@@ -4,13 +4,13 @@ from pyload.plugin.internal.XFSAccount import XFSAccount
 
 
 class FilerioCom(XFSAccount):
-    __name__    = "FilerioCom"
-    __type__    = "account"
-    __version__ = "0.03"
+    __name    = "FilerioCom"
+    __type    = "account"
+    __version = "0.03"
 
-    __description__ = """FileRio.in account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """FileRio.in account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     HOSTER_DOMAIN = "filerio.in"

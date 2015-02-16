@@ -5,13 +5,13 @@ from pyload.plugin.Account import Account
 
 
 class SimplyPremiumCom(Account):
-    __name__    = "SimplyPremiumCom"
-    __type__    = "account"
-    __version__ = "0.05"
+    __name    = "SimplyPremiumCom"
+    __type    = "account"
+    __version = "0.05"
 
-    __description__ = """Simply-Premium.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
+    __description = """Simply-Premium.com account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
     def loadAccountInfo(self, user, req):

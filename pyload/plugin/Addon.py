@@ -23,15 +23,15 @@ def threaded(fn):
 
 
 class Addon(Base):
-    __name__    = "Addon"
-    __type__    = "addon"
-    __version__ = "0.01"
+    __name    = "Addon"
+    __type    = "addon"
+    __version = "0.01"
 
-    __config__ = []  #: [("name", "type", "desc", "default")]
+    __config = []  #: [("name", "type", "desc", "default")]
 
-    __description__ = """Base addon plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("mkaay", "mkaay@mkaay.de"),
+    __description = """Base addon plugin"""
+    __license     = "GPLv3"
+    __authors     = [("mkaay", "mkaay@mkaay.de"),
                      ("RaNaN", "RaNaN@pyload.org")]
 
 
@@ -100,7 +100,7 @@ class Addon(Base):
 
 
     def __repr__(self):
-        return "<Addon %s>" % self.__name__
+        return "<Addon %s>" % self.__name
 
 
     def setup(self):
@@ -119,7 +119,7 @@ class Addon(Base):
 
     def isActivated(self):
         """ checks if addon is activated"""
-        return self.core.config.getPlugin(self.__name__, "activated")
+        return self.core.config.getPlugin(self.__name, "activated")
 
 
     # Event methods - overwrite these if needed

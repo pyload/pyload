@@ -11,12 +11,12 @@ from pyload.plugin.Captcha import Captcha
 
 
 class ReCaptcha(Captcha):
-    __name__    = "ReCaptcha"
-    __version__ = "0.14"
+    __name    = "ReCaptcha"
+    __version = "0.14"
 
-    __description__ = """ReCaptcha captcha service plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("pyLoad Team", "admin@pyload.org"),
+    __description = """ReCaptcha captcha service plugin"""
+    __license     = "GPLv3"
+    __authors     = [("pyLoad Team", "admin@pyload.org"),
                        ("Walter Purcaro", "vuolter@gmail.com"),
                        ("zapp-brannigan", "fuerst.reinje@web.de")]
 

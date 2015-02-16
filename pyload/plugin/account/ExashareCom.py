@@ -4,13 +4,13 @@ from pyload.plugin.internal.XFSAccount import XFSAccount
 
 
 class ExashareCom(XFSAccount):
-    __name__    = "ExashareCom"
-    __type__    = "account"
-    __version__ = "0.01"
+    __name    = "ExashareCom"
+    __type    = "account"
+    __version = "0.01"
 
-    __description__ = """Exashare.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Exashare.com account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     HOSTER_DOMAIN = "exashare.com"

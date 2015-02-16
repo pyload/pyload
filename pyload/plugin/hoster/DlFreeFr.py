@@ -35,15 +35,15 @@ class CustomBrowser(Browser):
 
 
 class DlFreeFr(SimpleHoster):
-    __name__    = "DlFreeFr"
-    __type__    = "hoster"
-    __version__ = "0.28"
+    __name    = "DlFreeFr"
+    __type    = "hoster"
+    __version = "0.28"
 
-    __pattern__ = r'http://(?:www\.)?dl\.free\.fr/(\w+|getfile\.pl\?file=/\w+)'
+    __pattern = r'http://(?:www\.)?dl\.free\.fr/(\w+|getfile\.pl\?file=/\w+)'
 
-    __description__ = """Dl.free.fr hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("the-razer", "daniel_ AT gmx DOT net"),
+    __description = """Dl.free.fr hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("the-razer", "daniel_ AT gmx DOT net"),
                        ("zoidberg", "zoidberg@mujmail.cz"),
                        ("Toilal", "toilal.dev@gmail.com")]
 
@@ -102,7 +102,7 @@ class DlFreeFr(SimpleHoster):
         headers = self.getLastHeaders()
         if headers.get("code") == 302 and "set-cookie" in headers and "location" in headers:
             m = re.search("(.*?)=(.*?); path=(.*?); domain=(.*?)", headers.get("set-cookie"))
-            cj = CookieJar(__name__)
+            cj = CookieJar(__name)
             if m:
                 cj.setCookie(m.group(4), m.group(1), m.group(2), m.group(3))
             else:

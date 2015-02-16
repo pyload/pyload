@@ -4,13 +4,13 @@ from pyload.plugin.OCR import OCR
 
 
 class GigasizeCom(OCR):
-    __name__    = "GigasizeCom"
-    __type__    = "ocr"
-    __version__ = "0.10"
+    __name    = "GigasizeCom"
+    __type    = "ocr"
+    __version = "0.10"
 
-    __description__ = """Gigasize.com ocr plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("pyLoad Team", "admin@pyload.org")]
+    __description = """Gigasize.com ocr plugin"""
+    __license     = "GPLv3"
+    __authors     = [("pyLoad Team", "admin@pyload.org")]
 
 
     def __init__(self):

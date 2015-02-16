@@ -5,17 +5,17 @@ from pyload.plugin.Crypter import Crypter
 
 
 class CzshareCom(Crypter):
-    __name__    = "CzshareCom"
-    __type__    = "crypter"
-    __version__ = "0.20"
+    __name    = "CzshareCom"
+    __type    = "crypter"
+    __version = "0.20"
 
-    __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/folders/.+'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/folders/.+'
+    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """Czshare.com folder decrypter plugin, now Sdilej.cz"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """Czshare.com folder decrypter plugin, now Sdilej.cz"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FOLDER_PATTERN = r'<tr class="subdirectory">\s*<td>\s*<table>(.*?)</table>'

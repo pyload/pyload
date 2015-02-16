@@ -8,15 +8,15 @@ from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 
 
 class CloudzillaTo(SimpleHoster):
-    __name__    = "CloudzillaTo"
-    __type__    = "crypter"
-    __version__ = "0.02"
+    __name    = "CloudzillaTo"
+    __type    = "crypter"
+    __version = "0.02"
 
-    __pattern__ = r'http://(?:www\.)?cloudzilla\.to/share/folder/(?P<ID>[\w^_]+)'
+    __pattern = r'http://(?:www\.)?cloudzilla\.to/share/folder/(?P<ID>[\w^_]+)'
 
-    __description__ = """Cloudzilla.to folder decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Cloudzilla.to folder decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     INFO_PATTERN    = r'<span class="name" title="(?P<N>.+?)"'

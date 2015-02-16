@@ -9,11 +9,11 @@ from pyload.utils import decode, remove_chars
 
 
 class MultiHook(Hook):
-    __name__    = "MultiHook"
-    __type__    = "hook"
-    __version__ = "0.37"
+    __name    = "MultiHook"
+    __type    = "hook"
+    __version = "0.37"
 
-    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
+    __config = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
                   ("revertfailed"  , "bool"               , "Revert to standard download if fails", True ),
                   ("retry"         , "int"                , "Number of retries before revert"     , 10   ),
@@ -21,9 +21,9 @@ class MultiHook(Hook):
                   ("reload"        , "bool"               , "Reload plugin list"                  , True ),
                   ("reloadinterval", "int"                , "Reload interval in hours"            , 12   )]
 
-    __description__ = """Hook plugin for multi hoster/crypter"""
-    __license__     = "GPLv3"
-    __authors__     = [("pyLoad Team", "admin@pyload.org"),
+    __description = """Hook plugin for multi hoster/crypter"""
+    __license     = "GPLv3"
+    __authors     = [("pyLoad Team", "admin@pyload.org"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
@@ -66,16 +66,16 @@ class MultiHook(Hook):
 
 
     def _initPlugin(self):
-        plugin, type = self.core.pluginManager.findPlugin(self.__name__)
+        plugin, type = self.core.pluginManager.findPlugin(self.__name)
 
         if not plugin:
             self.logWarning("Hook plugin will be deactivated due missing plugin reference")
             self.setConfig('activated', False)
         else:
-            self.pluginname   = self.__name__
+            self.pluginname   = self.__name
             self.plugintype   = type
-            self.pluginmodule = self.core.pluginManager.loadModule(type, self.__name__)
-            self.pluginclass  = getattr(self.pluginmodule, self.__name__)
+            self.pluginmodule = self.core.pluginManager.loadModule(type, self.__name)
+            self.pluginclass  = getattr(self.pluginmodule, self.__name)
 
 
     def _loadAccount(self):
@@ -250,8 +250,8 @@ class MultiHook(Hook):
 
             # create new regexp
             regexp = r'.*(?P<DOMAIN>%s).*' % "|".join([x.replace(".", "\.") for x in plugins])
-            if hasattr(self.pluginclass, "__pattern__") and isinstance(self.pluginclass.__pattern__, basestring) and '://' in self.pluginclass.__pattern__:
-                regexp = r'%s|%s' % (self.pluginclass.__pattern__, regexp)
+            if hasattr(self.pluginclass, "__pattern") and isinstance(self.pluginclass.__pattern, basestring) and '://' in self.pluginclass.__pattern:
+                regexp = r'%s|%s' % (self.pluginclass.__pattern, regexp)
 
             self.logDebug("Regexp: %s" % regexp)
 
@@ -278,7 +278,7 @@ class MultiHook(Hook):
         # reset pattern
         hdict = self.core.pluginManager.plugins[self.plugintype][self.pluginname]
 
-        hdict['pattern'] = getattr(self.pluginclass, "__pattern__", r'^unmatchable$')
+        hdict['pattern'] = getattr(self.pluginclass, "__pattern", r'^unmatchable$')
         hdict['re']      = re.compile(hdict['pattern'])
 
 

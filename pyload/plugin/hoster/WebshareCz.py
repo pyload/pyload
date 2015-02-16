@@ -7,15 +7,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class WebshareCz(SimpleHoster):
-    __name__    = "WebshareCz"
-    __type__    = "hoster"
-    __version__ = "0.16"
+    __name    = "WebshareCz"
+    __type    = "hoster"
+    __version = "0.16"
 
-    __pattern__ = r'https?://(?:www\.)?webshare\.cz/(?:#/)?file/(?P<ID>\w+)'
+    __pattern = r'https?://(?:www\.)?webshare\.cz/(?:#/)?file/(?P<ID>\w+)'
 
-    __description__ = """WebShare.cz hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it"),
+    __description = """WebShare.cz hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("stickell", "l.stickell@yahoo.it"),
                        ("rush", "radek.senfeld@gmail.com")]
 
 
@@ -24,7 +24,7 @@ class WebshareCz(SimpleHoster):
         info = super(WebshareCz, cls).getInfo(url, html)
 
         if url:
-            info['pattern'] = re.match(cls.__pattern__, url).groupdict()
+            info['pattern'] = re.match(cls.__pattern, url).groupdict()
 
             api_data = getURL("https://webshare.cz/api/file_info/",
                               post={'ident': info['pattern']['ID']},

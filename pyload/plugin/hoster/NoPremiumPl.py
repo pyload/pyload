@@ -5,15 +5,15 @@ from pyload.plugin.internal.MultiHoster import MultiHoster
 
 
 class NoPremiumPl(MultiHoster):
-    __name__    = "NoPremiumPl"
-    __type__    = "hoster"
-    __version__ = "0.02"
+    __name    = "NoPremiumPl"
+    __type    = "hoster"
+    __version = "0.02"
 
-    __pattern__ = r'https?://direct\.nopremium\.pl.+'
+    __pattern = r'https?://direct\.nopremium\.pl.+'
 
-    __description__ = """NoPremium.pl multi-hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("goddie", "dev@nopremium.pl")]
+    __description = """NoPremium.pl multi-hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("goddie", "dev@nopremium.pl")]
 
 
     API_URL = "http://crypt.nopremium.pl"
@@ -78,7 +78,7 @@ class NoPremiumPl(MultiHoster):
         if "errno" in parsed.keys():
             if parsed["errno"] in self.ERROR_CODES:
                 # error code in known
-                self.fail(self.ERROR_CODES[parsed["errno"]] % self.__name__)
+                self.fail(self.ERROR_CODES[parsed["errno"]] % self.__name)
             else:
                 # error code isn't yet added to plugin
                 self.fail(

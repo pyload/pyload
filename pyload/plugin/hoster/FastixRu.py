@@ -10,15 +10,15 @@ from pyload.plugin.internal.MultiHoster import MultiHoster
 
 
 class FastixRu(MultiHoster):
-    __name__    = "FastixRu"
-    __type__    = "hoster"
-    __version__ = "0.09"
+    __name    = "FastixRu"
+    __type    = "hoster"
+    __version = "0.09"
 
-    __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/\w{24}'
+    __pattern = r'http://(?:www\.)?fastix\.(ru|it)/file/\w{24}'
 
-    __description__ = """Fastix multi-hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Massimo Rosamilia", "max@spiritix.eu")]
+    __description = """Fastix multi-hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Massimo Rosamilia", "max@spiritix.eu")]
 
 
     def getFilename(self, url):

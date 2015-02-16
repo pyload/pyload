@@ -5,11 +5,11 @@ from pyload.plugin.internal.MultiHook import MultiHook
 
 
 class NoPremiumPl(MultiHook):
-    __name__    = "NoPremiumPl"
-    __type__    = "hook"
-    __version__ = "0.03"
+    __name    = "NoPremiumPl"
+    __type    = "hook"
+    __version = "0.03"
 
-    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
+    __config = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
                   ("revertfailed"  , "bool"               , "Revert to standard download if fails", True ),
                   ("retry"         , "int"                , "Number of retries before revert"     , 10   ),
@@ -17,9 +17,9 @@ class NoPremiumPl(MultiHook):
                   ("reload"        , "bool"               , "Reload plugin list"                  , True ),
                   ("reloadinterval", "int"                , "Reload interval in hours"            , 12   )]
 
-    __description__ = """NoPremium.pl hook plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("goddie", "dev@nopremium.pl")]
+    __description = """NoPremium.pl hook plugin"""
+    __license     = "GPLv3"
+    __authors     = [("goddie", "dev@nopremium.pl")]
 
 
     def getHosters(self):

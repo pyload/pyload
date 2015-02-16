@@ -6,15 +6,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class CloudzillaTo(SimpleHoster):
-    __name__    = "CloudzillaTo"
-    __type__    = "hoster"
-    __version__ = "0.06"
+    __name    = "CloudzillaTo"
+    __type    = "hoster"
+    __version = "0.06"
 
-    __pattern__ = r'http://(?:www\.)?cloudzilla\.to/share/file/(?P<ID>[\w^_]+)'
+    __pattern = r'http://(?:www\.)?cloudzilla\.to/share/file/(?P<ID>[\w^_]+)'
 
-    __description__ = """Cloudzilla.to hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Cloudzilla.to hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     INFO_PATTERN    = r'title="(?P<N>.+?)">\1</span> <span class="size">\((?P<S>[\d.]+) (?P<U>[\w^_]+)'

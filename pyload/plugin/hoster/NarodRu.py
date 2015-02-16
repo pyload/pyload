@@ -8,15 +8,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class NarodRu(SimpleHoster):
-    __name__    = "NarodRu"
-    __type__    = "hoster"
-    __version__ = "0.12"
+    __name    = "NarodRu"
+    __type    = "hoster"
+    __version = "0.12"
 
-    __pattern__ = r'http://(?:www\.)?narod(\.yandex)?\.ru/(disk|start/\d+\.\w+-narod\.yandex\.ru)/(?P<ID>\d+)/.+'
+    __pattern = r'http://(?:www\.)?narod(\.yandex)?\.ru/(disk|start/\d+\.\w+-narod\.yandex\.ru)/(?P<ID>\d+)/.+'
 
-    __description__ = """Narod.ru hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """Narod.ru hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     NAME_PATTERN = r'<dt class="name">(?:<[^<]*>)*(?P<N>[^<]+)</dt>'

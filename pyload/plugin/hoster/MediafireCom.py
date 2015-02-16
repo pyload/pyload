@@ -52,15 +52,15 @@ def getInfo(urls):
 
 
 class MediafireCom(SimpleHoster):
-    __name__    = "MediafireCom"
-    __type__    = "hoster"
-    __version__ = "0.84"
+    __name    = "MediafireCom"
+    __type    = "hoster"
+    __version = "0.84"
 
-    __pattern__ = r'http://(?:www\.)?mediafire\.com/(file/|(view/?|download\.php)?\?)(\w{11}|\w{15})($|/)'
+    __pattern = r'http://(?:www\.)?mediafire\.com/(file/|(view/?|download\.php)?\?)(\w{11}|\w{15})($|/)'
 
-    __description__ = """Mediafire.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description = """Mediafire.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it")]
 
 

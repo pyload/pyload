@@ -4,11 +4,11 @@ from pyload.plugin.internal.MultiHook import MultiHook
 
 
 class AlldebridCom(MultiHook):
-    __name__    = "AlldebridCom"
-    __type__    = "hook"
-    __version__ = "0.16"
+    __name    = "AlldebridCom"
+    __type    = "hook"
+    __version = "0.16"
 
-    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
+    __config = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
                   ("revertfailed"  , "bool"               , "Revert to standard download if fails", True ),
                   ("retry"         , "int"                , "Number of retries before revert"     , 10   ),
@@ -17,9 +17,9 @@ class AlldebridCom(MultiHook):
                   ("reloadinterval", "int"                , "Reload interval in hours"            , 12   ),
                   ("ssl"           , "bool"               , "Use HTTPS"                           , True )]
 
-    __description__ = """Alldebrid.com hook plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Andy Voigt", "spamsales@online.de")]
+    __description = """Alldebrid.com hook plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Andy Voigt", "spamsales@online.de")]
 
 
     def getHosters(self):

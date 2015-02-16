@@ -7,12 +7,12 @@ from pyload.utils import json_loads
 
 
 class AdYouLike(Captcha):
-    __name__    = "AdYouLike"
-    __version__ = "0.05"
+    __name    = "AdYouLike"
+    __version = "0.05"
 
-    __description__ = """AdYouLike captcha service plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """AdYouLike captcha service plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     AYL_PATTERN      = r'Adyoulike\.create\s*\((.+?)\)'

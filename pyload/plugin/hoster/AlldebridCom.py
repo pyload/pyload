@@ -11,15 +11,15 @@ from pyload.utils import parseFileSize
 
 
 class AlldebridCom(MultiHoster):
-    __name__    = "AlldebridCom"
-    __type__    = "hoster"
-    __version__ = "0.44"
+    __name    = "AlldebridCom"
+    __type    = "hoster"
+    __version = "0.44"
 
-    __pattern__ = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'
+    __pattern = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'
 
-    __description__ = """Alldebrid.com multi-hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Andy Voigt", "spamsales@online.de")]
+    __description = """Alldebrid.com multi-hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Andy Voigt", "spamsales@online.de")]
 
 
     def getFilename(self, url):

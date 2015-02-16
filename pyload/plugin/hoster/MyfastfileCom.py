@@ -7,15 +7,15 @@ from pyload.plugin.internal.MultiHoster import MultiHoster
 
 
 class MyfastfileCom(MultiHoster):
-    __name__    = "MyfastfileCom"
-    __type__    = "hoster"
-    __version__ = "0.08"
+    __name    = "MyfastfileCom"
+    __type    = "hoster"
+    __version = "0.08"
 
-    __pattern__ = r'http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/'
+    __pattern = r'http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/'
 
-    __description__ = """Myfastfile.com multi-hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+    __description = """Myfastfile.com multi-hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("stickell", "l.stickell@yahoo.it")]
 
 
 

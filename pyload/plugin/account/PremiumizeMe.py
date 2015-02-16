@@ -6,13 +6,13 @@ from pyload.utils import json_loads
 
 
 class PremiumizeMe(Account):
-    __name__    = "PremiumizeMe"
-    __type__    = "account"
-    __version__ = "0.13"
+    __name    = "PremiumizeMe"
+    __type    = "account"
+    __version = "0.13"
 
-    __description__ = """Premiumize.me account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
+    __description = """Premiumize.me account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
 
 
     def loadAccountInfo(self, user, req):

@@ -10,8 +10,8 @@ There are three kinds of different plugins: **Hoster**, **Crypter**, **Container
 All kind of plugins inherit from the base :class:`Plugin <pyload.plugin.Plugin.Plugin>`. You should know its
 convenient methods, they make your work easier ;-)
 
-Every plugin defines a ``__pattern__`` and when the user adds urls, every url is matched against the pattern defined in
-the plugin. In case the ``__pattern__`` matched on the url the plugin will be assigned to handle it and instanciated when
+Every plugin defines a ``__pattern`` and when the user adds urls, every url is matched against the pattern defined in
+the plugin. In case the ``__pattern`` matched on the url the plugin will be assigned to handle it and instanciated when
 pyLoad begins to download/decrypt the url.
 
 Plugin header
@@ -22,13 +22,13 @@ How basic hoster plugin header could look like: ::
         from pyload.plugin.Hoster import Hoster
 
         class MyFileHoster(Hoster):
-                __name__ = "MyFileHoster"
-                __version__ = "0.1"
-                __pattern__ = r"http://myfilehoster.example.com/file_id/[0-9]+"
-                __config__ = []
+                __name = "MyFileHoster"
+                __version = "0.1"
+                __pattern = r"http://myfilehoster.example.com/file_id/[0-9]+"
+                __config = []
 
-You have to define these meta-data, ``__pattern__`` has to be a regexp that sucessfully compiles with
-``re.compile(__pattern__)``.
+You have to define these meta-data, ``__pattern`` has to be a regexp that sucessfully compiles with
+``re.compile(__pattern)``.
 
 Just like :ref:`write_addons` you can add and use config values exatly the same way.
 If you want a Crypter or Container plugin, just replace the word Hoster with your desired plugin type.

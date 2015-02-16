@@ -9,15 +9,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class AndroidfilehostCom(SimpleHoster):
-    __name__    = "AndroidfilehostCom"
-    __type__    = "hoster"
-    __version__ = "0.01"
+    __name    = "AndroidfilehostCom"
+    __type    = "hoster"
+    __version = "0.01"
 
-    __pattern__ = r'https?://(?:www\.)?androidfilehost\.com/\?fid=\d+'
+    __pattern = r'https?://(?:www\.)?androidfilehost\.com/\?fid=\d+'
 
-    __description__ = """Androidfilehost.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
+    __description = """Androidfilehost.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
     NAME_PATTERN    = r'<br />(?P<N>.*?)</h1>'

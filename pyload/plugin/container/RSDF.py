@@ -12,15 +12,15 @@ from pyload.utils import fs_encode
 
 
 class RSDF(Container):
-    __name__    = "RSDF"
-    __type__    = "container"
-    __version__ = "0.27"
+    __name    = "RSDF"
+    __type    = "container"
+    __version = "0.27"
 
-    __pattern__ = r'.+\.rsdf$'
+    __pattern = r'.+\.rsdf$'
 
-    __description__ = """RSDF container decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+    __description = """RSDF container decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("RaNaN", "RaNaN@pyload.org"),
                        ("spoob", "spoob@pyload.org"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 

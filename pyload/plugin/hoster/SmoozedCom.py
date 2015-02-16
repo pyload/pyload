@@ -5,15 +5,15 @@ from pyload.plugin.internal.MultiHoster import MultiHoster
 
 
 class SmoozedCom(MultiHoster):
-    __name__    = "SmoozedCom"
-    __type__    = "hoster"
-    __version__ = "0.03"
+    __name    = "SmoozedCom"
+    __type    = "hoster"
+    __version = "0.03"
 
-    __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate
+    __pattern = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate
 
-    __description__ = """Smoozed.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("", "")]
+    __description = """Smoozed.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("", "")]
 
 
     def handlePremium(self, pyfile):

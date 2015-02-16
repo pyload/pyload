@@ -9,15 +9,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class UploadheroCom(SimpleHoster):
-    __name__    = "UploadheroCom"
-    __type__    = "hoster"
-    __version__ = "0.17"
+    __name    = "UploadheroCom"
+    __type    = "hoster"
+    __version = "0.17"
 
-    __pattern__ = r'http://(?:www\.)?uploadhero\.com?/dl/\w+'
+    __pattern = r'http://(?:www\.)?uploadhero\.com?/dl/\w+'
 
-    __description__ = """UploadHero.co plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("mcmyst", "mcmyst@hotmail.fr"),
+    __description = """UploadHero.co plugin"""
+    __license     = "GPLv3"
+    __authors     = [("mcmyst", "mcmyst@hotmail.fr"),
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 

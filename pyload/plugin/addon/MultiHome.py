@@ -6,15 +6,15 @@ from pyload.plugin.Addon import Addon
 
 
 class MultiHome(Addon):
-    __name__    = "MultiHome"
-    __type__    = "addon"
-    __version__ = "0.12"
+    __name    = "MultiHome"
+    __type    = "addon"
+    __version = "0.12"
 
-    __config__ = [("interfaces", "str", "Interfaces", "None")]
+    __config = [("interfaces", "str", "Interfaces", "None")]
 
-    __description__ = """Ip address changer"""
-    __license__     = "GPLv3"
-    __authors__     = [("mkaay", "mkaay@mkaay.de")]
+    __description = """Ip address changer"""
+    __license     = "GPLv3"
+    __authors     = [("mkaay", "mkaay@mkaay.de")]
 
 
     def setup(self):

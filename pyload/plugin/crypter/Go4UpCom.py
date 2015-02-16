@@ -8,15 +8,15 @@ from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 
 
 class Go4UpCom(SimpleCrypter):
-    __name__    = "Go4UpCom"
-    __type__    = "crypter"
-    __version__ = "0.11"
+    __name    = "Go4UpCom"
+    __type    = "crypter"
+    __version = "0.11"
 
-    __pattern__ = r'http://go4up\.com/(dl/\w{12}|rd/\w{12}/\d+)'
+    __pattern = r'http://go4up\.com/(dl/\w{12}|rd/\w{12}/\d+)'
 
-    __description__ = """Go4Up.com decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("rlindner81", "rlindner81@gmail.com"),
+    __description = """Go4Up.com decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("rlindner81", "rlindner81@gmail.com"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

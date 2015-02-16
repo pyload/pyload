@@ -5,11 +5,11 @@ from pyload.plugin.internal.MultiHook import MultiHook
 
 
 class RPNetBiz(MultiHook):
-    __name__    = "RPNetBiz"
-    __type__    = "hook"
-    __version__ = "0.14"
+    __name    = "RPNetBiz"
+    __type    = "hook"
+    __version = "0.14"
 
-    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
+    __config = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
                   ("revertfailed"  , "bool"               , "Revert to standard download if fails", True ),
                   ("retry"         , "int"                , "Number of retries before revert"     , 10   ),
@@ -17,9 +17,9 @@ class RPNetBiz(MultiHook):
                   ("reload"        , "bool"               , "Reload plugin list"                  , True ),
                   ("reloadinterval", "int"                , "Reload interval in hours"            , 12   )]
 
-    __description__ = """RPNet.biz hook plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Dman", "dmanugm@gmail.com")]
+    __description = """RPNet.biz hook plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Dman", "dmanugm@gmail.com")]
 
 
     def getHosters(self):

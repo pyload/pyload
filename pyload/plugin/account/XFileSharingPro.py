@@ -4,13 +4,13 @@ from pyload.plugin.internal.XFSAccount import XFSAccount
 
 
 class XFileSharingPro(XFSAccount):
-    __name__    = "XFileSharingPro"
-    __type__    = "account"
-    __version__ = "0.06"
+    __name    = "XFileSharingPro"
+    __type    = "account"
+    __version = "0.06"
 
-    __description__ = """XFileSharingPro multi-purpose account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """XFileSharingPro multi-purpose account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     HOSTER_DOMAIN = None

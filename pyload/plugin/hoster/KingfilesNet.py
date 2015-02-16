@@ -7,15 +7,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class KingfilesNet(SimpleHoster):
-    __name__    = "KingfilesNet"
-    __type__    = "hoster"
-    __version__ = "0.07"
+    __name    = "KingfilesNet"
+    __type    = "hoster"
+    __version = "0.07"
 
-    __pattern__ = r'http://(?:www\.)?kingfiles\.net/(?P<ID>\w{12})'
+    __pattern = r'http://(?:www\.)?kingfiles\.net/(?P<ID>\w{12})'
 
-    __description__ = """Kingfiles.net hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"),
+    __description = """Kingfiles.net hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zapp-brannigan", "fuerst.reinje@web.de"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

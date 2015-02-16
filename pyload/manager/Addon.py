@@ -105,7 +105,7 @@ class AddonManager(object):
 
         for pluginname in self.core.pluginManager.addonPlugins:
             try:
-                # hookClass = getattr(plugin, plugin.__name__)
+                # hookClass = getattr(plugin, plugin.__name)
                 if self.core.config.getPlugin(pluginname, "activated"):
                     pluginClass = self.core.pluginManager.loadClass("addon", pluginname)
                     if not pluginClass:
@@ -113,9 +113,9 @@ class AddonManager(object):
 
                     plugin = pluginClass(self.core, self)
                     plugins.append(plugin)
-                    self.pluginMap[pluginClass.__name__] = plugin
+                    self.pluginMap[pluginClass.__name] = plugin
                     if plugin.isActivated():
-                        active.append(pluginClass.__name__)
+                        active.append(pluginClass.__name)
                 else:
                     deactive.append(pluginname)
 
@@ -141,7 +141,7 @@ class AddonManager(object):
     def activateAddon(self, pluginname):
         # check if already loaded
         for inst in self.plugins:
-            if inst.__name__ == pluginname:
+            if inst.__name == pluginname:
                 return
 
         pluginClass = self.core.pluginManager.loadClass("addon", pluginname)
@@ -153,14 +153,14 @@ class AddonManager(object):
 
         addon = pluginClass(self.core, self)
         self.plugins.append(addon)
-        self.pluginMap[pluginClass.__name__] = addon
+        self.pluginMap[pluginClass.__name] = addon
 
         addon.activate()
 
 
     def deactivateAddon(self, pluginname):
         for plugin in self.plugins:
-            if plugin.__name__ == pluginname:
+            if plugin.__name == pluginname:
                 addon = plugin
                 break
         else:
@@ -174,7 +174,7 @@ class AddonManager(object):
         self.core.log.debug("Removed callback: %s" % self.core.scheduler.removeJob(addon.cb))
 
         self.plugins.remove(addon)
-        del self.pluginMap[addon.__name__]
+        del self.pluginMap[addon.__name]
 
 
     @try_catch

@@ -4,12 +4,12 @@ from pyload.plugin.internal.DeadHoster import DeadHoster
 
 
 class EgoFilesCom(DeadHoster):
-    __name__    = "EgoFilesCom"
-    __type__    = "hoster"
-    __version__ = "0.16"
+    __name    = "EgoFilesCom"
+    __type    = "hoster"
+    __version = "0.16"
 
-    __pattern__ = r'https?://(?:www\.)?egofiles\.com/\w+'
+    __pattern = r'https?://(?:www\.)?egofiles\.com/\w+'
 
-    __description__ = """Egofiles.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+    __description = """Egofiles.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("stickell", "l.stickell@yahoo.it")]

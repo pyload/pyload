@@ -9,13 +9,13 @@ from pyload.utils import json_loads
 
 
 class RapiduNet(Account):
-    __name__    = "RapiduNet"
-    __type__    = "account"
-    __version__ = "0.05"
+    __name    = "RapiduNet"
+    __type    = "account"
+    __version = "0.05"
 
-    __description__ = """Rapidu.net account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("prOq", None),
+    __description = """Rapidu.net account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("prOq", None),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

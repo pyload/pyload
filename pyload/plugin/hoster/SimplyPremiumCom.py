@@ -9,15 +9,15 @@ from pyload.plugin.internal.SimpleHoster import secondsToMidnight
 
 
 class SimplyPremiumCom(MultiHoster):
-    __name__    = "SimplyPremiumCom"
-    __type__    = "hoster"
-    __version__ = "0.08"
+    __name    = "SimplyPremiumCom"
+    __type    = "hoster"
+    __version = "0.08"
 
-    __pattern__ = r'https?://.+simply-premium\.com'
+    __pattern = r'https?://.+simply-premium\.com'
 
-    __description__ = """Simply-Premium.com multi-hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
+    __description = """Simply-Premium.com multi-hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
     def setup(self):

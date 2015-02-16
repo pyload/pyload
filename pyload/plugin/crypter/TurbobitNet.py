@@ -7,17 +7,17 @@ from pyload.utils import json_loads
 
 
 class TurbobitNet(SimpleCrypter):
-    __name__    = "TurbobitNet"
-    __type__    = "crypter"
-    __version__ = "0.05"
+    __name    = "TurbobitNet"
+    __type    = "crypter"
+    __version = "0.05"
 
-    __pattern__ = r'http://(?:www\.)?turbobit\.net/download/folder/(?P<ID>\w+)'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern = r'http://(?:www\.)?turbobit\.net/download/folder/(?P<ID>\w+)'
+    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """Turbobit.net folder decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it"),
+    __description = """Turbobit.net folder decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("stickell", "l.stickell@yahoo.it"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
@@ -39,6 +39,6 @@ class TurbobitNet(SimpleCrypter):
 
 
     def getLinks(self):
-        id = re.match(self.__pattern__, self.pyfile.url).group('ID')
+        id = re.match(self.__pattern, self.pyfile.url).group('ID')
         fixurl = lambda id: "http://turbobit.net/%s.html" % id
         return map(fixurl, self._getLinks(id))

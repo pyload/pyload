@@ -4,12 +4,12 @@ from pyload.plugin.internal.XFSHoster import XFSHoster
 
 
 class HundredEightyUploadCom(XFSHoster):
-    __name__    = "HundredEightyUploadCom"
-    __type__    = "hoster"
-    __version__ = "0.04"
+    __name    = "HundredEightyUploadCom"
+    __type    = "hoster"
+    __version = "0.04"
 
-    __pattern__ = r'http://(?:www\.)?180upload\.com/\w{12}'
+    __pattern = r'http://(?:www\.)?180upload\.com/\w{12}'
 
-    __description__ = """180upload.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+    __description = """180upload.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("stickell", "l.stickell@yahoo.it")]

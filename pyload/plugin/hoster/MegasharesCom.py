@@ -8,15 +8,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class MegasharesCom(SimpleHoster):
-    __name__    = "MegasharesCom"
-    __type__    = "hoster"
-    __version__ = "0.28"
+    __name    = "MegasharesCom"
+    __type    = "hoster"
+    __version = "0.28"
 
-    __pattern__ = r'http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index\.php)?\?d\d{2}=|dl/)\w+'
+    __pattern = r'http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index\.php)?\?d\d{2}=|dl/)\w+'
 
-    __description__ = """Megashares.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description = """Megashares.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

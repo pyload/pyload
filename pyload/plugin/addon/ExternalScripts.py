@@ -10,16 +10,16 @@ from pyload.utils import safe_join
 
 
 class ExternalScripts(Addon):
-    __name__    = "ExternalScripts"
-    __type__    = "addon"
-    __version__ = "0.29"
+    __name    = "ExternalScripts"
+    __type    = "addon"
+    __version = "0.29"
 
-    __config__ = [("activated", "bool", "Activated"         , True ),
+    __config = [("activated", "bool", "Activated"         , True ),
                   ("wait"     , "bool", "Wait script ending", False)]
 
-    __description__ = """Run external scripts"""
-    __license__     = "GPLv3"
-    __authors__     = [("mkaay", "mkaay@mkaay.de"),
+    __description = """Run external scripts"""
+    __license     = "GPLv3"
+    __authors     = [("mkaay", "mkaay@mkaay.de"),
                      ("RaNaN", "ranan@pyload.org"),
                      ("spoob", "spoob@pyload.org"),
                      ("Walter Purcaro", "vuolter@gmail.com")]

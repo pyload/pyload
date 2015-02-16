@@ -10,15 +10,15 @@ from pyload.utils import parseFileSize
 
 
 class CzshareCom(SimpleHoster):
-    __name__    = "CzshareCom"
-    __type__    = "hoster"
-    __version__ = "0.98"
+    __name    = "CzshareCom"
+    __type    = "hoster"
+    __version = "0.98"
 
-    __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download\.php\?).+'
+    __pattern = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download\.php\?).+'
 
-    __description__ = """CZshare.com hoster plugin, now Sdilej.cz"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """CZshare.com hoster plugin, now Sdilej.cz"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     NAME_PATTERN    = r'<div class="tab" id="parameters">\s*<p>\s*Cel. n.zev: <a href=[^>]*>(?P<N>[^<]+)</a>'

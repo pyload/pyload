@@ -10,12 +10,12 @@ from pyload.utils import fs_encode, safe_join
 
 
 class SevenZip(UnRar):
-    __name__    = "SevenZip"
-    __version__ = "0.08"
+    __name    = "SevenZip"
+    __version = "0.08"
 
-    __description__ = """7-Zip extractor plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Michael Nowak", ""),
+    __description = """7-Zip extractor plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Michael Nowak", ""),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

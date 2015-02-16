@@ -53,17 +53,17 @@ def create_connection(address, timeout=object(), source_address=None):
 
 
 class ClickAndLoad(Addon):
-    __name__    = "ClickAndLoad"
-    __type__    = "addon"
-    __version__ = "0.35"
+    __name    = "ClickAndLoad"
+    __type    = "addon"
+    __version = "0.35"
 
-    __config__ = [("activated", "bool", "Activated"                             , True),
+    __config = [("activated", "bool", "Activated"                             , True),
                   ("port"     , "int" , "Port"                                  , 9666),
                   ("extern"   , "bool", "Listen on the public network interface", True)]
 
-    __description__ = """Click'N'Load addon plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.de"),
+    __description = """Click'N'Load addon plugin"""
+    __license     = "GPLv3"
+    __authors     = [("RaNaN", "RaNaN@pyload.de"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

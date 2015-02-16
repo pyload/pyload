@@ -10,20 +10,20 @@ from pyload.utils import safe_join
 
 
 class YoutubeBatch(Crypter):
-    __name__    = "YoutubeBatch"
-    __type__    = "crypter"
-    __version__ = "1.01"
+    __name    = "YoutubeBatch"
+    __type    = "crypter"
+    __version = "1.01"
 
-    __pattern__ = r'https?://(?:www\.|m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w-]+)'
-    __config__ = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern = r'https?://(?:www\.|m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w-]+)'
+    __config = [("use_subfolder", "bool", "Save package to subfolder", True),
                 ("subfolder_per_package", "bool", "Create a subfolder for each package", True),
                 ("likes", "bool", "Grab user (channel) liked videos", False),
                 ("favorites", "bool", "Grab user (channel) favorite videos", False),
                 ("uploads", "bool", "Grab channel unplaylisted videos", True)]
 
-    __description__ = """Youtube.com channel & playlist decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Youtube.com channel & playlist decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     API_KEY = "AIzaSyCKnWLNlkX-L4oD1aEzqqhRw1zczeD6_k0"
@@ -95,7 +95,7 @@ class YoutubeBatch(Crypter):
 
 
     def decrypt(self, pyfile):
-        m = re.match(self.__pattern__, pyfile.url)
+        m = re.match(self.__pattern, pyfile.url)
         m_id = m.group('ID')
         m_type = m.group('TYPE')
 

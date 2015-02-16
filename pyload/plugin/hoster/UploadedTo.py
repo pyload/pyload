@@ -10,20 +10,20 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class UploadedTo(SimpleHoster):
-    __name__    = "UploadedTo"
-    __type__    = "hoster"
-    __version__ = "0.84"
+    __name    = "UploadedTo"
+    __type    = "hoster"
+    __version = "0.84"
 
-    __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
+    __pattern = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
 
-    __description__ = """Uploaded.net hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Uploaded.net hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     API_KEY = "lhF2IeeprweDfu9ccWlxXVVypA5nA3EL"
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", r'http://uploaded.net/file/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern + ".*", r'http://uploaded.net/file/\g<ID>')]
 
     LINK_PREMIUM_PATTERN = r'<div class="tfree".*\s*<form method="post" action="(.+?)"'
 
@@ -37,7 +37,7 @@ class UploadedTo(SimpleHoster):
 
         for _i in xrange(5):
             html = getURL("http://uploaded.net/api/filemultiple",
-                          get={"apikey": cls.API_KEY, 'id_0': re.match(cls.__pattern__, url).group('ID')},
+                          get={"apikey": cls.API_KEY, 'id_0': re.match(cls.__pattern, url).group('ID')},
                           decode=True)
 
             if html != "can't find request":

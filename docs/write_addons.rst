@@ -19,20 +19,20 @@ All addons should start with something like this: ::
         from pyload.plugin.Addon import Addon
 
         class YourAddon(Addon):
-                __name__ = "YourAddon"
-                __version__ = "0.1"
-                __description__ = "Does really cool stuff"
-                __config__ = [ ("activated" , "bool" , "Activated"  , "True" ) ]
+                __name = "YourAddon"
+                __version = "0.1"
+                __description = "Does really cool stuff"
+                __config = [ ("activated" , "bool" , "Activated"  , "True" ) ]
                 __author_name__ = ("Me")
                 __author_mail__ = ("me@has-no-mail.com")
 
-All meta-data is defined in the header, you need at least one option at ``__config__`` so the user can toggle your
+All meta-data is defined in the header, you need at least one option at ``__config`` so the user can toggle your
 addon on and off. Dont't overwrite the ``init`` method if not neccesary, use ``setup`` instead.
 
 Using the Config
 ----------------
 
-We are taking a closer look at the ``__config__`` parameter.
+We are taking a closer look at the ``__config`` parameter.
 You can add more config values as desired by adding tuples of the following format to the config list: ``("name", "type", "description", "default value")``.
 When everything went right you can access the config values with ``self.getConfig(name)`` and ``self.setConfig(name, value``.
 

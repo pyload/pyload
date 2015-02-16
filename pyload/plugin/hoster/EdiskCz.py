@@ -6,15 +6,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class EdiskCz(SimpleHoster):
-    __name__    = "EdiskCz"
-    __type__    = "hoster"
-    __version__ = "0.23"
+    __name    = "EdiskCz"
+    __type    = "hoster"
+    __version = "0.23"
 
-    __pattern__ = r'http://(?:www\.)?edisk\.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.+'
+    __pattern = r'http://(?:www\.)?edisk\.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.+'
 
-    __description__ = """Edisk.cz hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """Edisk.cz hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     INFO_PATTERN = r'<span class="fl" title="(?P<N>[^"]+)">\s*.*?\((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</h1></span>'

@@ -4,15 +4,15 @@ from pyload.plugin.internal.XFSHoster import XFSHoster
 
 
 class JunocloudMe(XFSHoster):
-    __name__    = "JunocloudMe"
-    __type__    = "hoster"
-    __version__ = "0.05"
+    __name    = "JunocloudMe"
+    __type    = "hoster"
+    __version = "0.05"
 
-    __pattern__ = r'http://(?:\w+\.)?junocloud\.me/\w{12}'
+    __pattern = r'http://(?:\w+\.)?junocloud\.me/\w{12}'
 
-    __description__ = """Junocloud.me hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("guidobelix", "guidobelix@hotmail.it")]
+    __description = """Junocloud.me hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("guidobelix", "guidobelix@hotmail.it")]
 
 
     URL_REPLACEMENTS = [(r'//(www\.)?junocloud', "//dl3.junocloud")]

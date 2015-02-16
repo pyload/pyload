@@ -20,10 +20,10 @@ class PluginManager(object):
     USERROOT = "userplugins."
     TYPES    = ["account", "addon", "container", "crypter", "hook", "hoster", "internal", "ocr"]
 
-    PATTERN = re.compile(r'__pattern__\s*=\s*u?r("|\')([^"\']+)')
-    VERSION = re.compile(r'__version__\s*=\s*("|\')([\d.]+)')
-    CONFIG  = re.compile(r'__config__\s*=\s*\[([^\]]+)', re.M)
-    DESC    = re.compile(r'__description__\s*=\s*("|"""|\')([^"\']+)')
+    PATTERN = re.compile(r'__pattern\s*=\s*u?r("|\')([^"\']+)')
+    VERSION = re.compile(r'__version\s*=\s*("|\')([\d.]+)')
+    CONFIG  = re.compile(r'__config\s*=\s*\[([^\]]+)', re.M)
+    DESC    = re.compile(r'__description\s*=\s*("|"""|\')([^"\']+)')
 
 
     def __init__(self, core):
@@ -93,8 +93,7 @@ class PluginManager(object):
             pfolder = join(pypath, "pyload", "plugins", folder)
 
         for f in listdir(pfolder):
-            if (isfile(join(pfolder, f)) and f.endswith(".py") or f.endswith("_25.pyc") or f.endswith(
-                "_26.pyc") or f.endswith("_27.pyc")) and not f.startswith("_"):
+            if isfile(join(pfolder, f)) and f.endswith(".py") and not f.startswith("_"):
 
                 try:
                     with open(join(pfolder, f)) as data:
@@ -102,15 +101,6 @@ class PluginManager(object):
 
                 except IOError, e:
                     self.core.log.error(str(e))
-                    continue
-
-                if f.endswith("_25.pyc") and version_info[0:2] != (2, 5):  #@TODO: Remove in 0.4.10
-                    continue
-
-                elif f.endswith("_26.pyc") and version_info[0:2] != (2, 6):  #@TODO: Remove in 0.4.10
-                    continue
-
-                elif f.endswith("_27.pyc") and version_info[0:2] != (2, 7):  #@TODO: Remove in 0.4.10
                     continue
 
                 name = f[:-3]

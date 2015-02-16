@@ -11,15 +11,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, secondsToMidnight
 
 
 class RapidgatorNet(SimpleHoster):
-    __name__    = "RapidgatorNet"
-    __type__    = "hoster"
-    __version__ = "0.32"
+    __name    = "RapidgatorNet"
+    __type    = "hoster"
+    __version = "0.32"
 
-    __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
+    __pattern = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
 
-    __description__ = """Rapidgator.net hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description = """Rapidgator.net hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("chrox", ""),
                        ("stickell", "l.stickell@yahoo.it"),
                        ("Walter Purcaro", "vuolter@gmail.com")]

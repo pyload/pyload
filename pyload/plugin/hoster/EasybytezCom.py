@@ -4,15 +4,15 @@ from pyload.plugin.internal.XFSHoster import XFSHoster
 
 
 class EasybytezCom(XFSHoster):
-    __name__    = "EasybytezCom"
-    __type__    = "hoster"
-    __version__ = "0.23"
+    __name    = "EasybytezCom"
+    __type    = "hoster"
+    __version = "0.23"
 
-    __pattern__ = r'http://(?:www\.)?easybytez\.com/\w{12}'
+    __pattern = r'http://(?:www\.)?easybytez\.com/\w{12}'
 
-    __description__ = """Easybytez.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description = """Easybytez.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it")]
 
 

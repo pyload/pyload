@@ -4,12 +4,12 @@ from pyload.plugin.internal.DeadCrypter import DeadCrypter
 
 
 class MultiuploadCom(DeadCrypter):
-    __name__    = "MultiuploadCom"
-    __type__    = "crypter"
-    __version__ = "0.02"
+    __name    = "MultiuploadCom"
+    __type    = "crypter"
+    __version = "0.02"
 
-    __pattern__ = r'http://(?:www\.)?multiupload\.(com|nl)/\w+'
+    __pattern = r'http://(?:www\.)?multiupload\.(com|nl)/\w+'
 
-    __description__ = """MultiUpload.com decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """MultiUpload.com decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]

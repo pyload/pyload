@@ -8,13 +8,13 @@ from pyload.plugin.Account import Account
 
 
 class CatShareNet(Account):
-    __name__    = "CatShareNet"
-    __type__    = "account"
-    __version__ = "0.05"
+    __name    = "CatShareNet"
+    __type    = "account"
+    __version = "0.05"
 
-    __description__ = """CatShareNet account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("prOq", "")]
+    __description = """CatShareNet account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("prOq", "")]
 
 
     PREMIUM_PATTERN      = r'<a href="/premium">Konto:[\s\n]*Premium'

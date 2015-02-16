@@ -19,12 +19,12 @@ class PasswordError(Exception):
 
 
 class Extractor(Base):
-    __name__    = "Extractor"
-    __version__ = "0.20"
+    __name    = "Extractor"
+    __version = "0.20"
 
-    __description__ = """Base extractor plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "ranan@pyload.org"),
+    __description = """Base extractor plugin"""
+    __license     = "GPLv3"
+    __authors     = [("RaNaN", "ranan@pyload.org"),
                        ("Walter Purcaro", "vuolter@gmail.com"),
                        ("Immenz", "immenz@gmx.net")]
 

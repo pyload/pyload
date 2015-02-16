@@ -4,13 +4,13 @@ from pyload.plugin.Account import Account
 
 
 class UploadableCh(Account):
-    __name__    = "UploadableCh"
-    __type__    = "account"
-    __version__ = "0.03"
+    __name    = "UploadableCh"
+    __type    = "account"
+    __version = "0.03"
 
-    __description__ = """Uploadable.ch account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Sasch", "gsasch@gmail.com")]
+    __description = """Uploadable.ch account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Sasch", "gsasch@gmail.com")]
 
 
     def loadAccountInfo(self, user, req):

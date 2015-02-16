@@ -9,17 +9,17 @@ from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 
 
 class DlProtectCom(SimpleCrypter):
-    __name__    = "DlProtectCom"
-    __type__    = "crypter"
-    __version__ = "0.03"
+    __name    = "DlProtectCom"
+    __type    = "crypter"
+    __version = "0.03"
 
-    __pattern__ = r'https?://(?:www\.)?dl-protect\.com/((en|fr)/)?\w+'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern = r'https?://(?:www\.)?dl-protect\.com/((en|fr)/)?\w+'
+    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """Dl-protect.com decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Dl-protect.com decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     COOKIES = [("dl-protect.com", "l", "en")]

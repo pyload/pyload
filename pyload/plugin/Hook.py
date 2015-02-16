@@ -4,12 +4,12 @@ from pyload.plugin.Addon import Addon, threaded
 
 
 class Hook(Addon):
-    __name__    = "Hook"
-    __type__    = "hook"
-    __version__ = "0.03"
+    __name    = "Hook"
+    __type    = "hook"
+    __version = "0.03"
 
-    __config__ = []  #: [("name", "type", "desc", "default")]
+    __config = []  #: [("name", "type", "desc", "default")]
 
-    __description__ = """Base hook plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Base hook plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]

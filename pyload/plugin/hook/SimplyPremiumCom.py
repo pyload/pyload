@@ -5,11 +5,11 @@ from pyload.plugin.internal.MultiHook import MultiHook
 
 
 class SimplyPremiumCom(MultiHook):
-    __name__    = "SimplyPremiumCom"
-    __type__    = "hook"
-    __version__ = "0.05"
+    __name    = "SimplyPremiumCom"
+    __type    = "hook"
+    __version = "0.05"
 
-    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
+    __config = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
                   ("revertfailed"  , "bool"               , "Revert to standard download if fails", True ),
                   ("retry"         , "int"                , "Number of retries before revert"     , 10   ),
@@ -17,9 +17,9 @@ class SimplyPremiumCom(MultiHook):
                   ("reload"        , "bool"               , "Reload plugin list"                  , True ),
                   ("reloadinterval", "int"                , "Reload interval in hours"            , 12   )]
 
-    __description__ = """Simply-Premium.com hook plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
+    __description = """Simply-Premium.com hook plugin"""
+    __license     = "GPLv3"
+    __authors     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
     def getHosters(self):

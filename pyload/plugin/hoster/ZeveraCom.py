@@ -8,15 +8,15 @@ from pyload.plugin.internal.MultiHoster import MultiHoster
 
 
 class ZeveraCom(MultiHoster):
-    __name__    = "ZeveraCom"
-    __type__    = "hoster"
-    __version__ = "0.28"
+    __name    = "ZeveraCom"
+    __type    = "hoster"
+    __version = "0.28"
 
-    __pattern__ = r'https?://(?:www\.)zevera\.com/(getFiles\.ashx|Members/download\.ashx)\?.*ourl=.+'
+    __pattern = r'https?://(?:www\.)zevera\.com/(getFiles\.ashx|Members/download\.ashx)\?.*ourl=.+'
 
-    __description__ = """Zevera.com multi-hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description = """Zevera.com multi-hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
