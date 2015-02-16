@@ -1,4 +1,4 @@
-{% extends '/flat/tml/base.html' %}
+{% extends '/Flat/tml/base.html' %}
 
 {% block head %}
     <script type="text/javascript">
@@ -11,8 +11,8 @@
     </script>
 {% endblock %}
 
-{% block title %}{{ _("Information") }} - {{ super() }} {% endblock %}
-{% block subtitle %}{{ _("Information") }}{% endblock %}
+{% block title %}{{ _("Info") }} - {{ super() }} {% endblock %}
+{% block subtitle %}{{ _("Info") }}{% endblock %}
 
 {% block content %}
     <h3>{{ _("News") }}</h3>
@@ -69,7 +69,7 @@
             <td>{{ language }}</td>
         </tr>
         <tr>
-            <td>{{ _("Webinterface Port:") }}</td>
+            <td>{{ _("Web UI Port:") }}</td>
             <td>{{ webif }}</td>
         </tr>
         <tr>

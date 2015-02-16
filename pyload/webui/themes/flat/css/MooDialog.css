@@ -12,8 +12,9 @@
   left: 50%;
   z-index: 50000;
 
-  background: #CDCDCD;
+  background-color: #E44424;
   color: black;
+  opacity:0.9;
 }
 
 .MooDialogTitle {

@@ -421,7 +421,7 @@ class SetupAssistant(object):
                 makedirs(dirname, 0700)
 
             chdir(dirname)
-            
+
             if persistent:
                 c = path.join(rootdir, "config", "configdir")
                 if not path.exists(c):
