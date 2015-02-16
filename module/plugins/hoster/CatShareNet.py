@@ -9,7 +9,7 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 class CatShareNet(SimpleHoster):
     __name__    = "CatShareNet"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.11"
 
     __pattern__ = r'http://(?:www\.)?catshare\.net/\w{16}'
 
@@ -26,8 +26,9 @@ class CatShareNet(SimpleHoster):
     OFFLINE_PATTERN = ur'Podany plik został usunięty\s*</div>'
 
     IP_BLOCKED_PATTERN = ur'>Nasz serwis wykrył że Twój adres IP nie pochodzi z Polski.<'
-    SECONDS_PATTERN = 'var\scount\s=\s(\d+);'
-    LINK_PATTERN = r'<form action="(.+?)" method="GET">'
+    WAIT_PATTERN       = r'var\scount\s=\s(\d+);'
+
+    LINK_FREE_PATTERN = LINK_PREMIUM_PATTERN = r'<form action="(.+?)" method="GET">'
 
 
     def setup(self):
@@ -42,26 +43,20 @@ class CatShareNet(SimpleHoster):
         return super(CatShareNet, self).getFileInfo()
 
 
-    def handleFree(self):
-        m = re.search(self.SECONDS_PATTERN, self.html)
-        if m:
-            wait_time = int(m.group(1))
-            self.wait(wait_time, True)
-
+    def handleFree(self, pyfile):
         recaptcha = ReCaptcha(self)
 
-        challenge, response = recaptcha.challenge()
-        self.html = self.load(self.pyfile.url,
+        response, challenge = recaptcha.challenge()
+        self.html = self.load(pyfile.url,
                               post={'recaptcha_challenge_field': challenge,
                                     'recaptcha_response_field' : response})
 
-        m = re.search(self.LINK_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
             self.invalidCaptcha()
             self.retry(reason=_("Wrong captcha entered"))
 
-        dl_link = m.group(1)
-        self.download(dl_link, disposition=True)
+        self.link = m.group(1)
 
 
 getInfo = create_getInfo(CatShareNet)

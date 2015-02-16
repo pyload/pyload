@@ -11,7 +11,7 @@ from time import sleep
 from pyload.utils import json_loads
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getRequest
-from pyload.plugin.Addon import Addon
+from module.plugins.Hook import Hook, threaded
 
 
 class DeathByCaptchaException(Exception):
@@ -51,7 +51,7 @@ class DeathByCaptchaException(Exception):
 class DeathByCaptcha(Addon):
     __name__    = "DeathByCaptcha"
     __type__    = "hook"
-    __version__ = "0.04"
+    __version__ = "0.06"
 
     __config__ = [("username", "str", "Username", ""),
                 ("passkey", "password", "Password", ""),
@@ -66,7 +66,7 @@ class DeathByCaptcha(Addon):
     API_URL = "http://api.dbcapi.me/api/"
 
 
-    def call_api(self, api="captcha", post=False, multipart=False):
+    def api_response(self, api="captcha", post=False, multipart=False):
         req = getRequest()
         req.c.setopt(HTTPHEADER, ["Accept: application/json", "User-Agent: pyLoad %s" % self.core.version])
 
@@ -108,7 +108,7 @@ class DeathByCaptcha(Addon):
 
 
     def getCredits(self):
-        res = self.call_api("user", True)
+        res = self.api_response("user", True)
 
         if 'is_banned' in res and res['is_banned']:
             raise DeathByCaptchaException('banned')
@@ -119,14 +119,14 @@ class DeathByCaptcha(Addon):
 
 
     def getStatus(self):
-        res = self.call_api("status", False)
+        res = self.api_response("status", False)
 
         if 'is_service_overloaded' in res and res['is_service_overloaded']:
             raise DeathByCaptchaException('service-overload')
 
 
     def submit(self, captcha, captchaType="file", match=None):
-        #workaround multipart-post bug in HTTPRequest.py
+        #@NOTE: Workaround multipart-post bug in HTTPRequest.py
         if re.match("^\w*$", self.getConfig("passkey")):
             multipart = True
             data = (FORM_FILE, captcha)
@@ -136,7 +136,7 @@ class DeathByCaptcha(Addon):
                 data = f.read()
             data = "base64:" + b64encode(data)
 
-        res = self.call_api("captcha", {"captchafile": data}, multipart)
+        res = self.api_response("captcha", {"captchafile": data}, multipart)
 
         if "captcha" not in res:
             raise DeathByCaptchaException(res)
@@ -144,7 +144,7 @@ class DeathByCaptcha(Addon):
 
         for _i in xrange(24):
             sleep(5)
-            res = self.call_api("captcha/%d" % ticket, False)
+            res = self.api_response("captcha/%d" % ticket, False)
             if res['text'] and res['is_correct']:
                 break
         else:
@@ -185,13 +185,13 @@ class DeathByCaptcha(Addon):
             task.handler.append(self)
             task.data['service'] = self.__name__
             task.setWaiting(180)
-            self.processCaptcha(task)
+            self._processCaptcha(task)
 
 
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             try:
-                res = self.call_api("captcha/%d/report" % task.data['ticket'], True)
+                res = self.api_response("captcha/%d/report" % task.data['ticket'], True)
 
             except DeathByCaptchaException, e:
                 self.logError(e.getDesc())
@@ -200,7 +200,8 @@ class DeathByCaptcha(Addon):
                 self.logError(e)
 
 
-    def processCaptcha(self, task):
+    @threaded
+    def _processCaptcha(self, task):
         c = task.captchaFile
         try:
             ticket, result = self.submit(c)

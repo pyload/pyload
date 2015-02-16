@@ -8,9 +8,9 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 class BezvadataCz(SimpleHoster):
     __name__    = "BezvadataCz"
     __type__    = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.26"
 
-    __pattern__ = r'http://(?:www\.)?bezvadata\.cz/stahnout/.*'
+    __pattern__ = r'http://(?:www\.)?bezvadata\.cz/stahnout/.+'
 
     __description__ = """BezvaData.cz hoster plugin"""
     __license__     = "GPLv3"
@@ -27,7 +27,7 @@ class BezvadataCz(SimpleHoster):
         self.multiDL        = True
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         #download button
         m = re.search(r'<a class="stahnoutSoubor".*?href="(.*?)"', self.html)
         if m is None:
@@ -88,7 +88,7 @@ class BezvadataCz(SimpleHoster):
 
 
     def loadcaptcha(self, data, *args, **kwargs):
-        return data.decode("base64")
+        return data.decode('base64')
 
 
 getInfo = create_getInfo(BezvadataCz)

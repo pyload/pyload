@@ -9,7 +9,7 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DateiTo(SimpleHoster):
     __name__    = "DateiTo"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.07"
 
     __pattern__ = r'http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html'
 
@@ -28,7 +28,7 @@ class DateiTo(SimpleHoster):
     DATA_PATTERN = r'url: "(.*?)", data: "(.*?)",'
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         url = 'http://datei.to/ajax/download.php'
         data = {'P': 'I', 'ID': self.info['pattern']['ID']}
         recaptcha = ReCaptcha(self)
@@ -52,7 +52,7 @@ class DateiTo(SimpleHoster):
             data = dict(x.split('=') for x in m.group(2).split('&'))
 
             if url.endswith('recaptcha.php'):
-                data['recaptcha_challenge_field'], data['recaptcha_response_field'] = recaptcha.challenge()
+                data['recaptcha_response_field'], data['recaptcha_challenge_field'] = recaptcha.challenge()
         else:
             self.fail(_("Too bad..."))
 

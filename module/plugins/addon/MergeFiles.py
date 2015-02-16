@@ -8,13 +8,13 @@ import re
 from traceback import print_exc
 
 from pyload.plugin.Addon import Addon, threaded
-from pyload.utils import safe_join, fs_encode
+from module.utils import safe_join
 
 
 class MergeFiles(Addon):
     __name__    = "MergeFiles"
     __type__    = "addon"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __config__ = [("activated", "bool", "Activated", True)]
 
@@ -59,7 +59,7 @@ class MergeFiles(Addon):
                     pyfile.setStatus("processing")
 
                     try:
-                        with open(os.path.join(download_folder, splitted_file), "rb") as s_file:
+                        with open(save_join(download_folder, splitted_file), "rb") as s_file:
                             size_written = 0
                             s_file_size = int(os.path.getsize(os.path.join(download_folder, splitted_file)))
 

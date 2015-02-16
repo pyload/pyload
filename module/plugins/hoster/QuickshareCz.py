@@ -8,9 +8,9 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 class QuickshareCz(SimpleHoster):
     __name__    = "QuickshareCz"
     __type__    = "hoster"
-    __version__ = "0.55"
+    __version__ = "0.56"
 
-    __pattern__ = r'http://(?:[^/]*\.)?quickshare\.cz/stahnout-soubor/.*'
+    __pattern__ = r'http://(?:[^/]*\.)?quickshare\.cz/stahnout-soubor/.+'
 
     __description__ = """Quickshare.cz hoster plugin"""
     __license__     = "GPLv3"
@@ -43,16 +43,15 @@ class QuickshareCz(SimpleHoster):
                     self.premium = False
 
         if self.premium:
-            self.handlePremium()
+            self.handlePremium(pyfile)
         else:
-            self.handleFree()
+            self.handleFree(pyfile)
 
-        check = self.checkDownload({"err": re.compile(r"\AChyba!")}, max_size=100)
-        if check == "err":
+        if self.checkDownload({"error": re.compile(r"\AChyba!")}, max_size=100):
             self.fail(_("File not m or plugin defect"))
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         # get download url
         download_url = '%s/download.php' % self.jsvars['server']
         data = dict((x, self.jsvars[x]) for x in self.jsvars if x in ("ID1", "ID2", "ID3", "ID4"))
@@ -81,7 +80,7 @@ class QuickshareCz(SimpleHoster):
         self.download(download_url)
 
 
-    def handlePremium(self):
+    def handlePremium(self, pyfile):
         download_url = '%s/download_premium.php' % self.jsvars['server']
         data = dict((x, self.jsvars[x]) for x in self.jsvars if x in ("ID1", "ID2", "ID4", "ID5"))
         self.download(download_url, get=data)

@@ -31,9 +31,9 @@ class YoutubeBatch(Crypter):
 
     def api_response(self, ref, req):
         req.update({"key": self.API_KEY})
-        url = urljoin("https://www.googleapis.com/youtube/v3/", ref)
-        page = self.load(url, get=req)
-        return json_loads(page)
+        url  = urljoin("https://www.googleapis.com/youtube/v3/", ref)
+        html = self.load(url, get=req)
+        return json_loads(html)
 
 
     def getChannel(self, user):
@@ -96,8 +96,8 @@ class YoutubeBatch(Crypter):
 
     def decrypt(self, pyfile):
         m = re.match(self.__pattern__, pyfile.url)
-        m_id = m.group("ID")
-        m_type = m.group("TYPE")
+        m_id = m.group('ID')
+        m_type = m.group('TYPE')
 
         if m_type == "user":
             self.logDebug("Url recognized as Channel")

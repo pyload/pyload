@@ -10,7 +10,7 @@ from pyload.plugin.Account import Account
 class DebridItaliaCom(Account):
     __name__    = "DebridItaliaCom"
     __type__    = "account"
-    __version__ = "0.11"
+    __version__ = "0.13"
 
     __description__ = """Debriditalia.com account plugin"""
     __license__     = "GPLv3"
@@ -28,7 +28,7 @@ class DebridItaliaCom(Account):
         if 'Account premium not activated' not in html:
             m = re.search(self.WALID_UNTIL_PATTERN, html)
             if m:
-                validuntil = int(mktime(strptime(m.group(1), "%d/%m/%Y %H:%M")))
+                validuntil = mktime(strptime(m.group(1), "%d/%m/%Y %H:%M"))
                 info = {'premium': True, 'validuntil': validuntil, 'trafficleft': -1}
             else:
                 self.logError(_("Unable to retrieve account information"))
@@ -38,7 +38,8 @@ class DebridItaliaCom(Account):
 
     def login(self, user, data, req):
         html = req.load("http://debriditalia.com/login.php",
-                        get={'u': user, 'p': data['password']})
+                        get={'u': user, 'p': data['password']},
+                        decode=True)
 
         if 'NO' in html:
             self.wrongPassword()

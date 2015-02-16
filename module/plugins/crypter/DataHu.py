@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class DataHu(SimpleCrypter):
@@ -38,3 +38,6 @@ class DataHu(SimpleCrypter):
 
             if u'Hib\xe1s jelsz\xf3' in self.html:  # Wrong password
                 self.fail(_("Wrong password"))
+
+
+getInfo = create_getInfo(DataHuFolder)

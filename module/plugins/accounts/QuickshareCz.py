@@ -8,7 +8,7 @@ from pyload.plugin.Account import Account
 class QuickshareCz(Account):
     __name__    = "QuickshareCz"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """Quickshare.cz account plugin"""
     __license__     = "GPLv3"
@@ -33,11 +33,11 @@ class QuickshareCz(Account):
 
 
     def login(self, user, data, req):
-        html = req.load('http://www.quickshare.cz/html/prihlaseni_process.php', post={
-            "akce": u'Přihlásit',
-            "heslo": data['password'],
-            "jmeno": user
-        }, decode=True)
+        html = req.load('http://www.quickshare.cz/html/prihlaseni_process.php',
+                        post={"akce": u'Přihlásit',
+                              "heslo": data['password'],
+                              "jmeno": user},
+                        decode=True)
 
         if u'>Takový uživatel neexistuje.<' in html or u'>Špatné heslo.<' in html:
             self.wrongPassword()

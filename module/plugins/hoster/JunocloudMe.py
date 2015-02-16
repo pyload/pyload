@@ -15,13 +15,9 @@ class JunocloudMe(XFSHoster):
     __authors__     = [("guidobelix", "guidobelix@hotmail.it")]
 
 
-    HOSTER_DOMAIN = "junocloud.me"
-
     URL_REPLACEMENTS = [(r'//(www\.)?junocloud', "//dl3.junocloud")]
 
-    SIZE_PATTERN = r'<p class="request_filesize">Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)</p>'
-
-    OFFLINE_PATTERN = r'>No such file with this filename<'
+    OFFLINE_PATTERN      = r'>No such file with this filename<'
     TEMP_OFFLINE_PATTERN = r'The page may have been renamed, removed or be temporarily unavailable.<'
 
 

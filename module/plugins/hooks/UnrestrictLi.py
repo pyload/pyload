@@ -1,30 +1,30 @@
 # -*- coding: utf-8 -*-
 
 from pyload.utils import json_loads
-from pyload.network.RequestFactory import getURL
-from pyload.plugin.internal.MultiHoster import MultiHoster
+from module.plugins.internal.MultiHook import MultiHook
 
 
-class UnrestrictLi(MultiHoster):
+class UnrestrictLi(MultiHook):
     __name__    = "UnrestrictLi"
     __type__    = "hook"
-    __version__ = "0.02"
+    __version__ = "0.05"
 
-    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
-                ("hosterList", "str", "Hoster list (comma separated)", ""),
-                ("unloadFailing", "bool", "Revert to standard download if download fails", False),
-                ("interval", "int", "Reload interval in hours (0 to disable)", 24),
-                ("history", "bool", "Delete History", False)]
+    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
+                  ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
+                  ("revertfailed"  , "bool"               , "Revert to standard download if fails", True ),
+                  ("retry"         , "int"                , "Number of retries before revert"     , 10   ),
+                  ("retryinterval" , "int"                , "Retry interval in minutes"           , 1    ),
+                  ("reload"        , "bool"               , "Reload plugin list"                  , True ),
+                  ("reloadinterval", "int"                , "Reload interval in hours"            , 12   ),
+                  ("history"       , "bool"               , "Delete History"                      , False)]
 
     __description__ = """Unrestrict.li hook plugin"""
     __license__     = "GPLv3"
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    def getHoster(self):
-        json_data = getURL("http://unrestrict.li/api/jdownloader/hosts.php", get={'format': "json"})
+    def getHosters(self):
+        json_data = self.getURL("http://unrestrict.li/api/jdownloader/hosts.php", get={'format': "json"})
         json_data = json_loads(json_data)
 
-        host_list = [element['host'] for element in json_data['result']]
-
-        return host_list
+        return [element['host'] for element in json_data['result']]

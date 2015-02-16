@@ -8,7 +8,7 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 class PromptfileCom(SimpleHoster):
     __name__    = "PromptfileCom"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = r'https?://(?:www\.)?promptfile\.com/'
 
@@ -21,10 +21,10 @@ class PromptfileCom(SimpleHoster):
     OFFLINE_PATTERN = r'<span style="[^"]*" title="File Not Found">File Not Found</span>'
 
     CHASH_PATTERN = r'<input type="hidden" name="chash" value="([^"]*)" />'
-    LINK_PATTERN = r'<a href=\"(.+)\" target=\"_blank\" class=\"view_dl_link\">Download File</a>'
+    LINK_FREE_PATTERN = r'<a href=\"(.+)\" target=\"_blank\" class=\"view_dl_link\">Download File</a>'
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         # STAGE 1: get link to continue
         m = re.search(self.CHASH_PATTERN, self.html)
         if m is None:
@@ -32,14 +32,14 @@ class PromptfileCom(SimpleHoster):
         chash = m.group(1)
         self.logDebug("Read chash %s" % chash)
         # continue to stage2
-        self.html = self.load(self.pyfile.url, decode=True, post={'chash': chash})
+        self.html = self.load(pyfile.url, decode=True, post={'chash': chash})
 
         # STAGE 2: get the direct link
-        m = re.search(self.LINK_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
-            self.error(_("LINK_PATTERN not found"))
+            self.error(_("LINK_FREE_PATTERN not found"))
 
-        self.download(m.group(1), disposition=True)
+        self.link = m.group(1)
 
 
 getInfo = create_getInfo(PromptfileCom)

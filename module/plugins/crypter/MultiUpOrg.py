@@ -3,7 +3,7 @@
 import re
 from urlparse import urljoin
 
-from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class MultiUpOrg(SimpleCrypter):
@@ -24,7 +24,7 @@ class MultiUpOrg(SimpleCrypter):
 
 
     def getLinks(self):
-        m_type = re.match(self.__pattern__, self.pyfile.url).group("TYPE")
+        m_type = re.match(self.__pattern__, self.pyfile.url).group('TYPE')
 
         if m_type == "project":
             pattern = r'\n(http://www\.multiup\.org/(?:en|fr)/download/.*)'
@@ -36,3 +36,6 @@ class MultiUpOrg(SimpleCrypter):
                 self.html = self.load(miror_page)
 
         return re.findall(pattern, self.html)
+
+
+getInfo = create_getInfo(MultiUpOrg)

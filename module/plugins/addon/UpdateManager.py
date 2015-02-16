@@ -16,14 +16,14 @@ from pyload.utils import safe_join
 class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "addon"
-    __version__ = "0.42"
+    __version__ = "0.43"
 
     __config__ = [("activated"    , "bool"                         , "Activated"                                     , True              ),
                 ("mode"         , "pyLoad + plugins;plugins only", "Check updates for"                             , "pyLoad + plugins"),
                 ("interval"     , "int"                          , "Check interval in hours"                       , 8                 ),
                 ("autorestart"  , "bool"                         , "Automatically restart pyLoad when required"    , True              ),
                 ("reloadplugins", "bool"                         , "Monitor plugins for code changes in debug mode", True              ),
-                ("nodebugupdate", "bool"                         , "Don't check for updates in debug mode"         , True              )]
+                ("nodebugupdate", "bool"                         , "Don't check for updates in debug mode"         , False             )]
 
     __description__ = """Check for updates"""
     __license__     = "GPLv3"
@@ -191,12 +191,13 @@ class UpdateManager(Addon):
         blacklisted = [(x.split('|')[0], x.split('|')[1].rsplit('.', 1)[0]) for x in blacklist] if blacklist else []
 
         if blacklist:
-            # Protect internal plugins against removing
-            for i, t, n in enumerate(blacklisted):
-				if t == "internal":
-                    blacklisted.pop(i)
-					continue
+            # Protect UpdateManager from self-removing
+            try:
+                blacklisted.remove(("hook", "UpdateManager"))
+            except Exception:
+                pass
 
+            for t, n in blacklisted:
                 for idx, plugin in enumerate(upgradable):
                     if n == plugin['name'] and t == plugin['type']:
                         upgradable.pop(idx)

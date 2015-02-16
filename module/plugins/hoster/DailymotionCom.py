@@ -15,9 +15,9 @@ def getInfo(urls):
     request = {"fields": "access_error,status,title"}
 
     for url in urls:
-        id   = regex.match(url).group("ID")
-        page = getURL(apiurl % id, get=request)
-        info = json_loads(page)
+        id   = regex.match(url).group('ID')
+        html = getURL(apiurl % id, get=request)
+        info = json_loads(html)
 
         name = info['title'] + ".mp4" if "title" in info else url
 
@@ -60,8 +60,8 @@ class DailymotionCom(Hoster):
 
         for result in re.finditer(r"\"(?P<URL>http:\\/\\/www.dailymotion.com\\/cdn\\/H264-(?P<QF>.*?)\\.*?)\"",
                                   self.html):
-            url = result.group("URL")
-            qf  = result.group("QF")
+            url = result.group('URL')
+            qf  = result.group('QF')
 
             link    = url.replace("\\", "")
             quality = tuple(int(x) for x in qf.split("x"))
@@ -86,7 +86,7 @@ class DailymotionCom(Hoster):
 
     def getLink(self, streams, quality):
         if quality > 0:
-            for x, s in reversed([item for item in enumerate(streams)]):
+            for x, s in [item for item in enumerate(streams)][::-1]:
                 qf = s[0][1]
                 if qf <= quality:
                     idx = x
@@ -116,7 +116,7 @@ class DailymotionCom(Hoster):
     def process(self, pyfile):
         self.checkInfo(pyfile)
 
-        id = re.match(self.__pattern__, pyfile.url).group("ID")
+        id = re.match(self.__pattern__, pyfile.url).group('ID')
         self.html = self.load("http://www.dailymotion.com/embed/video/" + id, decode=True)
 
         streams = self.getStreams()

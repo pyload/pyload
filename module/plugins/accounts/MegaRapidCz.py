@@ -9,7 +9,7 @@ from pyload.plugin.Account import Account
 class MegaRapidCz(Account):
     __name__    = "MegaRapidCz"
     __type__    = "account"
-    __version__ = "0.34"
+    __version__ = "0.35"
 
     __description__ = """MegaRapid.cz account plugin"""
     __license__     = "GPLv3"
@@ -25,19 +25,19 @@ class MegaRapidCz(Account):
 
 
     def loadAccountInfo(self, user, req):
-        html = req.load("http://megarapid.cz/mujucet/", decode=True)
+        htmll = req.load("http://megarapid.cz/mujucet/", decode=True)
 
-        m = re.search(self.LIMITDL_PATTERN, html)
+        m = re.search(self.LIMITDL_PATTERN, htmll)
         if m:
             data = self.getAccountData(user)
             data['options']['limitDL'] = [int(m.group(1))]
 
-        m = re.search(self.VALID_UNTIL_PATTERN, html)
+        m = re.search(self.VALID_UNTIL_PATTERN, htmll)
         if m:
             validuntil = mktime(strptime(m.group(1), "%d.%m.%Y - %H:%M"))
             return {"premium": True, "trafficleft": -1, "validuntil": validuntil}
 
-        m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
+        m = re.search(self.TRAFFIC_LEFT_PATTERN, htmll)
         if m:
             trafficleft = float(m.group(1)) * (1 << 20)
             return {"premium": True, "trafficleft": trafficleft, "validuntil": -1}
@@ -46,12 +46,13 @@ class MegaRapidCz(Account):
 
 
     def login(self, user, data, req):
-        htm = req.load("http://megarapid.cz/prihlaseni/")
-        if "Heslo:" in htm:
-            start = htm.index('id="inp_hash" name="hash" value="')
-            htm = htm[start + 33:]
-            hashes = htm[0:32]
-            htm = req.load("http://megarapid.cz/prihlaseni/",
+        html = req.load("http://megarapid.cz/prihlaseni/", decode=True)
+
+        if "Heslo:" in html:
+            start = html.index('id="inp_hash" name="hash" value="')
+            html = html[start + 33:]
+            hashes = html[0:32]
+            html = req.load("http://megarapid.cz/prihlaseni/",
                            post={"hash": hashes,
                                  "login": user,
                                  "pass1": data['password'],

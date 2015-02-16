@@ -18,8 +18,6 @@ class FileomCom(XFSHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_DOMAIN = "fileom.com"
-
     NAME_PATTERN = r'Filename: <span>(?P<N>.+?)<'
     SIZE_PATTERN = r'File Size: <span class="size">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 

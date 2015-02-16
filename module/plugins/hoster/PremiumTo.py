@@ -3,79 +3,53 @@
 from __future__ import with_statement
 
 from os import remove
-from os.path import exists
-from urllib import quote
 
-from pyload.plugin.Hoster import Hoster
-from pyload.utils import fs_encode
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
+from module.utils import fs_encode
 
 
-class PremiumTo(Hoster):
+class PremiumTo(MultiHoster):
     __name__    = "PremiumTo"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.21"
 
-    __pattern__ = r'https?://(?:www\.)?premium\.to/.+'
+    __pattern__ = r'^unmatchable$'
 
-    __description__ = """Premium.to hoster plugin"""
+    __description__ = """Premium.to multi-hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "RaNaN@pyload.org"),
                        ("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    def setup(self):
-        self.resumeDownload = True
-        self.chunkLimit = 1
+    CHECK_TRAFFIC = True
 
 
-    def process(self, pyfile):
-        if not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "premium.to")
-            self.fail(_("No premium.to account provided"))
-
-        self.logDebug("Old URL: %s" % pyfile.url)
-
-        tra = self.getTraffic()
-
+    def handlePremium(self, pyfile):
         #raise timeout to 2min
-        self.req.setOption("timeout", 120)
-
         self.download("http://premium.to/api/getfile.php",
                       get={'username': self.account.username,
                            'password': self.account.password,
-                           'link'    : quote(pyfile.url, "")},
+                           'link'    : pyfile.url},
                       disposition=True)
 
-        check = self.checkDownload({"nopremium": "No premium account available"})
 
-        if check == "nopremium":
+    def checkFile(self):
+        if self.checkDownload({'nopremium': "No premium account available"}):
             self.retry(60, 5 * 60, "No premium account available")
 
         err = ''
         if self.req.http.code == '420':
             # Custom error code send - fail
-            lastDownload = fs_encode(self.lastDownload)
-
-            if exists(lastDownload):
-                with open(lastDownload, "rb") as f:
-                    err = f.read(256).strip()
-                remove(lastDownload)
-            else:
-                err = _('File does not exist')
-
-        trb = self.getTraffic()
-        self.logInfo(_("Filesize: %d, Traffic used %d, traffic left %d") % (pyfile.size, tra - trb, trb))
+            file = fs_encode(self.lastDownload)
+            with open(file, "rb") as f:
+                err = f.read(256).strip()
+            remove(file)
 
         if err:
             self.fail(err)
 
+        return super(PremiumTo, self).checkFile()
 
-    def getTraffic(self):
-        try:
-            api_r = self.load("http://premium.to/api/straffic.php",
-                              get={'username': self.account.username, 'password': self.account.password})
-            traffic = sum(map(int, api_r.split(';')))
-        except Exception:
-            traffic = 0
-        return traffic
+
+getInfo = create_getInfo(PremiumTo)

@@ -8,7 +8,7 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 class OneFichierCom(SimpleHoster):
     __name__    = "OneFichierCom"
     __type__    = "hoster"
-    __version__ = "0.74"
+    __version__ = "0.78"
 
     __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
 
@@ -28,9 +28,10 @@ class OneFichierCom(SimpleHoster):
 
     OFFLINE_PATTERN = r'File not found !\s*<'
 
-    COOKIES = [("1fichier.com", "LG", "en")]
+    COOKIES     = [("1fichier.com", "LG", "en")]
+    DISPOSITION = False  #: Remove in 0.4.10
 
-    WAIT_PATTERN = r'>You must wait (\d+)'
+    WAIT_PATTERN = r'>You must wait (\d+) minutes'
 
 
     def setup(self):
@@ -38,14 +39,7 @@ class OneFichierCom(SimpleHoster):
         self.resumeDownload = True
 
 
-    def handle(self, reconnect):
-        m = re.search(self.WAIT_PATTERN, self.html)
-        if m:
-            wait_time = int(m.group(1)) * 60
-
-            self.wait(wait_time, reconnect)
-            self.retry(reason="You have to wait been each free download")
-
+    def handleFree(self, pyfile):
         id = self.info['pattern']['ID1'] or self.info['pattern']['ID2']
         url, inputs = self.parseHtmlForm('action="https://1fichier.com/\?%s' % id)
 
@@ -60,12 +54,8 @@ class OneFichierCom(SimpleHoster):
         self.download(url, post=inputs)
 
 
-    def handleFree(self):
-        return self.handle(True)
-
-
-    def handlePremium(self):
-        return self.handle(False)
+    def handlePremium(self, pyfile):
+        self.download(pyfile.url, post={'dl': "Download", 'did': 0})
 
 
 getInfo = create_getInfo(OneFichierCom)

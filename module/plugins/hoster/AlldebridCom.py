@@ -5,19 +5,19 @@ import re
 from random import randrange
 from urllib import unquote
 
-from pyload.utils import json_loads
-from pyload.plugin.Hoster import Hoster
-from pyload.utils import parseFileSize
+from module.common.json_layer import json_loads
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
+from module.utils import parseFileSize
 
 
-class AlldebridCom(Hoster):
+class AlldebridCom(MultiHoster):
     __name__    = "AlldebridCom"
     __type__    = "hoster"
-    __version__ = "0.34"
+    __version__ = "0.44"
 
-    __pattern__ = r'https?://(?:[^/]*\.)?alldebrid\..*'
+    __pattern__ = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'
 
-    __description__ = """Alldebrid.com hoster plugin"""
+    __description__ = """Alldebrid.com multi-hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Andy Voigt", "spamsales@online.de")]
 
@@ -27,61 +27,52 @@ class AlldebridCom(Hoster):
             name = unquote(url.rsplit("/", 1)[1])
         except IndexError:
             name = "Unknown_Filename..."
+
         if name.endswith("..."):  # incomplete filename, append random stuff
             name += "%s.tmp" % randrange(100, 999)
+
         return name
 
 
     def setup(self):
         self.chunkLimit = 16
-        self.resumeDownload = True
 
 
-    def process(self, pyfile):
-        if re.match(self.__pattern__, pyfile.url):
-            new_url = pyfile.url
-        elif not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "AllDebrid")
-            self.fail(_("No AllDebrid account provided"))
-        else:
-            self.logDebug("Old URL: %s" % pyfile.url)
-            password = self.getPassword().splitlines()[0] or ""
+    def handlePremium(self, pyfile):
+        password = self.getPassword()
 
-            data = json_loads(self.load("http://www.alldebrid.com/service.php",
-                                         get={'link': pyfile.url, 'json': "true", 'pw': password}))
+        data = json_loads(self.load("http://www.alldebrid.com/service.php",
+                                     get={'link': pyfile.url, 'json': "true", 'pw': password}))
 
-            self.logDebug("Json data", data)
+        self.logDebug("Json data", data)
 
-            if data['error']:
-                if data['error'] == "This link isn't available on the hoster website.":
-                    self.offline()
-                else:
-                    self.logWarning(data['error'])
-                    self.tempOffline()
+        if data['error']:
+            if data['error'] == "This link isn't available on the hoster website.":
+                self.offline()
             else:
-                if pyfile.name and not pyfile.name.endswith('.tmp'):
-                    pyfile.name = data['filename']
-                pyfile.size = parseFileSize(data['filesize'])
-                new_url = data['link']
-
-        if self.getConfig("https"):
-            new_url = new_url.replace("http://", "https://")
+                self.logWarning(data['error'])
+                self.tempOffline()
         else:
-            new_url = new_url.replace("https://", "http://")
+            if pyfile.name and not pyfile.name.endswith('.tmp'):
+                pyfile.name = data['filename']
+            pyfile.size = parseFileSize(data['filesize'])
+            self.link = data['link']
 
-        if new_url != pyfile.url:
-            self.logDebug("New URL: %s" % new_url)
+        if self.getConfig("ssl"):
+            self.link = self.link.replace("http://", "https://")
+        else:
+            self.link = self.link.replace("https://", "http://")
 
         if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown"):
             #only use when name wasnt already set
-            pyfile.name = self.getFilename(new_url)
+            pyfile.name = self.getFilename(self.link)
 
-        self.download(new_url, disposition=True)
 
-        check = self.checkDownload({'error': "<title>An error occured while processing your request</title>",
-                                    'empty': re.compile(r"^$")})
-
-        if check == "error":
+    def checkFile(self):
+        if self.checkDownload({'error': "<title>An error occured while processing your request</title>"}) == "error":
             self.retry(wait_time=60, reason=_("An error occured while generating link"))
-        elif check == "empty":
-            self.retry(wait_time=60, reason=_("Downloaded File was empty"))
+
+        return super(AlldebridCom, self).checkFile()
+
+
+getInfo = create_getInfo(AlldebridCom)

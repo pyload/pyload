@@ -8,7 +8,7 @@ from pyload.plugin.Account import Account
 class SimplydebridCom(Account):
     __name__    = "SimplydebridCom"
     __type__    = "account"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __description__ = """Simply-Debrid.com account plugin"""
     __license__     = "GPLv3"
@@ -27,8 +27,9 @@ class SimplydebridCom(Account):
 
     def login(self, user, data, req):
         self.loginname = user
-        self.password = data['password']
-        get_data = {'login': 1, 'u': self.loginname, 'p': self.password}
+        self.password  = data['password']
+        get_data       = {'login': 1, 'u': self.loginname, 'p': self.password}
+
         res = req.load("http://simply-debrid.com/api.php", get=get_data, decode=True)
         if res != "02: loggin success":
             self.wrongPassword()

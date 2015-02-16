@@ -7,7 +7,7 @@ from pyload.utils import json_loads
 class FilecloudIo(Account):
     __name__    = "FilecloudIo"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.04"
 
     __description__ = """FilecloudIo account plugin"""
     __license__     = "GPLv3"
@@ -19,7 +19,7 @@ class FilecloudIo(Account):
         # It looks like the first API request always fails, so we retry 5 times, it should work on the second try
         for _i in xrange(5):
             rep = req.load("https://secure.filecloud.io/api-fetch_apikey.api",
-                           post={"username": user, "password": self.accounts[user]['password']})
+                           post={"username": user, "password": self.getAccountData(user)['password']})
             rep = json_loads(rep)
             if rep['status'] == 'ok':
                 break
@@ -36,7 +36,7 @@ class FilecloudIo(Account):
         rep = json_loads(rep)
 
         if rep['is_premium'] == 1:
-            return {"validuntil": int(rep['premium_until']), "trafficleft": -1}
+            return {"validuntil": float(rep['premium_until']), "trafficleft": -1}
         else:
             return {"premium": False}
 
@@ -55,5 +55,5 @@ class FilecloudIo(Account):
                         post=self.form_data,
                         multipart=True)
 
-        self.logged_in = True if "you have successfully logged in - filecloud.io" in html else False
-        self.form_data = {}
+        if "you have successfully logged in" not in html:
+            self.wrongPassword()

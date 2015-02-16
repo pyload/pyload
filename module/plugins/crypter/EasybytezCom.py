@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugin.internal.XFSCrypter import XFSCrypter
+from module.plugins.internal.XFSCrypter import XFSCrypter
 
 
 class EasybytezCom(XFSCrypter):
@@ -17,6 +17,7 @@ class EasybytezCom(XFSCrypter):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    HOSTER_DOMAIN = "easybytez.com"
-
     LOGIN_ACCOUNT = True
+
+
+getInfo = create_getInfo(EasybytezComFolder)

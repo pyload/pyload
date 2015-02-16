@@ -2,21 +2,21 @@
 
 from __future__ import with_statement
 
-import base64
 import binascii
 import re
 import os
 
 from Crypto.Cipher import AES
 from pyload.plugin.Crypter import Crypter
+from module.utils import safe_join
 
 
 class RelinkUs(Crypter):
     __name__    = "RelinkUs"
     __type__    = "crypter"
-    __version__ = "3.11"
+    __version__ = "3.12"
 
-    __pattern__ = r'http://(?:www\.)?relink\.us/(f/|((view|go)\.php\?id=))(?P<id>.+)'
+    __pattern__ = r'http://(?:www\.)?relink\.us/(f/|((view|go)\.php\?id=))(?P<ID>.+)'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
@@ -50,15 +50,14 @@ class RelinkUs(Crypter):
     DLC_LINK_REGEX = r'<a href=".*?" class="dlc_button" target="_blank">'
     DLC_DOWNLOAD_URL = r'http://www.relink.us/download.php'
 
-    WEB_FORWARD_REGEX = r'getFile\(\'(?P<link>.+)\'\)'
+    WEB_FORWARD_REGEX = r'getFile\(\'(.+)\'\)'
     WEB_FORWARD_URL = r'http://www.relink.us/frame.php'
-    WEB_LINK_REGEX = r'<iframe name="Container" height="100%" frameborder="no" width="100%" src="(?P<link>.+)"></iframe>'
+    WEB_LINK_REGEX = r'<iframe name="Container" height="100%" frameborder="no" width="100%" src="(.+)"></iframe>'
 
 
     def setup(self):
-        self.fileid = None
+        self.fileid  = None
         self.package = None
-        self.password = None
         self.captcha = False
 
 
@@ -100,9 +99,8 @@ class RelinkUs(Crypter):
 
 
     def initPackage(self, pyfile):
-        self.fileid = re.match(self.__pattern__, pyfile.url).group('id')
+        self.fileid = re.match(self.__pattern__, pyfile.url).group('ID')
         self.package = pyfile.package()
-        self.password = self.getPassword()
 
 
     def requestPackage(self):
@@ -130,10 +128,14 @@ class RelinkUs(Crypter):
 
 
     def unlockPasswordProtection(self):
-        self.logDebug("Submitting password [%s] for protected links" % self.password)
-        passwd_url = self.PASSWORD_SUBMIT_URL + "?id=%s" % self.fileid
-        passwd_data = {'id': self.fileid, 'password': self.password, 'pw': 'submit'}
-        self.html = self.load(passwd_url, post=passwd_data, decode=True)
+        password = self.getPassword()
+
+        self.logDebug("Submitting password [%s] for protected links" % password)
+
+        if password:
+            passwd_url = self.PASSWORD_SUBMIT_URL + "?id=%s" % self.fileid
+            passwd_data = {'id': self.fileid, 'password': password, 'pw': 'submit'}
+            self.html = self.load(passwd_url, post=passwd_data, decode=True)
 
 
     def unlockCaptchaProtection(self):
@@ -189,7 +191,7 @@ class RelinkUs(Crypter):
         elif source == 'web':
             return self.handleWEBLinks()
         else:
-            self.error('Unknown source type "%s" (this is probably a bug)' % source)
+            self.error(_('Unknown source type "%s"') % source)
 
 
     def handleCNL2Links(self):
@@ -217,12 +219,14 @@ class RelinkUs(Crypter):
             try:
                 dlc = self.load(container_url)
                 dlc_filename = self.fileid + ".dlc"
-                dlc_filepath = os.path.join(self.config['general']['download_folder'], dlc_filename)
+                dlc_filepath = save_join(self.config['general']['download_folder'], dlc_filename)
                 with open(dlc_filepath, "wb") as f:
                     f.write(dlc)
                 package_links.append(dlc_filepath)
+
             except Exception:
-                self.fail("Unable to download DLC container")
+                self.fail(_("Unable to download DLC container"))
+
         return package_links
 
 
@@ -241,7 +245,7 @@ class RelinkUs(Crypter):
                 self.logDebug("Decrypting Web link %d, %s" % (index + 1, url))
 
                 res  = self.load(url, decode=True)
-                link = re.search(self.WEB_LINK_REGEX, res).group('link')
+                link = re.search(self.WEB_LINK_REGEX, res).group(1)
 
                 package_links.append(link)
 
@@ -274,19 +278,15 @@ class RelinkUs(Crypter):
         self.logDebug("JsEngine returns value [%s]" % jreturn)
         key = binascii.unhexlify(jreturn)
 
-        # Decode crypted
-        crypted = base64.standard_b64decode(crypted)
-
         # Decrypt
         Key = key
         IV = key
         obj = AES.new(Key, AES.MODE_CBC, IV)
-        text = obj.decrypt(crypted)
+        text = obj.decrypt(crypted.decode('base64'))
 
         # Extract links
         text = text.replace("\x00", "").replace("\r", "")
-        links = text.split("\n")
-        links = filter(lambda x: x != "", links)
+        links = filter(bool, text.split('\n'))
 
         # Log and return
         self.logDebug("Package has %d links" % len(links))

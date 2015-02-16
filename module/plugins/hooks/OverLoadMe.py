@@ -1,29 +1,31 @@
 # -*- coding: utf-8 -*-
 
-from pyload.network.RequestFactory import getURL
-from pyload.plugin.internal.MultiHoster import MultiHoster
+from module.plugins.internal.MultiHook import MultiHook
 
 
-class OverLoadMe(MultiHoster):
+class OverLoadMe(MultiHook):
     __name__    = "OverLoadMe"
     __type__    = "hook"
-    __version__ = "0.01"
+    __version__ = "0.04"
 
-    __config__ = [("https", "bool", "Enable HTTPS", True),
-                ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
-                ("hosterList", "str", "Hoster list (comma separated)", ""),
-                ("unloadFailing", "bool", "Revert to standard download if download fails", False),
-                ("interval", "int", "Reload interval in hours (0 to disable)", 12)]
+    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
+                  ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
+                  ("revertfailed"  , "bool"               , "Revert to standard download if fails", True ),
+                  ("retry"         , "int"                , "Number of retries before revert"     , 10   ),
+                  ("retryinterval" , "int"                , "Retry interval in minutes"           , 1    ),
+                  ("reload"        , "bool"               , "Reload plugin list"                  , True ),
+                  ("reloadinterval", "int"                , "Reload interval in hours"            , 12   ),
+                  ("ssl"           , "bool"               , "Use HTTPS"                           , True )]
 
     __description__ = """Over-Load.me hook plugin"""
     __license__     = "GPLv3"
     __authors__     = [("marley", "marley@over-load.me")]
 
 
-    def getHoster(self):
-        https = "https" if self.getConfig("https") else "http"
-        page = getURL(https + "://api.over-load.me/hoster.php",
+    def getHosters(self):
+        https = "https" if self.getConfig("ssl") else "http"
+        html = self.getURL(https + "://api.over-load.me/hoster.php",
                       get={'auth': "0001-cb1f24dadb3aa487bda5afd3b76298935329be7700cd7-5329be77-00cf-1ca0135f"}).replace("\"", "").strip()
-        self.logDebug("Hosterlist", page)
+        self.logDebug("Hosterlist", html)
 
-        return [x.strip() for x in page.split(",") if x.strip()]
+        return [x.strip() for x in html.split(",") if x.strip()]

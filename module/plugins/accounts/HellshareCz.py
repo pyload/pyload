@@ -9,7 +9,7 @@ from pyload.plugin.Account import Account
 class HellshareCz(Account):
     __name__    = "HellshareCz"
     __type__    = "account"
-    __version__ = "0.14"
+    __version__ = "0.16"
 
     __description__ = """Hellshare.cz account plugin"""
     __license__     = "GPLv3"
@@ -41,7 +41,7 @@ class HellshareCz(Account):
                     trafficleft = -1
                 else:
                     #Traffic-based account
-                    trafficleft = int(credit) * 1024
+                    trafficleft = self.parseTraffic(credit + "MB")
                     validuntil = -1
             except Exception, e:
                 self.logError(_("Unable to parse credit info"), e)
@@ -52,25 +52,28 @@ class HellshareCz(Account):
 
 
     def login(self, user, data, req):
-        html = req.load('http://www.hellshare.com/')
+        html = req.load('http://www.hellshare.com/', decode=True)
         if req.lastEffectiveURL != 'http://www.hellshare.com/':
             #Switch to English
             self.logDebug("Switch lang - URL: %s" % req.lastEffectiveURL)
+
             json = req.load("%s?do=locRouter-show" % req.lastEffectiveURL)
             hash = re.search(r"(\-\-[0-9a-f]+\-)", json).group(1)
+
             self.logDebug("Switch lang - HASH: %s" % hash)
-            html = req.load('http://www.hellshare.com/%s/' % hash)
+
+            html = req.load('http://www.hellshare.com/%s/' % hash, decode=True)
 
         if re.search(self.CREDIT_LEFT_PATTERN, html):
             self.logDebug("Already logged in")
             return
 
-        html = req.load('http://www.hellshare.com/login?do=loginForm-submit', post={
-            "login": "Log in",
-            "password": data['password'],
-            "username": user,
-            "perm_login": "on"
-        })
+        html = req.load('http://www.hellshare.com/login?do=loginForm-submit',
+                        post={"login": "Log in",
+                              "password": data['password'],
+                              "username": user,
+                              "perm_login": "on"},
+                        decode=True)
 
         if "<p>You input a wrong user name or wrong password</p>" in html:
             self.wrongPassword()

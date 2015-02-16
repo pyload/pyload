@@ -2,19 +2,21 @@
 
 import re
 
-from pyload.network.RequestFactory import getURL
-from pyload.plugin.internal.MultiHoster import MultiHoster
+from module.plugins.internal.MultiHook import MultiHook
 
 
-class DebridItaliaCom(MultiHoster):
+class DebridItaliaCom(MultiHook):
     __name__    = "DebridItaliaCom"
     __type__    = "hook"
-    __version__ = "0.08"
+    __version__ = "0.12"
 
-    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
-                ("hosterList", "str", "Hoster list (comma separated)", ""),
-                ("unloadFailing", "bool", "Revert to standard download if download fails", False),
-                ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
+    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
+                  ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
+                  ("revertfailed"  , "bool"               , "Revert to standard download if fails", True ),
+                  ("retry"         , "int"                , "Number of retries before revert"     , 10   ),
+                  ("retryinterval" , "int"                , "Retry interval in minutes"           , 1    ),
+                  ("reload"        , "bool"               , "Reload plugin list"                  , True ),
+                  ("reloadinterval", "int"                , "Reload interval in hours"            , 12   )]
 
     __description__ = """Debriditalia.com hook plugin"""
     __license__     = "GPLv3"
@@ -22,6 +24,5 @@ class DebridItaliaCom(MultiHoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def getHoster(self):
-        html = getURL("http://www.debriditalia.com/status.php")
-        return re.findall(r'title="(.+?)"> \1</td><td><img src="/images/(?:attivo|testing)', html)
+    def getHosters(self):
+        return self.getURL("http://debriditalia.com/api.php", get={'hosts': ""}).replace('"', '').split(',')

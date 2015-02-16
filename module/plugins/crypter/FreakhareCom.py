@@ -36,3 +36,6 @@ class FreakhareCom(SimpleCrypter):
                                                         'entrys': '20',
                                                         'page': page_n - 1,
                                                         'order': ''}, decode=True)
+
+
+getInfo = create_getInfo(FreakhareComFolder)

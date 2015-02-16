@@ -9,7 +9,7 @@ from pyload.plugin.Account import Account
 class FilerNet(Account):
     __name__    = "FilerNet"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.04"
 
     __description__ = """Filer.net account plugin"""
     __license__     = "GPLv3"
@@ -29,12 +29,14 @@ class FilerNet(Account):
         if re.search(self.FREE_PATTERN, html):
             return {"premium": False, "validuntil": None, "trafficleft": None}
 
-        until = re.search(self.WALID_UNTIL_PATTERN, html)
+        until   = re.search(self.WALID_UNTIL_PATTERN, html)
         traffic = re.search(self.TRAFFIC_PATTERN, html)
+
         if until and traffic:
-            validuntil = int(time.mktime(time.strptime(until.group(1), "%d.%m.%Y %H:%M:%S")))
+            validuntil  = time.mktime(time.strptime(until.group(1), "%d.%m.%Y %H:%M:%S"))
             trafficleft = self.parseTraffic(traffic.group(1))
             return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
+
         else:
             self.logError(_("Unable to retrieve account information"))
             return {"premium": False, "validuntil": None, "trafficleft": None}
@@ -42,9 +44,16 @@ class FilerNet(Account):
 
     def login(self, user, data, req):
         html = req.load("https://filer.net/login")
+
         token = re.search(self.TOKEN_PATTERN, html).group(1)
+
         html = req.load("https://filer.net/login_check",
-                             post={"_username": user, "_password": data['password'],
-                                   "_remember_me": "on", "_csrf_token": token, "_target_path": "https://filer.net/"})
+                        post={"_username": user,
+                              "_password": data['password'],
+                              "_remember_me": "on",
+                              "_csrf_token": token,
+                              "_target_path": "https://filer.net/"},
+                        decode=True)
+
         if 'Logout' not in html:
             self.wrongPassword()

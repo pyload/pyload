@@ -24,9 +24,9 @@ class DailymotionBatch(Crypter):
 
 
     def api_response(self, ref, req=None):
-        url = urljoin("https://api.dailymotion.com/", ref)
-        page = self.load(url, get=req)
-        return json_loads(page)
+        url  = urljoin("https://api.dailymotion.com/", ref)
+        html = self.load(url, get=req)
+        return json_loads(html)
 
 
     def getPlaylistInfo(self, id):
@@ -84,8 +84,8 @@ class DailymotionBatch(Crypter):
 
     def decrypt(self, pyfile):
         m = re.match(self.__pattern__, pyfile.url)
-        m_id = m.group("ID")
-        m_type = m.group("TYPE")
+        m_id = m.group('ID')
+        m_type = m.group('TYPE')
 
         if m_type == "playlist":
             self.logDebug("Url recognized as Playlist")

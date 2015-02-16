@@ -1,87 +1,95 @@
 # -*- coding: utf-8 -*-
 
-from os.path import basename
-
-from pyload.datatype.File import PyFile
-from pyload.plugin.Addon import Addon
-from pyload.utils import fs_encode
+from module.PyFile import PyFile
+from module.plugins.Hook import Hook
 
 
-class UnSkipOnFail(Addon):
+class UnSkipOnFail(Hook):
     __name__    = "UnSkipOnFail"
-    __type__    = "addon"
-    __version__ = "0.02"
+    __type__    = "hook"
+    __version__ = "0.05"
 
     __config__ = [("activated", "bool", "Activated", True)]
 
-    __description__ = """When a download fails, restart skipped duplicates"""
+    __description__ = """Queue skipped duplicates when download fails"""
     __license__     = "GPLv3"
-    __authors__     = [("hagg", "")]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def downloadFailed(self, pyfile):
-        pyfile_name = basename(pyfile.name)
-        pid = pyfile.package().id
-        msg = _('look for skipped duplicates for %s (pid:%s)')
-        self.logInfo(msg % (pyfile_name, pid))
-        dups = self.findDuplicates(pyfile)
-        for link in dups:
-            # check if link is "skipped"(=4)
-            if link.status == 4:
-                lpid = link.packageID
-                self.logInfo(_('restart "%s" (pid:%s)') % (pyfile_name, lpid))
-                self.setLinkStatus(link, "queued")
+        #: Check if pyfile is still "failed",
+        #  maybe might has been restarted in meantime
+        if pyfile.status != 8:
+            return
+
+        msg = _("Looking for skipped duplicates of: %s (pid:%s)")
+        self.logInfo(msg % (pyfile.name, pyfile.package().id))
+
+        dup = self.findDuplicate(pyfile)
+        if dup:
+            self.logInfo(_("Queue found duplicate: %s (pid:%s)") % (dup.name, dup.packageID))
+
+            #: Change status of "link" to "new_status".
+            #  "link" has to be a valid FileData object,
+            #  "new_status" has to be a valid status name
+            #  (i.e. "queued" for this Plugin)
+            #  It creates a temporary PyFile object using
+            #  "link" data, changes its status, and tells
+            #  the core.files-manager to save its data.
+            pylink = _pyfile(link)
+
+            pylink.setCustomStatus("UnSkipOnFail", "queued")
+
+            self.core.files.save()
+            pylink.release()
+
+        else:
+            self.logInfo(_("No duplicates found"))
 
 
-    def findDuplicates(self, pyfile):
+    def findDuplicate(self, pyfile):
         """ Search all packages for duplicate links to "pyfile".
             Duplicates are links that would overwrite "pyfile".
             To test on duplicity the package-folder and link-name
-            of twolinks are compared (basename(link.name)).
+            of twolinks are compared (link.name).
             So this method returns a list of all links with equal
             package-folders and filenames as "pyfile", but except
             the data for "pyfile" iotselöf.
             It does MOT check the link's status.
         """
-        dups = []
-        pyfile_name = fs_encode(basename(pyfile.name))
-        # get packages (w/o files, as most file data is useless here)
-        queue = self.core.api.getQueue()
+        queue = self.core.api.getQueue()  #: get packages (w/o files, as most file data is useless here)
+
         for package in queue:
-            # check if package-folder equals pyfile's package folder
-            if fs_encode(package.folder) == fs_encode(pyfile.package().folder):
-                # now get packaged data w/ files/links
-                pdata = self.core.api.getPackageData(package.pid)
-                if pdata.links:
-                    for link in pdata.links:
-                        link_name = fs_encode(basename(link.name))
-                        # check if link name collides with pdata's name
-                        if link_name == pyfile_name:
-                            # at last check if it is not pyfile itself
-                            if link.fid != pyfile.id:
-                                dups.append(link)
-        return dups
+            #: check if package-folder equals pyfile's package folder
+            if package.folder != pyfile.package().folder:
+                continue
+
+            #: now get packaged data w/ files/links
+            pdata = self.core.api.getPackageData(package.pid)
+            for link in pdata.links:
+                #: check if link is "skipped"
+                if link.status != 4:
+                    continue
+
+                #: check if link name collides with pdata's name
+                #: AND at last check if it is not pyfile itself
+                if link.name == pyfile.name and link.fid != pyfile.id:
+                    return link
 
 
-    def setLinkStatus(self, link, new_status):
-        """ Change status of "link" to "new_status".
-            "link" has to be a valid FileData object,
-            "new_status" has to be a valid status name
-              (i.e. "queued" for this Plugin)
-            It creates a temporary PyFile object using
-            "link" data, changes its status, and tells
-            the core.files-manager to save its data.
-        """
-        pyfile = PyFile(self.core.files,
-                        link.fid,
-                        link.url,
-                        link.name,
-                        link.size,
-                        link.status,
-                        link.error,
-                        link.plugin,
-                        link.packageID,
-                        link.order)
-        pyfile.setStatus(new_status)
-        self.core.files.save()
-        pyfile.release()
+    def _pyfile(self, link):
+        return PyFile(self.core.files,
+                      link.fid,
+                      link.url,
+                      link.name,
+                      link.size,
+                      link.status,
+                      link.error,
+                      link.plugin,
+                      link.packageID,
+                      link.order)

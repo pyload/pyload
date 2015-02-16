@@ -1,16 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from pyload.network.RequestFactory import getURL
-from pyload.plugin.internal.MultiHoster import MultiHoster
+from module.plugins.internal.MultiHook import MultiHook
 
 
-class PremiumTo(MultiHoster):
+class PremiumTo(MultiHook):
     __name__    = "PremiumTo"
     __type__    = "hook"
-    __version__ = "0.04"
+    __version__ = "0.08"
 
-    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for downloads from supported hosters:", "all"),
-                ("hosterList", "str", "Hoster list (comma separated)", "")]
+    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
+                  ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
+                  ("revertfailed"  , "bool"               , "Revert to standard download if fails", True ),
+                  ("retry"         , "int"                , "Number of retries before revert"     , 10   ),
+                  ("retryinterval" , "int"                , "Retry interval in minutes"           , 1    ),
+                  ("reload"        , "bool"               , "Reload plugin list"                  , True ),
+                  ("reloadinterval", "int"                , "Reload interval in hours"            , 12   )]
 
     __description__ = """Premium.to hook plugin"""
     __license__     = "GPLv3"
@@ -19,20 +23,7 @@ class PremiumTo(MultiHoster):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-
-    def getHoster(self):
-        page = getURL("http://premium.to/api/hosters.php",
+    def getHosters(self):
+        html = self.getURL("http://premium.to/api/hosters.php",
                       get={'username': self.account.username, 'password': self.account.password})
-        return [x.strip() for x in page.replace("\"", "").split(";")]
-
-
-    def activate(self):
-        self.account = self.core.accountManager.getAccountPlugin("PremiumTo")
-
-        user = self.account.selectAccount()[0]
-
-        if not user:
-            self.logError(_("Please add your premium.to account first and restart pyLoad"))
-            return
-
-        return MultiHoster.activate(self)
+        return [x.strip() for x in html.replace("\"", "").split(";")]

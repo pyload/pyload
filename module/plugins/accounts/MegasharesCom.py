@@ -9,7 +9,7 @@ from pyload.plugin.Account import Account
 class MegasharesCom(Account):
     __name__    = "MegasharesCom"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """Megashares.com account plugin"""
     __license__     = "GPLv3"
@@ -37,12 +37,12 @@ class MegasharesCom(Account):
 
 
     def login(self, user, data, req):
-        html = req.load('http://d01.megashares.com/myms_login.php', post={
-            "httpref": "",
-            "myms_login": "Login",
-            "mymslogin_name": user,
-            "mymspassword": data['password']
-        }, decode=True)
+        html = req.load('http://d01.megashares.com/myms_login.php',
+                        post={"httpref"       : "",
+                              "myms_login"    : "Login",
+                              "mymslogin_name": user,
+                              "mymspassword"  : data['password']},
+                        decode=True)
 
         if not '<span class="b ml">%s</span>' % user in html:
             self.wrongPassword()

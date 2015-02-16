@@ -7,7 +7,7 @@ from pyload.utils import json_loads
 class UnrestrictLi(Account):
     __name__    = "UnrestrictLi"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.05"
 
     __description__ = """Unrestrict.li account plugin"""
     __license__     = "GPLv3"
@@ -23,14 +23,14 @@ class UnrestrictLi(Account):
             return {"premium": False}
 
         validuntil = json_data['result']['expires']
-        trafficleft = int(json_data['result']['traffic'])
+        trafficleft = float(json_data['result']['traffic'] / 1024)  #@TODO: Remove `/ 1024` in 0.4.10
 
         return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
 
 
     def login(self, user, data, req):
         req.cj.setCookie("unrestrict.li", "lang", "EN")
-        html = req.load("https://unrestrict.li/sign_in")
+        html = req.load("https://unrestrict.li/sign_in", decode=True)
 
         if 'solvemedia' in html:
             self.logError(_("A Captcha is required. Go to http://unrestrict.li/sign_in and login, then retry"))
@@ -38,7 +38,7 @@ class UnrestrictLi(Account):
 
         post_data = {"username": user, "password": data['password'],
                      "remember_me": "remember", "signin": "Sign in"}
-        html = req.load("https://unrestrict.li/sign_in", post=post_data)
+        html = req.load("https://unrestrict.li/sign_in", post=post_data, decode=True)
 
         if 'sign_out' not in html:
             self.wrongPassword()

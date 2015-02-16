@@ -15,9 +15,8 @@ class CramitIn(XFSHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    HOSTER_DOMAIN = "cramit.in"
-
     INFO_PATTERN = r'<span class=t2>\s*(?P<N>.*?)</span>.*?<small>\s*\((?P<S>.*?)\)'
+
     LINK_PATTERN = r'href="(http://cramit\.in/file_download/.*?)"'
 
 

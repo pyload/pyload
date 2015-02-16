@@ -11,7 +11,7 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DepositfilesCom(SimpleHoster):
     __name__    = "DepositfilesCom"
     __type__    = "hoster"
-    __version__ = "0.51"
+    __version__ = "0.53"
 
     __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
 
@@ -32,14 +32,12 @@ class DepositfilesCom(SimpleHoster):
 
     COOKIES = [("dfiles.eu", "lang_current", "en")]
 
-    FREE_LINK_PATTERN      = r'<form id="downloader_file_form" action="(http://.+?\.(dfiles\.eu|depositfiles\.com)/.+?)" method="post"'
-    PREMIUM_LINK_PATTERN   = r'class="repeat"><a href="(.+?)"'
-    PREMIUM_MIRROR_PATTERN = r'class="repeat_mirror"><a href="(.+?)"'
+    LINK_FREE_PATTERN    = r'<form id="downloader_file_form" action="(http://.+?\.(dfiles\.eu|depositfiles\.com)/.+?)" method="post"'
+    LINK_PREMIUM_PATTERN = r'class="repeat"><a href="(.+?)"'
+    LINK_MIRROR_PATTERN  = r'class="repeat_mirror"><a href="(.+?)"'
 
 
-    def handleFree(self):
-        self.html = self.load(self.pyfile.url, post={"gateway_result": "1"}, cookies=True)
-
+    def handleFree(self, pyfile):
         if re.search(r'File is checked, please try again in a minute.', self.html) is not None:
             self.logInfo(_("The file is being checked. Waiting 1 minute"))
             self.retry(wait_time=60)
@@ -79,29 +77,24 @@ class DepositfilesCom(SimpleHoster):
             if '<input type=button value="Continue" onclick="check_recaptcha' in self.html:
                 if 'response' in params:
                     self.invalidCaptcha()
-                params['challenge'], params['response'] = recaptcha.challenge(captcha_key)
+                params['response'], params['challenge'] = recaptcha.challenge(captcha_key)
                 self.logDebug(params)
                 continue
 
-            m = re.search(self.FREE_LINK_PATTERN, self.html)
+            m = re.search(self.LINK_FREE_PATTERN, self.html)
             if m:
                 if 'response' in params:
                     self.correctCaptcha()
-                link = unquote(m.group(1))
-                self.logDebug("LINK: %s" % link)
+
+                self.link = unquote(m.group(1))
                 break
             else:
                 self.error(_("Download link"))
         else:
             self.fail(_("No valid captcha response received"))
 
-        try:
-            self.download(link, disposition=True)
-        except Exception:
-            self.retry(wait_time=60)
 
-
-    def handlePremium(self):
+    def handlePremium(self, pyfile):
         if '<span class="html_download_api-gold_traffic_limit">' in self.html:
             self.logWarning(_("Download limit reached"))
             self.retry(25, 60 * 60, "Download limit reached")
@@ -109,15 +102,14 @@ class DepositfilesCom(SimpleHoster):
             self.account.relogin(self.user)
             self.retry()
         else:
-            link = re.search(self.PREMIUM_LINK_PATTERN, self.html)
-            mirror = re.search(self.PREMIUM_MIRROR_PATTERN, self.html)
+            link   = re.search(self.LINK_PREMIUM_PATTERN, self.html)
+            mirror = re.search(self.LINK_MIRROR_PATTERN, self.html)
+
             if link:
-                dlink = link.group(1)
+                self.link = link.group(1)
+
             elif mirror:
-                dlink = mirror.group(1)
-            else:
-                self.error(_("No direct download link or mirror found"))
-            self.download(dlink, disposition=True)
+                self.link = mirror.group(1)
 
 
 getInfo = create_getInfo(DepositfilesCom)

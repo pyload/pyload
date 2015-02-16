@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import os
 import subprocess
 
 from itertools import chain
-from os import listdir, access, X_OK, makedirs
-from os.path import join, exists, basename, abspath
 
 from pyload.plugin.Addon import Addon
 from pyload.utils import safe_join
@@ -13,9 +12,10 @@ from pyload.utils import safe_join
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "addon"
-    __version__ = "0.25"
+    __version__ = "0.29"
 
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("activated", "bool", "Activated"         , True ),
+                  ("wait"     , "bool", "Wait script ending", False)]
 
     __description__ = """Run external scripts"""
     __license__     = "GPLv3"
@@ -46,40 +46,45 @@ class ExternalScripts(Addon):
         for folder in folders:
             self.scripts[folder] = []
 
-            self.initPluginType(folder, join(pypath, 'scripts', folder))
-            self.initPluginType(folder, join('scripts', folder))
+            self.initPluginType(folder, os.path.join(pypath, 'scripts', folder))
+            self.initPluginType(folder, os.path.join('scripts', folder))
 
         for script_type, names in self.scripts.iteritems():
             if names:
-                self.logInfo(_("Installed scripts for"), script_type, ", ".join([basename(x) for x in names]))
+                self.logInfo(_("Installed scripts for"), script_type, ", ".join(map(os.path.basename, names)))
 
 
     def initPluginType(self, folder, path):
-        if not exists(path):
+        if not os.path.exists(path):
             try:
-                makedirs(path)
+                os.makedirs(path)
+
             except Exception:
                 self.logDebug("Script folder %s not created" % folder)
                 return
 
-        for f in listdir(path):
+        for f in os.listdir(path):
             if f.startswith("#") or f.startswith(".") or f.startswith("_") or f.endswith("~") or f.endswith(".swp"):
                 continue
 
-            if not access(join(path, f), X_OK):
+            if not os.access(os.path.join(path, f), os.X_OK):
                 self.logWarning(_("Script not executable:") + " %s/%s" % (folder, f))
 
-            self.scripts[folder].append(join(path, f))
+            self.scripts[folder].append(os.path.join(path, f))
 
 
     def callScript(self, script, *args):
         try:
             cmd = [script] + [str(x) if not isinstance(x, basestring) else x for x in args]
-            self.logDebug("Executing", abspath(script), " ".join(cmd))
-            #output goes to pyload
-            subprocess.Popen(cmd, bufsize=-1)
+
+            self.logDebug("Executing", os.path.abspath(script), " ".join(cmd))
+
+            p = subprocess.Popen(cmd, bufsize=-1)  #@NOTE: output goes to pyload
+            if self.getConfig('wait'):
+                p.communicate()
+
         except Exception, e:
-            self.logError(_("Error in %(script)s: %(error)s") % {"script": basename(script), "error": e})
+            self.logError(_("Error in %(script)s: %(error)s") % {"script": os.path.basename(script), "error": e})
 
 
     def downloadPreparing(self, pyfile):

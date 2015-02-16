@@ -7,7 +7,7 @@ from pyload.utils import json_loads
 class FreeWayMe(Account):
     __name__    = "FreeWayMe"
     __type__    = "account"
-    __version__ = "0.11"
+    __version__ = "0.13"
 
     __description__ = """FreeWayMe account plugin"""
     __license__     = "GPLv3"
@@ -16,25 +16,20 @@ class FreeWayMe(Account):
 
     def loadAccountInfo(self, user, req):
         status = self.getAccountStatus(user, req)
-        if not status:
-            return False
+
         self.logDebug(status)
 
         account_info = {"validuntil": -1, "premium": False}
         if status['premium'] == "Free":
-            account_info['trafficleft'] = int(status['guthaben']) * 1024
+            account_info['trafficleft'] = self.parseTraffic(status['guthaben'] + "MB")
         elif status['premium'] == "Spender":
             account_info['trafficleft'] = -1
         elif status['premium'] == "Flatrate":
-            account_info = {"validuntil": int(status['Flatrate']),
+            account_info = {"validuntil": float(status['Flatrate']),
                             "trafficleft": -1,
                             "premium": True}
 
         return account_info
-
-
-    def getpw(self, user):
-        return self.accounts[user]['password']
 
 
     def login(self, user, data, req):
@@ -47,9 +42,11 @@ class FreeWayMe(Account):
 
     def getAccountStatus(self, user, req):
         answer = req.load("https://www.free-way.me/ajax/jd.php",
-                          get={"id": 4, "user": user, "pass": self.accounts[user]['password']})
+                          get={"id": 4, "user": user, "pass": self.getAccountData(user)['password']})
+
         self.logDebug("Login: %s" % answer)
+
         if answer == "Invalid login":
             self.wrongPassword()
-            return False
+
         return json_loads(answer)

@@ -8,9 +8,9 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 class IfolderRu(SimpleHoster):
     __name__    = "IfolderRu"
     __type__    = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
 
-    __pattern__ = r'http://(?:www\.)?(?:ifolder\.ru|rusfolder\.(?:com|net|ru))/(?:files/)?(?P<ID>\d+).*'
+    __pattern__ = r'http://(?:www\.)?(?:ifolder\.ru|rusfolder\.(?:com|net|ru))/(?:files/)?(?P<ID>\d+)'
 
     __description__ = """Ifolder.ru hoster plugin"""
     __license__     = "GPLv3"
@@ -18,25 +18,27 @@ class IfolderRu(SimpleHoster):
 
 
     SIZE_REPLACEMENTS = [(u'Кб', 'KB'), (u'Мб', 'MB'), (u'Гб', 'GB')]
-    NAME_PATTERN = ur'(?:<div><span>)?Название:(?:</span>)? <b>(?P<N>[^<]+)</b><(?:/div|br)>'
-    SIZE_PATTERN = ur'(?:<div><span>)?Размер:(?:</span>)? <b>(?P<S>[^<]+)</b><(?:/div|br)>'
+
+    NAME_PATTERN    = ur'(?:<div><span>)?Название:(?:</span>)? <b>(?P<N>[^<]+)</b><(?:/div|br)>'
+    SIZE_PATTERN    = ur'(?:<div><span>)?Размер:(?:</span>)? <b>(?P<S>[^<]+)</b><(?:/div|br)>'
     OFFLINE_PATTERN = ur'<p>Файл номер <b>[^<]*</b> (не найден|удален) !!!</p>'
 
     SESSION_ID_PATTERN = r'<a href=(http://ints\.(?:rusfolder\.com|ifolder\.ru)/ints/sponsor/\?bi=\d*&session=([^&]+)&u=[^>]+)>'
     INTS_SESSION_PATTERN = r'\(\'ints_session\'\);\s*if\(tag\)\{tag\.value = "([^"]+)";\}'
     HIDDEN_INPUT_PATTERN = r'var v = .*?name=\'(.+?)\' value=\'1\''
-    LINK_PATTERN = r'<a id="download_file_href" href="([^"]+)"'
+
+    LINK_FREE_PATTERN = r'<a id="download_file_href" href="([^"]+)"'
+
     WRONG_CAPTCHA_PATTERN = ur'<font color=Red>неверный код,<br>введите еще раз</font><br>'
 
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True if self.account else False
-        self.chunkLimit = 1
+        self.resumeDownload = self.multiDL = bool(self.account)
+        self.chunkLimit     = 1
 
 
-    def process(self, pyfile):
-        file_id = re.match(self.__pattern__, pyfile.url).group('ID')
-        self.html = self.load("http://rusfolder.com/%s" % file_id, cookies=True, decode=True)
+    def handleFree(self, pyfile):
+        self.html = self.load("http://rusfolder.com/%s" % self.info['pattern']['ID'], cookies=True, decode=True)
         self.getFileInfo()
 
         url = re.search(r"location\.href = '(http://ints\..*?=)'", self.html).group(1)
@@ -68,9 +70,7 @@ class IfolderRu(SimpleHoster):
         else:
             self.fail(_("Invalid captcha"))
 
-        download_url = re.search(self.LINK_PATTERN, self.html).group(1)
-        self.correctCaptcha()
-        self.download(download_url)
+        self.link = re.search(self.LINK_PATTERN, self.html).group(1)
 
 
 getInfo = create_getInfo(IfolderRu)

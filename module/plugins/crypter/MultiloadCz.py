@@ -9,7 +9,7 @@ class MultiloadCz(Crypter):
     __type__    = "crypter"
     __version__ = "0.40"
 
-    __pattern__ = r'http://(?:[^/]*\.)?multiload\.cz/(stahnout|slozka)/.*'
+    __pattern__ = r'http://(?:[^/]*\.)?multiload\.cz/(stahnout|slozka)/.+'
     __config__ = [("use_subfolder", "bool", "Save package to subfolder", True),
                 ("subfolder_per_package", "bool", "Create a subfolder for each package", True),
                 ("usedHoster", "str", "Prefered hoster list (bar-separated)", ""),
@@ -35,8 +35,8 @@ class MultiloadCz(Crypter):
             m = re.findall(self.LINK_PATTERN, self.html)
             if m:
                 prefered_set = set(self.getConfig("usedHoster").split('|'))
-                self.urls.extend([x[1] for x in m if x[0] in prefered_set])
+                self.urls.extend(x[1] for x in m if x[0] in prefered_set)
 
                 if not self.urls:
                     ignored_set = set(self.getConfig("ignoredHoster").split('|'))
-                    self.urls.extend([x[1] for x in m if x[0] not in ignored_set])
+                    self.urls.extend(x[1] for x in m if x[0] not in ignored_set)

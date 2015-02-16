@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import base64
 import binascii
 import re
 
@@ -15,7 +14,7 @@ from pyload.utils import html_unescape
 class LinkCryptWs(Crypter):
     __name__    = "LinkCryptWs"
     __type__    = "crypter"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'http://(?:www\.)?linkcrypt\.ws/(dir|container)/(?P<ID>\w+)'
 
@@ -57,7 +56,7 @@ class LinkCryptWs(Crypter):
             self.offline()
 
         if self.isKeyCaptchaProtected():
-            self.retry(4, 30, _("Can't handle Key-Captcha"))
+            self.retry(8, 15, _("Can't handle Key-Captcha"))
 
         if self.isCaptchaProtected():
             self.captcha = True
@@ -115,7 +114,7 @@ class LinkCryptWs(Crypter):
 
 
     def isKeyCaptchaProtected(self):
-        if re.search(r'Key[ -]', self.html, re.I):
+        if re.search(r'>If the folder does not open after klick on <', self.html, re.I):
             return True
         else:
             return False
@@ -307,19 +306,15 @@ class LinkCryptWs(Crypter):
 
         self.logDebug("JsEngine returns value [%s]" % jreturn)
 
-        # Decode crypted
-        crypted = base64.standard_b64decode(crypted)
-
         # Decrypt
         Key  = key
         IV   = key
         obj  = AES.new(Key, AES.MODE_CBC, IV)
-        text = obj.decrypt(crypted)
+        text = obj.decrypt(crypted.decode('base64'))
 
         # Extract links
         text  = text.replace("\x00", "").replace("\r", "")
-        links = text.split("\n")
-        links = filter(lambda x: x != "", links)
+        links = filter(bool, text.split('\n'))
 
         # Log and return
         self.logDebug("Package has %d links" % len(links))

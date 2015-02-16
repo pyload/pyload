@@ -2,17 +2,21 @@
 
 import re
 
-from pyload.network.RequestFactory import getURL
-from pyload.plugin.internal.MultiHoster import MultiHoster
+from module.plugins.internal.MultiHook import MultiHook
 
 
-class MultishareCz(MultiHoster):
+class MultishareCz(MultiHook):
     __name__    = "MultishareCz"
     __type__    = "hook"
-    __version__ = "0.04"
+    __version__ = "0.07"
 
-    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
-                ("hosterList", "str", "Hoster list (comma separated)", "uloz.to")]
+    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
+                  ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
+                  ("revertfailed"  , "bool"               , "Revert to standard download if fails", True ),
+                  ("retry"         , "int"                , "Number of retries before revert"     , 10   ),
+                  ("retryinterval" , "int"                , "Retry interval in minutes"           , 1    ),
+                  ("reload"        , "bool"               , "Reload plugin list"                  , True ),
+                  ("reloadinterval", "int"                , "Reload interval in hours"            , 12   )]
 
     __description__ = """MultiShare.cz hook plugin"""
     __license__     = "GPLv3"
@@ -22,6 +26,6 @@ class MultishareCz(MultiHoster):
     HOSTER_PATTERN = r'<img class="logo-shareserveru"[^>]*?alt="([^"]+)"></td>\s*<td class="stav">[^>]*?alt="OK"'
 
 
-    def getHoster(self):
-        page = getURL("http://www.multishare.cz/monitoring/")
-        return re.findall(self.HOSTER_PATTERN, page)
+    def getHosters(self):
+        html = self.getURL("http://www.multishare.cz/monitoring/")
+        return re.findall(self.HOSTER_PATTERN, html)

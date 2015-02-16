@@ -12,7 +12,7 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilepostCom(SimpleHoster):
     __name__    = "FilepostCom"
     __type__    = "hoster"
-    __version__ = "0.30"
+    __version__ = "0.33"
 
     __pattern__ = r'https?://(?:www\.)?(?:filepost\.com/files|fp\.io)/(?P<ID>[^/]+)'
 
@@ -29,7 +29,7 @@ class FilepostCom(SimpleHoster):
     FLP_TOKEN_PATTERN = r'set_store_options\({token: \'(.+?)\''
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         m = re.search(self.FLP_TOKEN_PATTERN, self.html)
         if m is None:
             self.error(_("Token"))
@@ -52,17 +52,20 @@ class FilepostCom(SimpleHoster):
 
         if 'var is_pass_exists = true;' in self.html:
             # Solve password
-            for file_pass in self.getPassword().splitlines():
-                get_dict['JsHttpRequest'] = str(int(time() * 10000)) + '-xml'
-                post_dict['file_pass'] = file_pass
+            password = self.getPassword()
+
+            if password:
                 self.logInfo(_("Password protected link, trying ") + file_pass)
 
-                download_url = self.getJsonResponse(get_dict, post_dict, 'link')
-                if download_url:
-                    break
+                get_dict['JsHttpRequest'] = str(int(time() * 10000)) + '-xml'
+                post_dict['file_pass'] = file_pass
 
+                self.link = self.getJsonResponse(get_dict, post_dict, 'link')
+
+                if not self.link:
+                    self.fail(_("Incorrect password"))
             else:
-                self.fail(_("No or incorrect password"))
+                self.fail(_("No password found"))
 
         else:
             # Solve recaptcha
@@ -71,7 +74,7 @@ class FilepostCom(SimpleHoster):
             for i in xrange(5):
                 get_dict['JsHttpRequest'] = str(int(time() * 10000)) + '-xml'
                 if i:
-                    post_dict['recaptcha_challenge_field'], post_dict['recaptcha_response_field'] = recaptcha.challenge(
+                    post_dict['recaptcha_response_field'], post_dict['recaptcha_challenge_field'] = recaptcha.challenge(
                         captcha_key)
                     self.logDebug(u"RECAPTCHA: %s : %s : %s" % (
                         captcha_key, post_dict['recaptcha_challenge_field'], post_dict['recaptcha_response_field']))
@@ -109,9 +112,9 @@ class FilepostCom(SimpleHoster):
                 self.retry(wait_time=res['js']['params']['next_download'])
                 # ~? self.retry(wait_time=js_answer['params']['next_download'])
 
-            elif ('Wrong file password' in res['js']['error']
-                  or 'You entered a wrong CAPTCHA code' in res['js']['error']
-                  or 'CAPTCHA Code nicht korrekt' in res['js']['error']):
+            elif 'Wrong file password' in res['js']['error'] \
+                 or 'You entered a wrong CAPTCHA code' in res['js']['error'] \
+                 or 'CAPTCHA Code nicht korrekt' in res['js']['error']:
                 return None
 
             elif 'CAPTCHA' in res['js']['error']:

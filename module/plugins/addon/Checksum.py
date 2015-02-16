@@ -40,7 +40,7 @@ def computeChecksum(local_file, algorithm):
 class Checksum(Addon):
     __name__    = "Checksum"
     __type__    = "addon"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __config__ = [("activated"     , "bool"              , "Activated"                                            , True   ),
                 ("check_checksum", "bool"              , "Check checksum? (If False only size will be verified)", True   ),
@@ -56,11 +56,13 @@ class Checksum(Addon):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    methods = {'sfv': 'crc32', 'crc': 'crc32', 'hash': 'md5'}
-    regexps = {'sfv': r'^(?P<name>[^;].+)\s+(?P<hash>[0-9A-Fa-f]{8})$',
-               'md5': r'^(?P<name>[0-9A-Fa-f]{32})  (?P<file>.+)$',
-               'crc': r'filename=(?P<name>.+)\nsize=(?P<size>\d+)\ncrc32=(?P<hash>[0-9A-Fa-f]{8})$',
-               'default': r'^(?P<hash>[0-9A-Fa-f]+)\s+\*?(?P<name>.+)$'}
+    methods = {'sfv' : 'crc32',
+               'crc' : 'crc32',
+               'hash': 'md5'}
+    regexps = {'sfv'    : r'^(?P<NAME>[^;].+)\s+(?P<HASH>[0-9A-Fa-f]{8})$',
+               'md5'    : r'^(?P<NAME>[0-9A-Fa-f]{32})  (?P<FILE>.+)$',
+               'crc'    : r'filename=(?P<NAME>.+)\nsize=(?P<SIZE>\d+)\ncrc32=(?P<HASH>[0-9A-Fa-f]{8})$',
+               'default': r'^(?P<HASH>[0-9A-Fa-f]+)\s+\*?(?P<NAME>.+)$'}
 
 
     def activate(self):
@@ -88,8 +90,9 @@ class Checksum(Addon):
         elif hasattr(pyfile.plugin, "api_data") and isinstance(pyfile.plugin.api_data, dict):
             data = pyfile.plugin.api_data.copy()
 
-        # elif hasattr(pyfile.plugin, "info") and isinstance(pyfile.plugin.info, dict):
-            # data = pyfile.plugin.info.copy()
+        elif hasattr(pyfile.plugin, "info") and isinstance(pyfile.plugin.info, dict):
+            data = pyfile.plugin.info.copy()
+            data.pop('size', None)  #@NOTE: Don't check file size until a similary matcher will be implemented
 
         else:
             return
@@ -106,19 +109,25 @@ class Checksum(Addon):
         if not isfile(local_file):
             self.checkFailed(pyfile, None, "File does not exist")
 
-            # validate file size
+        # validate file size
         if "size" in data:
-            api_size = int(data['size'])
+            api_size  = int(data['size'])
             file_size = getsize(local_file)
+
             if api_size != file_size:
                 self.logWarning(_("File %s has incorrect size: %d B (%d expected)") % (pyfile.name, file_size, api_size))
                 self.checkFailed(pyfile, local_file, "Incorrect file size")
-            del data['size']
+
+            data.pop('size', None)
 
         # validate checksum
         if data and self.getConfig("check_checksum"):
-            if "checksum" in data:
-                data['md5'] = data['checksum']
+
+            if not 'md5' in data:
+                for type in ("checksum", "hashsum", "hash"):
+                    if type in data:
+                        data['md5'] = data[type]  #@NOTE: What happens if it's not an md5 hash?
+                        break
 
             for key in self.algorithms:
                 if key in data:
@@ -175,12 +184,12 @@ class Checksum(Addon):
                 data = m.groupdict()
                 self.logDebug(link['name'], data)
 
-                local_file = fs_encode(safe_join(download_folder, data['name']))
+                local_file = fs_encode(safe_join(download_folder, data['NAME']))
                 algorithm = self.methods.get(file_type, file_type)
                 checksum = computeChecksum(local_file, algorithm)
-                if checksum == data['hash']:
+                if checksum == data['HASH']:
                     self.logInfo(_('File integrity of "%s" verified by %s checksum (%s)') %
-                                (data['name'], algorithm, checksum))
+                                (data['NAME'], algorithm, checksum))
                 else:
                     self.logWarning(_("%s checksum for file %s does not match (%s != %s)") %
-                                   (algorithm, data['name'], checksum, data['hash']))
+                                   (algorithm, data['NAME'], checksum, data['HASH']))

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class DepositfilesCom(SimpleCrypter):
@@ -18,3 +18,6 @@ class DepositfilesCom(SimpleCrypter):
 
 
     LINK_PATTERN = r'<div class="progressName"[^>]*>\s*<a href="([^"]+)" title="[^"]*" target="_blank">'
+
+
+getInfo = create_getInfo(DepositfilesComFolder)

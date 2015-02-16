@@ -12,30 +12,30 @@ from pyload.utils import parseFileSize
 class CzshareCom(SimpleHoster):
     __name__    = "CzshareCom"
     __type__    = "hoster"
-    __version__ = "0.95"
+    __version__ = "0.98"
 
-    __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download\.php\?).*'
+    __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download\.php\?).+'
 
     __description__ = """CZshare.com hoster plugin, now Sdilej.cz"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    NAME_PATTERN = r'<div class="tab" id="parameters">\s*<p>\s*Cel. n.zev: <a href=[^>]*>(?P<N>[^<]+)</a>'
-    SIZE_PATTERN = r'<div class="tab" id="category">(?:\s*<p>[^\n]*</p>)*\s*Velikost:\s*(?P<S>[\d .,]+)(?P<U>[\w^_]+)\s*</div>'
+    NAME_PATTERN    = r'<div class="tab" id="parameters">\s*<p>\s*Cel. n.zev: <a href=[^>]*>(?P<N>[^<]+)</a>'
+    SIZE_PATTERN    = r'<div class="tab" id="category">(?:\s*<p>[^\n]*</p>)*\s*Velikost:\s*(?P<S>[\d .,]+)(?P<U>[\w^_]+)\s*</div>'
     OFFLINE_PATTERN = r'<div class="header clearfix">\s*<h2 class="red">'
 
     SIZE_REPLACEMENTS = [(' ', '')]
-    URL_REPLACEMENTS = [(r'http://[^/]*/download.php\?.*?id=(\w+).*', r'http://sdilej.cz/\1/x/')]
+    URL_REPLACEMENTS  = [(r'http://[^/]*/download.php\?.*?id=(\w+).*', r'http://sdilej.cz/\1/x/')]
 
-    FORCE_CHECK_TRAFFIC = True
+    CHECK_TRAFFIC = True
 
-    FREE_URL_PATTERN = r'<a href="([^"]+)" class="page-download">[^>]*alt="([^"]+)" /></a>'
-    FREE_FORM_PATTERN = r'<form action="download\.php" method="post">\s*<img src="captcha\.php" id="captcha" />(.*?)</form>'
+    FREE_URL_PATTERN     = r'<a href="([^"]+)" class="page-download">[^>]*alt="([^"]+)" /></a>'
+    FREE_FORM_PATTERN    = r'<form action="download\.php" method="post">\s*<img src="captcha\.php" id="captcha" />(.*?)</form>'
     PREMIUM_FORM_PATTERN = r'<form action="/profi_down\.php" method="post">(.*?)</form>'
-    FORM_INPUT_PATTERN = r'<input[^>]* name="([^"]+)" value="([^"]+)"[^>]*/>'
-    MULTIDL_PATTERN = r'<p><font color=\'red\'>Z[^<]*PROFI.</font></p>'
-    USER_CREDIT_PATTERN = r'<div class="credit">\s*kredit: <strong>([\d .,]+)(\w+)</strong>\s*</div><!-- .credit -->'
+    FORM_INPUT_PATTERN   = r'<input[^>]* name="([^"]+)" value="([^"]+)"[^>]*/>'
+    MULTIDL_PATTERN      = r'<p><font color=\'red\'>Z[^<]*PROFI.</font></p>'
+    USER_CREDIT_PATTERN  = r'<div class="credit">\s*kredit: <strong>([\d .,]+)(\w+)</strong>\s*</div><!-- .credit -->'
 
 
     def checkTrafficLeft(self):
@@ -63,7 +63,7 @@ class CzshareCom(SimpleHoster):
         return True
 
 
-    def handlePremium(self):
+    def handlePremium(self, pyfile):
     # parse download link
         try:
             form = re.search(self.PREMIUM_FORM_PATTERN, self.html, re.S).group(1)
@@ -74,15 +74,16 @@ class CzshareCom(SimpleHoster):
 
         # download the file, destination is determined by pyLoad
         self.download("http://sdilej.cz/profi_down.php", post=inputs, disposition=True)
-        self.checkDownloadedFile()
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         # get free url
         m = re.search(self.FREE_URL_PATTERN, self.html)
         if m is None:
             self.error(_("FREE_URL_PATTERN not found"))
+
         parsed_url = "http://sdilej.cz" + m.group(1)
+
         self.logDebug("PARSED_URL:" + parsed_url)
 
         # get download ticket and parse html
@@ -93,7 +94,8 @@ class CzshareCom(SimpleHoster):
         try:
             form = re.search(self.FREE_FORM_PATTERN, self.html, re.S).group(1)
             inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
-            self.pyfile.size = int(inputs['size'])
+            pyfile.size = int(inputs['size'])
+
         except Exception, e:
             self.logError(e)
             self.error(_("Form"))
@@ -103,10 +105,13 @@ class CzshareCom(SimpleHoster):
         for _i in xrange(5):
             inputs['captchastring2'] = self.decryptCaptcha(captcha_url)
             self.html = self.load(parsed_url, cookies=True, post=inputs, decode=True)
+
             if u"<li>Zadaný ověřovací kód nesouhlasí!</li>" in self.html:
                 self.invalidCaptcha()
+
             elif re.search(self.MULTIDL_PATTERN, self.html):
                 self.longWait(5 * 60, 12)
+
             else:
                 self.correctCaptcha()
                 break
@@ -118,35 +123,39 @@ class CzshareCom(SimpleHoster):
 
         # download the file, destination is determined by pyLoad
         self.logDebug("WAIT URL", self.req.lastEffectiveURL)
+
         m = re.search("free_wait.php\?server=(.*?)&(.*)", self.req.lastEffectiveURL)
         if m is None:
             self.error(_("Download URL not found"))
 
-        url = "http://%s/download.php?%s" % (m.group(1), m.group(2))
+        self.link = "http://%s/download.php?%s" % (m.group(1), m.group(2))
 
         self.wait()
-        self.download(url)
-        self.checkDownloadedFile()
 
 
-    def checkDownloadedFile(self):
+    def checkFile(self):
         # check download
         check = self.checkDownload({
-            "temp_offline": re.compile(r"^Soubor je do.*asn.* nedostupn.*$"),
-            "credit": re.compile(r"^Nem.*te dostate.*n.* kredit.$"),
-            "multi_dl": re.compile(self.MULTIDL_PATTERN),
-            "captcha_err": "<li>Zadaný ověřovací kód nesouhlasí!</li>"
+            "temp offline" : re.compile(r"^Soubor je do.*asn.* nedostupn.*$"),
+            "credit"       : re.compile(r"^Nem.*te dostate.*n.* kredit.$"),
+            "multi-dl"     : re.compile(self.MULTIDL_PATTERN),
+            "captcha"      : "<li>Zadaný ověřovací kód nesouhlasí!</li>"
         })
 
-        if check == "temp_offline":
+        if check == "temp offline":
             self.fail(_("File not available - try later"))
-        if check == "credit":
+
+        elif check == "credit":
             self.resetAccount()
-        elif check == "multi_dl":
+
+        elif check == "multi-dl":
             self.longWait(5 * 60, 12)
-        elif check == "captcha_err":
+
+        elif check == "captcha":
             self.invalidCaptcha()
             self.retry()
+
+        return super(CzshareCom, self).checkFile()
 
 
 getInfo = create_getInfo(CzshareCom)

@@ -1,34 +1,32 @@
 # -*- coding: utf-8 -*-
 
 from pyload.utils import json_loads
-from pyload.network.RequestFactory import getURL
-from pyload.plugin.internal.MultiHoster import MultiHoster
+from module.plugins.internal.MultiHook import MultiHook
 
 
-class RPNetBiz(MultiHoster):
+class RPNetBiz(MultiHook):
     __name__    = "RPNetBiz"
     __type__    = "hook"
-    __version__ = "0.10"
+    __version__ = "0.14"
 
-    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
-                ("hosterList", "str", "Hoster list (comma separated)", ""),
-                ("unloadFailing", "bool", "Revert to stanard download if download fails", False),
-                ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
+    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
+                  ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
+                  ("revertfailed"  , "bool"               , "Revert to standard download if fails", True ),
+                  ("retry"         , "int"                , "Number of retries before revert"     , 10   ),
+                  ("retryinterval" , "int"                , "Retry interval in minutes"           , 1    ),
+                  ("reload"        , "bool"               , "Reload plugin list"                  , True ),
+                  ("reloadinterval", "int"                , "Reload interval in hours"            , 12   )]
 
     __description__ = """RPNet.biz hook plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Dman", "dmanugm@gmail.com")]
 
 
-    def getHoster(self):
-        # No hosts supported if no account
-        if not self.account or not self.account.canUse():
-            return []
-
+    def getHosters(self):
         # Get account data
-        (user, data) = self.account.selectAccount()
+        user, data = self.account.selectAccount()
 
-        res = getURL("https://premium.rpnet.biz/client_api.php",
+        res = self.getURL("https://premium.rpnet.biz/client_api.php",
                      get={'username': user, 'password': data['password'], 'action': "showHosterList"})
         hoster_list = json_loads(res)
 
@@ -38,15 +36,3 @@ class RPNetBiz(MultiHoster):
 
         # Extract hosters from json file
         return hoster_list['hosters']
-
-
-    def activate(self):
-        # Get account plugin and check if there is a valid account available
-        self.account = self.core.accountManager.getAccountPlugin("RPNetBiz")
-        if not self.account.canUse():
-            self.account = None
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "rpnet")
-            return
-
-        # Run the overwriten core ready which actually enables the multihoster hook
-        return MultiHoster.activate(self)

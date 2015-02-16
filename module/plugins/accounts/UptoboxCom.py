@@ -6,7 +6,7 @@ from pyload.plugin.internal.XFSAccount import XFSAccount
 class UptoboxCom(XFSAccount):
     __name__    = "UptoboxCom"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __description__ = """DDLStorage.com account plugin"""
     __license__     = "GPLv3"
@@ -15,3 +15,4 @@ class UptoboxCom(XFSAccount):
 
     HOSTER_DOMAIN = "uptobox.com"
     HOSTER_URL    = "https://uptobox.com/"
+    LOGIN_URL     = "https://login.uptobox.com/"

@@ -4,18 +4,18 @@ import re
 
 from urllib import unquote_plus
 
-from pyload.utils import json_loads
-from pyload.plugin.Hoster import Hoster
+from module.common.json_layer import json_loads
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
-class MegaDebridEu(Hoster):
+class MegaDebridEu(MultiHoster):
     __name__    = "MegaDebridEu"
     __type__    = "hoster"
-    __version__ = "0.40"
+    __version__ = "0.46"
 
-    __pattern__ = r'^https?://(?:w{3}\d+\.mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[^/]+/.+$'
+    __pattern__ = r'http://((?:www\d+\.|s\d+\.)?mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[\w^_]+'
 
-    __description__ = """mega-debrid.eu hoster plugin"""
+    __description__ = """mega-debrid.eu multi-hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("D.Ducatel", "dducatel@je-geek.fr")]
 
@@ -30,26 +30,18 @@ class MegaDebridEu(Hoster):
             return ""
 
 
-    def process(self, pyfile):
-        if re.match(self.__pattern__, pyfile.url):
-            new_url = pyfile.url
-        elif not self.account:
-            self.exitOnFail("Please enter your %s account or deactivate this plugin" % "Mega-debrid.eu")
-        else:
-            if not self.connectToApi():
-                self.exitOnFail("Unable to connect to Mega-debrid.eu")
+    def handlePremium(self, pyfile):
+        if not self.api_load():
+            self.exitOnFail("Unable to connect to Mega-debrid.eu")
 
-            self.logDebug("Old URL: %s" % pyfile.url)
-            new_url = self.debridLink(pyfile.url)
-            self.logDebug("New URL: " + new_url)
+        self.link = self.debridLink(pyfile.url)
 
-        filename = self.getFilename(new_url)
-        if filename != "":
+        filename = self.getFilename(self.link)
+        if filename:
             pyfile.name = filename
-        self.download(new_url, disposition=True)
 
 
-    def connectToApi(self):
+    def api_load(self):
         """
         Connexion to the mega-debrid API
         Return True if succeed
@@ -92,3 +84,6 @@ class MegaDebridEu(Hoster):
             self.resetAccount()
         else:
             self.fail(_(msg))
+
+
+getInfo = create_getInfo(MegaDebridEu)

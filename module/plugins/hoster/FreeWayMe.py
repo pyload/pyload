@@ -1,16 +1,16 @@
 ﻿# -*- coding: utf-8 -*-
 
-from pyload.plugin.Hoster import Hoster
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
-class FreeWayMe(Hoster):
+class FreeWayMe(MultiHoster):
     __name__    = "FreeWayMe"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.16"
 
-    __pattern__ = r'https://(?:www\.)?free-way\.me/.*'
+    __pattern__ = r'https://(?:www\.)?free-way\.me/.+'
 
-    __description__ = """FreeWayMe hoster plugin"""
+    __description__ = """FreeWayMe multi-hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Nicolas Giese", "james@free-way.me")]
 
@@ -21,16 +21,33 @@ class FreeWayMe(Hoster):
         self.chunkLimit     = 1
 
 
-    def process(self, pyfile):
-        if not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "FreeWayMe")
-            self.fail(_("No FreeWay account provided"))
+    def handlePremium(self, pyfile):
+        user, data = self.account.selectAccount()
 
-        self.logDebug("Old URL: %s" % pyfile.url)
+        for _i in xrange(5):
+            # try it five times
+            header = self.load("https://www.free-way.me/load.php",
+                               get={'multiget': 7,
+                                    'url'     : pyfile.url,
+                                    'user'    : user,
+                                    'pw'      : self.account.getAccountData(user)['password'],
+                                    'json'    : ""},
+                               just_header=True)
 
-        (user, data) = self.account.selectAccount()
+            if 'location' in header:
+                headers = self.load(header['location'], just_header=True)
+                if headers['code'] == 500:
+                    # error on 2nd stage
+                    self.logError(_("Error [stage2]"))
+                else:
+                    # seems to work..
+                    self.download(header['location'])
+                    break
+            else:
+                # error page first stage
+                self.logError(_("Error [stage1]"))
 
-        self.download(
-            "https://www.free-way.me/load.php",
-            get={"multiget": 7, "url": pyfile.url, "user": user, "pw": self.account.getpw(user), "json": ""},
-            disposition=True)
+            #@TODO: handle errors
+
+
+getInfo = create_getInfo(FreeWayMe)

@@ -10,13 +10,13 @@ from time import sleep
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getURL
 
-from pyload.plugin.Addon import Addon
+from module.plugins.Hook import Hook, threaded
 
 
-class Captcha9kw(Addon):
-    __name__    = "Captcha9kw"
+class Captcha9kw(Hook):
+    __name__    = "Captcha9Kw"
     __type__    = "hook"
-    __version__ = "0.26"
+    __version__ = "0.28"
 
     __config__ = [("ssl"           , "bool"    , "Use HTTPS"                                                                       , True                                                               ),
                 ("force"         , "bool"    , "Force captcha resolving even if client is connected"                             , True                                                               ),
@@ -60,6 +60,7 @@ class Captcha9kw(Addon):
             return 0
 
 
+    @threaded
     def _processCaptcha(self, task):
         try:
             with open(task.captchaFile, 'rb') as f:
@@ -69,22 +70,19 @@ class Captcha9kw(Addon):
             self.logError(e)
             return
 
-        data = b64encode(data)
-        mouse = 1 if task.isPositional() else 0
         pluginname = re.search(r'_([^_]*)_\d+.\w+', task.captchaFile).group(1)
-
-        option = {'min'           : 2,
-                  'max'           : 50,
-                  'phrase'        : 0,
-                  'numeric'       : 0,
-                  'case_sensitive': 0,
-                  'math'          : 0,
-                  'prio'          : min(max(self.getConfig("prio"), 0), 10),
-                  'confirm'       : self.getConfig("confirm"),
-                  'timeout'       : min(max(self.getConfig("timeout"), 300), 3999),
-                  'selfsolve'     : self.getConfig("selfsolve"),
-                  'cph'           : self.getConfig("captchaperhour"),
-                  'cpm'           : self.getConfig("captchapermin")}
+        option     = {'min'           : 2,
+                      'max'           : 50,
+                      'phrase'        : 0,
+                      'numeric'       : 0,
+                      'case_sensitive': 0,
+                      'math'          : 0,
+                      'prio'          : min(max(self.getConfig("prio"), 0), 10),
+                      'confirm'       : self.getConfig("confirm"),
+                      'timeout'       : min(max(self.getConfig("timeout"), 300), 3999),
+                      'selfsolve'     : self.getConfig("selfsolve"),
+                      'cph'           : self.getConfig("captchaperhour"),
+                      'cpm'           : self.getConfig("captchapermin")}
 
         for opt in str(self.getConfig("hoster_options").split('|')):
 
@@ -122,8 +120,8 @@ class Captcha9kw(Addon):
                      'pyload'        : "1",
                      'source'        : "pyload",
                      'base64'        : "1",
-                     'mouse'         : mouse,
-                     'file-upload-01': data,
+                     'mouse'         : 1 if task.isPositional() else 0,
+                     'file-upload-01': b64encode(data),
                      'action'        : "usercaptchaupload"}
 
         for _i in xrange(5):
@@ -202,9 +200,9 @@ class Captcha9kw(Addon):
             for d in details:
                 hosteroption = d.split("=")
 
-                if (len(hosteroption) > 1
-                    and hosteroption[0].lower() == 'timeout'
-                    and hosteroption[1].isdigit()):
+                if len(hosteroption) > 1 \
+                   and hosteroption[0].lower() == 'timeout' \
+                   and hosteroption[1].isdigit():
                     timeout = int(hosteroption[1])
 
             break

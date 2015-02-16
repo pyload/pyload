@@ -15,10 +15,6 @@ class SafesharingEu(XFSHoster):
     __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
-    HOSTER_DOMAIN = "safesharing.eu"
-
-    WAIT_PATTERN = r'You have to wait (\d+) minutes'
-
     ERROR_PATTERN = r'(?:<div class="alert alert-danger">)(.+?)(?:</div>)'
 
 

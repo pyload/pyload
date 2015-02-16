@@ -12,7 +12,7 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilepupNet(SimpleHoster):
     __name__    = "FilepupNet"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?filepup\.net/files/\w+'
 
@@ -27,7 +27,7 @@ class FilepupNet(SimpleHoster):
 
     OFFLINE_PATTERN = r'>This file has been deleted'
 
-    LINK_PATTERN = r'(http://www\.filepup\.net/get/.+?)\''
+    LINK_FREE_PATTERN = r'(http://www\.filepup\.net/get/.+?)\''
 
 
     def setup(self):
@@ -35,17 +35,13 @@ class FilepupNet(SimpleHoster):
         self.chunkLimit = 1
 
 
-    def handleFree(self):
-        m = re.search(self.LINK_PATTERN, self.html)
+    def handleFree(self, pyfile):
+        m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
             self.error(_("Download link not found"))
 
         dl_link = m.group(1)
         self.download(dl_link, post={'task': "download"})
-
-        check = self.checkDownload({'html': re.compile("html")})
-        if check == "html":
-            self.error(_("Downloaded file is an html page"))
 
 
 getInfo = create_getInfo(FilepupNet)

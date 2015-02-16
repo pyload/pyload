@@ -7,7 +7,7 @@ from pyload.utils import json_loads
 class FastixRu(Account):
     __name__    = "FastixRu"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """Fastix account plugin"""
     __license__     = "GPLv3"
@@ -16,9 +16,9 @@ class FastixRu(Account):
 
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)
-        page = json_loads(req.load("http://fastix.ru/api_v2/", get={'apikey': data['api'], 'sub': "getaccountdetails"}))
+        html = json_loads(req.load("http://fastix.ru/api_v2/", get={'apikey': data['api'], 'sub': "getaccountdetails"}))
 
-        points = page['points']
+        points = html['points']
         kb     = float(points) * 1024 ** 2 / 1000
 
         if points > 0:
@@ -29,10 +29,13 @@ class FastixRu(Account):
 
 
     def login(self, user, data, req):
-        page = req.load("http://fastix.ru/api_v2/",
+        html = req.load("http://fastix.ru/api_v2/",
                         get={'sub': "get_apikey", 'email': user, 'password': data['password']})
-        api = json_loads(page)
+
+        api = json_loads(html)
         api = api['apikey']
+
         data['api'] = api
-        if "error_code" in page:
+
+        if "error_code" in html:
             self.wrongPassword()

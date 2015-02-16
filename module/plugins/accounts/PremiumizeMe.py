@@ -8,7 +8,7 @@ from pyload.utils import json_loads
 class PremiumizeMe(Account):
     __name__    = "PremiumizeMe"
     __type__    = "account"
-    __version__ = "0.11"
+    __version__ = "0.13"
 
     __description__ = """Premiumize.me account plugin"""
     __license__     = "GPLv3"
@@ -22,7 +22,7 @@ class PremiumizeMe(Account):
 
         # Parse account info
         account_info = {"validuntil": float(status['result']['expires']),
-                        "trafficleft": max(0, status['result']['trafficleft_bytes'])}
+                        "trafficleft": max(0, status['result']['trafficleft_bytes'] / 1024)}  #@TODO: Remove `/ 1024` in 0.4.10
 
         if status['result']['type'] == 'free':
             account_info['premium'] = False
@@ -45,5 +45,5 @@ class PremiumizeMe(Account):
         answer = req.load("https://api.premiumize.me/pm-api/v1.php",
                            get={'method'       : "accountstatus",
                                 'params[login]': user,
-                                'params[pass]' : self.accounts[user]['password']})
+                                'params[pass]' : self.getAccountData(user)['password']})
         return json_loads(answer)

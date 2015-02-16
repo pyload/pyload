@@ -2,52 +2,42 @@
 
 import re
 
-from pyload.plugin.Hoster import Hoster
-from pyload.plugin.internal.SimpleHoster import replace_patterns
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
-class DebridItaliaCom(Hoster):
+class DebridItaliaCom(MultiHoster):
     __name__    = "DebridItaliaCom"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.17"
 
-    __pattern__ = r'http://s\d+\.debriditalia\.com/dl/\d+'
+    __pattern__ = r'https?://(?:www\.|s\d+\.)?debriditalia\.com/dl/\d+'
 
-    __description__ = """Debriditalia.com hoster plugin"""
+    __description__ = """Debriditalia.com multi-hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("stickell", "l.stickell@yahoo.it"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    URL_REPLACEMENTS  = [(r'(/dl/\d+)$', '\1/')]
+    URL_REPLACEMENTS = [("https://", "http://")]
 
 
-    def setup(self):
-        self.chunkLimit     = -1
-        self.resumeDownload = True
+    def handlePremium(self, pyfile):
+        self.html = self.load("http://www.debriditalia.com/api.php",
+                              get={'generate': "on", 'link': pyfile.url, 'p': self.getPassword()})
 
-
-    def process(self, pyfile):
-        pyfile.url = replace_patterns(pyfile.url, cls.URL_REPLACEMENTS)
-
-        if re.match(self.__pattern__, pyfile.url):
-            link = pyfile.url
-
-        elif not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "DebridItalia")
-            self.fail(_("No DebridItalia account provided"))
-
+        if "ERROR:" not in self.html:
+            self.link = self.html.strip()
         else:
-            html = self.load("http://www.debriditalia.com/api.php", get={'generate': "", 'link': pyfile.url})
+            self.info['error'] = re.search(r'ERROR:(.*)', self.html).group(1).strip()
 
-            if "ERROR" in html:
-                self.fail(re.search(r'ERROR:(.*)', html).strip())
+            self.html = self.load("http://debriditalia.com/linkgen2.php",
+                                  post={'xjxfun'   : "convertiLink",
+                                        'xjxargs[]': "S<![CDATA[%s]]>" % pyfile.url,
+                                        'xjxargs[]': "S%s" % self.getPassword()})
+            try:
+                self.link = re.search(r'<a href="(.+?)"', self.html).group(1)
+            except AttributeError:
+                pass
 
-            link = html.strip()
 
-        self.download(link, disposition=True)
-
-        check = self.checkDownload({'empty': re.compile(r'^$')})
-
-        if check == "empty":
-            self.retry(5, 2 * 60, "Empty file downloaded")
+getInfo = create_getInfo(DebridItaliaCom)

@@ -25,7 +25,7 @@ class StreamCz(Hoster):
     __type__    = "hoster"
     __version__ = "0.20"
 
-    __pattern__ = r'https?://(?:www\.)?stream\.cz/[^/]+/\d+.*'
+    __pattern__ = r'https?://(?:www\.)?stream\.cz/[^/]+/\d+'
 
     __description__ = """Stream.cz hoster plugin"""
     __license__     = "GPLv3"

@@ -4,8 +4,8 @@ from pyload.plugin.hoster.UnibytesCom import UnibytesCom
 from pyload.plugin.internal.SimpleHoster import create_getInfo
 
 
-class Share4webCom(UnibytesCom):
-    __name__    = "Share4webCom"
+class Share4WebCom(UnibytesCom):
+    __name__    = "Share4WebCom"
     __type__    = "hoster"
     __version__ = "0.11"
 
@@ -19,4 +19,4 @@ class Share4webCom(UnibytesCom):
     HOSTER_DOMAIN = "share4web.com"
 
 
-getInfo = create_getInfo(UnibytesCom)
+getInfo = create_getInfo(Share4WebCom)

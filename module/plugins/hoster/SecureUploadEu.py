@@ -15,8 +15,6 @@ class SecureUploadEu(XFSHoster):
     __authors__     = [("z00nx", "z00nx0@gmail.com")]
 
 
-    HOSTER_DOMAIN = "secureupload.eu"
-
     INFO_PATTERN = r'<h3>Downloading (?P<N>[^<]+) \((?P<S>[^<]+)\)</h3>'
 
 

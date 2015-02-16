@@ -37,7 +37,7 @@ class CustomBrowser(Browser):
 class DlFreeFr(SimpleHoster):
     __name__    = "DlFreeFr"
     __type__    = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.28"
 
     __pattern__ = r'http://(?:www\.)?dl\.free\.fr/(\w+|getfile\.pl\?file=/\w+)'
 
@@ -79,21 +79,24 @@ class DlFreeFr(SimpleHoster):
             if content_type and content_type.startswith("text/html"):
                 # Undirect acces to requested file, with a web page providing it (captcha)
                 self.html = self.load(valid_url)
-                self.handleFree()
+                self.handleFree(pyfile)
             else:
                 # Direct access to requested file for users using free.fr as Internet Service Provider.
-                self.download(valid_url, disposition=True)
+                self.link = valid_url
+
         elif headers.get('code') == 404:
             self.offline()
+
         else:
             self.fail(_("Invalid return code: ") + str(headers.get('code')))
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         action, inputs = self.parseHtmlForm('action="getfile.pl"')
 
         adyoulike = AdYouLike(self)
-        inputs.update(adyoulike.challenge())
+        response, challenge = adyoulike.challenge()
+        inputs.update(response)
 
         self.load("http://dl.free.fr/getfile.pl", post=inputs)
         headers = self.getLastHeaders()
@@ -104,9 +107,10 @@ class DlFreeFr(SimpleHoster):
                 cj.setCookie(m.group(4), m.group(1), m.group(2), m.group(3))
             else:
                 self.fail(_("Cookie error"))
-            location = headers.get("location")
+
+            self.link = headers.get("location")
+
             self.req.setCookieJar(cj)
-            self.download(location, disposition=True)
         else:
             self.fail(_("Invalid response"))
 

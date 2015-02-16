@@ -17,10 +17,9 @@ class NosuploadCom(XFSHoster):
     __authors__     = [("igel", "igelkun@myopera.com")]
 
 
-    HOSTER_DOMAIN = "nosupload.com"
-
     SIZE_PATTERN = r'<p><strong>Size:</strong> (?P<S>[\d.,]+) (?P<U>[\w^_]+)</p>'
     LINK_PATTERN = r'<a class="select" href="(http://.+?)">Download</a>'
+
     WAIT_PATTERN = r'Please wait.*?>(\d+)</span>'
 
 

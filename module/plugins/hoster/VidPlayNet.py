@@ -18,8 +18,6 @@ class VidPlayNet(XFSHoster):
     __authors__     = [("t4skforce", "t4skforce1337[AT]gmail[DOT]com")]
 
 
-    HOSTER_DOMAIN = "vidplay.net"
-
     NAME_PATTERN = r'<b>Password:</b></div>\s*<h[1-6]>(?P<N>[^<]+)</h[1-6]>'
 
 

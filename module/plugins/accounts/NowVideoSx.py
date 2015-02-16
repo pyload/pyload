@@ -7,10 +7,10 @@ from time import gmtime, mktime, strptime
 from pyload.plugin.Account import Account
 
 
-class NowVideoAt(Account):
-    __name__    = "NowVideoAt"
+class NowVideoSx(Account):
+    __name__    = "NowVideoSx"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.03"
 
     __description__ = """NowVideo.at account plugin"""
     __license__     = "GPLv3"
@@ -25,7 +25,7 @@ class NowVideoAt(Account):
         trafficleft = -1
         premium     = None
 
-        html = req.load("http://www.nowvideo.at/premium.php")
+        html = req.load("http://www.nowvideo.sx/premium.php")
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
@@ -49,8 +49,9 @@ class NowVideoAt(Account):
 
 
     def login(self, user, data, req):
-        html = req.load("http://www.nowvideo.at/login.php",
-                        post={'user': user, 'pass': data['password']})
+        html = req.load("http://www.nowvideo.sx/login.php",
+                        post={'user': user, 'pass': data['password']},
+                        decode=True)
 
-        if ">Invalid login details" is html:
+        if re.search(r'>Log In<', html):
             self.wrongPassword()

@@ -10,7 +10,7 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MegasharesCom(SimpleHoster):
     __name__    = "MegasharesCom"
     __type__    = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
     __pattern__ = r'http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index\.php)?\?d\d{2}=|dl/)\w+'
 
@@ -39,11 +39,11 @@ class MegasharesCom(SimpleHoster):
         self.multiDL        = self.premium
 
 
-    def handlePremium(self):
+    def handlePremium(self, pyfile):
         self.handleDownload(True)
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         if self.NO_SLOTS_PATTERN in self.html:
             self.retry(wait_time=5 * 60)
 

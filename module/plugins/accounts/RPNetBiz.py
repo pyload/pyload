@@ -7,7 +7,7 @@ from pyload.utils import json_loads
 class RPNetBiz(Account):
     __name__    = "RPNetBiz"
     __type__    = "account"
-    __version__ = "0.10"
+    __version__ = "0.12"
 
     __description__ = """RPNet.biz account plugin"""
     __license__     = "GPLv3"
@@ -20,7 +20,7 @@ class RPNetBiz(Account):
         try:
             if res['accountInfo']['isPremium']:
                 # Parse account info. Change the trafficleft later to support per host info.
-                account_info = {"validuntil": int(res['accountInfo']['premiumExpiry']),
+                account_info = {"validuntil": float(res['accountInfo']['premiumExpiry']),
                                 "trafficleft": -1, "premium": True}
             else:
                 account_info = {"validuntil": None, "trafficleft": None, "premium": False}
@@ -44,7 +44,7 @@ class RPNetBiz(Account):
     def getAccountStatus(self, user, req):
         # Using the rpnet API, check if valid premium account
         res = req.load("https://premium.rpnet.biz/client_api.php",
-                            get={"username": user, "password": self.accounts[user]['password'],
+                            get={"username": user, "password": self.getAccountData(user)['password'],
                                  "action": "showAccountInformation"})
         self.logDebug("JSON data: %s" % res)
 

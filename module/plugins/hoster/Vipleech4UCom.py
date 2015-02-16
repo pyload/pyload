@@ -3,8 +3,8 @@
 from pyload.plugin.internal.DeadHoster import DeadHoster, create_getInfo
 
 
-class Vipleech4uCom(DeadHoster):
-    __name__    = "Vipleech4uCom"
+class Vipleech4UCom(DeadHoster):
+    __name__    = "Vipleech4UCom"
     __type__    = "hoster"
     __version__ = "0.20"
 
@@ -15,4 +15,4 @@ class Vipleech4uCom(DeadHoster):
     __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
-getInfo = create_getInfo(Vipleech4uCom)
+getInfo = create_getInfo(Vipleech4UCom)

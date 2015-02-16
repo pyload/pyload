@@ -3,7 +3,7 @@
 import re
 
 from urlparse import urljoin
-from time import sleep, time
+from time import time
 
 from pyload.network.RequestFactory import getURL
 from pyload.plugin.Hoster import Hoster
@@ -23,7 +23,7 @@ def getInfo(urls):
         for url in chunk:
             match = id_regex.search(url)
             if match:
-                ids = ids + match.group(1) + ";"
+                ids = ids + match.group('ID') + ";"
 
         api = getURL(apiurl,
                      get={'auth'   : "Zf9SnQh9WiReEsb18akjvQGqT0I830e8",
@@ -62,15 +62,18 @@ def getInfo(urls):
 class NetloadIn(Hoster):
     __name__    = "NetloadIn"
     __type__    = "hoster"
-    __version__ = "0.47"
+    __version__ = "0.49"
 
-    __pattern__ = r'https?://(?:[^/]*\.)?netload\.in/(?:datei(.*?)(?:\.htm|/)|index\.php?id=10&file_id=)'
+    __pattern__ = r'https?://(?:www\.)?netload\.in/(?P<PATH>datei|index\.php\?id=10&file_id=)(?P<ID>\w+)'
 
     __description__ = """Netload.in hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("spoob", "spoob@pyload.org"),
                        ("RaNaN", "ranan@pyload.org"),
                        ("Gregy", "gregy@gregy.cz")]
+
+
+    RECAPTCHA_KEY = "6LcLJMQSAAAAAJzquPUPKNovIhbK6LpSqCjYrsR1"
 
 
     def setup(self):
@@ -88,7 +91,7 @@ class NetloadIn(Hoster):
 
 
     def prepare(self):
-        self.download_api_data()
+        self.api_load()
 
         if self.api_data and self.api_data['filename']:
             self.pyfile.name = self.api_data['filename']
@@ -111,14 +114,14 @@ class NetloadIn(Hoster):
             return False
 
 
-    def download_api_data(self, n=0):
+    def api_load(self, n=0):
         url      = self.url
         id_regex = re.compile(self.__pattern__)
         match    = id_regex.search(url)
 
         if match:
             #normalize url
-            self.url = 'http://www.netload.in/datei%s.htm' % match.group(1)
+            self.url = 'http://www.netload.in/datei%s.htm' % match.group('ID')
             self.logDebug("URL: %s" % self.url)
         else:
             self.api_data = False
@@ -126,11 +129,12 @@ class NetloadIn(Hoster):
 
         apiurl = "http://api.netload.in/info.php"
         html = self.load(apiurl, cookies=False,
-                        get={"file_id": match.group(1), "auth": "Zf9SnQh9WiReEsb18akjvQGqT0I830e8", "bz": "1",
+                        get={"file_id": match.group('ID'), "auth": "Zf9SnQh9WiReEsb18akjvQGqT0I830e8", "bz": "1",
                              "md5": "1"}, decode=True).strip()
         if not html and n <= 3:
-            sleep(0.2)
-            self.download_api_data(n + 1)
+            self.setWait(2)
+            self.wait()
+            self.api_load(n + 1)
             return
 
         self.logDebug("APIDATA: " + html)
@@ -234,7 +238,7 @@ class NetloadIn(Hoster):
         recaptcha = ReCaptcha(self)
 
         for _i in xrange(5):
-            challenge, response = recaptcha.challenge()
+            response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
 
             response_page = self.load("http://www.netload.in/index.php?id=10",
                                       post={'captcha_check'            : '1',
@@ -253,7 +257,7 @@ class NetloadIn(Hoster):
                 download_url = self.get_file_url(response_page)
                 self.logDebug("Download URL after get_file: " + download_url)
                 if not download_url.startswith("http://"):
-                    self.error("download url: %s" % download_url)
+                    self.error(_("Download url: %s") % download_url)
                 self.wait()
 
                 self.url = download_url

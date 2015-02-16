@@ -8,7 +8,7 @@ from pyload.plugin.Account import Account
 class MultishareCz(Account):
     __name__    = "MultishareCz"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.05"
 
     __description__ = """Multishare.cz account plugin"""
     __license__     = "GPLv3"
@@ -24,7 +24,7 @@ class MultishareCz(Account):
         html = req.load("http://www.multishare.cz/profil/", decode=True)
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        trafficleft = self.parseTraffic(m.group('S'), m.group('U')) if m else 0
+        trafficleft = self.parseTraffic(m.group('S') + m.group('U')) if m else 0
         self.premium = True if trafficleft else False
 
         html = req.load("http://www.multishare.cz/", decode=True)
@@ -34,11 +34,11 @@ class MultishareCz(Account):
 
 
     def login(self, user, data, req):
-        html = req.load('http://www.multishare.cz/html/prihlaseni_process.php', post={
-            "akce": "Přihlásit",
-            "heslo": data['password'],
-            "jmeno": user
-        }, decode=True)
+        html = req.load('http://www.multishare.cz/html/prihlaseni_process.php',
+                        post={"akce" : "Přihlásit",
+                              "heslo": data['password'],
+                              "jmeno": user},
+                        decode=True)
 
         if '<div class="akce-chyba akce">' in html:
             self.wrongPassword()

@@ -15,11 +15,6 @@ class MovReelCom(XFSHoster):
     __authors__     = [("JorisV83", "jorisv83-pyload@yahoo.com")]
 
 
-    HOSTER_DOMAIN = "movreel.com"
-
-    NAME_PATTERN = r'Filename: <b>(?P<N>.+?)<'
-    SIZE_PATTERN = r'Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
-
     LINK_PATTERN = r'<a href="([^"]+)">Download Link'
 
 

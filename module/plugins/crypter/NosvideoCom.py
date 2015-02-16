@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class NosvideoCom(SimpleCrypter):
@@ -19,3 +19,6 @@ class NosvideoCom(SimpleCrypter):
 
     LINK_PATTERN = r'href="(http://(?:w{3}\.)?nosupload\.com/\?d=\w+)"'
     NAME_PATTERN = r'<[tT]itle>Watch (?P<N>.+?)<'
+
+
+getInfo = create_getInfo(NosvideoCom)

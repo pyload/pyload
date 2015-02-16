@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class UploadableCh(SimpleCrypter):
@@ -22,3 +22,6 @@ class UploadableCh(SimpleCrypter):
     NAME_PATTERN = r'<div class="folder"><span>&nbsp;</span>(?P<N>.+?)</div>'
     OFFLINE_PATTERN = r'We are sorry... The URL you entered cannot be found on the server.'
     TEMP_OFFLINE_PATTERN = r'<div class="icon_err">'
+
+
+getInfo = create_getInfo(UploadableChFolder)

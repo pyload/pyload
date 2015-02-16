@@ -11,7 +11,7 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadheroCom(SimpleHoster):
     __name__    = "UploadheroCom"
     __type__    = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __pattern__ = r'http://(?:www\.)?uploadhero\.com?/dl/\w+'
 
@@ -31,11 +31,12 @@ class UploadheroCom(SimpleHoster):
     IP_WAIT_PATTERN = r'<span id="minutes">(\d+)</span>.*\s*<span id="seconds">(\d+)</span>'
 
     CAPTCHA_PATTERN = r'"(/captchadl\.php\?\w+)"'
-    FREE_URL_PATTERN = r'var magicomfg = \'<a href="(http://[^<>"]*?)"|"(http://storage\d+\.uploadhero\.co/\?d=\w+/[^<>"/]+)"'
-    PREMIUM_URL_PATTERN = r'<a href="([^"]+)" id="downloadnow"'
+
+    LINK_FREE_PATTERN    = r'var magicomfg = \'<a href="(http://[^<>"]*?)"|"(http://storage\d+\.uploadhero\.co/\?d=\w+/[^<>"/]+)"'
+    LINK_PREMIUM_PATTERN = r'<a href="([^"]+)" id="downloadnow"'
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         self.checkErrors()
 
         m = re.search(self.CAPTCHA_PATTERN, self.html)
@@ -45,8 +46,8 @@ class UploadheroCom(SimpleHoster):
 
         for _i in xrange(5):
             captcha = self.decryptCaptcha(captcha_url)
-            self.html = self.load(self.pyfile.url, get={"code": captcha})
-            m = re.search(self.FREE_URL_PATTERN, self.html)
+            self.html = self.load(pyfile.url, get={"code": captcha})
+            m = re.search(self.LINK_FREE_PATTERN, self.html)
             if m:
                 self.correctCaptcha()
                 download_url = m.group(1) or m.group(2)
@@ -57,12 +58,6 @@ class UploadheroCom(SimpleHoster):
             self.fail(_("No valid captcha code entered"))
 
         self.download(download_url)
-
-
-    def handlePremium(self):
-        self.logDebug("%s: Use Premium Account" % self.__name__)
-        link = re.search(self.PREMIUM_URL_PATTERN, self.html).group(1)
-        self.download(link)
 
 
     def checkErrors(self):

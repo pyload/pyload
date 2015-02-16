@@ -6,15 +6,15 @@ from base64 import b64encode
 from pycurl import LOW_SPEED_TIME
 from uuid import uuid4
 
-from pyload.network.HTTPRequest import BadHeader
-from pyload.network.RequestFactory import getURL, getRequest
-from pyload.plugin.Addon import Addon
+from module.network.HTTPRequest import BadHeader
+from module.network.RequestFactory import getURL, getRequest
+from module.plugins.Hook import Hook, threaded
 
 
 class ExpertDecoders(Addon):
     __name__    = "ExpertDecoders"
     __type__    = "hook"
-    __version__ = "0.02"
+    __version__ = "0.04"
 
     __config__ = [("force", "bool", "Force CT even if client is connected", False),
                 ("passkey", "password", "Access key", "")]
@@ -40,21 +40,24 @@ class ExpertDecoders(Addon):
             return 0
 
 
-    def processCaptcha(self, task):
+    @threaded
+    def _processCaptcha(self, task):
         task.data['ticket'] = ticket = uuid4()
         result = None
 
         with open(task.captchaFile, 'rb') as f:
             data = f.read()
-        data = b64encode(data)
 
         req = getRequest()
         #raise timeout threshold
         req.c.setopt(LOW_SPEED_TIME, 80)
 
         try:
-            result = req.load(self.API_URL, post={"action": "upload", "key": self.getConfig("passkey"),
-                                                   "file": data, "gen_task_id": ticket})
+            result = req.load(self.API_URL,
+                              post={'action'     : "upload",
+                                    'key'        : self.getConfig("passkey"),
+                                    'file'       : b64encode(data),
+                                    'gen_task_id': ticket})
         finally:
             req.close()
 
@@ -75,7 +78,8 @@ class ExpertDecoders(Addon):
         if self.getCredits() > 0:
             task.handler.append(self)
             task.setWaiting(100)
-            self.processCaptcha(task)
+            self._processCaptcha(task)
+
         else:
             self.logInfo(_("Your ExpertDecoders Account has not enough credits"))
 
@@ -86,7 +90,7 @@ class ExpertDecoders(Addon):
             try:
                 res = getURL(self.API_URL,
                              post={'action': "refund", 'key': self.getConfig("passkey"), 'gen_task_id': task.data['ticket']})
-                self.logInfo(_("Request refund", res)
+                self.logInfo(_("Request refund"), res)
 
             except BadHeader, e:
                 self.logError(_("Could not send refund request"), e)

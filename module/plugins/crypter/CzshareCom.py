@@ -9,7 +9,7 @@ class CzshareCom(Crypter):
     __type__    = "crypter"
     __version__ = "0.20"
 
-    __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/folders/.*'
+    __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/folders/.+'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 

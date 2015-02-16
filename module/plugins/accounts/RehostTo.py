@@ -6,7 +6,7 @@ from pyload.plugin.Account import Account
 class RehostTo(Account):
     __name__    = "RehostTo"
     __type__    = "account"
-    __version__ = "0.10"
+    __version__ = "0.16"
 
     __description__ = """Rehost.to account plugin"""
     __license__     = "GPLv3"
@@ -14,28 +14,41 @@ class RehostTo(Account):
 
 
     def loadAccountInfo(self, user, req):
-        data = self.getAccountData(user)
-        page = req.load("http://rehost.to/api.php",
-                        get={'cmd': "login", 'user': user, 'pass': data['password']})
-        data = [x.split("=") for x in page.split(",")]
-        ses = data[0][1]
-        long_ses = data[1][1]
+        premium     = False
+        trafficleft = None
+        validuntil  = -1
+        session     = ""
 
-        page = req.load("http://rehost.to/api.php",
-                        get={'cmd': "get_premium_credits", 'long_ses': long_ses})
-        traffic, valid = page.split(",")
+        html = req.load("http://rehost.to/api.php",
+                        get={'cmd' : "login", 'user': user,
+                             'pass': self.getAccountData(user)['password']})
+        try:
+            session = html.split(",")[1].split("=")[1]
 
-        account_info = {"trafficleft": int(traffic) * 1024,
-                        "validuntil": int(valid),
-                        "long_ses": long_ses,
-                        "ses": ses}
+            html = req.load("http://rehost.to/api.php",
+                            get={'cmd': "get_premium_credits", 'long_ses': session})
 
-        return account_info
+            if html.strip() == "0,0" or "ERROR" in html:
+                self.logDebug(html)
+            else:
+                traffic, valid = html.split(",")
+
+                premium     = True
+                trafficleft = self.parseTraffic(traffic + "MB")
+                validuntil  = float(valid)
+
+        finally:
+            return {'premium'    : premium,
+                    'trafficleft': trafficleft,
+                    'validuntil' : validuntil,
+                    'session'    : session}
 
 
     def login(self, user, data, req):
-        page = req.load("http://rehost.to/api.php",
-                        get={'cmd': "login", 'user': user, 'pass': data['password']})
+        html = req.load("http://rehost.to/api.php",
+                        get={'cmd': "login", 'user': user, 'pass': data['password']},
+                        decode=True)
 
-        if "Login failed." in page:
+        if "ERROR" in html:
+            self.logDebug(html)
             self.wrongPassword()

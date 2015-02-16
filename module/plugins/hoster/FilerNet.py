@@ -4,6 +4,7 @@
 # http://filer.net/get/ivgf5ztw53et3ogd
 # http://filer.net/get/hgo14gzcng3scbvv
 
+import pycurl
 import re
 
 from urlparse import urljoin
@@ -15,13 +16,13 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilerNet(SimpleHoster):
     __name__    = "FilerNet"
     __type__    = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.16"
 
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'
 
     __description__ = """Filer.net hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")
+    __authors__     = [("stickell", "l.stickell@yahoo.it"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
@@ -41,40 +42,33 @@ class FilerNet(SimpleHoster):
         self.info.pop('error', None)
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         inputs = self.parseHtmlForm(input_names={'token': re.compile(r'.+')})[1]
         if 'token' not in inputs:
             self.error(_("Unable to detect token"))
 
-        self.html = self.load(self.pyfile.url, post={'token': inputs['token']}, decode=True)
+        self.html = self.load(pyfile.url, post={'token': inputs['token']}, decode=True)
 
         inputs = self.parseHtmlForm(input_names={'hash': re.compile(r'.+')})[1]
         if 'hash' not in inputs:
             self.error(_("Unable to detect hash"))
 
-        recaptcha = ReCaptcha(self)
+        recaptcha           = ReCaptcha(self)
+        response, challenge = recaptcha.challenge()
 
-        for _i in xrange(5):
-            challenge, response = recaptcha.challenge()
+        #@NOTE: Work-around for v0.4.9 just_header issue
+        #@TODO: Check for v0.4.10
+        self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
+        self.load(pyfile.url, post={'recaptcha_challenge_field': challenge,
+                                    'recaptcha_response_field' : response,
+                                    'hash'                     : inputs['hash']})
+        self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
-            header = self.load(self.pyfile.url,
-                               post={'recaptcha_challenge_field': challenge,
-                                     'recaptcha_response_field' : response,
-                                     'hash'                     : inputs['hash']})
-
-            if 'location' in header and header['location']:
-                self.correctCaptcha()
-                self.link = header['location']
-                return
-            else:
-                self.invalidCaptcha()
-
-
-    def downloadLink(self, link):
-        if not link:
-            return
-
-        self.download(urljoin("http://filer.net/", link), disposition=True)
+        if 'location' in self.req.http.header.lower():
+            self.link = re.search(r'location: (\S+)', self.req.http.header, re.I).group(1)
+            self.correctCaptcha()
+        else:
+            self.invalidCaptcha()
 
 
 getInfo = create_getInfo(FilerNet)

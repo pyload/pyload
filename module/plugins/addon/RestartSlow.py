@@ -8,7 +8,7 @@ from pyload.plugin.Addon import Addon
 class RestartSlow(Addon):
     __name__    = "RestartSlow"
     __type__    = "addon"
-    __version__ = "0.02"
+    __version__ = "0.04"
 
     __config__ = [("free_limit"   , "int" ,  "Transfer speed threshold in kilobytes"                     , 100 ),
                 ("free_time"    , "int" ,  "Sample interval in minutes"                                , 5   ),
@@ -29,7 +29,7 @@ class RestartSlow(Addon):
 
 
     def periodical(self):
-        if not self.pyfile.req.dl:
+        if not self.pyfile.plugin.req.dl:
             return
 
         if self.getConfig("safe_mode") and not self.pyfile.plugin.resumeDownload:
@@ -40,8 +40,8 @@ class RestartSlow(Addon):
             time  = max(30, self.getConfig("%s_time" % type) * 60)
             limit = max(5, self.getConfig("%s_limit" % type) * 1024)
 
-        chunks = [chunk for chunk in self.pyfile.req.dl.chunks \
-                  if chunk.id not in self.info['chunk'] or self.info['chunk'][chunk.id] not is (time, limit)]
+        chunks = [chunk for chunk in self.pyfile.plugin.req.dl.chunks \
+                  if chunk.id not in self.info['chunk'] or self.info['chunk'][chunk.id] is not (time, limit)]
 
         for chunk in chunks:
             chunk.c.setopt(pycurl.LOW_SPEED_TIME , time)
@@ -53,5 +53,5 @@ class RestartSlow(Addon):
     def downloadStarts(self, pyfile, url, filename):
         if self.cb or (self.getConfig("safe_mode") and not pyfile.plugin.resumeDownload):
             return
-
+        self.pyfile = pyfile
         self.initPeriodical()

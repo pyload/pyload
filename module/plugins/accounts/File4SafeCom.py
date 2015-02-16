@@ -3,12 +3,12 @@
 from pyload.plugin.internal.XFSAccount import XFSAccount
 
 
-class File4safeCom(XFSAccount):
-    __name__    = "File4safeCom"
+class File4SafeCom(XFSAccount):
+    __name__    = "File4SafeCom"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
-    __description__ = """File4safe.com account plugin"""
+    __description__ = """File4Safe.com account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 

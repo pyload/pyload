@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class PastebinCom(SimpleCrypter):
@@ -19,3 +19,6 @@ class PastebinCom(SimpleCrypter):
 
     LINK_PATTERN = r'<div class="de\d+">(https?://[^ <]+)(?:[^<]*)</div>'
     NAME_PATTERN = r'<div class="paste_box_line1" title="(?P<N>[^"]+)">'
+
+
+getInfo = create_getInfo(PastebinCom)
