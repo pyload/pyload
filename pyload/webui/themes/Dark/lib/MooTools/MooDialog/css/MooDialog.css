@@ -1,0 +1,95 @@
+/* Created by Arian Stolwijk <http://www.aryweb.nl> */
+
+.MooDialog {
+	position: fixed;
+	width: 300px;
+	height: 100px;
+	top: 50%;
+	left: 50%;
+	margin: -150px 0 0 -150px;
+	padding: 10px;
+	z-index: 50000;
+
+	background: #eef5f8;
+	color: black;
+	border-radius: 7px;
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	border-radius: 7px;
+	-moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+	-webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+	box-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+}
+
+.MooDialogTitle {
+	padding-top: 30px;
+}
+
+.MooDialog .content {
+	height: 100px;
+}
+
+.MooDialog .title {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	padding: 3px 20px;
+
+	background: #b7c4dc;
+	border-bottom: 1px solid #a1aec5;
+	font-weight: bold;
+	text-shadow: 1px 1px 0 #fff;
+	color: black;
+	border-radius: 7px;
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+}
+
+.MooDialog .close {
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	top: -5px;
+	left: -5px;
+
+	background: url(dialog-close.png) no-repeat;
+	display: block;
+	cursor: pointer;
+}
+
+.MooDialog .buttons {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	text-align: right;
+}
+
+.MooDialog .iframe {
+	width: 100%;
+	height: 100%;
+}
+
+.MooDialog .textInput {
+	width: 200px;
+	float: left;
+}
+
+.MooDialog .MooDialogAlert,
+.MooDialog .MooDialogConfirm,
+.MooDialog .MooDialogPrompt,
+.MooDialog .MooDialogError {
+	padding-left: 40px;
+	min-height: 40px;
+	background: url(dialog-warning.png) no-repeat;
+}
+
+.MooDialog .MooDialogConfirm,
+.MooDialog .MooDialogPrompt {
+	background: url(dialog-question.png) no-repeat;
+}
+
+.MooDialog .MooDialogError {
+	background: url(dialog-error.png) no-repeat;
+}
