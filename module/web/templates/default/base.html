@@ -1,0 +1,180 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" type="text/css" href="/media/default/css/default.css"/>
+<link rel="stylesheet" type="text/css" href="/media/default/css/window.css"/>
+<link rel="stylesheet" type="text/css" href="/media/default/css/MooDialog.css"/>
+
+<script type="text/javascript" src="/media/js/mootools-core-1.4.1.js"></script>
+<script type="text/javascript" src="/media/js/mootools-more-1.4.0.1.js"></script>
+<script type="text/javascript" src="/media/js/MooDialog_static.js"></script>
+<script type="text/javascript" src="/media/js/purr_static.js"></script>
+
+
+<script type="text/javascript" src="/media/js/base.js"></script>
+
+<title>{% block title %}pyLoad {{_("Webinterface")}}{% endblock %}</title>
+
+{% block head %}
+{% endblock %}
+</head>
+<body>
+<a class="anchor" name="top" id="top"></a>
+
+<div id="head-panel">
+
+
+    <div id="head-search-and-login">
+    {% block headpanel %}
+
+        {% if user.is_authenticated %}
+
+
+{% if update %}
+<span>
+<span style="font-weight: bold; margin: 0 2px 0 2px;">{{_("pyLoad Update available!")}}</span>
+</span>
+{% endif %}
+
+
+{% if plugins %}
+<span>
+<span style="font-weight: bold; margin: 0 2px 0 2px;">{{_("Plugins updated, please restart!")}}</span>
+</span>
+{% endif %}
+
+<span id="cap_info" style="display: {% if captcha %}inline{%else%}none{% endif %}">
+<img src="/media/default/img/images.png" alt="Captcha:" style="vertical-align:middle; margin:2px" />
+<span style="font-weight: bold; cursor: pointer; margin-right: 2px;">{{_("Captcha waiting")}}</span>
+</span>
+
+    <img src="/media/default/img/head-login.png" alt="User:" style="vertical-align:middle; margin:2px" /><span style="padding-right: 2px;">{{user.name}}</span>
+	<ul id="user-actions">
+		<li><a href="/logout"  class="action logout" rel="nofollow">{{_("Logout")}}</a></li>
+		{% if user.is_admin %}
+		<li><a href="/admin" class="action profile" rel="nofollow">{{_("Administrate")}}</a></li>
+		{% endif %}
+        <li><a href="/info"  class="action info" rel="nofollow">{{_("Info")}}</a></li>
+
+	</ul>
+{% else %}
+    <span style="padding-right: 2px;">{{_("Please Login!")}}</span>
+{% endif %}
+
+    {% endblock %}
+	</div>
+
+	<a href="/"><img id="head-logo" src="/media/default/img/pyload-logo-edited3.5-new-font-small.png" alt="pyLoad" /></a>
+
+	<div id="head-menu">
+		<ul>
+
+        {% macro selected(name, right=False) -%}
+            {% if name in url -%}class="{% if right -%}right {% endif %}selected"{%- endif %}
+            {% if not name in url and right -%}class="right"{%- endif %}
+        {%- endmacro %}
+
+
+		{% block menu %}
+		<li>
+		    <a href="/" title=""><img src="/media/default/img/head-menu-home.png" alt="" /> {{_("Home")}}</a>
+		</li>
+		<li {{ selected('queue') }}>
+		    <a href="/queue/" title=""><img src="/media/default/img/head-menu-queue.png" alt="" /> {{_("Queue")}}</a>
+		</li>
+		<li {{ selected('collector') }}>
+		    <a href="/collector/" title=""><img src="/media/default/img/head-menu-collector.png" alt="" /> {{_("Collector")}}</a>
+		</li>
+		<li {{ selected('downloads') }}>
+		    <a href="/downloads/" title=""><img src="/media/default/img/head-menu-development.png" alt="" /> {{_("Downloads")}}</a>
+		</li>
+{#		<li {{ selected('filemanager') }}>#}
+{#		    <a href="/filemanager/" title=""><img src="/media/default/img/head-menu-download.png" alt="" /> {{_("FileManager")}}</a>#}
+{#		</li>#}
+		<li {{ selected('logs', True) }}>
+		    <a href="/logs/"  class="action index" accesskey="x" rel="nofollow"><img src="/media/default/img/head-menu-index.png" alt="" />{{_("Logs")}}</a>
+		</li>
+		<li {{ selected('settings', True) }}>
+		    <a href="/settings/"  class="action index" accesskey="x" rel="nofollow"><img src="/media/default/img/head-menu-config.png" alt="" />{{_("Config")}}</a>
+		</li>
+		{% endblock %}
+		
+		</ul>
+	</div>
+
+	<div style="clear:both;"></div>
+</div>
+
+{% if perms.STATUS %}
+<ul id="page-actions2">
+	<li id="action_play"><a href="#"  class="action play" accesskey="o" rel="nofollow">{{_("Start")}}</a></li>
+    <li id="action_stop"><a href="#"  class="action stop" accesskey="o" rel="nofollow">{{_("Stop")}}</a></li>
+    <li id="action_cancel"><a href="#"  class="action cancel" accesskey="o" rel="nofollow">{{_("Cancel")}}</a></li>
+    <li id="action_add"><a href="#"  class="action add" accesskey="o" rel="nofollow" >{{_("Add")}}</a></li>
+</ul>
+{% endif %}
+
+{% if perms.LIST %}
+<ul id="page-actions">
+    <li><span class="time">{{_("Download:")}}</span><a id="time" style=" background-color: {% if status.download %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.download %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</a></li>
+    <li><span class="reconnect">{{_("Reconnect:")}}</span><a id="reconnect" style=" background-color: {% if status.reconnect %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.reconnect %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</a></li>
+    <li><a class="action backlink">{{_("Speed:")}} <b id="speed">{{ status.speed }}</b></a></li>
+    <li><a class="action cog">{{_("Active:")}} <b id="aktiv" title="{{_("Active")}}">{{ status.active }}</b> / <b id="aktiv_from" title="{{_("Queued")}}">{{ status.queue }}</b> / <b id="aktiv_total" title="{{_("Total")}}">{{ status.total }}</b></a></li>
+    <li><a href=""  class="action revisions" accesskey="o" rel="nofollow">{{_("Reload page")}}</a></li>
+</ul>
+{% endif %}
+
+{% block pageactions %}
+{% endblock %}
+<br/>
+
+<div id="body-wrapper" class="dokuwiki">
+
+<div id="content" lang="en" dir="ltr">
+
+<h1>{% block subtitle %}pyLoad - {{_("Webinterface")}}{% endblock %}</h1>
+
+{% block statusbar %}
+{% endblock %}
+
+
+<br/>
+
+<div class="level1" style="clear:both">
+</div>
+<noscript><h1>Enable JavaScript to use the webinterface.</h1></noscript>
+
+{% for message in messages %}
+	<b><p>{{message}}</p></b>
+{% endfor %}
+
+<div id="load-indicator" style="opacity: 0; float: right; margin-top: -10px;">
+    <img src="/media/default/img/ajax-loader.gif" alt="" style="padding-right: 5px"/>
+    {{_("loading")}}
+</div>
+
+{% block content %}
+{% endblock content %}
+
+	<hr style="clear: both;" />
+
+<div id="foot">&copy; 2008-2011 pyLoad Team
+<a href="#top" class="action top" accesskey="x"><span>{{_("Back to top")}}</span></a><br />
+<!--<div class="breadcrumbs"></div>-->
+
+</div>
+</div>
+</div>
+
+<div style="display: none;">
+    {% include "default/window.html" %}
+    {% include "default/captcha.html" %}
+    {% block hidden %}
+    {% endblock %}
+</div>
+</body>
+</html>
