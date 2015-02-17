@@ -9,7 +9,7 @@
 {% block content %}
 <div style="clear: both;"></div>
 
-<div class="logpaginator"><a href="{{ "/logs/1" }}">&lt;&lt; {{_("Start")}}</a>  <a href="{{ "/logs/" + iprev|string }}">&lt; {{_("prev")}}</a>  <a href="{{ "/logs/" + inext|string }}">{{_("next")}} &gt;</a> <a href="/logs/">{{_("End")}} &gt;&gt;</a></div>
+<div class="logpaginator"><a href="{{ "/logs/1" }}"><span class="glyphicon glyphicon-fast-backward"></span></a>  <a href="{{ "/logs/" + iprev|string }}"><span class="glyphicon glyphicon-step-backward"></span></a>  <a href="{{ "/logs/" + inext|string }}"><span class="glyphicon glyphicon-step-forward"></span></a> <a href="/logs/"><span class="glyphicon glyphicon-fast-forward"></span></a></div>
 <div class="logperpage">
     <form id="logform1" action="" method="POST">
         <label for="reversed">Reversed:</label>
@@ -33,8 +33,8 @@
 </div>
 <div class="logform">
 <form id="logform2" action="" method="POST">
-    <label for="from">Jump to time:</label><input type="text" name="from" size="15" value="{{from}}"/>
-    <input type="submit" value="ok" />
+    <label for="from">Jump to time:</label><input style="float:left; width:80%;" class="form-control" type="text" name="from" size="15" value="{{from}}"/>
+    <input style="float:left; width:19%; margin-left: 1%;" class="btn btn-primary" type="submit" value="ok" />
 </form>
 </div>
 <div style="clear: both; height: 10px;">&nbsp; </div>
