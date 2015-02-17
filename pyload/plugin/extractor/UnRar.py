@@ -7,7 +7,7 @@ from glob import glob
 from string import digits
 from subprocess import Popen, PIPE
 
-from pyload.plugin.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
+from pyload.plugin.Extractor import Extractor, ArchiveError, CRCError, PasswordError
 from pyload.utils import decode, fs_encode, safe_join
 
 
@@ -22,6 +22,7 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name    = "UnRar"
+    __type    = "extractor"
     __version = "1.13"
 
     __description = """Rar extractor plugin"""

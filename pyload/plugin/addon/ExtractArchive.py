@@ -50,7 +50,7 @@ if os.name != "nt":
     from pwd import getpwnam
 
 from pyload.plugin.Addon import Addon, threaded, Expose
-from pyload.plugin.internal.Extractor import ArchiveError, CRCError, PasswordError
+from pyload.plugin.Extractor import ArchiveError, CRCError, PasswordError
 from pyload.plugin.internal.SimpleHoster import replace_patterns
 from pyload.utils import fs_encode, safe_join, uniqify
 
@@ -148,7 +148,7 @@ class ExtractArchive(Addon):
 
         for p in ("UnRar", "SevenZip", "UnZip"):
             try:
-                module = self.core.pluginManager.loadModule("internal", p)
+                module = self.core.pluginManager.loadModule("extractor", p)
                 klass  = getattr(module, p)
                 if klass.isUsable():
                     self.extractors.append(klass)

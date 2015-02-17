@@ -18,7 +18,7 @@ from SafeEval import const_eval as literal_eval
 class PluginManager(object):
     ROOT     = "pyload.plugin."
     USERROOT = "userplugins."
-    TYPES    = ["account", "addon", "container", "crypter", "hook", "hoster", "internal", "ocr"]
+    TYPES    = ["account", "addon", "container", "crypter", "extractor", "hook", "hoster", "internal", "ocr"]
 
     PATTERN = re.compile(r'__pattern\s*=\s*u?r("|\')([^"\']+)')
     VERSION = re.compile(r'__version\s*=\s*("|\')([\d.]+)')

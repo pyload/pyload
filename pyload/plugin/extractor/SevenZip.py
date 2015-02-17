@@ -5,12 +5,13 @@ import re
 
 from subprocess import Popen, PIPE
 
-from pyload.plugin.internal.UnRar import ArchiveError, CRCError, PasswordError, UnRar, renice
+from pyload.plugin.extractor.UnRar import ArchiveError, CRCError, PasswordError, UnRar, renice
 from pyload.utils import fs_encode, safe_join
 
 
 class SevenZip(UnRar):
     __name    = "SevenZip"
+    __type    = "extractor"
     __version = "0.08"
 
     __description = """7-Zip extractor plugin"""

@@ -6,12 +6,13 @@ import os
 import sys
 import zipfile
 
-from pyload.plugin.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
+from pyload.plugin.Extractor import Extractor, ArchiveError, CRCError, PasswordError
 from pyload.utils import fs_encode
 
 
 class UnZip(Extractor):
     __name    = "UnZip"
+    __type    = "extractor"
     __version = "1.10"
 
     __description = """Zip extractor plugin"""
