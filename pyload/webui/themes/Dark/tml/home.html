@@ -1,4 +1,4 @@
-{% extends '/Dark/tml/base.html' %}
+{% extends '/tml/base.html' %}
 {% block head %}
 
 <script type="text/javascript">
@@ -129,7 +129,7 @@ var LinkEntry = new Class({
                 'html': item.percent+ '% / '+ humanFileSize(item.size-item.bleft)
                 }),
                 remove: new Element('img',{
-                'src': '/Dark/img/default/control_cancel.png',
+                'src': '/img/control_cancel.png',
                 'styles':{
                     'vertical-align': 'middle',
                     'margin-right': '-20px',
@@ -208,22 +208,22 @@ var LinkEntry = new Class({
 
 {% block menu %}
 <li class="selected">
-    <a href="/" title=""><img src="/Dark/img/default/head-menu-home.png" alt="" /> {{_("Home")}}</a>
+    <a href="/" title=""><img src="/img/head-menu-home.png" alt="" /> {{_("Home")}}</a>
 </li>
 <li>
-    <a href="/queue/" title=""><img src="/Dark/img/default/head-menu-queue.png" alt="" /> {{_("Queue")}}</a>
+    <a href="/queue/" title=""><img src="/img/head-menu-queue.png" alt="" /> {{_("Queue")}}</a>
 </li>
 <li>
-    <a href="/collector/" title=""><img src="/Dark/img/default/head-menu-collector.png" alt="" /> {{_("Collector")}}</a>
+    <a href="/collector/" title=""><img src="/img/head-menu-collector.png" alt="" /> {{_("Collector")}}</a>
 </li>
 <li>
-    <a href="/downloads/" title=""><img src="/Dark/img/default/head-menu-development.png" alt="" /> {{_("Downloads")}}</a>
+    <a href="/downloads/" title=""><img src="/img/head-menu-development.png" alt="" /> {{_("Downloads")}}</a>
 </li>
 <li class="right">
-    <a href="/logs/"  title=""><img src="/Dark/img/default/head-menu-index.png" alt="" />{{_("Logs")}}</a>
+    <a href="/logs/"  title=""><img src="/img/head-menu-index.png" alt="" />{{_("Logs")}}</a>
 </li>
 <li class="right">
-    <a href="/settings/"  title=""><img src="/Dark/img/default/head-menu-config.png" alt="" />{{_("Config")}}</a>
+    <a href="/settings/"  title=""><img src="/img/head-menu-config.png" alt="" />{{_("Config")}}</a>
 </li>
 {% endblock %}
 
@@ -248,7 +248,7 @@ var LinkEntry = new Class({
     <td id="link_{{ link.id }}_bleft">{{ link.format_size }}</td>
     <td>
         <span id="link_{{ link.id }}_percent">{{ link.percent }}% /{{ link.bleft }}</span>
-        <img id="link_{{ link.id }}_remove" style="vertical-align: middle; margin-right: -20px; margin-left: 5px; margin-top: -2px; cursor:pointer;" src="/Dark/img/default/control_cancel.png"/>
+        <img id="link_{{ link.id }}_remove" style="vertical-align: middle; margin-right: -20px; margin-left: 5px; margin-top: -2px; cursor:pointer;" src="/img/control_cancel.png"/>
     </td>
   </tr>
   <tr id="link_{{ link.id }}_pgb_tr">

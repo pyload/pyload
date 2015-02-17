@@ -5,17 +5,17 @@
 <head>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<link rel="stylesheet" type="text/css" href="/Dark/css/base.min.css"/>
-<link rel="stylesheet" type="text/css" href="/Dark/css/window.min.css"/>
-<link rel="stylesheet" type="text/css" href="/Dark/css/MooDialog.min.css"/>
+<link rel="stylesheet" type="text/css" href="/css/base.min.css"/>
+<link rel="stylesheet" type="text/css" href="/css/window.min.css"/>
+<link rel="stylesheet" type="text/css" href="/css/MooDialog.css"/>
 
-<script type="text/javascript" src="/Dark/js/static/mootools-core.min.js"></script>
-<script type="text/javascript" src="/Dark/js/static/mootools-more.min.js"></script>
-<script type="text/javascript" src="/Dark/js/static/MooDialog.min.js"></script>
-<script type="text/javascript" src="/Dark/js/static/purr.min.js"></script>
+<script type="text/javascript" src="/lib/MooTools/MooTools-Core.js"></script>
+<script type="text/javascript" src="/lib/MooTools/MooTools-More.js"></script>
+<script type="text/javascript" src="/lib/MooTools/MooDialog/MooDialog.js"></script>
+<script type="text/javascript" src="/lib/MooTools/Purr/purr.js"></script>
 
 
-<script type="text/javascript" src="/Dark/js/render/base.min.js"></script>
+<script type="text/javascript" src="/js/base.min.js"></script>
 
 <title>{% block title %}pyLoad {{_("Webinterface")}}{% endblock %}</title>
 
@@ -48,11 +48,11 @@
 {% endif %}
 
 <span id="cap_info" style="display: {% if captcha %}inline{%else%}none{% endif %}">
-<img src="/Dark/img/default/images.png" alt="Captcha:" style="vertical-align:middle; margin:2px" />
+<img src="/img/images.png" alt="Captcha:" style="vertical-align:middle; margin:2px" />
 <span style="font-weight: bold; cursor: pointer; margin-right: 2px;">{{_("Captcha waiting")}}</span>
 </span>
 
-    <img src="/Dark/img/default/head-login.png" alt="User:" style="vertical-align:middle; margin:2px" /><span style="padding-right: 2px;">{{user.name}}</span>
+    <img src="/img/head-login.png" alt="User:" style="vertical-align:middle; margin:2px" /><span style="padding-right: 2px;">{{user.name}}</span>
   <ul id="user-actions">
     <li><a href="/logout"  class="action logout" rel="nofollow">{{_("Logout")}}</a></li>
     {% if user.is_admin %}
@@ -68,7 +68,7 @@
     {% endblock %}
   </div>
 
-  <a href="/"><img id="head-logo" src="/Dark/img/pyload-logo.png" alt="pyLoad" /></a>
+  <a href="/"><img id="head-logo" src="/img/pyload-logo.png" alt="pyLoad" /></a>
 {% if user.is_authenticated %}
   <div id="head-menu">
     <ul>
@@ -81,22 +81,22 @@
 
     {% block menu %}
     <li>
-        <a href="/" title=""><img src="/Dark/img/default/head-menu-home.png" alt="" /> {{_("Home")}}</a>
+        <a href="/" title=""><img src="/img/head-menu-home.png" alt="" /> {{_("Home")}}</a>
     </li>
     <li {{ selected('queue') }}>
-        <a href="/queue/" title=""><img src="/Dark/img/default/head-menu-queue.png" alt="" /> {{_("Queue")}}</a>
+        <a href="/queue/" title=""><img src="/img/head-menu-queue.png" alt="" /> {{_("Queue")}}</a>
     </li>
     <li {{ selected('collector') }}>
-        <a href="/collector/" title=""><img src="/Dark/img/default/head-menu-collector.png" alt="" /> {{_("Collector")}}</a>
+        <a href="/collector/" title=""><img src="/img/head-menu-collector.png" alt="" /> {{_("Collector")}}</a>
     </li>
     <li {{ selected('downloads') }}>
-        <a href="/downloads/" title=""><img src="/Dark/img/default/head-menu-development.png" alt="" /> {{_("Downloads")}}</a>
+        <a href="/downloads/" title=""><img src="/img/head-menu-development.png" alt="" /> {{_("Downloads")}}</a>
     </li>
     <li {{ selected('logs', True) }}>
-        <a href="/logs/"  title=""><img src="/Dark/img/default/head-menu-index.png" alt="" />{{_("Logs")}}</a>
+        <a href="/logs/"  title=""><img src="/img/head-menu-index.png" alt="" />{{_("Logs")}}</a>
     </li>
     <li {{ selected('settings', True) }}>
-        <a href="/settings/"  title=""><img src="/Dark/img/default/head-menu-config.png" alt="" />{{_("Config")}}</a>
+        <a href="/settings/"  title=""><img src="/img/head-menu-config.png" alt="" />{{_("Config")}}</a>
     </li>
     {% endblock %}
 
@@ -150,7 +150,7 @@
 {% endfor %}
 
 <div id="load-indicator" style="opacity: 0; float: right; margin-top: -10px;">
-    <img src="/Dark/img/default/ajax-loader.gif" alt="" style="padding-right: 5px"/>
+    <img src="/img/ajax-loader.gif" alt="" style="padding-right: 5px"/>
     {{_("loading")}}
 </div>
 
@@ -168,8 +168,8 @@
 </div>
 
 <div id="window_popup" style="display: none;">
-    {% include '/Dark/tml/window.html' %}
-    {% include '/Dark/tml/captcha.html' %}
+    {% include '/tml/window.html' %}
+    {% include '/tml/captcha.html' %}
     {% block hidden %}
     {% endblock %}
 </div>
