@@ -21,7 +21,7 @@ def forward(source, destination):
 #: create_connection wrapper for python 2.5 socket module
 def create_connection(address, timeout=object(), source_address=None):
     if hasattr(socket, 'create_connection'):
-        if type(timeout) == object:
+        if type(timeout) is object:
             timeout = socket._GLOBAL_DEFAULT_TIMEOUT
 
         return socket.create_connection(address, timeout, source_address)
@@ -29,11 +29,11 @@ def create_connection(address, timeout=object(), source_address=None):
     else:
         host, port = address
         err = None
-        for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+        for res in socket.getaddrinfo(host, port, 0, socket.SOCK_STREAM):
             af, socktype, proto, canonname, sa = res
             sock = None
             try:
-                sock = socket(af, socktype, proto)
+                sock = socket.socket(af, socktype, proto)
                 if type(timeout) != object:
                     sock.settimeout(timeout)
                 if source_address:
@@ -41,21 +41,18 @@ def create_connection(address, timeout=object(), source_address=None):
                 sock.connect(sa)
                 return sock
 
-            except socket.error, _:
-                err = _
+            except socket.error, e:
+                err = e
                 if sock is not None:
                     sock.close()
-
-        if err is not None:
-            raise err
         else:
-            raise socket.error("getaddrinfo returns an empty list")
+            raise socket.error(err or "getaddrinfo returns an empty list")
 
 
 class ClickAndLoad(Hook):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
-    __version__ = "0.35"
+    __version__ = "0.36"
 
     __config__ = [("activated", "bool", "Activated"                             , True),
                   ("port"     , "int" , "Port"                                  , 9666),
@@ -76,7 +73,7 @@ class ClickAndLoad(Hook):
         if not self.config['webinterface']['activated']:
             return
 
-        ip      = socket.gethostbyname(socket.gethostname()) if self.getConfig("extern") else "127.0.0.1"
+        ip      = "0.0.0.0" if self.getConfig("extern") else "127.0.0.1"
         webport = int(self.config['webinterface']['port'])
         cnlport = self.getConfig('port')
 
@@ -85,6 +82,7 @@ class ClickAndLoad(Hook):
 
     @threaded
     def proxy(self, ip, webport, cnlport):
+        self.logInfo(_("Proxy listening on %s:%s") % (ip, cnlport))
         self.manager.startThread(self._server, ip, webport, cnlport)
         lock = Lock()
         lock.acquire()
