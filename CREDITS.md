@@ -21,6 +21,7 @@ A special thanks to spoob, sebnapi and RaNaN who created pyLoad!
 
 *(alphabetically sorted)*
 
+ - stickell (Stefano) <l.stickell@yahoo.it>
  - vuolter (Walter Purcaro) <vuolter@gmail.com>
 
 

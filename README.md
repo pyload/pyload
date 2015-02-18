@@ -5,41 +5,55 @@
 
 **pyLoad** is a Free and Open Source download manager written in Python and designed to be extremely lightweight.
 
-pyLoad is available for all kind of operating systems and devices:
-You could install it on a computer, but also on a headless servers, a router, a smart usb-stick running linux... almost whatever you want!
+Its friendly Web User Interface allows full managing and easily remote access from anywhere!
 
-You can control it entirely by web.
-Its web user interface allows full managing and easily remote access to your download from anywhere, online, or in your personal network..
+pyLoad was developed to run on NAS, next-gen routers and headless home servers, whatever device able to connect to internet
+and supporting the Python programming language, so it's available for all kind of operating systems and a wide range of hardware platforms;
+you can even install on your PC or Mac if you want and control it entirely by web in the same way.
 
-All common video-sites, one-click-hosters, container formats and well known web standards are supported to allow you to download files.
+All common video-sites, one-click-hosters, container formats and well known web standards are supported to allow you to download your files.
 Additionaly, pyLoad has a great variety of plugins to automate common tasks and make unattended running possible.
 
-pyLoad has a fully featured and well documented API, it's easily extendable and accessible by external tools, cross-platform apps or other softwares.
+pyLoad has a fully featured and well documented Application Programming Interface, easily extendable and accessible by external tools, cross-platform apps or other softwares.
+Just take a look to the [Development section](https://github.com/pyload/pyload/tree/master#development) for more info about that.
+
+For news, wiki, forum and further info visit the pyLoad website: <http://pyload.org/>.
+
+Or joining us at `#pyload` on `irc.freenode.net`.
 
 
-Download & Installation
------------------------
-
-You can see all the pre-build packages of pyLoad here: <https://github.com/pyload/pyload/releases>.
+Download
+--------
 
 > **Note:**
-If you're on Windows, it's highly recommended to install the pre-build package instead getting the source code.
+> You need **at least Python 2.5** or **at most Python 2.7** to run pyLoad and its required software dependencies.
+>> **Python 3** and **PyPy** are not yet supported.
 
-Pre-build packages yet included all the software dependencies required to run pyLoad.
+Pre-build packages are provided with all the software dependencies required to run pyLoad flawlessly on the referenced platform, Python included.
 
-By the way, you can install any missing software packages by the Python Package Index, typing:
+But you can even get the source code here and manually install the required packages afterwards.
+Please refer to the [Dependencies section](https://github.com/pyload/pyload/tree/master#dependencies) for more info about that.
+
+> **Note:**
+> If you wanna use pyLoad on Windows, it's hightly recommented to install the latest **official** pre-build package for that platform.
+
+ - **Pre-build packages**: <https://github.com/pyload/pyload/releases>.
+ - **Latest stable version** (source code): <https://github.com/pyload/pyload/archive/stable.zip>.
+ - **Latest development version** (source code): <https://github.com/pyload/pyload/archive/master.zip>.
+
+
+Installation
+------------
+
+...
+
+You can install any missing software package from the *Python Package Index* typing:
 
     pip install <package-name>
-
-You can download the latest stable source code here: <>.
-You can download the latest development source code here: <>.
 
 
 Dependencies
 ------------
-
- - **You need at least Python 2.5 or at most Python 2.7 to run pyLoad and its required software packages**
- - **Python 3 and PyPy are not yet supported**
 
 ### Required ###
 
@@ -78,6 +92,63 @@ Some extra features require additional software packages. See below:
  - **tesseract**                                      *Captcha OCR support*
 
 
+Usage
+-----
+
+### First Start ###
+
+Run:
+
+    python pyload.py
+
+and follow the setup assistant instructions.
+
+> **Note:**
+> If you have installed pyLoad by a package-manager, command `python pyload.py` might be equivalent to `pyload`.
+
+If something go wrong, you can restart the setup assistant typing:
+
+    python pyload.py -s
+
+Or you can even edit the configuration files located in your pyLoad home directory
+(usually `%userprofile%/pyload` on Windows or `~/.pyload` otherwise) with your favorite editor.
+
+For a short description of all the configuration options available visit: <http://pyload.org/configuration>.
+
+
+### Web User Interface ###
+
+Run:
+
+    python pyload.py
+
+So, to retrieve it point your browser to the socket address configured by setup (default to `http://localhost:8000`).
+
+You can get a list of accepted arguments typing:
+
+    python pyload.py -h
+
+
+### Command Line Interface ###
+
+Run:
+
+    python pyload-cli.py -l
+
+You can get a list of accepted arguments typing:
+
+    python pyload-cli.py -h
+
+
+Development
+-----------
+
+ * pyLoad roadmap: <https://github.com/pyload/pyload/milestones>.
+ * To report bugs, suggest features, ask for a question or help us out, visit: <https://github.com/pyload/pyload/issues>.
+ * To request the merge of your code in the pyLoad repository, open a new *pull request* here: <https://github.com/pyload/pyload/pulls>.
+ * Documentation about how extending pyLoad can be found at: <http://docs.pyload.org>.
+
+
 Translations
 ------------
 
@@ -99,7 +170,7 @@ Translators will see:
     Thanks
 
 
-### Updating templates ###
+### Update templates ###
 
 To update POT files type:
 
@@ -133,96 +204,45 @@ For example to compile a core.po file type:
     msgfmt -o core.mo core.po
 
 
-Usage
------
-
-### First Start ###
-
-Run:
-
-    python pyload.py
-
-and follow the setup assistant instructions.
-
-> **Note:**
-If you installed pyLoad by a package-manager, command `python pyload.py` might be equivalent to `pyload`.
-
-If something go wrong, you can restart the setup assistant whenever you want, just typing:
-
-    python pyload.py -s
-
-Or you can even edit configuration files located in your pyLoad home directory (default to `~/.pyload`)
-with your favorite editor.
-For a short description of all the configuration options available visit <http://pyload.org/configuration>.
-
-
-### Web User Interface ###
-
-Run:
-
-    python pyload.py
-
-So, to retrieve it point your browser to the socket address configured by setup (default to `http://localhost:8000`).
-
-You can get the list of accepted arguments typing:
-
-    python pyload.py -h
-
-
-### Command Line Interface ###
-
-Run:
-
-    python pyload-cli.py -l
-
-You can get the list of accepted arguments typing:
-
-    python pyload-cli.py -h
-
-
 Licensing
 ---------
 
-### pyLoad  ###
+### Main program  ###
 
-Refer to the attached file **LICENSE.md** for the extended license.
+Please refer to the attached [LICENSE.md](/LICENSE.md) for the extended license.
 
 
-### Plugin  ###
+### Plugins  ###
 
-According to the terms of the pyLoad license, pyload's plugins must be treated as an extension of the main program.
-This means that all the plugins must be released under the same license of pyLoad (or a compatible
-one) to be included in the official repository and released with pyLoad:
+According to the terms of the pyLoad license, official plugins must be treated as an extension of the main program
+and released under the same license of pyLoad or a compatible one:
 
- * Any plugin published **without a license notice** is intend published under the pyLoad license.
- * A different license can be used but it **must be compatible** to the pyLoad license.
- * Any plugin published **with a incompatible license** will be rejected.
-
- * Is recommended to put a **shorten** license notice over the top of the plugin file.
- * Is recommended to avoid the license notice when the plugin is published under the same license of pyLoad.
+ * Any plugin published **without the \_\_license\_\_ attribute** is implied published under the same license of pyLoad.
+ * Only plugins published **with a compatible license** will be accepted as official and included in the pyLoad repository.
+ * **Un-official plugins are not supported**, so any issue report or feature request regarding this kind of plugin will be rejected.
+ * Is recommended to put a **shorten** license notice only if nedfull to avoid misunderstandings about the adopted license.
 
 
 Plugin policy
 -------------
 
-...
+ - No cracking website or service
+ - No drugs website or service
+ - No e-commerce website or service
+ - No government website or service
+ - No illegal website or service in the country where its servers are located
+ - No pedopornography website or service
+ - No private website or service
+ - No racist website or service
+ - No warez website or service
+ - No weapon website or service
+ - ...
 
 
 Credits
 -------
 
-Refer to the attached file **CREDITS.md** for the extended credits.
-
-
-Notes
------
-
-For news, wiki, forum and further info visit: <http://pyload.org/>.
-
-To report bugs, suggest features, ask a question or help us out, visit: <https://github.com/pyload/pyload/issues>.
-To request merging of an your patch or feature code, visit: <https://github.com/pyload/pyload/pr>.
-
-Documentation about extending pyLoad can be found at <http://docs.pyload.org> or joining us at `#pyload` on `irc.freenode.net`.
+Please refer to the attached [CREDITS.md](/CREDITS.md) for the extended credits.
 
 
 -----------------------------------
