@@ -13,7 +13,8 @@ class HundredEightyUploadCom(XFSHoster):
     __description__ = """180upload.com hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
-    
+
+
     OFFLINE_PATTERN = r'>File Not Found'
 
 
