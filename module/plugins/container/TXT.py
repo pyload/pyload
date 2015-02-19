@@ -6,16 +6,16 @@ from module.plugins.Container import Container
 from module.utils import fs_encode
 
 
-class LinkList(Container):
-    __name__    = "LinkList"
+class TXT(Container):
+    __name__    = "TXT"
     __type__    = "container"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
-    __pattern__ = r'.+\.txt$'
-    __config__ = [("flush"   , "bool"  , "Flush list after adding", False  ),
-                  ("encoding", "string", "File encoding"          , "utf-8")]
+    __pattern__ = r'.+\.(txt|text)$'
+    __config__  = [("flush"   , "bool"  , "Flush list after adding", False  ),
+                   ("encoding", "string", "File encoding"          , "utf-8")]
 
-    __description__ = """Read link lists in txt format"""
+    __description__ = """Read link lists in plain text formats"""
     __license__     = "GPLv3"
     __authors__     = [("spoob", "spoob@pyload.org"),
                        ("jeix", "jeix@hasnomail.com")]
