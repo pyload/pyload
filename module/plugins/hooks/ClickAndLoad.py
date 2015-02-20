@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import socket
+import time
 
 from threading import Lock
 
@@ -18,41 +19,11 @@ def forward(source, destination):
         destination.shutdown(socket.SHUT_WR)
 
 
-#: create_connection wrapper for python 2.5 socket module
-def create_connection(address, timeout=object(), source_address=None):
-    if hasattr(socket, 'create_connection'):
-        if type(timeout) is object:
-            timeout = socket._GLOBAL_DEFAULT_TIMEOUT
-
-        return socket.create_connection(address, timeout, source_address)
-
-    else:
-        host, port = address
-        err = None
-        for res in socket.getaddrinfo(host, port, 0, socket.SOCK_STREAM):
-            af, socktype, proto, canonname, sa = res
-            sock = None
-            try:
-                sock = socket.socket(af, socktype, proto)
-                if type(timeout) != object:
-                    sock.settimeout(timeout)
-                if source_address:
-                    sock.bind(source_address)
-                sock.connect(sa)
-                return sock
-
-            except socket.error, e:
-                err = e
-                if sock is not None:
-                    sock.close()
-        else:
-            raise socket.error(err or "getaddrinfo returns an empty list")
-
-
+#@TODO: IPv6 support
 class ClickAndLoad(Hook):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
-    __version__ = "0.36"
+    __version__ = "0.37"
 
     __config__ = [("activated", "bool", "Activated"                             , True),
                   ("port"     , "int" , "Port"                                  , 9666),
@@ -73,7 +44,7 @@ class ClickAndLoad(Hook):
         if not self.config['webinterface']['activated']:
             return
 
-        ip      = "0.0.0.0" if self.getConfig("extern") else "127.0.0.1"
+        ip      = "" if self.getConfig("extern") else "127.0.0.1"
         webport = int(self.config['webinterface']['port'])
         cnlport = self.getConfig('port')
 
@@ -91,32 +62,34 @@ class ClickAndLoad(Hook):
 
     def _server(self, ip, webport, cnlport, thread):
         try:
-            server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            server_socket.bind((ip, cnlport))
-            server_socket.listen(5)
+            try:
+                server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-            while True:
-                client_socket = server_socket.accept()[0]
-                dock_socket   = create_connection(("127.0.0.1", webport))
+                server_socket.bind((ip, cnlport))
+                server_socket.listen(5)
 
-                self.manager.startThread(forward, dock_socket, client_socket)
-                self.manager.startThread(forward, client_socket, dock_socket)
+                while True:
+                    client_socket = server_socket.accept()[0]
+                    dock_socket   = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+                    dock_socket.connect(("127.0.0.1", webport))
+
+                    self.manager.startThread(forward, dock_socket, client_socket)
+                    self.manager.startThread(forward, client_socket, dock_socket)
+
+            except socket.timeout:
+                self.logDebug("Connection timed out, retrying...")
+                return self._server(ip, webport, cnlport, thread)
+
+            finally:
+                server_socket.close()
+                client_socket.close()
+                dock_socket.close()
 
         except socket.error, e:
-            self.logDebug(e)
+            self.logError(e)
+            time.sleep(120)
             self._server(ip, webport, cnlport, thread)
 
         except Exception, e:
             self.logError(e)
-
-            try:
-                client_socket.close()
-                dock_socket.close()
-            except Exception:
-                pass
-
-            try:
-                server_socket.close()
-            except Exception:
-                pass
