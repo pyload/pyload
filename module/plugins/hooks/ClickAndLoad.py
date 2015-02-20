@@ -90,6 +90,3 @@ class ClickAndLoad(Hook):
             self.logError(e)
             time.sleep(120)
             self._server(ip, webport, cnlport, thread)
-
-        except Exception, e:
-            self.logError(e)
