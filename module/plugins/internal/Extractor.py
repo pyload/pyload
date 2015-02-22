@@ -19,7 +19,7 @@ class PasswordError(Exception):
 
 class Extractor:
     __name__    = "Extractor"
-    __version__ = "0.20"
+    __version__ = "0.21"
 
     __description__ = """Base extractor plugin"""
     __license__     = "GPLv3"
@@ -30,6 +30,7 @@ class Extractor:
 
     EXTENSIONS = []
     VERSION    = ""
+    REPAIR     = False
 
 
     @classmethod
@@ -90,23 +91,24 @@ class Extractor:
 
 
     def check(self):
-        """Check if password if needed. Raise ArchiveError if integrity is
-        questionable.
+        """Quick Check by listing content of archive.
+        Raises error if password is needed, integrity is questionable or else.
 
-        :return: boolean
+        :raises PasswordError
+        :raises CRCError
         :raises ArchiveError
         """
-        raise PasswordError
-
-
-    def isPassword(self, password):
-        """ Check if the given password is/might be correct.
-        If it can not be decided at this point return true.
-
-        :param password:
-        :return: boolean
+        raise NotImplementedError
+        
+    def test(self):
+        """Testing with Extractors buildt-in method
+        Raises error if password is needed, integrity is questionable or else.
+        
+        :raises PasswordError
+        :raises CRCError
+        :raises ArchiveError
         """
-        return None
+        raise NotImplementedError
 
 
     def repair(self):
