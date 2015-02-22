@@ -12,13 +12,13 @@ class TXT(Container):
     __version = "0.15"
 
     __pattern = r'.+\.(txt|text)$'
-    __config = [("flush"   , "bool"  , "Flush list after adding", False  ),
-                  ("encoding", "string", "File encoding"          , "utf-8")]
+    __config  = [("flush"   , "bool"  , "Flush list after adding", False  ),
+                 ("encoding", "string", "File encoding"          , "utf-8")]
 
     __description = """Read link lists in plain text formats"""
     __license     = "GPLv3"
     __authors     = [("spoob", "spoob@pyload.org"),
-                       ("jeix", "jeix@hasnomail.com")]
+                     ("jeix", "jeix@hasnomail.com")]
 
 
     def decrypt(self, pyfile):

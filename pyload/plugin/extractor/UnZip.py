@@ -13,7 +13,7 @@ from pyload.utils import fs_encode
 class UnZip(Extractor):
     __name    = "UnZip"
     __type    = "extractor"
-    __version = "1.10"
+    __version = "1.11"
 
     __description = """Zip extractor plugin"""
     __license     = "GPLv3"
@@ -35,7 +35,11 @@ class UnZip(Extractor):
             return z.namelist()
 
 
-    def check(self):
+    def check(self, password):
+        pass
+
+
+    def test(self):
         with zipfile.ZipFile(fs_encode(self.filename), 'r', allowZip64=True) as z:
             badfile = z.testzip()
 

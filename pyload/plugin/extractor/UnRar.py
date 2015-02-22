@@ -23,7 +23,7 @@ def renice(pid, value):
 class UnRar(Extractor):
     __name    = "UnRar"
     __type    = "extractor"
-    __version = "1.13"
+    __version = "1.14"
 
     __description = """Rar extractor plugin"""
     __license     = "GPLv3"
@@ -34,34 +34,40 @@ class UnRar(Extractor):
 
     CMD = "unrar"
     VERSION = ""
-
     EXTENSIONS = [".rar"]
 
 
-    re_multipart = re.compile(r'\.(part|r)(\d+)(?:\.rar)?',re.I)
+    re_multipart = re.compile(r'\.(part|r)(\d+)(?:\.rar)?(\.rev|\.bad)?',re.I)
 
     re_filefixed = re.compile(r'Building (.+)')
     re_filelist  = re.compile(r'^(.)(\s*[\w\.\-]+)\s+(\d+\s+)+(?:\d+\%\s+)?[\d\-]{8}\s+[\d\:]{5}', re.M|re.I)
 
     re_wrongpwd  = re.compile(r'password', re.I)
-    re_wrongcrc  = re.compile(r'encrypted|damaged|CRC failed|checksum error', re.I)
+    re_wrongcrc  = re.compile(r'encrypted|damaged|CRC failed|checksum error|corrupt', re.I)
 
-    re_version   = re.compile(r'UNRAR\s(\d+\.\d+)', re.I)
+    re_version   = re.compile(r'(?:UN)?RAR\s(\d+\.\d+)', re.I)
 
 
     @classmethod
     def isUsable(cls):
         if os.name == "nt":
-            cls.CMD = os.path.join(pypath, "UnRAR.exe")
-            p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
-            out, err = p.communicate()
-        else:
             try:
+                cls.CMD = os.path.join(pypath, "RAR.exe")
                 p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
                 out, err = p.communicate()
-
-            except OSError:  #: fallback to rar
-                cls.CMD = "rar"
+                cls.__name__ = "RAR"
+                cls.REPAIR = True
+            except OSError:
+                cls.CMD = os.path.join(pypath, "UnRAR.exe")
+                p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
+                out, err = p.communicate()
+        else:
+            try:
+                p = Popen(["rar"], stdout=PIPE, stderr=PIPE)
+                out, err = p.communicate()
+                cls.__name__ = "RAR"
+                cls.REPAIR = True
+            except OSError:  #: fallback to unrar
                 p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
                 out, err = p.communicate()
 
@@ -75,13 +81,25 @@ class UnRar(Extractor):
         multipart = cls.re_multipart.search(filename)
         if multipart:
             # First Multipart file (part1.rar for *.part1-9.rar format or *.rar for .r1-9 format) handled as normal Archive
-            return False if (multipart.group(1) == "part" and int(multipart.group(2)) == 1) else True
+            return False if (multipart.group(1) == "part" and int(multipart.group(2)) == 1 and not multipart.group(3)) else True
 
         return False
 
 
-    def check(self):
-        p = self.call_cmd("l", "-v", fs_encode(self.filename))
+    def test(self, password):
+        p = self.call_cmd("t", "-v", fs_encode(self.filename), password=password)
+        self._progress(p)
+        err = p.stderr.read().strip()
+
+        if self.re_wrongpwd.search(err):
+            raise PasswordError
+
+        if self.re_wrongcrc.search(err):
+            raise CRCError(err)
+
+
+    def check(self, password):
+        p = self.call_cmd("l", "-v", fs_encode(self.filename), password=password)
         out, err = p.communicate()
 
         if self.re_wrongpwd.search(err):
@@ -96,35 +114,14 @@ class UnRar(Extractor):
                 raise PasswordError
 
 
-    def isPassword(self, password):
-        # at this point we can only verify header protected files
-        p = self.call_cmd("l", "-v", fs_encode(self.filename), password=password)
-        out, err = p.communicate()
-        return False if self.re_wrongpwd.search(err) else True
-
-
     def repair(self):
         p = self.call_cmd("rc", fs_encode(self.filename))
 
         # communicate and retrieve stderr
         self._progress(p)
         err = p.stderr.read().strip()
-
         if err or p.returncode:
-            p = self.call_cmd("r", fs_encode(self.filename))
-
-            # communicate and retrieve stderr
-            self._progress(p)
-            err = p.stderr.read().strip()
-
-            if err or p.returncode:
-                return False
-            else:
-                dir  = os.path.dirname(filename)
-                name = re_filefixed.search(out).group(1)
-
-                self.filename = os.path.join(dir, name)
-
+            return False
         return True
 
 

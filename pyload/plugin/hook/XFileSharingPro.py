@@ -8,7 +8,7 @@ from pyload.plugin.Hook import Hook
 class XFileSharingPro(Hook):
     __name    = "XFileSharingPro"
     __type    = "hook"
-    __version = "0.31"
+    __version = "0.32"
 
     __config = [("activated"       , "bool", "Activated"                     , True ),
                   ("use_hoster_list" , "bool", "Load listed hosters only"      , False),
@@ -29,7 +29,7 @@ class XFileSharingPro(Hook):
                           r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:user|folder)s?/\w+')}
 
     HOSTER_BUILTIN  = [#WORKING HOSTERS:
-                       "180upload.com", "backin.net", "eyesfile.ca", "file4safe.com", "fileband.com", "filedwon.com",
+                       "backin.net", "eyesfile.ca", "file4safe.com", "fileband.com", "filedwon.com",
                        "fileparadox.in", "filevice.com", "hostingbulk.com", "junkyvideo.com", "linestorage.com", "ravishare.com",
                        "ryushare.com", "salefiles.com", "sendmyway.com", "sharesix.com", "thefile.me", "verzend.be", "xvidstage.com",
                        #NOT TESTED:
