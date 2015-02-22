@@ -8,7 +8,7 @@ from pyload.utils import formatSize, lock
 from pyload.manager.Event import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
 from pyload.datatype.Package import PyPackage
 from pyload.datatype.File import PyFile
-from pyload.database import style, DatabaseBackend
+from pyload.database import DatabaseBackend, style
 
 try:
     from pysqlite2 import dbapi2 as sqlite3
