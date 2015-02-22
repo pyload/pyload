@@ -104,13 +104,14 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.29"
+    __version__ = "1.30"
 
     __config__ = [("activated"       , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"        , "bool"  , "Extract with full paths"                   , True                                                                     ),
                   ("overwrite"       , "bool"  , "Overwrite files"                           , False                                                                    ),
                   ("keepbroken"      , "bool"  , "Try to extract broken archives"            , False                                                                    ),
-                  ("repair"          , "bool"  , "Repair broken archives"                    , True                                                                     ),
+                  ("repair"          , "bool"  , "Repair broken archives (rar required)"     , False                                                                    ),
+                  ("test"            , "bool"  , "Test archive before extracting"            , False                                                                    ),
                   ("usepasswordfile" , "bool"  , "Use password file"                         , True                                                                     ),
                   ("passwordfile"    , "file"  , "Password file"                             , "archive_password.txt"                                                   ),
                   ("delete"          , "bool"  , "Delete archive when successfully extracted", False                                                                    ),
@@ -128,35 +129,32 @@ class ExtractArchive(Hook):
                        ("Immenz"        , "immenz@gmx.net"   )]
 
 
-    event_list = ["allDownloadsProcessed"]
+    event_list = ["allDownloadsProcessed","packageDeleted"]
 
     NAME_REPLACEMENTS = [(r'\.part\d+\.rar$', ".part.rar")]
-
-
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
 
 
     def setup(self):
         self.queue  = ArchiveQueue(self, "Queue")
         self.failed = ArchiveQueue(self, "Failed")
 
-        self.interval   = 60
-        self.extracting = False
-        self.extractors = []
-        self.passwords  = []
+        self.interval    = 60
+        self.extracting  = False
+        self.lastPackage = False
+        self.extractors  = []
+        self.passwords   = []
+        self.repair      = False
 
 
     def coreReady(self):
-        # self.extracting = False
-
         for p in ("UnRar", "SevenZip", "UnZip"):
             try:
                 module = self.core.pluginManager.loadModule("internal", p)
                 klass  = getattr(module, p)
                 if klass.isUsable():
                     self.extractors.append(klass)
+                if klass.REPAIR:
+                    self.repair = self.getConfig("repair")
 
             except OSError, e:
                 if e.errno == 2:
@@ -173,37 +171,49 @@ class ExtractArchive(Hook):
 
         if self.extractors:
             self.logInfo(_("Activated") + " " + "|".join("%s %s" % (Extractor.__name__,Extractor.VERSION) for Extractor in self.extractors))
-
-            if self.getConfig("waitall"):
-                self.extractPackage(*self.queue.get())  #: Resume unfinished extractions
-            else:
-                super(ExtractArchive, self).initPeriodical()
-
+            self.extractQueued()  #: Resume unfinished extractions
         else:
             self.logInfo(_("No Extract plugins activated"))
 
+    @threaded
+    def extractQueued(self,thread):
+        packages = self.queue.get()
+        while packages:
+            if self.lastPackage: # called from allDownloadsProcessed
+                self.lastPackage = False
+                if self.extract(packages, thread):  #@NOTE: check only if all gone fine, no failed reporting for now
+                    self.manager.dispatchEvent("all_archives_extracted")
+                self.manager.dispatchEvent("all_archives_processed")
+            else:
+                if self.extract(packages, thread):  #@NOTE: check only if all gone fine, no failed reporting for now
+                    pass
 
-    def periodical(self):
-        if not self.extracting:
-            self.extractPackage(*self.queue.get())
+            packages = self.queue.get() # check for packages added during extraction
 
 
     @Expose
     def extractPackage(self, *ids):
         """ Extract packages with given id"""
-        self.manager.startThread(self.extract, ids)
+        for id in ids:
+            self.queue.add(id)
+        if not self.getConfig("waitall") and not self.extracting:
+            self.extractQueued()
+
+
+    def packageDeleted(self, pid):
+        self.queue.remove(pid)
 
 
     def packageFinished(self, pypack):
         self.queue.add(pypack.id)
+        if not self.getConfig("waitall") and not self.extracting:
+            self.extractQueued()
 
 
-    @threaded
-    def allDownloadsProcessed(self, thread):
-        if self.extract(self.queue.get(), thread):  #@NOTE: check only if all gone fine, no failed reporting for now
-            self.manager.dispatchEvent("all_archives_extracted")
-
-        self.manager.dispatchEvent("all_archives_processed")
+    def allDownloadsProcessed(self):
+        self.lastPackage = True
+        if not self.extracting:
+            self.extractQueued()
 
 
     def extract(self, ids, thread=None):
@@ -315,13 +325,17 @@ class ExtractArchive(Hook):
 
                             if recursive and os.path.isfile(file):
                                 new_files_ids.append((filename, fid, os.path.dirname(filename)))  # append as new target
-
+                        
+                        pyfile = self.core.files.getFile(fid)
+                        self.manager.dispatchEvent("archive_extracted", pyfile, archive.out, archive.filename, new_files)
+                        
                 files_ids = new_files_ids  # also check extracted files
 
             if matched:
                 if success:
                     extracted.append(pid)
                     self.manager.dispatchEvent("package_extracted", pypack)
+
                 else:
                     failed.append(pid)
                     self.manager.dispatchEvent("package_extract_failed", pypack)
@@ -352,50 +366,65 @@ class ExtractArchive(Hook):
 
         encrypted = False
         try:
-            try:
-                archive.check()
+            self.logDebug("Password: %s" % (password or "None provided"))
+            passwords = uniqify([password] + self.getPasswords(False)) if self.getConfig("usepasswordfile") else [password]
+            for pw in passwords:
+                try:
+                    if self.getConfig("test") or self.repair:
+                        pyfile.setCustomStatus(_("testing"))
+                        if pw:
+                            self.logDebug("Testing with password: %s" % pw)
+                        pyfile.setProgress(0)
+                        archive.test(pw)
+                        pyfile.setProgress(100)
+                    else:
+                        archive.check(pw)
+                    
+                    self.addPassword(pw)
+                    break
 
-            except CRCError, e:
-                self.logDebug(name, e)
-                self.logInfo(name, _("Header protected"))
+                except PasswordError:
+                    if not encrypted:
+                        self.logInfo(name, _("Password protected"))
+                        encrypted = True
+                    
+                except CRCError, e:
+                    self.logDebug(name, e)
+                    self.logInfo(name, _("CRC Error"))
 
-                if self.getConfig("repair"):
-                    self.logWarning(name, _("Repairing..."))
+                    if self.repair:
+                        self.logWarning(name, _("Repairing..."))
 
-                    pyfile.setCustomStatus(_("repairing"))
-                    pyfile.setProgress(0)
+                        pyfile.setCustomStatus(_("repairing"))
+                        pyfile.setProgress(0)
+                        repaired = archive.repair()
+                        pyfile.setProgress(100)
 
-                    repaired = archive.repair()
+                        if not repaired and not self.getConfig("keepbroken"):
+                            raise CRCError("Archive damaged")
 
-                    pyfile.setProgress(100)
-
-                    if not repaired and not self.getConfig("keepbroken"):
-                        raise CRCError("Archive damaged")
-
-            except PasswordError:
-                self.logInfo(name, _("Password protected"))
-                encrypted = True
-
-            except ArchiveError, e:
-                raise ArchiveError(e)
-
-            self.logDebug("Password: %s" % (password or "No provided"))
+                        self.addPassword(pw)
+                        break
+                    
+                    raise CRCError("Archive damaged")
+                        
+                except ArchiveError, e:
+                    raise ArchiveError(e)
 
             pyfile.setCustomStatus(_("extracting"))
             pyfile.setProgress(0)
 
             if not encrypted or not self.getConfig("usepasswordfile"):
+                self.logDebug("Extracting using password: %s" % (password or "None"))
                 archive.extract(password)
             else:
                 for pw in filter(None, uniqify([password] + self.getPasswords(False))):
                     try:
-                        self.logDebug("Try password: %s" % pw)
+                        self.logDebug("Extracting using password: %s" % pw)
 
-                        ispw = archive.isPassword(pw)
-                        if ispw or ispw is None:
-                            archive.extract(pw)
-                            self.addPassword(pw)
-                            break
+                        archive.extract(pw)
+                        self.addPassword(pw)
+                        break
 
                     except PasswordError:
                         self.logDebug("Password was wrong")
@@ -419,9 +448,7 @@ class ExtractArchive(Hook):
                         self.logDebug("%s does not exists" % f)
 
             self.logInfo(name, _("Extracting finished"))
-
             extracted_files = archive.files or archive.list()
-            self.manager.dispatchEvent("archive_extracted", pyfile, archive.out, archive.filename, extracted_files)
 
             return extracted_files
 

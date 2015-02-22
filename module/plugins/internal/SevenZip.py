@@ -11,7 +11,7 @@ from module.utils import fs_encode, save_join
 
 class SevenZip(UnRar):
     __name__    = "SevenZip"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __description__ = """7-Zip extractor plugin"""
     __license__     = "GPLv3"
@@ -32,9 +32,9 @@ class SevenZip(UnRar):
 
     #@NOTE: there are some more uncovered 7z formats
     re_filelist = re.compile(r'([\d\:]+)\s+([\d\:]+)\s+([\w\.]+)\s+(\d+)\s+(\d+)\s+(.+)')
-    re_wrongpwd = re.compile(r'(Can not open encrypted archive|Wrong password)', re.I)
-    re_wrongcrc = re.compile(r'Encrypted\s+\=\s+\+', re.I)
-    re_version   = re.compile(r'7-Zip\s(?:\[64\]\s)?(\d+\.\d+)', re.I)
+    re_wrongpwd = re.compile(r'(Can not open encrypted archive|Wrong password|Encrypted\s+\=\s+\+)', re.I)
+    re_wrongcrc = re.compile(r'CRC Failed|Can not open file', re.I)
+    re_version  = re.compile(r'7-Zip\s(?:\[64\]\s)?(\d+\.\d+)', re.I)
 
 
     @classmethod
@@ -52,34 +52,36 @@ class SevenZip(UnRar):
         return True
 
 
-    def check(self):
+    def test(self, password):
         file = fs_encode(self.filename)
 
-        p = self.call_cmd("t", file)
-        out, err = p.communicate()
-
-        if p.returncode > 1:
-            raise CRCError(err)
-
+        # 7z can't distinguish crc and pw error in test
         p = self.call_cmd("l", "-slt", file)
         out, err = p.communicate()
 
-        if p.returncode > 1:
-            raise ArchiveError(_("Process return code: %d") % p.returncode)
+        if self.re_wrongpwd.search(out):
+            raise PasswordError
+
+        if self.re_wrongpwd.search(err):
+            raise PasswordError
+
+        if self.re_wrongcrc.search(err):
+            raise CRCError(err)
+
+
+
+    def check(self, password):
+        file = fs_encode(self.filename)
+
+        p = self.call_cmd("l", "-slt", file)
+        out, err = p.communicate()
 
         # check if output or error macthes the 'wrong password'-Regexp
         if self.re_wrongpwd.search(out):
             raise PasswordError
 
-        # check if output matches 'Encrypted = +'
         if self.re_wrongcrc.search(out):
             raise CRCError(_("Header protected"))
-
-
-    def isPassword(self, password):
-        p = self.call_cmd("l", fs_encode(self.filename), password=password)
-        p.communicate()
-        return p.returncode == 0
 
 
     def repair(self):
@@ -142,7 +144,7 @@ class SevenZip(UnRar):
 
         #set a password
         if "password" in kwargs and kwargs["password"]:
-            args.append("-p'%s'" % kwargs["password"])
+            args.append("-p%s" % kwargs["password"])
         else:
             args.append("-p-")
 
