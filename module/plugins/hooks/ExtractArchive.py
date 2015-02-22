@@ -104,7 +104,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.30"
+    __version__ = "1.31"
 
     __config__ = [("activated"       , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"        , "bool"  , "Extract with full paths"                   , True                                                                     ),
@@ -269,7 +269,8 @@ class ExtractArchive(Hook):
 
             matched   = False
             success   = True
-            files_ids = [(save_join(dl, pypack.folder, pylink['name']), pylink['id'], out) for pylink in pypack.getChildren().itervalues()]
+            files_ids = dict((pylink['name'],((save_join(dl, pypack.folder, pylink['name'])), pylink['id'], out)) for pylink \
+                        in sorted(pypack.getChildren().itervalues(), key=lambda k: k['name'])).values()    # remove duplicates
 
             # check as long there are unseen files
             while files_ids:
