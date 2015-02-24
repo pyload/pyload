@@ -9,13 +9,13 @@ from glob import glob
 from os import sep
 from os.path import abspath, dirname
 
-from module.plugins.captcha.captcha import OCR
+from module.plugins.captcha.OCR import OCR
 
 
 class LinksaveIn(OCR):
     __name__    = "LinksaveIn"
     __type__    = "ocr"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __description__ = """Linksave.in ocr plugin"""
     __license__     = "GPLv3"
