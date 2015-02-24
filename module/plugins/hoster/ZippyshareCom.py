@@ -2,10 +2,11 @@
 
 import re
 
+from module.lib.BeautifulSoup import BeautifulSoup
+
 from module.plugins.internal.CaptchaService import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
-from module.lib.BeautifulSoup import BeautifulSoup
 
 class ZippyshareCom(SimpleHoster):
     __name__    = "ZippyshareCom"
@@ -16,7 +17,8 @@ class ZippyshareCom(SimpleHoster):
 
     __description__ = """Zippyshare.com hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com", "sebdelsol")]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
+                       ("sebdelsol", "seb.morin@gmail.com")]
 
 
     COOKIES = [("zippyshare.com", "ziplocale", "en")]
@@ -25,7 +27,7 @@ class ZippyshareCom(SimpleHoster):
     SIZE_PATTERN    = r'>Size:.+?">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'>File does not exist on this server'
 
-    LINK_PREMIUM_PATTERN = r'document.location = \'(.+?)\''
+    LINK_PREMIUM_PATTERN = r"document.location = '(.+?)'"
 
 
     def setup(self):
@@ -49,40 +51,36 @@ class ZippyshareCom(SimpleHoster):
         else:
             self.link = self.get_link()
 
+
     def get_link(self):
-        try:
-            # get all the scripts inside the html body
-            soup = BeautifulSoup(self.html)
-            scripts = (s.getText() for s in soup.body.findAll('script', type='text/javascript'))
+        # get all the scripts inside the html body
+        soup = BeautifulSoup(self.html)
+        scripts = (s.getText() for s in soup.body.findAll('script', type='text/javascript'))
 
-            # meant to be populated with the initialization of all the DOM elements found in the scripts
-            initScripts = set()
-            
-            def replElementById(element):
-                id, attr = element.group(1), element.group(4)      # attr might be None
-            
-                varName = '%s_%s' %(id, attr)
-            
-                initValues = (elt.get(attr, None) for elt in soup.findAll(id=id))
-                initValues = [v for v in initValues if v is not None]
-                initValue = '"%s"' %initValues[-1] if initValues else 'null'
-            
-                initScripts.add('var %s = %s;' %(varName, initValue))
-                return varName
-            
-            # handle all getElementById
-            reVar = r'document.getElementById\([\'"](\w+)[\'"]\)(\.)?(getAttribute\([\'"])?(\w+)?([\'"]\))?'
-            scripts = [re.sub(reVar, replElementById, script) for script in scripts]
-            
-            # add try/catch in JS to handle deliberate errors
-            tryJS, catchJS =  u'try{', u'} catch(err){}' # '', '' to see where the script fails
-            scripts = ['\n'.join((tryJS, script, catchJS)) for script in scripts if script.strip()]
+        # meant to be populated with the initialization of all the DOM elements found in the scripts
+        initScripts = set()
 
-            # get the file's url by evaluating all the scripts
-            scripts = '\n'.join(list(initScripts) + scripts + ['dlbutton_href'])
-            return self.js.eval(scripts)
+        def replElementById(element):
+            id   = element.group(1)
+            attr = element.group(4)  #: attr might be None
 
-        except Exception:
-            self.error(_("Unable to calculate the link"))
+            varName    = '%s_%s' % (id, attr)
+            initValues = filter(None, [elt.get(attr, None) for elt in soup.findAll(id=id)])
+            initValue  = '"%s"' % initValues[-1] if initValues else 'null'
+
+            initScripts.add('var %s = %s;' % (varName, initValue))
+            return varName
+
+        # handle all getElementById
+        reVar = r'document.getElementById\([\'"](\w+)[\'"]\)(\.)?(getAttribute\([\'"])?(\w+)?([\'"]\))?'
+        scripts = [re.sub(reVar, replElementById, script) for script in scripts]
+
+        # add try/catch in JS to handle deliberate errors
+        scripts = ["\n".join(("try{", script, "} catch(err){}")) for script in scripts if script.strip()]
+
+        # get the file's url by evaluating all the scripts
+        scripts = "\n".join(list(initScripts) + scripts + ['dlbutton_href'])
+        return self.js.eval(scripts)
+
 
 getInfo = create_getInfo(ZippyshareCom)
