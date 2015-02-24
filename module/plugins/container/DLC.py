@@ -49,9 +49,9 @@ class DLC(Container):
         except AttributeError:
             self.fail(_("Container is corrupted"))
 
-        cipher = AES.new(self.KEY, AES.MODE_CBC, self.IV).decrypt(rc)
+        key = iv = AES.new(self.KEY, AES.MODE_CBC, self.IV).decrypt(rc)
 
-        self.data     = AES.new(cipher, AES.MODE_CBC, cipher).decrypt(dlc_data).decode('base64')
+        self.data     = AES.new(key, AES.MODE_CBC, iv).decrypt(dlc_data).decode('base64')
         self.packages = [(entry[0] if entry[0] else pyfile.name, entry[1], entry[0] if entry[0] else pyfile.name) \
                          for entry in self.getPackages()]
 

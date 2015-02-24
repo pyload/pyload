@@ -14,7 +14,7 @@ from module.utils import fs_encode
 class RSDF(Container):
     __name__    = "RSDF"
     __type__    = "container"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
     __pattern__ = r'.+\.rsdf$'
 
@@ -31,9 +31,10 @@ class RSDF(Container):
 
     def decrypt(self, pyfile):
         KEY = binascii.unhexlify(self.KEY)
-        IV  = AES.new(Key, AES.MODE_ECB).encrypt(binascii.unhexlify(self.IV))
+        IV  = binascii.unhexlify(self.IV)
 
-        cipher = AES.new(KEY, AES.MODE_CFB, IV)
+        iv     = AES.new(KEY, AES.MODE_ECB).encrypt(IV)
+        cipher = AES.new(KEY, AES.MODE_CFB, iv)
 
         try:
             file = fs_encode(pyfile.url.strip())
