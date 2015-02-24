@@ -14,7 +14,7 @@ from module.utils import fs_encode
 class RSDF(Container):
     __name__    = "RSDF"
     __type__    = "container"
-    __version__ = "0.28"
+    __version__ = "0.29"
 
     __pattern__ = r'.+\.rsdf$'
 
@@ -47,7 +47,12 @@ class RSDF(Container):
         if re.search(r"<title>404 - Not Found</title>", data):
             return
 
-        for link in binascii.unhexlify(''.join(data.split())).splitlines():
-            if link:
+        try:
+            for link in binascii.unhexlify(''.join(data.split())).splitlines():
+                if not link:
+                    continue
                 link = cipher.decrypt(link.decode('base64')).replace('CCF: ', '')
                 self.urls.append(link)
+
+        except TypeError:
+            self.fail(_("Container is corrupted"))
