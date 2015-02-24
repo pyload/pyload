@@ -104,7 +104,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.31"
+    __version__ = "1.32"
 
     __config__ = [("activated"       , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"        , "bool"  , "Extract with full paths"                   , True                                                                     ),
@@ -254,6 +254,7 @@ class ExtractArchive(Hook):
             pypack = self.core.files.getPackage(pid)
 
             if not pypack:
+                self.queue.remove(pid)
                 continue
 
             self.logInfo(_("Check package: %s") % pypack.name)
