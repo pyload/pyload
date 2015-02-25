@@ -140,7 +140,7 @@ class ExternalScripts(Hook):
 
 
     def allDownloadsFinished(self):
-        for script in self.scripts['all_downloads_finished'] + self.scripts['all_dls_finished']):
+        for script in self.scripts['all_downloads_finished'] + self.scripts['all_dls_finished']:
             self.callScript(script)
 
 
