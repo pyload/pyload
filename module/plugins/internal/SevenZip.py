@@ -11,7 +11,7 @@ from module.utils import fs_encode, save_join
 
 class SevenZip(UnRar):
     __name__    = "SevenZip"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __description__ = """7-Zip extractor plugin"""
     __license__     = "GPLv3"
@@ -47,7 +47,8 @@ class SevenZip(UnRar):
             p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
             out, err = p.communicate()
         
-        cls.VERSION = cls.re_version.search(out).group(1)
+        m = cls.re_version.search(out)
+        cls.VERSION = m.group(1) if m else '(version unknown)'
 
         return True
 
