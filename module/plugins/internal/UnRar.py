@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.14"
+    __version__ = "1.15"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
@@ -70,7 +70,8 @@ class UnRar(Extractor):
                 p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
                 out, err = p.communicate()
 
-        cls.VERSION = cls.re_version.search(out).group(1)
+        m = cls.re_version.search(out)
+        cls.VERSION = m.group(1) if m else '(version unknown)'
 
         return True
 
