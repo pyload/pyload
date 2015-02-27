@@ -28,10 +28,10 @@ class TXT(Container):
         except Exception:
             encoding = "utf-8"
 
-        file     = fs_encode(pyfile.url.strip())
-        txt      = codecs.open(file, 'r', encoding)
-        curPack  = "Parsed links from %s" % pyfile.name
-        packages = {curPack:[],}
+        fs_filename = fs_encode(pyfile.url.strip())
+        txt         = codecs.open(fs_filename, 'r', encoding)
+        curPack     = "Parsed links from %s" % pyfile.name
+        packages    = {curPack:[],}
 
         for link in txt.readlines():
             link = link.strip()
@@ -59,7 +59,7 @@ class TXT(Container):
 
         if self.getConfig("flush"):
             try:
-                txt = open(file, 'wb')
+                txt = open(fs_filename, 'wb')
                 txt.close()
 
             except IOError:
