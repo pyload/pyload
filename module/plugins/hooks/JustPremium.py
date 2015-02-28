@@ -12,7 +12,7 @@ class JustPremium(Hook):
 
     __config__ = [("excluded", "str", "Exclude hosters (comma separated)", "")]
 
-    __description__ = """Remove all not premium links from urls added"""
+    __description__ = """Remove not-premium links from added urls"""
     __license__     = "GPLv3"
     __authors__     = [("mazleu", "mazleica@gmail.com"),
                        ("Walter Purcaro", "vuolter@gmail.com"),

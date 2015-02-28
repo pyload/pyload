@@ -90,7 +90,7 @@ class UnRar(Extractor):
         p = self.call_cmd("t", "-v", fs_encode(self.filename), password=password)
         self._progress(p)
         err = p.stderr.read().strip()
-        
+
         if self.re_wrongpwd.search(err):
             raise PasswordError
 

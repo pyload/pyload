@@ -327,10 +327,10 @@ class ExtractArchive(Hook):
 
                             if recursive and os.path.isfile(file):
                                 new_files_ids.append((filename, fid, os.path.dirname(filename)))  # append as new target
-                        
+
                         pyfile = self.core.files.getFile(fid)
                         self.manager.dispatchEvent("archive_extracted", pyfile, archive.out, archive.filename, new_files)
-                        
+
                 files_ids = new_files_ids  # also check extracted files
 
             if matched:
@@ -381,7 +381,7 @@ class ExtractArchive(Hook):
                         pyfile.setProgress(100)
                     else:
                         archive.check(pw)
-                    
+
                     self.addPassword(pw)
                     break
 
@@ -389,7 +389,7 @@ class ExtractArchive(Hook):
                     if not encrypted:
                         self.logInfo(name, _("Password protected"))
                         encrypted = True
-                    
+
                 except CRCError, e:
                     self.logDebug(name, e)
                     self.logInfo(name, _("CRC Error"))
@@ -407,9 +407,9 @@ class ExtractArchive(Hook):
 
                         self.addPassword(pw)
                         break
-                    
+
                     raise CRCError("Archive damaged")
-                        
+
                 except ArchiveError, e:
                     raise ArchiveError(e)
 

@@ -99,11 +99,11 @@ class Extractor:
         :raises ArchiveError
         """
         raise NotImplementedError
-        
+
     def test(self):
         """Testing with Extractors buildt-in method
         Raises error if password is needed, integrity is questionable or else.
-        
+
         :raises PasswordError
         :raises CRCError
         :raises ArchiveError

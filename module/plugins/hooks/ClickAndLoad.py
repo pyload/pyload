@@ -53,7 +53,7 @@ class ClickAndLoad(Hook):
 
     @threaded
     def proxy(self, ip, webport, cnlport):
-        self.logInfo(_("Proxy listening on %s:%s") % (ip, cnlport))
+        self.logInfo(_("Proxy listening on %s:%s") % (ip or "0.0.0.0", cnlport))
         self.manager.startThread(self._server, ip, webport, cnlport)
         lock = Lock()
         lock.acquire()

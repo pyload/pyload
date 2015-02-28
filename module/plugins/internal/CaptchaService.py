@@ -14,6 +14,7 @@ from module.plugins.Plugin import Base
 #@TODO: Extend (new) Plugin class; remove all `html` args
 class CaptchaService(Base):
     __name__    = "CaptchaService"
+    __type__    = "captcha"
     __version__ = "0.25"
 
     __description__ = """Base captcha service plugin"""
@@ -43,6 +44,7 @@ class CaptchaService(Base):
 
 class ReCaptcha(CaptchaService):
     __name__    = "ReCaptcha"
+    __type__    = "captcha"
     __version__ = "0.14"
 
     __description__ = """ReCaptcha captcha service plugin"""
@@ -239,9 +241,9 @@ class ReCaptcha(CaptchaService):
         return result, None
 
 
-
 class AdsCaptcha(CaptchaService):
     __name__    = "AdsCaptcha"
+    __type__    = "captcha"
     __version__ = "0.08"
 
     __description__ = """AdsCaptcha captcha service plugin"""
@@ -314,6 +316,7 @@ class AdsCaptcha(CaptchaService):
 
 class SolveMedia(CaptchaService):
     __name__    = "SolveMedia"
+    __type__    = "captcha"
     __version__ = "0.12"
 
     __description__ = """SolveMedia captcha service plugin"""
@@ -422,6 +425,7 @@ class SolveMedia(CaptchaService):
 
 class AdYouLike(CaptchaService):
     __name__    = "AdYouLike"
+    __type__    = "captcha"
     __version__ = "0.05"
 
     __description__ = """AdYouLike captcha service plugin"""
