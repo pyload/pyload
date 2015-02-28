@@ -8,9 +8,9 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class NowVideoSx(SimpleHoster):
     __name__    = "NowVideoSx"
     __type__    = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
-    __pattern__ = r'http://(?:www\.)?nowvideo\.(at|ch|co|eu|li|sx)/(video|mobile/#/videos)/(?P<ID>\w+)'
+    __pattern__ = r'http://(?:www\.)?nowvideo\.[a-zA-Z]{2,}/(video|mobile/#/videos)/(?P<ID>\w+)'
 
     __description__ = """NowVideo.sx hoster plugin"""
     __license__     = "GPLv3"
