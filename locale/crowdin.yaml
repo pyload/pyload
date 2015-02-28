@@ -2,7 +2,7 @@ project_identifier: pyload
 preserve_hierarchy: true
 api_key: {key}
 base_path: {tmp}
- 
+
 files:
   -
     source: 'pyLoad/*.pot'
