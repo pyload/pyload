@@ -6,7 +6,7 @@ import subprocess
 from itertools import chain
 
 from pyload.plugin.Addon import Addon
-from pyload.utils import safe_join
+from pyload.utils import fs_join
 
 
 class ExternalScripts(Addon):
@@ -95,14 +95,14 @@ class ExternalScripts(Addon):
     def downloadFinished(self, pyfile):
         download_folder = self.config['general']['download_folder']
         for script in self.scripts['download_finished']:
-            filename = safe_join(download_folder, pyfile.package().folder, pyfile.name)
+            filename = fs_join(download_folder, pyfile.package().folder, pyfile.name)
             self.callScript(script, pyfile.pluginname, pyfile.url, pyfile.name, filename, pyfile.id)
 
 
     def packageFinished(self, pypack):
         download_folder = self.config['general']['download_folder']
         for script in self.scripts['package_finished']:
-            folder = safe_join(download_folder, pypack.folder)
+            folder = fs_join(download_folder, pypack.folder)
             self.callScript(script, pypack.name, folder, pypack.password, pypack.id)
 
 
@@ -126,7 +126,7 @@ class ExternalScripts(Addon):
     def package_extracted(self, pypack):
         download_folder = self.config['general']['download_folder']
         for script in self.scripts['package_extracted']:
-            folder = safe_join(download_folder, pypack.folder)
+            folder = fs_join(download_folder, pypack.folder)
             self.callScript(script, pypack.name, folder, pypack.password, pypack.id)
 
 

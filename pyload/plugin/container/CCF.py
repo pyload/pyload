@@ -9,7 +9,7 @@ from urllib2 import build_opener
 from MultipartPostHandler import MultipartPostHandler
 
 from pyload.plugin.Container import Container
-from pyload.utils import fs_encode, safe_join
+from pyload.utils import fs_encode, fs_join
 
 
 class CCF(Container):
@@ -35,7 +35,7 @@ class CCF(Container):
                                    'upload'  : open(file, "rb")}).read()
 
         download_folder = self.config['general']['download_folder']
-        dlc_file        = safe_join(download_folder, "tmp_%s.dlc" % pyfile.name)
+        dlc_file        = fs_join(download_folder, "tmp_%s.dlc" % pyfile.name)
 
         try:
             dlc = re.search(r'<dlc>(.+)</dlc>', dlc_content, re.S).group(1).decode('base64')

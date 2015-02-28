@@ -8,7 +8,7 @@ from string import digits
 from subprocess import Popen, PIPE
 
 from pyload.plugin.Extractor import Extractor, ArchiveError, CRCError, PasswordError
-from pyload.utils import decode, fs_encode, safe_join
+from pyload.utils import decode, fs_encode, fs_join
 
 
 def renice(pid, value):
@@ -178,7 +178,7 @@ class UnRar(Extractor):
         files = [self.filename]
 
         # eventually Multipart Files
-        files.extend(safe_join(dir, os.path.basename(file)) for file in filter(self.isMultipart, os.listdir(dir))
+        files.extend(fs_join(dir, os.path.basename(file)) for file in filter(self.isMultipart, os.listdir(dir))
                      if re.sub(self.re_multipart,".rar",name) == re.sub(self.re_multipart,".rar",file))
 
         return files
@@ -200,13 +200,13 @@ class UnRar(Extractor):
         if not self.fullpath and self.VERSION.startswith('5'):
             # NOTE: Unrar 5 always list full path
             for f in decode(out).splitlines():
-                f = safe_join(self.out, os.path.basename(f.strip()))
+                f = fs_join(self.out, os.path.basename(f.strip()))
                 if os.path.isfile(f):
-                    result.add(safe_join(self.out, os.path.basename(f)))
+                    result.add(fs_join(self.out, os.path.basename(f)))
         else:
             for f in decode(out).splitlines():
                 f = f.strip()
-                result.add(safe_join(self.out, f))
+                result.add(fs_join(self.out, f))
 
         return list(result)
 

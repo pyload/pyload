@@ -17,7 +17,7 @@ from pycurl import error
 from pyload.datatype.File import PyFile
 from pyload.plugin.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload
 from pyload.utils.packagetools import parseNames
-from pyload.utils import safe_join
+from pyload.utils import fs_join
 from pyload.api import OnlineStatus
 
 class PluginThread(Thread):
@@ -47,11 +47,11 @@ class PluginThread(Thread):
             for f in listdir(join("tmp", pyfile.pluginname)):
                 try:
                     # avoid encoding errors
-                    zip.write(join("tmp", pyfile.pluginname, f), safe_join(pyfile.pluginname, f))
+                    zip.write(join("tmp", pyfile.pluginname, f), fs_join(pyfile.pluginname, f))
                 except Exception:
                     pass
 
-            info = zipfile.ZipInfo(safe_join(pyfile.pluginname, "debug_Report.txt"), gmtime())
+            info = zipfile.ZipInfo(fs_join(pyfile.pluginname, "debug_Report.txt"), gmtime())
             info.external_attr = 0644 << 16L # change permissions
 
             zip.writestr(info, dump)

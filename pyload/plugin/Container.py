@@ -8,7 +8,7 @@ from os import remove
 from os.path import basename, exists
 
 from pyload.plugin.internal.Crypter import Crypter
-from pyload.utils import safe_join
+from pyload.utils import fs_join
 
 
 class Container(Crypter):
@@ -45,7 +45,7 @@ class Container(Crypter):
         if self.pyfile.url.startswith("http"):
             self.pyfile.name = re.findall("([^\/=]+)", self.pyfile.url)[-1]
             content = self.load(self.pyfile.url)
-            self.pyfile.url = safe_join(self.core.config['general']['download_folder'], self.pyfile.name)
+            self.pyfile.url = fs_join(self.core.config['general']['download_folder'], self.pyfile.name)
             try:
                 with open(self.pyfile.url, "wb") as f:
                     f.write(content)
@@ -55,8 +55,8 @@ class Container(Crypter):
         else:
             self.pyfile.name = basename(self.pyfile.url)
             if not exists(self.pyfile.url):
-                if exists(safe_join(pypath, self.pyfile.url)):
-                    self.pyfile.url = safe_join(pypath, self.pyfile.url)
+                if exists(fs_join(pypath, self.pyfile.url)):
+                    self.pyfile.url = fs_join(pypath, self.pyfile.url)
                 else:
                     self.fail(_("File not exists"))
 

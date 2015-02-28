@@ -8,7 +8,7 @@ import re
 from traceback import print_exc
 
 from pyload.plugin.Addon import Addon, threaded
-from pyload.utils import safe_join
+from pyload.utils import fs_join
 
 
 class MergeFiles(Addon):
@@ -45,12 +45,12 @@ class MergeFiles(Addon):
         download_folder = self.config['general']['download_folder']
 
         if self.config['general']['folder_per_package']:
-            download_folder = safe_join(download_folder, pack.folder)
+            download_folder = fs_join(download_folder, pack.folder)
 
         for name, file_list in files.iteritems():
             self.logInfo(_("Starting merging of"), name)
 
-            final_file = open(safe_join(download_folder, name), "wb")
+            final_file = open(fs_join(download_folder, name), "wb")
                 for splitted_file in file_list:
                     self.logDebug("Merging part", splitted_file)
 
@@ -59,7 +59,7 @@ class MergeFiles(Addon):
                     pyfile.setStatus("processing")
 
                     try:
-                        with open(safe_join(download_folder, splitted_file), "rb") as s_file:
+                        with open(fs_join(download_folder, splitted_file), "rb") as s_file:
                             size_written = 0
                             s_file_size = int(os.path.getsize(os.path.join(download_folder, splitted_file)))
 

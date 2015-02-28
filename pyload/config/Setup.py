@@ -13,7 +13,7 @@ from os import chdir, makedirs, path
 from subprocess import PIPE, call
 
 from pyload.network.JsEngine import JsEngine
-from pyload.utils import get_console_encoding, load_translation, safe_join, versiontuple
+from pyload.utils import get_console_encoding, load_translation, fs_join, versiontuple
 
 
 class SetupAssistant(object):

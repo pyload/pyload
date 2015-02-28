@@ -14,7 +14,7 @@ import subprocess
 #import tempfile
 
 from pyload.plugin.Plugin import Base
-from pyload.utils import safe_join
+from pyload.utils import fs_join
 
 
 class OCR(Base):
@@ -60,11 +60,11 @@ class OCR(Base):
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True):
         #tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
         try:
-            tmpTif = open(safe_join("tmp", "tmpTif_%s.tif" % self.__name), "wb")
+            tmpTif = open(fs_join("tmp", "tmpTif_%s.tif" % self.__name), "wb")
             tmpTif.close()
 
             #tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
-            tmpTxt = open(safe_join("tmp", "tmpTxt_%s.txt" % self.__name), "wb")
+            tmpTxt = open(fs_join("tmp", "tmpTxt_%s.txt" % self.__name), "wb")
             tmpTxt.close()
 
         except IOError, e:
@@ -83,7 +83,7 @@ class OCR(Base):
 
         if subset and (digits or lowercase or uppercase):
             #tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
-            with open(safe_join("tmp", "tmpSub_%s.subset" % self.__name), "wb") as tmpSub:
+            with open(fs_join("tmp", "tmpSub_%s.subset" % self.__name), "wb") as tmpSub:
                 tmpSub.write("tessedit_char_whitelist ")
 
                 if digits:

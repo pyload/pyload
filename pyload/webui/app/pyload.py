@@ -21,7 +21,7 @@ from pyload.utils import render_to_response, parse_permissions, parse_userdata, 
 
 from pyload.webui.filters import relpath, unquotepath
 
-from pyload.utils import formatSize, safe_join, fs_encode, fs_decode
+from pyload.utils import formatSize, fs_join, fs_encode, fs_decode
 
 # Helper
 
@@ -206,16 +206,16 @@ def downloads():
     items = listdir(fs_encode(root))
 
     for item in sorted([fs_decode(x) for x in items]):
-        if isdir(safe_join(root, item)):
+        if isdir(fs_join(root, item)):
             folder = {
                 'name': item,
                 'path': item,
                 'files': []
             }
-            files = listdir(safe_join(root, item))
+            files = listdir(fs_join(root, item))
             for file in sorted([fs_decode(x) for x in files]):
                 try:
-                    if isfile(safe_join(root, item, file)):
+                    if isfile(fs_join(root, item, file)):
                         folder['files'].append(file)
                 except Exception:
                     pass

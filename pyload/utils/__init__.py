@@ -74,13 +74,13 @@ def save_path(name):
     return safe_filename(name)
 
 
-def safe_join(*args):
+def fs_join(*args):
     """ joins a path, encoding aware """
     return fs_encode(join(*[x if type(x) == unicode else decode(x) for x in args]))
 
 #: Deprecated method
 def save_join(*args):
-    return safe_join(*args)
+    return fs_join(*args)
 
 
 # File System Encoding functions:

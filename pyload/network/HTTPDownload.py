@@ -13,7 +13,7 @@ from pyload.network.HTTPChunk import ChunkInfo, HTTPChunk
 from pyload.network.HTTPRequest import BadHeader
 
 from pyload.plugin.Plugin import Abort
-from pyload.utils import safe_join, fs_encode
+from pyload.utils import fs_join, fs_encode
 
 
 class HTTPDownload(object):
@@ -99,7 +99,7 @@ class HTTPDownload(object):
             fo.close()
 
         if self.nameDisposition and self.disposition:
-            self.filename = safe_join(dirname(self.filename), self.nameDisposition)
+            self.filename = fs_join(dirname(self.filename), self.nameDisposition)
 
         move(init, fs_encode(self.filename))
         self.info.remove() #remove info file

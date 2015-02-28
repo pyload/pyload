@@ -10,7 +10,7 @@ from os import remove
 from os.path import getsize, isfile, splitext
 
 from pyload.plugin.Addon import Addon
-from pyload.utils import safe_join, fs_encode
+from pyload.utils import fs_join, fs_encode
 
 
 def computeChecksum(local_file, algorithm):
@@ -104,7 +104,7 @@ class Checksum(Addon):
 
         local_file = fs_encode(pyfile.plugin.lastDownload)
         #download_folder = self.config['general']['download_folder']
-        #local_file = fs_encode(safe_join(download_folder, pyfile.package().folder, pyfile.name))
+        #local_file = fs_encode(fs_join(download_folder, pyfile.package().folder, pyfile.name))
 
         if not isfile(local_file):
             self.checkFailed(pyfile, None, "File does not exist")
@@ -164,7 +164,7 @@ class Checksum(Addon):
 
 
     def packageFinished(self, pypack):
-        download_folder = safe_join(self.config['general']['download_folder'], pypack.folder, "")
+        download_folder = fs_join(self.config['general']['download_folder'], pypack.folder, "")
 
         for link in pypack.getChildren().itervalues():
             file_type = splitext(link['name'])[1][1:].lower()
@@ -172,7 +172,7 @@ class Checksum(Addon):
             if file_type not in self.formats:
                 continue
 
-            hash_file = fs_encode(safe_join(download_folder, link['name']))
+            hash_file = fs_encode(fs_join(download_folder, link['name']))
             if not isfile(hash_file):
                 self.logWarning(_("File not found"), link['name'])
                 continue
@@ -184,7 +184,7 @@ class Checksum(Addon):
                 data = m.groupdict()
                 self.logDebug(link['name'], data)
 
-                local_file = fs_encode(safe_join(download_folder, data['NAME']))
+                local_file = fs_encode(fs_join(download_folder, data['NAME']))
                 algorithm = self.methods.get(file_type, file_type)
                 checksum = computeChecksum(local_file, algorithm)
                 if checksum == data['HASH']:

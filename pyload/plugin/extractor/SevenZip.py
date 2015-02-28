@@ -6,7 +6,7 @@ import re
 from subprocess import Popen, PIPE
 
 from pyload.plugin.extractor.UnRar import ArchiveError, CRCError, PasswordError, UnRar, renice
-from pyload.utils import fs_encode, safe_join
+from pyload.utils import fs_encode, fs_join
 
 
 class SevenZip(UnRar):
@@ -131,7 +131,7 @@ class SevenZip(UnRar):
         result = set()
         for groups in self.re_filelist.findall(out):
             f = groups[-1].strip()
-            result.add(safe_join(self.out, f))
+            result.add(fs_join(self.out, f))
 
         return list(result)
 

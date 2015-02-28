@@ -10,7 +10,7 @@ from os import path, remove, stat
 
 from pyload.network.RequestFactory import getURL
 from pyload.plugin.Addon import Expose, Addon, threaded
-from pyload.utils import safe_join
+from pyload.utils import fs_join
 
 
 class UpdateManager(Addon):
@@ -240,7 +240,7 @@ class UpdateManager(Addon):
                 m = self.VERSION.search(content)
 
                 if m and m.group(2) == version:
-                    with open(safe_join("userplugins", prefix, filename), "wb") as f:
+                    with open(fs_join("userplugins", prefix, filename), "wb") as f:
                         f.write(content)
 
                     updated.append((prefix, name))
@@ -282,7 +282,7 @@ class UpdateManager(Addon):
 
             for root in ("userplugins", path.join(pypath, "pyload", "plugins")):
 
-                filename = safe_join(root, type, file)
+                filename = fs_join(root, type, file)
                 try:
                     remove(filename)
                 except Exception, e:

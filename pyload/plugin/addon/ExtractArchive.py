@@ -52,7 +52,7 @@ if os.name != "nt":
 from pyload.plugin.Addon import Addon, threaded, Expose
 from pyload.plugin.Extractor import ArchiveError, CRCError, PasswordError
 from pyload.plugin.internal.SimpleHoster import replace_patterns
-from pyload.utils import fs_encode, safe_join, uniqify
+from pyload.utils import fs_encode, fs_join, uniqify
 
 
 class ArchiveQueue(object):
@@ -259,17 +259,17 @@ class ExtractArchive(Addon):
             self.logInfo(_("Check package: %s") % pypack.name)
 
             # determine output folder
-            out = safe_join(dl, pypack.folder, destination, "")  #: force trailing slash
+            out = fs_join(dl, pypack.folder, destination, "")  #: force trailing slash
 
             if subfolder:
-                out = safe_join(out, pypack.folder)
+                out = fs_join(out, pypack.folder)
 
             if not os.path.exists(out):
                 os.makedirs(out)
 
             matched   = False
             success   = True
-            files_ids = [(safe_join(dl, pypack.folder, pylink['name']), pylink['id'], out) for pylink in pypack.getChildren().itervalues()]
+            files_ids = [(fs_join(dl, pypack.folder, pylink['name']), pylink['id'], out) for pylink in pypack.getChildren().itervalues()]
 
             # check as long there are unseen files
             while files_ids:
@@ -318,7 +318,7 @@ class ExtractArchive(Addon):
                         self.setPermissions(new_files)
 
                         for filename in new_files:
-                            file = fs_encode(safe_join(os.path.dirname(archive.filename), filename))
+                            file = fs_encode(fs_join(os.path.dirname(archive.filename), filename))
                             if not os.path.exists(file):
                                 self.logDebug("New file %s does not exists" % filename)
                                 continue

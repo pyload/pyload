@@ -18,7 +18,7 @@ from itertools import islice
 from traceback import print_exc
 from urlparse import urlparse
 
-from pyload.utils import fs_decode, fs_encode, safe_filename, safe_join
+from pyload.utils import fs_decode, fs_encode, safe_filename, fs_join
 
 
 def chunks(iterable, size):
@@ -535,7 +535,7 @@ class Plugin(Base):
             from inspect import currentframe
 
             frame = currentframe()
-            framefile = safe_join("tmp", self.__name, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
+            framefile = fs_join("tmp", self.__name, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
             try:
                 if not exists(join("tmp", self.__name)):
                     makedirs(join("tmp", self.__name))
@@ -598,7 +598,7 @@ class Plugin(Base):
 
         download_folder = self.core.config['general']['download_folder']
 
-        location = safe_join(download_folder, self.pyfile.package().folder)
+        location = fs_join(download_folder, self.pyfile.package().folder)
 
         if not exists(location):
             try:
@@ -722,7 +722,7 @@ class Plugin(Base):
                     raise SkipDownload(pyfile.pluginname)
 
         download_folder = self.core.config['general']['download_folder']
-        location = safe_join(download_folder, pack.folder, self.pyfile.name)
+        location = fs_join(download_folder, pack.folder, self.pyfile.name)
 
         if starting and self.core.config['download']['skip_existing'] and exists(location):
             size = os.stat(location).st_size

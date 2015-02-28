@@ -11,7 +11,7 @@ from select import select
 from time import time
 
 from pyload.plugin.Hoster import Hoster
-from pyload.utils import safe_join
+from pyload.utils import fs_join
 
 
 class Xdcc(Hoster):
@@ -192,7 +192,7 @@ class Xdcc(Hoster):
         self.pyfile.name = packname
 
         download_folder = self.config['general']['download_folder']
-        filename = safe_join(download_folder, packname)
+        filename = fs_join(download_folder, packname)
 
         self.logInfo(_("Downloading %s from %s:%d") % (packname, ip, port))
 

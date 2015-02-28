@@ -6,7 +6,7 @@ from urlparse import urljoin
 
 from pyload.utils import json_loads
 from pyload.plugin.Crypter import Crypter
-from pyload.utils import safe_join
+from pyload.utils import fs_join
 
 
 class YoutubeBatch(Crypter):
@@ -132,7 +132,7 @@ class YoutubeBatch(Crypter):
         for p in playlists:
             p_name = p['title']
             p_videos = self.getVideosId(p['id'])
-            p_folder = safe_join(self.config['general']['download_folder'], p['channelTitle'], p_name)
+            p_folder = fs_join(self.config['general']['download_folder'], p['channelTitle'], p_name)
             self.logDebug("%s video\s found on playlist \"%s\"" % (len(p_videos), p_name))
 
             if not p_videos:
