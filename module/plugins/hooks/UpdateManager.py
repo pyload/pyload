@@ -2,21 +2,33 @@
 
 from __future__ import with_statement
 
+import os
 import re
 import sys
 
 from operator import itemgetter
-from os import path, remove, stat
 
 from module.network.RequestFactory import getURL
 from module.plugins.Hook import Expose, Hook, threaded
 from module.utils import save_join
 
 
+# Case-sensitive os.path.exists
+def exists(path):
+    if os.path.exists(path):
+        if os.name == 'nt':
+            dir, name = os.path.split(path)
+            return name in os.listdir(dir)
+        else:
+            return True
+    else:
+        return False
+
+
 class UpdateManager(Hook):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "0.43"
+    __version__ = "0.44"
 
     __config__ = [("activated"    , "bool"                         , "Activated"                                     , True              ),
                   ("mode"         , "pyLoad + plugins;plugins only", "Check updates for"                             , "pyLoad + plugins"),
@@ -95,10 +107,10 @@ class UpdateManager(Hook):
             id = (type, name)
             if type in self.core.pluginManager.plugins:
                 f = m.__file__.replace(".pyc", ".py")
-                if not path.isfile(f):
+                if not os.path.isfile(f):
                     continue
 
-                mtime = stat(f).st_mtime
+                mtime = os.stat(f).st_mtime
 
                 if id not in self.mtimes:
                     self.mtimes[id] = mtime
@@ -114,9 +126,10 @@ class UpdateManager(Hook):
             self.updateThread()
 
 
-    def server_request(self):
+    def server_response(self):
         try:
             return getURL(self.SERVER_URL, get={'v': self.core.api.getServerVersion()}).splitlines()
+
         except Exception:
             self.logWarning(_("Unable to contact server to get updates"))
 
@@ -142,7 +155,7 @@ class UpdateManager(Hook):
     @Expose
     def update(self, onlyplugin=False):
         """ check for updates """
-        data = self.server_request()
+        data = self.server_response()
 
         if not data:
             exitcode = 0
@@ -202,7 +215,7 @@ class UpdateManager(Hook):
                         break
 
             for t, n in self.removePlugins(sorted(blacklisted)):
-                self.logInfo(_("Removed blacklisted plugin [%(type)s] %(name)s") % {
+                self.logInfo(_("Removed blacklisted plugin: [%(type)s] %(name)s") % {
                     'type': t,
                     'name': n,
                 })
@@ -217,7 +230,7 @@ class UpdateManager(Hook):
             else:
                 name = filename.replace(".py", "")
 
-            #@TODO: obsolete after 0.4.10
+            #@TODO: Remove in 0.4.10
             if prefix.endswith("s"):
                 type = prefix[:-1]
             else:
@@ -276,35 +289,36 @@ class UpdateManager(Hook):
         if not type_plugins:
             return
 
+        removed = set()
+
         self.logDebug("Requested deletion of plugins: %s" % type_plugins)
 
-        removed = []
-
         for type, name in type_plugins:
-            err = False
-            file = name + ".py"
+            rootplugins = os.path.join(pypath, "module", "plugins")
 
-            for root in ("userplugins", path.join(pypath, "module", "plugins")):
+            for dir in ("userplugins", rootplugins):
+                py_filename  = save_join(dir, type, name + ".py")
+                pyc_filename = py_filename + "c"
 
-                filename = save_join(root, type, file)
-                try:
-                    remove(filename)
-                except Exception, e:
-                    self.logDebug("Error removing: %s" % path.basename(filename), str(e))
-                    err = True
-
-                filename += "c"
-                if path.isfile(filename):
+                if type == "hook":
                     try:
-                        if type == "hook":
-                            self.manager.deactivateHook(name)
-                        remove(filename)
+                        self.manager.deactivateHook(name)
+
                     except Exception, e:
-                        self.logDebug("Error removing: %s" % path.basename(filename), str(e))
-                        err = True
+                        self.logDebug(e)
 
-            if not err:
-                id = (type, name)
-                removed.append(id)
+                for filename in (py_filename, pyc_filename):
+                    if not exists(filename):
+                        continue
 
-        return removed  #: return a list of the plugins successfully removed
+                    try:
+                        os.remove(filename)
+
+                    except IOError, e:
+                        self.logError(_("Error removing: %s") % filename, e)
+
+                    else:
+                        id = (type, name)
+                        removed.add(id)
+
+        return list(removed)  #: return a list of the plugins successfully removed
