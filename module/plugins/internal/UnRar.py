@@ -8,7 +8,7 @@ from string import digits
 from subprocess import Popen, PIPE
 
 from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
-from module.utils import decode, fs_encode, save_join
+from module.utils import fs_decode, save_join
 
 
 def renice(pid, value):
@@ -56,6 +56,7 @@ class UnRar(Extractor):
                 out, err = p.communicate()
                 cls.__name__ = "RAR"
                 cls.REPAIR = True
+
             except OSError:
                 cls.CMD = os.path.join(pypath, "UnRAR.exe")
                 p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
@@ -66,6 +67,7 @@ class UnRar(Extractor):
                 out, err = p.communicate()
                 cls.__name__ = "RAR"
                 cls.REPAIR = True
+
             except OSError:  #: fallback to unrar
                 p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
                 out, err = p.communicate()
@@ -87,7 +89,7 @@ class UnRar(Extractor):
 
 
     def test(self, password):
-        p = self.call_cmd("t", "-v", fs_encode(self.filename), password=password)
+        p = self.call_cmd("t", "-v", self.target, password=password)
         self._progress(p)
         err = p.stderr.read().strip()
 
@@ -99,7 +101,7 @@ class UnRar(Extractor):
 
 
     def check(self, password):
-        p = self.call_cmd("l", "-v", fs_encode(self.filename), password=password)
+        p = self.call_cmd("l", "-v", self.target, password=password)
         out, err = p.communicate()
 
         if self.re_wrongpwd.search(err):
@@ -115,7 +117,7 @@ class UnRar(Extractor):
 
 
     def repair(self):
-        p = self.call_cmd("rc", fs_encode(self.filename))
+        p = self.call_cmd("rc", self.target)
 
         # communicate and retrieve stderr
         self._progress(p)
@@ -147,7 +149,7 @@ class UnRar(Extractor):
     def extract(self, password=None):
         command = "x" if self.fullpath else "e"
 
-        p = self.call_cmd(command, fs_encode(self.filename), self.out, password=password)
+        p = self.call_cmd(command, self.target, self.out, password=password)
 
         renice(p.pid, self.renice)
 
@@ -187,7 +189,7 @@ class UnRar(Extractor):
     def list(self, password=None):
         command = "vb" if self.fullpath else "lb"
 
-        p = self.call_cmd(command, "-v", fs_encode(self.filename), password=password)
+        p = self.call_cmd(command, "-v", self.target, password=password)
         out, err = p.communicate()
 
         if "Cannot open" in err:
@@ -199,12 +201,12 @@ class UnRar(Extractor):
         result = set()
         if not self.fullpath and self.VERSION.startswith('5'):
             # NOTE: Unrar 5 always list full path
-            for f in decode(out).splitlines():
+            for f in fs_decode(out).splitlines():
                 f = save_join(self.out, os.path.basename(f.strip()))
                 if os.path.isfile(f):
                     result.add(save_join(self.out, os.path.basename(f)))
         else:
-            for f in decode(out).splitlines():
+            for f in fs_decode(out).splitlines():
                 f = f.strip()
                 result.add(save_join(self.out, f))
 

@@ -33,6 +33,7 @@ if sys.version_info < (2, 7) and os.name != "nt":
         if self.returncode is None:
             try:
                 pid, sts = _eintr_retry_call(os.waitpid, self.pid, 0)
+
             except OSError, e:
                 if e.errno != errno.ECHILD:
                     raise
@@ -93,10 +94,13 @@ class ArchiveQueue(object):
         queue = self.get()
         try:
             queue.remove(item)
+
         except ValueError:
             pass
+
         if queue == []:
             return self.delete()
+
         return self.set(queue)
 
 
@@ -106,22 +110,22 @@ class ExtractArchive(Hook):
     __type__    = "hook"
     __version__ = "1.32"
 
-    __config__ = [("activated"       , "bool"  , "Activated"                                 , True                                                                     ),
-                  ("fullpath"        , "bool"  , "Extract with full paths"                   , True                                                                     ),
-                  ("overwrite"       , "bool"  , "Overwrite files"                           , False                                                                    ),
-                  ("keepbroken"      , "bool"  , "Try to extract broken archives"            , False                                                                    ),
-                  ("repair"          , "bool"  , "Repair broken archives (rar required)"     , False                                                                    ),
-                  ("test"            , "bool"  , "Test archive before extracting"            , False                                                                    ),
-                  ("usepasswordfile" , "bool"  , "Use password file"                         , True                                                                     ),
-                  ("passwordfile"    , "file"  , "Password file"                             , "archive_password.txt"                                                   ),
-                  ("delete"          , "bool"  , "Delete archive when successfully extracted", False                                                                    ),
-                  ("subfolder"       , "bool"  , "Create subfolder for each package"         , False                                                                    ),
-                  ("destination"     , "folder", "Extract files to folder"                   , ""                                                                       ),
-                  ("extensions"      , "str"   , "Extract the following extensions"          , "7z,bz2,bzip2,gz,gzip,lha,lzh,lzma,rar,tar,taz,tbz,tbz2,tgz,xar,xz,z,zip"),
-                  ("excludefiles"    , "str"   , "Don't extract the following files"         , "*.nfo,*.DS_Store,index.dat,thumb.db"                                    ),
-                  ("recursive"       , "bool"  , "Extract archives in archives"              , True                                                                     ),
-                  ("waitall"         , "bool"  , "Wait for all downloads to be finished"     , False                                                                    ),
-                  ("renice"          , "int"   , "CPU priority"                              , 0                                                                        )]
+    __config__ = [("activated"      , "bool"  , "Activated"                                 , True                                                                     ),
+                  ("fullpath"       , "bool"  , "Extract with full paths"                   , True                                                                     ),
+                  ("overwrite"      , "bool"  , "Overwrite files"                           , False                                                                    ),
+                  ("keepbroken"     , "bool"  , "Try to extract broken archives"            , False                                                                    ),
+                  ("repair"         , "bool"  , "Repair broken archives (rar required)"     , False                                                                    ),
+                  ("test"           , "bool"  , "Test archive before extracting"            , False                                                                    ),
+                  ("usepasswordfile", "bool"  , "Use password file"                         , True                                                                     ),
+                  ("passwordfile"   , "file"  , "Password file"                             , "archive_password.txt"                                                   ),
+                  ("delete"         , "bool"  , "Delete archive when successfully extracted", False                                                                    ),
+                  ("subfolder"      , "bool"  , "Create subfolder for each package"         , False                                                                    ),
+                  ("destination"    , "folder", "Extract files to folder"                   , ""                                                                       ),
+                  ("extensions"     , "str"   , "Extract the following extensions"          , "7z,bz2,bzip2,gz,gzip,lha,lzh,lzma,rar,tar,taz,tbz,tbz2,tgz,xar,xz,z,zip"),
+                  ("excludefiles"   , "str"   , "Don't extract the following files"         , "*.nfo,*.DS_Store,index.dat,thumb.db"                                    ),
+                  ("recursive"      , "bool"  , "Extract archives in archives"              , True                                                                     ),
+                  ("waitall"        , "bool"  , "Wait for all downloads to be finished"     , False                                                                    ),
+                  ("renice"         , "int"   , "CPU priority"                              , 0                                                                        )]
 
     __description__ = """Extract different kind of archives"""
     __license__     = "GPLv3"
@@ -174,6 +178,7 @@ class ExtractArchive(Hook):
             self.extractQueued()  #: Resume unfinished extractions
         else:
             self.logInfo(_("No Extract plugins activated"))
+
 
     @threaded
     def extractQueued(self,thread):

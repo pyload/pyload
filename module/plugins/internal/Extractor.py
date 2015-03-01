@@ -3,6 +3,7 @@
 import os
 
 from module.PyFile import PyFile
+from module.utils import fs_encode
 
 
 class ArchiveError(Exception):
@@ -71,6 +72,7 @@ class Extractor:
                  fid=None):
         """ Initialize extractor for specific file """
         self.manager        = manager
+        self.target         = "'%s'" % fs_encode(filename)
         self.filename       = filename
         self.out            = out
         self.fullpath       = fullpath

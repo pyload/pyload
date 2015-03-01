@@ -6,7 +6,7 @@ import re
 from subprocess import Popen, PIPE
 
 from module.plugins.internal.UnRar import ArchiveError, CRCError, PasswordError, UnRar, renice
-from module.utils import fs_encode, save_join
+from module.utils import save_join
 
 
 class SevenZip(UnRar):
@@ -54,10 +54,8 @@ class SevenZip(UnRar):
 
 
     def test(self, password):
-        file = fs_encode(self.filename)
-
         # 7z can't distinguish crc and pw error in test
-        p = self.call_cmd("l", "-slt", file)
+        p = self.call_cmd("l", "-slt", self.target)
         out, err = p.communicate()
 
         if self.re_wrongpwd.search(out):
@@ -72,9 +70,7 @@ class SevenZip(UnRar):
 
 
     def check(self, password):
-        file = fs_encode(self.filename)
-
-        p = self.call_cmd("l", "-slt", file)
+        p = self.call_cmd("l", "-slt", self.target)
         out, err = p.communicate()
 
         # check if output or error macthes the 'wrong password'-Regexp
@@ -92,7 +88,7 @@ class SevenZip(UnRar):
     def extract(self, password=None):
         command = "x" if self.fullpath else "e"
 
-        p = self.call_cmd(command, '-o' + self.out, fs_encode(self.filename), password=password)
+        p = self.call_cmd(command, '-o' + self.out, self.target, password=password)
 
         renice(p.pid, self.renice)
 
@@ -119,7 +115,7 @@ class SevenZip(UnRar):
     def list(self, password=None):
         command = "l" if self.fullpath else "l"
 
-        p = self.call_cmd(command, fs_encode(self.filename), password=password)
+        p = self.call_cmd(command, self.target, password=password)
         out, err = p.communicate()
 
         if "Can not open" in err:
