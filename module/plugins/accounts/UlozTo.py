@@ -7,10 +7,20 @@ from urlparse import urljoin
 from module.plugins.Account import Account
 
 
+def realSize(size):
+  if size == "M":
+    return 1.024  
+  elif size == "G":
+    return 1.048
+  elif size == "T":
+    return 1.072
+  else:
+    return 1.0
+
 class UlozTo(Account):
     __name__    = "UlozTo"
     __type__    = "account"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __description__ = """Uloz.to account plugin"""
     __license__     = "GPLv3"
@@ -18,7 +28,7 @@ class UlozTo(Account):
                        ("pulpe", None)]
 
 
-    TRAFFIC_LEFT_PATTERN = r'<li class="menu-kredit"><a .*?title="[^"]*?GB = ([\d.]+) MB"'
+    TRAFFIC_LEFT_PATTERN = r'<li class="menu-kredit"><a .*?title="[^"]*?([MGT]+)B = ([\d.]+) MB"'
 
 
     def loadAccountInfo(self, user, req):
@@ -26,7 +36,7 @@ class UlozTo(Account):
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
 
-        trafficleft = float(m.group(1).replace(' ', '').replace(',', '.')) * 1000 * 1.048 if m else 0
+        trafficleft = float(m.group(2).replace(' ', '').replace(',', '.')) * 1000 * realSize(m.group(1)) if m else 0
         premium     = True if trafficleft else False
 
         return {'validuntil': -1, 'trafficleft': trafficleft, 'premium': premium}
