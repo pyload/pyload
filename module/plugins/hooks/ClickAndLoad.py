@@ -16,15 +16,15 @@ def forward(source, destination):
             destination.sendall(bufdata)
             bufdata = source.recv(bufsize)
     finally:
-        source.shutdown(socket.SHUT_RD)
         destination.shutdown(socket.SHUT_WR)
+        destination.close()
 
 
 #@TODO: IPv6 support
 class ClickAndLoad(Hook):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
-    __version__ = "0.38"
+    __version__ = "0.39"
 
     __config__ = [("activated", "bool", "Activated"                             , True),
                   ("port"     , "int" , "Port"                                  , 9666),
@@ -68,11 +68,11 @@ class ClickAndLoad(Hook):
         try:
             dock_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             dock_socket.bind((ip, cnlport))
-            dock_socket.listen(1)
+            dock_socket.listen(5)
 
             while True:
                 client_socket, client_addr = dock_socket.accept()
-                self.logDebug("Connection from: %s" % client_addr)
+                self.logDebug("Connection from %s:%s" % client_addr)
 
                 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 server_socket.connect(("127.0.0.1", webport))
