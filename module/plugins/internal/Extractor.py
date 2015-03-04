@@ -3,7 +3,6 @@
 import os
 
 from module.PyFile import PyFile
-from module.utils import fs_encode
 
 
 class ArchiveError(Exception):
@@ -71,17 +70,16 @@ class Extractor:
                  keepbroken=False,
                  fid=None):
         """ Initialize extractor for specific file """
-        self.manager        = manager
-        self.target         = "'%s'" % fs_encode(filename)
-        self.filename       = filename
-        self.out            = out
-        self.fullpath       = fullpath
-        self.overwrite      = overwrite
-        self.excludefiles   = excludefiles
-        self.renice         = renice
-        self.delete         = delete
-        self.keepbroken     = keepbroken
-        self.files          = []  #: Store extracted files here
+        self.manager      = manager
+        self.filename     = filename
+        self.out          = out
+        self.fullpath     = fullpath
+        self.overwrite    = overwrite
+        self.excludefiles = excludefiles
+        self.renice       = renice
+        self.delete       = delete
+        self.keepbroken   = keepbroken
+        self.files        = []  #: Store extracted files here
 
         pyfile = self.manager.core.files.getFile(fid) if fid else None
         self.notifyProgress = lambda x: pyfile.setProgress(x) if pyfile else lambda x: None
