@@ -17,14 +17,14 @@ def forward(source, destination):
             bufdata = source.recv(bufsize)
     finally:
         destination.shutdown(socket.SHUT_WR)
-        destination.close()
+        # destination.close()
 
 
 #@TODO: IPv6 support
 class ClickAndLoad(Hook):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
-    __version__ = "0.39"
+    __version__ = "0.40"
 
     __config__ = [("activated", "bool", "Activated"                             , True),
                   ("port"     , "int" , "Port"                                  , 9666),
