@@ -9,8 +9,8 @@ from module.plugins.Crypter import Crypter
 from module.utils import save_join
 
 
-class YoutubeBatch(Crypter):
-    __name__    = "YoutubeBatch"
+class YoutubeComFolder(Crypter):
+    __name__    = "YoutubeComFolder"
     __type__    = "crypter"
     __version__ = "1.01"
 

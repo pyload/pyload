@@ -9,8 +9,8 @@ from module.plugins.Crypter import Crypter
 from module.utils import save_join
 
 
-class DailymotionBatch(Crypter):
-    __name__    = "DailymotionBatch"
+class DailymotionComFolder(Crypter):
+    __name__    = "DailymotionComFolder"
     __type__    = "crypter"
     __version__ = "0.01"
 

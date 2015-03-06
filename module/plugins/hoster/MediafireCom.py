@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import re
-
 from module.plugins.internal.CaptchaService import SolveMedia
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
