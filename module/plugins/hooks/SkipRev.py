@@ -18,9 +18,10 @@ def _setup(self):
 class SkipRev(Hook):
     __name__    = "SkipRev"
     __type__    = "hook"
-    __version__ = "0.25"
+    __version__ = "0.26"
 
-    __config__ = [("tokeep", "int", "Number of rev files to keep for package (-1 to auto)", -1)]
+    __config__ = [("mode"  , "Auto;Manual", "Choose rev files to keep for package", "Auto"),
+                  ("tokeep", "int"        , "Custom number of files to keep"      , 0     )]
 
     __description__ = """Skip files ending with extension rev"""
     __license__     = "GPLv3"
@@ -32,8 +33,8 @@ class SkipRev(Hook):
         pass
 
 
-    def _pyname(self, pyfile):
-        if hasattr(pyfile.pluginmodule, "getInfo"):
+    def _name(self, pyfile):
+        if hasattr(pyfile.pluginmodule, "getInfo"):  #@NOTE: getInfo is deprecated in 0.4.10
             return getattr(pyfile.pluginmodule, "getInfo")([pyfile.url]).next()[0]
         else:
             self.logWarning("Unable to grab file name")
@@ -54,16 +55,19 @@ class SkipRev(Hook):
 
 
     def downloadPreparing(self, pyfile):
-        if pyfile.statusname is "unskipped" or not self._pyname(pyfile).endswith(".rev"):
+        name = self._name(pyfile)
+
+        if pyfile.statusname is "unskipped" or not name.endswith(".rev") or not '.part' in name:
             return
 
-        tokeep = self.getConfig("tokeep")
+        tokeep = -1 if self.getConfig('mode') == "Auto" else self.getConfig('tokeep')
 
         if tokeep:
             status_list = (1, 4, 8, 9, 14) if tokeep < 0 else (1, 3, 4, 8, 9, 14)
+            pyname      = re.compile(r'%s\.part\d+\.rev$' % name.rsplit('.', 2)[0].replace('.', '\.'))
 
             queued = [True for link in self.core.api.getPackageData(pyfile.package().id).links \
-                      if link.name.endswith(".rev") and link.status not in status_list].count(True)
+                      if link.status not in status_list and pyname.match(link.name)].count(True)
 
             if not queued or queued < tokeep:  #: keep one rev at least in auto mode
                 return
@@ -76,16 +80,18 @@ class SkipRev(Hook):
     def downloadFailed(self, pyfile):
         #: Check if pyfile is still "failed",
         #  maybe might has been restarted in meantime
-        if pyfile.status != 8:
+        if pyfile.status != 8 or pyfile.name.rsplit('.', 1)[-1].strip() not in ("rar", "rev"):
             return
 
-        tokeep = self.getConfig("tokeep")
+        tokeep = -1 if self.getConfig('mode') == "Auto" else self.getConfig('tokeep')
 
         if not tokeep:
             return
 
+        pyname = re.compile(r'%s\.part\d+\.rev$' % pyfile.name.rsplit('.', 2)[0].replace('.', '\.'))
+
         for link in self.core.api.getPackageData(pyfile.package().id).links:
-            if link.status is 4 and link.name.endswith(".rev"):
+            if link.status is 4 and pyname.match(link.name):
                 pylink = self._pyfile(link)
 
                 if tokeep > -1 or pyfile.name.endswith(".rev"):
