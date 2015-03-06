@@ -18,7 +18,7 @@ def _setup(self):
 class SkipRev(Hook):
     __name__    = "SkipRev"
     __type__    = "hook"
-    __version__ = "0.26"
+    __version__ = "0.27"
 
     __config__ = [("mode"  , "Auto;Manual", "Choose rev files to keep for package", "Auto"),
                   ("tokeep", "int"        , "Custom number of files to keep"      , 0     )]
@@ -57,7 +57,7 @@ class SkipRev(Hook):
     def downloadPreparing(self, pyfile):
         name = self._name(pyfile)
 
-        if pyfile.statusname is "unskipped" or not name.endswith(".rev") or not '.part' in name:
+        if pyfile.statusname is "unskipped" or not name.endswith(".rev") or not ".part" in name:
             return
 
         tokeep = -1 if self.getConfig('mode') == "Auto" else self.getConfig('tokeep')
@@ -73,8 +73,10 @@ class SkipRev(Hook):
                 return
 
         pyfile.setCustomStatus("SkipRev", "skipped")
-        pyfile.plugin._setup = pyfile.plugin.setup
-        pyfile.plugin.setup  = MethodType(_setup, pyfile.plugin)  #: work-around: inject status checker inside the preprocessing routine of the plugin
+
+        if not hasattr(pyfile.plugin, "_setup"):
+            pyfile.plugin._setup = pyfile.plugin.setup
+            pyfile.plugin.setup  = MethodType(_setup, pyfile.plugin)  #: work-around: inject status checker inside the preprocessing routine of the plugin
 
 
     def downloadFailed(self, pyfile):
