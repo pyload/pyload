@@ -22,8 +22,8 @@ class SkipRev(Hook):
     __type__    = "hook"
     __version__ = "0.28"
 
-    __config__ = [("mode"  , "Auto;Manual", "Choose rev files to keep for package", "Auto"),
-                  ("tokeep", "int"        , "Custom number of files to keep"      , 0     )]
+    __config__ = [("mode"     , "Auto;Manual", "Choose rev files to keep for package", "Auto"),
+                  ("revtokeep", "int"        , "Custom number of files to keep"      , 0     )]
 
     __description__ = """Skip files ending with extension rev"""
     __license__     = "GPLv3"
@@ -62,16 +62,16 @@ class SkipRev(Hook):
         if pyfile.statusname is "unskipped" or not name.endswith(".rev") or not ".part" in name:
             return
 
-        tokeep = -1 if self.getConfig('mode') == "Auto" else self.getConfig('tokeep')
+        revtokeep = -1 if self.getConfig('mode') == "Auto" else self.getConfig('revtokeep')
 
-        if tokeep:
-            status_list = (1, 4, 8, 9, 14) if tokeep < 0 else (1, 3, 4, 8, 9, 14)
+        if revtokeep:
+            status_list = (1, 4, 8, 9, 14) if revtokeep < 0 else (1, 3, 4, 8, 9, 14)
             pyname      = re.compile(r'%s\.part\d+\.rev$' % name.rsplit('.', 2)[0].replace('.', '\.'))
 
             queued = [True for link in self.core.api.getPackageData(pyfile.package().id).links \
                       if link.status not in status_list and pyname.match(link.name)].count(True)
 
-            if not queued or queued < tokeep:  #: keep one rev at least in auto mode
+            if not queued or queued < revtokeep:  #: keep one rev at least in auto mode
                 return
 
         pyfile.setCustomStatus("SkipRev", "skipped")
@@ -87,9 +87,9 @@ class SkipRev(Hook):
         if pyfile.status != 8 or pyfile.name.rsplit('.', 1)[-1].strip() not in ("rar", "rev"):
             return
 
-        tokeep = -1 if self.getConfig('mode') == "Auto" else self.getConfig('tokeep')
+        revtokeep = -1 if self.getConfig('mode') == "Auto" else self.getConfig('revtokeep')
 
-        if not tokeep:
+        if not revtokeep:
             return
 
         pyname = re.compile(r'%s\.part\d+\.rev$' % pyfile.name.rsplit('.', 2)[0].replace('.', '\.'))
@@ -98,7 +98,7 @@ class SkipRev(Hook):
             if link.status is 4 and pyname.match(link.name):
                 pylink = self._pyfile(link)
 
-                if tokeep > -1 or pyfile.name.endswith(".rev"):
+                if revtokeep > -1 or pyfile.name.endswith(".rev"):
                     pylink.setStatus("queued")
                 else:
                     pylink.setCustomStatus("unskipped", "queued")

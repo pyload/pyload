@@ -10,7 +10,7 @@ from module.utils import save_join
 class ExternalScripts(Hook):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.29"
+    __version__ = "0.30"
 
     __config__ = [("activated", "bool", "Activated"         , True ),
                   ("wait"     , "bool", "Wait script ending", False)]
@@ -74,8 +74,7 @@ class ExternalScripts(Hook):
 
     def callScript(self, script, *args):
         try:
-            cmd = [script] + [x.encode("UTF-8") if isinstance(x, unicode) else
-                str(x) if not isinstance(x, basestring) else x for x in args]
+            cmd = [script] + [(str(x) if not isinstance(x, basestring) else x).encode('utf-8') for x in args]
 
             self.logDebug("Executing", os.path.abspath(script), " ".join(cmd))
 
