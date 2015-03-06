@@ -74,7 +74,8 @@ class ExternalScripts(Hook):
 
     def callScript(self, script, *args):
         try:
-            cmd = [script] + [str(x) if not isinstance(x, basestring) else x for x in args]
+            cmd = [script] + [x.encode("UTF-8") if isinstance(x, unicode) else
+                str(x) if not isinstance(x, basestring) else x for x in args]
 
             self.logDebug("Executing", os.path.abspath(script), " ".join(cmd))
 
