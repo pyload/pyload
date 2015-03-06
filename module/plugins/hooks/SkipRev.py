@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import re
+
 from types import MethodType
 from urllib import unquote
 from urlparse import urlparse
@@ -18,7 +20,7 @@ def _setup(self):
 class SkipRev(Hook):
     __name__    = "SkipRev"
     __type__    = "hook"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
     __config__ = [("mode"  , "Auto;Manual", "Choose rev files to keep for package", "Auto"),
                   ("tokeep", "int"        , "Custom number of files to keep"      , 0     )]
@@ -35,7 +37,7 @@ class SkipRev(Hook):
 
     def _name(self, pyfile):
         if hasattr(pyfile.pluginmodule, "getInfo"):  #@NOTE: getInfo is deprecated in 0.4.10
-            return getattr(pyfile.pluginmodule, "getInfo")([pyfile.url]).next()[0]
+            return pyfile.pluginmodule.getInfo([pyfile.url]).next()[0]
         else:
             self.logWarning("Unable to grab file name")
             return urlparse(unquote(pyfile.url)).path.split('/')[-1]
