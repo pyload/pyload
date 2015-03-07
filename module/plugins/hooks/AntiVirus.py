@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import shutil
 import subprocess
 
 from module.plugins.Hook import Hook, Expose, threaded
@@ -10,7 +11,7 @@ from module.utils import fs_encode, save_join
 class AntiVirus(Hook):
     __name__    = "AntiVirus"
     __type__    = "hook"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __config__ = [("action"    , "Antivirus default;Delete;Quarantine", "Manage infected files"                    , "Antivirus default"),
                   ("quarpath"  , "folder"                             , "Quarantine folder"                        , ""                 ),
@@ -62,9 +63,9 @@ class AntiVirus(Hook):
 
                     elif action == "Quarantine":
                         new_filename = save_join(self.getConfig('quarpath'), name)
-                        os.rename(filename, new_filename)
+                        shutil.move(filename, new_filename)
 
-                except IOError, e:
+                except (IOError, shutil.Error), e:
                     self.logError(name, action + " action failed!", e)
 
             elif not out:
