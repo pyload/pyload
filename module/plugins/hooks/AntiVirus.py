@@ -11,7 +11,7 @@ from module.utils import fs_encode, save_join
 class AntiVirus(Hook):
     __name__    = "AntiVirus"
     __type__    = "hook"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __config__ = [("action"    , "Antivirus default;Delete;Quarantine", "Manage infected files"                    , "Antivirus default"),
                   ("quardir"   , "folder"                             , "Quarantine folder"                        , ""                 ),
@@ -45,7 +45,7 @@ class AntiVirus(Hook):
         pyfile.setCustomStatus(_("virus scanning"))
 
         try:
-            p = subprocess.Popen([cmdfile, cmdargs], bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p = subprocess.Popen([cmdfile, cmdargs, file], bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
             out, err = map(str.strip, p.communicate())
 
