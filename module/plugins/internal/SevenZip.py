@@ -2,8 +2,7 @@
 
 import os
 import re
-
-from subprocess import Popen, PIPE
+import subprocess
 
 from module.plugins.internal.UnRar import ArchiveError, CRCError, PasswordError, UnRar, renice
 from module.utils import fs_encode, save_join
@@ -41,10 +40,10 @@ class SevenZip(UnRar):
     def isUsable(cls):
         if os.name == "nt":
             cls.CMD = os.path.join(pypath, "7z.exe")
-            p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
+            p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out,err = p.communicate()
         else:
-            p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
+            p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = p.communicate()
 
         m = cls.re_version.search(out)
@@ -150,5 +149,5 @@ class SevenZip(UnRar):
 
         self.manager.logDebug(" ".join(call))
 
-        p = Popen(call, stdout=PIPE, stderr=PIPE)
+        p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return p

@@ -22,8 +22,8 @@ class SkipRev(Hook):
     __type__    = "hook"
     __version__ = "0.28"
 
-    __config__ = [("mode"     , "Auto;Manual", "Choose rev files to keep for package", "Auto"),
-                  ("revtokeep", "int"        , "Custom number of files to keep"      , 0     )]
+    __config__ = [("mode"     , "Auto;Manual", "Choose rev files to skip for package", "Auto"),
+                  ("revtokeep", "int"        , "Number of rev files to keep"         , 0     )]
 
     __description__ = """Skip files ending with extension rev"""
     __license__     = "GPLv3"

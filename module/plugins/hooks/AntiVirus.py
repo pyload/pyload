@@ -11,13 +11,14 @@ from module.utils import fs_encode, save_join
 class AntiVirus(Hook):
     __name__    = "AntiVirus"
     __type__    = "hook"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __config__ = [("action"    , "Antivirus default;Delete;Quarantine", "Manage infected files"                    , "Antivirus default"),
-                  ("quarpath"  , "folder"                             , "Quarantine folder"                        , ""                 ),
+                  ("quardir"   , "folder"                             , "Quarantine folder"                        , ""                 ),
                   ("scanfailed", "bool"                               , "Scan incompleted files (failed downloads)", False              ),
-                  ("cmdpath"   , "file"                               , "Antivirus executable"                     , ""                 ),
-                  ("cmdargs"   , "str"                                , "Scan options"                             , ""                 )]
+                  ("cmdfile"   , "file"                               , "Antivirus executable"                     , ""                 ),
+                  ("cmdargs"   , "str"                                , "Scan options"                             , ""                 ),
+                  ("ignore-err", "bool"                               , "Ignore scan errors"                       , False              )]
 
     __description__ = """Scan downloaded files with antivirus program"""
     __license__     = "GPLv3"
@@ -32,46 +33,52 @@ class AntiVirus(Hook):
     @Expose
     @threaded
     def scan(self, pyfile, thread):
-        name     = os.path.basename(pyfile.plugin.lastDownload)
-        filename = fs_encode(pyfile.plugin.lastDownload)
-        cmdpath  = fs_encode(self.getConfig('cmdpath'))
+        file     = fs_encode(pyfile.plugin.lastDownload)
+        filename = os.path.basename(pyfile.plugin.lastDownload)
+        cmdfile  = fs_encode(self.getConfig('cmdfile'))
         cmdargs  = fs_encode(self.getConfig('cmdargs').strip())
 
-        if not os.path.isfile(filename) or not os.path.isfile(cmdpath):
+        if not os.path.isfile(file) or not os.path.isfile(cmdfile):
             return
 
-        pyfile.setCustomStatus(_("virus scanning"))
         thread.addActive(pyfile)
+        pyfile.setCustomStatus(_("virus scanning"))
 
         try:
-            p = subprocess.Popen([cmdpath, cmdargs], bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p = subprocess.Popen([cmdfile, cmdargs], bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
             out, err = map(str.strip, p.communicate())
 
             if out:
-                self.logInfo(name, out)
+                self.logInfo(filename, out)
 
             if err:
-                self.logWarning(name, err)
-                return
+                self.logWarning(filename, err)
+                if not self.getConfig('ignore-err')
+                    self.logDebug("Delete/Quarantine action aborted")
+                    return
 
             if p.returncode:
+                pyfile.error = _("infected file")
                 action = self.getConfig('action')
                 try:
                     if action == "Delete":
-                        os.remove(filename)
+                        os.remove(file)
 
                     elif action == "Quarantine":
-                        new_filename = save_join(self.getConfig('quarpath'), name)
-                        shutil.move(filename, new_filename)
+                        pyfile.setCustomStatus(_("file moving"))
+                        pyfile.setProgress(0)
+                        new_filename = save_join(self.getConfig('quardir'), filename)
+                        shutil.move(file, new_filename)
 
                 except (IOError, shutil.Error), e:
-                    self.logError(name, action + " action failed!", e)
+                    self.logError(filename, action + " action failed!", e)
 
-            elif not out:
-                self.logDebug(name, "No virus found")
+            elif not out and not err:
+                self.logDebug(filename, "No infected file found")
 
         finally:
+            pyfile.setProgress(100)
             thread.finishFile(pyfile)
 
 

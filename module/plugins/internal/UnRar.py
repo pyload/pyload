@@ -2,10 +2,10 @@
 
 import os
 import re
+import subprocess
 
 from glob import glob
 from string import digits
-from subprocess import Popen, PIPE
 
 from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
 from module.utils import fs_decode, fs_encode, save_join
@@ -14,7 +14,7 @@ from module.utils import fs_decode, fs_encode, save_join
 def renice(pid, value):
     if value and os.name != "nt":
         try:
-            Popen(["renice", str(value), str(pid)], stdout=PIPE, stderr=PIPE, bufsize=-1)
+            subprocess.Popen(["renice", str(value), str(pid)], stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=-1)
 
         except Exception:
             pass
@@ -52,24 +52,24 @@ class UnRar(Extractor):
         if os.name == "nt":
             try:
                 cls.CMD = os.path.join(pypath, "RAR.exe")
-                p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
+                p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, err = p.communicate()
                 cls.__name__ = "RAR"
                 cls.REPAIR = True
 
             except OSError:
                 cls.CMD = os.path.join(pypath, "UnRAR.exe")
-                p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
+                p = Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, err = p.communicate()
         else:
             try:
-                p = Popen(["rar"], stdout=PIPE, stderr=PIPE)
+                p = Popen(["rar"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, err = p.communicate()
                 cls.__name__ = "RAR"
                 cls.REPAIR = True
 
             except OSError:  #: fallback to unrar
-                p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
+                p = Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, err = p.communicate()
 
         m = cls.re_version.search(out)
@@ -244,5 +244,5 @@ class UnRar(Extractor):
 
         self.manager.logDebug(" ".join(call))
 
-        p = Popen(call, stdout=PIPE, stderr=PIPE)
+        p = Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return p
