@@ -1,27 +1,28 @@
 # -*- coding: utf-8 -*-
 
-from time import time
+import time
 
 from module.network.RequestFactory import getURL
-from module.plugins.Hook import Hook
+from module.plugins.Hook import Hook, Expose
 
 
 class AndroidPhoneNotify(Hook):
     __name__    = "AndroidPhoneNotify"
     __type__    = "hook"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __config__ = [("apikey"         , "str" , "API key"                                  , ""   ),
                   ("notifycaptcha"  , "bool", "Notify captcha request"                   , True ),
                   ("notifypackage"  , "bool", "Notify package finished"                  , True ),
-                  ("notifyprocessed", "bool", "Notify processed packages status"         , True ),
-                  ("timeout"        , "int" , "Timeout between captchas in seconds"      , 5    ),
-                  ("force"          , "bool", "Send notifications if client is connected", False)]
+                  ("notifyprocessed", "bool", "Notify status of processed packages"      , True ),
+                  ("sendtimewait"   , "int" , "Timewait in seconds between notifications", 5    ),
+                  ("sendpermin"     , "int" , "Max notifications per minute"             , 12   ),
+                  ("ignoreclient"   , "bool", "Send notifications if client is connected", False)]
 
-    __description__ = """Send push notifications to your Android Phone using notifymyandroid.com"""
+    __description__ = """Send push notifications to your Android Phone (using notifymyandroid.com)"""
     __license__     = "GPLv3"
-    __authors__     = [("Steven Kosyra", "steven.kosyra@gmail.com"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("Steven Kosyra" , "steven.kosyra@gmail.com"),
+                       ("Walter Purcaro", "vuolter@gmail.com"      )]
 
 
     event_list = ["allDownloadsProcessed"]
@@ -33,16 +34,14 @@ class AndroidPhoneNotify(Hook):
 
 
     def setup(self):
-        self.info        = {}  #@TODO: Remove in 0.4.10
-        self.last_notify = 0
+        self.info          = {}  #@TODO: Remove in 0.4.10
+        self.last_notify   = 0
+        self.notifications = 0
 
 
     def newCaptchaTask(self, task):
         if not self.getConfig("notifycaptcha"):
-            return False
-
-        if time() - self.last_notify < self.getConf("timeout"):
-            return False
+            return
 
         self.notify(_("Captcha"), _("New request waiting user input"))
 
@@ -54,7 +53,7 @@ class AndroidPhoneNotify(Hook):
 
     def allDownloadsProcessed(self):
         if not self.getConfig("notifyprocessed"):
-            return False
+            return
 
         if any(True for pdata in self.core.api.getQueue() if pdata.linksdone < pdata.linkstotal):
             self.notify(_("Package failed"), _("One or more packages was not completed successfully"))
@@ -62,14 +61,27 @@ class AndroidPhoneNotify(Hook):
             self.notify(_("All packages finished"))
 
 
+    @Expose
     def notify(self, event, msg=""):
         apikey = self.getConfig("apikey")
 
         if not apikey:
-            return False
+            return
 
-        if self.core.isClientConnected() and not self.getConfig("force"):
-            return False
+        if self.core.isClientConnected() and not self.getConfig("ignoreclient"):
+            return
+
+        elapsed_time = time.time() - self.last_notify
+
+        if elapsed_time < self.getConf("sendtimewait"):
+            return
+
+        if elapsed_time > 60:
+            self.notifications = 0
+
+        elif self.notifications >= self.getConf("sendpermin"):
+            return
+
 
         getURL("http://www.notifymyandroid.com/publicapi/notify",
                get={'apikey'     : apikey,
@@ -77,4 +89,5 @@ class AndroidPhoneNotify(Hook):
                     'event'      : event,
                     'description': msg})
 
-        self.last_notify = time()
+        self.last_notify    = time.time()
+        self.notifications += 1
