@@ -59,7 +59,7 @@ class DeathByCaptcha(Hook):
 
     __description__ = """Send captchas to DeathByCaptcha.com"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+    __authors__     = [("RaNaN"   , "RaNaN@pyload.org"   ),
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 

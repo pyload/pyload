@@ -32,7 +32,7 @@ class ClickAndLoad(Hook):
 
     __description__ = """Click'n'Load hook plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.de"),
+    __authors__     = [("RaNaN"         , "RaNaN@pyload.de"  ),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

@@ -50,9 +50,9 @@ class Checksum(Hook):
 
     __description__ = """Verify downloaded file size and checksum"""
     __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
-                       ("Walter Purcaro", "vuolter@gmail.com"),
-                       ("stickell", "l.stickell@yahoo.it")]
+    __authors__     = [("zoidberg"      , "zoidberg@mujmail.cz"),
+                       ("Walter Purcaro", "vuolter@gmail.com"  ),
+                       ("stickell"      , "l.stickell@yahoo.it")]
 
 
     methods = {'sfv' : 'crc32',

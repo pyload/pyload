@@ -17,9 +17,9 @@ class ExternalScripts(Hook):
 
     __description__ = """Run external scripts"""
     __license__     = "GPLv3"
-    __authors__     = [("mkaay", "mkaay@mkaay.de"),
-                       ("RaNaN", "ranan@pyload.org"),
-                       ("spoob", "spoob@pyload.org"),
+    __authors__     = [("mkaay"         , "mkaay@mkaay.de"   ),
+                       ("RaNaN"         , "ranan@pyload.org" ),
+                       ("spoob"         , "spoob@pyload.org" ),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
@@ -67,7 +67,7 @@ class ExternalScripts(Hook):
 
             if not os.path.isfile(file):
                 continue
-            
+
             if filename[0] in ("#", "_") or filename.endswith("~") or filename.endswith(".swp"):
                 continue
 

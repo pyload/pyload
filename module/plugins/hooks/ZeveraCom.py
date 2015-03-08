@@ -18,8 +18,8 @@ class ZeveraCom(MultiHook):
 
     __description__ = """Zevera.com hook plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("zoidberg"      , "zoidberg@mujmail.cz"),
+                       ("Walter Purcaro", "vuolter@gmail.com"  )]
 
 
     def getHosters(self):

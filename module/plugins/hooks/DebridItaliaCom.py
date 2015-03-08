@@ -20,8 +20,8 @@ class DebridItaliaCom(MultiHook):
 
     __description__ = """Debriditalia.com hook plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("stickell"      , "l.stickell@yahoo.it"),
+                       ("Walter Purcaro", "vuolter@gmail.com"  )]
 
 
     def getHosters(self):

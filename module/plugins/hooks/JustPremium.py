@@ -15,9 +15,9 @@ class JustPremium(Hook):
 
     __description__ = """Remove not-premium links from added urls"""
     __license__     = "GPLv3"
-    __authors__     = [("mazleu", "mazleica@gmail.com"),
-                       ("Walter Purcaro", "vuolter@gmail.com"),
-                       ("immenz", "immenz@gmx.net")]
+    __authors__     = [("mazleu"        , "mazleica@gmail.com"),
+                       ("Walter Purcaro", "vuolter@gmail.com" ),
+                       ("immenz"        , "immenz@gmx.net"    )]
 
 
     event_list = ["linksAdded"]

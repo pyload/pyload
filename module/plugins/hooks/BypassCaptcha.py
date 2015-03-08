@@ -35,9 +35,9 @@ class BypassCaptcha(Hook):
 
     __description__ = """Send captchas to BypassCaptcha.com"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+    __authors__     = [("RaNaN"     , "RaNaN@pyload.org"     ),
                        ("Godofdream", "soilfcition@gmail.com"),
-                       ("zoidberg", "zoidberg@mujmail.cz")]
+                       ("zoidberg"  , "zoidberg@mujmail.cz"  )]
 
 
     PYLOAD_KEY = "4f771155b640970d5607f919a615bdefc67e7d32"
