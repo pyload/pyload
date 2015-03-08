@@ -2,7 +2,7 @@
 
 import re
 
-from module.lib.BeautifulSoup import BeautifulSoup
+from BeautifulSoup import BeautifulSoup
 
 from module.plugins.internal.CaptchaService import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
