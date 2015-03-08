@@ -4,16 +4,16 @@ import os
 import subprocess
 
 from module.plugins.Hook import Hook
-from module.utils import save_join
+from module.utils import fs_encode, save_join
 
 
 class ExternalScripts(Hook):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.30"
+    __version__ = "0.31"
 
     __config__ = [("activated", "bool", "Activated"         , True ),
-                  ("wait"     , "bool", "Wait script ending", False)]
+                  ("waitend"  , "bool", "Wait script ending", False)]
 
     __description__ = """Run external scripts"""
     __license__     = "GPLv3"
@@ -50,7 +50,7 @@ class ExternalScripts(Hook):
 
         for script_type, names in self.scripts.iteritems():
             if names:
-                self.logInfo(_("Installed scripts for"), script_type, ", ".join(map(os.path.basename, names)))
+                self.logInfo(_("Installed scripts for ") + script_type, ", ".join(map(os.path.basename, names)))
 
 
     def initPluginType(self, folder, path):
@@ -58,28 +58,33 @@ class ExternalScripts(Hook):
             try:
                 os.makedirs(path)
 
-            except Exception:
-                self.logDebug("Script folder %s not created" % folder)
+            except IOError, e:
+                self.logDebug(e)
                 return
 
-        for f in os.listdir(path):
-            if f.startswith("#") or f.startswith(".") or f.startswith("_") or f.endswith("~") or f.endswith(".swp"):
+        for filename in os.listdir(path):
+            file = os.path.join(path, filename)
+
+            if not os.path.isfile(file):
+                continue
+            
+            if filename[0] in ("#", "_") or filename.endswith("~") or filename.endswith(".swp"):
                 continue
 
-            if not os.access(os.path.join(path, f), os.X_OK):
-                self.logWarning(_("Script not executable:") + " %s/%s" % (folder, f))
+            if not os.access(file, os.X_OK):
+                self.logWarning(_("Script not executable:") + " %s/%s" % (folder, filename))
 
-            self.scripts[folder].append(os.path.join(path, f))
+            self.scripts[folder].append(file)
 
 
     def callScript(self, script, *args):
         try:
-            cmd = [script] + [(str(x) if not isinstance(x, basestring) else x).encode('utf-8') for x in args]
+            cmd = [(str(x) if not isinstance(x, basestring) else x).encode('utf-8') for x in args]
 
             self.logDebug("Executing", os.path.abspath(script), " ".join(cmd))
 
-            p = subprocess.Popen(cmd, bufsize=-1)  #@NOTE: output goes to pyload
-            if self.getConfig('wait'):
+            p = subprocess.Popen([script, fs_encode(cmd)], bufsize=-1)  #@NOTE: output goes to pyload
+            if self.getConfig('waitend'):
                 p.communicate()
 
         except Exception, e:
