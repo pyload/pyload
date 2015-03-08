@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FileSharkPl(SimpleHoster):
     __name__    = "FileSharkPl"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'http://(?:www\.)?fileshark\.pl/pobierz/\d+/\w+'
 
@@ -79,6 +79,8 @@ class FileSharkPl(SimpleHoster):
             self.error(_("Download url not found"))
 
         link = urljoin("http://fileshark.pl", m.group(1))
+
+        self.html = self.load(link, decode=True)
 
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
