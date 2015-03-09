@@ -108,7 +108,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.32"
+    __version__ = "1.33"
 
     __config__ = [("activated"      , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"       , "bool"  , "Extract with full paths"                   , True                                                                     ),
@@ -474,7 +474,7 @@ class ExtractArchive(Hook):
                 print_exc()
 
         finally:
-            pyfile.finishIfDone()
+            thread.finishFile(pyfile)
 
         self.manager.dispatchEvent("archive_extract_failed", pyfile)
 
