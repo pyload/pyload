@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ZippyshareCom(SimpleHoster):
     __name__    = "ZippyshareCom"
     __type__    = "hoster"
-    __version__ = "0.74"
+    __version__ = "0.75"
 
     __pattern__ = r'http://www\d{0,2}\.zippyshare\.com/v(/|iew\.jsp.*key=)(?P<KEY>[\w^_]+)'
 
@@ -64,7 +64,7 @@ class ZippyshareCom(SimpleHoster):
             id   = element.group(1)
             attr = element.group(4)  #: attr might be None
 
-            varName    = '%s_%s' % (id, attr)
+            varName    = '%s_%s' % (re.sub(r'\W', '', id), attr)
             initValues = filter(None, [elt.get(attr, None) for elt in soup.findAll(id=id)])
             initValue  = '"%s"' % initValues[-1] if initValues else 'null'
 
@@ -72,7 +72,7 @@ class ZippyshareCom(SimpleHoster):
             return varName
 
         # handle all getElementById
-        reVar = r'document.getElementById\([\'"](\w+)[\'"]\)(\.)?(getAttribute\([\'"])?(\w+)?([\'"]\))?'
+        reVar = r'document.getElementById\([\'"](.+)[\'"]\)(\.)?(getAttribute\([\'"])?(\w+)?([\'"]\))?'
         scripts = [re.sub(reVar, replElementById, script) for script in scripts]
 
         # add try/catch in JS to handle deliberate errors
