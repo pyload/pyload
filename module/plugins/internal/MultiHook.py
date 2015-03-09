@@ -11,7 +11,7 @@ from module.utils import decode, remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.37"
+    __version__ = "0.38"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
@@ -27,7 +27,7 @@ class MultiHook(Hook):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    MIN_INTERVAL = 1 * 60 * 60
+    MIN_INTERVAL = 1 * 60 * 60  #: 1 hour
 
     DOMAIN_REPLACEMENTS = [(r'180upload\.com'  , "hundredeightyupload.com"),
                            (r'1fichier\.com'   , "onefichier.com"         ),
@@ -119,17 +119,17 @@ class MultiHook(Hook):
         if self.plugins:
             return self.plugins
 
-        for _i in xrange(3):
+        for _i in xrange(2):
             try:
                 pluginset = self._pluginSet(self.getHosters() if self.plugintype == "hoster" else self.getCrypters())
+                break
 
             except Exception, e:
-                self.logError(e, "Waiting 1 minute and retry")
+                self.logDebug(e, "Waiting 1 minute and retry")
                 sleep(60)
-
-            else:
-                break
         else:
+            self.logWarning(_("Fallback to default reload interval due plugin"))
+            self.interval = self.MIN_INTERVAL
             return list()
 
         try:
@@ -181,8 +181,28 @@ class MultiHook(Hook):
         raise NotImplementedError
 
 
+    #: Threaded _periodical, remove in 0.4.10 and use built-in flag for that
+    def _periodical(self):
+        try:
+            if self.isActivated():
+                self.periodical()
+
+        except Exception, e:
+            self.core.log.error(_("Error executing hooks: %s") % str(e))
+            if self.core.debug:
+                print_exc()
+
+        self.cb = self.core.scheduler.addJob(self.interval, self._periodical)
+
+
     def periodical(self):
         """reload plugin list periodically"""
+        if self.getConfig("reload", True):
+            self.interval = max(self.getConfig("reloadinterval", 12) * 60 * 60, self.MIN_INTERVAL)
+        else:
+            self.core.scheduler.removeJob(self.cb)
+            self.cb = None
+
         self.logInfo(_("Reloading supported %s list") % self.plugintype)
 
         old_supported = self.supported
@@ -199,12 +219,6 @@ class MultiHook(Hook):
             self.logDebug("Unload: %s" % ", ".join(old_supported))
             for plugin in old_supported:
                 self.unloadPlugin(plugin)
-
-        if self.getConfig("reload", True):
-            self.interval = max(self.getConfig("reloadinterval", 12) * 60 * 60, self.MIN_INTERVAL)
-        else:
-            self.core.scheduler.removeJob(self.cb)
-            self.cb = None
 
 
     def overridePlugins(self):
