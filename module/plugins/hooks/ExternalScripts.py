@@ -10,7 +10,7 @@ from module.utils import fs_encode, save_join
 class ExternalScripts(Hook):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.31"
+    __version__ = "0.32"
 
     __config__ = [("activated", "bool", "Activated"         , True ),
                   ("waitend"  , "bool", "Wait script ending", False)]
@@ -79,11 +79,11 @@ class ExternalScripts(Hook):
 
     def callScript(self, script, *args):
         try:
-            cmd = [(str(x) if not isinstance(x, basestring) else x).encode('utf-8') for x in args]
+            cmd = [script] + [(str(x) if not isinstance(x, basestring) else x).encode('utf-8') for x in args]
 
             self.logDebug("Executing", os.path.abspath(script), " ".join(cmd))
 
-            p = subprocess.Popen([script, fs_encode(cmd)], bufsize=-1)  #@NOTE: output goes to pyload
+            p = subprocess.Popen(cmd, bufsize=-1)  #@NOTE: output goes to pyload
             if self.getConfig('waitend'):
                 p.communicate()
 
@@ -99,8 +99,8 @@ class ExternalScripts(Hook):
     def downloadFinished(self, pyfile):
         download_folder = self.config['general']['download_folder']
         for script in self.scripts['download_finished']:
-            filename = save_join(download_folder, pyfile.package().folder, pyfile.name)
-            self.callScript(script, pyfile.pluginname, pyfile.url, pyfile.name, filename, pyfile.id)
+            file = save_join(download_folder, pyfile.package().folder, pyfile.name)
+            self.callScript(script, pyfile.pluginname, pyfile.url, pyfile.name, file, pyfile.id)
 
 
     def packageFinished(self, pypack):
