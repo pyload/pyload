@@ -141,7 +141,7 @@ def timestamp():
 
 
 #@TODO: Move to hoster class in 0.4.10
-def fileUrl(self, url, follow_location=None):
+def getFileURL(self, url, follow_location=None):
     link     = ""
     redirect = 1
 
@@ -246,7 +246,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.15"
+    __version__ = "1.16"
 
     __pattern__ = r'^unmatchable$'
 
@@ -311,7 +311,7 @@ class SimpleHoster(Hoster):
     LOGIN_ACCOUNT = False  #: Set to True to require account login
     DISPOSITION   = True   #: Work-around to `filename*=UTF-8` bug; remove in 0.4.10
 
-    directLink = fileUrl  #@TODO: Remove in 0.4.10
+    directLink = getFileURL  #@TODO: Remove in 0.4.10
 
 
     @classmethod
@@ -349,7 +349,7 @@ class SimpleHoster(Hoster):
                 info['error']  = "missing url"
                 info['status'] = 1
 
-            elif info['status'] is 3 and not fileUrl(None, url):
+            elif info['status'] is 3 and not getFileURL(None, url):
                 try:
                     html = getURL(url, cookies=cls.COOKIES, decode=not cls.TEXT_ENCODING)
 

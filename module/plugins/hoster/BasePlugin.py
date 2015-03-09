@@ -6,14 +6,14 @@ from urllib import unquote
 from urlparse import urljoin, urlparse
 
 from module.network.HTTPRequest import BadHeader
-from module.plugins.internal.SimpleHoster import create_getInfo, fileUrl
+from module.plugins.internal.SimpleHoster import create_getInfo, getFileURL
 from module.plugins.Hoster import Hoster
 
 
 class BasePlugin(Hoster):
     __name__    = "BasePlugin"
     __type__    = "hoster"
-    __version__ = "0.34"
+    __version__ = "0.35"
 
     __pattern__ = r'^unmatchable$'
 
@@ -51,7 +51,7 @@ class BasePlugin(Hoster):
 
         for _i in xrange(5):
             try:
-                link = fileUrl(self, unquote(pyfile.url))
+                link = getFileURL(self, unquote(pyfile.url))
 
                 if link:
                     self.download(link, ref=False, disposition=True)
