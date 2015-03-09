@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.15"
+    __version__ = "1.16"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
@@ -59,17 +59,17 @@ class UnRar(Extractor):
 
             except OSError:
                 cls.CMD = os.path.join(pypath, "UnRAR.exe")
-                p = Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, err = p.communicate()
         else:
             try:
-                p = Popen(["rar"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                p = subprocess.Popen(["rar"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, err = p.communicate()
                 cls.__name__ = "RAR"
                 cls.REPAIR = True
 
             except OSError:  #: fallback to unrar
-                p = Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, err = p.communicate()
 
         m = cls.re_version.search(out)
@@ -244,5 +244,5 @@ class UnRar(Extractor):
 
         self.manager.logDebug(" ".join(call))
 
-        p = Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return p
