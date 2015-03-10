@@ -10,7 +10,7 @@ class RestartFailed(Hook):
 
     __config__ = [("interval", "int", "Check interval in minutes", 90)]
 
-    __description__ = """Periodically restart all failed downloads in queue"""
+    __description__ = """Restart all the failed downloads in queue"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 

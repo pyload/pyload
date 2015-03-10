@@ -11,7 +11,7 @@ class UnSkipOnFail(Hook):
 
     __config__ = [("activated", "bool", "Activated", True)]
 
-    __description__ = """Queue skipped duplicates when download fails"""
+    __description__ = """Restart skipped duplicates when download fails"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
