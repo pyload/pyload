@@ -13,7 +13,7 @@ from module.utils import parseFileSize
 class AlldebridCom(MultiHoster):
     __name__    = "AlldebridCom"
     __type__    = "hoster"
-    __version__ = "0.44"
+    __version__ = "0.45"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'
 
@@ -68,11 +68,11 @@ class AlldebridCom(MultiHoster):
             pyfile.name = self.getFilename(self.link)
 
 
-    def checkFile(self):
+    def checkFile(self, rules={}):
         if self.checkDownload({'error': "<title>An error occured while processing your request</title>"}) == "error":
             self.retry(wait_time=60, reason=_("An error occured while generating link"))
 
-        return super(AlldebridCom, self).checkFile()
+        return super(AlldebridCom, self).checkFile(rules)
 
 
 getInfo = create_getInfo(AlldebridCom)

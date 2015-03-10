@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHoster import MultiHoster
 class SmoozedCom(MultiHoster):
     __name__    = "SmoozedCom"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady
 
@@ -55,9 +55,9 @@ class SmoozedCom(MultiHoster):
             self.link = header["location"][-1] if isinstance(header["location"], list) else header["location"]
 
 
-    def checkFile(self):
+    def checkFile(self, rules={}):
         if self.checkDownload({'error': '{"state":"error"}',
                                'retry': '{"state":"retry"}'}):
             self.fail(_("Error response received"))
 
-        return super(SmoozedCom, self).checkFile()
+        return super(SmoozedCom, self).checkFile(rules)

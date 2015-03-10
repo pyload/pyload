@@ -13,7 +13,7 @@ from module.utils import parseFileSize
 class OverLoadMe(MultiHoster):
     __name__    = "OverLoadMe"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __pattern__ = r'https?://.*overload\.me/.+'
 
@@ -65,12 +65,12 @@ class OverLoadMe(MultiHoster):
             pyfile.name = self.getFilename(self.link)
 
 
-    def checkFile(self):
+    def checkFile(self, rules={}):
         if self.checkDownload({"error": "<title>An error occured while processing your request</title>"})
             # usual this download can safely be retried
             self.retry(wait_time=60, reason=_("An error occured while generating link."))
 
-        return super(OverLoadMe, self).checkFile()
+        return super(OverLoadMe, self).checkFile(rules)
 
 
 getInfo = create_getInfo(OverLoadMe)

@@ -11,7 +11,7 @@ from module.utils import fs_encode
 class PremiumTo(MultiHoster):
     __name__    = "PremiumTo"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __pattern__ = r'^unmatchable$'
 
@@ -34,7 +34,7 @@ class PremiumTo(MultiHoster):
                       disposition=True)
 
 
-    def checkFile(self):
+    def checkFile(self, rules={}):
         if self.checkDownload({'nopremium': "No premium account available"}):
             self.retry(60, 5 * 60, "No premium account available")
 
@@ -49,7 +49,7 @@ class PremiumTo(MultiHoster):
         if err:
             self.fail(err)
 
-        return super(PremiumTo, self).checkFile()
+        return super(PremiumTo, self).checkFile(rules)
 
 
 getInfo = create_getInfo(PremiumTo)

@@ -12,7 +12,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class FastixRu(MultiHoster):
     __name__    = "FastixRu"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/\w{24}'
 
@@ -56,11 +56,11 @@ class FastixRu(MultiHoster):
             pyfile.name = self.getFilename(self.link)
 
 
-    def checkFile(self):
+    def checkFile(self, rules={}):
         if self.checkDownload({"error": "<title>An error occurred while processing your request</title>"}):
             self.retry(wait_time=60, reason=_("An error occurred while generating link"))
 
-        return super(FastixRu, self).checkFile()
+        return super(FastixRu, self).checkFile(rules)
 
 
 getInfo = create_getInfo(FastixRu)

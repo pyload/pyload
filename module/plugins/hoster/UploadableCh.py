@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadableCh(SimpleHoster):
     __name__    = "UploadableCh"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __pattern__ = r'http://(?:www\.)?uploadable\.ch/file/(?P<ID>\w+)'
 
@@ -66,13 +66,13 @@ class UploadableCh(SimpleHoster):
         self.download(pyfile.url, post={'download': "normal"}, disposition=True)
 
 
-    def checkFile(self):
+    def checkFile(self, rules={}):
         if self.checkDownload({'wait': re.compile("Please wait for")}):
             self.logInfo("Downloadlimit reached, please wait or reconnect")
             self.wait(60 * 60, True)
             self.retry()
 
-        return super(UploadableCh, self).checkFile()
+        return super(UploadableCh, self).checkFile(rules)
 
 
 getInfo = create_getInfo(UploadableCh)

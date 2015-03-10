@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import secondsToMidnight
 class UnrestrictLi(MultiHoster):
     __name__    = "UnrestrictLi"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __pattern__ = r'https?://(?:www\.)?(unrestrict|unr)\.li/dl/[\w^_]+'
 
@@ -67,8 +67,8 @@ class UnrestrictLi(MultiHoster):
             self.setNameSize()
 
 
-    def checkFile(self):
-        super(UnrestrictLi, self).checkFile()
+    def checkFile(self, rules={}):
+        super(UnrestrictLi, self).checkFile(rules)
 
         if self.getConfig('history'):
             self.load("https://unrestrict.li/history/", get={'delete': "all"})

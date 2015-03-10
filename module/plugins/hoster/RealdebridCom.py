@@ -14,7 +14,7 @@ from module.utils import parseFileSize
 class RealdebridCom(MultiHoster):
     __name__    = "RealdebridCom"
     __type__    = "hoster"
-    __version__ = "0.64"
+    __version__ = "0.65"
 
     __pattern__ = r'https?://((?:www\.|s\d+\.)?real-debrid\.com/dl/|[\w^_]\.rdb\.so/d/)[\w^_]+'
 
@@ -68,12 +68,12 @@ class RealdebridCom(MultiHoster):
             pyfile.name = self.getFilename(self.link)
 
 
-    def checkFile(self):
+    def checkFile(self, rules={}):
         if self.checkDownload({"error": "<title>An error occured while processing your request</title>"}):
             #usual this download can safely be retried
             self.retry(wait_time=60, reason=_("An error occured while generating link"))
 
-        return super(RealdebridCom, self).checkFile()
+        return super(RealdebridCom, self).checkFile(rules)
 
 
 getInfo = create_getInfo(RealdebridCom)

@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo, rep
 class SimplydebridCom(MultiHoster):
     __name__    = "SimplydebridCom"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __pattern__ = r'http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd\.php'
 
@@ -38,11 +38,11 @@ class SimplydebridCom(MultiHoster):
         self.wait(5)
 
 
-    def checkFile(self):
+    def checkFile(self, rules={}):
         if self.checkDownload({"error": "No address associated with hostname"}):
             self.retry(24, 3 * 60, _("Bad file downloaded"))
 
-        return super(SimplydebridCom, self).checkFile()
+        return super(SimplydebridCom, self).checkFile(rules)
 
 
 getInfo = create_getInfo(SimplydebridCom)

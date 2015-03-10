@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "0.84"
+    __version__ = "0.85"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
 
@@ -109,12 +109,12 @@ class UploadedTo(SimpleHoster):
         self.checkErrors()
 
 
-    def checkFile(self):
+    def checkFile(self, rules={}):
         if self.checkDownload({'limit-dl': self.DL_LIMIT_ERROR}):
             self.wait(3 * 60 * 60, True)
             self.retry()
 
-        return super(UploadedTo, self).checkFile()
+        return super(UploadedTo, self).checkFile(rules)
 
 
 getInfo = create_getInfo(UploadedTo)

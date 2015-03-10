@@ -14,7 +14,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ShareonlineBiz(SimpleHoster):
     __name__    = "ShareonlineBiz"
     __type__    = "hoster"
-    __version__ = "0.48"
+    __version__ = "0.49"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
 
@@ -108,7 +108,7 @@ class ShareonlineBiz(SimpleHoster):
         self.download(download_url)
 
 
-    def checkFile(self):
+    def checkFile(self, rules={}):
         check = self.checkDownload({'cookie': re.compile(r'<div id="dl_failure"'),
                                     'fail'  : re.compile(r"<title>Share-Online")})
 
@@ -120,7 +120,7 @@ class ShareonlineBiz(SimpleHoster):
             self.invalidCaptcha()
             self.retry(5, 5 * 60, _("Download failed"))
 
-        return super(ShareonlineBiz, self).checkFile()
+        return super(ShareonlineBiz, self).checkFile(rules)
 
 
     def handlePremium(self, pyfile):  #: should be working better loading (account) api internally

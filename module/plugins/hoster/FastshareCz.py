@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FastshareCz(SimpleHoster):
     __name__    = "FastshareCz"
     __type__    = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
     __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
 
@@ -57,7 +57,7 @@ class FastshareCz(SimpleHoster):
         self.download(urljoin(baseurl, action), post={'code': captcha, 'btn.x': 77, 'btn.y': 18})
 
 
-    def checkFile(self):
+    def checkFile(self, rules={}):
         check = self.checkDownload({
             'paralell-dl'  : re.compile(r"<title>FastShare.cz</title>|<script>alert\('Pres FREE muzete stahovat jen jeden soubor najednou.'\)"),
             'wrong captcha': re.compile(r'Download for FREE'),
@@ -73,7 +73,7 @@ class FastshareCz(SimpleHoster):
         elif check == "credit":
             self.resetAccount()
 
-        return super(FastshareCz, self).checkFile()
+        return super(FastshareCz, self).checkFile(rules)
 
 
 getInfo = create_getInfo(FastshareCz)
