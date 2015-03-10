@@ -246,7 +246,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.17"
+    __version__ = "1.18"
 
     __pattern__ = r'^unmatchable$'
 
@@ -537,11 +537,10 @@ class SimpleHoster(Hoster):
         elif hasattr(self, 'ERROR_PATTERN'):
             m = re.search(self.ERROR_PATTERN, self.html)
             if m:
-                errmsg
                 try:
-                    errmsg = m.group(1)
+                    errmsg = m.group(1).strip()
                 except Exception:
-                    errmsg = m.group(0)
+                    errmsg = m.group(0).strip()
 
                 self.info['error'] = errmsg
 
@@ -557,8 +556,13 @@ class SimpleHoster(Hoster):
         elif hasattr(self, 'WAIT_PATTERN'):
             m = re.search(self.WAIT_PATTERN, self.html)
             if m:
+                try:
+                    waitmsg = m.group(1).strip()
+                except Exception:
+                    waitmsg = m.group(0).strip()
+
                 wait_time = sum(int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1}[u.lower()] for v, u in
-                                re.findall(r'(\d+)\s*(hr|hour|min|sec)', m.group(0), re.I))
+                                re.findall(r'(\d+)\s*(hr|hour|min|sec)', waitmsg, re.I))
                 self.wait(wait_time, wait_time > 300)
 
         self.info.pop('error', None)
