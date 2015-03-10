@@ -16,7 +16,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilerNet(SimpleHoster):
     __name__    = "FilerNet"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
 
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'
 
@@ -61,6 +61,12 @@ class FilerNet(SimpleHoster):
             self.correctCaptcha()
         else:
             self.invalidCaptcha()
+
+
+    def checkFile(self, rules={}):
+        if self.checkDownload({'Html file': re.compile(r'\A\s*<!DOCTYPE html')}):
+            self.offline()
+        return super(FilerNet, self).checkFile(rules)
 
 
 getInfo = create_getInfo(FilerNet)
