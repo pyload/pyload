@@ -246,7 +246,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.20"
+    __version__ = "1.21"
 
     __pattern__ = r'^unmatchable$'
 
@@ -499,7 +499,7 @@ class SimpleHoster(Hoster):
             self.download(link, ref=False, disposition=disposition)
 
 
-    def checkFile(self):
+    def checkFile(self, rules={}):
         if self.cTask and not self.lastDownload:
             self.invalidCaptcha()
             self.retry(10, reason=_("Wrong captcha"))
@@ -509,24 +509,28 @@ class SimpleHoster(Hoster):
             self.error(self.pyfile.error or _("No file downloaded"))
 
         else:
-            rules = {'empty file': re.compile(r'\A\Z'),
-                     'html file' : re.compile(r'\A\s*<!DOCTYPE html'),
-                     'html error': re.compile(r'\A\s*(<.+>)?\d{3}(\Z|\s+)')}
+            errmsg = self.checkDownload({'Empty file': re.compile(r'\A\s*\Z')})
 
-            if hasattr(self, 'ERROR_PATTERN'):
-                rules['error'] = re.compile(self.ERROR_PATTERN)
+            if errmsg:
+                self.lastDownload = ""
+            else:
+                for r, p in [('html file' , re.compile(r'\A\s*<!DOCTYPE html'      )),
+                             ('html error', re.compile(r'\A\s*(<.+>)?\d{3}(\Z|\s+)'))]:
+                    if r not in rules:
+                        rules[r] = p
 
-            if hasattr(self, 'WAIT_PATTERN'):
-                rules['wait error'] = re.compile(self.WAIT_PATTERN)
+                for r, a in [('error'     , 'ERROR_PATTERN'),
+                             ('wait error', 'WAIT_PATTERN' )]:
+                    if r not in rules and hasattr(self, a):
+                        rules[r] = getattr(self, a)
 
-            check = self.checkDownload(rules)
-            if check:  #@TODO: Move to hoster in 0.4.10
-                errmsg = check.strip().capitalize()
+                errmsg = self.checkDownload(rules, delete=not self.core.debug).strip().capitalize()
                 if self.lastCheck:
                     errmsg += " | " + self.lastCheck.group(0).strip()
 
-                self.lastDownload = ""
-                self.retry(10, 60, errmsg)
+            if errmsg:
+                self.logWarning("Bad file", "Waiting 1 minute and retry")
+                self.retry(3, 60, errmsg)
 
 
     def checkErrors(self):
