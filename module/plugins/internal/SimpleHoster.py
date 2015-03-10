@@ -246,7 +246,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.19"
+    __version__ = "1.20"
 
     __pattern__ = r'^unmatchable$'
 
@@ -515,6 +515,9 @@ class SimpleHoster(Hoster):
 
             if hasattr(self, 'ERROR_PATTERN'):
                 rules['error'] = re.compile(self.ERROR_PATTERN)
+
+            if hasattr(self, 'WAIT_PATTERN'):
+                rules['wait error'] = re.compile(self.WAIT_PATTERN)
 
             check = self.checkDownload(rules)
             if check:  #@TODO: Move to hoster in 0.4.10
