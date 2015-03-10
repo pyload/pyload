@@ -246,7 +246,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.22"
+    __version__ = "1.23"
 
     __pattern__ = r'^unmatchable$'
 
@@ -510,11 +510,11 @@ class SimpleHoster(Hoster):
 
         else:
             errmsg = self.checkDownload({'Empty file': re.compile(r'\A\s*\Z'),
-                                         'Html error': re.compile(r'\A(\s*<.+>)?([\w\s]*([Ee]rror|ERROR)\s*:?)?\s*\d{3}(\Z|\s+)')})
+                                         'Html error': re.compile(r'\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)')})
 
             if not errmsg:
                 for r, p in [('Html file'    , re.compile(r'\A\s*<!DOCTYPE html')                              ),
-                             ('Unknown error', re.compile(r'[Aa]n error occured while processing your request'))]:
+                             ('Unknown error', re.compile(r'([Aa]n error occured while processing your request)'))]:
                     if r not in rules:
                         rules[r] = p
 
@@ -526,12 +526,12 @@ class SimpleHoster(Hoster):
 
                 errmsg = self.checkDownload(rules).strip().capitalize()
 
-            try:
-                errmsg += " | " + self.lastCheck.group(1).strip()
-            except Exception:
-                pass
-
             if errmsg:
+                try:
+                    errmsg += " | " + self.lastCheck.group(1).strip()
+                except Exception:
+                    pass
+
                 self.logWarning("Bad file", "Waiting 1 minute and retry")
                 self.retry(3, 60, errmsg)
 
