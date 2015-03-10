@@ -246,7 +246,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.21"
+    __version__ = "1.22"
 
     __pattern__ = r'^unmatchable$'
 
@@ -509,24 +509,27 @@ class SimpleHoster(Hoster):
             self.error(self.pyfile.error or _("No file downloaded"))
 
         else:
-            errmsg = self.checkDownload({'Empty file': re.compile(r'\A\s*\Z')})
+            errmsg = self.checkDownload({'Empty file': re.compile(r'\A\s*\Z'),
+                                         'Html error': re.compile(r'\A(\s*<.+>)?([\w\s]*([Ee]rror|ERROR)\s*:?)?\s*\d{3}(\Z|\s+)')})
 
-            if errmsg:
-                self.lastDownload = ""
-            else:
-                for r, p in [('html file' , re.compile(r'\A\s*<!DOCTYPE html'      )),
-                             ('html error', re.compile(r'\A\s*(<.+>)?\d{3}(\Z|\s+)'))]:
+            if not errmsg:
+                for r, p in [('Html file'    , re.compile(r'\A\s*<!DOCTYPE html')                              ),
+                             ('Unknown error', re.compile(r'[Aa]n error occured while processing your request'))]:
                     if r not in rules:
                         rules[r] = p
 
-                for r, a in [('error'     , 'ERROR_PATTERN'),
-                             ('wait error', 'WAIT_PATTERN' )]:
+                for r, a in [('Error'       , "ERROR_PATTERN"       ),
+                             ('Premium only', "PREMIUM_ONLY_PATTERN"),
+                             ('Wait error'  , "WAIT_PATTERN"        )]:
                     if r not in rules and hasattr(self, a):
                         rules[r] = getattr(self, a)
 
-                errmsg = self.checkDownload(rules, delete=not self.core.debug).strip().capitalize()
-                if self.lastCheck:
-                    errmsg += " | " + self.lastCheck.group(0).strip()
+                errmsg = self.checkDownload(rules).strip().capitalize()
+
+            try:
+                errmsg += " | " + self.lastCheck.group(1).strip()
+            except Exception:
+                pass
 
             if errmsg:
                 self.logWarning("Bad file", "Waiting 1 minute and retry")
