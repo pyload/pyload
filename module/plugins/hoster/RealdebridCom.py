@@ -58,7 +58,7 @@ class RealdebridCom(MultiHoster):
             pyfile.size = parseFileSize(data['file_size'])
             self.link = data['generated_links'][0][-1]
 
-        if self.getConfig("ssl"):
+        if self.getConfig('ssl'):
             self.link = self.link.replace("http://", "https://")
         else:
             self.link = self.link.replace("https://", "http://")

@@ -46,7 +46,7 @@ class LinksaveIn(OCR):
             pix = frame.load()
             for x in xrange(frame.size[0]):
                 for y in xrange(frame.size[1]):
-                    if lut[pix[x, y]] != (0,0,0):
+                    if lut[pix[x, y]] != (0, 0, 0):
                         npix[x, y] = lut[pix[x, y]]
             frame_nr += 1
         new.save(self.data_dir+"unblacked.png")
@@ -112,7 +112,7 @@ class LinksaveIn(OCR):
                 rgb_bg = bglut[bgpix[x, y]]
                 rgb_c = lut[pix[x, y]]
                 if rgb_c == rgb_bg:
-                    orgpix[x, y] = (255,255,255)
+                    orgpix[x, y] = (255, 255, 255)
 
 
     def eval_black_white(self):
@@ -126,13 +126,13 @@ class LinksaveIn(OCR):
                 r, g, b = rgb
                 pix[x, y] = (255,255,255)
                 if r > max(b, g)+thresh:
-                    pix[x, y] = (0,0,0)
+                    pix[x, y] = (0, 0, 0)
                 if g < min(r, b):
-                    pix[x, y] = (0,0,0)
+                    pix[x, y] = (0, 0, 0)
                 if g > max(r, b)+thresh:
-                    pix[x, y] = (0,0,0)
+                    pix[x, y] = (0, 0, 0)
                 if b > max(r, g)+thresh:
-                    pix[x, y] = (0,0,0)
+                    pix[x, y] = (0, 0, 0)
         self.image = new
         self.pixels = self.image.load()
 

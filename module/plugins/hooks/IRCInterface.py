@@ -59,7 +59,7 @@ class IRCInterface(Thread, Hook):
 
     def packageFinished(self, pypack):
         try:
-            if self.getConfig("info_pack"):
+            if self.getConfig('info_pack'):
                 self.response(_("Package finished: %s") % pypack.name)
         except Exception:
             pass
@@ -67,7 +67,7 @@ class IRCInterface(Thread, Hook):
 
     def downloadFinished(self, pyfile):
         try:
-            if self.getConfig("info_file"):
+            if self.getConfig('info_file'):
                 self.response(
                     _("Download finished: %(name)s @ %(plugin)s ") % {"name": pyfile.name, "plugin": pyfile.pluginname})
         except Exception:
@@ -75,7 +75,7 @@ class IRCInterface(Thread, Hook):
 
 
     def newCaptchaTask(self, task):
-        if self.getConfig("captcha") and task.isTextual():
+        if self.getConfig('captcha') and task.isTextual():
             task.handler.append(self)
             task.setWaiting(60)
 
@@ -90,16 +90,16 @@ class IRCInterface(Thread, Hook):
     def run(self):
         # connect to IRC etc.
         self.sock = socket.socket()
-        host = self.getConfig("host")
-        self.sock.connect((host, self.getConfig("port")))
+        host = self.getConfig('host')
+        self.sock.connect((host, self.getConfig('port')))
 
-        if self.getConfig("ssl"):
+        if self.getConfig('ssl'):
             self.sock = ssl.wrap_socket(self.sock, cert_reqs=ssl.CERT_NONE)  #@TODO: support certificate
 
-        nick = self.getConfig("nick")
+        nick = self.getConfig('nick')
         self.sock.send("NICK %s\r\n" % nick)
         self.sock.send("USER %s %s bla :%s\r\n" % (nick, host, nick))
-        for t in self.getConfig("owner").split():
+        for t in self.getConfig('owner').split():
             if t.strip().startswith("#"):
                 self.sock.send("JOIN %s\r\n" % t.strip())
         self.logInfo(_("Connected to"), host)
@@ -153,10 +153,10 @@ class IRCInterface(Thread, Hook):
 
 
     def handle_events(self, msg):
-        if not msg['origin'].split("!", 1)[0] in self.getConfig("owner").split():
+        if not msg['origin'].split("!", 1)[0] in self.getConfig('owner').split():
             return
 
-        if msg['target'].split("!", 1)[0] != self.getConfig("nick"):
+        if msg['target'].split("!", 1)[0] != self.getConfig('nick'):
             return
 
         if msg['action'] != "PRIVMSG":
@@ -197,7 +197,7 @@ class IRCInterface(Thread, Hook):
 
     def response(self, msg, origin=""):
         if origin == "":
-            for t in self.getConfig("owner").split():
+            for t in self.getConfig('owner').split():
                 self.sock.send("PRIVMSG %s :%s\r\n" % (t.strip(), msg))
         else:
             self.sock.send("PRIVMSG %s :%s\r\n" % (origin.split("!", 1)[0], msg))

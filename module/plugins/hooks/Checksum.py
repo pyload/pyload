@@ -70,7 +70,7 @@ class Checksum(Hook):
 
 
     def coreReady(self):
-        if not self.getConfig("check_checksum"):
+        if not self.getConfig('check_checksum'):
             self.logInfo(_("Checksum validation is disabled in plugin configuration"))
 
 
@@ -125,7 +125,7 @@ class Checksum(Hook):
             data.pop('size', None)
 
         # validate checksum
-        if data and self.getConfig("check_checksum"):
+        if data and self.getConfig('check_checksum'):
 
             if not 'md5' in data:
                 for type in ("checksum", "hashsum", "hash"):
@@ -152,14 +152,14 @@ class Checksum(Hook):
 
 
     def checkFailed(self, pyfile, local_file, msg):
-        check_action = self.getConfig("check_action")
+        check_action = self.getConfig('check_action')
         if check_action == "retry":
-            max_tries = self.getConfig("max_tries")
-            retry_action = self.getConfig("retry_action")
+            max_tries = self.getConfig('max_tries')
+            retry_action = self.getConfig('retry_action')
             if pyfile.plugin.retries < max_tries:
                 if local_file:
                     remove(local_file)
-                pyfile.plugin.retry(max_tries, self.getConfig("wait_time"), msg)
+                pyfile.plugin.retry(max_tries, self.getConfig('wait_time'), msg)
             elif retry_action == "nothing":
                 return
         elif check_action == "nothing":

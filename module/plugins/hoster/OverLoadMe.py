@@ -39,7 +39,7 @@ class OverLoadMe(MultiHoster):
 
 
     def handlePremium(self, pyfile):
-        https = "https" if self.getConfig("ssl") else "http"
+        https = "https" if self.getConfig('ssl') else "http"
         data  = self.account.getAccountData(self.user)
         page  = self.load(https + "://api.over-load.me/getdownload.php",
                           get={'auth': data['password'],
@@ -58,7 +58,7 @@ class OverLoadMe(MultiHoster):
                 pyfile.size = parseFileSize(data['filesize'])
 
             http_repl = ["http://", "https://"]
-            self.link = data['downloadlink'].replace(*http_repl if self.getConfig("ssl") else *http_repl[::-1])
+            self.link = data['downloadlink'].replace(*http_repl if self.getConfig('ssl') else *http_repl[::-1])
 
         if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown") or pyfile.name.endswith('..'):
             # only use when name wasn't already set

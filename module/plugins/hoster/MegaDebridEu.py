@@ -79,7 +79,7 @@ class MegaDebridEu(MultiHoster):
         exit the plugin on fail case
         And display the reason of this failure
         """
-        if self.getConfig("unloadFailing"):
+        if self.getConfig('unloadFailing'):
             self.logError(_(msg))
             self.resetAccount()
         else:

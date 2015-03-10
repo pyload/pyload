@@ -22,9 +22,9 @@ class XFSHoster(SimpleHoster):
 
     __description__ = """XFileSharing hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
-                       ("stickell", "l.stickell@yahoo.it"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("zoidberg"      , "zoidberg@mujmail.cz"),
+                       ("stickell"      , "l.stickell@yahoo.it"),
+                       ("Walter Purcaro", "vuolter@gmail.com"  )]
 
 
     HOSTER_DOMAIN = None
@@ -103,7 +103,7 @@ class XFSHoster(SimpleHoster):
 
             self.req.http.c.setopt(FOLLOWLOCATION, 0)
 
-            self.html = self.load(pyfile.url, post=data, ref=True, decode=True)
+            self.html = self.load(pyfile.url, post=data, decode=True)
 
             self.req.http.c.setopt(FOLLOWLOCATION, 1)
 

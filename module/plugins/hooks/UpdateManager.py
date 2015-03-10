@@ -46,13 +46,13 @@ class UpdateManager(Hook):
 
     SERVER_URL   = "http://updatemanager.pyload.org"
     VERSION      = re.compile(r'__version__.*=.*("|\')([\d.]+)')
-    MIN_INTERVAL = 3 * 60 * 60  #: 3h minimum check interval (value is in seconds)
+    MIN_CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
 
 
     def pluginConfigChanged(self, plugin, name, value):
         if name == "interval":
             interval = value * 60 * 60
-            if self.MIN_INTERVAL <= interval != self.interval:
+            if self.MIN_CHECK_INTERVAL <= interval != self.interval:
                 self.core.scheduler.removeJob(self.cb)
                 self.interval = interval
                 self.initPeriodical()
@@ -67,8 +67,8 @@ class UpdateManager(Hook):
 
 
     def coreReady(self):
-        self.pluginConfigChanged(self.__name__, "interval", self.getConfig("interval"))
-        x = lambda: self.pluginConfigChanged(self.__name__, "reloadplugins", self.getConfig("reloadplugins"))
+        self.pluginConfigChanged(self.__name__, "interval", self.getConfig('interval'))
+        x = lambda: self.pluginConfigChanged(self.__name__, "reloadplugins", self.getConfig('reloadplugins'))
         self.core.scheduler.addJob(10, x, threaded=False)
 
 
@@ -78,7 +78,7 @@ class UpdateManager(Hook):
 
     def setup(self):
         self.cb2      = None
-        self.interval = self.MIN_INTERVAL
+        self.interval = self.MIN_CHECK_INTERVAL
         self.updating = False
         self.info     = {'pyload': False, 'version': None, 'plugins': False}
         self.mtimes   = {}  #: store modification time for each plugin
@@ -122,7 +122,7 @@ class UpdateManager(Hook):
 
 
     def periodical(self):
-        if not self.info['pyload'] and not (self.getConfig("nodebugupdate") and self.core.debug):
+        if not self.info['pyload'] and not (self.getConfig('nodebugupdate') and self.core.debug):
             self.updateThread()
 
 
@@ -138,9 +138,9 @@ class UpdateManager(Hook):
     def updateThread(self):
         self.updating = True
 
-        status = self.update(onlyplugin=self.getConfig("mode") == "plugins only")
+        status = self.update(onlyplugin=self.getConfig('mode') == "plugins only")
 
-        if status is 2 and self.getConfig("autorestart"):
+        if status is 2 and self.getConfig('autorestart'):
             self.core.api.restart()
         else:
             self.updating = False

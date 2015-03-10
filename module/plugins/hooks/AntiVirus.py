@@ -13,7 +13,7 @@ class AntiVirus(Hook):
     __type__    = "hook"
     __version__ = "0.04"
 
-    __config__ = [("action"    , "Antivirus default;Delete;Quarantine", "Manage infected files"                    , "Antivirus default"),
+    __config__ = [("action"    , "Antivirus default;Delete;Quarantine", "Manage infected files"                    , "Antivirus default"),  #@TODO: add trash option (use Send2Trash lib)
                   ("quardir"   , "folder"                             , "Quarantine folder"                        , ""                 ),
                   ("scanfailed", "bool"                               , "Scan incompleted files (failed downloads)", False              ),
                   ("cmdfile"   , "file"                               , "Antivirus executable"                     , ""                 ),
@@ -55,7 +55,7 @@ class AntiVirus(Hook):
             if err:
                 self.logWarning(filename, err)
                 if not self.getConfig('ignore-err')
-                    self.logDebug("Delete/Quarantine action aborted")
+                    self.logDebug("Delete/Quarantine task is aborted")
                     return
 
             if p.returncode:
@@ -68,8 +68,7 @@ class AntiVirus(Hook):
                     elif action == "Quarantine":
                         pyfile.setCustomStatus(_("file moving"))
                         pyfile.setProgress(0)
-                        new_filename = save_join(self.getConfig('quardir'), filename)
-                        shutil.move(file, new_filename)
+                        shutil.move(file, self.getConfig('quardir'))
 
                 except (IOError, shutil.Error), e:
                     self.logError(filename, action + " action failed!", e)

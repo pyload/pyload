@@ -26,9 +26,9 @@ class UnRar(Extractor):
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+    __authors__     = [("RaNaN"         , "RaNaN@pyload.org" ),
                        ("Walter Purcaro", "vuolter@gmail.com"),
-                       ("Immenz", "immenz@gmx.net"),]
+                       ("Immenz"        , "immenz@gmx.net"   )]
 
 
     CMD = "unrar"
@@ -79,7 +79,7 @@ class UnRar(Extractor):
 
 
     @classmethod
-    def isMultipart(cls,filename):
+    def isMultipart(cls, filename):
         multipart = cls.re_multipart.search(filename)
         if multipart:
             # First Multipart file (part1.rar for *.part1-9.rar format or *.rar for .r1-9 format) handled as normal Archive

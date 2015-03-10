@@ -38,7 +38,7 @@ class NetloadIn(Account):
                               "txtpass" : data['password'],
                               "txtcheck": "login",
                               "txtlogin": "Login"},
-                        cookies=True,
                         decode=True)
+
         if "password or it might be invalid!" in html:
             self.wrongPassword()

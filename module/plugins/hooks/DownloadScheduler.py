@@ -37,7 +37,7 @@ class DownloadScheduler(Hook):
 
     def updateSchedule(self, schedule=None):
         if schedule is None:
-            schedule = self.getConfig("timetable")
+            schedule = self.getConfig('timetable')
 
         schedule = re.findall("(\d{1,2}):(\d{2})[\s]*(-?\d+)",
                               schedule.lower().replace("full", "-1").replace("none", "0"))
@@ -65,7 +65,7 @@ class DownloadScheduler(Hook):
 
     def setDownloadSpeed(self, speed):
         if speed == 0:
-            abort = self.getConfig("abort")
+            abort = self.getConfig('abort')
             self.logInfo(_("Stopping download server. (Running downloads will %sbe aborted.)") % '' if abort else _('not '))
             self.core.api.pauseServer()
             if abort:

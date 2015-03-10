@@ -46,7 +46,6 @@ class FreakshareCom(Account):
 
         html = req.load("http://freakshare.com/login.html",
                         post={"submit": "Login", "user": user, "pass": data['password']},
-                        cookies=True,
                         decode=True)
 
         if ">Wrong Username or Password" in html:

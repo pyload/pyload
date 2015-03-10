@@ -108,7 +108,7 @@ class FileSharkPl(SimpleHoster):
 
         self.load = tmp_load
 
-        self.download(link, post=inputs, cookies=True, disposition=True)
+        self.download(link, post=inputs, disposition=True)
 
 
     def checkFile(self):

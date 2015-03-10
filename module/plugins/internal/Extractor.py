@@ -23,9 +23,9 @@ class Extractor:
 
     __description__ = """Base extractor plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "ranan@pyload.org"),
+    __authors__     = [("RaNaN"         , "ranan@pyload.org" ),
                        ("Walter Purcaro", "vuolter@gmail.com"),
-                       ("Immenz", "immenz@gmx.net")]
+                       ("Immenz"        , "immenz@gmx.net"   )]
 
 
     EXTENSIONS = []
@@ -40,7 +40,7 @@ class Extractor:
 
 
     @classmethod
-    def isMultipart(cls,filename):
+    def isMultipart(cls, filename):
         return False
 
 

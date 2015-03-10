@@ -61,8 +61,8 @@ class ImageTyperz(Hook):
     def getCredits(self):
         res = getURL(self.GETCREDITS_URL,
                      post={'action': "REQUESTBALANCE",
-                           'username': self.getConfig("username"),
-                           'password': self.getConfig("passkey")})
+                           'username': self.getConfig('username'),
+                           'password': self.getConfig('passkey')})
 
         if res.startswith('ERROR'):
             raise ImageTyperzException(res)
@@ -83,7 +83,7 @@ class ImageTyperz(Hook):
 
         try:
             #@NOTE: Workaround multipart-post bug in HTTPRequest.py
-            if re.match("^\w*$", self.getConfig("passkey")):
+            if re.match("^\w*$", self.getConfig('passkey')):
                 multipart = True
                 data = (FORM_FILE, captcha)
             else:
@@ -94,8 +94,8 @@ class ImageTyperz(Hook):
 
             res = req.load(self.SUBMIT_URL,
                            post={'action': "UPLOADCAPTCHA",
-                                 'username': self.getConfig("username"),
-                                 'password': self.getConfig("passkey"), "file": data},
+                                 'username': self.getConfig('username'),
+                                 'password': self.getConfig('passkey'), "file": data},
                            multipart=multipart)
         finally:
             req.close()
@@ -119,10 +119,10 @@ class ImageTyperz(Hook):
         if not task.isTextual():
             return False
 
-        if not self.getConfig("username") or not self.getConfig("passkey"):
+        if not self.getConfig('username') or not self.getConfig('passkey'):
             return False
 
-        if self.core.isClientConnected() and not self.getConfig("force"):
+        if self.core.isClientConnected() and not self.getConfig('force'):
             return False
 
         if self.getCredits() > 0:
@@ -139,8 +139,8 @@ class ImageTyperz(Hook):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             res = getURL(self.RESPOND_URL,
                          post={'action': "SETBADIMAGE",
-                               'username': self.getConfig("username"),
-                               'password': self.getConfig("passkey"),
+                               'username': self.getConfig('username'),
+                               'password': self.getConfig('passkey'),
                                'imageid': task.data['ticket']})
 
             if res == "SUCCESS":

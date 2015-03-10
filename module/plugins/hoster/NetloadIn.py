@@ -172,7 +172,7 @@ class NetloadIn(Hoster):
         self.url = self.get_file_url(page)
 
 
-    def check_free_wait(self,page):
+    def check_free_wait(self, page):
         if ">An access request has been made from IP address <" in page:
             self.wantReconnect = True
             self.setWait(self.get_wait_time(page) or 30)

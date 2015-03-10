@@ -80,7 +80,7 @@ class BitshareCom(SimpleHoster):
     def getDownloadUrl(self):
         # Return location if direct download is active
         if self.premium:
-            header = self.load(self.pyfile.url, cookies=True, just_header=True)
+            header = self.load(self.pyfile.url, just_header=True)
             if 'location' in header:
                 return header['location']
 

@@ -38,23 +38,23 @@ class IfolderRu(SimpleHoster):
 
 
     def handleFree(self, pyfile):
-        self.html = self.load("http://rusfolder.com/%s" % self.info['pattern']['ID'], cookies=True, decode=True)
+        self.html = self.load("http://rusfolder.com/%s" % self.info['pattern']['ID'], decode=True)
         self.getFileInfo()
 
         url = re.search(r"location\.href = '(http://ints\..*?=)'", self.html).group(1)
-        self.html = self.load(url, cookies=True, decode=True)
+        self.html = self.load(url, decode=True)
 
         url, session_id = re.search(self.SESSION_ID_PATTERN, self.html).groups()
-        self.html = self.load(url, cookies=True, decode=True)
+        self.html = self.load(url, decode=True)
 
         url = "http://ints.rusfolder.com/ints/frame/?session=%s" % session_id
-        self.html = self.load(url, cookies=True)
+        self.html = self.load(url)
 
         self.wait(31, False)
 
         captcha_url = "http://ints.rusfolder.com/random/images/?session=%s" % session_id
         for _i in xrange(5):
-            self.html = self.load(url, cookies=True)
+            self.html = self.load(url)
             action, inputs = self.parseHtmlForm('ID="Form1"')
             inputs['ints_session'] = re.search(self.INTS_SESSION_PATTERN, self.html).group(1)
             inputs[re.search(self.HIDDEN_INPUT_PATTERN, self.html).group(1)] = '1'
@@ -62,7 +62,7 @@ class IfolderRu(SimpleHoster):
             inputs['action'] = '1'
             self.logDebug(inputs)
 
-            self.html = self.load(url, decode=True, cookies=True, post=inputs)
+            self.html = self.load(url, decode=True, post=inputs)
             if self.WRONG_CAPTCHA_PATTERN in self.html:
                 self.invalidCaptcha()
             else:

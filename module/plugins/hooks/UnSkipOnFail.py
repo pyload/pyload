@@ -43,7 +43,7 @@ class UnSkipOnFail(Hook):
             #  the core.files-manager to save its data.
             pylink = _pyfile(link)
 
-            pylink.setCustomStatus("UnSkipOnFail", "queued")
+            pylink.setCustomStatus(_("unskipped"), "queued")
 
             self.core.files.save()
             pylink.release()

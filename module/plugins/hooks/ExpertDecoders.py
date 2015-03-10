@@ -38,7 +38,7 @@ class ExpertDecoders(Hook):
 
 
     def getCredits(self):
-        res = getURL(self.API_URL, post={"key": self.getConfig("passkey"), "action": "balance"})
+        res = getURL(self.API_URL, post={"key": self.getConfig('passkey'), "action": "balance"})
 
         if res.isdigit():
             self.logInfo(_("%s credits left") % res)
@@ -64,7 +64,7 @@ class ExpertDecoders(Hook):
         try:
             result = req.load(self.API_URL,
                               post={'action'     : "upload",
-                                    'key'        : self.getConfig("passkey"),
+                                    'key'        : self.getConfig('passkey'),
                                     'file'       : b64encode(data),
                                     'gen_task_id': ticket})
         finally:
@@ -78,10 +78,10 @@ class ExpertDecoders(Hook):
         if not task.isTextual():
             return False
 
-        if not self.getConfig("passkey"):
+        if not self.getConfig('passkey'):
             return False
 
-        if self.core.isClientConnected() and not self.getConfig("force"):
+        if self.core.isClientConnected() and not self.getConfig('force'):
             return False
 
         if self.getCredits() > 0:
@@ -98,7 +98,7 @@ class ExpertDecoders(Hook):
 
             try:
                 res = getURL(self.API_URL,
-                             post={'action': "refund", 'key': self.getConfig("passkey"), 'gen_task_id': task.data['ticket']})
+                             post={'action': "refund", 'key': self.getConfig('passkey'), 'gen_task_id': task.data['ticket']})
                 self.logInfo(_("Request refund"), res)
 
             except BadHeader, e:

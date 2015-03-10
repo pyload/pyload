@@ -46,14 +46,14 @@ class VimeoCom(SimpleHoster):
 
         link = dict((l.group('QL').lower(), l.group('URL')) for l in re.finditer(pattern, html))
 
-        if self.getConfig("original"):
+        if self.getConfig('original'):
             if "original" in link:
                 self.download(link[q])
                 return
             else:
                 self.logInfo(_("Original file not downloadable"))
 
-        quality = self.getConfig("quality")
+        quality = self.getConfig('quality')
         if quality == "Highest":
             qlevel = ("hd", "sd", "mobile")
         elif quality == "Lowest":

@@ -46,7 +46,7 @@ class UlozTo(SimpleHoster):
 
     def process(self, pyfile):
         pyfile.url = re.sub(r"(?<=http://)([^/]+)", "www.ulozto.net", pyfile.url)
-        self.html = self.load(pyfile.url, decode=True, cookies=True)
+        self.html = self.load(pyfile.url, decode=True)
 
         if re.search(self.ADULT_PATTERN, self.html):
             self.logInfo(_("Adult content confirmation needed"))
@@ -57,7 +57,7 @@ class UlozTo(SimpleHoster):
             token = m.group(1)
 
             self.html = self.load(pyfile.url, get={'do': "askAgeForm-submit"},
-                                  post={"agree": "Confirm", "_token_": token}, cookies=True)
+                                  post={"agree": "Confirm", "_token_": token})
 
         if self.PASSWD_PATTERN in self.html:
             password = self.getPassword()
@@ -65,7 +65,7 @@ class UlozTo(SimpleHoster):
             if password:
                 self.logInfo(_("Password protected link, trying ") + password)
                 self.html = self.load(pyfile.url, get={'do': "passwordProtectedForm-submit"},
-                                      post={"password": password, "password_send": 'Send'}, cookies=True)
+                                      post={"password": password, "password_send": 'Send'})
 
                 if self.PASSWD_PATTERN in self.html:
                     self.fail(_("Incorrect password"))
@@ -117,7 +117,7 @@ class UlozTo(SimpleHoster):
             self.error(_("CAPTCHA form changed"))
 
         self.multiDL = True
-        self.download("http://www.ulozto.net" + action, post=inputs, cookies=True, disposition=True)
+        self.download("http://www.ulozto.net" + action, post=inputs, disposition=True)
 
 
     def handlePremium(self, pyfile):

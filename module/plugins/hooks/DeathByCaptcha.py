@@ -82,8 +82,8 @@ class DeathByCaptcha(Hook):
         if post:
             if not isinstance(post, dict):
                 post = {}
-            post.update({"username": self.getConfig("username"),
-                         "password": self.getConfig("passkey")})
+            post.update({"username": self.getConfig('username'),
+                         "password": self.getConfig('passkey')})
 
         res = None
         try:
@@ -136,7 +136,7 @@ class DeathByCaptcha(Hook):
 
     def submit(self, captcha, captchaType="file", match=None):
         #@NOTE: Workaround multipart-post bug in HTTPRequest.py
-        if re.match("^\w*$", self.getConfig("passkey")):
+        if re.match("^\w*$", self.getConfig('passkey')):
             multipart = True
             data = (FORM_FILE, captcha)
         else:
@@ -172,10 +172,10 @@ class DeathByCaptcha(Hook):
         if not task.isTextual():
             return False
 
-        if not self.getConfig("username") or not self.getConfig("passkey"):
+        if not self.getConfig('username') or not self.getConfig('passkey'):
             return False
 
-        if self.core.isClientConnected() and not self.getConfig("force"):
+        if self.core.isClientConnected() and not self.getConfig('force'):
             return False
 
         try:

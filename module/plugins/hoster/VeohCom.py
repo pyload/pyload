@@ -33,7 +33,7 @@ class VeohCom(SimpleHoster):
 
 
     def handleFree(self, pyfile):
-        quality = self.getConfig("quality")
+        quality = self.getConfig('quality')
         if quality == "Auto":
             quality = ("High", "Low")
 

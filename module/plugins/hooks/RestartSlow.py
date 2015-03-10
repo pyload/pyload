@@ -36,7 +36,7 @@ class RestartSlow(Hook):
         if not self.pyfile.plugin.req.dl:
             return
 
-        if self.getConfig("safe_mode") and not self.pyfile.plugin.resumeDownload:
+        if self.getConfig('safe_mode') and not self.pyfile.plugin.resumeDownload:
             time  = 30
             limit = 5
         else:
@@ -55,7 +55,7 @@ class RestartSlow(Hook):
 
 
     def downloadStarts(self, pyfile, url, filename):
-        if self.cb or (self.getConfig("safe_mode") and not pyfile.plugin.resumeDownload):
+        if self.cb or (self.getConfig('safe_mode') and not pyfile.plugin.resumeDownload):
             return
         self.pyfile = pyfile
         super(RestartSlow, self).initPeriodical()

@@ -35,13 +35,13 @@ class UploadableCh(SimpleHoster):
 
     def handleFree(self, pyfile):
         # Click the "free user" button and wait
-        a = self.load(pyfile.url, cookies=True, post={'downloadLink': "wait"}, decode=True)
+        a = self.load(pyfile.url, post={'downloadLink': "wait"}, decode=True)
         self.logDebug(a)
 
         self.wait(30)
 
         # Make the recaptcha appear and show it the pyload interface
-        b = self.load(pyfile.url, cookies=True, post={'checkDownload': "check"}, decode=True)
+        b = self.load(pyfile.url, post={'checkDownload': "check"}, decode=True)
         self.logDebug(b)  #: Expected output: {"success":"showCaptcha"}
 
         recaptcha = ReCaptcha(self)
@@ -50,7 +50,6 @@ class UploadableCh(SimpleHoster):
 
         # Submit the captcha solution
         self.load("http://www.uploadable.ch/checkReCaptcha.php",
-                  cookies=True,
                   post={'recaptcha_challenge_field'  : challenge,
                         'recaptcha_response_field'   : response,
                         'recaptcha_shortencode_field': self.info['pattern']['ID']},
@@ -59,12 +58,12 @@ class UploadableCh(SimpleHoster):
         self.wait(3)
 
         # Get ready for downloading
-        self.load(pyfile.url, cookies=True, post={'downloadLink': "show"}, decode=True)
+        self.load(pyfile.url, post={'downloadLink': "show"}, decode=True)
 
         self.wait(3)
 
         # Download the file
-        self.download(pyfile.url, cookies=True, post={'download': "normal"}, disposition=True)
+        self.download(pyfile.url, post={'download': "normal"}, disposition=True)
 
 
     def checkFile(self):

@@ -70,7 +70,7 @@ class UnrestrictLi(MultiHoster):
     def checkFile(self):
         super(UnrestrictLi, self).checkFile()
 
-        if self.getConfig("history"):
+        if self.getConfig('history'):
             self.load("https://unrestrict.li/history/", get={'delete': "all"})
             self.logInfo(_("Download history deleted"))
 

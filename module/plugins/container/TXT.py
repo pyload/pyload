@@ -23,7 +23,7 @@ class TXT(Container):
 
     def decrypt(self, pyfile):
         try:
-            encoding = codecs.lookup(self.getConfig("encoding")).name
+            encoding = codecs.lookup(self.getConfig('encoding')).name
 
         except Exception:
             encoding = "utf-8"
@@ -57,7 +57,7 @@ class TXT(Container):
             if not value:
                 packages.pop(key, None)
 
-        if self.getConfig("flush"):
+        if self.getConfig('flush'):
             try:
                 txt = open(fs_filename, 'wb')
                 txt.close()

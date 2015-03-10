@@ -95,7 +95,7 @@ class YoutubeCom(Hoster):
             self.tempOffline()
 
         #get config
-        use3d = self.getConfig("3d")
+        use3d = self.getConfig('3d')
 
         if use3d:
             quality = {"sd": 82, "hd": 84, "fullhd": 85, "240p": 83, "360p": 82,
@@ -104,10 +104,10 @@ class YoutubeCom(Hoster):
             quality = {"sd": 18, "hd": 22, "fullhd": 37, "240p": 5, "360p": 18,
                        "480p": 35, "720p": 22, "1080p": 37, "3072p": 38}
 
-        desired_fmt = self.getConfig("fmt")
+        desired_fmt = self.getConfig('fmt')
 
         if not desired_fmt:
-            desired_fmt = quality.get(self.getConfig("quality"), 18)
+            desired_fmt = quality.get(self.getConfig('quality'), 18)
 
         elif desired_fmt not in self.formats:
             self.logWarning(_("FMT %d unknown, using default") % desired_fmt)

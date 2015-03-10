@@ -43,7 +43,7 @@ class CzshareCom(SimpleHoster):
         m = re.search(self.USER_CREDIT_PATTERN, self.html)
         if m is None:
             self.account.relogin(self.user)
-            self.html = self.load(self.pyfile.url, cookies=True, decode=True)
+            self.html = self.load(self.pyfile.url, decode=True)
             m = re.search(self.USER_CREDIT_PATTERN, self.html)
             if m is None:
                 return False
@@ -87,7 +87,7 @@ class CzshareCom(SimpleHoster):
         self.logDebug("PARSED_URL:" + parsed_url)
 
         # get download ticket and parse html
-        self.html = self.load(parsed_url, cookies=True, decode=True)
+        self.html = self.load(parsed_url, decode=True)
         if re.search(self.MULTIDL_PATTERN, self.html):
             self.longWait(5 * 60, 12)
 
@@ -104,7 +104,7 @@ class CzshareCom(SimpleHoster):
         captcha_url = 'http://sdilej.cz/captcha.php'
         for _i in xrange(5):
             inputs['captchastring2'] = self.decryptCaptcha(captcha_url)
-            self.html = self.load(parsed_url, cookies=True, post=inputs, decode=True)
+            self.html = self.load(parsed_url, post=inputs, decode=True)
 
             if u"<li>Zadaný ověřovací kód nesouhlasí!</li>" in self.html:
                 self.invalidCaptcha()

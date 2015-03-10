@@ -11,16 +11,10 @@ from module.plugins.Hook import Hook
 from module.plugins.Plugin import SkipDownload
 
 
-def _setup(self):
-    self.pyfile.plugin._setup()
-    if self.pyfile.hasStatus("skipped"):
-        raise SkipDownload(self.pyfile.statusname or self.pyfile.pluginname)
-
-
 class SkipRev(Hook):
     __name__    = "SkipRev"
     __type__    = "hook"
-    __version__ = "0.28"
+    __version__ = "0.29"
 
     __config__ = [("mode"     , "Auto;Manual", "Choose rev files to skip for package", "Auto"),
                   ("revtokeep", "int"        , "Number of rev files to keep"         , 0     )]
@@ -33,6 +27,13 @@ class SkipRev(Hook):
     #@TODO: Remove in 0.4.10
     def initPeriodical(self):
         pass
+
+
+    @staticmethod
+    def _setup(self):
+        self.pyfile.plugin._setup()
+        if self.pyfile.hasStatus("skipped"):
+            raise SkipDownload(self.pyfile.statusname or self.pyfile.pluginname)
 
 
     def _name(self, pyfile):
@@ -59,7 +60,7 @@ class SkipRev(Hook):
     def downloadPreparing(self, pyfile):
         name = self._name(pyfile)
 
-        if pyfile.statusname is "unskipped" or not name.endswith(".rev") or not ".part" in name:
+        if pyfile.statusname is _("unskipped") or not name.endswith(".rev") or not ".part" in name:
             return
 
         revtokeep = -1 if self.getConfig('mode') == "Auto" else self.getConfig('revtokeep')
@@ -77,8 +78,9 @@ class SkipRev(Hook):
         pyfile.setCustomStatus("SkipRev", "skipped")
 
         if not hasattr(pyfile.plugin, "_setup"):
+            # Work-around: inject status checker inside the preprocessing routine of the plugin
             pyfile.plugin._setup = pyfile.plugin.setup
-            pyfile.plugin.setup  = MethodType(_setup, pyfile.plugin)  #: work-around: inject status checker inside the preprocessing routine of the plugin
+            pyfile.plugin.setup  = MethodType(self._setup, pyfile.plugin)
 
 
     def downloadFailed(self, pyfile):
@@ -101,7 +103,7 @@ class SkipRev(Hook):
                 if revtokeep > -1 or pyfile.name.endswith(".rev"):
                     pylink.setStatus("queued")
                 else:
-                    pylink.setCustomStatus("unskipped", "queued")
+                    pylink.setCustomStatus(_("unskipped"), "queued")
 
                 self.core.files.save()
                 pylink.release()

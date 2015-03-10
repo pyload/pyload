@@ -14,7 +14,7 @@ class SevenZip(UnRar):
 
     __description__ = """7-Zip extractor plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("Michael Nowak", ""),
+    __authors__     = [("Michael Nowak" , ""                 ),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
@@ -41,7 +41,7 @@ class SevenZip(UnRar):
         if os.name == "nt":
             cls.CMD = os.path.join(pypath, "7z.exe")
             p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            out,err = p.communicate()
+            out, err = p.communicate()
         else:
             p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = p.communicate()

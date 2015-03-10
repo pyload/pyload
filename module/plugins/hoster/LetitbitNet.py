@@ -75,7 +75,7 @@ class LetitbitNet(SimpleHoster):
         self.logDebug(action, inputs)
         inputs['desc'] = ""
 
-        self.html = self.load(urljoin("http://letitbit.net/", action), post=inputs, cookies=True)
+        self.html = self.load(urljoin("http://letitbit.net/", action), post=inputs)
 
         m = re.search(self.SECONDS_PATTERN, self.html)
         seconds = int(m.group(1)) if m else 60
@@ -89,7 +89,7 @@ class LetitbitNet(SimpleHoster):
 
         self.wait(seconds)
 
-        res = self.load("http://letitbit.net/ajax/download3.php", post=" ", cookies=True)
+        res = self.load("http://letitbit.net/ajax/download3.php", post=" ")
         if res != '1':
             self.error(_("Unknown response - ajax_check_url"))
 
@@ -104,7 +104,7 @@ class LetitbitNet(SimpleHoster):
 
         self.logDebug("Post data to send", post_data)
 
-        res = self.load("http://letitbit.net/ajax/check_recaptcha.php", post=post_data, cookies=True)
+        res = self.load("http://letitbit.net/ajax/check_recaptcha.php", post=post_data)
 
         self.logDebug(res)
 

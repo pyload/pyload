@@ -35,8 +35,8 @@ class XHamsterCom(Hoster):
         if not self.file_exists():
             self.offline()
 
-        if self.getConfig("type"):
-            self.desired_fmt = self.getConfig("type")
+        if self.getConfig('type'):
+            self.desired_fmt = self.getConfig('type')
 
         pyfile.name = self.get_file_name() + self.desired_fmt
         self.download(self.get_file_url())

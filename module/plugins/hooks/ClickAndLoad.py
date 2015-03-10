@@ -45,7 +45,7 @@ class ClickAndLoad(Hook):
         if not self.config['webinterface']['activated']:
             return
 
-        ip      = "" if self.getConfig("extern") else "127.0.0.1"
+        ip      = "" if self.getConfig('extern') else "127.0.0.1"
         webport = self.config['webinterface']['port']
         cnlport = self.getConfig('port')
 

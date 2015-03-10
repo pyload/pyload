@@ -44,26 +44,25 @@ class ExternalScripts(Hook):
 
         for folder in folders:
             self.scripts[folder] = []
-
-            self.initPluginType(folder, os.path.join(pypath, 'scripts', folder))
-            self.initPluginType(folder, os.path.join('scripts', folder))
+            for dir in (pypath, ''):
+                self.initPluginType(folder, os.path.join(dir, 'scripts', folder))
 
         for script_type, names in self.scripts.iteritems():
             if names:
                 self.logInfo(_("Installed scripts for ") + script_type, ", ".join(map(os.path.basename, names)))
 
 
-    def initPluginType(self, folder, path):
-        if not os.path.exists(path):
+    def initPluginType(self, name, dir):
+        if not os.path.isdir(dir):
             try:
-                os.makedirs(path)
+                os.makedirs(dir)
 
             except IOError, e:
                 self.logDebug(e)
                 return
 
-        for filename in os.listdir(path):
-            file = os.path.join(path, filename)
+        for filename in os.listdir(dir):
+            file = os.path.join(dir, filename)
 
             if not os.path.isfile(file):
                 continue
@@ -72,9 +71,9 @@ class ExternalScripts(Hook):
                 continue
 
             if not os.access(file, os.X_OK):
-                self.logWarning(_("Script not executable:") + " %s/%s" % (folder, filename))
+                self.logWarning(_("Script not executable:") + " %s/%s" % (name, filename))
 
-            self.scripts[folder].append(file)
+            self.scripts[name].append(file)
 
 
     def callScript(self, script, *args):

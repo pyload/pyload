@@ -46,13 +46,13 @@ class Captcha9Kw(Hook):
 
     def setup(self):
         self.info = {}  #@TODO: Remove in 0.4.10
-        if self.getConfig("ssl"):
+        if self.getConfig('ssl'):
             self.API_URL = self.API_URL.replace("http://", "https://")
 
 
     def getCredits(self):
         res = getURL(self.API_URL,
-                     get={'apikey': self.getConfig("passkey"),
+                     get={'apikey': self.getConfig('passkey'),
                           'pyload': "1",
                           'source': "pyload",
                           'action': "usercaptchaguthaben"})
@@ -83,14 +83,14 @@ class Captcha9Kw(Hook):
                       'numeric'       : 0,
                       'case_sensitive': 0,
                       'math'          : 0,
-                      'prio'          : min(max(self.getConfig("prio"), 0), 10),
-                      'confirm'       : self.getConfig("confirm"),
-                      'timeout'       : min(max(self.getConfig("timeout"), 300), 3999),
-                      'selfsolve'     : self.getConfig("selfsolve"),
-                      'cph'           : self.getConfig("captchaperhour"),
-                      'cpm'           : self.getConfig("captchapermin")}
+                      'prio'          : min(max(self.getConfig('prio'), 0), 10),
+                      'confirm'       : self.getConfig('confirm'),
+                      'timeout'       : min(max(self.getConfig('timeout'), 300), 3999),
+                      'selfsolve'     : self.getConfig('selfsolve'),
+                      'cph'           : self.getConfig('captchaperhour'),
+                      'cpm'           : self.getConfig('captchapermin')}
 
-        for opt in str(self.getConfig("hoster_options").split('|')):
+        for opt in str(self.getConfig('hoster_options').split('|')):
 
             details = map(str.strip, opt.split(':'))
 
@@ -109,7 +109,7 @@ class Captcha9Kw(Hook):
 
             break
 
-        post_data = {'apikey'        : self.getConfig("passkey"),
+        post_data = {'apikey'        : self.getConfig('passkey'),
                      'prio'          : option['prio'],
                      'confirm'       : option['confirm'],
                      'maxtimeout'    : option['timeout'],
@@ -146,9 +146,9 @@ class Captcha9Kw(Hook):
 
         task.data["ticket"] = res
 
-        for _i in xrange(int(self.getConfig("timeout") / 5)):
+        for _i in xrange(int(self.getConfig('timeout') / 5)):
             result = getURL(self.API_URL,
-                            get={'apikey': self.getConfig("passkey"),
+                            get={'apikey': self.getConfig('passkey'),
                                  'id'    : res,
                                  'pyload': "1",
                                  'info'  : "1",
@@ -172,10 +172,10 @@ class Captcha9Kw(Hook):
         if not task.isTextual() and not task.isPositional():
             return
 
-        if not self.getConfig("passkey"):
+        if not self.getConfig('passkey'):
             return
 
-        if self.core.isClientConnected() and not self.getConfig("force"):
+        if self.core.isClientConnected() and not self.getConfig('force'):
             return
 
         credits = self.getCredits()
@@ -184,8 +184,8 @@ class Captcha9Kw(Hook):
             self.logError(_("Your captcha 9kw.eu account has not enough credits"))
             return
 
-        queue = min(self.getConfig("queue"), 999)
-        timeout = min(max(self.getConfig("timeout"), 300), 3999)
+        queue = min(self.getConfig('queue'), 999)
+        timeout = min(max(self.getConfig('timeout'), 300), 3999)
         pluginname = re.search(r'_([^_]*)_\d+.\w+', task.captchaFile).group(1)
 
         for _i in xrange(5):
@@ -197,7 +197,7 @@ class Captcha9Kw(Hook):
         else:
             self.fail(_("Too many captchas in queue"))
 
-        for opt in str(self.getConfig("hoster_options").split('|')):
+        for opt in str(self.getConfig('hoster_options').split('|')):
             details = map(str.strip, opt.split(':'))
 
             if not details or details[0].lower() != pluginname.lower():
@@ -227,7 +227,7 @@ class Captcha9Kw(Hook):
             self.logDebug("No CaptchaID for %s request (task: %s)" % (type, task))
             return
 
-        passkey = self.getConfig("passkey")
+        passkey = self.getConfig('passkey')
 
         for _i in xrange(3):
             res = getURL(self.API_URL,

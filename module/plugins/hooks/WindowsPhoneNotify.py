@@ -41,19 +41,19 @@ class WindowsPhoneNotify(Hook):
 
 
     def newCaptchaTask(self, task):
-        if not self.getConfig("notifycaptcha"):
+        if not self.getConfig('notifycaptcha'):
             return
 
         self.notify(_("Captcha"), _("New request waiting user input"))
 
 
     def packageFinished(self, pypack):
-        if self.getConfig("notifypackage"):
+        if self.getConfig('notifypackage'):
             self.notify(_("Package finished"), pypack.name)
 
 
     def allDownloadsProcessed(self):
-        if not self.getConfig("notifyprocessed"):
+        if not self.getConfig('notifyprocessed'):
             return
 
         if any(True for pdata in self.core.api.getQueue() if pdata.linksdone < pdata.linkstotal):
@@ -69,14 +69,17 @@ class WindowsPhoneNotify(Hook):
 
 
     @Expose
-    def notify(self, event, msg=""):
-        id  = self.getConfig("id")
-        url = self.getConfig("url")
+    def notify(self,
+               event,
+               msg="",
+               key=(self.getConfig('id'), self.getConfig('url'))):
+
+        id, url = key
 
         if not id or not url:
             return
 
-        if self.core.isClientConnected() and not self.getConfig("ignoreclient"):
+        if self.core.isClientConnected() and not self.getConfig('ignoreclient'):
             return
 
         elapsed_time = time.time() - self.last_notify

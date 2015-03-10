@@ -25,7 +25,7 @@ class MultiHome(Hook):
     def setup(self):
         self.register = {}
         self.interfaces = []
-        self.parseInterfaces(self.getConfig("interfaces").split(";"))
+        self.parseInterfaces(self.getConfig('interfaces').split(";"))
         if not self.interfaces:
             self.parseInterfaces([self.config['download']['interface']])
             self.setConfig("interfaces", self.toConfig())

@@ -58,7 +58,7 @@ class AlldebridCom(MultiHoster):
             pyfile.size = parseFileSize(data['filesize'])
             self.link = data['link']
 
-        if self.getConfig("ssl"):
+        if self.getConfig('ssl'):
             self.link = self.link.replace("http://", "https://")
         else:
             self.link = self.link.replace("https://", "http://")

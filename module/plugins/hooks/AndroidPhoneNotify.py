@@ -40,19 +40,19 @@ class AndroidPhoneNotify(Hook):
 
 
     def newCaptchaTask(self, task):
-        if not self.getConfig("notifycaptcha"):
+        if not self.getConfig('notifycaptcha'):
             return
 
         self.notify(_("Captcha"), _("New request waiting user input"))
 
 
     def packageFinished(self, pypack):
-        if self.getConfig("notifypackage"):
+        if self.getConfig('notifypackage'):
             self.notify(_("Package finished"), pypack.name)
 
 
     def allDownloadsProcessed(self):
-        if not self.getConfig("notifyprocessed"):
+        if not self.getConfig('notifyprocessed'):
             return
 
         if any(True for pdata in self.core.api.getQueue() if pdata.linksdone < pdata.linkstotal):
@@ -62,13 +62,15 @@ class AndroidPhoneNotify(Hook):
 
 
     @Expose
-    def notify(self, event, msg=""):
-        apikey = self.getConfig("apikey")
+    def notify(self,
+               event,
+               msg="",
+               key=self.getConfig('apikey')):
 
-        if not apikey:
+        if not key:
             return
 
-        if self.core.isClientConnected() and not self.getConfig("ignoreclient"):
+        if self.core.isClientConnected() and not self.getConfig('ignoreclient'):
             return
 
         elapsed_time = time.time() - self.last_notify
@@ -84,7 +86,7 @@ class AndroidPhoneNotify(Hook):
 
 
         getURL("http://www.notifymyandroid.com/publicapi/notify",
-               get={'apikey'     : apikey,
+               get={'apikey'     : key,
                     'application': "pyLoad",
                     'event'      : event,
                     'description': msg})

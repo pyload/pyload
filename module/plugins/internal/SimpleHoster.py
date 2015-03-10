@@ -153,11 +153,11 @@ def getFileURL(self, url, follow_location=None):
     for i in xrange(redirect):
         try:
             self.logDebug("Redirect #%d to: %s" % (i, url))
-            header = self.load(url, ref=True, cookies=True, just_header=True, decode=True)
+            header = self.load(url, just_header=True, decode=True)
 
         except Exception:  #: Bad bad bad...
             req = pyreq.getHTTPRequest()
-            res = req.load(url, cookies=True, just_header=True, decode=True)
+            res = req.load(url, just_header=True, decode=True)
 
             req.close()
 
@@ -252,9 +252,9 @@ class SimpleHoster(Hoster):
 
     __description__ = """Simple hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
-                       ("stickell", "l.stickell@yahoo.it"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("zoidberg"      , "zoidberg@mujmail.cz"),
+                       ("stickell"      , "l.stickell@yahoo.it"),
+                       ("Walter Purcaro", "vuolter@gmail.com"  )]
 
 
     """

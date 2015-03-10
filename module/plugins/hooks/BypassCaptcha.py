@@ -57,7 +57,7 @@ class BypassCaptcha(Hook):
 
 
     def getCredits(self):
-        res = getURL(self.GETCREDITS_URL, post={"key": self.getConfig("passkey")})
+        res = getURL(self.GETCREDITS_URL, post={"key": self.getConfig('passkey')})
 
         data = dict(x.split(' ', 1) for x in res.splitlines())
         return int(data['Left'])
@@ -72,7 +72,7 @@ class BypassCaptcha(Hook):
         try:
             res = req.load(self.SUBMIT_URL,
                            post={'vendor_key': self.PYLOAD_KEY,
-                                 'key': self.getConfig("passkey"),
+                                 'key': self.getConfig('passkey'),
                                  'gen_task_id': "1",
                                  'file': (FORM_FILE, captcha)},
                            multipart=True)
@@ -92,7 +92,7 @@ class BypassCaptcha(Hook):
 
     def respond(self, ticket, success):
         try:
-            res = getURL(self.RESPOND_URL, post={"task_id": ticket, "key": self.getConfig("passkey"),
+            res = getURL(self.RESPOND_URL, post={"task_id": ticket, "key": self.getConfig('passkey'),
                                                       "cv": 1 if success else 0})
         except BadHeader, e:
             self.logError(_("Could not send response"), e)
@@ -105,10 +105,10 @@ class BypassCaptcha(Hook):
         if not task.isTextual():
             return False
 
-        if not self.getConfig("passkey"):
+        if not self.getConfig('passkey'):
             return False
 
-        if self.core.isClientConnected() and not self.getConfig("force"):
+        if self.core.isClientConnected() and not self.getConfig('force'):
             return False
 
         if self.getCredits() > 0:
