@@ -246,7 +246,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.18"
+    __version__ = "1.19"
 
     __pattern__ = r'^unmatchable$'
 
@@ -544,7 +544,7 @@ class SimpleHoster(Hoster):
 
                 self.info['error'] = errmsg
 
-                if "hour" in errmsg
+                if "hour" in errmsg:
                     self.wait(secondsToMidnight(gmt=2), True)
 
                 elif re.search("da(il)?y|today", errmsg):
