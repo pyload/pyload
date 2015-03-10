@@ -7,13 +7,13 @@ from pycurl import HTTPHEADER
 from module.common.json_layer import json_loads
 from module.network.HTTPRequest import BadHeader
 from module.plugins.internal.CaptchaService import AdsCaptcha, ReCaptcha, SolveMedia
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, secondsToMidnight
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class RapidgatorNet(SimpleHoster):
     __name__    = "RapidgatorNet"
     __type__    = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
 
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
 
@@ -36,7 +36,7 @@ class RapidgatorNet(SimpleHoster):
     JSVARS_PATTERN = r'\s+var\s*(startTimerUrl|getDownloadUrl|captchaUrl|fid|secs)\s*=\s*\'?(.*?)\'?;'
 
     PREMIUM_ONLY_PATTERN = r'You can download files up to|This file can be downloaded by premium only<'
-    ERROR_PATTERN        = r'You have reached your (daily|hourly) downloads limit'
+    ERROR_PATTERN        = r'You have reached your (?:daily|hourly) downloads limit'
     WAIT_PATTERN         = r'(Delay between downloads must be not less than|Try again in).+'
 
     LINK_FREE_PATTERN = r'return \'(http://\w+.rapidgator.net/.*)\';'
@@ -125,8 +125,12 @@ class RapidgatorNet(SimpleHoster):
                 self.link = m.group(1)
                 break
             else:
-                captcha, captcha_key = self.handleCaptcha()
-                response, challenge  = captcha.challenge(captcha_key)
+                captcha = self.handleCaptcha()
+
+                if not captcha:
+                    self.error(_("Captcha pattern not found"))
+
+                response, challenge  = captcha.challenge()
 
                 self.html = self.load(url, post={'DownloadCaptchaForm[captcha]': "",
                                                  'adcopy_challenge'            : challenge,
@@ -141,24 +145,10 @@ class RapidgatorNet(SimpleHoster):
 
 
     def handleCaptcha(self):
-        m = re.search(self.ADSCAPTCHA_PATTERN, self.html)
-        if m:
-            captcha_key = m.group(1)
-            captcha     = AdsCaptcha(self)
-        else:
-            m = re.search(self.RECAPTCHA_PATTERN, self.html)
-            if m:
-                captcha_key = m.group(1)
-                captcha     = ReCaptcha(self)
-            else:
-                m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
-                if m:
-                    captcha_key = m.group(1)
-                    captcha     = SolveMedia(self)
-                else:
-                    self.error(_("Captcha"))
-
-        return captcha, captcha_key
+        for klass in (AdsCaptcha, ReCaptcha, SolveMedia):
+            inst = klass(self)
+            if inst.detect_key():
+                return inst
 
 
     def getJsonResponse(self, url):

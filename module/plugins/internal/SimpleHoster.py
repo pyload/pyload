@@ -237,7 +237,7 @@ def secondsToMidnight(gmt=0):
 
     if hasattr(td, 'total_seconds'):
         res = td.total_seconds()
-    else:  #@NOTE: work-around for python 2.5 and 2.6 missing timedelta.total_seconds
+    else:  #: work-around for python 2.5 and 2.6 missing timedelta.total_seconds
         res = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
 
     return int(res)
@@ -246,7 +246,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.16"
+    __version__ = "1.17"
 
     __pattern__ = r'^unmatchable$'
 
@@ -537,8 +537,22 @@ class SimpleHoster(Hoster):
         elif hasattr(self, 'ERROR_PATTERN'):
             m = re.search(self.ERROR_PATTERN, self.html)
             if m:
-                errmsg = self.info['error'] = m.group(1)
-                self.error(errmsg)
+                errmsg
+                try:
+                    errmsg = m.group(1)
+                except Exception:
+                    errmsg = m.group(0)
+
+                self.info['error'] = errmsg
+
+                if "hour" in errmsg
+                    self.wait(secondsToMidnight(gmt=2), True)
+
+                elif re.search("da(il)?y|today", errmsg):
+                    self.wait(1 * 60 * 60, True)
+
+                else:
+                    self.error(errmsg)
 
         elif hasattr(self, 'WAIT_PATTERN'):
             m = re.search(self.WAIT_PATTERN, self.html)
@@ -546,7 +560,6 @@ class SimpleHoster(Hoster):
                 wait_time = sum(int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1}[u.lower()] for v, u in
                                 re.findall(r'(\d+)\s*(hr|hour|min|sec)', m.group(0), re.I))
                 self.wait(wait_time, wait_time > 300)
-                return
 
         self.info.pop('error', None)
 
