@@ -8,7 +8,7 @@ from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
 class XFileSharingProFolder(XFSCrypter):
     __name__    = "XFileSharingProFolder"
     __type__    = "crypter"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -32,9 +32,6 @@ class XFileSharingProFolder(XFSCrypter):
 
         self.HOSTER_DOMAIN = re.match(self.__pattern__, self.pyfile.url).group("DOMAIN").lower()
         self.HOSTER_NAME   = "".join(part.capitalize() for part in re.split(r'(\.|\d+)', self.HOSTER_DOMAIN) if part != '.')
-
-        if self.HOSTER_NAME[0].isdigit():
-            self.HOSTER_NAME = 'X' + self.HOSTER_NAME
 
         account = self.core.accountManager.getAccountPlugin(self.HOSTER_NAME)
 

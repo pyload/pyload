@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class LinkdecrypterCom(MultiHook):
     __name__    = "LinkdecrypterCom"
     __type__    = "hook"
-    __version__ = "1.02"
+    __version__ = "1.03"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
@@ -22,4 +22,4 @@ class LinkdecrypterCom(MultiHook):
 
     def getCrypters(self):
         return re.search(r'>Supported\(\d+\)</b>: <i>(.[\w.\-, ]+)',
-                         self.getURL("http://linkdecrypter.com/").replace("(g)", "")).group(1).split(', ')
+                         self.getURL("http://linkdecrypter.com/", decode=True).replace("(g)", "")).group(1).split(', ')

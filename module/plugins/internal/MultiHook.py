@@ -11,7 +11,7 @@ from module.utils import decode, remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.38"
+    __version__ = "0.39"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
@@ -23,16 +23,13 @@ class MultiHook(Hook):
 
     __description__ = """Hook plugin for multi hoster/crypter"""
     __license__     = "GPLv3"
-    __authors__     = [("pyLoad Team", "admin@pyload.org"),
+    __authors__     = [("pyLoad Team"   , "admin@pyload.org" ),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    MIN_INTERVAL = 1 * 60 * 60  #: 1 hour
+    MIN_RELOAD_INTERVAL = 1 * 60 * 60  #: 1 hour
 
     DOMAIN_REPLACEMENTS = [(r'180upload\.com'  , "hundredeightyupload.com"),
-                           (r'1fichier\.com'   , "onefichier.com"         ),
-                           (r'2shared\.com'    , "twoshared.com"          ),
-                           (r'4shared\.com'    , "fourshared.com"         ),
                            (r'bayfiles\.net'   , "bayfiles.com"           ),
                            (r'cloudnator\.com' , "shragle.com"            ),
                            (r'dfiles\.eu'      , "depositfiles.com"       ),
@@ -48,7 +45,16 @@ class MultiHook(Hook):
                            (r'uploaded\.net'   , "uploaded.to"            ),
                            (r'uploadhero\.co'  , "uploadhero.com"         ),
                            (r'zshares\.net'    , "zshare.net"             ),
-                           (r'(\d+.+)'         , "X\1"                    )]
+                           (r'^1'              , "one"                    ),
+                           (r'^2'              , "two"                    ),
+                           (r'^3'              , "three"                  ),
+                           (r'^4'              , "four"                   ),
+                           (r'^5'              , "five"                   ),
+                           (r'^6'              , "six"                    ),
+                           (r'^7'              , "seven"                  ),
+                           (r'^8'              , "eight"                  ),
+                           (r'^9'              , "nine"                   ),
+                           (r'^0'              , "zero"                   )]
 
 
     def setup(self):
@@ -129,7 +135,7 @@ class MultiHook(Hook):
                 sleep(60)
         else:
             self.logWarning(_("Fallback to default reload interval due plugin"))
-            self.interval = self.MIN_INTERVAL
+            self.interval = self.MIN_RELOAD_INTERVAL
             return list()
 
         try:
@@ -152,17 +158,15 @@ class MultiHook(Hook):
 
 
     def _pluginSet(self, plugins):
-        plugins = set((decode(x).strip().lower() for x in plugins if '.' in x))
+        regexp  = re.compile(r'^[\w\-.^_]{3,63}\.[a-zA-Z]{2,}$', re.U)
+        plugins = [decode(p.strip()).lower() for p in plugins if regexp.match(p.strip())]
 
-        for rf, rt in self.DOMAIN_REPLACEMENTS:
-            regex = re.compile(rf)
-            for p in filter(lambda x: regex.match(x), plugins):
-                plugins.remove(p)
-                plugins.add(re.sub(rf, rt, p))
+        for r in self.DOMAIN_REPLACEMENTS:
+            rf, rt  = r
+            repr    = re.compile(rf, re.I|re.U)
+            plugins = [re.sub(rf, rt, p) if repr.match(p) else p for p in plugins]
 
-        plugins.discard('')
-
-        return plugins
+        return set(plugins)
 
 
     def getHosters(self):
@@ -198,7 +202,7 @@ class MultiHook(Hook):
     def periodical(self):
         """reload plugin list periodically"""
         if self.getConfig("reload", True):
-            self.interval = max(self.getConfig("reloadinterval", 12) * 60 * 60, self.MIN_INTERVAL)
+            self.interval = max(self.getConfig("reloadinterval", 12) * 60 * 60, self.MIN_RELOAD_INTERVAL)
         else:
             self.core.scheduler.removeJob(self.cb)
             self.cb = None
@@ -263,7 +267,7 @@ class MultiHook(Hook):
             self.logDebug("New %ss: %s" % (self.plugintype, ", ".join(plugins)))
 
             # create new regexp
-            regexp = r'.*(?P<DOMAIN>%s).*' % "|".join([x.replace(".", "\.") for x in plugins])
+            regexp = r'.*(?P<DOMAIN>%s).*' % "|".join(x.replace('.', '\.') for x in plugins)
             if hasattr(self.pluginclass, "__pattern__") and isinstance(self.pluginclass.__pattern__, basestring) and '://' in self.pluginclass.__pattern__:
                 regexp = r'%s|%s' % (self.pluginclass.__pattern__, regexp)
 
@@ -277,11 +281,11 @@ class MultiHook(Hook):
     def unloadPlugin(self, plugin):
         hdict = self.core.pluginManager.plugins[self.plugintype][plugin]
         if "module" in hdict:
-            del hdict['module']
+            hdict.pop('module', None)
 
         if "new_module" in hdict:
-            del hdict['new_module']
-            del hdict['new_name']
+            hdict.pop('new_module', None)
+            hdict.pop('new_name', None)
 
 
     def unload(self):

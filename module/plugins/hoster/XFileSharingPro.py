@@ -8,7 +8,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class XFileSharingPro(XFSHoster):
     __name__    = "XFileSharingPro"
     __type__    = "hoster"
-    __version__ = "0.44"
+    __version__ = "0.45"
 
     __pattern__ = r'^unmatchable$'
 
@@ -33,9 +33,6 @@ class XFileSharingPro(XFSHoster):
 
         self.HOSTER_DOMAIN = re.match(self.__pattern__, self.pyfile.url).group("DOMAIN").lower()
         self.HOSTER_NAME   = "".join(part.capitalize() for part in re.split(r'(\.|\d+)', self.HOSTER_DOMAIN) if part != '.')
-
-        if self.HOSTER_NAME[0].isdigit():
-            self.HOSTER_NAME = 'X' + self.HOSTER_NAME
 
         account = self.core.accountManager.getAccountPlugin(self.HOSTER_NAME)
 
