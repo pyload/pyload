@@ -246,7 +246,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.23"
+    __version__ = "1.24"
 
     __pattern__ = r'^unmatchable$'
 
@@ -524,16 +524,20 @@ class SimpleHoster(Hoster):
                     if r not in rules and hasattr(self, a):
                         rules[r] = getattr(self, a)
 
-                errmsg = self.checkDownload(rules).strip().capitalize()
+                errmsg = self.checkDownload(rules)
 
-            if errmsg:
-                try:
-                    errmsg += " | " + self.lastCheck.group(1).strip()
-                except Exception:
-                    pass
+            if not errmsg:
+                return
 
-                self.logWarning("Bad file", "Waiting 1 minute and retry")
-                self.retry(3, 60, errmsg)
+            errmsg = errmsg.strip().capitalize()
+
+            try:
+                errmsg += " | " + self.lastCheck.group(1).strip()
+            except Exception:
+                pass
+
+            self.logWarning("Bad file", "Waiting 1 minute and retry")
+            self.retry(3, 60, errmsg)
 
 
     def checkErrors(self):

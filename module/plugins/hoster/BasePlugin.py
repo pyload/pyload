@@ -89,14 +89,16 @@ class BasePlugin(Hoster):
                                      'Html error'   : re.compile(r'\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)'),
                                      'Html file'    : re.compile(r'\A\s*<!DOCTYPE html'),
                                      'Unknown error': re.compile(r'([Aa]n error occured while processing your request)')})
-        if errmsg:
-            try:
-                errmsg += " | " + self.lastCheck.group(1).strip()
-            except Exception:
-                pass
+        if not errmsg:
+            return
 
-            self.logWarning("Bad file", "Waiting 1 minute and retry")
-            self.retry(3, 60, errmsg)
+        try:
+            errmsg += " | " + self.lastCheck.group(1).strip()
+        except Exception:
+            pass
+
+        self.logWarning("Bad file", "Waiting 1 minute and retry")
+        self.retry(3, 60, errmsg)
 
 
 getInfo = create_getInfo(BasePlugin)
