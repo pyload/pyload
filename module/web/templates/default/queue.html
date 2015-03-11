@@ -38,7 +38,7 @@ document.addEvent("domready", function(){
     
     <div class="packagename" style="float:left; width: 50%; cursor: pointer">
         <span class="glyphicon glyphicon-folder-close"></span>
-        <span class="name" style="font-size: 16px; font-weight: bold;">{{package.name }}</span>
+        <span class="name" style="font-size: 16px; font-weight: bold;"><em class="package_drag" style="font-style:normal">{{package.name }}</em></span>
         &nbsp;&nbsp;
         <span class="buttons" style="opacity:0">
         <span class="glyphicon glyphicon-trash" title="{{_("Delete Package")}}" style="cursor: pointer" width="12px" height="12px" src="/media/default/img/delete.png" /></span>
@@ -47,7 +47,7 @@ document.addEvent("domready", function(){
         &nbsp;&nbsp;
          <span class="glyphicon glyphicon-pencil" title="{{_("Edit Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/default/img/pencil.png" /></span>
         &nbsp;&nbsp;
-         <span class="glyphicon glyphicon-transfer package_drag" title="{{_("Move Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/default/img/package_go.png" /></span>
+         <span class="glyphicon glyphicon-transfer" title="{{_("Move Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/default/img/package_go.png" /></span>
         </span>
     </div>
     {% set progress = (package.linksdone * 100) / package.linkstotal %}
