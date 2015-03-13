@@ -28,7 +28,7 @@ def exists(path):
 class UpdateManager(Hook):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "0.44"
+    __version__ = "0.45"
 
     __config__ = [("activated"    , "bool"                         , "Activated"                                     , True              ),
                   ("mode"         , "pyLoad + plugins;plugins only", "Check updates for"                             , "pyLoad + plugins"),
@@ -205,7 +205,7 @@ class UpdateManager(Hook):
             # Protect UpdateManager from self-removing
             try:
                 blacklisted.remove(("hook", "UpdateManager"))
-            except Exception:
+            except ValueError:
                 pass
 
             for t, n in blacklisted:
@@ -314,7 +314,7 @@ class UpdateManager(Hook):
                     try:
                         os.remove(filename)
 
-                    except IOError, e:
+                    except OSError, e:
                         self.logError(_("Error removing: %s") % filename, e)
 
                     else:
