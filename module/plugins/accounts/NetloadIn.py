@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from time import time
+import time
 
 from module.plugins.Account import Account
 
@@ -9,36 +9,55 @@ from module.plugins.Account import Account
 class NetloadIn(Account):
     __name__    = "NetloadIn"
     __type__    = "account"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __description__ = """Netload.in account plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
-                       ("CryNickSystems", "webmaster@pcProfil.de")]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+
+
+    def api_response(self, id, password, req):
+        return req.load("http://api.netload.in/user_info.php",
+                        get={'auth'         : "BVm96BWDSoB4WkfbEhn42HgnjIe1ilMt",
+                             'user_id'      : id,
+                             'user_password': password}).strip()
 
 
     def loadAccountInfo(self, user, req):
-        html = req.load("http://netload.in/index.php", get={'id': 2, 'lang': "de"})
-        left = r'>(\d+) (Tag|Tage), (\d+) Stunden<'
-        left = re.search(left, html)
-        if left:
-            validuntil = time() + int(left.group(1)) * 24 * 60 * 60 + int(left.group(3)) * 60 * 60
-            trafficleft = -1
+        validuntil  = None
+        trafficleft = -1
+        premium     = False
+
+        html = self.api_response(user, self.getAccountData(user)['password'], req)
+
+        if html == "-1":
             premium = True
+
+        elif html == "0":
+            validuntil = -1
+
         else:
-            validuntil = None
-            premium = False
-            trafficleft = None
-        return {"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium}
+            try:
+                validuntil = time.mktime(time.strptime(html, "%Y-%m-%d %H:%M"))
+
+            except Exception, e:
+                self.logError(e)
+
+            else:
+                self.logDebug("Valid until: %s" % validuntil)
+
+                if validuntil > time.mktime(time.gmtime()):
+                    premium = True
+                else:
+                    validuntil = -1
+
+        return {'validuntil' : validuntil,
+                'trafficleft': trafficleft,
+                'premium'    : premium}
 
 
     def login(self, user, data, req):
-        html = req.load("http://netload.in/index.php",
-                        post={"txtuser" : user,
-                              "txtpass" : data['password'],
-                              "txtcheck": "login",
-                              "txtlogin": "Login"},
-                        decode=True)
+        html = self.api_response(user, data['password'], req)
 
-        if "password or it might be invalid!" in html:
+        if not html or re.search(r'disallowed_agent|unknown_auth|login_failed', html):
             self.wrongPassword()
