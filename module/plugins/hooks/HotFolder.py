@@ -14,7 +14,7 @@ from module.utils import fs_encode, save_join
 class HotFolder(Hook):
     __name__    = "HotFolder"
     __type__    = "hook"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __config__ = [("folder"    , "str" , "Folder to observe"    , "container"),
                   ("watch_file", "bool", "Observe link file"    , False      ),
@@ -66,5 +66,5 @@ class HotFolder(Hook):
                 self.logInfo(_("Added %s from HotFolder") % f)
                 self.core.api.addPackage(f, [newpath], 1)
 
-        except IOError, e:
+        except (IOError, OSError), e:
             self.logError(e)
