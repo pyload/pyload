@@ -13,7 +13,7 @@ from module.plugins.Hoster import Hoster
 class BasePlugin(Hoster):
     __name__    = "BasePlugin"
     __type__    = "hoster"
-    __version__ = "0.37"
+    __version__ = "0.38"
 
     __pattern__ = r'^unmatchable$'
 
@@ -88,7 +88,7 @@ class BasePlugin(Hoster):
         errmsg = self.checkDownload({'Empty file'   : re.compile(r'\A\s*\Z'),
                                      'Html error'   : re.compile(r'\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)'),
                                      'Html file'    : re.compile(r'\A\s*<!DOCTYPE html'),
-                                     'Unknown error': re.compile(r'([Aa]n error occured while processing your request)')})
+                                     'Request error': re.compile(r'([Aa]n error occured while processing your request)')})
         if not errmsg:
             return
 
@@ -97,7 +97,7 @@ class BasePlugin(Hoster):
         except Exception:
             pass
 
-        self.logWarning("Bad file", "Waiting 1 minute and retry")
+        self.logWarning("Check result: " + errmsg, "Waiting 1 minute and retry")
         self.retry(3, 60, errmsg)
 
 

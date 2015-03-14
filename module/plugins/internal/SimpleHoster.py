@@ -246,7 +246,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.24"
+    __version__ = "1.25"
 
     __pattern__ = r'^unmatchable$'
 
@@ -514,7 +514,7 @@ class SimpleHoster(Hoster):
 
             if not errmsg:
                 for r, p in [('Html file'    , re.compile(r'\A\s*<!DOCTYPE html')                              ),
-                             ('Unknown error', re.compile(r'([Aa]n error occured while processing your request)'))]:
+                             ('Request error', re.compile(r'([Aa]n error occured while processing your request)'))]:
                     if r not in rules:
                         rules[r] = p
 
@@ -536,7 +536,7 @@ class SimpleHoster(Hoster):
             except Exception:
                 pass
 
-            self.logWarning("Bad file", "Waiting 1 minute and retry")
+            self.logWarning("Check result: " + errmsg, "Waiting 1 minute and retry")
             self.retry(3, 60, errmsg)
 
 
