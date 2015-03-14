@@ -2,8 +2,6 @@
 
 import re
 
-from datetime import datetime, timedelta
-
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 from module.plugins.internal.SimpleHoster import secondsToMidnight
 

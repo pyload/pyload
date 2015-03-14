@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from time import time
+import time
 
 from module.plugins.Hook import Hook
 
@@ -80,7 +80,7 @@ class Interface(object):
 
 
     def useFor(self, pluginName, account):
-        self.history[(pluginName, account)] = time()
+        self.history[(pluginName, account)] = time.time()
 
 
     def __repr__(self):

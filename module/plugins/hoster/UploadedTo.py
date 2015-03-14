@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import sleep
+import time
 
 from module.network.RequestFactory import getURL
 from module.plugins.internal.CaptchaService import ReCaptcha
@@ -48,7 +47,7 @@ class UploadedTo(SimpleHoster):
                     info['status'] = 1
                 break
             else:
-                sleep(3)
+                time.sleep(3)
 
         return info
 

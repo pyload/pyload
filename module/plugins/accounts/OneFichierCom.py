@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import strptime, mktime
+import time
 
 from pycurl import REFERER
 
@@ -36,7 +35,7 @@ class OneFichierCom(Account):
             self.logDebug("Expire date: " + expiredate)
 
             try:
-                validuntil = mktime(strptime(expiredate, "%d/%m/%Y"))
+                validuntil = time.mktime(time.strptime(expiredate, "%d/%m/%Y"))
             except Exception, e:
                 self.logError(e)
             else:

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from time import mktime, strptime
+import time
 
 from module.plugins.Account import Account
 
@@ -28,7 +28,7 @@ class FilejungleCom(Account):
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m:
             premium = True
-            validuntil = mktime(strptime(m.group(1), "%d %b %Y"))
+            validuntil = time.mktime(time.strptime(m.group(1), "%d %b %Y"))
         else:
             premium = False
             validuntil = -1

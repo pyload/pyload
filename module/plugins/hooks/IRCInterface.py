@@ -8,7 +8,6 @@ import time
 from pycurl import FORM_FILE
 from select import select
 from threading import Thread
-from time import sleep
 from traceback import print_exc
 
 from module.Api import PackageDoesNotExists, FileDoesNotExists
@@ -116,7 +115,7 @@ class IRCInterface(Thread, Hook):
     def main_loop(self):
         readbuffer = ""
         while True:
-            sleep(1)
+            time.sleep(1)
             fdset = select([self.sock], [], [], 0)
             if self.sock not in fdset[0]:
                 continue

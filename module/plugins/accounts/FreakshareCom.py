@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import strptime, mktime
+import time
 
 from module.plugins.Account import Account
 
@@ -26,7 +25,7 @@ class FreakshareCom(Account):
 
         try:
             m = re.search(r'ltig bis:</td>\s*<td><b>([\d.:-]+)</b></td>', html, re.M)
-            validuntil = mktime(strptime(m.group(1).strip(), "%d.%m.%Y - %H:%M"))
+            validuntil = time.mktime(time.strptime(m.group(1).strip(), "%d.%m.%Y - %H:%M"))
 
         except Exception:
             pass

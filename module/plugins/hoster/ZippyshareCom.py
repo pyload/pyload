@@ -63,15 +63,15 @@ class ZippyshareCom(SimpleHoster):
         def replElementById(element):
             id   = element.group(1) # id might be either 'x' (a real id) or x (a variable)
             attr = element.group(4)  # attr might be None
-            
+
             varName = re.sub(r'-', '', 'GVAR[%s+"_%s"]' %(id, attr))
-            
+
             realid = id.strip('"\'')
-            if id != realid: #id is not a variable, so look for realid.attr in the html 
+            if id != realid: #id is not a variable, so look for realid.attr in the html
                 initValues = filter(None, [elt.get(attr, None) for elt in soup.findAll(id=realid)])
                 initValue  = '"%s"' % initValues[-1] if initValues else 'null'
                 initScripts.add('%s = %s;' % (varName, initValue))
-                
+
             return varName
 
         # handle all getElementById

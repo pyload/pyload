@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 import mimetypes
 import os
 import re
+import time
 
-from datetime import datetime, timedelta
 from inspect import isclass
-from time import time
 from urllib import unquote
 from urlparse import urljoin, urlparse
 
@@ -137,7 +137,7 @@ def create_getInfo(plugin):
 
 
 def timestamp():
-    return int(time() * 1000)
+    return int(time.time() * 1000)
 
 
 #@TODO: Move to hoster class in 0.4.10
@@ -226,18 +226,18 @@ def getFileURL(self, url, follow_location=None):
 
 
 def secondsToMidnight(gmt=0):
-    now = datetime.utcnow() + timedelta(hours=gmt)
+    now = datetime.datetime.utcnow() + datetime.timedelta(hours=gmt)
 
     if now.hour is 0 and now.minute < 10:
         midnight = now
     else:
-        midnight = now + timedelta(days=1)
+        midnight = now + datetime.timedelta(days=1)
 
     td = midnight.replace(hour=0, minute=10, second=0, microsecond=0) - now
 
     if hasattr(td, 'total_seconds'):
         res = td.total_seconds()
-    else:  #: work-around for python 2.5 and 2.6 missing timedelta.total_seconds
+    else:  #: work-around for python 2.5 and 2.6 missing datetime.timedelta.total_seconds
         res = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
 
     return int(res)

@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import time, strptime, mktime
+import time
 
 from module.plugins.Account import Account
 from module.plugins.internal.SimpleHoster import set_cookies
@@ -37,13 +36,13 @@ class UploadingCom(Account):
             self.logDebug("Expire date: " + expiredate)
 
             try:
-                validuntil = mktime(strptime(expiredate, "%b %d, %Y"))
+                validuntil = time.mktime(time.strptime(expiredate, "%b %d, %Y"))
 
             except Exception, e:
                 self.logError(e)
 
             else:
-                if validuntil > mktime(gmtime()):
+                if validuntil > time.mktime(time.gmtime()):
                     premium = True
                 else:
                     premium = False
@@ -59,5 +58,5 @@ class UploadingCom(Account):
                      ("uploading.com", "_lang", "en")]
 
         req.load("http://uploading.com/")
-        req.load("http://uploading.com/general/login_form/?JsHttpRequest=%s-xml" % long(time() * 1000),
+        req.load("http://uploading.com/general/login_form/?JsHttpRequest=%s-xml" % long(time.time() * 1000),
                  post={'email': user, 'password': data['password'], 'remember': "on"})

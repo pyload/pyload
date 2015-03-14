@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import re
+import time
 
 from base64 import urlsafe_b64encode
-from time import time
 
 from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
@@ -40,7 +40,7 @@ class DlProtectCom(SimpleCrypter):
             self.wait(2)
 
         else:
-            mstime  = int(round(time() * 1000))
+            mstime  = int(round(time.time() * 1000))
             b64time = "_" + urlsafe_b64encode(str(mstime)).replace("=", "%3D")
 
             post_req.update({'i'         : b64time,

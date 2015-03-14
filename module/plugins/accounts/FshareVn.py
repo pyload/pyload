@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import mktime, strptime
+import time
 
 from module.plugins.Account import Account
 
@@ -35,7 +34,7 @@ class FshareVn(Account):
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
             premium = True
-            validuntil = mktime(strptime(m.group(1), '%I:%M:%S %p %d-%m-%Y'))
+            validuntil = time.mktime(time.strptime(m.group(1), '%I:%M:%S %p %d-%m-%Y'))
             trafficleft = self.getTrafficLeft()
         else:
             premium = False

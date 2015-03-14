@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import re
+import time
 
 from random import randrange
 from urllib import unquote
-from time import time
 
 from module.common.json_layer import json_loads
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
@@ -42,7 +42,7 @@ class RealdebridCom(MultiHoster):
                                     get={'lang'    : "en",
                                          'link'    : pyfile.url,
                                          'password': self.getPassword(),
-                                         'time'    : int(time() * 1000)}))
+                                         'time'    : int(time.time() * 1000)}))
 
         self.logDebug("Returned Data: %s" % data)
 

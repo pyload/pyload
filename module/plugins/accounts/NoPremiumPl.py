@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
+import datetime
 import hashlib
+import time
 
 from module.plugins.Account import Account
-from time import mktime
 from module.common.json_layer import json_loads as loads
 
 
@@ -44,7 +44,7 @@ class NoPremiumPl(Account):
 
         if "expire" in result.keys() and result["expire"]:
             premium = True
-            valid_untill = mktime(datetime.fromtimestamp(int(result["expire"])).timetuple())
+            valid_untill = time.mktime(datetime.datetime.fromtimestamp(int(result["expire"])).timetuple())
         traffic_left = result["balance"] * 1024
 
         return ({

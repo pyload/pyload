@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import re
+import time
 
-from time import strptime, mktime, gmtime
 from urlparse import urljoin
 
 from module.network.RequestFactory import getURL
@@ -99,8 +99,8 @@ class FshareVn(SimpleHoster):
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
             self.logInfo(_("Wait until %s ICT") % m.group(1))
-            wait_until = mktime(strptime(m.group(1), "%d/%m/%Y %H:%M"))
-            self.wait(wait_until - mktime(gmtime()) - 7 * 60 * 60, True)
+            wait_until = time.mktime.time(time.strptime.time(m.group(1), "%d/%m/%Y %H:%M"))
+            self.wait(wait_until - time.mktime.time(time.gmtime.time()) - 7 * 60 * 60, True)
             self.retry()
         elif '<ul class="message-error">' in self.html:
             msg = "Unknown error occured or wait time not parsed"

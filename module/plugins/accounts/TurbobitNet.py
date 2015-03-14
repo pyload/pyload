@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from time import mktime, strptime
+import time
 
 from module.plugins.Account import Account
 
@@ -22,7 +22,7 @@ class TurbobitNet(Account):
         m = re.search(r'<u>Turbo Access</u> to ([\d.]+)', html)
         if m:
             premium = True
-            validuntil = mktime(strptime(m.group(1), "%d.%m.%Y"))
+            validuntil = time.mktime(time.strptime(m.group(1), "%d.%m.%Y"))
         else:
             premium = False
             validuntil = -1

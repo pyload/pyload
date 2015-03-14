@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import sleep
+import time
 
 from module.plugins.Hook import Hook
 from module.utils import decode, remove_chars
@@ -132,7 +131,7 @@ class MultiHook(Hook):
 
             except Exception, e:
                 self.logDebug(e, "Waiting 1 minute and retry")
-                sleep(60)
+                time.sleep(60)
         else:
             self.logWarning(_("Fallback to default reload interval due plugin"))
             self.interval = self.MIN_RELOAD_INTERVAL

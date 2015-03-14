@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import time
+import time
 
 from module.plugins.Account import Account
 from module.common.json_layer import json_loads
@@ -38,7 +37,7 @@ class RapiduNet(Account):
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
-            validuntil = time() + (86400 * int(m.group(1)))
+            validuntil = time.time() + (86400 * int(m.group(1)))
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m:

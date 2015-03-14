@@ -3,10 +3,10 @@
 from __future__ import with_statement
 
 import re
+import time
 
 from base64 import b64encode
 from pycurl import FORM_FILE, HTTPHEADER
-from time import sleep
 
 from module.common.json_layer import json_loads
 from module.network.HTTPRequest import BadHeader
@@ -152,7 +152,7 @@ class DeathByCaptcha(Hook):
         ticket = res['captcha']
 
         for _i in xrange(24):
-            sleep(5)
+            time.sleep(5)
             res = self.api_response("captcha/%d" % ticket, False)
             if res['text'] and res['is_correct']:
                 break

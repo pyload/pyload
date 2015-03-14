@@ -3,9 +3,9 @@
 from __future__ import with_statement
 
 import re
+import time
 
 from base64 import b64encode
-from time import sleep
 
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL
@@ -134,7 +134,7 @@ class Captcha9Kw(Hook):
             try:
                 res = getURL(self.API_URL, post=post_data)
             except BadHeader, e:
-                sleep(3)
+                time.sleep(3)
             else:
                 if res and res.isdigit():
                     break
@@ -156,7 +156,7 @@ class Captcha9Kw(Hook):
                                  'action': "usercaptchacorrectdata"})
 
             if not result or result == "NO DATA":
-                sleep(5)
+                time.sleep(5)
             else:
                 break
         else:
@@ -193,7 +193,7 @@ class Captcha9Kw(Hook):
             if queue < re.search(r'queue=(\d+)', servercheck).group(1):
                 break
 
-            sleep(10)
+            time.sleep(10)
         else:
             self.fail(_("Too many captchas in queue"))
 
@@ -244,7 +244,7 @@ class Captcha9Kw(Hook):
             if res == "OK":
                 break
 
-            sleep(5)
+            time.sleep(5)
         else:
             self.logDebug("Could not send %s request: %s" % (type, res))
 

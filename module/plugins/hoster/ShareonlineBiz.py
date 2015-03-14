@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import re
+import time
 
-from time import time
 from urllib import unquote
 from urlparse import urlparse
 
@@ -74,7 +74,7 @@ class ShareonlineBiz(SimpleHoster):
             m = re.search(r'var wait=(\d+);', self.html)
             self.setWait(int(m.group(1)) if m else 30)
 
-            res = self.load("%s/free/captcha/%d" % (self.pyfile.url, int(time() * 1000)),
+            res = self.load("%s/free/captcha/%d" % (self.pyfile.url, int(time.time() * 1000)),
                             post={'dl_free'                  : "1",
                                   'recaptcha_challenge_field': challenge,
                                   'recaptcha_response_field' : response})

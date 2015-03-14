@@ -2,8 +2,6 @@
 
 import re
 
-from time import sleep
-
 from module.plugins.internal.CaptchaService import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 

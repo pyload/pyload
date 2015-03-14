@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import re
+import time
 
-from time import gmtime, mktime, strptime
 from urlparse import urljoin
 
 from module.plugins.Account import Account
@@ -80,7 +80,7 @@ class XFSAccount(Account):
             self.logDebug("Expire date: " + expiredate)
 
             try:
-                validuntil = mktime(strptime(expiredate, "%d %B %Y"))
+                validuntil = time.mktime(time.strptime(expiredate, "%d %B %Y"))
 
             except Exception, e:
                 self.logError(e)
@@ -88,7 +88,7 @@ class XFSAccount(Account):
             else:
                 self.logDebug("Valid until: %s" % validuntil)
 
-                if validuntil > mktime(gmtime()):
+                if validuntil > time.mktime(time.gmtime()):
                     premium     = True
                     trafficleft = -1
                 else:

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from time import mktime, strptime
 import re
+import time
 
 from module.plugins.Account import Account
 
@@ -25,7 +25,7 @@ class EuroshareEu(Account):
             premium, validuntil = False, -1
         else:
             premium = True
-            validuntil = mktime(strptime(m.group(1), "%d.%m.%Y %H:%M"))
+            validuntil = time.mktime(time.strptime(m.group(1), "%d.%m.%Y %H:%M"))
 
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 

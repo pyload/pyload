@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from time import time
+import time
 
 from module.common.json_layer import json_loads
 from module.plugins.Account import Account
@@ -18,7 +18,7 @@ class MyfastfileCom(Account):
 
     def loadAccountInfo(self, user, req):
         if 'days_left' in self.json_data:
-            validuntil = time() + self.json_data['days_left'] * 24 * 60 * 60
+            validuntil = time.time() + self.json_data['days_left'] * 24 * 60 * 60
             return {"premium": True, "validuntil": validuntil, "trafficleft": -1}
         else:
             self.logError(_("Unable to get account information"))

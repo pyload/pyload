@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import gmtime, mktime, strptime
+import time
 
 from module.plugins.Account import Account
 
@@ -41,13 +40,13 @@ class Keep2ShareCc(Account):
                 validuntil = -1
             else:
                 try:
-                    validuntil = mktime(strptime(expiredate, "%Y.%m.%d"))
+                    validuntil = time.mktime(time.strptime(expiredate, "%Y.%m.%d"))
 
                 except Exception, e:
                     self.logError(e)
 
                 else:
-                    premium = True if validuntil > mktime(gmtime()) else False
+                    premium = True if validuntil > time.mktime(time.gmtime()) else False
 
             m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
             if m:

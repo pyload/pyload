@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from time import time
+import time
 
 from module.plugins.Account import Account
 
@@ -39,7 +39,7 @@ class UploadedTo(Account):
             else:
                 m = re.findall(r'(\d+) (week|day|hour)', expiredate)
                 if m:
-                    validuntil = time()
+                    validuntil = time.time()
                     for n, u in m:
                         validuntil += float(n) * 60 * 60 * {'week': 168, 'day': 24, 'hour': 1}[u]
 

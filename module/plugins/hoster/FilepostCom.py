@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import time
+import time
 
 from module.common.json_layer import json_loads
 from module.plugins.internal.CaptchaService import ReCaptcha
@@ -41,7 +40,7 @@ class FilepostCom(SimpleHoster):
         captcha_key = m.group(1)
 
         # Get wait time
-        get_dict = {'SID': self.req.cj.getCookie('SID'), 'JsHttpRequest': str(int(time() * 10000)) + '-xml'}
+        get_dict = {'SID': self.req.cj.getCookie('SID'), 'JsHttpRequest': str(int(time.time() * 10000)) + '-xml'}
         post_dict = {'action': 'set_download', 'token': flp_token, 'code': self.info['pattern']['ID']}
         wait_time = int(self.getJsonResponse(get_dict, post_dict, 'wait_time'))
 
@@ -57,7 +56,7 @@ class FilepostCom(SimpleHoster):
             if password:
                 self.logInfo(_("Password protected link, trying ") + file_pass)
 
-                get_dict['JsHttpRequest'] = str(int(time() * 10000)) + '-xml'
+                get_dict['JsHttpRequest'] = str(int(time.time() * 10000)) + '-xml'
                 post_dict['file_pass'] = file_pass
 
                 self.link = self.getJsonResponse(get_dict, post_dict, 'link')
@@ -72,7 +71,7 @@ class FilepostCom(SimpleHoster):
             recaptcha = ReCaptcha(self)
 
             for i in xrange(5):
-                get_dict['JsHttpRequest'] = str(int(time() * 10000)) + '-xml'
+                get_dict['JsHttpRequest'] = str(int(time.time() * 10000)) + '-xml'
                 if i:
                     post_dict['recaptcha_response_field'], post_dict['recaptcha_challenge_field'] = recaptcha.challenge(
                         captcha_key)

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import re
+import time
 
 from random import random
-from time import sleep
 from urlparse import urljoin, urlparse
 
 from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME

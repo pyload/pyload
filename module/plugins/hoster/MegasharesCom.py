@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import time
+import time
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
@@ -66,7 +65,7 @@ class MegasharesCom(SimpleHoster):
                                      'rsargs[]': random_num,
                                      'rsargs[]': passport_num,
                                      'rsargs[]': "replace_sec_pprenewal",
-                                     'rsrnd[]' : str(int(time() * 1000))})
+                                     'rsrnd[]' : str(int(time.time() * 1000))})
 
                 if 'Thank you for reactivating your passport.' in res:
                     self.correctCaptcha()

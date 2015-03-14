@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import localtime
+import time
 
 from module.plugins.Hook import Hook
 
@@ -45,7 +44,7 @@ class DownloadScheduler(Hook):
             self.logError(_("Invalid schedule"))
             return
 
-        t0 = localtime()
+        t0  = time.localtime()
         now = (t0.tm_hour, t0.tm_min, t0.tm_sec, "X")
         schedule = sorted([(int(x[0]), int(x[1]), 0, int(x[2])) for x in schedule] + [now])
 

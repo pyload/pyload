@@ -4,13 +4,13 @@ from __future__ import with_statement
 
 import StringIO
 import pycurl
+import time
 
 try:
     from PIL import Image
 except ImportError:
     import Image
 
-from time import sleep
 from urllib import urlencode
 
 from module.network.RequestFactory import getURL, getRequest
@@ -117,7 +117,7 @@ class CaptchaBrotherhood(Hook):
         ticket = res[3:]
 
         for _i in xrange(15):
-            sleep(5)
+            time.sleep(5)
             res = self.api_response("askCaptchaResult", ticket)
             if res.startswith("OK-answered"):
                 return ticket, res[12:]
