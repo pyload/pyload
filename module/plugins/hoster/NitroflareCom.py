@@ -16,7 +16,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__    = "NitroflareCom"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
 
@@ -68,8 +68,8 @@ class NitroflareCom(SimpleHoster):
         # used here to load the cookies which will be required later
         self.load(pyfile.url, post={'goToFreePage': ""})
 
-        self.load("https://www.nitroflare.com/ajax/setCookie.php", post={'fileId': self.info['pattern']['ID']})
-        self.html = self.load("https://www.nitroflare.com/ajax/freeDownload.php",
+        self.load("http://nitroflare.com/ajax/setCookie.php", post={'fileId': self.info['pattern']['ID']})
+        self.html = self.load("http://nitroflare.com/ajax/freeDownload.php",
                               post={'method': "startTimer", 'fileId': self.info['pattern']['ID']})
 
         self.checkErrors()
@@ -87,7 +87,7 @@ class NitroflareCom(SimpleHoster):
         recaptcha = ReCaptcha(self)
         response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
 
-        self.html = self.load("https://www.nitroflare.com/ajax/freeDownload.php",
+        self.html = self.load("http://nitroflare.com/ajax/freeDownload.php",
                               post={'method'                   : "fetchDownload",
                                     'recaptcha_challenge_field': challenge,
                                     'recaptcha_response_field' : response})
