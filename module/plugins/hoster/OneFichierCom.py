@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class OneFichierCom(SimpleHoster):
     __name__    = "OneFichierCom"
     __type__    = "hoster"
-    __version__ = "0.78"
+    __version__ = "0.79"
 
     __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
 
@@ -31,7 +31,7 @@ class OneFichierCom(SimpleHoster):
     COOKIES     = [("1fichier.com", "LG", "en")]
     DISPOSITION = False  #: Remove in 0.4.10
 
-    WAIT_PATTERN = r'>You must wait (\d+) minutes'
+    WAIT_PATTERN = r'>You must wait \d+ minutes'
 
 
     def setup(self):
