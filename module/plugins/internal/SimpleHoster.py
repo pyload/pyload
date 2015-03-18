@@ -246,7 +246,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.26"
+    __version__ = "1.27"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -730,6 +730,15 @@ class SimpleHoster(Hoster):
             size = self.pyfile.size / 1024
             self.logInfo(_("Filesize: %i KiB, Traffic left for user %s: %i KiB") % (size, self.user, traffic))
             return size <= traffic
+
+
+    def getConfig(self, option, default=''):  #@TODO: Remove in 0.4.10
+        """getConfig with default value - sublass may not implements all config options"""
+        try:
+            return self.getConf(option)
+
+        except KeyError:
+            return default
 
 
     def retryFree(self):
