@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ZippyshareCom(SimpleHoster):
     __name__    = "ZippyshareCom"
     __type__    = "hoster"
-    __version__ = "0.76"
+    __version__ = "0.77"
 
     __pattern__ = r'http://www\d{0,2}\.zippyshare\.com/v(/|iew\.jsp.*key=)(?P<KEY>[\w^_]+)'
 
@@ -23,9 +23,9 @@ class ZippyshareCom(SimpleHoster):
 
     COOKIES = [("zippyshare.com", "ziplocale", "en")]
 
-    NAME_PATTERN    = r'("\d{6,}/"[ ]*\+.+?"/|<title>Zippyshare.com - )(?P<N>.+?)("|</title>)'
+    NAME_PATTERN    = r'("/|<title>Zippyshare.com - )(?P<N>[^/]+?)("\);|</title>)'
     SIZE_PATTERN    = r'>Size:.+?">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
-    OFFLINE_PATTERN = r'>File does not exist on this server'
+    OFFLINE_PATTERN = r'does not exist (anymore )?on this server<'
 
     LINK_PREMIUM_PATTERN = r"document.location = '(.+?)'"
 
