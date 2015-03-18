@@ -15,7 +15,7 @@ from module.network.CookieJar import CookieJar
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
-from module.plugins.Plugin import Fail
+from module.plugins.Plugin import Fail, Retry
 from module.utils import fixup, fs_encode, parseFileSize
 
 
@@ -246,9 +246,10 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.25"
+    __version__ = "1.26"
 
     __pattern__ = r'^unmatchable$'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Simple hoster plugin"""
     __license__     = "GPLv3"
@@ -424,6 +425,9 @@ class SimpleHoster(Hoster):
         self.directDL  = False  #@TODO: Move to hoster class in 0.4.10
         self.multihost = False  #@TODO: Move to hoster class in 0.4.10
 
+        if not self.getConfig('use_premium', True):
+            self.retryFree()
+
         if self.LOGIN_ACCOUNT and not self.account:
             self.fail(_("Required account not found"))
 
@@ -454,35 +458,42 @@ class SimpleHoster(Hoster):
 
 
     def process(self, pyfile):
-        self.prepare()
-        self.checkInfo()
-
-        if self.directDL:
-            self.logDebug("Looking for direct download link...")
-            self.handleDirect(pyfile)
-
-        if self.multihost and not self.link and not self.lastDownload:
-            self.logDebug("Looking for leeched download link...")
-            self.handleMulti(pyfile)
-
-            if not self.link and not self.lastDownload:
-                self.MULTI_HOSTER = False
-                self.retry(1, reason="Multi hoster fails")
-
-        if not self.link and not self.lastDownload:
-            self.preload()
+        try:
+            self.prepare()
             self.checkInfo()
 
-            if self.premium and (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
-                self.logDebug("Handled as premium download")
-                self.handlePremium(pyfile)
+            if self.directDL:
+                self.logDebug("Looking for direct download link...")
+                self.handleDirect(pyfile)
 
-            elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
-                self.logDebug("Handled as free download")
-                self.handleFree(pyfile)
+            if self.multihost and not self.link and not self.lastDownload:
+                self.logDebug("Looking for leeched download link...")
+                self.handleMulti(pyfile)
 
-        self.downloadLink(self.link, self.DISPOSITION)  #: Remove `self.DISPOSITION` in 0.4.10
-        self.checkFile()
+                if not self.link and not self.lastDownload:
+                    self.MULTI_HOSTER = False
+                    self.retry(1, reason="Multi hoster fails")
+
+            if not self.link and not self.lastDownload:
+                self.preload()
+                self.checkInfo()
+
+                if self.premium and (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
+                    self.logDebug("Handled as premium download")
+                    self.handlePremium(pyfile)
+
+                elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
+                    self.logDebug("Handled as free download")
+                    self.handleFree(pyfile)
+
+            self.downloadLink(self.link, self.DISPOSITION)  #: Remove `self.DISPOSITION` in 0.4.10
+            self.checkFile()
+
+        except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
+            if self.premium:
+                self.retryFree()
+            else:
+                raise Fail(e)
 
 
     def downloadLink(self, link, disposition=True):
@@ -719,6 +730,12 @@ class SimpleHoster(Hoster):
             size = self.pyfile.size / 1024
             self.logInfo(_("Filesize: %i KiB, Traffic left for user %s: %i KiB") % (size, self.user, traffic))
             return size <= traffic
+
+
+    def retryFree(self):
+        self.account = None
+        self.req     = self.core.requestFactory.getRequest(self.__name__)
+        raise Retry(_("Fallback to free download"))
 
 
     #@TODO: Remove in 0.4.10
