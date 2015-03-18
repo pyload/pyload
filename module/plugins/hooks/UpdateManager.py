@@ -49,21 +49,21 @@ class UpdateManager(Hook):
     MIN_CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
 
 
-    def pluginConfigChanged(self, plugin, name, value):
-        if name == "interval":
-            interval = value * 60 * 60
-            if self.MIN_CHECK_INTERVAL <= interval != self.interval:
-                self.core.scheduler.removeJob(self.cb)
-                self.interval = interval
-                self.initPeriodical()
-            else:
-                self.logDebug("Invalid interval value, kept current")
+    # def pluginConfigChanged(self, plugin, name, value):
+        # if name == "interval":
+            # interval = value * 60 * 60
+            # if self.MIN_CHECK_INTERVAL <= interval != self.interval:
+                # self.core.scheduler.removeJob(self.cb)
+                # self.interval = interval
+                # self.initPeriodical()
+            # else:
+                # self.logDebug("Invalid interval value, kept current")
 
-        elif name == "reloadplugins":
-            if self.cb2:
-                self.core.scheduler.removeJob(self.cb2)
-            if value is True and self.core.debug:
-                self.periodical2()
+        # elif name == "reloadplugins":
+            # if self.cb2:
+                # self.core.scheduler.removeJob(self.cb2)
+            # if value is True and self.core.debug:
+                # self.periodical2()
 
 
     def coreReady(self):

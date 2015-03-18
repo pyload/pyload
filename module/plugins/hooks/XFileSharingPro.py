@@ -8,7 +8,7 @@ from module.plugins.Hook import Hook
 class XFileSharingPro(Hook):
     __name__    = "XFileSharingPro"
     __type__    = "hook"
-    __version__ = "0.35"
+    __version__ = "0.36"
 
     __config__ = [("activated"       , "bool", "Activated"                     , True ),
                   ("use_hoster_list" , "bool", "Load listed hosters only"      , False),
@@ -22,7 +22,7 @@ class XFileSharingPro(Hook):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    event_list = ["pluginConfigChanged"]
+    # event_list = ["pluginConfigChanged"]
     regexp     = {'hoster' : (r'https?://(?:www\.)?(?P<DOMAIN>[\w\-.^_]{3,63}(?:\.[a-zA-Z]{2,})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
                               r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:embed-)?\w+'),
                   'crypter': (r'https?://(?:www\.)?(?P<DOMAIN>[\w\-.^_]{3,63}(?:\.[a-zA-Z]{2,})(?:\:\d+)?)/(?:user|folder)s?/\w+',
@@ -41,8 +41,8 @@ class XFileSharingPro(Hook):
     CRYPTER_BUILTIN = ["junocloud.me", "rapidfileshare.net"]
 
 
-    def pluginConfigChanged(self, plugin, name, value):
-        self.loadPattern()
+    # def pluginConfigChanged(self, plugin, name, value):
+        # self.loadPattern()
 
 
     #@TODO: Remove in 0.4.10
