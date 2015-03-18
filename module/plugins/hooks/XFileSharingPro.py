@@ -8,7 +8,7 @@ from module.plugins.Hook import Hook
 class XFileSharingPro(Hook):
     __name__    = "XFileSharingPro"
     __type__    = "hook"
-    __version__ = "0.34"
+    __version__ = "0.35"
 
     __config__ = [("activated"       , "bool", "Activated"                     , True ),
                   ("use_hoster_list" , "bool", "Load listed hosters only"      , False),
@@ -41,7 +41,7 @@ class XFileSharingPro(Hook):
     CRYPTER_BUILTIN = ["junocloud.me", "rapidfileshare.net"]
 
 
-    def pluginConfigChanged(self.__name__, plugin, name, value):
+    def pluginConfigChanged(self, plugin, name, value):
         self.loadPattern()
 
 
