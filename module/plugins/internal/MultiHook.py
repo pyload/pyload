@@ -10,15 +10,12 @@ from module.utils import decode, remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.39"
+    __version__ = "0.40"
 
-    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
-                  ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
-                  ("revertfailed"  , "bool"               , "Revert to standard download if fails", True ),
-                  ("retry"         , "int"                , "Number of retries before revert"     , 10   ),
-                  ("retryinterval" , "int"                , "Retry interval in minutes"           , 1    ),
-                  ("reload"        , "bool"               , "Reload plugin list"                  , True ),
-                  ("reloadinterval", "int"                , "Reload interval in hours"            , 12   )]
+    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
+                  ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
+                  ("reload"        , "bool"               , "Reload plugin list"           , True ),
+                  ("reloadinterval", "int"                , "Reload interval in hours"     , 12   )]
 
     __description__ = """Hook plugin for multi hoster/crypter"""
     __license__     = "GPLv3"
@@ -135,7 +132,7 @@ class MultiHook(Hook):
                 self.logDebug(e, "Waiting 1 minute and retry")
                 time.sleep(60)
         else:
-            self.logWarning(_("Fallback to default reload interval due plugin"))
+            self.logWarning(_("Fallback to default reload interval due plugin parse error"))
             self.interval = self.MIN_RELOAD_INTERVAL
             return list()
 
@@ -299,29 +296,3 @@ class MultiHook(Hook):
 
         hdict['pattern'] = getattr(self.pluginclass, "__pattern__", r'^unmatchable$')
         hdict['re']      = re.compile(hdict['pattern'])
-
-
-    def downloadFailed(self, pyfile):
-        """remove plugin override if download fails but not if file is offline/temp.offline"""
-        if pyfile.status != 8 or not self.getConfig("revertfailed", True):
-            return
-
-        hdict = self.core.pluginManager.plugins[self.plugintype][pyfile.pluginname]
-        if "new_name" in hdict and hdict['new_name'] == self.pluginname:
-            if pyfile.error == "MultiHook":
-                self.logDebug("Unload MultiHook", pyfile.pluginname, hdict)
-                self.unloadPlugin(pyfile.pluginname)
-                pyfile.setStatus("queued")
-                pyfile.sync()
-            else:
-                retries   = max(self.getConfig("retry", 10), 0)
-                wait_time = max(self.getConfig("retryinterval", 1), 0)
-
-                if 0 < retries > pyfile.plugin.retries:
-                    self.logInfo(_("Retrying: %s") % pyfile.name)
-                    pyfile.setCustomStatus("MultiHook", "queued")
-                    pyfile.sync()
-
-                    pyfile.plugin.retries += 1
-                    pyfile.plugin.setWait(wait_time)
-                    pyfile.plugin.wait()
