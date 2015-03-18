@@ -24,7 +24,7 @@ def forward(source, destination):
 class ClickAndLoad(Hook):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
-    __version__ = "0.40"
+    __version__ = "0.41"
 
     __config__ = [("activated", "bool", "Activated"                             , True),
                   ("port"     , "int" , "Port"                                  , 9666),
@@ -58,6 +58,8 @@ class ClickAndLoad(Hook):
 
     @threaded
     def proxy(self, ip, webport, cnlport):
+        time.sleep(10)  #@TODO: Implement addon delay on start in 0.4.10
+
         self.logInfo(_("Proxy listening on %s:%s") % (ip or "0.0.0.0", cnlport))
 
         self._server(ip, webport, cnlport)
