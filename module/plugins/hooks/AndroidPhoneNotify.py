@@ -9,12 +9,14 @@ from module.plugins.Hook import Hook, Expose
 class AndroidPhoneNotify(Hook):
     __name__    = "AndroidPhoneNotify"
     __type__    = "hook"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __config__ = [("apikey"         , "str" , "API key"                                  , ""   ),
                   ("notifycaptcha"  , "bool", "Notify captcha request"                   , True ),
                   ("notifypackage"  , "bool", "Notify package finished"                  , True ),
-                  ("notifyprocessed", "bool", "Notify status of processed packages"      , True ),
+                  ("notifyprocessed", "bool", "Notify packages processed"                , True ),
+                  ("notifyupdate"   , "bool", "Notify plugin updates"                    , True ),
+                  ("notifyexit"     , "bool", "Notify pyLoad shutdown"                   , True ),
                   ("sendtimewait"   , "int" , "Timewait in seconds between notifications", 5    ),
                   ("sendpermin"     , "int" , "Max notifications per minute"             , 12   ),
                   ("ignoreclient"   , "bool", "Send notifications if client is connected", False)]
@@ -25,7 +27,7 @@ class AndroidPhoneNotify(Hook):
                        ("Walter Purcaro", "vuolter@gmail.com"      )]
 
 
-    event_list = ["allDownloadsProcessed"]
+    event_list = ["allDownloadsProcessed", "plugin_updated"]
 
 
     #@TODO: Remove in 0.4.10
@@ -37,6 +39,23 @@ class AndroidPhoneNotify(Hook):
         self.info          = {}  #@TODO: Remove in 0.4.10
         self.last_notify   = 0
         self.notifications = 0
+
+
+    def plugin_updated(self, type_plugins):
+        if not self.getConfig('notifyupdate'):
+            return
+
+        self.notify(_("Plugins updated"), str(type_plugins))
+
+
+    def coreExiting(self):
+        if not self.getConfig('notifyexit'):
+            return
+
+        if self.core.do_restart:
+            self.notify(_("Restarting pyLoad"))
+        else:
+            self.notify(_("Exiting pyLoad"))
 
 
     def newCaptchaTask(self, task):
