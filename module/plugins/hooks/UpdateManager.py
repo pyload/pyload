@@ -28,7 +28,7 @@ def exists(path):
 class UpdateManager(Hook):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "0.45"
+    __version__ = "0.46"
 
     __config__ = [("activated"    , "bool"                         , "Activated"                                     , True              ),
                   ("mode"         , "pyLoad + plugins;plugins only", "Check updates for"                             , "pyLoad + plugins"),
@@ -276,6 +276,8 @@ class UpdateManager(Hook):
                 self.logInfo(_("*** Plugins have been updated, but need a pyLoad restart to be reloaded ***"))
                 self.info['plugins'] = True
                 exitcode = 2
+
+            self.manager.dispatchEvent("plugin_updated", updated)
         else:
             self.logInfo(_("No plugin updates available"))
 
