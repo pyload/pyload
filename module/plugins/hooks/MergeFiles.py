@@ -32,8 +32,7 @@ class MergeFiles(Hook):
 
 
     def setup(self):
-        # nothing to do
-        pass
+        self.info = {}  #@TODO: Remove in 0.4.10
 
 
     @threaded

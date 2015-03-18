@@ -20,6 +20,9 @@ class UnSkipOnFail(Hook):
     def initPeriodical(self):
         pass
 
+    def setup(self):
+        self.info = {}  #@TODO: Remove in 0.4.10
+
 
     def downloadFailed(self, pyfile):
         #: Check if pyfile is still "failed",

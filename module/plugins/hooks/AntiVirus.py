@@ -30,6 +30,10 @@ class AntiVirus(Hook):
         pass
 
 
+    def setup(self):
+        self.info = {}  #@TODO: Remove in 0.4.10
+
+
     @Expose
     @threaded
     def scan(self, pyfile, thread):

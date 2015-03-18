@@ -44,7 +44,7 @@ class DeleteFinished(Hook):
 
 
     def coreReady(self):
-        self.info = {'sleep': True}
+        self.info['sleep'] = True
         interval = self.getConfig('interval')
         self.pluginConfigChanged(self.__name__, 'interval', interval)
         self.addEvent('packageFinished', self.wakeup)
@@ -75,5 +75,6 @@ class DeleteFinished(Hook):
 
 
     def setup(self):
-        self.m = self.manager
+        self.info        = {}  #@TODO: Remove in 0.4.10
+        self.m           = self.manager
         self.removeEvent = self.m.removeEvent

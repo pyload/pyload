@@ -29,6 +29,10 @@ class SkipRev(Hook):
         pass
 
 
+    def setup(self):
+        self.info = {}  #@TODO: Remove in 0.4.10
+
+
     @staticmethod
     def _setup(self):
         self.pyfile.plugin._setup()

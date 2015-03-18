@@ -75,9 +75,12 @@ class Checksum(Hook):
 
 
     def setup(self):
+        self.info       = {}  #@TODO: Remove in 0.4.10
         self.algorithms = sorted(
             getattr(hashlib, "algorithms", ("md5", "sha1", "sha224", "sha256", "sha384", "sha512")), reverse=True)
+
         self.algorithms.extend(["crc32", "adler32"])
+
         self.formats = self.algorithms + ["sfv", "crc", "hash"]
 
 

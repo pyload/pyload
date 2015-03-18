@@ -27,6 +27,7 @@ class HotFolder(Hook):
 
 
     def setup(self):
+        self.info     = {}  #@TODO: Remove in 0.4.10
         self.interval = 30
 
 

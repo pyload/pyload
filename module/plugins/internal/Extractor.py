@@ -23,8 +23,7 @@ class Extractor:
 
     __description__ = """Base extractor plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN"         , "ranan@pyload.org" ),
-                       ("Walter Purcaro", "vuolter@gmail.com"),
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
                        ("Immenz"        , "immenz@gmx.net"   )]
 
 

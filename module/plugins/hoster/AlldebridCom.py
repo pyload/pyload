@@ -13,25 +13,13 @@ from module.utils import parseFileSize
 class AlldebridCom(MultiHoster):
     __name__    = "AlldebridCom"
     __type__    = "hoster"
-    __version__ = "0.45"
+    __version__ = "0.46"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'
 
     __description__ = """Alldebrid.com multi-hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Andy Voigt", "spamsales@online.de")]
-
-
-    def getFilename(self, url):
-        try:
-            name = unquote(url.rsplit("/", 1)[1])
-        except IndexError:
-            name = "Unknown_Filename..."
-
-        if name.endswith("..."):  # incomplete filename, append random stuff
-            name += "%s.tmp" % randrange(100, 999)
-
-        return name
 
 
     def setup(self):
@@ -62,17 +50,6 @@ class AlldebridCom(MultiHoster):
             self.link = self.link.replace("http://", "https://")
         else:
             self.link = self.link.replace("https://", "http://")
-
-        if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown"):
-            #only use when name wasnt already set
-            pyfile.name = self.getFilename(self.link)
-
-
-    def checkFile(self, rules={}):
-        if self.checkDownload({'error': "<title>An error occured while processing your request</title>"}) == "error":
-            self.retry(wait_time=60, reason=_("An error occured while generating link"))
-
-        return super(AlldebridCom, self).checkFile(rules)
 
 
 getInfo = create_getInfo(AlldebridCom)

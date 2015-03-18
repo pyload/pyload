@@ -1,14 +1,7 @@
 # -*- coding: utf-8 -*-
-#
-# Note:
-#   Right now premium support is not added
-#   Thus, any file that require premium support
-#   cannot be downloaded. Only the file that is free to
-#   download can be downloaded.
 
 import re
 
-from module.common.json_layer import json_loads
 from module.plugins.internal.CaptchaService import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
@@ -36,7 +29,7 @@ class NitroflareCom(SimpleHoster):
     RECAPTCHA_KEY = "6Lenx_USAAAAAF5L1pmTWvWcH73dipAEzNnmNLgy"
 
     PREMIUM_ONLY_PATTERN = r'This file is available with Premium only'
-    WAIT_PATTERN         = r'You have to wait .+'
+    WAIT_PATTERN         = r'You have to wait .+?<'
     ERROR_PATTERN        = r'downloading is not possible'
 
 

@@ -23,6 +23,15 @@ class JustPremium(Hook):
     event_list = ["linksAdded"]
 
 
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
+
+
+    def setup(self):
+        self.info = {}  #@TODO: Remove in 0.4.10
+
+
     def linksAdded(self, links, pid):
         hosterdict = self.core.pluginManager.hosterPlugins
         linkdict   = self.core.api.checkURLs(links)
