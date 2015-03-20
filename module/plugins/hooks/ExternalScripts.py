@@ -10,7 +10,7 @@ from module.utils import fs_encode, save_join
 class ExternalScripts(Hook):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.35"
+    __version__ = "0.36"
 
     __config__ = [("activated", "bool", "Activated"         , True ),
                   ("waitend"  , "bool", "Wait script ending", False)]
@@ -26,7 +26,8 @@ class ExternalScripts(Hook):
     event_list = ["archive_extract_failed", "archive_extracted"     ,
                   "package_extract_failed", "package_extracted"     ,
                   "all_archives_extracted", "all_archives_processed",
-                  "allDownloadsFinished"  , "allDownloadsProcessed" ]
+                  "allDownloadsFinished"  , "allDownloadsProcessed" ,
+                  "packageDeleted"]
 
 
     #@TODO: Remove in 0.4.10
@@ -35,13 +36,14 @@ class ExternalScripts(Hook):
 
 
     def setup(self):
-        self.info    = {}  #@TODO: Remove in 0.4.10
+        self.info    = {'oldip': None}
         self.scripts = {}
 
-        folders = ["before_reconnect", "after_reconnect",
+        folders = ["pyload_start", "pyload_restart", "pyload_shutdown",
+                   "before_reconnect", "after_reconnect",
                    "download_preparing", "download_failed", "download_finished",
                    "archive_extract_failed", "archive_extracted",
-                   "package_finished", "package_extract_failed", "package_extracted",
+                   "package_finished", "package_deleted", "package_extract_failed", "package_extracted",
                    "all_downloads_processed", "all_downloads_finished",  #@TODO: Invert `all_downloads_processed`, `all_downloads_finished` order in 0.4.10
                    "all_archives_extracted", "all_archives_processed"]
 
@@ -53,6 +55,8 @@ class ExternalScripts(Hook):
         for script_type, names in self.scripts.iteritems():
             if names:
                 self.logInfo(_("Installed scripts for: ") + script_type, ", ".join(map(os.path.basename, names)))
+
+        self.pyload_start()
 
 
     def initPluginType(self, name, dir):
@@ -97,14 +101,25 @@ class ExternalScripts(Hook):
                 self.logError(_("Runtime error: %s") % os.path.abspath(script), _("Unknown error"))
 
 
+    def pyload_start(self):
+        for script in self.scripts['pyload_start']:
+            self.callScript(script)
+
+
+    def coreExiting(self):
+        for script in self.scripts['pyload_restart' if self.core.do_restart else 'pyload_shutdown']:
+            self.callScript(script)
+
+
     def beforeReconnecting(self, ip):
         for script in self.scripts['before_reconnect']:
             self.callScript(script, ip)
+        self.info['oldip'] = ip
 
 
     def afterReconnecting(self, ip):
         for script in self.scripts['after_reconnect']:
-            self.callScript(script, ip)
+            self.callScript(script, ip, self.info['oldip'])  #@TODO: Use built-in oldip in 0.4.10
 
 
     def downloadPreparing(self, pyfile):
@@ -152,6 +167,18 @@ class ExternalScripts(Hook):
 
         for script in self.scripts['package_finished']:
             self.callScript(script, pypack.id, pypack.name, download_folder)
+
+
+    def packageDeleted(self, pid):
+        pack = self.core.api.getPackageInfo(pid)
+
+        if self.config['general']['folder_per_package']:
+            download_folder = save_join(self.config['general']['download_folder'], pack.folder)
+        else:
+            download_folder = self.config['general']['download_folder']
+
+        for script in self.scripts['package_deleted']:
+            self.callScript(script, pack.id, pack.name, download_folder)
 
 
     def package_extract_failed(self, pypack):
