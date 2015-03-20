@@ -56,16 +56,6 @@ class LetitbitNet(SimpleHoster):
         self.resumeDownload = True
 
 
-    def getFileInfo(self):
-        api_rep = api_response(self.pyfile.url)
-        if api_rep['status'] == 'OK':
-            self.api_data = api_rep['data'][0]
-            self.pyfile.name = self.api_data['name']
-            self.pyfile.size = self.api_data['size']
-        else:
-            self.offline()
-
-
     def handleFree(self, pyfile):
         action, inputs = self.parseHtmlForm('id="ifree_form"')
         if not action:

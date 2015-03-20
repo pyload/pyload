@@ -82,7 +82,7 @@ class UlozTo(SimpleHoster):
         else:
             self.handleFree(pyfile)
 
-        self.doCheckDownload()
+        self.checkFile()
 
 
     def handleFree(self, pyfile):
@@ -124,7 +124,7 @@ class UlozTo(SimpleHoster):
         self.download(pyfile.url, get={'do': "directDownload"}, disposition=True)
 
 
-    def doCheckDownload(self):
+    def checkFile(self, rules={}):
         check = self.checkDownload({
             "wrong_captcha": re.compile(r'<ul class="error">\s*<li>Error rewriting the text.</li>'),
             "offline"      : re.compile(self.OFFLINE_PATTERN),
@@ -153,6 +153,8 @@ class UlozTo(SimpleHoster):
 
         elif check == "not_found":
             self.fail(_("Server error - file not downloadable"))
+
+        return super(UlozTo, self).checkFile(rules)
 
 
 getInfo = create_getInfo(UlozTo)
