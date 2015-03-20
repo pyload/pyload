@@ -10,7 +10,7 @@ from module.utils import fs_encode, save_join
 class ExternalScripts(Hook):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.36"
+    __version__ = "0.37"
 
     __config__ = [("activated", "bool", "Activated"         , True ),
                   ("waitend"  , "bool", "Wait script ending", False)]
@@ -39,7 +39,7 @@ class ExternalScripts(Hook):
         self.info    = {'oldip': None}
         self.scripts = {}
 
-        folders = ["pyload_start", "pyload_restart", "pyload_shutdown",
+        folders = ["pyload_start", "pyload_restart", "pyload_stop",
                    "before_reconnect", "after_reconnect",
                    "download_preparing", "download_failed", "download_finished",
                    "archive_extract_failed", "archive_extracted",
@@ -107,7 +107,7 @@ class ExternalScripts(Hook):
 
 
     def coreExiting(self):
-        for script in self.scripts['pyload_restart' if self.core.do_restart else 'pyload_shutdown']:
+        for script in self.scripts['pyload_restart' if self.core.do_restart else 'pyload_stop']:
             self.callScript(script)
 
 
