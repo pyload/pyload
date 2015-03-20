@@ -246,7 +246,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.27"
+    __version__ = "1.28"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -522,7 +522,7 @@ class SimpleHoster(Hoster):
                                          'Html error': re.compile(r'\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)')})
 
             if not errmsg:
-                for r, p in [('Html file'    , re.compile(r'\A\s*<!DOCTYPE html')                              ),
+                for r, p in [('Html file'    , re.compile(r'\A\s*<!DOCTYPE html')                                ),
                              ('Request error', re.compile(r'([Aa]n error occured while processing your request)'))]:
                     if r not in rules:
                         rules[r] = p
@@ -567,11 +567,14 @@ class SimpleHoster(Hoster):
 
                 self.info['error'] = errmsg
 
-                if "hour" in errmsg:
-                    self.wait(secondsToMidnight(gmt=2), True)
+                if "min" in errmsg:
+                    self.wait(1 * 60)
+
+                elif "hour" in errmsg:
+                    self.wait(1 * 60 * 60, True)
 
                 elif re.search("da(il)?y|today", errmsg):
-                    self.wait(1 * 60 * 60, True)
+                    self.wait(secondsToMidnight(gmt=2), True)
 
                 else:
                     self.error(errmsg)
