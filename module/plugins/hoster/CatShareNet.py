@@ -9,7 +9,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class CatShareNet(SimpleHoster):
     __name__    = "CatShareNet"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __pattern__ = r'http://(?:www\.)?catshare\.net/\w{16}'
 
@@ -36,11 +36,12 @@ class CatShareNet(SimpleHoster):
         self.resumeDownload = True
 
 
-    def getFileInfo(self):
+    def checkErrors(self):
         m = re.search(self.IP_BLOCKED_PATTERN, self.html)
         if m:
             self.fail(_("Only connections from Polish IP address are allowed"))
-        return super(CatShareNet, self).getFileInfo()
+
+        return super(CatShareNet, self).checkErrors()
 
 
     def handleFree(self, pyfile):
