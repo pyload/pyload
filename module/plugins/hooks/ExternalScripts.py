@@ -96,6 +96,7 @@ class ExternalScripts(Hook):
             except Exception:
                 self.logError(_("Runtime error: %s") % os.path.abspath(script), _("Unknown error"))
 
+
     def beforeReconnecting(self, ip):
         for script in self.scripts['before_reconnect']:
             self.callScript(script, ip)
