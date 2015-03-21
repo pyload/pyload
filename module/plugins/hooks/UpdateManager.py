@@ -28,7 +28,7 @@ def exists(path):
 class UpdateManager(Hook):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "0.46"
+    __version__ = "0.47"
 
     __config__ = [("activated"    , "bool"                         , "Activated"                                     , True              ),
                   ("mode"         , "pyLoad + plugins;plugins only", "Check updates for"                             , "pyLoad + plugins"),
@@ -44,26 +44,26 @@ class UpdateManager(Hook):
 
     # event_list = ["pluginConfigChanged"]
 
-    SERVER_URL   = "http://updatemanager.pyload.org"
-    VERSION      = re.compile(r'__version__.*=.*("|\')([\d.]+)')
+    SERVER_URL         = "http://updatemanager.pyload.org"
+    VERSION            = re.compile(r'__version__.*=.*("|\')([\d.]+)')
     MIN_CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
 
 
-    # def pluginConfigChanged(self, plugin, name, value):
-        # if name == "interval":
-            # interval = value * 60 * 60
-            # if self.MIN_CHECK_INTERVAL <= interval != self.interval:
+    def pluginConfigChanged(self, plugin, name, value):
+        if name == "interval":
+            interval = value * 60 * 60
+            if self.MIN_CHECK_INTERVAL <= interval != self.interval:
                 # self.core.scheduler.removeJob(self.cb)
-                # self.interval = interval
-                # self.initPeriodical()
-            # else:
-                # self.logDebug("Invalid interval value, kept current")
+                self.interval = interval
+                self.initPeriodical()
+            else:
+                self.logDebug("Invalid interval value, kept current")
 
-        # elif name == "reloadplugins":
-            # if self.cb2:
-                # self.core.scheduler.removeJob(self.cb2)
-            # if value is True and self.core.debug:
-                # self.periodical2()
+        elif name == "reloadplugins":
+            if self.cb2:
+                self.core.scheduler.removeJob(self.cb2)
+            if value is True and self.core.debug:
+                self.periodical2()
 
 
     def coreReady(self):
