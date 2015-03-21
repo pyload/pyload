@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, r
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
@@ -82,6 +82,7 @@ class MultiHoster(SimpleHoster):
 
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
             if self.premium:
+                self.logWarning(_("Premium download failed"))
                 self.retryFree()
 
             elif self.getConfig("revertfailed", True) \

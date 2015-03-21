@@ -246,7 +246,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.28"
+    __version__ = "1.29"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -491,6 +491,7 @@ class SimpleHoster(Hoster):
 
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
             if self.premium:
+                self.logWarning(_("Premium download failed"))
                 self.retryFree()
             else:
                 raise Fail(e)
@@ -567,14 +568,14 @@ class SimpleHoster(Hoster):
 
                 self.info['error'] = errmsg
 
-                if "min" in errmsg:
-                    self.wait(1 * 60)
-
-                elif "hour" in errmsg:
+                if "hour" in errmsg:
                     self.wait(1 * 60 * 60, True)
 
                 elif re.search("da(il)?y|today", errmsg):
                     self.wait(secondsToMidnight(gmt=2), True)
+
+                elif "minute" in errmsg:
+                    self.wait(1 * 60)
 
                 else:
                     self.error(errmsg)
