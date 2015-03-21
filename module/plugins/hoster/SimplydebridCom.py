@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo, rep
 class SimplydebridCom(MultiHoster):
     __name__    = "SimplydebridCom"
     __type__    = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __pattern__ = r'http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd\.php'
 
@@ -24,7 +24,7 @@ class SimplydebridCom(MultiHoster):
                                                   ("ul.to", "uploaded.net/file")
                                                   ("uploaded.com", "uploaded.net")
                                                   ("filerio.com", "filerio.in")
-                                                  ("lumfile.com", "lumfile.se")]
+                                                  ("lumfile.com", "lumfile.se")])
 
         if 'fileparadox' in self.link:
             self.link = self.link.replace("http://", "https://")
