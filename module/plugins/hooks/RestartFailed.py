@@ -6,7 +6,7 @@ from module.plugins.Hook import Hook
 class RestartFailed(Hook):
     __name__    = "RestartFailed"
     __type__    = "hook"
-    __version__ = "1.57"
+    __version__ = "1.58"
 
     __config__ = [("interval", "int", "Check interval in minutes", 90)]
 
@@ -42,4 +42,5 @@ class RestartFailed(Hook):
 
 
     def coreReady(self):
-        self.pluginConfigChanged(self.__name__, "interval", self.getConfig('interval'))
+        # self.pluginConfigChanged(self.__name__, "interval", self.getConfig('interval'))
+        self.interval = max(self.MIN_CHECK_INTERVAL, self.getConfig('interval') * 60)
