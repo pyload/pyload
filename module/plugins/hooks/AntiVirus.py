@@ -11,9 +11,10 @@ from module.utils import fs_encode, save_join
 class AntiVirus(Hook):
     __name__    = "AntiVirus"
     __type__    = "hook"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
-    __config__ = [("action"    , "Antivirus default;Delete;Quarantine", "Manage infected files"                    , "Antivirus default"),  #@TODO: add trash option (use Send2Trash lib)
+    #@TODO: add trash option (use Send2Trash lib)
+    __config__ = [("action"    , "Antivirus default;Delete;Quarantine", "Manage infected files"                    , "Antivirus default"),
                   ("quardir"   , "folder"                             , "Quarantine folder"                        , ""                 ),
                   ("scanfailed", "bool"                               , "Scan incompleted files (failed downloads)", False              ),
                   ("cmdfile"   , "file"                               , "Antivirus executable"                     , ""                 ),
@@ -58,7 +59,7 @@ class AntiVirus(Hook):
 
             if err:
                 self.logWarning(filename, err)
-                if not self.getConfig('ignore-err')
+                if not self.getConfig('ignore-err'):
                     self.logDebug("Delete/Quarantine task is aborted")
                     return
 
