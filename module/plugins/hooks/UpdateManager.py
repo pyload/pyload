@@ -28,7 +28,7 @@ def exists(path):
 class UpdateManager(Hook):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "0.47"
+    __version__ = "0.48"
 
     __config__ = [("activated"    , "bool"                         , "Activated"                                     , True              ),
                   ("mode"         , "pyLoad + plugins;plugins only", "Check updates for"                             , "pyLoad + plugins"),
@@ -136,6 +136,7 @@ class UpdateManager(Hook):
 
     @threaded
     def updateThread(self):
+        self.core.api.pauseServer()
         self.updating = True
 
         status = self.update(onlyplugin=self.getConfig('mode') == "plugins only")
@@ -144,6 +145,7 @@ class UpdateManager(Hook):
             self.core.api.restart()
         else:
             self.updating = False
+            self.core.api.unpauseServer()
 
 
     @Expose
