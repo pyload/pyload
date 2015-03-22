@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.16"
+    __version__ = "1.17"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
@@ -82,8 +82,7 @@ class UnRar(Extractor):
     def isMultipart(cls, filename):
         multipart = cls.re_multipart.search(filename)
         if multipart:
-            # First Multipart file (part1.rar for *.part1-9.rar format or *.rar for .r1-9 format) handled as normal Archive
-            return False if (multipart.group(1) == "part" and int(multipart.group(2)) == 1 and not multipart.group(3)) else True
+            return True if not multipart.group(3) else False
 
         return False
 

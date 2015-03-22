@@ -106,7 +106,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.34"
+    __version__ = "1.35"
 
     __config__ = [("activated"      , "bool"  , "Activated"                             , True                                                                     ),
                   ("fullpath"       , "bool"  , "Extract with full paths"               , True                                                                     ),
@@ -328,7 +328,9 @@ class ExtractArchive(Hook):
                             success = False
                             continue
 
-                        files_ids.remove((fname, fid, fout))  #: don't let other extractors spam log
+                        # remove processed file and related multiparts from list
+                        files_ids = [(fname, fid, fout) for fname, fid, fout in files_ids \
+                                    if fname not in archive.getDeleteFiles()]
                         self.logDebug("Extracted files: %s" % new_files)
                         self.setPermissions(new_files)
 

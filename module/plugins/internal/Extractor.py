@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
 
 from module.PyFile import PyFile
 
@@ -19,7 +20,7 @@ class PasswordError(Exception):
 
 class Extractor:
     __name__    = "Extractor"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __description__ = """Base extractor plugin"""
     __license__     = "GPLv3"
@@ -35,7 +36,7 @@ class Extractor:
     @classmethod
     def isArchive(cls, filename):
         name = os.path.basename(filename).lower()
-        return any(name.endswith(ext) for ext in cls.EXTENSIONS) and not cls.isMultipart(filename)
+        return any(name.endswith(ext) for ext in cls.EXTENSIONS)
 
 
     @classmethod
@@ -57,7 +58,16 @@ class Extractor:
         :param files_ids: List of filepathes
         :return: List of targets, id tuple list
         """
-        return [(fname, id, fout) for fname, id, fout in files_ids if cls.isArchive(fname)]
+        targets = []
+        processed = []
+
+        for fname, id, fout in files_ids:
+            if cls.isArchive(fname):
+                pname = re.sub(cls.re_multipart, '', fname) if cls.isMultipart(fname) else os.path.splitext(fname)[0]
+                if pname not in processed:
+                    processed.append(pname)
+                    targets.append((fname, id, fout))
+        return targets
 
 
     def __init__(self, manager, filename, out,
