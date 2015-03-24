@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.17"
+    __version__ = "1.18"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
@@ -80,11 +80,7 @@ class UnRar(Extractor):
 
     @classmethod
     def isMultipart(cls, filename):
-        multipart = cls.re_multipart.search(filename)
-        if multipart:
-            return True if not multipart.group(3) else False
-
-        return False
+        return True if cls.re_multipart.search(filename) else False
 
 
     def test(self, password):
