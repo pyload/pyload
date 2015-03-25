@@ -246,7 +246,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.29"
+    __version__ = "1.30"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -746,8 +746,12 @@ class SimpleHoster(Hoster):
 
 
     def retryFree(self):
+        if not self.premium:
+            return
+        self.premium = False
         self.account = None
         self.req     = self.core.requestFactory.getRequest(self.__name__)
+        self.retries = 0
         raise Retry(_("Fallback to free download"))
 
 
