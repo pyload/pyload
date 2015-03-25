@@ -106,7 +106,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.36"
+    __version__ = "1.37"
 
     __config__ = [("activated"      , "bool"                , "Activated"                             , True                                                                     ),
                   ("fullpath"       , "bool"                , "Extract with full paths"               , True                                                                     ),
@@ -471,7 +471,7 @@ class ExtractArchive(Hook):
                     file = fs_encode(f)
                     if os.path.exists(file) and self.trash:
                         send2trash(file)
-                    elif os.path.exists:
+                    elif os.path.exists(file):
                         os.remove(file)
                     else:
                         self.logDebug("%s does not exists" % f)
