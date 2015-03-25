@@ -471,7 +471,7 @@ class ExtractArchive(Hook):
                     file = fs_encode(f)
                     if os.path.exists(file) and self.trash:
                         send2trash(file)
-                    elif os.path.exists:
+                    elif os.path.exists(file):
                         os.remove(file)
                     else:
                         self.logDebug("%s does not exists" % f)
