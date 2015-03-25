@@ -20,7 +20,7 @@ class PasswordError(Exception):
 
 class Extractor:
     __name__    = "Extractor"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __description__ = """Base extractor plugin"""
     __license__     = "GPLv3"
@@ -75,7 +75,7 @@ class Extractor:
                  overwrite=False,
                  excludefiles=[],
                  renice=0,
-                 delete=False,
+                 delete='No',
                  keepbroken=False,
                  fid=None):
         """ Initialize extractor for specific file """
