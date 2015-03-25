@@ -14,6 +14,7 @@ class ZippyshareCom(SimpleHoster):
     __version__ = "0.77"
 
     __pattern__ = r'http://www\d{0,2}\.zippyshare\.com/v(/|iew\.jsp.*key=)(?P<KEY>[\w^_]+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Zippyshare.com hoster plugin"""
     __license__     = "GPLv3"

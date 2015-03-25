@@ -9,6 +9,7 @@ class LomafileCom(DeadHoster):
     __version__ = "0.52"
 
     __pattern__ = r'http://lomafile\.com/\w{12}'
+    __config__  = []
 
     __description__ = """Lomafile.com hoster plugin"""
     __license__     = "GPLv3"

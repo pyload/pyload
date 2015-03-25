@@ -11,6 +11,7 @@ class OneFichierCom(SimpleHoster):
     __version__ = "0.79"
 
     __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """1fichier.com hoster plugin"""
     __license__     = "GPLv3"

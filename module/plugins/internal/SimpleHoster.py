@@ -148,7 +148,7 @@ def getFileURL(self, url, follow_location=None):
     if type(follow_location) is int:
         redirect = max(follow_location, 1)
     else:
-        redirect = 5
+        redirect = 10
 
     for i in xrange(redirect):
         try:
@@ -246,7 +246,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.30"
+    __version__ = "1.31"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

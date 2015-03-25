@@ -10,8 +10,9 @@ class ImgurComAlbum(SimpleCrypter):
     __version__ = "0.51"
 
     __pattern__ = r'https?://(?:www\.|m\.)?imgur\.com/(a|gallery|)/?\w{5,7}'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
-                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Imgur.com decrypter plugin"""
     __license__     = "GPLv3"

@@ -11,6 +11,7 @@ class UloziskoSk(SimpleHoster):
     __version__ = "0.25"
 
     __pattern__ = r'http://(?:www\.)?ulozisko\.sk/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Ulozisko.sk hoster plugin"""
     __license__     = "GPLv3"

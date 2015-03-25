@@ -14,6 +14,7 @@ class LuckyShareNet(SimpleHoster):
     __version__ = "0.06"
 
     __pattern__ = r'https?://(?:www\.)?luckyshare\.net/(?P<ID>\d{10,})'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """LuckyShare.net hoster plugin"""
     __license__     = "GPLv3"

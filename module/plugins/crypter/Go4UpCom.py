@@ -13,6 +13,9 @@ class Go4UpCom(SimpleCrypter):
     __version__ = "0.11"
 
     __pattern__ = r'http://go4up\.com/(dl/\w{12}|rd/\w{12}/\d+)'
+    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Go4Up.com decrypter plugin"""
     __license__     = "GPLv3"

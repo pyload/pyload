@@ -13,6 +13,7 @@ class QuickshareCz(SimpleHoster):
     __version__ = "0.56"
 
     __pattern__ = r'http://(?:[^/]*\.)?quickshare\.cz/stahnout-soubor/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Quickshare.cz hoster plugin"""
     __license__     = "GPLv3"

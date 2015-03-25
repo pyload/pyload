@@ -26,6 +26,7 @@ class MegaRapidCz(SimpleHoster):
     __version__ = "0.56"
 
     __pattern__ = r'http://(?:www\.)?(share|mega)rapid\.cz/soubor/\d+/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """MegaRapid.cz hoster plugin"""
     __license__     = "GPLv3"

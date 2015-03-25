@@ -11,8 +11,9 @@ class VimeoCom(SimpleHoster):
     __version__ = "0.04"
 
     __pattern__ = r'https?://(?:www\.)?(player\.)?vimeo\.com/(video/)?(?P<ID>\d+)'
-    __config__ = [("quality", "Lowest;Mobile;SD;HD;Highest", "Quality", "Highest"),
-                  ("original", "bool", "Try to download the original file first", True)]
+    __config__  = [("use_premium", "bool"                       , "Use premium account if available" , True     ),
+                   ("quality"    , "Lowest;Mobile;SD;HD;Highest", "Quality"                          , "Highest"),
+                   ("original"   , "bool"                       , "Try to download the original file", True     )]
 
     __description__ = """Vimeo.com hoster plugin"""
     __license__     = "GPLv3"

@@ -11,6 +11,7 @@ class CloudzillaTo(SimpleHoster):
     __version__ = "0.06"
 
     __pattern__ = r'http://(?:www\.)?cloudzilla\.to/share/file/(?P<ID>[\w^_]+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Cloudzilla.to hoster plugin"""
     __license__     = "GPLv3"

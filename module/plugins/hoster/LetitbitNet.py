@@ -39,6 +39,7 @@ class LetitbitNet(SimpleHoster):
     __version__ = "0.30"
 
     __pattern__ = r'https?://(?:www\.)?(letitbit|shareflare)\.net/download/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Letitbit.net hoster plugin"""
     __license__     = "GPLv3"

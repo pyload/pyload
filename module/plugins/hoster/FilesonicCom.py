@@ -9,6 +9,7 @@ class FilesonicCom(DeadHoster):
     __version__ = "0.35"
 
     __pattern__ = r'http://(?:www\.)?filesonic\.com/file/\w+'
+    __config__  = []
 
     __description__ = """Filesonic.com hoster plugin"""
     __license__     = "GPLv3"

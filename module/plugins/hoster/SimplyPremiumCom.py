@@ -12,6 +12,7 @@ class SimplyPremiumCom(MultiHoster):
     __version__ = "0.08"
 
     __pattern__ = r'https?://.+simply-premium\.com'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Simply-Premium.com multi-hoster plugin"""
     __license__     = "GPLv3"

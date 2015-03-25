@@ -15,6 +15,7 @@ class BasketbuildCom(SimpleHoster):
     __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w\.)?basketbuild\.com/filedl/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """basketbuild.com hoster plugin"""
     __license__     = "GPLv3"

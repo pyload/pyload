@@ -18,6 +18,7 @@ class UlozTo(SimpleHoster):
     __version__ = "1.04"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Uloz.to hoster plugin"""
     __license__     = "GPLv3"

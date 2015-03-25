@@ -14,6 +14,7 @@ class BitshareCom(SimpleHoster):
     __version__ = "0.53"
 
     __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/)?(?(1)|\?f=)(?P<ID>\w+)(?(1)/(?P<NAME>.+?)\.html)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Bitshare.com hoster plugin"""
     __license__     = "GPLv3"

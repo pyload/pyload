@@ -14,6 +14,7 @@ class FilepostCom(SimpleHoster):
     __version__ = "0.33"
 
     __pattern__ = r'https?://(?:www\.)?(?:filepost\.com/files|fp\.io)/(?P<ID>[^/]+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Filepost.com hoster plugin"""
     __license__     = "GPLv3"

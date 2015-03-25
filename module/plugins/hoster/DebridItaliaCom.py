@@ -11,6 +11,7 @@ class DebridItaliaCom(MultiHoster):
     __version__ = "0.17"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?debriditalia\.com/dl/\d+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Debriditalia.com multi-hoster plugin"""
     __license__     = "GPLv3"

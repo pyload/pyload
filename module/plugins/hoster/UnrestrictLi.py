@@ -13,6 +13,7 @@ class UnrestrictLi(MultiHoster):
     __version__ = "0.22"
 
     __pattern__ = r'https?://(?:www\.)?(unrestrict|unr)\.li/dl/[\w^_]+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Unrestrict.li multi-hoster plugin"""
     __license__     = "GPLv3"

@@ -11,6 +11,7 @@ class IfolderRu(SimpleHoster):
     __version__ = "0.39"
 
     __pattern__ = r'http://(?:www\.)?(?:ifolder\.ru|rusfolder\.(?:com|net|ru))/(?:files/)?(?P<ID>\d+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Ifolder.ru hoster plugin"""
     __license__     = "GPLv3"

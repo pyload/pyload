@@ -12,6 +12,7 @@ class CatShareNet(SimpleHoster):
     __version__ = "0.12"
 
     __pattern__ = r'http://(?:www\.)?catshare\.net/\w{16}'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """CatShare.net hoster plugin"""
     __license__     = "GPLv3"

@@ -39,6 +39,7 @@ class DlFreeFr(SimpleHoster):
     __version__ = "0.28"
 
     __pattern__ = r'http://(?:www\.)?dl\.free\.fr/(\w+|getfile\.pl\?file=/\w+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Dl.free.fr hoster plugin"""
     __license__     = "GPLv3"

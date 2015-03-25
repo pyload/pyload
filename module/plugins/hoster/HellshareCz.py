@@ -11,6 +11,7 @@ class HellshareCz(SimpleHoster):
     __version__ = "0.85"
 
     __pattern__ = r'http://(?:www\.)?hellshare\.(?:cz|com|sk|hu|pl)/[^?]*/\d+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Hellshare.cz hoster plugin"""
     __license__     = "GPLv3"

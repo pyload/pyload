@@ -14,6 +14,7 @@ class UploadedTo(SimpleHoster):
     __version__ = "0.85"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Uploaded.net hoster plugin"""
     __license__     = "GPLv3"

@@ -12,10 +12,10 @@ class MultiHook(Hook):
     __type__    = "hook"
     __version__ = "0.40"
 
-    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
-                  ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
-                  ("reload"        , "bool"               , "Reload plugin list"           , True ),
-                  ("reloadinterval", "int"                , "Reload interval in hours"     , 12   )]
+    __config__  = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
+                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
+                   ("reload"        , "bool"               , "Reload plugin list"           , True ),
+                   ("reloadinterval", "int"                , "Reload interval in hours"     , 12   )]
 
     __description__ = """Hook plugin for multi hoster/crypter"""
     __license__     = "GPLv3"

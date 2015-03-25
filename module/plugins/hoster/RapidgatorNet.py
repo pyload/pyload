@@ -16,6 +16,7 @@ class RapidgatorNet(SimpleHoster):
     __version__ = "0.33"
 
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Rapidgator.net hoster plugin"""
     __license__     = "GPLv3"

@@ -9,6 +9,7 @@ class OronCom(DeadHoster):
     __version__ = "0.14"
 
     __pattern__ = r'https?://(?:www\.)?oron\.com/\w{12}'
+    __config__  = []
 
     __description__ = """Oron.com hoster plugin"""
     __license__     = "GPLv3"

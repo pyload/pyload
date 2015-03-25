@@ -12,6 +12,7 @@ class MegasharesCom(SimpleHoster):
     __version__ = "0.28"
 
     __pattern__ = r'http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index\.php)?\?d\d{2}=|dl/)\w+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Megashares.com hoster plugin"""
     __license__     = "GPLv3"

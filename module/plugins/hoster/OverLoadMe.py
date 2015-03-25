@@ -16,6 +16,7 @@ class OverLoadMe(MultiHoster):
     __version__ = "0.11"
 
     __pattern__ = r'https?://.*overload\.me/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Over-Load.me multi-hoster plugin"""
     __license__     = "GPLv3"

@@ -9,6 +9,7 @@ class FileApeCom(DeadHoster):
     __version__ = "0.12"
 
     __pattern__ = r'http://(?:www\.)?fileape\.com/(index\.php\?act=download\&id=|dl/)\w+'
+    __config__  = []
 
     __description__ = """FileApe.com hoster plugin"""
     __license__     = "GPLv3"

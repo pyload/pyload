@@ -14,6 +14,7 @@ class DepositfilesCom(SimpleHoster):
     __version__ = "0.54"
 
     __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Depositfiles.com hoster plugin"""
     __license__     = "GPLv3"

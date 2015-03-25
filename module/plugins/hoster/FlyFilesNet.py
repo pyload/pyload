@@ -14,6 +14,7 @@ class FlyFilesNet(SimpleHoster):
     __version__ = "0.10"
 
     __pattern__ = r'http://(?:www\.)?flyfiles\.net/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """FlyFiles.net hoster plugin"""
     __license__     = "GPLv3"

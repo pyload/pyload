@@ -12,6 +12,7 @@ class WebshareCz(SimpleHoster):
     __version__ = "0.16"
 
     __pattern__ = r'https?://(?:www\.)?webshare\.cz/(?:#/)?file/(?P<ID>\w+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """WebShare.cz hoster plugin"""
     __license__     = "GPLv3"

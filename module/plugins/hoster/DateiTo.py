@@ -12,6 +12,7 @@ class DateiTo(SimpleHoster):
     __version__ = "0.07"
 
     __pattern__ = r'http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Datei.to hoster plugin"""
     __license__     = "GPLv3"

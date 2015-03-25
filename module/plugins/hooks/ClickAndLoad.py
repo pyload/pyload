@@ -58,7 +58,7 @@ class ClickAndLoad(Hook):
 
     @threaded
     def proxy(self, ip, webport, cnlport):
-        time.sleep(10)  #@TODO: Implement addon delay on start in 0.4.10
+        time.sleep(10)  #@TODO: Remove in 0.4.10 (implement addon delay on startup)
 
         self.logInfo(_("Proxy listening on %s:%s") % (ip or "0.0.0.0", cnlport))
 

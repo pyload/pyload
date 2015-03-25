@@ -20,6 +20,7 @@ class TurbobitNet(SimpleHoster):
     __version__ = "0.19"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """ Turbobit.net hoster plugin """
     __license__     = "GPLv3"

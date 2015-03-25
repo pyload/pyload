@@ -17,6 +17,7 @@ class RealdebridCom(MultiHoster):
     __version__ = "0.67"
 
     __pattern__ = r'https?://((?:www\.|s\d+\.)?real-debrid\.com/dl/|[\w^_]\.rdb\.so/d/)[\w^_]+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Real-Debrid.com multi-hoster plugin"""
     __license__     = "GPLv3"
