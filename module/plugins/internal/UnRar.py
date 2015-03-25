@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.18"
+    __version__ = "1.19"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
@@ -216,7 +216,7 @@ class UnRar(Extractor):
             args.append("-o+")
         else:
             args.append("-o-")
-            if self.delete:
+            if self.delete != 'No':
                 args.append("-or")
 
         for word in self.excludefiles:
