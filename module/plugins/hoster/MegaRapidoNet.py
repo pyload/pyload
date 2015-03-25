@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import re
-
-from module.plugins.Hoster import Hoster
 from random import randint
+
+from module.plugins.internal.MultiHoster import MultiHoster
+
 
 def random_with_N_digits(n):
     rand = "0."
@@ -19,63 +19,35 @@ def random_with_N_digits(n):
     else:
         return random_with_N_digits(n)
 
-class MegaRapidoNet(Hoster):
-    __name__ = "MegaRapidoNet"
-    __version__ = "0.01"
-    __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)*?(?:[^\.]+)\.megarapido\.net/\?file="
-    __description__ = """Megarapido.net hoster plugin"""
-    __author_name__ = ("Kagenoshin")
-    __author_mail__ = ("kagenoshin@gmx.ch")
 
-    DOWNLOAD_LINK_PATTERN = re.compile(r'<\s*?a[^>]*?title\s*?=\s*?["\'][^"\']*?download["\'][^>]*?href=["\']([^"\']*)', re.I)
-    ERROR_MESSAGE_PATTERN = re.compile(r'<\s*?div[^>]*?class\s*?=\s*?["\']?alert-message error[^>]*>([^<]*)',re.I)
+class MegaRapidoNet(MultiHoster):
+    __name__    = "MegaRapidoNet"
+    __type__    = "hoster"
+    __version__ = "0.02"
 
-    def setup(self):
-        self.resumeDownload = self.multiDL = True
-        self.chunkLimit = 1
+    __pattern__ = r'http://(?:www\.)?\w+\.megarapido\.net/\?file=\w+'
 
-    def process(self, pyfile):
-        if not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "vipleech4u.com")
-            self.fail("No vipleech4u.com account provided")
+    __description__ = """MegaRapido.net multi-hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
-        self.logDebug("Old URL: %s" % pyfile.url)
 
-        new_url = pyfile.url
+    LINK_PREMIUM_PATTERN = r'<\s*?a[^>]*?title\s*?=\s*?["\'][^"\']*?download["\'][^>]*?href=["\']([^"\']*)'
 
-        #load userID
-        user_id = self.getStorage("MegarapidoNet_userID")
+    ERROR_PATTERN = r'<\s*?div[^>]*?class\s*?=\s*?["\']?alert-message error[^>]*>([^<]*)'
 
-        #upload the link which has to be loaded
-        if not re.match(self.__pattern__, new_url):
-            page = self.load("http://megarapido.net/gerar.php", post={"rand":random_with_N_digits(16), "urllist":new_url, "links":new_url, "exibir":"normal", "usar":"premium", "user":user_id, "autoreset":""})
-            if "desloga e loga novamente para gerar seus links" in page.lower():
-                self.fail("Restart pyload, because you have logged in at another place.")
 
-            error_1 = self.ERROR_MESSAGE_PATTERN.search(page)
-            if error_1:
-                self.fail("%s" %error_1.group(1))
+    def handlePremium(self, pyfile):
+        self.html = self.load("http://megarapido.net/gerar.php",
+                         post={'rand'     :random_with_N_digits(16),
+                               'urllist'  : pyfile.url,
+                               'links'    : pyfile.url,
+                               'exibir'   : "normal",
+                               'usar'     : "premium",
+                               'user'     : self.account.getAccountInfo(self.user).get('sid', None),
+                               'autoreset': ""})
 
-            download_link = self.DOWNLOAD_LINK_PATTERN.search(page)
-            if download_link:
-                download_link = download_link.group(1)
-            else:
-                self.fail("Couldn't find a download link.")
-        else:
-            download_link = new_url
-        
-        #tests (todo)
-        if re.search(r'You have generated maximum links available to you today', page, re.I):
-            self.fail('Daily limit reached.')
+        if "desloga e loga novamente para gerar seus links" in self.html.lower():
+            self.error("You have logged in at another place")
 
-        self.setWait(5)
-        self.wait()
-        self.logDebug("Unrestricted URL: " + download_link)
-
-        self.download(download_link, disposition=True)
-
-        check = self.checkDownload({"bad": "<html"})
-
-        if check == "bad":
-            self.retry(24, 150, 'Bad file downloaded')
+        return super(MegaRapidoNet, self).handlePremium(pyfile)
