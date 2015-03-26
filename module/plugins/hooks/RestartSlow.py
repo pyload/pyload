@@ -22,14 +22,11 @@ class RestartSlow(Hook):
 
 
     event_list = ["downloadStarts"]
+    interval   = 0  #@TODO: Remove in 0.4.10
 
 
     def setup(self):
         self.info = {'chunk': {}}
-
-
-    def initPeriodical(self):
-        pass
 
 
     def periodical(self):

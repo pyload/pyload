@@ -23,12 +23,9 @@ class MergeFiles(Hook):
     __authors__     = [("and9000", "me@has-no-mail.com")]
 
 
+    interval = 0  #@TODO: Remove in 0.4.10
+
     BUFFER_SIZE = 4096
-
-
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
 
 
     def setup(self):

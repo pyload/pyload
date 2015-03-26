@@ -36,12 +36,9 @@ class Captcha9Kw(Hook):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
+    interval = 0  #@TODO: Remove in 0.4.10
+
     API_URL = "http://www.9kw.eu/index.cgi"
-
-
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
 
 
     def setup(self):

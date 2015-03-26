@@ -40,16 +40,13 @@ class BypassCaptcha(Hook):
                        ("zoidberg"  , "zoidberg@mujmail.cz"  )]
 
 
+    interval = 0  #@TODO: Remove in 0.4.10
+
     PYLOAD_KEY = "4f771155b640970d5607f919a615bdefc67e7d32"
 
     SUBMIT_URL = "http://bypasscaptcha.com/upload.php"
     RESPOND_URL = "http://bypasscaptcha.com/check_value.php"
     GETCREDITS_URL = "http://bypasscaptcha.com/ex_left.php"
-
-
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
 
 
     def setup(self):

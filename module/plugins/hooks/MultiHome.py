@@ -17,9 +17,7 @@ class MultiHome(Hook):
     __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
+    interval = 0  #@TODO: Remove in 0.4.10
 
 
     def setup(self):

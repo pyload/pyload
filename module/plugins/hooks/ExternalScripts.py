@@ -28,11 +28,7 @@ class ExternalScripts(Hook):
                   "all_archives_extracted", "all_archives_processed",
                   "allDownloadsFinished"  , "allDownloadsProcessed" ,
                   "packageDeleted"]
-
-
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
+    interval   = 0  #@TODO: Remove in 0.4.10
 
 
     def setup(self):

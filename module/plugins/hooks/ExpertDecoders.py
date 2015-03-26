@@ -25,12 +25,9 @@ class ExpertDecoders(Hook):
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 
+    interval = 0  #@TODO: Remove in 0.4.10
+
     API_URL = "http://www.fasttypers.org/imagepost.ashx"
-
-
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
 
 
     def setup(self):

@@ -24,9 +24,7 @@ class SkipRev(Hook):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
+    interval = 0  #@TODO: Remove in 0.4.10
 
 
     def setup(self):

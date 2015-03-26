@@ -23,6 +23,7 @@ class XFileSharingPro(Hook):
 
 
     # event_list = ["pluginConfigChanged"]
+    interval   = 0  #@TODO: Remove in 0.4.10
     regexp     = {'hoster' : (r'https?://(?:www\.)?(?P<DOMAIN>[\w\-.^_]{3,63}(?:\.[a-zA-Z]{2,})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
                               r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:embed-)?\w+'),
                   'crypter': (r'https?://(?:www\.)?(?P<DOMAIN>[\w\-.^_]{3,63}(?:\.[a-zA-Z]{2,})(?:\:\d+)?)/(?:user|folder)s?/\w+',
@@ -43,11 +44,6 @@ class XFileSharingPro(Hook):
 
     # def pluginConfigChanged(self, plugin, name, value):
         # self.loadPattern()
-
-
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
 
 
     def setup(self):

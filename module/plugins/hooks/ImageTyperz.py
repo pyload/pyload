@@ -44,14 +44,11 @@ class ImageTyperz(Hook):
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 
+    interval = 0  #@TODO: Remove in 0.4.10
+
     SUBMIT_URL = "http://captchatypers.com/Forms/UploadFileAndGetTextNEW.ashx"
     RESPOND_URL = "http://captchatypers.com/Forms/SetBadImage.ashx"
     GETCREDITS_URL = "http://captchatypers.com/Forms/RequestBalance.ashx"
-
-
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
 
 
     def setup(self):

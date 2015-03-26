@@ -28,11 +28,7 @@ class AndroidPhoneNotify(Hook):
 
 
     event_list = ["allDownloadsProcessed", "plugin_updated"]
-
-
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
+    interval   = 0  #@TODO: Remove in 0.4.10
 
 
     def setup(self):

@@ -21,9 +21,7 @@ class DownloadScheduler(Hook):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
+    interval = 0  #@TODO: Remove in 0.4.10
 
 
     def setup(self):
