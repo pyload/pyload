@@ -3,10 +3,10 @@
 from __future__ import with_statement
 
 import re
+import time
 
 from base64 import b64encode
 from pycurl import FORM_FILE, HTTPHEADER
-from time import sleep
 
 from pyload.utils import json_loads
 from pyload.network.HTTPRequest import BadHeader
@@ -59,9 +59,11 @@ class DeathByCaptcha(Hook):
 
     __description__ = """Send captchas to DeathByCaptcha.com"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+    __authors__     = [("RaNaN"   , "RaNaN@pyload.org"   ),
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
+
+    interval = 0  #@TODO: Remove in 0.4.10
 
     API_URL = "http://api.dbcapi.me/api/"
 
@@ -73,8 +75,8 @@ class DeathByCaptcha(Hook):
         if post:
             if not isinstance(post, dict):
                 post = {}
-            post.update({"username": self.getConfig("username"),
-                         "password": self.getConfig("passkey")})
+            post.update({"username": self.getConfig('username'),
+                         "password": self.getConfig('passkey')})
 
         res = None
         try:
@@ -127,7 +129,7 @@ class DeathByCaptcha(Hook):
 
     def submit(self, captcha, captchaType="file", match=None):
         #@NOTE: Workaround multipart-post bug in HTTPRequest.py
-        if re.match("^\w*$", self.getConfig("passkey")):
+        if re.match("^\w*$", self.getConfig('passkey')):
             multipart = True
             data = (FORM_FILE, captcha)
         else:
@@ -143,7 +145,7 @@ class DeathByCaptcha(Hook):
         ticket = res['captcha']
 
         for _i in xrange(24):
-            sleep(5)
+            time.sleep(5)
             res = self.api_response("captcha/%d" % ticket, False)
             if res['text'] and res['is_correct']:
                 break
@@ -163,10 +165,10 @@ class DeathByCaptcha(Hook):
         if not task.isTextual():
             return False
 
-        if not self.getConfig("username") or not self.getConfig("passkey"):
+        if not self.getConfig('username') or not self.getConfig('passkey'):
             return False
 
-        if self.core.isClientConnected() and not self.getConfig("force"):
+        if self.core.isClientConnected() and not self.getConfig('force'):
             return False
 
         try:

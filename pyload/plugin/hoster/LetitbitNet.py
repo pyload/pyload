@@ -39,6 +39,7 @@ class LetitbitNet(SimpleHoster):
     __version__ = "0.30"
 
     __pattern__ = r'https?://(?:www\.)?(letitbit|shareflare)\.net/download/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Letitbit.net hoster plugin"""
     __license__     = "GPLv3"
@@ -56,16 +57,6 @@ class LetitbitNet(SimpleHoster):
         self.resumeDownload = True
 
 
-    def getFileInfo(self):
-        api_rep = api_response(self.pyfile.url)
-        if api_rep['status'] == 'OK':
-            self.api_data = api_rep['data'][0]
-            self.pyfile.name = self.api_data['name']
-            self.pyfile.size = self.api_data['size']
-        else:
-            self.offline()
-
-
     def handleFree(self, pyfile):
         action, inputs = self.parseHtmlForm('id="ifree_form"')
         if not action:
@@ -75,7 +66,7 @@ class LetitbitNet(SimpleHoster):
         self.logDebug(action, inputs)
         inputs['desc'] = ""
 
-        self.html = self.load(urljoin("http://letitbit.net/", action), post=inputs, cookies=True)
+        self.html = self.load(urljoin("http://letitbit.net/", action), post=inputs)
 
         m = re.search(self.SECONDS_PATTERN, self.html)
         seconds = int(m.group(1)) if m else 60
@@ -89,7 +80,7 @@ class LetitbitNet(SimpleHoster):
 
         self.wait(seconds)
 
-        res = self.load("http://letitbit.net/ajax/download3.php", post=" ", cookies=True)
+        res = self.load("http://letitbit.net/ajax/download3.php", post=" ")
         if res != '1':
             self.error(_("Unknown response - ajax_check_url"))
 
@@ -104,7 +95,7 @@ class LetitbitNet(SimpleHoster):
 
         self.logDebug("Post data to send", post_data)
 
-        res = self.load("http://letitbit.net/ajax/check_recaptcha.php", post=post_data, cookies=True)
+        res = self.load("http://letitbit.net/ajax/check_recaptcha.php", post=post_data)
 
         self.logDebug(res)
 

@@ -12,6 +12,7 @@ class KingfilesNet(SimpleHoster):
     __version__ = "0.07"
 
     __pattern__ = r'http://(?:www\.)?kingfiles\.net/(?P<ID>\w{12})'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Kingfiles.net hoster plugin"""
     __license__     = "GPLv3"
@@ -43,7 +44,7 @@ class KingfilesNet(SimpleHoster):
                      'referer'    : "",
                      'method_free': "+"}
 
-        self.html = self.load(pyfile.url, post=post_data, cookies=True, decode=True)
+        self.html = self.load(pyfile.url, post=post_data, decode=True)
 
         solvemedia = SolveMedia(self)
         response, challenge = solvemedia.challenge()
@@ -66,7 +67,7 @@ class KingfilesNet(SimpleHoster):
                      'adcopy_challenge': challenge,
                      'down_direct'     : "1"}
 
-        self.html = self.load(pyfile.url, post=post_data, cookies=True, decode=True)
+        self.html = self.load(pyfile.url, post=post_data, decode=True)
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:

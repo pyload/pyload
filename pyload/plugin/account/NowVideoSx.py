@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import gmtime, mktime, strptime
+import time
 
 from pyload.plugin.Account import Account
 
@@ -33,13 +32,13 @@ class NowVideoSx(Account):
             self.logDebug("Expire date: " + expiredate)
 
             try:
-                validuntil = mktime(strptime(expiredate, "%Y-%b-%d"))
+                validuntil = time.mktime(time.strptime(expiredate, "%Y-%b-%d"))
 
             except Exception, e:
                 self.logError(e)
 
             else:
-                if validuntil > mktime(gmtime()):
+                if validuntil > time.mktime(time.gmtime()):
                     premium = True
                 else:
                     premium = False

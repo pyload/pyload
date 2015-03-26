@@ -33,14 +33,14 @@ class XMPPInterface(IRCInterface, JabberClient):
     def __init__(self, core, manager):
         IRCInterface.__init__(self, core, manager)
 
-        self.jid = JID(self.getConfig("jid"))
-        password = self.getConfig("pw")
+        self.jid = JID(self.getConfig('jid'))
+        password = self.getConfig('pw')
 
         # if bare JID is provided add a resource -- it is required
         if not self.jid.resource:
             self.jid = JID(self.jid.node, self.jid.domain, "pyLoad")
 
-        if self.getConfig("tls"):
+        if self.getConfig('tls'):
             tls_settings = streamtls.TLSSettings(require=True, verify_peer=False)
             auth = ("sasl:PLAIN", "sasl:DIGEST-MD5")
         else:
@@ -67,7 +67,7 @@ class XMPPInterface(IRCInterface, JabberClient):
 
     def packageFinished(self, pypack):
         try:
-            if self.getConfig("info_pack"):
+            if self.getConfig('info_pack'):
                 self.announce(_("Package finished: %s") % pypack.name)
         except Exception:
             pass
@@ -75,7 +75,7 @@ class XMPPInterface(IRCInterface, JabberClient):
 
     def downloadFinished(self, pyfile):
         try:
-            if self.getConfig("info_file"):
+            if self.getConfig('info_file'):
                 self.announce(
                     _("Download finished: %(name)s @ %(plugin)s") % {"name": pyfile.name, "plugin": pyfile.pluginname})
         except Exception:
@@ -139,7 +139,7 @@ class XMPPInterface(IRCInterface, JabberClient):
         to_name = to_jid.as_utf8()
         from_name = from_jid.as_utf8()
 
-        names = self.getConfig("owners").split(";")
+        names = self.getConfig('owners').split(";")
 
         if to_name in names or to_jid.node + "@" + to_jid.domain in names:
             messages = []
@@ -182,7 +182,7 @@ class XMPPInterface(IRCInterface, JabberClient):
 
     def announce(self, message):
         """ send message to all owners"""
-        for user in self.getConfig("owners").split(";"):
+        for user in self.getConfig('owners').split(";"):
             self.logDebug("Send message to", user)
 
             to_jid = JID(user)

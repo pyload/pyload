@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import re
+import time
 
 from urlparse import urljoin
-from time import time
 
 from pyload.network.RequestFactory import getURL
 from pyload.plugin.Hoster import Hoster
@@ -161,7 +161,7 @@ class NetloadIn(Hoster):
 
 
     def final_wait(self, page):
-        wait_time = self.get_wait_time(page)
+        wait_time = self.get_wait_time.time(page)
 
         self.setWait(wait_time)
 
@@ -172,10 +172,10 @@ class NetloadIn(Hoster):
         self.url = self.get_file_url(page)
 
 
-    def check_free_wait(self,page):
+    def check_free_wait(self, page):
         if ">An access request has been made from IP address <" in page:
             self.wantReconnect = True
-            self.setWait(self.get_wait_time(page) or 30)
+            self.setWait(self.get_wait_time.time(page) or 30)
             self.wait()
             return True
         else:
@@ -207,7 +207,7 @@ class NetloadIn(Hoster):
         for i in xrange(5):
             if not page:
                 page = self.load(self.url)
-                t = time() + 30
+                t = time.time() + 30
 
             if "/share/templates/download_hddcrash.tpl" in page:
                 self.logError(_("Netload HDD Crash"))
@@ -281,7 +281,7 @@ class NetloadIn(Hoster):
             return None
 
 
-    def get_wait_time(self, page):
+    def get_wait_time.time(self, page):
         return int(re.search(r"countdown\((.+),'change\(\)'\)", page).group(1)) / 100
 
 

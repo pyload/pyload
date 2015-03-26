@@ -11,9 +11,12 @@ class UnSkipOnFail(Addon):
 
     __config__ = [("activated", "bool", "Activated", True)]
 
-    __description__ = """Queue skipped duplicates when download fails"""
+    __description__ = """Restart skipped duplicates when download fails"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+
+
+    interval = 0  #@TODO: Remove in 0.4.10
 
 
     def downloadFailed(self, pyfile):
@@ -38,7 +41,7 @@ class UnSkipOnFail(Addon):
             #  the core.files-manager to save its data.
             pylink = _pyfile(link)
 
-            pylink.setCustomStatus("UnSkipOnFail", "queued")
+            pylink.setCustomStatus(_("unskipped"), "queued")
 
             self.core.files.save()
             pylink.release()

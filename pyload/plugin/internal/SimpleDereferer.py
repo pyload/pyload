@@ -5,17 +5,17 @@ import re
 from urllib import unquote
 
 from pyload.plugin.Crypter import Crypter
-from pyload.plugin.internal.SimpleHoster import fileUrl, set_cookies
+from pyload.plugin.internal.SimpleHoster import getFileURL, set_cookies
 
 
 class SimpleDereferer(Crypter):
     __name__    = "SimpleDereferer"
     __type__    = "crypter"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
-                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Simple dereferer plugin"""
     __license__     = "GPLv3"
@@ -45,7 +45,7 @@ class SimpleDereferer(Crypter):
 
 
     def decrypt(self, pyfile):
-        link = fileUrl(self, pyfile.url)
+        link = getFileURL(self, pyfile.url)
 
         if not link:
             try:

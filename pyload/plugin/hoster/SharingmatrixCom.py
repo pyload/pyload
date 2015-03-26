@@ -9,6 +9,7 @@ class SharingmatrixCom(DeadHoster):
     __version__ = "0.01"
 
     __pattern__ = r'http://(?:www\.)?sharingmatrix\.com/file/\w+'
+    __config__  = []
 
     __description__ = """Sharingmatrix.com hoster plugin"""
     __license__     = "GPLv3"

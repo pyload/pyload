@@ -16,9 +16,10 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 class FilerNet(SimpleHoster):
     __name__    = "FilerNet"
     __type__    = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.19"
 
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Filer.net hoster plugin"""
     __license__     = "GPLv3"
@@ -29,17 +30,9 @@ class FilerNet(SimpleHoster):
     INFO_PATTERN    = r'<h1 class="page-header">Free Download (?P<N>\S+) <small>(?P<S>[\w.]+) (?P<U>[\w^_]+)</small></h1>'
     OFFLINE_PATTERN = r'Nicht gefunden'
 
+    WAIT_PATTERN = r'musst du <span id="time">(\d+)'
+
     LINK_FREE_PATTERN = LINK_PREMIUM_PATTERN = r'href="([^"]+)">Get download</a>'
-
-
-    def checkErrors(self):
-        # Wait between downloads
-        m = re.search(r'musst du <span id="time">(\d+)</span> Sekunden warten', self.html)
-        if m:
-            errmsg = self.info['error'] = _("Wait between free downloads")
-            self.retry(wait_time=int(m.group(1)), reason=errmsg)
-
-        self.info.pop('error', None)
 
 
     def handleFree(self, pyfile):

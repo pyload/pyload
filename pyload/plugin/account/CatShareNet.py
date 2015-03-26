@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import mktime, strptime
+import time
 
 from pyload.plugin.Account import Account
 
@@ -36,7 +35,7 @@ class CatShareNet(Account):
             expiredate = re.search(self.VALID_UNTIL_PATTERN, html).group(1)
             self.logDebug("Expire date: " + expiredate)
 
-            validuntil = mktime(strptime(expiredate, "%Y-%m-%d %H:%M:%S"))
+            validuntil = time.mktime(time.strptime(expiredate, "%Y-%m-%d %H:%M:%S"))
 
         except Exception:
             pass

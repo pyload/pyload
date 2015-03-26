@@ -11,7 +11,8 @@ class VeohCom(SimpleHoster):
     __version__ = "0.22"
 
     __pattern__ = r'http://(?:www\.)?veoh\.com/(tv/)?(watch|videos)/(?P<ID>v\w+)'
-    __config__ = [("quality", "Low;High;Auto", "Quality", "Auto")]
+    __config__  = [("use_premium", "bool"         , "Use premium account if available", True  ),
+                   ("quality"    , "Low;High;Auto", "Quality"                         , "Auto")]
 
     __description__ = """Veoh.com hoster plugin"""
     __license__     = "GPLv3"
@@ -33,7 +34,7 @@ class VeohCom(SimpleHoster):
 
 
     def handleFree(self, pyfile):
-        quality = self.getConfig("quality")
+        quality = self.getConfig('quality')
         if quality == "Auto":
             quality = ("High", "Low")
 

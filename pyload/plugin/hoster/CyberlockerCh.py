@@ -9,6 +9,7 @@ class CyberlockerCh(DeadHoster):
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?cyberlocker\.ch/\w+'
+    __config__  = []
 
     __description__ = """Cyberlocker.ch hoster plugin"""
     __license__     = "GPLv3"

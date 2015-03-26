@@ -11,8 +11,8 @@ class VeehdCom(Hoster):
     __version__ = "0.23"
 
     __pattern__ = r'http://veehd\.com/video/\d+_\S+'
-    __config__ = [("filename_spaces", "bool", "Allow spaces in filename", False),
-                ("replacement_char", "str", "Filename replacement character", "_")]
+    __config__  = [("filename_spaces", "bool", "Allow spaces in filename", False),
+                   ("replacement_char", "str", "Filename replacement character", "_")]
 
     __description__ = """Veehd.com hoster plugin"""
     __license__     = "GPLv3"

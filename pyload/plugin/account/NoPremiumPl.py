@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 import hashlib
-
-from datetime import datetime
-from time import mktime
+import time
 
 from pyload.plugin.Account import Account
 from pyload.utils import json_loads
@@ -45,7 +44,7 @@ class NoPremiumPl(Account):
 
         if "expire" in result.keys() and result["expire"]:
             premium = True
-            valid_untill = mktime(datetime.fromtimestamp(int(result["expire"])).timetuple())
+            valid_untill = time.mktime(datetime.datetime.fromtimestamp(int(result["expire"])).timetuple())
         traffic_left = result["balance"] * 1024
 
         return ({

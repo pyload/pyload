@@ -14,6 +14,7 @@ class FlyFilesNet(SimpleHoster):
     __version__ = "0.10"
 
     __pattern__ = r'http://(?:www\.)?flyfiles\.net/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """FlyFiles.net hoster plugin"""
     __license__     = "GPLv3"
@@ -32,7 +33,7 @@ class FlyFilesNet(SimpleHoster):
         url = "http://flyfiles.net"
 
         # get download URL
-        parsed_url = getURL(url, post={"getDownLink": session}, cookies=True)
+        parsed_url = getURL(url, post={"getDownLink": session})
         self.logDebug("Parsed URL: %s" % parsed_url)
 
         if parsed_url == '#downlink|' or parsed_url == "#downlink|#":

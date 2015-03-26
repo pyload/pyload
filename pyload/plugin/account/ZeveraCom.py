@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from time import mktime, strptime
+import time
 
 from pyload.plugin.Account import Account
 
@@ -40,7 +40,7 @@ class ZeveraCom(Account):
         api = self.api_response(req)
 
         if "No trafic" not in api and api['endsubscriptiondate'] != "Expired!":
-            validuntil  = mktime(strptime(api['endsubscriptiondate'], "%Y/%m/%d %H:%M:%S"))
+            validuntil  = time.mktime(time.strptime(api['endsubscriptiondate'], "%Y/%m/%d %H:%M:%S"))
             trafficleft = float(api['availabletodaytraffic']) * 1024 if api['orondaytrafficlimit'] != '0' else -1
             premium     = True
 

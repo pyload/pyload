@@ -33,8 +33,8 @@ class DLC(Container):
 
 
     def decrypt(self, pyfile):
-        file = fs_encode(pyfile.url.strip())
-        with open(file) as dlc:
+        fs_filename = fs_encode(pyfile.url.strip())
+        with open(fs_filename) as dlc:
             data = dlc.read().strip()
 
         data += '=' * (-len(data) % 4)
@@ -49,11 +49,11 @@ class DLC(Container):
         except AttributeError:
             self.fail(_("Container is corrupted"))
 
-        cipher = AES.new(self.KEY, AES.MODE_CBC, self.IV).decrypt(rc)
+        key = iv = AES.new(self.KEY, AES.MODE_CBC, self.IV).decrypt(rc)
 
-        self.data     = AES.new(cipher, AES.MODE_CBC, cipher).decrypt(dlc_data).decode('base64')
-        self.packages = [(entry[0] if entry[0] else pyfile.name, entry[1], entry[0] if entry[0] else pyfile.name) \
-                         for entry in self.getPackages()]
+        self.data     = AES.new(key, AES.MODE_CBC, iv).decrypt(dlc_data).decode('base64')
+        self.packages = [(name or pyfile.name, links, name or pyfile.name) \
+                         for name, links in self.getPackages()]
 
 
     def getPackages(self):

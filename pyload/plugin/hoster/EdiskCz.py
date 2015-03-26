@@ -11,6 +11,7 @@ class EdiskCz(SimpleHoster):
     __version__ = "0.23"
 
     __pattern__ = r'http://(?:www\.)?edisk\.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Edisk.cz hoster plugin"""
     __license__     = "GPLv3"

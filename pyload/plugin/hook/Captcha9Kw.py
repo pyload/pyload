@@ -3,9 +3,9 @@
 from __future__ import with_statement
 
 import re
+import time
 
 from base64 import b64encode
-from time import sleep
 
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getURL
@@ -32,21 +32,23 @@ class Captcha9kw(Hook):
 
     __description__ = """Send captchas to 9kw.eu"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+    __authors__     = [("RaNaN"         , "RaNaN@pyload.org" ),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
+
+    interval = 0  #@TODO: Remove in 0.4.10
 
     API_URL = "http://www.9kw.eu/index.cgi"
 
 
     def activate(self):
-        if self.getConfig("ssl"):
+        if self.getConfig('ssl'):
             self.API_URL = self.API_URL.replace("http://", "https://")
 
 
     def getCredits(self):
         res = getURL(self.API_URL,
-                     get={'apikey': self.getConfig("passkey"),
+                     get={'apikey': self.getConfig('passkey'),
                           'pyload': "1",
                           'source': "pyload",
                           'action': "usercaptchaguthaben"})
@@ -77,14 +79,14 @@ class Captcha9kw(Hook):
                       'numeric'       : 0,
                       'case_sensitive': 0,
                       'math'          : 0,
-                      'prio'          : min(max(self.getConfig("prio"), 0), 10),
-                      'confirm'       : self.getConfig("confirm"),
-                      'timeout'       : min(max(self.getConfig("timeout"), 300), 3999),
-                      'selfsolve'     : self.getConfig("selfsolve"),
-                      'cph'           : self.getConfig("captchaperhour"),
-                      'cpm'           : self.getConfig("captchapermin")}
+                      'prio'          : min(max(self.getConfig('prio'), 0), 10),
+                      'confirm'       : self.getConfig('confirm'),
+                      'timeout'       : min(max(self.getConfig('timeout'), 300), 3999),
+                      'selfsolve'     : self.getConfig('selfsolve'),
+                      'cph'           : self.getConfig('captchaperhour'),
+                      'cpm'           : self.getConfig('captchapermin')}
 
-        for opt in str(self.getConfig("hoster_options").split('|')):
+        for opt in str(self.getConfig('hoster_options').split('|')):
 
             details = map(str.strip, opt.split(':'))
 
@@ -103,7 +105,7 @@ class Captcha9kw(Hook):
 
             break
 
-        post_data = {'apikey'        : self.getConfig("passkey"),
+        post_data = {'apikey'        : self.getConfig('passkey'),
                      'prio'          : option['prio'],
                      'confirm'       : option['confirm'],
                      'maxtimeout'    : option['timeout'],
@@ -128,7 +130,7 @@ class Captcha9kw(Hook):
             try:
                 res = getURL(self.API_URL, post=post_data)
             except BadHeader, e:
-                sleep(3)
+                time.sleep(3)
             else:
                 if res and res.isdigit():
                     break
@@ -140,9 +142,9 @@ class Captcha9kw(Hook):
 
         task.data["ticket"] = res
 
-        for _i in xrange(int(self.getConfig("timeout") / 5)):
+        for _i in xrange(int(self.getConfig('timeout') / 5)):
             result = getURL(self.API_URL,
-                            get={'apikey': self.getConfig("passkey"),
+                            get={'apikey': self.getConfig('passkey'),
                                  'id'    : res,
                                  'pyload': "1",
                                  'info'  : "1",
@@ -150,7 +152,7 @@ class Captcha9kw(Hook):
                                  'action': "usercaptchacorrectdata"})
 
             if not result or result == "NO DATA":
-                sleep(5)
+                time.sleep(5)
             else:
                 break
         else:
@@ -166,10 +168,10 @@ class Captcha9kw(Hook):
         if not task.isTextual() and not task.isPositional():
             return
 
-        if not self.getConfig("passkey"):
+        if not self.getConfig('passkey'):
             return
 
-        if self.core.isClientConnected() and not self.getConfig("force"):
+        if self.core.isClientConnected() and not self.getConfig('force'):
             return
 
         credits = self.getCredits()
@@ -178,8 +180,8 @@ class Captcha9kw(Hook):
             self.logError(_("Your captcha 9kw.eu account has not enough credits"))
             return
 
-        queue = min(self.getConfig("queue"), 999)
-        timeout = min(max(self.getConfig("timeout"), 300), 3999)
+        queue = min(self.getConfig('queue'), 999)
+        timeout = min(max(self.getConfig('timeout'), 300), 3999)
         pluginname = re.search(r'_([^_]*)_\d+.\w+', task.captchaFile).group(1)
 
         for _i in xrange(5):
@@ -187,11 +189,11 @@ class Captcha9kw(Hook):
             if queue < re.search(r'queue=(\d+)', servercheck).group(1):
                 break
 
-            sleep(10)
+            time.sleep(10)
         else:
             self.fail(_("Too many captchas in queue"))
 
-        for opt in str(self.getConfig("hoster_options").split('|')):
+        for opt in str(self.getConfig('hoster_options').split('|')):
             details = map(str.strip, opt.split(':'))
 
             if not details or details[0].lower() != pluginname.lower():
@@ -221,7 +223,7 @@ class Captcha9kw(Hook):
             self.logDebug("No CaptchaID for %s request (task: %s)" % (type, task))
             return
 
-        passkey = self.getConfig("passkey")
+        passkey = self.getConfig('passkey')
 
         for _i in xrange(3):
             res = getURL(self.API_URL,
@@ -238,7 +240,7 @@ class Captcha9kw(Hook):
             if res == "OK":
                 break
 
-            sleep(5)
+            time.sleep(5)
         else:
             self.logDebug("Could not send %s request: %s" % (type, res))
 

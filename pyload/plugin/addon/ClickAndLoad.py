@@ -17,30 +17,34 @@ def forward(source, destination):
             bufdata = source.recv(bufsize)
     finally:
         destination.shutdown(socket.SHUT_WR)
+        # destination.close()
 
 
 #@TODO: IPv6 support
 class ClickAndLoad(Addon):
     __name__    = "ClickAndLoad"
     __type__    = "addon"
-    __version__ = "0.37"
+    __version__ = "0.41"
 
     __config__ = [("activated", "bool", "Activated"                             , True),
-                ("port"     , "int" , "Port"                                  , 9666),
-                ("extern"   , "bool", "Listen on the public network interface", True)]
+                  ("port"     , "int" , "Port"                                  , 9666),
+                  ("extern"   , "bool", "Listen on the public network interface", True)]
 
-    __description__ = """Click'N'Load addon plugin"""
+    __description__ = """Click'n'Load hook plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.de"),
+    __authors__     = [("RaNaN"         , "RaNaN@pyload.de"  ),
                        ("Walter Purcaro", "vuolter@gmail.com")]
+
+
+    interval = 0  #@TODO: Remove in 0.4.10
 
 
     def activate(self):
         if not self.config['webinterface']['activated']:
             return
 
-        ip      = "" if self.getConfig("extern") else "127.0.0.1"
-        webport = int(self.config['webinterface']['port'])
+        ip      = "" if self.getConfig('extern') else "127.0.0.1"
+        webport = self.config['webinterface']['port']
         cnlport = self.getConfig('port')
 
         self.proxy(ip, webport, cnlport)
@@ -48,40 +52,39 @@ class ClickAndLoad(Addon):
 
     @threaded
     def proxy(self, ip, webport, cnlport):
-        self.logInfo(_("Proxy listening on %s:%s") % (ip, cnlport))
-        self.manager.startThread(self._server, ip, webport, cnlport)
+        time.sleep(10)  #@TODO: Remove in 0.4.10 (implement addon delay on startup)
+
+        self.logInfo(_("Proxy listening on %s:%s") % (ip or "0.0.0.0", cnlport))
+
+        self._server(ip, webport, cnlport)
+
         lock = Lock()
         lock.acquire()
         lock.acquire()
 
 
-    def _server(self, ip, webport, cnlport, thread):
+    @threaded
+    def _server(self, ip, webport, cnlport):
         try:
-            try:
+            dock_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            dock_socket.bind((ip, cnlport))
+            dock_socket.listen(5)
+
+            while True:
+                client_socket, client_addr = dock_socket.accept()
+                self.logDebug("Connection from %s:%s" % client_addr)
+
                 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                server_socket.connect(("127.0.0.1", webport))
 
-                server_socket.bind((ip, cnlport))
-                server_socket.listen(5)
+                self.manager.startThread(forward, client_socket, server_socket)
+                self.manager.startThread(forward, server_socket, client_socket)
 
-                while True:
-                    client_socket = server_socket.accept()[0]
-                    dock_socket   = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-                    dock_socket.connect(("127.0.0.1", webport))
-
-                    self.manager.startThread(forward, dock_socket, client_socket)
-                    self.manager.startThread(forward, client_socket, dock_socket)
-
-            except socket.timeout:
-                self.logDebug("Connection timed out, retrying...")
-                return self._server(ip, webport, cnlport, thread)
-
-            finally:
-                server_socket.close()
-                client_socket.close()
-                dock_socket.close()
+        except socket.timeout:
+            self.logDebug("Connection timed out, retrying...")
+            return self._server(ip, webport, cnlport)
 
         except socket.error, e:
             self.logError(e)
-            time.sleep(120)
-            self._server(ip, webport, cnlport, thread)
+            time.sleep(240)
+            return self._server(ip, webport, cnlport)

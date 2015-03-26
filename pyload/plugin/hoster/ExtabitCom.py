@@ -14,6 +14,7 @@ class ExtabitCom(SimpleHoster):
     __version__ = "0.65"
 
     __pattern__ = r'http://(?:www\.)?extabit\.com/(file|go|fid)/(?P<ID>\w+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Extabit.com hoster plugin"""
     __license__     = "GPLv3"

@@ -51,29 +51,33 @@ class Checksum(Addon):
 
     __description__ = """Verify downloaded file size and checksum"""
     __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
-                       ("Walter Purcaro", "vuolter@gmail.com"),
-                       ("stickell", "l.stickell@yahoo.it")]
+    __authors__     = [("zoidberg"      , "zoidberg@mujmail.cz"),
+                       ("Walter Purcaro", "vuolter@gmail.com"  ),
+                       ("stickell"      , "l.stickell@yahoo.it")]
 
 
-    methods = {'sfv' : 'crc32',
-               'crc' : 'crc32',
-               'hash': 'md5'}
-    regexps = {'sfv'    : r'^(?P<NAME>[^;].+)\s+(?P<HASH>[0-9A-Fa-f]{8})$',
-               'md5'    : r'^(?P<NAME>[0-9A-Fa-f]{32})  (?P<FILE>.+)$',
-               'crc'    : r'filename=(?P<NAME>.+)\nsize=(?P<SIZE>\d+)\ncrc32=(?P<HASH>[0-9A-Fa-f]{8})$',
-               'default': r'^(?P<HASH>[0-9A-Fa-f]+)\s+\*?(?P<NAME>.+)$'}
+    interval = 0  #@TODO: Remove in 0.4.10
+    methods  = {'sfv' : 'crc32',
+                'crc' : 'crc32',
+                'hash': 'md5'}
+    regexps  = {'sfv'    : r'^(?P<NAME>[^;].+)\s+(?P<HASH>[0-9A-Fa-f]{8})$',
+                'md5'    : r'^(?P<NAME>[0-9A-Fa-f]{32})  (?P<FILE>.+)$',
+                'crc'    : r'filename=(?P<NAME>.+)\nsize=(?P<SIZE>\d+)\ncrc32=(?P<HASH>[0-9A-Fa-f]{8})$',
+                'default': r'^(?P<HASH>[0-9A-Fa-f]+)\s+\*?(?P<NAME>.+)$'}
 
 
     def activate(self):
-        if not self.getConfig("check_checksum"):
+        if not self.getConfig('check_checksum'):
             self.logInfo(_("Checksum validation is disabled in plugin configuration"))
 
 
     def setup(self):
+        self.info       = {}  #@TODO: Remove in 0.4.10
         self.algorithms = sorted(
             getattr(hashlib, "algorithms", ("md5", "sha1", "sha224", "sha256", "sha384", "sha512")), reverse=True)
+
         self.algorithms.extend(["crc32", "adler32"])
+
         self.formats = self.algorithms + ["sfv", "crc", "hash"]
 
 
@@ -121,7 +125,7 @@ class Checksum(Addon):
             data.pop('size', None)
 
         # validate checksum
-        if data and self.getConfig("check_checksum"):
+        if data and self.getConfig('check_checksum'):
 
             if not 'md5' in data:
                 for type in ("checksum", "hashsum", "hash"):
@@ -148,14 +152,14 @@ class Checksum(Addon):
 
 
     def checkFailed(self, pyfile, local_file, msg):
-        check_action = self.getConfig("check_action")
+        check_action = self.getConfig('check_action')
         if check_action == "retry":
-            max_tries = self.getConfig("max_tries")
-            retry_action = self.getConfig("retry_action")
+            max_tries = self.getConfig('max_tries')
+            retry_action = self.getConfig('retry_action')
             if pyfile.plugin.retries < max_tries:
                 if local_file:
                     remove(local_file)
-                pyfile.plugin.retry(max_tries, self.getConfig("wait_time"), msg)
+                pyfile.plugin.retry(max_tries, self.getConfig('wait_time'), msg)
             elif retry_action == "nothing":
                 return
         elif check_action == "nothing":

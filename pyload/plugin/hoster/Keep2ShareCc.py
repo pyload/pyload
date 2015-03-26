@@ -14,6 +14,7 @@ class Keep2ShareCc(SimpleHoster):
     __version__ = "0.21"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Keep2Share.cc hoster plugin"""
     __license__     = "GPLv3"

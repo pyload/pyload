@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import re
+import time
 
 from base64 import urlsafe_b64encode
-from time import time
 
 from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 
@@ -14,8 +14,9 @@ class DlProtectCom(SimpleCrypter):
     __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?dl-protect\.com/((en|fr)/)?\w+'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
-                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Dl-protect.com decrypter plugin"""
     __license__     = "GPLv3"
@@ -40,7 +41,7 @@ class DlProtectCom(SimpleCrypter):
             self.wait(2)
 
         else:
-            mstime  = int(round(time() * 1000))
+            mstime  = int(round(time.time() * 1000))
             b64time = "_" + urlsafe_b64encode(str(mstime)).replace("=", "%3D")
 
             post_req.update({'i'         : b64time,

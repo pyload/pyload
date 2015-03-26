@@ -9,6 +9,7 @@ class WuploadCom(DeadCrypter):
     __version__ = "0.01"
 
     __pattern__ = r'http://(?:www\.)?wupload\.com/folder/\w+'
+    __config__  = []
 
     __description__ = """Wupload.com folder decrypter plugin"""
     __license__     = "GPLv3"

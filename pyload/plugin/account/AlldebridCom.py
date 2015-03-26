@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import re
+import time
 import xml.dom.minidom as dom
-
-from time import time
 
 from BeautifulSoup import BeautifulSoup
 
@@ -33,7 +32,7 @@ class AlldebridCom(Account):
 
             p = re.compile('\d+')
             exp_data = p.findall(time_text)
-            exp_time = time() + int(exp_data[0]) * 24 * 60 * 60 + int(
+            exp_time = time.time() + int(exp_data[0]) * 24 * 60 * 60 + int(
                 exp_data[1]) * 60 * 60 + (int(exp_data[2]) - 1) * 60
 
         #Get expiration date from API
@@ -45,7 +44,7 @@ class AlldebridCom(Account):
             self.logDebug(html)
 
             xml = dom.parseString(html)
-            exp_time = time() + int(xml.getElementsByTagName("date")[0].childNodes[0].nodeValue) * 24 * 60 * 60
+            exp_time = time.time() + int(xml.getElementsByTagName("date")[0].childNodes[0].nodeValue) * 24 * 60 * 60
 
         account_info = {"validuntil": exp_time, "trafficleft": -1}
         return account_info

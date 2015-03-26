@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import re
+import time
 
 from random import random
-from time import sleep
 from urlparse import urljoin, urlparse
 
 from pyload.plugin.internal.captcha import ReCaptcha, SolveMedia
@@ -14,15 +14,15 @@ from pyload.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.44"
+    __version__ = "0.45"
 
     __pattern__ = r'^unmatchable$'
 
     __description__ = """XFileSharing hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
-                       ("stickell", "l.stickell@yahoo.it"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("zoidberg"      , "zoidberg@mujmail.cz"),
+                       ("stickell"      , "l.stickell@yahoo.it"),
+                       ("Walter Purcaro", "vuolter@gmail.com"  )]
 
 
     HOSTER_DOMAIN = None
@@ -99,7 +99,7 @@ class XFSHoster(SimpleHoster):
 
             data = self.getPostParameters()
 
-            self.html = self.load(self.pyfile.url, post=data, ref=True, decode=True, follow_location=False)
+            self.html = self.load(pyfile.url, post=data, ref=True, decode=True, follow_location=False)
 
             m = re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I)
             if m and not "op=" in m.group(1):
@@ -189,7 +189,7 @@ class XFSHoster(SimpleHoster):
             if 'wait' in self.errmsg:
                 wait_time = sum(int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1}[u.lower()] for v, u in
                                 re.findall(r'(\d+)\s*(hr|hour|min|sec)', self.errmsg, re.I))
-                self.wait(wait_time, True)
+                self.wait(wait_time, wait_time > 300)
 
             elif 'country' in self.errmsg:
                 self.fail(_("Downloads are disabled for your country"))

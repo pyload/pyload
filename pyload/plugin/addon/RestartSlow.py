@@ -21,18 +21,17 @@ class RestartSlow(Addon):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    event_map = {'download-start': "downloadStarts"}
+    event_list = ["downloadStarts"]
+    interval   = 0  #@TODO: Remove in 0.4.10
 
 
     def setup(self):
         self.info = {'chunk': {}}
-
-
     def periodical(self):
         if not self.pyfile.plugin.req.dl:
             return
 
-        if self.getConfig("safe_mode") and not self.pyfile.plugin.resumeDownload:
+        if self.getConfig('safe_mode') and not self.pyfile.plugin.resumeDownload:
             time  = 30
             limit = 5
         else:
@@ -51,7 +50,7 @@ class RestartSlow(Addon):
 
 
     def downloadStarts(self, pyfile, url, filename):
-        if self.cb or (self.getConfig("safe_mode") and not pyfile.plugin.resumeDownload):
+        if self.cb or (self.getConfig('safe_mode') and not pyfile.plugin.resumeDownload):
             return
         self.pyfile = pyfile
         self.initPeriodical()

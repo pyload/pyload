@@ -26,13 +26,13 @@ class CCF(Container):
 
 
     def decrypt(self, pyfile):
-        file   = fs_encode(pyfile.url.strip())
-        opener = build_opener(MultipartPostHandler)
+        fs_filename = fs_encode(pyfile.url.strip())
+        opener      = build_opener(MultipartPostHandler)
 
         dlc_content = opener.open('http://service.jdownloader.net/dlcrypt/getDLC.php',
                                   {'src'     : "ccf",
                                    'filename': "test.ccf",
-                                   'upload'  : open(file, "rb")}).read()
+                                   'upload'  : open(fs_filename, "rb")}).read()
 
         download_folder = self.config['general']['download_folder']
         dlc_file        = fs_join(download_folder, "tmp_%s.dlc" % pyfile.name)

@@ -36,13 +36,13 @@ class YoutubeCom(Hoster):
     __version__ = "0.41"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(youtube\.com|youtu\.be)/watch\?(?:.*&)?v=.+'
-    __config__ = [("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting"             , "hd" ),
-                  ("fmt"    , "int"                                         , "FMT/ITAG Number (0 for auto)", 0    ),
-                  (".mp4"   , "bool"                                        , "Allow .mp4"                  , True ),
-                  (".flv"   , "bool"                                        , "Allow .flv"                  , True ),
-                  (".webm"  , "bool"                                        , "Allow .webm"                 , False),
-                  (".3gp"   , "bool"                                        , "Allow .3gp"                  , False),
-                  ("3d"     , "bool"                                        , "Prefer 3D"                   , False)]
+    __config__  = [("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting"             , "hd" ),
+                   ("fmt"    , "int"                                         , "FMT/ITAG Number (0 for auto)", 0    ),
+                   (".mp4"   , "bool"                                        , "Allow .mp4"                  , True ),
+                   (".flv"   , "bool"                                        , "Allow .flv"                  , True ),
+                   (".webm"  , "bool"                                        , "Allow .webm"                 , False),
+                   (".3gp"   , "bool"                                        , "Allow .3gp"                  , False),
+                   ("3d"     , "bool"                                        , "Prefer 3D"                   , False)]
 
     __description__ = """Youtube.com hoster plugin"""
     __license__     = "GPLv3"
@@ -95,7 +95,7 @@ class YoutubeCom(Hoster):
             self.tempOffline()
 
         #get config
-        use3d = self.getConfig("3d")
+        use3d = self.getConfig('3d')
 
         if use3d:
             quality = {"sd": 82, "hd": 84, "fullhd": 85, "240p": 83, "360p": 82,
@@ -104,10 +104,10 @@ class YoutubeCom(Hoster):
             quality = {"sd": 18, "hd": 22, "fullhd": 37, "240p": 5, "360p": 18,
                        "480p": 35, "720p": 22, "1080p": 37, "3072p": 38}
 
-        desired_fmt = self.getConfig("fmt")
+        desired_fmt = self.getConfig('fmt')
 
         if not desired_fmt:
-            desired_fmt = quality.get(self.getConfig("quality"), 18)
+            desired_fmt = quality.get(self.getConfig('quality'), 18)
 
         elif desired_fmt not in self.formats:
             self.logWarning(_("FMT %d unknown, using default") % desired_fmt)

@@ -11,6 +11,7 @@ class FileStoreTo(SimpleHoster):
     __version__ = "0.05"
 
     __pattern__ = r'http://(?:www\.)?filestore\.to/\?d=(?P<ID>\w+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """FileStore.to hoster plugin"""
     __license__     = "GPLv3"

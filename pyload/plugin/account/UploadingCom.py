@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import time, strptime, mktime
+import time
 
 from pyload.plugin.Account import Account
 from pyload.plugin.internal.SimpleHoster import set_cookies
@@ -11,7 +10,7 @@ from pyload.plugin.internal.SimpleHoster import set_cookies
 class UploadingCom(Account):
     __name__    = "UploadingCom"
     __type__    = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __description__ = """Uploading.com account plugin"""
     __license__     = "GPLv3"
@@ -37,27 +36,30 @@ class UploadingCom(Account):
             self.logDebug("Expire date: " + expiredate)
 
             try:
-                validuntil = mktime(strptime(expiredate, "%b %d, %Y"))
+                validuntil = time.mktime(time.strptime(expiredate, "%b %d, %Y"))
 
             except Exception, e:
                 self.logError(e)
 
             else:
-                if validuntil > mktime(gmtime()):
-                    premium = True
+                if validuntil > time.mktime(time.gmtime()):
+                    premium    = True
                 else:
-                    premium = False
+                    premium    = False
                     validuntil = None
 
-        return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
+        return {'validuntil' : validuntil,
+                'trafficleft': trafficleft,
+                'premium'    : premium}
 
 
     def login(self, user, data, req):
-        set_cookies([("uploading.com", "lang", "1"),
-                     ("uploading.com", "language", "1"),
-                     ("uploading.com", "setlang", "en"),
-                     ("uploading.com", "_lang", "en")]
+        set_cookies(req.cj,
+                    [("uploading.com", "lang"    , "1" ),
+                     ("uploading.com", "language", "1" ),
+                     ("uploading.com", "setlang" , "en"),
+                     ("uploading.com", "_lang"   , "en")])
 
         req.load("http://uploading.com/")
-        req.load("http://uploading.com/general/login_form/?JsHttpRequest=%s-xml" % long(time() * 1000),
+        req.load("http://uploading.com/general/login_form/?JsHttpRequest=%s-xml" % long(time.time() * 1000),
                  post={'email': user, 'password': data['password'], 'remember': "on"})

@@ -72,7 +72,7 @@ class DailymotionCom(Hoster):
 
 
     def getQuality(self):
-        q = self.getConfig("quality")
+        q = self.getConfig('quality')
 
         if q == "Lowest":
             quality = 0

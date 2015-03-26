@@ -35,10 +35,12 @@ class BypassCaptcha(Hook):
 
     __description__ = """Send captchas to BypassCaptcha.com"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+    __authors__     = [("RaNaN"     , "RaNaN@pyload.org"     ),
                        ("Godofdream", "soilfcition@gmail.com"),
-                       ("zoidberg", "zoidberg@mujmail.cz")]
+                       ("zoidberg"  , "zoidberg@mujmail.cz"  )]
 
+
+    interval = 0  #@TODO: Remove in 0.4.10
 
     PYLOAD_KEY = "4f771155b640970d5607f919a615bdefc67e7d32"
 
@@ -48,7 +50,7 @@ class BypassCaptcha(Hook):
 
 
     def getCredits(self):
-        res = getURL(self.GETCREDITS_URL, post={"key": self.getConfig("passkey")})
+        res = getURL(self.GETCREDITS_URL, post={"key": self.getConfig('passkey')})
 
         data = dict(x.split(' ', 1) for x in res.splitlines())
         return int(data['Left'])
@@ -63,7 +65,7 @@ class BypassCaptcha(Hook):
         try:
             res = req.load(self.SUBMIT_URL,
                            post={'vendor_key': self.PYLOAD_KEY,
-                                 'key': self.getConfig("passkey"),
+                                 'key': self.getConfig('passkey'),
                                  'gen_task_id': "1",
                                  'file': (FORM_FILE, captcha)},
                            multipart=True)
@@ -83,7 +85,7 @@ class BypassCaptcha(Hook):
 
     def respond(self, ticket, success):
         try:
-            res = getURL(self.RESPOND_URL, post={"task_id": ticket, "key": self.getConfig("passkey"),
+            res = getURL(self.RESPOND_URL, post={"task_id": ticket, "key": self.getConfig('passkey'),
                                                       "cv": 1 if success else 0})
         except BadHeader, e:
             self.logError(_("Could not send response"), e)
@@ -96,10 +98,10 @@ class BypassCaptcha(Hook):
         if not task.isTextual():
             return False
 
-        if not self.getConfig("passkey"):
+        if not self.getConfig('passkey'):
             return False
 
-        if self.core.isClientConnected() and not self.getConfig("force"):
+        if self.core.isClientConnected() and not self.getConfig('force'):
             return False
 
         if self.getCredits() > 0:

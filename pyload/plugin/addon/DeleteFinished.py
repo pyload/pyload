@@ -7,10 +7,11 @@ from pyload.plugin.Addon import Addon
 class DeleteFinished(Addon):
     __name__    = "DeleteFinished"
     __type__    = "addon"
-    __version__ = "1.11"
+    __version__ = "1.12"
 
-    __config__ = [('interval'  , 'int' , 'Delete every (hours)'              , '72'   ),
-                ('deloffline', 'bool', 'Delete packages with offline links', 'False')]
+    __config__ = [("activated" , "bool", "Activated"                         , "False"),
+                  ("interval"  , "int" , "Delete every (hours)"              , "72"   ),
+                  ("deloffline", "bool", "Delete packages with offline links", "False")]
 
     __description__ = """Automatically delete all finished packages from queue"""
     __license__     = "GPLv3"
@@ -19,8 +20,15 @@ class DeleteFinished(Addon):
 
     # event_list = ["pluginConfigChanged"]
 
+    MIN_CHECK_INTERVAL = 1 * 60 * 60  #: 1 hour
+
 
     ## overwritten methods ##
+    def setup(self):
+        self.info     = {}  #@TODO: Remove in 0.4.10
+        self.interval = self.MIN_CHECK_INTERVAL
+
+
     def periodical(self):
         if not self.info['sleep']:
             deloffline = self.getConfig('deloffline')
@@ -32,20 +40,21 @@ class DeleteFinished(Addon):
             self.addEvent('packageFinished', self.wakeup)
 
 
-    def pluginConfigChanged(self, plugin, name, value):
-        if name == "interval" and value != self.interval:
-            self.interval = value * 3600
-            self.initPeriodical()
+    # def pluginConfigChanged(self, plugin, name, value):
+        # if name == "interval" and value != self.interval:
+            # self.interval = value * 3600
+            # self.initPeriodical()
 
 
     def deactivate(self):
-        self.removeEvent('packageFinished', self.wakeup)
+        self.manager.removeEvent('packageFinished', self.wakeup)
 
 
     def activate(self):
-        self.info = {'sleep': True}
-        interval = self.getConfig('interval')
-        self.pluginConfigChanged(self.__name__, 'interval', interval)
+        self.info['sleep'] = True
+        # interval = self.getConfig('interval')
+        # self.pluginConfigChanged(self.__name__, 'interval', interval)
+        self.interval = max(self.MIN_CHECK_INTERVAL, self.getConfig('interval') * 60 * 60)
         self.addEvent('packageFinished', self.wakeup)
 
 
@@ -57,23 +66,17 @@ class DeleteFinished(Addon):
 
 
     def wakeup(self, pypack):
-        self.removeEvent('packageFinished', self.wakeup)
+        self.manager.removeEvent('packageFinished', self.wakeup)
         self.info['sleep'] = False
 
 
     ## event managing ##
     def addEvent(self, event, func):
         """Adds an event listener for event name"""
-        if event in self.m.events:
-            if func in self.m.events[event]:
+        if event in self.manager.events:
+            if func in self.manager.events[event]:
                 self.logDebug("Function already registered", func)
             else:
-                self.m.events[event].append(func)
+                self.manager.events[event].append(func)
         else:
-            self.m.events[event] = [func]
-
-
-    def setup(self):
-        self.interval = 0
-        self.m = self.manager
-        self.removeEvent = self.m.removeEvent
+            self.manager.events[event] = [func]

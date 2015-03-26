@@ -11,10 +11,11 @@ class RPNetBiz(MultiHoster):
     __type__    = "hoster"
     __version__ = "0.14"
 
+    __pattern__ = r'https?://.+rpnet\.biz'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+
     __description__ = """RPNet.biz multi-hoster plugin"""
     __license__     = "GPLv3"
-
-    __pattern__ = r'https?://.+rpnet\.biz'
     __authors__     = [("Dman", "dmanugm@gmail.com")]
 
 

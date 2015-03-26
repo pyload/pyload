@@ -9,6 +9,7 @@ class TurbouploadCom(DeadHoster):
     __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?turboupload\.com/(\w+)'
+    __config__  = []
 
     __description__ = """Turboupload.com hoster plugin"""
     __license__     = "GPLv3"

@@ -11,6 +11,7 @@ class TwoSharedCom(SimpleHoster):
     __version__ = "0.13"
 
     __pattern__ = r'http://(?:www\.)?2shared\.com/(account/)?(download|get|file|document|photo|video|audio)/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """2Shared.com hoster plugin"""
     __license__     = "GPLv3"

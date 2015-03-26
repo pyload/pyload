@@ -13,6 +13,7 @@ class UnibytesCom(SimpleHoster):
     __version__ = "0.12"
 
     __pattern__ = r'https?://(?:www\.)?unibytes\.com/[\w .-]{11}B'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """UniBytes.com hoster plugin"""
     __license__     = "GPLv3"

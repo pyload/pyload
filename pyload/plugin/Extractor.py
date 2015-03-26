@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
 
 from pyload.datatype.File import PyFile
 from pyload.plugin.Plugin import Base
@@ -18,16 +19,15 @@ class PasswordError(Exception):
     pass
 
 
-class Extractor(Base):
+class Extractor:
     __name    = "Extractor"
     __type    = "extractor"
-    __version = "0.21"
+    __version = "0.24"
 
     __description = """Base extractor plugin"""
     __license     = "GPLv3"
-    __authors     = [("RaNaN", "ranan@pyload.org"),
-                       ("Walter Purcaro", "vuolter@gmail.com"),
-                       ("Immenz", "immenz@gmx.net")]
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com"),
+                     ("Immenz"        , "immenz@gmx.net"   )]
 
 
     EXTENSIONS = []
@@ -38,11 +38,11 @@ class Extractor(Base):
     @classmethod
     def isArchive(cls, filename):
         name = os.path.basename(filename).lower()
-        return any(name.endswith(ext) for ext in cls.EXTENSIONS) and not cls.isMultipart(filename)
+        return any(name.endswith(ext) for ext in cls.EXTENSIONS)
 
 
     @classmethod
-    def isMultipart(cls,filename):
+    def isMultipart(cls, filename):
         return False
 
 
@@ -60,7 +60,16 @@ class Extractor(Base):
         :param files_ids: List of filepathes
         :return: List of targets, id tuple list
         """
-        return [(fname, id, fout) for fname, id, fout in files_ids if cls.isArchive(fname)]
+        targets = []
+        processed = []
+
+        for fname, id, fout in files_ids:
+            if cls.isArchive(fname):
+                pname = re.sub(cls.re_multipart, '', fname) if cls.isMultipart(fname) else os.path.splitext(fname)[0]
+                if pname not in processed:
+                    processed.append(pname)
+                    targets.append((fname, id, fout))
+        return targets
 
 
     def __init__(self, manager, filename, out,
@@ -68,20 +77,20 @@ class Extractor(Base):
                  overwrite=False,
                  excludefiles=[],
                  renice=0,
-                 delete=False,
+                 delete='No',
                  keepbroken=False,
                  fid=None):
         """ Initialize extractor for specific file """
-        self.manager        = manager
-        self.filename       = filename
-        self.out            = out
-        self.fullpath       = fullpath
-        self.overwrite      = overwrite
-        self.excludefiles   = excludefiles
-        self.renice         = renice
-        self.delete         = delete
-        self.keepbroken     = keepbroken
-        self.files          = []  #: Store extracted files here
+        self.manager      = manager
+        self.filename     = filename
+        self.out          = out
+        self.fullpath     = fullpath
+        self.overwrite    = overwrite
+        self.excludefiles = excludefiles
+        self.renice       = renice
+        self.delete       = delete
+        self.keepbroken   = keepbroken
+        self.files        = []  #: Store extracted files here
 
         pyfile = self.manager.core.files.getFile(fid) if fid else None
         self.notifyProgress = lambda x: pyfile.setProgress(x) if pyfile else lambda x: None
@@ -102,7 +111,7 @@ class Extractor(Base):
         """
         raise NotImplementedError
 
-    def test(self):
+    def verify(self):
         """Testing with Extractors buildt-in method
         Raises error if password is needed, integrity is questionable or else.
 

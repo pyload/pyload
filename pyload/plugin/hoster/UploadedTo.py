@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import sleep
+import time
 
 from pyload.network.RequestFactory import getURL
 from pyload.plugin.internal.CaptchaService import ReCaptcha
@@ -12,9 +11,10 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "0.84"
+    __version__ = "0.85"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Uploaded.net hoster plugin"""
     __license__     = "GPLv3"
@@ -48,7 +48,7 @@ class UploadedTo(SimpleHoster):
                     info['status'] = 1
                 break
             else:
-                sleep(3)
+                time.sleep(3)
 
         return info
 
@@ -109,9 +109,9 @@ class UploadedTo(SimpleHoster):
         self.checkErrors()
 
 
-    def checkFile(self):
+    def checkFile(self, rules={}):
         if self.checkDownload({'limit-dl': self.DL_LIMIT_ERROR}):
             self.wait(3 * 60 * 60, True)
             self.retry()
 
-        return super(UploadedTo, self).checkFile()
+        return super(UploadedTo, self).checkFile(rules)

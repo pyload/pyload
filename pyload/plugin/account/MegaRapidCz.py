@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import re
+import time
 
-from time import mktime, strptime
 from pyload.plugin.Account import Account
 
 
@@ -34,7 +34,7 @@ class MegaRapidCz(Account):
 
         m = re.search(self.VALID_UNTIL_PATTERN, htmll)
         if m:
-            validuntil = mktime(strptime(m.group(1), "%d.%m.%Y - %H:%M"))
+            validuntil = time.mktime(time.strptime(m.group(1), "%d.%m.%Y - %H:%M"))
             return {"premium": True, "trafficleft": -1, "validuntil": validuntil}
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, htmll)

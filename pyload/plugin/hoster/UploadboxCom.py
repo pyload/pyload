@@ -9,6 +9,7 @@ class UploadboxCom(DeadHoster):
     __version__ = "0.05"
 
     __pattern__ = r'http://(?:www\.)?uploadbox\.com/files/.+'
+    __config__  = []
 
     __description__ = """UploadBox.com hoster plugin"""
     __license__     = "GPLv3"

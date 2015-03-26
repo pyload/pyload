@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 import mimetypes
 import os
 import re
+import time
 
-from datetime import datetime, timedelta
 from inspect import isclass
-from time import time
 from urllib import unquote
 from urlparse import urljoin, urlparse
 
@@ -15,7 +15,7 @@ from pyload.network.CookieJar import CookieJar
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getURL
 from pyload.plugin.Hoster import Hoster
-from pyload.plugin.Plugin import Fail
+from pyload.plugin.Plugin import Fail, Retry
 from pyload.utils import fixup, fs_encode, parseFileSize
 
 
@@ -137,27 +137,27 @@ def parseFileInfo(plugin, url="", html=""):
 
 
 def timestamp():
-    return int(time() * 1000)
+    return int(time.time() * 1000)
 
 
 #@TODO: Move to hoster class in 0.4.10
-def fileUrl(self, url, follow_location=None):
+def getFileURL(self, url, follow_location=None):
     link     = ""
     redirect = 1
 
     if type(follow_location) is int:
         redirect = max(follow_location, 1)
     else:
-        redirect = 5
+        redirect = 10
 
     for i in xrange(redirect):
         try:
             self.logDebug("Redirect #%d to: %s" % (i, url))
-            header = self.load(url, ref=True, cookies=True, just_header=True, decode=True)
+            header = self.load(url, just_header=True, decode=True)
 
         except Exception:  #: Bad bad bad...
             req = pyreq.getHTTPRequest()
-            res = req.load(url, cookies=True, just_header=True, decode=True)
+            res = req.load(url, just_header=True, decode=True)
 
             req.close()
 
@@ -226,18 +226,18 @@ def fileUrl(self, url, follow_location=None):
 
 
 def secondsToMidnight(gmt=0):
-    now = datetime.utcnow() + timedelta(hours=gmt)
+    now = datetime.datetime.utcnow() + datetime.timedelta(hours=gmt)
 
     if now.hour is 0 and now.minute < 10:
         midnight = now
     else:
-        midnight = now + timedelta(days=1)
+        midnight = now + datetime.timedelta(days=1)
 
     td = midnight.replace(hour=0, minute=10, second=0, microsecond=0) - now
 
     if hasattr(td, 'total_seconds'):
         res = td.total_seconds()
-    else:  #@NOTE: work-around for python 2.5 and 2.6 missing timedelta.total_seconds
+    else:  #: work-around for python 2.5 and 2.6 missing datetime.timedelta.total_seconds
         res = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
 
     return int(res)
@@ -246,15 +246,14 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.15"
+    __version__ = "1.31"
 
     __pattern__ = r'^unmatchable$'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Simple hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
-                       ("stickell", "l.stickell@yahoo.it"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"  )]
 
 
     """
@@ -311,7 +310,7 @@ class SimpleHoster(Hoster):
     LOGIN_ACCOUNT = False  #: Set to True to require account login
     DISPOSITION   = True   #: Work-around to `filename*=UTF-8` bug; remove in 0.4.10
 
-    directLink = fileUrl  #@TODO: Remove in 0.4.10
+    directLink = getFileURL  #@TODO: Remove in 0.4.10
 
 
     @classmethod
@@ -349,7 +348,7 @@ class SimpleHoster(Hoster):
                 info['error']  = "missing url"
                 info['status'] = 1
 
-            elif info['status'] is 3 and not fileUrl(None, url):
+            elif info['status'] is 3 and not getFileURL(None, url):
                 try:
                     html = getURL(url, cookies=cls.COOKIES, decode=not cls.TEXT_ENCODING)
 
@@ -426,6 +425,9 @@ class SimpleHoster(Hoster):
         self.directDL  = False  #@TODO: Move to hoster class in 0.4.10
         self.multihost = False  #@TODO: Move to hoster class in 0.4.10
 
+        if not self.getConfig('use_premium', True):
+            self.retryFree()
+
         if self.LOGIN_ACCOUNT and not self.account:
             self.fail(_("Required account not found"))
 
@@ -456,35 +458,43 @@ class SimpleHoster(Hoster):
 
 
     def process(self, pyfile):
-        self.prepare()
-        self.checkInfo()
-
-        if self.directDL:
-            self.logDebug("Looking for direct download link...")
-            self.handleDirect(pyfile)
-
-        if self.multihost and not self.link and not self.lastDownload:
-            self.logDebug("Looking for leeched download link...")
-            self.handleMulti(pyfile)
-
-            if not self.link and not self.lastDownload:
-                self.MULTI_HOSTER = False
-                self.retry(1, reason="Multi hoster fails")
-
-        if not self.link and not self.lastDownload:
-            self.preload()
+        try:
+            self.prepare()
             self.checkInfo()
 
-            if self.premium and (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
-                self.logDebug("Handled as premium download")
-                self.handlePremium(pyfile)
+            if self.directDL:
+                self.logDebug("Looking for direct download link...")
+                self.handleDirect(pyfile)
 
-            elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
-                self.logDebug("Handled as free download")
-                self.handleFree(pyfile)
+            if self.multihost and not self.link and not self.lastDownload:
+                self.logDebug("Looking for leeched download link...")
+                self.handleMulti(pyfile)
 
-        self.downloadLink(self.link, self.DISPOSITION)  #: Remove `self.DISPOSITION` in 0.4.10
-        self.checkFile()
+                if not self.link and not self.lastDownload:
+                    self.MULTI_HOSTER = False
+                    self.retry(1, reason="Multi hoster fails")
+
+            if not self.link and not self.lastDownload:
+                self.preload()
+                self.checkInfo()
+
+                if self.premium and (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
+                    self.logDebug("Handled as premium download")
+                    self.handlePremium(pyfile)
+
+                elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
+                    self.logDebug("Handled as free download")
+                    self.handleFree(pyfile)
+
+            self.downloadLink(self.link, self.DISPOSITION)  #: Remove `self.DISPOSITION` in 0.4.10
+            self.checkFile()
+
+        except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
+            if self.premium:
+                self.logWarning(_("Premium download failed"))
+                self.retryFree()
+            else:
+                raise Fail(e)
 
 
     def downloadLink(self, link, disposition=True):
@@ -499,7 +509,7 @@ class SimpleHoster(Hoster):
             self.download(link, ref=False, disposition=disposition)
 
 
-    def checkFile(self):
+    def checkFile(self, rules={}):
         if self.cTask and not self.lastDownload:
             self.invalidCaptcha()
             self.retry(10, reason=_("Wrong captcha"))
@@ -509,21 +519,35 @@ class SimpleHoster(Hoster):
             self.error(self.pyfile.error or _("No file downloaded"))
 
         else:
-            rules = {'empty file': re.compile(r'\A\Z'),
-                     'html file' : re.compile(r'\A\s*<!DOCTYPE html'),
-                     'html error': re.compile(r'\A\s*(<.+>)?\d{3}(\Z|\s+)')}
+            errmsg = self.checkDownload({'Empty file': re.compile(r'\A\s*\Z'),
+                                         'Html error': re.compile(r'\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)')})
 
-            if hasattr(self, 'ERROR_PATTERN'):
-                rules['error'] = re.compile(self.ERROR_PATTERN)
+            if not errmsg:
+                for r, p in [('Html file'    , re.compile(r'\A\s*<!DOCTYPE html')                                ),
+                             ('Request error', re.compile(r'([Aa]n error occured while processing your request)'))]:
+                    if r not in rules:
+                        rules[r] = p
 
-            check = self.checkDownload(rules)
-            if check:  #@TODO: Move to hoster in 0.4.10
-                errmsg = check.strip().capitalize()
-                if self.lastCheck:
-                    errmsg += " | " + self.lastCheck.group(0).strip()
+                for r, a in [('Error'       , "ERROR_PATTERN"       ),
+                             ('Premium only', "PREMIUM_ONLY_PATTERN"),
+                             ('Wait error'  , "WAIT_PATTERN"        )]:
+                    if r not in rules and hasattr(self, a):
+                        rules[r] = getattr(self, a)
 
-                self.lastDownload = ""
-                self.retry(10, 60, errmsg)
+                errmsg = self.checkDownload(rules)
+
+            if not errmsg:
+                return
+
+            errmsg = errmsg.strip().capitalize()
+
+            try:
+                errmsg += " | " + self.lastCheck.group(1).strip()
+            except Exception:
+                pass
+
+            self.logWarning("Check result: " + errmsg, "Waiting 1 minute and retry")
+            self.retry(3, 60, errmsg)
 
 
     def checkErrors(self):
@@ -537,16 +561,36 @@ class SimpleHoster(Hoster):
         elif hasattr(self, 'ERROR_PATTERN'):
             m = re.search(self.ERROR_PATTERN, self.html)
             if m:
-                errmsg = self.info['error'] = m.group(1)
-                self.error(errmsg)
+                try:
+                    errmsg = m.group(1).strip()
+                except Exception:
+                    errmsg = m.group(0).strip()
+
+                self.info['error'] = errmsg
+
+                if "hour" in errmsg:
+                    self.wait(1 * 60 * 60, True)
+
+                elif re.search("da(il)?y|today", errmsg):
+                    self.wait(secondsToMidnight(gmt=2), True)
+
+                elif "minute" in errmsg:
+                    self.wait(1 * 60)
+
+                else:
+                    self.error(errmsg)
 
         elif hasattr(self, 'WAIT_PATTERN'):
             m = re.search(self.WAIT_PATTERN, self.html)
             if m:
+                try:
+                    waitmsg = m.group(1).strip()
+                except Exception:
+                    waitmsg = m.group(0).strip()
+
                 wait_time = sum(int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1}[u.lower()] for v, u in
-                                re.findall(r'(\d+)\s*(hr|hour|min|sec)', m.group(0), re.I))
+                                re.findall(r'(\d+)\s*(hr|hour|min|sec)', waitmsg, re.I))
                 self.wait(wait_time, wait_time > 300)
-                return
 
         self.info.pop('error', None)
 
@@ -690,6 +734,25 @@ class SimpleHoster(Hoster):
             size = self.pyfile.size / 1024
             self.logInfo(_("Filesize: %i KiB, Traffic left for user %s: %i KiB") % (size, self.user, traffic))
             return size <= traffic
+
+
+    def getConfig(self, option, default=''):  #@TODO: Remove in 0.4.10
+        """getConfig with default value - sublass may not implements all config options"""
+        try:
+            return self.getConf(option)
+
+        except KeyError:
+            return default
+
+
+    def retryFree(self):
+        if not self.premium:
+            return
+        self.premium = False
+        self.account = None
+        self.req     = self.core.requestFactory.getRequest(self.__name__)
+        self.retries = 0
+        raise Retry(_("Fallback to free download"))
 
 
     #@TODO: Remove in 0.4.10

@@ -28,7 +28,6 @@ class BitshareCom(Account):
     def login(self, user, data, req):
         html = req.load("http://bitshare.com/login.html",
                         post={"user": user, "password": data['password'], "submit": "Login"},
-                        cookies=True,
                         decode=True)
 
         if "login" in req.lastEffectiveURL:

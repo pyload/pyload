@@ -13,6 +13,7 @@ class WrzucTo(SimpleHoster):
     __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?wrzuc\.to/(\w+(\.wt|\.html)|(\w+/?linki/\w+))'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Wrzuc.to hoster plugin"""
     __license__     = "GPLv3"

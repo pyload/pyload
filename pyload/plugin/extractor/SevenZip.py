@@ -2,8 +2,7 @@
 
 import os
 import re
-
-from subprocess import Popen, PIPE
+import subprocess
 
 from pyload.plugin.extractor.UnRar import ArchiveError, CRCError, PasswordError, UnRar, renice
 from pyload.utils import fs_encode, fs_join
@@ -12,11 +11,11 @@ from pyload.utils import fs_encode, fs_join
 class SevenZip(UnRar):
     __name__    = "SevenZip"
     __type__    = "extractor"
-    __version__ = "0.09"
+    __version__ = "0.11"
 
     __description__ = """7-Zip extractor plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("Michael Nowak", ""),
+    __authors__     = [("Michael Nowak" , ""                 ),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
@@ -42,22 +41,21 @@ class SevenZip(UnRar):
     def isUsable(cls):
         if os.name == "nt":
             cls.CMD = os.path.join(pypath, "7z.exe")
-            p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
-            out,err = p.communicate()
+            p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            out, err = p.communicate()
         else:
-            p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
+            p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = p.communicate()
 
-        cls.VERSION = cls.re_version.search(out).group(1)
+        m = cls.re_version.search(out)
+        cls.VERSION = m.group(1) if m else '(version unknown)'
 
         return True
 
 
-    def test(self, password):
-        file = fs_encode(self.filename)
-
+    def verify(self, password):
         # 7z can't distinguish crc and pw error in test
-        p = self.call_cmd("l", "-slt", file)
+        p = self.call_cmd("l", "-slt", fs_encode(self.filename))
         out, err = p.communicate()
 
         if self.re_wrongpwd.search(out):
@@ -72,9 +70,7 @@ class SevenZip(UnRar):
 
 
     def check(self, password):
-        file = fs_encode(self.filename)
-
-        p = self.call_cmd("l", "-slt", file)
+        p = self.call_cmd("l", "-slt", fs_encode(self.filename))
         out, err = p.communicate()
 
         # check if output or error macthes the 'wrong password'-Regexp
@@ -154,5 +150,5 @@ class SevenZip(UnRar):
 
         self.manager.logDebug(" ".join(call))
 
-        p = Popen(call, stdout=PIPE, stderr=PIPE)
+        p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return p

@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import strptime, mktime
+import time
 
 from pyload.plugin.Account import Account
 
@@ -23,7 +22,7 @@ class DepositfilesCom(Account):
         html = req.load("https://dfiles.eu/de/gold/")
         validuntil = re.search(r"Sie haben Gold Zugang bis: <b>(.*?)</b></div>", html).group(1)
 
-        validuntil = mktime(strptime(validuntil, "%Y-%m-%d %H:%M:%S"))
+        validuntil = time.mktime(time.strptime(validuntil, "%Y-%m-%d %H:%M:%S"))
 
         return {"validuntil": validuntil, "trafficleft": -1}
 

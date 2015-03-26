@@ -9,9 +9,10 @@ from pyload.utils import fixup
 class NowDownloadSx(SimpleHoster):
     __name__    = "NowDownloadSx"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.09"
 
-    __pattern__ = r'http://(?:www\.)?(nowdownload\.(at|ch|co|eu|sx)/(dl/|download\.php\?id=)|likeupload\.org/)\w+'
+    __pattern__ = r'http://(?:www\.)?(nowdownload\.[a-zA-Z]{2,}/(dl/|download\.php.+?id=|mobile/(#/files/|.+?id=))|likeupload\.org/)\w+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """NowDownload.sx hoster plugin"""
     __license__     = "GPLv3"

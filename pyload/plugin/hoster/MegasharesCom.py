@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import time
+import time
 
 from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
@@ -13,6 +12,7 @@ class MegasharesCom(SimpleHoster):
     __version__ = "0.28"
 
     __pattern__ = r'http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index\.php)?\?d\d{2}=|dl/)\w+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Megashares.com hoster plugin"""
     __license__     = "GPLv3"
@@ -66,7 +66,7 @@ class MegasharesCom(SimpleHoster):
                                      'rsargs[]': random_num,
                                      'rsargs[]': passport_num,
                                      'rsargs[]': "replace_sec_pprenewal",
-                                     'rsrnd[]' : str(int(time() * 1000))})
+                                     'rsrnd[]' : str(int(time.time() * 1000))})
 
                 if 'Thank you for reactivating your passport.' in res:
                     self.correctCaptcha()

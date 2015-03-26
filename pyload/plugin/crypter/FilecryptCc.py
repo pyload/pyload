@@ -41,7 +41,7 @@ class FilecryptCc(Crypter):
 
 
     def decrypt(self, pyfile):
-        self.html = self.load(pyfile.url, cookies=True)
+        self.html = self.load(pyfile.url)
 
         if "content notfound" in self.html:  #@NOTE: "content notfound" is NOT a typo
             self.offline()
@@ -66,7 +66,7 @@ class FilecryptCc(Crypter):
         self.logInfo(_("Found %d mirrors") % len(mirror))
 
         for i in mirror[1:]:
-            self.siteWithLinks = self.siteWithLinks + self.load(i, cookies=True).decode("utf-8", "replace")
+            self.siteWithLinks = self.siteWithLinks + self.load(i).decode("utf-8", "replace")
 
 
     def handlePasswordProtection(self):
@@ -80,7 +80,7 @@ class FilecryptCc(Crypter):
         if not password:
             self.fail(_("Please enter the password in package section and try again"))
 
-        self.html = self.load(self.pyfile.url, post={"password": password}, cookies=True)
+        self.html = self.load(self.pyfile.url, post={"password": password})
 
 
     def handleCaptcha(self):
@@ -96,7 +96,6 @@ class FilecryptCc(Crypter):
 
             self.siteWithLinks = self.load(self.pyfile.url,
                                            post={'recaptcha_response_field': captcha_code},
-                                           cookies=True,
                                            decode=True)
         elif m2:  #: circle captcha
             self.logDebug("Captcha-URL: %s" % m2.group(1))
@@ -108,7 +107,6 @@ class FilecryptCc(Crypter):
 
             self.siteWithLinks = self.load(self.pyfile.url,
                                            post={'button.x': captcha_code[0], 'button.y': captcha_code[1]},
-                                           cookies=True,
                                            decode=True)
 
         else:
@@ -144,9 +142,9 @@ class FilecryptCc(Crypter):
             weblinks = re.findall(self.WEBLINK_PATTERN, self.siteWithLinks)
 
             for link in weblinks:
-                res   = self.load("http://filecrypt.cc/Link/%s.html" % link, cookies=True)
+                res   = self.load("http://filecrypt.cc/Link/%s.html" % link)
                 link2 = re.search('<iframe noresize src="(.*)"></iframe>', res)
-                res2  = self.load(link2.group(1), just_header=True, cookies=True)
+                res2  = self.load(link2.group(1), just_header=True)
                 self.links.append(res2['location'])
 
         except Exception, e:

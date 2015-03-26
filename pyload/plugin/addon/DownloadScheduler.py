@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import localtime
+import time
 
 from pyload.plugin.Addon import Addon
 
@@ -21,8 +20,12 @@ class DownloadScheduler(Addon):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
+    interval = 0  #@TODO: Remove in 0.4.10
+
+
     def setup(self):
-        self.cb = None  #: callback to scheduler job; will be by removed AddonManager when addon unloaded
+        self.info = {}    #@TODO: Remove in 0.4.10
+        self.cb   = None  # callback to scheduler job; will be by removed hookmanager when hook unloaded
 
 
     def activate(self):
@@ -31,7 +34,7 @@ class DownloadScheduler(Addon):
 
     def updateSchedule(self, schedule=None):
         if schedule is None:
-            schedule = self.getConfig("timetable")
+            schedule = self.getConfig('timetable')
 
         schedule = re.findall("(\d{1,2}):(\d{2})[\s]*(-?\d+)",
                               schedule.lower().replace("full", "-1").replace("none", "0"))
@@ -39,7 +42,7 @@ class DownloadScheduler(Addon):
             self.logError(_("Invalid schedule"))
             return
 
-        t0 = localtime()
+        t0  = time.localtime()
         now = (t0.tm_hour, t0.tm_min, t0.tm_sec, "X")
         schedule = sorted([(int(x[0]), int(x[1]), 0, int(x[2])) for x in schedule] + [now])
 
@@ -59,7 +62,7 @@ class DownloadScheduler(Addon):
 
     def setDownloadSpeed(self, speed):
         if speed == 0:
-            abort = self.getConfig("abort")
+            abort = self.getConfig('abort')
             self.logInfo(_("Stopping download server. (Running downloads will %sbe aborted.)") % '' if abort else _('not '))
             self.core.api.pauseServer()
             if abort:

@@ -2,19 +2,19 @@
 
 import os
 import re
+import subprocess
 
 from glob import glob
 from string import digits
-from subprocess import Popen, PIPE
 
 from pyload.plugin.Extractor import Extractor, ArchiveError, CRCError, PasswordError
-from pyload.utils import decode, fs_encode, fs_join
+from pyload.utils import fs_decode, fs_encode, fs_join
 
 
 def renice(pid, value):
     if value and os.name != "nt":
         try:
-            Popen(["renice", str(value), str(pid)], stdout=PIPE, stderr=PIPE, bufsize=-1)
+            subprocess.Popen(["renice", str(value), str(pid)], stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=-1)
 
         except Exception:
             pass
@@ -23,13 +23,13 @@ def renice(pid, value):
 class UnRar(Extractor):
     __name__    = "UnRar"
     __type__    = "extractor"
-    __version__ = "1.14"
+    __version__ = "1.20"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+    __authors__     = [("RaNaN"         , "RaNaN@pyload.org" ),
                        ("Walter Purcaro", "vuolter@gmail.com"),
-                       ("Immenz", "immenz@gmx.net"),]
+                       ("Immenz"        , "immenz@gmx.net"   )]
 
 
     CMD = "unrar"
@@ -53,40 +53,38 @@ class UnRar(Extractor):
         if os.name == "nt":
             try:
                 cls.CMD = os.path.join(pypath, "RAR.exe")
-                p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
+                p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, err = p.communicate()
                 cls.__name__ = "RAR"
                 cls.REPAIR = True
+
             except OSError:
                 cls.CMD = os.path.join(pypath, "UnRAR.exe")
-                p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
+                p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, err = p.communicate()
         else:
             try:
-                p = Popen(["rar"], stdout=PIPE, stderr=PIPE)
+                p = subprocess.Popen(["rar"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, err = p.communicate()
                 cls.__name__ = "RAR"
                 cls.REPAIR = True
+
             except OSError:  #: fallback to unrar
-                p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
+                p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, err = p.communicate()
 
-        cls.VERSION = cls.re_version.search(out).group(1)
+        m = cls.re_version.search(out)
+        cls.VERSION = m.group(1) if m else '(version unknown)'
 
         return True
 
 
     @classmethod
-    def isMultipart(cls,filename):
-        multipart = cls.re_multipart.search(filename)
-        if multipart:
-            # First Multipart file (part1.rar for *.part1-9.rar format or *.rar for .r1-9 format) handled as normal Archive
-            return False if (multipart.group(1) == "part" and int(multipart.group(2)) == 1 and not multipart.group(3)) else True
-
-        return False
+    def isMultipart(cls, filename):
+        return True if cls.re_multipart.search(filename) else False
 
 
-    def test(self, password):
+    def verify(self, password):
         p = self.call_cmd("t", "-v", fs_encode(self.filename), password=password)
         self._progress(p)
         err = p.stderr.read().strip()
@@ -199,14 +197,14 @@ class UnRar(Extractor):
         result = set()
         if not self.fullpath and self.VERSION.startswith('5'):
             # NOTE: Unrar 5 always list full path
-            for f in decode(out).splitlines():
-                f = fs_join(self.out, os.path.basename(f.strip()))
+            for f in fs_decode(out).splitlines():
+                f = save_join(self.out, os.path.basename(f.strip()))
                 if os.path.isfile(f):
-                    result.add(fs_join(self.out, os.path.basename(f)))
+                    result.add(save_join(self.out, os.path.basename(f)))
         else:
-            for f in decode(out).splitlines():
+            for f in fs_decode(out).splitlines():
                 f = f.strip()
-                result.add(fs_join(self.out, f))
+                result.add(save_join(self.out, f))
 
         return list(result)
 
@@ -219,7 +217,7 @@ class UnRar(Extractor):
             args.append("-o+")
         else:
             args.append("-o-")
-            if self.delete:
+            if self.delete != 'No':
                 args.append("-or")
 
         for word in self.excludefiles:
@@ -242,5 +240,5 @@ class UnRar(Extractor):
 
         self.manager.logDebug(" ".join(call))
 
-        p = Popen(call, stdout=PIPE, stderr=PIPE)
+        p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return p

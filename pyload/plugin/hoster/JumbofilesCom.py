@@ -11,6 +11,7 @@ class JumbofilesCom(SimpleHoster):
     __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?jumbofiles\.com/(?P<ID>\w{12})'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """JumboFiles.com hoster plugin"""
     __license__     = "GPLv3"

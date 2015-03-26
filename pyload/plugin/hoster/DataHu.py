@@ -14,6 +14,7 @@ class DataHu(SimpleHoster):
     __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?data\.hu/get/\w+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Data.hu hoster plugin"""
     __license__     = "GPLv3"

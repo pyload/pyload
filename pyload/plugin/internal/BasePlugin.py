@@ -6,14 +6,14 @@ from urllib import unquote
 from urlparse import urljoin, urlparse
 
 from pyload.network.HTTPRequest import BadHeader
-from pyload.plugin.internal.SimpleHoster import fileUrl
+from pyload.plugin.internal.SimpleHoster import create_getInfo, getFileURL
 from pyload.plugin.Hoster import Hoster
 
 
 class BasePlugin(Hoster):
     __name__    = "BasePlugin"
     __type__    = "hoster"
-    __version__ = "0.34"
+    __version__ = "0.38"
 
     __pattern__ = r'^unmatchable$'
 
@@ -51,7 +51,7 @@ class BasePlugin(Hoster):
 
         for _i in xrange(5):
             try:
-                link = fileUrl(self, unquote(pyfile.url))
+                link = getFileURL(self, unquote(pyfile.url))
 
                 if link:
                     self.download(link, ref=False, disposition=True)
@@ -85,8 +85,20 @@ class BasePlugin(Hoster):
         else:
             self.fail(_("No file downloaded"))  #@TODO: Move to hoster class in 0.4.10
 
-        check = self.checkDownload({'empty file': re.compile(r'\A\Z'),
-                                    'html file' : re.compile(r'\A\s*<!DOCTYPE html'),
-                                    'html error': re.compile(r'\A\s*(<.+>)?\d{3}(\Z|\s+)')})
-        if check:
-            self.fail(check.capitalize())
+        errmsg = self.checkDownload({'Empty file'   : re.compile(r'\A\s*\Z'),
+                                     'Html error'   : re.compile(r'\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)'),
+                                     'Html file'    : re.compile(r'\A\s*<!DOCTYPE html'),
+                                     'Request error': re.compile(r'([Aa]n error occured while processing your request)')})
+        if not errmsg:
+            return
+
+        try:
+            errmsg += " | " + self.lastCheck.group(1).strip()
+        except Exception:
+            pass
+
+        self.logWarning("Check result: " + errmsg, "Waiting 1 minute and retry")
+        self.retry(3, 60, errmsg)
+
+
+getInfo = create_getInfo(BasePlugin)

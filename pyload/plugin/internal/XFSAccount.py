@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import re
+import time
 
-from time import gmtime, mktime, strptime
 from urlparse import urljoin
 
 from pyload.plugin.Account import Account
@@ -16,8 +16,8 @@ class XFSAccount(Account):
 
     __description__ = """XFileSharing account plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("zoidberg"      , "zoidberg@mujmail.cz"),
+                       ("Walter Purcaro", "vuolter@gmail.com"  )]
 
 
     HOSTER_DOMAIN = None
@@ -75,7 +75,7 @@ class XFSAccount(Account):
             self.logDebug("Expire date: " + expiredate)
 
             try:
-                validuntil = mktime(strptime(expiredate, "%d %B %Y"))
+                validuntil = time.mktime(time.strptime(expiredate, "%d %B %Y"))
 
             except Exception, e:
                 self.logError(e)
@@ -83,7 +83,7 @@ class XFSAccount(Account):
             else:
                 self.logDebug("Valid until: %s" % validuntil)
 
-                if validuntil > mktime(gmtime()):
+                if validuntil > time.mktime(time.gmtime()):
                     premium     = True
                     trafficleft = -1
                 else:

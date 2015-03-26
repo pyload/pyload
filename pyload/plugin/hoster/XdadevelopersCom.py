@@ -14,6 +14,7 @@ class XdadevelopersCom(SimpleHoster):
     __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?forum\.xda-developers\.com/devdb/project/dl/\?id=\d+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Xda-developers.com hoster plugin"""
     __license__     = "GPLv3"

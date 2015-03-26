@@ -9,6 +9,7 @@ class MegauploadCom(DeadCrypter):
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?megaupload\.com/(\?f|xml/folderfiles\.php\?.*&?folderid)=\w+'
+    __config__  = []
 
     __description__ = """Megaupload.com folder decrypter plugin"""
     __license__     = "GPLv3"

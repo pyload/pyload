@@ -8,7 +8,7 @@ from pyload.plugin.Hook import Hook
 class XFileSharingPro(Hook):
     __name__    = "XFileSharingPro"
     __type__    = "hook"
-    __version__ = "0.32"
+    __version__ = "0.36"
 
     __config__ = [("activated"       , "bool", "Activated"                     , True ),
                   ("use_hoster_list" , "bool", "Load listed hosters only"      , False),
@@ -23,15 +23,16 @@ class XFileSharingPro(Hook):
 
 
     # event_list = ["pluginConfigChanged"]
-    regexp = {'hoster' : (r'https?://(?:www\.)?(?P<DOMAIN>[\w.^_]+(?:\.[a-zA-Z]{2,})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
-                          r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:embed-)?\w+'),
-              'crypter': (r'https?://(?:www\.)?(?P<DOMAIN>[\w.^_]+(?:\.[a-zA-Z]{2,})(?:\:\d+)?)/(?:user|folder)s?/\w+',
-                          r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:user|folder)s?/\w+')}
+    interval   = 0  #@TODO: Remove in 0.4.10
+    regexp     = {'hoster' : (r'https?://(?:www\.)?(?P<DOMAIN>[\w\-.^_]{3,63}(?:\.[a-zA-Z]{2,})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
+                              r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:embed-)?\w+'),
+                  'crypter': (r'https?://(?:www\.)?(?P<DOMAIN>[\w\-.^_]{3,63}(?:\.[a-zA-Z]{2,})(?:\:\d+)?)/(?:user|folder)s?/\w+',
+                              r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:user|folder)s?/\w+')}
 
     HOSTER_BUILTIN  = [#WORKING HOSTERS:
-                       "backin.net", "eyesfile.ca", "file4safe.com", "fileband.com", "filedwon.com",
-                       "fileparadox.in", "filevice.com", "hostingbulk.com", "junkyvideo.com", "linestorage.com", "ravishare.com",
-                       "ryushare.com", "salefiles.com", "sendmyway.com", "sharesix.com", "thefile.me", "verzend.be", "xvidstage.com",
+                       "backin.net", "eyesfile.ca", "file4safe.com", "fileband.com", "filedwon.com", "fileparadox.in",
+                       "filevice.com", "hostingbulk.com", "junkyvideo.com", "linestorage.com", "ravishare.com", "ryushare.com",
+                       "salefiles.com", "sendmyway.com", "sharesix.com", "thefile.me", "verzend.be", "xvidstage.com",
                        #NOT TESTED:
                        "101shared.com", "4upfiles.com", "filemaze.ws", "filenuke.com", "linkzhost.com", "mightyupload.com",
                        "rockdizfile.com", "sharebeast.com", "sharerepo.com", "shareswift.com", "uploadbaz.com", "uploadc.com",
@@ -41,7 +42,7 @@ class XFileSharingPro(Hook):
     CRYPTER_BUILTIN = ["junocloud.me", "rapidfileshare.net"]
 
 
-    # def pluginConfigChanged(self.__name__, plugin, name, value):
+    # def pluginConfigChanged(self, plugin, name, value):
         # self.loadPattern()
 
 
@@ -104,7 +105,7 @@ class XFileSharingPro(Hook):
     # def downloadFailed(self, pyfile):
         # if pyfile.pluginname == "BasePlugin" \
            # and pyfile.hasStatus("failed") \
-           # and not self.getConfig("use_hoster_list") \
+           # and not self.getConfig('use_hoster_list') \
            # and self.unloadHoster("BasePlugin"):
             # self.logDebug("Unloaded XFileSharingPro from BasePlugin")
             # pyfile.setStatus("queued")

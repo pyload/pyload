@@ -9,6 +9,7 @@ class ShareFilesCo(DeadHoster):
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?sharefiles\.co/\w{12}'
+    __config__  = []
 
     __description__ = """Sharefiles.co hoster plugin"""
     __license__     = "GPLv3"

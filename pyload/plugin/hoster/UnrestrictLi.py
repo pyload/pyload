@@ -10,9 +10,10 @@ from pyload.plugin.internal.SimpleHoster import secondsToMidnight
 class UnrestrictLi(MultiHoster):
     __name__    = "UnrestrictLi"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __pattern__ = r'https?://(?:www\.)?(unrestrict|unr)\.li/dl/[\w^_]+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Unrestrict.li multi-hoster plugin"""
     __license__     = "GPLv3"
@@ -67,10 +68,10 @@ class UnrestrictLi(MultiHoster):
             self.setNameSize()
 
 
-    def checkFile(self):
-        super(UnrestrictLi, self).checkFile()
+    def checkFile(self, rules={}):
+        super(UnrestrictLi, self).checkFile(rules)
 
-        if self.getConfig("history"):
+        if self.getConfig('history'):
             self.load("https://unrestrict.li/history/", get={'delete': "all"})
             self.logInfo(_("Download history deleted"))
 

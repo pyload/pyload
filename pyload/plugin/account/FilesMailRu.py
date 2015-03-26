@@ -25,7 +25,6 @@ class FilesMailRu(Account):
                               "Login": user,
                               "Password": data['password'],
                               "Page": "http://files.mail.ru/"},
-                        cookies=True,
                         decode=True)
 
         if "Неверное имя пользователя или пароль" in html:

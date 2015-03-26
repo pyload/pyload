@@ -4,19 +4,19 @@ import re
 
 from urlparse import urljoin
 
-from pyload.utils import json_loads
-from pyload.plugin.Crypter import Crypter
-from pyload.utils import fs_join
+from module.common.json_layer import json_loads
+from module.plugins.Crypter import Crypter
+from module.utils import save_join
 
 
-class DailymotionBatch(Crypter):
-    __name__    = "DailymotionBatch"
+class DailymotionComFolder(Crypter):
+    __name__    = "DailymotionComFolder"
     __type__    = "crypter"
     __version__ = "0.01"
 
     __pattern__ = r'https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
-                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Dailymotion.com channel & playlist decrypter"""
     __license__     = "GPLv3"
@@ -101,6 +101,6 @@ class DailymotionBatch(Crypter):
 
         for p_id, p_name, p_owner in playlists:
             p_videos = self.getVideos(p_id)
-            p_folder = fs_join(self.config['general']['download_folder'], p_owner, p_name)
+            p_folder = save_join(self.config['general']['download_folder'], p_owner, p_name)
             self.logDebug("%s video\s found on playlist \"%s\"" % (len(p_videos), p_name))
             self.packages.append((p_name, p_videos, p_folder))  #: folder is NOT recognized by pyload 0.4.9!

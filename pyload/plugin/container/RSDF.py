@@ -14,7 +14,7 @@ from pyload.utils import fs_encode
 class RSDF(Container):
     __name__    = "RSDF"
     __type__    = "container"
-    __version__ = "0.27"
+    __version__ = "0.29"
 
     __pattern__ = r'.+\.rsdf$'
 
@@ -31,22 +31,31 @@ class RSDF(Container):
 
     def decrypt(self, pyfile):
         KEY = binascii.unhexlify(self.KEY)
-        IV  = AES.new(Key, AES.MODE_ECB).encrypt(binascii.unhexlify(self.IV))
+        IV  = binascii.unhexlify(self.IV)
 
-        cipher = AES.new(KEY, AES.MODE_CFB, IV)
+        iv     = AES.new(KEY, AES.MODE_ECB).encrypt(IV)
+        cipher = AES.new(KEY, AES.MODE_CFB, iv)
 
         try:
-            file = fs_encode(pyfile.url.strip())
-            with open(file, 'r') as rsdf:
+            fs_filename = fs_encode(pyfile.url.strip())
+            with open(fs_filename, 'r') as rsdf:
                 data = rsdf.read()
 
         except IOError, e:
             self.fail(e)
 
         if re.search(r"<title>404 - Not Found</title>", data):
-            return
+            pyfile.setStatus("offline")
 
-        for link in binascii.unhexlify(''.join(data.split())).splitlines():
-            if link:
+        else:
+            try:
+                raw_links = binascii.unhexlify(''.join(data.split())).splitlines()
+
+            except TypeError:
+                self.fail(_("Container is corrupted"))
+
+            for link in raw_links:
+                if not link:
+                    continue
                 link = cipher.decrypt(link.decode('base64')).replace('CCF: ', '')
                 self.urls.append(link)

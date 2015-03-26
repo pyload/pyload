@@ -9,6 +9,7 @@ class DataportCz(SimpleHoster):
     __version__ = "0.41"
 
     __pattern__ = r'http://(?:www\.)?dataport\.cz/file/(.+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Dataport.cz hoster plugin"""
     __license__     = "GPLv3"

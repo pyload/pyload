@@ -13,6 +13,7 @@ class NarodRu(SimpleHoster):
     __version__ = "0.12"
 
     __pattern__ = r'http://(?:www\.)?narod(\.yandex)?\.ru/(disk|start/\d+\.\w+-narod\.yandex\.ru)/(?P<ID>\d+)/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Narod.ru hoster plugin"""
     __license__     = "GPLv3"

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
+import time
 
 from beaker.crypto.pbkdf2 import PBKDF2
-from time import time
 
 from pyload.utils import json_loads
 from pyload.plugin.Account import Account
@@ -36,7 +36,7 @@ class SmoozedCom(Account):
                     'session'    : status["data"]["session_key"],
                     'hosters'    : [hoster["name"] for hoster in status["data"]["hoster"]]}
 
-            if info['validuntil'] < time():
+            if info['validuntil'] < time.time():
                 info['premium'] = False
             else:
                 info['premium'] = True

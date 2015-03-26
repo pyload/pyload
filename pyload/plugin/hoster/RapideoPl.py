@@ -10,6 +10,7 @@ class RapideoPl(MultiHoster):
     __version__ = "0.02"
 
     __pattern__ = r'^unmatchable$'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Rapideo.pl multi-hoster plugin"""
     __license__     = "GPLv3"

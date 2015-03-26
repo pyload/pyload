@@ -1,14 +1,7 @@
 # -*- coding: utf-8 -*-
-#
-# Note:
-#   Right now premium support is not added
-#   Thus, any file that require premium support
-#   cannot be downloaded. Only the file that is free to
-#   download can be downloaded.
 
 import re
 
-from pyload.utils import json_loads
 from pyload.plugin.internal.CaptchaService import ReCaptcha
 from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
@@ -16,9 +9,10 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__    = "NitroflareCom"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Nitroflare.com hoster plugin"""
     __license__     = "GPLv3"
@@ -36,7 +30,7 @@ class NitroflareCom(SimpleHoster):
     RECAPTCHA_KEY = "6Lenx_USAAAAAF5L1pmTWvWcH73dipAEzNnmNLgy"
 
     PREMIUM_ONLY_PATTERN = r'This file is available with Premium only'
-    WAIT_PATTERN         = r'You have to wait .+'
+    WAIT_PATTERN         = r'You have to wait .+?<'
     ERROR_PATTERN        = r'downloading is not possible'
 
 
@@ -68,8 +62,8 @@ class NitroflareCom(SimpleHoster):
         # used here to load the cookies which will be required later
         self.load(pyfile.url, post={'goToFreePage': ""})
 
-        self.load("https://www.nitroflare.com/ajax/setCookie.php", post={'fileId': self.info['pattern']['ID']})
-        self.html = self.load("https://www.nitroflare.com/ajax/freeDownload.php",
+        self.load("http://nitroflare.com/ajax/setCookie.php", post={'fileId': self.info['pattern']['ID']})
+        self.html = self.load("http://nitroflare.com/ajax/freeDownload.php",
                               post={'method': "startTimer", 'fileId': self.info['pattern']['ID']})
 
         self.checkErrors()
@@ -87,7 +81,7 @@ class NitroflareCom(SimpleHoster):
         recaptcha = ReCaptcha(self)
         response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
 
-        self.html = self.load("https://www.nitroflare.com/ajax/freeDownload.php",
+        self.html = self.load("http://nitroflare.com/ajax/freeDownload.php",
                               post={'method'                   : "fetchDownload",
                                     'recaptcha_challenge_field': challenge,
                                     'recaptcha_response_field' : response})

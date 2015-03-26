@@ -11,6 +11,7 @@ class RgHostNet(SimpleHoster):
     __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?rghost\.net/\d+(?:r=\d+)?'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """RgHost.net hoster plugin"""
     __license__     = "GPLv3"

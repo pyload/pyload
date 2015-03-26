@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from time import mktime, strptime
+import time
 
 from pyload.plugin.Account import Account
 
@@ -22,7 +22,7 @@ class SimplydebridCom(Account):
         if str(data[0]) != "1":
             return {"premium": False}
         else:
-            return {"trafficleft": -1, "validuntil": mktime(strptime(str(data[2]), "%d/%m/%Y"))}
+            return {"trafficleft": -1, "validuntil": time.mktime(time.strptime(str(data[2]), "%d/%m/%Y"))}
 
 
     def login(self, user, data, req):

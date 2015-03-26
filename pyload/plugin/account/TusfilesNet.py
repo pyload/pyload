@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import mktime, strptime, gmtime
+import time
 
 from pyload.plugin.internal.XFSAccount import XFSAccount
 

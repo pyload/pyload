@@ -14,6 +14,7 @@ class GooIm(SimpleHoster):
     __version__ = "0.04"
 
     __pattern__ = r'https?://(?:www\.)?goo\.im/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Goo.im hoster plugin"""
     __license__     = "GPLv3"
@@ -31,4 +32,4 @@ class GooIm(SimpleHoster):
 
     def handleFree(self, pyfile):
         self.wait(10)
-        self.download(pyfile.url, cookies=True)
+        self.download(pyfile.url)

@@ -2,8 +2,6 @@
 
 import re
 
-from time import sleep
-
 from pyload.plugin.captcha import ReCaptcha
 from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
@@ -11,9 +9,10 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 class UploadableCh(SimpleHoster):
     __name__    = "UploadableCh"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __pattern__ = r'http://(?:www\.)?uploadable\.ch/file/(?P<ID>\w+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Uploadable.ch hoster plugin"""
     __license__     = "GPLv3"
@@ -35,13 +34,13 @@ class UploadableCh(SimpleHoster):
 
     def handleFree(self, pyfile):
         # Click the "free user" button and wait
-        a = self.load(pyfile.url, cookies=True, post={'downloadLink': "wait"}, decode=True)
+        a = self.load(pyfile.url, post={'downloadLink': "wait"}, decode=True)
         self.logDebug(a)
 
         self.wait(30)
 
         # Make the recaptcha appear and show it the pyload interface
-        b = self.load(pyfile.url, cookies=True, post={'checkDownload': "check"}, decode=True)
+        b = self.load(pyfile.url, post={'checkDownload': "check"}, decode=True)
         self.logDebug(b)  #: Expected output: {"success":"showCaptcha"}
 
         recaptcha = ReCaptcha(self)
@@ -50,7 +49,6 @@ class UploadableCh(SimpleHoster):
 
         # Submit the captcha solution
         self.load("http://www.uploadable.ch/checkReCaptcha.php",
-                  cookies=True,
                   post={'recaptcha_challenge_field'  : challenge,
                         'recaptcha_response_field'   : response,
                         'recaptcha_shortencode_field': self.info['pattern']['ID']},
@@ -59,18 +57,18 @@ class UploadableCh(SimpleHoster):
         self.wait(3)
 
         # Get ready for downloading
-        self.load(pyfile.url, cookies=True, post={'downloadLink': "show"}, decode=True)
+        self.load(pyfile.url, post={'downloadLink': "show"}, decode=True)
 
         self.wait(3)
 
         # Download the file
-        self.download(pyfile.url, cookies=True, post={'download': "normal"}, disposition=True)
+        self.download(pyfile.url, post={'download': "normal"}, disposition=True)
 
 
-    def checkFile(self):
+    def checkFile(self, rules={}):
         if self.checkDownload({'wait': re.compile("Please wait for")}):
             self.logInfo("Downloadlimit reached, please wait or reconnect")
             self.wait(60 * 60, True)
             self.retry()
 
-        return super(UploadableCh, self).checkFile()
+        return super(UploadableCh, self).checkFile(rules)

@@ -11,6 +11,7 @@ class SendspaceCom(SimpleHoster):
     __version__ = "0.17"
 
     __pattern__ = r'https?://(?:www\.)?sendspace\.com/file/\w+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Sendspace.com hoster plugin"""
     __license__     = "GPLv3"

@@ -9,6 +9,7 @@ class LemUploadsCom(DeadHoster):
     __version__ = "0.02"
 
     __pattern__ = r'https?://(?:www\.)?lemuploads\.com/\w{12}'
+    __config__  = []
 
     __description__ = """LemUploads.com hoster plugin"""
     __license__     = "GPLv3"

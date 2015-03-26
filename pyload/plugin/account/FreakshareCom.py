@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import strptime, mktime
+import time
 
 from pyload.plugin.Account import Account
 
@@ -26,7 +25,7 @@ class FreakshareCom(Account):
 
         try:
             m = re.search(r'ltig bis:</td>\s*<td><b>([\d.:-]+)</b></td>', html, re.M)
-            validuntil = mktime(strptime(m.group(1).strip(), "%d.%m.%Y - %H:%M"))
+            validuntil = time.mktime(time.strptime(m.group(1).strip(), "%d.%m.%Y - %H:%M"))
 
         except Exception:
             pass
@@ -46,7 +45,6 @@ class FreakshareCom(Account):
 
         html = req.load("http://freakshare.com/login.html",
                         post={"submit": "Login", "user": user, "pass": data['password']},
-                        cookies=True,
                         decode=True)
 
         if ">Wrong Username or Password" in html:

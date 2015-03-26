@@ -9,6 +9,7 @@ class FiredriveCom(DeadHoster):
     __version__ = "0.05"
 
     __pattern__ = r'https?://(?:www\.)?(firedrive|putlocker)\.com/(mobile/)?(file|embed)/(?P<ID>\w+)'
+    __config__  = []
 
     __description__ = """Firedrive.com hoster plugin"""
     __license__     = "GPLv3"

@@ -9,6 +9,7 @@ class NahrajCz(DeadHoster):
     __version__ = "0.21"
 
     __pattern__ = r'http://(?:www\.)?nahraj\.cz/content/download/.+'
+    __config__  = []
 
     __description__ = """Nahraj.cz hoster plugin"""
     __license__     = "GPLv3"

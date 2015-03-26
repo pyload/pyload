@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import re
+import time
 
-from time import time
 from urllib import unquote
 from urlparse import urlparse
 
@@ -14,9 +14,10 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 class ShareonlineBiz(SimpleHoster):
     __name__    = "ShareonlineBiz"
     __type__    = "hoster"
-    __version__ = "0.48"
+    __version__ = "0.49"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Shareonline.biz hoster plugin"""
     __license__     = "GPLv3"
@@ -74,7 +75,7 @@ class ShareonlineBiz(SimpleHoster):
             m = re.search(r'var wait=(\d+);', self.html)
             self.setWait(int(m.group(1)) if m else 30)
 
-            res = self.load("%s/free/captcha/%d" % (self.pyfile.url, int(time() * 1000)),
+            res = self.load("%s/free/captcha/%d" % (self.pyfile.url, int(time.time() * 1000)),
                             post={'dl_free'                  : "1",
                                   'recaptcha_challenge_field': challenge,
                                   'recaptcha_response_field' : response})
@@ -108,7 +109,7 @@ class ShareonlineBiz(SimpleHoster):
         self.download(download_url)
 
 
-    def checkFile(self):
+    def checkFile(self, rules={}):
         check = self.checkDownload({'cookie': re.compile(r'<div id="dl_failure"'),
                                     'fail'  : re.compile(r"<title>Share-Online")})
 
@@ -120,7 +121,7 @@ class ShareonlineBiz(SimpleHoster):
             self.invalidCaptcha()
             self.retry(5, 5 * 60, _("Download failed"))
 
-        return super(ShareonlineBiz, self).checkFile()
+        return super(ShareonlineBiz, self).checkFile(rules)
 
 
     def handlePremium(self, pyfile):  #: should be working better loading (account) api internally

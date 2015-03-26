@@ -15,6 +15,7 @@ class GoogledriveCom(SimpleHoster):
     __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?drive\.google\.com/file/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Drive.google.com hoster plugin"""
     __license__     = "GPLv3"

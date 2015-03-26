@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import re
+import time
 
 from pycurl import HTTPHEADER
-from time import time, altzone
 
 from pyload.utils import json_loads
 from pyload.plugin.captcha import ReCaptcha
@@ -16,6 +16,7 @@ class RapiduNet(SimpleHoster):
     __version__ = "0.07"
 
     __pattern__ = r'https?://(?:www\.)?rapidu\.net/(?P<ID>\d{10})'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Rapidu.net hoster plugin"""
     __license__     = "GPLv3"
@@ -47,14 +48,14 @@ class RapiduNet(SimpleHoster):
                                       decode=True)
 
         if str(jsvars['timeToDownload']) is "stop":
-            t = (24 * 60 * 60) - (int(time()) % (24 * 60 * 60)) + altzone
+            t = (24 * 60 * 60) - (int(time.time()) % (24 * 60 * 60)) + time.altzone
 
             self.logInfo("You've reach your daily download transfer")
 
             self.retry(10, 10 if t < 1 else None, _("Try tomorrow again"))  #@NOTE: check t in case of not synchronised clock
 
         else:
-            self.wait(int(jsvars['timeToDownload']) - int(time()))
+            self.wait(int(jsvars['timeToDownload']) - int(time.time()))
 
         recaptcha = ReCaptcha(self)
 

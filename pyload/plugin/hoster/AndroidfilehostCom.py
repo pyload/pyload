@@ -14,6 +14,7 @@ class AndroidfilehostCom(SimpleHoster):
     __version__ = "0.01"
 
     __pattern__ = r'https?://(?:www\.)?androidfilehost\.com/\?fid=\d+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Androidfilehost.com hoster plugin"""
     __license__     = "GPLv3"

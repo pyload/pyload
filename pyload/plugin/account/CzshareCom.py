@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from time import mktime, strptime
 import re
+import time
 
 from pyload.plugin.Account import Account
 
@@ -30,7 +30,7 @@ class CzshareCom(Account):
         try:
             m = re.search(self.CREDIT_LEFT_PATTERN, html)
             trafficleft = self.parseTraffic(m.group(1).replace(' ', '').replace(',', '.')) + m.group(2)
-            validuntil  = mktime(strptime(m.group(3), '%d.%m.%y %H:%M'))
+            validuntil  = time.mktime(time.strptime(m.group(3), '%d.%m.%y %H:%M'))
 
         except Exception, e:
             self.logError(e)

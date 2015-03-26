@@ -9,6 +9,7 @@ class HellspyCz(DeadHoster):
     __version__ = "0.28"
 
     __pattern__ = r'http://(?:www\.)?(?:hellspy\.(?:cz|com|sk|hu|pl)|sciagaj\.pl)(/\S+/\d+)'
+    __config__  = []
 
     __description__ = """HellSpy.cz hoster plugin"""
     __license__     = "GPLv3"

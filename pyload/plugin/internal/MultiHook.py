@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import sleep
+import time
 
 from pyload.plugin.Hook import Hook
 from pyload.utils import decode, remove_chars
@@ -11,28 +10,22 @@ from pyload.utils import decode, remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.37"
+    __version__ = "0.40"
 
-    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
-                  ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
-                  ("revertfailed"  , "bool"               , "Revert to standard download if fails", True ),
-                  ("retry"         , "int"                , "Number of retries before revert"     , 10   ),
-                  ("retryinterval" , "int"                , "Retry interval in minutes"           , 1    ),
-                  ("reload"        , "bool"               , "Reload plugin list"                  , True ),
-                  ("reloadinterval", "int"                , "Reload interval in hours"            , 12   )]
+    __config__  = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
+                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
+                   ("reload"        , "bool"               , "Reload plugin list"           , True ),
+                   ("reloadinterval", "int"                , "Reload interval in hours"     , 12   )]
 
     __description__ = """Hook plugin for multi hoster/crypter"""
     __license__     = "GPLv3"
-    __authors__     = [("pyLoad Team", "admin@pyload.org"),
+    __authors__     = [("pyLoad Team"   , "admin@pyload.org" ),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    MIN_INTERVAL = 1 * 60 * 60
+    MIN_RELOAD_INTERVAL = 1 * 60 * 60  #: 1 hour
 
     DOMAIN_REPLACEMENTS = [(r'180upload\.com'  , "hundredeightyupload.com"),
-                           (r'1fichier\.com'   , "onefichier.com"         ),
-                           (r'2shared\.com'    , "twoshared.com"          ),
-                           (r'4shared\.com'    , "fourshared.com"         ),
                            (r'bayfiles\.net'   , "bayfiles.com"           ),
                            (r'cloudnator\.com' , "shragle.com"            ),
                            (r'dfiles\.eu'      , "depositfiles.com"       ),
@@ -48,10 +41,21 @@ class MultiHook(Hook):
                            (r'uploaded\.net'   , "uploaded.to"            ),
                            (r'uploadhero\.co'  , "uploadhero.com"         ),
                            (r'zshares\.net'    , "zshare.net"             ),
-                           (r'(\d+.+)'         , "X\1"                    )]
+                           (r'^1'              , "one"                    ),
+                           (r'^2'              , "two"                    ),
+                           (r'^3'              , "three"                  ),
+                           (r'^4'              , "four"                   ),
+                           (r'^5'              , "five"                   ),
+                           (r'^6'              , "six"                    ),
+                           (r'^7'              , "seven"                  ),
+                           (r'^8'              , "eight"                  ),
+                           (r'^9'              , "nine"                   ),
+                           (r'^0'              , "zero"                   )]
 
 
     def setup(self):
+        self.info = {}  #@TODO: Remove in 0.4.10
+
         self.plugins       = []
         self.supported     = []
         self.new_supported = []
@@ -106,7 +110,7 @@ class MultiHook(Hook):
         return rep
 
 
-    def getConfig(self, option, default=''):
+    def getConfig(self, option, default=''):  #@TODO: Remove in 0.4.10
         """getConfig with default value - sublass may not implements all config options"""
         try:
             return self.getConf(option)
@@ -119,17 +123,17 @@ class MultiHook(Hook):
         if self.plugins:
             return self.plugins
 
-        for _i in xrange(3):
+        for _i in xrange(2):
             try:
                 pluginset = self._pluginSet(self.getHosters() if self.plugintype == "hoster" else self.getCrypters())
+                break
 
             except Exception, e:
-                self.logError(e, "Waiting 1 minute and retry")
-                sleep(60)
-
-            else:
-                break
+                self.logDebug(e, "Waiting 1 minute and retry")
+                time.sleep(60)
         else:
+            self.logWarning(_("Fallback to default reload interval due plugin parse error"))
+            self.interval = self.MIN_RELOAD_INTERVAL
             return list()
 
         try:
@@ -152,17 +156,15 @@ class MultiHook(Hook):
 
 
     def _pluginSet(self, plugins):
-        plugins = set((decode(x).strip().lower() for x in plugins if '.' in x))
+        regexp  = re.compile(r'^[\w\-.^_]{3,63}\.[a-zA-Z]{2,}$', re.U)
+        plugins = [decode(p.strip()).lower() for p in plugins if regexp.match(p.strip())]
 
-        for rf, rt in self.DOMAIN_REPLACEMENTS:
-            regex = re.compile(rf)
-            for p in filter(lambda x: regex.match(x), plugins):
-                plugins.remove(p)
-                plugins.add(re.sub(rf, rt, p))
+        for r in self.DOMAIN_REPLACEMENTS:
+            rf, rt  = r
+            repr    = re.compile(rf, re.I|re.U)
+            plugins = [re.sub(rf, rt, p) if repr.match(p) else p for p in plugins]
 
-        plugins.discard('')
-
-        return plugins
+        return set(plugins)
 
 
     def getHosters(self):
@@ -181,8 +183,28 @@ class MultiHook(Hook):
         raise NotImplementedError
 
 
+    #: Threaded _periodical, remove in 0.4.10 and use built-in flag for that
+    def _periodical(self):
+        try:
+            if self.isActivated():
+                self.periodical()
+
+        except Exception, e:
+            self.core.log.error(_("Error executing hooks: %s") % str(e))
+            if self.core.debug:
+                print_exc()
+
+        self.cb = self.core.scheduler.addJob(self.interval, self._periodical)
+
+
     def periodical(self):
         """reload plugin list periodically"""
+        if self.getConfig("reload", True):
+            self.interval = max(self.getConfig("reloadinterval", 12) * 60 * 60, self.MIN_RELOAD_INTERVAL)
+        else:
+            self.core.scheduler.removeJob(self.cb)
+            self.cb = None
+
         self.logInfo(_("Reloading supported %s list") % self.plugintype)
 
         old_supported = self.supported
@@ -199,12 +221,6 @@ class MultiHook(Hook):
             self.logDebug("Unload: %s" % ", ".join(old_supported))
             for plugin in old_supported:
                 self.unloadPlugin(plugin)
-
-        if self.getConfig("reload", True):
-            self.interval = max(self.getConfig("reloadinterval", 12) * 60 * 60, self.MIN_INTERVAL)
-        else:
-            self.core.scheduler.removeJob(self.cb)
-            self.cb = None
 
 
     def overridePlugins(self):
@@ -249,7 +265,7 @@ class MultiHook(Hook):
             self.logDebug("New %ss: %s" % (self.plugintype, ", ".join(plugins)))
 
             # create new regexp
-            regexp = r'.*(?P<DOMAIN>%s).*' % "|".join([x.replace(".", "\.") for x in plugins])
+            regexp = r'.*(?P<DOMAIN>%s).*' % "|".join(x.replace('.', '\.') for x in plugins)
             if hasattr(self.pluginclass, "__pattern__") and isinstance(self.pluginclass.__pattern__, basestring) and '://' in self.pluginclass.__pattern__:
                 regexp = r'%s|%s' % (self.pluginclass.__pattern__, regexp)
 
@@ -263,11 +279,11 @@ class MultiHook(Hook):
     def unloadPlugin(self, plugin):
         hdict = self.core.pluginManager.plugins[self.plugintype][plugin]
         if "module" in hdict:
-            del hdict['module']
+            hdict.pop('module', None)
 
         if "new_module" in hdict:
-            del hdict['new_module']
-            del hdict['new_name']
+            hdict.pop('new_module', None)
+            hdict.pop('new_name', None)
 
 
     def deactivate(self):
@@ -280,29 +296,3 @@ class MultiHook(Hook):
 
         hdict['pattern'] = getattr(self.pluginclass, "__pattern__", r'^unmatchable$')
         hdict['re']      = re.compile(hdict['pattern'])
-
-
-    def downloadFailed(self, pyfile):
-        """remove plugin override if download fails but not if file is offline/temp.offline"""
-        if pyfile.status != 8 or not self.getConfig("revertfailed", True):
-            return
-
-        hdict = self.core.pluginManager.plugins[self.plugintype][pyfile.pluginname]
-        if "new_name" in hdict and hdict['new_name'] == self.pluginname:
-            if pyfile.error == "MultiHook":
-                self.logDebug("Unload MultiHook", pyfile.pluginname, hdict)
-                self.unloadPlugin(pyfile.pluginname)
-                pyfile.setStatus("queued")
-                pyfile.sync()
-            else:
-                retries   = max(self.getConfig("retry", 10), 0)
-                wait_time = max(self.getConfig("retryinterval", 1), 0)
-
-                if 0 < retries > pyfile.plugin.retries:
-                    self.logInfo(_("Retrying: %s") % pyfile.name)
-                    pyfile.setCustomStatus("MultiHook", "queued")
-                    pyfile.sync()
-
-                    pyfile.plugin.retries += 1
-                    pyfile.plugin.setWait(wait_time)
-                    pyfile.plugin.wait()

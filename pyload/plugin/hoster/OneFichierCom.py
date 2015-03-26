@@ -8,9 +8,10 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 class OneFichierCom(SimpleHoster):
     __name__    = "OneFichierCom"
     __type__    = "hoster"
-    __version__ = "0.78"
+    __version__ = "0.79"
 
     __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """1fichier.com hoster plugin"""
     __license__     = "GPLv3"
@@ -31,7 +32,7 @@ class OneFichierCom(SimpleHoster):
     COOKIES     = [("1fichier.com", "LG", "en")]
     DISPOSITION = False  #: Remove in 0.4.10
 
-    WAIT_PATTERN = r'>You must wait (\d+) minutes'
+    WAIT_PATTERN = r'>You must wait \d+ minutes'
 
 
     def setup(self):

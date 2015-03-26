@@ -8,11 +8,11 @@ from pyload.plugin.internal.XFSCrypter import XFSCrypter
 class XFileSharingPro(XFSCrypter):
     __name__    = "XFileSharingPro"
     __type__    = "crypter"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
-                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """XFileSharingPro dummy folder decrypter plugin for hook"""
     __license__     = "GPLv3"
@@ -32,9 +32,6 @@ class XFileSharingPro(XFSCrypter):
 
         self.HOSTER_DOMAIN = re.match(self.__pattern__, self.pyfile.url).group("DOMAIN").lower()
         self.HOSTER_NAME   = "".join(part.capitalize() for part in re.split(r'(\.|\d+)', self.HOSTER_DOMAIN) if part != '.')
-
-        if self.HOSTER_NAME[0].isdigit():
-            self.HOSTER_NAME = 'X' + self.HOSTER_NAME
 
         account = self.core.accountManager.getAccountPlugin(self.HOSTER_NAME)
 
