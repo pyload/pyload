@@ -10,7 +10,7 @@ class RgHostNet(SimpleHoster):
     __type__    = "hoster"
     __version__ = "0.03"
 
-    __pattern__ = r'http://(?:www\.)?rghost\.net/\d+(?:r=\d+)?'
+    __pattern__ = r'http://(?:www\.)?rghost\.(?:net|ru)/\d+(?:r=\d+)?'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """RgHost.net hoster plugin"""
@@ -21,7 +21,7 @@ class RgHostNet(SimpleHoster):
     INFO_PATTERN    = r'<h1>\s+(<a[^>]+>)?(?P<N>[^<]+)(</a>)?\s+<small[^>]+>\s+\((?P<S>[^)]+)\)\s+</small>\s+</h1>'
     OFFLINE_PATTERN = r'File is deleted|this page is not found'
 
-    LINK_FREE_PATTERN = r'<a\s+href="([^"]+)"\s+class="btn\s+large\s+download"[^>]+>Download</a>'
+    LINK_FREE_PATTERN = r'<a\s+href="([^"]+)"\s+class="btn\s+large\s+download[^>]+>Download</a>'
 
 
 getInfo = create_getInfo(RgHostNet)
