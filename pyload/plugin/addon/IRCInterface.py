@@ -37,9 +37,6 @@ class IRCInterface(Thread, Addon):
     __authors__     = [("Jeix", "Jeix@hasnomail.com")]
 
 
-    interval = 0  #@TODO: Remove in 0.4.10
-
-
     def __init__(self, core, manager):
         Thread.__init__(self)
         Addon.__init__(self, core, manager)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.CaptchaService import SolveMedia
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from pyload.plugin.captcha.SolveMedia import SolveMedia
+from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class MediafireCom(SimpleHoster):
@@ -58,6 +58,3 @@ class MediafireCom(SimpleHoster):
                     self.fail(_("Incorrect password"))
 
         return super(MediafireCom, self).handleFree(pyfile)
-
-
-getInfo = create_getInfo(MediafireCom)

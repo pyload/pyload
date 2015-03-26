@@ -56,7 +56,6 @@ class Checksum(Addon):
                        ("stickell"      , "l.stickell@yahoo.it")]
 
 
-    interval = 0  #@TODO: Remove in 0.4.10
     methods  = {'sfv' : 'crc32',
                 'crc' : 'crc32',
                 'hash': 'md5'}
@@ -72,7 +71,6 @@ class Checksum(Addon):
 
 
     def setup(self):
-        self.info       = {}  #@TODO: Remove in 0.4.10
         self.algorithms = sorted(
             getattr(hashlib, "algorithms", ("md5", "sha1", "sha224", "sha256", "sha384", "sha512")), reverse=True)
 

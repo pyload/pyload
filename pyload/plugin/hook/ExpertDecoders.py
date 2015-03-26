@@ -25,9 +25,12 @@ class ExpertDecoders(Hook):
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    interval = 0  #@TODO: Remove in 0.4.10
-
     API_URL = "http://www.fasttypers.org/imagepost.ashx"
+
+
+    def activate(self):
+        if self.getConfig('ssl'):
+            self.API_URL = self.API_URL.replace("http://", "https://")
 
 
     def getCredits(self):

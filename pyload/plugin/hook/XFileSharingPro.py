@@ -23,7 +23,6 @@ class XFileSharingPro(Hook):
 
 
     # event_list = ["pluginConfigChanged"]
-    interval   = 0  #@TODO: Remove in 0.4.10
     regexp     = {'hoster' : (r'https?://(?:www\.)?(?P<DOMAIN>[\w\-.^_]{3,63}(?:\.[a-zA-Z]{2,})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
                               r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:embed-)?\w+'),
                   'crypter': (r'https?://(?:www\.)?(?P<DOMAIN>[\w\-.^_]{3,63}(?:\.[a-zA-Z]{2,})(?:\:\d+)?)/(?:user|folder)s?/\w+',
@@ -54,7 +53,7 @@ class XFileSharingPro(Hook):
         use_builtin_list = self.getConfig('use_builtin_list')
 
         for type in ("hoster", "crypter"):
-            every_plugin = not self.getConfig("use_%s_list" % type)
+            every_plugin = not self.getConfig('use_%s_list' % type)
 
             if every_plugin:
                 self.logInfo(_("Handling any %s I can!") % type)

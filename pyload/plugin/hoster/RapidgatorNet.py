@@ -6,8 +6,10 @@ from pycurl import HTTPHEADER
 
 from pyload.utils import json_loads
 from pyload.network.HTTPRequest import BadHeader
-from pyload.plugin.internal.CaptchaService import AdsCaptcha, ReCaptcha, SolveMedia
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, secondsToMidnight
+from pyload.plugin.captcha.AdsCaptcha import AdsCaptcha
+from pyload.plugin.captcha.ReCaptcha import ReCaptcha
+from pyload.plugin.captcha.SolveMedia import SolveMedia
+from pyload.plugin.internal.SimpleHoster import SimpleHoster, secondsToMidnight
 
 
 class RapidgatorNet(SimpleHoster):

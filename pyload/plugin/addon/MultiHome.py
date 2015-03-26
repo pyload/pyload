@@ -17,11 +17,7 @@ class MultiHome(Addon):
     __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
-    interval = 0  #@TODO: Remove in 0.4.10
-
-
     def setup(self):
-        self.info       = {}  #@TODO: Remove in 0.4.10
         self.register   = {}
         self.interfaces = []
 

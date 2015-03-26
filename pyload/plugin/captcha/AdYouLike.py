@@ -8,6 +8,7 @@ from pyload.utils import json_loads
 
 class AdYouLike(Captcha):
     __name__    = "AdYouLike"
+    __type__    = "captcha"
     __version__ = "0.05"
 
     __description__ = """AdYouLike captcha service plugin"""

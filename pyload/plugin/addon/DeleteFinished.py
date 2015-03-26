@@ -25,7 +25,6 @@ class DeleteFinished(Addon):
 
     ## overwritten methods ##
     def setup(self):
-        self.info     = {}  #@TODO: Remove in 0.4.10
         self.interval = self.MIN_CHECK_INTERVAL
 
 
@@ -56,6 +55,7 @@ class DeleteFinished(Addon):
         # self.pluginConfigChanged(self.__name__, 'interval', interval)
         self.interval = max(self.MIN_CHECK_INTERVAL, self.getConfig('interval') * 60 * 60)
         self.addEvent('packageFinished', self.wakeup)
+        self.initPeriodical()
 
 
     ## own methods ##

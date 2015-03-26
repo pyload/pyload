@@ -3,7 +3,7 @@
 import re
 import time
 
-from module.plugins.Account import Account
+from pyload.plugin.Account import Account
 
 
 class MegaRapidoNet(Account):
@@ -50,8 +50,8 @@ class MegaRapidoNet(Account):
         if "sair" not in html.lower():
             self.wrongPassword()
         else:
-        	m = re.search(self.USER_ID_PATTERN, html)
-        	if m:
-        		data['uid'] = m.group(1)
-        	else:
-        		self.fail("Couldn't find the user ID")
+            m = re.search(self.USER_ID_PATTERN, html)
+            if m:
+                data['uid'] = m.group(1)
+            else:
+                self.fail("Couldn't find the user ID")

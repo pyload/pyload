@@ -76,11 +76,9 @@ class Addon(Base):
 
         self.setup()
 
-        # self.initPeriodical()
-
 
     def initPeriodical(self, delay=0, threaded=False):
-        self.cb = self.core.scheduler.addJob(delay, self._periodical, args=[threaded], threaded=threaded)
+        self.cb = self.core.scheduler.addJob(max(0, delay), self._periodical, args=[threaded], threaded=threaded)
 
 
     def _periodical(self, threaded):

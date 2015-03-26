@@ -7,6 +7,7 @@ from pyload.plugin.Captcha import Captcha
 
 class SolveMedia(Captcha):
     __name__    = "SolveMedia"
+    __type__    = "captcha"
     __version__ = "0.12"
 
     __description__ = """SolveMedia captcha service plugin"""

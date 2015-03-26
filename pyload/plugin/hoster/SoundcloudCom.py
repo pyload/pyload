@@ -2,8 +2,8 @@
 
 import re
 
-from module.plugin.internal.SimpleHoster import SimpleHoster
-from module.common.json_layer import json_loads
+from pyload.plugin.internal.SimpleHoster import SimpleHoster
+from pyload.utils import json_loads
 
 
 class SoundcloudCom(SimpleHoster):
@@ -51,6 +51,3 @@ class SoundcloudCom(SimpleHoster):
         if http_streams:
             stream_name, self.link = http_streams[0 if self.getConfig('quality') == "Higher" else -1]
             pyfile.name += '.' + stream_name.split('_')[1].lower()
-
-
-getInfo = create_getInfo(SoundcloudCom)

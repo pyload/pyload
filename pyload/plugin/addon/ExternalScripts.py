@@ -28,7 +28,6 @@ class ExternalScripts(Addon):
                   "all_archives_extracted", "all_archives_processed",
                   "allDownloadsFinished"  , "allDownloadsProcessed" ,
                   "packageDeleted"]
-    interval   = 0  #@TODO: Remove in 0.4.10
 
 
     def setup(self):
@@ -65,7 +64,7 @@ class ExternalScripts(Addon):
                 return
 
         for filename in os.listdir(dir):
-            file = save_join(dir, filename)
+            file = fs_join(dir, filename)
 
             if not os.path.isfile(file):
                 continue
@@ -102,7 +101,7 @@ class ExternalScripts(Addon):
             self.callScript(script)
 
 
-    def coreExiting(self):
+    def exit(self):
         for script in self.scripts['pyload_restart' if self.core.do_restart else 'pyload_stop']:
             self.callScript(script)
 
@@ -125,23 +124,23 @@ class ExternalScripts(Addon):
 
     def downloadFailed(self, pyfile):
         if self.config['general']['folder_per_package']:
-            download_folder = save_join(self.config['general']['download_folder'], pyfile.package().folder)
+            download_folder = fs_join(self.config['general']['download_folder'], pyfile.package().folder)
         else:
             download_folder = self.config['general']['download_folder']
 
         for script in self.scripts['download_failed']:
-            file = save_join(download_folder, pyfile.name)
+            file = fs_join(download_folder, pyfile.name)
             self.callScript(script, pyfile.id, pyfile.name, pyfile.pluginname, pyfile.url, file)
 
 
     def downloadFinished(self, pyfile):
         if self.config['general']['folder_per_package']:
-            download_folder = save_join(self.config['general']['download_folder'], pyfile.package().folder)
+            download_folder = fs_join(self.config['general']['download_folder'], pyfile.package().folder)
         else:
             download_folder = self.config['general']['download_folder']
 
         for script in self.scripts['download_finished']:
-            file = save_join(download_folder, pyfile.name)
+            file = fs_join(download_folder, pyfile.name)
             self.callScript(script, pyfile.id, pyfile.name, pyfile.pluginname, pyfile.url, file)
 
 
@@ -157,7 +156,7 @@ class ExternalScripts(Addon):
 
     def packageFinished(self, pypack):
         if self.config['general']['folder_per_package']:
-            download_folder = save_join(self.config['general']['download_folder'], pypack.folder)
+            download_folder = fs_join(self.config['general']['download_folder'], pypack.folder)
         else:
             download_folder = self.config['general']['download_folder']
 
@@ -169,7 +168,7 @@ class ExternalScripts(Addon):
         pack = self.core.api.getPackageInfo(pid)
 
         if self.config['general']['folder_per_package']:
-            download_folder = save_join(self.config['general']['download_folder'], pack.folder)
+            download_folder = fs_join(self.config['general']['download_folder'], pack.folder)
         else:
             download_folder = self.config['general']['download_folder']
 
@@ -179,7 +178,7 @@ class ExternalScripts(Addon):
 
     def package_extract_failed(self, pypack):
         if self.config['general']['folder_per_package']:
-            download_folder = save_join(self.config['general']['download_folder'], pypack.folder)
+            download_folder = fs_join(self.config['general']['download_folder'], pypack.folder)
         else:
             download_folder = self.config['general']['download_folder']
 
@@ -189,7 +188,7 @@ class ExternalScripts(Addon):
 
     def package_extracted(self, pypack):
         if self.config['general']['folder_per_package']:
-            download_folder = save_join(self.config['general']['download_folder'], pypack.folder)
+            download_folder = fs_join(self.config['general']['download_folder'], pypack.folder)
         else:
             download_folder = self.config['general']['download_folder']
 

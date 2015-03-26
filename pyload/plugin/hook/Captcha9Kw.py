@@ -36,8 +36,6 @@ class Captcha9kw(Hook):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    interval = 0  #@TODO: Remove in 0.4.10
-
     API_URL = "http://www.9kw.eu/index.cgi"
 
 

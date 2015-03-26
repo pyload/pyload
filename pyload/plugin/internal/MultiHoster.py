@@ -85,7 +85,7 @@ class MultiHoster(SimpleHoster):
                 self.logWarning(_("Premium download failed"))
                 self.retryFree()
 
-            elif self.getConfig("revertfailed", True) \
+            elif self.getConfig('revertfailed', True) \
                  and "new_module" in self.core.pluginManager.hosterPlugins[self.__name__]:
                 hdict = self.core.pluginManager.hosterPlugins[self.__name__]
 

@@ -54,8 +54,6 @@ class MultiHook(Hook):
 
 
     def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
-
         self.plugins       = []
         self.supported     = []
         self.new_supported = []
@@ -82,7 +80,7 @@ class MultiHook(Hook):
             self.pluginclass  = getattr(self.pluginmodule, self.__name__)
 
 
-    def _loadAccount(self):
+    def loadAccount(self):
         self.account = self.core.accountManager.getAccountPlugin(self.pluginname)
 
         if self.account and not self.account.canUse():
@@ -94,7 +92,7 @@ class MultiHook(Hook):
 
 
     def activate(self):
-        self._loadAccount()
+        self.initPeriodical(threaded=True)
 
 
     def getURL(self, *args, **kwargs):  #@TODO: Remove in 0.4.10
@@ -137,9 +135,9 @@ class MultiHook(Hook):
             return list()
 
         try:
-            configmode = self.getConfig("pluginmode", 'all')
+            configmode = self.getConfig('pluginmode', 'all')
             if configmode in ("listed", "unlisted"):
-                pluginlist = self.getConfig("pluginlist", '').replace('|', ',').replace(';', ',').split(',')
+                pluginlist = self.getConfig('pluginlist', '').replace('|', ',').replace(';', ',').split(',')
                 configset  = self._pluginSet(pluginlist)
 
                 if configmode == "listed":
@@ -183,24 +181,12 @@ class MultiHook(Hook):
         raise NotImplementedError
 
 
-    #: Threaded _periodical, remove in 0.4.10 and use built-in flag for that
-    def _periodical(self):
-        try:
-            if self.isActivated():
-                self.periodical()
-
-        except Exception, e:
-            self.core.log.error(_("Error executing hooks: %s") % str(e))
-            if self.core.debug:
-                print_exc()
-
-        self.cb = self.core.scheduler.addJob(self.interval, self._periodical)
-
-
     def periodical(self):
         """reload plugin list periodically"""
-        if self.getConfig("reload", True):
-            self.interval = max(self.getConfig("reloadinterval", 12) * 60 * 60, self.MIN_RELOAD_INTERVAL)
+        self.loadAccount()
+
+        if self.getConfig('reload', True):
+            self.interval = max(self.getConfig('reloadinterval', 12) * 60 * 60, self.MIN_RELOAD_INTERVAL)
         else:
             self.core.scheduler.removeJob(self.cb)
             self.cb = None

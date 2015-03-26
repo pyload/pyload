@@ -40,3 +40,4 @@ class RestartFailed(Addon):
     def activate(self):
         # self.pluginConfigChanged(self.__name__, "interval", self.getConfig('interval'))
         self.interval = max(self.MIN_CHECK_INTERVAL, self.getConfig('interval') * 60)
+        self.initPeriodical()

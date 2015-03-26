@@ -22,11 +22,12 @@ class RestartSlow(Addon):
 
 
     event_list = ["downloadStarts"]
-    interval   = 0  #@TODO: Remove in 0.4.10
 
 
     def setup(self):
         self.info = {'chunk': {}}
+
+
     def periodical(self):
         if not self.pyfile.plugin.req.dl:
             return
@@ -36,8 +37,8 @@ class RestartSlow(Addon):
             limit = 5
         else:
             type  = "premium" if self.pyfile.plugin.premium else "free"
-            time  = max(30, self.getConfig("%s_time" % type) * 60)
-            limit = max(5, self.getConfig("%s_limit" % type) * 1024)
+            time  = max(30, self.getConfig('%s_time' % type) * 60)
+            limit = max(5, self.getConfig('%s_limit' % type) * 1024)
 
         chunks = [chunk for chunk in self.pyfile.plugin.req.dl.chunks \
                   if chunk.id not in self.info['chunk'] or self.info['chunk'][chunk.id] is not (time, limit)]

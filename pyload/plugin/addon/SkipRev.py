@@ -6,14 +6,14 @@ from types import MethodType
 from urllib import unquote
 from urlparse import urlparse
 
-from module.PyFile import PyFile
-from module.plugins.Hook import Hook
-from module.plugins.Plugin import SkipDownload
+from pyload.datatype.File import PyFile
+from pyload.plugin.Addon import Addon
+from pyload.plugin.Plugin import SkipDownload
 
 
-class SkipRev(Hook):
+class SkipRev(Addon):
     __name__    = "SkipRev"
-    __type__    = "hook"
+    __type__    = "addon"
     __version__ = "0.29"
 
     __config__ = [("mode"     , "Auto;Manual", "Choose recovery archives to skip"               , "Auto"),
@@ -22,13 +22,6 @@ class SkipRev(Hook):
     __description__ = """Skip recovery archives (.rev)"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
-
-
-    interval = 0  #@TODO: Remove in 0.4.10
-
-
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
 
 
     @staticmethod

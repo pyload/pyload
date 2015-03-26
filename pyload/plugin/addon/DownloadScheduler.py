@@ -20,14 +20,6 @@ class DownloadScheduler(Addon):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    interval = 0  #@TODO: Remove in 0.4.10
-
-
-    def setup(self):
-        self.info = {}    #@TODO: Remove in 0.4.10
-        self.cb   = None  # callback to scheduler job; will be by removed hookmanager when hook unloaded
-
-
     def activate(self):
         self.updateSchedule()
 

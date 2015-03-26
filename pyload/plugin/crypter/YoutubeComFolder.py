@@ -4,9 +4,9 @@ import re
 
 from urlparse import urljoin
 
-from module.common.json_layer import json_loads
-from module.plugins.Crypter import Crypter
-from module.utils import save_join
+from pyload.utils import json_loads
+from pyload.plugin.Crypter import Crypter
+from pyload.utils import fs_join
 
 
 class YoutubeComFolder(Crypter):
@@ -132,7 +132,7 @@ class YoutubeComFolder(Crypter):
         for p in playlists:
             p_name = p['title']
             p_videos = self.getVideosId(p['id'])
-            p_folder = save_join(self.config['general']['download_folder'], p['channelTitle'], p_name)
+            p_folder = fs_join(self.config['general']['download_folder'], p['channelTitle'], p_name)
             self.logDebug("%s video\s found on playlist \"%s\"" % (len(p_videos), p_name))
 
             if not p_videos:

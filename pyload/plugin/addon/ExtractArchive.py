@@ -137,8 +137,6 @@ class ExtractArchive(Addon):
 
 
     def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
-
         self.queue  = ArchiveQueue(self, "Queue")
         self.failed = ArchiveQueue(self, "Failed")
 

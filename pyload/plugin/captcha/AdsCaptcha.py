@@ -9,6 +9,7 @@ from pyload.plugin.Captcha import Captcha
 
 class AdsCaptcha(Captcha):
     __name__    = "AdsCaptcha"
+    __type__    = "captcha"
     __version__ = "0.08"
 
     __description__ = """AdsCaptcha captcha service plugin"""

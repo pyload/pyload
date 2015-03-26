@@ -19,7 +19,7 @@ class Captcha(Base):
     def __init__(self, plugin):
         self.plugin = plugin
         self.key = None  #: last key detected
-        super(CaptchaService, self).__init__(plugin.core)
+        super(Captcha, self).__init__(plugin.core)
 
 
     def detect_key(self, html=None):

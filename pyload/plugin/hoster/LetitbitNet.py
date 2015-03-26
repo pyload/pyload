@@ -12,7 +12,7 @@ from urlparse import urljoin
 
 from pyload.utils import json_loads, json_dumps
 from pyload.network.RequestFactory import getURL
-from pyload.plugin.internal.CaptchaService import ReCaptcha
+from pyload.plugin.captcha.ReCaptcha import ReCaptcha
 from pyload.plugin.internal.SimpleHoster import SimpleHoster, secondsToMidnight
 
 

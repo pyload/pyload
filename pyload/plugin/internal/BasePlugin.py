@@ -6,7 +6,7 @@ from urllib import unquote
 from urlparse import urljoin, urlparse
 
 from pyload.network.HTTPRequest import BadHeader
-from pyload.plugin.internal.SimpleHoster import create_getInfo, getFileURL
+from pyload.plugin.internal.SimpleHoster import getFileURL
 from pyload.plugin.Hoster import Hoster
 
 
@@ -99,6 +99,3 @@ class BasePlugin(Hoster):
 
         self.logWarning("Check result: " + errmsg, "Waiting 1 minute and retry")
         self.retry(3, 60, errmsg)
-
-
-getInfo = create_getInfo(BasePlugin)

@@ -16,9 +16,6 @@ class UnSkipOnFail(Addon):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    interval = 0  #@TODO: Remove in 0.4.10
-
-
     def downloadFailed(self, pyfile):
         #: Check if pyfile is still "failed",
         #  maybe might has been restarted in meantime

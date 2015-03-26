@@ -4,7 +4,7 @@ import re
 
 from pyload.utils import json_loads
 
-from pyload.plugin.internal.CaptchaService import ReCaptcha
+from pyload.plugin.captcha.ReCaptcha import ReCaptcha
 from pyload.plugin.internal.SimpleHoster import SimpleHoster, secondsToMidnight
 
 

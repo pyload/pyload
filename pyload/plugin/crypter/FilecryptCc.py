@@ -10,7 +10,7 @@ from Crypto.Cipher import AES
 from urlparse import urljoin
 
 from pyload.plugin.Crypter import Crypter
-from pyload.plugin.internal.CaptchaService import ReCaptcha
+from pyload.plugin.captcha.ReCaptcha import ReCaptcha
 
 
 class FilecryptCc(Crypter):

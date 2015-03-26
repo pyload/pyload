@@ -9,9 +9,9 @@ import time
 
 from operator import itemgetter
 
-from module.network.RequestFactory import getURL
-from module.plugins.Hook import Expose, Hook, threaded
-from module.utils import save_join
+from pyload.network.RequestFactory import getURL
+from pyload.plugin.Addon import Expose, Addon, threaded
+from pyload.utils import fs_join
 
 
 # Case-sensitive os.path.exists
@@ -26,9 +26,9 @@ def exists(path):
         return False
 
 
-class UpdateManager(Hook):
+class UpdateManager(Addon):
     __name__    = "UpdateManager"
-    __type__    = "hook"
+    __type__    = "addon"
     __version__ = "0.50"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),
@@ -43,14 +43,11 @@ class UpdateManager(Hook):
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
-
-    interval = 0
-
     SERVER_URL         = "http://updatemanager.pyload.org"
     MIN_CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
 
 
-    def coreReady(self):
+    def activate(self):
         if self.checkonstart:
             self.update()
 
@@ -189,7 +186,7 @@ class UpdateManager(Hook):
 
             # Protect UpdateManager from self-removing
             try:
-                type_plugins.remove(("hook", "UpdateManager"))
+                type_plugins.remove(("addon", "UpdateManager"))
             except ValueError:
                 pass
 
@@ -242,7 +239,7 @@ class UpdateManager(Hook):
                 m = VERSION.search(content)
 
                 if m and m.group(2) == version:
-                    with open(save_join("userplugins", prefix, filename), "wb") as f:
+                    with open(fs_join("userplugins", prefix, filename), "wb") as f:
                         f.write(content)
 
                     updated.append((prefix, name))
@@ -288,12 +285,12 @@ class UpdateManager(Hook):
             rootplugins = os.path.join(pypath, "module", "plugins")
 
             for dir in ("userplugins", rootplugins):
-                py_filename  = save_join(dir, type, name + ".py")
+                py_filename  = fs_join(dir, type, name + ".py")
                 pyc_filename = py_filename + "c"
 
-                if type == "hook":
+                if type == "addon":
                     try:
-                        self.manager.deactivateHook(name)
+                        self.manager.deactivateAddon(name)
 
                     except Exception, e:
                         self.logDebug(e)

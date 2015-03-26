@@ -198,13 +198,13 @@ class UnRar(Extractor):
         if not self.fullpath and self.VERSION.startswith('5'):
             # NOTE: Unrar 5 always list full path
             for f in fs_decode(out).splitlines():
-                f = save_join(self.out, os.path.basename(f.strip()))
+                f = fs_join(self.out, os.path.basename(f.strip()))
                 if os.path.isfile(f):
-                    result.add(save_join(self.out, os.path.basename(f)))
+                    result.add(fs_join(self.out, os.path.basename(f)))
         else:
             for f in fs_decode(out).splitlines():
                 f = f.strip()
-                result.add(save_join(self.out, f))
+                result.add(fs_join(self.out, f))
 
         return list(result)
 

@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.MultiHook import MultiHook
+from pyload.plugin.internal.MultiHook import MultiHook
 
 
 class MegaRapidoNet(MultiHook):

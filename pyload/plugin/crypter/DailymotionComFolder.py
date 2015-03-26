@@ -4,9 +4,9 @@ import re
 
 from urlparse import urljoin
 
-from module.common.json_layer import json_loads
-from module.plugins.Crypter import Crypter
-from module.utils import save_join
+from pyload.utils import json_loads
+from pyload.plugin.Crypter import Crypter
+from pyload.utils import fs_join
 
 
 class DailymotionComFolder(Crypter):
@@ -101,6 +101,6 @@ class DailymotionComFolder(Crypter):
 
         for p_id, p_name, p_owner in playlists:
             p_videos = self.getVideos(p_id)
-            p_folder = save_join(self.config['general']['download_folder'], p_owner, p_name)
+            p_folder = fs_join(self.config['general']['download_folder'], p_owner, p_name)
             self.logDebug("%s video\s found on playlist \"%s\"" % (len(p_videos), p_name))
             self.packages.append((p_name, p_videos, p_folder))  #: folder is NOT recognized by pyload 0.4.9!

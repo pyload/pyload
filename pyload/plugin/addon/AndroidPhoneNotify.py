@@ -28,11 +28,9 @@ class AndroidPhoneNotify(Addon):
 
 
     event_list = ["allDownloadsProcessed", "plugin_updated"]
-    interval   = 0  #@TODO: Remove in 0.4.10
 
 
     def setup(self):
-        self.info          = {}  #@TODO: Remove in 0.4.10
         self.last_notify   = 0
         self.notifications = 0
 
@@ -44,7 +42,7 @@ class AndroidPhoneNotify(Addon):
         self.notify(_("Plugins updated"), str(type_plugins))
 
 
-    def coreExiting(self):
+    def exit(self):
         if not self.getConfig('notifyexit'):
             return
 

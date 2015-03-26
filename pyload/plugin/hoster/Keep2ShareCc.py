@@ -4,7 +4,7 @@ import re
 
 from urlparse import urljoin
 
-from pyload.plugin.internal.CaptchaService import ReCaptcha
+from pyload.plugin.captcha.ReCaptcha import ReCaptcha
 from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 

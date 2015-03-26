@@ -12,6 +12,7 @@ from pyload.plugin.Captcha import Captcha
 
 class ReCaptcha(Captcha):
     __name__    = "ReCaptcha"
+    __type__    = "captcha"
     __version__ = "0.14"
 
     __description__ = """ReCaptcha captcha service plugin"""

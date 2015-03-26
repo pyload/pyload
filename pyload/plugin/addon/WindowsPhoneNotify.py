@@ -3,12 +3,12 @@
 import httplib
 import time
 
-from module.plugins.Hook import Hook, Expose
+from pyload.plugin.Addon import Addon, Expose
 
 
-class WindowsPhoneNotify(Hook):
+class WindowsPhoneNotify(Addon):
     __name__    = "WindowsPhoneNotify"
-    __type__    = "hook"
+    __type__    = "addon"
     __version__ = "0.09"
 
     __config__ = [("id"             , "str" , "Push ID"                                  , ""   ),
@@ -29,11 +29,9 @@ class WindowsPhoneNotify(Hook):
 
 
     event_list = ["allDownloadsProcessed", "plugin_updated"]
-    interval   = 0  #@TODO: Remove in 0.4.10
 
 
     def setup(self):
-        self.info          = {}  #@TODO: Remove in 0.4.10
         self.last_notify   = 0
         self.notifications = 0
 
@@ -45,7 +43,7 @@ class WindowsPhoneNotify(Hook):
         self.notify(_("Plugins updated"), str(type_plugins))
 
 
-    def coreExiting(self):
+    def exit(self):
         if not self.getConfig('notifyexit'):
             return
 

@@ -4,13 +4,13 @@ import os
 import shutil
 import subprocess
 
-from module.plugins.Hook import Hook, Expose, threaded
-from module.utils import fs_encode, save_join
+from pyload.plugin.Addon import Addon, Expose, threaded
+from pyload.utils import fs_encode, fs_join
 
 
-class AntiVirus(Hook):
+class AntiVirus(Addon):
     __name__    = "AntiVirus"
-    __type__    = "hook"
+    __type__    = "addon"
     __version__ = "0.05"
 
     #@TODO: add trash option (use Send2Trash lib)
@@ -24,13 +24,6 @@ class AntiVirus(Hook):
     __description__ = """Scan downloaded files with antivirus program"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
-
-
-    interval = 0  #@TODO: Remove in 0.4.10
-
-
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
 
 
     @Expose

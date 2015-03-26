@@ -30,13 +30,10 @@ class ClickAndLoad(Addon):
                   ("port"     , "int" , "Port"                                  , 9666),
                   ("extern"   , "bool", "Listen on the public network interface", True)]
 
-    __description__ = """Click'n'Load hook plugin"""
+    __description__ = """Click'n'Load addon plugin"""
     __license__     = "GPLv3"
     __authors__     = [("RaNaN"         , "RaNaN@pyload.de"  ),
                        ("Walter Purcaro", "vuolter@gmail.com")]
-
-
-    interval = 0  #@TODO: Remove in 0.4.10
 
 
     def activate(self):
