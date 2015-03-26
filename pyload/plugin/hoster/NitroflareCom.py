@@ -14,15 +14,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class NitroflareCom(SimpleHoster):
-    __name    = "NitroflareCom"
-    __type    = "hoster"
-    __version = "0.08"
+    __name__    = "NitroflareCom"
+    __type__    = "hoster"
+    __version__ = "0.08"
 
-    __pattern = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
+    __pattern__ = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
 
-    __description = """Nitroflare.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("sahil", "sahilshekhawat01@gmail.com"),
+    __description__ = """Nitroflare.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("sahil", "sahilshekhawat01@gmail.com"),
                        ("Walter Purcaro", "vuolter@gmail.com"),
                        ("Stickell", "l.stickell@yahoo.it")]
 

@@ -16,15 +16,15 @@ def _setup(self):
 
 
 class SkipRev(Addon):
-    __name    = "SkipRev"
-    __type    = "addon"
-    __version = "0.25"
+    __name__    = "SkipRev"
+    __type__    = "addon"
+    __version__ = "0.25"
 
-    __config = [("tokeep", "int", "Number of rev files to keep for package (-1 to auto)", -1)]
+    __config__ = [("tokeep", "int", "Number of rev files to keep for package (-1 to auto)", -1)]
 
-    __description = """Skip files ending with extension rev"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Skip files ending with extension rev"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def _pyname(self, pyfile):

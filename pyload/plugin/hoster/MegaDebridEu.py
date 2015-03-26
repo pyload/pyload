@@ -9,15 +9,15 @@ from pyload.plugin.internal.MultiHoster import MultiHoster
 
 
 class MegaDebridEu(MultiHoster):
-    __name    = "MegaDebridEu"
-    __type    = "hoster"
-    __version = "0.46"
+    __name__    = "MegaDebridEu"
+    __type__    = "hoster"
+    __version__ = "0.46"
 
-    __pattern = r'http://((?:www\d+\.|s\d+\.)?mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[\w^_]+'
+    __pattern__ = r'http://((?:www\d+\.|s\d+\.)?mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[\w^_]+'
 
-    __description = """mega-debrid.eu multi-hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("D.Ducatel", "dducatel@je-geek.fr")]
+    __description__ = """mega-debrid.eu multi-hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("D.Ducatel", "dducatel@je-geek.fr")]
 
 
     API_URL = "https://www.mega-debrid.eu/api.php"

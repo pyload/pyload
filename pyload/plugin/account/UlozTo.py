@@ -8,13 +8,13 @@ from pyload.plugin.Account import Account
 
 
 class UlozTo(Account):
-    __name    = "UlozTo"
-    __type    = "account"
-    __version = "0.10"
+    __name__    = "UlozTo"
+    __type__    = "account"
+    __version__ = "0.10"
 
-    __description = """Uloz.to account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description__ = """Uloz.to account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("pulpe", "")]
 
 

@@ -7,15 +7,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class DateiTo(SimpleHoster):
-    __name    = "DateiTo"
-    __type    = "hoster"
-    __version = "0.07"
+    __name__    = "DateiTo"
+    __type__    = "hoster"
+    __version__ = "0.07"
 
-    __pattern = r'http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html'
+    __pattern__ = r'http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html'
 
-    __description = """Datei.to hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Datei.to hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     NAME_PATTERN    = r'Dateiname:</td>\s*<td colspan="2"><strong>(?P<N>.*?)</'

@@ -12,15 +12,15 @@ from pyload.utils import parseFileSize
 
 
 class RealdebridCom(MultiHoster):
-    __name    = "RealdebridCom"
-    __type    = "hoster"
-    __version = "0.64"
+    __name__    = "RealdebridCom"
+    __type__    = "hoster"
+    __version__ = "0.64"
 
-    __pattern = r'https?://((?:www\.|s\d+\.)?real-debrid\.com/dl/|[\w^_]\.rdb\.so/d/)[\w^_]+'
+    __pattern__ = r'https?://((?:www\.|s\d+\.)?real-debrid\.com/dl/|[\w^_]\.rdb\.so/d/)[\w^_]+'
 
-    __description = """Real-Debrid.com multi-hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
+    __description__ = """Real-Debrid.com multi-hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
 
 
     def getFilename(self, url):

@@ -8,13 +8,13 @@ from pyload.plugin.Account import Account
 
 
 class DepositfilesCom(Account):
-    __name    = "DepositfilesCom"
-    __type    = "account"
-    __version = "0.32"
+    __name__    = "DepositfilesCom"
+    __type__    = "account"
+    __version__ = "0.32"
 
-    __description = """Depositfiles.com account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("mkaay", "mkaay@mkaay.de"),
+    __description__ = """Depositfiles.com account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de"),
                        ("stickell", "l.stickell@yahoo.it"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 

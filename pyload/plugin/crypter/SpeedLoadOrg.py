@@ -4,13 +4,13 @@ from pyload.plugin.internal.DeadCrypter import DeadCrypter
 
 
 class SpeedLoadOrg(DeadCrypter):
-    __name    = "SpeedLoadOrg"
-    __type    = "crypter"
-    __version = "0.30"
+    __name__    = "SpeedLoadOrg"
+    __type__    = "crypter"
+    __version__ = "0.30"
 
-    __pattern = r'http://(?:www\.)?speedload\.org/(\d+~f$|folder/\d+/)'
-    __config  = []
+    __pattern__ = r'http://(?:www\.)?speedload\.org/(\d+~f$|folder/\d+/)'
+    __config__  = []
 
-    __description = """Speedload decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("stickell", "l.stickell@yahoo.it")]
+    __description__ = """Speedload decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]

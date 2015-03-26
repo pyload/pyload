@@ -12,15 +12,15 @@ from pyload.utils import html_unescape
 
 
 class XFSHoster(SimpleHoster):
-    __name    = "XFSHoster"
-    __type    = "hoster"
-    __version = "0.44"
+    __name__    = "XFSHoster"
+    __type__    = "hoster"
+    __version__ = "0.44"
 
-    __pattern = r'^unmatchable$'
+    __pattern__ = r'^unmatchable$'
 
-    __description = """XFileSharing hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description__ = """XFileSharing hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
@@ -64,7 +64,7 @@ class XFSHoster(SimpleHoster):
             if self.account:
                 account = self.account
             else:
-                account = self.pyfile.m.core.accountManager.getAccountPlugin(self.__name)
+                account = self.pyfile.m.core.accountManager.getAccountPlugin(self.__name__)
 
             if account and hasattr(account, "HOSTER_DOMAIN") and account.HOSTER_DOMAIN:
                 self.HOSTER_DOMAIN = account.HOSTER_DOMAIN

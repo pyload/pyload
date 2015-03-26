@@ -4,12 +4,12 @@ from pyload.plugin.hoster.ZeveraCom import ZeveraCom
 
 
 class PutdriveCom(ZeveraCom):
-    __name    = "PutdriveCom"
-    __type    = "hoster"
-    __version = "0.02"
+    __name__    = "PutdriveCom"
+    __type__    = "hoster"
+    __version__ = "0.02"
 
-    __pattern = r'https?://(?:www\.)putdrive\.com/(getFiles\.ashx|Members/download\.ashx)\?.*ourl=.+'
+    __pattern__ = r'https?://(?:www\.)putdrive\.com/(getFiles\.ashx|Members/download\.ashx)\?.*ourl=.+'
 
-    __description = """Multihosters.com multi-hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Multihosters.com multi-hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]

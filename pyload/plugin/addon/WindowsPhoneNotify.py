@@ -8,11 +8,11 @@ from pyload.plugin.Addon import Addon
 
 
 class WindowsPhoneNotify(Addon):
-    __name    = "WindowsPhoneNotify"
-    __type    = "addon"
-    __version = "0.07"
+    __name__    = "WindowsPhoneNotify"
+    __type__    = "addon"
+    __version__ = "0.07"
 
-    __config = [("id"             , "str" , "Push ID"                                  , ""   ),
+    __config__ = [("id"             , "str" , "Push ID"                                  , ""   ),
                   ("url"            , "str" , "Push url"                                 , ""   ),
                   ("notifycaptcha"  , "bool", "Notify captcha request"                   , True ),
                   ("notifypackage"  , "bool", "Notify package finished"                  , True ),
@@ -20,9 +20,9 @@ class WindowsPhoneNotify(Addon):
                   ("timeout"        , "int" , "Timeout between captchas in seconds"      , 5    ),
                   ("force"          , "bool", "Send notifications if client is connected", False)]
 
-    __description = """Send push notifications to Windows Phone"""
-    __license     = "GPLv3"
-    __authors     = [("Andy Voigt", "phone-support@hotmail.de"),
+    __description__ = """Send push notifications to Windows Phone"""
+    __license__     = "GPLv3"
+    __authors__     = [("Andy Voigt", "phone-support@hotmail.de"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

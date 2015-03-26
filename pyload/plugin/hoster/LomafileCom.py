@@ -4,13 +4,13 @@ from pyload.plugin.internal.DeadHoster import DeadHoster
 
 
 class LomafileCom(DeadHoster):
-    __name    = "LomafileCom"
-    __type    = "hoster"
-    __version = "0.52"
+    __name__    = "LomafileCom"
+    __type__    = "hoster"
+    __version__ = "0.52"
 
-    __pattern = r'http://lomafile\.com/\w{12}'
+    __pattern__ = r'http://lomafile\.com/\w{12}'
 
-    __description = """Lomafile.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("nath_schwarz", "nathan.notwhite@gmail.com"),
+    __description__ = """Lomafile.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("nath_schwarz", "nathan.notwhite@gmail.com"),
                        ("guidobelix", "guidobelix@hotmail.it")]

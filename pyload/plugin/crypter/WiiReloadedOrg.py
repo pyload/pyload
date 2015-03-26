@@ -4,13 +4,13 @@ from pyload.plugin.internal.DeadCrypter import DeadCrypter
 
 
 class WiiReloadedOrg(DeadCrypter):
-    __name    = "WiiReloadedOrg"
-    __type    = "crypter"
-    __version = "0.11"
+    __name__    = "WiiReloadedOrg"
+    __type__    = "crypter"
+    __version__ = "0.11"
 
-    __pattern = r'http://(?:www\.)?wii-reloaded\.org/protect/get\.php\?i=.+'
-    __config  = []
+    __pattern__ = r'http://(?:www\.)?wii-reloaded\.org/protect/get\.php\?i=.+'
+    __config__  = []
 
-    __description = """Wii-Reloaded.org decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("hzpz", "")]
+    __description__ = """Wii-Reloaded.org decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("hzpz", "")]

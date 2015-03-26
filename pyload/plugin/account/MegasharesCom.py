@@ -7,13 +7,13 @@ from pyload.plugin.Account import Account
 
 
 class MegasharesCom(Account):
-    __name    = "MegasharesCom"
-    __type    = "account"
-    __version = "0.03"
+    __name__    = "MegasharesCom"
+    __type__    = "account"
+    __version__ = "0.03"
 
-    __description = """Megashares.com account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Megashares.com account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     VALID_UNTIL_PATTERN = r'<p class="premium_info_box">Period Ends: (\w{3} \d{1,2}, \d{4})</p>'

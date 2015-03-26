@@ -21,13 +21,13 @@ def renice(pid, value):
 
 
 class UnRar(Extractor):
-    __name    = "UnRar"
-    __type    = "extractor"
-    __version = "1.14"
+    __name__    = "UnRar"
+    __type__    = "extractor"
+    __version__ = "1.14"
 
-    __description = """Rar extractor plugin"""
-    __license     = "GPLv3"
-    __authors     = [("RaNaN", "RaNaN@pyload.org"),
+    __description__ = """Rar extractor plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
                        ("Walter Purcaro", "vuolter@gmail.com"),
                        ("Immenz", "immenz@gmx.net"),]
 

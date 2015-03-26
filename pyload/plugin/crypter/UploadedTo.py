@@ -8,17 +8,17 @@ from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 
 
 class UploadedTo(SimpleCrypter):
-    __name    = "UploadedTo"
-    __type    = "crypter"
-    __version = "0.42"
+    __name__    = "UploadedTo"
+    __type__    = "crypter"
+    __version__ = "0.42"
 
-    __pattern = r'http://(?:www\.)?(uploaded|ul)\.(to|net)/(f|folder|list)/(?P<ID>\w+)'
-    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern__ = r'http://(?:www\.)?(uploaded|ul)\.(to|net)/(f|folder|list)/(?P<ID>\w+)'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description = """UploadedTo decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("stickell", "l.stickell@yahoo.it")]
+    __description__ = """UploadedTo decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     PLAIN_PATTERN = r'<small class="date"><a href="([\w/]+)" onclick='

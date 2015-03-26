@@ -8,13 +8,13 @@ from pyload.plugin.Account import Account
 
 
 class Keep2shareCc(Account):
-    __name    = "Keep2shareCc"
-    __type    = "account"
-    __version = "0.02"
+    __name__    = "Keep2shareCc"
+    __type__    = "account"
+    __version__ = "0.02"
 
-    __description = """Keep2share.cc account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("aeronaut", "aeronaut@pianoguy.de")]
+    __description__ = """Keep2share.cc account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("aeronaut", "aeronaut@pianoguy.de")]
 
 
     VALID_UNTIL_PATTERN  = r'Premium expires: <b>(.+?)</b>'

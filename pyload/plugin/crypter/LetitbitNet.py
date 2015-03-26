@@ -5,17 +5,17 @@ from pyload.plugin.Crypter import Crypter
 
 
 class LetitbitNet(Crypter):
-    __name    = "LetitbitNet"
-    __type    = "crypter"
-    __version = "0.10"
+    __name__    = "LetitbitNet"
+    __type__    = "crypter"
+    __version__ = "0.10"
 
-    __pattern = r'http://(?:www\.)?letitbit\.net/folder/\w+'
-    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern__ = r'http://(?:www\.)?letitbit\.net/folder/\w+'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description = """Letitbit.net folder decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("DHMH", "webmaster@pcProfil.de"),
+    __description__ = """Letitbit.net folder decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("DHMH", "webmaster@pcProfil.de"),
                        ("z00nx", "z00nx0@gmail.com")]
 
 

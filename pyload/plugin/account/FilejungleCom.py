@@ -7,13 +7,13 @@ from pyload.plugin.Account import Account
 
 
 class FilejungleCom(Account):
-    __name    = "FilejungleCom"
-    __type    = "account"
-    __version = "0.12"
+    __name__    = "FilejungleCom"
+    __type__    = "account"
+    __version__ = "0.12"
 
-    __description = """Filejungle.com account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Filejungle.com account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     login_timeout = 60

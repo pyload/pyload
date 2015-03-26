@@ -7,20 +7,20 @@ from pyload.plugin.Addon import Addon
 
 
 class AndroidPhoneNotify(Addon):
-    __name    = "AndroidPhoneNotify"
-    __type    = "addon"
-    __version = "0.05"
+    __name__    = "AndroidPhoneNotify"
+    __type__    = "addon"
+    __version__ = "0.05"
 
-    __config = [("apikey"         , "str" , "API key"                                  , ""   ),
+    __config__ = [("apikey"         , "str" , "API key"                                  , ""   ),
                   ("notifycaptcha"  , "bool", "Notify captcha request"                   , True ),
                   ("notifypackage"  , "bool", "Notify package finished"                  , True ),
                   ("notifyprocessed", "bool", "Notify processed packages status"         , True ),
                   ("timeout"        , "int" , "Timeout between captchas in seconds"      , 5    ),
                   ("force"          , "bool", "Send notifications if client is connected", False)]
 
-    __description = """Send push notifications to your Android Phone using notifymyandroid.com"""
-    __license     = "GPLv3"
-    __authors     = [("Steven Kosyra", "steven.kosyra@gmail.com"),
+    __description__ = """Send push notifications to your Android Phone using notifymyandroid.com"""
+    __license__     = "GPLv3"
+    __authors__     = [("Steven Kosyra", "steven.kosyra@gmail.com"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

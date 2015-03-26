@@ -30,17 +30,17 @@ class ImageTyperzException(Exception):
 
 
 class ImageTyperz(Hook):
-    __name    = "ImageTyperz"
-    __type    = "hook"
-    __version = "0.06"
+    __name__    = "ImageTyperz"
+    __type__    = "hook"
+    __version__ = "0.06"
 
-    __config = [("username", "str", "Username", ""),
+    __config__ = [("username", "str", "Username", ""),
                 ("passkey", "password", "Password", ""),
                 ("force", "bool", "Force IT even if client is connected", False)]
 
-    __description = """Send captchas to ImageTyperz.com"""
-    __license     = "GPLv3"
-    __authors     = [("RaNaN", "RaNaN@pyload.org"),
+    __description__ = """Send captchas to ImageTyperz.com"""
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 
@@ -118,16 +118,16 @@ class ImageTyperz(Hook):
 
         if self.getCredits() > 0:
             task.handler.append(self)
-            task.data['service'] = self.__name
+            task.data['service'] = self.__name__
             task.setWaiting(100)
             self._processCaptcha(task)
 
         else:
-            self.logInfo(_("Your %s account has not enough credits") % self.__name)
+            self.logInfo(_("Your %s account has not enough credits") % self.__name__)
 
 
     def captchaInvalid(self, task):
-        if task.data['service'] == self.__name and "ticket" in task.data:
+        if task.data['service'] == self.__name__ and "ticket" in task.data:
             res = getURL(self.RESPOND_URL,
                          post={'action': "SETBADIMAGE",
                                'username': self.getConfig("username"),

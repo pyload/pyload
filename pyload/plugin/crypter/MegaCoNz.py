@@ -6,17 +6,17 @@ from pyload.plugin.Crypter import Crypter
 
 
 class MegaCoNz(Crypter):
-    __name    = "MegaCoNz"
-    __type    = "crypter"
-    __version = "0.04"
+    __name__    = "MegaCoNz"
+    __type__    = "crypter"
+    __version__ = "0.04"
 
-    __pattern = r'(?:https?://(?:www\.)?mega\.co\.nz/|mega:|chrome:.+?)#F!(?P<ID>[\w^_]+)!(?P<KEY>[\w,\\-]+)'
-    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern__ = r'(?:https?://(?:www\.)?mega\.co\.nz/|mega:|chrome:.+?)#F!(?P<ID>[\w^_]+)!(?P<KEY>[\w,\\-]+)'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description = """Mega.co.nz folder decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Mega.co.nz folder decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def setup(self):
@@ -24,7 +24,7 @@ class MegaCoNz(Crypter):
 
 
     def decrypt(self, pyfile):
-        url       = "https://mega.co.nz/#F!%s!%s" % re.match(self.__pattern, pyfile.url).groups()
+        url       = "https://mega.co.nz/#F!%s!%s" % re.match(self.__pattern__, pyfile.url).groups()
         self.html = self.load("http://rapidgen.org/linkfinder", post={'linklisturl': url})
         self.urls = re.findall(r'(https://mega.co.nz/#N!.+?)<', self.html)
 

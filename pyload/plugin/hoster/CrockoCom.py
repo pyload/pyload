@@ -7,15 +7,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class CrockoCom(SimpleHoster):
-    __name    = "CrockoCom"
-    __type    = "hoster"
-    __version = "0.19"
+    __name__    = "CrockoCom"
+    __type__    = "hoster"
+    __version__ = "0.19"
 
-    __pattern = r'http://(?:www\.)?(crocko|easy-share)\.com/\w+'
+    __pattern__ = r'http://(?:www\.)?(crocko|easy-share)\.com/\w+'
 
-    __description = """Crocko hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Crocko hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     NAME_PATTERN = r'<span class="fz24">Download:\s*<strong>(?P<N>.*)'

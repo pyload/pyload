@@ -6,17 +6,17 @@ import re
 
 
 class TnyCz(SimpleCrypter):
-    __name    = "TnyCz"
-    __type    = "crypter"
-    __version = "0.03"
+    __name__    = "TnyCz"
+    __type__    = "crypter"
+    __version__ = "0.03"
 
-    __pattern = r'http://(?:www\.)?tny\.cz/\w+'
-    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern__ = r'http://(?:www\.)?tny\.cz/\w+'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description = """Tny.cz decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Tny.cz decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     NAME_PATTERN = r'<title>(?P<N>.+) - .+</title>'

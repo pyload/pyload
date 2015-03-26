@@ -5,13 +5,13 @@ from pyload.utils import json_loads
 
 
 class FourSharedCom(Account):
-    __name    = "FourSharedCom"
-    __type    = "account"
-    __version = "0.04"
+    __name__    = "FourSharedCom"
+    __type__    = "account"
+    __version__ = "0.04"
 
-    __description = """FourShared.com account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description__ = """FourShared.com account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it")]
 
 

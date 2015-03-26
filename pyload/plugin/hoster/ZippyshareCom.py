@@ -7,15 +7,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class ZippyshareCom(SimpleHoster):
-    __name    = "ZippyshareCom"
-    __type    = "hoster"
-    __version = "0.73"
+    __name__    = "ZippyshareCom"
+    __type__    = "hoster"
+    __version__ = "0.73"
 
-    __pattern = r'http://www\d{0,2}\.zippyshare\.com/v(/|iew\.jsp.*key=)(?P<KEY>[\w^_]+)'
+    __pattern__ = r'http://www\d{0,2}\.zippyshare\.com/v(/|iew\.jsp.*key=)(?P<KEY>[\w^_]+)'
 
-    __description = """Zippyshare.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Zippyshare.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     COOKIES = [("zippyshare.com", "ziplocale", "en")]

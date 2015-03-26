@@ -6,12 +6,12 @@ from pyload.plugin.Captcha import Captcha
 
 
 class SolveMedia(Captcha):
-    __name    = "SolveMedia"
-    __version = "0.12"
+    __name__    = "SolveMedia"
+    __version__ = "0.12"
 
-    __description = """SolveMedia captcha service plugin"""
-    __license     = "GPLv3"
-    __authors     = [("pyLoad Team", "admin@pyload.org")]
+    __description__ = """SolveMedia captcha service plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
     KEY_PATTERN = r'api\.solvemedia\.com/papi/challenge\.(?:no)?script\?k=(.+?)["\']'

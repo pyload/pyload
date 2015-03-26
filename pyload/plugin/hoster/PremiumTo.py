@@ -9,15 +9,15 @@ from pyload.utils import fs_encode
 
 
 class PremiumTo(MultiHoster):
-    __name    = "PremiumTo"
-    __type    = "hoster"
-    __version = "0.21"
+    __name__    = "PremiumTo"
+    __type__    = "hoster"
+    __version__ = "0.21"
 
-    __pattern = r'^unmatchable$'
+    __pattern__ = r'^unmatchable$'
 
-    __description = """Premium.to multi-hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("RaNaN", "RaNaN@pyload.org"),
+    __description__ = """Premium.to multi-hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
                        ("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it")]
 

@@ -5,15 +5,15 @@ from pyload.plugin.Addon import Addon
 
 
 class UnSkipOnFail(Addon):
-    __name    = "UnSkipOnFail"
-    __type    = "addon"
-    __version = "0.05"
+    __name__    = "UnSkipOnFail"
+    __type__    = "addon"
+    __version__ = "0.05"
 
-    __config = [("activated", "bool", "Activated", True)]
+    __config__ = [("activated", "bool", "Activated", True)]
 
-    __description = """Queue skipped duplicates when download fails"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Queue skipped duplicates when download fails"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def downloadFailed(self, pyfile):

@@ -4,11 +4,11 @@ from pyload.plugin.internal.MultiHook import MultiHook
 
 
 class OverLoadMe(MultiHook):
-    __name    = "OverLoadMe"
-    __type    = "hook"
-    __version = "0.04"
+    __name__    = "OverLoadMe"
+    __type__    = "hook"
+    __version__ = "0.04"
 
-    __config = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
+    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
                   ("revertfailed"  , "bool"               , "Revert to standard download if fails", True ),
                   ("retry"         , "int"                , "Number of retries before revert"     , 10   ),
@@ -17,9 +17,9 @@ class OverLoadMe(MultiHook):
                   ("reloadinterval", "int"                , "Reload interval in hours"            , 12   ),
                   ("ssl"           , "bool"               , "Use HTTPS"                           , True )]
 
-    __description = """Over-Load.me hook plugin"""
-    __license     = "GPLv3"
-    __authors     = [("marley", "marley@over-load.me")]
+    __description__ = """Over-Load.me hook plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("marley", "marley@over-load.me")]
 
 
     def getHosters(self):

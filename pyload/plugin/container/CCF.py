@@ -13,15 +13,15 @@ from pyload.utils import fs_encode, fs_join
 
 
 class CCF(Container):
-    __name    = "CCF"
-    __type    = "container"
-    __version = "0.23"
+    __name__    = "CCF"
+    __type__    = "container"
+    __version__ = "0.23"
 
-    __pattern = r'.+\.ccf$'
+    __pattern__ = r'.+\.ccf$'
 
-    __description = """CCF container decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Willnix", "Willnix@pyload.org"),
+    __description__ = """CCF container decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Willnix", "Willnix@pyload.org"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

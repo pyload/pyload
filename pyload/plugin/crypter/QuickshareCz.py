@@ -5,17 +5,17 @@ from pyload.plugin.Crypter import Crypter
 
 
 class QuickshareCz(Crypter):
-    __name    = "QuickshareCz"
-    __type    = "crypter"
-    __version = "0.10"
+    __name__    = "QuickshareCz"
+    __type__    = "crypter"
+    __version__ = "0.10"
 
-    __pattern = r'http://(?:www\.)?quickshare\.cz/slozka-\d+'
-    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern__ = r'http://(?:www\.)?quickshare\.cz/slozka-\d+'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description = """Quickshare.cz folder decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Quickshare.cz folder decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FOLDER_PATTERN = r'<textarea[^>]*>(.*?)</textarea>'

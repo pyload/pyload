@@ -6,13 +6,13 @@ from pyload.plugin.Account import Account
 
 
 class CloudzillaTo(Account):
-    __name    = "CloudzillaTo"
-    __type    = "account"
-    __version = "0.02"
+    __name__    = "CloudzillaTo"
+    __type__    = "account"
+    __version__ = "0.02"
 
-    __description = """Cloudzilla.to account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Cloudzilla.to account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     PREMIUM_PATTERN = r'<h2>account type</h2>\s*Premium Account'

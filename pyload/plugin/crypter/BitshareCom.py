@@ -4,17 +4,17 @@ from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 
 
 class BitshareCom(SimpleCrypter):
-    __name    = "BitshareCom"
-    __type    = "crypter"
-    __version = "0.03"
+    __name__    = "BitshareCom"
+    __type__    = "crypter"
+    __version__ = "0.03"
 
-    __pattern = r'http://(?:www\.)?bitshare\.com/\?d=\w+'
-    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern__ = r'http://(?:www\.)?bitshare\.com/\?d=\w+'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description = """Bitshare.com folder decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("stickell", "l.stickell@yahoo.it")]
+    __description__ = """Bitshare.com folder decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     LINK_PATTERN = r'<a href="(http://bitshare\.com/files/.+)">.+</a></td>'

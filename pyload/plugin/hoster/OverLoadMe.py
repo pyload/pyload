@@ -11,15 +11,15 @@ from pyload.utils import parseFileSize
 
 
 class OverLoadMe(MultiHoster):
-    __name    = "OverLoadMe"
-    __type    = "hoster"
-    __version = "0.09"
+    __name__    = "OverLoadMe"
+    __type__    = "hoster"
+    __version__ = "0.09"
 
-    __pattern = r'https?://.*overload\.me/.+'
+    __pattern__ = r'https?://.*overload\.me/.+'
 
-    __description = """Over-Load.me multi-hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("marley", "marley@over-load.me")]
+    __description__ = """Over-Load.me multi-hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("marley", "marley@over-load.me")]
 
 
     def getFilename(self, url):

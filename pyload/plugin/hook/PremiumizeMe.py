@@ -5,11 +5,11 @@ from pyload.plugin.internal.MultiHook import MultiHook
 
 
 class PremiumizeMe(MultiHook):
-    __name    = "PremiumizeMe"
-    __type    = "hook"
-    __version = "0.17"
+    __name__    = "PremiumizeMe"
+    __type__    = "hook"
+    __version__ = "0.17"
 
-    __config = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
+    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
                   ("revertfailed"  , "bool"               , "Revert to standard download if fails", True ),
                   ("retry"         , "int"                , "Number of retries before revert"     , 10   ),
@@ -17,9 +17,9 @@ class PremiumizeMe(MultiHook):
                   ("reload"        , "bool"               , "Reload plugin list"                  , True ),
                   ("reloadinterval", "int"                , "Reload interval in hours"            , 12   )]
 
-    __description = """Premiumize.me hook plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
+    __description__ = """Premiumize.me hook plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
 
 
     def getHosters(self):

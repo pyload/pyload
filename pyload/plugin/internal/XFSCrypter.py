@@ -4,15 +4,15 @@ from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 
 
 class XFSCrypter(SimpleCrypter):
-    __name    = "XFSCrypter"
-    __type    = "crypter"
-    __version = "0.06"
+    __name__    = "XFSCrypter"
+    __type__    = "crypter"
+    __version__ = "0.06"
 
-    __pattern = r'^unmatchable$'
+    __pattern__ = r'^unmatchable$'
 
-    __description = """XFileSharing decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """XFileSharing decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     HOSTER_DOMAIN = None
@@ -31,7 +31,7 @@ class XFSCrypter(SimpleCrypter):
             if self.account:
                 account      = self.account
             else:
-                account_name = (self.__name + ".py").replace("Folder.py", "").replace(".py", "")
+                account_name = (self.__name__ + ".py").replace("Folder.py", "").replace(".py", "")
                 account      = self.pyfile.m.core.accountManager.getAccountPlugin(account_name)
 
             if account and hasattr(account, "HOSTER_DOMAIN") and account.HOSTER_DOMAIN:

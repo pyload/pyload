@@ -11,15 +11,15 @@ from pyload.plugin.Hoster import Hoster
 
 
 class BasePlugin(Hoster):
-    __name    = "BasePlugin"
-    __type    = "hoster"
-    __version = "0.34"
+    __name__    = "BasePlugin"
+    __type__    = "hoster"
+    __version__ = "0.34"
 
-    __pattern = r'^unmatchable$'
+    __pattern__ = r'^unmatchable$'
 
-    __description = """Base plugin when any other didnt fit"""
-    __license     = "GPLv3"
-    __authors     = [("RaNaN", "RaNaN@pyload.org"),
+    __description__ = """Base plugin when any other didnt fit"""
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

@@ -14,15 +14,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class RemixshareCom(SimpleHoster):
-    __name    = "RemixshareCom"
-    __type    = "hoster"
-    __version = "0.03"
+    __name__    = "RemixshareCom"
+    __type__    = "hoster"
+    __version__ = "0.03"
 
-    __pattern = r'https?://remixshare\.com/(download|dl)/\w+'
+    __pattern__ = r'https?://remixshare\.com/(download|dl)/\w+'
 
-    __description = """Remixshare.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zapp-brannigan", "fuerst.reinje@web.de"),
+    __description__ = """Remixshare.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

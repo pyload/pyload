@@ -6,17 +6,17 @@ from pyload.plugin.Crypter import Crypter
 
 
 class LixIn(Crypter):
-    __name    = "LixIn"
-    __type    = "crypter"
-    __version = "0.22"
+    __name__    = "LixIn"
+    __type__    = "crypter"
+    __version__ = "0.22"
 
-    __pattern = r'http://(?:www\.)?lix\.in/(?P<ID>.+)'
-    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern__ = r'http://(?:www\.)?lix\.in/(?P<ID>.+)'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description = """Lix.in decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("spoob", "spoob@pyload.org")]
+    __description__ = """Lix.in decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org")]
 
 
     CAPTCHA_PATTERN = r'<img src="(captcha_img\.php\?.*?)"'
@@ -27,7 +27,7 @@ class LixIn(Crypter):
     def decrypt(self, pyfile):
         url = pyfile.url
 
-        m = re.match(self.__pattern, url)
+        m = re.match(self.__pattern__, url)
         if m is None:
             self.error(_("Unable to identify file ID"))
 

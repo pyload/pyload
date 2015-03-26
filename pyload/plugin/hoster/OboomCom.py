@@ -11,15 +11,15 @@ from pyload.plugin.internal.captcha import ReCaptcha
 
 
 class OboomCom(Hoster):
-    __name    = "OboomCom"
-    __type    = "hoster"
-    __version = "0.31"
+    __name__    = "OboomCom"
+    __type__    = "hoster"
+    __version__ = "0.31"
 
-    __pattern = r'https?://(?:www\.)?oboom\.com/(#(id=|/)?)?(?P<ID>\w{8})'
+    __pattern__ = r'https?://(?:www\.)?oboom\.com/(#(id=|/)?)?(?P<ID>\w{8})'
 
-    __description = """oboom.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("stanley", "stanley.foerster@gmail.com")]
+    __description__ = """oboom.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("stanley", "stanley.foerster@gmail.com")]
 
 
     RECAPTCHA_KEY = "6LdqpO0SAAAAAJGHXo63HyalP7H4qlRs_vff0kJX"
@@ -51,7 +51,7 @@ class OboomCom(Hoster):
 
 
     def getFileId(self, url):
-        self.fileId = re.match(OboomCom.__pattern, url).group('ID')
+        self.fileId = re.match(OboomCom.__pattern__, url).group('ID')
 
 
     def getSessionToken(self):

@@ -7,12 +7,12 @@ from pyload.utils import json_loads
 
 
 class LinksnappyCom(Account):
-    __name    = "LinksnappyCom"
-    __type    = "account"
-    __version = "0.05"
-    __description = """Linksnappy.com account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("stickell", "l.stickell@yahoo.it")]
+    __name__    = "LinksnappyCom"
+    __type__    = "account"
+    __version__ = "0.05"
+    __description__ = """Linksnappy.com account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     def loadAccountInfo(self, user, req):

@@ -5,11 +5,11 @@ from pyload.plugin.internal.MultiHook import MultiHook
 
 
 class LinksnappyCom(MultiHook):
-    __name    = "LinksnappyCom"
-    __type    = "hook"
-    __version = "0.04"
+    __name__    = "LinksnappyCom"
+    __type__    = "hook"
+    __version__ = "0.04"
 
-    __config = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
+    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
                   ("revertfailed"  , "bool"               , "Revert to standard download if fails", True ),
                   ("retry"         , "int"                , "Number of retries before revert"     , 10   ),
@@ -17,9 +17,9 @@ class LinksnappyCom(MultiHook):
                   ("reload"        , "bool"               , "Reload plugin list"                  , True ),
                   ("reloadinterval", "int"                , "Reload interval in hours"            , 12   )]
 
-    __description = """Linksnappy.com hook plugin"""
-    __license     = "GPLv3"
-    __authors     = [("stickell", "l.stickell@yahoo.it")]
+    __description__ = """Linksnappy.com hook plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     def getHosters(self):

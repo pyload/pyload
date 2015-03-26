@@ -12,15 +12,15 @@ from pyload.utils import fs_join
 
 
 class MergeFiles(Addon):
-    __name    = "MergeFiles"
-    __type    = "addon"
-    __version = "0.14"
+    __name__    = "MergeFiles"
+    __type__    = "addon"
+    __version__ = "0.14"
 
-    __config = [("activated", "bool", "Activated", True)]
+    __config__ = [("activated", "bool", "Activated", True)]
 
-    __description = """Merges parts splitted with hjsplit"""
-    __license     = "GPLv3"
-    __authors     = [("and9000", "me@has-no-mail.com")]
+    __description__ = """Merges parts splitted with hjsplit"""
+    __license__     = "GPLv3"
+    __authors__     = [("and9000", "me@has-no-mail.com")]
 
 
     BUFFER_SIZE = 4096
