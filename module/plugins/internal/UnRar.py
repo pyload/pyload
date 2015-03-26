@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.19"
+    __version__ = "1.20"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
@@ -83,7 +83,7 @@ class UnRar(Extractor):
         return True if cls.re_multipart.search(filename) else False
 
 
-    def test(self, password):
+    def verify(self, password):
         p = self.call_cmd("t", "-v", fs_encode(self.filename), password=password)
         self._progress(p)
         err = p.stderr.read().strip()

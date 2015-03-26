@@ -12,7 +12,7 @@ from module.utils import fs_encode
 
 class UnZip(Extractor):
     __name__    = "UnZip"
-    __version__ = "1.11"
+    __version__ = "1.12"
 
     __description__ = """Zip extractor plugin"""
     __license__     = "GPLv3"
@@ -38,7 +38,7 @@ class UnZip(Extractor):
         pass
 
 
-    def test(self):
+    def verify(self):
         with zipfile.ZipFile(fs_encode(self.filename), 'r', allowZip64=True) as z:
             badfile = z.testzip()
 

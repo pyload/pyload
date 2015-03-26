@@ -10,7 +10,7 @@ from module.utils import fs_encode, save_join
 
 class SevenZip(UnRar):
     __name__    = "SevenZip"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __description__ = """7-Zip extractor plugin"""
     __license__     = "GPLv3"
@@ -52,7 +52,7 @@ class SevenZip(UnRar):
         return True
 
 
-    def test(self, password):
+    def verify(self, password):
         # 7z can't distinguish crc and pw error in test
         p = self.call_cmd("l", "-slt", fs_encode(self.filename))
         out, err = p.communicate()

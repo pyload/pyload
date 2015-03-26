@@ -106,24 +106,24 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.37"
+    __version__ = "1.38"
 
-    __config__ = [("activated"      , "bool"                , "Activated"                             , True                                                                     ),
-                  ("fullpath"       , "bool"                , "Extract with full paths"               , True                                                                     ),
-                  ("overwrite"      , "bool"                , "Overwrite files"                       , False                                                                    ),
-                  ("keepbroken"     , "bool"                , "Try to extract broken archives"        , False                                                                    ),
-                  ("repair"         , "bool"                , "Repair broken archives (RAR required)" , False                                                                    ),
-                  ("test"           , "bool"                , "Test archive before extracting"        , False                                                                    ),
-                  ("usepasswordfile", "bool"                , "Use password file"                     , True                                                                     ),
-                  ("passwordfile"   , "file"                , "Password file"                         , "archive_password.txt"                                                   ),
-                  ("delete"         , "No;Permanent;Trash"  , "Delete archive after extraction"       , "No"                                                                     ),
-                  ("subfolder"      , "bool"                , "Create subfolder for each package"     , False                                                                    ),
-                  ("destination"    , "folder"              , "Extract files to folder"               , ""                                                                       ),
-                  ("extensions"     , "str"                 , "Extract archives ending with extension", "7z,bz2,bzip2,gz,gzip,lha,lzh,lzma,rar,tar,taz,tbz,tbz2,tgz,xar,xz,z,zip"),
-                  ("excludefiles"   , "str"                 , "Don't extract the following files"     , "*.nfo,*.DS_Store,index.dat,thumb.db"                                    ),
-                  ("recursive"      , "bool"                , "Extract archives in archives"          , True                                                                     ),
-                  ("waitall"        , "bool"                , "Run after all downloads was processed" , False                                                                    ),
-                  ("renice"         , "int"                 , "CPU priority"                          , 0                                                                        )]
+    __config__ = [("activated"      , "bool"              , "Activated"                             , True                                                                     ),
+                  ("fullpath"       , "bool"              , "Extract with full paths"               , True                                                                     ),
+                  ("overwrite"      , "bool"              , "Overwrite files"                       , False                                                                    ),
+                  ("keepbroken"     , "bool"              , "Try to extract broken archives"        , False                                                                    ),
+                  ("repair"         , "bool"              , "Repair broken archives (RAR required)" , False                                                                    ),
+                  ("test"           , "bool"              , "Test archive before extracting"        , False                                                                    ),
+                  ("usepasswordfile", "bool"              , "Use password file"                     , True                                                                     ),
+                  ("passwordfile"   , "file"              , "Password file"                         , "archive_password.txt"                                                   ),
+                  ("delete"         , "No;Permanent;Trash", "Delete archive after extraction"       , "No"                                                                     ),
+                  ("subfolder"      , "bool"              , "Create subfolder for each package"     , False                                                                    ),
+                  ("destination"    , "folder"            , "Extract files to folder"               , ""                                                                       ),
+                  ("extensions"     , "str"               , "Extract archives ending with extension", "7z,bz2,bzip2,gz,gzip,lha,lzh,lzma,rar,tar,taz,tbz,tbz2,tgz,xar,xz,z,zip"),
+                  ("excludefiles"   , "str"               , "Don't extract the following files"     , "*.nfo,*.DS_Store,index.dat,thumb.db"                                    ),
+                  ("recursive"      , "bool"              , "Extract archives in archives"          , True                                                                     ),
+                  ("waitall"        , "bool"              , "Run after all downloads was processed" , False                                                                    ),
+                  ("renice"         , "int"               , "CPU priority"                          , 0                                                                        )]
 
     __description__ = """Extract different kind of archives"""
     __license__     = "GPLv3"
@@ -235,14 +235,14 @@ class ExtractArchive(Hook):
 
         toList = lambda string: string.replace(' ', '').replace(',', '|').replace(';', '|').split('|')
 
-        destination  = self.getConfig('destination')
-        subfolder    = self.getConfig('subfolder')
-        fullpath     = self.getConfig('fullpath')
-        overwrite    = self.getConfig('overwrite')
-        renice       = self.getConfig('renice')
-        recursive    = self.getConfig('recursive')
-        delete       = self.getConfig('delete')
-        keepbroken   = self.getConfig('keepbroken')
+        destination = self.getConfig('destination')
+        subfolder   = self.getConfig('subfolder')
+        fullpath    = self.getConfig('fullpath')
+        overwrite   = self.getConfig('overwrite')
+        renice      = self.getConfig('renice')
+        recursive   = self.getConfig('recursive')
+        delete      = self.getConfig('delete')
+        keepbroken  = self.getConfig('keepbroken')
 
         extensions   = [x.lstrip('.').lower() for x in toList(self.getConfig('extensions'))]
         excludefiles = toList(self.getConfig('excludefiles'))
@@ -253,8 +253,7 @@ class ExtractArchive(Hook):
         # reload from txt file
         self.reloadPasswords()
 
-        # dl folder
-        dl = self.config['general']['download_folder']
+        download_folder = self.config['general']['download_folder']
 
         # iterate packages -> extractors -> targets
         for pid in ids:
@@ -267,7 +266,7 @@ class ExtractArchive(Hook):
             self.logInfo(_("Check package: %s") % pypack.name)
 
             # determine output folder
-            out = save_join(dl, pypack.folder, destination, "")  #: force trailing slash
+            out = save_join(download_folder, pypack.folder, destination, "")  #: force trailing slash
 
             if subfolder:
                 out = save_join(out, pypack.folder)
@@ -277,7 +276,7 @@ class ExtractArchive(Hook):
 
             matched   = False
             success   = True
-            files_ids = dict((pylink['name'],((save_join(dl, pypack.folder, pylink['name'])), pylink['id'], out)) for pylink \
+            files_ids = dict((pylink['name'],((save_join(download_folder, pypack.folder, pylink['name'])), pylink['id'], out)) for pylink \
                         in sorted(pypack.getChildren().itervalues(), key=lambda k: k['name'])).values()  #: remove duplicates
 
             # check as long there are unseen files
@@ -390,7 +389,7 @@ class ExtractArchive(Hook):
                         if pw:
                             self.logDebug("Testing with password: %s" % pw)
                         pyfile.setProgress(0)
-                        archive.test(pw)
+                        archive.verify(pw)
                         pyfile.setProgress(100)
                     else:
                         archive.check(pw)

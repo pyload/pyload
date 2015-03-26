@@ -20,7 +20,7 @@ class PasswordError(Exception):
 
 class Extractor:
     __name__    = "Extractor"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __description__ = """Base extractor plugin"""
     __license__     = "GPLv3"
@@ -109,7 +109,7 @@ class Extractor:
         """
         raise NotImplementedError
 
-    def test(self):
+    def verify(self):
         """Testing with Extractors buildt-in method
         Raises error if password is needed, integrity is questionable or else.
 
