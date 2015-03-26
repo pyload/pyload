@@ -6,15 +6,15 @@ from pyload.plugin.internal.XFSHoster import XFSHoster
 
 
 class StreamcloudEu(XFSHoster):
-    __name__    = "StreamcloudEu"
-    __type__    = "hoster"
-    __version__ = "0.10"
+    __name    = "StreamcloudEu"
+    __type    = "hoster"
+    __version = "0.10"
 
-    __pattern__ = r'http://(?:www\.)?streamcloud\.eu/\w{12}'
+    __pattern = r'http://(?:www\.)?streamcloud\.eu/\w{12}'
 
-    __description__ = """Streamcloud.eu hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("seoester", "seoester@googlemail.com")]
+    __description = """Streamcloud.eu hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("seoester", "seoester@googlemail.com")]
 
 
     WAIT_PATTERN = r'var count = (\d+)'

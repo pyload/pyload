@@ -4,15 +4,15 @@ from pyload.plugin.Hoster import Hoster as _Hoster
 
 
 class DeadHoster(_Hoster):
-    __name__    = "DeadHoster"
-    __type__    = "hoster"
-    __version__ = "0.14"
+    __name    = "DeadHoster"
+    __type    = "hoster"
+    __version = "0.14"
 
-    __pattern__ = r'^unmatchable$'
+    __pattern = r'^unmatchable$'
 
-    __description__ = """Hoster is no longer available"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """Hoster is no longer available"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     @classmethod

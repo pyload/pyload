@@ -4,13 +4,13 @@ from pyload.plugin.internal.DeadHoster import DeadHoster
 
 
 class FilezyNet(DeadHoster):
-    __name__    = "FilezyNet"
-    __type__    = "hoster"
-    __version__ = "0.20"
+    __name    = "FilezyNet"
+    __type    = "hoster"
+    __version = "0.20"
 
-    __pattern__ = r'http://(?:www\.)?filezy\.net/\w{12}'
-    __config__  = []
+    __pattern = r'http://(?:www\.)?filezy\.net/\w{12}'
+    __config  = []
 
-    __description__ = """Filezy.net hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = []
+    __description = """Filezy.net hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = []

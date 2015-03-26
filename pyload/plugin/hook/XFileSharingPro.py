@@ -6,20 +6,20 @@ from pyload.plugin.Hook import Hook
 
 
 class XFileSharingPro(Hook):
-    __name__    = "XFileSharingPro"
-    __type__    = "hook"
-    __version__ = "0.36"
+    __name    = "XFileSharingPro"
+    __type    = "hook"
+    __version = "0.36"
 
-    __config__ = [("activated"       , "bool", "Activated"                     , True ),
+    __config = [("activated"       , "bool", "Activated"                     , True ),
                   ("use_hoster_list" , "bool", "Load listed hosters only"      , False),
                   ("use_crypter_list", "bool", "Load listed crypters only"     , False),
                   ("use_builtin_list", "bool", "Load built-in plugin list"     , True ),
                   ("hoster_list"     , "str" , "Hoster list (comma separated)" , ""   ),
                   ("crypter_list"    , "str" , "Crypter list (comma separated)", ""   )]
 
-    __description__ = """Load XFileSharingPro based hosters and crypter which don't need a own plugin to run"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Load XFileSharingPro based hosters and crypter which don't need a own plugin to run"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     # event_list = ["pluginConfigChanged"]

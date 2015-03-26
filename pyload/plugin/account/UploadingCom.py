@@ -8,13 +8,13 @@ from pyload.plugin.internal.SimpleHoster import set_cookies
 
 
 class UploadingCom(Account):
-    __name__    = "UploadingCom"
-    __type__    = "account"
-    __version__ = "0.12"
+    __name    = "UploadingCom"
+    __type    = "account"
+    __version = "0.12"
 
-    __description__ = """Uploading.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("mkaay", "mkaay@mkaay.de")]
+    __description = """Uploading.com account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("mkaay", "mkaay@mkaay.de")]
 
 
     PREMIUM_PATTERN = r'UPGRADE TO PREMIUM'

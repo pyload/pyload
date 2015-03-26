@@ -5,13 +5,13 @@ from pyload.plugin.Account import Account
 
 
 class LetitbitNet(Account):
-    __name__    = "LetitbitNet"
-    __type__    = "account"
-    __version__ = "0.02"
+    __name    = "LetitbitNet"
+    __type    = "account"
+    __version = "0.02"
 
-    __description__ = """Letitbit.net account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+    __description = """Letitbit.net account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("stickell", "l.stickell@yahoo.it")]
 
 
     def loadAccountInfo(self, user, req):

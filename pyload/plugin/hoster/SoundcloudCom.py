@@ -7,17 +7,17 @@ from pyload.utils import json_loads
 
 
 class SoundcloudCom(SimpleHoster):
-    __name__    = "SoundcloudCom"
-    __type__    = "hoster"
-    __version__ = "0.11"
+    __name    = "SoundcloudCom"
+    __type    = "hoster"
+    __version = "0.11"
 
-    __pattern__ = r'https?://(?:www\.)?soundcloud\.com/[\w-]+/[\w-]+'
-    __config__  = [("use_premium", "bool"        , "Use premium account if available", True    ),
+    __pattern = r'https?://(?:www\.)?soundcloud\.com/[\w-]+/[\w-]+'
+    __config  = [("use_premium", "bool"        , "Use premium account if available", True    ),
                    ("quality"    , "Lower;Higher", "Quality"                         , "Higher")]
 
-    __description__ = """SoundCloud.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """SoundCloud.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     NAME_PATTERN    = r'title" content="(?P<N>.+?)"'

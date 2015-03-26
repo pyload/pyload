@@ -15,20 +15,20 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, timestamp
 
 
 class TurbobitNet(SimpleHoster):
-    __name__    = "TurbobitNet"
-    __type__    = "hoster"
-    __version__ = "0.19"
+    __name    = "TurbobitNet"
+    __type    = "hoster"
+    __version = "0.19"
 
-    __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """Turbobit.net hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description = """Turbobit.net hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("prOq", "")]
 
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", "http://turbobit.net/\g<ID>.html")]
+    URL_REPLACEMENTS = [(__pattern + ".*", "http://turbobit.net/\g<ID>.html")]
 
     COOKIES = [("turbobit.net", "user_lang", "en")]
 
@@ -99,7 +99,7 @@ class TurbobitNet(SimpleHoster):
     def getRtUpdate(self):
         rtUpdate = self.getStorage("rtUpdate")
         if not rtUpdate:
-            if self.getStorage("version") != self.__version__ \
+            if self.getStorage("version") != self.__version \
                or int(self.getStorage("timestamp", 0)) + 86400000 < timestamp():
                 # that's right, we are even using jdownloader updates
                 rtUpdate = getURL("http://update0.jdownloader.org/pluginstuff/tbupdate.js")
@@ -111,7 +111,7 @@ class TurbobitNet(SimpleHoster):
 
                 self.setStorage("rtUpdate", rtUpdate)
                 self.setStorage("timestamp", timestamp())
-                self.setStorage("version", self.__version__)
+                self.setStorage("version", self.__version)
             else:
                 self.logError(_("Unable to download, wait for update..."))
                 self.tempOffline()

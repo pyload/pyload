@@ -4,18 +4,18 @@ from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 
 
 class UploadableCh(SimpleCrypter):
-    __name__    = "UploadableCh"
-    __type__    = "crypter"
-    __version__ = "0.03"
+    __name    = "UploadableCh"
+    __type    = "crypter"
+    __version = "0.03"
 
-    __pattern__ = r'http://(?:www\.)?uploadable\.ch/list/\w+'
-    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+    __pattern = r'http://(?:www\.)?uploadable\.ch/list/\w+'
+    __config  = [("use_premium"       , "bool", "Use premium account if available"   , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """Uploadable.ch folder decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("guidobelix", "guidobelix@hotmail.it"),
+    __description = """Uploadable.ch folder decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("guidobelix", "guidobelix@hotmail.it"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

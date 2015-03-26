@@ -6,16 +6,16 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class JumbofilesCom(SimpleHoster):
-    __name__    = "JumbofilesCom"
-    __type__    = "hoster"
-    __version__ = "0.03"
+    __name    = "JumbofilesCom"
+    __type    = "hoster"
+    __version = "0.03"
 
-    __pattern__ = r'http://(?:www\.)?jumbofiles\.com/(?P<ID>\w{12})'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'http://(?:www\.)?jumbofiles\.com/(?P<ID>\w{12})'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """JumboFiles.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("godofdream", "soilfiction@gmail.com")]
+    __description = """JumboFiles.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("godofdream", "soilfiction@gmail.com")]
 
 
     INFO_PATTERN = r'<TR><TD>(?P<N>[^<]+?)\s*<small>\((?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)'

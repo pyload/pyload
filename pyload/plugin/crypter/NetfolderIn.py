@@ -6,18 +6,18 @@ from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 
 
 class NetfolderIn(SimpleCrypter):
-    __name__    = "NetfolderIn"
-    __type__    = "crypter"
-    __version__ = "0.72"
+    __name    = "NetfolderIn"
+    __type    = "crypter"
+    __version = "0.72"
 
-    __pattern__ = r'http://(?:www\.)?netfolder\.in/(folder\.php\?folder_id=)?(?P<ID>\w+)(?(1)|/\w+)'
-    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+    __pattern = r'http://(?:www\.)?netfolder\.in/(folder\.php\?folder_id=)?(?P<ID>\w+)(?(1)|/\w+)'
+    __config  = [("use_premium"       , "bool", "Use premium account if available"   , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """NetFolder.in decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+    __description = """NetFolder.in decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("RaNaN", "RaNaN@pyload.org"),
                        ("fragonib", "fragonib[AT]yahoo[DOT]es")]
 
 
@@ -44,7 +44,7 @@ class NetfolderIn(SimpleCrypter):
     def submitPassword(self):
         # Gather data
         try:
-            m  = re.match(self.__pattern__, self.pyfile.url)
+            m  = re.match(self.__pattern, self.pyfile.url)
             id = m.group('ID')
         except AttributeError:
             self.logDebug("Unable to get package id from url [%s]" % self.pyfile.url)

@@ -4,13 +4,13 @@ from pyload.plugin.internal.DeadHoster import DeadHoster
 
 
 class FiredriveCom(DeadHoster):
-    __name__    = "FiredriveCom"
-    __type__    = "hoster"
-    __version__ = "0.05"
+    __name    = "FiredriveCom"
+    __type    = "hoster"
+    __version = "0.05"
 
-    __pattern__ = r'https?://(?:www\.)?(firedrive|putlocker)\.com/(mobile/)?(file|embed)/(?P<ID>\w+)'
-    __config__  = []
+    __pattern = r'https?://(?:www\.)?(firedrive|putlocker)\.com/(mobile/)?(file|embed)/(?P<ID>\w+)'
+    __config  = []
 
-    __description__ = """Firedrive.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Firedrive.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]

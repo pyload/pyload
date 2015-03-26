@@ -11,16 +11,16 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class LoadTo(SimpleHoster):
-    __name__    = "LoadTo"
-    __type__    = "hoster"
-    __version__ = "0.22"
+    __name    = "LoadTo"
+    __type    = "hoster"
+    __version = "0.22"
 
-    __pattern__ = r'http://(?:www\.)?load\.to/\w+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'http://(?:www\.)?load\.to/\w+'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """Load.to hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("halfman", "Pulpan3@gmail.com"),
+    __description = """Load.to hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("halfman", "Pulpan3@gmail.com"),
                        ("stickell", "l.stickell@yahoo.it")]
 
 

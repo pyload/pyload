@@ -4,18 +4,18 @@ from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 
 
 class FilestubeCom(SimpleCrypter):
-    __name__    = "FilestubeCom"
-    __type__    = "crypter"
-    __version__ = "0.05"
+    __name    = "FilestubeCom"
+    __type    = "crypter"
+    __version = "0.05"
 
-    __pattern__ = r'http://(?:www\.)?filestube\.(?:com|to)/\w+'
-    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+    __pattern = r'http://(?:www\.)?filestube\.(?:com|to)/\w+'
+    __config  = [("use_premium"       , "bool", "Use premium account if available"   , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """Filestube.com decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+    __description = """Filestube.com decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("stickell", "l.stickell@yahoo.it")]
 
 
     LINK_PATTERN = r'<a class=\"file-link-main(?: noref)?\" [^>]* href=\"(http://[^\"]+)'

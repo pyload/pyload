@@ -4,12 +4,12 @@ from pyload.plugin.hoster.ZeveraCom import ZeveraCom
 
 
 class MultihostersCom(ZeveraCom):
-    __name__    = "MultihostersCom"
-    __type__    = "hoster"
-    __version__ = "0.03"
+    __name    = "MultihostersCom"
+    __type    = "hoster"
+    __version = "0.03"
 
-    __pattern__ = r'https?://(?:www\.)multihosters\.com/(getFiles\.ashx|Members/download\.ashx)\?.*ourl=.+'
+    __pattern = r'https?://(?:www\.)multihosters\.com/(getFiles\.ashx|Members/download\.ashx)\?.*ourl=.+'
 
-    __description__ = """Multihosters.com multi-hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("tjeh", "tjeh@gmx.net")]
+    __description = """Multihosters.com multi-hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("tjeh", "tjeh@gmx.net")]

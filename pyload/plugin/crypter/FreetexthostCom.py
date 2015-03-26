@@ -6,18 +6,18 @@ from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 
 
 class FreetexthostCom(SimpleCrypter):
-    __name__    = "FreetexthostCom"
-    __type__    = "crypter"
-    __version__ = "0.01"
+    __name    = "FreetexthostCom"
+    __type    = "crypter"
+    __version = "0.01"
 
-    __pattern__ = r'http://(?:www\.)?freetexthost\.com/\w+'
-    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+    __pattern = r'http://(?:www\.)?freetexthost\.com/\w+'
+    __config  = [("use_premium"       , "bool", "Use premium account if available"   , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """Freetexthost.com decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+    __description = """Freetexthost.com decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("stickell", "l.stickell@yahoo.it")]
 
 
     def getLinks(self):

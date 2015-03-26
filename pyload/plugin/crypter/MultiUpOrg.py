@@ -7,25 +7,25 @@ from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 
 
 class MultiUpOrg(SimpleCrypter):
-    __name__    = "MultiUpOrg"
-    __type__    = "crypter"
-    __version__ = "0.03"
+    __name    = "MultiUpOrg"
+    __type    = "crypter"
+    __version = "0.03"
 
-    __pattern__ = r'http://(?:www\.)?multiup\.org/(en|fr)/(?P<TYPE>project|download|miror)/\w+(/\w+)?'
-    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+    __pattern = r'http://(?:www\.)?multiup\.org/(en|fr)/(?P<TYPE>project|download|miror)/\w+(/\w+)?'
+    __config  = [("use_premium"       , "bool", "Use premium account if available"   , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """MultiUp.org decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """MultiUp.org decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     NAME_PATTERN = r'<title>.*(?:Project|Projet|ownload|élécharger) (?P<N>.+?) (\(|- )'
 
 
     def getLinks(self):
-        m_type = re.match(self.__pattern__, self.pyfile.url).group('TYPE')
+        m_type = re.match(self.__pattern, self.pyfile.url).group('TYPE')
 
         if m_type == "project":
             pattern = r'\n(http://www\.multiup\.org/(?:en|fr)/download/.*)'

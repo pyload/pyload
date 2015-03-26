@@ -13,16 +13,16 @@ def convertDecimalPrefix(m):
 
 
 class UlozTo(SimpleHoster):
-    __name__    = "UlozTo"
-    __type__    = "hoster"
-    __version__ = "1.04"
+    __name    = "UlozTo"
+    __type    = "hoster"
+    __version = "1.04"
 
-    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """Uloz.to hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """Uloz.to hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     INFO_PATTERN    = r'<p>File <strong>(?P<N>[^<]+)</strong> is password protected</p>'

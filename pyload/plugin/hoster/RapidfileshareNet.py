@@ -4,15 +4,15 @@ from pyload.plugin.internal.XFSHoster import XFSHoster
 
 
 class RapidfileshareNet(XFSHoster):
-    __name__    = "RapidfileshareNet"
-    __type__    = "hoster"
-    __version__ = "0.03"
+    __name    = "RapidfileshareNet"
+    __type    = "hoster"
+    __version = "0.03"
 
-    __pattern__ = r'http://(?:www\.)?rapidfileshare\.net/\w{12}'
+    __pattern = r'http://(?:www\.)?rapidfileshare\.net/\w{12}'
 
-    __description__ = """Rapidfileshare.net hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("guidobelix", "guidobelix@hotmail.it")]
+    __description = """Rapidfileshare.net hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("guidobelix", "guidobelix@hotmail.it")]
 
 
     NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>.+?)">'

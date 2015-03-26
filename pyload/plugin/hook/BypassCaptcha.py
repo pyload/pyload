@@ -26,16 +26,16 @@ class BypassCaptchaException(Exception):
 
 
 class BypassCaptcha(Hook):
-    __name__    = "BypassCaptcha"
-    __type__    = "hook"
-    __version__ = "0.06"
+    __name    = "BypassCaptcha"
+    __type    = "hook"
+    __version = "0.06"
 
-    __config__ = [("force", "bool", "Force BC even if client is connected", False),
+    __config = [("force", "bool", "Force BC even if client is connected", False),
                 ("passkey", "password", "Passkey", "")]
 
-    __description__ = """Send captchas to BypassCaptcha.com"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN"     , "RaNaN@pyload.org"     ),
+    __description = """Send captchas to BypassCaptcha.com"""
+    __license     = "GPLv3"
+    __authors     = [("RaNaN"     , "RaNaN@pyload.org"     ),
                        ("Godofdream", "soilfcition@gmail.com"),
                        ("zoidberg"  , "zoidberg@mujmail.cz"  )]
 
@@ -104,21 +104,21 @@ class BypassCaptcha(Hook):
 
         if self.getCredits() > 0:
             task.handler.append(self)
-            task.data['service'] = self.__name__
+            task.data['service'] = self.__name
             task.setWaiting(100)
             self._processCaptcha(task)
 
         else:
-            self.logInfo(_("Your %s account has not enough credits") % self.__name__)
+            self.logInfo(_("Your %s account has not enough credits") % self.__name)
 
 
     def captchaCorrect(self, task):
-        if task.data['service'] == self.__name__ and "ticket" in task.data:
+        if task.data['service'] == self.__name and "ticket" in task.data:
             self.respond(task.data['ticket'], True)
 
 
     def captchaInvalid(self, task):
-        if task.data['service'] == self.__name__ and "ticket" in task.data:
+        if task.data['service'] == self.__name and "ticket" in task.data:
             self.respond(task.data['ticket'], False)
 
 

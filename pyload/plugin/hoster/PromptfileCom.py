@@ -6,16 +6,16 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class PromptfileCom(SimpleHoster):
-    __name__    = "PromptfileCom"
-    __type__    = "hoster"
-    __version__ = "0.13"
+    __name    = "PromptfileCom"
+    __type    = "hoster"
+    __version = "0.13"
 
-    __pattern__ = r'https?://(?:www\.)?promptfile\.com/'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'https?://(?:www\.)?promptfile\.com/'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """Promptfile.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("igel", "igelkun@myopera.com")]
+    __description = """Promptfile.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("igel", "igelkun@myopera.com")]
 
 
     INFO_PATTERN = r'<span style="[^"]*" title="[^"]*">(?P<N>.*?) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</span>'

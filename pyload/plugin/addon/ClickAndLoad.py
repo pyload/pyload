@@ -22,17 +22,17 @@ def forward(source, destination):
 
 #@TODO: IPv6 support
 class ClickAndLoad(Addon):
-    __name__    = "ClickAndLoad"
-    __type__    = "addon"
-    __version__ = "0.41"
+    __name    = "ClickAndLoad"
+    __type    = "addon"
+    __version = "0.41"
 
-    __config__ = [("activated", "bool", "Activated"                             , True),
+    __config = [("activated", "bool", "Activated"                             , True),
                   ("port"     , "int" , "Port"                                  , 9666),
                   ("extern"   , "bool", "Listen on the public network interface", True)]
 
-    __description__ = """Click'n'Load addon plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN"         , "RaNaN@pyload.de"  ),
+    __description = """Click'n'Load addon plugin"""
+    __license     = "GPLv3"
+    __authors     = [("RaNaN"         , "RaNaN@pyload.de"  ),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

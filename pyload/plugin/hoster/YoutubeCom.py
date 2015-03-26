@@ -31,12 +31,12 @@ def which(program):
 
 
 class YoutubeCom(Hoster):
-    __name__    = "YoutubeCom"
-    __type__    = "hoster"
-    __version__ = "0.41"
+    __name    = "YoutubeCom"
+    __type    = "hoster"
+    __version = "0.41"
 
-    __pattern__ = r'https?://(?:[^/]*\.)?(youtube\.com|youtu\.be)/watch\?(?:.*&)?v=.+'
-    __config__  = [("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting"             , "hd" ),
+    __pattern = r'https?://(?:[^/]*\.)?(youtube\.com|youtu\.be)/watch\?(?:.*&)?v=.+'
+    __config  = [("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting"             , "hd" ),
                    ("fmt"    , "int"                                         , "FMT/ITAG Number (0 for auto)", 0    ),
                    (".mp4"   , "bool"                                        , "Allow .mp4"                  , True ),
                    (".flv"   , "bool"                                        , "Allow .flv"                  , True ),
@@ -44,9 +44,9 @@ class YoutubeCom(Hoster):
                    (".3gp"   , "bool"                                        , "Allow .3gp"                  , False),
                    ("3d"     , "bool"                                        , "Prefer 3D"                   , False)]
 
-    __description__ = """Youtube.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("spoob", "spoob@pyload.org"),
+    __description = """Youtube.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("spoob", "spoob@pyload.org"),
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 

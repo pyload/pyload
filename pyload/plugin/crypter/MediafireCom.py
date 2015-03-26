@@ -7,17 +7,17 @@ from pyload.utils import json_loads
 
 
 class MediafireCom(Crypter):
-    __name__    = "MediafireCom"
-    __type__    = "crypter"
-    __version__ = "0.14"
+    __name    = "MediafireCom"
+    __type    = "crypter"
+    __version = "0.14"
 
-    __pattern__ = r'http://(?:www\.)?mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+    __pattern = r'http://(?:www\.)?mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))'
+    __config  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """Mediafire.com folder decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """Mediafire.com folder decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FOLDER_KEY_PATTERN = r'var afI= \'(\w+)'

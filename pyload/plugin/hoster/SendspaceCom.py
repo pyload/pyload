@@ -6,16 +6,16 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class SendspaceCom(SimpleHoster):
-    __name__    = "SendspaceCom"
-    __type__    = "hoster"
-    __version__ = "0.17"
+    __name    = "SendspaceCom"
+    __type    = "hoster"
+    __version = "0.17"
 
-    __pattern__ = r'https?://(?:www\.)?sendspace\.com/file/\w+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'https?://(?:www\.)?sendspace\.com/file/\w+'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """Sendspace.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """Sendspace.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     NAME_PATTERN    = r'<h2 class="bgray">\s*<(?:b|strong)>(?P<N>[^<]+)</'

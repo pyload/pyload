@@ -9,16 +9,16 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class FilepostCom(SimpleHoster):
-    __name__    = "FilepostCom"
-    __type__    = "hoster"
-    __version__ = "0.33"
+    __name    = "FilepostCom"
+    __type    = "hoster"
+    __version = "0.33"
 
-    __pattern__ = r'https?://(?:www\.)?(?:filepost\.com/files|fp\.io)/(?P<ID>[^/]+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'https?://(?:www\.)?(?:filepost\.com/files|fp\.io)/(?P<ID>[^/]+)'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """Filepost.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """Filepost.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     INFO_PATTERN = r'<input type="text" id="url" value=\'<a href[^>]*>(?P<N>[^>]+?) - (?P<S>[\d.,]+) (?P<U>[\w^_]+)</a>\' class="inp_text"/>'

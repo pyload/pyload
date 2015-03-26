@@ -4,13 +4,13 @@ from pyload.plugin.Account import Account
 
 
 class PremiumTo(Account):
-    __name__    = "PremiumTo"
-    __type__    = "account"
-    __version__ = "0.08"
+    __name    = "PremiumTo"
+    __type    = "account"
+    __version = "0.08"
 
-    __description__ = """Premium.to account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+    __description = """Premium.to account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("RaNaN", "RaNaN@pyload.org"),
                        ("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it")]
 

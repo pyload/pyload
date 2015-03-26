@@ -9,16 +9,16 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class LuckyShareNet(SimpleHoster):
-    __name__    = "LuckyShareNet"
-    __type__    = "hoster"
-    __version__ = "0.06"
+    __name    = "LuckyShareNet"
+    __type    = "hoster"
+    __version = "0.06"
 
-    __pattern__ = r'https?://(?:www\.)?luckyshare\.net/(?P<ID>\d{10,})'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'https?://(?:www\.)?luckyshare\.net/(?P<ID>\d{10,})'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """LuckyShare.net hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+    __description = """LuckyShare.net hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("stickell", "l.stickell@yahoo.it")]
 
 
     INFO_PATTERN = r'<h1 class=\'file_name\'>(?P<N>\S+)</h1>\s*<span class=\'file_size\'>Filesize: (?P<S>[\d.,]+)(?P<U>[\w^_]+)</span>'

@@ -6,16 +6,16 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class EuroshareEu(SimpleHoster):
-    __name__    = "EuroshareEu"
-    __type__    = "hoster"
-    __version__ = "0.28"
+    __name    = "EuroshareEu"
+    __type    = "hoster"
+    __version = "0.28"
 
-    __pattern__ = r'http://(?:www\.)?euroshare\.(eu|sk|cz|hu|pl)/file/.+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'http://(?:www\.)?euroshare\.(eu|sk|cz|hu|pl)/file/.+'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """Euroshare.eu hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """Euroshare.eu hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     INFO_PATTERN    = r'<span style="float: left;"><strong>(?P<N>.+?)</strong> \((?P<S>.+?)\)</span>'

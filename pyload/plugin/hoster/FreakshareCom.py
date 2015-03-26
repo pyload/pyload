@@ -8,15 +8,15 @@ from pyload.plugin.internal.SimpleHoster import secondsToMidnight
 
 
 class FreakshareCom(Hoster):
-    __name__    = "FreakshareCom"
-    __type__    = "hoster"
-    __version__ = "0.40"
+    __name    = "FreakshareCom"
+    __type    = "hoster"
+    __version = "0.40"
 
-    __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
+    __pattern = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
 
-    __description__ = """Freakshare.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("sitacuisses", "sitacuisses@yahoo.de"),
+    __description = """Freakshare.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("sitacuisses", "sitacuisses@yahoo.de"),
                        ("spoob", "spoob@pyload.org"),
                        ("mkaay", "mkaay@mkaay.de"),
                        ("Toilal", "toilal.dev@gmail.com")]

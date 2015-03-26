@@ -4,16 +4,16 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class DataportCz(SimpleHoster):
-    __name__    = "DataportCz"
-    __type__    = "hoster"
-    __version__ = "0.41"
+    __name    = "DataportCz"
+    __type    = "hoster"
+    __version = "0.41"
 
-    __pattern__ = r'http://(?:www\.)?dataport\.cz/file/(.+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'http://(?:www\.)?dataport\.cz/file/(.+)'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """Dataport.cz hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """Dataport.cz hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     NAME_PATTERN = r'<span itemprop="name">(?P<N>[^<]+)</span>'

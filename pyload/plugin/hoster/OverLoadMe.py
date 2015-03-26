@@ -11,16 +11,16 @@ from pyload.utils import parseFileSize
 
 
 class OverLoadMe(MultiHoster):
-    __name__    = "OverLoadMe"
-    __type__    = "hoster"
-    __version__ = "0.11"
+    __name    = "OverLoadMe"
+    __type    = "hoster"
+    __version = "0.11"
 
-    __pattern__ = r'https?://.*overload\.me/.+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'https?://.*overload\.me/.+'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """Over-Load.me multi-hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("marley", "marley@over-load.me")]
+    __description = """Over-Load.me multi-hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("marley", "marley@over-load.me")]
 
 
     def setup(self):

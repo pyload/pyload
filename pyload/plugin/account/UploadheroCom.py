@@ -8,13 +8,13 @@ from pyload.plugin.Account import Account
 
 
 class UploadheroCom(Account):
-    __name__    = "UploadheroCom"
-    __type__    = "account"
-    __version__ = "0.21"
+    __name    = "UploadheroCom"
+    __type    = "account"
+    __version = "0.21"
 
-    __description__ = """Uploadhero.co account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("mcmyst", "mcmyst@hotmail.fr")]
+    __description = """Uploadhero.co account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("mcmyst", "mcmyst@hotmail.fr")]
 
 
     def loadAccountInfo(self, user, req):

@@ -36,17 +36,17 @@ class CaptchaBrotherhoodException(Exception):
 
 
 class CaptchaBrotherhood(Hook):
-    __name__    = "CaptchaBrotherhood"
-    __type__    = "hook"
-    __version__ = "0.08"
+    __name    = "CaptchaBrotherhood"
+    __type    = "hook"
+    __version = "0.08"
 
-    __config__ = [("username", "str", "Username", ""),
+    __config = [("username", "str", "Username", ""),
                 ("force", "bool", "Force CT even if client is connected", False),
                 ("passkey", "password", "Password", "")]
 
-    __description__ = """Send captchas to CaptchaBrotherhood.com"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN"   , "RaNaN@pyload.org"   ),
+    __description = """Send captchas to CaptchaBrotherhood.com"""
+    __license     = "GPLv3"
+    __authors     = [("RaNaN"   , "RaNaN@pyload.org"   ),
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 
@@ -147,7 +147,7 @@ class CaptchaBrotherhood(Hook):
 
         if self.getCredits() > 10:
             task.handler.append(self)
-            task.data['service'] = self.__name__
+            task.data['service'] = self.__name
             task.setWaiting(100)
             self._processCaptcha(task)
         else:
@@ -155,7 +155,7 @@ class CaptchaBrotherhood(Hook):
 
 
     def captchaInvalid(self, task):
-        if task.data['service'] == self.__name__ and "ticket" in task.data:
+        if task.data['service'] == self.__name and "ticket" in task.data:
             res = self.api_response("complainCaptcha", task.data['ticket'])
 
 

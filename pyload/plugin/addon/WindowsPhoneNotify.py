@@ -7,11 +7,11 @@ from pyload.plugin.Addon import Addon, Expose
 
 
 class WindowsPhoneNotify(Addon):
-    __name__    = "WindowsPhoneNotify"
-    __type__    = "addon"
-    __version__ = "0.09"
+    __name    = "WindowsPhoneNotify"
+    __type    = "addon"
+    __version = "0.09"
 
-    __config__ = [("id"             , "str" , "Push ID"                                  , ""   ),
+    __config = [("id"             , "str" , "Push ID"                                  , ""   ),
                   ("url"            , "str" , "Push url"                                 , ""   ),
                   ("notifycaptcha"  , "bool", "Notify captcha request"                   , True ),
                   ("notifypackage"  , "bool", "Notify package finished"                  , True ),
@@ -22,9 +22,9 @@ class WindowsPhoneNotify(Addon):
                   ("sendpermin"     , "int" , "Max notifications per minute"             , 12   ),
                   ("ignoreclient"   , "bool", "Send notifications if client is connected", False)]
 
-    __description__ = """Send push notifications to Windows Phone"""
-    __license__     = "GPLv3"
-    __authors__     = [("Andy Voigt"    , "phone-support@hotmail.de"),
+    __description = """Send push notifications to Windows Phone"""
+    __license     = "GPLv3"
+    __authors     = [("Andy Voigt"    , "phone-support@hotmail.de"),
                        ("Walter Purcaro", "vuolter@gmail.com"       )]
 
 

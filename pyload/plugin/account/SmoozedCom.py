@@ -10,13 +10,13 @@ from pyload.plugin.Account import Account
 
 
 class SmoozedCom(Account):
-    __name__    = "SmoozedCom"
-    __type__    = "account"
-    __version__ = "0.03"
+    __name    = "SmoozedCom"
+    __type    = "account"
+    __version = "0.03"
 
-    __description__ = """Smoozed.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("", "")]
+    __description = """Smoozed.com account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("", "")]
 
 
     def loadAccountInfo(self, user, req):

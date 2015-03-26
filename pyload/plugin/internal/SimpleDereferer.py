@@ -9,17 +9,17 @@ from pyload.plugin.internal.SimpleHoster import getFileURL, set_cookies
 
 
 class SimpleDereferer(Crypter):
-    __name__    = "SimpleDereferer"
-    __type__    = "crypter"
-    __version__ = "0.08"
+    __name    = "SimpleDereferer"
+    __type    = "crypter"
+    __version = "0.08"
 
-    __pattern__ = r'^unmatchable$'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+    __pattern = r'^unmatchable$'
+    __config  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """Simple dereferer plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Simple dereferer plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     """
@@ -49,7 +49,7 @@ class SimpleDereferer(Crypter):
 
         if not link:
             try:
-                link = unquote(re.match(self.__pattern__, pyfile.url).group('LINK'))
+                link = unquote(re.match(self.__pattern, pyfile.url).group('LINK'))
 
             except Exception:
                 self.prepare()

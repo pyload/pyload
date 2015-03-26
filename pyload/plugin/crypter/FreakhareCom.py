@@ -6,18 +6,18 @@ from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 
 
 class FreakhareCom(SimpleCrypter):
-    __name__    = "FreakhareCom"
-    __type__    = "crypter"
-    __version__ = "0.03"
+    __name    = "FreakhareCom"
+    __type    = "crypter"
+    __version = "0.03"
 
-    __pattern__ = r'http://(?:www\.)?freakshare\.com/folder/.+'
-    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+    __pattern = r'http://(?:www\.)?freakshare\.com/folder/.+'
+    __config  = [("use_premium"       , "bool", "Use premium account if available"   , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """Freakhare.com folder decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+    __description = """Freakhare.com folder decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("stickell", "l.stickell@yahoo.it")]
 
 
     LINK_PATTERN = r'<a href="(http://freakshare\.com/files/[^"]+)" target="_blank">'
