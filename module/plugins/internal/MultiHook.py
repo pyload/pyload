@@ -10,7 +10,7 @@ from module.utils import decode, remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.40"
+    __version__ = "0.41"
 
     __config__  = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                    ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -66,10 +66,10 @@ class MultiHook(Hook):
         self.pluginname   = None
         self.plugintype   = None
 
-        self._initPlugin()
+        self.initPlugin()
 
 
-    def _initPlugin(self):
+    def initPlugin(self):
         plugin, type = self.core.pluginManager.findPlugin(self.__name__)
 
         if not plugin:
@@ -82,7 +82,7 @@ class MultiHook(Hook):
             self.pluginclass  = getattr(self.pluginmodule, self.__name__)
 
 
-    def _loadAccount(self):
+    def loadAccount(self):
         self.account = self.core.accountManager.getAccountPlugin(self.pluginname)
 
         if self.account and not self.account.canUse():
@@ -91,10 +91,6 @@ class MultiHook(Hook):
         if not self.account and hasattr(self.pluginclass, "LOGIN_ACCOUNT") and self.pluginclass.LOGIN_ACCOUNT:
             self.logWarning("Hook plugin will be deactivated due missing account reference")
             self.setConfig('activated', False)
-
-
-    def coreReady(self):
-        self._loadAccount()
 
 
     def getURL(self, *args, **kwargs):  #@TODO: Remove in 0.4.10
@@ -199,6 +195,8 @@ class MultiHook(Hook):
 
     def periodical(self):
         """reload plugin list periodically"""
+        self.loadAccount()
+
         if self.getConfig("reload", True):
             self.interval = max(self.getConfig("reloadinterval", 12) * 60 * 60, self.MIN_RELOAD_INTERVAL)
         else:
