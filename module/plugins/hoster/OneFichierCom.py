@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import urllib2
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
@@ -8,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class OneFichierCom(SimpleHoster):
     __name__    = "OneFichierCom"
     __type__    = "hoster"
-    __version__ = "0.79"
+    __version__ = "0.80"
 
     __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -53,6 +54,21 @@ class OneFichierCom(SimpleHoster):
         inputs['submit'] = "Download"
 
         self.download(url, post=inputs)
+
+    def handleDirect(self, pyfile):
+        link = self.directLink(pyfile.url, self.resumeDownload)
+
+        if link:
+            self.logInfo(_("Direct download link detected"))
+            remote = urllib2.urlopen(link)
+            name = remote.info()['Content-Disposition'].split(';')
+            filename = name[1].split('filename=')[1]
+            filename = filename[1:-1]
+            self.logDebug("filename=" + filename)
+            pyfile.name = filename
+            self.link = link
+        else:
+            self.logDebug("Direct download link not found")
 
 
     def handlePremium(self, pyfile):
