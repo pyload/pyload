@@ -18,7 +18,7 @@ class CrockoComFolder(SimpleCrypter):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    LINK_PATTERN = r'<td class="last"><a href="([^"]+)">download</a>'
+    LINK_PATTERN = r'<td class="last"><a href="(.+?)">download</a>'
 
 
 getInfo = create_getInfo(CrockoComFolder)

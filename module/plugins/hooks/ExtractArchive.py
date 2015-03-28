@@ -175,7 +175,7 @@ class ExtractArchive(Hook):
                     print_exc()
 
         if self.extractors:
-            self.logInfo(_("Activated") + " " + "|".join("%s %s" % (Extractor.__name__,Extractor.VERSION) for Extractor in self.extractors))
+            self.logInfo(_("Activated") + " " + "|".join("%s %s" % (Extractor.__name__, Extractor.VERSION) for Extractor in self.extractors))
             self.extractQueued()  #: Resume unfinished extractions
         else:
             self.logInfo(_("No Extract plugins activated"))

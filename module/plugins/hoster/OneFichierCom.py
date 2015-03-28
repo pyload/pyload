@@ -41,6 +41,16 @@ class OneFichierCom(SimpleHoster):
         self.resumeDownload = True
 
 
+    #@NOTE: Temp work-around to `Content-Disposition=filename*=UTF-8` bug!
+    def handleDirect(self, pyfile):
+        self.link = self.directLink(pyfile.url, self.resumeDownload)
+
+        if self.link:
+            remote = urllib2.urlopen(link)
+            name   = remote.info()['Content-Disposition'].split(';')
+            pyfile.name = name[1].split('filename=')[1][1:]
+
+
     def handleFree(self, pyfile):
         id = self.info['pattern']['ID1'] or self.info['pattern']['ID2']
         url, inputs = self.parseHtmlForm('action="https://1fichier.com/\?%s' % id)
@@ -54,21 +64,6 @@ class OneFichierCom(SimpleHoster):
         inputs['submit'] = "Download"
 
         self.download(url, post=inputs)
-
-    def handleDirect(self, pyfile):
-        link = self.directLink(pyfile.url, self.resumeDownload)
-
-        if link:
-            self.logInfo(_("Direct download link detected"))
-            remote = urllib2.urlopen(link)
-            name = remote.info()['Content-Disposition'].split(';')
-            filename = name[1].split('filename=')[1]
-            filename = filename[1:-1]
-            self.logDebug("filename=" + filename)
-            pyfile.name = filename
-            self.link = link
-        else:
-            self.logDebug("Direct download link not found")
 
 
     def handlePremium(self, pyfile):

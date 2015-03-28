@@ -16,8 +16,8 @@ class MegaRapidoNet(Account):
     __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
-    VALID_UNTIL_PATTERN = r'<\s*?div[^>]*?class\s*?=\s*?[\'"]premium_index[\'"][^>]*>[^<]*?<[^>]*?b[^>]*>\s*?TEMPO\s*?PREMIUM[^<]*<[^>]*?/b[^>]*>\s*?(\d*)[^\d]*?DIAS[^\d]*?(\d*)[^\d]*?HORAS[^\d]*?(\d*)[^\d]*?MINUTOS[^\d]*?(\d*)[^\d]*?SEGUNDOS'
-    USER_ID_PATTERN     = r'<\s*?div[^>]*?class\s*?=\s*?["\']checkbox_compartilhar["\'][^>]*>[^<]*<\s*?input[^>]*?name\s*?=\s*?["\']usar["\'][^>]*>[^<]*<\s*?input[^>]*?name\s*?=\s*?["\']user["\'][^>]*?value\s*?=\s*?["\'](.*?)\s*?["\']'
+    VALID_UNTIL_PATTERN = r'<\s*?div[^>]*?class\s*?=\s*?[\'"]premium_index[\'"].*?>[^<]*?<[^>]*?b.*?>\s*?TEMPO\s*?PREMIUM.*?<[^>]*?/b.*?>\s*?(\d*)[^\d]*?DIAS[^\d]*?(\d*)[^\d]*?HORAS[^\d]*?(\d*)[^\d]*?MINUTOS[^\d]*?(\d*)[^\d]*?SEGUNDOS'
+    USER_ID_PATTERN     = r'<\s*?div[^>]*?class\s*?=\s*?["\']checkbox_compartilhar["\'].*?>.*?<\s*?input[^>]*?name\s*?=\s*?["\']usar["\'].*?>.*?<\s*?input[^>]*?name\s*?=\s*?["\']user["\'][^>]*?value\s*?=\s*?["\'](.*?)\s*?["\']'
 
 
     def loadAccountInfo(self, user, req):
@@ -50,8 +50,8 @@ class MegaRapidoNet(Account):
         if "sair" not in html.lower():
             self.wrongPassword()
         else:
-        	m = re.search(self.USER_ID_PATTERN, html)
-        	if m:
-        		data['uid'] = m.group(1)
-        	else:
-        		self.fail("Couldn't find the user ID")
+            m = re.search(self.USER_ID_PATTERN, html)
+            if m:
+                data['uid'] = m.group(1)
+            else:
+                self.fail("Couldn't find the user ID")

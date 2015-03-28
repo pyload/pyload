@@ -131,7 +131,7 @@ class LinkCryptWs(Crypter):
 
 
     def unlockCaptchaProtection(self):
-        captcha_url  = re.search(r'<form.*?id\s*?=\s*?"captcha"[^>]*?>.*?<\s*?input.*?src="([^"]*?)"', self.html, re.I | re.S).group(1)
+        captcha_url  = re.search(r'<form.*?id\s*?=\s*?"captcha"[^>]*?>.*?<\s*?input.*?src="(.+?)"', self.html, re.I | re.S).group(1)
         captcha_code = self.decryptCaptcha(captcha_url, forceUser=True, imgtype="gif", result_type='positional')
 
         self.html = self.load(self.pyfile.url, post={"x": captcha_code[0], "y": captcha_code[1]})
@@ -190,7 +190,7 @@ class LinkCryptWs(Crypter):
         self.logDebug("Search for Web links ")
 
         package_links = []
-        pattern = r'<form action="http://linkcrypt.ws/out.html"[^>]*?>.*?<input[^>]*?value="([^"]*?)"[^>]*?name="file"'
+        pattern = r'<form action="http://linkcrypt.ws/out.html"[^>]*?>.*?<input[^>]*?value="(.+?)"[^>]*?name="file"'
         ids = re.findall(pattern, self.html, re.I | re.S)
 
         self.logDebug("Decrypting %d Web links" % len(ids))
@@ -244,7 +244,7 @@ class LinkCryptWs(Crypter):
         for line in self.container_html:
             if type in line:
                 jseval = self.handle_javascript(line)
-                clink = re.search(r'href=["\']([^"\']*?)["\']',jseval,re.I)
+                clink = re.search(r'href=["\'](["\']+)', jseval, re.I)
 
                 if not clink:
                     continue

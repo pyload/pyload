@@ -10,7 +10,7 @@ class IfolderRu(SimpleHoster):
     __type__    = "hoster"
     __version__ = "0.39"
 
-    __pattern__ = r'http://(?:www|files\.)?(?:ifolder\.ru|metalarea\.org|rusfolder\.(?:com|net|ru))/(?:files/)?(?P<ID>\d+)'
+    __pattern__ = r'http://(?:www)?(files\.)?(ifolder\.ru|metalarea\.org|rusfolder\.(com|net|ru))/(files/)?(?P<ID>\d+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Ifolder.ru hoster plugin"""
@@ -22,13 +22,13 @@ class IfolderRu(SimpleHoster):
 
     NAME_PATTERN    = ur'(?:<div><span>)?Название:(?:</span>)? <b>(?P<N>[^<]+)</b><(?:/div|br)>'
     SIZE_PATTERN    = ur'(?:<div><span>)?Размер:(?:</span>)? <b>(?P<S>[^<]+)</b><(?:/div|br)>'
-    OFFLINE_PATTERN = ur'<p>Файл номер <b>[^<]*</b> (не найден|удален) !!!</p>'
+    OFFLINE_PATTERN = ur'<p>Файл номер <b>.*?</b> (не найден|удален) !!!</p>'
 
-    SESSION_ID_PATTERN = r'<input type="hidden" name="session" value="([^"]+)"'
-    INTS_SESSION_PATTERN = r'\(\'ints_session\'\);\s*if\(tag\)\{tag\.value = "([^"]+)";\}'
+    SESSION_ID_PATTERN = r'<input type="hidden" name="session" value="(.+?)"'
+    INTS_SESSION_PATTERN = r'\(\'ints_session\'\);\s*if\(tag\)\{tag\.value = "(.+?)";\}'
     HIDDEN_INPUT_PATTERN = r'var v = .*?name=\'(.+?)\' value=\'1\''
 
-    LINK_FREE_PATTERN = r'<a href="([^"]+)" class="downloadbutton_files"'
+    LINK_FREE_PATTERN = r'<a href="(.+?)" class="downloadbutton_files"'
 
     WRONG_CAPTCHA_PATTERN = ur'<font color=Red>неверный код,<br>введите еще раз</font><br>'
 

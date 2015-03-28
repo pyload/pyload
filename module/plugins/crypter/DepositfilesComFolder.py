@@ -18,7 +18,7 @@ class DepositfilesComFolder(SimpleCrypter):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    LINK_PATTERN = r'<div class="progressName"[^>]*>\s*<a href="([^"]+)" title="[^"]*" target="_blank">'
+    LINK_PATTERN = r'<div class="progressName".*?>\s*<a href="(.+?)" title=".+?" target="_blank">'
 
 
 getInfo = create_getInfo(DepositfilesComFolder)

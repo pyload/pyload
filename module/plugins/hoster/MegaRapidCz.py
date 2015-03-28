@@ -36,13 +36,13 @@ class MegaRapidCz(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    NAME_PATTERN = r'<h1[^>]*><span[^>]*>(?:<a[^>]*>)?(?P<N>[^<]+)'
+    NAME_PATTERN = r'<h1.*?><span.*?>(?:<a.*?>)?(?P<N>[^<]+)'
     SIZE_PATTERN = r'<td class="i">Velikost:</td>\s*<td class="h"><strong>\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+)</strong></td>'
     OFFLINE_PATTERN = ur'Nastala chyba 404|Soubor byl smazán'
 
     CHECK_TRAFFIC = True
 
-    LINK_PREMIUM_PATTERN = r'<a href="([^"]+)" title="Stahnout">([^<]+)</a>'
+    LINK_PREMIUM_PATTERN = r'<a href="(.+?)" title="Stahnout">([^<]+)</a>'
 
     ERR_LOGIN_PATTERN  = ur'<div class="error_div"><strong>Stahování je přístupné pouze přihlášeným uživatelům'
     ERR_CREDIT_PATTERN = ur'<div class="error_div"><strong>Stahování zdarma je možné jen přes náš'

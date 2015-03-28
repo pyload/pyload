@@ -19,7 +19,7 @@ class PastebinCom(SimpleCrypter):
 
 
     LINK_PATTERN = r'<div class="de\d+">(https?://[^ <]+)(?:[^<]*)</div>'
-    NAME_PATTERN = r'<div class="paste_box_line1" title="(?P<N>[^"]+)">'
+    NAME_PATTERN = r'<div class="paste_box_line1" title="(?P<N>.+?)">'
 
 
 getInfo = create_getInfo(PastebinCom)

@@ -22,7 +22,7 @@ class CzshareCom(SimpleHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    NAME_PATTERN    = r'<div class="tab" id="parameters">\s*<p>\s*Cel. n.zev: <a href=[^>]*>(?P<N>[^<]+)</a>'
+    NAME_PATTERN    = r'<div class="tab" id="parameters">\s*<p>\s*Cel. n.zev: <a href=.*?>(?P<N>[^<]+)</a>'
     SIZE_PATTERN    = r'<div class="tab" id="category">(?:\s*<p>[^\n]*</p>)*\s*Velikost:\s*(?P<S>[\d .,]+)(?P<U>[\w^_]+)\s*</div>'
     OFFLINE_PATTERN = r'<div class="header clearfix">\s*<h2 class="red">'
 
@@ -31,10 +31,10 @@ class CzshareCom(SimpleHoster):
 
     CHECK_TRAFFIC = True
 
-    FREE_URL_PATTERN     = r'<a href="([^"]+)" class="page-download">[^>]*alt="([^"]+)" /></a>'
+    FREE_URL_PATTERN     = r'<a href="(.+?)" class="page-download">[^>]*alt="(.+?)" /></a>'
     FREE_FORM_PATTERN    = r'<form action="download\.php" method="post">\s*<img src="captcha\.php" id="captcha" />(.*?)</form>'
     PREMIUM_FORM_PATTERN = r'<form action="/profi_down\.php" method="post">(.*?)</form>'
-    FORM_INPUT_PATTERN   = r'<input[^>]* name="([^"]+)" value="([^"]+)"[^>]*/>'
+    FORM_INPUT_PATTERN   = r'<input[^>]* name="(.+?)" value="(.+?)"[^>]*/>'
     MULTIDL_PATTERN      = r'<p><font color=\'red\'>Z[^<]*PROFI.</font></p>'
     USER_CREDIT_PATTERN  = r'<div class="credit">\s*kredit: <strong>([\d .,]+)(\w+)</strong>\s*</div><!-- .credit -->'
 

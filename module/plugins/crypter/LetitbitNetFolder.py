@@ -20,7 +20,7 @@ class LetitbitNetFolder(Crypter):
 
 
     FOLDER_PATTERN = r'<table>(.*)</table>'
-    LINK_PATTERN = r'<a href="([^"]+)" target="_blank">'
+    LINK_PATTERN = r'<a href="(.+?)" target="_blank">'
 
 
     def decrypt(self, pyfile):

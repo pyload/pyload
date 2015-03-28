@@ -8,8 +8,8 @@ from module.plugins.internal.MultiHoster import MultiHoster
 def random_with_N_digits(n):
     rand = "0."
     not_zero = 0
-    for i in range(1,n+1):
-        r = randint(0,9)
+    for i in range(1, n + 1):
+        r = randint(0, 9)
         if(r > 0):
             not_zero += 1
         rand += str(r)
@@ -33,9 +33,9 @@ class MegaRapidoNet(MultiHoster):
     __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
-    LINK_PREMIUM_PATTERN = r'<\s*?a[^>]*?title\s*?=\s*?["\'][^"\']*?download["\'][^>]*?href=["\']([^"\']*)'
+    LINK_PREMIUM_PATTERN = r'<\s*?a[^>]*?title\s*?=\s*?["\'].*?download["\'][^>]*?href=["\']([^"\']+)'
 
-    ERROR_PATTERN = r'<\s*?div[^>]*?class\s*?=\s*?["\']?alert-message error[^>]*>([^<]*)'
+    ERROR_PATTERN = r'<\s*?div[^>]*?class\s*?=\s*?["\']?alert-message error.*?>([^<]*)'
 
 
     def handlePremium(self, pyfile):

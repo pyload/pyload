@@ -19,7 +19,7 @@ class CzshareComFolder(Crypter):
 
 
     FOLDER_PATTERN = r'<tr class="subdirectory">\s*<td>\s*<table>(.*?)</table>'
-    LINK_PATTERN = r'<td class="col2"><a href="([^"]+)">info</a></td>'
+    LINK_PATTERN = r'<td class="col2"><a href="(.+?)">info</a></td>'
 
 
     def decrypt(self, pyfile):

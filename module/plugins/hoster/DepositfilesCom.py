@@ -28,7 +28,7 @@ class DepositfilesCom(SimpleHoster):
     OFFLINE_PATTERN = r'<span class="html_download_api-not_exists"></span>'
 
     NAME_REPLACEMENTS = [(r'\%u([0-9A-Fa-f]{4})', lambda m: unichr(int(m.group(1), 16))),
-                              (r'.*<b title="(?P<N>[^"]+).*', "\g<N>")]
+                              (r'.*<b title="(?P<N>.+?)".*', "\g<N>")]
     URL_REPLACEMENTS  = [(__pattern__ + ".*", "https://dfiles.eu/files/\g<ID>")]
 
     COOKIES = [("dfiles.eu", "lang_current", "en")]

@@ -251,8 +251,8 @@ class AdsCaptcha(CaptchaService):
     __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
-    CAPTCHAID_PATTERN  = r'api\.adscaptcha\.com/Get\.aspx\?[^"\']*CaptchaId=(\d+)'
-    PUBLICKEY_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?[^"\']*PublicKey=([\w-]+)'
+    CAPTCHAID_PATTERN  = r'api\.adscaptcha\.com/Get\.aspx\?.*?CaptchaId=(\d+)'
+    PUBLICKEY_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?.*?PublicKey=([\w-]+)'
 
 
     def detect_key(self, html=None):
@@ -358,7 +358,7 @@ class SolveMedia(CaptchaService):
         html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript",
                                     get={'k': key})
         try:
-            challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="([^"]+)">',
+            challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="(.+?)">',
                                   html).group(1)
             server    = "http://api.solvemedia.com/papi/media"
 

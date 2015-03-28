@@ -20,17 +20,17 @@ class MegasharesCom(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    NAME_PATTERN = r'<h1 class="black xxl"[^>]*title="(?P<N>[^"]+)">'
+    NAME_PATTERN = r'<h1 class="black xxl"[^>]*title="(?P<N>.+?)">'
     SIZE_PATTERN = r'<strong><span class="black">Filesize:</span></strong> (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'<dd class="red">(Invalid Link Request|Link has been deleted|Invalid link)'
 
-    LINK_PATTERN = r'<div id="show_download_button_%d"[^>]*>\s*<a href="([^"]+)">'
+    LINK_PATTERN = r'<div id="show_download_button_%d".*?>\s*<a href="(.+?)">'
 
-    PASSPORT_LEFT_PATTERN = r'Your Download Passport is: <[^>]*>(\w+).*?You have.*?<[^>]*>.*?([\d.]+) (\w+)'
+    PASSPORT_LEFT_PATTERN = r'Your Download Passport is: <.*?>(\w+).*?You have.*?<.*?>.*?([\d.]+) (\w+)'
     PASSPORT_RENEW_PATTERN = r'(\d+):<strong>(\d+)</strong>:<strong>(\d+)</strong>'
     REACTIVATE_NUM_PATTERN = r'<input[^>]*id="random_num" value="(\d+)" />'
     REACTIVATE_PASSPORT_PATTERN = r'<input[^>]*id="passport_num" value="(\w+)" />'
-    REQUEST_URI_PATTERN = r'var request_uri = "([^"]+)";'
+    REQUEST_URI_PATTERN = r'var request_uri = "(.+?)";'
     NO_SLOTS_PATTERN = r'<dd class="red">All download slots for this link are currently filled'
 
 

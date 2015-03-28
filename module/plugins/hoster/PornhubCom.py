@@ -64,7 +64,7 @@ class PornhubCom(Hoster):
         if not self.html:
             self.download_html()
 
-        m = re.search(r'<title[^>]+>([^<]+) - ', self.html)
+        m = re.search(r'<title.+?>([^<]+) - ', self.html)
         if m:
             name = m.group(1)
         else:

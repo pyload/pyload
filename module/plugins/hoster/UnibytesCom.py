@@ -24,10 +24,10 @@ class UnibytesCom(SimpleHoster):
 
     HOSTER_DOMAIN = "unibytes.com"
 
-    INFO_PATTERN = r'<span[^>]*?id="fileName"[^>]*>(?P<N>[^>]+)</span>\s*\((?P<S>\d.*?)\)'
+    INFO_PATTERN = r'<span[^>]*?id="fileName".*?>(?P<N>[^>]+)</span>\s*\((?P<S>\d.*?)\)'
 
     WAIT_PATTERN = r'Wait for <span id="slowRest">(\d+)</span> sec'
-    LINK_FREE_PATTERN = r'<a href="([^"]+)">Download</a>'
+    LINK_FREE_PATTERN = r'<a href="(.+?)">Download</a>'
 
 
     def handleFree(self, pyfile):
