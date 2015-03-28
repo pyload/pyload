@@ -550,7 +550,7 @@ class Core(object):
             if self.config['webinterface']['activated'] and hasattr(self, "webserver"):
                 self.webserver.quit()
 
-            for thread in self.threadManager.threads:
+            for thread in list(self.threadManager.threads):
                 thread.put("quit")
             pyfiles = self.files.cache.values()
 
