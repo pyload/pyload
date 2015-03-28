@@ -60,7 +60,7 @@ class HTTPRequest(object):
     def initHandle(self):
         """ sets common options to curl handle """
         self.c.setopt(pycurl.FOLLOWLOCATION, 1)
-        self.c.setopt(pycurl.MAXREDIRS, 5)
+        self.c.setopt(pycurl.MAXREDIRS, 10)
         self.c.setopt(pycurl.CONNECTTIMEOUT, 30)
         self.c.setopt(pycurl.NOSIGNAL, 1)
         self.c.setopt(pycurl.NOPROGRESS, 1)
