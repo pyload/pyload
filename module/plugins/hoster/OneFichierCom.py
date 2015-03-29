@@ -23,7 +23,7 @@ class OneFichierCom(SimpleHoster):
                        ("stickell", "l.stickell@yahoo.it"),
                        ("Elrick69", "elrick69[AT]rocketmail[DOT]com"),
                        ("Walter Purcaro", "vuolter@gmail.com"),
-					   ("Ludovic Lehmann", "ludo.lehmann@gmail.com")]
+                       ("Ludovic Lehmann", "ludo.lehmann@gmail.com")]
 
 
     NAME_PATTERN = r'>FileName :</td>\s*<td.*>(?P<N>.+?)<'
