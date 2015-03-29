@@ -9,7 +9,7 @@ class MediafireCom(SimpleHoster):
     __type__    = "hoster"
     __version__ = "0.85"
 
-    __pattern__ = r'https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/))\w+'
+    __pattern__ = r'(https?://)?(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Mediafire.com hoster plugin"""
