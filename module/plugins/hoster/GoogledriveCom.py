@@ -12,7 +12,7 @@ from module.utils import html_unescape
 class GoogledriveCom(SimpleHoster):
     __name__    = "GoogledriveCom"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'https?://(?:www\.)?drive\.google\.com/file/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -39,8 +39,8 @@ class GoogledriveCom(SimpleHoster):
         self.link = self.directLink(pyfile.url, self.resumeDownload)
 
         if self.link:
-            remote = urllib2.urlopen(link)
-            name   = remote.info()['Content-Disposition'].split(';')
+            remote = urllib2.urlopen(self.link)
+            name = remote.info()['Content-Disposition'].split(';')
             pyfile.name = name[1].split('filename=')[1][1:]
 
 

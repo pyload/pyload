@@ -253,7 +253,7 @@ class SimpleHoster(Hoster):
 
     __description__ = """Simple hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"  )]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     """

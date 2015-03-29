@@ -20,7 +20,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
     __description__ = """Simple decrypter plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"  )]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     """

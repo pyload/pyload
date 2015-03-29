@@ -48,7 +48,7 @@ class OneFichierCom(SimpleHoster):
 
         if self.link:
             remote = urllib2.urlopen(self.link)
-            name   = remote.info()['Content-Disposition'].split(';')
+            name = remote.info()['Content-Disposition'].split(';')
             pyfile.name = name[1].split('filename=')[1][1:]
 
 
