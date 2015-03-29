@@ -2,19 +2,20 @@
 
 from __future__ import with_statement
 
-from os.path import exists
-
+import logging
 import os
 import threading
-import logging
 
-core = None
+core  = None
 setup = None
-log = logging.getLogger("log")
+log   = logging.getLogger("log")
+
 
 class WebServer(threading.Thread):
+
     def __init__(self, pycore):
         global core
+
         threading.Thread.__init__(self)
         self.core = pycore
         core = pycore
@@ -28,13 +29,14 @@ class WebServer(threading.Thread):
 
         self.setDaemon(True)
 
+
     def run(self):
         import pyload.webui as webinterface
         global webinterface
 
         reset = False
 
-        if self.https and (not exists(self.cert) or not exists(self.key)):
+        if self.https and (not os.exists(self.cert) or not os.exists(self.key)):
             log.warning(_("SSL certificates not found."))
             self.https = False
 
@@ -76,13 +78,14 @@ class WebServer(threading.Thread):
         else:
             self.start_builtin()
 
-    def start_builtin(self):
 
+    def start_builtin(self):
         if self.https:
             log.warning(_("This server offers no SSL, please consider using threaded instead"))
 
         self.core.log.info(_("Starting builtin webserver: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
         webinterface.run_simple(host=self.host, port=self.port)
+
 
     def start_threaded(self):
         if self.https:
@@ -94,10 +97,14 @@ class WebServer(threading.Thread):
 
         webinterface.run_threaded(host=self.host, port=self.port, cert=self.cert, key=self.key)
 
-    def start_fcgi(self):
 
+    def start_fcgi(self):
         self.core.log.info(_("Starting fastcgi server: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
-        webinterface.run_fcgi(host=self.host, port=self.port)
+        try:
+            webinterface.run_fcgi(host=self.host, port=self.port)
+
+        except ValueError: #@TODO: Fix https://github.com/pyload/pyload/issues/1145
+            pass
 
 
     def start_lightweight(self):
@@ -106,6 +113,7 @@ class WebServer(threading.Thread):
 
         self.core.log.info(_("Starting lightweight webserver (bjoern): %(host)s:%(port)d") % {"host": self.host, "port": self.port})
         webinterface.run_lightweight(host=self.host, port=self.port)
+
 
     def quit(self):
         self.running = False
