@@ -15,7 +15,7 @@ def convertDecimalPrefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "1.05"
+    __version__ = "1.06"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -30,8 +30,8 @@ class UlozTo(SimpleHoster):
     SIZE_PATTERN    = r'<span id="fileSize">.*?(?P<S>[\d.,]+\s[kMG]?B)</span>'
     OFFLINE_PATTERN = r'<title>404 - Page not found</title>|<h1 class="h1">File (has been deleted|was banned)</h1>'
 
-    URL_REPLACEMENTS  = [(r"(?<=http://)([^/]+)", "www.ulozto.net")]
-    SIZE_REPLACEMENTS = [('([\d.]+)\s([kMG])B', convertDecimalPrefix)]
+    URL_REPLACEMENTS  = [(r'(?<=http://)([^/]+)', "www.ulozto.net")]
+    SIZE_REPLACEMENTS = [(r'([\d.]+)\s([kMG])B', convertDecimalPrefix)]
 
     CHECK_TRAFFIC = True
     DISPOSITION   = False  #: Remove in 0.4.10
@@ -44,7 +44,7 @@ class UlozTo(SimpleHoster):
 
     def setup(self):
         self.chunkLimit     = 16 if self.premium else 1
-        self.multiDL        = self.premium
+        self.multiDL        = True
         self.resumeDownload = True
 
 
@@ -53,8 +53,8 @@ class UlozTo(SimpleHoster):
         self.link = self.directLink(pyfile.url, self.resumeDownload)
 
         if self.link:
-            remote = urllib2.urlopen(link)
-            name   = remote.info()['Content-Disposition'].split(';')
+            remote = urllib2.urlopen(self.link)
+            name = remote.info()['Content-Disposition'].split(';')
             pyfile.name = name[1].split('filename=')[1][1:]
 
 
