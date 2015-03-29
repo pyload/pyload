@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class OneFichierCom(SimpleHoster):
     __name__    = "OneFichierCom"
     __type__    = "hoster"
-    __version__ = "0.80"
+    __version__ = "0.81"
 
     __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -22,7 +22,8 @@ class OneFichierCom(SimpleHoster):
                        ("imclem", None),
                        ("stickell", "l.stickell@yahoo.it"),
                        ("Elrick69", "elrick69[AT]rocketmail[DOT]com"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+                       ("Walter Purcaro", "vuolter@gmail.com"),
+                       ("Ludovic Lehmann", "ludo.lehmann@gmail.com")]
 
 
     NAME_PATTERN = r'>FileName :</td>\s*<td.*>(?P<N>.+?)<'
@@ -46,7 +47,7 @@ class OneFichierCom(SimpleHoster):
         self.link = self.directLink(pyfile.url, self.resumeDownload)
 
         if self.link:
-            remote = urllib2.urlopen(link)
+            remote = urllib2.urlopen(self.link)
             name   = remote.info()['Content-Disposition'].split(';')
             pyfile.name = name[1].split('filename=')[1][1:]
 
