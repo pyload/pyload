@@ -7,7 +7,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class TusfilesNet(XFSHoster):
     __name__    = "TusfilesNet"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/\w{12}'
 
@@ -27,9 +27,9 @@ class TusfilesNet(XFSHoster):
         self.resumeDownload = True
 
 
-    def downloadLink(self, link):
+    def downloadLink(self, link, disposition=True):
         try:
-            return super(TusfilesNet, self).downloadLink(link)
+            return super(TusfilesNet, self).downloadLink(link, disposition)
 
         except BadHeader, e:
             if e.code is 503:
