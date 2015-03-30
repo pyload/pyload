@@ -15,7 +15,7 @@ def convertDecimalPrefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "1.06"
+    __version__ = "1.07"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -55,7 +55,7 @@ class UlozTo(SimpleHoster):
         if self.link:
             remote = urllib2.urlopen(self.link)
             name = remote.info()['Content-Disposition'].split(';')
-            pyfile.name = name[1].split('filename=')[1][1:]
+            pyfile.name = name[1].split('filename=')[1][1:-1]
 
 
     def handleFree(self, pyfile):
