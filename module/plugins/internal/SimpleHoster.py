@@ -247,7 +247,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.32"
+    __version__ = "1.33"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -502,8 +502,8 @@ class SimpleHoster(Hoster):
     def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=False):
         try:
             if disposition:
-                content = urllib2.urlopen(self.link).info()['Content-Disposition'].split(';')
-                self.pyfile.name = content[1].split('filename=')[1][1:-1]
+                content = urllib2.urlopen(url).info()['Content-Disposition'].split(';')
+                self.pyfile.name = content[1].split('filename=')[1][1:-1] or self.pyfile.name
         finally:
             return super(SimpleHoster, self).download(url, get, post, ref, cookies, False)
 
