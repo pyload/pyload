@@ -15,7 +15,7 @@ def convertDecimalPrefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "1.07"
+    __version__ = "1.08"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -34,7 +34,6 @@ class UlozTo(SimpleHoster):
     SIZE_REPLACEMENTS = [(r'([\d.]+)\s([kMG])B', convertDecimalPrefix)]
 
     CHECK_TRAFFIC = True
-    DISPOSITION   = False  #: Remove in 0.4.10
 
     ADULT_PATTERN   = r'<form action="(.+?)" method="post" id="frm-askAgeForm">'
     PASSWD_PATTERN  = r'<div class="passwordProtectedFile">'
@@ -46,16 +45,6 @@ class UlozTo(SimpleHoster):
         self.chunkLimit     = 16 if self.premium else 1
         self.multiDL        = True
         self.resumeDownload = True
-
-
-    #@NOTE: Temp work-around to `Content-Disposition=filename*=UTF-8` bug!
-    def handleDirect(self, pyfile):
-        self.link = self.directLink(pyfile.url, self.resumeDownload)
-
-        if self.link:
-            remote = urllib2.urlopen(self.link)
-            name = remote.info()['Content-Disposition'].split(';')
-            pyfile.name = name[1].split('filename=')[1][1:-1]
 
 
     def handleFree(self, pyfile):

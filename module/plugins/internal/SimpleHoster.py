@@ -5,6 +5,7 @@ import mimetypes
 import os
 import re
 import time
+import urllib2
 
 from inspect import isclass
 from urllib import unquote
@@ -246,7 +247,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.31"
+    __version__ = "1.32"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -308,7 +309,7 @@ class SimpleHoster(Hoster):
     DIRECT_LINK   = None   #: Set to True to looking for direct link (as defined in handleDirect method), set to None to do it if self.account is True else False
     MULTI_HOSTER  = False  #: Set to True to leech other hoster link (as defined in handleMulti method)
     LOGIN_ACCOUNT = False  #: Set to True to require account login
-    DISPOSITION   = True   #: Work-around to `filename*=UTF-8` bug; remove in 0.4.10
+    DISPOSITION   = True   #: Set to True to use any content-disposition value in http header as file name
 
     directLink = getFileURL  #@TODO: Remove in 0.4.10
 
@@ -486,7 +487,7 @@ class SimpleHoster(Hoster):
                     self.logDebug("Handled as free download")
                     self.handleFree(pyfile)
 
-            self.downloadLink(self.link, self.DISPOSITION)  #: Remove `self.DISPOSITION` in 0.4.10
+            self.downloadLink(self.link, self.DISPOSITION)
             self.checkFile()
 
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
@@ -495,6 +496,16 @@ class SimpleHoster(Hoster):
                 self.retryFree()
             else:
                 raise Fail(e)
+
+
+    #: Work-around to `filename*=UTF-8` bug; remove in 0.4.10
+    def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=False):
+        try:
+            if disposition:
+                content = urllib2.urlopen(self.link).info()['Content-Disposition'].split(';')
+                self.pyfile.name = content[1].split('filename=')[1][1:-1]
+        finally:
+            return super(SimpleHoster, self).download(url, get, post, ref, cookies, False)
 
 
     def downloadLink(self, link, disposition=True):

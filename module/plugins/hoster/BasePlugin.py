@@ -13,7 +13,7 @@ from module.plugins.Hoster import Hoster
 class BasePlugin(Hoster):
     __name__    = "BasePlugin"
     __type__    = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
 
     __pattern__ = r'^unmatchable$'
 
@@ -39,6 +39,16 @@ class BasePlugin(Hoster):
         self.chunkLimit     = -1
         self.multiDL        = True
         self.resumeDownload = True
+
+
+    #: Work-around to `filename*=UTF-8` bug; remove in 0.4.10
+    def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=False):
+        try:
+            if disposition:
+                content = urllib2.urlopen(self.link).info()['Content-Disposition'].split(';')
+                self.pyfile.name = content[1].split('filename=')[1][1:-1]
+        finally:
+            return super(SimpleHoster, self).download(url, get, post, ref, cookies, False)
 
 
     def process(self, pyfile):
