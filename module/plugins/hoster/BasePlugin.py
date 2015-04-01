@@ -13,7 +13,7 @@ from module.plugins.Hoster import Hoster
 class BasePlugin(Hoster):
     __name__    = "BasePlugin"
     __type__    = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.40"
 
     __pattern__ = r'^unmatchable$'
 
@@ -48,7 +48,7 @@ class BasePlugin(Hoster):
                 content = urllib2.urlopen(self.link).info()['Content-Disposition'].split(';')
                 self.pyfile.name = content[1].split('filename=')[1][1:-1]
         finally:
-            return super(SimpleHoster, self).download(url, get, post, ref, cookies, False)
+            return super(BasePlugin, self).download(url, get, post, ref, cookies, False)
 
 
     def process(self, pyfile):
