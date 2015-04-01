@@ -13,7 +13,7 @@ from module.plugins.Hoster import Hoster
 class BasePlugin(Hoster):
     __name__    = "BasePlugin"
     __type__    = "hoster"
-    __version__ = "0.40"
+    __version__ = "0.41"
 
     __pattern__ = r'^unmatchable$'
 
@@ -45,8 +45,8 @@ class BasePlugin(Hoster):
     def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=False):
         try:
             if disposition:
-                content = urllib2.urlopen(self.link).info()['Content-Disposition'].split(';')
-                self.pyfile.name = content[1].split('filename=')[1][1:-1]
+                content = urllib2.urlopen(url).info()['Content-Disposition'].split(';')
+                self.pyfile.name = content[1].split('filename=')[1][1:-1] or self.pyfile.name
         finally:
             return super(BasePlugin, self).download(url, get, post, ref, cookies, False)
 

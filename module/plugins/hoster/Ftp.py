@@ -12,7 +12,7 @@ from module.plugins.Hoster import Hoster
 class Ftp(Hoster):
     __name__    = "Ftp"
     __type__    = "hoster"
-    __version__ = "0.48"
+    __version__ = "0.49"
 
     __pattern__ = r'(?:ftps?|sftp)://([\w.-]+(:[\w.-]+)?@)?[\w.-]+(:\d+)?/.+'
 
@@ -32,8 +32,8 @@ class Ftp(Hoster):
     def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=False):
         try:
             if disposition:
-                content = urllib2.urlopen(self.link).info()['Content-Disposition'].split(';')
-                self.pyfile.name = content[1].split('filename=')[1][1:-1]
+                content = urllib2.urlopen(url).info()['Content-Disposition'].split(';')
+                self.pyfile.name = content[1].split('filename=')[1][1:-1] or self.pyfile.name
         finally:
             return super(Ftp, self).download(url, get, post, ref, cookies, False)
 
