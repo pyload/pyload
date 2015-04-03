@@ -8,7 +8,8 @@ import re
 import sys
 import time
 
-from gettext import gettext
+#from gettext import gettext
+import pylgettext as gettext
 from htmlentitydefs import name2codepoint
 from os.path import join
 from string import maketrans
@@ -252,11 +253,14 @@ def versiontuple(v):  #: By kindall (http://stackoverflow.com/a/11887825)
 
 def load_translation(name, locale, default="en"):
     """ Load language and return its translation object or None """
+    from traceback import print_exc
+    from os.path import join
     try:
-        gettext.setpaths([path.join(os.sep, "usr", "share", "pyload", "locale"), None])
-        translation = gettext.translation(name, self.path("locale"),
+        gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
+        translation = gettext.translation(name, join(pypath, "locale"),
                                           languages=[locale, default], fallback=True)
     except Exception:
+        print_exc()
         return None
     else:
         translation.install(True)

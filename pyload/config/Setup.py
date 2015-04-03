@@ -457,13 +457,13 @@ class SetupAssistant(object):
     def print_dep(self, name, value, false="MISSING", true="OK"):
         """ Print Status of dependency """
         if value and isinstance(value, basestring):
-            msg = "%(dep)-12s %(bool)s  (%(info)s)"
+            info = ", ".join(value)
         else:
-            msg = "%(dep)-12s %(bool)s"
+            info = ""
 
-        print msg % {'dep': name + ':',
+        print "%(dep)-12s %(bool)s  (%(info)s)" % {'dep': name + ':',
                      'bool': _(true if value else false).upper(),
-                     'info': ", ".join(value)}
+                     'info': info}
 
 
     def check_module(self, module):
