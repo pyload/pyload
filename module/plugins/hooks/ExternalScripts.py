@@ -10,7 +10,7 @@ from module.utils import fs_encode, save_join
 class ExternalScripts(Hook):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.38"
+    __version__ = "0.39"
 
     __config__ = [("activated", "bool", "Activated"         , True ),
                   ("waitend"  , "bool", "Wait script ending", False)]
