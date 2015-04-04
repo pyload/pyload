@@ -110,9 +110,9 @@ class AbstractEngine(object):
     __name = ""
 
 
-    def __init__(self):
+    def __init__(self, force=False):
         self.setup()
-        self.available = self.find()
+        self.available = True if force else self.find()
 
 
     def setup(self):
@@ -126,7 +126,7 @@ class AbstractEngine(object):
             __import__(cls.__name)
         except Exception:
             try:
-                out, err = cls().eval("print(23+19)")
+                out, err = cls(True).eval("print(23+19)")
             except Exception:
                 res = False
             else:
