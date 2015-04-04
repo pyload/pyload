@@ -29,11 +29,9 @@
                     <li class>
                         <div class="panel panel-default" >
                           <div class="panel-body">
-                            <ul id="general-menu" style="float: left; height: 600px; overflow: auto; overflow-x: hidden; width: 100%">
+                            <ul id="general-menu" style="float: left; max-height: 600px; overflow: auto; overflow-x: hidden; width: 100%">
                                 {% for entry,name in conf.general %}
-                                    <nobr>
-                                        <li style="list-style-type: none; cursor: pointer; margin-top: 10px;" id="general|{{ entry }}">{{ name }}</li>
-                                    </nobr>
+                                <li style="list-style-type: none; cursor: pointer; margin-top: 10px; white-space: nowrap;" id="general|{{ entry }}">{{ name }}</li>
                                 {% endfor %}
                             </ul>
                           </div>
@@ -58,11 +56,9 @@
                     <li class>
                         <div class="panel panel-default">
                             <div class="panel-body">
-                                <ul id="plugin-menu" style="float: left; height: 600px; overflow: auto; overflow-x: hidden; width: 100%">
+                                <ul id="plugin-menu" style="float: left; max-height: 600px; overflow: auto; overflow-x: hidden; width: 100%">
                                     {% for entry,name in conf.plugin %}
-                                        <nobr>
-                                            <li style="list-style-type: none; cursor: pointer; margin-top: 10px;" id="plugin|{{ entry }}">{{ name }}</li>
-                                        </nobr>
+                                    <li style="list-style-type: none; cursor: pointer; margin-top: 10px; white-space: nowrap;" id="plugin|{{ entry }}">{{ name }}</li>
                                     {% endfor %}
                                 </ul>
                             <div>
