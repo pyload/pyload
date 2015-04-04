@@ -28,17 +28,14 @@
                 <ul class="nav tabs" style="width: 20%; float:left;">
                     <li class>
                         <div class="panel panel-default" >
-                          <div class="panel-body"  style="overlow-y: scroll; ">
-                           
-                          
-                        <ul id="general-menu" style=" float: left;">
-                            {% for entry,name in conf.general %}
-                                <nobr>
-                                    <li style="list-style-type: none;" id="general|{{ entry }}">{{ name }}</li>
-                                </nobr>
-                                <br>
-                            {% endfor %}
-                        </ul>
+                          <div class="panel-body">
+                            <ul id="general-menu" style="float: left; height: 600px; overflow: auto; overflow-x: hidden; width: 100%">
+                                {% for entry,name in conf.general %}
+                                    <nobr>
+                                        <li style="list-style-type: none; cursor: pointer; margin-top: 10px;" id="general|{{ entry }}">{{ name }}</li>
+                                    </nobr>
+                                {% endfor %}
+                            </ul>
                           </div>
                         </div>
                     </li>
@@ -59,18 +56,16 @@
             <span id="plugins" class="tabContent">
                 <ul class="nav tabs" style="width: 20%; float:left; hight:300px;">
                     <li class>
-                            <div class="panel panel-default" style="overflow-y: scroll; ">
-                              <div class="panel-body"  >
-                    
-                        <ul id="plugin-menu" style=" float: left;">
-                            {% for entry,name in conf.plugin %}
-                                <nobr>
-                                    <li style="list-style-type: none;" id="plugin|{{ entry }}">{{ name }}</li>
-                                </nobr>
-                                <br>
-                            {% endfor %}
-                        </ul>
-                        <div>
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <ul id="plugin-menu" style="float: left; height: 600px; overflow: auto; overflow-x: hidden; width: 100%">
+                                    {% for entry,name in conf.plugin %}
+                                        <nobr>
+                                            <li style="list-style-type: none; cursor: pointer; margin-top: 10px;" id="plugin|{{ entry }}">{{ name }}</li>
+                                        </nobr>
+                                    {% endfor %}
+                                </ul>
+                            <div>
                         </div>
                     </li>
                 </ul>
