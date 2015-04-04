@@ -90,7 +90,7 @@ class PluginManager(object):
                 return rootplugins
 
         else:
-            pfolder = join(pypath, "pyload", "plugins", folder)
+            pfolder = join(pypath, "pyload", "plugin", folder)
 
         for f in listdir(pfolder):
             if isfile(join(pfolder, f)) and f.endswith(".py") and not f.startswith("_"):
