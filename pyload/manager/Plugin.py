@@ -37,14 +37,14 @@ class PluginManager(object):
 
 
     def loadTypes(self):
-        rootdir = join(pypath, "pyload", "plugins")
+        rootdir = join(pypath, "pyload", "plugin")
         userdir = "userplugins"
 
         types = set().union(*[[d for d in listdir(p) if isdir(join(p, d))]
                             for p in (rootdir, userdir) if exists(p)])
 
         if not types:
-            self.log.critical(_("No plugins found!"))
+            self.core.log.critical(_("No plugins found!"))
 
         self.TYPES = list(set(self.TYPES) | types)
 
