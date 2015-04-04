@@ -24,20 +24,20 @@ from middlewares import StripPathMiddleware, GZipMiddleWare, PrefixMiddleware
 SETUP = None
 PYLOAD = None
 
-from pyload.manager.thread import ServerThread
+from pyload.manager.thread import Server
 from pyload.network.JsEngine import JsEngine
 
-if not ServerThread.core:
-    if ServerThread.setup:
-        SETUP = ServerThread.setup
+if not Server.core:
+    if Server.setup:
+        SETUP = Server.setup
         config = SETUP.config
         JS = JsEngine(SETUP)
     else:
         raise Exception("Could not access pyLoad Core")
 else:
-    PYLOAD = ServerThread.core.api
-    config = ServerThread.core.config
-    JS = JsEngine(ServerThread.core)
+    PYLOAD = Server.core.api
+    config = Server.core.config
+    JS = JsEngine(Server.core)
 
 THEME = config.get('webinterface', 'theme')
 DL_ROOT = config.get('general', 'download_folder')
@@ -58,7 +58,7 @@ if not exists(cache):
 
 bcc = FileSystemBytecodeCache(cache, '%s.cache')
 
-loader = FileSystemLoader(THEME_DIR)
+loader = FileSystemLoader([THEME_DIR, join(THEME_DIR, THEME)])
 
 env = Environment(loader=loader, extensions=['jinja2.ext.i18n', 'jinja2.ext.autoescape'], trim_blocks=True, auto_reload=False,
                   bytecode_cache=bcc)
