@@ -52,11 +52,11 @@ document.addEvent("domready", function(){
     </div>
     {% set progress = (package.linksdone * 100) / package.linkstotal %}
 
-    <div id="progress" class="progress" style="float:left; width: 50%; margin-top: -5px;">
+    <div id="progress" class="progress" style="float:left; width: 50%; margin-top: -5px; color:#fff; font-weight: 700; font-size:12px;">
         <div class="progress-bar" role="progressbar" style="width: {{ progress }}%; height: 100%; position: relative; z-index: 1;">
             <label>{{ package.linksdone }} / {{ package.linkstotal }}</label>
         </div>
-        <label style="right: 30px; position: absolute; z-index: 2;">
+        <label style="right: 30px; position: absolute; z-index: 2; color:#fff;">
             {{ package.sizedone|formatsize }} / {{ package.sizetotal|formatsize }}</label>
         </div>
     <div style="clear: both; margin-bottom: -10px"></div>
