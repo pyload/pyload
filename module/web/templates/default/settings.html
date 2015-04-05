@@ -13,9 +13,9 @@
 {% block content %}
 
     <ul id="toptabs" class="nav nav-tabs">
-        <li role="presentation" class"active"><a href="#">{{ _("General") }}</a></li>
-        <li role="presentation"><a href="#">{{ _("Plugins") }}</a></li>
-        <li role="presentation"><a href="#">{{ _("Accounts") }}</a></li>
+            <li role="presentation" class"active"><a href="#">{{ _("General") }}</a></li>
+            <li role="presentation"><a href="#">{{ _("Plugins") }}</a></li>
+            <li role="presentation"><a href="#">{{ _("Accounts") }}</a></li>
     </ul>
 
     <div id="tabsback" style="height: 20px; padding-left: 150px; color: white; font-weight: bold;">
@@ -29,9 +29,11 @@
                     <li class>
                         <div class="panel panel-default" >
                           <div class="panel-body">
-                            <ul id="general-menu" style="float: left; max-height: 600px; overflow: auto; overflow-x: hidden; width: 100%">
+                            <ul id="general-menu" style="float: left; height: 600px; overflow: auto; overflow-x: hidden; width: 100%">
                                 {% for entry,name in conf.general %}
-                                <li style="list-style-type: none; cursor: pointer; margin-top: 10px; white-space: nowrap;" id="general|{{ entry }}">{{ name }}</li>
+                                    <nobr>
+                                        <li style="list-style-type: none; cursor: pointer; margin-top: 10px;" id="general|{{ entry }}">{{ name }}</li>
+                                    </nobr>
                                 {% endfor %}
                             </ul>
                           </div>
@@ -56,9 +58,11 @@
                     <li class>
                         <div class="panel panel-default">
                             <div class="panel-body">
-                                <ul id="plugin-menu" style="float: left; max-height: 600px; overflow: auto; overflow-x: hidden; width: 100%">
+                                <ul id="plugin-menu" style="float: left; height: 600px; overflow: auto; overflow-x: hidden; width: 100%">
                                     {% for entry,name in conf.plugin %}
-                                    <li style="list-style-type: none; cursor: pointer; margin-top: 10px; white-space: nowrap;" id="plugin|{{ entry }}">{{ name }}</li>
+                                        <nobr>
+                                            <li style="list-style-type: none; cursor: pointer; margin-top: 10px;" id="plugin|{{ entry }}">{{ name }}</li>
+                                        </nobr>
                                     {% endfor %}
                                 </ul>
                             <div>
@@ -173,34 +177,36 @@
 {% endblock %}
 {% block hidden %}
 <div id="account_box" style="z-index: 2">
-    <form id="add_account_form" action="/json/add_account" method="POST" enctype="multipart/form-data">
-        <h3>{{_("Add Account")}}</h3>
-        <p>{{_("Enter your account data to use premium features.")}}</p>
+<form id="add_account_form" action="/json/add_account" method="POST" enctype="multipart/form-data">
+<h3>{{_("Add Account")}}</h3>
+<p>{{_("Enter your account data to use premium features.")}}</p>
 
-        <div class="form-group">
-            <label for="account_login">{{_("Login")}}</label>
-            <input class="form-control" id="account_login" name="account_login" type="text" />
-            <p >{{_("Your username.")}}</p>
-        </div>
-        <div class="form-group">
-            <label for="account_password">{{_("Password")}}</label>
-            <input class="form-control" id="account_password" name="account_password" type="password" size="20" />
-            <p >{{_("The password for this account.")}}</p>
-        </div>
-        <div class="form-group">
-            <label for="account_type">{{_("Type")}}</label>
-            <p>{{_("Choose the hoster for your account.")}}</p>
-        </div>
-        <div class="form-group">
-            <select name=account_type id="account_type">
-                {% for type in types|sort %}
-                <option value="{{ type }}">{{ type }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <button class="btn btn-primary" style="float: right; margin-left: 5px;" id="account_add_button" type="submit">{{_("Add")}}</button>
-        <button class="btn btn-default" style="float: right;" id="account_reset" style="margin-left: 0" type="reset">{{_("Reset")}}</button>
-        <div class="spacer"></div>
-    </form>
+<div class="form-group">
+<label for="account_login">{{_("Login")}}</label>
+<input class="form-control" id="account_login" name="account_login" type="text" />
+<p >{{_("Your username.")}}</p>
+</div>
+<div class="form-group">
+<label for="account_password">{{_("Password")}}</label>
+<input class="form-control" id="account_password" name="account_password" type="password" size="20" />
+<p >{{_("The password for this account.")}}</p>
+</div>
+<div class="form-group">
+<label for="account_type">{{_("Type")}}</label>
+<p>{{_("Choose the hoster for your account.")}}</p>
+</div>
+<div class="form-group">
+    <select name=account_type id="account_type">
+        {% for type in types|sort %}
+            <option value="{{ type }}">{{ type }}</option>
+        {% endfor %}
+    </select>
+</div>
+<button class="btn btn-primary" style="float: right; margin-left: 5px;" id="account_add_button" type="submit">{{_("Add")}}</button>
+<button class="btn btn-default" style="float: right;" id="account_reset" style="margin-left: 0" type="reset">{{_("Reset")}}</button>
+<div class="spacer"></div>
+
+</form>
+
 </div>
 {% endblock %}
