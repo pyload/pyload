@@ -123,7 +123,7 @@ class AbstractEngine(object):
     def find(cls):
         """ Check if the engine is available """
         try:
-            __import__(cls.__name)
+            __import__(cls._name)
         except Exception:
             try:
                 out, err = cls(True).eval("23+19")
@@ -157,7 +157,7 @@ class AbstractEngine(object):
 
 class Pyv8Engine(AbstractEngine):
 
-    __name = "pyv8"
+    _name = "PyV8"
 
 
     def eval(self, script):
@@ -176,11 +176,12 @@ class Pyv8Engine(AbstractEngine):
 
 class CommonEngine(AbstractEngine):
 
-    __name = "js"
+    _name = "js"
 
 
     def setup(self):
-        subprocess.Popen(["js", "-v"], bufsize=-1).communicate()
+        # subprocess.Popen(["js", "-v"], bufsize=-1).communicate()
+        pass
 
 
     def eval(self, script):
@@ -191,7 +192,7 @@ class CommonEngine(AbstractEngine):
 
 class NodeEngine(AbstractEngine):
 
-    __name = "nodejs"
+    _name = "nodejs"
 
 
     def setup(self):
@@ -206,7 +207,7 @@ class NodeEngine(AbstractEngine):
 
 class RhinoEngine(AbstractEngine):
 
-    __name = "rhino"
+    _name = "rhino"
 
 
     def setup(self):
@@ -235,7 +236,7 @@ class RhinoEngine(AbstractEngine):
 
 class JscEngine(AbstractEngine):
 
-    __name = "javascriptcore"
+    _name = "javascriptcore"
 
 
     def setup(self):
