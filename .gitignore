@@ -3,7 +3,6 @@ bin/
 build/
 dist/
 env/
-/lib/
 lib64/
 parts/
 sdist/
