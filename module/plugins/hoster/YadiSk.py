@@ -11,15 +11,16 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class YadiSk(SimpleHoster):
     __name__    = "YadiSk"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
-    __pattern__ = r'https?://yadi\.sk/d/.+'
+    __pattern__ = r'https?://yadi\.sk/d/\w+'
 
-    __description__ = """yadi.sk hoster plugin"""
+    __description__ = """Yadi.sk hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("GammaC0de", "nomail@fakemailbox.com")]
 
-    OFFLINE_PATTERN = r"Nothing found"
+
+    OFFLINE_PATTERN = r'Nothing found'
 
 
     def setup(self):
@@ -27,58 +28,58 @@ class YadiSk(SimpleHoster):
         self.multiDL        = False
         self.chunkLimit     = 1
 
-    def prepare(self):
-        self.req.http.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:36.0) Gecko/20100101 Firefox/36.0")
-        return super(YadiSk, self).prepare()
 
     def handleFree(self, pyfile):
         m = re.search(r'<script id="models-client" type="application/json">(.+?)</script>', self.html)
         if m is None:
             self.fail(_("could not find required json data"))
 
-        json = m.group(1)
+        res = json_loads(m.group(1))
 
-        res = json_loads(json)
-
-        yadisk_ver = yadisk_sk = yadisk_id = yadisk_size = yadisk_name = yadisk_hash = None
-        try:
+        yadisk_ver  = None
+        yadisk_sk   = None
+        yadisk_id   = None
+        yadisk_size = None
+        yadisk_name = None
+        yadisk_hash = None
+        try:  #@TODO: Copy to apiInfo method
             for sect in res:
                 if 'model' in sect:
                     if sect['model'] == 'config':
                         yadisk_ver = sect['data']['version']
-                        yadisk_sk = sect['data']['sk']
+                        yadisk_sk  = sect['data']['sk']
+
                     elif sect['model'] == 'resource':
-                        yadisk_id = sect['data']['id']
+                        yadisk_id   = sect['data']['id']
                         yadisk_size = sect['data']['meta']['size']
                         yadisk_name = sect['data']['name']
-        except:
-            self.fail(_("Unexpected server response"))
-        if yadisk_id is None or yadisk_sk is None or yadisk_id is None or yadisk_size is None or yadisk_name is None:
-           self.fail(_("json data is missing important information, cannot continue"))
 
+        except Exception:
+            self.fail(_("Unexpected server response"))
+
+        if None is in (yadisk_id, yadisk_sk, yadisk_id, yadisk_size, yadisk_name):
+           self.fail(_("json data is missing important information, cannot continue"))
 
         self.pyfile.size = yadisk_size
         self.pyfile.name = yadisk_name
 
         yadisk_idclient = ""
-        for i in range(1, 32):
+        for _i in range(1, 32):
             yadisk_idclient += random.choice('0123456abcdef')
 
-        post_data = {'idClient': yadisk_idclient,
-                     'version': yadisk_ver,
-                     '_model.0': 'do-get-resource-url',
-                     'sk': yadisk_sk,
-                     'id.0': yadisk_id}
-
-        result_json = self.load("https://yadi.sk/models/?_m=do-get-resource-url", post=post_data)
+        result_json = self.load("https://yadi.sk/models/?_m=do-get-resource-url",
+                                post={'idClient': yadisk_idclient,
+                                      'version' : yadisk_ver,
+                                      '_model.0': 'do-get-resource-url',
+                                      'sk'      : yadisk_sk,
+                                      'id.0'    : yadisk_id})
 
         res = json_loads(result_json)
         try:
-            url = res['models'][0]['data']['file']
-        except:
-            self.fail(_("faild to retrieve the download url"))
+            self.link = res['models'][0]['data']['file']
 
-        self.download(url)
+        except Exception:
+            self.fail(_("faild to retrieve the download url"))
 
 
 getInfo = create_getInfo(YadiSk)
