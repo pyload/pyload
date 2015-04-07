@@ -3,7 +3,6 @@
 import datetime
 import mimetypes
 import os
-import pycurl
 import re
 import time
 import urllib2
@@ -248,7 +247,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.34"
+    __version__ = "1.35"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -434,8 +433,6 @@ class SimpleHoster(Hoster):
             self.fail(_("Required account not found"))
 
         self.req.setOption("timeout", 120)
-        self.req.http.c.setopt(pycurl.USERAGENT,
-                               "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0")  #@NOTE: Work-around to old user-agent bug; remove in 0.4.10
 
         if isinstance(self.COOKIES, list):
             set_cookies(self.req.cj, self.COOKIES)
