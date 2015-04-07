@@ -110,9 +110,9 @@ class AbstractEngine(object):
     __name = ""
 
 
-    def __init__(self):
+    def __init__(self, force=False):
         self.setup()
-        self.available = self.find()
+        self.available = True if force else self.find()
 
 
     def setup(self):
@@ -126,7 +126,7 @@ class AbstractEngine(object):
             __import__(cls.__name)
         except Exception:
             try:
-                out, err = cls().eval("print(23+19)")
+                out, err = cls(True).eval("23+19")
             except Exception:
                 res = False
             else:
@@ -137,7 +137,7 @@ class AbstractEngine(object):
         return res
 
 
-    def _eval(args):
+    def _eval(self, args):
         if not self.available:
             return None, "JS Engine \"%s\" not found" % self.__name
 
@@ -151,7 +151,7 @@ class AbstractEngine(object):
             return None, e
 
 
-    def eval(script):
+    def eval(self, script):
         raise NotImplementedError
 
 
@@ -211,7 +211,7 @@ class RhinoEngine(AbstractEngine):
 
     def setup(self):
         jspath = [
-            "/usr/share/java*/js.jar",
+            "/usr/share/java/js.jar",
             "js.jar",
             path.join(pypath, "js.jar")
         ]

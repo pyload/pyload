@@ -326,8 +326,8 @@ class SetupAssistant(object):
 
         print
         print _("Listen address, if you use 127.0.0.1 or localhost, the webinterface will only accessible locally.")
-        self.config.set("webui", "host", self.ask(_("Address"), "0.0.0.0"))
-        self.config.set("webui", "port", self.ask(_("Port"), "8000"))
+        self.config.set("webinterface", "host", self.ask(_("Address"), "0.0.0.0"))
+        self.config.set("webinterface", "port", self.ask(_("Port"), "8000"))
         print
         print _("pyLoad offers several server backends, now following a short explanation.")
         print "- auto:", _("Automatically choose the best webserver for your platform.")
@@ -347,7 +347,7 @@ class SetupAssistant(object):
         else:
             servers = ["auto", "builtin", "threaded", "fastcgi", "lightweight"]
 
-        self.config.set("webui", "server", self.ask(_("Choose webserver"), "auto", servers))
+        self.config.set("webinterface", "server", self.ask(_("Choose webserver"), "auto", servers))
 
 
     def conf_ssl(self):
@@ -363,7 +363,7 @@ class SetupAssistant(object):
 
         ssl = self.ask(_("Activate SSL?"), self.yes, bool=True)
         self.config.set("remote", "ssl", ssl)
-        self.config.set("webui", "ssl", ssl)
+        self.config.set("webinterface", "ssl", ssl)
 
 
     def set_user(self):
@@ -457,13 +457,13 @@ class SetupAssistant(object):
     def print_dep(self, name, value, false="MISSING", true="OK"):
         """ Print Status of dependency """
         if value and isinstance(value, basestring):
-            msg = "%(dep)-12s %(bool)s  (%(info)s)"
+            info = ", ".join(value)
         else:
-            msg = "%(dep)-12s %(bool)s"
+            info = ""
 
-        print msg % {'dep': name + ':',
+        print "%(dep)-12s %(bool)s  (%(info)s)" % {'dep': name + ':',
                      'bool': _(true if value else false).upper(),
-                     'info': ", ".join(value)}
+                     'info': info}
 
 
     def check_module(self, module):

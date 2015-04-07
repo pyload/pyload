@@ -14,9 +14,9 @@ from urllib import unquote
 
 from bottle import route, static_file, request, response, redirect, error
 
-from pyload.webui import PYLOAD, PYLOAD_DIR, THEME_DIR, SETUP, env
+from pyload.webui import PYLOAD, PYLOAD_DIR, THEME_DIR, THEME, SETUP, env
 
-from pyload.utils import render_to_response, parse_permissions, parse_userdata, \
+from pyload.webui.app.utils import render_to_response, parse_permissions, parse_userdata, \
     login_required, get_permission, set_permission, permlist, toDict, set_session
 
 from pyload.webui.filters import relpath, unquotepath
@@ -81,7 +81,7 @@ def error500(error):
 
 @route('/<theme>/<file:re:(.+/)?[^/]+\.min\.[^/]+>')
 def server_min(theme, file):
-    filename = join(THEME_DIR, theme, file)
+    filename = join(THEME_DIR, THEME, theme, file)
     if not isfile(filename):
         file = file.replace(".min.", ".")
     if file.endswith(".js"):
@@ -90,7 +90,7 @@ def server_min(theme, file):
         return server_static(theme, file)
 
 
-@route('/<theme>/<file_static:re:.+\.js>')
+@route('/<theme>/<file:re:.+\.js>')
 def server_js(theme, file):
     response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
 
@@ -111,7 +111,7 @@ def server_static(theme, file):
                                                 time.gmtime(time.time() + 24 * 7 * 60 * 60))
     response.headers['Cache-control'] = "public"
 
-    return static_file(file, root=join(THEME_DIR, theme))
+    return static_file(file, root=join(THEME_DIR, THEME, theme))
 
 
 @route('/favicon.ico')
