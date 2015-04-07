@@ -71,7 +71,8 @@ class SimpleDereferer(Crypter):
         self.html = ""
 
         self.req.setOption("timeout", 120)
-        self.req.http.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0")  #@NOTE: Work-around to old user-agent bug; remove in 0.4.10
+        self.req.http.c.setopt(pycurl.USERAGENT,
+                               "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0")  #@NOTE: Work-around to old user-agent bug; remove in 0.4.10
 
         if isinstance(self.COOKIES, list):
             set_cookies(self.req.cj, self.COOKIES)
