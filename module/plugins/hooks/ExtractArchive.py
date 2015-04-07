@@ -106,7 +106,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.39"
+    __version__ = "1.40"
 
     __config__ = [("activated"      , "bool"              , "Activated"                                 , True                                                                     ),
                   ("fullpath"       , "bool"              , "Extract with full paths"                   , True                                                                     ),
@@ -468,7 +468,7 @@ class ExtractArchive(Hook):
                 deltotrash = self.getConfig('deltotrash')
                 for f in delfiles:
                     file = fs_encode(f)
-                    if not os.path.exists(file)
+                    if not os.path.exists(file):
                         continue
 
                     if not deltotrash:
