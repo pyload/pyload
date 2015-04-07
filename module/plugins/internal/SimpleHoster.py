@@ -3,6 +3,7 @@
 import datetime
 import mimetypes
 import os
+import pycurl
 import re
 import time
 import urllib2
@@ -247,7 +248,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.33"
+    __version__ = "1.34"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -315,7 +316,7 @@ class SimpleHoster(Hoster):
 
 
     @classmethod
-    def parseInfos(cls, urls):  #@TODO: Built-in in 0.4.10 core, then remove from plugins
+    def parseInfos(cls, urls):  #@TODO: Built-in in 0.4.10 core (remove from plugins)
         for url in urls:
             url = replace_patterns(url, cls.URL_REPLACEMENTS)
             yield cls.getInfo(url)
@@ -433,6 +434,7 @@ class SimpleHoster(Hoster):
             self.fail(_("Required account not found"))
 
         self.req.setOption("timeout", 120)
+        self.req.http.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0")
 
         if isinstance(self.COOKIES, list):
             set_cookies(self.req.cj, self.COOKIES)

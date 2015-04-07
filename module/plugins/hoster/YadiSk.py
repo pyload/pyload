@@ -70,7 +70,7 @@ class YadiSk(SimpleHoster):
         result_json = self.load("https://yadi.sk/models/?_m=do-get-resource-url",
                                 post={'idClient': yadisk_idclient,
                                       'version' : yadisk_ver,
-                                      '_model.0': 'do-get-resource-url',
+                                      '_model.0': "do-get-resource-url",
                                       'sk'      : yadisk_sk,
                                       'id.0'    : yadisk_id})
 
