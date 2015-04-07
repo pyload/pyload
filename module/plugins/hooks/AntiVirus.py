@@ -85,7 +85,7 @@ class AntiVirus(Hook):
                             send2trash.send2trash(file)
 
                         else:
-                            self.logWarning("Unable to move file to trash, move to quarantine instead")
+                            self.logWarning(_("Unable to move file to trash, move to quarantine instead"))
                             pyfile.setCustomStatus(_("file moving"))
                             shutil.move(file, self.getConfig('quardir'))
 
