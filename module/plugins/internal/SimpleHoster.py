@@ -239,7 +239,7 @@ def secondsToMidnight(gmt=0):
 
     if hasattr(td, 'total_seconds'):
         res = td.total_seconds()
-    else:  #: work-around for python 2.5 and 2.6 missing datetime.timedelta.total_seconds
+    else:  #@NOTE: work-around for python 2.5 and 2.6 missing datetime.timedelta.total_seconds
         res = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
 
     return int(res)
@@ -434,7 +434,7 @@ class SimpleHoster(Hoster):
             self.fail(_("Required account not found"))
 
         self.req.setOption("timeout", 120)
-        self.req.http.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0")
+        self.req.http.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0")  #@NOTE: Work-around to old user-agent bug; remove in 0.4.10
 
         if isinstance(self.COOKIES, list):
             set_cookies(self.req.cj, self.COOKIES)
@@ -500,7 +500,7 @@ class SimpleHoster(Hoster):
                 raise Fail(e)
 
 
-    #: Work-around to `filename*=UTF-8` bug; remove in 0.4.10
+    #@NOTE: Work-around to `filename*=UTF-8` bug; remove in 0.4.10
     def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=False):
         try:
             if disposition:
