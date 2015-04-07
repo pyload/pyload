@@ -444,7 +444,7 @@ class Core(object):
         self.db.manager = self.files #ugly?
 
     def init_webserver(self):
-        if self.config['webinterface']['activated']:
+        if self.config['webui']['activated']:
             self.webserver = WebServer(self)
             self.webserver.start()
 
@@ -547,7 +547,7 @@ class Core(object):
     def shutdown(self):
         self.log.info(_("shutting down..."))
         try:
-            if self.config['webinterface']['activated'] and hasattr(self, "webserver"):
+            if self.config['webui']['activated'] and hasattr(self, "webserver"):
                 self.webserver.quit()
 
             for thread in list(self.threadManager.threads):
