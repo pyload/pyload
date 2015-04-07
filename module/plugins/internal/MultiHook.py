@@ -2,6 +2,7 @@
 
 import re
 import time
+import traceback
 
 from module.plugins.Hook import Hook
 from module.utils import decode, remove_chars
@@ -10,7 +11,7 @@ from module.utils import decode, remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.41"
+    __version__ = "0.42"
 
     __config__  = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                    ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -188,7 +189,7 @@ class MultiHook(Hook):
         except Exception, e:
             self.core.log.error(_("Error executing hooks: %s") % str(e))
             if self.core.debug:
-                print_exc()
+                traceback.print_exc()
 
         self.cb = self.core.scheduler.addJob(self.interval, self._periodical)
 

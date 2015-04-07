@@ -4,9 +4,9 @@ from __future__ import with_statement
 
 import os
 import sys
+import traceback
 
 from copy import copy
-from traceback import print_exc
 
 # monkey patch bug in python 2.6 and lower
 # http://bugs.python.org/issue6122 , http://bugs.python.org/issue1236 , http://bugs.python.org/issue1731717
@@ -177,12 +177,12 @@ class ExtractArchive(Hook):
                 else:
                     self.logWarning(_("Could not activate: %s") % p, e)
                     if self.core.debug:
-                        print_exc()
+                        traceback.print_exc()
 
             except Exception, e:
                 self.logWarning(_("Could not activate: %s") % p, e)
                 if self.core.debug:
-                    print_exc()
+                    traceback.print_exc()
 
         if self.extractors:
             self.logInfo(_("Activated") + " " + "|".join("%s %s" % (Extractor.__name__, Extractor.VERSION) for Extractor in self.extractors))
@@ -497,7 +497,7 @@ class ExtractArchive(Hook):
         except Exception, e:
             self.logError(name, _("Unknown error"), e)
             if self.core.debug:
-                print_exc()
+                traceback.print_exc()
 
         self.manager.dispatchEvent("archive_extract_failed", pyfile, archive)
 

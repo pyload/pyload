@@ -4,8 +4,7 @@ from __future__ import with_statement
 
 import os
 import re
-
-from traceback import print_exc
+import traceback
 
 from module.plugins.Hook import Hook, threaded
 from module.utils import save_join
@@ -75,7 +74,7 @@ class MergeFiles(Hook):
                         self.logDebug("Finished merging part", splitted_file)
 
                     except Exception, e:
-                        print_exc()
+                        traceback.print_exc()
 
                     finally:
                         pyfile.setProgress(100)
