@@ -20,12 +20,12 @@ class WebServer(threading.Thread):
         self.core = pycore
         core = pycore
         self.running = True
-        self.server = pycore.config['webinterface']['server']
-        self.https = pycore.config['webinterface']['https']
+        self.server = pycore.config['webui']['server']
+        self.https = pycore.config['webui']['https']
         self.cert = pycore.config["ssl"]["cert"]
         self.key = pycore.config["ssl"]["key"]
-        self.host = pycore.config['webinterface']['host']
-        self.port = pycore.config['webinterface']['port']
+        self.host = pycore.config['webui']['host']
+        self.port = pycore.config['webui']['port']
 
         self.setDaemon(True)
 
@@ -66,7 +66,7 @@ class WebServer(threading.Thread):
                     self.server = "builtin"
             else:
                 self.core.log.info(_("Server set to threaded, due to known performance problems on windows."))
-                self.core.config['webinterface']['server'] = "threaded"
+                self.core.config['webui']['server'] = "threaded"
                 self.server = "threaded"
 
         if self.server == "threaded":
