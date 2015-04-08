@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from module.common.json_layer import json_loads
+import re
+
 from module.plugins.internal.MultiHook import MultiHook
 
 
-class FastixRu(MultiHook):
-    __name__    = "FastixRu"
+class EasybytezComHook(MultiHook):
+    __name__    = "EasybytezComHook"
     __type__    = "hook"
-    __version__ = "0.05"
+    __version__ = "0.07"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
@@ -15,15 +16,15 @@ class FastixRu(MultiHook):
                   ("reload"        , "bool"               , "Reload plugin list"                  , True ),
                   ("reloadinterval", "int"                , "Reload interval in hours"            , 12   )]
 
-    __description__ = """Fastix.ru hook plugin"""
+    __description__ = """EasyBytez.com hook plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("Massimo Rosamilia", "max@spiritix.eu")]
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def getHosters(self):
-        html = self.getURL("http://fastix.ru/api_v2",
-                      get={'apikey': "5182964c3f8f9a7f0b00000a_kelmFB4n1IrnCDYuIFn2y",
-                           'sub'   : "allowed_sources"})
-        host_list = json_loads(html)
-        host_list = host_list['allow']
-        return host_list
+        user, data = self.account.selectAccount()
+
+        req  = self.account.getAccountRequest(user)
+        html = req.load("http://www.easybytez.com")
+
+        return re.search(r'</textarea>\s*Supported sites:(.*)', html).group(1).split(',')

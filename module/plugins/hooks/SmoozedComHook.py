@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from module.common.json_layer import json_loads
 from module.plugins.internal.MultiHook import MultiHook
 
 
-class NoPremiumPl(MultiHook):
-    __name__    = "NoPremiumPl"
+class SmoozedComHook(MultiHook):
+    __name__    = "SmoozedComHook"
     __type__    = "hook"
     __version__ = "0.03"
 
@@ -15,15 +14,11 @@ class NoPremiumPl(MultiHook):
                   ("reload"        , "bool"               , "Reload plugin list"                  , True ),
                   ("reloadinterval", "int"                , "Reload interval in hours"            , 12   )]
 
-    __description__ = """NoPremium.pl hook plugin"""
+    __description__ = """Smoozed.com hook plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("goddie", "dev@nopremium.pl")]
+    __authors__     = [("", "")]
 
 
     def getHosters(self):
-        hostings         = json_loads(self.getURL("https://www.nopremium.pl/clipboard.php?json=3").strip())
-        hostings_domains = [domain for row in hostings for domain in row["domains"] if row["sdownload"] == "0"]
-
-        self.logDebug(hostings_domains)
-
-        return hostings_domains
+        user, data = self.account.selectAccount()
+        return self.account.getAccountInfo(user)["hosters"]

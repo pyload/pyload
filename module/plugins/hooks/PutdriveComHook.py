@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hooks.ZeveraCom import ZeveraCom
+from module.plugins.hooks.ZeveraComHook import ZeveraComHook
 
 
-class PutdriveCom(ZeveraCom):
-    __name__    = "PutdriveCom"
+class PutdriveComHook(ZeveraComHook):
+    __name__    = "PutdriveComHook"
     __type__    = "hook"
     __version__ = "0.01"
 

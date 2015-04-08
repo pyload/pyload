@@ -11,7 +11,7 @@ from module.utils import decode, remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.42"
+    __version__ = "0.43"
 
     __config__  = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                    ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -71,16 +71,15 @@ class MultiHook(Hook):
 
 
     def initPlugin(self):
-        plugin, type = self.core.pluginManager.findPlugin(self.__name__)
+        self.pluginname         = self.__name__.rsplit("Hook", 1)[0]
+        plugin, self.plugintype = self.core.pluginManager.findPlugin(self.pluginname)
 
-        if not plugin:
+        if plugin:
+            self.pluginmodule = self.core.pluginManager.loadModule(type, self.pluginname)
+            self.pluginclass  = getattr(self.pluginmodule, self.pluginname)
+        else:
             self.logWarning("Hook plugin will be deactivated due missing plugin reference")
             self.setConfig('activated', False)
-        else:
-            self.pluginname   = self.__name__
-            self.plugintype   = type
-            self.pluginmodule = self.core.pluginManager.loadModule(type, self.__name__)
-            self.pluginclass  = getattr(self.pluginmodule, self.__name__)
 
 
     def loadAccount(self):

@@ -3,8 +3,8 @@
 from module.plugins.internal.MultiHook import MultiHook
 
 
-class FreeWayMe(MultiHook):
-    __name__    = "FreeWayMe"
+class FreeWayMeHook(MultiHook):
+    __name__    = "FreeWayMeHook"
     __type__    = "hook"
     __version__ = "0.15"
 

@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import re
-
 from module.plugins.internal.MultiHook import MultiHook
 
 
-class DebridItaliaCom(MultiHook):
-    __name__    = "DebridItaliaCom"
+class PremiumToHook(MultiHook):
+    __name__    = "PremiumToHook"
     __type__    = "hook"
-    __version__ = "0.12"
+    __version__ = "0.08"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
@@ -16,11 +14,14 @@ class DebridItaliaCom(MultiHook):
                   ("reload"        , "bool"               , "Reload plugin list"                  , True ),
                   ("reloadinterval", "int"                , "Reload interval in hours"            , 12   )]
 
-    __description__ = """Debriditalia.com hook plugin"""
+    __description__ = """Premium.to hook plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("stickell"      , "l.stickell@yahoo.it"),
-                       ("Walter Purcaro", "vuolter@gmail.com"  )]
+    __authors__     = [("RaNaN"   , "RaNaN@pyload.org"   ),
+                       ("zoidberg", "zoidberg@mujmail.cz"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     def getHosters(self):
-        return self.getURL("http://debriditalia.com/api.php", get={'hosts': ""}).replace('"', '').split(',')
+        html = self.getURL("http://premium.to/api/hosters.php",
+                      get={'username': self.account.username, 'password': self.account.password})
+        return [x.strip() for x in html.replace("\"", "").split(";")]

@@ -4,8 +4,8 @@ from module.common.json_layer import json_loads
 from module.plugins.internal.MultiHook import MultiHook
 
 
-class UnrestrictLi(MultiHook):
-    __name__    = "UnrestrictLi"
+class SimplyPremiumComHook(MultiHook):
+    __name__    = "SimplyPremiumComHook"
     __type__    = "hook"
     __version__ = "0.05"
 
@@ -13,16 +13,17 @@ class UnrestrictLi(MultiHook):
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
                   ("revertfailed"  , "bool"               , "Revert to standard download if fails", True ),
                   ("reload"        , "bool"               , "Reload plugin list"                  , True ),
-                  ("reloadinterval", "int"                , "Reload interval in hours"            , 12   ),
-                  ("history"       , "bool"               , "Delete History"                      , False)]
+                  ("reloadinterval", "int"                , "Reload interval in hours"            , 12   )]
 
-    __description__ = """Unrestrict.li hook plugin"""
+    __description__ = """Simply-Premium.com hook plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+    __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
     def getHosters(self):
-        json_data = self.getURL("http://unrestrict.li/api/jdownloader/hosts.php", get={'format': "json"})
+        json_data = self.getURL("http://www.simply-premium.com/api/hosts.php", get={'format': "json", 'online': 1})
         json_data = json_loads(json_data)
 
-        return [element['host'] for element in json_data['result']]
+        host_list = [element['regex'] for element in json_data['result']]
+
+        return host_list

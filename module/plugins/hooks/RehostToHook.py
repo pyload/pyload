@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.common.json_layer import json_loads
 from module.plugins.internal.MultiHook import MultiHook
 
 
-class SimplyPremiumCom(MultiHook):
-    __name__    = "SimplyPremiumCom"
+class RehostToHook(MultiHook):
+    __name__    = "RehostToHook"
     __type__    = "hook"
-    __version__ = "0.05"
+    __version__ = "0.50"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
@@ -15,15 +14,14 @@ class SimplyPremiumCom(MultiHook):
                   ("reload"        , "bool"               , "Reload plugin list"                  , True ),
                   ("reloadinterval", "int"                , "Reload interval in hours"            , 12   )]
 
-    __description__ = """Simply-Premium.com hook plugin"""
+    __description__ = """Rehost.to hook plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
+    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
     def getHosters(self):
-        json_data = self.getURL("http://www.simply-premium.com/api/hosts.php", get={'format': "json", 'online': 1})
-        json_data = json_loads(json_data)
-
-        host_list = [element['regex'] for element in json_data['result']]
-
-        return host_list
+        user, data = self.account.selectAccount()
+        html = self.getURL("http://rehost.to/api.php",
+                           get={'cmd'     : "get_supported_och_dl",
+                                'long_ses': self.account.getAccountInfo(user)['session']})
+        return [x.strip() for x in html.replace("\"", "").split(",")]

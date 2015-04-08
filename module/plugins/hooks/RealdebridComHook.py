@@ -3,8 +3,8 @@
 from module.plugins.internal.MultiHook import MultiHook
 
 
-class RealdebridCom(MultiHook):
-    __name__    = "RealdebridCom"
+class RealdebridComHook(MultiHook):
+    __name__    = "RealdebridComHook"
     __type__    = "hook"
     __version__ = "0.46"
 

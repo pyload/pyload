@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hooks.ZeveraCom import ZeveraCom
+from module.plugins.hooks.ZeveraComHook import ZeveraComHook
 
 
-class MultihostersCom(ZeveraCom):
-    __name__    = "MultihostersCom"
+class MultihostersComHook(ZeveraComHook):
+    __name__    = "MultihostersComHook"
     __type__    = "hook"
     __version__ = "0.02"
 

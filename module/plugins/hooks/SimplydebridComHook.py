@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import re
-
 from module.plugins.internal.MultiHook import MultiHook
 
 
-class EasybytezCom(MultiHook):
-    __name__    = "EasybytezCom"
+class SimplydebridComHook(MultiHook):
+    __name__    = "SimplydebridComHook"
     __type__    = "hook"
-    __version__ = "0.07"
+    __version__ = "0.04"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
@@ -16,15 +14,11 @@ class EasybytezCom(MultiHook):
                   ("reload"        , "bool"               , "Reload plugin list"                  , True ),
                   ("reloadinterval", "int"                , "Reload interval in hours"            , 12   )]
 
-    __description__ = """EasyBytez.com hook plugin"""
+    __description__ = """Simply-Debrid.com hook plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
     def getHosters(self):
-        user, data = self.account.selectAccount()
-
-        req  = self.account.getAccountRequest(user)
-        html = req.load("http://www.easybytez.com")
-
-        return re.search(r'</textarea>\s*Supported sites:(.*)', html).group(1).split(',')
+        html = self.getURL("http://simply-debrid.com/api.php", get={'list': 1})
+        return [x.strip() for x in html.rstrip(';').replace("\"", "").split(";")]
