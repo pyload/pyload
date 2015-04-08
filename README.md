@@ -1,21 +1,48 @@
-[![pyLoad](/docs/resources/banner.png "pyLoad")](http://pyload.org/)
-====================================================================
+<p align="center"><a href="http://pyload.org/"><img src="/docs/resources/banner.png" alt="pyLoad" /></a></p>
 
 [![Translation Status](http://translate.pyload.org/badges/pyload/localized.png "Translation Status")](http://translate.pyload.org/project/pyload/)
 
 **pyLoad** is a Free and Open Source download manager written in Python and designed to be extremely lightweight.
 
-Its friendly Web User Interface allows full managing and easily remote access from anywhere!
 
-pyLoad was developed to run on NAS, next-gen routers and headless home servers, whatever device able to connect to internet
-and supporting the Python programming language, so it's available for all kind of operating systems and a wide range of hardware platforms;
-you can even install on your PC or Mac if you want and control it entirely by web in the same way.
+Table of contents
+-----------------
+
+ - [Description](#description)
+ - [Download](#download)
+ - [Installation](#installation)
+ - [Dependencies](#dependencies)
+   - [Required](#required)
+   - [Optional](#optional)
+ - [Usage](#usage)
+   - [First Start](#first-start)
+   - [Web User Interface](#web-user-interface)
+   - [Command Line Interface](#command-line-interface)
+ - [Development](#development)
+ - [Translations](#translations)
+   - [Send a tip for translators](#send-a-tip-for-translators)
+   - [Update templates](#update-templates)
+   - [Retrieve PO files](#retrieve-po-files)
+   - [Compile PO files](#compile-po-files)
+ - [Licensing](#licensing)
+   - [Main program](#main-program)
+   - [Plugins](#plugins)
+ - [Plugin policy](#plugin-policy)
+ - [Credits](#credits)
+
+
+Description
+-----------
+
+**pyLoad** was developed to run on any device able to connect to internet and supporting the Python programming language.
+That's mean it's available for a really wide range of hardware platforms and operating systems.
+You can control it entirely by web on its friendly Web User Interface.
 
 All common video-sites, one-click-hosters, container formats and well known web standards are supported to allow you to download your files.
 Additionaly, pyLoad has a great variety of plugins to automate common tasks and make unattended running possible.
 
 pyLoad has a fully featured and well documented Application Programming Interface, easily extendable and accessible by external tools, cross-platform apps or other softwares.
-Just take a look to the [Development section](https://github.com/pyload/pyload/tree/master#development) for more info about that.
+Just take a look to the [Development section](#development) for more info about that.
 
 For news, wiki, forum and further info visit the pyLoad website: <http://pyload.org/>.
 
@@ -26,26 +53,28 @@ Download
 --------
 
 > **Note:**
-> You need **at least Python 2.5** or **at most Python 2.7** to run pyLoad and its required software dependencies.
->> **Python 3** and **PyPy** are not yet supported.
-
-Pre-build packages are provided with all the software dependencies required to run pyLoad flawlessly on the referenced platform, Python included.
-
-But you can even get the source code here and manually install the required packages afterwards.
-Please refer to the [Dependencies section](https://github.com/pyload/pyload/tree/master#dependencies) for more info about that.
-
-> **Note:**
 > If you wanna use pyLoad on Windows, it's hightly recommented to install the latest **official** pre-build package for that platform.
 
- - **Pre-build packages**: <https://github.com/pyload/pyload/releases>.
- - **Latest stable version** (source code): <https://github.com/pyload/pyload/archive/stable.zip>.
- - **Latest development version** (source code): <https://github.com/pyload/pyload/archive/master.zip>.
+Release                                      | Download
+-------------------------------------------- | -----------------------------------------------------
+Pre-build packages                           | <https://github.com/pyload/pyload/releases>
+Latest stable version (source code)          | <https://github.com/pyload/pyload/archive/stable.zip>
+Latest development version (source code)     | <https://github.com/pyload/pyload/archive/master.zip>
+
+Pre-build packages are provided with all the software dependencies required to run pyLoad flawlessly on the referenced platform.
+If you choose a source code, at least you need to have the proper Python version installed on your platform before launch pyLoad.
 
 
 Installation
 ------------
 
-...
+pyLoad currently works under:
+
+ - [ ] PyPy
+ - [x] **Python 2.5**
+ - [x] **Python 2.6**
+ - [x] **Python 2.7**
+ - [ ] Python 3
 
 You can install any missing software package from the *Python Package Index* typing:
 
