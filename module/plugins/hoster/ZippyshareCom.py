@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+from urllib import unquote
 
 from BeautifulSoup import BeautifulSoup
 
@@ -51,6 +52,9 @@ class ZippyshareCom(SimpleHoster):
 
         else:
             self.link = self.get_link()
+
+        if  pyfile.name == 'file.html' and self.link:
+            pyfile.name = unquote(self.link.split('/')[-1])
 
 
     def get_link(self):
