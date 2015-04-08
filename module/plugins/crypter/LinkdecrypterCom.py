@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from module.plugins.Crypter import Crypter
 
 

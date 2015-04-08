@@ -5,11 +5,9 @@ import mimetypes
 import os
 import re
 import time
+import urllib
 import urllib2
-
-from inspect import isclass
-from urllib import unquote
-from urlparse import urljoin, urlparse
+import urlparse
 
 from module.PyFile import statusMap as _statusMap
 from module.network.CookieJar import CookieJar
@@ -109,8 +107,8 @@ def parseFileInfo(plugin, url="", html=""):
         info = plugin.getInfo(url, html)
         res  = info['name'], info['size'], info['status'], info['url']
     else:
-        url   = unquote(url)
-        url_p = urlparse(url)
+        url   = urllib.unquote(url)
+        url_p = urlparse.urlparse(url)
         res   = ((url_p.path.split('/')[-1]
                   or url_p.query.split('=', 1)[::-1][0].split('&', 1)[0]
                   or url_p.netloc.split('.', 1)[0]),
@@ -186,10 +184,10 @@ def getFileURL(self, url, follow_location=None):
         elif 'location' in header and header['location'].strip():
             location = header['location']
 
-            if not urlparse(location).scheme:
-                url_p    = urlparse(url)
+            if not urlparse.urlparse(location).scheme:
+                url_p    = urlparse.urlparse(url)
                 baseurl  = "%s://%s" % (url_p.scheme, url_p.netloc)
-                location = urljoin(baseurl, location)
+                location = urlparse.urljoin(baseurl, location)
 
             if 'code' in header and header['code'] == 302:
                 link = location
@@ -199,7 +197,7 @@ def getFileURL(self, url, follow_location=None):
                 continue
 
         else:
-            extension = os.path.splitext(urlparse(url).path.split('/')[-1])[-1]
+            extension = os.path.splitext(urlparse.urlparse(url).path.split('/')[-1])[-1]
 
             if 'content-type' in header and header['content-type'].strip():
                 mimetype = header['content-type'].split(';')[0].strip()
@@ -247,7 +245,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.35"
+    __version__ = "1.36"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -323,8 +321,8 @@ class SimpleHoster(Hoster):
 
     @classmethod
     def apiInfo(cls, url="", get={}, post={}):
-        url   = unquote(url)
-        url_p = urlparse(url)
+        url   = urllib.unquote(url)
+        url_p = urlparse.urlparse(url)
         return {'name'  : (url_p.path.split('/')[-1]
                            or url_p.query.split('=', 1)[::-1][0].split('&', 1)[0]
                            or url_p.netloc.split('.', 1)[0]),
@@ -391,7 +389,7 @@ class SimpleHoster(Hoster):
             info['status'] = 2
 
             if 'N' in info['pattern']:
-                info['name'] = replace_patterns(unquote(info['pattern']['N'].strip()),
+                info['name'] = replace_patterns(urllib.unquote(info['pattern']['N'].strip()),
                                                 cls.NAME_REPLACEMENTS)
 
             if 'S' in info['pattern']:
@@ -503,7 +501,9 @@ class SimpleHoster(Hoster):
         try:
             if disposition:
                 content = urllib2.urlopen(url).info()['Content-Disposition'].split(';')
-                self.pyfile.name = content[1].split('filename=')[1][1:-1] or self.pyfile.name
+                self.pyfile.name = (content[1].split('filename=')[1][1:-1]
+                                    or urlparse.urlparse(urllib.unquote(url)).path.split('/')[-1]
+                                    or self.pyfile.name)
         finally:
             return super(SimpleHoster, self).download(url, get, post, ref, cookies, False)
 
@@ -512,10 +512,10 @@ class SimpleHoster(Hoster):
         if link and isinstance(link, basestring):
             self.correctCaptcha()
 
-            if not urlparse(link).scheme:
-                url_p   = urlparse(self.pyfile.url)
+            if not urlparse.urlparse(link).scheme:
+                url_p   = urlparse.urlparse(self.pyfile.url)
                 baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
-                link    = urljoin(baseurl, link)
+                link    = urlparse.urljoin(baseurl, link)
 
             self.download(link, ref=False, disposition=disposition)
 
@@ -679,7 +679,6 @@ class SimpleHoster(Hoster):
 
         if link:
             self.logInfo(_("Direct download link detected"))
-
             self.link = link
         else:
             self.logDebug("Direct download link not found")

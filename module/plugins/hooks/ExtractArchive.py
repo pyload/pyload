@@ -173,7 +173,7 @@ class ExtractArchive(Hook):
 
             except OSError, e:
                 if e.errno == 2:
-                    self.logInfo(_("No %s installed") % p)
+                    self.logWarning(_("No %s installed") % p)
                 else:
                     self.logWarning(_("Could not activate: %s") % p, e)
                     if self.core.debug:
@@ -185,7 +185,7 @@ class ExtractArchive(Hook):
                     traceback.print_exc()
 
         if self.extractors:
-            self.logInfo(_("Activated") + " " + "|".join("%s %s" % (Extractor.__name__, Extractor.VERSION) for Extractor in self.extractors))
+            self.logDebug(*["Found %s %s" % (Extractor.__name__, Extractor.VERSION) for Extractor in self.extractors])
             self.extractQueued()  #: Resume unfinished extractions
         else:
             self.logInfo(_("No Extract plugins activated"))
