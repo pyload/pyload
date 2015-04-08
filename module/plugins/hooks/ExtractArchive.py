@@ -106,7 +106,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.40"
+    __version__ = "1.41"
 
     __config__ = [("activated"      , "bool"              , "Activated"                                 , True                                                                     ),
                   ("fullpath"       , "bool"              , "Extract with full paths"                   , True                                                                     ),
@@ -154,7 +154,7 @@ class ExtractArchive(Hook):
             import send2trash
 
         except ImportError:
-            self.logDebug(name, _("Send2Trash lib not found"))
+            self.logDebug("Send2Trash lib not found")
             self.trashable = False
 
         else:

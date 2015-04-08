@@ -11,7 +11,7 @@ from module.utils import fs_encode, save_join
 class AntiVirus(Hook):
     __name__    = "AntiVirus"
     __type__    = "hook"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     #@TODO: add trash option (use Send2Trash lib)
     __config__ = [("action"    , "Antivirus default;Delete;Quarantine", "Manage infected files"                     , "Antivirus default"),
@@ -37,7 +37,7 @@ class AntiVirus(Hook):
             import send2trash
 
         except ImportError:
-            self.logDebug(name, _("Send2Trash lib not found"))
+            self.logDebug("Send2Trash lib not found")
             self.trashable = False
 
         else:
