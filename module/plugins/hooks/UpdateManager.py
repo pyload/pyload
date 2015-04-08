@@ -117,7 +117,7 @@ class UpdateManager(Hook):
             return getURL(self.SERVER_URL, get={'v': self.core.api.getServerVersion()}).splitlines()
 
         except Exception:
-            self.logWarning(_("Unable to contact server to get updates"))
+            self.logWarning(_("Unable to retrieve server to get updates"))
 
 
     @Expose
@@ -258,7 +258,7 @@ class UpdateManager(Hook):
             if self.core.pluginManager.reloadPlugins(updated):
                 exitcode = 1
             else:
-                self.logWarning(_("pyLoad restart required to reload the updated plugins"))
+                self.logWarning(_("Restart pyLoad to reload the updated plugins"))
                 self.info['plugins'] = True
                 exitcode = 2
 
