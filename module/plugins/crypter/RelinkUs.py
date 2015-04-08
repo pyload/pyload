@@ -153,7 +153,7 @@ class RelinkUs(Crypter):
 
         # Try to get info from web
         m = re.search(self.FILE_TITLE_REGEX, self.html)
-        if m is not None:
+        if m:
             title = m.group(1).strip()
             if not self.FILE_NOTITLE in title:
                 name = folder = title
@@ -198,7 +198,7 @@ class RelinkUs(Crypter):
         self.logDebug("Search for CNL2 links")
         package_links = []
         m = re.search(self.CNL2_FORM_REGEX, self.html, re.S)
-        if m is not None:
+        if m:
             cnl2_form = m.group(1)
             try:
                 (vcrypted, vjk) = self._getCipherParams(cnl2_form)
@@ -213,7 +213,7 @@ class RelinkUs(Crypter):
         self.logDebug("Search for DLC links")
         package_links = []
         m = re.search(self.DLC_LINK_REGEX, self.html)
-        if m is not None:
+        if m:
             container_url = self.DLC_DOWNLOAD_URL + "?id=%s&dlc=1" % self.fileid
             self.logDebug("Downloading DLC container link [%s]" % container_url)
             try:

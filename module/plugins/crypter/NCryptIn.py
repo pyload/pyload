@@ -108,7 +108,7 @@ class NCryptIn(Crypter):
 
     def isProtected(self):
         form = re.search(r'<form.*?name.*?protected.*?>(.*?)</form>', self.cleanedHtml, re.S)
-        if form is not None:
+        if form:
             content = form.group(1)
             for keyword in ("password", "captcha"):
                 if keyword in content:

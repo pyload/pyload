@@ -48,7 +48,7 @@ class EuroshareEu(SimpleHoster):
 
 
     def handleFree(self, pyfile):
-        if re.search(self.ERR_PARDL_PATTERN, self.html) is not None:
+        if re.search(self.ERR_PARDL_PATTERN, self.html):
             self.longWait(5 * 60, 12)
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)

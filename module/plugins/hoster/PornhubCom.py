@@ -83,7 +83,7 @@ class PornhubCom(Hoster):
         if not self.html:
             self.download_html()
 
-        if re.search(r'This video is no longer in our database or is in conversion', self.html) is not None:
+        if re.search(r'This video is no longer in our database or is in conversion', self.html):
             return False
         else:
             return True
