@@ -52,15 +52,15 @@ document.addEvent("domready", function(){
     </div>
     {% set progress = (package.linksdone * 100) / package.linkstotal %}
 
-    <div id="progress" class="progress" style="float:left; width: 50%; margin-top: -5px;">
-        <div class="progress-bar" role="progressbar" style="width: {{ progress }}%; height: 100%;">
-                <label>
-                {{ package.linksdone }} / {{ package.linkstotal }}</label>
+    <div id="progress" class="progress" style="float:left; width: 50%; margin-top: -5px; color:#fff; font-weight: 700; font-size:12px;">
+        <div class="progress-bar" role="progressbar" style="width: {{ progress }}%; height: 100%; position: relative; z-index: 1;">
+            <label>{{ package.linksdone }} / {{ package.linkstotal }}</label>
         </div>
-        <label style="padding-right: 5px ;float: right;">
-        {{ package.sizedone|formatsize }} / {{ package.sizetotal|formatsize }}</label>
+        <label style="right: 30px; position: absolute; z-index: 2; color:#fff;">
+            {{ package.sizedone|formatsize }} / {{ package.sizetotal|formatsize }}</label>
         </div>
     <div style="clear: both; margin-bottom: -10px"></div>
+    
 
     <div id="children_{{package.pid}}" style="display: none; margin-bottom: 15px;" class="children">
     <span class="child_secrow" style="margin-bottom: 30px; margin-top: 5px;">{{_("Folder:")}} <span class="folder">{{package.folder}}</span> | {{_("Password:")}} <span class="password">{{package.password}}</span></span>
