@@ -6,15 +6,15 @@ from urllib2 import unquote
 
 def get_filename_from_content_disposition(header):
     """Parse request header to retrieve filename from content disposition"""
-    for line in header.splitlines():
+    for orgline in header.splitlines():
 
-        if line.startswith("Content-Disposition"):
+        if orgline.startswith("Content-Disposition"):
             filename = ''
-            if "filename=" in line:
-                m = re.match(r".*filename=\"(.*)\"", line)
+            if "filename=" in orgline:
+                m = re.match(r".*filename=\"(.*)\"", orgline)
                 filename = m.group(1)
-            if "filename*=" in line:
-                m = re.match(r".*filename\*=UTF-8''(.*)", line)
+            if "filename*=" in orgline:
+                m = re.match(r".*filename\*=UTF-8''(.*)", orgline)
                 filename = unquote(m.group(1))
             #split for directory traversal
             return filename.split('/')[-1].lower()
