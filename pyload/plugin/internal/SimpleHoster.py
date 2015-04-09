@@ -437,7 +437,7 @@ class SimpleHoster(Hoster):
             set_cookies(self.req.cj, self.COOKIES)
 
         if (self.MULTI_HOSTER
-            and (self.__pattern != self.core.pluginManager.hosterPlugins[self.__name]['pattern']
+            and (self.__pattern != self.core.pluginManager.hosterPlugins[self.__class__.__name__]['pattern']
                  or re.match(self.__pattern, self.pyfile.url) is None)):
             self.multihost = True
             return

@@ -60,7 +60,9 @@ class PluginManager(object):
             self.plugins[type] = self.parse(type)
             setattr(self, "%sPlugins" % type, self.plugins[type])
 
-        self.plugins['addon'] = self.addonPlugins.update(self.hookPlugins)
+        # ???????? i don't understand this
+        # self.plugins['addon'] = self.addonPlugins.update(self.hookPlugins)
+        # ????????
 
         self.core.log.debug("Created index of plugins")
 

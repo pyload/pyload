@@ -176,7 +176,7 @@ class AccountManager(object):
             if self.accounts[p]:
                 p = self.getAccountPlugin(p)
                 if p:
-                    data[p.__name] = p.getAllAccounts(force)
+                    data[p.__class__.__name__] = p.getAllAccounts(force)
                 else:  #@NOTE: When an account has been skipped, p is None
                     data[p] = []
             else:

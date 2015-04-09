@@ -46,7 +46,7 @@ class JsEngine(object):
         elif isinstance(engine, basestring):
             engine_name = engine.lower()
             for E in ENGINES:
-                if E.__name == engine_name:  #: doesn't check if E(NGINE) is available, just convert string to class
+                if E._name == engine_name:  #: doesn't check if E(NGINE) is available, just convert string to class
                     JSE = E
                     break
             else:
@@ -88,14 +88,14 @@ class JsEngine(object):
 
         if self.core.config.get("general", "debug"):
             if err:
-                self.core.log.debug(JSE.__name + ":", err)
+                self.core.log.debug(JSE._name + ":", err)
 
             engines = self.find()
             engines.remove(JSE)
             for E in engines:
                 out, err = E.eval(script)
                 res = err or out
-                self.core.log.debug(E.__name + ":", res)
+                self.core.log.debug(E._name + ":", res)
                 results.append(res)
 
             if len(results) > 1 and len(uniqify(results)) > 1:
@@ -107,7 +107,7 @@ class JsEngine(object):
 class AbstractEngine(object):
     """ JSE base class """
 
-    __name = ""
+    _name = ""
 
 
     def __init__(self, force=False):
@@ -139,7 +139,7 @@ class AbstractEngine(object):
 
     def _eval(self, args):
         if not self.available:
-            return None, "JS Engine \"%s\" not found" % self.__name
+            return None, "JS Engine \"%s\" not found" % self._name
 
         try:
             p = subprocess.Popen(args,
@@ -162,7 +162,7 @@ class Pyv8Engine(AbstractEngine):
 
     def eval(self, script):
         if not self.available:
-            return None, "JS Engine \"%s\" not found" % self.__name
+            return None, "JS Engine \"%s\" not found" % self._name
 
         try:
             rt = PyV8.JSContext()

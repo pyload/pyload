@@ -98,7 +98,7 @@ class Addon(Base):
 
 
     def __repr__(self):
-        return "<Addon %s>" % self.__name
+        return "<Addon %s>" % self.__class__.__name__
 
 
     def setup(self):
@@ -117,7 +117,7 @@ class Addon(Base):
 
     def isActivated(self):
         """ checks if addon is activated"""
-        return self.core.config.getPlugin(self.__name, "activated")
+        return self.core.config.getPlugin(self.__class__.__name__, "activated")
 
 
     # Event methods - overwrite these if needed

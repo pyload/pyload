@@ -79,3 +79,4 @@ eggs
 _build/
 module/
 paver-minilib.zip
+/setup.sh

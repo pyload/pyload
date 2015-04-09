@@ -83,15 +83,15 @@ class UpdateManager(Addon):
     def autoreloadPlugins(self):
         """ reload and reindex all modified plugins """
         modules = filter(
-            lambda m: m and (m.__name.startswith("module.plugins.") or
-                             m.__name.startswith("userplugins.")) and
-                             m.__name.count(".") >= 2, sys.modules.itervalues()
+            lambda m: m and (m.__name__.startswith("module.plugins.") or
+                             m.__name__.startswith("userplugins.")) and
+                             m.__name__.count(".") >= 2, sys.modules.itervalues()
         )
 
         reloads = []
 
         for m in modules:
-            root, type, name = m.__name.rsplit(".", 2)
+            root, type, name = m.__name__.rsplit(".", 2)
             id = (type, name)
             if type in self.core.pluginManager.plugins:
                 f = m.__file__.replace(".pyc", ".py")

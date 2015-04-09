@@ -31,7 +31,7 @@ class XFSCrypter(SimpleCrypter):
             if self.account:
                 account      = self.account
             else:
-                account_name = (self.__name + ".py").replace("Folder.py", "").replace(".py", "")
+                account_name = (self.__class__.__name__ + ".py").replace("Folder.py", "").replace(".py", "")
                 account      = self.pyfile.m.core.accountManager.getAccountPlugin(account_name)
 
             if account and hasattr(account, "HOSTER_DOMAIN") and account.HOSTER_DOMAIN:

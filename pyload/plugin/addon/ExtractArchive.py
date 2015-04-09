@@ -173,7 +173,7 @@ class ExtractArchive(Addon):
                     print_exc()
 
         if self.extractors:
-            self.logInfo(_("Activated") + " " + "|".join("%s %s" % (Extractor.__name,Extractor.VERSION) for Extractor in self.extractors))
+            self.logInfo(_("Activated") + " " + "|".join("%s %s" % (Extractor.__name__,Extractor.VERSION) for Extractor in self.extractors))
             self.extractQueued()  #: Resume unfinished extractions
         else:
             self.logInfo(_("No Extract plugins activated"))
@@ -288,7 +288,7 @@ class ExtractArchive(Addon):
                 for Extractor in self.extractors:
                     targets = Extractor.getTargets(files_ids)
                     if targets:
-                        self.logDebug("Targets for %s: %s" % (Extractor.__name, targets))
+                        self.logDebug("Targets for %s: %s" % (Extractor.__class__.__name__, targets))
                         matched = True
 
                     for fname, fid, fout in targets:

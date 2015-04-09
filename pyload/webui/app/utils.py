@@ -12,7 +12,7 @@ from pyload.api import has_permission, PERMS, ROLE
 def render_to_response(file, args={}, proc=[]):
     for p in proc:
         args.update(p())
-    path = join(THEME, "tml", file)
+    path = "tml/" + file
     return env.get_template(path).render(**args)
 
 
