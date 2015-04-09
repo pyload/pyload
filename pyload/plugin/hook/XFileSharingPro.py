@@ -50,7 +50,7 @@ class XFileSharingPro(Hook):
 
 
     def loadPattern(self):
-        use_builtin_list = self.getConfig('use_builtin_list')
+        use_builtin_list = self.getConfig("use_builtin_list")
 
         for type in ("hoster", "crypter"):
             every_plugin = not self.getConfig('use_%s_list' % type)

@@ -100,31 +100,32 @@ class AddonManager(object):
 
     def createIndex(self):
         plugins  = []
-        active   = []
-        deactive = []
 
-        for pluginname in self.core.pluginManager.addonPlugins:
-            try:
-                if self.core.config.getPlugin(pluginname, "activated"):
-                    pluginClass = self.core.pluginManager.loadClass("addon", pluginname)
-                    if not pluginClass:
-                        continue
+        for type in ("addon", "hook"):
+            active   = []
+            deactive = []
+            for pluginname in getattr(self.core.pluginManager, "%sPlugins" % type):
+                try:
+                    if self.core.config.getPlugin("%s_%s" % (pluginname, type), "activated"):
+                        pluginClass = self.core.pluginManager.loadClass(type, pluginname)
+                        if not pluginClass:
+                            continue
+    
+                        plugin = pluginClass(self.core, self)
+                        plugins.append(plugin)
+                        self.pluginMap[pluginClass.__name__] = plugin
+                        if plugin.isActivated():
+                            active.append(pluginClass.__name__)
+                    else:
+                        deactive.append(pluginname)
 
-                    plugin = pluginClass(self.core, self)
-                    plugins.append(plugin)
-                    self.pluginMap[pluginClass.__name__] = plugin
-                    if plugin.isActivated():
-                        active.append(pluginClass.__name__)
-                else:
-                    deactive.append(pluginname)
+                except Exception:
+                    self.core.log.warning(_("Failed activating %(name)s") % {"name": pluginname})
+                    if self.core.debug or True:
+                        traceback.print_exc()
 
-            except Exception:
-                self.core.log.warning(_("Failed activating %(name)s") % {"name": pluginname})
-                if self.core.debug or True:
-                    traceback.print_exc()
-
-        self.core.log.info(_("Activated addons: %s") % ", ".join(sorted(active)))
-        self.core.log.info(_("Deactivated addons: %s") % ", ".join(sorted(deactive)))
+            self.core.log.info(_("Activated %ss: %s") % (type, ", ".join(sorted(active))))
+            self.core.log.info(_("Deactivated %ss: %s") % (type, ", ".join(sorted(deactive))))
 
         self.plugins = plugins
 

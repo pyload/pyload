@@ -78,7 +78,7 @@ class Addon(Base):
 
 
     def initPeriodical(self, delay=0, threaded=False):
-        self.cb = self.core.scheduler.addJob(max(0, delay), self._periodical, args=[threaded], threaded=threaded)
+        self.cb = self.core.scheduler.addJob(max(0, delay), self._periodical, [threaded], threaded=threaded)
 
 
     def _periodical(self, threaded):
@@ -94,7 +94,7 @@ class Addon(Base):
             if self.core.debug:
                 print_exc()
 
-        self.cb = self.core.scheduler.addJob(self.interval, self._periodical, threaded=threaded)
+        self.cb = self.core.scheduler.addJob(self.interval, self._periodical, [threaded], threaded=threaded)
 
 
     def __repr__(self):
@@ -117,7 +117,7 @@ class Addon(Base):
 
     def isActivated(self):
         """ checks if addon is activated"""
-        return self.core.config.getPlugin(self.__class__.__name__, "activated")
+        return self.getConfig("activated")
 
 
     # Event methods - overwrite these if needed

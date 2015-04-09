@@ -47,6 +47,6 @@ class OverLoadMe(MultiHoster):
                 pyfile.size = parseFileSize(data['filesize'])
 
             http_repl = ["http://", "https://"]
-            self.link = data['downloadlink'].replace(*http_repl if self.getConfig('ssl') else *http_repl[::-1])
+            self.link = data['downloadlink'].replace(*http_repl if self.getConfig('ssl') else http_repl[::-1])
 
 

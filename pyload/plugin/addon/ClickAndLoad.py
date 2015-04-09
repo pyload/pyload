@@ -37,11 +37,11 @@ class ClickAndLoad(Addon):
 
 
     def activate(self):
-        if not self.config['webinterface']['activated']:
+        if not self.core.config['webui']['activated']:
             return
 
         ip      = "" if self.getConfig('extern') else "127.0.0.1"
-        webport = self.config['webinterface']['port']
+        webport = self.core.config['webui']['port']
         cnlport = self.getConfig('port')
 
         self.proxy(ip, webport, cnlport)

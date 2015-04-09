@@ -99,7 +99,7 @@ def server_js(theme, file):
                                                     time.gmtime(time.time() + 24 * 7 * 60 * 60))
         response.headers['Cache-control'] = "public"
 
-        path = join(theme, file)
+        path = "/".join((theme, file))
         return env.get_template(path).render()
     else:
         return server_static(theme, file)

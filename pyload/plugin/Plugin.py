@@ -87,6 +87,10 @@ class Base(object):
         return self._log("critical", args)
 
 
+    def getPluginConfSection(self):
+        return "%s_%s" % (self.__class__.__name__, getattr(self, "_%s__type" % self.__class__.__name__)) 
+
+
     #: Deprecated method
     def setConf(self, option, value):
         """ see `setConfig` """
@@ -100,7 +104,7 @@ class Base(object):
         :param value:
         :return:
         """
-        self.core.config.setPlugin(self.__class__.__name__, option, value)
+        self.core.config.setPlugin(self.getPluginConfSection(), option, value)
 
 
     #: Deprecated method
@@ -115,24 +119,24 @@ class Base(object):
         :param option:
         :return:
         """
-        return self.core.config.getPlugin(self.__class__.__name__, option)
+        return self.core.config.getPlugin(self.getPluginConfSection(), option)
 
 
     def setStorage(self, key, value):
         """ Saves a value persistently to the database """
-        self.core.db.setStorage(self.__class__.__name__, key, value)
+        self.core.db.setStorage(self.getPluginConfSection(), key, value)
 
 
     def store(self, key, value):
         """ same as `setStorage` """
-        self.core.db.setStorage(self.__class__.__name__, key, value)
+        self.core.db.setStorage(self.getPluginConfSection(), key, value)
 
 
     def getStorage(self, key=None, default=None):
         """ Retrieves saved value or dict of all saved entries if key is None """
         if key:
-            return self.core.db.getStorage(self.__class__.__name__, key) or default
-        return self.core.db.getStorage(self.__class__.__name__, key)
+            return self.core.db.getStorage(self.getPluginConfSection(), key) or default
+        return self.core.db.getStorage(self.getPluginConfSection(), key)
 
 
     def retrieve(self, *args, **kwargs):
