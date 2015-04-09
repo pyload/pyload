@@ -19,7 +19,7 @@
 from os import remove, stat, fsync
 from os.path import exists
 from time import sleep
-from re import search
+import re
 from module.utils import fs_encode
 import codecs
 import pycurl
@@ -209,7 +209,7 @@ class HTTPChunk(HTTPRequest):
         if not self.range and self.header.endswith("\r\n\r\n"):
             self.parseHeader()
         elif not self.range and buf.startswith("150") and "data connection" in buf: #ftp file size parsing
-            size = search(r"(\d+) bytes", buf)
+            size = re.search(r"(\d+) bytes", buf)
             if size:
                 self.p.size = int(size.group(1))
                 self.p.chunkSupport = True
@@ -252,7 +252,7 @@ class HTTPChunk(HTTPRequest):
     def parseHeader(self):
         """parse data from recieved header"""
         for orgline in self.decodeResponse(self.header).splitlines():
-            if line.startswith("Accept-Ranges") and "bytes" in line:
+            if orgline.startswith("Accept-Ranges") and "bytes" in orgline:
                 self.p.chunkSupport = True
 
             if orgline.startswith("Content-Disposition"):
@@ -267,8 +267,8 @@ class HTTPChunk(HTTPRequest):
                 self.p.nameDisposition = filename.split('/')[-1].lower()
                 self.log.debug("Content-Disposition: %s" % filename)
 
-            if not self.resume and line.startswith("Content-Length"):
-                self.p.size = int(line.split(":")[1])
+            if not self.resume and orgline.startswith("Content-Length"):
+                self.p.size = int(orgline.split(":")[1])
 
         self.headerParsed = True
 
