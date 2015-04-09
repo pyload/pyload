@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FileSharkPl(SimpleHoster):
     __name__    = "FileSharkPl"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __pattern__ = r'http://(?:www\.)?fileshark\.pl/pobierz/\d+/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -25,8 +25,8 @@ class FileSharkPl(SimpleHoster):
     SIZE_PATTERN    = r'<p class="size-file">(.*?)<strong>(?P<S>\d+\.?\d*)\s(?P<U>\w+)</strong></p>'
     OFFLINE_PATTERN = r'(P|p)lik zosta. (usuni.ty|przeniesiony)'
 
-    LINK_FREE_PATTERN    = r'<a href="(.*?)" class="btn-upload-free">'
-    LINK_PREMIUM_PATTERN = r'<a href="(.*?)" class="btn-upload-premium">'
+    LINK_FREE_PATTERN    = r'<a  rel="nofollow" href="(.*?)" class="btn-upload-free">'
+    LINK_PREMIUM_PATTERN = r'<a rel="nofollow" href="(.*?)" class="btn-upload-premium">'
 
     WAIT_PATTERN       = r'var timeToDownload = (\d+);'
     ERROR_PATTERN      = r'<p class="lead text-center alert alert-warning">(.*?)</p>'
