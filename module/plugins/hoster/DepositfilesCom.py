@@ -52,7 +52,9 @@ class DepositfilesCom(SimpleHoster):
         params = {'fid': m.group(1)}
         self.logDebug("FID: %s" % params['fid'])
 
+        self.setWait(60)
         self.wait()
+
         recaptcha = ReCaptcha(self)
         captcha_key = recaptcha.detect_key()
         if captcha_key is None:
