@@ -54,13 +54,13 @@
 
 
 
-	</ul>
+    </ul>
 {% else %}
     <span style="padding-right: 2px;">{{_("Please Login!")}}</span>
 {% endif %}
 
     {% endblock %}
-	</div>
+    </div>
 
         <nav class="navbar navbar-default">
           <div class="container-fluid">
@@ -75,57 +75,57 @@
               <a class="navbar-brand" href="#"><img id="head-logo" src="/img/pyload-logo.png" alt="pyLoad" style="height:30px;"/></a>
             </div>
 
-	<a href="/"></a>
+    <a href="/"></a>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav">
-		
+
         {% macro selected(name, right=False) -%}
             {% if name in url -%}class="{% if right -%}right {% endif %}selected"{%- endif %}
             {% if not name in url and right -%}class="right"{%- endif %}
         {%- endmacro %}
 
 
-		{% block menu %}
-		<li>
-		    <a href="/" title=""><span class="glyphicon glyphicon-home"></span> {{_("Home")}}</a>
-		</li>
-		<li {{ selected('queue') }}>
-		    <a href="/queue/" title=""><span class="glyphicon glyphicon-tasks"></span> {{_("Queue")}}</a>
-		</li>
-		<li {{ selected('collector') }}>
-		    <a href="/collector/" title=""><span class="glyphicon glyphicon-magnet"></span>  {{_("Collector")}}</a>
-		</li>
-		<li {{ selected('downloads') }}>
-		    <a href="/downloads/" title=""> <span class="glyphicon glyphicon-download"></span> {{_("Downloads")}}</a>
-		</li>
-{#		<li {{ selected('filemanager') }}>#}
-{#		    <a href="/filemanager/" title=""><span class="glyphicon glyphicon-magnet"></span>  {{_("FileManager")}}</a>#}
-{#		</li>#}
-		<li {{ selected('logs', True) }}>
-		    <a href="/logs/"  class="action index" accesskey="x" rel="nofollow"><span class="glyphicon glyphicon-list"></span> {{_("Logs")}}</a>
-		</li>
-		<li {{ selected('settings', True) }}>
-		    <a href="/settings/"  class="action index" accesskey="x" rel="nofollow"><span class="glyphicon glyphicon-wrench"></span> {{_("Config")}}</a>
-		</li>
-		{% endblock %}
+        {% block menu %}
+        <li>
+            <a href="/" title=""><span class="glyphicon glyphicon-home"></span> {{_("Home")}}</a>
+        </li>
+        <li {{ selected('queue') }}>
+            <a href="/queue/" title=""><span class="glyphicon glyphicon-tasks"></span> {{_("Queue")}}</a>
+        </li>
+        <li {{ selected('collector') }}>
+            <a href="/collector/" title=""><span class="glyphicon glyphicon-magnet"></span>  {{_("Collector")}}</a>
+        </li>
+        <li {{ selected('downloads') }}>
+            <a href="/downloads/" title=""> <span class="glyphicon glyphicon-download"></span> {{_("Downloads")}}</a>
+        </li>
+{#        <li {{ selected('filemanager') }}>#}
+{#            <a href="/filemanager/" title=""><span class="glyphicon glyphicon-magnet"></span>  {{_("FileManager")}}</a>#}
+{#        </li>#}
+        <li {{ selected('logs', True) }}>
+            <a href="/logs/"  class="action index" accesskey="x" rel="nofollow"><span class="glyphicon glyphicon-list"></span> {{_("Logs")}}</a>
+        </li>
+        <li {{ selected('settings', True) }}>
+            <a href="/settings/"  class="action index" accesskey="x" rel="nofollow"><span class="glyphicon glyphicon-wrench"></span> {{_("Config")}}</a>
+        </li>
+        {% endblock %}
 
 
                       </ul>
                     <ul class="nav navbar-nav navbar-right">
                       <li><a href="/info"  class="action info" rel="nofollow"><span class="glyphicon glyphicon-user"></span> {{user.name}}</a></li>
-       		      {% if user.is_admin %}
-       		      <li><a href="/admin" class="action profile" rel="nofollow"><span class="glyphicon glyphicon-cog"></span></a></li>
-       		      {% endif %}
+                     {% if user.is_admin %}
+                     <li><a href="/admin" class="action profile" rel="nofollow"><span class="glyphicon glyphicon-cog"></span></a></li>
+                     {% endif %}
                       <li><a href="/info"  class="action info" rel="nofollow"><span class="glyphicon glyphicon-info-sign"></span></a></li>
 
                     </ul>
                   </div><!-- /.navbar-collapse -->
                 </div><!-- /.container-fluid -->
-		
-	</div>
+
+    </div>
 </nav>
-	<div style="clear:both;"></div>
+    <div style="clear:both;"></div>
 </div>
 
 {% if perms.STATUS %}
@@ -167,7 +167,7 @@
 {% block statusbar %}
 {% endblock %}
 {% for message in messages %}
-	<b><p>{{message}}</p></b>
+    <b><p>{{message}}</p></b>
 {% endfor %}
 
 <div id="load-indicator" style="opacity: 0; float: right; margin-top: -10px;">
@@ -178,7 +178,7 @@
 {% block content %}
 {% endblock content %}
 
-	<hr style="clear: both;" />
+    <hr style="clear: both;" />
 
 <div id="foot" style="with: 98%; margin-left: 10px; margin-right:10px">&copy; 2008-2011 pyLoad Team
 <a href="#top" class="action top" accesskey="x"><span>{{_("Back to top")}}</span></a><br />

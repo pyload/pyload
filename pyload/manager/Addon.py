@@ -110,7 +110,7 @@ class AddonManager(object):
                         pluginClass = self.core.pluginManager.loadClass(type, pluginname)
                         if not pluginClass:
                             continue
-    
+
                         plugin = pluginClass(self.core, self)
                         plugins.append(plugin)
                         self.pluginMap[pluginClass.__name__] = plugin

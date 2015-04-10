@@ -88,7 +88,7 @@ class Base(object):
 
 
     def getPluginConfSection(self):
-        return "%s_%s" % (self.__class__.__name__, getattr(self, "_%s__type" % self.__class__.__name__)) 
+        return "%s_%s" % (self.__class__.__name__, getattr(self, "_%s__type" % self.__class__.__name__))
 
 
     #: Deprecated method

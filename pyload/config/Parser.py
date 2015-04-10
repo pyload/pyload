@@ -300,8 +300,8 @@ class ConfigParser(object):
             if not name in plugins:
                 print "delete config " + name
                 del self.plugin[name]
-    
-    
+
+
     def getMetaData(self, section, option):
         """ get all config data for an option """
         return self.config[section][option]

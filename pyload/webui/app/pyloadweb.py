@@ -517,14 +517,14 @@ def info():
     else:
         extra = tuple()
 
-    data = {"python": sys.version,
-            "os": " ".join((os.name, sys.platform) + extra),
-            "version": PYLOAD.getServerVersion(),
-            "folder": abspath(PYLOAD_DIR), "config": abspath(""),
-            "download": abspath(conf["general"]["download_folder"]["value"]),
+    data = {"python"   : sys.version,
+            "os"       : " ".join((os.name, sys.platform) + extra),
+            "version"  : PYLOAD.getServerVersion(),
+            "folder"   : abspath(PYLOAD_DIR), "config": abspath(""),
+            "download" : abspath(conf["general"]["download_folder"]["value"]),
             "freespace": formatSize(PYLOAD.freeSpace()),
-            "remote": conf["remote"]["port"]["value"],
-            "webif": conf["webinterface"]["port"]["value"],
-            "language": conf["general"]["language"]["value"]}
+            "remote"   : conf["remote"]["port"]["value"],
+            "webif"    : conf["webui"]["port"]["value"],
+            "language" : conf["general"]["language"]["value"]}
 
     return render_to_response("info.html", data, [pre_processor])

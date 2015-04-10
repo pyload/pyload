@@ -1,6 +1,6 @@
 <html>
 <head>
-	<script class="javascript">
+    <script class="javascript">
         function chosen()
         {
             opener.ifield.value = document.forms[0].p.value;
@@ -24,21 +24,21 @@
             setValid();
 
         }
-	</script>
-	<link rel="stylesheet" type="text/css" href="/css/pathchooser.css"/>
+    </script>
+    <link rel="stylesheet" type="text/css" href="/css/pathchooser.css"/>
 </head>
 <body{% if type == 'file' %}{% if not oldfile %} onload="setInvalid();"{% endif %}{% endif %}>
 <center>
     <div id="paths">
-	<form method="get" action="?" onSubmit="chosen();" onReset="exit();">
-	    <input type="text" name="p" value="{{ oldfile|default(cwd) }}" size="60" onfocus="setValid();">
-	    <input type="submit" value="Ok" name="send">
-	</form>
+    <form method="get" action="?" onSubmit="chosen();" onReset="exit();">
+        <input type="text" name="p" value="{{ oldfile|default(cwd) }}" size="60" onfocus="setValid();">
+        <input type="submit" value="Ok" name="send">
+    </form>
 
     {% if type == 'folder' %}
-	<span class="path_abs_rel">{{_("Path")}}: <a href="{{ "/pathchooser" + cwd|path_make_absolute|quotepath }}"{% if absolute %} style="text-decoration: underline;"{% endif %}>{{_("absolute")}}</a> | <a href="{{ "/pathchooser/" + cwd|path_make_relative|quotepath }}"{% if not absolute %} style="text-decoration: underline;"{% endif %}>{{_("relative")}}</a></span>
+    <span class="path_abs_rel">{{_("Path")}}: <a href="{{ "/pathchooser" + cwd|path_make_absolute|quotepath }}"{% if absolute %} style="text-decoration: underline;"{% endif %}>{{_("absolute")}}</a> | <a href="{{ "/pathchooser/" + cwd|path_make_relative|quotepath }}"{% if not absolute %} style="text-decoration: underline;"{% endif %}>{{_("relative")}}</a></span>
     {% else %}
-	<span class="path_abs_rel">{{_("Path")}}: <a href="{{ "/filechooser/" + cwd|path_make_absolute|quotepath }}"{% if absolute %} style="text-decoration: underline;"{% endif %}>{{_("absolute")}}</a> | <a href="{{ "/filechooser/" + cwd|path_make_relative|quotepath }}"{% if not absolute %} style="text-decoration: underline;"{% endif %}>{{_("relative")}}</a></span>
+    <span class="path_abs_rel">{{_("Path")}}: <a href="{{ "/filechooser/" + cwd|path_make_absolute|quotepath }}"{% if absolute %} style="text-decoration: underline;"{% endif %}>{{_("absolute")}}</a> | <a href="{{ "/filechooser/" + cwd|path_make_relative|quotepath }}"{% if not absolute %} style="text-decoration: underline;"{% endif %}>{{_("relative")}}</a></span>
     {% endif %}
     </div>
     <table border="0" cellspacing="0" cellpadding="3">
@@ -48,13 +48,13 @@
             <th>{{_("type")}}</th>
             <th>{{_("last modified")}}</th>
         </tr>
-	{% if parentdir %}
+    {% if parentdir %}
         <tr>
             <td colspan="4">
                 <a href="{% if type == 'folder' %}{{ "/pathchooser/" + parentdir|quotepath }}{% else %}{{ "/filechooser/" + parentdir|quotepath }}{% endif %}"><span class="parentdir">{{_("parent directory")}}</span></a>
             </td>
         </tr>
-	{% endif %}
+    {% endif %}
 {% for file in files %}
         <tr>
             {% if type == 'folder' %}

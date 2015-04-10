@@ -55,7 +55,7 @@ class PluginManager(object):
         sys.path.append(abspath(""))
 
         self.loadTypes()
-        
+
         configs = []
 
         for type in self.TYPES:
