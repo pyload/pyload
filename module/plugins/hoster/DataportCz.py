@@ -38,7 +38,7 @@ class DataportCz(SimpleHoster):
             else:
                 self.error(_("captcha"))
 
-            self.html = self.download("http://www.dataport.cz%s" % action, post=inputs)
+            self.download("http://www.dataport.cz%s" % action, post=inputs)
 
             check = self.checkDownload({"captcha": 'alert("\u0160patn\u011b opsan\u00fd k\u00f3d z obr\u00e1zu");',
                                         "slot"   : 'alert("Je n\u00e1m l\u00edto, ale moment\u00e1ln\u011b nejsou'})

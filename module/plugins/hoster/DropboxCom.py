@@ -27,8 +27,8 @@ class DropboxCom(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL = True
-        self.chunkLimit = 1
+        self.multiDL        = True
+        self.chunkLimit     = 1
         self.resumeDownload = True
 
 

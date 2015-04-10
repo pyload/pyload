@@ -79,19 +79,10 @@ class FilepostCom(SimpleHoster):
                     self.logDebug(u"RECAPTCHA: %s : %s : %s" % (
                         captcha_key, post_dict['recaptcha_challenge_field'], post_dict['recaptcha_response_field']))
 
-                download_url = self.getJsonResponse(get_dict, post_dict, 'link')
-                if download_url:
-                    if i:
-                        self.correctCaptcha()
-                    break
-                elif i:
-                    self.invalidCaptcha()
+                self.link = self.getJsonResponse(get_dict, post_dict, 'link')
 
             else:
                 self.fail(_("Invalid captcha"))
-
-        # Download
-        self.download(download_url)
 
 
     def getJsonResponse(self, get_dict, post_dict, field):

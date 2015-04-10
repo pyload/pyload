@@ -98,15 +98,13 @@ class ShareonlineBiz(SimpleHoster):
 
         self.checkErrors()
 
-        res          = self.handleCaptcha()
-        download_url = res.decode('base64')
+        res = self.handleCaptcha()
+        self.link = res.decode('base64')
 
-        if not download_url.startswith("http://"):
+        if not self.link.startswith("http://"):
             self.error(_("Wrong download url"))
 
         self.wait()
-
-        self.download(download_url)
 
 
     def checkFile(self, rules={}):
@@ -145,13 +143,12 @@ class ShareonlineBiz(SimpleHoster):
             pyfile.name = dlinfo['name']
             pyfile.size = int(dlinfo['size'])
 
-            dlLink = dlinfo['url']
+            self.link = dlinfo['url']
 
-            if dlLink == "server_under_maintenance":
+            if self.link == "server_under_maintenance":
                 self.tempOffline()
             else:
                 self.multiDL = True
-                self.download(dlLink)
 
 
     def checkErrors(self):

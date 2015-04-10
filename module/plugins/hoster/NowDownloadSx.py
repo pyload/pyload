@@ -55,11 +55,11 @@ class NowDownloadSx(SimpleHoster):
 
         self.html = self.load(baseurl + str(continuelink.group(1)))
 
-        url = re.search(self.LINK_FREE_PATTERN, self.html)
-        if url is None:
+        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        if m is None:
             self.error(_("Download link not found"))
 
-        self.download(str(url.group(1)))
+        self.link = m.group(1)
 
 
 getInfo = create_getInfo(NowDownloadSx)

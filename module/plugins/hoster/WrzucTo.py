@@ -46,8 +46,7 @@ class WrzucTo(SimpleHoster):
         if len(data) != 4:
             self.error(_("No download URL"))
 
-        download_url = "http://%s.wrzuc.to/pobierz/%s" % (data['server_id'], data['download_link'])
-        self.download(download_url)
+        self.link = "http://%s.wrzuc.to/pobierz/%s" % (data['server_id'], data['download_link'])
 
 
 getInfo = create_getInfo(WrzucTo)

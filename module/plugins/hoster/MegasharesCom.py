@@ -105,9 +105,8 @@ class MegasharesCom(SimpleHoster):
         if m is None:
             self.error(msg)
 
-        download_url = m.group(1)
-        self.logDebug("%s: %s" % (msg, download_url))
-        self.download(download_url)
+        self.link = m.group(1)
+        self.logDebug("%s: %s" % (msg, self.link))
 
 
 getInfo = create_getInfo(MegasharesCom)

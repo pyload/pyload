@@ -51,7 +51,7 @@ class EdiskCz(SimpleHoster):
         if not re.match(self.LINK_FREE_PATTERN, url):
             self.fail(_("Unexpected server response"))
 
-        self.download(url)
+        self.link = url
 
 
 getInfo = create_getInfo(EdiskCz)

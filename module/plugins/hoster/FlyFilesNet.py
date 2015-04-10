@@ -41,6 +41,4 @@ class FlyFilesNet(SimpleHoster):
             self.wait(10 * 60, True)
             self.retry()
 
-        download_url = parsed_url.replace('#downlink|', '')
-
-        self.download(download_url)
+        self.link = parsed_url.replace('#downlink|', '')

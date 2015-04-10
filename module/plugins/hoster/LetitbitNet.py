@@ -119,16 +119,7 @@ class LetitbitNet(SimpleHoster):
         else:
             self.error(_("Unknown response - captcha check"))
 
-        self.correctCaptcha()
-
-        for download_url in urls:
-            try:
-                self.download(download_url)
-                break
-            except Exception, e:
-                self.logError(e)
-        else:
-            self.fail(_("Download did not finish correctly"))
+        self.link = urls[0]
 
 
     def handlePremium(self, pyfile):
