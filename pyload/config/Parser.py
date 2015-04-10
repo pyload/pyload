@@ -309,7 +309,13 @@ class ConfigParser(object):
     def addPluginConfig(self, name, config, outline=""):
         """adds config options with tuples (name, type, desc, default)"""
         if name not in self.plugin:
-            conf = {"desc": name,
+            for search, repl in ( ('_account', ' (Account)'), ('_addon', ' (Addon)'), ('_container', ''), ('_crypter', ' (Crypter)'), ('_extractor', ''), ('_hook', ' (Hook)'), ('_hoster', ' (Hoster)')):
+                if name.endswith(search): 
+                    desc = name.replace(search, repl)
+                    break
+            else:
+                desc = name
+            conf = {"desc": desc,
                     "outline": outline}
             self.plugin[name] = conf
         else:
