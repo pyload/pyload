@@ -55,10 +55,15 @@ class PluginManager(object):
         sys.path.append(abspath(""))
 
         self.loadTypes()
+        
+        configs = []
 
         for type in self.TYPES:
             self.plugins[type] = self.parse(type)
             setattr(self, "%sPlugins" % type, self.plugins[type])
+            configs.extend("%s_%s" % (p, type) for p in self.plugins[type])
+
+        self.core.config.removeDeletedPlugins(configs)
 
         self.core.log.debug("Created index of plugins")
 
