@@ -245,7 +245,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.36"
+    __version__ = "1.37"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -599,8 +599,8 @@ class SimpleHoster(Hoster):
                 except Exception:
                     waitmsg = m.group(0).strip()
 
-                wait_time = sum(int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1}[u.lower()] for v, u in
-                                re.findall(r'(\d+)\s*(hr|hour|min|sec)', waitmsg, re.I))
+                wait_time = sum(int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1, "": 1}[u.lower()] for v, u in
+                                re.findall(r'(\d+)\s*(hr|hour|min|sec|)', waitmsg, re.I))
                 self.wait(wait_time, wait_time > 300)
 
         self.info.pop('error', None)

@@ -16,7 +16,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.45"
+    __version__ = "0.46"
 
     __pattern__ = r'^unmatchable$'
 
@@ -193,8 +193,8 @@ class XFSHoster(SimpleHoster):
             self.logWarning(re.sub(r"<.*?>", " ", self.errmsg))
 
             if 'wait' in self.errmsg:
-                wait_time = sum(int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1}[u.lower()] for v, u in
-                                re.findall(r'(\d+)\s*(hr|hour|min|sec)', self.errmsg, re.I))
+                wait_time = sum(int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1, "": 1}[u.lower()] for v, u in
+                                re.findall(r'(\d+)\s*(hr|hour|min|sec|)', self.errmsg, re.I))
                 self.wait(wait_time, wait_time > 300)
 
             elif 'country' in self.errmsg:
