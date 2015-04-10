@@ -3,7 +3,20 @@
 import hashlib
 import time
 
-from beaker.crypto.pbkdf2 import PBKDF2
+try:
+    from beaker.crypto.pbkdf2 import PBKDF2
+
+except ImportError:
+    from beaker.crypto.pbkdf2 import pbkdf2
+    from binascii import b2a_hex
+    class PBKDF2(object):
+        def __init__(self, passphrase, salt, iterations=1000):
+            self.passphrase = passphrase
+            self.salt = salt
+            self.iterations = iterations
+
+        def hexread(self, octets):
+            return b2a_hex(pbkdf2(self.passphrase, self.salt, self.iterations, octets))
 
 from module.common.json_layer import json_loads
 from module.plugins.Account import Account
@@ -12,7 +25,7 @@ from module.plugins.Account import Account
 class SmoozedCom(Account):
     __name__    = "SmoozedCom"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """Smoozed.com account plugin"""
     __license__     = "GPLv3"
