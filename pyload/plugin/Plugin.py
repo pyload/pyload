@@ -6,6 +6,7 @@ from time import time, sleep
 from random import randint
 
 import os
+import re
 from os import remove, makedirs, chmod, stat
 from os.path import exists, join
 
@@ -18,7 +19,7 @@ from itertools import islice
 from traceback import print_exc
 from urlparse import urlparse
 
-from pyload.utils import fs_decode, fs_encode, safe_filename, fs_join
+from pyload.utils import fs_decode, fs_encode, safe_filename, fs_join, encode
 
 
 def chunks(iterable, size):
@@ -62,7 +63,7 @@ class Base(object):
     def _log(self, type, args):
         msg = " | ".join([encode(a).strip() for a in args if a])
         logger = getattr(self.core.log, type)
-        logger("%s: %s" % (self.__name, msg or _("%s MARK" % type.upper())))
+        logger("%s: %s" % (self.__class__.__name__, msg or _("%s MARK" % type.upper())))
 
 
     def logDebug(self, *args):
@@ -86,6 +87,10 @@ class Base(object):
         return self._log("critical", args)
 
 
+    def getPluginConfSection(self):
+        return "%s_%s" % (self.__class__.__name__, getattr(self, "_%s__type" % self.__class__.__name__)) 
+
+
     #: Deprecated method
     def setConf(self, option, value):
         """ see `setConfig` """
@@ -99,7 +104,7 @@ class Base(object):
         :param value:
         :return:
         """
-        self.core.config.setPlugin(self.__name, option, value)
+        self.core.config.setPlugin(self.getPluginConfSection(), option, value)
 
 
     #: Deprecated method
@@ -114,24 +119,24 @@ class Base(object):
         :param option:
         :return:
         """
-        return self.core.config.getPlugin(self.__name, option)
+        return self.core.config.getPlugin(self.getPluginConfSection(), option)
 
 
     def setStorage(self, key, value):
         """ Saves a value persistently to the database """
-        self.core.db.setStorage(self.__name, key, value)
+        self.core.db.setStorage(self.getPluginConfSection(), key, value)
 
 
     def store(self, key, value):
         """ same as `setStorage` """
-        self.core.db.setStorage(self.__name, key, value)
+        self.core.db.setStorage(self.getPluginConfSection(), key, value)
 
 
     def getStorage(self, key=None, default=None):
         """ Retrieves saved value or dict of all saved entries if key is None """
         if key:
-            return self.core.db.getStorage(self.__name, key) or default
-        return self.core.db.getStorage(self.__name, key)
+            return self.core.db.getStorage(self.getPluginConfSection(), key) or default
+        return self.core.db.getStorage(self.getPluginConfSection(), key)
 
 
     def retrieve(self, *args, **kwargs):
@@ -141,7 +146,7 @@ class Base(object):
 
     def delStorage(self, key):
         """ Delete entry in db """
-        self.core.db.delStorage(self.__name, key)
+        self.core.db.delStorage(self.__class__.__name__, key)
 
 
 class Plugin(Base):
@@ -188,7 +193,7 @@ class Plugin(Base):
         self.ocr = None
 
         #: account handler instance, see :py:class:`Account`
-        self.account = pyfile.m.core.accountManager.getAccountPlugin(self.__name)
+        self.account = pyfile.m.core.accountManager.getAccountPlugin(self.__class__.__name__)
 
         #: premium status
         self.premium = False
@@ -209,7 +214,7 @@ class Plugin(Base):
             #: premium status
             self.premium = self.account.isPremium(self.user)
         else:
-            self.req = pyfile.m.core.requestFactory.getRequest(self.__name)
+            self.req = pyfile.m.core.requestFactory.getRequest(self.__class__.__name__)
 
         #: associated pyfile instance, see `PyFile`
         self.pyfile = pyfile
@@ -240,7 +245,7 @@ class Plugin(Base):
 
 
     def __call__(self):
-        return self.__name
+        return self.__class__.__name__
 
 
     def init(self):
@@ -277,7 +282,7 @@ class Plugin(Base):
     def resetAccount(self):
         """ dont use account and retry download """
         self.account = None
-        self.req = self.core.requestFactory.getRequest(self.__name)
+        self.req = self.core.requestFactory.getRequest(self.__class__.__name__)
         self.retry()
 
 
@@ -451,13 +456,13 @@ class Plugin(Base):
 
         id = ("%.2f" % time())[-6:].replace(".", "")
 
-        with open(join("tmp", "tmpCaptcha_%s_%s.%s" % (self.__name, id, imgtype)), "wb") as tmpCaptcha:
+        with open(join("tmp", "tmpCaptcha_%s_%s.%s" % (self.__class__.__name__, id, imgtype)), "wb") as tmpCaptcha:
             tmpCaptcha.write(img)
 
-        has_plugin = self.__name in self.core.pluginManager.ocrPlugins
+        has_plugin = self.__class__.__name__ in self.core.pluginManager.ocrPlugins
 
         if self.core.captcha:
-            Ocr = self.core.pluginManager.loadClass("ocr", self.__name)
+            Ocr = self.core.pluginManager.loadClass("ocr", self.__class__.__name__)
         else:
             Ocr = None
 
@@ -535,10 +540,10 @@ class Plugin(Base):
             from inspect import currentframe
 
             frame = currentframe()
-            framefile = fs_join("tmp", self.__name, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
+            framefile = fs_join("tmp", self.__class__.__name__, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
             try:
-                if not exists(join("tmp", self.__name)):
-                    makedirs(join("tmp", self.__name))
+                if not exists(join("tmp", self.__class__.__name__)):
+                    makedirs(join("tmp", self.__class__.__name__))
 
                 with open(framefile, "wb") as f:
                     del frame  #: delete the frame or it wont be cleaned

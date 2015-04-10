@@ -71,7 +71,7 @@ class AddonManager(object):
             try:
                 return func(*args)
             except Exception, e:
-                args[0].log.error(_("Error executing addon: %s") % e)
+                args[0].core.log.error(_("Error executing addon: %s") % e)
                 if args[0].core.debug:
                     traceback.print_exc()
 
@@ -100,32 +100,32 @@ class AddonManager(object):
 
     def createIndex(self):
         plugins  = []
-        active   = []
-        deactive = []
 
-        for pluginname in self.core.pluginManager.addonPlugins:
-            try:
-                # hookClass = getattr(plugin, plugin.__name)
-                if self.core.config.getPlugin(pluginname, "activated"):
-                    pluginClass = self.core.pluginManager.loadClass("addon", pluginname)
-                    if not pluginClass:
-                        continue
+        for type in ("addon", "hook"):
+            active   = []
+            deactive = []
+            for pluginname in getattr(self.core.pluginManager, "%sPlugins" % type):
+                try:
+                    if self.core.config.getPlugin("%s_%s" % (pluginname, type), "activated"):
+                        pluginClass = self.core.pluginManager.loadClass(type, pluginname)
+                        if not pluginClass:
+                            continue
+    
+                        plugin = pluginClass(self.core, self)
+                        plugins.append(plugin)
+                        self.pluginMap[pluginClass.__name__] = plugin
+                        if plugin.isActivated():
+                            active.append(pluginClass.__name__)
+                    else:
+                        deactive.append(pluginname)
 
-                    plugin = pluginClass(self.core, self)
-                    plugins.append(plugin)
-                    self.pluginMap[pluginClass.__name] = plugin
-                    if plugin.isActivated():
-                        active.append(pluginClass.__name)
-                else:
-                    deactive.append(pluginname)
+                except Exception:
+                    self.core.log.warning(_("Failed activating %(name)s") % {"name": pluginname})
+                    if self.core.debug or True:
+                        traceback.print_exc()
 
-            except Exception:
-                self.core.log.warning(_("Failed activating %(name)s") % {"name": pluginname})
-                if self.core.debug:
-                    traceback.print_exc()
-
-        self.core.log.info(_("Activated addons: %s") % ", ".join(sorted(active)))
-        self.core.log.info(_("Deactivated addons: %s") % ", ".join(sorted(deactive)))
+            self.core.log.info(_("Activated %ss: %s") % (type, ", ".join(sorted(active))))
+            self.core.log.info(_("Deactivated %ss: %s") % (type, ", ".join(sorted(deactive))))
 
         self.plugins = plugins
 
@@ -141,7 +141,7 @@ class AddonManager(object):
     def activateAddon(self, pluginname):
         # check if already loaded
         for inst in self.plugins:
-            if inst.__name == pluginname:
+            if inst.__class__.__name__ == pluginname:
                 return
 
         pluginClass = self.core.pluginManager.loadClass("addon", pluginname)
@@ -153,14 +153,14 @@ class AddonManager(object):
 
         addon = pluginClass(self.core, self)
         self.plugins.append(addon)
-        self.pluginMap[pluginClass.__name] = addon
+        self.pluginMap[pluginClass.__name__] = addon
 
         addon.activate()
 
 
     def deactivateAddon(self, pluginname):
         for plugin in self.plugins:
-            if plugin.__name == pluginname:
+            if plugin.__class__.__name__ == pluginname:
                 addon = plugin
                 break
         else:
@@ -174,7 +174,7 @@ class AddonManager(object):
         self.core.log.debug("Removed callback: %s" % self.core.scheduler.removeJob(addon.cb))
 
         self.plugins.remove(addon)
-        del self.pluginMap[addon.__name]
+        del self.pluginMap[addon.__class__.__name__]
 
 
     @try_catch

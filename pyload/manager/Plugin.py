@@ -55,12 +55,15 @@ class PluginManager(object):
         sys.path.append(abspath(""))
 
         self.loadTypes()
+        
+        configs = []
 
         for type in self.TYPES:
             self.plugins[type] = self.parse(type)
             setattr(self, "%sPlugins" % type, self.plugins[type])
+            configs.extend("%s_%s" % (p, type) for p in self.plugins[type])
 
-        self.plugins['addon'] = self.addonPlugins.update(self.hookPlugins)
+        self.core.config.removeDeletedPlugins(configs)
 
         self.core.log.debug("Created index of plugins")
 
@@ -143,7 +146,7 @@ class PluginManager(object):
 
                 # internals have no config
                 if folder == "internal":
-                    self.core.config.deleteConfig(name)
+                    self.core.config.deleteConfig("internal")
                     continue
 
                 config = self.CONFIG.findall(content)
@@ -161,7 +164,7 @@ class PluginManager(object):
                         if folder not in ("account", "internal") and not [True for item in config if item[0] == "activated"]:
                             config.insert(0, ["activated", "bool", "Activated", False if folder in ("addon", "hook") else True])
 
-                        self.core.config.addPluginConfig(name, config, desc)
+                        self.core.config.addPluginConfig("%s_%s" % (name, folder), config, desc)
                     except Exception:
                         self.core.log.error("Invalid config in %s: %s" % (name, config))
 
@@ -171,7 +174,7 @@ class PluginManager(object):
                     config = (["activated", "bool", "Activated", False],)
 
                     try:
-                        self.core.config.addPluginConfig(name, config, desc)
+                        self.core.config.addPluginConfig("%s_%s" % (name, folder), config, desc)
                     except Exception:
                         self.core.log.error("Invalid config in %s: %s" % (name, config))
 

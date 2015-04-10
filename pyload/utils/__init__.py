@@ -265,3 +265,4 @@ def load_translation(name, locale, default="en"):
     else:
         translation.install(True)
         return translation
+

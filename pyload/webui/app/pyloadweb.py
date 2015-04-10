@@ -94,12 +94,12 @@ def server_min(theme, file):
 def server_js(theme, file):
     response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
 
-    if "/render/" in file or ".render." in file:
+    if "/render/" in file or ".render." in file or True:
         response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                                     time.gmtime(time.time() + 24 * 7 * 60 * 60))
         response.headers['Cache-control'] = "public"
 
-        path = join(theme, file)
+        path = "/".join((theme, file))
         return env.get_template(path).render()
     else:
         return server_static(theme, file)

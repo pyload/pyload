@@ -2,7 +2,19 @@
 
 import time
 
-from beaker.crypto.pbkdf2 import PBKDF2
+try:
+    from beaker.crypto.pbkdf2 import PBKDF2
+except:
+    from beaker.crypto.pbkdf2 import pbkdf2
+    from binascii import b2a_hex
+    class PBKDF2(object):
+        def __init__(self, passphrase, salt, iterations=1000):
+            self.passphrase = passphrase
+            self.salt = salt
+            self.iterations = iterations
+
+        def hexread(self, octets):
+            return b2a_hex(pbkdf2(self.passphrase, self.salt, self.iterations, octets))
 
 from pyload.utils import json_loads
 from pyload.plugin.Account import Account

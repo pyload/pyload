@@ -46,7 +46,7 @@ class MergeFiles(Addon):
         for name, file_list in files.iteritems():
             self.logInfo(_("Starting merging of"), name)
 
-            final_file = open(fs_join(download_folder, name), "wb")
+            with open(fs_join(download_folder, name), "wb") as final_file:
                 for splitted_file in file_list:
                     self.logDebug("Merging part", splitted_file)
 

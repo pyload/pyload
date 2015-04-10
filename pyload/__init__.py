@@ -86,7 +86,7 @@ except IOError:
     if os.name == "posix":
         configdir = os.path.join(homedir, ".pyload-beta")
     else:
-        configdir = os.path.join(homedir, "pyload")
+        configdir = os.path.join(homedir, "pyload-beta")
 
 try:
     if not os.path.exists(configdir):

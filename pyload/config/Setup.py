@@ -506,8 +506,8 @@ class SetupAssistant(object):
             pwlen = 8
             while p1 != p2:
                 sys.stdout.write(_("Password: "))
-                p1 = getpass("")
-
+                p1 = getpass("").strip("\n\r")
+                print("passwd:'%s'" % p1)
                 if len(p1) < pwlen:
                     print _("Password too short! Use at least %s symbols." % pwlen)
                     continue
@@ -516,7 +516,7 @@ class SetupAssistant(object):
                     continue
 
                 sys.stdout.write(_("Password (again): "))
-                p2 = getpass("")
+                p2 = getpass("").strip("\n\r")
 
                 if p1 == p2:
                     return p1
