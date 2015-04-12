@@ -8,7 +8,7 @@ from urlparse import urljoin
 from pyload.network.RequestFactory import getURL
 from pyload.plugin.Hoster import Hoster
 from pyload.plugin.Plugin import chunks
-from pyload.plugin.captcha import ReCaptcha
+from pyload.plugin.captcha.ReCaptcha import ReCaptcha
 
 
 def getInfo(urls):

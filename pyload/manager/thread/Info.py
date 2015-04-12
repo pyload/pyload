@@ -45,7 +45,7 @@ class InfoThread(PluginThread):
         for url, plugintype, pluginname in self.data:
             # filter out container plugins
             if plugintype == 'container':
-                container.extend([(name, url) for url in plugins[name]])
+                container.appen((pluginname, url))
             else:
                 if (plugintype, pluginname) in plugins:
                     plugins[(plugintype, pluginname)].append(url)

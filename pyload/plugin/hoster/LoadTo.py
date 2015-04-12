@@ -6,7 +6,7 @@
 
 import re
 
-from pyload.plugin.captcha import SolveMedia
+from pyload.plugin.captcha.SolveMedia import SolveMedia
 from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 

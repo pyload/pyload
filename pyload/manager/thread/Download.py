@@ -166,8 +166,7 @@ class DownloadThread(PluginThread):
             except SkipDownload, e:
                 pyfile.setStatus("skipped")
 
-                self.m.core.log.info(
-                    _("Download skipped: %(name)s due to %(plugin)s") % {"name": pyfile.name, "plugin": e.message})
+                self.m.core.log.info(_("Download skipped: %(name)s due to %(plugin)s") % {"name": pyfile.name, "plugin": e.message})
 
                 self.clean(pyfile)
 

@@ -137,26 +137,26 @@ class ReCaptcha(Captcha):
         millis, rpc         = self._prepareTimeAndRpc()
 
         html = self.plugin.req.load("https://www.google.com/recaptcha/api2/anchor",
-                                    get={'k': key,
-                                         'hl': language,
-                                         'v': vers,
-                                         'usegapi': "1",
-                                         'jsh': "%s#id=IO_%s" % (jsh, millis),
-                                         'parent': parent,
-                                         'pfname': "",
+                                    get={'k'       : key,
+                                         'hl'      : language,
+                                         'v'       : vers,
+                                         'usegapi' : "1",
+                                         'jsh'     : "%s#id=IO_%s" % (jsh, millis),
+                                         'parent'  : parent,
+                                         'pfname'  : "",
                                          'rpctoken': rpc})
 
         token1 = re.search(r'id="recaptcha-token" value="(.*?)">', html)
         self.logDebug("Token #1: %s" % token1.group(1))
 
         html = self.plugin.req.load("https://www.google.com/recaptcha/api2/frame",
-                                    get={'c': token1.group(1),
-                                         'hl': language,
-                                         'v': vers,
-                                         'bg': botguardstring,
-                                         'k': key,
+                                    get={'c'      : token1.group(1),
+                                         'hl'     : language,
+                                         'v'      : vers,
+                                         'bg'     : botguardstring,
+                                         'k'      : key,
                                          'usegapi': "1",
-                                         'jsh': jsh}).decode('unicode-escape')
+                                         'jsh'    : jsh}).decode('unicode-escape')
 
         token2 = re.search(r'"finput","(.*?)",', html)
         self.logDebug("Token #2: %s" % token2.group(1))
@@ -165,10 +165,10 @@ class ReCaptcha(Captcha):
         self.logDebug("Token #3: %s" % token3.group(1))
 
         html = self.plugin.req.load("https://www.google.com/recaptcha/api2/reload",
-                                    post={'k': key,
-                                          'c': token2.group(1),
+                                    post={'k'     : key,
+                                          'c'     : token2.group(1),
                                           'reason': "fi",
-                                          'fbg': token3.group(1)})
+                                          'fbg'   : token3.group(1)})
 
         token4 = re.search(r'"rresp","(.*?)",', html)
         self.logDebug("Token #4: %s" % token4.group(1))
@@ -186,12 +186,12 @@ class ReCaptcha(Captcha):
         timeToSolveMore = timeToSolve + int(float("0." + str(randint(1, 99999999))) * 500)
 
         html = self.plugin.req.load("https://www.google.com/recaptcha/api2/userverify",
-                                    post={'k': key,
-                                          'c': token4.group(1),
+                                    post={'k'       : key,
+                                          'c'       : token4.group(1),
                                           'response': response,
-                                          't': timeToSolve,
-                                          'ct': timeToSolveMore,
-                                          'bg': botguardstring})
+                                          't'       : timeToSolve,
+                                          'ct'      : timeToSolveMore,
+                                          'bg'      : botguardstring})
 
         token5 = re.search(r'"uvresp","(.*?)",', html)
         self.logDebug("Token #5: %s" % token5.group(1))

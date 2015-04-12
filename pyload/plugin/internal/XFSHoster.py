@@ -6,7 +6,8 @@ import time
 from random import random
 from urlparse import urljoin, urlparse
 
-from pyload.plugin.captcha import ReCaptcha, SolveMedia
+from pyload.plugin.captcha.ReCaptcha import ReCaptcha
+from pyload.plugin.captcha.SolveMedia import SolveMedia
 from pyload.plugin.internal.SimpleHoster import SimpleHoster, secondsToMidnight
 from pyload.utils import html_unescape
 
@@ -21,15 +22,14 @@ class XFSHoster(SimpleHoster):
     __description = """XFileSharing hoster plugin"""
     __license     = "GPLv3"
     __authors     = [("zoidberg"      , "zoidberg@mujmail.cz"),
-                       ("stickell"      , "l.stickell@yahoo.it"),
-                       ("Walter Purcaro", "vuolter@gmail.com"  )]
-
+                     ("stickell"      , "l.stickell@yahoo.it"),
+                     ("Walter Purcaro", "vuolter@gmail.com")]
 
     HOSTER_DOMAIN = None
 
     TEXT_ENCODING = False
     DIRECT_LINK   = None
-    MULTI_HOSTER  = True  #@NOTE: Should be default to False for safe, but I'm lazy...
+    MULTI_HOSTER  = True  # @NOTE: Should be default to False for safe, but I'm lazy...
 
     NAME_PATTERN = r'(Filename[ ]*:[ ]*</b>(</td><td nowrap>)?|name="fname"[ ]+value="|<[\w^_]+ class="(file)?name">)\s*(?P<N>.+?)(\s*<|")'
     SIZE_PATTERN = r'(Size[ ]*:[ ]*</b>(</td><td>)?|File:.*>|</font>\s*\(|<[\w^_]+ class="size">)\s*(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)'
@@ -52,11 +52,9 @@ class XFSHoster(SimpleHoster):
     FORM_PATTERN    = None
     FORM_INPUTS_MAP = None  #: dict passed as input_names to parseHtmlForm
 
-
     def setup(self):
         self.chunkLimit     = -1 if self.premium else 1
         self.resumeDownload = self.multiDL = self.premium
-
 
     def prepare(self):
         """ Initialize important variables """
@@ -86,7 +84,6 @@ class XFSHoster(SimpleHoster):
         if self.DIRECT_LINK is None:
             self.directDL = self.premium
 
-
     def handleFree(self, pyfile):
         for i in xrange(1, 6):
             self.logDebug("Getting download link: #%d" % i)
@@ -112,18 +109,16 @@ class XFSHoster(SimpleHoster):
             self.logError(data['op'] if 'op' in data else _("UNKNOWN"))
             return ""
 
-        self.link = m.group(1).strip()  #@TODO: Remove .strip() in 0.4.10
-
+        self.link = m.group(1).strip()  # @TODO: Remove .strip() in 0.4.10
 
     def handlePremium(self, pyfile):
         return self.handleFree(pyfile)
-
 
     def handleMulti(self, pyfile):
         if not self.account:
             self.fail(_("Only registered or premium users can use url leech feature"))
 
-        #only tested with easybytez.com
+        # only tested with easybytez.com
         self.html = self.load("http://www.%s/" % self.HOSTER_DOMAIN)
 
         action, inputs = self.parseHtmlForm()
@@ -166,7 +161,7 @@ class XFSHoster(SimpleHoster):
         else:
             self.fail(stmsg)
 
-        #get easybytez.com link for uploaded file
+        # get easybytez.com link for uploaded file
         m = re.search(self.LINK_LEECH_PATTERN, self.html)
         if m is None:
             self.error(_("LINK_LEECH_PATTERN not found"))
@@ -175,7 +170,6 @@ class XFSHoster(SimpleHoster):
 
         if 'location' in header:  #: Direct download link
             self.link = header['location']
-
 
     def checkErrors(self):
         m = re.search(self.ERROR_PATTERN, self.html)
@@ -229,7 +223,6 @@ class XFSHoster(SimpleHoster):
         else:
             self.info.pop('error', None)
 
-
     def getPostParameters(self):
         if self.FORM_PATTERN or self.FORM_INPUTS_MAP:
             action, inputs = self.parseHtmlForm(self.FORM_PATTERN or "", self.FORM_INPUTS_MAP or {})
@@ -274,7 +267,6 @@ class XFSHoster(SimpleHoster):
             inputs.pop('method_premium', None)
 
         return inputs
-
 
     def handleCaptcha(self, inputs):
         m = re.search(self.CAPTCHA_PATTERN, self.html)

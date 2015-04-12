@@ -48,8 +48,7 @@ class DecrypterThread(PluginThread):
             pyfile.plugin.preprocessing(self)
 
         except NotImplementedError:
-            self.m.core.log.error(
-                _("Plugin %s is missing a function.") % pyfile.pluginname)
+            self.m.core.log.error(_("Plugin %s is missing a function.") % pyfile.pluginname)
             return
 
         except Fail, e:
