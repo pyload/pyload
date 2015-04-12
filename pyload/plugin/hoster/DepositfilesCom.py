@@ -4,7 +4,7 @@ import re
 
 from urllib import unquote
 
-from pyload.plugin.internal.captcha import ReCaptcha
+from pyload.plugin.captcha.ReCaptcha import ReCaptcha
 from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 

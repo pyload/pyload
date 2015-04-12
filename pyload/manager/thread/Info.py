@@ -26,13 +26,13 @@ class InfoThread(PluginThread):
         PluginThread.__init__(self, manager)
 
         self.data = data
-        self.pid = pid # package id
+        self.pid = pid  # package id
         # [ .. (name, plugin) .. ]
 
-        self.rid = rid #result id
-        self.add = add #add packages instead of return result
+        self.rid = rid  # result id
+        self.add = add  # add packages instead of return result
 
-        self.cache = [] #accumulated data
+        self.cache = []  # accumulated data
 
         self.start()
 
@@ -42,35 +42,32 @@ class InfoThread(PluginThread):
         plugins = {}
         container = []
 
-        for url, plugintype, pluginname in data:
-            try:
-                plugins[plugintype][pluginname].append(url)
-            except Exception:
-                plugins[plugintype][pluginname] = [url]
+        for url, plugintype, pluginname in self.data:
+            # filter out container plugins
+            if plugintype == 'container':
+                container.appen((pluginname, url))
+            else:
+                if (plugintype, pluginname) in plugins:
+                    plugins[(plugintype, pluginname)].append(url)
+                else:
+                    plugins[(plugintype, pluginname)] = [url]
 
-        # filter out container plugins
-        for name in self.m.core.pluginManager.containerPlugins:
-            if name in plugins:
-                container.extend([(name, url) for url in plugins[name]])
-
-                del plugins[name]
-
-        #directly write to database
+        # directly write to database
         if self.pid > -1:
-            for plugintype, pluginname, urls in plugins.iteritems():
+            for (plugintype, pluginname), urls in plugins.iteritems():
                 plugin = self.m.core.pluginManager.getPlugin(plugintype, pluginname, True)
                 if hasattr(plugin, "getInfo"):
                     self.fetchForPlugin(pluginname, plugin, urls, self.updateDB)
                     self.m.core.files.save()
 
         elif self.add:
-            for plugintype, pluginname, urls in plugins.iteritems():
+            for (plugintype, pluginname), urls in plugins.iteritems():
                 plugin = self.m.core.pluginManager.getPlugin(plugintype, pluginname, True)
                 if hasattr(plugin, "getInfo"):
                     self.fetchForPlugin(pluginname, plugin, urls, self.updateCache, True)
 
                 else:
-                    #generate default result
+                    # generate default result
                     result = [(url, 0, 3, url) for url in urls]
 
                     self.updateCache(pluginname, result)
@@ -82,14 +79,13 @@ class InfoThread(PluginThread):
             for k, v in packs:
                 self.m.core.api.addPackage(k, v)
 
-            #empty cache
+            # empty cache
             del self.cache[:]
 
-        else: #post the results
-
+        else:  # post the results
 
             for name, url in container:
-                #attach container content
+                # attach container content
                 try:
                     data = self.decryptContainer(name, url)
                 except Exception:
@@ -110,12 +106,12 @@ class InfoThread(PluginThread):
                 if hasattr(plugin, "getInfo"):
                     self.fetchForPlugin(pluginname, plugin, urls, self.updateResult, True)
 
-                    #force to process cache
+                    # force to process cache
                     if self.cache:
                         self.updateResult(pluginname, [], True)
 
                 else:
-                    #generate default result
+                    # generate default result
                     result = [(url, 0, 3, url) for url in urls]
 
                     self.updateResult(pluginname, result, True)
@@ -124,20 +120,18 @@ class InfoThread(PluginThread):
 
         self.m.timestamp = time() + 5 * 60
 
-
     def updateDB(self, plugin, result):
         self.m.core.files.updateFileInfo(result, self.pid)
 
     def updateResult(self, plugin, result, force=False):
-        #parse package name and generate result
-        #accumulate results
+        # parse package name and generate result
+        # accumulate results
 
         self.cache.extend(result)
 
         if len(self.cache) >= 20 or force:
-            #used for package generating
-            tmp = [(name, (url, OnlineStatus(name, plugin, "unknown", status, int(size))))
-            for name, size, status, url in self.cache]
+            # used for package generating
+            tmp = [(name, (url, OnlineStatus(name, plugin, "unknown", status, int(size)))) for name, size, status, url in self.cache]
 
             data = parseNames(tmp)
             result = {}
@@ -155,8 +149,8 @@ class InfoThread(PluginThread):
 
     def fetchForPlugin(self, pluginname, plugin, urls, cb, err=None):
         try:
-            result = [] #result loaded from cache
-            process = [] #urls to process
+            result = []  # result loaded from cache
+            process = []  # urls to process
             for url in urls:
                 if url in self.m.infoCache:
                     result.append(self.m.infoCache[url])
@@ -170,19 +164,18 @@ class InfoThread(PluginThread):
             if process:
                 self.m.log.debug("Run Info Fetching for %s" % pluginname)
                 for result in plugin.getInfo(process):
-                    #result = [ .. (name, size, status, url) .. ]
+                    # result = [ .. (name, size, status, url) .. ]
                     if not type(result) == list:
                         result = [result]
 
                     for res in result:
-                        self.m.infoCache[res[3]] = res  #: why don't assign res dict directly?
+                        self.m.infoCache[res[3]] = res  # : why don't assign res dict directly?
 
                     cb(pluginname, result)
 
             self.m.log.debug("Finished Info Fetching for %s" % pluginname)
         except Exception, e:
-            self.m.log.warning(_("Info Fetching for %(name)s failed | %(err)s") %
-                               {"name": pluginname, "err": str(e)})
+            self.m.log.warning(_("Info Fetching for %(name)s failed | %(err)s") % {"name": pluginname, "err": str(e)})
             if self.m.core.debug:
                 print_exc()
 
@@ -190,7 +183,6 @@ class InfoThread(PluginThread):
             if err:
                 result = [(url, 0, 3, url) for url in urls]
                 cb(pluginname, result)
-
 
     def decryptContainer(self, plugin, url):
         data = []

@@ -22,7 +22,6 @@ from pyload.utils import freeSpace, lock
 class ThreadManager(object):
     """manages the download threads, assign jobs, reconnect etc"""
 
-
     def __init__(self, core):
         """Constructor"""
         self.core = core
@@ -34,7 +33,7 @@ class ThreadManager(object):
 
         self.reconnecting = Event()
         self.reconnecting.clear()
-        self.downloaded = 0 #number of files downloaded since last cleanup
+        self.downloaded = 0  # number of files downloaded since last cleanup
 
         self.lock = Lock()
 
@@ -47,14 +46,13 @@ class ThreadManager(object):
 
         # threads which are fetching hoster results
         self.infoResults = {}
-        #timeout for cache purge
+        # timeout for cache purge
         self.timestamp = 0
 
         pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
         for i in range(0, self.core.config.get("download", "max_downloads")):
             self.createThread()
-
 
     def createThread(self):
         """create a download thread"""
@@ -82,7 +80,6 @@ class ThreadManager(object):
         InfoThread(self, data, rid=rid, add=add)
 
         return rid
-
 
     @lock
     def getInfoResult(self, rid):
@@ -112,13 +109,12 @@ class ThreadManager(object):
         """get a id list of all pyfiles processed"""
         return [x.id for x in self.getActiveFiles()]
 
-
     def work(self):
         """run all task which have to be done (this is for repetivive call by core)"""
         try:
             self.tryReconnect()
         except Exception, e:
-            self.core.log.error(_("Reconnect Failed: %s") % str(e) )
+            self.core.log.error(_("Reconnect Failed: %s") % str(e))
             self.reconnecting.clear()
             if self.core.debug:
                 print_exc()
@@ -133,7 +129,7 @@ class ThreadManager(object):
 
             sleep(0.5)
             self.assignJob()
-            #it may be failed non critical so we try it again
+            # it may be failed non critical so we try it again
 
         if (self.infoCache or self.infoResults) and self.timestamp < time():
             self.infoCache.clear()
@@ -162,7 +158,7 @@ class ThreadManager(object):
 
         self.reconnecting.set()
 
-        #Do reconnect
+        # Do reconnect
         self.core.log.info(_("Starting reconnect"))
 
         while [x.active.plugin.waiting for x in self.threads if x.active].count(True) != 0:
@@ -175,7 +171,7 @@ class ThreadManager(object):
         self.core.log.debug("Old IP: %s" % ip)
 
         try:
-            reconn = Popen(self.core.config['reconnect']['method'], bufsize=-1, shell=True)#, stdout=subprocess.PIPE)
+            reconn = Popen(self.core.config['reconnect']['method'], bufsize=-1, shell=True)  # , stdout=subprocess.PIPE)
         except Exception:
             self.core.log.warning(_("Failed executing reconnect script!"))
             self.core.config["reconnect"]["activated"] = False
@@ -196,7 +192,7 @@ class ThreadManager(object):
     def getIP(self):
         """retrieve current ip"""
         services = [("http://automation.whatismyip.com/n09230945.asp", "(\S+)"),
-                    ("http://checkip.dyndns.org/",".*Current IP Address: (\S+)</body>.*")]
+                    ("http://checkip.dyndns.org/", ".*Current IP Address: (\S+)</body>.*")]
 
         ip = ""
         for i in range(10):
@@ -224,7 +220,6 @@ class ThreadManager(object):
             if free:
                 free[0].put("quit")
 
-
     def cleanPycurl(self):
         """ make a global curl cleanup (currently ununused) """
         if self.processingIds():
@@ -241,13 +236,13 @@ class ThreadManager(object):
 
         if self.pause or not self.core.api.isTimeDownload(): return
 
-        #if self.downloaded > 20:
+        # if self.downloaded > 20:
         #    if not self.cleanPyCurl(): return
 
         free = [x for x in self.threads if not x.active]
 
         inuse = set([(x.active.pluginname, self.getLimit(x)) for x in self.threads if x.active and x.active.hasPlugin() and x.active.plugin.account])
-        inuse = map(lambda x: (x[0], x[1], len([y for y in self.threads if y.active and y.active.pluginname == x[0]])) ,inuse)
+        inuse = map(lambda x: (x[0], x[1], len([y for y in self.threads if y.active and y.active.pluginname == x[0]])), inuse)
         onlimit = [x[0] for x in inuse if x[1] > 0 and x[2] >= x[1]]
 
         occ = [x.active.pluginname for x in self.threads if x.active and x.active.hasPlugin() and not x.active.plugin.multiDL] + onlimit
@@ -266,7 +261,7 @@ class ThreadManager(object):
                 job.release()
                 return
 
-            if job.plugin.__type == "hoster":
+            if job.plugin.grtPluginType() == "hoster":
                 spaceLeft = freeSpace(self.core.config["general"]["download_folder"]) / 1024 / 1024
                 if spaceLeft < self.core.config["general"]["min_free_space"]:
                     self.core.log.warning(_("Not enough space left on device"))
@@ -278,17 +273,16 @@ class ThreadManager(object):
 
                     thread.put(job)
                 else:
-                    #put job back
+                    # put job back
                     if occ not in self.core.files.jobCache:
                         self.core.files.jobCache[occ] = []
                     self.core.files.jobCache[occ].append(job.id)
 
-                    #check for decrypt jobs
+                    # check for decrypt jobs
                     job = self.core.files.getDecryptJob()
                     if job:
                         job.initPlugin()
                         thread = DecrypterThread(self, job)
-
 
             else:
                 thread = DecrypterThread(self, job)

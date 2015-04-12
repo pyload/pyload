@@ -7,7 +7,7 @@ from urllib import unquote
 from urlparse import urlparse
 
 from pyload.network.RequestFactory import getURL
-from pyload.plugin.captcha import ReCaptcha
+from pyload.plugin.captcha.ReCaptcha import ReCaptcha
 from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 

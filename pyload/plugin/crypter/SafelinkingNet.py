@@ -6,7 +6,7 @@ from BeautifulSoup import BeautifulSoup
 
 from pyload.utils import json_loads
 from pyload.plugin.Crypter import Crypter
-from pyload.plugin.internal.captcha import SolveMedia
+from pyload.plugin.captcha.SolveMedia import SolveMedia
 
 
 class SafelinkingNet(Crypter):

@@ -18,13 +18,11 @@ class ReCaptcha(Captcha):
     __description = """ReCaptcha captcha service plugin"""
     __license     = "GPLv3"
     __authors     = [("pyLoad Team", "admin@pyload.org"),
-                       ("Walter Purcaro", "vuolter@gmail.com"),
-                       ("zapp-brannigan", "fuerst.reinje@web.de")]
-
+                     ("Walter Purcaro", "vuolter@gmail.com"),
+                     ("zapp-brannigan", "fuerst.reinje@web.de")]
 
     KEY_V2_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']:\s*["\'])([\w-]+)'
     KEY_V1_PATTERN = r'(?:recaptcha(?:/api|\.net)/(?:challenge|noscript)\?k=|Recaptcha\.create\s*\(\s*["\'])([\w-]+)'
-
 
     def detect_key(self, html=None):
         if not html:
@@ -43,7 +41,6 @@ class ReCaptcha(Captcha):
         else:
             self.logDebug("Key not found")
             return None
-
 
     def challenge(self, key=None, html=None, version=None):
         if not key:
@@ -66,7 +63,6 @@ class ReCaptcha(Captcha):
             self.plugin.fail(errmsg)
             raise TypeError(errmsg)
 
-
     def _challenge_v1(self, key):
         html = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge",
                                     get={'k': key})
@@ -83,7 +79,6 @@ class ReCaptcha(Captcha):
 
         return self.result(server, challenge), challenge
 
-
     def result(self, server, challenge):
         result = self.plugin.decryptCaptcha("%simage" % server,
                                             get={'c': challenge},
@@ -95,13 +90,12 @@ class ReCaptcha(Captcha):
 
         return result
 
-
     def _collectApiInfo(self):
         html = self.plugin.req.load("http://www.google.com/recaptcha/api.js")
         a    = re.search(r'po.src = \'(.*?)\';', html).group(1)
         vers = a.split("/")[5]
 
-        self.logDebug("API version: %s" %vers)
+        self.logDebug("API version: %s" % vers)
 
         language = a.split("__")[1].split(".")[0]
 
@@ -114,7 +108,6 @@ class ReCaptcha(Captcha):
         self.logDebug("API jsh-string: %s" % jsh)
 
         return vers, language, jsh
-
 
     def _prepareTimeAndRpc(self):
         self.plugin.req.load("http://www.google.com/recaptcha/api2/demo")
@@ -130,7 +123,6 @@ class ReCaptcha(Captcha):
         self.logDebug("Rpc-token: %s" % rpc)
 
         return millis, rpc
-
 
     def _challenge_v2(self, key, parent=None):
         if parent is None:
@@ -183,7 +175,7 @@ class ReCaptcha(Captcha):
 
         millis_captcha_loading = int(round(time.time() * 1000))
         captcha_response       = self.plugin.decryptCaptcha("https://www.google.com/recaptcha/api2/payload",
-                                                            get={'c':token4.group(1), 'k':key},
+                                                            get={'c': token4.group(1), 'k': key},
                                                             cookies=True,
                                                             forceUser=True)
         response               = b64encode('{"response":"%s"}' % captcha_response)

@@ -9,7 +9,7 @@ import re
 
 from urlparse import urljoin
 
-from pyload.plugin.internal.captcha import ReCaptcha
+from pyload.plugin.captcha.ReCaptcha import ReCaptcha
 from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
@@ -24,8 +24,7 @@ class FilerNet(SimpleHoster):
     __description = """Filer.net hoster plugin"""
     __license     = "GPLv3"
     __authors     = [("stickell", "l.stickell@yahoo.it"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
-
+                     ("Walter Purcaro", "vuolter@gmail.com")]
 
     INFO_PATTERN    = r'<h1 class="page-header">Free Download (?P<N>\S+) <small>(?P<S>[\w.]+) (?P<U>[\w^_]+)</small></h1>'
     OFFLINE_PATTERN = r'Nicht gefunden'
@@ -33,7 +32,6 @@ class FilerNet(SimpleHoster):
     WAIT_PATTERN = r'musst du <span id="time">(\d+)'
 
     LINK_FREE_PATTERN = LINK_PREMIUM_PATTERN = r'href="([^"]+)">Get download</a>'
-
 
     def handleFree(self, pyfile):
         inputs = self.parseHtmlForm(input_names={'token': re.compile(r'.+')})[1]
@@ -53,8 +51,8 @@ class FilerNet(SimpleHoster):
         #@TODO: Check for v0.4.10
         self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
         self.load(pyfile.url, post={'recaptcha_challenge_field': challenge,
-                                    'recaptcha_response_field' : response,
-                                    'hash'                     : inputs['hash']})
+                                    'recaptcha_response_field': response,
+                                    'hash': inputs['hash']})
         self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
         if 'location' in self.req.http.header.lower():

@@ -59,43 +59,37 @@ class Base(object):
         #: Core instance
         self.core = core
 
-
     def _log(self, type, args):
-        msg = " | ".join([encode(a).strip() for a in args if a])
+        msg = " | ".join([encode(str(a)).strip() for a in args if a])
         logger = getattr(self.core.log, type)
         logger("%s: %s" % (self.__class__.__name__, msg or _("%s MARK" % type.upper())))
-
 
     def logDebug(self, *args):
         if self.core.debug:
             return self._log("debug", args)
 
-
     def logInfo(self, *args):
         return self._log("info", args)
-
 
     def logWarning(self, *args):
         return self._log("warning", args)
 
-
     def logError(self, *args):
         return self._log("error", args)
-
 
     def logCritical(self, *args):
         return self._log("critical", args)
 
+    def grtPluginType(self):
+        return getattr(self, "_%s__type" % self.__class__.__name__)
 
     def getPluginConfSection(self):
         return "%s_%s" % (self.__class__.__name__, getattr(self, "_%s__type" % self.__class__.__name__))
-
 
     #: Deprecated method
     def setConf(self, option, value):
         """ see `setConfig` """
         self.setConfig(option, value)
-
 
     def setConfig(self, option, value):
         """ Set config value for current plugin
@@ -106,12 +100,10 @@ class Base(object):
         """
         self.core.config.setPlugin(self.getPluginConfSection(), option, value)
 
-
     #: Deprecated method
     def getConf(self, option):
         """ see `getConfig` """
-        return self.getConfig(option)
-
+        return self.core.config.getPlugin(self.getPluginConfSection(), option)
 
     def getConfig(self, option):
         """ Returns config value for current plugin
@@ -121,16 +113,13 @@ class Base(object):
         """
         return self.core.config.getPlugin(self.getPluginConfSection(), option)
 
-
     def setStorage(self, key, value):
         """ Saves a value persistently to the database """
         self.core.db.setStorage(self.getPluginConfSection(), key, value)
 
-
     def store(self, key, value):
         """ same as `setStorage` """
         self.core.db.setStorage(self.getPluginConfSection(), key, value)
-
 
     def getStorage(self, key=None, default=None):
         """ Retrieves saved value or dict of all saved entries if key is None """
@@ -138,11 +127,9 @@ class Base(object):
             return self.core.db.getStorage(self.getPluginConfSection(), key) or default
         return self.core.db.getStorage(self.getPluginConfSection(), key)
 
-
     def retrieve(self, *args, **kwargs):
         """ same as `getStorage` """
         return self.getStorage(*args, **kwargs)
-
 
     def delStorage(self, key):
         """ Delete entry in db """
@@ -164,12 +151,10 @@ class Plugin(Base):
     __description = """Base plugin"""
     __license     = "GPLv3"
     __authors     = [("RaNaN", "RaNaN@pyload.org"),
-                       ("spoob", "spoob@pyload.org"),
-                       ("mkaay", "mkaay@mkaay.de")]
-
+                     ("spoob", "spoob@pyload.org"),
+                     ("mkaay", "mkaay@mkaay.de")]
 
     info = {}  #: file info dict
-
 
     def __init__(self, pyfile):
         Base.__init__(self, pyfile.m.core)
@@ -207,10 +192,10 @@ class Plugin(Base):
             self.user, data = self.account.selectAccount()
             #: Browser instance, see `network.Browser`
             self.req = self.account.getAccountRequest(self.user)
-            self.chunkLimit = -1 # chunk limit, -1 for unlimited
+            self.chunkLimit = -1  # chunk limit, -1 for unlimited
             #: enables resume (will be ignored if server dont accept chunks)
             self.resumeDownload = True
-            self.multiDL = True  #every hoster with account should provide multiple downloads
+            self.multiDL = True  # every hoster with account should provide multiple downloads
             #: premium status
             self.premium = self.account.isPremium(self.user)
         else:
@@ -219,7 +204,7 @@ class Plugin(Base):
         #: associated pyfile instance, see `PyFile`
         self.pyfile = pyfile
 
-        self.thread = None # holds thread in future
+        self.thread = None  # holds thread in future
 
         #: location where the last call to download was saved
         self.lastDownload = ""
@@ -232,31 +217,26 @@ class Plugin(Base):
         #: captcha task
         self.cTask = None
 
-        self.html = None  #@TODO: Move to hoster class in 0.4.10
+        self.html = None  # @TODO: Move to hoster class in 0.4.10
         self.retries = 0
 
         self.init()
-
 
     def getChunkCount(self):
         if self.chunkLimit <= 0:
             return self.core.config['download']['chunks']
         return min(self.core.config['download']['chunks'], self.chunkLimit)
 
-
     def __call__(self):
         return self.__class__.__name__
-
 
     def init(self):
         """initialize the plugin (in addition to `__init__`)"""
         pass
 
-
     def setup(self):
         """ setup for enviroment and other things, called before downloading (possibly more than one time)"""
         pass
-
 
     def preprocessing(self, thread):
         """ handles important things to do before starting """
@@ -273,18 +253,15 @@ class Plugin(Base):
 
         return self.process(self.pyfile)
 
-
     def process(self, pyfile):
         """the 'main' method of every plugin, you **have to** overwrite it"""
         raise NotImplementedError
-
 
     def resetAccount(self):
         """ dont use account and retry download """
         self.account = None
         self.req = self.core.requestFactory.getRequest(self.__class__.__name__)
         self.retry()
-
 
     def checksum(self, local_file=None):
         """
@@ -299,12 +276,10 @@ class Plugin(Base):
 
         return True, 10
 
-
     def setReconnect(self, reconnect):
         reconnect = bool(reconnect)
         self.logDebug("Set wantReconnect to: %s (previous: %s)" % (reconnect, self.wantReconnect))
         self.wantReconnect = reconnect
-
 
     def setWait(self, seconds, reconnect=None):
         """Set a specific wait time later used with `wait`
@@ -322,7 +297,6 @@ class Plugin(Base):
 
         if reconnect is not None:
             self.setReconnect(reconnect)
-
 
     def wait(self, seconds=None, reconnect=None):
         """ waits the time previously set """
@@ -369,18 +343,15 @@ class Plugin(Base):
 
         pyfile.status = status
 
-
     def fail(self, reason):
         """ fail and give reason """
         raise Fail(reason)
-
 
     def abort(self, reason=""):
         """ abort and give reason """
         if reason:
             self.pyfile.error = str(reason)
         raise Abort
-
 
     def error(self, reason="", type=""):
         if not reason and not type:
@@ -392,20 +363,17 @@ class Plugin(Base):
 
         raise Fail(msg)
 
-
     def offline(self, reason=""):
         """ fail and indicate file is offline """
         if reason:
             self.pyfile.error = str(reason)
         raise Fail("offline")
 
-
     def tempOffline(self, reason=""):
         """ fail and indicates file ist temporary offline, the core may take consequences """
         if reason:
             self.pyfile.error = str(reason)
         raise Fail("temp. offline")
-
 
     def retry(self, max_tries=5, wait_time=1, reason=""):
         """Retries and begin again from the beginning
@@ -422,18 +390,15 @@ class Plugin(Base):
         self.retries += 1
         raise Retry(reason)
 
-
     def invalidCaptcha(self):
         self.logError(_("Invalid captcha"))
         if self.cTask:
             self.cTask.invalid()
 
-
     def correctCaptcha(self):
         self.logInfo(_("Correct captcha"))
         if self.cTask:
             self.cTask.correct()
-
 
     def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, imgtype='jpg',
                        result_type='textual', timeout=290):
@@ -487,7 +452,7 @@ class Plugin(Base):
 
             captchaManager.removeTask(task)
 
-            if task.error and has_plugin: #ignore default error message since the user could use OCR
+            if task.error and has_plugin:  # ignore default error message since the user could use OCR
                 self.fail(_("Pil and tesseract not installed and no Client connected for captcha decrypting"))
             elif task.error:
                 self.fail(task.error)
@@ -504,7 +469,6 @@ class Plugin(Base):
                 pass
 
         return result
-
 
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False, follow_location=True, save_cookies=True):
         """Load content at url and returns it
@@ -526,7 +490,7 @@ class Plugin(Base):
         if not url:
             self.fail(_("No url given"))
 
-        url = encode(url).strip()  #@NOTE: utf8 vs decode -> please use decode attribute in all future plugins
+        url = encode(url).strip()  # @NOTE: utf8 vs decode -> please use decode attribute in all future plugins
 
         if self.core.debug:
             self.logDebug("Load url: " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
@@ -552,7 +516,7 @@ class Plugin(Base):
                 self.logError(e)
 
         if just_header:
-            #parse header
+            # parse header
             header = {"code": self.req.code}
             for line in res.splitlines():
                 line = line.strip()
@@ -572,7 +536,6 @@ class Plugin(Base):
             res = header
 
         return res
-
 
     def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=False):
         """Downloads the content at url to download folder
@@ -660,7 +623,6 @@ class Plugin(Base):
         self.lastDownload = filename
         return self.lastDownload
 
-
     def checkDownload(self, rules, api_size=0, max_size=50000, delete=True, read_size=0):
         """ checks the content of the last downloaded file, re match is saved to `lastCheck`
 
@@ -685,7 +647,7 @@ class Plugin(Base):
         with open(lastDownload, "rb") as f:
             content = f.read(read_size if read_size else -1)
 
-        #produces encoding errors, better log to other file in the future?
+        # produces encoding errors, better log to other file in the future?
         #self.logDebug("Content: %s" % content)
         for name, rule in rules.iteritems():
             if isinstance(rule, basestring):
@@ -701,13 +663,11 @@ class Plugin(Base):
                     self.lastCheck = m
                     return name
 
-
     def getPassword(self):
         """ get the password the user provided in the package"""
         password = self.pyfile.package().password
         if not password: return ""
         return password
-
 
     def checkForSameFiles(self, starting=False):
         """ checks if same file was/is downloaded within same package
@@ -720,10 +680,9 @@ class Plugin(Base):
 
         for pyfile in self.core.files.cache.values():
             if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package().folder == pack.folder:
-                if pyfile.status in (0, 12): #finished or downloading
+                if pyfile.status in (0, 12):  # finished or downloading
                     raise SkipDownload(pyfile.pluginname)
-                elif pyfile.status in (
-                5, 7) and starting: #a download is waiting/starting and was appenrently started before
+                elif pyfile.status in (5, 7) and starting:  # a download is waiting/starting and was appenrently started before
                     raise SkipDownload(pyfile.pluginname)
 
         download_folder = self.core.config['general']['download_folder']
@@ -740,7 +699,6 @@ class Plugin(Base):
                 raise SkipDownload(pyfile[0])
 
             self.logDebug("File %s not skipped, because it does not exists." % self.pyfile.name)
-
 
     def clean(self):
         """ clean everything and remove references """

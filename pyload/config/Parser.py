@@ -298,7 +298,6 @@ class ConfigParser(object):
     def removeDeletedPlugins(self, plugins):
         for name in self.plugin.keys():
             if not name in plugins:
-                print "delete config " + name
                 del self.plugin[name]
 
 

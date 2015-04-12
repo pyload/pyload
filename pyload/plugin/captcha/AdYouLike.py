@@ -15,10 +15,8 @@ class AdYouLike(Captcha):
     __license     = "GPLv3"
     __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
-
     AYL_PATTERN      = r'Adyoulike\.create\s*\((.+?)\)'
     CALLBACK_PATTERN = r'(Adyoulike\.g\._jsonp_\d+)'
-
 
     def detect_key(self, html=None):
         if not html:
@@ -39,7 +37,6 @@ class AdYouLike(Captcha):
             self.logDebug("Ayl or callback not found")
             return None
 
-
     def challenge(self, key=None, html=None):
         if not key:
             if self.detect_key(html):
@@ -56,8 +53,8 @@ class AdYouLike(Captcha):
         ayl = json_loads(ayl)
 
         html = self.plugin.req.load("http://api-ayl.appspot.com/challenge",
-                                    get={'key'     : ayl['adyoulike']['key'],
-                                         'env'     : ayl['all']['env'],
+                                    get={'key': ayl['adyoulike']['key'],
+                                         'env': ayl['all']['env'],
                                          'callback': callback})
         try:
             challenge = json_loads(re.search(callback + r'\s*\((.+?)\)', html).group(1))
@@ -70,7 +67,6 @@ class AdYouLike(Captcha):
         self.logDebug("Challenge: %s" % challenge)
 
         return self.result(ayl, challenge), challenge
-
 
     def result(self, server, challenge):
         # Adyoulike.g._jsonp_5579316662423138
@@ -98,11 +94,11 @@ class AdYouLike(Captcha):
             self.plugin.fail(errmsg)
             raise AttributeError(errmsg)
 
-        result = {'_ayl_captcha_engine' : "adyoulike",
-                  '_ayl_env'            : server['all']['env'],
-                  '_ayl_tid'            : challenge['tid'],
+        result = {'_ayl_captcha_engine': "adyoulike",
+                  '_ayl_env': server['all']['env'],
+                  '_ayl_tid': challenge['tid'],
                   '_ayl_token_challenge': challenge['token'],
-                  '_ayl_response'       : response}
+                  '_ayl_response': response}
 
         self.logDebug("Result: %s" % result)
 

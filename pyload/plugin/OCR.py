@@ -11,7 +11,7 @@ except ImportError:
 import logging
 import os
 import subprocess
-#import tempfile
+# import tempfile
 
 from pyload.plugin.Plugin import Base
 from pyload.utils import fs_join
@@ -20,31 +20,26 @@ from pyload.utils import fs_join
 class OCR(Base):
     __name    = "OCR"
     __type    = "ocr"
-    __version = "0.11"
+    __version = "0.12"
 
     __description = """OCR base plugin"""
     __license     = "GPLv3"
     __authors     = [("pyLoad Team", "admin@pyload.org")]
 
-
     def __init__(self):
         self.logger = logging.getLogger("log")
-
 
     def load_image(self, image):
         self.image = Image.open(image)
         self.pixels = self.image.load()
         self.result_captcha = ''
 
-
     def deactivate(self):
         """delete all tmp images"""
         pass
 
-
     def threshold(self, value):
         self.image = self.image.point(lambda a: a * value + 10)
-
 
     def run(self, command):
         """Run a command"""
@@ -56,14 +51,13 @@ class OCR(Base):
         popen.stderr.close()
         self.logger.debug("Tesseract ReturnCode %s Output: %s" % (popen.returncode, output))
 
-
-    def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True):
-        #tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
+    def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True, pagesegmode=None):
+        # tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
         try:
             tmpTif = open(fs_join("tmp", "tmpTif_%s.tif" % self.__class__.__name__), "wb")
             tmpTif.close()
 
-            #tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
+            # tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
             tmpTxt = open(fs_join("tmp", "tmpTxt_%s.txt" % self.__class__.__name__), "wb")
             tmpTxt.close()
 
@@ -79,10 +73,13 @@ class OCR(Base):
         else:
             tessparams = ["tesseract"]
 
-        tessparams.extend([os.path.abspath(tmpTif.name), os.path.abspath(tmpTxt.name).replace(".txt", "")] )
+        tessparams.extend([os.path.abspath(tmpTif.name), os.path.abspath(tmpTxt.name).replace(".txt", "")])
+
+        if pagesegmode:
+            tessparams.extend(["-psm", str(pagesegmode)])
 
         if subset and (digits or lowercase or uppercase):
-            #tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
+            # tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
             with open(fs_join("tmp", "tmpSub_%s.subset" % self.__class__.__name__), "wb") as tmpSub:
                 tmpSub.write("tessedit_char_whitelist ")
 
@@ -116,17 +113,14 @@ class OCR(Base):
         except Exception:
             pass
 
-
     def get_captcha(self, name):
         raise NotImplementedError
-
 
     def to_greyscale(self):
         if self.image.mode != 'L':
             self.image = self.image.convert('L')
 
         self.pixels = self.image.load()
-
 
     def eval_black_white(self, limit):
         self.pixels = self.image.load()
@@ -137,7 +131,6 @@ class OCR(Base):
                     self.pixels[x, y] = 255
                 else:
                     self.pixels[x, y] = 0
-
 
     def clean(self, allowed):
         pixels = self.pixels
@@ -183,7 +176,6 @@ class OCR(Base):
                     pixels[x, y] = 255
 
         self.pixels = pixels
-
 
     def derotate_by_average(self):
         """rotate by checking each angle and guess most suitable"""
@@ -258,7 +250,6 @@ class OCR(Base):
 
         self.pixels = pixels
 
-
     def split_captcha_letters(self):
         captcha = self.image
         started = False
@@ -297,7 +288,6 @@ class OCR(Base):
                 bottomY, topY = 0, height
 
         return letters
-
 
     def correct(self, values, var=None):
         if var:

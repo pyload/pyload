@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugin.internal.captcha import SolveMedia
+from pyload.plugin.captcha.SolveMedia import SolveMedia
 from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
@@ -17,8 +17,7 @@ class KingfilesNet(SimpleHoster):
     __description = """Kingfiles.net hoster plugin"""
     __license     = "GPLv3"
     __authors     = [("zapp-brannigan", "fuerst.reinje@web.de"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
-
+                     ("Walter Purcaro", "vuolter@gmail.com")]
 
     NAME_PATTERN = r'name="fname" value="(?P<N>.+?)">'
     SIZE_PATTERN = r'>Size: .+?">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
@@ -29,11 +28,9 @@ class KingfilesNet(SimpleHoster):
 
     LINK_FREE_PATTERN = r'var download_url = \'(.+)\';'
 
-
     def setup(self):
         self.resumeDownload = True
         self.multiDL        = True
-
 
     def handleFree(self, pyfile):
         # Click the free user button

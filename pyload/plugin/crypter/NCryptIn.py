@@ -6,7 +6,7 @@ import re
 from Crypto.Cipher import AES
 
 from pyload.plugin.Crypter import Crypter
-from pyload.plugin.internal.captcha import ReCaptcha
+from pyload.plugin.captcha.ReCaptcha import ReCaptcha
 
 
 class NCryptIn(Crypter):

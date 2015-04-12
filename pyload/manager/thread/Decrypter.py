@@ -19,6 +19,7 @@ from pyload.plugin.Plugin import Abort, Fail, Retry
 
 
 class DecrypterThread(PluginThread):
+
     """thread for decrypting"""
 
     def __init__(self, manager, pyfile):
@@ -42,12 +43,12 @@ class DecrypterThread(PluginThread):
         retry = False
 
         try:
-            self.m.log.info(_("Decrypting starts: %s") % pyfile.name)
+            self.m.core.log.info(_("Decrypting starts: %s") % pyfile.name)
             pyfile.error = ""
             pyfile.plugin.preprocessing(self)
 
         except NotImplementedError:
-            self.m.log.error(_("Plugin %s is missing a function.") % pyfile.pluginname)
+            self.m.core.log.error(_("Plugin %s is missing a function.") % pyfile.pluginname)
             return
 
         except Fail, e:
@@ -55,10 +56,12 @@ class DecrypterThread(PluginThread):
 
             if msg == "offline":
                 pyfile.setStatus("offline")
-                self.m.log.warning(_("Download is offline: %s") % pyfile.name)
+                self.m.core.log.warning(
+                    _("Download is offline: %s") % pyfile.name)
             else:
                 pyfile.setStatus("failed")
-                self.m.log.error(_("Decrypting failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": msg})
+                self.m.core.log.error(
+                    _("Decrypting failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": msg})
                 pyfile.error = msg
 
             if self.m.core.debug:
@@ -66,7 +69,7 @@ class DecrypterThread(PluginThread):
             return
 
         except Abort:
-            self.m.log.info(_("Download aborted: %s") % pyfile.name)
+            self.m.core.log.info(_("Download aborted: %s") % pyfile.name)
             pyfile.setStatus("aborted")
 
             if self.m.core.debug:
@@ -74,13 +77,14 @@ class DecrypterThread(PluginThread):
             return
 
         except Retry:
-            self.m.log.info(_("Retrying %s") % pyfile.name)
+            self.m.core.log.info(_("Retrying %s") % pyfile.name)
             retry = True
             return self.run()
 
         except Exception, e:
             pyfile.setStatus("failed")
-            self.m.log.error(_("Decrypting failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": str(e)})
+            self.m.core.log.error(_("Decrypting failed: %(name)s | %(msg)s") % {
+                                  "name": pyfile.name, "msg": str(e)})
             pyfile.error = str(e)
 
             if self.m.core.debug:

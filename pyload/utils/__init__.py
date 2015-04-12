@@ -70,6 +70,7 @@ def safe_filename(name):
     else:
         return remove_chars(name, u'\0\\"')
 
+
 #: Deprecated method
 def save_path(name):
     return safe_filename(name)
@@ -78,6 +79,7 @@ def save_path(name):
 def fs_join(*args):
     """ joins a path, encoding aware """
     return fs_encode(join(*[x if type(x) == unicode else decode(x) for x in args]))
+
 
 #: Deprecated method
 def save_join(*args):
@@ -91,7 +93,7 @@ if sys.getfilesystemencoding().startswith('ANSI'):
     def fs_encode(string):
         return safe_filename(encode(string))
 
-    fs_decode = decode #decode utf8
+    fs_decode = decode  # decode utf8
 
 else:
     fs_encode = fs_decode = lambda x: x  # do nothing
@@ -99,7 +101,7 @@ else:
 
 def get_console_encoding(enc):
     if os.name == "nt":
-        if enc == "cp65001": # aka UTF-8
+        if enc == "cp65001":  # aka UTF-8
             print "WARNING: Windows codepage 65001 is not supported."
             enc = "cp850"
     else:
@@ -170,7 +172,7 @@ def uniqify(seq):  #: Originally by Dave Kirby
     return [x for x in seq if x not in seen and not seen_add(x)]
 
 
-def parseFileSize(string, unit=None): #returns bytes
+def parseFileSize(string, unit=None):  # returns bytes
     if not unit:
         m = re.match(r"([\d.,]+) *([a-zA-Z]*)", string.strip().lower())
         if m:
@@ -184,7 +186,7 @@ def parseFileSize(string, unit=None): #returns bytes
         else:
             traffic = string
 
-    #ignore case
+    # ignore case
     unit = unit.lower().strip()
 
     if unit in ("eb", "ebyte", "exabyte", "eib", "e"):
@@ -205,7 +207,7 @@ def parseFileSize(string, unit=None): #returns bytes
 
 def lock(func):
     def new(*args):
-        #print "Handler: %s args: %s" % (func, args[1:])
+        # print "Handler: %s args: %s" % (func, args[1:])
         args[0].lock.acquire()
         try:
             return func(*args)
@@ -234,7 +236,7 @@ def fixup(m):
         except KeyError:
             pass
 
-    return text # leave as is
+    return text  # leave as is
 
 
 def has_method(obj, name):
@@ -265,4 +267,3 @@ def load_translation(name, locale, default="en"):
     else:
         translation.install(True)
         return translation
-

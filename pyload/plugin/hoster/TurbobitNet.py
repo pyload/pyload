@@ -10,7 +10,7 @@ from pycurl import HTTPHEADER
 from urllib import quote
 
 from pyload.network.RequestFactory import getURL
-from pyload.plugin.internal.captcha import ReCaptcha
+from pyload.plugin.captcha.ReCaptcha import ReCaptcha
 from pyload.plugin.internal.SimpleHoster import SimpleHoster, timestamp
 
 

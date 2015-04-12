@@ -25,14 +25,14 @@ statusMap = dict((v, k) for k, v in _statusMap.iteritems())
 
 #@TODO: Remove in 0.4.10 and redirect to self.error instead
 def _error(self, reason, type):
-        if not reason and not type:
-            type = "unknown"
+    if not reason and not type:
+        type = "unknown"
 
-        msg  = _("%s error") % type.strip().capitalize() if type else _("Error")
-        msg += ": %s" % reason.strip() if reason else ""
-        msg += _(" | Plugin may be out of date")
+    msg  = _("%s error") % type.strip().capitalize() if type else _("Error")
+    msg += ": %s" % reason.strip() if reason else ""
+    msg += _(" | Plugin may be out of date")
 
-        raise Fail(msg)
+    raise Fail(msg)
 
 
 #@TODO: Remove in 0.4.10
@@ -125,13 +125,13 @@ def parseFileInfo(plugin, url="", html=""):
 # def create_getInfo(plugin):
 
     # def generator(list):
-        # for x in list:
-            # yield x
+    # for x in list:
+    # yield x
 
     # if hasattr(plugin, "parseInfos"):
-        # fn = lambda urls: generator((info['name'], info['size'], info['status'], info['url']) for info in plugin.parseInfos(urls))
+    # fn = lambda urls: generator((info['name'], info['size'], info['status'], info['url']) for info in plugin.parseInfos(urls))
     # else:
-        # fn = lambda urls: generator(parseFileInfo(url) for url in urls)
+    # fn = lambda urls: generator(parseFileInfo(url) for url in urls)
 
     # return fn
 
@@ -238,7 +238,7 @@ def secondsToMidnight(gmt=0):
     if hasattr(td, 'total_seconds'):
         res = td.total_seconds()
     else:  #: work-around for python 2.5 and 2.6 missing datetime.timedelta.total_seconds
-        res = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
+        res = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10 ** 6) / 10 ** 6
 
     return int(res)
 
@@ -253,8 +253,7 @@ class SimpleHoster(Hoster):
 
     __description = """Simple hoster plugin"""
     __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com"  )]
-
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
     """
     Info patterns should be defined by each hoster:
@@ -310,27 +309,24 @@ class SimpleHoster(Hoster):
     LOGIN_ACCOUNT = False  #: Set to True to require account login
     DISPOSITION   = True   #: Work-around to `filename*=UTF-8` bug; remove in 0.4.10
 
-    directLink = getFileURL  #@TODO: Remove in 0.4.10
-
+    directLink = getFileURL  # @TODO: Remove in 0.4.10
 
     @classmethod
-    def parseInfos(cls, urls):  #@TODO: Built-in in 0.4.10 core, then remove from plugins
+    def parseInfos(cls, urls):  # @TODO: Built-in in 0.4.10 core, then remove from plugins
         for url in urls:
             url = replace_patterns(url, cls.URL_REPLACEMENTS)
             yield cls.getInfo(url)
-
 
     @classmethod
     def apiInfo(cls, url="", get={}, post={}):
         url   = unquote(url)
         url_p = urlparse(url)
-        return {'name'  : (url_p.path.split('/')[-1]
-                           or url_p.query.split('=', 1)[::-1][0].split('&', 1)[0]
-                           or url_p.netloc.split('.', 1)[0]),
-                'size'  : 0,
+        return {'name': (url_p.path.split('/')[-1]
+                         or url_p.query.split('=', 1)[::-1][0].split('&', 1)[0]
+                         or url_p.netloc.split('.', 1)[0]),
+                'size': 0,
                 'status': 3 if url else 8,
-                'url'   : url}
-
+                'url': url}
 
     @classmethod
     def getInfo(cls, url="", html=""):
@@ -411,19 +407,17 @@ class SimpleHoster(Hoster):
 
         return info
 
-
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium
 
-
     def prepare(self):
-        self.pyfile.error = ""  #@TODO: Remove in 0.4.10
+        self.pyfile.error = ""  # @TODO: Remove in 0.4.10
 
         self.info      = {}
         self.html      = ""
-        self.link      = ""     #@TODO: Move to hoster class in 0.4.10
-        self.directDL  = False  #@TODO: Move to hoster class in 0.4.10
-        self.multihost = False  #@TODO: Move to hoster class in 0.4.10
+        self.link      = ""  # @TODO: Move to hoster class in 0.4.10
+        self.directDL  = False  # @TODO: Move to hoster class in 0.4.10
+        self.multihost = False  # @TODO: Move to hoster class in 0.4.10
 
         if not self.getConfig('use_premium', True):
             self.retryFree()
@@ -449,13 +443,11 @@ class SimpleHoster(Hoster):
 
         self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
 
-
     def preload(self):
         self.html = self.load(self.pyfile.url, cookies=bool(self.COOKIES), decode=not self.TEXT_ENCODING)
 
         if isinstance(self.TEXT_ENCODING, basestring):
             self.html = unicode(self.html, self.TEXT_ENCODING)
-
 
     def process(self, pyfile):
         try:
@@ -489,13 +481,12 @@ class SimpleHoster(Hoster):
             self.downloadLink(self.link, self.DISPOSITION)  #: Remove `self.DISPOSITION` in 0.4.10
             self.checkFile()
 
-        except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
+        except Fail, e:  # @TODO: Move to PluginThread in 0.4.10
             if self.premium:
                 self.logWarning(_("Premium download failed"))
                 self.retryFree()
             else:
                 raise Fail(e)
-
 
     def downloadLink(self, link, disposition=True):
         if link and isinstance(link, basestring):
@@ -507,7 +498,6 @@ class SimpleHoster(Hoster):
                 link    = urljoin(baseurl, link)
 
             self.download(link, ref=False, disposition=disposition)
-
 
     def checkFile(self, rules={}):
         if self.cTask and not self.lastDownload:
@@ -523,14 +513,14 @@ class SimpleHoster(Hoster):
                                          'Html error': re.compile(r'\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)')})
 
             if not errmsg:
-                for r, p in [('Html file'    , re.compile(r'\A\s*<!DOCTYPE html')                                ),
+                for r, p in [('Html file', re.compile(r'\A\s*<!DOCTYPE html')),
                              ('Request error', re.compile(r'([Aa]n error occured while processing your request)'))]:
                     if r not in rules:
                         rules[r] = p
 
-                for r, a in [('Error'       , "ERROR_PATTERN"       ),
+                for r, a in [('Error', "ERROR_PATTERN"),
                              ('Premium only', "PREMIUM_ONLY_PATTERN"),
-                             ('Wait error'  , "WAIT_PATTERN"        )]:
+                             ('Wait error', "WAIT_PATTERN")]:
                     if r not in rules and hasattr(self, a):
                         rules[r] = getattr(self, a)
 
@@ -548,7 +538,6 @@ class SimpleHoster(Hoster):
 
             self.logWarning("Check result: " + errmsg, "Waiting 1 minute and retry")
             self.retry(3, 60, errmsg)
-
 
     def checkErrors(self):
         if not self.html:
@@ -594,7 +583,6 @@ class SimpleHoster(Hoster):
 
         self.info.pop('error', None)
 
-
     def checkStatus(self, getinfo=True):
         if not self.info or getinfo:
             self.logDebug("Update file info...")
@@ -616,7 +604,6 @@ class SimpleHoster(Hoster):
 
         finally:
             self.logDebug("File status: %s" % statusMap[status])
-
 
     def checkNameSize(self, getinfo=True):
         if not self.info or getinfo:
@@ -645,7 +632,6 @@ class SimpleHoster(Hoster):
         self.logDebug("File name: %s" % self.pyfile.name,
                       "File size: %s byte" % self.pyfile.size if self.pyfile.size > 0 else "File size: Unknown")
 
-
     def checkInfo(self):
         self.checkNameSize()
 
@@ -655,13 +641,11 @@ class SimpleHoster(Hoster):
 
         self.checkStatus(getinfo=False)
 
-
     #: Deprecated
     def getFileInfo(self):
         self.info = {}
         self.checkInfo()
         return self.info
-
 
     def handleDirect(self, pyfile):
         link = self.directLink(pyfile.url, self.resumeDownload)
@@ -673,10 +657,8 @@ class SimpleHoster(Hoster):
         else:
             self.logDebug("Direct download link not found")
 
-
     def handleMulti(self, pyfile):  #: Multi-hoster handler
         pass
-
 
     def handleFree(self, pyfile):
         if not hasattr(self, 'LINK_FREE_PATTERN'):
@@ -687,7 +669,6 @@ class SimpleHoster(Hoster):
             self.error(_("Free download link not found"))
         else:
             self.link = m.group(1)
-
 
     def handlePremium(self, pyfile):
         if not hasattr(self, 'LINK_PREMIUM_PATTERN'):
@@ -700,7 +681,6 @@ class SimpleHoster(Hoster):
             self.error(_("Premium download link not found"))
         else:
             self.link = m.group(1)
-
 
     def longWait(self, wait_time=None, max_tries=3):
         if wait_time and isinstance(wait_time, (int, long, float)):
@@ -715,10 +695,8 @@ class SimpleHoster(Hoster):
         self.wait(wait_time, True)
         self.retry(max_tries=max_tries, reason=_("Download limit reached"))
 
-
     def parseHtmlForm(self, attr_str="", input_names={}):
         return parseHtmlForm(attr_str, self.html, input_names)
-
 
     def checkTrafficLeft(self):
         if not self.account:
@@ -735,15 +713,13 @@ class SimpleHoster(Hoster):
             self.logInfo(_("Filesize: %i KiB, Traffic left for user %s: %i KiB") % (size, self.user, traffic))
             return size <= traffic
 
-
-    def getConfig(self, option, default=''):  #@TODO: Remove in 0.4.10
+    def getConfig(self, option, default=''):  # @TODO: Remove in 0.4.10
         """getConfig with default value - sublass may not implements all config options"""
         try:
             return self.getConf(option)
 
         except KeyError:
             return default
-
 
     def retryFree(self):
         if not self.premium:
@@ -754,11 +730,9 @@ class SimpleHoster(Hoster):
         self.retries = 0
         raise Retry(_("Fallback to free download"))
 
-
     #@TODO: Remove in 0.4.10
     def wait(self, seconds=0, reconnect=None):
         return _wait(self, seconds, reconnect)
-
 
     def error(self, reason="", type="parse"):
         return _error(self, reason, type)
