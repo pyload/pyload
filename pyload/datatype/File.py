@@ -9,32 +9,33 @@ from time import sleep, time
 from threading import RLock
 
 statusMap = {
-    "finished":    0,
-    "offline":     1,
-    "online":      2,
-    "queued":      3,
-    "skipped":     4,
-    "waiting":     5,
+    "finished": 0,
+    "offline": 1,
+    "online": 2,
+    "queued": 3,
+    "skipped": 4,
+    "waiting": 5,
     "temp. offline": 6,
-    "starting":    7,
-    "failed":      8,
-    "aborted":     9,
-    "decrypting":  10,
-    "custom":      11,
+    "starting": 7,
+    "failed": 8,
+    "aborted": 9,
+    "decrypting": 10,
+    "custom": 11,
     "downloading": 12,
-    "processing":  13,
-    "unknown":     14,
+    "processing": 13,
+    "unknown": 14,
 }
 
 
 def setSize(self, value):
     self._size = int(value)
 
+
 class PyFile(object):
     """
     Represents a file object at runtime
     """
-    __slots__ = ("m", "id", "url", "name", "size", "_size", "status", "plugin",
+    __slots__ = ("m", "id", "url", "name", "size", "_size", "status", "plugintype", "pluginname",
                  "packageid", "error", "order", "lock", "plugin", "waitUntil",
                  "active", "abort", "statusname", "reconnected", "progress",
                  "maxprogress", "pluginmodule", "pluginclass")
@@ -47,8 +48,8 @@ class PyFile(object):
         self.name = name
         self.size = size
         self.status = status
-        self.plugin = self.plugintype, self.pluginname = plugin
-        self.packageid = package #should not be used, use package() instead
+        self.plugintype, self.pluginname = plugin
+        self.packageid = package  # should not be used, use package() instead
         self.error = error
         self.order = order
         # database information ends here
@@ -58,10 +59,10 @@ class PyFile(object):
         self.plugin = None
         #self.download = None
 
-        self.waitUntil = 0 # time() + time to wait
+        self.waitUntil = 0  # time() + time to wait
 
         # status attributes
-        self.active = False #obsolete?
+        self.active = False  # obsolete?
         self.abort = False
         self.reconnected = False
 
@@ -71,7 +72,6 @@ class PyFile(object):
         self.maxprogress = 100
 
         self.m.cache[int(id)] = self
-
 
     # will convert all sizes to ints
     size = property(lambda self: self._size, setSize)
@@ -101,7 +101,7 @@ class PyFile(object):
 
     def setStatus(self, status):
         self.status = statusMap[status]
-        self.sync() #@TODO needed aslong no better job approving exists
+        self.sync()  # @TODO needed aslong no better job approving exists
 
     def setCustomStatus(self, msg, status="processing"):
         self.statusname = msg

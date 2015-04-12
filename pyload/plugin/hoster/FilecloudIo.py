@@ -3,7 +3,7 @@
 import re
 
 from pyload.utils import json_loads
-from pyload.plugin.internal.captcha import ReCaptcha
+from pyload.plugin.captcha import ReCaptcha
 from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 

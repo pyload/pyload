@@ -12,6 +12,7 @@ from operator import itemgetter
 from pyload.network.RequestFactory import getURL
 from pyload.plugin.Addon import Expose, Addon, threaded
 from pyload.utils import fs_join
+from pyload import __status_code__ as release_status
 
 
 # Case-sensitive os.path.exists
@@ -31,28 +32,29 @@ class UpdateManager(Addon):
     __type    = "addon"
     __version = "0.50"
 
-    __config = [("activated"    , "bool", "Activated"                                , True ),
-                  ("checkinterval", "int" , "Check interval in hours"                  , 8    ),
-                  ("autorestart"  , "bool", "Auto-restart pyLoad when required"        , True ),
-                  ("checkonstart" , "bool", "Check for updates on startup"             , True ),
-                  ("checkperiod"  , "bool", "Check for updates periodically"           , True ),
-                  ("reloadplugins", "bool", "Monitor plugin code changes in debug mode", True ),
-                  ("nodebugupdate", "bool", "Don't update plugins in debug mode"       , False)]
+    __config  = [("activated", "bool", "Activated", True),
+                 ("checkinterval", "int", "Check interval in hours", 8),
+                 ("autorestart", "bool",
+                  "Auto-restart pyLoad when required", True),
+                 ("checkonstart", "bool", "Check for updates on startup", True),
+                 ("checkperiod", "bool",
+                  "Check for updates periodically", True),
+                 ("reloadplugins", "bool",
+                  "Monitor plugin code changes in debug mode", True),
+                 ("nodebugupdate", "bool", "Don't update plugins in debug mode", False)]
 
     __description = """ Check for updates """
     __license     = "GPLv3"
     __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    SERVER_URL         = "http://updatemanager.pyload.org"
+    SERVER_URL         = "http://updatemanager.pyload.org" if release_status == 5 else None
     MIN_CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
-
 
     def activate(self):
         if self.checkonstart:
             self.update()
 
         self.initPeriodical()
-
 
     def setup(self):
         self.interval = 10
@@ -64,7 +66,6 @@ class UpdateManager(Addon):
             self.checkonstart = True
         else:
             self.checkonstart = False
-
 
     def periodical(self):
         if self.core.debug:
@@ -78,14 +79,13 @@ class UpdateManager(Addon):
            and time.time() - max(self.MIN_CHECK_INTERVAL, self.getConfig('checkinterval') * 60 * 60) > self.info['last_check']:
             self.update()
 
-
     @Expose
     def autoreloadPlugins(self):
         """ reload and reindex all modified plugins """
         modules = filter(
             lambda m: m and (m.__name__.startswith("module.plugins.") or
                              m.__name__.startswith("userplugins.")) and
-                             m.__name__.count(".") >= 2, sys.modules.itervalues()
+            m.__name__.count(".") >= 2, sys.modules.itervalues()
         )
 
         reloads = []
@@ -108,14 +108,12 @@ class UpdateManager(Addon):
 
         return True if self.core.pluginManager.reloadPlugins(reloads) else False
 
-
     def server_response(self):
         try:
             return getURL(self.SERVER_URL, get={'v': self.core.api.getServerVersion()}).splitlines()
 
         except Exception:
             self.logWarning(_("Unable to contact server to get updates"))
-
 
     @Expose
     @threaded
@@ -128,7 +126,6 @@ class UpdateManager(Addon):
             self.core.api.restart()
         else:
             self.core.api.unpauseServer()
-
 
     def _update(self):
         data = self.server_response()
@@ -158,7 +155,6 @@ class UpdateManager(Addon):
         #  1 = Plugins updated
         #  2 = Plugins updated, but restart required
         return exitcode
-
 
     def _updatePlugins(self, data):
         """ check for plugin updates """
@@ -220,7 +216,7 @@ class UpdateManager(Addon):
 
             plugins = getattr(self.core.pluginManager, "%sPlugins" % type)
 
-            oldver = float(plugins[name]['v']) if name in plugins else None
+            oldver = float(plugins[name]['version']) if name in plugins else None
             newver = float(version)
 
             if not oldver:
@@ -230,8 +226,8 @@ class UpdateManager(Addon):
             else:
                 continue
 
-            self.logInfo(_(msg) % {'type'  : type,
-                                   'name'  : name,
+            self.logInfo(_(msg) % {'type': type,
+                                   'name': name,
                                    'oldver': oldver,
                                    'newver': newver})
             try:
@@ -239,10 +235,10 @@ class UpdateManager(Addon):
                 m = VERSION.search(content)
 
                 if m and m.group(2) == version:
-                    with open(fs_join("userplugins", prefix, filename), "wb") as f:
+                    with open(fs_join("userplugins", type, filename), "wb") as f:
                         f.write(content)
 
-                    updated.append((prefix, name))
+                    updated.append((type, name))
                 else:
                     raise Exception, _("Version mismatch")
 
@@ -268,7 +264,6 @@ class UpdateManager(Addon):
         # 1 = Plugins updated
         # 2 = Plugins updated, but restart required
         return exitcode
-
 
     @Expose
     def removePlugins(self, type_plugins):
@@ -309,4 +304,5 @@ class UpdateManager(Addon):
                         id = (type, name)
                         removed.add(id)
 
-        return list(removed)  #: return a list of the plugins successfully removed
+        #: return a list of the plugins successfully removed
+        return list(removed)

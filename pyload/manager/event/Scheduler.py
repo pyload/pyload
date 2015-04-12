@@ -5,6 +5,7 @@ from time import time
 from heapq import heappop, heappush
 from threading import Lock, Thread
 
+
 class AlreadyCalled(Exception):
     pass
 
@@ -39,7 +40,6 @@ class Scheduler(object):
         j = Job(t, call, args, kwargs, d, threaded)
         self.queue.put((t, j))
         return d
-
 
     def removeJob(self, d):
         """

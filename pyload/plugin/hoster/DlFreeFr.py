@@ -5,7 +5,7 @@ import re
 
 from pyload.network.Browser import Browser
 from pyload.network.CookieJar import CookieJar
-from pyload.plugin.internal.captcha import AdYouLike
+from pyload.plugin.captcha import AdYouLike
 from pyload.plugin.internal.SimpleHoster import SimpleHoster, replace_patterns
 from pyload.utils import json_loads
 

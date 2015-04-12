@@ -6,7 +6,7 @@ import time
 from random import random
 from urlparse import urljoin, urlparse
 
-from pyload.plugin.internal.captcha import ReCaptcha, SolveMedia
+from pyload.plugin.captcha import ReCaptcha, SolveMedia
 from pyload.plugin.internal.SimpleHoster import SimpleHoster, secondsToMidnight
 from pyload.utils import html_unescape
 

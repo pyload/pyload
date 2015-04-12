@@ -80,3 +80,4 @@ _build/
 module/
 paver-minilib.zip
 /setup.sh
+/tesseract/

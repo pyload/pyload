@@ -25,6 +25,7 @@ from pyload.utils import formatSize, fs_join, fs_encode, fs_decode
 
 # Helper
 
+
 def pre_processor():
     s = request.environ.get('beaker.session')
     user = parse_userdata(s)
@@ -45,13 +46,12 @@ def pre_processor():
             if info["plugins"] == "True":
                 plugins = True
 
-
-    return {"user"   : user,
-            'status' : status,
+    return {"user": user,
+            'status': status,
             'captcha': captcha,
-            'perms'  : perms,
-            'url'    : request.url,
-            'update' : update,
+            'perms': perms,
+            'url': request.url,
+            'update': update,
             'plugins': plugins}
 
 
@@ -59,7 +59,7 @@ def base(messages):
     return render_to_response('base.html', {'messages': messages}, [pre_processor])
 
 
-## Views
+# Views
 @error(403)
 def error403(code):
     return "The parameter you passed has the wrong format"
@@ -240,7 +240,8 @@ def get_download(path):
 
 
 __TYPES         = ("account", "addon", "container", "crypter", "extractor", "hook", "hoster", "internal", "ocr")
-__TYPE_REPLACES = ( ('_account', ' (Account)'), ('_addon', ' (Addon)'), ('_container', ''), ('_crypter', ' (Crypter)'), ('_extractor', ''), ('_hook', ' (Hook)'), ('_hoster', ' (Hoster)'))
+__TYPE_REPLACES = (('_account', ' (Account)'), ('_addon', ' (Addon)'), ('_container', ''), ('_crypter', ' (Crypter)'), ('_extractor', ''), ('_hook', ' (Hook)'), ('_hoster', ' (Hoster)'))
+
 
 @route('/settings')
 @login_required('SETTINGS')
@@ -258,9 +259,9 @@ def config():
         desc = plugin[entry].description
         name, none, type = desc.partition("_")
         if type in __TYPES:
-            if len([a for a,b in plugin.iteritems() if b.description.startswith(name+"_")]) > 1:
+            if len([a for a, b in plugin.iteritems() if b.description.startswith(name + "_")]) > 1:
                 for search, repl in __TYPE_REPLACES:
-                    if desc.endswith(search): 
+                    if desc.endswith(search):
                         desc = desc.replace(search, repl)
                         break
             else:
@@ -279,7 +280,7 @@ def config():
 
         if data.validuntil == -1:
             data.validuntil  = _("unlimited")
-        elif not data.validuntil :
+        elif not data.validuntil:
             data.validuntil  = _("not available")
         else:
             t = time.localtime(data.validuntil)
@@ -296,8 +297,8 @@ def config():
             data.options["limitdl"] = "0"
 
     return render_to_response('settings.html',
-            {'conf': {'plugin': plugin_menu, 'general': conf_menu, 'accs': accs}, 'types': PYLOAD.getAccountTypes()},
-        [pre_processor])
+                              {'conf': {'plugin': plugin_menu, 'general': conf_menu, 'accs': accs}, 'types': PYLOAD.getAccountTypes()},
+                              [pre_processor])
 
 
 @route('/filechooser')
@@ -386,8 +387,8 @@ def path(file="", path=""):
     files = sorted(files, key=itemgetter('type', 'sort'))
 
     return render_to_response('pathchooser.html',
-            {'cwd': cwd, 'files': files, 'parentdir': parentdir, 'type': type, 'oldfile': oldfile,
-             'absolute': abs}, [])
+                              {'cwd': cwd, 'files': files, 'parentdir': parentdir, 'type': type, 'oldfile': oldfile,
+                               'absolute': abs}, [])
 
 
 @route('/logs')
@@ -437,7 +438,7 @@ def logs(item=-1):
     if item < 1 or type(item) is not int:
         item = 1 if len(log) - perpage + 1 < 1 else len(log) - perpage + 1
 
-    if type(fro) is datetime: # we will search for datetime
+    if type(fro) is datetime:  # we will search for datetime
         item = -1
 
     data = []
@@ -457,16 +458,16 @@ def logs(item=-1):
                 level = '?'
                 message = l
             if item == -1 and dtime is not None and fro <= dtime:
-                item = counter #found our datetime
+                item = counter  # found our datetime
             if item >= 0:
                 data.append({'line': counter, 'date': date + " " + time, 'level': level, 'message': message})
                 perpagecheck += 1
-                if fro is None and dtime is not None: #if fro not set set it to first showed line
+                if fro is None and dtime is not None:  # if fro not set set it to first showed line
                     fro = dtime
             if perpagecheck >= perpage > 0:
                 break
 
-    if fro is None: #still not set, empty log?
+    if fro is None:  # still not set, empty log?
         fro = datetime.now()
     if reversed:
         data.reverse()
@@ -489,7 +490,6 @@ def admin():
         data["perms"] = {}
         get_permission(data["perms"], data["permission"])
         data["perms"]["admin"] = True if data["role"] is 0 else False
-
 
     s = request.environ.get('beaker.session')
     if request.environ.get('REQUEST_METHOD', "GET") == "POST":
@@ -536,7 +536,7 @@ def info():
             "download": abspath(conf["general"]["download_folder"]["value"]),
             "freespace": formatSize(PYLOAD.freeSpace()),
             "remote": conf["remote"]["port"]["value"],
-            "webif": conf["webinterface"]["port"]["value"],
+            "webif": conf["webui"]["port"]["value"],
             "language": conf["general"]["language"]["value"]}
 
     return render_to_response("info.html", data, [pre_processor])

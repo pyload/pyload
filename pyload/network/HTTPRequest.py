@@ -19,11 +19,13 @@ from pyload.utils import encode
 def myquote(url):
     return quote(encode(url), safe="%/:=&?~#+!$,;'@()*[]")
 
+
 def myurlencode(data):
     data = dict(data)
     return urlencode(dict((encode(x), encode(y)) for x, y in data.iteritems()))
 
 bad_headers = range(400, 404) + range(405, 418) + range(500, 506)
+
 
 class BadHeader(Exception):
     def __init__(self, code, content=""):
@@ -37,16 +39,16 @@ class HTTPRequest(object):
         self.c = pycurl.Curl()
         self.rep = StringIO()
 
-        self.cj = cookies #cookiejar
+        self.cj = cookies  # cookiejar
 
         self.lastURL = None
         self.lastEffectiveURL = None
         self.abort = False
-        self.code = 0 # last http code
+        self.code = 0  # last http code
 
         self.header = ""
 
-        self.headers = [] #temporary request header
+        self.headers = []  # temporary request header
 
         self.initHandle()
         self.setInterface(options)
@@ -55,7 +57,6 @@ class HTTPRequest(object):
         self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
 
         self.log = getLogger("log")
-
 
     def initHandle(self):
         """ sets common options to curl handle """
@@ -69,7 +70,8 @@ class HTTPRequest(object):
         self.c.setopt(pycurl.SSL_VERIFYPEER, 0)
         self.c.setopt(pycurl.LOW_SPEED_TIME, 60)
         self.c.setopt(pycurl.LOW_SPEED_LIMIT, 5)
-        self.c.setopt(pycurl.USE_SSL, pycurl.CURLUSESSL_TRY)
+        if hasattr(pycurl, "USE_SSL"):
+            self.c.setopt(pycurl.USE_SSL, pycurl.CURLUSESSL_TRY)
 
         #self.c.setopt(pycurl.VERBOSE, 1)
 
@@ -117,7 +119,6 @@ class HTTPRequest(object):
         if "timeout" in options:
             self.c.setopt(pycurl.LOW_SPEED_TIME, options["timeout"])
 
-
     def addCookies(self):
         """ put cookies from curl handle to cj """
         if self.cj:
@@ -149,7 +150,7 @@ class HTTPRequest(object):
             self.c.setopt(pycurl.POST, 1)
             if not multipart:
                 if type(post) == unicode:
-                    post = str(post) #unicode not allowed
+                    post = str(post)  # unicode not allowed
                 elif type(post) == str:
                     pass
                 else:
@@ -169,7 +170,6 @@ class HTTPRequest(object):
             self.c.setopt(pycurl.COOKIEFILE, "")
             self.c.setopt(pycurl.COOKIEJAR, "")
             self.getCookies()
-
 
     def load(self, url, get={}, post={}, referer=True, cookies=True, just_header=False, multipart=False, decode=False, follow_location=True, save_cookies=True):
         """ load and returns a given page """
@@ -216,7 +216,7 @@ class HTTPRequest(object):
         """ raise an exceptions on bad headers """
         code = int(self.c.getinfo(pycurl.RESPONSE_CODE))
         if code in bad_headers:
-            #404 will NOT raise an exception
+            # 404 will NOT raise an exception
             raise BadHeader(code, self.getResponse())
         return code
 
@@ -237,7 +237,7 @@ class HTTPRequest(object):
     def decodeResponse(self, rep):
         """ decode with correct encoding, relies on header """
         header = self.header.splitlines()
-        encoding = "utf8" # default encoding
+        encoding = "utf8"  # default encoding
 
         for line in header:
             line = line.lower().replace(" ", "")
@@ -259,7 +259,7 @@ class HTTPRequest(object):
             decoder = getincrementaldecoder(encoding)("replace")
             rep = decoder.decode(rep, True)
 
-            #TODO: html_unescape as default
+            # TODO: html_unescape as default
 
         except LookupError:
             self.log.debug("No Decoder foung for %s" % encoding)

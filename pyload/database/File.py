@@ -27,18 +27,18 @@ class FileHandler(object):
         # translations
         self.statusMsg = [_("finished"), _("offline"), _("online"), _("queued"), _("skipped"), _("waiting"), _("temp. offline"), _("starting"), _("failed"), _("aborted"), _("decrypting"), _("custom"), _("downloading"), _("processing"), _("unknown")]
 
-        self.cache = {} #holds instances for files
+        self.cache = {}  # holds instances for files
         self.packageCache = {}  # same for packages
         #@TODO: purge the cache
 
         self.jobCache = {}
 
-        self.lock = RLock()  #@TODO should be a Lock w/o R
+        self.lock = RLock()  # @TODO should be a Lock w/o R
         #self.lock._Verbose__verbose = True
 
-        self.filecount = -1 # if an invalid value is set get current value from db
-        self.queuecount = -1 #number of package to be loaded
-        self.unchanged = False #determines if any changes was made since last call
+        self.filecount = -1  # if an invalid value is set get current value from db
+        self.queuecount = -1  # number of package to be loaded
+        self.unchanged = False  # determines if any changes was made since last call
 
         self.db = self.core.db
 
@@ -300,7 +300,7 @@ class FileHandler(object):
                     pyfile = self.getFile(self.jobCache[occ].pop())
 
         else:
-            self.jobCache = {} #better not caching to much
+            self.jobCache = {}  # better not caching to much
             jobs = self.db.getJob(occ)
             jobs.reverse()
             self.jobCache[occ] = jobs
@@ -312,7 +312,6 @@ class FileHandler(object):
                 pyfile = self.getFile(self.jobCache[occ].pop())
 
             #@TODO: maybe the new job has to be approved...
-
 
         #pyfile = self.getFile(self.jobCache[occ].pop())
         return pyfile
@@ -400,7 +399,6 @@ class FileHandler(object):
             self.cache[id].name = self.cache[id].url
             self.cache[id].error = ""
             self.cache[id].abortDownload()
-
 
         self.db.restartFile(id)
 
@@ -515,7 +513,6 @@ class FileHandler(object):
                 self.core.addonManager.packageFinished(pyfile.package())
                 pyfile.package().setFinished = True
 
-
     def reCheckPackage(self, pid):
         """ recheck links in package """
         data = self.db.getPackageData(pid)
@@ -540,7 +537,7 @@ class FileHandler(object):
 
         new_packs = self.db.getAllPackages(0)
         new_packs.update(self.db.getAllPackages(1))
-        #get new packages only from db
+        # get new packages only from db
 
         deleted = []
         for id in old_packs.iterkeys():
@@ -555,6 +552,7 @@ class FileHandler(object):
     def restartFailed(self):
         """ restart all failed links """
         self.db.restartFailed()
+
 
 class FileMethods(object):
     @style.queue
@@ -596,7 +594,7 @@ class FileMethods(object):
     @style.queue
     def addLink(self, url, name, plugin, package):
         order = self._nextFileOrder(package)
-        self.c.execute('INSERT INTO links(url, name, plugin, package, linkorder) VALUES(?,?,?,?,?)', (url, name, (plugintype, pluginname), package, order))
+        self.c.execute('INSERT INTO links(url, name, plugin, package, linkorder) VALUES(?,?,?,?,?)', (url, name, ".".join(plugintype, pluginname), package, order))
         return self.c.lastrowid
 
     @style.queue
@@ -604,7 +602,7 @@ class FileMethods(object):
         """ links is a list of tupels (url, plugin)"""
         order = self._nextFileOrder(package)
         orders = [order + x for x in range(len(links))]
-        links = [(x[0], x[0], (x[1], x[2]), package, o) for x, o in zip(links, orders)]
+        links = [(x[0], x[0], ".".join((x[1], x[2])), package, o) for x, o in zip(links, orders)]
         self.c.executemany('INSERT INTO links(url, name, plugin, package, linkorder) VALUES(?,?,?,?,?)', links)
 
     @style.queue
@@ -615,17 +613,14 @@ class FileMethods(object):
 
     @style.queue
     def deletePackage(self, p):
-
         self.c.execute('DELETE FROM links WHERE package=?', (str(p.id),))
         self.c.execute('DELETE FROM packages WHERE id=?', (str(p.id),))
         self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=?', (p.order, p.queue))
 
     @style.queue
     def deleteLink(self, f):
-
         self.c.execute('DELETE FROM links WHERE id=?', (str(f.id),))
         self.c.execute('UPDATE links SET linkorder=linkorder-1 WHERE linkorder > ? AND package=?', (f.order, str(f.packageid)))
-
 
     @style.queue
     def getAllLinks(self, q):
@@ -653,7 +648,7 @@ class FileMethods(object):
                 'status': r[4],
                 'statusmsg': self.manager.statusMsg[r[4]],
                 'error': r[5],
-                'plugin': r[6],
+                'plugin': tuple(r[6].split('.')),
                 'package': r[7],
                 'order': r[8],
             }
@@ -689,7 +684,7 @@ class FileMethods(object):
                 'queue': r[5],
                 'order': r[6],
                 'sizetotal': int(r[7]),
-                'sizedone': r[8] if r[8] else 0, #these can be None
+                'sizedone': r[8] if r[8] else 0,  # these can be None
                 'linksdone': r[9] if r[9] else 0,
                 'linkstotal': r[10],
                 'links': {}
@@ -714,7 +709,7 @@ class FileMethods(object):
             'status': r[4],
             'statusmsg': self.manager.statusMsg[r[4]],
             'error': r[5],
-            'plugin': r[6],
+            'plugin': tuple(r[6].split('.')),
             'package': r[7],
             'order': r[8],
         }
@@ -737,17 +732,16 @@ class FileMethods(object):
                 'status': r[4],
                 'statusmsg': self.manager.statusMsg[r[4]],
                 'error': r[5],
-                'plugin': r[6],
+                'plugin': tuple(r[6].split('.')),
                 'package': r[7],
                 'order': r[8],
             }
 
         return data
 
-
     @style.async
     def updateLink(self, f):
-        self.c.execute('UPDATE links SET url=?, name=?, size=?, status=?, error=?, package=? WHERE id=?', (f.url, f.name, f.size, f.status, f.error, str(f.packageid), str(f.id)))
+        self.c.execute('UPDATE links SET url=?, name=?, size=?, status=?, error=?, package=? WHERE id=?', (f.url, f.name, f.size, f.status, str(f.error), str(f.packageid), str(f.id)))
 
     @style.queue
     def updatePackage(self, p):
@@ -813,15 +807,16 @@ class FileMethods(object):
         self.c.execute("SELECT url, name, size, status, error, plugin, package, linkorder FROM links WHERE id=?", (str(id),))
         r = self.c.fetchone()
         if not r: return None
+        r = list(r)
+        r[5] = tuple(r[5].split('.'))
         return PyFile(self.manager, id, * r)
-
 
     @style.queue
     def getJob(self, occ):
         """return pyfile ids, which are suitable for download and dont use a occupied plugin"""
 
         #@TODO improve this hardcoded method
-        pre = "('CCF', 'DLC', 'LinkList', 'RSDF', 'TXT')"  #plugins which are processed in collector
+        pre = "('CCF', 'DLC', 'LinkList', 'RSDF', 'TXT')"  # plugins which are processed in collector
 
         cmd = "("
         for i, item in enumerate(occ):
@@ -832,7 +827,7 @@ class FileMethods(object):
 
         cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE ((p.queue=1 AND l.plugin NOT IN %s) OR l.plugin IN %s) AND l.status IN (2, 3, 14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5" % (cmd, pre)
 
-        self.c.execute(cmd) # very bad!
+        self.c.execute(cmd)  # very bad!
 
         return [x[0] for x in self.c]
 
@@ -841,7 +836,7 @@ class FileMethods(object):
         """returns pyfile ids with suited plugins"""
         cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE l.plugin IN %s AND l.status IN (2, 3, 14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5" % plugins
 
-        self.c.execute(cmd) # very bad!
+        self.c.execute(cmd)  # very bad!
 
         return [x[0] for x in self.c]
 
