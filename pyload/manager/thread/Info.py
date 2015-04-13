@@ -36,6 +36,7 @@ class InfoThread(PluginThread):
 
         self.start()
 
+
     def run(self):
         """run method"""
 
@@ -120,8 +121,10 @@ class InfoThread(PluginThread):
 
         self.m.timestamp = time() + 5 * 60
 
+
     def updateDB(self, plugin, result):
         self.m.core.files.updateFileInfo(result, self.pid)
+
 
     def updateResult(self, plugin, result, force=False):
         # parse package name and generate result
@@ -144,8 +147,10 @@ class InfoThread(PluginThread):
 
             self.cache = []
 
+
     def updateCache(self, plugin, result):
         self.cache.extend(result)
+
 
     def fetchForPlugin(self, pluginname, plugin, urls, cb, err=None):
         try:
@@ -183,6 +188,7 @@ class InfoThread(PluginThread):
             if err:
                 result = [(url, 0, 3, url) for url in urls]
                 cb(pluginname, result)
+
 
     def decryptContainer(self, plugin, url):
         data = []

@@ -86,6 +86,8 @@ class Keep2ShareCc(SimpleHoster):
                 self.error(_("Free download link not found"))
 
         self.link = m.group(1)
+
+
     def handleCaptcha(self):
         post_data = {'free'               : 1,
                      'freeDownloadRequest': 1,

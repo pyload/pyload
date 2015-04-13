@@ -23,6 +23,8 @@ class ZDF(Hoster):
 
 
     @staticmethod
+
+
     def video_key(video):
         return (
             int(video.findtext("videoBitrate", "0")),
@@ -31,12 +33,16 @@ class ZDF(Hoster):
 
 
     @staticmethod
+
+
     def video_valid(video):
         return video.findtext("url").startswith("http") and video.findtext("url").endswith(".mp4") and \
                video.findtext("facets/facet").startswith("progressive")
 
 
     @staticmethod
+
+
     def get_id(url):
         return int(re.search(r"\D*(\d{4,})\D*", url).group(1))
 

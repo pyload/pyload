@@ -84,7 +84,11 @@ def parse_userdata(session):
 
 
 def login_required(perm=None):
+
+
     def _dec(func):
+
+
         def _view(*args, **kwargs):
             s = request.environ.get('beaker.session')
             if s.get("name", None) and s.get("authenticated", False):
@@ -116,6 +120,7 @@ def toDict(obj):
 
 
 class CherryPyWSGI(ServerAdapter):
+
     def run(self, handler):
         from wsgiserver import CherryPyWSGIServer
 

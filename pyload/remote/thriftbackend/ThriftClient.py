@@ -36,6 +36,7 @@ class NoSSL(Exception):
     pass
 
 class ThriftClient(object):
+
     def __init__(self, host="localhost", port=7227, user="", password=""):
 
         self.createConnection(host, port)
@@ -76,6 +77,7 @@ class ThriftClient(object):
             self.transport.close()
             raise WrongLogin
 
+
     def createConnection(self, host, port, ssl=False):
         self.socket = Socket(host, port, ssl)
         self.transport = TTransport.TBufferedTransport(self.socket)
@@ -84,8 +86,10 @@ class ThriftClient(object):
         protocol = Protocol(self.transport)
         self.client = Pyload.Client(protocol)
 
+
     def close(self):
         self.transport.close()
+
 
     def __getattr__(self, item):
         return getattr(self.client, item)

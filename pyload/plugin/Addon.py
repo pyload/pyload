@@ -16,6 +16,7 @@ class Expose(object):
 
 def threaded(fn):
 
+
     def run(*args,**kwargs):
         addonManager.startThread(fn, *args, **kwargs)
 
@@ -111,6 +112,7 @@ class Addon(Base):
         if has_method(self.__class__, "unload"):
             self.unload()
 
+
     def unload(self):  # Deprecated, use method deactivate() instead
         pass
 
@@ -121,10 +123,13 @@ class Addon(Base):
 
 
     # Event methods - overwrite these if needed
+
+
     def activate(self):
         """ called when addon was activated """
         if has_method(self.__class__, "coreReady"):
             self.coreReady()
+
 
     def coreReady(self):  # Deprecated, use method activate() instead
         pass
@@ -134,6 +139,7 @@ class Addon(Base):
         """ called by core.shutdown just before pyLoad exit """
         if has_method(self.__class__, "coreExiting"):
             self.coreExiting()
+
 
     def coreExiting(self):  # Deprecated, use method exit() instead
         pass

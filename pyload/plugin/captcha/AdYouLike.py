@@ -18,6 +18,7 @@ class AdYouLike(Captcha):
     AYL_PATTERN      = r'Adyoulike\.create\s*\((.+?)\)'
     CALLBACK_PATTERN = r'(Adyoulike\.g\._jsonp_\d+)'
 
+
     def detect_key(self, html=None):
         if not html:
             if hasattr(self.plugin, "html") and self.plugin.html:
@@ -36,6 +37,7 @@ class AdYouLike(Captcha):
         else:
             self.logDebug("Ayl or callback not found")
             return None
+
 
     def challenge(self, key=None, html=None):
         if not key:
@@ -67,6 +69,7 @@ class AdYouLike(Captcha):
         self.logDebug("Challenge: %s" % challenge)
 
         return self.result(ayl, challenge), challenge
+
 
     def result(self, server, challenge):
         # Adyoulike.g._jsonp_5579316662423138

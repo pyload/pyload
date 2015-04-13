@@ -12,6 +12,7 @@ class AddPackage(Handler):
         self.name = ""
         self.urls = []
 
+
     def onEnter(self, inp):
         if inp == "0":
             self.cli.reset()
@@ -27,6 +28,7 @@ class AddPackage(Handler):
             if inp.strip():
                 self.urls.append(inp)
             self.setInput()
+
 
     def renderBody(self, line):
         println(line, white(_("Add Package:")))

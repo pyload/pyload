@@ -199,6 +199,7 @@ class IRCInterface(Thread, Addon):
 
         #### Events
 
+
     def event_pass(self, args):
         return []
 

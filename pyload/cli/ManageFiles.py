@@ -22,6 +22,7 @@ class ManageFiles(Handler):
         self.links = None
         self.time = 0
 
+
     def onChar(self, char):
         if char in ("m", "d", "r"):
             self.mode = char
@@ -33,11 +34,13 @@ class ManageFiles(Handler):
             self.pos += 5
             self.backspace()
 
+
     def onBackSpace(self):
         if not self.input and self.mode:
             self.mode = ""
         if not self.input and self.package > -1:
             self.package = -1
+
 
     def onEnter(self, input):
         if input == "0":
@@ -73,6 +76,7 @@ class ManageFiles(Handler):
         self.pos = 0
         self.mode = ""
         self.setInput()
+
 
     def renderBody(self, line):
         if self.package < 0:
@@ -131,6 +135,7 @@ class ManageFiles(Handler):
         println(line + 1, mag("0.") + _(" back to main menu"))
         return line + 2
 
+
     def getPackages(self):
         if self.cache and self.time + 2 < time():
             return self.cache
@@ -145,6 +150,7 @@ class ManageFiles(Handler):
 
         return data
 
+
     def getLinks(self):
         if self.links and self.time + 1 < time():
             return self.links
@@ -155,6 +161,7 @@ class ManageFiles(Handler):
         self.links = data
         self.time = time()
         return data
+
 
     def parseInput(self, inp, package=True):
         inp = inp.strip()

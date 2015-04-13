@@ -8,6 +8,8 @@ try:
     from os.path import relpath
 except Exception:
     from posixpath import curdir, sep, pardir
+
+
     def relpath(path, start=curdir):
         """Return a relative version of a path"""
         if not path:

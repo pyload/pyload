@@ -33,6 +33,8 @@ class JsEngine(object):
 
 
     @classmethod
+
+
     def find(cls):
         """ Check if there is any engine available """
         return [E for E in ENGINES if E.find()]
@@ -120,6 +122,8 @@ class AbstractEngine(object):
 
 
     @classmethod
+
+
     def find(cls):
         """ Check if the engine is available """
         try:

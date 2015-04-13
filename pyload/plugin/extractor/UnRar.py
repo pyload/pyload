@@ -49,6 +49,8 @@ class UnRar(Extractor):
 
 
     @classmethod
+
+
     def isUsable(cls):
         if os.name == "nt":
             try:
@@ -80,6 +82,8 @@ class UnRar(Extractor):
 
 
     @classmethod
+
+
     def isMultipart(cls, filename):
         return True if cls.re_multipart.search(filename) else False
 

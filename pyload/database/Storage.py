@@ -6,6 +6,8 @@ from pyload.database import DatabaseBackend
 
 class StorageMethods(object):
     @style.queue
+
+
     def setStorage(db, identifier, key, value):
         db.c.execute("SELECT id FROM storage WHERE identifier=? AND key=?", (identifier, key))
         if db.c.fetchone() is not None:
@@ -14,6 +16,8 @@ class StorageMethods(object):
             db.c.execute("INSERT INTO storage (identifier, key, value) VALUES (?, ?, ?)", (identifier, key, value))
 
     @style.queue
+
+
     def getStorage(db, identifier, key=None):
         if key is not None:
             db.c.execute("SELECT value FROM storage WHERE identifier=? AND key=?", (identifier, key))
@@ -28,6 +32,8 @@ class StorageMethods(object):
             return d
 
     @style.queue
+
+
     def delStorage(db, identifier, key):
         db.c.execute("DELETE FROM storage WHERE identifier=? AND key=?", (identifier, key))
 

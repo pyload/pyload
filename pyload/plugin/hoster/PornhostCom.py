@@ -27,6 +27,8 @@ class PornhostCom(Hoster):
 
 
     # Old interface
+
+
     def download_html(self):
         url = self.pyfile.url
         self.html = self.load(url)

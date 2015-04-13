@@ -9,6 +9,7 @@ from pyload.network.HTTPDownload import HTTPDownload
 class Browser(object):
     __slots__ = ("log", "options", "bucket", "cj", "_size", "http", "dl")
 
+
     def __init__(self, bucket=None, options={}):
         self.log = getLogger("log")
 
@@ -26,6 +27,7 @@ class Browser(object):
         if hasattr(self, "http"): self.http.close()
         self.http = HTTPRequest(self.cj, self.options)
 
+
     def setLastURL(self, val):
         self.http.lastURL = val
 
@@ -35,17 +37,22 @@ class Browser(object):
     code = property(lambda self: self.http.code)
     cookieJar = property(lambda self: self.cj)
 
+
     def setCookieJar(self, cj):
         self.cj = cj
         self.http.cj = cj
 
     @property
+
+
     def speed(self):
         if self.dl:
             return self.dl.speed
         return 0
 
     @property
+
+
     def size(self):
         if self._size:
             return self._size
@@ -54,29 +61,37 @@ class Browser(object):
         return 0
 
     @property
+
+
     def arrived(self):
         if self.dl:
             return self.dl.arrived
         return 0
 
     @property
+
+
     def percent(self):
         if not self.size: return 0
         return (self.arrived * 100) / self.size
+
 
     def clearCookies(self):
         if self.cj:
             self.cj.clear()
         self.http.clearCookies()
 
+
     def clearReferer(self):
         self.http.lastURL = None
+
 
     def abortDownloads(self):
         self.http.abort = True
         if self.dl:
             self._size = self.dl.size
             self.dl.abort = True
+
 
     def httpDownload(self, url, filename, get={}, post={}, ref=True, cookies=True, chunks=1, resume=False,
                      progressNotify=None, disposition=False):
@@ -91,13 +106,16 @@ class Browser(object):
 
         return name
 
+
     def load(self, *args, **kwargs):
         """ retrieves page """
         return self.http.load(*args, **kwargs)
 
+
     def putHeader(self, name, value):
         """ add a header to the request """
         self.http.putHeader(name, value)
+
 
     def addAuth(self, pwd):
         """Adds user and pw for http auth
@@ -107,19 +125,24 @@ class Browser(object):
         self.options["auth"] = pwd
         self.renewHTTPRequest() #we need a new request
 
+
     def removeAuth(self):
         if "auth" in self.options: del self.options["auth"]
         self.renewHTTPRequest()
+
 
     def setOption(self, name, value):
         """Adds an option to the request, see HTTPRequest for existing ones"""
         self.options[name] = value
 
+
     def deleteOption(self, name):
         if name in self.options: del self.options[name]
 
+
     def clearHeaders(self):
         self.http.clearHeaders()
+
 
     def close(self):
         """ cleanup """

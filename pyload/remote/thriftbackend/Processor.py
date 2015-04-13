@@ -3,15 +3,18 @@
 from pyload.remote.thriftbackend.thriftgen.pyload import Pyload
 
 class Processor(Pyload.Processor):
+
     def __init__(self, *args, **kwargs):
         Pyload.Processor.__init__(self, *args, **kwargs)
         self.authenticated = {}
+
 
     def process(self, iprot, oprot):
         trans = oprot.trans
         if trans not in self.authenticated:
             self.authenticated[trans] = False
             oldclose = trans.close
+
 
             def wrap():
                 if self in self.authenticated:

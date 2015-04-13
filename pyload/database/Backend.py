@@ -22,34 +22,49 @@ class style(object):
     db = None
 
     @classmethod
+
+
     def setDB(cls, db):
         cls.db = db
 
     @classmethod
+
+
     def inner(cls, f):
         @staticmethod
+
+
         def x(*args, **kwargs):
             if cls.db:
                 return f(cls.db, *args, **kwargs)
         return x
 
     @classmethod
+
+
     def queue(cls, f):
         @staticmethod
+
+
         def x(*args, **kwargs):
             if cls.db:
                 return cls.db.queue(f, *args, **kwargs)
         return x
 
     @classmethod
+
+
     def async(cls, f):
         @staticmethod
+
+
         def x(*args, **kwargs):
             if cls.db:
                 return cls.db.async(f, *args, **kwargs)
         return x
 
 class DatabaseJob(object):
+
     def __init__(self, f, *args, **kwargs):
         self.done = Event()
 
@@ -63,6 +78,7 @@ class DatabaseJob(object):
 #        import inspect
 #        self.frame = inspect.currentframe()
 
+
     def __repr__(self):
         from os.path import basename
         frame = self.frame.f_back
@@ -74,6 +90,7 @@ class DatabaseJob(object):
         del self.frame
 
         return "DataBase Job %s:%s\n%sResult: %s" % (self.f.__name__, self.args[1:], output, self.result)
+
 
     def processJob(self):
         try:
@@ -89,11 +106,14 @@ class DatabaseJob(object):
         finally:
             self.done.set()
 
+
     def wait(self):
         self.done.wait()
 
 class DatabaseBackend(Thread):
     subs = []
+
+
     def __init__(self, core):
         Thread.__init__(self)
         self.setDaemon(True)
@@ -105,9 +125,11 @@ class DatabaseBackend(Thread):
 
         style.setDB(self)
 
+
     def setup(self):
         self.start()
         self.setuplock.wait()
+
 
     def run(self):
         """main loop, which executes commands"""
@@ -137,9 +159,12 @@ class DatabaseBackend(Thread):
             j.processJob()
 
     @style.queue
+
+
     def shutdown(self):
         self.conn.commit()
         self.jobs.put("quit")
+
 
     def _checkVersion(self):
         """ check db version and delete it if needed"""
@@ -165,6 +190,7 @@ class DatabaseBackend(Thread):
             f.close()
             return v
 
+
     def _convertDB(self, v):
         try:
             getattr(self, "_convertV%i" % v)()
@@ -176,6 +202,7 @@ class DatabaseBackend(Thread):
 
     #convert scripts start-----------------------------------------------------
 
+
     def _convertV2(self):
         self.c.execute('CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
         try:
@@ -183,6 +210,7 @@ class DatabaseBackend(Thread):
         except Exception:
             print "Database was converted from v2 to v3."
         self._convertV3()
+
 
     def _convertV3(self):
         self.c.execute('CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)')
@@ -192,6 +220,7 @@ class DatabaseBackend(Thread):
             print "Database was converted from v3 to v4."
 
     #convert scripts end-------------------------------------------------------
+
 
     def _createTables(self):
         """create tables for database"""
@@ -249,25 +278,34 @@ class DatabaseBackend(Thread):
             self.c.executemany("INSERT INTO users(name, password, email) VALUES (?, ?, ?)", users)
             move("pyload.db", "pyload.old.db")
 
+
     def createCursor(self):
         return self.conn.cursor()
 
     @style.async
+
+
     def commit(self):
         self.conn.commit()
 
     @style.queue
+
+
     def syncSave(self):
         self.conn.commit()
 
     @style.async
+
+
     def rollback(self):
         self.conn.rollback()
+
 
     def async(self, f, *args, **kwargs):
         args = (self,) + args
         job = DatabaseJob(f, *args, **kwargs)
         self.jobs.put(job)
+
 
     def queue(self, f, *args, **kwargs):
         args = (self,) + args
@@ -277,12 +315,17 @@ class DatabaseBackend(Thread):
         return job.result
 
     @classmethod
+
+
     def registerSub(cls, klass):
         cls.subs.append(klass)
 
     @classmethod
+
+
     def unregisterSub(cls, klass):
         cls.subs.remove(klass)
+
 
     def __getattr__(self, attr):
         for sub in DatabaseBackend.subs:

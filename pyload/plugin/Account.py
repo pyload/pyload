@@ -63,6 +63,8 @@ class Account(Base):
 
 
     @lock
+
+
     def _login(self, user, data):
         # set timestamp for login
         self.timestamps[user] = time()
@@ -137,6 +139,8 @@ class Account(Base):
 
 
     @lock
+
+
     def getAccountInfo(self, name, force=False):
         """retrieve account infos for an user, do **not** overwrite this method!\\
         just use it to retrieve infos in hoster plugins. see `loadAccountInfo`
@@ -295,6 +299,8 @@ class Account(Base):
 
 
     @lock
+
+
     def checkLogin(self, user):
         """ checks if user is still logged in """
         if user in self.timestamps:

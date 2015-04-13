@@ -36,17 +36,23 @@ class Extractor:
 
 
     @classmethod
+
+
     def isArchive(cls, filename):
         name = os.path.basename(filename).lower()
         return any(name.endswith(ext) for ext in cls.EXTENSIONS)
 
 
     @classmethod
+
+
     def isMultipart(cls, filename):
         return False
 
 
     @classmethod
+
+
     def isUsable(cls):
         """ Check if system statisfy dependencies
         :return: boolean
@@ -55,6 +61,8 @@ class Extractor:
 
 
     @classmethod
+
+
     def getTargets(cls, files_ids):
         """ Filter suited targets from list of filename id tuple list
         :param files_ids: List of filepathes
@@ -110,6 +118,7 @@ class Extractor:
         :raises ArchiveError
         """
         raise NotImplementedError
+
 
     def verify(self):
         """Testing with Extractors buildt-in method

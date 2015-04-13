@@ -36,7 +36,6 @@ def startApiExerciser(core, n):
 
 class APIExerciser(Thread):
 
-
     def __init__(self, core, thrift=False, user=None, pw=None):
         global idPool
 
@@ -57,6 +56,7 @@ class APIExerciser(Thread):
         idPool += 1
 
         #self.start()
+
 
     def run(self):
 
@@ -91,6 +91,7 @@ class APIExerciser(Thread):
 
                 #sleep(random() / 500)
 
+
     def testAPI(self):
         global sumCalled
 
@@ -110,6 +111,7 @@ class APIExerciser(Thread):
         sumCalled += 1
 
         #print res
+
 
     def addPackage(self):
         name = "".join(sample(string.ascii_letters, 10))
@@ -139,6 +141,7 @@ class APIExerciser(Thread):
             pids = sample(pids, randint(1,  max(floor(len(pids) / 2.5), 1)))
             self.api.deletePackages(pids)
 
+
     def getFileData(self):
         info = self.api.getQueueData()
         if info:
@@ -146,13 +149,16 @@ class APIExerciser(Thread):
             if p.links:
                 self.api.getFileData(choice(p.links).fid)
 
+
     def getPackageData(self):
         info = self.api.getQueue()
         if info:
             self.api.getPackageData(choice(info).pid)
 
+
     def getAccounts(self):
         self.api.getAccounts(False)
+
 
     def getCaptchaTask(self):
         self.api.getCaptchaTask(False)

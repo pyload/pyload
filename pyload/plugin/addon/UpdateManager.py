@@ -50,11 +50,13 @@ class UpdateManager(Addon):
     SERVER_URL         = "http://updatemanager.pyload.org" if release_status == 5 else None
     MIN_CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
 
+
     def activate(self):
         if self.checkonstart:
             self.update()
 
         self.initPeriodical()
+
 
     def setup(self):
         self.interval = 10
@@ -66,6 +68,7 @@ class UpdateManager(Addon):
             self.checkonstart = True
         else:
             self.checkonstart = False
+
 
     def periodical(self):
         if self.core.debug:
@@ -80,6 +83,8 @@ class UpdateManager(Addon):
             self.update()
 
     @Expose
+
+
     def autoreloadPlugins(self):
         """ reload and reindex all modified plugins """
         modules = filter(
@@ -108,6 +113,7 @@ class UpdateManager(Addon):
 
         return True if self.core.pluginManager.reloadPlugins(reloads) else False
 
+
     def server_response(self):
         try:
             return getURL(self.SERVER_URL, get={'v': self.core.api.getServerVersion()}).splitlines()
@@ -117,6 +123,8 @@ class UpdateManager(Addon):
 
     @Expose
     @threaded
+
+
     def update(self):
         """ check for updates """
 
@@ -126,6 +134,7 @@ class UpdateManager(Addon):
             self.core.api.restart()
         else:
             self.core.api.unpauseServer()
+
 
     def _update(self):
         data = self.server_response()
@@ -155,6 +164,7 @@ class UpdateManager(Addon):
         #  1 = Plugins updated
         #  2 = Plugins updated, but restart required
         return exitcode
+
 
     def _updatePlugins(self, data):
         """ check for plugin updates """
@@ -266,6 +276,8 @@ class UpdateManager(Addon):
         return exitcode
 
     @Expose
+
+
     def removePlugins(self, type_plugins):
         """ delete plugins from disk """
 

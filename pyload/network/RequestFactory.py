@@ -11,6 +11,7 @@ from pyload.network.CookieJar import CookieJar
 from pyload.network.XDCCRequest import XDCCRequest
 
 class RequestFactory(object):
+
     def __init__(self, core):
         self.lock = Lock()
         self.core = core
@@ -18,8 +19,10 @@ class RequestFactory(object):
         self.updateBucket()
         self.cookiejars = {}
 
+
     def iface(self):
         return self.core.config["download"]["interface"]
+
 
     def getRequest(self, pluginName, account=None, type="HTTP"):
         self.lock.acquire()
@@ -38,11 +41,13 @@ class RequestFactory(object):
         self.lock.release()
         return req
 
+
     def getHTTPRequest(self, **kwargs):
         """ returns a http request, dont forget to close it ! """
         options = self.getOptions()
         options.update(kwargs) # submit kwargs as additional options
         return HTTPRequest(CookieJar(None), options)
+
 
     def getURL(self, *args, **kwargs):
         """ see HTTPRequest for argument list """
@@ -65,6 +70,7 @@ class RequestFactory(object):
 
         return rep
 
+
     def getCookieJar(self, pluginName, account=None):
         if (pluginName, account) in self.cookiejars:
             return self.cookiejars[(pluginName, account)]
@@ -72,6 +78,7 @@ class RequestFactory(object):
         cj = CookieJar(pluginName, account)
         self.cookiejars[(pluginName, account)] = cj
         return cj
+
 
     def getProxies(self):
         """ returns a proxy list for the request classes """
@@ -99,11 +106,13 @@ class RequestFactory(object):
                 "password": pw,
                 }
 
+
     def getOptions(self):
         """returns options needed for pycurl"""
         return {"interface": self.iface(),
                 "proxies": self.getProxies(),
                 "ipv6": self.core.config["download"]["ipv6"]}
+
 
     def updateBucket(self):
         """ set values in the bucket according to settings"""

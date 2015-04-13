@@ -20,7 +20,6 @@ from pyload.manager.thread.Plugin import PluginThread
 class AddonThread(PluginThread):
     """thread for addons"""
 
-    #--------------------------------------------------------------------------
     def __init__(self, m, function, args, kwargs):
         """Constructor"""
         PluginThread.__init__(self, m)
@@ -35,19 +34,23 @@ class AddonThread(PluginThread):
 
         self.start()
 
+
     def getActiveFiles(self):
         return self.active
+
 
     def addActive(self, pyfile):
         """ Adds a pyfile to active list and thus will be displayed on overview"""
         if pyfile not in self.active:
             self.active.append(pyfile)
 
+
     def finishFile(self, pyfile):
         if pyfile in self.active:
             self.active.remove(pyfile)
 
         pyfile.finishIfDone()
+
 
     def run(self):
         try:

@@ -16,6 +16,7 @@ from pyload.plugin.Plugin import Abort
 
 
 class XDCCRequest(object):
+
     def __init__(self, timeout=30, proxies={}):
 
         self.proxies = proxies
@@ -26,6 +27,7 @@ class XDCCRequest(object):
         self.speed = 0
 
         self.abort = False
+
 
     def createSocket(self):
         # proxytype = None
@@ -45,6 +47,7 @@ class XDCCRequest(object):
         # return sock
 
         return socket.socket()
+
 
     def download(self, ip, port, filename, irc, progress=None):
 
@@ -109,6 +112,7 @@ class XDCCRequest(object):
 
         return filename
 
+
     def _keepAlive(self, sock, *readbuffer):
         fdset = select([sock], [], [], 0)
         if sock not in fdset[0]:
@@ -124,21 +128,29 @@ class XDCCRequest(object):
             if first[0] == "PING":
                 sock.send("PONG %s\r\n" % first[1])
 
+
     def abortDownloads(self):
         self.abort = True
 
     @property
+
+
     def size(self):
         return self.filesize
 
     @property
+
+
     def arrived(self):
         return self.recv
 
     @property
+
+
     def percent(self):
         if not self.filesize: return 0
         return (self.recv * 100) / self.filesize
+
 
     def close(self):
         pass

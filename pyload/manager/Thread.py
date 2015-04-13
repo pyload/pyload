@@ -54,11 +54,13 @@ class ThreadManager(object):
         for i in range(0, self.core.config.get("download", "max_downloads")):
             self.createThread()
 
+
     def createThread(self):
         """create a download thread"""
 
         thread = DownloadThread(self)
         self.threads.append(thread)
+
 
     def createInfoThread(self, data, pid):
         """
@@ -70,6 +72,8 @@ class ThreadManager(object):
         InfoThread(self, data, pid)
 
     @lock
+
+
     def createResultThread(self, data, add=False):
         """ creates a thread to fetch online status, returns result id """
         self.timestamp = time() + 5 * 60
@@ -82,6 +86,8 @@ class ThreadManager(object):
         return rid
 
     @lock
+
+
     def getInfoResult(self, rid):
         """returns result and clears it"""
         self.timestamp = time() + 5 * 60
@@ -94,8 +100,11 @@ class ThreadManager(object):
             return {}
 
     @lock
+
+
     def setInfoResults(self, rid, result):
         self.infoResults[rid].update(result)
+
 
     def getActiveFiles(self):
         active = [x.active for x in self.threads if x.active and isinstance(x.active, PyFile)]
@@ -105,9 +114,11 @@ class ThreadManager(object):
 
         return active
 
+
     def processingIds(self):
         """get a id list of all pyfiles processed"""
         return [x.id for x in self.getActiveFiles()]
+
 
     def work(self):
         """run all task which have to be done (this is for repetivive call by core)"""
@@ -136,7 +147,9 @@ class ThreadManager(object):
             self.infoResults.clear()
             self.core.log.debug("Cleared Result cache")
 
+
     #--------------------------------------------------------------------------
+
     def tryReconnect(self):
         """checks if reconnect needed"""
 
@@ -189,6 +202,7 @@ class ThreadManager(object):
 
         self.reconnecting.clear()
 
+
     def getIP(self):
         """retrieve current ip"""
         services = [("http://automation.whatismyip.com/n09230945.asp", "(\S+)"),
@@ -207,7 +221,9 @@ class ThreadManager(object):
 
         return ip
 
+
     #--------------------------------------------------------------------------
+
     def checkThreadCount(self):
         """checks if there are need for increasing or reducing thread count"""
 
@@ -220,6 +236,7 @@ class ThreadManager(object):
             if free:
                 free[0].put("quit")
 
+
     def cleanPycurl(self):
         """ make a global curl cleanup (currently ununused) """
         if self.processingIds():
@@ -230,7 +247,9 @@ class ThreadManager(object):
         self.core.log.debug("Cleaned up pycurl")
         return True
 
+
     #--------------------------------------------------------------------------
+
     def assignJob(self):
         """assing a job to a thread if possible"""
 
@@ -287,9 +306,11 @@ class ThreadManager(object):
             else:
                 thread = DecrypterThread(self, job)
 
+
     def getLimit(self, thread):
         limit = thread.active.plugin.account.getAccountData(thread.active.plugin.user)["options"].get("limitDL", ["0"])[0]
         return int(limit)
+
 
     def cleanup(self):
         """do global cleanup, should be called when finished with pycurl"""

@@ -3,6 +3,7 @@
 from thrift.protocol import TBinaryProtocol
 
 class Protocol(TBinaryProtocol.TBinaryProtocol):
+
     def writeString(self, str):
         try:
             str = str.encode("utf8", "ignore")
@@ -11,6 +12,7 @@ class Protocol(TBinaryProtocol.TBinaryProtocol):
 
         self.writeI32(len(str))
         self.trans.write(str)
+
 
     def readString(self):
         len = self.readI32()

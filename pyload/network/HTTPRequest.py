@@ -28,6 +28,7 @@ bad_headers = range(400, 404) + range(405, 418) + range(500, 506)
 
 
 class BadHeader(Exception):
+
     def __init__(self, code, content=""):
         Exception.__init__(self, "Bad server response: %s %s" % (code, responses[int(code)]))
         self.code = code
@@ -35,6 +36,7 @@ class BadHeader(Exception):
 
 
 class HTTPRequest(object):
+
     def __init__(self, cookies=None, options=None):
         self.c = pycurl.Curl()
         self.rep = StringIO()
@@ -57,6 +59,7 @@ class HTTPRequest(object):
         self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
 
         self.log = getLogger("log")
+
 
     def initHandle(self):
         """ sets common options to curl handle """
@@ -86,6 +89,7 @@ class HTTPRequest(object):
                                           "Connection: keep-alive",
                                           "Keep-Alive: 300",
                                           "Expect:"])
+
 
     def setInterface(self, options):
 
@@ -119,10 +123,12 @@ class HTTPRequest(object):
         if "timeout" in options:
             self.c.setopt(pycurl.LOW_SPEED_TIME, options["timeout"])
 
+
     def addCookies(self):
         """ put cookies from curl handle to cj """
         if self.cj:
             self.cj.addCookies(self.c.getinfo(pycurl.INFO_COOKIELIST))
+
 
     def getCookies(self):
         """ add cookies from cj to curl handle """
@@ -131,8 +137,10 @@ class HTTPRequest(object):
                 self.c.setopt(pycurl.COOKIELIST, c)
         return
 
+
     def clearCookies(self):
         self.c.setopt(pycurl.COOKIELIST, "")
+
 
     def setRequestContext(self, url, get, post, referer, cookies, multipart=False):
         """ sets everything needed for the request """
@@ -170,6 +178,7 @@ class HTTPRequest(object):
             self.c.setopt(pycurl.COOKIEFILE, "")
             self.c.setopt(pycurl.COOKIEJAR, "")
             self.getCookies()
+
 
     def load(self, url, get={}, post={}, referer=True, cookies=True, just_header=False, multipart=False, decode=False, follow_location=True, save_cookies=True):
         """ load and returns a given page """
@@ -212,6 +221,7 @@ class HTTPRequest(object):
 
         return rep
 
+
     def verifyHeader(self):
         """ raise an exceptions on bad headers """
         code = int(self.c.getinfo(pycurl.RESPONSE_CODE))
@@ -220,9 +230,11 @@ class HTTPRequest(object):
             raise BadHeader(code, self.getResponse())
         return code
 
+
     def checkHeader(self):
         """ check if header indicates failure"""
         return int(self.c.getinfo(pycurl.RESPONSE_CODE)) not in bad_headers
+
 
     def getResponse(self):
         """ retrieve response from string io """
@@ -233,6 +245,7 @@ class HTTPRequest(object):
             self.rep.close()
             self.rep = StringIO()
             return value
+
 
     def decodeResponse(self, rep):
         """ decode with correct encoding, relies on header """
@@ -269,6 +282,7 @@ class HTTPRequest(object):
 
         return rep
 
+
     def write(self, buf):
         """ writes response """
         if self.rep.tell() > 1000000 or self.abort:
@@ -283,15 +297,19 @@ class HTTPRequest(object):
         else:
             self.rep.write(buf)
 
+
     def writeHeader(self, buf):
         """ writes header """
         self.header += buf
 
+
     def putHeader(self, name, value):
         self.headers.append("%s: %s" % (name, value))
 
+
     def clearHeaders(self):
         self.headers = []
+
 
     def close(self):
         """ cleanup, unusable after this """

@@ -67,6 +67,7 @@ class AddonManager(object):
 
     def try_catch(func):
 
+
         def new(*args):
             try:
                 return func(*args)
@@ -178,6 +179,8 @@ class AddonManager(object):
 
 
     @try_catch
+
+
     def coreReady(self):
         for plugin in self.plugins:
             if plugin.isActivated():
@@ -187,6 +190,8 @@ class AddonManager(object):
 
 
     @try_catch
+
+
     def coreExiting(self):
         for plugin in self.plugins:
             if plugin.isActivated():
@@ -196,6 +201,8 @@ class AddonManager(object):
 
 
     @lock
+
+
     def downloadPreparing(self, pyfile):
         for plugin in self.plugins:
             if plugin.isActivated():
@@ -205,6 +212,8 @@ class AddonManager(object):
 
 
     @lock
+
+
     def downloadFinished(self, pyfile):
         for plugin in self.plugins:
             if plugin.isActivated():
@@ -215,6 +224,8 @@ class AddonManager(object):
 
     @lock
     @try_catch
+
+
     def downloadFailed(self, pyfile):
         for plugin in self.plugins:
             if plugin.isActivated():
@@ -224,6 +235,8 @@ class AddonManager(object):
 
 
     @lock
+
+
     def packageFinished(self, package):
         for plugin in self.plugins:
             if plugin.isActivated():
@@ -233,6 +246,8 @@ class AddonManager(object):
 
 
     @lock
+
+
     def beforeReconnecting(self, ip):
         for plugin in self.plugins:
             plugin.beforeReconnecting(ip)
@@ -241,6 +256,8 @@ class AddonManager(object):
 
 
     @lock
+
+
     def afterReconnecting(self, ip):
         for plugin in self.plugins:
             if plugin.isActivated():

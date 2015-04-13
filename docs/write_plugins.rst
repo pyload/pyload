@@ -87,6 +87,7 @@ Example: ::
         """
             plugin code
         """
+
         def decrypt(self, pyfile):
 
             urls = ["http://get.pyload.org/src", "http://get.pyload.org/debian", "http://get.pyload.org/win"]

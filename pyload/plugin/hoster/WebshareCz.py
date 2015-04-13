@@ -21,6 +21,8 @@ class WebshareCz(SimpleHoster):
 
 
     @classmethod
+
+
     def getInfo(cls, url="", html=""):
         info = super(WebshareCz, cls).getInfo(url, html)
 

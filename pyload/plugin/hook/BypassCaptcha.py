@@ -123,6 +123,8 @@ class BypassCaptcha(Hook):
 
 
     @threaded
+
+
     def _processCaptcha(self, task):
         c = task.captchaFile
         try:

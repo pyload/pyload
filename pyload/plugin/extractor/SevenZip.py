@@ -38,6 +38,8 @@ class SevenZip(UnRar):
 
 
     @classmethod
+
+
     def isUsable(cls):
         if os.name == "nt":
             cls.CMD = os.path.join(pypath, "7z.exe")
@@ -66,7 +68,6 @@ class SevenZip(UnRar):
 
         if self.re_wrongcrc.search(err):
             raise CRCError(err)
-
 
 
     def check(self, password):

@@ -16,6 +16,8 @@ class DeadHoster(_Hoster):
 
 
     @classmethod
+
+
     def apiInfo(cls, url="", get={}, post={}):
         api = super(DeadHoster, self).apiInfo(url, get, post)
         api['status'] = 1

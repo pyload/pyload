@@ -33,8 +33,10 @@ class DecrypterThread(PluginThread):
 
         self.start()
 
+
     def getActiveFiles(self):
         return [self.active]
+
 
     def run(self):
         """run method"""

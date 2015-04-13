@@ -48,6 +48,7 @@ sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 class Core(object):
     """pyLoad Core, one tool to rule them all... (the filehosters) :D"""
 
+
     def __init__(self):
         self.doDebug = False
         self.running = False
@@ -122,6 +123,7 @@ class Core(object):
                 self.print_help()
                 exit()
 
+
     def print_help(self):
         print
         print "pyLoad v%s     2008-2015 the pyLoad Team" % CURRENT_VERSION
@@ -149,6 +151,7 @@ class Core(object):
         print "  -h, --help", " " * 13, "Display this help screen"
         print
 
+
     def toggle_pause(self):
         if self.threadManager.pause:
             self.threadManager.pause = False
@@ -157,10 +160,12 @@ class Core(object):
             self.threadManager.pause = True
             return True
 
+
     def quit(self, a, b):
         self.shutdown()
         self.log.info(_("Received Quit signal"))
         _exit(1)
+
 
     def writePidFile(self):
         self.deletePidFile()
@@ -169,10 +174,12 @@ class Core(object):
         f.write(str(pid))
         f.close()
 
+
     def deletePidFile(self):
         if self.checkPidFile():
             self.log.debug("Deleting old pidfile %s" % self.pidfile)
             os.remove(self.pidfile)
+
 
     def checkPidFile(self):
         """ return pid as int or 0"""
@@ -186,6 +193,7 @@ class Core(object):
 
         return 0
 
+
     def isAlreadyRunning(self):
         pid = self.checkPidFile()
         if not pid or os.name == "nt": return False
@@ -195,6 +203,7 @@ class Core(object):
             return 0
 
         return pid
+
 
     def quitInstance(self):
         if os.name == "nt":
@@ -237,6 +246,7 @@ class Core(object):
 
                 print join(path, f)
                 remove(join(path, f))
+
 
     def start(self, rpc=True, web=True):
         """ starts the fun :D """
@@ -436,6 +446,7 @@ class Core(object):
             self.threadManager.work()
             self.scheduler.work()
 
+
     def setupDB(self):
         self.db = DatabaseBackend(self) # the backend
         self.db.setup()
@@ -443,10 +454,12 @@ class Core(object):
         self.files = FileHandler(self)
         self.db.manager = self.files #ugly?
 
+
     def init_webserver(self):
         if self.config['webui']['activated']:
             self.webserver = WebServer(self)
             self.webserver.start()
+
 
     def init_logger(self, level):
         console = logging.StreamHandler(sys.stdout)
@@ -469,10 +482,12 @@ class Core(object):
         self.log.addHandler(console) #if console logging
         self.log.setLevel(level)
 
+
     def removeLogger(self):
         for h in list(self.log.handlers):
             self.log.removeHandler(h)
             h.close()
+
 
     def check_install(self, check_name, legend, python=True, essential=False):
         """check wether needed tools are installed"""
@@ -490,6 +505,7 @@ class Core(object):
                 exit()
 
             return False
+
 
     def check_file(self, check_names, description="", folder=False, empty=True, essential=False, quiet=False):
         """check wether needed files exists"""
@@ -528,8 +544,10 @@ class Core(object):
                     if essential:
                         exit()
 
+
     def isClientConnected(self):
         return (self.lastClientConnected + 30) > time()
+
 
     def restart(self):
         self.shutdown()
@@ -543,6 +561,7 @@ class Core(object):
 
         execl(executable, executable, *sys.argv)
         _exit(0)
+
 
     def shutdown(self):
         self.log.info(_("shutting down..."))

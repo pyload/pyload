@@ -51,7 +51,6 @@ class GigapetaCom(SimpleHoster):
             self.fail(_("No valid captcha code entered"))
 
 
-
     def checkErrors(self):
         if "All threads for IP" in self.html:
             self.logDebug("Your IP is already downloading a file")

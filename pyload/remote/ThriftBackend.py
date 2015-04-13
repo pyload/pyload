@@ -14,6 +14,7 @@ from pyload.remote.thriftbackend.Transport import TransportFactory
 from thrift.server import TServer
 
 class ThriftBackend(BackendBase):
+
     def setup(self, host, port):
         processor = Processor(self.core.api)
 
@@ -37,6 +38,7 @@ class ThriftBackend(BackendBase):
         #self.server = TNonblockingServer.TNonblockingServer(processor, transport, tfactory, pfactory)
 
         #server = TServer.TThreadPoolServer(processor, transport, tfactory, pfactory)
+
 
     def serve(self):
         self.server.serve()

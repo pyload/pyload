@@ -208,6 +208,7 @@ class DownloadInfo(TBase):
     (16, TType.STRING, 'plugin', None, None,), # 16
   )
 
+
   def __init__(self, fid=None, name=None, speed=None, eta=None, format_eta=None, bleft=None, size=None, format_size=None, percent=None, status=None, statusmsg=None, format_wait=None, wait_until=None, packageID=None, packageName=None, plugin=None,):
     self.fid = fid
     self.name = name
@@ -260,6 +261,7 @@ class ServerStatus(TBase):
     (7, TType.BOOL, 'reconnect', None, None,), # 7
   )
 
+
   def __init__(self, pause=None, active=None, queue=None, total=None, speed=None, download=None, reconnect=None,):
     self.pause = pause
     self.active = active
@@ -294,6 +296,7 @@ class ConfigItem(TBase):
     (4, TType.STRING, 'type', None, None,), # 4
   )
 
+
   def __init__(self, name=None, description=None, value=None, type=None,):
     self.name = name
     self.description = description
@@ -324,6 +327,7 @@ class ConfigSection(TBase):
     (3, TType.LIST, 'items', (TType.STRUCT, (ConfigItem, ConfigItem.thrift_spec)), None,), # 3
     (4, TType.STRING, 'outline', None, None,), # 4
   )
+
 
   def __init__(self, name=None, description=None, items=None, outline=None,):
     self.name = name
@@ -376,6 +380,7 @@ class FileData(TBase):
     (10, TType.STRING, 'error', None, None,), # 10
     (11, TType.I16, 'order', None, None,), # 11
   )
+
 
   def __init__(self, fid=None, url=None, name=None, plugin=None, size=None, format_size=None, status=None, statusmsg=None, packageID=None, error=None, order=None,):
     self.fid = fid
@@ -442,6 +447,7 @@ class PackageData(TBase):
     (13, TType.LIST, 'fids', (TType.I32, None), None,), # 13
   )
 
+
   def __init__(self, pid=None, name=None, folder=None, site=None, password=None, dest=None, order=None, linksdone=None, sizedone=None, sizetotal=None, linkstotal=None, links=None, fids=None,):
     self.pid = pid
     self.name = name
@@ -497,6 +503,7 @@ class InteractionTask(TBase):
     (9, TType.STRING, 'plugin', None, None,), # 9
   )
 
+
   def __init__(self, iid=None, input=None, structure=None, preset=None, output=None, data=None, title=None, description=None, plugin=None,):
     self.iid = iid
     self.input = input
@@ -533,6 +540,7 @@ class CaptchaTask(TBase):
     (4, TType.STRING, 'resultType', None, None,), # 4
   )
 
+
   def __init__(self, tid=None, data=None, type=None, resultType=None,):
     self.tid = tid
     self.data = data
@@ -563,6 +571,7 @@ class EventInfo(TBase):
     (3, TType.I32, 'type', None, None,), # 3
     (4, TType.I32, 'destination', None, None,), # 4
   )
+
 
   def __init__(self, eventname=None, id=None, type=None, destination=None,):
     self.eventname = eventname
@@ -597,6 +606,7 @@ class UserData(TBase):
     (4, TType.I32, 'permission', None, None,), # 4
     (5, TType.STRING, 'templateName', None, None,), # 5
   )
+
 
   def __init__(self, name=None, email=None, role=None, permission=None, templateName=None,):
     self.name = name
@@ -642,6 +652,7 @@ class AccountInfo(TBase):
     (8, TType.STRING, 'type', None, None,), # 8
   )
 
+
   def __init__(self, validuntil=None, login=None, options=None, valid=None, trafficleft=None, maxtraffic=None, premium=None, type=None,):
     self.validuntil = validuntil
     self.login = login
@@ -677,6 +688,7 @@ class ServiceCall(TBase):
     (4, TType.BOOL, 'parseArguments', None, None,), # 4
   )
 
+
   def __init__(self, plugin=None, func=None, arguments=None, parseArguments=None,):
     self.plugin = plugin
     self.func = func
@@ -711,6 +723,7 @@ class OnlineStatus(TBase):
     (5, TType.I64, 'size', None, None,), # 5
   )
 
+
   def __init__(self, name=None, plugin=None, packagename=None, status=None, size=None,):
     self.name = name
     self.plugin = plugin
@@ -737,6 +750,7 @@ class OnlineCheck(TBase):
     (2, TType.MAP, 'data', (TType.STRING, None, TType.STRUCT, (OnlineStatus, OnlineStatus.thrift_spec)), None,), # 2
   )
 
+
   def __init__(self, rid=None, data=None,):
     self.rid = rid
     self.data = data
@@ -757,8 +771,10 @@ class PackageDoesNotExists(TExceptionBase):
     (1, TType.I32, 'pid', None, None,), # 1
   )
 
+
   def __init__(self, pid=None,):
     self.pid = pid
+
 
   def __str__(self):
     return repr(self)
@@ -779,8 +795,10 @@ class FileDoesNotExists(TExceptionBase):
     (1, TType.I32, 'fid', None, None,), # 1
   )
 
+
   def __init__(self, fid=None,):
     self.fid = fid
+
 
   def __str__(self):
     return repr(self)
@@ -804,9 +822,11 @@ class ServiceDoesNotExists(TExceptionBase):
     (2, TType.STRING, 'func', None, None,), # 2
   )
 
+
   def __init__(self, plugin=None, func=None,):
     self.plugin = plugin
     self.func = func
+
 
   def __str__(self):
     return repr(self)
@@ -827,8 +847,10 @@ class ServiceException(TExceptionBase):
     (1, TType.STRING, 'msg', None, None,), # 1
   )
 
+
   def __init__(self, msg=None,):
     self.msg = msg
+
 
   def __str__(self):
     return repr(self)

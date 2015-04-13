@@ -21,8 +21,6 @@ from pyload.plugin.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload
 class DownloadThread(PluginThread):
     """thread for downloading files from 'real' hoster plugins"""
 
-    #--------------------------------------------------------------------------
-
     def __init__(self, manager):
         """Constructor"""
         PluginThread.__init__(self, manager)
@@ -32,7 +30,9 @@ class DownloadThread(PluginThread):
 
         self.start()
 
+
     #--------------------------------------------------------------------------
+
     def run(self):
         """run method"""
         pyfile = None
@@ -201,9 +201,11 @@ class DownloadThread(PluginThread):
             pyfile.finishIfDone()
             self.m.core.files.save()
 
+
     def put(self, job):
         """assing job to thread"""
         self.queue.put(job)
+
 
     def stop(self):
         """stops the thread"""

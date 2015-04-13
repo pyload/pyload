@@ -23,7 +23,6 @@ from pyload.api import OnlineStatus
 class PluginThread(Thread):
     """abstract base class for thread types"""
 
-    #--------------------------------------------------------------------------
     def __init__(self, manager):
         """Constructor"""
         Thread.__init__(self)
@@ -69,6 +68,7 @@ class PluginThread(Thread):
             f.close()
 
         self.m.core.log.info("Debug Report written to %s" % dump_name)
+
 
     def getDebugDump(self, pyfile):
         dump = "pyLoad %s Debug Report of %s %s \n\nTRACEBACK:\n %s \n\nFRAMESTACK:\n" % (
@@ -123,6 +123,7 @@ class PluginThread(Thread):
             dump += pformat(self.m.core.config.plugin[pyfile.pluginname]) + "\n"
 
         return dump
+
 
     def clean(self, pyfile):
         """ set thread unactive and release pyfile """

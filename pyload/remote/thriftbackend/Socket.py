@@ -11,21 +11,27 @@ from thrift.transport.TSocket import TSocket, TServerSocket, TTransportException
 WantReadError = Exception #overwritten when ssl is used
 
 class SecureSocketConnection(object):
+
     def __init__(self, connection):
         self.__dict__["connection"] = connection
+
 
     def __getattr__(self, name):
         return getattr(self.__dict__["connection"], name)
 
+
     def __setattr__(self, name, value):
         setattr(self.__dict__["connection"], name, value)
+
 
     def shutdown(self, how=1):
         self.__dict__["connection"].shutdown()
 
+
     def accept(self):
         connection, address = self.__dict__["connection"].accept()
         return SecureSocketConnection(connection), address
+
 
     def send(self, buff):
         try:
@@ -33,6 +39,7 @@ class SecureSocketConnection(object):
         except WantReadError:
             sleep(0.1)
             return self.send(buff)
+
 
     def recv(self, buff):
         try:
@@ -42,9 +49,11 @@ class SecureSocketConnection(object):
             return self.recv(buff)
 
 class Socket(TSocket):
+
     def __init__(self, host='localhost', port=7228, ssl=False):
         TSocket.__init__(self, host, port)
         self.ssl = ssl
+
 
     def open(self):
         if self.ssl:
@@ -61,6 +70,7 @@ class Socket(TSocket):
 
         self.handle.settimeout(self._timeout)
         self.handle.connect((self.host, self.port))
+
 
     def read(self, sz):
         try:
@@ -93,12 +103,14 @@ class Socket(TSocket):
 
 
 class ServerSocket(TServerSocket, Socket):
+
     def __init__(self, port=7228, host="0.0.0.0", key="", cert=""):
         self.host = host
         self.port = port
         self.key = key
         self.cert = cert
         self.handle = None
+
 
     def listen(self):
         if self.cert and self.key:
@@ -121,6 +133,7 @@ class ServerSocket(TServerSocket, Socket):
             self.handle.set_timeout(None)
         self.handle.bind((self.host, self.port))
         self.handle.listen(128)
+
 
     def accept(self):
         client, addr = self.handle.accept()

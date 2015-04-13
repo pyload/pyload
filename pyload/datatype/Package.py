@@ -8,6 +8,7 @@ class PyPackage(object):
     """
     Represents a package object at runtime
     """
+
     def __init__(self, manager, id, name, folder, site, password, queue, order):
         self.m = manager
         self.m.packageCache[int(id)] = self
@@ -22,8 +23,11 @@ class PyPackage(object):
         self.setFinished = False
 
     @property
+
+
     def folder(self):
         return safe_filename(self._folder)
+
 
     def toDict(self):
         """ Returns a dictionary representation of the data.
@@ -43,21 +47,26 @@ class PyPackage(object):
             }
         }
 
+
     def getChildren(self):
         """get information about contained links"""
         return self.m.getPackageData(self.id)["links"]
 
+
     def sync(self):
         """sync with db"""
         self.m.updatePackage(self)
+
 
     def release(self):
         """sync and delete from cache"""
         self.sync()
         self.m.releasePackage(self.id)
 
+
     def delete(self):
         self.m.deletePackage(self.id)
+
 
     def notifyChange(self):
         e = UpdateEvent("pack", self.id, "collector" if not self.queue else "queue")

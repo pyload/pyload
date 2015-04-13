@@ -52,9 +52,11 @@ class XFSHoster(SimpleHoster):
     FORM_PATTERN    = None
     FORM_INPUTS_MAP = None  #: dict passed as input_names to parseHtmlForm
 
+
     def setup(self):
         self.chunkLimit     = -1 if self.premium else 1
         self.resumeDownload = self.multiDL = self.premium
+
 
     def prepare(self):
         """ Initialize important variables """
@@ -84,6 +86,7 @@ class XFSHoster(SimpleHoster):
         if self.DIRECT_LINK is None:
             self.directDL = self.premium
 
+
     def handleFree(self, pyfile):
         for i in xrange(1, 6):
             self.logDebug("Getting download link: #%d" % i)
@@ -111,8 +114,10 @@ class XFSHoster(SimpleHoster):
 
         self.link = m.group(1).strip()  #@TODO: Remove .strip() in 0.4.10
 
+
     def handlePremium(self, pyfile):
         return self.handleFree(pyfile)
+
 
     def handleMulti(self, pyfile):
         if not self.account:
@@ -171,6 +176,7 @@ class XFSHoster(SimpleHoster):
         if 'location' in header:  #: Direct download link
             self.link = header['location']
 
+
     def checkErrors(self):
         m = re.search(self.ERROR_PATTERN, self.html)
         if m is None:
@@ -223,6 +229,7 @@ class XFSHoster(SimpleHoster):
         else:
             self.info.pop('error', None)
 
+
     def getPostParameters(self):
         if self.FORM_PATTERN or self.FORM_INPUTS_MAP:
             action, inputs = self.parseHtmlForm(self.FORM_PATTERN or "", self.FORM_INPUTS_MAP or {})
@@ -267,6 +274,7 @@ class XFSHoster(SimpleHoster):
             inputs.pop('method_premium', None)
 
         return inputs
+
 
     def handleCaptcha(self, inputs):
         m = re.search(self.CAPTCHA_PATTERN, self.html)

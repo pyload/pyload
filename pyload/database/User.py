@@ -8,6 +8,8 @@ from pyload.database import DatabaseBackend, style
 
 class UserMethods(object):
     @style.queue
+
+
     def checkAuth(db, user, password):
         c = db.c
         c.execute('SELECT id, name, password, role, permission, template, email FROM "users" WHERE name=?', (user,))
@@ -25,6 +27,8 @@ class UserMethods(object):
             return {}
 
     @style.queue
+
+
     def addUser(db, user, password):
         salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
         h = sha1(salt + password)
@@ -39,6 +43,8 @@ class UserMethods(object):
 
 
     @style.queue
+
+
     def changePassword(db, user, oldpw, newpw):
         db.c.execute('SELECT id, name, password FROM users WHERE name=?', (user,))
         r = db.c.fetchone()
@@ -60,15 +66,21 @@ class UserMethods(object):
 
 
     @style.async
+
+
     def setPermission(db, user, perms):
         db.c.execute("UPDATE users SET permission=? WHERE name=?", (perms, user))
 
     @style.async
+
+
     def setRole(db, user, role):
         db.c.execute("UPDATE users SET role=? WHERE name=?", (role, user))
 
 
     @style.queue
+
+
     def listUsers(db):
         db.c.execute('SELECT name FROM users')
         users = []
@@ -77,6 +89,8 @@ class UserMethods(object):
         return users
 
     @style.queue
+
+
     def getAllUserData(db):
         db.c.execute("SELECT name, permission, role, template, email FROM users")
         user = {}
@@ -86,6 +100,8 @@ class UserMethods(object):
         return user
 
     @style.queue
+
+
     def removeUser(db, user):
         db.c.execute('DELETE FROM users WHERE name=?', (user,))
 

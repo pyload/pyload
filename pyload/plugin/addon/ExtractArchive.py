@@ -14,6 +14,7 @@ if sys.version_info < (2, 7) and os.name != "nt":
     import errno
     import subprocess
 
+
     def _eintr_retry_call(func, *args):
         while True:
             try:
@@ -26,6 +27,8 @@ if sys.version_info < (2, 7) and os.name != "nt":
 
 
     # unsued timeout option for older python version
+
+
     def wait(self, timeout=0):
         """Wait for child process to terminate.  Returns returncode
         attribute."""
@@ -190,6 +193,8 @@ class ExtractArchive(Addon):
 
 
     @threaded
+
+
     def extractQueued(self, thread):
         packages = self.queue.get()
         while packages:
@@ -206,6 +211,8 @@ class ExtractArchive(Addon):
 
 
     @Expose
+
+
     def extractPackage(self, *ids):
         """ Extract packages with given id"""
         for id in ids:
@@ -231,6 +238,8 @@ class ExtractArchive(Addon):
 
 
     @Expose
+
+
     def extract(self, ids, thread=None):  #@TODO: Use pypack, not pid to improve method usability
         if not ids:
             return False
@@ -503,6 +512,8 @@ class ExtractArchive(Addon):
 
 
     @Expose
+
+
     def getPasswords(self, reload=True):
         """ List of saved passwords """
         if reload:
@@ -528,6 +539,8 @@ class ExtractArchive(Addon):
 
 
     @Expose
+
+
     def addPassword(self, password):
         """  Adds a password to saved list"""
         try:

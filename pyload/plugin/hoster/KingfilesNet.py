@@ -28,9 +28,11 @@ class KingfilesNet(SimpleHoster):
 
     LINK_FREE_PATTERN = r'var download_url = \'(.+)\';'
 
+
     def setup(self):
         self.resumeDownload = True
         self.multiDL        = True
+
 
     def handleFree(self, pyfile):
         # Click the free user button

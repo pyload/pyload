@@ -43,6 +43,8 @@ class AntiVirus(Addon):
 
     @Expose
     @threaded
+
+
     def scan(self, pyfile, thread):
         file     = fs_encode(pyfile.plugin.lastDownload)
         filename = os.path.basename(pyfile.plugin.lastDownload)

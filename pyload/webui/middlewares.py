@@ -8,8 +8,10 @@ except ImportError:
     from StringIO import StringIO
 
 class StripPathMiddleware(object):
+
     def __init__(self, app):
         self.app = app
+
 
     def __call__(self, e, h):
         e['PATH_INFO'] = e['PATH_INFO'].rstrip('/')
@@ -17,9 +19,11 @@ class StripPathMiddleware(object):
 
 
 class PrefixMiddleware(object):
+
     def __init__(self, app, prefix="/pyload"):
         self.app = app
         self.prefix = prefix
+
 
     def __call__(self, e, h):
         path = e["PATH_INFO"]
@@ -41,6 +45,7 @@ class GZipMiddleWare(object):
     def __init__(self, application, compress_level=6):
         self.application = application
         self.compress_level = int(compress_level)
+
 
     def __call__(self, environ, start_response):
         if 'gzip' not in environ.get('HTTP_ACCEPT_ENCODING', ''):
@@ -80,6 +85,7 @@ class GzipResponse(object):
         self.content_length = None
         self.headers = ()
 
+
     def gzip_start_response(self, status, headers, exc_info=None):
         self.headers = headers
         ct = header_value(headers,'content-type')
@@ -102,12 +108,14 @@ class GzipResponse(object):
         self.status = status
         return self.buffer.write
 
+
     def write(self):
         out = self.buffer
         out.seek(0)
         s = out.getvalue()
         out.close()
         return [s]
+
 
     def finish_response(self, app_iter):
         if self.compressible:

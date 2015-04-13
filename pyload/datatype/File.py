@@ -40,6 +40,7 @@ class PyFile(object):
                  "active", "abort", "statusname", "reconnected", "progress",
                  "maxprogress", "pluginmodule", "pluginclass")
 
+
     def __init__(self, manager, id, url, name, size, status, error, plugin, package, order):
         self.m = manager
 
@@ -76,10 +77,13 @@ class PyFile(object):
     # will convert all sizes to ints
     size = property(lambda self: self._size, setSize)
 
+
     def __repr__(self):
         return "PyFile %s: %s@%s" % (self.id, self.name, self.pluginname)
 
     @lock
+
+
     def initPlugin(self):
         """ inits plugin instance """
         if not self.plugin:
@@ -88,6 +92,8 @@ class PyFile(object):
             self.plugin       = self.pluginclass(self)
 
     @lock
+
+
     def hasPlugin(self):
         """Thread safe way to determine this file has initialized plugin attribute
 
@@ -95,17 +101,21 @@ class PyFile(object):
         """
         return hasattr(self, "plugin") and self.plugin
 
+
     def package(self):
         """ return package instance"""
         return self.m.getPackage(self.packageid)
+
 
     def setStatus(self, status):
         self.status = statusMap[status]
         self.sync()  #@TODO: needed aslong no better job approving exists
 
+
     def setCustomStatus(self, msg, status="processing"):
         self.statusname = msg
         self.setStatus(status)
+
 
     def getStatusName(self):
         if self.status not in (13, 14) or not self.statusname:
@@ -113,14 +123,18 @@ class PyFile(object):
         else:
             return self.statusname
 
+
     def hasStatus(self, status):
         return statusMap[status] == self.status
+
 
     def sync(self):
         """sync PyFile instance with database"""
         self.m.updateLink(self)
 
     @lock
+
+
     def release(self):
         """sync and remove from cache"""
         # file has valid package
@@ -133,13 +147,16 @@ class PyFile(object):
 
         self.m.releaseLink(self.id)
 
+
     def delete(self):
         """delete pyfile from database"""
         self.m.deleteLink(self.id)
 
+
     def toDict(self):
         """return dict with all information for interface"""
         return self.toDbDict()
+
 
     def toDbDict(self):
         """return data as dict for databse
@@ -167,6 +184,7 @@ class PyFile(object):
             }
         }
 
+
     def abortDownload(self):
         """abort pyfile if possible"""
         while self.id in self.m.core.threadManager.processingIds():
@@ -181,6 +199,7 @@ class PyFile(object):
 
         self.release()
 
+
     def finishIfDone(self):
         """set status to finish and release file if every thread is finished with it"""
 
@@ -192,8 +211,10 @@ class PyFile(object):
         self.m.checkAllLinksFinished()
         return True
 
+
     def checkIfProcessed(self):
         self.m.checkAllLinksProcessed(self.id)
+
 
     def formatWait(self):
         """ formats and return wait time in humanreadable format """
@@ -205,9 +226,11 @@ class PyFile(object):
         minutes, seconds = divmod(seconds, 60)
         return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
 
+
     def formatSize(self):
         """ formats size to readable format """
         return formatSize(self.getSize())
+
 
     def formatETA(self):
         """ formats eta to readable format """
@@ -219,12 +242,14 @@ class PyFile(object):
         minutes, seconds = divmod(seconds, 60)
         return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
 
+
     def getSpeed(self):
         """ calculates speed """
         try:
             return self.plugin.req.speed
         except Exception:
             return 0
+
 
     def getETA(self):
         """ gets established time of arrival"""
@@ -233,12 +258,14 @@ class PyFile(object):
         except Exception:
             return 0
 
+
     def getBytesLeft(self):
         """ gets bytes left """
         try:
             return self.getSize() - self.plugin.req.arrived
         except Exception:
             return 0
+
 
     def getPercent(self):
         """ get % of download """
@@ -250,6 +277,7 @@ class PyFile(object):
         else:
             return self.progress
 
+
     def getSize(self):
         """ get size of download """
         try:
@@ -260,9 +288,11 @@ class PyFile(object):
         except Exception:
             return self.size
 
+
     def notifyChange(self):
         e = UpdateEvent("file", self.id, "collector" if not self.package().queue else "queue")
         self.m.core.pullManager.addEvent(e)
+
 
     def setProgress(self, value):
         if not value == self.progress:

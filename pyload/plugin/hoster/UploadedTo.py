@@ -32,6 +32,8 @@ class UploadedTo(SimpleHoster):
 
 
     @classmethod
+
+
     def apiInfo(cls, url="", get={}, post={}):
         info = super(UploadedTo, cls).apiInfo(url)
 

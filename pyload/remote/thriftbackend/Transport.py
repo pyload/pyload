@@ -6,6 +6,7 @@ from thrift.transport.TZlibTransport import TZlibTransport
 class Transport(TBufferedTransport):
     DEFAULT_BUFFER = 4096
 
+
     def __init__(self, trans, rbuf_size = DEFAULT_BUFFER):
         TBufferedTransport.__init__(self, trans, rbuf_size)
         self.handle = trans.handle
@@ -14,12 +15,14 @@ class Transport(TBufferedTransport):
 class TransportCompressed(TZlibTransport):
     DEFAULT_BUFFER = 4096
 
+
     def __init__(self, trans, rbuf_size = DEFAULT_BUFFER):
         TZlibTransport.__init__(self, trans, rbuf_size)
         self.handle = trans.handle
         self.remoteaddr = trans.handle.getpeername()
 
 class TransportFactory(object):
+
     def getTransport(self, trans):
         buffered = Transport(trans)
         return buffered
@@ -27,6 +30,7 @@ class TransportFactory(object):
 class TransportFactoryCompressed(object):
     _last_trans = None
     _last_z = None
+
 
     def getTransport(self, trans, compresslevel=9):
         if trans == self._last_trans:

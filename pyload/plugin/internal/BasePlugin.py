@@ -24,6 +24,8 @@ class BasePlugin(Hoster):
 
 
     @classmethod
+
+
     def getInfo(cls, url="", html=""):  #@TODO: Move to hoster class in 0.4.10
         url   = unquote(url)
         url_p = urlparse(url)

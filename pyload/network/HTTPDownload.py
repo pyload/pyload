@@ -59,18 +59,25 @@ class HTTPDownload(object):
         self.progress = progress
 
     @property
+
+
     def speed(self):
         last = [sum(x) for x in self.lastSpeeds if x]
         return (sum(self.speeds) + sum(last)) / (1 + len(last))
 
     @property
+
+
     def arrived(self):
         return sum([c.arrived for c in self.chunks])
 
     @property
+
+
     def percent(self):
         if not self.size: return 0
         return (self.arrived * 100) / self.size
+
 
     def _copyChunks(self):
         init = fs_encode(self.info.getChunkName(0)) #initial chunk name
@@ -104,6 +111,7 @@ class HTTPDownload(object):
         move(init, fs_encode(self.filename))
         self.info.remove() #remove info file
 
+
     def download(self, chunks=1, resume=False):
         """ returns new filename or None """
 
@@ -131,6 +139,7 @@ class HTTPDownload(object):
 
         if self.nameDisposition and self.disposition: return self.nameDisposition
         return None
+
 
     def _download(self, chunks, resume):
         if not resume:
@@ -280,14 +289,17 @@ class HTTPDownload(object):
 
         self._copyChunks()
 
+
     def updateProgress(self):
         if self.progress:
             self.progress(self.percent)
+
 
     def findChunk(self, handle):
         """ linear search to find a chunk (should be ok since chunk size is usually low) """
         for chunk in self.chunks:
             if chunk.c == handle: return chunk
+
 
     def closeChunk(self, chunk):
         try:
@@ -296,6 +308,7 @@ class HTTPDownload(object):
             self.log.debug("Error removing chunk: %s" % str(e))
         finally:
             chunk.close()
+
 
     def close(self):
         """ cleanup """

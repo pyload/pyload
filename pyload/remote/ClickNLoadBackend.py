@@ -19,11 +19,13 @@ core = None
 js = None
 
 class ClickNLoadBackend(BackendBase):
+
     def setup(self, host, port):
         self.httpd = HTTPServer((host, port), CNLHandler)
         global core, js
         core = self.m.core
         js = core.js
+
 
     def serve(self):
         while self.enabled:
@@ -36,11 +38,13 @@ class CNLHandler(BaseHTTPRequestHandler):
         print "urls", urls
         print "queue", queue
 
+
     def get_post(self, name, default=""):
         if name in self.post:
             return self.post[name]
         else:
             return default
+
 
     def start_response(self, string):
 
@@ -52,6 +56,7 @@ class CNLHandler(BaseHTTPRequestHandler):
         self.send_header("Cache-Control", "no-cache, must-revalidate")
         self.send_header("Content-type", "text/html")
         self.end_headers()
+
 
     def do_GET(self):
         path = self.path.strip("/").lower()
@@ -84,6 +89,7 @@ class CNLHandler(BaseHTTPRequestHandler):
         else:
             self.send_error(404, "Not Found")
 
+
     def do_POST(self):
         form = FieldStorage(
                 fp=self.rfile,
@@ -98,8 +104,10 @@ class CNLHandler(BaseHTTPRequestHandler):
 
         return self.do_GET()
 
+
     def flash(self):
         return "JDownloader"
+
 
     def add(self):
         package = self.get_post('referer', 'ClickNLoad Package')
@@ -107,11 +115,13 @@ class CNLHandler(BaseHTTPRequestHandler):
 
         self.add_package(package, urls, 0)
 
+
     def addcrypted(self):
         package = self.get_post('referer', 'ClickNLoad Package')
         dlc = self.get_post('crypted').replace(" ", "+")
 
         core.upload_container(package, dlc)
+
 
     def addcrypted2(self):
         package = self.get_post("source", "ClickNLoad Package")
@@ -139,6 +149,7 @@ class CNLHandler(BaseHTTPRequestHandler):
 
         self.add_package(package, urls, autostart)
 
+
     def crossdomain(self):
         rep = "<?xml version=\"1.0\"?>\n"
         rep += "<!DOCTYPE cross-domain-policy SYSTEM \"http://www.macromedia.com/xml/dtds/cross-domain-policy.dtd\">\n"
@@ -147,8 +158,10 @@ class CNLHandler(BaseHTTPRequestHandler):
         rep += "</cross-domain-policy>"
         return rep
 
+
     def checksupport(self):
         pass
+
 
     def jdcheck(self):
         rep = "jdownloader=true;\n"

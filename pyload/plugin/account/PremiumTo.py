@@ -15,7 +15,6 @@ class PremiumTo(Account):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-
     def loadAccountInfo(self, user, req):
         traffic = req.load("http://premium.to/api/straffic.php",
                            get={'username': self.username, 'password': self.password})

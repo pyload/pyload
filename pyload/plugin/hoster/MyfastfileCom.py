@@ -19,7 +19,6 @@ class MyfastfileCom(MultiHoster):
     __authors     = [("stickell", "l.stickell@yahoo.it")]
 
 
-
     def setup(self):
         self.chunkLimit = -1
 

@@ -90,6 +90,8 @@ def save_join(*args):
 # Use fs_encode before accesing files on disk, it will encode the string properly
 
 if sys.getfilesystemencoding().startswith('ANSI'):
+
+
     def fs_encode(string):
         return safe_filename(encode(string))
 
@@ -206,6 +208,8 @@ def parseFileSize(string, unit=None):  # returns bytes
 
 
 def lock(func):
+
+
     def new(*args):
         # print "Handler: %s args: %s" % (func, args[1:])
         args[0].lock.acquire()

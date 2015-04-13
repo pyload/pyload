@@ -65,6 +65,7 @@ class ZippyshareCom(SimpleHoster):
         # meant to be populated with the initialization of all the DOM elements found in the scripts
         initScripts = set()
 
+
         def replElementById(element):
             id   = element.group(1) # id might be either 'x' (a real id) or x (a variable)
             attr = element.group(4)  # attr might be None

@@ -21,6 +21,7 @@ class CookieJar(Cookie.SimpleCookie):
     def getCookie(self, name):
         return self[name].value
 
+
     def setCookie(self, domain, name, value, path="/", exp=None, secure="FALSE"):
         self[name] = value
         self[name]["domain"] = domain

@@ -16,7 +16,6 @@ ACC_VERSION = 1
 class AccountManager(object):
     """manages all accounts"""
 
-    #----------------------------------------------------------------------
     def __init__(self, core):
         """Constructor"""
 
@@ -64,6 +63,7 @@ class AccountManager(object):
 
 
     #----------------------------------------------------------------------
+
     def loadAccounts(self):
         """loads all accounts available"""
 
@@ -111,6 +111,7 @@ class AccountManager(object):
 
 
     #----------------------------------------------------------------------
+
     def saveAccounts(self):
         """save all account information"""
 
@@ -135,6 +136,7 @@ class AccountManager(object):
 
 
     #----------------------------------------------------------------------
+
     def initAccountPlugins(self):
         """init names"""
         for name in self.core.pluginManager.getAccountPlugins():
@@ -142,6 +144,8 @@ class AccountManager(object):
 
 
     @lock
+
+
     def updateAccount(self, plugin , user, password=None, options={}):
         """add or update account"""
         if plugin in self.accounts:
@@ -154,6 +158,8 @@ class AccountManager(object):
 
 
     @lock
+
+
     def removeAccount(self, plugin, user):
         """remove account"""
 
@@ -165,6 +171,8 @@ class AccountManager(object):
 
 
     @lock
+
+
     def getAccountInfos(self, force=True, refresh=False):
         data = {}
 

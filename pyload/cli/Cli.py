@@ -36,6 +36,7 @@ from Getch import Getch
 from rename_process import renameProcess
 
 class Cli(object):
+
     def __init__(self, client, command):
         self.client = client
         self.command = command
@@ -66,10 +67,12 @@ class Cli(object):
         else:
             self.processCommand()
 
+
     def reset(self):
         """ reset to initial main menu """
         self.input = ""
         self.headerHandler = self.bodyHandler = self.inputHandler = self
+
 
     def start(self):
         """ main loop. handle input """
@@ -130,10 +133,12 @@ class Cli(object):
     def setInput(self, string=""):
         self.input = string
 
+
     def setHandler(self, klass):
         #create new handler with reference to cli
         self.bodyHandler = self.inputHandler = klass(self)
         self.input = ""
+
 
     def renderHeader(self, line):
         """ prints download status """
@@ -182,6 +187,7 @@ class Cli(object):
 
         return line + 1
 
+
     def renderBody(self, line):
         """ prints initial menu """
         println(line, white(_("Menu:")))
@@ -194,6 +200,7 @@ class Cli(object):
         println(line + 7, mag("6.") + _(" Quit"))
 
         return line + 8
+
 
     def renderFooter(self, line):
         """ prints out the input line with input """
@@ -211,6 +218,7 @@ class Cli(object):
 
         #set cursor to position
         print "\033[" + str(self.inputline) + ";0H"
+
 
     def onChar(self, char):
         """ default no special handling for single chars """
@@ -232,11 +240,14 @@ class Cli(object):
             os.system('clear')
             sys.exit()
 
+
     def onEnter(self, inp):
         pass
 
+
     def onBackSpace(self):
         pass
+
 
     def processCommand(self):
         command = self.command[0]
@@ -339,6 +350,7 @@ class Cli(object):
         else:
             print_commands()
 
+
     def printOnlineCheck(self, client, rid):
         while True:
             sleep(1)
@@ -354,10 +366,12 @@ class Cli(object):
 
 
 class RefreshThread(Thread):
+
     def __init__(self, cli):
         Thread.__init__(self)
         self.setDaemon(True)
         self.cli = cli
+
 
     def run(self):
         while True:

@@ -38,6 +38,7 @@ permMap = {}
 # decorator only called on init, never initialized, so has no effect on runtime
 def permission(bits):
     class _Dec(object):
+
         def __new__(cls, func, *args, **kwargs):
             permMap[func.__name__] = bits
             return func
@@ -85,14 +86,17 @@ class Api(Iface):
     """
     EXTERNAL = Iface  # let the json api know which methods are external
 
+
     def __init__(self, core):
         self.core = core
+
 
     def _convertPyFile(self, p):
         fdata = FileData(p["id"], p["url"], p["name"], p["plugin"], p["size"],
                          p["format_size"], p["status"], p["statusmsg"],
                          p["package"], p["error"], p["order"])
         return fdata
+
 
     def _convertConfigFormat(self, c):
         sections = {}
@@ -115,6 +119,8 @@ class Api(Iface):
         return sections
 
     @permission(PERMS.SETTINGS)
+
+
     def getConfigValue(self, category, option, section="core"):
         """Retrieve config value.
 
@@ -130,6 +136,8 @@ class Api(Iface):
         return str(value)
 
     @permission(PERMS.SETTINGS)
+
+
     def setConfigValue(self, category, option, value, section="core"):
         """Set new config value.
 
@@ -147,12 +155,15 @@ class Api(Iface):
             self.core.config.setPlugin(category, option, value)
 
     @permission(PERMS.SETTINGS)
+
+
     def getConfig(self):
         """Retrieves complete config of core.
 
         :return: list of `ConfigSection`
         """
         return self._convertConfigFormat(self.core.config.config)
+
 
     def getConfigDict(self):
         """Retrieves complete config in dict format, not for RPC.
@@ -162,12 +173,15 @@ class Api(Iface):
         return self.core.config.config
 
     @permission(PERMS.SETTINGS)
+
+
     def getPluginConfig(self):
         """Retrieves complete config for all plugins.
 
         :return: list of `ConfigSection`
         """
         return self._convertConfigFormat(self.core.config.plugin)
+
 
     def getPluginConfigDict(self):
         """Plugin config as dict, not for RPC.
@@ -177,16 +191,22 @@ class Api(Iface):
         return self.core.config.plugin
 
     @permission(PERMS.STATUS)
+
+
     def pauseServer(self):
         """Pause server: Tt wont start any new downloads, but nothing gets aborted."""
         self.core.threadManager.pause = True
 
     @permission(PERMS.STATUS)
+
+
     def unpauseServer(self):
         """Unpause server: New Downloads will be started."""
         self.core.threadManager.pause = False
 
     @permission(PERMS.STATUS)
+
+
     def togglePause(self):
         """Toggle pause state.
 
@@ -196,6 +216,8 @@ class Api(Iface):
         return self.core.threadManager.pause
 
     @permission(PERMS.STATUS)
+
+
     def toggleReconnect(self):
         """Toggle reconnect activation.
 
@@ -205,6 +227,8 @@ class Api(Iface):
         return self.core.config["reconnect"]["activated"]
 
     @permission(PERMS.LIST)
+
+
     def statusServer(self):
         """Some general information about the current status of pyLoad.
 
@@ -219,24 +243,32 @@ class Api(Iface):
         return serverStatus
 
     @permission(PERMS.STATUS)
+
+
     def freeSpace(self):
         """Available free space at download directory in bytes"""
         return freeSpace(self.core.config["general"]["download_folder"])
 
     @permission(PERMS.ALL)
+
+
     def getServerVersion(self):
         """pyLoad Core version """
         return self.core.version
 
+
     def kill(self):
         """Clean way to quit pyLoad"""
         self.core.do_kill = True
+
 
     def restart(self):
         """Restart pyload core"""
         self.core.do_restart = True
 
     @permission(PERMS.LOGS)
+
+
     def getLog(self, offset=0):
         """Returns most recent log entries.
 
@@ -255,6 +287,8 @@ class Api(Iface):
             return ['No log available']
 
     @permission(PERMS.STATUS)
+
+
     def isTimeDownload(self):
         """Checks if pyload will start new downloads according to time in config.
 
@@ -265,6 +299,8 @@ class Api(Iface):
         return compare_time(start, end)
 
     @permission(PERMS.STATUS)
+
+
     def isTimeReconnect(self):
         """Checks if pyload will try to make a reconnect
 
@@ -275,6 +311,8 @@ class Api(Iface):
         return compare_time(start, end) and self.core.config["reconnect"]["activated"]
 
     @permission(PERMS.LIST)
+
+
     def statusDownloads(self):
         """ Status off all currently running downloads.
 
@@ -292,6 +330,8 @@ class Api(Iface):
         return data
 
     @permission(PERMS.ADD)
+
+
     def addPackage(self, name, links, dest=Destination.Queue):
         """Adds a package, with links to desired destination.
 
@@ -318,6 +358,8 @@ class Api(Iface):
         return pid
 
     @permission(PERMS.ADD)
+
+
     def parseURLs(self, html=None, url=None):
         """Parses html content or any arbitaty text for links and returns result of `checkURLs`
 
@@ -334,6 +376,8 @@ class Api(Iface):
         return self.checkURLs(set(urls))
 
     @permission(PERMS.ADD)
+
+
     def checkURLs(self, urls):
         """ Gets urls and returns pluginname mapped to list of matches urls.
 
@@ -352,6 +396,8 @@ class Api(Iface):
         return plugins
 
     @permission(PERMS.ADD)
+
+
     def checkOnlineStatus(self, urls):
         """ initiates online status check
 
@@ -373,6 +419,8 @@ class Api(Iface):
         return OnlineCheck(rid, result)
 
     @permission(PERMS.ADD)
+
+
     def checkOnlineStatusContainer(self, urls, container, data):
         """ checks online status of urls and a submited container file
 
@@ -387,6 +435,8 @@ class Api(Iface):
         return self.checkOnlineStatus(urls + [th.name])
 
     @permission(PERMS.ADD)
+
+
     def pollResults(self, rid):
         """ Polls the result available for ResultID
 
@@ -401,6 +451,8 @@ class Api(Iface):
             return OnlineCheck(rid, result)
 
     @permission(PERMS.ADD)
+
+
     def generatePackages(self, links):
         """ Parses links, generates packages names from urls
 
@@ -410,6 +462,8 @@ class Api(Iface):
         return parseNames((x, x) for x in links)
 
     @permission(PERMS.ADD)
+
+
     def generateAndAddPackages(self, links, dest=Destination.Queue):
         """Generates and add packages
 
@@ -421,6 +475,8 @@ class Api(Iface):
                 in self.generatePackages(links).iteritems()]
 
     @permission(PERMS.ADD)
+
+
     def checkAndAddPackages(self, links, dest=Destination.Queue):
         """Checks online status, retrieves names, and will add packages.\
         Because of this packages are not added immediatly, only for internal use.
@@ -433,6 +489,8 @@ class Api(Iface):
         self.core.threadManager.createResultThread(data, True)
 
     @permission(PERMS.LIST)
+
+
     def getPackageData(self, pid):
         """Returns complete information about package, and included files.
 
@@ -447,6 +505,8 @@ class Api(Iface):
                            links=[self._convertPyFile(x) for x in data["links"].itervalues()])
 
     @permission(PERMS.LIST)
+
+
     def getPackageInfo(self, pid):
         """Returns information about package, without detailed information about containing files
 
@@ -462,6 +522,8 @@ class Api(Iface):
                            fids=[int(x) for x in data["links"]])
 
     @permission(PERMS.LIST)
+
+
     def getFileData(self, fid):
         """Get complete information about a specific file.
 
@@ -474,6 +536,8 @@ class Api(Iface):
         return self._convertPyFile(info.values()[0])
 
     @permission(PERMS.DELETE)
+
+
     def deleteFiles(self, fids):
         """Deletes several file entries from pyload.
 
@@ -484,6 +548,8 @@ class Api(Iface):
         self.core.files.save()
 
     @permission(PERMS.DELETE)
+
+
     def deletePackages(self, pids):
         """Deletes packages and containing links.
 
@@ -494,6 +560,8 @@ class Api(Iface):
         self.core.files.save()
 
     @permission(PERMS.LIST)
+
+
     def getQueue(self):
         """Returns info about queue and packages, **not** about files, see `getQueueData` \
         or `getPackageData` instead.
@@ -507,6 +575,8 @@ class Api(Iface):
                 for pack in self.core.files.getInfoData(Destination.Queue).itervalues()]
 
     @permission(PERMS.LIST)
+
+
     def getQueueData(self):
         """Return complete data about everything in queue, this is very expensive use it sparely.\
            See `getQueue` for alternative.
@@ -520,6 +590,8 @@ class Api(Iface):
                 for pack in self.core.files.getCompleteData(Destination.Queue).itervalues()]
 
     @permission(PERMS.LIST)
+
+
     def getCollector(self):
         """same as `getQueue` for collector.
 
@@ -532,6 +604,8 @@ class Api(Iface):
                 for pack in self.core.files.getInfoData(Destination.Collector).itervalues()]
 
     @permission(PERMS.LIST)
+
+
     def getCollectorData(self):
         """same as `getQueueData` for collector.
 
@@ -544,6 +618,8 @@ class Api(Iface):
                 for pack in self.core.files.getCompleteData(Destination.Collector).itervalues()]
 
     @permission(PERMS.ADD)
+
+
     def addFiles(self, pid, links):
         """Adds files to specific package.
 
@@ -555,6 +631,8 @@ class Api(Iface):
         self.core.files.save()
 
     @permission(PERMS.MODIFY)
+
+
     def pushToQueue(self, pid):
         """Moves package from Collector to Queue.
 
@@ -563,6 +641,8 @@ class Api(Iface):
         self.core.files.setPackageLocation(pid, Destination.Queue)
 
     @permission(PERMS.MODIFY)
+
+
     def pullFromQueue(self, pid):
         """Moves package from Queue to Collector.
 
@@ -571,6 +651,8 @@ class Api(Iface):
         self.core.files.setPackageLocation(pid, Destination.Collector)
 
     @permission(PERMS.MODIFY)
+
+
     def restartPackage(self, pid):
         """Restarts a package, resets every containing files.
 
@@ -579,6 +661,8 @@ class Api(Iface):
         self.core.files.restartPackage(int(pid))
 
     @permission(PERMS.MODIFY)
+
+
     def restartFile(self, fid):
         """Resets file status, so it will be downloaded again.
 
@@ -587,6 +671,8 @@ class Api(Iface):
         self.core.files.restartFile(int(fid))
 
     @permission(PERMS.MODIFY)
+
+
     def recheckPackage(self, pid):
         """Proofes online status of all files in a package, also a default action when package is added.
 
@@ -596,6 +682,8 @@ class Api(Iface):
         self.core.files.reCheckPackage(int(pid))
 
     @permission(PERMS.MODIFY)
+
+
     def stopAllDownloads(self):
         """Aborts all running downloads."""
 
@@ -604,6 +692,8 @@ class Api(Iface):
             pyfile.abortDownload()
 
     @permission(PERMS.MODIFY)
+
+
     def stopDownloads(self, fids):
         """Aborts specific downloads.
 
@@ -616,6 +706,8 @@ class Api(Iface):
                 pyfile.abortDownload()
 
     @permission(PERMS.MODIFY)
+
+
     def setPackageName(self, pid, name):
         """Renames a package.
 
@@ -627,6 +719,8 @@ class Api(Iface):
         pack.sync()
 
     @permission(PERMS.MODIFY)
+
+
     def movePackage(self, destination, pid):
         """Set a new package location.
 
@@ -637,6 +731,8 @@ class Api(Iface):
             self.core.files.setPackageLocation(pid, destination)
 
     @permission(PERMS.MODIFY)
+
+
     def moveFiles(self, fids, pid):
         """Move multiple files to another package
 
@@ -649,6 +745,8 @@ class Api(Iface):
 
 
     @permission(PERMS.ADD)
+
+
     def uploadContainer(self, filename, data):
         """Uploads and adds a container file to pyLoad.
 
@@ -661,6 +759,8 @@ class Api(Iface):
         self.addPackage(th.name, [th.name], Destination.Queue)
 
     @permission(PERMS.MODIFY)
+
+
     def orderPackage(self, pid, position):
         """Gives a package a new position.
 
@@ -670,6 +770,8 @@ class Api(Iface):
         self.core.files.reorderPackage(pid, position)
 
     @permission(PERMS.MODIFY)
+
+
     def orderFile(self, fid, position):
         """Gives a new position to a file within its package.
 
@@ -679,6 +781,8 @@ class Api(Iface):
         self.core.files.reorderFile(fid, position)
 
     @permission(PERMS.MODIFY)
+
+
     def setPackageData(self, pid, data):
         """Allows to modify several package attributes.
 
@@ -696,6 +800,8 @@ class Api(Iface):
         self.core.files.save()
 
     @permission(PERMS.DELETE)
+
+
     def deleteFinished(self):
         """Deletes all finished files and completly finished packages.
 
@@ -704,11 +810,15 @@ class Api(Iface):
         return self.core.files.deleteFinishedLinks()
 
     @permission(PERMS.MODIFY)
+
+
     def restartFailed(self):
         """Restarts all failed failes."""
         self.core.files.restartFailed()
 
     @permission(PERMS.LIST)
+
+
     def getPackageOrder(self, destination):
         """Returns information about package order.
 
@@ -725,6 +835,8 @@ class Api(Iface):
         return order
 
     @permission(PERMS.LIST)
+
+
     def getFileOrder(self, pid):
         """Information about file order within package.
 
@@ -741,6 +853,8 @@ class Api(Iface):
 
 
     @permission(PERMS.STATUS)
+
+
     def isCaptchaWaiting(self):
         """Indicates wether a captcha task is available
 
@@ -751,6 +865,8 @@ class Api(Iface):
         return not task is None
 
     @permission(PERMS.STATUS)
+
+
     def getCaptchaTask(self, exclusive=False):
         """Returns a captcha task
 
@@ -767,6 +883,8 @@ class Api(Iface):
         return CaptchaTask(-1)
 
     @permission(PERMS.STATUS)
+
+
     def getCaptchaTaskStatus(self, tid):
         """Get information about captcha task
 
@@ -778,6 +896,8 @@ class Api(Iface):
         return task.getStatus() if task else ""
 
     @permission(PERMS.STATUS)
+
+
     def setCaptchaResult(self, tid, result):
         """Set result for a captcha task
 
@@ -791,6 +911,8 @@ class Api(Iface):
             self.core.captchaManager.removeTask(task)
 
     @permission(PERMS.STATUS)
+
+
     def getEvents(self, uuid):
         """Lists occured events, may be affected to changes in future.
 
@@ -799,6 +921,7 @@ class Api(Iface):
         """
         events = self.core.pullManager.getEvents(uuid)
         new_events = []
+
 
         def convDest(d):
             return Destination.Queue if d == "queue" else Destination.Collector
@@ -821,6 +944,8 @@ class Api(Iface):
         return new_events
 
     @permission(PERMS.ACCOUNTS)
+
+
     def getAccounts(self, refresh):
         """Get information about all entered accounts.
 
@@ -835,6 +960,8 @@ class Api(Iface):
         return accounts or []
 
     @permission(PERMS.ALL)
+
+
     def getAccountTypes(self):
         """All available account types.
 
@@ -843,11 +970,15 @@ class Api(Iface):
         return self.core.accountManager.accounts.keys()
 
     @permission(PERMS.ACCOUNTS)
+
+
     def updateAccount(self, plugin, account, password=None, options=None):
         """Changes pw/options for specific account."""
         self.core.accountManager.updateAccount(plugin, account, password, options or {})
 
     @permission(PERMS.ACCOUNTS)
+
+
     def removeAccount(self, plugin, account):
         """Remove account from pyload.
 
@@ -857,6 +988,8 @@ class Api(Iface):
         self.core.accountManager.removeAccount(plugin, account)
 
     @permission(PERMS.ALL)
+
+
     def login(self, username, password, remoteip=None):
         """Login into pyLoad, this **must** be called when using rpc before any methods can be used.
 
@@ -866,6 +999,7 @@ class Api(Iface):
         :return: bool indicating login was successful
         """
         return bool(self.checkAuth(username, password, remoteip))
+
 
     def checkAuth(self, username, password, remoteip=None):
         """Check authentication and returns details
@@ -879,6 +1013,7 @@ class Api(Iface):
             return "local"
         else:
             return self.core.db.checkAuth(username, password)
+
 
     def isAuthorized(self, func, userdata):
         """checks if the user is authorized for specific method
@@ -895,6 +1030,8 @@ class Api(Iface):
             return False
 
     @permission(PERMS.ALL)
+
+
     def getUserData(self, username, password):
         """similar to `checkAuth` but returns UserData thrift type """
         user = self.checkAuth(username, password)
@@ -903,12 +1040,15 @@ class Api(Iface):
         else:
             return UserData()
 
+
     def getAllUserData(self):
         """returns all known user and info"""
         return dict((user, UserData(user, data["email"], data["role"], data["permission"], data["template"])) for user, data
                 in self.core.db.getAllUserData().iteritems())
 
     @permission(PERMS.STATUS)
+
+
     def getServices(self):
         """ A dict of available services, these can be defined by addon plugins.
 
@@ -917,6 +1057,8 @@ class Api(Iface):
         return dict((plugin, funcs) for plugin, funcs in self.core.addonManager.methods.iteritems())
 
     @permission(PERMS.STATUS)
+
+
     def hasService(self, plugin, func):
         """Checks wether a service is available.
 
@@ -928,6 +1070,8 @@ class Api(Iface):
         return plugin in cont and func in cont[plugin]
 
     @permission(PERMS.STATUS)
+
+
     def call(self, info):
         """Calls a service (a method in addon plugin).
 
@@ -948,6 +1092,8 @@ class Api(Iface):
             raise ServiceException(e.message)
 
     @permission(PERMS.STATUS)
+
+
     def getAllInfo(self):
         """Returns all information stored by addon plugins. Values are always strings
 
@@ -956,6 +1102,8 @@ class Api(Iface):
         return self.core.addonManager.getAllInfo()
 
     @permission(PERMS.STATUS)
+
+
     def getInfoByPlugin(self, plugin):
         """Returns information stored by a specific plugin.
 
@@ -964,9 +1112,11 @@ class Api(Iface):
         """
         return self.core.addonManager.getInfo(plugin)
 
+
     def changePassword(self, user, oldpw, newpw):
         """ changes password for specific user """
         return self.core.db.changePassword(user, oldpw, newpw)
+
 
     def setUserPermission(self, user, perm, role):
         self.core.db.setPermission(user, perm)

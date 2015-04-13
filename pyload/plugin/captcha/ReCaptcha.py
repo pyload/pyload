@@ -24,6 +24,7 @@ class ReCaptcha(Captcha):
     KEY_V2_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']:\s*["\'])([\w-]+)'
     KEY_V1_PATTERN = r'(?:recaptcha(?:/api|\.net)/(?:challenge|noscript)\?k=|Recaptcha\.create\s*\(\s*["\'])([\w-]+)'
 
+
     def detect_key(self, html=None):
         if not html:
             if hasattr(self.plugin, "html") and self.plugin.html:
@@ -41,6 +42,7 @@ class ReCaptcha(Captcha):
         else:
             self.logDebug("Key not found")
             return None
+
 
     def challenge(self, key=None, html=None, version=None):
         if not key:
@@ -63,6 +65,7 @@ class ReCaptcha(Captcha):
             self.plugin.fail(errmsg)
             raise TypeError(errmsg)
 
+
     def _challenge_v1(self, key):
         html = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge",
                                     get={'k': key})
@@ -79,6 +82,7 @@ class ReCaptcha(Captcha):
 
         return self.result(server, challenge), challenge
 
+
     def result(self, server, challenge):
         result = self.plugin.decryptCaptcha("%simage" % server,
                                             get={'c': challenge},
@@ -89,6 +93,7 @@ class ReCaptcha(Captcha):
         self.logDebug("Result: %s" % result)
 
         return result
+
 
     def _collectApiInfo(self):
         html = self.plugin.req.load("http://www.google.com/recaptcha/api.js")
@@ -109,6 +114,7 @@ class ReCaptcha(Captcha):
 
         return vers, language, jsh
 
+
     def _prepareTimeAndRpc(self):
         self.plugin.req.load("http://www.google.com/recaptcha/api2/demo")
 
@@ -123,6 +129,7 @@ class ReCaptcha(Captcha):
         self.logDebug("Rpc-token: %s" % rpc)
 
         return millis, rpc
+
 
     def _challenge_v2(self, key, parent=None):
         if parent is None:

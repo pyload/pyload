@@ -25,6 +25,8 @@ class SkipRev(Addon):
 
 
     @staticmethod
+
+
     def _setup(self):
         self.pyfile.plugin._setup()
         if self.pyfile.hasStatus("skipped"):

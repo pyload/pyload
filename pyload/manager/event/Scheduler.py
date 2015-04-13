@@ -11,12 +11,15 @@ class AlreadyCalled(Exception):
 
 
 class Deferred(object):
+
     def __init__(self):
         self.call = []
         self.result = ()
 
+
     def addCallback(self, f, *cargs, **ckwargs):
         self.call.append((f, cargs, ckwargs))
+
 
     def callback(self, *args, **kwargs):
         if self.result:
@@ -29,10 +32,12 @@ class Deferred(object):
 
 
 class Scheduler(object):
+
     def __init__(self, core):
         self.core = core
 
         self.queue = PriorityQueue()
+
 
     def addJob(self, t, call, args=[], kwargs={}, threaded=True):
         d = Deferred()
@@ -40,6 +45,7 @@ class Scheduler(object):
         j = Job(t, call, args, kwargs, d, threaded)
         self.queue.put((t, j))
         return d
+
 
     def removeJob(self, d):
         """
@@ -58,6 +64,7 @@ class Scheduler(object):
 
         return False
 
+
     def work(self):
         while True:
             t, j = self.queue.get()
@@ -72,6 +79,7 @@ class Scheduler(object):
 
 
 class Job(object):
+
     def __init__(self, time, call, args=[], kwargs={}, deferred=None, threaded=True):
         self.time = float(time)
         self.call = call
@@ -80,12 +88,14 @@ class Job(object):
         self.deferred = deferred
         self.threaded = threaded
 
+
     def run(self):
         ret = self.call(*self.args, **self.kwargs)
         if self.deferred is None:
             return
         else:
             self.deferred.callback(ret)
+
 
     def start(self):
         if self.threaded:
@@ -103,16 +113,20 @@ class PriorityQueue(object):
         self.queue = []
         self.lock = Lock()
 
+
     def __iter__(self):
         return iter(self.queue)
 
+
     def __delitem__(self, key):
         del self.queue[key]
+
 
     def put(self, element):
         self.lock.acquire()
         heappush(self.queue, element)
         self.lock.release()
+
 
     def get(self):
         """ return element or None """

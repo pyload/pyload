@@ -31,6 +31,7 @@ class NoPremiumPl(Account):
     _usr = None
     _pwd = None
 
+
     def loadAccountInfo(self, name, req):
         self._req = req
         try:
@@ -53,6 +54,7 @@ class NoPremiumPl(Account):
                     "premium": premium
                 })
 
+
     def login(self, user, data, req):
         self._usr = user
         self._pwd = hashlib.sha1(hashlib.md5(data["password"]).hexdigest()).hexdigest()
@@ -68,12 +70,14 @@ class NoPremiumPl(Account):
         data['usr'] = self._usr
         data['pwd'] = self._pwd
 
+
     def createAuthQuery(self):
         query = self._api_query
         query["username"] = self._usr
         query["password"] = self._pwd
 
         return query
+
 
     def runAuthQuery(self):
         data = self._req.load(self._api_url, post=self.createAuthQuery())

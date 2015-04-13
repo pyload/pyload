@@ -43,6 +43,7 @@ class MultiHome(Addon):
         requestFactory = self.core.requestFactory
         oldGetRequest = requestFactory.getRequest
 
+
         def getRequest(pluginName, account=None):
             iface = self.bestInterface(pluginName, account)
             if iface:

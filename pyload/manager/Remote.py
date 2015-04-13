@@ -5,12 +5,14 @@ from threading import Thread
 from traceback import print_exc
 
 class BackendBase(Thread):
+
     def __init__(self, manager):
         Thread.__init__(self)
         self.m = manager
         self.core = manager.core
         self.enabled = True
         self.running = False
+
 
     def run(self):
         self.running = True
@@ -23,17 +25,22 @@ class BackendBase(Thread):
         finally:
             self.running = False
 
+
     def setup(self, host, port):
         pass
+
 
     def checkDeps(self):
         return True
 
+
     def serve(self):
         pass
 
+
     def shutdown(self):
         pass
+
 
     def stop(self):
         self.enabled = False# set flag and call shutdowm message, so thread can react
@@ -42,6 +49,7 @@ class BackendBase(Thread):
 
 class RemoteManager(object):
     available = []
+
 
     def __init__(self, core):
         self.core = core

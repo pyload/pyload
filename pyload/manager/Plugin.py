@@ -25,6 +25,7 @@ class PluginManager(object):
     CONFIG  = re.compile(r'__config\s*=\s*\[([^\]]+)', re.M)
     DESC    = re.compile(r'__description\s*=\s*("|"""|\')([^"\']+)')
 
+
     def __init__(self, core):
         self.core = core
 
@@ -33,6 +34,7 @@ class PluginManager(object):
 
         # register for import addon
         sys.meta_path.append(self)
+
 
     def loadTypes(self):
         rootdir = join(pypath, "pyload", "plugin")
@@ -45,6 +47,7 @@ class PluginManager(object):
             self.core.log.critical(_("No plugins found!"))
 
         self.TYPES = list(set(self.TYPES) | types)
+
 
     def createIndex(self):
         """create information for all plugins available"""
@@ -63,6 +66,7 @@ class PluginManager(object):
         self.core.config.removeDeletedPlugins(configs)
 
         self.core.log.debug("Created index of plugins")
+
 
     def parse(self, folder, rootplugins={}):
         """
@@ -179,6 +183,7 @@ class PluginManager(object):
 
         return plugins
 
+
     def parseUrls(self, urls):
         """parse plugins for given list of urls"""
 
@@ -217,6 +222,7 @@ class PluginManager(object):
         print res
         return res
 
+
     def findPlugin(self, type, name):
         if type not in self.plugins:
             return None
@@ -228,6 +234,7 @@ class PluginManager(object):
 
         else:
             return self.plugins[type][name]
+
 
     def getPlugin(self, type, name, original=False):
         """return plugin module from hoster|decrypter|container"""
@@ -241,6 +248,7 @@ class PluginManager(object):
         else:
             return self.loadModule(type, name)
 
+
     def getPluginName(self, type, name):
         """ used to obtain new name if other plugin was injected"""
         plugin = self.findPlugin(type, name)
@@ -252,6 +260,7 @@ class PluginManager(object):
             return plugin['new_name']
 
         return name
+
 
     def loadModule(self, type, name):
         """ Returns loaded module for plugin
@@ -282,6 +291,7 @@ class PluginManager(object):
                                     % {'name': name, 'type': type, 'version': plugins[name]['version']})
                 return module
 
+
     def loadClass(self, type, name):
         """Returns the class of a plugin with the same name"""
         module = self.loadModule(type, name)
@@ -290,9 +300,11 @@ class PluginManager(object):
         else:
             return None
 
+
     def getAccountPlugins(self):
         """return list of account plugin names"""
         return self.accountPlugins.keys()
+
 
     def find_module(self, fullname, path=None):
         # redirecting imports if necesarry
@@ -311,6 +323,7 @@ class PluginManager(object):
                 # imported from userdir, but pyloads is newer
                 if user and not self.plugins[type][name]['user']:
                     return self
+
 
     def load_module(self, name, replace=True):
         if name not in sys.modules:  # could be already in modules
@@ -332,6 +345,7 @@ class PluginManager(object):
             sys.modules[newname] = module
 
         return sys.modules[name]
+
 
     def reloadPlugins(self, type_plugins):
         """ reload and reindex plugins """
@@ -377,6 +391,7 @@ class PluginManager(object):
             self.core.scheduler.addJob(0, self.core.accountManager.getAccountInfos)
 
         return reloaded  #: return a list of the plugins successfully reloaded
+
 
     def reloadPlugin(self, type_plugin):
         """ reload and reindex ONE plugin """

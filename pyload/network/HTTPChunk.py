@@ -17,11 +17,13 @@ class WrongFormat(Exception):
 
 
 class ChunkInfo(object):
+
     def __init__(self, name):
         self.name = unicode(name)
         self.size = 0
         self.resume = False
         self.chunks = []
+
 
     def __repr__(self):
         ret = "ChunkInfo: %s, %s\n" % (self.name, self.size)
@@ -30,14 +32,18 @@ class ChunkInfo(object):
 
         return ret
 
+
     def setSize(self, size):
         self.size = int(size)
+
 
     def addChunk(self, name, range):
         self.chunks.append((name, range))
 
+
     def clear(self):
         self.chunks = []
+
 
     def createChunks(self, chunks):
         self.clear()
@@ -62,6 +68,8 @@ class ChunkInfo(object):
         fh.close()
 
     @staticmethod
+
+
     def load(name):
         fs_name = fs_encode("%s.chunks" % name)
         if not exists(fs_name):
@@ -93,21 +101,26 @@ class ChunkInfo(object):
         fh.close()
         return ci
 
+
     def remove(self):
         fs_name = fs_encode("%s.chunks" % self.name)
         if exists(fs_name): remove(fs_name)
 
+
     def getCount(self):
         return len(self.chunks)
 
+
     def getChunkName(self, index):
         return self.chunks[index][0]
+
 
     def getChunkRange(self, index):
         return self.chunks[index][1]
 
 
 class HTTPChunk(HTTPRequest):
+
     def __init__(self, id, parent, range=None, resume=False):
         self.id = id
         self.p = parent # HTTPDownload instance
@@ -136,12 +149,16 @@ class HTTPChunk(HTTPRequest):
         self.sleep = 0.000
         self.lastSize = 0
 
+
     def __repr__(self):
         return "<HTTPChunk id=%d, size=%d, arrived=%d>" % (self.id, self.size, self.arrived)
 
     @property
+
+
     def cj(self):
         return self.p.cj
+
 
     def getHandle(self):
         """ returns a Curl handle ready to use for perform/multiperform """
@@ -188,6 +205,7 @@ class HTTPChunk(HTTPRequest):
 
         return self.c
 
+
     def writeHeader(self, buf):
         self.header += buf
         #@TODO forward headers?, this is possibly unneeeded, when we just parse valid 200 headers
@@ -201,6 +219,7 @@ class HTTPChunk(HTTPRequest):
                 self.p.chunkSupport = True
 
         self.headerParsed = True
+
 
     def writeBody(self, buf):
         #ignore BOM, it confuses unrar
@@ -263,24 +282,29 @@ class HTTPChunk(HTTPRequest):
 
         self.headerParsed = True
 
+
     def stop(self):
         """The download will not proceed after next call of writeBody"""
         self.range = [0, 0]
         self.size = 0
 
+
     def resetRange(self):
         """ Reset the range, so the download will load all data available  """
         self.range = None
 
+
     def setRange(self, range):
         self.range = range
         self.size = range[1] - range[0]
+
 
     def flushFile(self):
         """  flush and close file """
         self.fp.flush()
         fsync(self.fp.fileno()) #make sure everything was written to disk
         self.fp.close() #needs to be closed, or merging chunks will fail
+
 
     def close(self):
         """ closes everything, unusable after this """
