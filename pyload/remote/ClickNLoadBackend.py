@@ -18,7 +18,7 @@ from pyload.manager.Remote import BackendBase
 core = None
 js = None
 
-class ClickAndLoadBackend(BackendBase):
+class ClickNLoadBackend(BackendBase):
     def setup(self, host, port):
         self.httpd = HTTPServer((host, port), CNLHandler)
         global core, js
@@ -102,19 +102,19 @@ class CNLHandler(BaseHTTPRequestHandler):
         return "JDownloader"
 
     def add(self):
-        package = self.get_post('referer', 'ClickAndLoad Package')
+        package = self.get_post('referer', 'ClickNLoad Package')
         urls = filter(lambda x: x != "", self.get_post('urls').split("\n"))
 
         self.add_package(package, urls, 0)
 
     def addcrypted(self):
-        package = self.get_post('referer', 'ClickAndLoad Package')
+        package = self.get_post('referer', 'ClickNLoad Package')
         dlc = self.get_post('crypted').replace(" ", "+")
 
         core.upload_container(package, dlc)
 
     def addcrypted2(self):
-        package = self.get_post("source", "ClickAndLoad Package")
+        package = self.get_post("source", "ClickNLoad Package")
         crypted = self.get_post("crypted")
         jk = self.get_post("jk")
 

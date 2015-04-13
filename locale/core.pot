@@ -791,7 +791,7 @@ msgstr ""
 msgid "Setting User and Group failed"
 msgstr ""
 
-#: pyload/plugin/hooks/ClickAndLoad.py:75
+#: pyload/plugin/hooks/ClickNLoad.py:75
 msgid "Click'N'Load: Port 9666 already in use"
 msgstr ""
 

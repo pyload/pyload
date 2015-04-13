@@ -51,7 +51,7 @@ def add(request):
 @route('/flash/addcrypted', method='POST')
 @local_check
 def addcrypted():
-    package = request.forms.get('referer', 'ClickAndLoad Package')
+    package = request.forms.get('referer', 'ClickNLoad Package')
     dlc = request.forms['crypted'].replace(" ", "+")
 
     dlc_path = join(DL_ROOT, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc")
