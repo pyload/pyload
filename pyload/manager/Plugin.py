@@ -365,7 +365,7 @@ class PluginManager(object):
 
         for type in as_dict.iterkeys():
             if type in ("addon", "internal"):  # : do not reload them because would cause to much side effects
-                self.core.log.debug("Skipping reload for plugin: [%(type)s] %(name)s" % {'name': plugin, 'type': type})
+                self.core.log.debug("Skipping reload for plugins from type: %(type)s" % {'type': type})
                 continue
 
             for plugin in as_dict[type]:

@@ -89,8 +89,13 @@ class Base(object):
         return self._log("critical", args)
 
 
-    def grtPluginType(self):
+    def getPluginType(self):
         return getattr(self, "_%s__type" % self.__class__.__name__)
+
+
+    @classmethod
+    def getClassName(cls):
+        return cls.__name__
 
 
     def getPluginConfSection(self):
@@ -239,7 +244,7 @@ class Plugin(Base):
         #: captcha task
         self.cTask = None
 
-        self.html = None  #@TODO: Move to hoster class in 0.4.10
+        self.html = None  # @TODO: Move to hoster class in 0.4.10
         self.retries = 0
 
         self.init()
@@ -533,7 +538,7 @@ class Plugin(Base):
         if not url:
             self.fail(_("No url given"))
 
-        url = urllib.unquote(encode(url).strip())  #@NOTE: utf8 vs decode -> please use decode attribute in all future plugins
+        url = urllib.unquote(encode(url).strip())  # @NOTE: utf8 vs decode -> please use decode attribute in all future plugins
 
         if self.core.debug:
             self.logDebug("Load url: " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])

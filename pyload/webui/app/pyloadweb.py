@@ -239,33 +239,28 @@ def get_download(path):
     return static_file(fs_encode(path), fs_encode(root))
 
 
-__TYPES         = ("account", "addon", "container", "crypter", "extractor", "hook", "hoster", "internal", "ocr")
-__TYPE_REPLACES = (('_account', ' (Account)'), ('_addon', ' (Addon)'), ('_container', ''), ('_crypter', ' (Crypter)'), ('_extractor', ''), ('_hook', ' (Hook)'), ('_hoster', ' (Hoster)'))
-
-
 @route('/settings')
 @login_required('SETTINGS')
 def config():
     conf = PYLOAD.getConfig()
     plugin = PYLOAD.getPluginConfig()
-
     conf_menu = []
     plugin_menu = []
 
     for entry in sorted(conf.keys()):
         conf_menu.append((entry, conf[entry].description))
 
+    last_name = None
     for entry in sorted(plugin.keys()):
         desc = plugin[entry].description
         name, none, type = desc.partition("_")
-        if type in __TYPES:
-            if len([a for a, b in plugin.iteritems() if b.description.startswith(name + "_")]) > 1:
-                for search, repl in __TYPE_REPLACES:
-                    if desc.endswith(search):
-                        desc = desc.replace(search, repl)
-                        break
+
+        if type in PYLOAD.core.pluginManager.TYPES:
+            if name != last_name or len([a for a, b in plugin.iteritems() if b.description.startswith(name + "_")]) > 1:
+                desc = name + " (" + type.title() + ")"
             else:
                 desc = name
+            last_name = name
         plugin_menu.append((entry, desc))
 
     accs = PYLOAD.getAccounts(False)
