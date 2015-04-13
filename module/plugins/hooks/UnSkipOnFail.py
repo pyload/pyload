@@ -7,7 +7,7 @@ from module.plugins.Hook import Hook
 class UnSkipOnFail(Hook):
     __name__    = "UnSkipOnFail"
     __type__    = "hook"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __config__ = [("activated", "bool", "Activated", True)]
 
@@ -43,7 +43,7 @@ class UnSkipOnFail(Hook):
             #  It creates a temporary PyFile object using
             #  "link" data, changes its status, and tells
             #  the core.files-manager to save its data.
-            pylink = _pyfile(link)
+            pylink = self._pyfile(link)
 
             pylink.setCustomStatus(_("unskipped"), "queued")
 
