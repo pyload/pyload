@@ -7,7 +7,7 @@ from pyload.plugin.Addon import Addon
 class UnSkipOnFail(Addon):
     __name    = "UnSkipOnFail"
     __type    = "addon"
-    __version = "0.05"
+    __version = "0.06"
 
     __config = [("activated", "bool", "Activated", True)]
 
@@ -36,7 +36,7 @@ class UnSkipOnFail(Addon):
             #  It creates a temporary PyFile object using
             #  "link" data, changes its status, and tells
             #  the core.files-manager to save its data.
-            pylink = _pyfile(link)
+            pylink = self._pyfile(link)
 
             pylink.setCustomStatus(_("unskipped"), "queued")
 
