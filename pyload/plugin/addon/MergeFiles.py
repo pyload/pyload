@@ -26,8 +26,6 @@ class MergeFiles(Addon):
 
 
     @threaded
-
-
     def packageFinished(self, pack):
         files = {}
         fid_dict = {}

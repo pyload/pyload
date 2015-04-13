@@ -16,9 +16,9 @@ class TestApi(object):
         assert self.api.api.login("crapp", "wrong pw") is False
 
     # takes really long, only test when needed
+
+
     @nottest
-
-
     def test_random(self):
         for _ in range(0, 100):
             self.api.testAPI()

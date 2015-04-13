@@ -61,8 +61,6 @@ class Captcha9kw(Hook):
 
 
     @threaded
-
-
     def _processCaptcha(self, task):
         try:
             with open(task.captchaFile, 'rb') as f:

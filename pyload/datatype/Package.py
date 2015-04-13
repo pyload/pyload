@@ -22,9 +22,8 @@ class PyPackage(object):
         self.order = order
         self.setFinished = False
 
+
     @property
-
-
     def folder(self):
         return safe_filename(self._folder)
 

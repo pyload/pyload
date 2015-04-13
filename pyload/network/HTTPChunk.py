@@ -67,9 +67,8 @@ class ChunkInfo(object):
             fh.write("\trange:%i-%i\n" % c[1])
         fh.close()
 
+
     @staticmethod
-
-
     def load(name):
         fs_name = fs_encode("%s.chunks" % name)
         if not exists(fs_name):
@@ -153,9 +152,8 @@ class HTTPChunk(HTTPRequest):
     def __repr__(self):
         return "<HTTPChunk id=%d, size=%d, arrived=%d>" % (self.id, self.size, self.arrived)
 
+
     @property
-
-
     def cj(self):
         return self.p.cj
 

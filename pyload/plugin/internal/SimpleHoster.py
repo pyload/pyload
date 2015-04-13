@@ -311,16 +311,13 @@ class SimpleHoster(Hoster):
 
 
     @classmethod
-
-
     def parseInfos(cls, urls):  #@TODO: Built-in in 0.4.10 core (remove from plugins)
         for url in urls:
             url = replace_patterns(url, cls.URL_REPLACEMENTS)
             yield cls.getInfo(url)
 
+
     @classmethod
-
-
     def apiInfo(cls, url="", get={}, post={}):
         url   = urllib.unquote(url)
         url_p = urlparse.urlparse(url)
@@ -331,9 +328,8 @@ class SimpleHoster(Hoster):
                 'status': 3 if url else 8,
                 'url': url}
 
+
     @classmethod
-
-
     def getInfo(cls, url="", html=""):
         info   = cls.apiInfo(url)
         online = False if info['status'] != 2 else True

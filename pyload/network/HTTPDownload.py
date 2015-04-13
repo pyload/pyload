@@ -58,22 +58,19 @@ class HTTPDownload(object):
 
         self.progress = progress
 
+
     @property
-
-
     def speed(self):
         last = [sum(x) for x in self.lastSpeeds if x]
         return (sum(self.speeds) + sum(last)) / (1 + len(last))
 
+
     @property
-
-
     def arrived(self):
         return sum([c.arrived for c in self.chunks])
 
+
     @property
-
-
     def percent(self):
         if not self.size: return 0
         return (self.arrived * 100) / self.size

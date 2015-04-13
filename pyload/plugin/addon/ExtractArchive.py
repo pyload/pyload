@@ -193,8 +193,6 @@ class ExtractArchive(Addon):
 
 
     @threaded
-
-
     def extractQueued(self, thread):
         packages = self.queue.get()
         while packages:
@@ -211,8 +209,6 @@ class ExtractArchive(Addon):
 
 
     @Expose
-
-
     def extractPackage(self, *ids):
         """ Extract packages with given id"""
         for id in ids:
@@ -238,8 +234,6 @@ class ExtractArchive(Addon):
 
 
     @Expose
-
-
     def extract(self, ids, thread=None):  #@TODO: Use pypack, not pid to improve method usability
         if not ids:
             return False
@@ -512,8 +506,6 @@ class ExtractArchive(Addon):
 
 
     @Expose
-
-
     def getPasswords(self, reload=True):
         """ List of saved passwords """
         if reload:
@@ -539,8 +531,6 @@ class ExtractArchive(Addon):
 
 
     @Expose
-
-
     def addPassword(self, password):
         """  Adds a password to saved list"""
         try:

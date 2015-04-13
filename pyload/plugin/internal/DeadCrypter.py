@@ -16,8 +16,6 @@ class DeadCrypter(_Crypter):
 
 
     @classmethod
-
-
     def apiInfo(cls, url="", get={}, post={}):
         api = super(DeadCrypter, self).apiInfo(url, get, post)
         api['status'] = 1

@@ -75,8 +75,6 @@ class AndroidPhoneNotify(Addon):
 
 
     @Expose
-
-
     def notify(self,
                event,
                msg="",

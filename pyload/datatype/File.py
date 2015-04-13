@@ -81,9 +81,8 @@ class PyFile(object):
     def __repr__(self):
         return "PyFile %s: %s@%s" % (self.id, self.name, self.pluginname)
 
+
     @lock
-
-
     def initPlugin(self):
         """ inits plugin instance """
         if not self.plugin:
@@ -91,9 +90,8 @@ class PyFile(object):
             self.pluginclass  = getattr(self.pluginmodule, self.m.core.pluginManager.getPluginName(self.plugintype, self.pluginname))
             self.plugin       = self.pluginclass(self)
 
+
     @lock
-
-
     def hasPlugin(self):
         """Thread safe way to determine this file has initialized plugin attribute
 
@@ -132,9 +130,8 @@ class PyFile(object):
         """sync PyFile instance with database"""
         self.m.updateLink(self)
 
+
     @lock
-
-
     def release(self):
         """sync and remove from cache"""
         # file has valid package

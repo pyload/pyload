@@ -132,21 +132,18 @@ class XDCCRequest(object):
     def abortDownloads(self):
         self.abort = True
 
+
     @property
-
-
     def size(self):
         return self.filesize
 
+
     @property
-
-
     def arrived(self):
         return self.recv
 
+
     @property
-
-
     def percent(self):
         if not self.filesize: return 0
         return (self.recv * 100) / self.filesize

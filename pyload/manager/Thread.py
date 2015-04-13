@@ -71,9 +71,8 @@ class ThreadManager(object):
 
         InfoThread(self, data, pid)
 
+
     @lock
-
-
     def createResultThread(self, data, add=False):
         """ creates a thread to fetch online status, returns result id """
         self.timestamp = time() + 5 * 60
@@ -85,9 +84,8 @@ class ThreadManager(object):
 
         return rid
 
+
     @lock
-
-
     def getInfoResult(self, rid):
         """returns result and clears it"""
         self.timestamp = time() + 5 * 60
@@ -99,9 +97,8 @@ class ThreadManager(object):
         else:
             return {}
 
+
     @lock
-
-
     def setInfoResults(self, rid, result):
         self.infoResults[rid].update(result)
 

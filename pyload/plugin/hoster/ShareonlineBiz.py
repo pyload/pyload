@@ -37,8 +37,6 @@ class ShareonlineBiz(SimpleHoster):
 
 
     @classmethod
-
-
     def getInfo(cls, url="", html=""):
         info = {'name': urlparse(unquote(url)).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 3 if url else 1, 'url': url}
 

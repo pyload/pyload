@@ -42,17 +42,15 @@ class Browser(object):
         self.cj = cj
         self.http.cj = cj
 
+
     @property
-
-
     def speed(self):
         if self.dl:
             return self.dl.speed
         return 0
 
+
     @property
-
-
     def size(self):
         if self._size:
             return self._size
@@ -60,17 +58,15 @@ class Browser(object):
             return self.dl.size
         return 0
 
+
     @property
-
-
     def arrived(self):
         if self.dl:
             return self.dl.arrived
         return 0
 
+
     @property
-
-
     def percent(self):
         if not self.size: return 0
         return (self.arrived * 100) / self.size

@@ -60,9 +60,9 @@ class DeleteFinished(Addon):
 
 
     ## own methods ##
+
+
     @style.queue
-
-
     def deleteFinished(self, mode):
         self.c.execute('DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE package=packages.id AND status NOT IN (%s))' % mode)
         self.c.execute('DELETE FROM links WHERE NOT EXISTS(SELECT 1 FROM packages WHERE id=links.package)')

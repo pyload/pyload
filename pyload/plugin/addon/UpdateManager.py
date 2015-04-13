@@ -82,9 +82,8 @@ class UpdateManager(Addon):
            and time.time() - max(self.MIN_CHECK_INTERVAL, self.getConfig('checkinterval') * 60 * 60) > self.info['last_check']:
             self.update()
 
+
     @Expose
-
-
     def autoreloadPlugins(self):
         """ reload and reindex all modified plugins """
         modules = filter(
@@ -121,10 +120,9 @@ class UpdateManager(Addon):
         except Exception:
             self.logWarning(_("Unable to retrieve server to get updates"))
 
+
     @Expose
     @threaded
-
-
     def update(self):
         """ check for updates """
 
@@ -275,9 +273,8 @@ class UpdateManager(Addon):
         # 2 = Plugins updated, but restart required
         return exitcode
 
+
     @Expose
-
-
     def removePlugins(self, type_plugins):
         """ delete plugins from disk """
 

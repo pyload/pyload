@@ -25,8 +25,6 @@ class UnZip(Extractor):
 
 
     @classmethod
-
-
     def isUsable(cls):
         return sys.version_info[:2] >= (2, 6)
 

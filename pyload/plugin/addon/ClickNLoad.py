@@ -48,8 +48,6 @@ class ClickNLoad(Addon):
 
 
     @threaded
-
-
     def proxy(self, ip, webport, cnlport):
         time.sleep(10)  #@TODO: Remove in 0.4.10 (implement addon delay on startup)
 
@@ -63,8 +61,6 @@ class ClickNLoad(Addon):
 
 
     @threaded
-
-
     def _server(self, ip, webport, cnlport):
         try:
             dock_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

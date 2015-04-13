@@ -46,8 +46,6 @@ class ExpertDecoders(Hook):
 
 
     @threaded
-
-
     def _processCaptcha(self, task):
         task.data['ticket'] = ticket = uuid4()
         result = None

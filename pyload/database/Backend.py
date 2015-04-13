@@ -21,43 +21,39 @@ DB_VERSION = 4
 class style(object):
     db = None
 
+
     @classmethod
-
-
     def setDB(cls, db):
         cls.db = db
 
+
     @classmethod
-
-
     def inner(cls, f):
+
+
         @staticmethod
-
-
         def x(*args, **kwargs):
             if cls.db:
                 return f(cls.db, *args, **kwargs)
         return x
 
+
     @classmethod
-
-
     def queue(cls, f):
+
+
         @staticmethod
-
-
         def x(*args, **kwargs):
             if cls.db:
                 return cls.db.queue(f, *args, **kwargs)
         return x
 
+
     @classmethod
-
-
     def async(cls, f):
+
+
         @staticmethod
-
-
         def x(*args, **kwargs):
             if cls.db:
                 return cls.db.async(f, *args, **kwargs)
@@ -158,9 +154,8 @@ class DatabaseBackend(Thread):
                 break
             j.processJob()
 
+
     @style.queue
-
-
     def shutdown(self):
         self.conn.commit()
         self.jobs.put("quit")
@@ -282,21 +277,18 @@ class DatabaseBackend(Thread):
     def createCursor(self):
         return self.conn.cursor()
 
+
     @style.async
-
-
     def commit(self):
         self.conn.commit()
 
+
     @style.queue
-
-
     def syncSave(self):
         self.conn.commit()
 
+
     @style.async
-
-
     def rollback(self):
         self.conn.rollback()
 
@@ -314,15 +306,13 @@ class DatabaseBackend(Thread):
         job.wait()
         return job.result
 
+
     @classmethod
-
-
     def registerSub(cls, klass):
         cls.subs.append(klass)
 
+
     @classmethod
-
-
     def unregisterSub(cls, klass):
         cls.subs.remove(klass)
 

@@ -82,8 +82,6 @@ class WindowsPhoneNotify(Addon):
 
 
     @Expose
-
-
     def notify(self,
                event,
                msg="",

@@ -141,8 +141,6 @@ class ImageTyperz(Hook):
 
 
     @threaded
-
-
     def _processCaptcha(self, task):
         c = task.captchaFile
         try:

@@ -144,8 +144,6 @@ class AccountManager(object):
 
 
     @lock
-
-
     def updateAccount(self, plugin , user, password=None, options={}):
         """add or update account"""
         if plugin in self.accounts:
@@ -158,8 +156,6 @@ class AccountManager(object):
 
 
     @lock
-
-
     def removeAccount(self, plugin, user):
         """remove account"""
 
@@ -171,8 +167,6 @@ class AccountManager(object):
 
 
     @lock
-
-
     def getAccountInfos(self, force=True, refresh=False):
         data = {}
 
