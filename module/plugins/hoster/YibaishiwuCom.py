@@ -47,9 +47,8 @@ class YibaishiwuCom(SimpleHoster):
 
         for mr in mirrors:
             try:
-                url = mr['url'].replace("\\", "")
-                self.logDebug("Trying URL: " + url)
-                self.download(url)
+                self.link = mr['url'].replace("\\", "")
+                self.logDebug("Trying URL: " + self.link)
                 break
             except Exception:
                 continue

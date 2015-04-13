@@ -76,7 +76,7 @@ class BezvadataCz(SimpleHoster):
         wait_time = (int(m.group(1)) * 60 + int(m.group(2))) if m else 120
         self.wait(wait_time, False)
 
-        self.download(url)
+        self.link = url
 
 
     def checkErrors(self):

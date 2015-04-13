@@ -34,7 +34,7 @@ class EuroshareEu(SimpleHoster):
             self.account.relogin(self.user)
             self.retry(reason=_("User not logged in"))
 
-        self.download(pyfile.url.rstrip('/') + "/download/")
+        self.link = pyfile.url.rstrip('/') + "/download/"
 
         check = self.checkDownload({"login": re.compile(self.ERR_NOT_LOGGED_IN_PATTERN),
                                     "json" : re.compile(r'\{"status":"error".*?"message":"(.*?)"')})

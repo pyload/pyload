@@ -72,7 +72,7 @@ class BitshareCom(SimpleHoster):
         self.logDebug("File ajax id is [%s]" % self.ajaxid)
 
         # This may either download our file or forward us to an error page
-        self.download(self.getDownloadUrl())
+        self.link = self.getDownloadUrl()
 
         if self.checkDownload({"error": ">Error occured<"}):
             self.retry(5, 5 * 60, "Bitshare host : Error occured")

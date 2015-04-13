@@ -42,7 +42,7 @@ class UnibytesCom(SimpleHoster):
 
             m = re.search(r'location:\s*(\S+)', self.req.http.header, re.I)
             if m:
-                url = m.group(1)
+                self.link = m.group(1)
                 break
 
             if '>Somebody else is already downloading using your IP-address<' in self.html:
@@ -52,7 +52,7 @@ class UnibytesCom(SimpleHoster):
             if post_data['step'] == 'last':
                 m = re.search(self.LINK_FREE_PATTERN, self.html)
                 if m:
-                    url = m.group(1)
+                    self.link = m.group(1)
                     self.correctCaptcha()
                     break
                 else:
@@ -72,8 +72,6 @@ class UnibytesCom(SimpleHoster):
             self.fail(_("No valid captcha code entered"))
 
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
-
-        self.download(url)
 
 
 getInfo = create_getInfo(UnibytesCom)

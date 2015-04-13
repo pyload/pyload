@@ -2,7 +2,20 @@
 
 import time
 
-from beaker.crypto.pbkdf2 import PBKDF2
+try:
+    from beaker.crypto.pbkdf2 import PBKDF2
+
+except ImportError:
+    from beaker.crypto.pbkdf2 import pbkdf2
+    from binascii import b2a_hex
+    class PBKDF2(object):
+        def __init__(self, passphrase, salt, iterations=1000):
+            self.passphrase = passphrase
+            self.salt = salt
+            self.iterations = iterations
+
+        def hexread(self, octets):
+            return b2a_hex(pbkdf2(self.passphrase, self.salt, self.iterations, octets))
 
 from module.common.json_layer import json_loads
 from module.plugins.Account import Account
@@ -11,7 +24,7 @@ from module.plugins.Account import Account
 class OboomCom(Account):
     __name__    = "OboomCom"
     __type__    = "account"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __description__ = """Oboom.com account plugin"""
     __license__     = "GPLv3"

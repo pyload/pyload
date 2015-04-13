@@ -45,7 +45,7 @@ class LoadTo(SimpleHoster):
         if m is None:
             self.error(_("LINK_FREE_PATTERN not found"))
 
-        download_url = m.group(1)
+        self.link = m.group(1)
 
         # Set Timer - may be obsolete
         m = re.search(self.WAIT_PATTERN, self.html)
@@ -56,11 +56,9 @@ class LoadTo(SimpleHoster):
         solvemedia  = SolveMedia(self)
         captcha_key = solvemedia.detect_key()
 
-        if captcha_key is None:
-            self.download(download_url)
-        else:
+        if captcha_key:
             response, challenge = solvemedia.challenge(captcha_key)
-            self.download(download_url,
+            self.download(self.link,
                           post={'adcopy_challenge': challenge,
                                 'adcopy_response' : response,
                                 'returnUrl'       : pyfile.url})

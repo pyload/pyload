@@ -34,8 +34,7 @@ class UloziskoSk(SimpleHoster):
 
         m = re.search(self.IMG_PATTERN, self.html)
         if m:
-            url = "http://ulozisko.sk" + m.group(1)
-            self.download(url)
+            self.link = "http://ulozisko.sk" + m.group(1)
         else:
             self.handleFree(pyfile)
 

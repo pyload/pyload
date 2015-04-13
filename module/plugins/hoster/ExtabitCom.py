@@ -72,8 +72,7 @@ class ExtabitCom(SimpleHoster):
         if m is None:
             self.error(_("LINK_FREE_PATTERN not found"))
 
-        url = m.group(1)
-        self.download(url)
+        self.link = m.group(1)
 
 
 getInfo = create_getInfo(ExtabitCom)

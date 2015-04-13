@@ -68,11 +68,12 @@ class QuickshareCz(SimpleHoster):
         m = re.search(r'Location\s*:\s*(.+)', self.header, re.I)
         if m is None:
             self.fail(_("File not found"))
-        download_url = m.group(1).rstrip()  #@TODO: Remove .rstrip() in 0.4.10
-        self.logDebug("FREE URL2:" + download_url)
+
+        self.link = m.group(1).rstrip()  #@TODO: Remove .rstrip() in 0.4.10
+        self.logDebug("FREE URL2:" + self.link)
 
         # check errors
-        m = re.search(r'/chyba/(\d+)', download_url)
+        m = re.search(r'/chyba/(\d+)', self.link)
         if m:
             if m.group(1) == '1':
                 self.retry(60, 2 * 60, "This IP is already downloading")
@@ -80,9 +81,6 @@ class QuickshareCz(SimpleHoster):
                 self.retry(60, 60, "No free slots available")
             else:
                 self.fail(_("Error %d") % m.group(1))
-
-        # download file
-        self.download(download_url)
 
 
     def handlePremium(self, pyfile):

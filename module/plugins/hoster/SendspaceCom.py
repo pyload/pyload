@@ -35,7 +35,7 @@ class SendspaceCom(SimpleHoster):
             if m:
                 if 'captcha_hash' in params:
                     self.correctCaptcha()
-                download_url = m.group(1)
+                self.link = m.group(1)
                 break
 
             m = re.search(self.CAPTCHA_PATTERN, self.html)
@@ -55,8 +55,6 @@ class SendspaceCom(SimpleHoster):
             self.html = self.load(pyfile.url, post=params)
         else:
             self.fail(_("Download link not found"))
-
-        self.download(download_url)
 
 
 getInfo = create_getInfo(SendspaceCom)
