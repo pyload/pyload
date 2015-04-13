@@ -104,11 +104,11 @@ class ArchiveQueue(object):
 
 
 class ExtractArchive(Addon):
-    __name    = "ExtractArchive"
-    __type    = "addon"
-    __version = "1.38"
+    __name__    = "ExtractArchive"
+    __type__    = "addon"
+    __version__ = "1.38"
 
-    __config = [("activated"      , "bool"              , "Activated"                             , True                                                                     ),
+    __config__ = [("activated"      , "bool"              , "Activated"                             , True                                                                     ),
                   ("fullpath"       , "bool"              , "Extract with full paths"               , True                                                                     ),
                   ("overwrite"      , "bool"              , "Overwrite files"                       , False                                                                    ),
                   ("keepbroken"     , "bool"              , "Try to extract broken archives"        , False                                                                    ),
@@ -125,9 +125,9 @@ class ExtractArchive(Addon):
                   ("waitall"        , "bool"              , "Run after all downloads was processed" , False                                                                    ),
                   ("renice"         , "int"               , "CPU priority"                          , 0                                                                        )]
 
-    __description = """Extract different kind of archives"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com"),
+    __description__ = """Extract different kind of archives"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
                        ("Immenz"        , "immenz@gmx.net"   )]
 
 

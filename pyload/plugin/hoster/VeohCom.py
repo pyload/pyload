@@ -6,23 +6,23 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class VeohCom(SimpleHoster):
-    __name    = "VeohCom"
-    __type    = "hoster"
-    __version = "0.22"
+    __name__    = "VeohCom"
+    __type__    = "hoster"
+    __version__ = "0.22"
 
-    __pattern = r'http://(?:www\.)?veoh\.com/(tv/)?(watch|videos)/(?P<ID>v\w+)'
-    __config  = [("use_premium", "bool"         , "Use premium account if available", True  ),
+    __pattern__ = r'http://(?:www\.)?veoh\.com/(tv/)?(watch|videos)/(?P<ID>v\w+)'
+    __config__  = [("use_premium", "bool"         , "Use premium account if available", True  ),
                    ("quality"    , "Low;High;Auto", "Quality"                         , "Auto")]
 
-    __description = """Veoh.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Veoh.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     NAME_PATTERN    = r'<meta name="title" content="(?P<N>.*?)"'
     OFFLINE_PATTERN = r'>Sorry, we couldn\'t find the video you were looking for'
 
-    URL_REPLACEMENTS = [(__pattern + ".*", r'http://www.veoh.com/watch/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r'http://www.veoh.com/watch/\g<ID>')]
 
     COOKIES = [("veoh.com", "lassieLocale", "en")]
 

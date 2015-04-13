@@ -6,16 +6,16 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class UloziskoSk(SimpleHoster):
-    __name    = "UloziskoSk"
-    __type    = "hoster"
-    __version = "0.25"
+    __name__    = "UloziskoSk"
+    __type__    = "hoster"
+    __version__ = "0.25"
 
-    __pattern = r'http://(?:www\.)?ulozisko\.sk/.+'
-    __config  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern__ = r'http://(?:www\.)?ulozisko\.sk/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description = """Ulozisko.sk hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Ulozisko.sk hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     NAME_PATTERN = r'<div class="down1">(?P<N>[^<]+)</div>'

@@ -4,13 +4,13 @@ from pyload.plugin.internal.DeadHoster import DeadHoster
 
 
 class SpeedfileCz(DeadHoster):
-    __name    = "SpeedFileCz"
-    __type    = "hoster"
-    __version = "0.32"
+    __name__    = "SpeedFileCz"
+    __type__    = "hoster"
+    __version__ = "0.32"
 
-    __pattern = r'http://(?:www\.)?speedfile\.cz/.+'
-    __config  = []
+    __pattern__ = r'http://(?:www\.)?speedfile\.cz/.+'
+    __config__  = []
 
-    __description = """Speedfile.cz hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Speedfile.cz hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]

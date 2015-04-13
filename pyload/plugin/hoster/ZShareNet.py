@@ -4,14 +4,14 @@ from pyload.plugin.internal.DeadHoster import DeadHoster
 
 
 class ZShareNet(DeadHoster):
-    __name    = "ZShareNet"
-    __type    = "hoster"
-    __version = "0.21"
+    __name__    = "ZShareNet"
+    __type__    = "hoster"
+    __version__ = "0.21"
 
-    __pattern = r'https?://(?:ww[2w]\.)?zshares?\.net/.+'
-    __config  = []
+    __pattern__ = r'https?://(?:ww[2w]\.)?zshares?\.net/.+'
+    __config__  = []
 
-    __description = """ZShare.net hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("espes", ""),
+    __description__ = """ZShare.net hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("espes", ""),
                        ("Cptn Sandwich", "")]

@@ -11,16 +11,16 @@ from pyload.utils import parseFileSize
 
 
 class AlldebridCom(MultiHoster):
-    __name    = "AlldebridCom"
-    __type    = "hoster"
-    __version = "0.46"
+    __name__    = "AlldebridCom"
+    __type__    = "hoster"
+    __version__ = "0.46"
 
-    __pattern = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'
-    __config  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern__ = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description = """Alldebrid.com multi-hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Andy Voigt", "spamsales@online.de")]
+    __description__ = """Alldebrid.com multi-hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Andy Voigt", "spamsales@online.de")]
 
 
     def setup(self):

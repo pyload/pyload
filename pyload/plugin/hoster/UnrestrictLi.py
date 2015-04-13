@@ -8,16 +8,16 @@ from pyload.plugin.internal.SimpleHoster import secondsToMidnight
 
 
 class UnrestrictLi(MultiHoster):
-    __name    = "UnrestrictLi"
-    __type    = "hoster"
-    __version = "0.22"
+    __name__    = "UnrestrictLi"
+    __type__    = "hoster"
+    __version__ = "0.22"
 
-    __pattern = r'https?://(?:www\.)?(unrestrict|unr)\.li/dl/[\w^_]+'
-    __config  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern__ = r'https?://(?:www\.)?(unrestrict|unr)\.li/dl/[\w^_]+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description = """Unrestrict.li multi-hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("stickell", "l.stickell@yahoo.it")]
+    __description__ = """Unrestrict.li multi-hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     LOGIN_ACCOUNT = False

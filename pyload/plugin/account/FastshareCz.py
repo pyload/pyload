@@ -7,13 +7,13 @@ from pyload.utils import parseFileSize
 
 
 class FastshareCz(Account):
-    __name    = "FastshareCz"
-    __type    = "account"
-    __version = "0.06"
+    __name__    = "FastshareCz"
+    __type__    = "account"
+    __version__ = "0.06"
 
-    __description = """Fastshare.cz account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description__ = """Fastshare.cz account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it")]
 
 

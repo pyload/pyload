@@ -6,18 +6,18 @@ from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 
 
 class DataHu(SimpleCrypter):
-    __name    = "DataHu"
-    __type    = "crypter"
-    __version = "0.06"
+    __name__    = "DataHu"
+    __type__    = "crypter"
+    __version__ = "0.06"
 
-    __pattern = r'http://(?:www\.)?data\.hu/dir/\w+'
-    __config  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+    __pattern__ = r'http://(?:www\.)?data\.hu/dir/\w+'
+    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
-    __description = """Data.hu folder decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("crash", ""),
+    __description__ = """Data.hu folder decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("crash", ""),
                        ("stickell", "l.stickell@yahoo.it")]
 
 

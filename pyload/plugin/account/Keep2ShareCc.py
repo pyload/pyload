@@ -7,13 +7,13 @@ from pyload.plugin.Account import Account
 
 
 class Keep2ShareCc(Account):
-    __name    = "Keep2ShareCc"
-    __type    = "account"
-    __version = "0.05"
+    __name__    = "Keep2ShareCc"
+    __type__    = "account"
+    __version__ = "0.05"
 
-    __description = """Keep2Share.cc account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("aeronaut", "aeronaut@pianoguy.de"),
+    __description__ = """Keep2Share.cc account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("aeronaut", "aeronaut@pianoguy.de"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

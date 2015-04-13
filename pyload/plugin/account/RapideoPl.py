@@ -9,12 +9,12 @@ from pyload.utils import json_loads
 
 
 class RapideoPl(Account):
-    __name = "RapideoPl"
-    __version = "0.01"
-    __type = "account"
-    __description = "Rapideo.pl account plugin"
-    __license = "GPLv3"
-    __authors = [("goddie", "dev@rapideo.pl")]
+    __name__ = "RapideoPl"
+    __version__ = "0.01"
+    __type__ = "account"
+    __description__ = "Rapideo.pl account plugin"
+    __license__ = "GPLv3"
+    __authors__ = [("goddie", "dev@rapideo.pl")]
 
     _api_url = "http://enc.rapideo.pl"
 

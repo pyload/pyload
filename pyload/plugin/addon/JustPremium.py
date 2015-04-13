@@ -6,16 +6,16 @@ from pyload.plugin.Addon import Addon
 
 
 class JustPremium(Addon):
-    __name    = "JustPremium"
-    __type    = "addon"
-    __version = "0.22"
+    __name__    = "JustPremium"
+    __type__    = "addon"
+    __version__ = "0.22"
 
-    __config = [("excluded", "str", "Exclude hosters (comma separated)", ""),
+    __config__ = [("excluded", "str", "Exclude hosters (comma separated)", ""),
                   ("included", "str", "Include hosters (comma separated)", "")]
 
-    __description = """Remove not-premium links from added urls"""
-    __license     = "GPLv3"
-    __authors     = [("mazleu"        , "mazleica@gmail.com"),
+    __description__ = """Remove not-premium links from added urls"""
+    __license__     = "GPLv3"
+    __authors__     = [("mazleu"        , "mazleica@gmail.com"),
                        ("Walter Purcaro", "vuolter@gmail.com" ),
                        ("immenz"        , "immenz@gmx.net"    )]
 

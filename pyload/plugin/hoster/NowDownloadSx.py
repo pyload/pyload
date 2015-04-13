@@ -7,16 +7,16 @@ from pyload.utils import fixup
 
 
 class NowDownloadSx(SimpleHoster):
-    __name    = "NowDownloadSx"
-    __type    = "hoster"
-    __version = "0.09"
+    __name__    = "NowDownloadSx"
+    __type__    = "hoster"
+    __version__ = "0.09"
 
-    __pattern = r'http://(?:www\.)?(nowdownload\.[a-zA-Z]{2,}/(dl/|download\.php.+?id=|mobile/(#/files/|.+?id=))|likeupload\.org/)\w+'
-    __config  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern__ = r'http://(?:www\.)?(nowdownload\.[a-zA-Z]{2,}/(dl/|download\.php.+?id=|mobile/(#/files/|.+?id=))|likeupload\.org/)\w+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description = """NowDownload.sx hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("godofdream", "soilfiction@gmail.com"),
+    __description__ = """NowDownload.sx hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("godofdream", "soilfiction@gmail.com"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

@@ -9,16 +9,16 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class ZippyshareCom(SimpleHoster):
-    __name    = "ZippyshareCom"
-    __type    = "hoster"
-    __version = "0.77"
+    __name__    = "ZippyshareCom"
+    __type__    = "hoster"
+    __version__ = "0.77"
 
-    __pattern = r'http://www\d{0,2}\.zippyshare\.com/v(/|iew\.jsp.*key=)(?P<KEY>[\w^_]+)'
-    __config  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern__ = r'http://www\d{0,2}\.zippyshare\.com/v(/|iew\.jsp.*key=)(?P<KEY>[\w^_]+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description = """Zippyshare.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com"),
+    __description__ = """Zippyshare.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
                        ("sebdelsol", "seb.morin@gmail.com")]
 
 

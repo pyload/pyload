@@ -6,16 +6,16 @@ from pyload.plugin.internal.MultiHoster import MultiHoster
 
 
 class DebridItaliaCom(MultiHoster):
-    __name    = "DebridItaliaCom"
-    __type    = "hoster"
-    __version = "0.17"
+    __name__    = "DebridItaliaCom"
+    __type__    = "hoster"
+    __version__ = "0.17"
 
-    __pattern = r'https?://(?:www\.|s\d+\.)?debriditalia\.com/dl/\d+'
-    __config  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern__ = r'https?://(?:www\.|s\d+\.)?debriditalia\.com/dl/\d+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description = """Debriditalia.com multi-hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("stickell", "l.stickell@yahoo.it"),
+    __description__ = """Debriditalia.com multi-hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

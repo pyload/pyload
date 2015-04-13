@@ -4,13 +4,13 @@ from pyload.plugin.internal.XFSAccount import XFSAccount
 
 
 class JunkyvideoCom(XFSAccount):
-    __name    = "JunkyvideoCom"
-    __type    = "account"
-    __version = "0.01"
+    __name__    = "JunkyvideoCom"
+    __type__    = "account"
+    __version__ = "0.01"
 
-    __description = """Junkyvideo.com account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Junkyvideo.com account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     HOSTER_DOMAIN = "junkyvideo.com"

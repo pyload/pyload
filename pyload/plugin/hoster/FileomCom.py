@@ -7,15 +7,15 @@ from pyload.plugin.internal.XFSHoster import XFSHoster
 
 
 class FileomCom(XFSHoster):
-    __name    = "FileomCom"
-    __type    = "hoster"
-    __version = "0.05"
+    __name__    = "FileomCom"
+    __type__    = "hoster"
+    __version__ = "0.05"
 
-    __pattern = r'https?://(?:www\.)?fileom\.com/\w{12}'
+    __pattern__ = r'https?://(?:www\.)?fileom\.com/\w{12}'
 
-    __description = """Fileom.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Fileom.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     NAME_PATTERN = r'Filename: <span>(?P<N>.+?)<'

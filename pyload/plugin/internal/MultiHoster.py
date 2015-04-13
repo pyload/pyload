@@ -7,17 +7,17 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, replace_patterns, 
 
 
 class MultiHoster(SimpleHoster):
-    __name    = "MultiHoster"
-    __type    = "hoster"
-    __version = "0.39"
+    __name__    = "MultiHoster"
+    __type__    = "hoster"
+    __version__ = "0.39"
 
-    __pattern = r'^unmatchable$'
-    __config  = [("use_premium" , "bool", "Use premium account if available"    , True),
+    __pattern__ = r'^unmatchable$'
+    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
                    ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
-    __description = """Multi hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Multi hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     LOGIN_ACCOUNT = True
@@ -47,7 +47,7 @@ class MultiHoster(SimpleHoster):
             set_cookies(self.req.cj, self.COOKIES)
 
         if self.DIRECT_LINK is None:
-            self.directDL = self.__pattern != r'^unmatchable$' and re.match(self.__pattern, self.pyfile.url)
+            self.directDL = self.__pattern__ != r'^unmatchable$' and re.match(self.__pattern__, self.pyfile.url)
         else:
             self.directDL = self.DIRECT_LINK
 

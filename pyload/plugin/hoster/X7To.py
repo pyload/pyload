@@ -4,13 +4,13 @@ from pyload.plugin.internal.DeadHoster import DeadHoster
 
 
 class X7To(DeadHoster):
-    __name    = "X7To"
-    __type    = "hoster"
-    __version = "0.41"
+    __name__    = "X7To"
+    __type__    = "hoster"
+    __version__ = "0.41"
 
-    __pattern = r'http://(?:www\.)?x7\.to/'
-    __config  = []
+    __pattern__ = r'http://(?:www\.)?x7\.to/'
+    __config__  = []
 
-    __description = """X7.to hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("ernieb", "ernieb")]
+    __description__ = """X7.to hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("ernieb", "ernieb")]

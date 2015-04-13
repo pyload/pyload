@@ -11,16 +11,16 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class UploadheroCom(SimpleHoster):
-    __name    = "UploadheroCom"
-    __type    = "hoster"
-    __version = "0.18"
+    __name__    = "UploadheroCom"
+    __type__    = "hoster"
+    __version__ = "0.18"
 
-    __pattern = r'http://(?:www\.)?uploadhero\.com?/dl/\w+'
-    __config  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern__ = r'http://(?:www\.)?uploadhero\.com?/dl/\w+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description = """UploadHero.co plugin"""
-    __license     = "GPLv3"
-    __authors     = [("mcmyst", "mcmyst@hotmail.fr"),
+    __description__ = """UploadHero.co plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("mcmyst", "mcmyst@hotmail.fr"),
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 

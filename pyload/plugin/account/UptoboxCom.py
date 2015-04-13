@@ -4,13 +4,13 @@ from pyload.plugin.internal.XFSAccount import XFSAccount
 
 
 class UptoboxCom(XFSAccount):
-    __name    = "UptoboxCom"
-    __type    = "account"
-    __version = "0.08"
+    __name__    = "UptoboxCom"
+    __type__    = "account"
+    __version__ = "0.08"
 
-    __description = """DDLStorage.com account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """DDLStorage.com account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     HOSTER_DOMAIN = "uptobox.com"

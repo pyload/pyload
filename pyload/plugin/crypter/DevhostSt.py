@@ -11,18 +11,18 @@ from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 
 
 class DevhostSt(SimpleCrypter):
-    __name    = "DevhostSt"
-    __type    = "crypter"
-    __version = "0.05"
+    __name__    = "DevhostSt"
+    __type__    = "crypter"
+    __version__ = "0.05"
 
-    __pattern = r'http://(?:www\.)?d-h\.st/users/(?P<USER>\w+)(/\?fld_id=(?P<ID>\d+))?'
-    __config  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+    __pattern__ = r'http://(?:www\.)?d-h\.st/users/(?P<USER>\w+)(/\?fld_id=(?P<ID>\d+))?'
+    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
-    __description = """d-h.st folder decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zapp-brannigan", "fuerst.reinje@web.de"),
+    __description__ = """d-h.st folder decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

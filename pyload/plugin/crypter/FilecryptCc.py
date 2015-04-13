@@ -14,15 +14,15 @@ from pyload.plugin.captcha.ReCaptcha import ReCaptcha
 
 
 class FilecryptCc(Crypter):
-    __name    = "FilecryptCc"
-    __type    = "crypter"
-    __version = "0.11"
+    __name__    = "FilecryptCc"
+    __type__    = "crypter"
+    __version__ = "0.11"
 
-    __pattern = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
+    __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
 
-    __description = """Filecrypt.cc decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zapp-brannigan", "fuerst.reinje@web.de")]
+    __description__ = """Filecrypt.cc decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
     # URL_REPLACEMENTS  = [(r'.html$', ""), (r'$', ".html")]  #@TODO: Extend SimpleCrypter

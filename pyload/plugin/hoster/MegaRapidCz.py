@@ -21,16 +21,16 @@ def getInfo(urls):
 
 
 class MegaRapidCz(SimpleHoster):
-    __name    = "MegaRapidCz"
-    __type    = "hoster"
-    __version = "0.56"
+    __name__    = "MegaRapidCz"
+    __type__    = "hoster"
+    __version__ = "0.56"
 
-    __pattern = r'http://(?:www\.)?(share|mega)rapid\.cz/soubor/\d+/.+'
-    __config  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern__ = r'http://(?:www\.)?(share|mega)rapid\.cz/soubor/\d+/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description = """MegaRapid.cz hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("MikyWoW", "mikywow@seznam.cz"),
+    __description__ = """MegaRapid.cz hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("MikyWoW", "mikywow@seznam.cz"),
                        ("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it"),
                        ("Walter Purcaro", "vuolter@gmail.com")]

@@ -4,13 +4,13 @@ from pyload.plugin.internal.DeadHoster import DeadHoster
 
 
 class FilebeerInfo(DeadHoster):
-    __name    = "FilebeerInfo"
-    __type    = "hoster"
-    __version = "0.03"
+    __name__    = "FilebeerInfo"
+    __type__    = "hoster"
+    __version__ = "0.03"
 
-    __pattern = r'http://(?:www\.)?filebeer\.info/(?!\d*~f)(?P<ID>\w+)'
-    __config  = []
+    __pattern__ = r'http://(?:www\.)?filebeer\.info/(?!\d*~f)(?P<ID>\w+)'
+    __config__  = []
 
-    __description = """Filebeer.info plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Filebeer.info plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]

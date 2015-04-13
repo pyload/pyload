@@ -10,16 +10,16 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class BasketbuildCom(SimpleHoster):
-    __name    = "BasketbuildCom"
-    __type    = "hoster"
-    __version = "0.03"
+    __name__    = "BasketbuildCom"
+    __type__    = "hoster"
+    __version__ = "0.03"
 
-    __pattern = r'https?://(?:www\.)?(?:\w\.)?basketbuild\.com/filedl/.+'
-    __config  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern__ = r'https?://(?:www\.)?(?:\w\.)?basketbuild\.com/filedl/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description = """basketbuild.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zapp-brannigan", "fuerst.reinje@web.de")]
+    __description__ = """basketbuild.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
     NAME_PATTERN    = r'File Name:</strong> (?P<N>.+?)<br/>'

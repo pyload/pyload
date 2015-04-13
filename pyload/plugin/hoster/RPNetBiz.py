@@ -7,16 +7,16 @@ from pyload.utils import json_loads
 
 
 class RPNetBiz(MultiHoster):
-    __name    = "RPNetBiz"
-    __type    = "hoster"
-    __version = "0.14"
+    __name__    = "RPNetBiz"
+    __type__    = "hoster"
+    __version__ = "0.14"
 
-    __pattern = r'https?://.+rpnet\.biz'
-    __config  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern__ = r'https?://.+rpnet\.biz'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description = """RPNet.biz multi-hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Dman", "dmanugm@gmail.com")]
+    __description__ = """RPNet.biz multi-hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Dman", "dmanugm@gmail.com")]
 
 
     def setup(self):

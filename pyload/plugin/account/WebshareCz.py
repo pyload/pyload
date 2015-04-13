@@ -10,13 +10,13 @@ from pyload.plugin.Account import Account
 
 
 class WebshareCz(Account):
-    __name    = "WebshareCz"
-    __type    = "account"
-    __version = "0.07"
+    __name__    = "WebshareCz"
+    __type__    = "account"
+    __version__ = "0.07"
 
-    __description = """Webshare.cz account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("rush", "radek.senfeld@gmail.com")]
+    __description__ = """Webshare.cz account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("rush", "radek.senfeld@gmail.com")]
 
 
     VALID_UNTIL_PATTERN = r'<vip_until>(.+)</vip_until>'

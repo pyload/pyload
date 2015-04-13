@@ -5,18 +5,18 @@ from pyload.utils import uniqify
 
 
 class ImgurComAlbum(SimpleCrypter):
-    __name    = "ImgurComAlbum"
-    __type    = "crypter"
-    __version = "0.51"
+    __name__    = "ImgurComAlbum"
+    __type__    = "crypter"
+    __version__ = "0.51"
 
-    __pattern = r'https?://(?:www\.|m\.)?imgur\.com/(a|gallery|)/?\w{5,7}'
-    __config  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+    __pattern__ = r'https?://(?:www\.|m\.)?imgur\.com/(a|gallery|)/?\w{5,7}'
+    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
-    __description = """Imgur.com decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("nath_schwarz", "nathan.notwhite@gmail.com")]
+    __description__ = """Imgur.com decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("nath_schwarz", "nathan.notwhite@gmail.com")]
 
 
     NAME_PATTERN = r'(?P<N>.+?) - Imgur'

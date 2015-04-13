@@ -4,13 +4,13 @@ from pyload.plugin.OCR import OCR
 
 
 class NetloadIn(OCR):
-    __name    = "NetloadIn"
-    __type    = "ocr"
-    __version = "0.11"
+    __name__    = "NetloadIn"
+    __type__    = "ocr"
+    __version__ = "0.11"
 
-    __description = """Netload.in ocr plugin"""
-    __license     = "GPLv3"
-    __authors     = [("pyLoad Team", "admin@pyload.org")]
+    __description__ = """Netload.in ocr plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
     def __init__(self):

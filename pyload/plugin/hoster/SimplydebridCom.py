@@ -6,16 +6,16 @@ from pyload.plugin.internal.MultiHoster import MultiHoster, replace_patterns
 
 
 class SimplydebridCom(MultiHoster):
-    __name    = "SimplydebridCom"
-    __type    = "hoster"
-    __version = "0.17"
+    __name__    = "SimplydebridCom"
+    __type__    = "hoster"
+    __version__ = "0.17"
 
-    __pattern = r'http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd\.php'
-    __config  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern__ = r'http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd\.php'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description = """Simply-debrid.com multi-hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Kagenoshin", "kagenoshin@gmx.ch")]
+    __description__ = """Simply-debrid.com multi-hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
     def handlePremium(self, pyfile):

@@ -4,15 +4,15 @@ from pyload.plugin.Crypter import Crypter as _Crypter
 
 
 class DeadCrypter(_Crypter):
-    __name    = "DeadCrypter"
-    __type    = "crypter"
-    __version = "0.04"
+    __name__    = "DeadCrypter"
+    __type__    = "crypter"
+    __version__ = "0.04"
 
-    __pattern = r'^unmatchable$'
+    __pattern__ = r'^unmatchable$'
 
-    __description = """Crypter is no longer available"""
-    __license     = "GPLv3"
-    __authors     = [("stickell", "l.stickell@yahoo.it")]
+    __description__ = """Crypter is no longer available"""
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     @classmethod

@@ -8,17 +8,17 @@ from pyload.plugin.Crypter import Crypter
 
 
 class HoerbuchIn(Crypter):
-    __name    = "HoerbuchIn"
-    __type    = "crypter"
-    __version = "0.60"
+    __name__    = "HoerbuchIn"
+    __type__    = "crypter"
+    __version__ = "0.60"
 
-    __pattern = r'http://(?:www\.)?hoerbuch\.in/(wp/horbucher/\d+/.+/|tp/out\.php\?.+|protection/folder_\d+\.html)'
-    __config  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+    __pattern__ = r'http://(?:www\.)?hoerbuch\.in/(wp/horbucher/\d+/.+/|tp/out\.php\?.+|protection/folder_\d+\.html)'
+    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
-    __description = """Hoerbuch.in decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("spoob", "spoob@pyload.org"),
+    __description__ = """Hoerbuch.in decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org"),
                        ("mkaay", "mkaay@mkaay.de")]
 
 

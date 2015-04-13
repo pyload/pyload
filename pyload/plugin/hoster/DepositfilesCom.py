@@ -9,16 +9,16 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class DepositfilesCom(SimpleHoster):
-    __name    = "DepositfilesCom"
-    __type    = "hoster"
-    __version = "0.54"
+    __name__    = "DepositfilesCom"
+    __type__    = "hoster"
+    __version__ = "0.54"
 
-    __pattern = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
-    __config  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description = """Depositfiles.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("spoob", "spoob@pyload.org"),
+    __description__ = """Depositfiles.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org"),
                        ("zoidberg", "zoidberg@mujmail.cz"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
@@ -29,7 +29,7 @@ class DepositfilesCom(SimpleHoster):
 
     NAME_REPLACEMENTS = [(r'\%u([0-9A-Fa-f]{4})', lambda m: unichr(int(m.group(1), 16))),
                               (r'.*<b title="(?P<N>[^"]+).*', "\g<N>")]
-    URL_REPLACEMENTS  = [(__pattern + ".*", "https://dfiles.eu/files/\g<ID>")]
+    URL_REPLACEMENTS  = [(__pattern__ + ".*", "https://dfiles.eu/files/\g<ID>")]
 
     COOKIES = [("dfiles.eu", "lang_current", "en")]
 

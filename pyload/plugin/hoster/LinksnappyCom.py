@@ -9,16 +9,16 @@ from pyload.plugin.internal.MultiHoster import MultiHoster
 
 
 class LinksnappyCom(MultiHoster):
-    __name    = "LinksnappyCom"
-    __type    = "hoster"
-    __version = "0.08"
+    __name__    = "LinksnappyCom"
+    __type__    = "hoster"
+    __version__ = "0.08"
 
-    __pattern = r'https?://(?:[^/]+\.)?linksnappy\.com'
-    __config  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern__ = r'https?://(?:[^/]+\.)?linksnappy\.com'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description = """Linksnappy.com multi-hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("stickell", "l.stickell@yahoo.it")]
+    __description__ = """Linksnappy.com multi-hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     SINGLE_CHUNK_HOSTERS = ["easybytez.com"]

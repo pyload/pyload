@@ -9,13 +9,13 @@ from pyload.plugin.Account import Account
 
 
 class FilefactoryCom(Account):
-    __name    = "FilefactoryCom"
-    __type    = "account"
-    __version = "0.15"
+    __name__    = "FilefactoryCom"
+    __type__    = "account"
+    __version__ = "0.15"
 
-    __description = """Filefactory.com account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description__ = """Filefactory.com account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it")]
 
 

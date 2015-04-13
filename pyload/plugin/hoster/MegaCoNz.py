@@ -46,15 +46,15 @@ from pyload.utils import decode, fs_decode, fs_encode
 
 
 class MegaCoNz(Hoster):
-    __name    = "MegaCoNz"
-    __type    = "hoster"
-    __version = "0.26"
+    __name__    = "MegaCoNz"
+    __type__    = "hoster"
+    __version__ = "0.26"
 
-    __pattern = r'(?:https?://(?:www\.)?mega\.co\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w,-]+)'
+    __pattern__ = r'(?:https?://(?:www\.)?mega\.co\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w,-]+)'
 
-    __description = """Mega.co.nz hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("RaNaN", "ranan@pyload.org"),
+    __description__ = """Mega.co.nz hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "ranan@pyload.org"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
@@ -183,7 +183,7 @@ class MegaCoNz(Hoster):
 
 
     def process(self, pyfile):
-        pattern = re.match(self.__pattern, pyfile.url).groupdict()
+        pattern = re.match(self.__pattern__, pyfile.url).groupdict()
         id      = pattern['ID']
         key     = pattern['KEY']
         public  = pattern['TYPE'] == ''

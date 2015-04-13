@@ -6,15 +6,15 @@ from pyload.plugin.internal.XFSHoster import XFSHoster
 
 
 class ExashareCom(XFSHoster):
-    __name    = "ExashareCom"
-    __type    = "hoster"
-    __version = "0.01"
+    __name__    = "ExashareCom"
+    __type__    = "hoster"
+    __version__ = "0.01"
 
-    __pattern = r'http://(?:www\.)?exashare\.com/\w{12}'
+    __pattern__ = r'http://(?:www\.)?exashare\.com/\w{12}'
 
-    __description = """Exashare.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Exashare.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     INFO_PATTERN      = r'>(?P<NAME>.+?)<small>\( (?P<S>[\d.,]+) (?P<U>[\w^_]+)'

@@ -4,13 +4,13 @@ from pyload.plugin.internal.XFSAccount import XFSAccount
 
 
 class BackinNet(XFSAccount):
-    __name    = "BackinNet"
-    __type    = "account"
-    __version = "0.01"
+    __name__    = "BackinNet"
+    __type__    = "account"
+    __version__ = "0.01"
 
-    __description = """Backin.net account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Backin.net account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     HOSTER_DOMAIN = "backin.net"

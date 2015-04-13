@@ -6,19 +6,19 @@ from pyload.network.HTTPRequest import BadHeader
 
 
 class EmbeduploadCom(Crypter):
-    __name    = "EmbeduploadCom"
-    __type    = "crypter"
-    __version = "0.02"
+    __name__    = "EmbeduploadCom"
+    __type__    = "crypter"
+    __version__ = "0.02"
 
-    __pattern = r'http://(?:www\.)?embedupload\.com/\?d=.+'
-    __config  = [("use_subfolder"     , "bool", "Save package to subfolder"           , True         ),
+    __pattern__ = r'http://(?:www\.)?embedupload\.com/\?d=.+'
+    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"           , True         ),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package" , True         ),
                    ("preferedHoster"    , "str" , "Prefered hoster list (bar-separated)", "embedupload"),
                    ("ignoredHoster"     , "str" , "Ignored hoster list (bar-separated)" , ""           )]
 
-    __description = """EmbedUpload.com decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """EmbedUpload.com decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     LINK_PATTERN = r'<div id="([^"]+)"[^>]*>\s*<a href="([^"]+)" target="_blank" (?:class="DownloadNow"|style="color:red")>'

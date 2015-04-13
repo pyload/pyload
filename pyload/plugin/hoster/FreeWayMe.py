@@ -4,16 +4,16 @@ from pyload.plugin.internal.MultiHoster import MultiHoster
 
 
 class FreeWayMe(MultiHoster):
-    __name    = "FreeWayMe"
-    __type    = "hoster"
-    __version = "0.16"
+    __name__    = "FreeWayMe"
+    __type__    = "hoster"
+    __version__ = "0.16"
 
-    __pattern = r'https://(?:www\.)?free-way\.me/.+'
-    __config  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern__ = r'https://(?:www\.)?free-way\.me/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description = """FreeWayMe multi-hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Nicolas Giese", "james@free-way.me")]
+    __description__ = """FreeWayMe multi-hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Nicolas Giese", "james@free-way.me")]
 
 
     def setup(self):

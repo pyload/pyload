@@ -9,16 +9,16 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class DataHu(SimpleHoster):
-    __name    = "DataHu"
-    __type    = "hoster"
-    __version = "0.03"
+    __name__    = "DataHu"
+    __type__    = "hoster"
+    __version__ = "0.03"
 
-    __pattern = r'http://(?:www\.)?data\.hu/get/\w+'
-    __config  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern__ = r'http://(?:www\.)?data\.hu/get/\w+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description = """Data.hu hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("crash", ""),
+    __description__ = """Data.hu hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("crash", ""),
                        ("stickell", "l.stickell@yahoo.it")]
 
 

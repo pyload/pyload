@@ -9,12 +9,12 @@ from pyload.utils import json_loads
 
 
 class NoPremiumPl(Account):
-    __name = "NoPremiumPl"
-    __version = "0.01"
-    __type = "account"
-    __description = "NoPremium.pl account plugin"
-    __license = "GPLv3"
-    __authors = [("goddie", "dev@nopremium.pl")]
+    __name__ = "NoPremiumPl"
+    __version__ = "0.01"
+    __type__ = "account"
+    __description__ = "NoPremium.pl account plugin"
+    __license__ = "GPLv3"
+    __authors__ = [("goddie", "dev@nopremium.pl")]
 
     _api_url = "http://crypt.nopremium.pl"
 

@@ -6,15 +6,15 @@ from pyload.plugin.Hoster import Hoster
 
 
 class PornhostCom(Hoster):
-    __name    = "PornhostCom"
-    __type    = "hoster"
-    __version = "0.20"
+    __name__    = "PornhostCom"
+    __type__    = "hoster"
+    __version__ = "0.20"
 
-    __pattern = r'http://(?:www\.)?pornhost\.com/(\d+/\d+\.html|\d+)'
+    __pattern__ = r'http://(?:www\.)?pornhost\.com/(\d+/\d+\.html|\d+)'
 
-    __description = """Pornhost.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("jeix", "jeix@hasnomail.de")]
+    __description__ = """Pornhost.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("jeix", "jeix@hasnomail.de")]
 
 
     def process(self, pyfile):

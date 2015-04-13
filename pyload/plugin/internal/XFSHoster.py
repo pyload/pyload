@@ -13,15 +13,15 @@ from pyload.utils import html_unescape
 
 
 class XFSHoster(SimpleHoster):
-    __name    = "XFSHoster"
-    __type    = "hoster"
-    __version = "0.45"
+    __name__    = "XFSHoster"
+    __type__    = "hoster"
+    __version__ = "0.45"
 
-    __pattern = r'^unmatchable$'
+    __pattern__ = r'^unmatchable$'
 
-    __description = """XFileSharing hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg"      , "zoidberg@mujmail.cz"),
+    __description__ = """XFileSharing hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg"      , "zoidberg@mujmail.cz"),
                      ("stickell"      , "l.stickell@yahoo.it"),
                      ("Walter Purcaro", "vuolter@gmail.com")]
 

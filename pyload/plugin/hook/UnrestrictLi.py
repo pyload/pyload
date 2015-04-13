@@ -5,20 +5,20 @@ from pyload.plugin.internal.MultiHook import MultiHook
 
 
 class UnrestrictLi(MultiHook):
-    __name    = "UnrestrictLi"
-    __type    = "hook"
-    __version = "0.05"
+    __name__    = "UnrestrictLi"
+    __type__    = "hook"
+    __version__ = "0.05"
 
-    __config = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
+    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
                   ("revertfailed"  , "bool"               , "Revert to standard download if fails", True ),
                   ("reload"        , "bool"               , "Reload plugin list"                  , True ),
                   ("reloadinterval", "int"                , "Reload interval in hours"            , 12   ),
                   ("history"       , "bool"               , "Delete History"                      , False)]
 
-    __description = """Unrestrict.li hook plugin"""
-    __license     = "GPLv3"
-    __authors     = [("stickell", "l.stickell@yahoo.it")]
+    __description__ = """Unrestrict.li hook plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     def getHosters(self):

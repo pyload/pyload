@@ -10,11 +10,11 @@ from pyload.plugin.addon.IRCInterface import IRCInterface
 
 
 class XMPPInterface(IRCInterface, JabberClient):
-    __name    = "XMPPInterface"
-    __type    = "addon"
-    __version = "0.11"
+    __name__    = "XMPPInterface"
+    __type__    = "addon"
+    __version__ = "0.11"
 
-    __config = [("jid"      , "str" , "Jabber ID"                           , "user@exmaple-jabber-server.org"         ),
+    __config__ = [("jid"      , "str" , "Jabber ID"                           , "user@exmaple-jabber-server.org"         ),
                 ("pw"       , "str" , "Password"                            , ""                                       ),
                 ("tls"      , "bool", "Use TLS"                             , False                                    ),
                 ("owners"   , "str" , "List of JIDs accepting commands from", "me@icq-gateway.org;some@msn-gateway.org"),
@@ -22,9 +22,9 @@ class XMPPInterface(IRCInterface, JabberClient):
                 ("info_pack", "bool", "Inform about every package finished" , True                                     ),
                 ("captcha"  , "bool", "Send captcha requests"               , True                                     )]
 
-    __description = """Connect to jabber and let owner perform different tasks"""
-    __license     = "GPLv3"
-    __authors     = [("RaNaN", "RaNaN@pyload.org")]
+    __description__ = """Connect to jabber and let owner perform different tasks"""
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
     implements(IMessageHandlersProvider)

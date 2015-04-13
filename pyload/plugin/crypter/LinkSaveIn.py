@@ -4,17 +4,17 @@ from pyload.plugin.internal.SimpleDereferer import SimpleDereferer
 
 
 class LinkSaveIn(SimpleDereferer):
-    __name    = "LinkSaveIn"
-    __type    = "crypter"
-    __version = "2.03"
+    __name__    = "LinkSaveIn"
+    __type__    = "crypter"
+    __version__ = "2.03"
 
-    __pattern = r'https?://(?:www\.)?linksave\.in/\w+'
-    __config  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+    __pattern__ = r'https?://(?:www\.)?linksave\.in/\w+'
+    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
-    __description = """LinkSave.in decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """LinkSave.in decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     COOKIES = [("linksave.in", "Linksave_Language", "english")]

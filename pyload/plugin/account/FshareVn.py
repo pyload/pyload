@@ -7,13 +7,13 @@ from pyload.plugin.Account import Account
 
 
 class FshareVn(Account):
-    __name    = "FshareVn"
-    __type    = "account"
-    __version = "0.09"
+    __name__    = "FshareVn"
+    __type__    = "account"
+    __version__ = "0.09"
 
-    __description = """Fshare.vn account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description__ = """Fshare.vn account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it")]
 
 

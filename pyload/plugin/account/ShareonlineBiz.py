@@ -6,13 +6,13 @@ from pyload.plugin.Account import Account
 
 
 class ShareonlineBiz(Account):
-    __name    = "ShareonlineBiz"
-    __type    = "account"
-    __version = "0.31"
+    __name__    = "ShareonlineBiz"
+    __type__    = "account"
+    __version__ = "0.31"
 
-    __description = """Share-online.biz account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Share-online.biz account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def api_response(self, user, req):

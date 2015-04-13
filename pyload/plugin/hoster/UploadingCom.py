@@ -9,15 +9,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, timestamp
 
 
 class UploadingCom(SimpleHoster):
-    __name    = "UploadingCom"
-    __type    = "hoster"
-    __version = "0.40"
+    __name__    = "UploadingCom"
+    __type__    = "hoster"
+    __version__ = "0.40"
 
-    __pattern = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>\w+)'
+    __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>\w+)'
 
-    __description = """Uploading.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("jeix", "jeix@hasnomail.de"),
+    __description__ = """Uploading.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("jeix", "jeix@hasnomail.de"),
                        ("mkaay", "mkaay@mkaay.de"),
                        ("zoidberg", "zoidberg@mujmail.cz")]
 

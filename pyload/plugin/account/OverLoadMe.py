@@ -5,13 +5,13 @@ from pyload.utils import json_loads
 
 
 class OverLoadMe(Account):
-    __name    = "OverLoadMe"
-    __type    = "account"
-    __version = "0.04"
+    __name__    = "OverLoadMe"
+    __type__    = "account"
+    __version__ = "0.04"
 
-    __description = """Over-Load.me account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("marley", "marley@over-load.me")]
+    __description__ = """Over-Load.me account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("marley", "marley@over-load.me")]
 
 
     def loadAccountInfo(self, user, req):

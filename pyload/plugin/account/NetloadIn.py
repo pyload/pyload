@@ -7,13 +7,13 @@ from pyload.plugin.Account import Account
 
 
 class NetloadIn(Account):
-    __name    = "NetloadIn"
-    __type    = "account"
-    __version = "0.24"
+    __name__    = "NetloadIn"
+    __type__    = "account"
+    __version__ = "0.24"
 
-    __description = """Netload.in account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Netload.in account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def api_response(self, id, password, req):

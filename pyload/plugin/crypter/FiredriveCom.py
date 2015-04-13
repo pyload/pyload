@@ -4,13 +4,13 @@ from pyload.plugin.internal.DeadCrypter import DeadCrypter
 
 
 class FiredriveCom(DeadCrypter):
-    __name    = "FiredriveCom"
-    __type    = "crypter"
-    __version = "0.03"
+    __name__    = "FiredriveCom"
+    __type__    = "crypter"
+    __version__ = "0.03"
 
-    __pattern = r'https?://(?:www\.)?(firedrive|putlocker)\.com/share/.+'
-    __config  = []
+    __pattern__ = r'https?://(?:www\.)?(firedrive|putlocker)\.com/share/.+'
+    __config__  = []
 
-    __description = """Firedrive.com folder decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Firedrive.com folder decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]

@@ -10,16 +10,16 @@ from pyload.plugin.internal.MultiHoster import MultiHoster
 
 
 class FastixRu(MultiHoster):
-    __name    = "FastixRu"
-    __type    = "hoster"
-    __version = "0.11"
+    __name__    = "FastixRu"
+    __type__    = "hoster"
+    __version__ = "0.11"
 
-    __pattern = r'http://(?:www\.)?fastix\.(ru|it)/file/\w{24}'
-    __config  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/\w{24}'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description = """Fastix multi-hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Massimo Rosamilia", "max@spiritix.eu")]
+    __description__ = """Fastix multi-hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Massimo Rosamilia", "max@spiritix.eu")]
 
 
     def setup(self):

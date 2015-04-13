@@ -13,13 +13,13 @@ from pyload.plugin.OCR import OCR
 
 
 class LinksaveIn(OCR):
-    __name    = "LinksaveIn"
-    __type    = "ocr"
-    __version = "0.11"
+    __name__    = "LinksaveIn"
+    __type__    = "ocr"
+    __version__ = "0.11"
 
-    __description = """Linksave.in ocr plugin"""
-    __license     = "GPLv3"
-    __authors     = [("pyLoad Team", "admin@pyload.org")]
+    __description__ = """Linksave.in ocr plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
     def __init__(self):

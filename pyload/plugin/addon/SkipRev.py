@@ -12,16 +12,16 @@ from pyload.plugin.Plugin import SkipDownload
 
 
 class SkipRev(Addon):
-    __name    = "SkipRev"
-    __type    = "addon"
-    __version = "0.29"
+    __name__    = "SkipRev"
+    __type__    = "addon"
+    __version__ = "0.29"
 
-    __config = [("mode"     , "Auto;Manual", "Choose recovery archives to skip"               , "Auto"),
+    __config__ = [("mode"     , "Auto;Manual", "Choose recovery archives to skip"               , "Auto"),
                   ("revtokeep", "int"        , "Number of recovery archives to keep for package", 0     )]
 
-    __description = """Skip recovery archives (.rev)"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Skip recovery archives (.rev)"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     @staticmethod

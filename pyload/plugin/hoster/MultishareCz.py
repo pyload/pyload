@@ -8,16 +8,16 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class MultishareCz(SimpleHoster):
-    __name    = "MultishareCz"
-    __type    = "hoster"
-    __version = "0.40"
+    __name__    = "MultishareCz"
+    __type__    = "hoster"
+    __version__ = "0.40"
 
-    __pattern = r'http://(?:www\.)?multishare\.cz/stahnout/(?P<ID>\d+)'
-    __config  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern__ = r'http://(?:www\.)?multishare\.cz/stahnout/(?P<ID>\d+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description = """MultiShare.cz hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """MultiShare.cz hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     SIZE_REPLACEMENTS = [('&nbsp;', '')]

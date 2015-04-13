@@ -6,17 +6,17 @@ from pyload.plugin.Hoster import Hoster
 
 
 class VeehdCom(Hoster):
-    __name    = "VeehdCom"
-    __type    = "hoster"
-    __version = "0.23"
+    __name__    = "VeehdCom"
+    __type__    = "hoster"
+    __version__ = "0.23"
 
-    __pattern = r'http://veehd\.com/video/\d+_\S+'
-    __config  = [("filename_spaces", "bool", "Allow spaces in filename", False),
+    __pattern__ = r'http://veehd\.com/video/\d+_\S+'
+    __config__  = [("filename_spaces", "bool", "Allow spaces in filename", False),
                    ("replacement_char", "str", "Filename replacement character", "_")]
 
-    __description = """Veehd.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("cat", "cat@pyload")]
+    __description__ = """Veehd.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("cat", "cat@pyload")]
 
 
     def setup(self):

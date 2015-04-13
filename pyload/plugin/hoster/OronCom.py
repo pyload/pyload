@@ -4,14 +4,14 @@ from pyload.plugin.internal.DeadHoster import DeadHoster
 
 
 class OronCom(DeadHoster):
-    __name    = "OronCom"
-    __type    = "hoster"
-    __version = "0.14"
+    __name__    = "OronCom"
+    __type__    = "hoster"
+    __version__ = "0.14"
 
-    __pattern = r'https?://(?:www\.)?oron\.com/\w{12}'
-    __config  = []
+    __pattern__ = r'https?://(?:www\.)?oron\.com/\w{12}'
+    __config__  = []
 
-    __description = """Oron.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("chrox", "chrox@pyload.org"),
+    __description__ = """Oron.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("chrox", "chrox@pyload.org"),
                        ("DHMH", "DHMH@pyload.org")]

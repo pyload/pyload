@@ -7,13 +7,13 @@ from pyload.plugin.Account import Account
 
 
 class UploadedTo(Account):
-    __name    = "UploadedTo"
-    __type    = "account"
-    __version = "0.30"
+    __name__    = "UploadedTo"
+    __type__    = "account"
+    __version__ = "0.30"
 
-    __description = """Uploaded.to account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Uploaded.to account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     PREMIUM_PATTERN = r'<em>Premium</em>'

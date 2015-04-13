@@ -4,13 +4,13 @@ from pyload.plugin.internal.XFSAccount import XFSAccount
 
 
 class RarefileNet(XFSAccount):
-    __name    = "RarefileNet"
-    __type    = "account"
-    __version = "0.04"
+    __name__    = "RarefileNet"
+    __type__    = "account"
+    __version__ = "0.04"
 
-    __description = """RareFile.net account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """RareFile.net account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     HOSTER_DOMAIN = "rarefile.net"

@@ -6,13 +6,13 @@ from pyload.plugin.Account import Account
 
 
 class RealdebridCom(Account):
-    __name    = "RealdebridCom"
-    __type    = "account"
-    __version = "0.45"
+    __name__    = "RealdebridCom"
+    __type__    = "account"
+    __version__ = "0.45"
 
-    __description = """Real-Debrid.com account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
+    __description__ = """Real-Debrid.com account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
 
 
     def loadAccountInfo(self, user, req):

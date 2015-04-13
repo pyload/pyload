@@ -4,14 +4,14 @@ from pyload.plugin.internal.DeadCrypter import DeadCrypter
 
 
 class DdlstorageCom(DeadCrypter):
-    __name    = "DdlstorageCom"
-    __type    = "crypter"
-    __version = "0.03"
+    __name__    = "DdlstorageCom"
+    __type__    = "crypter"
+    __version__ = "0.03"
 
-    __pattern = r'https?://(?:www\.)?ddlstorage\.com/folder/\w+'
-    __config  = []
+    __pattern__ = r'https?://(?:www\.)?ddlstorage\.com/folder/\w+'
+    __config__  = []
 
-    __description = """DDLStorage.com folder decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("godofdream", "soilfiction@gmail.com"),
+    __description__ = """DDLStorage.com folder decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("godofdream", "soilfiction@gmail.com"),
                        ("stickell", "l.stickell@yahoo.it")]

@@ -8,16 +8,16 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class FilecloudIo(SimpleHoster):
-    __name    = "FilecloudIo"
-    __type    = "hoster"
-    __version = "0.08"
+    __name__    = "FilecloudIo"
+    __type__    = "hoster"
+    __version__ = "0.08"
 
-    __pattern = r'http://(?:www\.)?(?:filecloud\.io|ifile\.it|mihd\.net)/(?P<ID>\w+)'
-    __config  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern__ = r'http://(?:www\.)?(?:filecloud\.io|ifile\.it|mihd\.net)/(?P<ID>\w+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description = """Filecloud.io hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description__ = """Filecloud.io hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it")]
 
 

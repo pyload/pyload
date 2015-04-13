@@ -28,11 +28,11 @@ def exists(path):
 
 
 class UpdateManager(Addon):
-    __name    = "UpdateManager"
-    __type    = "addon"
-    __version = "0.50"
+    __name__    = "UpdateManager"
+    __type__    = "addon"
+    __version__ = "0.50"
 
-    __config  = [("activated", "bool", "Activated", True),
+    __config__  = [("activated", "bool", "Activated", True),
                  ("checkinterval", "int", "Check interval in hours", 8),
                  ("autorestart", "bool",
                   "Auto-restart pyLoad when required", True),
@@ -43,9 +43,9 @@ class UpdateManager(Addon):
                   "Monitor plugin code changes in debug mode", True),
                  ("nodebugupdate", "bool", "Don't update plugins in debug mode", False)]
 
-    __description = """ Check for updates """
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """ Check for updates """
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
     SERVER_URL         = "http://updatemanager.pyload.org" if release_status == 5 else None
     MIN_CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
@@ -165,7 +165,7 @@ class UpdateManager(Addon):
         url    = data[0]
         schema = data[1].split('|')
 
-        VERSION = re.compile(r'__version.*=.*("|\')([\d.]+)')
+        VERSION = re.compile(r'__version__.*=.*("|\')([\d.]+)')
 
         if "BLACKLIST" in data:
             blacklist  = data[data.index('BLACKLIST') + 1:]

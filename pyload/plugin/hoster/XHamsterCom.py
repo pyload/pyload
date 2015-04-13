@@ -17,16 +17,16 @@ def clean_json(json_expr):
 
 
 class XHamsterCom(Hoster):
-    __name    = "XHamsterCom"
-    __type    = "hoster"
-    __version = "0.12"
+    __name__    = "XHamsterCom"
+    __type__    = "hoster"
+    __version__ = "0.12"
 
-    __pattern = r'http://(?:www\.)?xhamster\.com/movies/.+'
-    __config  = [("type", ".mp4;.flv", "Preferred type", ".mp4")]
+    __pattern__ = r'http://(?:www\.)?xhamster\.com/movies/.+'
+    __config__  = [("type", ".mp4;.flv", "Preferred type", ".mp4")]
 
-    __description = """XHamster.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = []
+    __description__ = """XHamster.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = []
 
 
     def process(self, pyfile):

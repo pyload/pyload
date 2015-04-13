@@ -4,13 +4,13 @@ from pyload.plugin.internal.XFSAccount import XFSAccount
 
 
 class SendmywayCom(XFSAccount):
-    __name    = "SendmywayCom"
-    __type    = "account"
-    __version = "0.02"
+    __name__    = "SendmywayCom"
+    __type__    = "account"
+    __version__ = "0.02"
 
-    __description = """Sendmyway.com account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Sendmyway.com account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     HOSTER_DOMAIN = "sendmyway.com"

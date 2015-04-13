@@ -9,16 +9,16 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class XdadevelopersCom(SimpleHoster):
-    __name    = "XdadevelopersCom"
-    __type    = "hoster"
-    __version = "0.03"
+    __name__    = "XdadevelopersCom"
+    __type__    = "hoster"
+    __version__ = "0.03"
 
-    __pattern = r'https?://(?:www\.)?forum\.xda-developers\.com/devdb/project/dl/\?id=\d+'
-    __config  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern__ = r'https?://(?:www\.)?forum\.xda-developers\.com/devdb/project/dl/\?id=\d+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description = """Xda-developers.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zapp-brannigan", "fuerst.reinje@web.de")]
+    __description__ = """Xda-developers.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
     NAME_PATTERN    = r'<label>Filename:</label>\s*<div>\s*(?P<N>.*?)\n'

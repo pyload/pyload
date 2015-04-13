@@ -4,16 +4,16 @@ from pyload.plugin.Addon import Addon
 
 
 class RestartFailed(Addon):
-    __name    = "RestartFailed"
-    __type    = "addon"
-    __version = "1.58"
+    __name__    = "RestartFailed"
+    __type__    = "addon"
+    __version__ = "1.58"
 
-    __config = [("activated", "bool", "Activated"                , True),
+    __config__ = [("activated", "bool", "Activated"                , True),
                 ("interval" , "int" , "Check interval in minutes", 90  )]
 
-    __description = """Restart all the failed downloads in queue"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Restart all the failed downloads in queue"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     # event_list = ["pluginConfigChanged"]

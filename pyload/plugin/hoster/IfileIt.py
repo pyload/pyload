@@ -4,13 +4,13 @@ from pyload.plugin.internal.DeadHoster import DeadHoster
 
 
 class IfileIt(DeadHoster):
-    __name    = "IfileIt"
-    __type    = "hoster"
-    __version = "0.29"
+    __name__    = "IfileIt"
+    __type__    = "hoster"
+    __version__ = "0.29"
 
-    __pattern = r'^unmatchable$'
-    __config  = []
+    __pattern__ = r'^unmatchable$'
+    __config__  = []
 
-    __description = """Ifile.it"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Ifile.it"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
