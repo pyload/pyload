@@ -623,7 +623,10 @@ class SimpleHoster(Hoster):
                 self.tempOffline()
 
             elif status is 8:
-                self.fail()
+                if 'error' in self.info:
+                    self.fail(self.info['error'])
+                else:
+                    self.fail("Failed")
 
         finally:
             self.logDebug("File status: %s" % statusMap[status])
