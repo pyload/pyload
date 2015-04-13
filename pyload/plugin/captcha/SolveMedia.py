@@ -49,7 +49,7 @@ class SolveMedia(Captcha):
         html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript",
                                     get={'k': key})
         try:
-            challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="([^"]+)">',
+            challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="(.+?)">',
                                   html).group(1)
             server    = "http://api.solvemedia.com/papi/media"
 

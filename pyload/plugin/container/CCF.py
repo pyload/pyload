@@ -3,8 +3,7 @@
 from __future__ import with_statement
 
 import re
-
-from urllib2 import build_opener
+import urllib2
 
 from MultipartPostHandler import MultipartPostHandler
 
@@ -27,7 +26,7 @@ class CCF(Container):
 
     def decrypt(self, pyfile):
         fs_filename = fs_encode(pyfile.url.strip())
-        opener      = build_opener(MultipartPostHandler)
+        opener      = urllib2.build_opener(MultipartPostHandler)
 
         dlc_content = opener.open('http://service.jdownloader.net/dlcrypt/getDLC.php',
                                   {'src'     : "ccf",

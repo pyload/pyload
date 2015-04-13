@@ -7,6 +7,9 @@ from random import randint
 
 import os
 import re
+import urllib
+import urlparse
+
 from os import remove, makedirs, chmod, stat
 from os.path import exists, join
 
@@ -17,7 +20,6 @@ if os.name != "nt":
 
 from itertools import islice
 from traceback import print_exc
-from urlparse import urlparse
 
 from pyload.utils import fs_decode, fs_encode, safe_filename, fs_join, encode
 
@@ -217,7 +219,7 @@ class Plugin(Base):
         #: captcha task
         self.cTask = None
 
-        self.html = None  # @TODO: Move to hoster class in 0.4.10
+        self.html = None  #@TODO: Move to hoster class in 0.4.10
         self.retries = 0
 
         self.init()
@@ -490,7 +492,7 @@ class Plugin(Base):
         if not url:
             self.fail(_("No url given"))
 
-        url = encode(url).strip()  # @NOTE: utf8 vs decode -> please use decode attribute in all future plugins
+        url = urllib.unquote(encode(url).strip())  #@NOTE: utf8 vs decode -> please use decode attribute in all future plugins
 
         if self.core.debug:
             self.logDebug("Load url: " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
@@ -555,7 +557,7 @@ class Plugin(Base):
         if not url:
             self.fail(_("No url given"))
 
-        url = encode(url).strip()
+        url = urllib.unquote(encode(url).strip())
 
         if self.core.debug:
             self.logDebug("Download url: " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
@@ -563,6 +565,9 @@ class Plugin(Base):
         self.checkForSameFiles()
 
         self.pyfile.setStatus("downloading")
+
+        if disposition:
+            self.pyfile.name = urlparse.urlparse(url).path.split('/')[-1] or self.pyfile.name
 
         download_folder = self.core.config['general']['download_folder']
 
@@ -596,7 +601,7 @@ class Plugin(Base):
             self.pyfile.size = self.req.size
 
         if newname:
-            newname = urlparse(newname).path.split("/")[-1]
+            newname = urlparse.urlparse(newname).path.split('/')[-1]
 
             if disposition and newname != name:
                 self.logInfo(_("%(name)s saved as %(newname)s") % {"name": name, "newname": newname})

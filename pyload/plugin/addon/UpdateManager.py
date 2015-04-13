@@ -32,7 +32,7 @@ class UpdateManager(Addon):
     __type__    = "addon"
     __version__ = "0.50"
 
-    __config__  = [("activated", "bool", "Activated", True),
+    __config__  = [("activated", "bool", "Activated", False),
                  ("checkinterval", "int", "Check interval in hours", 8),
                  ("autorestart", "bool",
                   "Auto-restart pyLoad when required", True),
@@ -83,7 +83,7 @@ class UpdateManager(Addon):
     def autoreloadPlugins(self):
         """ reload and reindex all modified plugins """
         modules = filter(
-            lambda m: m and (m.__name__.startswith("module.plugins.") or
+            lambda m: m and (m.__name__.startswith("pyload.plugin.") or
                              m.__name__.startswith("userplugins.")) and
             m.__name__.count(".") >= 2, sys.modules.itervalues()
         )

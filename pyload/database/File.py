@@ -33,7 +33,7 @@ class FileHandler(object):
 
         self.jobCache = {}
 
-        self.lock = RLock()  # @TODO should be a Lock w/o R
+        self.lock = RLock()  #@TODO: should be a Lock w/o R
         #self.lock._Verbose__verbose = True
 
         self.filecount = -1  # if an invalid value is set get current value from db
@@ -111,7 +111,7 @@ class FileHandler(object):
         self.db.addLinks(data, package)
         self.core.threadManager.createInfoThread(data, package)
 
-        #@TODO change from reloadAll event to package update event
+        #@TODO: change from reloadAll event to package update event
         self.core.pullManager.addEvent(ReloadAllEvent("collector"))
 
     #--------------------------------------------------------------------------
@@ -278,8 +278,8 @@ class FileHandler(object):
     def getJob(self, occ):
         """get suitable job"""
 
-        #@TODO clean mess
-        #@TODO improve selection of valid jobs
+        #@TODO: clean mess
+        #@TODO: improve selection of valid jobs
 
         if occ in self.jobCache:
             if self.jobCache[occ]:
@@ -815,7 +815,7 @@ class FileMethods(object):
     def getJob(self, occ):
         """return pyfile ids, which are suitable for download and dont use a occupied plugin"""
 
-        #@TODO improve this hardcoded method
+        #@TODO: improve this hardcoded method
         pre = "('CCF', 'DLC', 'LinkList', 'RSDF', 'TXT')"  # plugins which are processed in collector
 
         cmd = "("

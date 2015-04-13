@@ -29,7 +29,7 @@ class XFSHoster(SimpleHoster):
 
     TEXT_ENCODING = False
     DIRECT_LINK   = None
-    MULTI_HOSTER  = True  # @NOTE: Should be default to False for safe, but I'm lazy...
+    MULTI_HOSTER  = True  #@NOTE: Should be default to False for safe, but I'm lazy...
 
     NAME_PATTERN = r'(Filename[ ]*:[ ]*</b>(</td><td nowrap>)?|name="fname"[ ]+value="|<[\w^_]+ class="(file)?name">)\s*(?P<N>.+?)(\s*<|")'
     SIZE_PATTERN = r'(Size[ ]*:[ ]*</b>(</td><td>)?|File:.*>|</font>\s*\(|<[\w^_]+ class="size">)\s*(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)'
@@ -109,7 +109,7 @@ class XFSHoster(SimpleHoster):
             self.logError(data['op'] if 'op' in data else _("UNKNOWN"))
             return ""
 
-        self.link = m.group(1).strip()  # @TODO: Remove .strip() in 0.4.10
+        self.link = m.group(1).strip()  #@TODO: Remove .strip() in 0.4.10
 
     def handlePremium(self, pyfile):
         return self.handleFree(pyfile)

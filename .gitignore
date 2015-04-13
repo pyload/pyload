@@ -77,7 +77,7 @@ eggs
 *.pydevproject
 *.rej
 _build/
-#module/
+module/
 paver-minilib.zip
 /setup.sh
 /tesseract/

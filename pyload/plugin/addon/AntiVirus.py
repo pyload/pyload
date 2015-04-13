@@ -27,9 +27,6 @@ class AntiVirus(Addon):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    interval = 0  #@TODO: Remove in 0.4.10
-
-
     def setup(self):
         self.info = {}  #@TODO: Remove in 0.4.10
 

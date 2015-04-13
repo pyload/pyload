@@ -63,14 +63,15 @@ setup(
     ],
 
     extras_require={
-        'Few plugins dependencies': ["BeautifulSoup >= 3.2, < 3.3"]
-        'Colored log'             : ["colorlog"]
-        'Lightweight webserver'   : ["bjoern"]
-        'RSS support'             : ["feedparser"]
-        'SSL support'             : ["pyOpenSSL"]
-        'RSDF/CCF/DLC support'    : ["pycrypto"]
-        'Captcha recognition'     : ["PIL"]
-        'JSON speedup'            : ["simplejson"]
+        'Few plugins dependencies': ["BeautifulSoup >= 3.2, < 3.3"],
+        'Colored log'             : ["colorlog"],
+        'Lightweight webserver'   : ["bjoern"],
+        'RSS support'             : ["feedparser"],
+        'SSL support'             : ["pyOpenSSL"],
+        'RSDF/CCF/DLC support'    : ["pycrypto"],
+        'Captcha recognition'     : ["PIL"],
+        'JSON speedup'            : ["simplejson"],
+        'Trash support'           : ["Send2Trash"]
     },
 
     #setup_requires=["setuptools_hg"],

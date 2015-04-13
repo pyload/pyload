@@ -17,8 +17,8 @@ class AdsCaptcha(Captcha):
     __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
-    CAPTCHAID_PATTERN  = r'api\.adscaptcha\.com/Get\.aspx\?[^"\']*CaptchaId=(\d+)'
-    PUBLICKEY_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?[^"\']*PublicKey=([\w-]+)'
+    CAPTCHAID_PATTERN  = r'api\.adscaptcha\.com/Get\.aspx\?.*?CaptchaId=(\d+)'
+    PUBLICKEY_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?.*?PublicKey=([\w-]+)'
 
 
     def detect_key(self, html=None):

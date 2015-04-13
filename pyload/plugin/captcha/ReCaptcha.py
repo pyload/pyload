@@ -13,7 +13,7 @@ from pyload.plugin.Captcha import Captcha
 class ReCaptcha(Captcha):
     __name__    = "ReCaptcha"
     __type__    = "captcha"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __description__ = """ReCaptcha captcha service plugin"""
     __license__     = "GPLv3"
@@ -161,21 +161,12 @@ class ReCaptcha(Captcha):
         token2 = re.search(r'"finput","(.*?)",', html)
         self.logDebug("Token #2: %s" % token2.group(1))
 
-        token3 = re.search(r'."asconf".\s,".*?".\s,"(.*?)".', html)
+        token3 = re.search(r'"rresp","(.*?)",', html)
         self.logDebug("Token #3: %s" % token3.group(1))
-
-        html = self.plugin.req.load("https://www.google.com/recaptcha/api2/reload",
-                                    post={'k'     : key,
-                                          'c'     : token2.group(1),
-                                          'reason': "fi",
-                                          'fbg'   : token3.group(1)})
-
-        token4 = re.search(r'"rresp","(.*?)",', html)
-        self.logDebug("Token #4: %s" % token4.group(1))
 
         millis_captcha_loading = int(round(time.time() * 1000))
         captcha_response       = self.plugin.decryptCaptcha("https://www.google.com/recaptcha/api2/payload",
-                                                            get={'c': token4.group(1), 'k': key},
+                                                            get={'c':token3.group(1), 'k':key},
                                                             cookies=True,
                                                             forceUser=True)
         response               = b64encode('{"response":"%s"}' % captcha_response)
@@ -187,15 +178,15 @@ class ReCaptcha(Captcha):
 
         html = self.plugin.req.load("https://www.google.com/recaptcha/api2/userverify",
                                     post={'k'       : key,
-                                          'c'       : token4.group(1),
+                                          'c'       : token3.group(1),
                                           'response': response,
                                           't'       : timeToSolve,
                                           'ct'      : timeToSolveMore,
                                           'bg'      : botguardstring})
 
-        token5 = re.search(r'"uvresp","(.*?)",', html)
-        self.logDebug("Token #5: %s" % token5.group(1))
+        token4 = re.search(r'"uvresp","(.*?)",', html)
+        self.logDebug("Token #4: %s" % token4.group(1))
 
-        result = token5.group(1)
+        result = token4.group(1)
 
         return result, None
