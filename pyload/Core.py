@@ -538,7 +538,7 @@ class Core(object):
         for i in range(3, 50):
             try:
                 close(i)
-            except :
+            except Exception:
                 pass
 
         execl(executable, executable, *sys.argv)

@@ -124,7 +124,7 @@ class GzipResponse(object):
             if hasattr(app_iter, 'close'):
                 try:
                     app_iter.close()
-                except :
+                except Exception:
                     pass
 
         content_length = self.buffer.tell()
