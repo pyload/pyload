@@ -12,7 +12,7 @@ except ImportError:
 
     if "64" in platform.machine():
         sys.path.append(os.path.join(pypath, "lib64"))
-    sys.path.append(os.path.join(pypath, "lib"))
+    sys.path.append(os.path.join(pypath, "lib", "Python", "Lib"))
 
 from thrift.transport import TTransport
 #from thrift.transport.TZlibTransport import TZlibTransport

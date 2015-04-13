@@ -283,7 +283,7 @@ msgid ""
 msgstr ""
 
 #: pyload/threads/ServerThread.py:60
-msgid "Copy the boern.so to the lib folder or use setup.py install"
+msgid "Copy the boern.so file to lib/Python/Lib or use setup.py install"
 msgstr ""
 
 #: pyload/threads/ServerThread.py:61

@@ -110,6 +110,7 @@ Some extra features require additional software packages. See below:
 
  - **BeautifulSoup**                                  *Few plugins support*
  - **PIL** (python-imaging)                           *Captcha recognition*
+ - **Send2Trash**                                     *Trash support*
  - **colorlog**                                       *Colored log*
  - **bjoern** (<https://github.com/jonashaag/bjoern>) *More responsive web interface*
  - **feedparser**                                     *RSS parsing*

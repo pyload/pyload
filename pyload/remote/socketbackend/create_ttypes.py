@@ -8,7 +8,7 @@ import sys
 
 if "64" in platform.machine():
     sys.path.append(os.path.join(pypath, "lib64"))
-sys.path.append(os.path.join(pypath, "lib"))
+sys.path.append(os.path.join(pypath, "lib", "Python", "Lib"))
 
 sys.path.append(os.path.join(pypath, "pyload", "remote"))
 

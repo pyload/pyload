@@ -64,14 +64,14 @@ setup(
 
     extras_require={
         'Few plugins dependencies': ["BeautifulSoup >= 3.2, < 3.3"],
+        'Captcha recognition'     : ["PIL"],
+        'Trash support'           : ["Send2Trash"],
         'Colored log'             : ["colorlog"],
         'Lightweight webserver'   : ["bjoern"],
         'RSS support'             : ["feedparser"],
         'SSL support'             : ["pyOpenSSL"],
         'RSDF/CCF/DLC support'    : ["pycrypto"],
-        'Captcha recognition'     : ["PIL"],
-        'JSON speedup'            : ["simplejson"],
-        'Trash support'           : ["Send2Trash"]
+        'JSON speedup'            : ["simplejson"]
     },
 
     #setup_requires=["setuptools_hg"],

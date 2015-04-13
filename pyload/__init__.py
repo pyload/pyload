@@ -54,7 +54,7 @@ __builtin__.pypath    = os.path.abspath(os.path.join(rootdir, ".."))
 
 if "64" in platform.machine():
     sys.path.append(os.path.join(pypath, "lib64"))
-sys.path.append(os.path.join(pypath, "lib"))
+sys.path.append(os.path.join(pypath, "lib", "Python", "Lib"))
 
 sys.stdout = getwriter(get_console_encoding(sys.stdout.encoding))(sys.stdout, errors="replace")
 
