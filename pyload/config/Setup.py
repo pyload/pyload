@@ -302,6 +302,7 @@ class SetupAssistant(object):
         db.shutdown()
 
         print
+        print
         print _("External clients (GUI, CLI or other) need remote access to work over the network.")
         print _("However, if you only want to use the webinterface you may disable it to save ram.")
         self.config.set("remote", "activated", self.ask(_("Enable remote access"), self.no, bool=True))
@@ -447,10 +448,10 @@ class SetupAssistant(object):
             confpath = self.set_configdir(confdir)
             print
             if not confpath:
-                print _("Failed to change the current config path!")
+                print _("Failed to change the current CONFIG PATH!")
                 print
             else:
-                print _("pyLoad config path successfully changed.")
+                print _("CONFIG PATH successfully changed to: %s") % configdir
                 break
 
 
@@ -507,20 +508,28 @@ class SetupAssistant(object):
             while p1 != p2:
                 sys.stdout.write(_("Password: "))
                 p1 = getpass("").strip("\n\r")
-                print("passwd:'%s'" % p1)
+
                 if len(p1) < pwlen:
+                    print
                     print _("Password too short! Use at least %s symbols." % pwlen)
+                    print
                     continue
                 elif not p1.isalnum():
+                    print
                     print _("Password must be alphanumeric.")
+                    print
                     continue
 
                 sys.stdout.write(_("Password (again): "))
                 p2 = getpass("").strip("\n\r")
 
                 if p1 == p2:
+                    if self.ask(_("Show password?"), self.no, bool=True):
+                        print
+                        print _("Your Password is: %s") % p1
                     return p1
                 else:
+                    print
                     print _("Passwords did not match.")
 
         while True:
