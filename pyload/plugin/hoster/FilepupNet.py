@@ -10,16 +10,16 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class FilepupNet(SimpleHoster):
-    __name__    = "FilepupNet"
-    __type__    = "hoster"
-    __version__ = "0.03"
+    __name    = "FilepupNet"
+    __type    = "hoster"
+    __version = "0.03"
 
-    __pattern__ = r'http://(?:www\.)?filepup\.net/files/\w+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'http://(?:www\.)?filepup\.net/files/\w+'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """Filepup.net hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"),
+    __description = """Filepup.net hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zapp-brannigan", "fuerst.reinje@web.de"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

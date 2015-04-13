@@ -4,18 +4,18 @@ from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 
 
 class FiletramCom(SimpleCrypter):
-    __name__    = "FiletramCom"
-    __type__    = "crypter"
-    __version__ = "0.03"
+    __name    = "FiletramCom"
+    __type    = "crypter"
+    __version = "0.03"
 
-    __pattern__ = r'http://(?:www\.)?filetram\.com/[^/]+/.+'
-    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+    __pattern = r'http://(?:www\.)?filetram\.com/[^/]+/.+'
+    __config  = [("use_premium"       , "bool", "Use premium account if available"   , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """Filetram.com decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("igel", "igelkun@myopera.com"),
+    __description = """Filetram.com decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("igel", "igelkun@myopera.com"),
                        ("stickell", "l.stickell@yahoo.it")]
 
 

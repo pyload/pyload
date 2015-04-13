@@ -4,13 +4,13 @@ from pyload.plugin.account.ZeveraCom import ZeveraCom
 
 
 class MultihostersCom(ZeveraCom):
-    __name__    = "MultihostersCom"
-    __type__    = "account"
-    __version__ = "0.03"
+    __name    = "MultihostersCom"
+    __type    = "account"
+    __version = "0.03"
 
-    __description__ = """Multihosters.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("tjeh", "tjeh@gmx.net")]
+    __description = """Multihosters.com account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("tjeh", "tjeh@gmx.net")]
 
 
     HOSTER_DOMAIN = "multihosters.com"

@@ -6,16 +6,16 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class RgHostNet(SimpleHoster):
-    __name__    = "RgHostNet"
-    __type__    = "hoster"
-    __version__ = "0.04"
+    __name    = "RgHostNet"
+    __type    = "hoster"
+    __version = "0.04"
 
-    __pattern__ = r'http://(?:www\.)?rghost\.(net|ru)/[\d-]+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'http://(?:www\.)?rghost\.(net|ru)/[\d-]+'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """RgHost.net hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("z00nx", "z00nx0@gmail.com")]
+    __description = """RgHost.net hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("z00nx", "z00nx0@gmail.com")]
 
 
     INFO_PATTERN    = r'data-share42-text="(?P<N>.+?) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)'

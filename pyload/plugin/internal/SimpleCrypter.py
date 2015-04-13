@@ -10,17 +10,17 @@ from pyload.utils import fixup
 
 
 class SimpleCrypter(Crypter, SimpleHoster):
-    __name__    = "SimpleCrypter"
-    __type__    = "crypter"
-    __version__ = "0.43"
+    __name    = "SimpleCrypter"
+    __type    = "crypter"
+    __version = "0.43"
 
-    __pattern__ = r'^unmatchable$'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),  #: Overrides core.config['general']['folder_per_package']
+    __pattern = r'^unmatchable$'
+    __config  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),  #: Overrides core.config['general']['folder_per_package']
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """Simple decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Simple decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     """

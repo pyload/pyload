@@ -6,15 +6,15 @@ from pyload.plugin.internal.XFSHoster import XFSHoster
 
 
 class NosuploadCom(XFSHoster):
-    __name__    = "NosuploadCom"
-    __type__    = "hoster"
-    __version__ = "0.31"
+    __name    = "NosuploadCom"
+    __type    = "hoster"
+    __version = "0.31"
 
-    __pattern__ = r'http://(?:www\.)?nosupload\.com/\?d=\w{12}'
+    __pattern = r'http://(?:www\.)?nosupload\.com/\?d=\w{12}'
 
-    __description__ = """Nosupload.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("igel", "igelkun@myopera.com")]
+    __description = """Nosupload.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("igel", "igelkun@myopera.com")]
 
 
     SIZE_PATTERN = r'<p><strong>Size:</strong> (?P<S>[\d.,]+) (?P<U>[\w^_]+)</p>'

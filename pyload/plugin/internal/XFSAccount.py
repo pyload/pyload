@@ -10,13 +10,13 @@ from pyload.plugin.internal.SimpleHoster import parseHtmlForm, set_cookies
 
 
 class XFSAccount(Account):
-    __name__    = "XFSAccount"
-    __type__    = "account"
-    __version__ = "0.36"
+    __name    = "XFSAccount"
+    __type    = "account"
+    __version = "0.36"
 
-    __description__ = """XFileSharing account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg"      , "zoidberg@mujmail.cz"),
+    __description = """XFileSharing account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg"      , "zoidberg@mujmail.cz"),
                        ("Walter Purcaro", "vuolter@gmail.com"  )]
 
 

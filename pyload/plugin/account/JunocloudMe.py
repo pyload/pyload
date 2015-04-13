@@ -4,13 +4,13 @@ from pyload.plugin.internal.XFSAccount import XFSAccount
 
 
 class JunocloudMe(XFSAccount):
-    __name__    = "JunocloudMe"
-    __type__    = "account"
-    __version__ = "0.02"
+    __name    = "JunocloudMe"
+    __type    = "account"
+    __version = "0.02"
 
-    __description__ = """Junocloud.me account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("guidobelix", "guidobelix@hotmail.it")]
+    __description = """Junocloud.me account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("guidobelix", "guidobelix@hotmail.it")]
 
 
     HOSTER_DOMAIN = "junocloud.me"

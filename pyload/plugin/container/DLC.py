@@ -12,15 +12,15 @@ from pyload.utils import decode, fs_encode
 
 
 class DLC(Container):
-    __name__    = "DLC"
-    __type__    = "container"
-    __version__ = "0.24"
+    __name    = "DLC"
+    __type    = "container"
+    __version = "0.24"
 
-    __pattern__ = r'.+\.dlc$'
+    __pattern = r'.+\.dlc$'
 
-    __description__ = """DLC container decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+    __description = """DLC container decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("RaNaN", "RaNaN@pyload.org"),
                        ("spoob", "spoob@pyload.org"),
                        ("mkaay", "mkaay@mkaay.de"),
                        ("Schnusch", "Schnusch@users.noreply.github.com"),

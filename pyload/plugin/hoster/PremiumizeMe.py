@@ -5,16 +5,16 @@ from pyload.plugin.internal.MultiHoster import MultiHoster
 
 
 class PremiumizeMe(MultiHoster):
-    __name__    = "PremiumizeMe"
-    __type__    = "hoster"
-    __version__ = "0.16"
+    __name    = "PremiumizeMe"
+    __type    = "hoster"
+    __version = "0.16"
 
-    __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """Premiumize.me multi-hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
+    __description = """Premiumize.me multi-hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
 
 
     def handlePremium(self, pyfile):

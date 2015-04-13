@@ -4,13 +4,13 @@ from pyload.plugin.internal.DeadHoster import DeadHoster
 
 
 class WarserverCz(DeadHoster):
-    __name__    = "WarserverCz"
-    __type__    = "hoster"
-    __version__ = "0.13"
+    __name    = "WarserverCz"
+    __type    = "hoster"
+    __version = "0.13"
 
-    __pattern__ = r'http://(?:www\.)?warserver\.cz/stahnout/\d+'
-    __config__  = []
+    __pattern = r'http://(?:www\.)?warserver\.cz/stahnout/\d+'
+    __config  = []
 
-    __description__ = """Warserver.cz hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Warserver.cz hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]

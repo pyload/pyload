@@ -7,20 +7,20 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class UploadableCh(SimpleHoster):
-    __name__    = "UploadableCh"
-    __type__    = "hoster"
-    __version__ = "0.09"
+    __name    = "UploadableCh"
+    __type    = "hoster"
+    __version = "0.09"
 
-    __pattern__ = r'http://(?:www\.)?uploadable\.ch/file/(?P<ID>\w+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'http://(?:www\.)?uploadable\.ch/file/(?P<ID>\w+)'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """Uploadable.ch hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"),
+    __description = """Uploadable.ch hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zapp-brannigan", "fuerst.reinje@web.de"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", r'http://www.uploadable.ch/file/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern + ".*", r'http://www.uploadable.ch/file/\g<ID>')]
 
     INFO_PATTERN = r'div id=\"file_name\" title=.*>(?P<N>.+)<span class=\"filename_normal\">\((?P<S>[\d.]+) (?P<U>\w+)\)</span><'
 

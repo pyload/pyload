@@ -7,13 +7,13 @@ from pyload.plugin.Account import Account
 
 
 class MegaRapidoNet(Account):
-    __name__    = "MegaRapidoNet"
-    __type__    = "account"
-    __version__ = "0.02"
+    __name    = "MegaRapidoNet"
+    __type    = "account"
+    __version = "0.02"
 
-    __description__ = """MegaRapido.net account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
+    __description = """MegaRapido.net account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
     VALID_UNTIL_PATTERN = r'<\s*?div[^>]*?class\s*?=\s*?[\'"]premium_index[\'"].*?>[^<]*?<[^>]*?b.*?>\s*?TEMPO\s*?PREMIUM.*?<[^>]*?/b.*?>\s*?(\d*)[^\d]*?DIAS[^\d]*?(\d*)[^\d]*?HORAS[^\d]*?(\d*)[^\d]*?MINUTOS[^\d]*?(\d*)[^\d]*?SEGUNDOS'

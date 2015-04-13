@@ -5,16 +5,16 @@ from pyload.plugin.Addon import Addon
 
 
 class DeleteFinished(Addon):
-    __name__    = "DeleteFinished"
-    __type__    = "addon"
-    __version__ = "1.12"
+    __name    = "DeleteFinished"
+    __type    = "addon"
+    __version = "1.12"
 
-    __config__ = [("interval"  , "int" , "Check interval in hours"          , 72   ),
+    __config = [("interval"  , "int" , "Check interval in hours"          , 72   ),
                   ("deloffline", "bool", "Delete package with offline links", False)]
 
-    __description__ = """Automatically delete all finished packages from queue"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Automatically delete all finished packages from queue"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     # event_list = ["pluginConfigChanged"]

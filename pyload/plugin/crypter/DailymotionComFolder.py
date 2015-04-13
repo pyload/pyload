@@ -10,17 +10,17 @@ from pyload.utils import fs_join
 
 
 class DailymotionComFolder(Crypter):
-    __name__    = "DailymotionComFolder"
-    __type__    = "crypter"
-    __version__ = "0.01"
+    __name    = "DailymotionComFolder"
+    __type    = "crypter"
+    __version = "0.01"
 
-    __pattern__ = r'https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+    __pattern = r'https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)'
+    __config  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """Dailymotion.com channel & playlist decrypter"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Dailymotion.com channel & playlist decrypter"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def api_response(self, ref, req=None):
@@ -83,7 +83,7 @@ class DailymotionComFolder(Crypter):
 
 
     def decrypt(self, pyfile):
-        m = re.match(self.__pattern__, pyfile.url)
+        m = re.match(self.__pattern, pyfile.url)
         m_id = m.group('ID')
         m_type = m.group('TYPE')
 

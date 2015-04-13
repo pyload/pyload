@@ -6,13 +6,13 @@ from pyload.plugin.Account import Account
 
 
 class SimplydebridCom(Account):
-    __name__    = "SimplydebridCom"
-    __type__    = "account"
-    __version__ = "0.11"
+    __name    = "SimplydebridCom"
+    __type    = "account"
+    __version = "0.11"
 
-    __description__ = """Simply-Debrid.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
+    __description = """Simply-Debrid.com account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
     def loadAccountInfo(self, user, req):

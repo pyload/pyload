@@ -31,15 +31,15 @@ def checkFile(plugin, urls):
 
 
 class FileserveCom(Hoster):
-    __name__    = "FileserveCom"
-    __type__    = "hoster"
-    __version__ = "0.54"
+    __name    = "FileserveCom"
+    __type    = "hoster"
+    __version = "0.54"
 
-    __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<ID>[^/]+)'
+    __pattern = r'http://(?:www\.)?fileserve\.com/file/(?P<ID>[^/]+)'
 
-    __description__ = """Fileserve.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("jeix", "jeix@hasnomail.de"),
+    __description = """Fileserve.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("jeix", "jeix@hasnomail.de"),
                        ("mkaay", "mkaay@mkaay.de"),
                        ("Paul King", ""),
                        ("zoidberg", "zoidberg@mujmail.cz")]
@@ -59,7 +59,7 @@ class FileserveCom(Hoster):
 
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium
-        self.file_id = re.match(self.__pattern__, self.pyfile.url).group('ID')
+        self.file_id = re.match(self.__pattern, self.pyfile.url).group('ID')
         self.url     = "%s%s" % (self.URLS[0], self.file_id)
 
         self.logDebug("File ID: %s URL: %s" % (self.file_id, self.url))
@@ -144,7 +144,7 @@ class FileserveCom(Hoster):
         if "fail" in res:
             self.fail(_("Failed getting wait time"))
 
-        if self.__name__ == "FilejungleCom":
+        if self.__name == "FilejungleCom":
             m = re.search(r'"waitTime":(\d+)', res)
             if m is None:
                 self.fail(_("Cannot get wait time"))
@@ -184,7 +184,7 @@ class FileserveCom(Hoster):
 
     def handlePremium(self, pyfile):
         premium_url = None
-        if self.__name__ == "FileserveCom":
+        if self.__name == "FileserveCom":
             #try api download
             res = self.load("http://app.fileserve.com/api/download/premium/",
                             post={"username": self.user,

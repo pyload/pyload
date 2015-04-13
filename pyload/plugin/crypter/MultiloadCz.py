@@ -5,19 +5,19 @@ from pyload.plugin.Crypter import Crypter
 
 
 class MultiloadCz(Crypter):
-    __name__    = "MultiloadCz"
-    __type__    = "crypter"
-    __version__ = "0.40"
+    __name    = "MultiloadCz"
+    __type    = "crypter"
+    __version = "0.40"
 
-    __pattern__ = r'http://(?:[^/]*\.)?multiload\.cz/(stahnout|slozka)/.+'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"           , True),
+    __pattern = r'http://(?:[^/]*\.)?multiload\.cz/(stahnout|slozka)/.+'
+    __config  = [("use_subfolder"     , "bool", "Save package to subfolder"           , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package" , True),
                    ("usedHoster"        , "str" , "Prefered hoster list (bar-separated)", ""  ),
                    ("ignoredHoster"     , "str" , "Ignored hoster list (bar-separated)" , ""  )]
 
-    __description__ = """Multiload.cz decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """Multiload.cz decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FOLDER_PATTERN = r'<form action="" method="get"><textarea.*?>([^>]*)</textarea></form>'
@@ -27,7 +27,7 @@ class MultiloadCz(Crypter):
     def decrypt(self, pyfile):
         self.html = self.load(pyfile.url, decode=True)
 
-        if re.match(self.__pattern__, pyfile.url).group(1) == "slozka":
+        if re.match(self.__pattern, pyfile.url).group(1) == "slozka":
             m = re.search(self.FOLDER_PATTERN, self.html)
             if m:
                 self.urls.extend(m.group(1).split())

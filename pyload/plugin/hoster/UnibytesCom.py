@@ -8,16 +8,16 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class UnibytesCom(SimpleHoster):
-    __name__    = "UnibytesCom"
-    __type__    = "hoster"
-    __version__ = "0.12"
+    __name    = "UnibytesCom"
+    __type    = "hoster"
+    __version = "0.12"
 
-    __pattern__ = r'https?://(?:www\.)?unibytes\.com/[\w .-]{11}B'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'https?://(?:www\.)?unibytes\.com/[\w .-]{11}B'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """UniBytes.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """UniBytes.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     HOSTER_DOMAIN = "unibytes.com"

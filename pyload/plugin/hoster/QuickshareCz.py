@@ -6,16 +6,16 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class QuickshareCz(SimpleHoster):
-    __name__    = "QuickshareCz"
-    __type__    = "hoster"
-    __version__ = "0.56"
+    __name    = "QuickshareCz"
+    __type    = "hoster"
+    __version = "0.56"
 
-    __pattern__ = r'http://(?:[^/]*\.)?quickshare\.cz/stahnout-soubor/.+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'http://(?:[^/]*\.)?quickshare\.cz/stahnout-soubor/.+'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """Quickshare.cz hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """Quickshare.cz hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     NAME_PATTERN = r'<th width="145px">Název:</th>\s*<td style="word-wrap:break-word;">(?P<N>[^<]+)</td>'

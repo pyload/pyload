@@ -7,17 +7,17 @@ from pyload.utils import fs_encode
 
 
 class TXT(Container):
-    __name__    = "TXT"
-    __type__    = "container"
-    __version__ = "0.15"
+    __name    = "TXT"
+    __type    = "container"
+    __version = "0.15"
 
-    __pattern__ = r'.+\.(txt|text)$'
-    __config__  = [("flush"   , "bool"  , "Flush list after adding", False  ),
+    __pattern = r'.+\.(txt|text)$'
+    __config  = [("flush"   , "bool"  , "Flush list after adding", False  ),
                  ("encoding", "string", "File encoding"          , "utf-8")]
 
-    __description__ = """Read link lists in plain text formats"""
-    __license__     = "GPLv3"
-    __authors__     = [("spoob", "spoob@pyload.org"),
+    __description = """Read link lists in plain text formats"""
+    __license     = "GPLv3"
+    __authors     = [("spoob", "spoob@pyload.org"),
                      ("jeix", "jeix@hasnomail.com")]
 
 

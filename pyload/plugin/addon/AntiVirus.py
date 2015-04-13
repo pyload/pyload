@@ -9,12 +9,12 @@ from pyload.utils import fs_encode, fs_join
 
 
 class AntiVirus(Addon):
-    __name__    = "AntiVirus"
-    __type__    = "addon"
-    __version__ = "0.07"
+    __name    = "AntiVirus"
+    __type    = "addon"
+    __version = "0.07"
 
     #@TODO: add trash option (use Send2Trash lib)
-    __config__ = [("action"    , "Antivirus default;Delete;Quarantine", "Manage infected files"                     , "Antivirus default"),
+    __config = [("action"    , "Antivirus default;Delete;Quarantine", "Manage infected files"                     , "Antivirus default"),
                   ("quardir"   , "folder"                             , "Quarantine folder"                         , ""                 ),
                   ("deltotrash", "bool"                               , "Move to trash (recycle bin) instead delete", True               ),
                   ("scanfailed", "bool"                               , "Scan incompleted files (failed downloads)" , False              ),
@@ -22,9 +22,9 @@ class AntiVirus(Addon):
                   ("cmdargs"   , "str"                                , "Scan options"                              , ""                 ),
                   ("ignore-err", "bool"                               , "Ignore scan errors"                        , False              )]
 
-    __description__ = """Scan downloaded files with antivirus program"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Scan downloaded files with antivirus program"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def setup(self):

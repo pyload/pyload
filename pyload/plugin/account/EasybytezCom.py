@@ -6,13 +6,13 @@ from pyload.plugin.internal.XFSAccount import XFSAccount
 
 
 class EasybytezCom(XFSAccount):
-    __name__    = "EasybytezCom"
-    __type__    = "account"
-    __version__ = "0.12"
+    __name    = "EasybytezCom"
+    __type    = "account"
+    __version = "0.12"
 
-    __description__ = """EasyBytez.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description = """EasyBytez.com account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("guidobelix", "guidobelix@hotmail.it")]
 
 

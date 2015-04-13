@@ -7,15 +7,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class LolabitsEs(SimpleHoster):
-    __name__    = "LolabitsEs"
-    __type__    = "hoster"
-    __version__ = "0.02"
+    __name    = "LolabitsEs"
+    __type    = "hoster"
+    __version = "0.02"
 
-    __pattern__ = r'https?://(?:www\.)?lolabits\.es/.+'
+    __pattern = r'https?://(?:www\.)?lolabits\.es/.+'
 
-    __description__ = """Lolabits.es hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
+    __description = """Lolabits.es hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
     NAME_PATTERN    = r'Descargar: <b>(?P<N>.+?)<'

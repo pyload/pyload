@@ -4,13 +4,13 @@ from pyload.plugin.internal.DeadHoster import DeadHoster
 
 
 class MegauploadCom(DeadHoster):
-    __name__    = "MegauploadCom"
-    __type__    = "hoster"
-    __version__ = "0.31"
+    __name    = "MegauploadCom"
+    __type    = "hoster"
+    __version = "0.31"
 
-    __pattern__ = r'http://(?:www\.)?megaupload\.com/\?.*&?(d|v)=\w+'
-    __config__  = []
+    __pattern = r'http://(?:www\.)?megaupload\.com/\?.*&?(d|v)=\w+'
+    __config  = []
 
-    __description__ = """Megaupload.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("spoob", "spoob@pyload.org")]
+    __description = """Megaupload.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("spoob", "spoob@pyload.org")]

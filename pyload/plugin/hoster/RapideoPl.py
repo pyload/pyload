@@ -5,16 +5,16 @@ from pyload.plugin.internal.MultiHoster import MultiHoster
 
 
 class RapideoPl(MultiHoster):
-    __name__    = "RapideoPl"
-    __type__    = "hoster"
-    __version__ = "0.02"
+    __name    = "RapideoPl"
+    __type    = "hoster"
+    __version = "0.02"
 
-    __pattern__ = r'^unmatchable$'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'^unmatchable$'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """Rapideo.pl multi-hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("goddie", "dev@rapideo.pl")]
+    __description = """Rapideo.pl multi-hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("goddie", "dev@rapideo.pl")]
 
 
     API_URL = "http://enc.rapideo.pl"
@@ -79,7 +79,7 @@ class RapideoPl(MultiHoster):
         if "errno" in parsed.keys():
             if parsed["errno"] in self.ERROR_CODES:
                 # error code in known
-                self.fail(self.ERROR_CODES[parsed["errno"]] % self.__name__)
+                self.fail(self.ERROR_CODES[parsed["errno"]] % self.__name)
             else:
                 # error code isn't yet added to plugin
                 self.fail(

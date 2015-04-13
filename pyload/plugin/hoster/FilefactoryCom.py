@@ -12,23 +12,23 @@ def getInfo(urls):
     for url in urls:
         h = getURL(url, just_header=True)
         m = re.search(r'Location: (.+)\r\n', h)
-        if m and not re.match(m.group(1), FilefactoryCom.__pattern__):  #: It's a direct link! Skipping
+        if m and not re.match(m.group(1), FilefactoryCom.__pattern):  #: It's a direct link! Skipping
             yield (url, 0, 3, url)
         else:  #: It's a standard html page
             yield parseFileInfo(FilefactoryCom, url, getURL(url))
 
 
 class FilefactoryCom(SimpleHoster):
-    __name__    = "FilefactoryCom"
-    __type__    = "hoster"
-    __version__ = "0.54"
+    __name    = "FilefactoryCom"
+    __type    = "hoster"
+    __version = "0.54"
 
-    __pattern__ = r'https?://(?:www\.)?filefactory\.com/(file|trafficshare/\w+)/\w+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'https?://(?:www\.)?filefactory\.com/(file|trafficshare/\w+)/\w+'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """Filefactory.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it"),
+    __description = """Filefactory.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("stickell", "l.stickell@yahoo.it"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

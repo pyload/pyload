@@ -104,11 +104,11 @@ class ArchiveQueue(object):
 
 
 class ExtractArchive(Addon):
-    __name__    = "ExtractArchive"
-    __type__    = "addon"
-    __version__ = "1.41"
+    __name    = "ExtractArchive"
+    __type    = "addon"
+    __version = "1.41"
 
-    __config__ = [("activated"      , "bool"              , "Activated"                                 , True                                                                     ),
+    __config = [("activated"      , "bool"              , "Activated"                                 , True                                                                     ),
                   ("fullpath"       , "bool"              , "Extract with full paths"                   , True                                                                     ),
                   ("overwrite"      , "bool"              , "Overwrite files"                           , False                                                                    ),
                   ("keepbroken"     , "bool"              , "Try to extract broken archives"            , False                                                                    ),
@@ -126,9 +126,9 @@ class ExtractArchive(Addon):
                   ("waitall"        , "bool"              , "Run after all downloads was processed"     , False                                                                    ),
                   ("renice"         , "int"               , "CPU priority"                              , 0                                                                        )]
 
-    __description__ = """Extract different kind of archives"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
+    __description = """Extract different kind of archives"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com"),
                        ("Immenz"        , "immenz@gmx.net"   )]
 
 
@@ -183,7 +183,7 @@ class ExtractArchive(Addon):
                     traceback.print_exc()
 
         if self.extractors:
-            self.logDebug(*["Found %s %s" % (Extractor.__name__, Extractor.VERSION) for Extractor in self.extractors])
+            self.logDebug(*["Found %s %s" % (Extractor.__name, Extractor.VERSION) for Extractor in self.extractors])
             self.extractQueued()  #: Resume unfinished extractions
         else:
             self.logInfo(_("No Extract plugins activated"))

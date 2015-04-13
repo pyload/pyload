@@ -21,16 +21,16 @@ def random_with_N_digits(n):
 
 
 class MegaRapidoNet(MultiHoster):
-    __name__    = "MegaRapidoNet"
-    __type__    = "hoster"
-    __version__ = "0.02"
+    __name    = "MegaRapidoNet"
+    __type    = "hoster"
+    __version = "0.02"
 
-    __pattern__ = r'http://(?:www\.)?\w+\.megarapido\.net/\?file=\w+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'http://(?:www\.)?\w+\.megarapido\.net/\?file=\w+'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """MegaRapido.net multi-hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
+    __description = """MegaRapido.net multi-hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
     LINK_PREMIUM_PATTERN = r'<\s*?a[^>]*?title\s*?=\s*?["\'].*?download["\'][^>]*?href=["\']([^"\']+)'

@@ -22,13 +22,13 @@ from pyload.plugin.Account import Account
 
 
 class OboomCom(Account):
-    __name__    = "OboomCom"
-    __type__    = "account"
-    __version__ = "0.24"
+    __name    = "OboomCom"
+    __type    = "account"
+    __version = "0.24"
 
-    __description__ = """Oboom.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stanley", "stanley.foerster@gmail.com")]
+    __description = """Oboom.com account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("stanley", "stanley.foerster@gmail.com")]
 
 
     def loadAccountData(self, user, req):

@@ -6,19 +6,19 @@ from pyload.plugin.internal.MultiHook import MultiHook
 
 
 class LinkdecrypterCom(MultiHook):
-    __name__    = "LinkdecrypterCom"
-    __type__    = "hook"
-    __version__ = "1.04"
+    __name    = "LinkdecrypterCom"
+    __type    = "hook"
+    __version = "1.04"
 
-    __config__ = [("activated"     , "bool"               , "Activated"                    , True ),
+    __config = [("activated"     , "bool"               , "Activated"                    , True ),
                   ("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
                   ("reload"        , "bool"               , "Reload plugin list"           , True ),
                   ("reloadinterval", "int"                , "Reload interval in hours"     , 12   )]
 
-    __description__ = """Linkdecrypter.com hook plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Linkdecrypter.com hook plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def getCrypters(self):

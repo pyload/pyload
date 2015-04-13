@@ -9,20 +9,20 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class Keep2ShareCc(SimpleHoster):
-    __name__    = "Keep2ShareCc"
-    __type__    = "hoster"
-    __version__ = "0.21"
+    __name    = "Keep2ShareCc"
+    __type    = "hoster"
+    __version = "0.21"
 
-    __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """Keep2Share.cc hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it"),
+    __description = """Keep2Share.cc hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("stickell", "l.stickell@yahoo.it"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", "http://keep2s.cc/file/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern + ".*", "http://keep2s.cc/file/\g<ID>")]
 
     NAME_PATTERN = r'File: <span>(?P<N>.+)</span>'
     SIZE_PATTERN = r'Size: (?P<S>[^<]+)</div>'

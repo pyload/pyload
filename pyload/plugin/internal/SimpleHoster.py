@@ -242,16 +242,16 @@ def secondsToMidnight(gmt=0):
 
 
 class SimpleHoster(Hoster):
-    __name__    = "SimpleHoster"
-    __type__    = "hoster"
-    __version__ = "1.37"
+    __name    = "SimpleHoster"
+    __type    = "hoster"
+    __version = "1.37"
 
-    __pattern__ = r'^unmatchable$'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'^unmatchable$'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """Simple hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Simple hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
     """
     Info patterns should be defined by each hoster:
@@ -333,7 +333,7 @@ class SimpleHoster(Hoster):
         online = False if info['status'] != 2 else True
 
         try:
-            info['pattern'] = re.match(cls.__pattern__, url).groupdict()  #: pattern groups will be saved here
+            info['pattern'] = re.match(cls.__pattern, url).groupdict()  #: pattern groups will be saved here
 
         except Exception:
             info['pattern'] = {}
@@ -430,8 +430,8 @@ class SimpleHoster(Hoster):
             set_cookies(self.req.cj, self.COOKIES)
 
         if (self.MULTI_HOSTER
-            and (self.__pattern__ != self.core.pluginManager.hosterPlugins[self.__class__.__name__]['pattern']
-                 or re.match(self.__pattern__, self.pyfile.url) is None)):
+            and (self.__pattern != self.core.pluginManager.hosterPlugins[self.__class__.__name__]['pattern']
+                 or re.match(self.__pattern, self.pyfile.url) is None)):
             self.multihost = True
             return
 
@@ -724,7 +724,7 @@ class SimpleHoster(Hoster):
             return
         self.premium = False
         self.account = None
-        self.req     = self.core.requestFactory.getRequest(self.__name__)
+        self.req     = self.core.requestFactory.getRequest(self.__name)
         self.retries = 0
         raise Retry(_("Fallback to free download"))
 

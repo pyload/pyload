@@ -6,25 +6,25 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class VimeoCom(SimpleHoster):
-    __name__    = "VimeoCom"
-    __type__    = "hoster"
-    __version__ = "0.04"
+    __name    = "VimeoCom"
+    __type    = "hoster"
+    __version = "0.04"
 
-    __pattern__ = r'https?://(?:www\.)?(player\.)?vimeo\.com/(video/)?(?P<ID>\d+)'
-    __config__  = [("use_premium", "bool"                       , "Use premium account if available" , True     ),
+    __pattern = r'https?://(?:www\.)?(player\.)?vimeo\.com/(video/)?(?P<ID>\d+)'
+    __config  = [("use_premium", "bool"                       , "Use premium account if available" , True     ),
                    ("quality"    , "Lowest;Mobile;SD;HD;Highest", "Quality"                          , "Highest"),
                    ("original"   , "bool"                       , "Try to download the original file", True     )]
 
-    __description__ = """Vimeo.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Vimeo.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     NAME_PATTERN         = r'<title>(?P<N>.+) on Vimeo<'
     OFFLINE_PATTERN      = r'class="exception_header"'
     TEMP_OFFLINE_PATTERN = r'Please try again in a few minutes.<'
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", r'https://www.vimeo.com/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern + ".*", r'https://www.vimeo.com/\g<ID>')]
 
     COOKIES = [("vimeo.com", "language", "en")]
 

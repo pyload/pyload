@@ -8,15 +8,15 @@ from pyload.plugin.Hoster import Hoster
 
 
 class YourfilesTo(Hoster):
-    __name__    = "YourfilesTo"
-    __type__    = "hoster"
-    __version__ = "0.22"
+    __name    = "YourfilesTo"
+    __type    = "hoster"
+    __version = "0.22"
 
-    __pattern__ = r'http://(?:www\.)?yourfiles\.(to|biz)/\?d=\w+'
+    __pattern = r'http://(?:www\.)?yourfiles\.(to|biz)/\?d=\w+'
 
-    __description__ = """Youfiles.to hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("jeix", "jeix@hasnomail.de"),
+    __description = """Youfiles.to hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("jeix", "jeix@hasnomail.de"),
                        ("skydancer", "skydancer@hasnomail.de")]
 
 

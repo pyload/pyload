@@ -8,15 +8,15 @@ from pyload.utils import json_loads
 
 
 class YadiSk(SimpleHoster):
-    __name__    = "YadiSk"
-    __type__    = "hoster"
-    __version__ = "0.03"
+    __name    = "YadiSk"
+    __type    = "hoster"
+    __version = "0.03"
 
-    __pattern__ = r'https?://yadi\.sk/d/\w+'
+    __pattern = r'https?://yadi\.sk/d/\w+'
 
-    __description__ = """Yadi.sk hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("GammaC0de", None)]
+    __description = """Yadi.sk hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("GammaC0de", None)]
 
 
     OFFLINE_PATTERN = r'Nothing found'

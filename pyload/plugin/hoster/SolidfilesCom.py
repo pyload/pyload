@@ -7,15 +7,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class SolidfilesCom(SimpleHoster):
-    __name__    = "SolidfilesCom"
-    __type__    = "hoster"
-    __version__ = "0.02"
+    __name    = "SolidfilesCom"
+    __type    = "hoster"
+    __version = "0.02"
 
-    __pattern__ = r'http://(?:www\.)?solidfiles\.com\/d/\w+'
+    __pattern = r'http://(?:www\.)?solidfiles\.com\/d/\w+'
 
-    __description__ = """Solidfiles.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("sraedler", "simon.raedler@yahoo.de")]
+    __description = """Solidfiles.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("sraedler", "simon.raedler@yahoo.de")]
 
 
     NAME_PATTERN    = r'<h1 title="(?P<N>.+?)"'

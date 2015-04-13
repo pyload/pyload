@@ -8,23 +8,23 @@ from pyload.plugin.internal.XFSCrypter import XFSCrypter
 
 
 class TusfilesNet(XFSCrypter):
-    __name__    = "TusfilesNet"
-    __type__    = "crypter"
-    __version__ = "0.08"
+    __name    = "TusfilesNet"
+    __type    = "crypter"
+    __version = "0.08"
 
-    __pattern__ = r'https?://(?:www\.)?tusfiles\.net/go/(?P<ID>\w+)'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+    __pattern = r'https?://(?:www\.)?tusfiles\.net/go/(?P<ID>\w+)'
+    __config  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """Tusfiles.net folder decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
+    __description = """Tusfiles.net folder decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com"),
                        ("stickell", "l.stickell@yahoo.it")]
 
 
     PAGES_PATTERN = r'>\((\d+) \w+\)<'
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", r'https://www.tusfiles.net/go/\g<ID>/')]
+    URL_REPLACEMENTS = [(__pattern + ".*", r'https://www.tusfiles.net/go/\g<ID>/')]
 
 
     def loadPage(self, page_n):

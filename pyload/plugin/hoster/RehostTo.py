@@ -6,16 +6,16 @@ from pyload.plugin.internal.MultiHoster import MultiHoster
 
 
 class RehostTo(MultiHoster):
-    __name__    = "RehostTo"
-    __type__    = "hoster"
-    __version__ = "0.21"
+    __name    = "RehostTo"
+    __type    = "hoster"
+    __version = "0.21"
 
-    __pattern__ = r'https?://.*rehost\.to\..+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'https?://.*rehost\.to\..+'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """Rehost.com multi-hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
+    __description = """Rehost.com multi-hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("RaNaN", "RaNaN@pyload.org")]
 
 
     def handlePremium(self, pyfile):

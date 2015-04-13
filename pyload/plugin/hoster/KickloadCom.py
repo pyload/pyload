@@ -4,13 +4,13 @@ from pyload.plugin.internal.DeadHoster import DeadHoster
 
 
 class KickloadCom(DeadHoster):
-    __name__    = "KickloadCom"
-    __type__    = "hoster"
-    __version__ = "0.21"
+    __name    = "KickloadCom"
+    __type    = "hoster"
+    __version = "0.21"
 
-    __pattern__ = r'http://(?:www\.)?kickload\.com/get/.+'
-    __config__  = []
+    __pattern = r'http://(?:www\.)?kickload\.com/get/.+'
+    __config  = []
 
-    __description__ = """Kickload.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("mkaay", "mkaay@mkaay.de")]
+    __description = """Kickload.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("mkaay", "mkaay@mkaay.de")]

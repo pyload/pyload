@@ -11,18 +11,18 @@ from pyload.utils import fs_encode
 
 
 class UserAgentSwitcher(Addon):
-    __name__    = "UserAgentSwitcher"
-    __type__    = "addon"
-    __version__ = "0.04"
+    __name    = "UserAgentSwitcher"
+    __type    = "addon"
+    __version = "0.04"
 
-    __config__ = [("activated", "bool", "Activated"               , True                                                                      ),
+    __config = [("activated", "bool", "Activated"               , True                                                                      ),
                   ("uaf"      , "file", "Random user-agents file" , ""                                                                        ),
                   ("uar"      , "bool", "Random user-agent"       , False                                                                     ),
                   ("uas"      , "str" , "Custom user-agent string", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0")]
 
-    __description__ = """Custom user-agent"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Custom user-agent"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def setup(self):

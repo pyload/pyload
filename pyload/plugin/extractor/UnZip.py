@@ -11,13 +11,13 @@ from pyload.utils import fs_encode
 
 
 class UnZip(Extractor):
-    __name__    = "UnZip"
-    __type__    = "extractor"
-    __version__ = "1.12"
+    __name    = "UnZip"
+    __type    = "extractor"
+    __version = "1.12"
 
-    __description__ = """Zip extractor plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Zip extractor plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     EXTENSIONS = [".zip", ".zip64"]

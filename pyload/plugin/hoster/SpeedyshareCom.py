@@ -11,16 +11,16 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class SpeedyshareCom(SimpleHoster):
-    __name__    = "SpeedyshareCom"
-    __type__    = "hoster"
-    __version__ = "0.05"
+    __name    = "SpeedyshareCom"
+    __type    = "hoster"
+    __version = "0.05"
 
-    __pattern__ = r'https?://(?:www\.)?(speedyshare\.com|speedy\.sh)/\w+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern = r'https?://(?:www\.)?(speedyshare\.com|speedy\.sh)/\w+'
+    __config  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """Speedyshare.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
+    __description = """Speedyshare.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
     NAME_PATTERN = r'class=downloadfilename>(?P<N>.*)</span></td>'
