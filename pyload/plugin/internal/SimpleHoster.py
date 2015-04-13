@@ -5,10 +5,8 @@ import mimetypes
 import os
 import re
 import time
-
-from inspect import isclass
-from urllib import unquote
-from urlparse import urljoin, urlparse
+import urllib
+import urlparse
 
 from pyload.datatype.File import statusMap as _statusMap
 from pyload.network.CookieJar import CookieJar
@@ -29,7 +27,7 @@ def _error(self, reason, type):
         type = "unknown"
 
     msg  = _("%s error") % type.strip().capitalize() if type else _("Error")
-    msg += ": %s" % reason.strip() if reason else ""
+    msg += (": %s" % reason.strip()) if reason else ""
     msg += _(" | Plugin may be out of date")
 
     raise Fail(msg)
@@ -108,8 +106,8 @@ def parseFileInfo(plugin, url="", html=""):
         info = plugin.getInfo(url, html)
         res  = info['name'], info['size'], info['status'], info['url']
     else:
-        url   = unquote(url)
-        url_p = urlparse(url)
+        url   = urllib.unquote(url)
+        url_p = urlparse.urlparse(url)
         res   = ((url_p.path.split('/')[-1]
                   or url_p.query.split('=', 1)[::-1][0].split('&', 1)[0]
                   or url_p.netloc.split('.', 1)[0]),
@@ -185,10 +183,10 @@ def getFileURL(self, url, follow_location=None):
         elif 'location' in header and header['location'].strip():
             location = header['location']
 
-            if not urlparse(location).scheme:
-                url_p    = urlparse(url)
+            if not urlparse.urlparse(location).scheme:
+                url_p    = urlparse.urlparse(url)
                 baseurl  = "%s://%s" % (url_p.scheme, url_p.netloc)
-                location = urljoin(baseurl, location)
+                location = urlparse.urljoin(baseurl, location)
 
             if 'code' in header and header['code'] == 302:
                 link = location
@@ -198,7 +196,7 @@ def getFileURL(self, url, follow_location=None):
                 continue
 
         else:
-            extension = os.path.splitext(urlparse(url).path.split('/')[-1])[-1]
+            extension = os.path.splitext(urlparse.urlparse(url).path.split('/')[-1])[-1]
 
             if 'content-type' in header and header['content-type'].strip():
                 mimetype = header['content-type'].split(';')[0].strip()
@@ -246,7 +244,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.31"
+    __version__ = "1.37"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -307,20 +305,21 @@ class SimpleHoster(Hoster):
     DIRECT_LINK   = None   #: Set to True to looking for direct link (as defined in handleDirect method), set to None to do it if self.account is True else False
     MULTI_HOSTER  = False  #: Set to True to leech other hoster link (as defined in handleMulti method)
     LOGIN_ACCOUNT = False  #: Set to True to require account login
-    DISPOSITION   = True   #: Work-around to `filename*=UTF-8` bug; remove in 0.4.10
+    DISPOSITION   = True   #: Set to True to use any content-disposition value in http header as file name
 
     directLink = getFileURL  # @TODO: Remove in 0.4.10
 
+
     @classmethod
-    def parseInfos(cls, urls):  # @TODO: Built-in in 0.4.10 core, then remove from plugins
+    def parseInfos(cls, urls):  #@TODO: Built-in in 0.4.10 core (remove from plugins)
         for url in urls:
             url = replace_patterns(url, cls.URL_REPLACEMENTS)
             yield cls.getInfo(url)
 
     @classmethod
     def apiInfo(cls, url="", get={}, post={}):
-        url   = unquote(url)
-        url_p = urlparse(url)
+        url   = urllib.unquote(url)
+        url_p = urlparse.urlparse(url)
         return {'name': (url_p.path.split('/')[-1]
                          or url_p.query.split('=', 1)[::-1][0].split('&', 1)[0]
                          or url_p.netloc.split('.', 1)[0]),
@@ -386,7 +385,7 @@ class SimpleHoster(Hoster):
             info['status'] = 2
 
             if 'N' in info['pattern']:
-                info['name'] = replace_patterns(unquote(info['pattern']['N'].strip()),
+                info['name'] = replace_patterns(urllib.unquote(info['pattern']['N'].strip()),
                                                 cls.NAME_REPLACEMENTS)
 
             if 'S' in info['pattern']:
@@ -478,7 +477,7 @@ class SimpleHoster(Hoster):
                     self.logDebug("Handled as free download")
                     self.handleFree(pyfile)
 
-            self.downloadLink(self.link, self.DISPOSITION)  #: Remove `self.DISPOSITION` in 0.4.10
+            self.downloadLink(self.link, self.DISPOSITION)
             self.checkFile()
 
         except Fail, e:  # @TODO: Move to PluginThread in 0.4.10
@@ -492,10 +491,10 @@ class SimpleHoster(Hoster):
         if link and isinstance(link, basestring):
             self.correctCaptcha()
 
-            if not urlparse(link).scheme:
-                url_p   = urlparse(self.pyfile.url)
+            if not urlparse.urlparse(link).scheme:
+                url_p   = urlparse.urlparse(self.pyfile.url)
                 baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
-                link    = urljoin(baseurl, link)
+                link    = urlparse.urljoin(baseurl, link)
 
             self.download(link, ref=False, disposition=disposition)
 
@@ -577,8 +576,8 @@ class SimpleHoster(Hoster):
                 except Exception:
                     waitmsg = m.group(0).strip()
 
-                wait_time = sum(int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1}[u.lower()] for v, u in
-                                re.findall(r'(\d+)\s*(hr|hour|min|sec)', waitmsg, re.I))
+                wait_time = sum(int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1, "": 1}[u.lower()] for v, u in
+                                re.findall(r'(\d+)\s*(hr|hour|min|sec|)', waitmsg, re.I))
                 self.wait(wait_time, wait_time > 300)
 
         self.info.pop('error', None)
@@ -652,7 +651,6 @@ class SimpleHoster(Hoster):
 
         if link:
             self.logInfo(_("Direct download link detected"))
-
             self.link = link
         else:
             self.logDebug("Direct download link not found")

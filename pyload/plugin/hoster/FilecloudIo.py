@@ -104,8 +104,7 @@ class FilecloudIo(SimpleHoster):
             if "size" in self.info and self.info['size']:
                 self.check_data = {"size": int(self.info['size'])}
 
-            download_url = m.group(1)
-            self.download(download_url)
+            self.link = m.group(1)
         else:
             self.fail(_("Unexpected server response"))
 

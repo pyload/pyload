@@ -101,7 +101,7 @@ class UploadedTo(SimpleHoster):
         if "type:'download'" in self.html:
             self.correctCaptcha()
             try:
-                self.link = re.search("url:'([^']+)", self.html).group(1)
+                self.link = re.search("url:'(.+?)'", self.html).group(1)
 
             except Exception:
                 pass

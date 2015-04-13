@@ -4,11 +4,11 @@ import re
 import socket
 import ssl
 import time
+import traceback
 
 from pycurl import FORM_FILE
 from select import select
 from threading import Thread
-from traceback import print_exc
 
 from pyload.api import PackageDoesNotExists, FileDoesNotExists
 from pyload.network.RequestFactory import getURL
@@ -103,7 +103,7 @@ class IRCInterface(Thread, Addon):
 
         except IRCError, ex:
             self.sock.send("QUIT :byebye\r\n")
-            print_exc()
+            traceback.print_exc()
             self.sock.close()
 
 

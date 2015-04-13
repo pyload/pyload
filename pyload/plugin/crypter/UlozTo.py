@@ -19,8 +19,8 @@ class UlozTo(Crypter):
 
 
     FOLDER_PATTERN = r'<ul class="profile_files">(.*?)</ul>'
-    LINK_PATTERN = r'<br /><a href="/([^"]+)">[^<]+</a>'
-    NEXT_PAGE_PATTERN = r'<a class="next " href="/([^"]+)">&nbsp;</a>'
+    LINK_PATTERN = r'<br /><a href="/(.+?)">.+?</a>'
+    NEXT_PAGE_PATTERN = r'<a class="next " href="/(.+?)">&nbsp;</a>'
 
 
     def decrypt(self, pyfile):

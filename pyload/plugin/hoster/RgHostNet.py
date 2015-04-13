@@ -8,9 +8,9 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 class RgHostNet(SimpleHoster):
     __name__    = "RgHostNet"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
-    __pattern__ = r'http://(?:www\.)?rghost\.net/\d+(?:r=\d+)?'
+    __pattern__ = r'http://(?:www\.)?rghost\.(net|ru)/[\d-]+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """RgHost.net hoster plugin"""
@@ -18,7 +18,9 @@ class RgHostNet(SimpleHoster):
     __authors__     = [("z00nx", "z00nx0@gmail.com")]
 
 
-    INFO_PATTERN    = r'<h1>\s+(<a[^>]+>)?(?P<N>[^<]+)(</a>)?\s+<small[^>]+>\s+\((?P<S>[^)]+)\)\s+</small>\s+</h1>'
-    OFFLINE_PATTERN = r'File is deleted|this page is not found'
+    INFO_PATTERN    = r'data-share42-text="(?P<N>.+?) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    HASHSUM_PATTERN = r'<dt>(?P<T>\w+)</dt>\s*<dd>(?P<H>\w+)'
+    OFFLINE_PATTERN = r'>(File is deleted|page not found)'
 
-    LINK_FREE_PATTERN = r'<a\s+href="([^"]+)"\s+class="btn\s+large\s+download"[^>]+>Download</a>'
+    LINK_FREE_PATTERN = r'<a href="(.+?)" class="btn large'
+

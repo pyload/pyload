@@ -49,7 +49,7 @@ class VimeoCom(SimpleHoster):
 
         if self.getConfig('original'):
             if "original" in link:
-                self.download(link[q])
+                self.link = link[q]
                 return
             else:
                 self.logInfo(_("Original file not downloadable"))
@@ -64,7 +64,7 @@ class VimeoCom(SimpleHoster):
 
         for q in qlevel:
             if q in link:
-                self.download(link[q])
+                self.link = link[q]
                 return
             else:
                 self.logInfo(_("No %s quality video found") % q.upper())

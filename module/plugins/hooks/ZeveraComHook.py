@@ -3,8 +3,8 @@
 from pyload.plugin.internal.MultiHook import MultiHook
 
 
-class ZeveraCom(MultiHook):
-    __name__    = "ZeveraCom"
+class ZeveraComHook(MultiHook):
+    __name__    = "ZeveraComHook"
     __type__    = "hook"
     __version__ = "0.05"
 

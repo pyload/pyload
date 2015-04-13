@@ -21,7 +21,7 @@ class EmbeduploadCom(Crypter):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    LINK_PATTERN = r'<div id="([^"]+)"[^>]*>\s*<a href="([^"]+)" target="_blank" (?:class="DownloadNow"|style="color:red")>'
+    LINK_PATTERN = r'<div id="(.+?)".*?>\s*<a href="(.+?)" target="_blank" (?:class="DownloadNow"|style="color:red")>'
 
 
     def decrypt(self, pyfile):

@@ -4,8 +4,8 @@ from pyload.utils import json_loads
 from pyload.plugin.internal.MultiHook import MultiHook
 
 
-class SimplyPremiumCom(MultiHook):
-    __name__    = "SimplyPremiumCom"
+class SimplyPremiumComHook(MultiHook):
+    __name__    = "SimplyPremiumComHook"
     __type__    = "hook"
     __version__ = "0.05"
 

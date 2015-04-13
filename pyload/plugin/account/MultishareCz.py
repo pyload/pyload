@@ -16,7 +16,7 @@ class MultishareCz(Account):
 
 
     TRAFFIC_LEFT_PATTERN = r'<span class="profil-zvyrazneni">Kredit:</span>\s*<strong>(?P<S>[\d.,]+)&nbsp;(?P<U>[\w^_]+)</strong>'
-    ACCOUNT_INFO_PATTERN = r'<input type="hidden" id="(u_ID|u_hash)" name="[^"]*" value="([^"]+)">'
+    ACCOUNT_INFO_PATTERN = r'<input type="hidden" id="(u_ID|u_hash)" name=".+?" value="(.+?)">'
 
 
     def loadAccountInfo(self, user, req):

@@ -49,8 +49,8 @@ class DlFreeFr(SimpleHoster):
                        ("Toilal", "toilal.dev@gmail.com")]
 
 
-    NAME_PATTERN = r'Fichier:</td>\s*<td[^>]*>(?P<N>[^>]*)</td>'
-    SIZE_PATTERN = r'Taille:</td>\s*<td[^>]*>(?P<S>[\d.,]+\w)o'
+    NAME_PATTERN = r'Fichier:</td>\s*<td.*?>(?P<N>[^>]*)</td>'
+    SIZE_PATTERN = r'Taille:</td>\s*<td.*?>(?P<S>[\d.,]+\w)o'
     OFFLINE_PATTERN = r'Erreur 404 - Document non trouv|Fichier inexistant|Le fichier demand&eacute; n\'a pas &eacute;t&eacute; trouv&eacute;'
 
 

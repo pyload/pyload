@@ -7,9 +7,9 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 class MediafireCom(SimpleHoster):
     __name__    = "MediafireCom"
     __type__    = "hoster"
-    __version__ = "0.85"
+    __version__ = "0.86"
 
-    __pattern__ = r'https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/))\w+'
+    __pattern__ = r'https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)\w{15}'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Mediafire.com hoster plugin"""

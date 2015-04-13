@@ -164,7 +164,7 @@ class ShareLinksBiz(Crypter):
         # Extract from web package header
         title_re = r'<h2><img.*?/>(.*)</h2>'
         m = re.search(title_re, self.html, re.S)
-        if m is not None:
+        if m:
             title = m.group(1).strip()
             if 'unnamed' not in title:
                 name = folder = title

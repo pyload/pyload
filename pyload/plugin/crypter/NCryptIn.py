@@ -27,7 +27,7 @@ class NCryptIn(Crypter):
     JK_KEY = "jk"
     CRYPTED_KEY = "crypted"
 
-    NAME_PATTERN = r'<meta name="description" content="(?P<N>[^"]+)"'
+    NAME_PATTERN = r'<meta name="description" content="(?P<N>.+?)"'
 
 
     def setup(self):
@@ -108,7 +108,7 @@ class NCryptIn(Crypter):
 
     def isProtected(self):
         form = re.search(r'<form.*?name.*?protected.*?>(.*?)</form>', self.cleanedHtml, re.S)
-        if form is not None:
+        if form:
             content = form.group(1)
             for keyword in ("password", "captcha"):
                 if keyword in content:
@@ -144,7 +144,7 @@ class NCryptIn(Crypter):
         # Resolve anicaptcha
         if "anicaptcha" in form:
             self.logDebug("Captcha protected")
-            captchaUri = re.search(r'src="(/temp/anicaptcha/[^"]+)', form).group(1)
+            captchaUri = re.search(r'src="(/temp/anicaptcha/.+?)"', form).group(1)
             captcha = self.decryptCaptcha("http://ncrypt.in" + captchaUri)
             self.logDebug("Captcha resolved [%s]" % captcha)
             postData['captcha'] = captcha

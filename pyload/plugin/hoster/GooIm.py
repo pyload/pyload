@@ -32,4 +32,5 @@ class GooIm(SimpleHoster):
 
     def handleFree(self, pyfile):
         self.wait(10)
-        self.download(pyfile.url)
+        self.link = pyfile.url
+

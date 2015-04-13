@@ -81,7 +81,7 @@ class YourfilesTo(Hoster):
         if not self.html:
             self.download_html()
 
-        if re.search(r"HTTP Status 404", self.html) is not None:
+        if re.search(r"HTTP Status 404", self.html):
             return False
         else:
             return True

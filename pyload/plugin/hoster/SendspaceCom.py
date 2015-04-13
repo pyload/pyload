@@ -22,10 +22,10 @@ class SendspaceCom(SimpleHoster):
     SIZE_PATTERN    = r'<div class="file_description reverse margin_center">\s*<b>File Size:</b>\s*(?P<S>[\d.,]+)(?P<U>[\w^_]+)\s*</div>'
     OFFLINE_PATTERN = r'<div class="msg error" style="cursor: default">Sorry, the file you requested is not available.</div>'
 
-    LINK_FREE_PATTERN = r'<a id="download_button" href="([^"]+)"'
+    LINK_FREE_PATTERN = r'<a id="download_button" href="(.+?)"'
 
-    CAPTCHA_PATTERN      = r'<td><img src="(/captchas/captcha\.php?captcha=([^"]+))"></td>'
-    USER_CAPTCHA_PATTERN = r'<td><img src="/captchas/captcha\.php?user=([^"]+))"></td>'
+    CAPTCHA_PATTERN      = r'<td><img src="(/captchas/captcha\.php?captcha=(.+?))"></td>'
+    USER_CAPTCHA_PATTERN = r'<td><img src="/captchas/captcha\.php?user=(.+?))"></td>'
 
 
     def handleFree(self, pyfile):
@@ -35,7 +35,7 @@ class SendspaceCom(SimpleHoster):
             if m:
                 if 'captcha_hash' in params:
                     self.correctCaptcha()
-                download_url = m.group(1)
+                self.link = m.group(1)
                 break
 
             m = re.search(self.CAPTCHA_PATTERN, self.html)
@@ -56,4 +56,3 @@ class SendspaceCom(SimpleHoster):
         else:
             self.fail(_("Download link not found"))
 
-        self.download(download_url)

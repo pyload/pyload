@@ -13,7 +13,7 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 class RapiduNet(SimpleHoster):
     __name__    = "RapiduNet"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'https?://(?:www\.)?rapidu\.net/(?P<ID>\d{10})'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -26,7 +26,7 @@ class RapiduNet(SimpleHoster):
     COOKIES = [("rapidu.net", "rapidu_lang", "en")]
 
     INFO_PATTERN    = r'<h1 title="(?P<N>.*)">.*</h1>\s*<small>(?P<S>\d+(\.\d+)?)\s(?P<U>\w+)</small>'
-    OFFLINE_PATTERN = r'404 - File not found'
+    OFFLINE_PATTERN = r'<h1>404'
 
     ERROR_PATTERN = r'<div class="error">'
 
@@ -58,20 +58,18 @@ class RapiduNet(SimpleHoster):
             self.wait(int(jsvars['timeToDownload']) - int(time.time()))
 
         recaptcha = ReCaptcha(self)
+        response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
 
-        for _i in xrange(10):
-            response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
+        jsvars = self.getJsonResponse("https://rapidu.net/ajax.php",
+                                      get={'a': "getCheckCaptcha"},
+                                      post={'_go'     : "",
+                                            'captcha1': challenge,
+                                            'captcha2': response,
+                                            'fileId'  : self.info['pattern']['ID']},
+                                      decode=True)
 
-            jsvars = self.getJsonResponse("https://rapidu.net/ajax.php",
-                                          get={'a': "getCheckCaptcha"},
-                                          post={'_go'     : "",
-                                                'captcha1': challenge,
-                                                'captcha2': response,
-                                                'fileId'  : self.info['pattern']['ID']},
-                                          decode=True)
-            if jsvars['message'] == 'success':
-                self.download(jsvars['url'])
-                break
+        if jsvars['message'] == 'success':
+            self.link = jsvars['url']
 
 
     def getJsonResponse(self, *args, **kwargs):

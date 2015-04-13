@@ -4,8 +4,8 @@ from pyload.utils import json_loads
 from pyload.plugin.internal.MultiHook import MultiHook
 
 
-class MegaDebridEu(MultiHook):
-    __name__    = "MegaDebridEu"
+class MegaDebridEuHook(MultiHook):
+    __name__    = "MegaDebridEuHook"
     __type__    = "hook"
     __version__ = "0.05"
 

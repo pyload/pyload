@@ -56,7 +56,7 @@ class RedtubeCom(Hoster):
         if not self.html:
             self.download_html()
 
-        if re.search(r'This video has been removed.', self.html) is not None:
+        if re.search(r'This video has been removed.', self.html):
             return False
         else:
             return True

@@ -18,4 +18,5 @@ class FshareVn(SimpleCrypter):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    LINK_PATTERN = r'<li class="w_80pc"><a href="([^"]+)" target="_blank">'
+    LINK_PATTERN = r'<li class="w_80pc"><a href="(.+?)" target="_blank">'
+

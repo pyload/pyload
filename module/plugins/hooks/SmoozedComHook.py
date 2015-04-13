@@ -3,8 +3,8 @@
 from pyload.plugin.internal.MultiHook import MultiHook
 
 
-class SmoozedCom(MultiHook):
-    __name__    = "SmoozedCom"
+class SmoozedComHook(MultiHook):
+    __name__    = "SmoozedComHook"
     __type__    = "hook"
     __version__ = "0.03"
 

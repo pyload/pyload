@@ -3,8 +3,8 @@
 from pyload.plugin.internal.MultiHook import MultiHook
 
 
-class OverLoadMe(MultiHook):
-    __name__    = "OverLoadMe"
+class OverLoadMeHook(MultiHook):
+    __name__    = "OverLoadMeHook"
     __type__    = "hook"
     __version__ = "0.04"
 

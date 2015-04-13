@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from pyload.plugin.Crypter import Crypter
 
 

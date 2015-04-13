@@ -53,8 +53,7 @@ class UploadingCom(SimpleHoster):
         self.html = self.load('http://uploading.com/files/get/?JsHttpRequest=%d-xml' % timestamp(), post=postData)
         url = re.search(r'"link"\s*:\s*"(.*?)"', self.html)
         if url:
-            url = url.group(1).replace("\\/", "/")
-            self.download(url)
+            self.link = url.group(1).replace("\\/", "/")
 
         raise Exception("Plugin defect")
 
@@ -93,4 +92,4 @@ class UploadingCom(SimpleHoster):
         else:
             self.error(_("No URL"))
 
-        self.download(url)
+        self.link = url

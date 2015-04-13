@@ -123,7 +123,7 @@ class XHamsterCom(Hoster):
         """
         if not self.html:
             self.download_html()
-        if re.search(r"(.*Video not found.*)", self.html) is not None:
+        if re.search(r"(.*Video not found.*)", self.html):
             return False
         else:
             return True

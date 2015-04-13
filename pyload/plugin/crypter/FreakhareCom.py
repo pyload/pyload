@@ -20,7 +20,7 @@ class FreakhareCom(SimpleCrypter):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    LINK_PATTERN = r'<a href="(http://freakshare\.com/files/[^"]+)" target="_blank">'
+    LINK_PATTERN = r'<a href="(http://freakshare\.com/files/.+?)" target="_blank">'
     NAME_PATTERN = r'Folder:</b> (?P<N>.+)'
     PAGES_PATTERN = r'Pages: +(\d+)'
 

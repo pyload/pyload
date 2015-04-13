@@ -124,7 +124,7 @@ class LinksaveIn(OCR):
             for y in xrange(new.size[1]):
                 rgb = orgpix[x, y]
                 r, g, b = rgb
-                pix[x, y] = (255,255,255)
+                pix[x, y] = (255, 255, 255)
                 if r > max(b, g)+thresh:
                     pix[x, y] = (0, 0, 0)
                 if g < min(r, b):

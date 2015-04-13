@@ -3,8 +3,8 @@
 from pyload.plugin.internal.MultiHook import MultiHook
 
 
-class SimplydebridCom(MultiHook):
-    __name__    = "SimplydebridCom"
+class SimplydebridComHook(MultiHook):
+    __name__    = "SimplydebridComHook"
     __type__    = "hook"
     __version__ = "0.04"
 

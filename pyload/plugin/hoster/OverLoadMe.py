@@ -42,7 +42,7 @@ class OverLoadMe(MultiHoster):
             self.logWarning(data['msg'])
             self.tempOffline()
         else:
-            if pyfile.name is not None and pyfile.name.endswith('.tmp') and data['filename']:
+            if pyfile.name and pyfile.name.endswith('.tmp') and data['filename']:
                 pyfile.name = data['filename']
                 pyfile.size = parseFileSize(data['filesize'])
 

@@ -4,8 +4,8 @@ from pyload.utils import json_loads
 from pyload.plugin.internal.MultiHook import MultiHook
 
 
-class FastixRu(MultiHook):
-    __name__    = "FastixRu"
+class FastixRuHook(MultiHook):
+    __name__    = "FastixRuHook"
     __type__    = "hook"
     __version__ = "0.05"
 

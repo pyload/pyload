@@ -48,7 +48,7 @@ class NarodRu(SimpleHoster):
 
             m = re.search(self.LINK_FREE_PATTERN, self.html)
             if m:
-                url = 'http://narod.ru' + m.group(1)
+                self.link = 'http://narod.ru' + m.group(1)
                 self.correctCaptcha()
                 break
 
@@ -61,4 +61,3 @@ class NarodRu(SimpleHoster):
         else:
             self.fail(_("No valid captcha code entered"))
 
-        self.download(url)

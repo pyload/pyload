@@ -34,7 +34,7 @@ class EuroshareEu(SimpleHoster):
             self.account.relogin(self.user)
             self.retry(reason=_("User not logged in"))
 
-        self.download(pyfile.url.rstrip('/') + "/download/")
+        self.link = pyfile.url.rstrip('/') + "/download/"
 
         check = self.checkDownload({"login": re.compile(self.ERR_NOT_LOGGED_IN_PATTERN),
                                     "json" : re.compile(r'\{"status":"error".*?"message":"(.*?)"')})
@@ -48,7 +48,7 @@ class EuroshareEu(SimpleHoster):
 
 
     def handleFree(self, pyfile):
-        if re.search(self.ERR_PARDL_PATTERN, self.html) is not None:
+        if re.search(self.ERR_PARDL_PATTERN, self.html):
             self.longWait(5 * 60, 12)
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)

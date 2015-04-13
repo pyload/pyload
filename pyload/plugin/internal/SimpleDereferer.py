@@ -11,7 +11,7 @@ from pyload.plugin.internal.SimpleHoster import getFileURL, set_cookies
 class SimpleDereferer(Crypter):
     __name__    = "SimpleDereferer"
     __type__    = "crypter"
-    __version__ = "0.08"
+    __version__ = "0.11"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

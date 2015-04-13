@@ -268,7 +268,7 @@ class NetloadIn(Hoster):
         try:
             file_url_pattern = r'<a class="Orange_Link" href="(http://.+)".?>Or click here'
             attempt = re.search(file_url_pattern, page)
-            if attempt is not None:
+            if attempt:
                 return attempt.group(1)
             else:
                 self.logDebug("Backup try for final link")

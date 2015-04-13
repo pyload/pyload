@@ -18,4 +18,5 @@ class MegaRapidCz(SimpleCrypter):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    LINK_PATTERN = r'<td class="soubor"[^>]*><a href="([^"]+)">'
+    LINK_PATTERN = r'<td class="soubor".*?><a href="(.+?)">'
+

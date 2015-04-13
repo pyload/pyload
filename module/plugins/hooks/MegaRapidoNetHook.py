@@ -5,8 +5,8 @@ import re
 from pyload.plugin.internal.MultiHook import MultiHook
 
 
-class MegaRapidoNet(MultiHook):
-    __name__    = "MegaRapidoNet"
+class MegaRapidoNetHook(MultiHook):
+    __name__    = "MegaRapidoNetHook"
     __type__    = "hook"
     __version__ = "0.02"
 

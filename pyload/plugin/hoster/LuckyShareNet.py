@@ -69,4 +69,5 @@ class LuckyShareNet(SimpleHoster):
         if not json['link']:
             self.fail(_("No Download url retrieved/all captcha attempts failed"))
 
-        self.download(json['link'])
+        self.link = json['link']
+

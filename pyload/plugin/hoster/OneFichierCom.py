@@ -8,7 +8,7 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 class OneFichierCom(SimpleHoster):
     __name__    = "OneFichierCom"
     __type__    = "hoster"
-    __version__ = "0.79"
+    __version__ = "0.83"
 
     __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -21,7 +21,8 @@ class OneFichierCom(SimpleHoster):
                        ("imclem", ""),
                        ("stickell", "l.stickell@yahoo.it"),
                        ("Elrick69", "elrick69[AT]rocketmail[DOT]com"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+                       ("Walter Purcaro", "vuolter@gmail.com"),
+                       ("Ludovic Lehmann", "ludo.lehmann@gmail.com")]
 
 
     NAME_PATTERN = r'>FileName :</td>\s*<td.*>(?P<N>.+?)<'
@@ -30,7 +31,6 @@ class OneFichierCom(SimpleHoster):
     OFFLINE_PATTERN = r'File not found !\s*<'
 
     COOKIES     = [("1fichier.com", "LG", "en")]
-    DISPOSITION = False  #: Remove in 0.4.10
 
     WAIT_PATTERN = r'>You must wait \d+ minutes'
 

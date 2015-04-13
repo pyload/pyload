@@ -5,8 +5,8 @@ import re
 from pyload.plugin.internal.MultiHook import MultiHook
 
 
-class MultishareCz(MultiHook):
-    __name__    = "MultishareCz"
+class MultishareCzHook(MultiHook):
+    __name__    = "MultishareCzHook"
     __type__    = "hook"
     __version__ = "0.07"
 
@@ -21,7 +21,7 @@ class MultishareCz(MultiHook):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    HOSTER_PATTERN = r'<img class="logo-shareserveru"[^>]*?alt="([^"]+)"></td>\s*<td class="stav">[^>]*?alt="OK"'
+    HOSTER_PATTERN = r'<img class="logo-shareserveru"[^>]*?alt="(.+?)"></td>\s*<td class="stav">[^>]*?alt="OK"'
 
 
     def getHosters(self):

@@ -18,10 +18,10 @@ class PromptfileCom(SimpleHoster):
     __authors__     = [("igel", "igelkun@myopera.com")]
 
 
-    INFO_PATTERN = r'<span style="[^"]*" title="[^"]*">(?P<N>.*?) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</span>'
-    OFFLINE_PATTERN = r'<span style="[^"]*" title="File Not Found">File Not Found</span>'
+    INFO_PATTERN = r'<span style=".+?" title=".+?">(?P<N>.*?) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</span>'
+    OFFLINE_PATTERN = r'<span style=".+?" title="File Not Found">File Not Found</span>'
 
-    CHASH_PATTERN = r'<input type="hidden" name="chash" value="([^"]*)" />'
+    CHASH_PATTERN = r'<input type="hidden" name="chash" value="(.+?)" />'
     LINK_FREE_PATTERN = r'<a href=\"(.+)\" target=\"_blank\" class=\"view_dl_link\">Download File</a>'
 
 

@@ -4,9 +4,9 @@ from __future__ import with_statement
 
 import os
 import sys
+import traceback
 
 from copy import copy
-from traceback import print_exc
 
 # monkey patch bug in python 2.6 and lower
 # http://bugs.python.org/issue6122 , http://bugs.python.org/issue1236 , http://bugs.python.org/issue1731717
@@ -106,24 +106,25 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__    = "ExtractArchive"
     __type__    = "addon"
-    __version__ = "1.38"
+    __version__ = "1.41"
 
-    __config__ = [("activated"      , "bool"              , "Activated"                             , True                                                                     ),
-                  ("fullpath"       , "bool"              , "Extract with full paths"               , True                                                                     ),
-                  ("overwrite"      , "bool"              , "Overwrite files"                       , False                                                                    ),
-                  ("keepbroken"     , "bool"              , "Try to extract broken archives"        , False                                                                    ),
-                  ("repair"         , "bool"              , "Repair broken archives (RAR required)" , False                                                                    ),
-                  ("test"           , "bool"              , "Test archive before extracting"        , False                                                                    ),
-                  ("usepasswordfile", "bool"              , "Use password file"                     , True                                                                     ),
-                  ("passwordfile"   , "file"              , "Password file"                         , "archive_password.txt"                                                   ),
-                  ("delete"         , "No;Permanent;Trash", "Delete archive after extraction"       , "No"                                                                     ),
-                  ("subfolder"      , "bool"              , "Create subfolder for each package"     , False                                                                    ),
-                  ("destination"    , "folder"            , "Extract files to folder"               , ""                                                                       ),
-                  ("extensions"     , "str"               , "Extract archives ending with extension", "7z,bz2,bzip2,gz,gzip,lha,lzh,lzma,rar,tar,taz,tbz,tbz2,tgz,xar,xz,z,zip"),
-                  ("excludefiles"   , "str"               , "Don't extract the following files"     , "*.nfo,*.DS_Store,index.dat,thumb.db"                                    ),
-                  ("recursive"      , "bool"              , "Extract archives in archives"          , True                                                                     ),
-                  ("waitall"        , "bool"              , "Run after all downloads was processed" , False                                                                    ),
-                  ("renice"         , "int"               , "CPU priority"                          , 0                                                                        )]
+    __config__ = [("activated"      , "bool"              , "Activated"                                 , True                                                                     ),
+                  ("fullpath"       , "bool"              , "Extract with full paths"                   , True                                                                     ),
+                  ("overwrite"      , "bool"              , "Overwrite files"                           , False                                                                    ),
+                  ("keepbroken"     , "bool"              , "Try to extract broken archives"            , False                                                                    ),
+                  ("repair"         , "bool"              , "Repair broken archives (RAR required)"     , False                                                                    ),
+                  ("test"           , "bool"              , "Test archive before extracting"            , False                                                                    ),
+                  ("usepasswordfile", "bool"              , "Use password file"                         , True                                                                     ),
+                  ("passwordfile"   , "file"              , "Password file"                             , "archive_password.txt"                                                   ),
+                  ("delete"         , "bool"              , "Delete archive after extraction"           , True                                                                     ),
+                  ("deltotrash"     , "bool"              , "Move to trash (recycle bin) instead delete", True                                                                     ),
+                  ("subfolder"      , "bool"              , "Create subfolder for each package"         , False                                                                    ),
+                  ("destination"    , "folder"            , "Extract files to folder"                   , ""                                                                       ),
+                  ("extensions"     , "str"               , "Extract archives ending with extension"    , "7z,bz2,bzip2,gz,gzip,lha,lzh,lzma,rar,tar,taz,tbz,tbz2,tgz,xar,xz,z,zip"),
+                  ("excludefiles"   , "str"               , "Don't extract the following files"         , "*.nfo,*.DS_Store,index.dat,thumb.db"                                    ),
+                  ("recursive"      , "bool"              , "Extract archives in archives"              , True                                                                     ),
+                  ("waitall"        , "bool"              , "Run after all downloads was processed"     , False                                                                    ),
+                  ("renice"         , "int"               , "CPU priority"                              , 0                                                                        )]
 
     __description__ = """Extract different kind of archives"""
     __license__     = "GPLv3"
@@ -146,7 +147,16 @@ class ExtractArchive(Addon):
         self.extractors  = []
         self.passwords   = []
         self.repair      = False
-        self.trash       = False
+
+        try:
+            import send2trash
+
+        except ImportError:
+            self.logDebug("Send2Trash lib not found")
+            self.trashable = False
+
+        else:
+            self.trashable = True
 
 
     def activate(self):
@@ -161,19 +171,19 @@ class ExtractArchive(Addon):
 
             except OSError, e:
                 if e.errno == 2:
-                    self.logInfo(_("No %s installed") % p)
+                    self.logWarning(_("No %s installed") % p)
                 else:
                     self.logWarning(_("Could not activate: %s") % p, e)
                     if self.core.debug:
-                        print_exc()
+                        traceback.print_exc()
 
             except Exception, e:
                 self.logWarning(_("Could not activate: %s") % p, e)
                 if self.core.debug:
-                    print_exc()
+                    traceback.print_exc()
 
         if self.extractors:
-            self.logInfo(_("Activated") + " " + "|".join("%s %s" % (Extractor.__name__,Extractor.VERSION) for Extractor in self.extractors))
+            self.logDebug(*["Found %s %s" % (Extractor.__name__, Extractor.VERSION) for Extractor in self.extractors])
             self.extractQueued()  #: Resume unfinished extractions
         else:
             self.logInfo(_("No Extract plugins activated"))
@@ -319,6 +329,7 @@ class ExtractArchive(Addon):
                                 new_files = self._extract(pyfile, archive, pypack.password)
 
                             finally:
+                                pyfile.setProgress(100)
                                 thread.finishFile(pyfile)
 
                         except Exception, e:
@@ -447,31 +458,25 @@ class ExtractArchive(Addon):
             pyfile.setStatus("processing")
 
             delfiles = archive.getDeleteFiles()
-            if self.core.debug:
-                self.logDebug("Would delete: %s" % ", ".join(delfiles))
+            self.logDebug("Would delete: " + ", ".join(delfiles))
 
-            if self.getConfig('delete') != 'No':
-                try:
-                    from send2trash import send2trash
-                    if self.getConfig('delete') == "Trash":
-                        self.trash = True
-                        self.logInfo(_("Sending %s files to trash") % len(delfiles))
-                except ImportError:
-                    self.logError(name, _("Send2Trash not installed, no files deleted"))
-                    self.trash = False
+            if self.getConfig('delete'):
+                self.logInfo(_("Deleting %s files") % len(delfiles))
 
-                if self.getConfig('delete') == "Permanent":
-                    self.trash = False
-                    self.logInfo(_("Deleting %s files") % len(delfiles))
-
+                deltotrash = self.getConfig('deltotrash')
                 for f in delfiles:
                     file = fs_encode(f)
-                    if os.path.exists(file) and self.trash:
-                        send2trash(file)
-                    elif os.path.exists(file):
+                    if not os.path.exists(file):
+                        continue
+
+                    if not deltotrash:
                         os.remove(file)
+
+                    elif self.trashable:
+                        send2trash.send2trash(file)
+
                     else:
-                        self.logDebug("%s does not exists" % f)
+                        self.logWarning(_("Unable to move %s to trash") % os.path.basename(f))
 
             self.logInfo(name, _("Extracting finished"))
             extracted_files = archive.files or archive.list()
@@ -490,7 +495,7 @@ class ExtractArchive(Addon):
         except Exception, e:
             self.logError(name, _("Unknown error"), e)
             if self.core.debug:
-                print_exc()
+                traceback.print_exc()
 
         self.manager.dispatchEvent("archive_extract_failed", pyfile, archive)
 

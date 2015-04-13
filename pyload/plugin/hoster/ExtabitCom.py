@@ -21,7 +21,7 @@ class ExtabitCom(SimpleHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    NAME_PATTERN = r'<th>File:</th>\s*<td class="col-fileinfo">\s*<div title="(?P<N>[^"]+)">'
+    NAME_PATTERN = r'<th>File:</th>\s*<td class="col-fileinfo">\s*<div title="(?P<N>.+?)">'
     SIZE_PATTERN = r'<th>Size:</th>\s*<td class="col-fileinfo">(?P<S>[^<]+)</td>'
     OFFLINE_PATTERN = r'>File not found<'
     TEMP_OFFLINE_PATTERN = r'>(File is temporary unavailable|No download mirror)<'
@@ -72,5 +72,5 @@ class ExtabitCom(SimpleHoster):
         if m is None:
             self.error(_("LINK_FREE_PATTERN not found"))
 
-        url = m.group(1)
-        self.download(url)
+        self.link = m.group(1)
+

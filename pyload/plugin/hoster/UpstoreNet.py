@@ -23,7 +23,7 @@ class UpstoreNet(SimpleHoster):
     OFFLINE_PATTERN = r'<span class="error">File not found</span>'
 
     WAIT_PATTERN = r'var sec = (\d+)'
-    CHASH_PATTERN = r'<input type="hidden" name="hash" value="([^"]*)">'
+    CHASH_PATTERN = r'<input type="hidden" name="hash" value="(.+?)">'
     LINK_FREE_PATTERN = r'<a href="(https?://.*?)" target="_blank"><b>'
 
 

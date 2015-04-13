@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import urllib
 
 from BeautifulSoup import BeautifulSoup
 
@@ -11,7 +12,7 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 class ZippyshareCom(SimpleHoster):
     __name__    = "ZippyshareCom"
     __type__    = "hoster"
-    __version__ = "0.77"
+    __version__ = "0.78"
 
     __pattern__ = r'http://www\d{0,2}\.zippyshare\.com/v(/|iew\.jsp.*key=)(?P<KEY>[\w^_]+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -24,7 +25,7 @@ class ZippyshareCom(SimpleHoster):
 
     COOKIES = [("zippyshare.com", "ziplocale", "en")]
 
-    NAME_PATTERN    = r'("/|<title>Zippyshare.com - )(?P<N>[^/]+?)("\);|</title>)'
+    NAME_PATTERN    = r'(<title>Zippyshare.com - |"/)(?P<N>[^/]+)(</title>|";)'
     SIZE_PATTERN    = r'>Size:.+?">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'does not exist (anymore )?on this server<'
 
@@ -51,6 +52,9 @@ class ZippyshareCom(SimpleHoster):
 
         else:
             self.link = self.get_link()
+
+        if self.link and pyfile.name == 'file.html':
+            pyfile.name = urllib.unquote(self.link.split('/')[-1])
 
 
     def get_link(self):

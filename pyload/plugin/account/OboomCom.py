@@ -4,7 +4,8 @@ import time
 
 try:
     from beaker.crypto.pbkdf2 import PBKDF2
-except:
+
+except ImportError:
     from beaker.crypto.pbkdf2 import pbkdf2
     from binascii import b2a_hex
     class PBKDF2(object):
@@ -23,7 +24,7 @@ from pyload.plugin.Account import Account
 class OboomCom(Account):
     __name__    = "OboomCom"
     __type__    = "account"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __description__ = """Oboom.com account plugin"""
     __license__     = "GPLv3"

@@ -11,19 +11,37 @@ from pyload.utils import fs_encode, fs_join
 class AntiVirus(Addon):
     __name__    = "AntiVirus"
     __type__    = "addon"
-    __version__ = "0.05"
+    __version__ = "0.07"
 
     #@TODO: add trash option (use Send2Trash lib)
-    __config__ = [("action"    , "Antivirus default;Delete;Quarantine", "Manage infected files"                    , "Antivirus default"),
-                  ("quardir"   , "folder"                             , "Quarantine folder"                        , ""                 ),
-                  ("scanfailed", "bool"                               , "Scan incompleted files (failed downloads)", False              ),
-                  ("cmdfile"   , "file"                               , "Antivirus executable"                     , ""                 ),
-                  ("cmdargs"   , "str"                                , "Scan options"                             , ""                 ),
-                  ("ignore-err", "bool"                               , "Ignore scan errors"                       , False              )]
+    __config__ = [("action"    , "Antivirus default;Delete;Quarantine", "Manage infected files"                     , "Antivirus default"),
+                  ("quardir"   , "folder"                             , "Quarantine folder"                         , ""                 ),
+                  ("deltotrash", "bool"                               , "Move to trash (recycle bin) instead delete", True               ),
+                  ("scanfailed", "bool"                               , "Scan incompleted files (failed downloads)" , False              ),
+                  ("cmdfile"   , "file"                               , "Antivirus executable"                      , ""                 ),
+                  ("cmdargs"   , "str"                                , "Scan options"                              , ""                 ),
+                  ("ignore-err", "bool"                               , "Ignore scan errors"                        , False              )]
 
     __description__ = """Scan downloaded files with antivirus program"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+
+
+    interval = 0  #@TODO: Remove in 0.4.10
+
+
+    def setup(self):
+        self.info = {}  #@TODO: Remove in 0.4.10
+
+        try:
+            import send2trash
+
+        except ImportError:
+            self.logDebug("Send2Trash lib not found")
+            self.trashable = False
+
+        else:
+            self.trashable = True
 
 
     @Expose
@@ -39,6 +57,7 @@ class AntiVirus(Addon):
 
         thread.addActive(pyfile)
         pyfile.setCustomStatus(_("virus scanning"))
+        pyfile.setProgress(0)
 
         try:
             p = subprocess.Popen([cmdfile, cmdargs, file], bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -59,11 +78,19 @@ class AntiVirus(Addon):
                 action = self.getConfig('action')
                 try:
                     if action == "Delete":
-                        os.remove(file)
+                        if not self.getConfig('deltotrash'):
+                            os.remove(file)
+
+                        elif self.trashable:
+                            send2trash.send2trash(file)
+
+                        else:
+                            self.logWarning(_("Unable to move file to trash, move to quarantine instead"))
+                            pyfile.setCustomStatus(_("file moving"))
+                            shutil.move(file, self.getConfig('quardir'))
 
                     elif action == "Quarantine":
                         pyfile.setCustomStatus(_("file moving"))
-                        pyfile.setProgress(0)
                         shutil.move(file, self.getConfig('quardir'))
 
                 except (IOError, shutil.Error), e:

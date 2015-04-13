@@ -3,8 +3,8 @@
 from pyload.plugin.internal.MultiHook import MultiHook
 
 
-class RehostTo(MultiHook):
-    __name__    = "RehostTo"
+class RehostToHook(MultiHook):
+    __name__    = "RehostToHook"
     __type__    = "hook"
     __version__ = "0.50"
 

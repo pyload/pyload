@@ -57,7 +57,7 @@ class DateiTo(SimpleHoster):
         else:
             self.fail(_("Too bad..."))
 
-        self.download(self.html)
+        self.link = self.html
 
 
     def checkErrors(self):

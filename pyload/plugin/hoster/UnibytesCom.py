@@ -22,10 +22,10 @@ class UnibytesCom(SimpleHoster):
 
     HOSTER_DOMAIN = "unibytes.com"
 
-    INFO_PATTERN = r'<span[^>]*?id="fileName"[^>]*>(?P<N>[^>]+)</span>\s*\((?P<S>\d.*?)\)'
+    INFO_PATTERN = r'<span[^>]*?id="fileName".*?>(?P<N>[^>]+)</span>\s*\((?P<S>\d.*?)\)'
 
     WAIT_PATTERN = r'Wait for <span id="slowRest">(\d+)</span> sec'
-    LINK_FREE_PATTERN = r'<a href="([^"]+)">Download</a>'
+    LINK_FREE_PATTERN = r'<a href="(.+?)">Download</a>'
 
 
     def handleFree(self, pyfile):
@@ -39,7 +39,7 @@ class UnibytesCom(SimpleHoster):
 
             m = re.search(r'location:\s*(\S+)', self.req.http.header, re.I)
             if m:
-                url = m.group(1)
+                self.link = m.group(1)
                 break
 
             if '>Somebody else is already downloading using your IP-address<' in self.html:
@@ -49,7 +49,7 @@ class UnibytesCom(SimpleHoster):
             if post_data['step'] == 'last':
                 m = re.search(self.LINK_FREE_PATTERN, self.html)
                 if m:
-                    url = m.group(1)
+                    self.link = m.group(1)
                     self.correctCaptcha()
                     break
                 else:
@@ -68,4 +68,3 @@ class UnibytesCom(SimpleHoster):
         else:
             self.fail(_("No valid captcha code entered"))
 
-        self.download(url)

@@ -48,7 +48,7 @@ class FileserveCom(Hoster):
     URLS = ["http://www.fileserve.com/file/", "http://www.fileserve.com/link-checker.php",
             "http://www.fileserve.com/checkReCaptcha.php"]
     LINKCHECK_TR = r'<tr>\s*(<td>http://www\.fileserve\.com/file/.*?)</tr>'
-    LINKCHECK_TD = r'<td>(?:<[^>]*>|&nbsp;)*([^<]*)'
+    LINKCHECK_TD = r'<td>(?:<.*?>|&nbsp;)*([^<]*)'
 
     CAPTCHA_KEY_PATTERN = r'var reCAPTCHA_publickey=\'(.+?)\''
     LONG_WAIT_PATTERN = r'<li class="title">You need to wait (\d+) (\w+) to start another download\.</li>'

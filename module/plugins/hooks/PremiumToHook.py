@@ -3,8 +3,8 @@
 from pyload.plugin.internal.MultiHook import MultiHook
 
 
-class PremiumTo(MultiHook):
-    __name__    = "PremiumTo"
+class PremiumToHook(MultiHook):
+    __name__    = "PremiumToHook"
     __type__    = "hook"
     __version__ = "0.08"
 

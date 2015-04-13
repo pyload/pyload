@@ -9,7 +9,7 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 class CatShareNet(SimpleHoster):
     __name__    = "CatShareNet"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = r'http://(?:www\.)?catshare\.net/\w{16}'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -24,12 +24,13 @@ class CatShareNet(SimpleHoster):
     TEXT_ENCODING = True
 
     INFO_PATTERN = r'<title>(?P<N>.+) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)<'
-    OFFLINE_PATTERN = ur'Podany plik został usunięty\s*</div>'
+    OFFLINE_PATTERN = r'<div class="alert alert-error"'
 
     IP_BLOCKED_PATTERN = ur'>Nasz serwis wykrył że Twój adres IP nie pochodzi z Polski.<'
     WAIT_PATTERN       = r'var\scount\s=\s(\d+);'
 
-    LINK_FREE_PATTERN = LINK_PREMIUM_PATTERN = r'<form action="(.+?)" method="GET">'
+    LINK_FREE_PATTERN    = r'<form action="(.+?)" method="GET">'
+    LINK_PREMIUM_PATTERN = r'<form action="(.+?)" method="GET">'
 
 
     def setup(self):
@@ -54,8 +55,6 @@ class CatShareNet(SimpleHoster):
                                     'recaptcha_response_field' : response})
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
-        if m is None:
-            self.invalidCaptcha()
-            self.retry(reason=_("Wrong captcha entered"))
+        if m:
+            self.link = m.group(1)
 
-        self.link = m.group(1)

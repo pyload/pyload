@@ -5,7 +5,8 @@ import time
 
 try:
     from beaker.crypto.pbkdf2 import PBKDF2
-except:
+
+except ImportError:
     from beaker.crypto.pbkdf2 import pbkdf2
     from binascii import b2a_hex
     class PBKDF2(object):
@@ -24,7 +25,7 @@ from pyload.plugin.Account import Account
 class SmoozedCom(Account):
     __name__    = "SmoozedCom"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """Smoozed.com account plugin"""
     __license__     = "GPLv3"

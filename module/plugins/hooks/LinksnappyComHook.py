@@ -4,8 +4,8 @@ from pyload.utils import json_loads
 from pyload.plugin.internal.MultiHook import MultiHook
 
 
-class LinksnappyCom(MultiHook):
-    __name__    = "LinksnappyCom"
+class LinksnappyComHook(MultiHook):
+    __name__    = "LinksnappyComHook"
     __type__    = "hook"
     __version__ = "0.04"
 

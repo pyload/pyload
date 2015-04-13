@@ -4,8 +4,8 @@ from pyload.utils import json_loads
 from pyload.plugin.internal.MultiHook import MultiHook
 
 
-class RapideoPl(MultiHook):
-    __name__    = "RapideoPl"
+class RapideoPlHook(MultiHook):
+    __name__    = "RapideoPlHook"
     __type__    = "hook"
     __version__ = "0.03"
 

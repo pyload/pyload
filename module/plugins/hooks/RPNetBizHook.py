@@ -4,8 +4,8 @@ from pyload.utils import json_loads
 from pyload.plugin.internal.MultiHook import MultiHook
 
 
-class RPNetBiz(MultiHook):
-    __name__    = "RPNetBiz"
+class RPNetBizHook(MultiHook):
+    __name__    = "RPNetBizHook"
     __type__    = "hook"
     __version__ = "0.14"
 

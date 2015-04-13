@@ -5,15 +5,16 @@ import re
 from pyload.plugin.internal.MultiHook import MultiHook
 
 
-class LinkdecrypterCom(MultiHook):
-    __name__    = "LinkdecrypterCom"
+class LinkdecrypterComHook(MultiHook):
+    __name__    = "LinkdecrypterComHook"
     __type__    = "hook"
-    __version__ = "1.03"
+    __version__ = "1.04"
 
-    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
-                  ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
-                  ("reload"        , "bool"               , "Reload plugin list"                  , True ),
-                  ("reloadinterval", "int"                , "Reload interval in hours"            , 12   )]
+    __config__ = [("activated"     , "bool"               , "Activated"                    , True ),
+                  ("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
+                  ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
+                  ("reload"        , "bool"               , "Reload plugin list"           , True ),
+                  ("reloadinterval", "int"                , "Reload interval in hours"     , 12   )]
 
     __description__ = """Linkdecrypter.com hook plugin"""
     __license__     = "GPLv3"

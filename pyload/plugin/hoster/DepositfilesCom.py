@@ -11,7 +11,7 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 class DepositfilesCom(SimpleHoster):
     __name__    = "DepositfilesCom"
     __type__    = "hoster"
-    __version__ = "0.54"
+    __version__ = "0.55"
 
     __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -28,7 +28,7 @@ class DepositfilesCom(SimpleHoster):
     OFFLINE_PATTERN = r'<span class="html_download_api-not_exists"></span>'
 
     NAME_REPLACEMENTS = [(r'\%u([0-9A-Fa-f]{4})', lambda m: unichr(int(m.group(1), 16))),
-                              (r'.*<b title="(?P<N>[^"]+).*', "\g<N>")]
+                         (r'.*<b title="(?P<N>.+?)".*', "\g<N>")]
     URL_REPLACEMENTS  = [(__pattern__ + ".*", "https://dfiles.eu/files/\g<ID>")]
 
     COOKIES = [("dfiles.eu", "lang_current", "en")]
@@ -52,7 +52,8 @@ class DepositfilesCom(SimpleHoster):
         params = {'fid': m.group(1)}
         self.logDebug("FID: %s" % params['fid'])
 
-        self.wait()
+        self.checkErrors()
+
         recaptcha = ReCaptcha(self)
         captcha_key = recaptcha.detect_key()
         if captcha_key is None:
@@ -66,9 +67,6 @@ class DepositfilesCom(SimpleHoster):
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m:
-            if 'response' in params:
-                self.correctCaptcha()
-
             self.link = unquote(m.group(1))
 
 

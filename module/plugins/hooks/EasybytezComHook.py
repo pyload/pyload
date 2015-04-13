@@ -5,8 +5,8 @@ import re
 from pyload.plugin.internal.MultiHook import MultiHook
 
 
-class EasybytezCom(MultiHook):
-    __name__    = "EasybytezCom"
+class EasybytezComHook(MultiHook):
+    __name__    = "EasybytezComHook"
     __type__    = "hook"
     __version__ = "0.07"
 

@@ -43,8 +43,7 @@ class VeohCom(SimpleHoster):
             m = re.search(pattern, self.html)
             if m:
                 pyfile.name += ".mp4"
-                link = m.group(1).replace("\\", "")
-                self.download(link)
+                self.link = m.group(1).replace("\\", "")
                 return
             else:
                 self.logInfo(_("No %s quality video found") % q.upper())

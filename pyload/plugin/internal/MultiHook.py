@@ -2,6 +2,7 @@
 
 import re
 import time
+import traceback
 
 from pyload.plugin.Hook import Hook
 from pyload.utils import decode, remove_chars
@@ -10,7 +11,7 @@ from pyload.utils import decode, remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.40"
+    __version__ = "0.44"
 
     __config__  = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                    ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -64,20 +65,19 @@ class MultiHook(Hook):
         self.pluginname   = None
         self.plugintype   = None
 
-        self._initPlugin()
+        self.initPlugin()
 
 
-    def _initPlugin(self):
-        plugin = self.core.pluginManager.findPlugin("hoster", self.__class__.__name__)
+    def initPlugin(self):
+        self.pluginname         = self.__class__.__name__.rsplit("Hook", 1)[0]
+        plugin, self.plugintype = self.core.pluginManager.findPlugin(self.pluginname)
 
-        if not plugin:
+        if plugin:
+            self.pluginmodule = self.core.pluginManager.loadModule(self.plugintype, self.pluginname)
+            self.pluginclass  = getattr(self.pluginmodule, self.pluginname)
+        else:
             self.logWarning("Hook plugin will be deactivated due missing plugin reference")
             self.setConfig('activated', False)
-        else:
-            self.pluginname   = self.__class__.__name__
-            self.plugintype   = "hoster"
-            self.pluginmodule = self.core.pluginManager.loadModule("hoster", self.__class__.__name__)
-            self.pluginclass  = getattr(self.pluginmodule, self.__class__.__name__)
 
 
     def loadAccount(self):

@@ -18,7 +18,7 @@ class QuickshareCz(Crypter):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FOLDER_PATTERN = r'<textarea[^>]*>(.*?)</textarea>'
+    FOLDER_PATTERN = r'<textarea.*?>(.*?)</textarea>'
     LINK_PATTERN = r'(http://www\.quickshare\.cz/\S+)'
 
 

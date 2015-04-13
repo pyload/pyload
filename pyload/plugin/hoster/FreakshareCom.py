@@ -107,12 +107,14 @@ class FreakshareCom(Hoster):
     def get_file_name(self):
         if not self.html:
             self.download_html()
+
         if not self.wantReconnect:
-            file_name = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">([^ ]+)", self.html)
-            if file_name is not None:
-                file_name = file_name.group(1)
+            m = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">([^ ]+)", self.html)
+            if m:
+                file_name = m.group(1)
             else:
                 file_name = self.pyfile.url
+
             return file_name
         else:
             return self.pyfile.url
@@ -122,12 +124,12 @@ class FreakshareCom(Hoster):
         size = 0
         if not self.html:
             self.download_html()
+
         if not self.wantReconnect:
-            file_size_check = re.search(
-                r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">[^ ]+ - ([^ ]+) (\w\w)yte", self.html)
-            if file_size_check is not None:
-                units = float(file_size_check.group(1).replace(",", ""))
-                pow = {'KB': 1, 'MB': 2, 'GB': 3}[file_size_check.group(2)]
+            m = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">[^ ]+ - ([^ ]+) (\w\w)yte", self.html)
+            if m:
+                units = float(m.group(1).replace(",", ""))
+                pow = {'KB': 1, 'MB': 2, 'GB': 3}[m.group(2)]
                 size = int(units * 1024 ** pow)
 
         return size
@@ -153,7 +155,7 @@ class FreakshareCom(Hoster):
         """
         if not self.html:
             self.download_html()
-        if re.search(r"This file does not exist!", self.html) is not None:
+        if re.search(r"This file does not exist!", self.html):
             return False
         else:
             return True

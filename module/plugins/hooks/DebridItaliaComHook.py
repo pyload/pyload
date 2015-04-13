@@ -5,8 +5,8 @@ import re
 from pyload.plugin.internal.MultiHook import MultiHook
 
 
-class DebridItaliaCom(MultiHook):
-    __name__    = "DebridItaliaCom"
+class DebridItaliaComHook(MultiHook):
+    __name__    = "DebridItaliaComHook"
     __type__    = "hook"
     __version__ = "0.12"
 

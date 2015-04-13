@@ -17,6 +17,6 @@ class HugefilesNet(XFSHoster):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    SIZE_PATTERN = r'File Size:</span>\s*<span[^>]*>(?P<S>[^<]+)</span></div>'
+    SIZE_PATTERN = r'File Size:</span>\s*<span.*?>(?P<S>[^<]+)</span></div>'
 
     FORM_INPUTS_MAP = {'ctype': re.compile(r'\d+')}

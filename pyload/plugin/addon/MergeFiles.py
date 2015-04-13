@@ -4,8 +4,7 @@ from __future__ import with_statement
 
 import os
 import re
-
-from traceback import print_exc
+import traceback
 
 from pyload.plugin.Addon import Addon, threaded
 from pyload.utils import fs_join
@@ -71,7 +70,7 @@ class MergeFiles(Addon):
                         self.logDebug("Finished merging part", splitted_file)
 
                     except Exception, e:
-                        print_exc()
+                        traceback.print_exc()
 
                     finally:
                         pyfile.setProgress(100)

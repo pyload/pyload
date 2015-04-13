@@ -18,7 +18,7 @@ class UlozTo(Account):
                        ("pulpe", "")]
 
 
-    TRAFFIC_LEFT_PATTERN = r'<li class="menu-kredit"><a .*?title="[^"]*?GB = ([\d.]+) MB"'
+    TRAFFIC_LEFT_PATTERN = r'<li class="menu-kredit"><a .*?title=".+?GB = ([\d.]+) MB"'
 
 
     def loadAccountInfo(self, user, req):

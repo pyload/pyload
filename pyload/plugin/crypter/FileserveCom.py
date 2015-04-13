@@ -20,7 +20,7 @@ class FileserveCom(Crypter):
 
 
     FOLDER_PATTERN = r'<table class="file_list">(.*?)</table>'
-    LINK_PATTERN = r'<a href="([^"]+)" class="sheet_icon wbold">'
+    LINK_PATTERN = r'<a href="(.+?)" class="sheet_icon wbold">'
 
 
     def decrypt(self, pyfile):

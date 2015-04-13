@@ -10,7 +10,7 @@ from pyload.utils import fs_encode, fs_join
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "addon"
-    __version__ = "0.37"
+    __version__ = "0.39"
 
     __config__ = [("activated", "bool", "Activated"         , True ),
                   ("waitend"  , "bool", "Wait script ending", False)]
@@ -119,7 +119,7 @@ class ExternalScripts(Addon):
 
     def downloadPreparing(self, pyfile):
         for script in self.scripts['download_preparing']:
-            self.callScript(script, pyfile.id, pyfile.name, pyfile.pluginname, pyfile.url, None)
+            self.callScript(script, pyfile.id, pyfile.name, None, pyfile.pluginname, pyfile.url)
 
 
     def downloadFailed(self, pyfile):
@@ -130,7 +130,7 @@ class ExternalScripts(Addon):
 
         for script in self.scripts['download_failed']:
             file = fs_join(download_folder, pyfile.name)
-            self.callScript(script, pyfile.id, pyfile.name, pyfile.pluginname, pyfile.url, file)
+            self.callScript(script, pyfile.id, pyfile.name, file, pyfile.pluginname, pyfile.url)
 
 
     def downloadFinished(self, pyfile):
@@ -141,17 +141,17 @@ class ExternalScripts(Addon):
 
         for script in self.scripts['download_finished']:
             file = fs_join(download_folder, pyfile.name)
-            self.callScript(script, pyfile.id, pyfile.name, pyfile.pluginname, pyfile.url, file)
+            self.callScript(script, pyfile.id, pyfile.name, file, pyfile.pluginname, pyfile.url)
 
 
     def archive_extract_failed(self, pyfile, archive):
         for script in self.scripts['archive_extract_failed']:
-            self.callScript(script, pyfile.id, pyfile.name, archive.out, archive.filename, archive.files)
+            self.callScript(script, pyfile.id, pyfile.name, archive.filename, archive.out, archive.files)
 
 
     def archive_extracted(self, pyfile, archive):
         for script in self.scripts['archive_extracted']:
-            self.callScript(script, pyfile.id, pyfile.name, archive.out, archive.filename, archive.files)
+            self.callScript(script, pyfile.id, pyfile.name, archive.filename, archive.out, archive.files)
 
 
     def packageFinished(self, pypack):
@@ -161,7 +161,7 @@ class ExternalScripts(Addon):
             download_folder = self.config['general']['download_folder']
 
         for script in self.scripts['package_finished']:
-            self.callScript(script, pypack.id, pypack.name, download_folder)
+            self.callScript(script, pypack.id, pypack.name, download_folder, pypack.password)
 
 
     def packageDeleted(self, pid):
@@ -173,7 +173,7 @@ class ExternalScripts(Addon):
             download_folder = self.config['general']['download_folder']
 
         for script in self.scripts['package_deleted']:
-            self.callScript(script, pack.id, pack.name, download_folder)
+            self.callScript(script, pack.id, pack.name, download_folder, pack.password)
 
 
     def package_extract_failed(self, pypack):
@@ -183,7 +183,7 @@ class ExternalScripts(Addon):
             download_folder = self.config['general']['download_folder']
 
         for script in self.scripts['package_extract_failed']:
-            self.callScript(script, pypack.id, pypack.name, download_folder)
+            self.callScript(script, pypack.id, pypack.name, download_folder, pypack.password)
 
 
     def package_extracted(self, pypack):

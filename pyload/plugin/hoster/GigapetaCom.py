@@ -43,14 +43,13 @@ class GigapetaCom(SimpleHoster):
 
             m = re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I)
             if m:
-                download_url = m.group(1)
+                self.link = m.group(1).rstrip()  #@TODO: Remove .rstrip() in 0.4.10
                 break
             elif "Entered figures don&#96;t coincide with the picture" in self.html:
                 self.invalidCaptcha()
         else:
             self.fail(_("No valid captcha code entered"))
 
-        self.download(download_url)
 
 
     def checkErrors(self):

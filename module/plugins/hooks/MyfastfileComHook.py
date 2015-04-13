@@ -4,8 +4,8 @@ from pyload.plugin.internal.MultiHook import MultiHook
 from pyload.utils import json_loads
 
 
-class MyfastfileCom(MultiHook):
-    __name__    = "MyfastfileCom"
+class MyfastfileComHook(MultiHook):
+    __name__    = "MyfastfileComHook"
     __type__    = "hook"
     __version__ = "0.05"
 

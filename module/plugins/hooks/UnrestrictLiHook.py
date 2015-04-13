@@ -4,8 +4,8 @@ from pyload.utils import json_loads
 from pyload.plugin.internal.MultiHook import MultiHook
 
 
-class UnrestrictLi(MultiHook):
-    __name__    = "UnrestrictLi"
+class UnrestrictLiHook(MultiHook):
+    __name__    = "UnrestrictLiHook"
     __type__    = "hook"
     __version__ = "0.05"
 
