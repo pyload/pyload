@@ -60,4 +60,3 @@ class NowDownloadSx(SimpleHoster):
             self.error(_("Download link not found"))
 
         self.link = m.group(1)
-

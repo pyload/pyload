@@ -60,4 +60,3 @@ class NarodRu(SimpleHoster):
 
         else:
             self.fail(_("No valid captcha code entered"))
-

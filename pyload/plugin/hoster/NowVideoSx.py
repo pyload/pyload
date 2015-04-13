@@ -40,4 +40,3 @@ class NowVideoSx(SimpleHoster):
             self.error(_("Free download link not found"))
 
         self.link = m.group(1)
-

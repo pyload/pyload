@@ -23,4 +23,3 @@ class RgHostNet(SimpleHoster):
     OFFLINE_PATTERN = r'>(File is deleted|page not found)'
 
     LINK_FREE_PATTERN = r'<a href="(.+?)" class="btn large'
-

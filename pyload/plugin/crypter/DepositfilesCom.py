@@ -19,4 +19,3 @@ class DepositfilesCom(SimpleCrypter):
 
 
     LINK_PATTERN = r'<div class="progressName".*?>\s*<a href="(.+?)" title=".+?" target="_blank">'
-

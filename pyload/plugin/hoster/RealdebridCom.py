@@ -53,5 +53,3 @@ class RealdebridCom(MultiHoster):
             self.link = self.link.replace("http://", "https://")
         else:
             self.link = self.link.replace("https://", "http://")
-
-

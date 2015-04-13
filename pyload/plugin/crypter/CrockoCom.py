@@ -19,4 +19,3 @@ class CrockoCom(SimpleCrypter):
 
 
     LINK_PATTERN = r'<td class="last"><a href="(.+?)">download</a>'
-

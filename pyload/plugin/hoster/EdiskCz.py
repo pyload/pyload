@@ -52,4 +52,3 @@ class EdiskCz(SimpleHoster):
             self.fail(_("Unexpected server response"))
 
         self.link = url
-

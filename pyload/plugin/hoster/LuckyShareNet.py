@@ -70,4 +70,3 @@ class LuckyShareNet(SimpleHoster):
             self.fail(_("No Download url retrieved/all captcha attempts failed"))
 
         self.link = json['link']
-

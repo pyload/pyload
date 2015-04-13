@@ -107,4 +107,3 @@ class MegasharesCom(SimpleHoster):
 
         self.link = m.group(1)
         self.logDebug("%s: %s" % (msg, self.link))
-

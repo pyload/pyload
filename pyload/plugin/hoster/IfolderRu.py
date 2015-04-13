@@ -61,4 +61,3 @@ class IfolderRu(SimpleHoster):
             self.fail(_("Invalid captcha"))
 
         self.link = re.search(self.LINK_FREE_PATTERN, self.html).group(1)
-

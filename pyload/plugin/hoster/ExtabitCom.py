@@ -73,4 +73,3 @@ class ExtabitCom(SimpleHoster):
             self.error(_("LINK_FREE_PATTERN not found"))
 
         self.link = m.group(1)
-

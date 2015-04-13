@@ -19,4 +19,3 @@ class FshareVn(SimpleCrypter):
 
 
     LINK_PATTERN = r'<li class="w_80pc"><a href="(.+?)" target="_blank">'
-

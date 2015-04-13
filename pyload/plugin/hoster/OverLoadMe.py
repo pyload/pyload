@@ -48,5 +48,3 @@ class OverLoadMe(MultiHoster):
 
             http_repl = ["http://", "https://"]
             self.link = data['downloadlink'].replace(*http_repl if self.getConfig('ssl') else http_repl[::-1])
-
-

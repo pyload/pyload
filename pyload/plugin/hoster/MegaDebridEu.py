@@ -56,5 +56,3 @@ class MegaDebridEu(MultiHoster):
         res = json_loads(jsonResponse)
         if res['response_code'] == "ok":
             self.link = res['debridLink'][1:-1]
-
-

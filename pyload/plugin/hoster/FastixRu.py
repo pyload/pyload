@@ -41,5 +41,3 @@ class FastixRu(MultiHoster):
             self.offline()
         else:
             self.link = data['downloadlink']
-
-

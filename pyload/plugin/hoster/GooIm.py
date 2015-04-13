@@ -33,4 +33,3 @@ class GooIm(SimpleHoster):
     def handleFree(self, pyfile):
         self.wait(10)
         self.link = pyfile.url
-

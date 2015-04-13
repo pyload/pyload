@@ -67,4 +67,3 @@ class UnibytesCom(SimpleHoster):
 
         else:
             self.fail(_("No valid captcha code entered"))
-

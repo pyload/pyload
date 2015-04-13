@@ -57,4 +57,3 @@ class CatShareNet(SimpleHoster):
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m:
             self.link = m.group(1)
-

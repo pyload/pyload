@@ -53,4 +53,3 @@ class RemixshareCom(SimpleHoster):
             self.error(_("File token"))
 
         self.link = b.group(1) + "/zzz/" + c.group(1)
-

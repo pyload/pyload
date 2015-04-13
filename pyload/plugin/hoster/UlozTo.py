@@ -147,4 +147,3 @@ class UlozTo(SimpleHoster):
             self.fail(_("Server error, file not downloadable"))
 
         return super(UlozTo, self).checkFile(rules)
-

@@ -19,4 +19,3 @@ class MegaRapidCz(SimpleCrypter):
 
 
     LINK_PATTERN = r'<td class="soubor".*?><a href="(.+?)">'
-

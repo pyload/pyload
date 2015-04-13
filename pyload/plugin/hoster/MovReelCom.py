@@ -16,4 +16,3 @@ class MovReelCom(XFSHoster):
 
 
     LINK_PATTERN = r'<a href="(.+?)">Download Link'
-
