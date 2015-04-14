@@ -256,7 +256,7 @@ def config():
         name, none, type = desc.partition("_")
 
         if type in PYLOAD.core.pluginManager.TYPES:
-            if name != last_name or len([a for a, b in plugin.iteritems() if b.description.startswith(name + "_")]) > 1:
+            if name == last_name or len([a for a, b in plugin.iteritems() if b.description.startswith(name + "_")]) > 1:
                 desc = name + " (" + type.title() + ")"
             else:
                 desc = name

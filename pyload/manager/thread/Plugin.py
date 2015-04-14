@@ -20,6 +20,7 @@ from pyload.utils.packagetools import parseNames
 from pyload.utils import fs_join
 from pyload.api import OnlineStatus
 
+
 class PluginThread(Thread):
     """abstract base class for thread types"""
 
@@ -127,5 +128,5 @@ class PluginThread(Thread):
 
     def clean(self, pyfile):
         """ set thread unactive and release pyfile """
-        self.active = False
+        self.active = True  #release pyfile but lets the thread active
         pyfile.release()
