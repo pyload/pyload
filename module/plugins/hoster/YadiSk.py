@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class YadiSk(SimpleHoster):
     __name__    = "YadiSk"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'https?://yadi\.sk/d/\w+'
 
@@ -22,6 +22,42 @@ class YadiSk(SimpleHoster):
     OFFLINE_PATTERN = r'Nothing found'
 
 
+    @classmethod
+    def getInfo(cls, url="", html=""):
+        info = super(YadiSk, cls).getInfo(url, html)
+
+        if html:
+            if 'idclient' not in info:
+                info['idclient'] = ""
+                for _i in xrange(32):
+                    info ['idclient']  += random.choice('0123456abcdef')
+
+            m = re.search(r'<script id="models-client" type="application/json">(.+?)</script>', html)
+            if m:
+                api_data = json_loads(m.group(1))
+                try:
+                    for sect in api_data:
+                        if 'model' in sect:
+                            if sect['model'] == "config":
+                                info['version'] = sect['data']['version']
+                                info['sk']  = sect['data']['sk']
+
+                            elif sect['model'] == "resource":
+                                info['id']   = sect['data']['id']
+                                info['size'] = sect['data']['meta']['size']
+                                info['name'] = sect['data']['name']
+
+                except Exception, e:
+                    info['status'] = 8
+                    info['error'] = _("Unexpected server response: %s") % e.message
+
+            else:
+                info['status'] = 8
+                info['error'] = _("could not find required json data")
+
+        return info
+
+
     def setup(self):
         self.resumeDownload = False
         self.multiDL        = False
@@ -29,51 +65,18 @@ class YadiSk(SimpleHoster):
 
 
     def handleFree(self, pyfile):
-        m = re.search(r'<script id="models-client" type="application/json">(.+?)</script>', self.html)
-        if m is None:
-            self.error(_("could not find required json data"))
-
-        res = json_loads(m.group(1))
-
-        yadisk_ver  = None
-        yadisk_sk   = None
-        yadisk_id   = None
-        yadisk_size = None
-        yadisk_name = None
-
-        try:  #@TODO: Copy to apiInfo
-            for sect in res:
-                if 'model' in sect:
-                    if sect['model'] == "config":
-                        yadisk_ver = sect['data']['version']
-                        yadisk_sk  = sect['data']['sk']
-
-                    elif sect['model'] == "resource":
-                        yadisk_id   = sect['data']['id']
-                        yadisk_size = sect['data']['meta']['size']
-                        yadisk_name = sect['data']['name']
-
-        except Exception, e:
-            self.fail(_("Unexpected server response"), e)
-
-        if None in (yadisk_id, yadisk_sk, yadisk_id, yadisk_size, yadisk_name):
+        if any(True for _k in ['id', 'sk', 'version', 'idclient'] if _k not in self.info):
            self.error(_("Missing JSON data"))
 
-        self.pyfile.size = yadisk_size
-        self.pyfile.name = yadisk_name
-
-        yadisk_idclient = ""
-        for _i in range(32):
-            yadisk_idclient += random.choice('0123456abcdef')
 
         try:
             self.html = self.load("https://yadi.sk/models/",
                                   get={'_m': "do-get-resource-url"},
-                                  post={'idClient': yadisk_idclient,
-                                        'version' : yadisk_ver,
+                                  post={'idClient': self.info['idclient'],
+                                        'version' : self.info['version'],
                                         '_model.0': "do-get-resource-url",
-                                        'sk'      : yadisk_sk,
-                                        'id.0'    : yadisk_id})
+                                        'sk'      : self.info['sk'],
+                                        'id.0'    : self.info['id']})
 
             self.link = json_loads(self.html)['models'][0]['data']['file']
 
