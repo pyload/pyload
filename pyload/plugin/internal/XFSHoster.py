@@ -25,6 +25,7 @@ class XFSHoster(SimpleHoster):
                      ("stickell"      , "l.stickell@yahoo.it"),
                      ("Walter Purcaro", "vuolter@gmail.com")]
 
+
     HOSTER_DOMAIN = None
 
     TEXT_ENCODING = False

@@ -307,11 +307,11 @@ class SimpleHoster(Hoster):
     LOGIN_ACCOUNT = False  #: Set to True to require account login
     DISPOSITION   = True   #: Set to True to use any content-disposition value in http header as file name
 
-    directLink = getFileURL  #@TODO: Remove in 0.4.10
+    directLink = getFileURL  # @TODO: Remove in 0.4.10
 
 
     @classmethod
-    def parseInfos(cls, urls):  #@TODO: Built-in in 0.4.10 core (remove from plugins)
+    def parseInfos(cls, urls):  # @TODO: Built-in in 0.4.10 core (remove from plugins)
         for url in urls:
             url = replace_patterns(url, cls.URL_REPLACEMENTS)
             yield cls.getInfo(url)
@@ -414,13 +414,13 @@ class SimpleHoster(Hoster):
 
 
     def prepare(self):
-        self.pyfile.error = ""  #@TODO: Remove in 0.4.10
+        self.pyfile.error = ""  # @TODO: Remove in 0.4.10
 
         self.info      = {}
         self.html      = ""
-        self.link      = ""  #@TODO: Move to hoster class in 0.4.10
-        self.directDL  = False  #@TODO: Move to hoster class in 0.4.10
-        self.multihost = False  #@TODO: Move to hoster class in 0.4.10
+        self.link      = ""  # @TODO: Move to hoster class in 0.4.10
+        self.directDL  = False  # @TODO: Move to hoster class in 0.4.10
+        self.multihost = False  # @TODO: Move to hoster class in 0.4.10
 
         if not self.getConfig('use_premium', True):
             self.retryFree()
@@ -486,7 +486,7 @@ class SimpleHoster(Hoster):
             self.downloadLink(self.link, self.DISPOSITION)
             self.checkFile()
 
-        except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
+        except Fail, e:  # @TODO: Move to PluginThread in 0.4.10
             if self.premium:
                 self.logWarning(_("Premium download failed"))
                 self.retryFree()
@@ -733,7 +733,7 @@ class SimpleHoster(Hoster):
             return size <= traffic
 
 
-    def getConfig(self, option, default=''):  #@TODO: Remove in 0.4.10
+    def getConfig(self, option, default=''):  # @TODO: Remove in 0.4.10
         """getConfig with default value - sublass may not implements all config options"""
         try:
             return self.getConf(option)
@@ -747,7 +747,7 @@ class SimpleHoster(Hoster):
             return
         self.premium = False
         self.account = None
-        self.req     = self.core.requestFactory.getRequest(self.__name)
+        self.req     = self.core.requestFactory.getRequest(self.__class__.__name__)
         self.retries = 0
         raise Retry(_("Fallback to free download"))
 

@@ -257,11 +257,11 @@ class ThreadManager(object):
 
         free = [x for x in self.threads if not x.active]
 
-        inuse = set([(x.active.pluginname, self.getLimit(x)) for x in self.threads if x.active and x.active.hasPlugin() and x.active.plugin.account])
-        inuse = map(lambda x: (x[0], x[1], len([y for y in self.threads if y.active and y.active.pluginname == x[0]])), inuse)
+        inuse = set([((x.active.plugintype, x.active.pluginname), self.getLimit(x)) for x in self.threads if x.active and x.active.hasPlugin() and x.active.plugin.account])
+        inuse = map(lambda x: ('.'.join(x[0]), x[1], len([y for y in self.threads if y.active and y.active.plugintype == x[0][0] and y.active.pluginname == x[0][1]])), inuse)
         onlimit = [x[0] for x in inuse if x[1] > 0 and x[2] >= x[1]]
 
-        occ = [x.active.pluginname for x in self.threads if x.active and x.active.hasPlugin() and not x.active.plugin.multiDL] + onlimit
+        occ = [x.active.plugintype + '.' + x.active.pluginname for x in self.threads if x.active and x.active.hasPlugin() and not x.active.plugin.multiDL] + onlimit
 
         occ.sort()
         occ = tuple(set(occ))
@@ -277,7 +277,7 @@ class ThreadManager(object):
                 job.release()
                 return
 
-            if job.plugin.grtPluginType() == "hoster":
+            if job.plugin.getPluginType() == "hoster":
                 spaceLeft = freeSpace(self.core.config["general"]["download_folder"]) / 1024 / 1024
                 if spaceLeft < self.core.config["general"]["min_free_space"]:
                     self.core.log.warning(_("Not enough space left on device"))

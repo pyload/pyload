@@ -19,6 +19,7 @@ class KingfilesNet(SimpleHoster):
     __authors     = [("zapp-brannigan", "fuerst.reinje@web.de"),
                      ("Walter Purcaro", "vuolter@gmail.com")]
 
+
     NAME_PATTERN = r'name="fname" value="(?P<N>.+?)">'
     SIZE_PATTERN = r'>Size: .+?">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
