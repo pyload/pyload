@@ -29,7 +29,7 @@ def exists(path):
 class UpdateManager(Hook):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "0.50"
+    __version__ = "0.51"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),
                   ("checkinterval", "int" , "Check interval in hours"                  , 8    ),
@@ -45,9 +45,12 @@ class UpdateManager(Hook):
 
 
     interval = 0
+    restartrequired = False
 
     SERVER_URL         = "http://updatemanager.pyload.org"
     MIN_CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
+
+    event_list = ["allDownloadsProcessed"]
 
 
     def coreReady(self):
@@ -67,6 +70,14 @@ class UpdateManager(Hook):
             self.checkonstart = True
         else:
             self.checkonstart = False
+
+        self.restartrequired = False
+
+
+    def allDownloadsProcessed(self):
+        if self.restartrequired is True:
+            self.logWarning(_("Downloads are done, restarting pyLoad to reload the updated plugins"))
+            self.core.api.restart()
 
 
     def periodical(self):
@@ -128,7 +139,12 @@ class UpdateManager(Hook):
         self.core.api.pauseServer()
 
         if self._update() is 2 and self.getConfig('autorestart'):
-            self.core.api.restart()
+            downloads = self.core.api.statusDownloads()
+            if not downloads:
+                self.core.api.restart()
+            else:
+                self.restartrequired = True
+                self.logWarning(_("Downloads are active, will restart once the download is done"))
         else:
             self.core.api.unpauseServer()
 
@@ -258,7 +274,7 @@ class UpdateManager(Hook):
             if self.core.pluginManager.reloadPlugins(updated):
                 exitcode = 1
             else:
-                self.logWarning(_("Restart pyLoad to reload the updated plugins"))
+                self.logWarning(_("pyLoad restart required to reload the updated plugins"))
                 self.info['plugins'] = True
                 exitcode = 2
 
