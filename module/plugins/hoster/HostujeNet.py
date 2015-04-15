@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-#
-
 
 import re
 
@@ -19,13 +17,13 @@ class HostujeNet(SimpleHoster):
     __authors__     = [("GammaC0de", None)]
 
 
-    NAME_PATTERN = r'<input type="hidden" name="name" value="(?P<N>.+?)">'
-    SIZE_PATTERN = r'<b>Rozmiar:</b> (?P<S>[\d.,]+) (?P<U>[\w^_]+)<br>'
+    NAME_PATTERN    = r'<input type="hidden" name="name" value="(?P<N>.+?)">'
+    SIZE_PATTERN    = r'<b>Rozmiar:</b> (?P<S>[\d.,]+) (?P<U>[\w^_]+)<br>'
     OFFLINE_PATTERN = ur'Podany plik nie został odnaleziony\.\.\.'
 
 
     def setup(self):
-        self.multiDL = True
+        self.multiDL    = True
         self.chunkLimit = 1
 
 
