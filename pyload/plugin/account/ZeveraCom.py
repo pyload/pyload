@@ -19,11 +19,6 @@ class ZeveraCom(Account):
     HOSTER_DOMAIN = "zevera.com"
 
 
-    def __init__(self, manager, accounts):  #@TODO: remove in 0.4.10
-        self.init()
-        return super(ZeveraCom, self).__init__(manager, accounts)
-
-
     def init(self):
         if not self.HOSTER_DOMAIN:
             self.logError(_("Missing HOSTER_DOMAIN"))

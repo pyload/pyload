@@ -109,8 +109,8 @@ class Api(Iface):
                 item = ConfigItem()
                 item.name = key
                 item.description = data["desc"]
-                item.value = str(data["value"]) if not isinstance(data["value"], basestring) else data["value"]
-                item.type = data["type"]
+                item.value = str(data['value']) if not isinstance(data['value'], basestring) else data['value']
+                item.type = data['type']
                 items.append(item)
             section.items = items
             sections[sectionName] = section
@@ -120,37 +120,37 @@ class Api(Iface):
 
 
     @permission(PERMS.SETTINGS)
-    def getConfigValue(self, category, option, section="core"):
+    def getConfigValue(self, section, option, section="core"):
         """Retrieve config value.
 
-        :param category: name of category, or plugin
+        :param section: name of section, or plugin
         :param option: config option
         :param section: 'plugin' or 'core'
         :return: config value as string
         """
         if section == "core":
-            value = self.core.config.get(category, option)
+            value = self.core.config.get(section, option)
         else:
-            value = self.core.config.getPlugin(category, option)
+            value = self.core.config.getPlugin(section, option)
         return str(value)
 
 
     @permission(PERMS.SETTINGS)
-    def setConfigValue(self, category, option, value, section="core"):
+    def setConfigValue(self, section, option, value, section="core"):
         """Set new config value.
 
-        :param category:
+        :param section:
         :param option:
         :param value: new config value
         :param section: 'plugin' or 'core
         """
-        self.core.addonManager.dispatchEvent("config-changed", category, option, value, section)
+        self.core.addonManager.dispatchEvent("config-changed", section, option, value, section)
         if section == "core":
-            self.core.config[category][option] = value
+            self.core.config.set(section, option, value)
             if option in ("limit_speed", "max_speed"):  # not so nice to update the limit
                 self.core.requestFactory.updateBucket()
         elif section == "plugin":
-            self.core.config.setPlugin(category, option, value)
+            self.core.config.setPlugin(section, option, value)
 
 
     @permission(PERMS.SETTINGS)
@@ -895,7 +895,7 @@ class Api(Iface):
         accs = self.core.accountManager.getAccountInfos(False, refresh)
         for group in accs.values():
             accounts = [AccountInfo(acc["validuntil"], acc["login"], acc["options"], acc["valid"],
-                                    acc["trafficleft"], acc["maxtraffic"], acc["premium"], acc["type"])
+                                    acc["trafficleft"], acc["maxtraffic"], acc["premium"], acc['type'])
                         for acc in group]
         return accounts or []
 

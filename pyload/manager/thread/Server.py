@@ -66,7 +66,7 @@ class WebServer(threading.Thread):
                     self.server = "builtin"
             else:
                 self.core.log.info(_("Server set to threaded, due to known performance problems on windows."))
-                self.core.config['webui']['server'] = "threaded"
+                self.core.config.set("webui", "server", "threaded")
                 self.server = "threaded"
 
         if self.server == "threaded":

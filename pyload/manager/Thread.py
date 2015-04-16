@@ -160,9 +160,9 @@ class ThreadManager(object):
 
         if not exists(self.core.config.get("reconnect", "method")):
             if exists(join(pypath, self.core.config.get("reconnect", "method"))):
-                self.core.config['reconnect']['method'] = join(pypath, self.core.config.get("reconnect", "method"))
+                self.core.config.set("reconnect", "method", join(pypath, self.core.config.get("reconnect", "method")))
             else:
-                self.core.config['reconnect']['activated'] = False
+                self.core.config.set("reconnect", "activated", False)
                 self.core.log.warning(_("Reconnect script not found!"))
                 return
 
@@ -184,7 +184,7 @@ class ThreadManager(object):
             reconn = Popen(self.core.config.get("reconnect", "method"), bufsize=-1, shell=True)  # , stdout=subprocess.PIPE)
         except Exception:
             self.core.log.warning(_("Failed executing reconnect script!"))
-            self.core.config['reconnect']['activated'] = False
+            self.core.config.set("reconnect", "activated", False)
             self.reconnecting.clear()
             if self.core.debug:
                 print_exc()
