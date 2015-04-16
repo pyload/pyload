@@ -59,8 +59,8 @@ class DeathByCaptcha(Hook):
 
     __description = """Send captchas to DeathByCaptcha.com"""
     __license     = "GPLv3"
-    __authors     = [("RaNaN"   , "RaNaN@pyload.org"   ),
-                       ("zoidberg", "zoidberg@mujmail.cz")]
+    __authors     = [("RaNaN"   , "RaNaN@pyload.org"),
+                     ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     API_URL = "http://api.dbcapi.me/api/"
@@ -188,13 +188,13 @@ class DeathByCaptcha(Hook):
 
         if balance > rate:
             task.handler.append(self)
-            task.data['service'] = self.__name
+            task.data['service'] = self.__class__.__name__
             task.setWaiting(180)
             self._processCaptcha(task)
 
 
     def captchaInvalid(self, task):
-        if task.data['service'] == self.__name and "ticket" in task.data:
+        if task.data['service'] == self.__class__.__name__ and "ticket" in task.data:
             try:
                 res = self.api_response("captcha/%d/report" % task.data['ticket'], True)
 
