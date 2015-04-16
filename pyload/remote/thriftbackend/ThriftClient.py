@@ -1,18 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import thrift
+
 from socket import error
 from traceback import print_exc
-
-try:
-    import thrift
-
-except ImportError:
-    import platform
-
-    if "64" in platform.machine():
-        sys.path.append(os.path.join(pypath, "lib64"))
-    sys.path.append(os.path.join(pypath, "lib", "Python", "Lib"))
 
 from thrift.transport import TTransport
 #from thrift.transport.TZlibTransport import TZlibTransport
