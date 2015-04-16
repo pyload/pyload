@@ -21,11 +21,11 @@ class ThriftBackend(BackendBase):
         key = None
         cert = None
 
-        if self.core.config['ssl']['activated']:
-            if exists(self.core.config['ssl']['cert']) and exists(self.core.config['ssl']['key']):
+        if self.core.config.get("ssl", "activated"):
+            if exists(self.core.config.get("ssl", "cert")) and exists(self.core.config.get("ssl", "key")):
                 self.core.log.info(_("Using SSL ThriftBackend"))
-                key = self.core.config['ssl']['key']
-                cert = self.core.config['ssl']['cert']
+                key = self.core.config.get("ssl", "key")
+                cert = self.core.config.get("ssl", "cert")
 
         transport = ServerSocket(port, host, key, cert)
 

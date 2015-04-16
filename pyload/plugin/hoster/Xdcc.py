@@ -191,7 +191,7 @@ class Xdcc(Hoster):
 
         self.pyfile.name = packname
 
-        download_folder = self.config['general']['download_folder']
+        download_folder = self.config.get("general", "download_folder")
         filename = fs_join(download_folder, packname)
 
         self.logInfo(_("Downloading %s from %s:%d") % (packname, ip, port))

@@ -215,8 +215,8 @@ class Api(Iface):
 
         :return: new reconnect state
         """
-        self.core.config["reconnect"]["activated"] ^= True
-        return self.core.config["reconnect"]["activated"]
+        self.core.config['reconnect']['activated'] ^= True
+        return self.core.config.get("reconnect", "activated")
 
 
     @permission(PERMS.LIST)
@@ -228,7 +228,7 @@ class Api(Iface):
         serverStatus = ServerStatus(self.core.threadManager.pause, len(self.core.threadManager.processingIds()),
                                     self.core.files.getQueueCount(), self.core.files.getFileCount(), 0,
                                     not self.core.threadManager.pause and self.isTimeDownload(),
-                                    self.core.config['reconnect']['activated'] and self.isTimeReconnect())
+                                    self.core.config.get("reconnect", "activated") and self.isTimeReconnect())
         for pyfile in [x.active for x in self.core.threadManager.threads if x.active and isinstance(x.active, PyFile)]:
             serverStatus.speed += pyfile.getSpeed()  # bytes/s
         return serverStatus
@@ -237,7 +237,7 @@ class Api(Iface):
     @permission(PERMS.STATUS)
     def freeSpace(self):
         """Available free space at download directory in bytes"""
-        return freeSpace(self.core.config["general"]["download_folder"])
+        return freeSpace(self.core.config.get("general", "download_folder"))
 
 
     @permission(PERMS.ALL)
@@ -263,7 +263,7 @@ class Api(Iface):
         :param offset: line offset
         :return: List of log entries
         """
-        filename = join(self.core.config['log']['log_folder'], 'log.txt')
+        filename = join(self.core.config.get("log", "log_folder"), 'log.txt')
         try:
             fh = open(filename, "r")
             lines = fh.readlines()
@@ -281,8 +281,8 @@ class Api(Iface):
 
         :return: bool
         """
-        start = self.core.config['downloadTime']['start'].split(":")
-        end = self.core.config['downloadTime']['end'].split(":")
+        start = self.core.config.get("downloadTime", "start").split(":")
+        end = self.core.config.get("downloadTime", "end").split(":")
         return compare_time(start, end)
 
 
@@ -292,9 +292,9 @@ class Api(Iface):
 
         :return: bool
         """
-        start = self.core.config['reconnect']['startTime'].split(":")
-        end = self.core.config['reconnect']['endTime'].split(":")
-        return compare_time(start, end) and self.core.config["reconnect"]["activated"]
+        start = self.core.config.get("reconnect", "startTime").split(":")
+        end = self.core.config.get("reconnect", "endTime").split(":")
+        return compare_time(start, end) and self.core.config.get("reconnect", "activated")
 
 
     @permission(PERMS.LIST)
@@ -324,7 +324,7 @@ class Api(Iface):
         :param dest: `Destination`
         :return: package id of the new package
         """
-        if self.core.config['general']['folder_per_package']:
+        if self.core.config.get("general", "folder_per_package"):
             folder = urlparse(name).path.split("/")[-1]
         else:
             folder = ""
@@ -409,7 +409,7 @@ class Api(Iface):
         :param data: file content
         :return: online check
         """
-        th = open(join(self.core.config["general"]["download_folder"], "tmp_" + container), "wb")
+        th = open(join(self.core.config.get("general", "download_folder"), "tmp_" + container), "wb")
         th.write(str(data))
         th.close()
         return self.checkOnlineStatus(urls + [th.name])
@@ -707,7 +707,7 @@ class Api(Iface):
         :param filename: filename, extension is important so it can correctly decrypted
         :param data: file content
         """
-        th = open(join(self.core.config["general"]["download_folder"], "tmp_" + filename), "wb")
+        th = open(join(self.core.config.get("general", "download_folder"), "tmp_" + filename), "wb")
         th.write(str(data))
         th.close()
         self.addPackage(th.name, [th.name], Destination.Queue)
@@ -945,7 +945,7 @@ class Api(Iface):
         :param remoteip:
         :return: dict with info, empty when login is incorrect
         """
-        if self.core.config["remote"]["nolocalauth"] and remoteip == "127.0.0.1":
+        if self.core.config.get("remote", "nolocalauth") and remoteip == "127.0.0.1":
             return "local"
         else:
             return self.core.db.checkAuth(username, password)

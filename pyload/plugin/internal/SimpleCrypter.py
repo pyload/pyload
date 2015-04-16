@@ -15,7 +15,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
     __version = "0.43"
 
     __pattern = r'^unmatchable$'
-    __config  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),  #: Overrides core.config['general']['folder_per_package']
+    __config  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),  #: Overrides core.config.get("general", "folder_per_package")
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description = """Simple decrypter plugin"""

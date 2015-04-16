@@ -264,7 +264,7 @@ class ExtractArchive(Addon):
         # reload from txt file
         self.reloadPasswords()
 
-        download_folder = self.config['general']['download_folder']
+        download_folder = self.config.get("general", "download_folder")
 
         # iterate packages -> extractors -> targets
         for pid in ids:
@@ -551,16 +551,16 @@ class ExtractArchive(Addon):
                 continue
 
             try:
-                if self.config['permission']['change_file']:
+                if self.config.get("permission", "change_file"):
                     if os.path.isfile(f):
-                        os.chmod(f, int(self.config['permission']['file'], 8))
+                        os.chmod(f, int(self.config.get("permission", "file"), 8))
 
                     elif os.path.isdir(f):
-                        os.chmod(f, int(self.config['permission']['folder'], 8))
+                        os.chmod(f, int(self.config.get("permission", "folder"), 8))
 
-                if self.config['permission']['change_dl'] and os.name != "nt":
-                    uid = getpwnam(self.config['permission']['user'])[2]
-                    gid = getgrnam(self.config['permission']['group'])[2]
+                if self.config.get("permission", "change_dl") and os.name != "nt":
+                    uid = getpwnam(self.config.get("permission", "user"))[2]
+                    gid = getgrnam(self.config.get("permission", "group"))[2]
                     os.chown(f, uid, gid)
 
             except Exception, e:
