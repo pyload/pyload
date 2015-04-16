@@ -4,6 +4,7 @@
 from threading import Thread
 from traceback import print_exc
 
+
 class BackendBase(Thread):
 
     def __init__(self, manager):
@@ -43,7 +44,7 @@ class BackendBase(Thread):
 
 
     def stop(self):
-        self.enabled = False# set flag and call shutdowm message, so thread can react
+        self.enabled = False  #: set flag and call shutdowm message, so thread can react
         self.shutdown()
 
 
@@ -57,9 +58,8 @@ class RemoteManager(object):
 
         if self.core.remote:
             self.available.append("ThriftBackend")
-#        else:
-#            self.available.append("SocketBackend")
-
+        # else:
+            # self.available.append("SocketBackend")
 
     def startBackends(self):
         host = self.core.config.get("remote", "listenaddr")
