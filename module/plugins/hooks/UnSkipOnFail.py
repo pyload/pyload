@@ -7,7 +7,7 @@ from module.plugins.Hook import Hook
 class UnSkipOnFail(Hook):
     __name__    = "UnSkipOnFail"
     __type__    = "hook"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __config__ = [("activated", "bool", "Activated", True)]
 
@@ -32,9 +32,9 @@ class UnSkipOnFail(Hook):
         msg = _("Looking for skipped duplicates of: %s (pid:%s)")
         self.logInfo(msg % (pyfile.name, pyfile.package().id))
 
-        dup = self.findDuplicate(pyfile)
-        if dup:
-            self.logInfo(_("Queue found duplicate: %s (pid:%s)") % (dup.name, dup.packageID))
+        link = self.findDuplicate(pyfile)
+        if link:
+            self.logInfo(_("Queue found duplicate: %s (pid:%s)") % (link.name, link.packageID))
 
             #: Change status of "link" to "new_status".
             #  "link" has to be a valid FileData object,
