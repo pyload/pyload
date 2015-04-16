@@ -462,11 +462,44 @@ class Core(object):
 
 
     def init_logger(self, level):
-        console = logging.StreamHandler(sys.stdout)
-        frm = logging.Formatter("%(asctime)s %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
-        console.setFormatter(frm)
-        self.log = logging.getLogger("log")  #: settable in config
+        self.log = logging.getLogger("log")
+        self.log.setLevel(level)
 
+        date_fmt = "%Y-%m-%d %H:%M:%S"
+        fh_fmt   = "%(asctime)s %(levelname)-8s  %(message)s"
+
+        fh_frm      = logging.Formatter(fh_fmt, date_fmt)  #: file handler formatter
+        console_frm = fh_frm  #: console formatter did not use colors as default
+
+        # Console formatter with colors
+        if self.config.get("log", "color_console"):
+            import colorlog
+
+            if self.config.get("log", "color_template") == "label":
+                cfmt = "%(asctime)s %(log_color)s%(bold)s%(white)s %(levelname)-8s %(reset)s %(message)s"
+                clr  = {'DEBUG'   : "bg_cyan"  ,
+                        'INFO'    : "bg_green" ,
+                        'WARNING' : "bg_yellow",
+                        'ERROR'   : "bg_red"   ,
+                        'CRITICAL': "bg_purple"}
+            else:
+                cfmt = "%(log_color)s%(asctime)s  %(levelname)-8s  %(message)s"
+                clr  = {'DEBUG'   : "cyan"  ,
+                        'WARNING' : "yellow",
+                        'ERROR'   : "red"   ,
+                        'CRITICAL': "purple"}
+
+            console_frm = colorlog.ColoredFormatter(cfmt, date_fmt, clr)
+
+        # Set console formatter
+        console = logging.StreamHandler(sys.stdout)
+        console.setFormatter(console_frm)
+        self.log.addHandler(console)
+
+        if not exists(self.config.get("log", "log_folder")):
+            makedirs(self.config.get("log", "log_folder"), 0700)
+
+        # Set file handler formatter
         if self.config.get("log", "file_log"):
             if self.config.get("log", "log_rotate"):
                 file_handler = logging.handlers.RotatingFileHandler(join(self.config.get("log", "log_folder"), 'log.txt'),
@@ -476,11 +509,8 @@ class Core(object):
             else:
                 file_handler = logging.FileHandler(join(self.config.get("log", "log_folder"), 'log.txt'), encoding="utf8")
 
-            file_handler.setFormatter(frm)
+            file_handler.setFormatter(fh_frm)
             self.log.addHandler(file_handler)
-
-        self.log.addHandler(console)  #: if console logging
-        self.log.setLevel(level)
 
 
     def removeLogger(self):
