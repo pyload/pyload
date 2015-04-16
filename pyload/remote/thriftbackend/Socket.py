@@ -8,7 +8,7 @@ from time import sleep
 
 from thrift.transport.TSocket import TSocket, TServerSocket, TTransportException
 
-WantReadError = Exception #overwritten when ssl is used
+WantReadError = Exception  #: overwritten when ssl is used
 
 class SecureSocketConnection(object):
 

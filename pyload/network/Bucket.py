@@ -10,7 +10,7 @@ MIN_RATE = 10240  #: 10kb minimum rate
 class Bucket(object):
 
     def __init__(self):
-        self.rate      = 0 # bytes per second, maximum targeted throughput
+        self.rate      = 0  #: bytes per second, maximum targeted throughput
         self.tokens    = 0
         self.timestamp = time()
         self.lock      = Lock()

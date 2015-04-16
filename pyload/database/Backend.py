@@ -129,12 +129,12 @@ class DatabaseBackend(Thread):
 
     def run(self):
         """main loop, which executes commands"""
-        convert = self._checkVersion() #returns None or current version
+        convert = self._checkVersion()  #: returns None or current version
 
         self.conn = sqlite3.connect("files.db")
         chmod("files.db", 0600)
 
-        self.c = self.conn.cursor() #compatibility
+        self.c = self.conn.cursor()  #: compatibility
 
         if convert is not None:
             self._convertDB(convert)

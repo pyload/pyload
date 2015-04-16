@@ -7,7 +7,7 @@ from socket import error
 from traceback import print_exc
 
 from thrift.transport import TTransport
-#from thrift.transport.TZlibTransport import TZlibTransport
+# from thrift.transport.TZlibTransport import TZlibTransport
 from Socket import Socket
 from Protocol import Protocol
 

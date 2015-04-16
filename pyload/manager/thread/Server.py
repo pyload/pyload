@@ -103,7 +103,7 @@ class WebServer(threading.Thread):
         try:
             webinterface.run_fcgi(host=self.host, port=self.port)
 
-        except ValueError: #@TODO: Fix https://github.com/pyload/pyload/issues/1145
+        except ValueError:  #@TODO: Fix https://github.com/pyload/pyload/issues/1145
             pass
 
 

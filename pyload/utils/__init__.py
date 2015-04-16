@@ -8,7 +8,7 @@ import re
 import sys
 import time
 
-#from gettext import gettext
+# from gettext import gettext
 import pylgettext as gettext
 from htmlentitydefs import name2codepoint
 from os.path import join

@@ -92,7 +92,7 @@ Example: ::
 
             urls = ["http://get.pyload.org/src", "http://get.pyload.org/debian", "http://get.pyload.org/win"]
 
-            self.packages.append(("pyLoad packages", urls, "pyLoad packages")) # urls list of urls
+            self.packages.append(("pyLoad packages", urls, "pyLoad packages"))  #: urls list of urls
 
 They can access all the methods from :class:`Plugin <pyload.plugin.Plugin.Plugin>`, but the important thing is they
 have to append all packages they parsed to the `self.packages` list. Simply append tuples with `(name, urls, folder)`,

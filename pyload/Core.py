@@ -56,7 +56,7 @@ class Core(object):
         self.remote = True
         self.arg_links = []
         self.pidfile = "pyload.pid"
-        self.deleteLinks = False # will delete links on startup
+        self.deleteLinks = False  #: will delete links on startup
 
         if len(argv) > 1:
             try:
@@ -216,7 +216,7 @@ class Core(object):
             return
 
         try:
-            os.kill(pid, 3) #SIGUIT
+            os.kill(pid, 3)  #: SIGUIT
 
             t = time()
             print "waiting for pyLoad to quit"
@@ -227,7 +227,7 @@ class Core(object):
             if not exists(self.pidfile):
                 print "pyLoad successfully stopped"
             else:
-                os.kill(pid, 9) #SIGKILL
+                os.kill(pid, 9)  #: SIGKILL
                 print "pyLoad did not respond"
                 print "Kill signal was send to process with id %s" % pid
 
@@ -319,9 +319,9 @@ class Core(object):
         self.check_file(self.config.get("log", "log_folder"), _("folder for logs"), True)
 
         if self.debug:
-            self.init_logger(logging.DEBUG) # logging level
+            self.init_logger(logging.DEBUG)  #: logging level
         else:
-            self.init_logger(logging.INFO) # logging level
+            self.init_logger(logging.INFO)  #: logging level
 
         self.do_kill = False
         self.do_restart = False
@@ -343,7 +343,7 @@ class Core(object):
         self.check_file("tmp", _("folder for temporary files"), True)
         #tesser = self.check_install("tesseract", _("tesseract for captcha reading"), False) if os.name != "nt" else True
 
-        self.captcha = True # checks seems to fail, although tesseract is available
+        self.captcha = True  #: checks seems to fail, although tesseract is available
 
         self.check_file(self.config.get("general", "download_folder"), _("folder for downloads"), True)
 
@@ -401,7 +401,7 @@ class Core(object):
 
         self.log.info(_("Free space: %s") % formatSize(spaceLeft))
 
-        self.config.save() #save so config files gets filled
+        self.config.save()  #: save so config files gets filled
 
         link_file = join(pypath, "links.txt")
 
@@ -441,18 +441,18 @@ class Core(object):
                 self.shutdown()
                 self.log.info(_("pyLoad quits"))
                 self.removeLogger()
-                _exit(0) #@TODO thrift blocks shutdown
+                _exit(0)  #@TODO thrift blocks shutdown
 
             self.threadManager.work()
             self.scheduler.work()
 
 
     def setupDB(self):
-        self.db = DatabaseBackend(self) # the backend
+        self.db = DatabaseBackend(self)  #: the backend
         self.db.setup()
 
         self.files = FileHandler(self)
-        self.db.manager = self.files #ugly?
+        self.db.manager = self.files  #: ugly?
 
 
     def init_webserver(self):
@@ -465,7 +465,7 @@ class Core(object):
         console = logging.StreamHandler(sys.stdout)
         frm = logging.Formatter("%(asctime)s %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
         console.setFormatter(frm)
-        self.log = logging.getLogger("log") # settable in config
+        self.log = logging.getLogger("log")  #: settable in config
 
         if self.config.get("log", "file_log"):
             if self.config.get("log", "log_rotate"):
@@ -479,7 +479,7 @@ class Core(object):
             file_handler.setFormatter(frm)
             self.log.addHandler(file_handler)
 
-        self.log.addHandler(console) #if console logging
+        self.log.addHandler(console)  #: if console logging
         self.log.setLevel(level)
 
 

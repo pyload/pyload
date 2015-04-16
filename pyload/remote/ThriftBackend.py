@@ -9,7 +9,7 @@ from pyload.remote.thriftbackend.Processor import Processor
 from pyload.remote.thriftbackend.Protocol import ProtocolFactory
 from pyload.remote.thriftbackend.Socket import ServerSocket
 from pyload.remote.thriftbackend.Transport import TransportFactory
-#from pyload.remote.thriftbackend.Transport import TransportFactoryCompressed
+# from pyload.remote.thriftbackend.Transport import TransportFactoryCompressed
 
 from thrift.server import TServer
 

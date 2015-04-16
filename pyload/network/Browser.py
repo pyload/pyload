@@ -13,10 +13,10 @@ class Browser(object):
     def __init__(self, bucket=None, options={}):
         self.log = getLogger("log")
 
-        self.options = options #holds pycurl options
+        self.options = options  #: holds pycurl options
         self.bucket = bucket
 
-        self.cj = None # needs to be setted later
+        self.cj = None  #: needs to be setted later
         self._size = 0
 
         self.renewHTTPRequest()
@@ -119,7 +119,7 @@ class Browser(object):
         :param pwd: string, user:password
         """
         self.options["auth"] = pwd
-        self.renewHTTPRequest() #we need a new request
+        self.renewHTTPRequest()  #: we need a new request
 
 
     def removeAuth(self):

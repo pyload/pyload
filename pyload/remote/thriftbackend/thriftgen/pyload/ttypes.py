@@ -189,23 +189,23 @@ class DownloadInfo(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'fid', None, None,), # 1
-    (2, TType.STRING, 'name', None, None,), # 2
-    (3, TType.I64, 'speed', None, None,), # 3
-    (4, TType.I32, 'eta', None, None,), # 4
-    (5, TType.STRING, 'format_eta', None, None,), # 5
-    (6, TType.I64, 'bleft', None, None,), # 6
-    (7, TType.I64, 'size', None, None,), # 7
-    (8, TType.STRING, 'format_size', None, None,), # 8
-    (9, TType.BYTE, 'percent', None, None,), # 9
-    (10, TType.I32, 'status', None, None,), # 10
-    (11, TType.STRING, 'statusmsg', None, None,), # 11
-    (12, TType.STRING, 'format_wait', None, None,), # 12
-    (13, TType.I64, 'wait_until', None, None,), # 13
-    (14, TType.I32, 'packageID', None, None,), # 14
-    (15, TType.STRING, 'packageName', None, None,), # 15
-    (16, TType.STRING, 'plugin', None, None,), # 16
+    None,  #: 0
+    (1, TType.I32, 'fid', None, None,),  #: 1
+    (2, TType.STRING, 'name', None, None,),  #: 2
+    (3, TType.I64, 'speed', None, None,),  #: 3
+    (4, TType.I32, 'eta', None, None,),  #: 4
+    (5, TType.STRING, 'format_eta', None, None,),  #: 5
+    (6, TType.I64, 'bleft', None, None,),  #: 6
+    (7, TType.I64, 'size', None, None,),  #: 7
+    (8, TType.STRING, 'format_size', None, None,),  #: 8
+    (9, TType.BYTE, 'percent', None, None,),  #: 9
+    (10, TType.I32, 'status', None, None,),  #: 10
+    (11, TType.STRING, 'statusmsg', None, None,),  #: 11
+    (12, TType.STRING, 'format_wait', None, None,),  #: 12
+    (13, TType.I64, 'wait_until', None, None,),  #: 13
+    (14, TType.I32, 'packageID', None, None,),  #: 14
+    (15, TType.STRING, 'packageName', None, None,),  #: 15
+    (16, TType.STRING, 'plugin', None, None,),  #: 16
   )
 
 
@@ -251,14 +251,14 @@ class ServerStatus(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.BOOL, 'pause', None, None,), # 1
-    (2, TType.I16, 'active', None, None,), # 2
-    (3, TType.I16, 'queue', None, None,), # 3
-    (4, TType.I16, 'total', None, None,), # 4
-    (5, TType.I64, 'speed', None, None,), # 5
-    (6, TType.BOOL, 'download', None, None,), # 6
-    (7, TType.BOOL, 'reconnect', None, None,), # 7
+    None,  #: 0
+    (1, TType.BOOL, 'pause', None, None,),  #: 1
+    (2, TType.I16, 'active', None, None,),  #: 2
+    (3, TType.I16, 'queue', None, None,),  #: 3
+    (4, TType.I16, 'total', None, None,),  #: 4
+    (5, TType.I64, 'speed', None, None,),  #: 5
+    (6, TType.BOOL, 'download', None, None,),  #: 6
+    (7, TType.BOOL, 'reconnect', None, None,),  #: 7
   )
 
 
@@ -289,11 +289,11 @@ class ConfigItem(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'name', None, None,), # 1
-    (2, TType.STRING, 'description', None, None,), # 2
-    (3, TType.STRING, 'value', None, None,), # 3
-    (4, TType.STRING, 'type', None, None,), # 4
+    None,  #: 0
+    (1, TType.STRING, 'name', None, None,),  #: 1
+    (2, TType.STRING, 'description', None, None,),  #: 2
+    (3, TType.STRING, 'value', None, None,),  #: 3
+    (4, TType.STRING, 'type', None, None,),  #: 4
   )
 
 
@@ -321,11 +321,11 @@ class ConfigSection(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'name', None, None,), # 1
-    (2, TType.STRING, 'description', None, None,), # 2
-    (3, TType.LIST, 'items', (TType.STRUCT, (ConfigItem, ConfigItem.thrift_spec)), None,), # 3
-    (4, TType.STRING, 'outline', None, None,), # 4
+    None,  #: 0
+    (1, TType.STRING, 'name', None, None,),  #: 1
+    (2, TType.STRING, 'description', None, None,),  #: 2
+    (3, TType.LIST, 'items', (TType.STRUCT, (ConfigItem, ConfigItem.thrift_spec)), None,),  #: 3
+    (4, TType.STRING, 'outline', None, None,),  #: 4
   )
 
 
@@ -367,18 +367,18 @@ class FileData(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'fid', None, None,), # 1
-    (2, TType.STRING, 'url', None, None,), # 2
-    (3, TType.STRING, 'name', None, None,), # 3
-    (4, TType.STRING, 'plugin', None, None,), # 4
-    (5, TType.I64, 'size', None, None,), # 5
-    (6, TType.STRING, 'format_size', None, None,), # 6
-    (7, TType.I32, 'status', None, None,), # 7
-    (8, TType.STRING, 'statusmsg', None, None,), # 8
-    (9, TType.I32, 'packageID', None, None,), # 9
-    (10, TType.STRING, 'error', None, None,), # 10
-    (11, TType.I16, 'order', None, None,), # 11
+    None,  #: 0
+    (1, TType.I32, 'fid', None, None,),  #: 1
+    (2, TType.STRING, 'url', None, None,),  #: 2
+    (3, TType.STRING, 'name', None, None,),  #: 3
+    (4, TType.STRING, 'plugin', None, None,),  #: 4
+    (5, TType.I64, 'size', None, None,),  #: 5
+    (6, TType.STRING, 'format_size', None, None,),  #: 6
+    (7, TType.I32, 'status', None, None,),  #: 7
+    (8, TType.STRING, 'statusmsg', None, None,),  #: 8
+    (9, TType.I32, 'packageID', None, None,),  #: 9
+    (10, TType.STRING, 'error', None, None,),  #: 10
+    (11, TType.I16, 'order', None, None,),  #: 11
   )
 
 
@@ -431,20 +431,20 @@ class PackageData(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'pid', None, None,), # 1
-    (2, TType.STRING, 'name', None, None,), # 2
-    (3, TType.STRING, 'folder', None, None,), # 3
-    (4, TType.STRING, 'site', None, None,), # 4
-    (5, TType.STRING, 'password', None, None,), # 5
-    (6, TType.I32, 'dest', None, None,), # 6
-    (7, TType.I16, 'order', None, None,), # 7
-    (8, TType.I16, 'linksdone', None, None,), # 8
-    (9, TType.I64, 'sizedone', None, None,), # 9
-    (10, TType.I64, 'sizetotal', None, None,), # 10
-    (11, TType.I16, 'linkstotal', None, None,), # 11
-    (12, TType.LIST, 'links', (TType.STRUCT, (FileData, FileData.thrift_spec)), None,), # 12
-    (13, TType.LIST, 'fids', (TType.I32, None), None,), # 13
+    None,  #: 0
+    (1, TType.I32, 'pid', None, None,),  #: 1
+    (2, TType.STRING, 'name', None, None,),  #: 2
+    (3, TType.STRING, 'folder', None, None,),  #: 3
+    (4, TType.STRING, 'site', None, None,),  #: 4
+    (5, TType.STRING, 'password', None, None,),  #: 5
+    (6, TType.I32, 'dest', None, None,),  #: 6
+    (7, TType.I16, 'order', None, None,),  #: 7
+    (8, TType.I16, 'linksdone', None, None,),  #: 8
+    (9, TType.I64, 'sizedone', None, None,),  #: 9
+    (10, TType.I64, 'sizetotal', None, None,),  #: 10
+    (11, TType.I16, 'linkstotal', None, None,),  #: 11
+    (12, TType.LIST, 'links', (TType.STRUCT, (FileData, FileData.thrift_spec)), None,),  #: 12
+    (13, TType.LIST, 'fids', (TType.I32, None), None,),  #: 13
   )
 
 
@@ -491,16 +491,16 @@ class InteractionTask(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'iid', None, None,), # 1
-    (2, TType.I32, 'input', None, None,), # 2
-    (3, TType.LIST, 'structure', (TType.STRING, None), None,), # 3
-    (4, TType.LIST, 'preset', (TType.STRING, None), None,), # 4
-    (5, TType.I32, 'output', None, None,), # 5
-    (6, TType.LIST, 'data', (TType.STRING, None), None,), # 6
-    (7, TType.STRING, 'title', None, None,), # 7
-    (8, TType.STRING, 'description', None, None,), # 8
-    (9, TType.STRING, 'plugin', None, None,), # 9
+    None,  #: 0
+    (1, TType.I32, 'iid', None, None,),  #: 1
+    (2, TType.I32, 'input', None, None,),  #: 2
+    (3, TType.LIST, 'structure', (TType.STRING, None), None,),  #: 3
+    (4, TType.LIST, 'preset', (TType.STRING, None), None,),  #: 4
+    (5, TType.I32, 'output', None, None,),  #: 5
+    (6, TType.LIST, 'data', (TType.STRING, None), None,),  #: 6
+    (7, TType.STRING, 'title', None, None,),  #: 7
+    (8, TType.STRING, 'description', None, None,),  #: 8
+    (9, TType.STRING, 'plugin', None, None,),  #: 9
   )
 
 
@@ -533,11 +533,11 @@ class CaptchaTask(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I16, 'tid', None, None,), # 1
-    (2, TType.STRING, 'data', None, None,), # 2
-    (3, TType.STRING, 'type', None, None,), # 3
-    (4, TType.STRING, 'resultType', None, None,), # 4
+    None,  #: 0
+    (1, TType.I16, 'tid', None, None,),  #: 1
+    (2, TType.STRING, 'data', None, None,),  #: 2
+    (3, TType.STRING, 'type', None, None,),  #: 3
+    (4, TType.STRING, 'resultType', None, None,),  #: 4
   )
 
 
@@ -565,11 +565,11 @@ class EventInfo(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'eventname', None, None,), # 1
-    (2, TType.I32, 'id', None, None,), # 2
-    (3, TType.I32, 'type', None, None,), # 3
-    (4, TType.I32, 'destination', None, None,), # 4
+    None,  #: 0
+    (1, TType.STRING, 'eventname', None, None,),  #: 1
+    (2, TType.I32, 'id', None, None,),  #: 2
+    (3, TType.I32, 'type', None, None,),  #: 3
+    (4, TType.I32, 'destination', None, None,),  #: 4
   )
 
 
@@ -599,12 +599,12 @@ class UserData(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'name', None, None,), # 1
-    (2, TType.STRING, 'email', None, None,), # 2
-    (3, TType.I32, 'role', None, None,), # 3
-    (4, TType.I32, 'permission', None, None,), # 4
-    (5, TType.STRING, 'templateName', None, None,), # 5
+    None,  #: 0
+    (1, TType.STRING, 'name', None, None,),  #: 1
+    (2, TType.STRING, 'email', None, None,),  #: 2
+    (3, TType.I32, 'role', None, None,),  #: 3
+    (4, TType.I32, 'permission', None, None,),  #: 4
+    (5, TType.STRING, 'templateName', None, None,),  #: 5
   )
 
 
@@ -641,15 +641,15 @@ class AccountInfo(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I64, 'validuntil', None, None,), # 1
-    (2, TType.STRING, 'login', None, None,), # 2
-    (3, TType.MAP, 'options', (TType.STRING, None, TType.LIST, (TType.STRING, None)), None,), # 3
-    (4, TType.BOOL, 'valid', None, None,), # 4
-    (5, TType.I64, 'trafficleft', None, None,), # 5
-    (6, TType.I64, 'maxtraffic', None, None,), # 6
-    (7, TType.BOOL, 'premium', None, None,), # 7
-    (8, TType.STRING, 'type', None, None,), # 8
+    None,  #: 0
+    (1, TType.I64, 'validuntil', None, None,),  #: 1
+    (2, TType.STRING, 'login', None, None,),  #: 2
+    (3, TType.MAP, 'options', (TType.STRING, None, TType.LIST, (TType.STRING, None)), None,),  #: 3
+    (4, TType.BOOL, 'valid', None, None,),  #: 4
+    (5, TType.I64, 'trafficleft', None, None,),  #: 5
+    (6, TType.I64, 'maxtraffic', None, None,),  #: 6
+    (7, TType.BOOL, 'premium', None, None,),  #: 7
+    (8, TType.STRING, 'type', None, None,),  #: 8
   )
 
 
@@ -681,11 +681,11 @@ class ServiceCall(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'plugin', None, None,), # 1
-    (2, TType.STRING, 'func', None, None,), # 2
-    (3, TType.LIST, 'arguments', (TType.STRING, None), None,), # 3
-    (4, TType.BOOL, 'parseArguments', None, None,), # 4
+    None,  #: 0
+    (1, TType.STRING, 'plugin', None, None,),  #: 1
+    (2, TType.STRING, 'func', None, None,),  #: 2
+    (3, TType.LIST, 'arguments', (TType.STRING, None), None,),  #: 3
+    (4, TType.BOOL, 'parseArguments', None, None,),  #: 4
   )
 
 
@@ -715,12 +715,12 @@ class OnlineStatus(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'name', None, None,), # 1
-    (2, TType.STRING, 'plugin', None, None,), # 2
-    (3, TType.STRING, 'packagename', None, None,), # 3
-    (4, TType.I32, 'status', None, None,), # 4
-    (5, TType.I64, 'size', None, None,), # 5
+    None,  #: 0
+    (1, TType.STRING, 'name', None, None,),  #: 1
+    (2, TType.STRING, 'plugin', None, None,),  #: 2
+    (3, TType.STRING, 'packagename', None, None,),  #: 3
+    (4, TType.I32, 'status', None, None,),  #: 4
+    (5, TType.I64, 'size', None, None,),  #: 5
   )
 
 
@@ -745,9 +745,9 @@ class OnlineCheck(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'rid', None, None,), # 1
-    (2, TType.MAP, 'data', (TType.STRING, None, TType.STRUCT, (OnlineStatus, OnlineStatus.thrift_spec)), None,), # 2
+    None,  #: 0
+    (1, TType.I32, 'rid', None, None,),  #: 1
+    (2, TType.MAP, 'data', (TType.STRING, None, TType.STRUCT, (OnlineStatus, OnlineStatus.thrift_spec)), None,),  #: 2
   )
 
 
@@ -767,8 +767,8 @@ class PackageDoesNotExists(TExceptionBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'pid', None, None,), # 1
+    None,  #: 0
+    (1, TType.I32, 'pid', None, None,),  #: 1
   )
 
 
@@ -791,8 +791,8 @@ class FileDoesNotExists(TExceptionBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'fid', None, None,), # 1
+    None,  #: 0
+    (1, TType.I32, 'fid', None, None,),  #: 1
   )
 
 
@@ -817,9 +817,9 @@ class ServiceDoesNotExists(TExceptionBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'plugin', None, None,), # 1
-    (2, TType.STRING, 'func', None, None,), # 2
+    None,  #: 0
+    (1, TType.STRING, 'plugin', None, None,),  #: 1
+    (2, TType.STRING, 'func', None, None,),  #: 2
   )
 
 
@@ -843,8 +843,8 @@ class ServiceException(TExceptionBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'msg', None, None,), # 1
+    None,  #: 0
+    (1, TType.STRING, 'msg', None, None,),  #: 1
   )
 
 

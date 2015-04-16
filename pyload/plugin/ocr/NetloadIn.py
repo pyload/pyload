@@ -24,6 +24,6 @@ class NetloadIn(OCR):
         self.clean(3)
         self.run_tesser(True, True, False, False)
 
-        self.result_captcha = self.result_captcha.replace(" ", "")[:4] # cut to 4 numbers
+        self.result_captcha = self.result_captcha.replace(" ", "")[:4]  #: cut to 4 numbers
 
         return self.result_captcha

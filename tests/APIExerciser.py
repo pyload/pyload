@@ -18,7 +18,7 @@ def createURLs():
     for x in range(0, randint(20, 100)):
         name = "DEBUG_API"
         if randint(0, 5) == 5:
-            name = "" #this link will fail
+            name = ""  #: this link will fail
 
         urls.append(name + "".join(sample(string.ascii_letters, randint(10, 20))))
 
@@ -42,7 +42,7 @@ class APIExerciser(Thread):
         Thread.__init__(self)
         self.setDaemon(True)
         self.core = core
-        self.count = 0 #number of methods
+        self.count = 0  #: number of methods
         self.time = time()
 
         if thrift:
@@ -81,7 +81,7 @@ class APIExerciser(Thread):
             if not self.count % 1000:
                 out.flush()
 
-            if not sumCalled % 1000: #not thread safe
+            if not sumCalled % 1000:  #: not thread safe
                 self.core.log.info("Exercisers tested %d api calls" % sumCalled)
                 persec = sumCalled / (time() - self.time)
                 self.core.log.info("Approx. %.2f calls per second." % persec)
