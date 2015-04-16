@@ -244,7 +244,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name    = "SimpleHoster"
     __type    = "hoster"
-    __version = "1.37"
+    __version = "1.38"
 
     __pattern = r'^unmatchable$'
     __config  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -609,7 +609,7 @@ class SimpleHoster(Hoster):
                 self.tempOffline()
 
             elif status is 8:
-                self.fail()
+                self.fail(self.info['error'] if 'error' in self.info else "Failed")
 
         finally:
             self.logDebug("File status: %s" % statusMap[status])
@@ -728,8 +728,8 @@ class SimpleHoster(Hoster):
         elif traffic == -1:
             return True
         else:
-            size = self.pyfile.size / 1024
-            self.logInfo(_("Filesize: %i KiB, Traffic left for user %s: %i KiB") % (size, self.user, traffic))
+            size = self.pyfile.size
+            self.logInfo(_("Filesize: %i KiB, Traffic left for user %s: %i KiB") % (size / 1024, self.user, traffic / 1024))
             return size <= traffic
 
 
@@ -750,8 +750,6 @@ class SimpleHoster(Hoster):
         self.req     = self.core.requestFactory.getRequest(self.__class__.__name__)
         self.retries = 0
         raise Retry(_("Fallback to free download"))
-
-    #@TODO: Remove in 0.4.10
 
 
     def wait(self, seconds=0, reconnect=None):

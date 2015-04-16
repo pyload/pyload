@@ -49,11 +49,7 @@ class UploadedTo(Account):
             size    = traffic['S'].replace('.', '')
             unit    = traffic['U'].lower()
 
-            if unit.startswith('t'):  #@NOTE: Remove in 0.4.10
-                trafficleft = float(size.replace(',', '.')) / 1024
-                trafficleft *= 1 << 40
-            else:
-                trafficleft = self.parseTraffic(size + unit)
+            trafficleft = self.parseTraffic(size + unit)
 
         return {'validuntil' : validuntil,
                 'trafficleft': trafficleft,

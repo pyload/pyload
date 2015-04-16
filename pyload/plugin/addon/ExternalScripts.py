@@ -30,7 +30,7 @@ class ExternalScripts(Addon):
 
 
     def setup(self):
-        self.info    = {'oldip': None}
+        self.info['oldip'] = None
         self.scripts = {}
 
         folders = ["pyload_start", "pyload_restart", "pyload_stop",
@@ -38,7 +38,7 @@ class ExternalScripts(Addon):
                    "download_preparing", "download_failed", "download_finished",
                    "archive_extract_failed", "archive_extracted",
                    "package_finished", "package_deleted", "package_extract_failed", "package_extracted",
-                   "all_downloads_processed", "all_downloads_finished",  # @TODO: Invert `all_downloads_processed`, `all_downloads_finished` order in 0.4.10
+                   "all_downloads_processed", "all_downloads_finished",  #@TODO: Invert `all_downloads_processed`, `all_downloads_finished` order in 0.4.10
                    "all_archives_extracted", "all_archives_processed"]
 
         for folder in folders:
@@ -84,7 +84,7 @@ class ExternalScripts(Addon):
 
             self.logDebug("Executing: %s" % os.path.abspath(script), "Args: " + ' '.join(cmd_args))
 
-            p = subprocess.Popen(cmd, bufsize=-1)  # @NOTE: output goes to pyload
+            p = subprocess.Popen(cmd, bufsize=-1)  #@NOTE: output goes to pyload
             if self.getConfig('waitend'):
                 p.communicate()
 
@@ -113,7 +113,7 @@ class ExternalScripts(Addon):
 
     def afterReconnecting(self, ip):
         for script in self.scripts['after_reconnect']:
-            self.callScript(script, ip, self.info['oldip'])  # @TODO: Use built-in oldip in 0.4.10
+            self.callScript(script, ip, self.info['oldip'])  #@TODO: Use built-in oldip in 0.4.10
 
 
     def downloadPreparing(self, pyfile):
@@ -122,10 +122,10 @@ class ExternalScripts(Addon):
 
 
     def downloadFailed(self, pyfile):
-        if self.core.config['general']['folder_per_package']:
-            download_folder = fs_join(self.core.config['general']['download_folder'], pyfile.package().folder)
+        if self.core.config.get("general", "folder_per_package"):
+            download_folder = fs_join(self.core.config.get("general", "download_folder"), pyfile.package().folder)
         else:
-            download_folder = self.core.config['general']['download_folder']
+            download_folder = self.core.config.get("general", "download_folder")
 
         for script in self.scripts['download_failed']:
             file = fs_join(download_folder, pyfile.name)
@@ -133,10 +133,10 @@ class ExternalScripts(Addon):
 
 
     def downloadFinished(self, pyfile):
-        if self.core.config['general']['folder_per_package']:
-            download_folder = fs_join(self.core.config['general']['download_folder'], pyfile.package().folder)
+        if self.core.config.get("general", "folder_per_package"):
+            download_folder = fs_join(self.core.config.get("general", "download_folder"), pyfile.package().folder)
         else:
-            download_folder = self.core.config['general']['download_folder']
+            download_folder = self.core.config.get("general", "download_folder")
 
         for script in self.scripts['download_finished']:
             file = fs_join(download_folder, pyfile.name)
@@ -154,10 +154,10 @@ class ExternalScripts(Addon):
 
 
     def packageFinished(self, pypack):
-        if self.core.config['general']['folder_per_package']:
-            download_folder = fs_join(self.core.config['general']['download_folder'], pypack.folder)
+        if self.core.config.get("general", "folder_per_package"):
+            download_folder = fs_join(self.core.config.get("general", "download_folder"), pypack.folder)
         else:
-            download_folder = self.core.config['general']['download_folder']
+            download_folder = self.core.config.get("general", "download_folder")
 
         for script in self.scripts['package_finished']:
             self.callScript(script, pypack.id, pypack.name, download_folder, pypack.password)
@@ -166,30 +166,30 @@ class ExternalScripts(Addon):
     def packageDeleted(self, pid):
         pack = self.core.api.getPackageInfo(pid)
 
-        if self.core.config['general']['folder_per_package']:
-            download_folder = fs_join(self.core.config['general']['download_folder'], pack.folder)
+        if self.core.config.get("general", "folder_per_package"):
+            download_folder = fs_join(self.core.config.get("general", "download_folder"), pack.folder)
         else:
-            download_folder = self.core.config['general']['download_folder']
+            download_folder = self.core.config.get("general", "download_folder")
 
         for script in self.scripts['package_deleted']:
             self.callScript(script, pack.id, pack.name, download_folder, pack.password)
 
 
     def package_extract_failed(self, pypack):
-        if self.core.config['general']['folder_per_package']:
-            download_folder = fs_join(self.core.config['general']['download_folder'], pypack.folder)
+        if self.core.config.get("general", "folder_per_package"):
+            download_folder = fs_join(self.core.config.get("general", "download_folder"), pypack.folder)
         else:
-            download_folder = self.core.config['general']['download_folder']
+            download_folder = self.core.config.get("general", "download_folder")
 
         for script in self.scripts['package_extract_failed']:
             self.callScript(script, pypack.id, pypack.name, download_folder, pypack.password)
 
 
     def package_extracted(self, pypack):
-        if self.core.config['general']['folder_per_package']:
-            download_folder = fs_join(self.core.config['general']['download_folder'], pypack.folder)
+        if self.core.config.get("general", "folder_per_package"):
+            download_folder = fs_join(self.core.config.get("general", "download_folder"), pypack.folder)
         else:
-            download_folder = self.core.config['general']['download_folder']
+            download_folder = self.core.config.get("general", "download_folder")
 
         for script in self.scripts['package_extracted']:
             self.callScript(script, pypack.id, pypack.name, download_folder)

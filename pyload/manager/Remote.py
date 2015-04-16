@@ -62,8 +62,8 @@ class RemoteManager(object):
 
 
     def startBackends(self):
-        host = self.core.config["remote"]["listenaddr"]
-        port = self.core.config["remote"]["port"]
+        host = self.core.config.get("remote", "listenaddr")
+        port = self.core.config.get("remote", "port")
 
         for b in self.available:
             klass = getattr(__import__("pyload.remote.%s" % b, globals(), locals(), [b], -1), b)

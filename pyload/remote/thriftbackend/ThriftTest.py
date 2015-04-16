@@ -48,8 +48,8 @@ proxy = xmlrpclib.ServerProxy(server_url, allow_none=True)
 bench(proxy.get_server_version)
 bench(proxy.status_server)
 bench(proxy.status_downloads)
-#bench(proxy.get_queue)
-#bench(proxy.get_collector)
+# bench(proxy.get_queue)
+# bench(proxy.get_collector)
 print
 try:
 

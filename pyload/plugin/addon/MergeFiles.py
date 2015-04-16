@@ -37,9 +37,9 @@ class MergeFiles(Addon):
                 files[data['name'][:-4]].sort()
                 fid_dict[data['name']] = fid
 
-        download_folder = self.config['general']['download_folder']
+        download_folder = self.config.get("general", "download_folder")
 
-        if self.config['general']['folder_per_package']:
+        if self.config.get("general", "folder_per_package"):
             download_folder = fs_join(download_folder, pack.folder)
 
         for name, file_list in files.iteritems():

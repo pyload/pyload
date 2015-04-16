@@ -278,7 +278,7 @@ def add_account():
 @route('/json/update_accounts', method='POST')
 @login_required("ACCOUNTS")
 def update_accounts():
-    deleted = [] #dont update deleted accs or they will be created again
+    deleted = []  #: dont update deleted accs or they will be created again
 
     for name, value in request.POST.iteritems():
         value = value.strip()

@@ -28,7 +28,7 @@ class PluginThread(Thread):
         """Constructor"""
         Thread.__init__(self)
         self.setDaemon(True)
-        self.m = manager #thread manager
+        self.m = manager  #: thread manager
 
 
     def writeDebugReport(self, pyfile):
@@ -52,7 +52,7 @@ class PluginThread(Thread):
                     pass
 
             info = zipfile.ZipInfo(fs_join(pyfile.pluginname, "debug_Report.txt"), gmtime())
-            info.external_attr = 0644 << 16L # change permissions
+            info.external_attr = 0644 << 16L  #: change permissions
 
             zip.writestr(info, dump)
             zip.close()
@@ -95,7 +95,7 @@ class PluginThread(Thread):
 
             del frame
 
-        del stack #delete it just to be sure...
+        del stack  #: delete it just to be sure...
 
         dump += "\n\nPLUGIN OBJECT DUMP: \n\n"
 

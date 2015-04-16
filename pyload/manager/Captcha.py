@@ -54,7 +54,7 @@ class CaptchaManager(object):
         cli = self.core.isClientConnected()
 
         if cli:  #: client connected -> should solve the captcha
-            task.setWaiting(timeout) #wait 50 sec for response
+            task.setWaiting(timeout)  #: wait 50 sec for response
 
         for plugin in self.core.addonManager.activePlugins():
             try:

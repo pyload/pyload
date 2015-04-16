@@ -89,7 +89,7 @@ class MegasharesCom(SimpleHoster):
             self.fail(_("Passport not found"))
 
         self.logInfo(_("Download passport: %s") % m.group(1))
-        data_left = float(m.group(2)) * 1024 ** {'B': 0, 'KB': 1, 'MB': 2, 'GB': 3}[m.group(3)]
+        data_left = float(m.group(2)) * (2 ** 20) ** {'B': 0, 'KB': 1, 'MB': 2, 'GB': 3}[m.group(3)]
         self.logInfo(_("Data left: %s %s (%d MB needed)") % (m.group(2), m.group(3), self.pyfile.size / 1048576))
 
         if not data_left:

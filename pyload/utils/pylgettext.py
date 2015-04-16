@@ -56,5 +56,5 @@ def find(domain, localedir=None, languages=None, all=False):
     else:
         return results
 
-#Is there a smarter/cleaner pythonic way for this?
+# Is there a smarter/cleaner pythonic way for this?
 translation.func_globals['find'] = find

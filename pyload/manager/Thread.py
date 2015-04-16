@@ -150,7 +150,7 @@ class ThreadManager(object):
     def tryReconnect(self):
         """checks if reconnect needed"""
 
-        if not (self.core.config["reconnect"]["activated"] and self.core.api.isTimeReconnect()):
+        if not (self.core.config.get("reconnect", "activated") and self.core.api.isTimeReconnect()):
             return False
 
         active = [x.active.plugin.wantReconnect and x.active.plugin.waiting for x in self.threads if x.active]
@@ -158,11 +158,11 @@ class ThreadManager(object):
         if not (0 < active.count(True) == len(active)):
             return False
 
-        if not exists(self.core.config['reconnect']['method']):
-            if exists(join(pypath, self.core.config['reconnect']['method'])):
-                self.core.config['reconnect']['method'] = join(pypath, self.core.config['reconnect']['method'])
+        if not exists(self.core.config.get("reconnect", "method")):
+            if exists(join(pypath, self.core.config.get("reconnect", "method"))):
+                self.core.config['reconnect']['method'] = join(pypath, self.core.config.get("reconnect", "method"))
             else:
-                self.core.config["reconnect"]["activated"] = False
+                self.core.config['reconnect']['activated'] = False
                 self.core.log.warning(_("Reconnect script not found!"))
                 return
 
@@ -181,10 +181,10 @@ class ThreadManager(object):
         self.core.log.debug("Old IP: %s" % ip)
 
         try:
-            reconn = Popen(self.core.config['reconnect']['method'], bufsize=-1, shell=True)  # , stdout=subprocess.PIPE)
+            reconn = Popen(self.core.config.get("reconnect", "method"), bufsize=-1, shell=True)  # , stdout=subprocess.PIPE)
         except Exception:
             self.core.log.warning(_("Failed executing reconnect script!"))
-            self.core.config["reconnect"]["activated"] = False
+            self.core.config['reconnect']['activated'] = False
             self.reconnecting.clear()
             if self.core.debug:
                 print_exc()
@@ -278,8 +278,8 @@ class ThreadManager(object):
                 return
 
             if job.plugin.getPluginType() == "hoster":
-                spaceLeft = freeSpace(self.core.config["general"]["download_folder"]) / 1024 / 1024
-                if spaceLeft < self.core.config["general"]["min_free_space"]:
+                spaceLeft = freeSpace(self.core.config.get("general", "download_folder")) / 1024 / 1024
+                if spaceLeft < self.core.config.get("general", "min_free_space"):
                     self.core.log.warning(_("Not enough space left on device"))
                     self.pause = True
 

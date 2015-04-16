@@ -38,7 +38,7 @@ class RapidgatorNet(Account):
                     self.scheduleRefresh(user, json['response']['reset_in'])
 
                 validuntil  = json['response']['expire_date']
-                trafficleft = float(json['response']['traffic_left']) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
+                trafficleft = float(json['response']['traffic_left'])
                 premium     = True
             else:
                 self.logError(json['response_details'])

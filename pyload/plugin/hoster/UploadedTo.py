@@ -11,7 +11,7 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 class UploadedTo(SimpleHoster):
     __name    = "UploadedTo"
     __type    = "hoster"
-    __version = "0.85"
+    __version = "0.86"
 
     __pattern = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
     __config  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -20,6 +20,8 @@ class UploadedTo(SimpleHoster):
     __license     = "GPLv3"
     __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
+
+    DISPOSITION = False
 
     API_KEY = "lhF2IeeprweDfu9ccWlxXVVypA5nA3EL"
 

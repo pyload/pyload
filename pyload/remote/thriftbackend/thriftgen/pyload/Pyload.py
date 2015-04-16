@@ -3667,10 +3667,10 @@ class getConfigValue_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'category', None, None,), # 1
-    (2, TType.STRING, 'option', None, None,), # 2
-    (3, TType.STRING, 'section', None, None,), # 3
+    None,  #: 0
+    (1, TType.STRING, 'category', None, None,),  #: 1
+    (2, TType.STRING, 'option', None, None,),  #: 2
+    (3, TType.STRING, 'section', None, None,),  #: 3
   )
 
 
@@ -3691,7 +3691,7 @@ class getConfigValue_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.STRING, 'success', None, None,), # 0
+    (0, TType.STRING, 'success', None, None,),  #: 0
   )
 
 
@@ -3716,11 +3716,11 @@ class setConfigValue_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'category', None, None,), # 1
-    (2, TType.STRING, 'option', None, None,), # 2
-    (3, TType.STRING, 'value', None, None,), # 3
-    (4, TType.STRING, 'section', None, None,), # 4
+    None,  #: 0
+    (1, TType.STRING, 'category', None, None,),  #: 1
+    (2, TType.STRING, 'option', None, None,),  #: 2
+    (3, TType.STRING, 'value', None, None,),  #: 3
+    (4, TType.STRING, 'section', None, None,),  #: 4
   )
 
 
@@ -3760,7 +3760,7 @@ class getConfig_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.MAP, 'success', (TType.STRING, None, TType.STRUCT, (ConfigSection, ConfigSection.thrift_spec)), None,), # 0
+    (0, TType.MAP, 'success', (TType.STRING, None, TType.STRUCT, (ConfigSection, ConfigSection.thrift_spec)), None,),  #: 0
   )
 
 
@@ -3788,7 +3788,7 @@ class getPluginConfig_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.MAP, 'success', (TType.STRING, None, TType.STRUCT, (ConfigSection, ConfigSection.thrift_spec)), None,), # 0
+    (0, TType.MAP, 'success', (TType.STRING, None, TType.STRUCT, (ConfigSection, ConfigSection.thrift_spec)), None,),  #: 0
   )
 
 
@@ -3852,7 +3852,7 @@ class togglePause_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.BOOL, 'success', None, None,), # 0
+    (0, TType.BOOL, 'success', None, None,),  #: 0
   )
 
 
@@ -3880,7 +3880,7 @@ class statusServer_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.STRUCT, 'success', (ServerStatus, ServerStatus.thrift_spec), None,), # 0
+    (0, TType.STRUCT, 'success', (ServerStatus, ServerStatus.thrift_spec), None,),  #: 0
   )
 
 
@@ -3908,7 +3908,7 @@ class freeSpace_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.I64, 'success', None, None,), # 0
+    (0, TType.I64, 'success', None, None,),  #: 0
   )
 
 
@@ -3936,7 +3936,7 @@ class getServerVersion_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.STRING, 'success', None, None,), # 0
+    (0, TType.STRING, 'success', None, None,),  #: 0
   )
 
 
@@ -3991,8 +3991,8 @@ class getLog_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'offset', None, None,), # 1
+    None,  #: 0
+    (1, TType.I32, 'offset', None, None,),  #: 1
   )
 
 
@@ -4011,7 +4011,7 @@ class getLog_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRING, None), None,), # 0
+    (0, TType.LIST, 'success', (TType.STRING, None), None,),  #: 0
   )
 
 
@@ -4039,7 +4039,7 @@ class isTimeDownload_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.BOOL, 'success', None, None,), # 0
+    (0, TType.BOOL, 'success', None, None,),  #: 0
   )
 
 
@@ -4067,7 +4067,7 @@ class isTimeReconnect_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.BOOL, 'success', None, None,), # 0
+    (0, TType.BOOL, 'success', None, None,),  #: 0
   )
 
 
@@ -4095,7 +4095,7 @@ class toggleReconnect_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.BOOL, 'success', None, None,), # 0
+    (0, TType.BOOL, 'success', None, None,),  #: 0
   )
 
 
@@ -4114,8 +4114,8 @@ class generatePackages_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.LIST, 'links', (TType.STRING, None), None,), # 1
+    None,  #: 0
+    (1, TType.LIST, 'links', (TType.STRING, None), None,),  #: 1
   )
 
 
@@ -4134,7 +4134,7 @@ class generatePackages_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.MAP, 'success', (TType.STRING, None, TType.LIST, (TType.STRING, None)), None,), # 0
+    (0, TType.MAP, 'success', (TType.STRING, None, TType.LIST, (TType.STRING, None)), None,),  #: 0
   )
 
 
@@ -4153,8 +4153,8 @@ class checkURLs_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.LIST, 'urls', (TType.STRING, None), None,), # 1
+    None,  #: 0
+    (1, TType.LIST, 'urls', (TType.STRING, None), None,),  #: 1
   )
 
 
@@ -4173,7 +4173,7 @@ class checkURLs_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.MAP, 'success', (TType.STRING, None, TType.LIST, (TType.STRING, None)), None,), # 0
+    (0, TType.MAP, 'success', (TType.STRING, None, TType.LIST, (TType.STRING, None)), None,),  #: 0
   )
 
 
@@ -4194,9 +4194,9 @@ class parseURLs_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'html', None, None,), # 1
-    (2, TType.STRING, 'url', None, None,), # 2
+    None,  #: 0
+    (1, TType.STRING, 'html', None, None,),  #: 1
+    (2, TType.STRING, 'url', None, None,),  #: 2
   )
 
 
@@ -4216,7 +4216,7 @@ class parseURLs_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.MAP, 'success', (TType.STRING, None, TType.LIST, (TType.STRING, None)), None,), # 0
+    (0, TType.MAP, 'success', (TType.STRING, None, TType.LIST, (TType.STRING, None)), None,),  #: 0
   )
 
 
@@ -4235,8 +4235,8 @@ class checkOnlineStatus_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.LIST, 'urls', (TType.STRING, None), None,), # 1
+    None,  #: 0
+    (1, TType.LIST, 'urls', (TType.STRING, None), None,),  #: 1
   )
 
 
@@ -4255,7 +4255,7 @@ class checkOnlineStatus_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.STRUCT, 'success', (OnlineCheck, OnlineCheck.thrift_spec), None,), # 0
+    (0, TType.STRUCT, 'success', (OnlineCheck, OnlineCheck.thrift_spec), None,),  #: 0
   )
 
 
@@ -4278,10 +4278,10 @@ class checkOnlineStatusContainer_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.LIST, 'urls', (TType.STRING, None), None,), # 1
-    (2, TType.STRING, 'filename', None, None,), # 2
-    (3, TType.STRING, 'data', None, None,), # 3
+    None,  #: 0
+    (1, TType.LIST, 'urls', (TType.STRING, None), None,),  #: 1
+    (2, TType.STRING, 'filename', None, None,),  #: 2
+    (3, TType.STRING, 'data', None, None,),  #: 3
   )
 
 
@@ -4302,7 +4302,7 @@ class checkOnlineStatusContainer_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.STRUCT, 'success', (OnlineCheck, OnlineCheck.thrift_spec), None,), # 0
+    (0, TType.STRUCT, 'success', (OnlineCheck, OnlineCheck.thrift_spec), None,),  #: 0
   )
 
 
@@ -4321,8 +4321,8 @@ class pollResults_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'rid', None, None,), # 1
+    None,  #: 0
+    (1, TType.I32, 'rid', None, None,),  #: 1
   )
 
 
@@ -4341,7 +4341,7 @@ class pollResults_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.STRUCT, 'success', (OnlineCheck, OnlineCheck.thrift_spec), None,), # 0
+    (0, TType.STRUCT, 'success', (OnlineCheck, OnlineCheck.thrift_spec), None,),  #: 0
   )
 
 
@@ -4369,7 +4369,7 @@ class statusDownloads_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT, (DownloadInfo, DownloadInfo.thrift_spec)), None,), # 0
+    (0, TType.LIST, 'success', (TType.STRUCT, (DownloadInfo, DownloadInfo.thrift_spec)), None,),  #: 0
   )
 
 
@@ -4388,8 +4388,8 @@ class getPackageData_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'pid', None, None,), # 1
+    None,  #: 0
+    (1, TType.I32, 'pid', None, None,),  #: 1
   )
 
 
@@ -4410,8 +4410,8 @@ class getPackageData_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.STRUCT, 'success', (PackageData, PackageData.thrift_spec), None,), # 0
-    (1, TType.STRUCT, 'e', (PackageDoesNotExists, PackageDoesNotExists.thrift_spec), None,), # 1
+    (0, TType.STRUCT, 'success', (PackageData, PackageData.thrift_spec), None,),  #: 0
+    (1, TType.STRUCT, 'e', (PackageDoesNotExists, PackageDoesNotExists.thrift_spec), None,),  #: 1
   )
 
 
@@ -4431,8 +4431,8 @@ class getPackageInfo_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'pid', None, None,), # 1
+    None,  #: 0
+    (1, TType.I32, 'pid', None, None,),  #: 1
   )
 
 
@@ -4453,8 +4453,8 @@ class getPackageInfo_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.STRUCT, 'success', (PackageData, PackageData.thrift_spec), None,), # 0
-    (1, TType.STRUCT, 'e', (PackageDoesNotExists, PackageDoesNotExists.thrift_spec), None,), # 1
+    (0, TType.STRUCT, 'success', (PackageData, PackageData.thrift_spec), None,),  #: 0
+    (1, TType.STRUCT, 'e', (PackageDoesNotExists, PackageDoesNotExists.thrift_spec), None,),  #: 1
   )
 
 
@@ -4474,8 +4474,8 @@ class getFileData_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'fid', None, None,), # 1
+    None,  #: 0
+    (1, TType.I32, 'fid', None, None,),  #: 1
   )
 
 
@@ -4496,8 +4496,8 @@ class getFileData_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.STRUCT, 'success', (FileData, FileData.thrift_spec), None,), # 0
-    (1, TType.STRUCT, 'e', (FileDoesNotExists, FileDoesNotExists.thrift_spec), None,), # 1
+    (0, TType.STRUCT, 'success', (FileData, FileData.thrift_spec), None,),  #: 0
+    (1, TType.STRUCT, 'e', (FileDoesNotExists, FileDoesNotExists.thrift_spec), None,),  #: 1
   )
 
 
@@ -4526,7 +4526,7 @@ class getQueue_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT, (PackageData, PackageData.thrift_spec)), None,), # 0
+    (0, TType.LIST, 'success', (TType.STRUCT, (PackageData, PackageData.thrift_spec)), None,),  #: 0
   )
 
 
@@ -4554,7 +4554,7 @@ class getCollector_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT, (PackageData, PackageData.thrift_spec)), None,), # 0
+    (0, TType.LIST, 'success', (TType.STRUCT, (PackageData, PackageData.thrift_spec)), None,),  #: 0
   )
 
 
@@ -4582,7 +4582,7 @@ class getQueueData_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT, (PackageData, PackageData.thrift_spec)), None,), # 0
+    (0, TType.LIST, 'success', (TType.STRUCT, (PackageData, PackageData.thrift_spec)), None,),  #: 0
   )
 
 
@@ -4610,7 +4610,7 @@ class getCollectorData_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT, (PackageData, PackageData.thrift_spec)), None,), # 0
+    (0, TType.LIST, 'success', (TType.STRUCT, (PackageData, PackageData.thrift_spec)), None,),  #: 0
   )
 
 
@@ -4629,8 +4629,8 @@ class getPackageOrder_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'destination', None, None,), # 1
+    None,  #: 0
+    (1, TType.I32, 'destination', None, None,),  #: 1
   )
 
 
@@ -4649,7 +4649,7 @@ class getPackageOrder_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.MAP, 'success', (TType.I16, None, TType.I32, None), None,), # 0
+    (0, TType.MAP, 'success', (TType.I16, None, TType.I32, None), None,),  #: 0
   )
 
 
@@ -4668,8 +4668,8 @@ class getFileOrder_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'pid', None, None,), # 1
+    None,  #: 0
+    (1, TType.I32, 'pid', None, None,),  #: 1
   )
 
 
@@ -4688,7 +4688,7 @@ class getFileOrder_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.MAP, 'success', (TType.I16, None, TType.I32, None), None,), # 0
+    (0, TType.MAP, 'success', (TType.I16, None, TType.I32, None), None,),  #: 0
   )
 
 
@@ -4709,9 +4709,9 @@ class generateAndAddPackages_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.LIST, 'links', (TType.STRING, None), None,), # 1
-    (2, TType.I32, 'dest', None, None,), # 2
+    None,  #: 0
+    (1, TType.LIST, 'links', (TType.STRING, None), None,),  #: 1
+    (2, TType.I32, 'dest', None, None,),  #: 2
   )
 
 
@@ -4731,7 +4731,7 @@ class generateAndAddPackages_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.I32, None), None,), # 0
+    (0, TType.LIST, 'success', (TType.I32, None), None,),  #: 0
   )
 
 
@@ -4754,10 +4754,10 @@ class addPackage_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'name', None, None,), # 1
-    (2, TType.LIST, 'links', (TType.STRING, None), None,), # 2
-    (3, TType.I32, 'dest', None, None,), # 3
+    None,  #: 0
+    (1, TType.STRING, 'name', None, None,),  #: 1
+    (2, TType.LIST, 'links', (TType.STRING, None), None,),  #: 2
+    (3, TType.I32, 'dest', None, None,),  #: 3
   )
 
 
@@ -4778,7 +4778,7 @@ class addPackage_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.I32, 'success', None, None,), # 0
+    (0, TType.I32, 'success', None, None,),  #: 0
   )
 
 
@@ -4799,9 +4799,9 @@ class addFiles_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'pid', None, None,), # 1
-    (2, TType.LIST, 'links', (TType.STRING, None), None,), # 2
+    None,  #: 0
+    (1, TType.I32, 'pid', None, None,),  #: 1
+    (2, TType.LIST, 'links', (TType.STRING, None), None,),  #: 2
   )
 
 
@@ -4832,9 +4832,9 @@ class uploadContainer_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'filename', None, None,), # 1
-    (2, TType.STRING, 'data', None, None,), # 2
+    None,  #: 0
+    (1, TType.STRING, 'filename', None, None,),  #: 1
+    (2, TType.STRING, 'data', None, None,),  #: 2
   )
 
 
@@ -4863,8 +4863,8 @@ class deleteFiles_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.LIST, 'fids', (TType.I32, None), None,), # 1
+    None,  #: 0
+    (1, TType.LIST, 'fids', (TType.I32, None), None,),  #: 1
   )
 
 
@@ -4892,8 +4892,8 @@ class deletePackages_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.LIST, 'pids', (TType.I32, None), None,), # 1
+    None,  #: 0
+    (1, TType.LIST, 'pids', (TType.I32, None), None,),  #: 1
   )
 
 
@@ -4921,8 +4921,8 @@ class pushToQueue_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'pid', None, None,), # 1
+    None,  #: 0
+    (1, TType.I32, 'pid', None, None,),  #: 1
   )
 
 
@@ -4950,8 +4950,8 @@ class pullFromQueue_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'pid', None, None,), # 1
+    None,  #: 0
+    (1, TType.I32, 'pid', None, None,),  #: 1
   )
 
 
@@ -4979,8 +4979,8 @@ class restartPackage_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'pid', None, None,), # 1
+    None,  #: 0
+    (1, TType.I32, 'pid', None, None,),  #: 1
   )
 
 
@@ -5008,8 +5008,8 @@ class restartFile_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'fid', None, None,), # 1
+    None,  #: 0
+    (1, TType.I32, 'fid', None, None,),  #: 1
   )
 
 
@@ -5037,8 +5037,8 @@ class recheckPackage_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'pid', None, None,), # 1
+    None,  #: 0
+    (1, TType.I32, 'pid', None, None,),  #: 1
   )
 
 
@@ -5084,8 +5084,8 @@ class stopDownloads_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.LIST, 'fids', (TType.I32, None), None,), # 1
+    None,  #: 0
+    (1, TType.LIST, 'fids', (TType.I32, None), None,),  #: 1
   )
 
 
@@ -5115,9 +5115,9 @@ class setPackageName_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'pid', None, None,), # 1
-    (2, TType.STRING, 'name', None, None,), # 2
+    None,  #: 0
+    (1, TType.I32, 'pid', None, None,),  #: 1
+    (2, TType.STRING, 'name', None, None,),  #: 2
   )
 
 
@@ -5148,9 +5148,9 @@ class movePackage_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'destination', None, None,), # 1
-    (2, TType.I32, 'pid', None, None,), # 2
+    None,  #: 0
+    (1, TType.I32, 'destination', None, None,),  #: 1
+    (2, TType.I32, 'pid', None, None,),  #: 2
   )
 
 
@@ -5181,9 +5181,9 @@ class moveFiles_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.LIST, 'fids', (TType.I32, None), None,), # 1
-    (2, TType.I32, 'pid', None, None,), # 2
+    None,  #: 0
+    (1, TType.LIST, 'fids', (TType.I32, None), None,),  #: 1
+    (2, TType.I32, 'pid', None, None,),  #: 2
   )
 
 
@@ -5214,9 +5214,9 @@ class orderPackage_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'pid', None, None,), # 1
-    (2, TType.I16, 'position', None, None,), # 2
+    None,  #: 0
+    (1, TType.I32, 'pid', None, None,),  #: 1
+    (2, TType.I16, 'position', None, None,),  #: 2
   )
 
 
@@ -5247,9 +5247,9 @@ class orderFile_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'fid', None, None,), # 1
-    (2, TType.I16, 'position', None, None,), # 2
+    None,  #: 0
+    (1, TType.I32, 'fid', None, None,),  #: 1
+    (2, TType.I16, 'position', None, None,),  #: 2
   )
 
 
@@ -5280,9 +5280,9 @@ class setPackageData_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'pid', None, None,), # 1
-    (2, TType.MAP, 'data', (TType.STRING, None, TType.STRING, None), None,), # 2
+    None,  #: 0
+    (1, TType.I32, 'pid', None, None,),  #: 1
+    (2, TType.MAP, 'data', (TType.STRING, None, TType.STRING, None), None,),  #: 2
   )
 
 
@@ -5302,8 +5302,8 @@ class setPackageData_result(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRUCT, 'e', (PackageDoesNotExists, PackageDoesNotExists.thrift_spec), None,), # 1
+    None,  #: 0
+    (1, TType.STRUCT, 'e', (PackageDoesNotExists, PackageDoesNotExists.thrift_spec), None,),  #: 1
   )
 
 
@@ -5331,7 +5331,7 @@ class deleteFinished_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.I32, None), None,), # 0
+    (0, TType.LIST, 'success', (TType.I32, None), None,),  #: 0
   )
 
 
@@ -5368,8 +5368,8 @@ class getEvents_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'uuid', None, None,), # 1
+    None,  #: 0
+    (1, TType.STRING, 'uuid', None, None,),  #: 1
   )
 
 
@@ -5388,7 +5388,7 @@ class getEvents_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT, (EventInfo, EventInfo.thrift_spec)), None,), # 0
+    (0, TType.LIST, 'success', (TType.STRUCT, (EventInfo, EventInfo.thrift_spec)), None,),  #: 0
   )
 
 
@@ -5407,8 +5407,8 @@ class getAccounts_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.BOOL, 'refresh', None, None,), # 1
+    None,  #: 0
+    (1, TType.BOOL, 'refresh', None, None,),  #: 1
   )
 
 
@@ -5427,7 +5427,7 @@ class getAccounts_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT, (AccountInfo, AccountInfo.thrift_spec)), None,), # 0
+    (0, TType.LIST, 'success', (TType.STRUCT, (AccountInfo, AccountInfo.thrift_spec)), None,),  #: 0
   )
 
 
@@ -5455,7 +5455,7 @@ class getAccountTypes_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRING, None), None,), # 0
+    (0, TType.LIST, 'success', (TType.STRING, None), None,),  #: 0
   )
 
 
@@ -5480,11 +5480,11 @@ class updateAccount_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'plugin', None, None,), # 1
-    (2, TType.STRING, 'account', None, None,), # 2
-    (3, TType.STRING, 'password', None, None,), # 3
-    (4, TType.MAP, 'options', (TType.STRING, None, TType.STRING, None), None,), # 4
+    None,  #: 0
+    (1, TType.STRING, 'plugin', None, None,),  #: 1
+    (2, TType.STRING, 'account', None, None,),  #: 2
+    (3, TType.STRING, 'password', None, None,),  #: 3
+    (4, TType.MAP, 'options', (TType.STRING, None, TType.STRING, None), None,),  #: 4
   )
 
 
@@ -5517,9 +5517,9 @@ class removeAccount_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'plugin', None, None,), # 1
-    (2, TType.STRING, 'account', None, None,), # 2
+    None,  #: 0
+    (1, TType.STRING, 'plugin', None, None,),  #: 1
+    (2, TType.STRING, 'account', None, None,),  #: 2
   )
 
 
@@ -5550,9 +5550,9 @@ class login_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'username', None, None,), # 1
-    (2, TType.STRING, 'password', None, None,), # 2
+    None,  #: 0
+    (1, TType.STRING, 'username', None, None,),  #: 1
+    (2, TType.STRING, 'password', None, None,),  #: 2
   )
 
 
@@ -5572,7 +5572,7 @@ class login_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.BOOL, 'success', None, None,), # 0
+    (0, TType.BOOL, 'success', None, None,),  #: 0
   )
 
 
@@ -5593,9 +5593,9 @@ class getUserData_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'username', None, None,), # 1
-    (2, TType.STRING, 'password', None, None,), # 2
+    None,  #: 0
+    (1, TType.STRING, 'username', None, None,),  #: 1
+    (2, TType.STRING, 'password', None, None,),  #: 2
   )
 
 
@@ -5615,7 +5615,7 @@ class getUserData_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.STRUCT, 'success', (UserData, UserData.thrift_spec), None,), # 0
+    (0, TType.STRUCT, 'success', (UserData, UserData.thrift_spec), None,),  #: 0
   )
 
 
@@ -5643,7 +5643,7 @@ class getAllUserData_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.MAP, 'success', (TType.STRING, None, TType.STRUCT, (UserData, UserData.thrift_spec)), None,), # 0
+    (0, TType.MAP, 'success', (TType.STRING, None, TType.STRUCT, (UserData, UserData.thrift_spec)), None,),  #: 0
   )
 
 
@@ -5671,7 +5671,7 @@ class getServices_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.MAP, 'success', (TType.STRING, None, TType.MAP, (TType.STRING, None, TType.STRING, None)), None,), # 0
+    (0, TType.MAP, 'success', (TType.STRING, None, TType.MAP, (TType.STRING, None, TType.STRING, None)), None,),  #: 0
   )
 
 
@@ -5692,9 +5692,9 @@ class hasService_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'plugin', None, None,), # 1
-    (2, TType.STRING, 'func', None, None,), # 2
+    None,  #: 0
+    (1, TType.STRING, 'plugin', None, None,),  #: 1
+    (2, TType.STRING, 'func', None, None,),  #: 2
   )
 
 
@@ -5714,7 +5714,7 @@ class hasService_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.BOOL, 'success', None, None,), # 0
+    (0, TType.BOOL, 'success', None, None,),  #: 0
   )
 
 
@@ -5733,8 +5733,8 @@ class call_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRUCT, 'info', (ServiceCall, ServiceCall.thrift_spec), None,), # 1
+    None,  #: 0
+    (1, TType.STRUCT, 'info', (ServiceCall, ServiceCall.thrift_spec), None,),  #: 1
   )
 
 
@@ -5757,9 +5757,9 @@ class call_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.STRING, 'success', None, None,), # 0
-    (1, TType.STRUCT, 'ex', (ServiceDoesNotExists, ServiceDoesNotExists.thrift_spec), None,), # 1
-    (2, TType.STRUCT, 'e', (ServiceException, ServiceException.thrift_spec), None,), # 2
+    (0, TType.STRING, 'success', None, None,),  #: 0
+    (1, TType.STRUCT, 'ex', (ServiceDoesNotExists, ServiceDoesNotExists.thrift_spec), None,),  #: 1
+    (2, TType.STRUCT, 'e', (ServiceException, ServiceException.thrift_spec), None,),  #: 2
   )
 
 
@@ -5789,7 +5789,7 @@ class getAllInfo_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.MAP, 'success', (TType.STRING, None, TType.MAP, (TType.STRING, None, TType.STRING, None)), None,), # 0
+    (0, TType.MAP, 'success', (TType.STRING, None, TType.MAP, (TType.STRING, None, TType.STRING, None)), None,),  #: 0
   )
 
 
@@ -5808,8 +5808,8 @@ class getInfoByPlugin_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'plugin', None, None,), # 1
+    None,  #: 0
+    (1, TType.STRING, 'plugin', None, None,),  #: 1
   )
 
 
@@ -5828,7 +5828,7 @@ class getInfoByPlugin_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.MAP, 'success', (TType.STRING, None, TType.STRING, None), None,), # 0
+    (0, TType.MAP, 'success', (TType.STRING, None, TType.STRING, None), None,),  #: 0
   )
 
 
@@ -5856,7 +5856,7 @@ class isCaptchaWaiting_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.BOOL, 'success', None, None,), # 0
+    (0, TType.BOOL, 'success', None, None,),  #: 0
   )
 
 
@@ -5875,8 +5875,8 @@ class getCaptchaTask_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.BOOL, 'exclusive', None, None,), # 1
+    None,  #: 0
+    (1, TType.BOOL, 'exclusive', None, None,),  #: 1
   )
 
 
@@ -5895,7 +5895,7 @@ class getCaptchaTask_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.STRUCT, 'success', (CaptchaTask, CaptchaTask.thrift_spec), None,), # 0
+    (0, TType.STRUCT, 'success', (CaptchaTask, CaptchaTask.thrift_spec), None,),  #: 0
   )
 
 
@@ -5914,8 +5914,8 @@ class getCaptchaTaskStatus_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'tid', None, None,), # 1
+    None,  #: 0
+    (1, TType.I32, 'tid', None, None,),  #: 1
   )
 
 
@@ -5934,7 +5934,7 @@ class getCaptchaTaskStatus_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.STRING, 'success', None, None,), # 0
+    (0, TType.STRING, 'success', None, None,),  #: 0
   )
 
 
@@ -5955,9 +5955,9 @@ class setCaptchaResult_args(TBase):
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'tid', None, None,), # 1
-    (2, TType.STRING, 'result', None, None,), # 2
+    None,  #: 0
+    (1, TType.I32, 'tid', None, None,),  #: 1
+    (2, TType.STRING, 'result', None, None,),  #: 2
   )
 
 

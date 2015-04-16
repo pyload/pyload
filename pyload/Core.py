@@ -56,7 +56,7 @@ class Core(object):
         self.remote = True
         self.arg_links = []
         self.pidfile = "pyload.pid"
-        self.deleteLinks = False # will delete links on startup
+        self.deleteLinks = False  #: will delete links on startup
 
         if len(argv) > 1:
             try:
@@ -216,7 +216,7 @@ class Core(object):
             return
 
         try:
-            os.kill(pid, 3) #SIGUIT
+            os.kill(pid, 3)  #: SIGUIT
 
             t = time()
             print "waiting for pyLoad to quit"
@@ -227,7 +227,7 @@ class Core(object):
             if not exists(self.pidfile):
                 print "pyLoad successfully stopped"
             else:
-                os.kill(pid, 9) #SIGKILL
+                os.kill(pid, 9)  #: SIGKILL
                 print "pyLoad did not respond"
                 print "Kill signal was send to process with id %s" % pid
 
@@ -282,46 +282,46 @@ class Core(object):
 
         gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation("pyLoad", self.path("locale"),
-                                          languages=[self.config['general']['language'], "en"], fallback=True)
+                                          languages=[self.config.get("general", "language"), "en"], fallback=True)
         translation.install(True)
 
-        self.debug = self.doDebug or self.config['general']['debug_mode']
-        self.remote &= self.config['remote']['activated']
+        self.debug = self.doDebug or self.config.get("general", "debug_mode")
+        self.remote &= self.config.get("remote", "activated")
 
         pid = self.isAlreadyRunning()
         if pid:
             print _("pyLoad already running with pid %s") % pid
             exit()
 
-        if os.name != "nt" and self.config["general"]["renice"]:
-            os.system("renice %d %d" % (self.config["general"]["renice"], os.getpid()))
+        if os.name != "nt" and self.config.get("general", "renice"):
+            os.system("renice %d %d" % (self.config.get("general", "renice"), os.getpid()))
 
-        if self.config["permission"]["change_group"]:
+        if self.config.get("permission", "change_group"):
             if os.name != "nt":
                 try:
                     from grp import getgrnam
 
-                    group = getgrnam(self.config["permission"]["group"])
+                    group = getgrnam(self.config.get("permission", "group"))
                     os.setgid(group[2])
                 except Exception, e:
                     print _("Failed changing group: %s") % e
 
-        if self.config["permission"]["change_user"]:
+        if self.config.get("permission", "change_user"):
             if os.name != "nt":
                 try:
                     from pwd import getpwnam
 
-                    user = getpwnam(self.config["permission"]["user"])
+                    user = getpwnam(self.config.get("permission", "user"))
                     os.setuid(user[2])
                 except Exception, e:
                     print _("Failed changing user: %s") % e
 
-        self.check_file(self.config['log']['log_folder'], _("folder for logs"), True)
+        self.check_file(self.config.get("log", "log_folder"), _("folder for logs"), True)
 
         if self.debug:
-            self.init_logger(logging.DEBUG) # logging level
+            self.init_logger(logging.DEBUG)  #: logging level
         else:
-            self.init_logger(logging.INFO) # logging level
+            self.init_logger(logging.INFO)  #: logging level
 
         self.do_kill = False
         self.do_restart = False
@@ -343,11 +343,11 @@ class Core(object):
         self.check_file("tmp", _("folder for temporary files"), True)
         #tesser = self.check_install("tesseract", _("tesseract for captcha reading"), False) if os.name != "nt" else True
 
-        self.captcha = True # checks seems to fail, although tesseract is available
+        self.captcha = True  #: checks seems to fail, although tesseract is available
 
-        self.check_file(self.config['general']['download_folder'], _("folder for downloads"), True)
+        self.check_file(self.config.get("general", "download_folder"), _("folder for downloads"), True)
 
-        if self.config['ssl']['activated']:
+        if self.config.get("ssl", "activated"):
             self.check_install("OpenSSL", _("OpenSSL for secure connection"))
 
         self.setupDB()
@@ -397,11 +397,11 @@ class Core(object):
         if web:
             self.init_webserver()
 
-        spaceLeft = freeSpace(self.config["general"]["download_folder"])
+        spaceLeft = freeSpace(self.config.get("general", "download_folder"))
 
         self.log.info(_("Free space: %s") % formatSize(spaceLeft))
 
-        self.config.save() #save so config files gets filled
+        self.config.save()  #: save so config files gets filled
 
         link_file = join(pypath, "links.txt")
 
@@ -441,46 +441,76 @@ class Core(object):
                 self.shutdown()
                 self.log.info(_("pyLoad quits"))
                 self.removeLogger()
-                _exit(0) #@TODO thrift blocks shutdown
+                _exit(0)  #@TODO thrift blocks shutdown
 
             self.threadManager.work()
             self.scheduler.work()
 
 
     def setupDB(self):
-        self.db = DatabaseBackend(self) # the backend
+        self.db = DatabaseBackend(self)  #: the backend
         self.db.setup()
 
         self.files = FileHandler(self)
-        self.db.manager = self.files #ugly?
+        self.db.manager = self.files  #: ugly?
 
 
     def init_webserver(self):
-        if self.config['webui']['activated']:
+        if self.config.get("webui", "activated"):
             self.webserver = WebServer(self)
             self.webserver.start()
 
 
     def init_logger(self, level):
-        console = logging.StreamHandler(sys.stdout)
-        frm = logging.Formatter("%(asctime)s %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
-        console.setFormatter(frm)
-        self.log = logging.getLogger("log") # settable in config
+        self.log = logging.getLogger("log")
+        self.log.setLevel(level)
 
-        if self.config['log']['file_log']:
-            if self.config['log']['log_rotate']:
-                file_handler = logging.handlers.RotatingFileHandler(join(self.config['log']['log_folder'], 'log.txt'),
-                                                                    maxBytes=self.config['log']['log_size'] * 1024,
-                                                                    backupCount=int(self.config['log']['log_count']),
+        date_fmt = "%Y-%m-%d %H:%M:%S"
+        fh_fmt   = "%(asctime)s %(levelname)-8s  %(message)s"
+
+        fh_frm      = logging.Formatter(fh_fmt, date_fmt)  #: file handler formatter
+        console_frm = fh_frm  #: console formatter did not use colors as default
+
+        # Console formatter with colors
+        if self.config.get("log", "color_console"):
+            import colorlog
+
+            if self.config.get("log", "color_template") == "label":
+                cfmt = "%(asctime)s %(log_color)s%(bold)s%(white)s %(levelname)-8s %(reset)s %(message)s"
+                clr  = {'DEBUG'   : "bg_cyan"  ,
+                        'INFO'    : "bg_green" ,
+                        'WARNING' : "bg_yellow",
+                        'ERROR'   : "bg_red"   ,
+                        'CRITICAL': "bg_purple"}
+            else:
+                cfmt = "%(log_color)s%(asctime)s  %(levelname)-8s  %(message)s"
+                clr  = {'DEBUG'   : "cyan"  ,
+                        'WARNING' : "yellow",
+                        'ERROR'   : "red"   ,
+                        'CRITICAL': "purple"}
+
+            console_frm = colorlog.ColoredFormatter(cfmt, date_fmt, clr)
+
+        # Set console formatter
+        console = logging.StreamHandler(sys.stdout)
+        console.setFormatter(console_frm)
+        self.log.addHandler(console)
+
+        if not exists(self.config.get("log", "log_folder")):
+            makedirs(self.config.get("log", "log_folder"), 0700)
+
+        # Set file handler formatter
+        if self.config.get("log", "file_log"):
+            if self.config.get("log", "log_rotate"):
+                file_handler = logging.handlers.RotatingFileHandler(join(self.config.get("log", "log_folder"), 'log.txt'),
+                                                                    maxBytes=self.config.get("log", "log_size") * 1024,
+                                                                    backupCount=int(self.config.get("log", "log_count")),
                                                                     encoding="utf8")
             else:
-                file_handler = logging.FileHandler(join(self.config['log']['log_folder'], 'log.txt'), encoding="utf8")
+                file_handler = logging.FileHandler(join(self.config.get("log", "log_folder"), 'log.txt'), encoding="utf8")
 
-            file_handler.setFormatter(frm)
+            file_handler.setFormatter(fh_frm)
             self.log.addHandler(file_handler)
-
-        self.log.addHandler(console) #if console logging
-        self.log.setLevel(level)
 
 
     def removeLogger(self):
@@ -566,7 +596,7 @@ class Core(object):
     def shutdown(self):
         self.log.info(_("shutting down..."))
         try:
-            if self.config['webui']['activated'] and hasattr(self, "webserver"):
+            if self.config.get("webui", "activated") and hasattr(self, "webserver"):
                 self.webserver.quit()
 
             for thread in list(self.threadManager.threads):

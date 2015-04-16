@@ -46,7 +46,7 @@ class NoPremiumPl(Account):
         if "expire" in result.keys() and result["expire"]:
             premium = True
             valid_untill = time.mktime(datetime.datetime.fromtimestamp(int(result["expire"])).timetuple())
-        traffic_left = result["balance"] * 1024
+        traffic_left = result["balance"] * 2 ** 20
 
         return ({
                     "validuntil": valid_untill,

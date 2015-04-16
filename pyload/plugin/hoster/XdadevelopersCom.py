@@ -33,4 +33,5 @@ class XdadevelopersCom(SimpleHoster):
 
 
     def handleFree(self, pyfile):
-        self.link = pyfile.url + "&task=get"  #@TODO: Revert to `get={'task': "get"}` in 0.4.10
+        self.download(pyfile.url,
+                      get={'task': "get"})

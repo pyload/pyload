@@ -27,7 +27,7 @@ class ShareonlineBiz(Account):
         premium     = False
         validuntil  = None
         trafficleft = -1
-        maxtraffic  = 100 * 1024 * 1024 * 1024  #: 100 GB
+        maxtraffic  = 100 * 2 ** 30  #: 100 GB
 
         api = {}
         for line in self.api_response(user, req).splitlines():
@@ -47,9 +47,6 @@ class ShareonlineBiz(Account):
             traffic     = float(api['traffic_1d'].split(";")[0])
             maxtraffic  = max(maxtraffic, traffic)
             trafficleft = maxtraffic - traffic
-
-        maxtraffic  /= 1024  #@TODO: Remove `/ 1024` in 0.4.10
-        trafficleft /= 1024  #@TODO: Remove `/ 1024` in 0.4.10
 
         return {'premium'    : premium,
                 'validuntil' : validuntil,

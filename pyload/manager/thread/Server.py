@@ -20,12 +20,12 @@ class WebServer(threading.Thread):
         self.core = pycore
         core = pycore
         self.running = True
-        self.server = pycore.config['webui']['server']
-        self.https = pycore.config['webui']['https']
-        self.cert = pycore.config["ssl"]["cert"]
-        self.key = pycore.config["ssl"]["key"]
-        self.host = pycore.config['webui']['host']
-        self.port = pycore.config['webui']['port']
+        self.server = pycore.config.get("webui", "server")
+        self.https = pycore.config.get("webui", "https")
+        self.cert = pycore.config.get("ssl", "cert")
+        self.key = pycore.config.get("ssl", "key")
+        self.host = pycore.config.get("webui", "host")
+        self.port = pycore.config.get("webui", "port")
 
         self.setDaemon(True)
 
@@ -103,7 +103,7 @@ class WebServer(threading.Thread):
         try:
             webinterface.run_fcgi(host=self.host, port=self.port)
 
-        except ValueError: #@TODO: Fix https://github.com/pyload/pyload/issues/1145
+        except ValueError:  #@TODO: Fix https://github.com/pyload/pyload/issues/1145
             pass
 
 

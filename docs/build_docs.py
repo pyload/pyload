@@ -21,10 +21,6 @@ dir_name = os.path.join(os.path.dirname(os.path.abspath("")))
 
 sys.path.append(dir_name)
 
-if "64" in platform.machine():
-    sys.path.append(os.path.join(os.path.dirname, "lib64"))
-sys.path.append(os.path.join(os.path.dirname, "lib", "Python", "Lib"))
-
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the

@@ -30,7 +30,7 @@ def exists(path):
 class UpdateManager(Addon):
     __name    = "UpdateManager"
     __type    = "addon"
-    __version = "0.50"
+    __version = "0.51"
 
     __config  = [("activated", "bool", "Activated", False),
                  ("checkinterval", "int", "Check interval in hours", 8),
@@ -50,6 +50,8 @@ class UpdateManager(Addon):
     SERVER_URL         = "http://updatemanager.pyload.org" if release_status == 5 else None
     MIN_CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
 
+    event_list = ["allDownloadsProcessed"]
+
 
     def activate(self):
         if self.checkonstart:
@@ -68,6 +70,14 @@ class UpdateManager(Addon):
             self.checkonstart = True
         else:
             self.checkonstart = False
+
+        self.do_restart = False
+
+
+    def allDownloadsProcessed(self):
+        if self.do_restart is True:
+            self.logWarning(_("Downloads are done, restarting pyLoad to reload the updated plugins"))
+            self.core.api.restart()
 
 
     def periodical(self):
@@ -129,7 +139,11 @@ class UpdateManager(Addon):
         self.core.api.pauseServer()
 
         if self._update() is 2 and self.getConfig('autorestart'):
-            self.core.api.restart()
+            if not self.core.api.statusDownloads():
+                self.core.api.restart()
+            else:
+                self.do_restart = True
+                self.logWarning(_("Downloads are active, will restart once the download is done"))
         else:
             self.core.api.unpauseServer()
 
@@ -208,19 +222,13 @@ class UpdateManager(Addon):
 
         for plugin in sorted(updatelist, key=itemgetter("type", "name")):
             filename = plugin['name']
-            prefix   = plugin['type']
+            type     = plugin['type']
             version  = plugin['version']
 
             if filename.endswith(".pyc"):
                 name = filename[:filename.find("_")]
             else:
                 name = filename.replace(".py", "")
-
-            #@TODO: Remove in 0.4.10
-            if prefix.endswith("s"):
-                type = prefix[:-1]
-            else:
-                type = prefix
 
             plugins = getattr(self.core.pluginManager, "%sPlugins" % type)
 
@@ -259,7 +267,7 @@ class UpdateManager(Addon):
             if self.core.pluginManager.reloadPlugins(updated):
                 exitcode = 1
             else:
-                self.logWarning(_("Restart pyLoad to reload the updated plugins"))
+                self.logWarning(_("pyLoad restart required to reload the updated plugins"))
                 self.info['plugins'] = True
                 exitcode = 2
 

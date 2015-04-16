@@ -81,8 +81,8 @@ class Cli(object):
             inp = self.getch.impl()
             if ord(inp) == 3:
                 os.system("clear")
-                sys.exit() # ctrl + c
-            elif ord(inp) == 13: #enter
+                sys.exit()  #: ctrl + c
+            elif ord(inp) == 13:  #: enter
                 try:
                     self.lock.acquire()
                     self.inputHandler.onEnter(self.input)
@@ -93,14 +93,14 @@ class Cli(object):
                     self.lock.release()
 
             elif ord(inp) == 127:
-                self.input = self.input[:-1] #backspace
+                self.input = self.input[:-1]  #: backspace
                 try:
                     self.lock.acquire()
                     self.inputHandler.onBackSpace()
                 finally:
                     self.lock.release()
 
-            elif ord(inp) == 27: #ugly symbol
+            elif ord(inp) == 27:  #: ugly symbol
                 pass
             else:
                 self.input += inp
@@ -143,7 +143,7 @@ class Cli(object):
     def renderHeader(self, line):
         """ prints download status """
         #print updated information
-        #        print "\033[J" #clear screen
+        #        print "\033[J"  #: clear screen
         #        self.println(1, blue("py") + yellow("Load") + white(_(" Command Line Interface")))
         #        self.println(2, "")
         #        self.println(3, white(_("%s Downloads:") % (len(data))))

@@ -68,7 +68,7 @@ def callApi(func, *args, **kwargs):
     return json.dumps(result, cls=TBaseEncoder)
 
 
-#post -> username, password
+# post -> username, password
 @route('/api/login', method='POST')
 def login():
     response.headers.replace("Content-type", "application/json")

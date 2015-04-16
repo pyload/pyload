@@ -252,8 +252,8 @@ class Plugin(Base):
 
     def getChunkCount(self):
         if self.chunkLimit <= 0:
-            return self.core.config['download']['chunks']
-        return min(self.core.config['download']['chunks'], self.chunkLimit)
+            return self.core.config.get("download", "chunks")
+        return min(self.core.config.get("download", "chunks"), self.chunkLimit)
 
 
     def __call__(self):
@@ -616,17 +616,17 @@ class Plugin(Base):
         if disposition:
             self.pyfile.name = urlparse.urlparse(url).path.split('/')[-1] or self.pyfile.name
 
-        download_folder = self.core.config['general']['download_folder']
+        download_folder = self.core.config.get("general", "download_folder")
 
         location = fs_join(download_folder, self.pyfile.package().folder)
 
         if not exists(location):
             try:
-                makedirs(location, int(self.core.config['permission']['folder'], 8))
+                makedirs(location, int(self.core.config.get("permission", "folder"), 8))
 
-                if self.core.config['permission']['change_dl'] and os.name != "nt":
-                    uid = getpwnam(self.core.config['permission']['user'])[2]
-                    gid = getgrnam(self.core.config['permission']['group'])[2]
+                if self.core.config.get("permission", "change_dl") and os.name != "nt":
+                    uid = getpwnam(self.core.config.get("permission", "user"))[2]
+                    gid = getgrnam(self.core.config.get("permission", "group"))[2]
                     chown(location, uid, gid)
 
             except Exception, e:
@@ -657,16 +657,16 @@ class Plugin(Base):
 
         fs_filename = fs_encode(filename)
 
-        if self.core.config['permission']['change_file']:
+        if self.core.config.get("permission", "change_file"):
             try:
-                chmod(fs_filename, int(self.core.config['permission']['file'], 8))
+                chmod(fs_filename, int(self.core.config.get("permission", "file"), 8))
             except Exception, e:
                 self.logWarning(_("Setting file mode failed"), e)
 
-        if self.core.config['permission']['change_dl'] and os.name != "nt":
+        if self.core.config.get("permission", "change_dl") and os.name != "nt":
             try:
-                uid = getpwnam(self.core.config['permission']['user'])[2]
-                gid = getgrnam(self.core.config['permission']['group'])[2]
+                uid = getpwnam(self.core.config.get("permission", "user"))[2]
+                gid = getgrnam(self.core.config.get("permission", "group"))[2]
                 chown(fs_filename, uid, gid)
 
             except Exception, e:
@@ -740,10 +740,10 @@ class Plugin(Base):
                 elif pyfile.status in (5, 7) and starting:  # a download is waiting/starting and was appenrently started before
                     raise SkipDownload(pyfile.pluginname)
 
-        download_folder = self.core.config['general']['download_folder']
+        download_folder = self.core.config.get("general", "download_folder")
         location = fs_join(download_folder, pack.folder, self.pyfile.name)
 
-        if starting and self.core.config['download']['skip_existing'] and exists(location):
+        if starting and self.core.config.get("download", "skip_existing") and exists(location):
             size = os.stat(location).st_size
             if size >= self.pyfile.size:
                 raise SkipDownload("File exists")

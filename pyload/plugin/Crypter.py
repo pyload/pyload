@@ -12,7 +12,7 @@ class Crypter(Plugin):
     __version = "0.05"
 
     __pattern = r'^unmatchable$'
-    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
+    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config.get("general", "folder_per_package")
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description = """Base decrypter plugin"""
@@ -42,7 +42,7 @@ class Crypter(Plugin):
             self.generatePackages()
 
         elif not self.packages:
-            self.error(_("No link extracted"), "decrypt")
+            self.error(_("No link grabbed"), "decrypt")
 
         self.createPackages()
 
@@ -65,7 +65,7 @@ class Crypter(Plugin):
         package_password = self.pyfile.package().password
         package_queue = self.pyfile.package().queue
 
-        folder_per_package = self.core.config['general']['folder_per_package']
+        folder_per_package = self.core.config.get("general", "folder_per_package")
         try:
             use_subfolder = self.getConfig('use_subfolder')
         except Exception:

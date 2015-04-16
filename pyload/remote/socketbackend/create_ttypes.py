@@ -5,11 +5,6 @@ import os
 import platform
 import sys
 
-
-if "64" in platform.machine():
-    sys.path.append(os.path.join(pypath, "lib64"))
-sys.path.append(os.path.join(pypath, "lib", "Python", "Lib"))
-
 sys.path.append(os.path.join(pypath, "pyload", "remote"))
 
 from pyload.remote.thriftbackend.thriftgen.pyload import ttypes
