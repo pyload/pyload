@@ -45,7 +45,6 @@ class UpdateManager(Hook):
 
 
     interval = 0
-    restartrequired = False
 
     SERVER_URL         = "http://updatemanager.pyload.org"
     MIN_CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
@@ -71,11 +70,11 @@ class UpdateManager(Hook):
         else:
             self.checkonstart = False
 
-        self.restartrequired = False
+        self.do_restart = False
 
 
     def allDownloadsProcessed(self):
-        if self.restartrequired is True:
+        if self.do_restart is True:
             self.logWarning(_("Downloads are done, restarting pyLoad to reload the updated plugins"))
             self.core.api.restart()
 
@@ -139,11 +138,10 @@ class UpdateManager(Hook):
         self.core.api.pauseServer()
 
         if self._update() is 2 and self.getConfig('autorestart'):
-            downloads = self.core.api.statusDownloads()
-            if not downloads:
+            if not self.core.api.statusDownloads():
                 self.core.api.restart()
             else:
-                self.restartrequired = True
+                self.do_restart = True
                 self.logWarning(_("Downloads are active, will restart once the download is done"))
         else:
             self.core.api.unpauseServer()
