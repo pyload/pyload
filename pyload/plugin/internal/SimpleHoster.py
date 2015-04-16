@@ -244,7 +244,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name    = "SimpleHoster"
     __type    = "hoster"
-    __version = "1.37"
+    __version = "1.38"
 
     __pattern = r'^unmatchable$'
     __config  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -609,7 +609,7 @@ class SimpleHoster(Hoster):
                 self.tempOffline()
 
             elif status is 8:
-                self.fail()
+                self.fail(self.info['error'] if 'error' in self.info else "Failed")
 
         finally:
             self.logDebug("File status: %s" % statusMap[status])
