@@ -65,7 +65,7 @@ class QuickshareCz(SimpleHoster):
         if m is None:
             self.fail(_("File not found"))
 
-        self.link = m.group(1).rstrip()  #@TODO: Remove .rstrip() in 0.4.10
+        self.link = m.group(1)
         self.logDebug("FREE URL2:" + self.link)
 
         # check errors

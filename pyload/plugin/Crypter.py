@@ -42,7 +42,7 @@ class Crypter(Plugin):
             self.generatePackages()
 
         elif not self.packages:
-            self.error(_("No link extracted"), "decrypt")
+            self.error(_("No link grabbed"), "decrypt")
 
         self.createPackages()
 

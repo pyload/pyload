@@ -18,13 +18,14 @@ class FastixRu(Account):
         data = self.getAccountData(user)
         html = json_loads(req.load("http://fastix.ru/api_v2/", get={'apikey': data['api'], 'sub': "getaccountdetails"}))
 
-        points = html['points']
-        kb     = float(points) * 1024 ** 2 / 1000
+        points      = html['points']
+        trafficleft = float(points) * 1024 ** 2 / 1000
 
         if points > 0:
-            account_info = {"validuntil": -1, "trafficleft": kb}
+            account_info = {"validuntil": -1, "trafficleft": trafficleft}
         else:
             account_info = {"validuntil": None, "trafficleft": None, "premium": False}
+
         return account_info
 
 

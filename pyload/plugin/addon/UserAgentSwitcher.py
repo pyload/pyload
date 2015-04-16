@@ -25,10 +25,6 @@ class UserAgentSwitcher(Addon):
     __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
-
-
     def downloadPreparing(self, pyfile):
         uar = self.getConfig('uar')
         uaf = fs_encode(self.getConfig('uaf'))

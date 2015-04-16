@@ -198,11 +198,11 @@ class ExtractArchive(Addon):
         while packages:
             if self.lastPackage:  #: called from allDownloadsProcessed
                 self.lastPackage = False
-                if self.extract(packages, thread):  # @NOTE: check only if all gone fine, no failed reporting for now
+                if self.extract(packages, thread):  #@NOTE: check only if all gone fine, no failed reporting for now
                     self.manager.dispatchEvent("all_archives_extracted")
                 self.manager.dispatchEvent("all_archives_processed")
             else:
-                if self.extract(packages, thread):  # @NOTE: check only if all gone fine, no failed reporting for now
+                if self.extract(packages, thread):  #@NOTE: check only if all gone fine, no failed reporting for now
                     pass
 
             packages = self.queue.get()  #: check for packages added during extraction
@@ -234,7 +234,7 @@ class ExtractArchive(Addon):
 
 
     @Expose
-    def extract(self, ids, thread=None):  # @TODO: Use pypack, not pid to improve method usability
+    def extract(self, ids, thread=None):  #@TODO: Use pypack, not pid to improve method usability
         if not ids:
             return False
 
@@ -295,7 +295,7 @@ class ExtractArchive(Addon):
                 new_files_ids = []
 
                 if extensions:
-                    files_ids = [(fname, fid, fout) for fname, fid, fout in files_ids 
+                    files_ids = [(fname, fid, fout) for fname, fid, fout in files_ids
                                  if filter(lambda ext: fname.lower().endswith(ext), extensions)]
 
                 for Extractor in self.extractors:
@@ -341,7 +341,7 @@ class ExtractArchive(Addon):
                             continue
 
                         # remove processed file and related multiparts from list
-                        files_ids = [(fname, fid, fout) for fname, fid, fout in files_ids 
+                        files_ids = [(fname, fid, fout) for fname, fid, fout in files_ids
                                      if fname not in archive.getDeleteFiles()]
                         self.logDebug("Extracted files: %s" % new_files)
                         self.setPermissions(new_files)

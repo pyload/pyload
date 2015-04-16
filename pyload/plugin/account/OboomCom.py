@@ -64,8 +64,8 @@ class OboomCom(Account):
 
         traffic = userData['traffic']
 
-        trafficLeft = traffic['current'] / 1024  #@TODO: Remove `/ 1024` in 0.4.10
-        maxTraffic = traffic['max'] / 1024  #@TODO: Remove `/ 1024` in 0.4.10
+        trafficLeft = traffic['current']
+        maxTraffic = traffic['max']
 
         session = accountData['session']
 

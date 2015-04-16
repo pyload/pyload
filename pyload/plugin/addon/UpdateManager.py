@@ -222,19 +222,13 @@ class UpdateManager(Addon):
 
         for plugin in sorted(updatelist, key=itemgetter("type", "name")):
             filename = plugin['name']
-            prefix   = plugin['type']
+            type     = plugin['type']
             version  = plugin['version']
 
             if filename.endswith(".pyc"):
                 name = filename[:filename.find("_")]
             else:
                 name = filename.replace(".py", "")
-
-            #@TODO: Remove in 0.4.10
-            if prefix.endswith("s"):
-                type = prefix[:-1]
-            else:
-                type = prefix
 
             plugins = getattr(self.core.pluginManager, "%sPlugins" % type)
 

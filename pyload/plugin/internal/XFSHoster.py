@@ -113,7 +113,7 @@ class XFSHoster(SimpleHoster):
             self.logError(data['op'] if 'op' in data else _("UNKNOWN"))
             return ""
 
-        self.link = m.group(1).strip()  #@TODO: Remove .strip() in 0.4.10
+        self.link = m.group(1)
 
 
     def handlePremium(self, pyfile):

@@ -41,7 +41,7 @@ class ZeveraCom(Account):
 
         if "No trafic" not in api and api['endsubscriptiondate'] != "Expired!":
             validuntil  = time.mktime(time.strptime(api['endsubscriptiondate'], "%Y/%m/%d %H:%M:%S"))
-            trafficleft = float(api['availabletodaytraffic']) * 1024 if api['orondaytrafficlimit'] != '0' else -1
+            trafficleft = float(api['availabletodaytraffic']) * 2 ** 20 if api['orondaytrafficlimit'] != '0' else -1
             premium     = True
 
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}

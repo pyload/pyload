@@ -30,7 +30,7 @@ class ExternalScripts(Addon):
 
 
     def setup(self):
-        self.info    = {'oldip': None}
+        self.info['oldip'] = None
         self.scripts = {}
 
         folders = ["pyload_start", "pyload_restart", "pyload_stop",
@@ -38,7 +38,7 @@ class ExternalScripts(Addon):
                    "download_preparing", "download_failed", "download_finished",
                    "archive_extract_failed", "archive_extracted",
                    "package_finished", "package_deleted", "package_extract_failed", "package_extracted",
-                   "all_downloads_processed", "all_downloads_finished",  # @TODO: Invert `all_downloads_processed`, `all_downloads_finished` order in 0.4.10
+                   "all_downloads_processed", "all_downloads_finished",  #@TODO: Invert `all_downloads_processed`, `all_downloads_finished` order in 0.4.10
                    "all_archives_extracted", "all_archives_processed"]
 
         for folder in folders:
@@ -84,7 +84,7 @@ class ExternalScripts(Addon):
 
             self.logDebug("Executing: %s" % os.path.abspath(script), "Args: " + ' '.join(cmd_args))
 
-            p = subprocess.Popen(cmd, bufsize=-1)  # @NOTE: output goes to pyload
+            p = subprocess.Popen(cmd, bufsize=-1)  #@NOTE: output goes to pyload
             if self.getConfig('waitend'):
                 p.communicate()
 
@@ -113,7 +113,7 @@ class ExternalScripts(Addon):
 
     def afterReconnecting(self, ip):
         for script in self.scripts['after_reconnect']:
-            self.callScript(script, ip, self.info['oldip'])  # @TODO: Use built-in oldip in 0.4.10
+            self.callScript(script, ip, self.info['oldip'])  #@TODO: Use built-in oldip in 0.4.10
 
 
     def downloadPreparing(self, pyfile):
