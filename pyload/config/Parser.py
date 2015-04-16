@@ -159,6 +159,7 @@ class ConfigParser(object):
                         typ, none, option = content.strip().rpartition(" ")
 
                         value = value.strip()
+                        typ = typ.strip()
 
                         if value.startswith("["):
                             if value.endswith("]"):
