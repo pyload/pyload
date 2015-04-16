@@ -129,7 +129,7 @@ class Api(Iface):
         :return: config value as string
         """
         if section == "core":
-            value = self.core.config[category][option]
+            value = self.core.config.get(category, option)
         else:
             value = self.core.config.getPlugin(category, option)
         return str(value)
