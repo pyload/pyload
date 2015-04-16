@@ -51,7 +51,7 @@ class WebshareCz(Account):
             self.wrongPassword()
 
         salt     = re.search('<salt>(.+)</salt>', salt).group(1)
-        password = sha1(md5_crypt.encrypt(data["password"], salt=salt)).hexdigest()
+        password = sha1(md5_crypt.encrypt(data['password'], salt=salt)).hexdigest()
         digest   = md5(user + ":Webshare:" + password).hexdigest()
 
         login = req.load("https://webshare.cz/api/login/",

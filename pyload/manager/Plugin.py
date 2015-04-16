@@ -230,7 +230,7 @@ class PluginManager(object):
         elif name not in self.plugins[type]:
             self.core.log.warning(_("Plugin [%(type)s] %(name)s not found | Using plugin: [internal] BasePlugin")
                                   % {'name': name, 'type': type})
-            return self.internalPlugins["BasePlugin"]
+            return self.internalPlugins['BasePlugin']
 
         else:
             return self.plugins[type][name]

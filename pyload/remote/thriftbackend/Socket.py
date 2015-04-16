@@ -13,29 +13,29 @@ WantReadError = Exception  #: overwritten when ssl is used
 class SecureSocketConnection(object):
 
     def __init__(self, connection):
-        self.__dict__["connection"] = connection
+        self.__dict__['connection'] = connection
 
 
     def __getattr__(self, name):
-        return getattr(self.__dict__["connection"], name)
+        return getattr(self.__dict__['connection'], name)
 
 
     def __setattr__(self, name, value):
-        setattr(self.__dict__["connection"], name, value)
+        setattr(self.__dict__['connection'], name, value)
 
 
     def shutdown(self, how=1):
-        self.__dict__["connection"].shutdown()
+        self.__dict__['connection'].shutdown()
 
 
     def accept(self):
-        connection, address = self.__dict__["connection"].accept()
+        connection, address = self.__dict__['connection'].accept()
         return SecureSocketConnection(connection), address
 
 
     def send(self, buff):
         try:
-            return self.__dict__["connection"].send(buff)
+            return self.__dict__['connection'].send(buff)
         except WantReadError:
             sleep(0.1)
             return self.send(buff)
@@ -43,7 +43,7 @@ class SecureSocketConnection(object):
 
     def recv(self, buff):
         try:
-            return self.__dict__["connection"].recv(buff)
+            return self.__dict__['connection'].recv(buff)
         except WantReadError:
             sleep(0.1)
             return self.recv(buff)

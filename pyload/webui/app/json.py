@@ -22,7 +22,7 @@ def format_time(seconds):
 
 
 def get_sort_key(item):
-    return item["order"]
+    return item['order']
 
 
 @route('/json/status')
@@ -87,29 +87,29 @@ def packages():
 def package(id):
     try:
         data = toDict(PYLOAD.getPackageData(id))
-        data["links"] = [toDict(x) for x in data["links"]]
+        data['links'] = [toDict(x) for x in data['links']]
 
-        for pyfile in data["links"]:
-            if pyfile["status"] == 0:
-                pyfile["icon"] = "status_finished.png"
-            elif pyfile["status"] in (2, 3):
-                pyfile["icon"] = "status_queue.png"
-            elif pyfile["status"] in (9, 1):
-                pyfile["icon"] = "status_offline.png"
-            elif pyfile["status"] == 5:
-                pyfile["icon"] = "status_waiting.png"
-            elif pyfile["status"] == 8:
-                pyfile["icon"] = "status_failed.png"
-            elif pyfile["status"] == 4:
-                pyfile["icon"] = "arrow_right.png"
-            elif pyfile["status"] in (11, 13):
-                pyfile["icon"] = "status_proc.png"
+        for pyfile in data['links']:
+            if pyfile['status'] == 0:
+                pyfile['icon'] = "status_finished.png"
+            elif pyfile['status'] in (2, 3):
+                pyfile['icon'] = "status_queue.png"
+            elif pyfile['status'] in (9, 1):
+                pyfile['icon'] = "status_offline.png"
+            elif pyfile['status'] == 5:
+                pyfile['icon'] = "status_waiting.png"
+            elif pyfile['status'] == 8:
+                pyfile['icon'] = "status_failed.png"
+            elif pyfile['status'] == 4:
+                pyfile['icon'] = "arrow_right.png"
+            elif pyfile['status'] in (11, 13):
+                pyfile['icon'] = "status_proc.png"
             else:
-                pyfile["icon"] = "status_downloading.png"
+                pyfile['icon'] = "status_downloading.png"
 
-        tmp = data["links"]
+        tmp = data['links']
         tmp.sort(key=get_sort_key)
-        data["links"] = tmp
+        data['links'] = tmp
         return data
 
     except Exception:
@@ -217,7 +217,7 @@ def edit_package():
 def set_captcha():
     if request.environ.get('REQUEST_METHOD', "GET") == "POST":
         try:
-            PYLOAD.setCaptchaResult(request.forms["cap_id"], request.forms["cap_result"])
+            PYLOAD.setCaptchaResult(request.forms['cap_id'], request.forms['cap_result'])
         except Exception:
             pass
 
@@ -243,10 +243,10 @@ def load_config(category, section):
     for key, option in conf[section].iteritems():
         if key in ("desc", "outline"): continue
 
-        if ";" in option["type"]:
-            option["list"] = option["type"].split(";")
+        if ";" in option['type']:
+            option['list'] = option['type'].split(";")
 
-        option["value"] = decode(option["value"])
+        option['value'] = decode(option['value'])
 
     return render_to_response("settings_item.html", {"skey": section, "section": conf[section]})
 
@@ -268,9 +268,9 @@ def save_config(category):
 @route('/json/add_account', method='POST')
 @login_required("ACCOUNTS")
 def add_account():
-    login = request.POST["account_login"]
-    password = request.POST["account_password"]
-    type = request.POST["account_type"]
+    login = request.POST['account_login']
+    password = request.POST['account_password']
+    type = request.POST['account_type']
 
     PYLOAD.updateAccount(type, login, password)
 
@@ -302,9 +302,9 @@ def update_accounts():
 @route('/json/change_password', method='POST')
 def change_password():
 
-    user = request.POST["user_login"]
-    oldpw = request.POST["login_current_password"]
-    newpw = request.POST["login_new_password"]
+    user = request.POST['user_login']
+    oldpw = request.POST['login_current_password']
+    newpw = request.POST['login_new_password']
 
     if not PYLOAD.changePassword(user, oldpw, newpw):
         print "Wrong password"

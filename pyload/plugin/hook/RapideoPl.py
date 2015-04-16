@@ -22,7 +22,7 @@ class RapideoPl(MultiHook):
 
     def getHosters(self):
         hostings         = json_loads(self.getURL("https://www.rapideo.pl/clipboard.php?json=3").strip())
-        hostings_domains = [domain for row in hostings for domain in row["domains"] if row["sdownload"] == "0"]
+        hostings_domains = [domain for row in hostings for domain in row['domains'] if row['sdownload'] == "0"]
 
         self.logDebug(hostings_domains)
 

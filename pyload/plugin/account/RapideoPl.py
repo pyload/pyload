@@ -42,11 +42,11 @@ class RapideoPl(Account):
 
         premium = False
         valid_untill = -1
-        if "expire" in result.keys() and result["expire"]:
+        if "expire" in result.keys() and result['expire']:
             premium = True
-            valid_untill = time.mktime(datetime.datetime.fromtimestamp(int(result["expire"])).timetuple())
+            valid_untill = time.mktime(datetime.datetime.fromtimestamp(int(result['expire'])).timetuple())
 
-        traffic_left = result["balance"]
+        traffic_left = result['balance']
 
         return ({
                     "validuntil": valid_untill,
@@ -57,7 +57,7 @@ class RapideoPl(Account):
 
     def login(self, user, data, req):
         self._usr = user
-        self._pwd = hashlib.md5(data["password"]).hexdigest()
+        self._pwd = hashlib.md5(data['password']).hexdigest()
         self._req = req
         try:
             response = json_loads(self.runAuthQuery())
@@ -72,8 +72,8 @@ class RapideoPl(Account):
 
     def createAuthQuery(self):
         query = self._api_query
-        query["username"] = self._usr
-        query["password"] = self._pwd
+        query['username'] = self._usr
+        query['password'] = self._pwd
 
         return query
 

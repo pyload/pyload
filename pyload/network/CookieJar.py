@@ -24,8 +24,8 @@ class CookieJar(Cookie.SimpleCookie):
 
     def setCookie(self, domain, name, value, path="/", exp=None, secure="FALSE"):
         self[name] = value
-        self[name]["domain"] = domain
-        self[name]["path"]   = path
+        self[name]['domain'] = domain
+        self[name]['path']   = path
 
         # Value of expires should be integer if possible
         # otherwise the cookie won't be used
@@ -37,7 +37,7 @@ class CookieJar(Cookie.SimpleCookie):
             except ValueError:
                 expires = exp
 
-        self[name]["expires"] = expires
+        self[name]['expires'] = expires
 
         if secure == "TRUE":
-            self[name]["secure"] = secure
+            self[name]['secure'] = secure

@@ -18,8 +18,8 @@ def render_to_response(file, args={}, proc=[]):
 
 def parse_permissions(session):
     perms = dict((x, False) for x in dir(PERMS) if not x.startswith("_"))
-    perms["ADMIN"] = False
-    perms["is_admin"] = False
+    perms['ADMIN'] = False
+    perms['is_admin'] = False
 
     if not session.get("authenticated", False):
         return perms
@@ -66,12 +66,12 @@ def set_permission(perms):
 
 def set_session(request, info):
     s = request.environ.get('beaker.session')
-    s["authenticated"] = True
-    s["user_id"] = info["id"]
-    s["name"] = info["name"]
-    s["role"] = info["role"]
-    s["perms"] = info["permission"]
-    s["template"] = info["template"]
+    s['authenticated'] = True
+    s['user_id'] = info['id']
+    s['name'] = info['name']
+    s['role'] = info['role']
+    s['perms'] = info['permission']
+    s['template'] = info['template']
     s.save()
 
     return s

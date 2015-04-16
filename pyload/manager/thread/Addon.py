@@ -55,14 +55,14 @@ class AddonThread(PluginThread):
     def run(self):
         try:
             try:
-                self.kwargs["thread"] = self
+                self.kwargs['thread'] = self
                 self.f(*self.args, **self.kwargs)
             except TypeError, e:
                 #dirty method to filter out exceptions
                 if "unexpected keyword argument 'thread'" not in e.args[0]:
                     raise
 
-                del self.kwargs["thread"]
+                del self.kwargs['thread']
                 self.f(*self.args, **self.kwargs)
         finally:
             local = copy(self.active)

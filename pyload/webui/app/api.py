@@ -37,7 +37,7 @@ def call_api(func, args=""):
     if not s or not s.get("authenticated", False):
         return HTTPError(403, json.dumps("Forbidden"))
 
-    if not PYLOAD.isAuthorized(func, {"role": s["role"], "permission": s["perms"]}):
+    if not PYLOAD.isAuthorized(func, {"role": s['role'], "permission": s['perms']}):
         return HTTPError(401, json.dumps("Unauthorized"))
 
     args = args.split("/")[1:]
@@ -86,7 +86,7 @@ def login():
 
     # get the session id by dirty way, documentations seems wrong
     try:
-        sid = s._headers["cookie_out"].split("=")[1].split(";")[0]
+        sid = s._headers['cookie_out'].split("=")[1].split(";")[0]
         return json.dumps(sid)
     except Exception:
         return json.dumps(True)

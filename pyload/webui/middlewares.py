@@ -27,7 +27,7 @@ class PrefixMiddleware(object):
 
 
     def __call__(self, e, h):
-        path = e["PATH_INFO"]
+        path = e['PATH_INFO']
         if path.startswith(self.prefix):
             e['PATH_INFO'] = path.replace(self.prefix, "", 1)
         return self.app(e, h)

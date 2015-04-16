@@ -402,10 +402,10 @@ def print_help(config):
     print
     print "  -u, --username=", " " * 2, "Specify Username"
     print "  --pw=<password>", " " * 2, "Password"
-    print "  -a, --address=", " " * 3, "Specify address (current=%s)" % config["addr"]
-    print "  -p, --port", " " * 7, "Specify port (current=%s)" % config["port"]
+    print "  -a, --address=", " " * 3, "Specify address (current=%s)" % config['addr']
+    print "  -p, --port", " " * 7, "Specify port (current=%s)" % config['port']
     print
-    print "  -l, --language", " " * 3, "Set user interface language (current=%s)" % config["language"]
+    print "  -l, --language", " " * 3, "Set user interface language (current=%s)" % config['language']
     print "  -h, --help", " " * 7, "Display this help screen"
     print "  -c, --commands", " " * 3, "List all available commands"
     print
@@ -474,12 +474,12 @@ def writeConfig(opts):
 def main():
     config = {"addr": "127.0.0.1", "port": "7227", "language": "en"}
     try:
-        config["language"] = os.environ["LANG"][0:2]
+        config['language'] = os.environ['LANG'][0:2]
     except Exception:
         pass
 
-    if (not exists(join(pypath, "locale", config["language"]))) or config["language"] == "":
-        config["language"] = "en"
+    if (not exists(join(pypath, "locale", config['language']))) or config['language'] == "":
+        config['language'] = "en"
 
     configFile = ConfigParser.ConfigParser()
     configFile.read(join(homedir, ".pyload-cli"))
@@ -490,7 +490,7 @@ def main():
 
     gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
     translation = gettext.translation("Cli", join(pypath, "locale"),
-        languages=[config["language"], "en"], fallback=True)
+        languages=[config['language'], "en"], fallback=True)
     translation.install(unicode=True)
 
     interactive = False
@@ -509,14 +509,14 @@ def main():
             elif option in ("-u", "--username"):
                 username = params
             elif option in ("-a", "--address"):
-                config["addr"] = params
+                config['addr'] = params
             elif option in ("-p", "--port"):
-                config["port"] = params
+                config['port'] = params
             elif option in ("-l", "--language"):
-                config["language"] = params
+                config['language'] = params
                 gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
                 translation = gettext.translation("Cli", join(pypath, "locale"),
-                    languages=[config["language"], "en"], fallback=True)
+                    languages=[config['language'], "en"], fallback=True)
                 translation.install(unicode=True)
             elif option in ("-h", "--help"):
                 print_help(config)
@@ -539,19 +539,19 @@ def main():
 
     if interactive:
         try:
-            client = ThriftClient(config["addr"], int(config["port"]), username, password)
+            client = ThriftClient(config['addr'], int(config['port']), username, password)
         except WrongLogin:
             pass
         except NoSSL:
             print _("You need py-openssl to connect to this pyLoad Core.")
             exit()
         except NoConnection:
-            config["addr"] = False
-            config["port"] = False
+            config['addr'] = False
+            config['port'] = False
 
         if not client:
-            if not config["addr"]: config["addr"] = raw_input(_("Address: "))
-            if not config["port"]: config["port"] = raw_input(_("Port: "))
+            if not config['addr']: config['addr'] = raw_input(_("Address: "))
+            if not config['port']: config['port'] = raw_input(_("Port: "))
             if not username: username = raw_input(_("Username: "))
             if not password:
                 from getpass import getpass
@@ -559,21 +559,21 @@ def main():
                 password = getpass(_("Password: "))
 
             try:
-                client = ThriftClient(config["addr"], int(config["port"]), username, password)
+                client = ThriftClient(config['addr'], int(config['port']), username, password)
             except WrongLogin:
                 print _("Login data is wrong.")
             except NoConnection:
-                print _("Could not establish connection to %(addr)s:%(port)s." % {"addr": config["addr"],
-                                                                                  "port": config["port"]})
+                print _("Could not establish connection to %(addr)s:%(port)s." % {"addr": config['addr'],
+                                                                                  "port": config['port']})
 
     else:
         try:
-            client = ThriftClient(config["addr"], int(config["port"]), username, password)
+            client = ThriftClient(config['addr'], int(config['port']), username, password)
         except WrongLogin:
             print _("Login data is wrong.")
         except NoConnection:
-            print _("Could not establish connection to %(addr)s:%(port)s." % {"addr": config["addr"],
-                                                                              "port": config["port"]})
+            print _("Could not establish connection to %(addr)s:%(port)s." % {"addr": config['addr'],
+                                                                              "port": config['port']})
         except NoSSL:
             print _("You need py-openssl to connect to this pyLoad core.")
 

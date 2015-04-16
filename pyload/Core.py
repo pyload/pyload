@@ -353,7 +353,7 @@ class Core(object):
         self.setupDB()
         if self.config.oldRemoteData:
             self.log.info(_("Moving old user config to DB"))
-            self.db.addUser(self.config.oldRemoteData["username"], self.config.oldRemoteData["password"])
+            self.db.addUser(self.config.oldRemoteData['username'], self.config.oldRemoteData['password'])
 
             self.log.info(_("Please check your logindata with ./pyload.py -u"))
 

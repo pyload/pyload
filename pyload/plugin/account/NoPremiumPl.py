@@ -43,10 +43,10 @@ class NoPremiumPl(Account):
         premium = False
         valid_untill = -1
 
-        if "expire" in result.keys() and result["expire"]:
+        if "expire" in result.keys() and result['expire']:
             premium = True
-            valid_untill = time.mktime(datetime.datetime.fromtimestamp(int(result["expire"])).timetuple())
-        traffic_left = result["balance"] * 2 ** 20
+            valid_untill = time.mktime(datetime.datetime.fromtimestamp(int(result['expire'])).timetuple())
+        traffic_left = result['balance'] * 2 ** 20
 
         return ({
                     "validuntil": valid_untill,
@@ -57,7 +57,7 @@ class NoPremiumPl(Account):
 
     def login(self, user, data, req):
         self._usr = user
-        self._pwd = hashlib.sha1(hashlib.md5(data["password"]).hexdigest()).hexdigest()
+        self._pwd = hashlib.sha1(hashlib.md5(data['password']).hexdigest()).hexdigest()
         self._req = req
 
         try:
@@ -73,8 +73,8 @@ class NoPremiumPl(Account):
 
     def createAuthQuery(self):
         query = self._api_query
-        query["username"] = self._usr
-        query["password"] = self._pwd
+        query['username'] = self._usr
+        query['password'] = self._pwd
 
         return query
 

@@ -82,7 +82,7 @@ class XFileSharingPro(Hook):
 
                 pattern = self.regexp[type][1] % match_list.replace('.', '\.')
 
-            dict = self.core.pluginManager.plugins[type]["XFileSharingPro"]
+            dict = self.core.pluginManager.plugins[type]['XFileSharingPro']
             dict['pattern'] = pattern
             dict['re'] = re.compile(pattern)
 
@@ -90,7 +90,7 @@ class XFileSharingPro(Hook):
 
 
     def _unload(self, type):
-        dict = self.core.pluginManager.plugins[type]["XFileSharingPro"]
+        dict = self.core.pluginManager.plugins[type]['XFileSharingPro']
         dict['pattern'] = r'^unmatchable$'
         dict['re'] = re.compile(dict['pattern'])
 
