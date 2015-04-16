@@ -40,8 +40,8 @@ class ImageTyperz(Hook):
 
     __description = """Send captchas to ImageTyperz.com"""
     __license     = "GPLv3"
-    __authors     = [("RaNaN"   , "RaNaN@pyload.org"   ),
-                       ("zoidberg", "zoidberg@mujmail.cz")]
+    __authors     = [("RaNaN"   , "RaNaN@pyload.org"),
+                     ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     SUBMIT_URL = "http://captchatypers.com/Forms/UploadFileAndGetTextNEW.ashx"
@@ -118,16 +118,16 @@ class ImageTyperz(Hook):
 
         if self.getCredits() > 0:
             task.handler.append(self)
-            task.data['service'] = self.__name
+            task.data['service'] = self.__class__.__name__
             task.setWaiting(100)
             self._processCaptcha(task)
 
         else:
-            self.logInfo(_("Your %s account has not enough credits") % self.__name)
+            self.logInfo(_("Your %s account has not enough credits") % self.__class__.__name__)
 
 
     def captchaInvalid(self, task):
-        if task.data['service'] == self.__name and "ticket" in task.data:
+        if task.data['service'] == self.__class__.__name__ and "ticket" in task.data:
             res = getURL(self.RESPOND_URL,
                          post={'action': "SETBADIMAGE",
                                'username': self.getConfig('username'),

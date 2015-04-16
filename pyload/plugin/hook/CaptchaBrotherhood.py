@@ -46,8 +46,8 @@ class CaptchaBrotherhood(Hook):
 
     __description = """Send captchas to CaptchaBrotherhood.com"""
     __license     = "GPLv3"
-    __authors     = [("RaNaN"   , "RaNaN@pyload.org"   ),
-                       ("zoidberg", "zoidberg@mujmail.cz")]
+    __authors     = [("RaNaN"   , "RaNaN@pyload.org"),
+                     ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     API_URL = "http://www.captchabrotherhood.com/"
@@ -123,9 +123,9 @@ class CaptchaBrotherhood(Hook):
 
     def api_response(self, api, ticket):
         res = getURL("%s%s.aspx" % (self.API_URL, api),
-                          get={"username": self.getConfig('username'),
-                               "password": self.getConfig('passkey'),
-                               "captchaID": ticket})
+                     get={"username": self.getConfig('username'),
+                          "password": self.getConfig('passkey'),
+                          "captchaID": ticket})
         if not res.startswith("OK"):
             raise CaptchaBrotherhoodException("Unknown response: %s" % res)
 
@@ -147,7 +147,7 @@ class CaptchaBrotherhood(Hook):
 
         if self.getCredits() > 10:
             task.handler.append(self)
-            task.data['service'] = self.__name
+            task.data['service'] = self.__class__.__name__
             task.setWaiting(100)
             self._processCaptcha(task)
         else:
@@ -155,7 +155,7 @@ class CaptchaBrotherhood(Hook):
 
 
     def captchaInvalid(self, task):
-        if task.data['service'] == self.__name and "ticket" in task.data:
+        if task.data['service'] == self.__class__.__name__ and "ticket" in task.data:
             res = self.api_response("complainCaptcha", task.data['ticket'])
 
 

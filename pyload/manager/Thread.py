@@ -257,11 +257,11 @@ class ThreadManager(object):
 
         free = [x for x in self.threads if not x.active]
 
-        inuse = set([((x.active.plugintype, x.active.pluginname), self.getLimit(x)) for x in self.threads if x.active and x.active.hasPlugin() and x.active.plugin.account])
-        inuse = map(lambda x: ('.'.join(x[0]), x[1], len([y for y in self.threads if y.active and y.active.plugintype == x[0][0] and y.active.pluginname == x[0][1]])), inuse)
+        inuse = set([((x.active.plugintype, x.active.pluginname), self.getLimit(x)) for x in self.threads if x.active and isinstance(x.active, PyFile) and x.active.hasPlugin() and x.active.plugin.account])
+        inuse = map(lambda x: ('.'.join(x[0]), x[1], len([y for y in self.threads if y.active and isinstance(y.active, PyFile) and y.active.plugintype == x[0][0] and y.active.pluginname == x[0][1]])), inuse)
         onlimit = [x[0] for x in inuse if x[1] > 0 and x[2] >= x[1]]
 
-        occ = [x.active.plugintype + '.' + x.active.pluginname for x in self.threads if x.active and x.active.hasPlugin() and not x.active.plugin.multiDL] + onlimit
+        occ = [x.active.plugintype + '.' + x.active.pluginname for x in self.threads if x.active and isinstance(x.active, PyFile) and x.active.hasPlugin() and not x.active.plugin.multiDL] + onlimit
 
         occ.sort()
         occ = tuple(set(occ))

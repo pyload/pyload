@@ -35,9 +35,9 @@ class BypassCaptcha(Hook):
 
     __description = """Send captchas to BypassCaptcha.com"""
     __license     = "GPLv3"
-    __authors     = [("RaNaN"     , "RaNaN@pyload.org"     ),
-                       ("Godofdream", "soilfcition@gmail.com"),
-                       ("zoidberg"  , "zoidberg@mujmail.cz"  )]
+    __authors     = [("RaNaN"     , "RaNaN@pyload.org"),
+                     ("Godofdream", "soilfcition@gmail.com"),
+                     ("zoidberg"  , "zoidberg@mujmail.cz")]
 
 
     PYLOAD_KEY = "4f771155b640970d5607f919a615bdefc67e7d32"
@@ -84,7 +84,7 @@ class BypassCaptcha(Hook):
     def respond(self, ticket, success):
         try:
             res = getURL(self.RESPOND_URL, post={"task_id": ticket, "key": self.getConfig('passkey'),
-                                                      "cv": 1 if success else 0})
+                                                 "cv": 1 if success else 0})
         except BadHeader, e:
             self.logError(_("Could not send response"), e)
 
@@ -104,21 +104,21 @@ class BypassCaptcha(Hook):
 
         if self.getCredits() > 0:
             task.handler.append(self)
-            task.data['service'] = self.__name
+            task.data['service'] = self.__class__.__name__
             task.setWaiting(100)
             self._processCaptcha(task)
 
         else:
-            self.logInfo(_("Your %s account has not enough credits") % self.__name)
+            self.logInfo(_("Your %s account has not enough credits") % self.__class__.__name__)
 
 
     def captchaCorrect(self, task):
-        if task.data['service'] == self.__name and "ticket" in task.data:
+        if task.data['service'] == self.__class__.__name__ and "ticket" in task.data:
             self.respond(task.data['ticket'], True)
 
 
     def captchaInvalid(self, task):
-        if task.data['service'] == self.__name and "ticket" in task.data:
+        if task.data['service'] == self.__class__.__name__ and "ticket" in task.data:
             self.respond(task.data['ticket'], False)
 
 

@@ -40,9 +40,9 @@ class FileserveCom(Hoster):
     __description = """Fileserve.com hoster plugin"""
     __license     = "GPLv3"
     __authors     = [("jeix", "jeix@hasnomail.de"),
-                       ("mkaay", "mkaay@mkaay.de"),
-                       ("Paul King", ""),
-                       ("zoidberg", "zoidberg@mujmail.cz")]
+                     ("mkaay", "mkaay@mkaay.de"),
+                     ("Paul King", ""),
+                     ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     URLS = ["http://www.fileserve.com/file/", "http://www.fileserve.com/link-checker.php",
@@ -144,7 +144,7 @@ class FileserveCom(Hoster):
         if "fail" in res:
             self.fail(_("Failed getting wait time"))
 
-        if self.__name == "FilejungleCom":
+        if self.__class__.__name__ == "FilejungleCom":
             m = re.search(r'"waitTime":(\d+)', res)
             if m is None:
                 self.fail(_("Cannot get wait time"))
@@ -184,7 +184,7 @@ class FileserveCom(Hoster):
 
     def handlePremium(self, pyfile):
         premium_url = None
-        if self.__name == "FileserveCom":
+        if self.__class__.__name__ == "FileserveCom":
             #try api download
             res = self.load("http://app.fileserve.com/api/download/premium/",
                             post={"username": self.user,
