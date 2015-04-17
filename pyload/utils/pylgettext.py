@@ -48,7 +48,8 @@ def find(domain, localedir=None, languages=None, all=False):
         results = filter(lambda x: x is not None, results)
         if len(results) == 0:
             return None
-        return results[0]
+        else:
+            return results[0]
     else:
         return results
 
