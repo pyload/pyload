@@ -68,7 +68,8 @@ class Browser(object):
 
     @property
     def percent(self):
-        if not self.size: return 0
+        if not self.size:
+            return 0
         return (self.arrived * 100) / self.size
 
 

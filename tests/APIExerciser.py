@@ -32,11 +32,12 @@ sumCalled = 0
 
 
 def startApiExerciser(core, n):
-    for _ in range(n):
+    for _i in range(n):
         APIExerciser(core).start()
 
 
 class APIExerciser(Thread):
+
     def __init__(self, core, thrift=False, user=None, pw=None):
         global idPool
 
@@ -114,9 +115,11 @@ class APIExerciser(Thread):
 
         self.api.addPackage(name, urls, choice([Destination.Queue, Destination.Collector]))
 
+
     def deleteFiles(self):
         info = self.api.getQueueData()
-        if not info: return
+        if not info:
+            return
 
         pack = choice(info)
         fids = pack.links
@@ -125,9 +128,11 @@ class APIExerciser(Thread):
             fids = [f.fid for f in sample(fids, randint(1, max(len(fids) / 2, 1)))]
             self.api.deleteFiles(fids)
 
+
     def deletePackages(self):
         info = choice([self.api.getQueue(), self.api.getCollector()])
-        if not info: return
+        if not info:
+            return
 
         pids = [p.pid for p in info]
         if pids:

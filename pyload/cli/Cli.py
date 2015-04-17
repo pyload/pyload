@@ -366,7 +366,8 @@ class Cli(object):
 
                 print "%-45s %-12s\t %-15s\t %s" % (status.name, formatSize(status.size), status.plugin, check)
 
-            if result.rid == -1: break
+            if result.rid == -1:
+                break
 
 
 class RefreshThread(Thread):

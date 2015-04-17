@@ -72,7 +72,8 @@ class HTTPDownload(object):
 
     @property
     def percent(self):
-        if not self.size: return 0
+        if not self.size:
+            return 0
         return (self.arrived * 100) / self.size
 
 
@@ -134,7 +135,8 @@ class HTTPDownload(object):
         finally:
             self.close()
 
-        if self.nameDisposition and self.disposition: return self.nameDisposition
+        if self.nameDisposition and self.disposition:
+            return self.nameDisposition
         return None
 
 
@@ -295,7 +297,8 @@ class HTTPDownload(object):
     def findChunk(self, handle):
         """ linear search to find a chunk (should be ok since chunk size is usually low) """
         for chunk in self.chunks:
-            if chunk.c == handle: return chunk
+            if chunk.c == handle:
+                return chunk
 
 
     def closeChunk(self, chunk):

@@ -136,7 +136,7 @@ def parseNames(files):
         else:
             name = ""
 
-        # fallback: package by hoster
+        #@NOTE: fallback: package by hoster
         if not name:
             name = urlparse(file).netloc
             if name:

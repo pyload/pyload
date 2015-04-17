@@ -61,6 +61,7 @@ class RemoteManager(object):
         # else:
             # self.available.append("SocketBackend")
 
+
     def startBackends(self):
         host = self.core.config.get("remote", "listenaddr")
         port = self.core.config.get("remote", "port")

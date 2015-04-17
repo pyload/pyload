@@ -652,9 +652,8 @@ class SimpleHoster(Hoster):
 
         self.checkStatus(getinfo=False)
 
+
     #: Deprecated
-
-
     def getFileInfo(self):
         self.info = {}
         self.checkInfo()

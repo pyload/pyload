@@ -5,6 +5,7 @@ import colorama
 
 colorama.init(autoreset=True)
 
+
 def color(color, text):
     return colorama.Fore.(c.upper())(text)
 

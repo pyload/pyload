@@ -313,7 +313,8 @@ class PluginManager(object):
             else: user = 0  # used as bool and int
 
             split = fullname.split(".")
-            if len(split) != 4 - user: return
+            if len(split) != 4 - user:
+                return
             type, name = split[2 - user:4 - user]
 
             if type in self.plugins and name in self.plugins[type]:

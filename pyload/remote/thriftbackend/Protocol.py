@@ -27,6 +27,7 @@ class Protocol(TBinaryProtocol.TBinaryProtocol):
 
 
 class ProtocolFactory(TBinaryProtocol.TBinaryProtocolFactory):
+
     def getProtocol(self, trans):
         prot = Protocol(trans, self.strictRead, self.strictWrite)
         return prot

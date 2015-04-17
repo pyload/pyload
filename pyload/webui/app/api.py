@@ -17,6 +17,7 @@ from pyload.api import BaseObject
 
 # json encoder that accepts TBase objects
 class TBaseEncoder(json.JSONEncoder):
+
     def default(self, o):
         if isinstance(o, BaseObject):
             return toDict(o)
@@ -24,7 +25,6 @@ class TBaseEncoder(json.JSONEncoder):
 
 
 # accepting positional arguments, as well as kwargs via post and get
-
 @route('/api/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>')
 @route('/api/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>', method='POST')
 def call_api(func, args=""):

@@ -250,10 +250,12 @@ class ThreadManager(object):
     def assignJob(self):
         """assing a job to a thread if possible"""
 
-        if self.pause or not self.core.api.isTimeDownload(): return
+        if self.pause or not self.core.api.isTimeDownload():
+            return
 
         # if self.downloaded > 20:
-        #    if not self.cleanPyCurl(): return
+        #    if not self.cleanPyCurl():
+            return
 
         free = [x for x in self.threads if not x.active]
 

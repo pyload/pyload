@@ -101,6 +101,7 @@ xargs = ["--language=Python", "--add-comments=L10N",
          "--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyLoad",
          "--package-version=%s" % options.version, "--msgid-bugs-address='bugs@pyload.org'"]
 
+
 @task
 @needs('cog')
 def html():
@@ -116,6 +117,8 @@ def html():
     ('rev=', 'r', "HG revision"),
     ("clean", 'c', 'Delete old source folder')
 ])
+
+
 def get_source(options):
     """ Downloads pyload source from bitbucket tip or given rev"""
     if options.rev: options.url = "https://bitbucket.org/spoob/pyload/get/%s.zip" % options.rev
@@ -164,6 +167,8 @@ def sdist():
     ('path=', 'p', 'Thrift path'),
     ('gen=', 'g', "Extra --gen option")
 ])
+
+
 def thrift(options):
     """ Generate Thrift stubs """
 
@@ -189,6 +194,7 @@ def thrift(options):
     #create light ttypes
     from pyload.remote.socketbackend.create_ttypes import main
     main()
+
 
 @task
 def compile_js():
@@ -224,7 +230,8 @@ def generate_locale():
     strings = set()
 
     for fi in path("pyload/web").walkfiles():
-        if not fi.name.endswith(".js") and not fi.endswith(".coffee"): continue
+        if not fi.name.endswith(".js") and not fi.endswith(".coffee"):
+            continue
         with open(fi, "rb") as c:
             content = c.read()
 
@@ -250,6 +257,8 @@ def generate_locale():
 @cmdopts([
     ('key=', 'k', 'api key')
 ])
+
+
 def upload_translations(options):
     """ Uploads the locale files to translation server """
     tmp = path(mkdtemp())
@@ -278,6 +287,8 @@ def upload_translations(options):
 @cmdopts([
     ('key=', 'k', 'api key')
 ])
+
+
 def download_translations(options):
     """ Downloads the translated files from translation server """
     tmp = path(mkdtemp())
@@ -327,6 +338,7 @@ def compile_translations():
 def tests():
     call(["nosetests2"])
 
+
 @task
 def virtualenv(options):
     """Setup virtual environment"""
@@ -362,12 +374,15 @@ def clean():
 
 # helper functions
 
+
 def walk_trans(path, EXCLUDE, endings=[".py"]):
     result = ""
 
     for f in path.walkfiles():
-        if [True for x in EXCLUDE if x in f.dirname().relpath()]: continue
-        if f.name in EXCLUDE: continue
+        if [True for x in EXCLUDE if x in f.dirname().relpath()]:
+            continue
+        if f.name in EXCLUDE:
+            continue
 
         for e in endings:
             if f.name.endswith(e):

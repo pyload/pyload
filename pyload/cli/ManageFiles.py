@@ -113,7 +113,7 @@ class ManageFiles(Handler):
                     i += 1
                 except Exception:
                     pass
-            for _ in range(5 - i):
+            for _i in range(5 - i):
                 println(line, "")
                 line += 1
         else:
@@ -128,7 +128,7 @@ class ManageFiles(Handler):
                     i += 1
                 except Exception, e:
                     pass
-            for _ in range(5 - i):
+            for _i in range(5 - i):
                 println(line, "")
                 line += 1
 

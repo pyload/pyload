@@ -197,7 +197,8 @@ class Core(object):
 
     def isAlreadyRunning(self):
         pid = self.checkPidFile()
-        if not pid or os.name == "nt": return False
+        if not pid or os.name == "nt":
+            return False
         try:
             os.kill(pid, 0)  # 0 - default signal (does nothing)
         except Exception:
@@ -277,7 +278,8 @@ class Core(object):
             exit()
 
         try: signal.signal(signal.SIGQUIT, self.quit)
-        except Exception: pass
+        except Exception:
+            pass
 
         self.config = ConfigParser()
 

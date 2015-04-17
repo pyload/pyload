@@ -9,6 +9,7 @@ from pyload.webui import env, THEME
 
 from pyload.api import has_permission, PERMS, ROLE
 
+
 def render_to_response(file, args={}, proc=[]):
     for p in proc:
         args.update(p())
@@ -56,7 +57,8 @@ def set_permission(perms):
     """
     permission = 0
     for name in dir(PERMS):
-        if name.startswith("_"): continue
+        if name.startswith("_"):
+            continue
 
         if name in perms and perms[name]:
             permission |= getattr(PERMS, name)

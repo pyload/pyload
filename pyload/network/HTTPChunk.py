@@ -177,7 +177,8 @@ class HTTPChunk(HTTPRequest):
 
             if self.range:
                 # do nothing if chunk already finished
-                if self.arrived + self.range[0] >= self.range[1]: return None
+                if self.arrived + self.range[0] >= self.range[1]:
+                    return None
 
                 if self.id == len(self.p.info.chunks) - 1:  #: as last chunk dont set end range, so we get everything
                     range = "%i-" % (self.arrived + self.range[0])

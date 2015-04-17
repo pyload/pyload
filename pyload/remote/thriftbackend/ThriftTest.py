@@ -22,9 +22,10 @@ from time import time
 
 import xmlrpclib
 
+
 def bench(f, *args, **kwargs):
     s = time()
-    ret = [f(*args, **kwargs) for i in range(0, 100)]
+    ret = [f(*args, **kwargs) for _i in range(0, 100)]
     e = time()
     try:
         print "%s: %f s" % (f._Method__name, e-s)

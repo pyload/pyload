@@ -214,7 +214,8 @@ class ConfigParser(object):
                 f.write('\n%s - "%s":\n' % (section, config[section]['desc']))
 
                 for option, data in config[section].iteritems():
-                    if option in ("desc", "outline"): continue
+                    if option in ("desc", "outline"):
+                        continue
 
                     if isinstance(data['value'], list):
                         value = "[ \n"

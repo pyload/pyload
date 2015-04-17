@@ -122,6 +122,7 @@ class RequestFactory(object):
         else:
             self.bucket.setRate(self.core.config.get("download", "max_speed") * 1024)
 
+
 # needs pyreq in global namespace
 def getURL(*args, **kwargs):
     return pyreq.getURL(*args, **kwargs)

@@ -81,7 +81,7 @@ class DatabaseJob(object):
         from os.path import basename
         frame = self.frame.f_back
         output = ""
-        for i in range(5):
+        for _i in range(5):
             output += "\t%s:%s, %s\n" % (basename(frame.f_code.co_filename), frame.f_lineno, frame.f_code.co_name)
             frame = frame.f_back
         del frame

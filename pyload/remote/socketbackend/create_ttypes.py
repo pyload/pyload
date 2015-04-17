@@ -49,7 +49,8 @@ class BaseObject(object):
         f.write("class %s:\n" % name)
 
         for attr in dir(enum):
-            if attr.startswith("_") or attr in ("read", "write"): continue
+            if attr.startswith("_") or attr in ("read", "write"):
+                continue
 
             f.write("\t%s = %s\n" % (attr, getattr(enum, attr)))
 
@@ -73,7 +74,8 @@ class BaseObject(object):
     f.write("class Iface(object):\n")
 
     for name in dir(Iface):
-        if name.startswith("_"): continue
+        if name.startswith("_"):
+            continue
 
         func = inspect.getargspec(getattr(Iface, name))
 

@@ -87,7 +87,8 @@ class FileHandler(object):
         data.update([(x.id, x.toDbDict()[x.id]) for x in self.cache.values()])
 
         for x in self.packageCache.itervalues():
-            if x.queue != queue or x.id not in packs: continue
+            if x.queue != queue or x.id not in packs:
+                continue
             packs[x.id].update(x.toDict()[x.id])
 
         for key, value in data.iteritems():
@@ -103,7 +104,8 @@ class FileHandler(object):
 
         packs = self.db.getAllPackages(queue)
         for x in self.packageCache.itervalues():
-            if x.queue != queue or x.id not in packs: continue
+            if x.queue != queue or x.id not in packs:
+                continue
             packs[x.id].update(x.toDict()[x.id])
 
         return packs
@@ -493,7 +495,8 @@ class FileHandler(object):
 
         packs = self.packageCache.values()
         for pack in packs:
-            if pack.queue != p.queue or pack.order < 0 or pack == p: continue
+            if pack.queue != p.queue or pack.order < 0 or pack == p:
+                continue
             if p.order > position:
                 if pack.order >= position and pack.order < p.order:
                     pack.order += 1
@@ -523,7 +526,8 @@ class FileHandler(object):
 
         pyfiles = self.cache.values()
         for pyfile in pyfiles:
-            if pyfile.packageid != f['package'] or pyfile.order < 0: continue
+            if pyfile.packageid != f['package'] or pyfile.order < 0:
+                continue
             if f['order'] > position:
                 if pyfile.order >= position and pyfile.order < f['order']:
                     pyfile.order += 1
@@ -871,7 +875,8 @@ class FileMethods(object):
         """return package instance from id"""
         self.c.execute("SELECT name, folder, site, password, queue, packageorder FROM packages WHERE id=?", (str(id),))
         r = self.c.fetchone()
-        if not r: return None
+        if not r:
+            return None
         return PyPackage(self.manager, id, * r)
 
 
@@ -882,7 +887,8 @@ class FileMethods(object):
         """return link instance from id"""
         self.c.execute("SELECT url, name, size, status, error, plugin, package, linkorder FROM links WHERE id=?", (str(id),))
         r = self.c.fetchone()
-        if not r: return None
+        if not r:
+            return None
         r = list(r)
         r[5] = tuple(r[5].split('.'))
         return PyFile(self.manager, id, * r)

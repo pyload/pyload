@@ -90,9 +90,12 @@ class AccountManager(object):
         for line in content[1:]:
             line = line.strip()
 
-            if not line: continue
-            if line.startswith("#"): continue
-            if line.startswith("version"): continue
+            if not line:
+                continue
+            if line.startswith("#"):
+                continue
+            if line.startswith("version"):
+                continue
 
             if line.endswith(":") and line.count(":") == 1:
                 plugin = line[:-1]

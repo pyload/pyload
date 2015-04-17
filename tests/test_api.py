@@ -20,5 +20,5 @@ class TestApi(object):
 
     @nottest
     def test_random(self):
-        for _ in range(0, 100):
+        for _i in range(0, 100):
             self.api.testAPI()
