@@ -8,7 +8,7 @@ from getopt import GetoptError, getopt
 import pyload.utils.pylgettext as gettext
 import os
 from os import _exit
-from os.path import join, exists, abspath, basename
+from os.path import join, exists, basename
 import sys
 from sys import exit
 from threading import Thread, Lock
@@ -18,6 +18,8 @@ from traceback import print_exc
 from pyload.config.Parser import ConfigParser
 
 from codecs import getwriter
+
+import module.common.pylgettext as gettext
 
 if os.name == "nt":
     enc = "cp850"
@@ -52,9 +54,9 @@ class Cli(object):
 
             self.lock = Lock()
 
-            #processor funcions, these will be changed dynamically depending on control flow
-            self.headerHandler = self   #the download status
-            self.bodyHandler = self    #the menu section
+            # processor funcions, these will be changed dynamically depending on control flow
+            self.headerHandler = self  # the download status
+            self.bodyHandler = self  # the menu section
             self.inputHandler = self
 
             os.system("clear")
@@ -78,7 +80,7 @@ class Cli(object):
     def start(self):
         """ main loop. handle input """
         while True:
-            #inp = raw_input()
+            # inp = raw_input()
             inp = self.getch.impl()
             if ord(inp) == 3:
                 os.system("clear")
@@ -136,14 +138,14 @@ class Cli(object):
 
 
     def setHandler(self, klass):
-        #create new handler with reference to cli
+        # create new handler with reference to cli
         self.bodyHandler = self.inputHandler = klass(self)
         self.input = ""
 
 
     def renderHeader(self, line):
         """ prints download status """
-        #print updated information
+        # print updated information
         #        print "\033[J"  #: clear screen
         #        self.println(1, blue("py") + yellow("Load") + white(_(" Command Line Interface")))
         #        self.println(2, "")
@@ -163,10 +165,10 @@ class Cli(object):
                 println(line, cyan(download.name))
                 line += 1
                 println(line,
-                    blue("[") + yellow(z * "#" + (25 - z) * " ") + blue("] ") + green(str(percent) + "%") + _(
-                        " Speed: ") + green(formatSize(download.speed) + "/s") + _(" Size: ") + green(
-                        download.format_size) + _(" Finished in: ") + green(download.format_eta) + _(
-                        " ID: ") + green(download.fid))
+                        blue("[") + yellow(z * "#" + (25 - z) * " ") + blue("] ") + green(str(percent) + "%") + _(
+                            " Speed: ") + green(formatSize(download.speed) + "/s") + _(" Size: ") + green(
+                            download.format_size) + _(" Finished in: ") + green(download.format_eta) + _(
+                            " ID: ") + green(download.fid))
                 line += 1
             if download.status == 5:
                 println(line, cyan(download.name))
@@ -182,7 +184,7 @@ class Cli(object):
         else:
             paused = _("Status:") + " " + red(_("running"))
 
-        println(line,"%s %s: %s %s: %s %s: %s" % (
+        println(line, "%s %s: %s %s: %s %s: %s" % (
             paused, _("total Speed"), red(formatSize(speed) + "/s"), _("Files in queue"), red(
                 status.queue), _("Total"), red(status.total)))
 
@@ -210,14 +212,14 @@ class Cli(object):
 
         println(line, white(" Input: ") + decode(self.input))
 
-        #clear old output
+        # clear old output
         if line < self.lastLowestLine:
             for i in range(line + 1, self.lastLowestLine + 1):
                 println(i, "")
 
         self.lastLowestLine = line
 
-        #set cursor to position
+        # set cursor to position
         print "\033[" + str(self.inputline) + ";0H"
 
 
@@ -313,7 +315,6 @@ class Cli(object):
             rid = self.client.checkOnlineStatus(args).rid
             self.printOnlineCheck(self.client, rid)
 
-
         elif command == "check_container":
             path = args[0]
             if not exists(join(owd, path)):
@@ -326,7 +327,6 @@ class Cli(object):
 
             rid = self.client.checkOnlineStatusContainer([], basename(f.name), content).rid
             self.printOnlineCheck(self.client, rid)
-
 
         elif command == "pause":
             self.client.pause()
@@ -357,9 +357,12 @@ class Cli(object):
             sleep(1)
             result = client.pollResults(rid)
             for url, status in result.data.iteritems():
-                if status.status == 2: check = "Online"
-                elif status.status == 1: check = "Offline"
-                else: check = "Unknown"
+                if status.status == 2:
+                    check = "Online"
+                elif status.status == 1:
+                    check = "Offline"
+                else:
+                    check = "Unknown"
 
                 print "%-45s %-12s\t %-15s\t %s" % (status.name, formatSize(status.size), status.plugin, check)
 
@@ -440,21 +443,21 @@ def print_status(download):
 
 def print_commands():
     commands = [("status", _("Prints server status")),
-        ("queue", _("Prints downloads in queue")),
-        ("collector", _("Prints downloads in collector")),
-        ("add <name> <link1> <link2>...", _("Adds package to queue")),
-        ("add_coll <name> <link1> <link2>...", _("Adds package to collector")),
-        ("del_file <fid> <fid2>...", _("Delete Files from Queue/Collector")),
-        ("del_package <pid> <pid2>...", _("Delete Packages from Queue/Collector")),
-        ("move <pid> <pid2>...", _("Move Packages from Queue to Collector or vice versa")),
-        ("restart_file <fid> <fid2>...", _("Restart files")),
-        ("restart_package <pid> <pid2>...", _("Restart packages")),
-        ("check <container|url> ...", _("Check online status, works with local container")),
-        ("check_container path", _("Checks online status of a container file")),
-        ("pause", _("Pause the server")),
-        ("unpause", _("continue downloads")),
-        ("toggle", _("Toggle pause/unpause")),
-        ("kill", _("kill server")), ]
+                ("queue", _("Prints downloads in queue")),
+                ("collector", _("Prints downloads in collector")),
+                ("add <name> <link1> <link2>...", _("Adds package to queue")),
+                ("add_coll <name> <link1> <link2>...", _("Adds package to collector")),
+                ("del_file <fid> <fid2>...", _("Delete Files from Queue/Collector")),
+                ("del_package <pid> <pid2>...", _("Delete Packages from Queue/Collector")),
+                ("move <pid> <pid2>...", _("Move Packages from Queue to Collector or vice versa")),
+                ("restart_file <fid> <fid2>...", _("Restart files")),
+                ("restart_package <pid> <pid2>...", _("Restart packages")),
+                ("check <container|url> ...", _("Check online status, works with local container")),
+                ("check_container path", _("Checks online status of a container file")),
+                ("pause", _("Pause the server")),
+                ("unpause", _("continue downloads")),
+                ("toggle", _("Toggle pause/unpause")),
+                ("kill", _("kill server")), ]
 
     print _("List of commands:")
     print
@@ -491,7 +494,7 @@ def main():
 
     gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
     translation = gettext.translation("Cli", join(pypath, "locale"),
-        languages=[config['language'], "en"], fallback=True)
+                                      languages=[config['language'], "en"], fallback=True)
     translation.install(unicode=True)
 
     interactive = False
@@ -517,7 +520,7 @@ def main():
                 config['language'] = params
                 gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
                 translation = gettext.translation("Cli", join(pypath, "locale"),
-                    languages=[config['language'], "en"], fallback=True)
+                                                  languages=[config['language'], "en"], fallback=True)
                 translation.install(unicode=True)
             elif option in ("-h", "--help"):
                 print_help(config)
