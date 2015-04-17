@@ -14,9 +14,9 @@ from SafeEval import const_eval as literal_eval
 from pyload.api import BaseObject
 
 
+
 # json encoder that accepts TBase objects
 class TBaseEncoder(json.JSONEncoder):
-
     def default(self, o):
         if isinstance(o, BaseObject):
             return toDict(o)
@@ -45,7 +45,8 @@ def call_api(func, args=""):
     kwargs = {}
 
     for x, y in chain(request.GET.iteritems(), request.POST.iteritems()):
-        if x == "session": continue
+        if x == "session":
+            continue
         kwargs[x] = unquote(y)
 
     try:
@@ -64,9 +65,7 @@ def callApi(func, *args, **kwargs):
                                    **dict((x, literal_eval(y)) for x, y in kwargs.iteritems()))
 
     # null is invalid json  response
-    if result is None: result = True
-
-    return json.dumps(result, cls=TBaseEncoder)
+    return json.dumps(result or True, cls=TBaseEncoder)
 
 
 # post -> username, password

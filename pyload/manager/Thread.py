@@ -51,7 +51,7 @@ class ThreadManager(object):
 
         pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
-        for i in range(0, self.core.config.get("download", "max_downloads")):
+        for _i in range(0, self.core.config.get("download", "max_downloads")):
             self.createThread()
 
 
@@ -206,7 +206,7 @@ class ThreadManager(object):
                     ("http://checkip.dyndns.org/", ".*Current IP Address: (\S+)</body>.*")]
 
         ip = ""
-        for i in range(10):
+        for _i in range(10):
             try:
                 sv = choice(services)
                 ip = getURL(sv[0])
@@ -285,7 +285,7 @@ class ThreadManager(object):
 
                 if free and not self.pause:
                     thread = free[0]
-                    #self.downloaded += 1
+                    # self.downloaded += 1
 
                     thread.put(job)
                 else:
@@ -299,7 +299,6 @@ class ThreadManager(object):
                     if job:
                         job.initPlugin()
                         thread = DecrypterThread(self, job)
-
             else:
                 thread = DecrypterThread(self, job)
 
