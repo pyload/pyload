@@ -10,6 +10,7 @@ from pyload.network.CookieJar import CookieJar
 
 from pyload.network.XDCCRequest import XDCCRequest
 
+
 class RequestFactory(object):
 
     def __init__(self, core):

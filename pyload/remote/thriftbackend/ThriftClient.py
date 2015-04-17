@@ -18,14 +18,18 @@ from pyload.remote.thriftbackend.thriftgen.pyload.ttypes import *
 
 ConnectionClosed = TTransport.TTransportException
 
+
 class WrongLogin(Exception):
     pass
+
 
 class NoConnection(Exception):
     pass
 
+
 class NoSSL(Exception):
     pass
+
 
 class ThriftClient(object):
 

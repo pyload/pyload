@@ -18,6 +18,7 @@ All addons should start with something like this: ::
 
         from pyload.plugin.Addon import Addon
 
+
         class YourAddon(Addon):
                 __name = "YourAddon"
                 __version = "0.1"
@@ -53,6 +54,7 @@ A basic excerpt would look like: ::
 
     from pyload.plugin.Addon import Addon
 
+
     class YourAddon(Addon):
         """
         Your Addon code here.
@@ -72,6 +74,7 @@ For your convenience it's possible to register listeners automatical via the ``e
 It requires a `dict` that maps event names to function names or a `list` of function names. It's important that all names are strings ::
 
     from pyload.plugin.Addon import Addon
+
 
     class YourAddon(Addon):
         """
@@ -109,6 +112,7 @@ Sounds complicated but is very easy to do. Just use the ``Expose`` decorator: ::
 
     from pyload.plugin.Addon import Addon, Expose
 
+
     class YourAddon(Addon):
         """
         Your Addon code here.
@@ -133,6 +137,7 @@ Your addon can store information in a ``dict`` that can easily be retrievied via
 Just store everything in ``self.info``. ::
 
     from pyload.plugin.Addon import Addon
+
 
     class YourAddon(Addon):
         """

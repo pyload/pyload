@@ -34,6 +34,7 @@ def startApiExerciser(core, n):
     for i in range(n):
         APIExerciser(core).start()
 
+
 class APIExerciser(Thread):
 
     def __init__(self, core, thrift=False, user=None, pw=None):

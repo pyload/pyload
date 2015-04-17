@@ -38,7 +38,6 @@ permMap = {}
 # decorator only called on init, never initialized, so has no effect on runtime
 def permission(bits):
     class _Dec(object):
-
         def __new__(cls, func, *args, **kwargs):
             permMap[func.__name__] = bits
             return func

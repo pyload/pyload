@@ -13,6 +13,7 @@ from pyload.utils import json
 from SafeEval import const_eval as literal_eval
 from pyload.api import BaseObject
 
+
 # json encoder that accepts TBase objects
 class TBaseEncoder(json.JSONEncoder):
 

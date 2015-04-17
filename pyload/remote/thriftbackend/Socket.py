@@ -10,6 +10,7 @@ from thrift.transport.TSocket import TSocket, TServerSocket, TTransportException
 
 WantReadError = Exception  #: overwritten when ssl is used
 
+
 class SecureSocketConnection(object):
 
     def __init__(self, connection):
@@ -47,6 +48,7 @@ class SecureSocketConnection(object):
         except WantReadError:
             sleep(0.1)
             return self.recv(buff)
+
 
 class Socket(TSocket):
 

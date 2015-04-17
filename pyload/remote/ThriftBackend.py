@@ -13,6 +13,7 @@ from pyload.remote.thriftbackend.Transport import TransportFactory
 
 from thrift.server import TServer
 
+
 class ThriftBackend(BackendBase):
 
     def setup(self, host, port):

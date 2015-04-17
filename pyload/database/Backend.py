@@ -18,6 +18,7 @@ except Exception:
 
 DB_VERSION = 4
 
+
 class style(object):
     db = None
 
@@ -58,6 +59,7 @@ class style(object):
             if cls.db:
                 return cls.db.async(f, *args, **kwargs)
         return x
+
 
 class DatabaseJob(object):
 
@@ -105,6 +107,7 @@ class DatabaseJob(object):
 
     def wait(self):
         self.done.wait()
+
 
 class DatabaseBackend(Thread):
     subs = []

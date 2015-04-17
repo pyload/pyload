@@ -6,6 +6,7 @@ import random
 
 from pyload.database import DatabaseBackend, style
 
+
 class UserMethods(object):
 
 

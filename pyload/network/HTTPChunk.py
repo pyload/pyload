@@ -12,6 +12,7 @@ import urllib
 
 from pyload.network.HTTPRequest import HTTPRequest
 
+
 class WrongFormat(Exception):
     pass
 
