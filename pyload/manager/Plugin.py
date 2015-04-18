@@ -224,10 +224,12 @@ class PluginManager(object):
 
 
     def findPlugin(self, type, name):
-        if type not in self.plugins:
-            return None
+        if isinstance(type, tuple):
+            for typ in type:
+                if name in self.plugins[typ]:
+                    return (self.plugins[typ][name], typ)
 
-        elif name not in self.plugins[type]:
+        if isinstance(type, tuple) or type not in self.plugins or name not in self.plugins[type]:
             self.core.log.warning(_("Plugin [%(type)s] %(name)s not found | Using plugin: [internal] BasePlugin")
                                   % {'name': name, 'type': type})
             return self.internalPlugins['BasePlugin']

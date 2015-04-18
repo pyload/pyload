@@ -14,44 +14,44 @@ class MultiHook(Hook):
     __version = "0.44"
 
     __config  = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
-                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
-                   ("reload"        , "bool"               , "Reload plugin list"           , True ),
-                   ("reloadinterval", "int"                , "Reload interval in hours"     , 12   )]
+                 ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""),
+                 ("reload"        , "bool"               , "Reload plugin list"           , True),
+                 ("reloadinterval", "int"                , "Reload interval in hours"     , 12)]
 
     __description = """Hook plugin for multi hoster/crypter"""
     __license     = "GPLv3"
-    __authors     = [("pyLoad Team"   , "admin@pyload.org" ),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors     = [("pyLoad Team"   , "admin@pyload.org"),
+                     ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     MIN_RELOAD_INTERVAL = 1 * 60 * 60  #: 1 hour
 
     DOMAIN_REPLACEMENTS = [(r'180upload\.com'  , "hundredeightyupload.com"),
-                           (r'bayfiles\.net'   , "bayfiles.com"           ),
-                           (r'cloudnator\.com' , "shragle.com"            ),
-                           (r'dfiles\.eu'      , "depositfiles.com"       ),
-                           (r'easy-share\.com' , "crocko.com"             ),
-                           (r'freakshare\.net' , "freakshare.com"         ),
-                           (r'hellshare\.com'  , "hellshare.cz"           ),
-                           (r'ifile\.it'       , "filecloud.io"           ),
-                           (r'nowdownload\.\w+', "nowdownload.sx"         ),
-                           (r'nowvideo\.\w+'   , "nowvideo.sx"            ),
-                           (r'putlocker\.com'  , "firedrive.com"          ),
-                           (r'share-?rapid\.cz', "multishare.cz"          ),
-                           (r'ul\.to'          , "uploaded.to"            ),
-                           (r'uploaded\.net'   , "uploaded.to"            ),
-                           (r'uploadhero\.co'  , "uploadhero.com"         ),
-                           (r'zshares\.net'    , "zshare.net"             ),
-                           (r'^1'              , "one"                    ),
-                           (r'^2'              , "two"                    ),
-                           (r'^3'              , "three"                  ),
-                           (r'^4'              , "four"                   ),
-                           (r'^5'              , "five"                   ),
-                           (r'^6'              , "six"                    ),
-                           (r'^7'              , "seven"                  ),
-                           (r'^8'              , "eight"                  ),
-                           (r'^9'              , "nine"                   ),
-                           (r'^0'              , "zero"                   )]
+                           (r'bayfiles\.net'   , "bayfiles.com"),
+                           (r'cloudnator\.com' , "shragle.com"),
+                           (r'dfiles\.eu'      , "depositfiles.com"),
+                           (r'easy-share\.com' , "crocko.com"),
+                           (r'freakshare\.net' , "freakshare.com"),
+                           (r'hellshare\.com'  , "hellshare.cz"),
+                           (r'ifile\.it'       , "filecloud.io"),
+                           (r'nowdownload\.\w+', "nowdownload.sx"),
+                           (r'nowvideo\.\w+'   , "nowvideo.sx"),
+                           (r'putlocker\.com'  , "firedrive.com"),
+                           (r'share-?rapid\.cz', "multishare.cz"),
+                           (r'ul\.to'          , "uploaded.to"),
+                           (r'uploaded\.net'   , "uploaded.to"),
+                           (r'uploadhero\.co'  , "uploadhero.com"),
+                           (r'zshares\.net'    , "zshare.net"),
+                           (r'^1'              , "one"),
+                           (r'^2'              , "two"),
+                           (r'^3'              , "three"),
+                           (r'^4'              , "four"),
+                           (r'^5'              , "five"),
+                           (r'^6'              , "six"),
+                           (r'^7'              , "seven"),
+                           (r'^8'              , "eight"),
+                           (r'^9'              , "nine"),
+                           (r'^0'              , "zero")]
 
 
     def setup(self):
@@ -70,7 +70,7 @@ class MultiHook(Hook):
 
     def initPlugin(self):
         self.pluginname         = self.__class__.__name__
-        plugin, self.plugintype = self.core.pluginManager.findPlugin(self.pluginname)
+        plugin, self.plugintype = self.core.pluginManager.findPlugin(("hoster", "decrypter", "container"), self.pluginname)
 
         if plugin:
             self.pluginmodule = self.core.pluginManager.loadModule(self.plugintype, self.pluginname)
@@ -159,7 +159,7 @@ class MultiHook(Hook):
 
         for r in self.DOMAIN_REPLACEMENTS:
             rf, rt  = r
-            repr    = re.compile(rf, re.I|re.U)
+            repr    = re.compile(rf, re.I | re.U)
             plugins = [re.sub(rf, rt, p) if repr.match(p) else p for p in plugins]
 
         return set(plugins)
