@@ -51,6 +51,46 @@ td.loglevel
 {
     text-align:right;
 }
+td.mixedDEBUG, td.lineDEBUG, td.loglevellineDEBUG
+{
+    color: darkcyan;
+}
+td.mixedWARNING, td.lineWARNING, td.loglevellineWARNING
+{
+    color: #660;
+}
+td.mixedERROR, td.lineERROR, td.loglevellineERROR
+{
+    color: red;
+}
+td.mixedCRITICAL, td.lineCRITICAL, td.loglevellineCRITICAL
+{
+    color: purple;
+}
+td.loglevelmixedDEBUG span, td.loglevellabelDEBUG span
+{
+    font-weight: bold;
+    color: white;
+    background-color: darkcyan;
+}
+td.loglevelmixedWARNING span, td.loglevellabelWARNING span
+{
+    font-weight: bold;
+    color: white;
+    background-color: #660;
+}
+td.loglevelmixedERROR span, td.loglevellabelERROR span
+{
+    font-weight: bold;
+    color: white;
+    background-color: red;
+}
+td.loglevelmixedCRITICAL span, td.loglevellabelCRITICAL span
+{
+    font-weight: bold;
+    color: white;
+    background-color: purple;
+}
 .logperpage
 {
     float: right;
