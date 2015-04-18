@@ -518,7 +518,7 @@ class Core(object):
                     'CRITICAL': "purple"
                 }
 
-            console_frm = colorlog.ColoredFormatter(format=c_fmt,
+            console_frm = colorlog.ColoredFormatter(fmt=c_fmt,
                                                     datefmt=date_fmt,
                                                     log_colors=clr,
                                                     secondary_log_colors=extra_clr)
@@ -596,7 +596,7 @@ class Core(object):
 
             if not file_exists and not quiet:
                 if file_created:
-                #self.log.info( _("%s created") % description )
+                    #self.log.info( _("%s created") % description )
                     pass
                 else:
                     if not empty:
@@ -674,7 +674,7 @@ def deamon():
     try:
         pid = os.fork()
         if pid > 0:
-        # exit from second parent, print eventual PID before
+            # exit from second parent, print eventual PID before
             print "Daemon PID %d" % pid
             sys.exit(0)
     except OSError, e:
@@ -698,7 +698,7 @@ def deamon():
 
 def main():
     if "--daemon" in sys.argv:
-            deamon()
+        deamon()
     else:
         pyload_core = Core()
         try:

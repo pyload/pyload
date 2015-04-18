@@ -120,23 +120,23 @@ class Api(Iface):
 
 
     @permission(PERMS.SETTINGS)
-    def getConfigValue(self, section, option, section="core"):
+    def getConfigValue(self, category, option, section="core"):
         """Retrieve config value.
 
-        :param section: name of section, or plugin
+        :param category: name of category, or plugin
         :param option: config option
         :param section: 'plugin' or 'core'
         :return: config value as string
         """
         if section == "core":
-            value = self.core.config.get(section, option)
+            value = self.core.config[category][option]
         else:
-            value = self.core.config.getPlugin(section, option)
+            value = self.core.config.getPlugin(category, option)
         return str(value)
 
 
     @permission(PERMS.SETTINGS)
-    def setConfigValue(self, section, option, value, section="core"):
+    def setConfigValue(self, category, option, value, section="core"):
         """Set new config value.
 
         :param section:
@@ -144,13 +144,13 @@ class Api(Iface):
         :param value: new config value
         :param section: 'plugin' or 'core
         """
-        self.core.addonManager.dispatchEvent("config-changed", section, option, value, section)
+        self.core.addonManager.dispatchEvent("config-changed", category, option, value, section)
         if section == "core":
-            self.core.config.set(section, option, value)
+            self.core.config[category][option] = value
             if option in ("limit_speed", "max_speed"):  # not so nice to update the limit
                 self.core.requestFactory.updateBucket()
         elif section == "plugin":
-            self.core.config.setPlugin(section, option, value)
+            self.core.config.setPlugin(category, option, value)
 
 
     @permission(PERMS.SETTINGS)
