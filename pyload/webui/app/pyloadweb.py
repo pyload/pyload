@@ -399,6 +399,7 @@ def logs(item=-1):
 
     warning = ""
     conf = PYLOAD.getConfigValue("log", "file_log")
+    color_template = PYLOAD.getConfigValue("log", "color_template") if PYLOAD.getConfigValue("log", "color_console") else ""
     if not conf:
         warning = "Warning: File log is disabled, see settings page."
 
@@ -445,7 +446,7 @@ def logs(item=-1):
         if counter >= item:
             try:
                 date, time, level, message = l.decode("utf8", "ignore").split(" ", 3)
-                dtime = datetime.strptime(date + ' ' + time, '%d.%m.%Y %H:%M:%S')
+                dtime = datetime.strptime(date + ' ' + time, '%Y-%m-%d %H:%M:%S')
             except Exception:
                 dtime = None
                 date = '?'
@@ -469,7 +470,8 @@ def logs(item=-1):
     return render_to_response('logs.html', {'warning': warning, 'log': data, 'from': fro.strftime('%d.%m.%Y %H:%M:%S'),
                                             'reversed': reversed, 'perpage': perpage, 'perpage_p': sorted(perpage_p),
                                             'iprev': 1 if item - perpage < 1 else item - perpage,
-                                            'inext': (item + perpage) if item + perpage < len(log) else item},
+                                            'inext': (item + perpage) if item + perpage < len(log) else item,
+                                            'color_template': color_template},
                               [pre_processor])
 
 
