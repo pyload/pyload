@@ -428,7 +428,7 @@ def logs(item=-1):
 
     log = PYLOAD.getLog()
     if not perpage:
-        item = 0
+        item = 1
 
     if item < 1 or type(item) is not int:
         item = 1 if len(log) - perpage + 1 < 1 else len(log) - perpage + 1
