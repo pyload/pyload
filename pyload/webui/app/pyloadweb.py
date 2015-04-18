@@ -34,16 +34,16 @@ def pre_processor():
     captcha = False
     update = False
     plugins = False
-    if user["is_authenticated"]:
+    if user['is_authenticated']:
         status = PYLOAD.statusServer()
         info = PYLOAD.getInfoByPlugin("UpdateManager")
         captcha = PYLOAD.isCaptchaWaiting()
 
         # check if update check is available
         if info:
-            if info["pyload"] == "True":
-                update = info["version"]
-            if info["plugins"] == "True":
+            if info['pyload'] == "True":
+                update = info['version']
+            if info['plugins'] == "True":
                 plugins = True
 
     return {"user": user,
@@ -165,8 +165,8 @@ def home():
         return redirect("/login")
 
     for link in res:
-        if link["status"] == 12:
-            link["information"] = "%s kB @ %s kB/s" % (link["size"] - link["bleft"], link["speed"])
+        if link['status'] == 12:
+            link['information'] = "%s kB @ %s kB/s" % (link['size'] - link['bleft'], link['speed'])
 
     return render_to_response("home.html", {"res": res}, [pre_processor])
 
@@ -282,14 +282,14 @@ def config():
             data.validuntil  = time.strftime("%d.%m.%Y - %H:%M:%S", t)
 
         try:
-            data.options["time"] = data.options["time"][0]
+            data.options['time'] = data.options['time'][0]
         except Exception:
-            data.options["time"] = "0:00-0:00"
+            data.options['time'] = "0:00-0:00"
 
         if "limitDL" in data.options:
-            data.options["limitdl"] = data.options["limitDL"][0]
+            data.options['limitdl'] = data.options['limitDL'][0]
         else:
-            data.options["limitdl"] = "0"
+            data.options['limitdl'] = "0"
 
     return render_to_response('settings.html',
                               {'conf': {'plugin': plugin_menu, 'general': conf_menu, 'accs': accs}, 'types': PYLOAD.getAccountTypes()},
@@ -482,30 +482,30 @@ def admin():
     perms = permlist()
 
     for data in user.itervalues():
-        data["perms"] = {}
-        get_permission(data["perms"], data["permission"])
-        data["perms"]["admin"] = True if data["role"] is 0 else False
+        data['perms'] = {}
+        get_permission(data['perms'], data['permission'])
+        data['perms']['admin'] = True if data['role'] is 0 else False
 
     s = request.environ.get('beaker.session')
     if request.environ.get('REQUEST_METHOD', "GET") == "POST":
         for name in user:
             if request.POST.get("%s|admin" % name, False):
-                user[name]["role"] = 0
-                user[name]["perms"]["admin"] = True
-            elif name != s["name"]:
-                user[name]["role"] = 1
-                user[name]["perms"]["admin"] = False
+                user[name]['role'] = 0
+                user[name]['perms']['admin'] = True
+            elif name != s['name']:
+                user[name]['role'] = 1
+                user[name]['perms']['admin'] = False
 
             # set all perms to false
             for perm in perms:
-                user[name]["perms"][perm] = False
+                user[name]['perms'][perm] = False
 
             for perm in request.POST.getall("%s|perms" % name):
-                user[name]["perms"][perm] = True
+                user[name]['perms'][perm] = True
 
-            user[name]["permission"] = set_permission(user[name]["perms"])
+            user[name]['permission'] = set_permission(user[name]['perms'])
 
-            PYLOAD.setUserPermission(name, user[name]["permission"], user[name]["role"])
+            PYLOAD.setUserPermission(name, user[name]['permission'], user[name]['role'])
 
     return render_to_response("admin.html", {"users": user, "permlist": perms}, [pre_processor])
 
@@ -528,10 +528,10 @@ def info():
             "os"       : " ".join((os.name, sys.platform) + extra),
             "version"  : PYLOAD.getServerVersion(),
             "folder"   : abspath(PYLOAD_DIR), "config": abspath(""),
-            "download" : abspath(conf["general"]["download_folder"]["value"]),
+            "download" : abspath(conf['general']['download_folder']['value']),
             "freespace": formatSize(PYLOAD.freeSpace()),
-            "remote"   : conf["remote"]["port"]["value"],
-            "webif"    : conf["webui"]["port"]["value"],
-            "language" : conf["general"]["language"]["value"]}
+            "remote"   : conf['remote']['port']['value'],
+            "webif"    : conf['webui']['port']['value'],
+            "language" : conf['general']['language']['value']}
 
     return render_to_response("info.html", data, [pre_processor])

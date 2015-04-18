@@ -57,6 +57,7 @@ class Base(object):
     A Base class with log/config/db methods *all* plugin types can use
     """
 
+
     def __init__(self, core):
         #: Core instance
         self.core = core
@@ -568,7 +569,8 @@ class Plugin(Base):
             header = {"code": self.req.code}
             for line in res.splitlines():
                 line = line.strip()
-                if not line or ":" not in line: continue
+                if not line or ":" not in line:
+                    continue
 
                 key, none, value = line.partition(":")
                 key = key.strip().lower()
@@ -693,8 +695,10 @@ class Plugin(Base):
         size = stat(lastDownload)
         size = size.st_size
 
-        if api_size and api_size <= size: return None
-        elif size > max_size and not read_size: return None
+        if api_size and api_size <= size:
+            return None
+        elif size > max_size and not read_size:
+            return None
         self.logDebug("Download Check triggered")
 
         with open(lastDownload, "rb") as f:
@@ -720,7 +724,8 @@ class Plugin(Base):
     def getPassword(self):
         """ get the password the user provided in the package"""
         password = self.pyfile.package().password
-        if not password: return ""
+        if not password:
+            return ""
         return password
 
 

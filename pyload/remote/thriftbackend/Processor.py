@@ -2,6 +2,7 @@
 
 from pyload.remote.thriftbackend.thriftgen.pyload import Pyload
 
+
 class Processor(Pyload.Processor):
 
     def __init__(self, *args, **kwargs):
@@ -66,7 +67,7 @@ class Processor(Pyload.Processor):
             self._processMap[name](self, seqid, iprot, oprot)
 
         else:
-            #no permission
+            # no permission
             iprot.skip(Pyload.TType.STRUCT)
             iprot.readMessageEnd()
             # 21 - Not authorized

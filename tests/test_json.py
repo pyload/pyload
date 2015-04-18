@@ -14,7 +14,7 @@ class TestJson(object):
 
     def call(self, name, post=None):
         if not post: post = {}
-        post["session"] = self.key
+        post['session'] = self.key
         u = urlopen(url % name, data=urlencode(post))
         return loads(u.read())
 

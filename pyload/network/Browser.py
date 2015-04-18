@@ -68,7 +68,8 @@ class Browser(object):
 
     @property
     def percent(self):
-        if not self.size: return 0
+        if not self.size:
+            return 0
         return (self.arrived * 100) / self.size
 
 
@@ -118,12 +119,12 @@ class Browser(object):
 
         :param pwd: string, user:password
         """
-        self.options["auth"] = pwd
+        self.options['auth'] = pwd
         self.renewHTTPRequest()  #: we need a new request
 
 
     def removeAuth(self):
-        if "auth" in self.options: del self.options["auth"]
+        if "auth" in self.options: del self.options['auth']
         self.renewHTTPRequest()
 
 

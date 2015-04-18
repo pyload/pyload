@@ -41,8 +41,6 @@ class AddonManager(object):
         | Notes:
         |    all_downloads-processed is *always* called before all_downloads-finished.
         |    config-changed is *always* called before pluginConfigChanged.
-
-
     """
 
     def __init__(self, core):

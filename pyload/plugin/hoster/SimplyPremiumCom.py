@@ -46,7 +46,7 @@ class SimplyPremiumCom(MultiHoster):
 
 
     def handlePremium(self, pyfile):
-        for i in xrange(5):
+        for _i in xrange(5):
             self.html = self.load("http://www.simply-premium.com/premium.php", get={'info': "", 'link': self.pyfile.url})
 
             if self.html:

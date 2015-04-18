@@ -4,6 +4,7 @@
 from time import time
 from pyload.utils import uniqify
 
+
 class PullManager(object):
 
     def __init__(self, core):
@@ -41,6 +42,7 @@ class PullManager(object):
         for client in self.clients:
             client.addEvent(event)
 
+
 class Client(object):
 
     def __init__(self, uuid):
@@ -62,6 +64,7 @@ class Client(object):
     def addEvent(self, event):
         self.events.append(event)
 
+
 class UpdateEvent(object):
 
     def __init__(self, itype, iid, destination):
@@ -75,6 +78,7 @@ class UpdateEvent(object):
     def toList(self):
         return ["update", self.destination, self.type, self.id]
 
+
 class RemoveEvent(object):
 
     def __init__(self, itype, iid, destination):
@@ -87,6 +91,7 @@ class RemoveEvent(object):
 
     def toList(self):
         return ["remove", self.destination, self.type, self.id]
+
 
 class InsertEvent(object):
 
@@ -102,6 +107,7 @@ class InsertEvent(object):
     def toList(self):
         return ["insert", self.destination, self.type, self.id, self.after]
 
+
 class ReloadAllEvent(object):
 
     def __init__(self, destination):
@@ -112,10 +118,12 @@ class ReloadAllEvent(object):
     def toList(self):
         return ["reload", self.destination]
 
+
 class AccountUpdateEvent(object):
 
     def toList(self):
         return ["account"]
+
 
 class ConfigUpdateEvent(object):
 

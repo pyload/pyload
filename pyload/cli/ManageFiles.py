@@ -15,9 +15,10 @@ class ManageFiles(Handler):
 
     def init(self):
         self.target = Destination.Queue
-        self.pos = 0  #position in queue
-        self.package = -1  #choosen package
+        self.pos = 0  # position in queue
+        self.package = -1  # choosen package
         self.mode = ""  # move/delete/restart
+
         self.cache = None
         self.links = None
         self.time = 0
@@ -46,7 +47,7 @@ class ManageFiles(Handler):
         if input == "0":
             self.cli.reset()
         elif self.package < 0 and self.mode:
-            #mode select
+            # mode select
             packs = self.parseInput(input)
             if self.mode == "m":
                 [self.client.movePackage((self.target + 1) % 2, x) for x in packs]
@@ -56,7 +57,7 @@ class ManageFiles(Handler):
                 [self.client.restartPackage(x) for x in packs]
 
         elif self.mode:
-            #edit links
+            # edit links
             links = self.parseInput(input, False)
 
             if self.mode == "d":
@@ -65,7 +66,7 @@ class ManageFiles(Handler):
                 map(self.client.restartFile, links)
 
         else:
-            #look into package
+            # look into package
             try:
                 self.package = int(input)
             except Exception:
@@ -102,7 +103,7 @@ class ManageFiles(Handler):
             line += 2
 
         if self.package < 0:
-            #print package info
+            # print package info
             pack = self.getPackages()
             i = 0
             for value in islice(pack, self.pos, self.pos + 5):
@@ -110,13 +111,13 @@ class ManageFiles(Handler):
                     println(line, mag(str(value.pid)) + ": " + value.name)
                     line += 1
                     i += 1
-                except Exception, e:
+                except Exception:
                     pass
-            for x in range(5 - i):
+            for _i in range(5 - i):
                 println(line, "")
                 line += 1
         else:
-            #print links info
+            # print links info
             pack = self.getLinks()
             i = 0
             for value in islice(pack.links, self.pos, self.pos + 5):
@@ -127,7 +128,7 @@ class ManageFiles(Handler):
                     i += 1
                 except Exception, e:
                     pass
-            for x in range(5 - i):
+            for _i in range(5 - i):
                 println(line, "")
                 line += 1
 
@@ -166,20 +167,12 @@ class ManageFiles(Handler):
     def parseInput(self, inp, package=True):
         inp = inp.strip()
         if "-" in inp:
-            l, n, h = inp.partition("-")
-            l = int(l)
-            h = int(h)
-            r = range(l, h + 1)
+            l, _, h = inp.partition("-")
+            r = range(int(l), int(h) + 1)
 
-            ret = []
             if package:
-                for p in self.cache:
-                    if p.pid in r:
-                        ret.append(p.pid)
-            else:
-                for l in self.links.links:
-                    if l.lid in r:
-                        ret.append(l.lid)
-            return ret
+                return [p.pid for p in self.cache if p.pid in r]
+            return [l.lid for l in self.links.links if l.lid in r]
+
         else:
             return [int(x) for x in inp.split(",")]

@@ -51,7 +51,7 @@ class ThreadManager(object):
 
         pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
-        for i in range(0, self.core.config.get("download", "max_downloads")):
+        for _i in range(0, self.core.config.get("download", "max_downloads")):
             self.createThread()
 
 
@@ -160,9 +160,9 @@ class ThreadManager(object):
 
         if not exists(self.core.config.get("reconnect", "method")):
             if exists(join(pypath, self.core.config.get("reconnect", "method"))):
-                self.core.config['reconnect']['method'] = join(pypath, self.core.config.get("reconnect", "method"))
+                self.core.config.set("reconnect", "method", join(pypath, self.core.config.get("reconnect", "method")))
             else:
-                self.core.config['reconnect']['activated'] = False
+                self.core.config.set("reconnect", "activated", False)
                 self.core.log.warning(_("Reconnect script not found!"))
                 return
 
@@ -184,7 +184,7 @@ class ThreadManager(object):
             reconn = Popen(self.core.config.get("reconnect", "method"), bufsize=-1, shell=True)  # , stdout=subprocess.PIPE)
         except Exception:
             self.core.log.warning(_("Failed executing reconnect script!"))
-            self.core.config['reconnect']['activated'] = False
+            self.core.config.set("reconnect", "activated", False)
             self.reconnecting.clear()
             if self.core.debug:
                 print_exc()
@@ -206,7 +206,7 @@ class ThreadManager(object):
                     ("http://checkip.dyndns.org/", ".*Current IP Address: (\S+)</body>.*")]
 
         ip = ""
-        for i in range(10):
+        for _i in range(10):
             try:
                 sv = choice(services)
                 ip = getURL(sv[0])
@@ -250,10 +250,12 @@ class ThreadManager(object):
     def assignJob(self):
         """assing a job to a thread if possible"""
 
-        if self.pause or not self.core.api.isTimeDownload(): return
+        if self.pause or not self.core.api.isTimeDownload():
+            return
 
         # if self.downloaded > 20:
-        #    if not self.cleanPyCurl(): return
+        #    if not self.cleanPyCurl():
+            return
 
         free = [x for x in self.threads if not x.active]
 
@@ -285,7 +287,7 @@ class ThreadManager(object):
 
                 if free and not self.pause:
                     thread = free[0]
-                    #self.downloaded += 1
+                    # self.downloaded += 1
 
                     thread.put(job)
                 else:
@@ -299,7 +301,6 @@ class ThreadManager(object):
                     if job:
                         job.initPlugin()
                         thread = DecrypterThread(self, job)
-
             else:
                 thread = DecrypterThread(self, job)
 

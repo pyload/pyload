@@ -6,12 +6,10 @@ _searchdirs = None
 
 origfind = find
 
+
 def setpaths(pathlist):
     global _searchdirs
-    if isinstance(pathlist, list):
-        _searchdirs = pathlist
-    else:
-        _searchdirs = list(pathlist)
+    _searchdirs = pathlist if isinstance(pathlist, list) else list(pathlist)
 
 
 def addpath(path):
@@ -32,8 +30,7 @@ def delpath(path):
 
 def clearpath():
     global _searchdirs
-    if _searchdirs is not None:
-        _searchdirs = None
+    _searchdirs = None
 
 
 def find(domain, localedir=None, languages=None, all=False):

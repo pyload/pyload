@@ -34,10 +34,10 @@ class XDCCRequest(object):
         # proxy = None
         # if self.proxies.has_key("socks5"):
             # proxytype = socks.PROXY_TYPE_SOCKS5
-            # proxy = self.proxies["socks5"]
+            # proxy = self.proxies['socks5']
         # elif self.proxies.has_key("socks4"):
             # proxytype = socks.PROXY_TYPE_SOCKS4
-            # proxy = self.proxies["socks4"]
+            # proxy = self.proxies['socks4']
         # if proxytype:
             # sock = socks.socksocket()
             # t = _parse_proxy(proxy)
@@ -145,7 +145,8 @@ class XDCCRequest(object):
 
     @property
     def percent(self):
-        if not self.filesize: return 0
+        if not self.filesize:
+            return 0
         return (self.recv * 100) / self.filesize
 
 

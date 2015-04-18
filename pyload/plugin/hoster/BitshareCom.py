@@ -114,7 +114,7 @@ class BitshareCom(SimpleHoster):
             recaptcha = ReCaptcha(self)
 
             # Try up to 3 times
-            for i in xrange(3):
+            for _i in xrange(3):
                 response, challenge = recaptcha.challenge()
                 res = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
                                      post={"request"                  : "validateCaptcha",

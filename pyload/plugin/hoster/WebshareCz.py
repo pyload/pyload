@@ -34,7 +34,7 @@ class WebshareCz(SimpleHoster):
             if 'File not found' in api_data:
                 info['status'] = 1
             else:
-                info["status"] = 2
+                info['status'] = 2
                 info['name']   = re.search('<name>(.+)</name>', api_data).group(1) or info['name']
                 info['size']   = re.search('<size>(.+)</size>', api_data).group(1) or info['size']
 

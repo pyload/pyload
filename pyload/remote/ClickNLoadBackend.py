@@ -18,6 +18,7 @@ from pyload.manager.Remote import BackendBase
 core = None
 js = None
 
+
 class ClickNLoadBackend(BackendBase):
 
     def setup(self, host, port):
@@ -30,6 +31,7 @@ class ClickNLoadBackend(BackendBase):
     def serve(self):
         while self.enabled:
             self.httpd.handle_request()
+
 
 class CNLHandler(BaseHTTPRequestHandler):
 

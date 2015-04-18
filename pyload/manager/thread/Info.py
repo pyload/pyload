@@ -117,7 +117,7 @@ class InfoThread(PluginThread):
 
                     self.updateResult(pluginname, result, True)
 
-            self.m.infoResults[self.rid]["ALL_INFO_FETCHED"] = {}
+            self.m.infoResults[self.rid]['ALL_INFO_FETCHED'] = {}
 
         self.m.timestamp = time() + 5 * 60
 

@@ -45,6 +45,7 @@ sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 # - configurable auth system ldap/mysql
 # - cron job like sheduler
 
+
 class Core(object):
     """pyLoad Core, one tool to rule them all... (the filehosters) :D"""
 
@@ -196,7 +197,8 @@ class Core(object):
 
     def isAlreadyRunning(self):
         pid = self.checkPidFile()
-        if not pid or os.name == "nt": return False
+        if not pid or os.name == "nt":
+            return False
         try:
             os.kill(pid, 0)  # 0 - default signal (does nothing)
         except Exception:
@@ -276,7 +278,8 @@ class Core(object):
             exit()
 
         try: signal.signal(signal.SIGQUIT, self.quit)
-        except Exception: pass
+        except Exception:
+            pass
 
         self.config = ConfigParser()
 
@@ -353,7 +356,7 @@ class Core(object):
         self.setupDB()
         if self.config.oldRemoteData:
             self.log.info(_("Moving old user config to DB"))
-            self.db.addUser(self.config.oldRemoteData["username"], self.config.oldRemoteData["password"])
+            self.db.addUser(self.config.oldRemoteData['username'], self.config.oldRemoteData['password'])
 
             self.log.info(_("Please check your logindata with ./pyload.py -u"))
 
@@ -475,39 +478,69 @@ class Core(object):
         if self.config.get("log", "color_console"):
             import colorlog
 
-            if self.config.get("log", "color_template") == "label":
-                cfmt = "%(asctime)s %(log_color)s%(bold)s%(white)s %(levelname)-8s %(reset)s %(message)s"
-                clr  = {'DEBUG'   : "bg_cyan"  ,
+            color_template = self.config.get("log", "color_template")
+            extra_clr = {}
+
+            if color_template is "mixed":
+                c_fmt = "%(log_color)s%(asctime)s %(label_log_color)s%(bold)s%(white)s %(levelname)-8s%(reset)s  %(log_color)s%(message)s"
+                clr = {
+                    'DEBUG'   : "cyan"  ,
+                    'WARNING' : "yellow",
+                    'ERROR'   : "red"   ,
+                    'CRITICAL': "purple",
+                }
+                extra_clr = {
+                    'label': {
+                        'DEBUG'   : "bg_cyan"  ,
                         'INFO'    : "bg_green" ,
                         'WARNING' : "bg_yellow",
                         'ERROR'   : "bg_red"   ,
-                        'CRITICAL': "bg_purple"}
-            else:
-                cfmt = "%(log_color)s%(asctime)s  %(levelname)-8s  %(message)s"
-                clr  = {'DEBUG'   : "cyan"  ,
-                        'WARNING' : "yellow",
-                        'ERROR'   : "red"   ,
-                        'CRITICAL': "purple"}
+                        'CRITICAL': "bg_purple",
+                    }
+                }
 
-            console_frm = colorlog.ColoredFormatter(cfmt, date_fmt, clr)
+            elif color_template is "label":
+                c_fmt = "%(asctime)s %(log_color)s%(bold)s%(white)s %(levelname)-8s%(reset)s  %(message)s"
+                clr = {
+                    'DEBUG'   : "bg_cyan"  ,
+                    'INFO'    : "bg_green" ,
+                    'WARNING' : "bg_yellow",
+                    'ERROR'   : "bg_red"   ,
+                    'CRITICAL': "bg_purple",
+                }
+
+            else:
+                c_fmt = "%(log_color)s%(asctime)s  %(levelname)-8s  %(message)s"
+                clr = {
+                    'DEBUG'   : "cyan"  ,
+                    'WARNING' : "yellow",
+                    'ERROR'   : "red"   ,
+                    'CRITICAL': "purple"
+                }
+
+            console_frm = colorlog.ColoredFormatter(format=c_fmt,
+                                                    datefmt=date_fmt,
+                                                    log_colors=clr,
+                                                    secondary_log_colors=extra_clr)
 
         # Set console formatter
         console = logging.StreamHandler(sys.stdout)
         console.setFormatter(console_frm)
         self.log.addHandler(console)
 
-        if not exists(self.config.get("log", "log_folder")):
-            makedirs(self.config.get("log", "log_folder"), 0700)
+        log_folder = self.config.get("log", "log_folder")
+        if not exists(log_folder):
+            makedirs(log_folder, 0700)
 
         # Set file handler formatter
         if self.config.get("log", "file_log"):
             if self.config.get("log", "log_rotate"):
-                file_handler = logging.handlers.RotatingFileHandler(join(self.config.get("log", "log_folder"), 'log.txt'),
+                file_handler = logging.handlers.RotatingFileHandler(join(log_folder, 'log.txt'),
                                                                     maxBytes=self.config.get("log", "log_size") * 1024,
                                                                     backupCount=int(self.config.get("log", "log_count")),
                                                                     encoding="utf8")
             else:
-                file_handler = logging.FileHandler(join(self.config.get("log", "log_folder"), 'log.txt'), encoding="utf8")
+                file_handler = logging.FileHandler(join(log_folder, 'log.txt'), encoding="utf8")
 
             file_handler.setFormatter(fh_frm)
             self.log.addHandler(file_handler)

@@ -13,6 +13,8 @@ from pyload.utils import json
 from SafeEval import const_eval as literal_eval
 from pyload.api import BaseObject
 
+
+
 # json encoder that accepts TBase objects
 class TBaseEncoder(json.JSONEncoder):
 
@@ -23,7 +25,6 @@ class TBaseEncoder(json.JSONEncoder):
 
 
 # accepting positional arguments, as well as kwargs via post and get
-
 @route('/api/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>')
 @route('/api/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>', method='POST')
 def call_api(func, args=""):
@@ -37,14 +38,15 @@ def call_api(func, args=""):
     if not s or not s.get("authenticated", False):
         return HTTPError(403, json.dumps("Forbidden"))
 
-    if not PYLOAD.isAuthorized(func, {"role": s["role"], "permission": s["perms"]}):
+    if not PYLOAD.isAuthorized(func, {"role": s['role'], "permission": s['perms']}):
         return HTTPError(401, json.dumps("Unauthorized"))
 
     args = args.split("/")[1:]
     kwargs = {}
 
     for x, y in chain(request.GET.iteritems(), request.POST.iteritems()):
-        if x == "session": continue
+        if x == "session":
+            continue
         kwargs[x] = unquote(y)
 
     try:
@@ -63,9 +65,7 @@ def callApi(func, *args, **kwargs):
                                    **dict((x, literal_eval(y)) for x, y in kwargs.iteritems()))
 
     # null is invalid json  response
-    if result is None: result = True
-
-    return json.dumps(result, cls=TBaseEncoder)
+    return json.dumps(result or True, cls=TBaseEncoder)
 
 
 # post -> username, password
@@ -86,7 +86,7 @@ def login():
 
     # get the session id by dirty way, documentations seems wrong
     try:
-        sid = s._headers["cookie_out"].split("=")[1].split(";")[0]
+        sid = s._headers['cookie_out'].split("=")[1].split(";")[0]
         return json.dumps(sid)
     except Exception:
         return json.dumps(True)

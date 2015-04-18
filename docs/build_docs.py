@@ -34,7 +34,9 @@ sys.path.append(dir_name)
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.autosummary', 'sphinx.ext.doctest', 'sphinx.ext.intersphinx', 'sphinx.ext.pngmath', 'sphinx.ext.ifconfig', 'sphinx.ext.viewcode']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.autosummary', 'sphinx.ext.doctest',
+              'sphinx.ext.intersphinx', 'sphinx.ext.pngmath', 'sphinx.ext.ifconfig',
+              'sphinx.ext.viewcode']
 
 autosummary_generate = True
 autodoc_default_flags = ['members']
@@ -201,8 +203,8 @@ htmlhelp_basename = 'pyLoaddoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'pyLoad.tex', u'pyLoad Documentation',
-   u'pyLoad Team', 'manual'),
+    ('index', 'pyLoad.tex', u'pyLoad Documentation',
+     u'pyLoad Team', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

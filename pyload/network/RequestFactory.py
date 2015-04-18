@@ -10,6 +10,7 @@ from pyload.network.CookieJar import CookieJar
 
 from pyload.network.XDCCRequest import XDCCRequest
 
+
 class RequestFactory(object):
 
     def __init__(self, core):
@@ -120,6 +121,7 @@ class RequestFactory(object):
             self.bucket.setRate(-1)
         else:
             self.bucket.setRate(self.core.config.get("download", "max_speed") * 1024)
+
 
 # needs pyreq in global namespace
 def getURL(*args, **kwargs):

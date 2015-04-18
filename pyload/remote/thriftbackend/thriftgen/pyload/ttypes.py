@@ -64,6 +64,7 @@ class DownloadStatus(TBase):
     "Unknown": 14,
   }
 
+
 class Destination(TBase):
   Collector = 0
   Queue = 1
@@ -78,6 +79,7 @@ class Destination(TBase):
     "Queue": 1,
   }
 
+
 class ElementType(TBase):
   Package = 0
   File = 1
@@ -91,6 +93,7 @@ class ElementType(TBase):
     "Package": 0,
     "File": 1,
   }
+
 
 class Input(TBase):
   NONE = 0
@@ -129,6 +132,7 @@ class Input(TBase):
     "LIST": 8,
     "TABLE": 9,
   }
+
 
 class Output(TBase):
   CAPTCHA = 1

@@ -18,6 +18,7 @@ except Exception:
 
 DB_VERSION = 4
 
+
 class style(object):
     db = None
 
@@ -59,6 +60,7 @@ class style(object):
                 return cls.db.async(f, *args, **kwargs)
         return x
 
+
 class DatabaseJob(object):
 
     def __init__(self, f, *args, **kwargs):
@@ -79,7 +81,7 @@ class DatabaseJob(object):
         from os.path import basename
         frame = self.frame.f_back
         output = ""
-        for i in range(5):
+        for _i in range(5):
             output += "\t%s:%s, %s\n" % (basename(frame.f_code.co_filename), frame.f_lineno, frame.f_code.co_name)
             frame = frame.f_back
         del frame
@@ -105,6 +107,7 @@ class DatabaseJob(object):
 
     def wait(self):
         self.done.wait()
+
 
 class DatabaseBackend(Thread):
     subs = []

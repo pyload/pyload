@@ -4,6 +4,7 @@
 from pyload.database import style
 from pyload.database import DatabaseBackend
 
+
 class StorageMethods(object):
 
 

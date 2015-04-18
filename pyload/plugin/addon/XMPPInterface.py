@@ -210,7 +210,6 @@ class XMPPInterface(IRCInterface, JabberClient):
 
 class VersionHandler(object):
     """Provides handler for a version query.
-
     This class will answer version query and announce 'jabber:iq:version' namespace
     in the client's disco#info results."""
 

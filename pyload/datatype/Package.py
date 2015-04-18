@@ -4,6 +4,7 @@
 from pyload.manager.Event import UpdateEvent
 from pyload.utils import safe_filename
 
+
 class PyPackage(object):
     """
     Represents a package object at runtime

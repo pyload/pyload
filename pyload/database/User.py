@@ -6,6 +6,7 @@ import random
 
 from pyload.database import DatabaseBackend, style
 
+
 class UserMethods(object):
 
 
@@ -29,7 +30,7 @@ class UserMethods(object):
 
     @style.queue
     def addUser(db, user, password):
-        salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
+        salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for _i in range(0, 5)])
         h = sha1(salt + password)
         password = salt + h.hexdigest()
 
@@ -52,7 +53,7 @@ class UserMethods(object):
         pw = r[2][5:]
         h = sha1(salt + oldpw)
         if h.hexdigest() == pw:
-            salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
+            salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for _i in range(0, 5)])
             h = sha1(salt + newpw)
             password = salt + h.hexdigest()
 

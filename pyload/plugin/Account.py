@@ -166,7 +166,7 @@ class Account(Base):
 
             infos['timestamp'] = time()
             self.infos[name] = infos
-        elif "timestamp" in self.infos[name] and self.infos[name]["timestamp"] + self.info_threshold * 60 < time():
+        elif "timestamp" in self.infos[name] and self.infos[name]['timestamp'] + self.info_threshold * 60 < time():
             self.logDebug("Reached timeout for account data")
             self.scheduleRefresh(name)
 
@@ -231,7 +231,8 @@ class Account(Base):
         """ returns an valid account name and data"""
         usable = []
         for user, data in self.accounts.iteritems():
-            if not data['valid']: continue
+            if not data['valid']:
+                continue
 
             if "time" in data['options'] and data['options']['time']:
                 time_data = ""
@@ -253,7 +254,8 @@ class Account(Base):
 
             usable.append((user, data))
 
-        if not usable: return None, None
+        if not usable:
+            return None, None
         return choice(usable)
 
 

@@ -21,7 +21,7 @@ class AddPackage(Handler):
             self.name = inp
             self.setInput()
         elif inp == "END":
-            #add package
+            # add package
             self.client.addPackage(self.name, self.urls, 1)
             self.cli.reset()
         else:

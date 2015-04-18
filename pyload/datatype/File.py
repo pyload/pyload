@@ -217,7 +217,8 @@ class PyFile(object):
         """ formats and return wait time in humanreadable format """
         seconds = self.waitUntil - time()
 
-        if seconds < 0: return "00:00:00"
+        if seconds < 0:
+            return "00:00:00"
 
         hours, seconds = divmod(seconds, 3600)
         minutes, seconds = divmod(seconds, 60)
@@ -233,7 +234,8 @@ class PyFile(object):
         """ formats eta to readable format """
         seconds = self.getETA()
 
-        if seconds < 0: return "00:00:00"
+        if seconds < 0:
+            return "00:00:00"
 
         hours, seconds = divmod(seconds, 3600)
         minutes, seconds = divmod(seconds, 60)

@@ -89,12 +89,12 @@ class ConfigParser(object):
 
         try:
             homeconf = self.parseConfig("pyload.conf")
-            if "username" in homeconf["remote"]:
-                if "password" in homeconf["remote"]:
-                    self.oldRemoteData = {"username": homeconf["remote"]["username"]["value"],
-                                          "password": homeconf["remote"]["username"]["value"]}
-                    del homeconf["remote"]["password"]
-                del homeconf["remote"]["username"]
+            if "username" in homeconf['remote']:
+                if "password" in homeconf['remote']:
+                    self.oldRemoteData = {"username": homeconf['remote']['username']['value'],
+                                          "password": homeconf['remote']['username']['value']}
+                    del homeconf['remote']['password']
+                del homeconf['remote']['username']
             self.updateValues(homeconf, self.config)
         except Exception:
             print "Config Warning"
@@ -159,7 +159,7 @@ class ConfigParser(object):
                         typ, none, option = content.strip().rpartition(" ")
 
                         value = value.strip()
-                        typ = typ.strip()
+                        typ   = typ.strip()
 
                         if value.startswith("["):
                             if value.endswith("]"):
@@ -195,7 +195,7 @@ class ConfigParser(object):
                         continue
 
                     if option in dest[section]:
-                        dest[section][option]["value"] = config[section][option]["value"]
+                        dest[section][option]['value'] = config[section][option]['value']
 
                     # else:
                        # dest[section][option] = config[section][option]
@@ -211,25 +211,26 @@ class ConfigParser(object):
             chmod(filename, 0600)
             f.write("version: %i \n" % CONF_VERSION)
             for section in config.iterkeys():
-                f.write('\n%s - "%s":\n' % (section, config[section]["desc"]))
+                f.write('\n%s - "%s":\n' % (section, config[section]['desc']))
 
                 for option, data in config[section].iteritems():
-                    if option in ("desc", "outline"): continue
+                    if option in ("desc", "outline"):
+                        continue
 
-                    if isinstance(data["value"], list):
+                    if isinstance(data['value'], list):
                         value = "[ \n"
-                        for x in data["value"]:
+                        for x in data['value']:
                             value += "\t\t" + str(x) + ",\n"
                         value += "\t\t]\n"
                     else:
-                        if isinstance(data["value"], basestring):
-                            value = data["value"] + "\n"
+                        if isinstance(data['value'], basestring):
+                            value = data['value'] + "\n"
                         else:
-                            value = str(data["value"]) + "\n"
+                            value = str(data['value']) + "\n"
                     try:
-                        f.write('\t%s %s : "%s" = %s' % (data["type"], option, data["desc"], value))
+                        f.write('\t%s %s : "%s" = %s' % (data['type'], option, data['desc'], value))
                     except UnicodeEncodeError:
-                        f.write('\t%s %s : "%s" = %s' % (data["type"], option, data["desc"], encode(value)))
+                        f.write('\t%s %s : "%s" = %s' % (data['type'], option, data['desc'], encode(value)))
 
 
     def cast(self, typ, value):
@@ -266,33 +267,31 @@ class ConfigParser(object):
 
     def get(self, section, option):
         """get value"""
-        value = self.config[section][option]["value"]
+        value = self.config[section][option]['value']
         return decode(value)
 
 
     def set(self, section, option, value):
         """set value"""
-
-        value = self.cast(self.config[section][option]["type"], value)
-
-        self.config[section][option]["value"] = value
+        value = self.cast(self.config[section][option]['type'], value)
+        self.config[section][option]['value'] = value
         self.save()
 
 
     def getPlugin(self, plugin, option):
         """gets a value for a plugin"""
-        value = self.plugin[plugin][option]["value"]
+        value = self.plugin[plugin][option]['value']
         return encode(value)
 
 
     def setPlugin(self, plugin, option, value):
         """sets a value for a plugin"""
 
-        value = self.cast(self.plugin[plugin][option]["type"], value)
+        value = self.cast(self.plugin[plugin][option]['type'], value)
 
         if self.pluginCB: self.pluginCB(plugin, option, value)
 
-        self.plugin[plugin][option]["value"] = value
+        self.plugin[plugin][option]['value'] = value
         self.save()
 
 
@@ -315,12 +314,12 @@ class ConfigParser(object):
             self.plugin[name] = conf
         else:
             conf = self.plugin[name]
-            conf["outline"] = outline
+            conf['outline'] = outline
 
         for item in config:
             if item[0] in conf:
-                conf[item[0]]["type"] = item[1]
-                conf[item[0]]["desc"] = item[2]
+                conf[item[0]]['type'] = item[1]
+                conf[item[0]]['desc'] = item[2]
             else:
                 conf[item[0]] = {
                     "desc": item[2],

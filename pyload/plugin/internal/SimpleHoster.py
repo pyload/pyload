@@ -418,7 +418,7 @@ class SimpleHoster(Hoster):
 
         self.info      = {}
         self.html      = ""
-        self.link      = ""  #@TODO: Move to hoster class in 0.4.10
+        self.link      = ""     #@TODO: Move to hoster class in 0.4.10
         self.directDL  = False  #@TODO: Move to hoster class in 0.4.10
         self.multihost = False  #@TODO: Move to hoster class in 0.4.10
 
@@ -652,9 +652,8 @@ class SimpleHoster(Hoster):
 
         self.checkStatus(getinfo=False)
 
+
     #: Deprecated
-
-
     def getFileInfo(self):
         self.info = {}
         self.checkInfo()

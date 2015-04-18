@@ -87,12 +87,13 @@ class FileHandler(object):
         data.update([(x.id, x.toDbDict()[x.id]) for x in self.cache.values()])
 
         for x in self.packageCache.itervalues():
-            if x.queue != queue or x.id not in packs: continue
+            if x.queue != queue or x.id not in packs:
+                continue
             packs[x.id].update(x.toDict()[x.id])
 
         for key, value in data.iteritems():
-            if value["package"] in packs:
-                packs[value["package"]]["links"][key] = value
+            if value['package'] in packs:
+                packs[value['package']]['links'][key] = value
 
         return packs
 
@@ -103,7 +104,8 @@ class FileHandler(object):
 
         packs = self.db.getAllPackages(queue)
         for x in self.packageCache.itervalues():
-            if x.queue != queue or x.id not in packs: continue
+            if x.queue != queue or x.id not in packs:
+                continue
             packs[x.id].update(x.toDict()[x.id])
 
         return packs
@@ -277,11 +279,11 @@ class FileHandler(object):
 
         cache = self.cache.values()
         for x in cache:
-            if int(x.toDbDict()[x.id]["package"]) == int(id):
+            if int(x.toDbDict()[x.id]['package']) == int(id):
                 tmplist.append((x.id, x.toDbDict()[x.id]))
         data.update(tmplist)
 
-        pack["links"] = data
+        pack['links'] = data
 
         return pack
 
@@ -364,7 +366,7 @@ class FileHandler(object):
         if jobs:
             return self.getFile(jobs[0])
         else:
-            self.jobCache["decrypt"] = "empty"
+            self.jobCache['decrypt'] = "empty"
             return None
 
 
@@ -493,7 +495,8 @@ class FileHandler(object):
 
         packs = self.packageCache.values()
         for pack in packs:
-            if pack.queue != p.queue or pack.order < 0 or pack == p: continue
+            if pack.queue != p.queue or pack.order < 0 or pack == p:
+                continue
             if p.order > position:
                 if pack.order >= position and pack.order < p.order:
                     pack.order += 1
@@ -516,20 +519,21 @@ class FileHandler(object):
         f = self.getFileData(id)
         f = f[id]
 
-        e = RemoveEvent("file", id, "collector" if not self.getPackage(f["package"]).queue else "queue")
+        e = RemoveEvent("file", id, "collector" if not self.getPackage(f['package']).queue else "queue")
         self.core.pullManager.addEvent(e)
 
         self.db.reorderLink(f, position)
 
         pyfiles = self.cache.values()
         for pyfile in pyfiles:
-            if pyfile.packageid != f["package"] or pyfile.order < 0: continue
-            if f["order"] > position:
-                if pyfile.order >= position and pyfile.order < f["order"]:
+            if pyfile.packageid != f['package'] or pyfile.order < 0:
+                continue
+            if f['order'] > position:
+                if pyfile.order >= position and pyfile.order < f['order']:
                     pyfile.order += 1
                     pyfile.notifyChange()
-            elif f["order"] < position:
-                if pyfile.order <= position and pyfile.order > f["order"]:
+            elif f['order'] < position:
+                if pyfile.order <= position and pyfile.order > f['order']:
                     pyfile.order -= 1
                     pyfile.notifyChange()
 
@@ -538,7 +542,7 @@ class FileHandler(object):
 
         self.db.commit()
 
-        e = InsertEvent("file", id, position, "collector" if not self.getPackage(f["package"]).queue else "queue")
+        e = InsertEvent("file", id, position, "collector" if not self.getPackage(f['package']).queue else "queue")
         self.core.pullManager.addEvent(e)
 
 
@@ -568,8 +572,8 @@ class FileHandler(object):
         urls = []
 
         for pyfile in data.itervalues():
-            if pyfile["status"] not in (0, 12, 13):
-                urls.append((pyfile["url"], pyfile["plugin"]))
+            if pyfile['status'] not in (0, 12, 13):
+                urls.append((pyfile['url'], pyfile['plugin']))
 
         self.core.threadManager.createInfoThread(urls, pid)
 
@@ -842,12 +846,12 @@ class FileMethods(object):
     @style.queue
     def reorderLink(self, f, position):
         """ reorder link with f as dict for pyfile  """
-        if f["order"] > position:
-            self.c.execute('UPDATE links SET linkorder=linkorder+1 WHERE linkorder >= ? AND linkorder < ? AND package=?', (position, f["order"], f["package"]))
-        elif f["order"] < position:
-            self.c.execute('UPDATE links SET linkorder=linkorder-1 WHERE linkorder <= ? AND linkorder > ? AND package=?', (position, f["order"], f["package"]))
+        if f['order'] > position:
+            self.c.execute('UPDATE links SET linkorder=linkorder+1 WHERE linkorder >= ? AND linkorder < ? AND package=?', (position, f['order'], f['package']))
+        elif f['order'] < position:
+            self.c.execute('UPDATE links SET linkorder=linkorder-1 WHERE linkorder <= ? AND linkorder > ? AND package=?', (position, f['order'], f['package']))
 
-        self.c.execute('UPDATE links SET linkorder=? WHERE id=?', (position, f["id"]))
+        self.c.execute('UPDATE links SET linkorder=? WHERE id=?', (position, f['id']))
 
 
     @style.queue
@@ -871,7 +875,8 @@ class FileMethods(object):
         """return package instance from id"""
         self.c.execute("SELECT name, folder, site, password, queue, packageorder FROM packages WHERE id=?", (str(id),))
         r = self.c.fetchone()
-        if not r: return None
+        if not r:
+            return None
         return PyPackage(self.manager, id, * r)
 
 
@@ -882,7 +887,8 @@ class FileMethods(object):
         """return link instance from id"""
         self.c.execute("SELECT url, name, size, status, error, plugin, package, linkorder FROM links WHERE id=?", (str(id),))
         r = self.c.fetchone()
-        if not r: return None
+        if not r:
+            return None
         r = list(r)
         r[5] = tuple(r[5].split('.'))
         return PyFile(self.manager, id, * r)

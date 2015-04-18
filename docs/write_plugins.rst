@@ -21,6 +21,7 @@ How basic hoster plugin header could look like: ::
 
         from pyload.plugin.Hoster import Hoster
 
+
         class MyFileHoster(Hoster):
                 __name = "MyFileHoster"
                 __version = "0.1"
@@ -42,6 +43,7 @@ In fact the ``process`` method is the only functionality your plugin has to prov
 An example ``process`` function could look like this ::
 
         from pyload.plugin.Hoster import Hoster
+
 
         class MyFileHoster(Hoster):
             """
@@ -82,6 +84,7 @@ Well, they work nearly the same, only that the function they have to provide is 
 Example: ::
 
     from pyload.plugin.Crypter import Crypter
+
 
     class MyFileCrypter(Crypter):
         """

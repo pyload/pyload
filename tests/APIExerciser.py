@@ -3,14 +3,14 @@
 
 import string
 from threading import Thread
-from random import choice, random, sample, randint
-from time import time, sleep
+from random import choice, sample, randint
+from time import time
 from math import floor
 import gc
-
 from traceback import print_exc, format_exc
 
 from pyload.remote.thriftbackend.ThriftClient import ThriftClient, Destination
+
 
 def createURLs():
     """ create some urls, some may fail """
@@ -24,6 +24,7 @@ def createURLs():
 
     return urls
 
+
 AVOID = (0, 3, 8)
 
 idPool = 0
@@ -31,8 +32,9 @@ sumCalled = 0
 
 
 def startApiExerciser(core, n):
-    for i in range(n):
+    for _i in range(n):
         APIExerciser(core).start()
+
 
 class APIExerciser(Thread):
 
@@ -45,17 +47,13 @@ class APIExerciser(Thread):
         self.count = 0  #: number of methods
         self.time = time()
 
-        if thrift:
-            self.api = ThriftClient(user=user, password=pw)
-        else:
-            self.api = core.api
-
+        self.api = ThriftClient(user=user, password=pw) if thrift else core.api
 
         self.id = idPool
 
         idPool += 1
 
-        #self.start()
+        # self.start()
 
 
     def run(self):
@@ -63,7 +61,7 @@ class APIExerciser(Thread):
         self.core.log.info("API Excerciser started %d" % self.id)
 
         out = open("error.log", "ab")
-        #core errors are not logged of course
+        # core errors are not logged of course
         out.write("\n" + "Starting\n")
         out.flush()
 
@@ -87,9 +85,7 @@ class APIExerciser(Thread):
                 self.core.log.info("Approx. %.2f calls per second." % persec)
                 self.core.log.info("Approx. %.2f ms per call." % (1000 / persec))
                 self.core.log.info("Collected garbage: %d" % gc.collect())
-
-
-                #sleep(random() / 500)
+                # sleep(random() / 500)
 
 
     def testAPI(self):
@@ -97,10 +93,10 @@ class APIExerciser(Thread):
 
         m = ["statusDownloads", "statusServer", "addPackage", "getPackageData", "getFileData", "deleteFiles",
              "deletePackages", "getQueue", "getCollector", "getQueueData", "getCollectorData", "isCaptchaWaiting",
-             "getCaptchaTask", "stopAllDownloads", "getAllInfo", "getServices" , "getAccounts", "getAllUserData"]
+             "getCaptchaTask", "stopAllDownloads", "getAllInfo", "getServices", "getAccounts", "getAllUserData"]
 
         method = choice(m)
-        #print "Testing:", method
+        # print "Testing:", method
 
         if hasattr(self, method):
             res = getattr(self, method)()
@@ -110,7 +106,7 @@ class APIExerciser(Thread):
         self.count += 1
         sumCalled += 1
 
-        #print res
+        # print res
 
 
     def addPackage(self):
@@ -122,7 +118,8 @@ class APIExerciser(Thread):
 
     def deleteFiles(self):
         info = self.api.getQueueData()
-        if not info: return
+        if not info:
+            return
 
         pack = choice(info)
         fids = pack.links
@@ -134,11 +131,12 @@ class APIExerciser(Thread):
 
     def deletePackages(self):
         info = choice([self.api.getQueue(), self.api.getCollector()])
-        if not info: return
+        if not info:
+            return
 
         pids = [p.pid for p in info]
-        if len(pids):
-            pids = sample(pids, randint(1,  max(floor(len(pids) / 2.5), 1)))
+        if pids:
+            pids = sample(pids, randint(1, max(floor(len(pids) / 2.5), 1)))
             self.api.deletePackages(pids)
 
 

@@ -16,7 +16,6 @@ class Expose(object):
 
 def threaded(fn):
 
-
     def run(*args,**kwargs):
         addonManager.startThread(fn, *args, **kwargs)
 

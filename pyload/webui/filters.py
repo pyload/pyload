@@ -18,7 +18,7 @@ except Exception:
         path_list = abspath(path).split(sep)
         # Work out how much of the filepath is shared by start and path.
         i = len(commonprefix([start_list, path_list]))
-        rel_list = [pardir] * (len(start_list)-i) + path_list[i:]
+        rel_list = [pardir] * (len(start_list) - i) + path_list[i:]
         if not rel_list:
             return curdir
         return join(*rel_list)
@@ -32,6 +32,7 @@ def quotepath(path):
     except Exception:
         return ""
 
+
 def unquotepath(path):
     try:
         return path.replace(quotechar, "../")
@@ -40,12 +41,14 @@ def unquotepath(path):
     except Exception:
         return ""
 
+
 def path_make_absolute(path):
     p = os.path.abspath(path)
     if p[-1] == os.path.sep:
         return p
     else:
         return p + os.path.sep
+
 
 def path_make_relative(path):
     p = relpath(path)
@@ -54,10 +57,12 @@ def path_make_relative(path):
     else:
         return p + os.path.sep
 
+
 def truncate(value, n):
     if (n - len(value)) < 3:
-        return value[:n]+"..."
+        return value[:n] + "..."
     return value
+
 
 def date(date, format):
     return date

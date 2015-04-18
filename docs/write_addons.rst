@@ -18,6 +18,7 @@ All addons should start with something like this: ::
 
         from pyload.plugin.Addon import Addon
 
+
         class YourAddon(Addon):
                 __name = "YourAddon"
                 __version = "0.1"
@@ -53,6 +54,7 @@ A basic excerpt would look like: ::
 
     from pyload.plugin.Addon import Addon
 
+
     class YourAddon(Addon):
         """
         Your Addon code here.
@@ -60,6 +62,7 @@ A basic excerpt would look like: ::
 
         def activate(self):
             print "Yay, the core is ready let's do some work."
+
 
         def downloadFinished(self, pyfile):
             print "A Download just finished."
@@ -73,19 +76,24 @@ It requires a `dict` that maps event names to function names or a `list` of func
 
     from pyload.plugin.Addon import Addon
 
+
     class YourAddon(Addon):
         """
         Your Addon code here.
         """
+
         event_map = {'downloadFinished': "doSomeWork",
                      'allDownloadsFnished': "someMethod",
                      'activate': "initialize"}
 
+
         def initialize(self):
             print "Initialized."
 
+
         def doSomeWork(self, pyfile):
             print "This is equivalent to the above example."
+
 
         def someMethod(self):
             print "The underlying event (allDownloadsFinished) for this method is not available through the base class"
@@ -108,6 +116,7 @@ So probably clients want to be able to interact with your addon to request it's 
 Sounds complicated but is very easy to do. Just use the ``Expose`` decorator: ::
 
     from pyload.plugin.Addon import Addon, Expose
+
 
     class YourAddon(Addon):
         """
@@ -134,6 +143,7 @@ Just store everything in ``self.info``. ::
 
     from pyload.plugin.Addon import Addon
 
+
     class YourAddon(Addon):
         """
         Your Addon code here.
@@ -141,6 +151,7 @@ Just store everything in ``self.info``. ::
 
         def setup(self):
             self.info = {'running': False}
+
 
         def activate(self):
             self.info['running'] = True

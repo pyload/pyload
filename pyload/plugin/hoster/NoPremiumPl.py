@@ -46,9 +46,9 @@ class NoPremiumPl(MultiHoster):
     def runFileQuery(self, url, mode=None):
         query = self.API_QUERY.copy()
 
-        query["username"] = self.usr
-        query["password"] = self.pwd
-        query["url"]      = url
+        query['username'] = self.usr
+        query['password'] = self.pwd
+        query['url']      = url
 
         if mode == "fileinfo":
             query['check'] = 2
@@ -77,24 +77,24 @@ class NoPremiumPl(MultiHoster):
         self.logDebug(parsed)
 
         if "errno" in parsed.keys():
-            if parsed["errno"] in self.ERROR_CODES:
+            if parsed['errno'] in self.ERROR_CODES:
                 # error code in known
-                self.fail(self.ERROR_CODES[parsed["errno"]] % self.__class__.__name__)
+                self.fail(self.ERROR_CODES[parsed['errno']] % self.__class__.__name__)
             else:
                 # error code isn't yet added to plugin
                 self.fail(
-                    parsed["errstring"]
-                    or _("Unknown error (code: %s)") % parsed["errno"]
+                    parsed['errstring']
+                    or _("Unknown error (code: %s)") % parsed['errno']
                 )
 
         if "sdownload" in parsed:
-            if parsed["sdownload"] == "1":
+            if parsed['sdownload'] == "1":
                 self.fail(
                     _("Download from %s is possible only using NoPremium.pl website \
-                    directly") % parsed["hosting"])
+                    directly") % parsed['hosting'])
 
-        pyfile.name = parsed["filename"]
-        pyfile.size = parsed["filesize"]
+        pyfile.name = parsed['filename']
+        pyfile.size = parsed['filesize']
 
         try:
             self.link = self.runFileQuery(pyfile.url, 'filedownload')
