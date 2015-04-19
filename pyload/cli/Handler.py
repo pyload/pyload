@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-
 class Handler(object):
 
     def __init__(self, cli):

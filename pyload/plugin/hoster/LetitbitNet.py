@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
 # API Documentation:
-# http://api.letitbit.net/reg/static/api.pdf
+#   http://api.letitbit.net/reg/static/api.pdf
 #
 # Test links:
-# http://letitbit.net/download/07874.0b5709a7d3beee2408bb1f2eefce/random.bin.html
+#   http://letitbit.net/download/07874.0b5709a7d3beee2408bb1f2eefce/random.bin.html
 
 import re
 

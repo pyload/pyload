@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Test links:
-# https://goo.im/devs/liquidsmooth/3.x/codina/Nightly/LS-KK-v3.2-2014-08-01-codina.zip
+#   https://goo.im/devs/liquidsmooth/3.x/codina/Nightly/LS-KK-v3.2-2014-08-01-codina.zip
 
 import re
 

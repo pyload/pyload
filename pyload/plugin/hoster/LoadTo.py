@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #
 # Test links:
-# http://www.load.to/JWydcofUY6/random.bin
-# http://www.load.to/oeSmrfkXE/random100.bin
+#   http://www.load.to/JWydcofUY6/random.bin
+#   http://www.load.to/oeSmrfkXE/random100.bin
 
 import re
 

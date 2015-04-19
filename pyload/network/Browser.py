@@ -124,7 +124,8 @@ class Browser(object):
 
 
     def removeAuth(self):
-        if "auth" in self.options: del self.options['auth']
+        if "auth" in self.options:
+            del self.options['auth']
         self.renewHTTPRequest()
 
 
@@ -134,7 +135,8 @@ class Browser(object):
 
 
     def deleteOption(self, name):
-        if name in self.options: del self.options[name]
+        if name in self.options:
+            del self.options[name]
 
 
     def clearHeaders(self):

@@ -310,7 +310,8 @@ class HTTPChunk(HTTPRequest):
         """ closes everything, unusable after this """
         if self.fp: self.fp.close()
         self.c.close()
-        if hasattr(self, "p"): del self.p
+        if hasattr(self, "p"):
+            del self.p
 
 
 def charEnc(enc):
