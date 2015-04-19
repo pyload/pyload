@@ -146,7 +146,8 @@ class ConfigParser(object):
                         if not listmode:
                             conf[section][option] = {"desc": desc,
                                                      "type": typ,
-                                                     "value": value}
+                                                     "value": value,
+                                                     "idx": len(conf[section])}
 
 
                     else:
@@ -175,7 +176,8 @@ class ConfigParser(object):
                         if not listmode:
                             conf[section][option] = {"desc": desc,
                                                      "type": typ,
-                                                     "value": value}
+                                                     "value": value,
+                                                     "idx": len(conf[section])}
 
             except Exception, e:
                 print "Config Warning"
@@ -213,7 +215,7 @@ class ConfigParser(object):
             for section in config.iterkeys():
                 f.write('\n%s - "%s":\n' % (section, config[section]['desc']))
 
-                for option, data in config[section].iteritems():
+                for option, data in sorted(config[section].items(), key=lambda i: i[1]['idx'] if i[0] not in ("desc", "outline") else 0):
                     if option in ("desc", "outline"):
                         continue
 
@@ -324,7 +326,8 @@ class ConfigParser(object):
                 conf[item[0]] = {
                     "desc": item[2],
                     "type": item[1],
-                    "value": self.cast(item[1], item[3])
+                    "value": self.cast(item[1], item[3]),
+                    "idx": len(conf)
                 }
 
         values = [x[0] for x in config] + ["desc", "outline"]
