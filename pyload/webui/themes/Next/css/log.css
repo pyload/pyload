@@ -51,41 +51,41 @@ td.loglevel
 {
     text-align:right;
 }
-td.mixedDEBUG, td.lineDEBUG, td.loglevellineDEBUG
+td.MixedDEBUG, td.LineDEBUG, td.loglevelLineDEBUG
 {
     color: darkcyan;
 }
-td.mixedWARNING, td.lineWARNING, td.loglevellineWARNING
+td.MixedWARNING, td.LineWARNING, td.loglevelLineWARNING
 {
     color: #660;
 }
-td.mixedERROR, td.lineERROR, td.loglevellineERROR
+td.MixedERROR, td.LineERROR, td.loglevelLineERROR
 {
     color: red;
 }
-td.mixedCRITICAL, td.lineCRITICAL, td.loglevellineCRITICAL
+td.MixedCRITICAL, td.LineCRITICAL, td.loglevelLineCRITICAL
 {
     color: purple;
 }
-td.loglevelmixedDEBUG span, td.loglevellabelDEBUG span
+td.loglevelMixedDEBUG span, td.loglevelLabelDEBUG span
 {
     font-weight: bold;
     color: white;
     background-color: darkcyan;
 }
-td.loglevelmixedWARNING span, td.loglevellabelWARNING span
+td.loglevelMixedWARNING span, td.loglevelLabelWARNING span
 {
     font-weight: bold;
     color: white;
     background-color: #660;
 }
-td.loglevelmixedERROR span, td.loglevellabelERROR span
+td.loglevelMixedERROR span, td.loglevelLabelERROR span
 {
     font-weight: bold;
     color: white;
     background-color: red;
 }
-td.loglevelmixedCRITICAL span, td.loglevellabelCRITICAL span
+td.loglevelMixedCRITICAL span, td.loglevelLabelCRITICAL span
 {
     font-weight: bold;
     color: white;

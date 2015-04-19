@@ -471,7 +471,7 @@ def logs(item=-1):
                                             'reversed': reversed, 'perpage': perpage, 'perpage_p': sorted(perpage_p),
                                             'iprev': 1 if item - perpage < 1 else item - perpage,
                                             'inext': (item + perpage) if item + perpage < len(log) else item,
-                                            'color_template': color_template},
+                                            'color_template': color_template.title()},
                               [pre_processor])
 
 

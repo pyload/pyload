@@ -203,7 +203,7 @@ def edit_package():
         id = int(request.forms.get("pack_id"))
         data = {"name": request.forms.get("pack_name").decode("utf8", "ignore"),
                 "folder": request.forms.get("pack_folder").decode("utf8", "ignore"),
-                 "password": request.forms.get("pack_pws").decode("utf8", "ignore")}
+                "password": request.forms.get("pack_pws").decode("utf8", "ignore")}
 
         PYLOAD.setPackageData(id, data)
         return {"response": "success"}
@@ -250,7 +250,8 @@ def load_config(category, section):
 
         option['value'] = decode(option['value'])
 
-    return render_to_response("settings_item.html", {"skey": section, "section": conf[section]})
+    return render_to_response("settings_item.html", {"sorted_conf": lambda c: sorted(c.items(), key=lambda i: i[1]['idx'] if i[0] not in ("desc", "outline") else 0),
+                                                     "skey": section, "section": conf[section]})
 
 
 @route('/json/save_config/<category>', method='POST')
@@ -300,7 +301,7 @@ def update_accounts():
         elif action == "limitdl" and value.isdigit():
             PYLOAD.updateAccount(plugin, user, options={"limitDL": [value]})
         elif action == "delete":
-            deleted.append((plugin,user))
+            deleted.append((plugin, user))
             PYLOAD.removeAccount(plugin, user)
 
 
