@@ -51,7 +51,7 @@ td.loglevel
 {
     text-align:right;
 }
-td.MixedDEBUG, td.LineDEBUG, td.logleveLlineDEBUG
+td.MixedDEBUG, td.LineDEBUG, td.loglevelLineDEBUG
 {
     color: darkcyan;
 }
