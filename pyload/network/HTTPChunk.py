@@ -51,7 +51,7 @@ class ChunkInfo(object):
         chunk_size = self.size / chunks
 
         current = 0
-        for i in range(chunks):
+        for i in xrange(chunks):
             end = self.size - 1 if (i == chunks - 1) else current + chunk_size
             self.addChunk("%s.chunk%s" % (self.name, i), (current, end))
             current += chunk_size + 1

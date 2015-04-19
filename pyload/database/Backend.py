@@ -85,7 +85,7 @@ class DatabaseJob(object):
 
         frame = self.frame.f_back
         output = ""
-        for _i in range(5):
+        for _i in xrange(5):
             output += "\t%s:%s, %s\n" % (basename(frame.f_code.co_filename), frame.f_lineno, frame.f_code.co_name)
             frame = frame.f_back
         del frame

@@ -612,7 +612,7 @@ class Core(object):
         self.shutdown()
         chdir(owd)
         # close some open fds
-        for i in range(3, 50):
+        for i in xrange(3, 50):
             try:
                 close(i)
             except Exception:
@@ -678,7 +678,7 @@ def deamon():
         sys.exit(1)
 
     # Iterate through and close some file descriptors.
-    for fd in range(0, 3):
+    for fd in xrange(0, 3):
         try:
             os.close(fd)
         except OSError:    # ERROR, fd wasn't open to begin with (ignored)

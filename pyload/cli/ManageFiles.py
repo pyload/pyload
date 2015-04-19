@@ -113,7 +113,7 @@ class ManageFiles(Handler):
                     i += 1
                 except Exception:
                     pass
-            for _i in range(5 - i):
+            for _i in xrange(5 - i):
                 println(line, "")
                 line += 1
         else:
@@ -128,7 +128,7 @@ class ManageFiles(Handler):
                     i += 1
                 except Exception, e:
                     pass
-            for _i in range(5 - i):
+            for _i in xrange(5 - i):
                 println(line, "")
                 line += 1
 
@@ -168,7 +168,7 @@ class ManageFiles(Handler):
         inp = inp.strip()
         if "-" in inp:
             l, _, h = inp.partition("-")
-            r = range(int(l), int(h) + 1)
+            r = xrange(int(l), int(h) + 1)
 
             if package:
                 return [p.pid for p in self.cache if p.pid in r]
