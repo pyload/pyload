@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
+
 from os.path import join
 from traceback import print_exc
 from shutil import copyfileobj
@@ -166,9 +168,8 @@ def add_package():
             name = f.name
 
         fpath = join(PYLOAD.getConfigValue("general", "download_folder"), "tmp_" + f.filename)
-        destination = open(fpath, 'wb')
-        copyfileobj(f.file, destination)
-        destination.close()
+        with open(fpath, 'wb') as destination:
+            copyfileobj(f.file, destination)
         links.insert(0, fpath)
     except Exception:
         pass

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
+from __future__ import with_statement
+
 from base64 import standard_b64encode
 from os.path import join
 from time import time
@@ -265,9 +267,8 @@ class Api(Iface):
         """
         filename = join(self.core.config.get("log", "log_folder"), 'log.txt')
         try:
-            fh = open(filename, "r")
-            lines = fh.readlines()
-            fh.close()
+            with open(filename, "r") as fh:
+                lines = fh.readlines()
             if offset >= len(lines):
                 return []
             return lines[offset:]
@@ -409,9 +410,8 @@ class Api(Iface):
         :param data: file content
         :return: online check
         """
-        th = open(join(self.core.config.get("general", "download_folder"), "tmp_" + container), "wb")
-        th.write(str(data))
-        th.close()
+        with open(join(self.core.config.get("general", "download_folder"), "tmp_" + container), "wb") as th:
+            th.write(str(data))
         return self.checkOnlineStatus(urls + [th.name])
 
 
@@ -707,9 +707,8 @@ class Api(Iface):
         :param filename: filename, extension is important so it can correctly decrypted
         :param data: file content
         """
-        th = open(join(self.core.config.get("general", "download_folder"), "tmp_" + filename), "wb")
-        th.write(str(data))
-        th.close()
+        with open(join(self.core.config.get("general", "download_folder"), "tmp_" + filename), "wb") as th:
+            th.write(str(data))
         self.addPackage(th.name, [th.name], Destination.Queue)
 
 

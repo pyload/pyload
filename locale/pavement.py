@@ -270,11 +270,11 @@ def upload_translations(options):
             shutil.copy(f, tmp / 'pyLoad')
 
     config = tmp / 'crowdin.yaml'
-    content = open(config, 'rb').read()
+    with open(config, 'rb') as f:
+        content = f.read()
     content = content.format(key=options.key, tmp=tmp)
-    f = open(config, 'wb')
-    f.write(content)
-    f.close()
+    with open(config, 'wb') as f:
+        f.write(content)
 
     call(['crowdin-cli', '-c', config, 'upload', 'source'])
 
@@ -300,11 +300,11 @@ def download_translations(options):
             shutil.copy(f, tmp / 'pyLoad')
 
     config = tmp / 'crowdin.yaml'
-    content = open(config, 'rb').read()
+    with open(config, 'rb') as f:
+        content = f.read()
     content = content.format(key=options.key, tmp=tmp)
-    f = open(config, 'wb')
-    f.write(content)
-    f.close()
+    with open(config, 'wb') as f:
+        f.write(content)
 
     call(['crowdin-cli', '-c', config, 'download'])
 
@@ -395,14 +395,12 @@ def walk_trans(path, EXCLUDE, endings=[".py"]):
 def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
     print "Generate %s.pot" % domain
 
-    f = open("includes.txt", "wb")
-    if includes:
-        f.write(includes)
+    with open("includes.txt", "wb") as f:
+        if includes:
+            f.write(includes)
 
-    if p:
-        f.write(walk_trans(path(p), excludes, endings))
-
-    f.close()
+        if p:
+            f.write(walk_trans(path(p), excludes, endings))
 
     call(["xgettext", "--files-from=includes.txt", "--default-domain=%s" % domain] + xargs + xxargs)
 

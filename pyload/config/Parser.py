@@ -52,29 +52,26 @@ class ConfigParser(object):
                 copy(join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
 
             if not exists("plugin.conf"):
-                f = open("plugin.conf", "wb")
-                f.write("version: " + str(CONF_VERSION))
-                f.close()
+                with open("plugin.conf", "wb") as f:
+                    f.write("version: " + str(CONF_VERSION))
 
-            f = open("pyload.conf", "rb")
-            v = f.readline()
-            f.close()
+            with open("pyload.conf", "rb") as f:
+                v = f.readline()
             v = v[v.find(":") + 1:].strip()
 
             if not v or int(v) < CONF_VERSION:
                 copy(join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
                 print "Old version of config was replaced"
 
-            f = open("plugin.conf", "rb")
-            v = f.readline()
-            f.close()
+            with open("plugin.conf", "rb") as f:
+                v = f.readline()
             v = v[v.find(":") + 1:].strip()
 
             if not v or int(v) < CONF_VERSION:
-                f = open("plugin.conf", "wb")
-                f.write("version: " + str(CONF_VERSION))
-                f.close()
+                with open("plugin.conf", "wb") as f:
+                    f.write("version: " + str(CONF_VERSION))
                 print "Old version of plugin-config replaced"
+
         except Exception:
             if n >= 3:
                 raise
@@ -104,9 +101,8 @@ class ConfigParser(object):
     def parseConfig(self, config):
         """parses a given configfile"""
 
-        f = open(config)
-
-        config = f.read()
+        with open(config) as f:
+            config = f.read()
 
         config = config.splitlines()[1:]
 
@@ -181,7 +177,6 @@ class ConfigParser(object):
                 print "Config Warning"
                 print_exc()
 
-        f.close()
         return conf
 
 

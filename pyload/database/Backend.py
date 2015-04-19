@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN, mkaay
 
+from __future__ import with_statement
+
 from threading import Event, Thread
 from os import remove
 from os.path import exists
@@ -167,26 +169,22 @@ class DatabaseBackend(Thread):
     def _checkVersion(self):
         """ check db version and delete it if needed"""
         if not exists("files.version"):
-            f = open("files.version", "wb")
-            f.write(str(DB_VERSION))
-            f.close()
+            with open("files.version", "wb") as f:
+                f.write(str(DB_VERSION))
             return
 
-        f = open("files.version", "rb")
-        v = int(f.read().strip())
-        f.close()
-        if v < DB_VERSION:
-            if v < 2:
-                try:
-                    self.manager.core.log.warning(_("Filedatabase was deleted due to incompatible version."))
-                except Exception:
-                    print "Filedatabase was deleted due to incompatible version."
-                remove("files.version")
-                move("files.db", "files.backup.db")
-            f = open("files.version", "wb")
-            f.write(str(DB_VERSION))
-            f.close()
-            return v
+        with open("files.version", "wb+") as f:
+            v = int(f.read().strip())
+            if v < DB_VERSION:
+                if v < 2:
+                    try:
+                        self.manager.core.log.warning(_("Filedatabase was deleted due to incompatible version."))
+                    except Exception:
+                        print "Filedatabase was deleted due to incompatible version."
+                    remove("files.version")
+                    move("files.db", "files.backup.db")
+                f.write(str(DB_VERSION))
+                return v
 
 
     def _convertDB(self, v):

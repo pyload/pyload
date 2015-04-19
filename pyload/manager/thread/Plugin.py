@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
+from __future__ import with_statement
+
 from Queue import Queue
 from threading import Thread
 from os import listdir, stat
@@ -64,9 +66,8 @@ class PluginThread(Thread):
             self.m.log.debug("Error creating zip file: %s" % e)
 
             dump_name = dump_name.replace(".zip", ".txt")
-            f = open(dump_name, "wb")
-            f.write(dump)
-            f.close()
+            with open(dump_name, "wb") as f:
+                f.write(dump)
 
         self.m.core.log.info("Debug Report written to %s" % dump_name)
 

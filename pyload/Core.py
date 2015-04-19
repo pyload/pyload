@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN, mkaay, sebnapi, spoob
+# @author: RaNaN, mkaay, sebnapi, spoob, vuolter
 # @version: v0.4.10
 
-CURRENT_VERSION = '0.4.10'
+from __future__ import with_statement
 
+import pyload
 import __builtin__
 
 from getopt import getopt, GetoptError
@@ -41,11 +42,10 @@ from codecs import getwriter
 enc = get_console_encoding(sys.stdout.encoding)
 sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 
+
 # TODO List
 # - configurable auth system ldap/mysql
 # - cron job like sheduler
-
-
 class Core(object):
     """pyLoad Core, one tool to rule them all... (the filehosters) :D"""
 
@@ -68,7 +68,7 @@ class Core(object):
 
                 for option, argument in options:
                     if option in ("-v", "--version"):
-                        print "pyLoad", CURRENT_VERSION
+                        print "pyLoad", pyload.__version__
                         exit()
                     elif option in ("-p", "--pidfile"):
                         self.pidfile = argument
@@ -127,7 +127,7 @@ class Core(object):
 
     def print_help(self):
         print
-        print "pyLoad v%s     2008-2015 the pyLoad Team" % CURRENT_VERSION
+        print "pyLoad v%s     2008-2015 the pyLoad Team" % pyload.__version__
         print
         if sys.argv[0].endswith(".py"):
             print "Usage: python pyload.py [options]"
@@ -171,9 +171,8 @@ class Core(object):
     def writePidFile(self):
         self.deletePidFile()
         pid = os.getpid()
-        f = open(self.pidfile, "wb")
-        f.write(str(pid))
-        f.close()
+        with open(self.pidfile, "wb") as f:
+            f.write(str(pid))
 
 
     def deletePidFile(self):
@@ -185,9 +184,8 @@ class Core(object):
     def checkPidFile(self):
         """ return pid as int or 0"""
         if os.path.isfile(self.pidfile):
-            f = open(self.pidfile, "rb")
-            pid = f.read().strip()
-            f.close()
+            with open(self.pidfile, "rb") as f:
+                pid = f.read().strip()
             if pid:
                 pid = int(pid)
                 return pid
@@ -253,7 +251,7 @@ class Core(object):
     def start(self, rpc=True, web=True):
         """ starts the fun :D """
 
-        self.version = CURRENT_VERSION
+        self.version = pyload.__version__
 
         if not exists("pyload.conf"):
             from pyload.config.Setup import SetupAssistant as Setup
@@ -330,7 +328,7 @@ class Core(object):
         self.do_restart = False
         self.shuttedDown = False
 
-        self.log.info(_("Starting") + " pyLoad %s" % CURRENT_VERSION)
+        self.log.info(_("Starting") + " pyLoad %s" % pyload.__version__)
         self.log.info(_("Using home directory: %s") % getcwd())
 
         self.writePidFile()
@@ -409,17 +407,15 @@ class Core(object):
         link_file = join(pypath, "links.txt")
 
         if exists(link_file):
-            f = open(link_file, "rb")
-            if f.read().strip():
-                self.api.addPackage("links.txt", [link_file], 1)
-            f.close()
+            with open(link_file, "rb") as f:
+                if f.read().strip():
+                    self.api.addPackage("links.txt", [link_file], 1)
 
         link_file = "links.txt"
         if exists(link_file):
-            f = open(link_file, "rb")
-            if f.read().strip():
-                self.api.addPackage("links.txt", [link_file], 1)
-            f.close()
+            with open(link_file, "rb") as f:
+                if f.read().strip():
+                    self.api.addPackage("links.txt", [link_file], 1)
 
         #self.scheduler.addJob(0, self.accountManager.getAccountInfos)
         self.log.info(_("Activating Accounts..."))

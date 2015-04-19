@@ -321,9 +321,8 @@ class Cli(object):
                 print _("File does not exists.")
                 return
 
-            f = open(join(owd, path), "rb")
-            content = f.read()
-            f.close()
+            with open(join(owd, path), "rb") as f:
+                content = f.read()
 
             rid = self.client.checkOnlineStatusContainer([], basename(f.name), content).rid
             self.printOnlineCheck(self.client, rid)
