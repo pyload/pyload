@@ -118,16 +118,16 @@ class ImageTyperz(Hook):
 
         if self.getCredits() > 0:
             task.handler.append(self)
-            task.data['service'] = self.__class__.__name__
+            task.data['service'] = self.getClassName()
             task.setWaiting(100)
             self._processCaptcha(task)
 
         else:
-            self.logInfo(_("Your %s account has not enough credits") % self.__class__.__name__)
+            self.logInfo(_("Your %s account has not enough credits") % self.getClassName())
 
 
     def captchaInvalid(self, task):
-        if task.data['service'] == self.__class__.__name__ and "ticket" in task.data:
+        if task.data['service'] == self.getClassName() and "ticket" in task.data:
             res = getURL(self.RESPOND_URL,
                          post={'action': "SETBADIMAGE",
                                'username': self.getConfig('username'),

@@ -86,8 +86,8 @@ class MultiHoster(SimpleHoster):
                 self.retryFree()
 
             elif self.getConfig('revertfailed', True) \
-                 and "new_module" in self.core.pluginManager.hosterPlugins[self.__class__.__name__]:
-                hdict = self.core.pluginManager.hosterPlugins[self.__class__.__name__]
+                 and "new_module" in self.core.pluginManager.hosterPlugins[self.getClassName()]:
+                hdict = self.core.pluginManager.hosterPlugins[self.getClassName()]
 
                 tmp_module = hdict['new_module']
                 tmp_name   = hdict['new_name']

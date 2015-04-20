@@ -13,27 +13,27 @@ from pyload.network.RequestFactory import getURL
 from pyload.plugin.Hook import Hook, threaded
 
 
-class Captcha9kw(Hook):
+class Captcha9Kw(Hook):
     __name    = "Captcha9Kw"
     __type    = "hook"
     __version = "0.28"
 
-    __config = [("ssl"           , "bool"    , "Use HTTPS"                                                                       , True                                                               ),
-                ("force"         , "bool"    , "Force captcha resolving even if client is connected"                             , True                                                               ),
-                ("confirm"       , "bool"    , "Confirm Captcha (cost +6 credits)"                                               , False                                                              ),
-                ("captchaperhour", "int"     , "Captcha per hour"                                                                , "9999"                                                             ),
-                ("captchapermin" , "int"     , "Captcha per minute"                                                              , "9999"                                                             ),
-                ("prio"          , "int"     , "Priority (max 10)(cost +0 -> +10 credits)"                                       , "0"                                                                ),
-                ("queue"         , "int"     , "Max. Queue (max 999)"                                                            , "50"                                                               ),
+    __config = [("ssl"           , "bool"    , "Use HTTPS"                                                                       , True),
+                ("force"         , "bool"    , "Force captcha resolving even if client is connected"                             , True),
+                ("confirm"       , "bool"    , "Confirm Captcha (cost +6 credits)"                                               , False),
+                ("captchaperhour", "int"     , "Captcha per hour"                                                                , "9999"),
+                ("captchapermin" , "int"     , "Captcha per minute"                                                              , "9999"),
+                ("prio"          , "int"     , "Priority (max 10)(cost +0 -> +10 credits)"                                       , "0"),
+                ("queue"         , "int"     , "Max. Queue (max 999)"                                                            , "50"),
                 ("hoster_options", "string"  , "Hoster options (format: pluginname:prio=1:selfsolfe=1:confirm=1:timeout=900|...)", "ShareonlineBiz:prio=0:timeout=999 | UploadedTo:prio=0:timeout=999"),
-                ("selfsolve"     , "bool"    , "Selfsolve (manually solve your captcha in your 9kw client if active)"            , "0"                                                                ),
-                ("passkey"       , "password", "API key"                                                                         , ""                                                                 ),
-                ("timeout"       , "int"     , "Timeout in seconds (min 60, max 3999)"                                           , "900"                                                              )]
+                ("selfsolve"     , "bool"    , "Selfsolve (manually solve your captcha in your 9kw client if active)"            , "0"),
+                ("passkey"       , "password", "API key"                                                                         , ""),
+                ("timeout"       , "int"     , "Timeout in seconds (min 60, max 3999)"                                           , "900")]
 
     __description = """Send captchas to 9kw.eu"""
     __license     = "GPLv3"
-    __authors     = [("RaNaN"         , "RaNaN@pyload.org" ),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors     = [("RaNaN"         , "RaNaN@pyload.org"),
+                     ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     API_URL = "http://www.9kw.eu/index.cgi"

@@ -147,7 +147,7 @@ class CaptchaBrotherhood(Hook):
 
         if self.getCredits() > 10:
             task.handler.append(self)
-            task.data['service'] = self.__class__.__name__
+            task.data['service'] = self.getClassName()
             task.setWaiting(100)
             self._processCaptcha(task)
         else:
@@ -155,7 +155,7 @@ class CaptchaBrotherhood(Hook):
 
 
     def captchaInvalid(self, task):
-        if task.data['service'] == self.__class__.__name__ and "ticket" in task.data:
+        if task.data['service'] == self.getClassName() and "ticket" in task.data:
             res = self.api_response("complainCaptcha", task.data['ticket'])
 
 

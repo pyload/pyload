@@ -16,7 +16,7 @@ class Expose(object):
 
 def threaded(fn):
 
-    def run(*args,**kwargs):
+    def run(*args, **kwargs):
         addonManager.startThread(fn, *args, **kwargs)
 
     return run
@@ -69,6 +69,8 @@ class Addon(Base):
             self.event_map = None
 
         if self.event_list:
+            self.logWarning(_("Plugin used deprecated 'event_list', use 'event_map' instead"))
+
             for f in self.event_list:
                 self.manager.addEvent(f, getattr(self, f))
 
@@ -98,7 +100,7 @@ class Addon(Base):
 
 
     def __repr__(self):
-        return "<Addon %s>" % self.__class__.__name__
+        return "<Addon %s>" % self.getClassName()
 
 
     def setup(self):
@@ -109,6 +111,7 @@ class Addon(Base):
     def deactivate(self):
         """ called when addon was deactivated """
         if has_method(self.__class__, "unload"):
+            self.logWarning(_("Deprecated method 'unload()', use deactivate() instead"))
             self.unload()
 
 
@@ -127,6 +130,7 @@ class Addon(Base):
     def activate(self):
         """ called when addon was activated """
         if has_method(self.__class__, "coreReady"):
+            self.logWarning(_("Deprecated method 'coreReady()', use activate() instead"))
             self.coreReady()
 
 

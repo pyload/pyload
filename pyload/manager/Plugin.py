@@ -110,6 +110,9 @@ class PluginManager(object):
                 if name[-1] == ".":
                     name = name[:-4]
 
+                if not re.search("class\\s+%s\\(" % name, content):
+                    self.core.log.error(_("invalid classname: %s ignored") % join(pfolder, f))
+
                 version = self.VERSION.findall(content)
                 if version:
                     version = float(version[0][1])
