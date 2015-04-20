@@ -39,10 +39,10 @@ setup(
     author="pyLoad Team",
     author_email="support@pyload.org",
     platforms = ('Any',),
-    #package_dir={'pyload': "src"},
+    # package_dir={'pyload': "src"},
     packages=["pyload"],
-    #package_data=find_package_data(),
-    #data_files=[],
+    # package_data=find_package_data(),
+    # data_files=[],
     include_package_data=True,
     exclude_package_data={'pyload': ["docs*", "scripts*", "tests*"]},  #: exluced from build but not from sdist
     # 'bottle >= 0.10.0' not in list, because its small and contain little modifications
@@ -53,7 +53,7 @@ setup(
         'lightweight webserver': ['bjoern'],
         'RSS plugins': ['feedparser'],
     },
-    #setup_requires=["setuptools_hg"],
+    # setup_requires=["setuptools_hg"],
     entry_points={
         'console_scripts': [
             'pyLoadCore = pyLoadCore:main',
@@ -152,8 +152,8 @@ def get_source(options):
     f = open(pyload / "__init__.py", "wb")
     f.close()
 
-    #options.setup.packages = find_packages()
-    #options.setup.package_data = find_package_data()
+    # options.setup.packages = find_packages()
+    # options.setup.package_data = find_package_data()
 
 
 @task
@@ -191,7 +191,7 @@ def thrift(options):
     (outdir / "thriftgen").rmtree()
     (outdir / "gen-py").move(outdir / "thriftgen")
 
-    #create light ttypes
+    # create light ttypes
     from pyload.remote.socketbackend.create_ttypes import main
     main()
 

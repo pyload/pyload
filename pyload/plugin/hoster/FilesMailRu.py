@@ -49,17 +49,17 @@ class FilesMailRu(Hoster):
         self.html = self.load(pyfile.url)
         self.url_pattern = '<a href="(.+?)" onclick="return Act\(this\, \'dlink\'\, event\)">(.+?)</a>'
 
-        #marks the file as "offline" when the pattern was found on the html-page'''
+        # marks the file as "offline" when the pattern was found on the html-page'''
         if r'<div class="errorMessage mb10">' in self.html:
             self.offline()
 
         elif r'Page cannot be displayed' in self.html:
             self.offline()
 
-        #the filename that will be showed in the list (e.g. test.part1.rar)'''
+        # the filename that will be showed in the list (e.g. test.part1.rar)'''
         pyfile.name = self.getFileName()
 
-        #prepare and download'''
+        # prepare and download'''
         if not self.account:
             self.prepare()
             self.download(self.getFileUrl())

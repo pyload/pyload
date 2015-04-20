@@ -185,7 +185,7 @@ class FileserveCom(Hoster):
     def handlePremium(self, pyfile):
         premium_url = None
         if self.__class__.__name__ == "FileserveCom":
-            #try api download
+            # try api download
             res = self.load("http://app.fileserve.com/api/download/premium/",
                             post={"username": self.user,
                                   "password": self.account.getAccountData(self.user)['password'],

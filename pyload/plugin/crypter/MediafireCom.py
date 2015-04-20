@@ -46,7 +46,7 @@ class MediafireCom(Crypter):
                                                      get={'folder_key'     : folder_key,
                                                           'response_format': "json",
                                                           'version'        : 1}))
-                    #self.logInfo(json_resp)
+                    # self.logInfo(json_resp)
                     if json_resp['response']['result'] == "Success":
                         for link in json_resp['response']['folder_info']['files']:
                             self.urls.append("http://www.mediafire.com/file/%s" % link['quickkey'])

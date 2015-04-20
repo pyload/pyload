@@ -58,7 +58,7 @@ class PyFile(object):
         self.lock = RLock()
 
         self.plugin = None
-        #self.download = None
+        # self.download = None
 
         self.waitUntil = 0  # time() + time to wait
 

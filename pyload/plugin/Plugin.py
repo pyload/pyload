@@ -705,7 +705,7 @@ class Plugin(Base):
             content = f.read(read_size if read_size else -1)
 
         # produces encoding errors, better log to other file in the future?
-        #self.logDebug("Content: %s" % content)
+        # self.logDebug("Content: %s" % content)
         for name, rule in rules.iteritems():
             if isinstance(rule, basestring):
                 if rule in content:

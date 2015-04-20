@@ -126,8 +126,8 @@ class AccountManager(object):
                     f.write("\n")
                     f.write(plugin + ":\n")
 
-                    for name,data in accounts.iteritems():
-                        f.write("\n\t%s:%s\n" % (name,data['password']) )
+                    for name, data in accounts.iteritems():
+                        f.write("\n\t%s:%s\n" % (name, data['password']) )
                         if data['options']:
                             for option, values in data['options'].iteritems():
                                 f.write("\t@%s %s\n" % (option, " ".join(values)))
@@ -147,12 +147,12 @@ class AccountManager(object):
 
 
     @lock
-    def updateAccount(self, plugin , user, password=None, options={}):
+    def updateAccount(self, plugin, user, password=None, options={}):
         """add or update account"""
         if plugin in self.accounts:
             p = self.getAccountPlugin(plugin)
             updated = p.updateAccounts(user, password, options)
-            #since accounts is a ref in plugin self.accounts doesnt need to be updated here
+            # since accounts is a ref in plugin self.accounts doesnt need to be updated here
 
             self.saveAccounts()
             if updated: p.scheduleRefresh(user, force=False)

@@ -24,7 +24,7 @@ class AlldebridCom(Account):
         html = req.load("http://www.alldebrid.com/account/")
         soup = BeautifulSoup(html)
 
-        #Try to parse expiration date directly from the control panel page (better accuracy)
+        # Try to parse expiration date directly from the control panel page (better accuracy)
         try:
             time_text = soup.find('div', attrs={'class': 'remaining_time_text'}).strong.string
 
@@ -35,7 +35,7 @@ class AlldebridCom(Account):
             exp_time = time.time() + int(exp_data[0]) * 24 * 60 * 60 + int(
                 exp_data[1]) * 60 * 60 + (int(exp_data[2]) - 1) * 60
 
-        #Get expiration date from API
+        # Get expiration date from API
         except Exception:
             data = self.getAccountData(user)
             html = req.load("http://www.alldebrid.com/api.php",

@@ -82,7 +82,7 @@ class HTTPDownload(object):
         if self.info.getCount() > 1:
             with open(init, "rb+") as fo:  #: first chunkfile
                 for i in xrange(1, self.info.getCount()):
-                    #input file
+                    # input file
                     fo.seek(
                         self.info.getChunkRange(i - 1)[1] + 1)  #: seek to beginning of chunk, to get rid of overlapping chunks
                     fname = fs_encode("%s.chunk%d" % (self.filename, i))
@@ -178,7 +178,7 @@ class HTTPDownload(object):
                         self.chunks.append(c)
                         self.m.add_handle(handle)
                     else:
-                        #close immediatly
+                        # close immediatly
                         self.log.debug("Invalid curl handle -> closed")
                         c.close()
 

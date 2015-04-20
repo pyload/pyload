@@ -4,7 +4,7 @@ from pyload.plugin.Plugin import Plugin
 
 
 def getInfo(self):
-        #result = [ .. (name, size, status, url) .. ]
+        # result = [ .. (name, size, status, url) .. ]
         return
 
 

@@ -32,9 +32,9 @@ class SetupAssistant(object):
 
         load_translation("setup", self.lang)
 
-        #Input shorthand for yes
+        # Input shorthand for yes
         self.yes = _("y")
-        #Input shorthand for no
+        # Input shorthand for no
         self.no = _("n")
 
         #        print

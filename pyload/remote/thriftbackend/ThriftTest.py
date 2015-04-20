@@ -74,8 +74,8 @@ try:
     bench(client.getServerVersion)
     bench(client.statusServer)
     bench(client.statusDownloads)
-    #bench(client.getQueue)
-    #bench(client.getCollector)
+    # bench(client.getQueue)
+    # bench(client.getCollector)
 
     print
     print client.getServerVersion()

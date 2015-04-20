@@ -896,7 +896,7 @@ class Api(Iface):
             accounts = [AccountInfo(acc['validuntil'], acc['login'], acc['options'], acc['valid'],
                                     acc['trafficleft'], acc['maxtraffic'], acc['premium'], acc['type'])
                         for acc in group]
-        return accounts or []
+        return accounts or list()
 
 
     @permission(PERMS.ALL)
@@ -909,9 +909,9 @@ class Api(Iface):
 
 
     @permission(PERMS.ACCOUNTS)
-    def updateAccount(self, plugin, account, password=None, options=None):
+    def updateAccount(self, plugin, account, password=None, options={}):
         """Changes pw/options for specific account."""
-        self.core.accountManager.updateAccount(plugin, account, password, options or {})
+        self.core.accountManager.updateAccount(plugin, account, password, options)
 
 
     @permission(PERMS.ACCOUNTS)

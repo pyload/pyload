@@ -74,7 +74,7 @@ class LinkCryptWs(Crypter):
         # Get package name and folder
         package_name, folder_name = self.getPackageInfo()
 
-        #get the container definitions from script section
+        # get the container definitions from script section
         self.get_container_html()
 
         # Extract package links

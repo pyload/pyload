@@ -120,7 +120,7 @@ class NetloadIn(Hoster):
         match    = id_regex.search(url)
 
         if match:
-            #normalize url
+            # normalize url
             self.url = 'http://www.netload.in/datei%s.htm' % match.group('ID')
             self.logDebug("URL: %s" % self.url)
         else:

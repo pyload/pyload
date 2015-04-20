@@ -169,7 +169,7 @@ class AddonManager(object):
 
         addon.deactivate()
 
-        #remove periodic call
+        # remove periodic call
         self.core.log.debug("Removed callback: %s" % self.core.scheduler.removeJob(addon.cb))
 
         self.plugins.remove(addon)

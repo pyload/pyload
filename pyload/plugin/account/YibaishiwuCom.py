@@ -19,7 +19,7 @@ class YibaishiwuCom(Account):
 
 
     def loadAccountInfo(self, user, req):
-        #self.relogin(user)
+        # self.relogin(user)
         html = req.load("http://115.com/", decode=True)
 
         m = re.search(self.ACCOUNT_INFO_PATTERN, html, re.S)

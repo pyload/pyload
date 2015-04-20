@@ -68,7 +68,7 @@ class Socket(TSocket):
         else:
             self.handle = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        #errno 104 connection reset
+        # errno 104 connection reset
 
         self.handle.settimeout(self._timeout)
         self.handle.connect((self.host, self.port))
@@ -94,7 +94,7 @@ class Socket(TSocket):
             if e.args == (-1, 'Unexpected EOF'):
                 buff = ''
             elif e.args == ([('SSL routines', 'SSL23_GET_CLIENT_HELLO', 'unknown protocol')],):
-                #a socket not using ssl tried to connect
+                # a socket not using ssl tried to connect
                 buff = ''
             else:
                 raise

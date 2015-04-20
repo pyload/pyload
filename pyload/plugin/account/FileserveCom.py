@@ -38,7 +38,7 @@ class FileserveCom(Account):
         if not res['type']:
             self.wrongPassword()
 
-        #login at fileserv html
+        # login at fileserv html
         req.load("http://www.fileserve.com/login.php",
                  post={"loginUserName": user, "loginUserPassword": data['password'], "autoLogin": "checked",
                        "loginFormSubmit": "Login"})

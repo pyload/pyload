@@ -20,7 +20,7 @@ class MegasharesCom(Account):
 
 
     def loadAccountInfo(self, user, req):
-        #self.relogin(user)
+        # self.relogin(user)
         html = req.load("http://d01.megashares.com/myms.php", decode=True)
 
         premium = '>Premium Upgrade<' not in html

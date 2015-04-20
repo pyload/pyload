@@ -29,13 +29,13 @@ class BezvadataCz(SimpleHoster):
 
 
     def handleFree(self, pyfile):
-        #download button
+        # download button
         m = re.search(r'<a class="stahnoutSoubor".*?href="(.*?)"', self.html)
         if m is None:
             self.error(_("Page 1 URL not found"))
         url = "http://bezvadata.cz%s" % m.group(1)
 
-        #captcha form
+        # captcha form
         self.html = self.load(url)
         self.checkErrors()
         for _i in xrange(5):
@@ -47,7 +47,7 @@ class BezvadataCz(SimpleHoster):
             if m is None:
                 self.error(_("Wrong captcha image"))
 
-            #captcha image is contained in html page as base64encoded data but decryptCaptcha() expects image url
+            # captcha image is contained in html page as base64encoded data but decryptCaptcha() expects image url
             self.load, proper_load = self.loadcaptcha, self.load
             try:
                 inputs['captcha'] = self.decryptCaptcha(m.group(1), imgtype='png')
@@ -62,7 +62,7 @@ class BezvadataCz(SimpleHoster):
         else:
             self.fail(_("No valid captcha code entered"))
 
-        #download url
+        # download url
         self.html = self.load("http://bezvadata.cz%s" % action, post=inputs)
         self.checkErrors()
         m = re.search(r'<a class="stahnoutSoubor2" href="(.*?)">', self.html)
@@ -71,7 +71,7 @@ class BezvadataCz(SimpleHoster):
         url = "http://bezvadata.cz%s" % m.group(1)
         self.logDebug("DL URL %s" % url)
 
-        #countdown
+        # countdown
         m = re.search(r'id="countdown">(\d\d):(\d\d)<', self.html)
         wait_time = (int(m.group(1)) * 60 + int(m.group(2))) if m else 120
         self.wait(wait_time, False)

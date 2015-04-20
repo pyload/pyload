@@ -91,7 +91,7 @@ class Browser(object):
                      progressNotify=None, disposition=False):
         """ this can also download ftp """
         self._size = 0
-        self.dl = HTTPDownload(url, filename, get or {}, post or {}, self.lastEffectiveURL if ref else None,
+        self.dl = HTTPDownload(url, filename, get, post, self.lastEffectiveURL if ref else None,
                                self.cj if cookies else None, self.bucket, self.options, progressNotify, disposition)
         name = self.dl.download(chunks, resume)
         self._size = self.dl.size

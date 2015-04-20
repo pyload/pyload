@@ -56,21 +56,21 @@ class Addon(Base):
         #: `AddonManager`
         self.manager = manager
 
-        #register events
+        # register events
         if self.event_map:
             for event, funcs in self.event_map.iteritems():
                 if type(funcs) in (list, tuple):
                     for f in funcs:
-                        self.manager.addEvent(event, getattr(self,f))
+                        self.manager.addEvent(event, getattr(self, f))
                 else:
-                    self.manager.addEvent(event, getattr(self,funcs))
+                    self.manager.addEvent(event, getattr(self, funcs))
 
-            #delete for various reasons
+            # delete for various reasons
             self.event_map = None
 
         if self.event_list:
             for f in self.event_list:
-                self.manager.addEvent(f, getattr(self,f))
+                self.manager.addEvent(f, getattr(self, f))
 
             self.event_list = None
 

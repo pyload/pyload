@@ -54,7 +54,7 @@ class ExpertDecoders(Hook):
             data = f.read()
 
         req = getRequest()
-        #raise timeout threshold
+        # raise timeout threshold
         req.c.setopt(LOW_SPEED_TIME, 80)
 
         try:

@@ -20,7 +20,7 @@ class MultishareCz(Account):
 
 
     def loadAccountInfo(self, user, req):
-        #self.relogin(user)
+        # self.relogin(user)
         html = req.load("http://www.multishare.cz/profil/", decode=True)
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)

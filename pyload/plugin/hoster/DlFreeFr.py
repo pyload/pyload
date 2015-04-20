@@ -117,7 +117,7 @@ class DlFreeFr(SimpleHoster):
 
 
     def getLastHeaders(self):
-        #parse header
+        # parse header
         header = {"code": self.req.code}
         for line in self.req.http.header.splitlines():
             line = line.strip()

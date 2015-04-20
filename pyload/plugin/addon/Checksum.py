@@ -105,8 +105,8 @@ class Checksum(Addon):
             self.checkFailed(pyfile, None, "No file downloaded")
 
         local_file = fs_encode(pyfile.plugin.lastDownload)
-        #download_folder = self.config.get("general", "download_folder")
-        #local_file = fs_encode(fs_join(download_folder, pyfile.package().folder, pyfile.name))
+        # download_folder = self.config.get("general", "download_folder")
+        # local_file = fs_encode(fs_join(download_folder, pyfile.package().folder, pyfile.name))
 
         if not isfile(local_file):
             self.checkFailed(pyfile, None, "File does not exist")
