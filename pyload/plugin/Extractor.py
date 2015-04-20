@@ -27,12 +27,17 @@ class Extractor:
     __description = """Base extractor plugin"""
     __license     = "GPLv3"
     __authors     = [("Walter Purcaro", "vuolter@gmail.com"),
-                     ("Immenz"        , "immenz@gmx.net"   )]
+                     ("Immenz"        , "immenz@gmx.net")]
 
 
     EXTENSIONS = []
     VERSION    = ""
     REPAIR     = False
+
+
+    @classmethod
+    def NAME(self):
+        return getattr(self, "_" + self.__name__ + "__name")
 
 
     @classmethod
