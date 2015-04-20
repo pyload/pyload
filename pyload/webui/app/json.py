@@ -9,9 +9,7 @@ from shutil import copyfileobj
 from bottle import route, request, HTTPError
 
 from pyload.webui import PYLOAD
-
 from pyload.webui.app.utils import login_required, render_to_response, toDict
-
 from pyload.utils import decode, formatSize
 
 
@@ -227,7 +225,7 @@ def set_captcha():
     if task.tid >= 0:
         src = "data:image/%s;base64,%s" % (task.type, task.data)
 
-        return {'captcha': True, 'id': task.tid, 'src': src, 'result_type' : task.resultType}
+        return {'captcha': True, 'id': task.tid, 'src': src, 'result_type': task.resultType}
     else:
         return {'captcha': False}
 
@@ -307,7 +305,6 @@ def update_accounts():
 
 @route('/json/change_password', method='POST')
 def change_password():
-
     user = request.POST['user_login']
     oldpw = request.POST['login_current_password']
     newpw = request.POST['login_new_password']

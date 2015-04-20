@@ -231,7 +231,7 @@ def downloads():
 @login_required("DOWNLOAD")
 def get_download(path):
     path = unquote(path).decode("utf8")
-    #@TODO some files can not be downloaded
+    # @TODO some files can not be downloaded
 
     root = PYLOAD.getConfigValue("general", "download_folder")
 
@@ -274,12 +274,12 @@ def config():
             data.trafficleft = formatSize(data.trafficleft)
 
         if data.validuntil == -1:
-            data.validuntil  = _("unlimited")
+            data.validuntil = _("unlimited")
         elif not data.validuntil:
-            data.validuntil  = _("not available")
+            data.validuntil = _("not available")
         else:
             t = time.localtime(data.validuntil)
-            data.validuntil  = time.strftime("%d.%m.%Y - %H:%M:%S", t)
+            data.validuntil = time.strftime("%d.%m.%Y - %H:%M:%S", t)
 
         try:
             data.options['time'] = data.options['time'][0]
@@ -292,7 +292,8 @@ def config():
             data.options['limitdl'] = "0"
 
     return render_to_response('settings.html',
-                              {'conf': {'plugin': plugin_menu, 'general': conf_menu, 'accs': accs}, 'types': PYLOAD.getAccountTypes()},
+                              {'conf': {'plugin': plugin_menu, 'general': conf_menu, 'accs': accs},
+                               'types': PYLOAD.getAccountTypes()},
                               [pre_processor])
 
 
@@ -302,10 +303,7 @@ def config():
 @route('/pathchooser/<path:path>')
 @login_required('STATUS')
 def path(file="", path=""):
-    if file:
-        type = "file"
-    else:
-        type = "folder"
+    type = "file" if file else "folder"
 
     path = os.path.normpath(unquotepath(path))
 
@@ -360,10 +358,7 @@ def path(file="", path=""):
         except Exception:
             continue
 
-        if os.path.isdir(join(cwd, f)):
-            data['type'] = 'dir'
-        else:
-            data['type'] = 'file'
+        data['type'] = 'dir' if os.path.isdir(join(cwd, f)) else 'file'
 
         if os.path.isfile(join(cwd, f)):
             data['size'] = os.path.getsize(join(cwd, f))
@@ -520,11 +515,7 @@ def setup():
 @route('/info')
 def info():
     conf = PYLOAD.getConfigDict()
-
-    if hasattr(os, "uname"):
-        extra = os.uname()
-    else:
-        extra = tuple()
+    extra = os.uname() if hasattr(os, "uname") else tuple()
 
     data = {"python"   : sys.version,
             "os"       : " ".join((os.name, sys.platform) + extra),

@@ -9,6 +9,7 @@ from base64 import standard_b64decode
 from binascii import unhexlify
 
 from bottle import route, request, HTTPError
+
 from pyload.webui import PYLOAD, DL_ROOT, JS
 
 
@@ -87,7 +88,7 @@ def addcrypted2():
         try:
             jk = re.findall(r"return ('|\")(.+)('|\")", jk)[0][1]
         except Exception:
-            ## Test for some known js functions to decode
+            # Test for some known js functions to decode
             if jk.find("dec") > -1 and jk.find("org") > -1:
                 org = re.findall(r"var org = ('|\")([^\"']+)", jk)[0][1]
                 jk = list(org)
