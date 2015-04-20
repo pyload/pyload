@@ -7,7 +7,6 @@ from pyload.network.Browser import Browser
 from pyload.network.Bucket import Bucket
 from pyload.network.HTTPRequest import HTTPRequest
 from pyload.network.CookieJar import CookieJar
-
 from pyload.network.XDCCRequest import XDCCRequest
 
 
@@ -88,8 +87,10 @@ class RequestFactory(object):
         else:
             type = "http"
             setting = self.core.config.get("proxy", "type").lower()
-            if setting == "socks4": type = "socks4"
-            elif setting == "socks5": type = "socks5"
+            if setting == "socks4":
+                type = "socks4"
+            elif setting == "socks5":
+                type = "socks5"
 
             username = None
             if self.core.config.get("proxy", "username") and self.core.config.get("proxy", "username").lower() != "none":
@@ -105,7 +106,7 @@ class RequestFactory(object):
                 "port": self.core.config.get("proxy", "port"),
                 "username": username,
                 "password": pw,
-                }
+            }
 
 
     def getOptions(self):

@@ -76,7 +76,7 @@ class HTTPRequest(object):
         if hasattr(pycurl, "USE_SSL"):
             self.c.setopt(pycurl.USE_SSL, pycurl.CURLUSESSL_TRY)
 
-        #self.c.setopt(pycurl.VERBOSE, 1)
+        # self.c.setopt(pycurl.VERBOSE, 1)
 
         self.c.setopt(pycurl.USERAGENT,
                       "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0")
@@ -254,8 +254,8 @@ class HTTPRequest(object):
 
         for line in header:
             line = line.lower().replace(" ", "")
-            if not line.startswith("content-type:") or\
-               ("text" not in line and "application" not in line):
+            if not line.startswith("content-type:") or \
+                    ("text" not in line and "application" not in line):
                 continue
 
             none, delemiter, charset = line.rpartition("charset=")
@@ -265,7 +265,7 @@ class HTTPRequest(object):
                     encoding = charset[0]
 
         try:
-            #self.log.debug("Decoded %s" % encoding )
+            # self.log.debug("Decoded %s" % encoding )
             if lookup(encoding).name == 'utf-8' and rep.startswith(BOM_UTF8):
                 encoding = 'utf-8-sig'
 

@@ -17,7 +17,7 @@ class Bucket(object):
 
 
     def __nonzero__(self):
-        return False if self.rate < MIN_RATE else True
+        return self.rate >= MIN_RATE
 
 
     def setRate(self, rate):
@@ -35,10 +35,7 @@ class Bucket(object):
         self.calc_tokens()
         self.tokens -= amount
 
-        if self.tokens < 0:
-            time = -self.tokens/float(self.rate)
-        else:
-            time = 0
+        time = -self.tokens / float(self.rate) if self.tokens < 0 else 0
 
         self.lock.release()
         return time
