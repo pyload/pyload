@@ -112,7 +112,7 @@ class AbstractEngine(object):
 
     def __init__(self, force=False):
         self.setup()
-        self.available = True if force else self.find()
+        self.available = force or self.find()
 
 
     def setup(self):

@@ -332,7 +332,7 @@ class SimpleHoster(Hoster):
     @classmethod
     def getInfo(cls, url="", html=""):
         info   = cls.apiInfo(url)
-        online = False if info['status'] != 2 else True
+        online = info['status'] == 2
 
         try:
             info['pattern'] = re.match(cls.__pattern, url).groupdict()  #: pattern groups will be saved here

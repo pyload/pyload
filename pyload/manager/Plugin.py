@@ -126,7 +126,7 @@ class PluginManager(object):
                 module = f.replace(".pyc", "").replace(".py", "")
 
                 # the plugin is loaded from user directory
-                plugins[name]['user'] = True if rootplugins else False
+                plugins[name]['user'] = bool(rootplugins)
                 plugins[name]['name'] = module
 
                 pattern = self.PATTERN.findall(content)
@@ -162,7 +162,7 @@ class PluginManager(object):
                             config = [list(config)]
 
                         if folder not in ("account", "internal") and not [True for item in config if item[0] == "activated"]:
-                            config.insert(0, ["activated", "bool", "Activated", False if folder in ("addon", "hook") else True])
+                            config.insert(0, ["activated", "bool", "Activated", not folder in ("addon", "hook")])
 
                         self.core.config.addPluginConfig("%s_%s" % (name, folder), config, desc)
                     except Exception:
@@ -398,4 +398,4 @@ class PluginManager(object):
 
     def reloadPlugin(self, type_plugin):
         """ reload and reindex ONE plugin """
-        return True if self.reloadPlugins(type_plugin) else False
+        return bool(self.reloadPlugins(type_plugin))

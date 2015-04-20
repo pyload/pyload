@@ -486,7 +486,7 @@ def admin():
     for data in user.itervalues():
         data['perms'] = {}
         get_permission(data['perms'], data['permission'])
-        data['perms']['admin'] = True if data['role'] is 0 else False
+        data['perms']['admin'] = data['role'] is 0
 
     s = request.environ.get('beaker.session')
     if request.environ.get('REQUEST_METHOD', "GET") == "POST":

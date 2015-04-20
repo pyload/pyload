@@ -28,7 +28,7 @@ class UploadingCom(Account):
 
         html = req.load("http://uploading.com/")
 
-        premium = False if re.search(self.PREMIUM_PATTERN, html) else True
+        premium = re.search(self.PREMIUM_PATTERN, html) is None
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:

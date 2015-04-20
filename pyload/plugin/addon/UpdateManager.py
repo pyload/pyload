@@ -120,7 +120,7 @@ class UpdateManager(Addon):
                     reloads.append(id)
                     self.mtimes[id] = mtime
 
-        return True if self.core.pluginManager.reloadPlugins(reloads) else False
+        return bool(self.core.pluginManager.reloadPlugins(reloads))
 
 
     def server_response(self):

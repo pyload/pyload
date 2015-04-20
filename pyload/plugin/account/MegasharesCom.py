@@ -23,7 +23,7 @@ class MegasharesCom(Account):
         #self.relogin(user)
         html = req.load("http://d01.megashares.com/myms.php", decode=True)
 
-        premium = False if '>Premium Upgrade<' in html else True
+        premium = '>Premium Upgrade<' not in html
 
         validuntil = trafficleft = -1
         try:

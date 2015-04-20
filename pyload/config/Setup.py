@@ -261,7 +261,7 @@ class SetupAssistant(object):
 
         web = sqlite and beaker
 
-        js = True if JsEngine.find() else False
+        js = bool(JsEngine.find())
         self.print_dep(_("JS engine"), js)
 
         if not python:

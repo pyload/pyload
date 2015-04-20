@@ -46,7 +46,7 @@ class Keep2ShareCc(Account):
                     self.logError(e)
 
                 else:
-                    premium = True if validuntil > time.mktime(time.gmtime()) else False
+                    premium = validuntil > time.mktime(time.gmtime())
 
             m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
             if m:

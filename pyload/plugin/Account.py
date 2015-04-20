@@ -260,7 +260,7 @@ class Account(Base):
 
 
     def canUse(self):
-        return False if self.selectAccount() == (None, None) else True
+        return self.selectAccount() != (None, None)
 
 
     def parseTraffic(self, value, unit=None):  #: return bytes
