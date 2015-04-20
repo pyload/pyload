@@ -100,7 +100,7 @@ class Addon(Base):
 
 
     def __repr__(self):
-        return "<Addon %s>" % self.__class__.__name__
+        return "<Addon %s>" % self.getClassName()
 
 
     def setup(self):

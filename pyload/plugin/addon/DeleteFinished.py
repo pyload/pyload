@@ -53,7 +53,7 @@ class DeleteFinished(Addon):
     def activate(self):
         self.info['sleep'] = True
         # interval = self.getConfig('interval')
-        # self.pluginConfigChanged(self.__class__.__name__, 'interval', interval)
+        # self.pluginConfigChanged(self.getClassName(), 'interval', interval)
         self.interval = max(self.MIN_CHECK_INTERVAL, self.getConfig('interval') * 60 * 60)
         self.addEvent('packageFinished', self.wakeup)
         self.initPeriodical()

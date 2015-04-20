@@ -79,7 +79,7 @@ class NoPremiumPl(MultiHoster):
         if "errno" in parsed.keys():
             if parsed['errno'] in self.ERROR_CODES:
                 # error code in known
-                self.fail(self.ERROR_CODES[parsed['errno']] % self.__class__.__name__)
+                self.fail(self.ERROR_CODES[parsed['errno']] % self.getClassName())
             else:
                 # error code isn't yet added to plugin
                 self.fail(

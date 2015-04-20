@@ -60,11 +60,11 @@ class OCR(Base):
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True, pagesegmode=None):
         # tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
         try:
-            tmpTif = open(fs_join("tmp", "tmpTif_%s.tif" % self.__class__.__name__), "wb")
+            tmpTif = open(fs_join("tmp", "tmpTif_%s.tif" % self.getClassName()), "wb")
             tmpTif.close()
 
             # tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
-            tmpTxt = open(fs_join("tmp", "tmpTxt_%s.txt" % self.__class__.__name__), "wb")
+            tmpTxt = open(fs_join("tmp", "tmpTxt_%s.txt" % self.getClassName()), "wb")
             tmpTxt.close()
 
         except IOError, e:
@@ -86,7 +86,7 @@ class OCR(Base):
 
         if subset and (digits or lowercase or uppercase):
             # tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
-            with open(fs_join("tmp", "tmpSub_%s.subset" % self.__class__.__name__), "wb") as tmpSub:
+            with open(fs_join("tmp", "tmpSub_%s.subset" % self.getClassName()), "wb") as tmpSub:
                 tmpSub.write("tessedit_char_whitelist ")
 
                 if digits:

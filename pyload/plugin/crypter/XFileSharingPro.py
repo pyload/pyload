@@ -22,13 +22,13 @@ class XFileSharingPro(XFSCrypter):
     def _log(self, type, args):
         msg = " | ".join(str(a).strip() for a in args if a)
         logger = getattr(self.log, type)
-        logger("%s: %s: %s" % (self.__class__.__name__, self.HOSTER_NAME, msg or _("%s MARK" % type.upper())))
+        logger("%s: %s: %s" % (self.getClassName(), self.HOSTER_NAME, msg or _("%s MARK" % type.upper())))
 
 
     def init(self):
         super(XFileSharingPro, self).init()
 
-        self.__pattern = self.core.pluginManager.crypterPlugins[self.__class__.__name__]['pattern']
+        self.__pattern = self.core.pluginManager.crypterPlugins[self.getClassName()]['pattern']
 
         self.HOSTER_DOMAIN = re.match(self.__pattern, self.pyfile.url).group("DOMAIN").lower()
         self.HOSTER_NAME   = "".join(part.capitalize() for part in re.split(r'(\.|\d+)', self.HOSTER_DOMAIN) if part != '.')

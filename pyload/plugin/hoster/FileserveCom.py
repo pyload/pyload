@@ -144,7 +144,7 @@ class FileserveCom(Hoster):
         if "fail" in res:
             self.fail(_("Failed getting wait time"))
 
-        if self.__class__.__name__ == "FilejungleCom":
+        if self.getClassName() == "FilejungleCom":
             m = re.search(r'"waitTime":(\d+)', res)
             if m is None:
                 self.fail(_("Cannot get wait time"))
@@ -184,7 +184,7 @@ class FileserveCom(Hoster):
 
     def handlePremium(self, pyfile):
         premium_url = None
-        if self.__class__.__name__ == "FileserveCom":
+        if self.getClassName() == "FileserveCom":
             #try api download
             res = self.load("http://app.fileserve.com/api/download/premium/",
                             post={"username": self.user,

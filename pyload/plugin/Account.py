@@ -196,7 +196,7 @@ class Account(Base):
                 "maxtraffic" : None,
                 "premium"    : None,
                 "timestamp"  : 0,  #: time this info was retrieved
-                "type"       : self.__class__.__name__}
+                "type"       : self.getClassName()}
 
 
     def getAllAccounts(self, force=False):
@@ -209,7 +209,7 @@ class Account(Base):
         if not user:
             return None
 
-        req = self.core.requestFactory.getRequest(self.__class__.__name__, user)
+        req = self.core.requestFactory.getRequest(self.getClassName(), user)
         return req
 
 
@@ -219,7 +219,7 @@ class Account(Base):
         if not user:
             return None
 
-        cj = self.core.requestFactory.getCookieJar(self.__class__.__name__, user)
+        cj = self.core.requestFactory.getCookieJar(self.getClassName(), user)
         return cj
 
 

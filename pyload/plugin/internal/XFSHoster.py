@@ -65,7 +65,7 @@ class XFSHoster(SimpleHoster):
             if self.account:
                 account = self.account
             else:
-                account = self.pyfile.m.core.accountManager.getAccountPlugin(self.__class__.__name__)
+                account = self.pyfile.m.core.accountManager.getAccountPlugin(self.getClassName())
 
             if account and hasattr(account, "HOSTER_DOMAIN") and account.HOSTER_DOMAIN:
                 self.HOSTER_DOMAIN = account.HOSTER_DOMAIN
