@@ -39,7 +39,7 @@ class DownloadThread(PluginThread):
 
         while True:
             del pyfile
-            self.active = False  # sets the thread inactive when it is ready to get next job
+            self.active = False  #: sets the thread inactive when it is ready to get next job
             self.active = self.queue.get()
             pyfile = self.active
 

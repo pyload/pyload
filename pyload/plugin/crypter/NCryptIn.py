@@ -69,7 +69,7 @@ class NCryptIn(Crypter):
             # Extract package links
             for link_source_type in self.links_source_order:
                 package_links.extend(self.handleLinkSource(link_source_type))
-                if package_links:  # use only first source which provides links
+                if package_links:  #: use only first source which provides links
                     break
             package_links = set(package_links)
 

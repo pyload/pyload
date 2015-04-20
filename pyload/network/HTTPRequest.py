@@ -41,16 +41,16 @@ class HTTPRequest(object):
         self.c = pycurl.Curl()
         self.rep = StringIO()
 
-        self.cj = cookies  # cookiejar
+        self.cj = cookies  #: cookiejar
 
         self.lastURL = None
         self.lastEffectiveURL = None
         self.abort = False
-        self.code = 0  # last http code
+        self.code = 0  #: last http code
 
         self.header = ""
 
-        self.headers = []  # temporary request header
+        self.headers = []  #: temporary request header
 
         self.initHandle()
         self.setInterface(options)
@@ -158,7 +158,7 @@ class HTTPRequest(object):
             self.c.setopt(pycurl.POST, 1)
             if not multipart:
                 if type(post) == unicode:
-                    post = str(post)  # unicode not allowed
+                    post = str(post)  #: unicode not allowed
                 elif type(post) == str:
                     pass
                 else:
@@ -250,7 +250,7 @@ class HTTPRequest(object):
     def decodeResponse(self, rep):
         """ decode with correct encoding, relies on header """
         header = self.header.splitlines()
-        encoding = "utf8"  # default encoding
+        encoding = "utf8"  #: default encoding
 
         for line in header:
             line = line.lower().replace(" ", "")

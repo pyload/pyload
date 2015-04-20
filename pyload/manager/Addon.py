@@ -89,7 +89,7 @@ class AddonManager(object):
 
     def callRPC(self, plugin, func, args, parse):
         if not args:
-            args = tuple()
+            args = ()
         if parse:
             args = tuple([literal_eval(x) for x in args])
         plugin = self.pluginMap[plugin]

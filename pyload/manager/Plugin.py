@@ -168,7 +168,7 @@ class PluginManager(object):
                     except Exception:
                         self.core.log.error("Invalid config in %s: %s" % (name, config))
 
-                elif folder in ("addon", "hook"):  # force config creation
+                elif folder in ("addon", "hook"):  #: force config creation
                     desc = self.DESC.findall(content)
                     desc = desc[0][1] if desc else ""
                     config = (["activated", "bool", "Activated", False],)
@@ -310,9 +310,9 @@ class PluginManager(object):
 
     def find_module(self, fullname, path=None):
         # redirecting imports if necesarry
-        if fullname.startswith(self.ROOT) or fullname.startswith(self.USERROOT):  # seperate pyload plugins
+        if fullname.startswith(self.ROOT) or fullname.startswith(self.USERROOT):  #: seperate pyload plugins
             if fullname.startswith(self.USERROOT): user = 1
-            else: user = 0  # used as bool and int
+            else: user = 0  #: used as bool and int
 
             split = fullname.split(".")
             if len(split) != 4 - user:
@@ -329,7 +329,7 @@ class PluginManager(object):
 
 
     def load_module(self, name, replace=True):
-        if name not in sys.modules:  # could be already in modules
+        if name not in sys.modules:  #: could be already in modules
             if replace:
                 if self.ROOT in name:
                     newname = name.replace(self.ROOT, self.USERROOT)

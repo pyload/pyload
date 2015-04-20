@@ -29,7 +29,7 @@ class Xdcc(Hoster):
 
 
     def setup(self):
-        self.debug = 0  # 0,1,2
+        self.debug = 0  #: 0,1,2
         self.timeout = 30
         self.multiDL = False
 
@@ -62,7 +62,7 @@ class Xdcc(Hoster):
 
 
     def doDownload(self, url):
-        self.pyfile.setStatus("waiting")  # real link
+        self.pyfile.setStatus("waiting")  #: real link
 
         m = re.match(r'xdcc://(.*?)/#?(.*?)/(.*?)/#?(\d+)/?', url)
         server = m.group(1)
@@ -89,7 +89,7 @@ class Xdcc(Hoster):
         sock = socket.socket()
         sock.connect((host, int(port)))
         if nick == "pyload":
-            nick = "pyload-%d" % (time.time() % 1000)  # last 3 digits
+            nick = "pyload-%d" % (time.time() % 1000)  #: last 3 digits
         sock.send("NICK %s\r\n" % nick)
         sock.send("USER %s %s bla :%s\r\n" % (ident, host, real))
 
@@ -161,7 +161,7 @@ class Xdcc(Hoster):
                         self.logDebug("Sending CTCP TIME")
                         sock.send("NOTICE %s :%d\r\n" % (msg['origin'], time.time()))
                     elif msg['text'] == "\x01LAG\x01":
-                        pass  # don't know how to answer
+                        pass  #: don't know how to answer
 
                 if not (bot == msg['origin'][0:len(bot)]
                         and nick == msg['target'][0:len(nick)]

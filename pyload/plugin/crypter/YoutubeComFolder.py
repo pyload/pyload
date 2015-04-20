@@ -43,7 +43,7 @@ class YoutubeComFolder(Crypter):
             return {"id": channel['id'],
                     "title": channel['snippet']['title'],
                     "relatedPlaylists": channel['contentDetails']['relatedPlaylists'],
-                    "user": user}  # One lone channel for user?
+                    "user": user}  #: One lone channel for user?
 
 
     def getPlaylist(self, p_id):

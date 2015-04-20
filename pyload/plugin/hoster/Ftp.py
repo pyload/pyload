@@ -69,7 +69,7 @@ class Ftp(Hoster):
                 pyfile.url = pyfile.url.rstrip('/')
                 pkgname = "/".join(pyfile.package().name, urlparse(pyfile.url).path.rpartition('/')[2])
                 pyfile.url += '/'
-                self.req.http.c.setopt(48, 1)  # CURLOPT_DIRLISTONLY
+                self.req.http.c.setopt(48, 1)  #: CURLOPT_DIRLISTONLY
                 res = self.load(pyfile.url, decode=False)
                 links = [pyfile.url + quote(x) for x in res.splitlines()]
                 self.logDebug("LINKS", links)

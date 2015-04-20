@@ -198,7 +198,7 @@ class Core(object):
         if not pid or os.name == "nt":
             return False
         try:
-            os.kill(pid, 0)  # 0 - default signal (does nothing)
+            os.kill(pid, 0)  #: 0 - default signal (does nothing)
         except Exception:
             return 0
 

@@ -51,7 +51,7 @@ An example ``process`` function could look like this ::
             """
 
             def process(self, pyfile):
-                html = self.load(pyfile.url)  # load the content of the orginal pyfile.url to html
+                html = self.load(pyfile.url)  #: load the content of the orginal pyfile.url to html
 
                 # parse the name from the site and set attribute in pyfile
                 pyfile.name = self.myFunctionToParseTheName(html)

@@ -33,7 +33,7 @@ class ThreadManager(object):
 
         self.reconnecting = Event()
         self.reconnecting.clear()
-        self.downloaded = 0  # number of files downloaded since last cleanup
+        self.downloaded = 0  #: number of files downloaded since last cleanup
 
         self.lock = Lock()
 

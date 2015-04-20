@@ -112,7 +112,7 @@ class Addon(Base):
             self.unload()
 
 
-    def unload(self):  # Deprecated, use method deactivate() instead
+    def unload(self):  #: Deprecated, use method deactivate() instead
         pass
 
 
@@ -130,7 +130,7 @@ class Addon(Base):
             self.coreReady()
 
 
-    def coreReady(self):  # Deprecated, use method activate() instead
+    def coreReady(self):  #: Deprecated, use method activate() instead
         pass
 
 
@@ -140,7 +140,7 @@ class Addon(Base):
             self.coreExiting()
 
 
-    def coreExiting(self):  # Deprecated, use method exit() instead
+    def coreExiting(self):  #: Deprecated, use method exit() instead
         pass
 
 

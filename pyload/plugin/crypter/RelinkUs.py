@@ -89,7 +89,7 @@ class RelinkUs(Crypter):
         package_links = []
         for sources in self.PREFERRED_LINK_SOURCES:
             package_links.extend(self.handleLinkSource(sources))
-            if package_links:  # use only first source which provides links
+            if package_links:  #: use only first source which provides links
                 break
         package_links = set(package_links)
 

@@ -24,11 +24,11 @@ class HTTPDownload(object):
     def __init__(self, url, filename, get={}, post={}, referer=None, cj=None, bucket=None,
                  options={}, progress=None, disposition=False):
         self.url = url
-        self.filename = filename  #complete file destination, not only name
+        self.filename = filename  #: complete file destination, not only name
         self.get = get
         self.post = post
         self.referer = referer
-        self.cj = cj  #cookiejar if cookies are needed
+        self.cj = cj  #: cookiejar if cookies are needed
         self.bucket = bucket
         self.options = options
         self.disposition = disposition
@@ -151,7 +151,7 @@ class HTTPDownload(object):
 
         lastFinishCheck = 0
         lastTimeCheck = 0
-        chunksDone = set()  # list of curl handles that are finished
+        chunksDone = set()  #: list of curl handles that are finished
         chunksCreated = False
         done = False
         if self.info.getCount() is 0:  #: This is a resume, if we were chunked originally assume still can
@@ -254,7 +254,7 @@ class HTTPDownload(object):
                     if len(chunksDone) >= len(self.chunks):
                         if len(chunksDone) > len(self.chunks):
                             self.log.warning("Finished download chunks size incorrect, please report bug.")
-                        done = True  # all chunks loaded
+                        done = True  #: all chunks loaded
 
                     break
 

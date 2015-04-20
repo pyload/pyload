@@ -238,7 +238,7 @@ class LinkCryptWs(Crypter):
 
         self.logDebug('Search for %s Container links' % type.upper())
 
-        if not type.isalnum():  # check to prevent broken re-pattern (cnl2,rsdf,ccf,dlc,web are all alpha-numeric)
+        if not type.isalnum():  #: check to prevent broken re-pattern (cnl2,rsdf,ccf,dlc,web are all alpha-numeric)
             self.fail(_("Unknown container type: %s") % type)  #@TODO: Replace with self.error in 0.4.10
 
         for line in self.container_html:

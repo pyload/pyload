@@ -28,7 +28,7 @@ class DataHu(SimpleCrypter):
     def prepare(self):
         super(DataHu, self).prepare()
 
-        if u'K\xe9rlek add meg a jelsz\xf3t' in self.html:  # Password protected
+        if u'K\xe9rlek add meg a jelsz\xf3t' in self.html:  #: Password protected
             password = self.getPassword()
             if not password:
                 self.fail(_("Password required"))
@@ -37,5 +37,5 @@ class DataHu(SimpleCrypter):
 
             self.html = self.load(self.pyfile.url, post={'mappa_pass': password}, decode=True)
 
-            if u'Hib\xe1s jelsz\xf3' in self.html:  # Wrong password
+            if u'Hib\xe1s jelsz\xf3' in self.html:  #: Wrong password
                 self.fail(_("Wrong password"))

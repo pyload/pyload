@@ -30,7 +30,7 @@ class FilecloudIo(Account):
             return {"premium": False}
 
         akey = rep['akey']
-        self.accounts[user]['akey'] = akey  # Saved for hoster plugin
+        self.accounts[user]['akey'] = akey  #: Saved for hoster plugin
         rep = req.load("http://api.filecloud.io/api-fetch_account_details.api",
                        post={"akey": akey})
         rep = json_loads(rep)

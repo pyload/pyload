@@ -129,5 +129,5 @@ class PluginThread(Thread):
 
     def clean(self, pyfile):
         """ set thread unactive and release pyfile """
-        self.active = True  #release pyfile but lets the thread active
+        self.active = True  #: release pyfile but lets the thread active
         pyfile.release()

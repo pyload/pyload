@@ -99,7 +99,7 @@ class OboomCom(Hoster):
                     self.retry(5, 15 * 60, _("Service unavailable"))
 
             elif result[0] == 403:
-                if result[1] == -1:  # another download is running
+                if result[1] == -1:  #: another download is running
                     self.setWait(15 * 60)
                 else:
                     self.setWait(result[1], True)

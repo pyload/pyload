@@ -13,8 +13,8 @@ class CaptchaManager(object):
     def __init__(self, core):
         self.lock = Lock()
         self.core = core
-        self.tasks = []  # task store, for outgoing tasks only
-        self.ids = 0  # only for internal purpose
+        self.tasks = []  #: task store, for outgoing tasks only
+        self.ids = 0  #: only for internal purpose
 
 
     def newTask(self, img, format, file, result_type):
@@ -43,7 +43,7 @@ class CaptchaManager(object):
     def getTaskByID(self, tid):
         self.lock.acquire()
         for task in self.tasks:
-            if task.id == str(tid):  # task ids are strings
+            if task.id == str(tid):  #: task ids are strings
                 self.lock.release()
                 return task
         self.lock.release()
@@ -81,9 +81,9 @@ class CaptchaTask(object):
         self.handler = []  #: the hook plugins that will take care of the solution
         self.result = None
         self.waitUntil = None
-        self.error = None  # error message
+        self.error = None  #: error message
         self.status = "init"
-        self.data = {}  # handler can store data here
+        self.data = {}  #: handler can store data here
 
 
     def getCaptcha(self):

@@ -152,9 +152,9 @@ class NetloadIn(Hoster):
             if self.api_data['status'] == "online":
                 self.api_data['checksum'] = lines[4].strip()
             else:
-                self.api_data = False  # check manually since api data is useless sometimes
+                self.api_data = False  #: check manually since api data is useless sometimes
 
-            if lines[0] == lines[1] and lines[2] == "0":  # useless api data
+            if lines[0] == lines[1] and lines[2] == "0":  #: useless api data
                 self.api_data = False
         else:
             self.api_data = False

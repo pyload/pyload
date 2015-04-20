@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PYLOAD="../pyload"  # Check pyload directory
+PYLOAD="../pyload"  #: Check pyload directory
 
 echo "Running sloccount ..."
 REPORT="sloccount.sc"

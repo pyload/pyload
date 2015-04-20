@@ -37,7 +37,7 @@ def find(domain, localedir=None, languages=None, all=False):
     if _searchdirs is None:
         return origfind(domain, localedir, languages, all)
     searches = [localedir] + _searchdirs
-    results = list()
+    results = []
     for dir in searches:
         res = origfind(domain, dir, languages, all)
         if all is False:

@@ -26,13 +26,13 @@ class InfoThread(PluginThread):
         PluginThread.__init__(self, manager)
 
         self.data = data
-        self.pid = pid  # package id
+        self.pid = pid  #: package id
         # [ .. (name, plugin) .. ]
 
-        self.rid = rid  # result id
-        self.add = add  # add packages instead of return result
+        self.rid = rid  #: result id
+        self.add = add  #: add packages instead of return result
 
-        self.cache = []  # accumulated data
+        self.cache = []  #: accumulated data
 
         self.start()
 
@@ -83,7 +83,7 @@ class InfoThread(PluginThread):
             # empty cache
             del self.cache[:]
 
-        else:  # post the results
+        else:  #: post the results
 
             for name, url in container:
                 # attach container content
@@ -154,8 +154,8 @@ class InfoThread(PluginThread):
 
     def fetchForPlugin(self, pluginname, plugin, urls, cb, err=None):
         try:
-            result = []  # result loaded from cache
-            process = []  # urls to process
+            result = []  #: result loaded from cache
+            process = []  #: urls to process
             for url in urls:
                 if url in self.m.infoCache:
                     result.append(self.m.infoCache[url])

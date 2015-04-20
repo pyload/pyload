@@ -96,7 +96,7 @@ class Account(Base):
             req.cj.clear()
             req.close()
         if user in self.infos:
-            del self.infos[user]  # delete old information
+            del self.infos[user]  #: delete old information
 
         return self._login(user, self.accounts[user])
 
@@ -112,7 +112,7 @@ class Account(Base):
         """ updates account and return true if anything changed """
 
         if user in self.accounts:
-            self.accounts[user]['valid'] = True  # do not remove or accounts will not login
+            self.accounts[user]['valid'] = True  #: do not remove or accounts will not login
             if password:
                 self.accounts[user]['password'] = password
                 self.relogin(user)

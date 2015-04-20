@@ -134,7 +134,7 @@ class FileserveCom(Hoster):
             self.wait()
             self.retry()
 
-        self.thread.m.reconnecting.wait(3)  # Ease issue with later downloads appearing to be in parallel
+        self.thread.m.reconnecting.wait(3)  #: Ease issue with later downloads appearing to be in parallel
 
 
     def doTimmer(self):

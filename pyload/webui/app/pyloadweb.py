@@ -429,7 +429,7 @@ def logs(item=-1):
     if item < 1 or type(item) is not int:
         item = 1 if len(log) - perpage + 1 < 1 else len(log) - perpage + 1
 
-    if type(fro) is datetime:  # we will search for datetime
+    if type(fro) is datetime:  #: we will search for datetime
         item = -1
 
     data = []
@@ -449,16 +449,16 @@ def logs(item=-1):
                 level = '?'
                 message = l
             if item == -1 and dtime is not None and fro <= dtime:
-                item = counter  # found our datetime
+                item = counter  #: found our datetime
             if item >= 0:
                 data.append({'line': counter, 'date': date + " " + time, 'level': level, 'message': message})
                 perpagecheck += 1
-                if fro is None and dtime is not None:  # if fro not set set it to first showed line
+                if fro is None and dtime is not None:  #: if fro not set set it to first showed line
                     fro = dtime
             if perpagecheck >= perpage > 0:
                 break
 
-    if fro is None:  # still not set, empty log?
+    if fro is None:  #: still not set, empty log?
         fro = datetime.now()
     if reversed:
         data.reverse()

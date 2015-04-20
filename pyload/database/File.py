@@ -28,8 +28,8 @@ class FileHandler(object):
                           _("temp. offline"), _("starting"), _("failed"), _("aborted"), _("decrypting"), _("custom"),
                           _("downloading"), _("processing"), _("unknown")]
 
-        self.cache = {}  # holds instances for files
-        self.packageCache = {}  # same for packages
+        self.cache = {}  #: holds instances for files
+        self.packageCache = {}  #: same for packages
         #@TODO: purge the cache
 
         self.jobCache = {}
@@ -37,9 +37,9 @@ class FileHandler(object):
         self.lock = RLock()  #@TODO: should be a Lock w/o R
         # self.lock._Verbose__verbose = True
 
-        self.filecount = -1  # if an invalid value is set get current value from db
-        self.queuecount = -1  # number of package to be loaded
-        self.unchanged = False  # determines if any changes was made since last call
+        self.filecount = -1  #: if an invalid value is set get current value from db
+        self.queuecount = -1  #: number of package to be loaded
+        self.unchanged = False  #: determines if any changes was made since last call
 
         self.db = self.core.db
 
@@ -339,7 +339,7 @@ class FileHandler(object):
                     pyfile = self.getFile(self.jobCache[occ].pop())
 
         else:
-            self.jobCache = {}  # better not caching to much
+            self.jobCache = {}  #: better not caching to much
             jobs = self.db.getJob(occ)
             jobs.reverse()
             self.jobCache[occ] = jobs
@@ -763,7 +763,7 @@ class FileMethods(object):
                 'queue': r[5],
                 'order': r[6],
                 'sizetotal': int(r[7]),
-                'sizedone': r[8] if r[8] else 0,  # these can be None
+                'sizedone': r[8] if r[8] else 0,  #: these can be None
                 'linksdone': r[9] if r[9] else 0,
                 'linkstotal': r[10],
                 'links': {}
@@ -923,7 +923,7 @@ class FileMethods(object):
         """return pyfile ids, which are suitable for download and dont use a occupied plugin"""
 
         #@TODO: improve this hardcoded method
-        pre = "('CCF', 'DLC', 'LinkList', 'RSDF', 'TXT')"  # plugins which are processed in collector
+        pre = "('CCF', 'DLC', 'LinkList', 'RSDF', 'TXT')"  #: plugins which are processed in collector
 
         cmd = "("
         for i, item in enumerate(occ):
@@ -934,7 +934,7 @@ class FileMethods(object):
 
         cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE ((p.queue=1 AND l.plugin NOT IN %s) OR l.plugin IN %s) AND l.status IN (2, 3, 14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5" % (cmd, pre)
 
-        self.c.execute(cmd)  # very bad!
+        self.c.execute(cmd)  #: very bad!
 
         return [x[0] for x in self.c]
 
@@ -944,7 +944,7 @@ class FileMethods(object):
         """returns pyfile ids with suited plugins"""
         cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE l.plugin IN %s AND l.status IN (2, 3, 14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5" % plugins
 
-        self.c.execute(cmd)  # very bad!
+        self.c.execute(cmd)  #: very bad!
 
         return [x[0] for x in self.c]
 
