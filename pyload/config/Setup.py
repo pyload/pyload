@@ -524,6 +524,7 @@ class SetupAssistant(object):
                 p2 = getpass("").strip("\n\r")
 
                 if p1 == p2:
+                    print
                     if self.ask(_("Show password?"), self.no, bool=True):
                         print
                         print _("Your Password is: %s") % p1

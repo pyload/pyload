@@ -81,7 +81,7 @@ class WebServer(threading.Thread):
 
     def start_builtin(self):
         if self.https:
-            log.warning(_("This server offers no SSL, please consider using threaded instead"))
+            log.warning(_("This server offers no SSL, please consider using `threaded` instead"))
 
         self.core.log.info(_("Starting builtin webserver: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
         webinterface.run_simple(host=self.host, port=self.port)
@@ -111,7 +111,7 @@ class WebServer(threading.Thread):
 
     def start_lightweight(self):
         if self.https:
-            log.warning(_("This server offers no SSL, please consider using threaded instead"))
+            log.warning(_("This server offers no SSL, please consider using `threaded` instead"))
 
         self.core.log.info(
             _("Starting lightweight webserver (bjoern): %(host)s:%(port)d") % {"host": self.host, "port": self.port})
