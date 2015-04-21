@@ -7,10 +7,10 @@ colorama.init(autoreset=True)
 
 
 def color(color, text):
-    return colorama.Fore.(c.upper())(text)
+    return colorama.Fore[c.upper()](text)
 
 for c in colorama.Fore:
-    eval("%(color) = lambda msg: color(%(color), msg)" % {'color': c.lower()}
+    eval("%(color)s = lambda msg: color(%(color)s, msg)" % {'color': c.lower()})
 
 
 def overline(line, msg):
