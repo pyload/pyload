@@ -175,18 +175,20 @@ class DatabaseBackend(Thread):
                 f.write(str(DB_VERSION))
             return
 
-        with open("files.version", "wb+") as f:
+        v = 0
+        with open("files.version", "rb") as f:
             v = int(f.read().strip())
-            if v < DB_VERSION:
-                if v < 2:
-                    try:
-                        self.manager.core.log.warning(_("Filedatabase was deleted due to incompatible version."))
-                    except Exception:
-                        print "Filedatabase was deleted due to incompatible version."
-                    remove("files.version")
-                    move("files.db", "files.backup.db")
+        if v < DB_VERSION:
+            if v < 2:
+                try:
+                    self.manager.core.log.warning(_("Filedatabase was deleted due to incompatible version."))
+                except Exception:
+                    print "Filedatabase was deleted due to incompatible version."
+                remove("files.version")
+                move("files.db", "files.backup.db")
+            with open("files.version", "wb") as f:
                 f.write(str(DB_VERSION))
-                return v
+            return v
 
 
     def _convertDB(self, v):
