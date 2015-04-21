@@ -24,7 +24,8 @@ class Browser(object):
 
 
     def renewHTTPRequest(self):
-        if hasattr(self, "http"): self.http.close()
+        if hasattr(self, "http"):
+            self.http.close()
         self.http = HTTPRequest(self.cj, self.options)
 
 
@@ -61,16 +62,12 @@ class Browser(object):
 
     @property
     def arrived(self):
-        if self.dl:
-            return self.dl.arrived
-        return 0
+        return self.dl.arrived if self.dl else 0
 
 
     @property
     def percent(self):
-        if not self.size:
-            return 0
-        return (self.arrived * 100) / self.size
+        return (self.arrived * 100) / self.size if self.size else 0
 
 
     def clearCookies(self):
@@ -95,7 +92,7 @@ class Browser(object):
         """ this can also download ftp """
         self._size = 0
         self.dl = HTTPDownload(url, filename, get, post, self.lastEffectiveURL if ref else None,
-            self.cj if cookies else None, self.bucket, self.options, progressNotify, disposition)
+                               self.cj if cookies else None, self.bucket, self.options, progressNotify, disposition)
         name = self.dl.download(chunks, resume)
         self._size = self.dl.size
 
@@ -124,7 +121,8 @@ class Browser(object):
 
 
     def removeAuth(self):
-        if "auth" in self.options: del self.options['auth']
+        if "auth" in self.options:
+            del self.options['auth']
         self.renewHTTPRequest()
 
 
@@ -134,7 +132,8 @@ class Browser(object):
 
 
     def deleteOption(self, name):
-        if name in self.options: del self.options[name]
+        if name in self.options:
+            del self.options[name]
 
 
     def clearHeaders(self):

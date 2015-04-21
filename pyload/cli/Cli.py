@@ -55,8 +55,8 @@ class Cli(object):
             self.lock = Lock()
 
             # processor funcions, these will be changed dynamically depending on control flow
-            self.headerHandler = self  # the download status
-            self.bodyHandler = self  # the menu section
+            self.headerHandler = self  #: the download status
+            self.bodyHandler = self  #: the menu section
             self.inputHandler = self
 
             os.system("clear")
@@ -158,7 +158,7 @@ class Cli(object):
         line += 1
 
         for download in data:
-            if download.status == 12:  # downloading
+            if download.status == 12:  #: downloading
                 percent = download.percent
                 z = percent / 4
                 speed += download.speed
@@ -214,7 +214,7 @@ class Cli(object):
 
         # clear old output
         if line < self.lastLowestLine:
-            for i in range(line + 1, self.lastLowestLine + 1):
+            for i in xrange(line + 1, self.lastLowestLine + 1):
                 println(i, "")
 
         self.lastLowestLine = line
@@ -265,7 +265,7 @@ class Cli(object):
                 print "No downloads running."
 
             for download in files:
-                if download.status == 12:  # downloading
+                if download.status == 12:  #: downloading
                     print print_status(download)
                     print "\tDownloading: %s @ %s/s\t %s (%s%%)" % (
                         download.format_eta, formatSize(download.speed), formatSize(download.size - download.bleft),
@@ -321,9 +321,8 @@ class Cli(object):
                 print _("File does not exists.")
                 return
 
-            f = open(join(owd, path), "rb")
-            content = f.read()
-            f.close()
+            with open(join(owd, path), "rb") as f:
+                content = f.read()
 
             rid = self.client.checkOnlineStatusContainer([], basename(f.name), content).rid
             self.printOnlineCheck(self.client, rid)

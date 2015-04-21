@@ -8,7 +8,7 @@ from pyload.plugin.internal.MultiHoster import MultiHoster
 def random_with_N_digits(n):
     rand = "0."
     not_zero = 0
-    for _i in range(1, n + 1):
+    for _i in xrange(1, n + 1):
         r = randint(0, 9)
         if(r > 0):
             not_zero += 1

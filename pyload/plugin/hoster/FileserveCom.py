@@ -134,7 +134,7 @@ class FileserveCom(Hoster):
             self.wait()
             self.retry()
 
-        self.thread.m.reconnecting.wait(3)  # Ease issue with later downloads appearing to be in parallel
+        self.thread.m.reconnecting.wait(3)  #: Ease issue with later downloads appearing to be in parallel
 
 
     def doTimmer(self):
@@ -185,7 +185,7 @@ class FileserveCom(Hoster):
     def handlePremium(self, pyfile):
         premium_url = None
         if self.getClassName() == "FileserveCom":
-            #try api download
+            # try api download
             res = self.load("http://app.fileserve.com/api/download/premium/",
                             post={"username": self.user,
                                   "password": self.account.getAccountData(self.user)['password'],

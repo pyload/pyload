@@ -39,10 +39,10 @@ setup(
     author="pyLoad Team",
     author_email="support@pyload.org",
     platforms = ('Any',),
-    #package_dir={'pyload': "src"},
+    # package_dir={'pyload': "src"},
     packages=["pyload"],
-    #package_data=find_package_data(),
-    #data_files=[],
+    # package_data=find_package_data(),
+    # data_files=[],
     include_package_data=True,
     exclude_package_data={'pyload': ["docs*", "scripts*", "tests*"]},  #: exluced from build but not from sdist
     # 'bottle >= 0.10.0' not in list, because its small and contain little modifications
@@ -53,7 +53,7 @@ setup(
         'lightweight webserver': ['bjoern'],
         'RSS plugins': ['feedparser'],
     },
-    #setup_requires=["setuptools_hg"],
+    # setup_requires=["setuptools_hg"],
     entry_points={
         'console_scripts': [
             'pyLoadCore = pyLoadCore:main',
@@ -152,8 +152,8 @@ def get_source(options):
     f = open(pyload / "__init__.py", "wb")
     f.close()
 
-    #options.setup.packages = find_packages()
-    #options.setup.package_data = find_package_data()
+    # options.setup.packages = find_packages()
+    # options.setup.package_data = find_package_data()
 
 
 @task
@@ -191,7 +191,7 @@ def thrift(options):
     (outdir / "thriftgen").rmtree()
     (outdir / "gen-py").move(outdir / "thriftgen")
 
-    #create light ttypes
+    # create light ttypes
     from pyload.remote.socketbackend.create_ttypes import main
     main()
 
@@ -270,11 +270,11 @@ def upload_translations(options):
             shutil.copy(f, tmp / 'pyLoad')
 
     config = tmp / 'crowdin.yaml'
-    content = open(config, 'rb').read()
+    with open(config, 'rb') as f:
+        content = f.read()
     content = content.format(key=options.key, tmp=tmp)
-    f = open(config, 'wb')
-    f.write(content)
-    f.close()
+    with open(config, 'wb') as f:
+        f.write(content)
 
     call(['crowdin-cli', '-c', config, 'upload', 'source'])
 
@@ -300,11 +300,11 @@ def download_translations(options):
             shutil.copy(f, tmp / 'pyLoad')
 
     config = tmp / 'crowdin.yaml'
-    content = open(config, 'rb').read()
+    with open(config, 'rb') as f:
+        content = f.read()
     content = content.format(key=options.key, tmp=tmp)
-    f = open(config, 'wb')
-    f.write(content)
-    f.close()
+    with open(config, 'wb') as f:
+        f.write(content)
 
     call(['crowdin-cli', '-c', config, 'download'])
 
@@ -395,14 +395,12 @@ def walk_trans(path, EXCLUDE, endings=[".py"]):
 def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
     print "Generate %s.pot" % domain
 
-    f = open("includes.txt", "wb")
-    if includes:
-        f.write(includes)
+    with open("includes.txt", "wb") as f:
+        if includes:
+            f.write(includes)
 
-    if p:
-        f.write(walk_trans(path(p), excludes, endings))
-
-    f.close()
+        if p:
+            f.write(walk_trans(path(p), excludes, endings))
 
     call(["xgettext", "--files-from=includes.txt", "--default-domain=%s" % domain] + xargs + xxargs)
 

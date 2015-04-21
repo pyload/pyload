@@ -126,8 +126,8 @@ class MegaCoNz(Hoster):
         except IOError, e:
             self.fail(e)
 
-        chunk_size = 2 ** 15  # buffer size, 32k
-        # file_mac   = [0, 0, 0, 0]  # calculate CBC-MAC for checksum
+        chunk_size = 2 ** 15  #: buffer size, 32k
+        # file_mac   = [0, 0, 0, 0]  #: calculate CBC-MAC for checksum
 
         chunks = os.path.getsize(file_crypted) / chunk_size + 1
         for i in xrange(chunks):

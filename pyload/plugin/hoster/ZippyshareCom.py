@@ -68,7 +68,7 @@ class ZippyshareCom(SimpleHoster):
 
         def replElementById(element):
             id   = element.group(1)  #: id might be either 'x' (a real id) or x (a variable)
-            attr = element.group(4)  # attr might be None
+            attr = element.group(4)  #: attr might be None
 
             varName = re.sub(r'-', '', 'GVAR[%s+"_%s"]' %(id, attr))
 

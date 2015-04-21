@@ -21,7 +21,7 @@ class CloudzillaTo(Account):
     def loadAccountInfo(self, user, req):
         html = req.load("http://www.cloudzilla.to/")
 
-        premium = True if re.search(self.PREMIUM_PATTERN, html) else False
+        premium = re.search(self.PREMIUM_PATTERN, html) is not None
 
         return {'validuntil': -1, 'trafficleft': -1, 'premium': premium}
 

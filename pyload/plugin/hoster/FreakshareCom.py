@@ -87,7 +87,7 @@ class FreakshareCom(Hoster):
 
 
     def download_html(self):
-        self.load("http://freakshare.com/index.php", {"language": "EN"})  # Set english language in server session
+        self.load("http://freakshare.com/index.php", {"language": "EN"})  #: Set english language in server session
         self.html = self.load(self.pyfile.url)
 
 
@@ -97,9 +97,9 @@ class FreakshareCom(Hoster):
         if not self.html:
             self.download_html()
         if not self.wantReconnect:
-            self.req_opts = self.get_download_options()  # get the Post options for the Request
-            #file_url = self.pyfile.url
-            #return file_url
+            self.req_opts = self.get_download_options()  #: get the Post options for the Request
+            # file_url = self.pyfile.url
+            # return file_url
         else:
             self.offline()
 
@@ -163,11 +163,11 @@ class FreakshareCom(Hoster):
 
     def get_download_options(self):
         re_envelope = re.search(r".*?value=\"Free\sDownload\".*?\n*?(.*?<.*?>\n*)*?\n*\s*?</form>",
-                                self.html).group(0)  # get the whole request
+                                self.html).group(0)  #: get the whole request
         to_sort = re.findall(r"<input\stype=\"hidden\"\svalue=\"(.*?)\"\sname=\"(.*?)\"\s\/>", re_envelope)
         request_options = dict((n, v) for (v, n) in to_sort)
 
-        herewego = self.load(self.pyfile.url, None, request_options)  # the actual download-Page
+        herewego = self.load(self.pyfile.url, None, request_options)  #: the actual download-Page
 
         to_sort = re.findall(r"<input\stype=\".*?\"\svalue=\"(\S*?)\".*?name=\"(\S*?)\"\s.*?\/>", herewego)
         request_options = dict((n, v) for (v, n) in to_sort)

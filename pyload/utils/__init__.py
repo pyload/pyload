@@ -63,7 +63,7 @@ def remove_chars(string, repl):
 
 def safe_filename(name):
     """ remove bad chars """
-    name = unquote(name).encode('ascii', 'replace')  # Non-ASCII chars usually breaks file saving. Replacing.
+    name = unquote(name).encode('ascii', 'replace')  #: Non-ASCII chars usually breaks file saving. Replacing.
     if os.name == 'nt':
         return remove_chars(name, u'\00\01\02\03\04\05\06\07\10\11\12\13\14\15\16\17\20\21\22\23\24\25\26\27\30\31\32'
                                   u'\33\34\35\36\37/?%*|"<>')
@@ -95,15 +95,15 @@ if sys.getfilesystemencoding().startswith('ANSI'):
     def fs_encode(string):
         return safe_filename(encode(string))
 
-    fs_decode = decode  # decode utf8
+    fs_decode = decode  #: decode utf8
 
 else:
-    fs_encode = fs_decode = lambda x: x  # do nothing
+    fs_encode = fs_decode = lambda x: x  #: do nothing
 
 
 def get_console_encoding(enc):
     if os.name == "nt":
-        if enc == "cp65001":  # aka UTF-8
+        if enc == "cp65001":  #: aka UTF-8
             print "WARNING: Windows codepage 65001 is not supported."
             enc = "cp850"
     else:
@@ -178,7 +178,7 @@ def uniqify(seq):  #: Originally by Dave Kirby
     return [x for x in seq if x not in seen and not seen_add(x)]
 
 
-def parseFileSize(string, unit=None):  # returns bytes
+def parseFileSize(string, unit=None):  #: returns bytes
     if not unit:
         m = re.match(r"([\d.,]+) *([a-zA-Z]*)", string.strip().lower())
         if m:
@@ -244,7 +244,7 @@ def fixup(m):
         except KeyError:
             pass
 
-    return text  # leave as is
+    return text  #: leave as is
 
 
 def has_method(obj, name):

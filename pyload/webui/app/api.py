@@ -8,7 +8,6 @@ from bottle import route, request, response, HTTPError
 
 from pyload.webui.app.utils import toDict, set_session
 from pyload.webui import PYLOAD
-
 from pyload.utils import json
 from SafeEval import const_eval as literal_eval
 from pyload.api import BaseObject

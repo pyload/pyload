@@ -274,12 +274,12 @@ def config():
             data.trafficleft = formatSize(data.trafficleft)
 
         if data.validuntil == -1:
-            data.validuntil  = _("unlimited")
+            data.validuntil = _("unlimited")
         elif not data.validuntil:
-            data.validuntil  = _("not available")
+            data.validuntil = _("not available")
         else:
             t = time.localtime(data.validuntil)
-            data.validuntil  = time.strftime("%d.%m.%Y - %H:%M:%S", t)
+            data.validuntil = time.strftime("%d.%m.%Y - %H:%M:%S", t)
 
         try:
             data.options['time'] = data.options['time'][0]
@@ -292,7 +292,8 @@ def config():
             data.options['limitdl'] = "0"
 
     return render_to_response('settings.html',
-                              {'conf': {'plugin': plugin_menu, 'general': conf_menu, 'accs': accs}, 'types': PYLOAD.getAccountTypes()},
+                              {'conf': {'plugin': plugin_menu, 'general': conf_menu, 'accs': accs},
+                               'types': PYLOAD.getAccountTypes()},
                               [pre_processor])
 
 
@@ -302,10 +303,7 @@ def config():
 @route('/pathchooser/<path:path>')
 @login_required('STATUS')
 def path(file="", path=""):
-    if file:
-        type = "file"
-    else:
-        type = "folder"
+    type = "file" if file else "folder"
 
     path = os.path.normpath(unquotepath(path))
 
@@ -360,10 +358,7 @@ def path(file="", path=""):
         except Exception:
             continue
 
-        if os.path.isdir(join(cwd, f)):
-            data['type'] = 'dir'
-        else:
-            data['type'] = 'file'
+        data['type'] = 'dir' if os.path.isdir(join(cwd, f)) else 'file'
 
         if os.path.isfile(join(cwd, f)):
             data['size'] = os.path.getsize(join(cwd, f))
@@ -434,7 +429,7 @@ def logs(item=-1):
     if item < 1 or type(item) is not int:
         item = 1 if len(log) - perpage + 1 < 1 else len(log) - perpage + 1
 
-    if type(fro) is datetime:  # we will search for datetime
+    if type(fro) is datetime:  #: we will search for datetime
         item = -1
 
     data = []
@@ -454,16 +449,16 @@ def logs(item=-1):
                 level = '?'
                 message = l
             if item == -1 and dtime is not None and fro <= dtime:
-                item = counter  # found our datetime
+                item = counter  #: found our datetime
             if item >= 0:
                 data.append({'line': counter, 'date': date + " " + time, 'level': level, 'message': message})
                 perpagecheck += 1
-                if fro is None and dtime is not None:  # if fro not set set it to first showed line
+                if fro is None and dtime is not None:  #: if fro not set set it to first showed line
                     fro = dtime
             if perpagecheck >= perpage > 0:
                 break
 
-    if fro is None:  # still not set, empty log?
+    if fro is None:  #: still not set, empty log?
         fro = datetime.now()
     if reversed:
         data.reverse()
@@ -486,7 +481,7 @@ def admin():
     for data in user.itervalues():
         data['perms'] = {}
         get_permission(data['perms'], data['permission'])
-        data['perms']['admin'] = True if data['role'] is 0 else False
+        data['perms']['admin'] = data['role'] is 0
 
     s = request.environ.get('beaker.session')
     if request.environ.get('REQUEST_METHOD', "GET") == "POST":
@@ -520,11 +515,7 @@ def setup():
 @route('/info')
 def info():
     conf = PYLOAD.getConfigDict()
-
-    if hasattr(os, "uname"):
-        extra = os.uname()
-    else:
-        extra = tuple()
+    extra = os.uname() if hasattr(os, "uname") else tuple()
 
     data = {"python"   : sys.version,
             "os"       : " ".join((os.name, sys.platform) + extra),

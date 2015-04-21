@@ -129,7 +129,7 @@ class PluginManager(object):
                 module = f.replace(".pyc", "").replace(".py", "")
 
                 # the plugin is loaded from user directory
-                plugins[name]['user'] = True if rootplugins else False
+                plugins[name]['user'] = bool(rootplugins)
                 plugins[name]['name'] = module
 
                 pattern = self.PATTERN.findall(content)
@@ -165,13 +165,13 @@ class PluginManager(object):
                             config = [list(config)]
 
                         if folder not in ("account", "internal") and not [True for item in config if item[0] == "activated"]:
-                            config.insert(0, ["activated", "bool", "Activated", False if folder in ("addon", "hook") else True])
+                            config.insert(0, ["activated", "bool", "Activated", not folder in ("addon", "hook")])
 
                         self.core.config.addPluginConfig("%s_%s" % (name, folder), config, desc)
                     except Exception:
                         self.core.log.error("Invalid config in %s: %s" % (name, config))
 
-                elif folder in ("addon", "hook"):  # force config creation
+                elif folder in ("addon", "hook"):  #: force config creation
                     desc = self.DESC.findall(content)
                     desc = desc[0][1] if desc else ""
                     config = (["activated", "bool", "Activated", False],)
@@ -313,9 +313,9 @@ class PluginManager(object):
 
     def find_module(self, fullname, path=None):
         # redirecting imports if necesarry
-        if fullname.startswith(self.ROOT) or fullname.startswith(self.USERROOT):  # seperate pyload plugins
+        if fullname.startswith(self.ROOT) or fullname.startswith(self.USERROOT):  #: seperate pyload plugins
             if fullname.startswith(self.USERROOT): user = 1
-            else: user = 0  # used as bool and int
+            else: user = 0  #: used as bool and int
 
             split = fullname.split(".")
             if len(split) != 4 - user:
@@ -332,7 +332,7 @@ class PluginManager(object):
 
 
     def load_module(self, name, replace=True):
-        if name not in sys.modules:  # could be already in modules
+        if name not in sys.modules:  #: could be already in modules
             if replace:
                 if self.ROOT in name:
                     newname = name.replace(self.ROOT, self.USERROOT)
@@ -401,4 +401,4 @@ class PluginManager(object):
 
     def reloadPlugin(self, type_plugin):
         """ reload and reindex ONE plugin """
-        return True if self.reloadPlugins(type_plugin) else False
+        return bool(self.reloadPlugins(type_plugin))

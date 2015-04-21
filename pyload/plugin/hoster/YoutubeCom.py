@@ -94,7 +94,7 @@ class YoutubeCom(Hoster):
         if "We have been receiving a large volume of requests from your network." in html:
             self.tempOffline()
 
-        #get config
+        # get config
         use3d = self.getConfig('3d')
 
         if use3d:
@@ -113,7 +113,7 @@ class YoutubeCom(Hoster):
             self.logWarning(_("FMT %d unknown, using default") % desired_fmt)
             desired_fmt = 0
 
-        #parse available streams
+        # parse available streams
         streams = re.search(r'"url_encoded_fmt_stream_map":"(.+?)",', html).group(1)
         streams = [x.split('\u0026') for x in streams.split(',')]
         streams = [dict((y.split('=', 1)) for y in x) for x in streams]
@@ -123,7 +123,7 @@ class YoutubeCom(Hoster):
 
         self.logDebug("AVAILABLE STREAMS: %s" % [x[0] for x in streams])
 
-        #build dictionary of supported itags (3D/2D)
+        # build dictionary of supported itags (3D/2D)
         allowed = lambda x: self.getConfig(self.formats[x][0])
         streams = [x for x in streams if x[0] in self.formats and allowed(x[0])]
 
@@ -136,11 +136,11 @@ class YoutubeCom(Hoster):
                       (desired_fmt, "%s %dx%d Q:%d 3D:%s" % self.formats[desired_fmt],
                        "" if desired_fmt in fmt_dict else "NOT ", "" if allowed(desired_fmt) else "NOT "))
 
-        #return fmt nearest to quality index
+        # return fmt nearest to quality index
         if desired_fmt in fmt_dict and allowed(desired_fmt):
             fmt = desired_fmt
         else:
-            sel  = lambda x: self.formats[x][3]  # select quality index
+            sel  = lambda x: self.formats[x][3]  #: select quality index
             comp = lambda x, y: abs(sel(x) - sel(y))
 
             self.logDebug("Choosing nearest fmt: %s" % [(x, allowed(x), comp(x, desired_fmt)) for x in fmt_dict.keys()])
@@ -154,7 +154,7 @@ class YoutubeCom(Hoster):
 
         self.logDebug("URL: %s" % url)
 
-        #set file name
+        # set file name
         file_suffix = self.formats[fmt][0] if fmt in self.formats else ".flv"
         file_name_pattern = '<meta name="title" content="(.+?)">'
         name = re.search(file_name_pattern, html).group(1).replace("/", "")

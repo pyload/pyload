@@ -20,12 +20,12 @@ class MultishareCz(Account):
 
 
     def loadAccountInfo(self, user, req):
-        #self.relogin(user)
+        # self.relogin(user)
         html = req.load("http://www.multishare.cz/profil/", decode=True)
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         trafficleft = self.parseTraffic(m.group('S') + m.group('U')) if m else 0
-        self.premium = True if trafficleft else False
+        self.premium = bool(trafficleft)
 
         html = req.load("http://www.multishare.cz/", decode=True)
         mms_info = dict(re.findall(self.ACCOUNT_INFO_PATTERN, html))

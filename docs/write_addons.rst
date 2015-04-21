@@ -20,12 +20,15 @@ All addons should start with something like this: ::
 
 
         class YourAddon(Addon):
-                __name = "YourAddon"
+                __name    = "YourAddon"
+                __tupe    = "addon"
                 __version = "0.1"
+
+                __config = [("activated", "bool", "Activated", "True")]
+
                 __description = "Does really cool stuff"
-                __config = [ ("activated" , "bool" , "Activated"  , "True" ) ]
-                __author_name__ = ("Me")
-                __author_mail__ = ("me@has-no-mail.com")
+                __license     = "Your license short name"
+                __authors     = [("Me", "me@has-no-mail.com")]
 
 All meta-data is defined in the header, you need at least one option at ``__config`` so the user can toggle your
 addon on and off. Dont't overwrite the ``init`` method if not neccesary, use ``setup`` instead.
@@ -130,7 +133,7 @@ Sounds complicated but is very easy to do. Just use the ``Expose`` decorator: ::
 Thats all, it's available via the :class:`Api <pyload.api.Api>` now. If you want to use it read :ref:`access_api`.
 Here is a basic example: ::
 
-    #Assuming client is a ThriftClient or Api object
+    # Assuming client is a ThriftClient or Api object
 
     print client.getServices()
     print client.call(ServiceCall("YourAddon", "invoke", "an argument"))
@@ -158,7 +161,7 @@ Just store everything in ``self.info``. ::
 
 Usable with: ::
 
-    #Assuming client is a ThriftClient or Api object
+    # Assuming client is a ThriftClient or Api object
 
     print client.getAllInfo()
 

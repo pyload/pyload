@@ -33,7 +33,7 @@ class ThreadManager(object):
 
         self.reconnecting = Event()
         self.reconnecting.clear()
-        self.downloaded = 0  # number of files downloaded since last cleanup
+        self.downloaded = 0  #: number of files downloaded since last cleanup
 
         self.lock = Lock()
 
@@ -51,7 +51,7 @@ class ThreadManager(object):
 
         pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
-        for _i in range(0, self.core.config.get("download", "max_downloads")):
+        for _i in xrange(0, self.core.config.get("download", "max_downloads")):
             self.createThread()
 
 
@@ -206,7 +206,7 @@ class ThreadManager(object):
                     ("http://checkip.dyndns.org/", ".*Current IP Address: (\S+)</body>.*")]
 
         ip = ""
-        for _i in range(10):
+        for _i in xrange(10):
             try:
                 sv = choice(services)
                 ip = getURL(sv[0])

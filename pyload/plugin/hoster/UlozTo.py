@@ -123,7 +123,7 @@ class UlozTo(SimpleHoster):
             "wrong_captcha": re.compile(r'<ul class="error">\s*<li>Error rewriting the text.</li>'),
             "offline"      : re.compile(self.OFFLINE_PATTERN),
             "passwd"       : self.PASSWD_PATTERN,
-            "server_error" : 'src="http://img.ulozto.cz/error403/vykricnik.jpg"',  # paralell dl, server overload etc.
+            "server_error" : 'src="http://img.ulozto.cz/error403/vykricnik.jpg"',  #: paralell dl, server overload etc.
             "not_found"    : "<title>Ulož.to</title>"
         })
 

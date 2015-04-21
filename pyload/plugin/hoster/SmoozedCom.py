@@ -20,7 +20,7 @@ class SmoozedCom(MultiHoster):
     def handlePremium(self, pyfile):
         # In some cases hostsers do not supply us with a filename at download, so we
         # are going to set a fall back filename (e.g. for freakshare or xfileshare)
-        pyfile.name = pyfile.name.split('/').pop()  # Remove everthing before last slash
+        pyfile.name = pyfile.name.split('/').pop()  #: Remove everthing before last slash
 
         # Correction for automatic assigned filename: Removing html at end if needed
         suffix_to_remove = ["html", "htm", "php", "php3", "asp", "shtm", "shtml", "cfml", "cfm"]

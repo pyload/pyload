@@ -34,13 +34,13 @@ setup(
 
     platforms=['Any'],
 
-    #package_dir={'pyload': 'src'},
+    # package_dir={'pyload': 'src'},
 
     packages=['pyload'],
 
-    #package_data=find_package_data(),
+    # package_data=find_package_data(),
 
-    #data_files=[],
+    # data_files=[],
 
     include_package_data=True,
 
@@ -74,11 +74,11 @@ setup(
         'JSON speedup'            : ["simplejson"]
     },
 
-    #setup_requires=["setuptools_hg"],
+    # setup_requires=["setuptools_hg"],
 
-    #test_suite='nose.collector',
+    # test_suite='nose.collector',
 
-    #tests_require=['nose', 'websocket-client >= 0.8.0', 'requests >= 1.2.2'],
+    # tests_require=['nose', 'websocket-client >= 0.8.0', 'requests >= 1.2.2'],
 
     entry_points={
         'console_scripts': [

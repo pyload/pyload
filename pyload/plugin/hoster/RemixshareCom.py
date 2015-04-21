@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 #
 # Test links:
-# http://remixshare.com/download/z8uli
+#   http://remixshare.com/download/z8uli
 #
 # Note:
-# The remixshare.com website is very very slow, so
-# if your download not starts because of pycurl timeouts:
-# Adjust timeouts in /usr/share/pyload/pyload/network/HTTPRequest.py
+#   The remixshare.com website is very very slow, so
+#   if your download not starts because of pycurl timeouts:
+#   Adjust timeouts in /usr/share/pyload/pyload/network/HTTPRequest.py
 
 import re
 

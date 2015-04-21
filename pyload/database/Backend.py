@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN, mkaay
 
+from __future__ import with_statement
+
 from threading import Event, Thread
 from os import remove
 from os.path import exists
 from shutil import move
-
 from Queue import Queue
 from traceback import print_exc
 
@@ -36,6 +37,7 @@ class style(object):
         def x(*args, **kwargs):
             if cls.db:
                 return f(cls.db, *args, **kwargs)
+
         return x
 
 
@@ -47,6 +49,7 @@ class style(object):
         def x(*args, **kwargs):
             if cls.db:
                 return cls.db.queue(f, *args, **kwargs)
+
         return x
 
 
@@ -73,15 +76,16 @@ class DatabaseJob(object):
         self.result = None
         self.exception = False
 
-#        import inspect
-#        self.frame = inspect.currentframe()
+        # import inspect
+        # self.frame = inspect.currentframe()
 
 
     def __repr__(self):
         from os.path import basename
+
         frame = self.frame.f_back
         output = ""
-        for _i in range(5):
+        for _i in xrange(5):
             output += "\t%s:%s, %s\n" % (basename(frame.f_code.co_filename), frame.f_lineno, frame.f_code.co_name)
             frame = frame.f_back
         del frame
@@ -167,26 +171,22 @@ class DatabaseBackend(Thread):
     def _checkVersion(self):
         """ check db version and delete it if needed"""
         if not exists("files.version"):
-            f = open("files.version", "wb")
-            f.write(str(DB_VERSION))
-            f.close()
+            with open("files.version", "wb") as f:
+                f.write(str(DB_VERSION))
             return
 
-        f = open("files.version", "rb")
-        v = int(f.read().strip())
-        f.close()
-        if v < DB_VERSION:
-            if v < 2:
-                try:
-                    self.manager.core.log.warning(_("Filedatabase was deleted due to incompatible version."))
-                except Exception:
-                    print "Filedatabase was deleted due to incompatible version."
-                remove("files.version")
-                move("files.db", "files.backup.db")
-            f = open("files.version", "wb")
-            f.write(str(DB_VERSION))
-            f.close()
-            return v
+        with open("files.version", "wb+") as f:
+            v = int(f.read().strip())
+            if v < DB_VERSION:
+                if v < 2:
+                    try:
+                        self.manager.core.log.warning(_("Filedatabase was deleted due to incompatible version."))
+                    except Exception:
+                        print "Filedatabase was deleted due to incompatible version."
+                    remove("files.version")
+                    move("files.db", "files.backup.db")
+                f.write(str(DB_VERSION))
+                return v
 
 
     def _convertDB(self, v):
@@ -198,11 +198,12 @@ class DatabaseBackend(Thread):
             except Exception:
                 print "Filedatabase could NOT be converted."
 
-    #convert scripts start-----------------------------------------------------
+    # convert scripts start ---------------------------------------------------
 
 
     def _convertV2(self):
-        self.c.execute('CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
         try:
             self.manager.core.log.info(_("Database was converted from v2 to v3."))
         except Exception:
@@ -211,47 +212,45 @@ class DatabaseBackend(Thread):
 
 
     def _convertV3(self):
-        self.c.execute('CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)')
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)')
         try:
             self.manager.core.log.info(_("Database was converted from v3 to v4."))
         except Exception:
             print "Database was converted from v3 to v4."
 
-    #convert scripts end-------------------------------------------------------
+    # convert scripts end -----------------------------------------------------
 
 
     def _createTables(self):
         """create tables for database"""
 
-        self.c.execute('CREATE TABLE IF NOT EXISTS "packages" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "folder" TEXT, "password" TEXT DEFAULT "", "site" TEXT DEFAULT "", "queue" INTEGER DEFAULT 0 NOT NULL, "packageorder" INTEGER DEFAULT 0 NOT NULL)')
-        self.c.execute('CREATE TABLE IF NOT EXISTS "links" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "url" TEXT NOT NULL, "name" TEXT, "size" INTEGER DEFAULT 0 NOT NULL, "status" INTEGER DEFAULT 3 NOT NULL, "plugin" TEXT DEFAULT "BasePlugin" NOT NULL, "error" TEXT DEFAULT "", "linkorder" INTEGER DEFAULT 0 NOT NULL, "package" INTEGER DEFAULT 0 NOT NULL, FOREIGN KEY(package) REFERENCES packages(id))')
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "packages" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "folder" TEXT, "password" TEXT DEFAULT "", "site" TEXT DEFAULT "", "queue" INTEGER DEFAULT 0 NOT NULL, "packageorder" INTEGER DEFAULT 0 NOT NULL)')
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "links" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "url" TEXT NOT NULL, "name" TEXT, "size" INTEGER DEFAULT 0 NOT NULL, "status" INTEGER DEFAULT 3 NOT NULL, "plugin" TEXT DEFAULT "BasePlugin" NOT NULL, "error" TEXT DEFAULT "", "linkorder" INTEGER DEFAULT 0 NOT NULL, "package" INTEGER DEFAULT 0 NOT NULL, FOREIGN KEY(package) REFERENCES packages(id))')
         self.c.execute('CREATE INDEX IF NOT EXISTS "pIdIndex" ON links(package)')
-        self.c.execute('CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
-        self.c.execute('CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)')
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)')
 
         self.c.execute('CREATE VIEW IF NOT EXISTS "pstats" AS \
         SELECT p.id AS id, SUM(l.size) AS sizetotal, COUNT(l.id) AS linkstotal, linksdone, sizedone\
         FROM packages p JOIN links l ON p.id = l.package LEFT OUTER JOIN\
         (SELECT p.id AS id, COUNT(*) AS linksdone, SUM(l.size) AS sizedone \
-        FROM packages p JOIN links l ON p.id = l.package AND l.status in (0, 4, 13) GROUP BY p.id) s ON s.id = p.id \
+        FROM packages p JOIN links l ON p.id = l.package AND l.status IN (0, 4, 13) GROUP BY p.id) s ON s.id = p.id \
         GROUP BY p.id')
 
-        #try to lower ids
+        # try to lower ids
         self.c.execute('SELECT max(id) FROM LINKS')
         fid = self.c.fetchone()[0]
-        if fid:
-            fid = int(fid)
-        else:
-            fid = 0
+        fid = int(fid) if fid else 0
         self.c.execute('UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?', (fid, "links"))
-
 
         self.c.execute('SELECT max(id) FROM packages')
         pid = self.c.fetchone()[0]
-        if pid:
-            pid = int(pid)
-        else:
-            pid = 0
+        pid = int(pid) if pid else 0
         self.c.execute('UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?', (pid, "packages"))
 
         self.c.execute('VACUUM')
@@ -265,7 +264,7 @@ class DatabaseBackend(Thread):
                 print "Converting old Django DB"
             conn = sqlite3.connect('pyload.db')
             c = conn.cursor()
-            c.execute("SELECT username, password, email from auth_user WHERE is_superuser")
+            c.execute("SELECT username, password, email FROM auth_user WHERE is_superuser")
             users = []
             for r in c:
                 pw = r[1].split("$")

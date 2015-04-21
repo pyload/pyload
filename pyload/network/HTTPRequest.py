@@ -24,7 +24,7 @@ def myurlencode(data):
     data = dict(data)
     return urlencode(dict((encode(x), encode(y)) for x, y in data.iteritems()))
 
-bad_headers = range(400, 404) + range(405, 418) + range(500, 506)
+bad_headers = xrange(400, 404) + xrange(405, 418) + xrange(500, 506)
 
 
 class BadHeader(Exception):
@@ -41,16 +41,16 @@ class HTTPRequest(object):
         self.c = pycurl.Curl()
         self.rep = StringIO()
 
-        self.cj = cookies  # cookiejar
+        self.cj = cookies  #: cookiejar
 
         self.lastURL = None
         self.lastEffectiveURL = None
         self.abort = False
-        self.code = 0  # last http code
+        self.code = 0  #: last http code
 
         self.header = ""
 
-        self.headers = []  # temporary request header
+        self.headers = []  #: temporary request header
 
         self.initHandle()
         self.setInterface(options)
@@ -76,7 +76,7 @@ class HTTPRequest(object):
         if hasattr(pycurl, "USE_SSL"):
             self.c.setopt(pycurl.USE_SSL, pycurl.CURLUSESSL_TRY)
 
-        #self.c.setopt(pycurl.VERBOSE, 1)
+        # self.c.setopt(pycurl.VERBOSE, 1)
 
         self.c.setopt(pycurl.USERAGENT,
                       "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0")
@@ -158,7 +158,7 @@ class HTTPRequest(object):
             self.c.setopt(pycurl.POST, 1)
             if not multipart:
                 if type(post) == unicode:
-                    post = str(post)  # unicode not allowed
+                    post = str(post)  #: unicode not allowed
                 elif type(post) == str:
                     pass
                 else:
@@ -250,12 +250,12 @@ class HTTPRequest(object):
     def decodeResponse(self, rep):
         """ decode with correct encoding, relies on header """
         header = self.header.splitlines()
-        encoding = "utf8"  # default encoding
+        encoding = "utf8"  #: default encoding
 
         for line in header:
             line = line.lower().replace(" ", "")
-            if not line.startswith("content-type:") or\
-               ("text" not in line and "application" not in line):
+            if not line.startswith("content-type:") or \
+                    ("text" not in line and "application" not in line):
                 continue
 
             none, delemiter, charset = line.rpartition("charset=")
@@ -265,7 +265,7 @@ class HTTPRequest(object):
                     encoding = charset[0]
 
         try:
-            #self.log.debug("Decoded %s" % encoding )
+            # self.log.debug("Decoded %s" % encoding )
             if lookup(encoding).name == 'utf-8' and rep.startswith(BOM_UTF8):
                 encoding = 'utf-8-sig'
 

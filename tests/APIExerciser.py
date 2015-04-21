@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
+
 import string
 from threading import Thread
 from random import choice, sample, randint
@@ -15,7 +17,7 @@ from pyload.remote.thriftbackend.ThriftClient import ThriftClient, Destination
 def createURLs():
     """ create some urls, some may fail """
     urls = []
-    for x in range(0, randint(20, 100)):
+    for x in xrange(0, randint(20, 100)):
         name = "DEBUG_API"
         if randint(0, 5) == 5:
             name = ""  #: this link will fail
@@ -32,7 +34,7 @@ sumCalled = 0
 
 
 def startApiExerciser(core, n):
-    for _i in range(n):
+    for _i in xrange(n):
         APIExerciser(core).start()
 
 
@@ -60,32 +62,32 @@ class APIExerciser(Thread):
 
         self.core.log.info("API Excerciser started %d" % self.id)
 
-        out = open("error.log", "ab")
-        # core errors are not logged of course
-        out.write("\n" + "Starting\n")
-        out.flush()
+        with open("error.log", "ab") as out:
+            # core errors are not logged of course
+            out.write("\n" + "Starting\n")
+            out.flush()
 
-        while True:
-            try:
-                self.testAPI()
-            except Exception:
-                self.core.log.error("Excerciser %d throw an execption" % self.id)
-                print_exc()
-                out.write(format_exc() + 2 * "\n")
-                out.flush()
+            while True:
+                try:
+                    self.testAPI()
+                except Exception:
+                    self.core.log.error("Excerciser %d throw an execption" % self.id)
+                    print_exc()
+                    out.write(format_exc() + 2 * "\n")
+                    out.flush()
 
-            if not self.count % 100:
-                self.core.log.info("Exerciser %d tested %d api calls" % (self.id, self.count))
-            if not self.count % 1000:
-                out.flush()
+                if not self.count % 100:
+                    self.core.log.info("Exerciser %d tested %d api calls" % (self.id, self.count))
+                if not self.count % 1000:
+                    out.flush()
 
-            if not sumCalled % 1000:  #: not thread safe
-                self.core.log.info("Exercisers tested %d api calls" % sumCalled)
-                persec = sumCalled / (time() - self.time)
-                self.core.log.info("Approx. %.2f calls per second." % persec)
-                self.core.log.info("Approx. %.2f ms per call." % (1000 / persec))
-                self.core.log.info("Collected garbage: %d" % gc.collect())
-                # sleep(random() / 500)
+                if not sumCalled % 1000:  #: not thread safe
+                    self.core.log.info("Exercisers tested %d api calls" % sumCalled)
+                    persec = sumCalled / (time() - self.time)
+                    self.core.log.info("Approx. %.2f calls per second." % persec)
+                    self.core.log.info("Approx. %.2f ms per call." % (1000 / persec))
+                    self.core.log.info("Collected garbage: %d" % gc.collect())
+                    # sleep(random() / 500)
 
 
     def testAPI(self):

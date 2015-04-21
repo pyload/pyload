@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #
 # Test links:
-# http://novafile.com/vfun4z6o2cit
-# http://novafile.com/s6zrr5wemuz4
+#   http://novafile.com/vfun4z6o2cit
+#   http://novafile.com/s6zrr5wemuz4
 
 from pyload.plugin.internal.XFSHoster import XFSHoster
 

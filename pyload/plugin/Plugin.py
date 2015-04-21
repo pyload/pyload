@@ -220,10 +220,10 @@ class Plugin(Base):
             self.user, data = self.account.selectAccount()
             #: Browser instance, see `network.Browser`
             self.req = self.account.getAccountRequest(self.user)
-            self.chunkLimit = -1  # chunk limit, -1 for unlimited
+            self.chunkLimit = -1  #: chunk limit, -1 for unlimited
             #: enables resume (will be ignored if server dont accept chunks)
             self.resumeDownload = True
-            self.multiDL = True  # every hoster with account should provide multiple downloads
+            self.multiDL = True  #: every hoster with account should provide multiple downloads
             #: premium status
             self.premium = self.account.isPremium(self.user)
         else:
@@ -232,7 +232,7 @@ class Plugin(Base):
         #: associated pyfile instance, see `PyFile`
         self.pyfile = pyfile
 
-        self.thread = None  # holds thread in future
+        self.thread = None  #: holds thread in future
 
         #: location where the last call to download was saved
         self.lastDownload = ""
@@ -500,7 +500,7 @@ class Plugin(Base):
 
             captchaManager.removeTask(task)
 
-            if task.error and has_plugin:  # ignore default error message since the user could use OCR
+            if task.error and has_plugin:  #: ignore default error message since the user could use OCR
                 self.fail(_("Pil and tesseract not installed and no Client connected for captcha decrypting"))
             elif task.error:
                 self.fail(task.error)
@@ -705,7 +705,7 @@ class Plugin(Base):
             content = f.read(read_size if read_size else -1)
 
         # produces encoding errors, better log to other file in the future?
-        #self.logDebug("Content: %s" % content)
+        # self.logDebug("Content: %s" % content)
         for name, rule in rules.iteritems():
             if isinstance(rule, basestring):
                 if rule in content:
@@ -740,9 +740,9 @@ class Plugin(Base):
 
         for pyfile in self.core.files.cache.values():
             if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package().folder == pack.folder:
-                if pyfile.status in (0, 12):  # finished or downloading
+                if pyfile.status in (0, 12):  #: finished or downloading
                     raise SkipDownload(pyfile.pluginname)
-                elif pyfile.status in (5, 7) and starting:  # a download is waiting/starting and was appenrently started before
+                elif pyfile.status in (5, 7) and starting:  #: a download is waiting/starting and was appenrently started before
                     raise SkipDownload(pyfile.pluginname)
 
         download_folder = self.core.config.get("general", "download_folder")

@@ -9,7 +9,7 @@ import traceback
 from copy import copy
 
 # monkey patch bug in python 2.6 and lower
-# http://bugs.python.org/issue6122 , http://bugs.python.org/issue1236 , http://bugs.python.org/issue1731717
+# http://bugs.python.org/issue6122, http://bugs.python.org/issue1236, http://bugs.python.org/issue1731717
 if sys.version_info < (2, 7) and os.name != "nt":
     import errno
     import subprocess

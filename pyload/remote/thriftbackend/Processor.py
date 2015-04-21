@@ -57,7 +57,7 @@ class Processor(Pyload.Processor):
             # api login
             self.authenticated[trans] = self._handler.checkAuth(args.username, args.password, trans.remoteaddr[0])
 
-            result.success = True if self.authenticated[trans] else False
+            result.success = bool(self.authenticated[trans])
             oprot.writeMessageBegin("login", Pyload.TMessageType.REPLY, seqid)
             result.write(oprot)
             oprot.writeMessageEnd()

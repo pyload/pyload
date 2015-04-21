@@ -57,7 +57,7 @@ class BypassCaptcha(Hook):
     def submit(self, captcha, captchaType="file", match=None):
         req = getRequest()
 
-        #raise timeout threshold
+        # raise timeout threshold
         req.c.setopt(LOW_SPEED_TIME, 80)
 
         try:

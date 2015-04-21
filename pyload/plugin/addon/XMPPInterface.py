@@ -135,7 +135,7 @@ class XMPPInterface(IRCInterface, JabberClient):
         to_jid = stanza.get_from()
         from_jid = stanza.get_to()
 
-        #j = JID()
+        # j = JID()
         to_name = to_jid.as_utf8()
         from_name = from_jid.as_utf8()
 

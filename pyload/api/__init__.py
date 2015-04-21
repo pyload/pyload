@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
+from __future__ import with_statement
+
 from base64 import standard_b64encode
 from os.path import join
 from time import time
@@ -49,20 +51,20 @@ urlmatcher = re.compile(r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()
 
 
 class PERMS(object):
-    ALL = 0  # requires no permission, but login
-    ADD = 1  # can add packages
-    DELETE = 2  # can delete packages
-    STATUS = 4  # see and change server status
-    LIST = 16  # see queue and collector
-    MODIFY = 32  # moddify some attribute of downloads
-    DOWNLOAD = 64  # can download from webinterface
-    SETTINGS = 128  # can access settings
-    ACCOUNTS = 256  # can access accounts
-    LOGS = 512  # can see server logs
+    ALL = 0  #: requires no permission, but login
+    ADD = 1  #: can add packages
+    DELETE = 2  #: can delete packages
+    STATUS = 4  #: see and change server status
+    LIST = 16  #: see queue and collector
+    MODIFY = 32  #: moddify some attribute of downloads
+    DOWNLOAD = 64  #: can download from webinterface
+    SETTINGS = 128  #: can access settings
+    ACCOUNTS = 256  #: can access accounts
+    LOGS = 512  #: can see server logs
 
 
 class ROLE(object):
-    ADMIN = 0  # admin has all permissions implicit
+    ADMIN = 0  #: admin has all permissions implicit
     USER = 1
 
 
@@ -84,7 +86,7 @@ class Api(Iface):
     These can be configured via webinterface.
     Admin user have all permissions, and are the only ones who can access the methods with no specific permission.
     """
-    EXTERNAL = Iface  # let the json api know which methods are external
+    EXTERNAL = Iface  #: let the json api know which methods are external
 
 
     def __init__(self, core):
@@ -147,7 +149,7 @@ class Api(Iface):
         self.core.addonManager.dispatchEvent("config-changed", category, option, value, section)
         if section == "core":
             self.core.config[category][option] = value
-            if option in ("limit_speed", "max_speed"):  # not so nice to update the limit
+            if option in ("limit_speed", "max_speed"):  #: not so nice to update the limit
                 self.core.requestFactory.updateBucket()
         elif section == "plugin":
             self.core.config.setPlugin(category, option, value)
@@ -230,7 +232,7 @@ class Api(Iface):
                                     not self.core.threadManager.pause and self.isTimeDownload(),
                                     self.core.config.get("reconnect", "activated") and self.isTimeReconnect())
         for pyfile in [x.active for x in self.core.threadManager.threads if x.active and isinstance(x.active, PyFile)]:
-            serverStatus.speed += pyfile.getSpeed()  # bytes/s
+            serverStatus.speed += pyfile.getSpeed()  #: bytes/s
         return serverStatus
 
 
@@ -265,9 +267,8 @@ class Api(Iface):
         """
         filename = join(self.core.config.get("log", "log_folder"), 'log.txt')
         try:
-            fh = open(filename, "r")
-            lines = fh.readlines()
-            fh.close()
+            with open(filename, "r") as fh:
+                lines = fh.readlines()
             if offset >= len(lines):
                 return []
             return lines[offset:]
@@ -409,9 +410,8 @@ class Api(Iface):
         :param data: file content
         :return: online check
         """
-        th = open(join(self.core.config.get("general", "download_folder"), "tmp_" + container), "wb")
-        th.write(str(data))
-        th.close()
+        with open(join(self.core.config.get("general", "download_folder"), "tmp_" + container), "wb") as th:
+            th.write(str(data))
         return self.checkOnlineStatus(urls + [th.name])
 
 
@@ -707,9 +707,8 @@ class Api(Iface):
         :param filename: filename, extension is important so it can correctly decrypted
         :param data: file content
         """
-        th = open(join(self.core.config.get("general", "download_folder"), "tmp_" + filename), "wb")
-        th.write(str(data))
-        th.close()
+        with open(join(self.core.config.get("general", "download_folder"), "tmp_" + filename), "wb") as th:
+            th.write(str(data))
         self.addPackage(th.name, [th.name], Destination.Queue)
 
 
@@ -777,7 +776,7 @@ class Api(Iface):
         order = {}
         for pid in packs:
             pack = self.core.files.getPackageData(int(pid))
-            while pack['order'] in order.keys():  # just in case
+            while pack['order'] in order.keys():  #: just in case
                 pack['order'] += 1
             order[pack['order']] = pack['id']
         return order
@@ -793,7 +792,7 @@ class Api(Iface):
         rawdata = self.core.files.getPackageData(int(pid))
         order = {}
         for id, pyfile in rawdata['links'].iteritems():
-            while pyfile['order'] in order.keys():  # just in case
+            while pyfile['order'] in order.keys():  #: just in case
                 pyfile['order'] += 1
             order[pyfile['order']] = pyfile['id']
         return order
@@ -897,7 +896,7 @@ class Api(Iface):
             accounts = [AccountInfo(acc['validuntil'], acc['login'], acc['options'], acc['valid'],
                                     acc['trafficleft'], acc['maxtraffic'], acc['premium'], acc['type'])
                         for acc in group]
-        return accounts or []
+        return accounts or list()
 
 
     @permission(PERMS.ALL)
@@ -910,9 +909,9 @@ class Api(Iface):
 
 
     @permission(PERMS.ACCOUNTS)
-    def updateAccount(self, plugin, account, password=None, options=None):
+    def updateAccount(self, plugin, account, password=None, options={}):
         """Changes pw/options for specific account."""
-        self.core.accountManager.updateAccount(plugin, account, password, options or {})
+        self.core.accountManager.updateAccount(plugin, account, password, options)
 
 
     @permission(PERMS.ACCOUNTS)

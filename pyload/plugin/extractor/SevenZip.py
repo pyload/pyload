@@ -134,11 +134,11 @@ class SevenZip(UnRar):
     def call_cmd(self, command, *xargs, **kwargs):
         args = []
 
-        #overwrite flag
+        # overwrite flag
         if self.overwrite:
             args.append("-y")
 
-        #set a password
+        # set a password
         if "password" in kwargs and kwargs['password']:
             args.append("-p%s" % kwargs['password'])
         else:

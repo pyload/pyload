@@ -25,7 +25,7 @@ import xmlrpclib
 
 def bench(f, *args, **kwargs):
     s = time()
-    ret = [f(*args, **kwargs) for _i in range(0, 100)]
+    ret = [f(*args, **kwargs) for _i in xrange(0, 100)]
     e = time()
     try:
         print "%s: %f s" % (f._Method__name, e-s)
@@ -74,8 +74,8 @@ try:
     bench(client.getServerVersion)
     bench(client.statusServer)
     bench(client.statusDownloads)
-    #bench(client.getQueue)
-    #bench(client.getCollector)
+    # bench(client.getQueue)
+    # bench(client.getCollector)
 
     print
     print client.getServerVersion()

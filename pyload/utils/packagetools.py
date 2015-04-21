@@ -79,7 +79,7 @@ def parseNames(files):
         if len(split) > 1:
             name = split.pop(1)
 
-            #check if an already existing package may be ok for this file
+            # check if an already existing package may be ok for this file
         #        found = False
         #        for pack in packs:
         #            if pack in file:

@@ -49,10 +49,10 @@ class ThriftClient(object):
             correct = self.client.login(user, password)
         except error, e:
             if e.args and e.args[0] == 104:
-                #connection reset by peer, probably wants ssl
+                # connection reset by peer, probably wants ssl
                 try:
                     self.createConnection(host, port, True)
-                    #set timeout or a ssl socket will block when querying none ssl server
+                    # set timeout or a ssl socket will block when querying none ssl server
                     self.socket.setTimeout(10)
 
                 except ImportError:

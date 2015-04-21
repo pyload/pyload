@@ -27,7 +27,7 @@ class UlozTo(Account):
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
 
         trafficleft = float(m.group(1).replace(' ', '').replace(',', '.')) * 1000 * 1.048 if m else 0
-        premium     = True if trafficleft else False
+        premium     = bool(trafficleft)
 
         return {'validuntil': -1, 'trafficleft': trafficleft, 'premium': premium}
 

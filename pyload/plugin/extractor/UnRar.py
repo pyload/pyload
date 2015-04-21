@@ -81,7 +81,7 @@ class UnRar(Extractor):
 
     @classmethod
     def isMultipart(cls, filename):
-        return True if cls.re_multipart.search(filename) else False
+        return cls.re_multipart.search(filename) is not None
 
 
     def verify(self, password):

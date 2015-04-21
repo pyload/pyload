@@ -30,7 +30,6 @@ class ChunkInfo(object):
         ret = "ChunkInfo: %s, %s\n" % (self.name, self.size)
         for i, c in enumerate(self.chunks):
             ret += "%s# %s\n" % (i, c[1])
-
         return ret
 
 
@@ -51,7 +50,7 @@ class ChunkInfo(object):
         chunk_size = self.size / chunks
 
         current = 0
-        for i in range(chunks):
+        for i in xrange(chunks):
             end = self.size - 1 if (i == chunks - 1) else current + chunk_size
             self.addChunk("%s.chunk%s" % (self.name, i), (current, end))
             current += chunk_size + 1
@@ -222,7 +221,7 @@ class HTTPChunk(HTTPRequest):
 
 
     def writeBody(self, buf):
-        #ignore BOM, it confuses unrar
+        # ignore BOM, it confuses unrar
         if not self.BOMChecked:
             if [ord(b) for b in buf[:3]] == [239, 187, 191]:
                 buf = buf[3:]
@@ -310,7 +309,8 @@ class HTTPChunk(HTTPRequest):
         """ closes everything, unusable after this """
         if self.fp: self.fp.close()
         self.c.close()
-        if hasattr(self, "p"): del self.p
+        if hasattr(self, "p"):
+            del self.p
 
 
 def charEnc(enc):

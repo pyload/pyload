@@ -56,7 +56,7 @@ class Addon(Base):
         #: `AddonManager`
         self.manager = manager
 
-        #register events
+        # register events
         if self.event_map:
             for event, funcs in self.event_map.iteritems():
                 if type(funcs) in (list, tuple):
@@ -65,7 +65,7 @@ class Addon(Base):
                 else:
                     self.manager.addEvent(event, getattr(self, funcs))
 
-            #delete for various reasons
+            # delete for various reasons
             self.event_map = None
 
         if self.event_list:
@@ -115,7 +115,7 @@ class Addon(Base):
             self.unload()
 
 
-    def unload(self):  # Deprecated, use method deactivate() instead
+    def unload(self):  #: Deprecated, use method deactivate() instead
         pass
 
 
@@ -134,7 +134,7 @@ class Addon(Base):
             self.coreReady()
 
 
-    def coreReady(self):  # Deprecated, use method activate() instead
+    def coreReady(self):  #: Deprecated, use method activate() instead
         pass
 
 
@@ -144,7 +144,7 @@ class Addon(Base):
             self.coreExiting()
 
 
-    def coreExiting(self):  # Deprecated, use method exit() instead
+    def coreExiting(self):  #: Deprecated, use method exit() instead
         pass
 
 

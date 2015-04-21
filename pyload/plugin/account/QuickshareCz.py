@@ -24,7 +24,7 @@ class QuickshareCz(Account):
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m:
             trafficleft = self.parseTraffic(m.group(1))
-            premium = True if trafficleft else False
+            premium = bool(trafficleft)
         else:
             trafficleft = None
             premium = False

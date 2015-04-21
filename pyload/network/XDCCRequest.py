@@ -2,15 +2,12 @@
 # @author: jeix
 
 import socket
-import re
+import struct
 
 from os import remove
 from os.path import exists
-
-from time import time
-
-import struct
 from select import select
+from time import time
 
 from pyload.plugin.Plugin import Abort
 
@@ -145,9 +142,7 @@ class XDCCRequest(object):
 
     @property
     def percent(self):
-        if not self.filesize:
-            return 0
-        return (self.recv * 100) / self.filesize
+        return (self.recv * 100) / self.filesize if elf.filesize else 0
 
 
     def close(self):

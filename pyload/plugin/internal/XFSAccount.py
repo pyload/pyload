@@ -67,7 +67,7 @@ class XFSAccount(Account):
 
         html = req.load(self.HOSTER_URL, get={'op': "my_account"}, decode=True)
 
-        premium = True if re.search(self.PREMIUM_PATTERN, html) else False
+        premium = re.search(self.PREMIUM_PATTERN, html) is not None
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:

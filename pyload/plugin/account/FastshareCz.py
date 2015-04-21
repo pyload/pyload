@@ -41,7 +41,7 @@ class FastshareCz(Account):
     def login(self, user, data, req):
         req.cj.setCookie("fastshare.cz", "lang", "en")
 
-        req.load('http://www.fastshare.cz/login')  # Do not remove or it will not login
+        req.load('http://www.fastshare.cz/login')  #: Do not remove or it will not login
 
         html = req.load("http://www.fastshare.cz/sql.php",
                         post={'login': user, 'heslo': data['password']},

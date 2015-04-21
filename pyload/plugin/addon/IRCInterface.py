@@ -338,7 +338,7 @@ class IRCInterface(Thread, Addon):
             if not pack:
                 return ["ERROR: Package doesn't exists."]
 
-            #TODO add links
+            # TODO add links
 
             return ["INFO: Added %d links to Package %s [#%d]" % (len(links), pack['name'], id)]
 

@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import with_statement
+
 from os.path import join
 import re
 from urllib import unquote
@@ -6,6 +9,7 @@ from base64 import standard_b64decode
 from binascii import unhexlify
 
 from bottle import route, request, HTTPError
+
 from pyload.webui import PYLOAD, DL_ROOT, JS
 
 
@@ -57,9 +61,8 @@ def addcrypted():
     dlc = request.forms['crypted'].replace(" ", "+")
 
     dlc_path = join(DL_ROOT, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc")
-    dlc_file = open(dlc_path, "wb")
-    dlc_file.write(dlc)
-    dlc_file.close()
+    with open(dlc_path, "wb") as dlc_file:
+        dlc_file.write(dlc)
 
     try:
         PYLOAD.addPackage(package, [dlc_path], 0)
@@ -85,7 +88,7 @@ def addcrypted2():
         try:
             jk = re.findall(r"return ('|\")(.+)('|\")", jk)[0][1]
         except Exception:
-            ## Test for some known js functions to decode
+            # Test for some known js functions to decode
             if jk.find("dec") > -1 and jk.find("org") > -1:
                 org = re.findall(r"var org = ('|\")([^\"']+)", jk)[0][1]
                 jk = list(org)

@@ -57,7 +57,7 @@ class UploadedTo(SimpleHoster):
 
     def setup(self):
         self.multiDL    = self.resumeDownload = self.premium
-        self.chunkLimit = 1  # critical problems with more chunks
+        self.chunkLimit = 1  #: critical problems with more chunks
 
 
     def checkErrors(self):
@@ -68,14 +68,14 @@ class UploadedTo(SimpleHoster):
         elif "limit-size" in self.html:
             self.fail(_("File too big for free download"))
 
-        elif "limit-slot" in self.html:  # Temporary restriction so just wait a bit
+        elif "limit-slot" in self.html:  #: Temporary restriction so just wait a bit
             self.wait(30 * 60, True)
             self.retry()
 
         elif "limit-parallel" in self.html:
             self.fail(_("Cannot download in parallel"))
 
-        elif "limit-dl" in self.html or self.DL_LIMIT_ERROR in self.html:  # limit-dl
+        elif "limit-dl" in self.html or self.DL_LIMIT_ERROR in self.html:  #: limit-dl
             self.wait(3 * 60 * 60, True)
             self.retry()
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Test links:
-# http://speedy.sh/ep2qY/Zapp-Brannigan.jpg
+#   http://speedy.sh/ep2qY/Zapp-Brannigan.jpg
 
 import re
 
