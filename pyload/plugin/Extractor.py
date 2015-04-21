@@ -31,13 +31,9 @@ class Extractor:
 
 
     EXTENSIONS = []
+    NAME       = __name__
     VERSION    = ""
     REPAIR     = False
-
-
-    @classmethod
-    def NAME(self):
-        return getattr(self, "_" + self.__name__ + "__name")
 
 
     @classmethod

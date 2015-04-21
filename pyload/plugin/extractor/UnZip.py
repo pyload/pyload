@@ -21,7 +21,8 @@ class UnZip(Extractor):
 
 
     EXTENSIONS = [".zip", ".zip64"]
-    VERSION ="(python %s.%s.%s)" % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
+    NAME       = __name__
+    VERSION    = "(python %s.%s.%s)" % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
 
 
     @classmethod
