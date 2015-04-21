@@ -24,7 +24,7 @@ def myurlencode(data):
     data = dict(data)
     return urlencode(dict((encode(x), encode(y)) for x, y in data.iteritems()))
 
-bad_headers = xrange(400, 404) + xrange(405, 418) + xrange(500, 506)
+bad_headers = range(400, 404) + range(405, 418) + range(500, 506)
 
 
 class BadHeader(Exception):
