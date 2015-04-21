@@ -69,7 +69,7 @@ class Addon(Base):
             self.event_map = None
 
         if self.event_list:
-            self.logWarning(_("Plugin used deprecated 'event_list', use 'event_map' instead"))
+            self.logWarning(_("Plugin used deprecated `event_list`, use `event_map` instead"))
 
             for f in self.event_list:
                 self.manager.addEvent(f, getattr(self, f))
@@ -111,11 +111,11 @@ class Addon(Base):
     def deactivate(self):
         """ called when addon was deactivated """
         if has_method(self.__class__, "unload"):
-            self.logWarning(_("Deprecated method 'unload()', use deactivate() instead"))
+            self.logWarning(_("Deprecated method `unload`, use `deactivate` instead"))
             self.unload()
 
 
-    def unload(self):  #: Deprecated, use method deactivate() instead
+    def unload(self):  #: Deprecated, use method `deactivate` instead
         pass
 
 
@@ -130,11 +130,11 @@ class Addon(Base):
     def activate(self):
         """ called when addon was activated """
         if has_method(self.__class__, "coreReady"):
-            self.logWarning(_("Deprecated method 'coreReady()', use activate() instead"))
+            self.logWarning(_("Deprecated method `coreReady`, use `activate` instead"))
             self.coreReady()
 
 
-    def coreReady(self):  #: Deprecated, use method activate() instead
+    def coreReady(self):  #: Deprecated, use method `activate` instead
         pass
 
 
@@ -144,7 +144,7 @@ class Addon(Base):
             self.coreExiting()
 
 
-    def coreExiting(self):  #: Deprecated, use method exit() instead
+    def coreExiting(self):  #: Deprecated, use method `exit` instead
         pass
 
 
