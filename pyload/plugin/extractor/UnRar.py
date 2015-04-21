@@ -33,7 +33,7 @@ class UnRar(Extractor):
 
 
     CMD        = "unrar"
-    NAME       = __name__
+    NAME       = __name__.rsplit('.', 1)[1]
     VERSION    = ""
     EXTENSIONS = [".rar"]
 

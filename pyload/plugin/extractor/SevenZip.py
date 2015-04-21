@@ -20,7 +20,7 @@ class SevenZip(UnRar):
 
 
     CMD     = "7z"
-    NAME    = __name__
+    NAME    = __name__.rsplit('.', 1)[1]
     VERSION = ""
 
     EXTENSIONS = [".7z", ".xz", ".zip", ".gz", ".gzip", ".tgz", ".bz2", ".bzip2",
