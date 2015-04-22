@@ -16,7 +16,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class FilecryptCc(Crypter):
     __name__    = "FilecryptCc"
     __type__    = "crypter"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
 
@@ -101,7 +101,7 @@ class FilecryptCc(Crypter):
         elif m2:  #: circle captcha
             self.logDebug("Captcha-URL: %s" % m2.group(1))
 
-            captcha_code = self.decryptCaptcha('%s%s?c=abc' %(self.base_url,m2.group(1)),
+            captcha_code = self.decryptCaptcha('%s%s?c=abc' %(self.base_url, m2.group(1)),
                                                result_type='positional')
 
             self.siteWithLinks = self.load(self.pyfile.url,
@@ -133,7 +133,7 @@ class FilecryptCc(Crypter):
             return
 
         for i in dlc:
-            self.links.append("%s/DLC/%s.dlc" % (self.base_url,i))
+            self.links.append("%s/DLC/%s.dlc" % (self.base_url, i))
 
 
     def handleWeblinks(self):
@@ -141,7 +141,7 @@ class FilecryptCc(Crypter):
             weblinks = re.findall(self.WEBLINK_PATTERN, self.siteWithLinks)
 
             for link in weblinks:
-                res   = self.load("%s/Link/%s.html" % (self.base_url,link))
+                res   = self.load("%s/Link/%s.html" % (self.base_url, link))
                 link2 = re.search('<iframe noresize src="(.*)"></iframe>', res)
                 res2  = self.load(link2.group(1), just_header=True)
                 self.links.append(res2['location'])
