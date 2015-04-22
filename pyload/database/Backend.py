@@ -186,11 +186,11 @@ class DatabaseBackend(Thread):
                     print "Filedatabase was deleted due to incompatible version."
                 remove("files.version")
                 move("files.db", "files.backup.db")
-            
+
             with open("files.version", "wb") as f:
                 f.write(str(DB_VERSION))
 
-        return v
+            return v
 
 
     def _convertDB(self, v):

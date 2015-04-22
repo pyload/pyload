@@ -82,7 +82,7 @@ class UserMethods(object):
     @style.queue
     def getAllUserData(db):
         db.c.execute("SELECT name, permission, role, template, email FROM users")
-        return {{"permission": r[1], "role": r[2], "template": r[3], "email": r[4]} for r in db.c}
+        return {r[0]: {"permission": r[1], "role": r[2], "template": r[3], "email": r[4]} for r in db.c}
 
 
     @style.queue

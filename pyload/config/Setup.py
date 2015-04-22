@@ -24,6 +24,11 @@ class SetupAssistant(object):
         self.lang           = "en"
         self.stdin_encoding = get_console_encoding(sys.stdin.encoding)
 
+        # Input shorthand for yes
+        self.yes = "y"
+        # Input shorthand for no
+        self.no = "n"
+
 
     def start(self):
         print
@@ -383,7 +388,7 @@ class SetupAssistant(object):
                 print _("2 - List users")
                 print _("3 - Remove user")
                 print _("4 - Quit")
-                action = raw_input("[1]/2/3/4: ")
+                action = raw_input("1/2/3/4: ")
                 if not action in ("1", "2", "3", "4"):
                     continue
                 elif action == "1":
@@ -463,8 +468,8 @@ class SetupAssistant(object):
             info = ""
 
         print "%(dep)-12s %(bool)s  (%(info)s)" % {'dep': name + ':',
-                     'bool': _(true if value else false).upper(),
-                     'info': info}
+                                                   'bool': _(true if value else false).upper(),
+                                                   'info': info}
 
 
     def check_module(self, module):

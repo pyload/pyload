@@ -15,11 +15,12 @@ class SevenZip(UnRar):
 
     __description = """7-Zip extractor plugin"""
     __license     = "GPLv3"
-    __authors     = [("Michael Nowak" , ""                 ),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors     = [("Michael Nowak" , ""),
+                     ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     CMD     = "7z"
+    NAME    = __name__.rsplit('.', 1)[1]
     VERSION = ""
 
     EXTENSIONS = [".7z", ".xz", ".zip", ".gz", ".gzip", ".tgz", ".bz2", ".bzip2",

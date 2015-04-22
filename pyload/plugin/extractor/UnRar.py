@@ -27,20 +27,21 @@ class UnRar(Extractor):
 
     __description = """Rar extractor plugin"""
     __license     = "GPLv3"
-    __authors     = [("RaNaN"         , "RaNaN@pyload.org" ),
-                       ("Walter Purcaro", "vuolter@gmail.com"),
-                       ("Immenz"        , "immenz@gmx.net"   )]
+    __authors     = [("RaNaN", "RaNaN@pyload.org"),
+                     ("Walter Purcaro", "vuolter@gmail.com"),
+                     ("Immenz", "immenz@gmx.net")]
 
 
-    CMD = "unrar"
-    VERSION = ""
+    CMD        = "unrar"
+    NAME       = __name__.rsplit('.', 1)[1]
+    VERSION    = ""
     EXTENSIONS = [".rar"]
 
 
-    re_multipart = re.compile(r'\.(part|r)(\d+)(?:\.rar)?(\.rev|\.bad)?',re.I)
+    re_multipart = re.compile(r'\.(part|r)(\d+)(?:\.rar)?(\.rev|\.bad)?', re.I)
 
     re_filefixed = re.compile(r'Building (.+)')
-    re_filelist  = re.compile(r'^(.)(\s*[\w\.\-]+)\s+(\d+\s+)+(?:\d+\%\s+)?[\d\-]{8}\s+[\d\:]{5}', re.M|re.I)
+    re_filelist  = re.compile(r'^(.)(\s*[\w\.\-]+)\s+(\d+\s+)+(?:\d+\%\s+)?[\d\-]{8}\s+[\d\:]{5}', re.M | re.I)
 
     re_wrongpwd  = re.compile(r'password', re.I)
     re_wrongcrc  = re.compile(r'encrypted|damaged|CRC failed|checksum error|corrupt', re.I)
@@ -55,7 +56,7 @@ class UnRar(Extractor):
                 cls.CMD = os.path.join(pypath, "RAR.exe")
                 p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, err = p.communicate()
-                cls.__name = "RAR"
+                cls.NAME = "RAR"
                 cls.REPAIR = True
 
             except OSError:
@@ -66,7 +67,7 @@ class UnRar(Extractor):
             try:
                 p = subprocess.Popen(["rar"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, err = p.communicate()
-                cls.__name = "RAR"
+                cls.NAME = "RAR"
                 cls.REPAIR = True
 
             except OSError:  #: fallback to unrar
@@ -177,7 +178,7 @@ class UnRar(Extractor):
 
         # eventually Multipart Files
         files.extend(fs_join(dir, os.path.basename(file)) for file in filter(self.isMultipart, os.listdir(dir))
-                     if re.sub(self.re_multipart,".rar",name) == re.sub(self.re_multipart,".rar",file))
+                     if re.sub(self.re_multipart, ".rar", name) == re.sub(self.re_multipart, ".rar", file))
 
         return files
 

@@ -186,7 +186,7 @@ class ExtractArchive(Addon):
                     traceback.print_exc()
 
         if self.extractors:
-            self.logDebug(*["Found %s %s" % (Extractor.NAME(), Extractor.VERSION) for Extractor in self.extractors])
+            self.logDebug(*["Found %s %s" % (Extractor.NAME, Extractor.VERSION) for Extractor in self.extractors])
             self.extractQueued()  #: Resume unfinished extractions
         else:
             self.logInfo(_("No Extract plugins activated"))
