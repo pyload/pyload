@@ -14,7 +14,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class FilecryptCc(Crypter):
     __name__    = "FilecryptCc"
     __type__    = "crypter"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
 
@@ -98,9 +98,7 @@ class FilecryptCc(Crypter):
         elif m2:  #: circle captcha
             self.logDebug("Captcha-URL: %s" % m2.group(1))
 
-            captcha_code = self.decryptCaptcha(urljoin("http://filecrypt.cc", m2.group(1)),
-                                               forceUser=True,
-                                               imgtype="gif",
+            captcha_code = self.decryptCaptcha('https://www.filecrypt.cc/captcha/circle.php?c=abc',
                                                result_type='positional')
 
             self.siteWithLinks = self.load(self.pyfile.url,
