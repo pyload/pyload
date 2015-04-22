@@ -98,7 +98,7 @@ class FilecryptCc(Crypter):
         elif m2:  #: circle captcha
             self.logDebug("Captcha-URL: %s" % m2.group(1))
 
-            captcha_code = self.decryptCaptcha('https://www.filecrypt.cc/captcha/circle.php?c=abc',
+            captcha_code = self.decryptCaptcha('https://filecrypt.cc/captcha/circle.php?c=abc',
                                                result_type='positional')
 
             self.siteWithLinks = self.load(self.pyfile.url,
