@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-# http://filecrypt.cc/Container/64E039F859.html
+#
+# Test links:
+#   http://filecrypt.cc/Container/64E039F859.html
 
 import binascii
 import re
@@ -14,7 +16,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class FilecryptCc(Crypter):
     __name__    = "FilecryptCc"
     __type__    = "crypter"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
 
