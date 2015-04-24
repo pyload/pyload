@@ -10,7 +10,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class UpleaCom(XFSHoster):
     __name__    = "UpleaCom"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'https?://(?:www\.)?uplea\.com/dl/\w{15}'
 
@@ -27,10 +27,13 @@ class UpleaCom(XFSHoster):
     OFFLINE_PATTERN = r'>You followed an invalid or expired link'
     PREMIUM_PATTERN = r'You need to have a Premium subscription to download this file'
 
-    LINK_PATTERN = r'"(https?://\w+\.uplea\.com/anonym/.*?)"'
+    DIRECTLINK_PATTERN = r'"(https?://\w+\.uplea\.com/anonym/.*?)"'
 
     WAIT_PATTERN = r'timeText: ?([\d.]+),'
     STEP_PATTERN = r'<a href="(/step/.+)">'
+
+    HOSTER_DOMAIN = r'uplea.com'
+    LINK_PATTERN = __pattern__
 
 
     def setup(self):
@@ -56,9 +59,9 @@ class UpleaCom(XFSHoster):
         if m:
             self.error(_("This URL requires a premium account"))
 
-        m = re.search(self.LINK_PATTERN, self.html)
+        m = re.search(self.DIRECTLINK_PATTERN, self.html)
         if m is None:
-            self.error(_("LINK_PATTERN not found"))
+            self.error(_("Download link not found"))
 
         self.link = m.group(1)
         self.wait(15)
