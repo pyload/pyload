@@ -12,7 +12,7 @@ from module.utils import fixup
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.43"
+    __version__ = "0.44"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),  #: Overrides core.config['general']['folder_per_package']
@@ -154,7 +154,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
         baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
 
         return [urljoin(baseurl, link) if not urlparse(link).scheme else link \
-                for link in re.findall(self.LINK_PATTERN, self.html)]
+                for link in re.findall(self.LINK_PATTERN, self.html, re.S)]
 
 
     def handlePages(self, pyfile):
