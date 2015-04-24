@@ -154,7 +154,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
         baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
 
         return [urljoin(baseurl, link) if not urlparse(link).scheme else link \
-                for link in re.findall(self.LINK_PATTERN, self.html)]
+                for link in re.findall(self.LINK_PATTERN, self.html, re.S)]
 
 
     def handlePages(self, pyfile):
