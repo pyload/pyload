@@ -10,23 +10,26 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class UpleaCom(XFSHoster):
     __name__    = "UpleaCom"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = r'https?://(?:www\.)?uplea\.com/dl/\w{15}'
 
     __description__ = """Uplea.com hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("Redleon", None)]
+    __authors__     = [("Redleon", None),
+                       ("GammaC0de", None)]
 
 
     NAME_PATTERN = r'class="agmd size18">(?P<N>.+?)<'
-    SIZE_PATTERN = r'size14">(?P<S>[\d.,]+) (?P<U>[\w^_])</span>'
+    SIZE_PATTERN = r'size14">(?P<S>[\d.,]+) (?P<U>[\w^_]+?)</span>'
+    SIZE_REPLACEMENTS = [('Ko','KB'), ('Mo','MB'), ('Go','GB')]
 
     OFFLINE_PATTERN = r'>You followed an invalid or expired link'
+    PREMIUM_PATTERN = r'You need to have a Premium subscription to download this file'
 
-    LINK_PATTERN = r'"(http?://\w+\.uplea\.com/anonym/.*?)"'
+    LINK_PATTERN = r'"(https?://\w+\.uplea\.com/anonym/.*?)"'
 
-    WAIT_PATTERN = r'timeText:([\d.]+),'
+    WAIT_PATTERN = r'timeText: ?([\d.]+),'
     STEP_PATTERN = r'<a href="(/step/.+)">'
 
 
@@ -45,8 +48,13 @@ class UpleaCom(XFSHoster):
 
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
+            self.logDebug(_("Waiting %s seconds") % m.group(1))
             self.wait(m.group(1), True)
             self.retry()
+
+        m = re.search(self.PREMIUM_PATTERN, self.html)
+        if m:
+            self.error(_("This URL requires a premium account"))
 
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
