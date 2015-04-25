@@ -10,7 +10,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class UpleaCom(XFSHoster):
     __name__    = "UpleaCom"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'https?://(?:www\.)?uplea\.com/dl/\w{15}'
 
@@ -28,6 +28,7 @@ class UpleaCom(XFSHoster):
     PREMIUM_PATTERN = r'You need to have a Premium subscription to download this file'
 
     LINK_PATTERN = r'"(https?://\w+\.uplea\.com/anonym/.*?)"'
+    HOSTER_DOMAIN = "uplea.com"
 
     WAIT_PATTERN = r'timeText: ?([\d.]+),'
     STEP_PATTERN = r'<a href="(/step/.+)">'
