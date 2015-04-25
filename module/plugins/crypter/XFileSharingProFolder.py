@@ -2,13 +2,15 @@
 
 import re
 
+from urlparse import urljoin, urlparse
+
 from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
 
 
 class XFileSharingProFolder(XFSCrypter):
     __name__    = "XFileSharingProFolder"
     __type__    = "crypter"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
@@ -47,6 +49,14 @@ class XFileSharingProFolder(XFSCrypter):
         self.user, data = self.account.selectAccount()
         self.req        = self.account.getAccountRequest(self.user)
         self.premium    = self.account.isPremium(self.user)
+
+
+    def getLinks(self):
+        url_p   = urlparse(self.pyfile.url)
+        baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
+
+        return [urljoin(baseurl, link) if not urlparse(link).scheme else link \
+                for link in re.findall(self.LINK_PATTERN, self.html, re.S)]
 
 
 getInfo = create_getInfo(XFileSharingProFolder)
