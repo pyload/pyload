@@ -10,7 +10,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class UpleaCom(XFSHoster):
     __name__    = "UpleaCom"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __pattern__ = r'https?://(?:www\.)?uplea\.com/dl/\w{15}'
 
@@ -22,8 +22,8 @@ class UpleaCom(XFSHoster):
 
     DISPOSITION = False  #@TODO: Remove in 0.4.10
 
-    NAME_PATTERN = r'class="agmd size18">(?P<N>.+?)<'
-    SIZE_PATTERN = r'size14">(?P<S>[\d.,]+) (?P<U>[\w^_]+?)</span>'
+    NAME_PATTERN = r'<span class="gold-text">(?P<N>.+?)</span>'
+    SIZE_PATTERN = r'<span class="label label-info agmd">(?P<S>[\d.,]+) (?P<U>[\w^_]+?)</span>'
     SIZE_REPLACEMENTS = [('ko','KB'), ('mo','MB'), ('go','GB'), ('Ko','KB'), ('Mo','MB'), ('Go','GB')]
 
     OFFLINE_PATTERN = r'>You followed an invalid or expired link'
