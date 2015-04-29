@@ -27,7 +27,7 @@ class UploadedTo(SimpleHoster):
 
     URL_REPLACEMENTS = [(__pattern__ + ".*", r'http://uploaded.net/file/\g<ID>')]
 
-    TEMP_OFFLINE_PATTERN = r'<title>uploaded.net - Maintenance - Wartungsarbeiten</title>'
+    TEMP_OFFLINE_PATTERN = r'<title>uploaded\.net - Maintenance - Wartungsarbeiten</title>'
 
     LINK_PREMIUM_PATTERN = r'<div class="tfree".*\s*<form method="post" action="(.+?)"'
 
