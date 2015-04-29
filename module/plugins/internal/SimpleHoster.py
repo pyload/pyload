@@ -501,7 +501,7 @@ class SimpleHoster(Hoster):
         try:
             if disposition:
                 content = urllib2.urlopen(url).info()['Content-Disposition'].split(';')
-                self.pyfile.name = (content[1].split('filename=')[1].strip('"')
+                self.pyfile.name = (content[1].split('filename=')[1].strip('"\'')
                                     or urlparse.urlparse(urllib.unquote(url)).path.split('/')[-1]
                                     or self.pyfile.name)
         finally:
