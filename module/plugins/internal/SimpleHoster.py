@@ -245,7 +245,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.38"
+    __version__ = "1.39"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -501,7 +501,7 @@ class SimpleHoster(Hoster):
         try:
             if disposition:
                 content = urllib2.urlopen(url).info()['Content-Disposition'].split(';')
-                self.pyfile.name = (content[1].split('filename=')[1][1:-1]
+                self.pyfile.name = (content[1].split('filename=')[1].strip('"')
                                     or urlparse.urlparse(urllib.unquote(url)).path.split('/')[-1]
                                     or self.pyfile.name)
         finally:
