@@ -16,7 +16,7 @@ from pyload.plugin.captcha.ReCaptcha import ReCaptcha
 class FilecryptCc(Crypter):
     __name    = "FilecryptCc"
     __type    = "crypter"
-    __version = "0.11"
+    __version = "0.14"
 
     __pattern = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
 
@@ -33,7 +33,7 @@ class FilecryptCc(Crypter):
     CAPTCHA_PATTERN        = r'<img id="nc" src="(.+?)"'
     CIRCLE_CAPTCHA_PATTERN = r'<input type="image" src="(.+?)"'
 
-    MIRROR_PAGE_PATTERN = r'"[\w]*" href="(http://filecrypt.cc/Container/\w+\.html\?mirror=\d+)">'
+    MIRROR_PAGE_PATTERN = r'"[\w]*" href="(https?://(?:www\.)?filecrypt.cc/Container/\w+\.html\?mirror=\d+)">'
 
 
     def setup(self):
@@ -42,6 +42,7 @@ class FilecryptCc(Crypter):
 
     def decrypt(self, pyfile):
         self.html = self.load(pyfile.url)
+        self.base_url = self.pyfile.url.split("Container")[0]
 
         if "content notfound" in self.html:  #@NOTE: "content notfound" is NOT a typo
             self.offline()
@@ -90,7 +91,7 @@ class FilecryptCc(Crypter):
         if m:  #: normal captcha
             self.logDebug("Captcha-URL: %s" % m.group(1))
 
-            captcha_code = self.decryptCaptcha(urljoin("http://filecrypt.cc", m.group(1)),
+            captcha_code = self.decryptCaptcha(urljoin(self.base_url, m.group(1)),
                                                forceUser=True,
                                                imgtype="gif")
 
@@ -100,9 +101,7 @@ class FilecryptCc(Crypter):
         elif m2:  #: circle captcha
             self.logDebug("Captcha-URL: %s" % m2.group(1))
 
-            captcha_code = self.decryptCaptcha(urljoin("http://filecrypt.cc", m2.group(1)),
-                                               forceUser=True,
-                                               imgtype="gif",
+            captcha_code = self.decryptCaptcha('%s%s?c=abc' %(self.base_url, m2.group(1)),
                                                result_type='positional')
 
             self.siteWithLinks = self.load(self.pyfile.url,
@@ -134,7 +133,7 @@ class FilecryptCc(Crypter):
             return
 
         for i in dlc:
-            self.links.append("http://filecrypt.cc/DLC/%s.dlc" % i)
+            self.links.append("%s/DLC/%s.dlc" % (self.base_url, i))
 
 
     def handleWeblinks(self):
@@ -142,7 +141,7 @@ class FilecryptCc(Crypter):
             weblinks = re.findall(self.WEBLINK_PATTERN, self.siteWithLinks)
 
             for link in weblinks:
-                res   = self.load("http://filecrypt.cc/Link/%s.html" % link)
+                res   = self.load("%s/Link/%s.html" % (self.base_url, link))
                 link2 = re.search('<iframe noresize src="(.*)"></iframe>', res)
                 res2  = self.load(link2.group(1), just_header=True)
                 self.links.append(res2['location'])

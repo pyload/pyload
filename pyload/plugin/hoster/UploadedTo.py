@@ -11,7 +11,7 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 class UploadedTo(SimpleHoster):
     __name    = "UploadedTo"
     __type    = "hoster"
-    __version = "0.86"
+    __version = "0.87"
 
     __pattern = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
     __config  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -26,6 +26,8 @@ class UploadedTo(SimpleHoster):
     API_KEY = "lhF2IeeprweDfu9ccWlxXVVypA5nA3EL"
 
     URL_REPLACEMENTS = [(__pattern + ".*", r'http://uploaded.net/file/\g<ID>')]
+
+    TEMP_OFFLINE_PATTERN = r'<title>uploaded\.net - Maintenance'
 
     LINK_PREMIUM_PATTERN = r'<div class="tfree".*\s*<form method="post" action="(.+?)"'
 

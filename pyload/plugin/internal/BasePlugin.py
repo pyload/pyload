@@ -13,7 +13,7 @@ from pyload.plugin.Hoster import Hoster
 class BasePlugin(Hoster):
     __name    = "BasePlugin"
     __type    = "hoster"
-    __version = "0.41"
+    __version = "0.42"
 
     __pattern = r'^unmatchable$'
 

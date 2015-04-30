@@ -12,7 +12,7 @@ from pyload.plugin.Hoster import Hoster
 class Ftp(Hoster):
     __name    = "Ftp"
     __type    = "hoster"
-    __version = "0.49"
+    __version = "0.50"
 
     __pattern = r'(?:ftps?|sftp)://([\w.-]+(:[\w.-]+)?@)?[\w.-]+(:\d+)?/.+'
 

@@ -244,7 +244,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name    = "SimpleHoster"
     __type    = "hoster"
-    __version = "1.38"
+    __version = "1.39"
 
     __pattern = r'^unmatchable$'
     __config  = [("use_premium", "bool", "Use premium account if available", True)]
