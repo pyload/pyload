@@ -474,28 +474,7 @@ class Core(object):
         if self.config.get("log", "color_console"):
             import colorlog
 
-            color_template = self.config.get("log", "color_template")
-            extra_clr = {}
-
-            if color_template is "mixed":
-                c_fmt = "%(log_color)s%(asctime)s %(label_log_color)s%(bold)s%(white)s %(levelname)-8s%(reset)s  %(log_color)s%(message)s"
-                clr = {
-                    'DEBUG'   : "cyan"  ,
-                    'WARNING' : "yellow",
-                    'ERROR'   : "red"   ,
-                    'CRITICAL': "purple",
-                }
-                extra_clr = {
-                    'label': {
-                        'DEBUG'   : "bg_cyan"  ,
-                        'INFO'    : "bg_green" ,
-                        'WARNING' : "bg_yellow",
-                        'ERROR'   : "bg_red"   ,
-                        'CRITICAL': "bg_purple",
-                    }
-                }
-
-            elif color_template is "label":
+            if self.config.get("log", "console_mode") == "label":
                 c_fmt = "%(asctime)s %(log_color)s%(bold)s%(white)s %(levelname)-8s%(reset)s  %(message)s"
                 clr = {
                     'DEBUG'   : "bg_cyan"  ,
@@ -511,13 +490,10 @@ class Core(object):
                     'DEBUG'   : "cyan"  ,
                     'WARNING' : "yellow",
                     'ERROR'   : "red"   ,
-                    'CRITICAL': "purple"
+                    'CRITICAL': "purple",
                 }
 
-            console_frm = colorlog.ColoredFormatter(fmt=c_fmt,
-                                                    datefmt=date_fmt,
-                                                    log_colors=clr,
-                                                    secondary_log_colors=extra_clr)
+            console_frm = colorlog.ColoredFormatter(c_fmt, date_fmt, clr)
 
         # Set console formatter
         console = logging.StreamHandler(sys.stdout)
