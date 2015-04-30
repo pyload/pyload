@@ -6,7 +6,6 @@ import os
 import re
 import time
 import urllib
-import urllib2
 import urlparse
 
 from module.PyFile import statusMap as _statusMap
@@ -245,7 +244,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.39"
+    __version__ = "1.40"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -494,18 +493,6 @@ class SimpleHoster(Hoster):
                 self.retryFree()
             else:
                 raise Fail(e)
-
-
-    #@NOTE: Work-around to `filename*=UTF-8` bug; remove in 0.4.10
-    def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=False):
-        try:
-            if disposition:
-                content = urllib2.urlopen(url).info()['Content-Disposition'].split(';')
-                self.pyfile.name = (content[1].split('filename=')[1].strip('"\'')
-                                    or urlparse.urlparse(urllib.unquote(url)).path.split('/')[-1]
-                                    or self.pyfile.name)
-        finally:
-            return super(SimpleHoster, self).download(url, get, post, ref, cookies, False)
 
 
     def downloadLink(self, link, disposition=True):

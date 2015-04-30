@@ -12,7 +12,7 @@ from module.plugins.Hoster import Hoster
 class Ftp(Hoster):
     __name__    = "Ftp"
     __type__    = "hoster"
-    __version__ = "0.50"
+    __version__ = "0.51"
 
     __pattern__ = r'(?:ftps?|sftp)://([\w.-]+(:[\w.-]+)?@)?[\w.-]+(:\d+)?/.+'
 
@@ -26,16 +26,6 @@ class Ftp(Hoster):
     def setup(self):
         self.chunkLimit = -1
         self.resumeDownload = True
-
-
-    #: Work-around to `filename*=UTF-8` bug; remove in 0.4.10
-    def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=False):
-        try:
-            if disposition:
-                content = urllib2.urlopen(url).info()['Content-Disposition'].split(';')
-                self.pyfile.name = content[1].split('filename=')[1].strip('"\'') or self.pyfile.name
-        finally:
-            return super(Ftp, self).download(url, get, post, ref, cookies, False)
 
 
     def process(self, pyfile):
