@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from urllib import unquote
+import urllib
 
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 

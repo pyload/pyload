@@ -6,8 +6,6 @@ import struct
 import sys
 import time
 
-from os import makedirs
-from os.path import exists, join
 from select import select
 
 from module.plugins.Hoster import Hoster

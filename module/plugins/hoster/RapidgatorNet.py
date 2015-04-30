@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
 import re
-
-from pycurl import HTTPHEADER
 
 from module.common.json_layer import json_loads
 from module.network.HTTPRequest import BadHeader
@@ -102,7 +101,7 @@ class RapidgatorNet(SimpleHoster):
         self.logDebug(jsvars)
 
         self.req.http.lastURL = pyfile.url
-        self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
+        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
 
         url = "http://rapidgator.net%s?fid=%s" % (
             jsvars.get('startTimerUrl', '/download/AjaxStartTimer'), jsvars['fid'])
@@ -115,7 +114,7 @@ class RapidgatorNet(SimpleHoster):
         jsvars.update(self.getJsonResponse(url))
 
         self.req.http.lastURL = pyfile.url
-        self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With:"])
+        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
 
         url = "http://rapidgator.net%s" % jsvars.get('captchaUrl', '/download/captcha')
         self.html = self.load(url)

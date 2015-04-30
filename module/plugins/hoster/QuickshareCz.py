@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
 import re
-
-from pycurl import FOLLOWLOCATION
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
@@ -60,10 +59,10 @@ class QuickshareCz(SimpleHoster):
         data = dict((x, self.jsvars[x]) for x in self.jsvars if x in ("ID1", "ID2", "ID3", "ID4"))
         self.logDebug("FREE URL1:" + download_url, data)
 
-        self.req.http.c.setopt(FOLLOWLOCATION, 0)
+        self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
         self.load(download_url, post=data)
         self.header = self.req.http.header
-        self.req.http.c.setopt(FOLLOWLOCATION, 1)
+        self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
         m = re.search(r'Location\s*:\s*(.+)', self.header, re.I)
         if m is None:

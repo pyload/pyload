@@ -7,8 +7,7 @@
 # http://letitbit.net/download/07874.0b5709a7d3beee2408bb1f2eefce/random.bin.html
 
 import re
-
-from urlparse import urljoin
+import urlparse
 
 from module.common.json_layer import json_loads, json_dumps
 from module.network.RequestFactory import getURL
@@ -66,7 +65,7 @@ class LetitbitNet(SimpleHoster):
         self.logDebug(action, inputs)
         inputs['desc'] = ""
 
-        self.html = self.load(urljoin("http://letitbit.net/", action), post=inputs)
+        self.html = self.load(urlparse.urljoin("http://letitbit.net/", action), post=inputs)
 
         m = re.search(self.SECONDS_PATTERN, self.html)
         seconds = int(m.group(1)) if m else 60

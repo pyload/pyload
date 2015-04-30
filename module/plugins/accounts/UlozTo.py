@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urlparse import urljoin
+import urlparse
 
 from module.plugins.Account import Account
 
@@ -37,7 +36,7 @@ class UlozTo(Account):
         action     = re.findall('<form action="(.+?)"', login_page)[1].replace('&amp;', '&')
         token      = re.search('_token_" value="(.+?)"', login_page).group(1)
 
-        html = req.load(urljoin("http://www.ulozto.net/", action),
+        html = req.load(urlparse.urljoin("http://www.ulozto.net/", action),
                         post={'_token_' : token,
                               'do'      : "loginForm-submit",
                               'login'   : u"Přihlásit",

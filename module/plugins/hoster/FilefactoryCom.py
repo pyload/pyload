@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urlparse import urljoin
+import urlparse
 
 from module.network.RequestFactory import getURL
 from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo

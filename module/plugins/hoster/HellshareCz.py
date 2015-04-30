@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from urlparse import urljoin
+import urlparse
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 

@@ -2,8 +2,7 @@
 
 import re
 import time
-
-from urlparse import urljoin
+import urlparse
 
 from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
@@ -230,7 +229,7 @@ class NetloadIn(Hoster):
                 page = None
 
             else:
-                url_captcha_html = urljoin("http://netload.in/", url_captcha_html)
+                url_captcha_html = urlparse.urljoin("http://netload.in/", url_captcha_html)
                 break
 
         self.html = self.load(url_captcha_html)

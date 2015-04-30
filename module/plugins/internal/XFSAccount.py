@@ -2,8 +2,7 @@
 
 import re
 import time
-
-from urlparse import urljoin
+import urlparse
 
 from module.plugins.Account import Account
 from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
@@ -160,7 +159,7 @@ class XFSAccount(Account):
             raise Exception(_("Missing HOSTER_DOMAIN"))
 
         if not self.LOGIN_URL:
-            self.LOGIN_URL  = urljoin(self.HOSTER_URL, "login.html")
+            self.LOGIN_URL  = urlparse.urljoin(self.HOSTER_URL, "login.html")
         html = req.load(self.LOGIN_URL, decode=True)
 
         action, inputs = parseHtmlForm('name="FL"', html)

@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import time
-
 try:
     from beaker.crypto.pbkdf2 import PBKDF2
 
 except ImportError:
     from beaker.crypto.pbkdf2 import pbkdf2
     from binascii import b2a_hex
+
     class PBKDF2(object):
         def __init__(self, passphrase, salt, iterations=1000):
             self.passphrase = passphrase

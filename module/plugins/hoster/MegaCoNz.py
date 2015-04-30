@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
+import array
 import os
+# import pycurl
 import random
 import re
 
-from array import array
 from base64 import standard_b64decode
 
 from Crypto.Cipher import AES
 from Crypto.Util import Counter
-# from pycurl import SSL_CIPHER_LIST
 
 from module.common.json_layer import json_loads, json_dumps
 from module.plugins.Hoster import Hoster
@@ -69,10 +69,10 @@ class MegaCoNz(Hoster):
 
     def getCipherKey(self, key):
         """ Construct the cipher key from the given data """
-        a = array("I", self.b64_decode(key))
+        a = array.array("I", self.b64_decode(key))
 
-        k        = array("I", (a[0] ^ a[4], a[1] ^ a[5], a[2] ^ a[6], a[3] ^ a[7]))
-        iv       = a[4:6] + array("I", (0, 0))
+        k        = array.array("I", (a[0] ^ a[4], a[1] ^ a[5], a[2] ^ a[6], a[3] ^ a[7]))
+        iv       = a[4:6] + array.array("I", (0, 0))
         meta_mac = a[6:8]
 
         return k, iv, meta_mac
@@ -82,7 +82,7 @@ class MegaCoNz(Hoster):
         """ Dispatch a call to the api, see https://mega.co.nz/#developers """
 
         # generate a session id, no idea where to obtain elsewhere
-        uid = random.randint(10 << 9, 10 ** 10)
+        uid = random.random.randint(10 << 9, 10 ** 10)
 
         res = self.load(self.API_URL, get={'id': uid}, post=json_dumps([kwargs]))
         self.logDebug("Api Response: " + res)
@@ -145,7 +145,7 @@ class MegaCoNz(Hoster):
                 # block = chunk[i:i+16]
                 # if len(block) % 16:
                     # block += '=' * (16 - (len(block) % 16))
-                # block = array("I", block)
+                # block = array.array("I", block)
 
                 # chunk_mac = [chunk_mac[0] ^ a_[0], chunk_mac[1] ^ block[1], chunk_mac[2] ^ block[2], chunk_mac[3] ^ block[3]]
                 # chunk_mac = aes_cbc_encrypt_a32(chunk_mac, k)
@@ -207,7 +207,7 @@ class MegaCoNz(Hoster):
         pyfile.name = attr['n'] + self.FILE_SUFFIX
         pyfile.size = mega['s']
 
-        # self.req.http.c.setopt(SSL_CIPHER_LIST, "RC4-MD5:DEFAULT")
+        # self.req.http.c.setopt(pycurl.SSL_CIPHER_LIST, "RC4-MD5:DEFAULT")
 
         self.download(mega['g'])
 

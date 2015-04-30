@@ -4,8 +4,7 @@
 # http://speedy.sh/ep2qY/Zapp-Brannigan.jpg
 
 import re
-
-from urlparse import urljoin
+import urlparse
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 

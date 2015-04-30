@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urllib import unquote
-from urlparse import urljoin, urlparse
+import urllib
+import urlparse
 
 from module.network.HTTPRequest import BadHeader
 from module.plugins.internal.SimpleHoster import create_getInfo, getFileURL
@@ -25,8 +24,8 @@ class BasePlugin(Hoster):
 
     @classmethod
     def getInfo(cls, url="", html=""):  #@TODO: Move to hoster class in 0.4.10
-        url   = unquote(url)
-        url_p = urlparse(url)
+        url   = urllib.unquote(url)
+        url_p = urlparse.urlparse(url)
         return {'name'  : (url_p.path.split('/')[-1]
                            or url_p.query.split('=', 1)[::-1][0].split('&', 1)[0]
                            or url_p.netloc.split('.', 1)[0]),
@@ -51,7 +50,7 @@ class BasePlugin(Hoster):
 
         for _i in xrange(5):
             try:
-                link = getFileURL(self, unquote(pyfile.url))
+                link = getFileURL(self, urllib.unquote(pyfile.url))
 
                 if link:
                     self.download(link, ref=False, disposition=True)
@@ -67,7 +66,7 @@ class BasePlugin(Hoster):
 
                     account = self.core.accountManager.getAccountPlugin('Http')
                     servers = [x['login'] for x in account.getAllAccounts()]
-                    server  = urlparse(pyfile.url).netloc
+                    server  = urlparse.urlparse(pyfile.url).netloc
 
                     if server in servers:
                         self.logDebug("Logging on to %s" % server)

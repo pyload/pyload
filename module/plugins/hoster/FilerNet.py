@@ -6,8 +6,7 @@
 
 import pycurl
 import re
-
-from urlparse import urljoin
+import urlparse
 
 from module.plugins.internal.CaptchaService import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo

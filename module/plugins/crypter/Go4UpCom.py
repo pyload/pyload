@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urlparse import urljoin
+import urlparse
 
 from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
@@ -35,7 +34,7 @@ class Go4UpCom(SimpleCrypter):
 
         m = re.search(r'(/download/gethosts/.+?)"', self.html)
         if m:
-            self.html = self.load(urljoin("http://go4up.com/", m.group(1)))
+            self.html = self.load(urlparse.urljoin("http://go4up.com/", m.group(1)))
             pages = [self.load(url) for url in re.findall(self.LINK_PATTERN, self.html)]
         else:
             pages = [self.html]

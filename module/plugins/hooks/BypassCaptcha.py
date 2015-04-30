@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pycurl import FORM_FILE, LOW_SPEED_TIME
+import pycurl
 
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL, getRequest
@@ -64,14 +64,14 @@ class BypassCaptcha(Hook):
         req = getRequest()
 
         #raise timeout threshold
-        req.c.setopt(LOW_SPEED_TIME, 80)
+        req.c.setopt(pycurl.LOW_SPEED_TIME, 80)
 
         try:
             res = req.load(self.SUBMIT_URL,
                            post={'vendor_key': self.PYLOAD_KEY,
                                  'key': self.getConfig('passkey'),
                                  'gen_task_id': "1",
-                                 'file': (FORM_FILE, captcha)},
+                                 'file': (pycurl.FORM_FILE, captcha)},
                            multipart=True)
         finally:
             req.close()

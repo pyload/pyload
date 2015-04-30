@@ -2,9 +2,7 @@
 
 import re
 import time
-
-from random import randrange
-from urllib import unquote
+import urllib
 
 from module.common.json_layer import json_loads
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo

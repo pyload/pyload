@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urlparse import urlsplit
+import urlparse
 
 from module.common.json_layer import json_loads, json_dumps
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
@@ -52,7 +51,7 @@ class LinksnappyCom(MultiHoster):
 
     @staticmethod
     def _get_host(url):
-        host = urlsplit(url).netloc
+        host = urlparse.urlsplit(url).netloc
         return re.search(r'[\w-]+\.\w+$', host).group(0)
 
 

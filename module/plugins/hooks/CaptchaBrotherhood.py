@@ -5,13 +5,12 @@ from __future__ import with_statement
 import StringIO
 import pycurl
 import time
+import urllib
 
 try:
     from PIL import Image
 except ImportError:
     import Image
-
-from urllib import urlencode
 
 from module.network.RequestFactory import getURL, getRequest
 from module.plugins.Hook import Hook, threaded
@@ -90,10 +89,10 @@ class CaptchaBrotherhood(Hook):
         req = getRequest()
 
         url = "%ssendNewCaptcha.aspx?%s" % (self.API_URL,
-                                            urlencode({'username'     : self.getConfig('username'),
-                                                       'password'     : self.getConfig('passkey'),
-                                                       'captchaSource': "pyLoad",
-                                                       'timeout'      : "80"}))
+                                            urllib.urlencode({'username'     : self.getConfig('username'),
+                                                              'password'     : self.getConfig('passkey'),
+                                                              'captchaSource': "pyLoad",
+                                                              'timeout'      : "80"}))
 
         req.c.setopt(pycurl.URL, url)
         req.c.setopt(pycurl.POST, 1)

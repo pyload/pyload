@@ -2,8 +2,6 @@
 
 import re
 
-from pycurl import FOLLOWLOCATION
-
 from BeautifulSoup import BeautifulSoup
 
 from module.common.json_layer import json_loads

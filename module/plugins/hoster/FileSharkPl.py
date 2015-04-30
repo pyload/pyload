@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urlparse import urljoin
+import urlparse
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
@@ -78,7 +77,7 @@ class FileSharkPl(SimpleHoster):
         if m is None:
             self.error(_("Download url not found"))
 
-        link = urljoin("http://fileshark.pl", m.group(1))
+        link = urlparse.urljoin("http://fileshark.pl", m.group(1))
 
         self.html = self.load(link)
 

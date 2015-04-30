@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
+import random
 import re
-import time
-
-from random import random
-from urlparse import urljoin, urlparse
-
-from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
+import urlparse
 
 from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, secondsToMidnight
@@ -101,11 +98,11 @@ class XFSHoster(SimpleHoster):
 
             data = self.getPostParameters()
 
-            self.req.http.c.setopt(FOLLOWLOCATION, 0)
+            self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
 
             self.html = self.load(pyfile.url, post=data, decode=True)
 
-            self.req.http.c.setopt(FOLLOWLOCATION, 1)
+            self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
             m = re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I)
             if m and not "op=" in m.group(1):
@@ -134,7 +131,7 @@ class XFSHoster(SimpleHoster):
 
         action, inputs = self.parseHtmlForm()
 
-        upload_id = "%012d" % int(random() * 10 ** 12)
+        upload_id = "%012d" % int(random.random() * 10 ** 12)
         action += upload_id + "&js_on=1&utype=prem&upload_type=url"
 
         inputs['tos'] = '1'

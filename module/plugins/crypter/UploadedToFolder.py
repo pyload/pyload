@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urlparse import urljoin
+import urlparse
 
 from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
@@ -31,7 +30,7 @@ class UploadedToFolder(SimpleCrypter):
         if m is None:
             self.error(_("PLAIN_PATTERN not found"))
 
-        plain_link = urljoin("http://uploaded.net/", m.group(1))
+        plain_link = urlparse.urljoin("http://uploaded.net/", m.group(1))
         return self.load(plain_link).split('\n')[:-1]
 
 

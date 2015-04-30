@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
 import re
 import time
-
-from pycurl import REFERER
 
 from module.plugins.Account import Account
 
@@ -38,7 +37,7 @@ class FilefactoryCom(Account):
 
 
     def login(self, user, data, req):
-        req.http.c.setopt(REFERER, "http://www.filefactory.com/member/login.php")
+        req.http.c.setopt(pycurl.REFERER, "http://www.filefactory.com/member/login.php")
 
         html = req.load("http://www.filefactory.com/member/signin.php",
                         post={"loginEmail"   : user,

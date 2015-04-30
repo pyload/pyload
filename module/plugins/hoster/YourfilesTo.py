@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import re
-
-from urllib import unquote
+import reimport urllib
 
 from module.plugins.Hoster import Hoster
 
@@ -62,7 +60,7 @@ class YourfilesTo(Hoster):
         url = re.search(r"var bla = '(.*?)';", self.html)
         if url:
             url = url.group(1)
-            url = unquote(url.replace("http://http:/http://", "http://").replace("dumdidum", ""))
+            url = urllib.unquote(url.replace("http://http:/http://", "http://").replace("dumdidum", ""))
             return url
         else:
             self.error(_("Absolute filepath not found"))

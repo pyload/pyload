@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import hashlib
 import re
 import time
 
-from hashlib import md5, sha1
 from passlib.hash import md5_crypt
 
 from module.plugins.Account import Account
@@ -51,8 +51,8 @@ class WebshareCz(Account):
             self.wrongPassword()
 
         salt     = re.search('<salt>(.+)</salt>', salt).group(1)
-        password = sha1(md5_crypt.encrypt(data["password"], salt=salt)).hexdigest()
-        digest   = md5(user + ":Webshare:" + password).hexdigest()
+        password = hashlib.sha1(md5_crypt.encrypt(data["password"], salt=salt)).hexdigest()
+        digest   = hashlib.md5(user + ":Webshare:" + password).hexdigest()
 
         login = req.load("https://webshare.cz/api/login/",
                          post={'digest'           : digest,

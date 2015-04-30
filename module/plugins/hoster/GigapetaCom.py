@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
+import random
 import re
-
-from pycurl import FOLLOWLOCATION
-from random import randint
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
@@ -29,10 +28,10 @@ class GigapetaCom(SimpleHoster):
 
 
     def handleFree(self, pyfile):
-        captcha_key = str(randint(1, 100000000))
+        captcha_key = str(random.randint(1, 100000000))
         captcha_url = "http://gigapeta.com/img/captcha.gif?x=%s" % captcha_key
 
-        self.req.http.c.setopt(FOLLOWLOCATION, 0)
+        self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
 
         for _i in xrange(5):
             self.checkErrors()
@@ -52,7 +51,7 @@ class GigapetaCom(SimpleHoster):
         else:
             self.fail(_("No valid captcha code entered"))
 
-        self.req.http.c.setopt(FOLLOWLOCATION, 1)
+        self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
 
     def checkErrors(self):

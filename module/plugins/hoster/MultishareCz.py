@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import random
 import re
-
-from random import random
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
@@ -45,7 +44,7 @@ class MultishareCz(SimpleHoster):
         if not self.checkTrafficLeft():
             self.fail(_("Not enough credit left to download file"))
 
-        self.download("http://dl%d.mms.multishare.cz/html/mms_process.php" % round(random() * 10000 * random()),
+        self.download("http://dl%d.mms.multishare.cz/html/mms_process.php" % round(random.random() * 10000 * random.random()),
                       get={'u_ID'  : self.acc_info['u_ID'],
                            'u_hash': self.acc_info['u_hash'],
                            'link'  : pyfile.url},
