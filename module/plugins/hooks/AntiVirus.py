@@ -11,7 +11,7 @@ from module.utils import fs_encode, save_join
 class AntiVirus(Hook):
     __name__    = "AntiVirus"
     __type__    = "hook"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     #@TODO: add trash option (use Send2Trash lib)
     __config__ = [("action"    , "Antivirus default;Delete;Quarantine", "Manage infected files"                     , "Antivirus default"),
@@ -82,6 +82,7 @@ class AntiVirus(Hook):
                             os.remove(file)
 
                         elif self.trashable:
+                            import send2trash
                             send2trash.send2trash(file)
 
                         else:
