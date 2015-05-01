@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from random import choice
-from time import time
-from traceback import print_exc
-from threading import RLock
+import random
+import threading
+import time
+import traceback
 
 from pyload.plugin.Plugin import Base
 from pyload.utils import compare_time, parseFileSize, lock
@@ -40,7 +40,7 @@ class Account(Base):
         self.manager = manager
         self.accounts = {}
         self.infos = {}  #: cache for account information
-        self.lock = RLock()
+        self.lock = threading.RLock()
         self.timestamps = {}
 
         self.init()
@@ -65,7 +65,7 @@ class Account(Base):
     @lock
     def _login(self, user, data):
         # set timestamp for login
-        self.timestamps[user] = time()
+        self.timestamps[user] = time.time()
 
         req = self.getAccountRequest(user)
         try:
@@ -81,7 +81,7 @@ class Account(Base):
                                                                         "msg": e})
             success = data['valid'] = False
             if self.core.debug:
-                print_exc()
+                traceback.print_exc()
         else:
             success = True
         finally:
@@ -157,16 +157,16 @@ class Account(Base):
                     raise Exception("Wrong return format")
             except Exception, e:
                 infos = {"error": str(e)}
-                print_exc()
+                traceback.print_exc()
 
             if req:
                 req.close()
 
             self.logDebug("Account Info: %s" % infos)
 
-            infos['timestamp'] = time()
+            infos['timestamp'] = time.time()
             self.infos[name] = infos
-        elif "timestamp" in self.infos[name] and self.infos[name]['timestamp'] + self.info_threshold * 60 < time():
+        elif "timestamp" in self.infos[name] and self.infos[name]['timestamp'] + self.info_threshold * 60 < time.time():
             self.logDebug("Reached timeout for account data")
             self.scheduleRefresh(name)
 
@@ -239,14 +239,14 @@ class Account(Base):
                 try:
                     time_data = data['options']['time'][0]
                     start, end = time_data.split("-")
-                    if not compare_time(start.split(":"), end.split(":")):
+                    if not compare_time.time(start.split(":"), end.split(":")):
                         continue
                 except Exception:
                     self.logWarning(_("Your Time %s has wrong format, use: 1:22-3:44") % time_data)
 
             if user in self.infos:
                 if "validuntil" in self.infos[user]:
-                    if self.infos[user]['validuntil'] > 0 and time() > self.infos[user]['validuntil']:
+                    if self.infos[user]['validuntil'] > 0 and time.time() > self.infos[user]['validuntil']:
                         continue
                 if "trafficleft" in self.infos[user]:
                     if self.infos[user]['trafficleft'] == 0:
@@ -256,7 +256,8 @@ class Account(Base):
 
         if not usable:
             return None, None
-        return choice(usable)
+
+        return random.choice(usable)
 
 
     def canUse(self):
@@ -285,7 +286,7 @@ class Account(Base):
         if user in self.infos:
             self.logWarning(_("Account %s is expired, checking again in 1h") % user)
 
-            self.infos[user].update({"validuntil": time() - 1})
+            self.infos[user].update({"validuntil": time.time() - 1})
             self.scheduleRefresh(user, 60 * 60)
 
 
@@ -299,7 +300,7 @@ class Account(Base):
     def checkLogin(self, user):
         """ checks if user is still logged in """
         if user in self.timestamps:
-            if self.login_timeout > 0 and self.timestamps[user] + self.login_timeout * 60 < time():
+            if self.login_timeout > 0 and self.timestamps[user] + self.login_timeout * 60 < time.time():
                 self.logDebug("Reached login timeout for %s" % user)
                 return self.relogin(user)
             else:

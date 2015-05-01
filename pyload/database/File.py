@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN, mkaay
 
-from threading import RLock
+import threading
 
 from pyload.utils import formatSize, lock
 from pyload.manager.Event import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
@@ -34,7 +34,7 @@ class FileHandler(object):
 
         self.jobCache = {}
 
-        self.lock = RLock()  #@TODO: should be a Lock w/o R
+        self.lock = threading.RLock()  #@TODO: should be a Lock w/o R
         # self.lock._Verbose__verbose = True
 
         self.filecount = -1  #: if an invalid value is set get current value from db

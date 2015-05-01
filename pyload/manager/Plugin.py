@@ -4,12 +4,12 @@ from __future__ import with_statement
 
 import re
 import sys
+import traceback
 
 from itertools import chain
 from os import listdir, makedirs
 from os.path import isdir, isfile, join, exists, abspath
 from sys import version_info
-from traceback import print_exc
 from urllib import unquote
 
 from SafeEval import const_eval as literal_eval
@@ -287,7 +287,7 @@ class PluginManager(object):
                 self.core.log.error(_("Error importing plugin: [%(type)s] %(name)s (v%(version).2f) | %(errmsg)s")
                                     % {'name': name, 'type': type, 'version': plugins[name]['version'], "errmsg": str(e)})
                 if self.core.debug:
-                    print_exc()
+                    traceback.print_exc()
 
             else:
                 plugins[name]['module'] = module  # : cache import, maybe unneeded

@@ -4,8 +4,8 @@
 
 import __builtin__
 
+import threading
 import traceback
-from threading import RLock, Thread
 
 from types import MethodType
 
@@ -59,7 +59,7 @@ class AddonManager(object):
 
         self.addEvent("pluginConfigChanged", self.manageAddon)
 
-        self.lock = RLock()
+        self.lock = threading.RLock()
         self.createIndex()
 
 

@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from urllib import unquote
-from itertools import chain
-from traceback import format_exc, print_exc
+import traceback
 
+from itertools import chain
+from urllib import unquote
+
+from SafeEval import const_eval as literal_eval
 from bottle import route, request, response, HTTPError
 
-from pyload.webui.app.utils import toDict, set_session
-from pyload.webui import PYLOAD
-from pyload.utils import json
-from SafeEval import const_eval as literal_eval
 from pyload.api import BaseObject
-
+from pyload.utils import json
+from pyload.webui import PYLOAD
+from pyload.webui.app.utils import toDict, set_session
 
 
 # json encoder that accepts TBase objects
@@ -51,8 +51,8 @@ def call_api(func, args=""):
     try:
         return callApi(func, *args, **kwargs)
     except Exception, e:
-        print_exc()
-        return HTTPError(500, json.dumps({"error": e.message, "traceback": format_exc()}))
+        traceback.print_exc()
+        return HTTPError(500, json.dumps({"error": e.message, "traceback": traceback.format_exc()}))
 
 
 def callApi(func, *args, **kwargs):

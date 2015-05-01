@@ -1,22 +1,20 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
+import traceback
+
 from Queue import Queue
-from threading import Thread
+from copy import copy
 from os import listdir, stat
 from os.path import join
-from time import sleep, time, strftime, gmtime
-from traceback import print_exc, format_exc
 from pprint import pformat
 from sys import exc_info, exc_clear
-from copy import copy
+from time import sleep, time, strftime, gmtime
 from types import MethodType
 
-from pycurl import error
-
+from pyload.api import OnlineStatus
 from pyload.datatype.File import PyFile
 from pyload.manager.thread.Plugin import PluginThread
-from pyload.api import OnlineStatus
 
 
 class InfoThread(PluginThread):
@@ -90,7 +88,7 @@ class InfoThread(PluginThread):
                 try:
                     data = self.decryptContainer(name, url)
                 except Exception:
-                    print_exc()
+                    traceback.print_exc()
                     self.m.log.error("Could not decrypt container.")
                     data = []
 
@@ -182,7 +180,7 @@ class InfoThread(PluginThread):
         except Exception, e:
             self.m.log.warning(_("Info Fetching for %(name)s failed | %(err)s") % {"name": pluginname, "err": str(e)})
             if self.m.core.debug:
-                print_exc()
+                traceback.print_exc()
 
             # generate default results
             if err:

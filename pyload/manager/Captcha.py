@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN, mkaay
 
+import threading
+import traceback
+
 from time import time
-from traceback import print_exc
-from threading import Lock
 
 from pyload.utils import encode
 
@@ -11,7 +12,7 @@ from pyload.utils import encode
 class CaptchaManager(object):
 
     def __init__(self, core):
-        self.lock = Lock()
+        self.lock = threading.Lock()
         self.core = core
         self.tasks = []  #: task store, for outgoing tasks only
         self.ids = 0  #: only for internal purpose
@@ -61,7 +62,7 @@ class CaptchaManager(object):
                 plugin.captchaTask(task)
             except Exception:
                 if self.core.debug:
-                    print_exc()
+                    traceback.print_exc()
 
         if task.handler or cli:  #: the captcha was handled
             self.tasks.append(task)

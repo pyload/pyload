@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
 import random
 import re
 

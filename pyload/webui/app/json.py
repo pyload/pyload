@@ -2,15 +2,16 @@
 
 from __future__ import with_statement
 
+import shutil
+import traceback
+
 from os.path import join
-from traceback import print_exc
-from shutil import copyfileobj
 
 from bottle import route, request, HTTPError
 
+from pyload.utils import decode, formatSize
 from pyload.webui import PYLOAD
 from pyload.webui.app.utils import login_required, render_to_response, toDict
-from pyload.utils import decode, formatSize
 
 
 def format_time(seconds):
@@ -60,7 +61,7 @@ def links():
         data = {'links': links, 'ids': ids}
         return data
     except Exception, e:
-        print_exc()
+        traceback.print_exc()
         return HTTPError()
 
 
@@ -113,7 +114,7 @@ def package(id):
         return data
 
     except Exception:
-        print_exc()
+        traceback.print_exc()
         return HTTPError()
 
 
@@ -167,7 +168,7 @@ def add_package():
 
         fpath = join(PYLOAD.getConfigValue("general", "download_folder"), "tmp_" + f.filename)
         with open(fpath, 'wb') as destination:
-            copyfileobj(f.file, destination)
+            shutil.copyfileobj(f.file, destination)
         links.insert(0, fpath)
     except Exception:
         pass

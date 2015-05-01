@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from os.path import exists, join
+import random
 import re
-from subprocess import Popen
-from threading import Event, Lock
-from time import sleep, time
-from traceback import print_exc
-from random import choice
+import threading
+import traceback
 
 import pycurl
 
+from os.path import exists, join
+from random import choice
+from subprocess import Popen
+from time import sleep, time
+
+from pyload.datatype.File import PyFile
 from pyload.manager.thread.Decrypter import DecrypterThread
 from pyload.manager.thread.Download import DownloadThread
 from pyload.manager.thread.Info import InfoThread
-from pyload.datatype.File import PyFile
 from pyload.network.RequestFactory import getURL
 from pyload.utils import freeSpace, lock
 
@@ -31,11 +33,11 @@ class ThreadManager(object):
 
         self.pause = True
 
-        self.reconnecting = Event()
+        self.reconnecting = threading.Event()
         self.reconnecting.clear()
         self.downloaded = 0  #: number of files downloaded since last cleanup
 
-        self.lock = Lock()
+        self.lock = threading.Lock()
 
         # some operations require to fetch url info from hoster, so we caching them so it wont be done twice
         # contains a timestamp and will be purged after timeout
@@ -125,7 +127,7 @@ class ThreadManager(object):
             self.core.log.error(_("Reconnect Failed: %s") % str(e))
             self.reconnecting.clear()
             if self.core.debug:
-                print_exc()
+                traceback.print_exc()
         self.checkThreadCount()
 
         try:
@@ -133,7 +135,7 @@ class ThreadManager(object):
         except Exception, e:
             self.core.log.warning("Assign job error", e)
             if self.core.debug:
-                print_exc()
+                traceback.print_exc()
 
             sleep(0.5)
             self.assignJob()
@@ -187,7 +189,7 @@ class ThreadManager(object):
             self.core.config.set("reconnect", "activated", False)
             self.reconnecting.clear()
             if self.core.debug:
-                print_exc()
+                traceback.print_exc()
             return
 
         reconn.wait()
@@ -208,7 +210,7 @@ class ThreadManager(object):
         ip = ""
         for _i in xrange(10):
             try:
-                sv = choice(services)
+                sv = random.choice(services)
                 ip = getURL(sv[0])
                 ip = re.match(sv[1], ip).group(1)
                 break
@@ -273,7 +275,7 @@ class ThreadManager(object):
                 job.initPlugin()
             except Exception, e:
                 self.core.log.critical(str(e))
-                print_exc()
+                traceback.print_exc()
                 job.setStatus("failed")
                 job.error = str(e)
                 job.release()

@@ -7,11 +7,12 @@ from paver.easy import *
 from paver.setuputils import setup
 from paver.doctools import cog
 
+import glob
 import os
 import sys
 import shutil
 import re
-from glob import glob
+
 from tempfile import mkdtemp
 from urllib import urlretrieve
 from subprocess import call, Popen, PIPE
@@ -133,10 +134,10 @@ def get_source(options):
     urlretrieve(options.src, "pyload_src.zip")
     zip = ZipFile("pyload_src.zip")
     zip.extractall()
-    path("pyload_src.zip").remove()
+    path("pyload_src.zip").reshutil.move()
 
     folder = [x for x in path(".").dirs() if x.name.startswith("spoob-pyload-")][0]
-    folder.move(pyload)
+    folder.shutil.move(pyload)
 
     change_mode(pyload, 0644)
     change_mode(pyload, 0755, folder=True)
@@ -145,8 +146,8 @@ def get_source(options):
         if file.name.endswith(".py"):
             file.chmod(0755)
 
-    (pyload / ".hgtags").remove()
-    (pyload / ".gitignore").remove()
+    (pyload / ".hgtags").reshutil.move()
+    (pyload / ".gitignore").reshutil.move()
     #(pyload / "docs").rmtree()
 
     f = open(pyload / "__init__.py", "wb")
@@ -189,7 +190,7 @@ def thrift(options):
     p.communicate()
 
     (outdir / "thriftgen").rmtree()
-    (outdir / "gen-py").move(outdir / "thriftgen")
+    (outdir / "gen-py").shutil.move(outdir / "thriftgen")
 
     # create light ttypes
     from pyload.remote.socketbackend.create_ttypes import main
@@ -246,9 +247,9 @@ def generate_locale():
 
     makepot("django", path("pyload/web"), EXCLUDE, "./%s\n" % trans.relpath(), [".py", ".html"], ["--language=Python"])
 
-    trans.remove()
+    trans.reshutil.move()
 
-    path("includes.txt").remove()
+    path("includes.txt").reshutil.move()
 
     print "Locale generated"
 
@@ -263,11 +264,11 @@ def upload_translations(options):
     """ Uploads the locale files to translation server """
     tmp = path(mkdtemp())
 
-    shutil.copy('locale/crowdin.yaml', tmp)
+    shutil.shutil.copy('locale/crowdin.yaml', tmp)
     os.mkdir(tmp / 'pyLoad')
-    for f in glob('locale/*.pot'):
+    for f in glob.glob('locale/*.pot'):
         if os.path.isfile(f):
-            shutil.copy(f, tmp / 'pyLoad')
+            shutil.shutil.copy(f, tmp / 'pyLoad')
 
     config = tmp / 'crowdin.yaml'
     with open(config, 'rb') as f:
@@ -293,11 +294,11 @@ def download_translations(options):
     """ Downloads the translated files from translation server """
     tmp = path(mkdtemp())
 
-    shutil.copy('locale/crowdin.yaml', tmp)
+    shutil.shutil.copy('locale/crowdin.yaml', tmp)
     os.mkdir(tmp / 'pyLoad')
-    for f in glob('locale/*.pot'):
+    for f in glob.glob('locale/*.pot'):
         if os.path.isfile(f):
-            shutil.copy(f, tmp / 'pyLoad')
+            shutil.shutil.copy(f, tmp / 'pyLoad')
 
     config = tmp / 'crowdin.yaml'
     with open(config, 'rb') as f:
@@ -329,7 +330,7 @@ def compile_translations():
         if not language.isdir():
             continue
 
-        for f in glob(language / 'LC_MESSAGES' / '*.po'):
+        for f in glob.glob(language / 'LC_MESSAGES' / '*.po'):
             print "Compiling %s" % f
             call(['msgfmt', '-o', f.replace('.po', '.mo'), f])
 
@@ -408,7 +409,7 @@ def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
     with open("%s.po" % domain, "rb") as f:
         content = f.read()
 
-    path("%s.po" % domain).remove()
+    path("%s.po" % domain).reshutil.move()
     content = content.replace("charset=CHARSET", "charset=UTF-8")
 
     with open("locale/%s.pot" % domain, "wb") as f:

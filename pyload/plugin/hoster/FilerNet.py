@@ -4,7 +4,6 @@
 #   http://filer.net/get/ivgf5ztw53et3ogd
 #   http://filer.net/get/hgo14gzcng3scbvv
 
-import pycurl
 import re
 import urlparse
 

@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN, mkaay
 
-from pyload.manager.Event import UpdateEvent
-from pyload.utils import formatSize, lock
+import threading
 
 from time import sleep, time
 
-from threading import RLock
+from pyload.manager.Event import UpdateEvent
+from pyload.utils import formatSize, lock
+
 
 statusMap = {
     "finished"     : 0,
@@ -55,7 +56,7 @@ class PyFile(object):
         self.order = order
         # database information ends here
 
-        self.lock = RLock()
+        self.lock = threading.RLock()
 
         self.plugin = None
         # self.download = None

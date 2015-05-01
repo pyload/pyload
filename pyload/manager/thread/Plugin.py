@@ -3,24 +3,22 @@
 
 from __future__ import with_statement
 
+import traceback
+
 from Queue import Queue
-from threading import Thread
+from copy import copy
 from os import listdir, stat
 from os.path import join
-from time import sleep, time, strftime, gmtime
-from traceback import print_exc, format_exc
 from pprint import pformat
 from sys import exc_info, exc_clear
-from copy import copy
+from time import sleep, time, strftime, gmtime
 from types import MethodType
 
-from pycurl import error
-
+from pyload.api import OnlineStatus
 from pyload.datatype.File import PyFile
 from pyload.plugin.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload
 from pyload.utils.packagetools import parseNames
 from pyload.utils import fs_join
-from pyload.api import OnlineStatus
 
 
 class PluginThread(Thread):
@@ -74,7 +72,7 @@ class PluginThread(Thread):
 
     def getDebugDump(self, pyfile):
         dump = "pyLoad %s Debug Report of %s %s \n\nTRACEBACK:\n %s \n\nFRAMESTACK:\n" % (
-            self.m.core.api.getServerVersion(), pyfile.pluginname, pyfile.plugin.__version, format_exc())
+            self.m.core.api.getServerVersion(), pyfile.pluginname, pyfile.plugin.__version, traceback.format_exc())
 
         tb = exc_info()[2]
         stack = []

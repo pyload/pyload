@@ -2,11 +2,12 @@
 
 from __future__ import with_statement
 
-from time import sleep
-from os.path import exists, join
-from shutil import copy
+import shutil
+import traceback
 
-from traceback import print_exc
+from os.path import exists, join
+from time import sleep
+
 from pyload.utils import chmod, encode, decode
 
 
@@ -49,7 +50,7 @@ class ConfigParser(object):
         """determines if config need to be copied"""
         try:
             if not exists("pyload.conf"):
-                copy(join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
+                shutil.copy(join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
 
             if not exists("plugin.conf"):
                 with open("plugin.conf", "wb") as f:
@@ -60,7 +61,7 @@ class ConfigParser(object):
             v = v[v.find(":") + 1:].strip()
 
             if not v or int(v) < CONF_VERSION:
-                copy(join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
+                shutil.copy(join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
                 print "Old version of config was replaced"
 
             with open("plugin.conf", "rb") as f:
@@ -95,7 +96,7 @@ class ConfigParser(object):
             self.updateValues(homeconf, self.config)
         except Exception:
             print "Config Warning"
-            print_exc()
+            traceback.print_exc()
 
 
     def parseConfig(self, config):
@@ -177,7 +178,7 @@ class ConfigParser(object):
 
             except Exception, e:
                 print "Config Warning"
-                print_exc()
+                traceback.print_exc()
 
         return conf
 

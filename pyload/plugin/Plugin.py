@@ -2,14 +2,16 @@
 
 from __future__ import with_statement
 
-from time import time, sleep
-from random import randint
+import traceback
 
 import os
+import random
 import re
+import time
 import urllib
 import urlparse
 
+from itertools import islice
 from os import remove, makedirs, chmod, stat
 from os.path import exists, join
 
@@ -17,9 +19,6 @@ if os.name != "nt":
     from os import chown
     from pwd import getpwnam
     from grp import getgrnam
-
-from itertools import islice
-from traceback import print_exc
 
 from pyload.utils import fs_decode, fs_encode, safe_filename, fs_join, encode
 
@@ -198,7 +197,7 @@ class Plugin(Base):
         self.chunkLimit = 1
         self.resumeDownload = False
 
-        #: time() + wait in seconds
+        #: time.time() + wait in seconds
         self.waitUntil = 0
         self.waiting = False
 
@@ -326,7 +325,7 @@ class Plugin(Base):
         :param reconnect: True if a reconnect would avoid wait time
         """
         wait_time  = int(seconds) + 1
-        wait_until = time() + wait_time
+        wait_until = time.time() + wait_time
 
         self.logDebug("Set waitUntil to: %f (previous: %f)" % (wait_until, self.pyfile.waitUntil),
                       "Wait: %d seconds" % wait_time)
@@ -353,19 +352,19 @@ class Plugin(Base):
         status = pyfile.status
         pyfile.setStatus("waiting")
 
-        self.logInfo(_("Wait: %d seconds") % (pyfile.waitUntil - time()),
+        self.logInfo(_("Wait: %d seconds") % (pyfile.waitUntil - time.time()),
                      _("Reconnect: %s")    % self.wantReconnect)
 
         if self.account:
             self.logDebug("Ignore reconnection due account logged")
 
-            while pyfile.waitUntil > time():
+            while pyfile.waitUntil > time.time():
                 if pyfile.abort:
                     self.abort()
 
-                sleep(1)
+                time.sleep(1)
         else:
-            while pyfile.waitUntil > time():
+            while pyfile.waitUntil > time.time():
                 self.thread.m.reconnecting.wait(2)
 
                 if pyfile.abort:
@@ -376,7 +375,7 @@ class Plugin(Base):
                     self.wantReconnect = False
                     raise Reconnect
 
-                sleep(1)
+                time.sleep(1)
 
         self.waiting = False
 
@@ -467,7 +466,7 @@ class Plugin(Base):
 
         img = self.load(url, get=get, post=post, cookies=cookies)
 
-        id = ("%.2f" % time())[-6:].replace(".", "")
+        id = ("%.2f" % time.time())[-6:].replace(".", "")
 
         with open(join("tmp", "tmpCaptcha_%s_%s.%s" % (self.getClassName(), id, imgtype)), "wb") as tmpCaptcha:
             tmpCaptcha.write(img)
@@ -480,7 +479,7 @@ class Plugin(Base):
             Ocr = None
 
         if Ocr and not forceUser:
-            sleep(randint(3000, 5000) / 1000.0)
+            time.sleep(random.randint(3000, 5000) / 1000.0)
             if self.pyfile.abort:
                 self.abort()
 
@@ -496,7 +495,7 @@ class Plugin(Base):
                 if self.pyfile.abort:
                     captchaManager.removeTask(task)
                     self.abort()
-                sleep(1)
+                time.sleep(1)
 
             captchaManager.removeTask(task)
 

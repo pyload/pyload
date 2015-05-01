@@ -3,13 +3,13 @@
 
 from __future__ import with_statement
 
-import string
-from threading import Thread
-from random import choice, sample, randint
-from time import time
-from math import floor
 import gc
-from traceback import print_exc, format_exc
+import random
+import string
+import traceback
+
+from math import floor
+from time import time
 
 from pyload.remote.thriftbackend.ThriftClient import ThriftClient, Destination
 
@@ -17,12 +17,12 @@ from pyload.remote.thriftbackend.ThriftClient import ThriftClient, Destination
 def createURLs():
     """ create some urls, some may fail """
     urls = []
-    for x in xrange(0, randint(20, 100)):
+    for x in xrange(0, random.randint(20, 100)):
         name = "DEBUG_API"
-        if randint(0, 5) == 5:
+        if random.randint(0, 5) == 5:
             name = ""  #: this link will fail
 
-        urls.append(name + "".join(sample(string.ascii_letters, randint(10, 20))))
+        urls.append(name + "".join(random.sample(string.ascii_letters, random.randint(10, 20))))
 
     return urls
 
@@ -72,8 +72,8 @@ class APIExerciser(Thread):
                     self.testAPI()
                 except Exception:
                     self.core.log.error("Excerciser %d throw an execption" % self.id)
-                    print_exc()
-                    out.write(format_exc() + 2 * "\n")
+                    traceback.print_exc()
+                    out.write(traceback.format_exc() + 2 * "\n")
                     out.flush()
 
                 if not self.count % 100:
@@ -97,7 +97,7 @@ class APIExerciser(Thread):
              "deletePackages", "getQueue", "getCollector", "getQueueData", "getCollectorData", "isCaptchaWaiting",
              "getCaptchaTask", "stopAllDownloads", "getAllInfo", "getServices", "getAccounts", "getAllUserData"]
 
-        method = choice(m)
+        method = random.choice(m)
         # print "Testing:", method
 
         if hasattr(self, method):
@@ -112,10 +112,10 @@ class APIExerciser(Thread):
 
 
     def addPackage(self):
-        name = "".join(sample(string.ascii_letters, 10))
+        name = "".join(random.sample(string.ascii_letters, 10))
         urls = createURLs()
 
-        self.api.addPackage(name, urls, choice([Destination.Queue, Destination.Collector]))
+        self.api.addPackage(name, urls, random.choice([Destination.Queue, Destination.Collector]))
 
 
     def deleteFiles(self):
@@ -123,37 +123,37 @@ class APIExerciser(Thread):
         if not info:
             return
 
-        pack = choice(info)
+        pack = random.choice(info)
         fids = pack.links
 
         if len(fids):
-            fids = [f.fid for f in sample(fids, randint(1, max(len(fids) / 2, 1)))]
+            fids = [f.fid for f in random.sample(fids, random.randint(1, max(len(fids) / 2, 1)))]
             self.api.deleteFiles(fids)
 
 
     def deletePackages(self):
-        info = choice([self.api.getQueue(), self.api.getCollector()])
+        info = random.choice([self.api.getQueue(), self.api.getCollector()])
         if not info:
             return
 
         pids = [p.pid for p in info]
         if pids:
-            pids = sample(pids, randint(1, max(floor(len(pids) / 2.5), 1)))
+            pids = random.sample(pids, random.randint(1, max(floor(len(pids) / 2.5), 1)))
             self.api.deletePackages(pids)
 
 
     def getFileData(self):
         info = self.api.getQueueData()
         if info:
-            p = choice(info)
+            p = random.choice(info)
             if p.links:
-                self.api.getFileData(choice(p.links).fid)
+                self.api.getFileData(random.choice(p.links).fid)
 
 
     def getPackageData(self):
         info = self.api.getQueue()
         if info:
-            self.api.getPackageData(choice(info).pid)
+            self.api.getPackageData(random.choice(info).pid)
 
 
     def getAccounts(self):

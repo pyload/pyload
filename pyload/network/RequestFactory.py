@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN, mkaay
 
-from threading import Lock
+import threading
 
 from pyload.network.Browser import Browser
 from pyload.network.Bucket import Bucket
-from pyload.network.HTTPRequest import HTTPRequest
 from pyload.network.CookieJar import CookieJar
+from pyload.network.HTTPRequest import HTTPRequest
 from pyload.network.XDCCRequest import XDCCRequest
 
 
 class RequestFactory(object):
 
     def __init__(self, core):
-        self.lock = Lock()
+        self.lock = threading.Lock()
         self.core = core
         self.bucket = Bucket()
         self.updateBucket()

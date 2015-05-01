@@ -4,43 +4,39 @@
 
 from __future__ import with_statement
 
-import pyload
-import __builtin__
-
-from getopt import getopt, GetoptError
-import pyload.utils.pylgettext as gettext
-from imp import find_module
 import logging
 import logging.handlers
 import os
-from os import _exit, execl, getcwd, makedirs, remove, sep, walk, chdir, close
-from os.path import exists, join
 import signal
 import subprocess
 import sys
-from sys import argv, executable, exit
-from time import time, sleep
-from traceback import print_exc
+import traceback
 
-from pyload.manager.Account import AccountManager
-from pyload.manager.Captcha import CaptchaManager
-from pyload.config.Parser import ConfigParser
-from pyload.manager.Plugin import PluginManager
-from pyload.manager.Event import PullManager
-from pyload.network.RequestFactory import RequestFactory
-from pyload.manager.thread.Server import WebServer
-from pyload.manager.event.Scheduler import Scheduler
-from pyload.network.JsEngine import JsEngine
-from pyload import remote
-from pyload.manager.Remote import RemoteManager
-from pyload.database import DatabaseBackend, FileHandler
-
-from pyload.utils import freeSpace, formatSize, get_console_encoding
+import __builtin__
+import pyload
+import pyload.utils.pylgettext as gettext
 
 from codecs import getwriter
+from getopt import getopt, GetoptError
+from imp import find_module
+from os import _exit, execl, getcwd, makedirs, remove, sep, walk, chdir, close
+from os.path import exists, join
+from sys import argv, executable, exit
+from time import time, sleep
 
-enc = get_console_encoding(sys.stdout.encoding)
-sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
+from pyload import remote
+from pyload.database import DatabaseBackend, FileHandler
+from pyload.config.Parser import ConfigParser
+from pyload.manager.Account import AccountManager
+from pyload.manager.Captcha import CaptchaManager
+from pyload.manager.Event import PullManager
+from pyload.manager.Plugin import PluginManager
+from pyload.manager.Remote import RemoteManager
+from pyload.manager.event.Scheduler import Scheduler
+from pyload.manager.thread.Server import WebServer
+from pyload.network.JsEngine import JsEngine
+from pyload.network.RequestFactory import RequestFactory
+from pyload.utils import freeSpace, formatSize
 
 
 # TODO List
@@ -178,7 +174,7 @@ class Core(object):
     def deletePidFile(self):
         if self.checkPidFile():
             self.log.debug("Deleting old pidfile %s" % self.pidfile)
-            os.remove(self.pidfile)
+            os.reshutil.move(self.pidfile)
 
 
     def checkPidFile(self):
@@ -245,7 +241,7 @@ class Core(object):
                     continue
 
                 print join(path, f)
-                remove(join(path, f))
+                reshutil.move(join(path, f))
 
 
     def start(self, rpc=True, web=True):
@@ -268,10 +264,10 @@ class Core(object):
                 print "\nSetup interrupted"
             except Exception:
                 res = False
-                print_exc()
+                traceback.print_exc()
                 print "Setup failed"
             if not res:
-                remove("pyload.conf")
+                reshutil.move("pyload.conf")
 
             exit()
 
@@ -615,7 +611,7 @@ class Core(object):
 
         except Exception:
             if self.debug:
-                print_exc()
+                traceback.print_exc()
             self.log.info(_("error while shutting down"))
 
         finally:

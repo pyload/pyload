@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from threading import Thread
-from traceback import print_exc
+import traceback
 
 
 class BackendBase(Thread):
@@ -22,7 +21,7 @@ class BackendBase(Thread):
         except Exception, e:
             self.core.log.error(_("Remote backend error: %s") % e)
             if self.core.debug:
-                print_exc()
+                traceback.print_exc()
         finally:
             self.running = False
 
@@ -77,7 +76,7 @@ class RemoteManager(object):
             except Exception, e:
                 self.core.log.error(_("Failed loading backend %(name)s | %(error)s") % {"name": b, "error": str(e)})
                 if self.core.debug:
-                    print_exc()
+                    traceback.print_exc()
             else:
                 backend.start()
                 self.backends.append(backend)

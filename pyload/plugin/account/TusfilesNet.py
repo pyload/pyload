@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import time
-
 from pyload.plugin.internal.XFSAccount import XFSAccount
 
 

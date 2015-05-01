@@ -3,39 +3,29 @@
 
 from __future__ import with_statement
 
-from getopt import GetoptError, getopt
+import os
+import sys
+import threading
+import traceback
 
 import pyload.utils.pylgettext as gettext
-import os
-from os import _exit
-from os.path import join, exists, basename
-import sys
-from sys import exit
-from threading import Thread, Lock
-from time import sleep
-from traceback import print_exc
-
-from pyload.config.Parser import ConfigParser
 
 from codecs import getwriter
+from getopt import GetoptError, getopt
+from os import _exit
+from os.path import join, exists, basename
+from sys import exit
+from time import sleep
 
-import module.common.pylgettext as gettext
-
-if os.name == "nt":
-    enc = "cp850"
-else:
-    enc = "utf8"
-
-sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
-
-from pyload.cli.printer import *
-from pyload.cli import AddPackage, ManageFiles
-
-from pyload.api import Destination
-from pyload.utils import formatSize, decode
-from pyload.remote.thriftbackend.ThriftClient import ThriftClient, NoConnection, NoSSL, WrongLogin, ConnectionClosed
 from Getch import Getch
 from rename_process import renameProcess
+
+from pyload.api import Destination
+from pyload.cli import AddPackage, ManageFiles
+from pyload.config.Parser import ConfigParser
+from pyload.remote.thriftbackend.ThriftClient import ThriftClient, NoConnection, NoSSL, WrongLogin, ConnectionClosed
+from pyload.utils import formatSize, decode
+from pyload.utils.printer import *
 
 
 class Cli(object):
@@ -52,7 +42,7 @@ class Cli(object):
             self.lastLowestLine = 0
             self.menuline = 0
 
-            self.lock = Lock()
+            self.lock = threading.Lock()
 
             # processor funcions, these will be changed dynamically depending on control flow
             self.headerHandler = self  #: the download status
@@ -389,7 +379,7 @@ class RefreshThread(Thread):
             except Exception, e:
                 println(2, red(str(e)))
                 self.cli.reset()
-                print_exc()
+                traceback.print_exc()
 
 
 def print_help(config):

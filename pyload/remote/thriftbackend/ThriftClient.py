@@ -2,17 +2,15 @@
 
 import sys
 import thrift
+import traceback
 
+from Protocol import Protocol
+from Socket import Socket
 from socket import error
-from traceback import print_exc
-
 from thrift.transport import TTransport
 # from thrift.transport.TZlibTransport import TZlibTransport
-from Socket import Socket
-from Protocol import Protocol
 
 # modules should import ttypes from here, when want to avoid importing API
-
 from pyload.remote.thriftbackend.thriftgen.pyload import Pyload
 from pyload.remote.thriftbackend.thriftgen.pyload.ttypes import *
 
@@ -42,7 +40,7 @@ class ThriftClient(object):
             if e.args and e.args[0] in (111, 10061):
                 raise NoConnection
             else:
-                print_exc()
+                traceback.print_exc()
                 raise NoConnection
 
         try:
@@ -66,7 +64,7 @@ class ThriftClient(object):
             elif e.args and e.args[0] == 32:
                 raise NoConnection
             else:
-                print_exc()
+                traceback.print_exc()
                 raise NoConnection
 
         if not correct:

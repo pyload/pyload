@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
 import re
 import socket
 import ssl
 import time
 import traceback
 
+import pycurl
+
 from select import select
-from threading import Thread
 
 from pyload.api import PackageDoesNotExists, FileDoesNotExists
 from pyload.network.RequestFactory import getURL

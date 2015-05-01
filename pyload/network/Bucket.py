@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
+import threading
+
 from time import time
-from threading import Lock
+
 
 MIN_RATE = 10240  #: 10kb minimum rate
 
@@ -13,7 +15,7 @@ class Bucket(object):
         self.rate      = 0  #: bytes per second, maximum targeted throughput
         self.tokens    = 0
         self.timestamp = time()
-        self.lock      = Lock()
+        self.lock      = threading.Lock()
 
 
     def __nonzero__(self):

@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
+import traceback
+
 from Queue import Queue
-from threading import Thread
+from copy import copy
 from os import listdir, stat
 from os.path import join
-from time import sleep, time, strftime, gmtime
-from traceback import print_exc, format_exc
 from pprint import pformat
 from sys import exc_info, exc_clear
-from copy import copy
+from time import sleep, time, strftime, gmtime
 from types import MethodType
-
-from pycurl import error
 
 from pyload.manager.thread.Plugin import PluginThread
 from pyload.plugin.Plugin import Abort, Fail, Retry
@@ -67,7 +65,7 @@ class DecrypterThread(PluginThread):
                 pyfile.error = msg
 
             if self.m.core.debug:
-                print_exc()
+                traceback.print_exc()
             return
 
         except Abort:
@@ -75,7 +73,7 @@ class DecrypterThread(PluginThread):
             pyfile.setStatus("aborted")
 
             if self.m.core.debug:
-                print_exc()
+                traceback.print_exc()
             return
 
         except Retry:
@@ -90,7 +88,7 @@ class DecrypterThread(PluginThread):
             pyfile.error = str(e)
 
             if self.m.core.debug:
-                print_exc()
+                traceback.print_exc()
                 self.writeDebugReport(pyfile)
 
             return

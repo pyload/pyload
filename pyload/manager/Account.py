@@ -2,13 +2,14 @@
 
 from __future__ import with_statement
 
-from os.path import exists
-from shutil import copy
+import shutil
+import threading
 
-from threading import Lock
+from os.path import exists
 
 from pyload.manager.Event import AccountUpdateEvent
 from pyload.utils import chmod, lock
+
 
 ACC_VERSION = 1
 
@@ -20,7 +21,7 @@ class AccountManager(object):
         """Constructor"""
 
         self.core = core
-        self.lock = Lock()
+        self.lock = threading.Lock()
 
         self.initPlugins()
         self.saveAccounts()  #: save to add categories to conf
@@ -73,7 +74,7 @@ class AccountManager(object):
                 version = content[0].split(":")[1].strip() if content else ""
 
                 if not version or int(version) < ACC_VERSION:
-                    copy("accounts.conf", "accounts.backup")
+                    shutil.copy("accounts.conf", "accounts.backup")
                     f.seek(0)
                     f.write("version: " + str(ACC_VERSION))
 

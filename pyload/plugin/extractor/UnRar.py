@@ -2,10 +2,8 @@
 
 import os
 import re
+import string
 import subprocess
-
-from glob import glob
-from string import digits
 
 from pyload.plugin.Extractor import Extractor, ArchiveError, CRCError, PasswordError
 from pyload.utils import fs_decode, fs_encode, fs_join
@@ -136,7 +134,7 @@ class UnRar(Extractor):
                 self.notifyProgress(int(s))
                 s = ""
             # not reading a digit -> therefore restart
-            elif c not in digits:
+            elif c not in string.digits:
                 s = ""
             # add digit to progressstring
             else:

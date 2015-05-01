@@ -3,12 +3,13 @@
 
 from __future__ import with_statement
 
+import shutil
+
 import pycurl
 
 from os import remove, fsync
 from os.path import dirname
 from time import sleep, time
-from shutil import move
 from logging import getLogger
 
 from pyload.network.HTTPChunk import ChunkInfo, HTTPChunk
@@ -94,16 +95,16 @@ class HTTPDownload(object):
                                 break
                             fo.write(data)
                     if fo.tell() < self.info.getChunkRange(i)[1]:
-                        remove(init)
-                        self.info.remove()  #: there are probably invalid chunks
+                        reshutil.move(init)
+                        self.info.reshutil.move()  #: there are probably invalid chunks
                         raise Exception("Downloaded content was smaller than expected. Try to reduce download connections.")
-                    remove(fname)  #: remove chunk
+                    reshutil.move(fname)  #: remove chunk
 
         if self.nameDisposition and self.disposition:
             self.filename = fs_join(dirname(self.filename), self.nameDisposition)
 
-        move(init, fs_encode(self.filename))
-        self.info.remove()  #: remove info file
+        shutil.move(init, fs_encode(self.filename))
+        self.info.reshutil.move()  #: remove info file
 
 
     def download(self, chunks=1, resume=False):
@@ -238,8 +239,8 @@ class HTTPDownload(object):
                         to_clean = filter(lambda x: x is not init, self.chunks)
                         for chunk in to_clean:
                             self.closeChunk(chunk)
-                            self.chunks.remove(chunk)
-                            remove(fs_encode(self.info.getChunkName(chunk.id)))
+                            self.chunks.reshutil.move(chunk)
+                            reshutil.move(fs_encode(self.info.getChunkName(chunk.id)))
 
                         # let first chunk load the rest and update the info file
                         init.resetRange()

@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import socket
+import threading
 import time
-
-from threading import Lock
 
 from pyload.plugin.Addon import Addon, threaded
 
@@ -55,7 +54,7 @@ class ClickNLoad(Addon):
 
         self._server(ip, webport, cnlport)
 
-        lock = Lock()
+        lock = threading.Lock()
         lock.acquire()
         lock.acquire()
 

@@ -3,19 +3,21 @@
 
 from __future__ import with_statement
 
-from threading import Event, Thread
-from os import remove
-from os.path import exists
-from shutil import move
-from Queue import Queue
-from traceback import print_exc
-
-from pyload.utils import chmod
-
 try:
     from pysqlite2 import dbapi2 as sqlite3
 except Exception:
     import sqlite3
+
+import shutil
+import threading
+import traceback
+
+from Queue import Queue
+from os import remove
+from os.path import exists
+
+from pyload.utils import chmod
+
 
 DB_VERSION = 4
 
@@ -67,7 +69,7 @@ class style(object):
 class DatabaseJob(object):
 
     def __init__(self, f, *args, **kwargs):
-        self.done = Event()
+        self.done = threading.Event()
 
         self.f = f
         self.args = args
@@ -98,7 +100,7 @@ class DatabaseJob(object):
         try:
             self.result = self.f(*self.args, **self.kwargs)
         except Exception, e:
-            print_exc()
+            traceback.print_exc()
             try:
                 print "Database Error @", self.f.__name__, self.args[1:], self.kwargs, e
             except Exception:
@@ -124,7 +126,7 @@ class DatabaseBackend(Thread):
 
         self.jobs = Queue()
 
-        self.setuplock = Event()
+        self.setuplock = threading.Event()
 
         style.setDB(self)
 
@@ -184,8 +186,8 @@ class DatabaseBackend(Thread):
                     self.manager.core.log.warning(_("Filedatabase was deleted due to incompatible version."))
                 except Exception:
                     print "Filedatabase was deleted due to incompatible version."
-                remove("files.version")
-                move("files.db", "files.backup.db")
+                reshutil.move("files.version")
+                shutil.move("files.db", "files.backup.db")
 
             with open("files.version", "wb") as f:
                 f.write(str(DB_VERSION))
@@ -277,7 +279,7 @@ class DatabaseBackend(Thread):
             conn.close()
 
             self.c.executemany("INSERT INTO users(name, password, email) VALUES (?, ?, ?)", users)
-            move("pyload.db", "pyload.old.db")
+            shutil.move("pyload.db", "pyload.old.db")
 
 
     def createCursor(self):
@@ -320,7 +322,7 @@ class DatabaseBackend(Thread):
 
     @classmethod
     def unregisterSub(cls, klass):
-        cls.subs.remove(klass)
+        cls.subs.reshutil.move(klass)
 
 
     def __getattr__(self, attr):

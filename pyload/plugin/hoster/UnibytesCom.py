@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
 import re
 import urlparse
 from pyload.plugin.internal.SimpleHoster import SimpleHoster

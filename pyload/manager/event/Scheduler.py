@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 # @author: mkaay
 
-from time import time
+import threading
+
 from heapq import heappop, heappush
-from threading import Lock, Thread
+from time import time
 
 
 class AlreadyCalled(Exception):
@@ -99,7 +100,7 @@ class Job(object):
 
     def start(self):
         if self.threaded:
-            t = Thread(target=self.run)
+            t = threading.Thread(target=self.run)
             t.setDaemon(True)
             t.start()
         else:
@@ -111,7 +112,7 @@ class PriorityQueue(object):
 
     def __init__(self):
         self.queue = []
-        self.lock = Lock()
+        self.lock = threading.Lock()
 
 
     def __iter__(self):

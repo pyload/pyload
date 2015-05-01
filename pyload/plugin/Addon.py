@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from traceback import print_exc
+import traceback
 
 from pyload.plugin.Plugin import Base
 from pyload.utils import has_method
@@ -94,7 +94,7 @@ class Addon(Base):
         except Exception, e:
             self.logError(_("Error executing addon: %s") % e)
             if self.core.debug:
-                print_exc()
+                traceback.print_exc()
 
         self.cb = self.core.scheduler.addJob(self.interval, self._periodical, [threaded], threaded=threaded)
 
