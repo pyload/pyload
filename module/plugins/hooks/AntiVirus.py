@@ -4,6 +4,11 @@ import os
 import shutil
 import subprocess
 
+try:
+    import send2trash
+except ImportError:
+    pass
+
 from module.plugins.Hook import Hook, Expose, threaded
 from module.utils import fs_encode, save_join
 
@@ -11,7 +16,7 @@ from module.utils import fs_encode, save_join
 class AntiVirus(Hook):
     __name__    = "AntiVirus"
     __type__    = "hook"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     #@TODO: add trash option (use Send2Trash lib)
     __config__ = [("action"    , "Antivirus default;Delete;Quarantine", "Manage infected files"                     , "Antivirus default"),
@@ -32,16 +37,6 @@ class AntiVirus(Hook):
 
     def setup(self):
         self.info = {}  #@TODO: Remove in 0.4.10
-
-        try:
-            import send2trash
-
-        except ImportError:
-            self.logDebug("Send2Trash lib not found")
-            self.trashable = False
-
-        else:
-            self.trashable = True
 
 
     @Expose
@@ -81,13 +76,14 @@ class AntiVirus(Hook):
                         if not self.getConfig('deltotrash'):
                             os.remove(file)
 
-                        elif self.trashable:
-                            send2trash.send2trash(file)
-
                         else:
-                            self.logWarning(_("Unable to move file to trash, move to quarantine instead"))
-                            pyfile.setCustomStatus(_("file moving"))
-                            shutil.move(file, self.getConfig('quardir'))
+                            try:
+                                send2trash.send2trash(file)
+
+                            except Exception:
+                                self.logWarning(_("Unable to move file to trash, move to quarantine instead"))
+                                pyfile.setCustomStatus(_("file moving"))
+                                shutil.move(file, self.getConfig('quardir'))
 
                     elif action == "Quarantine":
                         pyfile.setCustomStatus(_("file moving"))

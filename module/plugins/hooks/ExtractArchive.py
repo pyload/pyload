@@ -6,8 +6,6 @@ import os
 import sys
 import traceback
 
-from copy import copy
-
 # monkey patch bug in python 2.6 and lower
 # http://bugs.python.org/issue6122 , http://bugs.python.org/issue1236 , http://bugs.python.org/issue1731717
 if sys.version_info < (2, 7) and os.name != "nt":
@@ -45,6 +43,12 @@ if sys.version_info < (2, 7) and os.name != "nt":
 
     subprocess.Popen.wait = wait
 
+try:
+    import send2trash
+except ImportError:
+    pass
+
+from copy import copy
 if os.name != "nt":
     from grp import getgrnam
     from pwd import getpwnam
@@ -106,7 +110,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.41"
+    __version__ = "1.42"
 
     __config__ = [("activated"      , "bool"              , "Activated"                                 , True                                                                     ),
                   ("fullpath"       , "bool"              , "Extract with full paths"                   , True                                                                     ),
@@ -149,16 +153,6 @@ class ExtractArchive(Hook):
         self.extractors  = []
         self.passwords   = []
         self.repair      = False
-
-        try:
-            import send2trash
-
-        except ImportError:
-            self.logDebug("Send2Trash lib not found")
-            self.trashable = False
-
-        else:
-            self.trashable = True
 
 
     def coreReady(self):
@@ -474,11 +468,12 @@ class ExtractArchive(Hook):
                     if not deltotrash:
                         os.remove(file)
 
-                    elif self.trashable:
-                        send2trash.send2trash(file)
-
                     else:
-                        self.logWarning(_("Unable to move %s to trash") % os.path.basename(f))
+                        try:
+                            send2trash.send2trash(file)
+
+                        except Exception:
+                            self.logWarning(_("Unable to move %s to trash") % os.path.basename(f))
 
             self.logInfo(name, _("Extracting finished"))
             extracted_files = archive.files or archive.list()
