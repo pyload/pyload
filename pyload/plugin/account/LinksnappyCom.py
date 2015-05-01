@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from hashlib import md5
+import hashlib
 
 from pyload.plugin.Account import Account
 from pyload.utils import json_loads
@@ -18,7 +18,7 @@ class LinksnappyCom(Account):
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)
         r = req.load('http://gen.linksnappy.com/lseAPI.php',
-                     get={'act': 'USERDETAILS', 'username': user, 'password': md5(data['password']).hexdigest()})
+                     get={'act': 'USERDETAILS', 'username': user, 'password': hashlib.md5(data['password']).hexdigest()})
 
         self.logDebug("JSON data: " + r)
 
@@ -50,7 +50,7 @@ class LinksnappyCom(Account):
         r = req.load("http://gen.linksnappy.com/lseAPI.php",
                      get={'act'     : 'USERDETAILS',
                           'username': user,
-                          'password': md5(data['password']).hexdigest()},
+                          'password': hashlib.md5(data['password']).hexdigest()},
                      decode=True)
 
         if 'Invalid Account Details' in r:

@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
 import re
-
-from pycurl import HTTPHEADER
 
 from pyload.utils import json_loads
 from pyload.plugin.internal.SimpleHoster import SimpleHoster, timestamp
@@ -66,7 +65,7 @@ class UploadingCom(SimpleHoster):
             self.retry(6, (6 * 60 if m.group(2) else 15) * 60, pyfile.error)
 
         ajax_url = "http://uploading.com/files/get/?ajax"
-        self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
+        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
         self.req.http.lastURL = pyfile.url
 
         res = json_loads(self.load(ajax_url, post={'action': 'second_page', 'code': self.info['pattern']['ID']}))

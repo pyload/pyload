@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urlparse import urljoin
+import urlparse
 
 from pyload.plugin.internal.XFSHoster import XFSHoster
 
@@ -48,7 +47,7 @@ class UpleaCom(XFSHoster):
         if m is None:
             self.error(_("STEP_PATTERN not found"))
 
-        self.html = self.load(urljoin("http://uplea.com/", m.group(1)))
+        self.html = self.load(urlparse.urljoin("http://uplea.com/", m.group(1)))
 
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
 import re
 import socket
 import ssl
 import time
 import traceback
 
-from pycurl import FORM_FILE
 from select import select
 from threading import Thread
 
@@ -74,7 +74,7 @@ class IRCInterface(Thread, Addon):
             task.setWaiting(60)
 
             html = getURL("http://www.freeimagehosting.net/upload.php",
-                          post={"attached": (FORM_FILE, task.captchaFile)}, multipart=True)
+                          post={"attached": (pycurl.FORM_FILE, task.captchaFile)}, multipart=True)
 
             url = re.search(r"\[img\]([^\[]+)\[/img\]\[/url\]", html).group(1)
             self.response(_("New Captcha Request: %s") % url)

@@ -4,8 +4,7 @@
 #   http://speedy.sh/ep2qY/Zapp-Brannigan.jpg
 
 import re
-
-from urlparse import urljoin
+import urlparse
 
 from pyload.plugin.internal.SimpleHoster import SimpleHoster
 

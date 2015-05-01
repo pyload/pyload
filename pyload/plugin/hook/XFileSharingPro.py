@@ -8,7 +8,7 @@ from pyload.plugin.Hook import Hook
 class XFileSharingPro(Hook):
     __name    = "XFileSharingPro"
     __type    = "hook"
-    __version = "0.36"
+    __version = "0.37"
 
     __config = [("activated"       , "bool", "Activated"                     , True ),
                   ("use_hoster_list" , "bool", "Load listed hosters only"      , False),
@@ -35,7 +35,7 @@ class XFileSharingPro(Hook):
                        # NOT TESTED:
                        "101shared.com", "4upfiles.com", "filemaze.ws", "filenuke.com", "linkzhost.com", "mightyupload.com",
                        "rockdizfile.com", "sharebeast.com", "sharerepo.com", "shareswift.com", "uploadbaz.com", "uploadc.com",
-                       "vidbull.com", "zalaa.com", "zomgupload.com",
+                       "vidbull.com", "worldbytez.com", "zalaa.com", "zomgupload.com",
                        # NOT WORKING:
                        "amonshare.com", "banicrazy.info", "boosterking.com", "host4desi.com", "laoupload.com", "rd-fs.com"]
     CRYPTER_BUILTIN = ["junocloud.me", "rapidfileshare.net"]

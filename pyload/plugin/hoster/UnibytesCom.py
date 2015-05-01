@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
 import re
-
-from urlparse import urljoin
-
+import urlparse
 from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
@@ -35,7 +34,7 @@ class UnibytesCom(SimpleHoster):
 
         for _i in xrange(8):
             self.logDebug(action, post_data)
-            self.html = self.load(urljoin(domain, action), post=post_data, follow_location=False)
+            self.html = self.load(urlparse.urljoin(domain, action), post=post_data, follow_location=False)
 
             m = re.search(r'location:\s*(\S+)', self.req.http.header, re.I)
             if m:
@@ -63,7 +62,7 @@ class UnibytesCom(SimpleHoster):
                 self.wait(m.group(1) if m else 60, False)
 
             elif last_step in ("captcha", "last"):
-                post_data['captcha'] = self.decryptCaptcha(urljoin(domain, "/captcha.jpg"))
+                post_data['captcha'] = self.decryptCaptcha(urlparse.urljoin(domain, "/captcha.jpg"))
 
         else:
             self.fail(_("No valid captcha code entered"))

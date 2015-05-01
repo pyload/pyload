@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urlparse import urljoin
+import urlparse
 
 from pyload.network.RequestFactory import getURL
 from pyload.plugin.internal.SimpleHoster import SimpleHoster, parseFileInfo

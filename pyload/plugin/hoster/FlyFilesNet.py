@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urllib import unquote
+import urllib
 
 from pyload.network.RequestFactory import getURL
 from pyload.plugin.internal.SimpleHoster import SimpleHoster
@@ -26,7 +25,7 @@ class FlyFilesNet(SimpleHoster):
 
     def process(self, pyfile):
         name = re.search(self.NAME_PATTERN, pyfile.url).group(1)
-        pyfile.name = unquote_plus(name)
+        pyfile.name = urllib.unquote_plus(name)
 
         session = re.search(self.SESSION_PATTERN, pyfile.url).group(1)
 

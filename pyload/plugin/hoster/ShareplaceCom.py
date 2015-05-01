@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urllib import unquote
+import urllib
 
 from pyload.plugin.Hoster import Hoster
 
@@ -61,7 +60,7 @@ class ShareplaceCom(Hoster):
         url = re.search(r"var beer = '(.*?)';", self.html)
         if url:
             url = url.group(1)
-            url = unquote(
+            url = urllib.unquote(
                 url.replace("http://http:/", "").replace("vvvvvvvvv", "").replace("lllllllll", "").replace(
                     "teletubbies", ""))
             self.logDebug("URL: %s" % url)

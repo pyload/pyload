@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
+import random
 import re
-import time
-
-from random import random
-from urlparse import urljoin, urlparse
-
+import urlparse
 from pyload.plugin.captcha.ReCaptcha import ReCaptcha
 from pyload.plugin.captcha.SolveMedia import SolveMedia
 from pyload.plugin.internal.SimpleHoster import SimpleHoster, secondsToMidnight
@@ -129,7 +127,7 @@ class XFSHoster(SimpleHoster):
 
         action, inputs = self.parseHtmlForm()
 
-        upload_id = "%012d" % int(random() * 10 ** 12)
+        upload_id = "%012d" % int(random.random() * 10 ** 12)
         action += upload_id + "&js_on=1&utype=prem&upload_type=url"
 
         inputs['tos'] = '1'

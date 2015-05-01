@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urlparse import urljoin
+import urlparse
 
 from pyload.plugin.captcha.ReCaptcha import ReCaptcha
 from pyload.plugin.internal.SimpleHoster import SimpleHoster
@@ -100,7 +99,7 @@ class Keep2ShareCc(SimpleHoster):
         m = re.search(self.CAPTCHA_PATTERN, self.html)
         self.logDebug("CAPTCHA_PATTERN found %s" % m)
         if m:
-            captcha_url = urljoin("http://keep2s.cc/", m.group(1))
+            captcha_url = urlparse.urljoin("http://keep2s.cc/", m.group(1))
             post_data['CaptchaForm[code]'] = self.decryptCaptcha(captcha_url)
         else:
             recaptcha = ReCaptcha(self)

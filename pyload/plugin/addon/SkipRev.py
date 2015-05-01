@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import re
+import urllib
+import urlparse
 
 from types import MethodType
-from urllib import unquote
-from urlparse import urlparse
 
 from pyload.datatype.File import PyFile
 from pyload.plugin.Addon import Addon
@@ -36,7 +36,7 @@ class SkipRev(Addon):
             return pyfile.pluginmodule.getInfo([pyfile.url]).next()[0]
         else:
             self.logWarning("Unable to grab file name")
-            return urlparse(unquote(pyfile.url)).path.split('/')[-1]
+            return urlparse.urlparse(urllib.unquote(pyfile.url)).path.split('/')[-1]
 
 
     def _pyfile(self, link):

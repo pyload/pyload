@@ -3,11 +3,9 @@
 from __future__ import with_statement
 
 import hashlib
+import os
 import re
 import zlib
-
-from os import remove
-from os.path import getsize, isfile, splitext
 
 from pyload.plugin.Addon import Addon
 from pyload.utils import fs_join, fs_encode
@@ -108,13 +106,13 @@ class Checksum(Addon):
         # download_folder = self.config.get("general", "download_folder")
         # local_file = fs_encode(fs_join(download_folder, pyfile.package().folder, pyfile.name))
 
-        if not isfile(local_file):
+        if not os.path.isfile(local_file):
             self.checkFailed(pyfile, None, "File does not exist")
 
         # validate file size
         if "size" in data:
             api_size  = int(data['size'])
-            file_size = getsize(local_file)
+            file_size = os.path.getsize(local_file)
 
             if api_size != file_size:
                 self.logWarning(_("File %s has incorrect size: %d B (%d expected)") % (pyfile.name, file_size, api_size))
@@ -156,7 +154,7 @@ class Checksum(Addon):
             retry_action = self.getConfig('retry_action')
             if pyfile.plugin.retries < max_tries:
                 if local_file:
-                    remove(local_file)
+                    os.remove(local_file)
                 pyfile.plugin.retry(max_tries, self.getConfig('wait_time'), msg)
             elif retry_action == "nothing":
                 return
@@ -169,13 +167,13 @@ class Checksum(Addon):
         download_folder = fs_join(self.config.get("general", "download_folder"), pypack.folder, "")
 
         for link in pypack.getChildren().itervalues():
-            file_type = splitext(link['name'])[1][1:].lower()
+            file_type = os.path.splitext(link['name'])[1][1:].lower()
 
             if file_type not in self.formats:
                 continue
 
             hash_file = fs_encode(fs_join(download_folder, link['name']))
-            if not isfile(hash_file):
+            if not os.path.isfile(hash_file):
                 self.logWarning(_("File not found"), link['name'])
                 continue
 

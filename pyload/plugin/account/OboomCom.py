@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import time
-
 try:
     from beaker.crypto.pbkdf2 import PBKDF2
 

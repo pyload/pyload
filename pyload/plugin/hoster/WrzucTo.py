@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
 import re
-
-from pycurl import HTTPHEADER
 
 from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
@@ -35,7 +34,7 @@ class WrzucTo(SimpleHoster):
         if len(data) != 2:
             self.error(_("No file ID"))
 
-        self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
+        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
         self.req.http.lastURL = pyfile.url
         self.load("http://www.wrzuc.to/ajax/server/prepair", post={"md5": data['md5']})
 

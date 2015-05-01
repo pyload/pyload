@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urllib import unquote
+import urllib
 
 from pyload.plugin.captcha.ReCaptcha import ReCaptcha
 from pyload.plugin.internal.SimpleHoster import SimpleHoster
@@ -67,7 +66,7 @@ class DepositfilesCom(SimpleHoster):
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m:
-            self.link = unquote(m.group(1))
+            self.link = urllib.unquote(m.group(1))
 
 
     def handlePremium(self, pyfile):

@@ -6,8 +6,7 @@
 
 import pycurl
 import re
-
-from urlparse import urljoin
+import urlparse
 
 from pyload.plugin.captcha.ReCaptcha import ReCaptcha
 from pyload.plugin.internal.SimpleHoster import SimpleHoster

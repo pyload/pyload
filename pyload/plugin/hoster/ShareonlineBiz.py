@@ -2,9 +2,8 @@
 
 import re
 import time
-
-from urllib import unquote
-from urlparse import urlparse
+import urllib
+import urlparse
 
 from pyload.network.RequestFactory import getURL
 from pyload.plugin.captcha.ReCaptcha import ReCaptcha
@@ -38,7 +37,7 @@ class ShareonlineBiz(SimpleHoster):
 
     @classmethod
     def getInfo(cls, url="", html=""):
-        info = {'name': urlparse(unquote(url)).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 3 if url else 1, 'url': url}
+        info = {'name': urlparse.urlparse(urllib.unquote(url)).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 3 if url else 1, 'url': url}
 
         if url:
             info['pattern'] = re.match(cls.__pattern, url).groupdict()

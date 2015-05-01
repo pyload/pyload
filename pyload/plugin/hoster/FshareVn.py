@@ -2,8 +2,7 @@
 
 import re
 import time
-
-from urlparse import urljoin
+import urlparse
 
 from pyload.network.RequestFactory import getURL
 from pyload.plugin.internal.SimpleHoster import SimpleHoster, parseFileInfo
@@ -59,7 +58,7 @@ class FshareVn(SimpleHoster):
         self.checkErrors()
 
         action, inputs = self.parseHtmlForm('frm_download')
-        url = urljoin(pyfile.url, action)
+        url = urlparse.urljoin(pyfile.url, action)
 
         if not inputs:
             self.error(_("No FORM"))

@@ -2,9 +2,8 @@
 
 import pycurl
 import re
-
-from urllib import quote, unquote
-from urlparse import urlparse
+import urllib
+import urlparse
 
 from pyload.plugin.Hoster import Hoster
 
@@ -12,7 +11,7 @@ from pyload.plugin.Hoster import Hoster
 class Ftp(Hoster):
     __name    = "Ftp"
     __type    = "hoster"
-    __version = "0.50"
+    __version = "0.51"
 
     __pattern = r'(?:ftps?|sftp)://([\w.-]+(:[\w.-]+)?@)?[\w.-]+(:\d+)?/.+'
 
@@ -26,15 +25,13 @@ class Ftp(Hoster):
     def setup(self):
         self.chunkLimit = -1
         self.resumeDownload = True
-
-
     def process(self, pyfile):
-        parsed_url = urlparse(pyfile.url)
+        parsed_url = urlparse.urlparse(pyfile.url)
         netloc = parsed_url.netloc
 
         pyfile.name = parsed_url.path.rpartition('/')[2]
         try:
-            pyfile.name = unquote(str(pyfile.name)).decode('utf8')
+            pyfile.name = urllib.unquote(str(pyfile.name)).decode('utf8')
         except Exception:
             pass
 
@@ -67,11 +64,11 @@ class Ftp(Hoster):
             # Naive ftp directory listing
             if re.search(r'^25\d.*?"', self.req.http.header, re.M):
                 pyfile.url = pyfile.url.rstrip('/')
-                pkgname = "/".join(pyfile.package().name, urlparse(pyfile.url).path.rpartition('/')[2])
+                pkgname = "/".join(pyfile.package().name, urlparse.urlparse(pyfile.url).path.rpartition('/')[2])
                 pyfile.url += '/'
                 self.req.http.c.setopt(48, 1)  #: CURLOPT_DIRLISTONLY
                 res = self.load(pyfile.url, decode=False)
-                links = [pyfile.url + quote(x) for x in res.splitlines()]
+                links = [pyfile.url + urllib.quote(x) for x in res.splitlines()]
                 self.logDebug("LINKS", links)
                 self.core.api.addPackage(pkgname, links)
             else:

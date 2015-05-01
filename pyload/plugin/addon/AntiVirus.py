@@ -4,6 +4,11 @@ import os
 import shutil
 import subprocess
 
+try:
+    import send2trash
+except ImportError:
+    pass
+
 from pyload.plugin.Addon import Addon, Expose, threaded
 from pyload.utils import fs_encode, fs_join
 
@@ -11,7 +16,7 @@ from pyload.utils import fs_encode, fs_join
 class AntiVirus(Addon):
     __name    = "AntiVirus"
     __type    = "addon"
-    __version = "0.07"
+    __version = "0.08"
 
     #@TODO: add trash option (use Send2Trash lib)
     __config = [("action"    , "Antivirus default;Delete;Quarantine", "Manage infected files"                     , "Antivirus default"),
@@ -27,16 +32,7 @@ class AntiVirus(Addon):
     __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def setup(self):
-        try:
-            import send2trash
 
-        except ImportError:
-            self.logDebug("Send2Trash lib not found")
-            self.trashable = False
-
-        else:
-            self.trashable = True
 
 
     @Expose
@@ -76,13 +72,14 @@ class AntiVirus(Addon):
                         if not self.getConfig('deltotrash'):
                             os.remove(file)
 
-                        elif self.trashable:
-                            send2trash.send2trash(file)
-
                         else:
-                            self.logWarning(_("Unable to move file to trash, move to quarantine instead"))
-                            pyfile.setCustomStatus(_("file moving"))
-                            shutil.move(file, self.getConfig('quardir'))
+                            try:
+                                send2trash.send2trash(file)
+
+                            except Exception:
+                                self.logWarning(_("Unable to move file to trash, move to quarantine instead"))
+                                pyfile.setCustomStatus(_("file moving"))
+                                shutil.move(file, self.getConfig('quardir'))
 
                     elif action == "Quarantine":
                         pyfile.setCustomStatus(_("file moving"))

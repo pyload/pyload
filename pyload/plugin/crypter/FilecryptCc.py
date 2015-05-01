@@ -5,9 +5,9 @@
 
 import binascii
 import re
+import urlparse
 
 from Crypto.Cipher import AES
-from urlparse import urljoin
 
 from pyload.plugin.Crypter import Crypter
 from pyload.plugin.captcha.ReCaptcha import ReCaptcha
@@ -91,7 +91,7 @@ class FilecryptCc(Crypter):
         if m:  #: normal captcha
             self.logDebug("Captcha-URL: %s" % m.group(1))
 
-            captcha_code = self.decryptCaptcha(urljoin(self.base_url, m.group(1)),
+            captcha_code = self.decryptCaptcha(urlparse.urljoin(self.base_url, m.group(1)),
                                                forceUser=True,
                                                imgtype="gif")
 

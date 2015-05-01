@@ -2,7 +2,7 @@
 
 import math
 import re
-from urlparse import urljoin
+import urlparse
 
 from pyload.plugin.internal.XFSCrypter import XFSCrypter
 
@@ -28,7 +28,7 @@ class TusfilesNet(XFSCrypter):
 
 
     def loadPage(self, page_n):
-        return self.load(urljoin(self.pyfile.url, str(page_n)), decode=True)
+        return self.load(urlparse.urljoin(self.pyfile.url, str(page_n)), decode=True)
 
 
     def handlePages(self, pyfile):

@@ -2,10 +2,10 @@
 
 from __future__ import with_statement
 
+import pycurl
 import re
 
 from base64 import b64encode
-from pycurl import FORM_FILE, LOW_SPEED_TIME
 
 from pyload.network.RequestFactory import getURL, getRequest
 from pyload.plugin.Hook import Hook, threaded
@@ -70,13 +70,13 @@ class ImageTyperz(Hook):
     def submit(self, captcha, captchaType="file", match=None):
         req = getRequest()
         # raise timeout threshold
-        req.c.setopt(LOW_SPEED_TIME, 80)
+        req.c.setopt(pycurl.LOW_SPEED_TIME, 80)
 
         try:
             #@NOTE: Workaround multipart-post bug in HTTPRequest.py
             if re.match("^\w*$", self.getConfig('passkey')):
                 multipart = True
-                data = (FORM_FILE, captcha)
+                data = (pycurl.FORM_FILE, captcha)
             else:
                 multipart = False
                 with open(captcha, 'rb') as f:

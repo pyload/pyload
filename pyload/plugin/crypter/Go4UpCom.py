@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urlparse import urljoin
+import urlparse
 
 from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 
@@ -10,7 +9,7 @@ from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 class Go4UpCom(SimpleCrypter):
     __name    = "Go4UpCom"
     __type    = "crypter"
-    __version = "0.11"
+    __version = "0.12"
 
     __pattern = r'http://go4up\.com/(dl/\w{12}|rd/\w{12}/\d+)'
     __config  = [("use_premium"       , "bool", "Use premium account if available"   , True),
@@ -30,12 +29,12 @@ class Go4UpCom(SimpleCrypter):
     OFFLINE_PATTERN = r'>\s*(404 Page Not Found|File not Found|Mirror does not exist)'
 
 
-    def getLinks(self
+    def getLinks(self):
         links = []
 
-        m = re.search(r'(/download/gethosts/.+?)"')
+        m = re.search(r'(/download/gethosts/.+?)"', self.html)
         if m:
-            self.html = self.load(urljoin("http://go4up.com/", m.group(1)))
+            self.html = self.load(urlparse.urljoin("http://go4up.com/", m.group(1)))
             pages = [self.load(url) for url in re.findall(self.LINK_PATTERN, self.html)]
         else:
             pages = [self.html]

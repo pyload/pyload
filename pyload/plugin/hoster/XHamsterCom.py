@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urllib import unquote
+import urllib
 
 from pyload.utils import json_loads
 from pyload.plugin.Hoster import Hoster
@@ -83,7 +82,7 @@ class XHamsterCom(Hoster):
             self.logDebug("long_url = " + long_url)
         else:
             if flashvars['file']:
-                file_url = unquote(flashvars['file'])
+                file_url = urllib.unquote(flashvars['file'])
             else:
                 self.error(_("file_url not found"))
 

@@ -2,9 +2,10 @@
 
 from __future__ import with_statement
 
+import pycurl
+import uuid
+
 from base64 import b64encode
-from pycurl import LOW_SPEED_TIME
-from uuid import uuid4
 
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getURL, getRequest
@@ -47,7 +48,7 @@ class ExpertDecoders(Hook):
 
     @threaded
     def _processCaptcha(self, task):
-        task.data['ticket'] = ticket = uuid4()
+        task.data['ticket'] = ticket = uuid.uuid4()
         result = None
 
         with open(task.captchaFile, 'rb') as f:
@@ -55,7 +56,7 @@ class ExpertDecoders(Hook):
 
         req = getRequest()
         # raise timeout threshold
-        req.c.setopt(LOW_SPEED_TIME, 80)
+        req.c.setopt(pycurl.LOW_SPEED_TIME, 80)
 
         try:
             result = req.load(self.API_URL,

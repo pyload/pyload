@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
+import random
 import re
-
-from random import randint
 
 from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
@@ -28,7 +28,7 @@ class GigapetaCom(SimpleHoster):
 
 
     def handleFree(self, pyfile):
-        captcha_key = str(randint(1, 100000000))
+        captcha_key = str(random.randint(1, 100000000))
         captcha_url = "http://gigapeta.com/img/captcha.gif?x=%s" % captcha_key
 
         for _i in xrange(5):

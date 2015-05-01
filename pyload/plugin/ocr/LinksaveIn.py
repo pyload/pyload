@@ -5,9 +5,8 @@ try:
 except ImportError:
     import Image
 
-from glob import glob
-from os import sep
-from os.path import abspath, dirname
+import glob
+import os
 
 from pyload.plugin.OCR import OCR
 
@@ -24,7 +23,7 @@ class LinksaveIn(OCR):
 
     def __init__(self):
         OCR.__init__(self)
-        self.data_dir = dirname(abspath(__file__)) + sep + "LinksaveIn" + sep
+        self.data_dir = os.path.dirname(os.path.abspath(__file__)) + os.sep + "LinksaveIn" + os.sep
 
 
     def load_image(self, image):
@@ -59,7 +58,7 @@ class LinksaveIn(OCR):
         stat = {}
         cstat = {}
         img = self.image.convert("P")
-        for bgpath in glob(self.data_dir+"bg/*.gif"):
+        for bgpath in glob.glob(self.data_dir+"bg/*.gif"):
             stat[bgpath] = 0
             bg = Image.open(bgpath)
 

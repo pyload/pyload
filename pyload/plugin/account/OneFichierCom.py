@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
 import re
 import time
-
-from pycurl import REFERER
 
 from pyload.plugin.Account import Account
 
@@ -45,7 +44,7 @@ class OneFichierCom(Account):
 
 
     def login(self, user, data, req):
-        req.http.c.setopt(REFERER, "https://1fichier.com/login.pl?lg=en")
+        req.http.c.setopt(pycurl.REFERER, "https://1fichier.com/login.pl?lg=en")
 
         html = req.load("https://1fichier.com/login.pl?lg=en",
                         post={'mail'   : user,

@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urllib import unquote
+import urllib
 
 from pyload.plugin.Crypter import Crypter
 from pyload.plugin.internal.SimpleHoster import getFileURL, set_cookies
@@ -49,7 +48,7 @@ class SimpleDereferer(Crypter):
 
         if not link:
             try:
-                link = unquote(re.match(self.__pattern, pyfile.url).group('LINK'))
+                link = urllib.unquote(re.match(self.__pattern, pyfile.url).group('LINK'))
 
             except Exception:
                 self.prepare()

@@ -2,11 +2,11 @@
 
 from __future__ import with_statement
 
+import pycurl
 import re
 import time
 
 from base64 import b64encode
-from pycurl import FORM_FILE, HTTPHEADER
 
 from pyload.utils import json_loads
 from pyload.network.HTTPRequest import BadHeader
@@ -73,7 +73,7 @@ class DeathByCaptcha(Hook):
 
     def api_response(self, api="captcha", post=False, multipart=False):
         req = getRequest()
-        req.c.setopt(HTTPHEADER, ["Accept: application/json", "User-Agent: pyLoad %s" % self.core.version])
+        req.c.setopt(pycurl.HTTPHEADER, ["Accept: application/json", "User-Agent: pyLoad %s" % self.core.version])
 
         if post:
             if not isinstance(post, dict):
@@ -134,7 +134,7 @@ class DeathByCaptcha(Hook):
         #@NOTE: Workaround multipart-post bug in HTTPRequest.py
         if re.match("^\w*$", self.getConfig('passkey')):
             multipart = True
-            data = (FORM_FILE, captcha)
+            data = (pycurl.FORM_FILE, captcha)
         else:
             multipart = False
             with open(captcha, 'rb') as f:

@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from random import randrange
-from urllib import unquote
+import urllib
 
 from pyload.utils import json_loads
 from pyload.plugin.internal.MultiHoster import MultiHoster

@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urlparse import urljoin
+import urlparse
 
 from pyload.utils import json_loads
 from pyload.plugin.Crypter import Crypter
@@ -24,7 +23,7 @@ class DailymotionComFolder(Crypter):
 
 
     def api_response(self, ref, req=None):
-        url  = urljoin("https://api.dailymotion.com/", ref)
+        url  = urlparse.urljoin("https://api.dailymotion.com/", ref)
         html = self.load(url, get=req)
         return json_loads(html)
 

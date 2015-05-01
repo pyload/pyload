@@ -244,7 +244,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name    = "SimpleHoster"
     __type    = "hoster"
-    __version = "1.39"
+    __version = "1.40"
 
     __pattern = r'^unmatchable$'
     __config  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -492,8 +492,6 @@ class SimpleHoster(Hoster):
                 self.retryFree()
             else:
                 raise Fail(e)
-
-
     def downloadLink(self, link, disposition=True):
         if link and isinstance(link, basestring):
             self.correctCaptcha()
