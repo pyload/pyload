@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import random
 import re
-
-from random import random
 
 from pyload.plugin.Captcha import Captcha
 
@@ -71,7 +70,7 @@ class AdsCaptcha(Captcha):
 
     def result(self, server, challenge):
         result = self.plugin.decryptCaptcha("%sChallenge.aspx" % server,
-                                            get={'cid': challenge, 'dummy': random()},
+                                            get={'cid': challenge, 'dummy': random.random()},
                                             cookies=True,
                                             imgtype="jpg")
 

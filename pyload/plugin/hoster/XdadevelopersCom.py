@@ -3,8 +3,6 @@
 # Test links:
 #   http://forum.xda-developers.com/devdb/project/dl/?id=10885
 
-import re
-
 from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 

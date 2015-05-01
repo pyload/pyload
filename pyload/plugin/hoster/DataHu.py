@@ -3,8 +3,6 @@
 # Test links:
 #   http://data.hu/get/6381232/random.bin
 
-import re
-
 from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 

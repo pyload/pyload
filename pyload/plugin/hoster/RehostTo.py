@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from urllib import unquote
-
 from pyload.plugin.internal.MultiHoster import MultiHoster
 
 

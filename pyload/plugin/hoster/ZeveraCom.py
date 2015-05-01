@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import re
-
-from urlparse import urljoin
-
 from pyload.plugin.internal.MultiHoster import MultiHoster
 
 

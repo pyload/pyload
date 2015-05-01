@@ -3,8 +3,6 @@
 # Test links:
 #   http://d-h.st/mM8
 
-import re
-
 from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 

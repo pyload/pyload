@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urlparse
 
 from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 

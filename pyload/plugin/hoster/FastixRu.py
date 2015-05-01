@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import re
-import urllib
-
 from pyload.utils import json_loads
 from pyload.plugin.internal.MultiHoster import MultiHoster
 

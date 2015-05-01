@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import re
-
 from pyload.utils import json_loads
 from pyload.plugin.internal.MultiHoster import MultiHoster
 from pyload.plugin.internal.SimpleHoster import secondsToMidnight

@@ -1,4 +1,4 @@
-import re
+# -*- coding: utf-8 -*-
 
 from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 

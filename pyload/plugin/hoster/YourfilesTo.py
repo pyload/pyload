@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import reimport urllib
+import re
+import urllib
 
 from pyload.plugin.Hoster import Hoster
 

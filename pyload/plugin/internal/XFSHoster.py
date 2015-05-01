@@ -3,7 +3,6 @@
 import pycurl
 import random
 import re
-import urlparse
 from pyload.plugin.captcha.ReCaptcha import ReCaptcha
 from pyload.plugin.captcha.SolveMedia import SolveMedia
 from pyload.plugin.internal.SimpleHoster import SimpleHoster, secondsToMidnight

@@ -2,7 +2,8 @@
 
 import os
 import re
-import subprocessimport urllib
+import subprocess
+import urllib
 
 from pyload.plugin.Hoster import Hoster
 from pyload.plugin.internal.SimpleHoster import replace_patterns
