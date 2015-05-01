@@ -3,6 +3,7 @@
 
 """ Store all useful functions here """
 
+import bitmath
 import os
 import re
 import sys
@@ -91,7 +92,6 @@ def save_join(*args):
 
 if sys.getfilesystemencoding().startswith('ANSI'):
 
-
     def fs_encode(string):
         return safe_filename(encode(string))
 
@@ -131,13 +131,7 @@ def compare_time(start, end):
 
 def formatSize(size):
     """formats size of bytes"""
-    size = int(size)
-    steps = 0
-    sizes = ("B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB")
-    while size > 1000:
-        size /= 1024.0
-        steps += 1
-    return "%.2f %s" % (size, sizes[steps])
+    return bitmath.Byte(int(size)).best_prefix()
 
 
 def formatSpeed(speed):
@@ -212,7 +206,6 @@ def parseFileSize(string, unit=None):  #: returns bytes
 
 
 def lock(func):
-
 
     def new(*args):
         # print "Handler: %s args: %s" % (func, args[1:])
