@@ -16,7 +16,7 @@ from module.utils import fs_encode, save_join
 class AntiVirus(Hook):
     __name__    = "AntiVirus"
     __type__    = "hook"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     #@TODO: add trash option (use Send2Trash lib)
     __config__ = [("action"    , "Antivirus default;Delete;Quarantine", "Manage infected files"                     , "Antivirus default"),
@@ -80,8 +80,13 @@ class AntiVirus(Hook):
                             try:
                                 send2trash.send2trash(file)
 
-                            except Exception:
-                                self.logWarning(_("Unable to move file to trash, move to quarantine instead"))
+                            except NameError:
+                                self.logWarning(_("Send2Trash lib not found, moving to quarantine instead"))
+                                pyfile.setCustomStatus(_("file moving"))
+                                shutil.move(file, self.getConfig('quardir'))
+
+                             except Exception:
+                                self.logWarning(_("Unable to move file to trash, moving to quarantine instead"))
                                 pyfile.setCustomStatus(_("file moving"))
                                 shutil.move(file, self.getConfig('quardir'))
 
