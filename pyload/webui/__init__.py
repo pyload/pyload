@@ -103,8 +103,8 @@ if PREFIX:
 import pyload.webui.app
 
 
-def run_simple(host="0.0.0.0", port="8000"):
-    run(app=web, host=host, port=port, quiet=True)
+def run_auto(host="0.0.0.0", port="8000"):
+    run(app=web, host=host, port=port, server="auto", quiet=True)
 
 
 def run_lightweight(host="0.0.0.0", port="8000"):

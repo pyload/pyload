@@ -63,7 +63,7 @@ class WebServer(threading.Thread):
                     log.warning(_("You need to download and compile bjoern, https://github.com/jonashaag/bjoern"))
                     log.warning(_("Copy the boern.so file to lib/Python/Lib or use setup.py install"))
                     log.warning(_("Of course you need to be familiar with linux and know how to compile software"))
-                    self.server = "builtin"
+                    self.server = "auto"
             else:
                 self.core.log.info(_("Server set to threaded, due to known performance problems on windows."))
                 self.core.config.set("webui", "server", "threaded")
@@ -76,15 +76,15 @@ class WebServer(threading.Thread):
         elif self.server == "lightweight":
             self.start_lightweight()
         else:
-            self.start_builtin()
+            self.start_auto()
 
 
-    def start_builtin(self):
+    def start_auto(self):
         if self.https:
             log.warning(_("This server offers no SSL, please consider using `threaded` instead"))
 
         self.core.log.info(_("Starting builtin webserver: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
-        webinterface.run_simple(host=self.host, port=self.port)
+        webinterface.run_auto(host=self.host, port=self.port)
 
 
     def start_threaded(self):
