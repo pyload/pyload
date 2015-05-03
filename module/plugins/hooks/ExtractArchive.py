@@ -110,7 +110,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.42"
+    __version__ = "1.43"
 
     __config__ = [("activated"      , "bool"              , "Activated"                                 , True                                                                     ),
                   ("fullpath"       , "bool"              , "Extract with full paths"                   , True                                                                     ),
@@ -472,8 +472,14 @@ class ExtractArchive(Hook):
                         try:
                             send2trash.send2trash(file)
 
-                        except Exception:
-                            self.logWarning(_("Unable to move %s to trash") % os.path.basename(f))
+                        except NameError:
+                            self.logWarning(_("Unable to move %s to trash: Send2Trash lib not found") % os.path.basename(f))
+
+                        except Exception, e:
+                            self.logWarning(_("Unable to move %s to trash: %s") % (os.path.basename(f), e.message))
+
+                        else:
+                            self.logDebug(_("Successfully moved %s to trash") % os.path.basename(f))
 
             self.logInfo(name, _("Extracting finished"))
             extracted_files = archive.files or archive.list()
