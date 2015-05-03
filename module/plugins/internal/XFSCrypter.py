@@ -26,6 +26,7 @@ class HTMLTDLinkGrabbber(HTMLParser):
 
 
     def getLinks(self, html):
+        self.td_count = 0
         self.links = []
         try:
             self.feed(html)
