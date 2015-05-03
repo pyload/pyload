@@ -85,10 +85,13 @@ class AntiVirus(Hook):
                                 pyfile.setCustomStatus(_("file moving"))
                                 shutil.move(file, self.getConfig('quardir'))
 
-                             except Exception, e:
+                            except Exception, e:
                                 self.logWarning(_("Unable to move file to trash: %s, moving to quarantine instead") % e.message)
                                 pyfile.setCustomStatus(_("file moving"))
                                 shutil.move(file, self.getConfig('quardir'))
+
+                            else:
+                                self.logDebug(_("Successfully moved file to trash"))
 
                     elif action == "Quarantine":
                         pyfile.setCustomStatus(_("file moving"))
