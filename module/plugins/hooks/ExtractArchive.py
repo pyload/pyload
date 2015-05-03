@@ -478,6 +478,9 @@ class ExtractArchive(Hook):
                         except Exception, e:
                             self.logWarning(_("Unable to move %s to trash: %s") % (os.path.basename(f), e.message))
 
+                        else:
+                            self.logDebug(_("Successfully moved %s to trash") % os.path.basename(f))
+
             self.logInfo(name, _("Extracting finished"))
             extracted_files = archive.files or archive.list()
 
