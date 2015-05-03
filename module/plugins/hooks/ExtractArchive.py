@@ -475,8 +475,8 @@ class ExtractArchive(Hook):
                         except NameError:
                             self.logWarning(_("Unable to move %s to trash: Send2Trash lib not found") % os.path.basename(f))
 
-                        except Exception:
-                            self.logWarning(_("Unable to move %s to trash") % os.path.basename(f))
+                        except Exception, e:
+                            self.logWarning(_("Unable to move %s to trash: %s") % (os.path.basename(f), e.message))
 
             self.logInfo(name, _("Extracting finished"))
             extracted_files = archive.files or archive.list()
