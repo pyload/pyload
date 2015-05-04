@@ -17,9 +17,10 @@ class SizedriveCom(SimpleHoster):
     __authors__     = [("GammaC0de", None)]
 
 
+    NAME_PATTERN    = r'>Nome:</b> (?P<N>.+?)<'
+    SIZE_PATTERN    = r'>Tamanho:</b>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'ARQUIVO DELATADO POR'
-    NAME_PATTERN = r'<b>Nome:</b> (?P<N>.+)<'
-    SIZE_PATTERN = r'<b>Tamanho:</b>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+
 
     def setup(self):
         self.resumeDownload = False
@@ -35,8 +36,6 @@ class SizedriveCom(SimpleHoster):
         m = re.search(r'<span id="boton_download" ><a href="(.+?)"', self.html)
         if m:
             self.link = m.group(1)
-        else:
-            self.error(_("Download link not found"))
 
 
 getInfo = create_getInfo(SizedriveCom)
