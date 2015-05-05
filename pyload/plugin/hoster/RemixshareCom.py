@@ -43,7 +43,7 @@ class RemixshareCom(SimpleHoster):
         self.chunkLimit = 1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         b = re.search(self.LINK_PATTERN, self.html)
         if not b:
             self.error(_("File url"))

@@ -26,7 +26,7 @@ class UnrestrictLi(MultiHoster):
         self.resumeDownload = True
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         for _i in xrange(5):
             self.html = self.load('https://unrestrict.li/unrestrict.php',
                              post={'link': pyfile.url, 'domain': 'long'})

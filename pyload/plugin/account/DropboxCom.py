@@ -30,5 +30,5 @@ class DropboxCom(SimpleHoster):
         self.resumeDownload = True
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         self.download(pyfile.url, get={'dl': "1"})

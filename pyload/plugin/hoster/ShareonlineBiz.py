@@ -88,7 +88,7 @@ class ShareonlineBiz(SimpleHoster):
             self.fail(_("No valid captcha solution received"))
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         self.wait(3)
 
         self.html = self.load("%s/free/" % pyfile.url,
@@ -121,7 +121,7 @@ class ShareonlineBiz(SimpleHoster):
         return super(ShareonlineBiz, self).checkFile(rules)
 
 
-    def handlePremium(self, pyfile):  #: should be working better loading (account) api internally
+    def handle_premium(self, pyfile):  #: should be working better loading (account) api internally
         html = self.load("http://api.share-online.biz/account.php",
                          get={'username': self.user,
                               'password': self.account.getAccountData(self.user)['password'],

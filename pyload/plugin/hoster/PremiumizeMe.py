@@ -17,7 +17,7 @@ class PremiumizeMe(MultiHoster):
     __authors     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         # In some cases hostsers do not supply us with a filename at download, so we
         # are going to set a fall back filename (e.g. for freakshare or xfileshare)
         pyfile.name = pyfile.name.split('/').pop()  #: Remove everthing before last slash

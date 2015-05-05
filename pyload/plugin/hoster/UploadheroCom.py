@@ -38,7 +38,7 @@ class UploadheroCom(SimpleHoster):
     LINK_PREMIUM_PATTERN = r'<a href="(.+?)" id="downloadnow"'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         m = re.search(self.CAPTCHA_PATTERN, self.html)
         if m is None:
             self.error(_("Captcha not found"))

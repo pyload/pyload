@@ -22,7 +22,7 @@ class OverLoadMe(MultiHoster):
         self.chunkLimit = 5
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         https = "https" if self.getConfig('ssl') else "http"
         data  = self.account.getAccountData(self.user)
         page  = self.load(https + "://api.over-load.me/getdownload.php",

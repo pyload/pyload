@@ -28,7 +28,7 @@ class SizedriveCom(SimpleHoster):
         self.chunkLimit     = 1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         self.wait(5)
         self.html = self.load("http://www.sizedrive.com/getdownload.php",
                               post={'id': self.info['pattern']['ID']})

@@ -88,7 +88,7 @@ class RapidgatorNet(SimpleHoster):
             self.retry(wait_time=60)
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         self.api_data = self.api_response('info')
         self.api_data['md5'] = self.api_data['hash']
 
@@ -98,7 +98,7 @@ class RapidgatorNet(SimpleHoster):
         self.link = self.api_response('download')['url']
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         jsvars = dict(re.findall(self.JSVARS_PATTERN, self.html))
         self.logDebug(jsvars)
 

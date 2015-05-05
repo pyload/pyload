@@ -61,7 +61,7 @@ class MultiHoster(SimpleHoster):
             if self.directDL:
                 self.checkInfo()
                 self.logDebug("Looking for direct download link...")
-                self.handleDirect(pyfile)
+                self.handle_direct(pyfile)
 
             if not self.link and not self.lastDownload:
                 self.preload()
@@ -71,11 +71,11 @@ class MultiHoster(SimpleHoster):
 
                 if self.premium and (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
                     self.logDebug("Handled as premium download")
-                    self.handlePremium(pyfile)
+                    self.handle_premium(pyfile)
 
                 elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
                     self.logDebug("Handled as free download")
-                    self.handleFree(pyfile)
+                    self.handle_free(pyfile)
 
             self.downloadLink(self.link, True)
             self.checkFile()
@@ -105,11 +105,11 @@ class MultiHoster(SimpleHoster):
                 raise Fail(e)
 
 
-    def handlePremium(self, pyfile):
-        return self.handleFree(pyfile)
+    def handle_premium(self, pyfile):
+        return self.handle_free(pyfile)
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         if self.premium:
             raise NotImplementedError
         else:

@@ -22,7 +22,7 @@ class AlldebridCom(MultiHoster):
         self.chunkLimit = 16
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         password = self.getPassword()
 
         data = json_loads(self.load("http://www.alldebrid.com/service.php",

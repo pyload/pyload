@@ -29,7 +29,7 @@ class EuroshareEu(SimpleHoster):
     URL_REPLACEMENTS = [(r"(http://[^/]*\.)(sk|cz|hu|pl)/", r"\1eu/")]
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         if self.ERR_NOT_LOGGED_IN_PATTERN in self.html:
             self.account.relogin(self.user)
             self.retry(reason=_("User not logged in"))
@@ -47,7 +47,7 @@ class EuroshareEu(SimpleHoster):
             self.fail(self.lastCheck.group(1))
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         if re.search(self.ERR_PARDL_PATTERN, self.html):
             self.longWait(5 * 60, 12)
 

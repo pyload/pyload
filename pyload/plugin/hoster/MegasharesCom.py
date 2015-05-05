@@ -39,11 +39,11 @@ class MegasharesCom(SimpleHoster):
         self.multiDL        = self.premium
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         self.handleDownload(True)
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         if self.NO_SLOTS_PATTERN in self.html:
             self.retry(wait_time=5 * 60)
 

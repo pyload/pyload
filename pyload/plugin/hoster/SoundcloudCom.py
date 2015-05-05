@@ -24,7 +24,7 @@ class SoundcloudCom(SimpleHoster):
     OFFLINE_PATTERN = r'<title>"SoundCloud - Hear the world’s sounds"</title>'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         try:
             song_id = re.search(r'sounds:(\d+)"', self.html).group(1)
 

@@ -30,6 +30,6 @@ class XdadevelopersCom(SimpleHoster):
         self.chunkLimit     = 1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         self.download(pyfile.url,
                       get={'task': "get"})

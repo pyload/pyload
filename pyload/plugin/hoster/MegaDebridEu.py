@@ -37,7 +37,7 @@ class MegaDebridEu(MultiHoster):
             return False
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         """
         Debrid a link
         Return The debrided link if succeed or original link if fail

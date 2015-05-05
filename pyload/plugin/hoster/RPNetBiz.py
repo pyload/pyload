@@ -21,7 +21,7 @@ class RPNetBiz(MultiHoster):
         self.chunkLimit = -1
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         user, data = self.account.selectAccount()
 
         # Get the download link

@@ -26,7 +26,7 @@ class PremiumTo(MultiHoster):
     CHECK_TRAFFIC = True
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         # raise timeout to 2min
         self.download("http://premium.to/api/getfile.php",
                       get={'username': self.account.username,

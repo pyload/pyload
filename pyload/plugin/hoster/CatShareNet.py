@@ -46,7 +46,7 @@ class CatShareNet(SimpleHoster):
         return super(CatShareNet, self).checkErrors()
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         recaptcha = ReCaptcha(self)
 
         response, challenge = recaptcha.challenge()

@@ -80,7 +80,7 @@ class DlFreeFr(SimpleHoster):
             if content_type and content_type.startswith("text/html"):
                 # Undirect acces to requested file, with a web page providing it (captcha)
                 self.html = self.load(valid_url)
-                self.handleFree(pyfile)
+                self.handle_free(pyfile)
             else:
                 # Direct access to requested file for users using free.fr as Internet Service Provider.
                 self.link = valid_url
@@ -92,7 +92,7 @@ class DlFreeFr(SimpleHoster):
             self.fail(_("Invalid return code: ") + str(headers.get('code')))
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         action, inputs = self.parseHtmlForm('action="getfile.pl"')
 
         adyoulike = AdYouLike(self)

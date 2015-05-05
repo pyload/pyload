@@ -38,7 +38,7 @@ class IfolderRu(SimpleHoster):
         self.chunkLimit     = 1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         url = "http://rusfolder.com/%s" % self.info['pattern']['ID']
         self.html = self.load("http://rusfolder.com/%s" % self.info['pattern']['ID'], decode=True)
         self.getFileInfo()

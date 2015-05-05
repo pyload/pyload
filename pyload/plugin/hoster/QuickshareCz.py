@@ -43,15 +43,15 @@ class QuickshareCz(SimpleHoster):
                     self.premium = False
 
         if self.premium:
-            self.handlePremium(pyfile)
+            self.handle_premium(pyfile)
         else:
-            self.handleFree(pyfile)
+            self.handle_free(pyfile)
 
         if self.checkDownload({"error": re.compile(r"\AChyba!")}, max_size=100):
             self.fail(_("File not m or plugin defect"))
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         # get download url
         download_url = '%s/download.php' % self.jsvars['server']
         data = dict((x, self.jsvars[x]) for x in self.jsvars if x in ("ID1", "ID2", "ID3", "ID4"))
@@ -78,7 +78,7 @@ class QuickshareCz(SimpleHoster):
                 self.fail(_("Error %d") % m.group(1))
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         download_url = '%s/download_premium.php' % self.jsvars['server']
         data = dict((x, self.jsvars[x]) for x in self.jsvars if x in ("ID1", "ID2", "ID4", "ID5"))
         self.download(download_url, get=data)

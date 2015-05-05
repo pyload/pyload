@@ -90,7 +90,7 @@ class UploadedTo(SimpleHoster):
                 self.wait(m.group(1))
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         self.load("http://uploaded.net/language/en", just_header=True)
 
         self.html = self.load("http://uploaded.net/js/download.js", decode=True)

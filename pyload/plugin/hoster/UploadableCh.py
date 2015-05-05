@@ -32,7 +32,7 @@ class UploadableCh(SimpleHoster):
     RECAPTCHA_KEY = "6LdlJuwSAAAAAPJbPIoUhyqOJd7-yrah5Nhim5S3"
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         # Click the "free user" button and wait
         a = self.load(pyfile.url, post={'downloadLink': "wait"}, decode=True)
         self.logDebug(a)

@@ -24,7 +24,7 @@ class RealdebridCom(MultiHoster):
         self.chunkLimit = 3
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         data = json_loads(self.load("https://real-debrid.com/ajax/unrestrict.php",
                                     get={'lang'    : "en",
                                          'link'    : pyfile.url,

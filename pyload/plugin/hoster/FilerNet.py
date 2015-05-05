@@ -32,7 +32,7 @@ class FilerNet(SimpleHoster):
     LINK_FREE_PATTERN = LINK_PREMIUM_PATTERN = r'href="([^"]+)">Get download</a>'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         inputs = self.parseHtmlForm(input_names={'token': re.compile(r'.+')})[1]
         if 'token' not in inputs:
             self.error(_("Unable to detect token"))

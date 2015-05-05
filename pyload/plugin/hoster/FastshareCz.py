@@ -46,7 +46,7 @@ class FastshareCz(SimpleHoster):
         self.info.pop('error', None)
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         m = re.search(self.FREE_URL_PATTERN, self.html)
         if m:
             action, captcha_src = m.groups()

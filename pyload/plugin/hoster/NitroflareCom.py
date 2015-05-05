@@ -58,7 +58,7 @@ class NitroflareCom(SimpleHoster):
         self.info.pop('error', None)
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         # used here to load the cookies which will be required later
         self.load(pyfile.url, post={'goToFreePage': ""})
 

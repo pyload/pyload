@@ -64,7 +64,7 @@ class CzshareCom(SimpleHoster):
         return True
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
     # parse download link
         try:
             form = re.search(self.PREMIUM_FORM_PATTERN, self.html, re.S).group(1)
@@ -77,7 +77,7 @@ class CzshareCom(SimpleHoster):
         self.download("http://sdilej.cz/profi_down.php", post=inputs, disposition=True)
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         # get free url
         m = re.search(self.FREE_URL_PATTERN, self.html)
         if m is None:

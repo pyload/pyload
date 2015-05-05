@@ -27,7 +27,7 @@ class ExashareCom(XFSHoster):
         self.resumeDownload = self.premium
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
             self.error(_("Free download link not found"))

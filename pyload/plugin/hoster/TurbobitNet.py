@@ -42,7 +42,7 @@ class TurbobitNet(SimpleHoster):
     CAPTCHA_PATTERN    = r'<img alt="Captcha" src="(.+?)"'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         self.html = self.load("http://turbobit.net/download/free/%s" % self.info['pattern']['ID'],
                               decode=True)
 

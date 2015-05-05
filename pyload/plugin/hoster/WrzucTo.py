@@ -29,7 +29,7 @@ class WrzucTo(SimpleHoster):
         self.multiDL = True
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         data = dict(re.findall(r'(md5|file): "(.*?)"', self.html))
         if len(data) != 2:
             self.error(_("No file ID"))

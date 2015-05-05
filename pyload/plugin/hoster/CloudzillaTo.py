@@ -33,7 +33,7 @@ class CloudzillaTo(SimpleHoster):
             self.retry(reason="Wrong password")
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         self.html = self.load("http://www.cloudzilla.to/generateticket/",
                               post={'file_id': self.info['pattern']['ID'], 'key': self.getPassword()})
 
@@ -55,5 +55,5 @@ class CloudzillaTo(SimpleHoster):
                                                                               'ticket_id': ticket['ticket_id']}
 
 
-    def handlePremium(self, pyfile):
-        return self.handleFree(pyfile)
+    def handle_premium(self, pyfile):
+        return self.handle_free(pyfile)

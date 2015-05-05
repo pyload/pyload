@@ -38,7 +38,7 @@ class MegaRapidoNet(MultiHoster):
     ERROR_PATTERN = r'<\s*?div[^>]*?class\s*?=\s*?["\']?alert-message error.*?>([^<]*)'
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         self.html = self.load("http://megarapido.net/gerar.php",
                          post={'rand'     :random_with_N_digits(16),
                                'urllist'  : pyfile.url,
@@ -51,4 +51,4 @@ class MegaRapidoNet(MultiHoster):
         if "desloga e loga novamente para gerar seus links" in self.html.lower():
             self.error("You have logged in at another place")
 
-        return super(MegaRapidoNet, self).handlePremium(pyfile)
+        return super(MegaRapidoNet, self).handle_premium(pyfile)

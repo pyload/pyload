@@ -84,7 +84,7 @@ class XFSHoster(SimpleHoster):
             self.directDL = self.premium
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         for i in xrange(1, 6):
             self.logDebug("Getting download link: #%d" % i)
 
@@ -112,11 +112,11 @@ class XFSHoster(SimpleHoster):
         self.link = m.group(1)
 
 
-    def handlePremium(self, pyfile):
-        return self.handleFree(pyfile)
+    def handle_premium(self, pyfile):
+        return self.handle_free(pyfile)
 
 
-    def handleMulti(self, pyfile):
+    def handle_multi(self, pyfile):
         if not self.account:
             self.fail(_("Only registered or premium users can use url leech feature"))
 

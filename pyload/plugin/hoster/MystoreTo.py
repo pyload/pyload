@@ -32,7 +32,7 @@ class MystoreTo(SimpleHoster):
         self.multiDL        = True
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         try:
             fid = re.search(r'wert="(.+?)"', self.html).group(1)
 

@@ -36,7 +36,7 @@ class AndroidfilehostCom(SimpleHoster):
         self.chunkLimit     = 1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         wait = re.search(self.WAIT_PATTERN, self.html)
         self.logDebug("Waiting time: %s seconds" % wait.group(1))
 

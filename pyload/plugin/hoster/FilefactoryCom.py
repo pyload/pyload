@@ -42,7 +42,7 @@ class FilefactoryCom(SimpleHoster):
     COOKIES = [("filefactory.com", "locale", "en_US.utf8")]
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         if "Currently only Premium Members can download files larger than" in self.html:
             self.fail(_("File too large for free download"))
         elif "All free download slots on this server are currently in use" in self.html:
@@ -73,7 +73,7 @@ class FilefactoryCom(SimpleHoster):
         return super(FilefactoryCom, self).checkFile(rules)
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         self.link = self.directLink(self.load(pyfile.url, just_header=True))
 
         if not self.link:

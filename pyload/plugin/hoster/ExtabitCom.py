@@ -29,7 +29,7 @@ class ExtabitCom(SimpleHoster):
     LINK_FREE_PATTERN = r'[\'"](http://guest\d+\.extabit\.com/\w+/.*?)[\'"]'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         if r">Only premium users can download this file" in self.html:
             self.fail(_("Only premium users can download this file"))
 

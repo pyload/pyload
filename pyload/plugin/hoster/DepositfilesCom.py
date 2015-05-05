@@ -40,7 +40,7 @@ class DepositfilesCom(SimpleHoster):
     LINK_MIRROR_PATTERN  = r'class="repeat_mirror"><a href="(.+?)"'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         self.html = self.load(pyfile.url, post={'gateway_result': "1"})
 
         self.checkErrors()
@@ -69,7 +69,7 @@ class DepositfilesCom(SimpleHoster):
             self.link = urllib.unquote(m.group(1))
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         if '<span class="html_download_api-gold_traffic_limit">' in self.html:
             self.logWarning(_("Download limit reached"))
             self.retry(25, 60 * 60, "Download limit reached")

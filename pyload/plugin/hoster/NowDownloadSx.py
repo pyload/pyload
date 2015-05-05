@@ -37,7 +37,7 @@ class NowDownloadSx(SimpleHoster):
         self.chunkLimit     = -1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         tokenlink = re.search(self.TOKEN_PATTERN, self.html)
         continuelink = re.search(self.CONTINUE_PATTERN, self.html)
         if tokenlink is None or continuelink is None:

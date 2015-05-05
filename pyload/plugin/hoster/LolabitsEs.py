@@ -31,7 +31,7 @@ class LolabitsEs(SimpleHoster):
         self.chunkLimit = 1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         fileid = re.search(self.FILEID_PATTERN, self.html).group(1)
         self.logDebug("FileID: " + fileid)
 

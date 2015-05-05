@@ -21,7 +21,7 @@ class FastixRu(MultiHoster):
         self.chunkLimit = 3
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         api_key = self.account.getAccountData(self.user)
         api_key = api_key['api']
 

@@ -72,12 +72,12 @@ class FileserveCom(Hoster):
         self.logDebug("File Name: %s Size: %d" % (pyfile.name, pyfile.size))
 
         if self.premium:
-            self.handlePremium(pyfile)
+            self.handle_premium(pyfile)
         else:
-            self.handleFree(pyfile)
+            self.handle_free(pyfile)
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         self.html = self.load(self.url)
         action = self.load(self.url, post={"checkDownload": "check"}, decode=True)
         action = json_loads(action)
@@ -182,7 +182,7 @@ class FileserveCom(Hoster):
         self.retry()
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         premium_url = None
         if self.getClassName() == "FileserveCom":
             # try api download

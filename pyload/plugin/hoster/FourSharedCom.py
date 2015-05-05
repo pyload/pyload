@@ -35,7 +35,7 @@ class FourSharedCom(SimpleHoster):
     ID_PATTERN = r'name="d3fid" value="(.*?)"'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         m = re.search(self.LINK_BTN_PATTERN, self.html)
         if m:
             link = m.group(1)

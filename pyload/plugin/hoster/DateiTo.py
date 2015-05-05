@@ -29,7 +29,7 @@ class DateiTo(SimpleHoster):
     DATA_PATTERN = r'url: "(.*?)", data: "(.*?)",'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         url = 'http://datei.to/ajax/download.php'
         data = {'P': 'I', 'ID': self.info['pattern']['ID']}
         recaptcha = ReCaptcha(self)

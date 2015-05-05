@@ -22,7 +22,7 @@ class FreeWayMe(MultiHoster):
         self.chunkLimit     = 1
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         user, data = self.account.selectAccount()
 
         for _i in xrange(5):

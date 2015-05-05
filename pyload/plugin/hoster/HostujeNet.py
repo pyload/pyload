@@ -27,7 +27,7 @@ class HostujeNet(SimpleHoster):
         self.chunkLimit = 1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         m = re.search(r'<script src="([\w^_]+.php)"></script>', self.html)
         if m:
             jscript = self.load("http://hostuje.net/" + m.group(1))

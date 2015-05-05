@@ -35,7 +35,7 @@ class KingfilesNet(SimpleHoster):
         self.multiDL        = True
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         # Click the free user button
         post_data = {'op'         : "download1",
                      'usr_login'  : "",

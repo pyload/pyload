@@ -26,7 +26,7 @@ class GigapetaCom(SimpleHoster):
     COOKIES = [("gigapeta.com", "lang", "us")]
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         captcha_key = str(random.randint(1, 100000000))
         captcha_url = "http://gigapeta.com/img/captcha.gif?x=%s" % captcha_key
 

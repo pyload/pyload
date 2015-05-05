@@ -56,7 +56,7 @@ class LetitbitNet(SimpleHoster):
         self.resumeDownload = True
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         action, inputs = self.parseHtmlForm('id="ifree_form"')
         if not action:
             self.error(_("ifree_form"))
@@ -121,7 +121,7 @@ class LetitbitNet(SimpleHoster):
         self.link = urls[0]
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         api_key = self.user
         premium_key = self.account.getAccountData(self.user)['password']
 

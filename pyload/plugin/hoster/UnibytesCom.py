@@ -26,7 +26,7 @@ class UnibytesCom(SimpleHoster):
     LINK_FREE_PATTERN = r'<a href="(.+?)">Download</a>'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         domain            = "http://www.%s/" % self.HOSTER_DOMAIN
         action, post_data = self.parseHtmlForm('id="startForm"')
 

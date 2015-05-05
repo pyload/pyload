@@ -28,6 +28,6 @@ class GooIm(SimpleHoster):
         self.multiDL        = True
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         self.wait(10)
         self.link = pyfile.url

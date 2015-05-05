@@ -17,7 +17,7 @@ class ZeveraCom(MultiHoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         self.link = "https://%s/getFiles.ashx?ourl=%s" % (self.account.HOSTER_DOMAIN, pyfile.url)
 
 

@@ -44,7 +44,7 @@ class LuckyShareNet(SimpleHoster):
     # TODO: Some files could not be downloaded in free mode
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         rep = self.load(r"http://luckyshare.net/download/request/type/time/file/" + self.info['pattern']['ID'], decode=True)
 
         self.logDebug("JSON: " + rep)

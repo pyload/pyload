@@ -39,7 +39,7 @@ class LoadTo(SimpleHoster):
         self.chunkLimit = 1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         # Search for Download URL
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:

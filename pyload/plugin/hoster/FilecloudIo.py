@@ -44,7 +44,7 @@ class FilecloudIo(SimpleHoster):
         self.chunkLimit     = 1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         data = {"ukey": self.info['pattern']['ID']}
 
         m = re.search(self.AB1_PATTERN, self.html)
@@ -109,7 +109,7 @@ class FilecloudIo(SimpleHoster):
             self.fail(_("Unexpected server response"))
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         akey = self.account.getAccountData(self.user)['akey']
         ukey = self.info['pattern']['ID']
         self.logDebug("Akey: %s | Ukey: %s" % (akey, ukey))

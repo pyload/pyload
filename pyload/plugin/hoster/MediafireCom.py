@@ -34,7 +34,7 @@ class MediafireCom(SimpleHoster):
         self.multiDL        = True
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         solvemedia  = SolveMedia(self)
         captcha_key = solvemedia.detect_key()
 
@@ -57,4 +57,4 @@ class MediafireCom(SimpleHoster):
                 if self.PASSWORD_PATTERN in self.html:
                     self.fail(_("Incorrect password"))
 
-        return super(MediafireCom, self).handleFree(pyfile)
+        return super(MediafireCom, self).handle_free(pyfile)

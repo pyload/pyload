@@ -28,7 +28,7 @@ class SendspaceCom(SimpleHoster):
     USER_CAPTCHA_PATTERN = r'<td><img src="/captchas/captcha\.php?user=(.+?))"></td>'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         params = {}
         for _i in xrange(3):
             m = re.search(self.LINK_FREE_PATTERN, self.html)

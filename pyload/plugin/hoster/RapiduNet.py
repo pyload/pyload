@@ -36,7 +36,7 @@ class RapiduNet(SimpleHoster):
         self.multiDL        = self.premium
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         self.req.http.lastURL = pyfile.url
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
 

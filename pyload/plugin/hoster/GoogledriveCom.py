@@ -34,7 +34,7 @@ class GoogledriveCom(SimpleHoster):
         self.chunkLimit     = 1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         try:
             link1 = re.search(r'"(https://docs.google.com/uc\?id.*?export=download)",',
                               self.html.decode('unicode-escape')).group(1)

@@ -27,7 +27,7 @@ class UpstoreNet(SimpleHoster):
     LINK_FREE_PATTERN = r'<a href="(https?://.*?)" target="_blank"><b>'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         # STAGE 1: get link to continue
         m = re.search(self.CHASH_PATTERN, self.html)
         if m is None:

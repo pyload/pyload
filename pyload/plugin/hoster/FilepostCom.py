@@ -29,7 +29,7 @@ class FilepostCom(SimpleHoster):
     FLP_TOKEN_PATTERN = r'set_store_options\({token: \'(.+?)\''
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         m = re.search(self.FLP_TOKEN_PATTERN, self.html)
         if m is None:
             self.error(_("Token"))

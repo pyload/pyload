@@ -26,7 +26,7 @@ class YibaishiwuCom(SimpleHoster):
     LINK_FREE_PATTERN = r'(/\?ct=(pickcode|download)[^"\']+)'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
             self.error(_("LINK_FREE_PATTERN not found"))

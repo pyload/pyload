@@ -31,7 +31,7 @@ class NarodRu(SimpleHoster):
     LINK_FREE_PATTERN = r'<a class="h-link" rel="yandex_bar" href="(.+?)">'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         for _i in xrange(5):
             self.html = self.load('http://narod.ru/disk/getcapchaxml/?rnd=%d' % int(random.random() * 777))
 

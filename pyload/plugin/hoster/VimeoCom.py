@@ -35,7 +35,7 @@ class VimeoCom(SimpleHoster):
         self.chunkLimit     = -1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         password = self.getPassword()
 
         if self.js and 'class="btn iconify_down_b"' in self.html:

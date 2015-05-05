@@ -33,7 +33,7 @@ class VeohCom(SimpleHoster):
         self.chunkLimit     = -1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         quality = self.getConfig('quality')
         if quality == "Auto":
             quality = ("High", "Low")

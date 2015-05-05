@@ -21,7 +21,7 @@ class MyfastfileCom(MultiHoster):
         self.chunkLimit = -1
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         self.html = self.load('http://myfastfile.com/api.php',
                          get={'user': self.user, 'pass': self.account.getAccountData(self.user)['password'],
                               'link': pyfile.url})

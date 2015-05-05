@@ -59,7 +59,7 @@ class RapideoPl(MultiHoster):
         return self.load(self.API_URL, post=query)
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         try:
             data = self.runFileQuery(pyfile.url, 'fileinfo')
 

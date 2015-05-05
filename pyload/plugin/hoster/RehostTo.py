@@ -16,7 +16,7 @@ class RehostTo(MultiHoster):
     __authors     = [("RaNaN", "RaNaN@pyload.org")]
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         self.download("http://rehost.to/process_download.php",
                       get={'user': "cookie",
                            'pass': self.account.getAccountInfo(self.user)['session'],

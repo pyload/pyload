@@ -33,7 +33,7 @@ class BasketbuildCom(SimpleHoster):
         self.chunkLimit     = 1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         try:
             link1 = re.search(r'href="(.+dlgate/.+)"', self.html).group(1)
             self.html = self.load(link1)

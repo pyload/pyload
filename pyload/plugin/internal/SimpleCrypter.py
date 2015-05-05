@@ -94,7 +94,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
         self.links = self.getLinks()
 
         if hasattr(self, 'PAGES_PATTERN') and hasattr(self, 'loadPage'):
-            self.handlePages(pyfile)
+            self.handle_pages(pyfile)
 
         self.logDebug("Package has %d links" % len(self.links))
 
@@ -142,7 +142,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
                 for link in re.findall(self.LINK_PATTERN, self.html)]
 
 
-    def handlePages(self, pyfile):
+    def handle_pages(self, pyfile):
         try:
             pages = int(re.search(self.PAGES_PATTERN, self.html).group(1))
         except Exception:

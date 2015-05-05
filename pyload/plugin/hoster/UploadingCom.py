@@ -39,12 +39,12 @@ class UploadingCom(SimpleHoster):
         self.getFileInfo()
 
         if self.premium:
-            self.handlePremium(pyfile)
+            self.handle_premium(pyfile)
         else:
-            self.handleFree(pyfile)
+            self.handle_free(pyfile)
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         postData = {'action': 'get_link',
                     'code'  : self.info['pattern']['ID'],
                     'pass'  : 'undefined'}
@@ -57,7 +57,7 @@ class UploadingCom(SimpleHoster):
         raise Exception("Plugin defect")
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         m = re.search('<h2>((Daily )?Download Limit)</h2>', self.html)
         if m:
             pyfile.error = m.group(1)

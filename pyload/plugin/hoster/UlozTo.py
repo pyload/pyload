@@ -48,7 +48,7 @@ class UlozTo(SimpleHoster):
         self.resumeDownload = True
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         action, inputs = self.parseHtmlForm('id="frm-downloadDialog-freeDownloadForm"')
         if not action or not inputs:
             self.error(_("Free download form not found"))
@@ -83,7 +83,7 @@ class UlozTo(SimpleHoster):
         self.download("http://www.ulozto.net" + action, post=inputs)
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         self.download(pyfile.url, get={'do': "directDownload"})
 
 

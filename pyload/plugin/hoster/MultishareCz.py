@@ -27,15 +27,15 @@ class MultishareCz(SimpleHoster):
     OFFLINE_PATTERN = ur'<h1>Stáhnout soubor</h1><p><strong>Požadovaný soubor neexistuje.</strong></p>'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         self.download("http://www.multishare.cz/html/download_free.php", get={'ID': self.info['pattern']['ID']})
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         self.download("http://www.multishare.cz/html/download_premium.php", get={'ID': self.info['pattern']['ID']})
 
 
-    def handleMulti(self, pyfile):
+    def handle_multi(self, pyfile):
         self.html = self.load('http://www.multishare.cz/html/mms_ajax.php', post={"link": pyfile.url}, decode=True)
 
         self.checkInfo()

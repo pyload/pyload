@@ -45,7 +45,7 @@ class SimplyPremiumCom(MultiHoster):
             self.retry(5, 60, _("Hoster is temporarily unavailable"))
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         for _i in xrange(5):
             self.html = self.load("http://www.simply-premium.com/premium.php", get={'info': "", 'link': self.pyfile.url})
 

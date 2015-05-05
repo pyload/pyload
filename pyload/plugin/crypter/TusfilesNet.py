@@ -31,7 +31,7 @@ class TusfilesNet(XFSCrypter):
         return self.load(urlparse.urljoin(self.pyfile.url, str(page_n)), decode=True)
 
 
-    def handlePages(self, pyfile):
+    def handle_pages(self, pyfile):
         pages = re.search(self.PAGES_PATTERN, self.html)
         if pages:
             pages = int(math.ceil(int(pages.group('pages')) / 25.0))

@@ -42,7 +42,7 @@ class UpleaCom(XFSHoster):
         self.resumeDownload = True
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         m = re.search(self.STEP_PATTERN, self.html)
         if m is None:
             self.error(_("STEP_PATTERN not found"))

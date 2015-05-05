@@ -38,7 +38,7 @@ class OneFichierCom(SimpleHoster):
         self.resumeDownload = True
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         id = self.info['pattern']['ID1'] or self.info['pattern']['ID2']
         url, inputs = self.parseHtmlForm('action="https://1fichier.com/\?%s' % id)
 
@@ -53,5 +53,5 @@ class OneFichierCom(SimpleHoster):
         self.download(url, post=inputs)
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         self.download(pyfile.url, post={'dl': "Download", 'did': 0})

@@ -65,7 +65,7 @@ class Keep2ShareCc(SimpleHoster):
         self.info.pop('error', None)
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         self.fid  = re.search(r'<input type="hidden" name="slow_id" value="(.+?)">', self.html).group(1)
         self.html = self.load(pyfile.url, post={'yt0': '', 'slow_id': self.fid})
 

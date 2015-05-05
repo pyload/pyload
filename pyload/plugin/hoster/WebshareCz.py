@@ -41,7 +41,7 @@ class WebshareCz(SimpleHoster):
         return info
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         wst = self.account.infos['wst'] if self.account and 'wst' in self.account.infos else ""
 
         api_data = getURL('https://webshare.cz/api/file_link/',
@@ -57,5 +57,5 @@ class WebshareCz(SimpleHoster):
         self.link = m.group(1)
 
 
-    def handlePremium(self, pyfile):
-        return self.handleFree(pyfile)
+    def handle_premium(self, pyfile):
+        return self.handle_free(pyfile)

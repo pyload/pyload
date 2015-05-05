@@ -36,10 +36,10 @@ class UloziskoSk(SimpleHoster):
         if m:
             self.link = "http://ulozisko.sk" + m.group(1)
         else:
-            self.handleFree(pyfile)
+            self.handle_free(pyfile)
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
             self.error(_("LINK_FREE_PATTERN not found"))

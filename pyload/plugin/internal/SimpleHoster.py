@@ -287,7 +287,7 @@ class SimpleHoster(Hoster):
         example: ERROR_PATTERN = r''
 
 
-    Instead overriding handleFree and handlePremium methods you can define the following patterns for direct download:
+    Instead overriding handle_free and handle_premium methods you can define the following patterns for direct download:
 
       LINK_FREE_PATTERN: (optional) group(1) should be the direct link for free download
         example: LINK_FREE_PATTERN = r'<div class="link"><a href="(.+?)"'
@@ -303,8 +303,8 @@ class SimpleHoster(Hoster):
     TEXT_ENCODING = False  #: Set to True or encoding name if encoding value in http header is not correct
     COOKIES       = True   #: or False or list of tuples [(domain, name, value)]
     CHECK_TRAFFIC = False  #: Set to True to force checking traffic left for premium account
-    DIRECT_LINK   = None   #: Set to True to looking for direct link (as defined in handleDirect method), set to None to do it if self.account is True else False
-    MULTI_HOSTER  = False  #: Set to True to leech other hoster link (as defined in handleMulti method)
+    DIRECT_LINK   = None   #: Set to True to looking for direct link (as defined in handle_direct method), set to None to do it if self.account is True else False
+    MULTI_HOSTER  = False  #: Set to True to leech other hoster link (as defined in handle_multi method)
     LOGIN_ACCOUNT = False  #: Set to True to require account login
     DISPOSITION   = True   #: Set to True to use any content-disposition value in http header as file name
 
@@ -462,11 +462,11 @@ class SimpleHoster(Hoster):
 
             if self.directDL:
                 self.logDebug("Looking for direct download link...")
-                self.handleDirect(pyfile)
+                self.handle_direct(pyfile)
 
             if self.multihost and not self.link and not self.lastDownload:
                 self.logDebug("Looking for leeched download link...")
-                self.handleMulti(pyfile)
+                self.handle_multi(pyfile)
 
                 if not self.link and not self.lastDownload:
                     self.MULTI_HOSTER = False
@@ -478,11 +478,11 @@ class SimpleHoster(Hoster):
 
                 if self.premium and (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
                     self.logDebug("Handled as premium download")
-                    self.handlePremium(pyfile)
+                    self.handle_premium(pyfile)
 
                 elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
                     self.logDebug("Handled as free download")
-                    self.handleFree(pyfile)
+                    self.handle_free(pyfile)
 
             self.downloadLink(self.link, self.DISPOSITION)
             self.checkFile()
@@ -659,7 +659,7 @@ class SimpleHoster(Hoster):
         return self.info
 
 
-    def handleDirect(self, pyfile):
+    def handle_direct(self, pyfile):
         link = self.directLink(pyfile.url, self.resumeDownload)
 
         if link:
@@ -669,11 +669,11 @@ class SimpleHoster(Hoster):
             self.logDebug("Direct download link not found")
 
 
-    def handleMulti(self, pyfile):  #: Multi-hoster handler
+    def handle_multi(self, pyfile):  #: Multi-hoster handler
         pass
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         if not hasattr(self, 'LINK_FREE_PATTERN'):
             self.logError(_("Free download not implemented"))
 
@@ -684,11 +684,11 @@ class SimpleHoster(Hoster):
             self.link = m.group(1)
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         if not hasattr(self, 'LINK_PREMIUM_PATTERN'):
             self.logError(_("Premium download not implemented"))
             self.logDebug("Handled as free download")
-            self.handleFree(pyfile)
+            self.handle_free(pyfile)
 
         m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
         if m is None:

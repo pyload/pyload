@@ -29,7 +29,7 @@ class FileStoreTo(SimpleHoster):
         self.multiDL        = True
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         self.wait(10)
         self.link = self.load("http://filestore.to/ajax/download.php",
                               get={'D': re.search(r'"D=(\w+)', self.html).group(1)})

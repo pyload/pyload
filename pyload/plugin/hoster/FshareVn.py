@@ -52,7 +52,7 @@ class FshareVn(SimpleHoster):
             self.html = unicode(self.html, self.TEXT_ENCODING)
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         self.html = self.load(pyfile.url, decode=True)
 
         self.checkErrors()

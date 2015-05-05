@@ -24,7 +24,7 @@ class DataportCz(SimpleHoster):
     FREE_SLOTS_PATTERN = ur'Počet volných slotů: <span class="darkblue">(\d+)</span><br />'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         captchas = {"1": "jkeG", "2": "hMJQ", "3": "vmEK", "4": "ePQM", "5": "blBd"}
 
         for _i in xrange(60):

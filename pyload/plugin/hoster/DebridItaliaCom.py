@@ -22,7 +22,7 @@ class DebridItaliaCom(MultiHoster):
     URL_REPLACEMENTS = [("https://", "http://")]
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         self.html = self.load("http://www.debriditalia.com/api.php",
                               get={'generate': "on", 'link': pyfile.url, 'p': self.getPassword()})
 

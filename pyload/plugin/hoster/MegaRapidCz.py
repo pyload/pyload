@@ -51,7 +51,7 @@ class MegaRapidCz(SimpleHoster):
         self.chunkLimit = 1
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
         if m:
             self.link = m.group(1)

@@ -31,7 +31,7 @@ class CrockoCom(SimpleHoster):
     NAME_REPLACEMENTS = [(r'<.*?>', '')]
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         if "You need Premium membership to download this file." in self.html:
             self.fail(_("You need Premium membership to download this file"))
 

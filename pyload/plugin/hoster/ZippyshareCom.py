@@ -38,7 +38,7 @@ class ZippyshareCom(SimpleHoster):
         self.resumeDownload = True
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         recaptcha   = ReCaptcha(self)
         captcha_key = recaptcha.detect_key()
 
