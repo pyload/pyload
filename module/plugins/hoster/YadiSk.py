@@ -10,9 +10,9 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class YadiSk(SimpleHoster):
     __name__    = "YadiSk"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
-    __pattern__ = r'https?://yadi\.sk/d/\w+'
+    __pattern__ = r'https?://yadi\.sk/d/.+'
 
     __description__ = """Yadi.sk hoster plugin"""
     __license__     = "GPLv3"
