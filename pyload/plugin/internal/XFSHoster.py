@@ -11,7 +11,7 @@ from pyload.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name    = "XFSHoster"
     __type    = "hoster"
-    __version = "0.46"
+    __version = "0.47"
 
     __pattern = r'^unmatchable$'
 
@@ -34,7 +34,7 @@ class XFSHoster(SimpleHoster):
     OFFLINE_PATTERN      = r'>\s*\w+ (Not Found|file (was|has been) removed)'
     TEMP_OFFLINE_PATTERN = r'>\s*\w+ server (is in )?(maintenance|maintainance)'
 
-    WAIT_PATTERN         = r'<span id="countdown_str">.*?>(\d+)</span>|id="countdown" value=".*?(\d+).*?"'
+    WAIT_PATTERN         = r'<span id="countdown_str".*>(\d+)</span>|id="countdown" value=".*?(\d+).*?"'
     PREMIUM_ONLY_PATTERN = r'>This file is available for Premium Users only'
     ERROR_PATTERN        = r'(?:class=["\']err["\'].*?>|<[Cc]enter><b>|>Error</td>|>\(ERROR:)(?:\s*<.+?>\s*)*(.+?)(?:["\']|<|\))'
 
@@ -142,10 +142,7 @@ class XFSHoster(SimpleHoster):
 
         action, inputs = self.parseHtmlForm('F1')
         if not inputs:
-            if self.errmsg:
-                self.retry(reason=self.errmsg)
-            else:
-                self.error(_("TEXTAREA F1 not found"))
+            self.retry(reason=self.errmsg or _("TEXTAREA F1 not found"))
 
         self.logDebug(inputs)
 
@@ -198,7 +195,7 @@ class XFSHoster(SimpleHoster):
                 self.fail(_("File can be downloaded by premium users only"))
 
             elif 'limit' in self.errmsg:
-                if 'days' in self.errmsg:
+                if 'day' in self.errmsg:
                     delay   = secondsToMidnight(gmt=2)
                     retries = 3
                 else:
@@ -236,10 +233,7 @@ class XFSHoster(SimpleHoster):
         if not inputs:
             action, inputs = self.parseHtmlForm('F1')
             if not inputs:
-                if self.errmsg:
-                    self.retry(reason=self.errmsg)
-                else:
-                    self.error(_("TEXTAREA F1 not found"))
+                self.retry(reason=self.errmsg or _("TEXTAREA F1 not found"))
 
         self.logDebug(inputs)
 

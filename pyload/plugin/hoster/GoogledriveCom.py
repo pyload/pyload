@@ -12,7 +12,7 @@ from pyload.utils import html_unescape
 class GoogledriveCom(SimpleHoster):
     __name    = "GoogledriveCom"
     __type    = "hoster"
-    __version = "0.07"
+    __version = "0.08"
 
     __pattern = r'https?://(?:www\.)?drive\.google\.com/file/.+'
     __config  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -21,6 +21,8 @@ class GoogledriveCom(SimpleHoster):
     __license     = "GPLv3"
     __authors     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
+
+    DISPOSITION = False  #: Remove in 0.4.10
 
     NAME_PATTERN    = r'"og:title" content="(?P<N>.*?)">'
     OFFLINE_PATTERN = r'align="center"><p class="errorMessage"'

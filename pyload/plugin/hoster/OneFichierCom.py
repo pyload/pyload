@@ -6,7 +6,7 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 class OneFichierCom(SimpleHoster):
     __name    = "OneFichierCom"
     __type    = "hoster"
-    __version = "0.83"
+    __version = "0.84"
 
     __pattern = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
     __config  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -23,12 +23,12 @@ class OneFichierCom(SimpleHoster):
                        ("Ludovic Lehmann", "ludo.lehmann@gmail.com")]
 
 
-    NAME_PATTERN = r'>FileName :</td>\s*<td.*>(?P<N>.+?)<'
-    SIZE_PATTERN = r'>Size :</td>\s*<td.*>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
-
-    OFFLINE_PATTERN = r'File not found !\s*<'
-
     COOKIES     = [("1fichier.com", "LG", "en")]
+    DISPOSITION = False  #: Remove in 0.4.10
+
+    NAME_PATTERN    = r'>FileName :</td>\s*<td.*>(?P<N>.+?)<'
+    SIZE_PATTERN    = r'>Size :</td>\s*<td.*>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    OFFLINE_PATTERN = r'File not found !\s*<'
 
     WAIT_PATTERN = r'>You must wait \d+ minutes'
 

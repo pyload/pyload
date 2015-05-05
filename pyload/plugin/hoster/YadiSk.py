@@ -10,9 +10,9 @@ from pyload.utils import json_loads
 class YadiSk(SimpleHoster):
     __name    = "YadiSk"
     __type    = "hoster"
-    __version = "0.04"
+    __version = "0.05"
 
-    __pattern = r'https?://yadi\.sk/d/\w+'
+    __pattern = r'https?://yadi\.sk/d/[\w-]+'
 
     __description = """Yadi.sk hoster plugin"""
     __license     = "GPLv3"

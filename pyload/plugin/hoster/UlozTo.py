@@ -15,7 +15,7 @@ def convertDecimalPrefix(m):
 class UlozTo(SimpleHoster):
     __name    = "UlozTo"
     __type    = "hoster"
-    __version = "1.08"
+    __version = "1.09"
 
     __pattern = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
     __config  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -34,6 +34,7 @@ class UlozTo(SimpleHoster):
     SIZE_REPLACEMENTS = [(r'([\d.]+)\s([kMG])B', convertDecimalPrefix)]
 
     CHECK_TRAFFIC = True
+    DISPOSITION   = False  #: Remove in 0.4.10
 
     ADULT_PATTERN   = r'<form action="(.+?)" method="post" id="frm-askAgeForm">'
     PASSWD_PATTERN  = r'<div class="passwordProtectedFile">'
