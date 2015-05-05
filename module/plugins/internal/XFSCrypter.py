@@ -1,12 +1,47 @@
 # -*- coding: utf-8 -*-
 
+from HTMLParser import HTMLParser
+
 from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+
+class HTMLTDLinkGrabbber(HTMLParser):
+    td_count = 0
+    links = []
+
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "td":
+            self.td_count += 1
+
+        elif tag == "a" and self.td_count > 0:
+            for attr in attrs:
+                if attr[0] == "href":
+                    self.links.append(attr[1])
+                    break
+
+
+    def handle_endtag(self, tag):
+        if tag == "td":
+            self.td_count -= 1
+
+
+    def getLinks(self, html):
+        self.td_count = 0
+        self.links = []
+        try:
+            self.feed(html)
+        except Exception, e:
+            self.logError(_("Error parsing HTML: %s") % e.message)
+
+        return self.links
+
+
 
 
 class XFSCrypter(SimpleCrypter):
     __name__    = "XFSCrypter"
     __type__    = "crypter"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'^unmatchable$'
 
@@ -18,9 +53,6 @@ class XFSCrypter(SimpleCrypter):
     HOSTER_DOMAIN = None
 
     URL_REPLACEMENTS = [(r'&?per_page=\d+', ""), (r'[?/&]+$', ""), (r'(.+/[^?]+)$', r'\1?'), (r'$', r'&per_page=10000')]
-
-    LINK_PATTERN = r'<a href="(.+?)".*?>.+?(?:</a>)?\s*</(?:td|TD)>'
-    NAME_PATTERN = r'<[tT]itle>.*?\: (?P<N>.+) folder</[tT]itle>'
 
     OFFLINE_PATTERN      = r'>\s*\w+ (Not Found|file (was|has been) removed)'
     TEMP_OFFLINE_PATTERN = r'>\s*\w+ server (is in )?(maintenance|maintainance)'
@@ -43,3 +75,8 @@ class XFSCrypter(SimpleCrypter):
             self.COOKIES.insert((self.HOSTER_DOMAIN, "lang", "english"))
 
         return super(XFSCrypter, self).prepare()
+
+
+    def getLinks(self):
+        parser = HTMLTDLinkGrabbber()
+        return parser.getLinks(self.html)
