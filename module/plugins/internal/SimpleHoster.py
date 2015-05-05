@@ -244,10 +244,11 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.41"
+    __version__ = "1.42"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
+                   ("fallback"   , "bool", "Fallback to free download if premium fails", True)]
 
     __description__ = """Simple hoster plugin"""
     __license__     = "GPLv3"
@@ -488,7 +489,7 @@ class SimpleHoster(Hoster):
             self.checkFile()
 
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
-            if self.premium:
+            if self.getConfig('fallback', True) and self.premium:
                 self.logWarning(_("Premium download failed"), e)
                 self.retryFree()
             else:
@@ -748,7 +749,7 @@ class SimpleHoster(Hoster):
         self.premium = False
         self.account = None
         self.req     = self.core.requestFactory.getRequest(self.__name__)
-        self.retries = 0
+        self.retries = -1
         raise Retry(_("Fallback to free download"))
 
 
