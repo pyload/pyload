@@ -244,7 +244,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.40"
+    __version__ = "1.41"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -489,7 +489,7 @@ class SimpleHoster(Hoster):
 
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
             if self.premium:
-                self.logWarning(_("Premium download failed"))
+                self.logWarning(_("Premium download failed"), e)
                 self.retryFree()
             else:
                 raise Fail(e)

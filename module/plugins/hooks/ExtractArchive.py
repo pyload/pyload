@@ -110,7 +110,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.42"
+    __version__ = "1.43"
 
     __config__ = [("activated"      , "bool"              , "Activated"                                 , True                                                                     ),
                   ("fullpath"       , "bool"              , "Extract with full paths"                   , True                                                                     ),
@@ -187,6 +187,11 @@ class ExtractArchive(Hook):
 
     @threaded
     def extractQueued(self, thread):
+        if self.extracting:  #@NOTE: doing the check here for safty (called by coreReady)
+            return
+
+        self.extracting = True
+
         packages = self.queue.get()
         while packages:
             if self.lastPackage:  #: called from allDownloadsProcessed
@@ -199,6 +204,8 @@ class ExtractArchive(Hook):
                     pass
 
             packages = self.queue.get()  #: check for packages added during extraction
+
+        self.extracting = False
 
 
     @Expose
@@ -222,7 +229,7 @@ class ExtractArchive(Hook):
 
     def allDownloadsProcessed(self):
         self.lastPackage = True
-        if not self.extracting:
+        if self.getConfig('waitall') and not self.extracting:
             self.extractQueued()
 
 
@@ -230,8 +237,6 @@ class ExtractArchive(Hook):
     def extract(self, ids, thread=None):  #@TODO: Use pypack, not pid to improve method usability
         if not ids:
             return False
-
-        self.extracting = True
 
         processed = []
         extracted = []
@@ -374,7 +379,6 @@ class ExtractArchive(Hook):
 
             self.queue.remove(pid)
 
-        self.extracting = False
         return True if not failed else False
 
 
@@ -472,8 +476,14 @@ class ExtractArchive(Hook):
                         try:
                             send2trash.send2trash(file)
 
-                        except Exception:
-                            self.logWarning(_("Unable to move %s to trash") % os.path.basename(f))
+                        except NameError:
+                            self.logWarning(_("Unable to move %s to trash: Send2Trash lib not found") % os.path.basename(f))
+
+                        except Exception, e:
+                            self.logWarning(_("Unable to move %s to trash: %s") % (os.path.basename(f), e.message))
+
+                        else:
+                            self.logDebug(_("Successfully moved %s to trash") % os.path.basename(f))
 
             self.logInfo(name, _("Extracting finished"))
             extracted_files = archive.files or archive.list()
