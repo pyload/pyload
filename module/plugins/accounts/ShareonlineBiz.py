@@ -8,7 +8,7 @@ from module.plugins.Account import Account
 class ShareonlineBiz(Account):
     __name__    = "ShareonlineBiz"
     __type__    = "account"
-    __version__ = "0.31"
+    __version__ = "0.32"
 
     __description__ = """Share-online.biz account plugin"""
     __license__     = "GPLv3"
@@ -40,7 +40,7 @@ class ShareonlineBiz(Account):
         if api['a'].lower() != "not_available":
             req.cj.setCookie("share-online.biz", 'a', api['a'])
 
-            premium = api['group'] in ("Premium", "PrePaid")
+            premium = api['group'] in ("PrePaid", "Premium", "Penalty-Premium")
 
             validuntil = float(api['expire_date'])
 
