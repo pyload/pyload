@@ -90,7 +90,7 @@ class ClickAndLoad(Hook):
                         server_socket = ssl.wrap_socket(server_socket)
 
                     except NameError:
-                        self.logError(_("pyLoad's webinterface is configured to use HTTPS, Please install python's ssl lib or
+                        self.logError(_("pyLoad's webinterface is configured to use HTTPS, Please install python's ssl lib or disable HTTPS"))
                         client_socket.close()  #: reset the connection.
                         continue
 
