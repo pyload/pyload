@@ -6,6 +6,7 @@ from __future__ import with_statement
 import gc
 import random
 import string
+import threading
 import traceback
 
 from math import floor
@@ -38,12 +39,12 @@ def startApiExerciser(core, n):
         APIExerciser(core).start()
 
 
-class APIExerciser(Thread):
+class APIExerciser(threading.Thread):
 
     def __init__(self, core, thrift=False, user=None, pw=None):
         global idPool
 
-        Thread.__init__(self)
+        threading.Thread.__init__(self)
         self.setDaemon(True)
         self.core = core
         self.count = 0  #: number of methods

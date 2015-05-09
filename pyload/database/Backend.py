@@ -115,12 +115,12 @@ class DatabaseJob(object):
         self.done.wait()
 
 
-class DatabaseBackend(Thread):
+class DatabaseBackend(threading.Thread):
     subs = []
 
 
     def __init__(self, core):
-        Thread.__init__(self)
+        threading.Thread.__init__(self)
         self.setDaemon(True)
         self.core = core
 
@@ -322,7 +322,7 @@ class DatabaseBackend(Thread):
 
     @classmethod
     def unregisterSub(cls, klass):
-        cls.subs.reshutil.move(klass)
+        cls.subs.remove(klass)
 
 
     def __getattr__(self, attr):

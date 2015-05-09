@@ -174,7 +174,7 @@ class Core(object):
     def deletePidFile(self):
         if self.checkPidFile():
             self.log.debug("Deleting old pidfile %s" % self.pidfile)
-            os.reshutil.move(self.pidfile)
+            os.remove(self.pidfile)
 
 
     def checkPidFile(self):

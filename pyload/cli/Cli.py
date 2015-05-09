@@ -359,10 +359,10 @@ class Cli(object):
                 break
 
 
-class RefreshThread(Thread):
+class RefreshThread(threading.Thread):
 
     def __init__(self, cli):
-        Thread.__init__(self)
+        threading.Thread.__init__(self)
         self.setDaemon(True)
         self.cli = cli
 

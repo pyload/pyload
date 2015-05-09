@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
+import threading
 import traceback
 
 
-class BackendBase(Thread):
+class BackendBase(threading.Thread):
 
     def __init__(self, manager):
-        Thread.__init__(self)
+        threading.Thread.__init__(self)
         self.m = manager
         self.core = manager.core
         self.enabled = True

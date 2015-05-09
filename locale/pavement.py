@@ -134,7 +134,7 @@ def get_source(options):
     urlretrieve(options.src, "pyload_src.zip")
     zip = ZipFile("pyload_src.zip")
     zip.extractall()
-    path("pyload_src.zip").reshutil.move()
+    path("pyload_src.zip").remove()
 
     folder = [x for x in path(".").dirs() if x.name.startswith("spoob-pyload-")][0]
     folder.shutil.move(pyload)
@@ -146,8 +146,8 @@ def get_source(options):
         if file.name.endswith(".py"):
             file.chmod(0755)
 
-    (pyload / ".hgtags").reshutil.move()
-    (pyload / ".gitignore").reshutil.move()
+    (pyload / ".hgtags").remove()
+    (pyload / ".gitignore").remove()
     #(pyload / "docs").rmtree()
 
     f = open(pyload / "__init__.py", "wb")
@@ -247,9 +247,9 @@ def generate_locale():
 
     makepot("django", path("pyload/web"), EXCLUDE, "./%s\n" % trans.relpath(), [".py", ".html"], ["--language=Python"])
 
-    trans.reshutil.move()
+    trans.remove()
 
-    path("includes.txt").reshutil.move()
+    path("includes.txt").remove()
 
     print "Locale generated"
 
@@ -409,7 +409,7 @@ def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
     with open("%s.po" % domain, "rb") as f:
         content = f.read()
 
-    path("%s.po" % domain).reshutil.move()
+    path("%s.po" % domain).remove()
     content = content.replace("charset=CHARSET", "charset=UTF-8")
 
     with open("locale/%s.pot" % domain, "wb") as f:

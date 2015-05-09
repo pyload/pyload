@@ -4,6 +4,7 @@ import re
 import socket
 import ssl
 import time
+import threading
 import traceback
 
 import pycurl
@@ -38,7 +39,7 @@ class IRCInterface(Thread, Addon):
 
 
     def __init__(self, core, manager):
-        Thread.__init__(self)
+        threading.Thread.__init__(self)
         Addon.__init__(self, core, manager)
         self.setDaemon(True)
 

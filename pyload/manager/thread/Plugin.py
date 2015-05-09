@@ -3,6 +3,7 @@
 
 from __future__ import with_statement
 
+import threading
 import traceback
 
 from Queue import Queue
@@ -21,12 +22,12 @@ from pyload.utils.packagetools import parseNames
 from pyload.utils import fs_join
 
 
-class PluginThread(Thread):
+class PluginThread(threading.Thread):
     """abstract base class for thread types"""
 
     def __init__(self, manager):
         """Constructor"""
-        Thread.__init__(self)
+        threading.Thread.__init__(self)
         self.setDaemon(True)
         self.m = manager  #: thread manager
 
