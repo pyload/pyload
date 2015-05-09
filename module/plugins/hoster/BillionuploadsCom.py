@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
+from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class BillionuploadsCom(DeadHoster):
     __name__    = "BillionuploadsCom"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'http://(?:www\.)?billionuploads\.com/\w{12}'
 
