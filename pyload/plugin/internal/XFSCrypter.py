@@ -6,7 +6,7 @@ from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 class XFSCrypter(SimpleCrypter):
     __name    = "XFSCrypter"
     __type    = "crypter"
-    __version = "0.08"
+    __version = "0.09"
 
     __pattern = r'^unmatchable$'
 
@@ -19,7 +19,7 @@ class XFSCrypter(SimpleCrypter):
 
     URL_REPLACEMENTS = [(r'&?per_page=\d+', ""), (r'[?/&]+$', ""), (r'(.+/[^?]+)$', r'\1?'), (r'$', r'&per_page=10000')]
 
-    LINK_PATTERN = r'<a href="(.+?)".*?>.+?(?:</a>)?\s*(<.+>\s*)?</(?:td|TD)>'
+    LINK_PATTERN = r'<(?:td|TD).*?>\s*(?:<.+>\s*)?<a href="(.+?)".*?>.+?(?:</a>)?\s*(?:<.+>\s*)?</(?:td|TD)>'
     NAME_PATTERN = r'<[Tt]itle>.*?\: (?P<N>.+) folder</[Tt]itle>'
 
     OFFLINE_PATTERN      = r'>\s*\w+ (Not Found|file (was|has been) removed)'

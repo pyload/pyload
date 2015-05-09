@@ -8,7 +8,7 @@ from pyload.plugin.Account import Account
 class ShareonlineBiz(Account):
     __name    = "ShareonlineBiz"
     __type    = "account"
-    __version = "0.31"
+    __version = "0.32"
 
     __description = """Share-online.biz account plugin"""
     __license     = "GPLv3"
@@ -40,7 +40,7 @@ class ShareonlineBiz(Account):
         if api['a'].lower() != "not_available":
             req.cj.setCookie("share-online.biz", 'a', api['a'])
 
-            premium = api['group'] in ("Premium", "PrePaid")
+            premium = api['group'] in ("PrePaid", "Premium", "Penalty-Premium")
 
             validuntil = float(api['expire_date'])
 

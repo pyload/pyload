@@ -8,7 +8,7 @@ from pyload.plugin.internal.MultiHook import MultiHook
 class LinkdecrypterCom(MultiHook):
     __name    = "LinkdecrypterCom"
     __type    = "hook"
-    __version = "1.04"
+    __version = "1.06"
 
     __config = [("activated"     , "bool"               , "Activated"                    , True ),
                   ("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
@@ -21,6 +21,12 @@ class LinkdecrypterCom(MultiHook):
     __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def getCrypters(self):
-        return re.search(r'>Supported\(\d+\)</b>: <i>(.[\w.\-, ]+)',
+    def getHosters(self):
+        list = re.search(r'>Supported\(\d+\)</b>: <i>(.[\w.\-, ]+)',
                          self.getURL("http://linkdecrypter.com/", decode=True).replace("(g)", "")).group(1).split(', ')
+        try:
+            list.remove("download.serienjunkies.org")
+        except ValueError:
+            pass
+
+        return list

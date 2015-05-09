@@ -20,7 +20,7 @@ def getInfo(urls):
 class FilefactoryCom(SimpleHoster):
     __name    = "FilefactoryCom"
     __type    = "hoster"
-    __version = "0.54"
+    __version = "0.55"
 
     __pattern = r'https?://(?:www\.)?filefactory\.com/(file|trafficshare/\w+)/\w+'
     __config  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -32,7 +32,7 @@ class FilefactoryCom(SimpleHoster):
 
 
     INFO_PATTERN = r'<div id="file_name"[^>]*>\s*<h2>(?P<N>[^<]+)</h2>\s*<div id="file_info">\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+) uploaded'
-    OFFLINE_PATTERN = r'<h2>File Removed</h2>|This file is no longer available'
+    OFFLINE_PATTERN = r'<h2>File Removed</h2>|This file is no longer available|Invalid Download Link'
 
     LINK_FREE_PATTERN = LINK_PREMIUM_PATTERN = r'"([^"]+filefactory\.com/get.+?)"'
 

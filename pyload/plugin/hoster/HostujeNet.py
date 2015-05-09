@@ -6,15 +6,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class HostujeNet(SimpleHoster):
-    __name__    = "HostujeNet"
-    __type__    = "hoster"
-    __version__ = "0.01"
+    __name    = "HostujeNet"
+    __type    = "hoster"
+    __version = "0.01"
 
-    __pattern__ = r'http://(?:www\.)?hostuje\.net/\w+'
+    __pattern = r'http://(?:www\.)?hostuje\.net/\w+'
 
-    __description__ = """Hostuje.net hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("GammaC0de", None)]
+    __description = """Hostuje.net hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("GammaC0de", None)]
 
 
     NAME_PATTERN    = r'<input type="hidden" name="name" value="(?P<N>.+?)">'

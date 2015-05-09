@@ -6,15 +6,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 
 class SizedriveCom(SimpleHoster):
-    __name__    = "SizedriveCom"
-    __type__    = "hoster"
-    __version__ = "0.01"
+    __name    = "SizedriveCom"
+    __type    = "hoster"
+    __version = "0.01"
 
-    __pattern__ = r'http://(?:www\.)?sizedrive\.com/[rd]/(?P<ID>\w+)'
+    __pattern = r'http://(?:www\.)?sizedrive\.com/[rd]/(?P<ID>\w+)'
 
-    __description__ = """Sizedrive.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("GammaC0de", None)]
+    __description = """Sizedrive.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("GammaC0de", None)]
 
 
     NAME_PATTERN    = r'>Nome:</b> (?P<N>.+?)<'

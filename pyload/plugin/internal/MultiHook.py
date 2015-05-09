@@ -11,7 +11,7 @@ from pyload.utils import decode, remove_chars
 class MultiHook(Hook):
     __name    = "MultiHook"
     __type    = "hook"
-    __version = "0.44"
+    __version = "0.45"
 
     __config  = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                  ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""),
@@ -123,7 +123,7 @@ class MultiHook(Hook):
 
         for _i in xrange(2):
             try:
-                pluginset = self._pluginSet(self.getHosters() if self.plugintype == "hoster" else self.getCrypters())
+                pluginset = self._pluginSet(self.getHosters())
                 break
 
             except Exception, e:
@@ -167,14 +167,6 @@ class MultiHook(Hook):
 
     def getHosters(self):
         """Load list of supported hoster
-
-        :return: List of domain names
-        """
-        raise NotImplementedError
-
-
-    def getCrypters(self):
-        """Load list of supported crypters
 
         :return: List of domain names
         """

@@ -4,6 +4,11 @@ import socket
 import threading
 import time
 
+try:
+    import ssl
+except ImportError:
+    pass
+
 from pyload.plugin.Addon import Addon, threaded
 
 
@@ -23,7 +28,7 @@ def forward(source, destination):
 class ClickNLoad(Addon):
     __name    = "ClickNLoad"
     __type    = "addon"
-    __version = "0.41"
+    __version = "0.43"
 
     __config = [("activated", "bool", "Activated"                             , True),
                   ("port"     , "int" , "Port"                                  , 9666),
@@ -71,6 +76,21 @@ class ClickNLoad(Addon):
                 self.logDebug("Connection from %s:%s" % client_addr)
 
                 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+                if self.config['webinterface']['https']:
+                    try:
+                        server_socket = ssl.wrap_socket(server_socket)
+
+                    except NameError:
+                        self.logError(_("pyLoad's webinterface is configured to use HTTPS, Please install python's ssl lib or disable HTTPS"))
+                        client_socket.close()  #: reset the connection.
+                        continue
+
+                    except Exception, e:
+                        self.logError(_("SSL error: %s") % e.message)
+                        client_socket.close()  #: reset the connection.
+                        continue
+
                 server_socket.connect(("127.0.0.1", webport))
 
                 self.manager.startThread(forward, client_socket, server_socket)
