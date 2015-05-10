@@ -14,7 +14,7 @@ from sys import exc_info, exc_clear
 from time import sleep, time, strftime, gmtime
 from types import MethodType
 
-from pyload.manager.thread.Plugin import PluginThread
+from pyload.Thread.Plugin import PluginThread
 from pyload.plugin.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload
 
 

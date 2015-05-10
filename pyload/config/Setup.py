@@ -295,7 +295,7 @@ class SetupAssistant(object):
         print
         print _("The following logindata is valid for CLI and webinterface.")
 
-        from pyload.database import DatabaseBackend
+        from pyload.Database import DatabaseBackend
 
         db = DatabaseBackend(None)
         db.setup()
@@ -375,7 +375,7 @@ class SetupAssistant(object):
     def set_user(self):
         load_translation("setup", self.config.get("general", "language"))
 
-        from pyload.database import DatabaseBackend
+        from pyload.Database import DatabaseBackend
 
         db = DatabaseBackend(None)
         db.setup()

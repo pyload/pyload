@@ -4,7 +4,7 @@
 from hashlib import sha1
 import random
 
-from pyload.database import DatabaseBackend, style
+from pyload.Database import DatabaseBackend, style
 
 
 class UserMethods(object):

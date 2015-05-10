@@ -13,10 +13,8 @@ from random import choice
 from subprocess import Popen
 from time import sleep, time
 
-from pyload.datatype.File import PyFile
-from pyload.manager.thread.Decrypter import DecrypterThread
-from pyload.manager.thread.Download import DownloadThread
-from pyload.manager.thread.Info import InfoThread
+from pyload.Datatype import PyFile
+from pyload.Thread import DecrypterThread, DownloadThread, InfoThread
 from pyload.network.RequestFactory import getURL
 from pyload.utils import freeSpace, lock
 

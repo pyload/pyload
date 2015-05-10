@@ -25,15 +25,15 @@ from sys import argv, executable, exit
 from time import time, sleep
 
 from pyload import remote
-from pyload.database import DatabaseBackend, FileHandler
+from pyload.Database import DatabaseBackend, FileHandler
 from pyload.config.Parser import ConfigParser
 from pyload.manager.Account import AccountManager
 from pyload.manager.Captcha import CaptchaManager
 from pyload.manager.Event import PullManager
 from pyload.manager.Plugin import PluginManager
 from pyload.manager.Remote import RemoteManager
-from pyload.manager.event.Scheduler import Scheduler
-from pyload.manager.thread.Server import WebServer
+from pyload.manager.Scheduler import Scheduler
+from pyload.Thread.Server import WebServer
 from pyload.network.JsEngine import JsEngine
 from pyload.network.RequestFactory import RequestFactory
 from pyload.utils import freeSpace, formatSize
@@ -364,14 +364,14 @@ class Core(object):
         self.lastClientConnected = 0
 
         # later imported because they would trigger api import, and remote value not set correctly
-        from pyload import api
+        from pyload.api import Api
         from pyload.manager.Addon import AddonManager
         from pyload.manager.Thread import ThreadManager
 
-        if api.activated != self.remote:
+        if pyload.api.activated != self.remote:
             self.log.warning("Import error: API remote status not correct.")
 
-        self.api = api.Api(self)
+        self.api = Api(self)
 
         self.scheduler = Scheduler(self)
 

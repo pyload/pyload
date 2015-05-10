@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 # @author: mkaay
 
-from pyload.database import style
-from pyload.database import DatabaseBackend
+from pyload.Database import style
+from pyload.Database import DatabaseBackend
 
 
 class StorageMethods(object):
-
 
     @style.queue
     def setStorage(db, identifier, key, value):

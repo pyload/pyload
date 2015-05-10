@@ -13,8 +13,8 @@ from time import sleep, time, strftime, gmtime
 from types import MethodType
 
 from pyload.api import OnlineStatus
-from pyload.datatype.File import PyFile
-from pyload.manager.thread.Plugin import PluginThread
+from pyload.Datatype import PyFile
+from pyload.Thread.Plugin import PluginThread
 
 
 class InfoThread(PluginThread):

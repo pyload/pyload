@@ -2,16 +2,6 @@
 
 from __future__ import with_statement
 
-import __builtin__
-
-import os
-import platform
-import sys
-
-from codecs import getwriter
-
-from pyload.utils import get_console_encoding
-
 
 __all__ = ["__status_code__", "__status__", "__version_info__", "__version__", "__author_name__", "__author_mail__", "__license__"]
 
@@ -45,6 +35,9 @@ __authors__ = [("Marius"        , "mkaay@mkaay.de"        ),
 
 ################################# InitHomeDir #################################
 
+import __builtin__
+import os
+
 __builtin__.owd       = os.path.abspath("")  #: original working directory
 __builtin__.homedir   = os.path.expanduser("~")
 __builtin__.rootdir   = os.path.abspath(os.path.join(__file__, ".."))
@@ -52,13 +45,18 @@ __builtin__.configdir = ""
 __builtin__.pypath    = os.path.abspath(os.path.join(rootdir, ".."))
 
 
-if "64" in platform.machine():
-    sys.path.append(os.path.join(pypath, "lib64"))
+import sys
+
 sys.path.append(os.path.join(pypath, "lib", "Python", "Lib"))
 sys.path.append(os.path.join(pypath, "lib"))
 
 
+from codecs import getwriter
+
+from pyload.utils import get_console_encoding
+
 sys.stdout = getwriter(get_console_encoding(sys.stdout.encoding))(sys.stdout, errors="replace")
+
 
 if homedir == "~" and os.name == "nt":
     import ctypes
@@ -78,6 +76,7 @@ if homedir == "~" and os.name == "nt":
 
     __builtin__.homedir = path_buf.value
 
+
 try:
     p = os.path.join(rootdir, "config", "configdir")
 
@@ -89,6 +88,7 @@ except IOError:
         configdir = os.path.join(homedir, ".pyload")
     else:
         configdir = os.path.join(homedir, "pyload")
+
 
 try:
     if not os.path.exists(configdir):

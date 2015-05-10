@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from pyload.cli.Handler import Handler
+from pyload.Cli.Handler import Handler
 from pyload.utils.printer import *
 
 

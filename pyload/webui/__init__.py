@@ -24,7 +24,7 @@ from middlewares import StripPathMiddleware, GZipMiddleWare, PrefixMiddleware
 SETUP = None
 PYLOAD = None
 
-from pyload.manager.thread import Server
+from pyload.Thread import Server
 from pyload.network.JsEngine import JsEngine
 
 if not Server.core:

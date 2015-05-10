@@ -9,7 +9,7 @@ import traceback
 
 from types import MethodType
 
-from pyload.manager.thread.Addon import AddonThread
+from pyload.Thread import AddonThread
 from pyload.manager.Plugin import literal_eval
 from pyload.utils import lock
 

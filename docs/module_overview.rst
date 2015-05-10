@@ -15,5 +15,5 @@ You can find an overview of some important classes here:
    pyload.plugin.Account.Account
    pyload.plugin.Addon.Addon
    pyload.manager.Addon.AddonManager
-   pyload.datatypes.PyFile.PyFile
-   pyload.datatypes.PyPackage.PyPackage
+   pyload.Datatype.File.PyFile
+   pyload.Datatype.Package.PyPackage

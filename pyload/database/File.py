@@ -3,11 +3,10 @@
 
 import threading
 
-from pyload.utils import formatSize, lock
+from pyload.Datatype import PyFile, PyPackage
+from pyload.Database import DatabaseBackend, style
 from pyload.manager.Event import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
-from pyload.datatype.Package import PyPackage
-from pyload.datatype.File import PyFile
-from pyload.database import DatabaseBackend, style
+from pyload.utils import formatSize, lock
 
 try:
     from pysqlite2 import dbapi2 as sqlite3

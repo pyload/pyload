@@ -16,7 +16,7 @@ from time import sleep, time, strftime, gmtime
 from types import MethodType
 
 from pyload.api import OnlineStatus
-from pyload.datatype.File import PyFile
+from pyload.Datatype import PyFile
 from pyload.plugin.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload
 from pyload.utils.packagetools import parseNames
 from pyload.utils import fs_join

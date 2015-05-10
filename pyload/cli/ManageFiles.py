@@ -4,7 +4,7 @@
 from itertools import islice
 from time import time
 
-from pyload.cli.Handler import Handler
+from pyload.Cli.Handler import Handler
 from pyload.utils.printer import *
 
 from pyload.api import Destination, PackageData
