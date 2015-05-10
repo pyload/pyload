@@ -7,7 +7,7 @@ import re
 from os import remove
 from os.path import basename, exists
 
-from pyload.plugin.internal.Crypter import Crypter
+from pyload.plugin.Crypter import Crypter
 from pyload.utils import fs_join
 
 
