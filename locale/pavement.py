@@ -55,11 +55,7 @@ setup(
         'RSS plugins': ['feedparser'],
     },
     # setup_requires=["setuptools_hg"],
-    entry_points={
-        'console_scripts': [
-            'pyLoadCore = pyLoadCore:main',
-            'pyLoadCli = pyLoadCli:main'
-        ]},
+    entry_points={'console_scripts': ['pyLoadCore = pyLoadCore:main']},
     zip_safe=False,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
@@ -218,11 +214,10 @@ def compile_js():
 def generate_locale():
     """ Generates localization files """
 
-    EXCLUDE = ["BeautifulSoup.py", "pyload/cli", "web/locale", "web/ajax", "web/cnl", "web/pyload",
+    EXCLUDE = ["BeautifulSoup.py", "web/locale", "web/ajax", "web/cnl", "web/pyload",
                "setup.py"]
     makepot("core", path("pyload"), EXCLUDE, "./pyload.py\n")
 
-    makepot("cli", path("pyload") / "cli", [], includes="./pyload-cli.py\n")
     makepot("setup", "", [], includes="./pyload/setup.py\n")
 
     EXCLUDE = ["ServerThread.py", "web/media/default"]

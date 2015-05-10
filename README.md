@@ -162,17 +162,6 @@ You can get a list of accepted arguments typing:
     python pyload.py -h
 
 
-### Command Line Interface ###
-
-Run:
-
-    python pyload-cli.py -l
-
-You can get a list of accepted arguments typing:
-
-    python pyload-cli.py -h
-
-
 Development
 -----------
 
