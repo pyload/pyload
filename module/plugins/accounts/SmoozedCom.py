@@ -34,7 +34,6 @@ class SmoozedCom(Account):
 
 
     def loadAccountInfo(self, user, req):
-        # Get user data from premiumize.me
         status = self.getAccountStatus(user, req)
 
         self.logDebug(status)
@@ -51,7 +50,10 @@ class SmoozedCom(Account):
                     'hosters'    : [hoster["name"] for hoster in status["data"]["hoster"]]}
 
             if info['validuntil'] < time.time():
-                info['premium'] = False
+                if float(status["data"]["user"].get("user_trial", 0)) > time.time():
+                    info['premium'] = True
+                else:
+                    info['premium'] = False
             else:
                 info['premium'] = True
 
