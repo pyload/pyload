@@ -26,7 +26,7 @@ from module.plugins.Account import Account
 class SmoozedCom(Account):
     __name__    = "SmoozedCom"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __description__ = """Smoozed.com account plugin"""
     __license__     = "GPLv3"
