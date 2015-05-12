@@ -7,9 +7,6 @@ import sys
 import time
 import traceback
 
-from pprint import pformat
-from types import MethodType
-
 from pyload.Api import OnlineStatus
 from pyload.Datatype import PyFile
 from pyload.Thread.Plugin import PluginThread

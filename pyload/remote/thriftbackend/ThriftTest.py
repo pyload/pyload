@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import getpass
 import os
 import platform
 import sys
 import time
+import xmlrpclib
 
 from pyload.remote.thriftbackend.thriftgen.pyload import Pyload
 from pyload.remote.thriftbackend.thriftgen.pyload.ttypes import *
@@ -13,8 +15,6 @@ from thrift import Thrift
 from thrift.transport import TTransport
 
 from Protocol import Protocol
-
-import xmlrpclib
 
 
 def bench(f, *args, **kwargs):
@@ -27,9 +27,8 @@ def bench(f, *args, **kwargs):
         print "%s: %f s" % (f.__name__, e-s)
     return ret
 
-from getpass import getpass
 user = raw_input("user ")
-passwd = getpass("password ")
+passwd = getpass.getpass("password ")
 
 server_url = "http%s://%s:%s@%s:%s/" % (
   "",

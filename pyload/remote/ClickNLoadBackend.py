@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
+import BaseHTTPServer
 import base64
 import binascii
+import cgi
 import re
 import urllib
 
-from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
-from cgi import FieldStorage
-
 try:
-    from Crypto.Cipher import AES
+    import Crypto
 except Exception:
     pass
 
@@ -23,7 +22,7 @@ js = None
 class ClickNLoadBackend(BackendBase):
 
     def setup(self, host, port):
-        self.httpd = HTTPServer((host, port), CNLHandler)
+        self.httpd = BaseHTTPServer.HTTPServer((host, port), CNLHandler)
         global core, js
         core = self.m.core
         js = core.js
@@ -34,7 +33,7 @@ class ClickNLoadBackend(BackendBase):
             self.httpd.handle_request()
 
 
-class CNLHandler(BaseHTTPRequestHandler):
+class CNLHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
     def add_package(self, name, urls, queue=0):
         print "name", name
@@ -94,7 +93,7 @@ class CNLHandler(BaseHTTPRequestHandler):
 
 
     def do_POST(self):
-        form = FieldStorage(
+        form = cgi.FieldStorage(
             fp=self.rfile,
             headers=self.headers,
             environ={'REQUEST_METHOD': 'POST',
@@ -137,7 +136,7 @@ class CNLHandler(BaseHTTPRequestHandler):
         Key = binascii.unhexlify(jk)
         IV = Key
 
-        obj = AES.new(Key, AES.MODE_CBC, IV)
+        obj = Crypto.Cipher.AES.new(Key, Crypto.Cipher.AES.MODE_CBC, IV)
         result = obj.decrypt(crypted).replace("\x00", "").replace("\r", "").split("\n")
 
         result = filter(lambda x: x != "", result)

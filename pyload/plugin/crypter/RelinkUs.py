@@ -6,7 +6,8 @@ import binascii
 import re
 import os
 
-from Crypto.Cipher import AES
+import Crypto
+
 from pyload.plugin.Crypter import Crypter
 from pyload.utils import fs_join
 
@@ -281,7 +282,7 @@ class RelinkUs(Crypter):
         # Decrypt
         Key = key
         IV = key
-        obj = AES.new(Key, AES.MODE_CBC, IV)
+        obj = Crypto.Cipher.AES.new(Key, Crypto.Cipher.AES.MODE_CBC, IV)
         text = obj.decrypt(crypted.decode('base64'))
 
         # Extract links

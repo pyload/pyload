@@ -4,11 +4,10 @@
 from __future__ import with_statement
 
 import __builtin__
+import getpass
 import os
 import subprocess
 import sys
-
-from getpass import getpass
 
 from pyload.network.JsEngine import JsEngine
 from pyload.utils import get_console_encoding, load_translation, fs_join, versiontuple
@@ -510,7 +509,7 @@ class SetupAssistant(object):
             pwlen = 8
             while p1 != p2:
                 sys.stdout.write(_("Password: "))
-                p1 = getpass("").strip("\n\r")
+                p1 = getpass.getpass("").strip("\n\r")
 
                 if len(p1) < pwlen:
                     print
@@ -524,7 +523,7 @@ class SetupAssistant(object):
                     continue
 
                 sys.stdout.write(_("Password (again): "))
-                p2 = getpass("").strip("\n\r")
+                p2 = getpass.getpass("").strip("\n\r")
 
                 if p1 == p2:
                     print

@@ -7,7 +7,7 @@ import binascii
 import re
 import urlparse
 
-from Crypto.Cipher import AES
+import Crypto
 
 from pyload.plugin.Crypter import Crypter
 from pyload.plugin.captcha.ReCaptcha import ReCaptcha
@@ -169,7 +169,7 @@ class FilecryptCc(Crypter):
         # Decrypt
         Key  = key
         IV   = key
-        obj  = AES.new(Key, AES.MODE_CBC, IV)
+        obj  = Crypto.Cipher.AES.new(Key, Crypto.Cipher.AES.MODE_CBC, IV)
         text = obj.decrypt(crypted.decode('base64'))
 
         # Extract links

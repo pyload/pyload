@@ -113,7 +113,6 @@ Some extra features require additional software packages. See below:
  - **Send2Trash**                                     *Trash support*
  - **colorlog**                                       *Colored log*
  - **bjoern** (<https://github.com/jonashaag/bjoern>) *More responsive web interface*
- - **feedparser**                                     *RSS parsing*
  - **node.js**                                        *ClickNLoad and other plugins*
    - or **ossp-js**
    - or **pyv8**

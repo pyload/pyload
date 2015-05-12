@@ -5,13 +5,12 @@ import os
 import sys
 
 import bottle
+import jinja2
 
 import pyload.utils.pylgettext as gettext
 
-from jinja2 import Environment, FileSystemLoader, PrefixLoader, FileSystemBytecodeCache
-
 from pyload.Thread import Server
-from pyload.Webui.middlewares import StripPathMiddleware, GZipMiddleWare, PrefixMiddleware
+from pyload.utils.middlewares import StripPathMiddleware, GZipMiddleWare, PrefixMiddleware
 from pyload.network.JsEngine import JsEngine
 from pyload.utils import decode, formatSize
 
@@ -53,14 +52,14 @@ cache = os.path.join("tmp", "jinja_cache")
 if not os.path.exists(cache):
     os.makedirs(cache)
 
-bcc = FileSystemBytecodeCache(cache, '%s.cache')
+bcc = jinja2.FileSystemBytecodeCache(cache, '%s.cache')
 
-loader = FileSystemLoader([THEME_DIR, os.path.join(THEME_DIR, THEME)])
+loader = jinja2.FileSystemLoader([THEME_DIR, os.path.join(THEME_DIR, THEME)])
 
-env = Environment(loader=loader, extensions=['jinja2.ext.i18n', 'jinja2.ext.autoescape'], trim_blocks=True, auto_reload=False,
+env = jinja2.Environment(loader=loader, extensions=['jinja2.ext.i18n', 'jinja2.ext.autoescape'], trim_blocks=True, auto_reload=False,
                   bytecode_cache=bcc)
 
-from filters import quotepath, path_make_relative, path_make_absolute, truncate, date
+from pyload.utils.filters import quotepath, path_make_relative, path_make_absolute, truncate, date
 
 env.filters['quotepath'] = quotepath
 env.filters['truncate'] = truncate

@@ -5,7 +5,7 @@ from __future__ import with_statement
 import re
 import xml.dom.minidom
 
-from Crypto.Cipher import AES
+import Crypto
 
 from pyload.plugin.Container import Container
 from pyload.utils import decode, fs_encode
@@ -49,9 +49,9 @@ class DLC(Container):
         except AttributeError:
             self.fail(_("Container is corrupted"))
 
-        key = iv = AES.new(self.KEY, AES.MODE_CBC, self.IV).decrypt(rc)
+        key = iv = Crypto.Cipher.AES.new(self.KEY, Crypto.Cipher.AES.MODE_CBC, self.IV).decrypt(rc)
 
-        self.data     = AES.new(key, AES.MODE_CBC, iv).decrypt(dlc_data).decode('base64')
+        self.data     = Crypto.Cipher.AES.new(key, Crypto.Cipher.AES.MODE_CBC, iv).decrypt(dlc_data).decode('base64')
         self.packages = [(name or pyfile.name, links, name or pyfile.name) \
                          for name, links in self.getPackages()]
 

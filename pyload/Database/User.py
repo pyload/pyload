@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: mkaay
 
-from hashlib import sha1
+import hashlib
 import random
 
 from pyload.Database import DatabaseBackend, style
@@ -20,7 +20,7 @@ class UserMethods(object):
 
         salt = r[2][:5]
         pw = r[2][5:]
-        h = sha1(salt + password)
+        h = hashlib.sha1(salt + password)
         if h.hexdigest() == pw:
             return {"id": r[0], "name": r[1], "role": r[3],
                     "permission": r[4], "template": r[5], "email": r[6]}
@@ -31,7 +31,7 @@ class UserMethods(object):
     @style.queue
     def addUser(db, user, password):
         salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for _i in xrange(0, 5)])
-        h = sha1(salt + password)
+        h = hashlib.sha1(salt + password)
         password = salt + h.hexdigest()
 
         c = db.c
@@ -51,10 +51,10 @@ class UserMethods(object):
 
         salt = r[2][:5]
         pw = r[2][5:]
-        h = sha1(salt + oldpw)
+        h = hashlib.sha1(salt + oldpw)
         if h.hexdigest() == pw:
             salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for _i in xrange(0, 5)])
-            h = sha1(salt + newpw)
+            h = hashlib.sha1(salt + newpw)
             password = salt + h.hexdigest()
 
             db.c.execute("UPDATE users SET password=? WHERE name=?", (password, user))

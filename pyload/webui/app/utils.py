@@ -86,9 +86,7 @@ def parse_userdata(session):
 
 def login_required(perm=None):
 
-
     def _dec(func):
-
 
         def _view(*args, **kwargs):
             s = request.environ.get('beaker.session')

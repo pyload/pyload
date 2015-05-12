@@ -9,9 +9,6 @@ import traceback
 
 import pycurl
 
-from pprint import pformat
-from types import MethodType
-
 from pyload.Thread.Plugin import PluginThread
 from pyload.plugin.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload
 

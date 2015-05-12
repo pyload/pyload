@@ -67,7 +67,6 @@ setuptools.setup(
         'Trash support'           : ["Send2Trash"],
         'Colored log'             : ["colorlog"],
         'Lightweight webserver'   : ["bjoern"],
-        'RSS support'             : ["feedparser"],
         'SSL support'             : ["pyOpenSSL"],
         'RSDF/CCF/DLC support'    : ["pycrypto"],
         'JSON speedup'            : ["simplejson"]

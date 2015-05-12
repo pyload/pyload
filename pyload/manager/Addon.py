@@ -6,8 +6,7 @@ import __builtin__
 
 import threading
 import traceback
-
-from types import MethodType
+import types
 
 from pyload.Thread import AddonThread
 from pyload.manager.Plugin import literal_eval
@@ -55,7 +54,7 @@ class AddonManager(object):
         self.events = {}  #: contains events
 
         # registering callback for config event
-        self.core.config.pluginCB = MethodType(self.dispatchEvent, "pluginConfigChanged", basestring)  #@TODO: Rename event pluginConfigChanged
+        self.core.config.pluginCB = types.MethodType(self.dispatchEvent, "pluginConfigChanged", basestring)  #@TODO: Rename event pluginConfigChanged
 
         self.addEvent("pluginConfigChanged", self.manageAddon)
 

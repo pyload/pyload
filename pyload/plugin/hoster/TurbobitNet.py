@@ -7,7 +7,7 @@ import re
 import time
 import urllib
 
-from Crypto.Cipher import ARC4
+import Crypto
 
 from pyload.network.RequestFactory import getURL
 from pyload.plugin.captcha.ReCaptcha import ReCaptcha
@@ -155,7 +155,7 @@ class TurbobitNet(SimpleHoster):
 
 
     def decrypt(self, data):
-        cipher = ARC4.new(binascii.hexlify('E\x15\xa1\x9e\xa3M\xa0\xc6\xa0\x84\xb6H\x83\xa8o\xa0'))
+        cipher = Crypto.Cipher.ARC4.new(binascii.hexlify('E\x15\xa1\x9e\xa3M\xa0\xc6\xa0\x84\xb6H\x83\xa8o\xa0'))
         return binascii.unhexlify(cipher.encrypt(binascii.unhexlify(data)))
 
 

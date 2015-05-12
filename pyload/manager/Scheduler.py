@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 # @author: mkaay
 
+import heapq
 import threading
 import time
-
-from heapq import heappop, heappush
 
 
 class AlreadyCalled(Exception):
@@ -125,7 +124,7 @@ class PriorityQueue(object):
 
     def put(self, element):
         self.lock.acquire()
-        heappush(self.queue, element)
+        heapq.heappush(self.queue, element)
         self.lock.release()
 
 
@@ -133,7 +132,7 @@ class PriorityQueue(object):
         """ return element or None """
         self.lock.acquire()
         try:
-            el = heappop(self.queue)
+            el = heapq.heappop(self.queue)
             return el
         except IndexError:
             return None, None

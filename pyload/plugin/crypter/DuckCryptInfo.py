@@ -2,7 +2,7 @@
 
 import re
 
-from BeautifulSoup import BeautifulSoup
+import BeautifulSoup
 
 from pyload.plugin.Crypter import Crypter
 
@@ -41,7 +41,7 @@ class DuckCryptInfo(Crypter):
         m = re.match(self.__pattern, html)
         self.logDebug("Redirectet to " + str(m.group(0)))
         html = self.load(str(m.group(0)))
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup.BeautifulSoup(html)
         cryptlinks = soup.findAll("div", attrs={"class": "folderbox"})
         self.logDebug("Redirectet to " + str(cryptlinks))
         if not cryptlinks:
@@ -53,7 +53,7 @@ class DuckCryptInfo(Crypter):
 
     def handleLink(self, url):
         html = self.load(url)
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup.BeautifulSoup(html)
         self.urls = [soup.find("iframe")['src']]
         if not self.urls:
             self.logInfo(_("No link found"))

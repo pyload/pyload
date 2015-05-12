@@ -15,7 +15,7 @@ from pyload.webui import PYLOAD, PYLOAD_DIR, THEME_DIR, THEME, SETUP, env
 from pyload.webui.app.utils import render_to_response, parse_permissions, parse_userdata, \
     login_required, get_permission, set_permission, permlist, toDict, set_session
 
-from pyload.webui.filters import relpath, unquotepath
+from pyload.utils.filters import relpath, unquotepath
 
 from pyload.utils import formatSize, fs_join, fs_encode, fs_decode
 

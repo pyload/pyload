@@ -3,14 +3,13 @@
 
 from __future__ import with_statement
 
+import cStringIO
 import codecs
+import httplib
 import logging
 import urllib
 
 import pycurl
-
-from httplib import responses
-from cStringIO import StringIO
 
 from pyload.plugin.Plugin import Abort, Fail
 
@@ -31,7 +30,7 @@ bad_headers = range(400, 404) + range(405, 418) + range(500, 506)
 class BadHeader(Exception):
 
     def __init__(self, code, content=""):
-        Exception.__init__(self, "Bad server response: %s %s" % (code, responses[int(code)]))
+        Exception.__init__(self, "Bad server response: %s %s" % (code, httplib.responses[int(code)]))
         self.code = code
         self.content = content
 
@@ -40,7 +39,7 @@ class HTTPRequest(object):
 
     def __init__(self, cookies=None, options=None):
         self.c = pycurl.Curl()
-        self.rep = StringIO()
+        self.rep = cStringIO.StringIO()
 
         self.cj = cookies  #: cookiejar
 
@@ -244,7 +243,7 @@ class HTTPRequest(object):
         else:
             value = self.rep.getvalue()
             self.rep.close()
-            self.rep = StringIO()
+            self.rep = cStringIO.StringIO()
             return value
 
 

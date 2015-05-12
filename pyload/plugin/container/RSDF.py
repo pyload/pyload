@@ -5,7 +5,7 @@ from __future__ import with_statement
 import binascii
 import re
 
-from Crypto.Cipher import AES
+import Crypto
 
 from pyload.plugin.Container import Container
 from pyload.utils import fs_encode
@@ -33,8 +33,8 @@ class RSDF(Container):
         KEY = binascii.unhexlify(self.KEY)
         IV  = binascii.unhexlify(self.IV)
 
-        iv     = AES.new(KEY, AES.MODE_ECB).encrypt(IV)
-        cipher = AES.new(KEY, AES.MODE_CFB, iv)
+        iv     = Crypto.Cipher.AES.new(KEY, Crypto.Cipher.AES.MODE_ECB).encrypt(IV)
+        cipher = Crypto.Cipher.AES.new(KEY, Crypto.Cipher.AES.MODE_CFB, iv)
 
         try:
             fs_filename = fs_encode(pyfile.url.strip())

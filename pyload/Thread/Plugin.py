@@ -9,9 +9,8 @@ import sys
 import threading
 import time
 import traceback
-
-from pprint import pformat
-from types import MethodType
+import pprint
+import types
 
 from pyload.Api import OnlineStatus
 from pyload.Datatype import PyFile
@@ -87,7 +86,7 @@ class PluginThread(threading.Thread):
             for key, value in frame.f_locals.items():
                 dump += "\t%20s = " % key
                 try:
-                    dump += pformat(value) + "\n"
+                    dump += pprint.pformat(value) + "\n"
                 except Exception, e:
                     dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
 
@@ -99,10 +98,10 @@ class PluginThread(threading.Thread):
 
         for name in dir(pyfile.plugin):
             attr = getattr(pyfile.plugin, name)
-            if not name.endswith("__") and type(attr) != MethodType:
+            if not name.endswith("__") and type(attr) != types.MethodType:
                 dump += "\t%20s = " % name
                 try:
-                    dump += pformat(attr) + "\n"
+                    dump += pprint.pformat(attr) + "\n"
                 except Exception, e:
                     dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
 
@@ -110,16 +109,16 @@ class PluginThread(threading.Thread):
 
         for name in dir(pyfile):
             attr = getattr(pyfile, name)
-            if not name.endswith("__") and type(attr) != MethodType:
+            if not name.endswith("__") and type(attr) != types.MethodType:
                 dump += "\t%20s = " % name
                 try:
-                    dump += pformat(attr) + "\n"
+                    dump += pprint.pformat(attr) + "\n"
                 except Exception, e:
                     dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
 
         if pyfile.pluginname in self.m.core.config.plugin:
             dump += "\n\nCONFIG: \n\n"
-            dump += pformat(self.m.core.config.plugin[pyfile.pluginname]) + "\n"
+            dump += pprint.pformat(self.m.core.config.plugin[pyfile.pluginname]) + "\n"
 
         return dump
 

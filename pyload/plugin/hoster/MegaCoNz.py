@@ -7,8 +7,7 @@ import os
 import random
 import re
 
-from Crypto.Cipher import AES
-from Crypto.Util import Counter
+import Crypto
 
 from pyload.utils import json_loads, json_dumps
 from pyload.plugin.Hoster import Hoster
@@ -90,7 +89,7 @@ class MegaCoNz(Hoster):
 
     def decryptAttr(self, data, key):
         k, iv, meta_mac = self.getCipherKey(key)
-        cbc             = AES.new(k, AES.MODE_CBC, "\0" * 16)
+        cbc             = Crypto.Cipher.AES.new(k, Crypto.Cipher.AES.MODE_CBC, "\0" * 16)
         attr            = decode(cbc.decrypt(self.b64_decode(data)))
 
         self.logDebug("Decrypted Attr: %s" % attr)
@@ -109,8 +108,8 @@ class MegaCoNz(Hoster):
 
         # convert counter to long and shift bytes
         k, iv, meta_mac = self.getCipherKey(key)
-        ctr             = Counter.new(128, initial_value=long(n.encode("hex"), 16) << 64)
-        cipher          = AES.new(k, AES.MODE_CTR, counter=ctr)
+        ctr             = Crypto.Util.Counter.new(128, initial_value=long(n.encode("hex"), 16) << 64)
+        cipher          = Crypto.Cipher.AES.new(k, Crypto.Cipher.AES.MODE_CTR, counter=ctr)
 
         self.pyfile.setStatus("decrypting")
         self.pyfile.setProgress(0)

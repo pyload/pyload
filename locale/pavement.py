@@ -52,7 +52,6 @@ setup(
         'SSL': ["pyOpenSSL"],
         'DLC': ['pycrypto'],
         'lightweight webserver': ['bjoern'],
-        'RSS plugins': ['feedparser'],
     },
     # setup_requires=["setuptools_hg"],
     entry_points={'console_scripts': ['pyLoadCore = pyLoadCore:main']},

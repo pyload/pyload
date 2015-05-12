@@ -5,7 +5,7 @@ import re
 
 import pycurl
 
-from Crypto.Cipher import AES
+import Crypto
 
 from pyload.plugin.Crypter import Crypter
 from pyload.utils import html_unescape
@@ -309,7 +309,7 @@ class LinkCryptWs(Crypter):
         # Decrypt
         Key  = key
         IV   = key
-        obj  = AES.new(Key, AES.MODE_CBC, IV)
+        obj  = Crypto.Cipher.AES.new(Key, Crypto.Cipher.AES.MODE_CBC, IV)
         text = obj.decrypt(crypted.decode('base64'))
 
         # Extract links

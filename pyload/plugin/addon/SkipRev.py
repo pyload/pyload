@@ -3,8 +3,7 @@
 import re
 import urllib
 import urlparse
-
-from types import MethodType
+import types
 
 from pyload.datatype.File import PyFile
 from pyload.plugin.Addon import Addon
@@ -75,7 +74,7 @@ class SkipRev(Addon):
         if not hasattr(pyfile.plugin, "_setup"):
             # Work-around: inject status checker inside the preprocessing routine of the plugin
             pyfile.plugin._setup = pyfile.plugin.setup
-            pyfile.plugin.setup  = MethodType(self._setup, pyfile.plugin)
+            pyfile.plugin.setup  = types.MethodType(self._setup, pyfile.plugin)
 
 
     def downloadFailed(self, pyfile):
