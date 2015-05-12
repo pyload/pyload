@@ -8,8 +8,9 @@ import threading
 import traceback
 import types
 
+import SafeEval
+
 from pyload.Thread import AddonThread
-from pyload.manager.Plugin import literal_eval
 from pyload.utils import lock
 
 
@@ -90,7 +91,7 @@ class AddonManager(object):
         if not args:
             args = ()
         if parse:
-            args = tuple([literal_eval(x) for x in args])
+            args = tuple([SafeEval.const_eval(x) for x in args])
         plugin = self.pluginMap[plugin]
         f = getattr(plugin, func)
         return f(*args)

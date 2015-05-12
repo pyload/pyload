@@ -143,5 +143,5 @@ class XDCCRequest(object):
         return (self.recv * 100) / self.filesize if elf.filesize else 0
 
 
-    def os.close(self):
+    def close(self):
         pass

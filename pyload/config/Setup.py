@@ -418,20 +418,20 @@ class SetupAssistant(object):
 
 
     def set_configdir(self, configdir, persistent=False):
-        dirname = path.abspath(configdir)
+        dirname = os.path.abspath(configdir)
         try:
-            if not path.exists(dirname):
-                os.makedirs(dirname, 0700)
+            if not os.path.exists(os.path.dirname):
+                os.makedirs(os.path.dirname, 0700)
 
-            os.chdir(dirname)
+            os.chdir(os.path.dirname)
 
             if persistent:
-                c = path.join(rootdir, "config", "configdir")
-                if not path.exists(c):
+                c = os.path.join(rootdir, "config", "configdir")
+                if not os.path.exists(c):
                     os.makedirs(c, 0700)
 
                 with open(c, "wb") as f:
-                    f.write(dirname)
+                    f.write(os.path.dirname)
 
         except IOError:
             return False
@@ -478,7 +478,7 @@ class SetupAssistant(object):
 
 
     def check_prog(self, command):
-        pipe = PIPE
+        pipe = subprocess.PIPE
         try:
             subprocess.call(command, stdout=pipe, stderr=pipe)
             return True

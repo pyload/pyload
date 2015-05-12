@@ -7,7 +7,7 @@ import shutil
 import threading
 
 from pyload.manager.Event import AccountUpdateEvent
-from pyload.utils import chmod, lock
+from pyload.utils import lock
 
 
 ACC_VERSION = 1
@@ -132,7 +132,10 @@ class AccountManager(object):
                             for option, values in data['options'].iteritems():
                                 f.write("\t@%s %s\n" % (option, " ".join(values)))
 
-            os.chmod(f.name, 0600)
+            try:
+                os.chmod(f.name, 0600)
+            except Exception:
+                pass
 
         except Exception, e:
             self.core.log.error(str(e))

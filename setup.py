@@ -8,7 +8,7 @@ import sys
 import pyload
 
 
-PROJECT_DIR = path.abspath(path.join(__file__, ".."))
+PROJECT_DIR = os.path.abspath(path.join(__file__, ".."))
 
 setuptools.setup(
     name="pyload",

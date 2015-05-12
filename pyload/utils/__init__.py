@@ -12,17 +12,15 @@ import sys
 import time
 import urllib
 
-import pyload.utils.pylgettext as gettext
+from pyload.utils import pylgettext as gettext
 
 # abstraction layer for json operations
-from bottle import json_loads
-
-
-def os.chmod(*args):
-    try:
-        os.chmod(*args)
-    except Exception:
-        pass
+try:
+    import simplejson as json
+except ImportError:
+    import json
+    
+from bottle import json_loads, json_dumps
 
 
 def decode(string):
@@ -252,7 +250,7 @@ def load_translation(name, locale, default="en"):
     import traceback
 
     try:
-        gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
+        gettext.setpaths([os.path.join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation(name, os.path.join(pypath, "locale"),
                                           languages=[locale, default], fallback=True)
     except Exception:

@@ -12,7 +12,7 @@ import bottle
 
 from pyload.webui import PYLOAD, PYLOAD_DIR, THEME_DIR, THEME, SETUP, env
 
-from pyload.webui.app.utils import render_to_response, parse_permissions, parse_userdata, \
+from pyload.webui.App.utils import render_to_response, parse_permissions, parse_userdata, \
     login_required, get_permission, set_permission, permlist, toDict, set_session
 
 from pyload.utils.filters import relpath, unquotepath
@@ -298,7 +298,7 @@ def config():
 @bottle.route('/filechooser/<file:path>')
 @bottle.route('/pathchooser/<path:path>')
 @login_required('STATUS')
-def os.path(file="", path=""):
+def path(file="", path=""):
     type = "file" if file else "folder"
 
     path = os.path.normpath(unquotepath(path))

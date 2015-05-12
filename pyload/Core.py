@@ -9,6 +9,7 @@ import codecs
 import getopt
 import imp
 import logging
+import logging.handlers
 import os
 import signal
 import subprocess
@@ -17,7 +18,7 @@ import time
 import traceback
 
 import pyload
-import pyload.utils.pylgettext as gettext
+from pyload.utils import pylgettext as gettext
 
 from pyload import remote
 from pyload.Database import DatabaseBackend, FileHandler
@@ -50,9 +51,9 @@ class Core(object):
         self.pidfile = "pyload.pid"
         self.deleteLinks = False  #: will delete links on startup
 
-        if len(argv) > 1:
+        if len(sys.argv) > 1:
             try:
-                options, args = getopt.getopt(argv[1:], 'vchdusqp:',
+                options, args = getopt.getopt(sys.argv[1:], 'vchdusqp:',
                     ["version", "clear", "clean", "help", "debug", "user",
                      "setup", "configdir=", "changedir", "daemon",
                      "quit", "status", "no-remote","pidfile="])
@@ -111,7 +112,7 @@ class Core(object):
                         self.remote = False
 
             except getopt.GetoptError:
-                print 'Unknown Argument(s) "%s"' % " ".join(argv[1:])
+                print 'Unknown Argument(s) "%s"' % " ".join(sys.argv[1:])
                 self.print_help()
                 sys.exit()
 
@@ -212,7 +213,7 @@ class Core(object):
             t = time.time()
             print "waiting for pyLoad to quit"
 
-            whileself.pidfile) and t + 10 > time.time():
+            while os.path.exists(self.pidfile) and t + 10 > time.time():
                 time.sleep(0.25)
 
             if not os.path.exists(self.pidfile):
@@ -272,7 +273,7 @@ class Core(object):
 
         self.config = ConfigParser()
 
-        gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
+        gettext.setpaths([os.path.join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation("pyLoad", self.path("locale"),
                                           languages=[self.config.get("general", "language"), "en"], fallback=True)
         translation.install(True)
@@ -453,7 +454,7 @@ class Core(object):
 
 
     def init_logger(self, level):
-        self.log = logging.logging.getLogger("log")
+        self.log = logging.getLogger("log")
         self.log.setLevel(level)
 
         date_fmt = "%Y-%m-%d %H:%M:%S"
@@ -617,7 +618,7 @@ class Core(object):
         self.deletePidFile()
 
 
-    def os.path(self, *args):
+    def path(self, *args):
         return os.path.join(pypath, *args)
 
 

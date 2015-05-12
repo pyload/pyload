@@ -213,10 +213,10 @@ class RhinoEngine(AbstractEngine):
         jspath = [
             "/usr/share/java/js.jar",
             "js.jar",
-            path.join(pypath, "js.jar")
+            os.path.join(pypath, "js.jar")
         ]
         for p in jspath:
-            if path.exists(p):
+            if os.path.exists(p):
                 self.path = p
                 break
         else:
@@ -240,7 +240,7 @@ class JscEngine(AbstractEngine):
 
     def setup(self):
         jspath = "/System/Library/Frameworks/JavaScriptCore.framework/Resources/jsc"
-        self.path = jspath if path.exists(jspath) else ""
+        self.path = jspath if os.path.exists(jspath) else ""
 
 
     def eval(self, script):

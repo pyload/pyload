@@ -304,7 +304,7 @@ class HTTPDownload(object):
             chunk.close()
 
 
-    def os.close(self):
+    def close(self):
         """ cleanup """
         for chunk in self.chunks:
             self.closeChunk(chunk)

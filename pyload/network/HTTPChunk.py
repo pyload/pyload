@@ -101,7 +101,7 @@ class ChunkInfo(object):
         return ci
 
 
-    def os.remove(self):
+    def remove(self):
         fs_name = fs_encode("%s.chunks" % self.name)
         if os.path.exists(fs_name): os.remove(fs_name)
 
@@ -305,7 +305,7 @@ class HTTPChunk(HTTPRequest):
         self.fp.close()  #: needs to be closed, or merging chunks will fail
 
 
-    def os.close(self):
+    def close(self):
         """ closes everything, unusable after this """
         if self.fp: self.fp.close()
         self.c.close()

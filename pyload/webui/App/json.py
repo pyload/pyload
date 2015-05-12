@@ -10,7 +10,7 @@ import bottle
 
 from pyload.utils import decode, formatSize
 from pyload.webui import PYLOAD
-from pyload.webui.app.utils import login_required, render_to_response, toDict
+from pyload.webui.App.utils import login_required, render_to_response, toDict
 
 
 def format_time(seconds):

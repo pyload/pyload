@@ -4,11 +4,11 @@
 import os
 import sys
 
-import beaker
+import beaker.middleware
 import bottle
 import jinja2
 
-import pyload.utils.pylgettext as gettext
+from pyload.utils import pylgettext as gettext
 
 from pyload.Thread import Server
 from pyload.utils.middlewares import StripPathMiddleware, GZipMiddleWare, PrefixMiddleware
@@ -16,7 +16,7 @@ from pyload.network.JsEngine import JsEngine
 from pyload.utils import decode, formatSize
 
 
-THEME_DIR  = os.path.abspath(os.path.join(dirname(__file__), "themes"))
+THEME_DIR  = os.path.abspath(os.path.join(os.path.dirname(__file__), "themes"))
 PYLOAD_DIR = os.path.abspath(os.path.join(THEME_DIR, "..", "..", ".."))
 
 sys.path.append(PYLOAD_DIR)
@@ -76,7 +76,7 @@ if PREFIX:
 else:
     env.filters['url'] = lambda x: PREFIX + x if x.startswith("/") else x
 
-gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
+gettext.setpaths([os.path.join(os.sep, "usr", "share", "pyload", "locale"), None])
 translation = gettext.translation("django", os.path.join(PYLOAD_DIR, "locale"),
     languages=[config.get("general", "language"), "en"],fallback=True)
 translation.install(True)
@@ -95,7 +95,7 @@ web = GZipMiddleWare(web)
 if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
 
-import pyload.webui.app
+from pyload.webui import App
 
 
 def run_auto(host="0.0.0.0", port="8000"):
@@ -115,7 +115,7 @@ def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
 
     wsgiserver.CherryPyWSGIServer.numthreads = theads
 
-    from pyload.webui.app.utils import CherryPyWSGI
+    from pyload.webui.App.utils import CherryPyWSGI
 
     bottle.run(app=web, host=host, port=port, server=CherryPyWSGI, quiet=True)
 

@@ -115,7 +115,7 @@ def toDict(obj):
     return dict((att, getattr(obj, att)) for att in obj.__slots__)
 
 
-class CherryPyWSGI(ServerAdapter):
+class CherryPyWSGI(bottle.ServerAdapter):
 
     def run(self, handler):
         from wsgiserver import CherryPyWSGIServer

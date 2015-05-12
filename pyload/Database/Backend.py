@@ -9,11 +9,10 @@ except Exception:
     import sqlite3
 
 import Queue
+import os
 import shutil
 import threading
 import traceback
-
-from pyload.utils import chmod
 
 
 DB_VERSION = 4
@@ -138,7 +137,11 @@ class DatabaseBackend(threading.Thread):
         convert = self._checkVersion()  #: returns None or current version
 
         self.conn = sqlite3.connect("files.db")
-        os.chmod("files.db", 0600)
+
+        try:
+            os.chmod("files.db", 0600)
+        except Exception:
+            pass
 
         self.c = self.conn.cursor()  #: compatibility
 

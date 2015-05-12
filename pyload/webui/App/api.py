@@ -8,9 +8,9 @@ import SafeEval
 import bottle
 
 from pyload.Api import BaseObject
-from pyload.utils import json
+from pyload.utils import json, json_dumps
 from pyload.webui import PYLOAD
-from pyload.webui.app.utils import toDict, set_session
+from pyload.webui.App.utils import toDict, set_session
 
 
 # json encoder that accepts TBase objects
@@ -34,10 +34,10 @@ def call_api(func, args=""):
         s = s.get_by_id(request.POST['session'])
 
     if not s or not s.get("authenticated", False):
-        return bottle.HTTPError(403, json.dumps("Forbidden"))
+        return bottle.HTTPError(403, json_dumps("Forbidden"))
 
     if not PYLOAD.isAuthorized(func, {"role": s['role'], "permission": s['perms']}):
-        return bottle.HTTPError(401, json.dumps("Unauthorized"))
+        return bottle.HTTPError(401, json_dumps("Unauthorized"))
 
     args = args.split("/")[1:]
     kwargs = {}
@@ -51,19 +51,19 @@ def call_api(func, args=""):
         return callApi(func, *args, **kwargs)
     except Exception, e:
         traceback.print_exc()
-        return bottle.HTTPError(500, json.dumps({"error": e.message, "traceback": traceback.format_exc()}))
+        return bottle.HTTPError(500, json_dumps({"error": e.message, "traceback": traceback.format_exc()}))
 
 
 def callApi(func, *args, **kwargs):
     if not hasattr(PYLOAD.EXTERNAL, func) or func.startswith("_"):
         print "Invalid API call", func
-        return bottle.HTTPError(404, json.dumps("Not Found"))
+        return bottle.HTTPError(404, json_dumps("Not Found"))
 
     result = getattr(PYLOAD, func)(*[SafeEval.const_eval(x) for x in args],
                                    **dict((x, SafeEval.const_eval(y)) for x, y in kwargs.iteritems()))
 
     # null is invalid json  response
-    return json.dumps(result or True, cls=TBaseEncoder)
+    return json_dumps(result or True, cls=TBaseEncoder)
 
 
 # post -> username, password
@@ -78,16 +78,16 @@ def login():
     info = PYLOAD.checkAuth(user, password)
 
     if not info:
-        return json.dumps(False)
+        return json_dumps(False)
 
     s = set_session(request, info)
 
     # get the session id by dirty way, documentations seems wrong
     try:
         sid = s._headers['cookie_out'].split("=")[1].split(";")[0]
-        return json.dumps(sid)
+        return json_dumps(sid)
     except Exception:
-        return json.dumps(True)
+        return json_dumps(True)
 
 
 @bottle.route('/api/logout')
