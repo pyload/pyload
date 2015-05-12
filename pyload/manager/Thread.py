@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
+import os
 import random
 import re
 import threading
@@ -8,7 +9,6 @@ import traceback
 
 import pycurl
 
-from os.path import exists, join
 from random import choice
 from subprocess import Popen
 from time import sleep, time
@@ -158,9 +158,9 @@ class ThreadManager(object):
         if not (0 < active.count(True) == len(active)):
             return False
 
-        if not exists(self.core.config.get("reconnect", "method")):
-            if exists(join(pypath, self.core.config.get("reconnect", "method"))):
-                self.core.config.set("reconnect", "method", join(pypath, self.core.config.get("reconnect", "method")))
+        if not os.path.exists(self.core.config.get("reconnect", "method")):
+            if os.path.exists(os.path.join(pypath, self.core.config.get("reconnect", "method"))):
+                self.core.config.set("reconnect", "method", os.path.join(pypath, self.core.config.get("reconnect", "method")))
             else:
                 self.core.config.set("reconnect", "activated", False)
                 self.core.log.warning(_("Reconnect script not found!"))

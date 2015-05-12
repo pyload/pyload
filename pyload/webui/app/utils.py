@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN, vuolter
 
-from os.path import join
+import os
 
 from bottle import request, HTTPError, redirect, ServerAdapter
 
-from pyload.webui import env, THEME
-
 from pyload.api import has_permission, PERMS, ROLE
+from pyload.webui import env, THEME
 
 
 def render_to_response(file, args={}, proc=[]):

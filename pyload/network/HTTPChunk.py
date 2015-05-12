@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from os import remove, stat, fsync
-from os.path import exists
-from time import sleep
-from re import search
-from pyload.utils import fs_encode
 import codecs
-import pycurl
+import os
 import urllib
 
+import pycurl
+
+from time import sleep
+from re import search
+
 from pyload.network.HTTPRequest import HTTPRequest
+from pyload.utils import fs_encode
 
 
 class WrongFormat(Exception):
@@ -71,7 +72,7 @@ class ChunkInfo(object):
     @staticmethod
     def load(name):
         fs_name = fs_encode("%s.chunks" % name)
-        if not exists(fs_name):
+        if not os.path.exists(fs_name):
             raise IOError()
         fh = codecs.open(fs_name, "r", "utf_8")
         name = fh.readline()[:-1]
@@ -101,9 +102,9 @@ class ChunkInfo(object):
         return ci
 
 
-    def remove(self):
+    def os.remove(self):
         fs_name = fs_encode("%s.chunks" % self.name)
-        if exists(fs_name): remove(fs_name)
+        if os.path.exists(fs_name): os.remove(fs_name)
 
 
     def getCount(self):
@@ -172,7 +173,7 @@ class HTTPChunk(HTTPRequest):
             self.fp = open(fs_name, "ab")
             self.arrived = self.fp.tell()
             if not self.arrived:
-                self.arrived = stat(fs_name).st_size
+                self.arrived = os.stat(fs_name).st_size
 
             if self.range:
                 # do nothing if chunk already finished
@@ -301,11 +302,11 @@ class HTTPChunk(HTTPRequest):
     def flushFile(self):
         """  flush and close file """
         self.fp.flush()
-        fsync(self.fp.fileno())  #: make sure everything was written to disk
+        os.fsync(self.fp.fileno())  #: make sure everything was written to disk
         self.fp.close()  #: needs to be closed, or merging chunks will fail
 
 
-    def close(self):
+    def os.close(self):
         """ closes everything, unusable after this """
         if self.fp: self.fp.close()
         self.c.close()

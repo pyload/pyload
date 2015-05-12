@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # @author: vuolter
 
+import os
 import subprocess
 import sys
 
-from os import path
 from urllib import quote
 
 from pyload.utils import encode, decode, uniqify

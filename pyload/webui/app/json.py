@@ -2,10 +2,9 @@
 
 from __future__ import with_statement
 
+import os
 import shutil
 import traceback
-
-from os.path import join
 
 from bottle import route, request, HTTPError
 
@@ -166,7 +165,7 @@ def add_package():
         if not name or name == "New Package":
             name = f.name
 
-        fpath = join(PYLOAD.getConfigValue("general", "download_folder"), "tmp_" + f.filename)
+        fpath = os.path.join(PYLOAD.getConfigValue("general", "download_folder"), "tmp_" + f.filename)
         with open(fpath, 'wb') as destination:
             shutil.copyfileobj(f.file, destination)
         links.insert(0, fpath)

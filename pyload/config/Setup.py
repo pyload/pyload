@@ -4,12 +4,10 @@
 from __future__ import with_statement
 
 import __builtin__
-
 import os
 import sys
 
 from getpass import getpass
-from os import chdir, makedirs, path
 from subprocess import PIPE, call
 
 from pyload.network.JsEngine import JsEngine
@@ -424,14 +422,14 @@ class SetupAssistant(object):
         dirname = path.abspath(configdir)
         try:
             if not path.exists(dirname):
-                makedirs(dirname, 0700)
+                os.makedirs(dirname, 0700)
 
-            chdir(dirname)
+            os.chdir(dirname)
 
             if persistent:
                 c = path.join(rootdir, "config", "configdir")
                 if not path.exists(c):
-                    makedirs(c, 0700)
+                    os.makedirs(c, 0700)
 
                 with open(c, "wb") as f:
                     f.write(dirname)

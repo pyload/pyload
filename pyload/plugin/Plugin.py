@@ -12,11 +12,8 @@ import urllib
 import urlparse
 
 from itertools import islice
-from os import remove, makedirs, chmod, stat
-from os.path import exists, join
 
 if os.name != "nt":
-    from os import chown
     from pwd import getpwnam
     from grp import getgrnam
 
@@ -468,7 +465,7 @@ class Plugin(Base):
 
         id = ("%.2f" % time.time())[-6:].replace(".", "")
 
-        with open(join("tmp", "tmpCaptcha_%s_%s.%s" % (self.getClassName(), id, imgtype)), "wb") as tmpCaptcha:
+        with open(os.path.join("tmp", "tmpCaptcha_%s_%s.%s" % (self.getClassName(), id, imgtype)), "wb") as tmpCaptcha:
             tmpCaptcha.write(img)
 
         has_plugin = self.getClassName() in self.core.pluginManager.ocrPlugins
@@ -511,7 +508,7 @@ class Plugin(Base):
 
         if not self.core.debug:
             try:
-                remove(tmpCaptcha.name)
+                os.remove(tmpCaptcha.name)
             except Exception:
                 pass
 
@@ -554,8 +551,8 @@ class Plugin(Base):
             frame = currentframe()
             framefile = fs_join("tmp", self.getClassName(), "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
             try:
-                if not exists(join("tmp", self.getClassName())):
-                    makedirs(join("tmp", self.getClassName()))
+                if not os.path.exists(os.path.join("tmp", self.getClassName())):
+                    os.makedirs(os.path.join("tmp", self.getClassName()))
 
                 with open(framefile, "wb") as f:
                     del frame  #: delete the frame or it wont be cleaned
@@ -621,14 +618,14 @@ class Plugin(Base):
 
         location = fs_join(download_folder, self.pyfile.package().folder)
 
-        if not exists(location):
+        if not os.path.exists(location):
             try:
-                makedirs(location, int(self.core.config.get("permission", "folder"), 8))
+                os.makedirs(location, int(self.core.config.get("permission", "folder"), 8))
 
                 if self.core.config.get("permission", "change_dl") and os.name != "nt":
                     uid = getpwnam(self.core.config.get("permission", "user"))[2]
                     gid = getgrnam(self.core.config.get("permission", "group"))[2]
-                    chown(location, uid, gid)
+                    os.chown(location, uid, gid)
 
             except Exception, e:
                 self.fail(e)
@@ -637,7 +634,7 @@ class Plugin(Base):
         location = fs_decode(location)
         name = safe_filename(self.pyfile.name)
 
-        filename = join(location, name)
+        filename = os.path.join(location, name)
 
         self.core.addonManager.dispatchEvent("download-start", self.pyfile, url, filename)
 
@@ -654,13 +651,13 @@ class Plugin(Base):
             if disposition and newname != name:
                 self.logInfo(_("%(name)s saved as %(newname)s") % {"name": name, "newname": newname})
                 self.pyfile.name = newname
-                filename = join(location, newname)
+                filename = os.path.join(location, newname)
 
         fs_filename = fs_encode(filename)
 
         if self.core.config.get("permission", "change_file"):
             try:
-                chmod(fs_filename, int(self.core.config.get("permission", "file"), 8))
+                os.chmod(fs_filename, int(self.core.config.get("permission", "file"), 8))
             except Exception, e:
                 self.logWarning(_("Setting file mode failed"), e)
 
@@ -668,7 +665,7 @@ class Plugin(Base):
             try:
                 uid = getpwnam(self.core.config.get("permission", "user"))[2]
                 gid = getgrnam(self.core.config.get("permission", "group"))[2]
-                chown(fs_filename, uid, gid)
+                os.chown(fs_filename, uid, gid)
 
             except Exception, e:
                 self.logWarning(_("Setting User and Group failed"), e)
@@ -688,10 +685,10 @@ class Plugin(Base):
         :return: dictionary key of the first rule that matched
         """
         lastDownload = fs_encode(self.lastDownload)
-        if not exists(lastDownload):
+        if not os.path.exists(lastDownload):
             return None
 
-        size = stat(lastDownload)
+        size = os.stat(lastDownload)
         size = size.st_size
 
         if api_size and api_size <= size:
@@ -709,13 +706,13 @@ class Plugin(Base):
             if isinstance(rule, basestring):
                 if rule in content:
                     if delete:
-                        remove(lastDownload)
+                        os.remove(lastDownload)
                     return name
             elif hasattr(rule, "search"):
                 m = rule.search(content)
                 if m:
                     if delete:
-                        remove(lastDownload)
+                        os.remove(lastDownload)
                     self.lastCheck = m
                     return name
 
@@ -747,14 +744,14 @@ class Plugin(Base):
         download_folder = self.core.config.get("general", "download_folder")
         location = fs_join(download_folder, pack.folder, self.pyfile.name)
 
-        if starting and self.core.config.get("download", "skip_existing") and exists(location):
+        if starting and self.core.config.get("download", "skip_existing") and os.path.exists(location):
             size = os.stat(location).st_size
             if size >= self.pyfile.size:
                 raise SkipDownload("File exists")
 
         pyfile = self.core.db.findDuplicates(self.pyfile.id, self.pyfile.package().folder, self.pyfile.name)
         if pyfile:
-            if exists(location):
+            if os.path.exists(location):
                 raise SkipDownload(pyfile[0])
 
             self.logDebug("File %s not skipped, because it does not exists." % self.pyfile.name)

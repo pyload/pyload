@@ -2,8 +2,9 @@
 
 from __future__ import with_statement
 
-from os.path import join
+import os
 import re
+
 from urllib import unquote
 from base64 import standard_b64decode
 from binascii import unhexlify
@@ -60,7 +61,7 @@ def addcrypted():
     package = request.forms.get('referer', 'ClickNLoad Package')
     dlc = request.forms['crypted'].replace(" ", "+")
 
-    dlc_path = join(DL_ROOT, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc")
+    dlc_path = os.path.join(DL_ROOT, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc")
     with open(dlc_path, "wb") as dlc_file:
         dlc_file.write(dlc)
 

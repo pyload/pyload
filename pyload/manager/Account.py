@@ -2,10 +2,9 @@
 
 from __future__ import with_statement
 
+import os
 import shutil
 import threading
-
-from os.path import exists
 
 from pyload.manager.Event import AccountUpdateEvent
 from pyload.utils import chmod, lock
@@ -133,7 +132,7 @@ class AccountManager(object):
                             for option, values in data['options'].iteritems():
                                 f.write("\t@%s %s\n" % (option, " ".join(values)))
 
-            chmod(f.name, 0600)
+            os.chmod(f.name, 0600)
 
         except Exception, e:
             self.core.log.error(str(e))

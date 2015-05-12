@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 # @author: jeix
 
+import os
 import socket
 import struct
 
-from os import remove
-from os.path import exists
 from select import select
 from time import time
 
@@ -57,14 +56,14 @@ class XDCCRequest(object):
         dccsock.settimeout(self.timeout)
         dccsock.connect((ip, port))
 
-        if exists(filename):
+        if os.path.exists(filename):
             i = 0
             nameParts = filename.rpartition(".")
             while True:
                 newfilename = "%s-%d%s%s" % (nameParts[0], i, nameParts[1], nameParts[2])
                 i += 1
 
-                if not exists(newfilename):
+                if not os.path.exists(newfilename):
                     filename = newfilename
                     break
 
@@ -75,7 +74,7 @@ class XDCCRequest(object):
             if self.abort:
                 dccsock.close()
                 fh.close()
-                remove(filename)
+                os.remove(filename)
                 raise Abort
 
             self._keepAlive(irc, ircbuffer)
@@ -145,5 +144,5 @@ class XDCCRequest(object):
         return (self.recv * 100) / self.filesize if elf.filesize else 0
 
 
-    def close(self):
+    def os.close(self):
         pass

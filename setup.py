@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 import sys
 
 import pyload
 
-from os import path
 from setuptools import setup
 
 

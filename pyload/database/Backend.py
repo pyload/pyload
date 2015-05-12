@@ -13,8 +13,6 @@ import threading
 import traceback
 
 from Queue import Queue
-from os import remove
-from os.path import exists
 
 from pyload.utils import chmod
 
@@ -83,12 +81,12 @@ class DatabaseJob(object):
 
 
     def __repr__(self):
-        from os.path import basename
+        import os
 
         frame = self.frame.f_back
         output = ""
         for _i in xrange(5):
-            output += "\t%s:%s, %s\n" % (basename(frame.f_code.co_filename), frame.f_lineno, frame.f_code.co_name)
+            output += "\t%s:%s, %s\n" % (os.path.basename(frame.f_code.co_filename), frame.f_lineno, frame.f_code.co_name)
             frame = frame.f_back
         del frame
         del self.frame
@@ -141,7 +139,7 @@ class DatabaseBackend(threading.Thread):
         convert = self._checkVersion()  #: returns None or current version
 
         self.conn = sqlite3.connect("files.db")
-        chmod("files.db", 0600)
+        os.chmod("files.db", 0600)
 
         self.c = self.conn.cursor()  #: compatibility
 
@@ -172,7 +170,7 @@ class DatabaseBackend(threading.Thread):
 
     def _checkVersion(self):
         """ check db version and delete it if needed"""
-        if not exists("files.version"):
+        if not os.path.exists("files.version"):
             with open("files.version", "wb") as f:
                 f.write(str(DB_VERSION))
             return
@@ -263,7 +261,7 @@ class DatabaseBackend(threading.Thread):
 
 
     def _migrateUser(self):
-        if exists("pyload.db"):
+        if os.path.exists("pyload.db"):
             try:
                 self.core.log.info(_("Converting old Django DB"))
             except Exception:

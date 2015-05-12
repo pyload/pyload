@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN, vuolter
 
+import os
 import sys
 import pyload.utils.pylgettext as gettext
 
-import os
-from os.path import join, abspath, dirname, exists
-from os import makedirs
-
-THEME_DIR  = abspath(join(dirname(__file__), "themes"))
-PYLOAD_DIR = abspath(join(THEME_DIR, "..", "..", ".."))
+THEME_DIR  = os.path.abspath(os.path.join(dirname(__file__), "themes"))
+PYLOAD_DIR = os.path.abspath(os.path.join(THEME_DIR, "..", "..", ".."))
 
 sys.path.append(PYLOAD_DIR)
 
@@ -52,13 +49,13 @@ if PREFIX:
 DEBUG = config.get("general", "debug_mode") or "-d" in sys.argv or "--debug" in sys.argv
 bottle.debug(DEBUG)
 
-cache = join("tmp", "jinja_cache")
-if not exists(cache):
-    makedirs(cache)
+cache = os.path.join("tmp", "jinja_cache")
+if not os.path.exists(cache):
+    os.makedirs(cache)
 
 bcc = FileSystemBytecodeCache(cache, '%s.cache')
 
-loader = FileSystemLoader([THEME_DIR, join(THEME_DIR, THEME)])
+loader = FileSystemLoader([THEME_DIR, os.path.join(THEME_DIR, THEME)])
 
 env = Environment(loader=loader, extensions=['jinja2.ext.i18n', 'jinja2.ext.autoescape'], trim_blocks=True, auto_reload=False,
                   bytecode_cache=bcc)
@@ -80,7 +77,7 @@ else:
     env.filters['url'] = lambda x: PREFIX + x if x.startswith("/") else x
 
 gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
-translation = gettext.translation("django", join(PYLOAD_DIR, "locale"),
+translation = gettext.translation("django", os.path.join(PYLOAD_DIR, "locale"),
     languages=[config.get("general", "language"), "en"],fallback=True)
 translation.install(True)
 env.install_gettext_translations(translation)

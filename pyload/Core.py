@@ -19,8 +19,6 @@ import pyload.utils.pylgettext as gettext
 from codecs import getwriter
 from getopt import getopt, GetoptError
 from imp import find_module
-from os import _exit, execl, getcwd, makedirs, remove, sep, walk, chdir, close
-from os.path import exists, join
 from sys import argv, executable, exit
 from time import time, sleep
 
@@ -161,7 +159,7 @@ class Core(object):
     def quit(self, a, b):
         self.shutdown()
         self.log.info(_("Received Quit signal"))
-        _exit(1)
+        os._exit(1)
 
 
     def writePidFile(self):
@@ -217,10 +215,10 @@ class Core(object):
             t = time()
             print "waiting for pyLoad to quit"
 
-            while exists(self.pidfile) and t + 10 > time():
+            whileself.pidfile) and t + 10 > time():
                 sleep(0.25)
 
-            if not exists(self.pidfile):
+            if not os.path.exists(self.pidfile):
                 print "pyLoad successfully stopped"
             else:
                 os.kill(pid, 9)  #: SIGKILL
@@ -232,7 +230,7 @@ class Core(object):
 
 
     def cleanTree(self):
-        for path, dirs, files in walk(self.path("")):
+        for path, dirs, files in os.walk(self.path("")):
             for f in files:
                 if not f.endswith(".pyo") and not f.endswith(".pyc"):
                     continue
@@ -240,8 +238,8 @@ class Core(object):
                 if "_25" in f or "_26" in f or "_27" in f:
                     continue
 
-                print join(path, f)
-                reshutil.move(join(path, f))
+                print os.path.join(path, f)
+                reshutil.move(os.path.join(path, f))
 
 
     def start(self, rpc=True, web=True):
@@ -249,7 +247,7 @@ class Core(object):
 
         self.version = pyload.__version__
 
-        if not exists("pyload.conf"):
+        if not os.path.exists("pyload.conf"):
             from pyload.config.Setup import SetupAssistant as Setup
 
             print "This is your first start, running configuration assistent now."
@@ -325,7 +323,7 @@ class Core(object):
         self.shuttedDown = False
 
         self.log.info(_("Starting") + " pyLoad %s" % pyload.__version__)
-        self.log.info(_("Using home directory: %s") % getcwd())
+        self.log.info(_("Using home directory: %s") % os.getcwd())
 
         self.writePidFile()
 
@@ -400,15 +398,15 @@ class Core(object):
 
         self.config.save()  #: save so config files gets filled
 
-        link_file = join(pypath, "links.txt")
+        link_file = os.path.join(pypath, "links.txt")
 
-        if exists(link_file):
+        if os.path.exists(link_file):
             with open(link_file, "rb") as f:
                 if f.read().strip():
                     self.api.addPackage("links.txt", [link_file], 1)
 
         link_file = "links.txt"
-        if exists(link_file):
+        if os.path.exists(link_file):
             with open(link_file, "rb") as f:
                 if f.read().strip():
                     self.api.addPackage("links.txt", [link_file], 1)
@@ -436,7 +434,7 @@ class Core(object):
                 self.shutdown()
                 self.log.info(_("pyLoad quits"))
                 self.removeLogger()
-                _exit(0)  #@TODO thrift blocks shutdown
+                os._exit(0)  #@TODO thrift blocks shutdown
 
             self.threadManager.work()
             self.scheduler.work()
@@ -497,18 +495,18 @@ class Core(object):
         self.log.addHandler(console)
 
         log_folder = self.config.get("log", "log_folder")
-        if not exists(log_folder):
-            makedirs(log_folder, 0700)
+        if not os.path.exists(log_folder):
+            os.makedirs(log_folder, 0700)
 
         # Set file handler formatter
         if self.config.get("log", "file_log"):
             if self.config.get("log", "log_rotate"):
-                file_handler = logging.handlers.RotatingFileHandler(join(log_folder, 'log.txt'),
+                file_handler = logging.handlers.RotatingFileHandler(os.path.join(log_folder, 'log.txt'),
                                                                     maxBytes=self.config.get("log", "log_size") * 1024,
                                                                     backupCount=int(self.config.get("log", "log_count")),
                                                                     encoding="utf8")
             else:
-                file_handler = logging.FileHandler(join(log_folder, 'log.txt'), encoding="utf8")
+                file_handler = logging.FileHandler(os.path.join(log_folder, 'log.txt'), encoding="utf8")
 
             file_handler.setFormatter(fh_frm)
             self.log.addHandler(file_handler)
@@ -548,13 +546,13 @@ class Core(object):
         file_created = True
         file_exists = True
         for tmp_name in tmp_names:
-            if not exists(tmp_name):
+            if not os.path.exists(tmp_name):
                 file_exists = False
                 if empty:
                     try:
                         if folder:
                             tmp_name = tmp_name.replace("/", sep)
-                            makedirs(tmp_name)
+                            os.makedirs(tmp_name)
                         else:
                             open(tmp_name, "w")
                     except Exception:
@@ -582,16 +580,16 @@ class Core(object):
 
     def restart(self):
         self.shutdown()
-        chdir(owd)
+        os.chdir(owd)
         # close some open fds
         for i in xrange(3, 50):
             try:
-                close(i)
+                os.close(i)
             except Exception:
                 pass
 
-        execl(executable, executable, *sys.argv)
-        _exit(0)
+        os.execl(executable, executable, *sys.argv)
+        os._exit(0)
 
 
     def shutdown(self):
@@ -621,8 +619,8 @@ class Core(object):
         self.deletePidFile()
 
 
-    def path(self, *args):
-        return join(pypath, *args)
+    def os.path(self, *args):
+        return os.path.join(pypath, *args)
 
 
 def deamon():
@@ -675,7 +673,7 @@ def main():
             pyload_core.shutdown()
             pyload_core.log.info(_("killed pyLoad from Terminal"))
             pyload_core.removeLogger()
-            _exit(1)
+            os._exit(1)
 
 # And so it begins...
 if __name__ == "__main__":

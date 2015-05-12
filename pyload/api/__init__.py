@@ -3,12 +3,12 @@
 
 from __future__ import with_statement
 
-from base64 import standard_b64encode
-from os.path import join
-from time import time
+import os
 import re
+import urlparse
 
-from urlparse import urlparse
+from base64 import standard_b64encode
+from time import time
 
 from pyload.Datatype import PyFile
 from pyload.utils.packagetools import parseNames
@@ -265,7 +265,7 @@ class Api(Iface):
         :param offset: line offset
         :return: List of log entries
         """
-        filename = join(self.core.config.get("log", "log_folder"), 'log.txt')
+        filename = os.path.join(self.core.config.get("log", "log_folder"), 'log.txt')
         try:
             with open(filename, "r") as fh:
                 lines = fh.readlines()
@@ -326,7 +326,7 @@ class Api(Iface):
         :return: package id of the new package
         """
         if self.core.config.get("general", "folder_per_package"):
-            folder = urlparse(name).path.split("/")[-1]
+            folder = urlparse.urlparse(name).path.split("/")[-1]
         else:
             folder = ""
 
@@ -410,7 +410,7 @@ class Api(Iface):
         :param data: file content
         :return: online check
         """
-        with open(join(self.core.config.get("general", "download_folder"), "tmp_" + container), "wb") as th:
+        with open(os.path.join(self.core.config.get("general", "download_folder"), "tmp_" + container), "wb") as th:
             th.write(str(data))
         return self.checkOnlineStatus(urls + [th.name])
 
@@ -707,7 +707,7 @@ class Api(Iface):
         :param filename: filename, extension is important so it can correctly decrypted
         :param data: file content
         """
-        with open(join(self.core.config.get("general", "download_folder"), "tmp_" + filename), "wb") as th:
+        with open(os.path.join(self.core.config.get("general", "download_folder"), "tmp_" + filename), "wb") as th:
             th.write(str(data))
         self.addPackage(th.name, [th.name], Destination.Queue)
 

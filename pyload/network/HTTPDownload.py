@@ -3,18 +3,16 @@
 
 from __future__ import with_statement
 
+import os
 import shutil
 
 import pycurl
 
-from os import remove, fsync
-from os.path import dirname
 from time import sleep, time
 from logging import getLogger
 
 from pyload.network.HTTPChunk import ChunkInfo, HTTPChunk
 from pyload.network.HTTPRequest import BadHeader
-
 from pyload.plugin.Plugin import Abort
 from pyload.utils import fs_join, fs_encode
 
@@ -101,7 +99,7 @@ class HTTPDownload(object):
                     reshutil.move(fname)  #: remove chunk
 
         if self.nameDisposition and self.disposition:
-            self.filename = fs_join(dirname(self.filename), self.nameDisposition)
+            self.filename = fs_join(os.path.dirname(self.filename), self.nameDisposition)
 
         shutil.move(init, fs_encode(self.filename))
         self.info.remove()  #: remove info file
@@ -307,7 +305,7 @@ class HTTPDownload(object):
             chunk.close()
 
 
-    def close(self):
+    def os.close(self):
         """ cleanup """
         for chunk in self.chunks:
             self.closeChunk(chunk)

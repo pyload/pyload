@@ -3,13 +3,12 @@
 
 from __future__ import with_statement
 
+import os
 import threading
 import traceback
 
 from Queue import Queue
 from copy import copy
-from os import listdir, stat
-from os.path import join
 from pprint import pformat
 from sys import exc_info, exc_clear
 from time import sleep, time, strftime, gmtime
@@ -45,10 +44,10 @@ class PluginThread(threading.Thread):
 
             zip = zipfile.ZipFile(dump_name, "w")
 
-            for f in listdir(join("tmp", pyfile.pluginname)):
+            for f in os.listdir(os.path.join("tmp", pyfile.pluginname)):
                 try:
                     # avoid encoding errors
-                    zip.write(join("tmp", pyfile.pluginname, f), fs_join(pyfile.pluginname, f))
+                    zip.write(os.path.join("tmp", pyfile.pluginname, f), fs_join(pyfile.pluginname, f))
                 except Exception:
                     pass
 
@@ -58,7 +57,7 @@ class PluginThread(threading.Thread):
             zip.writestr(info, dump)
             zip.close()
 
-            if not stat(dump_name).st_size:
+            if not os.stat(dump_name).st_size:
                 raise Exception("Empty Zipfile")
 
         except Exception, e:

@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from datetime import datetime
-from operator import itemgetter, attrgetter
-
-import time
 import os
 import sys
-from os import listdir
-from os.path import isdir, isfile, join, abspath
+import time
+
+from datetime import datetime
+from operator import itemgetter, attrgetter
 from sys import getfilesystemencoding
 from urllib import unquote
 
@@ -81,8 +79,8 @@ def error500(error):
 
 @route('/<theme>/<file:re:(.+/)?[^/]+\.min\.[^/]+>')
 def server_min(theme, file):
-    filename = join(THEME_DIR, THEME, theme, file)
-    if not isfile(filename):
+    filename = os.path.join(THEME_DIR, THEME, theme, file)
+    if not os.path.isfile(filename):
         file = file.replace(".min.", ".")
     if file.endswith(".js"):
         return server_js(theme, file)
@@ -196,32 +194,32 @@ def collector():
 def downloads():
     root = PYLOAD.getConfigValue("general", "download_folder")
 
-    if not isdir(root):
+    if not os.path.isdir(root):
         return base([_('Download directory not found.')])
     data = {
         'folder': [],
         'files': []
     }
 
-    items = listdir(fs_encode(root))
+    items = os.listdir(fs_encode(root))
 
     for item in sorted([fs_decode(x) for x in items]):
-        if isdir(fs_join(root, item)):
+        if os.path.isdir(fs_join(root, item)):
             folder = {
                 'name': item,
                 'path': item,
                 'files': []
             }
-            files = listdir(fs_join(root, item))
+            files = os.listdir(fs_join(root, item))
             for file in sorted([fs_decode(x) for x in files]):
                 try:
-                    if isfile(fs_join(root, item, file)):
+                    if os.path.isfile(fs_join(root, item, file)):
                         folder['files'].append(file)
                 except Exception:
                     pass
 
             data['folder'].append(folder)
-        elif isfile(join(root, item)):
+        elif os.path.isfile(os.path.join(root, item)):
             data['files'].append(item)
 
     return render_to_response('downloads.html', {'files': data}, [pre_processor])
@@ -302,7 +300,7 @@ def config():
 @route('/filechooser/<file:path>')
 @route('/pathchooser/<path:path>')
 @login_required('STATUS')
-def path(file="", path=""):
+def os.path(file="", path=""):
     type = "file" if file else "folder"
 
     path = os.path.normpath(unquotepath(path))
@@ -320,7 +318,7 @@ def path(file="", path=""):
             cwd = os.path.abspath(path)
             abs = True
         else:
-            cwd = relpath(path)
+            cwd = os.relpath(path)
     else:
         cwd = os.getcwd()
 
@@ -333,10 +331,10 @@ def path(file="", path=""):
     parentdir = os.path.dirname(cwd)
     if not abs:
         if os.path.abspath(cwd) == "/":
-            cwd = relpath(cwd)
+            cwd = os.relpath(cwd)
         else:
-            cwd = relpath(cwd) + os.path.sep
-        parentdir = relpath(parentdir) + os.path.sep
+            cwd = os.relpath(cwd) + os.path.sep
+        parentdir = os.relpath(parentdir) + os.path.sep
 
     if os.path.abspath(cwd) == "/":
         parentdir = ""
@@ -351,17 +349,17 @@ def path(file="", path=""):
     for f in folders:
         try:
             f = f.decode(getfilesystemencoding())
-            data = {'name': f, 'fullpath': join(cwd, f)}
+            data = {'name': f, 'fullpath': os.path.join(cwd, f)}
             data['sort'] = data['fullpath'].lower()
-            data['modified'] = datetime.fromtimestamp(int(os.path.getmtime(join(cwd, f))))
+            data['modified'] = datetime.fromtimestamp(int(os.path.getmtime(os.path.join(cwd, f))))
             data['ext'] = os.path.splitext(f)[1]
         except Exception:
             continue
 
-        data['type'] = 'dir' if os.path.isdir(join(cwd, f)) else 'file'
+        data['type'] = 'dir' if os.path.isdir(os.path.join(cwd, f)) else 'file'
 
-        if os.path.isfile(join(cwd, f)):
-            data['size'] = os.path.getsize(join(cwd, f))
+        if os.path.isfile(os.path.join(cwd, f)):
+            data['size'] = os.path.getsize(os.path.join(cwd, f))
 
             power = 0
             while (data['size'] / 1024) > 0.3:
@@ -520,8 +518,8 @@ def info():
     data = {"python"   : sys.version,
             "os"       : " ".join((os.name, sys.platform) + extra),
             "version"  : PYLOAD.getServerVersion(),
-            "folder"   : abspath(PYLOAD_DIR), "config": abspath(""),
-            "download" : abspath(conf['general']['download_folder']['value']),
+            "folder"   : os.path.abspath(PYLOAD_DIR), "config": os.path.abspath(""),
+            "download" : os.path.abspath(conf['general']['download_folder']['value']),
             "freespace": formatSize(PYLOAD.freeSpace()),
             "remote"   : conf['remote']['port']['value'],
             "webif"    : conf['webui']['port']['value'],

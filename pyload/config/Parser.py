@@ -2,10 +2,10 @@
 
 from __future__ import with_statement
 
+import os
 import shutil
 import traceback
 
-from os.path import exists, join
 from time import sleep
 
 from pyload.utils import chmod, encode, decode
@@ -49,10 +49,10 @@ class ConfigParser(object):
     def checkVersion(self, n=0):
         """determines if config need to be copied"""
         try:
-            if not exists("pyload.conf"):
-                shutil.copy(join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
+            if not os.path.exists("pyload.conf"):
+                shutil.copy(os.path.join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
 
-            if not exists("plugin.conf"):
+            if not os.path.exists("plugin.conf"):
                 with open("plugin.conf", "wb") as f:
                     f.write("version: " + str(CONF_VERSION))
 
@@ -61,7 +61,7 @@ class ConfigParser(object):
             v = v[v.find(":") + 1:].strip()
 
             if not v or int(v) < CONF_VERSION:
-                shutil.copy(join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
+                shutil.copy(os.path.join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
                 print "Old version of config was replaced"
 
             with open("plugin.conf", "rb") as f:
@@ -82,7 +82,7 @@ class ConfigParser(object):
 
     def readConfig(self):
         """reads the config file"""
-        self.config = self.parseConfig(join(pypath, "pyload", "config", "default.conf"))
+        self.config = self.parseConfig(os.path.join(pypath, "pyload", "config", "default.conf"))
         self.plugin = self.parseConfig("plugin.conf")
 
         try:
@@ -206,7 +206,7 @@ class ConfigParser(object):
     def saveConfig(self, config, filename):
         """saves config to filename"""
         with open(filename, "wb") as f:
-            chmod(filename, 0600)
+            os.chmod(filename, 0600)
             f.write("version: %i \n" % CONF_VERSION)
             for section in config.iterkeys():
                 f.write('\n%s - "%s":\n' % (section, config[section]['desc']))

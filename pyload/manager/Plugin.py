@@ -2,13 +2,12 @@
 
 from __future__ import with_statement
 
+import os
 import re
 import sys
 import traceback
 
 from itertools import chain
-from os import listdir, makedirs
-from os.path import isdir, isfile, join, exists, abspath
 from sys import version_info
 from urllib import unquote
 
@@ -37,11 +36,11 @@ class PluginManager(object):
 
 
     def loadTypes(self):
-        rootdir = join(pypath, "pyload", "plugin")
+        rootdir = os.path.join(pypath, "pyload", "plugin")
         userdir = "userplugins"
 
-        types = set().union(*[[d for d in listdir(p) if isdir(join(p, d))]
-                              for p in (rootdir, userdir) if exists(p)])
+        types = set().union(*[[d for d in os.listdir(p) if os.path.isdir(os.path.join(p, d))]
+                              for p in (rootdir, userdir) if os.path.exists(p)])
 
         if not types:
             self.core.log.critical(_("No plugins found!"))
@@ -52,7 +51,7 @@ class PluginManager(object):
     def createIndex(self):
         """create information for all plugins available"""
 
-        sys.path.append(abspath(""))
+        sys.path.append(os.path.abspath(""))
 
         self.loadTypes()
 
@@ -78,13 +77,13 @@ class PluginManager(object):
 
         if rootplugins:
             try:
-                pfolder = join("userplugins", folder)
-                if not exists(pfolder):
-                    makedirs(pfolder)
+                pfolder = os.path.join("userplugins", folder)
+                if not os.path.exists(pfolder):
+                    os.makedirs(pfolder)
 
-                for ifile in (join("userplugins", "__init__.py"),
-                              join(pfolder, "__init__.py")):
-                    if not exists(ifile):
+                for ifile in (os.path.join("userplugins", "__init__.py"),
+                              os.path.join(pfolder, "__init__.py")):
+                    if not os.path.exists(ifile):
                         f = open(ifile, "wb")
                         f.close()
 
@@ -93,13 +92,13 @@ class PluginManager(object):
                 return rootplugins
 
         else:
-            pfolder = join(pypath, "pyload", "plugin", folder)
+            pfolder = os.path.join(pypath, "pyload", "plugin", folder)
 
-        for f in listdir(pfolder):
-            if isfile(join(pfolder, f)) and f.endswith(".py") and not f.startswith("_"):
+        for f in os.listdir(pfolder):
+            if os.path.isfile(os.path.join(pfolder, f)) and f.endswith(".py") and not f.startswith("_"):
 
                 try:
-                    with open(join(pfolder, f)) as data:
+                    with open(os.path.join(pfolder, f)) as data:
                         content = data.read()
 
                 except IOError, e:
@@ -111,7 +110,7 @@ class PluginManager(object):
                     name = name[:-4]
 
                 if not re.search("class\\s+%s\\(" % name, content):
-                    self.core.log.error(_("invalid classname: %s ignored") % join(pfolder, f))
+                    self.core.log.error(_("invalid classname: %s ignored") % os.path.join(pfolder, f))
 
                 version = self.VERSION.findall(content)
                 if version:

@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
+import os
 import traceback
 
 from Queue import Queue
 from copy import copy
-from os import listdir, stat
-from os.path import join
 from pprint import pformat
 from sys import exc_info, exc_clear
 from time import sleep, time, strftime, gmtime
