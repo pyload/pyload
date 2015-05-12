@@ -13,8 +13,8 @@ import urllib
 import urlparse
 
 if os.name != "nt":
-    from pwd import getpwnam
-    from grp import getgrnam
+    import grp
+    import pwd
 
 from pyload.utils import fs_decode, fs_encode, safe_filename, fs_join, encode
 
@@ -545,9 +545,9 @@ class Plugin(Base):
             res = encode(res)
 
         if self.core.debug:
-            from inspect import currentframe
+            import inspect
 
-            frame = currentframe()
+            frame = inspect.currentframe()
             framefile = fs_join("tmp", self.getClassName(), "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
             try:
                 if not os.path.exists(os.path.join("tmp", self.getClassName())):
@@ -622,8 +622,8 @@ class Plugin(Base):
                 os.makedirs(location, int(self.core.config.get("permission", "folder"), 8))
 
                 if self.core.config.get("permission", "change_dl") and os.name != "nt":
-                    uid = getpwnam(self.core.config.get("permission", "user"))[2]
-                    gid = getgrnam(self.core.config.get("permission", "group"))[2]
+                    uid = pwd.getpwnam(self.core.config.get("permission", "user"))[2]
+                    gid = grp.getgrnam(self.core.config.get("permission", "group"))[2]
                     os.chown(location, uid, gid)
 
             except Exception, e:
@@ -662,8 +662,8 @@ class Plugin(Base):
 
         if self.core.config.get("permission", "change_dl") and os.name != "nt":
             try:
-                uid = getpwnam(self.core.config.get("permission", "user"))[2]
-                gid = getgrnam(self.core.config.get("permission", "group"))[2]
+                uid = pwd.getpwnam(self.core.config.get("permission", "user"))[2]
+                gid = grp.getgrnam(self.core.config.get("permission", "group"))[2]
                 os.chown(fs_filename, uid, gid)
 
             except Exception, e:

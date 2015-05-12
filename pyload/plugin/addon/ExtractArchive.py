@@ -52,8 +52,8 @@ except ImportError:
     pass
 
 if os.name != "nt":
-    from grp import getgrnam
-    from pwd import getpwnam
+    import grp
+    import pwd
 
 from pyload.plugin.Addon import Addon, threaded, Expose
 from pyload.plugin.Extractor import ArchiveError, CRCError, PasswordError
@@ -563,8 +563,8 @@ class ExtractArchive(Addon):
                         os.chmod(f, int(self.config.get("permission", "folder"), 8))
 
                 if self.config.get("permission", "change_dl") and os.name != "nt":
-                    uid = getpwnam(self.config.get("permission", "user"))[2]
-                    gid = getgrnam(self.config.get("permission", "group"))[2]
+                    uid = pwd.getpwnam(self.config.get("permission", "user"))[2]
+                    gid = grp.getgrnam(self.config.get("permission", "group"))[2]
                     os.chown(f, uid, gid)
 
             except Exception, e:

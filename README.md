@@ -55,17 +55,17 @@ Download
 > **Note:**
 > If you wanna use pyLoad on Windows, it's hightly recommented to install the latest **official** pre-build package for that platform.
 
-Releases                                              | Download
------------------------------------------------------ | -----------------------------------------------------
-Pre-build packages with changelog                     | <https://github.com/pyload/pyload/releases>
+Releases                               | Download
+-------------------------------------- | --------------------------------------
+Pre-build packages with changelog      | <https://github.com/pyload/pyload/releases>
 
 Pre-build packages are provided with all the software dependencies required to run pyLoad flawlessly on the referenced platform.
 If you choose a source code, at least you need to have the proper Python version installed on your platform before launch pyLoad.
 
-Source code                                           | Download
------------------------------------------------------ | -----------------------------------------------------
-Latest stable version                                 | <https://github.com/pyload/pyload/archive/stable.zip>
-Latest development version                            | <https://github.com/pyload/pyload/archive/master.zip>
+Source code                            | Download
+-------------------------------------- | --------------------------------------
+Latest stable version                  | <https://github.com/pyload/pyload/archive/stable.zip>
+Latest development version             | <https://github.com/pyload/pyload/archive/master.zip>
 
 
 Installation
@@ -87,41 +87,42 @@ You can install any missing software package from the *Python Package Index* typ
 Dependencies
 ------------
 
+> **Note:**
+> Plugins may require additional software packages to run property, see *Optional packages*.
+
 ### Required ###
 
- - **Beaker**
- - **Getch**
- - **MultipartPostHandler**
- - **SafeEval**
- - **bottle**
- - **colorama**
- - **jinja2**
- - **markupsafe**
- - **pycurl** (python-curl)
- - **rename_process**
- - **setuptools**
- - **thrift**
- - **wsgiserver**
+Package name                           | Info
+-------------------------------------- | --------------------------------------
+Beaker                                 |
+Getch                                  |
+MultipartPostHandler                   |
+SafeEval                               |
+bottle                                 |
+colorama                               |
+jinja2                                 |
+markupsafe                             |
+pycrypto                               |
+pycurl                                 | python-curl
+rename_process                         |
+setuptools                             |
+thrift                                 |
+wsgiserver                             |
 
-
-Some extra features require additional software packages. See below:
 
 ### Optional ###
 
- - **BeautifulSoup**                                  *Few plugins support*
- - **PIL** (python-imaging)                           *Captcha recognition*
- - **Send2Trash**                                     *Trash support*
- - **colorlog**                                       *Colored log*
- - **bjoern** (<https://github.com/jonashaag/bjoern>) *More responsive web interface*
- - **node.js**                                        *ClickNLoad and other plugins*
-   - or **ossp-js**
-   - or **pyv8**
-   - or **rhino**
-   - or **spidermonkey**
- - **pyOpenSSL**                                      *SSL support*
- - **pycrypto**                                       *RSDF/CCF/DLC decrypting*
- - **simplejson**                                     *JSON speedup*
- - **tesseract**                                      *Captcha OCR support*
+Package name                           | Info
+-------------------------------------- | --------------------------------------
+BeautifulSoup                          | Few plugins support
+Pillow (or: PIL)                       | Captcha recognition
+Send2Trash                             | Trash support
+colorlog                               | Colored log
+bjoern                                 | More responsive web interface
+node.js (or: ossp-js, pyv8, rhino, spidermonkey) | ClickNLoad and other plugins
+pyOpenSSL                              | SSL support
+simplejson                             | JSON speedup
+tesseract                              | Captcha OCR support
 
 
 Usage

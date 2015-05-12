@@ -47,28 +47,28 @@ setuptools.setup(
 
     install_requires=[
         "Beaker >= 1.6",
+        "Getch",
+        "MultipartPostHandler",
+        "SafeEval",
         "bitmath",
         "bottle >= 0.10.0",
         "colorama",
-        "Getch",
         "jinja2",
         "markupsafe",
-        "MultipartPostHandler",
+        "pycrypto",
         "pycurl",
         "rename_process",
-        "SafeEval",
         "thrift >= 0.8.0",
         "wsgiserver"
     ],
 
     extras_require={
         'Few plugins dependencies': ["BeautifulSoup >= 3.2, < 3.3"],
-        'Captcha recognition'     : ["PIL"],
+        'Captcha recognition'     : ["Pillow"],
         'Trash support'           : ["Send2Trash"],
         'Colored log'             : ["colorlog"],
         'Lightweight webserver'   : ["bjoern"],
         'SSL support'             : ["pyOpenSSL"],
-        'RSDF/CCF/DLC support'    : ["pycrypto"],
         'JSON speedup'            : ["simplejson"]
     },
 

@@ -291,19 +291,20 @@ class Core(object):
         if self.config.get("permission", "change_group"):
             if os.name != "nt":
                 try:
-                    from grp import getgrnam
+                    import grp
 
-                    group = getgrnam(self.config.get("permission", "group"))
+                    group = grp.getgrnam(self.config.get("permission", "group"))
                     os.setgid(group[2])
+
                 except Exception, e:
                     print _("Failed changing group: %s") % e
 
         if self.config.get("permission", "change_user"):
             if os.name != "nt":
                 try:
-                    from pwd import getpwnam
+                    import pwd
 
-                    user = getpwnam(self.config.get("permission", "user"))
+                    user = pwd.getpwnam(self.config.get("permission", "user"))
                     os.setuid(user[2])
                 except Exception, e:
                     print _("Failed changing user: %s") % e

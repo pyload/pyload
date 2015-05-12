@@ -7,8 +7,8 @@ try:
     from beaker.crypto.pbkdf2 import PBKDF2
 
 except ImportError:
+    import binascii
     from beaker.crypto.pbkdf2 import pbkdf2
-    from binascii import b2a_hex
 
     class PBKDF2(object):
 
@@ -19,7 +19,7 @@ except ImportError:
 
 
         def hexread(self, octets):
-            return b2a_hex(pbkdf2(self.passphrase, self.salt, self.iterations, octets))
+            return binascii.b2a_hex(pbkdf2(self.passphrase, self.salt, self.iterations, octets))
 
 from pyload.utils import json_loads
 from pyload.plugin.Account import Account

@@ -17,15 +17,15 @@ from pyload.utils import compare_time, freeSpace, safe_filename
 
 if activated:
     try:
-        from thrift.protocol import TBase
+        import thrift
+
         from pyload.remote.thriftbackend.thriftgen.pyload.ttypes import *
         from pyload.remote.thriftbackend.thriftgen.pyload.Pyload import Iface
 
-        BaseObject = TBase
+        BaseObject = thrift.protocol.TBase
 
     except ImportError:
         from pyload.Api.types import *
-
         print "Thrift not imported"
 
 else:

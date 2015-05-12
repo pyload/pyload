@@ -10,7 +10,7 @@ except Exception:
     from posixpath import curdir, sep, pardir
 
 
-    def os.relpath(path, start=curdir):
+    def relpath(path, start=curdir):
         """Return a relative version of a path"""
         if not path:
             raise ValueError("no path specified")
@@ -51,7 +51,7 @@ def path_make_absolute(path):
 
 
 def path_make_relative(path):
-    p = os.relpath(path)
+    p = relpath(path)
     if p[-1] == os.path.sep:
         return p
     else:

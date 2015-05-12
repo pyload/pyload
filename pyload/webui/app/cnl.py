@@ -8,19 +8,13 @@ import os
 import re
 import urllib
 
+import Crypto
 import bottle
 
 from pyload.webui import PYLOAD, DL_ROOT, JS
 
 
-try:
-    from Crypto.Cipher import AES
-except Exception:
-    pass
-
-
 def local_check(function):
-
 
     def _view(*args, **kwargs):
         if request.environ.get("REMOTE_ADDR", "0") in ("127.0.0.1", "localhost") \
@@ -105,7 +99,7 @@ def addcrypted2():
 
     IV = Key
 
-    obj = AES.new(Key, AES.MODE_CBC, IV)
+    obj = Crypto.Cipher.AES.new(Key, Crypto.Cipher.AES.MODE_CBC, IV)
     result = obj.decrypt(crypted).replace("\x00", "").replace("\r", "").split("\n")
 
     result = filter(lambda x: x != "", result)

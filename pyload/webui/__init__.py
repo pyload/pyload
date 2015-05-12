@@ -107,13 +107,13 @@ def run_lightweight(host="0.0.0.0", port="8000"):
 
 
 def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
-    from wsgiserver import CherryPyWSGIServer
+    import wsgiserver
 
     if cert and key:
-        CherryPyWSGIServer.ssl_certificate = cert
-        CherryPyWSGIServer.ssl_private_key = key
+        wsgiserver.CherryPyWSGIServer.ssl_certificate = cert
+        wsgiserver.CherryPyWSGIServer.ssl_private_key = key
 
-    CherryPyWSGIServer.numthreads = theads
+    wsgiserver.CherryPyWSGIServer.numthreads = theads
 
     from pyload.webui.app.utils import CherryPyWSGI
 
