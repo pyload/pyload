@@ -10,6 +10,7 @@ import os
 import signal
 import subprocess
 import sys
+import time
 import traceback
 
 import __builtin__
@@ -20,7 +21,6 @@ from codecs import getwriter
 from getopt import getopt, GetoptError
 from imp import find_module
 from sys import argv, executable, exit
-from time import time, sleep
 
 from pyload import remote
 from pyload.Database import DatabaseBackend, FileHandler
@@ -212,11 +212,11 @@ class Core(object):
         try:
             os.kill(pid, 3)  #: SIGUIT
 
-            t = time()
+            t = time.time()
             print "waiting for pyLoad to quit"
 
-            whileself.pidfile) and t + 10 > time():
-                sleep(0.25)
+            whileself.pidfile) and t + 10 > time.time():
+                time.sleep(0.25)
 
             if not os.path.exists(self.pidfile):
                 print "pyLoad successfully stopped"
@@ -426,7 +426,7 @@ class Core(object):
         locals().clear()
 
         while True:
-            sleep(2)
+            time.sleep(2)
             if self.do_restart:
                 self.log.info(_("restarting pyLoad"))
                 self.restart()
@@ -575,7 +575,7 @@ class Core(object):
 
 
     def isClientConnected(self):
-        return (self.lastClientConnected + 30) > time()
+        return (self.lastClientConnected + 30) > time.time()
 
 
     def restart(self):

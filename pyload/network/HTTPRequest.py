@@ -3,10 +3,11 @@
 
 from __future__ import with_statement
 
+import urllib
+
 import pycurl
 
 from codecs import getincrementaldecoder, lookup, BOM_UTF8
-from urllib import quote, urlencode
 from httplib import responses
 from logging import getLogger
 from cStringIO import StringIO
@@ -17,12 +18,12 @@ from pyload.utils import encode
 
 
 def myquote(url):
-    return quote(encode(url), safe="%/:=&?~#+!$,;'@()*[]")
+    return urllib.quote(encode(url), safe="%/:=&?~#+!$,;'@()*[]")
 
 
 def myurlencode(data):
     data = dict(data)
-    return urlencode(dict((encode(x), encode(y)) for x, y in data.iteritems()))
+    return urllib.urlencode(dict((encode(x), encode(y)) for x, y in data.iteritems()))
 
 bad_headers = range(400, 404) + range(405, 418) + range(500, 506)
 
@@ -148,7 +149,7 @@ class HTTPRequest(object):
         url = myquote(url)
 
         if get:
-            get = urlencode(get)
+            get = urllib.urlencode(get)
             url = "%s?%s" % (url, get)
 
         self.c.setopt(pycurl.URL, url)

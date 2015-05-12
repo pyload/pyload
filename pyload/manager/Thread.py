@@ -5,13 +5,13 @@ import os
 import random
 import re
 import threading
+import time
 import traceback
 
 import pycurl
 
 from random import choice
 from subprocess import Popen
-from time import sleep, time
 
 from pyload.Datatype import PyFile
 from pyload.Thread import DecrypterThread, DownloadThread, InfoThread
@@ -67,7 +67,7 @@ class ThreadManager(object):
         start a thread whichs fetches online status and other infos
         data = [ .. () .. ]
         """
-        self.timestamp = time() + 5 * 60
+        self.timestamp = time.time() + 5 * 60
 
         InfoThread(self, data, pid)
 
@@ -75,7 +75,7 @@ class ThreadManager(object):
     @lock
     def createResultThread(self, data, add=False):
         """ creates a thread to fetch online status, returns result id """
-        self.timestamp = time() + 5 * 60
+        self.timestamp = time.time() + 5 * 60
 
         rid = self.resultIDs
         self.resultIDs += 1
@@ -88,7 +88,7 @@ class ThreadManager(object):
     @lock
     def getInfoResult(self, rid):
         """returns result and clears it"""
-        self.timestamp = time() + 5 * 60
+        self.timestamp = time.time() + 5 * 60
 
         if rid in self.infoResults:
             data = self.infoResults[rid]
@@ -135,11 +135,11 @@ class ThreadManager(object):
             if self.core.debug:
                 traceback.print_exc()
 
-            sleep(0.5)
+            time.sleep(0.5)
             self.assignJob()
             # it may be failed non critical so we try it again
 
-        if (self.infoCache or self.infoResults) and self.timestamp < time():
+        if (self.infoCache or self.infoResults) and self.timestamp < time.time():
             self.infoCache.clear()
             self.infoResults.clear()
             self.core.log.debug("Cleared Result cache")
@@ -172,7 +172,7 @@ class ThreadManager(object):
         self.core.log.info(_("Starting reconnect"))
 
         while [x.active.plugin.waiting for x in self.threads if x.active].count(True) != 0:
-            sleep(0.25)
+            time.sleep(0.25)
 
         ip = self.getIP()
 
@@ -191,7 +191,7 @@ class ThreadManager(object):
             return
 
         reconn.wait()
-        sleep(1)
+        time.sleep(1)
         ip = self.getIP()
         self.core.addonManager.afterReconnecting(ip)
 
@@ -214,7 +214,7 @@ class ThreadManager(object):
                 break
             except Exception:
                 ip = ""
-                sleep(1)
+                time.sleep(1)
 
         return ip
 

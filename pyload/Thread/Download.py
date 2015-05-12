@@ -2,6 +2,7 @@
 # @author: RaNaN
 
 import os
+import time
 import traceback
 
 import pycurl
@@ -10,7 +11,6 @@ from Queue import Queue
 from copy import copy
 from pprint import pformat
 from sys import exc_info, exc_clear
-from time import sleep, time, strftime, gmtime
 from types import MethodType
 
 from pyload.Thread.Plugin import PluginThread
@@ -90,7 +90,7 @@ class DownloadThread(PluginThread):
                 # pyfile.req.clearCookies()
 
                 while self.m.reconnecting.isSet():
-                    sleep(0.5)
+                    time.sleep(0.5)
 
                 continue
 
@@ -132,12 +132,12 @@ class DownloadThread(PluginThread):
 
                 if code in (7, 18, 28, 52, 56):
                     self.m.core.log.warning(_("Couldn't connect to host or connection reset, waiting 1 minute and retry."))
-                    wait = time() + 60
+                    wait = time.time() + 60
 
                     pyfile.waitUntil = wait
                     pyfile.setStatus("waiting")
-                    while time() < wait:
-                        sleep(1)
+                    while time.time() < wait:
+                        time.sleep(1)
                         if pyfile.abort:
                             break
 

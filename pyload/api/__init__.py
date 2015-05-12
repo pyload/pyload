@@ -5,10 +5,10 @@ from __future__ import with_statement
 
 import os
 import re
+import time
 import urlparse
 
 from base64 import standard_b64encode
-from time import time
 
 from pyload.Datatype import PyFile
 from pyload.utils.packagetools import parseNames
@@ -804,7 +804,7 @@ class Api(Iface):
 
         :return: bool
         """
-        self.core.lastClientConnected = time()
+        self.core.lastClientConnected = time.time()
         task = self.core.captchaManager.getTask()
         return not task is None
 
@@ -816,7 +816,7 @@ class Api(Iface):
         :param exclusive: unused
         :return: `CaptchaTask`
         """
-        self.core.lastClientConnected = time()
+        self.core.lastClientConnected = time.time()
         task = self.core.captchaManager.getTask()
         if task:
             task.setWatingForUser(exclusive=exclusive)
@@ -833,7 +833,7 @@ class Api(Iface):
         :param tid: task id
         :return: string
         """
-        self.core.lastClientConnected = time()
+        self.core.lastClientConnected = time.time()
         task = self.core.captchaManager.getTaskByID(tid)
         return task.getStatus() if task else ""
 
@@ -845,7 +845,7 @@ class Api(Iface):
         :param tid: task id
         :param result: captcha result
         """
-        self.core.lastClientConnected = time()
+        self.core.lastClientConnected = time.time()
         task = self.core.captchaManager.getTaskByID(tid)
         if task:
             task.setResult(result)

@@ -4,11 +4,11 @@
 import os
 import sys
 import time
+import urllib
 
 from datetime import datetime
 from operator import itemgetter, attrgetter
 from sys import getfilesystemencoding
-from urllib import unquote
 
 from bottle import route, static_file, request, response, redirect, error
 
@@ -228,7 +228,7 @@ def downloads():
 @route('/downloads/get/<path:path>')
 @login_required("DOWNLOAD")
 def get_download(path):
-    path = unquote(path).decode("utf8")
+    path = urllib.unquote(path).decode("utf8")
     #@TODO some files can not be downloaded
 
     root = PYLOAD.getConfigValue("general", "download_folder")

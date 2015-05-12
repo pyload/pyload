@@ -3,8 +3,7 @@
 import sys
 import socket
 import errno
-
-from time import sleep
+import time
 
 from thrift.transport.TSocket import TSocket, TServerSocket, TTransportException
 
@@ -38,7 +37,7 @@ class SecureSocketConnection(object):
         try:
             return self.__dict__['connection'].send(buff)
         except WantReadError:
-            sleep(0.1)
+            time.sleep(0.1)
             return self.send(buff)
 
 
@@ -46,7 +45,7 @@ class SecureSocketConnection(object):
         try:
             return self.__dict__['connection'].recv(buff)
         except WantReadError:
-            sleep(0.1)
+            time.sleep(0.1)
             return self.recv(buff)
 
 

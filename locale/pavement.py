@@ -12,9 +12,9 @@ import os
 import sys
 import shutil
 import re
+import urllib
 
 from tempfile import mkdtemp
-from urllib import urlretrieve
 from subprocess import call, Popen, PIPE
 from zipfile import ZipFile
 
@@ -127,7 +127,7 @@ def get_source(options):
     elif pyload.exists():
         pyload.rmtree()
 
-    urlretrieve(options.src, "pyload_src.zip")
+    urllib.urlretrieve(options.src, "pyload_src.zip")
     zip = ZipFile("pyload_src.zip")
     zip.extractall()
     path("pyload_src.zip").remove()

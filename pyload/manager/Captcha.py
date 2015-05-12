@@ -2,9 +2,8 @@
 # @author: RaNaN, mkaay
 
 import threading
+import time
 import traceback
-
-from time import time
 
 from pyload.utils import encode
 
@@ -112,7 +111,7 @@ class CaptchaTask(object):
 
     def setWaiting(self, sec):
         """ let the captcha wait secs for the solution """
-        self.waitUntil = max(time() + sec, self.waitUntil)
+        self.waitUntil = max(time.time() + sec, self.waitUntil)
         self.status = "waiting"
 
 
@@ -141,7 +140,7 @@ class CaptchaTask(object):
 
 
     def timedOut(self):
-        return time() > self.waitUntil
+        return time.time() > self.waitUntil
 
 
     def invalid(self):

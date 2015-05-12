@@ -2,9 +2,9 @@
 # @author: mkaay
 
 import threading
+import time
 
 from heapq import heappop, heappush
-from time import time
 
 
 class AlreadyCalled(Exception):
@@ -42,7 +42,7 @@ class Scheduler(object):
 
     def addJob(self, t, call, args=[], kwargs={}, threaded=True):
         d = Deferred()
-        t += time()
+        t += time.time()
         j = Job(t, call, args, kwargs, d, threaded)
         self.queue.put((t, j))
         return d
@@ -72,7 +72,7 @@ class Scheduler(object):
             if not j:
                 break
             else:
-                if t <= time():
+                if t <= time.time():
                     j.start()
                 else:
                     self.queue.put((t, j))

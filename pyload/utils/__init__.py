@@ -8,12 +8,12 @@ import os
 import re
 import sys
 import time
+import urllib
 
 # from gettext import gettext
 import pylgettext as gettext
 from htmlentitydefs import name2codepoint
 from string import maketrans
-from urllib import unquote
 
 # abstraction layer for json operations
 try:
@@ -63,7 +63,7 @@ def remove_chars(string, repl):
 
 def safe_filename(name):
     """ remove bad chars """
-    name = unquote(name).encode('ascii', 'replace')  #: Non-ASCII chars usually breaks file saving. Replacing.
+    name = urllib.unquote(name).encode('ascii', 'replace')  #: Non-ASCII chars usually breaks file saving. Replacing.
     if os.name == 'nt':
         return remove_chars(name, u'\00\01\02\03\04\05\06\07\10\11\12\13\14\15\16\17\20\21\22\23\24\25\26\27\30\31\32'
                                   u'\33\34\35\36\37/?%*|"<>')
@@ -256,14 +256,14 @@ def versiontuple(v):  #: By kindall (http://stackoverflow.com/a/11887825)
 def load_translation(name, locale, default="en"):
     """ Load language and return its translation object or None """
 
-    from traceback import print_exc
+    import traceback
 
     try:
         gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation(name, os.path.join(pypath, "locale"),
                                           languages=[locale, default], fallback=True)
     except Exception:
-        print_exc()
+        traceback.print_exc()
         return None
     else:
         translation.install(True)

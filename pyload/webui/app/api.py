@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import traceback
+import urllib
 
 from itertools import chain
-from urllib import unquote
 
 from SafeEval import const_eval as literal_eval
 from bottle import route, request, response, HTTPError
@@ -46,7 +46,7 @@ def call_api(func, args=""):
     for x, y in chain(request.GET.iteritems(), request.POST.iteritems()):
         if x == "session":
             continue
-        kwargs[x] = unquote(y)
+        kwargs[x] = urllib.unquote(y)
 
     try:
         return callApi(func, *args, **kwargs)

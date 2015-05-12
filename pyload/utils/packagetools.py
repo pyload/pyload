@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urlparse import urlparse
+import urlparse
 
 
 endings = ("jdeatme", "3gp", "7zip", "7z", "abr", "ac3", "aiff", "aifc", "aif", "ai",
@@ -138,7 +137,7 @@ def parseNames(files):
 
         #@NOTE: fallback: package by hoster
         if not name:
-            name = urlparse(file).netloc
+            name = urlparse.urlparse(file).netloc
             if name:
                 name = pat0.sub("", name)
 

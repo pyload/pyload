@@ -2,13 +2,13 @@
 # @author: RaNaN
 
 import os
+import time
 import traceback
 
 from Queue import Queue
 from copy import copy
 from pprint import pformat
 from sys import exc_info, exc_clear
-from time import sleep, time, strftime, gmtime
 from types import MethodType
 
 from pyload.api import OnlineStatus
@@ -116,7 +116,7 @@ class InfoThread(PluginThread):
 
             self.m.infoResults[self.rid]['ALL_INFO_FETCHED'] = {}
 
-        self.m.timestamp = time() + 5 * 60
+        self.m.timestamp = time.time() + 5 * 60
 
 
     def updateDB(self, plugin, result):

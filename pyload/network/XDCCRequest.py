@@ -4,9 +4,9 @@
 import os
 import socket
 import struct
+import time
 
 from select import select
-from time import time
 
 from pyload.plugin.Plugin import Abort
 
@@ -48,7 +48,7 @@ class XDCCRequest(object):
     def download(self, ip, port, filename, irc, progress=None):
 
         ircbuffer = ""
-        lastUpdate = time()
+        lastUpdate = time.time()
         cumRecvLen = 0
 
         dccsock = self.createSocket()
@@ -85,7 +85,7 @@ class XDCCRequest(object):
 
             cumRecvLen += dataLen
 
-            now = time()
+            now = time.time()
             timespan = now - lastUpdate
             if timespan > 1:
                 self.speed = cumRecvLen / timespan

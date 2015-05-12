@@ -5,10 +5,10 @@ from __future__ import with_statement
 
 import os
 import shutil
+import time
 
 import pycurl
 
-from time import sleep, time
 from logging import getLogger
 
 from pyload.network.HTTPChunk import ChunkInfo, HTTPChunk
@@ -188,7 +188,7 @@ class HTTPDownload(object):
                 if ret != pycurl.E_CALL_MULTI_PERFORM:
                     break
 
-            t = time()
+            t = time.time()
 
             # reduce these calls
             while lastFinishCheck + 0.5 < t:
@@ -275,7 +275,7 @@ class HTTPDownload(object):
             if self.abort:
                 raise Abort
 
-            # sleep(0.003)  #: supress busy waiting - limits dl speed to (1 / x) * buffersize
+            # time.sleep(0.003)  #: supress busy waiting - limits dl speed to (1 / x) * buffersize
             self.m.select(1)
 
         for chunk in self.chunks:

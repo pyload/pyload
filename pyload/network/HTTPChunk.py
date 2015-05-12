@@ -3,12 +3,11 @@
 
 import codecs
 import os
+import re
+import time
 import urllib
 
 import pycurl
-
-from time import sleep
-from re import search
 
 from pyload.network.HTTPRequest import HTTPRequest
 from pyload.utils import fs_encode
@@ -213,7 +212,7 @@ class HTTPChunk(HTTPRequest):
         if not self.range and self.header.endswith("\r\n\r\n"):
             self.parseHeader()
         elif not self.range and buf.startswith("150") and "data connection" in buf.lower():  #: ftp file size parsing
-            size = search(r"(\d+) bytes", buf)
+            size = re.search(r"(\d+) bytes", buf)
             if size:
                 self.p.size = int(size.group(1))
                 self.p.chunkSupport = True
@@ -235,7 +234,7 @@ class HTTPChunk(HTTPRequest):
         self.fp.write(buf)
 
         if self.p.bucket:
-            sleep(self.p.bucket.consumed(size))
+            time.sleep(self.p.bucket.consumed(size))
         else:
             # Avoid small buffers, increasing sleep time slowly if buffer size gets smaller
             # otherwise reduce sleep time percentual (values are based on tests)
@@ -248,7 +247,7 @@ class HTTPChunk(HTTPRequest):
 
             self.lastSize = size
 
-            sleep(self.sleep)
+            time.sleep(self.sleep)
 
         if self.range and self.arrived > self.size:
             return 0  #: close if we have enough data

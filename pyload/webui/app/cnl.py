@@ -4,8 +4,8 @@ from __future__ import with_statement
 
 import os
 import re
+import urllib
 
-from urllib import unquote
 from base64 import standard_b64decode
 from binascii import unhexlify
 
@@ -80,7 +80,7 @@ def addcrypted2():
     crypted = request.forms['crypted']
     jk = request.forms['jk']
 
-    crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
+    crypted = standard_b64decode(urllib.unquote(crypted.replace(" ", "+")))
     if JS:
         jk = "%s f()" % jk
         jk = JS.eval(jk)

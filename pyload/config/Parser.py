@@ -4,9 +4,8 @@ from __future__ import with_statement
 
 import os
 import shutil
+import time
 import traceback
-
-from time import sleep
 
 from pyload.utils import chmod, encode, decode
 
@@ -76,7 +75,7 @@ class ConfigParser(object):
         except Exception:
             if n >= 3:
                 raise
-            sleep(0.3)
+            time.sleep(0.3)
             self.checkVersion(n + 1)
 
 

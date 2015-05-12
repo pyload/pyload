@@ -7,10 +7,10 @@ import gc
 import random
 import string
 import threading
+import time
 import traceback
 
 from math import floor
-from time import time
 
 from pyload.remote.thriftbackend.ThriftClient import ThriftClient, Destination
 
@@ -48,7 +48,7 @@ class APIExerciser(threading.Thread):
         self.setDaemon(True)
         self.core = core
         self.count = 0  #: number of methods
-        self.time = time()
+        self.time = time.time()
 
         self.api = ThriftClient(user=user, password=pw) if thrift else core.api
 
@@ -84,11 +84,11 @@ class APIExerciser(threading.Thread):
 
                 if not sumCalled % 1000:  #: not thread safe
                     self.core.log.info("Exercisers tested %d api calls" % sumCalled)
-                    persec = sumCalled / (time() - self.time)
+                    persec = sumCalled / (time.time() - self.time)
                     self.core.log.info("Approx. %.2f calls per second." % persec)
                     self.core.log.info("Approx. %.2f ms per call." % (1000 / persec))
                     self.core.log.info("Collected garbage: %d" % gc.collect())
-                    # sleep(random() / 500)
+                    # time.sleep(random() / 500)
 
 
     def testAPI(self):

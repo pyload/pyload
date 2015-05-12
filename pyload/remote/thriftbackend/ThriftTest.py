@@ -3,11 +3,7 @@
 import os
 import platform
 import sys
-
-if "64" in platform.machine():
-    sys.path.append(os.path.join(pypath, "lib64"))
-sys.path.append(os.path.join(pypath, "lib", "Python", "Lib"))
-
+import time
 
 from pyload.remote.thriftbackend.thriftgen.pyload import Pyload
 from pyload.remote.thriftbackend.thriftgen.pyload.ttypes import *
@@ -18,15 +14,13 @@ from thrift.transport import TTransport
 
 from Protocol import Protocol
 
-from time import time
-
 import xmlrpclib
 
 
 def bench(f, *args, **kwargs):
-    s = time()
+    s = time.time()
     ret = [f(*args, **kwargs) for _i in xrange(0, 100)]
-    e = time()
+    e = time.time()
     try:
         print "%s: %f s" % (f._Method__name, e-s)
     except Exception:

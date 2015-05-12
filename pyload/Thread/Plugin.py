@@ -5,13 +5,13 @@ from __future__ import with_statement
 
 import os
 import threading
+import time
 import traceback
 
 from Queue import Queue
 from copy import copy
 from pprint import pformat
 from sys import exc_info, exc_clear
-from time import sleep, time, strftime, gmtime
 from types import MethodType
 
 from pyload.api import OnlineStatus
@@ -36,7 +36,7 @@ class PluginThread(threading.Thread):
         :return:
         """
 
-        dump_name = "debug_%s_%s.zip" % (pyfile.pluginname, strftime("%d-%m-%Y_%H-%M-%S"))
+        dump_name = "debug_%s_%s.zip" % (pyfile.pluginname, time.strftime("%d-%m-%Y_%H-%M-%S"))
         dump = self.getDebugDump(pyfile)
 
         try:
@@ -51,7 +51,7 @@ class PluginThread(threading.Thread):
                 except Exception:
                     pass
 
-            info = zipfile.ZipInfo(fs_join(pyfile.pluginname, "debug_Report.txt"), gmtime())
+            info = zipfile.ZipInfo(fs_join(pyfile.pluginname, "debug_Report.txt"), time.gmtime())
             info.external_attr = 0644 << 16L  #: change permissions
 
             zip.writestr(info, dump)

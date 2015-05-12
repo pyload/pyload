@@ -4,8 +4,7 @@
 import os
 import subprocess
 import sys
-
-from urllib import quote
+import urllib
 
 from pyload.utils import encode, decode, uniqify
 
@@ -185,7 +184,7 @@ class CommonEngine(AbstractEngine):
 
 
     def eval(self, script):
-        script = "print(eval(unescape('%s')))" % quote(script)
+        script = "print(eval(unescape('%s')))" % urllib.quote(script)
         args = ["js", "-e", script]
         return self._eval(args)
 
@@ -200,7 +199,7 @@ class NodeEngine(AbstractEngine):
 
 
     def eval(self, script):
-        script = "console.log(eval(unescape('%s')))" % quote(script)
+        script = "console.log(eval(unescape('%s')))" % urllib.quote(script)
         args = ["node", "-e", script]
         return self._eval(args)
 
@@ -225,7 +224,7 @@ class RhinoEngine(AbstractEngine):
 
 
     def eval(self, script):
-        script = "print(eval(unescape('%s')))" % quote(script)
+        script = "print(eval(unescape('%s')))" % urllib.quote(script)
         args = ["java", "-cp", self.path, "org.mozilla.javascript.tools.shell.Main", "-e", script]
         res = decode(self._eval(args))
         try:
@@ -245,7 +244,7 @@ class JscEngine(AbstractEngine):
 
 
     def eval(self, script):
-        script = "print(eval(unescape('%s')))" % quote(script)
+        script = "print(eval(unescape('%s')))" % urllib.quote(script)
         args = [self.path, "-e", script]
         return self._eval(args)
 

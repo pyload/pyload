@@ -2,9 +2,9 @@
 # @author: RaNaN
 
 import Cookie
+import time
 
 from datetime import datetime, timedelta
-from time import time
 
 
 # monkey patch for 32 bit systems
@@ -30,7 +30,7 @@ class CookieJar(Cookie.SimpleCookie):
         # Value of expires should be integer if possible
         # otherwise the cookie won't be used
         if not exp:
-            expires = time() + 3600 * 24 * 180
+            expires = time.time() + 3600 * 24 * 180
         else:
             try:
                 expires = int(exp)

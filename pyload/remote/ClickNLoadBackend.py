@@ -2,9 +2,10 @@
 # @author: RaNaN
 
 import re
+import urllib
+
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from cgi import FieldStorage
-from urllib import unquote
 from base64 import standard_b64decode
 from binascii import unhexlify
 
@@ -130,7 +131,7 @@ class CNLHandler(BaseHTTPRequestHandler):
         crypted = self.get_post("crypted")
         jk = self.get_post("jk")
 
-        crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
+        crypted = standard_b64decode(urllib.unquote(crypted.replace(" ", "+")))
         jk = "%s f()" % jk
         jk = js.eval(jk)
         Key = unhexlify(jk)
