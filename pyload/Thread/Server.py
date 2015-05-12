@@ -31,7 +31,7 @@ class WebServer(threading.Thread):
 
 
     def run(self):
-        import pyload.Webui as webinterface
+        import pyload.webui as webinterface
         global webinterface
 
         reset = False

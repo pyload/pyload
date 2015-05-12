@@ -8,7 +8,7 @@ You can find an overview of some important classes here:
 .. autosummary::
    :toctree: pyload
 
-   pyload.api.Api
+   pyload.Api.Api
    pyload.plugin.Plugin.Base
    pyload.plugin.Plugin.Plugin
    pyload.plugin.Crypter.Crypter

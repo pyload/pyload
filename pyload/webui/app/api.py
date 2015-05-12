@@ -8,7 +8,7 @@ from itertools import chain
 from SafeEval import const_eval as literal_eval
 from bottle import route, request, response, HTTPError
 
-from pyload.api import BaseObject
+from pyload.Api import BaseObject
 from pyload.utils import json
 from pyload.webui import PYLOAD
 from pyload.webui.app.utils import toDict, set_session

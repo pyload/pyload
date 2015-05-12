@@ -14,7 +14,7 @@ from copy import copy
 from pprint import pformat
 from types import MethodType
 
-from pyload.api import OnlineStatus
+from pyload.Api import OnlineStatus
 from pyload.Datatype import PyFile
 from pyload.plugin.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload
 from pyload.utils.packagetools import parseNames

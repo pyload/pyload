@@ -360,11 +360,11 @@ class Core(object):
         self.lastClientConnected = 0
 
         # later imported because they would trigger api import, and remote value not set correctly
-        from pyload.api import Api
+        from pyload.Api import Api
         from pyload.manager.Addon import AddonManager
         from pyload.manager.Thread import ThreadManager
 
-        if pyload.api.activated != self.remote:
+        if pyload.Api.activated != self.remote:
             self.log.warning("Import error: API remote status not correct.")
 
         self.api = Api(self)

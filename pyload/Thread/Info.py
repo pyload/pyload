@@ -11,7 +11,7 @@ from copy import copy
 from pprint import pformat
 from types import MethodType
 
-from pyload.api import OnlineStatus
+from pyload.Api import OnlineStatus
 from pyload.Datatype import PyFile
 from pyload.Thread.Plugin import PluginThread
 

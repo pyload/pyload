@@ -11,7 +11,7 @@ import pycurl
 
 from select import select
 
-from pyload.api import PackageDoesNotExists, FileDoesNotExists
+from pyload.Api import PackageDoesNotExists, FileDoesNotExists
 from pyload.network.RequestFactory import getURL
 from pyload.plugin.Addon import Addon
 from pyload.utils import formatSize

@@ -24,12 +24,12 @@ if activated:
         BaseObject = TBase
 
     except ImportError:
-        from pyload.api.types import *
+        from pyload.Api.types import *
 
         print "Thrift not imported"
 
 else:
-    from pyload.api.types import *
+    from pyload.Api.types import *
 
 # contains function names mapped to their permissions
 # unlisted functions are for admins only

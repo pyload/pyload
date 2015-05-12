@@ -5,7 +5,7 @@ import os
 
 from bottle import request, HTTPError, redirect, ServerAdapter
 
-from pyload.api import has_permission, PERMS, ROLE
+from pyload.Api import has_permission, PERMS, ROLE
 from pyload.webui import env, THEME
 
 
