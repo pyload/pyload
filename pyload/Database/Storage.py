@@ -25,7 +25,7 @@ class StorageMethods(object):
                 return row[0]
         else:
             db.c.execute("SELECT key, value FROM storage WHERE identifier=?", (identifier,))
-            return {row[0]: row[1] for row in db.c}
+            return dict((row[0], row[1]) for row in db.c)
 
 
     @style.queue
