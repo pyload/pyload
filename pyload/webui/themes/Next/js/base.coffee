@@ -165,7 +165,7 @@ submit_captcha = ->
     $('cap_result').set('value', '')
     false
 
-on_captcha_click = (e) -> 
+on_captcha_click = (e) ->
     position = e.target.getPosition()
     x = e.page.x - position.x
     y = e.page.y - position.y

@@ -197,7 +197,7 @@ var Package = new Class({
                     "margin-left": 0
                 }
             });
-            
+
             if (link.icon == 'arrow_right.png'){
                     link.icon = 'glyphicon glyphicon-arrow-right';
             }
@@ -216,7 +216,7 @@ var Package = new Class({
             if (link.icon == 'status_offline.png'){
                     link.icon = 'glyphicon glyphicon-ban-circle';
             }
-            
+
 
             var html = "<span style='' class='child_status'><span style='margin-right: 2px;' class='{icon} sorthandle'></span></span>\n".substitute({"icon": link.icon});
             html += "<span style='font-size: 18px; text-weight:bold'>{name}</span><br /><div class='child_secrow' style='margin-left: 21px; margin-bottom: 7px;'>".substitute({"name": link.name});

@@ -91,7 +91,7 @@ class SettingsUI
 
         form.send()
         e.stop()
-    
+
     submitAccounts: (e) ->
         form = $ "account_form"
         form.set "send", {
