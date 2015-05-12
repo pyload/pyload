@@ -28,7 +28,7 @@ from pyload.plugin.Account import Account
 class SmoozedCom(Account):
     __name    = "SmoozedCom"
     __type    = "account"
-    __version = "0.04"
+    __version = "0.05"
 
     __description = """Smoozed.com account plugin"""
     __license     = "GPLv3"
@@ -36,7 +36,6 @@ class SmoozedCom(Account):
 
 
     def loadAccountInfo(self, user, req):
-        # Get user data from premiumize.me
         status = self.getAccountStatus(user, req)
 
         self.logDebug(status)
@@ -53,7 +52,10 @@ class SmoozedCom(Account):
                     'hosters'    : [hoster['name'] for hoster in status['data']['hoster']]}
 
             if info['validuntil'] < time.time():
-                info['premium'] = False
+                if float(status["data"]["user"].get("user_trial", 0)) > time.time():
+                    info['premium'] = True
+                else:
+                    info['premium'] = False
             else:
                 info['premium'] = True
 

@@ -8,7 +8,7 @@ from pyload.plugin.Account import Account
 class ShareonlineBiz(Account):
     __name    = "ShareonlineBiz"
     __type    = "account"
-    __version = "0.32"
+    __version = "0.33"
 
     __description = """Share-online.biz account plugin"""
     __license     = "GPLv3"
@@ -45,8 +45,11 @@ class ShareonlineBiz(Account):
             validuntil = float(api['expire_date'])
 
             traffic     = float(api['traffic_1d'].split(";")[0])
-            maxtraffic  = max(maxtraffic, traffic)
-            trafficleft = maxtraffic - traffic
+
+            if maxtraffic > traffic:
+                trafficleft = maxtraffic - traffic
+            else:
+                trafficleft = -1
 
         return {'premium'    : premium,
                 'validuntil' : validuntil,

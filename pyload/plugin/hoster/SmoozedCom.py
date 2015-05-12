@@ -7,7 +7,7 @@ from pyload.plugin.internal.MultiHoster import MultiHoster
 class SmoozedCom(MultiHoster):
     __name    = "SmoozedCom"
     __type    = "hoster"
-    __version = "0.04"
+    __version = "0.05"
 
     __pattern = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate
     __config  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -17,7 +17,7 @@ class SmoozedCom(MultiHoster):
     __authors     = [("", "")]
 
 
-    def handle_premium(self, pyfile):
+    def handle_free(self, pyfile):
         # In some cases hostsers do not supply us with a filename at download, so we
         # are going to set a fall back filename (e.g. for freakshare or xfileshare)
         pyfile.name = pyfile.name.split('/').pop()  #: Remove everthing before last slash
