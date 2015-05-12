@@ -3,15 +3,14 @@
 
 import os
 
-from pyload.manager.Remote import BackendBase
+import thrift
 
+from pyload.manager.Remote import BackendBase
 from pyload.remote.thriftbackend.Processor import Processor
 from pyload.remote.thriftbackend.Protocol import ProtocolFactory
 from pyload.remote.thriftbackend.Socket import ServerSocket
 from pyload.remote.thriftbackend.Transport import TransportFactory
 # from pyload.remote.thriftbackend.Transport import TransportFactoryCompressed
-
-from thrift.server import TServer
 
 
 class ThriftBackend(BackendBase):
@@ -35,10 +34,10 @@ class ThriftBackend(BackendBase):
         tfactory = TransportFactory()
         pfactory = ProtocolFactory()
 
-        self.server = TServer.TThreadedServer(processor, transport, tfactory, pfactory)
+        self.server = thrift.server.TServer.TThreadedServer(processor, transport, tfactory, pfactory)
         # self.server = TNonblockingServer.TNonblockingServer(processor, transport, tfactory, pfactory)
 
-        # server = TServer.TThreadPoolServer(processor, transport, tfactory, pfactory)
+        # server = thrift.server.TServer.TThreadPoolServer(processor, transport, tfactory, pfactory)
 
 
     def serve(self):

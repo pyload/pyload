@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
+import passlib
 import re
 import time
-
-from passlib.hash import md5_crypt
 
 from pyload.plugin.Account import Account
 
@@ -51,7 +50,7 @@ class WebshareCz(Account):
             self.wrongPassword()
 
         salt     = re.search('<salt>(.+)</salt>', salt).group(1)
-        password = hashlib.sha1(md5_crypt.encrypt(data['password'], salt=salt)).hexdigest()
+        password = hashlib.sha1(passlib.hash.md5_crypt.encrypt(data['password'], salt=salt)).hexdigest()
         digest   = hashlib.md5(user + ":Webshare:" + password).hexdigest()
 
         login = req.load("https://webshare.cz/api/login/",

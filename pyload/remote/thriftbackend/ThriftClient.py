@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 
+import socket
 import sys
-import thrift
 import traceback
 
-from Protocol import Protocol
-from Socket import Socket
-from socket import error
-from thrift.transport import TTransport
-# from thrift.transport.TZlibTransport import TZlibTransport
+import thrift
+
+from pyload.remote.thriftbackend.Protocol import Protocol
+from pyload.remote.thriftbackend.Socket import Socket
 
 # modules should import ttypes from here, when want to avoid importing API
 from pyload.remote.thriftbackend.thriftgen.pyload import Pyload
 from pyload.remote.thriftbackend.thriftgen.pyload.ttypes import *
 
-ConnectionClosed = TTransport.TTransportException
+
+ConnectionClosed = thrift.transport.TTransport.TTransportException
 
 
 class WrongLogin(Exception):
@@ -36,7 +36,8 @@ class ThriftClient(object):
         self.createConnection(host, port)
         try:
             self.transport.open()
-        except error, e:
+
+        except socket.error, e:
             if e.args and e.args[0] in (111, 10061):
                 raise NoConnection
             else:
@@ -45,7 +46,8 @@ class ThriftClient(object):
 
         try:
             correct = self.client.login(user, password)
-        except error, e:
+
+        except socket.error, e:
             if e.args and e.args[0] == 104:
                 # connection reset by peer, probably wants ssl
                 try:
@@ -74,8 +76,8 @@ class ThriftClient(object):
 
     def createConnection(self, host, port, ssl=False):
         self.socket = Socket(host, port, ssl)
-        self.transport = TTransport.TBufferedTransport(self.socket)
-#        self.transport = TZlibTransport(TTransport.TBufferedTransport(self.socket))
+        self.transport = thrift.transport.TTransport.TBufferedTransport(self.socket)
+        # self.transport = thrift.transport.TZlibTransport.TZlibTransport(thrift.transport.TTransport.TBufferedTransport(self.socket))
 
         protocol = Protocol(self.transport)
         self.client = Pyload.Client(protocol)

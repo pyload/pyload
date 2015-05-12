@@ -4,6 +4,7 @@
 import os
 import sys
 
+import beaker
 import bottle
 import jinja2
 
@@ -81,8 +82,6 @@ translation = gettext.translation("django", os.path.join(PYLOAD_DIR, "locale"),
 translation.install(True)
 env.install_gettext_translations(translation)
 
-from beaker.middleware import SessionMiddleware
-
 session_opts = {
     'session.type': 'file',
     'session.cookie_expires': False,
@@ -90,7 +89,7 @@ session_opts = {
     'session.auto': False
 }
 
-web = StripPathMiddleware(SessionMiddleware(bottle.app(), session_opts))
+web = StripPathMiddleware(beaker.middleware.SessionMiddleware(bottle.app(), session_opts))
 web = GZipMiddleWare(web)
 
 if PREFIX:

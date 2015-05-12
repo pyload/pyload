@@ -7,14 +7,12 @@ import sys
 import time
 import xmlrpclib
 
+import thrift
+
+from pyload.remote.thriftbackend.Protocol import Protocol
+from pyload.remote.thriftbackend.Socket import Socket
 from pyload.remote.thriftbackend.thriftgen.pyload import Pyload
 from pyload.remote.thriftbackend.thriftgen.pyload.ttypes import *
-from Socket import Socket
-
-from thrift import Thrift
-from thrift.transport import TTransport
-
-from Protocol import Protocol
 
 
 def bench(f, *args, **kwargs):
@@ -51,7 +49,7 @@ try:
     transport = Socket('localhost', 7228, False)
 
     # Buffering is critical. Raw sockets are very slow
-    transport = TTransport.TBufferedTransport(transport)
+    transport = thrift.transport.TTransport.TBufferedTransport(transport)
 
     # Wrap in a protocol
     protocol = Protocol(transport)
@@ -84,5 +82,5 @@ try:
     # Close!
     transport.close()
 
-except Thrift.TException, tx:
+except thrift.Thrift.TException, tx:
     print 'ThriftExpection: %s' % tx.message

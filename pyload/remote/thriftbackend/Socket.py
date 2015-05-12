@@ -5,7 +5,8 @@ import socket
 import errno
 import time
 
-from thrift.transport.TSocket import TSocket, TServerSocket, TTransportException
+import thrift
+
 
 WantReadError = Exception  #: overwritten when ssl is used
 
@@ -49,10 +50,10 @@ class SecureSocketConnection(object):
             return self.recv(buff)
 
 
-class Socket(TSocket):
+class Socket(thrift.transport.TSocket.TSocket):
 
     def __init__(self, host='localhost', port=7228, ssl=False):
-        TSocket.__init__(self, host, port)
+        thrift.transport.TSocket.TSocket.__init__(self, host, port)
         self.ssl = ssl
 
 
@@ -81,8 +82,8 @@ class Socket(TSocket):
                 (sys.platform == 'darwin' or sys.platform.startswith('freebsd'))):
                 # freebsd and Mach don't follow POSIX semantic of recv
                 # and fail with ECONNRESET if peer performed shutdown.
-                # See corresponding comment and code in TSocket::read()
-                # in lib/cpp/src/transport/TSocket.cpp.
+                # See corresponding comment and code in thrift.transport.TSocket.TSocket::read()
+                # in lib/cpp/src/transport/thrift.transport.TSocket.TSocket.cpp.
                 self.close()
                 # Trigger the check to raise the END_OF_FILE exception below.
                 buff = ''
@@ -99,11 +100,11 @@ class Socket(TSocket):
                 raise
 
         if not len(buff):
-            raise TTransportException(type=TTransportException.END_OF_FILE, message='TSocket read 0 bytes')
+            raise thrift.transport.TSocket.TTransportException(type=thrift.transport.TSocket.TTransportException.END_OF_FILE, message='thrift.transport.TSocket.TSocket read 0 bytes')
         return buff
 
 
-class ServerSocket(TServerSocket, Socket):
+class ServerSocket(thrift.transport.TSocket.TServerSocket, Socket):
 
     def __init__(self, port=7228, host="0.0.0.0", key="", cert=""):
         self.host = host

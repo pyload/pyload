@@ -1,25 +1,24 @@
 # -*- coding: utf-8 -*-
 
-from thrift.transport.TTransport import TBufferedTransport
-from thrift.transport.TZlibTransport import TZlibTransport
+import thrift
 
 
-class Transport(TBufferedTransport):
+class Transport(thrift.transport.TTransport.TBufferedTransport):
     DEFAULT_BUFFER = 4096
 
 
     def __init__(self, trans, rbuf_size = DEFAULT_BUFFER):
-        TBufferedTransport.__init__(self, trans, rbuf_size)
+        thrift.transport.TTransport.TBufferedTransport.__init__(self, trans, rbuf_size)
         self.handle = trans.handle
         self.remoteaddr = trans.handle.getpeername()
 
 
-class TransportCompressed(TZlibTransport):
+class TransportCompressed(thrift.transport.TZlibTransport.TZlibTransport):
     DEFAULT_BUFFER = 4096
 
 
     def __init__(self, trans, rbuf_size = DEFAULT_BUFFER):
-        TZlibTransport.__init__(self, trans, rbuf_size)
+        thrift.transport.TZlibTransport.TZlibTransport.__init__(self, trans, rbuf_size)
         self.handle = trans.handle
         self.remoteaddr = trans.handle.getpeername()
 

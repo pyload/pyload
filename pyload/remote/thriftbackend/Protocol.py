@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from thrift.protocol import TBinaryProtocol
+import thrift
 
 
-class Protocol(TBinaryProtocol.TBinaryProtocol):
+class Protocol(thrift.protocol.TBinaryProtocol.thrift.protocol.TBinaryProtocol):
 
     def writeString(self, str):
         try:
@@ -26,7 +26,7 @@ class Protocol(TBinaryProtocol.TBinaryProtocol):
         return str
 
 
-class ProtocolFactory(TBinaryProtocol.TBinaryProtocolFactory):
+class ProtocolFactory(thrift.protocol.TBinaryProtocol.thrift.protocol.TBinaryProtocolFactory):
 
     def getProtocol(self, trans):
         prot = Protocol(trans, self.strictRead, self.strictWrite)
