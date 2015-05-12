@@ -5,10 +5,10 @@ from __future__ import with_statement
 
 import __builtin__
 import os
+import subprocess
 import sys
 
 from getpass import getpass
-from subprocess import PIPE, call
 
 from pyload.network.JsEngine import JsEngine
 from pyload.utils import get_console_encoding, load_translation, fs_join, versiontuple
@@ -481,7 +481,7 @@ class SetupAssistant(object):
     def check_prog(self, command):
         pipe = PIPE
         try:
-            call(command, stdout=pipe, stderr=pipe)
+            subprocess.call(command, stdout=pipe, stderr=pipe)
             return True
         except Exception:
             return False

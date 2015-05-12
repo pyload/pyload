@@ -2,10 +2,10 @@
 
 from __future__ import with_statement
 
-import pycurl
+import base64
 import uuid
 
-from base64 import b64encode
+import pycurl
 
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getURL, getRequest
@@ -62,7 +62,7 @@ class ExpertDecoders(Hook):
             result = req.load(self.API_URL,
                               post={'action'     : "upload",
                                     'key'        : self.getConfig('passkey'),
-                                    'file'       : b64encode(data),
+                                    'file'       : base64.b64encode(data),
                                     'gen_task_id': ticket})
         finally:
             req.close()

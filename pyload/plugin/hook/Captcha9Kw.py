@@ -2,10 +2,9 @@
 
 from __future__ import with_statement
 
+import base64
 import re
 import time
-
-from base64 import b64encode
 
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getURL
@@ -121,7 +120,7 @@ class Captcha9Kw(Hook):
                      'source'        : "pyload",
                      'base64'        : "1",
                      'mouse'         : 1 if task.isPositional() else 0,
-                     'file-upload-01': b64encode(data),
+                     'file-upload-01': base64.b64encode(data),
                      'action'        : "usercaptchaupload"}
 
         for _i in xrange(5):

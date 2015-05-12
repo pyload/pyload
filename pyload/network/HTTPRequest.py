@@ -3,13 +3,13 @@
 
 from __future__ import with_statement
 
+import logging
 import urllib
 
 import pycurl
 
 from codecs import getincrementaldecoder, lookup, BOM_UTF8
 from httplib import responses
-from logging import getLogger
 from cStringIO import StringIO
 
 from pyload.plugin.Plugin import Abort, Fail
@@ -59,7 +59,7 @@ class HTTPRequest(object):
         self.c.setopt(pycurl.WRITEFUNCTION, self.write)
         self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
 
-        self.log = getLogger("log")
+        self.log = logging.getLogger("log")
 
 
     def initHandle(self):

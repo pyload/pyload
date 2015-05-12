@@ -2,13 +2,13 @@
 # @author: RaNaN
 
 import os
+import sys
 import time
 import traceback
 
 from Queue import Queue
 from copy import copy
 from pprint import pformat
-from sys import exc_info, exc_clear
 from types import MethodType
 
 from pyload.Thread.Plugin import PluginThread
@@ -98,7 +98,7 @@ class DecrypterThread(PluginThread):
                 self.active = False
                 self.m.core.files.save()
                 self.m.localThreads.remove(self)
-                exc_clear()
+                sys.exc_clear()
 
         if not retry:
             pyfile.delete()

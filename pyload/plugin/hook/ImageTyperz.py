@@ -2,10 +2,10 @@
 
 from __future__ import with_statement
 
-import pycurl
+import base64
 import re
 
-from base64 import b64encode
+import pycurl
 
 from pyload.network.RequestFactory import getURL, getRequest
 from pyload.plugin.Hook import Hook, threaded
@@ -81,7 +81,7 @@ class ImageTyperz(Hook):
                 multipart = False
                 with open(captcha, 'rb') as f:
                     data = f.read()
-                data = b64encode(data)
+                data = base64.b64encode(data)
 
             res = req.load(self.SUBMIT_URL,
                            post={'action': "UPLOADCAPTCHA",

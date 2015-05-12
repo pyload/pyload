@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import base64
 import random
 import re
 import time
 import urlparse
-
-from base64 import b64encode
 
 from pyload.plugin.Captcha import Captcha
 
@@ -176,7 +175,7 @@ class ReCaptcha(Captcha):
                                                             get={'c':token3.group(1), 'k':key},
                                                             cookies=True,
                                                             forceUser=True)
-        response               = b64encode('{"response":"%s"}' % captcha_response)
+        response               = base64.b64encode('{"response":"%s"}' % captcha_response)
 
         self.logDebug("Result: %s" % response)
 

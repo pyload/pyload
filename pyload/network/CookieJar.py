@@ -2,14 +2,13 @@
 # @author: RaNaN
 
 import Cookie
+import datetime
 import time
-
-from datetime import datetime, timedelta
 
 
 # monkey patch for 32 bit systems
 def _getdate(future=0, weekdayname=Cookie._weekdayname, monthname=Cookie._monthname):
-    dt = datetime.now() + timedelta(seconds=int(future))
+    dt = datetime.datetime.now() + datetime.timedelta(seconds=int(future))
     return "%s, %02d %3s %4d %02d:%02d:%02d GMT" % \
            (weekdayname[dt.weekday()], dt.day, monthname[dt.month], dt.year, dt.hour, dt.minute, dt.second)
 

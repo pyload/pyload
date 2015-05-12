@@ -9,13 +9,13 @@ from paver.doctools import cog
 
 import glob
 import os
-import sys
 import shutil
+import sys
 import re
+import subprocess
+import tempfile
 import urllib
 
-from tempfile import mkdtemp
-from subprocess import call, Popen, PIPE
 from zipfile import ZipFile
 
 PROJECT_DIR = path(__file__).dirname()
@@ -105,7 +105,7 @@ def html():
     """Build html documentation"""
     module = path("docs") / "pyload"
     pyload.rmtree()
-    call_task('paver.doctools.html')
+    subprocess.call_task('paver.doctools.html')
 
 
 @task
@@ -182,7 +182,7 @@ def thrift(options):
 
     print "running", cmd
 
-    p = Popen(cmd)
+    p = subprocess.Popen(cmd)
     p.communicate()
 
     (outdir / "thriftgen").rmtree()
@@ -200,8 +200,8 @@ def compile_js():
     root = path("pyload") / "web" / "media" / "js"
     for f in root.glob("*.coffee"):
         print "generate", f
-        coffee = Popen(["coffee", "-cbs"], stdin=open(f, "rb"), stdout=PIPE)
-        yui = Popen(["yuicompressor", "--type", "js"], stdin=coffee.stdout, stdout=PIPE)
+        coffee = subprocess.Popen(["coffee", "-cbs"], stdin=open(f, "rb"), stdout=PIPE)
+        yui = subprocess.Popen(["yuicompressor", "--type", "js"], stdin=coffee.stdout, stdout=PIPE)
         coffee.stdout.close()
         content = yui.communicate()[0]
         with open(root / f.name.replace(".coffee", ".js"), "wb") as js:
@@ -257,7 +257,7 @@ def generate_locale():
 
 def upload_translations(options):
     """ Uploads the locale files to translation server """
-    tmp = path(mkdtemp())
+    tmp = path(tempfile.mkdtemp())
 
     shutil.shutil.copy('locale/crowdin.yaml', tmp)
     os.mkdir(tmp / 'pyLoad')
@@ -272,7 +272,7 @@ def upload_translations(options):
     with open(config, 'wb') as f:
         f.write(content)
 
-    call(['crowdin-cli', '-c', config, 'upload', 'source'])
+    subprocess.call(['crowdin-cli', '-c', config, 'upload', 'source'])
 
     shutil.rmtree(tmp)
 
@@ -287,7 +287,7 @@ def upload_translations(options):
 
 def download_translations(options):
     """ Downloads the translated files from translation server """
-    tmp = path(mkdtemp())
+    tmp = path(tempfile.mkdtemp())
 
     shutil.shutil.copy('locale/crowdin.yaml', tmp)
     os.mkdir(tmp / 'pyLoad')
@@ -302,7 +302,7 @@ def download_translations(options):
     with open(config, 'wb') as f:
         f.write(content)
 
-    call(['crowdin-cli', '-c', config, 'download'])
+    subprocess.call(['crowdin-cli', '-c', config, 'download'])
 
     for language in (tmp / 'pyLoad').listdir():
         if not language.isdir():
@@ -327,12 +327,12 @@ def compile_translations():
 
         for f in glob.glob(language / 'LC_MESSAGES' / '*.po'):
             print "Compiling %s" % f
-            call(['msgfmt', '-o', f.replace('.po', '.mo'), f])
+            subprocess.call(['msgfmt', '-o', f.replace('.po', '.mo'), f])
 
 
 @task
 def tests():
-    call(["nosetests2"])
+    subprocess.call(["nosetests2"])
 
 
 @task
@@ -341,7 +341,7 @@ def virtualenv(options):
     if path(options.dir).exists():
         return
 
-    call([options.virtual, "--no-site-packages", "--python", options.python, options.dir])
+    subprocess.call([options.virtual, "--no-site-packages", "--python", options.python, options.dir])
     print "$ source %s/bin/activate" % options.dir
 
 
@@ -358,7 +358,7 @@ def clean_env():
 def env_install():
     """Install pyLoad into the virtualenv"""
     venv = options.virtualenv
-    call([path(venv.dir) / "bin" / "easy_install", "."])
+    subprocess.call([path(venv.dir) / "bin" / "easy_install", "."])
 
 
 @task
@@ -398,7 +398,7 @@ def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
         if p:
             f.write(walk_trans(path(p), excludes, endings))
 
-    call(["xgettext", "--files-from=includes.txt", "--default-domain=%s" % domain] + xargs + xxargs)
+    subprocess.call(["xgettext", "--files-from=includes.txt", "--default-domain=%s" % domain] + xargs + xxargs)
 
     # replace charset und move file
     with open("%s.po" % domain, "rb") as f:

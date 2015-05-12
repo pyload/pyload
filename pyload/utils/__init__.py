@@ -6,6 +6,7 @@
 import bitmath
 import os
 import re
+import string
 import sys
 import time
 import urllib
@@ -13,7 +14,6 @@ import urllib
 # from gettext import gettext
 import pylgettext as gettext
 from htmlentitydefs import name2codepoint
-from string import maketrans
 
 # abstraction layer for json operations
 try:
@@ -56,7 +56,7 @@ def remove_chars(string, repl):
         return string
     else:
         if type(string) == str:
-            return string.translate(maketrans("", ""), repl)
+            return string.translate(string.maketrans("", ""), repl)
         elif type(string) == unicode:
             return string.translate(dict((ord(s), None) for s in repl))
 

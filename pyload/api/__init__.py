@@ -3,12 +3,11 @@
 
 from __future__ import with_statement
 
+import base64
 import os
 import re
 import time
 import urlparse
-
-from base64 import standard_b64encode
 
 from pyload.Datatype import PyFile
 from pyload.utils.packagetools import parseNames
@@ -821,7 +820,7 @@ class Api(Iface):
         if task:
             task.setWatingForUser(exclusive=exclusive)
             data, type, result = task.getCaptcha()
-            ctask = CaptchaTask(int(task.id), standard_b64encode(data), type, result)
+            ctask = CaptchaTask(int(task.id), base64.standard_b64encode(data), type, result)
             return ctask
         return CaptchaTask(-1)
 

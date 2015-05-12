@@ -9,7 +9,6 @@ import traceback
 import urllib
 
 from itertools import chain
-from sys import version_info
 
 from SafeEval import const_eval as literal_eval
 

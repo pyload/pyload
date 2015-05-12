@@ -4,6 +4,7 @@
 from __future__ import with_statement
 
 import os
+import sys
 import threading
 import time
 import traceback
@@ -11,7 +12,6 @@ import traceback
 from Queue import Queue
 from copy import copy
 from pprint import pformat
-from sys import exc_info, exc_clear
 from types import MethodType
 
 from pyload.api import OnlineStatus
@@ -74,7 +74,7 @@ class PluginThread(threading.Thread):
         dump = "pyLoad %s Debug Report of %s %s \n\nTRACEBACK:\n %s \n\nFRAMESTACK:\n" % (
             self.m.core.api.getServerVersion(), pyfile.pluginname, pyfile.plugin.__version, traceback.format_exc())
 
-        tb = exc_info()[2]
+        tb = sys.exc_info()[2]
         stack = []
         while tb:
             stack.append(tb.tb_frame)

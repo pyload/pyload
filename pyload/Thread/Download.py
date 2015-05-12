@@ -2,6 +2,7 @@
 # @author: RaNaN
 
 import os
+import sys
 import time
 import traceback
 
@@ -10,7 +11,6 @@ import pycurl
 from Queue import Queue
 from copy import copy
 from pprint import pformat
-from sys import exc_info, exc_clear
 from types import MethodType
 
 from pyload.Thread.Plugin import PluginThread
@@ -193,7 +193,7 @@ class DownloadThread(PluginThread):
             finally:
                 self.m.core.files.save()
                 pyfile.checkIfProcessed()
-                exc_clear()
+                sys.exc_clear()
 
             # pyfile.plugin.req.clean()
 

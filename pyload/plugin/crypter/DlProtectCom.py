@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import base64
 import re
 import time
-
-from base64 import urlsafe_b64encode
 
 from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 
@@ -42,7 +41,7 @@ class DlProtectCom(SimpleCrypter):
 
         else:
             mstime  = int(round(time.time() * 1000))
-            b64time = "_" + urlsafe_b64encode(str(mstime)).replace("=", "%3D")
+            b64time = "_" + base64.urlsafe_b64encode(str(mstime)).replace("=", "%3D")
 
             post_req.update({'i'         : b64time,
                              'submitform': "Decrypt+link"})

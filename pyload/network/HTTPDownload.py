@@ -3,13 +3,12 @@
 
 from __future__ import with_statement
 
+import logging
 import os
 import shutil
 import time
 
 import pycurl
-
-from logging import getLogger
 
 from pyload.network.HTTPChunk import ChunkInfo, HTTPChunk
 from pyload.network.HTTPRequest import BadHeader
@@ -39,7 +38,7 @@ class HTTPDownload(object):
 
         self.chunks = []
 
-        self.log = getLogger("log")
+        self.log = logging.getLogger("log")
 
         try:
             self.info = ChunkInfo.load(filename)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from logging import getLogger
+import logging
 
 from pyload.network.HTTPRequest import HTTPRequest
 from pyload.network.HTTPDownload import HTTPDownload
@@ -11,7 +11,7 @@ class Browser(object):
 
 
     def __init__(self, bucket=None, options={}):
-        self.log = getLogger("log")
+        self.log = logging.getLogger("log")
 
         self.options = options  #: holds pycurl options
         self.bucket = bucket

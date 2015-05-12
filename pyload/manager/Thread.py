@@ -4,14 +4,12 @@
 import os
 import random
 import re
+import subprocess
 import threading
 import time
 import traceback
 
 import pycurl
-
-from random import choice
-from subprocess import Popen
 
 from pyload.Datatype import PyFile
 from pyload.Thread import DecrypterThread, DownloadThread, InfoThread
@@ -181,7 +179,7 @@ class ThreadManager(object):
         self.core.log.debug("Old IP: %s" % ip)
 
         try:
-            reconn = Popen(self.core.config.get("reconnect", "method"), bufsize=-1, shell=True)  # , stdout=subprocess.PIPE)
+            reconn = subprocess.Popen(self.core.config.get("reconnect", "method"), bufsize=-1, shell=True)  # , stdout=subprocess.PIPE)
         except Exception:
             self.core.log.warning(_("Failed executing reconnect script!"))
             self.core.config.set("reconnect", "activated", False)

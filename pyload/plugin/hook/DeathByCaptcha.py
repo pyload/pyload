@@ -2,11 +2,11 @@
 
 from __future__ import with_statement
 
-import pycurl
+import base64
 import re
 import time
 
-from base64 import b64encode
+import pycurl
 
 from pyload.utils import json_loads
 from pyload.network.HTTPRequest import BadHeader
@@ -139,7 +139,7 @@ class DeathByCaptcha(Hook):
             multipart = False
             with open(captcha, 'rb') as f:
                 data = f.read()
-            data = "base64:" + b64encode(data)
+            data = "base64:" + base64.b64encode(data)
 
         res = self.api_response("captcha", {"captchafile": data}, multipart)
 

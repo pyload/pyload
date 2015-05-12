@@ -4,8 +4,8 @@
 
 from __future__ import with_statement
 
+import __builtin__
 import logging
-import logging.handlers
 import os
 import signal
 import subprocess
@@ -13,14 +13,12 @@ import sys
 import time
 import traceback
 
-import __builtin__
 import pyload
 import pyload.utils.pylgettext as gettext
 
 from codecs import getwriter
 from getopt import getopt, GetoptError
 from imp import find_module
-from sys import argv, executable, exit
 
 from pyload import remote
 from pyload.Database import DatabaseBackend, FileHandler
@@ -63,7 +61,7 @@ class Core(object):
                 for option, argument in options:
                     if option in ("-v", "--version"):
                         print "pyLoad", pyload.__version__
-                        exit()
+                        sys.exit()
                     elif option in ("-p", "--pidfile"):
                         self.pidfile = argument
                     elif option == "--daemon":
@@ -72,7 +70,7 @@ class Core(object):
                         self.deleteLinks = True
                     elif option in ("-h", "--help"):
                         self.print_help()
-                        exit()
+                        sys.exit()
                     elif option in ("-d", "--debug"):
                         self.doDebug = True
                     elif option in ("-u", "--user"):
@@ -81,42 +79,42 @@ class Core(object):
                         self.config = ConfigParser()
                         s = Setup(self.config)
                         s.set_user()
-                        exit()
+                        sys.exit()
                     elif option in ("-s", "--setup"):
                         from pyload.config.Setup import SetupAssistant as Setup
 
                         self.config = ConfigParser()
                         s = Setup(self.config)
                         s.start()
-                        exit()
+                        sys.exit()
                     elif option == "--changedir":
                         from pyload.config.Setup import SetupAssistant as Setup
 
                         self.config = ConfigParser()
                         s = Setup(self.config)
                         s.conf_path(True)
-                        exit()
+                        sys.exit()
                     elif option in ("-q", "--quit"):
                         self.quitInstance()
-                        exit()
+                        sys.exit()
                     elif option == "--status":
                         pid = self.isAlreadyRunning()
                         if self.isAlreadyRunning():
                             print pid
-                            exit(0)
+                            sys.exit(0)
                         else:
                             print "false"
-                            exit(1)
+                            sys.exit(1)
                     elif option == "--clean":
                         self.cleanTree()
-                        exit()
+                        sys.exit()
                     elif option == "--no-remote":
                         self.remote = False
 
             except GetoptError:
                 print 'Unknown Argument(s) "%s"' % " ".join(argv[1:])
                 self.print_help()
-                exit()
+                sys.exit()
 
 
     def print_help(self):
@@ -267,7 +265,7 @@ class Core(object):
             if not res:
                 reshutil.move("pyload.conf")
 
-            exit()
+            sys.exit()
 
         try: signal.signal(signal.SIGQUIT, self.quit)
         except Exception:
@@ -286,7 +284,7 @@ class Core(object):
         pid = self.isAlreadyRunning()
         if pid:
             print _("pyLoad already running with pid %s") % pid
-            exit()
+            sys.exit()
 
         if os.name != "nt" and self.config.get("general", "renice"):
             os.system("renice %d %d" % (self.config.get("general", "renice"), os.getpid()))
@@ -455,7 +453,7 @@ class Core(object):
 
 
     def init_logger(self, level):
-        self.log = logging.getLogger("log")
+        self.log = logging.logging.getLogger("log")
         self.log.setLevel(level)
 
         date_fmt = "%Y-%m-%d %H:%M:%S"
@@ -531,7 +529,7 @@ class Core(object):
         except Exception:
             if essential:
                 self.log.info(_("Install %s") % legend)
-                exit()
+                sys.exit()
 
             return False
 
@@ -571,7 +569,7 @@ class Core(object):
                     else:
                         print _("could not create %(desc)s: %(name)s") % {"desc": description, "name": tmp_name}
                     if essential:
-                        exit()
+                        sys.exit()
 
 
     def isClientConnected(self):

@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import array
+import base64
 import os
 # import pycurl
 import random
 import re
-
-from base64 import standard_b64decode
 
 from Crypto.Cipher import AES
 from Crypto.Util import Counter
@@ -64,7 +63,7 @@ class MegaCoNz(Hoster):
 
     def b64_decode(self, data):
         data = data.replace("-", "+").replace("_", "/")
-        return standard_b64decode(data + '=' * (-len(data) % 4))
+        return base64.standard_b64decode(data + '=' * (-len(data) % 4))
 
 
     def getCipherKey(self, key):
