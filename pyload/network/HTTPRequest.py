@@ -3,12 +3,12 @@
 
 from __future__ import with_statement
 
+import codecs
 import logging
 import urllib
 
 import pycurl
 
-from codecs import getincrementaldecoder, lookup, BOM_UTF8
 from httplib import responses
 from cStringIO import StringIO
 
@@ -267,10 +267,10 @@ class HTTPRequest(object):
 
         try:
             # self.log.debug("Decoded %s" % encoding )
-            if lookup(encoding).name == 'utf-8' and rep.startswith(BOM_UTF8):
+            if codecs.lookup(encoding).name == 'utf-8' and rep.startswith(codecs.BOM_UTF8):
                 encoding = 'utf-8-sig'
 
-            decoder = getincrementaldecoder(encoding)("replace")
+            decoder = codecs.getincrementaldecoder(encoding)("replace")
             rep = decoder.decode(rep, True)
 
             # TODO: html_unescape as default

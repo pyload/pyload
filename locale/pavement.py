@@ -15,8 +15,8 @@ import re
 import subprocess
 import tempfile
 import urllib
+import zipfile
 
-from zipfile import ZipFile
 
 PROJECT_DIR = path(__file__).dirname()
 sys.path.append(PROJECT_DIR)
@@ -128,7 +128,7 @@ def get_source(options):
         pyload.rmtree()
 
     urllib.urlretrieve(options.src, "pyload_src.zip")
-    zip = ZipFile("pyload_src.zip")
+    zip = zipfile.ZipFile("pyload_src.zip")
     zip.extractall()
     path("pyload_src.zip").remove()
 

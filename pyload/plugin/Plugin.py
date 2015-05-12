@@ -4,14 +4,13 @@ from __future__ import with_statement
 
 import traceback
 
+import itertools
 import os
 import random
 import re
 import time
 import urllib
 import urlparse
-
-from itertools import islice
 
 if os.name != "nt":
     from pwd import getpwnam
@@ -22,10 +21,10 @@ from pyload.utils import fs_decode, fs_encode, safe_filename, fs_join, encode
 
 def chunks(iterable, size):
     it = iter(iterable)
-    item = list(islice(it, size))
+    item = list(itertools.islice(it, size))
     while item:
         yield item
-        item = list(islice(it, size))
+        item = list(itertools.islice(it, size))
 
 
 class Abort(Exception):

@@ -8,9 +8,7 @@ import sys
 import traceback
 import urllib
 
-from itertools import chain
-
-from SafeEval import const_eval as literal_eval
+import SafeEval
 
 
 class PluginManager(object):
@@ -153,7 +151,7 @@ class PluginManager(object):
                 config = self.CONFIG.findall(content)
                 if config:
                     try:
-                        config = literal_eval(config[0].strip().replace("\n", "").replace("\r", ""))
+                        config = SafeEval.const_eval(config[0].strip().replace("\n", "").replace("\r", ""))
                         desc = self.DESC.findall(content)
                         desc = desc[0][1] if desc else ""
 

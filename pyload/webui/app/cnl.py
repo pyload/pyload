@@ -3,13 +3,12 @@
 from __future__ import with_statement
 
 import base64
+import binascii
 import os
 import re
 import urllib
 
-from binascii import unhexlify
-
-from bottle import route, request, HTTPError
+import bottle
 
 from pyload.webui import PYLOAD, DL_ROOT, JS
 
@@ -28,20 +27,20 @@ def local_check(function):
            or request.environ.get("HTTP_HOST", "0") in ("127.0.0.1:9666", "localhost:9666"):
             return function(*args, **kwargs)
         else:
-            return HTTPError(403, "Forbidden")
+            return bottle.HTTPError(403, "Forbidden")
 
     return _view
 
 
-@route('/flash')
-@route('/flash/<id>')
-@route('/flash', method='POST')
+@bottle.route('/flash')
+@bottle.route('/flash/<id>')
+@bottle.route('/flash', method='POST')
 @local_check
 def flash(id="0"):
     return "JDownloader\r\n"
 
 
-@route('/flash/add', method='POST')
+@bottle.route('/flash/add', method='POST')
 @local_check
 def add(request):
     package = request.POST.get('referer', None)
@@ -55,7 +54,7 @@ def add(request):
     return ""
 
 
-@route('/flash/addcrypted', method='POST')
+@bottle.route('/flash/addcrypted', method='POST')
 @local_check
 def addcrypted():
     package = request.forms.get('referer', 'ClickNLoad Package')
@@ -68,12 +67,12 @@ def addcrypted():
     try:
         PYLOAD.addPackage(package, [dlc_path], 0)
     except Exception:
-        return HTTPError()
+        return bottle.HTTPError()
     else:
         return "success\r\n"
 
 
-@route('/flash/addcrypted2', method='POST')
+@bottle.route('/flash/addcrypted2', method='POST')
 @local_check
 def addcrypted2():
     package = request.forms.get("source", None)
@@ -99,7 +98,7 @@ def addcrypted2():
                 print "Could not decrypt key, please install py-spidermonkey or ossp-js"
 
     try:
-        Key = unhexlify(jk)
+        Key = binascii.unhexlify(jk)
     except Exception:
         print "Could not decrypt key, please install py-spidermonkey or ossp-js"
         return "failed"
@@ -122,14 +121,14 @@ def addcrypted2():
         return "success\r\n"
 
 
-@route('/flashgot_pyload')
-@route('/flashgot_pyload', method='POST')
-@route('/flashgot')
-@route('/flashgot', method='POST')
+@bottle.route('/flashgot_pyload')
+@bottle.route('/flashgot_pyload', method='POST')
+@bottle.route('/flashgot')
+@bottle.route('/flashgot', method='POST')
 @local_check
 def flashgot():
     if request.environ['HTTP_REFERER'] not in ("http://localhost:9666/flashgot", "http://127.0.0.1:9666/flashgot"):
-        return HTTPError()
+        return bottle.HTTPError()
 
     autostart = int(request.forms.get('autostart', 0))
     package = request.forms.get('package', None)
@@ -144,7 +143,7 @@ def flashgot():
     return ""
 
 
-@route('/crossdomain.xml')
+@bottle.route('/crossdomain.xml')
 @local_check
 def crossdomain():
     rep = "<?xml version=\"1.0\"?>\n"
@@ -155,7 +154,7 @@ def crossdomain():
     return rep
 
 
-@route('/flash/checkSupportForUrl')
+@bottle.route('/flash/checkSupportForUrl')
 @local_check
 def checksupport():
     url = request.GET.get("url")
@@ -165,7 +164,7 @@ def checksupport():
     return str(supported).lower()
 
 
-@route('/jdcheck.js')
+@bottle.route('/jdcheck.js')
 @local_check
 def jdcheck():
     rep = "jdownloader=true;\n"

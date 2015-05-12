@@ -4,6 +4,7 @@
 """ Store all useful functions here """
 
 import bitmath
+import htmlentitydefs
 import os
 import re
 import string
@@ -11,18 +12,10 @@ import sys
 import time
 import urllib
 
-# from gettext import gettext
-import pylgettext as gettext
-from htmlentitydefs import name2codepoint
+import pyload.utils.pylgettext as gettext
 
 # abstraction layer for json operations
-try:
-    import simplejson as json
-except ImportError:
-    import json
-
-json_loads = json.loads
-json_dumps = json.dumps
+from bottle import json_loads
 
 
 def os.chmod(*args):
@@ -232,7 +225,7 @@ def fixup(m):
         # named entity
         try:
             name = text[1:-1]
-            text = unichr(name2codepoint[name])
+            text = unichr(htmlentitydefs.name2codepoint[name])
         except KeyError:
             pass
 

@@ -2,12 +2,12 @@
 # @author: RaNaN
 
 import base64
+import binascii
 import re
 import urllib
 
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from cgi import FieldStorage
-from binascii import unhexlify
 
 try:
     from Crypto.Cipher import AES
@@ -134,7 +134,7 @@ class CNLHandler(BaseHTTPRequestHandler):
         crypted = base64.standard_b64decode(urllib.unquote(crypted.replace(" ", "+")))
         jk = "%s f()" % jk
         jk = js.eval(jk)
-        Key = unhexlify(jk)
+        Key = binascii.unhexlify(jk)
         IV = Key
 
         obj = AES.new(Key, AES.MODE_CBC, IV)

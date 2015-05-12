@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import APIExerciser
+import nose
 
-from nose.tools import nottest
+import APIExerciser
 
 
 class TestApi(object):
@@ -18,7 +18,7 @@ class TestApi(object):
     # takes really long, only test when needed
 
 
-    @nottest
+    @nose.tools.nottest
     def test_random(self):
         for _i in xrange(0, 100):
             self.api.testAPI()

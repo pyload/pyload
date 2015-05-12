@@ -2,11 +2,10 @@
 # @author: jeix
 
 import os
+import select
 import socket
 import struct
 import time
-
-from select import select
 
 from pyload.plugin.Plugin import Abort
 
@@ -110,7 +109,7 @@ class XDCCRequest(object):
 
 
     def _keepAlive(self, sock, *readbuffer):
-        fdset = select([sock], [], [], 0)
+        fdset = select.select([sock], [], [], 0)
         if sock not in fdset[0]:
             return
 

@@ -2,16 +2,15 @@
 # -*- coding: utf-8 -*-
 
 import os
+import setuptools
 import sys
 
 import pyload
 
-from setuptools import setup
-
 
 PROJECT_DIR = path.abspath(path.join(__file__, ".."))
 
-setup(
+setuptools.setup(
     name="pyload",
 
     version=pyload.__version__,

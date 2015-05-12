@@ -51,11 +51,11 @@ sys.path.append(os.path.join(pypath, "lib", "Python", "Lib"))
 sys.path.append(os.path.join(pypath, "lib"))
 
 
-from codecs import getwriter
+import codecs
 
 from pyload.utils import get_console_encoding
 
-sys.stdout = getwriter(get_console_encoding(sys.stdout.encoding))(sys.stdout, errors="replace")
+sys.stdout = codecs.getwriter(get_console_encoding(sys.stdout.encoding))(sys.stdout, errors="replace")
 
 
 if homedir == "~" and os.name == "nt":

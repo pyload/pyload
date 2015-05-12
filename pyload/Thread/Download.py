@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
+import Queue
 import os
 import sys
 import time
@@ -8,8 +9,6 @@ import traceback
 
 import pycurl
 
-from Queue import Queue
-from copy import copy
 from pprint import pformat
 from types import MethodType
 
@@ -24,7 +23,7 @@ class DownloadThread(PluginThread):
         """Constructor"""
         PluginThread.__init__(self, manager)
 
-        self.queue = Queue()  #: job queue
+        self.queue = Queue.Queue()  #: job queue
         self.active = False
 
         self.start()

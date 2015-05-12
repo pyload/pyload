@@ -5,6 +5,9 @@
 from __future__ import with_statement
 
 import __builtin__
+import codecs
+import getopt
+import imp
 import logging
 import os
 import signal
@@ -15,10 +18,6 @@ import traceback
 
 import pyload
 import pyload.utils.pylgettext as gettext
-
-from codecs import getwriter
-from getopt import getopt, GetoptError
-from imp import find_module
 
 from pyload import remote
 from pyload.Database import DatabaseBackend, FileHandler
@@ -53,7 +52,7 @@ class Core(object):
 
         if len(argv) > 1:
             try:
-                options, args = getopt(argv[1:], 'vchdusqp:',
+                options, args = getopt.getopt(argv[1:], 'vchdusqp:',
                     ["version", "clear", "clean", "help", "debug", "user",
                      "setup", "configdir=", "changedir", "daemon",
                      "quit", "status", "no-remote","pidfile="])
@@ -111,7 +110,7 @@ class Core(object):
                     elif option == "--no-remote":
                         self.remote = False
 
-            except GetoptError:
+            except getopt.GetoptError:
                 print 'Unknown Argument(s) "%s"' % " ".join(argv[1:])
                 self.print_help()
                 sys.exit()
@@ -520,7 +519,7 @@ class Core(object):
         """check wether needed tools are installed"""
         try:
             if python:
-                find_module(check_name)
+                imp.find_module(check_name)
             else:
                 pipe = subprocess.PIPE
                 subprocess.Popen(check_name, stdout=pipe, stderr=pipe)

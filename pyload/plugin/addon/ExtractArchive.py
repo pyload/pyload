@@ -51,7 +51,6 @@ try:
 except ImportError:
     pass
 
-from copy import copy
 if os.name != "nt":
     from grp import getgrnam
     from pwd import getpwnam
@@ -145,7 +144,7 @@ class ExtractArchive(Addon):
 
 
     def setup(self):
-        self.queue  = ArchiveQueue(self, "Queue")
+        self.queue  = ArchiveQueue(self, "Queue.Queue")
         self.failed = ArchiveQueue(self, "Failed")
 
         self.interval    = 60

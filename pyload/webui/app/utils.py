@@ -3,7 +3,7 @@
 
 import os
 
-from bottle import request, HTTPError, redirect, ServerAdapter
+import bottle
 
 from pyload.Api import has_permission, PERMS, ROLE
 from pyload.webui import env, THEME
@@ -97,16 +97,16 @@ def login_required(perm=None):
                     perms = parse_permissions(s)
                     if perm not in perms or not perms[perm]:
                         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                            return HTTPError(403, "Forbidden")
+                            return bottle.HTTPError(403, "Forbidden")
                         else:
-                            return redirect("/nopermission")
+                            return bottle.redirect("/nopermission")
 
                 return func(*args, **kwargs)
             else:
                 if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                    return HTTPError(403, "Forbidden")
+                    return bottle.HTTPError(403, "Forbidden")
                 else:
-                    return redirect("/login")
+                    return bottle.redirect("/login")
 
         return _view
 

@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import re
+import select
 import socket
 import struct
 import sys
 import time
-
-from select import select
 
 from pyload.plugin.Hoster import Hoster
 from pyload.utils import fs_join
@@ -120,7 +119,7 @@ class Xdcc(Hoster):
                     sock.close()
                     self.fail(_("XDCC Bot did not answer"))
 
-            fdset = select([sock], [], [], 0)
+            fdset = select.select([sock], [], [], 0)
             if sock not in fdset[0]:
                 continue
 

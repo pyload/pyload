@@ -4,13 +4,12 @@
 from __future__ import with_statement
 
 import gc
+import math
 import random
 import string
 import threading
 import time
 import traceback
-
-from math import floor
 
 from pyload.remote.thriftbackend.ThriftClient import ThriftClient, Destination
 
@@ -116,7 +115,7 @@ class APIExerciser(threading.Thread):
         name = "".join(random.sample(string.ascii_letters, 10))
         urls = createURLs()
 
-        self.api.addPackage(name, urls, random.choice([Destination.Queue, Destination.Collector]))
+        self.api.addPackage(name, urls, random.choice([Destination.Queue.Queue, Destination.Collector]))
 
 
     def deleteFiles(self):
@@ -139,7 +138,7 @@ class APIExerciser(threading.Thread):
 
         pids = [p.pid for p in info]
         if pids:
-            pids = random.sample(pids, random.randint(1, max(floor(len(pids) / 2.5), 1)))
+            pids = random.sample(pids, random.randint(1, max(math.floor(len(pids) / 2.5), 1)))
             self.api.deletePackages(pids)
 
 

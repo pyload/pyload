@@ -8,11 +8,10 @@ try:
 except Exception:
     import sqlite3
 
+import Queue
 import shutil
 import threading
 import traceback
-
-from Queue import Queue
 
 from pyload.utils import chmod
 
@@ -122,7 +121,7 @@ class DatabaseBackend(threading.Thread):
         self.setDaemon(True)
         self.core = core
 
-        self.jobs = Queue()
+        self.jobs = Queue.Queue()
 
         self.setuplock = threading.Event()
 

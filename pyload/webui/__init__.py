@@ -3,26 +3,26 @@
 
 import os
 import sys
+
+import bottle
+
 import pyload.utils.pylgettext as gettext
+
+from jinja2 import Environment, FileSystemLoader, PrefixLoader, FileSystemBytecodeCache
+
+from pyload.Thread import Server
+from pyload.Webui.middlewares import StripPathMiddleware, GZipMiddleWare, PrefixMiddleware
+from pyload.network.JsEngine import JsEngine
+from pyload.utils import decode, formatSize
+
 
 THEME_DIR  = os.path.abspath(os.path.join(dirname(__file__), "themes"))
 PYLOAD_DIR = os.path.abspath(os.path.join(THEME_DIR, "..", "..", ".."))
 
 sys.path.append(PYLOAD_DIR)
 
-from pyload.utils import decode, formatSize
-
-import bottle
-from bottle import run, app
-
-from jinja2 import Environment, FileSystemLoader, PrefixLoader, FileSystemBytecodeCache
-from middlewares import StripPathMiddleware, GZipMiddleWare, PrefixMiddleware
-
 SETUP = None
 PYLOAD = None
-
-from pyload.Thread import Server
-from pyload.network.JsEngine import JsEngine
 
 if not Server.core:
     if Server.setup:
@@ -91,7 +91,7 @@ session_opts = {
     'session.auto': False
 }
 
-web = StripPathMiddleware(SessionMiddleware(app(), session_opts))
+web = StripPathMiddleware(SessionMiddleware(bottle.app(), session_opts))
 web = GZipMiddleWare(web)
 
 if PREFIX:
@@ -101,11 +101,11 @@ import pyload.webui.app
 
 
 def run_auto(host="0.0.0.0", port="8000"):
-    run(app=web, host=host, port=port, server="auto", quiet=True)
+    bottle.run(app=web, host=host, port=port, server="auto", quiet=True)
 
 
 def run_lightweight(host="0.0.0.0", port="8000"):
-    run(app=web, host=host, port=port, server="bjoern", quiet=True)
+    bottle.run(app=web, host=host, port=port, server="bjoern", quiet=True)
 
 
 def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
@@ -119,10 +119,8 @@ def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
 
     from pyload.webui.app.utils import CherryPyWSGI
 
-    run(app=web, host=host, port=port, server=CherryPyWSGI, quiet=True)
+    bottle.run(app=web, host=host, port=port, server=CherryPyWSGI, quiet=True)
 
 
 def run_fcgi(host="0.0.0.0", port="8000"):
-    from bottle import FlupFCGIServer
-
-    run(app=web, host=host, port=port, server=FlupFCGIServer, quiet=True)
+    bottle.run(app=web, host=host, port=port, server=bottle.FlupFCGIServer, quiet=True)

@@ -6,7 +6,7 @@ import os
 import shutil
 import traceback
 
-from bottle import route, request, HTTPError
+import bottle
 
 from pyload.utils import decode, formatSize
 from pyload.webui import PYLOAD
@@ -25,8 +25,8 @@ def get_sort_key(item):
     return item['order']
 
 
-@route('/json/status')
-@route('/json/status', method='POST')
+@bottle.route('/json/status')
+@bottle.route('/json/status', method='POST')
 @login_required('LIST')
 def status():
     try:
@@ -34,11 +34,11 @@ def status():
         status['captcha'] = PYLOAD.isCaptchaWaiting()
         return status
     except Exception:
-        return HTTPError()
+        return bottle.HTTPError()
 
 
-@route('/json/links')
-@route('/json/links', method='POST')
+@bottle.route('/json/links')
+@bottle.route('/json/links', method='POST')
 @login_required('LIST')
 def links():
     try:
@@ -61,10 +61,10 @@ def links():
         return data
     except Exception, e:
         traceback.print_exc()
-        return HTTPError()
+        return bottle.HTTPError()
 
 
-@route('/json/packages')
+@bottle.route('/json/packages')
 @login_required('LIST')
 def packages():
     print "/json/packages"
@@ -79,10 +79,10 @@ def packages():
         return data
 
     except Exception:
-        return HTTPError()
+        return bottle.HTTPError()
 
 
-@route('/json/package/<id:int>')
+@bottle.route('/json/package/<id:int>')
 @login_required('LIST')
 def package(id):
     try:
@@ -114,10 +114,10 @@ def package(id):
 
     except Exception:
         traceback.print_exc()
-        return HTTPError()
+        return bottle.HTTPError()
 
 
-@route('/json/package_order/<ids>')
+@bottle.route('/json/package_order/<ids>')
 @login_required('ADD')
 def package_order(ids):
     try:
@@ -125,20 +125,20 @@ def package_order(ids):
         PYLOAD.orderPackage(int(pid), int(pos))
         return {"response": "success"}
     except Exception:
-        return HTTPError()
+        return bottle.HTTPError()
 
 
-@route('/json/abort_link/<id:int>')
+@bottle.route('/json/abort_link/<id:int>')
 @login_required('DELETE')
 def abort_link(id):
     try:
         PYLOAD.stopDownloads([id])
         return {"response": "success"}
     except Exception:
-        return HTTPError()
+        return bottle.HTTPError()
 
 
-@route('/json/link_order/<ids>')
+@bottle.route('/json/link_order/<ids>')
 @login_required('ADD')
 def link_order(ids):
     try:
@@ -146,11 +146,11 @@ def link_order(ids):
         PYLOAD.orderFile(int(pid), int(pos))
         return {"response": "success"}
     except Exception:
-        return HTTPError()
+        return bottle.HTTPError()
 
 
-@route('/json/add_package')
-@route('/json/add_package', method='POST')
+@bottle.route('/json/add_package')
+@bottle.route('/json/add_package', method='POST')
 @login_required('ADD')
 def add_package():
     name = request.forms.get("add_name", "New Package").strip()
@@ -184,17 +184,17 @@ def add_package():
         PYLOAD.setPackageData(pack, data)
 
 
-@route('/json/move_package/<dest:int>/<id:int>')
+@bottle.route('/json/move_package/<dest:int>/<id:int>')
 @login_required('MODIFY')
 def move_package(dest, id):
     try:
         PYLOAD.movePackage(dest, id)
         return {"response": "success"}
     except Exception:
-        return HTTPError()
+        return bottle.HTTPError()
 
 
-@route('/json/edit_package', method='POST')
+@bottle.route('/json/edit_package', method='POST')
 @login_required('MODIFY')
 def edit_package():
     try:
@@ -207,11 +207,11 @@ def edit_package():
         return {"response": "success"}
 
     except Exception:
-        return HTTPError()
+        return bottle.HTTPError()
 
 
-@route('/json/set_captcha')
-@route('/json/set_captcha', method='POST')
+@bottle.route('/json/set_captcha')
+@bottle.route('/json/set_captcha', method='POST')
 @login_required('ADD')
 def set_captcha():
     if request.environ.get('REQUEST_METHOD', "GET") == "POST":
@@ -230,7 +230,7 @@ def set_captcha():
         return {'captcha': False}
 
 
-@route('/json/load_config/<category>/<section>')
+@bottle.route('/json/load_config/<category>/<section>')
 @login_required("SETTINGS")
 def load_config(category, section):
     conf = None
@@ -252,7 +252,7 @@ def load_config(category, section):
                                                      "skey": section, "section": conf[section]})
 
 
-@route('/json/save_config/<category>', method='POST')
+@bottle.route('/json/save_config/<category>', method='POST')
 @login_required("SETTINGS")
 def save_config(category):
     for key, value in request.POST.iteritems():
@@ -266,7 +266,7 @@ def save_config(category):
         PYLOAD.setConfigValue(section, option, decode(value), category)
 
 
-@route('/json/add_account', method='POST')
+@bottle.route('/json/add_account', method='POST')
 @login_required("ACCOUNTS")
 def add_account():
     login = request.POST['account_login']
@@ -276,7 +276,7 @@ def add_account():
     PYLOAD.updateAccount(type, login, password)
 
 
-@route('/json/update_accounts', method='POST')
+@bottle.route('/json/update_accounts', method='POST')
 @login_required("ACCOUNTS")
 def update_accounts():
     deleted = []  #: dont update deleted accs or they will be created again
@@ -303,7 +303,7 @@ def update_accounts():
             PYLOAD.removeAccount(plugin, user)
 
 
-@route('/json/change_password', method='POST')
+@bottle.route('/json/change_password', method='POST')
 def change_password():
     user = request.POST['user_login']
     oldpw = request.POST['login_current_password']
@@ -311,4 +311,4 @@ def change_password():
 
     if not PYLOAD.changePassword(user, oldpw, newpw):
         print "Wrong password"
-        return HTTPError()
+        return bottle.HTTPError()

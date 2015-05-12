@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import select
 import socket
 import ssl
 import time
@@ -8,8 +9,6 @@ import threading
 import traceback
 
 import pycurl
-
-from select import select
 
 from pyload.Api import PackageDoesNotExists, FileDoesNotExists
 from pyload.network.RequestFactory import getURL
@@ -112,7 +111,7 @@ class IRCInterface(Thread, Addon):
         readbuffer = ""
         while True:
             time.sleep(1)
-            fdset = select([self.sock], [], [], 0)
+            fdset = select.select([self.sock], [], [], 0)
             if self.sock not in fdset[0]:
                 continue
 

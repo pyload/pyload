@@ -2,12 +2,11 @@
 
 from __future__ import with_statement
 
+import operator
 import os
 import re
 import sys
 import time
-
-from operator import itemgetter
 
 from pyload.network.RequestFactory import getURL
 from pyload.plugin.Addon import Expose, Addon, threaded
@@ -220,7 +219,7 @@ class UpdateManager(Addon):
                     'name': n,
                 })
 
-        for plugin in sorted(updatelist, key=itemgetter("type", "name")):
+        for plugin in sorted(updatelist, key=operator.itemgetter("type", "name")):
             filename = plugin['name']
             type     = plugin['type']
             version  = plugin['version']
