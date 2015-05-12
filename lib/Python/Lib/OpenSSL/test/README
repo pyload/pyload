@@ -1,0 +1,8 @@
+These tests are meant to be run using twisted's "trial" command.
+
+See http://twistedmatrix.com/trac/wiki/TwistedTrial
+
+For example...
+
+$ sudo python ./setup install
+$ trial OpenSSL
