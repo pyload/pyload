@@ -26,12 +26,12 @@ class TBaseEncoder(json.JSONEncoder):
 @bottle.route('/api/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>')
 @bottle.route('/api/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>', method='POST')
 def call_api(func, args=""):
-    response.headers.replace("Content-type", "application/json")
-    response.headers.append("Cache-Control", "no-cache, must-revalidate")
+    bottle.response.headers.replace("Content-type", "application/json")
+    bottle.response.headers.append("Cache-Control", "no-cache, must-revalidate")
 
-    s = request.environ.get('beaker.session')
-    if 'session' in request.POST:
-        s = s.get_by_id(request.POST['session'])
+    s = bottle.request.environ.get('beaker.session')
+    if 'session' in bottle.request.POST:
+        s = s.get_by_id(bottle.request.POST['session'])
 
     if not s or not s.get("authenticated", False):
         return bottle.HTTPError(403, json_dumps("Forbidden"))
@@ -42,7 +42,7 @@ def call_api(func, args=""):
     args = args.split("/")[1:]
     kwargs = {}
 
-    for x, y in itertools.chain(request.GET.iteritems(), request.POST.iteritems()):
+    for x, y in itertools.chain(bottle.request.GET.iteritems(), bottle.request.POST.iteritems()):
         if x == "session":
             continue
         kwargs[x] = urllib.unquote(y)
@@ -69,11 +69,11 @@ def callApi(func, *args, **kwargs):
 # post -> username, password
 @bottle.route('/api/login', method='POST')
 def login():
-    response.headers.replace("Content-type", "application/json")
-    response.headers.append("Cache-Control", "no-cache, must-revalidate")
+    bottle.response.headers.replace("Content-type", "application/json")
+    bottle.response.headers.append("Cache-Control", "no-cache, must-revalidate")
 
-    user = request.forms.get("username")
-    password = request.forms.get("password")
+    user = bottle.request.forms.get("username")
+    password = bottle.request.forms.get("password")
 
     info = PYLOAD.checkAuth(user, password)
 
@@ -92,8 +92,8 @@ def login():
 
 @bottle.route('/api/logout')
 def logout():
-    response.headers.replace("Content-type", "application/json")
-    response.headers.append("Cache-Control", "no-cache, must-revalidate")
+    bottle.response.headers.replace("Content-type", "application/json")
+    bottle.response.headers.append("Cache-Control", "no-cache, must-revalidate")
 
-    s = request.environ.get('beaker.session')
+    s = bottle.request.environ.get('beaker.session')
     s.delete()

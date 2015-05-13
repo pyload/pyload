@@ -66,7 +66,7 @@ def set_permission(perms):
 
 
 def set_session(request, info):
-    s = request.environ.get('beaker.session')
+    s = bottle.request.environ.get('beaker.session')
     s['authenticated'] = True
     s['user_id'] = info['id']
     s['name'] = info['name']
@@ -89,19 +89,19 @@ def login_required(perm=None):
     def _dec(func):
 
         def _view(*args, **kwargs):
-            s = request.environ.get('beaker.session')
+            s = bottle.request.environ.get('beaker.session')
             if s.get("name", None) and s.get("authenticated", False):
                 if perm:
                     perms = parse_permissions(s)
                     if perm not in perms or not perms[perm]:
-                        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                        if bottle.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                             return bottle.HTTPError(403, "Forbidden")
                         else:
                             return bottle.redirect("/nopermission")
 
                 return func(*args, **kwargs)
             else:
-                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                if bottle.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                     return bottle.HTTPError(403, "Forbidden")
                 else:
                     return bottle.redirect("/login")

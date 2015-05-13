@@ -17,8 +17,8 @@ from pyload.webui import PYLOAD, DL_ROOT, JS
 def local_check(function):
 
     def _view(*args, **kwargs):
-        if request.environ.get("REMOTE_ADDR", "0") in ("127.0.0.1", "localhost") \
-           or request.environ.get("HTTP_HOST", "0") in ("127.0.0.1:9666", "localhost:9666"):
+        if bottle.request.environ.get("REMOTE_ADDR", "0") in ("127.0.0.1", "localhost") \
+           or bottle.request.environ.get("HTTP_HOST", "0") in ("127.0.0.1:9666", "localhost:9666"):
             return function(*args, **kwargs)
         else:
             return bottle.HTTPError(403, "Forbidden")
@@ -37,8 +37,8 @@ def flash(id="0"):
 @bottle.route('/flash/add', method='POST')
 @local_check
 def add(request):
-    package = request.POST.get('referer', None)
-    urls = filter(lambda x: x != "", request.POST['urls'].split("\n"))
+    package = bottle.request.POST.get('referer', None)
+    urls = filter(lambda x: x != "", bottle.request.POST['urls'].split("\n"))
 
     if package:
         PYLOAD.addPackage(package, urls, 0)
@@ -51,8 +51,8 @@ def add(request):
 @bottle.route('/flash/addcrypted', method='POST')
 @local_check
 def addcrypted():
-    package = request.forms.get('referer', 'ClickNLoad Package')
-    dlc = request.forms['crypted'].replace(" ", "+")
+    package = bottle.request.forms.get('referer', 'ClickNLoad Package')
+    dlc = bottle.request.forms['crypted'].replace(" ", "+")
 
     dlc_path = os.path.join(DL_ROOT, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc")
     with open(dlc_path, "wb") as dlc_file:
@@ -69,9 +69,9 @@ def addcrypted():
 @bottle.route('/flash/addcrypted2', method='POST')
 @local_check
 def addcrypted2():
-    package = request.forms.get("source", None)
-    crypted = request.forms['crypted']
-    jk = request.forms['jk']
+    package = bottle.request.forms.get("source", None)
+    crypted = bottle.request.forms['crypted']
+    jk = bottle.request.forms['jk']
 
     crypted = base64.standard_b64decode(urllib.unquote(crypted.replace(" ", "+")))
     if JS:
@@ -121,13 +121,13 @@ def addcrypted2():
 @bottle.route('/flashgot', method='POST')
 @local_check
 def flashgot():
-    if request.environ['HTTP_REFERER'] not in ("http://localhost:9666/flashgot", "http://127.0.0.1:9666/flashgot"):
+    if bottle.request.environ['HTTP_REFERER'] not in ("http://localhost:9666/flashgot", "http://127.0.0.1:9666/flashgot"):
         return bottle.HTTPError()
 
-    autostart = int(request.forms.get('autostart', 0))
-    package = request.forms.get('package', None)
-    urls = filter(lambda x: x != "", request.forms['urls'].split("\n"))
-    folder = request.forms.get('dir', None)
+    autostart = int(bottle.request.forms.get('autostart', 0))
+    package = bottle.request.forms.get('package', None)
+    urls = filter(lambda x: x != "", bottle.request.forms['urls'].split("\n"))
+    folder = bottle.request.forms.get('dir', None)
 
     if package:
         PYLOAD.addPackage(package, urls, autostart)
@@ -151,7 +151,7 @@ def crossdomain():
 @bottle.route('/flash/checkSupportForUrl')
 @local_check
 def checksupport():
-    url = request.GET.get("url")
+    url = bottle.request.GET.get("url")
     res = PYLOAD.checkURLs([url])
     supported = (not res[0][1] is None)
 

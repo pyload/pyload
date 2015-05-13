@@ -23,7 +23,7 @@ from pyload.utils import formatSize, fs_join, fs_encode, fs_decode
 
 
 def pre_processor():
-    s = request.environ.get('beaker.session')
+    s = bottle.request.environ.get('beaker.session')
     user = parse_userdata(s)
     perms = parse_permissions(s)
     status = {}
@@ -46,7 +46,7 @@ def pre_processor():
             'status': status,
             'captcha': captcha,
             'perms': perms,
-            'url': request.url,
+            'url': bottle.request.url,
             'update': update,
             'plugins': plugins}
 
@@ -88,12 +88,12 @@ def server_min(theme, file):
 
 @bottle.route('/<theme>/<file:re:.+\.js>')
 def server_js(theme, file):
-    response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
+    bottle.response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
 
     if "/render/" in file or ".render." in file or True:
-        response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+        bottle.response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                                     time.gmtime(time.time() + 24 * 7 * 60 * 60))
-        response.headers['Cache-control'] = "public"
+        bottle.response.headers['Cache-control'] = "public"
 
         path = "/".join((theme, file))
         return env.get_template(path).render()
@@ -103,16 +103,16 @@ def server_js(theme, file):
 
 @bottle.route('/<theme>/<file:path>')
 def server_static(theme, file):
-    response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+    bottle.response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                                 time.gmtime(time.time() + 24 * 7 * 60 * 60))
-    response.headers['Cache-control'] = "public"
+    bottle.response.headers['Cache-control'] = "public"
 
-    return bottle.static_file(file, root=join(THEME_DIR, THEME, theme))
+    return bottle.static_file(file, root=os.path.join(THEME_DIR, THEME, theme))
 
 
 @bottle.route('/favicon.ico')
 def favicon():
-    return bottle.static_file("icon.ico", root=join(PYLOAD_DIR, "docs", "resources"))
+    return bottle.static_file("icon.ico", root=os.path.join(PYLOAD_DIR, "docs", "resources"))
 
 
 @bottle.route('/login', method="GET")
@@ -130,8 +130,8 @@ def nopermission():
 
 @bottle.route('/login', method='POST')
 def login_post():
-    user = request.forms.get("username")
-    password = request.forms.get("password")
+    user = bottle.request.forms.get("username")
+    password = bottle.request.forms.get("password")
 
     info = PYLOAD.checkAuth(user, password)
 
@@ -144,7 +144,7 @@ def login_post():
 
 @bottle.route('/logout')
 def logout():
-    s = request.environ.get('beaker.session')
+    s = bottle.request.environ.get('beaker.session')
     s.delete()
     return render_to_response("logout.html", proc=[pre_processor])
 
@@ -156,7 +156,7 @@ def home():
     try:
         res = [toDict(x) for x in PYLOAD.statusDownloads()]
     except Exception:
-        s = request.environ.get('beaker.session')
+        s = bottle.request.environ.get('beaker.session')
         s.delete()
         return bottle.redirect("/login")
 
@@ -383,30 +383,29 @@ def path(file="", path=""):
 @bottle.route('/logs/<item>', method='POST')
 @login_required('LOGS')
 def logs(item=-1):
-    s = request.environ.get('beaker.session')
+    s = bottle.request.environ.get('beaker.session')
 
     perpage = s.get('perpage', 34)
     reversed = s.get('reversed', False)
 
     warning = ""
     conf = PYLOAD.getConfigValue("log", "file_log")
-    color_template = PYLOAD.getConfigValue("log", "color_template") if PYLOAD.getConfigValue("log", "color_console") else ""
     if not conf:
         warning = "Warning: File log is disabled, see settings page."
 
-    perpage_p = ((20, 20), (34, 34), (40, 40), (100, 100), (0, 'all'))
+    perpage_p = ((20, 20), (50, 50), (100, 100), (250, 250), (0, 'all'))
     fro = None
 
-    if request.environ.get('REQUEST_METHOD', "GET") == "POST":
+    if bottle.request.environ.get('REQUEST_METHOD', "GET") == "POST":
         try:
-            fro = datetime.datetime.strptime(request.forms['from'], '%d.%m.%Y %H:%M:%S')
+            fro = datetime.datetime.strptime(bottle.request.forms['from'], '%d.%m.%Y %H:%M:%S')
         except Exception:
             pass
         try:
-            perpage = int(request.forms['perpage'])
+            perpage = int(bottle.request.forms['perpage'])
             s['perpage'] = perpage
 
-            reversed = bool(request.forms.get('reversed', False))
+            reversed = bool(bottle.request.forms.get('reversed', False))
             s['reversed'] = reversed
         except Exception:
             pass
@@ -444,13 +443,16 @@ def logs(item=-1):
                 time = ' '
                 level = '?'
                 message = l
+
             if item == -1 and dtime is not None and fro <= dtime:
                 item = counter  #: found our datetime.datetime
+
             if item >= 0:
                 data.append({'line': counter, 'date': date + " " + time, 'level': level, 'message': message})
                 perpagecheck += 1
                 if fro is None and dtime is not None:  #: if fro not set set it to first showed line
                     fro = dtime
+
             if perpagecheck >= perpage > 0:
                 break
 
@@ -462,7 +464,7 @@ def logs(item=-1):
                                             'reversed': reversed, 'perpage': perpage, 'perpage_p': sorted(perpage_p),
                                             'iprev': 1 if item - perpage < 1 else item - perpage,
                                             'inext': (item + perpage) if item + perpage < len(log) else item,
-                                            'color_template': color_template.title()},
+                                            'color_console': PYLOAD.getConfigValue("log", "color_console")},
                               [pre_processor])
 
 
@@ -479,10 +481,10 @@ def admin():
         get_permission(data['perms'], data['permission'])
         data['perms']['admin'] = data['role'] is 0
 
-    s = request.environ.get('beaker.session')
-    if request.environ.get('REQUEST_METHOD', "GET") == "POST":
+    s = bottle.request.environ.get('beaker.session')
+    if bottle.request.environ.get('REQUEST_METHOD', "GET") == "POST":
         for name in user:
-            if request.POST.get("%s|admin" % name, False):
+            if bottle.request.POST.get("%s|admin" % name, False):
                 user[name]['role'] = 0
                 user[name]['perms']['admin'] = True
             elif name != s['name']:
@@ -493,7 +495,7 @@ def admin():
             for perm in perms:
                 user[name]['perms'][perm] = False
 
-            for perm in request.POST.getall("%s|perms" % name):
+            for perm in bottle.request.POST.getall("%s|perms" % name):
                 user[name]['perms'][perm] = True
 
             user[name]['permission'] = set_permission(user[name]['perms'])

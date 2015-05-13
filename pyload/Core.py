@@ -457,40 +457,41 @@ class Core(object):
         self.log = logging.getLogger("log")
         self.log.setLevel(level)
 
-        date_fmt = "%Y-%m-%d %H:%M:%S"
-        fh_fmt   = "%(asctime)s %(levelname)-8s  %(message)s"
-
-        fh_frm      = logging.Formatter(fh_fmt, date_fmt)  #: file handler formatter
-        console_frm = fh_frm  #: console formatter did not use colors as default
+        format  = "%(asctime)s  %(levelname)-8s  %(message)s"
+        datefmt = "%Y-%m-%d  %H:%M:%S"
+        console_formatter = logging.Formatter(format, datefmt)  #: console formatter did not use colors as default
 
         # Console formatter with colors
         if self.config.get("log", "color_console"):
             import colorlog
 
-            if self.config.get("log", "console_mode") == "label":
-                c_fmt = "%(asctime)s %(log_color)s%(bold)s%(white)s %(levelname)-8s%(reset)s  %(message)s"
-                clr = {
-                    'DEBUG'   : "bg_cyan"  ,
-                    'INFO'    : "bg_green" ,
-                    'WARNING' : "bg_yellow",
-                    'ERROR'   : "bg_red"   ,
-                    'CRITICAL': "bg_purple",
-                }
+            format  = "%(log_color)s%(asctime)s%(reset)s  %(label_log_color)s %(levelname)-8s %(reset)s  %(log_color)s%(message)s"
+            datefmt = "%Y-%m-%d  %H:%M:%S"
 
-            else:
-                c_fmt = "%(log_color)s%(asctime)s  %(levelname)-8s  %(message)s"
-                clr = {
-                    'DEBUG'   : "cyan"  ,
-                    'WARNING' : "yellow",
-                    'ERROR'   : "red"   ,
-                    'CRITICAL': "purple",
+            log_color = {
+                'DEBUG'   : "bold,cyan"  ,
+                'WARNING' : "bold,yellow",
+                'ERROR'   : "bold,red"   ,
+                'CRITICAL': "bold,purple",
+            }
+            secondary_log_colors = {
+                'label': {
+                    'DEBUG'   : "bold,white,bg_cyan"  ,
+                    'INFO'    : "bold,white,bg_green" ,
+                    'WARNING' : "bold,white,bg_yellow",
+                    'ERROR'   : "bold,white,bg_red"   ,
+                    'CRITICAL': "bold,white,bg_purple",
                 }
+            }
 
-            console_frm = colorlog.ColoredFormatter(c_fmt, date_fmt, clr)
+            console_formatter = colorlog.ColoredFormatter(format,
+                                                          datefmt,
+                                                          log_color,
+                                                          secondary_log_colors=secondary_log_colors)
 
         # Set console formatter
         console = logging.StreamHandler(sys.stdout)
-        console.setFormatter(console_frm)
+        console.setFormatter(console_formatter)
         self.log.addHandler(console)
 
         log_folder = self.config.get("log", "log_folder")
@@ -499,6 +500,8 @@ class Core(object):
 
         # Set file handler formatter
         if self.config.get("log", "file_log"):
+            file_handler_formatter = console_formatter
+
             if self.config.get("log", "log_rotate"):
                 file_handler = logging.handlers.RotatingFileHandler(os.path.join(log_folder, 'log.txt'),
                                                                     maxBytes=self.config.get("log", "log_size") * 1024,
@@ -507,7 +510,7 @@ class Core(object):
             else:
                 file_handler = logging.FileHandler(os.path.join(log_folder, 'log.txt'), encoding="utf8")
 
-            file_handler.setFormatter(fh_frm)
+            file_handler.setFormatter(file_handler_formatter)
             self.log.addHandler(file_handler)
 
 
