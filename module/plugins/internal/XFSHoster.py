@@ -13,7 +13,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.47"
+    __version__ = "0.48"
 
     __pattern__ = r'^unmatchable$'
 
@@ -38,6 +38,7 @@ class XFSHoster(SimpleHoster):
 
     WAIT_PATTERN         = r'<span id="countdown_str".*>(\d+)</span>|id="countdown" value=".*?(\d+).*?"'
     PREMIUM_ONLY_PATTERN = r'>This file is available for Premium Users only'
+    HAPPY_HOUR_PATTERN   = r'>[Hh]appy hour'
     ERROR_PATTERN        = r'(?:class=["\']err["\'].*?>|<[Cc]enter><b>|>Error</td>|>\(ERROR:)(?:\s*<.+?>\s*)*(.+?)(?:["\']|<|\))'
 
     LINK_LEECH_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
@@ -181,6 +182,12 @@ class XFSHoster(SimpleHoster):
         m = re.search(self.ERROR_PATTERN, self.html)
         if m is None:
             self.errmsg = None
+
+            if re.search(self.HAPPY_HOUR_PATTERN, self.html):
+                self.multiDL = True
+            else:
+                self.setup()
+
         else:
             self.errmsg = m.group(1).strip()
 
