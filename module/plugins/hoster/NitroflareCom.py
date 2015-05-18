@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__    = "NitroflareCom"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -32,30 +32,6 @@ class NitroflareCom(SimpleHoster):
     PREMIUM_ONLY_PATTERN = r'This file is available with Premium only'
     WAIT_PATTERN         = r'You have to wait .+?<'
     ERROR_PATTERN        = r'downloading is not possible'
-
-
-    def checkErrors(self):
-        if not self.html:
-            return
-
-        if not self.premium and re.search(self.PREMIUM_ONLY_PATTERN, self.html):
-            self.fail(_("Link require a premium account to be handled"))
-
-        elif hasattr(self, 'WAIT_PATTERN'):
-            m = re.search(self.WAIT_PATTERN, self.html)
-            if m:
-                wait_time = sum(int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1}[u.lower()] for v, u in
-                                re.findall(r'(\d+)\s*(hr|hour|min|sec)', m.group(0), re.I))
-                self.wait(wait_time, wait_time > 300)
-                return
-
-        elif hasattr(self, 'ERROR_PATTERN'):
-            m = re.search(self.ERROR_PATTERN, self.html)
-            if m:
-                errmsg = self.info['error'] = m.group(1)
-                self.error(errmsg)
-
-        self.info.pop('error', None)
 
 
     def handleFree(self, pyfile):

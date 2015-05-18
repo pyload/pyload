@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DateiTo(SimpleHoster):
     __name__    = "DateiTo"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -24,7 +24,7 @@ class DateiTo(SimpleHoster):
     OFFLINE_PATTERN = r'>Datei wurde nicht gefunden<|>Bitte wähle deine Datei aus... <'
 
     WAIT_PATTERN    = r'countdown\({seconds: (\d+)'
-    MULTIDL_PATTERN = r'>Du lädst bereits eine Datei herunter<'
+    DOWNLOAD_PATTERN = r'>Du lädst bereits eine Datei herunter'
 
     DATA_PATTERN = r'url: "(.*?)", data: "(.*?)",'
 
@@ -58,18 +58,6 @@ class DateiTo(SimpleHoster):
             self.fail(_("Too bad..."))
 
         self.link = self.html
-
-
-    def checkErrors(self):
-        m = re.search(self.MULTIDL_PATTERN, self.html)
-        if m:
-            m = re.search(self.WAIT_PATTERN, self.html)
-            wait_time = int(m.group(1)) if m else 30
-
-            errmsg = self.info['error'] = _("Parallel downloads")
-            self.retry(wait_time=wait_time, reason=errmsg)
-
-        self.info.pop('error', None)
 
 
     def doWait(self):

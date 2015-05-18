@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class BezvadataCz(SimpleHoster):
     __name__    = "BezvadataCz"
     __type__    = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.27"
 
     __pattern__ = r'http://(?:www\.)?bezvadata\.cz/stahnout/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -84,8 +84,8 @@ class BezvadataCz(SimpleHoster):
             self.longWait(5 * 60, 24)  #: parallel dl limit
         elif '<div class="infobox' in self.html:
             self.tempOffline()
-
-        self.info.pop('error', None)
+        else:
+            return super(BezvadataCz, self).checkErrors()
 
 
     def loadcaptcha(self, data, *args, **kwargs):

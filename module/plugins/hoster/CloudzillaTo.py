@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class CloudzillaTo(SimpleHoster):
     __name__    = "CloudzillaTo"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = r'http://(?:www\.)?cloudzilla\.to/share/file/(?P<ID>[\w^_]+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -25,12 +25,17 @@ class CloudzillaTo(SimpleHoster):
 
 
     def checkErrors(self):
-        m = re.search(self.PASSWORD_PATTERN, self.html)
-        if m:
-            self.html = self.load(self.pyfile.url, get={'key': self.getPassword()})
+        if re.search(self.PASSWORD_PATTERN, self.html):
+            pw = self.getPassword()
+            if pw:
+                self.html = self.load(self.pyfile.url, get={'key': pw})
+            else:
+                self.fail(_("Missing password"))
 
         if re.search(self.PASSWORD_PATTERN, self.html):
             self.retry(reason="Wrong password")
+        else:
+            return super(CloudzillaTo, self).checkErrors()
 
 
     def handleFree(self, pyfile):
