@@ -74,7 +74,7 @@ def parseHtmlForm(attr_str, html, input_names={}):
             if name:
                 value = parseHtmlTagAttrValue("value", inputtag.group(1))
                 if not value:
-                    inputs[name] = inputtag.group(3) or ''
+                    inputs[name] = inputtag.group(3) or ""
                 else:
                     inputs[name] = value
 
@@ -583,8 +583,8 @@ class SimpleHoster(Hoster):
                 except Exception:
                     errmsg = m.group(0).strip()
 
-                self.logWarning(re.sub(r'<.*?>', " ", errmsg))
-                self.info['error'] = errmsg
+                self.info['error'] = re.sub(r'<.*?>', " ", errmsg)
+                self.logWarning(self.info['error'])
 
                 if re.search('da(il)?y|today', errmsg, re.I):
                     wait_time = secondsToMidnight(gmt=2)
@@ -606,8 +606,8 @@ class SimpleHoster(Hoster):
                 except Exception:
                     errmsg = m.group(0).strip()
 
-                self.logWarning(re.sub(r'<.*?>', " ", errmsg))
-                self.info['error'] = errmsg
+                self.info['error'] = re.sub(r'<.*?>', " ", errmsg)
+                self.logWarning(self.info['error'])
 
                 if re.search('limit|wait', errmsg, re.I):
                     if re.search("da(il)?y|today", errmsg):
