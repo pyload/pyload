@@ -7,7 +7,7 @@ from module.plugins.Crypter import Crypter as _Crypter
 class DeadCrypter(_Crypter):
     __name__    = "DeadCrypter"
     __type__    = "crypter"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'^unmatchable$'
 
@@ -17,8 +17,8 @@ class DeadCrypter(_Crypter):
 
 
     @classmethod
-    def apiInfo(cls, url="", get={}, post={}):
-        api = super(DeadCrypter, self).apiInfo(url, get, post)
+    def apiInfo(cls, url):
+        api = super(DeadCrypter, cls).apiInfo(url)
         api['status'] = 1
         return api
 

@@ -36,15 +36,13 @@ class ShareonlineBiz(SimpleHoster):
 
 
     @classmethod
-    def getInfo(cls, url="", html=""):
-        info = {'name': urlparse.urlparse(urllib.unquote(url)).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 3 if url else 1, 'url': url}
+    def apiInfo(cls, url):
+        info = super(ShareonlineBiz, cls).apiInfo(url)
 
         if url:
-            info['pattern'] = re.match(cls.__pattern__, url).groupdict()
-
             field = getURL("http://api.share-online.biz/linkcheck.php",
                            get={'md5': "1"},
-                           post={'links': info['pattern']['ID']},
+                           post={'links': re.match(cls.__pattern__, url).group("ID")},
                            decode=True).split(";")
 
             if field[1] == "OK":

@@ -7,7 +7,7 @@ from module.plugins.Hoster import Hoster as _Hoster
 class DeadHoster(_Hoster):
     __name__    = "DeadHoster"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __pattern__ = r'^unmatchable$'
 
@@ -17,8 +17,8 @@ class DeadHoster(_Hoster):
 
 
     @classmethod
-    def apiInfo(cls, url="", get={}, post={}):
-        api = super(DeadHoster, self).apiInfo(url, get, post)
+    def apiInfo(cls, url):
+        api = super(DeadHoster, cls).apiInfo(url)
         api['status'] = 1
         return api
 

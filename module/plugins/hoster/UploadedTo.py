@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "0.87"
+    __version__ = "0.88"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -36,7 +36,7 @@ class UploadedTo(SimpleHoster):
 
 
     @classmethod
-    def apiInfo(cls, url="", get={}, post={}):
+    def apiInfo(cls, url):
         info = super(UploadedTo, cls).apiInfo(url)
 
         for _i in xrange(5):

@@ -91,7 +91,7 @@ class LinkCryptWs(Crypter):
 
     def isOnline(self):
         if "<title>Linkcrypt.ws // Error 404</title>" in self.html:
-            self.logDebug("folder doesen't exist anymore")
+            self.logDebug("Folder doesn't exist anymore")
             return False
         else:
             return True
@@ -197,16 +197,12 @@ class LinkCryptWs(Crypter):
 
         for idx, weblink_id in enumerate(ids):
             try:
-                self.logDebug("Decrypting Web link %d, %s" % (idx + 1, weblink_id))
-
                 res = self.load("http://linkcrypt.ws/out.html", post = {'file':weblink_id})
 
                 indexs = res.find("window.location =") + 19
                 indexe = res.find('"', indexs)
 
                 link2 = res[indexs:indexe]
-
-                self.logDebug(link2)
 
                 link2 = html_unescape(link2)
                 package_links.append(link2)

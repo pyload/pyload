@@ -100,7 +100,7 @@ def parseHtmlForm(attr_str, html, input_names={}):
     return {}, None  #: no matching form found
 
 
-#: Deprecated
+#@TODO: Remove in 0.4.10
 def parseFileInfo(plugin, url="", html=""):
     if hasattr(plugin, "getInfo"):
         info = plugin.getInfo(url, html)
@@ -119,19 +119,14 @@ def parseFileInfo(plugin, url="", html=""):
 
 
 #@TODO: Remove in 0.4.10
-#@NOTE: Every plugin must have own parseInfos classmethod to work with 0.4.10
 def create_getInfo(plugin):
+    def getInfo(urls):
+        for url in urls:
+            if hasattr(plugin, "URL_REPLACEMENTS"):
+                url = replace_patterns(url, plugin.URL_REPLACEMENTS)
+            yield parseFileInfo(plugin, url)
 
-    def generator(list):
-        for x in list:
-            yield x
-
-    if hasattr(plugin, "parseInfos"):
-        fn = lambda urls: generator((info['name'], info['size'], info['status'], info['url']) for info in plugin.parseInfos(urls))
-    else:
-        fn = lambda urls: generator(parseFileInfo(url) for url in urls)
-
-    return fn
+    return getInfo
 
 
 def timestamp():
@@ -244,7 +239,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.44"
+    __version__ = "1.45"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -325,14 +320,7 @@ class SimpleHoster(Hoster):
 
 
     @classmethod
-    def parseInfos(cls, urls):  #@TODO: Built-in in 0.4.10 core (remove from plugins)
-        for url in urls:
-            url = replace_patterns(url, cls.URL_REPLACEMENTS)
-            yield cls.getInfo(url)
-
-
-    @classmethod
-    def apiInfo(cls, url="", get={}, post={}):
+    def apiInfo(cls, url):
         url   = urllib.unquote(url)
         url_p = urlparse.urlparse(url)
         return {'name'  : (url_p.path.split('/')[-1]
