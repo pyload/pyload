@@ -244,7 +244,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.43"
+    __version__ = "1.44"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -583,7 +583,7 @@ class SimpleHoster(Hoster):
                 except Exception:
                     errmsg = m.group(0).strip()
 
-                self.logWarning(re.sub(r'<.*?>', " ", self.errmsg))
+                self.logWarning(re.sub(r'<.*?>', " ", errmsg))
                 self.info['error'] = errmsg
 
                 if re.search('da(il)?y|today', errmsg, re.I):
@@ -606,7 +606,7 @@ class SimpleHoster(Hoster):
                 except Exception:
                     errmsg = m.group(0).strip()
 
-                self.logWarning(re.sub(r'<.*?>', " ", self.errmsg))
+                self.logWarning(re.sub(r'<.*?>', " ", errmsg))
                 self.info['error'] = errmsg
 
                 if re.search('limit|wait', errmsg, re.I):
