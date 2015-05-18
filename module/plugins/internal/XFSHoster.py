@@ -13,7 +13,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.49"
+    __version__ = "0.50"
 
     __pattern__ = r'^unmatchable$'
 
@@ -77,8 +77,6 @@ class XFSHoster(SimpleHoster):
         if not self.LINK_PATTERN:
             pattern = r'(https?://(?:www\.)?([^/]*?%s|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<]'
             self.LINK_PATTERN = pattern % self.HOSTER_DOMAIN.replace('.', '\.')
-
-        self.captcha = None
 
         super(XFSHoster, self).prepare()
 
@@ -204,8 +202,7 @@ class XFSHoster(SimpleHoster):
                     wait_time = int(m.group(1))
                     self.setWait(wait_time, False)
 
-                self.captcha = self.handleCaptcha(inputs)
-
+                self.handleCaptcha(inputs)
                 self.wait()
         else:
             inputs['referer'] = self.pyfile.url
@@ -225,7 +222,7 @@ class XFSHoster(SimpleHoster):
         if m:
             captcha_url = m.group(1)
             inputs['code'] = self.decryptCaptcha(captcha_url)
-            return 1
+            return
 
         m = re.search(self.CAPTCHA_BLOCK_PATTERN, self.html, re.S)
         if m:
@@ -237,7 +234,7 @@ class XFSHoster(SimpleHoster):
             inputs['code'] = "".join(a[1] for a in sorted(numerals, key=lambda num: int(num[0])))
 
             self.logDebug("Captcha code: %s" % inputs['code'], numerals)
-            return 2
+            return
 
         recaptcha = ReCaptcha(self)
         try:
@@ -251,7 +248,7 @@ class XFSHoster(SimpleHoster):
 
         if captcha_key:
             inputs['recaptcha_response_field'], inputs['recaptcha_challenge_field'] = recaptcha.challenge(captcha_key)
-            return 3
+            return
 
         solvemedia = SolveMedia(self)
         try:
@@ -265,6 +262,3 @@ class XFSHoster(SimpleHoster):
 
         if captcha_key:
             inputs['adcopy_response'], inputs['adcopy_challenge'] = solvemedia.challenge(captcha_key)
-            return 4
-
-        return 0

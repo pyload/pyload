@@ -15,10 +15,10 @@ class UserAgentSwitcher(Hook):
     __type__    = "hook"
     __version__ = "0.04"
 
-    __config__ = [("activated", "bool", "Activated"               , True                                                                      ),
-                  ("uaf"      , "file", "Random user-agents file" , ""                                                                        ),
-                  ("uar"      , "bool", "Random user-agent"       , False                                                                     ),
-                  ("uas"      , "str" , "Custom user-agent string", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0")]
+    __config__ = [("activated", "bool", "Activated"                 , True                                                                      ),
+                  ("uaf"      , "file", "Random user-agent by file" , ""                                                                        ),
+                  ("uar"      , "bool", "Random user-agent"         , False                                                                     ),
+                  ("uas"      , "str" , "Custom user-agent string"  , "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0")]
 
     __description__ = """Custom user-agent"""
     __license__     = "GPLv3"
