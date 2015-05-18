@@ -6,7 +6,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class UptoboxCom(XFSHoster):
     __name__    = "UptoboxCom"
     __type__    = "hoster"
-    __version__ = "0.18"
+    __version__ = "0.19"
 
     __pattern__ = r'https?://(?:www\.)?(uptobox|uptostream)\.com/\w{12}'
 
@@ -14,6 +14,8 @@ class UptoboxCom(XFSHoster):
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
+
+    LOGIN_ACCOUNT = True
 
     INFO_PATTERN         = r'"para_title">(?P<N>.+) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)'
     OFFLINE_PATTERN      = r'>(File not found|Access Denied|404 Not Found)'
