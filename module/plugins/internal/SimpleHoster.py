@@ -244,7 +244,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.42"
+    __version__ = "1.43"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -283,6 +283,18 @@ class SimpleHoster(Hoster):
 
       PREMIUM_ONLY_PATTERN: (optional) Check if the file can be downloaded only with a premium account
         example: PREMIUM_ONLY_PATTERN = r'Premium account required'
+
+      HAPPY_HOUR_PATTERN: (optional)
+        example:
+
+      IP_BLOCKED_PATTERN: (optional)
+        example:
+
+      DOWNLOAD_LIMIT_PATTERN: (optional)
+        example:
+
+      SIZE_LIMIT_PATTERN: (optional)
+        example:
 
       ERROR_PATTERN: (optional) Detect any error preventing download
         example: ERROR_PATTERN = r''
@@ -554,10 +566,39 @@ class SimpleHoster(Hoster):
             self.logWarning(_("No html code to check"))
             return
 
-        if hasattr(self, 'PREMIUM_ONLY_PATTERN') and not self.premium and re.search(self.PREMIUM_ONLY_PATTERN, self.html):
-            self.fail(_("Link require a premium account to be handled"))
+        if hasattr(self, 'IP_BLOCKED_PATTERN') and re.search(self.IP_BLOCKED_PATTERN, self.html):
+            self.fail(_("Connection from your current IP address is not allowed"))
 
-        elif hasattr(self, 'ERROR_PATTERN'):
+        elif not self.premium:
+            if hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html):
+                self.fail(_("File can be downloaded by premium users only"))
+
+            elif hasattr(self, 'SIZE_LIMIT_PATTERN') and re.search(self.SIZE_LIMIT_PATTERN, self.html):
+                self.fail(_("File too large for free download"))
+
+            elif hasattr(self, 'DOWNLOAD_LIMIT_PATTERN') and re.search(self.DOWNLOAD_LIMIT_PATTERN, self.html):
+                m = re.search(self.DOWNLOAD_LIMIT_PATTERN, self.html)
+                try:
+                    errmsg = m.group(1).strip()
+                except Exception:
+                    errmsg = m.group(0).strip()
+
+                self.logWarning(re.sub(r'<.*?>', " ", self.errmsg))
+                self.info['error'] = errmsg
+
+                if re.search('da(il)?y|today', errmsg, re.I):
+                    wait_time = secondsToMidnight(gmt=2)
+                else:
+                    wait_time = sum(int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1, "": 1}[u.lower()] for v, u in
+                                re.findall(r'(\d+)\s*(hr|hour|min|sec|)', errmsg, re.I))
+
+                self.wantReconnect = wait_time > 300
+                self.retry(1, wait_time, _("Download limit exceeded"))
+
+        if hasattr(self, 'HAPPY_HOUR_PATTERN') and re.search(self.HAPPY_HOUR_PATTERN, self.html):
+            self.multiDL = True
+
+        if hasattr(self, 'ERROR_PATTERN'):
             m = re.search(self.ERROR_PATTERN, self.html)
             if m:
                 try:
@@ -565,19 +606,40 @@ class SimpleHoster(Hoster):
                 except Exception:
                     errmsg = m.group(0).strip()
 
+                self.logWarning(re.sub(r'<.*?>', " ", self.errmsg))
                 self.info['error'] = errmsg
 
-                if "hour" in errmsg:
-                    self.wait(1 * 60 * 60, True)
+                if re.search('limit|wait', errmsg, re.I):
+                    if re.search("da(il)?y|today", errmsg):
+                        wait_time = secondsToMidnight(gmt=2)
+                    else:
+                        wait_time = sum(int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1, "": 1}[u.lower()] for v, u in
+                                    re.findall(r'(\d+)\s*(hr|hour|min|sec|)', errmsg, re.I))
 
-                elif re.search("da(il)?y|today", errmsg):
-                    self.wait(secondsToMidnight(gmt=2), True)
+                    self.wantReconnect = wait_time > 300
+                    self.retry(1, wait_time, _("Download limit exceeded"))
 
-                elif "minute" in errmsg:
-                    self.wait(1 * 60)
+                elif re.search('country', errmsg, re.I):
+                    self.fail(_("Connection from your current IP address is not allowed"))
+
+                elif re.search('captcha', errmsg, re.I):
+                    self.invalidCaptcha()
+
+                elif re.search('countdown|expired', errmsg, re.I):
+                    self.retry(wait_time=60, reason=_("Link expired"))
+
+                elif re.search('maintenance|maintainance', errmsg, re.I):
+                    self.tempOffline()
+
+                elif re.search('up to', errmsg, re.I):
+                    self.fail(_("File too large for free download"))
+
+                elif re.search('premium', errmsg, re.I):
+                    self.fail(_("File can be downloaded by premium users only"))
 
                 else:
-                    self.error(errmsg)
+                    self.wantReconnect = True
+                    self.retry(wait_time=60, reason=errmsg)
 
         elif hasattr(self, 'WAIT_PATTERN'):
             m = re.search(self.WAIT_PATTERN, self.html)
@@ -611,7 +673,7 @@ class SimpleHoster(Hoster):
                 self.tempOffline()
 
             elif status is 8:
-                self.fail(self.info['error'] if 'error' in self.info else "Failed")
+                self.fail(self.info['error'] if 'error' in self.info else _("Failed"))
 
         finally:
             self.logDebug("File status: %s" % statusMap[status])
