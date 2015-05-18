@@ -148,7 +148,7 @@ def getFileURL(self, url, follow_location=None):
             self.logDebug("Redirect #%d to: %s" % (i, url))
             header = self.load(url, just_header=True, decode=True)
 
-        except Exception:  #: Bad bad bad...
+        except Exception:  #: Bad bad bad... rewrite this part in 0.4.10
             req = pyreq.getHTTPRequest()
             res = req.load(url, just_header=True, decode=True)
 
@@ -239,7 +239,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.45"
+    __version__ = "1.46"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -334,7 +334,7 @@ class SimpleHoster(Hoster):
     @classmethod
     def getInfo(cls, url="", html=""):
         info   = cls.apiInfo(url)
-        online = False if info['status'] != 2 else True
+        online = True if info['status'] is 2 else False
 
         try:
             info['pattern'] = re.match(cls.__pattern__, url).groupdict()  #: pattern groups will be saved here
@@ -347,7 +347,7 @@ class SimpleHoster(Hoster):
                 info['error']  = "missing url"
                 info['status'] = 1
 
-            elif info['status'] is 3 and not getFileURL(None, url):
+            elif info['status'] is 3:
                 try:
                     html = getURL(url, cookies=cls.COOKIES, decode=not cls.TEXT_ENCODING)
 
@@ -362,6 +362,9 @@ class SimpleHoster(Hoster):
 
                     elif e.code is 503:
                         info['status'] = 6
+
+                except Exception:
+                    pass
 
         if html:
             if hasattr(cls, "OFFLINE_PATTERN") and re.search(cls.OFFLINE_PATTERN, html):
