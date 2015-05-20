@@ -251,27 +251,27 @@ class SimpleHoster(Hoster):
 
 
     """
-    Info patterns should be defined by each hoster:
+    Info patterns:
 
-      INFO_PATTERN: (optional) Name and Size of the file
+      INFO_PATTERN: (mandatory) Name and Size of the file
         example: INFO_PATTERN = r'(?P<N>file_name) (?P<S>file_size) (?P<U>size_unit)'
       or
-        NAME_PATTERN: (optional) Name that will be set for the file
+        NAME_PATTERN: (mandatory) Name that will be set for the file
           example: NAME_PATTERN = r'(?P<N>file_name)'
-        SIZE_PATTERN: (optional) Size that will be checked for the file
+        SIZE_PATTERN: (mandatory) Size that will be checked for the file
           example: SIZE_PATTERN = r'(?P<S>file_size) (?P<U>size_unit)'
 
       HASHSUM_PATTERN: (optional) Hash code and type of the file
         example: HASHSUM_PATTERN = r'(?P<H>hash_code) (?P<T>MD5)'
 
-      OFFLINE_PATTERN: (optional) Check if the page is unreachable
+      OFFLINE_PATTERN: (mandatory) Check if the page is unreachable
         example: OFFLINE_PATTERN = r'File (deleted|not found)'
 
       TEMP_OFFLINE_PATTERN: (optional) Check if the page is temporarily unreachable
         example: TEMP_OFFLINE_PATTERN = r'Server (maintenance|maintainance)'
 
 
-    Error handling patterns are all optional:
+    Error patterns:
 
       WAIT_PATTERN: (optional) Detect waiting time
         example: WAIT_PATTERN = r''
@@ -280,22 +280,22 @@ class SimpleHoster(Hoster):
         example: PREMIUM_ONLY_PATTERN = r'Premium account required'
 
       HAPPY_HOUR_PATTERN: (optional)
-        example:
+        example: HAPPY_HOUR_PATTERN = r'Happy hour'
 
       IP_BLOCKED_PATTERN: (optional)
-        example:
+        example: IP_BLOCKED_PATTERN = r'in your country'
 
       DOWNLOAD_LIMIT_PATTERN: (optional)
-        example:
+        example: DOWNLOAD_LIMIT_PATTERN = r'download limit'
 
       SIZE_LIMIT_PATTERN: (optional)
-        example:
+        example: SIZE_LIMIT_PATTERN = r'up to'
 
       ERROR_PATTERN: (optional) Detect any error preventing download
         example: ERROR_PATTERN = r''
 
 
-    Instead overriding handleFree and handlePremium methods you can define the following patterns for direct download:
+    Instead overriding handleFree and handlePremium methods you may define the following patterns for basic link handling:
 
       LINK_FREE_PATTERN: (optional) group(1) should be the direct link for free download
         example: LINK_FREE_PATTERN = r'<div class="link"><a href="(.+?)"'
