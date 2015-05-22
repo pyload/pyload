@@ -51,10 +51,8 @@ class WebshareCz(SimpleHoster):
         self.logDebug("API data: " + api_data)
 
         m = re.search('<link>(.+)</link>', api_data)
-        if m is None:
-            self.error(_("Unable to detect direct link"))
-
-        self.link = m.group(1)
+        if m:
+            self.link = m.group(1)
 
 
     def handlePremium(self, pyfile):
