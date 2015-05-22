@@ -18,7 +18,6 @@ class ExashareCom(XFSHoster):
 
 
     INFO_PATTERN      = r'>(?P<NAME>.+?)<small>\( (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
-    LINK_FREE_PATTERN = r'file: "(.+?)"'
 
 
     def setup(self):

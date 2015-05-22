@@ -19,8 +19,6 @@ class StreamcloudEu(XFSHoster):
 
     WAIT_PATTERN = r'var count = (\d+)'
 
-    LINK_PATTERN = r'file: "(http://(stor|cdn)\d+\.streamcloud\.eu:?\d*/.*/video\.(mp4|flv))",'
-
 
     def setup(self):
         self.multiDL        = True
