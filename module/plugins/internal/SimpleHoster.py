@@ -239,7 +239,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.46"
+    __version__ = "1.47"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -610,20 +610,23 @@ class SimpleHoster(Hoster):
                     self.wantReconnect = wait_time > 300
                     self.retry(1, wait_time, _("Download limit exceeded"))
 
-                elif re.search('country', errmsg, re.I):
+                elif re.search('country|ip|region|nation', errmsg, re.I):
                     self.fail(_("Connection from your current IP address is not allowed"))
 
-                elif re.search('captcha', errmsg, re.I):
+                elif re.search('captcha|code', errmsg, re.I):
                     self.invalidCaptcha()
 
                 elif re.search('countdown|expired', errmsg, re.I):
                     self.retry(wait_time=60, reason=_("Link expired"))
 
-                elif re.search('maintenance|maintainance', errmsg, re.I):
+                elif re.search('maintenance|maintainance|temp', errmsg, re.I):
                     self.tempOffline()
 
                 elif re.search('up to', errmsg, re.I):
                     self.fail(_("File too large for free download"))
+
+                elif re.search('offline|delet|remov|not (found|available)', errmsg, re.I):
+                    self.offline()
 
                 elif re.search('premium', errmsg, re.I):
                     self.fail(_("File can be downloaded by premium users only"))
