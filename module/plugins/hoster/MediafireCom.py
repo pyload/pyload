@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.CaptchaService import SolveMedia
+from module.plugins.internal.CaptchaService import SolveMedia, ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class MediafireCom(SimpleHoster):
     __name__    = "MediafireCom"
     __type__    = "hoster"
-    __version__ = "0.86"
+    __version__ = "0.87"
 
     __pattern__ = r'https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)\w{15}'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -34,16 +34,30 @@ class MediafireCom(SimpleHoster):
         self.multiDL        = True
 
 
-    def handleFree(self, pyfile):
+    def handleCaptcha(self):
         solvemedia  = SolveMedia(self)
         captcha_key = solvemedia.detect_key()
 
         if captcha_key:
             response, challenge = solvemedia.challenge(captcha_key)
-            self.html = self.load(pyfile.url,
+            self.html = self.load(self.pyfile.url,
                                   post={'adcopy_challenge': challenge,
                                         'adcopy_response' : response},
                                   decode=True)
+            return
+
+        recaptcha   = ReCaptcha(self)
+        captcha_key = recaptcha.detect_key()
+
+        if captcha_key:
+            response, challenge = recaptcha.challenge(captcha_key)
+            self.html = self.load(self.pyfile.url,
+                                  post={'g-recaptcha-response': response},
+                                  decode=True)
+
+
+    def handleFree(self, pyfile):
+        self.handleCaptcha()
 
         if self.PASSWORD_PATTERN in self.html:
             password = self.getPassword()
