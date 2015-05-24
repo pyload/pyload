@@ -15,7 +15,7 @@ from module.plugins.Plugin import Base
 class CaptchaService(Base):
     __name__    = "CaptchaService"
     __type__    = "captcha"
-    __version__ = "0.26"
+    __version__ = "0.27"
 
     __description__ = """Base captcha service plugin"""
     __license__     = "GPLv3"
@@ -45,7 +45,7 @@ class CaptchaService(Base):
 class ReCaptcha(CaptchaService):
     __name__    = "ReCaptcha"
     __type__    = "captcha"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __description__ = """ReCaptcha captcha service plugin"""
     __license__     = "GPLv3"
@@ -113,10 +113,26 @@ class ReCaptcha(CaptchaService):
 
         self.logDebug("Challenge: %s" % challenge)
 
-        return self.result(server, challenge), challenge
+        return self.result(server, challenge, key) #, challenge
 
 
-    def result(self, server, challenge):
+    def result(self, server, challenge, key):
+        self.plugin.req.load("http://www.google.com/recaptcha/api/js/recaptcha.js", cookies=True)
+        html = self.plugin.req.load("http://www.google.com/recaptcha/api/reload",
+                                    get={"c":challenge,
+                                         "k":key,
+                                         "reason":"i",
+                                         "type":"image"},
+                                    cookies=True)
+        
+        try:
+            challenge = re.search('\(\'(.+?)\',',html).group(1)
+        except AttributeError:
+            errmsg = _("ReCaptcha second challenge pattern not found")
+            self.plugin.fail(errmsg)
+            raise AttributeError(errmsg)
+        
+        self.logDebug("Second challenge: %s" %challenge)
         result = self.plugin.decryptCaptcha("%simage" % server,
                                             get={'c': challenge},
                                             cookies=True,
@@ -125,7 +141,7 @@ class ReCaptcha(CaptchaService):
 
         self.logDebug("Result: %s" % result)
 
-        return result
+        return result, challenge
 
 
     def _collectApiInfo(self):
