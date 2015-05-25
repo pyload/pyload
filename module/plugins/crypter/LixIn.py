@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import urlparse
 
 from module.plugins.Crypter import Crypter
 
@@ -46,7 +47,7 @@ class LixIn(Crypter):
                 m = re.search(self.CAPTCHA_PATTERN, self.html)
                 if m:
                     self.logDebug("Trying captcha")
-                    captcharesult = self.decryptCaptcha("http://lix.in/" + m.group(1))
+                    captcharesult = self.decryptCaptcha(urlparse.urljoin("http://lix.in/", m.group(1)))
                 self.html = self.load(url, decode=True,
                                           post={"capt": captcharesult, "submit": "submit", "tiny": id})
             else:

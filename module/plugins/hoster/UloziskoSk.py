@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import urlparse
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
@@ -55,8 +56,8 @@ class UloziskoSk(SimpleHoster):
         m = re.search(self.CAPTCHA_PATTERN, self.html)
         if m is None:
             self.error(_("CAPTCHA_PATTERN not found"))
-        captcha_url = 'http://www.ulozisko.sk' + m.group(1)
 
+        captcha_url = urlparse.urljoin("http://www.ulozisko.sk", m.group(1))
         captcha = self.decryptCaptcha(captcha_url, cookies=True)
 
         self.logDebug("CAPTCHA_URL:" + captcha_url + ' CAPTCHA:' + captcha)

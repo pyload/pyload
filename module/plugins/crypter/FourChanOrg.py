@@ -3,6 +3,7 @@
 # Based on 4chandl by Roland Beermann (https://gist.github.com/enkore/3492599)
 
 import re
+import urlparse
 
 from module.plugins.Crypter import Crypter
 
@@ -24,4 +25,4 @@ class FourChanOrg(Crypter):
     def decrypt(self, pyfile):
         pagehtml = self.load(pyfile.url)
         images = set(re.findall(r'(images\.4chan\.org/[^/]*/src/[^"<]+)', pagehtml))
-        self.urls = ["http://" + image for image in images]
+        self.urls = [urlparse.urljoin("http://", image) for image in images]

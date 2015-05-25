@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import urlparse
 
 from module.common.json_layer import json_loads
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
@@ -35,7 +36,7 @@ class YibaishiwuCom(SimpleHoster):
 
         self.logDebug(('FREEUSER' if m.group(2) == 'download' else 'GUEST') + ' URL', url)
 
-        res = json_loads(self.load("http://115.com" + url, decode=False))
+        res = json_loads(self.load(urlparse.urljoin("http://115.com", url), decode=False))
         if "urls" in res:
             mirrors = res['urls']
 
