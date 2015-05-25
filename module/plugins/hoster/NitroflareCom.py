@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__    = "NitroflareCom"
     __type__    = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -27,6 +27,7 @@ class NitroflareCom(SimpleHoster):
 
     LINK_FREE_PATTERN = r'(https?://[\w\-]+\.nitroflare\.com/.+?)"'
 
+    RECAPTCHA_KEY        = "6Lenx_USAAAAAF5L1pmTWvWcH73dipAEzNnmNLgy"
     PREMIUM_ONLY_PATTERN = r'This file is available with Premium only'
     WAIT_PATTERN         = r'You have to wait .+?<'
     ERROR_PATTERN        = r'downloading is not possible'
