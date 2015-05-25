@@ -9,7 +9,7 @@ from module.utils import encode
 class UserAgentSwitcher(Hook):
     __name__    = "UserAgentSwitcher"
     __type__    = "hook"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __config__ = [("activated", "bool", "Activated"                , True                                                                      ),
                   ("useragent", "str" , "Custom user-agent string" , "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0")]
@@ -27,7 +27,7 @@ class UserAgentSwitcher(Hook):
 
 
     def downloadPreparing(self, pyfile):
-        useragent = encode(self.getConfig('useragent'))
+        useragent = self.getConfig('useragent').encode("utf8", "replace")  #@TODO: Remove `encode` in 0.4.10
         if useragent:
             self.logDebug("Use custom user-agent string: " + useragent)
             pyfile.plugin.req.http.c.setopt(pycurl.USERAGENT, useragent)
