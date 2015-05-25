@@ -86,7 +86,7 @@ class XFSHoster(SimpleHoster):
 
     def handleFree(self, pyfile):
         for i in xrange(1, 6):
-            self.logDebug("Getting download link: #%d" % i)
+            self.logDebug("Getting download link #%d" % i)
 
             self.checkErrors()
 

@@ -15,7 +15,7 @@ from module.plugins.Plugin import Base
 class CaptchaService(Base):
     __name__    = "CaptchaService"
     __type__    = "captcha"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
     __description__ = """Base captcha service plugin"""
     __license__     = "GPLv3"
@@ -28,6 +28,12 @@ class CaptchaService(Base):
     def __init__(self, plugin):
         self.plugin = plugin
         super(CaptchaService, self).__init__(plugin.core)
+
+
+    #@TODO: Recheck in 0.4.10
+    def fail(self, reason):
+        self.plugin.fail(reason)
+        raise AttributeError(reason)
 
 
     def detect_key(self, html=None):
@@ -45,7 +51,7 @@ class CaptchaService(Base):
 class ReCaptcha(CaptchaService):
     __name__    = "ReCaptcha"
     __type__    = "captcha"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __description__ = """ReCaptcha captcha service plugin"""
     __license__     = "GPLv3"
@@ -63,9 +69,7 @@ class ReCaptcha(CaptchaService):
             if hasattr(self.plugin, "html") and self.plugin.html:
                 html = self.plugin.html
             else:
-                errmsg = _("ReCaptcha html not found")
-                self.plugin.fail(errmsg)
-                raise TypeError(errmsg)
+                self.fail(_("ReCaptcha html not found"))
 
         m = re.search(self.KEY_V2_PATTERN, html) or re.search(self.KEY_V1_PATTERN, html)
         if m:
@@ -82,9 +86,7 @@ class ReCaptcha(CaptchaService):
             if self.detect_key(html):
                 key = self.key
             else:
-                errmsg = _("ReCaptcha key not found")
-                self.plugin.fail(errmsg)
-                raise TypeError(errmsg)
+                self.fail(_("ReCaptcha key not found"))
 
         if version in (1, 2):
             return getattr(self, "_challenge_v%s" % version)(key)
@@ -94,9 +96,7 @@ class ReCaptcha(CaptchaService):
             return self.challenge(key, self.plugin.html, version)
 
         else:
-            errmsg = _("ReCaptcha html not found")
-            self.plugin.fail(errmsg)
-            raise TypeError(errmsg)
+            self.fail(_("ReCaptcha html not found"))
 
 
     def _challenge_v1(self, key):
@@ -107,31 +107,27 @@ class ReCaptcha(CaptchaService):
             server    = re.search("server : '(.+?)',", html).group(1)
 
         except AttributeError:
-            errmsg = _("ReCaptcha challenge pattern not found")
-            self.plugin.fail(errmsg)
-            raise AttributeError(errmsg)
+            self.fail(_("ReCaptcha challenge pattern not found"))
 
         self.logDebug("Challenge: %s" % challenge)
 
-        return self.result(server, challenge, key) #, challenge
+        return self.result(server, challenge, key)
 
 
     def result(self, server, challenge, key):
-        self.plugin.req.load("http://www.google.com/recaptcha/api/js/recaptcha.js", cookies=True)
+        self.plugin.req.load("http://www.google.com/recaptcha/api/js/recaptcha.js")
         html = self.plugin.req.load("http://www.google.com/recaptcha/api/reload",
-                                    get={"c":challenge,
-                                         "k":key,
-                                         "reason":"i",
-                                         "type":"image"},
-                                    cookies=True)
-        
+                                    get={'c'     : challenge,
+                                         'k'     : key,
+                                         'reason': "i",
+                                         'type'  : "image"})
+
         try:
             challenge = re.search('\(\'(.+?)\',',html).group(1)
+
         except AttributeError:
-            errmsg = _("ReCaptcha second challenge pattern not found")
-            self.plugin.fail(errmsg)
-            raise AttributeError(errmsg)
-        
+            self.fail(_("ReCaptcha second challenge pattern not found"))
+
         self.logDebug("Second challenge: %s" %challenge)
         result = self.plugin.decryptCaptcha("%simage" % server,
                                             get={'c': challenge},
@@ -251,7 +247,7 @@ class ReCaptcha(CaptchaService):
 class AdsCaptcha(CaptchaService):
     __name__    = "AdsCaptcha"
     __type__    = "captcha"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __description__ = """AdsCaptcha captcha service plugin"""
     __license__     = "GPLv3"
@@ -267,15 +263,13 @@ class AdsCaptcha(CaptchaService):
             if hasattr(self.plugin, "html") and self.plugin.html:
                 html = self.plugin.html
             else:
-                errmsg = _("AdsCaptcha html not found")
-                self.plugin.fail(errmsg)
-                raise TypeError(errmsg)
+                self.fail(_("AdsCaptcha html not found"))
 
         m = re.search(self.PUBLICKEY_PATTERN, html)
         n = re.search(self.CAPTCHAID_PATTERN, html)
         if m and n:
             self.key = (m.group(1).strip(), n.group(1).strip())  #: key is the tuple(PublicKey, CaptchaId)
-            self.logDebug("Key|id: %s | %s" % self.key)
+            self.logDebug("Key: %s | ID: %s" % self.key)
             return self.key
         else:
             self.logDebug("Key or id not found")
@@ -287,9 +281,7 @@ class AdsCaptcha(CaptchaService):
             if self.detect_key(html):
                 key = self.key
             else:
-                errmsg = _("AdsCaptcha key not found")
-                self.plugin.fail(errmsg)
-                raise TypeError(errmsg)
+                self.fail(_("AdsCaptcha key not found"))
 
         PublicKey, CaptchaId = key
 
@@ -301,9 +293,7 @@ class AdsCaptcha(CaptchaService):
             server    = re.search("server: '(.+?)',", html).group(1)
 
         except AttributeError:
-            errmsg = _("AdsCaptcha challenge pattern not found")
-            self.plugin.fail(errmsg)
-            raise AttributeError(errmsg)
+            self.fail(_("AdsCaptcha challenge pattern not found"))
 
         self.logDebug("Challenge: %s" % challenge)
 
@@ -324,7 +314,7 @@ class AdsCaptcha(CaptchaService):
 class SolveMedia(CaptchaService):
     __name__    = "SolveMedia"
     __type__    = "captcha"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __description__ = """SolveMedia captcha service plugin"""
     __license__     = "GPLv3"
@@ -339,9 +329,7 @@ class SolveMedia(CaptchaService):
             if hasattr(self.plugin, "html") and self.plugin.html:
                 html = self.plugin.html
             else:
-                errmsg = _("SolveMedia html not found")
-                self.plugin.fail(errmsg)
-                raise TypeError(errmsg)
+                self.fail(_("SolveMedia html not found"))
 
         m = re.search(self.KEY_PATTERN, html)
         if m:
@@ -358,65 +346,62 @@ class SolveMedia(CaptchaService):
             if self.detect_key(html):
                 key = self.key
             else:
-                errmsg = _("SolveMedia key not found")
-                self.plugin.fail(errmsg)
-                raise TypeError(errmsg)
+                self.fail(_("SolveMedia key not found"))
 
         html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript",
                                     get={'k': key})
-        try:
-            challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="(.+?)">',
-                                  html).group(1)
-            server    = "http://api.solvemedia.com/papi/media"
 
-        except AttributeError:
-            errmsg = _("SolveMedia challenge pattern not found")
-            self.plugin.fail(errmsg)
-            raise AttributeError(errmsg)
-
-        self.logDebug("Challenge: %s" % challenge)
-
-        result = self.result(server, challenge)
-
-        try:
-            magic = re.search(r'name="magic" value="(.+?)"', html).group(1)
-
-        except AttributeError:
-            self.logDebug("Magic code not found")
-
-        else:
-            if not self._verify(key, magic, result, challenge):
-                self.logDebug("Captcha code was invalid")
-
-        return result, challenge
-
-
-    def _verify(self, key, magic, result, challenge, ref=None):  #@TODO: Clean up
-        if ref is None:
+        for i in xrange(1, 11):
             try:
-                ref = self.plugin.pyfile.url
+                magic = re.search(r'name="magic" value="(.+?)"', html).group(1)
+
+            except AttributeError:
+                self.logWarning("Magic pattern not found")
+                magic = None
+
+            try:
+                challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="(.+?)">',
+                                      html).group(1)
+
+            except AttributeError:
+                self.fail(_("SolveMedia challenge pattern not found"))
+
+            else:
+                self.logDebug("Challenge: %s" % challenge)
+
+            try:
+                result = self.result("http://api.solvemedia.com/papi/media", challenge)
 
             except Exception:
-                ref = ""
+                result = None
 
-        html = self.plugin.req.load("http://api.solvemedia.com/papi/verify.noscript",
-                                    post={'adcopy_response'  : result,
-                                          'k'                : key,
-                                          'l'                : "en",
-                                          't'                : "img",
-                                          's'                : "standard",
-                                          'magic'            : magic,
-                                          'adcopy_challenge' : challenge,
-                                          'ref'              : ref})
-        try:
-            html      = self.plugin.req.load(re.search(r'URL=(.+?)">', html).group(1))
-            gibberish = re.search(r'id=gibberish>(.+?)</textarea>', html).group(1)
+            html = self.plugin.req.load("http://api.solvemedia.com/papi/verify.noscript",
+                                        post={'adcopy_response' : result,
+                                              'k'               : key,
+                                              'l'               : "en",
+                                              't'               : "img",
+                                              's'               : "standard",
+                                              'magic'           : magic,
+                                              'adcopy_challenge': challenge,
+                                              'ref'             : self.plugin.pyfile.url})
+            try:
+                redirect = re.search(r'URL=(.+?)">', html).group(1)
 
-        except Exception:
-            return False
+            except AttributeError:
+                self.fail(_("SolveMedia verify pattern not found"))
+
+            else:
+                if "error" in html:
+                    self.logError("Captcha code was invalid")
+                    self.logDebug("Retry #%d" % i)
+                    html = self.plugin.req.load(redirect)
+                else:
+                    break
 
         else:
-            return True
+            self.fail(_("SolveMedia max retries exceeded"))
+
+        return result, challenge
 
 
     def result(self, server, challenge):
@@ -433,7 +418,7 @@ class SolveMedia(CaptchaService):
 class AdYouLike(CaptchaService):
     __name__    = "AdYouLike"
     __type__    = "captcha"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __description__ = """AdYouLike captcha service plugin"""
     __license__     = "GPLv3"
@@ -449,15 +434,13 @@ class AdYouLike(CaptchaService):
             if hasattr(self.plugin, "html") and self.plugin.html:
                 html = self.plugin.html
             else:
-                errmsg = _("AdYouLike html not found")
-                self.plugin.fail(errmsg)
-                raise TypeError(errmsg)
+                self.fail(_("AdYouLike html not found"))
 
         m = re.search(self.AYL_PATTERN, html)
         n = re.search(self.CALLBACK_PATTERN, html)
         if m and n:
             self.key = (m.group(1).strip(), n.group(1).strip())
-            self.logDebug("Ayl|callback: %s | %s" % self.key)
+            self.logDebug("Ayl: %s | Callback: %s" % self.key)
             return self.key   #: key is the tuple(ayl, callback)
         else:
             self.logDebug("Ayl or callback not found")
@@ -469,9 +452,7 @@ class AdYouLike(CaptchaService):
             if self.detect_key(html):
                 key = self.key
             else:
-                errmsg = _("AdYouLike key not found")
-                self.plugin.fail(errmsg)
-                raise TypeError(errmsg)
+                self.fail(_("AdYouLike key not found"))
 
         ayl, callback = key
 
@@ -487,9 +468,7 @@ class AdYouLike(CaptchaService):
             challenge = json_loads(re.search(callback + r'\s*\((.+?)\)', html).group(1))
 
         except AttributeError:
-            errmsg = _("AdYouLike challenge pattern not found")
-            self.plugin.fail(errmsg)
-            raise AttributeError(errmsg)
+            self.fail(_("AdYouLike challenge pattern not found"))
 
         self.logDebug("Challenge: %s" % challenge)
 
@@ -518,9 +497,7 @@ class AdYouLike(CaptchaService):
             result = re.search(u'«(.+?)»', instructions_visual).group(1).strip()
 
         except AttributeError:
-            errmsg = _("AdYouLike result not found")
-            self.plugin.fail(errmsg)
-            raise AttributeError(errmsg)
+            self.fail(_("AdYouLike result not found"))
 
         result = {'_ayl_captcha_engine' : "adyoulike",
                   '_ayl_env'            : server['all']['env'],
