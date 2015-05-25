@@ -4,6 +4,7 @@
 #   https://drive.google.com/file/d/0B6RNTe4ygItBQm15RnJiTmMyckU/view?pli=1
 
 import re
+import urlparse
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.utils import html_unescape
@@ -12,9 +13,9 @@ from module.utils import html_unescape
 class GoogledriveCom(SimpleHoster):
     __name__    = "GoogledriveCom"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
-    __pattern__ = r'https?://(?:www\.)?drive\.google\.com/file/.+'
+    __pattern__ = r'https?://(?:www\.)?(drive|docs)\.google\.com/file/d/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Drive.google.com hoster plugin"""
@@ -57,7 +58,7 @@ class GoogledriveCom(SimpleHoster):
         else:
             self.logDebug("Next hop: %s" % link2)
 
-        link3 = self.load("https://docs.google.com" + link2, just_header=True)
+        link3 = self.load(urlparse.urljoin("https://docs.google.com", link2), just_header=True)
         self.logDebug("DL-Link: %s" % link3['location'])
 
         self.link = link3['location']
