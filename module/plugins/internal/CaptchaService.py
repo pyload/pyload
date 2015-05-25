@@ -8,14 +8,14 @@ import urlparse
 from base64 import b64encode
 
 from module.common.json_layer import json_loads
-from module.plugins.Plugin import Base
+from module.plugins.Plugin import Base, Fail
 
 
 #@TODO: Extend (new) Plugin class; remove all `html` args
 class CaptchaService(Base):
     __name__    = "CaptchaService"
     __type__    = "captcha"
-    __version__ = "0.28"
+    __version__ = "0.29"
 
     __description__ = """Base captcha service plugin"""
     __license__     = "GPLv3"
@@ -36,6 +36,22 @@ class CaptchaService(Base):
         raise AttributeError(reason)
 
 
+    #@TODO: Recheck in 0.4.10
+    def retrieve_key(self, html):
+        if self.detect_key(html):
+            return self.key
+        else:
+            self.fail(_("%s key not found") % self.__name__)
+
+
+    #@TODO: Recheck in 0.4.10
+    def retrieve_html(self):
+        if hasattr(self.plugin, "html") and self.plugin.html:
+            return self.plugin.html
+        else:
+            self.fail(_("%s html not found") % self.__name__)
+
+
     def detect_key(self, html=None):
         raise NotImplementedError
 
@@ -46,6 +62,148 @@ class CaptchaService(Base):
 
     def result(self, server, challenge):
         raise NotImplementedError
+
+
+class AdYouLike(CaptchaService):
+    __name__    = "AdYouLike"
+    __type__    = "captcha"
+    __version__ = "0.06"
+
+    __description__ = """AdYouLike captcha service plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+
+
+    AYL_PATTERN      = r'Adyoulike\.create\s*\((.+?)\)'
+    CALLBACK_PATTERN = r'(Adyoulike\.g\._jsonp_\d+)'
+
+
+    def detect_key(self, html=None):
+        html = html or self.retrieve_html()
+
+        m = re.search(self.AYL_PATTERN, html)
+        n = re.search(self.CALLBACK_PATTERN, html)
+        if m and n:
+            self.key = (m.group(1).strip(), n.group(1).strip())
+            self.logDebug("Ayl: %s | Callback: %s" % self.key)
+            return self.key   #: key is the tuple(ayl, callback)
+        else:
+            self.logWarning("Ayl or callback pattern not found")
+            return None
+
+
+    def challenge(self, key=None, html=None):
+        ayl, callback = key or self.retrieve_key(html)
+
+        # {"adyoulike":{"key":"P~zQ~O0zV0WTiAzC-iw0navWQpCLoYEP"},
+        # "all":{"element_id":"ayl_private_cap_92300","lang":"fr","env":"prod"}}
+        ayl = json_loads(ayl)
+
+        html = self.plugin.req.load("http://api-ayl.appspot.com/challenge",
+                                    get={'key'     : ayl['adyoulike']['key'],
+                                         'env'     : ayl['all']['env'],
+                                         'callback': callback})
+        try:
+            challenge = json_loads(re.search(callback + r'\s*\((.+?)\)', html).group(1))
+
+        except AttributeError:
+            self.fail(_("AdYouLike challenge pattern not found"))
+
+        self.logDebug("Challenge: %s" % challenge)
+
+        return self.result(ayl, challenge), challenge
+
+
+    def result(self, server, challenge):
+        # Adyoulike.g._jsonp_5579316662423138
+        # ({"translations":{"fr":{"instructions_visual":"Recopiez « Soonnight » ci-dessous :"}},
+        # "site_under":true,"clickable":true,"pixels":{"VIDEO_050":[],"DISPLAY":[],"VIDEO_000":[],"VIDEO_100":[],
+        # "VIDEO_025":[],"VIDEO_075":[]},"medium_type":"image/adyoulike",
+        # "iframes":{"big":"<iframe src=\"http://www.soonnight.com/campagn.html\" scrolling=\"no\"
+        # height=\"250\" width=\"300\" frameborder=\"0\"></iframe>"},"shares":{},"id":256,
+        # "token":"e6QuI4aRSnbIZJg02IsV6cp4JQ9~MjA1","formats":{"small":{"y":300,"x":0,"w":300,"h":60},
+        # "big":{"y":0,"x":0,"w":300,"h":250},"hover":{"y":440,"x":0,"w":300,"h":60}},
+        # "tid":"SqwuAdxT1EZoi4B5q0T63LN2AkiCJBg5"})
+
+        if isinstance(server, basestring):
+            server = json_loads(server)
+
+        if isinstance(challenge, basestring):
+            challenge = json_loads(challenge)
+
+        try:
+            instructions_visual = challenge['translations'][server['all']['lang']]['instructions_visual']
+            result = re.search(u'«(.+?)»', instructions_visual).group(1).strip()
+
+        except AttributeError:
+            self.fail(_("AdYouLike result not found"))
+
+        result = {'_ayl_captcha_engine' : "adyoulike",
+                  '_ayl_env'            : server['all']['env'],
+                  '_ayl_tid'            : challenge['tid'],
+                  '_ayl_token_challenge': challenge['token'],
+                  '_ayl_response'       : response}
+
+        self.logDebug("Result: %s" % result)
+
+        return result
+
+
+class AdsCaptcha(CaptchaService):
+    __name__    = "AdsCaptcha"
+    __type__    = "captcha"
+    __version__ = "0.09"
+
+    __description__ = """AdsCaptcha captcha service plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
+
+
+    CAPTCHAID_PATTERN  = r'api\.adscaptcha\.com/Get\.aspx\?.*?CaptchaId=(\d+)'
+    PUBLICKEY_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?.*?PublicKey=([\w-]+)'
+
+
+    def detect_key(self, html=None):
+        html = html or self.retrieve_html()
+
+        m = re.search(self.PUBLICKEY_PATTERN, html)
+        n = re.search(self.CAPTCHAID_PATTERN, html)
+        if m and n:
+            self.key = (m.group(1).strip(), n.group(1).strip())  #: key is the tuple(PublicKey, CaptchaId)
+            self.logDebug("Key: %s | ID: %s" % self.key)
+            return self.key
+        else:
+            self.logWarning("Key or id pattern not found")
+            return None
+
+
+    def challenge(self, key=None, html=None):
+        PublicKey, CaptchaId = key or self.retrieve_key(html)
+
+        html = self.plugin.req.load("http://api.adscaptcha.com/Get.aspx",
+                                    get={'CaptchaId': CaptchaId,
+                                         'PublicKey': PublicKey})
+        try:
+            challenge = re.search("challenge: '(.+?)',", html).group(1)
+            server    = re.search("server: '(.+?)',", html).group(1)
+
+        except AttributeError:
+            self.fail(_("AdsCaptcha challenge pattern not found"))
+
+        self.logDebug("Challenge: %s" % challenge)
+
+        return self.result(server, challenge), challenge
+
+
+    def result(self, server, challenge):
+        result = self.plugin.decryptCaptcha("%sChallenge.aspx" % server,
+                                            get={'cid': challenge, 'dummy': random.random()},
+                                            cookies=True,
+                                            imgtype="jpg")
+
+        self.logDebug("Result: %s" % result)
+
+        return result
 
 
 class ReCaptcha(CaptchaService):
@@ -65,11 +223,7 @@ class ReCaptcha(CaptchaService):
 
 
     def detect_key(self, html=None):
-        if not html:
-            if hasattr(self.plugin, "html") and self.plugin.html:
-                html = self.plugin.html
-            else:
-                self.fail(_("ReCaptcha html not found"))
+        html = html or self.retrieve_html()
 
         m = re.search(self.KEY_V2_PATTERN, html) or re.search(self.KEY_V1_PATTERN, html)
         if m:
@@ -77,26 +231,19 @@ class ReCaptcha(CaptchaService):
             self.logDebug("Key: %s" % self.key)
             return self.key
         else:
-            self.logDebug("Key not found")
+            self.logWarning("Key pattern not found")
             return None
 
 
     def challenge(self, key=None, html=None, version=None):
-        if not key:
-            if self.detect_key(html):
-                key = self.key
-            else:
-                self.fail(_("ReCaptcha key not found"))
+        key = key or self.retrieve_key(html)
 
         if version in (1, 2):
             return getattr(self, "_challenge_v%s" % version)(key)
 
-        elif not html and hasattr(self.plugin, "html") and self.plugin.html:
-            version = 2 if re.search(self.KEY_V2_PATTERN, self.plugin.html) else 1
-            return self.challenge(key, self.plugin.html, version)
-
         else:
-            self.fail(_("ReCaptcha html not found"))
+            return self.challenge(key,
+                                  version=2 if re.search(self.KEY_V2_PATTERN, html or self.retrieve_html()) else 1)
 
 
     def _challenge_v1(self, key):
@@ -128,7 +275,7 @@ class ReCaptcha(CaptchaService):
         except AttributeError:
             self.fail(_("ReCaptcha second challenge pattern not found"))
 
-        self.logDebug("Second challenge: %s" %challenge)
+        self.logDebug("Second challenge: %s" % challenge)
         result = self.plugin.decryptCaptcha("%simage" % server,
                                             get={'c': challenge},
                                             cookies=True,
@@ -145,7 +292,7 @@ class ReCaptcha(CaptchaService):
         a    = re.search(r'po.src = \'(.*?)\';', html).group(1)
         vers = a.split("/")[5]
 
-        self.logDebug("API version: %s" %vers)
+        self.logDebug("API version: %s" % vers)
 
         language = a.split("__")[1].split(".")[0]
 
@@ -217,11 +364,11 @@ class ReCaptcha(CaptchaService):
         self.logDebug("Token #3: %s" % token3.group(1))
 
         millis_captcha_loading = int(round(time.time() * 1000))
-        captcha_response       = self.plugin.decryptCaptcha("https://www.google.com/recaptcha/api2/payload",
-                                                            get={'c':token3.group(1), 'k':key},
-                                                            cookies=True,
-                                                            forceUser=True)
-        response               = b64encode('{"response":"%s"}' % captcha_response)
+        captcha_response = self.plugin.decryptCaptcha("https://www.google.com/recaptcha/api2/payload",
+                                                      get={'c':token3.group(1), 'k':key},
+                                                      cookies=True,
+                                                      forceUser=True)
+        response = b64encode('{"response":"%s"}' % captcha_response)
 
         self.logDebug("Result: %s" % response)
 
@@ -244,73 +391,6 @@ class ReCaptcha(CaptchaService):
         return result, None
 
 
-class AdsCaptcha(CaptchaService):
-    __name__    = "AdsCaptcha"
-    __type__    = "captcha"
-    __version__ = "0.09"
-
-    __description__ = """AdsCaptcha captcha service plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("pyLoad Team", "admin@pyload.org")]
-
-
-    CAPTCHAID_PATTERN  = r'api\.adscaptcha\.com/Get\.aspx\?.*?CaptchaId=(\d+)'
-    PUBLICKEY_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?.*?PublicKey=([\w-]+)'
-
-
-    def detect_key(self, html=None):
-        if not html:
-            if hasattr(self.plugin, "html") and self.plugin.html:
-                html = self.plugin.html
-            else:
-                self.fail(_("AdsCaptcha html not found"))
-
-        m = re.search(self.PUBLICKEY_PATTERN, html)
-        n = re.search(self.CAPTCHAID_PATTERN, html)
-        if m and n:
-            self.key = (m.group(1).strip(), n.group(1).strip())  #: key is the tuple(PublicKey, CaptchaId)
-            self.logDebug("Key: %s | ID: %s" % self.key)
-            return self.key
-        else:
-            self.logDebug("Key or id not found")
-            return None
-
-
-    def challenge(self, key=None, html=None):
-        if not key:
-            if self.detect_key(html):
-                key = self.key
-            else:
-                self.fail(_("AdsCaptcha key not found"))
-
-        PublicKey, CaptchaId = key
-
-        html = self.plugin.req.load("http://api.adscaptcha.com/Get.aspx",
-                                    get={'CaptchaId': CaptchaId,
-                                         'PublicKey': PublicKey})
-        try:
-            challenge = re.search("challenge: '(.+?)',", html).group(1)
-            server    = re.search("server: '(.+?)',", html).group(1)
-
-        except AttributeError:
-            self.fail(_("AdsCaptcha challenge pattern not found"))
-
-        self.logDebug("Challenge: %s" % challenge)
-
-        return self.result(server, challenge), challenge
-
-
-    def result(self, server, challenge):
-        result = self.plugin.decryptCaptcha("%sChallenge.aspx" % server,
-                                            get={'cid': challenge, 'dummy': random.random()},
-                                            cookies=True,
-                                            imgtype="jpg")
-
-        self.logDebug("Result: %s" % result)
-
-        return result
-
-
 class SolveMedia(CaptchaService):
     __name__    = "SolveMedia"
     __type__    = "captcha"
@@ -325,11 +405,7 @@ class SolveMedia(CaptchaService):
 
 
     def detect_key(self, html=None):
-        if not html:
-            if hasattr(self.plugin, "html") and self.plugin.html:
-                html = self.plugin.html
-            else:
-                self.fail(_("SolveMedia html not found"))
+        html = html or self.retrieve_html()
 
         m = re.search(self.KEY_PATTERN, html)
         if m:
@@ -337,16 +413,12 @@ class SolveMedia(CaptchaService):
             self.logDebug("Key: %s" % self.key)
             return self.key
         else:
-            self.logDebug("Key not found")
+            self.logWarning("Key pattern not found")
             return None
 
 
     def challenge(self, key=None, html=None):
-        if not key:
-            if self.detect_key(html):
-                key = self.key
-            else:
-                self.fail(_("SolveMedia key not found"))
+        key = key or self.retrieve_key(html)
 
         html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript",
                                     get={'k': key})
@@ -372,7 +444,9 @@ class SolveMedia(CaptchaService):
             try:
                 result = self.result("http://api.solvemedia.com/papi/media", challenge)
 
-            except Exception:
+            except Fail, e:
+                self.logWarning(e)
+                self.plugin.invalidCaptcha()
                 result = None
 
             html = self.plugin.req.load("http://api.solvemedia.com/papi/verify.noscript",
@@ -392,7 +466,7 @@ class SolveMedia(CaptchaService):
 
             else:
                 if "error" in html:
-                    self.logError("Captcha code was invalid")
+                    self.logWarning("Captcha code was invalid")
                     self.logDebug("Retry #%d" % i)
                     html = self.plugin.req.load(redirect)
                 else:
@@ -409,101 +483,6 @@ class SolveMedia(CaptchaService):
                                             get={'c': challenge},
                                             cookies=True,
                                             imgtype="gif")
-
-        self.logDebug("Result: %s" % result)
-
-        return result
-
-
-class AdYouLike(CaptchaService):
-    __name__    = "AdYouLike"
-    __type__    = "captcha"
-    __version__ = "0.06"
-
-    __description__ = """AdYouLike captcha service plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
-
-
-    AYL_PATTERN      = r'Adyoulike\.create\s*\((.+?)\)'
-    CALLBACK_PATTERN = r'(Adyoulike\.g\._jsonp_\d+)'
-
-
-    def detect_key(self, html=None):
-        if not html:
-            if hasattr(self.plugin, "html") and self.plugin.html:
-                html = self.plugin.html
-            else:
-                self.fail(_("AdYouLike html not found"))
-
-        m = re.search(self.AYL_PATTERN, html)
-        n = re.search(self.CALLBACK_PATTERN, html)
-        if m and n:
-            self.key = (m.group(1).strip(), n.group(1).strip())
-            self.logDebug("Ayl: %s | Callback: %s" % self.key)
-            return self.key   #: key is the tuple(ayl, callback)
-        else:
-            self.logDebug("Ayl or callback not found")
-            return None
-
-
-    def challenge(self, key=None, html=None):
-        if not key:
-            if self.detect_key(html):
-                key = self.key
-            else:
-                self.fail(_("AdYouLike key not found"))
-
-        ayl, callback = key
-
-        # {"adyoulike":{"key":"P~zQ~O0zV0WTiAzC-iw0navWQpCLoYEP"},
-        # "all":{"element_id":"ayl_private_cap_92300","lang":"fr","env":"prod"}}
-        ayl = json_loads(ayl)
-
-        html = self.plugin.req.load("http://api-ayl.appspot.com/challenge",
-                                    get={'key'     : ayl['adyoulike']['key'],
-                                         'env'     : ayl['all']['env'],
-                                         'callback': callback})
-        try:
-            challenge = json_loads(re.search(callback + r'\s*\((.+?)\)', html).group(1))
-
-        except AttributeError:
-            self.fail(_("AdYouLike challenge pattern not found"))
-
-        self.logDebug("Challenge: %s" % challenge)
-
-        return self.result(ayl, challenge), challenge
-
-
-    def result(self, server, challenge):
-        # Adyoulike.g._jsonp_5579316662423138
-        # ({"translations":{"fr":{"instructions_visual":"Recopiez « Soonnight » ci-dessous :"}},
-        # "site_under":true,"clickable":true,"pixels":{"VIDEO_050":[],"DISPLAY":[],"VIDEO_000":[],"VIDEO_100":[],
-        # "VIDEO_025":[],"VIDEO_075":[]},"medium_type":"image/adyoulike",
-        # "iframes":{"big":"<iframe src=\"http://www.soonnight.com/campagn.html\" scrolling=\"no\"
-        # height=\"250\" width=\"300\" frameborder=\"0\"></iframe>"},"shares":{},"id":256,
-        # "token":"e6QuI4aRSnbIZJg02IsV6cp4JQ9~MjA1","formats":{"small":{"y":300,"x":0,"w":300,"h":60},
-        # "big":{"y":0,"x":0,"w":300,"h":250},"hover":{"y":440,"x":0,"w":300,"h":60}},
-        # "tid":"SqwuAdxT1EZoi4B5q0T63LN2AkiCJBg5"})
-
-        if isinstance(server, basestring):
-            server = json_loads(server)
-
-        if isinstance(challenge, basestring):
-            challenge = json_loads(challenge)
-
-        try:
-            instructions_visual = challenge['translations'][server['all']['lang']]['instructions_visual']
-            result = re.search(u'«(.+?)»', instructions_visual).group(1).strip()
-
-        except AttributeError:
-            self.fail(_("AdYouLike result not found"))
-
-        result = {'_ayl_captcha_engine' : "adyoulike",
-                  '_ayl_env'            : server['all']['env'],
-                  '_ayl_tid'            : challenge['tid'],
-                  '_ayl_token_challenge': challenge['token'],
-                  '_ayl_response'       : response}
 
         self.logDebug("Result: %s" % result)
 
