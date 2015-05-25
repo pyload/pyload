@@ -5,13 +5,13 @@ import urlparse
 
 from module.plugins.Crypter import Crypter
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns, set_cookies
-from module.utils import fixup
+from module.utils import fixup, html_unescape
 
 
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.45"
+    __version__ = "0.46"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),  #: Overrides core.config['general']['folder_per_package']
@@ -152,8 +152,10 @@ class SimpleCrypter(Crypter, SimpleHoster):
         url_p   = urlparse.urlparse(self.pyfile.url)
         baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
 
-        return [(urlparse.urljoin(baseurl, link) if not urlparse.urlparse(link).scheme else link).decode('unicode-escape') \
-                for link in re.findall(self.LINK_PATTERN, self.html)]
+        links = [urlparse.urljoin(baseurl, link) if not urlparse.urlparse(link).scheme else link \
+                 for link in re.findall(self.LINK_PATTERN, self.html)]
+
+        return [html_unescape(l.decode('unicode-escape')) for l in links]
 
 
     def handlePages(self, pyfile):

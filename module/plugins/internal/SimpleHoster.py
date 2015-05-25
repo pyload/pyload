@@ -14,7 +14,7 @@ from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
 from module.plugins.Plugin import Fail, Retry
-from module.utils import fixup, fs_encode, parseFileSize
+from module.utils import fixup, fs_encode, html_unescape, parseFileSize
 
 
 #@TODO: Adapt and move to PyFile in 0.4.10
@@ -239,7 +239,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.48"
+    __version__ = "1.49"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -504,15 +504,19 @@ class SimpleHoster(Hoster):
 
 
     def downloadLink(self, link, disposition=True):
-        if link and isinstance(link, basestring):
-            self.correctCaptcha()
+        if not link or not isinstance(link, basestring):
+            return
 
-            if not urlparse.urlparse(link).scheme:
-                url_p   = urlparse.urlparse(self.pyfile.url)
-                baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
-                link    = urlparse.urljoin(baseurl, link)
+        self.correctCaptcha()
 
-            self.download(link, ref=False, disposition=disposition)
+        link = html_unescape(link.decode('unicode-escape'))  #@TODO: Move this check to plugin `load` method
+
+        if not urlparse.urlparse(link).scheme:
+            url_p   = urlparse.urlparse(self.pyfile.url)
+            baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
+            link    = urlparse.urljoin(baseurl, link)
+
+        self.download(link, ref=False, disposition=disposition)
 
 
     def checkFile(self, rules={}):
@@ -794,7 +798,8 @@ class SimpleHoster(Hoster):
             return size <= traffic
 
 
-    def getConfig(self, option, default=''):  #@TODO: Remove in 0.4.10
+    #@TODO: Remove in 0.4.10
+    def getConfig(self, option, default=''):
         """getConfig with default value - sublass may not implements all config options"""
         try:
             return self.getConf(option)

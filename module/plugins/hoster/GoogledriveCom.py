@@ -13,7 +13,7 @@ from module.utils import html_unescape
 class GoogledriveCom(SimpleHoster):
     __name__    = "GoogledriveCom"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __pattern__ = r'https?://(?:www\.)?(drive|docs)\.google\.com/file/d/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -28,6 +28,8 @@ class GoogledriveCom(SimpleHoster):
     NAME_PATTERN    = r'"og:title" content="(?P<N>.*?)">'
     OFFLINE_PATTERN = r'align="center"><p class="errorMessage"'
 
+    LINK_FREE_PATTERN = r'"([^"]+uc\?.*?)"'
+
 
     def setup(self):
         self.multiDL        = True
@@ -36,32 +38,23 @@ class GoogledriveCom(SimpleHoster):
 
 
     def handleFree(self, pyfile):
-        try:
-            link1 = re.search(r'"(https://docs.google.com/uc\?id.*?export=download)",',
-                              self.html.decode('unicode-escape')).group(1)
+        for _i in xrange(2):
+            m = re.search(self.LINK_FREE_PATTERN, self.html)
 
-        except AttributeError:
-            self.error(_("Hop #1 not found"))
+            if m is None:
+                self.error(_("Free download link not found"))
 
-        else:
-            self.logDebug("Next hop: %s" % link1)
+            else:
+                link = html_unescape(m.group(1).decode('unicode-escape'))
+                if not urlparse.urlparse(link).scheme:
+                    link = urlparse.urljoin("https://docs.google.com/", link)
 
-        self.html = self.load(link1).decode('unicode-escape')
-
-        try:
-            link2 = html_unescape(re.search(r'href="(/uc\?export=download.*?)">',
-                                  self.html).group(1))
-
-        except AttributeError:
-            self.error(_("Hop #2 not found"))
-
-        else:
-            self.logDebug("Next hop: %s" % link2)
-
-        link3 = self.load(urlparse.urljoin("https://docs.google.com", link2), just_header=True)
-        self.logDebug("DL-Link: %s" % link3['location'])
-
-        self.link = link3['location']
+                direct_link = self.directLink(link, False)
+                if not direct_link:
+                    self.html = self.load(link, decode=True)
+                else:
+                    self.link = direct_link
+                    break
 
 
 getInfo = create_getInfo(GoogledriveCom)
