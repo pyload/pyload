@@ -9,7 +9,7 @@ from module.plugins.Hook import Hook, Expose
 class AndroidPhoneNotify(Hook):
     __name__    = "AndroidPhoneNotify"
     __type__    = "hook"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __config__ = [("apikey"         , "str" , "API key"                                  , ""   ),
                   ("notifycaptcha"  , "bool", "Notify captcha request"                   , True ),
@@ -42,6 +42,10 @@ class AndroidPhoneNotify(Hook):
             return
 
         self.notify(_("Plugins updated"), str(type_plugins))
+
+
+    def coreReady(self):
+        self.key = self.getConfig('apikey')
 
 
     def coreExiting(self):
@@ -80,8 +84,9 @@ class AndroidPhoneNotify(Hook):
     def notify(self,
                event,
                msg="",
-               key=self.getConfig('apikey')):
+               key=None):
 
+        key = key or self.key
         if not key:
             return
 
@@ -99,7 +104,6 @@ class AndroidPhoneNotify(Hook):
         elif self.notifications >= self.getConf("sendpermin"):
             return
 
-
         getURL("http://www.notifymyandroid.com/publicapi/notify",
                get={'apikey'     : key,
                     'application': "pyLoad",
@@ -108,3 +112,5 @@ class AndroidPhoneNotify(Hook):
 
         self.last_notify    = time.time()
         self.notifications += 1
+
+        return True

@@ -9,10 +9,10 @@ from module.plugins.Hook import Hook, Expose
 class WindowsPhoneNotify(Hook):
     __name__    = "WindowsPhoneNotify"
     __type__    = "hook"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
-    __config__ = [("id"             , "str" , "Push ID"                                  , ""   ),
-                  ("url"            , "str" , "Push url"                                 , ""   ),
+    __config__ = [("push-id"        , "str" , "Push ID"                                  , ""   ),
+                  ("push-url"       , "str" , "Push url"                                 , ""   ),
                   ("notifycaptcha"  , "bool", "Notify captcha request"                   , True ),
                   ("notifypackage"  , "bool", "Notify package finished"                  , True ),
                   ("notifyprocessed", "bool", "Notify packages processed"                , True ),
@@ -43,6 +43,10 @@ class WindowsPhoneNotify(Hook):
             return
 
         self.notify(_("Plugins updated"), str(type_plugins))
+
+
+    def coreReady(self):
+        self.key = (self.getConfig('push-id'), self.getConfig('push-url'))
 
 
     def coreExiting(self):
@@ -87,10 +91,9 @@ class WindowsPhoneNotify(Hook):
     def notify(self,
                event,
                msg="",
-               key=(self.getConfig('id'), self.getConfig('url'))):
+               key=(None, None)):
 
-        id, url = key
-
+        id, url = key or self.key
         if not id or not url:
             return
 
@@ -108,7 +111,6 @@ class WindowsPhoneNotify(Hook):
         elif self.notifications >= self.getConf("sendpermin"):
             return
 
-
         request    = self.getXmlData("%s: %s" % (event, msg) if msg else event)
         webservice = httplib.HTTP(url)
 
@@ -124,3 +126,5 @@ class WindowsPhoneNotify(Hook):
 
         self.last_notify    = time.time()
         self.notifications += 1
+
+        return True
