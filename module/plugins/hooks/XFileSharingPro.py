@@ -22,7 +22,6 @@ class XFileSharingPro(Hook):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    # event_list = ["pluginConfigChanged"]
     interval   = 0  #@TODO: Remove in 0.4.10
     regexp     = {'hoster' : (r'https?://(?:www\.)?(?P<DOMAIN>[\w\-.^_]{3,63}(?:\.[a-zA-Z]{2,})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
                               r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:embed-)?\w+'),
@@ -48,6 +47,7 @@ class XFileSharingPro(Hook):
 
     def setup(self):
         self.info = {}  #@TODO: Remove in 0.4.10
+        # self.event_list = ["pluginConfigChanged"]
 
 
     def coreReady(self):

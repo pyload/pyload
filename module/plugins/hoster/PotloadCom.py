@@ -9,7 +9,7 @@ class PotloadCom(DeadHoster):
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?potload\.com/\w{12}'
-    __config__  = []
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """Potload.com hoster plugin"""
     __license__     = "GPLv3"

@@ -136,13 +136,12 @@ class ExtractArchive(Hook):
                        ("Immenz"        , "immenz@gmx.net"   )]
 
 
-    event_list = ["allDownloadsProcessed","packageDeleted"]
-
     NAME_REPLACEMENTS = [(r'\.part\d+\.rar$', ".part.rar")]
 
 
     def setup(self):
         self.info = {}  #@TODO: Remove in 0.4.10
+        self.event_list = ["allDownloadsProcessed","packageDeleted"]
 
         self.queue  = ArchiveQueue(self, "Queue")
         self.failed = ArchiveQueue(self, "Failed")

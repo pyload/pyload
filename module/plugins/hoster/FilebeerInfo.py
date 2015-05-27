@@ -9,7 +9,7 @@ class FilebeerInfo(DeadHoster):
     __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?filebeer\.info/(?!\d*~f)(?P<ID>\w+)'
-    __config__  = []
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """Filebeer.info plugin"""
     __license__     = "GPLv3"

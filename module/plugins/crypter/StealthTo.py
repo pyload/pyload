@@ -9,7 +9,7 @@ class StealthTo(DeadCrypter):
     __version__ = "0.20"
 
     __pattern__ = r'http://(?:www\.)?stealth\.to/folder/.+'
-    __config__  = []
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """Stealth.to decrypter plugin"""
     __license__     = "GPLv3"

@@ -15,8 +15,6 @@ class RestartFailed(Hook):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    # event_list = ["pluginConfigChanged"]
-
     MIN_CHECK_INTERVAL = 15 * 60  #: 15 minutes
 
 
@@ -37,7 +35,8 @@ class RestartFailed(Hook):
 
 
     def setup(self):
-        self.info     = {}  #@TODO: Remove in 0.4.10
+        self.info = {}  #@TODO: Remove in 0.4.10
+        # self.event_list = ["pluginConfigChanged"]
         self.interval = self.MIN_CHECK_INTERVAL
 
 

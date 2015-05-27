@@ -9,7 +9,7 @@ class DdlstorageCom(DeadHoster):
     __version__ = "1.02"
 
     __pattern__ = r'https?://(?:www\.)?ddlstorage\.com/\w+'
-    __config__  = []
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """DDLStorage.com hoster plugin"""
     __license__     = "GPLv3"

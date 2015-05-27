@@ -9,7 +9,7 @@ class DuploadOrgFolder(DeadCrypter):
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?dupload\.org/folder/\d+'
-    __config__  = []
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """Dupload.org folder decrypter plugin"""
     __license__     = "GPLv3"

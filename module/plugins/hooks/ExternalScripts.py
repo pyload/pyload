@@ -23,17 +23,18 @@ class ExternalScripts(Hook):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    event_list = ["archive_extract_failed", "archive_extracted"     ,
-                  "package_extract_failed", "package_extracted"     ,
-                  "all_archives_extracted", "all_archives_processed",
-                  "allDownloadsFinished"  , "allDownloadsProcessed" ,
-                  "packageDeleted"]
     interval   = 0  #@TODO: Remove in 0.4.10
 
 
     def setup(self):
         self.info    = {'oldip': None}
         self.scripts = {}
+
+        self.event_list = ["archive_extract_failed", "archive_extracted"     ,
+                           "package_extract_failed", "package_extracted"     ,
+                           "all_archives_extracted", "all_archives_processed",
+                           "allDownloadsFinished"  , "allDownloadsProcessed" ,
+                           "packageDeleted"]
 
         folders = ["pyload_start", "pyload_restart", "pyload_stop",
                    "before_reconnect", "after_reconnect",

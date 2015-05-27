@@ -17,14 +17,13 @@ class DeleteFinished(Hook):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    # event_list = ["pluginConfigChanged"]
-
     MIN_CHECK_INTERVAL = 1 * 60 * 60  #: 1 hour
 
 
     ## overwritten methods ##
     def setup(self):
-        self.info     = {}  #@TODO: Remove in 0.4.10
+        self.info = {}  #@TODO: Remove in 0.4.10
+        # self.event_list = ["pluginConfigChanged"]
         self.interval = self.MIN_CHECK_INTERVAL
 
 

@@ -49,8 +49,6 @@ class UpdateManager(Hook):
     SERVER_URL         = "http://updatemanager.pyload.org"
     MIN_CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
 
-    event_list = ["allDownloadsProcessed"]
-
 
     def coreReady(self):
         if self.checkonstart:
@@ -60,9 +58,12 @@ class UpdateManager(Hook):
 
 
     def setup(self):
-        self.interval = 10
         self.info     = {'pyload': False, 'version': None, 'plugins': False, 'last_check': time.time()}
         self.mtimes   = {}  #: store modification time for each plugin
+
+        self.event_list = ["allDownloadsProcessed"]
+
+        self.interval = 10
 
         if self.getConfig('checkonstart'):
             self.core.api.pauseServer()

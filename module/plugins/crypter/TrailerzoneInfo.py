@@ -9,7 +9,7 @@ class TrailerzoneInfo(DeadCrypter):
     __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?trailerzone\.info/.+'
-    __config__  = []
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """TrailerZone.info decrypter plugin"""
     __license__     = "GPLv3"

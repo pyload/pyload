@@ -17,5 +17,5 @@ class NetloadIn(DeadHoster):
                        ("RaNaN", "ranan@pyload.org"),
                        ("Gregy", "gregy@gregy.cz"  )]
 
-                       
+
 getInfo = create_getInfo(NetloadIn)

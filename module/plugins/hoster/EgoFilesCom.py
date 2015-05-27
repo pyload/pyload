@@ -9,7 +9,7 @@ class EgoFilesCom(DeadHoster):
     __version__ = "0.16"
 
     __pattern__ = r'https?://(?:www\.)?egofiles\.com/\w+'
-    __config__  = []
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """Egofiles.com hoster plugin"""
     __license__     = "GPLv3"

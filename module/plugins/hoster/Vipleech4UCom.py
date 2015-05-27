@@ -9,7 +9,7 @@ class Vipleech4UCom(DeadHoster):
     __version__ = "0.20"
 
     __pattern__ = r'http://(?:www\.)?vipleech4u\.com/manager\.php'
-    __config__  = []
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """Vipleech4u.com hoster plugin"""
     __license__     = "GPLv3"

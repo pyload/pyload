@@ -27,12 +27,14 @@ class AndroidPhoneNotify(Hook):
                        ("Walter Purcaro", "vuolter@gmail.com"      )]
 
 
-    event_list = ["allDownloadsProcessed", "plugin_updated"]
     interval   = 0  #@TODO: Remove in 0.4.10
 
 
     def setup(self):
-        self.info          = {}  #@TODO: Remove in 0.4.10
+        self.info = {}  #@TODO: Remove in 0.4.10
+
+        self.event_list = ["allDownloadsProcessed", "plugin_updated"]
+
         self.last_notify   = 0
         self.notifications = 0
 
