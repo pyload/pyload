@@ -9,7 +9,7 @@ class MediafireCom(SimpleHoster):
     __type__    = "hoster"
     __version__ = "0.88"
 
-    __pattern__ = r'https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)\w{15}'
+    __pattern__ = r'https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)(?P<ID>\w{15})'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Mediafire.com hoster plugin"""
@@ -40,8 +40,7 @@ class MediafireCom(SimpleHoster):
 
         if captcha_key:
             response, challenge = solvemedia.challenge(captcha_key)
-            dl_id = self.pyfile.url.split("/")[4]
-            self.html = self.load("http://www.mediafire.com/?%s" %dl_id,
+            self.html = self.load("http://www.mediafire.com/?" + self.info['pattern']['ID'],
                                   post={'adcopy_challenge': challenge,
                                         'adcopy_response' : response},
                                   decode=True)
