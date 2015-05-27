@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MediafireCom(SimpleHoster):
     __name__    = "MediafireCom"
     __type__    = "hoster"
-    __version__ = "0.87"
+    __version__ = "0.88"
 
     __pattern__ = r'https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)\w{15}'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -40,7 +40,8 @@ class MediafireCom(SimpleHoster):
 
         if captcha_key:
             response, challenge = solvemedia.challenge(captcha_key)
-            self.html = self.load(self.pyfile.url,
+            dl_id = self.pyfile.url.split("/")[4]
+            self.html = self.load("http://www.mediafire.com/?%s" %dl_id,
                                   post={'adcopy_challenge': challenge,
                                         'adcopy_response' : response},
                                   decode=True)
