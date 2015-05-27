@@ -13,9 +13,9 @@ from module.utils import html_unescape
 class GoogledriveCom(SimpleHoster):
     __name__    = "GoogledriveCom"
     __type__    = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
-    __pattern__ = r'https?://(?:www\.)?(drive|docs)\.google\.com/file/d/\w+'
+    __pattern__ = r'https?://(?:www\.)?(drive|docs)\.google\.com/(file/d/\w+|uc.+?)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Drive.google.com hoster plugin"""
@@ -38,6 +38,10 @@ class GoogledriveCom(SimpleHoster):
 
 
     def handleFree(self, pyfile):
+        if "export=download" in self.pyfile.url:
+            dl_id = self.pyfile.url.split("id=")[1]
+            self.html = self.load("https://docs.google.com/file/d/%s/edit" %dl_id)
+            self.pyfile.name = re.search(self.NAME_PATTERN,self.html).group(1)
         for _i in xrange(2):
             m = re.search(self.LINK_FREE_PATTERN, self.html)
 
