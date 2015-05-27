@@ -29,7 +29,7 @@ def exists(path):
 class UpdateManager(Hook):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "0.51"
+    __version__ = "0.52"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),
                   ("checkinterval", "int" , "Check interval in hours"                  , 8    ),
@@ -52,7 +52,10 @@ class UpdateManager(Hook):
 
     def coreReady(self):
         if self.checkonstart:
+            self.core.api.pauseServer()
             self.update()
+            if self.do_restart is False:
+                self.core.api.unpauseServer()
 
         self.initPeriodical()
 
@@ -136,16 +139,13 @@ class UpdateManager(Hook):
     def update(self):
         """ check for updates """
 
-        self.core.api.pauseServer()
-
         if self._update() is 2 and self.getConfig('autorestart'):
             if not self.core.api.statusDownloads():
                 self.core.api.restart()
             else:
                 self.do_restart = True
                 self.logWarning(_("Downloads are active, will restart once the download is done"))
-        else:
-            self.core.api.unpauseServer()
+                self.core.api.pauseServer()
 
 
     def _update(self):
