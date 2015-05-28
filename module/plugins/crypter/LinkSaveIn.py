@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleDereferer import SimpleDereferer
+from module.plugins.internal.SimpleDereferer import SimpleDereferer, create_getInfo
 
 
 class LinkSaveIn(SimpleDereferer):
     __name__    = "LinkSaveIn"
     __type__    = "crypter"
-    __version__ = "2.03"
+    __version__ = "2.04"
 
     __pattern__ = r'https?://(?:www\.)?linksave\.in/\w+'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
@@ -20,3 +20,6 @@ class LinkSaveIn(SimpleDereferer):
     COOKIES = [("linksave.in", "Linksave_Language", "english")]
 
     OFFLINE_PATTERN = r'>(Error )?404 -'
+
+
+getInfo = create_getInfo(LinkSaveIn)

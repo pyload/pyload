@@ -509,7 +509,7 @@ class SimpleHoster(Hoster):
 
         self.correctCaptcha()
 
-        link = html_unescape(link.decode('unicode-escape'))  #@TODO: Move this check to plugin `load` method
+        link = html_unescape(link.decode('unicode-escape'))  #@TODO: Move this check to plugin `load` method in 0.4.10
 
         if not urlparse.urlparse(link).scheme:
             url_p   = urlparse.urlparse(self.pyfile.url)

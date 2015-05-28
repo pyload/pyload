@@ -4,17 +4,17 @@ import re
 import urllib
 
 from module.plugins.Crypter import Crypter
-from module.plugins.internal.SimpleHoster import getFileURL, set_cookies
+from module.plugins.internal.SimpleHoster import create_getInfo, getFileURL, set_cookies
+from module.utils import html_unescape
 
 
 class SimpleDereferer(Crypter):
     __name__    = "SimpleDereferer"
     __type__    = "crypter"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
-                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """Simple dereferer plugin"""
     __license__     = "GPLv3"
@@ -91,7 +91,7 @@ class SimpleDereferer(Crypter):
 
     def getLink(self):
         try:
-            return re.search(self.LINK_PATTERN, self.html).group(1)
+            return html_unescape(re.search(self.LINK_PATTERN, self.html).group(1).decode('unicode-escape'))  #@TODO: Move this check to plugin `load` method in 0.4.10
 
         except Exception:
             pass
