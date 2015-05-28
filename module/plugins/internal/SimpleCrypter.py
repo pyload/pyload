@@ -155,7 +155,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
         links = [urlparse.urljoin(baseurl, link) if not urlparse.urlparse(link).scheme else link \
                  for link in re.findall(self.LINK_PATTERN, self.html)]
 
-        return [html_unescape(l.decode('unicode-escape')) for l in links]
+        return [html_unescape(l.strip().decode('unicode-escape')) for l in links]
 
 
     def handlePages(self, pyfile):

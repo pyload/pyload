@@ -175,7 +175,7 @@ def getFileURL(self, url, follow_location=None):
         if 'content-disposition' in header:
             link = url
 
-        elif 'location' in header and header['location'].strip():
+        elif 'location' in header and header['location']:
             location = header['location']
 
             if not urlparse.urlparse(location).scheme:
@@ -193,7 +193,7 @@ def getFileURL(self, url, follow_location=None):
         else:
             extension = os.path.splitext(urlparse.urlparse(url).path.split('/')[-1])[-1]
 
-            if 'content-type' in header and header['content-type'].strip():
+            if 'content-type' in header and header['content-type']:
                 mimetype = header['content-type'].split(';')[0].strip()
 
             elif extension:
@@ -509,7 +509,7 @@ class SimpleHoster(Hoster):
 
         self.correctCaptcha()
 
-        link = html_unescape(link.decode('unicode-escape'))  #@TODO: Move this check to plugin `load` method in 0.4.10
+        link = html_unescape(link.strip().decode('unicode-escape'))  #@TODO: Move this check to plugin `load` method in 0.4.10
 
         if not urlparse.urlparse(link).scheme:
             url_p   = urlparse.urlparse(self.pyfile.url)

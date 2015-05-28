@@ -9,7 +9,7 @@ class GooGl(SimpleDereferer):
     __type__    = "crypter"
     __version__ = "0.02"
 
-    __pattern__ = r'https?://(?:www\.)?goo\.gl/(\w+/)?\w+'
+    __pattern__ = r'https?://(?:www\.)?goo\.gl/([a-zA-Z]+/)?\w+'
 
     __description__ = """Goo.gl decrypter plugin"""
     __license__     = "GPLv3"
