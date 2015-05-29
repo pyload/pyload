@@ -4,7 +4,7 @@ import re
 import urllib
 
 from module.plugins.Crypter import Crypter
-from module.plugins.internal.SimpleHoster import create_getInfo, getFileURL, set_cookies
+from module.plugins.internal.SimpleHoster import create_getInfo, set_cookies
 from module.utils import html_unescape
 
 

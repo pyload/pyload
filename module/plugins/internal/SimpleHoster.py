@@ -239,7 +239,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.49"
+    __version__ = "1.50"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -492,7 +492,9 @@ class SimpleHoster(Hoster):
             self.checkFile()
 
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
-            if str(e) == _("No captcha result obtained in appropiate time by any of the plugins."):  #@TODO: Fix in 0.4.10
+            err = str(e)  #@TODO: Recheck in 0.4.10
+
+            if err == _("No captcha result obtained in appropiate time by any of the plugins."):  #@TODO: Fix in 0.4.10
                 self.checkFile()
 
             elif self.getConfig('fallback', True) and self.premium:
@@ -500,7 +502,7 @@ class SimpleHoster(Hoster):
                 self.retryFree()
 
             else:
-                raise Fail(e)
+                raise Fail(err)
 
 
     def downloadLink(self, link, disposition=True):
