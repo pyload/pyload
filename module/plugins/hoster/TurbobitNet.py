@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
+import binascii
+import pycurl
 import random
 import re
 import time
+import urllib
 
 from Crypto.Cipher import ARC4
-from binascii import hexlify, unhexlify
-from pycurl import HTTPHEADER
-from urllib import quote
 
 from module.network.RequestFactory import getURL
 from module.plugins.internal.CaptchaService import ReCaptcha
@@ -17,9 +17,10 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, t
 class TurbobitNet(SimpleHoster):
     __name__    = "TurbobitNet"
     __type__    = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.19"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """ Turbobit.net hoster plugin """
     __license__     = "GPLv3"
@@ -35,26 +36,29 @@ class TurbobitNet(SimpleHoster):
     SIZE_PATTERN = r'class="file-size">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'<h2>File Not Found</h2>|html\(\'File (?:was )?not found'
 
-    LINK_PATTERN = r'(/download/redirect/[^"\']+)'
+    LINK_FREE_PATTERN = LINK_PREMIUM_PATTERN = r'(/download/redirect/[^"\']+)'
+
     LIMIT_WAIT_PATTERN = r'<div id=\'timeout\'>(\d+)<'
+    CAPTCHA_PATTERN    = r'<img alt="Captcha" src="(.+?)"'
 
-    CAPTCHA_PATTERN = r'<img alt="Captcha" src="(.+?)"'
 
-
-    def handleFree(self):
-        self.url = "http://turbobit.net/download/free/%s" % self.info['pattern']['ID']
-        self.html = self.load(self.url, ref=True, decode=True)
+    def handleFree(self, pyfile):
+        self.html = self.load("http://turbobit.net/download/free/%s" % self.info['pattern']['ID'],
+                              decode=True)
 
         rtUpdate = self.getRtUpdate()
 
         self.solveCaptcha()
-        self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
-        self.url = self.getDownloadUrl(rtUpdate)
 
-        self.wait()
-        self.html = self.load(self.url)
-        self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With:"])
-        self.downloadFile()
+        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
+
+        self.html = self.load(self.getDownloadUrl(rtUpdate))
+
+        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
+
+        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        if m:
+            self.link = m.group(1)
 
 
     def solveCaptcha(self):
@@ -72,7 +76,7 @@ class TurbobitNet(SimpleHoster):
 
             if inputs['captcha_type'] == 'recaptcha':
                 recaptcha = ReCaptcha(self)
-                inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge()
+                inputs['recaptcha_response_field'], inputs['recaptcha_challenge_field'] = recaptcha.challenge()
             else:
                 m = re.search(self.CAPTCHA_PATTERN, self.html)
                 if m is None:
@@ -130,44 +134,35 @@ class TurbobitNet(SimpleHoster):
 
         for b in [1, 3]:
             self.jscode = "var id = \'%s\';var b = %d;var inn = \'%s\';%sout" % (
-                          self.info['pattern']['ID'], b, quote(fun), rtUpdate)
+                          self.info['pattern']['ID'], b, urllib.quote(fun), rtUpdate)
 
             try:
                 out = self.js.eval(self.jscode)
                 self.logDebug("URL", self.js.engine, out)
                 if out.startswith('/download/'):
                     return "http://turbobit.net%s" % out.strip()
+
             except Exception, e:
                 self.logError(e)
         else:
             if self.retries >= 2:
                 # retry with updated js
                 self.delStorage("rtUpdate")
-            self.retry()
+            else:
+                self.retry()
+
+        self.wait()
 
 
     def decrypt(self, data):
-        cipher = ARC4.new(hexlify('E\x15\xa1\x9e\xa3M\xa0\xc6\xa0\x84\xb6H\x83\xa8o\xa0'))
-        return unhexlify(cipher.encrypt(unhexlify(data)))
+        cipher = ARC4.new(binascii.hexlify('E\x15\xa1\x9e\xa3M\xa0\xc6\xa0\x84\xb6H\x83\xa8o\xa0'))
+        return binascii.unhexlify(cipher.encrypt(binascii.unhexlify(data)))
 
 
     def getLocalTimeString(self):
         lt = time.localtime()
         tz = time.altzone if lt.tm_isdst else time.timezone
         return "%s GMT%+03d%02d" % (time.strftime("%a %b %d %Y %H:%M:%S", lt), -tz // 3600, tz % 3600)
-
-
-    def handlePremium(self):
-        self.logDebug("Premium download as user %s" % self.user)
-        self.downloadFile()
-
-
-    def downloadFile(self):
-        m = re.search(self.LINK_PATTERN, self.html)
-        if m is None:
-            self.error(_("Download link not found"))
-        self.url = "http://turbobit.net" + m.group(1)
-        self.download(self.url)
 
 
 getInfo = create_getInfo(TurbobitNet)

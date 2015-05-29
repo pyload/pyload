@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import base64
 import binascii
 import re
 
@@ -15,7 +14,7 @@ from module.utils import html_unescape
 class LinkCryptWs(Crypter):
     __name__    = "LinkCryptWs"
     __type__    = "crypter"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'http://(?:www\.)?linkcrypt\.ws/(dir|container)/(?P<ID>\w+)'
 
@@ -57,7 +56,7 @@ class LinkCryptWs(Crypter):
             self.offline()
 
         if self.isKeyCaptchaProtected():
-            self.retry(4, 30, _("Can't handle Key-Captcha"))
+            self.retry(8, 15, _("Can't handle Key-Captcha"))
 
         if self.isCaptchaProtected():
             self.captcha = True
@@ -92,7 +91,7 @@ class LinkCryptWs(Crypter):
 
     def isOnline(self):
         if "<title>Linkcrypt.ws // Error 404</title>" in self.html:
-            self.logDebug("folder doesen't exist anymore")
+            self.logDebug("Folder doesn't exist anymore")
             return False
         else:
             return True
@@ -115,7 +114,7 @@ class LinkCryptWs(Crypter):
 
 
     def isKeyCaptchaProtected(self):
-        if re.search(r'Key[ -]', self.html, re.I):
+        if re.search(r'>If the folder does not open after klick on <', self.html, re.I):
             return True
         else:
             return False
@@ -132,7 +131,7 @@ class LinkCryptWs(Crypter):
 
 
     def unlockCaptchaProtection(self):
-        captcha_url  = re.search(r'<form.*?id\s*?=\s*?"captcha"[^>]*?>.*?<\s*?input.*?src="([^"]*?)"', self.html, re.I | re.S).group(1)
+        captcha_url  = re.search(r'<form.*?id\s*?=\s*?"captcha"[^>]*?>.*?<\s*?input.*?src="(.+?)"', self.html, re.I | re.S).group(1)
         captcha_code = self.decryptCaptcha(captcha_url, forceUser=True, imgtype="gif", result_type='positional')
 
         self.html = self.load(self.pyfile.url, post={"x": captcha_code[0], "y": captcha_code[1]})
@@ -191,23 +190,19 @@ class LinkCryptWs(Crypter):
         self.logDebug("Search for Web links ")
 
         package_links = []
-        pattern = r'<form action="http://linkcrypt.ws/out.html"[^>]*?>.*?<input[^>]*?value="([^"]*?)"[^>]*?name="file"'
+        pattern = r'<form action="http://linkcrypt.ws/out.html"[^>]*?>.*?<input[^>]*?value="(.+?)"[^>]*?name="file"'
         ids = re.findall(pattern, self.html, re.I | re.S)
 
         self.logDebug("Decrypting %d Web links" % len(ids))
 
         for idx, weblink_id in enumerate(ids):
             try:
-                self.logDebug("Decrypting Web link %d, %s" % (idx + 1, weblink_id))
-
                 res = self.load("http://linkcrypt.ws/out.html", post = {'file':weblink_id})
 
                 indexs = res.find("window.location =") + 19
                 indexe = res.find('"', indexs)
 
                 link2 = res[indexs:indexe]
-
-                self.logDebug(link2)
 
                 link2 = html_unescape(link2)
                 package_links.append(link2)
@@ -245,7 +240,7 @@ class LinkCryptWs(Crypter):
         for line in self.container_html:
             if type in line:
                 jseval = self.handle_javascript(line)
-                clink = re.search(r'href=["\']([^"\']*?)["\']',jseval,re.I)
+                clink = re.search(r'href=["\'](["\']+)', jseval, re.I)
 
                 if not clink:
                     continue
@@ -279,7 +274,7 @@ class LinkCryptWs(Crypter):
             (vcrypted, vjk) = self._getCipherParams(cnl_section)
             for (crypted, jk) in zip(vcrypted, vjk):
                 package_links.extend(self._getLinks(crypted, jk))
-        except:
+        except Exception:
             self.logError(_("Unable to decrypt CNL links (JS Error) try to get over links"))
             return self.handleWebLinks()
 
@@ -307,19 +302,15 @@ class LinkCryptWs(Crypter):
 
         self.logDebug("JsEngine returns value [%s]" % jreturn)
 
-        # Decode crypted
-        crypted = base64.standard_b64decode(crypted)
-
         # Decrypt
         Key  = key
         IV   = key
         obj  = AES.new(Key, AES.MODE_CBC, IV)
-        text = obj.decrypt(crypted)
+        text = obj.decrypt(crypted.decode('base64'))
 
         # Extract links
         text  = text.replace("\x00", "").replace("\r", "")
-        links = text.split("\n")
-        links = filter(lambda x: x != "", links)
+        links = filter(bool, text.split('\n'))
 
         # Log and return
         self.logDebug("Package has %d links" % len(links))

@@ -1,43 +1,40 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urlparse import urlparse
+import urlparse
 
 from module.plugins.Crypter import Crypter
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns, set_cookies
-from module.utils import fixup
+from module.utils import fixup, html_unescape
 
 
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.33"
+    __version__ = "0.46"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
-                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),  #: Overrides core.config['general']['folder_per_package']
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Simple decrypter plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it"),
-                       ("zoidberg", "zoidberg@mujmail.cz"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     """
     Following patterns should be defined by each crypter:
 
-      LINK_PATTERN: group(1) must be a download link or a regex to catch more links
+      LINK_PATTERN: Download link or regex to catch links in group(1)
         example: LINK_PATTERN = r'<div class="link"><a href="(.+?)"'
 
-      NAME_PATTERN: (optional) folder name or webpage title
+      NAME_PATTERN: (optional) folder name or page title
         example: NAME_PATTERN = r'<title>Files of: (?P<N>[^<]+) folder</title>'
 
-      OFFLINE_PATTERN: (optional) Checks if the file is yet available online
+      OFFLINE_PATTERN: (optional) Checks if the page is unreachable
         example: OFFLINE_PATTERN = r'File (deleted|not found)'
 
-      TEMP_OFFLINE_PATTERN: (optional) Checks if the file is temporarily offline
+      TEMP_OFFLINE_PATTERN: (optional) Checks if the page is temporarily unreachable
         example: TEMP_OFFLINE_PATTERN = r'Server maintainance'
 
 
@@ -71,25 +68,28 @@ class SimpleCrypter(Crypter, SimpleHoster):
     #@TODO: Remove in 0.4.10
     def init(self):
         account_name = (self.__name__ + ".py").replace("Folder.py", "").replace(".py", "")
-        account = self.core.accountManager.getAccountPlugin(account_name)
+        account      = self.pyfile.m.core.accountManager.getAccountPlugin(account_name)
 
         if account and account.canUse():
             self.user, data = account.selectAccount()
-            self.req = account.getAccountRequest(self.user)
-            self.premium = account.isPremium(self.user)
+            self.req        = account.getAccountRequest(self.user)
+            self.premium    = account.isPremium(self.user)
 
             self.account = account
 
 
     def prepare(self):
-        if self.LOGIN_ACCOUNT and not self.account:
-            self.fail(_("Required account not found"))
+        self.pyfile.error = ""  #@TODO: Remove in 0.4.10
+
+        self.info  = {}
+        self.html  = ""
+        self.links = []  #@TODO: Move to hoster class in 0.4.10
 
         if self.LOGIN_PREMIUM and not self.premium:
             self.fail(_("Required premium account not found"))
 
-        self.info  = {}
-        self.links = []
+        if self.LOGIN_ACCOUNT and not self.account:
+            self.fail(_("Required account not found"))
 
         self.req.setOption("timeout", 120)
 
@@ -103,36 +103,45 @@ class SimpleCrypter(Crypter, SimpleHoster):
         self.prepare()
 
         self.preload()
-
-        if self.html is None:
-            self.fail(_("No html retrieved"))
-
         self.checkInfo()
 
         self.links = self.getLinks()
 
         if hasattr(self, 'PAGES_PATTERN') and hasattr(self, 'loadPage'):
-            self.handleMultiPages()
+            self.handlePages(pyfile)
 
         self.logDebug("Package has %d links" % len(self.links))
 
         if self.links:
             self.packages = [(self.info['name'], self.links, self.info['folder'])]
 
+        elif not self.urls and not self.packages:  #@TODO: Remove in 0.4.10
+            self.fail(_("No link grabbed"))
 
-    def checkNameSize(self):
-        name = self.info['name']
-        url  = self.info['url']
 
-        if name and name != url:
-            self.pyfile.name = name
-        else:
-            self.pyfile.name = self.info['name'] = urlparse(name).path.split('/')[-1]
+    def checkNameSize(self, getinfo=True):
+        if not self.info or getinfo:
+            self.logDebug("File info (BEFORE): %s" % self.info)
+            self.info.update(self.getInfo(self.pyfile.url, self.html))
+            self.logDebug("File info (AFTER): %s"  % self.info)
 
-        folder = self.info['folder'] = self.pyfile.name
+        try:
+            url  = self.info['url'].strip()
+            name = self.info['name'].strip()
+            if name and name != url:
+                self.pyfile.name = name
 
-        self.logDebug("File name: %s" % self.pyfile.name,
-                      "File folder: %s" % folder)
+        except Exception:
+            pass
+
+        try:
+            folder = self.info['folder'] = self.pyfile.name
+
+        except Exception:
+            pass
+
+        self.logDebug("File name: %s"   % self.pyfile.name,
+                      "File folder: %s" % self.pyfile.name)
 
 
     def getLinks(self):
@@ -140,14 +149,19 @@ class SimpleCrypter(Crypter, SimpleHoster):
         Returns the links extracted from self.html
         You should override this only if it's impossible to extract links using only the LINK_PATTERN.
         """
-        return re.findall(self.LINK_PATTERN, self.html)
+        url_p   = urlparse.urlparse(self.pyfile.url)
+        baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
+
+        links = [urlparse.urljoin(baseurl, link) if not urlparse.urlparse(link).scheme else link \
+                 for link in re.findall(self.LINK_PATTERN, self.html)]
+
+        return [html_unescape(l.strip().decode('unicode-escape')) for l in links]
 
 
-    def handleMultiPages(self):
+    def handlePages(self, pyfile):
         try:
-            m = re.search(self.PAGES_PATTERN, self.html)
-            pages = int(m.group(1))
-        except:
+            pages = int(re.search(self.PAGES_PATTERN, self.html).group(1))
+        except Exception:
             pages = 1
 
         for p in xrange(2, pages + 1):

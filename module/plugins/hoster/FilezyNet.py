@@ -9,6 +9,7 @@ class FilezyNet(DeadHoster):
     __version__ = "0.20"
 
     __pattern__ = r'http://(?:www\.)?filezy\.net/\w{12}'
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """Filezy.net hoster plugin"""
     __license__     = "GPLv3"

@@ -6,8 +6,8 @@ from module.common.json_layer import json_loads
 from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
 from module.plugins.Plugin import chunks
-from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.SimpleHoster import secondsToMidnight
 from module.utils import parseFileSize
 
 
@@ -33,9 +33,9 @@ def checkFile(plugin, urls):
 class FileserveCom(Hoster):
     __name__    = "FileserveCom"
     __type__    = "hoster"
-    __version__ = "0.52"
+    __version__ = "0.54"
 
-    __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<ID>[^/]+).*'
+    __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<ID>[^/]+)'
 
     __description__ = """Fileserve.com hoster plugin"""
     __license__     = "GPLv3"
@@ -48,7 +48,7 @@ class FileserveCom(Hoster):
     URLS = ["http://www.fileserve.com/file/", "http://www.fileserve.com/link-checker.php",
             "http://www.fileserve.com/checkReCaptcha.php"]
     LINKCHECK_TR = r'<tr>\s*(<td>http://www\.fileserve\.com/file/.*?)</tr>'
-    LINKCHECK_TD = r'<td>(?:<[^>]*>|&nbsp;)*([^<]*)'
+    LINKCHECK_TD = r'<td>(?:<.*?>|&nbsp;)*([^<]*)'
 
     CAPTCHA_KEY_PATTERN = r'var reCAPTCHA_publickey=\'(.+?)\''
     LONG_WAIT_PATTERN = r'<li class="title">You need to wait (\d+) (\w+) to start another download\.</li>'
@@ -118,14 +118,16 @@ class FileserveCom(Hoster):
         self.logDebug(self.req.http.lastEffectiveURL)
 
         check = self.checkDownload({"expired": self.LINK_EXPIRED_PATTERN,
-                                    "wait": re.compile(self.LONG_WAIT_PATTERN),
-                                    "limit": self.DAILY_LIMIT_PATTERN})
+                                    "wait"   : re.compile(self.LONG_WAIT_PATTERN),
+                                    "limit"  : self.DAILY_LIMIT_PATTERN})
 
         if check == "expired":
             self.logDebug("Download link was expired")
             self.retry()
+
         elif check == "wait":
             self.doLongWait(self.lastCheck)
+
         elif check == "limit":
             self.logWarning(_("Download limited reached for today"))
             self.setWait(secondsToMidnight(gmt=2), True)
@@ -159,7 +161,7 @@ class FileserveCom(Hoster):
         recaptcha = ReCaptcha(self)
 
         for _i in xrange(5):
-            challenge, response = recaptcha.challenge(captcha_key)
+            response, challenge = recaptcha.challenge(captcha_key)
             res = json_loads(self.load(self.URLS[2],
                                        post={'recaptcha_challenge_field'  : challenge,
                                              'recaptcha_response_field'   : response,
@@ -204,12 +206,9 @@ class FileserveCom(Hoster):
 
         self.download(premium_url or self.pyfile.url)
 
-        if not premium_url:
-            check = self.checkDownload({"login": re.compile(self.NOT_LOGGED_IN_PATTERN)})
-
-            if check == "login":
-                self.account.relogin(self.user)
-                self.retry(reason=_("Not logged in"))
+        if not premium_url and self.checkDownload({"login": re.compile(self.NOT_LOGGED_IN_PATTERN)}):
+            self.account.relogin(self.user)
+            self.retry(reason=_("Not logged in"))
 
 
 def getInfo(urls):

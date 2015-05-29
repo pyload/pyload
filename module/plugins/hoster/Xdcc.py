@@ -6,8 +6,6 @@ import struct
 import sys
 import time
 
-from os import makedirs
-from os.path import exists, join
 from select import select
 
 from module.plugins.Hoster import Hoster
@@ -92,7 +90,10 @@ class Xdcc(Hoster):
             nick = "pyload-%d" % (time.time() % 1000)  # last 3 digits
         sock.send("NICK %s\r\n" % nick)
         sock.send("USER %s %s bla :%s\r\n" % (ident, host, real))
-        time.sleep(3)
+
+        self.setWait(3)
+        self.wait()
+
         sock.send("JOIN #%s\r\n" % chan)
         sock.send("PRIVMSG %s :xdcc send #%s\r\n" % (bot, pack))
 

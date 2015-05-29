@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import gmtime, mktime, strptime
-from urlparse import urljoin
+import time
+import urlparse
 
 from module.plugins.Account import Account
 from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
@@ -12,18 +11,19 @@ from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.33"
+    __version__ = "0.37"
 
     __description__ = """XFileSharing account plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("zoidberg"      , "zoidberg@mujmail.cz"),
+                       ("Walter Purcaro", "vuolter@gmail.com"  )]
 
 
     HOSTER_DOMAIN = None
     HOSTER_URL    = None
+    LOGIN_URL     = None
 
-    COOKIES = [(HOSTER_DOMAIN, "lang", "english")]
+    COOKIES = True
 
     PREMIUM_PATTERN = r'\(Premium only\)'
 
@@ -35,7 +35,7 @@ class XFSAccount(Account):
     LEECH_TRAFFIC_PATTERN = r'Leech Traffic left:<b>.*?(?P<S>[\d.,]+|[Uu]nlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>'
     LEECH_TRAFFIC_UNIT    = "MB"  #: used only if no group <U> was found
 
-    LOGIN_FAIL_PATTERN = r'>\s*(Incorrect Login or Password|Error<)'
+    LOGIN_FAIL_PATTERN = r'Incorrect Login or Password|account was banned|Error<'
 
 
     def __init__(self, manager, accounts):  #@TODO: remove in 0.4.10
@@ -46,9 +46,15 @@ class XFSAccount(Account):
     def init(self):
         if not self.HOSTER_DOMAIN:
             self.logError(_("Missing HOSTER_DOMAIN"))
+            self.COOKIES = False
 
-        if not self.HOSTER_URL:
-            self.HOSTER_URL = "http://www.%s/" % self.HOSTER_DOMAIN or ""
+        else:
+            if not self.HOSTER_URL:
+                self.HOSTER_URL = "http://www.%s/" % self.HOSTER_DOMAIN
+
+            if isinstance(self.COOKIES, list):
+                self.COOKIES.insert((self.HOSTER_DOMAIN, "lang", "english"))
+                set_cookies(req.cj, self.COOKIES)
 
 
     def loadAccountInfo(self, user, req):
@@ -56,6 +62,12 @@ class XFSAccount(Account):
         trafficleft  = None
         leechtraffic = None
         premium      = None
+
+        if not self.HOSTER_URL:  #@TODO: Remove in 0.4.10
+            return {'validuntil'  : validuntil,
+                    'trafficleft' : trafficleft,
+                    'leechtraffic': leechtraffic,
+                    'premium'     : premium}
 
         html = req.load(self.HOSTER_URL, get={'op': "my_account"}, decode=True)
 
@@ -67,7 +79,7 @@ class XFSAccount(Account):
             self.logDebug("Expire date: " + expiredate)
 
             try:
-                validuntil = mktime(strptime(expiredate, "%d %B %Y"))
+                validuntil = time.mktime(time.strptime(expiredate, "%d %B %Y"))
 
             except Exception, e:
                 self.logError(e)
@@ -75,11 +87,11 @@ class XFSAccount(Account):
             else:
                 self.logDebug("Valid until: %s" % validuntil)
 
-                if validuntil > mktime(gmtime()):
-                    premium = True
+                if validuntil > time.mktime(time.gmtime()):
+                    premium     = True
                     trafficleft = -1
                 else:
-                    premium = False
+                    premium    = False
                     validuntil = None  #: registered account type (not premium)
         else:
             self.logDebug("VALID_UNTIL_PATTERN not found")
@@ -136,25 +148,34 @@ class XFSAccount(Account):
         else:
             self.logDebug("LEECH_TRAFFIC_PATTERN not found")
 
-        return {'validuntil': validuntil, 'trafficleft': trafficleft, 'leechtraffic': leechtraffic, 'premium': premium}
+        return {'validuntil'  : validuntil,
+                'trafficleft' : trafficleft,
+                'leechtraffic': leechtraffic,
+                'premium'     : premium}
 
 
     def login(self, user, data, req):
-        if isinstance(self.COOKIES, list):
-            set_cookies(req.cj, self.COOKIES)
+        if not self.HOSTER_URL:  #@TODO: Remove in 0.4.10
+            raise Exception(_("Missing HOSTER_DOMAIN"))
 
-        url = urljoin(self.HOSTER_URL, "login.html")
-        html = req.load(url, decode=True)
+        if not self.LOGIN_URL:
+            self.LOGIN_URL  = urlparse.urljoin(self.HOSTER_URL, "login.html")
+        html = req.load(self.LOGIN_URL, decode=True)
 
         action, inputs = parseHtmlForm('name="FL"', html)
         if not inputs:
-            inputs = {'op': "login",
+            inputs = {'op'      : "login",
                       'redirect': self.HOSTER_URL}
 
-        inputs.update({'login': user,
+        inputs.update({'login'   : user,
                        'password': data['password']})
 
-        html = req.load(self.HOSTER_URL, post=inputs, decode=True)
+        if action:
+            url = urlparse.urljoin("http://", action)
+        else:
+            url = self.HOSTER_URL
+
+        html = req.load(url, post=inputs, decode=True)
 
         if re.search(self.LOGIN_FAIL_PATTERN, html):
             self.wrongPassword()

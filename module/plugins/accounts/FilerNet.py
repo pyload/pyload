@@ -9,14 +9,14 @@ from module.plugins.Account import Account
 class FilerNet(Account):
     __name__    = "FilerNet"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """Filer.net account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    TOKEN_PATTERN = r'_csrf_token" value="([^"]+)" />'
+    TOKEN_PATTERN = r'_csrf_token" value="(.+?)" />'
     WALID_UNTIL_PATTERN = r'Der Premium-Zugang ist gültig bis (.+)\.\s*</td>'
     TRAFFIC_PATTERN = r'Traffic</th>\s*<td>([^<]+)</td>'
     FREE_PATTERN = r'Account Status</th>\s*<td>\s*Free'
@@ -44,9 +44,16 @@ class FilerNet(Account):
 
     def login(self, user, data, req):
         html = req.load("https://filer.net/login")
+
         token = re.search(self.TOKEN_PATTERN, html).group(1)
+
         html = req.load("https://filer.net/login_check",
-                             post={"_username": user, "_password": data['password'],
-                                   "_remember_me": "on", "_csrf_token": token, "_target_path": "https://filer.net/"})
+                        post={"_username": user,
+                              "_password": data['password'],
+                              "_remember_me": "on",
+                              "_csrf_token": token,
+                              "_target_path": "https://filer.net/"},
+                        decode=True)
+
         if 'Logout' not in html:
             self.wrongPassword()

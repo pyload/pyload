@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urlparse import urljoin
+import urlparse
 
 from module.plugins.Account import Account
 
@@ -10,7 +9,7 @@ from module.plugins.Account import Account
 class UlozTo(Account):
     __name__    = "UlozTo"
     __type__    = "account"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __description__ = """Uloz.to account plugin"""
     __license__     = "GPLv3"
@@ -18,15 +17,11 @@ class UlozTo(Account):
                        ("pulpe", None)]
 
 
-    TRAFFIC_LEFT_PATTERN = r'<li class="menu-kredit"><a .*?title="[^"]*?GB = ([\d.]+) MB"'
+    TRAFFIC_LEFT_PATTERN = r'<li class="menu-kredit"><a .*?title=".+?GB = ([\d.]+) MB"'
 
 
     def loadAccountInfo(self, user, req):
-        self.phpsessid = req.cj.getCookie("ULOSESSID")  #@NOTE: this cookie gets lost somehow after each request
-
         html = req.load("http://www.ulozto.net/", decode=True)
-
-        req.cj.setCookie("ulozto.net", "ULOSESSID", self.phpsessid)
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
 
@@ -41,12 +36,13 @@ class UlozTo(Account):
         action     = re.findall('<form action="(.+?)"', login_page)[1].replace('&amp;', '&')
         token      = re.search('_token_" value="(.+?)"', login_page).group(1)
 
-        html = req.load(urljoin("http://www.ulozto.net/", action),
+        html = req.load(urlparse.urljoin("http://www.ulozto.net/", action),
                         post={'_token_' : token,
                               'do'      : "loginForm-submit",
                               'login'   : u"Přihlásit",
                               'password': data['password'],
-                              'username': user},
+                              'username': user,
+                              'remember': "on"},
                         decode=True)
 
         if '<div class="flash error">' in html:

@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
 import re
 import socket
 import ssl
 import time
+import traceback
 
-from pycurl import FORM_FILE
 from select import select
 from threading import Thread
-from time import sleep
-from traceback import print_exc
 
 from module.Api import PackageDoesNotExists, FileDoesNotExists
 from module.network.RequestFactory import getURL
@@ -38,15 +37,13 @@ class IRCInterface(Thread, Hook):
     __authors__     = [("Jeix", "Jeix@hasnomail.com")]
 
 
+    interval = 0  #@TODO: Remove in 0.4.10
+
+
     def __init__(self, core, manager):
         Thread.__init__(self)
         Hook.__init__(self, core, manager)
         self.setDaemon(True)
-
-
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
 
 
     def coreReady(self):
@@ -59,30 +56,30 @@ class IRCInterface(Thread, Hook):
 
     def packageFinished(self, pypack):
         try:
-            if self.getConfig("info_pack"):
+            if self.getConfig('info_pack'):
                 self.response(_("Package finished: %s") % pypack.name)
-        except:
+        except Exception:
             pass
 
 
     def downloadFinished(self, pyfile):
         try:
-            if self.getConfig("info_file"):
+            if self.getConfig('info_file'):
                 self.response(
                     _("Download finished: %(name)s @ %(plugin)s ") % {"name": pyfile.name, "plugin": pyfile.pluginname})
-        except:
+        except Exception:
             pass
 
 
     def newCaptchaTask(self, task):
-        if self.getConfig("captcha") and task.isTextual():
+        if self.getConfig('captcha') and task.isTextual():
             task.handler.append(self)
             task.setWaiting(60)
 
-            page = getURL("http://www.freeimagehosting.net/upload.php",
-                          post={"attached": (FORM_FILE, task.captchaFile)}, multipart=True)
+            html = getURL("http://www.freeimagehosting.net/upload.php",
+                          post={"attached": (pycurl.FORM_FILE, task.captchaFile)}, multipart=True)
 
-            url = re.search(r"\[img\]([^\[]+)\[/img\]\[/url\]", page).group(1)
+            url = re.search(r"\[img\]([^\[]+)\[/img\]\[/url\]", html).group(1)
             self.response(_("New Captcha Request: %s") % url)
             self.response(_("Answer with 'c %s text on the captcha'") % task.id)
 
@@ -90,16 +87,16 @@ class IRCInterface(Thread, Hook):
     def run(self):
         # connect to IRC etc.
         self.sock = socket.socket()
-        host = self.getConfig("host")
-        self.sock.connect((host, self.getConfig("port")))
+        host = self.getConfig('host')
+        self.sock.connect((host, self.getConfig('port')))
 
-        if self.getConfig("ssl"):
+        if self.getConfig('ssl'):
             self.sock = ssl.wrap_socket(self.sock, cert_reqs=ssl.CERT_NONE)  #@TODO: support certificate
 
-        nick = self.getConfig("nick")
+        nick = self.getConfig('nick')
         self.sock.send("NICK %s\r\n" % nick)
         self.sock.send("USER %s %s bla :%s\r\n" % (nick, host, nick))
-        for t in self.getConfig("owner").split():
+        for t in self.getConfig('owner').split():
             if t.strip().startswith("#"):
                 self.sock.send("JOIN %s\r\n" % t.strip())
         self.logInfo(_("Connected to"), host)
@@ -109,14 +106,14 @@ class IRCInterface(Thread, Hook):
 
         except IRCError, ex:
             self.sock.send("QUIT :byebye\r\n")
-            print_exc()
+            traceback.print_exc()
             self.sock.close()
 
 
     def main_loop(self):
         readbuffer = ""
         while True:
-            sleep(1)
+            time.sleep(1)
             fdset = select([self.sock], [], [], 0)
             if self.sock not in fdset[0]:
                 continue
@@ -153,10 +150,10 @@ class IRCInterface(Thread, Hook):
 
 
     def handle_events(self, msg):
-        if not msg['origin'].split("!", 1)[0] in self.getConfig("owner").split():
+        if not msg['origin'].split("!", 1)[0] in self.getConfig('owner').split():
             return
 
-        if msg['target'].split("!", 1)[0] != self.getConfig("nick"):
+        if msg['target'].split("!", 1)[0] != self.getConfig('nick'):
             return
 
         if msg['action'] != "PRIVMSG":
@@ -183,7 +180,7 @@ class IRCInterface(Thread, Hook):
             trigger = temp[0]
             if len(temp) > 1:
                 args = temp[1:]
-        except:
+        except Exception:
             pass
 
         handler = getattr(self, "event_%s" % trigger, self.event_pass)
@@ -197,7 +194,7 @@ class IRCInterface(Thread, Hook):
 
     def response(self, msg, origin=""):
         if origin == "":
-            for t in self.getConfig("owner").split():
+            for t in self.getConfig('owner').split():
                 self.sock.send("PRIVMSG %s :%s\r\n" % (t.strip(), msg))
         else:
             self.sock.send("PRIVMSG %s :%s\r\n" % (origin.split("!", 1)[0], msg))
@@ -347,7 +344,7 @@ class IRCInterface(Thread, Hook):
 
             return ["INFO: Added %d links to Package %s [#%d]" % (len(links), pack['name'], id)]
 
-        except:
+        except Exception:
             # create new package
             id = self.core.api.addPackage(pack, links, 1)
             return ["INFO: Created new Package %s [#%d] with %d links." % (pack, id, len(links))]

@@ -8,20 +8,21 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class EdiskCz(SimpleHoster):
     __name__    = "EdiskCz"
     __type__    = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
-    __pattern__ = r'http://(?:www\.)?edisk\.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.*'
+    __pattern__ = r'http://(?:www\.)?edisk\.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Edisk.cz hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    INFO_PATTERN = r'<span class="fl" title="(?P<N>[^"]+)">\s*.*?\((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</h1></span>'
+    INFO_PATTERN = r'<span class="fl" title="(?P<N>.+?)">\s*.*?\((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</h1></span>'
     OFFLINE_PATTERN = r'<h3>This file does not exist due to one of the following:</h3><ul><li>'
 
     ACTION_PATTERN = r'/en/download/(\d+/.*\.html)'
-    LINK_PATTERN = r'http://.*edisk\.cz.*\.html'
+    LINK_FREE_PATTERN = r'http://.*edisk\.cz.*\.html'
 
 
     def setup(self):
@@ -47,10 +48,10 @@ class EdiskCz(SimpleHoster):
             "action": action
         })
 
-        if not re.match(self.LINK_PATTERN, url):
+        if not re.match(self.LINK_FREE_PATTERN, url):
             self.fail(_("Unexpected server response"))
 
-        self.download(url)
+        self.link = url
 
 
 getInfo = create_getInfo(EdiskCz)

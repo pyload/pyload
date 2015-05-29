@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urllib import unquote
+import urllib
 
 from module.common.json_layer import json_loads
 from module.plugins.Hoster import Hoster
@@ -22,7 +21,7 @@ class XHamsterCom(Hoster):
     __version__ = "0.12"
 
     __pattern__ = r'http://(?:www\.)?xhamster\.com/movies/.+'
-    __config__ = [("type", ".mp4;.flv", "Preferred type", ".mp4")]
+    __config__  = [("type", ".mp4;.flv", "Preferred type", ".mp4")]
 
     __description__ = """XHamster.com hoster plugin"""
     __license__     = "GPLv3"
@@ -35,8 +34,8 @@ class XHamsterCom(Hoster):
         if not self.file_exists():
             self.offline()
 
-        if self.getConfig("type"):
-            self.desired_fmt = self.getConfig("type")
+        if self.getConfig('type'):
+            self.desired_fmt = self.getConfig('type')
 
         pyfile.name = self.get_file_name() + self.desired_fmt
         self.download(self.get_file_url())
@@ -83,7 +82,7 @@ class XHamsterCom(Hoster):
             self.logDebug("long_url = " + long_url)
         else:
             if flashvars['file']:
-                file_url = unquote(flashvars['file'])
+                file_url = urllib.unquote(flashvars['file'])
             else:
                 self.error(_("file_url not found"))
 
@@ -123,7 +122,7 @@ class XHamsterCom(Hoster):
         """
         if not self.html:
             self.download_html()
-        if re.search(r"(.*Video not found.*)", self.html) is not None:
+        if re.search(r"(.*Video not found.*)", self.html):
             return False
         else:
             return True

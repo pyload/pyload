@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Test links:
-# http://remixshare.com/download/p946u
+# http://remixshare.com/download/z8uli
 #
 # Note:
 # The remixshare.com website is very very slow, so
@@ -16,22 +16,26 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class RemixshareCom(SimpleHoster):
     __name__    = "RemixshareCom"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.05"
 
     __pattern__ = r'https?://remixshare\.com/(download|dl)/\w+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Remixshare.com hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"  ),
+                       ("Walter Purcaro", "vuolter@gmail.com"     ),
+                       ("sraedler"      , "simon.raedler@yahoo.de")]
 
 
-    INFO_PATTERN = r'title=\'.+?\'>(?P<N>.+?)</span><span class=\'light2\'>&nbsp;\((?P<S>\d+)&nbsp;(?P<U>[\w^_]+)\)<'
-    OFFLINE_PATTERN = r'<h1>Ooops!<'
+    INFO_PATTERN    = r'title=\'.+?\'>(?P<N>.+?)</span><span class=\'light2\'>&nbsp;\((?P<S>\d+)&nbsp;(?P<U>[\w^_]+)\)<'
+    HASHSUM_PATTERN = r'>(?P<T>MD5): (?P<H>\w+)'
+    OFFLINE_PATTERN = r'<h1>Ooops!'
 
-    LINK_PATTERN = r'(http://remixshare\.com/downloadfinal/.+?)"'
+    LINK_PATTERN  = r'var uri = "(.+?)"'
     TOKEN_PATTERN = r'var acc = (\d+)'
-    WAIT_PATTERN = r'var XYZ = r"(\d+)"'
+
+    WAIT_PATTERN = r'var XYZ = "(\d+)"'
 
 
     def setup(self):
@@ -39,23 +43,16 @@ class RemixshareCom(SimpleHoster):
         self.chunkLimit = 1
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         b = re.search(self.LINK_PATTERN, self.html)
         if not b:
-            self.error(_("Cannot parse download url"))
+            self.error(_("File url"))
+
         c = re.search(self.TOKEN_PATTERN, self.html)
         if not c:
-            self.error(_("Cannot parse file token"))
-        dl_url = b.group(1) + c.group(1)
+            self.error(_("File token"))
 
-        #Check if we have to wait
-        seconds = re.search(self.WAIT_PATTERN, self.html)
-        if seconds:
-            self.logDebug("Wait " + seconds.group(1))
-            self.wait(int(seconds.group(1)))
-
-        # Finally start downloading...
-        self.download(dl_url, disposition=True)
+        self.link = b.group(1) + "/zzz/" + c.group(1)
 
 
 getInfo = create_getInfo(RemixshareCom)

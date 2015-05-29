@@ -25,17 +25,17 @@ class StreamCz(Hoster):
     __type__    = "hoster"
     __version__ = "0.20"
 
-    __pattern__ = r'https?://(?:www\.)?stream\.cz/[^/]+/\d+.*'
+    __pattern__ = r'https?://(?:www\.)?stream\.cz/[^/]+/\d+'
 
     __description__ = """Stream.cz hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    NAME_PATTERN = r'<link rel="video_src" href="http://www\.stream\.cz/\w+/(\d+)-([^"]+)" />'
+    NAME_PATTERN = r'<link rel="video_src" href="http://www\.stream\.cz/\w+/(\d+)-(.+?)" />'
     OFFLINE_PATTERN = r'<h1 class="commonTitle">Str.nku nebylo mo.n. nal.zt \(404\)</h1>'
 
-    CDN_PATTERN = r'<param name="flashvars" value="[^"]*&id=(?P<ID>\d+)(?:&cdnLQ=(?P<cdnLQ>\d*))?(?:&cdnHQ=(?P<cdnHQ>\d*))?(?:&cdnHD=(?P<cdnHD>\d*))?&'
+    CDN_PATTERN = r'<param name="flashvars" value=".+?&id=(?P<ID>\d+)(?:&cdnLQ=(?P<cdnLQ>\d*))?(?:&cdnHQ=(?P<cdnHQ>\d*))?(?:&cdnHD=(?P<cdnHD>\d*))?&'
 
 
     def setup(self):

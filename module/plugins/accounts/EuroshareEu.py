@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from time import mktime, strptime
 import re
+import time
 
 from module.plugins.Account import Account
 
@@ -9,7 +9,7 @@ from module.plugins.Account import Account
 class EuroshareEu(Account):
     __name__    = "EuroshareEu"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __description__ = """Euroshare.eu account plugin"""
     __license__     = "GPLv3"
@@ -25,17 +25,17 @@ class EuroshareEu(Account):
             premium, validuntil = False, -1
         else:
             premium = True
-            validuntil = mktime(strptime(m.group(1), "%d.%m.%Y %H:%M"))
+            validuntil = time.mktime(time.strptime(m.group(1), "%d.%m.%Y %H:%M"))
 
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 
 
     def login(self, user, data, req):
-        html = req.load('http://euroshare.eu/customer-zone/login/', post={
-            "trvale": "1",
-            "login": user,
-            "password": data['password']
-        }, decode=True)
+        html = req.load('http://euroshare.eu/customer-zone/login/',
+                        post={"trvale": "1",
+                              "login": user,
+                              "password": data['password']},
+                        decode=True)
 
         if u">Nesprávne prihlasovacie meno alebo heslo" in html:
             self.wrongPassword()

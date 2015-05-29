@@ -9,9 +9,10 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UpstoreNet(SimpleHoster):
     __name__    = "UpstoreNet"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.05"
 
     __pattern__ = r'https?://(?:www\.)?upstore\.net/'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Upstore.Net File Download Hoster"""
     __license__     = "GPLv3"
@@ -22,11 +23,11 @@ class UpstoreNet(SimpleHoster):
     OFFLINE_PATTERN = r'<span class="error">File not found</span>'
 
     WAIT_PATTERN = r'var sec = (\d+)'
-    CHASH_PATTERN = r'<input type="hidden" name="hash" value="([^"]*)">'
-    LINK_PATTERN = r'<a href="(https?://.*?)" target="_blank"><b>'
+    CHASH_PATTERN = r'<input type="hidden" name="hash" value="(.+?)">'
+    LINK_FREE_PATTERN = r'<a href="(https?://.*?)" target="_blank"><b>'
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         # STAGE 1: get link to continue
         m = re.search(self.CHASH_PATTERN, self.html)
         if m is None:
@@ -35,7 +36,7 @@ class UpstoreNet(SimpleHoster):
         self.logDebug("Read hash " + chash)
         # continue to stage2
         post_data = {'hash': chash, 'free': 'Slow download'}
-        self.html = self.load(self.pyfile.url, post=post_data, decode=True)
+        self.html = self.load(pyfile.url, post=post_data, decode=True)
 
         # STAGE 2: solv captcha and wait
         # first get the infos we need: recaptcha key and wait time
@@ -52,22 +53,21 @@ class UpstoreNet(SimpleHoster):
             self.wait(wait_time)
 
             # then, handle the captcha
-            challenge, response = recaptcha.challenge()
+            response, challenge = recaptcha.challenge()
             post_data.update({'recaptcha_challenge_field': challenge,
                               'recaptcha_response_field' : response})
 
-            self.html = self.load(self.pyfile.url, post=post_data, decode=True)
+            self.html = self.load(pyfile.url, post=post_data, decode=True)
 
             # STAGE 3: get direct link
-            m = re.search(self.LINK_PATTERN, self.html, re.S)
+            m = re.search(self.LINK_FREE_PATTERN, self.html, re.S)
             if m:
                 break
 
         if m is None:
             self.error(_("Download link not found"))
 
-        direct = m.group(1)
-        self.download(direct, disposition=True)
+        self.link = m.group(1)
 
 
 getInfo = create_getInfo(UpstoreNet)

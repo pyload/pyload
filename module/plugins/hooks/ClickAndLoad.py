@@ -1,82 +1,114 @@
 # -*- coding: utf-8 -*-
 
 import socket
-import thread
+import time
 
-from module.plugins.Hook import Hook
+try:
+    import ssl
+except ImportError:
+    pass
 
+from threading import Lock
 
-def proxy(self, *settings):
-    thread.start_new_thread(server, (self,) + settings)
-    lock = thread.allocate_lock()
-    lock.acquire()
-    lock.acquire()
-
-
-def server(self, *settings):
-    try:
-        dock_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        dock_socket.bind((settings[0], settings[2]))
-        dock_socket.listen(5)
-        while True:
-            client_socket = dock_socket.accept()[0]
-            server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            server_socket.connect(("127.0.0.1", settings[1]))
-            thread.start_new_thread(forward, (client_socket, server_socket))
-            thread.start_new_thread(forward, (server_socket, client_socket))
-    except socket.error, e:
-        if hasattr(e, "errno"):
-            errno = e.errno
-        else:
-            errno = e.args[0]
-
-        if errno == 98:
-            self.logWarning(_("Click'N'Load: Port 9666 already in use"))
-            return
-        thread.start_new_thread(server, (self,) + settings)
-    except:
-        thread.start_new_thread(server, (self,) + settings)
+from module.plugins.Hook import Hook, threaded
 
 
 def forward(source, destination):
-    string = ' '
-    while string:
-        string = source.recv(1024)
-        if string:
-            destination.sendall(string)
-        else:
-            #source.shutdown(socket.SHUT_RD)
-            destination.shutdown(socket.SHUT_WR)
+    try:
+        bufsize = 1024
+        bufdata = source.recv(bufsize)
+        while bufdata:
+            destination.sendall(bufdata)
+            bufdata = source.recv(bufsize)
+    finally:
+        destination.shutdown(socket.SHUT_WR)
+        # destination.close()
 
 
+#@TODO: IPv6 support
 class ClickAndLoad(Hook):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
-    __version__ = "0.23"
+    __version__ = "0.43"
 
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("extern", "bool", "Allow external link adding", False)]
+    __config__ = [("activated", "bool", "Activated"                             , True),
+                  ("port"     , "int" , "Port"                                  , 9666),
+                  ("extern"   , "bool", "Listen on the public network interface", True)]
 
-    __description__ = """Click'N'Load hook plugin"""
+    __description__ = """Click'n'Load hook plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.de"),
-                       ("mkaay", "mkaay@mkaay.de")]
+    __authors__     = [("RaNaN"         , "RaNaN@pyload.de"  ),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
+    interval = 0  #@TODO: Remove in 0.4.10
+
+
+    def setup(self):
+        self.info = {}  #@TODO: Remove in 0.4.10
 
 
     def coreReady(self):
-        self.port = int(self.config['webinterface']['port'])
-        if self.config['webinterface']['activated']:
-            try:
-                if self.getConfig("extern"):
-                    ip = "0.0.0.0"
-                else:
-                    ip = "127.0.0.1"
+        if not self.config['webinterface']['activated']:
+            return
 
-                thread.start_new_thread(proxy, (self, ip, self.port, 9666))
-            except:
-                self.logError(_("ClickAndLoad port already in use"))
+        ip      = "" if self.getConfig('extern') else "127.0.0.1"
+        webport = self.config['webinterface']['port']
+        cnlport = self.getConfig('port')
+
+        self.proxy(ip, webport, cnlport)
+
+
+    @threaded
+    def proxy(self, ip, webport, cnlport):
+        time.sleep(10)  #@TODO: Remove in 0.4.10 (implement addon delay on startup)
+
+        self.logInfo(_("Proxy listening on %s:%s") % (ip or "0.0.0.0", cnlport))
+
+        self._server(ip, webport, cnlport)
+
+        lock = Lock()
+        lock.acquire()
+        lock.acquire()
+
+
+    @threaded
+    def _server(self, ip, webport, cnlport):
+        try:
+            dock_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            dock_socket.bind((ip, cnlport))
+            dock_socket.listen(5)
+
+            while True:
+                client_socket, client_addr = dock_socket.accept()
+                self.logDebug("Connection from %s:%s" % client_addr)
+
+                server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+                if self.config['webinterface']['https']:
+                    try:
+                        server_socket = ssl.wrap_socket(server_socket)
+
+                    except NameError:
+                        self.logError(_("pyLoad's webinterface is configured to use HTTPS, Please install python's ssl lib or disable HTTPS"))
+                        client_socket.close()  #: reset the connection.
+                        continue
+
+                    except Exception, e:
+                        self.logError(_("SSL error: %s") % e.message)
+                        client_socket.close()  #: reset the connection.
+                        continue
+
+                server_socket.connect(("127.0.0.1", webport))
+
+                self.manager.startThread(forward, client_socket, server_socket)
+                self.manager.startThread(forward, server_socket, client_socket)
+
+        except socket.timeout:
+            self.logDebug("Connection timed out, retrying...")
+            return self._server(ip, webport, cnlport)
+
+        except socket.error, e:
+            self.logError(e)
+            time.sleep(240)
+            return self._server(ip, webport, cnlport)

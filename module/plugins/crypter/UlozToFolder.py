@@ -9,9 +9,9 @@ class UlozToFolder(Crypter):
     __type__    = "crypter"
     __version__ = "0.20"
 
-    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(m|soubory)/.*'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
-                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
+    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(m|soubory)/.+'
+    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Uloz.to folder decrypter plugin"""
     __license__     = "GPLv3"
@@ -19,8 +19,8 @@ class UlozToFolder(Crypter):
 
 
     FOLDER_PATTERN = r'<ul class="profile_files">(.*?)</ul>'
-    LINK_PATTERN = r'<br /><a href="/([^"]+)">[^<]+</a>'
-    NEXT_PAGE_PATTERN = r'<a class="next " href="/([^"]+)">&nbsp;</a>'
+    LINK_PATTERN = r'<br /><a href="/(.+?)">.+?</a>'
+    NEXT_PAGE_PATTERN = r'<a class="next " href="/(.+?)">&nbsp;</a>'
 
 
     def decrypt(self, pyfile):

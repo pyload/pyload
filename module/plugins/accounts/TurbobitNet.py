@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from time import mktime, strptime
+import time
 
 from module.plugins.Account import Account
 
@@ -9,7 +9,7 @@ from module.plugins.Account import Account
 class TurbobitNet(Account):
     __name__    = "TurbobitNet"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __description__ = """TurbobitNet account plugin"""
     __license__     = "GPLv3"
@@ -22,7 +22,7 @@ class TurbobitNet(Account):
         m = re.search(r'<u>Turbo Access</u> to ([\d.]+)', html)
         if m:
             premium = True
-            validuntil = mktime(strptime(m.group(1), "%d.%m.%Y"))
+            validuntil = time.mktime(time.strptime(m.group(1), "%d.%m.%Y"))
         else:
             premium = False
             validuntil = -1
@@ -33,10 +33,11 @@ class TurbobitNet(Account):
     def login(self, user, data, req):
         req.cj.setCookie("turbobit.net", "user_lang", "en")
 
-        html = req.load("http://turbobit.net/user/login", post={
-            "user[login]": user,
-            "user[pass]": data['password'],
-            "user[submit]": "Login"})
+        html = req.load("http://turbobit.net/user/login",
+                        post={"user[login]": user,
+                              "user[pass]": data['password'],
+                              "user[submit]": "Login"},
+                        decode=True)
 
         if not '<div class="menu-item user-name">' in html:
             self.wrongPassword()

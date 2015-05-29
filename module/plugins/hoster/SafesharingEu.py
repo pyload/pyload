@@ -15,8 +15,6 @@ class SafesharingEu(XFSHoster):
     __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
-    HOSTER_DOMAIN = "safesharing.eu"
-
     ERROR_PATTERN = r'(?:<div class="alert alert-danger">)(.+?)(?:</div>)'
 
 

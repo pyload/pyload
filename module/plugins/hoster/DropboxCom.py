@@ -8,9 +8,10 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DropboxCom(SimpleHoster):
     __name__    = "DropboxCom"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'https?://(?:www\.)?dropbox\.com/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Dropbox.com hoster plugin"""
     __license__     = "GPLv3"
@@ -26,17 +27,13 @@ class DropboxCom(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL = True
-        self.chunkLimit = 1
+        self.multiDL        = True
+        self.chunkLimit     = 1
         self.resumeDownload = True
 
 
-    def handleFree(self):
-        self.download(self.pyfile.url, get={'dl': "1"})
-
-        check = self.checkDownload({'html': re.compile("html")})
-        if check == "html":
-            self.error(_("Downloaded file is an html page"))
+    def handleFree(self, pyfile):
+        self.download(pyfile.url, get={'dl': "1"})
 
 
 getInfo = create_getInfo(DropboxCom)

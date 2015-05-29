@@ -8,9 +8,10 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class BezvadataCz(SimpleHoster):
     __name__    = "BezvadataCz"
     __type__    = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.27"
 
-    __pattern__ = r'http://(?:www\.)?bezvadata\.cz/stahnout/.*'
+    __pattern__ = r'http://(?:www\.)?bezvadata\.cz/stahnout/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """BezvaData.cz hoster plugin"""
     __license__     = "GPLv3"
@@ -27,7 +28,7 @@ class BezvadataCz(SimpleHoster):
         self.multiDL        = True
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         #download button
         m = re.search(r'<a class="stahnoutSoubor".*?href="(.*?)"', self.html)
         if m is None:
@@ -75,7 +76,7 @@ class BezvadataCz(SimpleHoster):
         wait_time = (int(m.group(1)) * 60 + int(m.group(2))) if m else 120
         self.wait(wait_time, False)
 
-        self.download(url)
+        self.link = url
 
 
     def checkErrors(self):
@@ -83,12 +84,12 @@ class BezvadataCz(SimpleHoster):
             self.longWait(5 * 60, 24)  #: parallel dl limit
         elif '<div class="infobox' in self.html:
             self.tempOffline()
-
-        self.info.pop('error', None)
+        else:
+            return super(BezvadataCz, self).checkErrors()
 
 
     def loadcaptcha(self, data, *args, **kwargs):
-        return data.decode("base64")
+        return data.decode('base64')
 
 
 getInfo = create_getInfo(BezvadataCz)

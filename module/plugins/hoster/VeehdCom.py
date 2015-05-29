@@ -11,8 +11,8 @@ class VeehdCom(Hoster):
     __version__ = "0.23"
 
     __pattern__ = r'http://veehd\.com/video/\d+_\S+'
-    __config__ = [("filename_spaces", "bool", "Allow spaces in filename", False),
-                  ("replacement_char", "str", "Filename replacement character", "_")]
+    __config__  = [("filename_spaces", "bool", "Allow spaces in filename", False),
+                   ("replacement_char", "str", "Filename replacement character", "_")]
 
     __description__ = """Veehd.com hoster plugin"""
     __license__     = "GPLv3"
@@ -52,7 +52,7 @@ class VeehdCom(Hoster):
         if not self.html:
             self.download_html()
 
-        m = re.search(r'<title[^>]*>([^<]+) on Veehd</title>', self.html)
+        m = re.search(r'<title.*?>([^<]+) on Veehd</title>', self.html)
         if m is None:
             self.error(_("Video title not found"))
 
@@ -73,7 +73,7 @@ class VeehdCom(Hoster):
         if not self.html:
             self.download_html()
 
-        m = re.search(r'<embed type="video/divx" src="(http://([^/]*\.)?veehd\.com/dl/[^"]+)"',
+        m = re.search(r'<embed type="video/divx" src="(http://([^/]*\.)?veehd\.com/dl/.+?)"',
                           self.html)
         if m is None:
             self.error(_("Embedded video url not found"))

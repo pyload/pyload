@@ -8,9 +8,10 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class CloudzillaTo(SimpleHoster):
     __name__    = "CloudzillaTo"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.07"
 
     __pattern__ = r'http://(?:www\.)?cloudzilla\.to/share/file/(?P<ID>[\w^_]+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Cloudzilla.to hoster plugin"""
     __license__     = "GPLv3"
@@ -24,15 +25,20 @@ class CloudzillaTo(SimpleHoster):
 
 
     def checkErrors(self):
-        m = re.search(self.PASSWORD_PATTERN, self.html)
-        if m:
-            self.html = self.load(self.pyfile.url, get={'key': self.getPassword()})
+        if re.search(self.PASSWORD_PATTERN, self.html):
+            pw = self.getPassword()
+            if pw:
+                self.html = self.load(self.pyfile.url, get={'key': pw})
+            else:
+                self.fail(_("Missing password"))
 
         if re.search(self.PASSWORD_PATTERN, self.html):
             self.retry(reason="Wrong password")
+        else:
+            return super(CloudzillaTo, self).checkErrors()
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         self.html = self.load("http://www.cloudzilla.to/generateticket/",
                               post={'file_id': self.info['pattern']['ID'], 'key': self.getPassword()})
 
@@ -47,15 +53,15 @@ class CloudzillaTo(SimpleHoster):
                 self.fail(ticket['error'])
 
         if 'wait' in ticket:
-            self.wait(int(ticket['wait']), int(ticket['wait']) > 5)
+            self.wait(ticket['wait'], int(ticket['wait']) > 5)
 
         self.link = "http://%(server)s/download/%(file_id)s/%(ticket_id)s" % {'server'   : ticket['server'],
                                                                               'file_id'  : self.info['pattern']['ID'],
-                                                                              'ticket_id': ticket['ticket_id']})
+                                                                              'ticket_id': ticket['ticket_id']}
 
 
-    def handlePremium(self):
-        return self.handleFree()
+    def handlePremium(self, pyfile):
+        return self.handleFree(pyfile)
 
 
 getInfo = create_getInfo(CloudzillaTo)

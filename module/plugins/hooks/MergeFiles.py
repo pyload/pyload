@@ -4,17 +4,16 @@ from __future__ import with_statement
 
 import os
 import re
-
-from traceback import print_exc
+import traceback
 
 from module.plugins.Hook import Hook, threaded
-from module.utils import save_join, fs_encode
+from module.utils import save_join
 
 
 class MergeFiles(Hook):
     __name__    = "MergeFiles"
     __type__    = "hook"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __config__ = [("activated", "bool", "Activated", True)]
 
@@ -23,17 +22,13 @@ class MergeFiles(Hook):
     __authors__     = [("and9000", "me@has-no-mail.com")]
 
 
+    interval = 0  #@TODO: Remove in 0.4.10
+
     BUFFER_SIZE = 4096
 
 
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
-
-
     def setup(self):
-        # nothing to do
-        pass
+        self.info = {}  #@TODO: Remove in 0.4.10
 
 
     @threaded
@@ -65,7 +60,7 @@ class MergeFiles(Hook):
                     pyfile.setStatus("processing")
 
                     try:
-                        with open(os.path.join(download_folder, splitted_file), "rb") as s_file:
+                        with open(save_join(download_folder, splitted_file), "rb") as s_file:
                             size_written = 0
                             s_file_size = int(os.path.getsize(os.path.join(download_folder, splitted_file)))
                             while True:
@@ -79,7 +74,7 @@ class MergeFiles(Hook):
                         self.logDebug("Finished merging part", splitted_file)
 
                     except Exception, e:
-                        print_exc()
+                        traceback.print_exc()
 
                     finally:
                         pyfile.setProgress(100)

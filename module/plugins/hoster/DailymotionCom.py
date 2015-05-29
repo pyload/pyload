@@ -16,8 +16,8 @@ def getInfo(urls):
 
     for url in urls:
         id   = regex.match(url).group('ID')
-        page = getURL(apiurl % id, get=request)
-        info = json_loads(page)
+        html = getURL(apiurl % id, get=request)
+        info = json_loads(html)
 
         name = info['title'] + ".mp4" if "title" in info else url
 
@@ -72,7 +72,7 @@ class DailymotionCom(Hoster):
 
 
     def getQuality(self):
-        q = self.getConfig("quality")
+        q = self.getConfig('quality')
 
         if q == "Lowest":
             quality = 0
@@ -86,7 +86,7 @@ class DailymotionCom(Hoster):
 
     def getLink(self, streams, quality):
         if quality > 0:
-            for x, s in reversed([item for item in enumerate(streams)]):
+            for x, s in [item for item in enumerate(streams)][::-1]:
                 qf = s[0][1]
                 if qf <= quality:
                     idx = x

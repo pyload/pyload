@@ -15,8 +15,6 @@ class JunocloudMe(XFSHoster):
     __authors__     = [("guidobelix", "guidobelix@hotmail.it")]
 
 
-    HOSTER_DOMAIN = "junocloud.me"
-
     URL_REPLACEMENTS = [(r'//(www\.)?junocloud', "//dl3.junocloud")]
 
     OFFLINE_PATTERN      = r'>No such file with this filename<'

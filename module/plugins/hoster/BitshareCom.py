@@ -11,9 +11,10 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class BitshareCom(SimpleHoster):
     __name__    = "BitshareCom"
     __type__    = "hoster"
-    __version__ = "0.51"
+    __version__ = "0.53"
 
-    __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/)?(?(1)|\?f=)(?P<ID>\w+)(?(1)/(?P<NAME>.*?)\.html)'
+    __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/)?(?(1)|\?f=)(?P<ID>\w+)(?(1)/(?P<NAME>.+?)\.html)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Bitshare.com hoster plugin"""
     __license__     = "GPLv3"
@@ -71,21 +72,16 @@ class BitshareCom(SimpleHoster):
         self.logDebug("File ajax id is [%s]" % self.ajaxid)
 
         # This may either download our file or forward us to an error page
-        self.download(self.getDownloadUrl())
+        self.link = self.getDownloadUrl()
 
-        check = self.checkDownload({"404": ">404 Not Found<", "Error": ">Error occured<"})
-
-        if check == "404":
-            self.retry(3, 60, 'Error 404')
-
-        elif check == "error":
+        if self.checkDownload({"error": ">Error occured<"}):
             self.retry(5, 5 * 60, "Bitshare host : Error occured")
 
 
     def getDownloadUrl(self):
         # Return location if direct download is active
         if self.premium:
-            header = self.load(self.pyfile.url, cookies=True, just_header=True)
+            header = self.load(self.pyfile.url, just_header=True)
             if 'location' in header:
                 return header['location']
 
@@ -119,7 +115,7 @@ class BitshareCom(SimpleHoster):
 
             # Try up to 3 times
             for i in xrange(3):
-                challenge, response = recaptcha.challenge()
+                response, challenge = recaptcha.challenge()
                 res = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
                                      post={"request"                  : "validateCaptcha",
                                            "ajaxid"                   : self.ajaxid,

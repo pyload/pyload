@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from time import mktime, strptime
-from pycurl import REFERER
 import re
+import time
 
 from module.plugins.Account import Account
 
@@ -10,7 +9,7 @@ from module.plugins.Account import Account
 class FshareVn(Account):
     __name__    = "FshareVn"
     __type__    = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __description__ = """Fshare.vn account plugin"""
     __license__     = "GPLv3"
@@ -19,8 +18,8 @@ class FshareVn(Account):
 
 
     VALID_UNTIL_PATTERN = ur'<dt>Thời hạn dùng:</dt>\s*<dd>([^<]+)</dd>'
-    LIFETIME_PATTERN = ur'<dt>Lần đăng nhập trước:</dt>\s*<dd>[^<]+</dd>'
-    TRAFFIC_LEFT_PATTERN = ur'<dt>Tổng Dung Lượng Tài Khoản</dt>\s*<dd[^>]*>([\d.]+) ([kKMG])B</dd>'
+    LIFETIME_PATTERN = ur'<dt>Lần đăng nhập trước:</dt>\s*<dd>.+?</dd>'
+    TRAFFIC_LEFT_PATTERN = ur'<dt>Tổng Dung Lượng Tài Khoản</dt>\s*<dd.*?>([\d.]+) ([kKMG])B</dd>'
     DIRECT_DOWNLOAD_PATTERN = ur'<input type="checkbox"\s*([^=>]*)[^>]*/>Kích hoạt download trực tiếp</dt>'
 
 
@@ -35,7 +34,7 @@ class FshareVn(Account):
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
             premium = True
-            validuntil = mktime(strptime(m.group(1), '%I:%M:%S %p %d-%m-%Y'))
+            validuntil = time.mktime(time.strptime(m.group(1), '%I:%M:%S %p %d-%m-%Y'))
             trafficleft = self.getTrafficLeft()
         else:
             premium = False
@@ -46,13 +45,13 @@ class FshareVn(Account):
 
 
     def login(self, user, data, req):
-        req.http.c.setopt(REFERER, "https://www.fshare.vn/login.php")
-
-        html = req.load('https://www.fshare.vn/login.php', post={
-            "login_password": data['password'],
-            "login_useremail": user,
-            "url_refe": "http://www.fshare.vn/index.php"
-        }, referer=True, decode=True)
+        html = req.load("https://www.fshare.vn/login.php",
+                        post={'LoginForm[email]'     : user,
+                              'LoginForm[password]'  : data['password'],
+                              'LoginForm[rememberMe]': 1,
+                              'yt0'                  : "Login"},
+                        referer=True,
+                        decode=True)
 
         if not re.search(r'<img\s+alt="VIP"', html):
             self.wrongPassword()

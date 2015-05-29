@@ -21,7 +21,7 @@ def getInfo(urls):
                     url_pattern = '<a href="(.+?)" onclick="return Act\(this\, \'dlink\'\, event\)">(.+?)</a>'
                     file_name = re.search(url_pattern, html).group(0).split(', event)">')[1].split('</a>')[0]
                     result.append((file_name, 0, 2, url))
-                except:
+                except Exception:
                     pass
 
         # status 1=OFFLINE, 2=OK, 3=UNKNOWN
@@ -32,9 +32,9 @@ def getInfo(urls):
 class FilesMailRu(Hoster):
     __name__    = "FilesMailRu"
     __type__    = "hoster"
-    __version__ = "0.31"
+    __version__ = "0.32"
 
-    __pattern__ = r'http://(?:www\.)?files\.mail\.ru/.*'
+    __pattern__ = r'http://(?:www\.)?files\.mail\.ru/.+'
 
     __description__ = """Files.mail.ru hoster plugin"""
     __license__     = "GPLv3"
@@ -42,8 +42,7 @@ class FilesMailRu(Hoster):
 
 
     def setup(self):
-        if not self.account:
-            self.multiDL = False
+        self.multiDL = bool(self.account)
 
 
     def process(self, pyfile):

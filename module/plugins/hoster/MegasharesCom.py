@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import time
+import time
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
@@ -10,9 +9,10 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MegasharesCom(SimpleHoster):
     __name__    = "MegasharesCom"
     __type__    = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
     __pattern__ = r'http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index\.php)?\?d\d{2}=|dl/)\w+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Megashares.com hoster plugin"""
     __license__     = "GPLv3"
@@ -20,17 +20,17 @@ class MegasharesCom(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    NAME_PATTERN = r'<h1 class="black xxl"[^>]*title="(?P<N>[^"]+)">'
+    NAME_PATTERN = r'<h1 class="black xxl"[^>]*title="(?P<N>.+?)">'
     SIZE_PATTERN = r'<strong><span class="black">Filesize:</span></strong> (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'<dd class="red">(Invalid Link Request|Link has been deleted|Invalid link)'
 
-    LINK_PATTERN = r'<div id="show_download_button_%d"[^>]*>\s*<a href="([^"]+)">'
+    LINK_PATTERN = r'<div id="show_download_button_%d".*?>\s*<a href="(.+?)">'
 
-    PASSPORT_LEFT_PATTERN = r'Your Download Passport is: <[^>]*>(\w+).*?You have.*?<[^>]*>.*?([\d.]+) (\w+)'
+    PASSPORT_LEFT_PATTERN = r'Your Download Passport is: <.*?>(\w+).*?You have.*?<.*?>.*?([\d.]+) (\w+)'
     PASSPORT_RENEW_PATTERN = r'(\d+):<strong>(\d+)</strong>:<strong>(\d+)</strong>'
     REACTIVATE_NUM_PATTERN = r'<input[^>]*id="random_num" value="(\d+)" />'
     REACTIVATE_PASSPORT_PATTERN = r'<input[^>]*id="passport_num" value="(\w+)" />'
-    REQUEST_URI_PATTERN = r'var request_uri = "([^"]+)";'
+    REQUEST_URI_PATTERN = r'var request_uri = "(.+?)";'
     NO_SLOTS_PATTERN = r'<dd class="red">All download slots for this link are currently filled'
 
 
@@ -39,11 +39,11 @@ class MegasharesCom(SimpleHoster):
         self.multiDL        = self.premium
 
 
-    def handlePremium(self):
+    def handlePremium(self, pyfile):
         self.handleDownload(True)
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         if self.NO_SLOTS_PATTERN in self.html:
             self.retry(wait_time=5 * 60)
 
@@ -66,7 +66,7 @@ class MegasharesCom(SimpleHoster):
                                      'rsargs[]': random_num,
                                      'rsargs[]': passport_num,
                                      'rsargs[]': "replace_sec_pprenewal",
-                                     'rsrnd[]' : str(int(time() * 1000))})
+                                     'rsrnd[]' : str(int(time.time() * 1000))})
 
                 if 'Thank you for reactivating your passport.' in res:
                     self.correctCaptcha()
@@ -105,9 +105,8 @@ class MegasharesCom(SimpleHoster):
         if m is None:
             self.error(msg)
 
-        download_url = m.group(1)
-        self.logDebug("%s: %s" % (msg, download_url))
-        self.download(download_url)
+        self.link = m.group(1)
+        self.logDebug("%s: %s" % (msg, self.link))
 
 
 getInfo = create_getInfo(MegasharesCom)

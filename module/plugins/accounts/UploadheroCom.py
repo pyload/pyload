@@ -10,7 +10,7 @@ from module.plugins.Account import Account
 class UploadheroCom(Account):
     __name__    = "UploadheroCom"
     __type__    = "account"
-    __version__ = "0.20"
+    __version__ = "0.21"
 
     __description__ = """Uploadhero.co account plugin"""
     __license__     = "GPLv3"
@@ -35,7 +35,8 @@ class UploadheroCom(Account):
 
     def login(self, user, data, req):
         html = req.load("http://uploadhero.co/lib/connexion.php",
-                        post={"pseudo_login": user, "password_login": data['password']})
+                        post={"pseudo_login": user, "password_login": data['password']},
+                        decode=True)
 
         if "mot de passe invalide" in html:
             self.wrongPassword()

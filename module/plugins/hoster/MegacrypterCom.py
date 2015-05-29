@@ -10,9 +10,9 @@ from module.plugins.hoster.MegaCoNz import MegaCoNz
 class MegacrypterCom(MegaCoNz):
     __name__    = "MegacrypterCom"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
-    __pattern__ = r'(https?://\w{0,10}\.?megacrypter\.com/[\w!-]+)'
+    __pattern__ = r'https?://\w{0,10}\.?megacrypter\.com/[\w!-]+'
 
     __description__ = """Megacrypter.com decrypter plugin"""
     __license__     = "GPLv3"
@@ -23,7 +23,7 @@ class MegacrypterCom(MegaCoNz):
     FILE_SUFFIX = ".crypted"
 
 
-    def callApi(self, **kwargs):
+    def api_response(self, **kwargs):
         """ Dispatch a call to the api, see megacrypter.com/api_doc """
         self.logDebug("JSON request: " + json_dumps(kwargs))
         res = self.load(self.API_URL, post=json_dumps(kwargs))
@@ -33,13 +33,13 @@ class MegacrypterCom(MegaCoNz):
 
     def process(self, pyfile):
         # match is guaranteed because plugin was chosen to handle url
-        node = re.match(self.__pattern__, pyfile.url).group(1)
+        node = re.match(self.__pattern__, pyfile.url).group(0)
 
         # get Mega.co.nz link info
-        info = self.callApi(link=node, m="info")
+        info = self.api_response(link=node, m="info")
 
         # get crypted file URL
-        dl = self.callApi(link=node, m="dl")
+        dl = self.api_response(link=node, m="dl")
 
         # TODO: map error codes, implement password protection
         # if info['pass'] is True:
@@ -50,6 +50,7 @@ class MegacrypterCom(MegaCoNz):
         pyfile.name = info['name'] + self.FILE_SUFFIX
 
         self.download(dl['url'])
+
         self.decryptFile(key)
 
         # Everything is finished and final name can be set

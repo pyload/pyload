@@ -2,76 +2,79 @@
 
 import re
 
-from datetime import datetime, timedelta
-
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
-from module.plugins.hoster.UnrestrictLi import secondsToMidnight
+from module.plugins.internal.SimpleHoster import secondsToMidnight
 
 
 class SimplyPremiumCom(MultiHoster):
     __name__    = "SimplyPremiumCom"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.08"
 
-    __pattern__ = r'https?://.*(simply-premium)\.com'
+    __pattern__ = r'https?://.+simply-premium\.com'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """Simply-Premium.com hoster plugin"""
+    __description__ = """Simply-Premium.com multi-hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
     def setup(self):
-        self.chunkLimit     = 16
-        self.resumeDownload = False
+        self.chunkLimit = 16
 
 
-    def handlePremium(self):
-        for i in xrange(5):
-            page = self.load("http://www.simply-premium.com/premium.php", get={'info': "", 'link': self.pyfile.url})
-            self.logDebug("JSON data: " + page)
-            if page != '':
-                break
-        else:
-            self.logInfo(_("Unable to get API data, waiting 1 minute and retry"))
-            self.retry(5, 60, "Unable to get API data")
-
-        if '<valid>0</valid>' in page or (
-                "You are not allowed to download from this host" in page and self.premium):
+    def checkErrors(self):
+        if '<valid>0</valid>' in self.html or (
+                "You are not allowed to download from this host" in self.html and self.premium):
             self.account.relogin(self.user)
             self.retry()
 
-        elif "NOTFOUND" in page:
+        elif "NOTFOUND" in self.html:
             self.offline()
 
-        elif "downloadlimit" in page:
+        elif "downloadlimit" in self.html:
             self.logWarning(_("Reached maximum connctions"))
-            self.retry(5, 60, "Reached maximum connctions")
+            self.retry(5, 60, _("Reached maximum connctions"))
 
-        elif "trafficlimit" in page:
+        elif "trafficlimit" in self.html:
             self.logWarning(_("Reached daily limit for this host"))
-            self.retry(wait_time=secondsToMidnight(gmt=2), "Daily limit for this host reached")
+            self.retry(wait_time=secondsToMidnight(gmt=2), reason="Daily limit for this host reached")
 
-        elif "hostererror" in page:
+        elif "hostererror" in self.html:
             self.logWarning(_("Hoster temporarily unavailable, waiting 1 minute and retry"))
-            self.retry(5, 60, "Hoster is temporarily unavailable")
+            self.retry(5, 60, _("Hoster is temporarily unavailable"))
+
+
+    def handlePremium(self, pyfile):
+        for i in xrange(5):
+            self.html = self.load("http://www.simply-premium.com/premium.php", get={'info': "", 'link': self.pyfile.url})
+
+            if self.html:
+                self.logDebug("JSON data: " + self.html)
+                break
+        else:
+            self.logInfo(_("Unable to get API data, waiting 1 minute and retry"))
+            self.retry(5, 60, _("Unable to get API data"))
+
+        self.checkErrors()
 
         try:
-            self.pyfile.name = re.search(r'<name>([^<]+)</name>', page).group(1)
+            self.pyfile.name = re.search(r'<name>([^<]+)</name>', self.html).group(1)
+
         except AttributeError:
             self.pyfile.name = ""
 
         try:
-            self.pyfile.size = re.search(r'<size>(\d+)</size>', page).group(1)
+            self.pyfile.size = re.search(r'<size>(\d+)</size>', self.html).group(1)
+
         except AttributeError:
             self.pyfile.size = 0
 
         try:
-            self.link = re.search(r'<download>([^<]+)</download>', page).group(1)
+            self.link = re.search(r'<download>([^<]+)</download>', self.html).group(1)
+
         except AttributeError:
             self.link = 'http://www.simply-premium.com/premium.php?link=' + self.pyfile.url
-
-        if self.link != self.pyfile.url:
-            self.logDebug("New URL: " + self.link)
 
 
 getInfo = create_getInfo(SimplyPremiumCom)

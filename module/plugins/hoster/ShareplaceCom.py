@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urllib import unquote
+import urllib
 
 from module.plugins.Hoster import Hoster
 
@@ -10,9 +9,9 @@ from module.plugins.Hoster import Hoster
 class ShareplaceCom(Hoster):
     __name__    = "ShareplaceCom"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
-    __pattern__ = r'(http://)?(?:www\.)?shareplace\.(com|org)/\?\w+'
+    __pattern__ = r'http://(?:www\.)?shareplace\.(com|org)/\?\w+'
 
     __description__ = """Shareplace.com hoster plugin"""
     __license__     = "GPLv3"
@@ -61,7 +60,7 @@ class ShareplaceCom(Hoster):
         url = re.search(r"var beer = '(.*?)';", self.html)
         if url:
             url = url.group(1)
-            url = unquote(
+            url = urllib.unquote(
                 url.replace("http://http:/", "").replace("vvvvvvvvv", "").replace("lllllllll", "").replace(
                     "teletubbies", ""))
             self.logDebug("URL: %s" % url)
@@ -83,7 +82,7 @@ class ShareplaceCom(Hoster):
         if not self.html:
             self.download_html()
 
-        if re.search(r"HTTP Status 404", self.html) is not None:
+        if re.search(r"HTTP Status 404", self.html):
             return False
         else:
             return True

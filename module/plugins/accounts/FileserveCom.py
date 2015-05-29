@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from time import mktime, strptime
+import time
 
 from module.plugins.Account import Account
 from module.common.json_layer import json_loads
@@ -24,7 +24,7 @@ class FileserveCom(Account):
         res = json_loads(html)
 
         if res['type'] == "premium":
-            validuntil = mktime(strptime(res['expireTime'], "%Y-%m-%d %H:%M:%S"))
+            validuntil = time.mktime(time.strptime(res['expireTime'], "%Y-%m-%d %H:%M:%S"))
             return {"trafficleft": res['traffic'], "validuntil": validuntil}
         else:
             return {"premium": False, "trafficleft": None, "validuntil": None}

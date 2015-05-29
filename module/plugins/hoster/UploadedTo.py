@@ -1,245 +1,124 @@
 # -*- coding: utf-8 -*-
-#
-# Test links:
-# http://ul.to/044yug9o
-# http://ul.to/gzfhd0xs
 
 import re
-
-from time import sleep
+import time
 
 from module.network.RequestFactory import getURL
-from module.plugins.Hoster import Hoster
-from module.plugins.Plugin import chunks
 from module.plugins.internal.CaptchaService import ReCaptcha
-from module.utils import html_unescape, parseFileSize
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
-key = "bGhGMkllZXByd2VEZnU5Y2NXbHhYVlZ5cEE1bkEzRUw=".decode('base64')
-
-
-def getID(url):
-    """ returns id from file url"""
-    m = re.match(UploadedTo.__pattern__, url)
-    return m.group('ID')
-
-
-def getAPIData(urls):
-    post = {"apikey": key}
-
-    idMap = {}
-
-    for i, url in enumerate(urls):
-        id = getID(url)
-        post['id_%s' % i] = id
-        idMap[id] = url
-
-    for _i in xrange(5):
-        api = unicode(getURL("http://uploaded.net/api/filemultiple", post=post, decode=False), 'iso-8859-1')
-        if api != "can't find request":
-            break
-        else:
-            sleep(3)
-
-    result = {}
-
-    if api:
-        for line in api.splitlines():
-            data = line.split(",", 4)
-            if data[1] in idMap:
-                result[data[1]] = (data[0], data[2], data[4], data[3], idMap[data[1]])
-
-    return result
-
-
-def parseFileInfo(self, url='', html=''):
-    if not html and hasattr(self, "html"):
-        html = self.html
-
-    name = url
-    size = 0
-    fileid = None
-
-    if re.search(self.OFFLINE_PATTERN, html):
-        # File offline
-        status = 1
-    else:
-        m = re.search(self.INFO_PATTERN, html)
-        if m:
-            name, fileid = html_unescape(m.group('N')), m.group('ID')
-            size = parseFileSize(m.group('S'))
-            status = 2
-        else:
-            status = 3
-
-    return name, size, status, fileid
-
-
-def getInfo(urls):
-    for chunk in chunks(urls, 80):
-        result = []
-
-        api = getAPIData(chunk)
-
-        for data in api.itervalues():
-            if data[0] == "online":
-                result.append((html_unescape(data[2]), data[1], 2, data[4]))
-
-            elif data[0] == "offline":
-                result.append((data[4], 0, 1, data[4]))
-
-        yield result
-
-
-class UploadedTo(Hoster):
+class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "0.75"
+    __version__ = "0.88"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Uploaded.net hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("spoob", "spoob@pyload.org"),
-                       ("mkaay", "mkaay@mkaay.de"),
-                       ("zoidberg", "zoidberg@mujmail.cz"),
-                       ("netpok", "netpok@gmail.com"),
-                       ("stickell", "l.stickell@yahoo.it")]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    INFO_PATTERN = r'<a href="file/(?P<ID>\w+)" id="filename">(?P<N>[^<]+)</a> &nbsp;\s*<small[^>]*>(?P<S>[^<]+)</small>'
-    OFFLINE_PATTERN = r'<small class="cL">Error: 404</small>'
-    DL_LIMIT_PATTERN = r'You have reached the max. number of possible free downloads for this hour'
+    DISPOSITION = False
+
+    API_KEY = "lhF2IeeprweDfu9ccWlxXVVypA5nA3EL"
+
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r'http://uploaded.net/file/\g<ID>')]
+
+    TEMP_OFFLINE_PATTERN = r'<title>uploaded\.net - Maintenance'
+
+    LINK_PREMIUM_PATTERN = r'<div class="tfree".*\s*<form method="post" action="(.+?)"'
+
+    WAIT_PATTERN   = r'Current waiting period: <span>(\d+)'
+    DL_LIMIT_ERROR = r'You have reached the max. number of possible free downloads for this hour'
+
+
+    @classmethod
+    def apiInfo(cls, url):
+        info = super(UploadedTo, cls).apiInfo(url)
+
+        for _i in xrange(5):
+            html = getURL("http://uploaded.net/api/filemultiple",
+                          get={"apikey": cls.API_KEY, 'id_0': re.match(cls.__pattern__, url).group('ID')},
+                          decode=True)
+
+            if html != "can't find request":
+                api = html.split(",", 4)
+                if api[0] == "online":
+                    info.update({'name': api[4].strip(), 'size': api[2], 'status': 2})
+                else:
+                    info['status'] = 1
+                break
+            else:
+                time.sleep(3)
+
+        return info
 
 
     def setup(self):
         self.multiDL    = self.resumeDownload = self.premium
         self.chunkLimit = 1  # critical problems with more chunks
 
-        self.fileID = getID(self.pyfile.url)
-        self.pyfile.url = "http://uploaded.net/file/%s" % self.fileID
 
-
-    def process(self, pyfile):
-        self.load("http://uploaded.net/language/en", just_header=True)
-
-        api = getAPIData([pyfile.url])
-
-        # TODO: fallback to parse from site, because api sometimes delivers wrong status codes
-
-        if not api:
-            self.logWarning(_("No response for API call"))
-
-            self.html = unicode(self.load(pyfile.url, decode=False), 'iso-8859-1')
-            name, size, status, self.fileID = parseFileInfo(self)
-            self.logDebug(name, size, status, self.fileID)
-            if status == 1:
-                self.offline()
-            elif status == 2:
-                pyfile.name, pyfile.size = name, size
-            else:
-                self.error(_("file info"))
-
-        elif api == 'Access denied':
-            self.fail(_("API key invalid"))
-
-        else:
-            if self.fileID not in api:
-                self.offline()
-
-            self.data = api[self.fileID]
-            if self.data[0] != "online":
-                self.offline()
-
-            pyfile.name = html_unescape(self.data[2])
-
-        # pyfile.name = self.get_file_name()
-
-        if self.premium:
-            self.handlePremium()
-        else:
-            self.handleFree()
-
-
-    def handlePremium(self):
-        info = self.account.getAccountInfo(self.user, True)
-        self.logDebug("%(name)s: Use Premium Account (%(left)sGB left)" % {"name": self.__name__,
-                                                                           "left": info['trafficleft'] / 1024 / 1024})
-        if int(self.data[1]) / 1024 > info['trafficleft']:
-            self.logInfo(_("Not enough traffic left"))
-            self.account.empty(self.user)
-            self.resetAccount()
-            self.fail(_("Traffic exceeded"))
-
-        header = self.load("http://uploaded.net/file/%s" % self.fileID, just_header=True)
-        if 'location' in header:
-            #Direct download
-            self.logDebug("Direct download link detected")
-            self.download(header['location'])
-        else:
-            #Indirect download
-            self.html = self.load("http://uploaded.net/file/%s" % self.fileID)
-            m = re.search(r'<div class="tfree".*\s*<form method="post" action="(.*?)"', self.html)
-            if m is None:
-                self.fail(_("Download URL not m. Try to enable direct downloads"))
-            url = m.group(1)
-            self.download(url, post={})
-
-
-    def handleFree(self):
-        self.html = self.load(self.pyfile.url, decode=True)
-
+    def checkErrors(self):
         if 'var free_enabled = false;' in self.html:
             self.logError(_("Free-download capacities exhausted"))
             self.retry(24, 5 * 60)
 
-        m = re.search(r"Current waiting period: <span>(\d+)</span> seconds", self.html)
-        if m is None:
-            self.fail(_("File not downloadable for free users"))
-        self.setWait(int(m.group(1)))
+        elif "limit-size" in self.html:
+            self.fail(_("File too big for free download"))
+
+        elif "limit-slot" in self.html:  # Temporary restriction so just wait a bit
+            self.wait(30 * 60, True)
+            self.retry()
+
+        elif "limit-parallel" in self.html:
+            self.fail(_("Cannot download in parallel"))
+
+        elif "limit-dl" in self.html or self.DL_LIMIT_ERROR in self.html:  # limit-dl
+            self.wait(3 * 60 * 60, True)
+            self.retry()
+
+        elif '"err":"captcha"' in self.html:
+            self.invalidCaptcha()
+
+        else:
+            m = re.search(self.WAIT_PATTERN, self.html)
+            if m:
+                self.wait(m.group(1))
+
+
+    def handleFree(self, pyfile):
+        self.load("http://uploaded.net/language/en", just_header=True)
 
         self.html = self.load("http://uploaded.net/js/download.js", decode=True)
 
-        url = "http://uploaded.net/io/ticket/captcha/%s" % self.fileID
-        downloadURL = ""
-
         recaptcha = ReCaptcha(self)
+        response, challenge = recaptcha.challenge()
 
-        for _i in xrange(5):
-            challenge, response = recaptcha.challenge()
-            options = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": response}
-            self.wait()
+        self.html = self.load("http://uploaded.net/io/ticket/captcha/%s" % self.info['pattern']['ID'],
+                              post={'recaptcha_challenge_field': challenge,
+                                    'recaptcha_response_field' : response})
 
-            result = self.load(url, post=options)
-            self.logDebug("Result: %s" % result)
+        if "type:'download'" in self.html:
+            self.correctCaptcha()
+            try:
+                self.link = re.search("url:'(.+?)'", self.html).group(1)
 
-            if "limit-size" in result:
-                self.fail(_("File too big for free download"))
-            elif "limit-slot" in result:  # Temporary restriction so just wait a bit
-                self.setWait(30 * 60, True)
-                self.wait()
-                self.retry()
-            elif "limit-parallel" in result:
-                self.fail(_("Cannot download in parallel"))
-            elif "limit-dl" in result or self.DL_LIMIT_PATTERN in result:  # limit-dl
-                self.setWait(3 * 60 * 60, True)
-                self.wait()
-                self.retry()
-            elif '"err":"captcha"' in result:
-                self.invalidCaptcha()
-            elif "type:'download'" in result:
-                self.correctCaptcha()
-                downloadURL = re.search("url:'([^']+)", result).group(1)
-                break
-            else:
-                self.error(_("Unknown error: %s") % result)
+            except Exception:
+                pass
 
-        if not downloadURL:
-            self.fail(_("No Download url retrieved/all captcha attempts failed"))
+        self.checkErrors()
 
-        self.download(downloadURL, disposition=True)
-        check = self.checkDownload({"limit-dl": self.DL_LIMIT_PATTERN})
-        if check == "limit-dl":
-            self.setWait(3 * 60 * 60, True)
-            self.wait()
+
+    def checkFile(self, rules={}):
+        if self.checkDownload({'limit-dl': self.DL_LIMIT_ERROR}):
+            self.wait(3 * 60 * 60, True)
             self.retry()
+
+        return super(UploadedTo, self).checkFile(rules)
+
+
+getInfo = create_getInfo(UploadedTo)

@@ -9,9 +9,10 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class WebshareCz(SimpleHoster):
     __name__    = "WebshareCz"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.16"
 
     __pattern__ = r'https?://(?:www\.)?webshare\.cz/(?:#/)?file/(?P<ID>\w+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """WebShare.cz hoster plugin"""
     __license__     = "GPLv3"
@@ -21,7 +22,7 @@ class WebshareCz(SimpleHoster):
 
     @classmethod
     def getInfo(cls, url="", html=""):
-        info = super(WebshareCz, self).getInfo(url, html)
+        info = super(WebshareCz, cls).getInfo(url, html)
 
         if url:
             info['pattern'] = re.match(cls.__pattern__, url).groupdict()
@@ -40,25 +41,22 @@ class WebshareCz(SimpleHoster):
         return info
 
 
-    def handleFree(self):
-        fid = re.match(self.__pattern__, self.pyfile.url).group('ID')
+    def handleFree(self, pyfile):
         wst = self.account.infos['wst'] if self.account and 'wst' in self.account.infos else ""
 
         api_data = getURL('https://webshare.cz/api/file_link/',
-                          post={'ident': fid, 'wst': wst},
+                          post={'ident': self.info['pattern']['ID'], 'wst': wst},
                           decode=True)
 
         self.logDebug("API data: " + api_data)
 
         m = re.search('<link>(.+)</link>', api_data)
-        if m is None:
-            self.error(_("Unable to detect direct link"))
-
-        self.link = m.group(1)
+        if m:
+            self.link = m.group(1)
 
 
-    def handlePremium(self):
-        return self.handleFree()
+    def handlePremium(self, pyfile):
+        return self.handleFree(pyfile)
 
 
 getInfo = create_getInfo(WebshareCz)

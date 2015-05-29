@@ -9,7 +9,7 @@ class SecuredIn(DeadCrypter):
     __version__ = "0.21"
 
     __pattern__ = r'http://(?:www\.)?secured\.in/download-[\d]+-\w{8}\.html'
-    __config__  = []
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """Secured.in decrypter plugin"""
     __license__     = "GPLv3"

@@ -3,14 +3,14 @@
 import re
 
 from module.plugins.Hoster import Hoster
-from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.SimpleHoster import secondsToMidnight
 
 
 class FreakshareCom(Hoster):
     __name__    = "FreakshareCom"
     __type__    = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.40"
 
     __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
 
@@ -43,23 +43,27 @@ class FreakshareCom(Hoster):
 
             self.download(pyfile.url, post=self.req_opts)
 
-            check = self.checkDownload({"bad": "bad try",
-                                        "paralell": "> Sorry, you cant download more then 1 files at time. <",
-                                        "empty": "Warning: Unknown: Filename cannot be empty",
-                                        "wrong_captcha": "Wrong Captcha!",
+            check = self.checkDownload({"bad"           : "bad try",
+                                        "paralell"      : "> Sorry, you cant download more then 1 files at time. <",
+                                        "empty"         : "Warning: Unknown: Filename cannot be empty",
+                                        "wrong_captcha" : "Wrong Captcha!",
                                         "downloadserver": "No Downloadserver. Please try again later!"})
 
             if check == "bad":
                 self.fail(_("Bad Try"))
+
             elif check == "paralell":
                 self.setWait(300, True)
                 self.wait()
                 self.retry()
+
             elif check == "empty":
                 self.fail(_("File not downloadable"))
+
             elif check == "wrong_captcha":
                 self.invalidCaptcha()
                 self.retry()
+
             elif check == "downloadserver":
                 self.retry(5, 15 * 60, _("No Download server"))
 
@@ -103,12 +107,14 @@ class FreakshareCom(Hoster):
     def get_file_name(self):
         if not self.html:
             self.download_html()
+
         if not self.wantReconnect:
-            file_name = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">([^ ]+)", self.html)
-            if file_name is not None:
-                file_name = file_name.group(1)
+            m = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">([^ ]+)", self.html)
+            if m:
+                file_name = m.group(1)
             else:
                 file_name = self.pyfile.url
+
             return file_name
         else:
             return self.pyfile.url
@@ -118,12 +124,12 @@ class FreakshareCom(Hoster):
         size = 0
         if not self.html:
             self.download_html()
+
         if not self.wantReconnect:
-            file_size_check = re.search(
-                r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">[^ ]+ - ([^ ]+) (\w\w)yte", self.html)
-            if file_size_check is not None:
-                units = float(file_size_check.group(1).replace(",", ""))
-                pow = {'KB': 1, 'MB': 2, 'GB': 3}[file_size_check.group(2)]
+            m = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">[^ ]+ - ([^ ]+) (\w\w)yte", self.html)
+            if m:
+                units = float(m.group(1).replace(",", ""))
+                pow = {'KB': 1, 'MB': 2, 'GB': 3}[m.group(2)]
                 size = int(units * 1024 ** pow)
 
         return size
@@ -149,7 +155,7 @@ class FreakshareCom(Hoster):
         """
         if not self.html:
             self.download_html()
-        if re.search(r"This file does not exist!", self.html) is not None:
+        if re.search(r"This file does not exist!", self.html):
             return False
         else:
             return True

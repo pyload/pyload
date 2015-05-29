@@ -1,32 +1,32 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.SimpleDereferer import SimpleDereferer, create_getInfo
 from module.common.json_layer import json_loads
 
 
-class GooGl(Crypter):
+class GooGl(SimpleDereferer):
     __name__    = "GooGl"
     __type__    = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
-    __pattern__ = r'https?://(?:www\.)?goo\.gl/\w+'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
-                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
+    __pattern__ = r'https?://(?:www\.)?goo\.gl/([a-zA-Z]+/)?\w+'
 
     __description__ = """Goo.gl decrypter plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+    __authors__     = [("stickell"      , "l.stickell@yahoo.it"),
+                       ("Walter Purcaro", "vuolter@gmail.com"  )]
 
 
     API_URL = "https://www.googleapis.com/urlshortener/v1/url"
 
+    OFFLINE_PATTERN = r'has been disabled|does not exist'
 
-    def decrypt(self, pyfile):
-        rep = self.load(self.API_URL, get={'shortUrl': pyfile.url})
+
+    def getLink(self):
+        rep = self.load(self.API_URL, get={'shortUrl': self.pyfile.url})
         self.logDebug("JSON data: " + rep)
         rep = json_loads(rep)
+        return rep['longUrl'] if "longUrl" in rep else None
 
-        if 'longUrl' in rep:
-            self.urls = [rep['longUrl']]
-        else:
-            self.fail(_("Unable to expand shortened link"))
+
+getInfo = create_getInfo(GooGl)

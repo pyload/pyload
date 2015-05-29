@@ -8,7 +8,7 @@ from module.plugins.Account import Account
 class FastshareCz(Account):
     __name__    = "FastshareCz"
     __type__    = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __description__ = """Fastshare.cz account plugin"""
     __license__     = "GPLv3"
@@ -16,13 +16,13 @@ class FastshareCz(Account):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    CREDIT_PATTERN = r'My account\s*\((.+?)\)'
+    CREDIT_PATTERN = r'Credit\s*:\s*</td>\s*<td>(.+?)\s*<'
 
 
     def loadAccountInfo(self, user, req):
-        validuntil  = None
+        validuntil  = -1
         trafficleft = None
-        premium     = None
+        premium     = False
 
         html = req.load("http://www.fastshare.cz/user", decode=True)
 
@@ -30,13 +30,11 @@ class FastshareCz(Account):
         if m:
             trafficleft = self.parseTraffic(m.group(1))
 
-        if trafficleft:
-            premium = True
-            validuntil = -1
-        else:
-            premium = False
+        premium = bool(trafficleft)
 
-        return {"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium}
+        return {'validuntil' : validuntil,
+                'trafficleft': trafficleft,
+                'premium'    : premium}
 
 
     def login(self, user, data, req):

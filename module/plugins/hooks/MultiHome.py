@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from time import time
+import time
 
 from module.plugins.Hook import Hook
 
@@ -17,22 +17,23 @@ class MultiHome(Hook):
     __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
+    interval = 0  #@TODO: Remove in 0.4.10
 
 
     def setup(self):
-        self.register = {}
+        self.info       = {}  #@TODO: Remove in 0.4.10
+        self.register   = {}
         self.interfaces = []
-        self.parseInterfaces(self.getConfig("interfaces").split(";"))
+
+        self.parseInterfaces(self.getConfig('interfaces').split(";"))
+
         if not self.interfaces:
             self.parseInterfaces([self.config['download']['interface']])
             self.setConfig("interfaces", self.toConfig())
 
 
     def toConfig(self):
-        return ";".join([i.adress for i in self.interfaces])
+        return ";".join(i.adress for i in self.interfaces)
 
 
     def parseInterfaces(self, interfaces):
@@ -80,7 +81,7 @@ class Interface(object):
 
 
     def useFor(self, pluginName, account):
-        self.history[(pluginName, account)] = time()
+        self.history[(pluginName, account)] = time.time()
 
 
     def __repr__(self):

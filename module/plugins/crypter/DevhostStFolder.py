@@ -4,8 +4,7 @@
 # http://d-h.st/users/shine/?fld_id=37263#files
 
 import re
-
-from urlparse import urljoin
+import urlparse
 
 from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
@@ -13,11 +12,12 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class DevhostStFolder(SimpleCrypter):
     __name__    = "DevhostStFolder"
     __type__    = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.05"
 
     __pattern__ = r'http://(?:www\.)?d-h\.st/users/(?P<USER>\w+)(/\?fld_id=(?P<ID>\d+))?'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
-                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """d-h.st folder decrypter plugin"""
     __license__     = "GPLv3"
@@ -25,37 +25,41 @@ class DevhostStFolder(SimpleCrypter):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    LINK_PATTERN = r'(?:/> |;">)<a href="(.+?)"(?!>Back to \w+<)'
+    LINK_PATTERN    = r'(?:/> |;">)<a href="(.+?)"(?!>Back to \w+<)'
     OFFLINE_PATTERN = r'"/cHP">test\.png<'
 
 
-    def getFileInfo(self):
-        if re.search(self.OFFLINE_PATTERN, self.html):
-            self.offline()
+    def checkNameSize(self, getinfo=True):
+        if not self.info or getinfo:
+            self.logDebug("File info (BEFORE): %s" % self.info)
+            self.info.update(self.getInfo(self.pyfile.url, self.html))
+            self.logDebug("File info (AFTER): %s"  % self.info)
 
         try:
-            id = re.match(self.__pattern__, self.pyfile.url).group('ID')
-            if id == "0":
+            if self.info['pattern']['ID'] == "0":
                 raise
 
             p = r'href="(.+?)">Back to \w+<'
             m = re.search(p, self.html)
-            html = self.load(urljoin("http://d-h.st", m.group(1)),
+            html = self.load(urlparse.urljoin("http://d-h.st", m.group(1)),
                              cookies=False)
 
-            p = '\?fld_id=%s.*?">(.+?)<' % id
+            p = '\?fld_id=%s.*?">(.+?)<' % self.info['pattern']['ID']
             m = re.search(p, html)
-            name = folder = m.group(1)
+            self.pyfile.name = m.group(1)
 
         except Exception, e:
             self.logDebug(e)
-            name = folder = re.match(self.__pattern__, self.pyfile.url).group('USER')
+            self.pyfile.name = self.info['pattern']['USER']
 
-        return {'name': name, 'folder': folder}
+        try:
+            folder = self.info['folder'] = self.pyfile.name
 
+        except Exception:
+            pass
 
-    def getLinks(self):
-        return [urljoin("http://d-h.st", link) for link in re.findall(self.LINK_PATTERN, self.html)]
+        self.logDebug("File name: %s"   % self.pyfile.name,
+                      "File folder: %s" % self.pyfile.name)
 
 
 getInfo = create_getInfo(DevhostStFolder)

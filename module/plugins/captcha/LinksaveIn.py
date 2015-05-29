@@ -5,17 +5,16 @@ try:
 except ImportError:
     import Image
 
-from glob import glob
-from os import sep
-from os.path import abspath, dirname
+import glob
+import os
 
-from module.plugins.captcha.captcha import OCR
+from module.plugins.captcha.OCR import OCR
 
 
 class LinksaveIn(OCR):
     __name__    = "LinksaveIn"
     __type__    = "ocr"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __description__ = """Linksave.in ocr plugin"""
     __license__     = "GPLv3"
@@ -24,7 +23,7 @@ class LinksaveIn(OCR):
 
     def __init__(self):
         OCR.__init__(self)
-        self.data_dir = dirname(abspath(__file__)) + sep + "LinksaveIn" + sep
+        self.data_dir = os.path.dirname(os.path.abspath(__file__)) + os.sep + "LinksaveIn" + os.sep
 
 
     def load_image(self, image):
@@ -46,7 +45,7 @@ class LinksaveIn(OCR):
             pix = frame.load()
             for x in xrange(frame.size[0]):
                 for y in xrange(frame.size[1]):
-                    if lut[pix[x, y]] != (0,0,0):
+                    if lut[pix[x, y]] != (0, 0, 0):
                         npix[x, y] = lut[pix[x, y]]
             frame_nr += 1
         new.save(self.data_dir+"unblacked.png")
@@ -59,7 +58,7 @@ class LinksaveIn(OCR):
         stat = {}
         cstat = {}
         img = self.image.convert("P")
-        for bgpath in glob(self.data_dir+"bg/*.gif"):
+        for bgpath in glob.glob(self.data_dir+"bg/*.gif"):
             stat[bgpath] = 0
             bg = Image.open(bgpath)
 
@@ -79,7 +78,7 @@ class LinksaveIn(OCR):
                     rgb_c = lut[pix[x, y]]
                     try:
                         cstat[rgb_c] += 1
-                    except:
+                    except Exception:
                         cstat[rgb_c] = 1
                     if rgb_bg == rgb_c:
                         stat[bgpath] += 1
@@ -112,7 +111,7 @@ class LinksaveIn(OCR):
                 rgb_bg = bglut[bgpix[x, y]]
                 rgb_c = lut[pix[x, y]]
                 if rgb_c == rgb_bg:
-                    orgpix[x, y] = (255,255,255)
+                    orgpix[x, y] = (255, 255, 255)
 
 
     def eval_black_white(self):
@@ -124,15 +123,15 @@ class LinksaveIn(OCR):
             for y in xrange(new.size[1]):
                 rgb = orgpix[x, y]
                 r, g, b = rgb
-                pix[x, y] = (255,255,255)
+                pix[x, y] = (255, 255, 255)
                 if r > max(b, g)+thresh:
-                    pix[x, y] = (0,0,0)
+                    pix[x, y] = (0, 0, 0)
                 if g < min(r, b):
-                    pix[x, y] = (0,0,0)
+                    pix[x, y] = (0, 0, 0)
                 if g > max(r, b)+thresh:
-                    pix[x, y] = (0,0,0)
+                    pix[x, y] = (0, 0, 0)
                 if b > max(r, g)+thresh:
-                    pix[x, y] = (0,0,0)
+                    pix[x, y] = (0, 0, 0)
         self.image = new
         self.pixels = self.image.load()
 

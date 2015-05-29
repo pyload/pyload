@@ -1,19 +1,22 @@
 # -*- coding: utf-8 -*-
+#
+# Test links:
+#   http://filecrypt.cc/Container/64E039F859.html
 
-import base64
 import binascii
 import re
+import urlparse
 
 from Crypto.Cipher import AES
-from urlparse import urljoin
 
 from module.plugins.Crypter import Crypter
+from module.plugins.internal.CaptchaService import ReCaptcha
 
 
 class FilecryptCc(Crypter):
     __name__    = "FilecryptCc"
     __type__    = "crypter"
-    __version__ = "0.07"
+    __version__ = "0.14"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
 
@@ -30,7 +33,7 @@ class FilecryptCc(Crypter):
     CAPTCHA_PATTERN        = r'<img id="nc" src="(.+?)"'
     CIRCLE_CAPTCHA_PATTERN = r'<input type="image" src="(.+?)"'
 
-    MIRROR_PAGE_PATTERN = r'"[\w]*" href="(http://filecrypt.cc/Container/\w+\.html\?mirror=\d+)">'
+    MIRROR_PAGE_PATTERN = r'"[\w]*" href="(https?://(?:www\.)?filecrypt.cc/Container/\w+\.html\?mirror=\d+)">'
 
 
     def setup(self):
@@ -38,7 +41,8 @@ class FilecryptCc(Crypter):
 
 
     def decrypt(self, pyfile):
-        self.html = self.load(pyfile.url, cookies=True)
+        self.html = self.load(pyfile.url)
+        self.base_url = self.pyfile.url.split("Container")[0]
 
         if "content notfound" in self.html:  #@NOTE: "content notfound" is NOT a typo
             self.offline()
@@ -63,7 +67,7 @@ class FilecryptCc(Crypter):
         self.logInfo(_("Found %d mirrors") % len(mirror))
 
         for i in mirror[1:]:
-            self.siteWithLinks = self.siteWithLinks + self.load(i, cookies=True).decode("utf-8", "replace")
+            self.siteWithLinks = self.siteWithLinks + self.load(i).decode("utf-8", "replace")
 
 
     def handlePasswordProtection(self):
@@ -72,44 +76,52 @@ class FilecryptCc(Crypter):
 
         self.logInfo(_("Folder is password protected"))
 
-        if not self.pyfile.package().password:
+        password = self.getPassword()
+
+        if not password:
             self.fail(_("Please enter the password in package section and try again"))
 
-        self.html = self.load(self.pyfile.url, post={"password": self.password}, cookies=True)
+        self.html = self.load(self.pyfile.url, post={"password": password})
 
 
     def handleCaptcha(self):
-        m = re.search(self.CAPTCHA_PATTERN, self.html)
+        m  = re.search(self.CAPTCHA_PATTERN, self.html)
         m2 = re.search(self.CIRCLE_CAPTCHA_PATTERN, self.html)
 
         if m:  #: normal captcha
             self.logDebug("Captcha-URL: %s" % m.group(1))
 
-            captcha_code = self.decryptCaptcha(urljoin("http://filecrypt.cc", m.group(1)),
+            captcha_code = self.decryptCaptcha(urlparse.urljoin(self.base_url, m.group(1)),
                                                forceUser=True,
                                                imgtype="gif")
 
             self.siteWithLinks = self.load(self.pyfile.url,
                                            post={'recaptcha_response_field': captcha_code},
-                                           cookies=True,
                                            decode=True)
         elif m2:  #: circle captcha
             self.logDebug("Captcha-URL: %s" % m2.group(1))
 
-            captcha_code = self.decryptCaptcha(urljoin("http://filecrypt.cc", m2.group(1)),
-                                               forceUser=True,
-                                               imgtype="gif",
+            captcha_code = self.decryptCaptcha('%s%s?c=abc' %(self.base_url, m2.group(1)),
                                                result_type='positional')
 
             self.siteWithLinks = self.load(self.pyfile.url,
                                            post={'button.x': captcha_code[0], 'button.y': captcha_code[1]},
-                                           cookies=True,
                                            decode=True)
-        else:
-            self.logDebug("No captcha found")
-            self.siteWithLinks = self.html
 
-        if "recaptcha_image" in self.siteWithLinks:
+        else:
+            recaptcha   = ReCaptcha(self)
+            captcha_key = recaptcha.detect_key()
+
+            if captcha_key:
+                response, challenge = recaptcha.challenge(captcha_key)
+                self.siteWithLinks  = self.load(self.pyfile.url,
+                                                post={'g-recaptcha-response': response},
+                                                decode=True)
+            else:
+                self.logInfo(_("No captcha found"))
+                self.siteWithLinks = self.html
+
+        if "recaptcha_image" in self.siteWithLinks or "data-sitekey" in self.siteWithLinks:
             self.invalidCaptcha()
             self.retry()
 
@@ -121,7 +133,7 @@ class FilecryptCc(Crypter):
             return
 
         for i in dlc:
-            self.links.append("http://filecrypt.cc/DLC/%s.dlc" % i)
+            self.links.append("%s/DLC/%s.dlc" % (self.base_url, i))
 
 
     def handleWeblinks(self):
@@ -129,9 +141,9 @@ class FilecryptCc(Crypter):
             weblinks = re.findall(self.WEBLINK_PATTERN, self.siteWithLinks)
 
             for link in weblinks:
-                res   = self.load("http://filecrypt.cc/Link/%s.html" % link, cookies=True)
+                res   = self.load("%s/Link/%s.html" % (self.base_url, link))
                 link2 = re.search('<iframe noresize src="(.*)"></iframe>', res)
-                res2  = self.load(link2.group(1), just_header=True, cookies=True)
+                res2  = self.load(link2.group(1), just_header=True)
                 self.links.append(res2['location'])
 
         except Exception, e:
@@ -154,17 +166,14 @@ class FilecryptCc(Crypter):
         # Get key
         key = binascii.unhexlify(str(jk))
 
-        # Decode crypted
-        crypted = base64.standard_b64decode(crypted)
-
         # Decrypt
         Key  = key
         IV   = key
         obj  = AES.new(Key, AES.MODE_CBC, IV)
-        text = obj.decrypt(crypted)
+        text = obj.decrypt(crypted.decode('base64'))
 
         # Extract links
-        links = filter(lambda x: x != "",
-                       text.replace("\x00", "").replace("\r", "").split("\n"))
+        text  = text.replace("\x00", "").replace("\r", "")
+        links = filter(bool, text.split('\n'))
 
         return links

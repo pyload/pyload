@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from urllib import unquote
-from urlparse import urlparse
-
 from module.plugins.internal.SimpleCrypter import create_getInfo
 from module.plugins.Crypter import Crypter as _Crypter
 
@@ -10,7 +7,7 @@ from module.plugins.Crypter import Crypter as _Crypter
 class DeadCrypter(_Crypter):
     __name__    = "DeadCrypter"
     __type__    = "crypter"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'^unmatchable$'
 
@@ -20,8 +17,10 @@ class DeadCrypter(_Crypter):
 
 
     @classmethod
-    def getInfo(cls, url="", html=""):
-        return {'name': urlparse(unquote(url)).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 1, 'url': url}
+    def apiInfo(cls, url):
+        api = super(DeadCrypter, cls).apiInfo(url)
+        api['status'] = 1
+        return api
 
 
     def setup(self):

@@ -7,21 +7,26 @@ from module.plugins.Hook import Hook
 class DeleteFinished(Hook):
     __name__    = "DeleteFinished"
     __type__    = "hook"
-    __version__ = "1.11"
+    __version__ = "1.12"
 
-    __config__ = [('activated', 'bool', 'Activated', 'False'),
-                  ('interval', 'int', 'Delete every (hours)', '72'),
-                  ('deloffline', 'bool', 'Delete packages with offline links', 'False')]
+    __config__ = [("interval"  , "int" , "Check interval in hours"          , 72   ),
+                  ("deloffline", "bool", "Delete package with offline links", False)]
 
     __description__ = """Automatically delete all finished packages from queue"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    # event_list = ["pluginConfigChanged"]
+    MIN_CHECK_INTERVAL = 1 * 60 * 60  #: 1 hour
 
 
     ## overwritten methods ##
+    def setup(self):
+        self.info = {}  #@TODO: Remove in 0.4.10
+        # self.event_list = ["pluginConfigChanged"]
+        self.interval = self.MIN_CHECK_INTERVAL
+
+
     def periodical(self):
         if not self.info['sleep']:
             deloffline = self.getConfig('deloffline')
@@ -33,20 +38,21 @@ class DeleteFinished(Hook):
             self.addEvent('packageFinished', self.wakeup)
 
 
-    def pluginConfigChanged(self, plugin, name, value):
-        if name == "interval" and value != self.interval:
-            self.interval = value * 3600
-            self.initPeriodical()
+    # def pluginConfigChanged(self, plugin, name, value):
+        # if name == "interval" and value != self.interval:
+            # self.interval = value * 3600
+            # self.initPeriodical()
 
 
     def unload(self):
-        self.removeEvent('packageFinished', self.wakeup)
+        self.manager.removeEvent('packageFinished', self.wakeup)
 
 
     def coreReady(self):
-        self.info = {'sleep': True}
-        interval = self.getConfig('interval')
-        self.pluginConfigChanged(self.__name__, 'interval', interval)
+        self.info['sleep'] = True
+        # interval = self.getConfig('interval')
+        # self.pluginConfigChanged(self.__name__, 'interval', interval)
+        self.interval = max(self.MIN_CHECK_INTERVAL, self.getConfig('interval') * 60 * 60)
         self.addEvent('packageFinished', self.wakeup)
 
 
@@ -58,22 +64,17 @@ class DeleteFinished(Hook):
 
 
     def wakeup(self, pypack):
-        self.removeEvent('packageFinished', self.wakeup)
+        self.manager.removeEvent('packageFinished', self.wakeup)
         self.info['sleep'] = False
 
 
     ## event managing ##
     def addEvent(self, event, func):
         """Adds an event listener for event name"""
-        if event in self.m.events:
-            if func in self.m.events[event]:
+        if event in self.manager.events:
+            if func in self.manager.events[event]:
                 self.logDebug("Function already registered", func)
             else:
-                self.m.events[event].append(func)
+                self.manager.events[event].append(func)
         else:
-            self.m.events[event] = [func]
-
-
-    def setup(self):
-        self.m = self.manager
-        self.removeEvent = self.m.removeEvent
+            self.manager.events[event] = [func]

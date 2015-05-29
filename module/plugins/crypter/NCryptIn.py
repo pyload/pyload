@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import base64
 import binascii
 import re
 
@@ -13,11 +12,11 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class NCryptIn(Crypter):
     __name__    = "NCryptIn"
     __type__    = "crypter"
-    __version__ = "1.33"
+    __version__ = "1.34"
 
     __pattern__ = r'http://(?:www\.)?ncrypt\.in/(?P<TYPE>folder|link|frame)-([^/\?]+)'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
-                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """NCrypt.in decrypter plugin"""
     __license__     = "GPLv3"
@@ -28,7 +27,7 @@ class NCryptIn(Crypter):
     JK_KEY = "jk"
     CRYPTED_KEY = "crypted"
 
-    NAME_PATTERN = r'<meta name="description" content="(?P<N>[^"]+)"'
+    NAME_PATTERN = r'<meta name="description" content="(?P<N>.+?)"'
 
 
     def setup(self):
@@ -109,7 +108,7 @@ class NCryptIn(Crypter):
 
     def isProtected(self):
         form = re.search(r'<form.*?name.*?protected.*?>(.*?)</form>', self.cleanedHtml, re.S)
-        if form is not None:
+        if form:
             content = form.group(1)
             for keyword in ("password", "captcha"):
                 if keyword in content:
@@ -145,7 +144,7 @@ class NCryptIn(Crypter):
         # Resolve anicaptcha
         if "anicaptcha" in form:
             self.logDebug("Captcha protected")
-            captchaUri = re.search(r'src="(/temp/anicaptcha/[^"]+)', form).group(1)
+            captchaUri = re.search(r'src="(/temp/anicaptcha/.+?)"', form).group(1)
             captcha = self.decryptCaptcha("http://ncrypt.in" + captchaUri)
             self.logDebug("Captcha resolved [%s]" % captcha)
             postData['captcha'] = captcha
@@ -156,7 +155,7 @@ class NCryptIn(Crypter):
             captcha_key = re.search(r'\?k=(.*?)"', form).group(1)
             self.logDebug("Resolving ReCaptcha with key [%s]" % captcha_key)
             recaptcha = ReCaptcha(self)
-            challenge, response = recaptcha.challenge(captcha_key)
+            response, challenge = recaptcha.challenge(captcha_key)
             postData['recaptcha_challenge_field'] = challenge
             postData['recaptcha_response_field']  = response
 
@@ -205,7 +204,7 @@ class NCryptIn(Crypter):
         elif link_source_type == "web":
             return self.handleWebLinks()
         else:
-            self.error('Unknown source type "%s" (this is probably a bug)' % link_source_type)
+            self.error(_('Unknown source type "%s"') % link_source_type)
 
 
     def handleSingleLink(self):
@@ -229,7 +228,7 @@ class NCryptIn(Crypter):
                 (vcrypted, vjk) = self._getCipherParams()
                 for (crypted, jk) in zip(vcrypted, vjk):
                     package_links.extend(self._getLinks(crypted, jk))
-            except:
+            except Exception:
                 self.fail(_("Unable to decrypt CNL2 links"))
 
         return package_links
@@ -296,19 +295,15 @@ class NCryptIn(Crypter):
         self.logDebug("JsEngine returns value [%s]" % jreturn)
         key = binascii.unhexlify(jreturn)
 
-        # Decode crypted
-        crypted = base64.standard_b64decode(crypted)
-
         # Decrypt
         Key = key
         IV = key
         obj = AES.new(Key, AES.MODE_CBC, IV)
-        text = obj.decrypt(crypted)
+        text = obj.decrypt(crypted.decode('base64'))
 
         # Extract links
         text = text.replace("\x00", "").replace("\r", "")
-        links = text.split("\n")
-        links = filter(lambda x: x != "", links)
+        links = filter(bool, text.split('\n'))
 
         # Log and return
         self.logDebug("Block has %d links" % len(links))

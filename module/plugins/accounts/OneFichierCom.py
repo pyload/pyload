@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
 import re
-
-from time import strptime, mktime
-
-from pycurl import REFERER
+import time
 
 from module.plugins.Account import Account
 
@@ -12,7 +10,7 @@ from module.plugins.Account import Account
 class OneFichierCom(Account):
     __name__    = "OneFichierCom"
     __type__    = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __description__ = """1fichier.com account plugin"""
     __license__     = "GPLv3"
@@ -36,7 +34,7 @@ class OneFichierCom(Account):
             self.logDebug("Expire date: " + expiredate)
 
             try:
-                validuntil = mktime(strptime(expiredate, "%d/%m/%Y"))
+                validuntil = time.mktime(time.strptime(expiredate, "%d/%m/%Y"))
             except Exception, e:
                 self.logError(e)
             else:
@@ -46,10 +44,15 @@ class OneFichierCom(Account):
 
 
     def login(self, user, data, req):
-        req.http.c.setopt(REFERER, "https://1fichier.com/login.pl?lg=en")
+        req.http.c.setopt(pycurl.REFERER, "https://1fichier.com/login.pl?lg=en")
 
         html = req.load("https://1fichier.com/login.pl?lg=en",
-                        post={'mail': user, 'pass': data['password'], 'It': "on", 'purge': "off", 'valider': "Send"})
+                        post={'mail'   : user,
+                              'pass'   : data['password'],
+                              'It'     : "on",
+                              'purge'  : "off",
+                              'valider': "Send"},
+                        decode=True)
 
         if '>Invalid email address' in html or '>Invalid password' in html:
             self.wrongPassword()

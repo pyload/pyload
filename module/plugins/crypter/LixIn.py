@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import urlparse
 
 from module.plugins.Crypter import Crypter
 
@@ -11,8 +12,8 @@ class LixIn(Crypter):
     __version__ = "0.22"
 
     __pattern__ = r'http://(?:www\.)?lix\.in/(?P<ID>.+)'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
-                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Lix.in decrypter plugin"""
     __license__     = "GPLv3"
@@ -46,7 +47,7 @@ class LixIn(Crypter):
                 m = re.search(self.CAPTCHA_PATTERN, self.html)
                 if m:
                     self.logDebug("Trying captcha")
-                    captcharesult = self.decryptCaptcha("http://lix.in/" + m.group(1))
+                    captcharesult = self.decryptCaptcha(urlparse.urljoin("http://lix.in/", m.group(1)))
                 self.html = self.load(url, decode=True,
                                           post={"capt": captcharesult, "submit": "submit", "tiny": id})
             else:

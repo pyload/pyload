@@ -3,11 +3,9 @@
 from __future__ import with_statement
 
 import hashlib
+import os
 import re
 import zlib
-
-from os import remove
-from os.path import getsize, isfile, splitext
 
 from module.plugins.Hook import Hook
 from module.utils import save_join, fs_encode
@@ -40,7 +38,7 @@ def computeChecksum(local_file, algorithm):
 class Checksum(Hook):
     __name__    = "Checksum"
     __type__    = "hook"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __config__ = [("check_checksum", "bool", "Check checksum? (If False only size will be verified)", True),
                   ("check_action", "fail;retry;nothing", "What to do if check fails?", "retry"),
@@ -50,32 +48,33 @@ class Checksum(Hook):
 
     __description__ = """Verify downloaded file size and checksum"""
     __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
-                       ("Walter Purcaro", "vuolter@gmail.com"),
-                       ("stickell", "l.stickell@yahoo.it")]
+    __authors__     = [("zoidberg"      , "zoidberg@mujmail.cz"),
+                       ("Walter Purcaro", "vuolter@gmail.com"  ),
+                       ("stickell"      , "l.stickell@yahoo.it")]
 
 
-    methods = {'sfv': 'crc32', 'crc': 'crc32', 'hash': 'md5'}
-    regexps = {'sfv': r'^(?P<NAME>[^;].+)\s+(?P<HASH>[0-9A-Fa-f]{8})$',
-               'md5': r'^(?P<NAME>[0-9A-Fa-f]{32})  (?P<FILE>.+)$',
-               'crc': r'filename=(?P<NAME>.+)\nsize=(?P<SIZE>\d+)\ncrc32=(?P<HASH>[0-9A-Fa-f]{8})$',
-               'default': r'^(?P<HASH>[0-9A-Fa-f]+)\s+\*?(?P<NAME>.+)$'}
-
-
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
+    interval = 0  #@TODO: Remove in 0.4.10
+    methods  = {'sfv' : 'crc32',
+                'crc' : 'crc32',
+                'hash': 'md5'}
+    regexps  = {'sfv'    : r'^(?P<NAME>[^;].+)\s+(?P<HASH>[0-9A-Fa-f]{8})$',
+                'md5'    : r'^(?P<NAME>[0-9A-Fa-f]{32})  (?P<FILE>.+)$',
+                'crc'    : r'filename=(?P<NAME>.+)\nsize=(?P<SIZE>\d+)\ncrc32=(?P<HASH>[0-9A-Fa-f]{8})$',
+                'default': r'^(?P<HASH>[0-9A-Fa-f]+)\s+\*?(?P<NAME>.+)$'}
 
 
     def coreReady(self):
-        if not self.getConfig("check_checksum"):
+        if not self.getConfig('check_checksum'):
             self.logInfo(_("Checksum validation is disabled in plugin configuration"))
 
 
     def setup(self):
+        self.info       = {}  #@TODO: Remove in 0.4.10
         self.algorithms = sorted(
             getattr(hashlib, "algorithms", ("md5", "sha1", "sha224", "sha256", "sha384", "sha512")), reverse=True)
+
         self.algorithms.extend(["crc32", "adler32"])
+
         self.formats = self.algorithms + ["sfv", "crc", "hash"]
 
 
@@ -92,8 +91,9 @@ class Checksum(Hook):
         elif hasattr(pyfile.plugin, "api_data") and isinstance(pyfile.plugin.api_data, dict):
             data = pyfile.plugin.api_data.copy()
 
-        # elif hasattr(pyfile.plugin, "info") and isinstance(pyfile.plugin.info, dict):
-            # data = pyfile.plugin.info.copy()
+        elif hasattr(pyfile.plugin, "info") and isinstance(pyfile.plugin.info, dict):
+            data = pyfile.plugin.info.copy()
+            data.pop('size', None)  #@NOTE: Don't check file size until a similary matcher will be implemented
 
         else:
             return
@@ -107,22 +107,28 @@ class Checksum(Hook):
         #download_folder = self.config['general']['download_folder']
         #local_file = fs_encode(save_join(download_folder, pyfile.package().folder, pyfile.name))
 
-        if not isfile(local_file):
+        if not os.path.isfile(local_file):
             self.checkFailed(pyfile, None, "File does not exist")
 
-            # validate file size
+        # validate file size
         if "size" in data:
-            api_size = int(data['size'])
-            file_size = getsize(local_file)
+            api_size  = int(data['size'])
+            file_size = os.path.getsize(local_file)
+
             if api_size != file_size:
                 self.logWarning(_("File %s has incorrect size: %d B (%d expected)") % (pyfile.name, file_size, api_size))
                 self.checkFailed(pyfile, local_file, "Incorrect file size")
-            del data['size']
+
+            data.pop('size', None)
 
         # validate checksum
-        if data and self.getConfig("check_checksum"):
-            if "checksum" in data:
-                data['md5'] = data['checksum']
+        if data and self.getConfig('check_checksum'):
+
+            if not 'md5' in data:
+                for type in ("checksum", "hashsum", "hash"):
+                    if type in data:
+                        data['md5'] = data[type]  #@NOTE: What happens if it's not an md5 hash?
+                        break
 
             for key in self.algorithms:
                 if key in data:
@@ -143,14 +149,14 @@ class Checksum(Hook):
 
 
     def checkFailed(self, pyfile, local_file, msg):
-        check_action = self.getConfig("check_action")
+        check_action = self.getConfig('check_action')
         if check_action == "retry":
-            max_tries = self.getConfig("max_tries")
-            retry_action = self.getConfig("retry_action")
+            max_tries = self.getConfig('max_tries')
+            retry_action = self.getConfig('retry_action')
             if pyfile.plugin.retries < max_tries:
                 if local_file:
-                    remove(local_file)
-                pyfile.plugin.retry(max_tries, self.getConfig("wait_time"), msg)
+                    os.remove(local_file)
+                pyfile.plugin.retry(max_tries, self.getConfig('wait_time'), msg)
             elif retry_action == "nothing":
                 return
         elif check_action == "nothing":
@@ -162,13 +168,13 @@ class Checksum(Hook):
         download_folder = save_join(self.config['general']['download_folder'], pypack.folder, "")
 
         for link in pypack.getChildren().itervalues():
-            file_type = splitext(link['name'])[1][1:].lower()
+            file_type = os.path.splitext(link['name'])[1][1:].lower()
 
             if file_type not in self.formats:
                 continue
 
             hash_file = fs_encode(save_join(download_folder, link['name']))
-            if not isfile(hash_file):
+            if not os.path.isfile(hash_file):
                 self.logWarning(_("File not found"), link['name'])
                 continue
 

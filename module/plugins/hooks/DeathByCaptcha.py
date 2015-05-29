@@ -2,17 +2,16 @@
 
 from __future__ import with_statement
 
+import pycurl
 import re
+import time
 
 from base64 import b64encode
-from pycurl import FORM_FILE, HTTPHEADER
-from thread import start_new_thread
-from time import sleep
 
 from module.common.json_layer import json_loads
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest
-from module.plugins.Hook import Hook
+from module.plugins.Hook import Hook, threaded
 
 
 class DeathByCaptchaException(Exception):
@@ -52,7 +51,7 @@ class DeathByCaptchaException(Exception):
 class DeathByCaptcha(Hook):
     __name__    = "DeathByCaptcha"
     __type__    = "hook"
-    __version__ = "0.04"
+    __version__ = "0.06"
 
     __config__ = [("username", "str", "Username", ""),
                   ("passkey", "password", "Password", ""),
@@ -60,31 +59,28 @@ class DeathByCaptcha(Hook):
 
     __description__ = """Send captchas to DeathByCaptcha.com"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+    __authors__     = [("RaNaN"   , "RaNaN@pyload.org"   ),
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 
+    interval = 0  #@TODO: Remove in 0.4.10
+
     API_URL = "http://api.dbcapi.me/api/"
-
-
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
 
 
     def setup(self):
         self.info = {}  #@TODO: Remove in 0.4.10
 
 
-    def call_api(self, api="captcha", post=False, multipart=False):
+    def api_response(self, api="captcha", post=False, multipart=False):
         req = getRequest()
-        req.c.setopt(HTTPHEADER, ["Accept: application/json", "User-Agent: pyLoad %s" % self.core.version])
+        req.c.setopt(pycurl.HTTPHEADER, ["Accept: application/json", "User-Agent: pyLoad %s" % self.core.version])
 
         if post:
             if not isinstance(post, dict):
                 post = {}
-            post.update({"username": self.getConfig("username"),
-                         "password": self.getConfig("passkey")})
+            post.update({"username": self.getConfig('username'),
+                         "password": self.getConfig('passkey')})
 
         res = None
         try:
@@ -118,7 +114,7 @@ class DeathByCaptcha(Hook):
 
 
     def getCredits(self):
-        res = self.call_api("user", True)
+        res = self.api_response("user", True)
 
         if 'is_banned' in res and res['is_banned']:
             raise DeathByCaptchaException('banned')
@@ -129,32 +125,32 @@ class DeathByCaptcha(Hook):
 
 
     def getStatus(self):
-        res = self.call_api("status", False)
+        res = self.api_response("status", False)
 
         if 'is_service_overloaded' in res and res['is_service_overloaded']:
             raise DeathByCaptchaException('service-overload')
 
 
     def submit(self, captcha, captchaType="file", match=None):
-        #workaround multipart-post bug in HTTPRequest.py
-        if re.match("^\w*$", self.getConfig("passkey")):
+        #@NOTE: Workaround multipart-post bug in HTTPRequest.py
+        if re.match("^\w*$", self.getConfig('passkey')):
             multipart = True
-            data = (FORM_FILE, captcha)
+            data = (pycurl.FORM_FILE, captcha)
         else:
             multipart = False
             with open(captcha, 'rb') as f:
                 data = f.read()
             data = "base64:" + b64encode(data)
 
-        res = self.call_api("captcha", {"captchafile": data}, multipart)
+        res = self.api_response("captcha", {"captchafile": data}, multipart)
 
         if "captcha" not in res:
             raise DeathByCaptchaException(res)
         ticket = res['captcha']
 
         for _i in xrange(24):
-            sleep(5)
-            res = self.call_api("captcha/%d" % ticket, False)
+            time.sleep(5)
+            res = self.api_response("captcha/%d" % ticket, False)
             if res['text'] and res['is_correct']:
                 break
         else:
@@ -173,10 +169,10 @@ class DeathByCaptcha(Hook):
         if not task.isTextual():
             return False
 
-        if not self.getConfig("username") or not self.getConfig("passkey"):
+        if not self.getConfig('username') or not self.getConfig('passkey'):
             return False
 
-        if self.core.isClientConnected() and not self.getConfig("force"):
+        if self.core.isClientConnected() and not self.getConfig('force'):
             return False
 
         try:
@@ -195,13 +191,13 @@ class DeathByCaptcha(Hook):
             task.handler.append(self)
             task.data['service'] = self.__name__
             task.setWaiting(180)
-            start_new_thread(self.processCaptcha, (task,))
+            self._processCaptcha(task)
 
 
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             try:
-                res = self.call_api("captcha/%d/report" % task.data['ticket'], True)
+                res = self.api_response("captcha/%d/report" % task.data['ticket'], True)
 
             except DeathByCaptchaException, e:
                 self.logError(e.getDesc())
@@ -210,7 +206,8 @@ class DeathByCaptcha(Hook):
                 self.logError(e)
 
 
-    def processCaptcha(self, task):
+    @threaded
+    def _processCaptcha(self, task):
         c = task.captchaFile
         try:
             ticket, result = self.submit(c)

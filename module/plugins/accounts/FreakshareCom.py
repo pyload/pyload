@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from time import strptime, mktime
+import time
 
 from module.plugins.Account import Account
 
@@ -10,7 +9,7 @@ from module.plugins.Account import Account
 class FreakshareCom(Account):
     __name__    = "FreakshareCom"
     __type__    = "account"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __description__ = """Freakshare.com account plugin"""
     __license__     = "GPLv3"
@@ -26,7 +25,7 @@ class FreakshareCom(Account):
 
         try:
             m = re.search(r'ltig bis:</td>\s*<td><b>([\d.:-]+)</b></td>', html, re.M)
-            validuntil = mktime(strptime(m.group(1).strip(), "%d.%m.%Y - %H:%M"))
+            validuntil = time.mktime(time.strptime(m.group(1).strip(), "%d.%m.%Y - %H:%M"))
 
         except Exception:
             pass
@@ -44,8 +43,9 @@ class FreakshareCom(Account):
     def login(self, user, data, req):
         req.load("http://freakshare.com/index.php?language=EN")
 
-        html = req.load("http://freakshare.com/login.html", None,
-                        {"submit": "Login", "user": user, "pass": data['password']}, cookies=True)
+        html = req.load("http://freakshare.com/login.html",
+                        post={"submit": "Login", "user": user, "pass": data['password']},
+                        decode=True)
 
         if ">Wrong Username or Password" in html:
             self.wrongPassword()

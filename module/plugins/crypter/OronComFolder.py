@@ -9,7 +9,7 @@ class OronComFolder(DeadCrypter):
     __version__ = "0.11"
 
     __pattern__ = r'http://(?:www\.)?oron\.com/folder/\w+'
-    __config__  = []
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """Oron.com folder decrypter plugin"""
     __license__     = "GPLv3"

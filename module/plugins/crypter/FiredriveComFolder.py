@@ -9,7 +9,7 @@ class FiredriveComFolder(DeadCrypter):
     __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?(firedrive|putlocker)\.com/share/.+'
-    __config__  = []
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """Firedrive.com folder decrypter plugin"""
     __license__     = "GPLv3"

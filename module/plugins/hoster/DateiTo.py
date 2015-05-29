@@ -9,9 +9,10 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DateiTo(SimpleHoster):
     __name__    = "DateiTo"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.08"
 
     __pattern__ = r'http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Datei.to hoster plugin"""
     __license__     = "GPLv3"
@@ -23,12 +24,12 @@ class DateiTo(SimpleHoster):
     OFFLINE_PATTERN = r'>Datei wurde nicht gefunden<|>Bitte wähle deine Datei aus... <'
 
     WAIT_PATTERN    = r'countdown\({seconds: (\d+)'
-    MULTIDL_PATTERN = r'>Du lädst bereits eine Datei herunter<'
+    DOWNLOAD_PATTERN = r'>Du lädst bereits eine Datei herunter'
 
     DATA_PATTERN = r'url: "(.*?)", data: "(.*?)",'
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         url = 'http://datei.to/ajax/download.php'
         data = {'P': 'I', 'ID': self.info['pattern']['ID']}
         recaptcha = ReCaptcha(self)
@@ -52,23 +53,11 @@ class DateiTo(SimpleHoster):
             data = dict(x.split('=') for x in m.group(2).split('&'))
 
             if url.endswith('recaptcha.php'):
-                data['recaptcha_challenge_field'], data['recaptcha_response_field'] = recaptcha.challenge()
+                data['recaptcha_response_field'], data['recaptcha_challenge_field'] = recaptcha.challenge()
         else:
             self.fail(_("Too bad..."))
 
-        self.download(self.html)
-
-
-    def checkErrors(self):
-        m = re.search(self.MULTIDL_PATTERN, self.html)
-        if m:
-            m = re.search(self.WAIT_PATTERN, self.html)
-            wait_time = int(m.group(1)) if m else 30
-
-            errmsg = self.info['error'] = _("Parallel downloads")
-            self.retry(wait_time=wait_time, reason=errmsg)
-
-        self.info.pop('error', None)
+        self.link = self.html
 
 
     def doWait(self):

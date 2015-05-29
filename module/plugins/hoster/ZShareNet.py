@@ -9,6 +9,7 @@ class ZShareNet(DeadHoster):
     __version__ = "0.21"
 
     __pattern__ = r'https?://(?:ww[2w]\.)?zshares?\.net/.+'
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """ZShare.net hoster plugin"""
     __license__     = "GPLv3"

@@ -1,8 +1,20 @@
 # -*- coding: utf-8 -*-
 
-import time
+try:
+    from beaker.crypto.pbkdf2 import PBKDF2
 
-from beaker.crypto.pbkdf2 import PBKDF2
+except ImportError:
+    from beaker.crypto.pbkdf2 import pbkdf2
+    from binascii import b2a_hex
+
+    class PBKDF2(object):
+        def __init__(self, passphrase, salt, iterations=1000):
+            self.passphrase = passphrase
+            self.salt = salt
+            self.iterations = iterations
+
+        def hexread(self, octets):
+            return b2a_hex(pbkdf2(self.passphrase, self.salt, self.iterations, octets))
 
 from module.common.json_layer import json_loads
 from module.plugins.Account import Account
@@ -11,7 +23,7 @@ from module.plugins.Account import Account
 class OboomCom(Account):
     __name__    = "OboomCom"
     __type__    = "account"
-    __version__ = "0.22"
+    __version__ = "0.24"
 
     __description__ = """Oboom.com account plugin"""
     __license__     = "GPLv3"
@@ -20,12 +32,15 @@ class OboomCom(Account):
 
     def loadAccountData(self, user, req):
         passwd = self.getAccountData(user)['password']
-        salt = passwd[::-1]
+        salt   = passwd[::-1]
         pbkdf2 = PBKDF2(passwd, salt, 1000).hexread(16)
+
         result = json_loads(req.load("https://www.oboom.com/1/login", get={"auth": user, "pass": pbkdf2}))
+
         if not result[0] == 200:
             self.logWarning(_("Failed to log in: %s") % result[1])
             self.wrongPassword()
+
         return result[1]
 
 

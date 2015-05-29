@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from time import time
+import time
 
 from module.plugins.Account import Account
 
@@ -9,7 +9,7 @@ from module.plugins.Account import Account
 class UploadedTo(Account):
     __name__    = "UploadedTo"
     __type__    = "account"
-    __version__ = "0.29"
+    __version__ = "0.30"
 
     __description__ = """Uploaded.to account plugin"""
     __license__     = "GPLv3"
@@ -39,7 +39,7 @@ class UploadedTo(Account):
             else:
                 m = re.findall(r'(\d+) (week|day|hour)', expiredate)
                 if m:
-                    validuntil = time()
+                    validuntil = time.time()
                     for n, u in m:
                         validuntil += float(n) * 60 * 60 * {'week': 168, 'day': 24, 'hour': 1}[u]
 
@@ -55,14 +55,17 @@ class UploadedTo(Account):
             else:
                 trafficleft = self.parseTraffic(size + unit)
 
-        return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
+        return {'validuntil' : validuntil,
+                'trafficleft': trafficleft,
+                'premium'    : premium}
 
 
     def login(self, user, data, req):
-        req.cj.setCookie("uploaded.net", "lang", "en")
+        # req.cj.setCookie("uploaded.net", "lang", "en")
 
         html = req.load("http://uploaded.net/io/login",
-                        post={'id': user, 'pw': data['password'], '_': ""})
+                        post={'id': user, 'pw': data['password'], '_': ""},
+                        decode=True)
 
-        if "User and password do not match" in html:
+        if '"err"' in html:
             self.wrongPassword()

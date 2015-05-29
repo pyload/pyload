@@ -8,10 +8,11 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class VeohCom(SimpleHoster):
     __name__    = "VeohCom"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __pattern__ = r'http://(?:www\.)?veoh\.com/(tv/)?(watch|videos)/(?P<ID>v\w+)'
-    __config__ = [("quality", "Low;High;Auto", "Quality", "Auto")]
+    __config__  = [("use_premium", "bool"         , "Use premium account if available", True  ),
+                   ("quality"    , "Low;High;Auto", "Quality"                         , "Auto")]
 
     __description__ = """Veoh.com hoster plugin"""
     __license__     = "GPLv3"
@@ -32,17 +33,17 @@ class VeohCom(SimpleHoster):
         self.chunkLimit     = -1
 
 
-    def handleFree(self):
-        quality = self.getConfig("quality")
+    def handleFree(self, pyfile):
+        quality = self.getConfig('quality')
         if quality == "Auto":
             quality = ("High", "Low")
+
         for q in quality:
             pattern = r'"fullPreviewHash%sPath":"(.+?)"' % q
             m = re.search(pattern, self.html)
             if m:
-                self.pyfile.name += ".mp4"
-                link = m.group(1).replace("\\", "")
-                self.download(link)
+                pyfile.name += ".mp4"
+                self.link = m.group(1).replace("\\", "")
                 return
             else:
                 self.logInfo(_("No %s quality video found") % q.upper())

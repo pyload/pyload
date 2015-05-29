@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import re
-
-from urllib import unquote
+import reimport urllib
 
 from module.plugins.Hoster import Hoster
 
@@ -10,9 +8,9 @@ from module.plugins.Hoster import Hoster
 class YourfilesTo(Hoster):
     __name__    = "YourfilesTo"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
-    __pattern__ = r'(http://)?(?:www\.)?yourfiles\.(to|biz)/\?d=\w+'
+    __pattern__ = r'http://(?:www\.)?yourfiles\.(to|biz)/\?d=\w+'
 
     __description__ = """Youfiles.to hoster plugin"""
     __license__     = "GPLv3"
@@ -62,7 +60,7 @@ class YourfilesTo(Hoster):
         url = re.search(r"var bla = '(.*?)';", self.html)
         if url:
             url = url.group(1)
-            url = unquote(url.replace("http://http:/http://", "http://").replace("dumdidum", ""))
+            url = urllib.unquote(url.replace("http://http:/http://", "http://").replace("dumdidum", ""))
             return url
         else:
             self.error(_("Absolute filepath not found"))
@@ -81,7 +79,7 @@ class YourfilesTo(Hoster):
         if not self.html:
             self.download_html()
 
-        if re.search(r"HTTP Status 404", self.html) is not None:
+        if re.search(r"HTTP Status 404", self.html):
             return False
         else:
             return True

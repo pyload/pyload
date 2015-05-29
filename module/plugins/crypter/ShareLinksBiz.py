@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import base64
 import binascii
 import re
 
@@ -14,8 +13,8 @@ class ShareLinksBiz(Crypter):
     __version__ = "1.14"
 
     __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
-                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Share-Links.biz decrypter plugin"""
     __license__     = "GPLv3"
@@ -165,7 +164,7 @@ class ShareLinksBiz(Crypter):
         # Extract from web package header
         title_re = r'<h2><img.*?/>(.*)</h2>'
         m = re.search(title_re, self.html, re.S)
-        if m is not None:
+        if m:
             title = m.group(1).strip()
             if 'unnamed' not in title:
                 name = folder = title
@@ -235,7 +234,7 @@ class ShareLinksBiz(Crypter):
             try:
                 (crypted, jk) = self._getCipherParams()
                 package_links.extend(self._getLinks(crypted, jk))
-            except:
+            except Exception:
                 self.fail(_("Unable to decrypt CNL2 links"))
         return package_links
 
@@ -248,14 +247,12 @@ class ShareLinksBiz(Crypter):
         params = res.split(";;")
 
         # Get jk
-        strlist = list(base64.standard_b64decode(params[1]))
-        strlist.reverse()
-        jk = ''.join(strlist)
+        strlist = list(params[1].decode('base64'))
+        jk      = ''.join(strlist[::-1])
 
         # Get crypted
-        strlist = list(base64.standard_b64decode(params[2]))
-        strlist.reverse()
-        crypted = ''.join(strlist)
+        strlist = list(params[2].decode('base64'))
+        crypted = ''.join(strlist[::-1])
 
         # Log and return
         return crypted, jk
@@ -267,19 +264,15 @@ class ShareLinksBiz(Crypter):
         self.logDebug("JsEngine returns value [%s]" % jreturn)
         key = binascii.unhexlify(jreturn)
 
-        # Decode crypted
-        crypted = base64.standard_b64decode(crypted)
-
         # Decrypt
         Key = key
         IV = key
         obj = AES.new(Key, AES.MODE_CBC, IV)
-        text = obj.decrypt(crypted)
+        text = obj.decrypt(crypted.decode('base64'))
 
         # Extract links
         text = text.replace("\x00", "").replace("\r", "")
-        links = text.split("\n")
-        links = filter(lambda x: x != "", links)
+        links = filter(bool, text.split('\n'))
 
         # Log and return
         self.logDebug("Block has %d links" % len(links))
