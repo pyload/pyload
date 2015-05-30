@@ -11,7 +11,7 @@ from module.utils import fixup, html_unescape
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.46"
+    __version__ = "0.47"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),  #: Overrides core.config['general']['folder_per_package']
@@ -59,7 +59,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
     URL_REPLACEMENTS  = []
 
     TEXT_ENCODING = False  #: Set to True or encoding name if encoding in http header is not correct
-    COOKIES       = True  #: or False or list of tuples [(domain, name, value)]
+    COOKIES       = True   #: or False or list of tuples [(domain, name, value)]
 
     LOGIN_ACCOUNT = False
     LOGIN_PREMIUM = False
@@ -99,18 +99,34 @@ class SimpleCrypter(Crypter, SimpleHoster):
         self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
 
 
+    def handleDirect(self, pyfile):
+        while True:
+            header = self.load(self.link or pyfile.url, just_header=True, decode=True)
+            if 'location' in header and header['location']:
+                self.link = header['location']
+            else:
+                break
+
+
     def decrypt(self, pyfile):
         self.prepare()
 
-        self.preload()
-        self.checkInfo()
+        self.logDebug("Looking for link redirect...")
+        self.handleDirect(pyfile)
 
-        self.links = self.getLinks()
+        if self.link:
+            self.urls = [self.link]
 
-        if hasattr(self, 'PAGES_PATTERN') and hasattr(self, 'loadPage'):
-            self.handlePages(pyfile)
+        else:
+            self.preload()
+            self.checkInfo()
 
-        self.logDebug("Package has %d links" % len(self.links))
+            self.links = self.getLinks()
+
+            if hasattr(self, 'PAGES_PATTERN') and hasattr(self, 'loadPage'):
+                self.handlePages(pyfile)
+
+            self.logDebug("Package has %d links" % len(self.links))
 
         if self.links:
             self.packages = [(self.info['name'], self.links, self.info['folder'])]
@@ -155,7 +171,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
         links = [urlparse.urljoin(baseurl, link) if not urlparse.urlparse(link).scheme else link \
                  for link in re.findall(self.LINK_PATTERN, self.html)]
 
-        return [html_unescape(l.strip().decode('unicode-escape')) for l in links]
+        return [html_unescape(l.decode('unicode-escape').strip()) for l in links]
 
 
     def handlePages(self, pyfile):

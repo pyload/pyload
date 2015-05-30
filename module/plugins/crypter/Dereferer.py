@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleDereferer import SimpleDereferer
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
-class Dereferer(SimpleDereferer):
+class Dereferer(SimpleCrypter):
     __name__    = "Dereferer"
     __type__    = "crypter"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/.*?(?P<LINK>(?:ht|f)tps?://.+)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
@@ -36,9 +36,5 @@ class Dereferer(SimpleDereferer):
         self.HOSTER_NAME   = "".join(part.capitalize() for part in re.split(r'(\.|\d+)', self.HOSTER_DOMAIN) if part != '.')
 
 
-    def getLink(self):
-        try:
-            return re.match(self.__pattern__, pyfile.url).group('LINK').strip()
-
-        except Exception, e:
-            self.logWarning(e)
+    def getLinks(self):
+        return [re.match(self.__pattern__, pyfile.url).group('LINK').strip()]
