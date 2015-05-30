@@ -3,13 +3,13 @@
 import re
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.ReCaptcha import ReCaptcha
 
 
 class CatShareNet(SimpleHoster):
     __name__    = "CatShareNet"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __pattern__ = r'http://(?:www\.)?catshare\.net/\w{16}'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

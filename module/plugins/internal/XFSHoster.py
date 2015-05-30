@@ -5,7 +5,8 @@ import random
 import re
 import urlparse
 
-from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia
+from module.plugins.internal.ReCaptcha import ReCaptcha
+from module.plugins.internal.SolveMedia import SolveMedia
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, secondsToMidnight
 from module.utils import html_unescape
 
@@ -13,7 +14,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.51"
+    __version__ = "0.52"
 
     __pattern__ = r'^unmatchable$'
 

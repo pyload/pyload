@@ -2,14 +2,14 @@
 
 import re
 
-from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UploadableCh(SimpleHoster):
     __name__    = "UploadableCh"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __pattern__ = r'http://(?:www\.)?uploadable\.ch/file/(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

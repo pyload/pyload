@@ -3,14 +3,14 @@
 import re
 import urlparse
 
-from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class Keep2ShareCc(SimpleHoster):
     __name__    = "Keep2ShareCc"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

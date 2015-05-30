@@ -6,13 +6,13 @@ import re
 from Crypto.Cipher import AES
 
 from module.plugins.Crypter import Crypter
-from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.ReCaptcha import ReCaptcha
 
 
 class NCryptIn(Crypter):
     __name__    = "NCryptIn"
     __type__    = "crypter"
-    __version__ = "1.34"
+    __version__ = "1.35"
 
     __pattern__ = r'http://(?:www\.)?ncrypt\.in/(?P<TYPE>folder|link|frame)-([^/\?]+)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

@@ -6,14 +6,14 @@ import urllib
 import urlparse
 
 from module.network.RequestFactory import getURL
-from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class ShareonlineBiz(SimpleHoster):
     __name__    = "ShareonlineBiz"
     __type__    = "hoster"
-    __version__ = "0.50"
+    __version__ = "0.51"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

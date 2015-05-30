@@ -2,14 +2,14 @@
 
 import re
 
-from module.plugins.internal.CaptchaService import SolveMedia
+from module.plugins.internal.SolveMedia import SolveMedia
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class KingfilesNet(SimpleHoster):
     __name__    = "KingfilesNet"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'http://(?:www\.)?kingfiles\.net/(?P<ID>\w{12})'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

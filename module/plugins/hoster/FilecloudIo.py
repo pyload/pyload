@@ -3,14 +3,14 @@
 import re
 
 from module.common.json_layer import json_loads
-from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FilecloudIo(SimpleHoster):
     __name__    = "FilecloudIo"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __pattern__ = r'http://(?:www\.)?(?:filecloud\.io|ifile\.it|mihd\.net)/(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

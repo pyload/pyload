@@ -5,14 +5,16 @@ import re
 
 from module.common.json_layer import json_loads
 from module.network.HTTPRequest import BadHeader
-from module.plugins.internal.CaptchaService import AdsCaptcha, ReCaptcha, SolveMedia
+from module.plugins.internal.AdsCaptcha import AdsCaptcha
+from module.plugins.internal.ReCaptcha import ReCaptcha
+from module.plugins.internal.SolveMedia import SolveMedia
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class RapidgatorNet(SimpleHoster):
     __name__    = "RapidgatorNet"
     __type__    = "hoster"
-    __version__ = "0.33"
+    __version__ = "0.34"
 
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

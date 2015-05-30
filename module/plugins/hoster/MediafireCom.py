@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.CaptchaService import SolveMedia, ReCaptcha
+from module.plugins.internal.ReCaptcha import ReCaptcha
+from module.plugins.internal.SolveMedia import SolveMedia
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class MediafireCom(SimpleHoster):
     __name__    = "MediafireCom"
     __type__    = "hoster"
-    __version__ = "0.88"
+    __version__ = "0.89"
 
     __pattern__ = r'https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)(?P<ID>\w{15})'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

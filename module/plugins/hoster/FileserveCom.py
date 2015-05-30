@@ -6,7 +6,7 @@ from module.common.json_layer import json_loads
 from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
 from module.plugins.Plugin import chunks
-from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import secondsToMidnight
 from module.utils import parseFileSize
 
@@ -33,7 +33,7 @@ def checkFile(plugin, urls):
 class FileserveCom(Hoster):
     __name__    = "FileserveCom"
     __type__    = "hoster"
-    __version__ = "0.54"
+    __version__ = "0.55"
 
     __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<ID>[^/]+)'
 

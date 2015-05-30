@@ -5,7 +5,7 @@ import re
 
 from module.network.Browser import Browser
 from module.network.CookieJar import CookieJar
-from module.plugins.internal.CaptchaService import AdYouLike
+from module.plugins.internal.AdYouLike import AdYouLike
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns
 
 
@@ -36,7 +36,7 @@ class CustomBrowser(Browser):
 class DlFreeFr(SimpleHoster):
     __name__    = "DlFreeFr"
     __type__    = "hoster"
-    __version__ = "0.28"
+    __version__ = "0.29"
 
     __pattern__ = r'http://(?:www\.)?dl\.free\.fr/(\w+|getfile\.pl\?file=/\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

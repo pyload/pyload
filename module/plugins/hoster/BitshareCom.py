@@ -4,14 +4,14 @@ from __future__ import with_statement
 
 import re
 
-from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class BitshareCom(SimpleHoster):
     __name__    = "BitshareCom"
     __type__    = "hoster"
-    __version__ = "0.53"
+    __version__ = "0.54"
 
     __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/)?(?(1)|\?f=)(?P<ID>\w+)(?(1)/(?P<NAME>.+?)\.html)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
