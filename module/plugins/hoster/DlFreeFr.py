@@ -94,14 +94,15 @@ class DlFreeFr(SimpleHoster):
     def handleFree(self, pyfile):
         action, inputs = self.parseHtmlForm('action="getfile.pl"')
 
-        adyoulike = AdYouLike(self)
-        response, challenge = adyoulike.challenge()
-        inputs.update(response)
+        # old - adyoulike is disabled for now
+        #adyoulike = AdYouLike(self)
+        #response, challenge = adyoulike.challenge()
+        #inputs.update(response)
 
         self.load("http://dl.free.fr/getfile.pl", post=inputs)
         headers = self.getLastHeaders()
         if headers.get("code") == 302 and "set-cookie" in headers and "location" in headers:
-            m = re.search("(.*?)=(.*?); path=(.*?); domain=(.*?)", headers.get("set-cookie"))
+            m = re.search("(.*?)=(.*?); path=(.*?); domain=(.*)", headers.get("set-cookie"))
             cj = CookieJar(__name__)
             if m:
                 cj.setCookie(m.group(4), m.group(1), m.group(2), m.group(3))
