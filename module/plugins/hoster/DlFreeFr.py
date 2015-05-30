@@ -5,7 +5,6 @@ import re
 
 from module.network.Browser import Browser
 from module.network.CookieJar import CookieJar
-from module.plugins.internal.AdYouLike import AdYouLike
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns
 
 
@@ -36,7 +35,7 @@ class CustomBrowser(Browser):
 class DlFreeFr(SimpleHoster):
     __name__    = "DlFreeFr"
     __type__    = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
 
     __pattern__ = r'http://(?:www\.)?dl\.free\.fr/(\w+|getfile\.pl\?file=/\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -44,12 +43,12 @@ class DlFreeFr(SimpleHoster):
     __description__ = """Dl.free.fr hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("the-razer", "daniel_ AT gmx DOT net"),
-                       ("zoidberg", "zoidberg@mujmail.cz"),
-                       ("Toilal", "toilal.dev@gmail.com")]
+                       ("zoidberg" , "zoidberg@mujmail.cz"   ),
+                       ("Toilal"   , "toilal.dev@gmail.com"  )]
 
 
-    NAME_PATTERN = r'Fichier:</td>\s*<td.*?>(?P<N>[^>]*)</td>'
-    SIZE_PATTERN = r'Taille:</td>\s*<td.*?>(?P<S>[\d.,]+\w)o'
+    NAME_PATTERN    = r'Fichier:</td>\s*<td.*?>(?P<N>[^>]*)</td>'
+    SIZE_PATTERN    = r'Taille:</td>\s*<td.*?>(?P<S>[\d.,]+\w)o'
     OFFLINE_PATTERN = r'Erreur 404 - Document non trouv|Fichier inexistant|Le fichier demand&eacute; n\'a pas &eacute;t&eacute; trouv&eacute;'
 
 
@@ -84,6 +83,8 @@ class DlFreeFr(SimpleHoster):
                 # Direct access to requested file for users using free.fr as Internet Service Provider.
                 self.link = valid_url
 
+            self.download(self.link, disposition=True)
+
         elif headers.get('code') == 404:
             self.offline()
 
@@ -93,12 +94,6 @@ class DlFreeFr(SimpleHoster):
 
     def handleFree(self, pyfile):
         action, inputs = self.parseHtmlForm('action="getfile.pl"')
-
-        # old - adyoulike is disabled for now
-        #adyoulike = AdYouLike(self)
-        #response, challenge = adyoulike.challenge()
-        #inputs.update(response)
-
         self.load("http://dl.free.fr/getfile.pl", post=inputs)
         headers = self.getLastHeaders()
         if headers.get("code") == 302 and "set-cookie" in headers and "location" in headers:
@@ -111,7 +106,6 @@ class DlFreeFr(SimpleHoster):
 
             self.link = headers.get("location")
             self.req.setCookieJar(cj)
-            self.download(self.link, disposition=True)
         else:
             self.fail(_("Invalid response"))
 
