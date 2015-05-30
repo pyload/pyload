@@ -12,7 +12,7 @@ class FurLy(SimpleCrypter):
 
     __description__ = """Fur.ly decrypter plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"  )]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     URL_REPLACEMENTS = [(r'fur\.ly/', r'fur\.ly/bar/')]
