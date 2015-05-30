@@ -8,9 +8,9 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class XFileSharingPro(XFSHoster):
     __name__    = "XFileSharingPro"
     __type__    = "hoster"
-    __version__ = "0.45"
+    __version__ = "0.46"
 
-    __pattern__ = r'^unmatchable$'
+    __pattern__ = r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)'
 
     __description__ = """XFileSharingPro dummy hoster plugin for hook"""
     __license__     = "GPLv3"
