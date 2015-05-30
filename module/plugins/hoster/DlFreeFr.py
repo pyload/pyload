@@ -110,8 +110,8 @@ class DlFreeFr(SimpleHoster):
                 self.fail(_("Cookie error"))
 
             self.link = headers.get("location")
-
             self.req.setCookieJar(cj)
+            self.download(self.link, disposition=True)
         else:
             self.fail(_("Invalid response"))
 
