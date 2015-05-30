@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib
 
 from module.plugins.Crypter import Crypter
 from module.plugins.internal.SimpleHoster import create_getInfo, set_cookies
@@ -11,7 +10,7 @@ from module.utils import html_unescape
 class SimpleDereferer(Crypter):
     __name__    = "SimpleDereferer"
     __type__    = "crypter"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __pattern__ = r'^unmatchable$'
     __config__  = []  #@TODO: Remove in 0.4.10
@@ -37,6 +36,8 @@ class SimpleDereferer(Crypter):
     You can override the getLinks method if you need a more sophisticated way to extract the redirect url.
     """
 
+    URL_REPLACEMENTS = []
+
     LINK_PATTERN = None
 
     TEXT_ENCODING = False
@@ -50,18 +51,15 @@ class SimpleDereferer(Crypter):
 
 
     def decrypt(self, pyfile):
+        self.prepare()
+
         self.handleDirect(pyfile)
 
         if not self.link:
-            try:
-                self.link = urllib.unquote(re.match(self.__pattern__, pyfile.url).group('LINK'))
+            self.preload()
+            self.checkStatus()
 
-            except AttributeError:
-                self.prepare()
-                self.preload()
-                self.checkStatus()
-
-                self.link = self.getLink()
+            self.link = self.getLink()
 
         if self.link:
             self.urls = [self.link]
@@ -80,6 +78,8 @@ class SimpleDereferer(Crypter):
         if isinstance(self.COOKIES, list):
             set_cookies(self.req.cj, self.COOKIES)
 
+        self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
+
 
     def preload(self):
         self.html = self.load(self.pyfile.url, cookies=bool(self.COOKIES), decode=not self.TEXT_ENCODING)
@@ -97,5 +97,11 @@ class SimpleDereferer(Crypter):
 
 
     def getLink(self):
-        link = re.search(self.LINK_PATTERN, self.html).group(1)
-        return html_unescape(link.strip().decode('unicode-escape'))  #@TODO: Move this check to plugin `load` method in 0.4.10
+        try:
+            link = re.search(self.LINK_PATTERN, self.html).group(1)
+
+        except Exception, e:
+            self.logWarning(e)
+
+        else:
+            return html_unescape(link.strip().decode('unicode-escape'))  #@TODO: Move this check to plugin `load` method in 0.4.10
