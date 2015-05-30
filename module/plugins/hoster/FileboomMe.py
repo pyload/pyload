@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FileboomMe(SimpleHoster):
     __name__    = "FileboomMe"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'https?://f(?:ile)?boom\.me/file/(?P<ID>\w+)'
 
@@ -42,7 +42,7 @@ class FileboomMe(SimpleHoster):
             self.html = self.load(post_url,
                                   post={'slow_id': m.group(1)})
 
-            m = re.search(self.LINK_PATTERN,  self.html)
+            m = re.search(self.LINK_PATTERN, self.html)
             if m:
                 self.link = urljoin(pyfile.url, m.group(0))
 
@@ -72,7 +72,7 @@ class FileboomMe(SimpleHoster):
                                                       post={'free'    : 1,
                                                             'uniqueId': uniqueId})
                                 
-                                m = re.search(self.LINK_PATTERN,  self.html)
+                                m = re.search(self.LINK_PATTERN, self.html)
                                 if m:
                                     self.link = urljoin(pyfile.url, m.group(0))
 
@@ -85,6 +85,13 @@ class FileboomMe(SimpleHoster):
                             self.fail(_("Captcha not found"))
 
                     else:
+                        m = re.search(r'>\s*Please wait ([\d:]+)', self.html)
+                        if m:
+                            wait_time = 0
+                            for v in re.findall(r'(\d+)', m.group(1), re.I):
+                                wait_time = 60 * wait_time + int(v)
+                            self.wait(wait_time)
+                            self.retry()
                         break
 
                 else:
