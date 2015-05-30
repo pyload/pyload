@@ -3,6 +3,7 @@
 import re
 
 from urlparse import urljoin
+
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
@@ -20,10 +21,10 @@ class FileboomMe(SimpleHoster):
 
     NAME_PATTERN    = r'<i class="icon-download"></i>\s*(?P<N>.+?)\s*<'
     SIZE_PATTERN    = r'File size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
-
     OFFLINE_PATTERN = r'>This file is no longer available'
+
     WAIT_PATTERN = r'<div class="tik-tak">([\d:]+)'
-    LINK_PATTERN    = r'/file/url\.html\?file=\w+'
+    LINK_PATTERN = r'/file/url\.html\?file=\w+'
 
     CAPTCHA_PATTERN = r'<img .* src="(/file/captcha.html\?v=\w+)"'
 
@@ -61,7 +62,7 @@ class FileboomMe(SimpleHoster):
                                                         'free'               : 1,
                                                         'freeDownloadRequest': 1,
                                                         'uniqueId'           : uniqueId})
- 
+
                             if 'The verification code is incorrect' in self.html:
                                 self.invalidCaptcha()
 
@@ -71,7 +72,7 @@ class FileboomMe(SimpleHoster):
                                 self.html = self.load(post_url,
                                                       post={'free'    : 1,
                                                             'uniqueId': uniqueId})
-                                
+
                                 m = re.search(self.LINK_PATTERN, self.html)
                                 if m:
                                     self.link = urljoin(pyfile.url, m.group(0))
