@@ -239,7 +239,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.50"
+    __version__ = "1.51"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -474,7 +474,7 @@ class SimpleHoster(Hoster):
 
                 if not self.link and not self.lastDownload:
                     self.MULTI_HOSTER = False
-                    self.retry(1, reason="Multi hoster fails")
+                    self.retry(1, reason=_("Multi hoster fails"))
 
             if not self.link and not self.lastDownload:
                 self.preload()
@@ -635,8 +635,13 @@ class SimpleHoster(Hoster):
                 elif re.search('up to', errmsg, re.I):
                     self.fail(_("File too large for free download"))
 
-                elif re.search('offline|delet|remov|not (found|available)', errmsg, re.I):
+                elif re.search('offline|delet|remov|not? (found|(longer)? available)', errmsg, re.I):
                     self.offline()
+
+                elif re.search('filename', errmsg, re.I):
+                    url_p = urlparse.urlparse(self.pyfile.url)
+                    self.pyfile.url = "%s://%s/%s" % (url_p.scheme, url_p.netloc, url_p.path.strip('/').split('/')[0])
+                    self.retry(1, reason=_("Wrong url"))
 
                 elif re.search('premium', errmsg, re.I):
                     self.fail(_("File can be downloaded by premium users only"))
