@@ -29,8 +29,8 @@ class Extractor:
 
 
     EXTENSIONS = []
-    VERSION    = ""
     REPAIR     = False
+    VERSION    = ""
 
 
     @classmethod

@@ -22,8 +22,8 @@ class ReCaptcha(Captcha):
                        ("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
-    KEY_V2_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']:\s*["\'])([\w-]+)'
     KEY_V1_PATTERN = r'(?:recaptcha(?:/api|\.net)/(?:challenge|noscript)\?k=|Recaptcha\.create\s*\(\s*["\'])([\w-]+)'
+    KEY_V2_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']:\s*["\'])([\w-]+)'
 
 
     def detect_key(self, html=None):

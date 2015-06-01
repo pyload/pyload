@@ -27,9 +27,7 @@ class XFSHoster(SimpleHoster):
 
     HOSTER_DOMAIN = None
 
-    TEXT_ENCODING = False
-    DIRECT_LINK   = None
-    MULTI_HOSTER  = True  #@NOTE: Should be default to False for safe, but I'm lazy...
+    MULTI_HOSTER = True  #@NOTE: Should be default to False for safe, but I'm lazy...
 
     NAME_PATTERN = r'(Filename[ ]*:[ ]*</b>(</td><td nowrap>)?|name="fname"[ ]+value="|<[\w^_]+ class="(file)?name">)\s*(?P<N>.+?)(\s*<|")'
     SIZE_PATTERN = r'(Size[ ]*:[ ]*</b>(</td><td>)?|File:.*>|</font>\s*\(|<[\w^_]+ class="size">)\s*(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)'
