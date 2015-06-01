@@ -11,7 +11,7 @@ from module.utils import fixup, html_unescape
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.47"
+    __version__ = "0.48"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),  #: Overrides core.config['general']['folder_per_package']
@@ -101,7 +101,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
     def handleDirect(self, pyfile):
         while True:
-            header = self.load(self.link or pyfile.url, just_header=True, decode=True)
+            header = self.load(self.link if hasattr(self, 'link') and self.link else pyfile.url, just_header=True, decode=True)
             if 'location' in header and header['location']:
                 self.link = header['location']
             else:
@@ -114,7 +114,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
         self.logDebug("Looking for link redirect...")
         self.handleDirect(pyfile)
 
-        if self.link:
+        if hasattr(self, 'link') and self.link:
             self.urls = [self.link]
 
         else:
