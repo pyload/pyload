@@ -31,11 +31,11 @@ class XFileSharingPro(Hook):
     HOSTER_BUILTIN  = [#WORKING HOSTERS:
                        "backin.net", "eyesfile.ca", "file4safe.com", "fileband.com", "filedwon.com", "fileparadox.in",
                        "filevice.com", "hostingbulk.com", "junkyvideo.com", "linestorage.com", "ravishare.com", "ryushare.com",
-                       "salefiles.com", "sendmyway.com", "sharesix.com", "thefile.me", "verzend.be", "xvidstage.com",
+                       "salefiles.com", "sendmyway.com", "sharesix.com", "thefile.me", "verzend.be", "worldbytez.com", "xvidstage.com",
                        #NOT TESTED:
                        "101shared.com", "4upfiles.com", "filemaze.ws", "filenuke.com", "linkzhost.com", "mightyupload.com",
                        "rockdizfile.com", "sharebeast.com", "sharerepo.com", "shareswift.com", "uploadbaz.com", "uploadc.com",
-                       "vidbull.com", "worldbytez.com", "zalaa.com", "zomgupload.com",
+                       "vidbull.com", "zalaa.com", "zomgupload.com",
                        #NOT WORKING:
                        "amonshare.com", "banicrazy.info", "boosterking.com", "host4desi.com", "laoupload.com", "rd-fs.com"]
     CRYPTER_BUILTIN = ["junocloud.me", "rapidfileshare.net"]

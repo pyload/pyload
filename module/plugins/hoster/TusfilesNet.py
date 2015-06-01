@@ -18,7 +18,6 @@ class TusfilesNet(XFSHoster):
 
 
     INFO_PATTERN    = r'\](?P<N>.+) - (?P<S>[\d.,]+) (?P<U>[\w^_]+)\['
-    OFFLINE_PATTERN = r'>File Not Found|<Title>TusFiles - Fast Sharing Files!|The file you are trying to download is no longer available'
 
 
     def setup(self):
