@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class WebshareCz(SimpleHoster):
     __name__    = "WebshareCz"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
 
     __pattern__ = r'https?://(?:www\.)?(en\.)?webshare\.cz/(?:#/)?file/(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -30,7 +30,7 @@ class WebshareCz(SimpleHoster):
                           post={'ident': info['pattern']['ID'], 'wst': ""},
                           decode=True)
 
-        if not re.search(r'<status>OK'):
+        if not re.search(r'<status>OK', api_data):
             info['status'] = 1
         else:
             info['status'] = 2
