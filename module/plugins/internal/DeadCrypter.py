@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from module.plugins.internal.SimpleCrypter import create_getInfo
-from module.plugins.Crypter import Crypter as _Crypter
+from module.plugins.Crypter import Crypter
 
 
-class DeadCrypter(_Crypter):
+class DeadCrypter(Crypter):
     __name__    = "DeadCrypter"
     __type__    = "crypter"
     __version__ = "0.05"
@@ -17,8 +17,8 @@ class DeadCrypter(_Crypter):
 
 
     @classmethod
-    def apiInfo(cls, url):
-        api = super(DeadCrypter, cls).apiInfo(url)
+    def apiInfo(cls, *args, **kwargs):
+        api = super(DeadCrypter, cls).apiInfo(*args, **kwargs)
         api['status'] = 1
         return api
 

@@ -12,7 +12,7 @@ from module.plugins.Account import Account
 class WebshareCz(Account):
     __name__    = "WebshareCz"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __description__ = """Webshare.cz account plugin"""
     __license__     = "GPLv3"
@@ -26,7 +26,7 @@ class WebshareCz(Account):
 
     def loadAccountInfo(self, user, req):
         html = req.load("https://webshare.cz/api/user_data/",
-                        post={'wst': self.infos['wst']},
+                        post={'wst': self.getAccountData(user).get('wst', None)},
                         decode=True)
 
         self.logDebug("Response: " + html)
@@ -65,4 +65,4 @@ class WebshareCz(Account):
         if "<status>OK</status>" not in login:
             self.wrongPassword()
 
-        self.infos['wst'] = re.search('<token>(.+)</token>', login).group(1)
+        data['wst'] = re.search('<token>(.+)</token>', login).group(1)

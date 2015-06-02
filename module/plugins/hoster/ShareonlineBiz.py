@@ -39,25 +39,24 @@ class ShareonlineBiz(SimpleHoster):
     def apiInfo(cls, url):
         info = super(ShareonlineBiz, cls).apiInfo(url)
 
-        if url:
-            field = getURL("http://api.share-online.biz/linkcheck.php",
-                           get={'md5'  : "1",
-                                'links': re.match(cls.__pattern__, url).group("ID")},
-                           decode=True).split(";")
+        field = getURL("http://api.share-online.biz/linkcheck.php",
+                       get={'md5'  : "1",
+                            'links': re.match(cls.__pattern__, url).group("ID")},
+                       decode=True).split(";")
 
-            try:
-                if field[1] == "OK":
-                    info['fileid']   = field[0]
-                    info['status']   = 2
-                    info['name']     = field[2]
-                    info['size']     = field[3]  #: in bytes
-                    info['md5']      = field[4].strip().lower().replace("\n\n", "")  #: md5
+        try:
+            if field[1] == "OK":
+                info['fileid']   = field[0]
+                info['status']   = 2
+                info['name']     = field[2]
+                info['size']     = field[3]  #: in bytes
+                info['md5']      = field[4].strip().lower().replace("\n\n", "")  #: md5
 
-                elif field[1] in ("DELETED", "NOT FOUND"):
-                    info['status'] = 1
+            elif field[1] in ("DELETED", "NOT FOUND"):
+                info['status'] = 1
 
-            except IndexError:
-                pass
+        except IndexError:
+            pass
 
         return info
 

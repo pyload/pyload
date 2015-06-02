@@ -317,6 +317,7 @@ class SimpleHoster(Hoster):
     MULTI_HOSTER  = False  #: Set to True to leech other hoster link (as defined in handleMulti method)
     TEXT_ENCODING = False  #: Set to True or encoding name if encoding value in http header is not correct
 
+
     directLink = getFileURL  #@TODO: Remove in 0.4.10
 
 

@@ -9,42 +9,41 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class WebshareCz(SimpleHoster):
     __name__    = "WebshareCz"
     __type__    = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
-    __pattern__ = r'https?://(?:www\.)?webshare\.cz/(?:#/)?file/(?P<ID>\w+)'
+    __pattern__ = r'https?://(?:www\.)?(en\.)?webshare\.cz/(?:#/)?file/(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """WebShare.cz hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it"),
-                       ("rush", "radek.senfeld@gmail.com")]
+    __authors__     = [("stickell", "l.stickell@yahoo.it    "),
+                       ("rush"    , "radek.senfeld@gmail.com")]
 
 
     @classmethod
-    def getInfo(cls, url="", html=""):
-        info = super(WebshareCz, cls).getInfo(url, html)
+    def apiInfo(cls, url):
+        info = super(WebshareCz, cls).apiInfo(url)
 
-        if url:
-            info['pattern'] = re.match(cls.__pattern__, url).groupdict()
+        info['pattern'] = re.match(cls.__pattern__, url).groupdict()
 
-            api_data = getURL("https://webshare.cz/api/file_info/",
-                              post={'ident': info['pattern']['ID']},
-                              decode=True)
+        api_data = getURL("https://webshare.cz/api/file_info/",
+                          post={'ident': info['pattern']['ID'], 'wst': ""},
+                          decode=True)
 
-            if 'File not found' in api_data:
-                info['status'] = 1
-            else:
-                info["status"] = 2
-                info['name']   = re.search('<name>(.+)</name>', api_data).group(1) or info['name']
-                info['size']   = re.search('<size>(.+)</size>', api_data).group(1) or info['size']
+        if not re.search(r'<status>OK'):
+            info['status'] = 1
+        else:
+            info['status'] = 2
+            info['name']   = re.search(r'<name>(.+?)<', api_data).group(1)
+            info['size']   = re.search(r'<size>(.+?)<', api_data).group(1)
 
         return info
 
 
     def handleFree(self, pyfile):
-        wst = self.account.infos['wst'] if self.account and 'wst' in self.account.infos else ""
+        wst = self.account.getAccountData(self.user).get('wst', None) if self.account else None
 
-        api_data = getURL('https://webshare.cz/api/file_link/',
+        api_data = getURL("https://webshare.cz/api/file_link/",
                           post={'ident': self.info['pattern']['ID'], 'wst': wst},
                           decode=True)
 
