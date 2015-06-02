@@ -9,23 +9,21 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__    = "NitroflareCom"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Nitroflare.com hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("sahil", "sahilshekhawat01@gmail.com"),
-                       ("Walter Purcaro", "vuolter@gmail.com"),
-                       ("Stickell", "l.stickell@yahoo.it")]
-
-    # URL_REPLACEMENTS = [("http://", "https://")]
+    __authors__     = [("sahil"         , "sahilshekhawat01@gmail.com"),
+                       ("Walter Purcaro", "vuolter@gmail.com"         ),
+                       ("Stickell"      , "l.stickell@yahoo.it"       )]
 
     INFO_PATTERN    = r'title="(?P<N>.+?)".+>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'>File doesn\'t exist'
 
-    LINK_FREE_PATTERN = r'(https?://[\w\-]+\.nitroflare\.com/.+?)"'
+    LINK_PREMIUM_PATTERN = LINK_FREE_PATTERN = r'(https?://[\w\-]+\.nitroflare\.com/.+?)"'
 
     RECAPTCHA_KEY        = "6Lenx_USAAAAAF5L1pmTWvWcH73dipAEzNnmNLgy"
     PREMIUM_ONLY_PATTERN = r'This file is available with Premium only'
@@ -60,13 +58,5 @@ class NitroflareCom(SimpleHoster):
                               post={'method'                   : "fetchDownload",
                                     'recaptcha_challenge_field': challenge,
                                     'recaptcha_response_field' : response})
-
-        if "The captcha wasn't entered correctly" in self.html:
-            self.logWarning("The captcha wasn't entered correctly")
-            return
-
-        if "You have to fill the captcha" in self.html:
-            self.logWarning("Captcha unfilled")
-            return
 
         return super(NitroflareCom, self).handleFree(pyfile)

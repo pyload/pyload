@@ -239,7 +239,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.52"
+    __version__ = "1.53"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -630,6 +630,7 @@ class SimpleHoster(Hoster):
 
                 elif re.search('captcha|code', errmsg, re.I):
                     self.invalidCaptcha()
+                    self.retry(10, reason=_("Wrong captcha"))
 
                 elif re.search('countdown|expired', errmsg, re.I):
                     self.retry(wait_time=60, reason=_("Link expired"))

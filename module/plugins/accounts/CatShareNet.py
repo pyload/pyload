@@ -11,7 +11,7 @@ class CatShareNet(Account):
     __type__    = "account"
     __version__ = "0.05"
 
-    __description__ = """CatShareNet account plugin"""
+    __description__ = """Catshare.net account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("prOq", None)]
 
