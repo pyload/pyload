@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
-
 from module.common.json_layer import json_loads
 from module.plugins.Account import Account
 
@@ -9,18 +7,11 @@ from module.plugins.Account import Account
 class PremiumizeMe(Account):
     __name__    = "PremiumizeMe"
     __type__    = "account"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __description__ = """Premiumize.me account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
-
-
-    def getAccountRequest(self, user=None):
-        req = super(PremiumizeMe, self).getAccountRequest(user)
-        if req:
-            req.http.c.setopt(pycurl.CURLOPT_SSL_CIPHER_LIST, "TLSv1")
-        return req
 
 
     def loadAccountInfo(self, user, req):
@@ -50,7 +41,7 @@ class PremiumizeMe(Account):
     def getAccountStatus(self, user, req):
         # Use premiumize.me API v1 (see https://secure.premiumize.me/?show=api)
         # to retrieve account info and return the parsed json answer
-        answer = req.load("https://api.premiumize.me/pm-api/v1.php",
+        answer = req.load("http://api.premiumize.me/pm-api/v1.php",
                            get={'method'       : "accountstatus",
                                 'params[login]': user,
                                 'params[pass]' : self.getAccountData(user)['password']})
