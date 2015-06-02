@@ -2,7 +2,7 @@
 
 import re
 import time
-import xml.dom.minidom as dom
+import xml.dom.minidom
 
 from BeautifulSoup import BeautifulSoup
 
@@ -43,7 +43,7 @@ class AlldebridCom(Account):
 
             self.logDebug(html)
 
-            xml = dom.parseString(html)
+            xml = xml.dom.minidom.parseString(html)
             exp_time = time.time() + int(xml.getElementsByTagName("date")[0].childNodes[0].nodeValue) * 24 * 60 * 60
 
         account_info = {"validuntil": exp_time, "trafficleft": -1}

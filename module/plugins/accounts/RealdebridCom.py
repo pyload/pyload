@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import xml.dom.minidom as dom
+import xml.dom.minidom
 
 from module.plugins.Account import Account
 
@@ -19,7 +19,7 @@ class RealdebridCom(Account):
         if self.pin_code:
             return {"premium": False}
         html = req.load("https://real-debrid.com/api/account.php")
-        xml = dom.parseString(html)
+        xml = xml.dom.minidom.parseString(html)
         account_info = {"validuntil": float(xml.getElementsByTagName("expiration")[0].childNodes[0].nodeValue),
                         "trafficleft": -1}
 
