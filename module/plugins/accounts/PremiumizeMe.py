@@ -1,18 +1,25 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Account import Account
+import pycurl
 
 from module.common.json_layer import json_loads
+from module.plugins.Account import Account
 
 
 class PremiumizeMe(Account):
     __name__    = "PremiumizeMe"
     __type__    = "account"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __description__ = """Premiumize.me account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
+
+
+    def getAccountRequest(self, user=None):
+        req = super(PremiumizeMe, self).getAccountRequest(user)
+        req.http.c.setopt(pycurl.CURLOPT_SSL_CIPHER_LIST, "TLSv1")
+        return req
 
 
     def loadAccountInfo(self, user, req):
