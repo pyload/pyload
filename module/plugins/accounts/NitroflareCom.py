@@ -9,14 +9,14 @@ from module.plugins.Account import Account
 class NitroflareCom(Account):
     __name__    = "NitroflareCom"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __description__ = """Nitroflare.com account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com"  )]
 
 
-    VALID_UNTIL_PATTERN = r'>Time Left</label.*>(.+?)</strong>'
+    VALID_UNTIL_PATTERN = r'>Time Left</label.*>(.+?)</'
     LOGIN_FAIL_PATTERN  = r'<ul class="errors">\s*<li>'
 
 
