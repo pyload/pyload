@@ -17,8 +17,9 @@ class ZahikiNet(SimpleHoster):
 
     DIRECT_LINK = True
 
-    NAME_PATTERN = r'/(?P<N>.+?) </title>'
-    OFFLINE_PATTERN   = r'>(Not Found|Il file selezionato non esiste)'
+    NAME_PATTERN    = r'/(?P<N>.+?) </title>'
+    OFFLINE_PATTERN = r'>(Not Found|Il file selezionato non esiste)'
+
     LINK_FREE_PATTERN = r'file: "(.+?)"'
 
 
