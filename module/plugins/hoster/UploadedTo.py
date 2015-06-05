@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "0.91"
+    __version__ = "0.92"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -32,6 +32,7 @@ class UploadedTo(SimpleHoster):
     TEMP_OFFLINE_PATTERN = r'<title>uploaded\.net - Maintenance'
 
     WAIT_PATTERN   = r'Current waiting period: <span>(\d+)'
+    DL_LIMIT_ERROR = r'You have reached the max. number of possible free downloads for this hour'
 
 
     @classmethod
