@@ -24,8 +24,7 @@
 +
 +
 +    def checkErrors(self):
-+        if '<valid>0</valid>' in self.html or (
-+                "You are not allowed to download from this host" in self.html and self.premium):
++        if '<valid>0</valid>' in self.html: #This is not working. It should by if 302 Moved Temporarily then ... But I don't now how to implement it.
 +            self.account.relogin(self.user)
 +            self.retry()
 +
