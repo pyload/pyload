@@ -8,14 +8,14 @@ import pycurl
 import re
 import urlparse
 
-from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FilerNet(SimpleHoster):
     __name__    = "FilerNet"
     __type__    = "hoster"
-    __version__ = "0.19"
+    __version__ = "0.20"
 
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

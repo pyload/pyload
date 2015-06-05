@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Account import Account
-
 from module.common.json_layer import json_loads
+from module.plugins.Account import Account
 
 
 class PremiumizeMe(Account):
     __name__    = "PremiumizeMe"
     __type__    = "account"
-    __version__ = "0.13"
+    __version__ = "0.16"
 
     __description__ = """Premiumize.me account plugin"""
     __license__     = "GPLv3"
@@ -42,7 +41,7 @@ class PremiumizeMe(Account):
     def getAccountStatus(self, user, req):
         # Use premiumize.me API v1 (see https://secure.premiumize.me/?show=api)
         # to retrieve account info and return the parsed json answer
-        answer = req.load("https://api.premiumize.me/pm-api/v1.php",
+        answer = req.load("http://api.premiumize.me/pm-api/v1.php",
                            get={'method'       : "accountstatus",
                                 'params[login]': user,
                                 'params[pass]' : self.getAccountData(user)['password']})

@@ -24,7 +24,7 @@ class RapidgatorNet(Account):
         sid         = None
 
         try:
-            sid = self.getAccountData(user).get('sid')
+            sid = self.getAccountData(user).get('sid', None)
             assert sid
 
             html = req.load("%s/info" % self.API_URL, get={'sid': sid})

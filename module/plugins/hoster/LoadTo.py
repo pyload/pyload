@@ -6,14 +6,14 @@
 
 import re
 
-from module.plugins.internal.CaptchaService import SolveMedia
+from module.plugins.internal.SolveMedia import SolveMedia
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class LoadTo(SimpleHoster):
     __name__    = "LoadTo"
     __type__    = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __pattern__ = r'http://(?:www\.)?load\.to/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

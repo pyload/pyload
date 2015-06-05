@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from module.plugins.internal.SimpleHoster import create_getInfo
-from module.plugins.Hoster import Hoster as _Hoster
+from module.plugins.Hoster import Hoster
 
 
-class DeadHoster(_Hoster):
+class DeadHoster(Hoster):
     __name__    = "DeadHoster"
     __type__    = "hoster"
     __version__ = "0.15"
@@ -17,8 +17,8 @@ class DeadHoster(_Hoster):
 
 
     @classmethod
-    def apiInfo(cls, url):
-        api = super(DeadHoster, cls).apiInfo(url)
+    def apiInfo(cls, *args, **kwargs):
+        api = super(DeadHoster, cls).apiInfo(*args, **kwargs)
         api['status'] = 1
         return api
 

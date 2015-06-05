@@ -19,8 +19,8 @@ class UnZip(Extractor):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    EXTENSIONS = [".zip", ".zip64"]
     VERSION ="(python %s.%s.%s)" % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
+    EXTENSIONS = [".zip", ".zip64"]
 
 
     @classmethod

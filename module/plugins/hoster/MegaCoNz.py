@@ -48,9 +48,9 @@ from module.utils import decode, fs_decode, fs_encode
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.29"
 
-    __pattern__ = r'(?:https?://(?:www\.)?mega\.co\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w,-]+)'
+    __pattern__ = r'(?:https?://(?:www\.)?mega(?:\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w,-]+)'
 
     __description__ = """Mega.co.nz hoster plugin"""
     __license__     = "GPLv3"
@@ -82,7 +82,7 @@ class MegaCoNz(Hoster):
         """ Dispatch a call to the api, see https://mega.co.nz/#developers """
 
         # generate a session id, no idea where to obtain elsewhere
-        uid = random.random.randint(10 << 9, 10 ** 10)
+        uid = random.randint(10 << 9, 10 ** 10)
 
         res = self.load(self.API_URL, get={'id': uid}, post=json_dumps([kwargs]))
         self.logDebug("Api Response: " + res)

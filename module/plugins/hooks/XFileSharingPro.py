@@ -8,7 +8,7 @@ from module.plugins.Hook import Hook
 class XFileSharingPro(Hook):
     __name__    = "XFileSharingPro"
     __type__    = "hook"
-    __version__ = "0.37"
+    __version__ = "0.38"
 
     __config__ = [("activated"       , "bool", "Activated"                     , True ),
                   ("use_hoster_list" , "bool", "Load listed hosters only"      , False),
@@ -17,25 +17,25 @@ class XFileSharingPro(Hook):
                   ("hoster_list"     , "str" , "Hoster list (comma separated)" , ""   ),
                   ("crypter_list"    , "str" , "Crypter list (comma separated)", ""   )]
 
-    __description__ = """Load XFileSharingPro based hosters and crypter which don't need a own plugin to run"""
+    __description__ = """Load XFileSharingPro based hosters and crypters which don't need a own plugin to run"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     interval   = 0  #@TODO: Remove in 0.4.10
-    regexp     = {'hoster' : (r'https?://(?:www\.)?(?P<DOMAIN>[\w\-.^_]{3,63}(?:\.[a-zA-Z]{2,})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
+    regexp     = {'hoster' : (r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
                               r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:embed-)?\w+'),
-                  'crypter': (r'https?://(?:www\.)?(?P<DOMAIN>[\w\-.^_]{3,63}(?:\.[a-zA-Z]{2,})(?:\:\d+)?)/(?:user|folder)s?/\w+',
+                  'crypter': (r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:user|folder)s?/\w+',
                               r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:user|folder)s?/\w+')}
 
     HOSTER_BUILTIN  = [#WORKING HOSTERS:
                        "backin.net", "eyesfile.ca", "file4safe.com", "fileband.com", "filedwon.com", "fileparadox.in",
                        "filevice.com", "hostingbulk.com", "junkyvideo.com", "linestorage.com", "ravishare.com", "ryushare.com",
-                       "salefiles.com", "sendmyway.com", "sharesix.com", "thefile.me", "verzend.be", "xvidstage.com",
+                       "salefiles.com", "sendmyway.com", "sharesix.com", "thefile.me", "verzend.be", "worldbytez.com", "xvidstage.com",
                        #NOT TESTED:
                        "101shared.com", "4upfiles.com", "filemaze.ws", "filenuke.com", "linkzhost.com", "mightyupload.com",
                        "rockdizfile.com", "sharebeast.com", "sharerepo.com", "shareswift.com", "uploadbaz.com", "uploadc.com",
-                       "vidbull.com", "worldbytez.com", "zalaa.com", "zomgupload.com",
+                       "vidbull.com", "zalaa.com", "zomgupload.com",
                        #NOT WORKING:
                        "amonshare.com", "banicrazy.info", "boosterking.com", "host4desi.com", "laoupload.com", "rd-fs.com"]
     CRYPTER_BUILTIN = ["junocloud.me", "rapidfileshare.net"]

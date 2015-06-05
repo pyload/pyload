@@ -239,7 +239,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.50"
+    __version__ = "1.53"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -308,13 +308,15 @@ class SimpleHoster(Hoster):
     SIZE_REPLACEMENTS = []
     URL_REPLACEMENTS  = []
 
-    TEXT_ENCODING = False  #: Set to True or encoding name if encoding value in http header is not correct
-    COOKIES       = True   #: or False or list of tuples [(domain, name, value)]
     CHECK_TRAFFIC = False  #: Set to True to force checking traffic left for premium account
+    COOKIES       = True   #: or False or list of tuples [(domain, name, value)]
     DIRECT_LINK   = None   #: Set to True to looking for direct link (as defined in handleDirect method), set to None to do it if self.account is True else False
-    MULTI_HOSTER  = False  #: Set to True to leech other hoster link (as defined in handleMulti method)
-    LOGIN_ACCOUNT = False  #: Set to True to require account login
     DISPOSITION   = True   #: Set to True to use any content-disposition value in http header as file name
+    LOGIN_ACCOUNT = False  #: Set to True to require account login
+    LOGIN_PREMIUM = False  #: Set to True to require premium account login
+    MULTI_HOSTER  = False  #: Set to True to leech other hoster link (as defined in handleMulti method)
+    TEXT_ENCODING = False  #: Set to True or encoding name if encoding value in http header is not correct
+
 
     directLink = getFileURL  #@TODO: Remove in 0.4.10
 
@@ -430,6 +432,9 @@ class SimpleHoster(Hoster):
         if not self.getConfig('use_premium', True):
             self.retryFree()
 
+        if self.LOGIN_PREMIUM and not self.premium:
+            self.fail(_("Required premium account not found"))
+
         if self.LOGIN_ACCOUNT and not self.account:
             self.fail(_("Required account not found"))
 
@@ -474,7 +479,7 @@ class SimpleHoster(Hoster):
 
                 if not self.link and not self.lastDownload:
                     self.MULTI_HOSTER = False
-                    self.retry(1, reason="Multi hoster fails")
+                    self.retry(1, reason=_("Multi hoster fails"))
 
             if not self.link and not self.lastDownload:
                 self.preload()
@@ -511,7 +516,7 @@ class SimpleHoster(Hoster):
 
         self.correctCaptcha()
 
-        link = html_unescape(link.strip().decode('unicode-escape'))  #@TODO: Move this check to plugin `load` method in 0.4.10
+        link = html_unescape(link.decode('unicode-escape').strip())  #@TODO: Move this check to plugin `load` method in 0.4.10
 
         if not urlparse.urlparse(link).scheme:
             url_p   = urlparse.urlparse(self.pyfile.url)
@@ -625,6 +630,7 @@ class SimpleHoster(Hoster):
 
                 elif re.search('captcha|code', errmsg, re.I):
                     self.invalidCaptcha()
+                    self.retry(10, reason=_("Wrong captcha"))
 
                 elif re.search('countdown|expired', errmsg, re.I):
                     self.retry(wait_time=60, reason=_("Link expired"))
@@ -635,8 +641,13 @@ class SimpleHoster(Hoster):
                 elif re.search('up to', errmsg, re.I):
                     self.fail(_("File too large for free download"))
 
-                elif re.search('offline|delet|remov|not (found|available)', errmsg, re.I):
+                elif re.search('offline|delet|remov|not? (found|(longer)? available)', errmsg, re.I):
                     self.offline()
+
+                elif re.search('filename', errmsg, re.I):
+                    url_p = urlparse.urlparse(self.pyfile.url)
+                    self.pyfile.url = "%s://%s/%s" % (url_p.scheme, url_p.netloc, url_p.path.strip('/').split('/')[0])
+                    self.retry(1, reason=_("Wrong url"))
 
                 elif re.search('premium', errmsg, re.I):
                     self.fail(_("File can be downloaded by premium users only"))
