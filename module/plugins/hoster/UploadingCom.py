@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, t
 class UploadingCom(SimpleHoster):
     __name__    = "UploadingCom"
     __type__    = "hoster"
-    __version__ = "0.40"
+    __version__ = "0.41"
 
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>\w+)'
 
@@ -21,7 +21,7 @@ class UploadingCom(SimpleHoster):
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    NAME_PATTERN = r'id="file_title">(?P<N>.+)</'
+    NAME_PATTERN = r'id="file_title">(?P<N>.+?)</'
     SIZE_PATTERN = r'size tip_container">(?P<S>[\d.,]+) (?P<U>[\w^_]+)<'
     OFFLINE_PATTERN = r'(Page|file) not found'
 
