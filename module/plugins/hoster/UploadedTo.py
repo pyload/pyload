@@ -2,6 +2,7 @@
 
 import re
 import time
+import urlparse
 
 from module.network.RequestFactory import getURL
 from module.plugins.internal.ReCaptcha import ReCaptcha
@@ -11,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "0.90"
+    __version__ = "0.91"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -69,7 +70,7 @@ class UploadedTo(SimpleHoster):
 
 
     def handlePremium(self, pyfile):
-        self.link = pyfile.url + "/ddl?pw=" + self.getPassword()
+        self.link = urlparse.urljoin(pyfile.url, "/ddl?pw=" + self.getPassword())
 
 
     def handleFree(self, pyfile):
