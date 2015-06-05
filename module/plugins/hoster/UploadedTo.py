@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "0.89"
+    __version__ = "0.90"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -29,10 +29,7 @@ class UploadedTo(SimpleHoster):
 
     TEMP_OFFLINE_PATTERN = r'<title>uploaded\.net - Maintenance'
 
-    LINK_PREMIUM_PATTERN = r'<div class="tfree".*\s*<form method="post" action="(.+?)"'
-
     WAIT_PATTERN   = r'Current waiting period: <span>(\d+)'
-    DL_LIMIT_ERROR = r'You have reached the max. number of possible free downloads for this hour'
 
 
     @classmethod
@@ -58,7 +55,7 @@ class UploadedTo(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL    = self.resumeDownload = self.premium
+        self.multiDL = self.resumeDownload = self.premium
         self.chunkLimit = 1  # critical problems with more chunks
 
 
@@ -67,27 +64,11 @@ class UploadedTo(SimpleHoster):
             self.logError(_("Free-download capacities exhausted"))
             self.retry(24, 5 * 60)
 
-        elif "limit-size" in self.html:
-            self.fail(_("File too big for free download"))
+        return super(UploadedTo, self).checkErrors()
 
-        elif "limit-slot" in self.html:  # Temporary restriction so just wait a bit
-            self.wait(30 * 60, True)
-            self.retry()
 
-        elif "limit-parallel" in self.html:
-            self.fail(_("Cannot download in parallel"))
-
-        elif "limit-dl" in self.html or self.DL_LIMIT_ERROR in self.html:  # limit-dl
-            self.wait(3 * 60 * 60, True)
-            self.retry()
-
-        elif '"err":"captcha"' in self.html:
-            self.invalidCaptcha()
-
-        else:
-            m = re.search(self.WAIT_PATTERN, self.html)
-            if m:
-                self.wait(m.group(1))
+    def handlePremium(self, pyfile):
+        self.link = pyfile.url + "/ddl?pw=" + self.getPassword()
 
 
     def handleFree(self, pyfile):
@@ -109,8 +90,6 @@ class UploadedTo(SimpleHoster):
 
             except Exception:
                 pass
-
-        self.checkErrors()
 
 
     def checkFile(self, rules={}):

@@ -239,7 +239,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.53"
+    __version__ = "1.54"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -615,7 +615,7 @@ class SimpleHoster(Hoster):
                 self.info['error'] = re.sub(r'<.*?>', " ", errmsg)
                 self.logWarning(self.info['error'])
 
-                if re.search('limit|wait', errmsg, re.I):
+                if re.search('limit|wait|slot', errmsg, re.I):
                     if re.search("da(il)?y|today", errmsg):
                         wait_time = secondsToMidnight(gmt=2)
                     else:
@@ -633,12 +633,12 @@ class SimpleHoster(Hoster):
                     self.retry(10, reason=_("Wrong captcha"))
 
                 elif re.search('countdown|expired', errmsg, re.I):
-                    self.retry(wait_time=60, reason=_("Link expired"))
+                    self.retry(10, wait_time=60, reason=_("Link expired"))
 
                 elif re.search('maintenance|maintainance|temp', errmsg, re.I):
                     self.tempOffline()
 
-                elif re.search('up to', errmsg, re.I):
+                elif re.search('up to|size', errmsg, re.I):
                     self.fail(_("File too large for free download"))
 
                 elif re.search('offline|delet|remov|not? (found|(longer)? available)', errmsg, re.I):
