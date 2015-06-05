@@ -21,7 +21,8 @@ class UploadedTo(SimpleHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    DISPOSITION = False
+    CHECK_TRAFFIC = True
+    DISPOSITION   = False
 
     API_KEY = "lhF2IeeprweDfu9ccWlxXVVypA5nA3EL"
 
