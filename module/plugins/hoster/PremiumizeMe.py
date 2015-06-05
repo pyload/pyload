@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class PremiumizeMe(MultiHoster):
     __name__    = "PremiumizeMe"
     __type__    = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -32,7 +32,7 @@ class PremiumizeMe(MultiHoster):
         user, data = self.account.selectAccount()
 
         # Get rewritten link using the premiumize.me api v1 (see https://secure.premiumize.me/?show=api)
-        data = json_loads(self.load("https://api.premiumize.me/pm-api/v1.php",
+        data = json_loads(self.load("http://api.premiumize.me/pm-api/v1.php",
                                     get={'method'       : "directdownloadlink",
                                          'params[login]': user,
                                          'params[pass]' : data['password'],
