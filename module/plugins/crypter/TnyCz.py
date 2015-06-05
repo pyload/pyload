@@ -8,7 +8,7 @@ import re
 class TnyCz(SimpleCrypter):
     __name__    = "TnyCz"
     __type__    = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?tny\.cz/\w+'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
@@ -20,7 +20,7 @@ class TnyCz(SimpleCrypter):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    NAME_PATTERN = r'<title>(?P<N>.+) - .+</title>'
+    NAME_PATTERN = r'<title>(?P<N>.+?) - .+</title>'
 
 
     def getLinks(self):

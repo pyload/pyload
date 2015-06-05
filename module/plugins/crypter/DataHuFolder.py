@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class DataHuFolder(SimpleCrypter):
     __name__    = "DataHuFolder"
     __type__    = "crypter"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = r'http://(?:www\.)?data\.hu/dir/\w+'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
@@ -22,7 +22,7 @@ class DataHuFolder(SimpleCrypter):
 
 
     LINK_PATTERN = r'<a href=\'(http://data\.hu/get/.+)\' target=\'_blank\'>\1</a>'
-    NAME_PATTERN = ur'<title>(?P<N>.+) Let\xf6lt\xe9se</title>'
+    NAME_PATTERN = ur'<title>(?P<N>.+?) Let\xf6lt\xe9se</title>'
 
 
     def prepare(self):

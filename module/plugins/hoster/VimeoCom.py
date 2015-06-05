@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class VimeoCom(SimpleHoster):
     __name__    = "VimeoCom"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'https?://(?:www\.)?(player\.)?vimeo\.com/(video/)?(?P<ID>\d+)'
     __config__  = [("use_premium", "bool"                       , "Use premium account if available" , True     ),
@@ -20,7 +20,7 @@ class VimeoCom(SimpleHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    NAME_PATTERN         = r'<title>(?P<N>.+) on Vimeo<'
+    NAME_PATTERN         = r'<title>(?P<N>.+?) on Vimeo<'
     OFFLINE_PATTERN      = r'class="exception_header"'
     TEMP_OFFLINE_PATTERN = r'Please try again in a few minutes.<'
 

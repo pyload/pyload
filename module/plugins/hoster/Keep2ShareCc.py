@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class Keep2ShareCc(SimpleHoster):
     __name__    = "Keep2ShareCc"
     __type__    = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -23,7 +23,7 @@ class Keep2ShareCc(SimpleHoster):
 
     URL_REPLACEMENTS = [(__pattern__ + ".*", "http://keep2s.cc/file/\g<ID>")]
 
-    NAME_PATTERN = r'File: <span>(?P<N>.+)</span>'
+    NAME_PATTERN = r'File: <span>(?P<N>.+?)</span>'
     SIZE_PATTERN = r'Size: (?P<S>[^<]+)</div>'
 
     OFFLINE_PATTERN      = r'File not found or deleted|Sorry, this file is blocked or deleted|Error 404'
