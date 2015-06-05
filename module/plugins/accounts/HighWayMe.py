@@ -11,7 +11,7 @@ class HighWayMe.py(Account):
 
     __description__ = """High-Way.Me account plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("yannik995", "evolutionclip@live.de")]
+    __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
     def loadAccountInfo(self, user, req):
