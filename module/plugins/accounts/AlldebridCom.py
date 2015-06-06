@@ -38,7 +38,7 @@ class AlldebridCom(Account):
         #Get expiration date from API
         except Exception:
             data = self.getAccountData(user)
-            html = req.load("http://www.alldebrid.com/api.php",
+            html = req.load("https://www.alldebrid.com/api.php",
                             get={'action': "info_user", 'login': user, 'pw': data['password']})
 
             self.logDebug(html)
@@ -51,7 +51,7 @@ class AlldebridCom(Account):
 
 
     def login(self, user, data, req):
-        html = req.load("http://www.alldebrid.com/register/",
+        html = req.load("https://www.alldebrid.com/register/",
                         get={'action'        : "login",
                              'login_login'   : user,
                              'login_password': data['password']},

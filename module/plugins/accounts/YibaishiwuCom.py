@@ -29,7 +29,7 @@ class YibaishiwuCom(Account):
 
 
     def login(self, user, data, req):
-        html = req.load("http://passport.115.com/?ac=login",
+        html = req.load("https://passport.115.com/?ac=login",
                         post={"back": "http://www.115.com/",
                               "goto": "http://115.com/",
                               "login[account]": user,

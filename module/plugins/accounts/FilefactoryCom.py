@@ -39,7 +39,7 @@ class FilefactoryCom(Account):
     def login(self, user, data, req):
         req.http.c.setopt(pycurl.REFERER, "http://www.filefactory.com/member/login.php")
 
-        html = req.load("http://www.filefactory.com/member/signin.php",
+        html = req.load("https://www.filefactory.com/member/signin.php",
                         post={"loginEmail"   : user,
                               "loginPassword": data['password'],
                               "Submit"       : "Sign In"})

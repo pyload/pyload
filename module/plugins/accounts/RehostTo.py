@@ -19,7 +19,7 @@ class RehostTo(Account):
         validuntil  = -1
         session     = ""
 
-        html = req.load("http://rehost.to/api.php",
+        html = req.load("https://rehost.to/api.php",
                         get={'cmd' : "login", 'user': user,
                              'pass': self.getAccountData(user)['password']})
         try:
@@ -45,7 +45,7 @@ class RehostTo(Account):
 
 
     def login(self, user, data, req):
-        html = req.load("http://rehost.to/api.php",
+        html = req.load("https://rehost.to/api.php",
                         get={'cmd': "login", 'user': user, 'pass': data['password']},
                         decode=True)
 

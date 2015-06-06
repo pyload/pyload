@@ -52,7 +52,7 @@ class MegaRapidCz(Account):
             start = html.index('id="inp_hash" name="hash" value="')
             html = html[start + 33:]
             hashes = html[0:32]
-            html = req.load("http://megarapid.cz/prihlaseni/",
+            html = req.load("https://megarapid.cz/prihlaseni/",
                            post={"hash": hashes,
                                  "login": user,
                                  "pass1": data['password'],

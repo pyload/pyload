@@ -15,9 +15,8 @@ class OverLoadMe(Account):
 
 
     def loadAccountInfo(self, user, req):
-        https = "https" if self.getConfig('ssl') else "http"
         data  = self.getAccountData(user)
-        html  = req.load(https + "://api.over-load.me/account.php",
+        html  = req.load("https://api.over-load.me/account.php",
                          get={'user': user,
                               'auth': data['password']}).strip()
 
@@ -32,8 +31,7 @@ class OverLoadMe(Account):
 
 
     def login(self, user, data, req):
-        https    = "https" if self.getConfig('ssl') else "http"
-        jsondata = req.load(https + "://api.over-load.me/account.php",
+        jsondata = req.load("https://api.over-load.me/account.php",
                             get={'user': user,
                                  'auth': data['password']}).strip()
 

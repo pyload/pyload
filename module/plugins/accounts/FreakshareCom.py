@@ -43,7 +43,7 @@ class FreakshareCom(Account):
     def login(self, user, data, req):
         req.load("http://freakshare.com/index.php?language=EN")
 
-        html = req.load("http://freakshare.com/login.html",
+        html = req.load("https://freakshare.com/login.html",
                         post={"submit": "Login", "user": user, "pass": data['password']},
                         decode=True)
 

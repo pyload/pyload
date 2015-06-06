@@ -62,7 +62,7 @@ class Keep2ShareCc(Account):
     def login(self, user, data, req):
         req.cj.setCookie("keep2share.cc", "lang", "en")
 
-        html = req.load("http://keep2share.cc/login.html",
+        html = req.load("https://keep2share.cc/login.html",
                         post={'LoginForm[username]'  : user,
                               'LoginForm[password]'  : data['password'],
                               'LoginForm[rememberMe]': 1,

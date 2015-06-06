@@ -29,7 +29,7 @@ class FastixRu(Account):
 
 
     def login(self, user, data, req):
-        html = req.load("http://fastix.ru/api_v2/",
+        html = req.load("https://fastix.ru/api_v2/",
                         get={'sub': "get_apikey", 'email': user, 'password': data['password']})
 
         api = json_loads(html)

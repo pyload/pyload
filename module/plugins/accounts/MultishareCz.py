@@ -34,7 +34,7 @@ class MultishareCz(Account):
 
 
     def login(self, user, data, req):
-        html = req.load('http://www.multishare.cz/html/prihlaseni_process.php',
+        html = req.load('https://www.multishare.cz/html/prihlaseni_process.php',
                         post={"akce" : "Přihlásit",
                               "heslo": data['password'],
                               "jmeno": user},

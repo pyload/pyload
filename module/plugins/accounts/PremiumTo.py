@@ -16,7 +16,7 @@ class PremiumTo(Account):
 
 
     def loadAccountInfo(self, user, req):
-        traffic = req.load("http://premium.to/api/straffic.php",
+        traffic = req.load("https://premium.to/api/straffic.php",
                            get={'username': self.username, 'password': self.password})
 
         if "wrong username" not in traffic:
@@ -29,7 +29,7 @@ class PremiumTo(Account):
     def login(self, user, data, req):
         self.username = user
         self.password = data['password']
-        authcode = req.load("http://premium.to/api/getauthcode.php",
+        authcode = req.load("https://premium.to/api/getauthcode.php",
                             get={'username': user, 'password': self.password},
                             decode=True)
 

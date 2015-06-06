@@ -68,7 +68,7 @@ class HellshareCz(Account):
             self.logDebug("Already logged in")
             return
 
-        html = req.load('http://www.hellshare.com/login?do=loginForm-submit',
+        html = req.load('https://www.hellshare.com/login?do=loginForm-submit',
                         post={"login": "Log in",
                               "password": data['password'],
                               "username": user,

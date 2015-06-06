@@ -63,7 +63,7 @@ class UploadedTo(Account):
     def login(self, user, data, req):
         # req.cj.setCookie("uploaded.net", "lang", "en")
 
-        html = req.load("http://uploaded.net/io/login",
+        html = req.load("https://uploaded.net/io/login",
                         post={'id': user, 'pw': data['password'], '_': ""},
                         decode=True)
 

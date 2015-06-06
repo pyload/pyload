@@ -26,7 +26,7 @@ class BitshareCom(Account):
 
 
     def login(self, user, data, req):
-        html = req.load("http://bitshare.com/login.html",
+        html = req.load("https://bitshare.com/login.html",
                         post={"user": user, "password": data['password'], "submit": "Login"},
                         decode=True)
 

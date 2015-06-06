@@ -40,7 +40,7 @@ class SimplyPremiumCom(Account):
     def login(self, user, data, req):
         req.cj.setCookie("simply-premium.com", "lang", "EN")
 
-        html = req.load("http://www.simply-premium.com/login.php",
+        html = req.load("https://www.simply-premium.com/login.php",
                         post={'key': user} if not data['password'] else {'login_name': user, 'login_pass': data['password']},
                         decode=True)
 

@@ -20,7 +20,7 @@ class FilesMailRu(Account):
     def login(self, user, data, req):
         user, domain = user.split("@")
 
-        html = req.load("http://swa.mail.ru/cgi-bin/auth",
+        html = req.load("https://swa.mail.ru/cgi-bin/auth",
                         post={"Domain": domain,
                               "Login": user,
                               "Password": data['password'],

@@ -42,7 +42,7 @@ class FastshareCz(Account):
 
         req.load('http://www.fastshare.cz/login')  # Do not remove or it will not login
 
-        html = req.load("http://www.fastshare.cz/sql.php",
+        html = req.load("https://www.fastshare.cz/sql.php",
                         post={'login': user, 'heslo': data['password']},
                         decode=True)
 

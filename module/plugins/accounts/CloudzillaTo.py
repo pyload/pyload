@@ -27,7 +27,7 @@ class CloudzillaTo(Account):
 
 
     def login(self, user, data, req):
-        html = req.load("http://www.cloudzilla.to/",
+        html = req.load("https://www.cloudzilla.to/",
                         post={'lusername': user,
                               'lpassword': data['password'],
                               'w'        : "dologin"},

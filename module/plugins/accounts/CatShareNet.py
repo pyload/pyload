@@ -50,7 +50,7 @@ class CatShareNet(Account):
 
 
     def login(self, user, data, req):
-        html = req.load("http://catshare.net/login",
+        html = req.load("https://catshare.net/login",
                         post={'user_email': user,
                               'user_password': data['password'],
                               'remindPassword': 0,

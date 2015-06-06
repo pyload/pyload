@@ -30,6 +30,6 @@ class SimplydebridCom(Account):
         self.password  = data['password']
         get_data       = {'login': 1, 'u': self.loginname, 'p': self.password}
 
-        res = req.load("http://simply-debrid.com/api.php", get=get_data, decode=True)
+        res = req.load("https://simply-debrid.com/api.php", get=get_data, decode=True)
         if res != "02: loggin success":
             self.wrongPassword()

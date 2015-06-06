@@ -36,7 +36,7 @@ class DebridItaliaCom(Account):
 
 
     def login(self, user, data, req):
-        html = req.load("http://debriditalia.com/login.php",
+        html = req.load("https://debriditalia.com/login.php",
                         get={'u': user, 'p': data['password']},
                         decode=True)
 

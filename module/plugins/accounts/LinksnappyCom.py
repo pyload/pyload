@@ -47,7 +47,7 @@ class LinksnappyCom(Account):
 
 
     def login(self, user, data, req):
-        r = req.load("http://gen.linksnappy.com/lseAPI.php",
+        r = req.load("https://gen.linksnappy.com/lseAPI.php",
                      get={'act'     : 'USERDETAILS',
                           'username': user,
                           'password': hashlib.md5(data['password']).hexdigest()},
