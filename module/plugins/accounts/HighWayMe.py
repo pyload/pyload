@@ -9,7 +9,7 @@ class HighWayMe.py(Account):
     __type__    = "account"
     __version__ = "0.01"
 
-    __description__ = """High-Way.Me account plugin"""
+    __description__ = """High-Way.me account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
@@ -34,11 +34,12 @@ class HighWayMe.py(Account):
         if 'premium_traffic' in json_data['user'] and json_data['user']['premium_traffic']:
             trafficleft = float(json_data['user']['premium_traffic']) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
 
-        return {"premium": premium, "validuntil": validuntil, "trafficleft": trafficleft}
+        return {'premium'    : premium,
+                'validuntil' : validuntil,
+                'trafficleft': trafficleft}
 
 
     def login(self, user, data, req):
-
         html = req.load("https://high-way.me/api.php?login",
                         post={'login': '1', 'user': user, 'pass': data['password']},
                         decode=True)
