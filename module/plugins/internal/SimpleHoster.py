@@ -239,7 +239,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.54"
+    __version__ = "1.55"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -285,8 +285,8 @@ class SimpleHoster(Hoster):
       IP_BLOCKED_PATTERN: (optional)
         example: IP_BLOCKED_PATTERN = r'in your country'
 
-      DOWNLOAD_LIMIT_PATTERN: (optional)
-        example: DOWNLOAD_LIMIT_PATTERN = r'download limit'
+      DL_LIMIT_PATTERN: (optional)
+        example: DL_LIMIT_PATTERN = r'download limit'
 
       SIZE_LIMIT_PATTERN: (optional)
         example: SIZE_LIMIT_PATTERN = r'up to'
@@ -545,9 +545,12 @@ class SimpleHoster(Hoster):
                     if r not in rules:
                         rules[r] = p
 
-                for r, a in [('Error'       , "ERROR_PATTERN"       ),
-                             ('Premium only', "PREMIUM_ONLY_PATTERN"),
-                             ('Wait error'  , "WAIT_PATTERN"        )]:
+                for r, a in [("IP blocked"    , "IP_BLOCKED_PATTERN"  ),
+                             ("Download limit", "DL_LIMIT_PATTERN"    ),
+                             ("Size limit"    , "SIZE_LIMIT_PATTERN"  ),
+                             ("Error"         , "ERROR_PATTERN"       ),
+                             ("Premium only"  , "PREMIUM_ONLY_PATTERN"),
+                             ("Wait error"    , "WAIT_PATTERN"        )]:
                     if r not in rules and hasattr(self, a):
                         rules[r] = getattr(self, a)
 
@@ -582,8 +585,8 @@ class SimpleHoster(Hoster):
             elif hasattr(self, 'SIZE_LIMIT_PATTERN') and re.search(self.SIZE_LIMIT_PATTERN, self.html):
                 self.fail(_("File too large for free download"))
 
-            elif hasattr(self, 'DOWNLOAD_LIMIT_PATTERN') and re.search(self.DOWNLOAD_LIMIT_PATTERN, self.html):
-                m = re.search(self.DOWNLOAD_LIMIT_PATTERN, self.html)
+            elif hasattr(self, 'DL_LIMIT_PATTERN') and re.search(self.DL_LIMIT_PATTERN, self.html):
+                m = re.search(self.DL_LIMIT_PATTERN, self.html)
                 try:
                     errmsg = m.group(1).strip()
                 except Exception:

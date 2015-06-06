@@ -39,21 +39,23 @@ class FileserveCom(Hoster):
 
     __description__ = """Fileserve.com hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("jeix", "jeix@hasnomail.de"),
-                       ("mkaay", "mkaay@mkaay.de"),
-                       ("Paul King", None),
-                       ("zoidberg", "zoidberg@mujmail.cz")]
+    __authors__     = [("jeix"     , "jeix@hasnomail.de"  ),
+                       ("mkaay"    , "mkaay@mkaay.de"     ),
+                       ("Paul King", None                 ),
+                       ("zoidberg" , "zoidberg@mujmail.cz")]
 
 
-    URLS = ["http://www.fileserve.com/file/", "http://www.fileserve.com/link-checker.php",
+    URLS = ["http://www.fileserve.com/file/",
+            "http://www.fileserve.com/link-checker.php",
             "http://www.fileserve.com/checkReCaptcha.php"]
+
     LINKCHECK_TR = r'<tr>\s*(<td>http://www\.fileserve\.com/file/.*?)</tr>'
     LINKCHECK_TD = r'<td>(?:<.*?>|&nbsp;)*([^<]*)'
 
-    CAPTCHA_KEY_PATTERN = r'var reCAPTCHA_publickey=\'(.+?)\''
-    LONG_WAIT_PATTERN = r'<li class="title">You need to wait (\d+) (\w+) to start another download\.</li>'
-    LINK_EXPIRED_PATTERN = r'Your download link has expired'
-    DAILY_LIMIT_PATTERN = r'Your daily download limit has been reached'
+    CAPTCHA_KEY_PATTERN   = r'var reCAPTCHA_publickey=\'(.+?)\''
+    LONG_WAIT_PATTERN     = r'<li class="title">You need to wait (\d+) (\w+) to start another download\.</li>'
+    LINK_EXPIRED_PATTERN  = r'Your download link has expired'
+    DL_LIMIT_PATTERN      = r'Your daily download limit has been reached'
     NOT_LOGGED_IN_PATTERN = r'<form (name="loginDialogBoxForm"|id="login_form")|<li><a href="/login\.php">Login</a></li>'
 
 
@@ -119,7 +121,7 @@ class FileserveCom(Hoster):
 
         check = self.checkDownload({"expired": self.LINK_EXPIRED_PATTERN,
                                     "wait"   : re.compile(self.LONG_WAIT_PATTERN),
-                                    "limit"  : self.DAILY_LIMIT_PATTERN})
+                                    "limit"  : self.DL_LIMIT_PATTERN})
 
         if check == "expired":
             self.logDebug("Download link was expired")
