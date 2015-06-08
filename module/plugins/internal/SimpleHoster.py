@@ -239,7 +239,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.58"
+    __version__ = "1.59"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -587,12 +587,12 @@ class SimpleHoster(Hoster):
             self.logDebug(_("Checking last downloaded file with custom rules"))
 
             if self.CHECK_FILE:
-                rules = [r, getattr(self, a) for r, a in (("IP blocked"    , "IP_BLOCKED_PATTERN"  ),
-                                                          ("Download limit", "DL_LIMIT_PATTERN"    ),
-                                                          ("Size limit"    , "SIZE_LIMIT_PATTERN"  ),
-                                                          ("Error"         , "ERROR_PATTERN"       ),
-                                                          ("Premium only"  , "PREMIUM_ONLY_PATTERN"),
-                                                          ("Wait error"    , "WAIT_PATTERN"        ))]
+                rules = [(r, getattr(self, a)) for r, a in (("IP blocked"    , "IP_BLOCKED_PATTERN"  ),
+                                                            ("Download limit", "DL_LIMIT_PATTERN"    ),
+                                                            ("Size limit"    , "SIZE_LIMIT_PATTERN"  ),
+                                                            ("Error"         , "ERROR_PATTERN"       ),
+                                                            ("Premium only"  , "PREMIUM_ONLY_PATTERN"),
+                                                            ("Wait error"    , "WAIT_PATTERN"        ))]
                 self.FILE_ERRORS.extend(rules)
 
             for r, p in self.FILE_ERRORS:
