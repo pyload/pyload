@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
@@ -36,7 +36,7 @@ class Account(Base):
     associated hoster plugin. Plugin should also provide `loadAccountInfo`
     """
     __name__ = "Account"
-    __version__ = "0.2"
+    __version__ = "0.02"
     __type__ = "account"
     __description__ = """Account Plugin"""
     __author_name__ = ("mkaay")
@@ -76,7 +76,7 @@ class Account(Base):
     def _login(self, user, data):
         # set timestamp for login
         self.timestamps[user] = time()
-        
+
         req = self.getAccountRequest(user)
         try:
             self.login(user, data, req)

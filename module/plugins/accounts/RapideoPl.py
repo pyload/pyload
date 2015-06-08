@@ -5,13 +5,13 @@ import hashlib
 import time
 
 from module.common.json_layer import json_loads
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class RapideoPl(Account):
     __name__    = "RapideoPl"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __description__ = "Rapideo.pl account plugin"
     __license__     = "GPLv3"

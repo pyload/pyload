@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter
 from module.plugins.hoster.MediafireCom import checkHTMLHeader
 from module.common.json_layer import json_loads
 
@@ -9,7 +9,7 @@ from module.common.json_layer import json_loads
 class MediafireComFolder(Crypter):
     __name__    = "MediafireComFolder"
     __type__    = "crypter"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __pattern__ = r'http://(?:www\.)?mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 from module.common.json_layer import json_loads
 
 
 class OverLoadMe(Account):
     __name__    = "OverLoadMe"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __description__ = """Over-Load.me account plugin"""
     __license__     = "GPLv3"

@@ -6,14 +6,14 @@ import MultipartPostHandler
 import re
 import urllib2
 
-from module.plugins.Container import Container
+from module.plugins.internal.Container import Container
 from module.utils import fs_encode, save_join
 
 
 class CCF(Container):
     __name__    = "CCF"
     __type__    = "container"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __pattern__ = r'.+\.ccf$'
 

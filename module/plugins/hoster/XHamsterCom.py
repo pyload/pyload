@@ -4,7 +4,7 @@ import re
 import urllib
 
 from module.common.json_layer import json_loads
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster
 
 
 def clean_json(json_expr):
@@ -18,7 +18,7 @@ def clean_json(json_expr):
 class XHamsterCom(Hoster):
     __name__    = "XHamsterCom"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = r'http://(?:www\.)?xhamster\.com/movies/.+'
     __config__  = [("type", ".mp4;.flv", "Preferred type", ".mp4")]

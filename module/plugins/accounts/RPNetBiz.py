@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 from module.common.json_layer import json_loads
 
 
 class RPNetBiz(Account):
     __name__    = "RPNetBiz"
     __type__    = "account"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __description__ = """RPNet.biz account plugin"""
     __license__     = "GPLv3"

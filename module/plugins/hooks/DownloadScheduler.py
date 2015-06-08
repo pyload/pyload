@@ -3,13 +3,13 @@
 import re
 import time
 
-from module.plugins.Hook import Hook
+from module.plugins.internal.Hook import Hook
 
 
 class DownloadScheduler(Hook):
     __name__    = "DownloadScheduler"
     __type__    = "hook"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __config__ = [("timetable", "str", "List time periods as hh:mm full or number(kB/s)",
                    "0:00 full, 7:00 250, 10:00 0, 17:00 150"),

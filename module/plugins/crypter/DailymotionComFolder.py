@@ -4,14 +4,14 @@ import re
 import urlparse
 
 from module.common.json_layer import json_loads
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter
 from module.utils import save_join
 
 
 class DailymotionComFolder(Crypter):
     __name__    = "DailymotionComFolder"
     __type__    = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

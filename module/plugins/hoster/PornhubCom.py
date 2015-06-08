@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster
 
 
 class PornhubCom(Hoster):
     __name__    = "PornhubCom"
     __type__    = "hoster"
-    __version__ = "0.50"
+    __version__ = "0.51"
 
     __pattern__ = r'http://(?:www\.)?pornhub\.com/view_video\.php\?viewkey=\w+'
 

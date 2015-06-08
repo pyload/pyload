@@ -3,13 +3,13 @@
 import re
 import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class HellshareCz(Account):
     __name__    = "HellshareCz"
     __type__    = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __description__ = """Hellshare.cz account plugin"""
     __license__     = "GPLv3"

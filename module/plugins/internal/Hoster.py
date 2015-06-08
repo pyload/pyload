@@ -13,11 +13,11 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
-from module.plugins.Plugin import Plugin
+from module.plugins.internal.Plugin import Plugin
 
 def getInfo(self):
         #result = [ .. (name, size, status, url) .. ]
@@ -25,7 +25,7 @@ def getInfo(self):
 
 class Hoster(Plugin):
     __name__ = "Hoster"
-    __version__ = "0.1"
+    __version__ = "0.02"
     __pattern__ = None
     __type__ = "hoster"
     __description__ = """Base hoster plugin"""

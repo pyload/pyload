@@ -10,7 +10,7 @@ except ImportError:
 
 from threading import Lock
 
-from module.plugins.Hook import Hook, threaded
+from module.plugins.internal.Hook import Hook, threaded
 
 
 def forward(source, destination):
@@ -29,7 +29,7 @@ def forward(source, destination):
 class ClickAndLoad(Hook):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
-    __version__ = "0.43"
+    __version__ = "0.44"
 
     __config__ = [("activated", "bool", "Activated"                             , True),
                   ("port"     , "int" , "Port"                                  , 9666),

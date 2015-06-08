@@ -3,14 +3,14 @@
 import re
 import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 from module.plugins.internal.SimpleHoster import set_cookies
 
 
 class UploadingCom(Account):
     __name__    = "UploadingCom"
     __type__    = "account"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __description__ = """Uploading.com account plugin"""
     __license__     = "GPLv3"

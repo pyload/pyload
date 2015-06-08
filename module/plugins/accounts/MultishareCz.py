@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class MultishareCz(Account):
     __name__    = "MultishareCz"
     __type__    = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __description__ = """Multishare.cz account plugin"""
     __license__     = "GPLv3"

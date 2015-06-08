@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class Ftp(Account):
     __name__    = "Ftp"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __description__ = """Ftp dummy account plugin"""
     __license__     = "GPLv3"

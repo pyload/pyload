@@ -2,14 +2,14 @@
 
 import re
 
-from module.plugins.Plugin import Fail
+from module.plugins.internal.Plugin import Fail
 from module.plugins.internal.Captcha import Captcha
 
 
 class SolveMedia(Captcha):
     __name__    = "SolveMedia"
     __type__    = "captcha"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __description__ = """SolveMedia captcha service plugin"""
     __license__     = "GPLv3"

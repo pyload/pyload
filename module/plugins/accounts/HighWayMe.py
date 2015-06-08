@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from module.common.json_layer import json_loads
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class HighWayMe.py(Account):
     __name__    = "HighWayMe.py"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __description__ = """High-Way.me account plugin"""
     __license__     = "GPLv3"

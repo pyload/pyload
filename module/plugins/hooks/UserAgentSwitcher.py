@@ -2,13 +2,13 @@
 
 import pycurl
 
-from module.plugins.Hook import Hook
+from module.plugins.internal.Hook import Hook
 
 
 class UserAgentSwitcher(Hook):
     __name__    = "UserAgentSwitcher"
     __type__    = "hook"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __config__ = [("activated"     , "bool", "Activated"                             , True                                                                      ),
                   ("connecttimeout", "int" , "Connection timeout in seconds"         , 60                                                                        ),

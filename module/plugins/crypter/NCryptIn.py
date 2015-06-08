@@ -5,14 +5,14 @@ import re
 
 from Crypto.Cipher import AES
 
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter
 from module.plugins.internal.ReCaptcha import ReCaptcha
 
 
 class NCryptIn(Crypter):
     __name__    = "NCryptIn"
     __type__    = "crypter"
-    __version__ = "1.35"
+    __version__ = "1.36"
 
     __pattern__ = r'http://(?:www\.)?ncrypt\.in/(?P<TYPE>folder|link|frame)-([^/\?]+)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

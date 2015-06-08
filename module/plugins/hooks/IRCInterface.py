@@ -12,14 +12,14 @@ from threading import Thread
 
 from module.Api import PackageDoesNotExists, FileDoesNotExists
 from module.network.RequestFactory import getURL
-from module.plugins.Hook import Hook
+from module.plugins.internal.Hook import Hook
 from module.utils import formatSize
 
 
 class IRCInterface(Thread, Hook):
     __name__    = "IRCInterface"
     __type__    = "hook"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __config__ = [("host", "str", "IRC-Server Address", "Enter your server here!"),
                   ("port", "int", "IRC-Server Port", 6667),

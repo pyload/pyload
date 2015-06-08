@@ -9,14 +9,14 @@ import urlparse
 
 from Crypto.Cipher import AES
 
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter
 from module.plugins.internal.ReCaptcha import ReCaptcha
 
 
 class FilecryptCc(Crypter):
     __name__    = "FilecryptCc"
     __type__    = "crypter"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
 

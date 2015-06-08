@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from module.database import style
-from module.plugins.Hook import Hook
+from module.plugins.internal.Hook import Hook
 
 
 class DeleteFinished(Hook):
     __name__    = "DeleteFinished"
     __type__    = "hook"
-    __version__ = "1.12"
+    __version__ = "1.13"
 
     __config__ = [("interval"  , "int" , "Check interval in hours"          , 72   ),
                   ("deloffline", "bool", "Delete package with offline links", False)]

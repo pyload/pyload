@@ -3,14 +3,14 @@
 import re
 import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 from module.common.json_layer import json_loads
 
 
 class RapiduNet(Account):
     __name__    = "RapiduNet"
     __type__    = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __description__ = """Rapidu.net account plugin"""
     __license__     = "GPLv3"

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter
 
 
 class ChipDe(Crypter):
     __name__    = "ChipDe"
     __type__    = "crypter"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __pattern__ = r'http://(?:www\.)?chip\.de/video/.+\.html'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
+from module.plugins.internal.Hoster import Hoster
 from module.plugins.internal.SimpleHoster import create_getInfo
-from module.plugins.Hoster import Hoster
 
 
 class DeadHoster(Hoster):
     __name__    = "DeadHoster"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __pattern__ = r'^unmatchable$'
 

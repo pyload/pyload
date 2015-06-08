@@ -4,13 +4,13 @@ import re
 import datetime
 import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class UploadheroCom(Account):
     __name__    = "UploadheroCom"
     __type__    = "account"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __description__ = """Uploadhero.co account plugin"""
     __license__     = "GPLv3"

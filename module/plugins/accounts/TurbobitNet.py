@@ -3,13 +3,13 @@
 import re
 import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class TurbobitNet(Account):
     __name__    = "TurbobitNet"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """TurbobitNet account plugin"""
     __license__     = "GPLv3"

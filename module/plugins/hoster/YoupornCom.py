@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster
 
 
 class YoupornCom(Hoster):
     __name__    = "YoupornCom"
     __type__    = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
 
     __pattern__ = r'http://(?:www\.)?youporn\.com/watch/.+'
 

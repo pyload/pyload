@@ -9,13 +9,13 @@ from base64 import b64encode
 
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL, getRequest
-from module.plugins.Hook import Hook, threaded
+from module.plugins.internal.Hook import Hook, threaded
 
 
 class ExpertDecoders(Hook):
     __name__    = "ExpertDecoders"
     __type__    = "hook"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __config__ = [("force", "bool", "Force CT even if client is connected", False),
                   ("passkey", "password", "Access key", "")]

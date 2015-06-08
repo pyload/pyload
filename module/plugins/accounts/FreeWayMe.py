@@ -1,13 +1,13 @@
 ﻿# -*- coding: utf-8 -*-
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 from module.common.json_layer import json_loads
 
 
 class FreeWayMe(Account):
     __name__    = "FreeWayMe"
     __type__    = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __description__ = """FreeWayMe account plugin"""
     __license__     = "GPLv3"

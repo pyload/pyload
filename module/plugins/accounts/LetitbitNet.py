@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 # from module.common.json_layer import json_loads, json_dumps
 
 
 class LetitbitNet(Account):
     __name__    = "LetitbitNet"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """Letitbit.net account plugin"""
     __license__     = "GPLv3"

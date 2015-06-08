@@ -3,13 +3,13 @@
 import time
 
 from module.network.RequestFactory import getURL
-from module.plugins.Hook import Hook, Expose
+from module.plugins.internal.Hook import Hook, Expose
 
 
 class AndroidPhoneNotify(Hook):
     __name__    = "AndroidPhoneNotify"
     __type__    = "hook"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __config__ = [("apikey"         , "str" , "API key"                                  , ""   ),
                   ("notifycaptcha"  , "bool", "Notify captcha request"                   , True ),

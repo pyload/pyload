@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter
 
 
 class SexuriaCom(Crypter):
     __name__    = "SexuriaCom"
     __type__    = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?sexuria\.com/(v1/)?(Pornos_Kostenlos_.+?_(\d+)\.html|dl_links_\d+_\d+\.html|id=\d+\&part=\d+\&link=\d+)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

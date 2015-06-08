@@ -4,14 +4,14 @@ import re
 import time
 import urlparse
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
 
 
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.37"
+    __version__ = "0.38"
 
     __description__ = """XFileSharing account plugin"""
     __license__     = "GPLv3"

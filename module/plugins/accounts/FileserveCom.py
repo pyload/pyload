@@ -2,14 +2,14 @@
 
 import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 from module.common.json_layer import json_loads
 
 
 class FileserveCom(Account):
     __name__    = "FileserveCom"
     __type__    = "account"
-    __version__ = "0.20"
+    __version__ = "0.21"
 
     __description__ = """Fileserve.com account plugin"""
     __license__     = "GPLv3"

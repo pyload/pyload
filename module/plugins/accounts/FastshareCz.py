@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class FastshareCz(Account):
     __name__    = "FastshareCz"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __description__ = """Fastshare.cz account plugin"""
     __license__     = "GPLv3"

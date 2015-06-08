@@ -13,7 +13,7 @@ except ImportError:
     import Image
 
 from module.network.RequestFactory import getURL, getRequest
-from module.plugins.Hook import Hook, threaded
+from module.plugins.internal.Hook import Hook, threaded
 
 
 class CaptchaBrotherhoodException(Exception):
@@ -37,7 +37,7 @@ class CaptchaBrotherhoodException(Exception):
 class CaptchaBrotherhood(Hook):
     __name__    = "CaptchaBrotherhood"
     __type__    = "hook"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __config__ = [("username", "str", "Username", ""),
                   ("force", "bool", "Force CT even if client is connected", False),

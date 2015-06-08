@@ -8,14 +8,14 @@ import time
 
 from select import select
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster
 from module.utils import save_join
 
 
 class Xdcc(Hoster):
     __name__    = "Xdcc"
     __type__    = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
 
     __config__ = [("nick", "str", "Nickname", "pyload"),
                   ("ident", "str", "Ident", "pyloadident"),

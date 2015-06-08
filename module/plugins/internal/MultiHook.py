@@ -4,14 +4,14 @@ import re
 import time
 import traceback
 
-from module.plugins.Hook import Hook
+from module.plugins.internal.Hook import Hook
 from module.utils import decode, remove_chars
 
 
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.45"
+    __version__ = "0.46"
 
     __config__  = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                    ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),

@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class ShareonlineBiz(Account):
     __name__    = "ShareonlineBiz"
     __type__    = "account"
-    __version__ = "0.33"
+    __version__ = "0.34"
 
     __description__ = """Share-online.biz account plugin"""
     __license__     = "GPLv3"

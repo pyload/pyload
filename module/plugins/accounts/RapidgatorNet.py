@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 from module.common.json_layer import json_loads
 
 
 class RapidgatorNet(Account):
     __name__    = "RapidgatorNet"
     __type__    = "account"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __description__ = """Rapidgator.net account plugin"""
     __license__     = "GPLv3"

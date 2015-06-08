@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter
 from module.network.HTTPRequest import BadHeader
 
 
 class EmbeduploadCom(Crypter):
     __name__    = "EmbeduploadCom"
     __type__    = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?embedupload\.com/\?d=.+'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"           , True         ),

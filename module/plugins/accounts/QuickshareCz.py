@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class QuickshareCz(Account):
     __name__    = "QuickshareCz"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """Quickshare.cz account plugin"""
     __license__     = "GPLv3"

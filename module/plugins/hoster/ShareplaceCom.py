@@ -3,13 +3,13 @@
 import re
 import urllib
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster
 
 
 class ShareplaceCom(Hoster):
     __name__    = "ShareplaceCom"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = r'http://(?:www\.)?shareplace\.(com|org)/\?\w+'
 

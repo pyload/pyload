@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 from module.common.json_layer import json_loads
 
 
 class MegaDebridEu(Account):
     __name__    = "MegaDebridEu"
     __type__    = "account"
-    __version__ = "0.20"
+    __version__ = "0.21"
 
     __description__ = """mega-debrid.eu account plugin"""
     __license__     = "GPLv3"

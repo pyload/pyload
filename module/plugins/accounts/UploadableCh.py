@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class UploadableCh(Account):
     __name__    = "UploadableCh"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """Uploadable.ch account plugin"""
     __license__     = "GPLv3"

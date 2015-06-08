@@ -5,13 +5,13 @@
 import re
 import urlparse
 
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter
 
 
 class FourChanOrg(Crypter):
     __name__    = "FourChanOrg"
     __type__    = "crypter"
-    __version__ = "0.31"
+    __version__ = "0.32"
 
     __pattern__ = r'http://(?:www\.)?boards\.4chan\.org/\w+/res/(\d+)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

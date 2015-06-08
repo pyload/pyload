@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Hook import Hook
+from module.plugins.internal.Hook import Hook
 
 
 class RestartFailed(Hook):
     __name__    = "RestartFailed"
     __type__    = "hook"
-    __version__ = "1.58"
+    __version__ = "1.59"
 
     __config__ = [("interval", "int", "Check interval in minutes", 90)]
 

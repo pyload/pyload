@@ -7,14 +7,14 @@ import time
 
 from shutil import move
 
-from module.plugins.Hook import Hook
+from module.plugins.internal.Hook import Hook
 from module.utils import fs_encode, save_join
 
 
 class HotFolder(Hook):
     __name__    = "HotFolder"
     __type__    = "hook"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __config__ = [("folder"    , "str" , "Folder to observe"    , "container"),
                   ("watch_file", "bool", "Observe link file"    , False      ),

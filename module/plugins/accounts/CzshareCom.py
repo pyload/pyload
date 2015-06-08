@@ -3,13 +3,13 @@
 import re
 import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class CzshareCom(Account):
     __name__    = "CzshareCom"
     __type__    = "account"
-    __version__ = "0.18"
+    __version__ = "0.19"
 
     __description__ = """Czshare.com account plugin, now Sdilej.cz"""
     __license__     = "GPLv3"

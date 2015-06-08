@@ -2,14 +2,14 @@
 
 import hashlib
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 from module.common.json_layer import json_loads
 
 
 class LinksnappyCom(Account):
     __name__    = "LinksnappyCom"
     __type__    = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __description__ = """Linksnappy.com account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("stickell", "l.stickell@yahoo.it")]

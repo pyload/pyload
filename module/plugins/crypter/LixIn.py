@@ -3,13 +3,13 @@
 import re
 import urlparse
 
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter
 
 
 class LixIn(Crypter):
     __name__    = "LixIn"
     __type__    = "crypter"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __pattern__ = r'http://(?:www\.)?lix\.in/(?P<ID>.+)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

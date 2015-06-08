@@ -6,13 +6,13 @@ import urlparse
 
 from module.network.HTTPRequest import BadHeader
 from module.plugins.internal.SimpleHoster import create_getInfo, getFileURL
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster
 
 
 class BasePlugin(Hoster):
     __name__    = "BasePlugin"
     __type__    = "hoster"
-    __version__ = "0.43"
+    __version__ = "0.44"
 
     __pattern__ = r'^unmatchable$'
 

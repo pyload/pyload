@@ -3,13 +3,13 @@
 import re
 import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class UploadedTo(Account):
     __name__    = "UploadedTo"
     __type__    = "account"
-    __version__ = "0.30"
+    __version__ = "0.31"
 
     __description__ = """Uploaded.to account plugin"""
     __license__     = "GPLv3"

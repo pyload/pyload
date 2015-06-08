@@ -3,13 +3,13 @@
 import time
 
 from module.common.json_layer import json_loads
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class MyfastfileCom(Account):
     __name__    = "MyfastfileCom"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __description__ = """Myfastfile.com account plugin"""
     __license__     = "GPLv3"

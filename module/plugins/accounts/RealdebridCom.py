@@ -2,13 +2,13 @@
 
 import xml.dom.minidom
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class RealdebridCom(Account):
     __name__    = "RealdebridCom"
     __type__    = "account"
-    __version__ = "0.45"
+    __version__ = "0.46"
 
     __description__ = """Real-Debrid.com account plugin"""
     __license__     = "GPLv3"

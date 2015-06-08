@@ -17,13 +17,13 @@ except ImportError:
             return b2a_hex(pbkdf2(self.passphrase, self.salt, self.iterations, octets))
 
 from module.common.json_layer import json_loads
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class OboomCom(Account):
     __name__    = "OboomCom"
     __type__    = "account"
-    __version__ = "0.24"
+    __version__ = "0.25"
 
     __description__ = """Oboom.com account plugin"""
     __license__     = "GPLv3"

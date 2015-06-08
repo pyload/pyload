@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class CloudzillaTo(Account):
     __name__    = "CloudzillaTo"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """Cloudzilla.to account plugin"""
     __license__     = "GPLv3"

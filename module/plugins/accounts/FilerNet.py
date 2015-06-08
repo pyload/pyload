@@ -3,13 +3,13 @@
 import re
 import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class FilerNet(Account):
     __name__    = "FilerNet"
     __type__    = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __description__ = """Filer.net account plugin"""
     __license__     = "GPLv3"

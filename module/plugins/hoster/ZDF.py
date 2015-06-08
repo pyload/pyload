@@ -4,14 +4,14 @@ import re
 
 from xml.etree.ElementTree import fromstring
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster
 
 
 # Based on zdfm by Roland Beermann (http://github.com/enkore/zdfm/)
 class ZDF(Hoster):
     __name__    = "ZDF Mediathek"
     __type__    = "hoster"
-    __version__ = "0.80"
+    __version__ = "0.81"
 
     __pattern__ = r'http://(?:www\.)?zdf\.de/ZDFmediathek/\D*(\d+)\D*'
 

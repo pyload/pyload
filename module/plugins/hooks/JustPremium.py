@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.Hook import Hook
+from module.plugins.internal.Hook import Hook
 
 
 class JustPremium(Hook):
     __name__    = "JustPremium"
     __type__    = "hook"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __config__ = [("excluded", "str", "Exclude hosters (comma separated)", ""),
                   ("included", "str", "Include hosters (comma separated)", "")]

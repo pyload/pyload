@@ -7,14 +7,14 @@ import re
 import os
 
 from Crypto.Cipher import AES
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter
 from module.utils import save_join
 
 
 class RelinkUs(Crypter):
     __name__    = "RelinkUs"
     __type__    = "crypter"
-    __version__ = "3.12"
+    __version__ = "3.13"
 
     __pattern__ = r'http://(?:www\.)?relink\.us/(f/|((view|go)\.php\?id=))(?P<ID>.+)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

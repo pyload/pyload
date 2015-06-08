@@ -4,7 +4,7 @@ import os
 import re
 import subprocessimport urllib
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster
 from module.plugins.internal.SimpleHoster import replace_patterns
 from module.utils import html_unescape
 
@@ -31,7 +31,7 @@ def which(program):
 class YoutubeCom(Hoster):
     __name__    = "YoutubeCom"
     __type__    = "hoster"
-    __version__ = "0.41"
+    __version__ = "0.42"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(youtube\.com|youtu\.be)/watch\?(?:.*&)?v=.+'
     __config__  = [("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting"             , "hd" ),

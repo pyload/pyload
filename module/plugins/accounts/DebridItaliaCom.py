@@ -3,13 +3,13 @@
 import re
 import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class DebridItaliaCom(Account):
     __name__    = "DebridItaliaCom"
     __type__    = "account"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __description__ = """Debriditalia.com account plugin"""
     __license__     = "GPLv3"

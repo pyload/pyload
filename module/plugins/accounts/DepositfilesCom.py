@@ -3,13 +3,13 @@
 import re
 import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class DepositfilesCom(Account):
     __name__    = "DepositfilesCom"
     __type__    = "account"
-    __version__ = "0.32"
+    __version__ = "0.33"
 
     __description__ = """Depositfiles.com account plugin"""
     __license__     = "GPLv3"

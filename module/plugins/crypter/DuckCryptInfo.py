@@ -4,13 +4,13 @@ import re
 
 from BeautifulSoup import BeautifulSoup
 
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter
 
 
 class DuckCryptInfo(Crypter):
     __name__    = "DuckCryptInfo"
     __type__    = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?duckcrypt\.info/(folder|wait|link)/(\w+)/?(\w*)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

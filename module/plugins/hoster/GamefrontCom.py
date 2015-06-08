@@ -3,14 +3,14 @@
 import re
 
 from module.network.RequestFactory import getURL
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster
 from module.utils import parseFileSize
 
 
 class GamefrontCom(Hoster):
     __name__    = "GamefrontCom"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'http://(?:www\.)?gamefront\.com/files/\w+'
 

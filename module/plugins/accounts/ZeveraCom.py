@@ -2,13 +2,13 @@
 
 import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class ZeveraCom(Account):
     __name__    = "ZeveraCom"
     __type__    = "account"
-    __version__ = "0.26"
+    __version__ = "0.27"
 
     __description__ = """Zevera.com account plugin"""
     __license__     = "GPLv3"

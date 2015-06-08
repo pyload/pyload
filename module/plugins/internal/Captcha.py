@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Plugin import Base
+from module.plugins.internal.Plugin import Base
 
 
 #@TODO: Extend (new) Plugin class; remove all `html` args
 class Captcha(Base):
     __name__    = "Captcha"
     __type__    = "captcha"
-    __version__ = "0.29"
+    __version__ = "0.30"
 
     __description__ = """Base captcha service plugin"""
     __license__     = "GPLv3"

@@ -2,13 +2,13 @@
 
 import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class SimplydebridCom(Account):
     __name__    = "SimplydebridCom"
     __type__    = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __description__ = """Simply-Debrid.com account plugin"""
     __license__     = "GPLv3"

@@ -6,14 +6,14 @@ import os
 import re
 import traceback
 
-from module.plugins.Hook import Hook, threaded
+from module.plugins.internal.Hook import Hook, threaded
 from module.utils import save_join
 
 
 class MergeFiles(Hook):
     __name__    = "MergeFiles"
     __type__    = "hook"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __config__ = [("activated", "bool", "Activated", True)]
 

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class PremiumTo(Account):
     __name__    = "PremiumTo"
     __type__    = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __description__ = """Premium.to account plugin"""
     __license__     = "GPLv3"

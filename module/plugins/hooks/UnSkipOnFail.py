@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from module.PyFile import PyFile
-from module.plugins.Hook import Hook
+from module.plugins.internal.Hook import Hook
 
 
 class UnSkipOnFail(Hook):
     __name__    = "UnSkipOnFail"
     __type__    = "hook"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __config__ = [("activated", "bool", "Activated", True)]
 

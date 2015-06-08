@@ -7,14 +7,14 @@ import xml.dom.minidom
 
 from Crypto.Cipher import AES
 
-from module.plugins.Container import Container
+from module.plugins.internal.Container import Container
 from module.utils import decode, fs_encode
 
 
 class DLC(Container):
     __name__    = "DLC"
     __type__    = "container"
-    __version__ = "0.24"
+    __version__ = "0.25"
 
     __pattern__ = r'.+\.dlc$'
 

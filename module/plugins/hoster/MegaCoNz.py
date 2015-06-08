@@ -12,7 +12,7 @@ from Crypto.Cipher import AES
 from Crypto.Util import Counter
 
 from module.common.json_layer import json_loads, json_dumps
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster
 from module.utils import decode, fs_decode, fs_encode
 
 
@@ -48,7 +48,7 @@ from module.utils import decode, fs_decode, fs_encode
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w,-]+)'
 

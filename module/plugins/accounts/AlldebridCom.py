@@ -6,13 +6,13 @@ import xml.dom.minidom
 
 from BeautifulSoup import BeautifulSoup
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class AlldebridCom(Account):
     __name__    = "AlldebridCom"
     __type__    = "account"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __description__ = """AllDebrid.com account plugin"""
     __license__     = "GPLv3"

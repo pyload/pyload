@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.Hook import Hook
+from module.plugins.internal.Hook import Hook
 
 
 class XFileSharingPro(Hook):
     __name__    = "XFileSharingPro"
     __type__    = "hook"
-    __version__ = "0.38"
+    __version__ = "0.39"
 
     __config__ = [("activated"       , "bool", "Activated"                     , True ),
                   ("use_hoster_list" , "bool", "Load listed hosters only"      , False),

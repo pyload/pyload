@@ -142,7 +142,7 @@ class Plugin(Base):
     Overwrite `process` / `decrypt` in your subclassed plugin.
     """
     __name__ = "Plugin"
-    __version__ = "0.4"
+    __version__ = "0.04"
     __pattern__ = None
     __type__ = "hoster"
     __config__ = [("name", "type", "desc", "default")]
@@ -263,7 +263,7 @@ class Plugin(Base):
 
     def setWait(self, seconds, reconnect=False):
         """Set a specific wait time later used with `wait`
-        
+
         :param seconds: wait time in seconds
         :param reconnect: True if a reconnect would avoid wait time
         """
@@ -339,7 +339,7 @@ class Plugin(Base):
         :param result_type: 'textual' if text is written on the captcha\
         or 'positional' for captcha where the user have to click\
         on a specific region on the captcha
-        
+
         :return: result of decrypting
         """
 
@@ -528,7 +528,7 @@ class Plugin(Base):
 
     def checkDownload(self, rules, api_size=0, max_size=50000, delete=True, read_size=0):
         """ checks the content of the last downloaded file, re match is saved to `lastCheck`
-        
+
         :param rules: dict with names and rules to match (compiled regexp or strings)
         :param api_size: expected file size
         :param max_size: if the file is larger then it wont be checked

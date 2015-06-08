@@ -6,14 +6,14 @@
 import re
 
 from module.common.json_layer import json_loads
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster
 from module.plugins.internal.ReCaptcha import ReCaptcha
 
 
 class OboomCom(Hoster):
     __name__    = "OboomCom"
     __type__    = "hoster"
-    __version__ = "0.33"
+    __version__ = "0.34"
 
     __pattern__ = r'https?://(?:www\.)?oboom\.com/(?:#(?:id=|/)?)?(?P<ID>\w{8})'
 

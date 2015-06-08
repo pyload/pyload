@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter
 
 
 class LinkdecrypterCom(Crypter):
     __name__    = "LinkdecrypterCom"
     __type__    = "crypter"
-    __version__ = "0.29"
+    __version__ = "0.30"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

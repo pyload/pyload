@@ -6,13 +6,13 @@ import time
 
 from passlib.hash import md5_crypt
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class WebshareCz(Account):
     __name__    = "WebshareCz"
     __type__    = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __description__ = """Webshare.cz account plugin"""
     __license__     = "GPLv3"

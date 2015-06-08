@@ -9,14 +9,14 @@ try:
 except ImportError:
     pass
 
-from module.plugins.Hook import Hook, Expose, threaded
+from module.plugins.internal.Hook import Hook, Expose, threaded
 from module.utils import fs_encode, save_join
 
 
 class AntiVirus(Hook):
     __name__    = "AntiVirus"
     __type__    = "hook"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     #@TODO: add trash option (use Send2Trash lib)
     __config__ = [("action"    , "Antivirus default;Delete;Quarantine", "Manage infected files"                     , "Antivirus default"),

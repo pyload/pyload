@@ -2,13 +2,13 @@
 
 import reimport urllib
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster
 
 
 class YourfilesTo(Hoster):
     __name__    = "YourfilesTo"
     __type__    = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __pattern__ = r'http://(?:www\.)?yourfiles\.(to|biz)/\?d=\w+'
 

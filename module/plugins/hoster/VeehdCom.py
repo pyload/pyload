@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster
 
 
 class VeehdCom(Hoster):
     __name__    = "VeehdCom"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __pattern__ = r'http://veehd\.com/video/\d+_\S+'
     __config__  = [("filename_spaces", "bool", "Allow spaces in filename", False),

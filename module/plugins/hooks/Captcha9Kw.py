@@ -10,13 +10,13 @@ from base64 import b64encode
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL
 
-from module.plugins.Hook import Hook, threaded
+from module.plugins.internal.Hook import Hook, threaded
 
 
 class Captcha9Kw(Hook):
     __name__    = "Captcha9Kw"
     __type__    = "hook"
-    __version__ = "0.28"
+    __version__ = "0.29"
 
     __config__ = [("ssl"           , "bool"    , "Use HTTPS"                                                                       , True                                                               ),
                   ("force"         , "bool"    , "Force captcha resolving even if client is connected"                             , True                                                               ),

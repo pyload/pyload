@@ -3,13 +3,13 @@
 import re
 import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class NowVideoSx(Account):
     __name__    = "NowVideoSx"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """NowVideo.at account plugin"""
     __license__     = "GPLv3"

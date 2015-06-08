@@ -3,13 +3,13 @@
 import re
 import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class MegaRapidCz(Account):
     __name__    = "MegaRapidCz"
     __type__    = "account"
-    __version__ = "0.35"
+    __version__ = "0.36"
 
     __description__ = """MegaRapid.cz account plugin"""
     __license__     = "GPLv3"

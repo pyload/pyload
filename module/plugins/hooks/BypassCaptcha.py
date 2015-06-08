@@ -4,7 +4,7 @@ import pycurl
 
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL, getRequest
-from module.plugins.Hook import Hook, threaded
+from module.plugins.internal.Hook import Hook, threaded
 
 
 class BypassCaptchaException(Exception):
@@ -28,7 +28,7 @@ class BypassCaptchaException(Exception):
 class BypassCaptcha(Hook):
     __name__    = "BypassCaptcha"
     __type__    = "hook"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __config__ = [("force", "bool", "Force BC even if client is connected", False),
                   ("passkey", "password", "Passkey", "")]

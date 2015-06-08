@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class RehostTo(Account):
     __name__    = "RehostTo"
     __type__    = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __description__ = """Rehost.to account plugin"""
     __license__     = "GPLv3"

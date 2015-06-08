@@ -11,7 +11,7 @@ from base64 import b64encode
 from module.common.json_layer import json_loads
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest
-from module.plugins.Hook import Hook, threaded
+from module.plugins.internal.Hook import Hook, threaded
 
 
 class DeathByCaptchaException(Exception):
@@ -51,7 +51,7 @@ class DeathByCaptchaException(Exception):
 class DeathByCaptcha(Hook):
     __name__    = "DeathByCaptcha"
     __type__    = "hook"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __config__ = [("username", "str", "Username", ""),
                   ("passkey", "password", "Password", ""),

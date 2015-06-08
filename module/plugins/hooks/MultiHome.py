@@ -2,13 +2,13 @@
 
 import time
 
-from module.plugins.Hook import Hook
+from module.plugins.internal.Hook import Hook
 
 
 class MultiHome(Hook):
     __name__    = "MultiHome"
     __type__    = "hook"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __config__ = [("interfaces", "str", "Interfaces", "None")]
 

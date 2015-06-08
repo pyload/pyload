@@ -7,14 +7,14 @@ import urlparse
 from types import MethodType
 
 from module.PyFile import PyFile
-from module.plugins.Hook import Hook
-from module.plugins.Plugin import SkipDownload
+from module.plugins.internal.Hook import Hook
+from module.plugins.internal.Plugin import SkipDownload
 
 
 class SkipRev(Hook):
     __name__    = "SkipRev"
     __type__    = "hook"
-    __version__ = "0.29"
+    __version__ = "0.30"
 
     __config__ = [("mode"     , "Auto;Manual", "Choose recovery archives to skip"               , "Auto"),
                   ("revtokeep", "int"        , "Number of recovery archives to keep for package", 0     )]

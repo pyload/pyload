@@ -3,7 +3,7 @@
 import re
 
 from module.network.RequestFactory import getURL
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster
 
 
 def getInfo(urls):
@@ -23,7 +23,7 @@ def getInfo(urls):
 class StreamCz(Hoster):
     __name__    = "StreamCz"
     __type__    = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
 
     __pattern__ = r'https?://(?:www\.)?stream\.cz/[^/]+/\d+'
 

@@ -7,14 +7,14 @@ import pycurl
 
 from Crypto.Cipher import AES
 
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter
 from module.utils import html_unescape
 
 
 class LinkCryptWs(Crypter):
     __name__    = "LinkCryptWs"
     __type__    = "crypter"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __pattern__ = r'http://(?:www\.)?linkcrypt\.ws/(dir|container)/(?P<ID>\w+)'
 

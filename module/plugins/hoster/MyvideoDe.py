@@ -2,14 +2,14 @@
 
 import re
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster
 from module.unescape import unescape
 
 
 class MyvideoDe(Hoster):
     __name__    = "MyvideoDe"
     __type__    = "hoster"
-    __version__ = "0.90"
+    __version__ = "0.91"
 
     __pattern__ = r'http://(?:www\.)?myvideo\.de/watch/'
 

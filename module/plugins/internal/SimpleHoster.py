@@ -12,8 +12,8 @@ from module.PyFile import statusMap as _statusMap
 from module.network.CookieJar import CookieJar
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL
-from module.plugins.Hoster import Hoster
-from module.plugins.Plugin import Fail, Retry
+from module.plugins.internal.Hoster import Hoster
+from module.plugins.internal.Plugin import Fail, Retry
 from module.utils import fixup, fs_encode, html_unescape, parseFileSize
 
 
@@ -239,7 +239,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.55"
+    __version__ = "1.56"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),

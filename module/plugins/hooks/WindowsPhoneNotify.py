@@ -3,13 +3,13 @@
 import httplib
 import time
 
-from module.plugins.Hook import Hook, Expose
+from module.plugins.internal.Hook import Hook, Expose
 
 
 class WindowsPhoneNotify(Hook):
     __name__    = "WindowsPhoneNotify"
     __type__    = "hook"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __config__ = [("push-id"        , "str" , "Push ID"                                  , ""   ),
                   ("push-url"       , "str" , "Push url"                                 , ""   ),

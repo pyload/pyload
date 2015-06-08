@@ -2,14 +2,14 @@
 
 import re
 
-from module.plugins.Plugin import Fail, Retry
+from module.plugins.internal.Plugin import Fail, Retry
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns, set_cookies
 
 
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.40"
+    __version__ = "0.41"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),

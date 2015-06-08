@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from module.common.json_layer import json_loads
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class PremiumizeMe(Account):
     __name__    = "PremiumizeMe"
     __type__    = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __description__ = """Premiumize.me account plugin"""
     __license__     = "GPLv3"

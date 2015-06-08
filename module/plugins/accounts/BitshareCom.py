@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class BitshareCom(Account):
     __name__    = "BitshareCom"
     __type__    = "account"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __description__ = """Bitshare account plugin"""
     __license__     = "GPLv3"

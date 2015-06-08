@@ -4,13 +4,13 @@ import re
 
 from BeautifulSoup import BeautifulSoup, BeautifulStoneSoup
 
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter
 
 
 class HoerbuchIn(Crypter):
     __name__    = "HoerbuchIn"
     __type__    = "crypter"
-    __version__ = "0.60"
+    __version__ = "0.61"
 
     __pattern__ = r'http://(?:www\.)?hoerbuch\.in/(wp/horbucher/\d+/.+/|tp/out\.php\?.+|protection/folder_\d+\.html)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

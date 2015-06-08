@@ -3,8 +3,8 @@
 import re
 
 from module.network.RequestFactory import getURL
-from module.plugins.Hoster import Hoster
-from module.plugins.Plugin import chunks
+from module.plugins.internal.Hoster import Hoster
+from module.plugins.internal.Plugin import chunks
 
 
 def getInfo(urls):
@@ -32,7 +32,7 @@ def getInfo(urls):
 class FilesMailRu(Hoster):
     __name__    = "FilesMailRu"
     __type__    = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
 
     __pattern__ = r'http://(?:www\.)?files\.mail\.ru/.+'
 

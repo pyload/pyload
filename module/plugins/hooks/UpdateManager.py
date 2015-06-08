@@ -10,7 +10,7 @@ import time
 from operator import itemgetter
 
 from module.network.RequestFactory import getURL
-from module.plugins.Hook import Expose, Hook, threaded
+from module.plugins.internal.Hook import Expose, Hook, threaded
 from module.utils import save_join
 
 
@@ -29,7 +29,7 @@ def exists(path):
 class UpdateManager(Hook):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "0.52"
+    __version__ = "0.53"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),
                   ("checkinterval", "int" , "Check interval in hours"                  , 8    ),

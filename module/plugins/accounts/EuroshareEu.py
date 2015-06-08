@@ -3,13 +3,13 @@
 import re
 import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class EuroshareEu(Account):
     __name__    = "EuroshareEu"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """Euroshare.eu account plugin"""
     __license__     = "GPLv3"

@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter
 
 
 class FileserveComFolder(Crypter):
     __name__    = "FileserveComFolder"
     __type__    = "crypter"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __pattern__ = r'http://(?:www\.)?fileserve\.com/list/\w+'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

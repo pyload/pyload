@@ -20,13 +20,13 @@ except ImportError:
             return b2a_hex(pbkdf2(self.passphrase, self.salt, self.iterations, octets))
 
 from module.common.json_layer import json_loads
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class SmoozedCom(Account):
     __name__    = "SmoozedCom"
     __type__    = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __description__ = """Smoozed.com account plugin"""
     __license__     = "GPLv3"

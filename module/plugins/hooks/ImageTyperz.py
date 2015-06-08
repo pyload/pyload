@@ -8,7 +8,7 @@ import re
 from base64 import b64encode
 
 from module.network.RequestFactory import getURL, getRequest
-from module.plugins.Hook import Hook, threaded
+from module.plugins.internal.Hook import Hook, threaded
 
 
 class ImageTyperzException(Exception):
@@ -32,7 +32,7 @@ class ImageTyperzException(Exception):
 class ImageTyperz(Hook):
     __name__    = "ImageTyperz"
     __type__    = "hook"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __config__ = [("username", "str", "Username", ""),
                   ("passkey", "password", "Password", ""),

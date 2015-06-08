@@ -7,7 +7,7 @@ import os
 import re
 import zlib
 
-from module.plugins.Hook import Hook
+from module.plugins.internal.Hook import Hook
 from module.utils import save_join, fs_encode
 
 
@@ -38,7 +38,7 @@ def computeChecksum(local_file, algorithm):
 class Checksum(Hook):
     __name__    = "Checksum"
     __type__    = "hook"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __config__ = [("check_checksum", "bool", "Check checksum? (If False only size will be verified)", True),
                   ("check_action", "fail;retry;nothing", "What to do if check fails?", "retry"),

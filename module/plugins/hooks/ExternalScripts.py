@@ -3,14 +3,14 @@
 import os
 import subprocess
 
-from module.plugins.Hook import Hook
+from module.plugins.internal.Hook import Hook
 from module.utils import fs_encode, save_join
 
 
 class ExternalScripts(Hook):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.39"
+    __version__ = "0.40"
 
     __config__ = [("activated", "bool", "Activated"         , True ),
                   ("waitend"  , "bool", "Wait script ending", False)]

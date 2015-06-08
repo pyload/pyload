@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from module.common.json_layer import json_loads
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class SimplyPremiumCom(Account):
     __name__    = "SimplyPremiumCom"
     __type__    = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __description__ = """Simply-Premium.com account plugin"""
     __license__     = "GPLv3"

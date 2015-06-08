@@ -2,14 +2,14 @@
 
 import codecs
 
-from module.plugins.Container import Container
+from module.plugins.internal.Container import Container
 from module.utils import fs_encode
 
 
 class TXT(Container):
     __name__    = "TXT"
     __type__    = "container"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __pattern__ = r'.+\.(txt|text)$'
     __config__  = [("flush"   , "bool"  , "Flush list after adding", False  ),
