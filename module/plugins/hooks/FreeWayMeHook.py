@@ -6,7 +6,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class FreeWayMeHook(MultiHook):
     __name__    = "FreeWayMeHook"
     __type__    = "hook"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
@@ -20,13 +20,6 @@ class FreeWayMeHook(MultiHook):
 
 
     def getHosters(self):
-        # Get account data
-        if not self.account or not self.account.canUse():
-           hostis = self.getURL("https://www.free-way.me/ajax/jd.php", get={"id": 3}).replace("\"", "").strip()
-        else:
-           self.logDebug("AccountInfo available - Get HosterList with User Pass")
-           (user, data) = self.account.selectAccount()
-           hostis = self.getURL("https://www.free-way.me/ajax/jd.php", get={"id": 3, "user": user, "pass": data['password']}).replace("\"", "").strip()
-
-        self.logDebug("hosters: %s" % hostis)
+        user, data = self.account.selectAccount()
+        hostis = self.getURL("http://www.free-way.bz/ajax/jd.php", get={"id": 3, "user": user, "pass": data['password']}).replace("\"", "")  #@TODO: Revert to `https` in 0.4.10
         return [x.strip() for x in hostis.split(",") if x.strip()]

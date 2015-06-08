@@ -50,7 +50,7 @@ class MegaCoNz(Hoster):
     __type__    = "hoster"
     __version__ = "0.29"
 
-    __pattern__ = r'(?:https?://(?:www\.)?mega(?:\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w,-]+)'
+    __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w,-]+)'
 
     __description__ = """Mega.co.nz hoster plugin"""
     __license__     = "GPLv3"

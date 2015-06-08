@@ -32,7 +32,7 @@ class PremiumizeMe(MultiHoster):
         user, data = self.account.selectAccount()
 
         # Get rewritten link using the premiumize.me api v1 (see https://secure.premiumize.me/?show=api)
-        data = json_loads(self.load("http://api.premiumize.me/pm-api/v1.php",
+        data = json_loads(self.load("http://api.premiumize.me/pm-api/v1.php",  #@TODO: Revert to `https` in 0.4.10
                                     get={'method'       : "directdownloadlink",
                                          'params[login]': user,
                                          'params[pass]' : data['password'],

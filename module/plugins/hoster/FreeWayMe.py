@@ -6,9 +6,9 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class FreeWayMe(MultiHoster):
     __name__    = "FreeWayMe"
     __type__    = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
-    __pattern__ = r'https://(?:www\.)?free-way\.me/.+'
+    __pattern__ = r'https?://(?:www\.)?free-way\.(bz|me)/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """FreeWayMe multi-hoster plugin"""
@@ -27,7 +27,7 @@ class FreeWayMe(MultiHoster):
 
         for _i in xrange(5):
             # try it five times
-            header = self.load("https://www.free-way.me/load.php",
+            header = self.load("http://www.free-way.bz/load.php",  #@TODO: Revert to `https` in 0.4.10
                                get={'multiget': 7,
                                     'url'     : pyfile.url,
                                     'user'    : user,
