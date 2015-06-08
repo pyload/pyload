@@ -133,7 +133,7 @@ def timestamp():
     return int(time.time() * 1000)
 
 
-#@TODO: Move to hoster class in 0.4.10
+#@TODO: Move to Hoster in 0.4.10
 def getFileURL(self, url, follow_location=None):
     link     = ""
     redirect = 1
@@ -239,7 +239,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.56"
+    __version__ = "1.57"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -308,6 +308,11 @@ class SimpleHoster(Hoster):
     SIZE_REPLACEMENTS = []
     URL_REPLACEMENTS  = []
 
+    FILE_ERRORS = [('Html error'   , r'\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)'),
+                   ('Request error', r'([Aa]n error occured while processing your request)'                   ),
+                   ('Html file'    , r'\A\s*<!DOCTYPE html'                                                   )]
+
+    CHECK_FILE    = True   #: Set to False to not check the last downloaded file with declared error patterns
     CHECK_TRAFFIC = False  #: Set to True to force checking traffic left for premium account
     COOKIES       = True   #: or False or list of tuples [(domain, name, value)]
     DIRECT_LINK   = None   #: Set to True to looking for direct link (as defined in handleDirect method), set to None to do it if self.account is True else False
@@ -416,18 +421,55 @@ class SimpleHoster(Hoster):
         return info
 
 
+    #@TODO: Move to Hoster in 0.4.10
+    def _log(self, type, args):
+        msg = " | ".join([(a.encode("utf-8", "replace") if type(a) is unicode else str(a)).strip() for a in args if a])
+        logger = getattr(self.core.log, type)
+        logger("%(plugin)s[%(id)s]: %(msg)s" % {'plugin' : self.__name,
+                                                'id'     : self.pyfile.id
+                                                'msg'    : msg or _("%s MARK" % type.upper())})
+
+
+    #@TODO: Move to Hoster in 0.4.10
+    def logDebug(self, *args):
+        if self.core.debug:
+            return self._log("debug", args)
+
+
+    #@TODO: Move to Hoster in 0.4.10
+    def logInfo(self, *args):
+        return self._log("info", args)
+
+
+    #@TODO: Move to Hoster in 0.4.10
+    def logWarning(self, *args):
+        return self._log("warning", args)
+
+
+    #@TODO: Move to Hoster in 0.4.10
+    def logError(self, *args):
+        return self._log("error", args)
+
+
+    #@TODO: Move to Hoster in 0.4.10
+    def logCritical(self, *args):
+        return self._log("critical", args)
+
+
+    #@TODO: Move to Hoster in 0.4.10
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium
 
 
+    #@TODO: Move to Hoster in 0.4.10
     def prepare(self):
         self.pyfile.error = ""  #@TODO: Remove in 0.4.10
 
         self.info      = {}
         self.html      = ""
-        self.link      = ""     #@TODO: Move to hoster class in 0.4.10
-        self.directDL  = False  #@TODO: Move to hoster class in 0.4.10
-        self.multihost = False  #@TODO: Move to hoster class in 0.4.10
+        self.link      = ""     #@TODO: Move to Hoster in 0.4.10
+        self.directDL  = False  #@TODO: Move to Hoster in 0.4.10
+        self.multihost = False  #@TODO: Move to Hoster in 0.4.10
 
         if not self.getConfig('use_premium', True):
             self.retryFree()
@@ -493,7 +535,7 @@ class SimpleHoster(Hoster):
                     self.logDebug("Handled as free download")
                     self.handleFree(pyfile)
 
-            self.downloadLink(self.link, self.DISPOSITION)
+            self.download(self.link, ref=False, disposition=self.DISPOSITION)
             self.checkFile()
 
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
@@ -510,23 +552,23 @@ class SimpleHoster(Hoster):
                 raise Fail(err)
 
 
-    def downloadLink(self, link, disposition=True):
-        if not link or not isinstance(link, basestring):
+    def download(self, url, *args, **kwargs):
+        if not url or not isinstance(url, basestring):
             return
 
         self.correctCaptcha()
 
-        link = html_unescape(link.decode('unicode-escape').strip())  #@TODO: Move this check to plugin `load` method in 0.4.10
+        url = html_unescape(url.decode('unicode-escape').strip())  #@TODO: Move to Hoster in 0.4.10
 
-        if not urlparse.urlparse(link).scheme:
+        if not urlparse.urlparse(url).scheme:
             url_p   = urlparse.urlparse(self.pyfile.url)
             baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
-            link    = urlparse.urljoin(baseurl, link)
+            url     = urlparse.urljoin(baseurl, url)
 
-        self.download(link, ref=False, disposition=disposition)
+        return super(SimpleHoster, self).download(url, *args, **kwargs)
 
 
-    def checkFile(self, rules={}):
+    def checkFile(self):
         if self.cTask and not self.lastDownload:
             self.invalidCaptcha()
             self.retry(10, reason=_("Wrong captcha"))
@@ -536,38 +578,36 @@ class SimpleHoster(Hoster):
             self.error(self.pyfile.error or _("No file downloaded"))
 
         else:
-            errmsg = self.checkDownload({'Empty file': re.compile(r'\A\s*\Z'),
-                                         'Html error': re.compile(r'\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)')})
+            self.logDebug(_("Checking last downloaded file with built-in rules"))
+            errmsg = self.checkDownload({'Empty file': re.compile(r'\A((.|)(\2|\s)*)\Z')})
 
-            if not errmsg:
-                for r, p in [('Html file'    , re.compile(r'\A\s*<!DOCTYPE html')                                ),
-                             ('Request error', re.compile(r'([Aa]n error occured while processing your request)'))]:
-                    if r not in rules:
-                        rules[r] = p
-
-                for r, a in [("IP blocked"    , "IP_BLOCKED_PATTERN"  ),
-                             ("Download limit", "DL_LIMIT_PATTERN"    ),
-                             ("Size limit"    , "SIZE_LIMIT_PATTERN"  ),
-                             ("Error"         , "ERROR_PATTERN"       ),
-                             ("Premium only"  , "PREMIUM_ONLY_PATTERN"),
-                             ("Wait error"    , "WAIT_PATTERN"        )]:
-                    if r not in rules and hasattr(self, a):
-                        rules[r] = getattr(self, a)
-
-                errmsg = self.checkDownload(rules)
-
-            if not errmsg:
+            if errmsg:
                 return
 
-            errmsg = errmsg.strip().capitalize()
+            self.logDebug(_("Checking last downloaded file with custom rules"))
 
-            try:
-                errmsg += " | " + self.lastCheck.group(1).strip()
-            except Exception:
-                pass
+            if self.CHECK_FILE:
+                rules = [r, getattr(self, a) for r, a in (("IP blocked"    , "IP_BLOCKED_PATTERN"  ),
+                                                          ("Download limit", "DL_LIMIT_PATTERN"    ),
+                                                          ("Size limit"    , "SIZE_LIMIT_PATTERN"  ),
+                                                          ("Error"         , "ERROR_PATTERN"       ),
+                                                          ("Premium only"  , "PREMIUM_ONLY_PATTERN"),
+                                                          ("Wait error"    , "WAIT_PATTERN"        ))]
+                self.FILE_ERRORS.extend(rules)
 
-            self.logWarning("Check result: " + errmsg, "Waiting 1 minute and retry")
-            self.retry(3, 60, errmsg)
+            for r, p in self.FILE_ERRORS:
+                errmsg = self.checkDownload({r: re.compile(p)}).strip().capitalize()
+
+                if not errmsg:
+                    continue
+
+                try:
+                    errmsg += " | " + self.lastCheck.group(1).strip()
+                except Exception:
+                    pass
+
+                self.logWarning("Check result: " + errmsg, "Waiting 1 minute and retry")
+                self.retry(3, 60, errmsg)
 
 
     def checkErrors(self):
@@ -636,7 +676,7 @@ class SimpleHoster(Hoster):
                     self.retry(10, reason=_("Wrong captcha"))
 
                 elif re.search('countdown|expired', errmsg, re.I):
-                    self.retry(10, wait_time=60, reason=_("Link expired"))
+                    self.retry(10, 60, _("Link expired"))
 
                 elif re.search('maintenance|maintainance|temp', errmsg, re.I):
                     self.tempOffline()

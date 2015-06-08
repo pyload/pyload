@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Test links:
-# http://www.solidfiles.com/d/609cdb4b1b
+#   http://www.solidfiles.com/d/609cdb4b1b
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 

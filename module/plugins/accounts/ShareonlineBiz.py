@@ -64,5 +64,5 @@ class ShareonlineBiz(Account):
         html = self.api_response(user, req)
         err  = re.search(r'\*\*(.+?)\*\*', html)
         if err:
-            self.logError(err.group(1))
+            self.logError(err.group(1).strip())
             self.wrongPassword()

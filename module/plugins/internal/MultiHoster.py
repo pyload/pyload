@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, r
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.41"
+    __version__ = "0.42"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
@@ -32,8 +32,8 @@ class MultiHoster(SimpleHoster):
     def prepare(self):
         self.info     = {}
         self.html     = ""
-        self.link     = ""     #@TODO: Move to hoster class in 0.4.10
-        self.directDL = False  #@TODO: Move to hoster class in 0.4.10
+        self.link     = ""     #@TODO: Move to Hoster in 0.4.10
+        self.directDL = False  #@TODO: Move to Hoster in 0.4.10
 
         if not self.getConfig('use_premium', True):
             self.retryFree()
@@ -77,7 +77,7 @@ class MultiHoster(SimpleHoster):
                     self.logDebug("Handled as free download")
                     self.handleFree(pyfile)
 
-            self.downloadLink(self.link, True)
+            self.download(self.link, ref=False, disposition=True)
             self.checkFile()
 
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10

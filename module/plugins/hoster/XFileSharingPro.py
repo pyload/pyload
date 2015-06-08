@@ -8,7 +8,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class XFileSharingPro(XFSHoster):
     __name__    = "XFileSharingPro"
     __type__    = "hoster"
-    __version__ = "0.46"
+    __version__ = "0.47"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)'
 
@@ -21,9 +21,7 @@ class XFileSharingPro(XFSHoster):
 
 
     def _log(self, type, args):
-        msg = " | ".join(str(a).strip() for a in args if a)
-        logger = getattr(self.log, type)
-        logger("%s: %s: %s" % (self.__name__, self.HOSTER_NAME, msg or _("%s MARK" % type.upper())))
+        return super(XFileSharingPro, self)._log(type, [self.HOSTER_NAME] + args)
 
 
     def init(self):
