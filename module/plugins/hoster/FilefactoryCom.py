@@ -20,7 +20,7 @@ def getInfo(urls):
 class FilefactoryCom(SimpleHoster):
     __name__    = "FilefactoryCom"
     __type__    = "hoster"
-    __version__ = "0.55"
+    __version__ = "0.56"
 
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/(file|trafficshare/\w+)/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -59,7 +59,7 @@ class FilefactoryCom(SimpleHoster):
             self.wait(m.group(1))
 
 
-    def checkFile(self, rules={}):
+    def checkFile(self):
         check = self.checkDownload({'multiple': "You are currently downloading too many files at once.",
                                     'error'   : '<div id="errorMessage">'})
 
@@ -70,7 +70,7 @@ class FilefactoryCom(SimpleHoster):
         elif check == "error":
             self.error(_("Unknown error"))
 
-        return super(FilefactoryCom, self).checkFile(rules)
+        return super(FilefactoryCom, self).checkFile()
 
 
     def handlePremium(self, pyfile):

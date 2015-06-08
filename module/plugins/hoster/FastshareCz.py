@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FastshareCz(SimpleHoster):
     __name__    = "FastshareCz"
     __type__    = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
 
     __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -58,7 +58,7 @@ class FastshareCz(SimpleHoster):
         self.download(urlparse.urljoin(baseurl, action), post={'code': captcha, 'btn.x': 77, 'btn.y': 18})
 
 
-    def checkFile(self, rules={}):
+    def checkFile(self):
         check = self.checkDownload({
             'paralell-dl'  : re.compile(r"<title>FastShare.cz</title>|<script>alert\('Pres FREE muzete stahovat jen jeden soubor najednou.'\)"),
             'wrong captcha': re.compile(r'Download for FREE'),
@@ -74,7 +74,7 @@ class FastshareCz(SimpleHoster):
         elif check == "credit":
             self.resetAccount()
 
-        return super(FastshareCz, self).checkFile(rules)
+        return super(FastshareCz, self).checkFile()
 
 
 getInfo = create_getInfo(FastshareCz)

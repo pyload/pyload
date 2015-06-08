@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class EuroshareEu(SimpleHoster):
     __name__    = "EuroshareEu"
     __type__    = "hoster"
-    __version__ = "0.28"
+    __version__ = "0.29"
 
     __pattern__ = r'http://(?:www\.)?euroshare\.(eu|sk|cz|hu|pl)/file/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -58,11 +58,11 @@ class EuroshareEu(SimpleHoster):
         self.link = "http://euroshare.eu%s" % m.group(1)
 
 
-    def checkFile(self, rules={}):
+    def checkFile(self):
         if self.checkDownload({"multi-dl": re.compile(self.ERR_PARDL_PATTERN)})
             self.longWait(5 * 60, 12)
 
-        return super(EuroshareEu, self).checkFile(rules)
+        return super(EuroshareEu, self).checkFile()
 
 
 getInfo = create_getInfo(EuroshareEu)

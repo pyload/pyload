@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadableCh(SimpleHoster):
     __name__    = "UploadableCh"
     __type__    = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __pattern__ = r'http://(?:www\.)?uploadable\.ch/file/(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -65,13 +65,13 @@ class UploadableCh(SimpleHoster):
         self.download(pyfile.url, post={'download': "normal"}, disposition=True)
 
 
-    def checkFile(self, rules={}):
+    def checkFile(self):
         if self.checkDownload({'wait': re.compile("Please wait for")}):
             self.logInfo("Downloadlimit reached, please wait or reconnect")
             self.wait(60 * 60, True)
             self.retry()
 
-        return super(UploadableCh, self).checkFile(rules)
+        return super(UploadableCh, self).checkFile()
 
 
 getInfo = create_getInfo(UploadableCh)

@@ -15,7 +15,7 @@ def convertDecimalPrefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "1.09"
+    __version__ = "1.10"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -119,7 +119,7 @@ class UlozTo(SimpleHoster):
         return super(UlozTo, self).checkErrors()
 
 
-    def checkFile(self, rules={}):
+    def checkFile(self):
         check = self.checkDownload({
             "wrong_captcha": re.compile(r'<ul class="error">\s*<li>Error rewriting the text.</li>'),
             "offline"      : re.compile(self.OFFLINE_PATTERN),
@@ -147,7 +147,7 @@ class UlozTo(SimpleHoster):
         elif check == "not_found":
             self.fail(_("Server error, file not downloadable"))
 
-        return super(UlozTo, self).checkFile(rules)
+        return super(UlozTo, self).checkFile()
 
 
 getInfo = create_getInfo(UlozTo)

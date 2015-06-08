@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHoster import MultiHoster
 class SmoozedCom(MultiHoster):
     __name__    = "SmoozedCom"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -15,6 +15,10 @@ class SmoozedCom(MultiHoster):
     __description__ = """Smoozed.com hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("", "")]
+
+
+    FILE_ERRORS = [("Error", r'{"state":"error"}'),
+                   ("Retry", r'{"state":"retry"}')]
 
 
     def handleFree(self, pyfile):
@@ -54,11 +58,3 @@ class SmoozedCom(MultiHoster):
             self.fail(_("Unable to initialize download"))
         else:
             self.link = header["location"][-1] if isinstance(header["location"], list) else header["location"]
-
-
-    def checkFile(self, rules={}):
-        if self.checkDownload({'error': '{"state":"error"}',
-                               'retry': '{"state":"retry"}'}):
-            self.fail(_("Error response received"))
-
-        return super(SmoozedCom, self).checkFile(rules)
