@@ -239,7 +239,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.57"
+    __version__ = "1.58"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -425,8 +425,8 @@ class SimpleHoster(Hoster):
     def _log(self, type, args):
         msg = " | ".join([(a.encode("utf-8", "replace") if type(a) is unicode else str(a)).strip() for a in args if a])
         logger = getattr(self.core.log, type)
-        logger("%(plugin)s[%(id)s]: %(msg)s" % {'plugin' : self.__name,
-                                                'id'     : self.pyfile.id
+        logger("%(plugin)s[%(id)s]: %(msg)s" % {'plugin' : self.__name__,
+                                                'id'     : self.pyfile.id,
                                                 'msg'    : msg or _("%s MARK" % type.upper())})
 
 
