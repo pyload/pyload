@@ -14,7 +14,7 @@ from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL
 from module.plugins.internal.Hoster import Hoster
 from module.plugins.internal.Plugin import Fail, Retry
-from module.utils import fixup, fs_encode, html_unescape, parseFileSize
+from module.utils import decode, fixup, fs_encode, html_unescape, parseFileSize
 
 
 #@TODO: Adapt and move to PyFile in 0.4.10
@@ -239,7 +239,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.59"
+    __version__ = "1.60"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -423,11 +423,13 @@ class SimpleHoster(Hoster):
 
     #@TODO: Move to Hoster in 0.4.10
     def _log(self, type, args):
-        msg = " | ".join([(a.encode("utf-8", "replace") if type(a) is unicode else str(a)).strip() for a in args if a])
+        msg = " | ".join((fs_encode(a) if type(a) is unicode else  #@NOTE: `fs_encode` -> `encode` in 0.4.10
+                          decode(a) if type(a) is str else
+                          str(a)).strip() for a in args if a)
         logger = getattr(self.core.log, type)
         logger("%(plugin)s[%(id)s]: %(msg)s" % {'plugin' : self.__name__,
                                                 'id'     : self.pyfile.id,
-                                                'msg'    : msg or _("%s MARK" % type.upper())})
+                                                'msg'    : msg or _(type.upper() + " MARK")})
 
 
     #@TODO: Move to Hoster in 0.4.10
@@ -456,12 +458,10 @@ class SimpleHoster(Hoster):
         return self._log("critical", args)
 
 
-    #@TODO: Move to Hoster in 0.4.10
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium
 
 
-    #@TODO: Move to Hoster in 0.4.10
     def prepare(self):
         self.pyfile.error = ""  #@TODO: Remove in 0.4.10
 
