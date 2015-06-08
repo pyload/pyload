@@ -41,7 +41,6 @@ class XFSHoster(SimpleHoster):
     ERROR_PATTERN        = r'(?:class=["\']err["\'].*?>|<[Cc]enter><b>|>Error</td>|>\(ERROR:)(?:\s*<.+?>\s*)*(.+?)(?:["\']|<|\))'
 
     LINK_LEECH_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
-    LINK_PATTERN       = None  #: final download url pattern
 
     CAPTCHA_PATTERN       = r'(https?://[^"\']+?/captchas?/[^"\']+)'
     CAPTCHA_BLOCK_PATTERN = r'>Enter code.*?<div.*?>(.+?)</div>'
@@ -112,7 +111,7 @@ class XFSHoster(SimpleHoster):
             self.logError(data['op'] if 'op' in data else _("UNKNOWN"))
             return ""
 
-        self.link = m.group(1).strip()  #@TODO: Remove .strip() in 0.4.10
+        self.link = m.group(1).strip()  #@TODO: Remove `.strip()` in 0.4.10
 
 
     def handlePremium(self, pyfile):

@@ -239,7 +239,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.62"
+    __version__ = "1.63"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -249,7 +249,6 @@ class SimpleHoster(Hoster):
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
-
     """
     Info patterns:
 
@@ -258,6 +257,7 @@ class SimpleHoster(Hoster):
       or
         NAME_PATTERN: (mandatory) Name that will be set for the file
           example: NAME_PATTERN = r'(?P<N>file_name)'
+
         SIZE_PATTERN: (mandatory) Size that will be checked for the file
           example: SIZE_PATTERN = r'(?P<S>file_size) (?P<U>size_unit)'
 
@@ -297,11 +297,14 @@ class SimpleHoster(Hoster):
 
     Instead overriding handleFree and handlePremium methods you may define the following patterns for basic link handling:
 
-      LINK_FREE_PATTERN: (optional) group(1) should be the direct link for free download
-        example: LINK_FREE_PATTERN = r'<div class="link"><a href="(.+?)"'
+      LINK_PATTERN: (optional) group(1) should be the direct link for free and premium download
+        example: LINK_PATTERN = r'<div class="link"><a href="(.+?)"'
+      or
+        LINK_FREE_PATTERN: (optional) group(1) should be the direct link for free download
+          example: LINK_FREE_PATTERN = r'<div class="link"><a href="(.+?)"'
 
-      LINK_PREMIUM_PATTERN: (optional) group(1) should be the direct link for premium download
-        example: LINK_PREMIUM_PATTERN = r'<div class="link"><a href="(.+?)"'
+        LINK_PREMIUM_PATTERN: (optional) group(1) should be the direct link for premium download
+          example: LINK_PREMIUM_PATTERN = r'<div class="link"><a href="(.+?)"'
     """
 
     NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
@@ -321,6 +324,8 @@ class SimpleHoster(Hoster):
     LOGIN_PREMIUM = False  #: Set to True to require premium account login
     MULTI_HOSTER  = False  #: Set to True to leech other hoster link (as defined in handleMulti method)
     TEXT_ENCODING = False  #: Set to True or encoding name if encoding value in http header is not correct
+
+    LINK_PATTERN = None
 
 
     directLink = getFileURL  #@TODO: Remove in 0.4.10
@@ -485,6 +490,13 @@ class SimpleHoster(Hoster):
         if isinstance(self.COOKIES, list):
             set_cookies(self.req.cj, self.COOKIES)
 
+        if self.LINK_PATTERN:
+            if not hasattr(self, 'LINK_FREE_PATTERN'):
+                self.LINK_FREE_PATTERN = self.LINK_PATTERN
+
+            if not hasattr(self, 'LINK_PREMIUM_PATTERN'):
+                self.LINK_PREMIUM_PATTERN = self.LINK_PATTERN
+
         if (self.MULTI_HOSTER
             and (self.__pattern__ != self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
                  or re.match(self.__pattern__, self.pyfile.url) is None)):
@@ -596,10 +608,12 @@ class SimpleHoster(Hoster):
                 self.FILE_ERRORS.extend(rules)
 
             for r, p in self.FILE_ERRORS:
-                errmsg = self.checkDownload({r: re.compile(p)}).strip().capitalize()
+                errmsg = self.checkDownload({r: re.compile(p)})
 
                 if not errmsg:
                     continue
+
+                errmsg = errmsg.strip().capitalize()
 
                 try:
                     errmsg += " | " + self.lastCheck.group(1).strip()
