@@ -11,7 +11,7 @@ from module.utils import fixup, html_unescape
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.51"
+    __version__ = "0.52"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),  #: Overrides core.config['general']['folder_per_package']
@@ -20,7 +20,6 @@ class SimpleCrypter(Crypter, SimpleHoster):
     __description__ = """Simple decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
-
 
     """
     Following patterns should be defined by each crypter:
@@ -52,9 +51,6 @@ class SimpleCrypter(Crypter, SimpleHoster):
       def loadPage(self, page_n):
           return the html of the page number page_n
     """
-
-    LINK_PATTERN = None
-
 
     #@TODO: Remove in 0.4.10
     def init(self):
@@ -92,12 +88,17 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
 
     def handleDirect(self, pyfile):
-        while True:
-            header = self.load(self.link or pyfile.url, just_header=True, decode=True)
+        for i in xrange(10):  #@TODO: Use `pycurl.MAXREDIRS` value in 0.4.10
+            redirect = self.link or pyfile.url
+            self.logDebug("Redirect #%d to: %s" % (i, redirect))
+
+            header = self.load(redirect, just_header=True, decode=True)
             if 'location' in header and header['location']:
                 self.link = header['location']
             else:
                 break
+        else:
+            self.logError(_("Too many redirects"))
 
 
     def decrypt(self, pyfile):
