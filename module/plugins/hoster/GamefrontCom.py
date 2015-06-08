@@ -10,7 +10,7 @@ from module.utils import parseFileSize
 class GamefrontCom(Hoster):
     __name__    = "GamefrontCom"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'http://(?:www\.)?gamefront\.com/files/\w+'
 
@@ -57,7 +57,7 @@ class GamefrontCom(Hoster):
     def _getName(self):
         name = re.search(self.PATTERN_FILENAME, self.html)
         if name is None:
-            self.fail(_("Plugin broken")
+            self.fail(_("Plugin broken"))
 
         return name.group(1)
 
