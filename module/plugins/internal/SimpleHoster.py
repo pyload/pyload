@@ -239,7 +239,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.61"
+    __version__ = "1.62"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -592,7 +592,7 @@ class SimpleHoster(Hoster):
                                                             ("Size limit"    , "SIZE_LIMIT_PATTERN"  ),
                                                             ("Error"         , "ERROR_PATTERN"       ),
                                                             ("Premium only"  , "PREMIUM_ONLY_PATTERN"),
-                                                            ("Wait error"    , "WAIT_PATTERN"        ))]
+                                                            ("Wait error"    , "WAIT_PATTERN"        )) if hasattr(self, a)]
                 self.FILE_ERRORS.extend(rules)
 
             for r, p in self.FILE_ERRORS:
