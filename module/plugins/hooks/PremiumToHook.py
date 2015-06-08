@@ -6,7 +6,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class PremiumToHook(MultiHook):
     __name__    = "PremiumToHook"
     __type__    = "hook"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
@@ -22,6 +22,7 @@ class PremiumToHook(MultiHook):
 
 
     def getHosters(self):
+        user, data = self.account.selectAccount()
         html = self.getURL("http://premium.to/api/hosters.php",
-                      get={'username': self.account.username, 'password': self.account.password})
+                      get={'username': user, 'password': data['password']})
         return [x.strip() for x in html.replace("\"", "").split(";")]
