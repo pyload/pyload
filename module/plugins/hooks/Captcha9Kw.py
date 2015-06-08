@@ -139,7 +139,7 @@ class Captcha9Kw(Hook):
             self.logError(_("Bad upload: %s") % res)
             return
 
-        self.logDebug(_("NewCaptchaID ticket: %s") % res, task.captchaFile)
+        self.logDebug("NewCaptchaID ticket: %s" % res, task.captchaFile)
 
         task.data["ticket"] = res
 

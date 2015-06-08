@@ -11,7 +11,7 @@ class TusfilesNet(XFSAccount):
     __type__    = "account"
     __version__ = "0.06"
 
-    __description__ = """ Tusfile.net account plugin """
+    __description__ = """Tusfile.net account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("guidobelix", "guidobelix@hotmail.it")]
 

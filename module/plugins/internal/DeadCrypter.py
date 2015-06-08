@@ -11,7 +11,7 @@ class DeadCrypter(Crypter):
 
     __pattern__ = r'^unmatchable$'
 
-    __description__ = """ Crypter is no longer available """
+    __description__ = """Crypter is no longer available"""
     __license__     = "GPLv3"
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 

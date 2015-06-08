@@ -18,7 +18,7 @@ class LoadTo(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?load\.to/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """ Load.to hoster plugin """
+    __description__ = """Load.to hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("halfman", "Pulpan3@gmail.com"),
                        ("stickell", "l.stickell@yahoo.it")]

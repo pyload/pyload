@@ -13,7 +13,7 @@ class UploadableChFolder(SimpleCrypter):
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """ Uploadable.ch folder decrypter plugin """
+    __description__ = """Uploadable.ch folder decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("guidobelix", "guidobelix@hotmail.it"),
                        ("Walter Purcaro", "vuolter@gmail.com")]

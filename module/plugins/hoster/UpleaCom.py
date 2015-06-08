@@ -51,7 +51,7 @@ class UpleaCom(XFSHoster):
 
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
-            self.logDebug(_("Waiting %s seconds") % m.group(1))
+            self.logDebug("Waiting %s seconds" % m.group(1))
             self.wait(m.group(1), True)
             self.retry()
 

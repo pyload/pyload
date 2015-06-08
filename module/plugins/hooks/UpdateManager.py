@@ -39,7 +39,7 @@ class UpdateManager(Hook):
                   ("reloadplugins", "bool", "Monitor plugin code changes in debug mode", True ),
                   ("nodebugupdate", "bool", "Don't update plugins in debug mode"       , False)]
 
-    __description__ = """ Check for updates """
+    __description__ = """Check for updates"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 

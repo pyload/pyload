@@ -239,7 +239,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.63"
+    __version__ = "1.64"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -581,47 +581,43 @@ class SimpleHoster(Hoster):
 
 
     def checkFile(self):
+        lastDownload = fs_encode(self.lastDownload)
+
         if self.cTask and not self.lastDownload:
             self.invalidCaptcha()
             self.retry(10, reason=_("Wrong captcha"))
 
-        elif not self.lastDownload or not os.path.exists(fs_encode(self.lastDownload)):
+        elif not self.lastDownload or not os.path.exists(lastDownload):
             self.lastDownload = ""
             self.error(self.pyfile.error or _("No file downloaded"))
 
         else:
-            self.logDebug(_("Checking last downloaded file with built-in rules"))
-            errmsg = self.checkDownload({'Empty file': re.compile(r'\A((.|)(\2|\s)*)\Z')})
+            #@TODO: Move to Hoster in 0.4.10
+            if os.stat(lastDownload).st_size < 1 or self.checkDownload({'Empty file': re.compile(r'\A((.|)(\2|\s)*)\Z')}):
+                self.error(_("Empty file"))
 
-            if errmsg:
-                return
-
-            self.logDebug(_("Checking last downloaded file with custom rules"))
-
-            if self.CHECK_FILE:
-                rules = [(r, getattr(self, a)) for r, a in (("IP blocked"    , "IP_BLOCKED_PATTERN"  ),
-                                                            ("Download limit", "DL_LIMIT_PATTERN"    ),
-                                                            ("Size limit"    , "SIZE_LIMIT_PATTERN"  ),
-                                                            ("Error"         , "ERROR_PATTERN"       ),
-                                                            ("Premium only"  , "PREMIUM_ONLY_PATTERN"),
-                                                            ("Wait error"    , "WAIT_PATTERN"        )) if hasattr(self, a)]
-                self.FILE_ERRORS.extend(rules)
-
+            self.logDebug("Checking last downloaded file with built-in rules")
             for r, p in self.FILE_ERRORS:
                 errmsg = self.checkDownload({r: re.compile(p)})
+                if errmsg is not None:
+                    errmsg = errmsg.strip().capitalize()
 
-                if not errmsg:
-                    continue
+                    try:
+                        errmsg += " | " + self.lastCheck.group(1).strip()
+                    except Exception:
+                        pass
 
-                errmsg = errmsg.strip().capitalize()
+                    self.logWarning("Check result: " + errmsg, "Waiting 1 minute and retry")
+                    self.wantReconnect = True
+                    self.retry(wait_time=60, reason=errmsg)
+            else:
+                if self.CHECK_FILE:
+                    self.logDebug("Checking last downloaded file with custom rules")
+                    with open(lastDownload, "rb") as f:
+                        self.html = f.read(50000)  #@TODO: Recheck in 0.4.10
+                    self.checkErrors()
 
-                try:
-                    errmsg += " | " + self.lastCheck.group(1).strip()
-                except Exception:
-                    pass
-
-                self.logWarning("Check result: " + errmsg, "Waiting 1 minute and retry")
-                self.retry(3, 60, errmsg)
+            self.logDebug("No file errors found")
 
 
     def checkErrors(self):
