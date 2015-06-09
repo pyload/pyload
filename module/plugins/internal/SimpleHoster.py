@@ -241,7 +241,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.65"
+    __version__ = "1.66"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -514,7 +514,7 @@ class SimpleHoster(Hoster):
 
 
     def preload(self):
-        self.html = self.load(self.pyfile.url, cookies=bool(self.COOKIES), decode=not self.TEXT_ENCODING)
+        self.html = self.load(self.pyfile.url, cookies=bool(self.COOKIES), ref=False, decode=not self.TEXT_ENCODING)
 
         if isinstance(self.TEXT_ENCODING, basestring):
             self.html = unicode(self.html, self.TEXT_ENCODING)
