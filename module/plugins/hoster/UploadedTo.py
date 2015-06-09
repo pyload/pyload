@@ -32,6 +32,7 @@ class UploadedTo(SimpleHoster):
     OFFLINE_PATTERN      = r'>Page not found'
     TEMP_OFFLINE_PATTERN = r'<title>uploaded\.net - Maintenance'
 
+    LINK_FREE_PATTERN    = r"url:\s*'(.+?)'"
     LINK_PREMIUM_PATTERN = r'<div class="tfree".*\s*<form method="post" action="(.+?)"'
 
     WAIT_PATTERN     = r'Current waiting period: <span>(\d+)'
@@ -77,12 +78,7 @@ class UploadedTo(SimpleHoster):
                               post={'recaptcha_challenge_field': challenge,
                                     'recaptcha_response_field' : response})
 
-        if "type:'download'" in self.html:
-            try:
-                self.link = re.search("url:\s*'(.+?)'", self.html).group(1)
-            except Exception:
-                pass
-
+        super(UploadedTo, self).handleFree(pyfile)
         self.checkErrors()
 
 
