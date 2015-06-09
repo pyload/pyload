@@ -11,7 +11,7 @@ from module.utils import fixup, html_unescape
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.52"
+    __version__ = "0.53"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),  #: Overrides core.config['general']['folder_per_package']
@@ -122,7 +122,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
             self.logDebug("Package has %d links" % len(self.links))
 
         if self.links:
-            self.links    = [html_unescape(l.decode('unicode-escape').strip()) for l in links]  #@TODO: Move to Crypter in 0.4.10
+            self.links    = [html_unescape(l.decode('unicode-escape').strip()) for l in self.links]  #@TODO: Move to Crypter in 0.4.10
             self.packages = [(self.info['name'], self.links, self.info['folder'])]
 
         elif not self.urls and not self.packages:  #@TODO: Remove in 0.4.10
