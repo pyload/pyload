@@ -254,6 +254,8 @@ class ConfigParser:
                 return value.encode("utf8")
             except:
                 return value
+        elif typ == "info":
+            return ""
         else:
             return value
 
