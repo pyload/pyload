@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class CatShareNet(Account):
     __name__    = "CatShareNet"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __description__ = """Catshare.net account plugin"""
     __license__     = "GPLv3"
@@ -50,7 +50,7 @@ class CatShareNet(Account):
 
 
     def login(self, user, data, req):
-        html = req.load("https://catshare.net/login",
+        html = req.load("http://catshare.net/login",  #@TODO: Revert to `https` in 0.4.10
                         post={'user_email': user,
                               'user_password': data['password'],
                               'remindPassword': 0,
