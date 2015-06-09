@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "0.93"
+    __version__ = "0.94"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -29,7 +29,9 @@ class UploadedTo(SimpleHoster):
 
     API_KEY = "lhF2IeeprweDfu9ccWlxXVVypA5nA3EL"
 
+    OFFLINE_PATTERN      = r'>Page not found'
     TEMP_OFFLINE_PATTERN = r'<title>uploaded\.net - Maintenance'
+
     LINK_PREMIUM_PATTERN = r'<div class="tfree".*\s*<form method="post" action="(.+?)"'
 
     WAIT_PATTERN     = r'Current waiting period: <span>(\d+)'
