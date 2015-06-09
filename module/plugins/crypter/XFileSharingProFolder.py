@@ -8,7 +8,7 @@ from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
 class XFileSharingProFolder(XFSCrypter):
     __name__    = "XFileSharingProFolder"
     __type__    = "crypter"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:user|folder)s?/\w+'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
@@ -20,7 +20,7 @@ class XFileSharingProFolder(XFSCrypter):
 
 
     def _log(self, type, args):
-        return super(XFileSharingProFolder, self)._log(type, [self.HOSTER_NAME] + args)
+        return super(XFileSharingProFolder, self)._log(type, (self.HOSTER_NAME,) + args)
 
 
     def init(self):

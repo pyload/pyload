@@ -429,14 +429,14 @@ class SimpleHoster(Hoster):
 
 
     #@TODO: Move to Hoster in 0.4.10
-    def _log(self, type, args):
+    def _log(self, level, args):
+        log = getattr(self.core.log, level)
         msg = " | ".join((fs_encode(a) if isinstance(a, unicode) else  #@NOTE: `fs_encode` -> `encode` in 0.4.10
                           decode(a) if isinstance(a, str) else
                           str(a)).strip() for a in args if a)
-        logger = getattr(self.core.log, type)
-        logger("%(plugin)s[%(id)s]: %(msg)s" % {'plugin': self.__name__,
-                                                'id'    : self.pyfile.id,
-                                                'msg'   : msg or _(type.upper() + " MARK")})
+        log("%(plugin)s[%(id)s]: %(msg)s" % {'plugin': self.__name__,
+                                             'id'    : self.pyfile.id,
+                                             'msg'   : msg or _(level.upper() + " MARK")})
 
 
     #@TODO: Move to Hoster in 0.4.10
