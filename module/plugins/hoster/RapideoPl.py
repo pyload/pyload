@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHoster import MultiHoster
 class RapideoPl(MultiHoster):
     __name__    = "RapideoPl"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

@@ -9,7 +9,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class MyfastfileCom(MultiHoster):
     __name__    = "MyfastfileCom"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __pattern__ = r'http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

@@ -11,7 +11,7 @@ from module.utils import parseFileSize
 class AlldebridCom(MultiHoster):
     __name__    = "AlldebridCom"
     __type__    = "hoster"
-    __version__ = "0.46"
+    __version__ = "0.47"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

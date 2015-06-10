@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class DebridItaliaCom(MultiHoster):
     __name__    = "DebridItaliaCom"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?debriditalia\.com/dl/\d+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

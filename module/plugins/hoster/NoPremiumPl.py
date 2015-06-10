@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHoster import MultiHoster
 class NoPremiumPl(MultiHoster):
     __name__    = "NoPremiumPl"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'https?://direct\.nopremium\.pl.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

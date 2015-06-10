@@ -9,7 +9,7 @@ from module.common.json_layer import json_loads
 class RPNetBiz(MultiHoster):
     __name__    = "RPNetBiz"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __pattern__ = r'https?://.+rpnet\.biz'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import secondsToMidnight
 class HighWayMe(MultiHoster):
     __name__    = "HighWayMe"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __pattern__ = r'https?://.+high-way\.my'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

@@ -11,7 +11,7 @@ from module.utils import parseFileSize
 class OverLoadMe(MultiHoster):
     __name__    = "OverLoadMe"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __pattern__ = r'https?://.*overload\.me/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

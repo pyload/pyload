@@ -12,7 +12,7 @@ from module.utils import parseFileSize
 class RealdebridCom(MultiHoster):
     __name__    = "RealdebridCom"
     __type__    = "hoster"
-    __version__ = "0.67"
+    __version__ = "0.68"
 
     __pattern__ = r'https?://((?:www\.|s\d+\.)?real-debrid\.com/dl/|[\w^_]\.rdb\.so/d/)[\w^_]+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
