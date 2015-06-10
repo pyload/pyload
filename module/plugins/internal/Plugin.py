@@ -31,6 +31,7 @@ if os.name != "nt":
 
 from itertools import islice
 
+from module.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload
 from module.utils import save_join, save_path, fs_encode, fs_decode
 
 def chunks(iterable, size):
@@ -39,26 +40,6 @@ def chunks(iterable, size):
     while item:
         yield item
         item = list(islice(it, size))
-
-
-class Abort(Exception):
-    """ raised when aborted """
-
-
-class Fail(Exception):
-    """ raised when failed """
-
-
-class Reconnect(Exception):
-    """ raised when reconnected """
-
-
-class Retry(Exception):
-    """ raised when start again from beginning """
-
-
-class SkipDownload(Exception):
-    """ raised when download should be skipped """
 
 
 class Base(object):
@@ -142,7 +123,7 @@ class Plugin(Base):
     Overwrite `process` / `decrypt` in your subclassed plugin.
     """
     __name__ = "Plugin"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __pattern__ = None
     __type__ = "hoster"
     __config__ = [("name", "type", "desc", "default")]
