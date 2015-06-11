@@ -4,7 +4,7 @@ from module.common.json_layer import json_loads
 from module.plugins.Account import Account
 
 
-class HighWayMe.py(Account):
+class HighWayMe(Account):
     __name__    = "HighWayMe.py"
     __type__    = "account"
     __version__ = "0.01"
