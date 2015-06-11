@@ -9,7 +9,7 @@
 +class HighWayMe(MultiHoster):
 +    __name__    = "HighWayMe"
 +    __type__    = "hoster"
-+    __version__ = "0.08"
++    __version__ = "0.09"
 +
 +    __pattern__ = r'https?://.+high-way\.my'
 +    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -24,7 +24,7 @@
 +
 +
 +    def checkErrors(self):
-+        if '<valid>0</valid>' in self.html: #This is not working. It should by if 302 Moved Temporarily then ... But I don't now how to implement it.
++         if self.html.get('code') == 302: #This is not working. It should by if 302 Moved Temporarily then ... But I don't now how to implement it.
 +            self.account.relogin(self.user)
 +            self.retry()
 +
