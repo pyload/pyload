@@ -28,8 +28,8 @@ def _error(self, reason, type):
         if not reason and not type:
             type = "unknown"
 
-        msg  = _("%s error") % type.strip().capitalize() if type else _("Error")
-        msg += (": %s" % reason.strip()) if reason else ""
+        msg  = _("%s error") % str(type).strip().capitalize() if type else _("Error")
+        msg += (": %s" % str(reason).strip()) if reason else ""
         msg += _(" | Plugin may be out of date")
 
         raise Fail(msg)
@@ -241,7 +241,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.66"
+    __version__ = "1.67"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
