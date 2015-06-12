@@ -37,8 +37,37 @@ from utils import render_to_response, parse_permissions, parse_userdata, \
 from filters import relpath, unquotepath
 
 from module.utils import formatSize, save_join, fs_encode, fs_decode
+from module.plugins.PluginManager import literal_eval
 
 # Helper
+def get_plugin_content():
+    """Retrieve additional resources to be added to the webpage.
+
+    :return: 'list' of resources, resources are of type 'dict' with keys 'type' and ('src' or 'content')
+    """
+    allServices = PYLOAD.getServices()
+    webServices = []
+    pluginContent = []
+
+    # Find plugins that provide additional content for the webinterface
+    for key in allServices:
+        if 'webinterface_add_plugin_content' in allServices[key]:
+            webServices.append(key)
+    
+    # Request content to be added from each plugin
+    # Content is expected as 'string' of 'list' of resources, resources are of type 'dict' with keys 'type' and ('src' or 'content')
+    # str(   [{'src': 'http://sam.ple/Foo.js', 'type': 'javascript'}, {'content': 'body {zoom:0.5}', 'type': 'css'}]   )
+    for plugin in webServices:
+        RPC_result = literal_eval(PYLOAD.call(info={'plugin':plugin, 'func':'webinterface_add_plugin_content', 'arguments':None, 'parseArguments':False}))
+        if type(RPC_result) is list:
+            pluginContent.extend(RPC_result)
+        elif type(RPC_result) is dict:
+            pluginContent.append(RPC_result)
+        # else raise Error ???
+
+    print pluginContent
+    
+    return pluginContent
 
 def pre_processor():
     s = request.environ.get('beaker.session')
@@ -48,10 +77,12 @@ def pre_processor():
     captcha = False
     update = False
     plugins = False
+    pluginContent = []
     if user["is_authenticated"]:
         status = PYLOAD.statusServer()
         info = PYLOAD.getInfoByPlugin("UpdateManager")
         captcha = PYLOAD.isCaptchaWaiting()
+        pluginContent = get_plugin_content()
 
         # check if update check is available
         if info:
@@ -65,7 +96,8 @@ def pre_processor():
             'perms': perms,
             'url': request.url,
             'update': update,
-            'plugins': plugins}
+            'plugins': plugins,
+            'plugincontent': pluginContent}
 
 
 def base(messages):

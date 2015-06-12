@@ -21,6 +21,22 @@
 
 {% block head %}
 {% endblock %}
+
+{% if plugincontent %}
+<!--plugincontent-->
+{% for content in plugincontent %}
+    <!--content-->
+    {% if content.type == 'javascript' %}
+        <script type="text/javascript" {% if content.src %}src="{{content.src}}"{% endif %}>{% if content.content %}{{content.content}}{% endif %}</script>
+    {% elif content.type == 'css' and content.src %}
+        <link rel="stylesheet" type="text/css" href="{{content.src}}"/>
+    {% elif content.type == 'css' and content.content %}
+        <style type="text/css">{{content.content}}</style>
+    {% endif %}
+{% endfor %}
+<!--end plugincontent-->
+{% endif %}
+
 </head>
 <body>
 <a class="anchor" name="top" id="top"></a>
