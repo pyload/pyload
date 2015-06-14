@@ -21,12 +21,10 @@ class JustPremium(Hook):
 
 
     interval   = 0  #@TODO: Remove in 0.4.10
-
+    event_list = ["linksAdded"]
 
     def setup(self):
         self.info = {}  #@TODO: Remove in 0.4.10
-        self.event_list = ["linksAdded"]
-
 
     def linksAdded(self, links, pid):
         hosterdict = self.core.pluginManager.hosterPlugins
