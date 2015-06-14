@@ -9,7 +9,7 @@ import math
 import operator
 import urllib
 
-from module.plugins.captcha.OCR import OCR
+from module.plugins.internal.OCR import OCR
 
 
 class ImageSequence:
@@ -29,7 +29,7 @@ class ImageSequence:
 class CircleCaptcha(OCR):
     __name__    = "CircleCaptcha"
     __type__    = "ocr"
-    __version__ = "1.00"
+    __version__ = "1.01"
 
     __description__ = """Circle captcha ocr plugin"""
     __license__     = "GPLv3"
