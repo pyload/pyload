@@ -28,8 +28,8 @@ def _error(self, reason, type):
         if not reason and not type:
             type = "unknown"
 
-        msg  = _("%s error") % type.strip().capitalize() if type else _("Error")
-        msg += (": %s" % reason.strip()) if reason else ""
+        msg  = _("%s error") % str(type).strip().capitalize() if type else _("Error")
+        msg += (": %s" % str(reason).strip()) if reason else ""
         msg += _(" | Plugin may be out of date")
 
         raise Fail(msg)
