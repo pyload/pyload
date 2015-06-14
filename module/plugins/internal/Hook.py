@@ -1,161 +1,190 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+import traceback
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
+from module.plugins.internal.Plugin import Plugin
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay
-    @interface-version: 0.2
-"""
-
-from traceback import print_exc
-
-from Plugin import Base
 
 class Expose(object):
-    """ used for decoration to declare rpc services """
+    """Used for decoration to declare rpc services"""
 
     def __new__(cls, f, *args, **kwargs):
         hookManager.addRPC(f.__module__, f.func_name, f.func_doc)
         return f
 
-def threaded(f):
-    def run(*args,**kwargs):
-        hookManager.startThread(f, *args, **kwargs)
+
+def threaded(fn):
+
+    def run(*args, **kwargs):
+        hookManager.startThread(fn, *args, **kwargs)
+
     return run
 
-class Hook(Base):
-    """
-    Base class for hook plugins.
-    """
-    __name__ = "Hook"
-    __version__ = "0.02"
-    __type__ = "hook"
-    __threaded__ = []
-    __config__ = [ ("name", "type", "desc" , "default") ]
-    __description__ = """interface for hook"""
-    __author_name__ = ("mkaay", "RaNaN")
-    __author_mail__ = ("mkaay@mkaay.de", "RaNaN@pyload.org")
 
-    #: automatically register event listeners for functions, attribute will be deleted dont use it yourself
-    event_map = None
+class Hook(Plugin):
+    __name__    = "Hook"
+    __type__    = "hook"
+    __version__ = "0.03"
 
-    # Alternative to event_map
-    #: List of events the plugin can handle, name the functions exactly like eventname.
-    event_list = None  # dont make duplicate entries in event_map
+    __config__ = []  #: [("name", "type", "desc", "default")]
 
+    __description__ = """Base hook plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay"         , "mkaay@mkaay.de"   ),
+                       ("RaNaN"         , "RaNaN@pyload.org" ),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
-    #: periodic call interval in secondc
-    interval = 60
 
     def __init__(self, core, manager):
-        Base.__init__(self, core)
-
         #: Provide information in dict here, usable by API `getInfo`
-        self.info = None
+        self.info = {}
 
-        #: Callback of periodical job task, used by hookmanager
-        self.cb = None
+        #: Callback of periodical job task, used by HookManager
+        self.cb       = None
+        self.interval = 60
 
         #: `HookManager`
         self.manager = manager
 
-        #register events
+        self.setup()
+
+        #: automatically register event listeners for functions, attribute will be deleted dont use it yourself
+        self.event_map = {}
+
+        # Deprecated alternative to event_map
+        #: List of events the plugin can handle, name the functions exactly like eventname.
+        self.event_list = []  #@NOTE: dont make duplicate entries in event_map
+
+        # register events
         if self.event_map:
             for event, funcs in self.event_map.iteritems():
                 if type(funcs) in (list, tuple):
                     for f in funcs:
-                        self.manager.addEvent(event, getattr(self,f))
+                        self.manager.addEvent(event, getattr(self, f))
                 else:
-                    self.manager.addEvent(event, getattr(self,funcs))
+                    self.manager.addEvent(event, getattr(self, funcs))
 
-            #delete for various reasons
+            # delete for various reasons
             self.event_map = None
 
         if self.event_list:
+            self.logWarning(_("Deprecated method `event_list`, use `event_map` instead"))
+
             for f in self.event_list:
-                self.manager.addEvent(f, getattr(self,f))
+                self.manager.addEvent(f, getattr(self, f))
 
             self.event_list = None
 
-        self.initPeriodical()
-        self.setup()
 
-    def initPeriodical(self):
-        if self.interval >=1:
-            self.cb = self.core.scheduler.addJob(0, self._periodical, threaded=False)
+    def initPeriodical(self, delay=0, threaded=False):
+        self.cb = self.core.scheduler.addJob(max(0, delay), self._periodical, [threaded], threaded=threaded)
 
-    def _periodical(self):
+
+    def _periodical(self, threaded):
+        if self.interval < 0:
+            self.cb = None
+            return
+
         try:
-            if self.isActivated(): self.periodical()
-        except Exception, e:
-            self.core.log.error(_("Error executing hooks: %s") % str(e))
-            if self.core.debug:
-                print_exc()
+            self.periodical()
 
-        self.cb = self.core.scheduler.addJob(self.interval, self._periodical, threaded=False)
+        except Exception, e:
+            self.logError(_("Error executing hook: %s") % e)
+            if self.core.debug:
+                traceback.print_exc()
+
+        self.cb = self.core.scheduler.addJob(self.interval, self._periodical, [threaded], threaded=threaded)
 
 
     def __repr__(self):
         return "<Hook %s>" % self.__name__
 
+
     def setup(self):
-        """ more init stuff if needed """
+        """More init stuff if needed"""
         pass
 
-    def unload(self):
-        """ called when hook was deactivated """
-        pass
 
     def isActivated(self):
-        """ checks if hook is activated"""
-        return self.config.getPlugin(self.__name__, "activated")
+        """Checks if hook is activated"""
+        return self.getConfig("activated")
 
 
-    #event methods - overwrite these if needed
+    def deactivate(self):
+        """Called when hook was deactivated"""
+        pass
+
+
+    #: Deprecated, use method `deactivate` instead
+    def unload(self):
+        self.logWarning(_("Deprecated method `unload`, use `deactivate` instead"))
+        return self.deactivate()
+
+
+    def activate(self):
+        """Called when hook was activated"""
+        pass
+
+
+    #: Deprecated, use method `activate` instead
     def coreReady(self):
+        self.logWarning(_("Deprecated method `coreReady`, use `activate` instead"))
+        return self.activate()
+
+
+    def exit(self):
+        """Called by core.shutdown just before pyLoad exit"""
         pass
 
+
+    #: Deprecated, use method `exit` instead
     def coreExiting(self):
-        pass
+        self.logWarning(_("Deprecated method `coreExiting`, use `exit` instead"))
+        return self.exit()
+
 
     def downloadPreparing(self, pyfile):
         pass
 
+
     def downloadFinished(self, pyfile):
         pass
+
 
     def downloadFailed(self, pyfile):
         pass
 
+
     def packageFinished(self, pypack):
         pass
+
 
     def beforeReconnecting(self, ip):
         pass
 
+
     def afterReconnecting(self, ip):
         pass
+
 
     def periodical(self):
         pass
 
-    def newCaptchaTask(self, task):
-        """ new captcha task for the plugin, it MUST set the handler and timeout or will be ignored """
+
+    def captchaTask(self, task):
+        """New captcha task for the plugin, it MUST set the handler and timeout or will be ignored"""
         pass
+
+
+    #: Deprecated, use method `captchaTask` instead
+    def newCaptchaTask(self, task):
+        self.logWarning(_("Deprecated method `newCaptchaTask`, use `captchaTask` instead"))
+        return self.captchaTask()
+
 
     def captchaCorrect(self, task):
         pass
+
 
     def captchaInvalid(self, task):
         pass
