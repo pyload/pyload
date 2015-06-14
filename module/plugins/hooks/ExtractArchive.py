@@ -110,7 +110,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.45"
+    __version__ = "1.46"
 
     __config__ = [("activated"      , "bool"              , "Activated"                                 , True                                                                     ),
                   ("fullpath"       , "bool"              , "Extract with full paths"                   , True                                                                     ),
@@ -138,10 +138,10 @@ class ExtractArchive(Hook):
 
     NAME_REPLACEMENTS = [(r'\.part\d+\.rar$', ".part.rar")]
 
+    event_list = ["allDownloadsProcessed","packageDeleted"]
 
     def setup(self):
         self.info = {}  #@TODO: Remove in 0.4.10
-        self.event_list = ["allDownloadsProcessed","packageDeleted"]
 
         self.queue  = ArchiveQueue(self, "Queue")
         self.failed = ArchiveQueue(self, "Failed")
