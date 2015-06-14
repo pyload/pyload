@@ -1,75 +1,64 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+from __future__ import with_statement
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay
-"""
-
-from module.plugins.internal.Crypter import Crypter
-
-from os.path import join, exists, basename
-from os import remove
+import os
 import re
 
+from module.plugins.internal.Crypter import Crypter
+from pyload.utils import save_join
+
+
 class Container(Crypter):
-    __name__ = "Container"
-    __version__ = "0.02"
-    __pattern__ = None
-    __type__ = "container"
-    __description__ = """Base container plugin"""
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+    __name__    = "Container"
+    __type__    = "container"
+    __version__ = "0.03"
+
+    __pattern__ = r'^unmatchable$'
+    __config__  = []  #: [("name", "type", "desc", "default")]
+
+    __description__ = """Base container decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
     def preprocessing(self, thread):
-        """prepare"""
+        """Prepare"""
 
         self.setup()
         self.thread = thread
 
-        self.loadToDisk()
+        self._load2disk()
 
         self.decrypt(self.pyfile)
-        self.deleteTmp()
+        self.delete_tmp()
 
-        self.createPackages()
+        self._create_packages()
 
 
-    def loadToDisk(self):
-        """loads container to disk if its stored remotely and overwrite url,
+    def _load2disk(self):
+        """Loads container to disk if its stored remotely and overwrite url,
         or check existent on several places at disk"""
 
         if self.pyfile.url.startswith("http"):
             self.pyfile.name = re.findall("([^\/=]+)", self.pyfile.url)[-1]
             content = self.load(self.pyfile.url)
-            self.pyfile.url = join(self.config["general"]["download_folder"], self.pyfile.name)
-            f = open(self.pyfile.url, "wb" )
-            f.write(content)
-            f.close()
+            self.pyfile.url = save_join(self.core.config.get("general", "download_folder"), self.pyfile.name)
+            try:
+                with open(self.pyfile.url, "wb") as f:
+                    f.write(content)
+            except IOError, e:
+                self.fail(str(e))
 
         else:
-            self.pyfile.name = basename(self.pyfile.url)
-            if not exists(self.pyfile.url):
-                if exists(join(pypath, self.pyfile.url)):
-                    self.pyfile.url = join(pypath, self.pyfile.url)
+            self.pyfile.name = os.path.basename(self.pyfile.url)
+            if not os.path.exists(self.pyfile.url):
+                if os.path.exists(save_join(pypath, self.pyfile.url)):
+                    self.pyfile.url = save_join(pypath, self.pyfile.url)
                 else:
-                    self.fail(_("File not exists."))
+                    self.fail(_("File not exists"))
 
 
-    def deleteTmp(self):
+    def delete_tmp(self):
         if self.pyfile.name.startswith("tmp_"):
-            remove(self.pyfile.url)
-
-
+            os.remove(self.pyfile.url)
