@@ -1,35 +1,36 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+import urlparse
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
+from module.plugins.internal.Hoster import Hoster
+from module.utils import decode, save_path
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-    @author: mkaay
-"""
+class Crypter(Hoster):
+    """
+    Base plugin for crypter.
+    Overwrite `decrypt` in your subclassed plugin.
+    """
 
-from module.plugins.internal.Plugin import Plugin
+    __name__    = "Crypter"
+    __type__    = "crypter"
+    __version__ = "0.03"
 
-class Crypter(Plugin):
-    __name__ = "Crypter"
-    __version__ = "0.02"
-    __pattern__ = None
-    __type__ = "container"
-    __description__ = """Base crypter plugin"""
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+    __pattern__ = r'^unmatchable$'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config.get("general", "folder_per_package")
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
+
+    __description__ = """Base decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+
+
+    html = None  #: last html loaded  #@TODO: Move to Hoster
+
 
     def __init__(self, pyfile):
-        Plugin.__init__(self, pyfile)
+        #: Provide information in dict here
+        self.info = {}  #@TODO: Move to Plugin
 
         #: Put all packages here. It's a list of tuples like: ( name, [list of links], folder )
         self.packages = []
@@ -37,36 +38,70 @@ class Crypter(Plugin):
         #: List of urls, pyLoad will generate packagenames
         self.urls = []
 
-        self.multiDL = True
-        self.limitDL = 0
+        Plugin.__init__(self, pyfile)
 
 
-    def preprocessing(self, thread):
-        """prepare"""
-        self.setup()
-        self.thread = thread
+    def process(self, pyfile):
+        """Main method"""
 
-        self.decrypt(self.pyfile)
+        self.decrypt(pyfile)
 
-        self.createPackages()
+        if self.urls:
+            self._generate_packages()
+
+        elif not self.packages:
+            self.error(_("No link grabbed"), "decrypt")
+
+        self._create_packages()
 
 
     def decrypt(self, pyfile):
         raise NotImplementedError
 
-    def createPackages(self):
-        """ create new packages from self.packages """
-        for pack in self.packages:
 
-            self.log.debug("Parsed package %(name)s with %(len)d links" % { "name" : pack[0], "len" : len(pack[1]) } )
+    def _generate_packages(self):
+        """Generate new packages from self.urls"""
 
-            links = [x.decode("utf-8") for x in pack[1]]
+        packages = [(name, links, None) for name, links in self.core.api.generatePackages(self.urls).iteritems()]
+        self.packages.extend(packages)
 
-            pid = self.core.api.addPackage(pack[0], links, self.pyfile.package().queue)
 
-            if self.pyfile.package().password:
-                self.core.api.setPackageData(pid, {"password": self.pyfile.package().password})
+    def _create_packages(self):
+        """Create new packages from self.packages"""
 
-        if self.urls:
-            self.core.api.generateAndAddPackages(self.urls)
+        package_folder   = self.pyfile.package().folder
+        package_password = self.pyfile.package().password
+        package_queue    = self.pyfile.package().queue
 
+        folder_per_package    = self.core.config.get('general', 'folder_per_package')
+        use_subfolder         = self.getConfig('use_subfolder', folder_per_package)
+        subfolder_per_package = self.getConfig('subfolder_per_package', True)
+
+        for name, links, folder in self.packages:
+            self.logDebug("Parsed package: %s" % name,
+                          "%d links" % len(links),
+                          "Saved to folder: %s" % folder if folder else "Saved to download folder")
+
+            links = map(decode, links)
+
+            pid = self.core.api.addPackage(name, links, package_queue)
+
+            if package_password:
+                self.core.api.setPackageData(pid, {"password": package_password})
+
+            setFolder = lambda x: self.core.api.setPackageData(pid, {"folder": x or ""})  #@NOTE: Workaround to do not break API addPackage method
+
+            if use_subfolder:
+                if not subfolder_per_package:
+                    setFolder(package_folder)
+                    self.logDebug("Set package %(name)s folder to: %(folder)s" % {"name": name, "folder": folder})
+
+                elif not folder_per_package or name != folder:
+                    if not folder:
+                        folder = urlparse.urlparse(name).path.split("/")[-1]
+
+                    setFolder(save_path(folder))
+                    self.logDebug("Set package %(name)s folder to: %(folder)s" % {"name": name, "folder": folder})
+
+            elif folder_per_package:
+                setFolder(None)
