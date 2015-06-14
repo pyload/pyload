@@ -32,7 +32,7 @@ if os.name != "nt":
 from itertools import islice
 
 from module.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload  #@TODO: Remove in 0.4.10
-from module.utils import decode, save_join, save_path, fs_encode, fs_decode
+from module.utils import save_join, save_path, fs_encode, fs_decode
 
 def chunks(iterable, size):
     it = iter(iterable)
