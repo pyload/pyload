@@ -2,11 +2,11 @@
 
 import urlparse
 
-from module.plugins.internal.Hoster import Hoster
+from module.plugins.internal.Plugin import Plugin
 from module.utils import decode, save_path
 
 
-class Crypter(Hoster):
+class Crypter(Plugin):
     """
     Base plugin for crypter.
     Overwrite `decrypt` in your subclassed plugin.
@@ -29,6 +29,8 @@ class Crypter(Hoster):
 
 
     def __init__(self, pyfile):
+        super(Crypter, self).__init__(self, pyfile)
+
         #: Provide information in dict here
         self.info = {}  #@TODO: Move to Plugin
 
@@ -38,7 +40,8 @@ class Crypter(Hoster):
         #: List of urls, pyLoad will generate packagenames
         self.urls = []
 
-        Plugin.__init__(self, pyfile)
+        self.multiDL = True
+        self.limitDL = 0
 
 
     def process(self, pyfile):
