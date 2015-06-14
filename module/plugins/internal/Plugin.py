@@ -61,7 +61,7 @@ class Base(object):
         msg = " | ".join((fs_encode(a) if isinstance(a, unicode) else  #@NOTE: `fs_encode` -> `encode` in 0.4.10
                           str(a)).strip() for a in args if a)
         log("%(plugin)s[%(id)s]: %(msg)s" % {'plugin': self.__name__,
-                                             'id'    : self.pyfile.id,
+                                             'id'    : self.pyfile.id if hasattr(self, 'pyfile') else "",
                                              'msg'   : msg or _(level.upper() + " MARK")})
 
 
@@ -140,7 +140,7 @@ class Plugin(Base):
     Overwrite `process` / `decrypt` in your subclassed plugin.
     """
     __name__ = "Plugin"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __pattern__ = None
     __type__ = "hoster"
     __config__ = [("name", "type", "desc", "default")]
