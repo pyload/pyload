@@ -4,10 +4,10 @@ from module.common.json_layer import json_loads
 from module.plugins.internal.Account import Account
 
 
-class HighWayMe.py(Account):
+class HighWayMe(Account):
     __name__    = "HighWayMe.py"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """High-Way.me account plugin"""
     __license__     = "GPLv3"
