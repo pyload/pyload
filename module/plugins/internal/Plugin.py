@@ -31,8 +31,8 @@ if os.name != "nt":
 
 from itertools import islice
 
-from module.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload
-from module.utils import save_join, save_path, fs_encode, fs_decode
+from module.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload  #@TODO: Remove in 0.4.10
+from module.utils import decode, save_join, save_path, fs_encode, fs_decode
 
 def chunks(iterable, size):
     it = iter(iterable)
@@ -55,18 +55,35 @@ class Base(object):
         #: core config
         self.config = core.config
 
-    #log functions
-    def logInfo(self, *args):
-        self.log.info("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args])))
+    # Log functions
+    def _log(self, level, args):
+        log = getattr(self.core.log, level)
+        msg = " | ".join((fs_encode(a) if isinstance(a, unicode) else  #@NOTE: `fs_encode` -> `encode` in 0.4.10
+                          str(a)).strip() for a in args if a)
+        log("%(plugin)s[%(id)s]: %(msg)s" % {'plugin': self.__name__,
+                                             'id'    : self.pyfile.id,
+                                             'msg'   : msg or _(level.upper() + " MARK")})
 
-    def logWarning(self, *args):
-        self.log.warning("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args])))
-
-    def logError(self, *args):
-        self.log.error("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args])))
 
     def logDebug(self, *args):
-        self.log.debug("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args])))
+        if self.core.debug:
+            return self._log("debug", args)
+
+
+    def logInfo(self, *args):
+        return self._log("info", args)
+
+
+    def logWarning(self, *args):
+        return self._log("warning", args)
+
+
+    def logError(self, *args):
+        return self._log("error", args)
+
+
+    def logCritical(self, *args):
+        return self._log("critical", args)
 
 
     def setConf(self, option, value):
@@ -123,7 +140,7 @@ class Plugin(Base):
     Overwrite `process` / `decrypt` in your subclassed plugin.
     """
     __name__ = "Plugin"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __pattern__ = None
     __type__ = "hoster"
     __config__ = [("name", "type", "desc", "default")]

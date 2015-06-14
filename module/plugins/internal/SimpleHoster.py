@@ -16,7 +16,7 @@ from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL
 from module.plugins.internal.Hoster import Hoster
 from module.plugins.internal.Plugin import Fail, Retry
-from module.utils import decode, fixup, fs_encode, html_unescape, parseFileSize
+from module.utils import fixup, fs_encode, html_unescape, parseFileSize
 
 
 #@TODO: Adapt and move to PyFile in 0.4.10
@@ -241,7 +241,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.66"
+    __version__ = "1.67"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -426,43 +426,6 @@ class SimpleHoster(Hoster):
             info.pop('pattern', None)
 
         return info
-
-
-    #@TODO: Move to Hoster in 0.4.10
-    def _log(self, level, args):
-        log = getattr(self.core.log, level)
-        msg = " | ".join((fs_encode(a) if isinstance(a, unicode) else  #@NOTE: `fs_encode` -> `encode` in 0.4.10
-                          decode(a) if isinstance(a, str) else
-                          str(a)).strip() for a in args if a)
-        log("%(plugin)s[%(id)s]: %(msg)s" % {'plugin': self.__name__,
-                                             'id'    : self.pyfile.id,
-                                             'msg'   : msg or _(level.upper() + " MARK")})
-
-
-    #@TODO: Move to Hoster in 0.4.10
-    def logDebug(self, *args):
-        if self.core.debug:
-            return self._log("debug", args)
-
-
-    #@TODO: Move to Hoster in 0.4.10
-    def logInfo(self, *args):
-        return self._log("info", args)
-
-
-    #@TODO: Move to Hoster in 0.4.10
-    def logWarning(self, *args):
-        return self._log("warning", args)
-
-
-    #@TODO: Move to Hoster in 0.4.10
-    def logError(self, *args):
-        return self._log("error", args)
-
-
-    #@TODO: Move to Hoster in 0.4.10
-    def logCritical(self, *args):
-        return self._log("critical", args)
 
 
     def setup(self):
