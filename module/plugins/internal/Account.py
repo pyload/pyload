@@ -6,7 +6,7 @@ import time
 import traceback
 
 from module.plugins.internal.Plugin import Base
-from module.utils import compare_time, lock, parse_size
+from module.utils import compare_time, lock, parseFileSize
 
 
 class WrongPassword(Exception):
@@ -14,11 +14,6 @@ class WrongPassword(Exception):
 
 
 class Account(Base):
-    """
-    Base class for every Account plugin.
-    Just overwrite `login` and cookies will be stored and account becomes accessible in\
-    associated hoster plugin. Plugin should also provide `loadAccountInfo`
-    """
     __name__    = "Account"
     __type__    = "account"
     __version__ = "0.03"
@@ -29,6 +24,8 @@ class Account(Base):
 
 
     def __init__(self, manager, accounts):
+        super(Account, self).__init__(manager.core)
+
         self.manager = manager
         self.accounts = {}
         self.infos = {}  #: cache for account information

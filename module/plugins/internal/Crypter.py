@@ -7,11 +7,6 @@ from module.utils import decode, save_path
 
 
 class Crypter(Plugin):
-    """
-    Base plugin for crypter.
-    Overwrite `decrypt` in your subclassed plugin.
-    """
-
     __name__    = "Crypter"
     __type__    = "crypter"
     __version__ = "0.03"
@@ -29,7 +24,7 @@ class Crypter(Plugin):
 
 
     def __init__(self, pyfile):
-        super(Crypter, self).__init__(self, pyfile)
+        super(Crypter, self).__init__(pyfile)
 
         #: Provide information in dict here
         self.info = {}  #@TODO: Move to Plugin

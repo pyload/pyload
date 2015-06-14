@@ -60,8 +60,8 @@ class Base(object):
         log = getattr(self.core.log, level)
         msg = " | ".join((fs_encode(a) if isinstance(a, unicode) else  #@NOTE: `fs_encode` -> `encode` in 0.4.10
                           str(a)).strip() for a in args if a)
-        log("%(plugin)s[%(id)s]: %(msg)s" % {'plugin': self.__name__,
-                                             'id'    : self.pyfile.id if hasattr(self, 'pyfile') else "",
+        log("%(plugin)s%(id)s: %(msg)s" % {'plugin': self.__name__,
+                                             'id'    : ("[%s]" % self.pyfile.id) if hasattr(self, 'pyfile') else "",
                                              'msg'   : msg or _(level.upper() + " MARK")})
 
 

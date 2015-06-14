@@ -26,7 +26,8 @@ class Hook(Base):
     __type__    = "hook"
     __version__ = "0.03"
 
-    __config__ = []  #: [("name", "type", "desc", "default")]
+    __config__   = []  #: [("name", "type", "desc", "default")]
+    __threaded__ = []  #@TODO: Remove in 0.4.10
 
     __description__ = """Base hook plugin"""
     __license__     = "GPLv3"
@@ -36,6 +37,8 @@ class Hook(Base):
 
 
     def __init__(self, core, manager):
+        super(Hook, self).__init__(core)
+
         #: Provide information in dict here, usable by API `getInfo`
         self.info = {}
 
@@ -55,7 +58,12 @@ class Hook(Base):
         #: List of events the plugin can handle, name the functions exactly like eventname.
         self.event_list = []  #@NOTE: dont make duplicate entries in event_map
 
-        # register events
+        self.initEvents()
+        # self.initPeriodical(10)
+
+
+    def initEvents(self):
+         # register events
         if self.event_map:
             for event, funcs in self.event_map.iteritems():
                 if type(funcs) in (list, tuple):
@@ -117,7 +125,6 @@ class Hook(Base):
 
     #: Deprecated, use method `deactivate` instead
     def unload(self):
-        self.logWarning(_("Deprecated method `unload`, use `deactivate` instead"))
         return self.deactivate()
 
 
@@ -128,7 +135,6 @@ class Hook(Base):
 
     #: Deprecated, use method `activate` instead
     def coreReady(self):
-        self.logWarning(_("Deprecated method `coreReady`, use `activate` instead"))
         return self.activate()
 
 
@@ -139,7 +145,6 @@ class Hook(Base):
 
     #: Deprecated, use method `exit` instead
     def coreExiting(self):
-        self.logWarning(_("Deprecated method `coreExiting`, use `exit` instead"))
         return self.exit()
 
 
@@ -178,7 +183,6 @@ class Hook(Base):
 
     #: Deprecated, use method `captchaTask` instead
     def newCaptchaTask(self, task):
-        self.logWarning(_("Deprecated method `newCaptchaTask`, use `captchaTask` instead"))
         return self.captchaTask()
 
 
