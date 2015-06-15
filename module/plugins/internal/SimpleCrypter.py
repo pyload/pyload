@@ -11,7 +11,7 @@ from module.utils import fixup, html_unescape
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.53"
+    __version__ = "0.54"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),  #: Overrides core.config['general']['folder_per_package']
@@ -114,7 +114,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
             self.preload()
             self.checkInfo()
 
-            self.links = self.getLinks()
+            self.links = self.getLinks() or list()
 
             if hasattr(self, 'PAGES_PATTERN') and hasattr(self, 'loadPage'):
                 self.handlePages(pyfile)
