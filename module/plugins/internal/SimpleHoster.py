@@ -817,16 +817,6 @@ class SimpleHoster(Hoster):
             return size <= traffic
 
 
-    #@TODO: Remove in 0.4.10
-    def getConfig(self, option, default=''):
-        """getConfig with default value - sublass may not implements all config options"""
-        try:
-            return self.getConf(option)
-
-        except KeyError:
-            return default
-
-
     def retryFree(self):
         if not self.premium:
             return

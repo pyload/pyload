@@ -104,14 +104,18 @@ class Base(object):
         return self.setConfig(*args, **kwargs)
 
 
-    def getConfig(self, option):
+    def getConfig(self, option, default=""):
         """
         Returns config value for current plugin
 
         :param option:
         :return:
         """
-        return self.core.config.getPlugin(self.__name__, option)
+        try:
+            return self.core.config.getPlugin(self.__name__, option)
+
+        except KeyError:
+            return default
 
 
     #: Deprecated method
@@ -166,7 +170,7 @@ class Base(object):
 class Plugin(Base):
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __pattern__ = r'^unmatchable$'
     __config__  = []  #: [("name", "type", "desc", "default")]

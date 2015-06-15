@@ -11,7 +11,7 @@ from module.utils import decode, remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.46"
+    __version__ = "0.47"
 
     __config__  = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                    ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -104,15 +104,6 @@ class MultiHook(Hook):
             h.close()
 
         return rep
-
-
-    def getConfig(self, option, default=''):  #@TODO: Remove in 0.4.10
-        """getConfig with default value - sublass may not implements all config options"""
-        try:
-            return self.getConf(option)
-
-        except KeyError:
-            return default
 
 
     def pluginsCached(self):
