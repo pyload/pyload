@@ -24,7 +24,7 @@ def threaded(fn):
 class Hook(Base):
     __name__    = "Hook"
     __type__    = "hook"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __config__   = []  #: [("name", "type", "desc", "default")]
     __threaded__ = []  #@TODO: Remove in 0.4.10
