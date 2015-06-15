@@ -166,7 +166,7 @@ class Base(object):
 class Plugin(Base):
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __pattern__ = r'^unmatchable$'
     __config__  = []  #: [("name", "type", "desc", "default")]
@@ -324,7 +324,7 @@ class Plugin(Base):
         """ fail and indicates file ist temporary offline, the core may take consequences """
         raise Fail("temp. offline")
 
-    def skip(self, reason)
+    def skip(self, reason):
         raise Skip(reason)
 
     def retry(self, max_tries=3, wait_time=1, reason=""):
