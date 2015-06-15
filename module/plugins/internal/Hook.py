@@ -24,7 +24,7 @@ def threaded(fn):
 class Hook(Base):
     __name__    = "Hook"
     __type__    = "hook"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __config__   = []  #: [("name", "type", "desc", "default")]
     __threaded__ = []  #@TODO: Remove in 0.4.10
@@ -59,11 +59,10 @@ class Hook(Base):
         self.event_list = []  #@NOTE: dont make duplicate entries in event_map
 
         self.initEvents()
-        # self.initPeriodical(10)
+        self.initPeriodical(10)
 
 
     def initEvents(self):
-         # register events
         if self.event_map:
             for event, funcs in self.event_map.iteritems():
                 if type(funcs) in (list, tuple):
@@ -123,7 +122,7 @@ class Hook(Base):
         pass
 
 
-    #: Deprecated, use method `deactivate` instead
+    #: Deprecated method, use `deactivate` instead
     def unload(self):
         return self.deactivate()
 
@@ -133,7 +132,7 @@ class Hook(Base):
         pass
 
 
-    #: Deprecated, use method `activate` instead
+    #: Deprecated method, use `activate` instead
     def coreReady(self):
         return self.activate()
 
@@ -143,7 +142,7 @@ class Hook(Base):
         pass
 
 
-    #: Deprecated, use method `exit` instead
+    #: Deprecated method, use `exit` instead
     def coreExiting(self):
         return self.exit()
 
@@ -176,14 +175,14 @@ class Hook(Base):
         pass
 
 
-    def captchaTask(self, task):
+    def captcha_task(self, task):
         """New captcha task for the plugin, it MUST set the handler and timeout or will be ignored"""
         pass
 
 
-    #: Deprecated, use method `captchaTask` instead
+    #: Deprecated method, use `captcha_task` instead
     def newCaptchaTask(self, task):
-        return self.captchaTask(task)
+        return self.captcha_task(task)
 
 
     def captchaCorrect(self, task):
