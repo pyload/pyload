@@ -11,7 +11,7 @@ from module.utils import decode, remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.47"
+    __version__ = "0.48"
 
     __config__  = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                    ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -93,8 +93,12 @@ class MultiHook(Hook):
             self.setConfig('activated', False)
 
 
+    def activate(self):
+        self.initPeriodical(threaded=True)
+
+
     def getURL(self, *args, **kwargs):  #@TODO: Remove in 0.4.10
-        """ see HTTPRequest for argument list """
+        """See HTTPRequest for argument list"""
         h = pyreq.getHTTPRequest(timeout=120)
         try:
             if not 'decode' in kwargs:
@@ -124,9 +128,9 @@ class MultiHook(Hook):
             return list()
 
         try:
-            configmode = self.getConfig("pluginmode", 'all')
+            configmode = self.getConfig('pluginmode', 'all')
             if configmode in ("listed", "unlisted"):
-                pluginlist = self.getConfig("pluginlist", '').replace('|', ',').replace(';', ',').split(',')
+                pluginlist = self.getConfig('pluginlist', '').replace('|', ',').replace(';', ',').split(',')
                 configset  = self._pluginSet(pluginlist)
 
                 if configmode == "listed":
@@ -155,33 +159,20 @@ class MultiHook(Hook):
 
 
     def getHosters(self):
-        """Load list of supported hoster
+        """
+        Load list of supported hoster
 
         :return: List of domain names
         """
         raise NotImplementedError
 
 
-    #: Threaded _periodical, remove in 0.4.10 and use built-in flag for that
-    def _periodical(self):
-        try:
-            if self.isActivated():
-                self.periodical()
-
-        except Exception, e:
-            self.core.log.error(_("Error executing hooks: %s") % str(e))
-            if self.core.debug:
-                traceback.print_exc()
-
-        self.cb = self.core.scheduler.addJob(self.interval, self._periodical)
-
-
     def periodical(self):
-        """reload plugin list periodically"""
+        """Reload plugin list periodically"""
         self.loadAccount()
 
-        if self.getConfig("reload", True):
-            self.interval = max(self.getConfig("reloadinterval", 12) * 60 * 60, self.MIN_RELOAD_INTERVAL)
+        if self.getConfig('reload', True):
+            self.interval = max(self.getConfig('reloadinterval', 12) * 60 * 60, self.MIN_RELOAD_INTERVAL)
         else:
             self.core.scheduler.removeJob(self.cb)
             self.cb = None
@@ -247,7 +238,7 @@ class MultiHook(Hook):
 
             # create new regexp
             regexp = r'.*(?P<DOMAIN>%s).*' % "|".join(x.replace('.', '\.') for x in plugins)
-            if hasattr(self.pluginclass, "__pattern__") and isinstance(self.pluginclass.__pattern__, basestring) and '://' in self.pluginclass.__pattern__:
+            if hasattr(self.pluginclass, "__pattern__") and isinstance(self.pluginclass.__pattern__, basestring) and "://" in self.pluginclass.__pattern__:
                 regexp = r'%s|%s' % (self.pluginclass.__pattern__, regexp)
 
             self.logDebug("Regexp: %s" % regexp)
