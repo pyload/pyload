@@ -162,7 +162,7 @@ class DeathByCaptcha(Hook):
         return ticket, result
 
 
-    def newCaptchaTask(self, task):
+    def captcha_task(self, task):
         if "service" in task.data:
             return False
 

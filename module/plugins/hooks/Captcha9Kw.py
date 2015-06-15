@@ -165,7 +165,7 @@ class Captcha9Kw(Hook):
         task.setResult(result)
 
 
-    def newCaptchaTask(self, task):
+    def captcha_task(self, task):
         if not task.isTextual() and not task.isPositional():
             return
 

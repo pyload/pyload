@@ -61,7 +61,7 @@ class WindowsPhoneNotify(Hook):
             self.notify(_("Exiting pyLoad"))
 
 
-    def newCaptchaTask(self, task):
+    def captcha_task(self, task):
         if not self.getConfig('notifycaptcha'):
             return
 
@@ -104,13 +104,13 @@ class WindowsPhoneNotify(Hook):
 
         elapsed_time = time.time() - self.last_notify
 
-        if elapsed_time < self.getConf("sendtimewait"):
+        if elapsed_time < self.getConfig("sendtimewait"):
             return
 
         if elapsed_time > 60:
             self.notifications = 0
 
-        elif self.notifications >= self.getConf("sendpermin"):
+        elif self.notifications >= self.getConfig("sendpermin"):
             return
 
         request    = self.getXmlData("%s: %s" % (event, msg) if msg else event)

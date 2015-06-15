@@ -132,7 +132,7 @@ class CaptchaBrotherhood(Hook):
         return res
 
 
-    def newCaptchaTask(self, task):
+    def captcha_task(self, task):
         if "service" in task.data:
             return False
 

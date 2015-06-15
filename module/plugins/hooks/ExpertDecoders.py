@@ -72,7 +72,7 @@ class ExpertDecoders(Hook):
         task.setResult(result)
 
 
-    def newCaptchaTask(self, task):
+    def captcha_task(self, task):
         if not task.isTextual():
             return False
 

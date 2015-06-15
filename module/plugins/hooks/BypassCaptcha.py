@@ -95,7 +95,7 @@ class BypassCaptcha(Hook):
             self.logError(_("Could not send response"), e)
 
 
-    def newCaptchaTask(self, task):
+    def captcha_task(self, task):
         if "service" in task.data:
             return False
 
