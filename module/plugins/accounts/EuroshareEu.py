@@ -22,7 +22,8 @@ class EuroshareEu(Account):
 
         m = re.search('id="input_expire_date" value="(\d+\.\d+\.\d+ \d+:\d+)"', html)
         if m is None:
-            premium, validuntil = False, -1
+            premium    = False
+            validuntil = -1
         else:
             premium = True
             validuntil = time.mktime(time.strptime(m.group(1), "%d.%m.%Y %H:%M"))
