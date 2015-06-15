@@ -3,7 +3,6 @@
 import pycurl
 import random
 import re
-import urlparse
 
 from module.plugins.internal.ReCaptcha import ReCaptcha
 from module.plugins.internal.SolveMedia import SolveMedia

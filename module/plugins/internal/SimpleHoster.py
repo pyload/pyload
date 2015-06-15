@@ -229,7 +229,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.68"
+    __version__ = "1.69"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -517,20 +517,27 @@ class SimpleHoster(Hoster):
                 raise Fail(err)
 
 
+    def fixurl(self, url):
+        return self.fixurls([url])[0]
+
+
+    def fixurls(self, urls):
+        url_p   = urlparse.urlparse(self.pyfile.url)
+        baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
+
+        urls = (html_unescape(url.decode('unicode-escape').strip()) for url in urls)
+
+        return [urlparse.urljoin(baseurl, url) if not urlparse.urlparse(url).scheme else url \
+                for url in urls]
+
+
     def download(self, url, *args, **kwargs):
         if not url or not isinstance(url, basestring):
             return
 
         self.correctCaptcha()
 
-        url = html_unescape(url.decode('unicode-escape').strip())  #@TODO: Move to Hoster in 0.4.10
-
-        if not urlparse.urlparse(url).scheme:
-            url_p   = urlparse.urlparse(self.pyfile.url)
-            baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
-            url     = urlparse.urljoin(baseurl, url)
-
-        return super(SimpleHoster, self).download(url, *args, **kwargs)
+        return super(SimpleHoster, self).download(self.fixurl(url), *args, **kwargs)
 
 
     def checkFile(self):

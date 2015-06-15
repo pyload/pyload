@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urlparse
 
 from module.plugins.internal.Crypter import Crypter
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns, set_cookies
@@ -11,7 +10,7 @@ from module.utils import fixup, html_unescape
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.54"
+    __version__ = "0.55"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),  #: Overrides core.config['general']['folder_per_package']
@@ -108,13 +107,13 @@ class SimpleCrypter(Crypter, SimpleHoster):
         self.handleDirect(pyfile)
 
         if self.link:
-            self.urls = [self.link]
+            self.urls = self.fixurls([self.link])
 
         else:
             self.preload()
             self.checkInfo()
 
-            self.links = self.getLinks() or list()
+            self.links = self.fixurls(self.getLinks()) or list()
 
             if hasattr(self, 'PAGES_PATTERN') and hasattr(self, 'loadPage'):
                 self.handlePages(pyfile)
@@ -122,7 +121,6 @@ class SimpleCrypter(Crypter, SimpleHoster):
             self.logDebug("Package has %d links" % len(self.links))
 
         if self.links:
-            self.links    = [html_unescape(l.decode('unicode-escape').strip()) for l in self.links]  #@TODO: Move to Crypter in 0.4.10
             self.packages = [(self.info['name'], self.links, self.info['folder'])]
 
         elif not self.urls and not self.packages:  #@TODO: Remove in 0.4.10
@@ -159,11 +157,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
         Returns the links extracted from self.html
         You should override this only if it's impossible to extract links using only the LINK_PATTERN.
         """
-        url_p   = urlparse.urlparse(self.pyfile.url)
-        baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
-
-        return [urlparse.urljoin(baseurl, link) if not urlparse.urlparse(link).scheme else link \
-                for link in re.findall(self.LINK_PATTERN, self.html)]
+        return re.findall(self.LINK_PATTERN, self.html)
 
 
     def handlePages(self, pyfile):
