@@ -24,7 +24,7 @@ def threaded(fn):
 class Hook(Base):
     __name__    = "Hook"
     __type__    = "hook"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __config__   = []  #: [("name", "type", "desc", "default")]
     __threaded__ = []  #@TODO: Remove in 0.4.10
@@ -183,7 +183,7 @@ class Hook(Base):
 
     #: Deprecated, use method `captchaTask` instead
     def newCaptchaTask(self, task):
-        return self.captchaTask()
+        return self.captchaTask(task)
 
 
     def captchaCorrect(self, task):
