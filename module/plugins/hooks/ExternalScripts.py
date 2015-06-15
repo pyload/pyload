@@ -103,7 +103,7 @@ class ExternalScripts(Hook):
             self.callScript(script)
 
 
-    def coreExiting(self):
+    def exit(self):
         for script in self.scripts['pyload_restart' if self.core.do_restart else 'pyload_stop']:
             self.callScript(script)
 

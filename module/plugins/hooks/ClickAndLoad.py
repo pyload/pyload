@@ -48,7 +48,7 @@ class ClickAndLoad(Hook):
         self.info = {}  #@TODO: Remove in 0.4.10
 
 
-    def coreReady(self):
+    def activate(self):
         if not self.config['webinterface']['activated']:
             return
 

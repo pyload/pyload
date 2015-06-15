@@ -50,7 +50,7 @@ class UpdateManager(Hook):
     MIN_CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
 
 
-    def coreReady(self):
+    def activate(self):
         if self.checkonstart:
             self.core.api.pauseServer()
             self.update()

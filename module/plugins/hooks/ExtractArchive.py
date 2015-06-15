@@ -154,7 +154,7 @@ class ExtractArchive(Hook):
         self.repair      = False
 
 
-    def coreReady(self):
+    def activate(self):
         for p in ("UnRar", "SevenZip", "UnZip"):
             try:
                 module = self.core.pluginManager.loadModule("internal", p)

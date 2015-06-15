@@ -46,11 +46,11 @@ class AndroidPhoneNotify(Hook):
         self.notify(_("Plugins updated"), str(type_plugins))
 
 
-    def coreReady(self):
+    def activate(self):
         self.key = self.getConfig('apikey')
 
 
-    def coreExiting(self):
+    def exit(self):
         if not self.getConfig('notifyexit'):
             return
 

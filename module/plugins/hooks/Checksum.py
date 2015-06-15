@@ -63,7 +63,7 @@ class Checksum(Hook):
                 'default': r'^(?P<HASH>[0-9A-Fa-f]+)\s+\*?(?P<NAME>.+)$'}
 
 
-    def coreReady(self):
+    def activate(self):
         if not self.getConfig('check_checksum'):
             self.logInfo(_("Checksum validation is disabled in plugin configuration"))
 

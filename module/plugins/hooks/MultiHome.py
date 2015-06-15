@@ -43,7 +43,7 @@ class MultiHome(Hook):
             self.interfaces.append(Interface(interface))
 
 
-    def coreReady(self):
+    def activate(self):
         requestFactory = self.core.requestFactory
         oldGetRequest = requestFactory.getRequest
 

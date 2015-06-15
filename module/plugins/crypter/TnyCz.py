@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
-
 import re
+
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class TnyCz(SimpleCrypter):

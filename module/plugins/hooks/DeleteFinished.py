@@ -44,11 +44,11 @@ class DeleteFinished(Hook):
             # self.initPeriodical()
 
 
-    def unload(self):
+    def deactivate(self):
         self.manager.removeEvent('packageFinished', self.wakeup)
 
 
-    def coreReady(self):
+    def activate(self):
         self.info['sleep'] = True
         # interval = self.getConfig('interval')
         # self.pluginConfigChanged(self.__name__, 'interval', interval)

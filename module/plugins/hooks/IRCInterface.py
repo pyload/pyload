@@ -46,7 +46,7 @@ class IRCInterface(Thread, Hook):
         self.setDaemon(True)
 
 
-    def coreReady(self):
+    def activate(self):
         self.abort = False
         self.more = []
         self.new_package = {}

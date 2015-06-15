@@ -36,7 +36,7 @@ class OCR(object):
         self.result_captcha = ''
 
 
-    def unload(self):
+    def deactivate(self):
         """delete all tmp images"""
         pass
 

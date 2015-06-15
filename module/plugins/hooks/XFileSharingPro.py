@@ -53,7 +53,7 @@ class XFileSharingPro(Hook):
         # self.event_list = ["pluginConfigChanged"]
 
 
-    def coreReady(self):
+    def activate(self):
         self.loadPattern()
 
 
@@ -104,7 +104,7 @@ class XFileSharingPro(Hook):
         dict['re'] = re.compile(dict['pattern'])
 
 
-    def unload(self):
+    def deactivate(self):
         # self.unloadHoster("BasePlugin")
         for type, plugin in (("hoster",  "XFileSharingPro"),
                              ("crypter", "XFileSharingProFolder")):

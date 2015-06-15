@@ -258,7 +258,7 @@ class MultiHook(Hook):
             hdict.pop('new_name', None)
 
 
-    def unload(self):
+    def deactivate(self):
         """Remove override for all plugins. Scheduler job is removed by hookmanager"""
         for plugin in self.supported:
             self.unloadPlugin(plugin)
