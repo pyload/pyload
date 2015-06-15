@@ -74,7 +74,7 @@ class Hook(Base):
             self.event_map = None
 
         if self.event_list:
-            self.logWarning(_("Deprecated method `event_list`, use `event_map` instead"))
+            self.logDebug("Deprecated method `event_list`, use `event_map` instead")
 
             for f in self.event_list:
                 self.manager.addEvent(f, getattr(self, f))
