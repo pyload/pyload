@@ -6,13 +6,13 @@ import os
 import re
 
 from module.plugins.internal.Crypter import Crypter
-from pyload.utils import save_join
+from module.utils import save_join
 
 
 class Container(Crypter):
     __name__    = "Container"
     __type__    = "container"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'^unmatchable$'
     __config__  = []  #: [("name", "type", "desc", "default")]
