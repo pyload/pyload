@@ -24,7 +24,7 @@ def threaded(fn):
 class Hook(Base):
     __name__    = "Hook"
     __type__    = "hook"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __config__   = []  #: [("name", "type", "desc", "default")]
     __threaded__ = []  #@TODO: Remove in 0.4.10
@@ -39,17 +39,11 @@ class Hook(Base):
     def __init__(self, core, manager):
         super(Hook, self).__init__(core)
 
-        #: Provide information in dict here, usable by API `getInfo`
-        self.info = {}
-
-        #: Callback of periodical job task, used by HookManager
-        self.cb       = None
-        self.interval = 60
-
         #: `HookManager`
         self.manager = manager
 
-        self.setup()
+        #: Provide information in dict here, usable by API `getInfo`
+        self.info = {}
 
         #: automatically register event listeners for functions, attribute will be deleted dont use it yourself
         self.event_map = {}
@@ -58,11 +52,16 @@ class Hook(Base):
         #: List of events the plugin can handle, name the functions exactly like eventname.
         self.event_list = []  #@NOTE: dont make duplicate entries in event_map
 
-        self.initEvents()
-        self.initPeriodical(10)
+        #: Callback of periodical job task, used by HookManager
+        self.cb       = None
+        self.interval = 60
+
+        self.setup()
+        self.init_events()
+        self.init_periodical(10)
 
 
-    def initEvents(self):
+    def init_events(self):
         if self.event_map:
             for event, funcs in self.event_map.iteritems():
                 if type(funcs) in (list, tuple):
@@ -83,8 +82,13 @@ class Hook(Base):
             self.event_list = None
 
 
-    def initPeriodical(self, delay=0, threaded=False):
+    def init_periodical(self, delay=0, threaded=False):
         self.cb = self.core.scheduler.addJob(max(0, delay), self._periodical, [threaded], threaded=threaded)
+
+
+    #: Deprecated method, use `init_periodical` instead
+    def initPeriodical(self):
+        return self.init_periodical()
 
 
     def _periodical(self, threaded):
@@ -103,6 +107,10 @@ class Hook(Base):
         self.cb = self.core.scheduler.addJob(self.interval, self._periodical, [threaded], threaded=threaded)
 
 
+    def periodical(self):
+        pass
+
+
     def __repr__(self):
         return "<Hook %s>" % self.__name__
 
@@ -112,9 +120,14 @@ class Hook(Base):
         pass
 
 
-    def isActivated(self):
+    def is_activated(self):
         """Checks if hook is activated"""
         return self.getConfig("activated")
+
+
+    #: Deprecated method, use `is_activated` instead
+    def isActivated(self):
+        return self.is_activated()
 
 
     def deactivate(self):
@@ -147,32 +160,58 @@ class Hook(Base):
         return self.exit()
 
 
+    def download_preparing(self, pyfile):
+        pass
+
+
+    #: Deprecated method, use `download_preparing` instead
     def downloadPreparing(self, pyfile):
+        return self.download_preparing(pyfile)
+
+
+    def download_finished(self, pyfile):
         pass
 
 
+    #: Deprecated method, use `download_finished` instead
     def downloadFinished(self, pyfile):
+        return self.download_finished(pyfile)
+
+
+    def download_failed(self, pyfile):
         pass
 
 
+    #: Deprecated method, use `download_failed` instead
     def downloadFailed(self, pyfile):
+        return self.download_failed(pyfile)
+
+
+    def package_finished(self, pypack):
         pass
 
 
+    #: Deprecated method, use `package_finished` instead
     def packageFinished(self, pypack):
+        return self.package_finished(pyfile)
+
+
+    def before_reconnect(self, ip):
         pass
 
 
+    #: Deprecated method, use `before_reconnect` instead
     def beforeReconnecting(self, ip):
+        return self.before_reconnect(ip)
+
+
+    def after_reconnect(self, ip, oldip):
         pass
 
 
+    #: Deprecated method, use `after_reconnect` instead
     def afterReconnecting(self, ip):
-        pass
-
-
-    def periodical(self):
-        pass
+        return self.after_reconnect(ip, None)
 
 
     def captcha_task(self, task):
@@ -185,9 +224,19 @@ class Hook(Base):
         return self.captcha_task(task)
 
 
+    def captcha_correct(self, task):
+        pass
+
+
+    #: Deprecated method, use `captcha_correct` instead
     def captchaCorrect(self, task):
+        return self.captcha_correct(task)
+
+
+    def captcha_invalid(self, task):
         pass
 
 
+    #: Deprecated method, use `captcha_invalid` instead
     def captchaInvalid(self, task):
-        pass
+        return self.captcha_invalid(task)
