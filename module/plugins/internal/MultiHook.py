@@ -11,7 +11,7 @@ from module.utils import decode, remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.48"
+    __version__ = "0.49"
 
     __config__  = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                    ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -94,7 +94,7 @@ class MultiHook(Hook):
 
 
     def activate(self):
-        self.initPeriodical(threaded=True)
+        self.init_periodical(threaded=True)
 
 
     def getURL(self, *args, **kwargs):  #@TODO: Remove in 0.4.10
