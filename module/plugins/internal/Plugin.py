@@ -31,7 +31,7 @@ if os.name != "nt":
 
 from itertools import islice
 
-from module.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload  #@TODO: Remove in 0.4.10
+from module.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload as Skip  #@TODO: Remove in 0.4.10
 from module.utils import save_join, save_path, fs_encode, fs_decode
 
 def chunks(iterable, size):
@@ -55,7 +55,8 @@ class Base(object):
         #: core config
         self.config = core.config
 
-    # Log functions
+
+    #: Log functions
     def _log(self, level, args):
         log = getattr(self.core.log, level)
         msg = " | ".join((fs_encode(a) if isinstance(a, unicode) else  #@NOTE: `fs_encode` -> `encode` in 0.4.10
@@ -86,67 +87,96 @@ class Base(object):
         return self._log("critical", args)
 
 
-    def setConf(self, option, value):
-        """ see `setConfig` """
-        self.core.config.setPlugin(self.__name__, option, value)
-
     def setConfig(self, option, value):
-        """ Set config value for current plugin
+        """
+        Set config value for current plugin
 
         :param option:
         :param value:
         :return:
         """
-        self.setConf(option, value)
+        self.core.config.setPlugin(self.__name__, option, value)
 
-    def getConf(self, option):
-        """ see `getConfig` """
-        return self.core.config.getPlugin(self.__name__, option)
+
+    #: Deprecated method
+    def setConf(self, *args, **kwargs):
+        """See `setConfig`"""
+        return self.setConfig(*args, **kwargs)
+
 
     def getConfig(self, option):
-        """ Returns config value for current plugin
+        """
+        Returns config value for current plugin
 
         :param option:
         :return:
         """
-        return self.getConf(option)
+        return self.core.config.getPlugin(self.__name__, option)
 
-    def setStorage(self, key, value):
-        """ Saves a value persistently to the database """
-        self.core.db.setStorage(self.__name__, key, value)
+
+    #: Deprecated method
+    def getConf(self, *args, **kwargs):
+        """See `getConfig`"""
+        return self.getConfig(*args, **kwargs)
+
 
     def store(self, key, value):
-        """ same as `setStorage` """
+        """Saves a value persistently to the database"""
         self.core.db.setStorage(self.__name__, key, value)
 
-    def getStorage(self, key=None, default=None):
-        """ Retrieves saved value or dict of all saved entries if key is None """
-        if key is not None:
-            return self.core.db.getStorage(self.__name__, key) or default
-        return self.core.db.getStorage(self.__name__, key)
 
-    def retrieve(self, *args, **kwargs):
-        """ same as `getStorage` """
-        return self.getStorage(*args, **kwargs)
+    #: Deprecated method
+    def setStorage(self, *args, **kwargs):
+        """Same as `setStorage`"""
+        return self.store(*args, **kwargs)
+
+
+    def retrieve(self, key, default=None):
+        """Retrieves saved value or dict of all saved entries if key is None"""
+        return self.core.db.getStorage(self.__name__, key) or default
+
+
+    #: Deprecated method
+    def getStorage(self, *args, **kwargs):
+        """Same as `getStorage`"""
+        return self.retrieve(*args, **kwargs)
+
 
     def delStorage(self, key):
-        """ Delete entry in db """
+        """Delete entry in db"""
         self.core.db.delStorage(self.__name__, key)
 
 
+    def fail(self, reason):
+        """Fail and give reason"""
+        raise Fail(reason)
+
+
+    def error(self, reason="", type=_("Parse")):
+        if not reason and not type:
+            type = _("Unknown")
+
+        msg  = _("%s error") % type.strip().capitalize() if type else _("Error")
+        msg += (": %s" % reason.strip()) if reason else ""
+        msg += _(" | Plugin may be out of date")
+
+        raise Fail(msg)
+
+
 class Plugin(Base):
-    """
-    Base plugin for hoster/crypter.
-    Overwrite `process` / `decrypt` in your subclassed plugin.
-    """
-    __name__ = "Plugin"
-    __version__ = "0.07"
-    __pattern__ = None
-    __type__ = "hoster"
-    __config__ = [("name", "type", "desc", "default")]
-    __description__ = """Base Plugin"""
-    __author_name__ = ("RaNaN", "spoob", "mkaay")
-    __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org", "mkaay@mkaay.de")
+    __name__    = "Plugin"
+    __type__    = "hoster"
+    __version__ = "0.08"
+
+    __pattern__ = r'^unmatchable$'
+    __config__  = []  #: [("name", "type", "desc", "default")]
+
+    __description__ = """Base plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("spoob", "spoob@pyload.org"),
+                       ("mkaay", "mkaay@mkaay.de"  )]
+
 
     def __init__(self, pyfile):
         Base.__init__(self, pyfile.m.core)
@@ -286,10 +316,6 @@ class Plugin(Base):
         self.waiting = False
         self.pyfile.setStatus("starting")
 
-    def fail(self, reason):
-        """ fail and give reason """
-        raise Fail(reason)
-
     def offline(self):
         """ fail and indicate file is offline """
         raise Fail("offline")
@@ -297,6 +323,9 @@ class Plugin(Base):
     def tempOffline(self):
         """ fail and indicates file ist temporary offline, the core may take consequences """
         raise Fail("temp. offline")
+
+    def skip(self, reason)
+        raise Skip(reason)
 
     def retry(self, max_tries=3, wait_time=1, reason=""):
         """Retries and begin again from the beginning
@@ -574,7 +603,7 @@ class Plugin(Base):
         """ checks if same file was/is downloaded within same package
 
         :param starting: indicates that the current download is going to start
-        :raises SkipDownload:
+        :raises Skip:
         """
 
         pack = self.pyfile.package()
@@ -582,10 +611,10 @@ class Plugin(Base):
         for pyfile in self.core.files.cache.values():
             if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package().folder == pack.folder:
                 if pyfile.status in (0, 12): #finished or downloading
-                    raise SkipDownload(pyfile.pluginname)
+                    self.skip(pyfile.pluginname)
                 elif pyfile.status in (
                 5, 7) and starting: #a download is waiting/starting and was appenrently started before
-                    raise SkipDownload(pyfile.pluginname)
+                    self.skip(pyfile.pluginname)
 
         download_folder = self.config['general']['download_folder']
         location = save_join(download_folder, pack.folder, self.pyfile.name)
@@ -593,14 +622,14 @@ class Plugin(Base):
         if starting and self.core.config['download']['skip_existing'] and exists(location):
             size = os.stat(location).st_size
             if size >= self.pyfile.size:
-                raise SkipDownload("File exists.")
+                self.skip("File exists")
 
         pyfile = self.core.db.findDuplicates(self.pyfile.id, self.pyfile.package().folder, self.pyfile.name)
         if pyfile:
             if exists(location):
-                raise SkipDownload(pyfile[0])
+                self.skip(pyfile[0])
 
-            self.log.debug("File %s not skipped, because it does not exists." % self.pyfile.name)
+            self.log.debug("File %s not skipped, because it does not exists" % self.pyfile.name)
 
     def clean(self):
         """ clean everything and remove references """

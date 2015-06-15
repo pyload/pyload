@@ -23,18 +23,6 @@ from module.utils import fixup, fs_encode, html_unescape, parseFileSize
 statusMap = dict((v, k) for k, v in _statusMap.iteritems())
 
 
-#@TODO: Remove in 0.4.10 and redirect to self.error instead
-def _error(self, reason, type):
-        if not reason and not type:
-            type = "unknown"
-
-        msg  = _("%s error") % type.strip().capitalize() if type else _("Error")
-        msg += (": %s" % reason.strip()) if reason else ""
-        msg += _(" | Plugin may be out of date")
-
-        raise Fail(msg)
-
-
 #@TODO: Remove in 0.4.10
 def _wait(self, seconds, reconnect):
     if seconds:
@@ -852,7 +840,3 @@ class SimpleHoster(Hoster):
     #@TODO: Remove in 0.4.10
     def wait(self, seconds=0, reconnect=None):
         return _wait(self, seconds, reconnect)
-
-
-    def error(self, reason="", type="parse"):
-        return _error(self, reason, type)
