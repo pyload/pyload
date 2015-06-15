@@ -8,7 +8,7 @@ from module.plugins.internal.Account import Account
 class RealdebridCom(Account):
     __name__    = "RealdebridCom"
     __type__    = "account"
-    __version__ = "0.46"
+    __version__ = "0.47"
 
     __description__ = """Real-Debrid.com account plugin"""
     __license__     = "GPLv3"
@@ -17,17 +17,21 @@ class RealdebridCom(Account):
 
     def loadAccountInfo(self, user, req):
         if self.pin_code:
-            return {"premium": False}
-        html = req.load("https://real-debrid.com/api/account.php")
-        xml = xml.dom.minidom.parseString(html)
-        account_info = {"validuntil": float(xml.getElementsByTagName("expiration")[0].childNodes[0].nodeValue),
-                        "trafficleft": -1}
+            return
 
-        return account_info
+        html = req.load("https://real-debrid.com/api/account.php")
+        xml  = xml.dom.minidom.parseString(html)
+
+        validuntil = float(xml.getElementsByTagName("expiration")[0].childNodes[0].nodeValue)
+
+        return {'validuntil' : validuntil,
+                'trafficleft': -1        ,
+                'premium'    : True      }
 
 
     def login(self, user, data, req):
         self.pin_code = False
+
         html = req.load("https://real-debrid.com/ajax/login.php",
                         get={"user": user, "pass": data['password']},
                         decode=True)
