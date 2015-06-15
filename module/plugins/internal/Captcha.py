@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Plugin import Base
+from module.plugins.internal.Plugin import Plugin
 
 
 #@TODO: Extend (new) Plugin class; remove all `html` args
-class Captcha(Base):
+class Captcha(Plugin):
     __name__    = "Captcha"
     __type__    = "captcha"
     __version__ = "0.30"

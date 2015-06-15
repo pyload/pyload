@@ -24,7 +24,7 @@ class RestartFailed(Hook):
             # if self.MIN_CHECK_INTERVAL <= interval != self.interval:
                 # self.core.scheduler.removeJob(self.cb)
                 # self.interval = interval
-                # self.initPeriodical()
+                # self.init_periodical()
             # else:
                 # self.logDebug("Invalid interval value, kept current")
 

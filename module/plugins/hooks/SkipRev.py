@@ -59,7 +59,7 @@ class SkipRev(Hook):
                       link.order)
 
 
-    def downloadPreparing(self, pyfile):
+    def download_preparing(self, pyfile):
         name = self._name(pyfile)
 
         if pyfile.statusname is _("unskipped") or not name.endswith(".rev") or not ".part" in name:
@@ -85,7 +85,7 @@ class SkipRev(Hook):
             pyfile.plugin.setup  = MethodType(self._setup, pyfile.plugin)
 
 
-    def downloadFailed(self, pyfile):
+    def download_failed(self, pyfile):
         #: Check if pyfile is still "failed",
         #  maybe might has been restarted in meantime
         if pyfile.status != 8 or pyfile.name.rsplit('.', 1)[-1].strip() not in ("rar", "rev"):

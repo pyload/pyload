@@ -5,7 +5,7 @@ import re
 import subprocess
 
 from module.plugins.internal.UnRar import ArchiveError, CRCError, PasswordError, UnRar, renice
-from module.utils import fs_encode, save_join
+from module.utils import fs_encode, save_join as fs_join
 
 
 class SevenZip(UnRar):
@@ -126,7 +126,7 @@ class SevenZip(UnRar):
         result = set()
         for groups in self.re_filelist.findall(out):
             f = groups[-1].strip()
-            result.add(save_join(self.out, f))
+            result.add(fs_join(self.out, f))
 
         return list(result)
 

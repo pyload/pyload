@@ -132,7 +132,7 @@ class ImageTyperz(Hook):
             self.logInfo(_("Your %s account has not enough credits") % self.__name__)
 
 
-    def captchaInvalid(self, task):
+    def captcha_invalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             res = getURL(self.RESPOND_URL,
                          post={'action': "SETBADIMAGE",

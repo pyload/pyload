@@ -8,7 +8,7 @@ import re
 import zlib
 
 from module.plugins.internal.Hook import Hook
-from module.utils import save_join, fs_encode
+from module.utils import save_join as fs_join, fs_encode
 
 
 def computeChecksum(local_file, algorithm):
@@ -78,7 +78,7 @@ class Checksum(Hook):
         self.formats = self.algorithms + ["sfv", "crc", "hash"]
 
 
-    def downloadFinished(self, pyfile):
+    def download_finished(self, pyfile):
         """
         Compute checksum for the downloaded file and compare it with the hash provided by the hoster.
         pyfile.plugin.check_data should be a dictionary which can contain:
@@ -104,8 +104,8 @@ class Checksum(Hook):
             self.checkFailed(pyfile, None, "No file downloaded")
 
         local_file = fs_encode(pyfile.plugin.lastDownload)
-        #download_folder = self.config['general']['download_folder']
-        #local_file = fs_encode(save_join(download_folder, pyfile.package().folder, pyfile.name))
+        #download_folder = self.core.config['general']['download_folder']
+        #local_file = fs_encode(fs_join(download_folder, pyfile.package().folder, pyfile.name))
 
         if not os.path.isfile(local_file):
             self.checkFailed(pyfile, None, "File does not exist")
@@ -164,8 +164,8 @@ class Checksum(Hook):
         pyfile.plugin.fail(reason=msg)
 
 
-    def packageFinished(self, pypack):
-        download_folder = save_join(self.config['general']['download_folder'], pypack.folder, "")
+    def package_finished(self, pypack):
+        download_folder = fs_join(self.core.config['general']['download_folder'], pypack.folder, "")
 
         for link in pypack.getChildren().itervalues():
             file_type = os.path.splitext(link['name'])[1][1:].lower()
@@ -173,7 +173,7 @@ class Checksum(Hook):
             if file_type not in self.formats:
                 continue
 
-            hash_file = fs_encode(save_join(download_folder, link['name']))
+            hash_file = fs_encode(fs_join(download_folder, link['name']))
             if not os.path.isfile(hash_file):
                 self.logWarning(_("File not found"), link['name'])
                 continue
@@ -185,7 +185,7 @@ class Checksum(Hook):
                 data = m.groupdict()
                 self.logDebug(link['name'], data)
 
-                local_file = fs_encode(save_join(download_folder, data['NAME']))
+                local_file = fs_encode(fs_join(download_folder, data['NAME']))
                 algorithm = self.methods.get(file_type, file_type)
                 checksum = computeChecksum(local_file, algorithm)
                 if checksum == data['HASH']:

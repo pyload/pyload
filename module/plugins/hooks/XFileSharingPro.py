@@ -126,7 +126,7 @@ class XFileSharingPro(Hook):
             return False
 
 
-    # def downloadFailed(self, pyfile):
+    # def download_failed(self, pyfile):
         # if pyfile.pluginname == "BasePlugin" \
            # and pyfile.hasStatus("failed") \
            # and not self.getConfig('use_hoster_list') \

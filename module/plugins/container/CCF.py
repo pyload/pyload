@@ -7,7 +7,7 @@ import re
 import urllib2
 
 from module.plugins.internal.Container import Container
-from module.utils import fs_encode, save_join
+from module.utils import fs_encode, save_join as fs_join
 
 
 class CCF(Container):
@@ -32,8 +32,8 @@ class CCF(Container):
                                    'filename': "test.ccf",
                                    'upload'  : open(fs_filename, "rb")}).read()
 
-        download_folder = self.config['general']['download_folder']
-        dlc_file        = save_join(download_folder, "tmp_%s.dlc" % pyfile.name)
+        download_folder = self.core.config['general']['download_folder']
+        dlc_file        = fs_join(download_folder, "tmp_%s.dlc" % pyfile.name)
 
         try:
             dlc = re.search(r'<dlc>(.+)</dlc>', dlc_content, re.S).group(1).decode('base64')

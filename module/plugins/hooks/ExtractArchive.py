@@ -56,7 +56,7 @@ if os.name != "nt":
 from module.plugins.internal.Hook import Hook, Expose, threaded
 from module.plugins.internal.Extractor import ArchiveError, CRCError, PasswordError
 from module.plugins.internal.SimpleHoster import replace_patterns
-from module.utils import fs_encode, save_join, uniqify
+from module.utils import fs_encode, save_join as fs_join, uniqify
 
 
 class ArchiveQueue(object):
@@ -220,7 +220,7 @@ class ExtractArchive(Hook):
         self.queue.remove(pid)
 
 
-    def packageFinished(self, pypack):
+    def package_finished(self, pypack):
         self.queue.add(pypack.id)
         if not self.getConfig('waitall') and not self.extracting:
             self.extractQueued()
@@ -261,7 +261,7 @@ class ExtractArchive(Hook):
         # reload from txt file
         self.reloadPasswords()
 
-        download_folder = self.config['general']['download_folder']
+        download_folder = self.core.config['general']['download_folder']
 
         # iterate packages -> extractors -> targets
         for pid in ids:
@@ -274,17 +274,17 @@ class ExtractArchive(Hook):
             self.logInfo(_("Check package: %s") % pypack.name)
 
             # determine output folder
-            out = save_join(download_folder, pypack.folder, destination, "")  #: force trailing slash
+            out = fs_join(download_folder, pypack.folder, destination, "")  #: force trailing slash
 
             if subfolder:
-                out = save_join(out, pypack.folder)
+                out = fs_join(out, pypack.folder)
 
             if not os.path.exists(out):
                 os.makedirs(out)
 
             matched   = False
             success   = True
-            files_ids = dict((pylink['name'],((save_join(download_folder, pypack.folder, pylink['name'])), pylink['id'], out)) for pylink \
+            files_ids = dict((pylink['name'],((fs_join(download_folder, pypack.folder, pylink['name'])), pylink['id'], out)) for pylink \
                         in sorted(pypack.getChildren().itervalues(), key=lambda k: k['name'])).values()  #: remove duplicates
 
             # check as long there are unseen files
@@ -344,7 +344,7 @@ class ExtractArchive(Hook):
                         self.setPermissions(new_files)
 
                         for filename in new_files:
-                            file = fs_encode(save_join(os.path.dirname(archive.filename), filename))
+                            file = fs_encode(fs_join(os.path.dirname(archive.filename), filename))
                             if not os.path.exists(file):
                                 self.logDebug("New file %s does not exists" % filename)
                                 continue
@@ -554,16 +554,16 @@ class ExtractArchive(Hook):
                 continue
 
             try:
-                if self.config['permission']['change_file']:
+                if self.core.config['permission']['change_file']:
                     if os.path.isfile(f):
-                        os.chmod(f, int(self.config['permission']['file'], 8))
+                        os.chmod(f, int(self.core.config['permission']['file'], 8))
 
                     elif os.path.isdir(f):
-                        os.chmod(f, int(self.config['permission']['folder'], 8))
+                        os.chmod(f, int(self.core.config['permission']['folder'], 8))
 
-                if self.config['permission']['change_dl'] and os.name != "nt":
-                    uid = getpwnam(self.config['permission']['user'])[2]
-                    gid = getgrnam(self.config['permission']['group'])[2]
+                if self.core.config['permission']['change_dl'] and os.name != "nt":
+                    uid = getpwnam(self.core.config['permission']['user'])[2]
+                    gid = getgrnam(self.core.config['permission']['group'])[2]
                     os.chown(f, uid, gid)
 
             except Exception, e:

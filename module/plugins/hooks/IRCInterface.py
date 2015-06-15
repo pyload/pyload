@@ -54,7 +54,7 @@ class IRCInterface(Thread, Hook):
         self.start()
 
 
-    def packageFinished(self, pypack):
+    def package_finished(self, pypack):
         try:
             if self.getConfig('info_pack'):
                 self.response(_("Package finished: %s") % pypack.name)
@@ -62,7 +62,7 @@ class IRCInterface(Thread, Hook):
             pass
 
 
-    def downloadFinished(self, pyfile):
+    def download_finished(self, pyfile):
         try:
             if self.getConfig('info_file'):
                 self.response(

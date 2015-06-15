@@ -2,7 +2,7 @@
 
 import traceback
 
-from module.plugins.internal.Plugin import Base
+from module.plugins.internal.Plugin import Plugin
 
 
 class Expose(object):
@@ -21,7 +21,7 @@ def threaded(fn):
     return run
 
 
-class Hook(Base):
+class Hook(Plugin):
     __name__    = "Hook"
     __type__    = "hook"
     __version__ = "0.08"

@@ -194,7 +194,7 @@ class DeathByCaptcha(Hook):
             self._processCaptcha(task)
 
 
-    def captchaInvalid(self, task):
+    def captcha_invalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             try:
                 res = self.api_response("captcha/%d/report" % task.data['ticket'], True)

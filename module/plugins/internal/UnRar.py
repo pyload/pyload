@@ -8,7 +8,7 @@ from glob import glob
 from string import digits
 
 from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
-from module.utils import fs_decode, fs_encode, save_join
+from module.utils import fs_decode, fs_encode, save_join as fs_join
 
 
 def renice(pid, value):
@@ -175,7 +175,7 @@ class UnRar(Extractor):
         files = [self.filename]
 
         # eventually Multipart Files
-        files.extend(save_join(dir, os.path.basename(file)) for file in filter(self.isMultipart, os.listdir(dir))
+        files.extend(fs_join(dir, os.path.basename(file)) for file in filter(self.isMultipart, os.listdir(dir))
                      if re.sub(self.re_multipart,".rar",name) == re.sub(self.re_multipart,".rar",file))
 
         return files
@@ -197,13 +197,13 @@ class UnRar(Extractor):
         if not self.fullpath and self.VERSION.startswith('5'):
             # NOTE: Unrar 5 always list full path
             for f in fs_decode(out).splitlines():
-                f = save_join(self.out, os.path.basename(f.strip()))
+                f = fs_join(self.out, os.path.basename(f.strip()))
                 if os.path.isfile(f):
-                    result.add(save_join(self.out, os.path.basename(f)))
+                    result.add(fs_join(self.out, os.path.basename(f)))
         else:
             for f in fs_decode(out).splitlines():
                 f = f.strip()
-                result.add(save_join(self.out, f))
+                result.add(fs_join(self.out, f))
 
         return list(result)
 

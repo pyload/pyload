@@ -27,7 +27,7 @@ class UserAgentSwitcher(Hook):
         self.info = {}  #@TODO: Remove in 0.4.10
 
 
-    def downloadPreparing(self, pyfile):
+    def download_preparing(self, pyfile):
         connecttimeout = self.getConfig('connecttimeout')
         maxredirs      = self.getConfig('maxredirs')
         useragent      = self.getConfig('useragent').encode("utf8", "replace")  #@TODO: Remove `encode` in 0.4.10

@@ -35,17 +35,17 @@ class DeleteFinished(Hook):
             self.logInfo(msg % (_('including') if deloffline else _('excluding')))
             self.deleteFinished(mode)
             self.info['sleep'] = True
-            self.addEvent('packageFinished', self.wakeup)
+            self.addEvent('package_finished', self.wakeup)
 
 
     # def pluginConfigChanged(self, plugin, name, value):
         # if name == "interval" and value != self.interval:
             # self.interval = value * 3600
-            # self.initPeriodical()
+            # self.init_periodical()
 
 
     def deactivate(self):
-        self.manager.removeEvent('packageFinished', self.wakeup)
+        self.manager.removeEvent('package_finished', self.wakeup)
 
 
     def activate(self):
@@ -53,7 +53,7 @@ class DeleteFinished(Hook):
         # interval = self.getConfig('interval')
         # self.pluginConfigChanged(self.__name__, 'interval', interval)
         self.interval = max(self.MIN_CHECK_INTERVAL, self.getConfig('interval') * 60 * 60)
-        self.addEvent('packageFinished', self.wakeup)
+        self.addEvent('package_finished', self.wakeup)
 
 
     ## own methods ##
@@ -64,7 +64,7 @@ class DeleteFinished(Hook):
 
 
     def wakeup(self, pypack):
-        self.manager.removeEvent('packageFinished', self.wakeup)
+        self.manager.removeEvent('package_finished', self.wakeup)
         self.info['sleep'] = False
 
 

@@ -8,7 +8,7 @@ import time
 from shutil import move
 
 from module.plugins.internal.Hook import Hook
-from module.utils import fs_encode, save_join
+from module.utils import fs_encode, save_join as fs_join
 
 
 class HotFolder(Hook):
@@ -50,7 +50,7 @@ class HotFolder(Hook):
 
                     name = "%s_%s.txt" % (file, time.strftime("%H-%M-%S_%d%b%Y"))
 
-                    with open(save_join(folder, "finished", name), "wb") as f:
+                    with open(fs_join(folder, "finished", name), "wb") as f:
                         f.write(content)
 
                     self.core.api.addPackage(f.name, [f.name], 1)

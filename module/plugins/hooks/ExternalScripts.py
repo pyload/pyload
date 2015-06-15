@@ -4,7 +4,7 @@ import os
 import subprocess
 
 from module.plugins.internal.Hook import Hook
-from module.utils import fs_encode, save_join
+from module.utils import fs_encode, save_join as fs_join
 
 
 class ExternalScripts(Hook):
@@ -66,7 +66,7 @@ class ExternalScripts(Hook):
                 return
 
         for filename in os.listdir(dir):
-            file = save_join(dir, filename)
+            file = fs_join(dir, filename)
 
             if not os.path.isfile(file):
                 continue
@@ -108,41 +108,41 @@ class ExternalScripts(Hook):
             self.callScript(script)
 
 
-    def beforeReconnecting(self, ip):
+    def before_reconnect(self, ip):
         for script in self.scripts['before_reconnect']:
             self.callScript(script, ip)
         self.info['oldip'] = ip
 
 
-    def afterReconnecting(self, ip):
+    def after_reconnect(self, ip):
         for script in self.scripts['after_reconnect']:
             self.callScript(script, ip, self.info['oldip'])  #@TODO: Use built-in oldip in 0.4.10
 
 
-    def downloadPreparing(self, pyfile):
+    def download_preparing(self, pyfile):
         for script in self.scripts['download_preparing']:
             self.callScript(script, pyfile.id, pyfile.name, None, pyfile.pluginname, pyfile.url)
 
 
-    def downloadFailed(self, pyfile):
-        if self.config['general']['folder_per_package']:
-            download_folder = save_join(self.config['general']['download_folder'], pyfile.package().folder)
+    def download_failed(self, pyfile):
+        if self.core.config['general']['folder_per_package']:
+            download_folder = fs_join(self.core.config['general']['download_folder'], pyfile.package().folder)
         else:
-            download_folder = self.config['general']['download_folder']
+            download_folder = self.core.config['general']['download_folder']
 
         for script in self.scripts['download_failed']:
-            file = save_join(download_folder, pyfile.name)
+            file = fs_join(download_folder, pyfile.name)
             self.callScript(script, pyfile.id, pyfile.name, file, pyfile.pluginname, pyfile.url)
 
 
-    def downloadFinished(self, pyfile):
-        if self.config['general']['folder_per_package']:
-            download_folder = save_join(self.config['general']['download_folder'], pyfile.package().folder)
+    def download_finished(self, pyfile):
+        if self.core.config['general']['folder_per_package']:
+            download_folder = fs_join(self.core.config['general']['download_folder'], pyfile.package().folder)
         else:
-            download_folder = self.config['general']['download_folder']
+            download_folder = self.core.config['general']['download_folder']
 
         for script in self.scripts['download_finished']:
-            file = save_join(download_folder, pyfile.name)
+            file = fs_join(download_folder, pyfile.name)
             self.callScript(script, pyfile.id, pyfile.name, file, pyfile.pluginname, pyfile.url)
 
 
@@ -156,11 +156,11 @@ class ExternalScripts(Hook):
             self.callScript(script, pyfile.id, pyfile.name, archive.filename, archive.out, archive.files)
 
 
-    def packageFinished(self, pypack):
-        if self.config['general']['folder_per_package']:
-            download_folder = save_join(self.config['general']['download_folder'], pypack.folder)
+    def package_finished(self, pypack):
+        if self.core.config['general']['folder_per_package']:
+            download_folder = fs_join(self.core.config['general']['download_folder'], pypack.folder)
         else:
-            download_folder = self.config['general']['download_folder']
+            download_folder = self.core.config['general']['download_folder']
 
         for script in self.scripts['package_finished']:
             self.callScript(script, pypack.id, pypack.name, download_folder, pypack.password)
@@ -169,30 +169,30 @@ class ExternalScripts(Hook):
     def packageDeleted(self, pid):
         pack = self.core.api.getPackageInfo(pid)
 
-        if self.config['general']['folder_per_package']:
-            download_folder = save_join(self.config['general']['download_folder'], pack.folder)
+        if self.core.config['general']['folder_per_package']:
+            download_folder = fs_join(self.core.config['general']['download_folder'], pack.folder)
         else:
-            download_folder = self.config['general']['download_folder']
+            download_folder = self.core.config['general']['download_folder']
 
         for script in self.scripts['package_deleted']:
             self.callScript(script, pack.id, pack.name, download_folder, pack.password)
 
 
     def package_extract_failed(self, pypack):
-        if self.config['general']['folder_per_package']:
-            download_folder = save_join(self.config['general']['download_folder'], pypack.folder)
+        if self.core.config['general']['folder_per_package']:
+            download_folder = fs_join(self.core.config['general']['download_folder'], pypack.folder)
         else:
-            download_folder = self.config['general']['download_folder']
+            download_folder = self.core.config['general']['download_folder']
 
         for script in self.scripts['package_extract_failed']:
             self.callScript(script, pypack.id, pypack.name, download_folder, pypack.password)
 
 
     def package_extracted(self, pypack):
-        if self.config['general']['folder_per_package']:
-            download_folder = save_join(self.config['general']['download_folder'], pypack.folder)
+        if self.core.config['general']['folder_per_package']:
+            download_folder = fs_join(self.core.config['general']['download_folder'], pypack.folder)
         else:
-            download_folder = self.config['general']['download_folder']
+            download_folder = self.core.config['general']['download_folder']
 
         for script in self.scripts['package_extracted']:
             self.callScript(script, pypack.id, pypack.name, download_folder)

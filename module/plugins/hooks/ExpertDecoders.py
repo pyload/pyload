@@ -91,7 +91,7 @@ class ExpertDecoders(Hook):
             self.logInfo(_("Your ExpertDecoders Account has not enough credits"))
 
 
-    def captchaInvalid(self, task):
+    def captcha_invalid(self, task):
         if "ticket" in task.data:
 
             try:

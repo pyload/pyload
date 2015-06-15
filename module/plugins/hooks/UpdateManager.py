@@ -11,7 +11,7 @@ from operator import itemgetter
 
 from module.network.RequestFactory import getURL
 from module.plugins.internal.Hook import Expose, Hook, threaded
-from module.utils import save_join
+from module.utils import save_join as fs_join
 
 
 # Case-sensitive os.path.exists
@@ -57,7 +57,7 @@ class UpdateManager(Hook):
             if self.do_restart is False:
                 self.core.api.unpauseServer()
 
-        self.initPeriodical()
+        self.init_periodical()
 
 
     def setup(self):
@@ -257,7 +257,7 @@ class UpdateManager(Hook):
                 m = VERSION.search(content)
 
                 if m and m.group(2) == version:
-                    with open(save_join("userplugins", prefix, filename), "wb") as f:
+                    with open(fs_join("userplugins", prefix, filename), "wb") as f:
                         f.write(content)
 
                     updated.append((prefix, name))
@@ -303,7 +303,7 @@ class UpdateManager(Hook):
             rootplugins = os.path.join(pypath, "module", "plugins")
 
             for dir in ("userplugins", rootplugins):
-                py_filename  = save_join(dir, type, name + ".py")
+                py_filename  = fs_join(dir, type, name + ".py")
                 pyc_filename = py_filename + "c"
 
                 if type == "hook":

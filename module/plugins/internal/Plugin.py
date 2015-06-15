@@ -32,7 +32,7 @@ if os.name != "nt":
 from itertools import islice
 
 from module.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload as Skip  #@TODO: Remove in 0.4.10
-from module.utils import save_join, save_path, fs_encode, fs_decode
+from module.utils import save_join as fs_join, save_path as safe_filename, fs_encode, fs_decode
 
 def chunks(iterable, size):
     it = iter(iterable)
@@ -50,10 +50,6 @@ class Base(object):
     def __init__(self, core):
         #: Core instance
         self.core = core
-        #: logging instance
-        self.log = core.log
-        #: core config
-        self.config = core.config
 
 
     #: Log functions
@@ -183,7 +179,7 @@ class Plugin(Base):
 
 
     def __init__(self, pyfile):
-        Base.__init__(self, pyfile.m.core)
+        super(Plugin, self).__init__(pyfile.m.core)
 
         self.wantReconnect = False
         #: enables simultaneous processing of multiple downloads
@@ -239,8 +235,8 @@ class Plugin(Base):
 
     def getChunkCount(self):
         if self.chunkLimit <= 0:
-            return self.config["download"]["chunks"]
-        return min(self.config["download"]["chunks"], self.chunkLimit)
+            return self.core.config["download"]["chunks"]
+        return min(self.core.config["download"]["chunks"], self.chunkLimit)
 
     def __call__(self):
         return self.__name__
@@ -416,7 +412,7 @@ class Plugin(Base):
                 self.fail(_("No captcha result obtained in appropiate time by any of the plugins."))
 
             result = task.result
-            self.log.debug("Received captcha result: %s" % str(result))
+            self.core.log.debug("Received captcha result: %s" % str(result))
 
         if not self.core.debug:
             try:
@@ -504,25 +500,25 @@ class Plugin(Base):
 
         self.pyfile.setStatus("downloading")
 
-        download_folder = self.config['general']['download_folder']
+        download_folder = self.core.config['general']['download_folder']
 
-        location = save_join(download_folder, self.pyfile.package().folder)
+        location = fs_join(download_folder, self.pyfile.package().folder)
 
         if not exists(location):
             makedirs(location, int(self.core.config["permission"]["folder"], 8))
 
             if self.core.config["permission"]["change_dl"] and os.name != "nt":
                 try:
-                    uid = getpwnam(self.config["permission"]["user"])[2]
-                    gid = getgrnam(self.config["permission"]["group"])[2]
+                    uid = getpwnam(self.core.config["permission"]["user"])[2]
+                    gid = getgrnam(self.core.config["permission"]["group"])[2]
 
                     chown(location, uid, gid)
                 except Exception, e:
-                    self.log.warning(_("Setting User and Group failed: %s") % str(e))
+                    self.core.log.warning(_("Setting User and Group failed: %s") % str(e))
 
         # convert back to unicode
         location = fs_decode(location)
-        name = save_path(self.pyfile.name)
+        name = safe_filename(self.pyfile.name)
 
         filename = join(location, name)
 
@@ -536,7 +532,7 @@ class Plugin(Base):
             self.pyfile.size = self.req.size
 
         if disposition and newname and newname != name: #triple check, just to be sure
-            self.log.info("%(name)s saved as %(newname)s" % {"name": name, "newname": newname})
+            self.core.log.info("%(name)s saved as %(newname)s" % {"name": name, "newname": newname})
             self.pyfile.name = newname
             filename = join(location, newname)
 
@@ -547,12 +543,12 @@ class Plugin(Base):
 
         if self.core.config["permission"]["change_dl"] and os.name != "nt":
             try:
-                uid = getpwnam(self.config["permission"]["user"])[2]
-                gid = getgrnam(self.config["permission"]["group"])[2]
+                uid = getpwnam(self.core.config["permission"]["user"])[2]
+                gid = getgrnam(self.core.config["permission"]["group"])[2]
 
                 chown(fs_filename, uid, gid)
             except Exception, e:
-                self.log.warning(_("Setting User and Group failed: %s") % str(e))
+                self.core.log.warning(_("Setting User and Group failed: %s") % str(e))
 
         self.lastDownload = filename
         return self.lastDownload
@@ -575,12 +571,12 @@ class Plugin(Base):
 
         if api_size and api_size <= size: return None
         elif size > max_size and not read_size: return None
-        self.log.debug("Download Check triggered")
+        self.core.log.debug("Download Check triggered")
         f = open(lastDownload, "rb")
         content = f.read(read_size if read_size else -1)
         f.close()
         #produces encoding errors, better log to other file in the future?
-        #self.log.debug("Content: %s" % content)
+        #self.core.log.debug("Content: %s" % content)
         for name, rule in rules.iteritems():
             if type(rule) in (str, unicode):
                 if rule in content:
@@ -620,8 +616,8 @@ class Plugin(Base):
                 5, 7) and starting: #a download is waiting/starting and was appenrently started before
                     self.skip(pyfile.pluginname)
 
-        download_folder = self.config['general']['download_folder']
-        location = save_join(download_folder, pack.folder, self.pyfile.name)
+        download_folder = self.core.config['general']['download_folder']
+        location = fs_join(download_folder, pack.folder, self.pyfile.name)
 
         if starting and self.core.config['download']['skip_existing'] and exists(location):
             size = os.stat(location).st_size
@@ -633,7 +629,7 @@ class Plugin(Base):
             if exists(location):
                 self.skip(pyfile[0])
 
-            self.log.debug("File %s not skipped, because it does not exists" % self.pyfile.name)
+            self.core.log.debug("File %s not skipped, because it does not exists" % self.pyfile.name)
 
     def clean(self):
         """ clean everything and remove references """

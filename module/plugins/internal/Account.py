@@ -5,7 +5,7 @@ import threading
 import time
 import traceback
 
-from module.plugins.internal.Plugin import Base
+from module.plugins.internal.Plugin import Plugin
 from module.utils import compare_time, lock, parseFileSize
 
 
@@ -13,7 +13,7 @@ class WrongPassword(Exception):
     pass
 
 
-class Account(Base):
+class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
     __version__ = "0.03"

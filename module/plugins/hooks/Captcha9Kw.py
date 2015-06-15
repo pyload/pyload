@@ -246,9 +246,9 @@ class Captcha9Kw(Hook):
             self.logDebug("Could not send %s request: %s" % (type, res))
 
 
-    def captchaCorrect(self, task):
+    def captcha_correct(self, task):
         self._captchaResponse(task, True)
 
 
-    def captchaInvalid(self, task):
+    def captcha_invalid(self, task):
         self._captchaResponse(task, False)

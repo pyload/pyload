@@ -7,7 +7,7 @@ import re
 import traceback
 
 from module.plugins.internal.Hook import Hook, threaded
-from module.utils import save_join
+from module.utils import save_join as fs_join
 
 
 class MergeFiles(Hook):
@@ -32,7 +32,7 @@ class MergeFiles(Hook):
 
 
     @threaded
-    def packageFinished(self, pack):
+    def package_finished(self, pack):
         files = {}
         fid_dict = {}
         for fid, data in pack.getChildren().iteritems():
@@ -43,15 +43,15 @@ class MergeFiles(Hook):
                 files[data['name'][:-4]].sort()
                 fid_dict[data['name']] = fid
 
-        download_folder = self.config['general']['download_folder']
+        download_folder = self.core.config['general']['download_folder']
 
-        if self.config['general']['folder_per_package']:
-            download_folder = save_join(download_folder, pack.folder)
+        if self.core.config['general']['folder_per_package']:
+            download_folder = fs_join(download_folder, pack.folder)
 
         for name, file_list in files.iteritems():
             self.logInfo(_("Starting merging of"), name)
 
-            with open(save_join(download_folder, name), "wb") as final_file:
+            with open(fs_join(download_folder, name), "wb") as final_file:
                 for splitted_file in file_list:
                     self.logDebug("Merging part", splitted_file)
 
@@ -60,7 +60,7 @@ class MergeFiles(Hook):
                     pyfile.setStatus("processing")
 
                     try:
-                        with open(save_join(download_folder, splitted_file), "rb") as s_file:
+                        with open(fs_join(download_folder, splitted_file), "rb") as s_file:
                             size_written = 0
                             s_file_size = int(os.path.getsize(os.path.join(download_folder, splitted_file)))
                             while True:

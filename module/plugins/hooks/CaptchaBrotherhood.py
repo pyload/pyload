@@ -154,7 +154,7 @@ class CaptchaBrotherhood(Hook):
             self.logInfo(_("Your CaptchaBrotherhood Account has not enough credits"))
 
 
-    def captchaInvalid(self, task):
+    def captcha_invalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             res = self.api_response("complainCaptcha", task.data['ticket'])
 

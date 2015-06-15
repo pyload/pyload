@@ -67,7 +67,7 @@ class AndroidPhoneNotify(Hook):
         self.notify(_("Captcha"), _("New request waiting user input"))
 
 
-    def packageFinished(self, pypack):
+    def package_finished(self, pypack):
         if self.getConfig('notifypackage'):
             self.notify(_("Package finished"), pypack.name)
 

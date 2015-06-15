@@ -10,7 +10,7 @@ except ImportError:
     pass
 
 from module.plugins.internal.Hook import Hook, Expose, threaded
-from module.utils import fs_encode, save_join
+from module.utils import fs_encode, save_join as fs_join
 
 
 class AntiVirus(Hook):
@@ -108,11 +108,11 @@ class AntiVirus(Hook):
             thread.finishFile(pyfile)
 
 
-    def downloadFinished(self, pyfile):
+    def download_finished(self, pyfile):
         return self.scan(pyfile)
 
 
-    def downloadFailed(self, pyfile):
+    def download_failed(self, pyfile):
         #: Check if pyfile is still "failed",
         #  maybe might has been restarted in meantime
         if pyfile.status == 8 and self.getConfig('scanfailed'):

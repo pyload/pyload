@@ -3,7 +3,7 @@
 import urlparse
 
 from module.plugins.internal.Plugin import Plugin
-from module.utils import decode, save_path
+from module.utils import decode, save_path as safe_filename
 
 
 class Crypter(Plugin):
@@ -98,7 +98,7 @@ class Crypter(Plugin):
                     if not folder:
                         folder = urlparse.urlparse(name).path.split("/")[-1]
 
-                    setFolder(save_path(folder))
+                    setFolder(safe_filename(folder))
                     self.logDebug("Set package %(name)s folder to: %(folder)s" % {"name": name, "folder": folder})
 
             elif folder_per_package:

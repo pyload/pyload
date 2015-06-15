@@ -8,7 +8,7 @@ import os
 
 from Crypto.Cipher import AES
 from module.plugins.internal.Crypter import Crypter
-from module.utils import save_join
+from module.utils import save_join as fs_join
 
 
 class RelinkUs(Crypter):
@@ -219,7 +219,7 @@ class RelinkUs(Crypter):
             try:
                 dlc = self.load(container_url)
                 dlc_filename = self.fileid + ".dlc"
-                dlc_filepath = save_join(self.config['general']['download_folder'], dlc_filename)
+                dlc_filepath = fs_join(self.core.config['general']['download_folder'], dlc_filename)
                 with open(dlc_filepath, "wb") as f:
                     f.write(dlc)
                 package_links.append(dlc_filepath)
