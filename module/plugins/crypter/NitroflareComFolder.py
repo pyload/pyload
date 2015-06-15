@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class NitroflareComFolder(SimpleCrypter):
     __name__    = "NitroflareComFolder"
     __type__    = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/folder/(?P<USER>\d+)/(?P<ID>[\w=]+)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
@@ -23,7 +23,8 @@ class NitroflareComFolder(SimpleCrypter):
                                    post={'userId' : self.info['pattern']['USER'],
                                          'folder' : self.info['pattern']['ID'],
                                          'page'   : 1,
-                                         'perPage': 10000}))
+                                         'perPage': 10000},
+                                   decode=True))
         if res['name']:
             self.pyfile.name = res['name']
         else:
