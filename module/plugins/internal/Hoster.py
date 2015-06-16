@@ -12,7 +12,7 @@ if os.name != "nt":
     import grp
     import pwd
 
-from module.plugins.internal.Plugin import Plugin, Abort, Fail, Reconnect, Retry, Skip
+from module.plugins.internal.Plugin import Plugin, Abort, Fail, Reconnect, Retry, Skip, parseHtmlForm
 from module.utils import fs_decode, fs_encode, save_join as fs_join
 
 
