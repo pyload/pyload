@@ -2,7 +2,8 @@
 
 import os
 import re
-import subprocessimport urllib
+import subprocess
+import urllib
 
 from module.plugins.internal.Hoster import Hoster
 from module.plugins.internal.SimpleHoster import replace_patterns
