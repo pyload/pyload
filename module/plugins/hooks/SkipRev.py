@@ -8,13 +8,13 @@ from types import MethodType
 
 from module.PyFile import PyFile
 from module.plugins.internal.Hook import Hook
-from module.plugins.internal.Plugin import SkipDownload
+from module.plugins.internal.Plugin import Skip
 
 
 class SkipRev(Hook):
     __name__    = "SkipRev"
     __type__    = "hook"
-    __version__ = "0.30"
+    __version__ = "0.31"
 
     __config__ = [("mode"     , "Auto;Manual", "Choose recovery archives to skip"               , "Auto"),
                   ("revtokeep", "int"        , "Number of recovery archives to keep for package", 0     )]
@@ -35,7 +35,7 @@ class SkipRev(Hook):
     def _setup(self):
         self.pyfile.plugin._setup()
         if self.pyfile.hasStatus("skipped"):
-            raise SkipDownload(self.pyfile.statusname or self.pyfile.pluginname)
+            raise Skip(self.pyfile.statusname or self.pyfile.pluginname)
 
 
     def _name(self, pyfile):
