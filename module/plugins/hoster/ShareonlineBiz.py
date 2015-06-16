@@ -41,8 +41,7 @@ class ShareonlineBiz(SimpleHoster):
 
         field = getURL("http://api.share-online.biz/linkcheck.php",
                        get={'md5'  : "1",
-                            'links': re.match(cls.__pattern__, url).group("ID")},
-                       decode=True).split(";")
+                            'links': re.match(cls.__pattern__, url).group("ID")}).split(";")
 
         try:
             if field[1] == "OK":
@@ -93,8 +92,7 @@ class ShareonlineBiz(SimpleHoster):
         self.wait(3)
 
         self.html = self.load("%s/free/" % pyfile.url,
-                              post={'dl_free': "1", 'choice': "free"},
-                              decode=True)
+                              post={'dl_free': "1", 'choice': "free"})
 
         self.checkErrors()
 

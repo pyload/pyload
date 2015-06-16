@@ -26,7 +26,7 @@ class OneFichierCom(Account):
         trafficleft = -1
         premium = None
 
-        html = req.load("https://1fichier.com/console/abo.pl")
+        html = self.load("https://1fichier.com/console/abo.pl", req=req)
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
@@ -46,13 +46,12 @@ class OneFichierCom(Account):
     def login(self, user, data, req):
         req.http.c.setopt(pycurl.REFERER, "https://1fichier.com/login.pl?lg=en")
 
-        html = req.load("https://1fichier.com/login.pl?lg=en",
+        html = self.load("https://1fichier.com/login.pl?lg=en",
                         post={'mail'   : user,
                               'pass'   : data['password'],
                               'It'     : "on",
                               'purge'  : "off",
-                              'valider': "Send"},
-                        decode=True)
+                              'valider': "Send"}, req=req)
 
         if '>Invalid email address' in html or '>Invalid password' in html:
             self.wrongPassword()

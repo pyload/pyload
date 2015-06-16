@@ -19,7 +19,7 @@ class CloudzillaTo(Account):
 
 
     def loadAccountInfo(self, user, req):
-        html = req.load("http://www.cloudzilla.to/")
+        html = self.load("http://www.cloudzilla.to/", req=req)
 
         premium = True if re.search(self.PREMIUM_PATTERN, html) else False
 
@@ -27,11 +27,10 @@ class CloudzillaTo(Account):
 
 
     def login(self, user, data, req):
-        html = req.load("https://www.cloudzilla.to/",
+        html = self.load("https://www.cloudzilla.to/",
                         post={'lusername': user,
                               'lpassword': data['password'],
-                              'w'        : "dologin"},
-                        decode=True)
+                              'w'        : "dologin"}, req=req)
 
         if "ERROR" in html:
             self.wrongPassword()

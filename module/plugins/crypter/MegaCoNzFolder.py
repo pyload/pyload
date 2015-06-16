@@ -27,6 +27,3 @@ class MegaCoNzFolder(Crypter):
         url       = "https://mega.co.nz/#F!%s!%s" % re.match(self.__pattern__, pyfile.url).groups()
         self.html = self.load("http://rapidgen.org/linkfinder", post={'linklisturl': url})
         self.urls = re.findall(r'(https://mega(\.co)?\.nz/#N!.+?)<', self.html)
-
-        if not self.urls:  #@TODO: Remove in 0.4.10
-            self.fail(_("No link grabbed"))

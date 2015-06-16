@@ -54,8 +54,8 @@ if os.name != "nt":
     from pwd import getpwnam
 
 from module.plugins.internal.Hook import Hook, Expose, threaded
+from module.plugins.internal.Plugin import replace_patterns
 from module.plugins.internal.Extractor import ArchiveError, CRCError, PasswordError
-from module.plugins.internal.SimpleHoster import replace_patterns
 from module.utils import fs_encode, save_join as fs_join, uniqify
 
 

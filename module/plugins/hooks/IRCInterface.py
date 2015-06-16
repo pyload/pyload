@@ -11,7 +11,6 @@ from select import select
 from threading import Thread
 
 from module.Api import PackageDoesNotExists, FileDoesNotExists
-from module.network.RequestFactory import getURL
 from module.plugins.internal.Hook import Hook
 from module.utils import formatSize
 
@@ -76,8 +75,8 @@ class IRCInterface(Thread, Hook):
             task.handler.append(self)
             task.setWaiting(60)
 
-            html = getURL("http://www.freeimagehosting.net/upload.php",
-                          post={"attached": (pycurl.FORM_FILE, task.captchaFile)}, multipart=True)
+            html = self.load("http://www.freeimagehosting.net/upload.php",
+                          post={"attached": (pycurl.FORM_FILE, task.captchaFile)})
 
             url = re.search(r"\[img\]([^\[]+)\[/img\]\[/url\]", html).group(1)
             self.response(_("New Captcha Request: %s") % url)

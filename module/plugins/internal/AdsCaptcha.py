@@ -37,7 +37,7 @@ class AdsCaptcha(Captcha):
     def challenge(self, key=None, html=None):
         PublicKey, CaptchaId = key or self.retrieve_key(html)
 
-        html = self.plugin.req.load("http://api.adscaptcha.com/Get.aspx",
+        html = self.plugin.load("http://api.adscaptcha.com/Get.aspx",
                                     get={'CaptchaId': CaptchaId,
                                          'PublicKey': PublicKey})
         try:

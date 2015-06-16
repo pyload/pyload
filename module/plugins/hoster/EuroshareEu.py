@@ -49,7 +49,7 @@ class EuroshareEu(SimpleHoster):
 
     def handleFree(self, pyfile):
         if re.search(self.ERR_PARDL_PATTERN, self.html):
-            self.longWait(5 * 60, 12)
+            self.wait(5 * 60, 12, _("Download limit reached"))
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
@@ -60,7 +60,7 @@ class EuroshareEu(SimpleHoster):
 
     def checkFile(self):
         if self.checkDownload({"multi-dl": re.compile(self.ERR_PARDL_PATTERN)})
-            self.longWait(5 * 60, 12)
+            self.wait(5 * 60, 12, _("Download limit reached"))
 
         return super(EuroshareEu, self).checkFile()
 

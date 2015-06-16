@@ -24,7 +24,7 @@ class FilejungleCom(Account):
 
 
     def loadAccountInfo(self, user, req):
-        html = req.load(self.URL + "dashboard.php")
+        html = self.load(self.URL + "dashboard.php", req=req)
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m:
             premium = True
@@ -37,14 +37,13 @@ class FilejungleCom(Account):
 
 
     def login(self, user, data, req):
-        html = req.load(self.URL + "login.php",
+        html = self.load(self.URL + "login.php",
                         post={"loginUserName": user,
                               "loginUserPassword": data['password'],
                               "loginFormSubmit": "Login",
                               "recaptcha_challenge_field": "",
                               "recaptcha_response_field": "",
-                              "recaptcha_shortencode_field": ""},
-                        decode=True)
+                              "recaptcha_shortencode_field": ""}, req=req)
 
         if re.search(self.LOGIN_FAILED_PATTERN, html):
             self.wrongPassword()

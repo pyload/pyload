@@ -8,8 +8,6 @@ import time
 from base64 import b64encode
 
 from module.network.HTTPRequest import BadHeader
-from module.network.RequestFactory import getURL
-
 from module.plugins.internal.Hook import Hook, threaded
 
 
@@ -48,7 +46,7 @@ class Captcha9Kw(Hook):
 
 
     def getCredits(self):
-        res = getURL(self.API_URL,
+        res = self.load(self.API_URL,
                      get={'apikey': self.getConfig('passkey'),
                           'pyload': "1",
                           'source': "pyload",
@@ -129,7 +127,7 @@ class Captcha9Kw(Hook):
 
         for _i in xrange(5):
             try:
-                res = getURL(self.API_URL, post=post_data)
+                res = self.load(self.API_URL, post=post_data)
             except BadHeader, e:
                 time.sleep(3)
             else:
@@ -144,7 +142,7 @@ class Captcha9Kw(Hook):
         task.data["ticket"] = res
 
         for _i in xrange(int(self.getConfig('timeout') / 5)):
-            result = getURL(self.API_URL,
+            result = self.load(self.API_URL,
                             get={'apikey': self.getConfig('passkey'),
                                  'id'    : res,
                                  'pyload': "1",
@@ -186,7 +184,7 @@ class Captcha9Kw(Hook):
         pluginname = re.search(r'_([^_]*)_\d+.\w+', task.captchaFile).group(1)
 
         for _i in xrange(5):
-            servercheck = getURL("http://www.9kw.eu/grafik/servercheck.txt")
+            servercheck = self.load("http://www.9kw.eu/grafik/servercheck.txt")
             if queue < re.search(r'queue=(\d+)', servercheck).group(1):
                 break
 
@@ -227,7 +225,7 @@ class Captcha9Kw(Hook):
         passkey = self.getConfig('passkey')
 
         for _i in xrange(3):
-            res = getURL(self.API_URL,
+            res = self.load(self.API_URL,
                          get={'action' : "usercaptchacorrectback",
                               'apikey' : passkey,
                               'api_key': passkey,

@@ -26,7 +26,7 @@ class PremiumizeMeHook(MultiHook):
 
         # Get supported hosters list from premiumize.me using the
         # json API v1 (see https://secure.premiumize.me/?show=api)
-        answer = self.getURL("http://api.premiumize.me/pm-api/v1.php",  #@TODO: Revert to `https` in 0.4.10
+        answer = self.load("http://api.premiumize.me/pm-api/v1.php",  #@TODO: Revert to `https` in 0.4.10
                         get={'method': "hosterlist", 'params[login]': user, 'params[pass]': data['password']})
         data = json_loads(answer)
 

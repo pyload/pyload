@@ -35,7 +35,7 @@ class SolveMedia(Captcha):
     def challenge(self, key=None, html=None):
         key = key or self.retrieve_key(html)
 
-        html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript",
+        html = self.plugin.load("http://api.solvemedia.com/papi/challenge.noscript",
                                     get={'k': key})
 
         for i in xrange(1, 11):
@@ -64,7 +64,7 @@ class SolveMedia(Captcha):
                 self.plugin.invalidCaptcha()
                 result = None
 
-            html = self.plugin.req.load("http://api.solvemedia.com/papi/verify.noscript",
+            html = self.plugin.load("http://api.solvemedia.com/papi/verify.noscript",
                                         post={'adcopy_response' : result,
                                               'k'               : key,
                                               'l'               : "en",
@@ -83,7 +83,7 @@ class SolveMedia(Captcha):
                 if "error" in html:
                     self.logWarning("Captcha code was invalid")
                     self.logDebug("Retry #%d" % i)
-                    html = self.plugin.req.load(redirect)
+                    html = self.plugin.load(redirect)
                 else:
                     break
 

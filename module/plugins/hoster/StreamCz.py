@@ -44,7 +44,7 @@ class StreamCz(Hoster):
 
 
     def process(self, pyfile):
-        self.html = self.load(pyfile.url, decode=True)
+        self.html = self.load(pyfile.url)
 
         if re.search(self.OFFLINE_PATTERN, self.html):
             self.offline()

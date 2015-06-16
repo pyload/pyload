@@ -36,7 +36,7 @@ class FreakhareComFolder(SimpleCrypter):
                                                         'f_md5': self.f_md5,
                                                         'entrys': '20',
                                                         'page': page_n - 1,
-                                                        'order': ''}, decode=True)
+                                                        'order': ''})
 
 
 getInfo = create_getInfo(FreakhareComFolder)

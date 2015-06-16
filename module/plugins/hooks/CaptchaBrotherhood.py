@@ -12,7 +12,7 @@ try:
 except ImportError:
     import Image
 
-from module.network.RequestFactory import getURL, getRequest
+from module.network.RequestFactory import getRequest
 from module.plugins.internal.Hook import Hook, threaded
 
 
@@ -59,7 +59,7 @@ class CaptchaBrotherhood(Hook):
 
 
     def getCredits(self):
-        res = getURL(self.API_URL + "askCredits.aspx",
+        res = self.load(self.API_URL + "askCredits.aspx",
                      get={"username": self.getConfig('username'), "password": self.getConfig('passkey')})
         if not res.startswith("OK"):
             raise CaptchaBrotherhoodException(res)
@@ -122,7 +122,7 @@ class CaptchaBrotherhood(Hook):
 
 
     def api_response(self, api, ticket):
-        res = getURL("%s%s.aspx" % (self.API_URL, api),
+        res = self.load("%s%s.aspx" % (self.API_URL, api),
                           get={"username": self.getConfig('username'),
                                "password": self.getConfig('passkey'),
                                "captchaID": ticket})

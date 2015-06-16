@@ -26,7 +26,7 @@ class CatShareNet(Account):
         validuntil  = -1
         trafficleft = -1
 
-        html = req.load("http://catshare.net/", decode=True)
+        html = self.load("http://catshare.net/", req=req)
 
         if re.search(self.PREMIUM_PATTERN, html):
             premium = True
@@ -50,12 +50,11 @@ class CatShareNet(Account):
 
 
     def login(self, user, data, req):
-        html = req.load("http://catshare.net/login",  #@TODO: Revert to `https` in 0.4.10
+        html = self.load("http://catshare.net/login",  #@TODO: Revert to `https` in 0.4.10
                         post={'user_email': user,
                               'user_password': data['password'],
                               'remindPassword': 0,
-                              'user[submit]': "Login"},
-                        decode=True)
+                              'user[submit]': "Login"}, req=req)
 
         if not '<a href="/logout">Wyloguj</a>' in html:
             self.wrongPassword()

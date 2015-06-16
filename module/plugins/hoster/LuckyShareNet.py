@@ -27,7 +27,7 @@ class LuckyShareNet(SimpleHoster):
 
     def parseJson(self, rep):
         if 'AJAX Error' in rep:
-            html = self.load(self.pyfile.url, decode=True)
+            html = self.load(self.pyfile.url)
             m = re.search(r"waitingtime = (\d+);", html)
             if m:
                 seconds = int(m.group(1))
@@ -43,7 +43,7 @@ class LuckyShareNet(SimpleHoster):
     # TODO: There should be a filesize limit for free downloads
     # TODO: Some files could not be downloaded in free mode
     def handleFree(self, pyfile):
-        rep = self.load(r"http://luckyshare.net/download/request/type/time/file/" + self.info['pattern']['ID'], decode=True)
+        rep = self.load(r"http://luckyshare.net/download/request/type/time/file/" + self.info['pattern']['ID'])
 
         self.logDebug("JSON: " + rep)
 
@@ -55,7 +55,7 @@ class LuckyShareNet(SimpleHoster):
         for _i in xrange(5):
             response, challenge = recaptcha.challenge()
             rep = self.load(r"http://luckyshare.net/download/verify/challenge/%s/response/%s/hash/%s" %
-                            (challenge, response, json['hash']), decode=True)
+                            (challenge, response, json['hash']))
             self.logDebug("JSON: " + rep)
             if 'link' in rep:
                 json.update(self.parseJson(rep))

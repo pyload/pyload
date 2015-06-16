@@ -51,7 +51,7 @@ class ReCaptcha(Captcha):
 
 
     def _challenge_v1(self, key):
-        html = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge",
+        html = self.plugin.load("http://www.google.com/recaptcha/api/challenge",
                                     get={'k': key})
         try:
             challenge = re.search("challenge : '(.+?)',", html).group(1)
@@ -66,8 +66,8 @@ class ReCaptcha(Captcha):
 
 
     def result(self, server, challenge, key):
-        self.plugin.req.load("http://www.google.com/recaptcha/api/js/recaptcha.js")
-        html = self.plugin.req.load("http://www.google.com/recaptcha/api/reload",
+        self.plugin.load("http://www.google.com/recaptcha/api/js/recaptcha.js")
+        html = self.plugin.load("http://www.google.com/recaptcha/api/reload",
                                     get={'c'     : challenge,
                                          'k'     : key,
                                          'reason': "i",
@@ -92,7 +92,7 @@ class ReCaptcha(Captcha):
 
 
     def _collectApiInfo(self):
-        html = self.plugin.req.load("http://www.google.com/recaptcha/api.js")
+        html = self.plugin.load("http://www.google.com/recaptcha/api.js")
         a    = re.search(r'po.src = \'(.*?)\';', html).group(1)
         vers = a.split("/")[5]
 
@@ -102,7 +102,7 @@ class ReCaptcha(Captcha):
 
         self.logDebug("API language: %s" % language)
 
-        html = self.plugin.req.load("https://apis.google.com/js/api.js")
+        html = self.plugin.load("https://apis.google.com/js/api.js")
         b    = re.search(r'"h":"(.*?)","', html).group(1)
         jsh  = b.decode('unicode-escape')
 
@@ -112,7 +112,7 @@ class ReCaptcha(Captcha):
 
 
     def _prepareTimeAndRpc(self):
-        self.plugin.req.load("http://www.google.com/recaptcha/api2/demo")
+        self.plugin.load("http://www.google.com/recaptcha/api2/demo")
 
         millis = int(round(time.time() * 1000))
 
@@ -139,7 +139,7 @@ class ReCaptcha(Captcha):
         vers, language, jsh = self._collectApiInfo()
         millis, rpc         = self._prepareTimeAndRpc()
 
-        html = self.plugin.req.load("https://www.google.com/recaptcha/api2/anchor",
+        html = self.plugin.load("https://www.google.com/recaptcha/api2/anchor",
                                     get={'k'       : key,
                                          'hl'      : language,
                                          'v'       : vers,
@@ -152,14 +152,15 @@ class ReCaptcha(Captcha):
         token1 = re.search(r'id="recaptcha-token" value="(.*?)">', html)
         self.logDebug("Token #1: %s" % token1.group(1))
 
-        html = self.plugin.req.load("https://www.google.com/recaptcha/api2/frame",
-                                    get={'c'      : token1.group(1),
-                                         'hl'     : language,
-                                         'v'      : vers,
-                                         'bg'     : botguardstring,
-                                         'k'      : key,
-                                         'usegapi': "1",
-                                         'jsh'    : jsh}).decode('unicode-escape')
+        html = self.plugin.load("https://www.google.com/recaptcha/api2/frame",
+                                get={'c'      : token1.group(1),
+                                     'hl'     : language,
+                                     'v'      : vers,
+                                     'bg'     : botguardstring,
+                                     'k'      : key,
+                                     'usegapi': "1",
+                                     'jsh'    : jsh},
+                                decode="unicode-escape")
 
         token2 = re.search(r'"finput","(.*?)",', html)
         self.logDebug("Token #2: %s" % token2.group(1))
@@ -179,7 +180,7 @@ class ReCaptcha(Captcha):
         timeToSolve     = int(round(time.time() * 1000)) - millis_captcha_loading
         timeToSolveMore = timeToSolve + int(float("0." + str(random.randint(1, 99999999))) * 500)
 
-        html = self.plugin.req.load("https://www.google.com/recaptcha/api2/userverify",
+        html = self.plugin.load("https://www.google.com/recaptcha/api2/userverify",
                                     post={'k'       : key,
                                           'c'       : token3.group(1),
                                           'response': response,

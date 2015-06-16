@@ -61,7 +61,7 @@ class XFSHoster(SimpleHoster):
             if self.account:
                 account = self.account
             else:
-                account = self.pyfile.m.core.accountManager.getAccountPlugin(self.__name__)
+                account = self.core.accountManager.getAccountPlugin(self.__name__)
 
             if account and hasattr(account, "HOSTER_DOMAIN") and account.HOSTER_DOMAIN:
                 self.HOSTER_DOMAIN = account.HOSTER_DOMAIN
@@ -95,7 +95,7 @@ class XFSHoster(SimpleHoster):
 
             self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
 
-            self.html = self.load(pyfile.url, post=data, decode=True)
+            self.html = self.load(pyfile.url, post=data)
 
             self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
@@ -110,7 +110,7 @@ class XFSHoster(SimpleHoster):
             self.logError(data['op'] if 'op' in data else _("UNKNOWN"))
             return ""
 
-        self.link = m.group(1).strip()  #@TODO: Remove `.strip()` in 0.4.10
+        self.link = m.group(1)
 
 
     def handlePremium(self, pyfile):
@@ -166,7 +166,7 @@ class XFSHoster(SimpleHoster):
         if m is None:
             self.error(_("LINK_LEECH_PATTERN not found"))
 
-        header = self.load(m.group(1), just_header=True, decode=True)
+        header = self.load(m.group(1), just_header=True)
 
         if 'location' in header:  #: Direct download link
             self.link = header['location']

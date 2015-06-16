@@ -11,83 +11,15 @@ import urllib
 import urlparse
 
 from module.PyFile import statusMap as _statusMap
-from module.network.CookieJar import CookieJar
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.Plugin import Fail, Retry
-from module.utils import fixup, fs_encode, html_unescape, parseFileSize
+from module.plugins.internal.Plugin import Fail, Retry, replace_patterns, set_cookies
+from module.utils import fixup, fs_encode, parseFileSize
 
 
 #@TODO: Adapt and move to PyFile in 0.4.10
 statusMap = dict((v, k) for k, v in _statusMap.iteritems())
-
-
-#@TODO: Remove in 0.4.10
-def _wait(self, seconds, reconnect):
-    if seconds:
-        self.setWait(int(seconds) + 1)
-
-    if reconnect is not None:
-        self.wantReconnect = reconnect
-
-    super(SimpleHoster, self).wait()
-
-
-def replace_patterns(string, ruleslist):
-    for r in ruleslist:
-        rf, rt = r
-        string = re.sub(rf, rt, string)
-    return string
-
-
-def set_cookies(cj, cookies):
-    for cookie in cookies:
-        if isinstance(cookie, tuple) and len(cookie) == 3:
-            domain, name, value = cookie
-            cj.setCookie(domain, name, value)
-
-
-def parseHtmlTagAttrValue(attr_name, tag):
-    m = re.search(r"%s\s*=\s*([\"']?)((?<=\")[^\"]+|(?<=')[^']+|[^>\s\"'][^>\s]*)\1" % attr_name, tag, re.I)
-    return m.group(2) if m else None
-
-
-def parseHtmlForm(attr_str, html, input_names={}):
-    for form in re.finditer(r"(?P<TAG><form[^>]*%s[^>]*>)(?P<CONTENT>.*?)</?(form|body|html)[^>]*>" % attr_str,
-                            html, re.S | re.I):
-        inputs = {}
-        action = parseHtmlTagAttrValue("action", form.group('TAG'))
-
-        for inputtag in re.finditer(r'(<(input|textarea)[^>]*>)([^<]*(?=</\2)|)', form.group('CONTENT'), re.S | re.I):
-            name = parseHtmlTagAttrValue("name", inputtag.group(1))
-            if name:
-                value = parseHtmlTagAttrValue("value", inputtag.group(1))
-                if not value:
-                    inputs[name] = inputtag.group(3) or ""
-                else:
-                    inputs[name] = value
-
-        if input_names:
-            # check input attributes
-            for key, val in input_names.iteritems():
-                if key in inputs:
-                    if isinstance(val, basestring) and inputs[key] == val:
-                        continue
-                    elif isinstance(val, tuple) and inputs[key] in val:
-                        continue
-                    elif hasattr(val, "search") and re.match(val, inputs[key]):
-                        continue
-                    break  #: attibute value does not match
-                else:
-                    break  #: attibute name does not match
-            else:
-                return action, inputs  #: passed attribute check
-        else:
-            # no attribute check
-            return action, inputs
-
-    return {}, None  #: no matching form found
 
 
 #@TODO: Remove in 0.4.10
@@ -121,91 +53,6 @@ def create_getInfo(plugin):
 
 def timestamp():
     return int(time.time() * 1000)
-
-
-#@TODO: Move to Hoster in 0.4.10
-def getFileURL(self, url, follow_location=None):
-    link     = ""
-    redirect = 1
-
-    if type(follow_location) is int:
-        redirect = max(follow_location, 1)
-    else:
-        redirect = 10
-
-    for i in xrange(redirect):
-        try:
-            self.logDebug("Redirect #%d to: %s" % (i, url))
-            header = self.load(url, just_header=True, decode=True)
-
-        except Exception:  #: Bad bad bad... rewrite this part in 0.4.10
-            req = pyreq.getHTTPRequest()
-            res = req.load(url, just_header=True, decode=True)
-
-            req.close()
-
-            header = {"code": req.code}
-            for line in res.splitlines():
-                line = line.strip()
-                if not line or ":" not in line:
-                    continue
-
-                key, none, value = line.partition(":")
-                key              = key.lower().strip()
-                value            = value.strip()
-
-                if key in header:
-                    if type(header[key]) == list:
-                        header[key].append(value)
-                    else:
-                        header[key] = [header[key], value]
-                else:
-                    header[key] = value
-
-        if 'content-disposition' in header:
-            link = url
-
-        elif 'location' in header and header['location']:
-            location = header['location']
-
-            if not urlparse.urlparse(location).scheme:
-                url_p    = urlparse.urlparse(url)
-                baseurl  = "%s://%s" % (url_p.scheme, url_p.netloc)
-                location = urlparse.urljoin(baseurl, location)
-
-            if 'code' in header and header['code'] == 302:
-                link = location
-
-            if follow_location:
-                url = location
-                continue
-
-        else:
-            extension = os.path.splitext(urlparse.urlparse(url).path.split('/')[-1])[-1]
-
-            if 'content-type' in header and header['content-type']:
-                mimetype = header['content-type'].split(';')[0].strip()
-
-            elif extension:
-                mimetype = mimetypes.guess_type(extension, False)[0] or "application/octet-stream"
-
-            else:
-                mimetype = ""
-
-            if mimetype and (link or 'html' not in mimetype):
-                link = url
-            else:
-                link = ""
-
-        break
-
-    else:
-        try:
-            self.logError(_("Too many redirects"))
-        except Exception:
-            pass
-
-    return link
 
 
 def secondsToMidnight(gmt=0):
@@ -313,12 +160,9 @@ class SimpleHoster(Hoster):
     LOGIN_ACCOUNT = False  #: Set to True to require account login
     LOGIN_PREMIUM = False  #: Set to True to require premium account login
     MULTI_HOSTER  = False  #: Set to True to leech other hoster link (as defined in handleMulti method)
-    TEXT_ENCODING = False  #: Set to True or encoding name if encoding value in http header is not correct
+    TEXT_ENCODING = True   #: Set to encoding name if encoding value in http header is not correct
 
     LINK_PATTERN = None
-
-
-    directLink = getFileURL  #@TODO: Remove in 0.4.10
 
 
     @classmethod
@@ -351,10 +195,7 @@ class SimpleHoster(Hoster):
 
             elif info['status'] is 3:
                 try:
-                    html = getURL(url, cookies=cls.COOKIES, decode=not cls.TEXT_ENCODING)
-
-                    if isinstance(cls.TEXT_ENCODING, basestring):
-                        html = unicode(html, cls.TEXT_ENCODING)
+                    html = getURL(url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
 
                 except BadHeader, e:
                     info['error'] = "%d: %s" % (e.code, e.content)
@@ -424,10 +265,10 @@ class SimpleHoster(Hoster):
         self.pyfile.error = ""  #@TODO: Remove in 0.4.10
 
         self.info      = {}
-        self.html      = ""
-        self.link      = ""     #@TODO: Move to Hoster in 0.4.10
-        self.directDL  = False  #@TODO: Move to Hoster in 0.4.10
-        self.multihost = False  #@TODO: Move to Hoster in 0.4.10
+        self.html      = ""  #@TODO: Recheck in 0.4.10
+        self.link      = ""  #@TODO: Recheck in 0.4.10
+        self.directDL  = False
+        self.multihost = False
 
         if not self.getConfig('use_premium', True):
             self.retryFree()
@@ -465,10 +306,10 @@ class SimpleHoster(Hoster):
 
 
     def preload(self):
-        self.html = self.load(self.pyfile.url, cookies=bool(self.COOKIES), ref=False, decode=not self.TEXT_ENCODING)
-
-        if isinstance(self.TEXT_ENCODING, basestring):
-            self.html = unicode(self.html, self.TEXT_ENCODING)
+        self.html = self.load(self.pyfile.url,
+                              cookies=bool(self.COOKIES),
+                              ref=False,
+                              decode=self.TEXT_ENCODING)
 
 
     def process(self, pyfile):
@@ -517,29 +358,6 @@ class SimpleHoster(Hoster):
                 raise Fail(err)
 
 
-    def fixurl(self, url):
-        return self.fixurls([url])[0]
-
-
-    def fixurls(self, urls):
-        url_p   = urlparse.urlparse(self.pyfile.url)
-        baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
-
-        urls = (html_unescape(url.decode('unicode-escape').strip()) for url in urls)
-
-        return [urlparse.urljoin(baseurl, url) if not urlparse.urlparse(url).scheme else url \
-                for url in urls]
-
-
-    def download(self, url, *args, **kwargs):
-        if not url or not isinstance(url, basestring):
-            return
-
-        self.correctCaptcha()
-
-        return super(SimpleHoster, self).download(self.fixurl(url), *args, **kwargs)
-
-
     def checkFile(self):
         lastDownload = fs_encode(self.lastDownload)
 
@@ -547,15 +365,10 @@ class SimpleHoster(Hoster):
             self.invalidCaptcha()
             self.retry(10, reason=_("Wrong captcha"))
 
-        elif not self.lastDownload or not os.path.exists(lastDownload):
-            self.lastDownload = ""
-            self.error(self.pyfile.error or _("No file downloaded"))
+        elif self.checkDownload({'Empty file': re.compile(r'\A((.|)(\2|\s)*)\Z')}, file_size=self.info['size']):
+            self.error(_("Empty file"))
 
         else:
-            #@TODO: Move to Hoster in 0.4.10
-            if os.stat(lastDownload).st_size < 1 or self.checkDownload({'Empty file': re.compile(r'\A((.|)(\2|\s)*)\Z')}):
-                self.error(_("Empty file"))
-
             self.logDebug("Checking last downloaded file with built-in rules")
             for r, p in self.FILE_ERRORS:
                 errmsg = self.checkDownload({r: re.compile(p)})
@@ -577,7 +390,7 @@ class SimpleHoster(Hoster):
                         self.html = f.read(50000)  #@TODO: Recheck in 0.4.10
                     self.checkErrors()
 
-            self.logDebug("No file errors found")
+        self.logDebug("No file errors found")
 
 
     def checkErrors(self):
@@ -790,50 +603,10 @@ class SimpleHoster(Hoster):
             self.link = m.group(1)
 
 
-    def longWait(self, wait_time=None, max_tries=3):
-        if wait_time and isinstance(wait_time, (int, long, float)):
-            time_str  = "%dh %dm" % divmod(wait_time / 60, 60)
-        else:
-            wait_time = 900
-            time_str  = _("(unknown time)")
-            max_tries = 100
-
-        self.logInfo(_("Download limit reached, reconnect or wait %s") % time_str)
-
-        self.wait(wait_time, True)
-        self.retry(max_tries=max_tries, reason=_("Download limit reached"))
-
-
-    def parseHtmlForm(self, attr_str="", input_names={}):
-        return parseHtmlForm(attr_str, self.html, input_names)
-
-
-    def checkTrafficLeft(self):
-        if not self.account:
-            return True
-
-        traffic = self.account.getAccountInfo(self.user, True)['trafficleft']
-
-        if traffic is None:
-            return False
-        elif traffic == -1:
-            return True
-        else:
-            size = self.pyfile.size / 1024
-            self.logInfo(_("Filesize: %i KiB, Traffic left for user %s: %i KiB") % (size, self.user, traffic))
-            return size <= traffic
-
-
     def retryFree(self):
         if not self.premium:
             return
         self.premium = False
         self.account = None
-        self.req     = self.core.requestFactory.getRequest(self.__name__)
-        self.retries = -1
+        self.req = self.core.requestFactory.getRequest(self.__name__)
         raise Retry(_("Fallback to free download"))
-
-
-    #@TODO: Remove in 0.4.10
-    def wait(self, seconds=0, reconnect=None):
-        return _wait(self, seconds, reconnect)

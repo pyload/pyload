@@ -104,7 +104,7 @@ class RelinkUs(Crypter):
 
 
     def requestPackage(self):
-        self.html = self.load(self.pyfile.url, decode=True)
+        self.html = self.load(self.pyfile.url)
 
 
     def isOnline(self):
@@ -135,7 +135,7 @@ class RelinkUs(Crypter):
         if password:
             passwd_url = self.PASSWORD_SUBMIT_URL + "?id=%s" % self.fileid
             passwd_data = {'id': self.fileid, 'password': password, 'pw': 'submit'}
-            self.html = self.load(passwd_url, post=passwd_data, decode=True)
+            self.html = self.load(passwd_url, post=passwd_data)
 
 
     def unlockCaptchaProtection(self):
@@ -145,7 +145,7 @@ class RelinkUs(Crypter):
         self.logDebug("Captcha resolved, coords [%s]" % str(coords))
         captcha_post_url = self.CAPTCHA_SUBMIT_URL + "?id=%s" % self.fileid
         captcha_post_data = {'button.x': coords[0], 'button.y': coords[1], 'captcha': 'submit'}
-        self.html = self.load(captcha_post_url, post=captcha_post_data, decode=True)
+        self.html = self.load(captcha_post_url, post=captcha_post_data)
 
 
     def getPackageInfo(self):
@@ -244,7 +244,7 @@ class RelinkUs(Crypter):
 
                 self.logDebug("Decrypting Web link %d, %s" % (index + 1, url))
 
-                res  = self.load(url, decode=True)
+                res  = self.load(url)
                 link = re.search(self.WEB_LINK_REGEX, res).group(1)
 
                 package_links.append(link)

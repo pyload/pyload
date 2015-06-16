@@ -84,7 +84,7 @@ class NCryptIn(Crypter):
 
 
     def requestFolderHome(self):
-        return self.load(self.pyfile.url, decode=True)
+        return self.load(self.pyfile.url)
 
 
     def removeHtmlCrap(self, content):
@@ -170,7 +170,7 @@ class NCryptIn(Crypter):
 
         # Unlock protection
         postData['submit_protected'] = 'Continue to folder'
-        return self.load(self.pyfile.url, post=postData, decode=True)
+        return self.load(self.pyfile.url, post=postData)
 
 
     def handleErrors(self):

@@ -16,7 +16,7 @@ class ShareonlineBiz(Account):
 
 
     def api_response(self, user, req):
-        return req.load("http://api.share-online.biz/cgi-bin",
+        return self.load("http://api.share-online.biz/cgi-bin",
                         get={'q'       : "userdetails",
                              'aux'     : "traffic",
                              'username': user,

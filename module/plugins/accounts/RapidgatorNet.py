@@ -27,7 +27,7 @@ class RapidgatorNet(Account):
             sid = self.getAccountData(user).get('sid', None)
             assert sid
 
-            html = req.load("%s/info" % self.API_URL, get={'sid': sid})
+            html = self.load("%s/info" % self.API_URL, get={'sid': sid}, req=req)
 
             self.logDebug("API:USERINFO", html)
 
@@ -54,7 +54,7 @@ class RapidgatorNet(Account):
 
     def login(self, user, data, req):
         try:
-            html = req.load('%s/login' % self.API_URL, post={"username": user, "password": data['password']})
+            html = self.load('%s/login' % self.API_URL, post={"username": user, "password": data['password']}, req=req)
 
             self.logDebug("API:LOGIN", html)
 

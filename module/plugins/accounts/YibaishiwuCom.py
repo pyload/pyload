@@ -20,7 +20,7 @@ class YibaishiwuCom(Account):
 
     def loadAccountInfo(self, user, req):
         #self.relogin(user)
-        html = req.load("http://115.com/", decode=True)
+        html = self.load("http://115.com/", req=req)
 
         m = re.search(self.ACCOUNT_INFO_PATTERN, html, re.S)
         premium = True if m and 'is_vip: 1' in m.group(1) else False
@@ -29,12 +29,11 @@ class YibaishiwuCom(Account):
 
 
     def login(self, user, data, req):
-        html = req.load("https://passport.115.com/?ac=login",
+        html = self.load("https://passport.115.com/?ac=login",
                         post={"back": "http://www.115.com/",
                               "goto": "http://115.com/",
                               "login[account]": user,
-                              "login[passwd]": data['password']},
-                        decode=True)
+                              "login[passwd]": data['password']}, req=req)
 
         if not 'var USER_PERMISSION = {' in html:
             self.wrongPassword()

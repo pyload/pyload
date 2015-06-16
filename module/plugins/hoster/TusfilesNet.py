@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from module.network.HTTPRequest import BadHeader
+from module.plugins.internal.Plugin import Retry
 from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 

@@ -30,7 +30,7 @@ class UloziskoSk(SimpleHoster):
 
 
     def process(self, pyfile):
-        self.html = self.load(pyfile.url, decode=True)
+        self.html = self.load(pyfile.url)
         self.getFileInfo()
 
         m = re.search(self.IMG_PATTERN, self.html)

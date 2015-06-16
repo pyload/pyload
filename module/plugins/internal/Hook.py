@@ -42,9 +42,6 @@ class Hook(Plugin):
         #: `HookManager`
         self.manager = manager
 
-        #: Provide information in dict here, usable by API `getInfo`
-        self.info = {}
-
         #: automatically register event listeners for functions, attribute will be deleted dont use it yourself
         self.event_map = {}
 

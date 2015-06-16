@@ -21,7 +21,7 @@ class NoPremiumPlHook(MultiHook):
 
 
     def getHosters(self):
-        hostings         = json_loads(self.getURL("https://www.nopremium.pl/clipboard.php?json=3").strip())
+        hostings         = json_loads(self.load("https://www.nopremium.pl/clipboard.php?json=3").strip())
         hostings_domains = [domain for row in hostings for domain in row["domains"] if row["sdownload"] == "0"]
 
         self.logDebug(hostings_domains)

@@ -44,7 +44,7 @@ class KingfilesNet(SimpleHoster):
                      'referer'    : "",
                      'method_free': "+"}
 
-        self.html = self.load(pyfile.url, post=post_data, decode=True)
+        self.html = self.load(pyfile.url, post=post_data)
 
         solvemedia = SolveMedia(self)
         response, challenge = solvemedia.challenge()
@@ -67,7 +67,7 @@ class KingfilesNet(SimpleHoster):
                      'adcopy_challenge': challenge,
                      'down_direct'     : "1"}
 
-        self.html = self.load(pyfile.url, post=post_data, decode=True)
+        self.html = self.load(pyfile.url, post=post_data)
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:

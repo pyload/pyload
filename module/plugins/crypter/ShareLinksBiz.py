@@ -34,7 +34,7 @@ class ShareLinksBiz(Crypter):
 
         # Request package
         url = self.baseUrl + '/' + self.fileId
-        self.html = self.load(url, decode=True)
+        self.html = self.load(url)
 
         # Unblock server (load all images)
         self.unblockServer()
@@ -104,7 +104,7 @@ class ShareLinksBiz(Crypter):
         self.logDebug("Submitting password [%s] for protected links" % password)
         post = {"password": password, 'login': 'Submit form'}
         url = self.baseUrl + '/' + self.fileId
-        self.html = self.load(url, post=post, decode=True)
+        self.html = self.load(url, post=post)
 
 
     def unlockCaptchaProtection(self):
@@ -125,7 +125,7 @@ class ShareLinksBiz(Crypter):
             self.invalidCaptcha()
             self.retry(wait_time=5)
         url = self.baseUrl + href
-        self.html = self.load(url, decode=True)
+        self.html = self.load(url)
 
 
     def _getCaptchaMap(self):

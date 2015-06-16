@@ -41,7 +41,7 @@ class FreeWayMe(Account):
 
 
     def getAccountStatus(self, user, req):
-        answer = req.load("http://www.free-way.bz/ajax/jd.php",  #@TODO: Revert to `https` in 0.4.10
+        answer = self.load("http://www.free-way.bz/ajax/jd.php",  #@TODO: Revert to `https` in 0.4.10
                           get={"id": 4, "user": user, "pass": self.getAccountData(user)['password']})
 
         self.logDebug("Login: %s" % answer)

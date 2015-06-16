@@ -21,7 +21,7 @@ class MyfastfileComHook(MultiHook):
 
 
     def getHosters(self):
-        json_data = self.getURL("http://myfastfile.com/api.php", get={'hosts': ""}, decode=True)
+        json_data = self.load("http://myfastfile.com/api.php", get={'hosts': ""})
         self.logDebug("JSON data", json_data)
         json_data = json_loads(json_data)
 

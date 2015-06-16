@@ -4,7 +4,7 @@ import re
 import time
 
 from module.plugins.internal.Account import Account
-from module.plugins.internal.SimpleHoster import set_cookies
+from module.plugins.internal.Plugin import set_cookies
 
 
 class UploadingCom(Account):
@@ -26,7 +26,7 @@ class UploadingCom(Account):
         trafficleft = None
         premium     = None
 
-        html = req.load("http://uploading.com/")
+        html = self.load("http://uploading.com/", req=req)
 
         premium = False if re.search(self.PREMIUM_PATTERN, html) else True
 
@@ -60,6 +60,6 @@ class UploadingCom(Account):
                      ("uploading.com", "setlang" , "en"),
                      ("uploading.com", "_lang"   , "en")])
 
-        req.load("http://uploading.com/")
-        req.load("https://uploading.com/general/login_form/?JsHttpRequest=%s-xml" % long(time.time() * 1000),
+        self.load("http://uploading.com/", req=req)
+        self.load("https://uploading.com/general/login_form/?JsHttpRequest=%s-xml" % long(time.time() * 1000, req=req),
                  post={'email': user, 'password': data['password'], 'remember': "on"})

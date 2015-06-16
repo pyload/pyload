@@ -21,7 +21,7 @@ class FreakshareCom(Account):
         validuntil  = None
         trafficleft = None
 
-        html = req.load("http://freakshare.com/")
+        html = self.load("http://freakshare.com/", req=req)
 
         try:
             m = re.search(r'ltig bis:</td>\s*<td><b>([\d.:-]+)</b></td>', html, re.M)
@@ -41,11 +41,10 @@ class FreakshareCom(Account):
 
 
     def login(self, user, data, req):
-        req.load("http://freakshare.com/index.php?language=EN")
+        self.load("http://freakshare.com/index.php?language=EN", req=req)
 
-        html = req.load("https://freakshare.com/login.html",
-                        post={"submit": "Login", "user": user, "pass": data['password']},
-                        decode=True)
+        html = self.load("https://freakshare.com/login.html",
+                        post={"submit": "Login", "user": user, "pass": data['password']}, req=req)
 
         if ">Wrong Username or Password" in html:
             self.wrongPassword()

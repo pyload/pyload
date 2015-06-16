@@ -21,7 +21,7 @@ class FastixRuHook(MultiHook):
 
 
     def getHosters(self):
-        html = self.getURL("http://fastix.ru/api_v2",
+        html = self.load("http://fastix.ru/api_v2",
                       get={'apikey': "5182964c3f8f9a7f0b00000a_kelmFB4n1IrnCDYuIFn2y",
                            'sub'   : "allowed_sources"})
         host_list = json_loads(html)

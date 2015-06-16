@@ -41,7 +41,7 @@ class AdYouLike(Captcha):
         # "all":{"element_id":"ayl_private_cap_92300","lang":"fr","env":"prod"}}
         ayl = json_loads(ayl)
 
-        html = self.plugin.req.load("http://api-ayl.appspot.com/challenge",
+        html = self.plugin.load("http://api-ayl.appspot.com/challenge",
                                     get={'key'     : ayl['adyoulike']['key'],
                                          'env'     : ayl['all']['env'],
                                          'callback': callback})

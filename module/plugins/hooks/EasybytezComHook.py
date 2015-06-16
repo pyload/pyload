@@ -25,6 +25,6 @@ class EasybytezComHook(MultiHook):
         user, data = self.account.selectAccount()
 
         req  = self.account.getAccountRequest(user)
-        html = req.load("http://www.easybytez.com")
+        html = self.load("http://www.easybytez.com", req=req)
 
         return re.search(r'</textarea>\s*Supported sites:(.*)', html).group(1).split(',')

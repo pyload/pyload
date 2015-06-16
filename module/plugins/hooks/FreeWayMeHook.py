@@ -21,5 +21,5 @@ class FreeWayMeHook(MultiHook):
 
     def getHosters(self):
         user, data = self.account.selectAccount()
-        hostis = self.getURL("http://www.free-way.bz/ajax/jd.php", get={"id": 3, "user": user, "pass": data['password']}).replace("\"", "")  #@TODO: Revert to `https` in 0.4.10
+        hostis = self.load("http://www.free-way.bz/ajax/jd.php", get={"id": 3, "user": user, "pass": data['password']}).replace("\"", "")  #@TODO: Revert to `https` in 0.4.10
         return [x.strip() for x in hostis.split(",") if x.strip()]

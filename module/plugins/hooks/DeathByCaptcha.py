@@ -84,9 +84,11 @@ class DeathByCaptcha(Hook):
 
         res = None
         try:
-            json = req.load("%s%s" % (self.API_URL, api),
-                            post=post,
-                            multipart=multipart)
+            json = self.load("%s%s" % (self.API_URL, api),
+                             post=post,
+                             multipart=multipart,
+                             req=req)
+
             self.logDebug(json)
             res = json_loads(json)
 

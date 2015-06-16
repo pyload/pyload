@@ -19,14 +19,14 @@ class RehostTo(Account):
         validuntil  = -1
         session     = ""
 
-        html = req.load("https://rehost.to/api.php",
+        html = self.load("https://rehost.to/api.php",
                         get={'cmd' : "login", 'user': user,
                              'pass': self.getAccountData(user)['password']})
         try:
             session = html.split(",")[1].split("=")[1]
 
-            html = req.load("http://rehost.to/api.php",
-                            get={'cmd': "get_premium_credits", 'long_ses': session})
+            html = self.load("http://rehost.to/api.php",
+                            get={'cmd': "get_premium_credits", 'long_ses': session}, req=req)
 
             if html.strip() == "0,0" or "ERROR" in html:
                 self.logDebug(html)
@@ -45,9 +45,8 @@ class RehostTo(Account):
 
 
     def login(self, user, data, req):
-        html = req.load("https://rehost.to/api.php",
-                        get={'cmd': "login", 'user': user, 'pass': data['password']},
-                        decode=True)
+        html = self.load("https://rehost.to/api.php",
+                        get={'cmd': "login", 'user': user, 'pass': data['password']}, req=req)
 
         if "ERROR" in html:
             self.logDebug(html)

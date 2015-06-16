@@ -21,7 +21,7 @@ class LinksnappyComHook(MultiHook):
 
 
     def getHosters(self):
-        json_data = self.getURL("http://gen.linksnappy.com/lseAPI.php", get={'act': "FILEHOSTS"})
+        json_data = self.load("http://gen.linksnappy.com/lseAPI.php", get={'act': "FILEHOSTS"})
         json_data = json_loads(json_data)
 
         return json_data['return'].keys()

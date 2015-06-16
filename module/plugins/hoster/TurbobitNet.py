@@ -43,8 +43,7 @@ class TurbobitNet(SimpleHoster):
 
 
     def handleFree(self, pyfile):
-        self.html = self.load("http://turbobit.net/download/free/%s" % self.info['pattern']['ID'],
-                              decode=True)
+        self.html = self.load("http://turbobit.net/download/free/%s" % self.info['pattern']['ID'])
 
         rtUpdate = self.getRtUpdate()
 

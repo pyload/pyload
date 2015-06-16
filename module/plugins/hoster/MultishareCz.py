@@ -37,7 +37,7 @@ class MultishareCz(SimpleHoster):
 
 
     def handleMulti(self, pyfile):
-        self.html = self.load('http://www.multishare.cz/html/mms_ajax.php', post={"link": pyfile.url}, decode=True)
+        self.html = self.load('http://www.multishare.cz/html/mms_ajax.php', post={"link": pyfile.url})
 
         self.checkInfo()
 

@@ -23,6 +23,6 @@ class PremiumToHook(MultiHook):
 
     def getHosters(self):
         user, data = self.account.selectAccount()
-        html = self.getURL("http://premium.to/api/hosters.php",
+        html = self.load("http://premium.to/api/hosters.php",
                       get={'username': user, 'password': data['password']})
         return [x.strip() for x in html.replace("\"", "").split(";")]

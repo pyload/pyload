@@ -25,7 +25,7 @@ class MultiloadCz(Crypter):
 
 
     def decrypt(self, pyfile):
-        self.html = self.load(pyfile.url, decode=True)
+        self.html = self.load(pyfile.url)
 
         if re.match(self.__pattern__, pyfile.url).group(1) == "slozka":
             m = re.search(self.FOLDER_PATTERN, self.html)

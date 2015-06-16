@@ -46,7 +46,7 @@ class BitshareCom(SimpleHoster):
         self.logDebug("File id is [%s]" % self.file_id)
 
         # Load main page
-        self.html = self.load(pyfile.url, ref=False, decode=True)
+        self.html = self.load(pyfile.url, ref=False)
 
         # Check offline
         if re.search(self.OFFLINE_PATTERN, self.html):

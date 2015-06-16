@@ -11,8 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 def getInfo(urls):
     for url in urls:
         html = getURL("http://www.fshare.vn/check_link.php",
-                      post={'action': "check_link", 'arrlinks': url},
-                      decode=True)
+                      post={'action': "check_link", 'arrlinks': url})
 
         yield parseFileInfo(FshareVn, url, html)
 
@@ -45,15 +44,11 @@ class FshareVn(SimpleHoster):
 
     def preload(self):
         self.html = self.load("http://www.fshare.vn/check_link.php",
-                              post={'action': "check_link", 'arrlinks': pyfile.url},
-                              decode=True)
-
-        if isinstance(self.TEXT_ENCODING, basestring):
-            self.html = unicode(self.html, self.TEXT_ENCODING)
+                              post={'action': "check_link", 'arrlinks': pyfile.url})
 
 
     def handleFree(self, pyfile):
-        self.html = self.load(pyfile.url, decode=True)
+        self.html = self.load(pyfile.url)
 
         self.checkErrors()
 
@@ -69,7 +64,7 @@ class FshareVn(SimpleHoster):
             if password:
                 self.logInfo(_("Password protected link, trying ") + password)
                 inputs['link_file_pwd_dl'] = password
-                self.html = self.load(url, post=inputs, decode=True)
+                self.html = self.load(url, post=inputs)
 
                 if 'name="link_file_pwd_dl"' in self.html:
                     self.fail(_("Incorrect password"))
@@ -77,7 +72,7 @@ class FshareVn(SimpleHoster):
                 self.fail(_("No password found"))
 
         else:
-            self.html = self.load(url, post=inputs, decode=True)
+            self.html = self.load(url, post=inputs)
 
         self.checkErrors()
 

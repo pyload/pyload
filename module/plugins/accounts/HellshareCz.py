@@ -21,7 +21,7 @@ class HellshareCz(Account):
 
     def loadAccountInfo(self, user, req):
         self.relogin(user)
-        html = req.load("http://www.hellshare.com/")
+        html = self.load("http://www.hellshare.com/", req=req)
 
         m = re.search(self.CREDIT_LEFT_PATTERN, html)
         if m is None:
@@ -52,28 +52,27 @@ class HellshareCz(Account):
 
 
     def login(self, user, data, req):
-        html = req.load('http://www.hellshare.com/', decode=True)
+        html = self.load('http://www.hellshare.com/', req=req)
         if req.lastEffectiveURL != 'http://www.hellshare.com/':
             #Switch to English
             self.logDebug("Switch lang - URL: %s" % req.lastEffectiveURL)
 
-            json = req.load("%s?do=locRouter-show" % req.lastEffectiveURL)
+            json = self.load("%s?do=locRouter-show" % req.lastEffectiveURL, req=req)
             hash = re.search(r"(\-\-[0-9a-f]+\-)", json).group(1)
 
             self.logDebug("Switch lang - HASH: %s" % hash)
 
-            html = req.load('http://www.hellshare.com/%s/' % hash, decode=True)
+            html = self.load('http://www.hellshare.com/%s/' % hash, req=req)
 
         if re.search(self.CREDIT_LEFT_PATTERN, html):
             self.logDebug("Already logged in")
             return
 
-        html = req.load('https://www.hellshare.com/login?do=loginForm-submit',
+        html = self.load('https://www.hellshare.com/login?do=loginForm-submit',
                         post={"login": "Log in",
                               "password": data['password'],
                               "username": user,
-                              "perm_login": "on"},
-                        decode=True)
+                              "perm_login": "on"}, req=req)
 
         if "<p>You input a wrong user name or wrong password</p>" in html:
             self.wrongPassword()

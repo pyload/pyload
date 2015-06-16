@@ -40,7 +40,7 @@ class IfolderRu(SimpleHoster):
 
     def handleFree(self, pyfile):
         url = "http://rusfolder.com/%s" % self.info['pattern']['ID']
-        self.html = self.load("http://rusfolder.com/%s" % self.info['pattern']['ID'], decode=True)
+        self.html = self.load("http://rusfolder.com/%s" % self.info['pattern']['ID'])
         self.getFileInfo()
 
         session_id = re.search(self.SESSION_ID_PATTERN, self.html).groups()
@@ -52,7 +52,7 @@ class IfolderRu(SimpleHoster):
             inputs['action'] = '1'
             self.logDebug(inputs)
 
-            self.html = self.load(url, decode=True, post=inputs)
+            self.html = self.load(url, post=inputs)
             if self.WRONG_CAPTCHA_PATTERN in self.html:
                 self.invalidCaptcha()
             else:

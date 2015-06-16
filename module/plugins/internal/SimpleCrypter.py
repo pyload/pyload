@@ -54,7 +54,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
     #@TODO: Remove in 0.4.10
     def init(self):
         account_name = (self.__name__ + ".py").replace("Folder.py", "").replace(".py", "")
-        account      = self.pyfile.m.core.accountManager.getAccountPlugin(account_name)
+        account      = self.core.accountManager.getAccountPlugin(account_name)
 
         if account and account.canUse():
             self.user, data = account.selectAccount()
@@ -68,9 +68,9 @@ class SimpleCrypter(Crypter, SimpleHoster):
         self.pyfile.error = ""  #@TODO: Remove in 0.4.10
 
         self.info  = {}
-        self.html  = ""
-        self.link  = ""  #@TODO: Move to Hoster in 0.4.10
-        self.links = []  #@TODO: Move to Hoster in 0.4.10
+        self.html  = ""  #@TODO: Recheck in 0.4.10
+        self.link  = ""  #@TODO: Recheck in 0.4.10
+        self.links = []
 
         if self.LOGIN_PREMIUM and not self.premium:
             self.fail(_("Required premium account not found"))
@@ -87,11 +87,11 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
 
     def handleDirect(self, pyfile):
-        for i in xrange(10):  #@TODO: Use `pycurl.MAXREDIRS` value in 0.4.10
+        for i in xrange(self.getConfig("maxredirs", plugin="UserAgentSwitcher")):
             redirect = self.link or pyfile.url
             self.logDebug("Redirect #%d to: %s" % (i, redirect))
 
-            header = self.load(redirect, just_header=True, decode=True)
+            header = self.load(redirect, just_header=True)
             if 'location' in header and header['location']:
                 self.link = header['location']
             else:
@@ -107,13 +107,13 @@ class SimpleCrypter(Crypter, SimpleHoster):
         self.handleDirect(pyfile)
 
         if self.link:
-            self.urls = self.fixurls([self.link])
+            self.urls = [self.link]
 
         else:
             self.preload()
             self.checkInfo()
 
-            self.links = self.fixurls(self.getLinks()) or list()
+            self.links = self.getLinks() or list()
 
             if hasattr(self, 'PAGES_PATTERN') and hasattr(self, 'loadPage'):
                 self.handlePages(pyfile)
@@ -122,9 +122,6 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
         if self.links:
             self.packages = [(self.info['name'], self.links, self.info['folder'])]
-
-        elif not self.urls and not self.packages:  #@TODO: Remove in 0.4.10
-            self.fail(_("No link grabbed"))
 
 
     def checkNameSize(self, getinfo=True):

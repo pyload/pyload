@@ -25,7 +25,7 @@ class TnyCz(SimpleCrypter):
 
     def getLinks(self):
         m = re.search(r'<a id=\'save_paste\' href="(.+save\.php\?hash=.+)">', self.html)
-        return re.findall(".+", self.load(m.group(1), decode=True)) if m else None
+        return re.findall(".+", self.load(m.group(1))) if m else None
 
 
 getInfo = create_getInfo(TnyCz)

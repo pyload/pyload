@@ -48,7 +48,7 @@ class OboomCom(Hoster):
     def loadUrl(self, url, get=None):
         if get is None:
             get = dict()
-        return json_loads(self.load(url, get, decode=True))
+        return json_loads(self.load(url, get))
 
 
     def getFileId(self, url):

@@ -60,7 +60,7 @@ class SexuriaCom(Crypter):
         elif re.match(self.PATTERN_SUPPORTED_CRYPT, url, re.I):
             # Extract info from main file
             id = re.search(self.PATTERN_SUPPORTED_CRYPT, url, re.I).group('ID')
-            html = self.load("http://sexuria.com/v1/Pornos_Kostenlos_info_%s.html" % id, decode=True)
+            html = self.load("http://sexuria.com/v1/Pornos_Kostenlos_info_%s.html" % id)
 
             title = re.search(self.PATTERN_TITLE, html, re.I).group('TITLE').strip()
             if title:

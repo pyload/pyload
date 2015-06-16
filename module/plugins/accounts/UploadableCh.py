@@ -14,7 +14,7 @@ class UploadableCh(Account):
 
 
     def loadAccountInfo(self, user, req):
-        html = req.load("http://www.uploadable.ch/login.php")
+        html = self.load("http://www.uploadable.ch/login.php", req=req)
 
         premium     = '<a href="/logout.php"' in html
         trafficleft = -1 if premium else None
@@ -23,12 +23,11 @@ class UploadableCh(Account):
 
 
     def login(self, user, data, req):
-        html = req.load("http://www.uploadable.ch/login.php",
+        html = self.load("http://www.uploadable.ch/login.php",
                         post={'userName'     : user,
                               'userPassword' : data["password"],
                               'autoLogin'    : "1",
-                              'action__login': "normalLogin"},
-                        decode=True)
+                              'action__login': "normalLogin"}, req=req)
 
         if "Login failed" in html:
             self.wrongPassword()

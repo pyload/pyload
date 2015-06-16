@@ -78,4 +78,4 @@ class NoPremiumPl(Account):
 
 
     def runAuthQuery(self):
-        return self._req.load(self.API_URL, post=self.createAuthQuery())
+        return self._self.load(self.API_URL, post=self.createAuthQuery(), req=req)

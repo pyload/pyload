@@ -5,7 +5,7 @@ import time
 import urlparse
 
 from module.plugins.internal.Account import Account
-from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
+from module.plugins.internal.Plugin import parseHtmlForm, set_cookies
 
 
 class XFSAccount(Account):
@@ -38,11 +38,6 @@ class XFSAccount(Account):
     LOGIN_FAIL_PATTERN = r'Incorrect Login or Password|account was banned|Error<'
 
 
-    def __init__(self, manager, accounts):  #@TODO: remove in 0.4.10
-        self.init()
-        return super(XFSAccount, self).__init__(manager, accounts)
-
-
     def init(self):
         if not self.HOSTER_DOMAIN:
             self.logError(_("Missing HOSTER_DOMAIN"))
@@ -69,7 +64,7 @@ class XFSAccount(Account):
                     'leechtraffic': leechtraffic,
                     'premium'     : premium}
 
-        html = req.load(self.HOSTER_URL, get={'op': "my_account"}, decode=True)
+        html = self.load(self.HOSTER_URL, get={'op': "my_account"}, req=req)
 
         premium = True if re.search(self.PREMIUM_PATTERN, html) else False
 
@@ -160,7 +155,7 @@ class XFSAccount(Account):
 
         if not self.LOGIN_URL:
             self.LOGIN_URL  = urlparse.urljoin(self.HOSTER_URL, "login.html")
-        html = req.load(self.LOGIN_URL, decode=True)
+        html = self.load(self.LOGIN_URL, req=req)
 
         action, inputs = parseHtmlForm('name="FL"', html)
         if not inputs:
@@ -175,7 +170,7 @@ class XFSAccount(Account):
         else:
             url = self.HOSTER_URL
 
-        html = req.load(url, post=inputs, decode=True)
+        html = self.load(url, post=inputs, req=req)
 
         if re.search(self.LOGIN_FAIL_PATTERN, html):
             self.wrongPassword()

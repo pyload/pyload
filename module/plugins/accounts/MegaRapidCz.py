@@ -25,7 +25,7 @@ class MegaRapidCz(Account):
 
 
     def loadAccountInfo(self, user, req):
-        htmll = req.load("http://megarapid.cz/mujucet/", decode=True)
+        htmll = self.load("http://megarapid.cz/mujucet/", req=req)
 
         m = re.search(self.LIMITDL_PATTERN, htmll)
         if m:
@@ -46,15 +46,15 @@ class MegaRapidCz(Account):
 
 
     def login(self, user, data, req):
-        html = req.load("http://megarapid.cz/prihlaseni/", decode=True)
+        html = self.load("http://megarapid.cz/prihlaseni/", req=req)
 
         if "Heslo:" in html:
             start = html.index('id="inp_hash" name="hash" value="')
             html = html[start + 33:]
             hashes = html[0:32]
-            html = req.load("https://megarapid.cz/prihlaseni/",
+            html = self.load("https://megarapid.cz/prihlaseni/",
                            post={"hash": hashes,
                                  "login": user,
                                  "pass1": data['password'],
                                  "remember": 0,
-                                 "sbmt": u"Přihlásit"})
+                                 "sbmt": u"Přihlásit"}, req=req)

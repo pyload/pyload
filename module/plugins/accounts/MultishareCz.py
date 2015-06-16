@@ -21,24 +21,23 @@ class MultishareCz(Account):
 
     def loadAccountInfo(self, user, req):
         #self.relogin(user)
-        html = req.load("http://www.multishare.cz/profil/", decode=True)
+        html = self.load("http://www.multishare.cz/profil/", req=req)
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         trafficleft = self.parseTraffic(m.group('S') + m.group('U')) if m else 0
         self.premium = True if trafficleft else False
 
-        html = req.load("http://www.multishare.cz/", decode=True)
+        html = self.load("http://www.multishare.cz/", req=req)
         mms_info = dict(re.findall(self.ACCOUNT_INFO_PATTERN, html))
 
         return dict(mms_info, **{"validuntil": -1, "trafficleft": trafficleft})
 
 
     def login(self, user, data, req):
-        html = req.load('https://www.multishare.cz/html/prihlaseni_process.php',
+        html = self.load('https://www.multishare.cz/html/prihlaseni_process.php',
                         post={"akce" : "Přihlásit",
                               "heslo": data['password'],
-                              "jmeno": user},
-                        decode=True)
+                              "jmeno": user}, req=req)
 
         if '<div class="akce-chyba akce">' in html:
             self.wrongPassword()

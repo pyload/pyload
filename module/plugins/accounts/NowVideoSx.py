@@ -24,7 +24,7 @@ class NowVideoSx(Account):
         trafficleft = -1
         premium     = None
 
-        html = req.load("http://www.nowvideo.sx/premium.php")
+        html = self.load("http://www.nowvideo.sx/premium.php", req=req)
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
@@ -48,9 +48,8 @@ class NowVideoSx(Account):
 
 
     def login(self, user, data, req):
-        html = req.load("http://www.nowvideo.sx/login.php",
-                        post={'user': user, 'pass': data['password']},
-                        decode=True)
+        html = self.load("http://www.nowvideo.sx/login.php",
+                        post={'user': user, 'pass': data['password']}, req=req)
 
         if re.search(r'>Log In<', html):
             self.wrongPassword()

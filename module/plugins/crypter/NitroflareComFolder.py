@@ -23,8 +23,7 @@ class NitroflareComFolder(SimpleCrypter):
                                    post={'userId' : self.info['pattern']['USER'],
                                          'folder' : self.info['pattern']['ID'],
                                          'page'   : 1,
-                                         'perPage': 10000},
-                                   decode=True))
+                                         'perPage': 10000}))
         if res['name']:
             self.pyfile.name = res['name']
         else:

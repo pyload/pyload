@@ -55,8 +55,6 @@ class MultiHook(Hook):
 
 
     def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
-
         self.plugins       = []
         self.supported     = []
         self.new_supported = []
@@ -95,19 +93,6 @@ class MultiHook(Hook):
 
     def activate(self):
         self.init_periodical(threaded=True)
-
-
-    def getURL(self, *args, **kwargs):  #@TODO: Remove in 0.4.10
-        """See HTTPRequest for argument list"""
-        h = pyreq.getHTTPRequest(timeout=120)
-        try:
-            if not 'decode' in kwargs:
-                kwargs['decode'] = True
-            rep = h.load(*args, **kwargs)
-        finally:
-            h.close()
-
-        return rep
 
 
     def pluginsCached(self):

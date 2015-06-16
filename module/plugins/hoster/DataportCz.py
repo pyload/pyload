@@ -48,7 +48,7 @@ class DataportCz(SimpleHoster):
             elif check == "slot":
                 self.logDebug("No free slots - wait 60s and retry")
                 self.wait(60, False)
-                self.html = self.load(pyfile.url, decode=True)
+                self.html = self.load(pyfile.url)
                 continue
 
             else:

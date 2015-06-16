@@ -23,4 +23,4 @@ class DebridItaliaComHook(MultiHook):
 
 
     def getHosters(self):
-        return self.getURL("http://debriditalia.com/api.php", get={'hosts': ""}).replace('"', '').split(',')
+        return self.load("http://debriditalia.com/api.php", get={'hosts': ""}).replace('"', '').split(',')

@@ -23,7 +23,7 @@ class LinkdecrypterComHook(MultiHook):
 
     def getHosters(self):
         list = re.search(r'>Supported\(\d+\)</b>: <i>(.[\w.\-, ]+)',
-                         self.getURL("http://linkdecrypter.com/", decode=True).replace("(g)", "")).group(1).split(', ')
+                         self.load("http://linkdecrypter.com/").replace("(g)", "")).group(1).split(', ')
         try:
             list.remove("download.serienjunkies.org")
         except ValueError:

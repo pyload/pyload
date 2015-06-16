@@ -2,14 +2,14 @@
 
 import urlparse
 
-from module.plugins.internal.Plugin import Plugin
-from module.utils import decode, save_path as safe_filename
+from module.plugins.internal.Hoster import Hoster
+from module.utils import save_path as safe_filename
 
 
-class Crypter(Plugin):
+class Crypter(Hoster):
     __name__    = "Crypter"
     __type__    = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config.get("general", "folder_per_package")
@@ -26,17 +26,11 @@ class Crypter(Plugin):
     def __init__(self, pyfile):
         super(Crypter, self).__init__(pyfile)
 
-        #: Provide information in dict here
-        self.info = {}  #@TODO: Move to Plugin
-
         #: Put all packages here. It's a list of tuples like: ( name, [list of links], folder )
         self.packages = []
 
         #: List of urls, pyLoad will generate packagenames
         self.urls = []
-
-        self.multiDL = True
-        self.limitDL = 0
 
 
     def process(self, pyfile):
@@ -80,14 +74,13 @@ class Crypter(Plugin):
                           "%d links" % len(links),
                           "Saved to folder: %s" % folder if folder else "Saved to download folder")
 
-            links = map(decode, links)
-
-            pid = self.core.api.addPackage(name, links, package_queue)
+            pid = self.core.api.addPackage(name, self.fixurl(links), package_queue)
 
             if package_password:
                 self.core.api.setPackageData(pid, {"password": package_password})
 
-            setFolder = lambda x: self.core.api.setPackageData(pid, {"folder": x or ""})  #@NOTE: Workaround to do not break API addPackage method
+            # Workaround to do not break API addPackage method
+            setFolder = lambda x: self.core.api.setPackageData(pid, {"folder": x or ""})
 
             if use_subfolder:
                 if not subfolder_per_package:

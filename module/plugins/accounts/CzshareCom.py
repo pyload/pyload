@@ -25,7 +25,7 @@ class CzshareCom(Account):
         validuntil  = None
         trafficleft = None
 
-        html = req.load("http://sdilej.cz/prehled_kreditu/")
+        html = self.load("http://sdilej.cz/prehled_kreditu/", req=req)
 
         try:
             m = re.search(self.CREDIT_LEFT_PATTERN, html)
@@ -44,11 +44,10 @@ class CzshareCom(Account):
 
 
     def login(self, user, data, req):
-        html = req.load('https://sdilej.cz/index.php',
+        html = self.load('https://sdilej.cz/index.php',
                         post={"Prihlasit": "Prihlasit",
                               "login-password": data['password'],
-                              "login-name": user},
-                        decode=True)
+                              "login-name": user}, req=req)
 
         if '<div class="login' in html:
             self.wrongPassword()

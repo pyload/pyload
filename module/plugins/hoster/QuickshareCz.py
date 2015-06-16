@@ -25,7 +25,7 @@ class QuickshareCz(SimpleHoster):
 
 
     def process(self, pyfile):
-        self.html = self.load(pyfile.url, decode=True)
+        self.html = self.load(pyfile.url)
         self.getFileInfo()
 
         # parse js variables

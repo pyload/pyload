@@ -17,7 +17,7 @@ class TurbobitNet(Account):
 
 
     def loadAccountInfo(self, user, req):
-        html = req.load("http://turbobit.net")
+        html = self.load("http://turbobit.net", req=req)
 
         m = re.search(r'<u>Turbo Access</u> to ([\d.]+)', html)
         if m:
@@ -33,11 +33,10 @@ class TurbobitNet(Account):
     def login(self, user, data, req):
         req.cj.setCookie("turbobit.net", "user_lang", "en")
 
-        html = req.load("http://turbobit.net/user/login",
+        html = self.load("http://turbobit.net/user/login",
                         post={"user[login]": user,
                               "user[pass]": data['password'],
-                              "user[submit]": "Login"},
-                        decode=True)
+                              "user[submit]": "Login"}, req=req)
 
         if not '<div class="menu-item user-name">' in html:
             self.wrongPassword()

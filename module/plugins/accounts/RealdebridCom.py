@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import xml.dom.minidom
+import xml.dom.minidom as dom
 
 from module.plugins.internal.Account import Account
 
@@ -19,10 +19,10 @@ class RealdebridCom(Account):
         if self.pin_code:
             return
 
-        html = req.load("https://real-debrid.com/api/account.php")
-        account  = xml.dom.minidom.parseString(html)
+        html = self.load("https://real-debrid.com/api/account.php", req=req)
+        xml  = dom.parseString(html)
 
-        validuntil = float(account.getElementsByTagName("expiration")[0].childNodes[0].nodeValue)
+        validuntil = float(xml.getElementsByTagName("expiration")[0].childNodes[0].nodeValue)
 
         return {'validuntil' : validuntil,
                 'trafficleft': -1        ,
@@ -32,9 +32,8 @@ class RealdebridCom(Account):
     def login(self, user, data, req):
         self.pin_code = False
 
-        html = req.load("https://real-debrid.com/ajax/login.php",
-                        get={"user": user, "pass": data['password']},
-                        decode=True)
+        html = self.load("https://real-debrid.com/ajax/login.php",
+                        get={"user": user, "pass": data['password']}, req=req)
 
         if "Your login informations are incorrect" in html:
             self.wrongPassword()

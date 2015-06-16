@@ -39,7 +39,7 @@ class FilerNet(SimpleHoster):
         if 'token' not in inputs:
             self.error(_("Unable to detect token"))
 
-        self.html = self.load(pyfile.url, post={'token': inputs['token']}, decode=True)
+        self.html = self.load(pyfile.url, post={'token': inputs['token']})
 
         inputs = self.parseHtmlForm(input_names={'hash': re.compile(r'.+')})[1]
         if 'hash' not in inputs:

@@ -9,7 +9,6 @@ import time
 
 from operator import itemgetter
 
-from module.network.RequestFactory import getURL
 from module.plugins.internal.Hook import Expose, Hook, threaded
 from module.utils import save_join as fs_join
 
@@ -128,7 +127,8 @@ class UpdateManager(Hook):
 
     def server_response(self):
         try:
-            return getURL(self.SERVER_URL, get={'v': self.core.api.getServerVersion()}).splitlines()
+            return self.load(self.SERVER_URL,
+                             get={'v': self.core.api.getServerVersion()}).splitlines()
 
         except Exception:
             self.logWarning(_("Unable to retrieve server to get updates"))
@@ -253,7 +253,7 @@ class UpdateManager(Hook):
                                    'oldver': oldver,
                                    'newver': newver})
             try:
-                content = getURL(url % plugin)
+                content = self.load(url % plugin)
                 m = VERSION.search(content)
 
                 if m and m.group(2) == version:

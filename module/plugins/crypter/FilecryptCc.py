@@ -96,8 +96,7 @@ class FilecryptCc(Crypter):
                                                imgtype="gif")
 
             self.siteWithLinks = self.load(self.pyfile.url,
-                                           post={'recaptcha_response_field': captcha_code},
-                                           decode=True)
+                                           post={'recaptcha_response_field': captcha_code})
         elif m2:  #: circle captcha
             self.logDebug("Captcha-URL: %s" % m2.group(1))
 
@@ -105,8 +104,7 @@ class FilecryptCc(Crypter):
                                                result_type='positional')
 
             self.siteWithLinks = self.load(self.pyfile.url,
-                                           post={'button.x': captcha_code[0], 'button.y': captcha_code[1]},
-                                           decode=True)
+                                           post={'button.x': captcha_code[0], 'button.y': captcha_code[1]})
 
         else:
             recaptcha   = ReCaptcha(self)
@@ -115,8 +113,7 @@ class FilecryptCc(Crypter):
             if captcha_key:
                 response, challenge = recaptcha.challenge(captcha_key)
                 self.siteWithLinks  = self.load(self.pyfile.url,
-                                                post={'g-recaptcha-response': response},
-                                                decode=True)
+                                                post={'g-recaptcha-response': response})
             else:
                 self.logInfo(_("No captcha found"))
                 self.siteWithLinks = self.html

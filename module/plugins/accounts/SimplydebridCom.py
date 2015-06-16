@@ -17,7 +17,7 @@ class SimplydebridCom(Account):
 
     def loadAccountInfo(self, user, req):
         get_data = {'login': 2, 'u': self.loginname, 'p': self.password}
-        res = req.load("http://simply-debrid.com/api.php", get=get_data, decode=True)
+        res = self.load("http://simply-debrid.com/api.php", get=get_data, req=req)
         data = [x.strip() for x in res.split(";")]
         if str(data[0]) != "1":
             return {"premium": False}
@@ -30,6 +30,6 @@ class SimplydebridCom(Account):
         self.password  = data['password']
         get_data       = {'login': 1, 'u': self.loginname, 'p': self.password}
 
-        res = req.load("https://simply-debrid.com/api.php", get=get_data, decode=True)
+        res = self.load("https://simply-debrid.com/api.php", get=get_data, req=req)
         if res != "02: loggin success":
             self.wrongPassword()

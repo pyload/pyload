@@ -45,8 +45,7 @@ class UploadedTo(SimpleHoster):
 
         for _i in xrange(5):
             html = getURL("http://uploaded.net/api/filemultiple",
-                          get={"apikey": cls.API_KEY, 'id_0': re.match(cls.__pattern__, url).group('ID')},
-                          decode=True)
+                          get={"apikey": cls.API_KEY, 'id_0': re.match(cls.__pattern__, url).group('ID')})
 
             if html != "can't find request":
                 api = html.split(",", 4)
@@ -69,7 +68,7 @@ class UploadedTo(SimpleHoster):
     def handleFree(self, pyfile):
         self.load("http://uploaded.net/language/en", just_header=True)
 
-        self.html = self.load("http://uploaded.net/js/download.js", decode=True)
+        self.html = self.load("http://uploaded.net/js/download.js")
 
         recaptcha = ReCaptcha(self)
         response, challenge = recaptcha.challenge()

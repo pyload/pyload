@@ -28,7 +28,7 @@ class Keep2ShareCc(Account):
         trafficleft = -1
         premium     = False
 
-        html = req.load("http://keep2share.cc/site/profile.html", decode=True)
+        html = self.load("http://keep2share.cc/site/profile.html", req=req)
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
@@ -62,12 +62,11 @@ class Keep2ShareCc(Account):
     def login(self, user, data, req):
         req.cj.setCookie("keep2share.cc", "lang", "en")
 
-        html = req.load("https://keep2share.cc/login.html",
+        html = self.load("https://keep2share.cc/login.html",
                         post={'LoginForm[username]'  : user,
                               'LoginForm[password]'  : data['password'],
                               'LoginForm[rememberMe]': 1,
-                              'yt0'                  : ""},
-                        decode=True)
+                              'yt0'                  : ""}, req=req)
 
         if re.search(self.LOGIN_FAIL_PATTERN, html):
             self.wrongPassword()

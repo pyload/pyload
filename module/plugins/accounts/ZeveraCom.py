@@ -62,10 +62,9 @@ class ZeveraCom(Account):
 
         get_data.update(kwargs)
 
-        res = req.load(self.API_URL,
+        res = self.load(self.API_URL,
                        get=get_data,
-                       just_header=just_header,
-                       decode=True)
+                       just_header=just_header, req=req)
 
         self.logDebug(res)
 

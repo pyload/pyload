@@ -8,7 +8,6 @@ from types import MethodType
 
 from module.PyFile import PyFile
 from module.plugins.internal.Hook import Hook
-from module.plugins.internal.Plugin import Skip
 
 
 class SkipRev(Hook):
@@ -35,7 +34,7 @@ class SkipRev(Hook):
     def _setup(self):
         self.pyfile.plugin._setup()
         if self.pyfile.hasStatus("skipped"):
-            raise Skip(self.pyfile.statusname or self.pyfile.pluginname)
+            self.skip(self.pyfile.statusname or self.pyfile.pluginname)
 
 
     def _name(self, pyfile):

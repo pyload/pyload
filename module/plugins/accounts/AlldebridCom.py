@@ -2,7 +2,7 @@
 
 import re
 import time
-import xml.dom.minidom
+import xml.dom.minidom as dom
 
 from BeautifulSoup import BeautifulSoup
 
@@ -21,7 +21,7 @@ class AlldebridCom(Account):
 
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)
-        html = req.load("http://www.alldebrid.com/account/")
+        html = self.load("http://www.alldebrid.com/account/", req=req)
         soup = BeautifulSoup(html)
 
         #Try to parse expiration date directly from the control panel page (better accuracy)
@@ -38,12 +38,12 @@ class AlldebridCom(Account):
         #Get expiration date from API
         except Exception:
             data = self.getAccountData(user)
-            html = req.load("https://www.alldebrid.com/api.php",
-                            get={'action': "info_user", 'login': user, 'pw': data['password']})
+            html = self.load("https://www.alldebrid.com/api.php",
+                            get={'action': "info_user", 'login': user, 'pw': data['password']}, req=req)
 
             self.logDebug(html)
 
-            xml = xml.dom.minidom.parseString(html)
+            xml = dom.parseString(html)
             exp_time = time.time() + int(xml.getElementsByTagName("date")[0].childNodes[0].nodeValue) * 24 * 60 * 60
 
         return {'validuntil' : exp_time,
@@ -52,11 +52,10 @@ class AlldebridCom(Account):
 
 
     def login(self, user, data, req):
-        html = req.load("https://www.alldebrid.com/register/",
+        html = self.load("https://www.alldebrid.com/register/",
                         get={'action'        : "login",
                              'login_login'   : user,
-                             'login_password': data['password']},
-                        decode=True)
+                             'login_password': data['password']}, req=req)
 
         if "This login doesn't exist" in html \
            or "The password is not valid" in html \

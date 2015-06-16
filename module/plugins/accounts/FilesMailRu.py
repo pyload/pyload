@@ -20,12 +20,11 @@ class FilesMailRu(Account):
     def login(self, user, data, req):
         user, domain = user.split("@")
 
-        html = req.load("https://swa.mail.ru/cgi-bin/auth",
+        html = self.load("https://swa.mail.ru/cgi-bin/auth",
                         post={"Domain": domain,
                               "Login": user,
                               "Password": data['password'],
-                              "Page": "http://files.mail.ru/"},
-                        decode=True)
+                              "Page": "http://files.mail.ru/"}, req=req)
 
         if "Неверное имя пользователя или пароль" in html:
             self.wrongPassword()

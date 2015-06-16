@@ -41,7 +41,7 @@ class PremiumizeMe(Account):
     def getAccountStatus(self, user, req):
         # Use premiumize.me API v1 (see https://secure.premiumize.me/?show=api)
         # to retrieve account info and return the parsed json answer
-        answer = req.load("http://api.premiumize.me/pm-api/v1.php",  #@TODO: Revert to `https` in 0.4.10
+        answer = self.load("http://api.premiumize.me/pm-api/v1.php",  #@TODO: Revert to `https` in 0.4.10
                            get={'method'       : "accountstatus",
                                 'params[login]': user,
                                 'params[pass]' : self.getAccountData(user)['password']})

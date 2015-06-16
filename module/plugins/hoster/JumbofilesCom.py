@@ -30,7 +30,7 @@ class JumbofilesCom(SimpleHoster):
 
     def handleFree(self, pyfile):
         post_data = {"id": self.info['pattern']['ID'], "op": "download3", "rand": ""}
-        html = self.load(self.pyfile.url, post=post_data, decode=True)
+        html = self.load(self.pyfile.url, post=post_data)
         self.link = re.search(self.LINK_FREE_PATTERN, html).group(1)
 
 

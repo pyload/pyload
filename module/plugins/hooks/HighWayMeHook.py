@@ -21,6 +21,6 @@ class HighWayMeHook(MultiHook):
 
 
     def getHosters(self):
-        json_data = json_loads(self.getURL("https://high-way.me/api.php",
+        json_data = json_loads(self.load("https://high-way.me/api.php",
                                            get={'hoster': 1}))
         return [element['name'] for element in json_data['hoster']]

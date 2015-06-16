@@ -123,7 +123,7 @@ class XMPPInterface(IRCInterface, JabberClient):
         subject = stanza.get_subject()
         body = stanza.get_body()
         t = stanza.get_type()
-        self.logDebug("Message from %s received." % unicode(stanza.get_from()))
+        self.logDebug("Message from %s received." % stanza.get_from())
         self.logDebug("Body: %s Subject: %s Type: %s" % (body, subject, t))
 
         if t == "headline":

@@ -43,8 +43,7 @@ class MediafireCom(SimpleHoster):
             response, challenge = solvemedia.challenge(captcha_key)
             self.html = self.load("http://www.mediafire.com/?" + self.info['pattern']['ID'],
                                   post={'adcopy_challenge': challenge,
-                                        'adcopy_response' : response},
-                                  decode=True)
+                                        'adcopy_response' : response})
             return
 
         recaptcha   = ReCaptcha(self)
@@ -53,8 +52,7 @@ class MediafireCom(SimpleHoster):
         if captcha_key:
             response, challenge = recaptcha.challenge(captcha_key)
             self.html = self.load(self.pyfile.url,
-                                  post={'g-recaptcha-response': response},
-                                  decode=True)
+                                  post={'g-recaptcha-response': response})
 
 
     def handleFree(self, pyfile):

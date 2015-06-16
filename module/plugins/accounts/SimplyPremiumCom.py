@@ -19,7 +19,7 @@ class SimplyPremiumCom(Account):
         validuntil  = -1
         trafficleft = None
 
-        json_data = req.load('http://www.simply-premium.com/api/user.php?format=json')
+        json_data = self.load('http://www.simply-premium.com/api/user.php?format=json', req=req)
 
         self.logDebug("JSON data: %s" % json_data)
 
@@ -40,9 +40,8 @@ class SimplyPremiumCom(Account):
     def login(self, user, data, req):
         req.cj.setCookie("simply-premium.com", "lang", "EN")
 
-        html = req.load("https://www.simply-premium.com/login.php",
-                        post={'key': user} if not data['password'] else {'login_name': user, 'login_pass': data['password']},
-                        decode=True)
+        html = self.load("https://www.simply-premium.com/login.php",
+                        post={'key': user} if not data['password'] else {'login_name': user, 'login_pass': data['password']}, req=req)
 
         if 'logout' not in html:
             self.wrongPassword()

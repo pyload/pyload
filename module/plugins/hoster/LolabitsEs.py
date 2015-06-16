@@ -40,7 +40,8 @@ class LolabitsEs(SimpleHoster):
 
         self.html = self.load("http://lolabits.es/action/License/Download",
                               post={'fileId'                     : fileid,
-                                    '__RequestVerificationToken' : token}).decode('unicode-escape')
+                                    '__RequestVerificationToken' : token},
+                              decode="unicode-escape")
 
         self.link = HTMLParser.HTMLParser().unescape(re.search(self.LINK_PATTERN, self.html).group(1))
 

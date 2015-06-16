@@ -18,7 +18,7 @@ class FilecloudIo(Account):
     def loadAccountInfo(self, user, req):
         # It looks like the first API request always fails, so we retry 5 times, it should work on the second try
         for _i in xrange(5):
-            rep = req.load("https://secure.filecloud.io/api-fetch_apikey.api",
+            rep = self.load("https://secure.filecloud.io/api-fetch_apikey.api",
                            post={"username": user, "password": self.getAccountData(user)['password']})
             rep = json_loads(rep)
             if rep['status'] == 'ok':
@@ -31,8 +31,8 @@ class FilecloudIo(Account):
 
         akey = rep['akey']
         self.accounts[user]['akey'] = akey  # Saved for hoster plugin
-        rep = req.load("http://api.filecloud.io/api-fetch_account_details.api",
-                       post={"akey": akey})
+        rep = self.load("http://api.filecloud.io/api-fetch_account_details.api",
+                       post={"akey": akey}, req=req)
         rep = json_loads(rep)
 
         if rep['is_premium'] == 1:
@@ -43,7 +43,7 @@ class FilecloudIo(Account):
 
     def login(self, user, data, req):
         req.cj.setCookie("secure.filecloud.io", "lang", "en")
-        html = req.load('https://secure.filecloud.io/user-login.html')
+        html = self.load('https://secure.filecloud.io/user-login.html', req=req)
 
         if not hasattr(self, "form_data"):
             self.form_data = {}
@@ -51,9 +51,9 @@ class FilecloudIo(Account):
         self.form_data['username'] = user
         self.form_data['password'] = data['password']
 
-        html = req.load('https://secure.filecloud.io/user-login_p.html',
-                        post=self.form_data,
-                        multipart=True)
+        html = self.load('https://secure.filecloud.io/user-login_p.html',
+                         post=self.form_data,
+                         req=req)
 
         if "you have successfully logged in" not in html:
             self.wrongPassword()

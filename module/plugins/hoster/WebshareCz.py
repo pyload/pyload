@@ -27,8 +27,7 @@ class WebshareCz(SimpleHoster):
         info['pattern'] = re.match(cls.__pattern__, url).groupdict()
 
         api_data = getURL("https://webshare.cz/api/file_info/",
-                          post={'ident': info['pattern']['ID'], 'wst': ""},
-                          decode=True)
+                          post={'ident': info['pattern']['ID'], 'wst': ""})
 
         if not re.search(r'<status>OK', api_data):
             info['status'] = 1
@@ -44,8 +43,7 @@ class WebshareCz(SimpleHoster):
         wst = self.account.getAccountData(self.user).get('wst', None) if self.account else None
 
         api_data = getURL("https://webshare.cz/api/file_link/",
-                          post={'ident': self.info['pattern']['ID'], 'wst': wst},
-                          decode=True)
+                          post={'ident': self.info['pattern']['ID'], 'wst': wst})
 
         self.logDebug("API data: " + api_data)
 

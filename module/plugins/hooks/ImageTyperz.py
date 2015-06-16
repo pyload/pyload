@@ -7,7 +7,7 @@ import re
 
 from base64 import b64encode
 
-from module.network.RequestFactory import getURL, getRequest
+from module.network.RequestFactory import getRequest
 from module.plugins.internal.Hook import Hook, threaded
 
 
@@ -56,7 +56,7 @@ class ImageTyperz(Hook):
 
 
     def getCredits(self):
-        res = getURL(self.GETCREDITS_URL,
+        res = self.load(self.GETCREDITS_URL,
                      post={'action': "REQUESTBALANCE",
                            'username': self.getConfig('username'),
                            'password': self.getConfig('passkey')})
@@ -89,11 +89,12 @@ class ImageTyperz(Hook):
                     data = f.read()
                 data = b64encode(data)
 
-            res = req.load(self.SUBMIT_URL,
-                           post={'action': "UPLOADCAPTCHA",
-                                 'username': self.getConfig('username'),
-                                 'password': self.getConfig('passkey'), "file": data},
-                           multipart=multipart)
+            res = self.load(self.SUBMIT_URL,
+                            post={'action': "UPLOADCAPTCHA",
+                                  'username': self.getConfig('username'),
+                                  'password': self.getConfig('passkey'), "file": data},
+                            multipart=multipart,
+                            req=req)
         finally:
             req.close()
 
@@ -134,7 +135,7 @@ class ImageTyperz(Hook):
 
     def captcha_invalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
-            res = getURL(self.RESPOND_URL,
+            res = self.load(self.RESPOND_URL,
                          post={'action': "SETBADIMAGE",
                                'username': self.getConfig('username'),
                                'password': self.getConfig('passkey'),

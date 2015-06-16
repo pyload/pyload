@@ -82,10 +82,11 @@ class ExternalScripts(Hook):
 
     def callScript(self, script, *args):
         try:
-            cmd_args = [fs_encode(str(x) if not isinstance(x, basestring) else x) for x in args]
-            cmd      = [script] + cmd_args
+            cmd_args = (fs_encode(x) if isinstande(x, basestring) else str(x) for x in args)  #@NOTE: `fs_encode` -> `encode` in 0.4.10
 
             self.logDebug("Executing: %s" % os.path.abspath(script), "Args: " + ' '.join(cmd_args))
+
+            cmd = (script,) + cmd_args
 
             p = subprocess.Popen(cmd, bufsize=-1)  #@NOTE: output goes to pyload
             if self.getConfig('waitend'):

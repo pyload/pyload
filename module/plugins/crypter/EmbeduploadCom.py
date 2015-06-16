@@ -25,7 +25,7 @@ class EmbeduploadCom(Crypter):
 
 
     def decrypt(self, pyfile):
-        self.html = self.load(pyfile.url, decode=True)
+        self.html = self.load(pyfile.url)
         tmp_links = []
 
         m = re.findall(self.LINK_PATTERN, self.html)

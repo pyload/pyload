@@ -35,7 +35,7 @@ class PromptfileCom(SimpleHoster):
         self.logDebug("Read chash %s" % chash)
 
         # continue to stage2
-        self.html = self.load(pyfile.url, decode=True, post={'chash': chash})
+        self.html = self.load(pyfile.url, post={'chash': chash})
 
         # STAGE 2: get the direct link
         return super(PromptfileCom, self).handleFree(pyfile)

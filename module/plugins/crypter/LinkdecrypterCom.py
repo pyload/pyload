@@ -35,7 +35,7 @@ class LinkdecrypterCom(Crypter):
         retries = 5
 
         post_dict = {"link_cache": "on", "pro_links": pyfile.url, "modo_links": "text"}
-        self.html = self.load('http://linkdecrypter.com/', post=post_dict, decode=True)
+        self.html = self.load('http://linkdecrypter.com/', post=post_dict)
 
         while retries:
             m = re.search(self.TEXTAREA_PATTERN, self.html, re.S)
@@ -54,16 +54,16 @@ class LinkdecrypterCom(Crypter):
                 captcha = self.decryptCaptcha(captcha_url, result_type=result_type)
                 if result_type == "positional":
                     captcha = "%d|%d" % captcha
-                self.html = self.load('http://linkdecrypter.com/', post={"captcha": captcha}, decode=True)
+                self.html = self.load('http://linkdecrypter.com/', post={"captcha": captcha})
                 retries -= 1
 
             elif self.PASSWORD_PATTERN in self.html:
                 if self.password:
                     self.logInfo(_("Password protected link"))
-                    self.html = self.load('http://linkdecrypter.com/', post={'password': self.password}, decode=True)
+                    self.html = self.load('http://linkdecrypter.com/', post={'password': self.password})
                 else:
                     self.fail(_("Missing password"))
 
             else:
                 retries -= 1
-                self.html = self.load('http://linkdecrypter.com/', decode=True)
+                self.html = self.load('http://linkdecrypter.com/')

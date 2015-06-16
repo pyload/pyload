@@ -51,7 +51,7 @@ class GoogledriveCom(SimpleHoster):
 
                 direct_link = self.directLink(link, False)
                 if not direct_link:
-                    self.html = self.load(link, decode=True)
+                    self.html = self.load(link)
                 else:
                     self.link = direct_link
                     break

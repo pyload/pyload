@@ -154,7 +154,9 @@ class Account(Plugin):
                 if not type(infos) == dict:
                     raise Exception("Wrong return format")
             except Exception, e:
-                infos = {"error": str(e)}
+                infos = super(self.__class__, self).loadAccountInfo(name, req)
+                infos['error'] = str(e)
+
                 if self.core.debug:
                     traceback.print_exc()
 
@@ -206,11 +208,8 @@ class Account(Plugin):
     def getAccountRequest(self, user=None):
         if not user:
             user, data = self.selectAccount()
-        if not user:
-            return None
 
-        req = self.core.requestFactory.getRequest(self.__name__, user)
-        return req
+        return self.core.requestFactory.getRequest(self.__name__, user)
 
 
     def getAccountCookies(self, user=None):
@@ -264,7 +263,7 @@ class Account(Plugin):
         return self.selectAccount() != (None, None)
 
 
-    def parseTraffic(self, value, unit=None):  #: return bytes
+    def parseTraffic(self, value, unit=None):  #: return kilobytes
         if not unit and not isinstance(value, basestring):
             unit = "KB"
         return parseFileSize(value, unit)

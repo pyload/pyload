@@ -30,7 +30,7 @@ class UserAgentSwitcher(Hook):
     def download_preparing(self, pyfile):
         connecttimeout = self.getConfig('connecttimeout')
         maxredirs      = self.getConfig('maxredirs')
-        useragent      = self.getConfig('useragent').encode("utf8", "replace")  #@TODO: Remove `encode` in 0.4.10
+        useragent      = self.getConfig('useragent')
 
         if connecttimeout:
             pyfile.plugin.req.http.c.setopt(pycurl.CONNECTTIMEOUT, connecttimeout)

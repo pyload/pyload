@@ -51,7 +51,7 @@ class ShareplaceCom(Hoster):
 
     def download_html(self):
         url = re.sub("shareplace.com\/\?", "shareplace.com//index1.php/?a=", self.pyfile.url)
-        self.html = self.load(url, decode=True)
+        self.html = self.load(url)
 
 
     def get_file_url(self):

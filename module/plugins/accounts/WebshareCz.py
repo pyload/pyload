@@ -25,9 +25,8 @@ class WebshareCz(Account):
 
 
     def loadAccountInfo(self, user, req):
-        html = req.load("https://webshare.cz/api/user_data/",
-                        post={'wst': self.getAccountData(user).get('wst', None)},
-                        decode=True)
+        html = self.load("https://webshare.cz/api/user_data/",
+                        post={'wst': self.getAccountData(user).get('wst', None)})
 
         self.logDebug("Response: " + html)
 
@@ -42,10 +41,9 @@ class WebshareCz(Account):
 
 
     def login(self, user, data, req):
-        salt = req.load("https://webshare.cz/api/salt/",
+        salt = self.load("https://webshare.cz/api/salt/",
                         post={'username_or_email': user,
-                              'wst'              : ""},
-                        decode=True)
+                              'wst'              : ""}, req=req)
 
         if "<status>OK</status>" not in salt:
             self.wrongPassword()
@@ -54,13 +52,12 @@ class WebshareCz(Account):
         password = hashlib.sha1(md5_crypt.encrypt(data["password"], salt=salt)).hexdigest()
         digest   = hashlib.md5(user + ":Webshare:" + password).hexdigest()
 
-        login = req.load("https://webshare.cz/api/login/",
+        login = self.load("https://webshare.cz/api/login/",
                          post={'digest'           : digest,
                                'keep_logged_in'   : 1,
                                'password'         : password,
                                'username_or_email': user,
-                               'wst'              : ""},
-                         decode=True)
+                               'wst'              : ""}, req=req)
 
         if "<status>OK</status>" not in login:
             self.wrongPassword()

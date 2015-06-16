@@ -65,7 +65,7 @@ class RapidgatorNet(SimpleHoster):
         try:
             json = self.load('%s/%s' % (self.API_URL, cmd),
                              get={'sid': self.sid,
-                                  'url': self.pyfile.url}, decode=True)
+                                  'url': self.pyfile.url})
             self.logDebug("API:%s" % cmd, json, "SID: %s" % self.sid)
             json = json_loads(json)
             status = json['response_status']
@@ -154,7 +154,7 @@ class RapidgatorNet(SimpleHoster):
 
 
     def getJsonResponse(self, url):
-        res = self.load(url, decode=True)
+        res = self.load(url)
         if not res.startswith('{'):
             self.retry()
         self.logDebug(url, res)

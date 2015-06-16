@@ -26,7 +26,7 @@ class UploadedTo(Account):
         trafficleft = None
         premium     = None
 
-        html = req.load("http://uploaded.net/me")
+        html = self.load("http://uploaded.net/me", req=req)
 
         premium = True if re.search(self.PREMIUM_PATTERN, html) else False
 
@@ -63,9 +63,8 @@ class UploadedTo(Account):
     def login(self, user, data, req):
         # req.cj.setCookie("uploaded.net", "lang", "en")
 
-        html = req.load("https://uploaded.net/io/login",
-                        post={'id': user, 'pw': data['password'], '_': ""},
-                        decode=True)
+        html = self.load("https://uploaded.net/io/login",
+                        post={'id': user, 'pw': data['password'], '_': ""}, req=req)
 
         if '"err"' in html:
             self.wrongPassword()

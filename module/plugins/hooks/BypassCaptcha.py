@@ -3,7 +3,7 @@
 import pycurl
 
 from module.network.HTTPRequest import BadHeader
-from module.network.RequestFactory import getURL, getRequest
+from module.network.RequestFactory import getRequest
 from module.plugins.internal.Hook import Hook, threaded
 
 
@@ -54,7 +54,7 @@ class BypassCaptcha(Hook):
 
 
     def getCredits(self):
-        res = getURL(self.GETCREDITS_URL, post={"key": self.getConfig('passkey')})
+        res = self.load(self.GETCREDITS_URL, post={"key": self.getConfig('passkey')})
 
         data = dict(x.split(' ', 1) for x in res.splitlines())
         return int(data['Left'])
@@ -67,12 +67,12 @@ class BypassCaptcha(Hook):
         req.c.setopt(pycurl.LOW_SPEED_TIME, 80)
 
         try:
-            res = req.load(self.SUBMIT_URL,
-                           post={'vendor_key': self.PYLOAD_KEY,
-                                 'key': self.getConfig('passkey'),
-                                 'gen_task_id': "1",
-                                 'file': (pycurl.FORM_FILE, captcha)},
-                           multipart=True)
+            res = self.load(self.SUBMIT_URL,
+                            post={'vendor_key': self.PYLOAD_KEY,
+                                  'key': self.getConfig('passkey'),
+                                  'gen_task_id': "1",
+                                  'file': (pycurl.FORM_FILE, captcha)},
+                            req=req)
         finally:
             req.close()
 
@@ -89,7 +89,7 @@ class BypassCaptcha(Hook):
 
     def respond(self, ticket, success):
         try:
-            res = getURL(self.RESPOND_URL, post={"task_id": ticket, "key": self.getConfig('passkey'),
+            res = self.load(self.RESPOND_URL, post={"task_id": ticket, "key": self.getConfig('passkey'),
                                                       "cv": 1 if success else 0})
         except BadHeader, e:
             self.logError(_("Could not send response"), e)

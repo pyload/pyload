@@ -8,7 +8,7 @@ import uuid
 from base64 import b64encode
 
 from module.network.HTTPRequest import BadHeader
-from module.network.RequestFactory import getURL, getRequest
+from module.network.RequestFactory import getRequest
 from module.plugins.internal.Hook import Hook, threaded
 
 
@@ -36,7 +36,7 @@ class ExpertDecoders(Hook):
 
 
     def getCredits(self):
-        res = getURL(self.API_URL, post={"key": self.getConfig('passkey'), "action": "balance"})
+        res = self.load(self.API_URL, post={"key": self.getConfig('passkey'), "action": "balance"})
 
         if res.isdigit():
             self.logInfo(_("%s credits left") % res)
@@ -60,11 +60,12 @@ class ExpertDecoders(Hook):
         req.c.setopt(pycurl.LOW_SPEED_TIME, 80)
 
         try:
-            result = req.load(self.API_URL,
-                              post={'action'     : "upload",
+            result = self.load(self.API_URL,
+                               post={'action'     : "upload",
                                     'key'        : self.getConfig('passkey'),
                                     'file'       : b64encode(data),
-                                    'gen_task_id': ticket})
+                                    'gen_task_id': ticket},
+                               req=req)
         finally:
             req.close()
 
@@ -95,7 +96,7 @@ class ExpertDecoders(Hook):
         if "ticket" in task.data:
 
             try:
-                res = getURL(self.API_URL,
+                res = self.load(self.API_URL,
                              post={'action': "refund", 'key': self.getConfig('passkey'), 'gen_task_id': task.data['ticket']})
                 self.logInfo(_("Request refund"), res)
 

@@ -28,7 +28,7 @@ class TusfilesNetFolder(XFSCrypter):
 
 
     def loadPage(self, page_n):
-        return self.load(urlparse.urljoin(self.pyfile.url, str(page_n)), decode=True)
+        return self.load(urlparse.urljoin(self.pyfile.url, str(page_n)))
 
 
     def handlePages(self, pyfile):

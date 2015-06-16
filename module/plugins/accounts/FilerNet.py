@@ -23,7 +23,7 @@ class FilerNet(Account):
 
 
     def loadAccountInfo(self, user, req):
-        html = req.load("https://filer.net/profile")
+        html = self.load("https://filer.net/profile", req=req)
 
         # Free user
         if re.search(self.FREE_PATTERN, html):
@@ -43,17 +43,16 @@ class FilerNet(Account):
 
 
     def login(self, user, data, req):
-        html = req.load("https://filer.net/login", decode=True)
+        html = self.load("https://filer.net/login", req=req)
 
         token = re.search(self.TOKEN_PATTERN, html).group(1)
 
-        html = req.load("https://filer.net/login_check",
+        html = self.load("https://filer.net/login_check",
                         post={"_username"   : user,
                               "_password"   : data['password'],
                               "_remember_me": "on",
                               "_csrf_token" : token,
-                              "_target_path": "https://filer.net/"},
-                        decode=True)
+                              "_target_path": "https://filer.net/"}, req=req)
 
         if 'Logout' not in html:
             self.wrongPassword()

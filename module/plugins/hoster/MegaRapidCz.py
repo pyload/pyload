@@ -15,7 +15,7 @@ def getInfo(urls):
                 "User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0"])
 
     for url in urls:
-        html = h.load(url, decode=True)
+        html = h.load(url)
         yield parseFileInfo(MegaRapidCz, url, html)
 
 

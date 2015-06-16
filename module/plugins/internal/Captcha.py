@@ -23,12 +23,6 @@ class Captcha(Plugin):
 
 
     #@TODO: Recheck in 0.4.10
-    def fail(self, reason):
-        self.plugin.fail(reason)
-        raise AttributeError(reason)
-
-
-    #@TODO: Recheck in 0.4.10
     def retrieve_key(self, html):
         if self.detect_key(html):
             return self.key

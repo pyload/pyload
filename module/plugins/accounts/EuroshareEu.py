@@ -18,7 +18,7 @@ class EuroshareEu(Account):
 
     def loadAccountInfo(self, user, req):
         self.relogin(user)
-        html = req.load("http://euroshare.eu/customer-zone/settings/")
+        html = self.load("http://euroshare.eu/customer-zone/settings/", req=req)
 
         m = re.search('id="input_expire_date" value="(\d+\.\d+\.\d+ \d+:\d+)"', html)
         if m is None:
@@ -32,11 +32,10 @@ class EuroshareEu(Account):
 
 
     def login(self, user, data, req):
-        html = req.load('http://euroshare.eu/customer-zone/login/',
+        html = self.load('http://euroshare.eu/customer-zone/login/',
                         post={"trvale": "1",
                               "login": user,
-                              "password": data['password']},
-                        decode=True)
+                              "password": data['password']}, req=req)
 
         if u">Nesprávne prihlasovacie meno alebo heslo" in html:
             self.wrongPassword()

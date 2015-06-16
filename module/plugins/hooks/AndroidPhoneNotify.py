@@ -2,7 +2,6 @@
 
 import time
 
-from module.network.RequestFactory import getURL
 from module.plugins.internal.Hook import Hook, Expose
 
 
@@ -106,7 +105,7 @@ class AndroidPhoneNotify(Hook):
         elif self.notifications >= self.getConfig("sendpermin"):
             return
 
-        getURL("http://www.notifymyandroid.com/publicapi/notify",
+        self.load("http://www.notifymyandroid.com/publicapi/notify",
                get={'apikey'     : key,
                     'application': "pyLoad",
                     'event'      : event,

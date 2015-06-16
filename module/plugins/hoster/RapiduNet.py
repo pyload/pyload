@@ -43,8 +43,7 @@ class RapiduNet(SimpleHoster):
 
         jsvars = self.getJsonResponse("https://rapidu.net/ajax.php",
                                       get={'a': "getLoadTimeToDownload"},
-                                      post={'_go': ""},
-                                      decode=True)
+                                      post={'_go': ""})
 
         if str(jsvars['timeToDownload']) is "stop":
             t = (24 * 60 * 60) - (int(time.time()) % (24 * 60 * 60)) + time.altzone
@@ -64,8 +63,7 @@ class RapiduNet(SimpleHoster):
                                       post={'_go'     : "",
                                             'captcha1': challenge,
                                             'captcha2': response,
-                                            'fileId'  : self.info['pattern']['ID']},
-                                      decode=True)
+                                            'fileId'  : self.info['pattern']['ID']})
 
         if jsvars['message'] == 'success':
             self.link = jsvars['url']

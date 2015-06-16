@@ -6,7 +6,7 @@ import subprocess
 import urllib
 
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.SimpleHoster import replace_patterns
+from module.plugins.internal.Plugin import replace_patterns
 from module.utils import html_unescape
 
 
@@ -85,7 +85,7 @@ class YoutubeCom(Hoster):
 
     def process(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
-        html       = self.load(pyfile.url, decode=True)
+        html       = self.load(pyfile.url)
 
         if re.search(r'<div id="player-unavailable" class="\s*player-width player-height\s*">', html):
             self.offline()

@@ -19,8 +19,8 @@ class FileserveCom(Account):
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)
 
-        html = req.load("http://app.fileserve.com/api/login/", post={"username": user, "password": data['password'],
-                                                                     "submit": "Submit+Query"})
+        html = self.load("http://app.fileserve.com/api/login/", post={"username": user, "password": data['password'],
+                                                                     "submit": "Submit+Query"}, req=req)
         res = json_loads(html)
 
         if res['type'] == "premium":
@@ -31,14 +31,14 @@ class FileserveCom(Account):
 
 
     def login(self, user, data, req):
-        html = req.load("http://app.fileserve.com/api/login/", post={"username": user, "password": data['password'],
-                                                                     "submit": "Submit+Query"})
+        html = self.load("http://app.fileserve.com/api/login/", post={"username": user, "password": data['password'],
+                                                                     "submit": "Submit+Query"}, req=req)
         res = json_loads(html)
 
         if not res['type']:
             self.wrongPassword()
 
         #login at fileserv html
-        req.load("http://www.fileserve.com/login.php",
+        self.load("http://www.fileserve.com/login.php",
                  post={"loginUserName": user, "loginUserPassword": data['password'], "autoLogin": "checked",
-                       "loginFormSubmit": "Login"})
+                       "loginFormSubmit": "Login"}, req=req)

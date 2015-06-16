@@ -36,7 +36,7 @@ class UpstoreNet(SimpleHoster):
         self.logDebug("Read hash " + chash)
         # continue to stage2
         post_data = {'hash': chash, 'free': 'Slow download'}
-        self.html = self.load(pyfile.url, post=post_data, decode=True)
+        self.html = self.load(pyfile.url, post=post_data)
 
         # STAGE 2: solv captcha and wait
         # first get the infos we need: recaptcha key and wait time
@@ -57,7 +57,7 @@ class UpstoreNet(SimpleHoster):
             post_data.update({'recaptcha_challenge_field': challenge,
                               'recaptcha_response_field' : response})
 
-            self.html = self.load(pyfile.url, post=post_data, decode=True)
+            self.html = self.load(pyfile.url, post=post_data)
 
             # STAGE 3: get direct link
             m = re.search(self.LINK_FREE_PATTERN, self.html, re.S)

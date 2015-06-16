@@ -21,7 +21,7 @@ class MegaDebridEuHook(MultiHook):
 
 
     def getHosters(self):
-        reponse   = self.getURL("http://www.mega-debrid.eu/api.php", get={'action': "getHosters"})
+        reponse   = self.load("http://www.mega-debrid.eu/api.php", get={'action': "getHosters"})
         json_data = json_loads(reponse)
 
         if json_data['response_code'] == "ok":

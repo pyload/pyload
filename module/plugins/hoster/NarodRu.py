@@ -44,7 +44,7 @@ class NarodRu(SimpleHoster):
             captcha_url, post_data['key'] = m.groups()
             post_data['rep'] = self.decryptCaptcha(captcha_url)
 
-            self.html = self.load(pyfile.url, post=post_data, decode=True)
+            self.html = self.load(pyfile.url, post=post_data)
 
             m = re.search(self.LINK_FREE_PATTERN, self.html)
             if m:

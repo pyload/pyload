@@ -12,7 +12,7 @@ from module.utils import parseFileSize
 
 
 def checkFile(plugin, urls):
-    html = getURL(plugin.URLS[1], post={"urls": "\n".join(urls)}, decode=True)
+    html = getURL(plugin.URLS[1], post={"urls": "\n".join(urls)})
 
     file_info = []
     for li in re.finditer(plugin.LINKCHECK_TR, html, re.S):
@@ -81,14 +81,13 @@ class FileserveCom(Hoster):
 
     def handleFree(self):
         self.html = self.load(self.url)
-        action = self.load(self.url, post={"checkDownload": "check"}, decode=True)
+        action = self.load(self.url, post={"checkDownload": "check"})
         action = json_loads(action)
         self.logDebug(action)
 
         if "fail" in action:
             if action['fail'] == "timeLimit":
-                self.html = self.load(self.url, post={"checkDownload": "showError", "errorType": "timeLimit"},
-                                      decode=True)
+                self.html = self.load(self.url, post={"checkDownload": "showError", "errorType": "timeLimit"})
 
                 self.doLongWait(re.search(self.LONG_WAIT_PATTERN, self.html))
 
@@ -110,7 +109,7 @@ class FileserveCom(Hoster):
             self.error(_("Unknown server response"))
 
         # show download link
-        res = self.load(self.url, post={"downloadLink": "show"}, decode=True)
+        res = self.load(self.url, post={"downloadLink": "show"})
         self.logDebug("Show downloadLink response: %s" % res)
         if "fail" in res:
             self.error(_("Couldn't retrieve download url"))
@@ -140,7 +139,7 @@ class FileserveCom(Hoster):
 
 
     def doTimmer(self):
-        res = self.load(self.url, post={"downloadLink": "wait"}, decode=True)
+        res = self.load(self.url, post={"downloadLink": "wait"})
         self.logDebug("Wait response: %s" % res[:80])
 
         if "fail" in res:
@@ -191,8 +190,7 @@ class FileserveCom(Hoster):
             res = self.load("http://app.fileserve.com/api/download/premium/",
                             post={"username": self.user,
                                   "password": self.account.getAccountData(self.user)['password'],
-                                  "shorten": self.file_id},
-                            decode=True)
+                                  "shorten": self.file_id})
             if res:
                 res = json_loads(res)
                 if res['error_code'] == "302":

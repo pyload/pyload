@@ -21,8 +21,6 @@ class CatShareNet(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    TEXT_ENCODING = True
-
     INFO_PATTERN = r'<title>(?P<N>.+) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)<'
     OFFLINE_PATTERN = r'<div class="alert alert-error"'
 

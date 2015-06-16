@@ -22,7 +22,7 @@ class FilefactoryCom(Account):
 
 
     def loadAccountInfo(self, user, req):
-        html = req.load("http://www.filefactory.com/account/")
+        html = self.load("http://www.filefactory.com/account/", req=req)
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
@@ -39,10 +39,10 @@ class FilefactoryCom(Account):
     def login(self, user, data, req):
         req.http.c.setopt(pycurl.REFERER, "http://www.filefactory.com/member/login.php")
 
-        html = req.load("https://www.filefactory.com/member/signin.php",
+        html = self.load("https://www.filefactory.com/member/signin.php",
                         post={"loginEmail"   : user,
                               "loginPassword": data['password'],
-                              "Submit"       : "Sign In"})
+                              "Submit"       : "Sign In"}, req=req)
 
         if req.lastEffectiveURL != "http://www.filefactory.com/account/":
             self.wrongPassword()

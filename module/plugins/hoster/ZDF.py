@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from xml.etree.ElementTree import fromstring
+import xml.etree.ElementTree as etree
 
 from module.plugins.internal.Hoster import Hoster
 
@@ -42,7 +41,7 @@ class ZDF(Hoster):
 
 
     def process(self, pyfile):
-        xml = fromstring(self.load(self.XML_API % self.get_id(pyfile.url)))
+        xml = etree.fromstring(self.load(self.XML_API % self.get_id(pyfile.url)))
 
         status = xml.findtext("./status/statuscode")
         if status != "ok":

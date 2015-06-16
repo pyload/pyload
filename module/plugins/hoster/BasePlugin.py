@@ -5,7 +5,7 @@ import urllib
 import urlparse
 
 from module.network.HTTPRequest import BadHeader
-from module.plugins.internal.SimpleHoster import create_getInfo, getFileURL
+from module.plugins.internal.SimpleHoster import create_getInfo
 from module.plugins.internal.Hoster import Hoster
 
 
@@ -50,7 +50,7 @@ class BasePlugin(Hoster):
 
         for _i in xrange(5):
             try:
-                link = getFileURL(self, urllib.unquote(pyfile.url))
+                link = self.directLink(self, urllib.unquote(pyfile.url))
 
                 if link:
                     self.download(link, ref=False, disposition=True)

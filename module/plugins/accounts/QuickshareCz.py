@@ -19,7 +19,7 @@ class QuickshareCz(Account):
 
 
     def loadAccountInfo(self, user, req):
-        html = req.load("http://www.quickshare.cz/premium", decode=True)
+        html = self.load("http://www.quickshare.cz/premium", req=req)
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m:
@@ -33,11 +33,10 @@ class QuickshareCz(Account):
 
 
     def login(self, user, data, req):
-        html = req.load('http://www.quickshare.cz/html/prihlaseni_process.php',
+        html = self.load('http://www.quickshare.cz/html/prihlaseni_process.php',
                         post={"akce": u'Přihlásit',
                               "heslo": data['password'],
-                              "jmeno": user},
-                        decode=True)
+                              "jmeno": user}, req=req)
 
         if u'>Takový uživatel neexistuje.<' in html or u'>Špatné heslo.<' in html:
             self.wrongPassword()
