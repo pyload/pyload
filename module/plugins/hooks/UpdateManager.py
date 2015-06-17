@@ -174,10 +174,10 @@ class UpdateManager(Hook):
             exitcode = 3
 
         # Exit codes:
-        # -1 = No plugin updated, new pyLoad version available
-        #  0 = No plugin updated
-        #  1 = Plugins updated
-        #  2 = Plugins updated, but restart required
+        #  -1 = No plugin updated, new pyLoad version available
+        #   0 = No plugin updated
+        #   1 = Plugins updated
+        #   2 = Plugins updated, but restart required
         return exitcode
 
 
@@ -206,7 +206,7 @@ class UpdateManager(Hook):
         if blacklist:
             type_plugins = [(plugin['type'], plugin['name'].rsplit('.', 1)[0]) for plugin in blacklist]
 
-            # Protect UpdateManager from self-removing
+            #: Protect UpdateManager from self-removing
             try:
                 type_plugins.remove(("hook", "UpdateManager"))
             except ValueError:
@@ -286,9 +286,9 @@ class UpdateManager(Hook):
             self.logInfo(_("No plugin updates available"))
 
         # Exit codes:
-        # 0 = No plugin updated
-        # 1 = Plugins updated
-        # 2 = Plugins updated, but restart required
+        #   0 = No plugin updated
+        #   1 = Plugins updated
+        #   2 = Plugins updated, but restart required
         return exitcode
 
 

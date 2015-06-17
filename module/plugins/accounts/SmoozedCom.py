@@ -43,7 +43,7 @@ class SmoozedCom(Account):
                     'trafficleft': None,
                     'premium'    : False}
         else:
-            # Parse account info
+            #: Parse account info
             info = {'validuntil' : float(status["data"]["user"]["user_premium"]),
                     'trafficleft': max(0, status["data"]["traffic"][1] - status["data"]["traffic"][0]),
                     'session'    : status["data"]["session_key"],
@@ -61,10 +61,10 @@ class SmoozedCom(Account):
 
 
     def login(self, user, data, req):
-        # Get user data from premiumize.me
+        #: Get user data from premiumize.me
         status = self.getAccountStatus(user, req)
 
-        # Check if user and password are valid
+        #: Check if user and password are valid
         if status['state'] != 'ok':
             self.wrongPassword()
 

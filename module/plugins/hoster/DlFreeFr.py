@@ -76,11 +76,11 @@ class DlFreeFr(SimpleHoster):
         if headers.get('code') == 200:
             content_type = headers.get('content-type')
             if content_type and content_type.startswith("text/html"):
-                # Undirect acces to requested file, with a web page providing it (captcha)
+                #: Undirect acces to requested file, with a web page providing it (captcha)
                 self.html = self.load(valid_url)
                 self.handleFree(pyfile)
             else:
-                # Direct access to requested file for users using free.fr as Internet Service Provider.
+                #: Direct access to requested file for users using free.fr as Internet Service Provider.
                 self.link = valid_url
 
             self.download(self.link, disposition=True)

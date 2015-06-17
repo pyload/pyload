@@ -25,7 +25,7 @@ class MyfastfileCom(Account):
 
 
     def login(self, user, data, req):
-        # Password to use is the API-Password written in http://myfastfile.com/myaccount
+        #: Password to use is the API-Password written in http://myfastfile.com/myaccount
         html = self.load("https://myfastfile.com/api.php",
                         get={"user": user, "pass": data['password']}, req=req)
 

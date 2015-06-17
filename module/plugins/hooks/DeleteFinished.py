@@ -23,7 +23,7 @@ class DeleteFinished(Hook):
     ## overwritten methods ##
     def setup(self):
         self.info = {}  #@TODO: Remove in 0.4.10
-        # self.event_list = ["pluginConfigChanged"]
+        #: self.event_list = ["pluginConfigChanged"]
         self.interval = self.MIN_CHECK_INTERVAL
 
 
@@ -38,10 +38,10 @@ class DeleteFinished(Hook):
             self.addEvent('package_finished', self.wakeup)
 
 
-    # def pluginConfigChanged(self, plugin, name, value):
-        # if name == "interval" and value != self.interval:
-            # self.interval = value * 3600
-            # self.init_periodical()
+    #: def pluginConfigChanged(self, plugin, name, value):
+        #: if name == "interval" and value != self.interval:
+            #: self.interval = value * 3600
+            #: self.init_periodical()
 
 
     def deactivate(self):
@@ -50,8 +50,8 @@ class DeleteFinished(Hook):
 
     def activate(self):
         self.info['sleep'] = True
-        # interval = self.getConfig('interval')
-        # self.pluginConfigChanged(self.__name__, 'interval', interval)
+        #: interval = self.getConfig('interval')
+        #: self.pluginConfigChanged(self.__name__, 'interval', interval)
         self.interval = max(self.MIN_CHECK_INTERVAL, self.getConfig('interval') * 60 * 60)
         self.addEvent('package_finished', self.wakeup)
 

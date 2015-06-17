@@ -84,7 +84,7 @@ class MegaCoNz(Hoster):
         """
         Dispatch a call to the api, see https://mega.co.nz/#developers
         """
-        # generate a session id, no idea where to obtain elsewhere
+        #: generate a session id, no idea where to obtain elsewhere
         uid = random.randint(10 << 9, 10 ** 10)
 
         res = self.load(self.API_URL, get={'id': uid}, post=json_dumps([kwargs]))
@@ -101,7 +101,7 @@ class MegaCoNz(Hoster):
         if not attr.startswith("MEGA"):
             self.fail(_("Decryption failed"))
 
-        # Data is padded, 0-bytes must be stripped
+        #: Data is padded, 0-bytes must be stripped
         return json_loads(re.search(r'{.+?}', attr).group(0))
 
 
@@ -109,10 +109,10 @@ class MegaCoNz(Hoster):
         """
         Decrypts the file at lastDownload`
         """
-        # upper 64 bit of counter start
+        #: upper 64 bit of counter start
         n = self.b64_decode(key)[16:24]
 
-        # convert counter to long and shift bytes
+        #: convert counter to long and shift bytes
         k, iv, meta_mac = self.getCipherKey(key)
         ctr             = Counter.new(128, initial_value=long(n.encode("hex"), 16) << 64)
         cipher          = AES.new(k, AES.MODE_CTR, counter=ctr)
@@ -130,8 +130,8 @@ class MegaCoNz(Hoster):
         except IOError, e:
             self.fail(e)
 
-        chunk_size = 2 ** 15  # buffer size, 32k
-        # file_mac   = [0, 0, 0, 0]  # calculate CBC-MAC for checksum
+        chunk_size = 2 ** 15  #: buffer size, 32k
+        #: file_mac   = [0, 0, 0, 0]  # calculate CBC-MAC for checksum
 
         chunks = os.path.getsize(file_crypted) / chunk_size + 1
         for i in xrange(chunks):
@@ -144,27 +144,27 @@ class MegaCoNz(Hoster):
 
             self.pyfile.setProgress(int((100.0 / chunks) * i))
 
-            # chunk_mac = [iv[0], iv[1], iv[0], iv[1]]
-            # for i in xrange(0, chunk_size, 16):
-                # block = chunk[i:i+16]
-                # if len(block) % 16:
-                    # block += '=' * (16 - (len(block) % 16))
-                # block = array.array("I", block)
+            #: chunk_mac = [iv[0], iv[1], iv[0], iv[1]]
+            #: for i in xrange(0, chunk_size, 16):
+                #: block = chunk[i:i+16]
+                #: if len(block) % 16:
+                    #: block += '=' * (16 - (len(block) % 16))
+                #: block = array.array("I", block)
 
-                # chunk_mac = [chunk_mac[0] ^ a_[0], chunk_mac[1] ^ block[1], chunk_mac[2] ^ block[2], chunk_mac[3] ^ block[3]]
-                # chunk_mac = aes_cbc_encrypt_a32(chunk_mac, k)
+                #: chunk_mac = [chunk_mac[0] ^ a_[0], chunk_mac[1] ^ block[1], chunk_mac[2] ^ block[2], chunk_mac[3] ^ block[3]]
+                #: chunk_mac = aes_cbc_encrypt_a32(chunk_mac, k)
 
-            # file_mac = [file_mac[0] ^ chunk_mac[0], file_mac[1] ^ chunk_mac[1], file_mac[2] ^ chunk_mac[2], file_mac[3] ^ chunk_mac[3]]
-            # file_mac = aes_cbc_encrypt_a32(file_mac, k)
+            #: file_mac = [file_mac[0] ^ chunk_mac[0], file_mac[1] ^ chunk_mac[1], file_mac[2] ^ chunk_mac[2], file_mac[3] ^ chunk_mac[3]]
+            #: file_mac = aes_cbc_encrypt_a32(file_mac, k)
 
         self.pyfile.setProgress(100)
 
         f.close()
         df.close()
 
-        # if file_mac[0] ^ file_mac[1], file_mac[2] ^ file_mac[3] != meta_mac:
-            # os.remove(file_decrypted)
-            # self.fail(_("Checksum mismatch"))
+        #: if file_mac[0] ^ file_mac[1], file_mac[2] ^ file_mac[3] != meta_mac:
+            #: os.remove(file_decrypted)
+            #: self.fail(_("Checksum mismatch"))
 
         os.remove(file_crypted)
         self.lastDownload = fs_decode(file_decrypted)
@@ -194,8 +194,8 @@ class MegaCoNz(Hoster):
 
         self.logDebug("ID: %s" % id, "Key: %s" % key, "Type: %s" % ("public" if public else "node"))
 
-        # g is for requesting a download url
-        # this is similar to the calls in the mega js app, documentation is very bad
+        #: g is for requesting a download url
+        #: this is similar to the calls in the mega js app, documentation is very bad
         if public:
             mega = self.api_response(a="g", g=1, p=id, ssl=1)[0]
         else:
@@ -211,11 +211,11 @@ class MegaCoNz(Hoster):
         pyfile.name = attr['n'] + self.FILE_SUFFIX
         pyfile.size = mega['s']
 
-        # self.req.http.c.setopt(pycurl.SSL_CIPHER_LIST, "RC4-MD5:DEFAULT")
+        #: self.req.http.c.setopt(pycurl.SSL_CIPHER_LIST, "RC4-MD5:DEFAULT")
 
         self.download(mega['g'])
 
         self.decryptFile(key)
 
-        # Everything is finished and final name can be set
+        #: Everything is finished and final name can be set
         pyfile.name = attr['n']

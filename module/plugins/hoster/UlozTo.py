@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 def convertDecimalPrefix(m):
-    # decimal prefixes used in filesize and traffic
+    #: decimal prefixes used in filesize and traffic
     return ("%%.%df" % {'k': 3, 'M': 6, 'G': 9}[m.group(2)] % float(m.group(1))).replace('.', '')
 
 
@@ -54,9 +54,9 @@ class UlozTo(SimpleHoster):
             self.error(_("Free download form not found"))
 
         self.logDebug("inputs.keys = " + str(inputs.keys()))
-        # get and decrypt captcha
+        #: get and decrypt captcha
         if all(key in inputs for key in ("captcha_value", "captcha_id", "captcha_key")):
-            # Old version - last seen 9.12.2013
+            #: Old version - last seen 9.12.2013
             self.logDebug('Using "old" version')
 
             captcha_value = self.decryptCaptcha("http://img.uloz.to/captcha/%s.png" % inputs['captcha_id'])
@@ -65,7 +65,7 @@ class UlozTo(SimpleHoster):
             inputs.update({'captcha_id': inputs['captcha_id'], 'captcha_key': inputs['captcha_key'], 'captcha_value': captcha_value})
 
         elif all(key in inputs for key in ("captcha_value", "timestamp", "salt", "hash")):
-            # New version - better to get new parameters (like captcha reload) because of image url - since 6.12.2013
+            #: New version - better to get new parameters (like captcha reload) because of image url - since 6.12.2013
             self.logDebug('Using "new" version')
 
             xapca = self.load("http://www.ulozto.net/reloadXapca.php", get={'rnd': str(int(time.time()))})
@@ -124,7 +124,7 @@ class UlozTo(SimpleHoster):
             "wrong_captcha": re.compile(r'<ul class="error">\s*<li>Error rewriting the text.</li>'),
             "offline"      : re.compile(self.OFFLINE_PATTERN),
             "passwd"       : self.PASSWD_PATTERN,
-            "server_error" : 'src="http://img.ulozto.cz/error403/vykricnik.jpg"',  # paralell dl, server overload etc.
+            "server_error" : 'src="http://img.ulozto.cz/error403/vykricnik.jpg"',  #: paralell dl, server overload etc.
             "not_found"    : "<title>Ulož.to</title>"
         })
 

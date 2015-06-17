@@ -52,10 +52,10 @@ class YoutubeCom(Hoster):
 
     URL_REPLACEMENTS = [(r'youtu\.be/', 'youtube.com/')]
 
-    # Invalid characters that must be removed from the file name
+    #: Invalid characters that must be removed from the file name
     invalidChars = u'\u2605:?><"|\\'
 
-    # name, width, height, quality ranking, 3D
+    #: name, width, height, quality ranking, 3D
     formats = {5  : (".flv" , 400 , 240 , 1 , False),
                6  : (".flv" , 640 , 400 , 4 , False),
                17 : (".3gp" , 176 , 144 , 0 , False),
@@ -119,7 +119,7 @@ class YoutubeCom(Hoster):
         streams = [dict((y.split('=', 1)) for y in x) for x in streams]
         streams = [(int(x['itag']), urllib.unquote(x['url'])) for x in streams]
 
-        # self.logDebug("Found links: %s" % streams)
+        #: self.logDebug("Found links: %s" % streams)
 
         self.logDebug("AVAILABLE STREAMS: %s" % [x[0] for x in streams])
 
@@ -140,7 +140,7 @@ class YoutubeCom(Hoster):
         if desired_fmt in fmt_dict and allowed(desired_fmt):
             fmt = desired_fmt
         else:
-            sel  = lambda x: self.formats[x][3]  # select quality index
+            sel  = lambda x: self.formats[x][3]  #: select quality index
             comp = lambda x, y: abs(sel(x) - sel(y))
 
             self.logDebug("Choosing nearest fmt: %s" % [(x, allowed(x), comp(x, desired_fmt)) for x in fmt_dict.keys()])
@@ -159,7 +159,7 @@ class YoutubeCom(Hoster):
         file_name_pattern = '<meta name="title" content="(.+?)">'
         name = re.search(file_name_pattern, html).group(1).replace("/", "")
 
-        # Cleaning invalid characters from the file name
+        #: Cleaning invalid characters from the file name
         name = name.encode('ascii', 'replace')
         for c in self.invalidChars:
             name = name.replace(c, '_')

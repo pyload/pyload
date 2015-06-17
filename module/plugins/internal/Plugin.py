@@ -45,7 +45,7 @@ def parseHtmlForm(attr_str, html, input_names={}):
                     inputs[name] = value
 
         if input_names:
-            # check input attributes
+            #: check input attributes
             for key, val in input_names.iteritems():
                 if key in inputs:
                     if isinstance(val, basestring) and inputs[key] == val:
@@ -60,7 +60,7 @@ def parseHtmlForm(attr_str, html, input_names={}):
             else:
                 return action, inputs  #: passed attribute check
         else:
-            # no attribute check
+            #: no attribute check
             return action, inputs
 
     return {}, None  #: no matching form found
@@ -281,7 +281,7 @@ class Plugin(object):
                 self.logError(e)
 
         if just_header:
-            # parse header
+            #: parse header
             header = {"code": req.code}
             for line in res.splitlines():
                 line = line.strip()

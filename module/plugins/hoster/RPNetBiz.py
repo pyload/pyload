@@ -26,7 +26,7 @@ class RPNetBiz(MultiHoster):
     def handlePremium(self, pyfile):
         user, data = self.account.selectAccount()
 
-        # Get the download link
+        #: Get the download link
         res = self.load("https://premium.rpnet.biz/client_api.php",
                         get={"username": user,
                              "password": data['password'],
@@ -34,15 +34,15 @@ class RPNetBiz(MultiHoster):
                              "links"   : pyfile.url})
 
         self.logDebug("JSON data: %s" % res)
-        link_status = json_loads(res)['links'][0]  # get the first link... since we only queried one
+        link_status = json_loads(res)['links'][0]  #: get the first link... since we only queried one
 
-        # Check if we only have an id as a HDD link
+        #: Check if we only have an id as a HDD link
         if 'id' in link_status:
             self.logDebug("Need to wait at least 30 seconds before requery")
-            self.setWait(30)  # wait for 30 seconds
+            self.setWait(30)  #: wait for 30 seconds
             self.wait()
-            # Lets query the server again asking for the status on the link,
-            # we need to keep doing this until we reach 100
+            #: Lets query the server again asking for the status on the link,
+            #: we need to keep doing this until we reach 100
             max_tries = 30
             my_try = 0
             while (my_try <= max_tries):
@@ -66,7 +66,7 @@ class RPNetBiz(MultiHoster):
                 self.wait()
                 my_try += 1
 
-            if my_try > max_tries:  # We went over the limit!
+            if my_try > max_tries:  #: We went over the limit!
                 self.fail(_("Waited for about 15 minutes for download to finish but failed"))
 
         if 'generated' in link_status:

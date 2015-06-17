@@ -82,7 +82,7 @@ class Crypter(Hoster):
             if package_password:
                 self.core.api.setPackageData(pid, {"password": package_password})
 
-            # Workaround to do not break API addPackage method
+            #: Workaround to do not break API addPackage method
             setFolder = lambda x: self.core.api.setPackageData(pid, {"folder": x or ""})
 
             if use_subfolder:

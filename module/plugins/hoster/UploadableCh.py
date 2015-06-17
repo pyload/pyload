@@ -33,13 +33,13 @@ class UploadableCh(SimpleHoster):
 
 
     def handleFree(self, pyfile):
-        # Click the "free user" button and wait
+        #: Click the "free user" button and wait
         a = self.load(pyfile.url, post={'downloadLink': "wait"})
         self.logDebug(a)
 
         self.wait(30)
 
-        # Make the recaptcha appear and show it the pyload interface
+        #: Make the recaptcha appear and show it the pyload interface
         b = self.load(pyfile.url, post={'checkDownload': "check"})
         self.logDebug(b)  #: Expected output: {"success":"showCaptcha"}
 
@@ -47,7 +47,7 @@ class UploadableCh(SimpleHoster):
 
         response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
 
-        # Submit the captcha solution
+        #: Submit the captcha solution
         self.load("http://www.uploadable.ch/checkReCaptcha.php",
                   post={'recaptcha_challenge_field'  : challenge,
                         'recaptcha_response_field'   : response,
@@ -55,12 +55,12 @@ class UploadableCh(SimpleHoster):
 
         self.wait(3)
 
-        # Get ready for downloading
+        #: Get ready for downloading
         self.load(pyfile.url, post={'downloadLink': "show"})
 
         self.wait(3)
 
-        # Download the file
+        #: Download the file
         self.download(pyfile.url, post={'download': "normal"}, disposition=True)
 
 

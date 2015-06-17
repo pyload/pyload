@@ -44,13 +44,13 @@ class XFileSharingPro(Hook):
     CRYPTER_BUILTIN = ["junocloud.me", "rapidfileshare.net"]
 
 
-    # def pluginConfigChanged(self, plugin, name, value):
-        # self.loadPattern()
+    #: def pluginConfigChanged(self, plugin, name, value):
+        #: self.loadPattern()
 
 
     def setup(self):
         self.info = {}  #@TODO: Remove in 0.4.10
-        # self.event_list = ["pluginConfigChanged"]
+        #: self.event_list = ["pluginConfigChanged"]
 
 
     def activate(self):
@@ -105,7 +105,7 @@ class XFileSharingPro(Hook):
 
 
     def deactivate(self):
-        # self.unloadHoster("BasePlugin")
+        #: self.unloadHoster("BasePlugin")
         for type, plugin in (("hoster",  "XFileSharingPro"),
                              ("crypter", "XFileSharingProFolder")):
             self._unload(type, plugin)
@@ -126,10 +126,10 @@ class XFileSharingPro(Hook):
             return False
 
 
-    # def download_failed(self, pyfile):
-        # if pyfile.pluginname == "BasePlugin" \
-           # and pyfile.hasStatus("failed") \
-           # and not self.getConfig('use_hoster_list') \
-           # and self.unloadHoster("BasePlugin"):
-            # self.logDebug("Unloaded XFileSharingPro from BasePlugin")
-            # pyfile.setStatus("queued")
+    #: def download_failed(self, pyfile):
+        #: if pyfile.pluginname == "BasePlugin" \
+           #: and pyfile.hasStatus("failed") \
+           #: and not self.getConfig('use_hoster_list') \
+           #: and self.unloadHoster("BasePlugin"):
+            #: self.logDebug("Unloaded XFileSharingPro from BasePlugin")
+            #: pyfile.setStatus("queued")

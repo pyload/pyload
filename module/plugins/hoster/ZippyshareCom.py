@@ -58,35 +58,35 @@ class ZippyshareCom(SimpleHoster):
 
 
     def get_link(self):
-        # get all the scripts inside the html body
+        #: get all the scripts inside the html body
         soup = BeautifulSoup(self.html)
         scripts = (s.getText().strip() for s in soup.body.findAll('script', type='text/javascript'))
 
-        # meant to be populated with the initialization of all the DOM elements found in the scripts
+        #: meant to be populated with the initialization of all the DOM elements found in the scripts
         initScripts = set()
 
         def replElementById(element):
-            id   = element.group(1)  # id might be either 'x' (a real id) or x (a variable)
-            attr = element.group(4)  # attr might be None
+            id   = element.group(1)  #: id might be either 'x' (a real id) or x (a variable)
+            attr = element.group(4)  #: attr might be None
 
             varName = re.sub(r'-', '', 'GVAR[%s+"_%s"]' %(id, attr))
 
             realid = id.strip('"\'')
-            if id != realid: #id is not a variable, so look for realid.attr in the html
+            if id != realid:  #: id is not a variable, so look for realid.attr in the html
                 initValues = filter(None, [elt.get(attr, None) for elt in soup.findAll(id=realid)])
                 initValue  = '"%s"' % initValues[-1] if initValues else 'null'
                 initScripts.add('%s = %s;' % (varName, initValue))
 
             return varName
 
-        # handle all getElementById
+        #: handle all getElementById
         reVar = r'document.getElementById\(([\'"\w-]+)\)(\.)?(getAttribute\([\'"])?(\w+)?([\'"]\))?'
         scripts = [re.sub(reVar, replElementById, script) for script in scripts if script]
 
-        # add try/catch in JS to handle deliberate errors
+        #: add try/catch in JS to handle deliberate errors
         scripts = ['\n'.join(('try{', script, '} catch(err){}')) for script in scripts]
 
-        # get the file's url by evaluating all the scripts
+        #: get the file's url by evaluating all the scripts
         scripts = ['var GVAR = {}'] + list(initScripts)  + scripts + ['GVAR["dlbutton_href"]']
         return self.js.eval('\n'.join(scripts))
 

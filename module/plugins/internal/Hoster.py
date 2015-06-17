@@ -435,7 +435,7 @@ class Hoster(Plugin):
             except Exception, e:
                 self.fail(e)
 
-        # convert back to unicode
+        #: convert back to unicode
         location = fs_decode(location)
         name = safe_filename(self.pyfile.name)
 
@@ -519,8 +519,8 @@ class Hoster(Plugin):
             with open(lastDownload, "rb") as f:
                 content = f.read(read_size)
 
-            # produces encoding errors, better log to other file in the future?
-            # self.logDebug("Content: %s" % content)
+            #: produces encoding errors, better log to other file in the future?
+            #: self.logDebug("Content: %s" % content)
             for name, rule in rules.iteritems():
                 if isinstance(rule, basestring):
                     if rule in content:

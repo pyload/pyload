@@ -57,7 +57,7 @@ class Account(Plugin):
 
     @lock
     def _login(self, user, data):
-        # set timestamp for login
+        #: set timestamp for login
         self.timestamps[user] = time.time()
 
         req = self.getAccountRequest(user)
@@ -192,7 +192,7 @@ class Account(Plugin):
         """
         return {"validuntil" : None,  #: -1 for unlimited
                 "login"      : name,
-                # "password"   : self.accounts[name]['password'],  #: commented due security reason
+                #: "password"   : self.accounts[name]['password'],  #: commented due security reason
                 "options"    : self.accounts[name]['options'],
                 "valid"      : self.accounts[name]['valid'],
                 "trafficleft": None,  #: in bytes, -1 for unlimited

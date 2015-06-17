@@ -24,18 +24,18 @@ class NosuploadCom(XFSHoster):
 
 
     def getDownloadLink(self):
-        # stage1: press the "Free Download" button
+        #: stage1: press the "Free Download" button
         data = self.getPostParameters()
         self.html = self.load(self.pyfile.url, post=data)
 
-        # stage2: wait some time and press the "Download File" button
+        #: stage2: wait some time and press the "Download File" button
         data = self.getPostParameters()
         wait_time = re.search(self.WAIT_PATTERN, self.html, re.M | re.S).group(1)
         self.logDebug("Hoster told us to wait %s seconds" % wait_time)
         self.wait(wait_time)
         self.html = self.load(self.pyfile.url, post=data)
 
-        # stage3: get the download link
+        #: stage3: get the download link
         return re.search(self.LINK_PATTERN, self.html, re.S).group(1)
 
 

@@ -207,7 +207,7 @@ class MultiHook(Hook):
             self.logError(_("No %s loaded") % self.plugintype)
             return
 
-        # inject plugin plugin
+        #: inject plugin plugin
         self.logDebug("Overwritten %ss: %s" % (self.plugintype, ", ".join(sorted(self.supported))))
 
         for plugin in self.supported:
@@ -223,7 +223,7 @@ class MultiHook(Hook):
 
             self.logDebug("New %ss: %s" % (self.plugintype, ", ".join(plugins)))
 
-            # create new regexp
+            #: create new regexp
             regexp = r'.*(?P<DOMAIN>%s).*' % "|".join(x.replace('.', '\.') for x in plugins)
             if hasattr(self.pluginclass, "__pattern__") and isinstance(self.pluginclass.__pattern__, basestring) and "://" in self.pluginclass.__pattern__:
                 regexp = r'%s|%s' % (self.pluginclass.__pattern__, regexp)
@@ -252,7 +252,7 @@ class MultiHook(Hook):
         for plugin in self.supported:
             self.unloadPlugin(plugin)
 
-        # reset pattern
+        #: reset pattern
         hdict = self.core.pluginManager.plugins[self.plugintype][self.pluginname]
 
         hdict['pattern'] = getattr(self.pluginclass, "__pattern__", r'^unmatchable$')

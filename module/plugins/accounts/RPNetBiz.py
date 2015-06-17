@@ -15,11 +15,11 @@ class RPNetBiz(Account):
 
 
     def loadAccountInfo(self, user, req):
-        # Get account information from rpnet.biz
+        #: Get account information from rpnet.biz
         res = self.getAccountStatus(user, req)
         try:
             if res['accountInfo']['isPremium']:
-                # Parse account info. Change the trafficleft later to support per host info.
+                #: Parse account info. Change the trafficleft later to support per host info.
                 account_info = {"validuntil": float(res['accountInfo']['premiumExpiry']),
                                 "trafficleft": -1, "premium": True}
             else:
@@ -33,16 +33,16 @@ class RPNetBiz(Account):
 
 
     def login(self, user, data, req):
-        # Get account information from rpnet.biz
+        #: Get account information from rpnet.biz
         res = self.getAccountStatus(user, req)
 
-        # If we have an error in the res, we have wrong login information
+        #: If we have an error in the res, we have wrong login information
         if 'error' in res:
             self.wrongPassword()
 
 
     def getAccountStatus(self, user, req):
-        # Using the rpnet API, check if valid premium account
+        #: Using the rpnet API, check if valid premium account
         res = self.load("https://premium.rpnet.biz/client_api.php",
                             get={"username": user, "password": self.getAccountData(user)['password'],
                                  "action": "showAccountInformation"})

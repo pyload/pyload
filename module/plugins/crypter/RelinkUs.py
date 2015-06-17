@@ -62,17 +62,17 @@ class RelinkUs(Crypter):
 
 
     def decrypt(self, pyfile):
-        # Init
+        #: Init
         self.initPackage(pyfile)
 
-        # Request package
+        #: Request package
         self.requestPackage()
 
-        # Check for online
+        #: Check for online
         if not self.isOnline():
             self.offline()
 
-        # Check for protection
+        #: Check for protection
         if self.isPasswordProtected():
             self.unlockPasswordProtection()
             self.handleErrors()
@@ -82,18 +82,18 @@ class RelinkUs(Crypter):
             self.unlockCaptchaProtection()
             self.handleErrors()
 
-        # Get package name and folder
+        #: Get package name and folder
         (package_name, folder_name) = self.getPackageInfo()
 
-        # Extract package links
+        #: Extract package links
         package_links = []
         for sources in self.PREFERRED_LINK_SOURCES:
             package_links.extend(self.handleLinkSource(sources))
-            if package_links:  # use only first source which provides links
+            if package_links:  #: use only first source which provides links
                 break
         package_links = set(package_links)
 
-        # Pack
+        #: Pack
         if package_links:
             self.packages = [(package_name, package_links, folder_name)]
 
@@ -151,7 +151,7 @@ class RelinkUs(Crypter):
     def getPackageInfo(self):
         name = folder = None
 
-        # Try to get info from web
+        #: Try to get info from web
         m = re.search(self.FILE_TITLE_REGEX, self.html)
         if m:
             title = m.group(1).strip()
@@ -159,13 +159,13 @@ class RelinkUs(Crypter):
                 name = folder = title
                 self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
 
-        # Fallback to defaults
+        #: Fallback to defaults
         if not name or not folder:
             name = self.package.name
             folder = self.package.folder
             self.logDebug("Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
 
-        # Return package info
+        #: Return package info
         return name, folder
 
 
@@ -259,35 +259,35 @@ class RelinkUs(Crypter):
 
 
     def _getCipherParams(self, cnl2_form):
-        # Get jk
+        #: Get jk
         jk_re = self.CNL2_FORMINPUT_REGEX % self.CNL2_JK_KEY
         vjk = re.findall(jk_re, cnl2_form, re.I)
 
-        # Get crypted
+        #: Get crypted
         crypted_re = self.CNL2_FORMINPUT_REGEX % RelinkUs.CNL2_CRYPTED_KEY
         vcrypted = re.findall(crypted_re, cnl2_form, re.I)
 
-        # Log and return
+        #: Log and return
         self.logDebug("Detected %d crypted blocks" % len(vcrypted))
         return vcrypted, vjk
 
 
     def _getLinks(self, crypted, jk):
-        # Get key
+        #: Get key
         jreturn = self.js.eval("%s f()" % jk)
         self.logDebug("JsEngine returns value [%s]" % jreturn)
         key = binascii.unhexlify(jreturn)
 
-        # Decrypt
+        #: Decrypt
         Key = key
         IV = key
         obj = AES.new(Key, AES.MODE_CBC, IV)
         text = obj.decrypt(crypted.decode('base64'))
 
-        # Extract links
+        #: Extract links
         text = text.replace("\x00", "").replace("\r", "")
         links = filter(bool, text.split('\n'))
 
-        # Log and return
+        #: Log and return
         self.logDebug("Package has %d links" % len(links))
         return links

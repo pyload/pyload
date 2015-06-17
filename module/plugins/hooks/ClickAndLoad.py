@@ -22,7 +22,7 @@ def forward(source, destination):
             bufdata = source.recv(bufsize)
     finally:
         destination.shutdown(socket.SHUT_WR)
-        # destination.close()
+        #: destination.close()
 
 
 #@TODO: IPv6 support

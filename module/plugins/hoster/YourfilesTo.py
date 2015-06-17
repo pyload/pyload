@@ -40,7 +40,7 @@ class YourfilesTo(Hoster):
         if not self.html:
             self.download_html()
 
-        #var zzipitime = 15;
+        # var zzipitime = 15
         m = re.search(r'var zzipitime = (\d+);', self.html)
         if m:
             sec = int(m.group(1))

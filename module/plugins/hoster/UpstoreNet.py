@@ -34,7 +34,7 @@ class UpstoreNet(SimpleHoster):
             self.error(_("CHASH_PATTERN not found"))
         chash = m.group(1)
         self.logDebug("Read hash " + chash)
-        # continue to stage2
+        #: continue to stage2
         post_data = {'hash': chash, 'free': 'Slow download'}
         self.html = self.load(pyfile.url, post=post_data)
 
@@ -42,17 +42,17 @@ class UpstoreNet(SimpleHoster):
         # first get the infos we need: recaptcha key and wait time
         recaptcha = ReCaptcha(self)
 
-        # try the captcha 5 times
+        #: try the captcha 5 times
         for i in xrange(5):
             m = re.search(self.WAIT_PATTERN, self.html)
             if m is None:
                 self.error(_("Wait pattern not found"))
             wait_time = int(m.group(1))
 
-            # then, do the waiting
+            #: then, do the waiting
             self.wait(wait_time)
 
-            # then, handle the captcha
+            #: then, handle the captcha
             response, challenge = recaptcha.challenge()
             post_data.update({'recaptcha_challenge_field': challenge,
                               'recaptcha_response_field' : response})

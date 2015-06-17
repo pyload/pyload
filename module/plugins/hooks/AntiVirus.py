@@ -113,7 +113,6 @@ class AntiVirus(Hook):
 
 
     def download_failed(self, pyfile):
-        #: Check if pyfile is still "failed",
-        #  maybe might has been restarted in meantime
+        #: Check if pyfile is still "failed", maybe might has been restarted in meantime
         if pyfile.status == 8 and self.getConfig('scanfailed'):
             return self.scan(pyfile)

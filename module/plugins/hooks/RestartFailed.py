@@ -18,15 +18,15 @@ class RestartFailed(Hook):
     MIN_CHECK_INTERVAL = 15 * 60  #: 15 minutes
 
 
-    # def pluginConfigChanged(self, plugin, name, value):
-        # if name == "interval":
-            # interval = value * 60
-            # if self.MIN_CHECK_INTERVAL <= interval != self.interval:
-                # self.core.scheduler.removeJob(self.cb)
-                # self.interval = interval
-                # self.init_periodical()
-            # else:
-                # self.logDebug("Invalid interval value, kept current")
+    #: def pluginConfigChanged(self, plugin, name, value):
+        #: if name == "interval":
+            #: interval = value * 60
+            #: if self.MIN_CHECK_INTERVAL <= interval != self.interval:
+                #: self.core.scheduler.removeJob(self.cb)
+                #: self.interval = interval
+                #: self.init_periodical()
+            #: else:
+                #: self.logDebug("Invalid interval value, kept current")
 
 
     def periodical(self):
@@ -36,10 +36,10 @@ class RestartFailed(Hook):
 
     def setup(self):
         self.info = {}  #@TODO: Remove in 0.4.10
-        # self.event_list = ["pluginConfigChanged"]
+        #: self.event_list = ["pluginConfigChanged"]
         self.interval = self.MIN_CHECK_INTERVAL
 
 
     def activate(self):
-        # self.pluginConfigChanged(self.__name__, "interval", self.getConfig('interval'))
+        #: self.pluginConfigChanged(self.__name__, "interval", self.getConfig('interval'))
         self.interval = max(self.MIN_CHECK_INTERVAL, self.getConfig('interval') * 60)

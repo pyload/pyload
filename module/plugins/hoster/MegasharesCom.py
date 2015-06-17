@@ -83,7 +83,7 @@ class MegasharesCom(SimpleHoster):
             self.logDebug("Waiting %d seconds for a new passport" % renew)
             self.retry(wait_time=renew, reason=_("Passport renewal"))
 
-        # Check traffic left on passport
+        #: Check traffic left on passport
         m = re.search(self.PASSPORT_LEFT_PATTERN, self.html, re.M | re.S)
         if m is None:
             self.fail(_("Passport not found"))
@@ -99,7 +99,7 @@ class MegasharesCom(SimpleHoster):
 
 
     def handleDownload(self, premium=False):
-        # Find download link;
+        #: Find download link
         m = re.search(self.LINK_PATTERN % (1 if premium else 2), self.html)
         msg = _('%s download URL' % ('Premium' if premium else 'Free'))
         if m is None:

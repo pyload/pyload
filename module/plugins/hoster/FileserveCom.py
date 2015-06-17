@@ -108,13 +108,13 @@ class FileserveCom(Hoster):
         else:
             self.error(_("Unknown server response"))
 
-        # show download link
+        #: show download link
         res = self.load(self.url, post={"downloadLink": "show"})
         self.logDebug("Show downloadLink response: %s" % res)
         if "fail" in res:
             self.error(_("Couldn't retrieve download url"))
 
-        # this may either download our file or forward us to an error page
+        #: this may either download our file or forward us to an error page
         self.download(self.url, post={"download": "normal"})
         self.logDebug(self.req.http.lastEffectiveURL)
 
@@ -135,7 +135,7 @@ class FileserveCom(Hoster):
             self.wait()
             self.retry()
 
-        self.thread.m.reconnecting.wait(3)  # Ease issue with later downloads appearing to be in parallel
+        self.thread.m.reconnecting.wait(3)  #: Ease issue with later downloads appearing to be in parallel
 
 
     def doTimmer(self):

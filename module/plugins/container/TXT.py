@@ -43,7 +43,7 @@ class TXT(Container):
                 continue
 
             if link.startswith("[") and link.endswith("]"):
-                # new package
+                #: new package
                 curPack = link[1:-1]
                 packages[curPack] = []
                 continue
@@ -52,7 +52,7 @@ class TXT(Container):
 
         txt.close()
 
-        # empty packages fix
+        #: empty packages fix
         for key, value in packages.iteritems():
             if not value:
                 packages.pop(key, None)

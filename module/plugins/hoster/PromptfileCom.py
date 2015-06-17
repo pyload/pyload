@@ -34,7 +34,7 @@ class PromptfileCom(SimpleHoster):
         chash = m.group(1)
         self.logDebug("Read chash %s" % chash)
 
-        # continue to stage2
+        #: continue to stage2
         self.html = self.load(pyfile.url, post={'chash': chash})
 
         # STAGE 2: get the direct link

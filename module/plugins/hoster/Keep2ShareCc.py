@@ -55,7 +55,7 @@ class Keep2ShareCc(SimpleHoster):
         if m:
             self.logDebug("Hoster told us to wait for %s" % m.group(1))
 
-            # string to time convert courtesy of https://stackoverflow.com/questions/10663720
+            #: string to time convert courtesy of https://stackoverflow.com/questions/10663720
             ftr = [3600, 60, 1]
             wait_time = sum(a * b for a, b in zip(ftr, map(int, m.group(1).split(':'))))
 
@@ -69,8 +69,8 @@ class Keep2ShareCc(SimpleHoster):
         self.fid  = re.search(r'<input type="hidden" name="slow_id" value="(.+?)">', self.html).group(1)
         self.html = self.load(pyfile.url, post={'yt0': '', 'slow_id': self.fid})
 
-        # self.logDebug(self.fid)
-        # self.logDebug(pyfile.url)
+        #: self.logDebug(self.fid)
+        #: self.logDebug(pyfile.url)
 
         self.checkErrors()
 

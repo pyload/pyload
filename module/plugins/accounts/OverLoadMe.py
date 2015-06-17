@@ -23,7 +23,7 @@ class OverLoadMe(Account):
         data = json_loads(html)
         self.logDebug(data)
 
-        # Check for premium
+        #: Check for premium
         if data['membership'] == "Free":
             return {'premium': False, 'validuntil': None, 'trafficleft': None}
         else:

@@ -105,7 +105,7 @@ class UnRar(Extractor):
         if self.re_wrongcrc.search(err):
             raise CRCError(err)
 
-        # output only used to check if passworded files are present
+        #: output only used to check if passworded files are present
         for attr in self.re_filelist.findall(out):
             if attr[0].startswith("*"):
                 raise PasswordError
@@ -114,7 +114,7 @@ class UnRar(Extractor):
     def repair(self):
         p = self.call_cmd("rc", fs_encode(self.filename))
 
-        # communicate and retrieve stderr
+        #: communicate and retrieve stderr
         self._progress(p)
         err = p.stderr.read().strip()
         if err or p.returncode:
@@ -126,17 +126,17 @@ class UnRar(Extractor):
         s = ""
         while True:
             c = process.stdout.read(1)
-            # quit loop on eof
+            #: quit loop on eof
             if not c:
                 break
-            # reading a percentage sign -> set progress and restart
+            #: reading a percentage sign -> set progress and restart
             if c == '%':
                 self.notifyProgress(int(s))
                 s = ""
-            # not reading a digit -> therefore restart
+            #: not reading a digit -> therefore restart
             elif c not in digits:
                 s = ""
-            # add digit to progressstring
+            #: add digit to progressstring
             else:
                 s += c
 
@@ -148,7 +148,7 @@ class UnRar(Extractor):
 
         renice(p.pid, self.renice)
 
-        # communicate and retrieve stderr
+        #: communicate and retrieve stderr
         self._progress(p)
         err = p.stderr.read().strip()
 
@@ -171,10 +171,10 @@ class UnRar(Extractor):
     def getDeleteFiles(self):
         dir, name = os.path.split(self.filename)
 
-        # actually extracted file
+        #: actually extracted file
         files = [self.filename]
 
-        # eventually Multipart Files
+        #: eventually Multipart Files
         files.extend(fs_join(dir, os.path.basename(file)) for file in filter(self.isMultipart, os.listdir(dir))
                      if re.sub(self.re_multipart,".rar",name) == re.sub(self.re_multipart,".rar",file))
 
@@ -195,7 +195,7 @@ class UnRar(Extractor):
 
         result = set()
         if not self.fullpath and self.VERSION.startswith('5'):
-            # NOTE: Unrar 5 always list full path
+            #@NOTE: Unrar 5 always list full path
             for f in fs_decode(out).splitlines():
                 f = fs_join(self.out, os.path.basename(f.strip()))
                 if os.path.isfile(f):
@@ -211,7 +211,7 @@ class UnRar(Extractor):
     def call_cmd(self, command, *xargs, **kwargs):
         args = []
 
-        # overwrite flag
+        #: overwrite flag
         if self.overwrite:
             args.append("-o+")
         else:
@@ -222,10 +222,10 @@ class UnRar(Extractor):
         for word in self.excludefiles:
             args.append("-x'%s'" % word.strip())
 
-        # assume yes on all queries
+        #: assume yes on all queries
         args.append("-y")
 
-        # set a password
+        #: set a password
         if "password" in kwargs and kwargs['password']:
             args.append("-p%s" % kwargs['password'])
         else:
@@ -234,7 +234,7 @@ class UnRar(Extractor):
         if self.keepbroken:
             args.append("-kb")
 
-        # NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
+        #@NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
         call = [self.CMD, command] + args + list(xargs)
 
         self.manager.logDebug(" ".join(call))

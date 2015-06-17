@@ -61,12 +61,12 @@ class OCR(Plugin):
 
 
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True, pagesegmode=None):
-        # tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
+        #: tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
         try:
             tmpTif = open(fs_join("tmp", "tmpTif_%s.tif" % self.__name__), "wb")
             tmpTif.close()
 
-            # tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
+            #: tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
             tmpTxt = open(fs_join("tmp", "tmpTxt_%s.txt" % self.__name__), "wb")
             tmpTxt.close()
 
@@ -88,7 +88,7 @@ class OCR(Plugin):
             tessparams.extend(["-psm", str(pagesegmode)])
 
         if subset and (digits or lowercase or uppercase):
-            # tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
+            #: tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
             with open(fs_join("tmp", "tmpSub_%s.subset" % self.__name__), "wb") as tmpSub:
                 tmpSub.write("tessedit_char_whitelist ")
 
@@ -154,7 +154,7 @@ class OCR(Plugin):
             for y in xrange(h):
                 if pixels[x, y] == 255:
                     continue
-                # No point in processing white pixels since we only want to remove black pixel
+                #: No point in processing white pixels since we only want to remove black pixel
                 count = 0
 
                 try:
@@ -177,12 +177,12 @@ class OCR(Plugin):
                 except Exception:
                     pass
 
-                # not enough neighbors are dark pixels so mark this pixel
-                # to be changed to white
+                #: not enough neighbors are dark pixels so mark this pixel
+                #: to be changed to white
                 if count < allowed:
                     pixels[x, y] = 1
 
-        # second pass: this time set all 1's to 255 (white)
+        #: second pass: this time set all 1's to 255 (white)
         for x in xrange(w):
             for y in xrange(h):
                 if pixels[x, y] == 1:

@@ -79,14 +79,13 @@ class SkipRev(Hook):
         pyfile.setCustomStatus("SkipRev", "skipped")
 
         if not hasattr(pyfile.plugin, "_setup"):
-            # Work-around: inject status checker inside the preprocessing routine of the plugin
+            #: Work-around: inject status checker inside the preprocessing routine of the plugin
             pyfile.plugin._setup = pyfile.plugin.setup
             pyfile.plugin.setup  = MethodType(self._setup, pyfile.plugin)
 
 
     def download_failed(self, pyfile):
-        #: Check if pyfile is still "failed",
-        #  maybe might has been restarted in meantime
+        #: Check if pyfile is still "failed", maybe might has been restarted in meantime
         if pyfile.status != 8 or pyfile.name.rsplit('.', 1)[-1].strip() not in ("rar", "rev"):
             return
 

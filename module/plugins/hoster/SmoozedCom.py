@@ -22,18 +22,18 @@ class SmoozedCom(MultiHoster):
 
 
     def handleFree(self, pyfile):
-        # In some cases hostsers do not supply us with a filename at download, so we
-        # are going to set a fall back filename (e.g. for freakshare or xfileshare)
-        pyfile.name = pyfile.name.split('/').pop()  # Remove everthing before last slash
+        #: In some cases hostsers do not supply us with a filename at download, so we
+        #: are going to set a fall back filename (e.g. for freakshare or xfileshare)
+        pyfile.name = pyfile.name.split('/').pop()  #: Remove everthing before last slash
 
-        # Correction for automatic assigned filename: Removing html at end if needed
+        #: Correction for automatic assigned filename: Removing html at end if needed
         suffix_to_remove = ["html", "htm", "php", "php3", "asp", "shtm", "shtml", "cfml", "cfm"]
         temp             = pyfile.name.split('.')
 
         if temp.pop() in suffix_to_remove:
             pyfile.name = ".".join(temp)
 
-        # Check the link
+        #: Check the link
         get_data = {'session_key': self.account.getAccountInfo(self.user)['session'],
                     'url'        : pyfile.url}
 
@@ -51,7 +51,7 @@ class SmoozedCom(MultiHoster):
         pyfile.name = data["data"]["name"]
         pyfile.size = int(data["data"]["size"])
 
-        # Start the download
+        #: Start the download
         header = self.load("http://www2.smoozed.com/api/download", get=get_data, just_header=True)
 
         if not "location" in header:

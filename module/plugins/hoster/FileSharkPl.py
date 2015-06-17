@@ -47,7 +47,7 @@ class FileSharkPl(SimpleHoster):
 
 
     def checkErrors(self):
-        # check if file is now available for download (-> file name can be found in html body)
+        #: check if file is now available for download (-> file name can be found in html body)
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
             errmsg = self.info['error'] = _("Another download already run")

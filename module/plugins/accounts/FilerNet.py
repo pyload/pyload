@@ -25,7 +25,7 @@ class FilerNet(Account):
     def loadAccountInfo(self, user, req):
         html = self.load("https://filer.net/profile", req=req)
 
-        # Free user
+        #: Free user
         if re.search(self.FREE_PATTERN, html):
             return {"premium": False, "validuntil": None, "trafficleft": None}
 

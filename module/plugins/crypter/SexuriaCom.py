@@ -29,11 +29,11 @@ class SexuriaCom(Crypter):
 
 
     def decrypt(self, pyfile):
-        # Init
+        #: Init
         self.pyfile = pyfile
         self.package = pyfile.package()
 
-        # Get package links
+        #: Get package links
         package_name, self.links, folder_name, package_pwd = self.decryptLinks(self.pyfile.url)
         self.packages = [(package_name, self.links, folder_name)]
 
@@ -45,20 +45,20 @@ class SexuriaCom(Crypter):
         password = None
 
         if re.match(self.PATTERN_SUPPORTED_MAIN, url, re.I):
-            # Processing main page
+            #: Processing main page
             html = self.load(url)
             links = re.findall(self.PATTERN_DL_LINK_PAGE, html, re.I)
             for link in links:
                 linklist.append("http://sexuria.com/v1/" + link)
 
         elif re.match(self.PATTERN_SUPPORTED_REDIRECT, url, re.I):
-            # Processing direct redirect link (out.php), redirecting to main page
+            #: Processing direct redirect link (out.php), redirecting to main page
             id = re.search(self.PATTERN_SUPPORTED_REDIRECT, url, re.I).group('ID')
             if id:
                 linklist.append("http://sexuria.com/v1/Pornos_Kostenlos_liebe_%s.html" % id)
 
         elif re.match(self.PATTERN_SUPPORTED_CRYPT, url, re.I):
-            # Extract info from main file
+            #: Extract info from main file
             id = re.search(self.PATTERN_SUPPORTED_CRYPT, url, re.I).group('ID')
             html = self.load("http://sexuria.com/v1/Pornos_Kostenlos_info_%s.html" % id)
 
@@ -72,7 +72,7 @@ class SexuriaCom(Crypter):
                 password = pwd.strip()
                 self.logDebug("Password info [%s] found" % password)
 
-            # Process link (dl_link)
+            #: Process link (dl_link)
             html = self.load(url)
             links = re.findall(self.PATTERN_REDIRECT_LINKS, html, re.I)
             if len(links) == 0:
@@ -86,7 +86,7 @@ class SexuriaCom(Crypter):
                     else:
                         linklist.append(finallink)
 
-        # Debug log
+        #: Debug log
         self.logDebug("%d supported links" % len(linklist))
         for i, link in enumerate(linklist):
             self.logDebug("Supported link %d, %s" % (i + 1, link))

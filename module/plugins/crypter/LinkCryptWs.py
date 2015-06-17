@@ -36,12 +36,12 @@ class LinkCryptWs(Crypter):
 
 
     def prepare(self):
-        # Init
+        #: Init
         self.fileid = re.match(self.__pattern__, self.pyfile.url).group('ID')
 
         self.req.cj.setCookie("linkcrypt.ws", "language", "en")
 
-        # Request package
+        #: Request package
         self.req.http.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko")  #: better chance to not get those key-captchas
         self.html = self.load(self.pyfile.url)
 
@@ -63,21 +63,21 @@ class LinkCryptWs(Crypter):
             self.unlockCaptchaProtection()
             self.handleCaptchaErrors()
 
-        # Check for protection
+        #: Check for protection
         if self.isPasswordProtected():
             self.unlockPasswordProtection()
             self.handleErrors()
 
-        # get unrar password
+        #: get unrar password
         self.getunrarpw()
 
-        # Get package name and folder
+        #: Get package name and folder
         package_name, folder_name = self.getPackageInfo()
 
         #get the container definitions from script section
         self.get_container_html()
 
-        # Extract package links
+        #: Extract package links
         for type in self.sources:
             links = self.handleLinkSource(type)
 
@@ -234,7 +234,7 @@ class LinkCryptWs(Crypter):
 
         self.logDebug('Search for %s Container links' % type.upper())
 
-        if not type.isalnum():  # check to prevent broken re-pattern (cnl2,rsdf,ccf,dlc,web are all alpha-numeric)
+        if not type.isalnum():  #: check to prevent broken re-pattern (cnl2,rsdf,ccf,dlc,web are all alpha-numeric)
             self.fail(_("Unknown container type: %s") % type)  #@TODO: Replace with self.error in 0.4.10
 
         for line in self.container_html:
@@ -282,37 +282,37 @@ class LinkCryptWs(Crypter):
 
 
     def _getCipherParams(self, cnl_section):
-        # Get jk
+        #: Get jk
         jk_re = r'<INPUT.*?NAME="%s".*?VALUE="(.*?)"' % LinkCryptWs.JK_KEY
         vjk = re.findall(jk_re, cnl_section)
 
-        # Get crypted
+        #: Get crypted
         crypted_re = r'<INPUT.*?NAME="%s".*?VALUE="(.*?)"' % LinkCryptWs.CRYPTED_KEY
         vcrypted = re.findall(crypted_re, cnl_section)
 
-        # Log and return
+        #: Log and return
         self.logDebug("Detected %d crypted blocks" % len(vcrypted))
         return vcrypted, vjk
 
 
     def _getLinks(self, crypted, jk):
-        # Get key
+        #: Get key
         jreturn = self.js.eval("%s f()" % jk)
         key     = binascii.unhexlify(jreturn)
 
         self.logDebug("JsEngine returns value [%s]" % jreturn)
 
-        # Decrypt
+        #: Decrypt
         Key  = key
         IV   = key
         obj  = AES.new(Key, AES.MODE_CBC, IV)
         text = obj.decrypt(crypted.decode('base64'))
 
-        # Extract links
+        #: Extract links
         text  = text.replace("\x00", "").replace("\r", "")
         links = filter(bool, text.split('\n'))
 
-        # Log and return
+        #: Log and return
         self.logDebug("Package has %d links" % len(links))
 
         return links

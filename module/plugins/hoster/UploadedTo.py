@@ -62,7 +62,7 @@ class UploadedTo(SimpleHoster):
 
     def setup(self):
         self.multiDL = self.resumeDownload = self.premium
-        self.chunkLimit = 1  # critical problems with more chunks
+        self.chunkLimit = 1  #: critical problems with more chunks
 
 
     def handleFree(self, pyfile):

@@ -24,8 +24,7 @@ class UnSkipOnFail(Hook):
 
 
     def download_failed(self, pyfile):
-        #: Check if pyfile is still "failed",
-        #  maybe might has been restarted in meantime
+        #: Check if pyfile is still "failed", maybe might has been restarted in meantime
         if pyfile.status != 8:
             return
 
@@ -36,13 +35,13 @@ class UnSkipOnFail(Hook):
         if link:
             self.logInfo(_("Queue found duplicate: %s (pid:%s)") % (link.name, link.packageID))
 
-            #: Change status of "link" to "new_status".
-            #  "link" has to be a valid FileData object,
-            #  "new_status" has to be a valid status name
-            #  (i.e. "queued" for this Plugin)
-            #  It creates a temporary PyFile object using
-            #  "link" data, changes its status, and tells
-            #  the core.files-manager to save its data.
+            # Change status of "link" to "new_status".
+            # "link" has to be a valid FileData object,
+            # "new_status" has to be a valid status name
+            # (i.e. "queued" for this Plugin)
+            # It creates a temporary PyFile object using
+            # "link" data, changes its status, and tells
+            # the core.files-manager to save its data.
             pylink = self._pyfile(link)
 
             pylink.setCustomStatus(_("unskipped"), "queued")

@@ -40,19 +40,19 @@ class LoadTo(SimpleHoster):
 
 
     def handleFree(self, pyfile):
-        # Search for Download URL
+        #: Search for Download URL
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
             self.error(_("LINK_FREE_PATTERN not found"))
 
         self.link = m.group(1)
 
-        # Set Timer - may be obsolete
+        #: Set Timer - may be obsolete
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
             self.wait(m.group(1))
 
-        # Load.to is using solvemedia captchas since ~july 2014:
+        #: Load.to is using solvemedia captchas since ~july 2014:
         solvemedia  = SolveMedia(self)
         captcha_key = solvemedia.detect_key()
 

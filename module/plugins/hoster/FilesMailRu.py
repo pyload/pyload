@@ -24,8 +24,8 @@ def getInfo(urls):
                 except Exception:
                     pass
 
-        # status 1=OFFLINE, 2=OK, 3=UNKNOWN
-        # result.append((#name,#size,#status,#url))
+        #: status 1=OFFLINE, 2=OK, 3=UNKNOWN
+        #: result.append((#name,#size,#status,#url))
         yield result
 
 
@@ -93,16 +93,16 @@ class FilesMailRu(Hoster):
 
 
     def myPostProcess(self):
-        # searches the file for HTMl-Code. Sometimes the Redirect
-        # doesn't work (maybe a curl Problem) and you get only a small
-        # HTML file and the Download is marked as "finished"
-        # then the download will be restarted. It's only bad for these
-        # who want download a HTML-File (it's one in a million ;-) )
+        #: searches the file for HTMl-Code. Sometimes the Redirect
+        #: doesn't work (maybe a curl Problem) and you get only a small
+        #: HTML file and the Download is marked as "finished"
+        #: then the download will be restarted. It's only bad for these
+        #: who want download a HTML-File (it's one in a million ;-) )
         #
-        # The maximum UploadSize allowed on files.mail.ru at the moment is 100MB
-        # so i set it to check every download because sometimes there are downloads
-        # that contain the HTML-Text and 60MB ZEROs after that in a xyzfile.part1.rar file
-        # (Loading 100MB in to ram is not an option)
+        #: The maximum UploadSize allowed on files.mail.ru at the moment is 100MB
+        #: so i set it to check every download because sometimes there are downloads
+        #: that contain the HTML-Text and 60MB ZEROs after that in a xyzfile.part1.rar file
+        #: (Loading 100MB in to ram is not an option)
         check = self.checkDownload({"html": "<meta name="}, read_size=50000)
         if check == "html":
             self.logInfo(_(

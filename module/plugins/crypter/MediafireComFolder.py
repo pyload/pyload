@@ -29,14 +29,14 @@ class MediafireComFolder(Crypter):
         self.logDebug("Location (%d): %s" % (result, url))
 
         if result == 0:
-            # load and parse html
+            #: load and parse html
             html = self.load(pyfile.url)
             m = re.search(self.LINK_PATTERN, html)
             if m:
-                # file page
+                #: file page
                 self.urls.append("http://www.mediafire.com/file/%s" % m.group(1))
             else:
-                # folder page
+                #: folder page
                 m = re.search(self.FOLDER_KEY_PATTERN, html)
                 if m:
                     folder_key = m.group(1)

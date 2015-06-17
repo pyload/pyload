@@ -23,7 +23,7 @@ if sys.version_info < (2, 7) and os.name != "nt":
                 raise
 
 
-    # unsued timeout option for older python version
+    #: unsued timeout option for older python version
     def wait(self, timeout=0):
         """
         Wait for child process to terminate.  Returns returncode
@@ -36,9 +36,9 @@ if sys.version_info < (2, 7) and os.name != "nt":
             except OSError, e:
                 if e.errno != errno.ECHILD:
                     raise
-                    # This happens if SIGCLD is set to be ignored or waiting
-                # for child processes has otherwise been disabled for our
-                # process.  This child is dead, we can't get the status.
+                    #: This happens if SIGCLD is set to be ignored or waiting
+                #: for child processes has otherwise been disabled for our
+                #: process.  This child is dead, we can't get the status.
                 sts = 0
             self._handle_exitstatus(sts)
         return self.returncode
@@ -262,12 +262,12 @@ class ExtractArchive(Hook):
         if extensions:
             self.logDebug("Use for extensions: %s" % "|.".join(extensions))
 
-        # reload from txt file
+        #: reload from txt file
         self.reloadPasswords()
 
         download_folder = self.core.config.get("general", "download_folder")
 
-        # iterate packages -> extractors -> targets
+        #: iterate packages -> extractors -> targets
         for pid in ids:
             pypack = self.core.files.getPackage(pid)
 
@@ -277,7 +277,7 @@ class ExtractArchive(Hook):
 
             self.logInfo(_("Check package: %s") % pypack.name)
 
-            # determine output folder
+            #: determine output folder
             out = fs_join(download_folder, pypack.folder, destination, "")  #: force trailing slash
 
             if subfolder:
@@ -291,7 +291,7 @@ class ExtractArchive(Hook):
             files_ids = dict((pylink['name'],((fs_join(download_folder, pypack.folder, pylink['name'])), pylink['id'], out)) for pylink \
                         in sorted(pypack.getChildren().itervalues(), key=lambda k: k['name'])).values()  #: remove duplicates
 
-            # check as long there are unseen files
+            #: check as long there are unseen files
             while files_ids:
                 new_files_ids = []
 
@@ -341,7 +341,7 @@ class ExtractArchive(Hook):
                             success = False
                             continue
 
-                        # remove processed file and related multiparts from list
+                        #: remove processed file and related multiparts from list
                         files_ids = [(fname, fid, fout) for fname, fid, fout in files_ids \
                                     if fname not in archive.getDeleteFiles()]
                         self.logDebug("Extracted files: %s" % new_files)

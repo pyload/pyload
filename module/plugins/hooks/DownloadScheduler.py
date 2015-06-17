@@ -26,7 +26,7 @@ class DownloadScheduler(Hook):
 
     def setup(self):
         self.info = {}    #@TODO: Remove in 0.4.10
-        self.cb   = None  # callback to scheduler job; will be by removed hookmanager when hook unloaded
+        self.cb   = None  #: callback to scheduler job; will be by removed hookmanager when hook unloaded
 
 
     def activate(self):

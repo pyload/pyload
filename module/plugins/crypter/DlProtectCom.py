@@ -29,7 +29,7 @@ class DlProtectCom(SimpleCrypter):
 
 
     def getLinks(self):
-        # Direct link with redirect
+        #: Direct link with redirect
         if not re.match(r"https?://(?:www\.)?dl-protect\.com/.+", self.req.http.lastEffectiveURL):
             return [self.req.http.lastEffectiveURL]
 

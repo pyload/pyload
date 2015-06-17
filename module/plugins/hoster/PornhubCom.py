@@ -40,7 +40,7 @@ class PornhubCom(Hoster):
 
         url = "http://www.pornhub.com//gateway.php"
         video_id = self.pyfile.url.split('=')[-1]
-        # thanks to jD team for this one  v
+        #: thanks to jD team for this one  v
         post_data = "\x00\x03\x00\x00\x00\x01\x00\x0c\x70\x6c\x61\x79\x65\x72\x43\x6f\x6e\x66\x69\x67\x00\x02\x2f\x31\x00\x00\x00\x44\x0a\x00\x00\x00\x03\x02\x00"
         post_data += chr(len(video_id))
         post_data += video_id

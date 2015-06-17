@@ -27,13 +27,13 @@ class Xdcc(Hoster):
 
 
     def setup(self):
-        self.debug = 0  # 0,1,2
+        self.debug = 0  #: 0,1,2
         self.timeout = 30
         self.multiDL = False
 
 
     def process(self, pyfile):
-        # change request type
+        #: change request type
         self.req = self.core.requestFactory.getRequest(self.__name__, type="XDCC")
 
         self.pyfile = pyfile
@@ -60,7 +60,7 @@ class Xdcc(Hoster):
 
 
     def doDownload(self, url):
-        self.pyfile.setStatus("waiting")  # real link
+        self.pyfile.setStatus("waiting")  #: real link
 
         m = re.match(r'xdcc://(.*?)/#?(.*?)/(.*?)/#?(\d+)/?', url)
         server = m.group(1)
@@ -81,13 +81,13 @@ class Xdcc(Hoster):
             self.fail(_("Invalid hostname for IRC Server: %s") % server)
 
         #######################
-        # CONNECT TO IRC AND IDLE FOR REAL LINK
+        #: CONNECT TO IRC AND IDLE FOR REAL LINK
         dl_time = time.time()
 
         sock = socket.socket()
         sock.connect((host, int(port)))
         if nick == "pyload":
-            nick = "pyload-%d" % (time.time() % 1000)  # last 3 digits
+            nick = "pyload-%d" % (time.time() % 1000)  #: last 3 digits
         sock.send("NICK %s\r\n" % nick)
         sock.send("USER %s %s bla :%s\r\n" % (ident, host, real))
 
@@ -97,14 +97,14 @@ class Xdcc(Hoster):
         sock.send("JOIN #%s\r\n" % chan)
         sock.send("PRIVMSG %s :xdcc send #%s\r\n" % (bot, pack))
 
-        # IRC recv loop
+        #: IRC recv loop
         readbuffer = ""
         done = False
         retry = None
         m = None
         while True:
 
-            # done is set if we got our real link
+            #: done is set if we got our real link
             if done:
                 break
 
@@ -115,7 +115,7 @@ class Xdcc(Hoster):
                     sock.send("PRIVMSG %s :xdcc send #%s\r\n" % (bot, pack))
 
             else:
-                if (dl_time + self.timeout) < time.time():  # todo: add in config
+                if (dl_time + self.timeout) < time.time():  #@TODO: add in config
                     sock.send("QUIT :byebye\r\n")
                     sock.close()
                     self.fail(_("XDCC Bot did not answer"))
@@ -159,7 +159,7 @@ class Xdcc(Hoster):
                         self.logDebug("Sending CTCP TIME")
                         sock.send("NOTICE %s :%d\r\n" % (msg['origin'], time.time()))
                     elif msg['text'] == "\x01LAG\x01":
-                        pass  # don't know how to answer
+                        pass  #: don't know how to answer
 
                 if not (bot == msg['origin'][0:len(bot)]
                         and nick == msg['target'][0:len(nick)]
@@ -179,7 +179,7 @@ class Xdcc(Hoster):
                 if m:
                     done = True
 
-        # get connection data
+        #: get connection data
         ip = socket.inet_ntoa(struct.pack('L', socket.ntohl(int(m.group(2)))))
         port = int(m.group(3))
         packname = m.group(1)
@@ -200,8 +200,8 @@ class Xdcc(Hoster):
             self.logInfo(_("%(name)s saved as %(newname)s") % {"name": self.pyfile.name, "newname": newname})
             filename = newname
 
-        # kill IRC socket
-        # sock.send("QUIT :byebye\r\n")
+        #: kill IRC socket
+        #: sock.send("QUIT :byebye\r\n")
         sock.close()
 
         self.lastDownload = filename

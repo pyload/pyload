@@ -53,7 +53,7 @@ class SevenZip(UnRar):
 
 
     def verify(self, password):
-        # 7z can't distinguish crc and pw error in test
+        #: 7z can't distinguish crc and pw error in test
         p = self.call_cmd("l", "-slt", fs_encode(self.filename))
         out, err = p.communicate()
 
@@ -72,7 +72,7 @@ class SevenZip(UnRar):
         p = self.call_cmd("l", "-slt", fs_encode(self.filename))
         out, err = p.communicate()
 
-        # check if output or error macthes the 'wrong password'-Regexp
+        #: check if output or error macthes the 'wrong password'-Regexp
         if self.re_wrongpwd.search(out):
             raise PasswordError
 
@@ -91,7 +91,7 @@ class SevenZip(UnRar):
 
         renice(p.pid, self.renice)
 
-        # communicate and retrieve stderr
+        #: communicate and retrieve stderr
         self._progress(p)
         err = p.stderr.read().strip()
 

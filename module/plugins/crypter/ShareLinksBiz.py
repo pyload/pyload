@@ -29,17 +29,17 @@ class ShareLinksBiz(Crypter):
 
 
     def decrypt(self, pyfile):
-        # Init
+        #: Init
         self.initFile(pyfile)
 
-        # Request package
+        #: Request package
         url = self.baseUrl + '/' + self.fileId
         self.html = self.load(url)
 
-        # Unblock server (load all images)
+        #: Unblock server (load all images)
         self.unblockServer()
 
-        # Check for protection
+        #: Check for protection
         if self.isPasswordProtected():
             self.unlockPasswordProtection()
             self.handleErrors()
@@ -49,17 +49,17 @@ class ShareLinksBiz(Crypter):
             self.unlockCaptchaProtection()
             self.handleErrors()
 
-        # Extract package links
+        #: Extract package links
         package_links = []
         package_links.extend(self.handleWebLinks())
         package_links.extend(self.handleContainers())
         package_links.extend(self.handleCNL2())
         package_links = set(package_links)
 
-        # Get package info
+        #: Get package info
         package_name, package_folder = self.getPackageInfo()
 
-        # Pack
+        #: Pack
         self.packages = [(package_name, package_links, package_folder)]
 
 
@@ -108,18 +108,18 @@ class ShareLinksBiz(Crypter):
 
 
     def unlockCaptchaProtection(self):
-        # Get captcha map
+        #: Get captcha map
         captchaMap = self._getCaptchaMap()
         self.logDebug("Captcha map with [%d] positions" % len(captchaMap.keys()))
 
-        # Request user for captcha coords
+        #: Request user for captcha coords
         m = re.search(r'<img src="/captcha.gif\?d=(.*?)&amp;PHPSESSID=(.*?)&amp;legend=1"', self.html)
         captchaUrl = self.baseUrl + '/captcha.gif?d=%s&PHPSESSID=%s' % (m.group(1), m.group(2))
         self.logDebug("Waiting user for correct position")
         coords = self.decryptCaptcha(captchaUrl, forceUser=True, imgtype="gif", result_type='positional')
         self.logDebug("Captcha resolved, coords [%s]" % str(coords))
 
-        # Resolve captcha
+        #: Resolve captcha
         href = self._resolveCoords(coords, captchaMap)
         if href is None:
             self.invalidCaptcha()
@@ -161,7 +161,7 @@ class ShareLinksBiz(Crypter):
     def getPackageInfo(self):
         name = folder = None
 
-        # Extract from web package header
+        #: Extract from web package header
         title_re = r'<h2><img.*?/>(.*)</h2>'
         m = re.search(title_re, self.html, re.S)
         if m:
@@ -170,13 +170,13 @@ class ShareLinksBiz(Crypter):
                 name = folder = title
                 self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
 
-        # Fallback to defaults
+        #: Fallback to defaults
         if not name or not folder:
             name = self.package.name
             folder = self.package.folder
             self.logDebug("Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
 
-        # Return package info
+        #: Return package info
         return name, folder
 
 
@@ -240,40 +240,40 @@ class ShareLinksBiz(Crypter):
 
 
     def _getCipherParams(self):
-        # Request CNL2
+        #: Request CNL2
         code   = re.search(r'ClicknLoad.swf\?code=(.*?)"', self.html).group(1)
         url    = "%s/get/cnl2/%s" % (self.baseUrl, code)
         res    = self.load(url)
         params = res.split(";;")
 
-        # Get jk
+        #: Get jk
         strlist = list(params[1].decode('base64'))
         jk      = ''.join(strlist[::-1])
 
-        # Get crypted
+        #: Get crypted
         strlist = list(params[2].decode('base64'))
         crypted = ''.join(strlist[::-1])
 
-        # Log and return
+        #: Log and return
         return crypted, jk
 
 
     def _getLinks(self, crypted, jk):
-        # Get key
+        #: Get key
         jreturn = self.js.eval("%s f()" % jk)
         self.logDebug("JsEngine returns value [%s]" % jreturn)
         key = binascii.unhexlify(jreturn)
 
-        # Decrypt
+        #: Decrypt
         Key = key
         IV = key
         obj = AES.new(Key, AES.MODE_CBC, IV)
         text = obj.decrypt(crypted.decode('base64'))
 
-        # Extract links
+        #: Extract links
         text = text.replace("\x00", "").replace("\r", "")
         links = filter(bool, text.split('\n'))
 
-        # Log and return
+        #: Log and return
         self.logDebug("Block has %d links" % len(links))
         return links

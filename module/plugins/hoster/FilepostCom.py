@@ -40,7 +40,7 @@ class FilepostCom(SimpleHoster):
             self.error(_("Captcha key"))
         captcha_key = m.group(1)
 
-        # Get wait time
+        #: Get wait time
         get_dict = {'SID': self.req.cj.getCookie('SID'), 'JsHttpRequest': str(int(time.time() * 10000)) + '-xml'}
         post_dict = {'action': 'set_download', 'token': flp_token, 'code': self.info['pattern']['ID']}
         wait_time = int(self.getJsonResponse(get_dict, post_dict, 'wait_time'))
@@ -51,7 +51,7 @@ class FilepostCom(SimpleHoster):
         post_dict = {"token": flp_token, "code": self.info['pattern']['ID'], "file_pass": ''}
 
         if 'var is_pass_exists = true;' in self.html:
-            # Solve password
+            #: Solve password
             password = self.getPassword()
 
             if password:
@@ -68,7 +68,7 @@ class FilepostCom(SimpleHoster):
                 self.fail(_("No password found"))
 
         else:
-            # Solve recaptcha
+            #: Solve recaptcha
             recaptcha = ReCaptcha(self)
 
             for i in xrange(5):
@@ -93,15 +93,15 @@ class FilepostCom(SimpleHoster):
         if not 'js' in res:
             self.error(_("JSON %s 1") % field)
 
-        # i changed js_answer to res['js'] since js_answer is nowhere set.
-        # i don't know the JSON-HTTP specs in detail, but the previous author
-        # accessed res['js']['error'] as well as js_answer['error'].
-        # see the two lines commented out with  "# ~?".
+        #: i changed js_answer to res['js'] since js_answer is nowhere set.
+        #: i don't know the JSON-HTTP specs in detail, but the previous author
+        #: accessed res['js']['error'] as well as js_answer['error'].
+        #: see the two lines commented out with  "# ~?".
         if 'error' in res['js']:
 
             if res['js']['error'] == 'download_delay':
                 self.retry(wait_time=res['js']['params']['next_download'])
-                # ~? self.retry(wait_time=js_answer['params']['next_download'])
+                #: ~? self.retry(wait_time=js_answer['params']['next_download'])
 
             elif 'Wrong file password' in res['js']['error'] \
                  or 'You entered a wrong CAPTCHA code' in res['js']['error'] \

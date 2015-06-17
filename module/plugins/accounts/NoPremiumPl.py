@@ -36,7 +36,7 @@ class NoPremiumPl(Account):
         try:
             result = json_loads(self.runAuthQuery())
         except Exception:
-            # todo: return or let it be thrown?
+            #@TODO: return or let it be thrown?
             return
 
         premium = False

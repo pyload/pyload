@@ -32,7 +32,7 @@ class NitroflareCom(SimpleHoster):
 
 
     def handleFree(self, pyfile):
-        # used here to load the cookies which will be required later
+        #: used here to load the cookies which will be required later
         self.load(pyfile.url, post={'goToFreePage': ""})
 
         self.load("http://nitroflare.com/ajax/setCookie.php", post={'fileId': self.info['pattern']['ID']})

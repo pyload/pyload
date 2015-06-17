@@ -21,16 +21,16 @@ class RPNetBizHook(MultiHook):
 
 
     def getHosters(self):
-        # Get account data
+        #: Get account data
         user, data = self.account.selectAccount()
 
         res = self.load("https://premium.rpnet.biz/client_api.php",
                      get={'username': user, 'password': data['password'], 'action': "showHosterList"})
         hoster_list = json_loads(res)
 
-        # If account is not valid thera are no hosters available
+        #: If account is not valid thera are no hosters available
         if 'error' in hoster_list:
             return []
 
-        # Extract hosters from json file
+        #: Extract hosters from json file
         return hoster_list['hosters']

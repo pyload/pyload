@@ -160,16 +160,16 @@ class FilecryptCc(Crypter):
 
 
     def _getLinks(self, crypted, jk):
-        # Get key
+        #: Get key
         key = binascii.unhexlify(str(jk))
 
-        # Decrypt
+        #: Decrypt
         Key  = key
         IV   = key
         obj  = AES.new(Key, AES.MODE_CBC, IV)
         text = obj.decrypt(crypted.decode('base64'))
 
-        # Extract links
+        #: Extract links
         text  = text.replace("\x00", "").replace("\r", "")
         links = filter(bool, text.split('\n'))
 

@@ -16,7 +16,7 @@ class FilecloudIo(Account):
 
 
     def loadAccountInfo(self, user, req):
-        # It looks like the first API request always fails, so we retry 5 times, it should work on the second try
+        #: It looks like the first API request always fails, so we retry 5 times, it should work on the second try
         for _i in xrange(5):
             rep = self.load("https://secure.filecloud.io/api-fetch_apikey.api",
                            post={"username": user, "password": self.getAccountData(user)['password']})
@@ -30,7 +30,7 @@ class FilecloudIo(Account):
             return {"premium": False}
 
         akey = rep['akey']
-        self.accounts[user]['akey'] = akey  # Saved for hoster plugin
+        self.accounts[user]['akey'] = akey  #: Saved for hoster plugin
         rep = self.load("http://api.filecloud.io/api-fetch_account_details.api",
                        post={"akey": akey}, req=req)
         rep = json_loads(rep)

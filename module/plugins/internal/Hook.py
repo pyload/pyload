@@ -46,7 +46,7 @@ class Hook(Plugin):
         #: automatically register event listeners for functions, attribute will be deleted dont use it yourself
         self.event_map = {}
 
-        # Deprecated alternative to event_map
+        #: Deprecated alternative to event_map
         #: List of events the plugin can handle, name the functions exactly like eventname.
         self.event_list = []  #@NOTE: dont make duplicate entries in event_map
 
@@ -68,7 +68,7 @@ class Hook(Plugin):
                 else:
                     self.manager.addEvent(event, getattr(self, funcs))
 
-            # delete for various reasons
+            #: delete for various reasons
             self.event_map = None
 
         if self.event_list:

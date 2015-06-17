@@ -38,42 +38,42 @@ class NCryptIn(Crypter):
 
 
     def decrypt(self, pyfile):
-        # Init
+        #: Init
         self.package = pyfile.package()
         package_links = []
         package_name = self.package.name
         folder_name = self.package.folder
 
-        # Deal with single links
+        #: Deal with single links
         if self.isSingleLink():
             package_links.extend(self.handleSingleLink())
 
-        # Deal with folders
+        #: Deal with folders
         else:
 
-            # Request folder home
+            #: Request folder home
             self.html = self.requestFolderHome()
             self.cleanedHtml = self.removeHtmlCrap(self.html)
             if not self.isOnline():
                 self.offline()
 
-            # Check for folder protection
+            #: Check for folder protection
             if self.isProtected():
                 self.html = self.unlockProtection()
                 self.cleanedHtml = self.removeHtmlCrap(self.html)
                 self.handleErrors()
 
-            # Prepare package name and folder
+            #: Prepare package name and folder
             (package_name, folder_name) = self.getPackageInfo()
 
-            # Extract package links
+            #: Extract package links
             for link_source_type in self.links_source_order:
                 package_links.extend(self.handleLinkSource(link_source_type))
-                if package_links:  # use only first source which provides links
+                if package_links:  #: use only first source which provides links
                     break
             package_links = set(package_links)
 
-        # Pack and return links
+        #: Pack and return links
         if package_links:
             self.packages = [(package_name, package_links, folder_name)]
 
@@ -135,13 +135,13 @@ class NCryptIn(Crypter):
 
         form = re.search(r'<form name="protected"(.*?)</form>', self.cleanedHtml, re.S).group(1)
 
-        # Submit package password
+        #: Submit package password
         if "password" in form:
             password = self.getPassword()
             self.logDebug("Submitting password [%s] for protected links" % password)
             postData['password'] = password
 
-        # Resolve anicaptcha
+        #: Resolve anicaptcha
         if "anicaptcha" in form:
             self.logDebug("Captcha protected")
             captchaUri = re.search(r'src="(/temp/anicaptcha/.+?)"', form).group(1)
@@ -149,7 +149,7 @@ class NCryptIn(Crypter):
             self.logDebug("Captcha resolved [%s]" % captcha)
             postData['captcha'] = captcha
 
-        # Resolve recaptcha
+        #: Resolve recaptcha
         if "recaptcha" in form:
             self.logDebug("ReCaptcha protected")
             captcha_key = re.search(r'\?k=(.*?)"', form).group(1)
@@ -159,7 +159,7 @@ class NCryptIn(Crypter):
             postData['recaptcha_challenge_field'] = challenge
             postData['recaptcha_response_field']  = response
 
-        # Resolve circlecaptcha
+        #: Resolve circlecaptcha
         if "circlecaptcha" in form:
             self.logDebug("CircleCaptcha protected")
             captcha_img_url = "http://ncrypt.in/classes/captcha/circlecaptcha.php"
@@ -168,7 +168,7 @@ class NCryptIn(Crypter):
             postData['circle.x'] = coords[0]
             postData['circle.y'] = coords[1]
 
-        # Unlock protection
+        #: Unlock protection
         postData['submit_protected'] = 'Continue to folder'
         return self.load(self.pyfile.url, post=postData)
 
@@ -188,13 +188,13 @@ class NCryptIn(Crypter):
 
 
     def handleLinkSource(self, link_source_type):
-        # Check for JS engine
+        #: Check for JS engine
         require_js_engine = link_source_type in ("cnl2", "rsdf", "ccf", "dlc")
         if require_js_engine and not self.js:
             self.logDebug("No JS engine available, skip %s links" % link_source_type)
             return []
 
-        # Select suitable handler
+        #: Select suitable handler
         if link_source_type == 'single':
             return self.handleSingleLink()
         if link_source_type == 'cnl2':
@@ -211,7 +211,7 @@ class NCryptIn(Crypter):
         self.logDebug("Handling Single link")
         package_links = []
 
-        # Decrypt single link
+        #: Decrypt single link
         decrypted_link = self.decryptLink(self.pyfile.url)
         if decrypted_link:
             package_links.append(decrypted_link)
@@ -276,35 +276,35 @@ class NCryptIn(Crypter):
     def _getCipherParams(self):
         pattern = r'<input.*?name="%s".*?value="(.*?)"'
 
-        # Get jk
+        #: Get jk
         jk_re = pattern % NCryptIn.JK_KEY
         vjk = re.findall(jk_re, self.html)
 
-        # Get crypted
+        #: Get crypted
         crypted_re = pattern % NCryptIn.CRYPTED_KEY
         vcrypted = re.findall(crypted_re, self.html)
 
-        # Log and return
+        #: Log and return
         self.logDebug("Detected %d crypted blocks" % len(vcrypted))
         return vcrypted, vjk
 
 
     def _getLinks(self, crypted, jk):
-        # Get key
+        #: Get key
         jreturn = self.js.eval("%s f()" % jk)
         self.logDebug("JsEngine returns value [%s]" % jreturn)
         key = binascii.unhexlify(jreturn)
 
-        # Decrypt
+        #: Decrypt
         Key = key
         IV = key
         obj = AES.new(Key, AES.MODE_CBC, IV)
         text = obj.decrypt(crypted.decode('base64'))
 
-        # Extract links
+        #: Extract links
         text = text.replace("\x00", "").replace("\r", "")
         links = filter(bool, text.split('\n'))
 
-        # Log and return
+        #: Log and return
         self.logDebug("Block has %d links" % len(links))
         return links

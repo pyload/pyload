@@ -36,7 +36,7 @@ class KingfilesNet(SimpleHoster):
 
 
     def handleFree(self, pyfile):
-        # Click the free user button
+        #: Click the free user button
         post_data = {'op'         : "download1",
                      'usr_login'  : "",
                      'id'         : self.info['pattern']['ID'],
@@ -49,7 +49,7 @@ class KingfilesNet(SimpleHoster):
         solvemedia = SolveMedia(self)
         response, challenge = solvemedia.challenge()
 
-        # Make the downloadlink appear and load the file
+        #: Make the downloadlink appear and load the file
         m = re.search(self.RAND_ID_PATTERN, self.html)
         if m is None:
             self.error(_("Random key not found"))

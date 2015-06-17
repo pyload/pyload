@@ -84,7 +84,7 @@ class IRCInterface(Thread, Hook):
 
 
     def run(self):
-        # connect to IRC etc.
+        #: connect to IRC etc.
         self.sock = socket.socket()
         host = self.getConfig('host')
         self.sock.connect((host, self.getConfig('port')))
@@ -158,7 +158,7 @@ class IRCInterface(Thread, Hook):
         if msg['action'] != "PRIVMSG":
             return
 
-        # HANDLE CTCP ANTI FLOOD/BOT PROTECTION
+        #: HANDLE CTCP ANTI FLOOD/BOT PROTECTION
         if msg['text'] == "\x01VERSION\x01":
             self.logDebug("Sending CTCP VERSION")
             self.sock.send("NOTICE %s :%s\r\n" % (msg['origin'], "pyLoad! IRC Interface"))
@@ -344,7 +344,7 @@ class IRCInterface(Thread, Hook):
             return ["INFO: Added %d links to Package %s [#%d]" % (len(links), pack['name'], id)]
 
         except Exception:
-            # create new package
+            #: create new package
             id = self.core.api.addPackage(pack, links, 1)
             return ["INFO: Created new Package %s [#%d] with %d links." % (pack, id, len(links))]
 

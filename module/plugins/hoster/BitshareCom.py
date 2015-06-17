@@ -40,25 +40,25 @@ class BitshareCom(SimpleHoster):
         if self.premium:
             self.account.relogin(self.user)
 
-        # File id
+        #: File id
         m = re.match(self.__pattern__, pyfile.url)
         self.file_id = max(m.group('ID1'), m.group('ID2'))
         self.logDebug("File id is [%s]" % self.file_id)
 
-        # Load main page
+        #: Load main page
         self.html = self.load(pyfile.url, ref=False)
 
-        # Check offline
+        #: Check offline
         if re.search(self.OFFLINE_PATTERN, self.html):
             self.offline()
 
-        # Check Traffic used up
+        #: Check Traffic used up
         if re.search(self.TRAFFIC_USED_UP, self.html):
             self.logInfo(_("Your Traffic is used up for today"))
             self.wait(30 * 60, True)
             self.retry()
 
-        # File name
+        #: File name
         m     = re.match(self.__pattern__, pyfile.url)
         name1 = m.group('NAME') if m else None
 
@@ -67,11 +67,11 @@ class BitshareCom(SimpleHoster):
 
         pyfile.name = max(name1, name2)
 
-        # Ajax file id
+        #: Ajax file id
         self.ajaxid = re.search(self.AJAXID_PATTERN, self.html).group(1)
         self.logDebug("File ajax id is [%s]" % self.ajaxid)
 
-        # This may either download our file or forward us to an error page
+        #: This may either download our file or forward us to an error page
         self.link = self.getDownloadUrl()
 
         if self.checkDownload({"error": ">Error occured<"}):
@@ -79,13 +79,13 @@ class BitshareCom(SimpleHoster):
 
 
     def getDownloadUrl(self):
-        # Return location if direct download is active
+        #: Return location if direct download is active
         if self.premium:
             header = self.load(self.pyfile.url, just_header=True)
             if 'location' in header:
                 return header['location']
 
-        # Get download info
+        #: Get download info
         self.logDebug("Getting download info")
         res = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
                         post={"request": "generateID", "ajaxid": self.ajaxid})
@@ -99,7 +99,7 @@ class BitshareCom(SimpleHoster):
 
         self.logDebug("Download info [type: '%s', waiting: %d, captcha: %d]" % (filetype, wait, captcha))
 
-        # Waiting
+        #: Waiting
         if wait > 0:
             self.logDebug("Waiting %d seconds." % wait)
             if wait < 120:
@@ -108,12 +108,12 @@ class BitshareCom(SimpleHoster):
                 self.wait(wait - 55, True)
                 self.retry()
 
-        # Resolve captcha
+        #: Resolve captcha
         if captcha == 1:
             self.logDebug("File is captcha protected")
             recaptcha = ReCaptcha(self)
 
-            # Try up to 3 times
+            #: Try up to 3 times
             for i in xrange(3):
                 response, challenge = recaptcha.challenge()
                 res = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
@@ -124,7 +124,7 @@ class BitshareCom(SimpleHoster):
                 if self.handleCaptchaErrors(res):
                     break
 
-        # Get download URL
+        #: Get download URL
         self.logDebug("Getting download url")
         res = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
                         post={"request": "getDownloadURL", "ajaxid": self.ajaxid})
