@@ -52,7 +52,11 @@ def get_plugin_content():
     # Find plugins that provide additional content for the webinterface
     for key in allServices:
         if 'webinterface_add_plugin_content' in allServices[key]:
-            webServices.append(key)
+            #When the config has been changed to 'activated=False' without restarting, 
+            # this plugin will still be listed in PYLOAD.getServices(),
+            # so well confirm this value here
+            if PYLOAD.getConfigValue(key, 'activated', 'plugin'):
+                webServices.append(key)
     
     # Request content to be added from each plugin
     # Content is expected as 'string' of 'list' of resources, resources are of type 'dict' with keys 'type' and ('src' or 'content')
@@ -65,8 +69,6 @@ def get_plugin_content():
             pluginContent.append(RPC_result)
         # else raise Error ???
 
-    print pluginContent
-    
     return pluginContent
 
 def pre_processor():

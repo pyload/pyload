@@ -24,15 +24,15 @@
 
 {% if plugincontent %}
 <!--plugincontent-->
-{% for content in plugincontent %}
-    <!--content-->
-    {% if content.type == 'javascript' %}
-        <script type="text/javascript" {% if content.src %}src="{{content.src}}"{% endif %}>{% if content.content %}{{content.content}}{% endif %}</script>
-    {% elif content.type == 'css' and content.src %}
-        <link rel="stylesheet" type="text/css" href="{{content.src}}"/>
-    {% elif content.type == 'css' and content.content %}
-        <style type="text/css">{{content.content}}</style>
-    {% endif %}
+{% for plugin in plugincontent %}
+    <!--plugin-->
+    {% if plugin.type == 'javascript' -%}
+        <script type="text/javascript" {% if plugin.src %}src="{{plugin.src}}"{% endif %}>{% if plugin.content %}{{plugin.content}}{% endif %}</script>
+    {% elif plugin.type == 'css' and plugin.src -%}
+        <link rel="stylesheet" type="text/css" href="{{plugin.src}}"/>
+    {% elif plugin.type == 'css' and plugin.content -%}
+        <style type="text/css">{{plugin.content}}</style>
+    {% endif -%}
 {% endfor %}
 <!--end plugincontent-->
 {% endif %}
