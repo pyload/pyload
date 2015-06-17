@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import reimport urllib
+import re
+import urllib
 
 from module.plugins.internal.Hoster import Hoster
 

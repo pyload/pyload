@@ -178,11 +178,11 @@ class Hoster(Plugin):
         :param seconds: wait time in seconds
         :param reconnect: True if a reconnect would avoid wait time
         """
-        wait_time  = int(seconds) + 1
-        wait_until = time.time() + wait_time
+        wait_time  = max(int(seconds), 1)
+        wait_until = time.time() + wait_time + 1
 
         self.logDebug("Set waitUntil to: %f (previous: %f)" % (wait_until, self.pyfile.waitUntil),
-                      "Wait: %d seconds" % wait_time)
+                      "Wait: %d(+1) seconds" % wait_time)
 
         self.pyfile.waitUntil = wait_until
 
@@ -190,13 +190,13 @@ class Hoster(Plugin):
             self.setReconnect(reconnect)
 
 
-    def wait(self, seconds=None, reconnect=None):
+    def wait(self, seconds=0, reconnect=None):
         """
         Waits the time previously set
         """
         pyfile = self.pyfile
 
-        if seconds is not None:
+        if seconds > 0:
             self.setWait(seconds)
 
         if reconnect is not None:
@@ -284,7 +284,7 @@ class Hoster(Plugin):
             self.retries[id] = 0
 
         if 0 < max_tries <= self.retries[id]:
-            self.fail(reason or _("Max retries reached"), "retry")
+            self.fail(reason or _("Max retries reached"), _("retry"))
 
         self.wait(wait_time, False)
 
@@ -480,7 +480,7 @@ class Hoster(Plugin):
         return self.lastDownload
 
 
-    def checkDownload(self, rules, delete=True, file_size=None, size_tolerance=1000, read_size=100000):
+    def checkDownload(self, rules, delete=True, file_size=0, size_tolerance=1000, read_size=100000):
         """
         Checks the content of the last downloaded file, re match is saved to `lastCheck`
 
@@ -491,40 +491,52 @@ class Hoster(Plugin):
         :param read_size: amount of bytes to read from files
         :return: dictionary key of the first rule that matched
         """
+        do_delete = False
         lastDownload = fs_encode(self.lastDownload)
 
         if not self.lastDownload or not os.path.exists(lastDownload):
             self.lastDownload = ""
             self.fail(self.pyfile.error or _("No file downloaded"))
 
-        download_size = os.stat(lastDownload).st_size
+        try:
+            download_size = os.stat(lastDownload).st_size
 
-        if download_size < 1 or (file_size and abs(file_size - download_size) > size_tolerance):
-            if delete:
+            if download_size < 1:
+                do_delete = True
+                self.fail(_("Empty file"))
+
+            elif file_size > 0:
+                diff = abs(file_size - download_size)
+
+                if diff > size_tolerance:
+                    do_delete = True
+                    self.fail(_("File size mismatch"))
+
+                elif diff != 0:
+                    self.logWarning(_("File size is not equal to expected size"))
+
+            self.logDebug("Download Check triggered")
+
+            with open(lastDownload, "rb") as f:
+                content = f.read(read_size)
+
+            # produces encoding errors, better log to other file in the future?
+            # self.logDebug("Content: %s" % content)
+            for name, rule in rules.iteritems():
+                if isinstance(rule, basestring):
+                    if rule in content:
+                        do_delete = True
+                        return name
+
+                elif hasattr(rule, "search"):
+                    m = rule.search(content)
+                    if m:
+                        do_delete = True
+                        self.lastCheck = m
+                        return name
+        finally:
+            if delete and do_delete:
                 os.remove(lastDownload)
-            self.fail(_("Empty file"))
-
-        self.logDebug("Download Check triggered")
-
-        with open(lastDownload, "rb") as f:
-            content = f.read(read_size)
-
-        # produces encoding errors, better log to other file in the future?
-        # self.logDebug("Content: %s" % content)
-        for name, rule in rules.iteritems():
-            if isinstance(rule, basestring):
-                if rule in content:
-                    if delete:
-                        os.remove(lastDownload)
-                    return name
-
-            elif hasattr(rule, "search"):
-                m = rule.search(content)
-                if m:
-                    if delete:
-                        os.remove(lastDownload)
-                    self.lastCheck = m
-                    return name
 
 
     def directLink(self, url, follow_location=None):

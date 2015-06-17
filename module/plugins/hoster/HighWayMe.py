@@ -24,7 +24,7 @@ class HighWayMe(MultiHoster):
 
 
     def checkErrors(self):
-        if self.html.get('code') == 302:  #@NOTE: This is not working. It should by if 302 Moved Temporarily then ... But I don't now how to implement it.
+        if self.html.get('code') == 302:  #@NOTE: This is not working. It should by if 302 Moved Temporarily then... But I don't now how to implement it.
             self.account.relogin(self.user)
             self.retry()
 

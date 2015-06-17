@@ -23,20 +23,20 @@ class EuroshareEu(SimpleHoster):
 
     LINK_FREE_PATTERN = r'<a href="(/file/\d+/[^/]*/download/)"><div class="downloadButton"'
 
-    ERR_PARDL_PATTERN         = r'<h2>Prebieha s.ahovanie</h2>|<p>Naraz je z jednej IP adresy mo.n. s.ahova. iba jeden s.bor'
-    ERR_NOT_LOGGED_IN_PATTERN = r'href="/customer-zone/login/"'
+    DL_LIMIT_PATTERN = r'<h2>Prebieha s.ahovanie</h2>|<p>Naraz je z jednej IP adresy mo.n. s.ahova. iba jeden s.bor'
+    ERROR_PATTERN    = r'href="/customer-zone/login/"'
 
     URL_REPLACEMENTS = [(r"(http://[^/]*\.)(sk|cz|hu|pl)/", r"\1eu/")]
 
 
     def handlePremium(self, pyfile):
-        if self.ERR_NOT_LOGGED_IN_PATTERN in self.html:
+        if self.ERROR_PATTERN in self.html:
             self.account.relogin(self.user)
             self.retry(reason=_("User not logged in"))
 
         self.link = pyfile.url.rstrip('/') + "/download/"
 
-        check = self.checkDownload({"login": re.compile(self.ERR_NOT_LOGGED_IN_PATTERN),
+        check = self.checkDownload({"login": re.compile(self.ERROR_PATTERN),
                                     "json" : re.compile(r'\{"status":"error".*?"message":"(.*?)"')})
 
         if check == "login" or (check == "json" and self.lastCheck.group(1) == "Access token expired"):
@@ -48,7 +48,7 @@ class EuroshareEu(SimpleHoster):
 
 
     def handleFree(self, pyfile):
-        if re.search(self.ERR_PARDL_PATTERN, self.html):
+        if re.search(self.DL_LIMIT_PATTERN, self.html):
             self.wait(5 * 60, 12, _("Download limit reached"))
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
@@ -56,13 +56,6 @@ class EuroshareEu(SimpleHoster):
             self.error(_("LINK_FREE_PATTERN not found"))
 
         self.link = "http://euroshare.eu%s" % m.group(1)
-
-
-    def checkFile(self):
-        if self.checkDownload({"multi-dl": re.compile(self.ERR_PARDL_PATTERN)})
-            self.wait(5 * 60, 12, _("Download limit reached"))
-
-        return super(EuroshareEu, self).checkFile()
 
 
 getInfo = create_getInfo(EuroshareEu)

@@ -3,7 +3,6 @@
 from module.plugins.internal.Plugin import Plugin
 
 
-#@TODO: Extend (new) Plugin class; remove all `html` args
 class Captcha(Plugin):
     __name__    = "Captcha"
     __type__    = "captcha"
@@ -11,15 +10,14 @@ class Captcha(Plugin):
 
     __description__ = """Base captcha service plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("pyLoad Team", "admin@pyload.org")]
-
-
-    key = None  #: last key detected
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def __init__(self, plugin):
-        self.plugin = plugin
         super(Captcha, self).__init__(plugin.core)
+
+        self.plugin = plugin
+        self.key    = None  #: last key detected
 
 
     #@TODO: Recheck in 0.4.10

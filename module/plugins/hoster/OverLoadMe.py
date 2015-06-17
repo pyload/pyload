@@ -40,12 +40,10 @@ class OverLoadMe(MultiHoster):
             self.logWarning(data['msg'])
             self.tempOffline()
         else:
+            self.link = data['downloadlink']
             if pyfile.name and pyfile.name.endswith('.tmp') and data['filename']:
                 pyfile.name = data['filename']
                 pyfile.size = parseFileSize(data['filesize'])
-
-            http_repl = ["http://", "https://"]
-            self.link = data['downloadlink'].replace(*http_repl if self.getConfig('ssl') else *http_repl[::-1])
 
 
 getInfo = create_getInfo(OverLoadMe)

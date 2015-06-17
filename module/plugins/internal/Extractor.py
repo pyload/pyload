@@ -4,6 +4,7 @@ import os
 import re
 
 from module.PyFile import PyFile
+from module.plugins.internal.Plugin import Plugin
 
 
 class ArchiveError(Exception):
@@ -18,8 +19,9 @@ class PasswordError(Exception):
     pass
 
 
-class Extractor:
+class Extractor(Plugin):
     __name__    = "Extractor"
+    __type__    = "extractor"
     __version__ = "0.24"
 
     __description__ = """Base extractor plugin"""
@@ -46,7 +48,8 @@ class Extractor:
 
     @classmethod
     def isUsable(cls):
-        """ Check if system statisfy dependencies
+        """
+        Check if system statisfy dependencies
         :return: boolean
         """
         return None
@@ -54,7 +57,8 @@ class Extractor:
 
     @classmethod
     def getTargets(cls, files_ids):
-        """ Filter suited targets from list of filename id tuple list
+        """
+        Filter suited targets from list of filename id tuple list
         :param files_ids: List of filepathes
         :return: List of targets, id tuple list
         """
@@ -78,7 +82,7 @@ class Extractor:
                  delete='No',
                  keepbroken=False,
                  fid=None):
-        """ Initialize extractor for specific file """
+        """Initialize extractor for specific file"""
         self.manager      = manager
         self.filename     = filename
         self.out          = out
@@ -95,12 +99,13 @@ class Extractor:
 
 
     def init(self):
-        """ Initialize additional data structures """
+        """Initialize additional data structures"""
         pass
 
 
     def check(self):
-        """Quick Check by listing content of archive.
+        """
+        Quick Check by listing content of archive.
         Raises error if password is needed, integrity is questionable or else.
 
         :raises PasswordError
@@ -109,8 +114,10 @@ class Extractor:
         """
         raise NotImplementedError
 
+
     def verify(self):
-        """Testing with Extractors buildt-in method
+        """
+        Testing with Extractors buildt-in method
         Raises error if password is needed, integrity is questionable or else.
 
         :raises PasswordError
@@ -125,7 +132,8 @@ class Extractor:
 
 
     def extract(self, password=None):
-        """Extract the archive. Raise specific errors in case of failure.
+        """
+        Extract the archive. Raise specific errors in case of failure.
 
         :param progress: Progress function, call this to update status
         :param password password to use
@@ -138,7 +146,8 @@ class Extractor:
 
 
     def getDeleteFiles(self):
-        """Return list of files to delete, do *not* delete them here.
+        """
+        Return list of files to delete, do *not* delete them here.
 
         :return: List with paths of files to delete
         """

@@ -11,12 +11,13 @@ except ImportError:
 import logging
 import os
 import subprocess
-#import tempfile
+# import tempfile
 
+from module.plugins.internal.Plugin import Plugin
 from module.utils import save_join as fs_join
 
 
-class OCR(object):
+class OCR(Plugin):
     __name__    = "OCR"
     __type__    = "ocr"
     __version__ = "0.11"
@@ -37,7 +38,7 @@ class OCR(object):
 
 
     def deactivate(self):
-        """delete all tmp images"""
+        """Delete all tmp images"""
         pass
 
 
@@ -48,21 +49,21 @@ class OCR(object):
     def run(self, command):
         """Run a command"""
 
-        popen = subprocess.Popen(command, bufsize = -1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        popen = subprocess.Popen(command, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         popen.wait()
-        output = popen.stdout.read() +" | "+ popen.stderr.read()
+        output = popen.stdout.read() + " | " + popen.stderr.read()
         popen.stdout.close()
         popen.stderr.close()
         self.logger.debug("Tesseract ReturnCode %s Output: %s" % (popen.returncode, output))
 
 
-    def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True):
-        #tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
+    def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True, pagesegmode=None):
+        # tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
         try:
             tmpTif = open(fs_join("tmp", "tmpTif_%s.tif" % self.__name__), "wb")
             tmpTif.close()
 
-            #tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
+            # tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
             tmpTxt = open(fs_join("tmp", "tmpTxt_%s.txt" % self.__name__), "wb")
             tmpTxt.close()
 
@@ -78,10 +79,13 @@ class OCR(object):
         else:
             tessparams = ["tesseract"]
 
-        tessparams.extend( [os.path.abspath(tmpTif.name), os.path.abspath(tmpTxt.name).replace(".txt", "")] )
+        tessparams.extend([os.path.abspath(tmpTif.name), os.path.abspath(tmpTxt.name).replace(".txt", "")])
+
+        if pagesegmode:
+            tessparams.extend(["-psm", str(pagesegmode)])
 
         if subset and (digits or lowercase or uppercase):
-            #tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
+            # tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
             with open(fs_join("tmp", "tmpSub_%s.subset" % self.__name__), "wb") as tmpSub:
                 tmpSub.write("tessedit_char_whitelist ")
 
@@ -151,11 +155,11 @@ class OCR(object):
                 count = 0
 
                 try:
-                    if pixels[x-1, y-1] != 255:
+                    if pixels[x - 1, y - 1] != 255:
                         count += 1
-                    if pixels[x-1, y] != 255:
+                    if pixels[x - 1, y] != 255:
                         count += 1
-                    if pixels[x-1, y + 1] != 255:
+                    if pixels[x - 1, y + 1] != 255:
                         count += 1
                     if pixels[x, y + 1] != 255:
                         count += 1
@@ -163,19 +167,19 @@ class OCR(object):
                         count += 1
                     if pixels[x + 1, y] != 255:
                         count += 1
-                    if pixels[x + 1, y-1] != 255:
+                    if pixels[x + 1, y - 1] != 255:
                         count += 1
-                    if pixels[x, y-1] != 255:
+                    if pixels[x, y - 1] != 255:
                         count += 1
                 except Exception:
                     pass
 
-        # not enough neighbors are dark pixels so mark this pixel
-            # to be changed to white
+                # not enough neighbors are dark pixels so mark this pixel
+                # to be changed to white
                 if count < allowed:
                     pixels[x, y] = 1
 
-            # second pass: this time set all 1's to 255 (white)
+        # second pass: this time set all 1's to 255 (white)
         for x in xrange(w):
             for y in xrange(h):
                 if pixels[x, y] == 1:
@@ -185,7 +189,7 @@ class OCR(object):
 
 
     def derotate_by_average(self):
-        """rotate by checking each angle and guess most suitable"""
+        """Rotate by checking each angle and guess most suitable"""
 
         w, h = self.image.size
         pixels = self.pixels
@@ -210,7 +214,6 @@ class OCR(object):
                 for y in xrange(h):
                     if pixels[x, y] == 0:
                         pixels[x, y] = 255
-
 
             count = {}
 
