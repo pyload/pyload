@@ -25,7 +25,7 @@ class UploadableCh(Account):
     def login(self, user, data, req):
         html = self.load("http://www.uploadable.ch/login.php",
                         post={'userName'     : user,
-                              'userPassword' : data["password"],
+                              'userPassword' : data['password'],
                               'autoLogin'    : "1",
                               'action__login': "normalLogin"}, req=req)
 

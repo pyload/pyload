@@ -87,7 +87,7 @@ class ZippyshareCom(SimpleHoster):
         scripts = ['\n'.join(('try{', script, '} catch(err){}')) for script in scripts]
 
         #: get the file's url by evaluating all the scripts
-        scripts = ['var GVAR = {}'] + list(initScripts)  + scripts + ['GVAR["dlbutton_href"]']
+        scripts = ['var GVAR = {}'] + list(initScripts)  + scripts + ['GVAR['dlbutton_href']']
         return self.js.eval('\n'.join(scripts))
 
 

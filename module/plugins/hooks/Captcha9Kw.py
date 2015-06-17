@@ -139,7 +139,7 @@ class Captcha9Kw(Hook):
 
         self.logDebug("NewCaptchaID ticket: %s" % res, task.captchaFile)
 
-        task.data["ticket"] = res
+        task.data['ticket'] = res
 
         for _i in xrange(int(self.getConfig('timeout') / 5)):
             result = self.load(self.API_URL,
@@ -232,7 +232,7 @@ class Captcha9Kw(Hook):
                               'correct': "1" if correct else "2",
                               'pyload' : "1",
                               'source' : "pyload",
-                              'id'     : task.data["ticket"]})
+                              'id'     : task.data['ticket']})
 
             self.logDebug("Request %s: %s" % (type, res))
 

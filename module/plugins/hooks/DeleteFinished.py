@@ -30,7 +30,7 @@ class DeleteFinished(Hook):
     def periodical(self):
         if not self.info['sleep']:
             deloffline = self.getConfig('deloffline')
-            mode = '0,1,4' if deloffline else '0,4'
+            mode = "0,1,4" if deloffline else "0,4"
             msg = _('delete all finished packages in queue list (%s packages with offline links)')
             self.logInfo(msg % (_('including') if deloffline else _('excluding')))
             self.deleteFinished(mode)

@@ -39,17 +39,17 @@ class SmoozedCom(MultiHoster):
 
         data = json_loads(self.load("http://www2.smoozed.com/api/check", get=get_data))
 
-        if data["state"] != "ok":
-            self.fail(data["message"])
+        if data['state'] != "ok":
+            self.fail(data['message'])
 
-        if data["data"].get("state", "ok") != "ok":
-            if data["data"] == "Offline":
+        if data['data'].get("state", "ok") != "ok":
+            if data['data'] == "Offline":
                 self.offline()
             else:
-                self.fail(data["data"]["message"])
+                self.fail(data['data']['message'])
 
-        pyfile.name = data["data"]["name"]
-        pyfile.size = int(data["data"]["size"])
+        pyfile.name = data['data']['name']
+        pyfile.size = int(data['data']['size'])
 
         #: Start the download
         header = self.load("http://www2.smoozed.com/api/download", get=get_data, just_header=True)
@@ -57,4 +57,4 @@ class SmoozedCom(MultiHoster):
         if not "location" in header:
             self.fail(_("Unable to initialize download"))
         else:
-            self.link = header["location"][-1] if isinstance(header["location"], list) else header["location"]
+            self.link = header['location'][-1] if isinstance(header['location'], list) else header['location']
