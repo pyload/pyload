@@ -20,9 +20,9 @@ class RealdebridCom(Account):
             return
 
         html = req.load("https://real-debrid.com/api/account.php")
-        xml  = xml.dom.minidom.parseString(html)
+        account  = xml.dom.minidom.parseString(html)
 
-        validuntil = float(xml.getElementsByTagName("expiration")[0].childNodes[0].nodeValue)
+        validuntil = float(account.getElementsByTagName("expiration")[0].childNodes[0].nodeValue)
 
         return {'validuntil' : validuntil,
                 'trafficleft': -1        ,
