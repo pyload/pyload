@@ -11,9 +11,10 @@ from module.utils import html_unescape
 
 
 def which(program):
-    """Works exactly like the unix command which
-    Courtesy of http://stackoverflow.com/a/377028/675646"""
-
+    """
+    Works exactly like the unix command which
+    Courtesy of http://stackoverflow.com/a/377028/675646
+    """
     isExe = lambda x: os.path.isfile(x) and os.access(x, os.X_OK)
 
     fpath, fname = os.path.split(program)

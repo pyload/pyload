@@ -16,7 +16,7 @@ class DevhostSt(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?d-h\.st/(?!users/)\w{3}'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """d-h.st hoster plugin"""
+    __description__ = """D-h.st hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 

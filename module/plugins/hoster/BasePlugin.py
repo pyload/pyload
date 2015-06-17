@@ -41,8 +41,9 @@ class BasePlugin(Hoster):
 
 
     def process(self, pyfile):
-        """main function"""
-
+        """
+        Main function
+        """
         pyfile.name = self.getInfo(pyfile.url)['name']
 
         if not pyfile.url.startswith("http"):

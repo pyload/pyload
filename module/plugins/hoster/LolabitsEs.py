@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*
 
-import HTMLParser
 import re
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.utils import html_unescape
 
 
 class LolabitsEs(SimpleHoster):
@@ -43,7 +43,7 @@ class LolabitsEs(SimpleHoster):
                                     '__RequestVerificationToken' : token},
                               decode="unicode-escape")
 
-        self.link = HTMLParser.HTMLParser().unescape(re.search(self.LINK_PATTERN, self.html).group(1))
+        self.link = html_unescape(re.search(self.LINK_PATTERN, self.html).group(1))
 
 
 getInfo = create_getInfo(LolabitsEs)

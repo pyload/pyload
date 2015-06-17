@@ -6,8 +6,9 @@ from module.plugins.internal.Plugin import Plugin
 
 
 class Expose(object):
-    """Used for decoration to declare rpc services"""
-
+    """
+    Used for decoration to declare rpc services
+    """
     def __new__(cls, f, *args, **kwargs):
         hookManager.addRPC(f.__module__, f.func_name, f.func_doc)
         return f
@@ -113,12 +114,16 @@ class Hook(Plugin):
 
 
     def setup(self):
-        """More init stuff if needed"""
+        """
+        More init stuff if needed
+        """
         pass
 
 
     def is_activated(self):
-        """Checks if hook is activated"""
+        """
+        Checks if hook is activated
+        """
         return self.getConfig("activated")
 
 
@@ -128,7 +133,9 @@ class Hook(Plugin):
 
 
     def deactivate(self):
-        """Called when hook was deactivated"""
+        """
+        Called when hook was deactivated
+        """
         pass
 
 
@@ -138,7 +145,9 @@ class Hook(Plugin):
 
 
     def activate(self):
-        """Called when hook was activated"""
+        """
+        Called when hook was activated
+        """
         pass
 
 
@@ -148,7 +157,9 @@ class Hook(Plugin):
 
 
     def exit(self):
-        """Called by core.shutdown just before pyLoad exit"""
+        """
+        Called by core.shutdown just before pyLoad exit
+        """
         pass
 
 
@@ -212,7 +223,9 @@ class Hook(Plugin):
 
 
     def captcha_task(self, task):
-        """New captcha task for the plugin, it MUST set the handler and timeout or will be ignored"""
+        """
+        New captcha task for the plugin, it MUST set the handler and timeout or will be ignored
+        """
         pass
 
 

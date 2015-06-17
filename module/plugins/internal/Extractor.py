@@ -82,7 +82,9 @@ class Extractor(Plugin):
                  delete='No',
                  keepbroken=False,
                  fid=None):
-        """Initialize extractor for specific file"""
+        """
+        Initialize extractor for specific file
+        """
         self.manager      = manager
         self.filename     = filename
         self.out          = out
@@ -99,7 +101,9 @@ class Extractor(Plugin):
 
 
     def init(self):
-        """Initialize additional data structures"""
+        """
+        Initialize additional data structures
+        """
         pass
 
 
@@ -155,5 +159,7 @@ class Extractor(Plugin):
 
 
     def list(self, password=None):
-        """Populate self.files at some point while extracting"""
+        """
+        Populate self.files at some point while extracting
+        """
         return self.files

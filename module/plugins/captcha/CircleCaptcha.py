@@ -241,7 +241,6 @@ class CircleCaptcha(OCR):
                 -1 -> Not found circle
                 -2 -> Found black position then leave position
         """
-
         imageheight = range(int(c[1]-c[2]),int(c[1]+c[2]))
         imagewidth = range(int(c[0]-c[2]),int(c[0]+c[2]))
 
@@ -323,7 +322,6 @@ class CircleCaptcha(OCR):
                 -1 -> Not found circle
                 -2 -> Found black position then leave position
         """
-
         imageheight = range(int(c[1]-c[2]),int(c[1]+c[2]))
         imagewidth = range(int(c[0]-c[2]),int(c[0]+c[2]))
 
@@ -485,7 +483,6 @@ class CircleCaptcha(OCR):
         if maxX - minX < c[2] * 2 * 0.10 and maxY - minY < c[2] * 2 * 0.10:
             return -1;
         """
-
         if missing / howmany > 0.25 or \
             missingconsecutive >= (howmany / 4) * 2 or \
             howmany < 80:

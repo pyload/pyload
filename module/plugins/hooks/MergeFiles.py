@@ -43,9 +43,9 @@ class MergeFiles(Hook):
                 files[data['name'][:-4]].sort()
                 fid_dict[data['name']] = fid
 
-        download_folder = self.core.config['general']['download_folder']
+        download_folder = self.core.config.get("general", "download_folder")
 
-        if self.core.config['general']['folder_per_package']:
+        if self.core.config.get("general", "folder_per_package"):
             download_folder = fs_join(download_folder, pack.folder)
 
         for name, file_list in files.iteritems():

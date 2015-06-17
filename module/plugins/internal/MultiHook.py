@@ -153,7 +153,9 @@ class MultiHook(Hook):
 
 
     def periodical(self):
-        """Reload plugin list periodically"""
+        """
+        Reload plugin list periodically
+        """
         self.loadAccount()
 
         if self.getConfig('reload', True):
@@ -244,7 +246,9 @@ class MultiHook(Hook):
 
 
     def deactivate(self):
-        """Remove override for all plugins. Scheduler job is removed by hookmanager"""
+        """
+        Remove override for all plugins. Scheduler job is removed by hookmanager
+        """
         for plugin in self.supported:
             self.unloadPlugin(plugin)
 

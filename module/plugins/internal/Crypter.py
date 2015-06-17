@@ -34,8 +34,9 @@ class Crypter(Hoster):
 
 
     def process(self, pyfile):
-        """Main method"""
-
+        """
+        Main method
+        """
         self.decrypt(pyfile)
 
         if self.urls:
@@ -52,20 +53,22 @@ class Crypter(Hoster):
 
 
     def _generate_packages(self):
-        """Generate new packages from self.urls"""
-
+        """
+        Generate new packages from self.urls
+        """
         packages = [(name, links, None) for name, links in self.core.api.generatePackages(self.urls).iteritems()]
         self.packages.extend(packages)
 
 
     def _create_packages(self):
-        """Create new packages from self.packages"""
-
+        """
+        Create new packages from self.packages
+        """
         package_folder   = self.pyfile.package().folder
         package_password = self.pyfile.package().password
         package_queue    = self.pyfile.package().queue
 
-        folder_per_package    = self.core.config.get('general', 'folder_per_package')
+        folder_per_package    = self.core.config.get("general", "folder_per_package")
         use_subfolder         = self.getConfig('use_subfolder', folder_per_package)
         subfolder_per_package = self.getConfig('subfolder_per_package', True)
 

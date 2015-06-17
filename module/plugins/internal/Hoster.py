@@ -321,7 +321,6 @@ class Hoster(Plugin):
 
         :return: result of decrypting
         """
-
         img = self.load(url, get=get, post=post, cookies=cookies)
 
         id = ("%.2f" % time.time())[-6:].replace(".", "")

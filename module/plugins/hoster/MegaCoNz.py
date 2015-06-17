@@ -68,7 +68,9 @@ class MegaCoNz(Hoster):
 
 
     def getCipherKey(self, key):
-        """ Construct the cipher key from the given data """
+        """
+        Construct the cipher key from the given data
+        """
         a = array.array("I", self.b64_decode(key))
 
         k        = array.array("I", (a[0] ^ a[4], a[1] ^ a[5], a[2] ^ a[6], a[3] ^ a[7]))
@@ -79,8 +81,9 @@ class MegaCoNz(Hoster):
 
 
     def api_response(self, **kwargs):
-        """ Dispatch a call to the api, see https://mega.co.nz/#developers """
-
+        """
+        Dispatch a call to the api, see https://mega.co.nz/#developers
+        """
         # generate a session id, no idea where to obtain elsewhere
         uid = random.randint(10 << 9, 10 ** 10)
 
@@ -103,8 +106,9 @@ class MegaCoNz(Hoster):
 
 
     def decryptFile(self, key):
-        """  Decrypts the file at lastDownload` """
-
+        """
+        Decrypts the file at lastDownload`
+        """
         # upper 64 bit of counter start
         n = self.b64_decode(key)[16:24]
 

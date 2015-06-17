@@ -23,8 +23,9 @@ class Container(Crypter):
 
 
     def preprocessing(self, thread):
-        """Prepare"""
-
+        """
+        Prepare
+        """
         self.setup()
         self.thread = thread
 
@@ -37,9 +38,10 @@ class Container(Crypter):
 
 
     def _load2disk(self):
-        """Loads container to disk if its stored remotely and overwrite url,
-        or check existent on several places at disk"""
-
+        """
+        Loads container to disk if its stored remotely and overwrite url,
+        or check existent on several places at disk
+        """
         if self.pyfile.url.startswith("http"):
             self.pyfile.name = re.findall("([^\/=]+)", self.pyfile.url)[-1]
             content = self.load(self.pyfile.url)

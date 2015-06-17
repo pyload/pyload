@@ -25,8 +25,10 @@ if sys.version_info < (2, 7) and os.name != "nt":
 
     # unsued timeout option for older python version
     def wait(self, timeout=0):
-        """Wait for child process to terminate.  Returns returncode
-        attribute."""
+        """
+        Wait for child process to terminate.  Returns returncode
+        attribute.
+        """
         if self.returncode is None:
             try:
                 pid, sts = _eintr_retry_call(os.waitpid, self.pid, 0)
@@ -209,7 +211,9 @@ class ExtractArchive(Hook):
 
     @Expose
     def extractPackage(self, *ids):
-        """ Extract packages with given id"""
+        """
+        Extract packages with given id
+        """
         for id in ids:
             self.queue.add(id)
         if not self.getConfig('waitall') and not self.extracting:
@@ -261,7 +265,7 @@ class ExtractArchive(Hook):
         # reload from txt file
         self.reloadPasswords()
 
-        download_folder = self.core.config['general']['download_folder']
+        download_folder = self.core.config.get("general", "download_folder")
 
         # iterate packages -> extractors -> targets
         for pid in ids:
@@ -510,7 +514,9 @@ class ExtractArchive(Hook):
 
     @Expose
     def getPasswords(self, reload=True):
-        """ List of saved passwords """
+        """
+        List of saved passwords
+        """
         if reload:
             self.reloadPasswords()
 
@@ -535,7 +541,9 @@ class ExtractArchive(Hook):
 
     @Expose
     def addPassword(self, password):
-        """  Adds a password to saved list"""
+        """
+         Adds a password to saved list
+        """
         try:
             self.passwords = uniqify([password] + self.passwords)
 
@@ -554,16 +562,16 @@ class ExtractArchive(Hook):
                 continue
 
             try:
-                if self.core.config['permission']['change_file']:
+                if self.core.config.get("permission", "change_file"):
                     if os.path.isfile(f):
-                        os.chmod(f, int(self.core.config['permission']['file'], 8))
+                        os.chmod(f, int(self.core.config.get("permission", "file"), 8))
 
                     elif os.path.isdir(f):
-                        os.chmod(f, int(self.core.config['permission']['folder'], 8))
+                        os.chmod(f, int(self.core.config.get("permission", "folder"), 8))
 
-                if self.core.config['permission']['change_dl'] and os.name != "nt":
-                    uid = getpwnam(self.core.config['permission']['user'])[2]
-                    gid = getgrnam(self.core.config['permission']['group'])[2]
+                if self.core.config.get("permission", "change_dl") and os.name != "nt":
+                    uid = getpwnam(self.core.config.get("permission", "user"))[2]
+                    gid = getgrnam(self.core.config.get("permission", "group"))[2]
                     os.chown(f, uid, gid)
 
             except Exception, e:

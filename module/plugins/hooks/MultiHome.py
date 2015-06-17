@@ -12,7 +12,7 @@ class MultiHome(Hook):
 
     __config__ = [("interfaces", "str", "Interfaces", "None")]
 
-    __description__ = """Ip address changer"""
+    __description__ = """IP address changer"""
     __license__     = "GPLv3"
     __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
@@ -28,7 +28,7 @@ class MultiHome(Hook):
         self.parseInterfaces(self.getConfig('interfaces').split(";"))
 
         if not self.interfaces:
-            self.parseInterfaces([self.core.config['download']['interface']])
+            self.parseInterfaces([self.core.config.get("download", "interface")])
             self.setConfig("interfaces", self.toConfig())
 
 

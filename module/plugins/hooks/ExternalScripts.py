@@ -126,10 +126,10 @@ class ExternalScripts(Hook):
 
 
     def download_failed(self, pyfile):
-        if self.core.config['general']['folder_per_package']:
-            download_folder = fs_join(self.core.config['general']['download_folder'], pyfile.package().folder)
+        if self.core.config.get("general", "folder_per_package"):
+            download_folder = fs_join(self.core.config.get("general", "download_folder"), pyfile.package().folder)
         else:
-            download_folder = self.core.config['general']['download_folder']
+            download_folder = self.core.config.get("general", "download_folder")
 
         for script in self.scripts['download_failed']:
             file = fs_join(download_folder, pyfile.name)
@@ -137,10 +137,10 @@ class ExternalScripts(Hook):
 
 
     def download_finished(self, pyfile):
-        if self.core.config['general']['folder_per_package']:
-            download_folder = fs_join(self.core.config['general']['download_folder'], pyfile.package().folder)
+        if self.core.config.get("general", "folder_per_package"):
+            download_folder = fs_join(self.core.config.get("general", "download_folder"), pyfile.package().folder)
         else:
-            download_folder = self.core.config['general']['download_folder']
+            download_folder = self.core.config.get("general", "download_folder")
 
         for script in self.scripts['download_finished']:
             file = fs_join(download_folder, pyfile.name)
@@ -158,10 +158,10 @@ class ExternalScripts(Hook):
 
 
     def package_finished(self, pypack):
-        if self.core.config['general']['folder_per_package']:
-            download_folder = fs_join(self.core.config['general']['download_folder'], pypack.folder)
+        if self.core.config.get("general", "folder_per_package"):
+            download_folder = fs_join(self.core.config.get("general", "download_folder"), pypack.folder)
         else:
-            download_folder = self.core.config['general']['download_folder']
+            download_folder = self.core.config.get("general", "download_folder")
 
         for script in self.scripts['package_finished']:
             self.callScript(script, pypack.id, pypack.name, download_folder, pypack.password)
@@ -170,30 +170,30 @@ class ExternalScripts(Hook):
     def packageDeleted(self, pid):
         pack = self.core.api.getPackageInfo(pid)
 
-        if self.core.config['general']['folder_per_package']:
-            download_folder = fs_join(self.core.config['general']['download_folder'], pack.folder)
+        if self.core.config.get("general", "folder_per_package"):
+            download_folder = fs_join(self.core.config.get("general", "download_folder"), pack.folder)
         else:
-            download_folder = self.core.config['general']['download_folder']
+            download_folder = self.core.config.get("general", "download_folder")
 
         for script in self.scripts['package_deleted']:
             self.callScript(script, pack.id, pack.name, download_folder, pack.password)
 
 
     def package_extract_failed(self, pypack):
-        if self.core.config['general']['folder_per_package']:
-            download_folder = fs_join(self.core.config['general']['download_folder'], pypack.folder)
+        if self.core.config.get("general", "folder_per_package"):
+            download_folder = fs_join(self.core.config.get("general", "download_folder"), pypack.folder)
         else:
-            download_folder = self.core.config['general']['download_folder']
+            download_folder = self.core.config.get("general", "download_folder")
 
         for script in self.scripts['package_extract_failed']:
             self.callScript(script, pypack.id, pypack.name, download_folder, pypack.password)
 
 
     def package_extracted(self, pypack):
-        if self.core.config['general']['folder_per_package']:
-            download_folder = fs_join(self.core.config['general']['download_folder'], pypack.folder)
+        if self.core.config.get("general", "folder_per_package"):
+            download_folder = fs_join(self.core.config.get("general", "download_folder"), pypack.folder)
         else:
-            download_folder = self.core.config['general']['download_folder']
+            download_folder = self.core.config.get("general", "download_folder")
 
         for script in self.scripts['package_extracted']:
             self.callScript(script, pypack.id, pypack.name, download_folder)

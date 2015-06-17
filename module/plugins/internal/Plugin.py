@@ -139,7 +139,9 @@ class Plugin(object):
 
     #: Deprecated method
     def setConf(self, *args, **kwargs):
-        """See `setConfig`"""
+        """
+        See `setConfig`
+        """
         return self.setConfig(*args, **kwargs)
 
 
@@ -160,39 +162,53 @@ class Plugin(object):
 
     #: Deprecated method
     def getConf(self, *args, **kwargs):
-        """See `getConfig`"""
+        """
+        See `getConfig`
+        """
         return self.getConfig(*args, **kwargs)
 
 
     def store(self, key, value):
-        """Saves a value persistently to the database"""
+        """
+        Saves a value persistently to the database
+        """
         self.core.db.setStorage(self.__name__, key, value)
 
 
     #: Deprecated method
     def setStorage(self, *args, **kwargs):
-        """Same as `setStorage`"""
+        """
+        Same as `setStorage`
+        """
         return self.store(*args, **kwargs)
 
 
     def retrieve(self, key, default=None):
-        """Retrieves saved value or dict of all saved entries if key is None"""
+        """
+        Retrieves saved value or dict of all saved entries if key is None
+        """
         return self.core.db.getStorage(self.__name__, key) or default
 
 
     #: Deprecated method
     def getStorage(self, *args, **kwargs):
-        """Same as `getStorage`"""
+        """
+        Same as `getStorage`
+        """
         return self.retrieve(*args, **kwargs)
 
 
     def delStorage(self, key):
-        """Delete entry in db"""
+        """
+        Delete entry in db
+        """
         self.core.db.delStorage(self.__name__, key)
 
 
     def fail(self, reason):
-        """Fail and give reason"""
+        """
+        Fail and give reason
+        """
         raise Fail(fs_encode(reason))
 
 

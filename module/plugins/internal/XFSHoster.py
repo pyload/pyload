@@ -56,7 +56,9 @@ class XFSHoster(SimpleHoster):
 
 
     def prepare(self):
-        """ Initialize important variables """
+        """
+        Initialize important variables
+        """
         if not self.HOSTER_DOMAIN:
             if self.account:
                 account = self.account

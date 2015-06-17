@@ -392,7 +392,9 @@ class IRCInterface(Thread, Hook):
 
 
     def event_c(self, args):
-        """ captcha answer """
+        """
+        Captcha answer
+        """
         if not args:
             return ["ERROR: Captcha ID missing."]
 

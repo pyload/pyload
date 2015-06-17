@@ -19,7 +19,7 @@ class DevhostStFolder(SimpleCrypter):
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """d-h.st folder decrypter plugin"""
+    __description__ = """D-h.st folder decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"),
                        ("Walter Purcaro", "vuolter@gmail.com")]

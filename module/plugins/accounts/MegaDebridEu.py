@@ -9,7 +9,7 @@ class MegaDebridEu(Account):
     __type__    = "account"
     __version__ = "0.21"
 
-    __description__ = """mega-debrid.eu account plugin"""
+    __description__ = """Mega-debrid.eu account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("D.Ducatel", "dducatel@je-geek.fr")]
 

@@ -38,7 +38,9 @@ class OCR(Plugin):
 
 
     def deactivate(self):
-        """Delete all tmp images"""
+        """
+        Delete all tmp images
+        """
         pass
 
 
@@ -47,8 +49,9 @@ class OCR(Plugin):
 
 
     def run(self, command):
-        """Run a command"""
-
+        """
+        Run a command
+        """
         popen = subprocess.Popen(command, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         popen.wait()
         output = popen.stdout.read() + " | " + popen.stderr.read()
@@ -189,8 +192,9 @@ class OCR(Plugin):
 
 
     def derotate_by_average(self):
-        """Rotate by checking each angle and guess most suitable"""
-
+        """
+        Rotate by checking each angle and guess most suitable
+        """
         w, h = self.image.size
         pixels = self.pixels
 

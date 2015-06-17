@@ -50,7 +50,6 @@ class SimpleCrypter(Crypter, SimpleHoster):
       def loadPage(self, page_n):
           return the html of the page number page_n
     """
-
     #@TODO: Remove in 0.4.10
     def init(self):
         account_name = (self.__name__ + ".py").replace("Folder.py", "").replace(".py", "")
