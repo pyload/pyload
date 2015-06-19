@@ -138,7 +138,7 @@ def login_post():
     if not info:
         return render_to_response("login.html", {"errors": True}, [pre_processor])
 
-    set_session(request, info)
+    set_session(info)
     return bottle.redirect("/")
 
 
