@@ -65,7 +65,7 @@ def set_permission(perms):
     return permission
 
 
-def set_session(request, info):
+def set_session(info):
     s = bottle.request.environ.get('beaker.session')
     s['authenticated'] = True
     s['user_id'] = info['id']
