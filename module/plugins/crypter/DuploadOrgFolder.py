@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
-class DuploadOrgFolder(SimpleCrypter):
-    __name__ = "DuploadOrgFolder"
-    __type__ = "crypter"
-    __version__ = "0.01"
+class DuploadOrgFolder(DeadCrypter):
+    __name__    = "DuploadOrgFolder"
+    __type__    = "crypter"
+    __version__ = "0.02"
 
-    __pattern__ = r'http://(?:www\.)?dupload\.org/folder/\d+/'
+    __pattern__ = r'http://(?:www\.)?dupload\.org/folder/\d+'
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """Dupload.org folder decrypter plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
-    LINK_PATTERN = r'<td style="[^"]+"><a href="(http://[^"]+)" target="_blank">[^<]+</a></td>'
+
+getInfo = create_getInfo(DuploadOrgFolder)

@@ -13,86 +13,54 @@ def convertDecimalPrefix(m):
 
 
 class UlozTo(SimpleHoster):
-    __name__ = "UlozTo"
-    __type__ = "hoster"
-    __version__ = "0.98"
+    __name__    = "UlozTo"
+    __type__    = "hoster"
+    __version__ = "1.10"
 
-    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\w+/[^/?]*)'
+    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Uloz.to hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
-    FILE_INFO_PATTERN = r'<p>File <strong>(?P<N>[^<]+)</strong> is password protected</p>'
-    FILE_NAME_PATTERN = r'<title>(?P<N>[^<]+) \| Uloz.to</title>'
-    FILE_SIZE_PATTERN = r'<span id="fileSize">.*?(?P<S>[0-9.]+\s[kMG]?B)</span>'
+
+    INFO_PATTERN    = r'<p>File <strong>(?P<N>[^<]+)</strong> is password protected</p>'
+    NAME_PATTERN    = r'<title>(?P<N>[^<]+) \| Uloz\.to</title>'
+    SIZE_PATTERN    = r'<span id="fileSize">.*?(?P<S>[\d.,]+\s[kMG]?B)</span>'
     OFFLINE_PATTERN = r'<title>404 - Page not found</title>|<h1 class="h1">File (has been deleted|was banned)</h1>'
 
-    FILE_SIZE_REPLACEMENTS = [('([0-9.]+)\s([kMG])B', convertDecimalPrefix)]
-    FILE_URL_REPLACEMENTS = [(r"(?<=http://)([^/]+)", "www.ulozto.net")]
+    URL_REPLACEMENTS  = [(r'(?<=http://)([^/]+)', "www.ulozto.net")]
+    SIZE_REPLACEMENTS = [(r'([\d.]+)\s([kMG])B', convertDecimalPrefix)]
 
-    ADULT_PATTERN = r'<form action="(?P<link>[^\"]*)" method="post" id="frm-askAgeForm">'
-    PASSWD_PATTERN = r'<div class="passwordProtectedFile">'
-    VIPLINK_PATTERN = r'<a href="[^"]*\?disclaimer=1" class="linkVip">'
-    FREE_URL_PATTERN = r'<div class="freeDownloadForm"><form action="([^"]+)"'
-    PREMIUM_URL_PATTERN = r'<div class="downloadForm"><form action="([^"]+)"'
-    TOKEN_PATTERN = r'<input type="hidden" name="_token_" id="[^\"]*" value="(?P<token>[^\"]*)" />'
+    CHECK_TRAFFIC = True
+    DISPOSITION   = False  #: Remove in 0.4.10
+
+    ADULT_PATTERN   = r'<form action="(.+?)" method="post" id="frm-askAgeForm">'
+    PASSWD_PATTERN  = r'<div class="passwordProtectedFile">'
+    VIPLINK_PATTERN = r'<a href=".+?\?disclaimer=1" class="linkVip">'
+    TOKEN_PATTERN   = r'<input type="hidden" name="_token_" .*?value="(.+?)"'
 
 
     def setup(self):
-        self.multiDL = self.premium
+        self.chunkLimit     = 16 if self.premium else 1
+        self.multiDL        = True
         self.resumeDownload = True
 
-    def process(self, pyfile):
-        pyfile.url = re.sub(r"(?<=http://)([^/]+)", "www.ulozto.net", pyfile.url)
-        self.html = self.load(pyfile.url, decode=True, cookies=True)
 
-        if re.search(self.ADULT_PATTERN, self.html):
-            self.logInfo("Adult content confirmation needed. Proceeding..")
-
-            m = re.search(self.TOKEN_PATTERN, self.html)
-            if m is None:
-                self.parseError('TOKEN')
-            token = m.group(1)
-
-            self.html = self.load(pyfile.url, get={"do": "askAgeForm-submit"},
-                                  post={"agree": "Confirm", "_token_": token}, cookies=True)
-
-        passwords = self.getPassword().splitlines()
-        while self.PASSWD_PATTERN in self.html:
-            if passwords:
-                password = passwords.pop(0)
-                self.logInfo("Password protected link, trying " + password)
-                self.html = self.load(pyfile.url, get={"do": "passwordProtectedForm-submit"},
-                                      post={"password": password, "password_send": 'Send'}, cookies=True)
-            else:
-                self.fail("No or incorrect password")
-
-        if re.search(self.VIPLINK_PATTERN, self.html):
-            self.html = self.load(pyfile.url, get={"disclaimer": "1"})
-
-        self.file_info = self.getFileInfo()
-
-        if self.premium and self.checkTrafficLeft():
-            self.handlePremium()
-        else:
-            self.handleFree()
-
-        self.doCheckDownload()
-
-    def handleFree(self):
+    def handleFree(self, pyfile):
         action, inputs = self.parseHtmlForm('id="frm-downloadDialog-freeDownloadForm"')
         if not action or not inputs:
-            self.parseError("free download form")
+            self.error(_("Free download form not found"))
 
-        self.logDebug('inputs.keys() = ' + str(inputs.keys()))
+        self.logDebug("inputs.keys = " + str(inputs.keys()))
         # get and decrypt captcha
         if all(key in inputs for key in ("captcha_value", "captcha_id", "captcha_key")):
             # Old version - last seen 9.12.2013
             self.logDebug('Using "old" version')
 
             captcha_value = self.decryptCaptcha("http://img.uloz.to/captcha/%s.png" % inputs['captcha_id'])
-            self.logDebug('CAPTCHA ID: ' + inputs['captcha_id'] + ", CAPTCHA VALUE: " + captcha_value)
+            self.logDebug("CAPTCHA ID: " + inputs['captcha_id'] + ", CAPTCHA VALUE: " + captcha_value)
 
             inputs.update({'captcha_id': inputs['captcha_id'], 'captcha_key': inputs['captcha_key'], 'captcha_value': captcha_value})
 
@@ -100,59 +68,86 @@ class UlozTo(SimpleHoster):
             # New version - better to get new parameters (like captcha reload) because of image url - since 6.12.2013
             self.logDebug('Using "new" version')
 
-            xapca = self.load("http://www.ulozto.net/reloadXapca.php", get={"rnd": str(int(time.time()))})
-            self.logDebug('xapca = ' + str(xapca))
+            xapca = self.load("http://www.ulozto.net/reloadXapca.php", get={'rnd': str(int(time.time()))})
+            self.logDebug("xapca = " + str(xapca))
 
             data = json_loads(xapca)
             captcha_value = self.decryptCaptcha(str(data['image']))
-            self.logDebug("CAPTCHA HASH: " + data['hash'] + ", CAPTCHA SALT: " + str(data['salt']) + ", CAPTCHA VALUE: " + captcha_value)
+            self.logDebug("CAPTCHA HASH: " + data['hash'], "CAPTCHA SALT: " + str(data['salt']), "CAPTCHA VALUE: " + captcha_value)
 
             inputs.update({'timestamp': data['timestamp'], 'salt': data['salt'], 'hash': data['hash'], 'captcha_value': captcha_value})
+
         else:
-            self.parseError("CAPTCHA form changed")
+            self.error(_("CAPTCHA form changed"))
 
-        self.multiDL = True
-        self.download("http://www.ulozto.net" + action, post=inputs, cookies=True, disposition=True)
+        self.download("http://www.ulozto.net" + action, post=inputs)
 
-    def handlePremium(self):
-        self.download(self.pyfile.url + "?do=directDownload", disposition=True)
-        #parsed_url = self.findDownloadURL(premium=True)
-        #self.download(parsed_url, post={"download": "Download"})
 
-    def findDownloadURL(self, premium=False):
-        msg = "%s link" % ("Premium" if premium else "Free")
-        m = re.search(self.PREMIUM_URL_PATTERN if premium else self.FREE_URL_PATTERN, self.html)
-        if m is None:
-            self.parseError(msg)
-        parsed_url = "http://www.ulozto.net" + m.group(1)
-        self.logDebug("%s: %s" % (msg, parsed_url))
-        return parsed_url
+    def handlePremium(self, pyfile):
+        self.download(pyfile.url, get={'do': "directDownload"})
 
-    def doCheckDownload(self):
+
+    def checkErrors(self):
+        if re.search(self.ADULT_PATTERN, self.html):
+            self.logInfo(_("Adult content confirmation needed"))
+
+            m = re.search(self.TOKEN_PATTERN, self.html)
+            if m is None:
+                self.error(_("TOKEN_PATTERN not found"))
+
+            self.html = self.load(pyfile.url,
+                                  get={'do': "askAgeForm-submit"},
+                                  post={"agree": "Confirm", "_token_": m.group(1)})
+
+        if self.PASSWD_PATTERN in self.html:
+            password = self.getPassword()
+
+            if password:
+                self.logInfo(_("Password protected link, trying ") + password)
+                self.html = self.load(pyfile.url,
+                                      get={'do': "passwordProtectedForm-submit"},
+                                      post={"password": password, "password_send": 'Send'})
+
+                if self.PASSWD_PATTERN in self.html:
+                    self.fail(_("Incorrect password"))
+            else:
+                self.fail(_("No password found"))
+
+        if re.search(self.VIPLINK_PATTERN, self.html):
+            self.html = self.load(pyfile.url, get={'disclaimer': "1"})
+
+        return super(UlozTo, self).checkErrors()
+
+
+    def checkFile(self):
         check = self.checkDownload({
             "wrong_captcha": re.compile(r'<ul class="error">\s*<li>Error rewriting the text.</li>'),
-            "offline": re.compile(self.OFFLINE_PATTERN),
-            "passwd": self.PASSWD_PATTERN,
-            "server_error": 'src="http://img.ulozto.cz/error403/vykricnik.jpg"',  # paralell dl, server overload etc.
-            "not_found": "<title>Ulož.to</title>"
+            "offline"      : re.compile(self.OFFLINE_PATTERN),
+            "passwd"       : self.PASSWD_PATTERN,
+            "server_error" : 'src="http://img.ulozto.cz/error403/vykricnik.jpg"',  # paralell dl, server overload etc.
+            "not_found"    : "<title>Ulož.to</title>"
         })
 
         if check == "wrong_captcha":
-            #self.delStorage("captcha_id")
-            #self.delStorage("captcha_text")
             self.invalidCaptcha()
-            self.retry(reason="Wrong captcha code")
+            self.retry(reason=_("Wrong captcha code"))
+
         elif check == "offline":
             self.offline()
+
         elif check == "passwd":
-            self.fail("Wrong password")
+            self.fail(_("Wrong password"))
+
         elif check == "server_error":
-            self.logError("Server error, try downloading later")
+            self.logError(_("Server error, try downloading later"))
             self.multiDL = False
             self.wait(1 * 60 * 60, True)
             self.retry()
+
         elif check == "not_found":
-            self.fail("Server error - file not downloadable")
+            self.fail(_("Server error, file not downloadable"))
+
+        return super(UlozTo, self).checkFile()
 
 
 getInfo = create_getInfo(UlozTo)

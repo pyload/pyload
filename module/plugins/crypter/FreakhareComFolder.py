@@ -2,23 +2,27 @@
 
 import re
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class FreakhareComFolder(SimpleCrypter):
-    __name__ = "FreakhareComFolder"
-    __type__ = "crypter"
-    __version__ = "0.01"
+    __name__    = "FreakhareComFolder"
+    __type__    = "crypter"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?freakshare\.com/folder/.+'
+    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Freakhare.com folder decrypter plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
-    LINK_PATTERN = r'<a href="(http://freakshare.com/files/[^"]+)" target="_blank">'
-    TITLE_PATTERN = r'Folder:</b> (?P<title>.+)'
-    PAGES_PATTERN = r'Pages: +(?P<pages>\d+)'
+
+    LINK_PATTERN = r'<a href="(http://freakshare\.com/files/.+?)" target="_blank">'
+    NAME_PATTERN = r'Folder:</b> (?P<N>.+)'
+    PAGES_PATTERN = r'Pages: +(\d+)'
 
 
     def loadPage(self, page_n):
@@ -33,3 +37,6 @@ class FreakhareComFolder(SimpleCrypter):
                                                         'entrys': '20',
                                                         'page': page_n - 1,
                                                         'order': ''}, decode=True)
+
+
+getInfo = create_getInfo(FreakhareComFolder)

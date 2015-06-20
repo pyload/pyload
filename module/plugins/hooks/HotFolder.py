@@ -1,65 +1,71 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
+
+import os
 import time
 
-from os import listdir, makedirs
-from os.path import exists, isfile, join
 from shutil import move
 
-from module.plugins.Hook import Hook
+from module.plugins.internal.Hook import Hook
+from module.utils import fs_encode, save_join
 
 
 class HotFolder(Hook):
-    __name__ = "HotFolder"
-    __type__ = "hook"
-    __version__ = "0.11"
+    __name__    = "HotFolder"
+    __type__    = "hook"
+    __version__ = "0.15"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("folder", "str", "Folder to observe", "container"),
-                  ("watch_file", "bool", "Observe link file", False),
-                  ("keep", "bool", "Keep added containers", True),
-                  ("file", "str", "Link file", "links.txt")]
+    __config__ = [("folder"    , "str" , "Folder to observe"    , "container"),
+                  ("watch_file", "bool", "Observe link file"    , False      ),
+                  ("keep"      , "bool", "Keep added containers", True       ),
+                  ("file"      , "str" , "Link file"            , "links.txt")]
 
     __description__ = """Observe folder and file for changes and add container and links"""
-    __author_name__ = "RaNaN"
-    __author_mail__ = "RaNaN@pyload.de"
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.de")]
 
 
     def setup(self):
-        self.interval = 10
+        self.info     = {}  #@TODO: Remove in 0.4.10
+        self.interval = 30
+
 
     def periodical(self):
-        if not exists(join(self.getConfig("folder"), "finished")):
-            makedirs(join(self.getConfig("folder"), "finished"))
+        folder = fs_encode(self.getConfig('folder'))
+        file   = fs_encode(self.getConfig('file'))
 
-        if self.getConfig("watch_file"):
+        try:
+            if not os.path.isdir(os.path.join(folder, "finished")):
+                os.makedirs(os.path.join(folder, "finished"))
 
-            if not exists(self.getConfig("file")):
-                f = open(self.getConfig("file"), "wb")
-                f.close()
+            if self.getConfig('watch_file'):
+                with open(file, "a+") as f:
+                    f.seek(0)
+                    content = f.read().strip()
 
-            f = open(self.getConfig("file"), "rb")
-            content = f.read().strip()
-            f.close()
-            f = open(self.getConfig("file"), "wb")
-            f.close()
-            if content:
-                name = "%s_%s.txt" % (self.getConfig("file"), time.strftime("%H-%M-%S_%d%b%Y"))
+                if content:
+                    f = open(file, "wb")
+                    f.close()
 
-                f = open(join(self.getConfig("folder"), "finished", name), "wb")
-                f.write(content)
-                f.close()
+                    name = "%s_%s.txt" % (file, time.strftime("%H-%M-%S_%d%b%Y"))
 
-                self.core.api.addPackage(f.name, [f.name], 1)
+                    with open(save_join(folder, "finished", name), "wb") as f:
+                        f.write(content)
 
-        for f in listdir(self.getConfig("folder")):
-            path = join(self.getConfig("folder"), f)
+                    self.core.api.addPackage(f.name, [f.name], 1)
 
-            if not isfile(path) or f.endswith("~") or f.startswith("#") or f.startswith("."):
-                continue
+            for f in os.listdir(folder):
+                path = os.path.join(folder, f)
 
-            newpath = join(self.getConfig("folder"), "finished", f if self.getConfig("keep") else "tmp_" + f)
-            move(path, newpath)
+                if not os.path.isfile(path) or f.endswith("~") or f.startswith("#") or f.startswith("."):
+                    continue
 
-            self.logInfo(_("Added %s from HotFolder") % f)
-            self.core.api.addPackage(f, [newpath], 1)
+                newpath = os.path.join(folder, "finished", f if self.getConfig('keep') else "tmp_" + f)
+                move(path, newpath)
+
+                self.logInfo(_("Added %s from HotFolder") % f)
+                self.core.api.addPackage(f, [newpath], 1)
+
+        except (IOError, OSError), e:
+            self.logError(e)

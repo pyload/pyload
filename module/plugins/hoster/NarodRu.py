@@ -1,60 +1,65 @@
 # -*- coding: utf-8 -*-
 
+import random
 import re
-
-from random import random
+import urlparse
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class NarodRu(SimpleHoster):
-    __name__ = "NarodRu"
-    __type__ = "hoster"
-    __version__ = "0.1"
+    __name__    = "NarodRu"
+    __type__    = "hoster"
+    __version__ = "0.12"
 
-    __pattern__ = r'http://(?:www\.)?narod(\.yandex)?\.ru/(disk|start/[0-9]+\.\w+-narod\.yandex\.ru)/(?P<ID>\d+)/.+'
+    __pattern__ = r'http://(?:www\.)?narod(\.yandex)?\.ru/(disk|start/\d+\.\w+-narod\.yandex\.ru)/(?P<ID>\d+)/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Narod.ru hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
-    FILE_NAME_PATTERN = r'<dt class="name">(?:<[^<]*>)*(?P<N>[^<]+)</dt>'
-    FILE_SIZE_PATTERN = r'<dd class="size">(?P<S>\d[^<]*)</dd>'
+
+    NAME_PATTERN = r'<dt class="name">(?:<[^<]*>)*(?P<N>[^<]+)</dt>'
+    SIZE_PATTERN = r'<dd class="size">(?P<S>\d[^<]*)</dd>'
     OFFLINE_PATTERN = r'<title>404</title>|Файл удален с сервиса|Закончился срок хранения файла\.'
 
-    FILE_SIZE_REPLACEMENTS = [(u'КБ', 'KB'), (u'МБ', 'MB'), (u'ГБ', 'GB')]
-    FILE_URL_REPLACEMENTS = [("narod.yandex.ru/", "narod.ru/"),
-                             (r"/start/[0-9]+\.\w+-narod\.yandex\.ru/([0-9]{6,15})/\w+/(\w+)", r"/disk/\1/\2")]
+    SIZE_REPLACEMENTS = [(u'КБ', 'KB'), (u'МБ', 'MB'), (u'ГБ', 'GB')]
+    URL_REPLACEMENTS = [("narod.yandex.ru/", "narod.ru/"),
+                             (r"/start/\d+\.\w+-narod\.yandex\.ru/(\d{6,15})/\w+/(\w+)", r"/disk/\1/\2")]
 
     CAPTCHA_PATTERN = r'<number url="(.*?)">(\w+)</number>'
-    LINK_PATTERN = r'<a class="h-link" rel="yandex_bar" href="(.+?)">'
+    LINK_FREE_PATTERN = r'<a class="h-link" rel="yandex_bar" href="(.+?)">'
 
 
-    def handleFree(self):
-        for _ in xrange(5):
-            self.html = self.load('http://narod.ru/disk/getcapchaxml/?rnd=%d' % int(random() * 777))
+    def handleFree(self, pyfile):
+        for _i in xrange(5):
+            self.html = self.load('http://narod.ru/disk/getcapchaxml/?rnd=%d' % int(random.random() * 777))
+
             m = re.search(self.CAPTCHA_PATTERN, self.html)
             if m is None:
-                self.parseError('Captcha')
+                self.error(_("Captcha"))
+
             post_data = {"action": "sendcapcha"}
             captcha_url, post_data['key'] = m.groups()
             post_data['rep'] = self.decryptCaptcha(captcha_url)
 
-            self.html = self.load(self.pyfile.url, post=post_data, decode=True)
-            m = re.search(self.LINK_PATTERN, self.html)
+            self.html = self.load(pyfile.url, post=post_data, decode=True)
+
+            m = re.search(self.LINK_FREE_PATTERN, self.html)
             if m:
-                url = 'http://narod.ru' + m.group(1)
+                self.link = urlparse.urljoin("http://narod.ru", m.group(1))
                 self.correctCaptcha()
                 break
+
             elif u'<b class="error-msg"><strong>Ошиблись?</strong>' in self.html:
                 self.invalidCaptcha()
-            else:
-                self.parseError('Download link')
-        else:
-            self.fail("No valid captcha code entered")
 
-        self.logDebug('Download link: ' + url)
-        self.download(url)
+            else:
+                self.error(_("Download link"))
+
+        else:
+            self.fail(_("No valid captcha code entered"))
 
 
 getInfo = create_getInfo(NarodRu)

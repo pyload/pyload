@@ -1,15 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadCrypter import DeadCrypter
+from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class RSLayerCom(DeadCrypter):
-    __name__ = "RSLayerCom"
-    __type__ = "crypter"
+    __name__    = "RSLayerCom"
+    __type__    = "crypter"
     __version__ = "0.21"
 
-    __pattern__ = r'http://(?:www\.)?rs-layer.com/directory-'
+    __pattern__ = r'http://(?:www\.)?rs-layer\.com/directory-'
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """RS-Layer.com decrypter plugin"""
-    __author_name__ = "hzpz"
-    __author_mail__ = None
+    __license__     = "GPLv3"
+    __authors__     = [("hzpz", None)]
+
+
+getInfo = create_getInfo(RSLayerCom)

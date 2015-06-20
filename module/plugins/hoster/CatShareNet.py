@@ -2,43 +2,53 @@
 
 import re
 
-from module.plugins.internal.CaptchaService import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.ReCaptcha import ReCaptcha
 
 
 class CatShareNet(SimpleHoster):
-    __name__ = "CatShareNet"
-    __type__ = "hoster"
-    __version__ = "0.01"
+    __name__    = "CatShareNet"
+    __type__    = "hoster"
+    __version__ = "0.15"
 
-    __pattern__ = r'http://(?:www\.)?catshare.net/\w{16}.*'
+    __pattern__ = r'http://(?:www\.)?catshare\.net/\w{16}'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """CatShare.net hoster plugin"""
-    __author_name__ = "z00nx"
-    __author_mail__ = "z00nx0@gmail.com"
-
-    FILE_INFO_PATTERN = r'<h3 class="pull-left"[^>]+>(?P<N>.*)</h3>\s+<h3 class="pull-right"[^>]+>(?P<S>.*)</h3>'
-    OFFLINE_PATTERN = r'Podany plik zosta'
-
-    SECONDS_PATTERN = r'var\s+count\s+=\s+(\d+);'
-
-    RECAPTCHA_KEY = "6Lfln9kSAAAAANZ9JtHSOgxUPB9qfDFeLUI_QMEy"
+    __license__     = "GPLv3"
+    __authors__     = [("z00nx", "z00nx0@gmail.com"),
+                       ("prOq", None),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def handleFree(self):
-        m = re.search(self.SECONDS_PATTERN, self.html)
-        seconds = int(m.group(1))
-        self.logDebug("Seconds found", seconds)
-        self.wait(seconds + 1)
+    TEXT_ENCODING = True
+
+    INFO_PATTERN = r'<title>(?P<N>.+) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)<'
+    OFFLINE_PATTERN = r'<div class="alert alert-error"'
+
+    IP_BLOCKED_PATTERN = ur'>Nasz serwis wykrył że Twój adres IP nie pochodzi z Polski.<'
+    WAIT_PATTERN       = r'var\scount\s=\s(\d+);'
+
+    LINK_FREE_PATTERN    = r'<form action="(.+?)" method="GET">'
+    LINK_PREMIUM_PATTERN = r'<form action="(.+?)" method="GET">'
+
+
+    def setup(self):
+        self.multiDL        = self.premium
+        self.resumeDownload = True
+
+
+    def handleFree(self, pyfile):
         recaptcha = ReCaptcha(self)
-        challenge, code = recaptcha.challenge(self.RECAPTCHA_KEY)
-        post_data = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": code}
-        self.download(self.pyfile.url, post=post_data)
-        check = self.checkDownload({"html": re.compile("\A<!DOCTYPE html PUBLIC")})
-        if check == "html":
-            self.logDebug("Wrong captcha entered")
-            self.invalidCaptcha()
-            self.retry()
+
+        response, challenge = recaptcha.challenge()
+        self.html = self.load(pyfile.url,
+                              post={'recaptcha_challenge_field': challenge,
+                                    'recaptcha_response_field' : response})
+
+        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        if m:
+            self.link = m.group(1)
 
 
 getInfo = create_getInfo(CatShareNet)

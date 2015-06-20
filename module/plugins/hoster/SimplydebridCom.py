@@ -2,61 +2,48 @@
 
 import re
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo, replace_patterns
 
 
-class SimplydebridCom(Hoster):
-    __name__ = "SimplydebridCom"
-    __type__ = "hoster"
-    __version__ = "0.1"
+class SimplydebridCom(MultiHoster):
+    __name__    = "SimplydebridCom"
+    __type__    = "hoster"
+    __version__ = "0.19"
 
-    __pattern__ = r'http://(?:www\.)?\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd.php/*'
+    __pattern__ = r'http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd\.php'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """Simply-debrid.com hoster plugin"""
-    __author_name__ = "Kagenoshin"
-    __author_mail__ = "kagenoshin@gmx.ch"
+    __description__ = """Simply-debrid.com multi-hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
-    def setup(self):
-        self.resumeDownload = self.multiDL = True
-        self.chunkLimit = 1
-
-    def process(self, pyfile):
-        if not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "simply-debrid.com")
-            self.fail("No simply-debrid.com account provided")
-
-        self.logDebug("Old URL: %s" % pyfile.url)
-
+    def handlePremium(self, pyfile):
         #fix the links for simply-debrid.com!
-        new_url = pyfile.url
-        new_url = new_url.replace("clz.to", "cloudzer.net/file")
-        new_url = new_url.replace("http://share-online", "http://www.share-online")
-        new_url = new_url.replace("ul.to", "uploaded.net/file")
-        new_url = new_url.replace("uploaded.com", "uploaded.net")
-        new_url = new_url.replace("filerio.com", "filerio.in")
-        new_url = new_url.replace("lumfile.com", "lumfile.se")
-        if('fileparadox' in new_url):
-            new_url = new_url.replace("http://", "https://")
+        self.link = replace_patterns(pyfile.url, [("clz.to", "cloudzer.net/file")
+                                                  ("http://share-online", "http://www.share-online")
+                                                  ("ul.to", "uploaded.net/file")
+                                                  ("uploaded.com", "uploaded.net")
+                                                  ("filerio.com", "filerio.in")
+                                                  ("lumfile.com", "lumfile.se")])
 
-        if re.match(self.__pattern__, new_url):
-            new_url = new_url
+        if 'fileparadox' in self.link:
+            self.link = self.link.replace("http://", "https://")
 
-        self.logDebug("New URL: %s" % new_url)
+        self.html = self.load("http://simply-debrid.com/api.php", get={'dl': self.link})
+        if 'tiger Link' in self.html or 'Invalid Link' in self.html or ('API' in self.html and 'ERROR' in self.html):
+            self.error(_("Unable to unrestrict link"))
 
-        if not re.match(self.__pattern__, new_url):
-            page = self.load('http://simply-debrid.com/api.php', get={'dl': new_url})  # +'&u='+self.user+'&p='+self.account.getAccountData(self.user)['password'])
-            if 'tiger Link' in page or 'Invalid Link' in page or ('API' in page and 'ERROR' in page):
-                self.fail('Unable to unrestrict link')
-            new_url = page
+        self.link = self.html
 
-        self.setWait(5)
-        self.wait()
-        self.logDebug("Unrestricted URL: " + new_url)
+        self.wait(5)
 
-        self.download(new_url, disposition=True)
 
-        check = self.checkDownload({"bad1": "No address associated with hostname", "bad2": "<html"})
+    def checkFile(self):
+        if self.checkDownload({"error": "No address associated with hostname"}):
+            self.retry(24, 3 * 60, _("Bad file downloaded"))
 
-        if check == "bad1" or check == "bad2":
-            self.retry(24, 3 * 60, "Bad file downloaded")
+        return super(SimplydebridCom, self).checkFile()
+
+
+getInfo = create_getInfo(SimplydebridCom)

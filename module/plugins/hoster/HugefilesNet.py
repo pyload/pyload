@@ -1,25 +1,25 @@
 # -*- coding: utf-8 -*-
-#
-# Test links:
-# http://hugefiles.net/prthf9ya4w6s
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+import re
+
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
-class HugefilesNet(XFileSharingPro):
-    __name__ = "HugefilesNet"
-    __type__ = "hoster"
-    __version__ = "0.01"
+class HugefilesNet(XFSHoster):
+    __name__    = "HugefilesNet"
+    __type__    = "hoster"
+    __version__ = "0.05"
 
     __pattern__ = r'http://(?:www\.)?hugefiles\.net/\w{12}'
 
     __description__ = """Hugefiles.net hoster plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
-    HOSTER_NAME = "hugefiles.net"
 
-    FILE_SIZE_PATTERN = r'File Size:</span>\s*<span[^>]*>(?P<S>[^<]+)</span></div>'
+    SIZE_PATTERN = r'File Size:</span>\s*<span.*?>(?P<S>[^<]+)</span></div>'
+
+    FORM_INPUTS_MAP = {'ctype': re.compile(r'\d+')}
 
 
 getInfo = create_getInfo(HugefilesNet)

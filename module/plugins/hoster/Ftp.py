@@ -2,35 +2,39 @@
 
 import pycurl
 import re
+import urllib
+import urlparse
 
-from urllib import quote, unquote
-from urlparse import urlparse
-
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster
 
 
 class Ftp(Hoster):
-    __name__ = "Ftp"
-    __type__ = "hoster"
-    __version__ = "0.42"
-    __pattern__ = r'(ftps?|sftp)://(.*?:.*?@)?.*?/.*' # ftp://user:password@ftp.server.org/path/to/file
+    __name__    = "Ftp"
+    __type__    = "hoster"
+    __version__ = "0.53"
+
+    __pattern__ = r'(?:ftps?|sftp)://([\w.-]+(:[\w.-]+)?@)?[\w.-]+(:\d+)?/.+'
+
     __description__ = """Download from ftp directory"""
-    __author_name__ = ("jeix", "mkaay", "zoidberg")
-    __author_mail__ = ("jeix@hasnomail.com", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
+    __license__     = "GPLv3"
+    __authors__     = [("jeix", "jeix@hasnomail.com"),
+                       ("mkaay", "mkaay@mkaay.de"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def setup(self):
         self.chunkLimit = -1
         self.resumeDownload = True
 
+
     def process(self, pyfile):
-        parsed_url = urlparse(pyfile.url)
+        parsed_url = urlparse.urlparse(pyfile.url)
         netloc = parsed_url.netloc
 
         pyfile.name = parsed_url.path.rpartition('/')[2]
         try:
-            pyfile.name = unquote(str(pyfile.name)).decode('utf8')
-        except:
+            pyfile.name = urllib.unquote(str(pyfile.name)).decode('utf8')
+        except Exception:
             pass
 
         if not "@" in netloc:
@@ -38,24 +42,23 @@ class Ftp(Hoster):
 
             if netloc in servers:
                 self.logDebug("Logging on to %s" % netloc)
-                self.req.addAuth(self.account.accounts[netloc]['password'])
+                self.req.addAuth(self.account.getAccountInfo(netloc)['password'])
             else:
-                for pwd in pyfile.package().password.splitlines():
-                    if ":" in pwd:
-                        self.req.addAuth(pwd.strip())
-                        break
+                pwd = self.getPassword()
+                if ':' in pwd:
+                    self.req.addAuth(pwd)
 
         self.req.http.c.setopt(pycurl.NOBODY, 1)
 
         try:
-            response = self.load(pyfile.url)
+            res = self.load(pyfile.url)
         except pycurl.error, e:
-            self.fail("Error %d: %s" % e.args)
+            self.fail(_("Error %d: %s") % e.args)
 
         self.req.http.c.setopt(pycurl.NOBODY, 0)
         self.logDebug(self.req.http.header)
 
-        m = re.search(r"Content-Length:\s*(\d+)", response)
+        m = re.search(r"Content-Length:\s*(\d+)", res)
         if m:
             pyfile.size = int(m.group(1))
             self.download(pyfile.url)
@@ -63,12 +66,12 @@ class Ftp(Hoster):
             #Naive ftp directory listing
             if re.search(r'^25\d.*?"', self.req.http.header, re.M):
                 pyfile.url = pyfile.url.rstrip('/')
-                pkgname = "/".join(pyfile.package().name, urlparse(pyfile.url).path.rpartition('/')[2])
+                pkgname = "/".join([pyfile.package().name, urlparse.urlparse(pyfile.url).path.rpartition('/')[2]])
                 pyfile.url += '/'
                 self.req.http.c.setopt(48, 1)  # CURLOPT_DIRLISTONLY
-                response = self.load(pyfile.url, decode=False)
-                links = [pyfile.url + quote(x) for x in response.splitlines()]
+                res = self.load(pyfile.url, decode=False)
+                links = [pyfile.url + urllib.quote(x) for x in res.splitlines()]
                 self.logDebug("LINKS", links)
                 self.core.api.addPackage(pkgname, links)
             else:
-                self.fail("Unexpected server response")
+                self.fail(_("Unexpected server response"))

@@ -1,28 +1,37 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class PremiumTo(Account):
-    __name__ = "PremiumTo"
-    __type__ = "account"
-    __version__ = "0.04"
+    __name__    = "PremiumTo"
+    __type__    = "account"
+    __version__ = "0.10"
+
     __description__ = """Premium.to account plugin"""
-    __author_name__ = ("RaNaN", "zoidberg", "stickell")
-    __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("zoidberg", "zoidberg@mujmail.cz"),
+                       ("stickell", "l.stickell@yahoo.it")]
+
 
     def loadAccountInfo(self, user, req):
-        api_r = req.load("http://premium.to/api/straffic.php",
-                         get={'username': self.username, 'password': self.password})
-        traffic = sum(map(int, api_r.split(';')))
+        traffic = req.load("http://premium.to/api/straffic.php",  #@TODO: Revert to `https` in 0.4.10
+                           get={'username': self.username, 'password': self.password})
 
-        return {"trafficleft": int(traffic) / 1024, "validuntil": -1}
+        if "wrong username" not in traffic:
+            trafficleft = sum(map(float, traffic.split(';'))) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
+            return {'premium': True, 'trafficleft': trafficleft, 'validuntil': -1}
+        else:
+            return {'premium': False, 'trafficleft': None, 'validuntil': None}
+
 
     def login(self, user, data, req):
         self.username = user
         self.password = data['password']
-        authcode = req.load("http://premium.to/api/getauthcode.php?username=%s&password=%s" % (
-                                 user, self.password)).strip()
+        authcode = req.load("http://premium.to/api/getauthcode.php",  #@TODO: Revert to `https` in 0.4.10
+                            get={'username': user, 'password': self.password},
+                            decode=True)
 
         if "wrong username" in authcode:
             self.wrongPassword()

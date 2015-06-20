@@ -1,42 +1,46 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
 import re
-
-from pycurl import FOLLOWLOCATION
+import urlparse
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UnibytesCom(SimpleHoster):
-    __name__ = "UnibytesCom"
-    __type__ = "hoster"
-    __version__ = "0.1"
+    __name__    = "UnibytesCom"
+    __type__    = "hoster"
+    __version__ = "0.12"
 
-    __pattern__ = r'http://(?:www\.)?unibytes\.com/[a-zA-Z0-9-._ ]{11}B'
+    __pattern__ = r'https?://(?:www\.)?unibytes\.com/[\w .-]{11}B'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """UniBytes.com hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
-    FILE_INFO_PATTERN = r'<span[^>]*?id="fileName"[^>]*>(?P<N>[^>]+)</span>\s*\((?P<S>\d.*?)\)'
 
-    HOSTER_NAME = "unibytes.com"
+    HOSTER_DOMAIN = "unibytes.com"
+
+    INFO_PATTERN = r'<span[^>]*?id="fileName".*?>(?P<N>[^>]+)</span>\s*\((?P<S>\d.*?)\)'
+
     WAIT_PATTERN = r'Wait for <span id="slowRest">(\d+)</span> sec'
-    LINK_PATTERN = r'<a href="([^"]+)">Download</a>'
+    LINK_FREE_PATTERN = r'<a href="(.+?)">Download</a>'
 
 
-    def handleFree(self):
-        domain = "http://www." + self.HOSTER_NAME
+    def handleFree(self, pyfile):
+        domain            = "http://www.%s/" % self.HOSTER_DOMAIN
         action, post_data = self.parseHtmlForm('id="startForm"')
-        self.req.http.c.setopt(FOLLOWLOCATION, 0)
 
-        for _ in xrange(8):
+        self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
+
+        for _i in xrange(8):
             self.logDebug(action, post_data)
-            self.html = self.load(domain + action, post=post_data)
+            self.html = self.load(urlparse.urljoin(domain, action), post=post_data)
 
             m = re.search(r'location:\s*(\S+)', self.req.http.header, re.I)
             if m:
-                url = m.group(1)
+                self.link = m.group(1)
                 break
 
             if '>Somebody else is already downloading using your IP-address<' in self.html:
@@ -44,9 +48,9 @@ class UnibytesCom(SimpleHoster):
                 self.retry()
 
             if post_data['step'] == 'last':
-                m = re.search(self.LINK_PATTERN, self.html)
+                m = re.search(self.LINK_FREE_PATTERN, self.html)
                 if m:
-                    url = m.group(1)
+                    self.link = m.group(1)
                     self.correctCaptcha()
                     break
                 else:
@@ -57,15 +61,15 @@ class UnibytesCom(SimpleHoster):
 
             if last_step == 'timer':
                 m = re.search(self.WAIT_PATTERN, self.html)
-                self.wait(int(m.group(1)) if m else 60, False)
-            elif last_step in ("captcha", "last"):
-                post_data['captcha'] = self.decryptCaptcha(domain + '/captcha.jpg')
-        else:
-            self.fail("No valid captcha code entered")
+                self.wait(m.group(1) if m else 60, False)
 
-        self.logDebug('Download link: ' + url)
-        self.req.http.c.setopt(FOLLOWLOCATION, 1)
-        self.download(url)
+            elif last_step in ("captcha", "last"):
+                post_data['captcha'] = self.decryptCaptcha(urlparse.urljoin(domain, "/captcha.jpg"))
+
+        else:
+            self.fail(_("No valid captcha code entered"))
+
+        self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
 
 getInfo = create_getInfo(UnibytesCom)

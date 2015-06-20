@@ -9,33 +9,27 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DataHu(SimpleHoster):
-    __name__ = "DataHu"
-    __type__ = "hoster"
-    __version__ = "0.01"
+    __name__    = "DataHu"
+    __type__    = "hoster"
+    __version__ = "0.03"
 
-    __pattern__ = r'http://(?:www\.)?data.hu/get/\w+'
+    __pattern__ = r'http://(?:www\.)?data\.hu/get/\w+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Data.hu hoster plugin"""
-    __author_name__ = ("crash", "stickell")
-    __author_mail__ = "l.stickell@yahoo.it"
+    __license__     = "GPLv3"
+    __authors__     = [("crash", None),
+                       ("stickell", "l.stickell@yahoo.it")]
 
-    FILE_INFO_PATTERN = ur'<title>(?P<N>.*) \((?P<S>[^)]+)\) let\xf6lt\xe9se</title>'
+
+    INFO_PATTERN = ur'<title>(?P<N>.*) \((?P<S>[^)]+)\) let\xf6lt\xe9se</title>'
     OFFLINE_PATTERN = ur'Az adott f\xe1jl nem l\xe9tezik'
-    LINK_PATTERN = r'<div class="download_box_button"><a href="([^"]+)">'
+    LINK_FREE_PATTERN = r'<div class="download_box_button"><a href="(.+?)">'
 
 
-    def handleFree(self):
+    def setup(self):
         self.resumeDownload = True
-        self.html = self.load(self.pyfile.url, decode=True)
-
-        m = re.search(self.LINK_PATTERN, self.html)
-        if m:
-            url = m.group(1)
-            self.logDebug('Direct link: ' + url)
-        else:
-            self.parseError('Unable to get direct link')
-
-        self.download(url, disposition=True)
+        self.multiDL        = self.premium
 
 
 getInfo = create_getInfo(DataHu)

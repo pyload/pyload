@@ -1,74 +1,94 @@
 # -*- coding: utf-8 -*-
-#
-# Test links:
-# http://www13.zippyshare.com/v/18665333/file.html
 
 import re
+import urllib
 
+from BeautifulSoup import BeautifulSoup
+
+from module.plugins.internal.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class ZippyshareCom(SimpleHoster):
-    __name__ = "ZippyshareCom"
-    __type__ = "hoster"
-    __version__ = "0.49"
+    __name__    = "ZippyshareCom"
+    __type__    = "hoster"
+    __version__ = "0.79"
 
-    __pattern__ = r'(?P<HOST>http://www\d{0,2}\.zippyshare.com)/v(?:/|iew.jsp.*key=)(?P<KEY>\d+)'
+    __pattern__ = r'http://www\d{0,2}\.zippyshare\.com/v(/|iew\.jsp.*key=)(?P<KEY>[\w^_]+)'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Zippyshare.com hoster plugin"""
-    __author_name__ = ("spoob", "zoidberg", "stickell", "skylab")
-    __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it", "development@sky-lab.de")
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
+                       ("sebdelsol", "seb.morin@gmail.com")]
 
-    FILE_NAME_PATTERN = r'<title>Zippyshare\.com - (?P<N>[^<]+)</title>'
-    FILE_SIZE_PATTERN = r'>Size:</font>\s*<font [^>]*>(?P<S>[0-9.,]+) (?P<U>[kKMG]+)i?B</font><br />'
-    FILE_INFO_PATTERN = r'document\.getElementById\(\'dlbutton\'\)\.href = "[^;]*/(?P<N>[^"]+)";'
-    OFFLINE_PATTERN = r'>File does not exist on this server</div>'
 
-    SH_COOKIES = [(".zippyshare.com", "ziplocale", "en")]
+    COOKIES = [("zippyshare.com", "ziplocale", "en")]
+
+    NAME_PATTERN    = r'(<title>Zippyshare.com - |"/)(?P<N>[^/]+)(</title>|";)'
+    SIZE_PATTERN    = r'>Size:.+?">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    OFFLINE_PATTERN = r'does not exist (anymore )?on this server<'
+
+    LINK_PREMIUM_PATTERN = r"document.location = '(.+?)'"
 
 
     def setup(self):
-        self.multiDL = True
+        self.chunkLimit     = -1
+        self.multiDL        = True
+        self.resumeDownload = True
 
-    def handleFree(self):
-        url = self.get_file_url()
-        if not url:
-            self.fail("Download URL not found.")
-        self.logDebug("Download URL: %s" % url)
-        self.download(url)
 
-    def get_file_url(self):
-        """returns the absolute downloadable filepath"""
-        url_parts = re.search(r'(addthis:url="(http://www(\d+).zippyshare.com/v/(\d*)/file.html))', self.html)
-        number = url_parts.group(4)
-        check = re.search(r'<script type="text/javascript">([^<]*?)(var a = (\d*);)', self.html)
-        if check:
-            a = int(re.search(r'<script type="text/javascript">([^<]*?)(var a = (\d*);)', self.html).group(3))
-            k = int(re.search(r'<script type="text/javascript">([^<]*?)(\d*%(\d*))', self.html).group(3))
-            checksum = ((a + 3) % k) * ((a + 3) % 3) + 18
+    def handleFree(self, pyfile):
+        recaptcha   = ReCaptcha(self)
+        captcha_key = recaptcha.detect_key()
+
+        if captcha_key:
+            try:
+                self.link = re.search(self.LINK_PREMIUM_PATTERN, self.html)
+                recaptcha.challenge()
+
+            except Exception, e:
+                self.error(e)
+
         else:
-            # This might work but is insecure
-            # checksum = eval(re.search("((\d*)\s\%\s(\d*)\s\+\s(\d*)\s\%\s(\d*))", self.html).group(0))
+            self.link = self.get_link()
 
-            m = re.search(r"((?P<a>\d*)\s%\s(?P<b>\d*)\s\+\s(?P<c>\d*)\s%\s(?P<k>\d*))", self.html)
-            if m is None:
-                self.parseError("Unable to detect values to calculate direct link")
-            a = int(m.group("a"))
-            b = int(m.group("b"))
-            c = int(m.group("c"))
-            k = int(m.group("k"))
-            if a == c:
-                checksum = ((a % b) + (a % k))
-            else:
-                checksum = ((a % b) + (c % k))
+        if self.link and pyfile.name == 'file.html':
+            pyfile.name = urllib.unquote(self.link.split('/')[-1])
 
-        self.logInfo('Checksum: %s' % checksum)
 
-        filename = re.search(r'>Name:</font>\s*<font [^>]*>(?P<N>[^<]+)</font><br />', self.html).group('N')
+    def get_link(self):
+        # get all the scripts inside the html body
+        soup = BeautifulSoup(self.html)
+        scripts = (s.getText().strip() for s in soup.body.findAll('script', type='text/javascript'))
 
-        url = "/d/%s/%s/%s" % (number, checksum, filename)
-        self.logInfo(self.file_info['HOST'] + url)
-        return self.file_info['HOST'] + url
+        # meant to be populated with the initialization of all the DOM elements found in the scripts
+        initScripts = set()
+
+        def replElementById(element):
+            id   = element.group(1)  # id might be either 'x' (a real id) or x (a variable)
+            attr = element.group(4)  # attr might be None
+
+            varName = re.sub(r'-', '', 'GVAR[%s+"_%s"]' %(id, attr))
+
+            realid = id.strip('"\'')
+            if id != realid: #id is not a variable, so look for realid.attr in the html
+                initValues = filter(None, [elt.get(attr, None) for elt in soup.findAll(id=realid)])
+                initValue  = '"%s"' % initValues[-1] if initValues else 'null'
+                initScripts.add('%s = %s;' % (varName, initValue))
+
+            return varName
+
+        # handle all getElementById
+        reVar = r'document.getElementById\(([\'"\w-]+)\)(\.)?(getAttribute\([\'"])?(\w+)?([\'"]\))?'
+        scripts = [re.sub(reVar, replElementById, script) for script in scripts if script]
+
+        # add try/catch in JS to handle deliberate errors
+        scripts = ['\n'.join(('try{', script, '} catch(err){}')) for script in scripts]
+
+        # get the file's url by evaluating all the scripts
+        scripts = ['var GVAR = {}'] + list(initScripts)  + scripts + ['GVAR["dlbutton_href"]']
+        return self.js.eval('\n'.join(scripts))
 
 
 getInfo = create_getInfo(ZippyshareCom)

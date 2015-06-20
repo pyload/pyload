@@ -4,15 +4,17 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class DdlstorageComFolder(DeadCrypter):
-    __name__ = "DdlstorageComFolder"
-    __type__ = "crypter"
+    __name__    = "DdlstorageComFolder"
+    __type__    = "crypter"
     __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?ddlstorage\.com/folder/\w+'
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """DDLStorage.com folder decrypter plugin"""
-    __author_name__ = ("godofdream", "stickell")
-    __author_mail__ = ("soilfiction@gmail.com", "l.stickell@yahoo.it")
+    __license__     = "GPLv3"
+    __authors__     = [("godofdream", "soilfiction@gmail.com"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
-getInfo = create_getInfo(SpeedLoadOrg)
+getInfo = create_getInfo(DdlstorageComFolder)

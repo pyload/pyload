@@ -9,28 +9,30 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class GooIm(SimpleHoster):
-    __name__ = "GooIm"
-    __type__ = "hoster"
-    __version__ = "0.03"
+    __name__    = "GooIm"
+    __type__    = "hoster"
+    __version__ = "0.04"
 
     __pattern__ = r'https?://(?:www\.)?goo\.im/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Goo.im hoster plugin"""
-    __author_name__ = "zapp-brannigan"
-    __author_mail__ = "fuerst.reinje@web.de"
+    __license__     = "GPLv3"
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
-    FILE_NAME_PATTERN = r'You will be redirected to .*(?P<N>[^/ ]+)  in'
+
+    NAME_PATTERN = r'You will be redirected to .*(?P<N>[^/ ]+)  in'
     OFFLINE_PATTERN = r'The file you requested was not found'
 
 
     def setup(self):
-        self.multiDL = self.resumeDownload = True
+        self.resumeDownload = True
+        self.multiDL        = True
 
-    def handleFree(self):
-        url = self.pyfile.url
-        self.html = self.load(url, cookies=True)
+
+    def handleFree(self, pyfile):
         self.wait(10)
-        self.download(url, cookies=True)
+        self.link = pyfile.url
 
 
 getInfo = create_getInfo(GooIm)

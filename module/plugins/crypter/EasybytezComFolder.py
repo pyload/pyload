@@ -1,20 +1,23 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
 
 
-class EasybytezComFolder(SimpleCrypter):
-    __name__ = "EasybytezComFolder"
-    __type__ = "crypter"
-    __version__ = "0.06"
+class EasybytezComFolder(XFSCrypter):
+    __name__    = "EasybytezComFolder"
+    __type__    = "crypter"
+    __version__ = "0.10"
 
-    __pattern__ = r'http://(?:www\.)?easybytez\.com/users/(?P<ID>\d+/\d+)'
+    __pattern__ = r'http://(?:www\.)?easybytez\.com/users/\d+/\d+'
+    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """Easybytez.com decrypter plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __description__ = """Easybytez.com folder decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
-    URL_REPLACEMENTS = [(__pattern__, r"http://www.easybytez.com/users/\g<ID>?per_page=10000")]
 
-    LINK_PATTERN = r'<td><a href="(http://www\.easybytez\.com/\w+)" target="_blank">.+(?:</a>)?</td>'
-    TITLE_PATTERN = r'<Title>Files of \d+: (?P<title>.+) folder</Title>'
+    LOGIN_ACCOUNT = True
+
+
+getInfo = create_getInfo(EasybytezComFolder)

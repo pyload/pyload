@@ -1,62 +1,69 @@
 # -*- coding: utf-8 -*-
 
 import re
+import time
 
 from base64 import urlsafe_b64encode
-from time import time
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class DlProtectCom(SimpleCrypter):
-    __name__ = "DlProtectCom"
-    __type__ = "crypter"
-    __version__ = "0.01"
+    __name__    = "DlProtectCom"
+    __type__    = "crypter"
+    __version__ = "0.03"
 
-    __pattern__ = r'http://(?:www\.)?dl-protect\.com/((en|fr)/)?(?P<ID>\w+)'
+    __pattern__ = r'https?://(?:www\.)?dl-protect\.com/((en|fr)/)?\w+'
+    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Dl-protect.com decrypter plugin"""
-    __author_name__ = "Walter Purcaro"
-    __author_mail__ = "vuolter@gmail.com"
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    OFFLINE_PATTERN = r'>Unfortunately, the link you are looking for is not found'
+
+    COOKIES = [("dl-protect.com", "l", "en")]
+
+    OFFLINE_PATTERN = r'Unfortunately, the link you are looking for is not found'
 
 
     def getLinks(self):
         # Direct link with redirect
-        if not re.match(r"http://(?:www\.)?dl-protect\.com", self.req.http.lastEffectiveURL):
+        if not re.match(r"https?://(?:www\.)?dl-protect\.com/.+", self.req.http.lastEffectiveURL):
             return [self.req.http.lastEffectiveURL]
 
-        #id = re.match(self.__pattern__, self.pyfile.url).group("ID")
-        key = re.search(r'name="id_key" value="(.+?)"', self.html).group(1)
+        post_req = {'key'       : re.search(r'name="key" value="(.+?)"', self.html).group(1),
+                    'submitform': ""}
 
-        post_req = {"id_key": key, "submitform": ""}
+        if "Please click on continue to see the content" in self.html:
+            post_req['submitform'] = "Continue"
+            self.wait(2)
 
-        if self.OFFLINE_PATTERN in self.html:
-            self.offline()
-        elif ">Please click on continue to see the content" in self.html:
-            post_req.update({"submitform": "Continue"})
         else:
-            mstime = int(round(time() * 1000))
+            mstime  = int(round(time.time() * 1000))
             b64time = "_" + urlsafe_b64encode(str(mstime)).replace("=", "%3D")
 
-            post_req.update({"i": b64time, "submitform": "Decrypt+link"})
+            post_req.update({'i'         : b64time,
+                             'submitform': "Decrypt+link"})
 
-            if ">Password :" in self.html:
+            if "Password :" in self.html:
                 post_req['pwd'] = self.getPassword()
 
-            if ">Security Code" in self.html:
-                captcha_id = re.search(r'/captcha\.php\?uid=(.+?)"', self.html).group(1)
-                captcha_url = "http://www.dl-protect.com/captcha.php?uid=" + captcha_id
+            if "Security Code" in self.html:
+                captcha_id   = re.search(r'/captcha\.php\?uid=(.+?)"', self.html).group(1)
+                captcha_url  = "http://www.dl-protect.com/captcha.php?uid=" + captcha_id
                 captcha_code = self.decryptCaptcha(captcha_url, imgtype="gif")
 
                 post_req['secure'] = captcha_code
 
         self.html = self.load(self.pyfile.url, post=post_req)
 
-        for errmsg in (">The password is incorrect", ">The security code is incorrect"):
+        for errmsg in ("The password is incorrect", "The security code is incorrect"):
             if errmsg in self.html:
-                self.fail(errmsg[1:])
+                self.fail(_(errmsg[1:]))
 
-        pattern = r'<a href="([^/].+?)" target="_blank">'
-        return re.findall(pattern, self.html)
+        return re.findall(r'<a href="([^/].+?)" target="_blank">', self.html)
+
+
+getInfo = create_getInfo(DlProtectCom)

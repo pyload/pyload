@@ -2,48 +2,43 @@
 
 import re
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
-class DebridItaliaCom(Hoster):
-    __name__ = "DebridItaliaCom"
-    __type__ = "hoster"
-    __version__ = "0.05"
+class DebridItaliaCom(MultiHoster):
+    __name__    = "DebridItaliaCom"
+    __type__    = "hoster"
+    __version__ = "0.18"
 
-    __pattern__ = r'https?://(?:[^/]*\.)?debriditalia\.com'
+    __pattern__ = r'https?://(?:www\.|s\d+\.)?debriditalia\.com/dl/\d+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """Debriditalia.com hoster plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __description__ = """Debriditalia.com multi-hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def setup(self):
-        self.chunkLimit = -1
-        self.resumeDownload = True
+    URL_REPLACEMENTS = [("https://", "http://")]
 
-    def process(self, pyfile):
-        if re.match(self.__pattern__, pyfile.url):
-            new_url = pyfile.url
-        elif not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "DebridItalia")
-            self.fail("No DebridItalia account provided")
+
+    def handlePremium(self, pyfile):
+        self.html = self.load("http://www.debriditalia.com/api.php",
+                              get={'generate': "on", 'link': pyfile.url, 'p': self.getPassword()})
+
+        if "ERROR:" not in self.html:
+            self.link = self.html.strip()
         else:
-            self.logDebug("Old URL: %s" % pyfile.url)
-            url = "http://debriditalia.com/linkgen2.php?xjxfun=convertiLink&xjxargs[]=S<![CDATA[%s]]>" % pyfile.url
-            page = self.load(url)
-            self.logDebug("XML data: %s" % page)
+            self.info['error'] = re.search(r'ERROR:(.*)', self.html).group(1).strip()
 
-            if 'File not available' in page:
-                self.fail('File not available')
-            else:
-                new_url = re.search(r'<a href="(?:[^"]+)">(?P<direct>[^<]+)</a>', page).group('direct')
+            self.html = self.load("http://debriditalia.com/linkgen2.php",
+                                  post={'xjxfun'   : "convertiLink",
+                                        'xjxargs[]': "S<![CDATA[%s]]>" % pyfile.url,
+                                        'xjxargs[]': "S%s" % self.getPassword()})
+            try:
+                self.link = re.search(r'<a href="(.+?)"', self.html).group(1)
+            except AttributeError:
+                pass
 
-        if new_url != pyfile.url:
-            self.logDebug("New URL: %s" % new_url)
 
-        self.download(new_url, disposition=True)
-
-        check = self.checkDownload({"empty": re.compile(r"^$")})
-
-        if check == "empty":
-            self.retry(5, 2 * 60, "Empty file downloaded")
+getInfo = create_getInfo(DebridItaliaCom)

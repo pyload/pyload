@@ -1,24 +1,21 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
-class MovReelCom(XFileSharingPro):
-    __name__ = "MovReelCom"
-    __type__ = "hoster"
-    __version__ = "1.20"
+class MovReelCom(XFSHoster):
+    __name__    = "MovReelCom"
+    __type__    = "hoster"
+    __version__ = "1.24"
 
-    __pattern__ = r'http://(?:www\.)?movreel.com/.*'
+    __pattern__ = r'http://(?:www\.)?movreel\.com/\w{12}'
 
     __description__ = """MovReel.com hoster plugin"""
-    __author_name__ = "JorisV83"
-    __author_mail__ = "jorisv83-pyload@yahoo.com"
+    __license__     = "GPLv3"
+    __authors__     = [("JorisV83", "jorisv83-pyload@yahoo.com")]
 
-    HOSTER_NAME = "movreel.com"
 
-    FILE_INFO_PATTERN = r'<h3>(?P<N>.+?) <small><sup>(?P<S>[\d.]+) (?P<U>..)</sup> </small></h3>'
-    OFFLINE_PATTERN = r'<b>File Not Found</b><br><br>'
-    LINK_PATTERN = r'<a href="(http://[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/.*)">Download Link</a>'
+    LINK_PATTERN = r'<a href="(.+?)">Download Link'
 
 
 getInfo = create_getInfo(MovReelCom)

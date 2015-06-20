@@ -1,41 +1,50 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.Account import Account
-from module.utils import parseFileSize
+
+from module.plugins.internal.Account import Account
 
 
 class FastshareCz(Account):
-    __name__ = "FastshareCz"
-    __type__ = "account"
-    __version__ = "0.03"
+    __name__    = "FastshareCz"
+    __type__    = "account"
+    __version__ = "0.07"
 
     __description__ = """Fastshare.cz account plugin"""
-    __author_name__ = ("zoidberg", "stickell")
-    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
-    CREDIT_PATTERN = r'(?:Kredit|Credit)\s*</td>\s*<td[^>]*>([\d. \w]+)&nbsp;'
+
+    CREDIT_PATTERN = r'Credit\s*:\s*</td>\s*<td>(.+?)\s*<'
 
 
     def loadAccountInfo(self, user, req):
+        validuntil  = -1
+        trafficleft = None
+        premium     = False
+
         html = req.load("http://www.fastshare.cz/user", decode=True)
 
         m = re.search(self.CREDIT_PATTERN, html)
         if m:
-            trafficleft = parseFileSize(m.group(1)) / 1024
-            premium = True if trafficleft else False
-        else:
-            trafficleft = None
-            premium = False
+            trafficleft = self.parseTraffic(m.group(1))
 
-        return {"validuntil": -1, "trafficleft": trafficleft, "premium": premium}
+        premium = bool(trafficleft)
+
+        return {'validuntil' : validuntil,
+                'trafficleft': trafficleft,
+                'premium'    : premium}
+
 
     def login(self, user, data, req):
-        req.load('http://www.fastshare.cz/login')  # Do not remove or it will not login
-        html = req.load('http://www.fastshare.cz/sql.php', post={
-            "heslo": data['password'],
-            "login": user
-        }, decode=True)
+        req.cj.setCookie("fastshare.cz", "lang", "en")
 
-        if u'>Špatné uživatelské jméno nebo heslo.<' in html:
+        req.load('http://www.fastshare.cz/login')  # Do not remove or it will not login
+
+        html = req.load("https://www.fastshare.cz/sql.php",
+                        post={'login': user, 'heslo': data['password']},
+                        decode=True)
+
+        if ">Wrong username or password" in html:
             self.wrongPassword()

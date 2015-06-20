@@ -6,42 +6,46 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class BezvadataCz(SimpleHoster):
-    __name__ = "BezvadataCz"
-    __type__ = "hoster"
-    __version__ = "0.24"
+    __name__    = "BezvadataCz"
+    __type__    = "hoster"
+    __version__ = "0.27"
 
-    __pattern__ = r'http://(?:www\.)?bezvadata.cz/stahnout/.*'
+    __pattern__ = r'http://(?:www\.)?bezvadata\.cz/stahnout/.+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """BezvaData.cz hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
-    FILE_NAME_PATTERN = r'<p><b>Soubor: (?P<N>[^<]+)</b></p>'
-    FILE_SIZE_PATTERN = r'<li><strong>Velikost:</strong> (?P<S>[^<]+)</li>'
+
+    NAME_PATTERN = r'<p><b>Soubor: (?P<N>[^<]+)</b></p>'
+    SIZE_PATTERN = r'<li><strong>Velikost:</strong> (?P<S>[^<]+)</li>'
     OFFLINE_PATTERN = r'<title>BezvaData \| Soubor nenalezen</title>'
 
 
     def setup(self):
-        self.multiDL = self.resumeDownload = True
+        self.resumeDownload = True
+        self.multiDL        = True
 
-    def handleFree(self):
+
+    def handleFree(self, pyfile):
         #download button
         m = re.search(r'<a class="stahnoutSoubor".*?href="(.*?)"', self.html)
         if m is None:
-            self.parseError("page1 URL")
+            self.error(_("Page 1 URL not found"))
         url = "http://bezvadata.cz%s" % m.group(1)
 
         #captcha form
         self.html = self.load(url)
         self.checkErrors()
-        for _ in xrange(5):
+        for _i in xrange(5):
             action, inputs = self.parseHtmlForm('frm-stahnoutFreeForm')
             if not inputs:
-                self.parseError("FreeForm")
+                self.error(_("FreeForm"))
 
             m = re.search(r'<img src="data:image/png;base64,(.*?)"', self.html)
             if m is None:
-                self.parseError("captcha img")
+                self.error(_("Wrong captcha image"))
 
             #captcha image is contained in html page as base64encoded data but decryptCaptcha() expects image url
             self.load, proper_load = self.loadcaptcha, self.load
@@ -56,32 +60,36 @@ class BezvadataCz(SimpleHoster):
                 self.correctCaptcha()
                 break
         else:
-            self.fail("No valid captcha code entered")
+            self.fail(_("No valid captcha code entered"))
 
         #download url
         self.html = self.load("http://bezvadata.cz%s" % action, post=inputs)
         self.checkErrors()
         m = re.search(r'<a class="stahnoutSoubor2" href="(.*?)">', self.html)
         if m is None:
-            self.parseError("page2 URL")
+            self.error(_("Page 2 URL not found"))
         url = "http://bezvadata.cz%s" % m.group(1)
         self.logDebug("DL URL %s" % url)
 
         #countdown
         m = re.search(r'id="countdown">(\d\d):(\d\d)<', self.html)
-        wait_time = (int(m.group(1)) * 60 + int(m.group(2)) + 1) if m else 120
+        wait_time = (int(m.group(1)) * 60 + int(m.group(2))) if m else 120
         self.wait(wait_time, False)
 
-        self.download(url)
+        self.link = url
+
 
     def checkErrors(self):
         if 'images/button-download-disable.png' in self.html:
-            self.longWait(5 * 60, 24)  # parallel dl limit
+            self.longWait(5 * 60, 24)  #: parallel dl limit
         elif '<div class="infobox' in self.html:
             self.tempOffline()
+        else:
+            return super(BezvadataCz, self).checkErrors()
+
 
     def loadcaptcha(self, data, *args, **kwargs):
-        return data.decode("base64")
+        return data.decode('base64')
 
 
 getInfo = create_getInfo(BezvadataCz)

@@ -1,38 +1,30 @@
 # -*- coding: utf-8 -*-
 
 import re
+import urlparse
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class UploadedToFolder(SimpleCrypter):
-    __name__ = "UploadedToFolder"
-    __type__ = "crypter"
-    __version__ = "0.3"
+    __name__    = "UploadedToFolder"
+    __type__    = "crypter"
+    __version__ = "0.43"
 
-    __pattern__ = r'http://(?:www\.)?(uploaded|ul)\.(to|net)/(f|folder|list)/(?P<id>\w+)'
+    __pattern__ = r'https?://(?:www\.)?(uploaded|ul)\.(to|net)/(f|folder|list)/\w+'
+    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """UploadedTo decrypter plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
-
-    PLAIN_PATTERN = r'<small class="date"><a href="(?P<plain>[\w/]+)" onclick='
-    TITLE_PATTERN = r'<title>(?P<title>[^<]+)</title>'
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    def decrypt(self, pyfile):
-        self.html = self.load(pyfile.url)
+    NAME_PATTERN         = r'<title>(?P<N>.+?)<'
+    OFFLINE_PATTERN      = r'>Page not found'
+    TEMP_OFFLINE_PATTERN = r'<title>uploaded\.net - Maintenance'
 
-        package_name, folder_name = self.getPackageNameAndFolder()
+    LINK_PATTERN = r'<h2><a href="(.+?)"'
 
-        m = re.search(self.PLAIN_PATTERN, self.html)
-        if m:
-            plain_link = 'http://uploaded.net/' + m.group('plain')
-        else:
-            self.fail('Parse error - Unable to find plain url list')
 
-        self.html = self.load(plain_link)
-        package_links = self.html.split('\n')[:-1]
-        self.logDebug('Package has %d links' % len(package_links))
-
-        self.packages = [(package_name, package_links, folder_name)]
+getInfo = create_getInfo(UploadedToFolder)

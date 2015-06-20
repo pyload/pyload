@@ -6,22 +6,43 @@
 import re
 
 from module.common.json_layer import json_loads
-from module.plugins.Hoster import Hoster
-from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.Hoster import Hoster
+from module.plugins.internal.ReCaptcha import ReCaptcha
 
 
 class OboomCom(Hoster):
-    __name__ = "OboomCom"
-    __type__ = "hoster"
-    __version__ = "0.1"
+    __name__    = "OboomCom"
+    __type__    = "hoster"
+    __version__ = "0.34"
 
-    __pattern__ = r'https?://(?:www\.)?oboom\.com/(#(id=|/)?)?(?P<ID>[A-Z0-9]{8})'
+    __pattern__ = r'https?://(?:www\.)?oboom\.com/(?:#(?:id=|/)?)?(?P<ID>\w{8})'
 
     __description__ = """oboom.com hoster plugin"""
-    __author_name__ = "stanley"
-    __author_mail__ = "stanley.foerster@gmail.com"
+    __license__     = "GPLv3"
+    __authors__     = [("stanley", "stanley.foerster@gmail.com")]
+
 
     RECAPTCHA_KEY = "6LdqpO0SAAAAAJGHXo63HyalP7H4qlRs_vff0kJX"
+
+
+    def setup(self):
+        self.chunkLimit = 1
+        self.multiDL = self.resumeDownload = self.premium
+
+
+    def process(self, pyfile):
+        self.pyfile.url.replace(".com/#id=", ".com/#")
+        self.pyfile.url.replace(".com/#/", ".com/#")
+        self.html = self.load(pyfile.url)
+        self.getFileId(self.pyfile.url)
+        self.getSessionToken()
+        self.getFileInfo(self.sessionToken, self.fileId)
+        self.pyfile.name = self.fileName
+        self.pyfile.size = self.fileSize
+        if not self.premium:
+            self.solveCaptcha()
+        self.getDownloadTicket()
+        self.download("https://%s/1.0/dlh" % self.downloadDomain, get={"ticket": self.downloadTicket, "http_errors": 0})
 
 
     def loadUrl(self, url, get=None):
@@ -29,8 +50,10 @@ class OboomCom(Hoster):
             get = dict()
         return json_loads(self.load(url, get, decode=True))
 
+
     def getFileId(self, url):
         self.fileId = re.match(OboomCom.__pattern__, url).group('ID')
+
 
     def getSessionToken(self):
         if self.premium:
@@ -38,19 +61,21 @@ class OboomCom(Hoster):
             if "session" in accountInfo:
                 self.sessionToken = accountInfo['session']
             else:
-                self.fail("Could not retrieve premium session")
+                self.fail(_("Could not retrieve premium session"))
         else:
             apiUrl = "https://www.oboom.com/1.0/guestsession"
             result = self.loadUrl(apiUrl)
             if result[0] == 200:
                 self.sessionToken = result[1]
             else:
-                self.fail("Could not retrieve token for guest session. Error code %s" % result[0])
+                self.fail(_("Could not retrieve token for guest session. Error code: %s") % result[0])
+
 
     def solveCaptcha(self):
         recaptcha = ReCaptcha(self)
-        for _ in xrange(5):
-            challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
+
+        for _i in xrange(5):
+            response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
             apiUrl = "https://www.oboom.com/1.0/download/ticket"
             params = {"recaptcha_challenge_field": challenge,
                       "recaptcha_response_field": response,
@@ -65,23 +90,26 @@ class OboomCom(Hoster):
                 self.setWait(30)
                 self.wait()
                 break
+
             elif result[0] == 400:
                 if result[1] == "incorrect-captcha-sol":
                     self.invalidCaptcha()
                 elif result[1] == "captcha-timeout":
                     self.invalidCaptcha()
                 elif result[1] == "forbidden":
-                    self.retry(5, 15 * 60, "Service unavailable")
+                    self.retry(5, 15 * 60, _("Service unavailable"))
+
             elif result[0] == 403:
                 if result[1] == -1:  # another download is running
                     self.setWait(15 * 60)
                 else:
-                    self.setWait(result[1], reconnect=True)
+                    self.setWait(result[1], True)
                 self.wait()
                 self.retry(5)
         else:
             self.invalidCaptcha()
-            self.fail("Received invalid captcha 5 times")
+            self.fail(_("Received invalid captcha 5 times"))
+
 
     def getFileInfo(self, token, fileId):
         apiUrl = "https://api.oboom.com/1.0/info"
@@ -96,10 +124,11 @@ class OboomCom(Hoster):
             else:
                 self.offline()
         else:
-            self.fail("Could not retrieve file info. Error code %s: %s" % (result[0], result[1]))
+            self.fail(_("Could not retrieve file info. Error code %s: %s") % (result[0], result[1]))
+
 
     def getDownloadTicket(self):
-        apiUrl = "https://api.oboom.com/1.0/dl"
+        apiUrl = "https://api.oboom.com/1/dl"
         params = {"item": self.fileId, "http_errors": 0}
         if self.premium:
             params['token'] = self.sessionToken
@@ -111,22 +140,7 @@ class OboomCom(Hoster):
         if result[0] == 200:
             self.downloadDomain = result[1]
             self.downloadTicket = result[2]
+        elif result[0] == 421:
+            self.retry(wait_time=result[2] + 60, reason=_("Connection limit exceeded"))
         else:
-            self.fail("Could not retrieve download ticket. Error code %s" % result[0])
-
-    def setup(self):
-        self.chunkLimit = 1
-        self.multiDL = self.premium
-
-    def process(self, pyfile):
-        self.pyfile.url.replace(".com/#id=", ".com/#")
-        self.pyfile.url.replace(".com/#/", ".com/#")
-        self.getFileId(self.pyfile.url)
-        self.getSessionToken()
-        self.getFileInfo(self.sessionToken, self.fileId)
-        self.pyfile.name = self.fileName
-        self.pyfile.size = self.fileSize
-        if not self.premium:
-            self.solveCaptcha()
-        self.getDownloadTicket()
-        self.download("https://%s/1.0/dlh" % self.downloadDomain, get={"ticket": self.downloadTicket, "http_errors": 0})
+            self.fail(_("Could not retrieve download ticket. Error code: %s") % result[0])

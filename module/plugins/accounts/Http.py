@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class Http(Account):
-    __name__ = "Http"
-    __type__ = "account"
-    __version__ = "0.01"
+    __name__    = "Http"
+    __type__    = "account"
+    __version__ = "0.02"
 
     __description__ = """Http dummy account plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    login_timeout = info_threshold = 1000000
+    info_threshold = 1000000
+    login_timeout = 1000000

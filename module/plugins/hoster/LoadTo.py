@@ -6,30 +6,32 @@
 
 import re
 
-from module.plugins.internal.CaptchaService import SolveMedia
+from module.plugins.internal.SolveMedia import SolveMedia
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class LoadTo(SimpleHoster):
-    __name__ = "LoadTo"
-    __type__ = "hoster"
-    __version__ = "0.16"
+    __name__    = "LoadTo"
+    __type__    = "hoster"
+    __version__ = "0.24"
 
     __pattern__ = r'http://(?:www\.)?load\.to/\w+'
+    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
-    __description__ = """ Load.to hoster plugin """
-    __author_name__ = ("halfman", "stickell")
-    __author_mail__ = ("Pulpan3@gmail.com", "l.stickell@yahoo.it")
+    __description__ = """Load.to hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("halfman", "Pulpan3@gmail.com"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
-    FILE_NAME_PATTERN = r'<h1>(?P<N>.+)</h1>'
-    FILE_SIZE_PATTERN = r'Size: (?P<S>[\d.]+) (?P<U>\w+)'
+
+    NAME_PATTERN = r'<h1>(?P<N>.+?)</h1>'
+    SIZE_PATTERN = r'Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'>Can\'t find file'
 
-    LINK_PATTERN = r'<form method="post" action="(.+?)"'
+    LINK_FREE_PATTERN = r'<form method="post" action="(.+?)"'
     WAIT_PATTERN = r'type="submit" value="Download \((\d+)\)"'
-    SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.noscript\?k=([^"]+)'
 
-    FILE_URL_REPLACEMENTS = [(r'(\w)$', r'\1/')]
+    URL_REPLACEMENTS = [(r'(\w)$', r'\1/')]
 
 
     def setup(self):
@@ -37,13 +39,13 @@ class LoadTo(SimpleHoster):
         self.chunkLimit = 1
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         # Search for Download URL
-        m = re.search(self.LINK_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
-            self.parseError("Unable to detect download URL")
+            self.error(_("LINK_FREE_PATTERN not found"))
 
-        download_url = m.group(1)
+        self.link = m.group(1)
 
         # Set Timer - may be obsolete
         m = re.search(self.WAIT_PATTERN, self.html)
@@ -51,19 +53,15 @@ class LoadTo(SimpleHoster):
             self.wait(m.group(1))
 
         # Load.to is using solvemedia captchas since ~july 2014:
-        m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
-        if m is None:
-            self.download(download_url)
-        else:
-            captcha_key = m.group(1)
-            solvemedia = SolveMedia(self)
-            captcha_challenge, captcha_response = solvemedia.challenge(captcha_key)
-            self.download(download_url, post={"adcopy_challenge": captcha_challenge, "adcopy_response": captcha_response})
-            check = self.checkDownload({"404": re.compile("\A<h1>404 Not Found</h1>")})
-            if check == "404":
-                self.logWarning("The captcha you entered was incorrect. Please try again.")
-                self.invalidCaptcha()
-                self.retry()
+        solvemedia  = SolveMedia(self)
+        captcha_key = solvemedia.detect_key()
+
+        if captcha_key:
+            response, challenge = solvemedia.challenge(captcha_key)
+            self.download(self.link,
+                          post={'adcopy_challenge': challenge,
+                                'adcopy_response' : response,
+                                'returnUrl'       : pyfile.url})
 
 
 getInfo = create_getInfo(LoadTo)

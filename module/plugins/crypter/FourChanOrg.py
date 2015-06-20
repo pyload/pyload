@@ -3,23 +3,26 @@
 # Based on 4chandl by Roland Beermann (https://gist.github.com/enkore/3492599)
 
 import re
+import urlparse
 
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter
 
 
 class FourChanOrg(Crypter):
-    __name__ = "FourChanOrg"
-    __type__ = "crypter"
-    __version__ = "0.3"
+    __name__    = "FourChanOrg"
+    __type__    = "crypter"
+    __version__ = "0.32"
 
-    __pattern__ = r'http://(?:www\.)?boards\.4chan.org/\w+/res/(\d+)'
+    __pattern__ = r'http://(?:www\.)?boards\.4chan\.org/\w+/res/(\d+)'
+    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """4chan.org folder decrypter plugin"""
-    __author_name__ = None
-    __author_mail__ = None
+    __license__     = "GPLv3"
+    __authors__     = []
 
 
     def decrypt(self, pyfile):
         pagehtml = self.load(pyfile.url)
-        images = set(re.findall(r'(images\.4chan\.org/[^/]*/src/[^"<]*)', pagehtml))
-        self.urls = ["http://" + image for image in images]
+        images = set(re.findall(r'(images\.4chan\.org/[^/]*/src/[^"<]+)', pagehtml))
+        self.urls = [urlparse.urljoin("http://", image) for image in images]

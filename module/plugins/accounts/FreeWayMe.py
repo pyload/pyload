@@ -1,39 +1,36 @@
 ﻿# -*- coding: utf-8 -*-
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 from module.common.json_layer import json_loads
 
 
 class FreeWayMe(Account):
-    __name__ = "FreeWayMe"
-    __type__ = "account"
-    __version__ = "0.11"
+    __name__    = "FreeWayMe"
+    __type__    = "account"
+    __version__ = "0.15"
 
     __description__ = """FreeWayMe account plugin"""
-    __author_name__ = "Nicolas Giese"
-    __author_mail__ = "james@free-way.me"
+    __license__     = "GPLv3"
+    __authors__     = [("Nicolas Giese", "james@free-way.me")]
 
 
     def loadAccountInfo(self, user, req):
         status = self.getAccountStatus(user, req)
-        if not status:
-            return False
+
         self.logDebug(status)
 
         account_info = {"validuntil": -1, "premium": False}
         if status['premium'] == "Free":
-            account_info['trafficleft'] = int(status['guthaben']) * 1024
+            account_info['trafficleft'] = self.parseTraffic(status['guthaben'] + "MB")
         elif status['premium'] == "Spender":
             account_info['trafficleft'] = -1
         elif status['premium'] == "Flatrate":
-            account_info = {"validuntil": int(status['Flatrate']),
+            account_info = {"validuntil": float(status['Flatrate']),
                             "trafficleft": -1,
                             "premium": True}
 
         return account_info
 
-    def getpw(self, user):
-        return self.accounts[user]['password']
 
     def login(self, user, data, req):
         status = self.getAccountStatus(user, req)
@@ -42,11 +39,14 @@ class FreeWayMe(Account):
         if not status:
             self.wrongPassword()
 
+
     def getAccountStatus(self, user, req):
-        answer = req.load("https://www.free-way.me/ajax/jd.php",
-                          get={"id": 4, "user": user, "pass": self.accounts[user]['password']})
-        self.logDebug("login: %s" % answer)
+        answer = req.load("http://www.free-way.bz/ajax/jd.php",  #@TODO: Revert to `https` in 0.4.10
+                          get={"id": 4, "user": user, "pass": self.getAccountData(user)['password']})
+
+        self.logDebug("Login: %s" % answer)
+
         if answer == "Invalid login":
             self.wrongPassword()
-            return False
+
         return json_loads(answer)

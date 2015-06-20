@@ -2,190 +2,117 @@
 
 import re
 
-from module.plugins.Hook import Hook
-from module.utils import remove_chars
+from module.plugins.internal.Plugin import Fail, Retry
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns, set_cookies
 
 
-class MultiHoster(Hook):
-    __name__ = "AbtractExtractor"
-    __version__ = "0.19"
+class MultiHoster(SimpleHoster):
+    __name__    = "MultiHoster"
+    __type__    = "hoster"
+    __version__ = "0.42"
 
-    __description__ = """Generic MultiHoster plugin"""
-    __author_name__ = "pyLoad Team"
-    __author_mail__ = "admin@pyload.org"
+    __pattern__ = r'^unmatchable$'
+    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
-    replacements = [("2shared.com", "twoshared.com"), ("4shared.com", "fourshared.com"), ("cloudnator.com", "shragle.com"),
-                    ("ifile.it", "filecloud.io"), ("easy-share.com", "crocko.com"), ("freakshare.net", "freakshare.com"),
-                    ("hellshare.com", "hellshare.cz"), ("share-rapid.cz", "sharerapid.com"), ("sharerapid.cz", "sharerapid.com"),
-                    ("ul.to", "uploaded.to"), ("uploaded.net", "uploaded.to"), ("1fichier.com", "onefichier.com")]
-    ignored = []
-    interval = 24 * 60 * 60  #: reload hosters daily
+    __description__ = """Multi hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+
+
+    LOGIN_ACCOUNT = True
 
 
     def setup(self):
-        self.hosters = []
-        self.supported = []
-        self.new_supported = []
+        self.chunkLimit     = 1
+        self.multiDL        = bool(self.account)
+        self.resumeDownload = self.premium
 
-    def getConfig(self, option, default=''):
-        """getConfig with default value - sublass may not implements all config options"""
-        try:
-            return self.getConf(option)
-        except KeyError:
-            return default
 
-    def getHosterCached(self):
-        if not self.hosters:
+    def prepare(self):
+        self.info     = {}
+        self.html     = ""
+        self.link     = ""     #@TODO: Move to Hoster in 0.4.10
+        self.directDL = False  #@TODO: Move to Hoster in 0.4.10
 
-            try:
-                hosterSet = self.toHosterSet(self.getHoster()) - set(self.ignored)
-            except Exception, e:
-                self.logError("%s" % str(e))
-                return []
+        if not self.getConfig('use_premium', True):
+            self.retryFree()
 
-            try:
-                configMode = self.getConfig('hosterListMode', 'all')
-                if configMode in ("listed", "unlisted"):
-                    configSet = self.toHosterSet(self.getConfig('hosterList', '').replace('|', ',').replace(';', ',').split(','))
+        if self.LOGIN_ACCOUNT and not self.account:
+            self.fail(_("Required account not found"))
 
-                    if configMode == "listed":
-                        hosterSet &= configSet
-                    else:
-                        hosterSet -= configSet
+        self.req.setOption("timeout", 120)
 
-            except Exception, e:
-                self.logError("%s" % str(e))
+        if isinstance(self.COOKIES, list):
+            set_cookies(self.req.cj, self.COOKIES)
 
-            self.hosters = list(hosterSet)
-
-        return self.hosters
-
-    def toHosterSet(self, hosters):
-        hosters = set((str(x).strip().lower() for x in hosters))
-
-        for rep in self.replacements:
-            if rep[0] in hosters:
-                hosters.remove(rep[0])
-                hosters.add(rep[1])
-
-        hosters.discard('')
-        return hosters
-
-    def getHoster(self):
-        """Load list of supported hoster
-
-        :return: List of domain names
-        """
-        raise NotImplementedError
-
-    def coreReady(self):
-        if self.cb:
-            self.core.scheduler.removeJob(self.cb)
-
-        self.setConfig("activated", True)  #: config not in sync after plugin reload
-
-        cfg_interval = self.getConfig("interval", None)  #: reload interval in hours
-        if cfg_interval is not None:
-            self.interval = cfg_interval * 60 * 60
-
-        if self.interval:
-            self._periodical()
+        if self.DIRECT_LINK is None:
+            self.directDL = self.__pattern__ != r'^unmatchable$' and re.match(self.__pattern__, self.pyfile.url)
         else:
-            self.periodical()
+            self.directDL = self.DIRECT_LINK
 
-    def initPeriodical(self):
-        pass
+        self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
 
-    def periodical(self):
-        """reload hoster list periodically"""
-        self.logInfo("Reloading supported hoster list")
 
-        old_supported = self.supported
-        self.supported, self.new_supported, self.hosters = [], [], []
+    def process(self, pyfile):
+        try:
+            self.prepare()
 
-        self.overridePlugins()
+            if self.directDL:
+                self.checkInfo()
+                self.logDebug("Looking for direct download link...")
+                self.handleDirect(pyfile)
 
-        old_supported = [hoster for hoster in old_supported if hoster not in self.supported]
-        if old_supported:
-            self.logDebug("UNLOAD: %s" % ", ".join(old_supported))
-            for hoster in old_supported:
-                self.unloadHoster(hoster)
+            if not self.link and not self.lastDownload:
+                self.preload()
 
-    def overridePlugins(self):
-        pluginMap = {}
-        for name in self.core.pluginManager.hosterPlugins.keys():
-            pluginMap[name.lower()] = name
+                self.checkErrors()
+                self.checkStatus(getinfo=False)
 
-        accountList = [name.lower() for name, data in self.core.accountManager.accounts.items() if data]
-        excludedList = []
+                if self.premium and (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
+                    self.logDebug("Handled as premium download")
+                    self.handlePremium(pyfile)
 
-        for hoster in self.getHosterCached():
-            name = remove_chars(hoster.lower(), "-.")
+                elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
+                    self.logDebug("Handled as free download")
+                    self.handleFree(pyfile)
 
-            if name in accountList:
-                excludedList.append(hoster)
+            self.download(self.link, ref=False, disposition=True)
+            self.checkFile()
+
+        except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
+            err = str(e)  #@TODO: Recheck in 0.4.10
+
+            if self.premium:
+                self.logWarning(_("Premium download failed"))
+                self.retryFree()
+
+            elif self.getConfig("revertfailed", True) \
+                 and "new_module" in self.core.pluginManager.hosterPlugins[self.__name__]:
+                hdict = self.core.pluginManager.hosterPlugins[self.__name__]
+
+                tmp_module = hdict['new_module']
+                tmp_name   = hdict['new_name']
+                hdict.pop('new_module', None)
+                hdict.pop('new_name', None)
+
+                pyfile.initPlugin()
+
+                hdict['new_module'] = tmp_module
+                hdict['new_name']   = tmp_name
+
+                raise Retry(_("Revert to original hoster plugin"))
+
             else:
-                if name in pluginMap:
-                    self.supported.append(pluginMap[name])
-                else:
-                    self.new_supported.append(hoster)
+                raise Fail(err)
 
-        if not self.supported and not self.new_supported:
-            self.logError(_("No Hoster loaded"))
-            return
 
-        module = self.core.pluginManager.getPlugin(self.__name__)
-        klass = getattr(module, self.__name__)
+    def handlePremium(self, pyfile):
+        return self.handleFree(pyfile)
 
-        # inject plugin plugin
-        self.logDebug("Overwritten Hosters: %s" % ", ".join(sorted(self.supported)))
-        for hoster in self.supported:
-            dict = self.core.pluginManager.hosterPlugins[hoster]
-            dict['new_module'] = module
-            dict['new_name'] = self.__name__
 
-        if excludedList:
-            self.logInfo("The following hosters were not overwritten - account exists: %s" % ", ".join(sorted(excludedList)))
-
-        if self.new_supported:
-            self.logDebug("New Hosters: %s" % ", ".join(sorted(self.new_supported)))
-
-            # create new regexp
-            regexp = r".*(%s).*" % "|".join([x.replace(".", "\\.") for x in self.new_supported])
-            if hasattr(klass, "__pattern__") and isinstance(klass.__pattern__, basestring) and '://' in klass.__pattern__:
-                regexp = r"%s|%s" % (klass.__pattern__, regexp)
-
-            self.logDebug("Regexp: %s" % regexp)
-
-            dict = self.core.pluginManager.hosterPlugins[self.__name__]
-            dict['pattern'] = regexp
-            dict['re'] = re.compile(regexp)
-
-    def unloadHoster(self, hoster):
-        dict = self.core.pluginManager.hosterPlugins[hoster]
-        if "module" in dict:
-            del dict['module']
-
-        if "new_module" in dict:
-            del dict['new_module']
-            del dict['new_name']
-
-    def unload(self):
-        """Remove override for all hosters. Scheduler job is removed by hookmanager"""
-        for hoster in self.supported:
-            self.unloadHoster(hoster)
-
-        # reset pattern
-        klass = getattr(self.core.pluginManager.getPlugin(self.__name__), self.__name__)
-        dict = self.core.pluginManager.hosterPlugins[self.__name__]
-        dict['pattern'] = getattr(klass, "__pattern__", r'^unmatchable$')
-        dict['re'] = re.compile(dict['pattern'])
-
-    def downloadFailed(self, pyfile):
-        """remove plugin override if download fails but not if file is offline/temp.offline"""
-        if pyfile.hasStatus("failed") and self.getConfig("unloadFailing", True):
-            hdict = self.core.pluginManager.hosterPlugins[pyfile.pluginname]
-            if "new_name" in hdict and hdict['new_name'] == self.__name__:
-                self.logDebug("Unload MultiHoster", pyfile.pluginname, hdict)
-                self.unloadHoster(pyfile.pluginname)
-                pyfile.setStatus("queued")
+    def handleFree(self, pyfile):
+        if self.premium:
+            raise NotImplementedError
+        else:
+            self.fail(_("Required premium account not found"))

@@ -2,67 +2,66 @@
 
 import re
 
-from pycurl import FOLLOWLOCATION
-
-from module.lib.BeautifulSoup import BeautifulSoup
+from BeautifulSoup import BeautifulSoup
 
 from module.common.json_layer import json_loads
-from module.plugins.Crypter import Crypter
-from module.plugins.internal.CaptchaService import SolveMedia
+from module.plugins.internal.Crypter import Crypter
+from module.plugins.internal.SolveMedia import SolveMedia
 
 
 class SafelinkingNet(Crypter):
-    __name__ = "SafelinkingNet"
-    __type__ = "crypter"
-    __version__ = "0.1"
+    __name__    = "SafelinkingNet"
+    __type__    = "crypter"
+    __version__ = "0.16"
 
-    __pattern__ = r'https?://(?:www\.)?safelinking.net/([pd])/\w+'
+    __pattern__ = r'https?://(?:www\.)?safelinking\.net/([pd])/\w+'
+    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Safelinking.net decrypter plugin"""
-    __author_name__ = "quareevo"
-    __author_mail__ = "quareevo@arcor.de"
+    __license__     = "GPLv3"
+    __authors__     = [("quareevo", "quareevo@arcor.de")]
 
-    SOLVEMEDIA_PATTERN = "solvemediaApiKey = '([\w\.\-_]+)';"
+
+    SOLVEMEDIA_PATTERN = "solvemediaApiKey = '([\w.-]+)';"
 
 
     def decrypt(self, pyfile):
         url = pyfile.url
+
         if re.match(self.__pattern__, url).group(1) == "d":
-            self.req.http.c.setopt(FOLLOWLOCATION, 0)
-            self.load(url)
-            m = re.search("^Location: (.+)$", self.req.http.header, re.MULTILINE)
-            if m:
-                self.urls = [m.group(1)]
+
+            header = self.load(url, just_header=True)
+            if 'location' in header:
+                self.urls = [header['location']]
             else:
-                self.fail("Couldn't find forwarded Link")
+                self.error(_("Couldn't find forwarded Link"))
 
         else:
-            password = ""
             postData = {"post-protect": "1"}
 
             self.html = self.load(url)
 
             if "link-password" in self.html:
-                password = pyfile.package().password
-                postData['link-password'] = password
+                postData['link-password'] = self.getPassword()
 
             if "altcaptcha" in self.html:
-                for _ in xrange(5):
+                for _i in xrange(5):
                     m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
                     if m:
                         captchaKey = m.group(1)
                         captcha = SolveMedia(self)
                         captchaProvider = "Solvemedia"
                     else:
-                        self.fail("Error parsing captcha")
+                        self.fail(_("Error parsing captcha"))
 
-                    challenge, response = captcha.challenge(captchaKey)
+                    response, challenge = captcha.challenge(captchaKey)
                     postData['adcopy_challenge'] = challenge
-                    postData['adcopy_response'] = response
+                    postData['adcopy_response']  = response
 
                     self.html = self.load(url, post=postData)
                     if "The password you entered was incorrect" in self.html:
-                        self.fail("Incorrect Password")
+                        self.fail(_("Incorrect Password"))
                     if not "The CAPTCHA code you entered was wrong" in self.html:
                         break
 

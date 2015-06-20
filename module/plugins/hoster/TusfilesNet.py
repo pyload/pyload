@@ -1,31 +1,39 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.network.HTTPRequest import BadHeader
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
-class TusfilesNet(XFileSharingPro):
-    __name__ = "TusfilesNet"
-    __type__ = "hoster"
-    __version__ = "0.03"
+class TusfilesNet(XFSHoster):
+    __name__    = "TusfilesNet"
+    __type__    = "hoster"
+    __version__ = "0.11"
 
-    __pattern__ = r'https?://(?:www\.)?tusfiles\.net/(?P<ID>\w+)'
+    __pattern__ = r'https?://(?:www\.)?tusfiles\.net/\w{12}'
 
     __description__ = """Tusfiles.net hoster plugin"""
-    __author_name__ = "Walter Purcaro"
-    __author_mail__ = "vuolter@gmail.com"
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
+                       ("guidobelix", "guidobelix@hotmail.it")]
 
-    HOSTER_NAME = "tusfiles.net"
 
-    FILE_INFO_PATTERN = r'\](?P<N>.+) - (?P<S>[\d.]+) (?P<U>\w+)\['
-    OFFLINE_PATTERN = r'>File Not Found|<Title>TusFiles - Fast Sharing Files!'
-
-    SH_COOKIES = [(".tusfiles.net", "lang", "english")]
+    INFO_PATTERN    = r'\](?P<N>.+) - (?P<S>[\d.,]+) (?P<U>[\w^_]+)\['
 
 
     def setup(self):
-        self.multiDL = False
-        self.chunkLimit = -1
+        self.chunkLimit     = -1
+        self.multiDL        = True
         self.resumeDownload = True
+
+
+    def download(self, url, *args, **kwargs):
+        try:
+            return super(TusfilesNet, self).download(url, *args, **kwargs)
+
+        except BadHeader, e:
+            if e.code is 503:
+                self.multiDL = False
+                raise Retry("503")
 
 
 getInfo = create_getInfo(TusfilesNet)
