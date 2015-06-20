@@ -8,7 +8,7 @@ import time
 import urllib
 import urlparse
 
-from pyload.datatype.File import statusMap as _statusMap
+from pyload.Datatype.File import statusMap as _statusMap
 from pyload.network.CookieJar import CookieJar
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getURL

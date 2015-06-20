@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.database import style
+from pyload.Database import style
 from pyload.plugin.Addon import Addon
 
 

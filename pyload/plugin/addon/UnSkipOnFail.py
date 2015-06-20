@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.datatype.File import PyFile
+from pyload.Datatype import PyFile
 from pyload.plugin.Addon import Addon
 
 

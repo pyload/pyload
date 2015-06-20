@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.datatype.File import statusMap
+from pyload.Datatype.File import statusMap
 from pyload.utils import json_loads
 from pyload.network.RequestFactory import getURL
 from pyload.plugin.Hoster import Hoster

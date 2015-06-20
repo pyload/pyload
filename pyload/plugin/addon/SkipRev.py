@@ -5,7 +5,7 @@ import urllib
 import urlparse
 import types
 
-from pyload.datatype.File import PyFile
+from pyload.Datatype import PyFile
 from pyload.plugin.Addon import Addon
 from pyload.plugin.Plugin import SkipDownload
 
