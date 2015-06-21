@@ -32,7 +32,7 @@ def which(program):
 class YoutubeCom(Hoster):
     __name__    = "YoutubeCom"
     __type__    = "hoster"
-    __version__ = "0.42"
+    __version__ = "0.43"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(youtube\.com|youtu\.be)/watch\?(?:.*&)?v=.+'
     __config__  = [("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting"             , "hd" ),
