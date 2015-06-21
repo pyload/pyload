@@ -13,7 +13,8 @@ class MegaDebridEu(MultiHoster):
     __version__ = "0.48"
 
     __pattern__ = r'http://((?:www\d+\.|s\d+\.)?mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[\w^_]+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Mega-debrid.eu multi-hoster plugin"""
     __license__     = "GPLv3"

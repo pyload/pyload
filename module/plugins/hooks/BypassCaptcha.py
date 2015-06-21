@@ -30,8 +30,8 @@ class BypassCaptcha(Hook):
     __type__    = "hook"
     __version__ = "0.07"
 
-    __config__ = [("force", "bool", "Force BC even if client is connected", False),
-                  ("passkey", "password", "Passkey", "")]
+    __config__ = [("passkey"     , "password", "Access key"                      , ""  ),
+                  ("check_client", "bool"    , "Don't use if client is connected", True)]
 
     __description__ = """Send captchas to BypassCaptcha.com"""
     __license__     = "GPLv3"
@@ -105,7 +105,7 @@ class BypassCaptcha(Hook):
         if not self.getConfig('passkey'):
             return False
 
-        if self.core.isClientConnected() and not self.getConfig('force'):
+        if self.core.isClientConnected() and self.getConfig('check_client'):
             return False
 
         if self.getCredits() > 0:

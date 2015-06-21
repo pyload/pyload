@@ -39,9 +39,9 @@ class CaptchaBrotherhood(Hook):
     __type__    = "hook"
     __version__ = "0.09"
 
-    __config__ = [("username", "str", "Username", ""),
-                  ("force", "bool", "Force CT even if client is connected", False),
-                  ("passkey", "password", "Password", "")]
+    __config__ = [("username"    , "str"     , "Username"                        , ""  ),
+                  ("password"    , "password", "Password"                        , ""  ),
+                  ("check_client", "bool"    , "Don't use if client is connected", True)]
 
     __description__ = """Send captchas to CaptchaBrotherhood.com"""
     __license__     = "GPLv3"
@@ -60,7 +60,7 @@ class CaptchaBrotherhood(Hook):
 
     def getCredits(self):
         res = self.load(self.API_URL + "askCredits.aspx",
-                     get={"username": self.getConfig('username'), "password": self.getConfig('passkey')})
+                     get={"username": self.getConfig('username'), "password": self.getConfig('password')})
         if not res.startswith("OK"):
             raise CaptchaBrotherhoodException(res)
         else:
@@ -90,7 +90,7 @@ class CaptchaBrotherhood(Hook):
 
         url = "%ssendNewCaptcha.aspx?%s" % (self.API_URL,
                                             urllib.urlencode({'username'     : self.getConfig('username'),
-                                                              'password'     : self.getConfig('passkey'),
+                                                              'password'     : self.getConfig('password'),
                                                               'captchaSource': "pyLoad",
                                                               'timeout'      : "80"}))
 
@@ -124,7 +124,7 @@ class CaptchaBrotherhood(Hook):
     def api_response(self, api, ticket):
         res = self.load("%s%s.aspx" % (self.API_URL, api),
                           get={"username": self.getConfig('username'),
-                               "password": self.getConfig('passkey'),
+                               "password": self.getConfig('password'),
                                "captchaID": ticket})
         if not res.startswith("OK"):
             raise CaptchaBrotherhoodException("Unknown response: %s" % res)
@@ -139,10 +139,10 @@ class CaptchaBrotherhood(Hook):
         if not task.isTextual():
             return False
 
-        if not self.getConfig('username') or not self.getConfig('passkey'):
+        if not self.getConfig('username') or not self.getConfig('password'):
             return False
 
-        if self.core.isClientConnected() and not self.getConfig('force'):
+        if self.core.isClientConnected() and self.getConfig('check_client'):
             return False
 
         if self.getCredits() > 10:

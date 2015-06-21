@@ -13,7 +13,8 @@ class LinksnappyCom(MultiHoster):
     __version__ = "0.09"
 
     __pattern__ = r'https?://(?:[^/]+\.)?linksnappy\.com'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Linksnappy.com multi-hoster plugin"""
     __license__     = "GPLv3"

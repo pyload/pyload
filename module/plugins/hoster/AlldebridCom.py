@@ -14,7 +14,8 @@ class AlldebridCom(MultiHoster):
     __version__ = "0.47"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Alldebrid.com multi-hoster plugin"""
     __license__     = "GPLv3"
@@ -44,11 +45,6 @@ class AlldebridCom(MultiHoster):
                 pyfile.name = data['filename']
             pyfile.size = parseFileSize(data['filesize'])
             self.link = data['link']
-
-        if self.getConfig('ssl'):
-            self.link = self.link.replace("http://", "https://")
-        else:
-            self.link = self.link.replace("https://", "http://")
 
 
 getInfo = create_getInfo(AlldebridCom)

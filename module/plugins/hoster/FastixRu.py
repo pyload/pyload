@@ -13,7 +13,8 @@ class FastixRu(MultiHoster):
     __version__ = "0.12"
 
     __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/\w{24}'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Fastix multi-hoster plugin"""
     __license__     = "GPLv3"

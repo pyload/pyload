@@ -26,7 +26,8 @@ class MegaRapidoNet(MultiHoster):
     __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?\w+\.megarapido\.net/\?file=\w+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """MegaRapido.net multi-hoster plugin"""
     __license__     = "GPLv3"

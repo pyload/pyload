@@ -14,7 +14,8 @@ class OverLoadMe(MultiHoster):
     __version__ = "0.12"
 
     __pattern__ = r'https?://.*overload\.me/.+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Over-Load.me multi-hoster plugin"""
     __license__     = "GPLv3"
@@ -26,9 +27,8 @@ class OverLoadMe(MultiHoster):
 
 
     def handlePremium(self, pyfile):
-        https = "https" if self.getConfig('ssl') else "http"
         data  = self.account.getAccountData(self.user)
-        page  = self.load(https + "://api.over-load.me/getdownload.php",
+        page  = self.load("https://api.over-load.me/getdownload.php",
                           get={'auth': data['password'],
                                'link': pyfile.url})
 

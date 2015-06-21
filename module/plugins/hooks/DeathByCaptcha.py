@@ -53,9 +53,9 @@ class DeathByCaptcha(Hook):
     __type__    = "hook"
     __version__ = "0.07"
 
-    __config__ = [("username", "str", "Username", ""),
-                  ("passkey", "password", "Password", ""),
-                  ("force", "bool", "Force DBC even if client is connected", False)]
+    __config__ = [("username"    , "str"     , "Username"                        , ""  ),
+                  ("password"    , "password", "Password"                        , ""  ),
+                  ("check_client", "bool"    , "Don't use if client is connected", True)]
 
     __description__ = """Send captchas to DeathByCaptcha.com"""
     __license__     = "GPLv3"
@@ -80,7 +80,7 @@ class DeathByCaptcha(Hook):
             if not isinstance(post, dict):
                 post = {}
             post.update({"username": self.getConfig('username'),
-                         "password": self.getConfig('passkey')})
+                         "password": self.getConfig('password')})
 
         res = None
         try:
@@ -135,7 +135,7 @@ class DeathByCaptcha(Hook):
 
     def submit(self, captcha, captchaType="file", match=None):
         #@NOTE: Workaround multipart-post bug in HTTPRequest.py
-        if re.match("^\w*$", self.getConfig('passkey')):
+        if re.match("^\w*$", self.getConfig('password')):
             multipart = True
             data = (pycurl.FORM_FILE, captcha)
         else:
@@ -171,10 +171,10 @@ class DeathByCaptcha(Hook):
         if not task.isTextual():
             return False
 
-        if not self.getConfig('username') or not self.getConfig('passkey'):
+        if not self.getConfig('username') or not self.getConfig('password'):
             return False
 
-        if self.core.isClientConnected() and not self.getConfig('force'):
+        if self.core.isClientConnected() and self.getConfig('check_client'):
             return False
 
         try:

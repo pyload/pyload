@@ -14,7 +14,8 @@ class PremiumTo(MultiHoster):
     __version__ = "0.24"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Premium.to multi-hoster plugin"""
     __license__     = "GPLv3"

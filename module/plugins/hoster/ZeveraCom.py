@@ -12,7 +12,8 @@ class ZeveraCom(MultiHoster):
     __version__ = "0.31"
 
     __pattern__ = r'https?://(?:www\.)zevera\.com/(getFiles\.ashx|Members/download\.ashx)\?.*ourl=.+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Zevera.com multi-hoster plugin"""
     __license__     = "GPLv3"

@@ -20,16 +20,16 @@ class IRCInterface(Thread, Hook):
     __type__    = "hook"
     __version__ = "0.14"
 
-    __config__ = [("host", "str", "IRC-Server Address", "Enter your server here!"),
-                  ("port", "int", "IRC-Server Port", 6667),
-                  ("ident", "str", "Clients ident", "pyload-irc"),
-                  ("realname", "str", "Realname", "pyload-irc"),
-                  ("ssl", "bool", "Use SSL", False),
-                  ("nick", "str", "Nickname the Client will take", "pyLoad-IRC"),
-                  ("owner", "str", "Nickname the Client will accept commands from", "Enter your nick here!"),
-                  ("info_file", "bool", "Inform about every file finished", False),
-                  ("info_pack", "bool", "Inform about every package finished", True),
-                  ("captcha", "bool", "Send captcha requests", True)]
+    __config__ = [("host"     , "str" , "IRC-Server Address"                           , "Enter your server here!"),
+                  ("port"     , "int" , "IRC-Server Port"                              , 6667                     ),
+                  ("ident"    , "str" , "Clients ident"                                , "pyload-irc"             ),
+                  ("realname" , "str" , "Realname"                                     , "pyload-irc"             ),
+                  ("ssl"      , "bool", "Use SSL"                                      , False                    ),
+                  ("nick"     , "str" , "Nickname the Client will take"                , "pyLoad-IRC"             ),
+                  ("owner"    , "str" , "Nickname the Client will accept commands from", "Enter your nick here!"  ),
+                  ("info_file", "bool", "Inform about every file finished"             , False                    ),
+                  ("info_pack", "bool", "Inform about every package finished"          , True                     ),
+                  ("captcha"  , "bool", "Send captcha requests"                        , True                     )]
 
     __description__ = """Connect to irc and let owner perform different tasks"""
     __license__     = "GPLv3"

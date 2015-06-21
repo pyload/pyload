@@ -11,7 +11,8 @@ class SimplydebridCom(MultiHoster):
     __version__ = "0.19"
 
     __pattern__ = r'http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd\.php'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Simply-debrid.com multi-hoster plugin"""
     __license__     = "GPLv3"

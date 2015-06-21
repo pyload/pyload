@@ -34,9 +34,9 @@ class ImageTyperz(Hook):
     __type__    = "hook"
     __version__ = "0.07"
 
-    __config__ = [("username", "str", "Username", ""),
-                  ("passkey", "password", "Password", ""),
-                  ("force", "bool", "Force IT even if client is connected", False)]
+    __config__ = [("username"    , "str"     , "Username"                        , ""  ),
+                  ("password"    , "password", "Password"                        , ""  ),
+                  ("check_client", "bool"    , "Don't use if client is connected", True)]
 
     __description__ = """Send captchas to ImageTyperz.com"""
     __license__     = "GPLv3"
@@ -59,7 +59,7 @@ class ImageTyperz(Hook):
         res = self.load(self.GETCREDITS_URL,
                      post={'action': "REQUESTBALANCE",
                            'username': self.getConfig('username'),
-                           'password': self.getConfig('passkey')})
+                           'password': self.getConfig('password')})
 
         if res.startswith('ERROR'):
             raise ImageTyperzException(res)
@@ -80,7 +80,7 @@ class ImageTyperz(Hook):
 
         try:
             #@NOTE: Workaround multipart-post bug in HTTPRequest.py
-            if re.match("^\w*$", self.getConfig('passkey')):
+            if re.match("^\w*$", self.getConfig('password')):
                 multipart = True
                 data = (pycurl.FORM_FILE, captcha)
             else:
@@ -92,7 +92,7 @@ class ImageTyperz(Hook):
             res = self.load(self.SUBMIT_URL,
                             post={'action': "UPLOADCAPTCHA",
                                   'username': self.getConfig('username'),
-                                  'password': self.getConfig('passkey'), "file": data},
+                                  'password': self.getConfig('password'), "file": data},
                             multipart=multipart,
                             req=req)
         finally:
@@ -117,10 +117,10 @@ class ImageTyperz(Hook):
         if not task.isTextual():
             return False
 
-        if not self.getConfig('username') or not self.getConfig('passkey'):
+        if not self.getConfig('username') or not self.getConfig('password'):
             return False
 
-        if self.core.isClientConnected() and not self.getConfig('force'):
+        if self.core.isClientConnected() and self.getConfig('check_client'):
             return False
 
         if self.getCredits() > 0:
@@ -138,7 +138,7 @@ class ImageTyperz(Hook):
             res = self.load(self.RESPOND_URL,
                          post={'action': "SETBADIMAGE",
                                'username': self.getConfig('username'),
-                               'password': self.getConfig('passkey'),
+                               'password': self.getConfig('password'),
                                'imageid': task.data['ticket']})
 
             if res == "SUCCESS":

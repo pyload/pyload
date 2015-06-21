@@ -16,8 +16,7 @@ class Captcha9Kw(Hook):
     __type__    = "hook"
     __version__ = "0.29"
 
-    __config__ = [("ssl"           , "bool"    , "Use HTTPS"                                                                       , True                                                               ),
-                  ("force"         , "bool"    , "Force captcha resolving even if client is connected"                             , True                                                               ),
+    __config__ = [("check_client"  , "bool"    , "Don't use if client is connected"                                                , True                                                               ),
                   ("confirm"       , "bool"    , "Confirm Captcha (cost +6 credits)"                                               , False                                                              ),
                   ("captchaperhour", "int"     , "Captcha per hour"                                                                , "9999"                                                             ),
                   ("captchapermin" , "int"     , "Captcha per minute"                                                              , "9999"                                                             ),
@@ -36,13 +35,11 @@ class Captcha9Kw(Hook):
 
     interval = 0  #@TODO: Remove in 0.4.10
 
-    API_URL = "http://www.9kw.eu/index.cgi"
+    API_URL = "https://www.9kw.eu/index.cgi"
 
 
     def setup(self):
         self.info = {}  #@TODO: Remove in 0.4.10
-        if self.getConfig('ssl'):
-            self.API_URL = self.API_URL.replace("http://", "https://")
 
 
     def getCredits(self):
@@ -170,7 +167,7 @@ class Captcha9Kw(Hook):
         if not self.getConfig('passkey'):
             return
 
-        if self.core.isClientConnected() and not self.getConfig('force'):
+        if self.core.isClientConnected() and self.getConfig('check_client'):
             return
 
         credits = self.getCredits()
