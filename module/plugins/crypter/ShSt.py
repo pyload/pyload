@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.Crypter import Crypter
 
 import pycurl
 import re
 
 
-class ShSt(SimpleCrypter):
+class ShSt(Crypter):
     __name__    = "ShSt"
     __type__    = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://sh\.st/\w+'
 
