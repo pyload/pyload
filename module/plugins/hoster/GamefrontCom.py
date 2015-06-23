@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class GamefrontCom(SimpleHoster):
     __name__    = "GamefrontCom"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'http://(?:www\.)?gamefront\.com/files/(?P<ID>\d+)'
 
@@ -15,7 +15,7 @@ class GamefrontCom(SimpleHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    NAME_PATTERN    = r'>File Name:</dt>\s*<dd>(?P<N>.+?)<'
+    NAME_PATTERN    = r'<title>(?P<N>.+?) \| Game Front</title>'
     SIZE_PATTERN    = r'>File Size:</dt>\s*<dd>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'<p>File not found'
 
