@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class DlProtectCom(SimpleCrypter):
     __name__    = "DlProtectCom"
     __type__    = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'https?://(?:www\.)?dl-protect\.com/((en|fr)/)?\w+'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
@@ -36,7 +36,7 @@ class DlProtectCom(SimpleCrypter):
         post_req = {'key'       : re.search(r'name="key" value="(.+?)"', self.html).group(1),
                     'submitform': ""}
 
-        if "Please click on continue to see the content" in self.html:
+        if "Please click on continue to see the links" in self.html:
             post_req['submitform'] = "Continue"
             self.wait(2)
 
@@ -51,11 +51,10 @@ class DlProtectCom(SimpleCrypter):
                 post_req['pwd'] = self.getPassword()
 
             if "Security Code" in self.html:
-                captcha_id   = re.search(r'/captcha\.php\?uid=(.+?)"', self.html).group(1)
-                captcha_url  = "http://www.dl-protect.com/captcha.php?uid=" + captcha_id
-                captcha_code = self.decryptCaptcha(captcha_url, imgtype="gif")
-
-                post_req['secure'] = captcha_code
+                m = re.search(r'/captcha\.php\?key=(.+?)"', self.html)
+                if m:
+                    captcha_code = self.decryptCaptcha("http://www.dl-protect.com/captcha.php?key=" + m.group(1), imgtype="gif")
+                    post_req['secure'] = captcha_code
 
         self.html = self.load(self.pyfile.url, post=post_req)
 
