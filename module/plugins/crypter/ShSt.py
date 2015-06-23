@@ -2,13 +2,14 @@
 
 from module.plugins.internal.Crypter import Crypter
 
+import pycurl
 import re
 
 
 class ShSt(Crypter):
     __name__    = "ShSt"
     __type__    = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.03"
 
     __pattern__ = r'http://sh\.st/\w+'
 
@@ -21,8 +22,9 @@ class ShSt(Crypter):
 
 
     def decrypt(self, pyfile):
-        package = pyfile.package()
-        package_name = package.name
-        package_folder = package.folder
-        html = self.load("http://deadlockers.com/submit.php", post = { "deadlock" : self.pyfile.url }, decode = True)
-        self.packages.append((package_name, [html], package_folder))
+        # if we use curl as a user agent, we will get a straight redirect (no waiting!)
+        self.req.http.c.setopt(pycurl.USERAGENT, "curl/7.42.1")
+        # fetch the target URL
+        header = self.load(self.pyfile.url, just_header = True, decode = False)
+        target_url = header["location"]
+        self.urls.append(target_url)
