@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class HighWayMeHook(MultiHook):
     __name__    = "HighWayMeHook"
     __type__    = "hook"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
