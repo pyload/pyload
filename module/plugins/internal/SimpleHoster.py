@@ -603,9 +603,12 @@ class SimpleHoster(Hoster):
                 else:
                     wait_time = sum(int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1, "": 1}[u.lower()] for v, u in
                                 re.findall(r'(\d+)\s*(hr|hour|min|sec|)', errmsg, re.I))
+                # default wait time to 1h
+                if wait_time == 0:
+                    wait_time = 3600;
 
                 self.wantReconnect = wait_time > 300
-                self.retry(1, wait_time, _("Download limit exceeded"))
+                self.retry(1, wait_time, _("Download limit exceeded, waiting %s sec" % wait_time))
 
         if hasattr(self, 'HAPPY_HOUR_PATTERN') and re.search(self.HAPPY_HOUR_PATTERN, self.html):
             self.multiDL = True
@@ -621,12 +624,15 @@ class SimpleHoster(Hoster):
                 self.info['error'] = re.sub(r'<.*?>', " ", errmsg)
                 self.logWarning(self.info['error'])
 
-                if re.search('limit|wait|slot', errmsg, re.I):
-                    if re.search("da(il)?y|today", errmsg):
+                if re.search('limit|wait|slot|exceed|same time', errmsg, re.I):
+                    if re.search("da(il)?y", errmsg):
                         wait_time = secondsToMidnight(gmt=2)
                     else:
                         wait_time = sum(int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1, "": 1}[u.lower()] for v, u in
                                     re.findall(r'(\d+)\s*(hr|hour|min|sec|)', errmsg, re.I))
+                    # default wait time to 1h
+                    if wait_time == 0:
+                        wait_time = 3600;
 
                     self.wantReconnect = wait_time > 300
                     self.retry(1, wait_time, _("Download limit exceeded"))
@@ -644,7 +650,7 @@ class SimpleHoster(Hoster):
                 elif re.search('maintenance|maintainance|temp', errmsg, re.I):
                     self.tempOffline()
 
-                elif re.search('up to|size', errmsg, re.I):
+                elif re.search('up to|size|large', errmsg, re.I):
                     self.fail(_("File too large for free download"))
 
                 elif re.search('offline|delet|remov|not? (found|(longer)? available)', errmsg, re.I):
@@ -655,7 +661,7 @@ class SimpleHoster(Hoster):
                     self.pyfile.url = "%s://%s/%s" % (url_p.scheme, url_p.netloc, url_p.path.strip('/').split('/')[0])
                     self.retry(1, reason=_("Wrong url"))
 
-                elif re.search('premium', errmsg, re.I):
+                elif re.search('premium|access|private', errmsg, re.I):
                     self.fail(_("File can be downloaded by premium users only"))
 
                 else:
