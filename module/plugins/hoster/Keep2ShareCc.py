@@ -35,21 +35,11 @@ class Keep2ShareCc(SimpleHoster):
     CAPTCHA_PATTERN = r'src="(/file/captcha\.html.+?)"'
 
     WAIT_PATTERN         = r'Please wait ([\d:]+) to download this file'
-    TEMP_ERROR_PATTERN   = r'>\s*(Download count files exceed|Traffic limit exceed|Free account does not allow to download more than one file at the same time)'
-    ERROR_PATTERN        = r'>\s*(Free user can\'t download large files|You no can access to this file|This download available only for premium users|This is private file)'
+    ERROR_PATTERN   = "(Download count files exceed|Traffic limit exceed|Free account does not allow to download more than one file at the same time|Free user can't download large files|You no can access to this file|available.*only for premium|This is private file)"
 
 
     def checkErrors(self):
-        m = re.search(self.TEMP_ERROR_PATTERN, self.html)
-        if m:
-            self.info['error'] = m.group(1)
-            self.wantReconnect = True
-            self.retry(wait_time=30 * 60, reason=m.group(0))
-
-        m = re.search(self.ERROR_PATTERN, self.html)
-        if m:
-            errmsg = self.info['error'] = m.group(1)
-            self.error(errmsg)
+        self.logDebug("checking for errors...")
 
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
@@ -62,10 +52,12 @@ class Keep2ShareCc(SimpleHoster):
             self.wantReconnect = True
             self.retry(wait_time=wait_time, reason="Please wait to download this file")
 
-        self.info.pop('error', None)
+        super(Keep2ShareCc, self).checkErrors()
 
 
     def handleFree(self, pyfile):
+        self.checkErrors()
+
         self.fid  = re.search(r'<input type="hidden" name="slow_id" value="(.+?)">', self.html).group(1)
         self.html = self.load(pyfile.url, post={'yt0': '', 'slow_id': self.fid})
 
