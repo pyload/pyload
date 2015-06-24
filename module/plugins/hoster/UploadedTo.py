@@ -78,8 +78,9 @@ class UploadedTo(SimpleHoster):
                               post={'recaptcha_challenge_field': challenge,
                                     'recaptcha_response_field' : response})
 
-        super(UploadedTo, self).handleFree(pyfile)
+        # need to check for errors before calling handleFree for proper handling of DL_LIMIT
         self.checkErrors()
+        super(UploadedTo, self).handleFree(pyfile)
 
 
 getInfo = create_getInfo(UploadedTo)
