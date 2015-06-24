@@ -28,6 +28,9 @@ class PremiumizeMe(MultiHoster):
         if temp.pop() in suffix_to_remove:
             pyfile.name = ".".join(temp)
 
+        if pyfile.pluginname == "OboomCom":
+            self.workaroundOboomCom(pyfile)
+
         # Get account data
         user, data = self.account.selectAccount()
 
@@ -57,5 +60,20 @@ class PremiumizeMe(MultiHoster):
         else:
             self.fail(data['statusmessage'])
 
+    def workaroundOboomCom(self, pyfile):
+        apiUrl = "https://api.oboom.com/1.0/info"
+        params = {"items": pyfile.name, "http_errors": 0}
+
+        result = json_loads(self.load(apiUrl, params, decode=True))
+
+        if result[0] == 200:
+            item = result[1][0]
+            if item['state'] == "online":
+                self.pyfile.name = self.info['name'] = item['name']
+                self.pyfile.size = self.info['size'] = item['size']
+            else:
+                self.offline()
+        else:
+            self.fail(_("Could not retrieve file info. Error code %s: %s") % (result[0], result[1]))
 
 getInfo = create_getInfo(PremiumizeMe)
