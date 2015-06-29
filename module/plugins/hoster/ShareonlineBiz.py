@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ShareonlineBiz(SimpleHoster):
     __name__    = "ShareonlineBiz"
     __type__    = "hoster"
-    __version__ = "0.53"
+    __version__ = "0.54"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -33,6 +33,7 @@ class ShareonlineBiz(SimpleHoster):
     RECAPTCHA_KEY = "6LdatrsSAAAAAHZrB70txiV5p-8Iv8BtVxlTtjKX"
 
     ERROR_PATTERN = r'<p class="b">Information:</p>\s*<div>\s*<strong>(.*?)</strong>'
+    OFFLINE_PATTERN = r'>The requested file is not available'
 
 
     @classmethod
@@ -167,13 +168,13 @@ class ShareonlineBiz(SimpleHoster):
         if errmsg is "invalid":
             self.fail(_("File not available"))
 
-        elif errmsg in ("full", "freelimit", "size", "proxy"):
+        elif errmsg in ("freelimit", "size", "proxy"):
             self.fail(_("Premium account needed"))
 
         elif errmsg in ("expired", "server"):
             self.retry(wait_time=600, reason=errmsg)
 
-        elif 'slot' in errmsg:
+        elif errmsg in ("full", "slot"):
             self.wantReconnect = True
             self.retry(24, 3600, errmsg)
 
