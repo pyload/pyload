@@ -21,5 +21,6 @@ class NosvideoCom(SimpleCrypter):
     LINK_PATTERN = r'href="(http://(?:w{3}\.)?nosupload\.com/\?d=\w+)"'
     NAME_PATTERN = r'<[tT]itle>Watch (?P<N>.+?)<'
 
+    OFFLINE_PATTERN = r'File Not Found'
 
 getInfo = create_getInfo(NosvideoCom)

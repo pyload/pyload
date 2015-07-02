@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import re
+import pycurl
 from collections import defaultdict
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter
 
 class SolarmovieIs(Crypter):
     __name__ = 'SolarmovieIs'
@@ -15,31 +16,32 @@ class SolarmovieIs(Crypter):
     __author_mail__ = ('')
 
     BASE_URL = 'http://www.solarmovie.is'
+    CINE_BASE_URL = 'http://cinema.solarmovie.is'
     PLAY_BASE = '/link/play/'
     TV_URL_PATH_PATTERN = r'tv/(?P<name>.*?)-(?P<year>\d+)(?P<remain>/.*)'
     TV_SEASON_URL_PATH_PATTERN = r'season-(?P<snr>\d+)(?P<remain>/.*)'
     TV_EPISODE_URL_PATH_PATTERN = r'episode-(?P<enr>\d+)'
 
     # find seasons in a TV show page
-    SEASON_PATTERN = r'<a href="(?P<sURL>/tv/.+?)">(?:.|\n)+?Season (?P<sNR>\d+)\s*</a>'
+    SEASON_PATTERN = '<a href="(?P<sURL>/tv/.+?)">(?:.|\n)+?Season (?P<sNR>\d+)\s*</a>'
 
     # find the name of the TV show
-    NAME_PATTERN = r'\s*(?P<name>.+?)(?:\s|\n)*<a class="year" href=".*?">'
+    NAME_PATTERN = '\s*(?P<name>.+?)(?:\s|\n)*<a class="year" href=".*?">'
 
     # find the name (and season number) of the TV show on a season-page
     SEASON_INFO_PATTERN = r'<a href="/tv/.*?">(?P<name>.*?)</a> <span class="season_episode">/ Season (?P<sNR>\d+)</span>'
 
     # find episodes on a season-page
-    EPISODE_PATTERN = r'<a href="(?P<eURL>/tv/.+?)" class="linkCount typicalGrey">(?:\s|\n)*?\d+ links</a>'
+    EPISODE_PATTERN = '<a href="(?P<eURL>/tv/.+?)" class="linkCount typicalGrey">(?:\s|\n)*?\d+ links</a>'
 
     # find a link on an episode/movie-page
-    ID_PATTERN = r'<tr id="link_(?P<ID>\d+)">.*?<a href="/link/show/(?P<ID2>\d+)/">(?:\s|\n)*(?P<hoster>\w+\.\w+)</a>'
+    ID_PATTERN = '<tr id="link_(?P<ID>\d+)".*?<a href="/link/show/(?P<ID2>\d+)/">(?:\s|\n)*(?P<hoster>\w+\.\w+)\s*</a>'
 
     # find the iframe in the play-movie page
     HOSTER_FRAME_PATTERN = r'<iframe.*?src="(.*?)"'
 
     # find info about the episode in the episode page
-    EPISODE_INFO_PATTERN = r'<span class="season_episode">/ Episode (?P<eNR>\d+)</span>(?:.|\n)*?<div class="breadcrumb">(?:\s|\n)*<ul>(?:\s|\n)*<li><a href="/tv/.+?">(?P<sName>.+?)</a></li>(?:\s|\n)*<li><a href="/tv/.+?">\s*Season (?P<sNR>\d+)\s*</a></li>'
+    EPISODE_INFO_PATTERN = '<span class="season_episode">/ Episode (?P<eNR>\d+)</span>(?:.|\n)*?<div class="breadcrumb">(?:\s|\n)*<ul>(?:\s|\n)*<li><a href="/tv/.+?">(?P<sName>.+?)</a></li>(?:\s|\n)*<li><a href="/tv/.+?">\s*Season (?P<sNR>\d+)\s*</a></li>'
 
     # this is much too slow, dunno why...
     #EPISODE_INFO_PATTERN = r'\s*(?P<eName>.+?)(?:\s|\n)*<span class="season_episode">/ Episode (?P<eNR>\d+)</span>(?:.|\n)*?<div class="breadcrumb">(?:\s|\n)*<ul>(?:\s|\n)*<li><a href="/tv/.+?">(?P<sName>.+?</a></li>(?:\s|\n)*<li><a href="/tv/.+?">\s*Season (P:<sNR>\d+)\s*</a></li>'
@@ -85,8 +87,12 @@ class SolarmovieIs(Crypter):
         return links
 
     def getLink(self, my_id):
+        # clear cookies
+        self.req.http.c.setopt(pycurl.COOKIELIST, "ALL");
+        # solarmovies sometimes doesn't like gzip/deflate encoding and sends us into an infinite redirect, so clear the encoding flag
+        self.req.http.c.setopt(pycurl.ENCODING, "");
         # load the page        
-        self.html = self.load("%s%s%s/" % (self.BASE_URL, self.PLAY_BASE, my_id))
+        self.html = self.load("%s%s%s/" % (self.CINE_BASE_URL, self.PLAY_BASE, my_id), cookies=False)
 
         # get the frame source
         link = re.search(self.HOSTER_FRAME_PATTERN, self.html, re.IGNORECASE | re.MULTILINE | re.DOTALL).group(1)

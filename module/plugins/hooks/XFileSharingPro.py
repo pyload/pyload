@@ -34,6 +34,7 @@ class XFileSharingPro(Hook):
                        "junkyvideo.com", "linestorage.com", "ravishare.com", "ryushare.com",
                        "salefiles.com", "sendmyway.com", "sharebeast.com", "sharesix.com",
                        "thefile.me", "verzend.be", "worldbytez.com", "xvidstage.com",
+                       "thevideo.me",
                        #NOT TESTED:
                        "101shared.com", "4upfiles.com", "filemaze.ws", "filenuke.com",
                        "linkzhost.com", "mightyupload.com", "rockdizfile.com", "sharerepo.com",
