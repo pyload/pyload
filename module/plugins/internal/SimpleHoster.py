@@ -38,6 +38,7 @@ def replace_patterns(string, ruleslist):
     for r in ruleslist:
         rf, rt = r
         string = re.sub(rf, rt, string)
+        print str("replacing %s with %s" % (rf, rt))
     return string
 
 
