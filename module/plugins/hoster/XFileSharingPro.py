@@ -17,7 +17,7 @@ class XFileSharingPro(XFSHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    URL_REPLACEMENTS = [("/embed-", "/")]
+    URL_REPLACEMENTS = [("/embed-(\w+)-?[0-9x]*", "/\\1")]
 
 
     def _log(self, type, args):

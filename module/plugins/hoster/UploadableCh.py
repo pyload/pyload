@@ -1,77 +1,72 @@
 # -*- coding: utf-8 -*-
-
 import re
 
-from module.plugins.internal.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.CaptchaService import ReCaptcha
 
 
 class UploadableCh(SimpleHoster):
-    __name__    = "UploadableCh"
-    __type__    = "hoster"
-    __version__ = "0.11"
+    __name__ = "UploadableCh"
+    __type__ = "hoster"
+    __pattern__ = r"https?://(?:www\.)?uploadable\.ch/file/(?P<ID>[^/]*)"
+    __version__ = "0.01"
+    __description__ = """Uploadable.Ch File Download Hoster"""
+    __author_name__ = ("igel")
 
-    __pattern__ = r'http://(?:www\.)?uploadable\.ch/file/(?P<ID>\w+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    FILE_INFO_PATTERN = r'<div id="file_name" title=".*?">(?P<N>.*?)<span class="filename_normal">\((?P:<S>[0-9.,]+? (?P<U>\w+?)\)</span></div>'
+    FILE_OFFLINE_PATTERN = r'file could not be found'
 
-    __description__ = """Uploadable.ch hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
-
-
-    URL_REPLACEMENTS = [(__pattern__ + ".*", r'http://www.uploadable.ch/file/\g<ID>')]
-
-    INFO_PATTERN = r'div id=\"file_name\" title=.*>(?P<N>.+)<span class=\"filename_normal\">\((?P<S>[\d.]+) (?P<U>\w+)\)</span><'
-
-    OFFLINE_PATTERN      = r'>(File not available|This file is no longer available)'
-    TEMP_OFFLINE_PATTERN = r'<div class="icon_err">'
-
-    WAIT_PATTERN = r'>Please wait.+?<'
-
-    RECAPTCHA_KEY = "6LdlJuwSAAAAAPJbPIoUhyqOJd7-yrah5Nhim5S3"
+    WAIT_PATTERN = r'<span class="timer".*?>Wait (\d+) sec'
+    WAIT_PENALTY_PATTERN = r'Please wait for (\d+) minutes to download the next file.'
+    RECAPTCHA_PATTERN = r"var reCAPTCHA_publickey='(.*?)'"
 
 
-    def handleFree(self, pyfile):
-        # Click the "free user" button and wait
-        a = self.load(pyfile.url, post={'downloadLink': "wait"}, decode=True)
-        self.logDebug(a)
-
-        self.wait(30)
-
-        # Make the recaptcha appear and show it the pyload interface
-        b = self.load(pyfile.url, post={'checkDownload': "check"}, decode=True)
-        self.logDebug(b)  #: Expected output: {"success":"showCaptcha"}
-
+    def handleCaptcha(self):
+        m = re.search(self.RECAPTCHA_PATTERN, self.html)
+        if not m:
+          self.parseError("could not find recaptcha pattern")
+        recaptcha_key = m.group(1)
+        self.logDebug("using captcha key " + recaptcha_key)
         recaptcha = ReCaptcha(self)
+        return recaptcha.challenge(recaptcha_key)
+        
+    def handleWait(self):
+        m = re.search(self.WAIT_PENALTY_PATTERN, self.html)
+        if m:
+          mins = m.group(1)
+          self.logDebug("Hoster told us to wait %s minutes" % mins)
+          self.retry(wait_time = 60 * mins)
 
-        response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
+    def handleFree(self):
+        fid = re.search(self.__pattern__, self.pyfile.url).group('ID')
 
-        # Submit the captcha solution
-        self.load("http://www.uploadable.ch/checkReCaptcha.php",
-                  post={'recaptcha_challenge_field'  : challenge,
-                        'recaptcha_response_field'   : response,
-                        'recaptcha_shortencode_field': self.info['pattern']['ID']},
-                  decode=True)
+        # STAGE 1: get captcha challenge & response
+        # try the captcha 5 times
+        for i in xrange(5):
+          challenge, code = self.handleCaptcha()
+          post_data['recaptcha_challenge_field'] = challenge
+          post_data['recaptcha_response_field'] = code
+          post_data['recaptcha_shortencode_field'] = 'PAdc2ZARDzvn'
+          post_data['download'] = 'normal'
 
-        self.wait(3)
+          # I think waiting is just cient-side
+          #self.handleWait()
+          self.html = self.load(self.pyfile.url, decode=True, post=post_data)
 
-        # Get ready for downloading
-        self.load(pyfile.url, post={'downloadLink': "show"}, decode=True)
+          # STAGE 2: handle wait penalty time
+          self.handleWait()
 
-        self.wait(3)
+          # STAGE 3: get direct link
+          if self.WRONG_CAPTCHA_PATTERN in self.html:
+            self.logDebug("Wrong captcha")
+          else:
+            self.logDebug('found direct link: ' + direct)
+            self.download(self.pyfile.url, decode=True, post={'download':'normal'})
+            self.download(direct, disposition=True)
+        else:
+          self.fail('too many wrong captcha attempts')
 
-        # Download the file
-        self.download(pyfile.url, post={'download': "normal"}, disposition=True)
 
-
-    def checkFile(self):
-        if self.checkDownload({'wait': re.compile("Please wait for")}):
-            self.logInfo("Downloadlimit reached, please wait or reconnect")
-            self.wait(60 * 60, True)
-            self.retry()
-
-        return super(UploadableCh, self).checkFile()
 
 
 getInfo = create_getInfo(UploadableCh)

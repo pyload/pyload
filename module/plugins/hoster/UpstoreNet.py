@@ -22,9 +22,11 @@ class UpstoreNet(SimpleHoster):
     INFO_PATTERN = r'<div class="comment">.*?</div>\s*\n<h2 style="margin:0">(?P<N>.*?)</h2>\s*\n<div class="comment">\s*\n\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'<span class="error">File not found</span>'
 
+    LONG_WAIT_PATTERN = r'You should wait (\d+) min. before downloading next'
     WAIT_PATTERN = r'var sec = (\d+)'
     CHASH_PATTERN = r'<input type="hidden" name="hash" value="(.+?)">'
     LINK_FREE_PATTERN = r'<a href="(https?://.*?)" target="_blank"><b>'
+    WRONG_CAPTCHA_PATTERN = r'Wrong captcha'
 
 
     def handleFree(self, pyfile):
@@ -59,10 +61,32 @@ class UpstoreNet(SimpleHoster):
 
             self.html = self.load(pyfile.url, post=post_data, decode=True)
 
-            # STAGE 3: get direct link
+            # check whether the captcha was wrong
+            m = re.search(self.WRONG_CAPTCHA_PATTERN, self.html, re.S)
+            if m:
+                self.invalidCaptcha()
+                continue
+            else:
+                self.correctCaptcha()
+
+
+            # STAGE 3: get direct link or wait time
+            m = re.search(self.LONG_WAIT_PATTERN, self.html, re.S)
+            if m:
+                wait_time = 60* int(m.group(1))
+                self.wantReconnect = True
+                self.retry(wait_time=wait_time, reason="Please wait to download this file")
+
             m = re.search(self.LINK_FREE_PATTERN, self.html, re.S)
             if m:
                 break
+
+            # sometimes, upstore just restarts the countdown without saying anything...
+            # in this case we'll just wait 1h and retry
+            self.wantReconnect = True
+            self.retry(wait_time=3600, reason="Upstore doesn't like us today")
+
+            
 
         if m is None:
             self.error(_("Download link not found"))
