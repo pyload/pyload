@@ -95,22 +95,24 @@ class XFSHoster(SimpleHoster):
             data = self.getPostParameters()
 
             self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
+            self.req.http.c.setopt(pycurl.REFERER, str(pyfile.url))
 
-            self.html = self.load(pyfile.url, post=data, decode=True)
+            self.html = self.load(pyfile.url, ref=False, post=data, decode=True)
 
             self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
             m = re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I)
             if m and not "op=" in m.group(1):
                 break
-
-            m = re.search(self.LINK_PATTERN, self.html, re.S)
+            
+            m = re.search(self.LINK_PATTERN, self.html, re.MULTILINE | re.DOTALL)
             if m:
                 break
         else:
-            self.logError(data['op'] if 'op' in data else _("UNKNOWN"))
+            self.logDebug(data['op'] if 'op' in data else _("UNKNOWN"))
             return ""
-
+        
+        self.logDebug('using link: %s' % m.group(1))
         self.link = m.group(1).strip()  #@TODO: Remove `.strip()` in 0.4.10
 
 
@@ -190,6 +192,15 @@ class XFSHoster(SimpleHoster):
             action, inputs = self.parseHtmlForm('F1')
             if not inputs:
                 self.retry(reason=self.info['error'] if 'error' in self.info else _("TEXTAREA F1 not found"))
+        
+        if hasattr(self, 'HIDDEN_POST_PARAMETERS'):
+            self.logDebug('parsing additional parameters...')
+            for inputtag in re.finditer(self.HIDDEN_POST_PARAMETERS, self.html):
+                self.logDebug("adding hidden post parameter: %s = %s" % (inputtag.group('id'), inputtag.group('value')))
+                inputs[inputtag.group('id')] = inputtag.group('value')
+        else:
+            self.logDebug('no additional parameters to parse...')
+
 
         self.logDebug(inputs)
 
