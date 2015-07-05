@@ -17,14 +17,18 @@
     @author: mkaay, RaNaN
 """
 
+from __future__ import with_statement
+
 import re
 import sys
 
-from os import listdir, makedirs
+from os import listdir, makedirs, getcwd
 from os.path import isfile, join, exists, abspath
 from sys import version_info
 from itertools import chain
 from traceback import print_exc
+from base64 import b64decode
+from shutil import rmtree
 
 from module.lib.SafeEval import const_eval as literal_eval
 from module.ConfigParser import IGNORE
@@ -38,6 +42,7 @@ class PluginManager:
     VERSION = re.compile(r'__version__.*=.*("|\')([0-9.]+)')
     CONFIG = re.compile(r'__config__.*=.*\[([^\]]+)', re.MULTILINE)
     DESC = re.compile(r'__description__.?=.?("|"""|\')([^"\']+)')
+    WEBFILES = re.compile(r'__web_files__.*=.*(\{[^\}]+})', re.MULTILINE)
 
 
     def __init__(self, core):
@@ -63,6 +68,13 @@ class PluginManager:
         if not exists(join("userplugins", "__init__.py")):
             f = open(join("userplugins", "__init__.py"), "wb")
             f.close()
+
+        #Full indexing: Cleanup folders for additional webserver content
+        # "<config_dir>/tmp/plugins/"
+        content_path = join(getcwd(), 'tmp/plugins')
+        if exists( content_path ):
+            rmtree ( content_path )
+        makedirs( content_path )
 
         self.plugins["crypter"] = self.crypterPlugins = self.parse("crypter", pattern=True)
         self.plugins["container"] = self.containerPlugins = self.parse("container", pattern=True)
@@ -191,6 +203,29 @@ class PluginManager:
                         self.core.config.addPluginConfig(name, config, desc)
                     except:
                         self.log.error("Invalid config in %s: %s" % (name, config))
+                
+                #Parse files to be serverd via webserver
+                web_files = self.WEBFILES.findall(content)
+                if web_files:
+                    web_files = literal_eval(web_files[0].strip().replace("\n", "").replace("\r", ""))
+
+                    #Unpack tuple
+                    if type(web_files) == tuple:
+                        web_files = web_files[0]
+
+                    #Construct and create folders for additional webserver content
+                    # "<config_dir>/tmp/plugins/<plugin_name>"
+                    #Existring content will be removed, i.e.: Cleanup before run-time update
+                    content_path = join(getcwd(), 'tmp/plugins', name)
+                    if exists( content_path ):
+                        rmtree ( content_path )
+                    makedirs( content_path )
+
+                    #Fill folder with content
+                    for file_name in web_files:
+                        print file_name
+                        with open(join(content_path, file_name), "wb") as web_content:
+                            web_content.write(b64decode(web_files[file_name]))
 
         if not home:
             temp = self.parse(folder, pattern, plugins)

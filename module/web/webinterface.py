@@ -77,7 +77,8 @@ if not exists(cache):
 bcc = FileSystemBytecodeCache(cache, '%s.cache')
 loader = PrefixLoader({
     "default": FileSystemLoader(join(PROJECT_DIR, "templates", "default")),
-    'js': FileSystemLoader(join(PROJECT_DIR, 'media', 'js'))
+    'js': FileSystemLoader(join(PROJECT_DIR, 'media', 'js')),
+    'plugins': FileSystemLoader(join(os.getcwd(), 'tmp', 'plugins'))
 })
 
 env = Environment(loader=loader, extensions=['jinja2.ext.i18n', 'jinja2.ext.autoescape'], trim_blocks=True, auto_reload=False,

@@ -134,6 +134,27 @@ def js_dynamic(path):
     except:
         return HTTPError(404, "Not Found")
 
+# render plugin content
+@route("/media/plugins/<path:path>")
+def plugin_dynamic(path):
+    response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+                                                time.gmtime(time.time() + 60 * 60 * 24 * 2))
+    response.headers['Cache-control'] = "public"
+
+    plugin_name = path.split('/')[0]
+    plugin_config = PYLOAD.getPluginConfigDict()[plugin_name]
+    
+    try:
+        if "static" not in path and "Static" not in path:
+            t = env.get_template("plugins/%s" % path)
+            return t.render(notifications=plugin_config)
+        else:
+            return static_file(path, root=join(os.getcwd(), 'tmp', 'plugins'))
+    except Exception, e:
+        return HTTPError(404, "Not Found " + str(e) + "  ---  " + str(sys.exc_info()[0]))
+    except:
+        return HTTPError(404, "Not Found" + str(sys.exc_info()[0]))
+
 @route('/media/<path:path>')
 def server_static(path):
     response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
