@@ -182,7 +182,7 @@ class Hoster(Plugin):
         wait_until = time.time() + wait_time + 1
 
         self.logDebug("Set waitUntil to: %f (previous: %f)" % (wait_until, self.pyfile.waitUntil),
-                      "Wait: %d(+1) seconds" % wait_time)
+                      "Wait: %d+1 seconds" % wait_time)
 
         self.pyfile.waitUntil = wait_until
 
@@ -641,7 +641,7 @@ class Hoster(Plugin):
             return True
         else:
             size = self.pyfile.size / 1024
-            self.logInfo(_("Filesize: %i KiB, Traffic left for user %s: %i KiB") % (size, self.user, traffic))
+            self.logInfo(_("Filesize: %s KiB, Traffic left for user %s: %s KiB") % (size, self.user, traffic))
             return size <= traffic
 
 
