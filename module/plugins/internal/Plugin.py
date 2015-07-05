@@ -2,6 +2,7 @@
 
 from __future__ import with_statement
 
+import inspect
 import os
 import re
 import urllib
@@ -260,14 +261,9 @@ class Plugin(object):
         res = req.load(url, get, post, ref, cookies, just_header, True, bool(decode))
 
         if decode:
-            res = html_unescape(res)
-
-        if isinstance(decode, basestring):
-            res = res.decode(decode)
+            res = html_unescape(res).decode(decode if isinstance(decode, basestring) else 'utf8')
 
         if self.core.debug:
-            import inspect
-
             frame = inspect.currentframe()
             framefile = fs_join("tmp", self.__name__, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
             try:
