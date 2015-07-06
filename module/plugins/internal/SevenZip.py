@@ -10,7 +10,7 @@ from module.utils import fs_encode, save_join as fs_join
 
 class SevenZip(UnRar):
     __name__    = "SevenZip"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __description__ = """7-Zip extractor plugin"""
     __license__     = "GPLv3"
@@ -37,7 +37,7 @@ class SevenZip(UnRar):
 
 
     @classmethod
-    def isUsable(cls):
+    def is_usable(cls):
         if os.name == "nt":
             cls.CMD = os.path.join(pypath, "7z.exe")
             p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -134,11 +134,11 @@ class SevenZip(UnRar):
     def call_cmd(self, command, *xargs, **kwargs):
         args = []
 
-        #overwrite flag
+        # overwrite flag
         if self.overwrite:
             args.append("-y")
 
-        #set a password
+        # set a password
         if "password" in kwargs and kwargs['password']:
             args.append("-p%s" % kwargs['password'])
         else:

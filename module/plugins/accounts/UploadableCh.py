@@ -6,14 +6,14 @@ from module.plugins.internal.Account import Account
 class UploadableCh(Account):
     __name__    = "UploadableCh"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __description__ = """Uploadable.ch account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Sasch", "gsasch@gmail.com")]
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         html = self.load("http://www.uploadable.ch/login.php", req=req)
 
         premium     = '<a href="/logout.php"' in html
@@ -30,4 +30,4 @@ class UploadableCh(Account):
                               'action__login': "normalLogin"}, req=req)
 
         if "Login failed" in html:
-            self.wrongPassword()
+            self.wrong_password()

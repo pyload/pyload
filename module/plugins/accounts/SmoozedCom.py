@@ -26,17 +26,17 @@ from module.plugins.internal.Account import Account
 class SmoozedCom(Account):
     __name__    = "SmoozedCom"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __description__ = """Smoozed.com account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("", "")]
 
 
-    def loadAccountInfo(self, user, req):
-        status = self.getAccountStatus(user, req)
+    def load_account_info(self, user, req):
+        status = self.get_account_status(user, req)
 
-        self.logDebug(status)
+        self.log_debug(status)
 
         if status['state'] != 'ok':
             info = {'validuntil' : None,
@@ -62,15 +62,15 @@ class SmoozedCom(Account):
 
     def login(self, user, data, req):
         #: Get user data from premiumize.me
-        status = self.getAccountStatus(user, req)
+        status = self.get_account_status(user, req)
 
         #: Check if user and password are valid
         if status['state'] != 'ok':
-            self.wrongPassword()
+            self.wrong_password()
 
 
-    def getAccountStatus(self, user, req):
-        password  = self.getAccountData(user)['password']
+    def get_account_status(self, user, req):
+        password  = self.get_account_data(user)['password']
         salt      = hashlib.sha256(password).hexdigest()
         encrypted = PBKDF2(password, salt, iterations=1000).hexread(32)
 

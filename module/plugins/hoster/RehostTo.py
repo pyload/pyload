@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class RehostTo(MultiHoster):
     __name__    = "RehostTo"
     __type__    = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __pattern__ = r'https?://.*rehost\.to\..+'
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
@@ -19,7 +19,7 @@ class RehostTo(MultiHoster):
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         self.download("http://rehost.to/process_download.php",
                       get={'user': "cookie",
                            'pass': self.account.getAccountInfo(self.user)['session'],

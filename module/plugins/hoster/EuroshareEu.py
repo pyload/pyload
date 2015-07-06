@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class EuroshareEu(SimpleHoster):
     __name__    = "EuroshareEu"
     __type__    = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
 
     __pattern__ = r'http://(?:www\.)?euroshare\.(eu|sk|cz|hu|pl)/file/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -29,25 +29,25 @@ class EuroshareEu(SimpleHoster):
     URL_REPLACEMENTS = [(r"(http://[^/]*\.)(sk|cz|hu|pl)/", r"\1eu/")]
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         if self.ERROR_PATTERN in self.html:
             self.account.relogin(self.user)
             self.retry(reason=_("User not logged in"))
 
         self.link = pyfile.url.rstrip('/') + "/download/"
 
-        check = self.checkDownload({"login": re.compile(self.ERROR_PATTERN),
+        check = self.check_download({"login": re.compile(self.ERROR_PATTERN),
                                     "json" : re.compile(r'\{"status":"error".*?"message":"(.*?)"')})
 
-        if check == "login" or (check == "json" and self.lastCheck.group(1) == "Access token expired"):
+        if check == "login" or (check == "json" and self.last_check.group(1) == "Access token expired"):
             self.account.relogin(self.user)
             self.retry(reason=_("Access token expired"))
 
         elif check == "json":
-            self.fail(self.lastCheck.group(1))
+            self.fail(self.last_check.group(1))
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         if re.search(self.DL_LIMIT_PATTERN, self.html):
             self.wait(5 * 60, 12, _("Download limit reached"))
 

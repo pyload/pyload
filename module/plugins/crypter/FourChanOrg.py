@@ -11,7 +11,7 @@ from module.plugins.internal.Crypter import Crypter
 class FourChanOrg(Crypter):
     __name__    = "FourChanOrg"
     __type__    = "crypter"
-    __version__ = "0.32"
+    __version__ = "0.33"
 
     __pattern__ = r'http://(?:www\.)?boards\.4chan\.org/\w+/res/(\d+)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

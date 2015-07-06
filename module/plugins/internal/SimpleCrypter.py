@@ -10,7 +10,7 @@ from module.utils import fixup, html_unescape
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.55"
+    __version__ = "0.56"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),  #: Overrides core.config['general']['folder_per_package']
@@ -47,7 +47,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
     and its loadPage method:
 
 
-      def loadPage(self, page_n):
+      def load_page(self, page_n):
           return the html of the page number page_n
     """
     #@TODO: Remove in 0.4.10
@@ -85,10 +85,10 @@ class SimpleCrypter(Crypter, SimpleHoster):
         self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
 
 
-    def handleDirect(self, pyfile):
-        for i in xrange(self.getConfig("maxredirs", plugin="UserAgentSwitcher")):
+    def handle_direct(self, pyfile):
+        for i in xrange(self.get_config("maxredirs", plugin="UserAgentSwitcher")):
             redirect = self.link or pyfile.url
-            self.logDebug("Redirect #%d to: %s" % (i, redirect))
+            self.log_debug("Redirect #%d to: %s" % (i, redirect))
 
             header = self.load(redirect, just_header=True)
             if 'location' in header and header['location']:
@@ -96,38 +96,38 @@ class SimpleCrypter(Crypter, SimpleHoster):
             else:
                 break
         else:
-            self.logError(_("Too many redirects"))
+            self.log_error(_("Too many redirects"))
 
 
     def decrypt(self, pyfile):
         self.prepare()
 
-        self.logDebug("Looking for link redirect...")
-        self.handleDirect(pyfile)
+        self.log_debug("Looking for link redirect...")
+        self.handle_direct(pyfile)
 
         if self.link:
             self.urls = [self.link]
 
         else:
             self.preload()
-            self.checkInfo()
+            self.check_info()
 
-            self.links = self.getLinks() or list()
+            self.links = self.get_links() or list()
 
             if hasattr(self, 'PAGES_PATTERN') and hasattr(self, 'loadPage'):
-                self.handlePages(pyfile)
+                self.handle_pages(pyfile)
 
-            self.logDebug("Package has %d links" % len(self.links))
+            self.log_debug("Package has %d links" % len(self.links))
 
         if self.links:
             self.packages = [(self.info['name'], self.links, self.info['folder'])]
 
 
-    def checkNameSize(self, getinfo=True):
+    def check_name_size(self, getinfo=True):
         if not self.info or getinfo:
-            self.logDebug("File info (BEFORE): %s" % self.info)
-            self.info.update(self.getInfo(self.pyfile.url, self.html))
-            self.logDebug("File info (AFTER): %s"  % self.info)
+            self.log_debug("File info (BEFORE): %s" % self.info)
+            self.info.update(self.get_info(self.pyfile.url, self.html))
+            self.log_debug("File info (AFTER): %s"  % self.info)
 
         try:
             url  = self.info['url'].strip()
@@ -144,11 +144,11 @@ class SimpleCrypter(Crypter, SimpleHoster):
         except Exception:
             pass
 
-        self.logDebug("File name: %s"   % self.pyfile.name,
+        self.log_debug("File name: %s"   % self.pyfile.name,
                       "File folder: %s" % self.pyfile.name)
 
 
-    def getLinks(self):
+    def get_links(self):
         """
         Returns the links extracted from self.html
         You should override this only if it's impossible to extract links using only the LINK_PATTERN.
@@ -156,12 +156,12 @@ class SimpleCrypter(Crypter, SimpleHoster):
         return re.findall(self.LINK_PATTERN, self.html)
 
 
-    def handlePages(self, pyfile):
+    def handle_pages(self, pyfile):
         try:
             pages = int(re.search(self.PAGES_PATTERN, self.html).group(1))
         except Exception:
             pages = 1
 
         for p in xrange(2, pages + 1):
-            self.html = self.loadPage(p)
-            self.links += self.getLinks()
+            self.html = self.load_page(p)
+            self.links += self.get_links()

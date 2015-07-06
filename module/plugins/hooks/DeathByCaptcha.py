@@ -29,11 +29,11 @@ class DeathByCaptchaException(Exception):
         self.err = err
 
 
-    def getCode(self):
+    def get_code(self):
         return self.err
 
 
-    def getDesc(self):
+    def get_desc(self):
         if self.err in self.DBC_ERRORS.keys():
             return self.DBC_ERRORS[self.err]
         else:
@@ -51,7 +51,7 @@ class DeathByCaptchaException(Exception):
 class DeathByCaptcha(Hook):
     __name__    = "DeathByCaptcha"
     __type__    = "hook"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __config__ = [("username"    , "str"     , "Username"                        , ""  ),
                   ("password"    , "password", "Password"                        , ""  ),
@@ -79,8 +79,8 @@ class DeathByCaptcha(Hook):
         if post:
             if not isinstance(post, dict):
                 post = {}
-            post.update({"username": self.getConfig('username'),
-                         "password": self.getConfig('password')})
+            post.update({"username": self.get_config('username'),
+                         "password": self.get_config('password')})
 
         res = None
         try:
@@ -89,7 +89,7 @@ class DeathByCaptcha(Hook):
                              multipart=multipart,
                              req=req)
 
-            self.logDebug(json)
+            self.log_debug(json)
             res = json_loads(json)
 
             if "error" in res:
@@ -115,7 +115,7 @@ class DeathByCaptcha(Hook):
         return res
 
 
-    def getCredits(self):
+    def get_credits(self):
         res = self.api_response("user", True)
 
         if 'is_banned' in res and res['is_banned']:
@@ -126,7 +126,7 @@ class DeathByCaptcha(Hook):
             raise DeathByCaptchaException(res)
 
 
-    def getStatus(self):
+    def get_status(self):
         res = self.api_response("status", False)
 
         if 'is_service_overloaded' in res and res['is_service_overloaded']:
@@ -135,7 +135,7 @@ class DeathByCaptcha(Hook):
 
     def submit(self, captcha, captchaType="file", match=None):
         #@NOTE: Workaround multipart-post bug in HTTPRequest.py
-        if re.match("^\w*$", self.getConfig('password')):
+        if re.match("^\w*$", self.get_config('password')):
             multipart = True
             data = (pycurl.FORM_FILE, captcha)
         else:
@@ -159,7 +159,7 @@ class DeathByCaptcha(Hook):
             raise DeathByCaptchaException('timed-out')
 
         result = res['text']
-        self.logDebug("Result %s : %s" % (ticket, result))
+        self.log_debug("Result %s : %s" % (ticket, result))
 
         return ticket, result
 
@@ -171,21 +171,21 @@ class DeathByCaptcha(Hook):
         if not task.isTextual():
             return False
 
-        if not self.getConfig('username') or not self.getConfig('password'):
+        if not self.get_config('username') or not self.get_config('password'):
             return False
 
-        if self.core.isClientConnected() and self.getConfig('check_client'):
+        if self.core.isClientConnected() and self.get_config('check_client'):
             return False
 
         try:
-            self.getStatus()
-            self.getCredits()
+            self.get_status()
+            self.get_credits()
         except DeathByCaptchaException, e:
-            self.logError(e.getDesc())
+            self.log_error(e.getDesc())
             return False
 
         balance, rate = self.info['balance'], self.info['rate']
-        self.logInfo(_("Account balance"),
+        self.log_info(_("Account balance"),
                      _("US$%.3f (%d captchas left at %.2f cents each)") % (balance / 100,
                                                                            balance // rate, rate))
 
@@ -193,7 +193,7 @@ class DeathByCaptcha(Hook):
             task.handler.append(self)
             task.data['service'] = self.__name__
             task.setWaiting(180)
-            self._processCaptcha(task)
+            self._process_captcha(task)
 
 
     def captcha_invalid(self, task):
@@ -202,20 +202,20 @@ class DeathByCaptcha(Hook):
                 res = self.api_response("captcha/%d/report" % task.data['ticket'], True)
 
             except DeathByCaptchaException, e:
-                self.logError(e.getDesc())
+                self.log_error(e.getDesc())
 
             except Exception, e:
-                self.logError(e)
+                self.log_error(e)
 
 
     @threaded
-    def _processCaptcha(self, task):
+    def _process_captcha(self, task):
         c = task.captchaFile
         try:
             ticket, result = self.submit(c)
         except DeathByCaptchaException, e:
             task.error = e.getCode()
-            self.logError(e.getDesc())
+            self.log_error(e.getDesc())
             return
 
         task.data['ticket'] = ticket

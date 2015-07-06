@@ -9,7 +9,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class UpleaCom(XFSHoster):
     __name__    = "UpleaCom"
     __type__    = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __pattern__ = r'https?://(?:www\.)?uplea\.com/dl/\w{15}'
 
@@ -37,12 +37,12 @@ class UpleaCom(XFSHoster):
 
 
     def setup(self):
-        self.multiDL = False
-        self.chunkLimit = 1
-        self.resumeDownload = True
+        self.multi_dl = False
+        self.chunk_limit = 1
+        self.resume_download = True
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         m = re.search(self.STEP_PATTERN, self.html)
         if m is None:
             self.error(_("STEP_PATTERN not found"))
@@ -51,7 +51,7 @@ class UpleaCom(XFSHoster):
 
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
-            self.logDebug("Waiting %s seconds" % m.group(1))
+            self.log_debug("Waiting %s seconds" % m.group(1))
             self.wait(m.group(1), True)
             self.retry()
 

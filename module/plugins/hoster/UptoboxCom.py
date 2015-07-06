@@ -6,7 +6,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class UptoboxCom(XFSHoster):
     __name__    = "UptoboxCom"
     __type__    = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
 
     __pattern__ = r'https?://(?:www\.)?(uptobox|uptostream)\.com/\w{12}'
 
@@ -23,9 +23,9 @@ class UptoboxCom(XFSHoster):
 
 
     def setup(self):
-        self.multiDL = True
-        self.chunkLimit = 1
-        self.resumeDownload = True
+        self.multi_dl = True
+        self.chunk_limit = 1
+        self.resume_download = True
 
 
 getInfo = create_getInfo(UptoboxCom)

@@ -9,14 +9,14 @@ from module.plugins.internal.Account import Account
 class TurbobitNet(Account):
     __name__    = "TurbobitNet"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """TurbobitNet account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         html = self.load("http://turbobit.net", req=req)
 
         m = re.search(r'<u>Turbo Access</u> to ([\d.]+)', html)
@@ -39,4 +39,4 @@ class TurbobitNet(Account):
                               "user[submit]": "Login"}, req=req)
 
         if not '<div class="menu-item user-name">' in html:
-            self.wrongPassword()
+            self.wrong_password()

@@ -10,7 +10,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class LinksnappyCom(MultiHoster):
     __name__    = "LinksnappyCom"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __pattern__ = r'https?://(?:[^/]+\.)?linksnappy\.com'
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
@@ -24,7 +24,7 @@ class LinksnappyCom(MultiHoster):
     SINGLE_CHUNK_HOSTERS = ["easybytez.com"]
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         host        = self._get_host(pyfile.url)
         json_params = json_dumps({'link'    : pyfile.url,
                                   'type'    : host,
@@ -34,7 +34,7 @@ class LinksnappyCom(MultiHoster):
         r = self.load("http://gen.linksnappy.com/genAPI.php",
                       post={'genLinks': json_params})
 
-        self.logDebug("JSON data: " + r)
+        self.log_debug("JSON data: " + r)
 
         j = json_loads(r)['links'][0]
 
@@ -45,7 +45,7 @@ class LinksnappyCom(MultiHoster):
         self.link   = j['generated']
 
         if host in self.SINGLE_CHUNK_HOSTERS:
-            self.chunkLimit = 1
+            self.chunk_limit = 1
         else:
             self.setup()
 

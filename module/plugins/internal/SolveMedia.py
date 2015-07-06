@@ -9,7 +9,7 @@ from module.plugins.internal.Captcha import Captcha
 class SolveMedia(Captcha):
     __name__    = "SolveMedia"
     __type__    = "captcha"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __description__ = """SolveMedia captcha service plugin"""
     __license__     = "GPLv3"
@@ -25,10 +25,10 @@ class SolveMedia(Captcha):
         m = re.search(self.KEY_PATTERN, html)
         if m:
             self.key = m.group(1).strip()
-            self.logDebug("Key: %s" % self.key)
+            self.log_debug("Key: %s" % self.key)
             return self.key
         else:
-            self.logWarning("Key pattern not found")
+            self.log_warning("Key pattern not found")
             return None
 
 
@@ -43,7 +43,7 @@ class SolveMedia(Captcha):
                 magic = re.search(r'name="magic" value="(.+?)"', html).group(1)
 
             except AttributeError:
-                self.logWarning("Magic pattern not found")
+                self.log_warning("Magic pattern not found")
                 magic = None
 
             try:
@@ -54,13 +54,13 @@ class SolveMedia(Captcha):
                 self.fail(_("SolveMedia challenge pattern not found"))
 
             else:
-                self.logDebug("Challenge: %s" % challenge)
+                self.log_debug("Challenge: %s" % challenge)
 
             try:
                 result = self.result("http://api.solvemedia.com/papi/media", challenge)
 
             except Fail, e:
-                self.logWarning(e)
+                self.log_warning(e)
                 self.plugin.invalidCaptcha()
                 result = None
 
@@ -81,8 +81,8 @@ class SolveMedia(Captcha):
 
             else:
                 if "error" in html:
-                    self.logWarning("Captcha code was invalid")
-                    self.logDebug("Retry #%d" % i)
+                    self.log_warning("Captcha code was invalid")
+                    self.log_debug("Retry #%d" % i)
                     html = self.plugin.load(redirect)
                 else:
                     break
@@ -99,6 +99,6 @@ class SolveMedia(Captcha):
                                             cookies=True,
                                             imgtype="gif")
 
-        self.logDebug("Result: %s" % result)
+        self.log_debug("Result: %s" % result)
 
         return result

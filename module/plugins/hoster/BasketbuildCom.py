@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class BasketbuildCom(SimpleHoster):
     __name__    = "BasketbuildCom"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w\.)?basketbuild\.com/filedl/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -28,12 +28,12 @@ class BasketbuildCom(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL        = True
-        self.resumeDownload = True
-        self.chunkLimit     = 1
+        self.multi_dl        = True
+        self.resume_download = True
+        self.chunk_limit     = 1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         try:
             link1 = re.search(r'href="(.+dlgate/.+)"', self.html).group(1)
             self.html = self.load(link1)
@@ -42,15 +42,15 @@ class BasketbuildCom(SimpleHoster):
             self.error(_("Hop #1 not found"))
 
         else:
-            self.logDebug("Next hop: %s" % link1)
+            self.log_debug("Next hop: %s" % link1)
 
         try:
             wait = re.search(r'var sec = (\d+)', self.html).group(1)
-            self.logDebug("Wait %s seconds" % wait)
+            self.log_debug("Wait %s seconds" % wait)
             self.wait(wait)
 
         except AttributeError:
-            self.logDebug("No wait time found")
+            self.log_debug("No wait time found")
 
         try:
             self.link = re.search(r'id="dlLink">\s*<a href="(.+?)"', self.html).group(1)

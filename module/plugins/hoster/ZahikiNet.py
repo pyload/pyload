@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ZahikiNet(SimpleHoster):
     __name__    = "ZahikiNet"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'https?://(?:www\.)?zahiki\.net/\w+/.+'
 
@@ -24,9 +24,9 @@ class ZahikiNet(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = True
-        self.multiDL = True
-        self.limitDL = 6
+        self.resume_download = True
+        self.multi_dl = True
+        self.limit_dl = 6
 
 
 getInfo = create_getInfo(ZahikiNet)

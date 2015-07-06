@@ -10,7 +10,7 @@ from module.plugins.internal.Account import Account
 class FilefactoryCom(Account):
     __name__    = "FilefactoryCom"
     __type__    = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __description__ = """Filefactory.com account plugin"""
     __license__     = "GPLv3"
@@ -21,7 +21,7 @@ class FilefactoryCom(Account):
     VALID_UNTIL_PATTERN = r'Premium valid until: <strong>(?P<D>\d{1,2})\w{1,2} (?P<M>\w{3}), (?P<Y>\d{4})</strong>'
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         html = self.load("http://www.filefactory.com/account/", req=req)
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
@@ -45,4 +45,4 @@ class FilefactoryCom(Account):
                               "Submit"       : "Sign In"}, req=req)
 
         if req.lastEffectiveURL != "http://www.filefactory.com/account/":
-            self.wrongPassword()
+            self.wrong_password()

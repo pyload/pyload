@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class FshareVn(Account):
     __name__    = "FshareVn"
     __type__    = "account"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __description__ = """Fshare.vn account plugin"""
     __license__     = "GPLv3"
@@ -23,19 +23,19 @@ class FshareVn(Account):
     DIRECT_DOWNLOAD_PATTERN = ur'<input type="checkbox"\s*([^=>]*)[^>]*/>Kích hoạt download trực tiếp</dt>'
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         html = self.load("http://www.fshare.vn/account_info.php", req=req)
 
         if re.search(self.LIFETIME_PATTERN, html):
-            self.logDebug("Lifetime membership detected")
-            trafficleft = self.getTrafficLeft()
+            self.log_debug("Lifetime membership detected")
+            trafficleft = self.get_traffic_left()
             return {"validuntil": -1, "trafficleft": trafficleft, "premium": True}
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
             premium = True
             validuntil = time.mktime(time.strptime(m.group(1), '%I:%M:%S %p %d-%m-%Y'))
-            trafficleft = self.getTrafficLeft()
+            trafficleft = self.get_traffic_left()
         else:
             premium = False
             validuntil = None
@@ -53,9 +53,9 @@ class FshareVn(Account):
                         referer=True, req=req)
 
         if not re.search(r'<img\s+alt="VIP"', html):
-            self.wrongPassword()
+            self.wrong_password()
 
 
-    def getTrafficLeft(self):
+    def get_traffic_left(self):
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        return self.parseTraffic(m.group(1) + m.group(2)) if m else 0
+        return self.parse_traffic(m.group(1) + m.group(2)) if m else 0

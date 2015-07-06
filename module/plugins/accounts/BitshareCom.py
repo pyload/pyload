@@ -6,21 +6,21 @@ from module.plugins.internal.Account import Account
 class BitshareCom(Account):
     __name__    = "BitshareCom"
     __type__    = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __description__ = """Bitshare account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Paul King", None)]
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         html = self.load("http://bitshare.com/mysettings.html", req=req)
 
         if "\"http://bitshare.com/myupgrade.html\">Free" in html:
             return {"validuntil": -1, "trafficleft": -1, "premium": False}
 
         if not '<input type="checkbox" name="directdownload" checked="checked" />' in html:
-            self.logWarning(_("Activate direct Download in your Bitshare Account"))
+            self.log_warning(_("Activate direct Download in your Bitshare Account"))
 
         return {"validuntil": -1, "trafficleft": -1, "premium": True}
 
@@ -30,4 +30,4 @@ class BitshareCom(Account):
                         post={"user": user, "password": data['password'], "submit": "Login"}, req=req)
 
         if "login" in req.lastEffectiveURL:
-            self.wrongPassword()
+            self.wrong_password()

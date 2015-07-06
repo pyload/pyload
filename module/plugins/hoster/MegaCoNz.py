@@ -48,7 +48,7 @@ from module.utils import decode, fs_decode, fs_encode
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.30"
+    __version__ = "0.31"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w,-]+)'
 
@@ -67,7 +67,7 @@ class MegaCoNz(Hoster):
         return standard_b64decode(data + '=' * (-len(data) % 4))
 
 
-    def getCipherKey(self, key):
+    def get_cipher_key(self, key):
         """
         Construct the cipher key from the given data
         """
@@ -88,16 +88,16 @@ class MegaCoNz(Hoster):
         uid = random.randint(10 << 9, 10 ** 10)
 
         res = self.load(self.API_URL, get={'id': uid}, post=json_dumps([kwargs]))
-        self.logDebug("Api Response: " + res)
+        self.log_debug("Api Response: " + res)
         return json_loads(res)
 
 
-    def decryptAttr(self, data, key):
-        k, iv, meta_mac = self.getCipherKey(key)
+    def decrypt_attr(self, data, key):
+        k, iv, meta_mac = self.get_cipher_key(key)
         cbc             = AES.new(k, AES.MODE_CBC, "\0" * 16)
         attr            = decode(cbc.decrypt(self.b64_decode(data)))
 
-        self.logDebug("Decrypted Attr: %s" % attr)
+        self.log_debug("Decrypted Attr: %s" % attr)
         if not attr.startswith("MEGA"):
             self.fail(_("Decryption failed"))
 
@@ -105,7 +105,7 @@ class MegaCoNz(Hoster):
         return json_loads(re.search(r'{.+?}', attr).group(0))
 
 
-    def decryptFile(self, key):
+    def decrypt_file(self, key):
         """
         Decrypts the file at lastDownload`
         """
@@ -113,14 +113,14 @@ class MegaCoNz(Hoster):
         n = self.b64_decode(key)[16:24]
 
         #: convert counter to long and shift bytes
-        k, iv, meta_mac = self.getCipherKey(key)
+        k, iv, meta_mac = self.get_cipher_key(key)
         ctr             = Counter.new(128, initial_value=long(n.encode("hex"), 16) << 64)
         cipher          = AES.new(k, AES.MODE_CTR, counter=ctr)
 
         self.pyfile.setStatus("decrypting")
         self.pyfile.setProgress(0)
 
-        file_crypted   = fs_encode(self.lastDownload)
+        file_crypted   = fs_encode(self.last_download)
         file_decrypted = file_crypted.rsplit(self.FILE_SUFFIX)[0]
 
         try:
@@ -167,17 +167,17 @@ class MegaCoNz(Hoster):
             #: self.fail(_("Checksum mismatch"))
 
         os.remove(file_crypted)
-        self.lastDownload = fs_decode(file_decrypted)
+        self.last_download = fs_decode(file_decrypted)
 
 
-    def checkError(self, code):
+    def check_error(self, code):
         ecode = abs(code)
 
         if ecode in (9, 16, 21):
             self.offline()
 
         elif ecode in (3, 13, 17, 18, 19):
-            self.tempOffline()
+            self.temp_offline()
 
         elif ecode in (1, 4, 6, 10, 15, 21):
             self.retry(5, 30, _("Error code: [%s]") % -ecode)
@@ -192,7 +192,7 @@ class MegaCoNz(Hoster):
         key     = pattern['KEY']
         public  = pattern['TYPE'] == ''
 
-        self.logDebug("ID: %s" % id, "Key: %s" % key, "Type: %s" % ("public" if public else "node"))
+        self.log_debug("ID: %s" % id, "Key: %s" % key, "Type: %s" % ("public" if public else "node"))
 
         #: g is for requesting a download url
         #: this is similar to the calls in the mega js app, documentation is very bad
@@ -202,11 +202,11 @@ class MegaCoNz(Hoster):
             mega = self.api_response(a="g", g=1, n=id, ssl=1)[0]
 
         if isinstance(mega, int):
-            self.checkError(mega)
+            self.check_error(mega)
         elif "e" in mega:
-            self.checkError(mega['e'])
+            self.check_error(mega['e'])
 
-        attr = self.decryptAttr(mega['at'], key)
+        attr = self.decrypt_attr(mega['at'], key)
 
         pyfile.name = attr['n'] + self.FILE_SUFFIX
         pyfile.size = mega['s']
@@ -215,7 +215,7 @@ class MegaCoNz(Hoster):
 
         self.download(mega['g'])
 
-        self.decryptFile(key)
+        self.decrypt_file(key)
 
         #: Everything is finished and final name can be set
         pyfile.name = attr['n']

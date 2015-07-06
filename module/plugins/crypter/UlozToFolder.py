@@ -7,7 +7,7 @@ from module.plugins.internal.Crypter import Crypter
 class UlozToFolder(Crypter):
     __name__    = "UlozToFolder"
     __type__    = "crypter"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(m|soubory)/.+'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
@@ -28,7 +28,7 @@ class UlozToFolder(Crypter):
 
         new_links = []
         for i in xrange(1, 100):
-            self.logInfo(_("Fetching links from page %i") % i)
+            self.log_info(_("Fetching links from page %i") % i)
             m = re.search(self.FOLDER_PATTERN, html, re.S)
             if m is None:
                 self.error(_("FOLDER_PATTERN not found"))
@@ -40,7 +40,7 @@ class UlozToFolder(Crypter):
             else:
                 break
         else:
-            self.logInfo(_("Limit of 99 pages reached, aborting"))
+            self.log_info(_("Limit of 99 pages reached, aborting"))
 
         if new_links:
             self.urls = [map(lambda s: "http://ulozto.net/%s" % s, new_links)]

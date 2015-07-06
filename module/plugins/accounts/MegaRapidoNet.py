@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class MegaRapidoNet(Account):
     __name__    = "MegaRapidoNet"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """MegaRapido.net account plugin"""
     __license__     = "GPLv3"
@@ -20,7 +20,7 @@ class MegaRapidoNet(Account):
     USER_ID_PATTERN     = r'<\s*?div[^>]*?class\s*?=\s*?["\']checkbox_compartilhar["\'].*?>.*?<\s*?input[^>]*?name\s*?=\s*?["\']usar["\'].*?>.*?<\s*?input[^>]*?name\s*?=\s*?["\']user["\'][^>]*?value\s*?=\s*?["\'](.*?)\s*?["\']'
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         validuntil  = None
         trafficleft = None
         premium     = False
@@ -29,7 +29,7 @@ class MegaRapidoNet(Account):
 
         validuntil = re.search(self.VALID_UNTIL_PATTERN, html)
         if validuntil:
-            #hier weitermachen!!! (müssen umbedingt die zeit richtig machen damit! (sollte aber möglich))
+            # hier weitermachen!!! (müssen umbedingt die zeit richtig machen damit! (sollte aber möglich))
             validuntil  = time.time() + int(validuntil.group(1)) * 24 * 3600 + int(validuntil.group(2)) * 3600 + int(validuntil.group(3)) * 60 + int(validuntil.group(4))
             trafficleft = -1
             premium     = True
@@ -47,7 +47,7 @@ class MegaRapidoNet(Account):
         html = self.load("http://megarapido.net/gerador", req=req)
 
         if "sair" not in html.lower():
-            self.wrongPassword()
+            self.wrong_password()
         else:
             m = re.search(self.USER_ID_PATTERN, html)
             if m:

@@ -9,7 +9,7 @@ from module.common.json_layer import json_loads
 class SoundcloudCom(SimpleHoster):
     __name__    = "SoundcloudCom"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __pattern__ = r'https?://(?:www\.)?soundcloud\.com/[\w-]+/[\w-]+'
     __config__  = [("use_premium", "bool"        , "Use premium account if available", True    ),
@@ -24,7 +24,7 @@ class SoundcloudCom(SimpleHoster):
     OFFLINE_PATTERN = r'<title>"SoundCloud - Hear the world’s sounds"</title>'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         try:
             song_id = re.search(r'sounds:(\d+)"', self.html).group(1)
 
@@ -46,10 +46,10 @@ class SoundcloudCom(SimpleHoster):
                               key=lambda t: regex.sub(t[0], ''),
                               reverse=True)
 
-        self.logDebug("Streams found: %s" % (http_streams or "None"))
+        self.log_debug("Streams found: %s" % (http_streams or "None"))
 
         if http_streams:
-            stream_name, self.link = http_streams[0 if self.getConfig('quality') == "Higher" else -1]
+            stream_name, self.link = http_streams[0 if self.get_config('quality') == "Higher" else -1]
             pyfile.name += '.' + stream_name.split('_')[1].lower()
 
 

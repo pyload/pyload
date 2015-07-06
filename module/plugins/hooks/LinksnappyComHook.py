@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class LinksnappyComHook(MultiHook):
     __name__    = "LinksnappyComHook"
     __type__    = "hook"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -19,7 +19,7 @@ class LinksnappyComHook(MultiHook):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    def getHosters(self):
+    def get_hosters(self):
         json_data = self.load("http://gen.linksnappy.com/lseAPI.php", get={'act': "FILEHOSTS"})
         json_data = json_loads(json_data)
 

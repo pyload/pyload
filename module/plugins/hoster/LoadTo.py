@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class LoadTo(SimpleHoster):
     __name__    = "LoadTo"
     __type__    = "hoster"
-    __version__ = "0.24"
+    __version__ = "0.25"
 
     __pattern__ = r'http://(?:www\.)?load\.to/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -35,11 +35,11 @@ class LoadTo(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL = True
-        self.chunkLimit = 1
+        self.multi_dl = True
+        self.chunk_limit = 1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         #: Search for Download URL
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:

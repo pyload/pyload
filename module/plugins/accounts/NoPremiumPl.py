@@ -11,7 +11,7 @@ from module.plugins.internal.Account import Account
 class NoPremiumPl(Account):
     __name__    = "NoPremiumPl"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = "NoPremium.pl account plugin"
     __license__     = "GPLv3"
@@ -31,10 +31,10 @@ class NoPremiumPl(Account):
     _pwd = None
 
 
-    def loadAccountInfo(self, name, req):
+    def load_account_info(self, name, req):
         self._req = req
         try:
-            result = json_loads(self.runAuthQuery())
+            result = json_loads(self.run_auth_query())
         except Exception:
             #@TODO: return or let it be thrown?
             return
@@ -59,23 +59,23 @@ class NoPremiumPl(Account):
         self._req = req
 
         try:
-            response = json_loads(self.runAuthQuery())
+            response = json_loads(self.run_auth_query())
         except Exception:
-            self.wrongPassword()
+            self.wrong_password()
 
         if "errno" in response.keys():
-            self.wrongPassword()
+            self.wrong_password()
 
         data['usr'] = self._usr
         data['pwd'] = self._pwd
 
 
-    def createAuthQuery(self):
+    def create_auth_query(self):
         query = self.API_QUERY
         query['username'] = self._usr
         query['password'] = self._pwd
         return query
 
 
-    def runAuthQuery(self):
-        return self._self.load(self.API_URL, post=self.createAuthQuery(), req=req)
+    def run_auth_query(self):
+        return self._self.load(self.API_URL, post=self.create_auth_query(), req=req)

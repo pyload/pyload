@@ -8,7 +8,7 @@ from module.plugins.internal.Crypter import Crypter
 class LinkdecrypterCom(Crypter):
     __name__    = "LinkdecrypterCom"
     __type__    = "crypter"
-    __version__ = "0.30"
+    __version__ = "0.31"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
@@ -27,7 +27,7 @@ class LinkdecrypterCom(Crypter):
 
 
     def setup(self):
-        self.password = self.getPassword()
+        self.password = self.get_password()
         self.req.setOption("timeout", 300)
 
 
@@ -49,9 +49,9 @@ class LinkdecrypterCom(Crypter):
 
                 m = re.search(r"<p><i><b>([^<]+)</b></i></p>", self.html)
                 msg = m.group(1) if m else ""
-                self.logInfo(_("Captcha protected link"), result_type, msg)
+                self.log_info(_("Captcha protected link"), result_type, msg)
 
-                captcha = self.decryptCaptcha(captcha_url, result_type=result_type)
+                captcha = self.decrypt_captcha(captcha_url, result_type=result_type)
                 if result_type == "positional":
                     captcha = "%d|%d" % captcha
                 self.html = self.load('http://linkdecrypter.com/', post={"captcha": captcha})
@@ -59,7 +59,7 @@ class LinkdecrypterCom(Crypter):
 
             elif self.PASSWORD_PATTERN in self.html:
                 if self.password:
-                    self.logInfo(_("Password protected link"))
+                    self.log_info(_("Password protected link"))
                     self.html = self.load('http://linkdecrypter.com/', post={'password': self.password})
                 else:
                     self.fail(_("Missing password"))

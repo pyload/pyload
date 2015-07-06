@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, t
 class UploadingCom(SimpleHoster):
     __name__    = "UploadingCom"
     __type__    = "hoster"
-    __version__ = "0.41"
+    __version__ = "0.42"
 
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>\w+)'
 
@@ -39,12 +39,12 @@ class UploadingCom(SimpleHoster):
         self.getFileInfo()
 
         if self.premium:
-            self.handlePremium(pyfile)
+            self.handle_premium(pyfile)
         else:
-            self.handleFree(pyfile)
+            self.handle_free(pyfile)
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         postData = {'action': 'get_link',
                     'code'  : self.info['pattern']['ID'],
                     'pass'  : 'undefined'}
@@ -57,11 +57,11 @@ class UploadingCom(SimpleHoster):
         raise Exception("Plugin defect")
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         m = re.search('<h2>((Daily )?Download Limit)</h2>', self.html)
         if m:
             pyfile.error = m.group(1)
-            self.logWarning(pyfile.error)
+            self.log_warning(pyfile.error)
             self.retry(6, (6 * 60 if m.group(2) else 15) * 60, pyfile.error)
 
         ajax_url = "http://uploading.com/files/get/?ajax"
@@ -72,7 +72,7 @@ class UploadingCom(SimpleHoster):
 
         if 'answer' in res and 'wait_time' in res['answer']:
             wait_time = int(res['answer']['wait_time'])
-            self.logInfo(_("Waiting %d seconds") % wait_time)
+            self.log_info(_("Waiting %d seconds") % wait_time)
             self.wait(wait_time)
         else:
             self.error(_("No AJAX/WAIT"))

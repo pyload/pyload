@@ -6,14 +6,14 @@ from module.plugins.internal.Account import Account
 class FilesMailRu(Account):
     __name__    = "FilesMailRu"
     __type__    = "account"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __description__ = """Filesmail.ru account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         return {"validuntil": None, "trafficleft": None}
 
 
@@ -27,4 +27,4 @@ class FilesMailRu(Account):
                               "Page": "http://files.mail.ru/"}, req=req)
 
         if "Неверное имя пользователя или пароль" in html:
-            self.wrongPassword()
+            self.wrong_password()

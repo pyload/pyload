@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.20"
+    __version__ = "1.21"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
@@ -48,7 +48,7 @@ class UnRar(Extractor):
 
 
     @classmethod
-    def isUsable(cls):
+    def is_usable(cls):
         if os.name == "nt":
             try:
                 cls.CMD = os.path.join(pypath, "RAR.exe")
@@ -79,7 +79,7 @@ class UnRar(Extractor):
 
 
     @classmethod
-    def isMultipart(cls, filename):
+    def is_multipart(cls, filename):
         return True if cls.re_multipart.search(filename) else False
 
 
@@ -131,7 +131,7 @@ class UnRar(Extractor):
                 break
             #: reading a percentage sign -> set progress and restart
             if c == '%':
-                self.notifyProgress(int(s))
+                self.notify_progress(int(s))
                 s = ""
             #: not reading a digit -> therefore restart
             elif c not in digits:
@@ -168,14 +168,14 @@ class UnRar(Extractor):
         self.files = self.list(password)
 
 
-    def getDeleteFiles(self):
+    def get_delete_files(self):
         dir, name = os.path.split(self.filename)
 
         #: actually extracted file
         files = [self.filename]
 
         #: eventually Multipart Files
-        files.extend(fs_join(dir, os.path.basename(file)) for file in filter(self.isMultipart, os.listdir(dir))
+        files.extend(fs_join(dir, os.path.basename(file)) for file in filter(self.is_multipart, os.listdir(dir))
                      if re.sub(self.re_multipart,".rar",name) == re.sub(self.re_multipart,".rar",file))
 
         return files

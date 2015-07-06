@@ -6,7 +6,7 @@ from module.plugins.internal.OCR import OCR
 class ShareonlineBiz(OCR):
     __name__    = "ShareonlineBiz"
     __type__    = "ocr"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __description__ = """Shareonline.biz ocr plugin"""
     __license__     = "GPLv3"
@@ -23,8 +23,8 @@ class ShareonlineBiz(OCR):
         self.image = self.image.resize((160, 50))
         self.pixels = self.image.load()
         self.threshold(1.85)
-        #self.eval_black_white(240)
-        #self.derotate_by_average()
+        # self.eval_black_white(240)
+        # self.derotate_by_average()
 
         letters = self.split_captcha_letters()
 
@@ -36,4 +36,4 @@ class ShareonlineBiz(OCR):
 
         return final
 
-        #tesseract at 60%
+        # tesseract at 60%

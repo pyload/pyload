@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class UlozTo(Account):
     __name__    = "UlozTo"
     __type__    = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __description__ = """Uloz.to account plugin"""
     __license__     = "GPLv3"
@@ -20,7 +20,7 @@ class UlozTo(Account):
     TRAFFIC_LEFT_PATTERN = r'<li class="menu-kredit"><a .*?title=".+?GB = ([\d.]+) MB"'
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         html = self.load("http://www.ulozto.net/", req=req)
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
@@ -45,4 +45,4 @@ class UlozTo(Account):
                               'remember': "on"})
 
         if '<div class="flash error">' in html:
-            self.wrongPassword()
+            self.wrong_password()

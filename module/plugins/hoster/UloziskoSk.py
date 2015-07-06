@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UloziskoSk(SimpleHoster):
     __name__    = "UloziskoSk"
     __type__    = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.26"
 
     __pattern__ = r'http://(?:www\.)?ulozisko\.sk/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -37,10 +37,10 @@ class UloziskoSk(SimpleHoster):
         if m:
             self.link = "http://ulozisko.sk" + m.group(1)
         else:
-            self.handleFree(pyfile)
+            self.handle_free(pyfile)
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
             self.error(_("LINK_FREE_PATTERN not found"))
@@ -51,16 +51,16 @@ class UloziskoSk(SimpleHoster):
             self.error(_("ID_PATTERN not found"))
         id = m.group(1)
 
-        self.logDebug("URL:" + parsed_url + ' ID:' + id)
+        self.log_debug("URL:" + parsed_url + ' ID:' + id)
 
         m = re.search(self.CAPTCHA_PATTERN, self.html)
         if m is None:
             self.error(_("CAPTCHA_PATTERN not found"))
 
         captcha_url = urlparse.urljoin("http://www.ulozisko.sk", m.group(1))
-        captcha = self.decryptCaptcha(captcha_url, cookies=True)
+        captcha = self.decrypt_captcha(captcha_url, cookies=True)
 
-        self.logDebug("CAPTCHA_URL:" + captcha_url + ' CAPTCHA:' + captcha)
+        self.log_debug("CAPTCHA_URL:" + captcha_url + ' CAPTCHA:' + captcha)
 
         self.download(parsed_url,
                       post={"antispam": captcha,

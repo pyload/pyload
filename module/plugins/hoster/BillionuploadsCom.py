@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class BillionuploadsCom(DeadHoster):
     __name__    = "BillionuploadsCom"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = r'http://(?:www\.)?billionuploads\.com/\w{12}'
     __config__  = []  #@TODO: Remove in 0.4.10

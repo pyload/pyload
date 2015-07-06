@@ -10,7 +10,7 @@ from module.plugins.internal.Plugin import set_cookies
 class UploadingCom(Account):
     __name__    = "UploadingCom"
     __type__    = "account"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __description__ = """Uploading.com account plugin"""
     __license__     = "GPLv3"
@@ -21,7 +21,7 @@ class UploadingCom(Account):
     VALID_UNTIL_PATTERN = r'Valid Until:(.+?)<'
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         validuntil  = None
         trafficleft = None
         premium     = None
@@ -33,13 +33,13 @@ class UploadingCom(Account):
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
             expiredate = m.group(1).strip()
-            self.logDebug("Expire date: " + expiredate)
+            self.log_debug("Expire date: " + expiredate)
 
             try:
                 validuntil = time.mktime(time.strptime(expiredate, "%b %d, %Y"))
 
             except Exception, e:
-                self.logError(e)
+                self.log_error(e)
 
             else:
                 if validuntil > time.mktime(time.gmtime()):

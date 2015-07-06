@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class TwoSharedCom(SimpleHoster):
     __name__    = "TwoSharedCom"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __pattern__ = r'http://(?:www\.)?2shared\.com/(account/)?(download|get|file|document|photo|video|audio)/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -26,8 +26,8 @@ class TwoSharedCom(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = True
-        self.multiDL        = True
+        self.resume_download = True
+        self.multi_dl        = True
 
 
 getInfo = create_getInfo(TwoSharedCom)

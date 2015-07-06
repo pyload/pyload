@@ -18,7 +18,7 @@ from module.utils import formatSize
 class IRCInterface(Thread, Hook):
     __name__    = "IRCInterface"
     __type__    = "hook"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __config__ = [("host"     , "str" , "IRC-Server Address"                           , "Enter your server here!"),
                   ("port"     , "int" , "IRC-Server Port"                              , 6667                     ),
@@ -42,7 +42,7 @@ class IRCInterface(Thread, Hook):
     def __init__(self, core, manager):
         Thread.__init__(self)
         Hook.__init__(self, core, manager)
-        self.setDaemon(True)
+        self.set_daemon(True)
 
 
     def activate(self):
@@ -55,7 +55,7 @@ class IRCInterface(Thread, Hook):
 
     def package_finished(self, pypack):
         try:
-            if self.getConfig('info_pack'):
+            if self.get_config('info_pack'):
                 self.response(_("Package finished: %s") % pypack.name)
         except Exception:
             pass
@@ -63,7 +63,7 @@ class IRCInterface(Thread, Hook):
 
     def download_finished(self, pyfile):
         try:
-            if self.getConfig('info_file'):
+            if self.get_config('info_file'):
                 self.response(
                     _("Download finished: %(name)s @ %(plugin)s ") % {"name": pyfile.name, "plugin": pyfile.pluginname})
         except Exception:
@@ -71,7 +71,7 @@ class IRCInterface(Thread, Hook):
 
 
     def captcha_task(self, task):
-        if self.getConfig('captcha') and task.isTextual():
+        if self.get_config('captcha') and task.isTextual():
             task.handler.append(self)
             task.setWaiting(60)
 
@@ -86,20 +86,20 @@ class IRCInterface(Thread, Hook):
     def run(self):
         #: connect to IRC etc.
         self.sock = socket.socket()
-        host = self.getConfig('host')
-        self.sock.connect((host, self.getConfig('port')))
+        host = self.get_config('host')
+        self.sock.connect((host, self.get_config('port')))
 
-        if self.getConfig('ssl'):
+        if self.get_config('ssl'):
             self.sock = ssl.wrap_socket(self.sock, cert_reqs=ssl.CERT_NONE)  #@TODO: support certificate
 
-        nick = self.getConfig('nick')
+        nick = self.get_config('nick')
         self.sock.send("NICK %s\r\n" % nick)
         self.sock.send("USER %s %s bla :%s\r\n" % (nick, host, nick))
-        for t in self.getConfig('owner').split():
+        for t in self.get_config('owner').split():
             if t.strip().startswith("#"):
                 self.sock.send("JOIN %s\r\n" % t.strip())
-        self.logInfo(_("Connected to"), host)
-        self.logInfo(_("Switching to listening mode!"))
+        self.log_info(_("Connected to"), host)
+        self.log_info(_("Switching to listening mode!"))
         try:
             self.main_loop()
 
@@ -149,10 +149,10 @@ class IRCInterface(Thread, Hook):
 
 
     def handle_events(self, msg):
-        if not msg['origin'].split("!", 1)[0] in self.getConfig('owner').split():
+        if not msg['origin'].split("!", 1)[0] in self.get_config('owner').split():
             return
 
-        if msg['target'].split("!", 1)[0] != self.getConfig('nick'):
+        if msg['target'].split("!", 1)[0] != self.get_config('nick'):
             return
 
         if msg['action'] != "PRIVMSG":
@@ -160,15 +160,15 @@ class IRCInterface(Thread, Hook):
 
         #: HANDLE CTCP ANTI FLOOD/BOT PROTECTION
         if msg['text'] == "\x01VERSION\x01":
-            self.logDebug("Sending CTCP VERSION")
+            self.log_debug("Sending CTCP VERSION")
             self.sock.send("NOTICE %s :%s\r\n" % (msg['origin'], "pyLoad! IRC Interface"))
             return
         elif msg['text'] == "\x01TIME\x01":
-            self.logDebug("Sending CTCP TIME")
+            self.log_debug("Sending CTCP TIME")
             self.sock.send("NOTICE %s :%d\r\n" % (msg['origin'], time.time()))
             return
         elif msg['text'] == "\x01LAG\x01":
-            self.logDebug("Received CTCP LAG")  #: don't know how to answer
+            self.log_debug("Received CTCP LAG")  #: don't know how to answer
             return
 
         trigger = "pass"
@@ -188,12 +188,12 @@ class IRCInterface(Thread, Hook):
             for line in res:
                 self.response(line, msg['origin'])
         except Exception, e:
-            self.logError(e)
+            self.log_error(e)
 
 
     def response(self, msg, origin=""):
         if origin == "":
-            for t in self.getConfig('owner').split():
+            for t in self.get_config('owner').split():
                 self.sock.send("PRIVMSG %s :%s\r\n" % (t.strip(), msg))
         else:
             self.sock.send("PRIVMSG %s :%s\r\n" % (origin.split("!", 1)[0], msg))
@@ -339,7 +339,7 @@ class IRCInterface(Thread, Hook):
             if not pack:
                 return ["ERROR: Package doesn't exists."]
 
-            #TODO add links
+            # TODO add links
 
             return ["INFO: Added %d links to Package %s [#%d]" % (len(links), pack['name'], id)]
 

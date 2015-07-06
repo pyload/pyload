@@ -8,7 +8,7 @@ from module.plugins.internal.Account import Account
 class FastshareCz(Account):
     __name__    = "FastshareCz"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __description__ = """Fastshare.cz account plugin"""
     __license__     = "GPLv3"
@@ -19,7 +19,7 @@ class FastshareCz(Account):
     CREDIT_PATTERN = r'Credit\s*:\s*</td>\s*<td>(.+?)\s*<'
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         validuntil  = -1
         trafficleft = None
         premium     = False
@@ -28,7 +28,7 @@ class FastshareCz(Account):
 
         m = re.search(self.CREDIT_PATTERN, html)
         if m:
-            trafficleft = self.parseTraffic(m.group(1))
+            trafficleft = self.parse_traffic(m.group(1))
 
         premium = bool(trafficleft)
 
@@ -46,4 +46,4 @@ class FastshareCz(Account):
                         post={'login': user, 'heslo': data['password']}, req=req)
 
         if ">Wrong username or password" in html:
-            self.wrongPassword()
+            self.wrong_password()

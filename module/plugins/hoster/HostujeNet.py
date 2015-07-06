@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class HostujeNet(SimpleHoster):
     __name__    = "HostujeNet"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?hostuje\.net/\w+'
 
@@ -23,11 +23,11 @@ class HostujeNet(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL    = True
-        self.chunkLimit = 1
+        self.multi_dl    = True
+        self.chunk_limit = 1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         m = re.search(r'<script src="([\w^_]+.php)"></script>', self.html)
         if m:
             jscript = self.load("http://hostuje.net/" + m.group(1))
@@ -39,7 +39,7 @@ class HostujeNet(SimpleHoster):
         else:
             self.error(_("script not found"))
 
-        action, inputs = self.parseHtmlForm(pyfile.url.replace(".", "\.").replace( "?", "\?"))
+        action, inputs = self.parse_html_form(pyfile.url.replace(".", "\.").replace( "?", "\?"))
         if not action:
             self.error(_("form not found"))
 

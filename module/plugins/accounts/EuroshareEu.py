@@ -9,14 +9,14 @@ from module.plugins.internal.Account import Account
 class EuroshareEu(Account):
     __name__    = "EuroshareEu"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """Euroshare.eu account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         self.relogin(user)
         html = self.load("http://euroshare.eu/customer-zone/settings/", req=req)
 
@@ -38,4 +38,4 @@ class EuroshareEu(Account):
                               "password": data['password']}, req=req)
 
         if u">Nesprávne prihlasovacie meno alebo heslo" in html:
-            self.wrongPassword()
+            self.wrong_password()

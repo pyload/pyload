@@ -6,14 +6,14 @@ import re
 
 from module.plugins.internal.ReCaptcha import ReCaptcha
 from module.plugins.internal.SolveMedia import SolveMedia
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, secondsToMidnight
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, seconds_to_midnight
 from module.utils import html_unescape
 
 
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.53"
+    __version__ = "0.54"
 
     __pattern__ = r'^unmatchable$'
 
@@ -51,8 +51,8 @@ class XFSHoster(SimpleHoster):
 
 
     def setup(self):
-        self.chunkLimit     = -1 if self.premium else 1
-        self.resumeDownload = self.multiDL = self.premium
+        self.chunk_limit     = -1 if self.premium else 1
+        self.resume_download = self.multi_dl = self.premium
 
 
     def prepare(self):
@@ -80,20 +80,20 @@ class XFSHoster(SimpleHoster):
         super(XFSHoster, self).prepare()
 
         if self.DIRECT_LINK is None:
-            self.directDL = self.premium
+            self.direct_d_l = self.premium
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         for i in xrange(1, 6):
-            self.logDebug("Getting download link #%d" % i)
+            self.log_debug("Getting download link #%d" % i)
 
-            self.checkErrors()
+            self.check_errors()
 
             m = re.search(self.LINK_PATTERN, self.html, re.S)
             if m:
                 break
 
-            data = self.getPostParameters()
+            data = self.get_post_parameters()
 
             self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
 
@@ -109,24 +109,24 @@ class XFSHoster(SimpleHoster):
             if m:
                 break
         else:
-            self.logError(data['op'] if 'op' in data else _("UNKNOWN"))
+            self.log_error(data['op'] if 'op' in data else _("UNKNOWN"))
             return ""
 
         self.link = m.group(1)
 
 
-    def handlePremium(self, pyfile):
-        return self.handleFree(pyfile)
+    def handle_premium(self, pyfile):
+        return self.handle_free(pyfile)
 
 
-    def handleMulti(self, pyfile):
+    def handle_multi(self, pyfile):
         if not self.account:
             self.fail(_("Only registered or premium users can use url leech feature"))
 
-        #only tested with easybytez.com
+        # only tested with easybytez.com
         self.html = self.load("http://www.%s/" % self.HOSTER_DOMAIN)
 
-        action, inputs = self.parseHtmlForm()
+        action, inputs = self.parse_html_form()
 
         upload_id = "%012d" % int(random.random() * 10 ** 12)
         action += upload_id + "&js_on=1&utype=prem&upload_type=url"
@@ -135,19 +135,19 @@ class XFSHoster(SimpleHoster):
         inputs['url_mass'] = pyfile.url
         inputs['up1oad_type'] = 'url'
 
-        self.logDebug(action, inputs)
+        self.log_debug(action, inputs)
 
         self.req.setOption("timeout", 600)  #: wait for file to upload to easybytez.com
 
         self.html = self.load(action, post=inputs)
 
-        self.checkErrors()
+        self.check_errors()
 
-        action, inputs = self.parseHtmlForm('F1')
+        action, inputs = self.parse_html_form('F1')
         if not inputs:
             self.retry(reason=self.info['error'] if 'error' in self.info else _("TEXTAREA F1 not found"))
 
-        self.logDebug(inputs)
+        self.log_debug(inputs)
 
         stmsg = inputs['st']
 
@@ -158,12 +158,12 @@ class XFSHoster(SimpleHoster):
             self.retry(20, 3 * 60, _("Can not leech file"))
 
         elif 'today' in stmsg:
-            self.retry(wait_time=secondsToMidnight(gmt=2), reason=_("You've used all Leech traffic today"))
+            self.retry(wait_time=seconds_to_midnight(gmt=2), reason=_("You've used all Leech traffic today"))
 
         else:
             self.fail(stmsg)
 
-        #get easybytez.com link for uploaded file
+        # get easybytez.com link for uploaded file
         m = re.search(self.LINK_LEECH_PATTERN, self.html)
         if m is None:
             self.error(_("LINK_LEECH_PATTERN not found"))
@@ -174,22 +174,22 @@ class XFSHoster(SimpleHoster):
             self.link = header['location']
 
 
-    def getPostParameters(self):
+    def get_post_parameters(self):
         if self.FORM_PATTERN or self.FORM_INPUTS_MAP:
-            action, inputs = self.parseHtmlForm(self.FORM_PATTERN or "", self.FORM_INPUTS_MAP or {})
+            action, inputs = self.parse_html_form(self.FORM_PATTERN or "", self.FORM_INPUTS_MAP or {})
         else:
-            action, inputs = self.parseHtmlForm(input_names={'op': re.compile(r'^download')})
+            action, inputs = self.parse_html_form(input_names={'op': re.compile(r'^download')})
 
         if not inputs:
-            action, inputs = self.parseHtmlForm('F1')
+            action, inputs = self.parse_html_form('F1')
             if not inputs:
                 self.retry(reason=self.info['error'] if 'error' in self.info else _("TEXTAREA F1 not found"))
 
-        self.logDebug(inputs)
+        self.log_debug(inputs)
 
         if 'op' in inputs:
             if "password" in inputs:
-                password = self.getPassword()
+                password = self.get_password()
                 if password:
                     inputs['password'] = password
                 else:
@@ -199,9 +199,9 @@ class XFSHoster(SimpleHoster):
                 m = re.search(self.WAIT_PATTERN, self.html)
                 if m:
                     wait_time = int(m.group(1))
-                    self.setWait(wait_time, False)
+                    self.set_wait(wait_time, False)
 
-                self.handleCaptcha(inputs)
+                self.handle_captcha(inputs)
                 self.wait()
         else:
             inputs['referer'] = self.pyfile.url
@@ -216,11 +216,11 @@ class XFSHoster(SimpleHoster):
         return inputs
 
 
-    def handleCaptcha(self, inputs):
+    def handle_captcha(self, inputs):
         m = re.search(self.CAPTCHA_PATTERN, self.html)
         if m:
             captcha_url = m.group(1)
-            inputs['code'] = self.decryptCaptcha(captcha_url)
+            inputs['code'] = self.decrypt_captcha(captcha_url)
             return
 
         m = re.search(self.CAPTCHA_BLOCK_PATTERN, self.html, re.S)
@@ -228,11 +228,11 @@ class XFSHoster(SimpleHoster):
             captcha_div = m.group(1)
             numerals    = re.findall(r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
 
-            self.logDebug(captcha_div)
+            self.log_debug(captcha_div)
 
             inputs['code'] = "".join(a[1] for a in sorted(numerals, key=lambda num: int(num[0])))
 
-            self.logDebug("Captcha code: %s" % inputs['code'], numerals)
+            self.log_debug("Captcha code: %s" % inputs['code'], numerals)
             return
 
         recaptcha = ReCaptcha(self)
@@ -243,7 +243,7 @@ class XFSHoster(SimpleHoster):
             captcha_key = recaptcha.detect_key()
 
         else:
-            self.logDebug("ReCaptcha key: %s" % captcha_key)
+            self.log_debug("ReCaptcha key: %s" % captcha_key)
 
         if captcha_key:
             inputs['recaptcha_response_field'], inputs['recaptcha_challenge_field'] = recaptcha.challenge(captcha_key)
@@ -257,7 +257,7 @@ class XFSHoster(SimpleHoster):
             captcha_key = solvemedia.detect_key()
 
         else:
-            self.logDebug("SolveMedia key: %s" % captcha_key)
+            self.log_debug("SolveMedia key: %s" % captcha_key)
 
         if captcha_key:
             inputs['adcopy_response'], inputs['adcopy_challenge'] = solvemedia.challenge(captcha_key)

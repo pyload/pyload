@@ -8,7 +8,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class TusfilesNet(XFSHoster):
     __name__    = "TusfilesNet"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/\w{12}'
 
@@ -22,9 +22,9 @@ class TusfilesNet(XFSHoster):
 
 
     def setup(self):
-        self.chunkLimit     = -1
-        self.multiDL        = True
-        self.resumeDownload = True
+        self.chunk_limit     = -1
+        self.multi_dl        = True
+        self.resume_download = True
 
 
     def download(self, url, *args, **kwargs):
@@ -33,7 +33,7 @@ class TusfilesNet(XFSHoster):
 
         except BadHeader, e:
             if e.code is 503:
-                self.multiDL = False
+                self.multi_dl = False
                 raise Retry("503")
 
 

@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class NitroflareComFolder(SimpleCrypter):
     __name__    = "NitroflareComFolder"
     __type__    = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/folder/(?P<USER>\d+)/(?P<ID>[\w=]+)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
@@ -18,7 +18,7 @@ class NitroflareComFolder(SimpleCrypter):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def getLinks(self):
+    def get_links(self):
         res = json_loads(self.load("http://nitroflare.com/ajax/folder.php",
                                    post={'userId' : self.info['pattern']['USER'],
                                          'folder' : self.info['pattern']['ID'],

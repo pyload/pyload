@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class PremiumizeMeHook(MultiHook):
     __name__    = "PremiumizeMeHook"
     __type__    = "hook"
-    __version__ = "0.18"
+    __version__ = "0.19"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -19,7 +19,7 @@ class PremiumizeMeHook(MultiHook):
     __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
 
 
-    def getHosters(self):
+    def get_hosters(self):
         #: Get account data
         user, data = self.account.selectAccount()
 

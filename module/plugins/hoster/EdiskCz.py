@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class EdiskCz(SimpleHoster):
     __name__    = "EdiskCz"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __pattern__ = r'http://(?:www\.)?edisk\.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -26,13 +26,13 @@ class EdiskCz(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL = False
+        self.multi_dl = False
 
 
     def process(self, pyfile):
         url = re.sub("/(stahni|sk/stahni)/", "/en/download/", pyfile.url)
 
-        self.logDebug("URL:" + url)
+        self.log_debug("URL:" + url)
 
         m = re.search(self.ACTION_PATTERN, url)
         if m is None:

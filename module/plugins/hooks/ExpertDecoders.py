@@ -15,7 +15,7 @@ from module.plugins.internal.Hook import Hook, threaded
 class ExpertDecoders(Hook):
     __name__    = "ExpertDecoders"
     __type__    = "hook"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __config__ = [("passkey"     , "password", "Access key"                      , ""  ),
                   ("check_client", "bool"    , "Don't use if client is connected", True)]
@@ -35,20 +35,20 @@ class ExpertDecoders(Hook):
         self.info = {}  #@TODO: Remove in 0.4.10
 
 
-    def getCredits(self):
-        res = self.load(self.API_URL, post={"key": self.getConfig('passkey'), "action": "balance"})
+    def get_credits(self):
+        res = self.load(self.API_URL, post={"key": self.get_config('passkey'), "action": "balance"})
 
         if res.isdigit():
-            self.logInfo(_("%s credits left") % res)
+            self.log_info(_("%s credits left") % res)
             self.info['credits'] = credits = int(res)
             return credits
         else:
-            self.logError(res)
+            self.log_error(res)
             return 0
 
 
     @threaded
-    def _processCaptcha(self, task):
+    def _process_captcha(self, task):
         task.data['ticket'] = ticket = uuid.uuid4()
         result = None
 
@@ -56,20 +56,20 @@ class ExpertDecoders(Hook):
             data = f.read()
 
         req = getRequest()
-        #raise timeout threshold
+        # raise timeout threshold
         req.c.setopt(pycurl.LOW_SPEED_TIME, 80)
 
         try:
             result = self.load(self.API_URL,
                                post={'action'     : "upload",
-                                    'key'        : self.getConfig('passkey'),
+                                    'key'        : self.get_config('passkey'),
                                     'file'       : b64encode(data),
                                     'gen_task_id': ticket},
                                req=req)
         finally:
             req.close()
 
-        self.logDebug("Result %s : %s" % (ticket, result))
+        self.log_debug("Result %s : %s" % (ticket, result))
         task.setResult(result)
 
 
@@ -77,19 +77,19 @@ class ExpertDecoders(Hook):
         if not task.isTextual():
             return False
 
-        if not self.getConfig('passkey'):
+        if not self.get_config('passkey'):
             return False
 
-        if self.core.isClientConnected() and self.getConfig('check_client'):
+        if self.core.isClientConnected() and self.get_config('check_client'):
             return False
 
-        if self.getCredits() > 0:
+        if self.get_credits() > 0:
             task.handler.append(self)
             task.setWaiting(100)
-            self._processCaptcha(task)
+            self._process_captcha(task)
 
         else:
-            self.logInfo(_("Your ExpertDecoders Account has not enough credits"))
+            self.log_info(_("Your ExpertDecoders Account has not enough credits"))
 
 
     def captcha_invalid(self, task):
@@ -97,8 +97,8 @@ class ExpertDecoders(Hook):
 
             try:
                 res = self.load(self.API_URL,
-                             post={'action': "refund", 'key': self.getConfig('passkey'), 'gen_task_id': task.data['ticket']})
-                self.logInfo(_("Request refund"), res)
+                             post={'action': "refund", 'key': self.get_config('passkey'), 'gen_task_id': task.data['ticket']})
+                self.log_info(_("Request refund"), res)
 
             except BadHeader, e:
-                self.logError(_("Could not send refund request"), e)
+                self.log_error(_("Could not send refund request"), e)

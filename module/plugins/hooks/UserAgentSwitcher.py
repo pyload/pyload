@@ -8,7 +8,7 @@ from module.plugins.internal.Hook import Hook
 class UserAgentSwitcher(Hook):
     __name__    = "UserAgentSwitcher"
     __type__    = "hook"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __config__ = [("activated"     , "bool", "Activated"                             , True                                                                      ),
                   ("connecttimeout", "int" , "Connection timeout in seconds"         , 60                                                                        ),
@@ -28,9 +28,9 @@ class UserAgentSwitcher(Hook):
 
 
     def download_preparing(self, pyfile):
-        connecttimeout = self.getConfig('connecttimeout')
-        maxredirs      = self.getConfig('maxredirs')
-        useragent      = self.getConfig('useragent')
+        connecttimeout = self.get_config('connecttimeout')
+        maxredirs      = self.get_config('maxredirs')
+        useragent      = self.get_config('useragent')
 
         if connecttimeout:
             pyfile.plugin.req.http.c.setopt(pycurl.CONNECTTIMEOUT, connecttimeout)
@@ -39,5 +39,5 @@ class UserAgentSwitcher(Hook):
             pyfile.plugin.req.http.c.setopt(pycurl.MAXREDIRS, maxredirs)
 
         if useragent:
-            self.logDebug("Use custom user-agent string: " + useragent)
+            self.log_debug("Use custom user-agent string: " + useragent)
             pyfile.plugin.req.http.c.setopt(pycurl.USERAGENT, useragent)

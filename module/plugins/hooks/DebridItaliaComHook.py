@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class DebridItaliaComHook(MultiHook):
     __name__    = "DebridItaliaComHook"
     __type__    = "hook"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -21,5 +21,5 @@ class DebridItaliaComHook(MultiHook):
                        ("Walter Purcaro", "vuolter@gmail.com"  )]
 
 
-    def getHosters(self):
+    def get_hosters(self):
         return self.load("http://debriditalia.com/api.php", get={'hosts': ""}).replace('"', '').split(',')

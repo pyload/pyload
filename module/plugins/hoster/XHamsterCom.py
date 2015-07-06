@@ -18,7 +18,7 @@ def clean_json(json_expr):
 class XHamsterCom(Hoster):
     __name__    = "XHamsterCom"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __pattern__ = r'http://(?:www\.)?xhamster\.com/movies/.+'
     __config__  = [("type", ".mp4;.flv", "Preferred type", ".mp4")]
@@ -34,8 +34,8 @@ class XHamsterCom(Hoster):
         if not self.file_exists():
             self.offline()
 
-        if self.getConfig('type'):
-            self.desired_fmt = self.getConfig('type')
+        if self.get_config('type'):
+            self.desired_fmt = self.get_config('type')
 
         pyfile.name = self.get_file_name() + self.desired_fmt
         self.download(self.get_file_url())
@@ -80,7 +80,7 @@ class XHamsterCom(Hoster):
                 self.error(_("file_url not found"))
             file_url = file_url.group(1)
             long_url = srv_url + file_url
-            self.logDebug("long_url = " + long_url)
+            self.log_debug("long_url = " + long_url)
         else:
             if flashvars['file']:
                 file_url = urllib.unquote(flashvars['file'])
@@ -89,10 +89,10 @@ class XHamsterCom(Hoster):
 
             if url_mode == '3':
                 long_url = file_url
-                self.logDebug("long_url = " + long_url)
+                self.log_debug("long_url = " + long_url)
             else:
                 long_url = srv_url + "key=" + file_url
-                self.logDebug("long_url = " + long_url)
+                self.log_debug("long_url = " + long_url)
 
         return long_url
 

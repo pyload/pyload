@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class WrzucTo(SimpleHoster):
     __name__    = "WrzucTo"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?wrzuc\.to/(\w+(\.wt|\.html)|(\w+/?linki/\w+))'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -26,10 +26,10 @@ class WrzucTo(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL = True
+        self.multi_dl = True
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         data = dict(re.findall(r'(md5|file): "(.*?)"', self.html))
         if len(data) != 2:
             self.error(_("No file ID"))

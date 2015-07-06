@@ -7,15 +7,15 @@ from module.common.json_layer import json_loads
 class FastixRu(Account):
     __name__    = "FastixRu"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __description__ = """Fastix account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Massimo Rosamilia", "max@spiritix.eu")]
 
 
-    def loadAccountInfo(self, user, req):
-        data = self.getAccountData(user)
+    def load_account_info(self, user, req):
+        data = self.get_account_data(user)
         html = json_loads(self.load("http://fastix.ru/api_v2/", get={'apikey': data['api'], 'sub': "getaccountdetails"}), req=req)
 
         points = html['points']
@@ -38,4 +38,4 @@ class FastixRu(Account):
         data['api'] = api
 
         if "error_code" in html:
-            self.wrongPassword()
+            self.wrong_password()

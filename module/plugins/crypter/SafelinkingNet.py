@@ -12,7 +12,7 @@ from module.plugins.internal.SolveMedia import SolveMedia
 class SafelinkingNet(Crypter):
     __name__    = "SafelinkingNet"
     __type__    = "crypter"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __pattern__ = r'https?://(?:www\.)?safelinking\.net/([pd])/\w+'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
@@ -43,7 +43,7 @@ class SafelinkingNet(Crypter):
             self.html = self.load(url)
 
             if "link-password" in self.html:
-                postData['link-password'] = self.getPassword()
+                postData['link-password'] = self.get_password()
 
             if "altcaptcha" in self.html:
                 for _i in xrange(5):

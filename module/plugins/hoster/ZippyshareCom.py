@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ZippyshareCom(SimpleHoster):
     __name__    = "ZippyshareCom"
     __type__    = "hoster"
-    __version__ = "0.79"
+    __version__ = "0.80"
 
     __pattern__ = r'http://www\d{0,2}\.zippyshare\.com/v(/|iew\.jsp.*key=)(?P<KEY>[\w^_]+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -33,12 +33,12 @@ class ZippyshareCom(SimpleHoster):
 
 
     def setup(self):
-        self.chunkLimit     = -1
-        self.multiDL        = True
-        self.resumeDownload = True
+        self.chunk_limit     = -1
+        self.multi_dl        = True
+        self.resume_download = True
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         recaptcha   = ReCaptcha(self)
         captcha_key = recaptcha.detect_key()
 
@@ -65,7 +65,7 @@ class ZippyshareCom(SimpleHoster):
         #: meant to be populated with the initialization of all the DOM elements found in the scripts
         initScripts = set()
 
-        def replElementById(element):
+        def repl_element_by_id(element):
             id   = element.group(1)  #: id might be either 'x' (a real id) or x (a variable)
             attr = element.group(4)  #: attr might be None
 
@@ -81,7 +81,7 @@ class ZippyshareCom(SimpleHoster):
 
         #: handle all getElementById
         reVar = r'document.getElementById\(([\'"\w-]+)\)(\.)?(getAttribute\([\'"])?(\w+)?([\'"]\))?'
-        scripts = [re.sub(reVar, replElementById, script) for script in scripts if script]
+        scripts = [re.sub(reVar, repl_element_by_id, script) for script in scripts if script]
 
         #: add try/catch in JS to handle deliberate errors
         scripts = ['\n'.join(('try{', script, '} catch(err){}')) for script in scripts]

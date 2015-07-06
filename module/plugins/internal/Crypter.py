@@ -9,7 +9,7 @@ from module.utils import save_path as safe_filename
 class Crypter(Hoster):
     __name__    = "Crypter"
     __type__    = "crypter"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config.get("general", "folder_per_package")
@@ -69,11 +69,11 @@ class Crypter(Hoster):
         package_queue    = self.pyfile.package().queue
 
         folder_per_package    = self.core.config.get("general", "folder_per_package")
-        use_subfolder         = self.getConfig('use_subfolder', folder_per_package)
-        subfolder_per_package = self.getConfig('subfolder_per_package', True)
+        use_subfolder         = self.get_config('use_subfolder', folder_per_package)
+        subfolder_per_package = self.get_config('subfolder_per_package', True)
 
         for name, links, folder in self.packages:
-            self.logDebug("Parsed package: %s" % name,
+            self.log_debug("Parsed package: %s" % name,
                           "%d links" % len(links),
                           "Saved to folder: %s" % folder if folder else "Saved to download folder")
 
@@ -88,14 +88,14 @@ class Crypter(Hoster):
             if use_subfolder:
                 if not subfolder_per_package:
                     setFolder(package_folder)
-                    self.logDebug("Set package %(name)s folder to: %(folder)s" % {"name": name, "folder": folder})
+                    self.log_debug("Set package %(name)s folder to: %(folder)s" % {"name": name, "folder": folder})
 
                 elif not folder_per_package or name != folder:
                     if not folder:
                         folder = urlparse.urlparse(name).path.split("/")[-1]
 
                     setFolder(safe_filename(folder))
-                    self.logDebug("Set package %(name)s folder to: %(folder)s" % {"name": name, "folder": folder})
+                    self.log_debug("Set package %(name)s folder to: %(folder)s" % {"name": name, "folder": folder})
 
             elif folder_per_package:
                 setFolder(None)

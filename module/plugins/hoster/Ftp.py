@@ -11,7 +11,7 @@ from module.plugins.internal.Hoster import Hoster
 class Ftp(Hoster):
     __name__    = "Ftp"
     __type__    = "hoster"
-    __version__ = "0.53"
+    __version__ = "0.54"
 
     __pattern__ = r'(?:ftps?|sftp)://([\w.-]+(:[\w.-]+)?@)?[\w.-]+(:\d+)?/.+'
 
@@ -23,8 +23,8 @@ class Ftp(Hoster):
 
 
     def setup(self):
-        self.chunkLimit = -1
-        self.resumeDownload = True
+        self.chunk_limit = -1
+        self.resume_download = True
 
 
     def process(self, pyfile):
@@ -41,10 +41,10 @@ class Ftp(Hoster):
             servers = [x['login'] for x in self.account.getAllAccounts()] if self.account else []
 
             if netloc in servers:
-                self.logDebug("Logging on to %s" % netloc)
+                self.log_debug("Logging on to %s" % netloc)
                 self.req.addAuth(self.account.getAccountInfo(netloc)['password'])
             else:
-                pwd = self.getPassword()
+                pwd = self.get_password()
                 if ':' in pwd:
                     self.req.addAuth(pwd)
 
@@ -56,14 +56,14 @@ class Ftp(Hoster):
             self.fail(_("Error %d: %s") % e.args)
 
         self.req.http.c.setopt(pycurl.NOBODY, 0)
-        self.logDebug(self.req.http.header)
+        self.log_debug(self.req.http.header)
 
         m = re.search(r"Content-Length:\s*(\d+)", res)
         if m:
             pyfile.size = int(m.group(1))
             self.download(pyfile.url)
         else:
-            #Naive ftp directory listing
+            # Naive ftp directory listing
             if re.search(r'^25\d.*?"', self.req.http.header, re.M):
                 pyfile.url = pyfile.url.rstrip('/')
                 pkgname = "/".join([pyfile.package().name, urlparse.urlparse(pyfile.url).path.rpartition('/')[2]])
@@ -71,7 +71,7 @@ class Ftp(Hoster):
                 self.req.http.c.setopt(48, 1)  #: CURLOPT_DIRLISTONLY
                 res = self.load(pyfile.url, decode=False)
                 links = [pyfile.url + x for x in res.splitlines()]
-                self.logDebug("LINKS", links)
+                self.log_debug("LINKS", links)
                 self.core.api.addPackage(pkgname, links)
             else:
                 self.fail(_("Unexpected server response"))

@@ -6,7 +6,7 @@ from module.plugins.internal.Account import Account
 class PremiumTo(Account):
     __name__    = "PremiumTo"
     __type__    = "account"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __description__ = """Premium.to account plugin"""
     __license__     = "GPLv3"
@@ -15,7 +15,7 @@ class PremiumTo(Account):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         traffic = self.load("http://premium.to/api/straffic.php",  #@TODO: Revert to `https` in 0.4.10
                            get={'username': self.username, 'password': self.password}, req=req)
 
@@ -33,4 +33,4 @@ class PremiumTo(Account):
                             get={'username': user, 'password': self.password}, req=req)
 
         if "wrong username" in authcode:
-            self.wrongPassword()
+            self.wrong_password()

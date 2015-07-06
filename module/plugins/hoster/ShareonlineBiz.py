@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ShareonlineBiz(SimpleHoster):
     __name__    = "ShareonlineBiz"
     __type__    = "hoster"
-    __version__ = "0.53"
+    __version__ = "0.54"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -36,8 +36,8 @@ class ShareonlineBiz(SimpleHoster):
 
 
     @classmethod
-    def apiInfo(cls, url):
-        info = super(ShareonlineBiz, cls).apiInfo(url)
+    def api_info(cls, url):
+        info = super(ShareonlineBiz, cls).api_info(url)
 
         field = getURL("http://api.share-online.biz/linkcheck.php",
                        get={'md5'  : "1",
@@ -61,42 +61,42 @@ class ShareonlineBiz(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = self.premium
-        self.multiDL        = False
+        self.resume_download = self.premium
+        self.multi_dl        = False
 
 
-    def handleCaptcha(self):
+    def handle_captcha(self):
         recaptcha = ReCaptcha(self)
 
         for _i in xrange(5):
             response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
 
             m = re.search(r'var wait=(\d+);', self.html)
-            self.setWait(int(m.group(1)) if m else 30)
+            self.set_wait(int(m.group(1)) if m else 30)
 
             res = self.load("%s/free/captcha/%d" % (self.pyfile.url, int(time.time() * 1000)),
                             post={'dl_free'                  : "1",
                                   'recaptcha_challenge_field': challenge,
                                   'recaptcha_response_field' : response})
             if not res == '0':
-                self.correctCaptcha()
+                self.correct_captcha()
                 return res
             else:
-                self.invalidCaptcha()
+                self.invalid_captcha()
         else:
-            self.invalidCaptcha()
+            self.invalid_captcha()
             self.fail(_("No valid captcha solution received"))
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         self.wait(3)
 
         self.html = self.load("%s/free/" % pyfile.url,
                               post={'dl_free': "1", 'choice': "free"})
 
-        self.checkErrors()
+        self.check_errors()
 
-        res = self.handleCaptcha()
+        res = self.handle_captcha()
         self.link = res.decode('base64')
 
         if not self.link.startswith("http://"):
@@ -105,22 +105,22 @@ class ShareonlineBiz(SimpleHoster):
         self.wait()
 
 
-    def checkFile(self):
-        check = self.checkDownload({'cookie': re.compile(r'<div id="dl_failure"'),
+    def check_file(self):
+        check = self.check_download({'cookie': re.compile(r'<div id="dl_failure"'),
                                     'fail'  : re.compile(r"<title>Share-Online")})
 
         if check == "cookie":
-            self.invalidCaptcha()
+            self.invalid_captcha()
             self.retry(5, 60, _("Cookie failure"))
 
         elif check == "fail":
-            self.invalidCaptcha()
+            self.invalid_captcha()
             self.retry(5, 5 * 60, _("Download failed"))
 
         return super(ShareonlineBiz, self).checkFile()
 
 
-    def handlePremium(self, pyfile):  #: should be working better loading (account) api internally
+    def handle_premium(self, pyfile):  #: should be working better loading (account) api internally
         html = self.load("http://api.share-online.biz/account.php",
                          get={'username': self.user,
                               'password': self.account.getAccountData(self.user)['password'],
@@ -133,7 +133,7 @@ class ShareonlineBiz(SimpleHoster):
             key, value = line.split(": ")
             dlinfo[key.lower()] = value
 
-        self.logDebug(dlinfo)
+        self.log_debug(dlinfo)
 
         if not dlinfo['status'] == "online":
             self.offline()
@@ -144,12 +144,12 @@ class ShareonlineBiz(SimpleHoster):
             self.link = dlinfo['url']
 
             if self.link == "server_under_maintenance":
-                self.tempOffline()
+                self.temp_offline()
             else:
-                self.multiDL = True
+                self.multi_dl = True
 
 
-    def checkErrors(self):
+    def check_errors(self):
         m = re.search(r"/failure/(.*?)/1", self.req.lastEffectiveURL)
         if m is None:
             self.info.pop('error', None)
@@ -158,9 +158,9 @@ class ShareonlineBiz(SimpleHoster):
         errmsg = m.group(1).lower()
 
         try:
-            self.logError(errmsg, re.search(self.ERROR_PATTERN, self.html).group(1))
+            self.log_error(errmsg, re.search(self.ERROR_PATTERN, self.html).group(1))
         except Exception:
-            self.logError("Unknown error occurred", errmsg)
+            self.log_error("Unknown error occurred", errmsg)
 
         if errmsg is "invalid":
             self.fail(_("File not available"))
@@ -172,11 +172,11 @@ class ShareonlineBiz(SimpleHoster):
             self.retry(wait_time=600, reason=errmsg)
 
         elif 'slot' in errmsg:
-            self.wantReconnect = True
+            self.want_reconnect = True
             self.retry(24, 3600, errmsg)
 
         else:
-            self.wantReconnect = True
+            self.want_reconnect = True
             self.retry(wait_time=60, reason=errmsg)
 
 

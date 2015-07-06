@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "0.94"
+    __version__ = "0.95"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -40,8 +40,8 @@ class UploadedTo(SimpleHoster):
 
 
     @classmethod
-    def apiInfo(cls, url):
-        info = super(UploadedTo, cls).apiInfo(url)
+    def api_info(cls, url):
+        info = super(UploadedTo, cls).api_info(url)
 
         for _i in xrange(5):
             html = getURL("http://uploaded.net/api/filemultiple",
@@ -61,11 +61,11 @@ class UploadedTo(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL = self.resumeDownload = self.premium
-        self.chunkLimit = 1  #: critical problems with more chunks
+        self.multi_dl = self.resume_download = self.premium
+        self.chunk_limit = 1  #: critical problems with more chunks
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         self.load("http://uploaded.net/language/en", just_header=True)
 
         self.html = self.load("http://uploaded.net/js/download.js")
@@ -77,8 +77,8 @@ class UploadedTo(SimpleHoster):
                               post={'recaptcha_challenge_field': challenge,
                                     'recaptcha_response_field' : response})
 
-        super(UploadedTo, self).handleFree(pyfile)
-        self.checkErrors()
+        super(UploadedTo, self).handle_free(pyfile)
+        self.check_errors()
 
 
 getInfo = create_getInfo(UploadedTo)

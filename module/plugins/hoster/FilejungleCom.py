@@ -7,7 +7,7 @@ from module.plugins.internal.Plugin import chunks
 class FilejungleCom(FileserveCom):
     __name__    = "FilejungleCom"
     __type__    = "hoster"
-    __version__ = "0.52"
+    __version__ = "0.53"
 
     __pattern__ = r'http://(?:www\.)?filejungle\.com/f/(?P<ID>[^/]+)'
 
@@ -24,6 +24,6 @@ class FilejungleCom(FileserveCom):
     LONG_WAIT_PATTERN = r'<h1>Please wait for (\d+) (\w+)\s*to download the next file\.</h1>'
 
 
-def getInfo(urls):
+def get_info(urls):
     for chunk in chunks(urls, 100):
         yield checkFile(FilejungleCom, chunk)

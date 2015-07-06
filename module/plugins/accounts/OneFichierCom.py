@@ -10,7 +10,7 @@ from module.plugins.internal.Account import Account
 class OneFichierCom(Account):
     __name__    = "OneFichierCom"
     __type__    = "account"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __description__ = """1fichier.com account plugin"""
     __license__     = "GPLv3"
@@ -21,7 +21,7 @@ class OneFichierCom(Account):
     VALID_UNTIL_PATTERN = r'Your Premium Status will end the (\d+/\d+/\d+)'
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         validuntil = None
         trafficleft = -1
         premium = None
@@ -31,12 +31,12 @@ class OneFichierCom(Account):
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
             expiredate = m.group(1)
-            self.logDebug("Expire date: " + expiredate)
+            self.log_debug("Expire date: " + expiredate)
 
             try:
                 validuntil = time.mktime(time.strptime(expiredate, "%d/%m/%Y"))
             except Exception, e:
-                self.logError(e)
+                self.log_error(e)
             else:
                 premium = True
 
@@ -54,4 +54,4 @@ class OneFichierCom(Account):
                               'valider': "Send"}, req=req)
 
         if '>Invalid email address' in html or '>Invalid password' in html:
-            self.wrongPassword()
+            self.wrong_password()

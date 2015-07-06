@@ -28,7 +28,7 @@ def exists(path):
 class UpdateManager(Hook):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "0.53"
+    __version__ = "0.54"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),
                   ("checkinterval", "int" , "Check interval in hours"                  , 8    ),
@@ -63,11 +63,11 @@ class UpdateManager(Hook):
         self.info     = {'pyload': False, 'version': None, 'plugins': False, 'last_check': time.time()}
         self.mtimes   = {}  #: store modification time for each plugin
 
-        self.event_list = ["allDownloadsProcessed"]
+        self.event_map = {'allDownloadsProcessed': "all_downloads_processed"}
 
         self.interval = 10
 
-        if self.getConfig('checkonstart'):
+        if self.get_config('checkonstart'):
             self.core.api.pauseServer()
             self.checkonstart = True
         else:
@@ -76,27 +76,27 @@ class UpdateManager(Hook):
         self.do_restart = False
 
 
-    def allDownloadsProcessed(self):
+    def all_downloads_processed(self):
         if self.do_restart is True:
-            self.logWarning(_("Downloads are done, restarting pyLoad to reload the updated plugins"))
+            self.log_warning(_("Downloads are done, restarting pyLoad to reload the updated plugins"))
             self.core.api.restart()
 
 
     def periodical(self):
         if self.core.debug:
-            if self.getConfig('reloadplugins'):
-                self.autoreloadPlugins()
+            if self.get_config('reloadplugins'):
+                self.autoreload_plugins()
 
-            if self.getConfig('nodebugupdate'):
+            if self.get_config('nodebugupdate'):
                 return
 
-        if self.getConfig('checkperiod') \
-           and time.time() - max(self.MIN_CHECK_INTERVAL, self.getConfig('checkinterval') * 60 * 60) > self.info['last_check']:
+        if self.get_config('checkperiod') \
+           and time.time() - max(self.MIN_CHECK_INTERVAL, self.get_config('checkinterval') * 60 * 60) > self.info['last_check']:
             self.update()
 
 
     @Expose
-    def autoreloadPlugins(self):
+    def autoreload_plugins(self):
         """
         Reload and reindex all modified plugins
         """
@@ -133,7 +133,7 @@ class UpdateManager(Hook):
                              get={'v': self.core.api.getServerVersion()}).splitlines()
 
         except Exception:
-            self.logWarning(_("Unable to retrieve server to get updates"))
+            self.log_warning(_("Unable to retrieve server to get updates"))
 
 
     @Expose
@@ -142,12 +142,12 @@ class UpdateManager(Hook):
         """
         Check for updates
         """
-        if self._update() is 2 and self.getConfig('autorestart'):
+        if self._update() is 2 and self.get_config('autorestart'):
             if not self.core.api.statusDownloads():
                 self.core.api.restart()
             else:
                 self.do_restart = True
-                self.logWarning(_("Downloads are active, will restart once the download is done"))
+                self.log_warning(_("Downloads are active, will restart once the download is done"))
                 self.core.api.pauseServer()
 
 
@@ -160,15 +160,15 @@ class UpdateManager(Hook):
             exitcode = 0
 
         elif data[0] == "None":
-            self.logInfo(_("No new pyLoad version available"))
-            exitcode = self._updatePlugins(data[1:])
+            self.log_info(_("No new pyLoad version available"))
+            exitcode = self._update_plugins(data[1:])
 
         elif onlyplugin:
             exitcode = 0
 
         else:
-            self.logInfo(_("***  New pyLoad Version %s available  ***") % data[0])
-            self.logInfo(_("***  Get it here: https://github.com/pyload/pyload/releases  ***"))
+            self.log_info(_("***  New pyLoad Version %s available  ***") % data[0])
+            self.log_info(_("***  Get it here: https://github.com/pyload/pyload/releases  ***"))
             self.info['pyload']  = True
             self.info['version'] = data[0]
             exitcode = 3
@@ -181,7 +181,7 @@ class UpdateManager(Hook):
         return exitcode
 
 
-    def _updatePlugins(self, data):
+    def _update_plugins(self, data):
         """
         Check for plugin updates
         """
@@ -218,8 +218,8 @@ class UpdateManager(Hook):
                         updatelist.pop(idx)
                         break
 
-            for t, n in self.removePlugins(sorted(type_plugins)):
-                self.logInfo(_("Removed blacklisted plugin: [%(type)s] %(name)s") % {
+            for t, n in self.remove_plugins(sorted(type_plugins)):
+                self.log_info(_("Removed blacklisted plugin: [%(type)s] %(name)s") % {
                     'type': t,
                     'name': n,
                 })
@@ -252,7 +252,7 @@ class UpdateManager(Hook):
             else:
                 continue
 
-            self.logInfo(_(msg) % {'type'  : type,
+            self.log_info(_(msg) % {'type'  : type,
                                    'name'  : name,
                                    'oldver': oldver,
                                    'newver': newver})
@@ -269,21 +269,21 @@ class UpdateManager(Hook):
                     raise Exception, _("Version mismatch")
 
             except Exception, e:
-                self.logError(_("Error updating plugin: %s") % filename, e)
+                self.log_error(_("Error updating plugin: %s") % filename, e)
 
         if updated:
-            self.logInfo(_("*** Plugins updated ***"))
+            self.log_info(_("*** Plugins updated ***"))
 
             if self.core.pluginManager.reloadPlugins(updated):
                 exitcode = 1
             else:
-                self.logWarning(_("pyLoad restart required to reload the updated plugins"))
+                self.log_warning(_("pyLoad restart required to reload the updated plugins"))
                 self.info['plugins'] = True
                 exitcode = 2
 
             self.manager.dispatchEvent("plugin_updated", updated)
         else:
-            self.logInfo(_("No plugin updates available"))
+            self.log_info(_("No plugin updates available"))
 
         # Exit codes:
         #   0 = No plugin updated
@@ -293,7 +293,7 @@ class UpdateManager(Hook):
 
 
     @Expose
-    def removePlugins(self, type_plugins):
+    def remove_plugins(self, type_plugins):
         """
         Delete plugins from disk
         """
@@ -302,7 +302,7 @@ class UpdateManager(Hook):
 
         removed = set()
 
-        self.logDebug("Requested deletion of plugins: %s" % type_plugins)
+        self.log_debug("Requested deletion of plugins: %s" % type_plugins)
 
         for type, name in type_plugins:
             rootplugins = os.path.join(pypath, "module", "plugins")
@@ -316,7 +316,7 @@ class UpdateManager(Hook):
                         self.manager.deactivateHook(name)
 
                     except Exception, e:
-                        self.logDebug(e)
+                        self.log_debug(e)
 
                 for filename in (py_filename, pyc_filename):
                     if not exists(filename):
@@ -326,7 +326,7 @@ class UpdateManager(Hook):
                         os.remove(filename)
 
                     except OSError, e:
-                        self.logError(_("Error removing: %s") % filename, e)
+                        self.log_error(_("Error removing: %s") % filename, e)
 
                     else:
                         id = (type, name)

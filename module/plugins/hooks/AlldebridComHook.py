@@ -6,7 +6,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class AlldebridComHook(MultiHook):
     __name__    = "AlldebridComHook"
     __type__    = "hook"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -18,7 +18,7 @@ class AlldebridComHook(MultiHook):
     __authors__     = [("Andy Voigt", "spamsales@online.de")]
 
 
-    def getHosters(self):
+    def get_hosters(self):
         html = self.load("https://www.alldebrid.com/api.php",
                          get={'action': "get_host"}).replace("\"", "").strip()
         return [x.strip() for x in html.split(",") if x.strip()]

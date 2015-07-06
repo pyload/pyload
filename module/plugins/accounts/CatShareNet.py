@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class CatShareNet(Account):
     __name__    = "CatShareNet"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __description__ = """Catshare.net account plugin"""
     __license__     = "GPLv3"
@@ -21,7 +21,7 @@ class CatShareNet(Account):
     TRAFFIC_LEFT_PATTERN = r'<a href="/premium">([0-9.]+ [kMG]B)'
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         premium     = False
         validuntil  = -1
         trafficleft = -1
@@ -33,7 +33,7 @@ class CatShareNet(Account):
 
         try:
             expiredate = re.search(self.VALID_UNTIL_PATTERN, html).group(1)
-            self.logDebug("Expire date: " + expiredate)
+            self.log_debug("Expire date: " + expiredate)
 
             validuntil = time.mktime(time.strptime(expiredate, "%Y-%m-%d %H:%M:%S"))
 
@@ -41,7 +41,7 @@ class CatShareNet(Account):
             pass
 
         try:
-            trafficleft = self.parseTraffic(re.search(self.TRAFFIC_LEFT_PATTERN, html).group(1))
+            trafficleft = self.parse_traffic(re.search(self.TRAFFIC_LEFT_PATTERN, html).group(1))
 
         except Exception:
             pass
@@ -57,4 +57,4 @@ class CatShareNet(Account):
                               'user[submit]': "Login"}, req=req)
 
         if not '<a href="/logout">Wyloguj</a>' in html:
-            self.wrongPassword()
+            self.wrong_password()

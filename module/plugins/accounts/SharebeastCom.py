@@ -6,7 +6,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class SharebeastCom(XFSAccount):
     __name__    = "SharebeastCom"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __description__ = """Sharebeast.com account plugin"""
     __license__     = "GPLv3"

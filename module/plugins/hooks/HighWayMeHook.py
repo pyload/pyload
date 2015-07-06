@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class HighWayMeHook(MultiHook):
     __name__    = "HighWayMeHook"
     __type__    = "hook"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -19,7 +19,7 @@ class HighWayMeHook(MultiHook):
     __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
-    def getHosters(self):
+    def get_hosters(self):
         json_data = json_loads(self.load("https://high-way.me/api.php",
                                            get={'hoster': 1}))
         return [element['name'] for element in json_data['hoster']]

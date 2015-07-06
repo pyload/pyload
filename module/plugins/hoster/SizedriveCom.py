@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class SizedriveCom(SimpleHoster):
     __name__    = "SizedriveCom"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?sizedrive\.com/[rd]/(?P<ID>\w+)'
 
@@ -23,12 +23,12 @@ class SizedriveCom(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = False
-        self.multiDL        = False
-        self.chunkLimit     = 1
+        self.resume_download = False
+        self.multi_dl        = False
+        self.chunk_limit     = 1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         self.wait(5)
         self.html = self.load("http://www.sizedrive.com/getdownload.php",
                               post={'id': self.info['pattern']['ID']})

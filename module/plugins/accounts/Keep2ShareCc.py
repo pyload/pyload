@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class Keep2ShareCc(Account):
     __name__    = "Keep2ShareCc"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __description__ = """Keep2Share.cc account plugin"""
     __license__     = "GPLv3"
@@ -23,7 +23,7 @@ class Keep2ShareCc(Account):
     LOGIN_FAIL_PATTERN = r'Please fix the following input errors'
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         validuntil  = None
         trafficleft = -1
         premium     = False
@@ -33,7 +33,7 @@ class Keep2ShareCc(Account):
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
             expiredate = m.group(1).strip()
-            self.logDebug("Expire date: " + expiredate)
+            self.log_debug("Expire date: " + expiredate)
 
             if expiredate == "LifeTime":
                 premium    = True
@@ -43,7 +43,7 @@ class Keep2ShareCc(Account):
                     validuntil = time.mktime(time.strptime(expiredate, "%Y.%m.%d"))
 
                 except Exception, e:
-                    self.logError(e)
+                    self.log_error(e)
 
                 else:
                     premium = True if validuntil > time.mktime(time.gmtime()) else False
@@ -51,10 +51,10 @@ class Keep2ShareCc(Account):
             m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
             if m:
                 try:
-                    trafficleft = self.parseTraffic(m.group(1))
+                    trafficleft = self.parse_traffic(m.group(1))
 
                 except Exception, e:
-                    self.logError(e)
+                    self.log_error(e)
 
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 
@@ -69,4 +69,4 @@ class Keep2ShareCc(Account):
                               'yt0'                  : ""}, req=req)
 
         if re.search(self.LOGIN_FAIL_PATTERN, html):
-            self.wrongPassword()
+            self.wrong_password()

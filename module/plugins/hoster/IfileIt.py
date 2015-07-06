@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class IfileIt(DeadHoster):
     __name__    = "IfileIt"
     __type__    = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
 
     __pattern__ = r'^unmatchable$'
     __config__  = []  #@TODO: Remove in 0.4.10

@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UpstoreNet(SimpleHoster):
     __name__    = "UpstoreNet"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = r'https?://(?:www\.)?upstore\.net/'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -27,13 +27,13 @@ class UpstoreNet(SimpleHoster):
     LINK_FREE_PATTERN = r'<a href="(https?://.*?)" target="_blank"><b>'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         # STAGE 1: get link to continue
         m = re.search(self.CHASH_PATTERN, self.html)
         if m is None:
             self.error(_("CHASH_PATTERN not found"))
         chash = m.group(1)
-        self.logDebug("Read hash " + chash)
+        self.log_debug("Read hash " + chash)
         #: continue to stage2
         post_data = {'hash': chash, 'free': 'Slow download'}
         self.html = self.load(pyfile.url, post=post_data)

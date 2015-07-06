@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class EasybytezComHook(MultiHook):
     __name__    = "EasybytezComHook"
     __type__    = "hook"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -20,7 +20,7 @@ class EasybytezComHook(MultiHook):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    def getHosters(self):
+    def get_hosters(self):
         user, data = self.account.selectAccount()
 
         req  = self.account.getAccountRequest(user)

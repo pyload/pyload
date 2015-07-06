@@ -8,14 +8,14 @@ from module.plugins.internal.Account import Account
 class SimplydebridCom(Account):
     __name__    = "SimplydebridCom"
     __type__    = "account"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __description__ = """Simply-Debrid.com account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         get_data = {'login': 2, 'u': self.loginname, 'p': self.password}
         res = self.load("http://simply-debrid.com/api.php", get=get_data, req=req)
         data = [x.strip() for x in res.split(";")]
@@ -32,4 +32,4 @@ class SimplydebridCom(Account):
 
         res = self.load("https://simply-debrid.com/api.php", get=get_data, req=req)
         if res != "02: loggin success":
-            self.wrongPassword()
+            self.wrong_password()

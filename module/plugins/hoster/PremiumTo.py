@@ -11,7 +11,7 @@ from module.utils import fs_encode
 class PremiumTo(MultiHoster):
     __name__    = "PremiumTo"
     __type__    = "hoster"
-    __version__ = "0.24"
+    __version__ = "0.25"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
@@ -27,8 +27,8 @@ class PremiumTo(MultiHoster):
     CHECK_TRAFFIC = True
 
 
-    def handlePremium(self, pyfile):
-        #raise timeout to 2min
+    def handle_premium(self, pyfile):
+        # raise timeout to 2min
         self.download("http://premium.to/api/getfile.php",
                       get={'username': self.account.username,
                            'password': self.account.password,
@@ -36,14 +36,14 @@ class PremiumTo(MultiHoster):
                       disposition=True)
 
 
-    def checkFile(self):
-        if self.checkDownload({'nopremium': "No premium account available"}):
+    def check_file(self):
+        if self.check_download({'nopremium': "No premium account available"}):
             self.retry(60, 5 * 60, "No premium account available")
 
         err = ''
         if self.req.http.code == '420':
             #: Custom error code send - fail
-            file = fs_encode(self.lastDownload)
+            file = fs_encode(self.last_download)
             with open(file, "rb") as f:
                 err = f.read(256).strip()
             os.remove(file)

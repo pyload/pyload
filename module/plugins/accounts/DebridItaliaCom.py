@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class DebridItaliaCom(Account):
     __name__    = "DebridItaliaCom"
     __type__    = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __description__ = """Debriditalia.com account plugin"""
     __license__     = "GPLv3"
@@ -20,7 +20,7 @@ class DebridItaliaCom(Account):
     WALID_UNTIL_PATTERN = r'Premium valid till: (.+?) \|'
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         info = {"premium": False, "validuntil": None, "trafficleft": None}
         html = self.load("http://debriditalia.com/", req=req)
 
@@ -30,7 +30,7 @@ class DebridItaliaCom(Account):
                 validuntil = time.mktime(time.strptime(m.group(1), "%d/%m/%Y %H:%M"))
                 info = {"premium": True, "validuntil": validuntil, "trafficleft": -1}
             else:
-                self.logError(_("Unable to retrieve account information"))
+                self.log_error(_("Unable to retrieve account information"))
 
         return info
 
@@ -40,4 +40,4 @@ class DebridItaliaCom(Account):
                         get={'u': user, 'p': data['password']}, req=req)
 
         if 'NO' in html:
-            self.wrongPassword()
+            self.wrong_password()

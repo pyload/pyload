@@ -4,13 +4,13 @@ import re
 
 from module.plugins.internal.Hoster import Hoster
 from module.plugins.internal.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import secondsToMidnight
+from module.plugins.internal.SimpleHoster import seconds_to_midnight
 
 
 class FreakshareCom(Hoster):
     __name__    = "FreakshareCom"
     __type__    = "hoster"
-    __version__ = "0.42"
+    __version__ = "0.43"
 
     __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
 
@@ -23,7 +23,7 @@ class FreakshareCom(Hoster):
 
 
     def setup(self):
-        self.multiDL = False
+        self.multi_dl = False
         self.req_opts = []
 
 
@@ -43,7 +43,7 @@ class FreakshareCom(Hoster):
 
             self.download(pyfile.url, post=self.req_opts)
 
-            check = self.checkDownload({"bad"           : "bad try",
+            check = self.check_download({"bad"           : "bad try",
                                         "paralell"      : "> Sorry, you cant download more then 1 files at time. <",
                                         "empty"         : "Warning: Unknown: Filename cannot be empty",
                                         "wrong_captcha" : "Wrong Captcha!",
@@ -53,7 +53,7 @@ class FreakshareCom(Hoster):
                 self.fail(_("Bad Try"))
 
             elif check == "paralell":
-                self.setWait(300, True)
+                self.set_wait(300, True)
                 self.wait()
                 self.retry()
 
@@ -61,7 +61,7 @@ class FreakshareCom(Hoster):
                 self.fail(_("File not downloadable"))
 
             elif check == "wrong_captcha":
-                self.invalidCaptcha()
+                self.invalid_captcha()
                 self.retry()
 
             elif check == "downloadserver":
@@ -76,7 +76,7 @@ class FreakshareCom(Hoster):
         if not self.file_exists():
             self.offline()
 
-        self.setWait(self.get_waiting_time())
+        self.set_wait(self.get_waiting_time())
 
         pyfile.name = self.get_file_name()
         pyfile.size = self.get_file_size()
@@ -97,10 +97,10 @@ class FreakshareCom(Hoster):
         """
         if not self.html:
             self.download_html()
-        if not self.wantReconnect:
+        if not self.want_reconnect:
             self.req_opts = self.get_download_options()  #: get the Post options for the Request
-            #file_url = self.pyfile.url
-            #return file_url
+            # file_url = self.pyfile.url
+            # return file_url
         else:
             self.offline()
 
@@ -109,7 +109,7 @@ class FreakshareCom(Hoster):
         if not self.html:
             self.download_html()
 
-        if not self.wantReconnect:
+        if not self.want_reconnect:
             m = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">([^ ]+)", self.html)
             if m:
                 file_name = m.group(1)
@@ -126,7 +126,7 @@ class FreakshareCom(Hoster):
         if not self.html:
             self.download_html()
 
-        if not self.wantReconnect:
+        if not self.want_reconnect:
             m = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">[^ ]+ - ([^ ]+) (\w\w)yte", self.html)
             if m:
                 units = float(m.group(1).replace(",", ""))
@@ -141,8 +141,8 @@ class FreakshareCom(Hoster):
             self.download_html()
 
         if "Your Traffic is used up for today" in self.html:
-            self.wantReconnect = True
-            return secondsToMidnight(gmt=2)
+            self.want_reconnect = True
+            return seconds_to_midnight(gmt=2)
 
         timestring = re.search('\s*var\s(?:downloadWait|time)\s=\s(\d*)[\d.]*;', self.html)
         if timestring:

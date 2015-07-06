@@ -5,7 +5,7 @@ import random
 from module.plugins.internal.MultiHoster import MultiHoster
 
 
-def random_with_N_digits(n):
+def random_with_n_digits(n):
     rand = "0."
     not_zero = 0
     for i in xrange(1, n + 1):
@@ -23,7 +23,7 @@ def random_with_N_digits(n):
 class MegaRapidoNet(MultiHoster):
     __name__    = "MegaRapidoNet"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?\w+\.megarapido\.net/\?file=\w+'
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
@@ -39,7 +39,7 @@ class MegaRapidoNet(MultiHoster):
     ERROR_PATTERN = r'<\s*?div[^>]*?class\s*?=\s*?["\']?alert-message error.*?>([^<]*)'
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         self.html = self.load("http://megarapido.net/gerar.php",
                          post={'rand'     :random_with_N_digits(16),
                                'urllist'  : pyfile.url,
@@ -52,4 +52,4 @@ class MegaRapidoNet(MultiHoster):
         if "desloga e loga novamente para gerar seus links" in self.html.lower():
             self.error("You have logged in at another place")
 
-        return super(MegaRapidoNet, self).handlePremium(pyfile)
+        return super(MegaRapidoNet, self).handle_premium(pyfile)

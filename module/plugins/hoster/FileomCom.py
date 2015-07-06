@@ -9,7 +9,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class FileomCom(XFSHoster):
     __name__    = "FileomCom"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'https?://(?:www\.)?fileom\.com/\w{12}'
 
@@ -25,9 +25,9 @@ class FileomCom(XFSHoster):
 
 
     def setup(self):
-        self.multiDL = True
-        self.chunkLimit = 1
-        self.resumeDownload = self.premium
+        self.multi_dl = True
+        self.chunk_limit = 1
+        self.resume_download = self.premium
 
 
 getInfo = create_getInfo(FileomCom)

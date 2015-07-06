@@ -25,12 +25,12 @@ def set_cookies(cj, cookies):
             cj.setCookie(domain, name, value)
 
 
-def parseHtmlTagAttrValue(attr_name, tag):
+def parse_html_tag_attr_value(attr_name, tag):
     m = re.search(r"%s\s*=\s*([\"']?)((?<=\")[^\"]+|(?<=')[^']+|[^>\s\"'][^>\s]*)\1" % attr_name, tag, re.I)
     return m.group(2) if m else None
 
 
-def parseHtmlForm(attr_str, html, input_names={}):
+def parse_html_form(attr_str, html, input_names={}):
     for form in re.finditer(r"(?P<TAG><form[^>]*%s[^>]*>)(?P<CONTENT>.*?)</?(form|body|html)[^>]*>" % attr_str,
                             html, re.S | re.I):
         inputs = {}
@@ -78,7 +78,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __pattern__ = r'^unmatchable$'
     __config__  = []  #: [("name", "type", "desc", "default")]
@@ -106,28 +106,28 @@ class Plugin(object):
                                            'msg'   : msg or _(level.upper() + " MARK")})
 
 
-    def logDebug(self, *args):
+    def log_debug(self, *args):
         if self.core.debug:
             return self._log("debug", args)
 
 
-    def logInfo(self, *args):
+    def log_info(self, *args):
         return self._log("info", args)
 
 
-    def logWarning(self, *args):
+    def log_warning(self, *args):
         return self._log("warning", args)
 
 
-    def logError(self, *args):
+    def log_error(self, *args):
         return self._log("error", args)
 
 
-    def logCritical(self, *args):
+    def log_critical(self, *args):
         return self._log("critical", args)
 
 
-    def setConfig(self, option, value):
+    def set_config(self, option, value):
         """
         Set config value for current plugin
 
@@ -138,15 +138,15 @@ class Plugin(object):
         self.core.config.setPlugin(self.__name__, option, value)
 
 
-    #: Deprecated method
+    #: Deprecated method, use `set_config` instead
     def setConf(self, *args, **kwargs):
         """
-        See `setConfig`
+        See `set_config`
         """
-        return self.setConfig(*args, **kwargs)
+        return self.set_config(*args, **kwargs)
 
 
-    def getConfig(self, option, default="", plugin=None):
+    def get_config(self, option, default="", plugin=None):
         """
         Returns config value for current plugin
 
@@ -157,16 +157,16 @@ class Plugin(object):
             return self.core.config.getPlugin(plugin or self.__name__, option)
 
         except KeyError:
-            self.logWarning(_("Config option or plugin not found"))
+            self.log_warning(_("Config option or plugin not found"))
             return default
 
 
-    #: Deprecated method
+    #: Deprecated method, use `get_config` instead
     def getConf(self, *args, **kwargs):
         """
-        See `getConfig`
+        See `get_config`
         """
-        return self.getConfig(*args, **kwargs)
+        return self.get_config(*args, **kwargs)
 
 
     def store(self, key, value):
@@ -176,10 +176,10 @@ class Plugin(object):
         self.core.db.setStorage(self.__name__, key, value)
 
 
-    #: Deprecated method
+    #: Deprecated method, use `store` instead
     def setStorage(self, *args, **kwargs):
         """
-        Same as `setStorage`
+        Same as `store`
         """
         return self.store(*args, **kwargs)
 
@@ -191,19 +191,27 @@ class Plugin(object):
         return self.core.db.getStorage(self.__name__, key) or default
 
 
-    #: Deprecated method
+    #: Deprecated method, use `retrieve` instead
     def getStorage(self, *args, **kwargs):
         """
-        Same as `getStorage`
+        Same as `retrieve`
         """
         return self.retrieve(*args, **kwargs)
 
 
-    def delStorage(self, key):
+    def delete(self, key):
         """
         Delete entry in db
         """
         self.core.db.delStorage(self.__name__, key)
+
+
+    #: Deprecated method, use `delete` instead
+    def delStorage(self, *args, **kwargs):
+        """
+        Same as `delete`
+        """
+        return self.delete(*args, **kwargs)
 
 
     def fail(self, reason):
@@ -250,7 +258,7 @@ class Plugin(object):
             self.fail(_("No url given"))
 
         if self.core.debug:
-            self.logDebug("Load url: " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
+            self.log_debug("Load url: " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
 
         if req is None:
             if hasattr(self, "req"):
@@ -274,7 +282,7 @@ class Plugin(object):
                     del frame  #: delete the frame or it wont be cleaned
                     f.write(res.encode('utf8'))
             except IOError, e:
-                self.logError(e)
+                self.log_error(e)
 
         if just_header:
             #: parse header

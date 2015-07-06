@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FiledropperCom(SimpleHoster):
     __name__    = "FiledropperCom"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'https?://(?:www\.)?filedropper\.com/\w+'
 
@@ -24,16 +24,16 @@ class FiledropperCom(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL    = False
-        self.chunkLimit = 1
+        self.multi_dl    = False
+        self.chunk_limit = 1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         m = re.search(r'img id="img" src="(.+?)"', self.html)
         if m is None:
             self.fail("Captcha not found")
 
-        captcha_code = self.decryptCaptcha("http://www.filedropper.com/%s" % m.group(1))
+        captcha_code = self.decrypt_captcha("http://www.filedropper.com/%s" % m.group(1))
 
         m = re.search(r'method="post" action="(.+?)"', self.html)
         if m is None:

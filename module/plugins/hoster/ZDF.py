@@ -10,7 +10,7 @@ from module.plugins.internal.Hoster import Hoster
 class ZDF(Hoster):
     __name__    = "ZDF Mediathek"
     __type__    = "hoster"
-    __version__ = "0.81"
+    __version__ = "0.82"
 
     __pattern__ = r'http://(?:www\.)?zdf\.de/ZDFmediathek/\D*(\d+)\D*'
 

@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class KingfilesNet(SimpleHoster):
     __name__    = "KingfilesNet"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __pattern__ = r'http://(?:www\.)?kingfiles\.net/(?P<ID>\w{12})'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -31,11 +31,11 @@ class KingfilesNet(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = True
-        self.multiDL        = True
+        self.resume_download = True
+        self.multi_dl        = True
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         #: Click the free user button
         post_data = {'op'         : "download1",
                      'usr_login'  : "",
@@ -55,7 +55,7 @@ class KingfilesNet(SimpleHoster):
             self.error(_("Random key not found"))
 
         rand = m.group(1)
-        self.logDebug("rand = ", rand)
+        self.log_debug("rand = ", rand)
 
         post_data = {'op'              : "download2",
                      'id'              : self.info['pattern']['ID'],

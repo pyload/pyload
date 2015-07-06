@@ -7,7 +7,7 @@ from module.plugins.internal.Hook import Hook
 class UnSkipOnFail(Hook):
     __name__    = "UnSkipOnFail"
     __type__    = "hook"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __config__ = [("activated", "bool", "Activated", True)]
 
@@ -29,11 +29,11 @@ class UnSkipOnFail(Hook):
             return
 
         msg = _("Looking for skipped duplicates of: %s (pid:%s)")
-        self.logInfo(msg % (pyfile.name, pyfile.package().id))
+        self.log_info(msg % (pyfile.name, pyfile.package().id))
 
-        link = self.findDuplicate(pyfile)
+        link = self.find_duplicate(pyfile)
         if link:
-            self.logInfo(_("Queue found duplicate: %s (pid:%s)") % (link.name, link.packageID))
+            self.log_info(_("Queue found duplicate: %s (pid:%s)") % (link.name, link.packageID))
 
             # Change status of "link" to "new_status".
             # "link" has to be a valid FileData object,
@@ -50,10 +50,10 @@ class UnSkipOnFail(Hook):
             pylink.release()
 
         else:
-            self.logInfo(_("No duplicates found"))
+            self.log_info(_("No duplicates found"))
 
 
-    def findDuplicate(self, pyfile):
+    def find_duplicate(self, pyfile):
         """Search all packages for duplicate links to "pyfile".
             Duplicates are links that would overwrite "pyfile".
             To test on duplicity the package-folder and link-name

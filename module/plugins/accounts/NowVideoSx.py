@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class NowVideoSx(Account):
     __name__    = "NowVideoSx"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __description__ = """NowVideo.at account plugin"""
     __license__     = "GPLv3"
@@ -19,7 +19,7 @@ class NowVideoSx(Account):
     VALID_UNTIL_PATTERN = r'>Your premium membership expires on: (.+?)<'
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         validuntil  = None
         trafficleft = -1
         premium     = None
@@ -29,13 +29,13 @@ class NowVideoSx(Account):
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
             expiredate = m.group(1).strip()
-            self.logDebug("Expire date: " + expiredate)
+            self.log_debug("Expire date: " + expiredate)
 
             try:
                 validuntil = time.mktime(time.strptime(expiredate, "%Y-%b-%d"))
 
             except Exception, e:
-                self.logError(e)
+                self.log_error(e)
 
             else:
                 if validuntil > time.mktime(time.gmtime()):
@@ -52,4 +52,4 @@ class NowVideoSx(Account):
                         post={'user': user, 'pass': data['password']}, req=req)
 
         if re.search(r'>Log In<', html):
-            self.wrongPassword()
+            self.wrong_password()

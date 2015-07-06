@@ -8,14 +8,14 @@ from module.plugins.internal.Account import Account
 class RealdebridCom(Account):
     __name__    = "RealdebridCom"
     __type__    = "account"
-    __version__ = "0.47"
+    __version__ = "0.48"
 
     __description__ = """Real-Debrid.com account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         if self.pin_code:
             return
 
@@ -36,8 +36,8 @@ class RealdebridCom(Account):
                         get={"user": user, "pass": data['password']}, req=req)
 
         if "Your login informations are incorrect" in html:
-            self.wrongPassword()
+            self.wrong_password()
 
         elif "PIN Code required" in html:
-            self.logWarning(_("PIN code required. Please login to https://real-debrid.com using the PIN or disable the double authentication in your control panel on https://real-debrid.com"))
+            self.log_warning(_("PIN code required. Please login to https://real-debrid.com using the PIN or disable the double authentication in your control panel on https://real-debrid.com"))
             self.pin_code = True

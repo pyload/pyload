@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class PromptfileCom(SimpleHoster):
     __name__    = "PromptfileCom"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __pattern__ = r'https?://(?:www\.)?promptfile\.com/'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -25,20 +25,20 @@ class PromptfileCom(SimpleHoster):
     LINK_FREE_PATTERN = r'<a href=\"(.+)\" target=\"_blank\" class=\"view_dl_link\">Download File</a>'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         # STAGE 1: get link to continue
         m = re.search(self.CHASH_PATTERN, self.html)
         if m is None:
             self.error(_("CHASH_PATTERN not found"))
 
         chash = m.group(1)
-        self.logDebug("Read chash %s" % chash)
+        self.log_debug("Read chash %s" % chash)
 
         #: continue to stage2
         self.html = self.load(pyfile.url, post={'chash': chash})
 
         # STAGE 2: get the direct link
-        return super(PromptfileCom, self).handleFree(pyfile)
+        return super(PromptfileCom, self).handle_free(pyfile)
 
 
 getInfo = create_getInfo(PromptfileCom)

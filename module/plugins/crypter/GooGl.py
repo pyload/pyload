@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 class GooGl(SimpleCrypter):
     __name__    = "GooGl"
     __type__    = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'https?://(?:www\.)?goo\.gl/([a-zA-Z]+/)?\w+'
 
@@ -22,9 +22,9 @@ class GooGl(SimpleCrypter):
     OFFLINE_PATTERN = r'has been disabled|does not exist'
 
 
-    def getLinks(self):
+    def get_links(self):
         rep = self.load(self.API_URL, get={'shortUrl': self.pyfile.url})
-        self.logDebug("JSON data: " + rep)
+        self.log_debug("JSON data: " + rep)
         rep = json_loads(rep)
         return [rep['longUrl']] if "longUrl" in rep else None
 

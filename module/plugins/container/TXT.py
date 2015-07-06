@@ -9,7 +9,7 @@ from module.utils import fs_encode
 class TXT(Container):
     __name__    = "TXT"
     __type__    = "container"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __pattern__ = r'.+\.(txt|text)$'
     __config__  = [("flush"   , "bool"  , "Flush list after adding", False  ),
@@ -23,7 +23,7 @@ class TXT(Container):
 
     def decrypt(self, pyfile):
         try:
-            encoding = codecs.lookup(self.getConfig('encoding')).name
+            encoding = codecs.lookup(self.get_config('encoding')).name
 
         except Exception:
             encoding = "utf-8"
@@ -57,13 +57,13 @@ class TXT(Container):
             if not value:
                 packages.pop(key, None)
 
-        if self.getConfig('flush'):
+        if self.get_config('flush'):
             try:
                 txt = open(fs_filename, 'wb')
                 txt.close()
 
             except IOError:
-                self.logWarning(_("Failed to flush list"))
+                self.log_warning(_("Failed to flush list"))
 
         for name, links in packages.iteritems():
             self.packages.append((name, links, name))

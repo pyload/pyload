@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 class FilecloudIo(Account):
     __name__    = "FilecloudIo"
     __type__    = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __description__ = """FilecloudIo account plugin"""
     __license__     = "GPLv3"
@@ -15,16 +15,16 @@ class FilecloudIo(Account):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         #: It looks like the first API request always fails, so we retry 5 times, it should work on the second try
         for _i in xrange(5):
             rep = self.load("https://secure.filecloud.io/api-fetch_apikey.api",
-                           post={"username": user, "password": self.getAccountData(user)['password']})
+                           post={"username": user, "password": self.get_account_data(user)['password']})
             rep = json_loads(rep)
             if rep['status'] == 'ok':
                 break
             elif rep['status'] == 'error' and rep['message'] == 'no such user or wrong password':
-                self.logError(_("Wrong username or password"))
+                self.log_error(_("Wrong username or password"))
                 return {"valid": False, "premium": False}
         else:
             return {"premium": False}
@@ -56,4 +56,4 @@ class FilecloudIo(Account):
                          req=req)
 
         if "you have successfully logged in" not in html:
-            self.wrongPassword()
+            self.wrong_password()

@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class OneFichierCom(SimpleHoster):
     __name__    = "OneFichierCom"
     __type__    = "hoster"
-    __version__ = "0.84"
+    __version__ = "0.85"
 
     __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -36,26 +36,26 @@ class OneFichierCom(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL        = self.premium
-        self.resumeDownload = True
+        self.multi_dl        = self.premium
+        self.resume_download = True
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         id = self.info['pattern']['ID1'] or self.info['pattern']['ID2']
-        url, inputs = self.parseHtmlForm('action="https://1fichier.com/\?%s' % id)
+        url, inputs = self.parse_html_form('action="https://1fichier.com/\?%s' % id)
 
         if not url:
             self.fail(_("Download link not found"))
 
         if "pass" in inputs:
-            inputs['pass'] = self.getPassword()
+            inputs['pass'] = self.get_password()
 
         inputs['submit'] = "Download"
 
         self.download(url, post=inputs)
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         self.download(pyfile.url, post={'dl': "Download", 'did': 0})
 
 

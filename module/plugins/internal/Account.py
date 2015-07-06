@@ -16,7 +16,7 @@ class WrongPassword(Exception):
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """Base account plugin"""
     __license__     = "GPLv3"
@@ -37,7 +37,7 @@ class Account(Plugin):
 
         self.init()
 
-        self.setAccounts(accounts)
+        self.set_accounts(accounts)
 
 
     def init(self):
@@ -60,18 +60,18 @@ class Account(Plugin):
         #: set timestamp for login
         self.timestamps[user] = time.time()
 
-        req = self.getAccountRequest(user)
+        req = self.get_account_request(user)
         try:
             self.login(user, data, req)
 
         except WrongPassword:
-            self.logWarning(
+            self.log_warning(
                 _("Could not login with account %(user)s | %(msg)s") % {"user": user,
                                                                         "msg": _("Wrong Password")})
             success = data['valid'] = False
 
         except Exception, e:
-            self.logWarning(
+            self.log_warning(
                 _("Could not login with account %(user)s | %(msg)s") % {"user": user,
                                                                         "msg": e})
             success = data['valid'] = False
@@ -88,7 +88,7 @@ class Account(Plugin):
 
 
     def relogin(self, user):
-        req = self.getAccountRequest(user)
+        req = self.get_account_request(user)
         if req:
             req.cj.clear()
             req.close()
@@ -98,14 +98,14 @@ class Account(Plugin):
         return self._login(user, self.accounts[user])
 
 
-    def setAccounts(self, accounts):
+    def set_accounts(self, accounts):
         self.accounts = accounts
         for user, data in self.accounts.iteritems():
             self._login(user, data)
             self.infos[user] = {}
 
 
-    def updateAccounts(self, user, password=None, options={}):
+    def update_accounts(self, user, password=None, options={}):
         """
         Updates account and return true if anything changed
         """
@@ -125,7 +125,12 @@ class Account(Plugin):
             return True
 
 
-    def removeAccount(self, user):
+    #: Deprecated method, use `update_accounts` instead
+    def updateAccounts(self, *args, **kwargs):
+        return self.update_accounts(*args, **kwargs)
+
+
+    def remove_account(self, user):
         if user in self.accounts:
             del self.accounts[user]
         if user in self.infos:
@@ -134,28 +139,33 @@ class Account(Plugin):
             del self.timestamps[user]
 
 
+    #: Deprecated method, use `remove_account` instead
+    def removeAccount(self, *args, **kwargs):
+        return self.remove_account(*args, **kwargs)
+
+
     @lock
-    def getAccountInfo(self, name, force=False):
+    def get_account_info(self, name, force=False):
         """
         Retrieve account infos for an user, do **not** overwrite this method!\\
-        just use it to retrieve infos in hoster plugins. see `loadAccountInfo`
+        just use it to retrieve infos in hoster plugins. see `load_account_info`
 
         :param name: username
         :param force: reloads cached account information
         :return: dictionary with information
         """
-        data = Account.loadAccountInfo(self, name)
+        data = Account.load_account_info(self, name)
 
         if force or name not in self.infos:
-            self.logDebug("Get Account Info for %s" % name)
-            req = self.getAccountRequest(name)
+            self.log_debug("Get Account Info for %s" % name)
+            req = self.get_account_request(name)
 
             try:
-                infos = self.loadAccountInfo(name, req)
+                infos = self.load_account_info(name, req)
                 if not type(infos) == dict:
                     raise Exception("Wrong return format")
             except Exception, e:
-                infos = super(self.__class__, self).loadAccountInfo(name, req)
+                infos = super(self.__class__, self).load_account_info(name, req)
                 infos['error'] = str(e)
 
                 if self.core.debug:
@@ -164,24 +174,24 @@ class Account(Plugin):
             if req:
                 req.close()
 
-            self.logDebug("Account Info: %s" % infos)
+            self.log_debug("Account Info: %s" % infos)
 
             infos['timestamp'] = time.time()
             self.infos[name] = infos
         elif "timestamp" in self.infos[name] and self.infos[name]['timestamp'] + self.info_threshold * 60 < time.time():
-            self.logDebug("Reached timeout for account data")
-            self.scheduleRefresh(name)
+            self.log_debug("Reached timeout for account data")
+            self.schedule_refresh(name)
 
         data.update(self.infos[name])
         return data
 
 
-    def isPremium(self, user):
-        info = self.getAccountInfo(user)
+    def is_premium(self, user):
+        info = self.get_account_info(user)
         return info['premium']
 
 
-    def loadAccountInfo(self, name, req=None):
+    def load_account_info(self, name, req=None):
         """
         This should be overwritten in account plugin,\
         and retrieving account information for user
@@ -202,20 +212,25 @@ class Account(Plugin):
                 "type"       : self.__name__}
 
 
-    def getAllAccounts(self, force=False):
-        return [self.getAccountInfo(user, force) for user, data in self.accounts.iteritems()]
+    def get_all_accounts(self, force=False):
+        return [self.get_account_info(user, force) for user, data in self.accounts.iteritems()]
 
 
-    def getAccountRequest(self, user=None):
+    #: Deprecated method, use `get_all_accounts` instead
+    def getAllAccounts(self, *args, **kwargs):
+        return self.get_all_accounts(*args, **kwargs)
+
+
+    def get_account_request(self, user=None):
         if not user:
-            user, data = self.selectAccount()
+            user, data = self.select_account()
 
         return self.core.requestFactory.getRequest(self.__name__, user)
 
 
-    def getAccountCookies(self, user=None):
+    def get_account_cookies(self, user=None):
         if not user:
-            user, data = self.selectAccount()
+            user, data = self.select_account()
         if not user:
             return None
 
@@ -223,11 +238,11 @@ class Account(Plugin):
         return cj
 
 
-    def getAccountData(self, user):
+    def get_account_data(self, user):
         return self.accounts[user]
 
 
-    def selectAccount(self):
+    def select_account(self):
         """
         Returns an valid account name and data
         """
@@ -244,7 +259,7 @@ class Account(Plugin):
                     if not compare_time(start.split(":"), end.split(":")):
                         continue
                 except Exception:
-                    self.logWarning(_("Your Time %s has wrong format, use: 1:22-3:44") % time_data)
+                    self.log_warning(_("Your Time %s has wrong format, use: 1:22-3:44") % time_data)
 
             if user in self.infos:
                 if "validuntil" in self.infos[user]:
@@ -262,52 +277,57 @@ class Account(Plugin):
         return random.choice(usable)
 
 
-    def canUse(self):
-        return self.selectAccount() != (None, None)
+    def can_use(self):
+        return self.select_account() != (None, None)
 
 
-    def parseTraffic(self, value, unit=None):  #: return kilobytes
+    def parse_traffic(self, value, unit=None):  #: return kilobytes
         if not unit and not isinstance(value, basestring):
             unit = "KB"
         return parseFileSize(value, unit)
 
 
-    def wrongPassword(self):
+    def wrong_password(self):
         raise WrongPassword
 
 
     def empty(self, user):
         if user in self.infos:
-            self.logWarning(_("Account %s has not enough traffic, checking again in 30min") % user)
+            self.log_warning(_("Account %s has not enough traffic, checking again in 30min") % user)
 
             self.infos[user].update({"trafficleft": 0})
-            self.scheduleRefresh(user, 30 * 60)
+            self.schedule_refresh(user, 30 * 60)
 
 
     def expired(self, user):
         if user in self.infos:
-            self.logWarning(_("Account %s is expired, checking again in 1h") % user)
+            self.log_warning(_("Account %s is expired, checking again in 1h") % user)
 
             self.infos[user].update({"validuntil": time.time() - 1})
-            self.scheduleRefresh(user, 60 * 60)
+            self.schedule_refresh(user, 60 * 60)
 
 
-    def scheduleRefresh(self, user, time=0, force=True):
+    def schedule_refresh(self, user, time=0, force=True):
         """
         Add task to refresh account info to sheduler
         """
-        self.logDebug("Scheduled Account refresh for %s in %s seconds." % (user, time))
-        self.core.scheduler.addJob(time, self.getAccountInfo, [user, force])
+        self.log_debug("Scheduled Account refresh for %s in %s seconds." % (user, time))
+        self.core.scheduler.addJob(time, self.get_account_info, [user, force])
+
+
+    #: Deprecated method, use `schedule_refresh` instead
+    def scheduleRefresh(self, *args, **kwargs):
+        return self.schedule_refresh(*args, **kwargs)
 
 
     @lock
-    def checkLogin(self, user):
+    def check_login(self, user):
         """
         Checks if user is still logged in
         """
         if user in self.timestamps:
             if self.login_timeout > 0 and self.timestamps[user] + self.login_timeout * 60 < time.time():
-                self.logDebug("Reached login timeout for %s" % user)
+                self.log_debug("Reached login timeout for %s" % user)
                 return self.relogin(user)
             else:
                 return True

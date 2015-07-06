@@ -16,15 +16,15 @@ from module.plugins.internal.Plugin import Plugin, Abort, Fail, Reconnect, Retry
 from module.utils import fs_decode, fs_encode, save_join as fs_join
 
 
-def getInfo(urls):
-    #result = [ .. (name, size, status, url) .. ]
+def get_info(urls):
+    # result = [ .. (name, size, status, url) .. ]
     pass
 
 
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'^unmatchable$'
     __config__  = []  #: [("name", "type", "desc", "default")]
@@ -41,18 +41,18 @@ class Hoster(Plugin):
         super(Hoster, self).__init__(pyfile.m.core)
 
         #: engage wan reconnection
-        self.wantReconnect = False
+        self.want_reconnect = False
 
         #: enable simultaneous processing of multiple downloads
-        self.multiDL = True
-        self.limitDL = 0
+        self.multi_dl = True
+        self.limit_dl = 0
 
         #: chunk limit
-        self.chunkLimit = 1
-        self.resumeDownload = False
+        self.chunk_limit = 1
+        self.resume_download = False
 
         #: time.time() + wait in seconds
-        self.waitUntil = 0
+        self.wait_until = 0
         self.waiting = False
 
         #: captcha reader instance
@@ -75,10 +75,10 @@ class Hoster(Plugin):
 
             #: Browser instance, see `network.Browser`
             self.req = self.account.getAccountRequest(self.user)
-            self.chunkLimit = -1  #: chunk limit, -1 for unlimited
+            self.chunk_limit = -1  #: chunk limit, -1 for unlimited
 
             #: enables resume (will be ignored if server dont accept chunks)
-            self.resumeDownload = True
+            self.resume_download = True
 
             #: premium status
             self.premium = self.account.isPremium(self.user)
@@ -91,16 +91,16 @@ class Hoster(Plugin):
         self.thread = None  #: holds thread in future
 
         #: location where the last call to download was saved
-        self.lastDownload = ""
+        self.last_download = ""
 
         #: re match of the last call to `checkDownload`
-        self.lastCheck = None
+        self.last_check = None
 
         #: js engine, see `JsEngine`
         self.js = self.core.js
 
         #: captcha task
-        self.cTask = None
+        self.c_task = None
 
         #: some plugins store html code here
         self.html = None
@@ -150,13 +150,13 @@ class Hoster(Plugin):
         raise NotImplementedError
 
 
-    def getChunkCount(self):
-        if self.chunkLimit <= 0:
+    def get_chunk_count(self):
+        if self.chunk_limit <= 0:
             return self.core.config.get("download", "chunks")
-        return min(self.core.config.get("download", "chunks"), self.chunkLimit)
+        return min(self.core.config.get("download", "chunks"), self.chunk_limit)
 
 
-    def resetAccount(self):
+    def reset_account(self):
         """
         Don't use account and retry download
         """
@@ -165,13 +165,13 @@ class Hoster(Plugin):
         self.retry()
 
 
-    def setReconnect(self, reconnect):
+    def set_reconnect(self, reconnect):
         reconnect = bool(reconnect)
-        self.logDebug("Set wantReconnect to: %s (previous: %s)" % (reconnect, self.wantReconnect))
-        self.wantReconnect = reconnect
+        self.log_debug("Set wantReconnect to: %s (previous: %s)" % (reconnect, self.want_reconnect))
+        self.want_reconnect = reconnect
 
 
-    def setWait(self, seconds, reconnect=None):
+    def set_wait(self, seconds, reconnect=None):
         """
         Set a specific wait time later used with `wait`
 
@@ -181,13 +181,13 @@ class Hoster(Plugin):
         wait_time  = max(int(seconds), 1)
         wait_until = time.time() + wait_time + 1
 
-        self.logDebug("Set waitUntil to: %f (previous: %f)" % (wait_until, self.pyfile.waitUntil),
+        self.log_debug("Set waitUntil to: %f (previous: %f)" % (wait_until, self.pyfile.waitUntil),
                       "Wait: %d+1 seconds" % wait_time)
 
         self.pyfile.waitUntil = wait_until
 
         if reconnect is not None:
-            self.setReconnect(reconnect)
+            self.set_reconnect(reconnect)
 
 
     def wait(self, seconds=0, reconnect=None):
@@ -197,21 +197,21 @@ class Hoster(Plugin):
         pyfile = self.pyfile
 
         if seconds > 0:
-            self.setWait(seconds)
+            self.set_wait(seconds)
 
         if reconnect is not None:
-            self.setReconnect(reconnect)
+            self.set_reconnect(reconnect)
 
         self.waiting = True
 
         status = pyfile.status
         pyfile.setStatus("waiting")
 
-        self.logInfo(_("Wait: %d seconds") % (pyfile.waitUntil - time.time()),
-                     _("Reconnect: %s")    % self.wantReconnect)
+        self.log_info(_("Wait: %d seconds") % (pyfile.waitUntil - time.time()),
+                     _("Reconnect: %s")    % self.want_reconnect)
 
         if self.account:
-            self.logDebug("Ignore reconnection due account logged")
+            self.log_debug("Ignore reconnection due account logged")
 
             while pyfile.waitUntil > time.time():
                 if pyfile.abort:
@@ -227,7 +227,7 @@ class Hoster(Plugin):
 
                 if self.thread.m.reconnecting.isSet():
                     self.waiting = False
-                    self.wantReconnect = False
+                    self.want_reconnect = False
                     raise Reconnect
 
                 time.sleep(1)
@@ -262,7 +262,7 @@ class Hoster(Plugin):
         raise Fail("offline")
 
 
-    def tempOffline(self, reason=""):
+    def temp_offline(self, reason=""):
         """
         Fail and indicates file ist temporary offline, the core may take consequences
         """
@@ -292,19 +292,19 @@ class Hoster(Plugin):
         raise Retry(reason)
 
 
-    def invalidCaptcha(self):
-        self.logError(_("Invalid captcha"))
-        if self.cTask:
-            self.cTask.invalid()
+    def invalid_captcha(self):
+        self.log_error(_("Invalid captcha"))
+        if self.c_task:
+            self.c_task.invalid()
 
 
-    def correctCaptcha(self):
-        self.logInfo(_("Correct captcha"))
-        if self.cTask:
-            self.cTask.correct()
+    def correct_captcha(self):
+        self.log_info(_("Correct captcha"))
+        if self.c_task:
+            self.c_task.correct()
 
 
-    def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False,
+    def decrypt_captcha(self, url, get={}, post={}, cookies=False, forceUser=False,
                        imgtype='jpg', result_type='textual'):
         """
         Loads a captcha and decrypts it with ocr, plugin, user input
@@ -345,7 +345,7 @@ class Hoster(Plugin):
         else:
             captchaManager = self.core.captchaManager
             task = captchaManager.newTask(img, imgtype, tmpCaptcha.name, result_type)
-            self.cTask = task
+            self.c_task = task
             captchaManager.handleCaptcha(task)
 
             while task.isWaiting():
@@ -364,7 +364,7 @@ class Hoster(Plugin):
                 self.fail(_("No captcha result obtained in appropiate time by any of the plugins"))
 
             result = task.result
-            self.logDebug("Received captcha result: %s" % result)
+            self.log_debug("Received captcha result: %s" % result)
 
         if not self.core.debug:
             try:
@@ -409,10 +409,10 @@ class Hoster(Plugin):
             self.fail(_("No url given"))
 
         if self.core.debug:
-            self.logDebug("Download url: " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
+            self.log_debug("Download url: " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
 
-        self.correctCaptcha()
-        self.checkForSameFiles()
+        self.correct_captcha()
+        self.check_for_same_files()
 
         self.pyfile.setStatus("downloading")
 
@@ -445,7 +445,7 @@ class Hoster(Plugin):
 
         try:
             newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref, cookies=cookies,
-                                            chunks=self.getChunkCount(), resume=self.resumeDownload,
+                                            chunks=self.get_chunk_count(), resume=self.resume_download,
                                             progressNotify=self.pyfile.setProgress, disposition=disposition)
         finally:
             self.pyfile.size = self.req.size
@@ -454,7 +454,7 @@ class Hoster(Plugin):
             newname = urlparse.urlparse(newname).path.split('/')[-1]
 
             if disposition and newname != name:
-                self.logInfo(_("%(name)s saved as %(newname)s") % {"name": name, "newname": newname})
+                self.log_info(_("%(name)s saved as %(newname)s") % {"name": name, "newname": newname})
                 self.pyfile.name = newname
                 filename = os.path.join(location, newname)
 
@@ -464,7 +464,7 @@ class Hoster(Plugin):
             try:
                 os.chmod(fs_filename, int(self.core.config.get("permission", "file"), 8))
             except Exception, e:
-                self.logWarning(_("Setting file mode failed"), e)
+                self.log_warning(_("Setting file mode failed"), e)
 
         if self.core.config.get("permission", "change_dl") and os.name != "nt":
             try:
@@ -473,13 +473,13 @@ class Hoster(Plugin):
                 os.chown(fs_filename, uid, gid)
 
             except Exception, e:
-                self.logWarning(_("Setting User and Group failed"), e)
+                self.log_warning(_("Setting User and Group failed"), e)
 
-        self.lastDownload = filename
-        return self.lastDownload
+        self.last_download = filename
+        return self.last_download
 
 
-    def checkDownload(self, rules, delete=True, file_size=0, size_tolerance=1000, read_size=100000):
+    def check_download(self, rules, delete=True, file_size=0, size_tolerance=1000, read_size=100000):
         """
         Checks the content of the last downloaded file, re match is saved to `lastCheck`
 
@@ -491,10 +491,10 @@ class Hoster(Plugin):
         :return: dictionary key of the first rule that matched
         """
         do_delete = False
-        lastDownload = fs_encode(self.lastDownload)
+        lastDownload = fs_encode(self.last_download)
 
-        if not self.lastDownload or not os.path.exists(lastDownload):
-            self.lastDownload = ""
+        if not self.last_download or not os.path.exists(lastDownload):
+            self.last_download = ""
             self.fail(self.pyfile.error or _("No file downloaded"))
 
         try:
@@ -512,15 +512,15 @@ class Hoster(Plugin):
                     self.fail(_("File size mismatch"))
 
                 elif diff != 0:
-                    self.logWarning(_("File size is not equal to expected size"))
+                    self.log_warning(_("File size is not equal to expected size"))
 
-            self.logDebug("Download Check triggered")
+            self.log_debug("Download Check triggered")
 
             with open(lastDownload, "rb") as f:
                 content = f.read(read_size)
 
             #: produces encoding errors, better log to other file in the future?
-            #: self.logDebug("Content: %s" % content)
+            #: self.log_debug("Content: %s" % content)
             for name, rule in rules.iteritems():
                 if isinstance(rule, basestring):
                     if rule in content:
@@ -531,14 +531,14 @@ class Hoster(Plugin):
                     m = rule.search(content)
                     if m:
                         do_delete = True
-                        self.lastCheck = m
+                        self.last_check = m
                         return name
         finally:
             if delete and do_delete:
                 os.remove(lastDownload)
 
 
-    def directLink(self, url, follow_location=None):
+    def direct_link(self, url, follow_location=None):
         link = ""
 
         if follow_location is None:
@@ -548,11 +548,11 @@ class Hoster(Plugin):
             redirect = max(follow_location, 1)
 
         else:
-            redirect = self.getConfig("maxredirs", plugin="UserAgentSwitcher")
+            redirect = self.get_config("maxredirs", plugin="UserAgentSwitcher")
 
         for i in xrange(redirect):
             try:
-                self.logDebug("Redirect #%d to: %s" % (i, url))
+                self.log_debug("Redirect #%d to: %s" % (i, url))
                 header = self.load(url, just_header=True)
 
             except Exception:  #: Bad bad bad... rewrite this part in 0.4.10
@@ -618,18 +618,18 @@ class Hoster(Plugin):
 
         else:
             try:
-                self.logError(_("Too many redirects"))
+                self.log_error(_("Too many redirects"))
             except Exception:
                 pass
 
         return link
 
 
-    def parseHtmlForm(self, attr_str="", input_names={}):
+    def parse_html_form(self, attr_str="", input_names={}):
         return parseHtmlForm(attr_str, self.html, input_names)
 
 
-    def checkTrafficLeft(self):
+    def check_traffic_left(self):
         if not self.account:
             return True
 
@@ -641,18 +641,18 @@ class Hoster(Plugin):
             return True
         else:
             size = self.pyfile.size / 1024
-            self.logInfo(_("Filesize: %s KiB, Traffic left for user %s: %s KiB") % (size, self.user, traffic))
+            self.log_info(_("Filesize: %s KiB, Traffic left for user %s: %s KiB") % (size, self.user, traffic))
             return size <= traffic
 
 
-    def getPassword(self):
+    def get_password(self):
         """
         Get the password the user provided in the package
         """
         return self.pyfile.package().password or ""
 
 
-    def checkForSameFiles(self, starting=False):
+    def check_for_same_files(self, starting=False):
         """
         Checks if same file was/is downloaded within same package
 
@@ -681,7 +681,7 @@ class Hoster(Plugin):
             if os.path.exists(location):
                 self.skip(pyfile[0])
 
-            self.logDebug("File %s not skipped, because it does not exists." % self.pyfile.name)
+            self.log_debug("File %s not skipped, because it does not exists." % self.pyfile.name)
 
 
     def clean(self):

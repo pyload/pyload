@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class HellshareCz(Account):
     __name__    = "HellshareCz"
     __type__    = "account"
-    __version__ = "0.17"
+    __version__ = "0.18"
 
     __description__ = """Hellshare.cz account plugin"""
     __license__     = "GPLv3"
@@ -19,7 +19,7 @@ class HellshareCz(Account):
     CREDIT_LEFT_PATTERN = r'<div class="credit-link">\s*<table>\s*<tr>\s*<th>(\d+|\d\d\.\d\d\.)</th>'
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         self.relogin(user)
         html = self.load("http://www.hellshare.com/", req=req)
 
@@ -33,18 +33,18 @@ class HellshareCz(Account):
             premium = True
             try:
                 if "." in credit:
-                    #Time-based account
+                    # Time-based account
                     vt = [int(x) for x in credit.split('.')[:2]]
                     lt = time.localtime()
                     year = lt.tm_year + int(vt[1] < lt.tm_mon or (vt[1] == lt.tm_mon and vt[0] < lt.tm_mday))
                     validuntil = time.mktime(time.strptime("%s%d 23:59:59" % (credit, year), "%d.%m.%Y %H:%M:%S"))
                     trafficleft = -1
                 else:
-                    #Traffic-based account
-                    trafficleft = self.parseTraffic(credit + "MB")
+                    # Traffic-based account
+                    trafficleft = self.parse_traffic(credit + "MB")
                     validuntil = -1
             except Exception, e:
-                self.logError(_("Unable to parse credit info"), e)
+                self.log_error(_("Unable to parse credit info"), e)
                 validuntil = -1
                 trafficleft = -1
 
@@ -54,18 +54,18 @@ class HellshareCz(Account):
     def login(self, user, data, req):
         html = self.load('http://www.hellshare.com/', req=req)
         if req.lastEffectiveURL != 'http://www.hellshare.com/':
-            #Switch to English
-            self.logDebug("Switch lang - URL: %s" % req.lastEffectiveURL)
+            # Switch to English
+            self.log_debug("Switch lang - URL: %s" % req.lastEffectiveURL)
 
             json = self.load("%s?do=locRouter-show" % req.lastEffectiveURL, req=req)
             hash = re.search(r"(\-\-[0-9a-f]+\-)", json).group(1)
 
-            self.logDebug("Switch lang - HASH: %s" % hash)
+            self.log_debug("Switch lang - HASH: %s" % hash)
 
             html = self.load('http://www.hellshare.com/%s/' % hash, req=req)
 
         if re.search(self.CREDIT_LEFT_PATTERN, html):
-            self.logDebug("Already logged in")
+            self.log_debug("Already logged in")
             return
 
         html = self.load('https://www.hellshare.com/login?do=loginForm-submit',
@@ -75,4 +75,4 @@ class HellshareCz(Account):
                               "perm_login": "on"}, req=req)
 
         if "<p>You input a wrong user name or wrong password</p>" in html:
-            self.wrongPassword()
+            self.wrong_password()

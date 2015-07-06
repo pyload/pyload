@@ -12,7 +12,7 @@ from module.plugins.internal.Account import Account
 class WebshareCz(Account):
     __name__    = "WebshareCz"
     __type__    = "account"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __description__ = """Webshare.cz account plugin"""
     __license__     = "GPLv3"
@@ -24,17 +24,17 @@ class WebshareCz(Account):
     TRAFFIC_LEFT_PATTERN = r'<bytes>(.+)</bytes>'
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         html = self.load("https://webshare.cz/api/user_data/",
-                        post={'wst': self.getAccountData(user).get('wst', None)})
+                        post={'wst': self.get_account_data(user).get('wst', None)})
 
-        self.logDebug("Response: " + html)
+        self.log_debug("Response: " + html)
 
         expiredate = re.search(self.VALID_UNTIL_PATTERN, html).group(1)
-        self.logDebug("Expire date: " + expiredate)
+        self.log_debug("Expire date: " + expiredate)
 
         validuntil  = time.mktime(time.strptime(expiredate, "%Y-%m-%d %H:%M:%S"))
-        trafficleft = self.parseTraffic(re.search(self.TRAFFIC_LEFT_PATTERN, html).group(1))
+        trafficleft = self.parse_traffic(re.search(self.TRAFFIC_LEFT_PATTERN, html).group(1))
         premium     = validuntil > time.time()
 
         return {'validuntil': validuntil, 'trafficleft': -1, 'premium': premium}
@@ -46,7 +46,7 @@ class WebshareCz(Account):
                               'wst'              : ""}, req=req)
 
         if "<status>OK</status>" not in salt:
-            self.wrongPassword()
+            self.wrong_password()
 
         salt     = re.search('<salt>(.+)</salt>', salt).group(1)
         password = hashlib.sha1(md5_crypt.encrypt(data['password'], salt=salt)).hexdigest()
@@ -60,6 +60,6 @@ class WebshareCz(Account):
                                'wst'              : ""}, req=req)
 
         if "<status>OK</status>" not in login:
-            self.wrongPassword()
+            self.wrong_password()
 
         data['wst'] = re.search('<token>(.+)</token>', login).group(1)

@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MegasharesCom(SimpleHoster):
     __name__    = "MegasharesCom"
     __type__    = "hoster"
-    __version__ = "0.28"
+    __version__ = "0.29"
 
     __pattern__ = r'http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index\.php)?\?d\d{2}=|dl/)\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -35,15 +35,15 @@ class MegasharesCom(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = True
-        self.multiDL        = self.premium
+        self.resume_download = True
+        self.multi_dl        = self.premium
 
 
-    def handlePremium(self, pyfile):
-        self.handleDownload(True)
+    def handle_premium(self, pyfile):
+        self.handle_download(True)
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         if self.NO_SLOTS_PATTERN in self.html:
             self.retry(wait_time=5 * 60)
 
@@ -55,10 +55,10 @@ class MegasharesCom(SimpleHoster):
             for _i in xrange(5):
                 random_num = re.search(self.REACTIVATE_NUM_PATTERN, self.html).group(1)
 
-                verifyinput = self.decryptCaptcha("http://d01.megashares.com/index.php",
+                verifyinput = self.decrypt_captcha("http://d01.megashares.com/index.php",
                                                   get={'secgfx': "gfx", 'random_num': random_num})
 
-                self.logInfo(_("Reactivating passport %s: %s %s") % (passport_num, random_num, verifyinput))
+                self.log_info(_("Reactivating passport %s: %s %s") % (passport_num, random_num, verifyinput))
 
                 res = self.load("http://d01.megashares.com%s" % request_uri,
                                 get={'rs'      : "check_passport_renewal",
@@ -69,10 +69,10 @@ class MegasharesCom(SimpleHoster):
                                      'rsrnd[]' : str(int(time.time() * 1000))})
 
                 if 'Thank you for reactivating your passport.' in res:
-                    self.correctCaptcha()
+                    self.correct_captcha()
                     self.retry()
                 else:
-                    self.invalidCaptcha()
+                    self.invalid_captcha()
             else:
                 self.fail(_("Failed to reactivate passport"))
 
@@ -80,7 +80,7 @@ class MegasharesCom(SimpleHoster):
         if m:
             time = [int(x) for x in m.groups()]
             renew = time[0] + (time[1] * 60) + (time[2] * 60)
-            self.logDebug("Waiting %d seconds for a new passport" % renew)
+            self.log_debug("Waiting %d seconds for a new passport" % renew)
             self.retry(wait_time=renew, reason=_("Passport renewal"))
 
         #: Check traffic left on passport
@@ -88,17 +88,17 @@ class MegasharesCom(SimpleHoster):
         if m is None:
             self.fail(_("Passport not found"))
 
-        self.logInfo(_("Download passport: %s") % m.group(1))
+        self.log_info(_("Download passport: %s") % m.group(1))
         data_left = float(m.group(2)) * 1024 ** {'B': 0, 'KB': 1, 'MB': 2, 'GB': 3}[m.group(3)]
-        self.logInfo(_("Data left: %s %s (%d MB needed)") % (m.group(2), m.group(3), self.pyfile.size / 1048576))
+        self.log_info(_("Data left: %s %s (%d MB needed)") % (m.group(2), m.group(3), self.pyfile.size / 1048576))
 
         if not data_left:
             self.retry(wait_time=600, reason=_("Passport renewal"))
 
-        self.handleDownload(False)
+        self.handle_download(False)
 
 
-    def handleDownload(self, premium=False):
+    def handle_download(self, premium=False):
         #: Find download link
         m = re.search(self.LINK_PATTERN % (1 if premium else 2), self.html)
         msg = _('%s download URL' % ('Premium' if premium else 'Free'))
@@ -106,7 +106,7 @@ class MegasharesCom(SimpleHoster):
             self.error(msg)
 
         self.link = m.group(1)
-        self.logDebug("%s: %s" % (msg, self.link))
+        self.log_debug("%s: %s" % (msg, self.link))
 
 
 getInfo = create_getInfo(MegasharesCom)

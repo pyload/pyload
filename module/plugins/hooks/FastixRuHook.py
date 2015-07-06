@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class FastixRuHook(MultiHook):
     __name__    = "FastixRuHook"
     __type__    = "hook"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -19,7 +19,7 @@ class FastixRuHook(MultiHook):
     __authors__     = [("Massimo Rosamilia", "max@spiritix.eu")]
 
 
-    def getHosters(self):
+    def get_hosters(self):
         html = self.load("http://fastix.ru/api_v2",
                       get={'apikey': "5182964c3f8f9a7f0b00000a_kelmFB4n1IrnCDYuIFn2y",
                            'sub'   : "allowed_sources"})

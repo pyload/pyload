@@ -9,19 +9,19 @@ from module.common.json_layer import json_loads
 class LinksnappyCom(Account):
     __name__    = "LinksnappyCom"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __description__ = """Linksnappy.com account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    def loadAccountInfo(self, user, req):
-        data = self.getAccountData(user)
+    def load_account_info(self, user, req):
+        data = self.get_account_data(user)
         r = self.load('http://gen.linksnappy.com/lseAPI.php',
                      get={'act': 'USERDETAILS', 'username': user, 'password': hashlib.md5(data['password'], req=req).hexdigest()})
 
-        self.logDebug("JSON data: " + r)
+        self.log_debug("JSON data: " + r)
 
         j = json_loads(r)
 
@@ -42,7 +42,7 @@ class LinksnappyCom(Account):
         if 'trafficleft' not in j['return'] or isinstance(j['return']['trafficleft'], str):
             trafficleft = -1
         else:
-            trafficleft = self.parseTraffic("%d MB" % j['return']['trafficleft'])
+            trafficleft = self.parse_traffic("%d MB" % j['return']['trafficleft'])
 
         return {'premium'    : True       ,
                 'validuntil' : validuntil ,
@@ -56,4 +56,4 @@ class LinksnappyCom(Account):
                              'password': hashlib.md5(data['password'], req=req).hexdigest()})
 
         if "Invalid Account Details" in html:
-            self.wrongPassword()
+            self.wrong_password()

@@ -8,7 +8,7 @@ from module.plugins.internal.Hook import Hook, Expose
 class AndroidPhoneNotify(Hook):
     __name__    = "AndroidPhoneNotify"
     __type__    = "hook"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __config__ = [("apikey"         , "str" , "API key"                                  , ""   ),
                   ("notifycaptcha"  , "bool", "Notify captcha request"                   , True ),
@@ -32,25 +32,26 @@ class AndroidPhoneNotify(Hook):
     def setup(self):
         self.info = {}  #@TODO: Remove in 0.4.10
 
-        self.event_list = ["allDownloadsProcessed", "plugin_updated"]
+        self.event_list = ["plugin_updated"]
+        self.event_map  = {'allDownloadsProcessed': "all_downloads_processed"}
 
         self.last_notify   = 0
         self.notifications = 0
 
 
     def plugin_updated(self, type_plugins):
-        if not self.getConfig('notifyupdate'):
+        if not self.get_config('notifyupdate'):
             return
 
         self.notify(_("Plugins updated"), str(type_plugins))
 
 
     def activate(self):
-        self.key = self.getConfig('apikey')
+        self.key = self.get_config('apikey')
 
 
     def exit(self):
-        if not self.getConfig('notifyexit'):
+        if not self.get_config('notifyexit'):
             return
 
         if self.core.do_restart:
@@ -60,19 +61,19 @@ class AndroidPhoneNotify(Hook):
 
 
     def captcha_task(self, task):
-        if not self.getConfig('notifycaptcha'):
+        if not self.get_config('notifycaptcha'):
             return
 
         self.notify(_("Captcha"), _("New request waiting user input"))
 
 
     def package_finished(self, pypack):
-        if self.getConfig('notifypackage'):
+        if self.get_config('notifypackage'):
             self.notify(_("Package finished"), pypack.name)
 
 
-    def allDownloadsProcessed(self):
-        if not self.getConfig('notifyprocessed'):
+    def all_downloads_processed(self):
+        if not self.get_config('notifyprocessed'):
             return
 
         if any(True for pdata in self.core.api.getQueue() if pdata.linksdone < pdata.linkstotal):
@@ -91,18 +92,18 @@ class AndroidPhoneNotify(Hook):
         if not key:
             return
 
-        if self.core.isClientConnected() and not self.getConfig('ignoreclient'):
+        if self.core.isClientConnected() and not self.get_config('ignoreclient'):
             return
 
         elapsed_time = time.time() - self.last_notify
 
-        if elapsed_time < self.getConfig("sendtimewait"):
+        if elapsed_time < self.get_config("sendtimewait"):
             return
 
         if elapsed_time > 60:
             self.notifications = 0
 
-        elif self.notifications >= self.getConfig("sendpermin"):
+        elif self.notifications >= self.get_config("sendpermin"):
             return
 
         self.load("http://www.notifymyandroid.com/publicapi/notify",

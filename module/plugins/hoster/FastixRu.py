@@ -10,7 +10,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class FastixRu(MultiHoster):
     __name__    = "FastixRu"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/\w{24}'
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
@@ -22,10 +22,10 @@ class FastixRu(MultiHoster):
 
 
     def setup(self):
-        self.chunkLimit = 3
+        self.chunk_limit = 3
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         api_key = self.account.getAccountData(self.user)
         api_key = api_key['api']
 
@@ -34,7 +34,7 @@ class FastixRu(MultiHoster):
 
         data = json_loads(self.html)
 
-        self.logDebug("Json data", data)
+        self.log_debug("Json data", data)
 
         if "error\":true" in self.html:
             self.offline()

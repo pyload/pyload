@@ -20,7 +20,7 @@ from module.utils import save_join as fs_join
 class OCR(Plugin):
     __name__    = "OCR"
     __type__    = "ocr"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __description__ = """OCR base plugin"""
     __license__     = "GPLv3"
@@ -71,7 +71,7 @@ class OCR(Plugin):
             tmpTxt.close()
 
         except IOError, e:
-            self.logError(e)
+            self.log_error(e)
             return
 
         self.logger.debug("save tiff")

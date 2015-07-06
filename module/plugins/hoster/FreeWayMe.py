@@ -6,7 +6,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class FreeWayMe(MultiHoster):
     __name__    = "FreeWayMe"
     __type__    = "hoster"
-    __version__ = "0.18"
+    __version__ = "0.19"
 
     __pattern__ = r'https?://(?:www\.)?free-way\.(bz|me)/.+'
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
@@ -18,12 +18,12 @@ class FreeWayMe(MultiHoster):
 
 
     def setup(self):
-        self.resumeDownload = False
-        self.multiDL        = self.premium
-        self.chunkLimit     = 1
+        self.resume_download = False
+        self.multi_dl        = self.premium
+        self.chunk_limit     = 1
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         user, data = self.account.selectAccount()
 
         for _i in xrange(5):
@@ -40,14 +40,14 @@ class FreeWayMe(MultiHoster):
                 headers = self.load(header['location'], just_header=True)
                 if headers['code'] == 500:
                     #: error on 2nd stage
-                    self.logError(_("Error [stage2]"))
+                    self.log_error(_("Error [stage2]"))
                 else:
                     #: seems to work..
                     self.download(header['location'])
                     break
             else:
                 #: error page first stage
-                self.logError(_("Error [stage1]"))
+                self.log_error(_("Error [stage1]"))
 
             #@TODO: handle errors
 

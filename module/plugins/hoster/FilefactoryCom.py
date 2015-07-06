@@ -7,7 +7,7 @@ from module.network.RequestFactory import getURL
 from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 
 
-def getInfo(urls):
+def get_info(urls):
     for url in urls:
         h = getURL(url, just_header=True)
         m = re.search(r'Location: (.+)\r\n', h)
@@ -20,7 +20,7 @@ def getInfo(urls):
 class FilefactoryCom(SimpleHoster):
     __name__    = "FilefactoryCom"
     __type__    = "hoster"
-    __version__ = "0.56"
+    __version__ = "0.57"
 
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/(file|trafficshare/\w+)/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -42,7 +42,7 @@ class FilefactoryCom(SimpleHoster):
     COOKIES = [("filefactory.com", "locale", "en_US.utf8")]
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         if "Currently only Premium Members can download files larger than" in self.html:
             self.fail(_("File too large for free download"))
         elif "All free download slots on this server are currently in use" in self.html:
@@ -59,12 +59,12 @@ class FilefactoryCom(SimpleHoster):
             self.wait(m.group(1))
 
 
-    def checkFile(self):
-        check = self.checkDownload({'multiple': "You are currently downloading too many files at once.",
+    def check_file(self):
+        check = self.check_download({'multiple': "You are currently downloading too many files at once.",
                                     'error'   : '<div id="errorMessage">'})
 
         if check == "multiple":
-            self.logDebug("Parallel downloads detected; waiting 15 minutes")
+            self.log_debug("Parallel downloads detected; waiting 15 minutes")
             self.retry(wait_time=15 * 60, reason=_("Parallel downloads"))
 
         elif check == "error":
@@ -73,8 +73,8 @@ class FilefactoryCom(SimpleHoster):
         return super(FilefactoryCom, self).checkFile()
 
 
-    def handlePremium(self, pyfile):
-        self.link = self.directLink(self.load(pyfile.url, just_header=True))
+    def handle_premium(self, pyfile):
+        self.link = self.direct_link(self.load(pyfile.url, just_header=True))
 
         if not self.link:
             html = self.load(pyfile.url)

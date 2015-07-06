@@ -9,19 +9,19 @@ from module.plugins.internal.Account import Account
 class MyfastfileCom(Account):
     __name__    = "MyfastfileCom"
     __type__    = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __description__ = """Myfastfile.com account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         if 'days_left' in self.json_data:
             validuntil = time.time() + self.json_data['days_left'] * 24 * 60 * 60
             return {"premium": True, "validuntil": validuntil, "trafficleft": -1}
         else:
-            self.logError(_("Unable to get account information"))
+            self.log_error(_("Unable to get account information"))
 
 
     def login(self, user, data, req):
@@ -29,9 +29,9 @@ class MyfastfileCom(Account):
         html = self.load("https://myfastfile.com/api.php",
                         get={"user": user, "pass": data['password']}, req=req)
 
-        self.logDebug("JSON data: " + html)
+        self.log_debug("JSON data: " + html)
 
         self.json_data = json_loads(html)
         if self.json_data['status'] != 'ok':
-            self.logError(_('Invalid login. The password to use is the API-Password you find in your "My Account" page'))
-            self.wrongPassword()
+            self.log_error(_('Invalid login. The password to use is the API-Password you find in your "My Account" page'))
+            self.wrong_password()

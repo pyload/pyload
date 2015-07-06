@@ -6,7 +6,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class StreamcloudEu(XFSAccount):
     __name__    = "StreamcloudEu"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """Streamcloud.eu account plugin"""
     __license__     = "GPLv3"

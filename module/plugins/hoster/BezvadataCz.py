@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class BezvadataCz(SimpleHoster):
     __name__    = "BezvadataCz"
     __type__    = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
     __pattern__ = r'http://(?:www\.)?bezvadata\.cz/stahnout/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -24,22 +24,22 @@ class BezvadataCz(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = True
-        self.multiDL        = True
+        self.resume_download = True
+        self.multi_dl        = True
 
 
-    def handleFree(self, pyfile):
-        #download button
+    def handle_free(self, pyfile):
+        # download button
         m = re.search(r'<a class="stahnoutSoubor".*?href="(.*?)"', self.html)
         if m is None:
             self.error(_("Page 1 URL not found"))
         url = "http://bezvadata.cz%s" % m.group(1)
 
-        #captcha form
+        # captcha form
         self.html = self.load(url)
-        self.checkErrors()
+        self.check_errors()
         for _i in xrange(5):
-            action, inputs = self.parseHtmlForm('frm-stahnoutFreeForm')
+            action, inputs = self.parse_html_form('frm-stahnoutFreeForm')
             if not inputs:
                 self.error(_("FreeForm"))
 
@@ -47,31 +47,31 @@ class BezvadataCz(SimpleHoster):
             if m is None:
                 self.error(_("Wrong captcha image"))
 
-            #captcha image is contained in html page as base64encoded data but decryptCaptcha() expects image url
+            # captcha image is contained in html page as base64encoded data but decryptCaptcha() expects image url
             self.load, proper_load = self.loadcaptcha, self.load
             try:
-                inputs['captcha'] = self.decryptCaptcha(m.group(1), imgtype='png')
+                inputs['captcha'] = self.decrypt_captcha(m.group(1), imgtype='png')
             finally:
                 self.load = proper_load
 
             if '<img src="data:image/png;base64' in self.html:
-                self.invalidCaptcha()
+                self.invalid_captcha()
             else:
-                self.correctCaptcha()
+                self.correct_captcha()
                 break
         else:
             self.fail(_("No valid captcha code entered"))
 
-        #download url
+        # download url
         self.html = self.load("http://bezvadata.cz%s" % action, post=inputs)
-        self.checkErrors()
+        self.check_errors()
         m = re.search(r'<a class="stahnoutSoubor2" href="(.*?)">', self.html)
         if m is None:
             self.error(_("Page 2 URL not found"))
         url = "http://bezvadata.cz%s" % m.group(1)
-        self.logDebug("DL URL %s" % url)
+        self.log_debug("DL URL %s" % url)
 
-        #countdown
+        # countdown
         m = re.search(r'id="countdown">(\d\d):(\d\d)<', self.html)
         wait_time = (int(m.group(1)) * 60 + int(m.group(2))) if m else 120
         self.wait(wait_time, False)
@@ -79,11 +79,11 @@ class BezvadataCz(SimpleHoster):
         self.link = url
 
 
-    def checkErrors(self):
+    def check_errors(self):
         if 'images/button-download-disable.png' in self.html:
             self.wait(5 * 60, 24, _("Download limit reached"))  #: parallel dl limit
         elif '<div class="infobox' in self.html:
-            self.tempOffline()
+            self.temp_offline()
         else:
             return super(BezvadataCz, self).checkErrors()
 

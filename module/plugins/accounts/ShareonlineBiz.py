@@ -8,7 +8,7 @@ from module.plugins.internal.Account import Account
 class ShareonlineBiz(Account):
     __name__    = "ShareonlineBiz"
     __type__    = "account"
-    __version__ = "0.34"
+    __version__ = "0.35"
 
     __description__ = """Share-online.biz account plugin"""
     __license__     = "GPLv3"
@@ -20,10 +20,10 @@ class ShareonlineBiz(Account):
                         get={'q'       : "userdetails",
                              'aux'     : "traffic",
                              'username': user,
-                             'password': self.getAccountData(user)['password']})
+                             'password': self.get_account_data(user)['password']})
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         premium     = False
         validuntil  = None
         trafficleft = -1
@@ -35,7 +35,7 @@ class ShareonlineBiz(Account):
                 key, value = line.split("=")
                 api[key] = value
 
-        self.logDebug(api)
+        self.log_debug(api)
 
         if api['a'].lower() != "not_available":
             req.cj.setCookie("share-online.biz", 'a', api['a'])
@@ -64,5 +64,5 @@ class ShareonlineBiz(Account):
         html = self.api_response(user, req)
         err  = re.search(r'\*\*(.+?)\*\*', html)
         if err:
-            self.logError(err.group(1).strip())
-            self.wrongPassword()
+            self.log_error(err.group(1).strip())
+            self.wrong_password()

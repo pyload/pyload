@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class MyfastfileComHook(MultiHook):
     __name__    = "MyfastfileComHook"
     __type__    = "hook"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -19,9 +19,9 @@ class MyfastfileComHook(MultiHook):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    def getHosters(self):
+    def get_hosters(self):
         json_data = self.load("http://myfastfile.com/api.php", get={'hosts': ""})
-        self.logDebug("JSON data", json_data)
+        self.log_debug("JSON data", json_data)
         json_data = json_loads(json_data)
 
         return json_data['hosts']

@@ -6,7 +6,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 class MultiuploadCom(DeadCrypter):
     __name__    = "MultiuploadCom"
     __type__    = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?multiupload\.(com|nl)/\w+'
     __config__  = []  #@TODO: Remove in 0.4.10

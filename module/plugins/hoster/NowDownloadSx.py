@@ -9,7 +9,7 @@ from module.utils import fixup
 class NowDownloadSx(SimpleHoster):
     __name__    = "NowDownloadSx"
     __type__    = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __pattern__ = r'http://(?:www\.)?(nowdownload\.[a-zA-Z]{2,}/(dl/|download\.php.+?id=|mobile/(#/files/|.+?id=))|likeupload\.org/)\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -32,12 +32,12 @@ class NowDownloadSx(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = True
-        self.multiDL        = True
-        self.chunkLimit     = -1
+        self.resume_download = True
+        self.multi_dl        = True
+        self.chunk_limit     = -1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         tokenlink = re.search(self.TOKEN_PATTERN, self.html)
         continuelink = re.search(self.CONTINUE_PATTERN, self.html)
         if tokenlink is None or continuelink is None:

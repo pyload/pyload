@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DevhostSt(SimpleHoster):
     __name__    = "DevhostSt"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'http://(?:www\.)?d-h\.st/(?!users/)\w{3}'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -30,8 +30,8 @@ class DevhostSt(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL    = True
-        self.chunkLimit = 1
+        self.multi_dl    = True
+        self.chunk_limit = 1
 
 
 getInfo = create_getInfo(DevhostSt)

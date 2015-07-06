@@ -6,7 +6,7 @@ from module.network.RequestFactory import getURL
 from module.plugins.internal.Hoster import Hoster
 
 
-def getInfo(urls):
+def get_info(urls):
     result = []
 
     for url in urls:
@@ -23,7 +23,7 @@ def getInfo(urls):
 class StreamCz(Hoster):
     __name__    = "StreamCz"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __pattern__ = r'https?://(?:www\.)?stream\.cz/[^/]+/\d+'
 
@@ -39,8 +39,8 @@ class StreamCz(Hoster):
 
 
     def setup(self):
-        self.resumeDownload = True
-        self.multiDL        = True
+        self.resume_download = True
+        self.multi_dl        = True
 
 
     def process(self, pyfile):
@@ -53,7 +53,7 @@ class StreamCz(Hoster):
         if m is None:
             self.error(_("CDN_PATTERN not found"))
         cdn = m.groupdict()
-        self.logDebug(cdn)
+        self.log_debug(cdn)
         for cdnkey in ("cdnHD", "cdnHQ", "cdnLQ"):
             if cdnkey in cdn and cdn[cdnkey] > '':
                 cdnid = cdn[cdnkey]
@@ -67,5 +67,5 @@ class StreamCz(Hoster):
         pyfile.name = "%s-%s.%s.mp4" % (m.group(2), m.group(1), cdnkey[-2:])
 
         download_url = "http://cdn-dispatcher.stream.cz/?id=" + cdnid
-        self.logInfo(_("STREAM: %s") % cdnkey[-2:], download_url)
+        self.log_info(_("STREAM: %s") % cdnkey[-2:], download_url)
         self.download(download_url)

@@ -8,7 +8,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class XFileSharingPro(XFSHoster):
     __name__    = "XFileSharingPro"
     __type__    = "hoster"
-    __version__ = "0.48"
+    __version__ = "0.49"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)'
 
@@ -49,9 +49,9 @@ class XFileSharingPro(XFSHoster):
 
 
     def setup(self):
-        self.chunkLimit     = 1
-        self.resumeDownload = self.premium
-        self.multiDL        = True
+        self.chunk_limit     = 1
+        self.resume_download = self.premium
+        self.multi_dl        = True
 
 
 getInfo = create_getInfo(XFileSharingPro)

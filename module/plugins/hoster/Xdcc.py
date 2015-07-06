@@ -15,7 +15,7 @@ from module.utils import save_join as fs_join
 class Xdcc(Hoster):
     __name__    = "Xdcc"
     __type__    = "hoster"
-    __version__ = "0.33"
+    __version__ = "0.34"
 
     __config__ = [("nick", "str", "Nickname", "pyload"),
                   ("ident", "str", "Ident", "pyloadident"),
@@ -29,7 +29,7 @@ class Xdcc(Hoster):
     def setup(self):
         self.debug = 0  #: 0,1,2
         self.timeout = 30
-        self.multiDL = False
+        self.multi_dl = False
 
 
     def process(self, pyfile):
@@ -39,8 +39,8 @@ class Xdcc(Hoster):
         self.pyfile = pyfile
         for _i in xrange(0, 3):
             try:
-                nmn = self.doDownload(pyfile.url)
-                self.logDebug("Download of %s finished." % nmn)
+                nmn = self.do_download(pyfile.url)
+                self.log_debug("Download of %s finished." % nmn)
                 return
             except socket.error, e:
                 if hasattr(e, "errno"):
@@ -49,8 +49,8 @@ class Xdcc(Hoster):
                     errno = e.args[0]
 
                 if errno == 10054:
-                    self.logDebug("Server blocked our ip, retry in 5 min")
-                    self.setWait(300)
+                    self.log_debug("Server blocked our ip, retry in 5 min")
+                    self.set_wait(300)
                     self.wait()
                     continue
 
@@ -59,7 +59,7 @@ class Xdcc(Hoster):
         self.fail(_("Server blocked our ip, retry again later manually"))
 
 
-    def doDownload(self, url):
+    def do_download(self, url):
         self.pyfile.setStatus("waiting")  #: real link
 
         m = re.match(r'xdcc://(.*?)/#?(.*?)/(.*?)/#?(\d+)/?', url)
@@ -67,9 +67,9 @@ class Xdcc(Hoster):
         chan = m.group(2)
         bot = m.group(3)
         pack = m.group(4)
-        nick = self.getConfig('nick')
-        ident = self.getConfig('ident')
-        real = self.getConfig('realname')
+        nick = self.get_config('nick')
+        ident = self.get_config('ident')
+        real = self.get_config('realname')
 
         temp = server.split(':')
         ln = len(temp)
@@ -91,7 +91,7 @@ class Xdcc(Hoster):
         sock.send("NICK %s\r\n" % nick)
         sock.send("USER %s %s bla :%s\r\n" % (ident, host, real))
 
-        self.setWait(3)
+        self.set_wait(3)
         self.wait()
 
         sock.send("JOIN #%s\r\n" % chan)
@@ -153,10 +153,10 @@ class Xdcc(Hoster):
 
                 if nick == msg['target'][0:len(nick)] and "PRIVMSG" == msg['action']:
                     if msg['text'] == "\x01VERSION\x01":
-                        self.logDebug("Sending CTCP VERSION")
+                        self.log_debug("Sending CTCP VERSION")
                         sock.send("NOTICE %s :%s\r\n" % (msg['origin'], "pyLoad! IRC Interface"))
                     elif msg['text'] == "\x01TIME\x01":
-                        self.logDebug("Sending CTCP TIME")
+                        self.log_debug("Sending CTCP TIME")
                         sock.send("NOTICE %s :%d\r\n" % (msg['origin'], time.time()))
                     elif msg['text'] == "\x01LAG\x01":
                         pass  #: don't know how to answer
@@ -192,17 +192,17 @@ class Xdcc(Hoster):
         download_folder = self.core.config.get("general", "download_folder")
         filename = fs_join(download_folder, packname)
 
-        self.logInfo(_("Downloading %s from %s:%d") % (packname, ip, port))
+        self.log_info(_("Downloading %s from %s:%d") % (packname, ip, port))
 
         self.pyfile.setStatus("downloading")
         newname = self.req.download(ip, port, filename, sock, self.pyfile.setProgress)
         if newname and newname != filename:
-            self.logInfo(_("%(name)s saved as %(newname)s") % {"name": self.pyfile.name, "newname": newname})
+            self.log_info(_("%(name)s saved as %(newname)s") % {"name": self.pyfile.name, "newname": newname})
             filename = newname
 
         #: kill IRC socket
         #: sock.send("QUIT :byebye\r\n")
         sock.close()
 
-        self.lastDownload = filename
-        return self.lastDownload
+        self.last_download = filename
+        return self.last_download

@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleCrypter import create_getInfo
 class DeadCrypter(Crypter):
     __name__    = "DeadCrypter"
     __type__    = "crypter"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = r'^unmatchable$'
 
@@ -17,8 +17,8 @@ class DeadCrypter(Crypter):
 
 
     @classmethod
-    def apiInfo(cls, *args, **kwargs):
-        api = super(DeadCrypter, cls).apiInfo(*args, **kwargs)
+    def api_info(cls, *args, **kwargs):
+        api = super(DeadCrypter, cls).api_info(*args, **kwargs)
         api['status'] = 1
         return api
 

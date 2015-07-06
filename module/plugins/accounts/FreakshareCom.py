@@ -9,14 +9,14 @@ from module.plugins.internal.Account import Account
 class FreakshareCom(Account):
     __name__    = "FreakshareCom"
     __type__    = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __description__ = """Freakshare.com account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         premium = False
         validuntil  = None
         trafficleft = None
@@ -32,7 +32,7 @@ class FreakshareCom(Account):
 
         try:
             m = re.search(r'Traffic verbleibend:</td>\s*<td>([^<]+)', html, re.M)
-            trafficleft = self.parseTraffic(m.group(1))
+            trafficleft = self.parse_traffic(m.group(1))
 
         except Exception:
             pass
@@ -47,4 +47,4 @@ class FreakshareCom(Account):
                         post={"submit": "Login", "user": user, "pass": data['password']}, req=req)
 
         if ">Wrong Username or Password" in html:
-            self.wrongPassword()
+            self.wrong_password()

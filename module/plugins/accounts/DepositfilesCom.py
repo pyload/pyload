@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class DepositfilesCom(Account):
     __name__    = "DepositfilesCom"
     __type__    = "account"
-    __version__ = "0.33"
+    __version__ = "0.34"
 
     __description__ = """Depositfiles.com account plugin"""
     __license__     = "GPLv3"
@@ -18,7 +18,7 @@ class DepositfilesCom(Account):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         html = self.load("https://dfiles.eu/de/gold/", req=req)
         validuntil = re.search(r"Sie haben Gold Zugang bis: <b>(.*?)</b></div>", html).group(1)
 
@@ -32,4 +32,4 @@ class DepositfilesCom(Account):
                         post={"login": user, "password": data['password']}, req=req)
 
         if r'<div class="error_message">Sie haben eine falsche Benutzername-Passwort-Kombination verwendet.</div>' in html:
-            self.wrongPassword()
+            self.wrong_password()

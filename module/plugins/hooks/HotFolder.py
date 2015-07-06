@@ -14,7 +14,7 @@ from module.utils import fs_encode, save_join as fs_join
 class HotFolder(Hook):
     __name__    = "HotFolder"
     __type__    = "hook"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __config__ = [("folder"    , "str" , "Folder to observe"    , "container"),
                   ("watch_file", "bool", "Observe link file"    , False      ),
@@ -32,14 +32,14 @@ class HotFolder(Hook):
 
 
     def periodical(self):
-        folder = fs_encode(self.getConfig('folder'))
-        file   = fs_encode(self.getConfig('file'))
+        folder = fs_encode(self.get_config('folder'))
+        file   = fs_encode(self.get_config('file'))
 
         try:
             if not os.path.isdir(os.path.join(folder, "finished")):
                 os.makedirs(os.path.join(folder, "finished"))
 
-            if self.getConfig('watch_file'):
+            if self.get_config('watch_file'):
                 with open(file, "a+") as f:
                     f.seek(0)
                     content = f.read().strip()
@@ -61,11 +61,11 @@ class HotFolder(Hook):
                 if not os.path.isfile(path) or f.endswith("~") or f.startswith("#") or f.startswith("."):
                     continue
 
-                newpath = os.path.join(folder, "finished", f if self.getConfig('keep') else "tmp_" + f)
+                newpath = os.path.join(folder, "finished", f if self.get_config('keep') else "tmp_" + f)
                 move(path, newpath)
 
-                self.logInfo(_("Added %s from HotFolder") % f)
+                self.log_info(_("Added %s from HotFolder") % f)
                 self.core.api.addPackage(f, [newpath], 1)
 
         except (IOError, OSError), e:
-            self.logError(e)
+            self.log_error(e)

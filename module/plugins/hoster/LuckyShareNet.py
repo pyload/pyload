@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class LuckyShareNet(SimpleHoster):
     __name__    = "LuckyShareNet"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'https?://(?:www\.)?luckyshare\.net/(?P<ID>\d{10,})'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -25,13 +25,13 @@ class LuckyShareNet(SimpleHoster):
     OFFLINE_PATTERN = r'There is no such file available'
 
 
-    def parseJson(self, rep):
+    def parse_json(self, rep):
         if 'AJAX Error' in rep:
             html = self.load(self.pyfile.url)
             m = re.search(r"waitingtime = (\d+);", html)
             if m:
                 seconds = int(m.group(1))
-                self.logDebug("You have to wait %d seconds between free downloads" % seconds)
+                self.log_debug("You have to wait %d seconds between free downloads" % seconds)
                 self.retry(wait_time=seconds)
             else:
                 self.error(_("Unable to detect wait time between free downloads"))
@@ -42,12 +42,12 @@ class LuckyShareNet(SimpleHoster):
 
     #@TODO: There should be a filesize limit for free downloads
     #       Some files could not be downloaded in free mode
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         rep = self.load(r"http://luckyshare.net/download/request/type/time/file/" + self.info['pattern']['ID'])
 
-        self.logDebug("JSON: " + rep)
+        self.log_debug("JSON: " + rep)
 
-        json = self.parseJson(rep)
+        json = self.parse_json(rep)
         self.wait(json['time'])
 
         recaptcha = ReCaptcha(self)
@@ -56,13 +56,13 @@ class LuckyShareNet(SimpleHoster):
             response, challenge = recaptcha.challenge()
             rep = self.load(r"http://luckyshare.net/download/verify/challenge/%s/response/%s/hash/%s" %
                             (challenge, response, json['hash']))
-            self.logDebug("JSON: " + rep)
+            self.log_debug("JSON: " + rep)
             if 'link' in rep:
-                json.update(self.parseJson(rep))
-                self.correctCaptcha()
+                json.update(self.parse_json(rep))
+                self.correct_captcha()
                 break
             elif 'Verification failed' in rep:
-                self.invalidCaptcha()
+                self.invalid_captcha()
             else:
                 self.error(_("Unable to get downlaod link"))
 

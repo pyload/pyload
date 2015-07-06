@@ -6,7 +6,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class RehostToHook(MultiHook):
     __name__    = "RehostToHook"
     __type__    = "hook"
-    __version__ = "0.50"
+    __version__ = "0.51"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -18,7 +18,7 @@ class RehostToHook(MultiHook):
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
-    def getHosters(self):
+    def get_hosters(self):
         user, data = self.account.selectAccount()
         html = self.load("http://rehost.to/api.php",
                            get={'cmd'     : "get_supported_och_dl",

@@ -9,7 +9,7 @@ import re
 class ShSt(Crypter):
     __name__    = "ShSt"
     __type__    = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'http://sh\.st/\w+'
 

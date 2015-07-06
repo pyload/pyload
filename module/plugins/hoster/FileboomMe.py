@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FileboomMe(SimpleHoster):
     __name__    = "FileboomMe"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'https?://f(?:ile)?boom\.me/file/(?P<ID>\w+)'
 
@@ -30,12 +30,12 @@ class FileboomMe(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = True
-        self.multiDL        = False
-        self.chunkLimit     = 1
+        self.resume_download = True
+        self.multi_dl        = False
+        self.chunk_limit     = 1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         post_url = urljoin(pyfile.url, "/file/" + self.info['pattern']['ID'])
 
         m = re.search(r'data-slow-id="(\w+)"', self.html)
@@ -55,7 +55,7 @@ class FileboomMe(SimpleHoster):
 
                         m = re.search(self.CAPTCHA_PATTERN, self.html)
                         if m:
-                            captcha = self.decryptCaptcha(urljoin(pyfile.url, m.group(1)))
+                            captcha = self.decrypt_captcha(urljoin(pyfile.url, m.group(1)))
 
                             self.html = self.load(post_url,
                                                   post={'CaptchaForm[code]'  : captcha,
@@ -64,10 +64,10 @@ class FileboomMe(SimpleHoster):
                                                         'uniqueId'           : uniqueId})
 
                             if 'The verification code is incorrect' in self.html:
-                                self.invalidCaptcha()
+                                self.invalid_captcha()
 
                             else:
-                                self.checkErrors()
+                                self.check_errors()
 
                                 self.html = self.load(post_url,
                                                       post={'free'    : 1,
@@ -78,7 +78,7 @@ class FileboomMe(SimpleHoster):
                                     self.link = urljoin(pyfile.url, m.group(0))
 
                                 else:
-                                    self.invalidCaptcha()
+                                    self.invalid_captcha()
 
                                 break
 

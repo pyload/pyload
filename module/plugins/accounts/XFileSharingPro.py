@@ -6,7 +6,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class XFileSharingPro(XFSAccount):
     __name__    = "XFileSharingPro"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __description__ = """XFileSharingPro multi-purpose account plugin"""
     __license__     = "GPLv3"
@@ -21,8 +21,8 @@ class XFileSharingPro(XFSAccount):
             return super(XFileSharingPro, self).init()
 
 
-    def loadAccountInfo(self, user, req):
-        return super(XFileSharingPro if self.HOSTER_DOMAIN else XFSAccount, self).loadAccountInfo(user, req)
+    def load_account_info(self, user, req):
+        return super(XFileSharingPro if self.HOSTER_DOMAIN else XFSAccount, self).load_account_info(user, req)
 
 
     def login(self, user, data, req):

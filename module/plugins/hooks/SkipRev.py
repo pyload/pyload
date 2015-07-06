@@ -13,7 +13,7 @@ from module.plugins.internal.Hook import Hook
 class SkipRev(Hook):
     __name__    = "SkipRev"
     __type__    = "hook"
-    __version__ = "0.31"
+    __version__ = "0.32"
 
     __config__ = [("mode"     , "Auto;Manual", "Choose recovery archives to skip"               , "Auto"),
                   ("revtokeep", "int"        , "Number of recovery archives to keep for package", 0     )]
@@ -39,9 +39,9 @@ class SkipRev(Hook):
 
     def _name(self, pyfile):
         if hasattr(pyfile.pluginmodule, "getInfo"):  #@NOTE: getInfo is deprecated in 0.4.10
-            return pyfile.pluginmodule.getInfo([pyfile.url]).next()[0]
+            return pyfile.pluginmodule.get_info([pyfile.url]).next()[0]
         else:
-            self.logWarning("Unable to grab file name")
+            self.log_warning("Unable to grab file name")
             return urlparse.urlparse(urllib.unquote(pyfile.url)).path.split('/')[-1]
 
 
@@ -64,7 +64,7 @@ class SkipRev(Hook):
         if pyfile.statusname is _("unskipped") or not name.endswith(".rev") or not ".part" in name:
             return
 
-        revtokeep = -1 if self.getConfig('mode') == "Auto" else self.getConfig('revtokeep')
+        revtokeep = -1 if self.get_config('mode') == "Auto" else self.get_config('revtokeep')
 
         if revtokeep:
             status_list = (1, 4, 8, 9, 14) if revtokeep < 0 else (1, 3, 4, 8, 9, 14)
@@ -89,7 +89,7 @@ class SkipRev(Hook):
         if pyfile.status != 8 or pyfile.name.rsplit('.', 1)[-1].strip() not in ("rar", "rev"):
             return
 
-        revtokeep = -1 if self.getConfig('mode') == "Auto" else self.getConfig('revtokeep')
+        revtokeep = -1 if self.get_config('mode') == "Auto" else self.get_config('revtokeep')
 
         if not revtokeep:
             return

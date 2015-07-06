@@ -7,21 +7,21 @@ from module.plugins.internal.Account import Account
 class SimplyPremiumCom(Account):
     __name__    = "SimplyPremiumCom"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __description__ = """Simply-Premium.com account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         premium     = False
         validuntil  = -1
         trafficleft = None
 
         json_data = self.load('http://www.simply-premium.com/api/user.php?format=json', req=req)
 
-        self.logDebug("JSON data: %s" % json_data)
+        self.log_debug("JSON data: %s" % json_data)
 
         json_data = json_loads(json_data)
 
@@ -44,4 +44,4 @@ class SimplyPremiumCom(Account):
                         post={'key': user} if not data['password'] else {'login_name': user, 'login_pass': data['password']}, req=req)
 
         if 'logout' not in html:
-            self.wrongPassword()
+            self.wrong_password()

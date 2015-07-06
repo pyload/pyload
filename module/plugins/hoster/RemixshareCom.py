@@ -16,7 +16,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class RemixshareCom(SimpleHoster):
     __name__    = "RemixshareCom"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'https?://remixshare\.com/(download|dl)/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -39,11 +39,11 @@ class RemixshareCom(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL = True
-        self.chunkLimit = 1
+        self.multi_dl = True
+        self.chunk_limit = 1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         b = re.search(self.LINK_PATTERN, self.html)
         if not b:
             self.error(_("File url"))

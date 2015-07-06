@@ -13,7 +13,7 @@ from module.utils import fs_encode, save_join as fs_join
 class CCF(Container):
     __name__    = "CCF"
     __type__    = "container"
-    __version__ = "0.24"
+    __version__ = "0.25"
 
     __pattern__ = r'.+\.ccf$'
 

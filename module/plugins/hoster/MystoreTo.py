@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MystoreTo(SimpleHoster):
     __name__    = "MystoreTo"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'https?://(?:www\.)?mystore\.to/dl/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -27,12 +27,12 @@ class MystoreTo(SimpleHoster):
 
 
     def setup(self):
-        self.chunkLimit     = 1
-        self.resumeDownload = True
-        self.multiDL        = True
+        self.chunk_limit     = 1
+        self.resume_download = True
+        self.multi_dl        = True
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         try:
             fid = re.search(r'wert="(.+?)"', self.html).group(1)
 

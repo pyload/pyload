@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
-def convertDecimalPrefix(m):
+def convert_decimal_prefix(m):
     #: decimal prefixes used in filesize and traffic
     return ("%%.%df" % {'k': 3, 'M': 6, 'G': 9}[m.group(2)] % float(m.group(1))).replace('.', '')
 
@@ -15,7 +15,7 @@ def convertDecimalPrefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "1.10"
+    __version__ = "1.11"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -43,37 +43,37 @@ class UlozTo(SimpleHoster):
 
 
     def setup(self):
-        self.chunkLimit     = 16 if self.premium else 1
-        self.multiDL        = True
-        self.resumeDownload = True
+        self.chunk_limit     = 16 if self.premium else 1
+        self.multi_dl        = True
+        self.resume_download = True
 
 
-    def handleFree(self, pyfile):
-        action, inputs = self.parseHtmlForm('id="frm-downloadDialog-freeDownloadForm"')
+    def handle_free(self, pyfile):
+        action, inputs = self.parse_html_form('id="frm-downloadDialog-freeDownloadForm"')
         if not action or not inputs:
             self.error(_("Free download form not found"))
 
-        self.logDebug("inputs.keys = " + str(inputs.keys()))
+        self.log_debug("inputs.keys = " + str(inputs.keys()))
         #: get and decrypt captcha
         if all(key in inputs for key in ("captcha_value", "captcha_id", "captcha_key")):
             #: Old version - last seen 9.12.2013
-            self.logDebug('Using "old" version')
+            self.log_debug('Using "old" version')
 
-            captcha_value = self.decryptCaptcha("http://img.uloz.to/captcha/%s.png" % inputs['captcha_id'])
-            self.logDebug("CAPTCHA ID: " + inputs['captcha_id'] + ", CAPTCHA VALUE: " + captcha_value)
+            captcha_value = self.decrypt_captcha("http://img.uloz.to/captcha/%s.png" % inputs['captcha_id'])
+            self.log_debug("CAPTCHA ID: " + inputs['captcha_id'] + ", CAPTCHA VALUE: " + captcha_value)
 
             inputs.update({'captcha_id': inputs['captcha_id'], 'captcha_key': inputs['captcha_key'], 'captcha_value': captcha_value})
 
         elif all(key in inputs for key in ("captcha_value", "timestamp", "salt", "hash")):
             #: New version - better to get new parameters (like captcha reload) because of image url - since 6.12.2013
-            self.logDebug('Using "new" version')
+            self.log_debug('Using "new" version')
 
             xapca = self.load("http://www.ulozto.net/reloadXapca.php", get={'rnd': str(int(time.time()))})
-            self.logDebug("xapca = " + str(xapca))
+            self.log_debug("xapca = " + str(xapca))
 
             data = json_loads(xapca)
-            captcha_value = self.decryptCaptcha(str(data['image']))
-            self.logDebug("CAPTCHA HASH: " + data['hash'], "CAPTCHA SALT: " + str(data['salt']), "CAPTCHA VALUE: " + captcha_value)
+            captcha_value = self.decrypt_captcha(str(data['image']))
+            self.log_debug("CAPTCHA HASH: " + data['hash'], "CAPTCHA SALT: " + str(data['salt']), "CAPTCHA VALUE: " + captcha_value)
 
             inputs.update({'timestamp': data['timestamp'], 'salt': data['salt'], 'hash': data['hash'], 'captcha_value': captcha_value})
 
@@ -83,13 +83,13 @@ class UlozTo(SimpleHoster):
         self.download("http://www.ulozto.net" + action, post=inputs)
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         self.download(pyfile.url, get={'do': "directDownload"})
 
 
-    def checkErrors(self):
+    def check_errors(self):
         if re.search(self.ADULT_PATTERN, self.html):
-            self.logInfo(_("Adult content confirmation needed"))
+            self.log_info(_("Adult content confirmation needed"))
 
             m = re.search(self.TOKEN_PATTERN, self.html)
             if m is None:
@@ -100,10 +100,10 @@ class UlozTo(SimpleHoster):
                                   post={"agree": "Confirm", "_token_": m.group(1)})
 
         if self.PASSWD_PATTERN in self.html:
-            password = self.getPassword()
+            password = self.get_password()
 
             if password:
-                self.logInfo(_("Password protected link, trying ") + password)
+                self.log_info(_("Password protected link, trying ") + password)
                 self.html = self.load(pyfile.url,
                                       get={'do': "passwordProtectedForm-submit"},
                                       post={"password": password, "password_send": 'Send'})
@@ -119,8 +119,8 @@ class UlozTo(SimpleHoster):
         return super(UlozTo, self).checkErrors()
 
 
-    def checkFile(self):
-        check = self.checkDownload({
+    def check_file(self):
+        check = self.check_download({
             "wrong_captcha": re.compile(r'<ul class="error">\s*<li>Error rewriting the text.</li>'),
             "offline"      : re.compile(self.OFFLINE_PATTERN),
             "passwd"       : self.PASSWD_PATTERN,
@@ -129,7 +129,7 @@ class UlozTo(SimpleHoster):
         })
 
         if check == "wrong_captcha":
-            self.invalidCaptcha()
+            self.invalid_captcha()
             self.retry(reason=_("Wrong captcha code"))
 
         elif check == "offline":
@@ -139,8 +139,8 @@ class UlozTo(SimpleHoster):
             self.fail(_("Wrong password"))
 
         elif check == "server_error":
-            self.logError(_("Server error, try downloading later"))
-            self.multiDL = False
+            self.log_error(_("Server error, try downloading later"))
+            self.multi_dl = False
             self.wait(1 * 60 * 60, True)
             self.retry()
 

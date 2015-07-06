@@ -10,7 +10,7 @@ from module.plugins.internal.Crypter import Crypter
 class ShareLinksBiz(Crypter):
     __name__    = "ShareLinksBiz"
     __type__    = "crypter"
-    __version__ = "1.15"
+    __version__ = "1.16"
 
     __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
@@ -22,113 +22,113 @@ class ShareLinksBiz(Crypter):
 
 
     def setup(self):
-        self.baseUrl = None
-        self.fileId = None
+        self.base_url = None
+        self.file_id = None
         self.package = None
         self.captcha = False
 
 
     def decrypt(self, pyfile):
         #: Init
-        self.initFile(pyfile)
+        self.init_file(pyfile)
 
         #: Request package
-        url = self.baseUrl + '/' + self.fileId
+        url = self.base_url + '/' + self.file_id
         self.html = self.load(url)
 
         #: Unblock server (load all images)
-        self.unblockServer()
+        self.unblock_server()
 
         #: Check for protection
-        if self.isPasswordProtected():
-            self.unlockPasswordProtection()
-            self.handleErrors()
+        if self.is_password_protected():
+            self.unlock_password_protection()
+            self.handle_errors()
 
-        if self.isCaptchaProtected():
+        if self.is_captcha_protected():
             self.captcha = True
-            self.unlockCaptchaProtection()
-            self.handleErrors()
+            self.unlock_captcha_protection()
+            self.handle_errors()
 
         #: Extract package links
         package_links = []
-        package_links.extend(self.handleWebLinks())
-        package_links.extend(self.handleContainers())
-        package_links.extend(self.handleCNL2())
+        package_links.extend(self.handle_web_links())
+        package_links.extend(self.handle_containers())
+        package_links.extend(self.handle_CNL2())
         package_links = set(package_links)
 
         #: Get package info
-        package_name, package_folder = self.getPackageInfo()
+        package_name, package_folder = self.get_package_info()
 
         #: Pack
         self.packages = [(package_name, package_links, package_folder)]
 
 
-    def initFile(self, pyfile):
+    def init_file(self, pyfile):
         url = pyfile.url
         if 's2l.biz' in url:
             url = self.load(url, just_header=True)['location']
-        self.baseUrl = "http://www.%s.biz" % re.match(self.__pattern__, url).group(1)
-        self.fileId = re.match(self.__pattern__, url).group('ID')
+        self.base_url = "http://www.%s.biz" % re.match(self.__pattern__, url).group(1)
+        self.file_id = re.match(self.__pattern__, url).group('ID')
         self.package = pyfile.package()
 
 
-    def isOnline(self):
+    def is_online(self):
         if "No usable content was found" in self.html:
-            self.logDebug("File not found")
+            self.log_debug("File not found")
             return False
         return True
 
 
-    def isPasswordProtected(self):
+    def is_password_protected(self):
         if re.search(r'''<form.*?id="passwordForm".*?>''', self.html):
-            self.logDebug("Links are protected")
+            self.log_debug("Links are protected")
             return True
         return False
 
 
-    def isCaptchaProtected(self):
+    def is_captcha_protected(self):
         if '<map id="captchamap"' in self.html:
-            self.logDebug("Links are captcha protected")
+            self.log_debug("Links are captcha protected")
             return True
         return False
 
 
-    def unblockServer(self):
+    def unblock_server(self):
         imgs = re.findall(r"(/template/images/.*?\.gif)", self.html)
         for img in imgs:
-            self.load(self.baseUrl + img)
+            self.load(self.base_url + img)
 
 
-    def unlockPasswordProtection(self):
-        password = self.getPassword()
-        self.logDebug("Submitting password [%s] for protected links" % password)
+    def unlock_password_protection(self):
+        password = self.get_password()
+        self.log_debug("Submitting password [%s] for protected links" % password)
         post = {"password": password, 'login': 'Submit form'}
-        url = self.baseUrl + '/' + self.fileId
+        url = self.base_url + '/' + self.file_id
         self.html = self.load(url, post=post)
 
 
-    def unlockCaptchaProtection(self):
+    def unlock_captcha_protection(self):
         #: Get captcha map
-        captchaMap = self._getCaptchaMap()
-        self.logDebug("Captcha map with [%d] positions" % len(captchaMap.keys()))
+        captchaMap = self._get_captcha_map()
+        self.log_debug("Captcha map with [%d] positions" % len(captchaMap.keys()))
 
         #: Request user for captcha coords
         m = re.search(r'<img src="/captcha.gif\?d=(.*?)&amp;PHPSESSID=(.*?)&amp;legend=1"', self.html)
-        captchaUrl = self.baseUrl + '/captcha.gif?d=%s&PHPSESSID=%s' % (m.group(1), m.group(2))
-        self.logDebug("Waiting user for correct position")
-        coords = self.decryptCaptcha(captchaUrl, forceUser=True, imgtype="gif", result_type='positional')
-        self.logDebug("Captcha resolved, coords [%s]" % str(coords))
+        captchaUrl = self.base_url + '/captcha.gif?d=%s&PHPSESSID=%s' % (m.group(1), m.group(2))
+        self.log_debug("Waiting user for correct position")
+        coords = self.decrypt_captcha(captchaUrl, forceUser=True, imgtype="gif", result_type='positional')
+        self.log_debug("Captcha resolved, coords [%s]" % str(coords))
 
         #: Resolve captcha
-        href = self._resolveCoords(coords, captchaMap)
+        href = self._resolve_coords(coords, captchaMap)
         if href is None:
-            self.invalidCaptcha()
+            self.invalid_captcha()
             self.retry(wait_time=5)
-        url = self.baseUrl + href
+        url = self.base_url + href
         self.html = self.load(url)
 
 
-    def _getCaptchaMap(self):
+    def _get_captcha_map(self):
         mapp = {}
         for m in re.finditer(r'<area shape="rect" coords="(.*?)" href="(.*?)"', self.html):
             rect = eval('(' + m.group(1) + ')')
@@ -137,7 +137,7 @@ class ShareLinksBiz(Crypter):
         return mapp
 
 
-    def _resolveCoords(self, coords, captchaMap):
+    def _resolve_coords(self, coords, captchaMap):
         x, y = coords
         for rect, href in captchaMap.iteritems():
             x1, y1, x2, y2 = rect
@@ -145,20 +145,20 @@ class ShareLinksBiz(Crypter):
                 return href
 
 
-    def handleErrors(self):
+    def handle_errors(self):
         if "The inserted password was wrong" in self.html:
-            self.logDebug("Incorrect password, please set right password on 'Edit package' form and retry")
+            self.log_debug("Incorrect password, please set right password on 'Edit package' form and retry")
             self.fail(_("Incorrect password, please set right password on 'Edit package' form and retry"))
 
         if self.captcha:
             if "Your choice was wrong" in self.html:
-                self.invalidCaptcha()
+                self.invalid_captcha()
                 self.retry(wait_time=5)
             else:
-                self.correctCaptcha()
+                self.correct_captcha()
 
 
-    def getPackageInfo(self):
+    def get_package_info(self):
         name = folder = None
 
         #: Extract from web package header
@@ -168,35 +168,35 @@ class ShareLinksBiz(Crypter):
             title = m.group(1).strip()
             if 'unnamed' not in title:
                 name = folder = title
-                self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
+                self.log_debug("Found name [%s] and folder [%s] in package info" % (name, folder))
 
         #: Fallback to defaults
         if not name or not folder:
             name = self.package.name
             folder = self.package.folder
-            self.logDebug("Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
+            self.log_debug("Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
 
         #: Return package info
         return name, folder
 
 
-    def handleWebLinks(self):
+    def handle_web_links(self):
         package_links = []
-        self.logDebug("Handling Web links")
+        self.log_debug("Handling Web links")
 
         #@TODO: Gather paginated web links
         pattern = r'javascript:_get\(\'(.*?)\', \d+, \'\'\)'
         ids = re.findall(pattern, self.html)
-        self.logDebug("Decrypting %d Web links" % len(ids))
+        self.log_debug("Decrypting %d Web links" % len(ids))
         for i, ID in enumerate(ids):
             try:
-                self.logDebug("Decrypting Web link %d, [%s]" % (i + 1, ID))
+                self.log_debug("Decrypting Web link %d, [%s]" % (i + 1, ID))
 
-                dwLink = self.baseUrl + "/get/lnk/" + ID
+                dwLink = self.base_url + "/get/lnk/" + ID
                 res = self.load(dwLink)
 
                 code = re.search(r'frm/(\d+)', res).group(1)
-                fwLink = self.baseUrl + "/get/frm/" + code
+                fwLink = self.base_url + "/get/frm/" + code
                 res = self.load(fwLink)
 
                 jscode = re.search(r'<script language="javascript">\s*eval\((.*)\)\s*</script>', res, re.S).group(1)
@@ -205,44 +205,44 @@ class ShareLinksBiz(Crypter):
 
                 dlLink = self.js.eval(jslauncher % jscode)
 
-                self.logDebug("JsEngine returns value [%s] for redirection link" % dlLink)
+                self.log_debug("JsEngine returns value [%s] for redirection link" % dlLink)
 
                 package_links.append(dlLink)
             except Exception, detail:
-                self.logDebug("Error decrypting Web link [%s], %s" % (ID, detail))
+                self.log_debug("Error decrypting Web link [%s], %s" % (ID, detail))
         return package_links
 
 
-    def handleContainers(self):
+    def handle_containers(self):
         package_links = []
-        self.logDebug("Handling Container links")
+        self.log_debug("Handling Container links")
 
         pattern = r'javascript:_get\(\'(.*?)\', 0, \'(rsdf|ccf|dlc)\'\)'
         containersLinks = re.findall(pattern, self.html)
-        self.logDebug("Decrypting %d Container links" % len(containersLinks))
+        self.log_debug("Decrypting %d Container links" % len(containersLinks))
         for containerLink in containersLinks:
-            link = "%s/get/%s/%s" % (self.baseUrl, containerLink[1], containerLink[0])
+            link = "%s/get/%s/%s" % (self.base_url, containerLink[1], containerLink[0])
             package_links.append(link)
         return package_links
 
 
-    def handleCNL2(self):
+    def handle_CNL2(self):
         package_links = []
-        self.logDebug("Handling CNL2 links")
+        self.log_debug("Handling CNL2 links")
 
         if '/lib/cnl2/ClicknLoad.swf' in self.html:
             try:
-                (crypted, jk) = self._getCipherParams()
-                package_links.extend(self._getLinks(crypted, jk))
+                (crypted, jk) = self._get_cipher_params()
+                package_links.extend(self._get_links(crypted, jk))
             except Exception:
                 self.fail(_("Unable to decrypt CNL2 links"))
         return package_links
 
 
-    def _getCipherParams(self):
+    def _get_cipher_params(self):
         #: Request CNL2
         code   = re.search(r'ClicknLoad.swf\?code=(.*?)"', self.html).group(1)
-        url    = "%s/get/cnl2/%s" % (self.baseUrl, code)
+        url    = "%s/get/cnl2/%s" % (self.base_url, code)
         res    = self.load(url)
         params = res.split(";;")
 
@@ -258,10 +258,10 @@ class ShareLinksBiz(Crypter):
         return crypted, jk
 
 
-    def _getLinks(self, crypted, jk):
+    def _get_links(self, crypted, jk):
         #: Get key
         jreturn = self.js.eval("%s f()" % jk)
-        self.logDebug("JsEngine returns value [%s]" % jreturn)
+        self.log_debug("JsEngine returns value [%s]" % jreturn)
         key = binascii.unhexlify(jreturn)
 
         #: Decrypt
@@ -275,5 +275,5 @@ class ShareLinksBiz(Crypter):
         links = filter(bool, text.split('\n'))
 
         #: Log and return
-        self.logDebug("Block has %d links" % len(links))
+        self.log_debug("Block has %d links" % len(links))
         return links

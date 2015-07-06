@@ -7,17 +7,17 @@ from module.plugins.internal.Account import Account
 class PremiumizeMe(Account):
     __name__    = "PremiumizeMe"
     __type__    = "account"
-    __version__ = "0.18"
+    __version__ = "0.19"
 
     __description__ = """Premiumize.me account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         #: Get user data from premiumize.me
-        status = self.getAccountStatus(user, req)
-        self.logDebug(status)
+        status = self.get_account_status(user, req)
+        self.log_debug(status)
 
         #: Parse account info
         account_info = {"validuntil": float(status['result']['expires']),
@@ -31,18 +31,18 @@ class PremiumizeMe(Account):
 
     def login(self, user, data, req):
         #: Get user data from premiumize.me
-        status = self.getAccountStatus(user, req)
+        status = self.get_account_status(user, req)
 
         #: Check if user and password are valid
         if status['status'] != 200:
-            self.wrongPassword()
+            self.wrong_password()
 
 
-    def getAccountStatus(self, user, req):
+    def get_account_status(self, user, req):
         #: Use premiumize.me API v1 (see https://secure.premiumize.me/?show=api)
         #: to retrieve account info and return the parsed json answer
         answer = self.load("http://api.premiumize.me/pm-api/v1.php",  #@TODO: Revert to `https` in 0.4.10
                            get={'method'       : "accountstatus",
                                 'params[login]': user,
-                                'params[pass]' : self.getAccountData(user)['password']})
+                                'params[pass]' : self.get_account_data(user)['password']})
         return json_loads(answer)

@@ -6,7 +6,7 @@ from module.plugins.internal.Account import Account
 class FourSharedCom(Account):
     __name__    = "FourSharedCom"
     __type__    = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __description__ = """FourShared.com account plugin"""
     __license__     = "GPLv3"
@@ -14,7 +14,7 @@ class FourSharedCom(Account):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         #: Free mode only for now
         return {"premium": False}
 
@@ -30,4 +30,4 @@ class FourSharedCom(Account):
                              'returnTo' : "http://www.4shared.com/account/home.jsp"}, req=req)
 
         if 'Please log in to access your 4shared account' in res:
-            self.wrongPassword()
+            self.wrong_password()

@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class UploadedTo(Account):
     __name__    = "UploadedTo"
     __type__    = "account"
-    __version__ = "0.31"
+    __version__ = "0.32"
 
     __description__ = """Uploaded.to account plugin"""
     __license__     = "GPLv3"
@@ -21,7 +21,7 @@ class UploadedTo(Account):
     TRAFFIC_LEFT_PATTERN = r'<b class="cB">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         validuntil  = None
         trafficleft = None
         premium     = None
@@ -53,7 +53,7 @@ class UploadedTo(Account):
                 trafficleft = float(size.replace(',', '.')) / 1024
                 trafficleft *= 1 << 40
             else:
-                trafficleft = self.parseTraffic(size + unit)
+                trafficleft = self.parse_traffic(size + unit)
 
         return {'validuntil' : validuntil,
                 'trafficleft': trafficleft,
@@ -67,4 +67,4 @@ class UploadedTo(Account):
                         post={'id': user, 'pw': data['password'], '_': ""}, req=req)
 
         if '"err"' in html:
-            self.wrongPassword()
+            self.wrong_password()

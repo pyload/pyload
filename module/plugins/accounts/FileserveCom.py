@@ -9,15 +9,15 @@ from module.common.json_layer import json_loads
 class FileserveCom(Account):
     __name__    = "FileserveCom"
     __type__    = "account"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __description__ = """Fileserve.com account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
-    def loadAccountInfo(self, user, req):
-        data = self.getAccountData(user)
+    def load_account_info(self, user, req):
+        data = self.get_account_data(user)
 
         html = self.load("http://app.fileserve.com/api/login/", post={"username": user, "password": data['password'],
                                                                      "submit": "Submit+Query"}, req=req)
@@ -36,9 +36,9 @@ class FileserveCom(Account):
         res = json_loads(html)
 
         if not res['type']:
-            self.wrongPassword()
+            self.wrong_password()
 
-        #login at fileserv html
+        # login at fileserv html
         self.load("http://www.fileserve.com/login.php",
                  post={"loginUserName": user, "loginUserPassword": data['password'], "autoLogin": "checked",
                        "loginFormSubmit": "Login"}, req=req)

@@ -8,7 +8,7 @@ from module.network.RequestFactory import getRequest
 from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 
 
-def getInfo(urls):
+def get_info(urls):
     h = getRequest()
     h.c.setopt(pycurl.HTTPHEADER,
                ["Accept: text/html",
@@ -22,7 +22,7 @@ def getInfo(urls):
 class MegaRapidCz(SimpleHoster):
     __name__    = "MegaRapidCz"
     __type__    = "hoster"
-    __version__ = "0.56"
+    __version__ = "0.57"
 
     __pattern__ = r'http://(?:www\.)?(share|mega)rapid\.cz/soubor/\d+/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -48,10 +48,10 @@ class MegaRapidCz(SimpleHoster):
 
 
     def setup(self):
-        self.chunkLimit = 1
+        self.chunk_limit = 1
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
         if m:
             self.link = m.group(1)

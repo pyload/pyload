@@ -9,7 +9,7 @@ from module.plugins.internal.Hoster import Hoster
 class YourfilesTo(Hoster):
     __name__    = "YourfilesTo"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __pattern__ = r'http://(?:www\.)?yourfiles\.(to|biz)/\?d=\w+'
 
@@ -32,7 +32,7 @@ class YourfilesTo(Hoster):
         self.pyfile.name = self.get_file_name()
 
         wait_time = self.get_waiting_time()
-        self.setWait(wait_time)
+        self.set_wait(wait_time)
         self.wait()
 
 

@@ -6,7 +6,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class SmoozedComHook(MultiHook):
     __name__    = "SmoozedComHook"
     __type__    = "hook"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -18,6 +18,6 @@ class SmoozedComHook(MultiHook):
     __authors__     = [("", "")]
 
 
-    def getHosters(self):
+    def get_hosters(self):
         user, data = self.account.selectAccount()
         return self.account.getAccountInfo(user)["hosters"]

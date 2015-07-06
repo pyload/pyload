@@ -10,7 +10,7 @@ from module.plugins.hoster.MegaCoNz import MegaCoNz
 class MegacrypterCom(MegaCoNz):
     __name__    = "MegacrypterCom"
     __type__    = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __pattern__ = r'https?://\w{0,10}\.?megacrypter\.com/[\w!-]+'
 
@@ -27,9 +27,9 @@ class MegacrypterCom(MegaCoNz):
         """
         Dispatch a call to the api, see megacrypter.com/api_doc
         """
-        self.logDebug("JSON request: " + json_dumps(kwargs))
+        self.log_debug("JSON request: " + json_dumps(kwargs))
         res = self.load(self.API_URL, post=json_dumps(kwargs))
-        self.logDebug("API Response: " + res)
+        self.log_debug("API Response: " + res)
         return json_loads(res)
 
 
@@ -53,7 +53,7 @@ class MegacrypterCom(MegaCoNz):
 
         self.download(dl['url'])
 
-        self.decryptFile(key)
+        self.decrypt_file(key)
 
         #: Everything is finished and final name can be set
         pyfile.name = info['name']

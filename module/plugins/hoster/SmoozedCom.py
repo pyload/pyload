@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHoster import MultiHoster
 class SmoozedCom(MultiHoster):
     __name__    = "SmoozedCom"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
@@ -22,7 +22,7 @@ class SmoozedCom(MultiHoster):
                    ("Retry", r'{"state":"retry"}')]
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         #: In some cases hostsers do not supply us with a filename at download, so we
         #: are going to set a fall back filename (e.g. for freakshare or xfileshare)
         pyfile.name = pyfile.name.split('/').pop()  #: Remove everthing before last slash

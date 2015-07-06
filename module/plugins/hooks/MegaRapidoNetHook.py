@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class MegaRapidoNetHook(MultiHook):
     __name__    = "MegaRapidoNetHook"
     __type__    = "hook"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -20,7 +20,7 @@ class MegaRapidoNetHook(MultiHook):
     __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
-    def getHosters(self):
+    def get_hosters(self):
         hosters = {'1fichier'    : [],#leave it there are so many possible addresses?
                    '1st-files'   : ['1st-files.com'],
                    '2shared'     : ['2shared.com'],

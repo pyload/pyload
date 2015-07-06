@@ -25,7 +25,7 @@ def threaded(fn):
 class Hook(Plugin):
     __name__    = "Hook"
     __type__    = "hook"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __config__   = []  #: [("name", "type", "desc", "default")]
     __threaded__ = []  #@TODO: Remove in 0.4.10
@@ -72,7 +72,7 @@ class Hook(Plugin):
             self.event_map = None
 
         if self.event_list:
-            self.logDebug("Deprecated method `event_list`, use `event_map` instead")
+            self.log_debug("Deprecated method `event_list`, use `event_map` instead")
 
             for f in self.event_list:
                 self.manager.addEvent(f, getattr(self, f))
@@ -85,8 +85,8 @@ class Hook(Plugin):
 
 
     #: Deprecated method, use `init_periodical` instead
-    def initPeriodical(self):
-        return self.init_periodical()
+    def initPeriodical(self, *args, **kwargs):
+        return self.init_periodical(*args, **kwargs)
 
 
     def _periodical(self, threaded):
@@ -98,7 +98,7 @@ class Hook(Plugin):
             self.periodical()
 
         except Exception, e:
-            self.logError(_("Error executing hook: %s") % e)
+            self.log_error(_("Error executing hook: %s") % e)
             if self.core.debug:
                 traceback.print_exc()
 
@@ -124,12 +124,12 @@ class Hook(Plugin):
         """
         Checks if hook is activated
         """
-        return self.getConfig("activated")
+        return self.get_config("activated")
 
 
     #: Deprecated method, use `is_activated` instead
-    def isActivated(self):
-        return self.is_activated()
+    def isActivated(self, *args, **kwargs):
+        return self.is_activated(*args, **kwargs)
 
 
     def deactivate(self):
@@ -140,8 +140,8 @@ class Hook(Plugin):
 
 
     #: Deprecated method, use `deactivate` instead
-    def unload(self):
-        return self.deactivate()
+    def unload(self, *args, **kwargs):
+        return self.deactivate(*args, **kwargs)
 
 
     def activate(self):
@@ -152,8 +152,8 @@ class Hook(Plugin):
 
 
     #: Deprecated method, use `activate` instead
-    def coreReady(self):
-        return self.activate()
+    def coreReady(self, *args, **kwargs):
+        return self.activate(*args, **kwargs)
 
 
     def exit(self):
@@ -164,8 +164,8 @@ class Hook(Plugin):
 
 
     #: Deprecated method, use `exit` instead
-    def coreExiting(self):
-        return self.exit()
+    def coreExiting(self, *args, **kwargs):
+        return self.exit(*args, **kwargs)
 
 
     def download_preparing(self, pyfile):
@@ -173,8 +173,8 @@ class Hook(Plugin):
 
 
     #: Deprecated method, use `download_preparing` instead
-    def downloadPreparing(self, pyfile):
-        return self.download_preparing(pyfile)
+    def downloadPreparing(self, *args, **kwargs):
+        return self.download_preparing(*args, **kwargs)
 
 
     def download_finished(self, pyfile):
@@ -182,8 +182,8 @@ class Hook(Plugin):
 
 
     #: Deprecated method, use `download_finished` instead
-    def downloadFinished(self, pyfile):
-        return self.download_finished(pyfile)
+    def downloadFinished(self, *args, **kwargs):
+        return self.download_finished(*args, **kwargs)
 
 
     def download_failed(self, pyfile):
@@ -191,8 +191,8 @@ class Hook(Plugin):
 
 
     #: Deprecated method, use `download_failed` instead
-    def downloadFailed(self, pyfile):
-        return self.download_failed(pyfile)
+    def downloadFailed(self, *args, **kwargs):
+        return self.download_failed(*args, **kwargs)
 
 
     def package_finished(self, pypack):
@@ -200,8 +200,8 @@ class Hook(Plugin):
 
 
     #: Deprecated method, use `package_finished` instead
-    def packageFinished(self, pypack):
-        return self.package_finished(pypack)
+    def packageFinished(self, *args, **kwargs):
+        return self.package_finished(*args, **kwargs)
 
 
     def before_reconnect(self, ip):
@@ -209,8 +209,8 @@ class Hook(Plugin):
 
 
     #: Deprecated method, use `before_reconnect` instead
-    def beforeReconnecting(self, ip):
-        return self.before_reconnect(ip)
+    def beforeReconnecting(self, *args, **kwargs):
+        return self.before_reconnect(*args, **kwargs)
 
 
     def after_reconnect(self, ip, oldip):
@@ -230,8 +230,8 @@ class Hook(Plugin):
 
 
     #: Deprecated method, use `captcha_task` instead
-    def newCaptchaTask(self, task):
-        return self.captcha_task(task)
+    def newCaptchaTask(self, *args, **kwargs):
+        return self.captcha_task(*args, **kwargs)
 
 
     def captcha_correct(self, task):
@@ -239,8 +239,8 @@ class Hook(Plugin):
 
 
     #: Deprecated method, use `captcha_correct` instead
-    def captchaCorrect(self, task):
-        return self.captcha_correct(task)
+    def captchaCorrect(self, *args, **kwargs):
+        return self.captcha_correct(*args, **kwargs)
 
 
     def captcha_invalid(self, task):
@@ -248,5 +248,5 @@ class Hook(Plugin):
 
 
     #: Deprecated method, use `captcha_invalid` instead
-    def captchaInvalid(self, task):
-        return self.captcha_invalid(task)
+    def captchaInvalid(self, *args, **kwargs):
+        return self.captcha_invalid(*args, **kwargs)

@@ -8,7 +8,7 @@ from module.plugins.internal.Account import Account
 class YibaishiwuCom(Account):
     __name__    = "YibaishiwuCom"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """115.com account plugin"""
     __license__     = "GPLv3"
@@ -18,8 +18,8 @@ class YibaishiwuCom(Account):
     ACCOUNT_INFO_PATTERN = r'var USER_PERMISSION = {(.*?)}'
 
 
-    def loadAccountInfo(self, user, req):
-        #self.relogin(user)
+    def load_account_info(self, user, req):
+        # self.relogin(user)
         html = self.load("http://115.com/", req=req)
 
         m = re.search(self.ACCOUNT_INFO_PATTERN, html, re.S)
@@ -36,4 +36,4 @@ class YibaishiwuCom(Account):
                               "login[passwd]": data['password']}, req=req)
 
         if not 'var USER_PERMISSION = {' in html:
-            self.wrongPassword()
+            self.wrong_password()

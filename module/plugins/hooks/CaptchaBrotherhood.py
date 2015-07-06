@@ -22,7 +22,7 @@ class CaptchaBrotherhoodException(Exception):
         self.err = err
 
 
-    def getCode(self):
+    def get_code(self):
         return self.err
 
 
@@ -37,7 +37,7 @@ class CaptchaBrotherhoodException(Exception):
 class CaptchaBrotherhood(Hook):
     __name__    = "CaptchaBrotherhood"
     __type__    = "hook"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __config__ = [("username"    , "str"     , "Username"                        , ""  ),
                   ("password"    , "password", "Password"                        , ""  ),
@@ -58,14 +58,14 @@ class CaptchaBrotherhood(Hook):
         self.info = {}  #@TODO: Remove in 0.4.10
 
 
-    def getCredits(self):
+    def get_credits(self):
         res = self.load(self.API_URL + "askCredits.aspx",
-                     get={"username": self.getConfig('username'), "password": self.getConfig('password')})
+                     get={"username": self.get_config('username'), "password": self.get_config('password')})
         if not res.startswith("OK"):
             raise CaptchaBrotherhoodException(res)
         else:
             credits = int(res[3:])
-            self.logInfo(_("%d credits left") % credits)
+            self.log_info(_("%d credits left") % credits)
             self.info['credits'] = credits
             return credits
 
@@ -74,7 +74,7 @@ class CaptchaBrotherhood(Hook):
         try:
             img = Image.open(captcha)
             output = StringIO.StringIO()
-            self.logDebug("CAPTCHA IMAGE", img, img.format, img.mode)
+            self.log_debug("CAPTCHA IMAGE", img, img.format, img.mode)
             if img.format in ("GIF", "JPEG"):
                 img.save(output, img.format)
             else:
@@ -89,8 +89,8 @@ class CaptchaBrotherhood(Hook):
         req = getRequest()
 
         url = "%ssendNewCaptcha.aspx?%s" % (self.API_URL,
-                                            urllib.urlencode({'username'     : self.getConfig('username'),
-                                                              'password'     : self.getConfig('password'),
+                                            urllib.urlencode({'username'     : self.get_config('username'),
+                                                              'password'     : self.get_config('password'),
                                                               'captchaSource': "pyLoad",
                                                               'timeout'      : "80"}))
 
@@ -123,8 +123,8 @@ class CaptchaBrotherhood(Hook):
 
     def api_response(self, api, ticket):
         res = self.load("%s%s.aspx" % (self.API_URL, api),
-                          get={"username": self.getConfig('username'),
-                               "password": self.getConfig('password'),
+                          get={"username": self.get_config('username'),
+                               "password": self.get_config('password'),
                                "captchaID": ticket})
         if not res.startswith("OK"):
             raise CaptchaBrotherhoodException("Unknown response: %s" % res)
@@ -139,19 +139,19 @@ class CaptchaBrotherhood(Hook):
         if not task.isTextual():
             return False
 
-        if not self.getConfig('username') or not self.getConfig('password'):
+        if not self.get_config('username') or not self.get_config('password'):
             return False
 
-        if self.core.isClientConnected() and self.getConfig('check_client'):
+        if self.core.isClientConnected() and self.get_config('check_client'):
             return False
 
-        if self.getCredits() > 10:
+        if self.get_credits() > 10:
             task.handler.append(self)
             task.data['service'] = self.__name__
             task.setWaiting(100)
-            self._processCaptcha(task)
+            self._process_captcha(task)
         else:
-            self.logInfo(_("Your CaptchaBrotherhood Account has not enough credits"))
+            self.log_info(_("Your CaptchaBrotherhood Account has not enough credits"))
 
 
     def captcha_invalid(self, task):
@@ -160,7 +160,7 @@ class CaptchaBrotherhood(Hook):
 
 
     @threaded
-    def _processCaptcha(self, task):
+    def _process_captcha(self, task):
         c = task.captchaFile
         try:
             ticket, result = self.submit(c)

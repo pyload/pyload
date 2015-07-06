@@ -9,7 +9,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class MyfastfileCom(MultiHoster):
     __name__    = "MyfastfileCom"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __pattern__ = r'http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/'
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
@@ -21,14 +21,14 @@ class MyfastfileCom(MultiHoster):
 
 
     def setup(self):
-        self.chunkLimit = -1
+        self.chunk_limit = -1
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         self.html = self.load('http://myfastfile.com/api.php',
                          get={'user': self.user, 'pass': self.account.getAccountData(self.user)['password'],
                               'link': pyfile.url})
-        self.logDebug("JSON data: " + self.html)
+        self.log_debug("JSON data: " + self.html)
 
         self.html = json_loads(self.html)
         if self.html['status'] != 'ok':

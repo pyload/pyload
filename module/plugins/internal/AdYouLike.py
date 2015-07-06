@@ -9,7 +9,7 @@ from module.plugins.internal.Captcha import Captcha
 class AdYouLike(Captcha):
     __name__    = "AdYouLike"
     __type__    = "captcha"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __description__ = """AdYouLike captcha service plugin"""
     __license__     = "GPLv3"
@@ -27,10 +27,10 @@ class AdYouLike(Captcha):
         n = re.search(self.CALLBACK_PATTERN, html)
         if m and n:
             self.key = (m.group(1).strip(), n.group(1).strip())
-            self.logDebug("Ayl: %s | Callback: %s" % self.key)
+            self.log_debug("Ayl: %s | Callback: %s" % self.key)
             return self.key   #: key is the tuple(ayl, callback)
         else:
-            self.logWarning("Ayl or callback pattern not found")
+            self.log_warning("Ayl or callback pattern not found")
             return None
 
 
@@ -51,7 +51,7 @@ class AdYouLike(Captcha):
         except AttributeError:
             self.fail(_("AdYouLike challenge pattern not found"))
 
-        self.logDebug("Challenge: %s" % challenge)
+        self.log_debug("Challenge: %s" % challenge)
 
         return self.result(ayl, challenge), challenge
 
@@ -86,6 +86,6 @@ class AdYouLike(Captcha):
                   '_ayl_token_challenge': challenge['token'],
                   '_ayl_response'       : response}
 
-        self.logDebug("Result: %s" % result)
+        self.log_debug("Result: %s" % result)
 
         return result

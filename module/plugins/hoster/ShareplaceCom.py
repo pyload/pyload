@@ -9,7 +9,7 @@ from module.plugins.internal.Hoster import Hoster
 class ShareplaceCom(Hoster):
     __name__    = "ShareplaceCom"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __pattern__ = r'http://(?:www\.)?shareplace\.(com|org)/\?\w+'
 
@@ -31,7 +31,7 @@ class ShareplaceCom(Hoster):
         self.pyfile.name = self.get_file_name()
 
         wait_time = self.get_waiting_time()
-        self.setWait(wait_time)
+        self.set_wait(wait_time)
         self.wait()
 
 
@@ -64,7 +64,7 @@ class ShareplaceCom(Hoster):
             url = urllib.unquote(
                 url.replace("http://http:/", "").replace("vvvvvvvvv", "").replace("lllllllll", "").replace(
                     "teletubbies", ""))
-            self.logDebug("URL: %s" % url)
+            self.log_debug("URL: %s" % url)
             return url
         else:
             self.error(_("Absolute filepath not found"))

@@ -9,7 +9,7 @@ from module.plugins.internal.Captcha import Captcha
 class AdsCaptcha(Captcha):
     __name__    = "AdsCaptcha"
     __type__    = "captcha"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __description__ = """AdsCaptcha captcha service plugin"""
     __license__     = "GPLv3"
@@ -27,10 +27,10 @@ class AdsCaptcha(Captcha):
         n = re.search(self.CAPTCHAID_PATTERN, html)
         if m and n:
             self.key = (m.group(1).strip(), n.group(1).strip())  #: key is the tuple(PublicKey, CaptchaId)
-            self.logDebug("Key: %s | ID: %s" % self.key)
+            self.log_debug("Key: %s | ID: %s" % self.key)
             return self.key
         else:
-            self.logWarning("Key or id pattern not found")
+            self.log_warning("Key or id pattern not found")
             return None
 
 
@@ -47,7 +47,7 @@ class AdsCaptcha(Captcha):
         except AttributeError:
             self.fail(_("AdsCaptcha challenge pattern not found"))
 
-        self.logDebug("Challenge: %s" % challenge)
+        self.log_debug("Challenge: %s" % challenge)
 
         return self.result(server, challenge), challenge
 
@@ -58,6 +58,6 @@ class AdsCaptcha(Captcha):
                                             cookies=True,
                                             imgtype="jpg")
 
-        self.logDebug("Result: %s" % result)
+        self.log_debug("Result: %s" % result)
 
         return result

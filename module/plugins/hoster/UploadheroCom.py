@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadheroCom(SimpleHoster):
     __name__    = "UploadheroCom"
     __type__    = "hoster"
-    __version__ = "0.18"
+    __version__ = "0.19"
 
     __pattern__ = r'http://(?:www\.)?uploadhero\.com?/dl/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -38,12 +38,12 @@ class UploadheroCom(SimpleHoster):
     LINK_PREMIUM_PATTERN = r'<a href="(.+?)" id="downloadnow"'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         m = re.search(self.CAPTCHA_PATTERN, self.html)
         if m is None:
             self.error(_("Captcha not found"))
 
-        captcha = self.decryptCaptcha(urlparse.urljoin("http://uploadhero.co", m.group(1)))
+        captcha = self.decrypt_captcha(urlparse.urljoin("http://uploadhero.co", m.group(1)))
 
         self.html = self.load(pyfile.url,
                               get={"code": captcha})
@@ -54,7 +54,7 @@ class UploadheroCom(SimpleHoster):
             self.wait(50)
 
 
-    def checkErrors(self):
+    def check_errors(self):
         m = re.search(self.IP_BLOCKED_PATTERN, self.html)
         if m:
             self.html = self.load(urlparse.urljoin("http://uploadhero.co", m.group(1)))

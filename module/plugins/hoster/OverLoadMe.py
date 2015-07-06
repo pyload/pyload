@@ -11,7 +11,7 @@ from module.utils import parseFileSize
 class OverLoadMe(MultiHoster):
     __name__    = "OverLoadMe"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = r'https?://.*overload\.me/.+'
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
@@ -23,10 +23,10 @@ class OverLoadMe(MultiHoster):
 
 
     def setup(self):
-        self.chunkLimit = 5
+        self.chunk_limit = 5
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         data  = self.account.getAccountData(self.user)
         page  = self.load("https://api.over-load.me/getdownload.php",
                           get={'auth': data['password'],
@@ -34,11 +34,11 @@ class OverLoadMe(MultiHoster):
 
         data = json_loads(page)
 
-        self.logDebug(data)
+        self.log_debug(data)
 
         if data['error'] == 1:
-            self.logWarning(data['msg'])
-            self.tempOffline()
+            self.log_warning(data['msg'])
+            self.temp_offline()
         else:
             self.link = data['downloadlink']
             if pyfile.name and pyfile.name.endswith('.tmp') and data['filename']:

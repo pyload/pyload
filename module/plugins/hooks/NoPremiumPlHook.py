@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class NoPremiumPlHook(MultiHook):
     __name__    = "NoPremiumPlHook"
     __type__    = "hook"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -19,10 +19,10 @@ class NoPremiumPlHook(MultiHook):
     __authors__     = [("goddie", "dev@nopremium.pl")]
 
 
-    def getHosters(self):
+    def get_hosters(self):
         hostings         = json_loads(self.load("https://www.nopremium.pl/clipboard.php?json=3").strip())
         hostings_domains = [domain for row in hostings for domain in row['domains'] if row['sdownload'] == "0"]
 
-        self.logDebug(hostings_domains)
+        self.log_debug(hostings_domains)
 
         return hostings_domains

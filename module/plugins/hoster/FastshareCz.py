@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FastshareCz(SimpleHoster):
     __name__    = "FastshareCz"
     __type__    = "hoster"
-    __version__ = "0.30"
+    __version__ = "0.31"
 
     __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -33,20 +33,20 @@ class FastshareCz(SimpleHoster):
     CREDIT_ERROR = " credit for "
 
 
-    def checkErrors(self):
+    def check_errors(self):
         if self.SLOT_ERROR in self.html:
             errmsg = self.info['error'] = _("No free slots")
             self.retry(12, 60, errmsg)
 
         if self.CREDIT_ERROR in self.html:
             errmsg = self.info['error'] = _("Not enough traffic left")
-            self.logWarning(errmsg)
-            self.resetAccount()
+            self.log_warning(errmsg)
+            self.reset_account()
 
         self.info.pop('error', None)
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         m = re.search(self.FREE_URL_PATTERN, self.html)
         if m:
             action, captcha_src = m.groups()
@@ -54,12 +54,12 @@ class FastshareCz(SimpleHoster):
             self.error(_("FREE_URL_PATTERN not found"))
 
         baseurl = "http://www.fastshare.cz"
-        captcha = self.decryptCaptcha(urlparse.urljoin(baseurl, captcha_src))
+        captcha = self.decrypt_captcha(urlparse.urljoin(baseurl, captcha_src))
         self.download(urlparse.urljoin(baseurl, action), post={'code': captcha, 'btn.x': 77, 'btn.y': 18})
 
 
-    def checkFile(self):
-        check = self.checkDownload({
+    def check_file(self):
+        check = self.check_download({
             'paralell-dl'  : re.compile(r"<title>FastShare.cz</title>|<script>alert\('Pres FREE muzete stahovat jen jeden soubor najednou.'\)"),
             'wrong captcha': re.compile(r'Download for FREE'),
             'credit'       : re.compile(self.CREDIT_ERROR)
@@ -72,7 +72,7 @@ class FastshareCz(SimpleHoster):
             self.retry(max_tries=5, reason=_("Wrong captcha"))
 
         elif check == "credit":
-            self.resetAccount()
+            self.reset_account()
 
         return super(FastshareCz, self).checkFile()
 

@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class RPNetBizHook(MultiHook):
     __name__    = "RPNetBizHook"
     __type__    = "hook"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -19,7 +19,7 @@ class RPNetBizHook(MultiHook):
     __authors__     = [("Dman", "dmanugm@gmail.com")]
 
 
-    def getHosters(self):
+    def get_hosters(self):
         #: Get account data
         user, data = self.account.selectAccount()
 

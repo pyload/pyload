@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class SimplyPremiumComHook(MultiHook):
     __name__    = "SimplyPremiumComHook"
     __type__    = "hook"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -19,7 +19,7 @@ class SimplyPremiumComHook(MultiHook):
     __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
-    def getHosters(self):
+    def get_hosters(self):
         json_data = self.load("http://www.simply-premium.com/api/hosts.php", get={'format': "json", 'online': 1})
         json_data = json_loads(json_data)
 

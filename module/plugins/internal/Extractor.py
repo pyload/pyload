@@ -22,7 +22,7 @@ class PasswordError(Exception):
 class Extractor(Plugin):
     __name__    = "Extractor"
     __type__    = "extractor"
-    __version__ = "0.24"
+    __version__ = "0.25"
 
     __description__ = """Base extractor plugin"""
     __license__     = "GPLv3"
@@ -36,18 +36,18 @@ class Extractor(Plugin):
 
 
     @classmethod
-    def isArchive(cls, filename):
+    def is_archive(cls, filename):
         name = os.path.basename(filename).lower()
         return any(name.endswith(ext) for ext in cls.EXTENSIONS)
 
 
     @classmethod
-    def isMultipart(cls, filename):
+    def is_multipart(cls, filename):
         return False
 
 
     @classmethod
-    def isUsable(cls):
+    def is_usable(cls):
         """
         Check if system statisfy dependencies
         :return: boolean
@@ -56,7 +56,7 @@ class Extractor(Plugin):
 
 
     @classmethod
-    def getTargets(cls, files_ids):
+    def get_targets(cls, files_ids):
         """
         Filter suited targets from list of filename id tuple list
         :param files_ids: List of filepathes
@@ -97,7 +97,7 @@ class Extractor(Plugin):
         self.files        = []  #: Store extracted files here
 
         pyfile = self.manager.core.files.getFile(fid) if fid else None
-        self.notifyProgress = lambda x: pyfile.setProgress(x) if pyfile else lambda x: None
+        self.notify_progress = lambda x: pyfile.setProgress(x) if pyfile else lambda x: None
 
 
     def init(self):
@@ -149,7 +149,7 @@ class Extractor(Plugin):
         raise NotImplementedError
 
 
-    def getDeleteFiles(self):
+    def get_delete_files(self):
         """
         Return list of files to delete, do *not* delete them here.
 

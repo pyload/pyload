@@ -8,7 +8,7 @@ from module.plugins.internal.Account import Account
 class MultishareCz(Account):
     __name__    = "MultishareCz"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __description__ = """Multishare.cz account plugin"""
     __license__     = "GPLv3"
@@ -19,12 +19,12 @@ class MultishareCz(Account):
     ACCOUNT_INFO_PATTERN = r'<input type="hidden" id="(u_ID|u_hash)" name=".+?" value="(.+?)">'
 
 
-    def loadAccountInfo(self, user, req):
-        #self.relogin(user)
+    def load_account_info(self, user, req):
+        # self.relogin(user)
         html = self.load("http://www.multishare.cz/profil/", req=req)
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        trafficleft = self.parseTraffic(m.group('S') + m.group('U')) if m else 0
+        trafficleft = self.parse_traffic(m.group('S') + m.group('U')) if m else 0
         self.premium = True if trafficleft else False
 
         html = self.load("http://www.multishare.cz/", req=req)
@@ -40,4 +40,4 @@ class MultishareCz(Account):
                               "jmeno": user}, req=req)
 
         if '<div class="akce-chyba akce">' in html:
-            self.wrongPassword()
+            self.wrong_password()

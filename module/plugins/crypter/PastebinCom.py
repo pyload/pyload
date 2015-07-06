@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class PastebinCom(SimpleCrypter):
     __name__    = "PastebinCom"
     __type__    = "crypter"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'https://(?:www\.)?pastebin\.com/(.+i=)?(?P<ID>\w{8})'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),

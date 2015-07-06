@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class SolidfilesCom(SimpleHoster):
     __name__    = "SolidfilesCom"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?solidfiles\.com\/d/\w+'
 
@@ -26,8 +26,8 @@ class SolidfilesCom(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL    = True
-        self.chunkLimit = 1
+        self.multi_dl    = True
+        self.chunk_limit = 1
 
 
 getInfo = create_getInfo(SolidfilesCom)

@@ -8,7 +8,7 @@ from module.plugins.internal.Account import Account
 class ZeveraCom(Account):
     __name__    = "ZeveraCom"
     __type__    = "account"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
     __description__ = """Zevera.com account plugin"""
     __license__     = "GPLv3"
@@ -26,13 +26,13 @@ class ZeveraCom(Account):
 
     def init(self):
         if not self.HOSTER_DOMAIN:
-            self.logError(_("Missing HOSTER_DOMAIN"))
+            self.log_error(_("Missing HOSTER_DOMAIN"))
 
         if not hasattr(self, "API_URL"):
             self.API_URL = "http://api.%s/jDownloader.ashx" % (self.HOSTER_DOMAIN or "")
 
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         validuntil  = None
         trafficleft = None
         premium     = False
@@ -52,7 +52,7 @@ class ZeveraCom(Account):
         self.password = data['password']
 
         if self.api_response(req) == "No trafic":
-            self.wrongPassword()
+            self.wrong_password()
 
 
     def api_response(self, req, just_header=False, **kwargs):
@@ -66,7 +66,7 @@ class ZeveraCom(Account):
                        get=get_data,
                        just_header=just_header, req=req)
 
-        self.logDebug(res)
+        self.log_debug(res)
 
         if ':' in res:
             if not just_header:

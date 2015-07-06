@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHoster import MultiHoster
 class RapideoPl(MultiHoster):
     __name__    = "RapideoPl"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
@@ -44,7 +44,7 @@ class RapideoPl(MultiHoster):
         self.pwd = data['pwd']
 
 
-    def runFileQuery(self, url, mode=None):
+    def run_file_query(self, url, mode=None):
         query = self.API_QUERY.copy()
 
         query['username'] = self.usr
@@ -55,27 +55,27 @@ class RapideoPl(MultiHoster):
             query['check'] = 2
             query['loc']   = 1
 
-        self.logDebug(query)
+        self.log_debug(query)
 
         return self.load(self.API_URL, post=query)
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         try:
-            data = self.runFileQuery(pyfile.url, 'fileinfo')
+            data = self.run_file_query(pyfile.url, 'fileinfo')
 
         except Exception:
-            self.logDebug("RunFileQuery error")
-            self.tempOffline()
+            self.log_debug("RunFileQuery error")
+            self.temp_offline()
 
         try:
             parsed = json_loads(data)
 
         except Exception:
-            self.logDebug("Loads error")
-            self.tempOffline()
+            self.log_debug("Loads error")
+            self.temp_offline()
 
-        self.logDebug(parsed)
+        self.log_debug(parsed)
 
         if "errno" in parsed.keys():
             if parsed['errno'] in self.ERROR_CODES:
@@ -98,8 +98,8 @@ class RapideoPl(MultiHoster):
         pyfile.size = parsed['filesize']
 
         try:
-            self.link = self.runFileQuery(pyfile.url, 'filedownload')
+            self.link = self.run_file_query(pyfile.url, 'filedownload')
 
         except Exception:
-            self.logDebug("runFileQuery error #2")
-            self.tempOffline()
+            self.log_debug("runFileQuery error #2")
+            self.temp_offline()

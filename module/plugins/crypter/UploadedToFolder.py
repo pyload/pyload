@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class UploadedToFolder(SimpleCrypter):
     __name__    = "UploadedToFolder"
     __type__    = "crypter"
-    __version__ = "0.43"
+    __version__ = "0.44"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded|ul)\.(to|net)/(f|folder|list)/\w+'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
