@@ -126,14 +126,13 @@ class HTTPRequest(object):
 
     def addCookies(self):
         """ put cookies from curl handle to cj """
-        if self.cj:
-            self.cj.addCookies(self.c.getinfo(pycurl.INFO_COOKIELIST))
-
+        if self.cj is not None:
+            self.cj.addPycurlCookies(self.c.getinfo(pycurl.INFO_COOKIELIST))
 
     def getCookies(self):
         """ add cookies from cj to curl handle """
-        if self.cj:
-            for c in self.cj.getCookies():
+        if self.cj is not None:
+            for c in self.cj.getAsPycurlCookies():
                 self.c.setopt(pycurl.COOKIELIST, c)
         return
 
@@ -178,7 +177,6 @@ class HTTPRequest(object):
             self.c.setopt(pycurl.COOKIEFILE, "")
             self.c.setopt(pycurl.COOKIEJAR, "")
             self.getCookies()
-
 
     def load(self, url, get={}, post={}, referer=True, cookies=True, just_header=False, multipart=False, decode=False, follow_location=True, save_cookies=True):
         """ load and returns a given page """
