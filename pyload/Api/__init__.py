@@ -891,8 +891,10 @@ class Api(Iface):
         :return: list of `AccountInfo`
         """
         accs = self.core.accountManager.getAccountInfos(False, refresh)
+        accounts = list()
+
         for group in accs.values():
-            accounts = [AccountInfo(acc['validuntil'], acc['login'], acc['options'], acc['valid'],
+            accounts += [AccountInfo(acc['validuntil'], acc['login'], acc['options'], acc['valid'],
                                     acc['trafficleft'], acc['maxtraffic'], acc['premium'], acc['type'])
                         for acc in group]
         return accounts or list()
