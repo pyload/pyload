@@ -17,10 +17,10 @@ class LinksnappyCom(MultiHoster):
 
     __description__ = """Linksnappy.com multi-hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+    __authors__     = [("stickell", "l.stickell@yahoo.it", "bilalghouri")]
 
 
-    SINGLE_CHUNK_HOSTERS = ["easybytez.com"]
+    #SINGLE_CHUNK_HOSTERS = ["easybytez.com"]
 
 
     def handlePremium(self, pyfile):
@@ -30,7 +30,7 @@ class LinksnappyCom(MultiHoster):
                                   'username': self.user,
                                   'password': self.account.getAccountData(self.user)['password']})
 
-        r = self.load("http://gen.linksnappy.com/genAPI.php",
+        r = self.load("http://linksnappy.com/api/linkgen",
                       post={'genLinks': json_params})
 
         self.logDebug("JSON data: " + r)
@@ -42,11 +42,11 @@ class LinksnappyCom(MultiHoster):
 
         pyfile.name = j['filename']
         self.link   = j['generated']
-
-        if host in self.SINGLE_CHUNK_HOSTERS:
-            self.chunkLimit = 1
-        else:
-            self.setup()
+        self.setup()
+        #if host in self.SINGLE_CHUNK_HOSTERS:
+        #    self.chunkLimit = 1
+        #else:
+        #    self.setup()
 
 
     @staticmethod
