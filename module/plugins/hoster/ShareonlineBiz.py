@@ -13,10 +13,11 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ShareonlineBiz(SimpleHoster):
     __name__    = "ShareonlineBiz"
     __type__    = "hoster"
-    __version__ = "0.53"
+    __version__ = "0.54"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("use_premium", "bool", "Use premium account if available", True),
+                   ("retry_full", "bool", "Restart download if server is full", True)]
 
     __description__ = """Shareonline.biz hoster plugin"""
     __license__     = "GPLv3"
@@ -167,11 +168,17 @@ class ShareonlineBiz(SimpleHoster):
         if errmsg is "invalid":
             self.fail(_("File not available"))
 
-        elif errmsg in ("full", "freelimit", "size", "proxy"):
+        elif errmsg in ("freelimit", "size", "proxy"):
             self.fail(_("Premium account needed"))
 
         elif errmsg in ("expired", "server"):
             self.retry(wait_time=600, reason=errmsg)
+        
+        elif errmsg is "full":
+            if self.getConfig('retry_full'):
+                self.retry(max_tries=10, wait_time=600, reason=_("Server is full"))
+            else:
+                self.fail(_("Server is full"))
 
         elif 'slot' in errmsg:
             self.wantReconnect = True
