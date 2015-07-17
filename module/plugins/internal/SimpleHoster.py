@@ -266,7 +266,7 @@ class SimpleHoster(Hoster):
         self.info      = {}
         self.html      = ""  #@TODO: Recheck in 0.4.10
         self.link      = ""  #@TODO: Recheck in 0.4.10
-        self.direct_d_l  = False
+        self.direct_dl  = False
         self.multihost = False
 
         if not self.get_config('use_premium', True):
@@ -297,9 +297,9 @@ class SimpleHoster(Hoster):
             return
 
         if self.DIRECT_LINK is None:
-            self.direct_d_l = bool(self.account)
+            self.direct_dl = bool(self.account)
         else:
-            self.direct_d_l = self.DIRECT_LINK
+            self.direct_dl = self.DIRECT_LINK
 
         self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
 
@@ -316,7 +316,7 @@ class SimpleHoster(Hoster):
             self.prepare()
             self.check_info()
 
-            if self.direct_d_l:
+            if self.direct_dl:
                 self.log_debug("Looking for direct download link...")
                 self.handle_direct(pyfile)
 
@@ -364,7 +364,8 @@ class SimpleHoster(Hoster):
             self.invalid_captcha()
             self.retry(10, reason=_("Wrong captcha"))
 
-        elif self.check_download({'Empty file': re.compile(r'\A((.|)(\2|\s)*)\Z')}, file_size=self.info['size']):
+        elif self.check_download({'Empty file': re.compile(r'\A((.|)(\2|\s)*)\Z')},
+                                 file_size=self.info['size']):
             self.error(_("Empty file"))
 
         else:

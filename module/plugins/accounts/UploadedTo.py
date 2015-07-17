@@ -64,7 +64,10 @@ class UploadedTo(Account):
         #: req.cj.setCookie("uploaded.net", "lang", "en")
 
         html = self.load("https://uploaded.net/io/login",
-                        post={'id': user, 'pw': data['password'], '_': ""}, req=req)
+                         post={'id': user,
+                               'pw': data['password'],
+                               '_': ""},
+                         req=req)
 
         if '"err"' in html:
             self.wrong_password()

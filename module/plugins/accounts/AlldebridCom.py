@@ -39,7 +39,10 @@ class AlldebridCom(Account):
         except Exception:
             data = self.get_account_data(user)
             html = self.load("https://www.alldebrid.com/api.php",
-                            get={'action': "info_user", 'login': user, 'pw': data['password']}, req=req)
+                             get={'action': "info_user",
+                                  'login' : user,
+                                  'pw'    : data['password']},
+                             req=req)
 
             self.log_debug(html)
 
@@ -53,9 +56,10 @@ class AlldebridCom(Account):
 
     def login(self, user, data, req):
         html = self.load("https://www.alldebrid.com/register/",
-                        get={'action'        : "login",
-                             'login_login'   : user,
-                             'login_password': data['password']}, req=req)
+                         get={'action'        : "login",
+                              'login_login'   : user,
+                              'login_password': data['password']},
+                         req=req)
 
         if "This login doesn't exist" in html \
            or "The password is not valid" in html \

@@ -21,7 +21,7 @@ class RPNetBizHook(MultiHook):
 
     def get_hosters(self):
         #: Get account data
-        user, data = self.account.selectAccount()
+        user, data = self.account.select_account()
 
         res = self.load("https://premium.rpnet.biz/client_api.php",
                      get={'username': user, 'password': data['password'], 'action': "showHosterList"})

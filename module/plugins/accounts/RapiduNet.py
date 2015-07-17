@@ -48,16 +48,18 @@ class RapiduNet(Account):
 
     def login(self, user, data, req):
         self.load("https://rapidu.net/ajax.php",
-                 get={'a': "getChangeLang"},
-                 post={'_go' : "",
-                       'lang': "en"}, req=req)
+                  get={'a': "getChangeLang"},
+                  post={'_go' : "",
+                        'lang': "en"},
+                  req=req)
 
         json = json_loads(self.load("https://rapidu.net/ajax.php",
-                                   get={'a': "getUserLogin"},
-                                   post={'_go'     : "",
-                                         'login'   : user,
-                                         'pass'    : data['password'],
-                                         'remember': "1"}, req=req))
+                                    get={'a': "getUserLogin"},
+                                    post={'_go'     : "",
+                                          'login'   : user,
+                                          'pass'    : data['password'],
+                                          'remember': "1"},
+                                    req=req))
 
         self.log_debug(json)
 

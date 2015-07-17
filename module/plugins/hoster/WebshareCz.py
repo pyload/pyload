@@ -40,7 +40,7 @@ class WebshareCz(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        wst = self.account.getAccountData(self.user).get('wst', None) if self.account else None
+        wst = self.account.get_account_data(self.user).get('wst', None) if self.account else None
 
         api_data = getURL("https://webshare.cz/api/file_link/",
                           post={'ident': self.info['pattern']['ID'], 'wst': wst})

@@ -110,7 +110,7 @@ class FilecloudIo(SimpleHoster):
 
 
     def handle_premium(self, pyfile):
-        akey = self.account.getAccountData(self.user)['akey']
+        akey = self.account.get_account_data(self.user)['akey']
         ukey = self.info['pattern']['ID']
         self.log_debug("Akey: %s | Ukey: %s" % (akey, ukey))
         rep = self.load("http://api.filecloud.io/api-fetch_download_url.api",

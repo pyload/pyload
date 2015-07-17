@@ -49,7 +49,9 @@ class NowVideoSx(Account):
 
     def login(self, user, data, req):
         html = self.load("http://www.nowvideo.sx/login.php",
-                        post={'user': user, 'pass': data['password']}, req=req)
+                         post={'user': user,
+                               'pass': data['password']},
+                         req=req)
 
         if re.search(r'>Log In<', html):
             self.wrong_password()

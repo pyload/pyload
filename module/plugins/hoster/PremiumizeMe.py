@@ -30,7 +30,7 @@ class PremiumizeMe(MultiHoster):
             pyfile.name = ".".join(temp)
 
         #: Get account data
-        user, data = self.account.selectAccount()
+        user, data = self.account.select_account()
 
         #: Get rewritten link using the premiumize.me api v1 (see https://secure.premiumize.me/?show=api)
         data = json_loads(self.load("http://api.premiumize.me/pm-api/v1.php",  #@TODO: Revert to `https` in 0.4.10

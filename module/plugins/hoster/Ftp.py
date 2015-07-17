@@ -38,11 +38,11 @@ class Ftp(Hoster):
             pass
 
         if not "@" in netloc:
-            servers = [x['login'] for x in self.account.getAllAccounts()] if self.account else []
+            servers = [x['login'] for x in self.account.get_all_accounts()] if self.account else []
 
             if netloc in servers:
                 self.log_debug("Logging on to %s" % netloc)
-                self.req.addAuth(self.account.getAccountInfo(netloc)['password'])
+                self.req.addAuth(self.account.get_account_info(netloc)['password'])
             else:
                 pwd = self.get_password()
                 if ':' in pwd:

@@ -30,10 +30,11 @@ class YibaishiwuCom(Account):
 
     def login(self, user, data, req):
         html = self.load("https://passport.115.com/?ac=login",
-                        post={"back": "http://www.115.com/",
-                              "goto": "http://115.com/",
-                              "login[account]": user,
-                              "login[passwd]": data['password']}, req=req)
+                         post={"back"          : "http://www.115.com/",
+                               "goto"          : "http://115.com/",
+                               "login[account]": user,
+                               "login[passwd]" : data['password']},
+                         req=req)
 
         if not 'var USER_PERMISSION = {' in html:
             self.wrong_password()

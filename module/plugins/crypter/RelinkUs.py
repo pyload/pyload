@@ -187,9 +187,9 @@ class RelinkUs(Crypter):
         if source == 'cnl2':
             return self.handle_CNL2Links()
         elif source == 'dlc':
-            return self.handle_d_l_c_links()
+            return self.handle_DLC_links()
         elif source == 'web':
-            return self.handle_w_e_b_links()
+            return self.handle_WEB_links()
         else:
             self.error(_('Unknown source type "%s"') % source)
 
@@ -209,7 +209,7 @@ class RelinkUs(Crypter):
         return package_links
 
 
-    def handle_d_l_c_links(self):
+    def handle_DLC_links(self):
         self.log_debug("Search for DLC links")
         package_links = []
         m = re.search(self.DLC_LINK_REGEX, self.html)
@@ -230,7 +230,7 @@ class RelinkUs(Crypter):
         return package_links
 
 
-    def handle_w_e_b_links(self):
+    def handle_WEB_links(self):
         self.log_debug("Search for WEB links")
 
         package_links = []

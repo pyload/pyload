@@ -28,8 +28,11 @@ class DepositfilesCom(Account):
 
 
     def login(self, user, data, req):
-        html = self.load("https://dfiles.eu/de/login.php", get={"return": "/de/gold/payment.php"},
-                        post={"login": user, "password": data['password']}, req=req)
+        html = self.load("https://dfiles.eu/de/login.php",
+                         get={"return": "/de/gold/payment.php"},
+                         post={"login"   : user,
+                               "password": data['password']},
+                         req=req)
 
         if r'<div class="error_message">Sie haben eine falsche Benutzername-Passwort-Kombination verwendet.</div>' in html:
             self.wrong_password()

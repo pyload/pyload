@@ -40,10 +40,12 @@ class FastshareCz(Account):
     def login(self, user, data, req):
         req.cj.setCookie("fastshare.cz", "lang", "en")
 
-        self.load('http://www.fastshare.cz/login', req=req)  #: Do not remove or it will not login
+        self.load('http://www.fastshare.cz/login', req=req)  #@NOTE: Do not remove or it will not login
 
         html = self.load("https://www.fastshare.cz/sql.php",
-                        post={'login': user, 'heslo': data['password']}, req=req)
+                         post={'login': user,
+                               'heslo': data['password']},
+                         req=req)
 
         if ">Wrong username or password" in html:
             self.wrong_password()

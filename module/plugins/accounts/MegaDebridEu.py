@@ -21,7 +21,10 @@ class MegaDebridEu(Account):
     def load_account_info(self, user, req):
         data = self.get_account_data(user)
         jsonResponse = self.load(self.API_URL,
-                                get={'action': 'connectUser', 'login': user, 'password': data['password']}, req=req)
+                                 get={'action'  : 'connectUser',
+                                      'login'   : user,
+                                      'password': data['password']},
+                                 req=req)
         res = json_loads(jsonResponse)
 
         if res['response_code'] == "ok":
@@ -33,7 +36,10 @@ class MegaDebridEu(Account):
 
     def login(self, user, data, req):
         jsonResponse = self.load(self.API_URL,
-                                get={'action': 'connectUser', 'login': user, 'password': data['password']}, req=req)
+                                 get={'action'  : 'connectUser',
+                                      'login'   : user,
+                                      'password': data['password']},
+                                 req=req)
         res = json_loads(jsonResponse)
         if res['response_code'] != "ok":
             self.wrong_password()

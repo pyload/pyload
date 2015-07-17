@@ -42,8 +42,9 @@ class WebshareCz(Account):
 
     def login(self, user, data, req):
         salt = self.load("https://webshare.cz/api/salt/",
-                        post={'username_or_email': user,
-                              'wst'              : ""}, req=req)
+                         post={'username_or_email': user,
+                               'wst'              : ""},
+                         req=req)
 
         if "<status>OK</status>" not in salt:
             self.wrong_password()
@@ -53,11 +54,12 @@ class WebshareCz(Account):
         digest   = hashlib.md5(user + ":Webshare:" + password).hexdigest()
 
         login = self.load("https://webshare.cz/api/login/",
-                         post={'digest'           : digest,
-                               'keep_logged_in'   : 1,
-                               'password'         : password,
-                               'username_or_email': user,
-                               'wst'              : ""}, req=req)
+                          post={'digest'           : digest,
+                                'keep_logged_in'   : 1,
+                                'password'         : password,
+                                'username_or_email': user,
+                                'wst'              : ""},
+                          req=req)
 
         if "<status>OK</status>" not in login:
             self.wrong_password()

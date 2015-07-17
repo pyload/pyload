@@ -75,4 +75,6 @@ class SmoozedCom(Account):
         encrypted = PBKDF2(password, salt, iterations=1000).hexread(32)
 
         return json_loads(self.load("http://www2.smoozed.com/api/login",
-                                   get={'auth': user, 'password': encrypted}, req=req))
+                                    get={'auth': user,
+                                         'password': encrypted},
+                                    req=req))

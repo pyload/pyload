@@ -61,5 +61,8 @@ class UploadingCom(Account):
                      ("uploading.com", "_lang"   , "en")])
 
         self.load("http://uploading.com/", req=req)
-        self.load("https://uploading.com/general/login_form/?JsHttpRequest=%s-xml" % long(time.time() * 1000, req=req),
-                 post={'email': user, 'password': data['password'], 'remember': "on"})
+        self.load("https://uploading.com/general/login_form/?JsHttpRequest=%s-xml" % long(time.time() * 1000),
+                  post={'email'   : user,
+                        'password': data['password'],
+                        'remember': "on"},
+                  req=req)

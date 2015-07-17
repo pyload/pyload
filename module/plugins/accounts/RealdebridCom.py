@@ -33,7 +33,9 @@ class RealdebridCom(Account):
         self.pin_code = False
 
         html = self.load("https://real-debrid.com/ajax/login.php",
-                        get={"user": user, "pass": data['password']}, req=req)
+                         get={"user": user,
+                              "pass": data['password']},
+                         req=req)
 
         if "Your login informations are incorrect" in html:
             self.wrong_password()

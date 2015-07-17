@@ -57,7 +57,7 @@ class OboomCom(Hoster):
 
     def get_session_token(self):
         if self.premium:
-            accountInfo = self.account.getAccountInfo(self.user, True)
+            accountInfo = self.account.get_account_info(self.user, True)
             if "session" in accountInfo:
                 self.session_token = accountInfo['session']
             else:

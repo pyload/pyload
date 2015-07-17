@@ -64,7 +64,7 @@ class UploadheroCom(SimpleHoster):
             self.wait(wait_time, True)
             self.retry()
 
-        return super(UploadheroCom, self).checkErrors()
+        return super(UploadheroCom, self).check_errors()
 
 
 getInfo = create_getInfo(UploadheroCom)

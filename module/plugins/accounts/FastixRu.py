@@ -16,7 +16,10 @@ class FastixRu(Account):
 
     def load_account_info(self, user, req):
         data = self.get_account_data(user)
-        html = json_loads(self.load("http://fastix.ru/api_v2/", get={'apikey': data['api'], 'sub': "getaccountdetails"}), req=req)
+        html = json_loads(self.load("http://fastix.ru/api_v2/",
+                                    get={'apikey': data['api'],
+                                         'sub'   : "getaccountdetails"}),
+                                    req=req)
 
         points = html['points']
         kb     = float(points) * 1024 ** 2 / 1000
@@ -30,7 +33,10 @@ class FastixRu(Account):
 
     def login(self, user, data, req):
         html = self.load("https://fastix.ru/api_v2/",
-                        get={'sub': "get_apikey", 'email': user, 'password': data['password']}, req=req)
+                         get={'sub'     : "get_apikey",
+                              'email'   : user,
+                              'password': data['password']},
+                         req=req)
 
         api = json_loads(html)
         api = api['apikey']

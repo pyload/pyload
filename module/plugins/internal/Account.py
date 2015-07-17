@@ -60,9 +60,9 @@ class Account(Plugin):
         #: set timestamp for login
         self.timestamps[user] = time.time()
 
-        req = self.get_account_request(user)
+        self.req = self.get_account_request(user)
         try:
-            self.login(user, data, req)
+            self.login(user, data, self.req)
 
         except WrongPassword:
             self.log_warning(
@@ -82,8 +82,10 @@ class Account(Plugin):
             success = True
 
         finally:
-            if req:
-                req.close()
+            if hasattr(self, "req"):
+                if self.req:
+                    self.req.close()
+                del self.req
             return success
 
 
@@ -158,26 +160,31 @@ class Account(Plugin):
 
         if force or name not in self.infos:
             self.log_debug("Get Account Info for %s" % name)
-            req = self.get_account_request(name)
+            self.req  = self.get_account_request(name)
 
             try:
-                infos = self.load_account_info(name, req)
+                infos = self.load_account_info(name, self.req)
                 if not type(infos) == dict:
                     raise Exception("Wrong return format")
+
             except Exception, e:
-                infos = super(self.__class__, self).load_account_info(name, req)
+                infos = super(self.__class__, self).load_account_info(name, self.req)
                 infos['error'] = str(e)
 
                 if self.core.debug:
                     traceback.print_exc()
 
-            if req:
-                req.close()
+            finally:
+                if hasattr(self, "req"):
+                    if self.req:
+                        self.req.close()
+                    del self.req
 
             self.log_debug("Account Info: %s" % infos)
 
             infos['timestamp'] = time.time()
             self.infos[name] = infos
+
         elif "timestamp" in self.infos[name] and self.infos[name]['timestamp'] + self.info_threshold * 60 < time.time():
             self.log_debug("Reached timeout for account data")
             self.schedule_refresh(name)

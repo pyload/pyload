@@ -29,7 +29,8 @@ class NitroflareCom(Account):
         premium      = False
 
         html = self.load("https://nitroflare.com/member",
-                        get={'s': "premium"}, req=req)
+                         get={'s': "premium"},
+                         req=req)
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
@@ -72,10 +73,11 @@ class NitroflareCom(Account):
         token = re.search(self.TOKEN_PATTERN, html).group(1)
 
         html = self.load("https://nitroflare.com/login",
-                        post={'login'   : "",
-                              'email'   : user,
-                              'password': data['password'],
-                              'token'   : token}, req=req)
+                         post={'login'   : "",
+                               'email'   : user,
+                               'password': data['password'],
+                               'token'   : token},
+                         req=req)
 
         if re.search(self.LOGIN_FAIL_PATTERN, html):
             self.wrong_password()

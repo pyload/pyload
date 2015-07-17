@@ -33,9 +33,10 @@ class EuroshareEu(Account):
 
     def login(self, user, data, req):
         html = self.load('http://euroshare.eu/customer-zone/login/',
-                        post={"trvale": "1",
-                              "login": user,
-                              "password": data['password']}, req=req)
+                         post={"trvale"  : "1",
+                               "login"   : user,
+                               "password": data['password']},
+                         req=req)
 
         if u">Nesprávne prihlasovacie meno alebo heslo" in html:
             self.wrong_password()

@@ -34,9 +34,10 @@ class QuickshareCz(Account):
 
     def login(self, user, data, req):
         html = self.load('http://www.quickshare.cz/html/prihlaseni_process.php',
-                        post={"akce": u'Přihlásit',
-                              "heslo": data['password'],
-                              "jmeno": user}, req=req)
+                         post={"akce" : u'Přihlásit',
+                               "heslo": data['password'],
+                               "jmeno": user},
+                         req=req)
 
         if u'>Takový uživatel neexistuje.<' in html or u'>Špatné heslo.<' in html:
             self.wrong_password()

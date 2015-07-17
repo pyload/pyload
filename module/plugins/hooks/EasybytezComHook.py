@@ -21,9 +21,9 @@ class EasybytezComHook(MultiHook):
 
 
     def get_hosters(self):
-        user, data = self.account.selectAccount()
+        user, data = self.account.select_account()
 
-        req  = self.account.getAccountRequest(user)
+        req  = self.account.get_account_request(user)
         html = self.load("http://www.easybytez.com", req=req)
 
         return re.search(r'</textarea>\s*Supported sites:(.*)', html).group(1).split(',')

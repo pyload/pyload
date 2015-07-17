@@ -42,7 +42,9 @@ class MegaRapidoNet(Account):
     def login(self, user, data, req):
         self.load("http://megarapido.net/login", req=req)
         self.load("http://megarapido.net/painel_user/ajax/logar.php",
-                 post={'login': user, 'senha': data['password']}, req=req)
+                  post={'login': user,
+                        'senha': data['password']},
+                  req=req)
 
         html = self.load("http://megarapido.net/gerador", req=req)
 

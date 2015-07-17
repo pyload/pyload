@@ -28,9 +28,10 @@ class CloudzillaTo(Account):
 
     def login(self, user, data, req):
         html = self.load("https://www.cloudzilla.to/",
-                        post={'lusername': user,
-                              'lpassword': data['password'],
-                              'w'        : "dologin"}, req=req)
+                         post={'lusername': user,
+                               'lpassword': data['password'],
+                               'w'        : "dologin"},
+                         req=req)
 
         if "ERROR" in html:
             self.wrong_password()

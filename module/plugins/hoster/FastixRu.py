@@ -26,7 +26,7 @@ class FastixRu(MultiHoster):
 
 
     def handle_premium(self, pyfile):
-        api_key = self.account.getAccountData(self.user)
+        api_key = self.account.get_account_data(self.user)
         api_key = api_key['api']
 
         self.html = self.load("http://fastix.ru/api_v2/",

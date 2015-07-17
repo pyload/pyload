@@ -95,6 +95,15 @@ class UpdateManager(Hook):
             self.update()
 
 
+    #: Deprecated method, use `autoreload_plugins` instead
+    @Expose
+    def autoreloadPlugins(self, *args, **kwargs):
+        """
+        See `autoreload_plugins`
+        """
+        return self.autoreload_plugins(*args, **kwargs)
+
+
     @Expose
     def autoreload_plugins(self):
         """
@@ -290,6 +299,15 @@ class UpdateManager(Hook):
         #   1 = Plugins updated
         #   2 = Plugins updated, but restart required
         return exitcode
+
+
+    #: Deprecated method, use `remove_plugins` instead
+    @Expose
+    def removePlugins(self, *args, **kwargs):
+        """
+        See `remove_plugins`
+        """
+        return self.remove_plugins(*args, **kwargs)
 
 
     @Expose

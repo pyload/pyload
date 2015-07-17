@@ -44,7 +44,10 @@ class FreakshareCom(Account):
         self.load("http://freakshare.com/index.php?language=EN", req=req)
 
         html = self.load("https://freakshare.com/login.html",
-                        post={"submit": "Login", "user": user, "pass": data['password']}, req=req)
+                         post={"submit": "Login",
+                               "user"  : user,
+                               "pass"  : data['password']},
+                         req=req)
 
         if ">Wrong Username or Password" in html:
             self.wrong_password()

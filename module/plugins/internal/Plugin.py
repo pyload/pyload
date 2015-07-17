@@ -236,7 +236,7 @@ class Plugin(object):
         return html_unescape(urllib.unquote(url.decode('unicode-escape'))).strip()
 
 
-    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=True, req=None):
+    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=True, multipart=True, req=None):
         """
         Load content at url and returns it
 
@@ -266,7 +266,7 @@ class Plugin(object):
             else:
                 req = self.core.requestFactory.getRequest(self.__name__)
 
-        res = req.load(url, get, post, ref, cookies, just_header, True, bool(decode))
+        res = req.load(url, get, post, ref, cookies, just_header, multipart, bool(decode))
 
         if decode:
             res = html_unescape(res).decode(decode if isinstance(decode, basestring) else 'utf8')

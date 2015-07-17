@@ -23,11 +23,12 @@ class FourSharedCom(Account):
         req.cj.setCookie("4shared.com", "4langcookie", "en")
 
         res = self.load("https://www.4shared.com/web/login",
-                       post={'login'    : user,
-                             'password' : data['password'],
-                             'remember' : "on",
-                             '_remember': "on",
-                             'returnTo' : "http://www.4shared.com/account/home.jsp"}, req=req)
+                        post={'login'    : user,
+                              'password' : data['password'],
+                              'remember' : "on",
+                              '_remember': "on",
+                              'returnTo' : "http://www.4shared.com/account/home.jsp"},
+                        req=req)
 
         if 'Please log in to access your 4shared account' in res:
             self.wrong_password()

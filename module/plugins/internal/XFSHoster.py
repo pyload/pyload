@@ -47,7 +47,7 @@ class XFSHoster(SimpleHoster):
     SOLVEMEDIA_PATTERN    = None
 
     FORM_PATTERN    = None
-    FORM_INPUTS_MAP = None  #: dict passed as input_names to parseHtmlForm
+    FORM_INPUTS_MAP = None  #: dict passed as input_names to parse_html_form
 
 
     def setup(self):
@@ -80,7 +80,7 @@ class XFSHoster(SimpleHoster):
         super(XFSHoster, self).prepare()
 
         if self.DIRECT_LINK is None:
-            self.direct_d_l = self.premium
+            self.direct_dl = self.premium
 
 
     def handle_free(self, pyfile):

@@ -41,7 +41,10 @@ class HighWayMe(Account):
 
     def login(self, user, data, req):
         html = self.load("https://high-way.me/api.php?login",
-                        post={'login': '1', 'user': user, 'pass': data['password']}, req=req)
+                         post={'login': '1',
+                               'user': user,
+                               'pass': data['password']},
+                         req=req)
 
         if 'UserOrPassInvalid' in html:
             self.wrong_password()

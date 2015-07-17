@@ -85,7 +85,7 @@ class BezvadataCz(SimpleHoster):
         elif '<div class="infobox' in self.html:
             self.temp_offline()
         else:
-            return super(BezvadataCz, self).checkErrors()
+            return super(BezvadataCz, self).check_errors()
 
 
     def loadcaptcha(self, data, *args, **kwargs):

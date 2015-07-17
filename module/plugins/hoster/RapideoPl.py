@@ -38,7 +38,7 @@ class RapideoPl(MultiHoster):
     def prepare(self):
         super(RapideoPl, self).prepare()
 
-        data = self.account.getAccountData(self.user)
+        data = self.account.get_account_data(self.user)
 
         self.usr = data['usr']
         self.pwd = data['pwd']

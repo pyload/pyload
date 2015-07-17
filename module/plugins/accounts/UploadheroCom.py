@@ -35,7 +35,9 @@ class UploadheroCom(Account):
 
     def login(self, user, data, req):
         html = self.load("http://uploadhero.co/lib/connexion.php",
-                        post={"pseudo_login": user, "password_login": data['password']}, req=req)
+                         post={"pseudo_login": user,
+                               "password_login": data['password']},
+                         req=req)
 
         if "mot de passe invalide" in html:
             self.wrong_password()

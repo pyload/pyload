@@ -41,7 +41,8 @@ class SimplyPremiumCom(Account):
         req.cj.setCookie("simply-premium.com", "lang", "EN")
 
         html = self.load("https://www.simply-premium.com/login.php",
-                        post={'key': user} if not data['password'] else {'login_name': user, 'login_pass': data['password']}, req=req)
+                         post={'key': user} if not data['password'] else {'login_name': user, 'login_pass': data['password']},
+                         req=req)
 
         if 'logout' not in html:
             self.wrong_password()

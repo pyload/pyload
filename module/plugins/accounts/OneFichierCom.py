@@ -47,11 +47,12 @@ class OneFichierCom(Account):
         req.http.c.setopt(pycurl.REFERER, "https://1fichier.com/login.pl?lg=en")
 
         html = self.load("https://1fichier.com/login.pl?lg=en",
-                        post={'mail'   : user,
-                              'pass'   : data['password'],
-                              'It'     : "on",
-                              'purge'  : "off",
-                              'valider': "Send"}, req=req)
+                         post={'mail'   : user,
+                               'pass'   : data['password'],
+                               'It'     : "on",
+                               'purge'  : "off",
+                               'valider': "Send"},
+                         req=req)
 
         if '>Invalid email address' in html or '>Invalid password' in html:
             self.wrong_password()

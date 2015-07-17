@@ -5,7 +5,7 @@ import time
 import urlparse
 
 from module.plugins.internal.Account import Account
-from module.plugins.internal.Plugin import parseHtmlForm, set_cookies
+from module.plugins.internal.Plugin import parse_html_form, set_cookies
 
 
 class XFSAccount(Account):
@@ -157,7 +157,7 @@ class XFSAccount(Account):
             self.LOGIN_URL  = urlparse.urljoin(self.HOSTER_URL, "login.html")
         html = self.load(self.LOGIN_URL, req=req)
 
-        action, inputs = parseHtmlForm('name="FL"', html)
+        action, inputs = parse_html_form('name="FL"', html)
         if not inputs:
             inputs = {'op'      : "login",
                       'redirect': self.HOSTER_URL}

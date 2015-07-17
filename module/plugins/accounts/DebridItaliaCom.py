@@ -37,7 +37,9 @@ class DebridItaliaCom(Account):
 
     def login(self, user, data, req):
         html = self.load("https://debriditalia.com/login.php",
-                        get={'u': user, 'p': data['password']}, req=req)
+                         get={'u': user,
+                              'p': data['password']},
+                         req=req)
 
         if 'NO' in html:
             self.wrong_password()

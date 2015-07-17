@@ -162,7 +162,7 @@ class ExtractArchive(Hook):
             try:
                 module = self.core.pluginManager.loadModule("internal", p)
                 klass  = getattr(module, p)
-                if klass.isUsable():
+                if klass.is_usable():
                     self.extractors.append(klass)
                 if klass.REPAIR:
                     self.repair = self.get_config('repair')
@@ -208,6 +208,15 @@ class ExtractArchive(Hook):
             packages = self.queue.get()  #: check for packages added during extraction
 
         self.extracting = False
+
+
+    #: Deprecated method, use `extract_package` instead
+    @Expose
+    def extractPackage(self, *args, **kwargs):
+        """
+        See `extract_package`
+        """
+        return self.extract_package(*args, **kwargs)
 
 
     @Expose
@@ -301,7 +310,7 @@ class ExtractArchive(Hook):
                                  if filter(lambda ext: fname.lower().endswith(ext), extensions)]
 
                 for Extractor in self.extractors:
-                    targets = Extractor.getTargets(files_ids)
+                    targets = Extractor.get_targets(files_ids)
                     if targets:
                         self.log_debug("Targets for %s: %s" % (Extractor.__name__, targets))
                         matched = True
@@ -513,6 +522,15 @@ class ExtractArchive(Hook):
         raise Exception(_("Extract failed"))
 
 
+    #: Deprecated method, use `get_passwords` instead
+    @Expose
+    def getPasswords(self, *args, **kwargs):
+        """
+        See `get_passwords`
+        """
+        return self.get_passwords(*args, **kwargs)
+
+
     @Expose
     def get_passwords(self, reload=True):
         """
@@ -538,6 +556,15 @@ class ExtractArchive(Hook):
 
         else:
             self.passwords = passwords
+
+
+    #: Deprecated method, use `add_password` instead
+    @Expose
+    def addPassword(self, *args, **kwargs):
+        """
+        See `add_password`
+        """
+        return self.add_password(*args, **kwargs)
 
 
     @Expose

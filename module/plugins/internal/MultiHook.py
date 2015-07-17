@@ -83,7 +83,7 @@ class MultiHook(Hook):
     def load_account(self):
         self.account = self.core.accountManager.getAccountPlugin(self.pluginname)
 
-        if self.account and not self.account.canUse():
+        if self.account and not self.account.can_use():
             self.account = None
 
         if not self.account and hasattr(self.pluginclass, "LOGIN_ACCOUNT") and self.pluginclass.LOGIN_ACCOUNT:

@@ -51,10 +51,11 @@ class CatShareNet(Account):
 
     def login(self, user, data, req):
         html = self.load("http://catshare.net/login",  #@TODO: Revert to `https` in 0.4.10
-                        post={'user_email': user,
-                              'user_password': data['password'],
-                              'remindPassword': 0,
-                              'user[submit]': "Login"}, req=req)
+                         post={'user_email'    : user,
+                               'user_password' : data['password'],
+                               'remindPassword': 0,
+                               'user[submit]'  : "Login"},
+                         req=req)
 
         if not '<a href="/logout">Wyloguj</a>' in html:
             self.wrong_password()

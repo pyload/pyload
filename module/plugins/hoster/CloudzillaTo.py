@@ -35,7 +35,7 @@ class CloudzillaTo(SimpleHoster):
         if re.search(self.PASSWORD_PATTERN, self.html):
             self.retry(reason="Wrong password")
         else:
-            return super(CloudzillaTo, self).checkErrors()
+            return super(CloudzillaTo, self).check_errors()
 
 
     def handle_free(self, pyfile):

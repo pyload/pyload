@@ -33,7 +33,7 @@ class MultiHoster(SimpleHoster):
         self.info     = {}
         self.html     = ""
         self.link     = ""     #@TODO: Move to Hoster in 0.4.10
-        self.direct_d_l = False  #@TODO: Move to Hoster in 0.4.10
+        self.direct_dl = False  #@TODO: Move to Hoster in 0.4.10
 
         if not self.get_config('use_premium', True):
             self.retry_free()
@@ -47,9 +47,9 @@ class MultiHoster(SimpleHoster):
             set_cookies(self.req.cj, self.COOKIES)
 
         if self.DIRECT_LINK is None:
-            self.direct_d_l = self.__pattern__ != r'^unmatchable$' and re.match(self.__pattern__, self.pyfile.url)
+            self.direct_dl = self.__pattern__ != r'^unmatchable$' and re.match(self.__pattern__, self.pyfile.url)
         else:
-            self.direct_d_l = self.DIRECT_LINK
+            self.direct_dl = self.DIRECT_LINK
 
         self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
 
@@ -58,7 +58,7 @@ class MultiHoster(SimpleHoster):
         try:
             self.prepare()
 
-            if self.direct_d_l:
+            if self.direct_dl:
                 self.check_info()
                 self.log_debug("Looking for direct download link...")
                 self.handle_direct(pyfile)

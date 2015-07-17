@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import urlparse
+
 from module.plugins.internal.Account import Account
 from module.common.json_layer import json_loads
 
@@ -27,7 +29,9 @@ class RapidgatorNet(Account):
             sid = self.get_account_data(user).get('sid', None)
             assert sid
 
-            html = self.load("%s/info" % self.API_URL, get={'sid': sid}, req=req)
+            html = self.load(urlparse.urljoin(self.API_URL, "info"),
+                             get={'sid': sid},
+                             req=req)
 
             self.log_debug("API:USERINFO", html)
 
@@ -54,7 +58,10 @@ class RapidgatorNet(Account):
 
     def login(self, user, data, req):
         try:
-            html = self.load('%s/login' % self.API_URL, post={"username": user, "password": data['password']}, req=req)
+            html = self.load(urlparse.urljoin(self.API_URL, "login"),
+                             post={"username": user,
+                                   "password": data['password']},
+                             req=req)
 
             self.log_debug("API:LOGIN", html)
 

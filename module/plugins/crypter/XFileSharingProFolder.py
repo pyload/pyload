@@ -33,7 +33,7 @@ class XFileSharingProFolder(XFSCrypter):
 
         account = self.core.accountManager.getAccountPlugin(self.HOSTER_NAME)
 
-        if account and account.canUse():
+        if account and account.can_use():
             self.account = account
 
         elif self.account:
@@ -42,9 +42,9 @@ class XFileSharingProFolder(XFSCrypter):
         else:
             return
 
-        self.user, data = self.account.selectAccount()
-        self.req        = self.account.getAccountRequest(self.user)
-        self.premium    = self.account.isPremium(self.user)
+        self.user, data = self.account.select_account()
+        self.req        = self.account.get_account_request(self.user)
+        self.premium    = self.account.is_premium(self.user)
 
 
 getInfo = create_getInfo(XFileSharingProFolder)

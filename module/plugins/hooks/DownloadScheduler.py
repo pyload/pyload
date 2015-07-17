@@ -72,9 +72,9 @@ class DownloadScheduler(Hook):
 
             if speed > 0:
                 self.log_info(_("Setting download speed to %d kB/s") % speed)
-                self.core.api.setConfigValue("download", "limit_speed", 1)
-                self.core.api.setConfigValue("download", "max_speed", speed)
+                self.core.config.set("download", "limit_speed", 1)
+                self.core.config.set("download", "max_speed", speed)
             else:
                 self.log_info(_("Setting download speed to FULL"))
-                self.core.api.setConfigValue("download", "limit_speed", 0)
-                self.core.api.setConfigValue("download", "max_speed", -1)
+                self.core.config.set("download", "limit_speed", 0)
+                self.core.config.set("download", "max_speed", -1)

@@ -17,8 +17,9 @@ class OverLoadMe(Account):
     def load_account_info(self, user, req):
         data  = self.get_account_data(user)
         html  = self.load("https://api.over-load.me/account.php",
-                         get={'user': user,
-                              'auth': data['password']}, req=req).strip()
+                          get={'user': user,
+                               'auth': data['password']},
+                          req=req).strip()
 
         data = json_loads(html)
         self.log_debug(data)
@@ -32,8 +33,9 @@ class OverLoadMe(Account):
 
     def login(self, user, data, req):
         jsondata = self.load("https://api.over-load.me/account.php",
-                            get={'user': user,
-                                 'auth': data['password']}, req=req).strip()
+                             get={'user': user,
+                                  'auth': data['password']},
+                             req=req).strip()
 
         data = json_loads(jsondata)
 

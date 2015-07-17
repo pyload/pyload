@@ -46,11 +46,11 @@ class FshareVn(Account):
 
     def login(self, user, data, req):
         html = self.load("https://www.fshare.vn/login.php",
-                        post={'LoginForm[email]'     : user,
-                              'LoginForm[password]'  : data['password'],
-                              'LoginForm[rememberMe]': 1,
-                              'yt0'                  : "Login"},
-                        referer=True, req=req)
+                         post={'LoginForm[email]'     : user,
+                               'LoginForm[password]'  : data['password'],
+                               'LoginForm[rememberMe]': 1,
+                               'yt0'                  : "Login"},
+                         req=req)
 
         if not re.search(r'<img\s+alt="VIP"', html):
             self.wrong_password()

@@ -34,9 +34,10 @@ class TurbobitNet(Account):
         req.cj.setCookie("turbobit.net", "user_lang", "en")
 
         html = self.load("http://turbobit.net/user/login",
-                        post={"user[login]": user,
-                              "user[pass]": data['password'],
-                              "user[submit]": "Login"}, req=req)
+                         post={"user[login]" : user,
+                               "user[pass]"  : data['password'],
+                               "user[submit]": "Login"},
+                         req=req)
 
         if not '<div class="menu-item user-name">' in html:
             self.wrong_password()

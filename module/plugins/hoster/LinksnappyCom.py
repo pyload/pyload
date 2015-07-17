@@ -29,7 +29,7 @@ class LinksnappyCom(MultiHoster):
         json_params = json_dumps({'link'    : pyfile.url,
                                   'type'    : host,
                                   'username': self.user,
-                                  'password': self.account.getAccountData(self.user)['password']})
+                                  'password': self.account.get_account_data(self.user)['password']})
 
         r = self.load("http://gen.linksnappy.com/genAPI.php",
                       post={'genLinks': json_params})

@@ -21,10 +21,11 @@ class FilesMailRu(Account):
         user, domain = user.split("@")
 
         html = self.load("https://swa.mail.ru/cgi-bin/auth",
-                        post={"Domain": domain,
-                              "Login": user,
-                              "Password": data['password'],
-                              "Page": "http://files.mail.ru/"}, req=req)
+                         post={"Domain"  : domain,
+                               "Login"   : user,
+                               "Password": data['password'],
+                               "Page"    : "http://files.mail.ru/"},
+                         req=req)
 
         if "Неверное имя пользователя или пароль" in html:
             self.wrong_password()

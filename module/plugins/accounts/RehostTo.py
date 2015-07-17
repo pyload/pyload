@@ -26,7 +26,9 @@ class RehostTo(Account):
             session = html.split(",")[1].split("=")[1]
 
             html = self.load("http://rehost.to/api.php",
-                            get={'cmd': "get_premium_credits", 'long_ses': session}, req=req)
+                             get={'cmd'     : "get_premium_credits",
+                                  'long_ses': session},
+                             req=req)
 
             if html.strip() == "0,0" or "ERROR" in html:
                 self.log_debug(html)
@@ -46,7 +48,10 @@ class RehostTo(Account):
 
     def login(self, user, data, req):
         html = self.load("https://rehost.to/api.php",
-                        get={'cmd': "login", 'user': user, 'pass': data['password']}, req=req)
+                         get={'cmd': "login",
+                              'user': user,
+                              'pass': data['password']},
+                         req=req)
 
         if "ERROR" in html:
             self.log_debug(html)

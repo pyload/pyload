@@ -55,10 +55,10 @@ class SimpleCrypter(Crypter, SimpleHoster):
         account_name = (self.__name__ + ".py").replace("Folder.py", "").replace(".py", "")
         account      = self.core.accountManager.getAccountPlugin(account_name)
 
-        if account and account.canUse():
-            self.user, data = account.selectAccount()
-            self.req        = account.getAccountRequest(self.user)
-            self.premium    = account.isPremium(self.user)
+        if account and account.can_use():
+            self.user, data = account.select_account()
+            self.req        = account.get_account_request(self.user)
+            self.premium    = account.is_premium(self.user)
 
             self.account = account
 

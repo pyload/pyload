@@ -63,10 +63,11 @@ class Keep2ShareCc(Account):
         req.cj.setCookie("keep2share.cc", "lang", "en")
 
         html = self.load("https://keep2share.cc/login.html",
-                        post={'LoginForm[username]'  : user,
-                              'LoginForm[password]'  : data['password'],
-                              'LoginForm[rememberMe]': 1,
-                              'yt0'                  : ""}, req=req)
+                         post={'LoginForm[username]'  : user,
+                               'LoginForm[password]'  : data['password'],
+                               'LoginForm[rememberMe]': 1,
+                               'yt0'                  : ""},
+                         req=req)
 
         if re.search(self.LOGIN_FAIL_PATTERN, html):
             self.wrong_password()

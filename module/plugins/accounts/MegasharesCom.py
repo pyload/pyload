@@ -38,10 +38,11 @@ class MegasharesCom(Account):
 
     def login(self, user, data, req):
         html = self.load('http://d01.megashares.com/myms_login.php',
-                        post={"httpref"       : "",
-                              "myms_login"    : "Login",
-                              "mymslogin_name": user,
-                              "mymspassword"  : data['password']}, req=req)
+                         post={"httpref"       : "",
+                               "myms_login"    : "Login",
+                               "mymslogin_name": user,
+                               "mymspassword"  : data['password']},
+                         req=req)
 
         if not '<span class="b ml">%s</span>' % user in html:
             self.wrong_password()

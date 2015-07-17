@@ -53,8 +53,9 @@ class MegaRapidCz(Account):
             html = html[start + 33:]
             hashes = html[0:32]
             html = self.load("https://megarapid.cz/prihlaseni/",
-                           post={"hash": hashes,
-                                 "login": user,
-                                 "pass1": data['password'],
-                                 "remember": 0,
-                                 "sbmt": u"Přihlásit"}, req=req)
+                             post={"hash"    : hashes,
+                                   "login"   : user,
+                                   "pass1"   : data['password'],
+                                   "remember": 1,
+                                   "sbmt"    : u"Přihlásit"},
+                             req=req)

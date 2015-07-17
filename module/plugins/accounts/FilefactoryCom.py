@@ -40,9 +40,10 @@ class FilefactoryCom(Account):
         req.http.c.setopt(pycurl.REFERER, "http://www.filefactory.com/member/login.php")
 
         html = self.load("https://www.filefactory.com/member/signin.php",
-                        post={"loginEmail"   : user,
-                              "loginPassword": data['password'],
-                              "Submit"       : "Sign In"}, req=req)
+                         post={"loginEmail"   : user,
+                               "loginPassword": data['password'],
+                               "Submit"       : "Sign In"},
+                         req=req)
 
         if req.lastEffectiveURL != "http://www.filefactory.com/account/":
             self.wrong_password()

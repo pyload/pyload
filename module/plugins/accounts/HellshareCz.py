@@ -68,11 +68,13 @@ class HellshareCz(Account):
             self.log_debug("Already logged in")
             return
 
-        html = self.load('https://www.hellshare.com/login?do=loginForm-submit',
-                        post={"login": "Log in",
-                              "password": data['password'],
-                              "username": user,
-                              "perm_login": "on"}, req=req)
+        html = self.load("https://www.hellshare.com/login",
+                         get={'do': "loginForm-submit"},
+                         post={'login'     : "Log in",
+                               'password'  : data['password'],
+                               'username'  : user,
+                               'perm_login': "on"},
+                         req=req)
 
         if "<p>You input a wrong user name or wrong password</p>" in html:
             self.wrong_password()

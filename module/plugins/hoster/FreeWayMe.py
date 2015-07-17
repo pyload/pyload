@@ -24,7 +24,7 @@ class FreeWayMe(MultiHoster):
 
 
     def handle_premium(self, pyfile):
-        user, data = self.account.selectAccount()
+        user, data = self.account.select_account()
 
         for _i in xrange(5):
             #: try it five times
@@ -32,7 +32,7 @@ class FreeWayMe(MultiHoster):
                                get={'multiget': 7,
                                     'url'     : pyfile.url,
                                     'user'    : user,
-                                    'pw'      : self.account.getAccountData(user)['password'],
+                                    'pw'      : self.account.get_account_data(user)['password'],
                                     'json'    : ""},
                                just_header=True)
 

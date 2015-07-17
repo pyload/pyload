@@ -116,7 +116,7 @@ class UlozTo(SimpleHoster):
         if re.search(self.VIPLINK_PATTERN, self.html):
             self.html = self.load(pyfile.url, get={'disclaimer': "1"})
 
-        return super(UlozTo, self).checkErrors()
+        return super(UlozTo, self).check_errors()
 
 
     def check_file(self):

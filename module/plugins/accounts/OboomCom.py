@@ -35,7 +35,10 @@ class OboomCom(Account):
         salt   = passwd[::-1]
         pbkdf2 = PBKDF2(passwd, salt, 1000).hexread(16)
 
-        result = json_loads(self.load("https://www.oboom.com/1/login", get={"auth": user, "pass": pbkdf2}), req=req)
+        result = json_loads(self.load("https://www.oboom.com/1/login",
+                                      get={"auth": user,
+                                           "pass": pbkdf2}),
+                                      req=req)
 
         if not result[0] == 200:
             self.log_warning(_("Failed to log in: %s") % result[1])

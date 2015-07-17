@@ -36,13 +36,14 @@ class UlozTo(Account):
         action     = re.findall('<form action="(.+?)"', login_page)[1].replace('&amp;', '&')
         token      = re.search('_token_" value="(.+?)"', login_page).group(1)
 
-        html = self.load(urlparse.urljoin("https://www.ulozto.net/", action, req=req),
-                        post={'_token_' : token,
-                              'do'      : "loginForm-submit",
-                              'login'   : u"Přihlásit",
-                              'password': data['password'],
-                              'username': user,
-                              'remember': "on"})
+        html = self.load(urlparse.urljoin("https://www.ulozto.net/", action),
+                         post={'_token_' : token,
+                               'do'      : "loginForm-submit",
+                               'login'   : u"Přihlásit",
+                               'password': data['password'],
+                               'username': user,
+                               'remember': "on"},
+                         req=req)
 
         if '<div class="flash error">' in html:
             self.wrong_password()

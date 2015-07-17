@@ -2,6 +2,7 @@
 
 import re
 import time
+import urlparse
 
 from module.plugins.internal.Account import Account
 
@@ -37,13 +38,14 @@ class FilejungleCom(Account):
 
 
     def login(self, user, data, req):
-        html = self.load(self.URL + "login.php",
-                        post={"loginUserName": user,
-                              "loginUserPassword": data['password'],
-                              "loginFormSubmit": "Login",
-                              "recaptcha_challenge_field": "",
-                              "recaptcha_response_field": "",
-                              "recaptcha_shortencode_field": ""}, req=req)
+        html = self.load(urlparse.urljoin(self.URL, "login.php"),
+                         post={"loginUserName"              : user,
+                               "loginUserPassword"          : data['password'],
+                               "loginFormSubmit"            : "Login",
+                               "recaptcha_challenge_field"  : "",
+                               "recaptcha_response_field"   : "",
+                               "recaptcha_shortencode_field": ""},
+                         req=req)
 
         if re.search(self.LOGIN_FAILED_PATTERN, html):
             self.wrong_password()

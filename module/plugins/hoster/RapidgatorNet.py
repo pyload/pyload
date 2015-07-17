@@ -50,7 +50,7 @@ class RapidgatorNet(SimpleHoster):
 
     def setup(self):
         if self.account:
-            self.sid = self.account.getAccountInfo(self.user).get('sid', None)
+            self.sid = self.account.get_account_info(self.user).get('sid', None)
         else:
             self.sid = None
 

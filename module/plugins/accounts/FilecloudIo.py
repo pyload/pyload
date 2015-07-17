@@ -32,7 +32,8 @@ class FilecloudIo(Account):
         akey = rep['akey']
         self.accounts[user]['akey'] = akey  #: Saved for hoster plugin
         rep = self.load("http://api.filecloud.io/api-fetch_account_details.api",
-                       post={"akey": akey}, req=req)
+                        post={"akey": akey},
+                        req=req)
         rep = json_loads(rep)
 
         if rep['is_premium'] == 1:

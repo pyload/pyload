@@ -17,7 +17,9 @@ class PremiumTo(Account):
 
     def load_account_info(self, user, req):
         traffic = self.load("http://premium.to/api/straffic.php",  #@TODO: Revert to `https` in 0.4.10
-                           get={'username': self.username, 'password': self.password}, req=req)
+                            get={'username': self.username,
+                                 'password': self.password},
+                            req=req)
 
         if "wrong username" not in traffic:
             trafficleft = sum(map(float, traffic.split(';'))) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
@@ -30,7 +32,9 @@ class PremiumTo(Account):
         self.username = user
         self.password = data['password']
         authcode = self.load("http://premium.to/api/getauthcode.php",  #@TODO: Revert to `https` in 0.4.10
-                            get={'username': user, 'password': self.password}, req=req)
+                             get={'username': user,
+                                  'password': self.password},
+                             req=req)
 
         if "wrong username" in authcode:
             self.wrong_password()

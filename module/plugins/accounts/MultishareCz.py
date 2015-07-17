@@ -35,9 +35,10 @@ class MultishareCz(Account):
 
     def login(self, user, data, req):
         html = self.load('https://www.multishare.cz/html/prihlaseni_process.php',
-                        post={"akce" : "Přihlásit",
-                              "heslo": data['password'],
-                              "jmeno": user}, req=req)
+                         post={"akce" : "Přihlásit",
+                               "heslo": data['password'],
+                               "jmeno": user},
+                         req=req)
 
         if '<div class="akce-chyba akce">' in html:
             self.wrong_password()

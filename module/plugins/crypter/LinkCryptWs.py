@@ -249,7 +249,7 @@ class LinkCryptWs(Crypter):
 
                 package_name, folder_name = self.get_package_info()
                 self.log_debug("Added package with name %s.%s and container link %s" %( package_name, type, clink.group(1)))
-                self.core.api.uploadContainer( "%s.%s" %(package_name, type), self.load(clink.group(1)))
+                self.core.api.uploadContainer('.'.join([package_name, type]), self.load(clink.group(1)))
                 return "Found it"
 
         return package_links

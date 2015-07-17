@@ -12,7 +12,7 @@ if os.name != "nt":
     import grp
     import pwd
 
-from module.plugins.internal.Plugin import Plugin, Abort, Fail, Reconnect, Retry, Skip, parseHtmlForm
+from module.plugins.internal.Plugin import Plugin, Abort, Fail, Reconnect, Retry, Skip, parse_html_form
 from module.utils import fs_decode, fs_encode, save_join as fs_join
 
 
@@ -67,21 +67,21 @@ class Hoster(Plugin):
         #: username/login
         self.user = None
 
-        if self.account and not self.account.canUse():
+        if self.account and not self.account.can_use():
             self.account = None
 
         if self.account:
-            self.user, data = self.account.selectAccount()
+            self.user, data = self.account.select_account()
 
             #: Browser instance, see `network.Browser`
-            self.req = self.account.getAccountRequest(self.user)
+            self.req = self.account.get_account_request(self.user)
             self.chunk_limit = -1  #: chunk limit, -1 for unlimited
 
             #: enables resume (will be ignored if server dont accept chunks)
             self.resume_download = True
 
             #: premium status
-            self.premium = self.account.isPremium(self.user)
+            self.premium = self.account.is_premium(self.user)
         else:
             self.req = pyfile.m.core.requestFactory.getRequest(self.__name__)
 
@@ -132,7 +132,7 @@ class Hoster(Plugin):
         self.thread = thread
 
         if self.account:
-            self.account.checkLogin(self.user)
+            self.account.check_login(self.user)
         else:
             self.req.clearCookies()
 
@@ -626,14 +626,14 @@ class Hoster(Plugin):
 
 
     def parse_html_form(self, attr_str="", input_names={}):
-        return parseHtmlForm(attr_str, self.html, input_names)
+        return parse_html_form(attr_str, self.html, input_names)
 
 
     def check_traffic_left(self):
         if not self.account:
             return True
 
-        traffic = self.account.getAccountInfo(self.user, True)['trafficleft']
+        traffic = self.account.get_account_info(self.user, True)['trafficleft']
 
         if traffic is None:
             return False
