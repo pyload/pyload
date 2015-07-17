@@ -30,7 +30,7 @@ class RapiduNet(Account):
         trafficleft = -1
         premium     = False
 
-        html = self.load("https://rapidu.net/", req=req)
+        html = self.load("https://rapidu.net/")
 
         if re.search(self.PREMIUM_PATTERN, html):
             premium = True
@@ -50,16 +50,14 @@ class RapiduNet(Account):
         self.load("https://rapidu.net/ajax.php",
                   get={'a': "getChangeLang"},
                   post={'_go' : "",
-                        'lang': "en"},
-                  req=req)
+                        'lang': "en"})
 
         json = json_loads(self.load("https://rapidu.net/ajax.php",
                                     get={'a': "getUserLogin"},
                                     post={'_go'     : "",
                                           'login'   : user,
                                           'pass'    : data['password'],
-                                          'remember': "1"},
-                                    req=req))
+                                          'remember': "1"}))
 
         self.log_debug(json)
 

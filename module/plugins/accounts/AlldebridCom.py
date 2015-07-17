@@ -21,7 +21,7 @@ class AlldebridCom(Account):
 
     def load_account_info(self, user, req):
         data = self.get_account_data(user)
-        html = self.load("http://www.alldebrid.com/account/", req=req)
+        html = self.load("http://www.alldebrid.com/account/")
         soup = BeautifulSoup(html)
 
         # Try to parse expiration date directly from the control panel page (better accuracy)
@@ -41,8 +41,7 @@ class AlldebridCom(Account):
             html = self.load("https://www.alldebrid.com/api.php",
                              get={'action': "info_user",
                                   'login' : user,
-                                  'pw'    : data['password']},
-                             req=req)
+                                  'pw'    : data['password']})
 
             self.log_debug(html)
 
@@ -58,8 +57,7 @@ class AlldebridCom(Account):
         html = self.load("https://www.alldebrid.com/register/",
                          get={'action'        : "login",
                               'login_login'   : user,
-                              'login_password': data['password']},
-                         req=req)
+                              'login_password': data['password']})
 
         if "This login doesn't exist" in html \
            or "The password is not valid" in html \

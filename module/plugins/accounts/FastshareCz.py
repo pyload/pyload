@@ -24,7 +24,7 @@ class FastshareCz(Account):
         trafficleft = None
         premium     = False
 
-        html = self.load("http://www.fastshare.cz/user", req=req)
+        html = self.load("http://www.fastshare.cz/user")
 
         m = re.search(self.CREDIT_PATTERN, html)
         if m:
@@ -40,12 +40,11 @@ class FastshareCz(Account):
     def login(self, user, data, req):
         req.cj.setCookie("fastshare.cz", "lang", "en")
 
-        self.load('http://www.fastshare.cz/login', req=req)  #@NOTE: Do not remove or it will not login
+        self.load('http://www.fastshare.cz/login')  #@NOTE: Do not remove or it will not login
 
         html = self.load("https://www.fastshare.cz/sql.php",
                          post={'login': user,
-                               'heslo': data['password']},
-                         req=req)
+                               'heslo': data['password']})
 
         if ">Wrong username or password" in html:
             self.wrong_password()

@@ -43,8 +43,7 @@ class WebshareCz(Account):
     def login(self, user, data, req):
         salt = self.load("https://webshare.cz/api/salt/",
                          post={'username_or_email': user,
-                               'wst'              : ""},
-                         req=req)
+                               'wst'              : ""})
 
         if "<status>OK</status>" not in salt:
             self.wrong_password()
@@ -58,8 +57,7 @@ class WebshareCz(Account):
                                 'keep_logged_in'   : 1,
                                 'password'         : password,
                                 'username_or_email': user,
-                                'wst'              : ""},
-                          req=req)
+                                'wst'              : ""})
 
         if "<status>OK</status>" not in login:
             self.wrong_password()

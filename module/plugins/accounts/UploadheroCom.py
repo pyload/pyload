@@ -21,7 +21,7 @@ class UploadheroCom(Account):
         premium_pattern = re.compile('Il vous reste <span class="bleu">(\d+)</span> jours premium')
 
         data = self.get_account_data(user)
-        html = self.load("http://uploadhero.co/my-account", req=req)
+        html = self.load("http://uploadhero.co/my-account")
 
         if premium_pattern.search(html):
             end_date = datetime.date.today() + datetime.timedelta(days=int(premium_pattern.search(html).group(1)))
@@ -36,8 +36,7 @@ class UploadheroCom(Account):
     def login(self, user, data, req):
         html = self.load("http://uploadhero.co/lib/connexion.php",
                          post={"pseudo_login": user,
-                               "password_login": data['password']},
-                         req=req)
+                               "password_login": data['password']})
 
         if "mot de passe invalide" in html:
             self.wrong_password()

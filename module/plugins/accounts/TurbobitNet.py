@@ -17,7 +17,7 @@ class TurbobitNet(Account):
 
 
     def load_account_info(self, user, req):
-        html = self.load("http://turbobit.net", req=req)
+        html = self.load("http://turbobit.net")
 
         m = re.search(r'<u>Turbo Access</u> to ([\d.]+)', html)
         if m:
@@ -36,8 +36,7 @@ class TurbobitNet(Account):
         html = self.load("http://turbobit.net/user/login",
                          post={"user[login]" : user,
                                "user[pass]"  : data['password'],
-                               "user[submit]": "Login"},
-                         req=req)
+                               "user[submit]": "Login"})
 
         if not '<div class="menu-item user-name">' in html:
             self.wrong_password()

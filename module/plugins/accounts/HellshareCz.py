@@ -21,7 +21,7 @@ class HellshareCz(Account):
 
     def load_account_info(self, user, req):
         self.relogin(user)
-        html = self.load("http://www.hellshare.com/", req=req)
+        html = self.load("http://www.hellshare.com/")
 
         m = re.search(self.CREDIT_LEFT_PATTERN, html)
         if m is None:
@@ -52,17 +52,17 @@ class HellshareCz(Account):
 
 
     def login(self, user, data, req):
-        html = self.load('http://www.hellshare.com/', req=req)
+        html = self.load('http://www.hellshare.com/')
         if req.lastEffectiveURL != 'http://www.hellshare.com/':
             # Switch to English
             self.log_debug("Switch lang - URL: %s" % req.lastEffectiveURL)
 
-            json = self.load("%s?do=locRouter-show" % req.lastEffectiveURL, req=req)
+            json = self.load("%s?do=locRouter-show" % req.lastEffectiveURL)
             hash = re.search(r"(\-\-[0-9a-f]+\-)", json).group(1)
 
             self.log_debug("Switch lang - HASH: %s" % hash)
 
-            html = self.load('http://www.hellshare.com/%s/' % hash, req=req)
+            html = self.load('http://www.hellshare.com/%s/' % hash)
 
         if re.search(self.CREDIT_LEFT_PATTERN, html):
             self.log_debug("Already logged in")
@@ -73,8 +73,7 @@ class HellshareCz(Account):
                          post={'login'     : "Log in",
                                'password'  : data['password'],
                                'username'  : user,
-                               'perm_login': "on"},
-                         req=req)
+                               'perm_login': "on"})
 
         if "<p>You input a wrong user name or wrong password</p>" in html:
             self.wrong_password()

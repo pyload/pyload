@@ -21,13 +21,13 @@ class MultishareCz(Account):
 
     def load_account_info(self, user, req):
         # self.relogin(user)
-        html = self.load("http://www.multishare.cz/profil/", req=req)
+        html = self.load("http://www.multishare.cz/profil/")
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         trafficleft = self.parse_traffic(m.group('S') + m.group('U')) if m else 0
         self.premium = True if trafficleft else False
 
-        html = self.load("http://www.multishare.cz/", req=req)
+        html = self.load("http://www.multishare.cz/")
         mms_info = dict(re.findall(self.ACCOUNT_INFO_PATTERN, html))
 
         return dict(mms_info, **{"validuntil": -1, "trafficleft": trafficleft})
@@ -37,8 +37,7 @@ class MultishareCz(Account):
         html = self.load('https://www.multishare.cz/html/prihlaseni_process.php',
                          post={"akce" : "Přihlásit",
                                "heslo": data['password'],
-                               "jmeno": user},
-                         req=req)
+                               "jmeno": user})
 
         if '<div class="akce-chyba akce">' in html:
             self.wrong_password()

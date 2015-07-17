@@ -27,8 +27,7 @@ class FourSharedCom(Account):
                               'password' : data['password'],
                               'remember' : "on",
                               '_remember': "on",
-                              'returnTo' : "http://www.4shared.com/account/home.jsp"},
-                        req=req)
+                              'returnTo' : "http://www.4shared.com/account/home.jsp"})
 
         if 'Please log in to access your 4shared account' in res:
             self.wrong_password()

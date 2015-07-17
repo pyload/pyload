@@ -23,8 +23,7 @@ class MegaDebridEu(Account):
         jsonResponse = self.load(self.API_URL,
                                  get={'action'  : 'connectUser',
                                       'login'   : user,
-                                      'password': data['password']},
-                                 req=req)
+                                      'password': data['password']})
         res = json_loads(jsonResponse)
 
         if res['response_code'] == "ok":
@@ -38,8 +37,7 @@ class MegaDebridEu(Account):
         jsonResponse = self.load(self.API_URL,
                                  get={'action'  : 'connectUser',
                                       'login'   : user,
-                                      'password': data['password']},
-                                 req=req)
+                                      'password': data['password']})
         res = json_loads(jsonResponse)
         if res['response_code'] != "ok":
             self.wrong_password()

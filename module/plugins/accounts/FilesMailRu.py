@@ -24,8 +24,7 @@ class FilesMailRu(Account):
                          post={"Domain"  : domain,
                                "Login"   : user,
                                "Password": data['password'],
-                               "Page"    : "http://files.mail.ru/"},
-                         req=req)
+                               "Page"    : "http://files.mail.ru/"})
 
         if "Неверное имя пользователя или пароль" in html:
             self.wrong_password()

@@ -32,8 +32,7 @@ class FilecloudIo(Account):
         akey = rep['akey']
         self.accounts[user]['akey'] = akey  #: Saved for hoster plugin
         rep = self.load("http://api.filecloud.io/api-fetch_account_details.api",
-                        post={"akey": akey},
-                        req=req)
+                        post={"akey": akey})
         rep = json_loads(rep)
 
         if rep['is_premium'] == 1:
@@ -44,7 +43,7 @@ class FilecloudIo(Account):
 
     def login(self, user, data, req):
         req.cj.setCookie("secure.filecloud.io", "lang", "en")
-        html = self.load('https://secure.filecloud.io/user-login.html', req=req)
+        html = self.load('https://secure.filecloud.io/user-login.html')
 
         if not hasattr(self, "form_data"):
             self.form_data = {}
@@ -53,8 +52,7 @@ class FilecloudIo(Account):
         self.form_data['password'] = data['password']
 
         html = self.load('https://secure.filecloud.io/user-login_p.html',
-                         post=self.form_data,
-                         req=req)
+                         post=self.form_data)
 
         if "you have successfully logged in" not in html:
             self.wrong_password()

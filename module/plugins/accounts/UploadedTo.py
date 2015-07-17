@@ -26,7 +26,7 @@ class UploadedTo(Account):
         trafficleft = None
         premium     = None
 
-        html = self.load("http://uploaded.net/me", req=req)
+        html = self.load("http://uploaded.net/me")
 
         premium = True if re.search(self.PREMIUM_PATTERN, html) else False
 
@@ -66,8 +66,7 @@ class UploadedTo(Account):
         html = self.load("https://uploaded.net/io/login",
                          post={'id': user,
                                'pw': data['password'],
-                               '_': ""},
-                         req=req)
+                               '_': ""})
 
         if '"err"' in html:
             self.wrong_password()

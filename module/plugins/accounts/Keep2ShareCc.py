@@ -28,7 +28,7 @@ class Keep2ShareCc(Account):
         trafficleft = -1
         premium     = False
 
-        html = self.load("http://keep2share.cc/site/profile.html", req=req)
+        html = self.load("http://keep2share.cc/site/profile.html")
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
@@ -66,8 +66,7 @@ class Keep2ShareCc(Account):
                          post={'LoginForm[username]'  : user,
                                'LoginForm[password]'  : data['password'],
                                'LoginForm[rememberMe]': 1,
-                               'yt0'                  : ""},
-                         req=req)
+                               'yt0'                  : ""})
 
         if re.search(self.LOGIN_FAIL_PATTERN, html):
             self.wrong_password()

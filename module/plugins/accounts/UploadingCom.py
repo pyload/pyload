@@ -26,7 +26,7 @@ class UploadingCom(Account):
         trafficleft = None
         premium     = None
 
-        html = self.load("http://uploading.com/", req=req)
+        html = self.load("http://uploading.com/")
 
         premium = False if re.search(self.PREMIUM_PATTERN, html) else True
 
@@ -60,9 +60,8 @@ class UploadingCom(Account):
                      ("uploading.com", "setlang" , "en"),
                      ("uploading.com", "_lang"   , "en")])
 
-        self.load("http://uploading.com/", req=req)
+        self.load("http://uploading.com/")
         self.load("https://uploading.com/general/login_form/?JsHttpRequest=%s-xml" % long(time.time() * 1000),
                   post={'email'   : user,
                         'password': data['password'],
-                        'remember': "on"},
-                  req=req)
+                        'remember': "on"})

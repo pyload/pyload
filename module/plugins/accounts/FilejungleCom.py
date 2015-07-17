@@ -25,7 +25,7 @@ class FilejungleCom(Account):
 
 
     def load_account_info(self, user, req):
-        html = self.load(self.URL + "dashboard.php", req=req)
+        html = self.load(self.URL + "dashboard.php")
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m:
             premium = True
@@ -44,8 +44,7 @@ class FilejungleCom(Account):
                                "loginFormSubmit"            : "Login",
                                "recaptcha_challenge_field"  : "",
                                "recaptcha_response_field"   : "",
-                               "recaptcha_shortencode_field": ""},
-                         req=req)
+                               "recaptcha_shortencode_field": ""})
 
         if re.search(self.LOGIN_FAILED_PATTERN, html):
             self.wrong_password()

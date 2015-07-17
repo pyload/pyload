@@ -21,7 +21,7 @@ class MegasharesCom(Account):
 
     def load_account_info(self, user, req):
         # self.relogin(user)
-        html = self.load("http://d01.megashares.com/myms.php", req=req)
+        html = self.load("http://d01.megashares.com/myms.php")
 
         premium = False if '>Premium Upgrade<' in html else True
 
@@ -41,8 +41,7 @@ class MegasharesCom(Account):
                          post={"httpref"       : "",
                                "myms_login"    : "Login",
                                "mymslogin_name": user,
-                               "mymspassword"  : data['password']},
-                         req=req)
+                               "mymspassword"  : data['password']})
 
         if not '<span class="b ml">%s</span>' % user in html:
             self.wrong_password()

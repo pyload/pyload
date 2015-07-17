@@ -76,5 +76,4 @@ class SmoozedCom(Account):
 
         return json_loads(self.load("http://www2.smoozed.com/api/login",
                                     get={'auth': user,
-                                         'password': encrypted},
-                                    req=req))
+                                         'password': encrypted}))

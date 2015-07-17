@@ -19,7 +19,7 @@ class RealdebridCom(Account):
         if self.pin_code:
             return
 
-        html = self.load("https://real-debrid.com/api/account.php", req=req)
+        html = self.load("https://real-debrid.com/api/account.php")
         xml  = dom.parseString(html)
 
         validuntil = float(xml.getElementsByTagName("expiration")[0].childNodes[0].nodeValue)
@@ -34,8 +34,7 @@ class RealdebridCom(Account):
 
         html = self.load("https://real-debrid.com/ajax/login.php",
                          get={"user": user,
-                              "pass": data['password']},
-                         req=req)
+                              "pass": data['password']})
 
         if "Your login informations are incorrect" in html:
             self.wrong_password()

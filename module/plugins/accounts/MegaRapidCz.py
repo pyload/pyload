@@ -25,7 +25,7 @@ class MegaRapidCz(Account):
 
 
     def load_account_info(self, user, req):
-        htmll = self.load("http://megarapid.cz/mujucet/", req=req)
+        htmll = self.load("http://megarapid.cz/mujucet/")
 
         m = re.search(self.LIMITDL_PATTERN, htmll)
         if m:
@@ -46,7 +46,7 @@ class MegaRapidCz(Account):
 
 
     def login(self, user, data, req):
-        html = self.load("http://megarapid.cz/prihlaseni/", req=req)
+        html = self.load("http://megarapid.cz/prihlaseni/")
 
         if "Heslo:" in html:
             start = html.index('id="inp_hash" name="hash" value="')
@@ -57,5 +57,4 @@ class MegaRapidCz(Account):
                                    "login"   : user,
                                    "pass1"   : data['password'],
                                    "remember": 1,
-                                   "sbmt"    : u"Přihlásit"},
-                             req=req)
+                                   "sbmt"    : u"Přihlásit"})

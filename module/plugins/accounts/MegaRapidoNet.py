@@ -25,7 +25,7 @@ class MegaRapidoNet(Account):
         trafficleft = None
         premium     = False
 
-        html = self.load("http://megarapido.net/gerador", req=req)
+        html = self.load("http://megarapido.net/gerador")
 
         validuntil = re.search(self.VALID_UNTIL_PATTERN, html)
         if validuntil:
@@ -40,13 +40,12 @@ class MegaRapidoNet(Account):
 
 
     def login(self, user, data, req):
-        self.load("http://megarapido.net/login", req=req)
+        self.load("http://megarapido.net/login")
         self.load("http://megarapido.net/painel_user/ajax/logar.php",
                   post={'login': user,
-                        'senha': data['password']},
-                  req=req)
+                        'senha': data['password']})
 
-        html = self.load("http://megarapido.net/gerador", req=req)
+        html = self.load("http://megarapido.net/gerador")
 
         if "sair" not in html.lower():
             self.wrong_password()

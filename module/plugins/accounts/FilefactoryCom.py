@@ -22,7 +22,7 @@ class FilefactoryCom(Account):
 
 
     def load_account_info(self, user, req):
-        html = self.load("http://www.filefactory.com/account/", req=req)
+        html = self.load("http://www.filefactory.com/account/")
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
@@ -42,8 +42,7 @@ class FilefactoryCom(Account):
         html = self.load("https://www.filefactory.com/member/signin.php",
                          post={"loginEmail"   : user,
                                "loginPassword": data['password'],
-                               "Submit"       : "Sign In"},
-                         req=req)
+                               "Submit"       : "Sign In"})
 
         if req.lastEffectiveURL != "http://www.filefactory.com/account/":
             self.wrong_password()

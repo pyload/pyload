@@ -64,8 +64,7 @@ class ZeveraCom(Account):
 
         res = self.load(self.API_URL,
                         get=get_data,
-                        just_header=just_header,
-                        req=req)
+                        just_header=just_header)
 
         self.log_debug(res)
 

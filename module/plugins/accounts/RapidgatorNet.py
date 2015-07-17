@@ -30,8 +30,7 @@ class RapidgatorNet(Account):
             assert sid
 
             html = self.load(urlparse.urljoin(self.API_URL, "info"),
-                             get={'sid': sid},
-                             req=req)
+                             get={'sid': sid})
 
             self.log_debug("API:USERINFO", html)
 
@@ -60,8 +59,7 @@ class RapidgatorNet(Account):
         try:
             html = self.load(urlparse.urljoin(self.API_URL, "login"),
                              post={"username": user,
-                                   "password": data['password']},
-                             req=req)
+                                   "password": data['password']})
 
             self.log_debug("API:LOGIN", html)
 

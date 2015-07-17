@@ -24,7 +24,7 @@ class FshareVn(Account):
 
 
     def load_account_info(self, user, req):
-        html = self.load("http://www.fshare.vn/account_info.php", req=req)
+        html = self.load("http://www.fshare.vn/account_info.php")
 
         if re.search(self.LIFETIME_PATTERN, html):
             self.log_debug("Lifetime membership detected")
@@ -49,8 +49,7 @@ class FshareVn(Account):
                          post={'LoginForm[email]'     : user,
                                'LoginForm[password]'  : data['password'],
                                'LoginForm[rememberMe]': 1,
-                               'yt0'                  : "Login"},
-                         req=req)
+                               'yt0'                  : "Login"})
 
         if not re.search(r'<img\s+alt="VIP"', html):
             self.wrong_password()

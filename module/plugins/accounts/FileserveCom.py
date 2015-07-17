@@ -22,8 +22,7 @@ class FileserveCom(Account):
         html = self.load("http://app.fileserve.com/api/login/",
                          post={"username": user,
                                "password": data['password'],
-                               "submit": "Submit+Query"},
-                         req=req)
+                               "submit": "Submit+Query"})
         res = json_loads(html)
 
         if res['type'] == "premium":
@@ -37,8 +36,7 @@ class FileserveCom(Account):
         html = self.load("http://app.fileserve.com/api/login/",
                          post={"username": user,
                                "password": data['password'],
-                               "submit"  : "Submit+Query"},
-                         req=req)
+                               "submit"  : "Submit+Query"})
         res = json_loads(html)
 
         if not res['type']:
@@ -49,5 +47,4 @@ class FileserveCom(Account):
                   post={"loginUserName": user,
                         "loginUserPassword": data['password'],
                         "autoLogin": "checked",
-                        "loginFormSubmit": "Login"},
-                  req=req)
+                        "loginFormSubmit": "Login"})

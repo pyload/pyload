@@ -26,7 +26,7 @@ class OneFichierCom(Account):
         trafficleft = -1
         premium = None
 
-        html = self.load("https://1fichier.com/console/abo.pl", req=req)
+        html = self.load("https://1fichier.com/console/abo.pl")
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
@@ -51,8 +51,7 @@ class OneFichierCom(Account):
                                'pass'   : data['password'],
                                'It'     : "on",
                                'purge'  : "off",
-                               'valider': "Send"},
-                         req=req)
+                               'valider': "Send"})
 
         if '>Invalid email address' in html or '>Invalid password' in html:
             self.wrong_password()

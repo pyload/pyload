@@ -21,8 +21,7 @@ class LinksnappyCom(Account):
         r = self.load('http://gen.linksnappy.com/lseAPI.php',
                       get={'act'     : 'USERDETAILS',
                            'username': user,
-                           'password': hashlib.md5(data['password'],
-                      req=req).hexdigest()})
+                           'password': hashlib.md5(data['password']).hexdigest()})
 
         self.log_debug("JSON data: " + r)
 
@@ -56,8 +55,7 @@ class LinksnappyCom(Account):
         html = self.load("https://gen.linksnappy.com/lseAPI.php",
                          get={'act'     : 'USERDETAILS',
                               'username': user,
-                              'password': hashlib.md5(data['password'],
-                         req=req).hexdigest()})
+                              'password': hashlib.md5(data['password']).hexdigest()})
 
         if "Invalid Account Details" in html:
             self.wrong_password()

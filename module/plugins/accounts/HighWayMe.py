@@ -19,7 +19,7 @@ class HighWayMe(Account):
         validuntil  = -1
         trafficleft = None
 
-        json_data = self.load('https://high-way.me/api.php?user', req=req)
+        json_data = self.load('https://high-way.me/api.php?user')
 
         self.log_debug("JSON data: %s" % json_data)
 
@@ -43,8 +43,7 @@ class HighWayMe(Account):
         html = self.load("https://high-way.me/api.php?login",
                          post={'login': '1',
                                'user': user,
-                               'pass': data['password']},
-                         req=req)
+                               'pass': data['password']})
 
         if 'UserOrPassInvalid' in html:
             self.wrong_password()

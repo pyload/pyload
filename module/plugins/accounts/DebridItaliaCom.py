@@ -22,7 +22,7 @@ class DebridItaliaCom(Account):
 
     def load_account_info(self, user, req):
         info = {"premium": False, "validuntil": None, "trafficleft": None}
-        html = self.load("http://debriditalia.com/", req=req)
+        html = self.load("http://debriditalia.com/")
 
         if 'Account premium not activated' not in html:
             m = re.search(self.WALID_UNTIL_PATTERN, html)
@@ -38,8 +38,7 @@ class DebridItaliaCom(Account):
     def login(self, user, data, req):
         html = self.load("https://debriditalia.com/login.php",
                          get={'u': user,
-                              'p': data['password']},
-                         req=req)
+                              'p': data['password']})
 
         if 'NO' in html:
             self.wrong_password()

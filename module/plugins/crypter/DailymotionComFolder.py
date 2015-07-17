@@ -22,16 +22,16 @@ class DailymotionComFolder(Crypter):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def api_response(self, ref, req=None):
+    def api_response(self, ref, data=None):
         url  = urlparse.urljoin("https://api.dailymotion.com/", ref)
-        html = self.load(url, get=req)
+        html = self.load(url, get=data)
         return json_loads(html)
 
 
     def get_playlist_info(self, id):
-        ref = "playlist/" + id
-        req = {"fields": "name,owner.screenname"}
-        playlist = self.api_response(ref, req)
+        ref  = "playlist/" + id
+        data = {"fields": "name,owner.screenname"}
+        playlist = self.api_response(ref, data)
 
         if "error" in playlist:
             return
@@ -42,9 +42,9 @@ class DailymotionComFolder(Crypter):
 
 
     def _get_playlists(self, user_id, page=1):
-        ref = "user/%s/playlists" % user_id
-        req = {"fields": "id", "page": page, "limit": 100}
-        user = self.api_response(ref, req)
+        ref  = "user/%s/playlists" % user_id
+        data = {"fields": "id", "page": page, "limit": 100}
+        user = self.api_response(ref, data)
 
         if "error" in user:
             return
@@ -62,9 +62,9 @@ class DailymotionComFolder(Crypter):
 
 
     def _get_videos(self, id, page=1):
-        ref = "playlist/%s/videos" % id
-        req = {"fields": "url", "page": page, "limit": 100}
-        playlist = self.api_response(ref, req)
+        ref  = "playlist/%s/videos" % id
+        data = {"fields": "url", "page": page, "limit": 100}
+        playlist = self.api_response(ref, data)
 
         if "error" in playlist:
             return

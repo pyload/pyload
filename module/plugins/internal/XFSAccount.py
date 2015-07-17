@@ -64,7 +64,7 @@ class XFSAccount(Account):
                     'leechtraffic': leechtraffic,
                     'premium'     : premium}
 
-        html = self.load(self.HOSTER_URL, get={'op': "my_account"}, req=req)
+        html = self.load(self.HOSTER_URL, get={'op': "my_account"})
 
         premium = True if re.search(self.PREMIUM_PATTERN, html) else False
 
@@ -155,7 +155,7 @@ class XFSAccount(Account):
 
         if not self.LOGIN_URL:
             self.LOGIN_URL  = urlparse.urljoin(self.HOSTER_URL, "login.html")
-        html = self.load(self.LOGIN_URL, req=req)
+        html = self.load(self.LOGIN_URL)
 
         action, inputs = parse_html_form('name="FL"', html)
         if not inputs:
@@ -170,7 +170,7 @@ class XFSAccount(Account):
         else:
             url = self.HOSTER_URL
 
-        html = self.load(url, post=inputs, req=req)
+        html = self.load(url, post=inputs)
 
         if re.search(self.LOGIN_FAIL_PATTERN, html):
             self.wrong_password()
