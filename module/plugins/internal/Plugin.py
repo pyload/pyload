@@ -11,6 +11,29 @@ from module.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload as
 from module.utils import fs_encode, fs_decode, html_unescape, save_join as fs_join
 
 
+#@TODO: Move to utils in 0.4.10
+def timestamp():
+    return int(time.time() * 1000)
+
+
+def seconds_to_midnight(gmt=0):
+    now = datetime.datetime.utcnow() + datetime.timedelta(hours=gmt)
+
+    if now.hour is 0 and now.minute < 10:
+        midnight = now
+    else:
+        midnight = now + datetime.timedelta(days=1)
+
+    td = midnight.replace(hour=0, minute=10, second=0, microsecond=0) - now
+
+    if hasattr(td, 'total_seconds'):
+        res = td.total_seconds()
+    else:  #@NOTE: work-around for python 2.5 and 2.6 missing datetime.timedelta.total_seconds
+        res = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
+
+    return int(res)
+
+
 def replace_patterns(string, ruleslist):
     for r in ruleslist:
         rf, rt = r
@@ -67,6 +90,7 @@ def parse_html_form(attr_str, html, input_names={}):
     return {}, None  #: no matching form found
 
 
+#@TODO: Move to utils in 0.4.10
 def chunks(iterable, size):
     it   = iter(iterable)
     item = list(islice(it, size))
@@ -78,7 +102,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = r'^unmatchable$'
     __config__  = []  #: [("name", "type", "desc", "default")]

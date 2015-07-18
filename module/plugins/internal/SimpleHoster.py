@@ -13,70 +13,19 @@ import urlparse
 from module.PyFile import statusMap as _statusMap
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL
-from module.plugins.internal.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster, parse_fileInfo, create_getInfo
 from module.plugins.internal.Plugin import Fail, Retry, replace_patterns, set_cookies
-from module.utils import fixup, fs_encode, parseFileSize
+from module.utils import fixup, fs_encode, parseFileSize as parse_size
 
 
 #@TODO: Adapt and move to PyFile in 0.4.10
 statusMap = dict((v, k) for k, v in _statusMap.iteritems())
 
 
-#@TODO: Remove in 0.4.10
-def parseFileInfo(plugin, url="", html=""):
-    if hasattr(plugin, "getInfo"):
-        info = plugin.get_info(url, html)
-        res  = info['name'], info['size'], info['status'], info['url']
-    else:
-        url   = urllib.unquote(url)
-        url_p = urlparse.urlparse(url)
-        res   = ((url_p.path.split('/')[-1]
-                  or url_p.query.split('=', 1)[::-1][0].split('&', 1)[0]
-                  or url_p.netloc.split('.', 1)[0]),
-                 0,
-                 3 if url else 8,
-                 url)
-
-    return res
-
-
-#@TODO: Remove in 0.4.10
-def create_getInfo(plugin):
-    def get_info(urls):
-        for url in urls:
-            if hasattr(plugin, "URL_REPLACEMENTS"):
-                url = replace_patterns(url, plugin.URL_REPLACEMENTS)
-            yield parseFileInfo(plugin, url)
-
-    return getInfo
-
-
-def timestamp():
-    return int(time.time() * 1000)
-
-
-def seconds_to_midnight(gmt=0):
-    now = datetime.datetime.utcnow() + datetime.timedelta(hours=gmt)
-
-    if now.hour is 0 and now.minute < 10:
-        midnight = now
-    else:
-        midnight = now + datetime.timedelta(days=1)
-
-    td = midnight.replace(hour=0, minute=10, second=0, microsecond=0) - now
-
-    if hasattr(td, 'total_seconds'):
-        res = td.total_seconds()
-    else:  #@NOTE: work-around for python 2.5 and 2.6 missing datetime.timedelta.total_seconds
-        res = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
-
-    return int(res)
-
-
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.70"
+    __version__ = "1.71"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -166,14 +115,7 @@ class SimpleHoster(Hoster):
 
     @classmethod
     def api_info(cls, url):
-        url   = urllib.unquote(url)
-        url_p = urlparse.urlparse(url)
-        return {'name'  : (url_p.path.split('/')[-1]
-                           or url_p.query.split('=', 1)[::-1][0].split('&', 1)[0]
-                           or url_p.netloc.split('.', 1)[0]),
-                'size'  : 0,
-                'status': 3 if url else 8,
-                'url'   : url}
+        return super(SimpleHoster, self).get_info(url)
 
 
     @classmethod
@@ -240,11 +182,11 @@ class SimpleHoster(Hoster):
             if 'S' in info['pattern']:
                 size = replace_patterns(info['pattern']['S'] + info['pattern']['U'] if 'U' in info['pattern'] else info['pattern']['S'],
                                         cls.SIZE_REPLACEMENTS)
-                info['size'] = parseFileSize(size)
+                info['size'] = parse_size(size)
 
             elif isinstance(info['size'], basestring):
                 unit = info['units'] if 'units' in info else None
-                info['size'] = parseFileSize(info['size'], unit)
+                info['size'] = parse_size(info['size'], unit)
 
             if 'H' in info['pattern']:
                 hashtype = info['pattern']['T'] if 'T' in info['pattern'] else "hash"

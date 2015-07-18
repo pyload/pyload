@@ -6,25 +6,47 @@ import inspect
 import os
 import random
 import time
+import urllib
 import urlparse
 
 if os.name != "nt":
     import grp
     import pwd
 
-from module.plugins.internal.Plugin import Plugin, Abort, Fail, Reconnect, Retry, Skip, parse_html_form
+from module.plugins.internal.Plugin import (Plugin, Abort, Fail, Reconnect, Retry, Skip
+                                            chunks, replace_patterns, seconds_to_midnight,
+                                            set_cookies, parse_html_form, parse_html_tag_attr_value,
+                                            timestamp)
 from module.utils import fs_decode, fs_encode, save_join as fs_join
 
 
-def get_info(urls):
+#@TODO: Remove in 0.4.10
+def parse_fileInfo(klass, url="", html=""):
+    info = klass.get_info(url, html)
+    return info['name'], info['size'], info['status'], info['url']
+
+
+#@TODO: Remove in 0.4.10
+def getInfo(urls):
     # result = [ .. (name, size, status, url) .. ]
     pass
+
+
+#@TODO: Remove in 0.4.10
+def create_getInfo(klass):
+    def get_info(urls):
+        for url in urls:
+            if hasattr(klass, "URL_REPLACEMENTS"):
+                url = replace_patterns(url, klass.URL_REPLACEMENTS)
+            yield parse_fileInfo(klass, url)
+
+    return get_info
 
 
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'^unmatchable$'
     __config__  = []  #: [("name", "type", "desc", "default")]
@@ -109,6 +131,18 @@ class Hoster(Plugin):
         self.retries = {}
 
         self.init()
+
+
+    @classmethod
+    def get_info(cls, url="", html=""):
+        url   = urllib.unquote(url)
+        url_p = urlparse.urlparse(url)
+        return {'name'  : (url_p.path.split('/')[-1]
+                           or url_p.query.split('=', 1)[::-1][0].split('&', 1)[0]
+                           or url_p.netloc.split('.', 1)[0]),
+                'size'  : 0,
+                'status': 3 if url else 8,
+                'url'   : url}
 
 
     def init(self):
