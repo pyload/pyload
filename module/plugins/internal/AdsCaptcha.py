@@ -26,7 +26,7 @@ class AdsCaptcha(Captcha):
         m = re.search(self.PUBLICKEY_PATTERN, html)
         n = re.search(self.CAPTCHAID_PATTERN, html)
         if m and n:
-            self.key = (m.group(1).strip(), n.group(1).strip())  #: key is the tuple(PublicKey, CaptchaId)
+            self.key = (m.group(1).strip(), n.group(1).strip())  #: Key is the tuple(PublicKey, CaptchaId)
             self.log_debug("Key: %s | ID: %s" % self.key)
             return self.key
         else:

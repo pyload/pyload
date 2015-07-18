@@ -28,7 +28,7 @@ def parse_fileInfo(klass, url="", html=""):
 
 #@TODO: Remove in 0.4.10
 def getInfo(urls):
-    # result = [ .. (name, size, status, url) .. ]
+    #: result = [ .. (name, size, status, url) .. ]
     pass
 
 
@@ -62,14 +62,14 @@ class Hoster(Plugin):
     def __init__(self, pyfile):
         super(Hoster, self).__init__(pyfile.m.core)
 
-        #: engage wan reconnection
+        #: Engage wan reconnection
         self.want_reconnect = False
 
-        #: enable simultaneous processing of multiple downloads
+        #: Enable simultaneous processing of multiple downloads
         self.multi_dl = True
         self.limit_dl = 0
 
-        #: chunk limit
+        #: Chunk limit
         self.chunk_limit = 1
         self.resume_download = False
 
@@ -77,13 +77,13 @@ class Hoster(Plugin):
         self.wait_until = 0
         self.waiting = False
 
-        #: captcha reader instance
+        #: Captcha reader instance
         self.ocr = None
 
-        #: account handler instance, see :py:class:`Account`
+        #: Account handler instance, see :py:class:`Account`
         self.account = pyfile.m.core.accountManager.getAccountPlugin(self.__name__)
 
-        #: premium status
+        #: Premium status
         self.premium = False
 
         #: username/login
@@ -97,37 +97,37 @@ class Hoster(Plugin):
 
             #: Browser instance, see `network.Browser`
             self.req = self.account.get_account_request(self.user)
-            self.chunk_limit = -1  #: chunk limit, -1 for unlimited
+            self.chunk_limit = -1  #: Chunk limit, -1 for unlimited
 
-            #: enables resume (will be ignored if server dont accept chunks)
+            #: Enables resume (will be ignored if server dont accept chunks)
             self.resume_download = True
 
-            #: premium status
+            #: Premium status
             self.premium = self.account.is_premium(self.user)
         else:
             self.req = pyfile.m.core.requestFactory.getRequest(self.__name__)
 
-        #: associated pyfile instance, see `PyFile`
+        #: Associated pyfile instance, see `PyFile`
         self.pyfile = pyfile
 
-        self.thread = None  #: holds thread in future
+        self.thread = None  #: Holds thread in future
 
-        #: location where the last call to download was saved
+        #: Location where the last call to download was saved
         self.last_download = ""
 
-        #: re match of the last call to `checkDownload`
+        #: Re match of the last call to `checkDownload`
         self.last_check = None
 
-        #: js engine, see `JsEngine`
+        #: Js engine, see `JsEngine`
         self.js = self.core.js
 
-        #: captcha task
+        #: Captcha task
         self.c_task = None
 
-        #: some plugins store html code here
+        #: Some plugins store html code here
         self.html = None
 
-        #: dict of the amount of retries already made
+        #: Dict of the amount of retries already made
         self.retries = {}
 
         self.init()
@@ -392,7 +392,7 @@ class Hoster(Plugin):
 
             captchaManager.removeTask(task)
 
-            if task.error and has_plugin:  #: ignore default error message since the user could use OCR
+            if task.error and has_plugin:  #: Ignore default error message since the user could use OCR
                 self.fail(_("Pil and tesseract not installed and no Client connected for captcha decrypting"))
             elif task.error:
                 self.fail(task.error)
@@ -471,7 +471,7 @@ class Hoster(Plugin):
             except Exception, e:
                 self.fail(e)
 
-        #: convert back to unicode
+        #: Convert back to unicode
         location = fs_decode(location)
         name = safe_filename(self.pyfile.name)
 
@@ -555,8 +555,8 @@ class Hoster(Plugin):
             with open(lastDownload, "rb") as f:
                 content = f.read(read_size)
 
-            #: produces encoding errors, better log to other file in the future?
-            #: self.log_debug("Content: %s" % content)
+            #: Produces encoding errors, better log to other file in the future?
+            # self.log_debug("Content: %s" % content)
             for name, rule in rules.iteritems():
                 if isinstance(rule, basestring):
                     if rule in content:
@@ -699,9 +699,9 @@ class Hoster(Plugin):
 
         for pyfile in self.core.files.cache.values():
             if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package().folder == pack.folder:
-                if pyfile.status in (0, 12):  #: finished or downloading
+                if pyfile.status in (0, 12):  #: Finished or downloading
                     self.skip(pyfile.pluginname)
-                elif pyfile.status in (5, 7) and starting:  #: a download is waiting/starting and was appenrently started before
+                elif pyfile.status in (5, 7) and starting:  #: A download is waiting/starting and was appenrently started before
                     self.skip(pyfile.pluginname)
 
         download_folder = self.core.config.get("general", "download_folder")

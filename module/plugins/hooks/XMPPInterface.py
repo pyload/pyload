@@ -36,7 +36,7 @@ class XMPPInterface(IRCInterface, JabberClient):
         self.jid = JID(self.get_config('jid'))
         password = self.get_config('pw')
 
-        #: if bare JID is provided add a resource -- it is required
+        #: If bare JID is provided add a resource -- it is required
         if not self.jid.resource:
             self.jid = JID(self.jid.node, self.jid.domain, "pyLoad")
 
@@ -47,8 +47,8 @@ class XMPPInterface(IRCInterface, JabberClient):
             tls_settings = None
             auth = ("sasl:DIGEST-MD5", "digest")
 
-        #: setup client with provided connection information
-        #: and identity data
+        #: Setup client with provided connection information
+        #: And identity data
         JabberClient.__init__(self, self.jid, password,
                               disco_name="pyLoad XMPP Client", disco_type="bot",
                               tls_settings=tls_settings, auth_methods=auth)
@@ -83,7 +83,7 @@ class XMPPInterface(IRCInterface, JabberClient):
 
 
     def run(self):
-        #: connect to IRC etc.
+        #: Connect to IRC etc.
         self.connect()
         try:
             self.loop()

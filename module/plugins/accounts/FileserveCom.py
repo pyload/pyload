@@ -42,7 +42,7 @@ class FileserveCom(Account):
         if not res['type']:
             self.wrong_password()
 
-        # login at fileserv html
+        #: Login at fileserv html
         self.load("http://www.fileserve.com/login.php",
                   post={"loginUserName": user,
                         "loginUserPassword": data['password'],

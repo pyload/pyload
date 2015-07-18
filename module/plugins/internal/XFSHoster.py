@@ -47,7 +47,7 @@ class XFSHoster(SimpleHoster):
     SOLVEMEDIA_PATTERN    = None
 
     FORM_PATTERN    = None
-    FORM_INPUTS_MAP = None  #: dict passed as input_names to parse_html_form
+    FORM_INPUTS_MAP = None  #: Dict passed as input_names to parse_html_form
 
 
     def setup(self):
@@ -123,7 +123,7 @@ class XFSHoster(SimpleHoster):
         if not self.account:
             self.fail(_("Only registered or premium users can use url leech feature"))
 
-        # only tested with easybytez.com
+        #: Only tested with easybytez.com
         self.html = self.load("http://www.%s/" % self.HOSTER_DOMAIN)
 
         action, inputs = self.parse_html_form()
@@ -137,7 +137,7 @@ class XFSHoster(SimpleHoster):
 
         self.log_debug(action, inputs)
 
-        self.req.setOption("timeout", 600)  #: wait for file to upload to easybytez.com
+        self.req.setOption("timeout", 600)  #: Wait for file to upload to easybytez.com
 
         self.html = self.load(action, post=inputs)
 
@@ -163,7 +163,7 @@ class XFSHoster(SimpleHoster):
         else:
             self.fail(stmsg)
 
-        # get easybytez.com link for uploaded file
+        #: Get easybytez.com link for uploaded file
         m = re.search(self.LINK_LEECH_PATTERN, self.html)
         if m is None:
             self.error(_("LINK_LEECH_PATTERN not found"))

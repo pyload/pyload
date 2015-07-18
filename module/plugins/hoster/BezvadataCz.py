@@ -29,13 +29,13 @@ class BezvadataCz(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        # download button
+        #: Download button
         m = re.search(r'<a class="stahnoutSoubor".*?href="(.*?)"', self.html)
         if m is None:
             self.error(_("Page 1 URL not found"))
         url = "http://bezvadata.cz%s" % m.group(1)
 
-        # captcha form
+        #: Captcha form
         self.html = self.load(url)
         self.check_errors()
         for _i in xrange(5):
@@ -47,7 +47,7 @@ class BezvadataCz(SimpleHoster):
             if m is None:
                 self.error(_("Wrong captcha image"))
 
-            # captcha image is contained in html page as base64encoded data but decryptCaptcha() expects image url
+            #: Captcha image is contained in html page as base64encoded data but decryptCaptcha() expects image url
             self.load, proper_load = self.loadcaptcha, self.load
             try:
                 inputs['captcha'] = self.decrypt_captcha(m.group(1), imgtype='png')
@@ -62,7 +62,7 @@ class BezvadataCz(SimpleHoster):
         else:
             self.fail(_("No valid captcha code entered"))
 
-        # download url
+        #: Download url
         self.html = self.load("http://bezvadata.cz%s" % action, post=inputs)
         self.check_errors()
         m = re.search(r'<a class="stahnoutSoubor2" href="(.*?)">', self.html)
@@ -71,7 +71,7 @@ class BezvadataCz(SimpleHoster):
         url = "http://bezvadata.cz%s" % m.group(1)
         self.log_debug("DL URL %s" % url)
 
-        # countdown
+        #: countdown
         m = re.search(r'id="countdown">(\d\d):(\d\d)<', self.html)
         wait_time = (int(m.group(1)) * 60 + int(m.group(2))) if m else 120
         self.wait(wait_time, False)
@@ -81,7 +81,7 @@ class BezvadataCz(SimpleHoster):
 
     def check_errors(self):
         if 'images/button-download-disable.png' in self.html:
-            self.wait(5 * 60, 24, _("Download limit reached"))  #: parallel dl limit
+            self.wait(5 * 60, 24, _("Download limit reached"))  #: Parallel dl limit
         elif '<div class="infobox' in self.html:
             self.temp_offline()
         else:

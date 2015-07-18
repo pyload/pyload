@@ -102,4 +102,4 @@ class DailymotionComFolder(Crypter):
             p_videos = self.get_videos(p_id)
             p_folder = fs_join(self.core.config.get("general", "download_folder"), p_owner, p_name)
             self.log_debug("%s video\s found on playlist \"%s\"" % (len(p_videos), p_name))
-            self.packages.append((p_name, p_videos, p_folder))  #: folder is NOT recognized by pyload 0.4.9!
+            self.packages.append((p_name, p_videos, p_folder))  #: Folder is NOT recognized by pyload 0.4.9!

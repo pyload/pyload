@@ -50,8 +50,8 @@ class DeleteFinished(Hook):
 
     def activate(self):
         self.info['sleep'] = True
-        #: interval = self.get_config('interval')
-        #: self.plugin_config_changed(self.__name__, 'interval', interval)
+        # interval = self.get_config('interval')
+        # self.plugin_config_changed(self.__name__, 'interval', interval)
         self.interval = max(self.MIN_CHECK_INTERVAL, self.get_config('interval') * 60 * 60)
         self.add_event('package_finished', self.wakeup)
 

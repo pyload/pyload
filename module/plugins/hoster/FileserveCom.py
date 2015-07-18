@@ -108,13 +108,13 @@ class FileserveCom(Hoster):
         else:
             self.error(_("Unknown server response"))
 
-        #: show download link
+        #: Show download link
         res = self.load(self.url, post={"downloadLink": "show"})
         self.log_debug("Show downloadLink response: %s" % res)
         if "fail" in res:
             self.error(_("Couldn't retrieve download url"))
 
-        #: this may either download our file or forward us to an error page
+        #: This may either download our file or forward us to an error page
         self.download(self.url, post={"download": "normal"})
         self.log_debug(self.req.http.lastEffectiveURL)
 
@@ -183,7 +183,7 @@ class FileserveCom(Hoster):
     def handle_premium(self):
         premium_url = None
         if self.__name__ == "FileserveCom":
-            # try api download
+            #: Try api download
             res = self.load("http://app.fileserve.com/api/download/premium/",
                             post={"username": self.user,
                                   "password": self.account.get_account_data(self.user)['password'],

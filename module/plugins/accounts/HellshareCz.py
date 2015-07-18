@@ -33,14 +33,14 @@ class HellshareCz(Account):
             premium = True
             try:
                 if "." in credit:
-                    # Time-based account
+                    #: Time-based account
                     vt = [int(x) for x in credit.split('.')[:2]]
                     lt = time.localtime()
                     year = lt.tm_year + int(vt[1] < lt.tm_mon or (vt[1] == lt.tm_mon and vt[0] < lt.tm_mday))
                     validuntil = time.mktime(time.strptime("%s%d 23:59:59" % (credit, year), "%d.%m.%Y %H:%M:%S"))
                     trafficleft = -1
                 else:
-                    # Traffic-based account
+                    #: Traffic-based account
                     trafficleft = self.parse_traffic(credit + "MB")
                     validuntil = -1
             except Exception, e:
@@ -54,7 +54,7 @@ class HellshareCz(Account):
     def login(self, user, data, req):
         html = self.load('http://www.hellshare.com/')
         if req.lastEffectiveURL != 'http://www.hellshare.com/':
-            # Switch to English
+            #: Switch to English
             self.log_debug("Switch lang - URL: %s" % req.lastEffectiveURL)
 
             json = self.load("%s?do=locRouter-show" % req.lastEffectiveURL)

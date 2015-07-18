@@ -20,7 +20,7 @@ class Crypter(Hoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    html = None  #: last html loaded  #@TODO: Move to Hoster
+    html = None  #: Last html loaded  #@TODO: Move to Hoster
 
 
     def __init__(self, pyfile):

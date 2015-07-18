@@ -84,7 +84,7 @@ class IRCInterface(Thread, Hook):
 
 
     def run(self):
-        #: connect to IRC etc.
+        #: Connect to IRC etc.
         self.sock = socket.socket()
         host = self.get_config('host')
         self.sock.connect((host, self.get_config('port')))
@@ -339,12 +339,12 @@ class IRCInterface(Thread, Hook):
             if not pack:
                 return ["ERROR: Package doesn't exists."]
 
-            # TODO add links
+            #@TODO: add links
 
             return ["INFO: Added %d links to Package %s [#%d]" % (len(links), pack['name'], id)]
 
         except Exception:
-            #: create new package
+            #: Create new package
             id = self.core.api.addPackage(pack, links, 1)
             return ["INFO: Created new Package %s [#%d] with %d links." % (pack, id, len(links))]
 

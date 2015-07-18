@@ -63,7 +63,7 @@ class Ftp(Hoster):
             pyfile.size = int(m.group(1))
             self.download(pyfile.url)
         else:
-            # Naive ftp directory listing
+            #: Naive ftp directory listing
             if re.search(r'^25\d.*?"', self.req.http.header, re.M):
                 pyfile.url = pyfile.url.rstrip('/')
                 pkgname = "/".join([pyfile.package().name, urlparse.urlparse(pyfile.url).path.rpartition('/')[2]])

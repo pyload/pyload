@@ -61,7 +61,7 @@ class UpdateManager(Hook):
 
     def setup(self):
         self.info     = {'pyload': False, 'version': None, 'plugins': False, 'last_check': time.time()}
-        self.mtimes   = {}  #: store modification time for each plugin
+        self.mtimes   = {}  #: Store modification time for each plugin
 
         self.event_map = {'allDownloadsProcessed': "all_downloads_processed"}
 
@@ -182,11 +182,11 @@ class UpdateManager(Hook):
             self.info['version'] = data[0]
             exitcode = 3
 
-        # Exit codes:
-        #  -1 = No plugin updated, new pyLoad version available
-        #   0 = No plugin updated
-        #   1 = Plugins updated
-        #   2 = Plugins updated, but restart required
+        #: Exit codes:
+        #:  -1 = No plugin updated, new pyLoad version available
+        #:   0 = No plugin updated
+        #:   1 = Plugins updated
+        #:   2 = Plugins updated, but restart required
         return exitcode
 
 
@@ -294,10 +294,10 @@ class UpdateManager(Hook):
         else:
             self.log_info(_("No plugin updates available"))
 
-        # Exit codes:
-        #   0 = No plugin updated
-        #   1 = Plugins updated
-        #   2 = Plugins updated, but restart required
+        #: Exit codes:
+        #:   0 = No plugin updated
+        #:   1 = Plugins updated
+        #:   2 = Plugins updated, but restart required
         return exitcode
 
 
@@ -350,4 +350,4 @@ class UpdateManager(Hook):
                         id = (type, name)
                         removed.add(id)
 
-        return list(removed)  #: return a list of the plugins successfully removed
+        return list(removed)  #: Return a list of the plugins successfully removed

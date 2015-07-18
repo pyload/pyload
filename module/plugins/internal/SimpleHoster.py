@@ -124,7 +124,7 @@ class SimpleHoster(Hoster):
         online = True if info['status'] is 2 else False
 
         try:
-            info['pattern'] = re.match(cls.__pattern__, url).groupdict()  #: pattern groups will be saved here
+            info['pattern'] = re.match(cls.__pattern__, url).groupdict()  #: Pattern groups will be saved here
 
         except Exception:
             info['pattern'] = {}

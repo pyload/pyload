@@ -68,7 +68,7 @@ class UnRar(Extractor):
                 cls.__name__ = "RAR"
                 cls.REPAIR = True
 
-            except OSError:  #: fallback to unrar
+            except OSError:  #: Fallback to unrar
                 p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, err = p.communicate()
 
@@ -105,7 +105,7 @@ class UnRar(Extractor):
         if self.re_wrongcrc.search(err):
             raise CRCError(err)
 
-        #: output only used to check if passworded files are present
+        #: Output only used to check if passworded files are present
         for attr in self.re_filelist.findall(out):
             if attr[0].startswith("*"):
                 raise PasswordError
@@ -114,7 +114,7 @@ class UnRar(Extractor):
     def repair(self):
         p = self.call_cmd("rc", fs_encode(self.filename))
 
-        #: communicate and retrieve stderr
+        #: Communicate and retrieve stderr
         self._progress(p)
         err = p.stderr.read().strip()
         if err or p.returncode:
@@ -126,17 +126,17 @@ class UnRar(Extractor):
         s = ""
         while True:
             c = process.stdout.read(1)
-            #: quit loop on eof
+            #: Quit loop on eof
             if not c:
                 break
-            #: reading a percentage sign -> set progress and restart
+            #: Reading a percentage sign -> set progress and restart
             if c == '%':
                 self.notify_progress(int(s))
                 s = ""
-            #: not reading a digit -> therefore restart
+            #: Not reading a digit -> therefore restart
             elif c not in digits:
                 s = ""
-            #: add digit to progressstring
+            #: Add digit to progressstring
             else:
                 s += c
 
@@ -148,7 +148,7 @@ class UnRar(Extractor):
 
         renice(p.pid, self.renice)
 
-        #: communicate and retrieve stderr
+        #: Communicate and retrieve stderr
         self._progress(p)
         err = p.stderr.read().strip()
 
@@ -159,7 +159,7 @@ class UnRar(Extractor):
             elif self.re_wrongcrc.search(err):
                 raise CRCError(err)
 
-            else:  #: raise error if anything is on stderr
+            else:  #: Raise error if anything is on stderr
                 raise ArchiveError(err)
 
         if p.returncode:
@@ -171,7 +171,7 @@ class UnRar(Extractor):
     def get_delete_files(self):
         dir, name = os.path.split(self.filename)
 
-        #: actually extracted file
+        #: Actually extracted file
         files = [self.filename]
 
         #: eventually Multipart Files
@@ -190,7 +190,7 @@ class UnRar(Extractor):
         if "Cannot open" in err:
             raise ArchiveError(_("Cannot open file"))
 
-        if err.strip():  #: only log error at this point
+        if err.strip():  #: Only log error at this point
             self.manager.log_error(err.strip())
 
         result = set()
@@ -211,7 +211,7 @@ class UnRar(Extractor):
     def call_cmd(self, command, *xargs, **kwargs):
         args = []
 
-        #: overwrite flag
+        #: Overwrite flag
         if self.overwrite:
             args.append("-o+")
         else:
@@ -222,10 +222,10 @@ class UnRar(Extractor):
         for word in self.excludefiles:
             args.append("-x'%s'" % word.strip())
 
-        #: assume yes on all queries
+        #: Assume yes on all queries
         args.append("-y")
 
-        #: set a password
+        #: Set a password
         if "password" in kwargs and kwargs['password']:
             args.append("-p%s" % kwargs['password'])
         else:

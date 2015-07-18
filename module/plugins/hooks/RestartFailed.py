@@ -41,5 +41,5 @@ class RestartFailed(Hook):
 
 
     def activate(self):
-        #: self.plugin_config_changed(self.__name__, "interval", self.get_config('interval'))
+        # self.plugin_config_changed(self.__name__, "interval", self.get_config('interval'))
         self.interval = max(self.MIN_CHECK_INTERVAL, self.get_config('interval') * 60)

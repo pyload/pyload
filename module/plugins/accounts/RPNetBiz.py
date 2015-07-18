@@ -26,7 +26,7 @@ class RPNetBiz(Account):
                 account_info = {"validuntil": None, "trafficleft": None, "premium": False}
 
         except KeyError:
-            # handle wrong password exception
+            #: Handle wrong password exception
             account_info = {"validuntil": None, "trafficleft": None, "premium": False}
 
         return account_info

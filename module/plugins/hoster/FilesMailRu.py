@@ -49,17 +49,17 @@ class FilesMailRu(Hoster):
         self.html = self.load(pyfile.url)
         self.url_pattern = '<a href="(.+?)" onclick="return Act\(this\, \'dlink\'\, event\)">(.+?)</a>'
 
-        # marks the file as "offline" when the pattern was found on the html-page'''
+        #: Marks the file as "offline" when the pattern was found on the html-page'''
         if r'<div class="errorMessage mb10">' in self.html:
             self.offline()
 
         elif r'Page cannot be displayed' in self.html:
             self.offline()
 
-        # the filename that will be showed in the list (e.g. test.part1.rar)'''
+        #: The filename that will be showed in the list (e.g. test.part1.rar)'''
         pyfile.name = self.get_file_name()
 
-        # prepare and download'''
+        #: Prepare and download'''
         if not self.account:
             self.prepare()
             self.download(self.get_file_url())
@@ -92,7 +92,7 @@ class FilesMailRu(Hoster):
 
 
     def my_post_process(self):
-        #: searches the file for HTMl-Code. Sometimes the Redirect
+        #: Searches the file for HTMl-Code. Sometimes the Redirect
         #: doesn't work (maybe a curl Problem) and you get only a small
         #: HTML file and the Download is marked as "finished"
         #: then the download will be restarted. It's only bad for these

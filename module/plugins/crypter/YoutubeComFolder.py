@@ -142,6 +142,6 @@ class YoutubeComFolder(Crypter):
             else:
                 p_urls = map(urlize, p_videos)
 
-            self.packages.append((p_name, p_urls, p_folder))  #: folder is NOT recognized by pyload 0.4.9!
+            self.packages.append((p_name, p_urls, p_folder))  #: Folder is NOT recognized by pyload 0.4.9!
 
             addedvideos.extend(p_videos)

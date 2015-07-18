@@ -102,7 +102,7 @@ class TurbobitNet(SimpleHoster):
                 #: that's right, we are even using jdownloader updates
                 rtUpdate = self.load("http://update0.jdownloader.org/pluginstuff/tbupdate.js")
                 rtUpdate = self.decrypt(rtUpdate.splitlines()[1])
-                #: but we still need to fix the syntax to work with other engines than rhino
+                #: But we still need to fix the syntax to work with other engines than rhino
                 rtUpdate = re.sub(r'for each\(var (\w+) in(\[[^\]]+\])\)\{',
                                   r'zza=\2;for(var zzi=0;zzi<zza.length;zzi++){\1=zza[zzi];', rtUpdate)
                 rtUpdate = re.sub(r"for\((\w+)=", r"for(var \1=", rtUpdate)
@@ -144,7 +144,7 @@ class TurbobitNet(SimpleHoster):
                 self.log_error(e)
         else:
             if self.retries >= 2:
-                #: retry with updated js
+                #: Retry with updated js
                 self.delete("rtUpdate")
             else:
                 self.retry()

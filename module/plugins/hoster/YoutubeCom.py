@@ -94,7 +94,7 @@ class YoutubeCom(Hoster):
         if "We have been receiving a large volume of requests from your network." in html:
             self.temp_offline()
 
-        # get config
+        #: Get config
         use3d = self.get_config('3d')
 
         if use3d:
@@ -113,17 +113,17 @@ class YoutubeCom(Hoster):
             self.log_warning(_("FMT %d unknown, using default") % desired_fmt)
             desired_fmt = 0
 
-        # parse available streams
+        #: Parse available streams
         streams = re.search(r'"url_encoded_fmt_stream_map":"(.+?)",', html).group(1)
         streams = [x.split('\u0026') for x in streams.split(',')]
         streams = [dict((y.split('=', 1)) for y in x) for x in streams]
         streams = [(int(x['itag']), urllib.unquote(x['url'])) for x in streams]
 
-        #: self.log_debug("Found links: %s" % streams)
+        # self.log_debug("Found links: %s" % streams)
 
         self.log_debug("AVAILABLE STREAMS: %s" % [x[0] for x in streams])
 
-        # build dictionary of supported itags (3D/2D)
+        #: Build dictionary of supported itags (3D/2D)
         allowed = lambda x: self.get_config(self.formats[x][0])
         streams = [x for x in streams if x[0] in self.formats and allowed(x[0])]
 
@@ -136,11 +136,11 @@ class YoutubeCom(Hoster):
                       (desired_fmt, "%s %dx%d Q:%d 3D:%s" % self.formats[desired_fmt],
                        "" if desired_fmt in fmt_dict else "NOT ", "" if allowed(desired_fmt) else "NOT "))
 
-        # return fmt nearest to quality index
+        #: Return fmt nearest to quality index
         if desired_fmt in fmt_dict and allowed(desired_fmt):
             fmt = desired_fmt
         else:
-            sel  = lambda x: self.formats[x][3]  #: select quality index
+            sel  = lambda x: self.formats[x][3]  #: Select quality index
             comp = lambda x, y: abs(sel(x) - sel(y))
 
             self.log_debug("Choosing nearest fmt: %s" % [(x, allowed(x), comp(x, desired_fmt)) for x in fmt_dict.keys()])
@@ -154,7 +154,7 @@ class YoutubeCom(Hoster):
 
         self.log_debug("URL: %s" % url)
 
-        # set file name
+        #: Set file name
         file_suffix = self.formats[fmt][0] if fmt in self.formats else ".flv"
         file_name_pattern = '<meta name="title" content="(.+?)">'
         name = re.search(file_name_pattern, html).group(1).replace("/", "")

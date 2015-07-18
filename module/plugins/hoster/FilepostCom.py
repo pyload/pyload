@@ -93,10 +93,10 @@ class FilepostCom(SimpleHoster):
         if not 'js' in res:
             self.error(_("JSON %s 1") % field)
 
-        #: i changed js_answer to res['js'] since js_answer is nowhere set.
-        #: i don't know the JSON-HTTP specs in detail, but the previous author
-        #: accessed res['js']['error'] as well as js_answer['error'].
-        #: see the two lines commented out with  "# ~?".
+        #: I changed js_answer to res['js'] since js_answer is nowhere set.
+        #: I don't know the JSON-HTTP specs in detail, but the previous author
+        #: Accessed res['js']['error'] as well as js_answer['error'].
+        #: See the two lines commented out with  "# ~?".
         if 'error' in res['js']:
 
             if res['js']['error'] == 'download_delay':

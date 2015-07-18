@@ -27,7 +27,7 @@ class FreeWayMe(MultiHoster):
         user, data = self.account.select_account()
 
         for _i in xrange(5):
-            #: try it five times
+            #: Try it five times
             header = self.load("http://www.free-way.bz/load.php",  #@TODO: Revert to `https` in 0.4.10
                                get={'multiget': 7,
                                     'url'     : pyfile.url,
@@ -39,14 +39,14 @@ class FreeWayMe(MultiHoster):
             if 'location' in header:
                 headers = self.load(header['location'], just_header=True)
                 if headers['code'] == 500:
-                    #: error on 2nd stage
+                    #: Error on 2nd stage
                     self.log_error(_("Error [stage2]"))
                 else:
-                    #: seems to work..
+                    #: Seems to work..
                     self.download(header['location'])
                     break
             else:
-                #: error page first stage
+                #: Error page first stage
                 self.log_error(_("Error [stage1]"))
 
             #@TODO: handle errors

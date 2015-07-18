@@ -37,7 +37,7 @@ class SoundcloudCom(SimpleHoster):
         except Exception:
             client_id = "b45b1aa10f1ac2941910a7f0d10f8e28"
 
-        #: url to retrieve the actual song url
+        #: Url to retrieve the actual song url
         streams = json_loads(self.load("https://api.soundcloud.com/tracks/%s/streams" % song_id,
                              get={'client_id': client_id}))
 

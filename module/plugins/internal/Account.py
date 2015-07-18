@@ -28,12 +28,12 @@ class Account(Plugin):
 
         self.manager = manager
         self.accounts = {}
-        self.infos = {}  #: cache for account information
+        self.infos = {}  #: Cache for account information
         self.lock = threading.RLock()
         self.timestamps = {}
 
-        self.login_timeout  = 10 * 60  #: after that time (in minutes) pyload will relogin the account
-        self.info_threshold = 10 * 60  #: after that time (in minutes) account data will be reloaded
+        self.login_timeout  = 10 * 60  #: After that time (in minutes) pyload will relogin the account
+        self.info_threshold = 10 * 60  #: After that time (in minutes) account data will be reloaded
 
         self.init()
 
@@ -57,7 +57,7 @@ class Account(Plugin):
 
     @lock
     def _login(self, user, data):
-        #: set timestamp for login
+        #: Set timestamp for login
         self.timestamps[user] = time.time()
 
         self.req = self.get_account_request(user)
@@ -96,7 +96,7 @@ class Account(Plugin):
             req.close()
 
         if user in self.infos:
-            del self.infos[user]  #: delete old information
+            del self.infos[user]  #: Delete old information
 
         return self._login(user, self.accounts[user])
 
@@ -113,7 +113,7 @@ class Account(Plugin):
         Updates account and return true if anything changed
         """
         if user in self.accounts:
-            self.accounts[user]['valid'] = True  #: do not remove or accounts will not login
+            self.accounts[user]['valid'] = True  #: Do not remove or accounts will not login
             if password:
                 self.accounts[user]['password'] = password
                 self.relogin(user)
@@ -210,13 +210,13 @@ class Account(Plugin):
         """
         return {"validuntil" : None,  #: -1 for unlimited
                 "login"      : name,
-                #: "password"   : self.accounts[name]['password'],  #: commented due security reason
+                # "password"   : self.accounts[name]['password'],  #: Commented due security reason
                 "options"    : self.accounts[name]['options'],
                 "valid"      : self.accounts[name]['valid'],
-                "trafficleft": None,  #: in bytes, -1 for unlimited
+                "trafficleft": None,  #: In bytes, -1 for unlimited
                 "maxtraffic" : None,
                 "premium"    : None,
-                "timestamp"  : 0,  #: time this info was retrieved
+                "timestamp"  : 0,  #: Time this info was retrieved
                 "type"       : self.__name__}
 
 
@@ -289,7 +289,7 @@ class Account(Plugin):
         return self.select_account() != (None, None)
 
 
-    def parse_traffic(self, value, unit=None):  #: return kilobytes
+    def parse_traffic(self, value, unit=None):  #: Return kilobytes
         if not unit and not isinstance(value, basestring):
             unit = "KB"
         return parse_size(value, unit)

@@ -88,7 +88,7 @@ class FilecryptCc(Crypter):
         m  = re.search(self.CAPTCHA_PATTERN, self.html)
         m2 = re.search(self.CIRCLE_CAPTCHA_PATTERN, self.html)
 
-        if m:  #: normal captcha
+        if m:  #: Normal captcha
             self.log_debug("Captcha-URL: %s" % m.group(1))
 
             captcha_code = self.decrypt_captcha(urlparse.urljoin(self.base_url, m.group(1)),
@@ -97,7 +97,7 @@ class FilecryptCc(Crypter):
 
             self.site_with_links = self.load(self.pyfile.url,
                                            post={'recaptcha_response_field': captcha_code})
-        elif m2:  #: circle captcha
+        elif m2:  #: Circle captcha
             self.log_debug("Captcha-URL: %s" % m2.group(1))
 
             captcha_code = self.decrypt_captcha('%s%s?c=abc' %(self.base_url, m2.group(1)),

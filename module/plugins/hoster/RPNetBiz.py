@@ -35,14 +35,14 @@ class RPNetBiz(MultiHoster):
                              "links"   : pyfile.url})
 
         self.log_debug("JSON data: %s" % res)
-        link_status = json_loads(res)['links'][0]  #: get the first link... since we only queried one
+        link_status = json_loads(res)['links'][0]  #: Get the first link... since we only queried one
 
         #: Check if we only have an id as a HDD link
         if 'id' in link_status:
             self.log_debug("Need to wait at least 30 seconds before requery")
-            self.wait(30)  #: wait for 30 seconds
+            self.wait(30)  #: Wait for 30 seconds
             #: Lets query the server again asking for the status on the link,
-            #: we need to keep doing this until we reach 100
+            #: We need to keep doing this until we reach 100
             max_tries = 30
             my_try = 0
             while (my_try <= max_tries):

@@ -43,7 +43,7 @@ class Hook(Plugin):
         #: `HookManager`
         self.manager = manager
 
-        #: automatically register event listeners for functions, attribute will be deleted dont use it yourself
+        #: Automatically register event listeners for functions, attribute will be deleted dont use it yourself
         self.event_map = {}
 
         #: Deprecated alternative to event_map
@@ -68,7 +68,7 @@ class Hook(Plugin):
                 else:
                     self.manager.addEvent(event, getattr(self, funcs))
 
-            #: delete for various reasons
+            #: Delete for various reasons
             self.event_map = None
 
         if self.event_list:

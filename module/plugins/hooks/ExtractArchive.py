@@ -23,7 +23,7 @@ if sys.version_info < (2, 7) and os.name != "nt":
                 raise
 
 
-    #: unsued timeout option for older python version
+    #: Unsued timeout option for older python version
     def wait(self, timeout=0):
         """
         Wait for child process to terminate.  Returns returncode
@@ -36,8 +36,8 @@ if sys.version_info < (2, 7) and os.name != "nt":
             except OSError, e:
                 if e.errno != errno.ECHILD:
                     raise
-                    #: This happens if SIGCLD is set to be ignored or waiting
-                #: for child processes has otherwise been disabled for our
+                #: This happens if SIGCLD is set to be ignored or waiting
+                #: For child processes has otherwise been disabled for our
                 #: process.  This child is dead, we can't get the status.
                 sts = 0
             self._handle_exitstatus(sts)
@@ -196,7 +196,7 @@ class ExtractArchive(Hook):
 
         packages = self.queue.get()
         while packages:
-            if self.last_package:  #: called from allDownloadsProcessed
+            if self.last_package:  #: Called from allDownloadsProcessed
                 self.last_package = False
                 if self.extract(packages, thread):  #@NOTE: check only if all gone fine, no failed reporting for now
                     self.manager.dispatchEvent("all_archives_extracted")
@@ -205,7 +205,7 @@ class ExtractArchive(Hook):
                 if self.extract(packages, thread):  #@NOTE: check only if all gone fine, no failed reporting for now
                     pass
 
-            packages = self.queue.get()  #: check for packages added during extraction
+            packages = self.queue.get()  #: Check for packages added during extraction
 
         self.extracting = False
 
@@ -272,12 +272,12 @@ class ExtractArchive(Hook):
         if extensions:
             self.log_debug("Use for extensions: %s" % "|.".join(extensions))
 
-        #: reload from txt file
+        #: Reload from txt file
         self.reload_passwords()
 
         download_folder = self.core.config.get("general", "download_folder")
 
-        #: iterate packages -> extractors -> targets
+        #: Iterate packages -> extractors -> targets
         for pid in ids:
             pypack = self.core.files.getPackage(pid)
 
@@ -287,8 +287,8 @@ class ExtractArchive(Hook):
 
             self.log_info(_("Check package: %s") % pypack.name)
 
-            #: determine output folder
-            out = fs_join(download_folder, pypack.folder, destination, "")  #: force trailing slash
+            #: Determine output folder
+            out = fs_join(download_folder, pypack.folder, destination, "")  #: Force trailing slash
 
             if subfolder:
                 out = fs_join(out, pypack.folder)
@@ -299,9 +299,9 @@ class ExtractArchive(Hook):
             matched   = False
             success   = True
             files_ids = dict((pylink['name'],((fs_join(download_folder, pypack.folder, pylink['name'])), pylink['id'], out)) for pylink \
-                        in sorted(pypack.getChildren().itervalues(), key=lambda k: k['name'])).values()  #: remove duplicates
+                        in sorted(pypack.getChildren().itervalues(), key=lambda k: k['name'])).values()  #: Remove duplicates
 
-            #: check as long there are unseen files
+            #: Check as long there are unseen files
             while files_ids:
                 new_files_ids = []
 
@@ -351,7 +351,7 @@ class ExtractArchive(Hook):
                             success = False
                             continue
 
-                        #: remove processed file and related multiparts from list
+                        #: Remove processed file and related multiparts from list
                         files_ids = [(fname, fid, fout) for fname, fid, fout in files_ids \
                                     if fname not in archive.getDeleteFiles()]
                         self.log_debug("Extracted files: %s" % new_files)
@@ -364,11 +364,11 @@ class ExtractArchive(Hook):
                                 continue
 
                             if recursive and os.path.isfile(file):
-                                new_files_ids.append((filename, fid, os.path.dirname(filename)))  #: append as new target
+                                new_files_ids.append((filename, fid, os.path.dirname(filename)))  #: Append as new target
 
                         self.manager.dispatchEvent("archive_extracted", pyfile, archive)
 
-                files_ids = new_files_ids  #: also check extracted files
+                files_ids = new_files_ids  #: Also check extracted files
 
             if matched:
                 if success:

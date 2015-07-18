@@ -75,7 +75,7 @@ class ImageTyperz(Hook):
 
     def submit(self, captcha, captchaType="file", match=None):
         req = get_request()
-        # raise timeout threshold
+        #: Raise timeout threshold
         req.c.setopt(pycurl.LOW_SPEED_TIME, 80)
 
         try:

@@ -69,7 +69,7 @@ def parse_html_form(attr_str, html, input_names={}):
                     inputs[name] = value
 
         if input_names:
-            #: check input attributes
+            #: Check input attributes
             for key, val in input_names.iteritems():
                 if key in inputs:
                     if isinstance(val, basestring) and inputs[key] == val:
@@ -78,16 +78,16 @@ def parse_html_form(attr_str, html, input_names={}):
                         continue
                     elif hasattr(val, "search") and re.match(val, inputs[key]):
                         continue
-                    break  #: attibute value does not match
+                    break  #: Attibute value does not match
                 else:
-                    break  #: attibute name does not match
+                    break  #: Attibute name does not match
             else:
-                return action, inputs  #: passed attribute check
+                return action, inputs  #: Passed attribute check
         else:
-            #: no attribute check
+            #: No attribute check
             return action, inputs
 
-    return {}, None  #: no matching form found
+    return {}, None  #: No matching form found
 
 
 #@TODO: Move to utils in 0.4.10
@@ -303,13 +303,13 @@ class Plugin(object):
                     os.makedirs(os.path.join("tmp", self.__name__))
 
                 with open(framefile, "wb") as f:
-                    del frame  #: delete the frame or it wont be cleaned
+                    del frame  #: Delete the frame or it wont be cleaned
                     f.write(res.encode('utf8'))
             except IOError, e:
                 self.log_error(e)
 
         if just_header:
-            #: parse header
+            #: Parse header
             header = {"code": req.code}
             for line in res.splitlines():
                 line = line.strip()

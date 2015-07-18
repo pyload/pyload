@@ -110,7 +110,7 @@ class Checksum(Hook):
         if not os.path.isfile(local_file):
             self.check_failed(pyfile, None, "File does not exist")
 
-        #: validate file size
+        #: Validate file size
         if "size" in data:
             api_size  = int(data['size'])
             file_size = os.path.getsize(local_file)
@@ -121,7 +121,7 @@ class Checksum(Hook):
 
             data.pop('size', None)
 
-        #: validate checksum
+        #: Validate checksum
         if data and self.get_config('check_checksum'):
 
             if not 'md5' in data:

@@ -24,7 +24,7 @@ class SmoozedCom(MultiHoster):
 
     def handle_free(self, pyfile):
         #: In some cases hostsers do not supply us with a filename at download, so we
-        #: are going to set a fall back filename (e.g. for freakshare or xfileshare)
+        #: Are going to set a fall back filename (e.g. for freakshare or xfileshare)
         pyfile.name = pyfile.name.split('/').pop()  #: Remove everthing before last slash
 
         #: Correction for automatic assigned filename: Removing html at end if needed

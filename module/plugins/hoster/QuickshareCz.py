@@ -28,12 +28,12 @@ class QuickshareCz(SimpleHoster):
         self.html = self.load(pyfile.url)
         self.getFileInfo()
 
-        #: parse js variables
+        #: Parse js variables
         self.jsvars = dict((x, y.strip("'")) for x, y in re.findall(r"var (\w+) = ([\d.]+|'.+?')", self.html))
         self.log_debug(self.jsvars)
         pyfile.name = self.jsvars['ID3']
 
-        #: determine download type - free or premium
+        #: Determine download type - free or premium
         if self.premium:
             if 'UU_prihlasen' in self.jsvars:
                 if self.jsvars['UU_prihlasen'] == '0':
@@ -54,7 +54,7 @@ class QuickshareCz(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        #: get download url
+        #: Get download url
         download_url = '%s/download.php' % self.jsvars['server']
         data = dict((x, self.jsvars[x]) for x in self.jsvars if x in ("ID1", "ID2", "ID3", "ID4"))
         self.log_debug("FREE URL1:" + download_url, data)
@@ -71,7 +71,7 @@ class QuickshareCz(SimpleHoster):
         self.link = m.group(1).rstrip()  #@TODO: Remove .rstrip() in 0.4.10
         self.log_debug("FREE URL2:" + self.link)
 
-        #: check errors
+        #: Check errors
         m = re.search(r'/chyba/(\d+)', self.link)
         if m:
             if m.group(1) == '1':

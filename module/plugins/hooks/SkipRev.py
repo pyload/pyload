@@ -73,7 +73,7 @@ class SkipRev(Hook):
             queued = [True for link in self.core.api.getPackageData(pyfile.package().id).links \
                       if link.status not in status_list and pyname.match(link.name)].count(True)
 
-            if not queued or queued < revtokeep:  #: keep one rev at least in auto mode
+            if not queued or queued < revtokeep:  #: Keep one rev at least in auto mode
                 return
 
         pyfile.setCustomStatus("SkipRev", "skipped")

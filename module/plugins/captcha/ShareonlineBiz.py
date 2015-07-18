@@ -36,4 +36,4 @@ class ShareonlineBiz(OCR):
 
         return final
 
-        # tesseract at 60%
+        #: Tesseract at 60%

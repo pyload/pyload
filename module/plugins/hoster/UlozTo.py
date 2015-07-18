@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 def convert_decimal_prefix(m):
-    #: decimal prefixes used in filesize and traffic
+    #: Decimal prefixes used in filesize and traffic
     return ("%%.%df" % {'k': 3, 'M': 6, 'G': 9}[m.group(2)] % float(m.group(1))).replace('.', '')
 
 
@@ -54,7 +54,7 @@ class UlozTo(SimpleHoster):
             self.error(_("Free download form not found"))
 
         self.log_debug("inputs.keys = " + str(inputs.keys()))
-        #: get and decrypt captcha
+        #: Get and decrypt captcha
         if all(key in inputs for key in ("captcha_value", "captcha_id", "captcha_key")):
             #: Old version - last seen 9.12.2013
             self.log_debug('Using "old" version')
@@ -124,7 +124,7 @@ class UlozTo(SimpleHoster):
             "wrong_captcha": re.compile(r'<ul class="error">\s*<li>Error rewriting the text.</li>'),
             "offline"      : re.compile(self.OFFLINE_PATTERN),
             "passwd"       : self.PASSWD_PATTERN,
-            "server_error" : 'src="http://img.ulozto.cz/error403/vykricnik.jpg"',  #: paralell dl, server overload etc.
+            "server_error" : 'src="http://img.ulozto.cz/error403/vykricnik.jpg"',  #: Paralell dl, server overload etc.
             "not_found"    : "<title>Ulož.to</title>"
         })
 

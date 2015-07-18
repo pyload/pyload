@@ -29,7 +29,7 @@ class MegaRapidoNet(Account):
 
         validuntil = re.search(self.VALID_UNTIL_PATTERN, html)
         if validuntil:
-            # hier weitermachen!!! (müssen umbedingt die zeit richtig machen damit! (sollte aber möglich))
+            #: Hier weitermachen!!! (müssen umbedingt die zeit richtig machen damit! (sollte aber möglich))
             validuntil  = time.time() + int(validuntil.group(1)) * 24 * 3600 + int(validuntil.group(2)) * 3600 + int(validuntil.group(3)) * 60 + int(validuntil.group(4))
             trafficleft = -1
             premium     = True

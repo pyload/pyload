@@ -58,7 +58,7 @@ class VeehdCom(Hoster):
 
         name = m.group(1)
 
-        #: replace unwanted characters in filename
+        #: Replace unwanted characters in filename
         if self.get_config('filename_spaces'):
             pattern = '[^\w ]+'
         else:

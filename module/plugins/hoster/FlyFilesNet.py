@@ -30,7 +30,7 @@ class FlyFilesNet(SimpleHoster):
 
         url = "http://flyfiles.net"
 
-        #: get download URL
+        #: Get download URL
         parsed_url = self.load(url, post={"getDownLink": session})
         self.log_debug("Parsed URL: %s" % parsed_url)
 

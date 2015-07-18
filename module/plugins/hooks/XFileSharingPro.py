@@ -34,12 +34,12 @@ class XFileSharingPro(Hook):
                        "junkyvideo.com", "linestorage.com", "ravishare.com", "ryushare.com",
                        "salefiles.com", "sendmyway.com", "sharebeast.com", "sharesix.com",
                        "thefile.me", "verzend.be", "worldbytez.com", "xvidstage.com",
-                       # NOT TESTED:
+                       #: NOT TESTED:
                        "101shared.com", "4upfiles.com", "filemaze.ws", "filenuke.com",
                        "linkzhost.com", "mightyupload.com", "rockdizfile.com", "sharerepo.com",
                        "shareswift.com", "uploadbaz.com", "uploadc.com", "vidbull.com",
                        "zalaa.com", "zomgupload.com",
-                       # NOT WORKING:
+                       #: NOT WORKING:
                        "amonshare.com", "banicrazy.info", "boosterking.com", "host4desi.com", "laoupload.com", "rd-fs.com"]
     CRYPTER_BUILTIN = ["junocloud.me", "rapidfileshare.net"]
 
@@ -105,7 +105,7 @@ class XFileSharingPro(Hook):
 
 
     def deactivate(self):
-        #: self.unload_hoster("BasePlugin")
+        # self.unload_hoster("BasePlugin")
         for type, plugin in (("hoster",  "XFileSharingPro"),
                              ("crypter", "XFileSharingProFolder")):
             self._unload(type, plugin)

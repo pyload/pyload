@@ -91,12 +91,12 @@ class ClickAndLoad(Hook):
 
                     except NameError:
                         self.log_error(_("pyLoad's webinterface is configured to use HTTPS, Please install python's ssl lib or disable HTTPS"))
-                        client_socket.close()  #: reset the connection.
+                        client_socket.close()  #: Reset the connection.
                         continue
 
                     except Exception, e:
                         self.log_error(_("SSL error: %s") % e.message)
-                        client_socket.close()  #: reset the connection.
+                        client_socket.close()  #: Reset the connection.
                         continue
 
                 server_socket.connect(("127.0.0.1", webport))

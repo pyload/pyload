@@ -17,7 +17,7 @@ class Captcha(Plugin):
         super(Captcha, self).__init__(plugin.core)
 
         self.plugin = plugin
-        self.key    = None  #: last key detected
+        self.key    = None  #: Last key detected
 
 
     #@TODO: Recheck in 0.4.10

@@ -72,7 +72,7 @@ class SevenZip(UnRar):
         p = self.call_cmd("l", "-slt", fs_encode(self.filename))
         out, err = p.communicate()
 
-        #: check if output or error macthes the 'wrong password'-Regexp
+        #: Check if output or error macthes the 'wrong password'-Regexp
         if self.re_wrongpwd.search(out):
             raise PasswordError
 
@@ -91,7 +91,7 @@ class SevenZip(UnRar):
 
         renice(p.pid, self.renice)
 
-        #: communicate and retrieve stderr
+        #: Communicate and retrieve stderr
         self._progress(p)
         err = p.stderr.read().strip()
 
@@ -102,7 +102,7 @@ class SevenZip(UnRar):
             elif self.re_wrongcrc.search(err):
                 raise CRCError(err)
 
-            else:  #: raise error if anything is on stderr
+            else:  #: Raise error if anything is on stderr
                 raise ArchiveError(err)
 
         if p.returncode > 1:
@@ -134,11 +134,11 @@ class SevenZip(UnRar):
     def call_cmd(self, command, *xargs, **kwargs):
         args = []
 
-        # overwrite flag
+        #: Overwrite flag
         if self.overwrite:
             args.append("-y")
 
-        # set a password
+        #: Set a password
         if "password" in kwargs and kwargs['password']:
             args.append("-p%s" % kwargs['password'])
         else:

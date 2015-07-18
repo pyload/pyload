@@ -33,7 +33,7 @@ class Xdcc(Hoster):
 
 
     def process(self, pyfile):
-        #: change request type
+        #: Change request type
         self.req = self.core.requestFactory.getRequest(self.__name__, type="XDCC")
 
         self.pyfile = pyfile
@@ -59,7 +59,7 @@ class Xdcc(Hoster):
 
 
     def do_download(self, url):
-        self.pyfile.setStatus("waiting")  #: real link
+        self.pyfile.setStatus("waiting")  #: Real link
 
         m = re.match(r'xdcc://(.*?)/#?(.*?)/(.*?)/#?(\d+)/?', url)
         server = m.group(1)
@@ -102,7 +102,7 @@ class Xdcc(Hoster):
         m = None
         while True:
 
-            #: done is set if we got our real link
+            #: Done is set if we got our real link
             if done:
                 break
 
@@ -177,7 +177,7 @@ class Xdcc(Hoster):
                 if m:
                     done = True
 
-        #: get connection data
+        #: Get connection data
         ip = socket.inet_ntoa(struct.pack('L', socket.ntohl(int(m.group(2)))))
         port = int(m.group(3))
         packname = m.group(1)

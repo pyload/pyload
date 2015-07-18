@@ -35,13 +35,13 @@ class UnSkipOnFail(Hook):
         if link:
             self.log_info(_("Queue found duplicate: %s (pid:%s)") % (link.name, link.packageID))
 
-            # Change status of "link" to "new_status".
-            # "link" has to be a valid FileData object,
-            # "new_status" has to be a valid status name
-            # (i.e. "queued" for this Plugin)
-            # It creates a temporary PyFile object using
-            # "link" data, changes its status, and tells
-            # the core.files-manager to save its data.
+            #: Change status of "link" to "new_status".
+            #: "link" has to be a valid FileData object,
+            #: "new_status" has to be a valid status name
+            #: (i.e. "queued" for this Plugin)
+            #: It creates a temporary PyFile object using
+            #: "link" data, changes its status, and tells
+            #: The core.files-manager to save its data.
             pylink = self._pyfile(link)
 
             pylink.setCustomStatus(_("unskipped"), "queued")
@@ -63,22 +63,22 @@ class UnSkipOnFail(Hook):
             the data for "pyfile" iotselöf.
             It does MOT check the link's status.
         """
-        queue = self.core.api.getQueue()  #: get packages (w/o files, as most file data is useless here)
+        queue = self.core.api.getQueue()  #: Get packages (w/o files, as most file data is useless here)
 
         for package in queue:
-            #: check if package-folder equals pyfile's package folder
+            #: Check if package-folder equals pyfile's package folder
             if package.folder != pyfile.package().folder:
                 continue
 
-            #: now get packaged data w/ files/links
+            #: Now get packaged data w/ files/links
             pdata = self.core.api.getPackageData(package.pid)
             for link in pdata.links:
-                #: check if link is "skipped"
+                #: Check if link is "skipped"
                 if link.status != 4:
                     continue
 
-                #: check if link name collides with pdata's name
-                #: AND at last check if it is not pyfile itself
+                #: Check if link name collides with pdata's name
+                #: and at last check if it is not pyfile itself
                 if link.name == pyfile.name and link.fid != pyfile.id:
                     return link
 

@@ -34,18 +34,18 @@ class MegacrypterCom(MegaCoNz):
 
 
     def process(self, pyfile):
-        #: match is guaranteed because plugin was chosen to handle url
+        #: Match is guaranteed because plugin was chosen to handle url
         node = re.match(self.__pattern__, pyfile.url).group(0)
 
         #: get Mega.co.nz link info
         info = self.api_response(link=node, m="info")
 
-        #: get crypted file URL
+        #: Get crypted file URL
         dl = self.api_response(link=node, m="dl")
 
         #@TODO: map error codes, implement password protection
-        #       if info['pass'] is True:
-        #           crypted_file_key, md5_file_key = info['key'].split("#")
+        # if info['pass'] is True:
+            # crypted_file_key, md5_file_key = info['key'].split("#")
 
         key = self.b64_decode(info['key'])
 

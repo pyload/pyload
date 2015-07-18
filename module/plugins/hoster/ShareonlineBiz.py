@@ -48,7 +48,7 @@ class ShareonlineBiz(SimpleHoster):
                 info['fileid']   = field[0]
                 info['status']   = 2
                 info['name']     = field[2]
-                info['size']     = field[3]  #: in bytes
+                info['size']     = field[3]  #: In bytes
                 info['md5']      = field[4].strip().lower().replace("\n\n", "")  #: md5
 
             elif field[1] in ("DELETED", "NOT FOUND"):
@@ -120,7 +120,7 @@ class ShareonlineBiz(SimpleHoster):
         return super(ShareonlineBiz, self).checkFile()
 
 
-    def handle_premium(self, pyfile):  #: should be working better loading (account) api internally
+    def handle_premium(self, pyfile):  #: Should be working better loading (account) api internally
         html = self.load("http://api.share-online.biz/account.php",
                          get={'username': self.user,
                               'password': self.account.get_account_data(self.user)['password'],

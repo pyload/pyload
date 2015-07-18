@@ -42,7 +42,7 @@ class LinkCryptWs(Crypter):
         self.req.cj.setCookie("linkcrypt.ws", "language", "en")
 
         #: Request package
-        self.req.http.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko")  #: better chance to not get those key-captchas
+        self.req.http.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko")  #: Better chance to not get those key-captchas
         self.html = self.load(self.pyfile.url)
 
 
@@ -68,13 +68,13 @@ class LinkCryptWs(Crypter):
             self.unlock_password_protection()
             self.handle_errors()
 
-        #: get unrar password
+        #: Get unrar password
         self.getunrarpw()
 
         #: Get package name and folder
         package_name, folder_name = self.get_package_info()
 
-        # get the container definitions from script section
+        #: Get the container definitions from script section
         self.get_container_html()
 
         #: Extract package links
@@ -234,7 +234,7 @@ class LinkCryptWs(Crypter):
 
         self.log_debug('Search for %s Container links' % type.upper())
 
-        if not type.isalnum():  #: check to prevent broken re-pattern (cnl2, rsdf, ccf, dlc, web are all alpha-numeric)
+        if not type.isalnum():  #: Check to prevent broken re-pattern (cnl2, rsdf, ccf, dlc, web are all alpha-numeric)
             self.fail(_("Unknown container type: %s") % type)  #@TODO: Replace with self.error in 0.4.10
 
         for line in self.container_html:

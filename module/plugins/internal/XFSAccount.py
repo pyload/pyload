@@ -30,10 +30,10 @@ class XFSAccount(Account):
     VALID_UNTIL_PATTERN = r'Premium.[Aa]ccount expire:.*?(\d{1,2} [\w^_]+ \d{4})'
 
     TRAFFIC_LEFT_PATTERN = r'Traffic available today:.*?<b>\s*(?P<S>[\d.,]+|[Uu]nlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>'
-    TRAFFIC_LEFT_UNIT    = "MB"  #: used only if no group <U> was found
+    TRAFFIC_LEFT_UNIT    = "MB"  #: Used only if no group <U> was found
 
     LEECH_TRAFFIC_PATTERN = r'Leech Traffic left:<b>.*?(?P<S>[\d.,]+|[Uu]nlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>'
-    LEECH_TRAFFIC_UNIT    = "MB"  #: used only if no group <U> was found
+    LEECH_TRAFFIC_UNIT    = "MB"  #: Used only if no group <U> was found
 
     LOGIN_FAIL_PATTERN = r'Incorrect Login or Password|account was banned|Error<'
 
@@ -87,7 +87,7 @@ class XFSAccount(Account):
                     trafficleft = -1
                 else:
                     premium    = False
-                    validuntil = None  #: registered account type (not premium)
+                    validuntil = None  #: Registered account type (not premium)
         else:
             self.log_debug("VALID_UNTIL_PATTERN not found")
 

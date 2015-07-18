@@ -56,7 +56,7 @@ class ExpertDecoders(Hook):
             data = f.read()
 
         req = get_request()
-        # raise timeout threshold
+        #: Raise timeout threshold
         req.c.setopt(pycurl.LOW_SPEED_TIME, 80)
 
         try:
