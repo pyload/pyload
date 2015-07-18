@@ -12,6 +12,11 @@ from module.utils import fs_encode, fs_decode, html_unescape, save_join as fs_jo
 
 
 #@TODO: Move to utils in 0.4.10
+def fixurl(url):
+    return html_unescape(urllib.unquote(url.decode('unicode-escape'))).strip()
+
+
+#@TODO: Move to utils in 0.4.10
 def timestamp():
     return int(time.time() * 1000)
 
@@ -256,10 +261,6 @@ class Plugin(object):
         raise Fail(msg)
 
 
-    def fixurl(self, url):
-        return html_unescape(urllib.unquote(url.decode('unicode-escape'))).strip()
-
-
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=True, multipart=True, req=None):
         """
         Load content at url and returns it
@@ -276,7 +277,7 @@ class Plugin(object):
         if hasattr(self, 'pyfile') and self.pyfile.abort:
             self.abort()
 
-        url = self.fixurl(url)
+        url = fixurl(url)
 
         if not url or not isinstance(url, basestring):
             self.fail(_("No url given"))

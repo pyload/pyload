@@ -6,7 +6,6 @@ import inspect
 import os
 import random
 import time
-import urllib
 import urlparse
 
 if os.name != "nt":
@@ -14,7 +13,7 @@ if os.name != "nt":
     import pwd
 
 from module.plugins.internal.Plugin import (Plugin, Abort, Fail, Reconnect, Retry, Skip
-                                            chunks, replace_patterns, seconds_to_midnight,
+                                            chunks, fixurl as _fixurl, replace_patterns, seconds_to_midnight,
                                             set_cookies, parse_html_form, parse_html_tag_attr_value,
                                             timestamp)
 from module.utils import fs_decode, fs_encode, save_join as fs_join
@@ -135,7 +134,7 @@ class Hoster(Plugin):
 
     @classmethod
     def get_info(cls, url="", html=""):
-        url   = urllib.unquote(url)
+        url   = _fixurl(url)
         url_p = urlparse.urlparse(url)
         return {'name'  : (url_p.path.split('/')[-1]
                            or url_p.query.split('=', 1)[::-1][0].split('&', 1)[0]
@@ -412,12 +411,11 @@ class Hoster(Plugin):
 
 
     def fixurl(self, url):
-        url_p   = urlparse.urlparse(self.pyfile.url)
-        baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
-
-        url = super(Hoster, self).fixurl(url)
+        url = _fixurl(url)
 
         if not urlparse.urlparse(url).scheme:
+            url_p = urlparse.urlparse(self.pyfile.url)
+            baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
             url = urlparse.urljoin(baseurl, url)
 
         return url

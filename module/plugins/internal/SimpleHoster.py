@@ -7,14 +7,13 @@ import mimetypes
 import os
 import re
 import time
-import urllib
 import urlparse
 
 from module.PyFile import statusMap as _statusMap
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster, create_getInfo, parse_fileInfo
-from module.plugins.internal.Plugin import Fail, Retry, replace_patterns, set_cookies
+from module.plugins.internal.Plugin import Fail, Retry, fixurl, replace_patterns, set_cookies
 from module.utils import fixup, fs_encode, parseFileSize as parse_size
 
 
@@ -176,7 +175,7 @@ class SimpleHoster(Hoster):
             info['status'] = 2
 
             if 'N' in info['pattern']:
-                info['name'] = replace_patterns(urllib.unquote(info['pattern']['N'].strip()),
+                info['name'] = replace_patterns(fixurl(info['pattern']['N']),
                                                 cls.NAME_REPLACEMENTS)
 
             if 'S' in info['pattern']:

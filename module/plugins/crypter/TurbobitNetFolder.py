@@ -40,9 +40,7 @@ class TurbobitNetFolder(SimpleCrypter):
 
 
     def get_links(self):
-        id = re.match(self.__pattern__, self.pyfile.url).group('ID')
-        fixurl = lambda id: "http://turbobit.net/%s.html" % id
-        return map(fixurl, self._get_links(id))
+        return ["http://turbobit.net/%s.html" % id for id in self._get_links(self.info['pattern']['ID'])]
 
 
 getInfo = create_getInfo(TurbobitNetFolder)
