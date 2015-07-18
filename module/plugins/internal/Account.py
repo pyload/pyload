@@ -16,7 +16,7 @@ class WrongPassword(Exception):
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __description__ = """Base account plugin"""
     __license__     = "GPLv3"
@@ -92,8 +92,9 @@ class Account(Plugin):
     def relogin(self, user):
         req = self.get_account_request(user)
         if req:
-            req.cj.clear()
+            req.clearCookies()
             req.close()
+
         if user in self.infos:
             del self.infos[user]  #: delete old information
 

@@ -165,6 +165,8 @@ class Hoster(Plugin):
         """
         self.thread = thread
 
+        self.req.renewHTTPRequest()
+
         if self.account:
             self.account.check_login(self.user)
         else:
