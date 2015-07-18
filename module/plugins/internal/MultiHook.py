@@ -76,7 +76,7 @@ class MultiHook(Hook):
             self.pluginmodule = self.core.pluginManager.loadModule(self.plugintype, self.pluginname)
             self.pluginclass  = getattr(self.pluginmodule, self.pluginname)
         else:
-            self.log_warning("Hook plugin will be deactivated due missing plugin reference")
+            self.log_warning(_("Hook plugin will be deactivated due missing plugin reference"))
             self.set_config('activated', False)
 
 
@@ -87,7 +87,7 @@ class MultiHook(Hook):
             self.account = None
 
         if not self.account and hasattr(self.pluginclass, "LOGIN_ACCOUNT") and self.pluginclass.LOGIN_ACCOUNT:
-            self.log_warning("Hook plugin will be deactivated due missing account reference")
+            self.log_warning(_("Hook plugin will be deactivated due missing account reference"))
             self.set_config('activated', False)
 
 

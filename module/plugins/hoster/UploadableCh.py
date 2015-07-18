@@ -66,7 +66,7 @@ class UploadableCh(SimpleHoster):
 
     def check_file(self):
         if self.check_download({'wait': re.compile("Please wait for")}):
-            self.log_info("Downloadlimit reached, please wait or reconnect")
+            self.log_info(_("Downloadlimit reached, please wait or reconnect"))
             self.wait(60 * 60, True)
             self.retry()
 

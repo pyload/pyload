@@ -41,7 +41,7 @@ class SkipRev(Hook):
         if hasattr(pyfile.pluginmodule, "getInfo"):  #@NOTE: getInfo is deprecated in 0.4.10
             return pyfile.pluginmodule.get_info([pyfile.url]).next()[0]
         else:
-            self.log_warning("Unable to grab file name")
+            self.log_warning(_("Unable to grab file name"))
             return urlparse.urlparse(urllib.unquote(pyfile.url)).path.split('/')[-1]
 
 

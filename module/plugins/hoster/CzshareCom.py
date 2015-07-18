@@ -6,7 +6,7 @@
 import re
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.utils import parseFileSize
+from module.utils import parseFileSize as parse_size
 
 
 class CzshareCom(SimpleHoster):
@@ -51,7 +51,7 @@ class CzshareCom(SimpleHoster):
 
         #: check user credit
         try:
-            credit = parseFileSize(m.group(1).replace(' ', ''), m.group(2))
+            credit = parse_size(m.group(1).replace(' ', ''), m.group(2))
             self.log_info(_("Premium download for %i KiB of Credit") % (self.pyfile.size / 1024))
             self.log_info(_("User %s has %i KiB left") % (self.user, credit / 1024))
             if credit < self.pyfile.size:

@@ -2,8 +2,7 @@
 
 import re
 
-from bottle import json_loads
-
+from module.common.json_layer import json_loads
 from module.plugins.internal.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 

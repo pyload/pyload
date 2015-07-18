@@ -4,19 +4,19 @@ import pycurl
 import re
 
 from module.network.HTTPRequest import BadHeader
-from module.network.RequestFactory import getRequest
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
+from module.network.RequestFactory import getRequest as get_request
+from module.plugins.internal.SimpleHoster import SimpleHoster, parse_fileInfo
 
 
 def get_info(urls):
-    h = getRequest()
+    h = get_request()
     h.c.setopt(pycurl.HTTPHEADER,
                ["Accept: text/html",
                 "User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0"])
 
     for url in urls:
         html = h.load(url)
-        yield parseFileInfo(MegaRapidCz, url, html)
+        yield parse_fileInfo(MegaRapidCz, url, html)
 
 
 class MegaRapidCz(SimpleHoster):

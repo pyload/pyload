@@ -35,7 +35,7 @@ class CustomBrowser(Browser):
 class DlFreeFr(SimpleHoster):
     __name__    = "DlFreeFr"
     __type__    = "hoster"
-    __version__ = "0.31"
+    __version__ = "0.32"
 
     __pattern__ = r'http://(?:www\.)?dl\.free\.fr/(\w+|getfile\.pl\?file=/\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -98,7 +98,7 @@ class DlFreeFr(SimpleHoster):
         headers = self.get_last_headers()
         if headers.get("code") == 302 and "set-cookie" in headers and "location" in headers:
             m = re.search("(.*?)=(.*?); path=(.*?); domain=(.*)", headers.get("set-cookie"))
-            cj = CookieJar(__name__)
+            cj = CookieJar(self.__name__)
             if m:
                 cj.setCookie(m.group(4), m.group(1), m.group(2), m.group(3))
             else:

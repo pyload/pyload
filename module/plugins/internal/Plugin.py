@@ -282,7 +282,7 @@ class Plugin(object):
             self.fail(_("No url given"))
 
         if self.core.debug:
-            self.log_debug("Load url: " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
+            self.log_debug("Load url " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
 
         if req is None:
             if hasattr(self, "req"):

@@ -4,7 +4,7 @@ import re
 
 from module.PyFile import statusMap
 from module.common.json_layer import json_loads
-from module.network.RequestFactory import getURL
+from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster
 
 
@@ -16,7 +16,7 @@ def get_info(urls):
 
     for url in urls:
         id   = regex.match(url).group('ID')
-        html = getURL(apiurl % id, get=request)
+        html = get_url(apiurl % id, get=request)
         info = json_loads(html)
 
         name = info['title'] + ".mp4" if "title" in info else url

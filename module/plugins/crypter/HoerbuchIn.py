@@ -2,7 +2,7 @@
 
 import re
 
-from BeautifulSoup import BeautifulSoup, BeautifulStoneSoup
+import BeautifulSoup
 
 from module.plugins.internal.Crypter import Crypter
 
@@ -31,7 +31,7 @@ class HoerbuchIn(Crypter):
 
         if self.article.match(pyfile.url):
             html = self.load(pyfile.url)
-            soup = BeautifulSoup(html, convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
+            soup = BeautifulSoup.BeautifulSoup(html, convertEntities=BeautifulSoup.BeautifulStoneSoup.HTML_ENTITIES)
 
             abookname = soup.find("a", attrs={"rel": "bookmark"}).text
             for a in soup.findAll("a", attrs={"href": self.protection}):

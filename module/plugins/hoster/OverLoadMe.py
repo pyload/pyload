@@ -5,7 +5,7 @@ import urllib
 
 from module.common.json_layer import json_loads
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
-from module.utils import parseFileSize
+from module.utils import parseFileSize as parse_size
 
 
 class OverLoadMe(MultiHoster):
@@ -43,7 +43,7 @@ class OverLoadMe(MultiHoster):
             self.link = data['downloadlink']
             if pyfile.name and pyfile.name.endswith('.tmp') and data['filename']:
                 pyfile.name = data['filename']
-                pyfile.size = parseFileSize(data['filesize'])
+                pyfile.size = parse_size(data['filesize'])
 
 
 getInfo = create_getInfo(OverLoadMe)

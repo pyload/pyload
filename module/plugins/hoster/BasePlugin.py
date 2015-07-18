@@ -97,7 +97,7 @@ class BasePlugin(Hoster):
         except Exception:
             pass
 
-        self.log_warning("Check result: " + errmsg, "Waiting 1 minute and retry")
+        self.log_warning(_("Check result: ") + errmsg, _("Waiting 1 minute and retry"))
         self.retry(3, 60, errmsg)
 
 

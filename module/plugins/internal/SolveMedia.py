@@ -28,7 +28,7 @@ class SolveMedia(Captcha):
             self.log_debug("Key: %s" % self.key)
             return self.key
         else:
-            self.log_warning("Key pattern not found")
+            self.log_warning(_("Key pattern not found")
             return None
 
 
@@ -43,7 +43,7 @@ class SolveMedia(Captcha):
                 magic = re.search(r'name="magic" value="(.+?)"', html).group(1)
 
             except AttributeError:
-                self.log_warning("Magic pattern not found")
+                self.log_warning(_("Magic pattern not found")
                 magic = None
 
             try:
@@ -81,7 +81,7 @@ class SolveMedia(Captcha):
 
             else:
                 if "error" in html:
-                    self.log_warning("Captcha code was invalid")
+                    self.log_warning(_("Captcha code was invalid"))
                     self.log_debug("Retry #%d" % i)
                     html = self.plugin.load(redirect)
                 else:

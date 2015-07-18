@@ -30,7 +30,7 @@ class AdYouLike(Captcha):
             self.log_debug("Ayl: %s | Callback: %s" % self.key)
             return self.key   #: key is the tuple(ayl, callback)
         else:
-            self.log_warning("Ayl or callback pattern not found")
+            self.log_warning(_("Ayl or callback pattern not found"))
             return None
 
 

@@ -87,8 +87,7 @@ class OboomCom(Hoster):
                 self.download_token = result[1]
                 self.download_auth = result[2]
                 self.correct_captcha()
-                self.set_wait(30)
-                self.wait()
+                self.wait(30)
                 break
 
             elif result[0] == 400:

@@ -56,7 +56,7 @@ class MultiHome(Hook):
                 self.log_debug("Using address", iface.adress)
             return oldGetRequest(pluginName, account)
 
-        requestFactory.getRequest = getRequest
+        requestFactory.getRequest = get_request
 
 
     def best_interface(self, pluginName, account):

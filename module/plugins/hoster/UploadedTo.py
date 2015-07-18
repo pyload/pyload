@@ -4,7 +4,7 @@ import re
 import time
 import urlparse
 
-from module.network.RequestFactory import getURL
+from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
@@ -44,7 +44,7 @@ class UploadedTo(SimpleHoster):
         info = super(UploadedTo, cls).api_info(url)
 
         for _i in xrange(5):
-            html = getURL("http://uploaded.net/api/filemultiple",
+            html = get_url("http://uploaded.net/api/filemultiple",
                           get={"apikey": cls.API_KEY, 'id_0': re.match(cls.__pattern__, url).group('ID')})
 
             if html != "can't find request":

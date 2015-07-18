@@ -2,7 +2,7 @@
 
 import re
 
-from module.network.RequestFactory import getURL
+from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster
 
 
@@ -11,7 +11,7 @@ def get_info(urls):
 
     for url in urls:
 
-        html = getURL(url)
+        html = get_url(url)
         if re.search(StreamCz.OFFLINE_PATTERN, html):
             #: File offline
             result.append((url, 0, 1, url))

@@ -6,7 +6,7 @@ import time
 import traceback
 
 from module.plugins.internal.Plugin import Plugin
-from module.utils import compare_time, lock, parseFileSize
+from module.utils import compare_time, lock, parseFileSize as parse_size
 
 
 class WrongPassword(Exception):
@@ -266,7 +266,7 @@ class Account(Plugin):
                     if not compare_time(start.split(":"), end.split(":")):
                         continue
                 except Exception:
-                    self.log_warning(_("Your Time %s has wrong format, use: 1:22-3:44") % time_data)
+                    self.log_warning(_("Your Time %s has wrong format, use 1:22-3:44") % time_data)
 
             if user in self.infos:
                 if "validuntil" in self.infos[user]:
@@ -291,7 +291,7 @@ class Account(Plugin):
     def parse_traffic(self, value, unit=None):  #: return kilobytes
         if not unit and not isinstance(value, basestring):
             unit = "KB"
-        return parseFileSize(value, unit)
+        return parse_size(value, unit)
 
 
     def wrong_password(self):

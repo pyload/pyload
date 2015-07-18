@@ -30,7 +30,7 @@ class AdsCaptcha(Captcha):
             self.log_debug("Key: %s | ID: %s" % self.key)
             return self.key
         else:
-            self.log_warning("Key or id pattern not found")
+            self.log_warning(_("Key or id pattern not found"))
             return None
 
 

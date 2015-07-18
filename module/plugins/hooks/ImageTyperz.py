@@ -7,7 +7,7 @@ import re
 
 from base64 import b64encode
 
-from module.network.RequestFactory import getRequest
+from module.network.RequestFactory import getRequest as get_request
 from module.plugins.internal.Hook import Hook, threaded
 
 
@@ -74,7 +74,7 @@ class ImageTyperz(Hook):
 
 
     def submit(self, captcha, captchaType="file", match=None):
-        req = getRequest()
+        req = get_request()
         # raise timeout threshold
         req.c.setopt(pycurl.LOW_SPEED_TIME, 80)
 

@@ -40,8 +40,7 @@ class RPNetBiz(MultiHoster):
         #: Check if we only have an id as a HDD link
         if 'id' in link_status:
             self.log_debug("Need to wait at least 30 seconds before requery")
-            self.set_wait(30)  #: wait for 30 seconds
-            self.wait()
+            self.wait(30)  #: wait for 30 seconds
             #: Lets query the server again asking for the status on the link,
             #: we need to keep doing this until we reach 100
             max_tries = 30
@@ -63,8 +62,7 @@ class RPNetBiz(MultiHoster):
                 else:
                     self.log_debug("At %s%% for the file download" % download_status['status'])
 
-                self.set_wait(30)
-                self.wait()
+                self.wait(30)
                 my_try += 1
 
             if my_try > max_tries:  #: We went over the limit!

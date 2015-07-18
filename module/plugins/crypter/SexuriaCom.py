@@ -76,13 +76,13 @@ class SexuriaCom(Crypter):
             html = self.load(url)
             links = re.findall(self.PATTERN_REDIRECT_LINKS, html, re.I)
             if len(links) == 0:
-                self.log_error("Broken for link %s" % link)
+                self.log_error(_("Broken for link: %s") % link)
             else:
                 for link in links:
                     link = link.replace("http://sexuria.com/", "http://www.sexuria.com/")
                     finallink = self.load(link, just_header=True)['location']
                     if not finallink or "sexuria.com/" in finallink:
-                        self.log_error("Broken for link %s" % link)
+                        self.log_error(_("Broken for link: %s") % link)
                     else:
                         linklist.append(finallink)
 

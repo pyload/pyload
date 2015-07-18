@@ -3,18 +3,18 @@
 import re
 import urlparse
 
-from module.network.RequestFactory import getURL
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
+from module.network.RequestFactory import getURL as get_url
+from module.plugins.internal.SimpleHoster import SimpleHoster, parse_fileInfo
 
 
 def get_info(urls):
     for url in urls:
-        h = getURL(url, just_header=True)
+        h = get_url(url, just_header=True)
         m = re.search(r'Location: (.+)\r\n', h)
         if m and not re.match(m.group(1), FilefactoryCom.__pattern__):  #: It's a direct link! Skipping
             yield (url, 0, 3, url)
         else:  #: It's a standard html page
-            yield parseFileInfo(FilefactoryCom, url, getURL(url))
+            yield parse_fileInfo(FilefactoryCom, url, get_url(url))
 
 
 class FilefactoryCom(SimpleHoster):

@@ -31,9 +31,7 @@ class YourfilesTo(Hoster):
 
         self.pyfile.name = self.get_file_name()
 
-        wait_time = self.get_waiting_time()
-        self.set_wait(wait_time)
-        self.wait()
+        self.wait(self.get_waiting_time())
 
 
     def get_waiting_time(self):

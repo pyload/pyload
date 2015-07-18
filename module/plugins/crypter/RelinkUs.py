@@ -252,8 +252,7 @@ class RelinkUs(Crypter):
             except Exception, detail:
                 self.log_debug("Error decrypting Web link %s, %s" % (index, detail))
 
-            self.set_wait(4)
-            self.wait()
+            self.wait(4)
 
         return package_links
 

@@ -5,7 +5,7 @@ import time
 import urllib
 import urlparse
 
-from module.network.RequestFactory import getURL
+from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
@@ -39,7 +39,7 @@ class ShareonlineBiz(SimpleHoster):
     def api_info(cls, url):
         info = super(ShareonlineBiz, cls).api_info(url)
 
-        field = getURL("http://api.share-online.biz/linkcheck.php",
+        field = get_url("http://api.share-online.biz/linkcheck.php",
                        get={'md5'  : "1",
                             'links': re.match(cls.__pattern__, url).group("ID")}).split(";")
 
@@ -160,7 +160,7 @@ class ShareonlineBiz(SimpleHoster):
         try:
             self.log_error(errmsg, re.search(self.ERROR_PATTERN, self.html).group(1))
         except Exception:
-            self.log_error("Unknown error occurred", errmsg)
+            self.log_error(_("Unknown error occurred"), errmsg)
 
         if errmsg is "invalid":
             self.fail(_("File not available"))

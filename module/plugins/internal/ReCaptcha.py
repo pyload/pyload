@@ -35,7 +35,7 @@ class ReCaptcha(Captcha):
             self.log_debug("Key: %s" % self.key)
             return self.key
         else:
-            self.log_warning("Key pattern not found")
+            self.log_warning(_("Key pattern not found"))
             return None
 
 

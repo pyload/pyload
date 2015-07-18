@@ -53,8 +53,7 @@ class FreakshareCom(Hoster):
                 self.fail(_("Bad Try"))
 
             elif check == "paralell":
-                self.set_wait(300, True)
-                self.wait()
+                self.wait(300, True)
                 self.retry()
 
             elif check == "empty":

@@ -10,14 +10,14 @@ import re
 import urlparse
 
 from module.common.json_layer import json_loads, json_dumps
-from module.network.RequestFactory import getURL
+from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, seconds_to_midnight
 
 
 def api_response(url):
     json_data = ["yw7XQy2v9", ["download/info", {"link": url}]]
-    api_rep   = getURL("http://api.letitbit.net/json",
+    api_rep   = get_url("http://api.letitbit.net/json",
                        post={'r': json_dumps(json_data)})
     return json_loads(api_rep)
 

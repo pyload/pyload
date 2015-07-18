@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.SimpleCrypter import create_getInfo
+from module.plugins.internal.Crypter import Crypter, create_getInfo
 
 
 class DeadCrypter(Crypter):
     __name__    = "DeadCrypter"
     __type__    = "crypter"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'^unmatchable$'
 
@@ -17,10 +16,10 @@ class DeadCrypter(Crypter):
 
 
     @classmethod
-    def api_info(cls, *args, **kwargs):
-        api = super(DeadCrypter, cls).api_info(*args, **kwargs)
-        api['status'] = 1
-        return api
+    def get_info(cls, *args, **kwargs):
+        info = super(DeadCrypter, cls).get_info(*args, **kwargs)
+        info['status'] = 1
+        return info
 
 
     def setup(self):

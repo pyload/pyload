@@ -2,7 +2,7 @@
 
 import re
 
-from module.network.RequestFactory import getURL
+from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster
 from module.plugins.internal.Plugin import chunks
 
@@ -11,7 +11,7 @@ def get_info(urls):
     result = []
     for chunk in chunks(urls, 10):
         for url in chunk:
-            html = getURL(url)
+            html = get_url(url)
             if r'<div class="errorMessage mb10">' in html:
                 result.append((url, 0, 1, url))
             elif r'Page cannot be displayed' in html:
@@ -73,8 +73,7 @@ class FilesMailRu(Hoster):
         """
         You have to wait some seconds. Otherwise you will get a 40Byte HTML Page instead of the file you expected
         """
-        self.set_wait(10)
-        self.wait()
+        self.wait(10)
         return True
 
 

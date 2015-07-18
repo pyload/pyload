@@ -50,8 +50,7 @@ class Xdcc(Hoster):
 
                 if errno == 10054:
                     self.log_debug("Server blocked our ip, retry in 5 min")
-                    self.set_wait(300)
-                    self.wait()
+                    self.wait(300)
                     continue
 
                 self.fail(_("Failed due to socket errors. Code: %d") % errno)
@@ -91,8 +90,7 @@ class Xdcc(Hoster):
         sock.send("NICK %s\r\n" % nick)
         sock.send("USER %s %s bla :%s\r\n" % (ident, host, real))
 
-        self.set_wait(3)
-        self.wait()
+        self.wait(3)
 
         sock.send("JOIN #%s\r\n" % chan)
         sock.send("PRIVMSG %s :xdcc send #%s\r\n" % (bot, pack))

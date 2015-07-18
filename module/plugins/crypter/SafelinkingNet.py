@@ -2,7 +2,7 @@
 
 import re
 
-from BeautifulSoup import BeautifulSoup
+import BeautifulSoup
 
 from module.common.json_layer import json_loads
 from module.plugins.internal.Crypter import Crypter
@@ -66,7 +66,7 @@ class SafelinkingNet(Crypter):
                         break
 
             pyfile.package().password = ""
-            soup = BeautifulSoup(self.html)
+            soup = BeautifulSoup.BeautifulSoup(self.html)
             scripts = soup.findAll("script")
             for s in scripts:
                 if "d_links" in s.text:

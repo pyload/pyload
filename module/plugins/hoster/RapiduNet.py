@@ -48,7 +48,7 @@ class RapiduNet(SimpleHoster):
         if str(jsvars['timeToDownload']) is "stop":
             t = (24 * 60 * 60) - (int(time.time()) % (24 * 60 * 60)) + time.altzone
 
-            self.log_info("You've reach your daily download transfer")
+            self.log_info(_("You've reach your daily download transfer"))
 
             self.retry(10, 10 if t < 1 else None, _("Try tomorrow again"))  #@NOTE: check t in case of not synchronised clock
 

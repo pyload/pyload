@@ -5,7 +5,7 @@ import urllib
 
 from module.common.json_layer import json_loads
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
-from module.utils import parseFileSize
+from module.utils import parseFileSize as parse_size
 
 
 class AlldebridCom(MultiHoster):
@@ -43,7 +43,7 @@ class AlldebridCom(MultiHoster):
         else:
             if pyfile.name and not pyfile.name.endswith('.tmp'):
                 pyfile.name = data['filename']
-            pyfile.size = parseFileSize(data['filesize'])
+            pyfile.size = parse_size(data['filesize'])
             self.link = data['link']
 
 

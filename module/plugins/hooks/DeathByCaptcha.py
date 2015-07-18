@@ -10,7 +10,7 @@ from base64 import b64encode
 
 from module.common.json_layer import json_loads
 from module.network.HTTPRequest import BadHeader
-from module.network.RequestFactory import getRequest
+from module.network.RequestFactory import getRequest as get_request
 from module.plugins.internal.Hook import Hook, threaded
 
 
@@ -73,7 +73,7 @@ class DeathByCaptcha(Hook):
 
 
     def api_response(self, api="captcha", post=False, multipart=False):
-        req = getRequest()
+        req = get_request()
         req.c.setopt(pycurl.HTTPHEADER, ["Accept: application/json", "User-Agent: pyLoad %s" % self.core.version])
 
         if post:

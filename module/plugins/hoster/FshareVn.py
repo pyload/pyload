@@ -4,16 +4,16 @@ import re
 import time
 import urlparse
 
-from module.network.RequestFactory import getURL
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
+from module.network.RequestFactory import getURL as get_url
+from module.plugins.internal.SimpleHoster import SimpleHoster, parse_fileInfo
 
 
 def get_info(urls):
     for url in urls:
-        html = getURL("http://www.fshare.vn/check_link.php",
+        html = get_url("http://www.fshare.vn/check_link.php",
                       post={'action': "check_link", 'arrlinks': url})
 
-        yield parseFileInfo(FshareVn, url, html)
+        yield parse_fileInfo(FshareVn, url, html)
 
 
 def double_decode(m):

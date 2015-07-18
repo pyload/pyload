@@ -9,7 +9,6 @@ import urllib
 
 from Crypto.Cipher import ARC4
 
-from module.network.RequestFactory import getURL
 from module.plugins.internal.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, timestamp
 
@@ -101,7 +100,7 @@ class TurbobitNet(SimpleHoster):
             if self.retrieve("version") != self.__version__ \
                or int(self.retrieve("timestamp", 0)) + 86400000 < timestamp():
                 #: that's right, we are even using jdownloader updates
-                rtUpdate = getURL("http://update0.jdownloader.org/pluginstuff/tbupdate.js")
+                rtUpdate = self.load("http://update0.jdownloader.org/pluginstuff/tbupdate.js")
                 rtUpdate = self.decrypt(rtUpdate.splitlines()[1])
                 #: but we still need to fix the syntax to work with other engines than rhino
                 rtUpdate = re.sub(r'for each\(var (\w+) in(\[[^\]]+\])\)\{',

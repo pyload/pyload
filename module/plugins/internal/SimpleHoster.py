@@ -12,8 +12,8 @@ import urlparse
 
 from module.PyFile import statusMap as _statusMap
 from module.network.HTTPRequest import BadHeader
-from module.network.RequestFactory import getURL
-from module.plugins.internal.Hoster import Hoster, parse_fileInfo, create_getInfo
+from module.network.RequestFactory import getURL as get_url
+from module.plugins.internal.Hoster import Hoster, create_getInfo, parse_fileInfo
 from module.plugins.internal.Plugin import Fail, Retry, replace_patterns, set_cookies
 from module.utils import fixup, fs_encode, parseFileSize as parse_size
 
@@ -136,7 +136,7 @@ class SimpleHoster(Hoster):
 
             elif info['status'] is 3:
                 try:
-                    html = getURL(url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
+                    html = get_url(url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
 
                 except BadHeader, e:
                     info['error'] = "%d: %s" % (e.code, e.content)
@@ -322,7 +322,7 @@ class SimpleHoster(Hoster):
                     except Exception:
                         pass
 
-                    self.log_warning("Check result: " + errmsg, "Waiting 1 minute and retry")
+                    self.log_warning(_("Check result: ") + errmsg, _("Waiting 1 minute and retry"))
                     self.want_reconnect = True
                     self.retry(wait_time=60, reason=errmsg)
             else:

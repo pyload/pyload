@@ -9,10 +9,11 @@ import urllib
 
 try:
     from PIL import Image
+
 except ImportError:
     import Image
 
-from module.network.RequestFactory import getRequest
+from module.network.RequestFactory import getRequest as get_request
 from module.plugins.internal.Hook import Hook, threaded
 
 
@@ -86,7 +87,7 @@ class CaptchaBrotherhood(Hook):
         except Exception, e:
             raise CaptchaBrotherhoodException("Reading or converting captcha image failed: %s" % e)
 
-        req = getRequest()
+        req = get_request()
 
         url = "%ssendNewCaptcha.aspx?%s" % (self.API_URL,
                                             urllib.urlencode({'username'     : self.get_config('username'),

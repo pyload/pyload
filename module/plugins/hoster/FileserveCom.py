@@ -3,16 +3,16 @@
 import re
 
 from module.common.json_layer import json_loads
-from module.network.RequestFactory import getURL
+from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster
 from module.plugins.internal.Plugin import chunks
 from module.plugins.internal.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import seconds_to_midnight
-from module.utils import parseFileSize
+from module.utils import parseFileSize as parse_size
 
 
 def check_file(plugin, urls):
-    html = getURL(plugin.URLS[1], post={"urls": "\n".join(urls)})
+    html = get_url(plugin.URLS[1], post={"urls": "\n".join(urls)})
 
     file_info = []
     for li in re.finditer(plugin.LINKCHECK_TR, html, re.S):
@@ -21,7 +21,7 @@ def check_file(plugin, urls):
             if cols:
                 file_info.append((
                     cols[1] if cols[1] != '--' else cols[0],
-                    parseFileSize(cols[2]) if cols[2] != '--' else 0,
+                    parse_size(cols[2]) if cols[2] != '--' else 0,
                     2 if cols[3].startswith('Available') else 1,
                     cols[0]))
         except Exception, e:
@@ -131,8 +131,7 @@ class FileserveCom(Hoster):
 
         elif check == "limit":
             self.log_warning(_("Download limited reached for today"))
-            self.set_wait(seconds_to_midnight(gmt=2), True)
-            self.wait()
+            self.wait(seconds_to_midnight(gmt=2), True)
             self.retry()
 
         self.thread.m.reconnecting.wait(3)  #: Ease issue with later downloads appearing to be in parallel
@@ -153,8 +152,7 @@ class FileserveCom(Hoster):
         else:
             wait_time = int(res) + 3
 
-        self.set_wait(wait_time)
-        self.wait()
+        self.wait(wait_time)
 
 
     def do_captcha(self):
@@ -178,8 +176,7 @@ class FileserveCom(Hoster):
 
     def do_long_wait(self, m):
         wait_time = (int(m.group(1)) * {'seconds': 1, 'minutes': 60, 'hours': 3600}[m.group(2)]) if m else 12 * 60
-        self.set_wait(wait_time, True)
-        self.wait()
+        self.wait(wait_time, True)
         self.retry()
 
 

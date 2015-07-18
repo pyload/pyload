@@ -216,7 +216,7 @@ class Hoster(Plugin):
         wait_until = time.time() + wait_time + 1
 
         self.log_debug("Set waitUntil to: %f (previous: %f)" % (wait_until, self.pyfile.waitUntil),
-                      "Wait: %d+1 seconds" % wait_time)
+                       "Wait: %d (+1) seconds" % wait_time)
 
         self.pyfile.waitUntil = wait_until
 
@@ -242,7 +242,7 @@ class Hoster(Plugin):
         pyfile.setStatus("waiting")
 
         self.log_info(_("Wait: %d seconds") % (pyfile.waitUntil - time.time()),
-                     _("Reconnect: %s")    % self.want_reconnect)
+                      _("Reconnect: %s")    % self.want_reconnect)
 
         if self.account:
             self.log_debug("Ignore reconnection due account logged")
@@ -443,7 +443,7 @@ class Hoster(Plugin):
             self.fail(_("No url given"))
 
         if self.core.debug:
-            self.log_debug("Download url: " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
+            self.log_debug("Download url " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
 
         self.correct_captcha()
         self.check_for_same_files()

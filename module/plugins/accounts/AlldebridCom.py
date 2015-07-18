@@ -4,7 +4,7 @@ import re
 import time
 import xml.dom.minidom as dom
 
-from BeautifulSoup import BeautifulSoup
+import BeautifulSoup
 
 from module.plugins.internal.Account import Account
 
@@ -22,7 +22,7 @@ class AlldebridCom(Account):
     def load_account_info(self, user, req):
         data = self.get_account_data(user)
         html = self.load("http://www.alldebrid.com/account/")
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup.BeautifulSoup(html)
 
         # Try to parse expiration date directly from the control panel page (better accuracy)
         try:
