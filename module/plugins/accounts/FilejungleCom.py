@@ -34,17 +34,17 @@ class FilejungleCom(Account):
             premium = False
             validuntil = -1
 
-        return {"premium": premium, "trafficleft": -1, "validuntil": validuntil}
+        return {'premium': premium, 'trafficleft': -1, 'validuntil': validuntil}
 
 
     def login(self, user, data, req):
         html = self.load(urlparse.urljoin(self.URL, "login.php"),
-                         post={"loginUserName"              : user,
-                               "loginUserPassword"          : data['password'],
-                               "loginFormSubmit"            : "Login",
-                               "recaptcha_challenge_field"  : "",
-                               "recaptcha_response_field"   : "",
-                               "recaptcha_shortencode_field": ""})
+                         post={'loginUserName'              : user,
+                               'loginUserPassword'          : data['password'],
+                               'loginFormSubmit'            : "Login",
+                               'recaptcha_challenge_field'  : "",
+                               'recaptcha_response_field'   : "",
+                               'recaptcha_shortencode_field': ""})
 
         if re.search(self.LOGIN_FAILED_PATTERN, html):
             self.wrong_password()

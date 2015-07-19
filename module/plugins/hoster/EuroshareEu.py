@@ -36,8 +36,8 @@ class EuroshareEu(SimpleHoster):
 
         self.link = pyfile.url.rstrip('/') + "/download/"
 
-        check = self.check_download({"login": re.compile(self.ERROR_PATTERN),
-                                    "json" : re.compile(r'\{"status":"error".*?"message":"(.*?)"')})
+        check = self.check_download({'login': re.compile(self.ERROR_PATTERN),
+                                    'json' : re.compile(r'\{"status":"error".*?"message":"(.*?)"')})
 
         if check == "login" or (check == "json" and self.last_check.group(1) == "Access token expired"):
             self.account.relogin(self.user)

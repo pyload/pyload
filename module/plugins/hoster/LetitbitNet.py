@@ -16,7 +16,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, seconds_to_midnig
 
 
 def api_response(url):
-    json_data = ["yw7XQy2v9", ["download/info", {"link": url}]]
+    json_data = ["yw7XQy2v9", ["download/info", {'link': url}]]
     api_rep   = get_url("http://api.letitbit.net/json",
                        post={'r': json_dumps(json_data)})
     return json_loads(api_rep)
@@ -88,9 +88,9 @@ class LetitbitNet(SimpleHoster):
         recaptcha = ReCaptcha(self)
         response, challenge = recaptcha.challenge()
 
-        post_data = {"recaptcha_challenge_field": challenge,
-                     "recaptcha_response_field": response,
-                     "recaptcha_control_field": recaptcha_control_field}
+        post_data = {'recaptcha_challenge_field': challenge,
+                     'recaptcha_response_field': response,
+                     'recaptcha_control_field': recaptcha_control_field}
 
         self.log_debug("Post data to send", post_data)
 
@@ -125,7 +125,7 @@ class LetitbitNet(SimpleHoster):
         api_key = self.user
         premium_key = self.account.get_account_data(self.user)['password']
 
-        json_data = [api_key, ["download/direct_links", {"pass": premium_key, "link": pyfile.url}]]
+        json_data = [api_key, ["download/direct_links", {'pass': premium_key, 'link': pyfile.url}]]
         api_rep = self.load('http://api.letitbit.net/json', post={'r': json_dumps(json_data)})
         self.log_debug("API Data: " + api_rep)
         api_rep = json_loads(api_rep)

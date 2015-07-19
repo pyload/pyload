@@ -34,7 +34,7 @@ class LinkdecrypterCom(Crypter):
     def decrypt(self, pyfile):
         retries = 5
 
-        post_dict = {"link_cache": "on", "pro_links": pyfile.url, "modo_links": "text"}
+        post_dict = {'link_cache': "on", 'pro_links': pyfile.url, 'modo_links': "text"}
         self.html = self.load('http://linkdecrypter.com/', post=post_dict)
 
         while retries:
@@ -54,7 +54,7 @@ class LinkdecrypterCom(Crypter):
                 captcha = self.decrypt_captcha(captcha_url, result_type=result_type)
                 if result_type == "positional":
                     captcha = "%d|%d" % captcha
-                self.html = self.load('http://linkdecrypter.com/', post={"captcha": captcha})
+                self.html = self.load('http://linkdecrypter.com/', post={'captcha': captcha})
                 retries -= 1
 
             elif self.PASSWORD_PATTERN in self.html:

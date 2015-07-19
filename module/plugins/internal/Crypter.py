@@ -80,22 +80,22 @@ class Crypter(Hoster):
             pid = self.core.api.addPackage(name, self.fixurl(links), package_queue)
 
             if package_password:
-                self.core.api.setPackageData(pid, {"password": package_password})
+                self.core.api.setPackageData(pid, {'password': package_password})
 
             #: Workaround to do not break API addPackage method
-            setFolder = lambda x: self.core.api.setPackageData(pid, {"folder": x or ""})
+            setFolder = lambda x: self.core.api.setPackageData(pid, {'folder': x or ""})
 
             if use_subfolder:
                 if not subfolder_per_package:
                     setFolder(package_folder)
-                    self.log_debug("Set package %(name)s folder to: %(folder)s" % {"name": name, "folder": folder})
+                    self.log_debug("Set package %(name)s folder to: %(folder)s" % {'name': name, 'folder': folder})
 
                 elif not folder_per_package or name != folder:
                     if not folder:
                         folder = urlparse.urlparse(name).path.split("/")[-1]
 
                     setFolder(safe_filename(folder))
-                    self.log_debug("Set package %(name)s folder to: %(folder)s" % {"name": name, "folder": folder})
+                    self.log_debug("Set package %(name)s folder to: %(folder)s" % {'name': name, 'folder': folder})
 
             elif folder_per_package:
                 setFolder(None)

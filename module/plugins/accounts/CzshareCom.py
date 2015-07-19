@@ -45,7 +45,7 @@ class CzshareCom(Account):
 
     def login(self, user, data, req):
         html = self.load('https://sdilej.cz/index.php',
-                         post={"Prihlasit"     : "Prihlasit",
+                         post={'Prihlasit'     : "Prihlasit",
                                "login-password": data['password'],
                                "login-name"    : user})
 

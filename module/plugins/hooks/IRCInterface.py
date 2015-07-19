@@ -62,7 +62,7 @@ class IRCInterface(Thread, Addon):
         try:
             if self.get_config('info_file'):
                 self.response(
-                    _("Download finished: %(name)s @ %(plugin)s ") % {"name": pyfile.name, "plugin": pyfile.pluginname})
+                    _("Download finished: %(name)s @ %(plugin)s ") % {'name': pyfile.name, 'plugin': pyfile.pluginname})
         except Exception:
             pass
 
@@ -73,7 +73,7 @@ class IRCInterface(Thread, Addon):
             task.setWaiting(60)
 
             html = self.load("http://www.freeimagehosting.net/upload.php",
-                          post={"attached": (pycurl.FORM_FILE, task.captchaFile)})
+                          post={'attached': (pycurl.FORM_FILE, task.captchaFile)})
 
             url = re.search(r"\[img\]([^\[]+)\[/img\]\[/url\]", html).group(1)
             self.response(_("New Captcha Request: %s") % url)
@@ -136,10 +136,10 @@ class IRCInterface(Thread, Addon):
                     continue
 
                 msg = {
-                    "origin": msg[0][1:],
-                    "action": msg[1],
-                    "target": msg[2],
-                    "text": msg[3][1:]
+                    'origin': msg[0][1:],
+                    'action': msg[1],
+                    'target': msg[2],
+                    'text': msg[3][1:]
                 }
 
                 self.handle_events(msg)

@@ -17,19 +17,19 @@ class BitshareCom(Account):
         html = self.load("http://bitshare.com/mysettings.html")
 
         if "\"http://bitshare.com/myupgrade.html\">Free" in html:
-            return {"validuntil": -1, "trafficleft": -1, "premium": False}
+            return {'validuntil': -1, 'trafficleft': -1, 'premium': False}
 
         if not '<input type="checkbox" name="directdownload" checked="checked" />' in html:
             self.log_warning(_("Activate direct Download in your Bitshare Account"))
 
-        return {"validuntil": -1, "trafficleft": -1, "premium": True}
+        return {'validuntil': -1, 'trafficleft': -1, 'premium': True}
 
 
     def login(self, user, data, req):
         html = self.load("https://bitshare.com/login.html",
-                         post={"user"    : user,
-                               "password": data['password'],
-                               "submit"  : "Login"})
+                         post={'user'    : user,
+                               'password': data['password'],
+                               'submit'  : "Login"})
 
         if "login" in req.lastEffectiveURL:
             self.wrong_password()

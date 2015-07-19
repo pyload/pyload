@@ -20,8 +20,8 @@ class PremiumizeMe(Account):
         self.log_debug(status)
 
         #: Parse account info
-        account_info = {"validuntil": float(status['result']['expires']),
-                        "trafficleft": max(0, status['result']['trafficleft_bytes'] / 1024)}  #@TODO: Remove `/ 1024` in 0.4.10
+        account_info = {'validuntil': float(status['result']['expires']),
+                        'trafficleft': max(0, status['result']['trafficleft_bytes'] / 1024)}  #@TODO: Remove `/ 1024` in 0.4.10
 
         if status['result']['type'] != 'free':
             account_info['premium'] = True

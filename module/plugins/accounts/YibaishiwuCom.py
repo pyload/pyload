@@ -25,13 +25,13 @@ class YibaishiwuCom(Account):
         m = re.search(self.ACCOUNT_INFO_PATTERN, html, re.S)
         premium = True if m and 'is_vip: 1' in m.group(1) else False
         validuntil = trafficleft = (-1 if m else 0)
-        return dict({"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium})
+        return dict({'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium})
 
 
     def login(self, user, data, req):
         html = self.load("https://passport.115.com/?ac=login",
-                         post={"back"          : "http://www.115.com/",
-                               "goto"          : "http://115.com/",
+                         post={'back'          : "http://www.115.com/",
+                               'goto'          : "http://115.com/",
                                "login[account]": user,
                                "login[passwd]" : data['password']})
 

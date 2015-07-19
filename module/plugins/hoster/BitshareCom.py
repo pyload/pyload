@@ -74,7 +74,7 @@ class BitshareCom(SimpleHoster):
         #: This may either download our file or forward us to an error page
         self.link = self.get_download_url()
 
-        if self.check_download({"error": ">Error occured<"}):
+        if self.check_download({'error': ">Error occured<"}):
             self.retry(5, 5 * 60, "Bitshare host : Error occured")
 
 
@@ -88,7 +88,7 @@ class BitshareCom(SimpleHoster):
         #: Get download info
         self.log_debug("Getting download info")
         res = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
-                        post={"request": "generateID", "ajaxid": self.ajaxid})
+                        post={'request': "generateID", 'ajaxid': self.ajaxid})
 
         self.handle_errors(res, ':')
 
@@ -117,17 +117,17 @@ class BitshareCom(SimpleHoster):
             for i in xrange(3):
                 response, challenge = recaptcha.challenge()
                 res = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
-                                     post={"request"                  : "validateCaptcha",
-                                           "ajaxid"                   : self.ajaxid,
-                                           "recaptcha_challenge_field": challenge,
-                                           "recaptcha_response_field" : response})
+                                     post={'request'                  : "validateCaptcha",
+                                           'ajaxid'                   : self.ajaxid,
+                                           'recaptcha_challenge_field': challenge,
+                                           'recaptcha_response_field' : response})
                 if self.handle_captcha_errors(res):
                     break
 
         #: Get download URL
         self.log_debug("Getting download url")
         res = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
-                        post={"request": "getDownloadURL", "ajaxid": self.ajaxid})
+                        post={'request': "getDownloadURL", 'ajaxid': self.ajaxid})
 
         self.handle_errors(res, '#')
 

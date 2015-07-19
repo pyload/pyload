@@ -123,6 +123,14 @@ class Plugin(object):
     def __init__(self, core):
         self.core = core
         self.info = {}  #: Provide information in dict here
+        self.init()
+
+
+    def init(self):
+        """
+        Initialize the plugin (in addition to `__init__`)
+        """
+        pass
 
 
     def _log(self, level, args):
@@ -309,7 +317,7 @@ class Plugin(object):
 
         if just_header:
             #: Parse header
-            header = {"code": req.code}
+            header = {'code': req.code}
             for line in res.splitlines():
                 line = line.strip()
                 if not line or ":" not in line:

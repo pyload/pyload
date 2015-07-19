@@ -20,14 +20,14 @@ class RPNetBiz(Account):
         try:
             if res['accountInfo']['isPremium']:
                 #: Parse account info. Change the trafficleft later to support per host info.
-                account_info = {"validuntil": float(res['accountInfo']['premiumExpiry']),
-                                "trafficleft": -1, "premium": True}
+                account_info = {'validuntil': float(res['accountInfo']['premiumExpiry']),
+                                'trafficleft': -1, 'premium': True}
             else:
-                account_info = {"validuntil": None, "trafficleft": None, "premium": False}
+                account_info = {'validuntil': None, 'trafficleft': None, 'premium': False}
 
         except KeyError:
             #: Handle wrong password exception
-            account_info = {"validuntil": None, "trafficleft": None, "premium": False}
+            account_info = {'validuntil': None, 'trafficleft': None, 'premium': False}
 
         return account_info
 
@@ -44,8 +44,8 @@ class RPNetBiz(Account):
     def get_account_status(self, user, req):
         #: Using the rpnet API, check if valid premium account
         res = self.load("https://premium.rpnet.biz/client_api.php",
-                            get={"username": user, "password": self.get_account_data(user)['password'],
-                                 "action": "showAccountInformation"})
+                            get={'username': user, 'password': self.get_account_data(user)['password'],
+                                 'action': "showAccountInformation"})
         self.log_debug("JSON data: %s" % res)
 
         return json_loads(res)

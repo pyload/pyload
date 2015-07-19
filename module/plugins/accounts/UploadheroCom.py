@@ -26,17 +26,17 @@ class UploadheroCom(Account):
         if premium_pattern.search(html):
             end_date = datetime.date.today() + datetime.timedelta(days=int(premium_pattern.search(html).group(1)))
             end_date = time.mktime(future.timetuple())
-            account_info = {"validuntil": end_date, "trafficleft": -1, "premium": True}
+            account_info = {'validuntil': end_date, 'trafficleft': -1, 'premium': True}
         else:
-            account_info = {"validuntil": -1, "trafficleft": -1, "premium": False}
+            account_info = {'validuntil': -1, 'trafficleft': -1, 'premium': False}
 
         return account_info
 
 
     def login(self, user, data, req):
         html = self.load("http://uploadhero.co/lib/connexion.php",
-                         post={"pseudo_login": user,
-                               "password_login": data['password']})
+                         post={'pseudo_login': user,
+                               'password_login': data['password']})
 
         if "mot de passe invalide" in html:
             self.wrong_password()

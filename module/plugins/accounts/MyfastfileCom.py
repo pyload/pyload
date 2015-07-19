@@ -19,7 +19,7 @@ class MyfastfileCom(Account):
     def load_account_info(self, user, req):
         if 'days_left' in self.json_data:
             validuntil = time.time() + self.json_data['days_left'] * 24 * 60 * 60
-            return {"premium": True, "validuntil": validuntil, "trafficleft": -1}
+            return {'premium': True, 'validuntil': validuntil, 'trafficleft': -1}
         else:
             self.log_error(_("Unable to get account information"))
 
@@ -27,8 +27,8 @@ class MyfastfileCom(Account):
     def login(self, user, data, req):
         #: Password to use is the API-Password written in http://myfastfile.com/myaccount
         html = self.load("https://myfastfile.com/api.php",
-                         get={"user": user,
-                              "pass": data['password']})
+                         get={'user': user,
+                              'pass': data['password']})
 
         self.log_debug("JSON data: " + html)
 

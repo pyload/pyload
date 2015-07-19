@@ -33,8 +33,8 @@ class HoerbuchIn(Crypter):
             html = self.load(pyfile.url)
             soup = BeautifulSoup.BeautifulSoup(html, convertEntities=BeautifulSoup.BeautifulStoneSoup.HTML_ENTITIES)
 
-            abookname = soup.find("a", attrs={"rel": "bookmark"}).text
-            for a in soup.findAll("a", attrs={"href": self.protection}):
+            abookname = soup.find("a", attrs={'rel': "bookmark"}).text
+            for a in soup.findAll("a", attrs={'href': self.protection}):
                 package = "%s (%s)" % (abookname, a.previousSibling.previousSibling.text[:-1])
                 links = self.decrypt_folder(a['href'])
 
@@ -50,7 +50,7 @@ class HoerbuchIn(Crypter):
         url = m.group(0)
 
         self.pyfile.url = url
-        html = self.load(url, post={"viewed": "adpg"})
+        html = self.load(url, post={'viewed': "adpg"})
 
         links = []
         pattern = re.compile("http://www\.hoerbuch\.in/protection/(\w+)/(.*?)\"")

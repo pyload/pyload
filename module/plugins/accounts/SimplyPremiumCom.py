@@ -34,7 +34,7 @@ class SimplyPremiumCom(Account):
         if 'remain_traffic' in json_data['result'] and json_data['result']['remain_traffic']:
             trafficleft = float(json_data['result']['remain_traffic']) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
 
-        return {"premium": premium, "validuntil": validuntil, "trafficleft": trafficleft}
+        return {'premium': premium, 'validuntil': validuntil, 'trafficleft': trafficleft}
 
 
     def login(self, user, data, req):

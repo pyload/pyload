@@ -27,7 +27,7 @@ class TurbobitNetFolder(SimpleCrypter):
 
     def _get_links(self, id, page=1):
         gridFile = self.load("http://turbobit.net/downloadfolder/gridFile",
-                             get={"rootId": id, "rows": 200, "page": page})
+                             get={'rootId': id, 'rows': 200, 'page': page})
         grid = json_loads(gridFile)
 
         if grid['rows']:

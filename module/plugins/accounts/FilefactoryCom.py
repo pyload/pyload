@@ -33,16 +33,16 @@ class FilefactoryCom(Account):
             premium = False
             validuntil = -1
 
-        return {"premium": premium, "trafficleft": -1, "validuntil": validuntil}
+        return {'premium': premium, 'trafficleft': -1, 'validuntil': validuntil}
 
 
     def login(self, user, data, req):
         req.http.c.setopt(pycurl.REFERER, "http://www.filefactory.com/member/login.php")
 
         html = self.load("https://www.filefactory.com/member/signin.php",
-                         post={"loginEmail"   : user,
-                               "loginPassword": data['password'],
-                               "Submit"       : "Sign In"})
+                         post={'loginEmail'   : user,
+                               'loginPassword': data['password'],
+                               'Submit'       : "Sign In"})
 
         if req.lastEffectiveURL != "http://www.filefactory.com/account/":
             self.wrong_password()

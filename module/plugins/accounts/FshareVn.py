@@ -29,7 +29,7 @@ class FshareVn(Account):
         if re.search(self.LIFETIME_PATTERN, html):
             self.log_debug("Lifetime membership detected")
             trafficleft = self.get_traffic_left()
-            return {"validuntil": -1, "trafficleft": trafficleft, "premium": True}
+            return {'validuntil': -1, 'trafficleft': trafficleft, 'premium': True}
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
@@ -41,7 +41,7 @@ class FshareVn(Account):
             validuntil = None
             trafficleft = None
 
-        return {"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium}
+        return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 
 
     def login(self, user, data, req):

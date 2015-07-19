@@ -52,7 +52,7 @@ class LinksaveIn(OCR):
         new.save(self.data_dir+"unblacked.png")
         self.image = new.copy()
         self.pixels = self.image.load()
-        self.result_captcha = ''
+        self.result_captcha = ""
 
 
     def get_bg(self):

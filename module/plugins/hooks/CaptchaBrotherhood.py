@@ -55,7 +55,7 @@ class CaptchaBrotherhood(Hook):
 
     def get_credits(self):
         res = self.load(self.API_URL + "askCredits.aspx",
-                     get={"username": self.get_config('username'), "password": self.get_config('password')})
+                     get={'username': self.get_config('username'), 'password': self.get_config('password')})
         if not res.startswith("OK"):
             raise CaptchaBrotherhoodException(res)
         else:
@@ -118,9 +118,9 @@ class CaptchaBrotherhood(Hook):
 
     def api_response(self, api, ticket):
         res = self.load("%s%s.aspx" % (self.API_URL, api),
-                          get={"username": self.get_config('username'),
-                               "password": self.get_config('password'),
-                               "captchaID": ticket})
+                          get={'username': self.get_config('username'),
+                               'password': self.get_config('password'),
+                               'captchaID': ticket})
         if not res.startswith("OK"):
             raise CaptchaBrotherhoodException("Unknown response: %s" % res)
 

@@ -36,10 +36,10 @@ class WrzucTo(SimpleHoster):
 
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
         self.req.http.lastURL = pyfile.url
-        self.load("http://www.wrzuc.to/ajax/server/prepair", post={"md5": data['md5']})
+        self.load("http://www.wrzuc.to/ajax/server/prepair", post={'md5': data['md5']})
 
         self.req.http.lastURL = pyfile.url
-        self.html = self.load("http://www.wrzuc.to/ajax/server/download_link", post={"file": data['file']})
+        self.html = self.load("http://www.wrzuc.to/ajax/server/download_link", post={'file': data['file']})
 
         data.update(re.findall(r'"(download_link|server_id)":"(.*?)"', self.html))
         if len(data) != 4:

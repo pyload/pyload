@@ -86,7 +86,7 @@ class ImageTyperz(Hook):
             res = self.load(self.SUBMIT_URL,
                             post={'action': "UPLOADCAPTCHA",
                                   'username': self.get_config('username'),
-                                  'password': self.get_config('password'), "file": data},
+                                  'password': self.get_config('password'), 'file': data},
                             multipart=multipart,
                             req=req)
         finally:

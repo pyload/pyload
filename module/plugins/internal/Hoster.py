@@ -488,7 +488,7 @@ class Hoster(Plugin):
             newname = urlparse.urlparse(newname).path.split('/')[-1]
 
             if disposition and newname != name:
-                self.log_info(_("%(name)s saved as %(newname)s") % {"name": name, "newname": newname})
+                self.log_info(_("%(name)s saved as %(newname)s") % {'name': name, 'newname': newname})
                 self.pyfile.name = newname
                 filename = os.path.join(location, newname)
 
@@ -595,7 +595,7 @@ class Hoster(Plugin):
 
                 req.close()
 
-                header = {"code": req.code}
+                header = {'code': req.code}
                 for line in res.splitlines():
                     line = line.strip()
                     if not line or ":" not in line:

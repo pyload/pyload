@@ -190,7 +190,7 @@ class MegaCoNz(Hoster):
         pattern = re.match(self.__pattern__, pyfile.url).groupdict()
         id      = pattern['ID']
         key     = pattern['KEY']
-        public  = pattern['TYPE'] == ''
+        public  = pattern['TYPE'] == ""
 
         self.log_debug("ID: %s" % id, "Key: %s" % key, "Type: %s" % ("public" if public else "node"))
 

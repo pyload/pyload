@@ -29,7 +29,7 @@ class YoupornCom(Hoster):
 
     def download_html(self):
         url = self.pyfile.url
-        self.html = self.load(url, post={"user_choice": "Enter"}, cookies=False)
+        self.html = self.load(url, post={'user_choice': "Enter"}, cookies=False)
 
 
     def get_file_url(self):

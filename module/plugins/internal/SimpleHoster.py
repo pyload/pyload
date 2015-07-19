@@ -361,7 +361,7 @@ class SimpleHoster(Hoster):
                 if re.search('da(il)?y|today', errmsg, re.I):
                     wait_time = seconds_to_midnight(gmt=2)
                 else:
-                    wait_time = sum(int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1, "": 1}[u.lower()] for v, u in
+                    wait_time = sum(int(v) * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, "": 1}[u.lower()] for v, u in
                                 re.findall(r'(\d+)\s*(hr|hour|min|sec|)', errmsg, re.I))
 
                 self.want_reconnect = wait_time > 300
@@ -385,7 +385,7 @@ class SimpleHoster(Hoster):
                     if re.search("da(il)?y|today", errmsg):
                         wait_time = seconds_to_midnight(gmt=2)
                     else:
-                        wait_time = sum(int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1, "": 1}[u.lower()] for v, u in
+                        wait_time = sum(int(v) * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, "": 1}[u.lower()] for v, u in
                                     re.findall(r'(\d+)\s*(hr|hour|min|sec|)', errmsg, re.I))
 
                     self.want_reconnect = wait_time > 300
@@ -430,7 +430,7 @@ class SimpleHoster(Hoster):
                 except Exception:
                     waitmsg = m.group(0).strip()
 
-                wait_time = sum(int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1, "": 1}[u.lower()] for v, u in
+                wait_time = sum(int(v) * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, "": 1}[u.lower()] for v, u in
                                 re.findall(r'(\d+)\s*(hr|hour|min|sec|)', waitmsg, re.I))
                 self.wait(wait_time, wait_time > 300)
 

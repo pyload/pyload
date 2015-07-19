@@ -16,7 +16,7 @@ class FourSharedCom(Account):
 
     def load_account_info(self, user, req):
         #: Free mode only for now
-        return {"premium": False}
+        return {'premium': False}
 
 
     def login(self, user, data, req):

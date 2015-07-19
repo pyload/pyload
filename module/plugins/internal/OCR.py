@@ -42,7 +42,7 @@ class OCR(Plugin):
     def load_image(self, image):
         self.image = Image.open(image)
         self.pixels = self.image.load()
-        self.result_captcha = ''
+        self.result_captcha = ""
 
 
     def deactivate(self):

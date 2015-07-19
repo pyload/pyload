@@ -12,7 +12,7 @@ from module.utils import parseFileSize as parse_size
 
 
 def check_file(plugin, urls):
-    html = get_url(plugin.URLS[1], post={"urls": "\n".join(urls)})
+    html = get_url(plugin.URLS[1], post={'urls': "\n".join(urls)})
 
     file_info = []
     for li in re.finditer(plugin.LINKCHECK_TR, html, re.S):
@@ -81,13 +81,13 @@ class FileserveCom(Hoster):
 
     def handle_free(self):
         self.html = self.load(self.url)
-        action = self.load(self.url, post={"checkDownload": "check"})
+        action = self.load(self.url, post={'checkDownload': "check"})
         action = json_loads(action)
         self.log_debug(action)
 
         if "fail" in action:
             if action['fail'] == "timeLimit":
-                self.html = self.load(self.url, post={"checkDownload": "showError", "errorType": "timeLimit"})
+                self.html = self.load(self.url, post={'checkDownload': "showError", 'errorType': "timeLimit"})
 
                 self.do_long_wait(re.search(self.LONG_WAIT_PATTERN, self.html))
 
@@ -109,18 +109,18 @@ class FileserveCom(Hoster):
             self.error(_("Unknown server response"))
 
         #: Show download link
-        res = self.load(self.url, post={"downloadLink": "show"})
+        res = self.load(self.url, post={'downloadLink': "show"})
         self.log_debug("Show downloadLink response: %s" % res)
         if "fail" in res:
             self.error(_("Couldn't retrieve download url"))
 
         #: This may either download our file or forward us to an error page
-        self.download(self.url, post={"download": "normal"})
+        self.download(self.url, post={'download': "normal"})
         self.log_debug(self.req.http.lastEffectiveURL)
 
-        check = self.check_download({"expired": self.LINK_EXPIRED_PATTERN,
-                                    "wait"   : re.compile(self.LONG_WAIT_PATTERN),
-                                    "limit"  : self.DL_LIMIT_PATTERN})
+        check = self.check_download({'expired': self.LINK_EXPIRED_PATTERN,
+                                    'wait'   : re.compile(self.LONG_WAIT_PATTERN),
+                                    'limit'  : self.DL_LIMIT_PATTERN})
 
         if check == "expired":
             self.log_debug("Download link was expired")
@@ -138,7 +138,7 @@ class FileserveCom(Hoster):
 
 
     def do_timmer(self):
-        res = self.load(self.url, post={"downloadLink": "wait"})
+        res = self.load(self.url, post={'downloadLink': "wait"})
         self.log_debug("Wait response: %s" % res[:80])
 
         if "fail" in res:
@@ -185,9 +185,9 @@ class FileserveCom(Hoster):
         if self.__name__ == "FileserveCom":
             #: Try api download
             res = self.load("http://app.fileserve.com/api/download/premium/",
-                            post={"username": self.user,
-                                  "password": self.account.get_account_data(self.user)['password'],
-                                  "shorten": self.file_id})
+                            post={'username': self.user,
+                                  'password': self.account.get_account_data(self.user)['password'],
+                                  'shorten': self.file_id})
             if res:
                 res = json_loads(res)
                 if res['error_code'] == "302":
@@ -203,7 +203,7 @@ class FileserveCom(Hoster):
 
         self.download(premium_url or self.pyfile.url)
 
-        if not premium_url and self.check_download({"login": re.compile(self.NOT_LOGGED_IN_PATTERN)}):
+        if not premium_url and self.check_download({'login': re.compile(self.NOT_LOGGED_IN_PATTERN)}):
             self.account.relogin(self.user)
             self.retry(reason=_("Not logged in"))
 

@@ -30,7 +30,7 @@ class ExpertDecoders(Hook):
 
 
     def get_credits(self):
-        res = self.load(self.API_URL, post={"key": self.get_config('passkey'), "action": "balance"})
+        res = self.load(self.API_URL, post={'key': self.get_config('passkey'), 'action': "balance"})
 
         if res.isdigit():
             self.log_info(_("%s credits left") % res)

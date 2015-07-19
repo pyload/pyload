@@ -67,7 +67,7 @@ class Extractor(Plugin):
 
         for fname, id, fout in files_ids:
             if cls.isArchive(fname):
-                pname = re.sub(cls.re_multipart, '', fname) if cls.isMultipart(fname) else os.path.splitext(fname)[0]
+                pname = re.sub(cls.re_multipart, "", fname) if cls.isMultipart(fname) else os.path.splitext(fname)[0]
                 if pname not in processed:
                     processed.append(pname)
                     targets.append((fname, id, fout))

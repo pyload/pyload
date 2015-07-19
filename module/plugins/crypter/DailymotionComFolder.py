@@ -30,7 +30,7 @@ class DailymotionComFolder(Crypter):
 
     def get_playlist_info(self, id):
         ref  = "playlist/" + id
-        data = {"fields": "name,owner.screenname"}
+        data = {'fields': "name,owner.screenname"}
         playlist = self.api_response(ref, data)
 
         if "error" in playlist:
@@ -43,7 +43,7 @@ class DailymotionComFolder(Crypter):
 
     def _get_playlists(self, user_id, page=1):
         ref  = "user/%s/playlists" % user_id
-        data = {"fields": "id", "page": page, "limit": 100}
+        data = {'fields': "id", 'page': page, 'limit': 100}
         user = self.api_response(ref, data)
 
         if "error" in user:
@@ -63,7 +63,7 @@ class DailymotionComFolder(Crypter):
 
     def _get_videos(self, id, page=1):
         ref  = "playlist/%s/videos" % id
-        data = {"fields": "url", "page": page, "limit": 100}
+        data = {'fields': "url", 'page': page, 'limit': 100}
         playlist = self.api_response(ref, data)
 
         if "error" in playlist:

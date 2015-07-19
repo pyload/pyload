@@ -45,7 +45,7 @@ class EdiskCz(SimpleHoster):
         self.html = self.load(re.sub("/en/download/", "/en/download-slow/", url))
 
         url = self.load(re.sub("/en/download/", "/x-download/", url), post={
-            "action": action
+            'action': action
         })
 
         if not re.match(self.LINK_FREE_PATTERN, url):

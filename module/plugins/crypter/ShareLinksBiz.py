@@ -80,7 +80,7 @@ class ShareLinksBiz(Crypter):
 
 
     def is_password_protected(self):
-        if re.search(r'''<form.*?id="passwordForm".*?>''', self.html):
+        if re.search(r'<form.*?id="passwordForm".*?>', self.html):
             self.log_debug("Links are protected")
             return True
         return False
@@ -102,7 +102,7 @@ class ShareLinksBiz(Crypter):
     def unlock_password_protection(self):
         password = self.get_password()
         self.log_debug("Submitting password [%s] for protected links" % password)
-        post = {"password": password, 'login': 'Submit form'}
+        post = {'password': password, 'login': 'Submit form'}
         url = self.base_url + '/' + self.file_id
         self.html = self.load(url, post=post)
 
@@ -248,11 +248,11 @@ class ShareLinksBiz(Crypter):
 
         #: Get jk
         strlist = list(params[1].decode('base64'))
-        jk      = ''.join(strlist[::-1])
+        jk      = "".join(strlist[::-1])
 
         #: Get crypted
         strlist = list(params[2].decode('base64'))
-        crypted = ''.join(strlist[::-1])
+        crypted = "".join(strlist[::-1])
 
         #: Log and return
         return crypted, jk

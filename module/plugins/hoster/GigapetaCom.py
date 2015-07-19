@@ -40,9 +40,9 @@ class GigapetaCom(SimpleHoster):
 
             captcha = self.decrypt_captcha(captcha_url)
             self.html = self.load(pyfile.url, post={
-                "captcha_key": captcha_key,
-                "captcha": captcha,
-                "download": "Download"})
+                'captcha_key': captcha_key,
+                'captcha': captcha,
+                'download': "Download"})
 
             m = re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I)
             if m:

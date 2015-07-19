@@ -143,10 +143,10 @@ class Xdcc(Hoster):
                     continue
 
                 msg = {
-                    "origin": msg[0][1:],
-                    "action": msg[1],
-                    "target": msg[2],
-                    "text": msg[3][1:]
+                    'origin': msg[0][1:],
+                    'action': msg[1],
+                    'target': msg[2],
+                    'text': msg[3][1:]
                 }
 
                 if nick == msg['target'][0:len(nick)] and "PRIVMSG" == msg['action']:
@@ -195,7 +195,7 @@ class Xdcc(Hoster):
         self.pyfile.setStatus("downloading")
         newname = self.req.download(ip, port, filename, sock, self.pyfile.setProgress)
         if newname and newname != filename:
-            self.log_info(_("%(name)s saved as %(newname)s") % {"name": self.pyfile.name, "newname": newname})
+            self.log_info(_("%(name)s saved as %(newname)s") % {'name': self.pyfile.name, 'newname': newname})
             filename = newname
 
         #: kill IRC socket

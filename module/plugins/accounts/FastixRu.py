@@ -24,9 +24,9 @@ class FastixRu(Account):
         kb     = float(points) * 1024 ** 2 / 1000
 
         if points > 0:
-            account_info = {"validuntil": -1, "trafficleft": kb}
+            account_info = {'validuntil': -1, 'trafficleft': kb}
         else:
-            account_info = {"validuntil": None, "trafficleft": None, "premium": False}
+            account_info = {'validuntil': None, 'trafficleft': None, 'premium': False}
         return account_info
 
 

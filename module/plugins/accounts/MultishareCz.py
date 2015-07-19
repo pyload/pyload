@@ -30,14 +30,14 @@ class MultishareCz(Account):
         html = self.load("http://www.multishare.cz/")
         mms_info = dict(re.findall(self.ACCOUNT_INFO_PATTERN, html))
 
-        return dict(mms_info, **{"validuntil": -1, "trafficleft": trafficleft})
+        return dict(mms_info, **{'validuntil': -1, 'trafficleft': trafficleft})
 
 
     def login(self, user, data, req):
         html = self.load('https://www.multishare.cz/html/prihlaseni_process.php',
-                         post={"akce" : "Přihlásit",
-                               "heslo": data['password'],
-                               "jmeno": user})
+                         post={'akce' : "Přihlásit",
+                               'heslo': data['password'],
+                               'jmeno': user})
 
         if '<div class="akce-chyba akce">' in html:
             self.wrong_password()

@@ -27,7 +27,7 @@ class LetitbitNet(Account):
         #     self.log_warning(api_rep['data'])
         #     return {'valid': False, 'premium': False}
 
-        return {"premium": True}
+        return {'premium': True}
 
 
     def login(self, user, data, req):

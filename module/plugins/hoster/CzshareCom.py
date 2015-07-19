@@ -138,9 +138,9 @@ class CzshareCom(SimpleHoster):
         #: Check download
         check = self.check_download({
             "temp offline" : re.compile(r"^Soubor je do.*asn.* nedostupn.*$"),
-            "credit"       : re.compile(r"^Nem.*te dostate.*n.* kredit.$"),
+            'credit'       : re.compile(r"^Nem.*te dostate.*n.* kredit.$"),
             "multi-dl"     : re.compile(self.MULTIDL_PATTERN),
-            "captcha"      : "<li>Zadaný ověřovací kód nesouhlasí!</li>"
+            'captcha'      : "<li>Zadaný ověřovací kód nesouhlasí!</li>"
         })
 
         if check == "temp offline":

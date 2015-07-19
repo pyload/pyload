@@ -27,7 +27,7 @@ class TurbobitNet(Account):
             premium = False
             validuntil = -1
 
-        return {"premium": premium, "trafficleft": -1, "validuntil": validuntil}
+        return {'premium': premium, 'trafficleft': -1, 'validuntil': validuntil}
 
 
     def login(self, user, data, req):

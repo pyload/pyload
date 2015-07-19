@@ -69,14 +69,14 @@ class Account(Plugin):
 
         except WrongPassword:
             self.log_warning(
-                _("Could not login with account %(user)s | %(msg)s") % {"user": user,
-                                                                        "msg": _("Wrong Password")})
+                _("Could not login with account %(user)s | %(msg)s") % {'user': user,
+                                                                        'msg': _("Wrong Password")})
             success = data['valid'] = False
 
         except Exception, e:
             self.log_warning(
-                _("Could not login with account %(user)s | %(msg)s") % {"user": user,
-                                                                        "msg": e})
+                _("Could not login with account %(user)s | %(msg)s") % {'user': user,
+                                                                        'msg': e})
             success = data['valid'] = False
             if self.core.debug:
                 traceback.print_exc()
@@ -126,7 +126,7 @@ class Account(Plugin):
                 self.accounts[user]['options'].update(options)
                 return self.accounts[user]['options'] != before
         else:
-            self.accounts[user] = {"password": password, "options": options, "valid": True}
+            self.accounts[user] = {'password': password, 'options': options, 'valid': True}
             self._login(user, self.accounts[user])
             return True
 
@@ -211,16 +211,16 @@ class Account(Plugin):
         :param req: `Request` instance
         :return:
         """
-        return {"validuntil" : None,  #: -1 for unlimited
-                "login"      : name,
-                # "password"   : self.accounts[name]['password'],  #: Commented due security reason
-                "options"    : self.accounts[name]['options'],
-                "valid"      : self.accounts[name]['valid'],
-                "trafficleft": None,  #: In bytes, -1 for unlimited
-                "maxtraffic" : None,
-                "premium"    : None,
-                "timestamp"  : 0,  #: Time this info was retrieved
-                "type"       : self.__name__}
+        return {'validuntil' : None,  #: -1 for unlimited
+                'login'      : name,
+                # 'password'   : self.accounts[name]['password'],  #: Commented due security reason
+                'options'    : self.accounts[name]['options'],
+                'valid'      : self.accounts[name]['valid'],
+                'trafficleft': None,  #: In bytes, -1 for unlimited
+                'maxtraffic' : None,
+                'premium'    : None,
+                'timestamp'  : 0,  #: Time this info was retrieved
+                'type'       : self.__name__}
 
 
     def get_all_accounts(self, force=False):
@@ -306,7 +306,7 @@ class Account(Plugin):
         if user in self.infos:
             self.log_warning(_("Account %s has not enough traffic, checking again in 30min") % user)
 
-            self.infos[user].update({"trafficleft": 0})
+            self.infos[user].update({'trafficleft': 0})
             self.schedule_refresh(user, 30 * 60)
 
 
@@ -314,7 +314,7 @@ class Account(Plugin):
         if user in self.infos:
             self.log_warning(_("Account %s is expired, checking again in 1h") % user)
 
-            self.infos[user].update({"validuntil": time.time() - 1})
+            self.infos[user].update({'validuntil': time.time() - 1})
             self.schedule_refresh(user, 60 * 60)
 
 

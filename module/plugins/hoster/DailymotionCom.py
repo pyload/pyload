@@ -12,7 +12,7 @@ def get_info(urls):
     result  = []
     regex   = re.compile(DailymotionCom.__pattern__)
     apiurl  = "https://api.dailymotion.com/video/%s"
-    request = {"fields": "access_error,status,title"}
+    request = {'fields': "access_error,status,title"}
 
     for url in urls:
         id   = regex.match(url).group('ID')

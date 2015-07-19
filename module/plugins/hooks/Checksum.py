@@ -80,8 +80,8 @@ class Checksum(Addon):
         """
         Compute checksum for the downloaded file and compare it with the hash provided by the hoster.
         pyfile.plugin.check_data should be a dictionary which can contain:
-        a) if known, the exact filesize in bytes (e.g. "size": 123456789)
-        b) hexadecimal hash string with algorithm name as key (e.g. "md5": "d76505d0869f9f928a17d42d66326307")
+        a) if known, the exact filesize in bytes (e.g. 'size': 123456789)
+        b) hexadecimal hash string with algorithm name as key (e.g. 'md5': "d76505d0869f9f928a17d42d66326307")
         """
         if hasattr(pyfile.plugin, "check_data") and isinstance(pyfile.plugin.check_data, dict):
             data = pyfile.plugin.check_data.copy()

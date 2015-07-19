@@ -19,15 +19,15 @@ class FreeWayMe(Account):
 
         self.log_debug(status)
 
-        account_info = {"validuntil": -1, "premium": False}
+        account_info = {'validuntil': -1, 'premium': False}
         if status['premium'] == "Free":
             account_info['trafficleft'] = self.parse_traffic(status['guthaben'] + "MB")
         elif status['premium'] == "Spender":
             account_info['trafficleft'] = -1
         elif status['premium'] == "Flatrate":
-            account_info = {"validuntil": float(status['Flatrate']),
-                            "trafficleft": -1,
-                            "premium": True}
+            account_info = {'validuntil' : float(status['Flatrate']),
+                            'trafficleft': -1,
+                            'premium'    : True}
 
         return account_info
 
@@ -42,7 +42,7 @@ class FreeWayMe(Account):
 
     def get_account_status(self, user, req):
         answer = self.load("http://www.free-way.bz/ajax/jd.php",  #@TODO: Revert to `https` in 0.4.10
-                          get={"id": 4, "user": user, "pass": self.get_account_data(user)['password']})
+                          get={'id': 4, 'user': user, 'pass': self.get_account_data(user)['password']})
 
         self.log_debug("Login: %s" % answer)
 

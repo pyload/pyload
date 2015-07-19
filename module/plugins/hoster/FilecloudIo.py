@@ -45,7 +45,7 @@ class FilecloudIo(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        data = {"ukey": self.info['pattern']['ID']}
+        data = {'ukey': self.info['pattern']['ID']}
 
         m = re.search(self.AB1_PATTERN, self.html)
         if m is None:
@@ -61,8 +61,8 @@ class FilecloudIo(SimpleHoster):
             self.error(_("ReCaptcha key not found"))
 
         response, challenge = recaptcha.challenge(captcha_key)
-        self.account.form_data = {"recaptcha_challenge_field": challenge,
-                                  "recaptcha_response_field" : response}
+        self.account.form_data = {'recaptcha_challenge_field': challenge,
+                                  'recaptcha_response_field' : response}
         self.account.relogin(self.user)
         self.retry(2)
 
@@ -102,7 +102,7 @@ class FilecloudIo(SimpleHoster):
                 self.error(_("LINK_FREE_PATTERN not found"))
 
             if "size" in self.info and self.info['size']:
-                self.check_data = {"size": int(self.info['size'])}
+                self.check_data = {'size': int(self.info['size'])}
 
             self.link = m.group(1)
         else:
@@ -114,7 +114,7 @@ class FilecloudIo(SimpleHoster):
         ukey = self.info['pattern']['ID']
         self.log_debug("Akey: %s | Ukey: %s" % (akey, ukey))
         rep = self.load("http://api.filecloud.io/api-fetch_download_url.api",
-                        post={"akey": akey, "ukey": ukey})
+                        post={'akey': akey, 'ukey': ukey})
         self.log_debug("FetchDownloadUrl: " + rep)
         rep = json_loads(rep)
         if rep['status'] == 'ok':

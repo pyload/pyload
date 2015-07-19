@@ -77,7 +77,7 @@ class XMPPInterface(IRCInterface, JabberClient):
         try:
             if self.get_config('info_file'):
                 self.announce(
-                    _("Download finished: %(name)s @ %(plugin)s") % {"name": pyfile.name, "plugin": pyfile.pluginname})
+                    _("Download finished: %(name)s @ %(plugin)s") % {'name': pyfile.name, 'plugin': pyfile.pluginname})
         except Exception:
             pass
 

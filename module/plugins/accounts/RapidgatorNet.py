@@ -58,8 +58,8 @@ class RapidgatorNet(Account):
     def login(self, user, data, req):
         try:
             html = self.load(urlparse.urljoin(self.API_URL, "login"),
-                             post={"username": user,
-                                   "password": data['password']})
+                             post={'username': user,
+                                   'password': data['password']})
 
             self.log_debug("API:LOGIN", html)
 

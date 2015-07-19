@@ -81,7 +81,7 @@ class FilecryptCc(Crypter):
         if not password:
             self.fail(_("Please enter the password in package section and try again"))
 
-        self.html = self.load(self.pyfile.url, post={"password": password})
+        self.html = self.load(self.pyfile.url, post={'password': password})
 
 
     def handle_captcha(self):

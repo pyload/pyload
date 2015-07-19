@@ -14,17 +14,17 @@ class FilesMailRu(Account):
 
 
     def load_account_info(self, user, req):
-        return {"validuntil": None, "trafficleft": None}
+        return {'validuntil': None, 'trafficleft': None}
 
 
     def login(self, user, data, req):
         user, domain = user.split("@")
 
         html = self.load("https://swa.mail.ru/cgi-bin/auth",
-                         post={"Domain"  : domain,
-                               "Login"   : user,
-                               "Password": data['password'],
-                               "Page"    : "http://files.mail.ru/"})
+                         post={'Domain'  : domain,
+                               'Login'   : user,
+                               'Password': data['password'],
+                               'Page'    : "http://files.mail.ru/"})
 
         if "Неверное имя пользователя или пароль" in html:
             self.wrong_password()

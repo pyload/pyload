@@ -44,7 +44,7 @@ class NowVideoSx(Account):
                     premium = False
                     validuntil = -1
 
-        return {"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium}
+        return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 
 
     def login(self, user, data, req):

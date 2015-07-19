@@ -37,16 +37,16 @@ class FreakshareCom(Account):
         except Exception:
             pass
 
-        return {"premium": premium, "validuntil": validuntil, "trafficleft": trafficleft}
+        return {'premium': premium, 'validuntil': validuntil, 'trafficleft': trafficleft}
 
 
     def login(self, user, data, req):
         self.load("http://freakshare.com/index.php?language=EN")
 
         html = self.load("https://freakshare.com/login.html",
-                         post={"submit": "Login",
-                               "user"  : user,
-                               "pass"  : data['password']})
+                         post={'submit': "Login",
+                               'user'  : user,
+                               'pass'  : data['password']})
 
         if ">Wrong Username or Password" in html:
             self.wrong_password()

@@ -35,14 +35,14 @@ class MegaRapidCz(Account):
         m = re.search(self.VALID_UNTIL_PATTERN, htmll)
         if m:
             validuntil = time.mktime(time.strptime(m.group(1), "%d.%m.%Y - %H:%M"))
-            return {"premium": True, "trafficleft": -1, "validuntil": validuntil}
+            return {'premium': True, 'trafficleft': -1, 'validuntil': validuntil}
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, htmll)
         if m:
             trafficleft = float(m.group(1)) * (1 << 20)
-            return {"premium": True, "trafficleft": trafficleft, "validuntil": -1}
+            return {'premium': True, 'trafficleft': trafficleft, 'validuntil': -1}
 
-        return {"premium": False, "trafficleft": None, "validuntil": None}
+        return {'premium': False, 'trafficleft': None, 'validuntil': None}
 
 
     def login(self, user, data, req):
@@ -53,8 +53,8 @@ class MegaRapidCz(Account):
             html = html[start + 33:]
             hashes = html[0:32]
             html = self.load("https://megarapid.cz/prihlaseni/",
-                             post={"hash"    : hashes,
-                                   "login"   : user,
-                                   "pass1"   : data['password'],
-                                   "remember": 1,
-                                   "sbmt"    : u"Přihlásit"})
+                             post={'hash'    : hashes,
+                                   'login'   : user,
+                                   'pass1'   : data['password'],
+                                   'remember': 1,
+                                   'sbmt'    : u"Přihlásit"})

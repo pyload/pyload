@@ -73,8 +73,8 @@ class DeathByCaptcha(Hook):
         if post:
             if not isinstance(post, dict):
                 post = {}
-            post.update({"username": self.get_config('username'),
-                         "password": self.get_config('password')})
+            post.update({'username': self.get_config('username'),
+                         'password': self.get_config('password')})
 
         res = None
         try:
@@ -138,7 +138,7 @@ class DeathByCaptcha(Hook):
                 data = f.read()
             data = "base64:" + b64encode(data)
 
-        res = self.api_response("captcha", {"captchafile": data}, multipart)
+        res = self.api_response("captcha", {'captchafile': data}, multipart)
 
         if "captcha" not in res:
             raise DeathByCaptchaException(res)

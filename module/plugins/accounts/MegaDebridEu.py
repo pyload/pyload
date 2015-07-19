@@ -27,10 +27,10 @@ class MegaDebridEu(Account):
         res = json_loads(jsonResponse)
 
         if res['response_code'] == "ok":
-            return {"premium": True, "validuntil": float(res['vip_end']), "status": True}
+            return {'premium': True, 'validuntil': float(res['vip_end']), 'status': True}
         else:
             self.log_error(res)
-            return {"status": False, "premium": False}
+            return {'status': False, 'premium': False}
 
 
     def login(self, user, data, req):

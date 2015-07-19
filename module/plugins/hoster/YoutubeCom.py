@@ -98,11 +98,11 @@ class YoutubeCom(Hoster):
         use3d = self.get_config('3d')
 
         if use3d:
-            quality = {"sd": 82, "hd": 84, "fullhd": 85, "240p": 83, "360p": 82,
-                       "480p": 82, "720p": 84, "1080p": 85, "3072p": 85}
+            quality = {'sd': 82, 'hd': 84, 'fullhd': 85, '240p': 83, '360p': 82,
+                       '480p': 82, '720p': 84, '1080p': 85, '3072p': 85}
         else:
-            quality = {"sd": 18, "hd": 22, "fullhd": 37, "240p": 5, "360p": 18,
-                       "480p": 35, "720p": 22, "1080p": 37, "3072p": 38}
+            quality = {'sd': 18, 'hd': 22, 'fullhd': 37, '240p': 5, '360p': 18,
+                       '480p': 35, '720p': 22, '1080p': 37, '3072p': 38}
 
         desired_fmt = self.get_config('fmt')
 

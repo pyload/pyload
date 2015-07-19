@@ -37,8 +37,8 @@ class AdYouLike(Captcha):
     def challenge(self, key=None, html=None):
         ayl, callback = key or self.retrieve_key(html)
 
-        #: {"adyoulike":{"key":"P~zQ~O0zV0WTiAzC-iw0navWQpCLoYEP"},
-        #: "all":{"element_id":"ayl_private_cap_92300","lang":"fr","env":"prod"}}
+        #: {'adyoulike':{'key':"P~zQ~O0zV0WTiAzC-iw0navWQpCLoYEP"},
+        #: 'all':{'element_id':"ayl_private_cap_92300",'lang':"fr",'env':"prod"}}
         ayl = json_loads(ayl)
 
         html = self.plugin.load("http://api-ayl.appspot.com/challenge",
@@ -58,14 +58,14 @@ class AdYouLike(Captcha):
 
     def result(self, server, challenge):
         #: Adyoulike.g._jsonp_5579316662423138
-        #: ({"translations":{"fr":{"instructions_visual":"Recopiez « Soonnight » ci-dessous :"}},
-        #: "site_under":true,"clickable":true,"pixels":{"VIDEO_050":[],"DISPLAY":[],"VIDEO_000":[],"VIDEO_100":[],
-        #: "VIDEO_025":[],"VIDEO_075":[]},"medium_type":"image/adyoulike",
-        #: "iframes":{"big":"<iframe src=\"http://www.soonnight.com/campagn.html\" scrolling=\"no\"
-        #: height=\"250\" width=\"300\" frameborder=\"0\"></iframe>"},"shares":{},"id":256,
-        #: "token":"e6QuI4aRSnbIZJg02IsV6cp4JQ9~MjA1","formats":{"small":{"y":300,"x":0,"w":300,"h":60},
-        #: "big":{"y":0,"x":0,"w":300,"h":250},"hover":{"y":440,"x":0,"w":300,"h":60}},
-        #: "tid":"SqwuAdxT1EZoi4B5q0T63LN2AkiCJBg5"})
+        #: ({'translations':{'fr':{'instructions_visual':"Recopiez « Soonnight » ci-dessous :"}},
+        #: 'site_under':true,'clickable':true,'pixels':{'VIDEO_050':[],'DISPLAY':[],'VIDEO_000':[],'VIDEO_100':[],
+        #: 'VIDEO_025':[],'VIDEO_075':[]},'medium_type':"image/adyoulike",
+        #: 'iframes':{'big':"<iframe src=\"http://www.soonnight.com/campagn.html\" scrolling=\"no\"
+        #: height=\"250\" width=\"300\" frameborder=\"0\"></iframe>"},'shares':{},'id':256,
+        #: 'token':"e6QuI4aRSnbIZJg02IsV6cp4JQ9~MjA1",'formats':{'small':{'y':300,'x':0,'w':300,'h':60},
+        #: 'big':{'y':0,'x':0,'w':300,'h':250},'hover':{'y':440,'x':0,'w':300,'h':60}},
+        #: 'tid':"SqwuAdxT1EZoi4B5q0T63LN2AkiCJBg5"})
 
         if isinstance(server, basestring):
             server = json_loads(server)

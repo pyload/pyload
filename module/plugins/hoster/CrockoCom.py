@@ -57,7 +57,7 @@ class CrockoCom(SimpleHoster):
             inputs['recaptcha_response_field'], inputs['recaptcha_challenge_field'] = recaptcha.challenge()
             self.download(action, post=inputs)
 
-            if self.check_download({"captcha": recaptcha.KEY_AJAX_PATTERN}):
+            if self.check_download({'captcha': recaptcha.KEY_AJAX_PATTERN}):
                 self.invalid_captcha()
             else:
                 break

@@ -24,14 +24,14 @@ class DepositfilesCom(Account):
 
         validuntil = time.mktime(time.strptime(validuntil, "%Y-%m-%d %H:%M:%S"))
 
-        return {"validuntil": validuntil, "trafficleft": -1}
+        return {'validuntil': validuntil, 'trafficleft': -1}
 
 
     def login(self, user, data, req):
         html = self.load("https://dfiles.eu/de/login.php",
-                         get={"return": "/de/gold/payment.php"},
-                         post={"login"   : user,
-                               "password": data['password']})
+                         get={'return': "/de/gold/payment.php"},
+                         post={'login'   : user,
+                               'password': data['password']})
 
         if r'<div class="error_message">Sie haben eine falsche Benutzername-Passwort-Kombination verwendet.</div>' in html:
             self.wrong_password()

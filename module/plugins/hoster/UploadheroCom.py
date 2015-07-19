@@ -46,7 +46,7 @@ class UploadheroCom(SimpleHoster):
         captcha = self.decrypt_captcha(urlparse.urljoin("http://uploadhero.co", m.group(1)))
 
         self.html = self.load(pyfile.url,
-                              get={"code": captcha})
+                              get={'code': captcha})
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m:

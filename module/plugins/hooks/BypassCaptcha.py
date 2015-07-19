@@ -48,7 +48,7 @@ class BypassCaptcha(Hook):
 
 
     def get_credits(self):
-        res = self.load(self.GETCREDITS_URL, post={"key": self.get_config('passkey')})
+        res = self.load(self.GETCREDITS_URL, post={'key': self.get_config('passkey')})
 
         data = dict(x.split(' ', 1) for x in res.splitlines())
         return int(data['Left'])
@@ -83,8 +83,8 @@ class BypassCaptcha(Hook):
 
     def respond(self, ticket, success):
         try:
-            res = self.load(self.RESPOND_URL, post={"task_id": ticket, "key": self.get_config('passkey'),
-                                                      "cv": 1 if success else 0})
+            res = self.load(self.RESPOND_URL, post={'task_id': ticket, 'key': self.get_config('passkey'),
+                                                      'cv': 1 if success else 0})
         except BadHeader, e:
             self.log_error(_("Could not send response"), e)
 

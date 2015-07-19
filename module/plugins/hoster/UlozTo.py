@@ -97,7 +97,7 @@ class UlozTo(SimpleHoster):
 
             self.html = self.load(pyfile.url,
                                   get={'do': "askAgeForm-submit"},
-                                  post={"agree": "Confirm", "_token_": m.group(1)})
+                                  post={'agree': "Confirm", '_token_': m.group(1)})
 
         if self.PASSWD_PATTERN in self.html:
             password = self.get_password()
@@ -106,7 +106,7 @@ class UlozTo(SimpleHoster):
                 self.log_info(_("Password protected link, trying ") + password)
                 self.html = self.load(pyfile.url,
                                       get={'do': "passwordProtectedForm-submit"},
-                                      post={"password": password, "password_send": 'Send'})
+                                      post={'password': password, 'password_send': 'Send'})
 
                 if self.PASSWD_PATTERN in self.html:
                     self.fail(_("Incorrect password"))
@@ -121,11 +121,11 @@ class UlozTo(SimpleHoster):
 
     def check_file(self):
         check = self.check_download({
-            "wrong_captcha": re.compile(r'<ul class="error">\s*<li>Error rewriting the text.</li>'),
-            "offline"      : re.compile(self.OFFLINE_PATTERN),
-            "passwd"       : self.PASSWD_PATTERN,
-            "server_error" : 'src="http://img.ulozto.cz/error403/vykricnik.jpg"',  #: Paralell dl, server overload etc.
-            "not_found"    : "<title>Ulož.to</title>"
+            'wrong_captcha': re.compile(r'<ul class="error">\s*<li>Error rewriting the text.</li>'),
+            'offline'      : re.compile(self.OFFLINE_PATTERN),
+            'passwd'       : self.PASSWD_PATTERN,
+            'server_error' : 'src="http://img.ulozto.cz/error403/vykricnik.jpg"',  #: Paralell dl, server overload etc.
+            'not_found'    : "<title>Ulož.to</title>"
         })
 
         if check == "wrong_captcha":

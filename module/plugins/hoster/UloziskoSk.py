@@ -63,10 +63,10 @@ class UloziskoSk(SimpleHoster):
         self.log_debug("CAPTCHA_URL:" + captcha_url + ' CAPTCHA:' + captcha)
 
         self.download(parsed_url,
-                      post={"antispam": captcha,
-                            "id"      : id,
-                            "name"    : pyfile.name,
-                            "but"     : "++++STIAHNI+S%DABOR++++"})
+                      post={'antispam': captcha,
+                            'id'      : id,
+                            'name'    : pyfile.name,
+                            'but'     : "++++STIAHNI+S%DABOR++++"})
 
 
 getInfo = create_getInfo(UloziskoSk)
