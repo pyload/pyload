@@ -10,6 +10,7 @@ class SolveMedia(Captcha):
     __name__    = "SolveMedia"
     __type__    = "captcha"
     __version__ = "0.15"
+    __status__  = "stable"
 
     __description__ = """SolveMedia captcha service plugin"""
     __license__     = "GPLv3"

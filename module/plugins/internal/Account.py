@@ -17,6 +17,7 @@ class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
     __version__ = "0.05"
+    __status__  = "stable"
 
     __description__ = """Base account plugin"""
     __license__     = "GPLv3"

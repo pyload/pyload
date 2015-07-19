@@ -10,6 +10,7 @@ class SimplyPremiumCom(MultiHoster):
     __name__    = "SimplyPremiumCom"
     __type__    = "hoster"
     __version__ = "0.10"
+    __status__  = "stable"
 
     __pattern__ = r'https?://.+simply-premium\.com'
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),

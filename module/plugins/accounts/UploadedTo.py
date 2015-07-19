@@ -10,6 +10,7 @@ class UploadedTo(Account):
     __name__    = "UploadedTo"
     __type__    = "account"
     __version__ = "0.32"
+    __status__  = "stable"
 
     __description__ = """Uploaded.to account plugin"""
     __license__     = "GPLv3"

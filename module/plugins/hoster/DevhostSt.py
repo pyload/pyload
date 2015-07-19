@@ -12,6 +12,7 @@ class DevhostSt(SimpleHoster):
     __name__    = "DevhostSt"
     __type__    = "hoster"
     __version__ = "0.06"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?d-h\.st/(?!users/)\w{3}'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

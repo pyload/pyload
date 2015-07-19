@@ -7,6 +7,7 @@ class LinestorageCom(XFSAccount):
     __name__    = "LinestorageCom"
     __type__    = "account"
     __version__ = "0.04"
+    __status__  = "stable"
 
     __description__ = """Linestorage.com account plugin"""
     __license__     = "GPLv3"

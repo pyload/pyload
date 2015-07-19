@@ -8,6 +8,7 @@ class PremiumizeMe(Account):
     __name__    = "PremiumizeMe"
     __type__    = "account"
     __version__ = "0.19"
+    __status__  = "stable"
 
     __description__ = """Premiumize.me account plugin"""
     __license__     = "GPLv3"

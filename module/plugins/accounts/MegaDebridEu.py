@@ -8,6 +8,7 @@ class MegaDebridEu(Account):
     __name__    = "MegaDebridEu"
     __type__    = "account"
     __version__ = "0.22"
+    __status__  = "stable"
 
     __description__ = """Mega-debrid.eu account plugin"""
     __license__     = "GPLv3"

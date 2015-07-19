@@ -7,6 +7,7 @@ class MultihostersCom(ZeveraCom):
     __name__    = "MultihostersCom"
     __type__    = "account"
     __version__ = "0.04"
+    __status__  = "stable"
 
     __description__ = """Multihosters.com account plugin"""
     __license__     = "GPLv3"

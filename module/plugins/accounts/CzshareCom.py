@@ -10,6 +10,7 @@ class CzshareCom(Account):
     __name__    = "CzshareCom"
     __type__    = "account"
     __version__ = "0.20"
+    __status__  = "stable"
 
     __description__ = """Czshare.com account plugin, now Sdilej.cz"""
     __license__     = "GPLv3"

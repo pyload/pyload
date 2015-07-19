@@ -10,6 +10,7 @@ class LixIn(Crypter):
     __name__    = "LixIn"
     __type__    = "crypter"
     __version__ = "0.24"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?lix\.in/(?P<ID>.+)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

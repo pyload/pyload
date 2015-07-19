@@ -9,6 +9,7 @@ class FileuploadNet(SimpleHoster):
     __name__    = "FileuploadNet"
     __type__    = "hoster"
     __version__ = "0.03"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?(en\.)?file-upload\.net/download-\d+/.+'
 

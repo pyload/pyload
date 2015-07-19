@@ -7,6 +7,7 @@ class VidPlayNet(XFSAccount):
     __name__    = "VidPlayNet"
     __type__    = "account"
     __version__ = "0.03"
+    __status__  = "stable"
 
     __description__ = """VidPlay.net account plugin"""
     __license__     = "GPLv3"

@@ -10,6 +10,7 @@ class FileserveCom(Account):
     __name__    = "FileserveCom"
     __type__    = "account"
     __version__ = "0.22"
+    __status__  = "stable"
 
     __description__ = """Fileserve.com account plugin"""
     __license__     = "GPLv3"

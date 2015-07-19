@@ -9,6 +9,7 @@ class NosuploadCom(XFSHoster):
     __name__    = "NosuploadCom"
     __type__    = "hoster"
     __version__ = "0.32"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?nosupload\.com/\?d=\w{12}'
 

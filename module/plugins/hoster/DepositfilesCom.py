@@ -11,6 +11,7 @@ class DepositfilesCom(SimpleHoster):
     __name__    = "DepositfilesCom"
     __type__    = "hoster"
     __version__ = "0.57"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

@@ -10,6 +10,7 @@ class MyfastfileCom(Account):
     __name__    = "MyfastfileCom"
     __type__    = "account"
     __version__ = "0.06"
+    __status__  = "stable"
 
     __description__ = """Myfastfile.com account plugin"""
     __license__     = "GPLv3"

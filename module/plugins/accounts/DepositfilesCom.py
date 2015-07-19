@@ -10,6 +10,7 @@ class DepositfilesCom(Account):
     __name__    = "DepositfilesCom"
     __type__    = "account"
     __version__ = "0.34"
+    __status__  = "stable"
 
     __description__ = """Depositfiles.com account plugin"""
     __license__     = "GPLv3"

@@ -41,6 +41,7 @@ class DailymotionCom(Hoster):
     __name__    = "DailymotionCom"
     __type__    = "hoster"
     __version__ = "0.22"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?dailymotion\.com/.*video/(?P<ID>[\w^_]+)'
     __config__  = [("quality", "Lowest;LD 144p;LD 240p;SD 384p;HQ 480p;HD 720p;HD 1080p;Highest", "Quality", "Highest")]

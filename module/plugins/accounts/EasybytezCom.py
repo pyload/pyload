@@ -9,6 +9,7 @@ class EasybytezCom(XFSAccount):
     __name__    = "EasybytezCom"
     __type__    = "account"
     __version__ = "0.13"
+    __status__  = "stable"
 
     __description__ = """EasyBytez.com account plugin"""
     __license__     = "GPLv3"

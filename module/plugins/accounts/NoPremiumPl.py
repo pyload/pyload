@@ -12,6 +12,7 @@ class NoPremiumPl(Account):
     __name__    = "NoPremiumPl"
     __type__    = "account"
     __version__ = "0.03"
+    __status__  = "stable"
 
     __description__ = "NoPremium.pl account plugin"
     __license__     = "GPLv3"

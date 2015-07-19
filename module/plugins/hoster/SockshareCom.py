@@ -7,6 +7,7 @@ class SockshareCom(DeadHoster):
     __name__    = "SockshareCom"
     __type__    = "hoster"
     __version__ = "0.06"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?sockshare\.com/(mobile/)?(file|embed)/(?P<ID>\w+)'
     __config__  = []  #@TODO: Remove in 0.4.10

@@ -7,6 +7,7 @@ class EgoFilesCom(DeadHoster):
     __name__    = "EgoFilesCom"
     __type__    = "hoster"
     __version__ = "0.17"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?egofiles\.com/\w+'
     __config__  = []  #@TODO: Remove in 0.4.10

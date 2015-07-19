@@ -7,6 +7,7 @@ class SharebeastCom(XFSAccount):
     __name__    = "SharebeastCom"
     __type__    = "account"
     __version__ = "0.02"
+    __status__  = "stable"
 
     __description__ = """Sharebeast.com account plugin"""
     __license__     = "GPLv3"

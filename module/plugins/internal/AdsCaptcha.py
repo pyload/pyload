@@ -10,6 +10,7 @@ class AdsCaptcha(Captcha):
     __name__    = "AdsCaptcha"
     __type__    = "captcha"
     __version__ = "0.10"
+    __status__  = "stable"
 
     __description__ = """AdsCaptcha captcha service plugin"""
     __license__     = "GPLv3"

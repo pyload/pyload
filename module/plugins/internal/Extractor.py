@@ -23,6 +23,7 @@ class Extractor(Plugin):
     __name__    = "Extractor"
     __type__    = "extractor"
     __version__ = "0.25"
+    __status__  = "stable"
 
     __description__ = """Base extractor plugin"""
     __license__     = "GPLv3"

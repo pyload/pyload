@@ -9,6 +9,7 @@ class Dereferer(SimpleCrypter):
     __name__    = "Dereferer"
     __type__    = "crypter"
     __version__ = "0.17"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/.*?(?P<LINK>(?:ht|f)tps?://.+)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

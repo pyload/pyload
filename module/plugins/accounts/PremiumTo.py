@@ -7,6 +7,7 @@ class PremiumTo(Account):
     __name__    = "PremiumTo"
     __type__    = "account"
     __version__ = "0.11"
+    __status__  = "stable"
 
     __description__ = """Premium.to account plugin"""
     __license__     = "GPLv3"

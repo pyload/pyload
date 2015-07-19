@@ -9,6 +9,7 @@ class SexuriaCom(Crypter):
     __name__    = "SexuriaCom"
     __type__    = "crypter"
     __version__ = "0.04"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?sexuria\.com/(v1/)?(Pornos_Kostenlos_.+?_(\d+)\.html|dl_links_\d+_\d+\.html|id=\d+\&part=\d+\&link=\d+)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

@@ -34,6 +34,7 @@ class FileserveCom(Hoster):
     __name__    = "FileserveCom"
     __type__    = "hoster"
     __version__ = "0.57"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<ID>[^/]+)'
 

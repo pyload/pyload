@@ -10,6 +10,7 @@ class TXT(Container):
     __name__    = "TXT"
     __type__    = "container"
     __version__ = "0.17"
+    __status__  = "stable"
 
     __pattern__ = r'.+\.(txt|text)$'
     __config__  = [("flush"   , "bool"  , "Flush list after adding", False  ),

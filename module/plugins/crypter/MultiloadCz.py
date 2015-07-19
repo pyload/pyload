@@ -8,6 +8,7 @@ class MultiloadCz(Crypter):
     __name__    = "MultiloadCz"
     __type__    = "crypter"
     __version__ = "0.42"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:[^/]*\.)?multiload\.cz/(stahnout|slozka)/.+'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"           , True),

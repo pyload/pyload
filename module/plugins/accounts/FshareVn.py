@@ -10,6 +10,7 @@ class FshareVn(Account):
     __name__    = "FshareVn"
     __type__    = "account"
     __version__ = "0.11"
+    __status__  = "stable"
 
     __description__ = """Fshare.vn account plugin"""
     __license__     = "GPLv3"

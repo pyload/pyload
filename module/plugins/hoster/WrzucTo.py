@@ -10,6 +10,7 @@ class WrzucTo(SimpleHoster):
     __name__    = "WrzucTo"
     __type__    = "hoster"
     __version__ = "0.04"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?wrzuc\.to/(\w+(\.wt|\.html)|(\w+/?linki/\w+))'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

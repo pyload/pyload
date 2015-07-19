@@ -10,6 +10,7 @@ class MediafireComFolder(Crypter):
     __name__    = "MediafireComFolder"
     __type__    = "crypter"
     __version__ = "0.16"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

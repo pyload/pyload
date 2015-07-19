@@ -11,6 +11,7 @@ class YadiSk(SimpleHoster):
     __name__    = "YadiSk"
     __type__    = "hoster"
     __version__ = "0.06"
+    __status__  = "stable"
 
     __pattern__ = r'https?://yadi\.sk/d/[\w-]+'
 

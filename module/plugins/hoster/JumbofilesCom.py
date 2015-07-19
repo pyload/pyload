@@ -9,6 +9,7 @@ class JumbofilesCom(SimpleHoster):
     __name__    = "JumbofilesCom"
     __type__    = "hoster"
     __version__ = "0.04"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?jumbofiles\.com/(?P<ID>\w{12})'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

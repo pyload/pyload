@@ -7,6 +7,7 @@ class EasybytezCom(XFSHoster):
     __name__    = "EasybytezCom"
     __type__    = "hoster"
     __version__ = "0.24"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?easybytez\.com/\w{12}'
 

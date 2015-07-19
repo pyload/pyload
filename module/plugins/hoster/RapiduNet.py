@@ -13,6 +13,7 @@ class RapiduNet(SimpleHoster):
     __name__    = "RapiduNet"
     __type__    = "hoster"
     __version__ = "0.10"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?rapidu\.net/(?P<ID>\d{10})'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

@@ -10,6 +10,7 @@ class UpleaCom(XFSHoster):
     __name__    = "UpleaCom"
     __type__    = "hoster"
     __version__ = "0.11"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?uplea\.com/dl/\w{15}'
 

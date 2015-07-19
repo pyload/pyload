@@ -7,6 +7,7 @@ class SmoozedComHook(MultiHook):
     __name__    = "SmoozedComHook"
     __type__    = "hook"
     __version__ = "0.04"
+    __status__  = "stable"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),

@@ -10,6 +10,7 @@ class FiledropperCom(SimpleHoster):
     __name__    = "FiledropperCom"
     __type__    = "hoster"
     __version__ = "0.02"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?filedropper\.com/\w+'
 

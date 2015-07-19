@@ -16,6 +16,7 @@ class Xdcc(Hoster):
     __name__    = "Xdcc"
     __type__    = "hoster"
     __version__ = "0.34"
+    __status__  = "stable"
 
     __config__ = [("nick", "str", "Nickname", "pyload"),
                   ("ident", "str", "Ident", "pyloadident"),

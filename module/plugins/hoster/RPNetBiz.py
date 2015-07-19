@@ -10,6 +10,7 @@ class RPNetBiz(MultiHoster):
     __name__    = "RPNetBiz"
     __type__    = "hoster"
     __version__ = "0.16"
+    __status__  = "stable"
 
     __pattern__ = r'https?://.+rpnet\.biz'
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),

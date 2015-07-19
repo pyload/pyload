@@ -7,6 +7,7 @@ class FreevideoCz(DeadHoster):
     __name__    = "FreevideoCz"
     __type__    = "hoster"
     __version__ = "0.31"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?freevideo\.cz/vase-videa/.+'
     __config__  = []  #@TODO: Remove in 0.4.10

@@ -11,6 +11,7 @@ class FilefactoryCom(Account):
     __name__    = "FilefactoryCom"
     __type__    = "account"
     __version__ = "0.17"
+    __status__  = "stable"
 
     __description__ = """Filefactory.com account plugin"""
     __license__     = "GPLv3"

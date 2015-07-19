@@ -10,6 +10,7 @@ class MegaRapidoNet(Account):
     __name__    = "MegaRapidoNet"
     __type__    = "account"
     __version__ = "0.04"
+    __status__  = "stable"
 
     __description__ = """MegaRapido.net account plugin"""
     __license__     = "GPLv3"

@@ -12,6 +12,7 @@ class MystoreTo(SimpleHoster):
     __name__    = "MystoreTo"
     __type__    = "hoster"
     __version__ = "0.04"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?mystore\.to/dl/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

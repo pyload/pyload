@@ -10,6 +10,7 @@ class FileomCom(XFSHoster):
     __name__    = "FileomCom"
     __type__    = "hoster"
     __version__ = "0.06"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?fileom\.com/\w{12}'
 

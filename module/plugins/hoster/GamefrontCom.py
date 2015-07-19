@@ -7,6 +7,7 @@ class GamefrontCom(SimpleHoster):
     __name__    = "GamefrontCom"
     __type__    = "hoster"
     __version__ = "0.09"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?gamefront\.com/files/(?P<ID>\d+)'
 

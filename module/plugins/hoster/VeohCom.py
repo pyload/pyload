@@ -9,6 +9,7 @@ class VeohCom(SimpleHoster):
     __name__    = "VeohCom"
     __type__    = "hoster"
     __version__ = "0.23"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?veoh\.com/(tv/)?(watch|videos)/(?P<ID>v\w+)'
     __config__  = [("use_premium", "bool"         , "Use premium account if available", True  ),

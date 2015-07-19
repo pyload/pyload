@@ -8,6 +8,7 @@ class SimplyPremiumCom(Account):
     __name__    = "SimplyPremiumCom"
     __type__    = "account"
     __version__ = "0.07"
+    __status__  = "stable"
 
     __description__ = """Simply-Premium.com account plugin"""
     __license__     = "GPLv3"

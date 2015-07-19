@@ -11,6 +11,7 @@ class UnibytesCom(SimpleHoster):
     __name__    = "UnibytesCom"
     __type__    = "hoster"
     __version__ = "0.13"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?unibytes\.com/[\w .-]{11}B'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

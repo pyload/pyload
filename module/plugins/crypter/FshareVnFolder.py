@@ -7,6 +7,7 @@ class FshareVnFolder(SimpleCrypter):
     __name__    = "FshareVnFolder"
     __type__    = "crypter"
     __version__ = "0.02"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?fshare\.vn/folder/.+'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),

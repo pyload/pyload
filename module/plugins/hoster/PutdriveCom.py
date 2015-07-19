@@ -7,6 +7,7 @@ class PutdriveCom(ZeveraCom):
     __name__    = "PutdriveCom"
     __type__    = "hoster"
     __version__ = "0.03"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)putdrive\.com/(getFiles\.ashx|Members/download\.ashx)\?.*ourl=.+'
 

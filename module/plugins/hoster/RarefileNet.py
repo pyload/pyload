@@ -9,6 +9,7 @@ class RarefileNet(XFSHoster):
     __name__    = "RarefileNet"
     __type__    = "hoster"
     __version__ = "0.10"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?rarefile\.net/\w{12}'
 

@@ -11,6 +11,7 @@ class UploadingCom(Account):
     __name__    = "UploadingCom"
     __type__    = "account"
     __version__ = "0.14"
+    __status__  = "stable"
 
     __description__ = """Uploading.com account plugin"""
     __license__     = "GPLv3"

@@ -9,6 +9,7 @@ class JustPremium(Addon):
     __name__    = "JustPremium"
     __type__    = "hook"
     __version__ = "0.24"
+    __status__  = "stable"
 
     __config__ = [("excluded", "str", "Exclude hosters (comma separated)", ""),
                   ("included", "str", "Include hosters (comma separated)", "")]

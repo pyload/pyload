@@ -10,6 +10,7 @@ class CatShareNet(SimpleHoster):
     __name__    = "CatShareNet"
     __type__    = "hoster"
     __version__ = "0.16"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?catshare\.net/\w{16}'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

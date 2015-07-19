@@ -7,6 +7,7 @@ class UploadStationCom(DeadHoster):
     __name__    = "UploadStationCom"
     __type__    = "hoster"
     __version__ = "0.53"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?uploadstation\.com/file/(?P<ID>\w+)'
     __config__  = []  #@TODO: Remove in 0.4.10

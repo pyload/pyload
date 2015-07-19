@@ -9,6 +9,7 @@ class TusfilesNet(XFSHoster):
     __name__    = "TusfilesNet"
     __type__    = "hoster"
     __version__ = "0.12"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/\w{12}'
 

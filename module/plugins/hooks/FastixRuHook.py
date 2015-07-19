@@ -8,6 +8,7 @@ class FastixRuHook(MultiHook):
     __name__    = "FastixRuHook"
     __type__    = "hook"
     __version__ = "0.06"
+    __status__  = "stable"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),

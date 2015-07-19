@@ -12,6 +12,7 @@ class BitshareCom(SimpleHoster):
     __name__    = "BitshareCom"
     __type__    = "hoster"
     __version__ = "0.55"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/)?(?(1)|\?f=)(?P<ID>\w+)(?(1)/(?P<NAME>.+?)\.html)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

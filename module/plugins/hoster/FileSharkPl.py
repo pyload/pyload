@@ -10,6 +10,7 @@ class FileSharkPl(SimpleHoster):
     __name__    = "FileSharkPl"
     __type__    = "hoster"
     __version__ = "0.12"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?fileshark\.pl/pobierz/\d+/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

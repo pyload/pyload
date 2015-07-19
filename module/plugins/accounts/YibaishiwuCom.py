@@ -9,6 +9,7 @@ class YibaishiwuCom(Account):
     __name__    = "YibaishiwuCom"
     __type__    = "account"
     __version__ = "0.04"
+    __status__  = "stable"
 
     __description__ = """115.com account plugin"""
     __license__     = "GPLv3"

@@ -10,6 +10,7 @@ class QuickshareCz(SimpleHoster):
     __name__    = "QuickshareCz"
     __type__    = "hoster"
     __version__ = "0.57"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:[^/]*\.)?quickshare\.cz/stahnout-soubor/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

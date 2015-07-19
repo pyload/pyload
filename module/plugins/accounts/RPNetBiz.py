@@ -8,6 +8,7 @@ class RPNetBiz(Account):
     __name__    = "RPNetBiz"
     __type__    = "account"
     __version__ = "0.14"
+    __status__  = "stable"
 
     __description__ = """RPNet.biz account plugin"""
     __license__     = "GPLv3"

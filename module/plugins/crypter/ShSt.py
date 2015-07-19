@@ -10,6 +10,7 @@ class ShSt(Crypter):
     __name__    = "ShSt"
     __type__    = "crypter"
     __version__ = "0.04"
+    __status__  = "stable"
 
     __pattern__ = r'http://sh\.st/\w+'
 

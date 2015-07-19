@@ -7,6 +7,7 @@ class DeadCrypter(Crypter):
     __name__    = "DeadCrypter"
     __type__    = "crypter"
     __version__ = "0.08"
+    __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
 

@@ -11,6 +11,7 @@ class LuckyShareNet(SimpleHoster):
     __name__    = "LuckyShareNet"
     __type__    = "hoster"
     __version__ = "0.08"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?luckyshare\.net/(?P<ID>\d{10,})'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

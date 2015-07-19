@@ -7,6 +7,7 @@ class CrockoComFolder(SimpleCrypter):
     __name__    = "CrockoComFolder"
     __type__    = "crypter"
     __version__ = "0.02"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?crocko\.com/f/.+'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),

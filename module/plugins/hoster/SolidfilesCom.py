@@ -10,6 +10,7 @@ class SolidfilesCom(SimpleHoster):
     __name__    = "SolidfilesCom"
     __type__    = "hoster"
     __version__ = "0.03"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?solidfiles\.com\/d/\w+'
 

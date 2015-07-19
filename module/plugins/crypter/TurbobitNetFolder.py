@@ -10,6 +10,7 @@ class TurbobitNetFolder(SimpleCrypter):
     __name__    = "TurbobitNetFolder"
     __type__    = "crypter"
     __version__ = "0.06"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/download/folder/(?P<ID>\w+)'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),

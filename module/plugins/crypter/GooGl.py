@@ -8,6 +8,7 @@ class GooGl(SimpleCrypter):
     __name__    = "GooGl"
     __type__    = "crypter"
     __version__ = "0.04"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?goo\.gl/([a-zA-Z]+/)?\w+'
 

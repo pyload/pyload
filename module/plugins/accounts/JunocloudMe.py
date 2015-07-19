@@ -7,6 +7,7 @@ class JunocloudMe(XFSAccount):
     __name__    = "JunocloudMe"
     __type__    = "account"
     __version__ = "0.03"
+    __status__  = "stable"
 
     __description__ = """Junocloud.me account plugin"""
     __license__     = "GPLv3"

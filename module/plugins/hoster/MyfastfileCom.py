@@ -10,6 +10,7 @@ class MyfastfileCom(MultiHoster):
     __name__    = "MyfastfileCom"
     __type__    = "hoster"
     __version__ = "0.10"
+    __status__  = "stable"
 
     __pattern__ = r'http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/'
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),

@@ -39,6 +39,7 @@ class Checksum(Addon):
     __name__    = "Checksum"
     __type__    = "hook"
     __version__ = "0.18"
+    __status__  = "stable"
 
     __config__ = [("check_checksum", "bool"             , "Check checksum? (If False only size will be verified)", True   ),
                   ("check_action" , "fail;retry;nothing", "What to do if check fails?"                           , "retry"),

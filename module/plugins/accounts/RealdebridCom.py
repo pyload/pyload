@@ -9,6 +9,7 @@ class RealdebridCom(Account):
     __name__    = "RealdebridCom"
     __type__    = "account"
     __version__ = "0.48"
+    __status__  = "stable"
 
     __description__ = """Real-Debrid.com account plugin"""
     __license__     = "GPLv3"

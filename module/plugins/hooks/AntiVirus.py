@@ -17,6 +17,7 @@ class AntiVirus(Addon):
     __name__    = "AntiVirus"
     __type__    = "hook"
     __version__ = "0.11"
+    __status__  = "stable"
 
     #@TODO: add trash option (use Send2Trash lib)
     __config__ = [("action"    , "Antivirus default;Delete;Quarantine", "Manage infected files"                     , "Antivirus default"),

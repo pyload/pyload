@@ -11,6 +11,7 @@ class MegaDebridEu(MultiHoster):
     __name__    = "MegaDebridEu"
     __type__    = "hoster"
     __version__ = "0.49"
+    __status__  = "stable"
 
     __pattern__ = r'http://((?:www\d+\.|s\d+\.)?mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[\w^_]+'
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),

@@ -7,6 +7,7 @@ class PrzeklejPl(DeadHoster):
     __name__    = "PrzeklejPl"
     __type__    = "hoster"
     __version__ = "0.12"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?przeklej\.pl/plik/.+'
     __config__  = []  #@TODO: Remove in 0.4.10

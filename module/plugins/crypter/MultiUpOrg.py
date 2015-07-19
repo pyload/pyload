@@ -10,6 +10,7 @@ class MultiUpOrg(SimpleCrypter):
     __name__    = "MultiUpOrg"
     __type__    = "crypter"
     __version__ = "0.04"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?multiup\.org/(en|fr)/(?P<TYPE>project|download|miror)/\w+(/\w+)?'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),

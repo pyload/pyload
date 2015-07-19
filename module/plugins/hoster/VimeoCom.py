@@ -9,6 +9,7 @@ class VimeoCom(SimpleHoster):
     __name__    = "VimeoCom"
     __type__    = "hoster"
     __version__ = "0.06"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?(player\.)?vimeo\.com/(video/)?(?P<ID>\d+)'
     __config__  = [("use_premium", "bool"                       , "Use premium account if available" , True     ),

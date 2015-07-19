@@ -9,6 +9,7 @@ class HostujeNet(SimpleHoster):
     __name__    = "HostujeNet"
     __type__    = "hoster"
     __version__ = "0.02"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?hostuje\.net/\w+'
 

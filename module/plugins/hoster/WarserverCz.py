@@ -7,6 +7,7 @@ class WarserverCz(DeadHoster):
     __name__    = "WarserverCz"
     __type__    = "hoster"
     __version__ = "0.14"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?warserver\.cz/stahnout/\d+'
     __config__  = []  #@TODO: Remove in 0.4.10

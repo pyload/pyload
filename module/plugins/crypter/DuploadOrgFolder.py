@@ -7,6 +7,7 @@ class DuploadOrgFolder(DeadCrypter):
     __name__    = "DuploadOrgFolder"
     __type__    = "crypter"
     __version__ = "0.03"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?dupload\.org/folder/\d+'
     __config__  = []  #@TODO: Remove in 0.4.10

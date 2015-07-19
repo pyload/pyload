@@ -33,6 +33,7 @@ class ImageTyperz(Hook):
     __name__    = "ImageTyperz"
     __type__    = "hook"
     __version__ = "0.08"
+    __status__  = "stable"
 
     __config__ = [("username"    , "str"     , "Username"                        , ""  ),
                   ("password"    , "password", "Password"                        , ""  ),

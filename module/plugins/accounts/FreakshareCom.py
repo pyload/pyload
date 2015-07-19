@@ -10,6 +10,7 @@ class FreakshareCom(Account):
     __name__    = "FreakshareCom"
     __type__    = "account"
     __version__ = "0.15"
+    __status__  = "stable"
 
     __description__ = """Freakshare.com account plugin"""
     __license__     = "GPLv3"

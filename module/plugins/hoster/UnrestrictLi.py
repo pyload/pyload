@@ -7,6 +7,7 @@ class UnrestrictLi(DeadHoster):
     __name__    = "UnrestrictLi"
     __type__    = "hoster"
     __version__ = "0.24"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?(unrestrict|unr)\.li/dl/[\w^_]+'
     __config__  = []  #@TODO: Remove in 0.4.10

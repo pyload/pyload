@@ -9,6 +9,7 @@ class ZeveraCom(Account):
     __name__    = "ZeveraCom"
     __type__    = "account"
     __version__ = "0.28"
+    __status__  = "stable"
 
     __description__ = """Zevera.com account plugin"""
     __license__     = "GPLv3"

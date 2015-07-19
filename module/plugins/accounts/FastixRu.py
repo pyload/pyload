@@ -8,6 +8,7 @@ class FastixRu(Account):
     __name__    = "FastixRu"
     __type__    = "account"
     __version__ = "0.05"
+    __status__  = "stable"
 
     __description__ = """Fastix account plugin"""
     __license__     = "GPLv3"

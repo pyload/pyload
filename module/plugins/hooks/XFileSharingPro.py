@@ -9,6 +9,7 @@ class XFileSharingPro(Hook):
     __name__    = "XFileSharingPro"
     __type__    = "hook"
     __version__ = "0.40"
+    __status__  = "stable"
 
     __config__ = [("activated"       , "bool", "Activated"                     , True ),
                   ("use_hoster_list" , "bool", "Load listed hosters only"      , False),

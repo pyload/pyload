@@ -7,6 +7,7 @@ class RapidfileshareNet(XFSHoster):
     __name__    = "RapidfileshareNet"
     __type__    = "hoster"
     __version__ = "0.04"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?rapidfileshare\.net/\w{12}'
 

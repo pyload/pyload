@@ -11,6 +11,7 @@ class ShareLinksBiz(Crypter):
     __name__    = "ShareLinksBiz"
     __type__    = "crypter"
     __version__ = "1.16"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

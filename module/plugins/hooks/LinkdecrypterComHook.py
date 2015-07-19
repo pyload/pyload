@@ -9,6 +9,7 @@ class LinkdecrypterComHook(MultiHook):
     __name__    = "LinkdecrypterComHook"
     __type__    = "hook"
     __version__ = "1.07"
+    __status__  = "stable"
 
     __config__ = [("activated"     , "bool"               , "Activated"                    , True ),
                   ("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),

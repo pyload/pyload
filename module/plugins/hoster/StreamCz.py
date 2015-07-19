@@ -24,6 +24,7 @@ class StreamCz(Hoster):
     __name__    = "StreamCz"
     __type__    = "hoster"
     __version__ = "0.22"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?stream\.cz/[^/]+/\d+'
 

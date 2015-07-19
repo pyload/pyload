@@ -7,6 +7,7 @@ class UptoboxCom(XFSHoster):
     __name__    = "UptoboxCom"
     __type__    = "hoster"
     __version__ = "0.21"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?(uptobox|uptostream)\.com/\w{12}'
 

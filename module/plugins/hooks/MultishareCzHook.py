@@ -9,6 +9,7 @@ class MultishareCzHook(MultiHook):
     __name__    = "MultishareCzHook"
     __type__    = "hook"
     __version__ = "0.08"
+    __status__  = "stable"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),

@@ -108,6 +108,7 @@ class Plugin(object):
     __name__    = "Plugin"
     __type__    = "hoster"
     __version__ = "0.13"
+    __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
     __config__  = []  #: [("name", "type", "desc", "default")]

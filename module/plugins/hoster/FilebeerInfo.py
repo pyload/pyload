@@ -7,6 +7,7 @@ class FilebeerInfo(DeadHoster):
     __name__    = "FilebeerInfo"
     __type__    = "hoster"
     __version__ = "0.04"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?filebeer\.info/(?!\d*~f)(?P<ID>\w+)'
     __config__  = []  #@TODO: Remove in 0.4.10

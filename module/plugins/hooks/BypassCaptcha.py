@@ -29,6 +29,7 @@ class BypassCaptcha(Hook):
     __name__    = "BypassCaptcha"
     __type__    = "hook"
     __version__ = "0.08"
+    __status__  = "stable"
 
     __config__ = [("passkey"     , "password", "Access key"                      , ""  ),
                   ("check_client", "bool"    , "Don't use if client is connected", True)]

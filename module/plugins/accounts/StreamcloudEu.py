@@ -7,6 +7,7 @@ class StreamcloudEu(XFSAccount):
     __name__    = "StreamcloudEu"
     __type__    = "account"
     __version__ = "0.03"
+    __status__  = "stable"
 
     __description__ = """Streamcloud.eu account plugin"""
     __license__     = "GPLv3"

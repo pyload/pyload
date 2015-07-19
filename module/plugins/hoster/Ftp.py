@@ -12,6 +12,7 @@ class Ftp(Hoster):
     __name__    = "Ftp"
     __type__    = "hoster"
     __version__ = "0.54"
+    __status__  = "stable"
 
     __pattern__ = r'(?:ftps?|sftp)://([\w.-]+(:[\w.-]+)?@)?[\w.-]+(:\d+)?/.+'
 

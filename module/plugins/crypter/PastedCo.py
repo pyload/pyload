@@ -9,6 +9,7 @@ class PastedCo(Crypter):
     __name__    = "PastedCo"
     __type__    = "crypter"
     __version__ = "0.02"
+    __status__  = "stable"
 
     __pattern__ = r'http://pasted\.co/\w+'
 

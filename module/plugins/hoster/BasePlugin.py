@@ -13,6 +13,7 @@ class BasePlugin(Hoster):
     __name__    = "BasePlugin"
     __type__    = "hoster"
     __version__ = "0.45"
+    __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
 

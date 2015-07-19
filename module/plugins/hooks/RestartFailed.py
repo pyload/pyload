@@ -7,6 +7,7 @@ class RestartFailed(Addon):
     __name__    = "RestartFailed"
     __type__    = "hook"
     __version__ = "1.60"
+    __status__  = "stable"
 
     __config__ = [("interval", "int", "Check interval in minutes", 90)]
 

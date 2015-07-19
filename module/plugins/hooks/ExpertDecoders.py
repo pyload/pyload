@@ -16,6 +16,7 @@ class ExpertDecoders(Hook):
     __name__    = "ExpertDecoders"
     __type__    = "hook"
     __version__ = "0.06"
+    __status__  = "stable"
 
     __config__ = [("passkey"     , "password", "Access key"                      , ""  ),
                   ("check_client", "bool"    , "Don't use if client is connected", True)]

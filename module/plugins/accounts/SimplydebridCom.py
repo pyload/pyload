@@ -9,6 +9,7 @@ class SimplydebridCom(Account):
     __name__    = "SimplydebridCom"
     __type__    = "account"
     __version__ = "0.13"
+    __status__  = "stable"
 
     __description__ = """Simply-Debrid.com account plugin"""
     __license__     = "GPLv3"

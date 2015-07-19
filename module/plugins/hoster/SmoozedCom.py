@@ -8,6 +8,7 @@ class SmoozedCom(MultiHoster):
     __name__    = "SmoozedCom"
     __type__    = "hoster"
     __version__ = "0.08"
+    __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),

@@ -7,6 +7,7 @@ class PremiumToHook(MultiHook):
     __name__    = "PremiumToHook"
     __type__    = "hook"
     __version__ = "0.10"
+    __status__  = "stable"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),

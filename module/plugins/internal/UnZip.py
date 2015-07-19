@@ -13,6 +13,7 @@ from module.utils import fs_encode
 class UnZip(Extractor):
     __name__    = "UnZip"
     __version__ = "1.13"
+    __status__  = "stable"
 
     __description__ = """Zip extractor plugin"""
     __license__     = "GPLv3"

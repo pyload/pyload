@@ -13,6 +13,7 @@ class DevhostStFolder(SimpleCrypter):
     __name__    = "DevhostStFolder"
     __type__    = "crypter"
     __version__ = "0.06"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?d-h\.st/users/(?P<USER>\w+)(/\?fld_id=(?P<ID>\d+))?'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),

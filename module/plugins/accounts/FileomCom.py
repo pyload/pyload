@@ -7,6 +7,7 @@ class FileomCom(XFSAccount):
     __name__    = "FileomCom"
     __type__    = "account"
     __version__ = "0.03"
+    __status__  = "stable"
 
     __description__ = """Fileom.com account plugin"""
     __license__     = "GPLv3"

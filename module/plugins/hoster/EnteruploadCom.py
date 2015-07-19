@@ -7,6 +7,7 @@ class EnteruploadCom(DeadHoster):
     __name__    = "EnteruploadCom"
     __type__    = "hoster"
     __version__ = "0.03"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?enterupload\.com/\w+'
     __config__  = []  #@TODO: Remove in 0.4.10

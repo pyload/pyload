@@ -7,6 +7,7 @@ class FilefactoryComFolder(SimpleCrypter):
     __name__    = "FilefactoryComFolder"
     __type__    = "crypter"
     __version__ = "0.33"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/(?:f|folder)/\w+'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),

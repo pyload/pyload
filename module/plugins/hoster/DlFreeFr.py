@@ -36,6 +36,7 @@ class DlFreeFr(SimpleHoster):
     __name__    = "DlFreeFr"
     __type__    = "hoster"
     __version__ = "0.32"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?dl\.free\.fr/(\w+|getfile\.pl\?file=/\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

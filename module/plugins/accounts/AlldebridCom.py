@@ -13,6 +13,7 @@ class AlldebridCom(Account):
     __name__    = "AlldebridCom"
     __type__    = "account"
     __version__ = "0.26"
+    __status__  = "stable"
 
     __description__ = """AllDebrid.com account plugin"""
     __license__     = "GPLv3"

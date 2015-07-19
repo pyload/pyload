@@ -7,6 +7,7 @@ class IFileWs(DeadHoster):
     __name__    = "IFileWs"
     __type__    = "hoster"
     __version__ = "0.03"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?ifile\.ws/\w{12}'
     __config__  = []  #@TODO: Remove in 0.4.10

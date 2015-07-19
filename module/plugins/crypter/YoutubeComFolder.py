@@ -12,6 +12,7 @@ class YoutubeComFolder(Crypter):
     __name__    = "YoutubeComFolder"
     __type__    = "crypter"
     __version__ = "1.03"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.|m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w-]+)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True ),

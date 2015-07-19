@@ -7,6 +7,7 @@ class LemUploadsCom(DeadHoster):
     __name__    = "LemUploadsCom"
     __type__    = "hoster"
     __version__ = "0.03"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?lemuploads\.com/\w{12}'
     __config__  = []  #@TODO: Remove in 0.4.10

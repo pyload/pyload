@@ -9,6 +9,7 @@ class UserAgentSwitcher(Addon):
     __name__    = "UserAgentSwitcher"
     __type__    = "hook"
     __version__ = "0.10"
+    __status__  = "stable"
 
     __config__ = [("activated"     , "bool", "Activated"                             , True                                                                      ),
                   ("connecttimeout", "int" , "Connection timeout in seconds"         , 60                                                                        ),

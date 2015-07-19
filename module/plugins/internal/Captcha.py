@@ -7,6 +7,7 @@ class Captcha(Plugin):
     __name__    = "Captcha"
     __type__    = "captcha"
     __version__ = "0.31"
+    __status__  = "stable"
 
     __description__ = """Base captcha service plugin"""
     __license__     = "GPLv3"

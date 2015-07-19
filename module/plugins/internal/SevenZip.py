@@ -11,6 +11,7 @@ from module.utils import fs_encode, save_join as fs_join
 class SevenZip(UnRar):
     __name__    = "SevenZip"
     __version__ = "0.12"
+    __status__  = "stable"
 
     __description__ = """7-Zip extractor plugin"""
     __license__     = "GPLv3"

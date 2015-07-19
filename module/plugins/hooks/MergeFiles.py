@@ -14,6 +14,7 @@ class MergeFiles(Addon):
     __name__    = "MergeFiles"
     __type__    = "hook"
     __version__ = "0.16"
+    __status__  = "stable"
 
     __config__ = [("activated", "bool", "Activated", True)]
 

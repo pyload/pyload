@@ -13,6 +13,7 @@ class UploadheroCom(SimpleHoster):
     __name__    = "UploadheroCom"
     __type__    = "hoster"
     __version__ = "0.19"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?uploadhero\.com?/dl/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

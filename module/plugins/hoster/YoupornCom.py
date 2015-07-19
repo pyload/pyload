@@ -9,6 +9,7 @@ class YoupornCom(Hoster):
     __name__    = "YoupornCom"
     __type__    = "hoster"
     __version__ = "0.22"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?youporn\.com/watch/.+'
 

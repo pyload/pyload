@@ -16,6 +16,7 @@ class FilerNet(SimpleHoster):
     __name__    = "FilerNet"
     __type__    = "hoster"
     __version__ = "0.21"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

@@ -12,6 +12,7 @@ class ExtabitCom(SimpleHoster):
     __name__    = "ExtabitCom"
     __type__    = "hoster"
     __version__ = "0.67"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?extabit\.com/(file|go|fid)/(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

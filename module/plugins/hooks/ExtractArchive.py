@@ -113,6 +113,7 @@ class ExtractArchive(Addon):
     __name__    = "ExtractArchive"
     __type__    = "hook"
     __version__ = "1.46"
+    __status__  = "stable"
 
     __config__ = [("activated"      , "bool"              , "Activated"                                 , True                                                                     ),
                   ("fullpath"       , "bool"              , "Extract with full paths"                   , True                                                                     ),

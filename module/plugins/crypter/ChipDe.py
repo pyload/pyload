@@ -8,6 +8,7 @@ class ChipDe(Crypter):
     __name__    = "ChipDe"
     __type__    = "crypter"
     __version__ = "0.12"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?chip\.de/video/.+\.html'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

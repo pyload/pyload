@@ -33,6 +33,7 @@ class FilesMailRu(Hoster):
     __name__    = "FilesMailRu"
     __type__    = "hoster"
     __version__ = "0.34"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?files\.mail\.ru/.+'
 

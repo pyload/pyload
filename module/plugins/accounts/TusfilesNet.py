@@ -10,6 +10,7 @@ class TusfilesNet(XFSAccount):
     __name__    = "TusfilesNet"
     __type__    = "account"
     __version__ = "0.07"
+    __status__  = "stable"
 
     __description__ = """Tusfile.net account plugin"""
     __license__     = "GPLv3"

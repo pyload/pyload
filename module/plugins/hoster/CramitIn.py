@@ -7,6 +7,7 @@ class CramitIn(XFSHoster):
     __name__    = "CramitIn"
     __type__    = "hoster"
     __version__ = "0.08"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?cramit\.in/\w{12}'
 

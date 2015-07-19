@@ -13,6 +13,7 @@ class WebshareCz(Account):
     __name__    = "WebshareCz"
     __type__    = "account"
     __version__ = "0.10"
+    __status__  = "stable"
 
     __description__ = """Webshare.cz account plugin"""
     __license__     = "GPLv3"

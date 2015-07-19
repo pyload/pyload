@@ -7,6 +7,7 @@ class SecuredIn(DeadCrypter):
     __name__    = "SecuredIn"
     __type__    = "crypter"
     __version__ = "0.22"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?secured\.in/download-[\d]+-\w{8}\.html'
     __config__  = []  #@TODO: Remove in 0.4.10

@@ -11,6 +11,7 @@ class YibaishiwuCom(SimpleHoster):
     __name__    = "YibaishiwuCom"
     __type__    = "hoster"
     __version__ = "0.15"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?(?:u\.)?115\.com/file/(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

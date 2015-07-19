@@ -12,6 +12,7 @@ class DataHu(SimpleHoster):
     __name__    = "DataHu"
     __type__    = "hoster"
     __version__ = "0.04"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?data\.hu/get/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

@@ -23,6 +23,7 @@ class MegaRapidCz(SimpleHoster):
     __name__    = "MegaRapidCz"
     __type__    = "hoster"
     __version__ = "0.57"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?(share|mega)rapid\.cz/soubor/\d+/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

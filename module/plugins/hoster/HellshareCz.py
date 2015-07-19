@@ -9,6 +9,7 @@ class HellshareCz(SimpleHoster):
     __name__    = "HellshareCz"
     __type__    = "hoster"
     __version__ = "0.86"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?hellshare\.(?:cz|com|sk|hu|pl)/[^?]*/\d+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

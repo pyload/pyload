@@ -7,6 +7,7 @@ class LinkSaveIn(SimpleCrypter):
     __name__    = "LinkSaveIn"
     __type__    = "crypter"
     __version__ = "2.06"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?linksave\.in/\w+'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
