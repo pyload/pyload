@@ -42,11 +42,11 @@ class ClickAndLoad(Addon):
 
 
     def activate(self):
-        if not self.core.config.get("webinterface", "activated"):
+        if not self.pyload.config.get("webinterface", "activated"):
             return
 
         ip      = "" if self.get_config('extern') else "127.0.0.1"
-        webport = self.core.config.get("webinterface", "port")
+        webport = self.pyload.config.get("webinterface", "port")
         cnlport = self.get_config('port')
 
         self.proxy(ip, webport, cnlport)
@@ -78,7 +78,7 @@ class ClickAndLoad(Addon):
 
                 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-                if self.core.config.get("webinterface", "https"):
+                if self.pyload.config.get("webinterface", "https"):
                     try:
                         server_socket = ssl.wrap_socket(server_socket)
 

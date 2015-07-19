@@ -159,7 +159,7 @@ class ExtractArchive(Addon):
     def activate(self):
         for p in ("UnRar", "SevenZip", "UnZip"):
             try:
-                module = self.core.pluginManager.loadModule("internal", p)
+                module = self.pyload.pluginManager.loadModule("internal", p)
                 klass  = getattr(module, p)
                 if klass.is_usable():
                     self.extractors.append(klass)
@@ -171,12 +171,12 @@ class ExtractArchive(Addon):
                     self.log_warning(_("No %s installed") % p)
                 else:
                     self.log_warning(_("Could not activate: %s") % p, e)
-                    if self.core.debug:
+                    if self.pyload.debug:
                         traceback.print_exc()
 
             except Exception, e:
                 self.log_warning(_("Could not activate: %s") % p, e)
-                if self.core.debug:
+                if self.pyload.debug:
                     traceback.print_exc()
 
         if self.extractors:
@@ -274,11 +274,11 @@ class ExtractArchive(Addon):
         #: Reload from txt file
         self.reload_passwords()
 
-        download_folder = self.core.config.get("general", "download_folder")
+        download_folder = self.pyload.config.get("general", "download_folder")
 
         #: Iterate packages -> extractors -> targets
         for pid in ids:
-            pypack = self.core.files.getPackage(pid)
+            pypack = self.pyload.files.getPackage(pid)
 
             if not pypack:
                 self.queue.remove(pid)
@@ -323,7 +323,7 @@ class ExtractArchive(Addon):
 
                         self.log_info(name, _("Extract to: %s") % fout)
                         try:
-                            pyfile  = self.core.files.getFile(fid)
+                            pyfile  = self.pyload.files.getFile(fid)
                             archive = Extractor(self,
                                                 fname,
                                                 fout,
@@ -513,7 +513,7 @@ class ExtractArchive(Addon):
 
         except Exception, e:
             self.log_error(name, _("Unknown error"), e)
-            if self.core.debug:
+            if self.pyload.debug:
                 traceback.print_exc()
 
         self.manager.dispatchEvent("archive_extract_failed", pyfile, archive)
@@ -589,16 +589,16 @@ class ExtractArchive(Addon):
                 continue
 
             try:
-                if self.core.config.get("permission", "change_file"):
+                if self.pyload.config.get("permission", "change_file"):
                     if os.path.isfile(f):
-                        os.chmod(f, int(self.core.config.get("permission", "file"), 8))
+                        os.chmod(f, int(self.pyload.config.get("permission", "file"), 8))
 
                     elif os.path.isdir(f):
-                        os.chmod(f, int(self.core.config.get("permission", "folder"), 8))
+                        os.chmod(f, int(self.pyload.config.get("permission", "folder"), 8))
 
-                if self.core.config.get("permission", "change_dl") and os.name != "nt":
-                    uid = getpwnam(self.core.config.get("permission", "user"))[2]
-                    gid = getgrnam(self.core.config.get("permission", "group"))[2]
+                if self.pyload.config.get("permission", "change_dl") and os.name != "nt":
+                    uid = getpwnam(self.pyload.config.get("permission", "user"))[2]
+                    gid = getgrnam(self.pyload.config.get("permission", "group"))[2]
                     os.chown(f, uid, gid)
 
             except Exception, e:

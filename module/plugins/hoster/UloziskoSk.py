@@ -31,7 +31,7 @@ class UloziskoSk(SimpleHoster):
 
     def process(self, pyfile):
         self.html = self.load(pyfile.url)
-        self.getFileInfo()
+        self.get_fileInfo()
 
         m = re.search(self.IMG_PATTERN, self.html)
         if m:

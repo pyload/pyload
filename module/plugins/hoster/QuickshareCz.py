@@ -26,7 +26,7 @@ class QuickshareCz(SimpleHoster):
 
     def process(self, pyfile):
         self.html = self.load(pyfile.url)
-        self.getFileInfo()
+        self.get_fileInfo()
 
         #: Parse js variables
         self.jsvars = dict((x, y.strip("'")) for x, y in re.findall(r"var (\w+) = ([\d.]+|'.+?')", self.html))

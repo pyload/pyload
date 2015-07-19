@@ -24,7 +24,7 @@ class MultiHome(Addon):
         self.parse_interfaces(self.get_config('interfaces').split(";"))
 
         if not self.interfaces:
-            self.parse_interfaces([self.core.config.get("download", "interface")])
+            self.parse_interfaces([self.pyload.config.get("download", "interface")])
             self.set_config("interfaces", self.to_config())
 
 
@@ -40,7 +40,7 @@ class MultiHome(Addon):
 
 
     def activate(self):
-        requestFactory = self.core.requestFactory
+        requestFactory = self.pyload.requestFactory
         oldGetRequest = requestFactory.getRequest
 
 

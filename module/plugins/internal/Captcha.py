@@ -14,7 +14,8 @@ class Captcha(Plugin):
 
 
     def __init__(self, plugin):
-        super(Captcha, self).__init__(plugin.core)
+        self.pyload = plugin.core
+        self.info   = {}  #: Provide information in dict here
 
         self.plugin = plugin
         self.key    = None  #: Last key detected

@@ -34,7 +34,7 @@ class Xdcc(Hoster):
 
     def process(self, pyfile):
         #: Change request type
-        self.req = self.core.requestFactory.getRequest(self.__name__, type="XDCC")
+        self.req = self.pyload.requestFactory.getRequest(self.__name__, type="XDCC")
 
         self.pyfile = pyfile
         for _i in xrange(0, 3):
@@ -187,7 +187,7 @@ class Xdcc(Hoster):
 
         self.pyfile.name = packname
 
-        download_folder = self.core.config.get("general", "download_folder")
+        download_folder = self.pyload.config.get("general", "download_folder")
         filename = fs_join(download_folder, packname)
 
         self.log_info(_("Downloading %s from %s:%d") % (packname, ip, port))

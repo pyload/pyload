@@ -56,7 +56,7 @@ class Crypter(Hoster):
         """
         Generate new packages from self.urls
         """
-        packages = [(name, links, None) for name, links in self.core.api.generatePackages(self.urls).iteritems()]
+        packages = [(name, links, None) for name, links in self.pyload.api.generatePackages(self.urls).iteritems()]
         self.packages.extend(packages)
 
 
@@ -68,7 +68,7 @@ class Crypter(Hoster):
         package_password = self.pyfile.package().password
         package_queue    = self.pyfile.package().queue
 
-        folder_per_package    = self.core.config.get("general", "folder_per_package")
+        folder_per_package    = self.pyload.config.get("general", "folder_per_package")
         use_subfolder         = self.get_config('use_subfolder', folder_per_package)
         subfolder_per_package = self.get_config('subfolder_per_package', True)
 
@@ -77,13 +77,13 @@ class Crypter(Hoster):
                           "%d links" % len(links),
                           "Saved to folder: %s" % folder if folder else "Saved to download folder")
 
-            pid = self.core.api.addPackage(name, self.fixurl(links), package_queue)
+            pid = self.pyload.api.addPackage(name, self.fixurl(links), package_queue)
 
             if package_password:
-                self.core.api.setPackageData(pid, {'password': package_password})
+                self.pyload.api.setPackageData(pid, {'password': package_password})
 
             #: Workaround to do not break API addPackage method
-            setFolder = lambda x: self.core.api.setPackageData(pid, {'folder': x or ""})
+            setFolder = lambda x: self.pyload.api.setPackageData(pid, {'folder': x or ""})
 
             if use_subfolder:
                 if not subfolder_per_package:

@@ -36,7 +36,7 @@ class UploadingCom(SimpleHoster):
             pyfile.url = pyfile.url.replace("/files", "/files/get")
 
         self.html = self.load(pyfile.url)
-        self.getFileInfo()
+        self.get_fileInfo()
 
         if self.premium:
             self.handle_premium(pyfile)

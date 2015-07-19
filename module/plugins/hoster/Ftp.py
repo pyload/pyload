@@ -72,6 +72,6 @@ class Ftp(Hoster):
                 res = self.load(pyfile.url, decode=False)
                 links = [pyfile.url + x for x in res.splitlines()]
                 self.log_debug("LINKS", links)
-                self.core.api.addPackage(pkgname, links)
+                self.pyload.api.addPackage(pkgname, links)
             else:
                 self.fail(_("Unexpected server response"))

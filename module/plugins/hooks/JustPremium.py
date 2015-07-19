@@ -25,12 +25,12 @@ class JustPremium(Addon):
 
 
     def links_added(self, links, pid):
-        hosterdict = self.core.pluginManager.hosterPlugins
-        linkdict   = self.core.api.checkURLs(links)
+        hosterdict = self.pyload.pluginManager.hosterPlugins
+        linkdict   = self.pyload.api.checkURLs(links)
 
-        premiumplugins = set(account.type for account in self.core.api.getAccounts(False) \
+        premiumplugins = set(account.type for account in self.pyload.api.getAccounts(False) \
                              if account.valid and account.premium)
-        multihosters   = set(hoster for hoster in self.core.pluginManager.hosterPlugins \
+        multihosters   = set(hoster for hoster in self.pyload.pluginManager.hosterPlugins \
                              if 'new_name' in hosterdict[hoster] \
                              and hosterdict[hoster]['new_name'] in premiumplugins)
 

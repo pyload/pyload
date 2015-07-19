@@ -47,7 +47,7 @@ class XFileSharingPro(Hook):
         # self.load_pattern()
 
 
-    def init(self):
+    # def init(self):
         # self.event_map = {'pluginConfigChanged': "plugin_config_changed"}
 
 
@@ -89,7 +89,7 @@ class XFileSharingPro(Hook):
 
                 pattern = self.regexp[type][1] % match_list.replace('.', '\.')
 
-            dict = self.core.pluginManager.plugins[type][plugin]
+            dict = self.pyload.pluginManager.plugins[type][plugin]
             dict['pattern'] = pattern
             dict['re'] = re.compile(pattern)
 
@@ -97,7 +97,7 @@ class XFileSharingPro(Hook):
 
 
     def _unload(self, type, plugin):
-        dict = self.core.pluginManager.plugins[type][plugin]
+        dict = self.pyload.pluginManager.plugins[type][plugin]
         dict['pattern'] = r'^unmatchable$'
         dict['re'] = re.compile(dict['pattern'])
 
@@ -110,7 +110,7 @@ class XFileSharingPro(Hook):
 
 
     def unload_hoster(self, hoster):
-        hdict = self.core.pluginManager.hosterPlugins[hoster]
+        hdict = self.pyload.pluginManager.hosterPlugins[hoster]
         if "new_name" in hdict and hdict['new_name'] == "XFileSharingPro":
             if "module" in hdict:
                 hdict.pop('module', None)

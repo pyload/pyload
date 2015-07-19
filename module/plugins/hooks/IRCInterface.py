@@ -203,7 +203,7 @@ class IRCInterface(Thread, Addon):
 
 
     def event_status(self, args):
-        downloads = self.core.api.statusDownloads()
+        downloads = self.pyload.api.statusDownloads()
         if not downloads:
             return ["INFO: There are no active downloads currently."]
 
@@ -229,7 +229,7 @@ class IRCInterface(Thread, Addon):
 
 
     def event_queue(self, args):
-        ps = self.core.api.getQueueData()
+        ps = self.pyload.api.getQueueData()
 
         if not ps:
             return ["INFO: There are no packages in queue."]
@@ -242,7 +242,7 @@ class IRCInterface(Thread, Addon):
 
 
     def event_collector(self, args):
-        ps = self.core.api.getCollectorData()
+        ps = self.pyload.api.getCollectorData()
         if not ps:
             return ["INFO: No packages in collector!"]
 
@@ -259,7 +259,7 @@ class IRCInterface(Thread, Addon):
 
         info = None
         try:
-            info = self.core.api.getFileData(int(args[0]))
+            info = self.pyload.api.getFileData(int(args[0]))
 
         except FileDoesNotExists:
             return ["ERROR: Link doesn't exists."]
@@ -274,7 +274,7 @@ class IRCInterface(Thread, Addon):
         lines = []
         pack = None
         try:
-            pack = self.core.api.getPackageData(int(args[0]))
+            pack = self.pyload.api.getPackageData(int(args[0]))
 
         except PackageDoesNotExists:
             return ["ERROR: Package doesn't exists."]
@@ -311,12 +311,12 @@ class IRCInterface(Thread, Addon):
 
 
     def event_start(self, args):
-        self.core.api.unpauseServer()
+        self.pyload.api.unpauseServer()
         return ["INFO: Starting downloads."]
 
 
     def event_stop(self, args):
-        self.core.api.pauseServer()
+        self.pyload.api.pauseServer()
         return ["INFO: No new downloads will be started."]
 
 
@@ -332,7 +332,7 @@ class IRCInterface(Thread, Addon):
         count_failed = 0
         try:
             id = int(pack)
-            pack = self.core.api.getPackageData(id)
+            pack = self.pyload.api.getPackageData(id)
             if not pack:
                 return ["ERROR: Package doesn't exists."]
 
@@ -342,7 +342,7 @@ class IRCInterface(Thread, Addon):
 
         except Exception:
             #: Create new package
-            id = self.core.api.addPackage(pack, links, 1)
+            id = self.pyload.api.addPackage(pack, links, 1)
             return ["INFO: Created new Package %s [#%d] with %d links." % (pack, id, len(links))]
 
 
@@ -351,11 +351,11 @@ class IRCInterface(Thread, Addon):
             return ["ERROR: Use del command like this: del -p|-l <id> [...] (-p indicates that the ids are from packages, -l indicates that the ids are from links)"]
 
         if args[0] == "-p":
-            ret = self.core.api.deletePackages(map(int, args[1:]))
+            ret = self.pyload.api.deletePackages(map(int, args[1:]))
             return ["INFO: Deleted %d packages!" % len(args[1:])]
 
         elif args[0] == "-l":
-            ret = self.core.api.delLinks(map(int, args[1:]))
+            ret = self.pyload.api.delLinks(map(int, args[1:]))
             return ["INFO: Deleted %d links!" % len(args[1:])]
 
         else:
@@ -368,11 +368,11 @@ class IRCInterface(Thread, Addon):
 
         id = int(args[0])
         try:
-            info = self.core.api.getPackageInfo(id)
+            info = self.pyload.api.getPackageInfo(id)
         except PackageDoesNotExists:
             return ["ERROR: Package #%d does not exist." % id]
 
-        self.core.api.pushToQueue(id)
+        self.pyload.api.pushToQueue(id)
         return ["INFO: Pushed package #%d to queue." % id]
 
 
@@ -381,10 +381,10 @@ class IRCInterface(Thread, Addon):
             return ["ERROR: Pull package from queue like this: pull <package id>."]
 
         id = int(args[0])
-        if not self.core.api.getPackageData(id):
+        if not self.pyload.api.getPackageData(id):
             return ["ERROR: Package #%d does not exist." % id]
 
-        self.core.api.pullFromQueue(id)
+        self.pyload.api.pullFromQueue(id)
         return ["INFO: Pulled package #%d from queue to collector." % id]
 
 
@@ -395,7 +395,7 @@ class IRCInterface(Thread, Addon):
         if not args:
             return ["ERROR: Captcha ID missing."]
 
-        task = self.core.captchaManager.getTaskByID(args[0])
+        task = self.pyload.captchaManager.getTaskByID(args[0])
         if not task:
             return ["ERROR: Captcha Task with ID %s does not exists." % args[0]]
 

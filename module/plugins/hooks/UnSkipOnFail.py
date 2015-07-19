@@ -39,7 +39,7 @@ class UnSkipOnFail(Addon):
 
             pylink.setCustomStatus(_("unskipped"), "queued")
 
-            self.core.files.save()
+            self.pyload.files.save()
             pylink.release()
 
         else:
@@ -56,7 +56,7 @@ class UnSkipOnFail(Addon):
             the data for "pyfile" iotselöf.
             It does MOT check the link's status.
         """
-        queue = self.core.api.getQueue()  #: Get packages (w/o files, as most file data is useless here)
+        queue = self.pyload.api.getQueue()  #: Get packages (w/o files, as most file data is useless here)
 
         for package in queue:
             #: Check if package-folder equals pyfile's package folder
@@ -64,7 +64,7 @@ class UnSkipOnFail(Addon):
                 continue
 
             #: Now get packaged data w/ files/links
-            pdata = self.core.api.getPackageData(package.pid)
+            pdata = self.pyload.api.getPackageData(package.pid)
             for link in pdata.links:
                 #: Check if link is "skipped"
                 if link.status != 4:
@@ -77,7 +77,7 @@ class UnSkipOnFail(Addon):
 
 
     def _pyfile(self, link):
-        return PyFile(self.core.files,
+        return PyFile(self.pyload.files,
                       link.fid,
                       link.url,
                       link.name,

@@ -53,7 +53,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
     #@TODO: Remove in 0.4.10
     def init(self):
         account_name = (self.__name__ + ".py").replace("Folder.py", "").replace(".py", "")
-        account      = self.core.accountManager.getAccountPlugin(account_name)
+        account      = self.pyload.accountManager.getAccountPlugin(account_name)
 
         if account and account.can_use():
             self.user, data = account.select_account()

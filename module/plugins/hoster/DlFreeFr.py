@@ -60,7 +60,7 @@ class DlFreeFr(SimpleHoster):
 
 
     def init(self):
-        factory = self.core.requestFactory
+        factory = self.pyload.requestFactory
         self.req = CustomBrowser(factory.bucket, factory.getOptions())
 
 

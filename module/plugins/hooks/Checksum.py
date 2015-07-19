@@ -102,7 +102,7 @@ class Checksum(Addon):
             self.check_failed(pyfile, None, "No file downloaded")
 
         local_file = fs_encode(pyfile.plugin.lastDownload)
-        # download_folder = self.core.config.get("general", "download_folder")
+        # download_folder = self.pyload.config.get("general", "download_folder")
         # local_file = fs_encode(fs_join(download_folder, pyfile.package().folder, pyfile.name))
 
         if not os.path.isfile(local_file):
@@ -163,7 +163,7 @@ class Checksum(Addon):
 
 
     def package_finished(self, pypack):
-        download_folder = fs_join(self.core.config.get("general", "download_folder"), pypack.folder, "")
+        download_folder = fs_join(self.pyload.config.get("general", "download_folder"), pypack.folder, "")
 
         for link in pypack.getChildren().itervalues():
             file_type = os.path.splitext(link['name'])[1][1:].lower()

@@ -41,7 +41,7 @@ class IfolderRu(SimpleHoster):
     def handle_free(self, pyfile):
         url = "http://rusfolder.com/%s" % self.info['pattern']['ID']
         self.html = self.load("http://rusfolder.com/%s" % self.info['pattern']['ID'])
-        self.getFileInfo()
+        self.get_fileInfo()
 
         session_id = re.search(self.SESSION_ID_PATTERN, self.html).groups()
 

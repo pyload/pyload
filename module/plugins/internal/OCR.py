@@ -28,6 +28,9 @@ class OCR(Plugin):
 
 
     def __init__(self):
+        self.pyload = pyfile.m.core
+        self.info   = {}  #: Provide information in dict here
+
         self.logger = logging.getLogger("log")
         self.init()
 

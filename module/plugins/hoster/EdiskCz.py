@@ -40,7 +40,7 @@ class EdiskCz(SimpleHoster):
         action = m.group(1)
 
         self.html = self.load(url)
-        self.getFileInfo()
+        self.get_fileInfo()
 
         self.html = self.load(re.sub("/en/download/", "/en/download-slow/", url))
 

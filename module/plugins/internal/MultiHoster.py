@@ -87,8 +87,8 @@ class MultiHoster(SimpleHoster):
                 self.retry_free()
 
             elif self.get_config("revertfailed", True) \
-                 and "new_module" in self.core.pluginManager.hosterPlugins[self.__name__]:
-                hdict = self.core.pluginManager.hosterPlugins[self.__name__]
+                 and "new_module" in self.pyload.pluginManager.hosterPlugins[self.__name__]:
+                hdict = self.pyload.pluginManager.hosterPlugins[self.__name__]
 
                 tmp_module = hdict['new_module']
                 tmp_name   = hdict['new_name']

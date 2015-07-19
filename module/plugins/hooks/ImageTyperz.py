@@ -114,7 +114,7 @@ class ImageTyperz(Hook):
         if not self.get_config('username') or not self.get_config('password'):
             return False
 
-        if self.core.isClientConnected() and self.get_config('check_client'):
+        if self.pyload.isClientConnected() and self.get_config('check_client'):
             return False
 
         if self.get_credits() > 0:

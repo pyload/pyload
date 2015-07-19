@@ -70,10 +70,10 @@ class MultiHook(Hook):
 
     def init_plugin(self):
         self.pluginname         = self.__name__.rsplit("Hook", 1)[0]
-        plugin, self.plugintype = self.core.pluginManager.findPlugin(self.pluginname)
+        plugin, self.plugintype = self.pyload.pluginManager.findPlugin(self.pluginname)
 
         if plugin:
-            self.pluginmodule = self.core.pluginManager.loadModule(self.plugintype, self.pluginname)
+            self.pluginmodule = self.pyload.pluginManager.loadModule(self.plugintype, self.pluginname)
             self.pluginclass  = getattr(self.pluginmodule, self.pluginname)
         else:
             self.log_warning(_("Hook plugin will be deactivated due missing plugin reference"))
@@ -81,7 +81,7 @@ class MultiHook(Hook):
 
 
     def load_account(self):
-        self.account = self.core.accountManager.getAccountPlugin(self.pluginname)
+        self.account = self.pyload.accountManager.getAccountPlugin(self.pluginname)
 
         if self.account and not self.account.can_use():
             self.account = None
@@ -161,7 +161,7 @@ class MultiHook(Hook):
         if self.get_config('reload', True):
             self.interval = max(self.get_config('reloadinterval', 12) * 60 * 60, self.MIN_RELOAD_INTERVAL)
         else:
-            self.core.scheduler.removeJob(self.cb)
+            self.pyload.scheduler.removeJob(self.cb)
             self.cb = None
 
         self.log_info(_("Reloading supported %s list") % self.plugintype)
@@ -186,11 +186,11 @@ class MultiHook(Hook):
         excludedList = []
 
         if self.plugintype == "hoster":
-            pluginMap    = dict((name.lower(), name) for name in self.core.pluginManager.hosterPlugins.iterkeys())
-            accountList  = [account.type.lower() for account in self.core.api.getAccounts(False) if account.valid and account.premium]
+            pluginMap    = dict((name.lower(), name) for name in self.pyload.pluginManager.hosterPlugins.iterkeys())
+            accountList  = [account.type.lower() for account in self.pyload.api.getAccounts(False) if account.valid and account.premium]
         else:
             pluginMap    = {}
-            accountList  = [name[::-1].replace("Folder"[::-1], "", 1).lower()[::-1] for name in self.core.pluginManager.crypterPlugins.iterkeys()]
+            accountList  = [name[::-1].replace("Folder"[::-1], "", 1).lower()[::-1] for name in self.pyload.pluginManager.crypterPlugins.iterkeys()]
 
         for plugin in self.plugins_cached():
             name = remove_chars(plugin, "-.")
@@ -211,7 +211,7 @@ class MultiHook(Hook):
         self.log_debug("Overwritten %ss: %s" % (self.plugintype, ", ".join(sorted(self.supported))))
 
         for plugin in self.supported:
-            hdict = self.core.pluginManager.plugins[self.plugintype][plugin]
+            hdict = self.pyload.pluginManager.plugins[self.plugintype][plugin]
             hdict['new_module'] = self.pluginmodule
             hdict['new_name']   = self.pluginname
 
@@ -230,13 +230,13 @@ class MultiHook(Hook):
 
             self.log_debug("Regexp: %s" % regexp)
 
-            hdict = self.core.pluginManager.plugins[self.plugintype][self.pluginname]
+            hdict = self.pyload.pluginManager.plugins[self.plugintype][self.pluginname]
             hdict['pattern'] = regexp
             hdict['re']      = re.compile(regexp)
 
 
     def unload_plugin(self, plugin):
-        hdict = self.core.pluginManager.plugins[self.plugintype][plugin]
+        hdict = self.pyload.pluginManager.plugins[self.plugintype][plugin]
         if "module" in hdict:
             hdict.pop('module', None)
 
@@ -253,7 +253,7 @@ class MultiHook(Hook):
             self.unload_plugin(plugin)
 
         #: Reset pattern
-        hdict = self.core.pluginManager.plugins[self.plugintype][self.pluginname]
+        hdict = self.pyload.pluginManager.plugins[self.plugintype][self.pluginname]
 
         hdict['pattern'] = getattr(self.pluginclass, "__pattern__", r'^unmatchable$')
         hdict['re']      = re.compile(hdict['pattern'])

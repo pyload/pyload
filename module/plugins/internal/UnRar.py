@@ -191,7 +191,7 @@ class UnRar(Extractor):
             raise ArchiveError(_("Cannot open file"))
 
         if err.strip():  #: Only log error at this point
-            self.manager.log_error(err.strip())
+            self.log_error(err.strip())
 
         result = set()
         if not self.fullpath and self.VERSION.startswith('5'):
@@ -237,7 +237,7 @@ class UnRar(Extractor):
         #@NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
         call = [self.CMD, command] + args + list(xargs)
 
-        self.manager.log_debug(" ".join(call))
+        self.log_debug(" ".join(call))
 
         p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return p

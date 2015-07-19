@@ -51,7 +51,7 @@ class WindowsPhoneNotify(Addon):
         if not self.get_config('notifyexit'):
             return
 
-        if self.core.do_restart:
+        if self.pyload.do_restart:
             self.notify(_("Restarting pyLoad"))
         else:
             self.notify(_("Exiting pyLoad"))
@@ -73,7 +73,7 @@ class WindowsPhoneNotify(Addon):
         if not self.get_config('notifyprocessed'):
             return
 
-        if any(True for pdata in self.core.api.getQueue() if pdata.linksdone < pdata.linkstotal):
+        if any(True for pdata in self.pyload.api.getQueue() if pdata.linksdone < pdata.linkstotal):
             self.notify(_("Package failed"), _("One or more packages was not completed successfully"))
         else:
             self.notify(_("All packages finished"))
@@ -95,7 +95,7 @@ class WindowsPhoneNotify(Addon):
         if not id or not url:
             return
 
-        if self.core.isClientConnected() and not self.get_config('ignoreclient'):
+        if self.pyload.isClientConnected() and not self.get_config('ignoreclient'):
             return
 
         elapsed_time = time.time() - self.last_notify

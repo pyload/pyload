@@ -68,7 +68,7 @@ class DeathByCaptcha(Hook):
 
     def api_response(self, api="captcha", post=False, multipart=False):
         req = get_request()
-        req.c.setopt(pycurl.HTTPHEADER, ["Accept: application/json", "User-Agent: pyLoad %s" % self.core.version])
+        req.c.setopt(pycurl.HTTPHEADER, ["Accept: application/json", "User-Agent: pyLoad %s" % self.pyload.version])
 
         if post:
             if not isinstance(post, dict):
@@ -168,7 +168,7 @@ class DeathByCaptcha(Hook):
         if not self.get_config('username') or not self.get_config('password'):
             return False
 
-        if self.core.isClientConnected() and self.get_config('check_client'):
+        if self.pyload.isClientConnected() and self.get_config('check_client'):
             return False
 
         try:

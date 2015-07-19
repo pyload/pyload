@@ -27,6 +27,6 @@ class MegaDebridEuHook(MultiHook):
             host_list = [element[0] for element in json_data['hosters']]
         else:
             self.log_error(_("Unable to retrieve hoster list"))
-            host_list = list()
+            host_list = []
 
         return host_list

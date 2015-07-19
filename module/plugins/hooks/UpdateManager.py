@@ -51,10 +51,10 @@ class UpdateManager(Addon):
 
     def activate(self):
         if self.checkonstart:
-            self.core.api.pauseServer()
+            self.pyload.api.pauseServer()
             self.update()
             if self.do_restart is False:
-                self.core.api.unpauseServer()
+                self.pyload.api.unpauseServer()
 
         self.init_periodical()
 
@@ -68,7 +68,7 @@ class UpdateManager(Addon):
         self.interval = 10
 
         if self.get_config('checkonstart'):
-            self.core.api.pauseServer()
+            self.pyload.api.pauseServer()
             self.checkonstart = True
         else:
             self.checkonstart = False
@@ -79,11 +79,11 @@ class UpdateManager(Addon):
     def all_downloads_processed(self):
         if self.do_restart is True:
             self.log_warning(_("Downloads are done, restarting pyLoad to reload the updated plugins"))
-            self.core.api.restart()
+            self.pyload.api.restart()
 
 
     def periodical(self):
-        if self.core.debug:
+        if self.pyload.debug:
             if self.get_config('reloadplugins'):
                 self.autoreload_plugins()
 
@@ -120,7 +120,7 @@ class UpdateManager(Addon):
         for m in modules:
             root, type, name = m.__name__.rsplit(".", 2)
             id = (type, name)
-            if type in self.core.pluginManager.plugins:
+            if type in self.pyload.pluginManager.plugins:
                 f = m.__file__.replace(".pyc", ".py")
                 if not os.path.isfile(f):
                     continue
@@ -133,13 +133,13 @@ class UpdateManager(Addon):
                     reloads.append(id)
                     self.mtimes[id] = mtime
 
-        return True if self.core.pluginManager.reloadPlugins(reloads) else False
+        return True if self.pyload.pluginManager.reloadPlugins(reloads) else False
 
 
     def server_response(self):
         try:
             return self.load(self.SERVER_URL,
-                             get={'v': self.core.api.getServerVersion()}).splitlines()
+                             get={'v': self.pyload.api.getServerVersion()}).splitlines()
 
         except Exception:
             self.log_warning(_("Unable to retrieve server to get updates"))
@@ -152,12 +152,12 @@ class UpdateManager(Addon):
         Check for updates
         """
         if self._update() is 2 and self.get_config('autorestart'):
-            if not self.core.api.statusDownloads():
-                self.core.api.restart()
+            if not self.pyload.api.statusDownloads():
+                self.pyload.api.restart()
             else:
                 self.do_restart = True
                 self.log_warning(_("Downloads are active, will restart once the download is done"))
-                self.core.api.pauseServer()
+                self.pyload.api.pauseServer()
 
 
     def _update(self):
@@ -249,7 +249,7 @@ class UpdateManager(Addon):
             else:
                 type = prefix
 
-            plugins = getattr(self.core.pluginManager, "%sPlugins" % type)
+            plugins = getattr(self.pyload.pluginManager, "%sPlugins" % type)
 
             oldver = float(plugins[name]['v']) if name in plugins else None
             newver = float(version)
@@ -283,7 +283,7 @@ class UpdateManager(Addon):
         if updated:
             self.log_info(_("*** Plugins updated ***"))
 
-            if self.core.pluginManager.reloadPlugins(updated):
+            if self.pyload.pluginManager.reloadPlugins(updated):
                 exitcode = 1
             else:
                 self.log_warning(_("pyLoad restart required to reload the updated plugins"))

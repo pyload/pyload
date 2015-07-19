@@ -85,7 +85,9 @@ class Extractor(Plugin):
         """
         Initialize extractor for specific file
         """
-        self.manager      = manager
+        self.pyload = manager.core
+        self.info   = {}  #: Provide information in dict here
+
         self.filename     = filename
         self.out          = out
         self.fullpath     = fullpath
@@ -96,7 +98,7 @@ class Extractor(Plugin):
         self.keepbroken   = keepbroken
         self.files        = []  #: Store extracted files here
 
-        pyfile = self.manager.core.files.getFile(fid) if fid else None
+        pyfile = self.pyload.files.getFile(fid) if fid else None
         self.notify_progress = lambda x: pyfile.setProgress(x) if pyfile else lambda x: None
 
         self.init()

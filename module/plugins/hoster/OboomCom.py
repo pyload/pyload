@@ -36,7 +36,7 @@ class OboomCom(Hoster):
         self.html = self.load(pyfile.url)
         self.get_file_id(self.pyfile.url)
         self.get_session_token()
-        self.getFileInfo(self.session_token, self.file_id)
+        self.get_fileInfo(self.session_token, self.file_id)
         self.pyfile.name = self.file_name
         self.pyfile.size = self.file_size
         if not self.premium:
@@ -47,7 +47,7 @@ class OboomCom(Hoster):
 
     def load_url(self, url, get=None):
         if get is None:
-            get = dict()
+            get = {}
         return json_loads(self.load(url, get))
 
 
@@ -110,7 +110,7 @@ class OboomCom(Hoster):
             self.fail(_("Received invalid captcha 5 times"))
 
 
-    def getFileInfo(self, token, fileId):
+    def get_fileInfo(self, token, fileId):
         apiUrl = "https://api.oboom.com/1.0/info"
         params = {'token': token, 'items': fileId, 'http_errors': 0}
 

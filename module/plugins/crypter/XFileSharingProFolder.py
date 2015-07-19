@@ -26,12 +26,12 @@ class XFileSharingProFolder(XFSCrypter):
     def init(self):
         super(XFileSharingProFolder, self).init()
 
-        self.__pattern__ = self.core.pluginManager.crypterPlugins[self.__name__]['pattern']
+        self.__pattern__ = self.pyload.pluginManager.crypterPlugins[self.__name__]['pattern']
 
         self.HOSTER_DOMAIN = re.match(self.__pattern__, self.pyfile.url).group("DOMAIN").lower()
         self.HOSTER_NAME   = "".join(part.capitalize() for part in re.split(r'(\.|\d+)', self.HOSTER_DOMAIN) if part != '.')
 
-        account = self.core.accountManager.getAccountPlugin(self.HOSTER_NAME)
+        account = self.pyload.accountManager.getAccountPlugin(self.HOSTER_NAME)
 
         if account and account.can_use():
             self.account = account

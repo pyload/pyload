@@ -30,7 +30,7 @@ class Dereferer(SimpleCrypter):
     def init(self):
         super(Dereferer, self).init()
 
-        self.__pattern__ = self.core.pluginManager.crypterPlugins[self.__name__]['pattern']  #@TODO: Recheck in 0.4.10
+        self.__pattern__ = self.pyload.pluginManager.crypterPlugins[self.__name__]['pattern']  #@TODO: Recheck in 0.4.10
 
         self.HOSTER_DOMAIN = re.match(self.__pattern__, self.pyfile.url).group("DOMAIN").lower()
         self.HOSTER_NAME   = "".join(part.capitalize() for part in re.split(r'(\.|\d+)', self.HOSTER_DOMAIN) if part != '.')

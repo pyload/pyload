@@ -24,7 +24,8 @@ class Account(Plugin):
 
 
     def __init__(self, manager, accounts):
-        super(Account, self).__init__(manager.core)
+        self.pyload = manager.core
+        self.info   = {}  #: Provide information in dict here
 
         self.manager = manager
         self.accounts = {}
@@ -78,7 +79,7 @@ class Account(Plugin):
                 _("Could not login with account %(user)s | %(msg)s") % {'user': user,
                                                                         'msg': e})
             success = data['valid'] = False
-            if self.core.debug:
+            if self.pyload.debug:
                 traceback.print_exc()
 
         else:
@@ -175,7 +176,7 @@ class Account(Plugin):
                 infos = super(self.__class__, self).load_account_info(name, self.req)
                 infos['error'] = str(e)
 
-                if self.core.debug:
+                if self.pyload.debug:
                     traceback.print_exc()
 
             finally:
@@ -236,7 +237,7 @@ class Account(Plugin):
         if not user:
             user, data = self.select_account()
 
-        return self.core.requestFactory.getRequest(self.__name__, user)
+        return self.pyload.requestFactory.getRequest(self.__name__, user)
 
 
     def get_account_cookies(self, user=None):
@@ -245,7 +246,7 @@ class Account(Plugin):
         if not user:
             return None
 
-        cj = self.core.requestFactory.getCookieJar(self.__name__, user)
+        cj = self.pyload.requestFactory.getCookieJar(self.__name__, user)
         return cj
 
 
@@ -323,7 +324,7 @@ class Account(Plugin):
         Add task to refresh account info to sheduler
         """
         self.log_debug("Scheduled Account refresh for %s in %s seconds." % (user, time))
-        self.core.scheduler.addJob(time, self.get_account_info, [user, force])
+        self.pyload.scheduler.addJob(time, self.get_account_info, [user, force])
 
 
     #: Deprecated method, use `schedule_refresh` instead

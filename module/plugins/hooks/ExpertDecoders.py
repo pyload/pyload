@@ -74,7 +74,7 @@ class ExpertDecoders(Hook):
         if not self.get_config('passkey'):
             return False
 
-        if self.core.isClientConnected() and self.get_config('check_client'):
+        if self.pyload.isClientConnected() and self.get_config('check_client'):
             return False
 
         if self.get_credits() > 0:

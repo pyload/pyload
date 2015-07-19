@@ -45,7 +45,7 @@ class Container(Crypter):
         if self.pyfile.url.startswith("http"):
             self.pyfile.name = re.findall("([^\/=]+)", self.pyfile.url)[-1]
             content = self.load(self.pyfile.url)
-            self.pyfile.url = fs_join(self.core.config.get("general", "download_folder"), self.pyfile.name)
+            self.pyfile.url = fs_join(self.pyload.config.get("general", "download_folder"), self.pyfile.name)
             try:
                 with open(self.pyfile.url, "wb") as f:
                     f.write(content)

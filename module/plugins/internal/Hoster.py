@@ -59,7 +59,8 @@ class Hoster(Plugin):
 
 
     def __init__(self, pyfile):
-        super(Hoster, self).__init__(pyfile.m.core)
+        self.pyload = pyfile.m.core
+        self.info   = {}  #: Provide information in dict here
 
         #: Engage wan reconnection
         self.want_reconnect = False
@@ -118,7 +119,7 @@ class Hoster(Plugin):
         self.last_check = None
 
         #: Js engine, see `JsEngine`
-        self.js = self.core.js
+        self.js = self.pyload.js
 
         #: Captcha task
         self.c_task = None
@@ -187,8 +188,8 @@ class Hoster(Plugin):
 
     def get_chunk_count(self):
         if self.chunk_limit <= 0:
-            return self.core.config.get("download", "chunks")
-        return min(self.core.config.get("download", "chunks"), self.chunk_limit)
+            return self.pyload.config.get("download", "chunks")
+        return min(self.pyload.config.get("download", "chunks"), self.chunk_limit)
 
 
     def reset_account(self):
@@ -196,7 +197,7 @@ class Hoster(Plugin):
         Don't use account and retry download
         """
         self.account = None
-        self.req = self.core.requestFactory.getRequest(self.__name__)
+        self.req = self.pyload.requestFactory.getRequest(self.__name__)
         self.retry()
 
 
@@ -363,10 +364,10 @@ class Hoster(Plugin):
         with open(os.path.join("tmp", "tmpCaptcha_%s_%s.%s" % (self.__name__, id, imgtype)), "wb") as tmpCaptcha:
             tmpCaptcha.write(img)
 
-        has_plugin = self.__name__ in self.core.pluginManager.ocrPlugins
+        has_plugin = self.__name__ in self.pyload.pluginManager.ocrPlugins
 
-        if self.core.captcha:
-            Ocr = self.core.pluginManager.loadClass("ocr", self.__name__)
+        if self.pyload.captcha:
+            Ocr = self.pyload.pluginManager.loadClass("ocr", self.__name__)
         else:
             Ocr = None
 
@@ -378,7 +379,7 @@ class Hoster(Plugin):
             ocr = Ocr()
             result = ocr.get_captcha(tmpCaptcha.name)
         else:
-            captchaManager = self.core.captchaManager
+            captchaManager = self.pyload.captchaManager
             task = captchaManager.newTask(img, imgtype, tmpCaptcha.name, result_type)
             self.c_task = task
             captchaManager.handleCaptcha(task)
@@ -401,7 +402,7 @@ class Hoster(Plugin):
             result = task.result
             self.log_debug("Received captcha result: %s" % result)
 
-        if not self.core.debug:
+        if not self.pyload.debug:
             try:
                 os.remove(tmpCaptcha.name)
             except Exception:
@@ -442,8 +443,8 @@ class Hoster(Plugin):
         if not url or not isinstance(url, basestring):
             self.fail(_("No url given"))
 
-        if self.core.debug:
-            self.log_debug("Download url " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
+        if self.pyload.debug:
+            self.log_debug("DOWNLOAD URL " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
 
         self.correct_captcha()
         self.check_for_same_files()
@@ -453,17 +454,17 @@ class Hoster(Plugin):
         if disposition:
             self.pyfile.name = urlparse.urlparse(url).path.split('/')[-1] or self.pyfile.name
 
-        download_folder = self.core.config.get("general", "download_folder")
+        download_folder = self.pyload.config.get("general", "download_folder")
 
         location = fs_join(download_folder, self.pyfile.package().folder)
 
         if not os.path.exists(location):
             try:
-                os.makedirs(location, int(self.core.config.get("permission", "folder"), 8))
+                os.makedirs(location, int(self.pyload.config.get("permission", "folder"), 8))
 
-                if self.core.config.get("permission", "change_dl") and os.name != "nt":
-                    uid = pwd.getpwnam(self.core.config.get("permission", "user"))[2]
-                    gid = grp.getgrnam(self.core.config.get("permission", "group"))[2]
+                if self.pyload.config.get("permission", "change_dl") and os.name != "nt":
+                    uid = pwd.getpwnam(self.pyload.config.get("permission", "user"))[2]
+                    gid = grp.getgrnam(self.pyload.config.get("permission", "group"))[2]
                     os.chown(location, uid, gid)
 
             except Exception, e:
@@ -475,7 +476,7 @@ class Hoster(Plugin):
 
         filename = os.path.join(location, name)
 
-        self.core.addonManager.dispatchEvent("download-start", self.pyfile, url, filename)
+        self.pyload.addonManager.dispatchEvent("download-start", self.pyfile, url, filename)
 
         try:
             newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref, cookies=cookies,
@@ -494,16 +495,16 @@ class Hoster(Plugin):
 
         fs_filename = fs_encode(filename)
 
-        if self.core.config.get("permission", "change_file"):
+        if self.pyload.config.get("permission", "change_file"):
             try:
-                os.chmod(fs_filename, int(self.core.config.get("permission", "file"), 8))
+                os.chmod(fs_filename, int(self.pyload.config.get("permission", "file"), 8))
             except Exception, e:
                 self.log_warning(_("Setting file mode failed"), e)
 
-        if self.core.config.get("permission", "change_dl") and os.name != "nt":
+        if self.pyload.config.get("permission", "change_dl") and os.name != "nt":
             try:
-                uid = pwd.getpwnam(self.core.config.get("permission", "user"))[2]
-                gid = grp.getgrnam(self.core.config.get("permission", "group"))[2]
+                uid = pwd.getpwnam(self.pyload.config.get("permission", "user"))[2]
+                gid = grp.getgrnam(self.pyload.config.get("permission", "group"))[2]
                 os.chown(fs_filename, uid, gid)
 
             except Exception, e:
@@ -695,22 +696,22 @@ class Hoster(Plugin):
         """
         pack = self.pyfile.package()
 
-        for pyfile in self.core.files.cache.values():
+        for pyfile in self.pyload.files.cache.values():
             if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package().folder == pack.folder:
                 if pyfile.status in (0, 12):  #: Finished or downloading
                     self.skip(pyfile.pluginname)
                 elif pyfile.status in (5, 7) and starting:  #: A download is waiting/starting and was appenrently started before
                     self.skip(pyfile.pluginname)
 
-        download_folder = self.core.config.get("general", "download_folder")
+        download_folder = self.pyload.config.get("general", "download_folder")
         location = fs_join(download_folder, pack.folder, self.pyfile.name)
 
-        if starting and self.core.config.get("download", "skip_existing") and os.path.exists(location):
+        if starting and self.pyload.config.get("download", "skip_existing") and os.path.exists(location):
             size = os.stat(location).st_size
             if size >= self.pyfile.size:
                 self.skip("File exists")
 
-        pyfile = self.core.db.findDuplicates(self.pyfile.id, self.pyfile.package().folder, self.pyfile.name)
+        pyfile = self.pyload.db.findDuplicates(self.pyfile.id, self.pyfile.package().folder, self.pyfile.name)
         if pyfile:
             if os.path.exists(location):
                 self.skip(pyfile[0])

@@ -147,7 +147,7 @@ class SevenZip(UnRar):
         #@NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
         call = [self.CMD, command] + args + list(xargs)
 
-        self.manager.log_debug(" ".join(call))
+        self.log_debug(" ".join(call))
 
         p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return p

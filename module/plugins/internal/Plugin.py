@@ -121,8 +121,8 @@ class Plugin(object):
 
 
     def __init__(self, core):
-        self.core = core
-        self.info = {}  #: Provide information in dict here
+        self.pyload = core
+        self.info   = {}  #: Provide information in dict here
         self.init()
 
 
@@ -134,7 +134,7 @@ class Plugin(object):
 
 
     def _log(self, level, args):
-        log = getattr(self.core.log, level)
+        log = getattr(self.pyload.log, level)
         msg = fs_encode(" | ".join((a if isinstance(a, basestring) else str(a)).strip() for a in args if a))  #@NOTE: `fs_encode` -> `encode` in 0.4.10
         log("%(plugin)s%(id)s: %(msg)s" % {'plugin': self.__name__,
                                            'id'    : ("[%s]" % self.pyfile.id) if hasattr(self, 'pyfile') else "",
@@ -142,7 +142,7 @@ class Plugin(object):
 
 
     def log_debug(self, *args):
-        if self.core.debug:
+        if self.pyload.debug:
             return self._log("debug", args)
 
 
@@ -170,15 +170,7 @@ class Plugin(object):
         :param value:
         :return:
         """
-        self.core.config.setPlugin(self.__name__, option, value)
-
-
-    #: Deprecated method, use `set_config` instead
-    def setConf(self, *args, **kwargs):
-        """
-        See `set_config`
-        """
-        return self.set_config(*args, **kwargs)
+        self.pyload.config.setPlugin(self.__name__, option, value)
 
 
     def get_config(self, option, default="", plugin=None):
@@ -189,64 +181,32 @@ class Plugin(object):
         :return:
         """
         try:
-            return self.core.config.getPlugin(plugin or self.__name__, option)
+            return self.pyload.config.getPlugin(plugin or self.__name__, option)
 
         except KeyError:
             self.log_warning(_("Config option or plugin not found"))
             return default
 
 
-    #: Deprecated method, use `get_config` instead
-    def getConf(self, *args, **kwargs):
-        """
-        See `get_config`
-        """
-        return self.get_config(*args, **kwargs)
-
-
     def store(self, key, value):
         """
         Saves a value persistently to the database
         """
-        self.core.db.setStorage(self.__name__, key, value)
-
-
-    #: Deprecated method, use `store` instead
-    def setStorage(self, *args, **kwargs):
-        """
-        Same as `store`
-        """
-        return self.store(*args, **kwargs)
+        self.pyload.db.setStorage(self.__name__, key, value)
 
 
     def retrieve(self, key, default=None):
         """
         Retrieves saved value or dict of all saved entries if key is None
         """
-        return self.core.db.getStorage(self.__name__, key) or default
-
-
-    #: Deprecated method, use `retrieve` instead
-    def getStorage(self, *args, **kwargs):
-        """
-        Same as `retrieve`
-        """
-        return self.retrieve(*args, **kwargs)
+        return self.pyload.db.getStorage(self.__name__, key) or default
 
 
     def delete(self, key):
         """
         Delete entry in db
         """
-        self.core.db.delStorage(self.__name__, key)
-
-
-    #: Deprecated method, use `delete` instead
-    def delStorage(self, *args, **kwargs):
-        """
-        Same as `delete`
-        """
-        return self.delete(*args, **kwargs)
+        self.pyload.db.delStorage(self.__name__, key)
 
 
     def fail(self, reason):
@@ -288,21 +248,21 @@ class Plugin(object):
         if not url or not isinstance(url, basestring):
             self.fail(_("No url given"))
 
-        if self.core.debug:
-            self.log_debug("Load url " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
+        if self.pyload.debug:
+            self.log_debug("LOAD URL " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
 
         if req is None:
             if hasattr(self, "req"):
                 req = self.req
             else:
-                req = self.core.requestFactory.getRequest(self.__name__)
+                req = self.pyload.requestFactory.getRequest(self.__name__)
 
         res = req.load(url, get, post, ref, cookies, just_header, multipart, bool(decode))
 
         if decode:
             res = html_unescape(res).decode(decode if isinstance(decode, basestring) else 'utf8')
 
-        if self.core.debug:
+        if self.pyload.debug:
             frame = inspect.currentframe()
             framefile = fs_join("tmp", self.__name__, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
             try:

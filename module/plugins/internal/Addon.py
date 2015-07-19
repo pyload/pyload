@@ -36,7 +36,8 @@ class Addon(Plugin):
 
 
     def __init__(self, core, manager):
-        super(Addon, self).__init__(core)
+        self.pyload = core
+        self.info   = {}  #: Provide information in dict here
 
         #: `HookManager`
         self.manager = manager
@@ -78,7 +79,7 @@ class Addon(Plugin):
 
 
     def init_periodical(self, delay=0, threaded=False):
-        self.cb = self.core.scheduler.addJob(max(0, delay), self._periodical, [threaded], threaded=threaded)
+        self.cb = self.pyload.scheduler.addJob(max(0, delay), self._periodical, [threaded], threaded=threaded)
 
 
     #: Deprecated method, use `init_periodical` instead
@@ -96,10 +97,10 @@ class Addon(Plugin):
 
         except Exception, e:
             self.log_error(_("Error executing addon: %s") % e)
-            if self.core.debug:
+            if self.pyload.debug:
                 traceback.print_exc()
 
-        self.cb = self.core.scheduler.addJob(self.interval, self._periodical, [threaded], threaded=threaded)
+        self.cb = self.pyload.scheduler.addJob(self.interval, self._periodical, [threaded], threaded=threaded)
 
 
     def periodical(self):
