@@ -33,13 +33,7 @@ class Captcha9Kw(Hook):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    interval = 0  #@TODO: Remove in 0.4.10
-
     API_URL = "https://www.9kw.eu/index.cgi"
-
-
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
 
 
     def get_credits(self):

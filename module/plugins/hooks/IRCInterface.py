@@ -11,11 +11,11 @@ from select import select
 from threading import Thread
 
 from module.Api import PackageDoesNotExists, FileDoesNotExists
-from module.plugins.internal.Hook import Hook
+from module.plugins.internal.Addon import Addon
 from module.utils import formatSize
 
 
-class IRCInterface(Thread, Hook):
+class IRCInterface(Thread, Addon):
     __name__    = "IRCInterface"
     __type__    = "hook"
     __version__ = "0.15"
@@ -36,12 +36,9 @@ class IRCInterface(Thread, Hook):
     __authors__     = [("Jeix", "Jeix@hasnomail.com")]
 
 
-    interval = 0  #@TODO: Remove in 0.4.10
-
-
     def __init__(self, core, manager):
         Thread.__init__(self)
-        Hook.__init__(self, core, manager)
+        Addon.__init__(self, core, manager)
         self.set_daemon(True)
 
 

@@ -2,10 +2,10 @@
 
 import pycurl
 
-from module.plugins.internal.Hook import Hook
+from module.plugins.internal.Addon import Addon
 
 
-class UserAgentSwitcher(Hook):
+class UserAgentSwitcher(Addon):
     __name__    = "UserAgentSwitcher"
     __type__    = "hook"
     __version__ = "0.10"
@@ -18,13 +18,6 @@ class UserAgentSwitcher(Hook):
     __description__ = """Custom user-agent"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
-
-
-    interval = 0  #@TODO: Remove in 0.4.10
-
-
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
 
 
     def download_preparing(self, pyfile):

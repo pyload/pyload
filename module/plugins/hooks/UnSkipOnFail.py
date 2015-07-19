@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from module.PyFile import PyFile
-from module.plugins.internal.Hook import Hook
+from module.plugins.internal.Addon import Addon
 
 
-class UnSkipOnFail(Hook):
+class UnSkipOnFail(Addon):
     __name__    = "UnSkipOnFail"
     __type__    = "hook"
     __version__ = "0.09"
@@ -14,13 +14,6 @@ class UnSkipOnFail(Hook):
     __description__ = """Restart skipped duplicates when download fails"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
-
-
-    interval = 0  #@TODO: Remove in 0.4.10
-
-
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
 
 
     def download_failed(self, pyfile):

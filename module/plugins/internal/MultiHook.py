@@ -11,7 +11,7 @@ from module.utils import decode, remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.50"
+    __version__ = "0.51"
 
     __config__  = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                    ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -54,7 +54,7 @@ class MultiHook(Hook):
                            (r'^0'              , "zero"                   )]
 
 
-    def setup(self):
+    def init(self):
         self.plugins       = []
         self.supported     = []
         self.new_supported = []

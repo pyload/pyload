@@ -3,11 +3,11 @@
 import os
 import subprocess
 
-from module.plugins.internal.Hook import Hook
+from module.plugins.internal.Addon import Addon
 from module.utils import fs_encode, save_join as fs_join
 
 
-class ExternalScripts(Hook):
+class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
     __version__ = "0.43"
@@ -23,11 +23,8 @@ class ExternalScripts(Hook):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    interval   = 0  #@TODO: Remove in 0.4.10
-
-
-    def setup(self):
-        self.info    = {'oldip': None}
+    def init(self):
+        self.info['oldip'] = None
         self.scripts = {}
 
         self.event_list = ["archive_extract_failed", "archive_extracted"     ,

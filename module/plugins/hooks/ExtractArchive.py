@@ -55,7 +55,7 @@ if os.name != "nt":
     from grp import getgrnam
     from pwd import getpwnam
 
-from module.plugins.internal.Hook import Hook, Expose, threaded
+from module.plugins.internal.Addon import Addon, Expose, threaded
 from module.plugins.internal.Plugin import replace_patterns
 from module.plugins.internal.Extractor import ArchiveError, CRCError, PasswordError
 from module.utils import fs_encode, save_join as fs_join, uniqify
@@ -109,7 +109,7 @@ class ArchiveQueue(object):
         return self.set(queue)
 
 
-class ExtractArchive(Hook):
+class ExtractArchive(Addon):
     __name__    = "ExtractArchive"
     __type__    = "hook"
     __version__ = "1.46"
@@ -141,8 +141,7 @@ class ExtractArchive(Hook):
     NAME_REPLACEMENTS = [(r'\.part\d+\.rar$', ".part.rar")]
 
 
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
+    def init(self):
         self.event_map  = {'allDownloadsProcessed': "all_downloads_processed",
                            'packageDeleted'       : "package_deleted"        }
 

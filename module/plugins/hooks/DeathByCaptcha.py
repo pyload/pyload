@@ -63,13 +63,7 @@ class DeathByCaptcha(Hook):
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    interval = 0  #@TODO: Remove in 0.4.10
-
     API_URL = "http://api.dbcapi.me/api/"
-
-
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
 
 
     def api_response(self, api="captcha", post=False, multipart=False):

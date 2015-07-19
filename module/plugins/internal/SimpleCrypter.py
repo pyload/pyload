@@ -66,7 +66,6 @@ class SimpleCrypter(Crypter, SimpleHoster):
     def prepare(self):
         self.pyfile.error = ""  #@TODO: Remove in 0.4.10
 
-        self.info  = {}
         self.html  = ""  #@TODO: Recheck in 0.4.10
         self.link  = ""  #@TODO: Recheck in 0.4.10
         self.links = []

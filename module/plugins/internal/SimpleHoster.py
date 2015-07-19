@@ -204,10 +204,9 @@ class SimpleHoster(Hoster):
     def prepare(self):
         self.pyfile.error = ""  #@TODO: Remove in 0.4.10
 
-        self.info      = {}
         self.html      = ""  #@TODO: Recheck in 0.4.10
         self.link      = ""  #@TODO: Recheck in 0.4.10
-        self.direct_dl  = False
+        self.direct_dl = False
         self.multihost = False
 
         if not self.get_config('use_premium', True):

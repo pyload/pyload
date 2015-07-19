@@ -19,6 +19,15 @@ class Captcha(Plugin):
         self.plugin = plugin
         self.key    = None  #: Last key detected
 
+        self.init()
+
+
+    def init(self):
+        """
+        Initialize additional data structures
+        """
+        pass
+
 
     #@TODO: Recheck in 0.4.10
     def retrieve_key(self, html):

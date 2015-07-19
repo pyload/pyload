@@ -6,11 +6,11 @@ import os
 import re
 import traceback
 
-from module.plugins.internal.Hook import Hook, threaded
+from module.plugins.internal.Addon import Addon, threaded
 from module.utils import save_join as fs_join
 
 
-class MergeFiles(Hook):
+class MergeFiles(Addon):
     __name__    = "MergeFiles"
     __type__    = "hook"
     __version__ = "0.16"
@@ -22,13 +22,7 @@ class MergeFiles(Hook):
     __authors__     = [("and9000", "me@has-no-mail.com")]
 
 
-    interval = 0  #@TODO: Remove in 0.4.10
-
     BUFFER_SIZE = 4096
-
-
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
 
 
     @threaded

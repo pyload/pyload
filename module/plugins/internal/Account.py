@@ -41,6 +41,9 @@ class Account(Plugin):
 
 
     def init(self):
+        """
+        Initialize additional data structures
+        """
         pass
 
 

@@ -29,6 +29,14 @@ class OCR(Plugin):
 
     def __init__(self):
         self.logger = logging.getLogger("log")
+        self.init()
+
+
+    def init(self):
+        """
+        Initialize additional data structures
+        """
+        pass
 
 
     def load_image(self, image):

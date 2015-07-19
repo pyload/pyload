@@ -7,13 +7,13 @@ import urlparse
 from types import MethodType
 
 from module.PyFile import PyFile
-from module.plugins.internal.Hook import Hook
+from module.plugins.internal.Addon import Addon
 
 
-class SkipRev(Hook):
+class SkipRev(Addon):
     __name__    = "SkipRev"
     __type__    = "hook"
-    __version__ = "0.32"
+    __version__ = "0.33"
 
     __config__ = [("mode"     , "Auto;Manual", "Choose recovery archives to skip"               , "Auto"),
                   ("revtokeep", "int"        , "Number of recovery archives to keep for package", 0     )]
@@ -23,26 +23,15 @@ class SkipRev(Hook):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    interval = 0  #@TODO: Remove in 0.4.10
-
-
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
-
-
     @staticmethod
-    def _setup(self):
-        self.pyfile.plugin._setup()
+    def _init(self):
+        self.pyfile.plugin._init()
         if self.pyfile.hasStatus("skipped"):
             self.skip(self.pyfile.statusname or self.pyfile.pluginname)
 
 
     def _name(self, pyfile):
-        if hasattr(pyfile.pluginmodule, "getInfo"):  #@NOTE: getInfo is deprecated in 0.4.10
-            return pyfile.pluginmodule.get_info([pyfile.url]).next()[0]
-        else:
-            self.log_warning(_("Unable to grab file name"))
-            return urlparse.urlparse(urllib.unquote(pyfile.url)).path.split('/')[-1]
+        return pyfile.pluginclass.get_info(pyfile.url)['name']
 
 
     def _pyfile(self, link):
@@ -78,10 +67,10 @@ class SkipRev(Hook):
 
         pyfile.setCustomStatus("SkipRev", "skipped")
 
-        if not hasattr(pyfile.plugin, "_setup"):
+        if not hasattr(pyfile.plugin, "_init"):
             #: Work-around: inject status checker inside the preprocessing routine of the plugin
-            pyfile.plugin._setup = pyfile.plugin.setup
-            pyfile.plugin.setup  = MethodType(self._setup, pyfile.plugin)
+            pyfile.plugin._init = pyfile.plugin.init
+            pyfile.plugin.init  = MethodType(self._init, pyfile.plugin)
 
 
     def download_failed(self, pyfile):

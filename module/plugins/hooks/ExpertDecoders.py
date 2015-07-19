@@ -26,13 +26,7 @@ class ExpertDecoders(Hook):
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    interval = 0  #@TODO: Remove in 0.4.10
-
     API_URL = "http://www.fasttypers.org/imagepost.ashx"
-
-
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
 
 
     def get_credits(self):

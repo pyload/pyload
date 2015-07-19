@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from module.database import style
-from module.plugins.internal.Hook import Hook
+from module.plugins.internal.Addon import Addon
 
 
-class DeleteFinished(Hook):
+class DeleteFinished(Addon):
     __name__    = "DeleteFinished"
     __type__    = "hook"
     __version__ = "1.14"
@@ -21,8 +21,7 @@ class DeleteFinished(Hook):
 
 
     ## overwritten methods ##
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
+    def init(self):
         # self.event_map = {'pluginConfigChanged': "plugin_config_changed"}
         self.interval = self.MIN_CHECK_INTERVAL
 

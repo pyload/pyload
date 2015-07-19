@@ -2,10 +2,10 @@
 
 import time
 
-from module.plugins.internal.Hook import Hook
+from module.plugins.internal.Addon import Addon
 
 
-class MultiHome(Hook):
+class MultiHome(Addon):
     __name__    = "MultiHome"
     __type__    = "hook"
     __version__ = "0.14"
@@ -17,11 +17,7 @@ class MultiHome(Hook):
     __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
-    interval = 0  #@TODO: Remove in 0.4.10
-
-
-    def setup(self):
-        self.info       = {}  #@TODO: Remove in 0.4.10
+    def init(self):
         self.register   = {}
         self.interfaces = []
 

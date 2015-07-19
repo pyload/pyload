@@ -3,10 +3,10 @@
 import httplib
 import time
 
-from module.plugins.internal.Hook import Hook, Expose
+from module.plugins.internal.Addon import Addon, Expose
 
 
-class WindowsPhoneNotify(Hook):
+class WindowsPhoneNotify(Addon):
     __name__    = "WindowsPhoneNotify"
     __type__    = "hook"
     __version__ = "0.12"
@@ -28,12 +28,7 @@ class WindowsPhoneNotify(Hook):
                        ("Walter Purcaro", "vuolter@gmail.com"       )]
 
 
-    interval   = 0  #@TODO: Remove in 0.4.10
-
-
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
-
+    def init(self):
         self.event_list = ["plugin_updated"]
         self.event_map  = {'allDownloadsProcessed': "all_downloads_processed"}
 

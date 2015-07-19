@@ -2,10 +2,10 @@
 
 import re
 
-from module.plugins.internal.Hook import Hook
+from module.plugins.internal.Addon import Addon
 
 
-class JustPremium(Hook):
+class JustPremium(Addon):
     __name__    = "JustPremium"
     __type__    = "hook"
     __version__ = "0.24"
@@ -20,11 +20,7 @@ class JustPremium(Hook):
                        ("immenz"        , "immenz@gmx.net"    )]
 
 
-    interval   = 0  #@TODO: Remove in 0.4.10
-
-
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
+    def init(self):
         self.event_map = {'linksAdded': "links_added"}
 
 

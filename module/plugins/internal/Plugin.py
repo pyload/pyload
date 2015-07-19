@@ -122,9 +122,7 @@ class Plugin(object):
 
     def __init__(self, core):
         self.core = core
-
-        #: Provide information in dict here
-        self.info = {}
+        self.info = {}  #: Provide information in dict here
 
 
     def _log(self, level, args):

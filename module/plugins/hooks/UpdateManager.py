@@ -9,7 +9,7 @@ import time
 
 from operator import itemgetter
 
-from module.plugins.internal.Hook import Expose, Hook, threaded
+from module.plugins.internal.Addon import Expose, Addon, threaded
 from module.utils import save_join as fs_join
 
 
@@ -25,7 +25,7 @@ def exists(path):
         return False
 
 
-class UpdateManager(Hook):
+class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "hook"
     __version__ = "0.54"
@@ -59,7 +59,7 @@ class UpdateManager(Hook):
         self.init_periodical()
 
 
-    def setup(self):
+    def init(self):
         self.info     = {'pyload': False, 'version': None, 'plugins': False, 'last_check': time.time()}
         self.mtimes   = {}  #: Store modification time for each plugin
 

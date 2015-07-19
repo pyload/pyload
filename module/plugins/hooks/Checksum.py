@@ -7,7 +7,7 @@ import os
 import re
 import zlib
 
-from module.plugins.internal.Hook import Hook
+from module.plugins.internal.Addon import Addon
 from module.utils import save_join as fs_join, fs_encode
 
 
@@ -35,7 +35,7 @@ def compute_checksum(local_file, algorithm):
         return None
 
 
-class Checksum(Hook):
+class Checksum(Addon):
     __name__    = "Checksum"
     __type__    = "hook"
     __version__ = "0.18"
@@ -53,7 +53,6 @@ class Checksum(Hook):
                        ("stickell"      , "l.stickell@yahoo.it")]
 
 
-    interval = 0  #@TODO: Remove in 0.4.10
     methods  = {'sfv' : 'crc32',
                 'crc' : 'crc32',
                 'hash': 'md5'}
@@ -68,8 +67,7 @@ class Checksum(Hook):
             self.log_info(_("Checksum validation is disabled in plugin configuration"))
 
 
-    def setup(self):
-        self.info       = {}  #@TODO: Remove in 0.4.10
+    def init(self):
         self.algorithms = sorted(
             getattr(hashlib, "algorithms", ("md5", "sha1", "sha224", "sha256", "sha384", "sha512")), reverse=True)
 

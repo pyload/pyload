@@ -3,10 +3,10 @@
 import re
 import time
 
-from module.plugins.internal.Hook import Hook
+from module.plugins.internal.Addon import Addon
 
 
-class DownloadScheduler(Hook):
+class DownloadScheduler(Addon):
     __name__    = "DownloadScheduler"
     __type__    = "hook"
     __version__ = "0.24"
@@ -18,14 +18,6 @@ class DownloadScheduler(Hook):
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it")]
-
-
-    interval = 0  #@TODO: Remove in 0.4.10
-
-
-    def setup(self):
-        self.info = {}    #@TODO: Remove in 0.4.10
-        self.cb   = None  #: Callback to scheduler job; will be by removed hookmanager when hook unloaded
 
 
     def activate(self):

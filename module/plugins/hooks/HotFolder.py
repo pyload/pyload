@@ -7,11 +7,11 @@ import time
 
 from shutil import move
 
-from module.plugins.internal.Hook import Hook
+from module.plugins.internal.Addon import Addon
 from module.utils import fs_encode, save_join as fs_join
 
 
-class HotFolder(Hook):
+class HotFolder(Addon):
     __name__    = "HotFolder"
     __type__    = "hook"
     __version__ = "0.16"
@@ -26,8 +26,7 @@ class HotFolder(Hook):
     __authors__     = [("RaNaN", "RaNaN@pyload.de")]
 
 
-    def setup(self):
-        self.info     = {}  #@TODO: Remove in 0.4.10
+    def init(self):
         self.interval = 30
 
 

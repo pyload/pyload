@@ -10,7 +10,7 @@ except ImportError:
 
 from threading import Lock
 
-from module.plugins.internal.Hook import Hook, threaded
+from module.plugins.internal.Addon import Addon, threaded
 
 
 def forward(source, destination):
@@ -26,7 +26,7 @@ def forward(source, destination):
 
 
 #@TODO: IPv6 support
-class ClickAndLoad(Hook):
+class ClickAndLoad(Addon):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
     __version__ = "0.45"
@@ -39,13 +39,6 @@ class ClickAndLoad(Hook):
     __license__     = "GPLv3"
     __authors__     = [("RaNaN"         , "RaNaN@pyload.de"  ),
                        ("Walter Purcaro", "vuolter@gmail.com")]
-
-
-    interval = 0  #@TODO: Remove in 0.4.10
-
-
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
 
 
     def activate(self):

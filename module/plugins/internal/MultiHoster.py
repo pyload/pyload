@@ -30,9 +30,8 @@ class MultiHoster(SimpleHoster):
 
 
     def prepare(self):
-        self.info     = {}
-        self.html     = ""
-        self.link     = ""     #@TODO: Move to Hoster in 0.4.10
+        self.html      = ""
+        self.link      = ""     #@TODO: Move to Hoster in 0.4.10
         self.direct_dl = False  #@TODO: Move to Hoster in 0.4.10
 
         if not self.get_config('use_premium', True):

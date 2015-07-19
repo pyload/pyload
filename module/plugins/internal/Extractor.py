@@ -99,6 +99,8 @@ class Extractor(Plugin):
         pyfile = self.manager.core.files.getFile(fid) if fid else None
         self.notify_progress = lambda x: pyfile.setProgress(x) if pyfile else lambda x: None
 
+        self.init()
+
 
     def init(self):
         """
