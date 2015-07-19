@@ -27,11 +27,9 @@ class OCR(Plugin):
     __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
-    def __init__(self):
+    def __init__(self, pyfile):
         self.pyload = pyfile.m.core
         self.info   = {}  #: Provide information in dict here
-
-        self.logger = logging.getLogger("log")
         self.init()
 
 
@@ -68,7 +66,7 @@ class OCR(Plugin):
         output = popen.stdout.read() + " | " + popen.stderr.read()
         popen.stdout.close()
         popen.stderr.close()
-        self.logger.debug("Tesseract ReturnCode %s Output: %s" % (popen.returncode, output))
+        self.pyload.log_debug("Tesseract ReturnCode " + popen.returncode, "Output: " + output)
 
 
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True, pagesegmode=None):
@@ -85,7 +83,7 @@ class OCR(Plugin):
             self.log_error(e)
             return
 
-        self.logger.debug("save tiff")
+        self.pyload.log_debug("Saving tiff...")
         self.image.save(tmpTif.name, 'TIFF')
 
         if os.name == "nt":
@@ -114,9 +112,9 @@ class OCR(Plugin):
                 tessparams.append("nobatch")
                 tessparams.append(os.path.abspath(tmpSub.name))
 
-        self.logger.debug("run tesseract")
+        self.pyload.log_debug("Running tesseract...")
         self.run(tessparams)
-        self.logger.debug("read txt")
+        self.pyload.log_debug("Reading txt...")
 
         try:
             with open(tmpTxt.name, 'r') as f:
@@ -124,7 +122,7 @@ class OCR(Plugin):
         except Exception:
             self.result_captcha = ""
 
-        self.logger.debug(self.result_captcha)
+        self.pyload.log_info(_("OCR result: ") + self.result_captcha)
         try:
             os.remove(tmpTif.name)
             os.remove(tmpTxt.name)

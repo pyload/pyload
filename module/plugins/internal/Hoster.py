@@ -376,7 +376,7 @@ class Hoster(Plugin):
             if self.pyfile.abort:
                 self.abort()
 
-            ocr = Ocr()
+            ocr = Ocr(self.pyfile)
             result = ocr.get_captcha(tmpCaptcha.name)
         else:
             captchaManager = self.pyload.captchaManager
