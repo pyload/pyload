@@ -40,8 +40,8 @@ class ShareonlineBiz(SimpleHoster):
         info = super(ShareonlineBiz, cls).api_info(url)
 
         field = get_url("http://api.share-online.biz/linkcheck.php",
-                       get={'md5'  : "1",
-                            'links': re.match(cls.__pattern__, url).group("ID")}).split(";")
+                        get={'md5'  : "1",
+                             'links': re.match(cls.__pattern__, url).group("ID")}).split(";")
 
         try:
             if field[1] == "OK":

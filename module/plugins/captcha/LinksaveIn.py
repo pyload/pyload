@@ -15,15 +15,14 @@ from module.plugins.internal.OCR import OCR
 class LinksaveIn(OCR):
     __name__    = "LinksaveIn"
     __type__    = "ocr"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __description__ = """Linksave.in ocr plugin"""
     __license__     = "GPLv3"
     __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
-    def __init__(self):
-        OCR.__init__(self)
+    def init(self):
         self.data_dir = os.path.dirname(os.path.abspath(__file__)) + os.sep + "LinksaveIn" + os.sep
 
 

@@ -18,7 +18,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, seconds_to_midnig
 def api_response(url):
     json_data = ["yw7XQy2v9", ["download/info", {'link': url}]]
     api_rep   = get_url("http://api.letitbit.net/json",
-                       post={'r': json_dumps(json_data)})
+                        post={'r': json_dumps(json_data)})
     return json_loads(api_rep)
 
 

@@ -6,15 +6,11 @@ from module.plugins.internal.OCR import OCR
 class ShareonlineBiz(OCR):
     __name__    = "ShareonlineBiz"
     __type__    = "ocr"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __description__ = """Shareonline.biz ocr plugin"""
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
-
-
-    def __init__(self):
-        OCR.__init__(self)
 
 
     def get_captcha(self, image):

@@ -500,7 +500,7 @@ class SimpleHoster(Hoster):
 
     #: Deprecated method
     def get_fileInfo(self):
-        self.info   = {}
+        self.info = {}
         self.check_info()
         return self.info
 
