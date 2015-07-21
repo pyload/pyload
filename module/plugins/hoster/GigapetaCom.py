@@ -39,7 +39,7 @@ class GigapetaCom(SimpleHoster):
         for _i in xrange(5):
             self.check_errors()
 
-            captcha = self.decrypt_captcha(captcha_url)
+            captcha = self.captcha.decrypt_image(captcha_url)
             self.html = self.load(pyfile.url, post={
                 'captcha_key': captcha_key,
                 'captcha': captcha,
@@ -50,7 +50,7 @@ class GigapetaCom(SimpleHoster):
                 self.link = m.group(1).rstrip()  #@TODO: Remove .rstrip() in 0.4.10
                 break
             elif "Entered figures don&#96;t coincide with the picture" in self.html:
-                self.invalid_captcha()
+                self.captcha.invalid()
         else:
             self.fail(_("No valid captcha code entered"))
 

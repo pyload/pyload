@@ -55,10 +55,10 @@ class ExtabitCom(SimpleHoster):
                 get_data['capture'], get_data['challenge'] = recaptcha.challenge(captcha_key)
                 res = json_loads(self.load("http://extabit.com/file/%s/" % fileID, get=get_data))
                 if "ok" in res:
-                    self.correct_captcha()
+                    self.captcha.correct()
                     break
                 else:
-                    self.invalid_captcha()
+                    self.captcha.invalid()
             else:
                 self.fail(_("Invalid captcha"))
         else:

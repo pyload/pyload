@@ -59,10 +59,10 @@ class LuckyShareNet(SimpleHoster):
             self.log_debug("JSON: " + rep)
             if 'link' in rep:
                 json.update(self.parse_json(rep))
-                self.correct_captcha()
+                self.captcha.correct()
                 break
             elif 'Verification failed' in rep:
-                self.invalid_captcha()
+                self.captcha.invalid()
             else:
                 self.error(_("Unable to get downlaod link"))
 

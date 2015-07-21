@@ -56,7 +56,7 @@ class FileboomMe(SimpleHoster):
 
                         m = re.search(self.CAPTCHA_PATTERN, self.html)
                         if m:
-                            captcha = self.decrypt_captcha(urljoin(pyfile.url, m.group(1)))
+                            captcha = self.captcha.decrypt_image(urljoin(pyfile.url, m.group(1)))
 
                             self.html = self.load(post_url,
                                                   post={'CaptchaForm[code]'  : captcha,
@@ -65,7 +65,7 @@ class FileboomMe(SimpleHoster):
                                                         'uniqueId'           : uniqueId})
 
                             if 'The verification code is incorrect' in self.html:
-                                self.invalid_captcha()
+                                self.captcha.invalid()
 
                             else:
                                 self.check_errors()
@@ -79,7 +79,7 @@ class FileboomMe(SimpleHoster):
                                     self.link = urljoin(pyfile.url, m.group(0))
 
                                 else:
-                                    self.invalid_captcha()
+                                    self.captcha.invalid()
 
                                 break
 

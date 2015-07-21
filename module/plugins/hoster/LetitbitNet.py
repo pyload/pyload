@@ -100,14 +100,14 @@ class LetitbitNet(SimpleHoster):
         self.log_debug(res)
 
         if not res:
-            self.invalid_captcha()
+            self.captcha.invalid()
 
         if res == "error_free_download_blocked":
             self.log_warning(_("Daily limit reached"))
             self.wait(seconds_to_midnight(gmt=2), True)
 
         if res == "error_wrong_captcha":
-            self.invalid_captcha()
+            self.captcha.invalid()
             self.retry()
 
         elif res.startswith('['):

@@ -140,9 +140,9 @@ class RapidgatorNet(SimpleHoster):
                                                  'adcopy_response'             : response})
 
                 if "The verification code is incorrect" in self.html:
-                    self.invalid_captcha()
+                    self.captcha.invalid()
                 else:
-                    self.correct_captcha()
+                    self.captcha.correct()
         else:
             self.error(_("Download link"))
 

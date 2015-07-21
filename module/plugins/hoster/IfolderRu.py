@@ -49,13 +49,13 @@ class IfolderRu(SimpleHoster):
         captcha_url = "http://ints.rusfolder.com/random/images/?session=%s" % session_id
         for _i in xrange(5):
             action, inputs = self.parse_html_form('id="download-step-one-form"')
-            inputs['confirmed_number'] = self.decrypt_captcha(captcha_url, cookies=True)
+            inputs['confirmed_number'] = self.captcha.decrypt_image(captcha_url, cookies=True)
             inputs['action'] = '1'
             self.log_debug(inputs)
 
             self.html = self.load(url, post=inputs)
             if self.WRONG_CAPTCHA_PATTERN in self.html:
-                self.invalid_captcha()
+                self.captcha.invalid()
             else:
                 break
         else:

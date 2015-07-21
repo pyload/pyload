@@ -133,7 +133,7 @@ class LinkCryptWs(Crypter):
 
     def unlock_captcha_protection(self):
         captcha_url  = re.search(r'<form.*?id\s*?=\s*?"captcha"[^>]*?>.*?<\s*?input.*?src="(.+?)"', self.html, re.I | re.S).group(1)
-        captcha_code = self.decrypt_captcha(captcha_url, forceUser=True, imgtype="gif", result_type='positional')
+        captcha_code = self.captcha.decrypt_image(captcha_url, input_type="gif", output_type='positional', try_ocr=False)
 
         self.html = self.load(self.pyfile.url, post={'x': captcha_code[0], 'y': captcha_code[1]})
 
@@ -167,10 +167,10 @@ class LinkCryptWs(Crypter):
     def handle_captcha_errors(self):
         if self.captcha:
             if "Your choice was wrong!" in self.html:
-                self.invalid_captcha()
+                self.captcha.invalid()
                 self.retry()
             else:
-                self.correct_captcha()
+                self.captcha.correct()
 
 
     def handle_link_source(self, type):

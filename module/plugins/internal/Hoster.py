@@ -12,6 +12,7 @@ if os.name != "nt":
     import grp
     import pwd
 
+from module.plugins.internal import Captcha
 from module.plugins.internal.Plugin import (Plugin, Abort, Fail, Reconnect, Retry, Skip
                                             chunks, fixurl as _fixurl, replace_patterns, seconds_to_midnight,
                                             set_cookies, parse_html_form, parse_html_tag_attr_value,
@@ -122,8 +123,8 @@ class Hoster(Plugin):
         #: Js engine, see `JsEngine`
         self.js = self.pyload.js
 
-        #: Captcha task
-        self.c_task = None
+        #: Captcha stuff
+        self.captcha = Captcha(self)
 
         #: Some plugins store html code here
         self.html = None
@@ -257,7 +258,7 @@ class Hoster(Plugin):
                 time.sleep(1)
         else:
             while pyfile.waitUntil > time.time():
-                self.thread.m.reconnecting.wait(2)
+                self.thread.m.reconnecting.wait(1)
 
                 if pyfile.abort:
                     self.abort()
@@ -329,89 +330,6 @@ class Hoster(Plugin):
         raise Retry(reason)
 
 
-    def invalid_captcha(self):
-        self.log_error(_("Invalid captcha"))
-        if self.c_task:
-            self.c_task.invalid()
-
-
-    def correct_captcha(self):
-        self.log_info(_("Correct captcha"))
-        if self.c_task:
-            self.c_task.correct()
-
-
-    def decrypt_captcha(self, url, get={}, post={}, cookies=False, forceUser=False,
-                       imgtype='jpg', result_type='textual'):
-        """
-        Loads a captcha and decrypts it with ocr, plugin, user input
-
-        :param url: url of captcha image
-        :param get: get part for request
-        :param post: post part for request
-        :param cookies: True if cookies should be enabled
-        :param forceUser: if True, ocr is not used
-        :param imgtype: Type of the Image
-        :param result_type: 'textual' if text is written on the captcha\
-        or 'positional' for captcha where the user have to click\
-        on a specific region on the captcha
-
-        :return: result of decrypting
-        """
-        img = self.load(url, get=get, post=post, cookies=cookies)
-
-        id = ("%.2f" % time.time())[-6:].replace(".", "")
-
-        with open(os.path.join("tmp", "tmpCaptcha_%s_%s.%s" % (self.__name__, id, imgtype)), "wb") as tmpCaptcha:
-            tmpCaptcha.write(img)
-
-        has_plugin = self.__name__ in self.pyload.pluginManager.ocrPlugins
-
-        if self.pyload.captcha:
-            Ocr = self.pyload.pluginManager.loadClass("ocr", self.__name__)
-        else:
-            Ocr = None
-
-        if Ocr and not forceUser:
-            time.sleep(random.randint(3000, 5000) / 1000.0)
-            if self.pyfile.abort:
-                self.abort()
-
-            ocr = Ocr(self.pyfile)
-            result = ocr.get_captcha(tmpCaptcha.name)
-        else:
-            captchaManager = self.pyload.captchaManager
-            task = captchaManager.newTask(img, imgtype, tmpCaptcha.name, result_type)
-            self.c_task = task
-            captchaManager.handleCaptcha(task)
-
-            while task.isWaiting():
-                if self.pyfile.abort:
-                    captchaManager.removeTask(task)
-                    self.abort()
-                time.sleep(1)
-
-            captchaManager.removeTask(task)
-
-            if task.error and has_plugin:  #: Ignore default error message since the user could use OCR
-                self.fail(_("Pil and tesseract not installed and no Client connected for captcha decrypting"))
-            elif task.error:
-                self.fail(task.error)
-            elif not task.result:
-                self.fail(_("No captcha result obtained in appropiate time by any of the plugins"))
-
-            result = task.result
-            self.log_debug("Received captcha result: %s" % result)
-
-        if not self.pyload.debug:
-            try:
-                os.remove(tmpCaptcha.name)
-            except Exception:
-                pass
-
-        return result
-
-
     def fixurl(self, url):
         url = _fixurl(url)
 
@@ -447,7 +365,7 @@ class Hoster(Plugin):
         if self.pyload.debug:
             self.log_debug("DOWNLOAD URL " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
 
-        self.correct_captcha()
+        self.captcha.correct()
         self.check_for_same_files()
 
         self.pyfile.setStatus("downloading")

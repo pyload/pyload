@@ -88,9 +88,9 @@ class FilecloudIo(SimpleHoster):
                 res = json_loads(res)
 
                 if "retry" in res and res['retry']:
-                    self.invalid_captcha()
+                    self.captcha.invalid()
                 else:
-                    self.correct_captcha()
+                    self.captcha.correct()
                     break
             else:
                 self.fail(_("Incorrect captcha"))

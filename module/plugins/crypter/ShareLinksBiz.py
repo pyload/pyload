@@ -117,13 +117,13 @@ class ShareLinksBiz(Crypter):
         m = re.search(r'<img src="/captcha.gif\?d=(.*?)&amp;PHPSESSID=(.*?)&amp;legend=1"', self.html)
         captchaUrl = self.base_url + '/captcha.gif?d=%s&PHPSESSID=%s' % (m.group(1), m.group(2))
         self.log_debug("Waiting user for correct position")
-        coords = self.decrypt_captcha(captchaUrl, forceUser=True, imgtype="gif", result_type='positional')
+        coords = self.captcha.decrypt_image(captchaUrl, input_type="gif", output_type='positional', try_ocr=False)
         self.log_debug("Captcha resolved, coords [%s]" % str(coords))
 
         #: Resolve captcha
         href = self._resolve_coords(coords, captchaMap)
         if href is None:
-            self.invalid_captcha()
+            self.captcha.invalid()
             self.retry(wait_time=5)
         url = self.base_url + href
         self.html = self.load(url)
@@ -153,10 +153,10 @@ class ShareLinksBiz(Crypter):
 
         if self.captcha:
             if "Your choice was wrong" in self.html:
-                self.invalid_captcha()
+                self.captcha.invalid()
                 self.retry(wait_time=5)
             else:
-                self.correct_captcha()
+                self.captcha.correct()
 
 
     def get_package_info(self):

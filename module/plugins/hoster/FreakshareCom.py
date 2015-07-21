@@ -61,7 +61,7 @@ class FreakshareCom(Hoster):
                 self.fail(_("File not downloadable"))
 
             elif check == "wrong_captcha":
-                self.invalid_captcha()
+                self.captcha.invalid()
                 self.retry()
 
             elif check == "downloadserver":

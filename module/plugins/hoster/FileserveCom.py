@@ -167,9 +167,9 @@ class FileserveCom(Hoster):
                                              'recaptcha_response_field'   : response,
                                              'recaptcha_shortencode_field': self.file_id}))
             if not res['success']:
-                self.invalid_captcha()
+                self.captcha.invalid()
             else:
-                self.correct_captcha()
+                self.captcha.correct()
                 break
         else:
             self.fail(_("Invalid captcha"))

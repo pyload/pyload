@@ -59,9 +59,9 @@ class FilerNet(SimpleHoster):
 
         if 'location' in self.req.http.header.lower():
             self.link = re.search(r'location: (\S+)', self.req.http.header, re.I).group(1)
-            self.correct_captcha()
+            self.captcha.correct()
         else:
-            self.invalid_captcha()
+            self.captcha.invalid()
 
 
 getInfo = create_getInfo(FilerNet)

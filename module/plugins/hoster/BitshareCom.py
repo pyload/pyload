@@ -149,12 +149,12 @@ class BitshareCom(SimpleHoster):
     def handle_captcha_errors(self, res):
         self.log_debug("Result of captcha resolving [%s]" % res)
         if "SUCCESS" in res:
-            self.correct_captcha()
+            self.captcha.correct()
             return True
         elif "ERROR:SESSION ERROR" in res:
             self.retry()
 
-        self.invalid_captcha()
+        self.captcha.invalid()
 
 
 getInfo = create_getInfo(BitshareCom)

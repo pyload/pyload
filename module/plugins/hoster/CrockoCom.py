@@ -59,7 +59,7 @@ class CrockoCom(SimpleHoster):
             self.download(action, post=inputs)
 
             if self.check_download({'captcha': recaptcha.KEY_AJAX_PATTERN}):
-                self.invalid_captcha()
+                self.captcha.invalid()
             else:
                 break
         else:

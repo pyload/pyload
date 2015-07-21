@@ -101,7 +101,7 @@ class Keep2ShareCc(SimpleHoster):
         self.log_debug("CAPTCHA_PATTERN found %s" % m)
         if m:
             captcha_url = urlparse.urljoin("http://keep2s.cc/", m.group(1))
-            post_data['CaptchaForm[code]'] = self.decrypt_captcha(captcha_url)
+            post_data['CaptchaForm[code]'] = self.captcha.decrypt_image(captcha_url)
         else:
             recaptcha = ReCaptcha(self)
             response, challenge = recaptcha.challenge()
@@ -111,9 +111,9 @@ class Keep2ShareCc(SimpleHoster):
         self.html = self.load(self.pyfile.url, post=post_data)
 
         if 'verification code is incorrect' not in self.html:
-            self.correct_captcha()
+            self.captcha.correct()
         else:
-            self.invalid_captcha()
+            self.captcha.invalid()
 
 
 getInfo = create_getInfo(Keep2ShareCc)

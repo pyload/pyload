@@ -7,10 +7,10 @@ import urlparse
 
 from base64 import b64encode
 
-from module.plugins.internal.Captcha import Captcha
+from module.plugins.internal.CaptchaService import CaptchaService
 
 
-class ReCaptcha(Captcha):
+class ReCaptcha(CaptchaService):
     __name__    = "ReCaptcha"
     __type__    = "captcha"
     __version__ = "0.18"
@@ -27,8 +27,8 @@ class ReCaptcha(Captcha):
     KEY_V2_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']:\s*["\'])([\w-]+)'
 
 
-    def detect_key(self, html=None):
-        html = html or self.retrieve_html()
+    def detect_key(self, data=None):
+        html = data or self.retrieve_data()
 
         m = re.search(self.KEY_V2_PATTERN, html) or re.search(self.KEY_V1_PATTERN, html)
         if m:
@@ -40,15 +40,15 @@ class ReCaptcha(Captcha):
             return None
 
 
-    def challenge(self, key=None, html=None, version=None):
-        key = key or self.retrieve_key(html)
+    def challenge(self, key=None, data=None, version=None):
+        key = key or self.retrieve_key(data)
 
         if version in (1, 2):
             return getattr(self, "_challenge_v%s" % version)(key)
 
         else:
             return self.challenge(key,
-                                  version=2 if re.search(self.KEY_V2_PATTERN, html or self.retrieve_html()) else 1)
+                                  version=2 if re.search(self.KEY_V2_PATTERN, html or self.retrieve_data()) else 1)
 
 
     def _challenge_v1(self, key):
@@ -81,11 +81,11 @@ class ReCaptcha(Captcha):
             self.fail(_("ReCaptcha second challenge pattern not found"))
 
         self.log_debug("Second challenge: %s" % challenge)
-        result = self.plugin.decryptCaptcha("%simage" % server,
-                                            get={'c': challenge},
-                                            cookies=True,
-                                            forceUser=True,
-                                            imgtype="jpg")
+        result = self.decrypt("%simage" % server,
+                              get={'c': challenge},
+                              cookies=True,
+                              input_type="jpg",
+                              try_ocr=False)
 
         self.log_debug("Result: %s" % result)
 
@@ -170,10 +170,10 @@ class ReCaptcha(Captcha):
         self.log_debug("Token #3: %s" % token3.group(1))
 
         millis_captcha_loading = int(round(time.time() * 1000))
-        captcha_response = self.plugin.decryptCaptcha("https://www.google.com/recaptcha/api2/payload",
-                                                      get={'c':token3.group(1), 'k':key},
-                                                      cookies=True,
-                                                      forceUser=True)
+        captcha_response = self.decrypt_image("https://www.google.com/recaptcha/api2/payload",
+                                              get={'c':token3.group(1), 'k':key},
+                                              cookies=True,
+                                              try_ocr=False)
         response = b64encode('{"response":"%s"}' % captcha_response)
 
         self.log_debug("Result: %s" % response)

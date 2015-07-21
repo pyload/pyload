@@ -3,10 +3,10 @@
 import re
 
 from module.common.json_layer import json_loads
-from module.plugins.internal.Captcha import Captcha
+from module.plugins.internal.CaptchaService import CaptchaService
 
 
-class AdYouLike(Captcha):
+class AdYouLike(CaptchaService):
     __name__    = "AdYouLike"
     __type__    = "captcha"
     __version__ = "0.07"
@@ -21,8 +21,8 @@ class AdYouLike(Captcha):
     CALLBACK_PATTERN = r'(Adyoulike\.g\._jsonp_\d+)'
 
 
-    def detect_key(self, html=None):
-        html = html or self.retrieve_html()
+    def detect_key(self, data=None):
+        html = data or self.retrieve_data()
 
         m = re.search(self.AYL_PATTERN, html)
         n = re.search(self.CALLBACK_PATTERN, html)
@@ -35,8 +35,8 @@ class AdYouLike(Captcha):
             return None
 
 
-    def challenge(self, key=None, html=None):
-        ayl, callback = key or self.retrieve_key(html)
+    def challenge(self, key=None, data=None):
+        ayl, callback = key or self.retrieve_key(data)
 
         #: {'adyoulike':{'key':"P~zQ~O0zV0WTiAzC-iw0navWQpCLoYEP"},
         #: 'all':{'element_id':"ayl_private_cap_92300",'lang':"fr",'env':"prod"}}

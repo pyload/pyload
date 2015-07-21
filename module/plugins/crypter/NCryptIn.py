@@ -146,7 +146,7 @@ class NCryptIn(Crypter):
         if "anicaptcha" in form:
             self.log_debug("Captcha protected")
             captchaUri = re.search(r'src="(/temp/anicaptcha/.+?)"', form).group(1)
-            captcha = self.decrypt_captcha("http://ncrypt.in" + captchaUri)
+            captcha = self.captcha.decrypt_image("http://ncrypt.in" + captchaUri)
             self.log_debug("Captcha resolved [%s]" % captcha)
             postData['captcha'] = captcha
 
@@ -164,7 +164,7 @@ class NCryptIn(Crypter):
         if "circlecaptcha" in form:
             self.log_debug("CircleCaptcha protected")
             captcha_img_url = "http://ncrypt.in/classes/captcha/circlecaptcha.php"
-            coords = self.decrypt_captcha(captcha_img_url, forceUser=True, imgtype="png", result_type='positional')
+            coords = self.captcha.decrypt_image(captcha_img_url, input_type="png", output_type='positional', try_ocr=False)
             self.log_debug("Captcha resolved, coords [%s]" % str(coords))
             postData['circle.x'] = coords[0]
             postData['circle.y'] = coords[1]
@@ -182,10 +182,10 @@ class NCryptIn(Crypter):
 
         if self.protection_type == "captcha":
             if "The securitycheck was wrong!" in self.cleaned_html:
-                self.invalid_captcha()
+                self.captcha.invalid()
                 self.retry()
             else:
-                self.correct_captcha()
+                self.captcha.correct()
 
 
     def handle_link_source(self, link_source_type):

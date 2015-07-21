@@ -105,17 +105,17 @@ class CzshareCom(SimpleHoster):
         #: Get and decrypt captcha
         captcha_url = 'http://sdilej.cz/captcha.php'
         for _i in xrange(5):
-            inputs['captchastring2'] = self.decrypt_captcha(captcha_url)
+            inputs['captchastring2'] = self.captcha.decrypt_image(captcha_url)
             self.html = self.load(parsed_url, post=inputs)
 
             if u"<li>Zadaný ověřovací kód nesouhlasí!</li>" in self.html:
-                self.invalid_captcha()
+                self.captcha.invalid()
 
             elif re.search(self.MULTIDL_PATTERN, self.html):
                 self.wait(5 * 60, 12, _("Download limit reached"))
 
             else:
-                self.correct_captcha()
+                self.captcha.correct()
                 break
         else:
             self.fail(_("No valid captcha code entered"))
@@ -154,7 +154,7 @@ class CzshareCom(SimpleHoster):
             self.wait(5 * 60, 12, _("Download limit reached"))
 
         elif check == "captcha":
-            self.invalid_captcha()
+            self.captcha.invalid()
             self.retry()
 
         return super(CzshareCom, self).checkFile()

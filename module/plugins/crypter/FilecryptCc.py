@@ -92,17 +92,17 @@ class FilecryptCc(Crypter):
         if m:  #: Normal captcha
             self.log_debug("Captcha-URL: %s" % m.group(1))
 
-            captcha_code = self.decrypt_captcha(urlparse.urljoin(self.base_url, m.group(1)),
-                                               forceUser=True,
-                                               imgtype="gif")
+            captcha_code = self.captcha.decrypt_image(urlparse.urljoin(self.base_url, m.group(1)),
+                                                      input_type="gif",
+                                                      try_ocr=False)
 
             self.site_with_links = self.load(self.pyfile.url,
                                            post={'recaptcha_response_field': captcha_code})
         elif m2:  #: Circle captcha
             self.log_debug("Captcha-URL: %s" % m2.group(1))
 
-            captcha_code = self.decrypt_captcha('%s%s?c=abc' %(self.base_url, m2.group(1)),
-                                               result_type='positional')
+            captcha_code = self.captcha.decrypt_image('%s%s?c=abc' %(self.base_url, m2.group(1)),
+                                               output_type='positional')
 
             self.site_with_links = self.load(self.pyfile.url,
                                            post={'button.x': captcha_code[0], 'button.y': captcha_code[1]})
@@ -120,7 +120,7 @@ class FilecryptCc(Crypter):
                 self.site_with_links = self.html
 
         if "recaptcha_image" in self.site_with_links or "data-sitekey" in self.site_with_links:
-            self.invalid_captcha()
+            self.captcha.invalid()
             self.retry()
 
 

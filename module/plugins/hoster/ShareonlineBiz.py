@@ -80,12 +80,12 @@ class ShareonlineBiz(SimpleHoster):
                                   'recaptcha_challenge_field': challenge,
                                   'recaptcha_response_field' : response})
             if not res == '0':
-                self.correct_captcha()
+                self.captcha.correct()
                 return res
             else:
-                self.invalid_captcha()
+                self.captcha.invalid()
         else:
-            self.invalid_captcha()
+            self.captcha.invalid()
             self.fail(_("No valid captcha solution received"))
 
 
@@ -111,11 +111,11 @@ class ShareonlineBiz(SimpleHoster):
                                     'fail'  : re.compile(r"<title>Share-Online")})
 
         if check == "cookie":
-            self.invalid_captcha()
+            self.captcha.invalid()
             self.retry(5, 60, _("Cookie failure"))
 
         elif check == "fail":
-            self.invalid_captcha()
+            self.captcha.invalid()
             self.retry(5, 5 * 60, _("Download failed"))
 
         return super(ShareonlineBiz, self).checkFile()

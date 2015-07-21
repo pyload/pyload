@@ -301,8 +301,8 @@ class SimpleHoster(Hoster):
     def check_file(self):
         lastDownload = fs_encode(self.last_download)
 
-        if self.c_task and not self.last_download:
-            self.invalid_captcha()
+        if self.captcha.task and not self.last_download:
+            self.captcha.invalid()
             self.retry(10, reason=_("Wrong captcha"))
 
         elif self.check_download({'Empty file': re.compile(r'\A((.|)(\2|\s)*)\Z')},
@@ -396,7 +396,7 @@ class SimpleHoster(Hoster):
                     self.fail(_("Connection from your current IP address is not allowed"))
 
                 elif re.search('captcha|code', errmsg, re.I):
-                    self.invalid_captcha()
+                    self.captcha.invalid()
                     self.retry(10, reason=_("Wrong captcha"))
 
                 elif re.search('countdown|expired', errmsg, re.I):

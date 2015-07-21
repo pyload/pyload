@@ -3,10 +3,10 @@
 import random
 import re
 
-from module.plugins.internal.Captcha import Captcha
+from module.plugins.internal.CaptchaService import CaptchaService
 
 
-class AdsCaptcha(Captcha):
+class AdsCaptcha(CaptchaService):
     __name__    = "AdsCaptcha"
     __type__    = "captcha"
     __version__ = "0.10"
@@ -21,8 +21,8 @@ class AdsCaptcha(Captcha):
     PUBLICKEY_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?.*?PublicKey=([\w-]+)'
 
 
-    def detect_key(self, html=None):
-        html = html or self.retrieve_html()
+    def detect_key(self, data=None):
+        html = data or self.retrieve_data()
 
         m = re.search(self.PUBLICKEY_PATTERN, html)
         n = re.search(self.CAPTCHAID_PATTERN, html)
@@ -35,8 +35,8 @@ class AdsCaptcha(Captcha):
             return None
 
 
-    def challenge(self, key=None, html=None):
-        PublicKey, CaptchaId = key or self.retrieve_key(html)
+    def challenge(self, key=None, data=None):
+        PublicKey, CaptchaId = key or self.retrieve_key(data)
 
         html = self.plugin.load("http://api.adscaptcha.com/Get.aspx",
                                     get={'CaptchaId': CaptchaId,
@@ -54,10 +54,10 @@ class AdsCaptcha(Captcha):
 
 
     def result(self, server, challenge):
-        result = self.plugin.decryptCaptcha("%sChallenge.aspx" % server,
-                                            get={'cid': challenge, 'dummy': random.random()},
-                                            cookies=True,
-                                            imgtype="jpg")
+        result = self.decrypt_image("%sChallenge.aspx" % server,
+                                    get={'cid': challenge, 'dummy': random.random()},
+                                    cookies=True,
+                                    input_type="jpg")
 
         self.log_debug("Result: %s" % result)
 

@@ -35,20 +35,20 @@ class SendspaceCom(SimpleHoster):
             m = re.search(self.LINK_FREE_PATTERN, self.html)
             if m:
                 if 'captcha_hash' in params:
-                    self.correct_captcha()
+                    self.captcha.correct()
                 self.link = m.group(1)
                 break
 
             m = re.search(self.CAPTCHA_PATTERN, self.html)
             if m:
                 if 'captcha_hash' in params:
-                    self.invalid_captcha()
+                    self.captcha.invalid()
                 captcha_url1 = "http://www.sendspace.com/" + m.group(1)
                 m = re.search(self.USER_CAPTCHA_PATTERN, self.html)
                 captcha_url2 = "http://www.sendspace.com/" + m.group(1)
                 params = {'captcha_hash': m.group(2),
                           'captcha_submit': 'Verify',
-                          'captcha_answer': self.decrypt_captcha(captcha_url1) + " " + self.decrypt_captcha(captcha_url2)}
+                          'captcha_answer': self.captcha.decrypt_image(captcha_url1) + " " + self.captcha.decrypt_image(captcha_url2)}
             else:
                 params = {'download': "Regular Download"}
 

@@ -43,18 +43,18 @@ class NarodRu(SimpleHoster):
 
             post_data = {'action': "sendcapcha"}
             captcha_url, post_data['key'] = m.groups()
-            post_data['rep'] = self.decrypt_captcha(captcha_url)
+            post_data['rep'] = self.captcha.decrypt_image(captcha_url)
 
             self.html = self.load(pyfile.url, post=post_data)
 
             m = re.search(self.LINK_FREE_PATTERN, self.html)
             if m:
                 self.link = urlparse.urljoin("http://narod.ru", m.group(1))
-                self.correct_captcha()
+                self.captcha.correct()
                 break
 
             elif u'<b class="error-msg"><strong>Ошиблись?</strong>' in self.html:
-                self.invalid_captcha()
+                self.captcha.invalid()
 
             else:
                 self.error(_("Download link"))

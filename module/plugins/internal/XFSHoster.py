@@ -221,7 +221,7 @@ class XFSHoster(SimpleHoster):
         m = re.search(self.CAPTCHA_PATTERN, self.html)
         if m:
             captcha_url = m.group(1)
-            inputs['code'] = self.decrypt_captcha(captcha_url)
+            inputs['code'] = self.captcha.decrypt_image(captcha_url)
             return
 
         m = re.search(self.CAPTCHA_BLOCK_PATTERN, self.html, re.S)

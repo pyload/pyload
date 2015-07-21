@@ -81,15 +81,15 @@ class TurbobitNet(SimpleHoster):
                 if m is None:
                     self.error(_("captcha"))
                 captcha_url = m.group(1)
-                inputs['captcha_response'] = self.decrypt_captcha(captcha_url)
+                inputs['captcha_response'] = self.captcha.decrypt_image(captcha_url)
 
             self.log_debug(inputs)
             self.html = self.load(self.url, post=inputs)
 
             if '<div class="captcha-error">Incorrect, try again!<' in self.html:
-                self.invalid_captcha()
+                self.captcha.invalid()
             else:
-                self.correct_captcha()
+                self.captcha.correct()
                 break
         else:
             self.fail(_("Invalid captcha"))

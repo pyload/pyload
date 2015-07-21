@@ -52,10 +52,10 @@ class UnibytesCom(SimpleHoster):
                 m = re.search(self.LINK_FREE_PATTERN, self.html)
                 if m:
                     self.link = m.group(1)
-                    self.correct_captcha()
+                    self.captcha.correct()
                     break
                 else:
-                    self.invalid_captcha()
+                    self.captcha.invalid()
 
             last_step = post_data['step']
             action, post_data = self.parse_html_form('id="stepForm"')
@@ -65,7 +65,7 @@ class UnibytesCom(SimpleHoster):
                 self.wait(m.group(1) if m else 60, False)
 
             elif last_step in ("captcha", "last"):
-                post_data['captcha'] = self.decrypt_captcha(urlparse.urljoin(domain, "/captcha.jpg"))
+                post_data['captcha'] = self.captcha.decrypt_image(urlparse.urljoin(domain, "/captcha.jpg"))
 
         else:
             self.fail(_("No valid captcha code entered"))

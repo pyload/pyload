@@ -87,15 +87,15 @@ class OboomCom(Hoster):
             if result[0] == 200:
                 self.download_token = result[1]
                 self.download_auth = result[2]
-                self.correct_captcha()
+                self.captcha.correct()
                 self.wait(30)
                 break
 
             elif result[0] == 400:
                 if result[1] == "incorrect-captcha-sol":
-                    self.invalid_captcha()
+                    self.captcha.invalid()
                 elif result[1] == "captcha-timeout":
-                    self.invalid_captcha()
+                    self.captcha.invalid()
                 elif result[1] == "forbidden":
                     self.retry(5, 15 * 60, _("Service unavailable"))
 
@@ -107,7 +107,7 @@ class OboomCom(Hoster):
                 self.wait()
                 self.retry(5)
         else:
-            self.invalid_captcha()
+            self.captcha.invalid()
             self.fail(_("Received invalid captcha 5 times"))
 
 
