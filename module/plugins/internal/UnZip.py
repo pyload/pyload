@@ -12,7 +12,7 @@ from module.utils import fs_encode
 
 class UnZip(Extractor):
     __name__    = "UnZip"
-    __version__ = "1.13"
+    __version__ = "1.14"
     __status__  = "stable"
 
     __description__ = """Zip extractor plugin"""
@@ -25,7 +25,7 @@ class UnZip(Extractor):
 
 
     @classmethod
-    def is_usable(cls):
+    def find(cls):
         return sys.version_info[:2] >= (2, 6)
 
 

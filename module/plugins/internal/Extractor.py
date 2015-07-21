@@ -22,7 +22,7 @@ class PasswordError(Exception):
 class Extractor(Plugin):
     __name__    = "Extractor"
     __type__    = "extractor"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__  = "stable"
 
     __description__ = """Base extractor plugin"""
@@ -48,12 +48,12 @@ class Extractor(Plugin):
 
 
     @classmethod
-    def is_usable(cls):
+    def find(cls):
         """
         Check if system statisfy dependencies
         :return: boolean
         """
-        return None
+        pass
 
 
     @classmethod

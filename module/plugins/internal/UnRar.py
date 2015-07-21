@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.21"
+    __version__ = "1.22"
     __status__  = "stable"
 
     __description__ = """Rar extractor plugin"""
@@ -49,34 +49,37 @@ class UnRar(Extractor):
 
 
     @classmethod
-    def is_usable(cls):
-        if os.name == "nt":
-            try:
+    def find(cls):
+        try:
+            if os.name == "nt":
                 cls.CMD = os.path.join(pypath, "RAR.exe")
+            else:
+                cls.CMD = "rar"
+
+            p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            out, err = p.communicate()
+            cls.__name__ = "RAR"
+            cls.REPAIR = True
+
+        except OSError:
+            try:
+                if os.name == "nt":
+                    cls.CMD = os.path.join(pypath, "UnRAR.exe")
+                 else:
+                    cls.CMD = "unrar"
+
                 p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, err = p.communicate()
-                cls.__name__ = "RAR"
-                cls.REPAIR = True
 
             except OSError:
-                cls.CMD = os.path.join(pypath, "UnRAR.exe")
-                p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                out, err = p.communicate()
+                return False
+
         else:
-            try:
-                p = subprocess.Popen(["rar"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                out, err = p.communicate()
-                cls.__name__ = "RAR"
-                cls.REPAIR = True
+            return True
 
-            except OSError:  #: Fallback to unrar
-                p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                out, err = p.communicate()
-
-        m = cls.re_version.search(out)
-        cls.VERSION = m.group(1) if m else '(version unknown)'
-
-        return True
+        finally:
+            m = cls.re_version.search(out)
+            cls.VERSION = m.group(1) if m else '(version unknown)'
 
 
     @classmethod

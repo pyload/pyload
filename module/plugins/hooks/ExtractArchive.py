@@ -112,7 +112,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.46"
+    __version__ = "1.47"
     __status__  = "stable"
 
     __config__ = [("activated"      , "bool"              , "Activated"                                 , True                                                                     ),
@@ -162,7 +162,7 @@ class ExtractArchive(Addon):
             try:
                 module = self.pyload.pluginManager.loadModule("internal", p)
                 klass  = getattr(module, p)
-                if klass.is_usable():
+                if klass.find():
                     self.extractors.append(klass)
                 if klass.REPAIR:
                     self.repair = self.get_config('repair')
