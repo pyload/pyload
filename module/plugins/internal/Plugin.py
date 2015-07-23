@@ -258,7 +258,7 @@ class Plugin(object):
             else:
                 req = self.pyload.requestFactory.getRequest(self.__name__)
 
-        res = req.load(url, get, post, ref, cookies, just_header, multipart, bool(decode))
+        res = req.load(url, get, post, ref, cookies, just_header, multipart, decode is True)
 
         if decode:
             res = html_unescape(res).decode(decode if isinstance(decode, basestring) else 'utf8')
