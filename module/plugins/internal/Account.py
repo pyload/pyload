@@ -206,7 +206,7 @@ class Account(Plugin):
 
     def load_account_info(self, name, req=None):
         """
-        This should be overwritten in account plugin,\
+        This should be overwritten in account plugin
         and retrieving account information for user
 
         :param name:

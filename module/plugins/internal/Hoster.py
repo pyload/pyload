@@ -83,7 +83,7 @@ class Hoster(Plugin):
         self.ocr = None
 
         #: Account handler instance, see :py:class:`Account`
-        self.account = pyfile.m.core.accountManager.getAccountPlugin(self.__name__)
+        self.account = self.pyload.accountManager.getAccountPlugin(self.__name__)
 
         #: Premium status
         self.premium = False
@@ -107,7 +107,7 @@ class Hoster(Plugin):
             #: Premium status
             self.premium = self.account.is_premium(self.user)
         else:
-            self.req = pyfile.m.core.requestFactory.getRequest(self.__name__)
+            self.req = self.pyload.requestFactory.getRequest(self.__name__)
 
         #: Associated pyfile instance, see `PyFile`
         self.pyfile = pyfile

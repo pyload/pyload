@@ -9,6 +9,7 @@ import time
 from select import select
 
 from module.plugins.internal.Hoster import Hoster
+# from module.utils import decode
 from module.utils import save_join as fs_join
 
 
@@ -28,7 +29,6 @@ class Xdcc(Hoster):
 
 
     def setup(self):
-        self.debug = 0  #: 0,1,2
         self.timeout = 30
         self.multi_dl = False
 
@@ -128,8 +128,8 @@ class Xdcc(Hoster):
             readbuffer = temp.pop()
 
             for line in temp:
-                if self.debug is 2:
-                    print "*> " + unicode(line, errors='ignore')
+                # if self.pyload.debug:
+                    # self.log_debug("*> " + decode(line))
                 line = line.rstrip()
                 first = line.split()
 
@@ -165,8 +165,8 @@ class Xdcc(Hoster):
                         and msg['action'] in ("PRIVMSG", "NOTICE")):
                     continue
 
-                if self.debug is 1:
-                    print "%s: %s" % (msg['origin'], msg['text'])
+                if self.pyload.debug:
+                    self.log_debug(msg['origin'], msg['text'])
 
                 if "You already requested that pack" in msg['text']:
                     retry = time.time() + 300

@@ -10,7 +10,7 @@ class TNTVillageScambioeticoOrg(SimpleCrypter):
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?forum\.tntvillage\.scambioetico\.org/index\.php\?.*showtopic=\d+'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),  #: Overrides core.config['general']['folder_per_package']
+    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),  #: Overrides pyload.config['general']['folder_per_package']
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """TNTVillage.scambioetico.org decrypter plugin"""

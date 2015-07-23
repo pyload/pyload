@@ -35,7 +35,7 @@ class UnSkipOnFail(Addon):
             #: (i.e. "queued" for this Plugin)
             #: It creates a temporary PyFile object using
             #: "link" data, changes its status, and tells
-            #: The core.files-manager to save its data.
+            #: The pyload.files-manager to save its data.
             pylink = self._pyfile(link)
 
             pylink.setCustomStatus(_("unskipped"), "queued")

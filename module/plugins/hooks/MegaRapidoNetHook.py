@@ -22,14 +22,14 @@ class MegaRapidoNetHook(MultiHook):
 
 
     def get_hosters(self):
-        hosters = {'1fichier'    : [],#leave it there are so many possible addresses?
+        hosters = {'1fichier'    : [],  # leave it there are so many possible addresses?
                    '1st-files'   : ['1st-files.com'],
                    '2shared'     : ['2shared.com'],
                    '4shared'     : ['4shared.com', '4shared-china.com'],
                    'asfile'      : ['http://asfile.com/'],
                    'bitshare'    : ['bitshare.com'],
                    'brupload'    : ['brupload.net'],
-                   'crocko'      : ['crocko.com','easy-share.com'],
+                   'crocko'      : ['crocko.com', 'easy-share.com'],
                    'dailymotion' : ['dailymotion.com'],
                    'depfile'     : ['depfile.com'],
                    'depositfiles': ['depositfiles.com', 'dfiles.eu'],
@@ -39,12 +39,12 @@ class MegaRapidoNetHook(MultiHook):
                    'extmatrix'   : ['extmatrix.com'],
                    'facebook'    : [],
                    'file4go'     : ['file4go.com'],
-                   'filecloud'   : ['filecloud.io','ifile.it','mihd.net'],
+                   'filecloud'   : ['filecloud.io', 'ifile.it', 'mihd.net'],
                    'filefactory' : ['filefactory.com'],
                    'fileom'      : ['fileom.com'],
                    'fileparadox' : ['fileparadox.in'],
                    'filepost'    : ['filepost.com', 'fp.io'],
-                   'filerio'     : ['filerio.in','filerio.com','filekeen.com'],
+                   'filerio'     : ['filerio.in', 'filerio.com', 'filekeen.com'],
                    'filesflash'  : ['filesflash.com'],
                    'firedrive'   : ['firedrive.com', 'putlocker.com'],
                    'flashx'      : [],
@@ -52,7 +52,7 @@ class MegaRapidoNetHook(MultiHook):
                    'gigasize'    : ['gigasize.com'],
                    'hipfile'     : ['hipfile.com'],
                    'junocloud'   : ['junocloud.me'],
-                   'letitbit'    : ['letitbit.net','shareflare.net'],
+                   'letitbit'    : ['letitbit.net', 'shareflare.net'],
                    'mediafire'   : ['mediafire.com'],
                    'mega'        : ['mega.co.nz'],
                    'megashares'  : ['megashares.com'],

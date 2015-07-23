@@ -37,7 +37,7 @@ class UnRar(Extractor):
     EXTENSIONS = [".rar"]
 
 
-    re_multipart = re.compile(r'\.(part|r)(\d+)(?:\.rar)?(\.rev|\.bad)?',re.I)
+    re_multipart = re.compile(r'\.(part|r)(\d+)(?:\.rar)?(\.rev|\.bad)?', re.I)
 
     re_filefixed = re.compile(r'Building (.+)')
     re_filelist  = re.compile(r'^(.)(\s*[\w\.\-]+)\s+(\d+\s+)+(?:\d+\%\s+)?[\d\-]{8}\s+[\d\:]{5}', re.M|re.I)
@@ -180,7 +180,7 @@ class UnRar(Extractor):
 
         #: eventually Multipart Files
         files.extend(fs_join(dir, os.path.basename(file)) for file in filter(self.is_multipart, os.listdir(dir))
-                     if re.sub(self.re_multipart,".rar",name) == re.sub(self.re_multipart,".rar",file))
+                     if re.sub(self.re_multipart, ".rar", name) == re.sub(self.re_multipart, ".rar", file))
 
         return files
 

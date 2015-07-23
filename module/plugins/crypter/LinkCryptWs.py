@@ -150,7 +150,7 @@ class LinkCryptWs(Crypter):
     def getunrarpw(self):
         sitein = self.html
         indexi = sitein.find("|source|") + 8
-        indexe = sitein.find("|",indexi)
+        indexe = sitein.find("|", indexi)
 
         unrarpw = sitein[indexi:indexe]
 
