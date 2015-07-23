@@ -5,7 +5,7 @@ import time
 import urlparse
 
 from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.ReCaptcha import ReCaptcha
+from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 

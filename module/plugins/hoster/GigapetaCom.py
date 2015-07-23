@@ -39,7 +39,7 @@ class GigapetaCom(SimpleHoster):
         for _i in xrange(5):
             self.check_errors()
 
-            captcha = self.captcha.decrypt_image(captcha_url)
+            captcha = self.captcha.decrypt(captcha_url)
             self.html = self.load(pyfile.url, post={
                 'captcha_key': captcha_key,
                 'captcha': captcha,

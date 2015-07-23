@@ -48,7 +48,7 @@ class SendspaceCom(SimpleHoster):
                 captcha_url2 = "http://www.sendspace.com/" + m.group(1)
                 params = {'captcha_hash': m.group(2),
                           'captcha_submit': 'Verify',
-                          'captcha_answer': self.captcha.decrypt_image(captcha_url1) + " " + self.captcha.decrypt_image(captcha_url2)}
+                          'captcha_answer': self.captcha.decrypt(captcha_url1) + " " + self.captcha.decrypt(captcha_url2)}
             else:
                 params = {'download': "Regular Download"}
 

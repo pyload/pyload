@@ -56,7 +56,7 @@ class MegasharesCom(SimpleHoster):
             for _i in xrange(5):
                 random_num = re.search(self.REACTIVATE_NUM_PATTERN, self.html).group(1)
 
-                verifyinput = self.captcha.decrypt_image("http://d01.megashares.com/index.php",
+                verifyinput = self.captcha.decrypt("http://d01.megashares.com/index.php",
                                                   get={'secgfx': "gfx", 'random_num': random_num})
 
                 self.log_info(_("Reactivating passport %s: %s %s") % (passport_num, random_num, verifyinput))

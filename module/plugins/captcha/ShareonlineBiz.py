@@ -14,7 +14,7 @@ class ShareonlineBiz(OCR):
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
-    def get_captcha(self, image):
+    def recognize(self, image):
         self.load_image(image)
         self.to_greyscale()
         self.image = self.image.resize((160, 50))

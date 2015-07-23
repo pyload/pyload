@@ -95,7 +95,7 @@ class SolveMedia(CaptchaService):
 
 
     def result(self, server, challenge):
-        result = self.decrypt_image(server,
+        result = self.decrypt(server,
                                     get={'c': challenge},
                                     cookies=True,
                                     input_type="gif")

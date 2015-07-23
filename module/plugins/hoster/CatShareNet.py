@@ -3,7 +3,7 @@
 import re
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.internal.ReCaptcha import ReCaptcha
+from module.plugins.captcha.ReCaptcha import ReCaptcha
 
 
 class CatShareNet(SimpleHoster):

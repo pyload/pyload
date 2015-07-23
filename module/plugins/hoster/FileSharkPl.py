@@ -100,7 +100,7 @@ class FileSharkPl(SimpleHoster):
         if m is None:
             self.retry(reason=_("Captcha image not found"))
 
-        inputs['form[captcha]'] = self.captcha.decrypt(m.group(1).decode('base64'), input_type='jpeg')
+        inputs['form[captcha]'] = self.captcha._decrypt(m.group(1).decode('base64'), input_type='jpeg')
         inputs['form[start]'] = ""
 
         self.download(link, post=inputs, disposition=True)

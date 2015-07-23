@@ -85,7 +85,7 @@ class ReCaptcha(CaptchaService):
                               get={'c': challenge},
                               cookies=True,
                               input_type="jpg",
-                              try_ocr=False)
+                              ocr=False)
 
         self.log_debug("Result: %s" % result)
 
@@ -170,10 +170,10 @@ class ReCaptcha(CaptchaService):
         self.log_debug("Token #3: %s" % token3.group(1))
 
         millis_captcha_loading = int(round(time.time() * 1000))
-        captcha_response = self.decrypt_image("https://www.google.com/recaptcha/api2/payload",
+        captcha_response = self.decrypt("https://www.google.com/recaptcha/api2/payload",
                                               get={'c':token3.group(1), 'k':key},
                                               cookies=True,
-                                              try_ocr=False)
+                                              ocr=False)
         response = b64encode('{"response":"%s"}' % captcha_response)
 
         self.log_debug("Result: %s" % response)

@@ -4,8 +4,8 @@ import pycurl
 import random
 import re
 
-from module.plugins.internal.ReCaptcha import ReCaptcha
-from module.plugins.internal.SolveMedia import SolveMedia
+from module.plugins.captcha.ReCaptcha import ReCaptcha
+from module.plugins.captcha.SolveMedia import SolveMedia
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, seconds_to_midnight
 from module.utils import html_unescape
 
@@ -221,7 +221,7 @@ class XFSHoster(SimpleHoster):
         m = re.search(self.CAPTCHA_PATTERN, self.html)
         if m:
             captcha_url = m.group(1)
-            inputs['code'] = self.captcha.decrypt_image(captcha_url)
+            inputs['code'] = self.captcha.decrypt(captcha_url)
             return
 
         m = re.search(self.CAPTCHA_BLOCK_PATTERN, self.html, re.S)

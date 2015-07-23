@@ -11,7 +11,7 @@ import urlparse
 
 from module.common.json_layer import json_loads, json_dumps
 from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.ReCaptcha import ReCaptcha
+from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, seconds_to_midnight
 
 

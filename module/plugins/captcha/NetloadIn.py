@@ -14,7 +14,7 @@ class NetloadIn(OCR):
     __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
-    def get_captcha(self, image):
+    def recognize(self, image):
         self.load_image(image)
         self.to_greyscale()
         self.clean(3)

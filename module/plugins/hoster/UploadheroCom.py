@@ -44,7 +44,7 @@ class UploadheroCom(SimpleHoster):
         if m is None:
             self.error(_("Captcha not found"))
 
-        captcha = self.captcha.decrypt_image(urlparse.urljoin("http://uploadhero.co", m.group(1)))
+        captcha = self.captcha.decrypt(urlparse.urljoin("http://uploadhero.co", m.group(1)))
 
         self.html = self.load(pyfile.url,
                               get={'code': captcha})

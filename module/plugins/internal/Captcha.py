@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import time
+
 from module.plugins.internal.Plugin import Plugin
 
 
 class Captcha(Plugin):
     __name__    = "Captcha"
     __type__    = "captcha"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "stable"
 
     __description__ = """Base anti-captcha plugin"""
@@ -35,13 +37,21 @@ class Captcha(Plugin):
         pass
 
 
-    def decrypt_image(self, url, get={}, post={}, ref=False, cookies=False, decode=False,
-                      input_type='png', output_type='textual', try_ocr=True):
-        image = self.load(url, get=get, post=post, ref=ref, cookies=cookies, decode=decode)
-        return self.decrypt(image, input_type, output_type, try_ocr)
+    def recognize(self, image):
+        """
+        Extend to build your custom anti-captcha ocr
+        """
+        pass
 
 
-    def decrypt(self, data, input_type='png', output_type='textual', try_ocr=True):
+    def decrypt(self, url, get={}, post={}, ref=False, cookies=False, decode=False,
+                input_type='png', output_type='textual', ocr=True):
+        img = self.load(url, get=get, post=post, ref=ref, cookies=cookies, decode=decode)
+        return self._decrypt(img, input_type, output_type, ocr)
+
+
+    #@TODO: Definitely dhoose a better name for this method!
+    def _decrypt(self, raw, input_type='png', output_type='textual', ocr=None):
         """
         Loads a captcha and decrypts it with ocr, plugin, user input
 
@@ -53,56 +63,53 @@ class Captcha(Plugin):
         :param output_type: 'textual' if text is written on the captcha\
         or 'positional' for captcha where the user have to click\
         on a specific region on the captcha
-        :param try_ocr: if True, ocr is not used
+        :param ocr: if True, ocr is not used
 
         :return: result of decrypting
         """
-        id = ("%.2f" % time.time())[-6:].replace(".", "")
+        time_ref = ("%.2f" % time.time())[-6:].replace(".", "")
 
-        with open(os.path.join("tmp", "tmpCaptcha_%s_%s.%s" % (self.plugin.__name__, id, input_type)), "wb") as tmpCaptcha:
-            tmpCaptcha.write(img)
+        with open(os.path.join("tmp", "captcha_image_%s_%s.%s" % (self.plugin.__name__, time_ref, input_type)), "wb") as tmp_img:
+            tmp_img.write(raw)
 
-        has_plugin = self.plugin.__name__ in self.pyload.pluginManager.ocrPlugins
+            if ocr is not False:
+                if isinstance(ocr, basestring):
+                    OCR = self.pyload.pluginManager.loadClass("captcha", ocr)  #: Rename `captcha` to `ocr` in 0.4.10
 
-        if self.pyload.captcha:
-            Ocr = self.pyload.pluginManager.loadClass("ocr", self.plugin.__name__)
-        else:
-            Ocr = None
+                    if self.plugin.pyfile.abort:
+                        self.abort()
 
-        if Ocr and try_ocr:
-            time.sleep(random.randint(3000, 5000) / 1000.0)
-            if self.pyfile.abort:
-                self.abort()
+                    result = OCR(self.plugin.pyfile).recognize(tmp_img.name)
 
-            ocr = Ocr(self.pyfile)
-            result = ocr.get_captcha(tmpCaptcha.name)
-        else:
-            captchaManager = self.pyload.captchaManager
-            task = captchaManager.newTask(img, input_type, tmpCaptcha.name, output_type)
-            self.task = task
-            captchaManager.handleCaptcha(task)
+                else:
+                    result = self.recognize(tmp_img.name)
 
-            while task.isWaiting():
-                if self.pyfile.abort:
-                    captchaManager.removeTask(task)
-                    self.abort()
-                time.sleep(1)
+            else:
+                captchaManager = self.pyload.captchaManager
 
-            captchaManager.removeTask(task)
+                try:
+                    self.task = captchaManager.newTask(img, input_type, tmp_img.name, output_type)
+                    captchaManager.handleCaptcha(self.task)
 
-            if task.error and has_plugin:  #: Ignore default error message since the user could use try_ocr
-                self.fail(_("Pil and tesseract not installed and no Client connected for captcha decrypting"))
-            elif task.error:
-                self.fail(task.error)
-            elif not task.result:
-                self.fail(_("No captcha result obtained in appropiate time by any of the plugins"))
+                    while self.task.isWaiting():
+                        if self.plugin.pyfile.abort:
+                            self.abort()
+                        time.sleep(1)
+                finally:
+                    captchaManager.removeTask(self.task)
 
-            result = task.result
-            self.log_debug("Received captcha result: %s" % result)
+                if self.task.error:
+                    self.fail(task.error)
+
+                elif not self.task.result:
+                    self.fail(_("No captcha result obtained in appropiate time by any of the plugins"))
+
+                result = task.result
+                self.log_debug("Received captcha result: %s" % result)  #@TODO: Remove from here?
 
         if not self.pyload.debug:
             try:
-                os.remove(tmpCaptcha.name)
+                os.remove(tmp_img.name)
             except Exception:
                 pass
 

@@ -142,7 +142,7 @@ class RelinkUs(Crypter):
     def unlock_captcha_protection(self):
         self.log_debug("Request user positional captcha resolving")
         captcha_img_url = self.CAPTCHA_IMG_URL + "?id=%s" % self.fileid
-        coords = self.captcha.decrypt_image(captcha_img_url, input_type="png", output_type='positional', try_ocr=False)
+        coords = self.captcha.decrypt(captcha_img_url, input_type="png", output_type='positional', ocr=False)
         self.log_debug("Captcha resolved, coords [%s]" % str(coords))
         captcha_post_url = self.CAPTCHA_SUBMIT_URL + "?id=%s" % self.fileid
         captcha_post_data = {'button.x': coords[0], 'button.y': coords[1], 'captcha': 'submit'}

@@ -48,7 +48,7 @@ class BezvadataCz(SimpleHoster):
             if m is None:
                 self.error(_("Wrong captcha image"))
 
-            inputs['captcha'] = self.captcha.decrypt(m.group(1).decode('base64'), input_type='png')
+            inputs['captcha'] = self.captcha._decrypt(m.group(1).decode('base64'), input_type='png')
 
             if '<img src="data:image/png;base64' in self.html:
                 self.captcha.invalid()

@@ -52,7 +52,7 @@ class LinkdecrypterCom(Crypter):
                 msg = m.group(1) if m else ""
                 self.log_info(_("Captcha protected link"), result_type, msg)
 
-                captcha = self.captcha.decrypt_image(captcha_url, output_type=result_type)
+                captcha = self.captcha.decrypt(captcha_url, output_type=result_type)
                 if result_type == "positional":
                     captcha = "%d|%d" % captcha
                 self.html = self.load('http://linkdecrypter.com/', post={'captcha': captcha})

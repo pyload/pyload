@@ -9,7 +9,7 @@ import urllib
 
 from Crypto.Cipher import ARC4
 
-from module.plugins.internal.ReCaptcha import ReCaptcha
+from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, timestamp
 
 
@@ -81,7 +81,7 @@ class TurbobitNet(SimpleHoster):
                 if m is None:
                     self.error(_("captcha"))
                 captcha_url = m.group(1)
-                inputs['captcha_response'] = self.captcha.decrypt_image(captcha_url)
+                inputs['captcha_response'] = self.captcha.decrypt(captcha_url)
 
             self.log_debug(inputs)
             self.html = self.load(self.url, post=inputs)

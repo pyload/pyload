@@ -10,7 +10,7 @@ import urlparse
 from Crypto.Cipher import AES
 
 from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.ReCaptcha import ReCaptcha
+from module.plugins.captcha.ReCaptcha import ReCaptcha
 
 
 class FilecryptCc(Crypter):
@@ -92,16 +92,16 @@ class FilecryptCc(Crypter):
         if m:  #: Normal captcha
             self.log_debug("Captcha-URL: %s" % m.group(1))
 
-            captcha_code = self.captcha.decrypt_image(urlparse.urljoin(self.base_url, m.group(1)),
+            captcha_code = self.captcha.decrypt(urlparse.urljoin(self.base_url, m.group(1)),
                                                       input_type="gif",
-                                                      try_ocr=False)
+                                                      ocr=False)
 
             self.site_with_links = self.load(self.pyfile.url,
                                            post={'recaptcha_response_field': captcha_code})
         elif m2:  #: Circle captcha
             self.log_debug("Captcha-URL: %s" % m2.group(1))
 
-            captcha_code = self.captcha.decrypt_image('%s%s?c=abc' %(self.base_url, m2.group(1)),
+            captcha_code = self.captcha.decrypt('%s%s?c=abc' %(self.base_url, m2.group(1)),
                                                output_type='positional')
 
             self.site_with_links = self.load(self.pyfile.url,

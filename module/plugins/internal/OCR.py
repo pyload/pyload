@@ -20,7 +20,7 @@ from module.utils import save_join as fs_join
 class OCR(Plugin):
     __name__    = "OCR"
     __type__    = "ocr"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "stable"
 
     __description__ = """OCR base plugin"""
@@ -133,7 +133,7 @@ class OCR(Plugin):
             pass
 
 
-    def get_captcha(self, name):
+    def recognize(self, name):
         raise NotImplementedError
 
 

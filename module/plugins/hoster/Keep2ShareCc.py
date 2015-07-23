@@ -3,7 +3,7 @@
 import re
 import urlparse
 
-from module.plugins.internal.ReCaptcha import ReCaptcha
+from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
@@ -101,7 +101,7 @@ class Keep2ShareCc(SimpleHoster):
         self.log_debug("CAPTCHA_PATTERN found %s" % m)
         if m:
             captcha_url = urlparse.urljoin("http://keep2s.cc/", m.group(1))
-            post_data['CaptchaForm[code]'] = self.captcha.decrypt_image(captcha_url)
+            post_data['CaptchaForm[code]'] = self.captcha.decrypt(captcha_url)
         else:
             recaptcha = ReCaptcha(self)
             response, challenge = recaptcha.challenge()

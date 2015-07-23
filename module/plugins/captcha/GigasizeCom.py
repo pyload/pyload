@@ -14,7 +14,7 @@ class GigasizeCom(OCR):
     __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
-    def get_captcha(self, image):
+    def recognize(self, image):
         self.load_image(image)
         self.threshold(2.8)
         self.run_tesser(True, False, False, True)

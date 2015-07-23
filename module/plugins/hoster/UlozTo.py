@@ -60,7 +60,7 @@ class UlozTo(SimpleHoster):
             #: Old version - last seen 9.12.2013
             self.log_debug('Using "old" version')
 
-            captcha_value = self.captcha.decrypt_image("http://img.uloz.to/captcha/%s.png" % inputs['captcha_id'])
+            captcha_value = self.captcha.decrypt("http://img.uloz.to/captcha/%s.png" % inputs['captcha_id'])
             self.log_debug("CAPTCHA ID: " + inputs['captcha_id'] + ", CAPTCHA VALUE: " + captcha_value)
 
             inputs.update({'captcha_id': inputs['captcha_id'], 'captcha_key': inputs['captcha_key'], 'captcha_value': captcha_value})
@@ -73,7 +73,7 @@ class UlozTo(SimpleHoster):
             self.log_debug("xapca = " + str(xapca))
 
             data = json_loads(xapca)
-            captcha_value = self.captcha.decrypt_image(str(data['image']))
+            captcha_value = self.captcha.decrypt(str(data['image']))
             self.log_debug("CAPTCHA HASH: " + data['hash'], "CAPTCHA SALT: " + str(data['salt']), "CAPTCHA VALUE: " + captcha_value)
 
             inputs.update({'timestamp': data['timestamp'], 'salt': data['salt'], 'hash': data['hash'], 'captcha_value': captcha_value})

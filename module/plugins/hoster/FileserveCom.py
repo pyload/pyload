@@ -6,7 +6,7 @@ from module.common.json_layer import json_loads
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster
 from module.plugins.internal.Plugin import chunks
-from module.plugins.internal.ReCaptcha import ReCaptcha
+from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import seconds_to_midnight
 from module.utils import parseFileSize as parse_size
 

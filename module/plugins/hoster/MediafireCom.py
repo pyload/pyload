@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.ReCaptcha import ReCaptcha
-from module.plugins.internal.SolveMedia import SolveMedia
+from module.plugins.captcha.ReCaptcha import ReCaptcha
+from module.plugins.captcha.SolveMedia import SolveMedia
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 

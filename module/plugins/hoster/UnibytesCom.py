@@ -65,7 +65,7 @@ class UnibytesCom(SimpleHoster):
                 self.wait(m.group(1) if m else 60, False)
 
             elif last_step in ("captcha", "last"):
-                post_data['captcha'] = self.captcha.decrypt_image(urlparse.urljoin(domain, "/captcha.jpg"))
+                post_data['captcha'] = self.captcha.decrypt(urlparse.urljoin(domain, "/captcha.jpg"))
 
         else:
             self.fail(_("No valid captcha code entered"))

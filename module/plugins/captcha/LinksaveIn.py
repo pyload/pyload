@@ -137,7 +137,7 @@ class LinksaveIn(OCR):
         self.pixels = self.image.load()
 
 
-    def get_captcha(self, image):
+    def recognize(self, image):
         self.load_image(image)
         bg = self.get_bg()
         self.substract_bg(bg)

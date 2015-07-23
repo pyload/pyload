@@ -6,7 +6,7 @@ import re
 from Crypto.Cipher import AES
 
 from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.ReCaptcha import ReCaptcha
+from module.plugins.captcha.ReCaptcha import ReCaptcha
 
 
 class NCryptIn(Crypter):
@@ -146,7 +146,7 @@ class NCryptIn(Crypter):
         if "anicaptcha" in form:
             self.log_debug("Captcha protected")
             captchaUri = re.search(r'src="(/temp/anicaptcha/.+?)"', form).group(1)
-            captcha = self.captcha.decrypt_image("http://ncrypt.in" + captchaUri)
+            captcha = self.captcha.decrypt("http://ncrypt.in" + captchaUri)
             self.log_debug("Captcha resolved [%s]" % captcha)
             postData['captcha'] = captcha
 
@@ -164,7 +164,7 @@ class NCryptIn(Crypter):
         if "circlecaptcha" in form:
             self.log_debug("CircleCaptcha protected")
             captcha_img_url = "http://ncrypt.in/classes/captcha/circlecaptcha.php"
-            coords = self.captcha.decrypt_image(captcha_img_url, input_type="png", output_type='positional', try_ocr=False)
+            coords = self.captcha.decrypt(captcha_img_url, input_type="png", output_type='positional', ocr=False)
             self.log_debug("Captcha resolved, coords [%s]" % str(coords))
             postData['circle.x'] = coords[0]
             postData['circle.y'] = coords[1]

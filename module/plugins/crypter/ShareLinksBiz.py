@@ -117,7 +117,7 @@ class ShareLinksBiz(Crypter):
         m = re.search(r'<img src="/captcha.gif\?d=(.*?)&amp;PHPSESSID=(.*?)&amp;legend=1"', self.html)
         captchaUrl = self.base_url + '/captcha.gif?d=%s&PHPSESSID=%s' % (m.group(1), m.group(2))
         self.log_debug("Waiting user for correct position")
-        coords = self.captcha.decrypt_image(captchaUrl, input_type="gif", output_type='positional', try_ocr=False)
+        coords = self.captcha.decrypt(captchaUrl, input_type="gif", output_type='positional', ocr=False)
         self.log_debug("Captcha resolved, coords [%s]" % str(coords))
 
         #: Resolve captcha

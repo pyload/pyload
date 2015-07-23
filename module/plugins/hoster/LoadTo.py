@@ -6,7 +6,7 @@
 
 import re
 
-from module.plugins.internal.SolveMedia import SolveMedia
+from module.plugins.captcha.SolveMedia import SolveMedia
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 

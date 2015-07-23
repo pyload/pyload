@@ -55,7 +55,7 @@ class FastshareCz(SimpleHoster):
             self.error(_("FREE_URL_PATTERN not found"))
 
         baseurl = "http://www.fastshare.cz"
-        captcha = self.captcha.decrypt_image(urlparse.urljoin(baseurl, captcha_src))
+        captcha = self.captcha.decrypt(urlparse.urljoin(baseurl, captcha_src))
         self.download(urlparse.urljoin(baseurl, action), post={'code': captcha, 'btn.x': 77, 'btn.y': 18})
 
 

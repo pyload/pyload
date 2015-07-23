@@ -56,7 +56,7 @@ class FileboomMe(SimpleHoster):
 
                         m = re.search(self.CAPTCHA_PATTERN, self.html)
                         if m:
-                            captcha = self.captcha.decrypt_image(urljoin(pyfile.url, m.group(1)))
+                            captcha = self.captcha.decrypt(urljoin(pyfile.url, m.group(1)))
 
                             self.html = self.load(post_url,
                                                   post={'CaptchaForm[code]'  : captcha,

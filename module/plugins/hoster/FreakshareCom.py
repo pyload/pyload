@@ -3,7 +3,7 @@
 import re
 
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.ReCaptcha import ReCaptcha
+from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import seconds_to_midnight
 
 

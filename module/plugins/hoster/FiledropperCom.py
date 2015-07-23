@@ -34,7 +34,7 @@ class FiledropperCom(SimpleHoster):
         if m is None:
             self.fail("Captcha not found")
 
-        captcha_code = self.captcha.decrypt_image("http://www.filedropper.com/%s" % m.group(1))
+        captcha_code = self.captcha.decrypt("http://www.filedropper.com/%s" % m.group(1))
 
         m = re.search(r'method="post" action="(.+?)"', self.html)
         if m is None:

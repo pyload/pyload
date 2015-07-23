@@ -6,7 +6,7 @@ import BeautifulSoup
 
 from module.common.json_layer import json_loads
 from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.SolveMedia import SolveMedia
+from module.plugins.captcha.SolveMedia import SolveMedia
 
 
 class SafelinkingNet(Crypter):

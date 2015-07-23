@@ -43,7 +43,7 @@ class NarodRu(SimpleHoster):
 
             post_data = {'action': "sendcapcha"}
             captcha_url, post_data['key'] = m.groups()
-            post_data['rep'] = self.captcha.decrypt_image(captcha_url)
+            post_data['rep'] = self.captcha.decrypt(captcha_url)
 
             self.html = self.load(pyfile.url, post=post_data)
 

@@ -59,7 +59,7 @@ class UloziskoSk(SimpleHoster):
             self.error(_("CAPTCHA_PATTERN not found"))
 
         captcha_url = urlparse.urljoin("http://www.ulozisko.sk", m.group(1))
-        captcha = self.captcha.decrypt_image(captcha_url, cookies=True)
+        captcha = self.captcha.decrypt(captcha_url, cookies=True)
 
         self.log_debug("CAPTCHA_URL:" + captcha_url + ' CAPTCHA:' + captcha)
 
