@@ -16,8 +16,8 @@ class Captcha(Plugin):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def __init__(self, plugin):  #@TODO: pass pyfile instead plugin, so store plugin's html in its associated pyfile as data
-        self.pyload = plugin.core
+    def __init__(self, plugin):  #@TODO: Pass pyfile instead plugin, so store plugin's html in its associated pyfile as data
+        self.pyload = plugin.pyload
         self.info   = {}  #: Provide information in dict here
 
         self.plugin = plugin
@@ -79,7 +79,7 @@ class Captcha(Plugin):
                     if self.plugin.pyfile.abort:
                         self.abort()
 
-                    result = OCR(self.plugin.pyfile).recognize(tmp_img.name)
+                    result = OCR(self.plugin).recognize(tmp_img.name)
 
                 else:
                     result = self.recognize(tmp_img.name)

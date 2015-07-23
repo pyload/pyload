@@ -28,8 +28,8 @@ class OCR(Plugin):
     __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
-    def __init__(self, pyfile):
-        self.pyload = pyfile.m.core
+    def __init__(self, plugin):
+        self.pyload = plugin.pyload
         self.info   = {}  #: Provide information in dict here
         self.init()
 

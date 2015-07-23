@@ -75,7 +75,7 @@ class Extractor(Plugin):
         return targets
 
 
-    def __init__(self, manager, filename, out,
+    def __init__(self, plugin, filename, out,
                  fullpath=True,
                  overwrite=False,
                  excludefiles=[],
@@ -86,7 +86,7 @@ class Extractor(Plugin):
         """
         Initialize extractor for specific file
         """
-        self.pyload = manager.core
+        self.pyload = plugin.pyload
         self.info   = {}  #: Provide information in dict here
 
         self.filename     = filename
