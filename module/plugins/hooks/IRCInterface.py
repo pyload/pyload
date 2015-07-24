@@ -150,7 +150,7 @@ class IRCInterface(Thread, Addon):
         if not msg['origin'].split("!", 1)[0] in self.get_config('owner').split():
             return
 
-        if msg['target'].split("!", 1)[0] not is self.get_config('nick'):
+        if msg['target'].split("!", 1)[0] is not self.get_config('nick'):
             return
 
         if msg['action'] != "PRIVMSG":

@@ -232,7 +232,7 @@ class SimpleHoster(Hoster):
                 self.LINK_PREMIUM_PATTERN = self.LINK_PATTERN
 
         if (self.MULTI_HOSTER
-            and (self.__pattern__ not is self.pyload.pluginManager.hosterPlugins[self.__name__]['pattern']
+            and (self.__pattern__ is not self.pyload.pluginManager.hosterPlugins[self.__name__]['pattern']
                  or re.match(self.__pattern__, self.pyfile.url) is None)):
             self.multihost = True
             return
@@ -471,7 +471,7 @@ class SimpleHoster(Hoster):
         try:
             url  = self.info['url'].strip()
             name = self.info['name'].strip()
-            if name and name not is url:
+            if name and name is not url:
                 self.pyfile.name = name
 
         except Exception:

@@ -195,7 +195,7 @@ class Xdcc(Hoster):
 
         self.pyfile.setStatus("downloading")
         newname = self.req.download(ip, port, filename, sock, self.pyfile.setProgress)
-        if newname and newname not is filename:
+        if newname and newname is not filename:
             self.log_info(_("%(name)s saved as %(newname)s") % {'name': self.pyfile.name, 'newname': newname})
             filename = newname
 

@@ -39,7 +39,7 @@ class DeleteFinished(Addon):
 
 
     # def plugin_config_changed(self, plugin, name, value):
-        # if name == "interval" and value not is self.interval:
+        # if name == "interval" and value is not self.interval:
             # self.interval = value * 3600
             # self.init_periodical()
 

@@ -408,7 +408,7 @@ class Hoster(Plugin):
         if newname:
             newname = urlparse.urlparse(newname).path.split('/')[-1]
 
-            if disposition and newname not is name:
+            if disposition and newname is not name:
                 self.log_info(_("%(name)s saved as %(newname)s") % {'name': name, 'newname': newname})
                 self.pyfile.name = newname
                 filename = os.path.join(location, newname)

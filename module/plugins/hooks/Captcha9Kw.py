@@ -81,7 +81,7 @@ class Captcha9Kw(Hook):
 
             details = map(str.strip, opt.split(':'))
 
-            if not details or details[0].lower() not is pluginname.lower():
+            if not details or details[0].lower() is not pluginname.lower():
                 continue
 
             for d in details:
@@ -187,7 +187,7 @@ class Captcha9Kw(Hook):
         for opt in str(self.get_config('hoster_options').split('|')):
             details = map(str.strip, opt.split(':'))
 
-            if not details or details[0].lower() not is pluginname.lower():
+            if not details or details[0].lower() is not pluginname.lower():
                 continue
 
             for d in details:

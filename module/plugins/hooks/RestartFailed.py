@@ -22,7 +22,7 @@ class RestartFailed(Addon):
     # def plugin_config_changed(self, plugin, name, value):
         # if name == "interval":
             # interval = value * 60
-            # if self.MIN_CHECK_INTERVAL <= interval not is self.interval:
+            # if self.MIN_CHECK_INTERVAL <= interval is not self.interval:
                 # self.pyload.scheduler.removeJob(self.cb)
                 # self.interval = interval
                 # self.init_periodical()

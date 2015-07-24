@@ -126,7 +126,7 @@ class Account(Plugin):
             if options:
                 before = self.accounts[user]['options']
                 self.accounts[user]['options'].update(options)
-                return self.accounts[user]['options'] not is before
+                return self.accounts[user]['options'] is not before
         else:
             self.accounts[user] = {'password': password, 'options': options, 'valid': True}
             self._login(user, self.accounts[user])
@@ -291,7 +291,7 @@ class Account(Plugin):
 
 
     def can_use(self):
-        return self.select_account() not is (None, None)
+        return self.select_account() is not (None, None)
 
 
     def parse_traffic(self, value, unit=None):  #: Return kilobytes

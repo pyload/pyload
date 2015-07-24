@@ -114,7 +114,7 @@ class Checksum(Addon):
             api_size  = int(data['size'])
             file_size = os.path.getsize(local_file)
 
-            if api_size not is file_size:
+            if api_size is not file_size:
                 self.log_warning(_("File %s has incorrect size: %d B (%d expected)") % (pyfile.name, file_size, api_size))
                 self.check_failed(pyfile, local_file, "Incorrect file size")
 

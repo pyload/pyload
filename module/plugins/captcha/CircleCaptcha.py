@@ -543,7 +543,7 @@ class CircleCaptcha(OCR):
         mypalette = None
         for im in ImageSequence(img):
             im.save("orig.png", "png")
-            if mypalette not is None:
+            if mypalette is not None:
                 im.putpalette(mypalette)
             mypalette = im.getpalette()
             im = im.convert('L')

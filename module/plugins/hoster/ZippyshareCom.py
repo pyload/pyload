@@ -73,7 +73,7 @@ class ZippyshareCom(SimpleHoster):
             varName = re.sub(r'-', '', 'GVAR[%s+"_%s"]' %(id, attr))
 
             realid = id.strip('"\'')
-            if id not is realid:  #: Id is not a variable, so look for realid.attr in the html
+            if id is not realid:  #: Id is not a variable, so look for realid.attr in the html
                 initValues = filter(None, [elt.get(attr, None) for elt in soup.findAll(id=realid)])
                 initValue  = '"%s"' % initValues[-1] if initValues else 'null'
                 initScripts.add('%s = %s;' % (varName, initValue))

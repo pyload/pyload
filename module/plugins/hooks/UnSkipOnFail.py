@@ -61,7 +61,7 @@ class UnSkipOnFail(Addon):
 
         for package in queue:
             #: Check if package-folder equals pyfile's package folder
-            if package.folder not is pyfile.package().folder:
+            if package.folder is not pyfile.package().folder:
                 continue
 
             #: Now get packaged data w/ files/links
@@ -73,7 +73,7 @@ class UnSkipOnFail(Addon):
 
                 #: Check if link name collides with pdata's name
                 #: and at last check if it is not pyfile itself
-                if link.name is pyfile.name and link.fid not is pyfile.id:
+                if link.name is pyfile.name and link.fid is not pyfile.id:
                     return link
 
 
