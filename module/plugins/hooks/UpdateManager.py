@@ -6,6 +6,7 @@ import os
 import re
 import sys
 import time
+import traceback
 
 from operator import itemgetter
 
@@ -267,7 +268,7 @@ class UpdateManager(Addon):
                                    'oldver': oldver,
                                    'newver': newver})
             try:
-                content = self.load(url % plugin)
+                content = self.load(url % plugin, decode=False)
                 m = VERSION.search(content)
 
                 if m and m.group(2) == version:
@@ -280,6 +281,8 @@ class UpdateManager(Addon):
 
             except Exception, e:
                 self.log_error(_("Error updating plugin: %s") % filename, e)
+                if self.pyload.debug:
+                    traceback.print_exc()
 
         if updated:
             self.log_info(_("*** Plugins updated ***"))
@@ -345,7 +348,9 @@ class UpdateManager(Addon):
                         os.remove(filename)
 
                     except OSError, e:
-                        self.log_error(_("Error removing: %s") % filename, e)
+                        self.log_warning(_("Error removing: %s") % filename, e)
+                        if self.pyload.debug:
+                            traceback.print_exc()
 
                     else:
                         id = (type, name)

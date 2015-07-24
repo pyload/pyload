@@ -12,6 +12,24 @@ from module.utils import fs_encode, fs_decode, html_unescape, save_join as fs_jo
 
 
 #@TODO: Move to utils in 0.4.10
+def decode(string, encoding='utf8'):
+    """ Decode string to unicode with utf8 """
+    if type(string) is str:
+        return string.decode(encoding, "replace")
+    else:
+        return string
+
+
+#@TODO: Move to utils in 0.4.10
+def encode(string, encoding='utf8'):
+    """ Decode string to utf8 """
+    if type(string) is unicode:
+        return string.encode(encoding, "replace")
+    else:
+        return string
+
+
+#@TODO: Move to utils in 0.4.10
 def fixurl(url):
     return html_unescape(urllib.unquote(url.decode('unicode-escape'))).strip()
 
@@ -136,7 +154,7 @@ class Plugin(object):
 
     def _log(self, level, args):
         log = getattr(self.pyload.log, level)
-        msg = fs_encode(" | ".join((a if isinstance(a, basestring) else str(a)).strip() for a in args if a))  #@NOTE: `fs_encode` -> `encode` in 0.4.10
+        msg = encode(" | ".join((a if isinstance(a, basestring) else str(a)).strip() for a in args if a))  #@NOTE: `fs_encode` -> `encode` in 0.4.10
         log("%(plugin)s%(id)s: %(msg)s" % {'plugin': self.__name__,
                                            'id'    : ("[%s]" % self.pyfile.id) if hasattr(self, 'pyfile') else "",
                                            'msg'   : msg or _(level.upper() + " MARK")})
@@ -214,7 +232,7 @@ class Plugin(object):
         """
         Fail and give reason
         """
-        raise Fail(fs_encode(reason))
+        raise Fail(encode(reason))  #: Move to manager in 0.4.10
 
 
     def error(self, reason="", type=_("Parse")):
@@ -260,8 +278,11 @@ class Plugin(object):
 
         res = req.load(url, get, post, ref, cookies, just_header, multipart, decode is True)
 
-        if decode:
-            res = html_unescape(res).decode(decode if isinstance(decode, basestring) else 'utf8')
+        if decode:   #@TODO: Move to network in 0.4.10
+            res = html_unescape(res)
+
+        if isinstance(decode, basestring):  #@TODO: Move to network in 0.4.10
+            res = decode(res, decode)
 
         if self.pyload.debug:
             frame = inspect.currentframe()
@@ -272,7 +293,7 @@ class Plugin(object):
 
                 with open(framefile, "wb") as f:
                     del frame  #: Delete the frame or it wont be cleaned
-                    f.write(res.encode('utf8'))
+                    f.write(encode(res))
             except IOError, e:
                 self.log_error(e)
 

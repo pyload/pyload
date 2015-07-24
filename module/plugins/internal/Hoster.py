@@ -6,6 +6,7 @@ import inspect
 import os
 import random
 import time
+import traceback
 import urlparse
 
 if os.name != "nt":
@@ -14,7 +15,7 @@ if os.name != "nt":
 
 from module.plugins.internal import Captcha
 from module.plugins.internal.Plugin import (Plugin, Abort, Fail, Reconnect, Retry, Skip
-                                            chunks, fixurl as _fixurl, replace_patterns, seconds_to_midnight,
+                                            chunks, encode, fixurl as _fixurl, replace_patterns, seconds_to_midnight,
                                             set_cookies, parse_html_form, parse_html_tag_attr_value,
                                             timestamp)
 from module.utils import fs_decode, fs_encode, save_join as fs_join
@@ -279,7 +280,7 @@ class Hoster(Plugin):
         """
         Skip and give reason
         """
-        raise Skip(fs_encode(reason))
+        raise Skip(encode(reason))
 
 
     def abort(self, reason=""):
@@ -287,7 +288,7 @@ class Hoster(Plugin):
         Abort and give reason
         """
         if reason:
-            self.pyfile.error = fs_encode(reason)
+            self.pyfile.error = encode(reason)
         raise Abort
 
 
@@ -296,7 +297,7 @@ class Hoster(Plugin):
         Fail and indicate file is offline
         """
         if reason:
-            self.pyfile.error = fs_encode(reason)
+            self.pyfile.error = encode(reason)
         raise Fail("offline")
 
 
@@ -305,7 +306,7 @@ class Hoster(Plugin):
         Fail and indicates file ist temporary offline, the core may take consequences
         """
         if reason:
-            self.pyfile.error = fs_encode(reason)
+            self.pyfile.error = encode(reason)
         raise Fail("temp. offline")
 
 
@@ -489,7 +490,12 @@ class Hoster(Plugin):
                         return name
         finally:
             if delete and do_delete:
-                os.remove(lastDownload)
+                try:
+                    os.remove(lastDownload)
+                except OSError, e:
+                    self.log_warning(_("Error removing: %s") % lastDownload, e)
+                    if self.pyload.debug:
+                        traceback.print_exc()
 
 
     def direct_link(self, url, follow_location=None):

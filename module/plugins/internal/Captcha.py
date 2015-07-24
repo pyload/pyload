@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
+import traceback
 
 from module.plugins.internal.Plugin import Plugin
 
@@ -110,8 +111,9 @@ class Captcha(Plugin):
         if not self.pyload.debug:
             try:
                 os.remove(tmp_img.name)
-            except Exception:
-                pass
+            except OSError, e:
+                self.log_warning(_("Error removing: %s") % tmp_img.name, e)
+                traceback.print_exc()
 
         return result
 

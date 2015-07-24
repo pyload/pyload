@@ -4,6 +4,7 @@ from __future__ import with_statement
 
 import os
 import re
+import traceback
 
 from module.plugins.internal.Crypter import Crypter
 from module.utils import save_join as fs_join
@@ -63,5 +64,12 @@ class Container(Crypter):
 
 
     def delete_tmp(self):
-        if self.pyfile.name.startswith("tmp_"):
+        if not self.pyfile.name.startswith("tmp_"):
+            return
+
+        try:
             os.remove(self.pyfile.url)
+        except OSError, e:
+            self.log_warning(_("Error removing: %s") % self.pyfile.url, e)
+            if self.pyload.debug:
+                traceback.print_exc()
