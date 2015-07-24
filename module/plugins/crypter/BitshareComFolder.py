@@ -7,7 +7,7 @@ class BitshareComFolder(SimpleCrypter):
     __name__    = "BitshareComFolder"
     __type__    = "crypter"
     __version__ = "0.05"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?bitshare\.com/\?d=\w+'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),

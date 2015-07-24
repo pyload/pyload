@@ -9,8 +9,8 @@ from module.plugins.internal.Plugin import Plugin
 class Captcha(Plugin):
     __name__    = "Captcha"
     __type__    = "captcha"
-    __version__ = "0.02"
-    __status__  = "stable"
+    __version__ = "0.31"
+    __status__  = "testing"
 
     __description__ = """Base anti-captcha plugin"""
     __license__     = "GPLv3"
@@ -27,8 +27,8 @@ class Captcha(Plugin):
         self.init()
 
 
-    def _log(self, type, args):
-        return super(Captcha, self)._log(type, (self.plugin.__name__,) + args)
+    def _log(self, level, args):
+        return self.plugin._log(level, (self.__name__,) + args)
 
 
     def init(self):
@@ -119,12 +119,16 @@ class Captcha(Plugin):
 
 
     def invalid(self):
+        if not self.task:
+            return
+
         self.log_error(_("Invalid captcha"))
-        if self.task:
-            self.task.invalid()
+        self.task.invalid()
 
 
     def correct(self):
+        if not self.task:
+            return
+
         self.log_info(_("Correct captcha"))
-        if self.task:
-            self.task.correct()
+        self.task.correct()

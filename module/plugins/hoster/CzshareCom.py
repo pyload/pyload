@@ -13,7 +13,7 @@ class CzshareCom(SimpleHoster):
     __name__    = "CzshareCom"
     __type__    = "hoster"
     __version__ = "1.01"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download\.php\?).+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

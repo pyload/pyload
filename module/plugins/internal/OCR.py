@@ -22,7 +22,7 @@ class OCR(Plugin):
     __name__    = "OCR"
     __type__    = "ocr"
     __version__ = "0.13"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """OCR base plugin"""
     __license__     = "GPLv3"
@@ -88,7 +88,7 @@ class OCR(Plugin):
         self.pyload.log_debug("Saving tiff...")
         self.image.save(tmpTif.name, 'TIFF')
 
-        if os.name == "nt":
+        if os.name is "nt":
             tessparams = [os.path.join(pypath, "tesseract", "tesseract.exe")]
         else:
             tessparams = ["tesseract"]
@@ -165,7 +165,7 @@ class OCR(Plugin):
 
         for x in xrange(w):
             for y in xrange(h):
-                if pixels[x, y] == 255:
+                if pixels[x, y] is 255:
                     continue
                 #: No point in processing white pixels since we only want to remove black pixel
                 count = 0
@@ -198,7 +198,7 @@ class OCR(Plugin):
         #: Second pass: this time set all 1's to 255 (white)
         for x in xrange(w):
             for y in xrange(h):
-                if pixels[x, y] == 1:
+                if pixels[x, y] is 1:
                     pixels[x, y] = 255
 
         self.pixels = pixels
@@ -213,7 +213,7 @@ class OCR(Plugin):
 
         for x in xrange(w):
             for y in xrange(h):
-                if pixels[x, y] == 0:
+                if pixels[x, y] is 0:
                     pixels[x, y] = 155
 
         highest = {}
@@ -229,7 +229,7 @@ class OCR(Plugin):
 
             for x in xrange(w):
                 for y in xrange(h):
-                    if pixels[x, y] == 0:
+                    if pixels[x, y] is 0:
                         pixels[x, y] = 255
 
             count = {}
@@ -237,7 +237,7 @@ class OCR(Plugin):
             for x in xrange(w):
                 count[x] = 0
                 for y in xrange(h):
-                    if pixels[x, y] == 155:
+                    if pixels[x, y] is 155:
                         count[x] += 1
 
             sum = 0
@@ -270,10 +270,10 @@ class OCR(Plugin):
 
         for x in xrange(w):
             for y in xrange(h):
-                if pixels[x, y] == 0:
+                if pixels[x, y] is 0:
                     pixels[x, y] = 255
 
-                if pixels[x, y] == 155:
+                if pixels[x, y] is 155:
                     pixels[x, y] = 0
 
         self.pixels = pixels
@@ -327,7 +327,7 @@ class OCR(Plugin):
 
         for key, item in values.iteritems():
 
-            if key.__class__ == str:
+            if key.__class__ is str:
                 result = result.replace(key, item)
             else:
                 for expr in key:

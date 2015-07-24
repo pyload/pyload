@@ -13,7 +13,7 @@ class XMPPInterface(IRCInterface, JabberClient):
     __name__    = "XMPPInterface"
     __type__    = "hook"
     __version__ = "0.12"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __config__ = [("jid"      , "str" , "Jabber ID"                           , "user@exmaple-jabber-server.org"         ),
                   ("pw"       , "str" , "Password"                            , ""                                       ),

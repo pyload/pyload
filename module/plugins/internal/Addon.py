@@ -26,7 +26,7 @@ class Addon(Plugin):
     __name__    = "Addon"
     __type__    = "hook"  #@TODO: Change to `addon` in 0.4.10
     __version__ = "0.01"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __config__   = []  #: [("name", "type", "desc", "default")]
     __threaded__ = []  #@TODO: Remove in 0.4.10

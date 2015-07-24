@@ -7,7 +7,7 @@ class UploadableCh(Account):
     __name__    = "UploadableCh"
     __type__    = "account"
     __version__ = "0.05"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Uploadable.ch account plugin"""
     __license__     = "GPLv3"

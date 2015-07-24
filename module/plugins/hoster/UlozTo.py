@@ -16,7 +16,7 @@ class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
     __version__ = "1.11"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -45,7 +45,7 @@ class UlozTo(SimpleHoster):
 
     def setup(self):
         self.chunk_limit     = 16 if self.premium else 1
-        self.multi_dl        = True
+        self.multiDL        = True
         self.resume_download = True
 
 
@@ -141,7 +141,7 @@ class UlozTo(SimpleHoster):
 
         elif check == "server_error":
             self.log_error(_("Server error, try downloading later"))
-            self.multi_dl = False
+            self.multiDL = False
             self.wait(1 * 60 * 60, True)
             self.retry()
 

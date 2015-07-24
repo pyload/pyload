@@ -9,7 +9,7 @@ class HostujeNet(SimpleHoster):
     __name__    = "HostujeNet"
     __type__    = "hoster"
     __version__ = "0.02"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?hostuje\.net/\w+'
 
@@ -24,7 +24,7 @@ class HostujeNet(SimpleHoster):
 
 
     def setup(self):
-        self.multi_dl    = True
+        self.multiDL    = True
         self.chunk_limit = 1
 
 

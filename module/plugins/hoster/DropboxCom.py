@@ -9,7 +9,7 @@ class DropboxCom(SimpleHoster):
     __name__    = "DropboxCom"
     __type__    = "hoster"
     __version__ = "0.05"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?dropbox\.com/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -28,7 +28,7 @@ class DropboxCom(SimpleHoster):
 
 
     def setup(self):
-        self.multi_dl        = True
+        self.multiDL        = True
         self.chunk_limit     = 1
         self.resume_download = True
 

@@ -10,7 +10,7 @@ class DateiTo(SimpleHoster):
     __name__    = "DateiTo"
     __type__    = "hoster"
     __version__ = "0.10"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

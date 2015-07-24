@@ -39,7 +39,7 @@ class CaptchaBrotherhood(Hook):
     __name__    = "CaptchaBrotherhood"
     __type__    = "hook"
     __version__ = "0.10"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __config__ = [("username"    , "str"     , "Username"                        , ""  ),
                   ("password"    , "password", "Password"                        , ""  ),

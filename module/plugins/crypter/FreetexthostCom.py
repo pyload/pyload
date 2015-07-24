@@ -9,7 +9,7 @@ class FreetexthostCom(SimpleCrypter):
     __name__    = "FreetexthostCom"
     __type__    = "crypter"
     __version__ = "0.02"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?freetexthost\.com/\w+'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),

@@ -12,7 +12,7 @@ class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
     __version__ = "0.39"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """XFileSharing account plugin"""
     __license__     = "GPLv3"

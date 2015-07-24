@@ -10,7 +10,7 @@ class DebridItaliaCom(Account):
     __name__    = "DebridItaliaCom"
     __type__    = "account"
     __version__ = "0.15"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Debriditalia.com account plugin"""
     __license__     = "GPLv3"

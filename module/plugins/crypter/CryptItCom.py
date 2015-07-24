@@ -7,7 +7,7 @@ class CryptItCom(DeadCrypter):
     __name__    = "CryptItCom"
     __type__    = "crypter"
     __version__ = "0.12"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?crypt-it\.com/(s|e|d|c)/\w+'
     __config__  = []  #@TODO: Remove in 0.4.10

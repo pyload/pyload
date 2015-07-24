@@ -41,7 +41,7 @@ class DailymotionCom(Hoster):
     __name__    = "DailymotionCom"
     __type__    = "hoster"
     __version__ = "0.22"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?dailymotion\.com/.*video/(?P<ID>[\w^_]+)'
     __config__  = [("quality", "Lowest;LD 144p;LD 240p;SD 384p;HQ 480p;HD 720p;HD 1080p;Highest", "Quality", "Highest")]
@@ -53,7 +53,7 @@ class DailymotionCom(Hoster):
 
     def setup(self):
         self.resume_download = True
-        self.multi_dl        = True
+        self.multiDL        = True
 
 
     def get_streams(self):

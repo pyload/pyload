@@ -17,7 +17,7 @@ class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
     __version__ = "0.05"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Base account plugin"""
     __license__     = "GPLv3"
@@ -170,7 +170,7 @@ class Account(Plugin):
 
             try:
                 infos = self.load_account_info(name, self.req)
-                if not type(infos) == dict:
+                if not type(infos) is dict:
                     raise Exception("Wrong return format")
 
             except Exception, e:
@@ -279,7 +279,7 @@ class Account(Plugin):
                     if self.infos[user]['validuntil'] > 0 and time.time() > self.infos[user]['validuntil']:
                         continue
                 if "trafficleft" in self.infos[user]:
-                    if self.infos[user]['trafficleft'] == 0:
+                    if self.infos[user]['trafficleft'] is 0:
                         continue
 
             usable.append((user, data))

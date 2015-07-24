@@ -14,7 +14,7 @@ class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
     __version__ = "0.54"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
 
@@ -53,7 +53,7 @@ class XFSHoster(SimpleHoster):
 
     def setup(self):
         self.chunk_limit     = -1 if self.premium else 1
-        self.resume_download = self.multi_dl = self.premium
+        self.resume_download = self.multiDL = self.premium
 
 
     def prepare(self):
@@ -152,7 +152,7 @@ class XFSHoster(SimpleHoster):
 
         stmsg = inputs['st']
 
-        if stmsg == 'OK':
+        if stmsg is 'OK':
             self.html = self.load(action, post=inputs)
 
         elif 'Can not leech file' in stmsg:

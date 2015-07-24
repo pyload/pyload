@@ -8,7 +8,7 @@ class DeleteFinished(Addon):
     __name__    = "DeleteFinished"
     __type__    = "hook"
     __version__ = "1.14"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __config__ = [("interval"  , "int" , "Check interval in hours"          , 72   ),
                   ("deloffline", "bool", "Delete package with offline links", False)]

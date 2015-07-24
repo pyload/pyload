@@ -10,7 +10,7 @@ class CloudzillaToFolder(SimpleHoster):
     __name__    = "CloudzillaToFolder"
     __type__    = "crypter"
     __version__ = "0.03"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?cloudzilla\.to/share/folder/(?P<ID>[\w^_]+)'
 

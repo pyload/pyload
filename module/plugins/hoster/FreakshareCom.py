@@ -11,7 +11,7 @@ class FreakshareCom(Hoster):
     __name__    = "FreakshareCom"
     __type__    = "hoster"
     __version__ = "0.43"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
 
@@ -24,7 +24,7 @@ class FreakshareCom(Hoster):
 
 
     def setup(self):
-        self.multi_dl = False
+        self.multiDL = False
         self.req_opts = []
 
 
@@ -97,7 +97,7 @@ class FreakshareCom(Hoster):
         """
         if not self.html:
             self.download_html()
-        if not self.want_reconnect:
+        if not self.wantReconnect:
             self.req_opts = self.get_download_options()  #: Get the Post options for the Request
             # file_url = self.pyfile.url
             # return file_url
@@ -109,7 +109,7 @@ class FreakshareCom(Hoster):
         if not self.html:
             self.download_html()
 
-        if not self.want_reconnect:
+        if not self.wantReconnect:
             m = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">([^ ]+)", self.html)
             if m:
                 file_name = m.group(1)
@@ -126,7 +126,7 @@ class FreakshareCom(Hoster):
         if not self.html:
             self.download_html()
 
-        if not self.want_reconnect:
+        if not self.wantReconnect:
             m = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">[^ ]+ - ([^ ]+) (\w\w)yte", self.html)
             if m:
                 units = float(m.group(1).replace(",", ""))
@@ -141,7 +141,7 @@ class FreakshareCom(Hoster):
             self.download_html()
 
         if "Your Traffic is used up for today" in self.html:
-            self.want_reconnect = True
+            self.wantReconnect = True
             return seconds_to_midnight(gmt=2)
 
         timestring = re.search('\s*var\s(?:downloadWait|time)\s=\s(\d*)[\d.]*;', self.html)

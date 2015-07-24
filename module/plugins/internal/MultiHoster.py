@@ -10,7 +10,7 @@ class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
     __version__ = "0.43"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
@@ -26,7 +26,7 @@ class MultiHoster(SimpleHoster):
 
     def setup(self):
         self.chunk_limit     = 1
-        self.multi_dl        = bool(self.account)
+        self.multiDL        = bool(self.account)
         self.resume_download = self.premium
 
 

@@ -19,7 +19,7 @@ class IRCInterface(Thread, Addon):
     __name__    = "IRCInterface"
     __type__    = "hook"
     __version__ = "0.15"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __config__ = [("host"     , "str" , "IRC-Server Address"                           , "Enter your server here!"),
                   ("port"     , "int" , "IRC-Server Port"                              , 6667                     ),

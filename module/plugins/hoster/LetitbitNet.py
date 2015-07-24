@@ -36,7 +36,7 @@ class LetitbitNet(SimpleHoster):
     __name__    = "LetitbitNet"
     __type__    = "hoster"
     __version__ = "0.32"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(letitbit|shareflare)\.net/download/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

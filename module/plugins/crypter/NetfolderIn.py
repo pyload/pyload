@@ -7,7 +7,7 @@ class NetfolderIn(DeadCrypter):
     __name__    = "NetfolderIn"
     __type__    = "crypter"
     __version__ = "0.74"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?netfolder\.(in|me)/(folder\.php\?folder_id=)?(?P<ID>\w+)(?(1)|/\w+)'
     __config__  = []  #@TODO: Remove in 0.4.10

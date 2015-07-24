@@ -10,7 +10,7 @@ class WindowsPhoneNotify(Addon):
     __name__    = "WindowsPhoneNotify"
     __type__    = "hook"
     __version__ = "0.12"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __config__ = [("push-id"        , "str" , "Push ID"                                  , ""   ),
                   ("push-url"       , "str" , "Push url"                                 , ""   ),

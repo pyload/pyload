@@ -7,7 +7,7 @@ class DepositfilesComFolder(SimpleCrypter):
     __name__    = "DepositfilesComFolder"
     __type__    = "crypter"
     __version__ = "0.02"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?depositfiles\.com/folders/\w+'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),

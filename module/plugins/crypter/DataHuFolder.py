@@ -9,7 +9,7 @@ class DataHuFolder(SimpleCrypter):
     __name__    = "DataHuFolder"
     __type__    = "crypter"
     __version__ = "0.08"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?data\.hu/dir/\w+'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),

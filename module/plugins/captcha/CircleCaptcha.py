@@ -32,7 +32,7 @@ class CircleCaptcha(OCR):
     __name__    = "CircleCaptcha"
     __type__    = "ocr"
     __version__ = "1.02"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Circle captcha ocr plugin"""
     __license__     = "GPLv3"

@@ -8,7 +8,7 @@ class RapideoPl(MultiHoster):
     __name__    = "RapideoPl"
     __type__    = "hoster"
     __version__ = "0.04"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),

@@ -10,7 +10,7 @@ class UpstoreNet(SimpleHoster):
     __name__    = "UpstoreNet"
     __type__    = "hoster"
     __version__ = "0.07"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?upstore\.net/'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

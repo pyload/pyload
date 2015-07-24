@@ -10,7 +10,7 @@ class FileSharkPl(SimpleHoster):
     __name__    = "FileSharkPl"
     __type__    = "hoster"
     __version__ = "0.13"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fileshark\.pl/pobierz/\d+/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -41,10 +41,10 @@ class FileSharkPl(SimpleHoster):
         self.resume_download = True
 
         if self.premium:
-            self.multi_dl = True
-            self.limit_dl = 20
+            self.multiDL = True
+            self.limitDL = 20
         else:
-            self.multi_dl = False
+            self.multiDL = False
 
 
     def check_errors(self):

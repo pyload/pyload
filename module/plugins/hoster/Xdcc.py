@@ -17,7 +17,7 @@ class Xdcc(Hoster):
     __name__    = "Xdcc"
     __type__    = "hoster"
     __version__ = "0.34"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __config__ = [("nick", "str", "Nickname", "pyload"),
                   ("ident", "str", "Ident", "pyloadident"),
@@ -30,7 +30,7 @@ class Xdcc(Hoster):
 
     def setup(self):
         self.timeout = 30
-        self.multi_dl = False
+        self.multiDL = False
 
 
     def process(self, pyfile):

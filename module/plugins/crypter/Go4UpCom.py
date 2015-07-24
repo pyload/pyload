@@ -10,7 +10,7 @@ class Go4UpCom(SimpleCrypter):
     __name__    = "Go4UpCom"
     __type__    = "crypter"
     __version__ = "0.13"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://go4up\.com/(dl/\w{12}|rd/\w{12}/\d+)'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),

@@ -10,7 +10,7 @@ class SoundcloudCom(SimpleHoster):
     __name__    = "SoundcloudCom"
     __type__    = "hoster"
     __version__ = "0.12"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?soundcloud\.com/[\w-]+/[\w-]+'
     __config__  = [("use_premium", "bool"        , "Use premium account if available", True    ),

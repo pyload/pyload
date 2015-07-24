@@ -10,7 +10,7 @@ class OneKhDe(Crypter):
     __name__    = "OneKhDe"
     __type__    = "crypter"
     __version__ = "0.13"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?1kh\.de/f/'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

@@ -17,7 +17,7 @@ class RemixshareCom(SimpleHoster):
     __name__    = "RemixshareCom"
     __type__    = "hoster"
     __version__ = "0.06"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://remixshare\.com/(download|dl)/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -40,7 +40,7 @@ class RemixshareCom(SimpleHoster):
 
 
     def setup(self):
-        self.multi_dl = True
+        self.multiDL = True
         self.chunk_limit = 1
 
 

@@ -9,7 +9,7 @@ class VeohCom(SimpleHoster):
     __name__    = "VeohCom"
     __type__    = "hoster"
     __version__ = "0.23"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?veoh\.com/(tv/)?(watch|videos)/(?P<ID>v\w+)'
     __config__  = [("use_premium", "bool"         , "Use premium account if available", True  ),
@@ -30,7 +30,7 @@ class VeohCom(SimpleHoster):
 
     def setup(self):
         self.resume_download = True
-        self.multi_dl        = True
+        self.multiDL        = True
         self.chunk_limit     = -1
 
 

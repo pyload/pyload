@@ -9,7 +9,7 @@ class FastshareCz(Account):
     __name__    = "FastshareCz"
     __type__    = "account"
     __version__ = "0.08"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Fastshare.cz account plugin"""
     __license__     = "GPLv3"

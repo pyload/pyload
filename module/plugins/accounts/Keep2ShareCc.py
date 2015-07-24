@@ -10,7 +10,7 @@ class Keep2ShareCc(Account):
     __name__    = "Keep2ShareCc"
     __type__    = "account"
     __version__ = "0.07"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Keep2Share.cc account plugin"""
     __license__     = "GPLv3"

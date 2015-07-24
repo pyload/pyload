@@ -13,7 +13,7 @@ class BasePlugin(Hoster):
     __name__    = "BasePlugin"
     __type__    = "hoster"
     __version__ = "0.45"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
 
@@ -37,7 +37,7 @@ class BasePlugin(Hoster):
 
     def setup(self):
         self.chunk_limit     = -1
-        self.multi_dl        = True
+        self.multiDL        = True
         self.resume_download = True
 
 

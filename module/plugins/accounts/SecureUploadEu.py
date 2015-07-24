@@ -7,7 +7,7 @@ class SecureUploadEu(XFSAccount):
     __name__    = "SecureUploadEu"
     __type__    = "account"
     __version__ = "0.03"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """SecureUpload.eu account plugin"""
     __license__     = "GPLv3"

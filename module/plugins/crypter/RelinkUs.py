@@ -15,7 +15,7 @@ class RelinkUs(Crypter):
     __name__    = "RelinkUs"
     __type__    = "crypter"
     __version__ = "3.14"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?relink\.us/(f/|((view|go)\.php\?id=))(?P<ID>.+)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

@@ -7,7 +7,7 @@ class FilestubeCom(SimpleCrypter):
     __name__    = "FilestubeCom"
     __type__    = "crypter"
     __version__ = "0.07"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?filestube\.(?:com|to)/\w+'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),

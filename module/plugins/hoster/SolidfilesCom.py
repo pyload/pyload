@@ -10,7 +10,7 @@ class SolidfilesCom(SimpleHoster):
     __name__    = "SolidfilesCom"
     __type__    = "hoster"
     __version__ = "0.03"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?solidfiles\.com\/d/\w+'
 
@@ -27,7 +27,7 @@ class SolidfilesCom(SimpleHoster):
 
 
     def setup(self):
-        self.multi_dl    = True
+        self.multiDL    = True
         self.chunk_limit = 1
 
 

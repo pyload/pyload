@@ -10,7 +10,7 @@ class NowVideoSx(Account):
     __name__    = "NowVideoSx"
     __type__    = "account"
     __version__ = "0.05"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """NowVideo.at account plugin"""
     __license__     = "GPLv3"

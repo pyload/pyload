@@ -15,7 +15,7 @@ class DLC(Container):
     __name__    = "DLC"
     __type__    = "container"
     __version__ = "0.26"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'.+\.dlc$'
 

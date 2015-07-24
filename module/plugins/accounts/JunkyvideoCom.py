@@ -7,7 +7,7 @@ class JunkyvideoCom(XFSAccount):
     __name__    = "JunkyvideoCom"
     __type__    = "account"
     __version__ = "0.02"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Junkyvideo.com account plugin"""
     __license__     = "GPLv3"

@@ -7,7 +7,7 @@ class IfileIt(DeadHoster):
     __name__    = "IfileIt"
     __type__    = "hoster"
     __version__ = "0.30"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
     __config__  = []  #@TODO: Remove in 0.4.10

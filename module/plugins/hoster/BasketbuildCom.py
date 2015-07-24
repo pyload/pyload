@@ -13,7 +13,7 @@ class BasketbuildCom(SimpleHoster):
     __name__    = "BasketbuildCom"
     __type__    = "hoster"
     __version__ = "0.04"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w\.)?basketbuild\.com/filedl/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -29,7 +29,7 @@ class BasketbuildCom(SimpleHoster):
 
 
     def setup(self):
-        self.multi_dl        = True
+        self.multiDL        = True
         self.resume_download = True
         self.chunk_limit     = 1
 

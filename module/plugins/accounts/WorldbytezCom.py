@@ -7,7 +7,7 @@ class WorldbytezCom(XFSAccount):
     __name__    = "WorldbytezCom"
     __type__    = "account"
     __version__ = "0.02"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Worldbytez.com account plugin"""
     __license__     = "GPLv3"

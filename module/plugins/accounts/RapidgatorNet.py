@@ -10,7 +10,7 @@ class RapidgatorNet(Account):
     __name__    = "RapidgatorNet"
     __type__    = "account"
     __version__ = "0.11"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Rapidgator.net account plugin"""
     __license__     = "GPLv3"

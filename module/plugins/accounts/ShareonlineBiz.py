@@ -9,7 +9,7 @@ class ShareonlineBiz(Account):
     __name__    = "ShareonlineBiz"
     __type__    = "account"
     __version__ = "0.35"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Share-online.biz account plugin"""
     __license__     = "GPLv3"

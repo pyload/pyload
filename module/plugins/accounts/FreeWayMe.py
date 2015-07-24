@@ -8,7 +8,7 @@ class FreeWayMe(Account):
     __name__    = "FreeWayMe"
     __type__    = "account"
     __version__ = "0.16"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """FreeWayMe account plugin"""
     __license__     = "GPLv3"

@@ -11,7 +11,7 @@ class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
     __version__ = "0.43"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"         , True ),
                   ("waitend"  , "bool", "Wait script ending", False)]

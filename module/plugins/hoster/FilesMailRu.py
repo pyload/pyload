@@ -33,7 +33,7 @@ class FilesMailRu(Hoster):
     __name__    = "FilesMailRu"
     __type__    = "hoster"
     __version__ = "0.34"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?files\.mail\.ru/.+'
 
@@ -43,7 +43,7 @@ class FilesMailRu(Hoster):
 
 
     def setup(self):
-        self.multi_dl = bool(self.account)
+        self.multiDL = bool(self.account)
 
 
     def process(self, pyfile):

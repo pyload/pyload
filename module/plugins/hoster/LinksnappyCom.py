@@ -11,7 +11,7 @@ class LinksnappyCom(MultiHoster):
     __name__    = "LinksnappyCom"
     __type__    = "hoster"
     __version__ = "0.10"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:[^/]+\.)?linksnappy\.com'
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),

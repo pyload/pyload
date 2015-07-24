@@ -7,7 +7,7 @@ class UploadcCom(XFSAccount):
     __name__    = "UploadcCom"
     __type__    = "account"
     __version__ = "0.03"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Uploadc.com account plugin"""
     __license__     = "GPLv3"

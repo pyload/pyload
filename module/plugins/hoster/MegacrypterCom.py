@@ -11,7 +11,7 @@ class MegacrypterCom(MegaCoNz):
     __name__    = "MegacrypterCom"
     __type__    = "hoster"
     __version__ = "0.23"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://\w{0,10}\.?megacrypter\.com/[\w!-]+'
 

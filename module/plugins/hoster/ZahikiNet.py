@@ -7,7 +7,7 @@ class ZahikiNet(SimpleHoster):
     __name__    = "ZahikiNet"
     __type__    = "hoster"
     __version__ = "0.02"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?zahiki\.net/\w+/.+'
 
@@ -26,8 +26,8 @@ class ZahikiNet(SimpleHoster):
 
     def setup(self):
         self.resume_download = True
-        self.multi_dl = True
-        self.limit_dl = 6
+        self.multiDL = True
+        self.limitDL = 6
 
 
 getInfo = create_getInfo(ZahikiNet)

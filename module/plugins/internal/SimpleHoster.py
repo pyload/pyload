@@ -25,7 +25,7 @@ class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
     __version__ = "1.71"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
@@ -199,7 +199,7 @@ class SimpleHoster(Hoster):
 
 
     def setup(self):
-        self.resume_download = self.multi_dl = self.premium
+        self.resume_download = self.multiDL = self.premium
 
 
     def prepare(self):
@@ -287,7 +287,7 @@ class SimpleHoster(Hoster):
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
             err = str(e)  #@TODO: Recheck in 0.4.10
 
-            if err == _("No captcha result obtained in appropiate time by any of the plugins."):  #@TODO: Fix in 0.4.10
+            if err is _("No captcha result obtained in appropiate time by any of the plugins."):  #@TODO: Fix in 0.4.10
                 self.check_file()
 
             elif self.get_config('fallback', True) and self.premium:
@@ -322,7 +322,7 @@ class SimpleHoster(Hoster):
                         pass
 
                     self.log_warning(_("Check result: ") + errmsg, _("Waiting 1 minute and retry"))
-                    self.want_reconnect = True
+                    self.wantReconnect = True
                     self.retry(wait_time=60, reason=errmsg)
             else:
                 if self.CHECK_FILE:
@@ -365,11 +365,11 @@ class SimpleHoster(Hoster):
                     wait_time = sum(int(v) * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, "": 1}[u.lower()] for v, u in
                                 re.findall(r'(\d+)\s*(hr|hour|min|sec|)', errmsg, re.I))
 
-                self.want_reconnect = wait_time > 300
+                self.wantReconnect = wait_time > 300
                 self.retry(1, wait_time, _("Download limit exceeded"))
 
         if hasattr(self, 'HAPPY_HOUR_PATTERN') and re.search(self.HAPPY_HOUR_PATTERN, self.html):
-            self.multi_dl = True
+            self.multiDL = True
 
         if hasattr(self, 'ERROR_PATTERN'):
             m = re.search(self.ERROR_PATTERN, self.html)
@@ -389,7 +389,7 @@ class SimpleHoster(Hoster):
                         wait_time = sum(int(v) * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, "": 1}[u.lower()] for v, u in
                                     re.findall(r'(\d+)\s*(hr|hour|min|sec|)', errmsg, re.I))
 
-                    self.want_reconnect = wait_time > 300
+                    self.wantReconnect = wait_time > 300
                     self.retry(1, wait_time, _("Download limit exceeded"))
 
                 elif re.search('country|ip|region|nation', errmsg, re.I):
@@ -420,7 +420,7 @@ class SimpleHoster(Hoster):
                     self.fail(_("File can be downloaded by premium users only"))
 
                 else:
-                    self.want_reconnect = True
+                    self.wantReconnect = True
                     self.retry(wait_time=60, reason=errmsg)
 
         elif hasattr(self, 'WAIT_PATTERN'):

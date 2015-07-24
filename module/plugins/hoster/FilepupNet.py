@@ -13,7 +13,7 @@ class FilepupNet(SimpleHoster):
     __name__    = "FilepupNet"
     __type__    = "hoster"
     __version__ = "0.04"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?filepup\.net/files/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -33,7 +33,7 @@ class FilepupNet(SimpleHoster):
 
 
     def setup(self):
-        self.multi_dl = False
+        self.multiDL = False
         self.chunk_limit = 1
 
 

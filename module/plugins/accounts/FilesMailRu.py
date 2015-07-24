@@ -7,7 +7,7 @@ class FilesMailRu(Account):
     __name__    = "FilesMailRu"
     __type__    = "account"
     __version__ = "0.13"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Filesmail.ru account plugin"""
     __license__     = "GPLv3"

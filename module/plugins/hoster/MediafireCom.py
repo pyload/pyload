@@ -9,7 +9,7 @@ class MediafireCom(SimpleHoster):
     __name__    = "MediafireCom"
     __type__    = "hoster"
     __version__ = "0.90"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)(?P<ID>\w{15})'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -33,7 +33,7 @@ class MediafireCom(SimpleHoster):
 
     def setup(self):
         self.resume_download = True
-        self.multi_dl        = True
+        self.multiDL        = True
 
 
     def handle_captcha(self):

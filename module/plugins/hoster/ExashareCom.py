@@ -9,7 +9,7 @@ class ExashareCom(XFSHoster):
     __name__    = "ExashareCom"
     __type__    = "hoster"
     __version__ = "0.02"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?exashare\.com/\w{12}'
 
@@ -22,7 +22,7 @@ class ExashareCom(XFSHoster):
 
 
     def setup(self):
-        self.multi_dl        = True
+        self.multiDL        = True
         self.chunk_limit     = 1
         self.resume_download = self.premium
 

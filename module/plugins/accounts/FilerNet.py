@@ -10,7 +10,7 @@ class FilerNet(Account):
     __name__    = "FilerNet"
     __type__    = "account"
     __version__ = "0.07"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Filer.net account plugin"""
     __license__     = "GPLv3"

@@ -30,7 +30,7 @@ class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "hook"
     __version__ = "0.54"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),
                   ("checkinterval", "int" , "Check interval in hours"                  , 8    ),

@@ -10,7 +10,7 @@ class MegaRapidCz(Account):
     __name__    = "MegaRapidCz"
     __type__    = "account"
     __version__ = "0.37"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """MegaRapid.cz account plugin"""
     __license__     = "GPLv3"

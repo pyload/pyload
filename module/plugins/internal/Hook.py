@@ -7,7 +7,7 @@ class Hook(Addon):
     __name__    = "Hook"
     __type__    = "hook"
     __version__ = "0.10"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __config__   = []  #: [("name", "type", "desc", "default")]
 

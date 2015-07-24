@@ -10,7 +10,7 @@ class MegasharesCom(SimpleHoster):
     __name__    = "MegasharesCom"
     __type__    = "hoster"
     __version__ = "0.29"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index\.php)?\?d\d{2}=|dl/)\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -37,7 +37,7 @@ class MegasharesCom(SimpleHoster):
 
     def setup(self):
         self.resume_download = True
-        self.multi_dl        = self.premium
+        self.multiDL        = self.premium
 
 
     def handle_premium(self, pyfile):

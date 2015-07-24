@@ -7,7 +7,7 @@ class ILoadTo(DeadCrypter):
     __name__    = "ILoadTo"
     __type__    = "crypter"
     __version__ = "0.12"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?iload\.to/go/\d+-[\w.-]+/'
     __config__  = []  #@TODO: Remove in 0.4.10

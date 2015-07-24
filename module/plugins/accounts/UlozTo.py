@@ -10,7 +10,7 @@ class UlozTo(Account):
     __name__    = "UlozTo"
     __type__    = "account"
     __version__ = "0.12"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Uloz.to account plugin"""
     __license__     = "GPLv3"

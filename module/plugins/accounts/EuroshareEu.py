@@ -10,7 +10,7 @@ class EuroshareEu(Account):
     __name__    = "EuroshareEu"
     __type__    = "account"
     __version__ = "0.04"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Euroshare.eu account plugin"""
     __license__     = "GPLv3"

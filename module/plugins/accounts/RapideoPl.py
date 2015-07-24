@@ -12,7 +12,7 @@ class RapideoPl(Account):
     __name__    = "RapideoPl"
     __type__    = "account"
     __version__ = "0.03"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = "Rapideo.pl account plugin"
     __license__     = "GPLv3"

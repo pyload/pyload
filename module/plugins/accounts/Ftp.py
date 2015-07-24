@@ -7,7 +7,7 @@ class Ftp(Account):
     __name__    = "Ftp"
     __type__    = "account"
     __version__ = "0.03"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Ftp dummy account plugin"""
     __license__     = "GPLv3"

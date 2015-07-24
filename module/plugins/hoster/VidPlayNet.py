@@ -10,7 +10,7 @@ class VidPlayNet(XFSHoster):
     __name__    = "VidPlayNet"
     __type__    = "hoster"
     __version__ = "0.05"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?vidplay\.net/\w{12}'
 

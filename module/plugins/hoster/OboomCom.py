@@ -14,7 +14,7 @@ class OboomCom(Hoster):
     __name__    = "OboomCom"
     __type__    = "hoster"
     __version__ = "0.35"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?oboom\.com/(?:#(?:id=|/)?)?(?P<ID>\w{8})'
 
@@ -28,7 +28,7 @@ class OboomCom(Hoster):
 
     def setup(self):
         self.chunk_limit = 1
-        self.multi_dl = self.resume_download = self.premium
+        self.multiDL = self.resume_download = self.premium
 
 
     def process(self, pyfile):

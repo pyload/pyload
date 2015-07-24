@@ -7,7 +7,7 @@ class KickloadCom(DeadHoster):
     __name__    = "KickloadCom"
     __type__    = "hoster"
     __version__ = "0.22"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?kickload\.com/get/.+'
     __config__  = []  #@TODO: Remove in 0.4.10

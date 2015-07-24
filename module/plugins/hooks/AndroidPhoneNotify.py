@@ -9,7 +9,7 @@ class AndroidPhoneNotify(Addon):
     __name__    = "AndroidPhoneNotify"
     __type__    = "hook"
     __version__ = "0.10"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __config__ = [("apikey"         , "str" , "API key"                                  , ""   ),
                   ("notifycaptcha"  , "bool", "Notify captcha request"                   , True ),

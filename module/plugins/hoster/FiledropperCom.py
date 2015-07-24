@@ -10,7 +10,7 @@ class FiledropperCom(SimpleHoster):
     __name__    = "FiledropperCom"
     __type__    = "hoster"
     __version__ = "0.02"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filedropper\.com/\w+'
 
@@ -25,7 +25,7 @@ class FiledropperCom(SimpleHoster):
 
 
     def setup(self):
-        self.multi_dl    = False
+        self.multiDL    = False
         self.chunk_limit = 1
 
 

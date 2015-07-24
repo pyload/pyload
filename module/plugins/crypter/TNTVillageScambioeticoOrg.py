@@ -7,7 +7,7 @@ class TNTVillageScambioeticoOrg(SimpleCrypter):
     __name__    = "TNTVillageScambioeticoOrg"
     __type__    = "crypter"
     __version__ = "0.02"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?forum\.tntvillage\.scambioetico\.org/index\.php\?.*showtopic=\d+'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),  #: Overrides pyload.config['general']['folder_per_package']

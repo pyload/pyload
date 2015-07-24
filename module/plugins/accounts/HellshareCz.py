@@ -10,7 +10,7 @@ class HellshareCz(Account):
     __name__    = "HellshareCz"
     __type__    = "account"
     __version__ = "0.18"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Hellshare.cz account plugin"""
     __license__     = "GPLv3"

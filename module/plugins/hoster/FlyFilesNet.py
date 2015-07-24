@@ -10,7 +10,7 @@ class FlyFilesNet(SimpleHoster):
     __name__    = "FlyFilesNet"
     __type__    = "hoster"
     __version__ = "0.11"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?flyfiles\.net/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

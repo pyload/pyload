@@ -9,7 +9,7 @@ class MultishareCz(Account):
     __name__    = "MultishareCz"
     __type__    = "account"
     __version__ = "0.07"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Multishare.cz account plugin"""
     __license__     = "GPLv3"

@@ -10,7 +10,7 @@ class UpleaCom(XFSHoster):
     __name__    = "UpleaCom"
     __type__    = "hoster"
     __version__ = "0.11"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?uplea\.com/dl/\w{15}'
 
@@ -38,7 +38,7 @@ class UpleaCom(XFSHoster):
 
 
     def setup(self):
-        self.multi_dl = False
+        self.multiDL = False
         self.chunk_limit = 1
         self.resume_download = True
 

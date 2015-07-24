@@ -7,7 +7,7 @@ class FilebeerInfoFolder(DeadCrypter):
     __name__    = "FilebeerInfoFolder"
     __type__    = "crypter"
     __version__ = "0.03"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?filebeer\.info/\d*~f\w+'
     __config__  = []  #@TODO: Remove in 0.4.10

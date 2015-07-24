@@ -7,7 +7,7 @@ class UploadhereCom(DeadHoster):
     __name__    = "UploadhereCom"
     __type__    = "hoster"
     __version__ = "0.13"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?uploadhere\.com/\w{10}'
     __config__  = []  #@TODO: Remove in 0.4.10

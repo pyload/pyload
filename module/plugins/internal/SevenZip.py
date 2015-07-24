@@ -11,7 +11,7 @@ from module.utils import fs_encode, save_join as fs_join
 class SevenZip(UnRar):
     __name__    = "SevenZip"
     __version__ = "0.13"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """7-Zip extractor plugin"""
     __license__     = "GPLv3"
@@ -40,7 +40,7 @@ class SevenZip(UnRar):
     @classmethod
     def find(cls):
         try:
-            if os.name == "nt":
+            if os.name is "nt":
                 cls.CMD = os.path.join(pypath, "7z.exe")
 
             p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)

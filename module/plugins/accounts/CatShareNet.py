@@ -10,7 +10,7 @@ class CatShareNet(Account):
     __name__    = "CatShareNet"
     __type__    = "account"
     __version__ = "0.08"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Catshare.net account plugin"""
     __license__     = "GPLv3"

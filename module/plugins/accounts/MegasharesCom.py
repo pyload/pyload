@@ -10,7 +10,7 @@ class MegasharesCom(Account):
     __name__    = "MegasharesCom"
     __type__    = "account"
     __version__ = "0.05"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Megashares.com account plugin"""
     __license__     = "GPLv3"

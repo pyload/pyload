@@ -10,7 +10,7 @@ class AdYouLike(CaptchaService):
     __name__    = "AdYouLike"
     __type__    = "captcha"
     __version__ = "0.07"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """AdYouLike captcha service plugin"""
     __license__     = "GPLv3"

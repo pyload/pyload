@@ -9,7 +9,7 @@ class RehostTo(MultiHoster):
     __name__    = "RehostTo"
     __type__    = "hoster"
     __version__ = "0.23"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://.*rehost\.to\..+'
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),

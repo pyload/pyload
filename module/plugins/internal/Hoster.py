@@ -13,12 +13,12 @@ if os.name != "nt":
     import grp
     import pwd
 
-from module.plugins.internal import Captcha
-from module.plugins.internal.Plugin import (Plugin, Abort, Fail, Reconnect, Retry, Skip
+from module.plugins.internal.Captcha import Captcha
+from module.plugins.internal.Plugin import (Plugin, Abort, Fail, Reconnect, Retry, Skip,
                                             chunks, encode, fixurl as _fixurl, replace_patterns, seconds_to_midnight,
                                             set_cookies, parse_html_form, parse_html_tag_attr_value,
                                             timestamp)
-from module.utils import fs_decode, fs_encode, save_join as fs_join
+from module.utils import fs_decode, fs_encode, save_join as fs_join, save_path as safe_filename
 
 
 #@TODO: Remove in 0.4.10
@@ -48,7 +48,7 @@ class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
     __version__ = "0.05"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
     __config__  = []  #: [("name", "type", "desc", "default")]
@@ -66,11 +66,11 @@ class Hoster(Plugin):
         self.info   = {}  #: Provide information in dict here
 
         #: Engage wan reconnection
-        self.want_reconnect = False
+        self.wantReconnect = False  #@TODO: Change to `want_reconnect` in 0.4.10
 
         #: Enable simultaneous processing of multiple downloads
-        self.multi_dl = True
-        self.limit_dl = 0
+        self.multiDL = True  #@TODO: Change to `multi_dl` in 0.4.10
+        self.limitDL = 0     #@TODO: Change to `limit_dl` in 0.4.10
 
         #: Chunk limit
         self.chunk_limit = 1
@@ -206,8 +206,8 @@ class Hoster(Plugin):
 
     def set_reconnect(self, reconnect):
         reconnect = bool(reconnect)
-        self.log_debug("Set wantReconnect to: %s (previous: %s)" % (reconnect, self.want_reconnect))
-        self.want_reconnect = reconnect
+        self.log_debug("Set wantReconnect to: %s (previous: %s)" % (reconnect, self.wantReconnect))
+        self.wantReconnect = reconnect
 
 
     def set_wait(self, seconds, reconnect=None):
@@ -247,7 +247,7 @@ class Hoster(Plugin):
         pyfile.setStatus("waiting")
 
         self.log_info(_("Wait: %d seconds") % (pyfile.waitUntil - time.time()),
-                      _("Reconnect: %s")    % self.want_reconnect)
+                      _("Reconnect: %s")    % self.wantReconnect)
 
         if self.account:
             self.log_debug("Ignore reconnection due account logged")
@@ -266,7 +266,7 @@ class Hoster(Plugin):
 
                 if self.thread.m.reconnecting.isSet():
                     self.waiting = False
-                    self.want_reconnect = False
+                    self.wantReconnect = False
                     raise Reconnect
 
                 time.sleep(1)
@@ -396,7 +396,7 @@ class Hoster(Plugin):
 
         filename = os.path.join(location, name)
 
-        self.pyload.addonManager.dispatchEvent("download-start", self.pyfile, url, filename)
+        self.pyload.hookManager.dispatchEvent("download_start", self.pyfile, url, filename)
 
         try:
             newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref, cookies=cookies,
@@ -532,7 +532,7 @@ class Hoster(Plugin):
                     value            = value.strip()
 
                     if key in header:
-                        if type(header[key]) == list:
+                        if type(header[key]) is list:
                             header[key].append(value)
                         else:
                             header[key] = [header[key], value]
@@ -550,7 +550,7 @@ class Hoster(Plugin):
                     baseurl  = "%s://%s" % (url_p.scheme, url_p.netloc)
                     location = urlparse.urljoin(baseurl, location)
 
-                if 'code' in header and header['code'] == 302:
+                if 'code' in header and header['code'] is 302:
                     link = location
 
                 if follow_location:
@@ -597,7 +597,7 @@ class Hoster(Plugin):
 
         if traffic is None:
             return False
-        elif traffic == -1:
+        elif traffic is -1:
             return True
         else:
             size = self.pyfile.size / 1024
@@ -612,6 +612,11 @@ class Hoster(Plugin):
         return self.pyfile.package().password or ""
 
 
+    #: Deprecated method, use `check_for_same_files` instead
+    def checkForSameFiles(self, *args, **kwargs):
+        return self.check_for_same_files(*args, **kwargs)
+
+
     def check_for_same_files(self, starting=False):
         """
         Checks if same file was/is downloaded within same package
@@ -622,7 +627,7 @@ class Hoster(Plugin):
         pack = self.pyfile.package()
 
         for pyfile in self.pyload.files.cache.values():
-            if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package().folder == pack.folder:
+            if pyfile != self.pyfile and pyfile.name is self.pyfile.name and pyfile.package().folder is pack.folder:
                 if pyfile.status in (0, 12):  #: Finished or downloading
                     self.skip(pyfile.pluginname)
                 elif pyfile.status in (5, 7) and starting:  #: A download is waiting/starting and was appenrently started before

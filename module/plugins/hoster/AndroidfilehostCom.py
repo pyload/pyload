@@ -12,7 +12,7 @@ class AndroidfilehostCom(SimpleHoster):
     __name__    = "AndroidfilehostCom"
     __type__    = "hoster"
     __version__ = "0.02"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?androidfilehost\.com/\?fid=\d+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -32,7 +32,7 @@ class AndroidfilehostCom(SimpleHoster):
 
 
     def setup(self):
-        self.multi_dl        = True
+        self.multiDL        = True
         self.resume_download = True
         self.chunk_limit     = 1
 

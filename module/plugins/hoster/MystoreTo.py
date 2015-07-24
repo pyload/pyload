@@ -12,7 +12,7 @@ class MystoreTo(SimpleHoster):
     __name__    = "MystoreTo"
     __type__    = "hoster"
     __version__ = "0.04"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?mystore\.to/dl/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -30,7 +30,7 @@ class MystoreTo(SimpleHoster):
     def setup(self):
         self.chunk_limit     = 1
         self.resume_download = True
-        self.multi_dl        = True
+        self.multiDL        = True
 
 
     def handle_free(self, pyfile):

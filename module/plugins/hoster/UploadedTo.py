@@ -13,7 +13,7 @@ class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
     __version__ = "0.95"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -63,7 +63,7 @@ class UploadedTo(SimpleHoster):
 
 
     def setup(self):
-        self.multi_dl = self.resume_download = self.premium
+        self.multiDL = self.resume_download = self.premium
         self.chunk_limit = 1  #: Critical problems with more chunks
 
 

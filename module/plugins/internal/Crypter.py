@@ -10,7 +10,7 @@ class Crypter(Hoster):
     __name__    = "Crypter"
     __type__    = "crypter"
     __version__ = "0.05"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides pyload.config.get("general", "folder_per_package")

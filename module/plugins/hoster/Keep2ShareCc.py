@@ -11,7 +11,7 @@ class Keep2ShareCc(SimpleHoster):
     __name__    = "Keep2ShareCc"
     __type__    = "hoster"
     __version__ = "0.24"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -44,7 +44,7 @@ class Keep2ShareCc(SimpleHoster):
         m = re.search(self.TEMP_ERROR_PATTERN, self.html)
         if m:
             self.info['error'] = m.group(1)
-            self.want_reconnect = True
+            self.wantReconnect = True
             self.retry(wait_time=30 * 60, reason=m.group(0))
 
         m = re.search(self.ERROR_PATTERN, self.html)
@@ -60,7 +60,7 @@ class Keep2ShareCc(SimpleHoster):
             ftr = [3600, 60, 1]
             wait_time = sum(a * b for a, b in zip(ftr, map(int, m.group(1).split(':'))))
 
-            self.want_reconnect = True
+            self.wantReconnect = True
             self.retry(wait_time=wait_time, reason="Please wait to download this file")
 
         self.info.pop('error', None)

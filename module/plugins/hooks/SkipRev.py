@@ -14,7 +14,7 @@ class SkipRev(Addon):
     __name__    = "SkipRev"
     __type__    = "hook"
     __version__ = "0.33"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __config__ = [("mode"     , "Auto;Manual", "Choose recovery archives to skip"               , "Auto"),
                   ("revtokeep", "int"        , "Number of recovery archives to keep for package", 0     )]

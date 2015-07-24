@@ -7,7 +7,7 @@ class BayfilesCom(DeadHoster):
     __name__    = "BayfilesCom"
     __type__    = "hoster"
     __version__ = "0.10"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?bayfiles\.(com|net)/file/(?P<ID>\w+/\w+/[^/]+)'
     __config__  = []  #@TODO: Remove in 0.4.10

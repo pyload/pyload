@@ -10,7 +10,7 @@ class LolabitsEs(SimpleHoster):
     __name__    = "LolabitsEs"
     __type__    = "hoster"
     __version__ = "0.03"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?lolabits\.es/.+'
 

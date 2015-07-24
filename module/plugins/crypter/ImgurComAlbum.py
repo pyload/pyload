@@ -8,7 +8,7 @@ class ImgurComAlbum(SimpleCrypter):
     __name__    = "ImgurComAlbum"
     __type__    = "crypter"
     __version__ = "0.52"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.|m\.)?imgur\.com/(a|gallery|)/?\w{5,7}'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),

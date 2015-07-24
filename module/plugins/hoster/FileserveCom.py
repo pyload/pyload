@@ -34,7 +34,7 @@ class FileserveCom(Hoster):
     __name__    = "FileserveCom"
     __type__    = "hoster"
     __version__ = "0.57"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<ID>[^/]+)'
 
@@ -61,7 +61,7 @@ class FileserveCom(Hoster):
 
 
     def setup(self):
-        self.resume_download = self.multi_dl = self.premium
+        self.resume_download = self.multiDL = self.premium
         self.file_id = re.match(self.__pattern__, self.pyfile.url).group('ID')
         self.url     = "%s%s" % (self.URLS[0], self.file_id)
 

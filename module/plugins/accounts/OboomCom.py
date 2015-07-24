@@ -24,7 +24,7 @@ class OboomCom(Account):
     __name__    = "OboomCom"
     __type__    = "account"
     __version__ = "0.26"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Oboom.com account plugin"""
     __license__     = "GPLv3"

@@ -7,7 +7,7 @@ class DdlstorageComFolder(DeadCrypter):
     __name__    = "DdlstorageComFolder"
     __type__    = "crypter"
     __version__ = "0.04"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?ddlstorage\.com/folder/\w+'
     __config__  = []  #@TODO: Remove in 0.4.10

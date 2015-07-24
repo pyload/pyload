@@ -12,7 +12,7 @@ class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
     __version__ = "0.51"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __config__  = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                    ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -119,7 +119,7 @@ class MultiHook(Hook):
                 pluginlist = self.get_config('pluginlist', '').replace('|', ',').replace(';', ',').split(',')
                 configset  = self._plugin_set(pluginlist)
 
-                if configmode == "listed":
+                if configmode is "listed":
                     pluginset &= configset
                 else:
                     pluginset -= configset
@@ -186,7 +186,7 @@ class MultiHook(Hook):
     def override_plugins(self):
         excludedList = []
 
-        if self.plugintype == "hoster":
+        if self.plugintype is "hoster":
             pluginMap    = dict((name.lower(), name) for name in self.pyload.pluginManager.hosterPlugins.iterkeys())
             accountList  = [account.type.lower() for account in self.pyload.api.getAccounts(False) if account.valid and account.premium]
         else:

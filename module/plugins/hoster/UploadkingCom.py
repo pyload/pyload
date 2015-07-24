@@ -7,7 +7,7 @@ class UploadkingCom(DeadHoster):
     __name__    = "UploadkingCom"
     __type__    = "hoster"
     __version__ = "0.15"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?uploadking\.com/\w{10}'
     __config__  = []  #@TODO: Remove in 0.4.10

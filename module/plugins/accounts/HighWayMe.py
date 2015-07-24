@@ -8,7 +8,7 @@ class HighWayMe(Account):
     __name__    = "HighWayMe.py"
     __type__    = "account"
     __version__ = "0.04"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """High-Way.me account plugin"""
     __license__     = "GPLv3"

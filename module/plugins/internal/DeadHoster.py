@@ -7,7 +7,7 @@ class DeadHoster(Hoster):
     __name__    = "DeadHoster"
     __type__    = "hoster"
     __version__ = "0.18"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
 

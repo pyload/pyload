@@ -66,7 +66,7 @@ def replace_patterns(string, ruleslist):
 
 def set_cookies(cj, cookies):
     for cookie in cookies:
-        if isinstance(cookie, tuple) and len(cookie) == 3:
+        if isinstance(cookie, tuple) and len(cookie) is 3:
             domain, name, value = cookie
             cj.setCookie(domain, name, value)
 
@@ -95,7 +95,7 @@ def parse_html_form(attr_str, html, input_names={}):
             #: Check input attributes
             for key, val in input_names.iteritems():
                 if key in inputs:
-                    if isinstance(val, basestring) and inputs[key] == val:
+                    if isinstance(val, basestring) and inputs[key] is val:
                         continue
                     elif isinstance(val, tuple) and inputs[key] in val:
                         continue
@@ -126,7 +126,7 @@ class Plugin(object):
     __name__    = "Plugin"
     __type__    = "hoster"
     __version__ = "0.13"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
     __config__  = []  #: [("name", "type", "desc", "default")]
@@ -232,7 +232,7 @@ class Plugin(object):
         """
         Fail and give reason
         """
-        raise Fail(encode(reason))  #: Move to manager in 0.4.10
+        raise Fail(encode(reason))  #: Move `encode(reason)` to manager in 0.4.10
 
 
     def error(self, reason="", type=_("Parse")):
@@ -246,7 +246,7 @@ class Plugin(object):
         raise Fail(msg)
 
 
-    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=True, multipart=True, req=None):
+    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=True, req=None):
         """
         Load content at url and returns it
 
@@ -276,7 +276,7 @@ class Plugin(object):
             else:
                 req = self.pyload.requestFactory.getRequest(self.__name__)
 
-        res = req.load(url, get, post, ref, cookies, just_header, multipart, decode is True)
+        res = req.load(url, get, post, ref, cookies, just_header, isinstance(post, dict), decode is True)  #@TODO: Fix network multipart in 0.4.10
 
         if decode:   #@TODO: Move to network in 0.4.10
             res = html_unescape(res)
@@ -310,7 +310,7 @@ class Plugin(object):
                 value = value.strip()
 
                 if key in header:
-                    if type(header[key]) == list:
+                    if type(header[key]) is list:
                         header[key].append(value)
                     else:
                         header[key] = [header[key], value]

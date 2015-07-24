@@ -9,7 +9,7 @@ class XFileSharingPro(XFSHoster):
     __name__    = "XFileSharingPro"
     __type__    = "hoster"
     __version__ = "0.49"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)'
 
@@ -21,8 +21,8 @@ class XFileSharingPro(XFSHoster):
     URL_REPLACEMENTS = [("/embed-", "/")]
 
 
-    def _log(self, type, args):
-        return super(XFileSharingPro, self)._log(type, (self.HOSTER_NAME,) + args)
+    def _log(self, level, args):
+        return super(XFileSharingPro, self)._log(level, (self.HOSTER_NAME,) + args)
 
 
     def init(self):
@@ -52,7 +52,7 @@ class XFileSharingPro(XFSHoster):
     def setup(self):
         self.chunk_limit     = 1
         self.resume_download = self.premium
-        self.multi_dl        = True
+        self.multiDL        = True
 
 
 getInfo = create_getInfo(XFileSharingPro)

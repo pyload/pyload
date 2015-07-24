@@ -10,7 +10,7 @@ class MultishareCz(SimpleHoster):
     __name__    = "MultishareCz"
     __type__    = "hoster"
     __version__ = "0.41"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?multishare\.cz/stahnout/(?P<ID>\d+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

@@ -8,7 +8,7 @@ class PremiumizeMe(MultiHoster):
     __name__    = "PremiumizeMe"
     __type__    = "hoster"
     __version__ = "0.19"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate
     __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),

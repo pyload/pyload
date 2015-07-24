@@ -7,7 +7,7 @@ class JunocloudMe(XFSHoster):
     __name__    = "JunocloudMe"
     __type__    = "hoster"
     __version__ = "0.06"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:\w+\.)?junocloud\.me/\w{12}'
 

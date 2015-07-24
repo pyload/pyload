@@ -9,7 +9,7 @@ class EdiskCz(SimpleHoster):
     __name__    = "EdiskCz"
     __type__    = "hoster"
     __version__ = "0.24"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?edisk\.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -27,7 +27,7 @@ class EdiskCz(SimpleHoster):
 
 
     def setup(self):
-        self.multi_dl = False
+        self.multiDL = False
 
 
     def process(self, pyfile):

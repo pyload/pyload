@@ -14,7 +14,7 @@ class Container(Crypter):
     __name__    = "Container"
     __type__    = "container"
     __version__ = "0.05"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
     __config__  = []  #: [("name", "type", "desc", "default")]
@@ -39,6 +39,11 @@ class Container(Crypter):
         self._create_packages()
 
 
+    #: Deprecated method, use `_load2disk` instead
+    def loadToDisk(self, *args, **kwargs):
+        return self._load2disk(*args, **kwargs)
+
+
     def _load2disk(self):
         """
         Loads container to disk if its stored remotely and overwrite url,
@@ -61,6 +66,11 @@ class Container(Crypter):
                     self.pyfile.url = fs_join(pypath, self.pyfile.url)
                 else:
                     self.fail(_("File not exists"))
+
+
+    #: Deprecated method, use `delete_tmp` instead
+    def deleteTmp(self, *args, **kwargs):
+        return self.delete_tmp(*args, **kwargs)
 
 
     def delete_tmp(self):

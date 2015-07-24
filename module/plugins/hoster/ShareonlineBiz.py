@@ -14,7 +14,7 @@ class ShareonlineBiz(SimpleHoster):
     __name__    = "ShareonlineBiz"
     __type__    = "hoster"
     __version__ = "0.54"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -63,7 +63,7 @@ class ShareonlineBiz(SimpleHoster):
 
     def setup(self):
         self.resume_download = self.premium
-        self.multi_dl        = False
+        self.multiDL        = False
 
 
     def handle_captcha(self):
@@ -147,7 +147,7 @@ class ShareonlineBiz(SimpleHoster):
             if self.link == "server_under_maintenance":
                 self.temp_offline()
             else:
-                self.multi_dl = True
+                self.multiDL = True
 
 
     def check_errors(self):
@@ -173,11 +173,11 @@ class ShareonlineBiz(SimpleHoster):
             self.retry(wait_time=600, reason=errmsg)
 
         elif 'slot' in errmsg:
-            self.want_reconnect = True
+            self.wantReconnect = True
             self.retry(24, 3600, errmsg)
 
         else:
-            self.want_reconnect = True
+            self.wantReconnect = True
             self.retry(wait_time=60, reason=errmsg)
 
 

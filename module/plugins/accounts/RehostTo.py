@@ -7,7 +7,7 @@ class RehostTo(Account):
     __name__    = "RehostTo"
     __type__    = "account"
     __version__ = "0.18"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Rehost.to account plugin"""
     __license__     = "GPLv3"

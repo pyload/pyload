@@ -15,7 +15,7 @@ class Captcha9Kw(Hook):
     __name__    = "Captcha9Kw"
     __type__    = "hook"
     __version__ = "0.30"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __config__ = [("check_client"  , "bool"    , "Don't use if client is connected"                                                , True                                                               ),
                   ("confirm"       , "bool"    , "Confirm Captcha (cost +6 credits)"                                               , False                                                              ),

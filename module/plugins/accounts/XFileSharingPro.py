@@ -7,7 +7,7 @@ class XFileSharingPro(XFSAccount):
     __name__    = "XFileSharingPro"
     __type__    = "account"
     __version__ = "0.07"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """XFileSharingPro multi-purpose account plugin"""
     __license__     = "GPLv3"

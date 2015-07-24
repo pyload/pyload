@@ -19,7 +19,7 @@ class XHamsterCom(Hoster):
     __name__    = "XHamsterCom"
     __type__    = "hoster"
     __version__ = "0.14"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?xhamster\.com/movies/.+'
     __config__  = [("type", ".mp4;.flv", "Preferred type", ".mp4")]

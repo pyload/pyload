@@ -12,7 +12,7 @@ class DailymotionComFolder(Crypter):
     __name__    = "DailymotionComFolder"
     __type__    = "crypter"
     __version__ = "0.03"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

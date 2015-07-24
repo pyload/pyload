@@ -7,7 +7,7 @@ class GamefrontCom(SimpleHoster):
     __name__    = "GamefrontCom"
     __type__    = "hoster"
     __version__ = "0.09"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?gamefront\.com/files/(?P<ID>\d+)'
 
@@ -25,7 +25,7 @@ class GamefrontCom(SimpleHoster):
 
     def setup(self):
         self.resume_download = True
-        self.multi_dl        = True
+        self.multiDL        = True
 
 
     def handle_free(self, pyfile):

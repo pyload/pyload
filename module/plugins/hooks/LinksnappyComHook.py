@@ -8,7 +8,7 @@ class LinksnappyComHook(MultiHook):
     __name__    = "LinksnappyComHook"
     __type__    = "hook"
     __version__ = "0.05"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),

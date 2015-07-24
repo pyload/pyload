@@ -15,7 +15,7 @@ class HotFolder(Addon):
     __name__    = "HotFolder"
     __type__    = "hook"
     __version__ = "0.16"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __config__ = [("folder"    , "str" , "Folder to observe"    , "container"),
                   ("watch_file", "bool", "Observe link file"    , False      ),

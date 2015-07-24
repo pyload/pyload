@@ -9,7 +9,7 @@ class EuroshareEu(SimpleHoster):
     __name__    = "EuroshareEu"
     __type__    = "hoster"
     __version__ = "0.30"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?euroshare\.(eu|sk|cz|hu|pl)/file/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

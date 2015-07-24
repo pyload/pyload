@@ -8,7 +8,7 @@ class UnSkipOnFail(Addon):
     __name__    = "UnSkipOnFail"
     __type__    = "hook"
     __version__ = "0.09"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated", True)]
 

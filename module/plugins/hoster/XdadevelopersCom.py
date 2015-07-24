@@ -12,7 +12,7 @@ class XdadevelopersCom(SimpleHoster):
     __name__    = "XdadevelopersCom"
     __type__    = "hoster"
     __version__ = "0.04"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?forum\.xda-developers\.com/devdb/project/dl/\?id=\d+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -28,7 +28,7 @@ class XdadevelopersCom(SimpleHoster):
 
 
     def setup(self):
-        self.multi_dl        = True
+        self.multiDL        = True
         self.resume_download = True
         self.chunk_limit     = 1
 

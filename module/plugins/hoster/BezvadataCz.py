@@ -9,7 +9,7 @@ class BezvadataCz(SimpleHoster):
     __name__    = "BezvadataCz"
     __type__    = "hoster"
     __version__ = "0.29"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?bezvadata\.cz/stahnout/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -26,7 +26,7 @@ class BezvadataCz(SimpleHoster):
 
     def setup(self):
         self.resume_download = True
-        self.multi_dl        = True
+        self.multiDL        = True
 
 
     def handle_free(self, pyfile):

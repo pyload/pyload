@@ -9,7 +9,7 @@ class VeehdCom(Hoster):
     __name__    = "VeehdCom"
     __type__    = "hoster"
     __version__ = "0.25"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://veehd\.com/video/\d+_\S+'
     __config__  = [("filename_spaces", "bool", "Allow spaces in filename", False),
@@ -21,7 +21,7 @@ class VeehdCom(Hoster):
 
 
     def setup(self):
-        self.multi_dl = True
+        self.multiDL = True
         self.req.canContinue = True
 
 

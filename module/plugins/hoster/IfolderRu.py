@@ -9,7 +9,7 @@ class IfolderRu(SimpleHoster):
     __name__    = "IfolderRu"
     __type__    = "hoster"
     __version__ = "0.40"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www)?(files\.)?(ifolder\.ru|metalarea\.org|rusfolder\.(com|net|ru))/(files/)?(?P<ID>\d+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -35,7 +35,7 @@ class IfolderRu(SimpleHoster):
 
 
     def setup(self):
-        self.resume_download = self.multi_dl = bool(self.account)
+        self.resume_download = self.multiDL = bool(self.account)
         self.chunk_limit     = 1
 
 

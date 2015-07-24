@@ -7,7 +7,7 @@ class BitshareCom(Account):
     __name__    = "BitshareCom"
     __type__    = "account"
     __version__ = "0.15"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """Bitshare account plugin"""
     __license__     = "GPLv3"

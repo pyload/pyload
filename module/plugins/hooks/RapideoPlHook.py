@@ -8,7 +8,7 @@ class RapideoPlHook(MultiHook):
     __name__    = "RapideoPlHook"
     __type__    = "hook"
     __version__ = "0.04"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),

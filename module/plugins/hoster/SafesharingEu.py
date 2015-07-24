@@ -7,7 +7,7 @@ class SafesharingEu(XFSHoster):
     __name__    = "SafesharingEu"
     __type__    = "hoster"
     __version__ = "0.06"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?safesharing\.eu/\w{12}'
 

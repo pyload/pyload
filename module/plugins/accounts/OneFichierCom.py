@@ -11,7 +11,7 @@ class OneFichierCom(Account):
     __name__    = "OneFichierCom"
     __type__    = "account"
     __version__ = "0.14"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __description__ = """1fichier.com account plugin"""
     __license__     = "GPLv3"

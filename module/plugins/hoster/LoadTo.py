@@ -14,7 +14,7 @@ class LoadTo(SimpleHoster):
     __name__    = "LoadTo"
     __type__    = "hoster"
     __version__ = "0.25"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?load\.to/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -36,7 +36,7 @@ class LoadTo(SimpleHoster):
 
 
     def setup(self):
-        self.multi_dl = True
+        self.multiDL = True
         self.chunk_limit = 1
 
 

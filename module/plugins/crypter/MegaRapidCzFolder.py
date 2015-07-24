@@ -7,7 +7,7 @@ class MegaRapidCzFolder(SimpleCrypter):
     __name__    = "MegaRapidCzFolder"
     __type__    = "crypter"
     __version__ = "0.03"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(share|mega)rapid\.cz/slozka/\d+/\w+'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),

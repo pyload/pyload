@@ -10,7 +10,7 @@ class MyvideoDe(Hoster):
     __name__    = "MyvideoDe"
     __type__    = "hoster"
     __version__ = "0.92"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?myvideo\.de/watch/'
 

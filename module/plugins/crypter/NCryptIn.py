@@ -13,7 +13,7 @@ class NCryptIn(Crypter):
     __name__    = "NCryptIn"
     __type__    = "crypter"
     __version__ = "1.37"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?ncrypt\.in/(?P<TYPE>folder|link|frame)-([^/\?]+)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

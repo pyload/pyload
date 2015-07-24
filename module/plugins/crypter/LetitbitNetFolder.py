@@ -8,7 +8,7 @@ class LetitbitNetFolder(Crypter):
     __name__    = "LetitbitNetFolder"
     __type__    = "crypter"
     __version__ = "0.12"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?letitbit\.net/folder/\w+'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

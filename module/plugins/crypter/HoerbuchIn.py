@@ -11,7 +11,7 @@ class HoerbuchIn(Crypter):
     __name__    = "HoerbuchIn"
     __type__    = "crypter"
     __version__ = "0.62"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?hoerbuch\.in/(wp/horbucher/\d+/.+/|tp/out\.php\?.+|protection/folder_\d+\.html)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

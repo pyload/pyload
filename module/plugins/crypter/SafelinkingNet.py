@@ -13,7 +13,7 @@ class SafelinkingNet(Crypter):
     __name__    = "SafelinkingNet"
     __type__    = "crypter"
     __version__ = "0.17"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?safelinking\.net/([pd])/\w+'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

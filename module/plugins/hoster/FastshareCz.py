@@ -10,7 +10,7 @@ class FastshareCz(SimpleHoster):
     __name__    = "FastshareCz"
     __type__    = "hoster"
     __version__ = "0.31"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

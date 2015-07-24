@@ -9,7 +9,7 @@ class MultiHome(Addon):
     __name__    = "MultiHome"
     __type__    = "hook"
     __version__ = "0.14"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __config__ = [("interfaces", "str", "Interfaces", "None")]
 

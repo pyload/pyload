@@ -9,7 +9,7 @@ class FileStoreTo(SimpleHoster):
     __name__    = "FileStoreTo"
     __type__    = "hoster"
     __version__ = "0.06"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?filestore\.to/\?d=(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -27,7 +27,7 @@ class FileStoreTo(SimpleHoster):
 
     def setup(self):
         self.resume_download = True
-        self.multi_dl        = True
+        self.multiDL        = True
 
 
     def handle_free(self, pyfile):

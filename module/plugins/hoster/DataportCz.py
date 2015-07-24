@@ -7,7 +7,7 @@ class DataportCz(SimpleHoster):
     __name__    = "DataportCz"
     __type__    = "hoster"
     __version__ = "0.42"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?dataport\.cz/file/(.+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]

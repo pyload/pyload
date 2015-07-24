@@ -15,7 +15,7 @@ class RapidgatorNet(SimpleHoster):
     __name__    = "RapidgatorNet"
     __type__    = "hoster"
     __version__ = "0.35"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -58,7 +58,7 @@ class RapidgatorNet(SimpleHoster):
         if self.sid:
             self.premium = True
 
-        self.resume_download = self.multi_dl = self.premium
+        self.resume_download = self.multiDL = self.premium
         self.chunk_limit     = 1
 
 

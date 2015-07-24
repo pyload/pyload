@@ -30,7 +30,7 @@ class ClickAndLoad(Addon):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
     __version__ = "0.45"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                             , True),
                   ("port"     , "int" , "Port"                                  , 9666),

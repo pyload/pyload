@@ -14,7 +14,7 @@ class CCF(Container):
     __name__    = "CCF"
     __type__    = "container"
     __version__ = "0.25"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'.+\.ccf$'
 

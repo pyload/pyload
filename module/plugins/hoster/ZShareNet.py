@@ -7,7 +7,7 @@ class ZShareNet(DeadHoster):
     __name__    = "ZShareNet"
     __type__    = "hoster"
     __version__ = "0.22"
-    __status__  = "stable"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:ww[2w]\.)?zshares?\.net/.+'
     __config__  = []  #@TODO: Remove in 0.4.10
