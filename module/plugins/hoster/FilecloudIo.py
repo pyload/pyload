@@ -30,7 +30,7 @@ class FilecloudIo(SimpleHoster):
     TEMP_OFFLINE_PATTERN = r'l10n\.FILES__WARNING'
 
     UKEY_PATTERN = r'\'ukey\'\s*:\'(\w+)'
-    AB1_PATTERN  = r'if\( __ab1 == \'(\w+)\' \)'
+    AB1_PATTERN  = r'if\( __ab1 is \'(\w+)\' \)'
 
     ERROR_MSG_PATTERN = r'var __error_msg\s*=\s*l10n\.(.*?);'
 
@@ -118,7 +118,7 @@ class FilecloudIo(SimpleHoster):
                         post={'akey': akey, 'ukey': ukey})
         self.log_debug("FetchDownloadUrl: " + rep)
         rep = json_loads(rep)
-        if rep['status'] == 'ok':
+        if rep['status'] == "ok":
             self.link = rep['download_url']
         else:
             self.fail(rep['message'])

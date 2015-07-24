@@ -56,7 +56,7 @@ class RPNetBiz(MultiHoster):
                 self.log_debug("JSON data hdd query: %s" % res)
                 download_status = json_loads(res)['download']
 
-                if download_status['status'] == '100':
+                if download_status['status'] == "100":
                     link_status['generated'] = download_status['rpnet_link']
                     self.log_debug("Successfully downloaded to rpnet HDD: %s" % link_status['generated'])
                     break

@@ -121,7 +121,7 @@ class SimpleHoster(Hoster):
     @classmethod
     def get_info(cls, url="", html=""):
         info   = cls.api_info(url)
-        online = True if info['status'] is 2 else False
+        online = True if info['status'] == 2 else False
 
         try:
             info['pattern'] = re.match(cls.__pattern__, url).groupdict()  #: Pattern groups will be saved here
@@ -134,17 +134,17 @@ class SimpleHoster(Hoster):
                 info['error']  = "missing url"
                 info['status'] = 1
 
-            elif info['status'] is 3:
+            elif info['status'] == 3:
                 try:
                     html = get_url(url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
 
                 except BadHeader, e:
                     info['error'] = "%d: %s" % (e.code, e.content)
 
-                    if e.code is 404:
+                    if e.code == 404:
                         info['status'] = 1
 
-                    elif e.code is 503:
+                    elif e.code == 503:
                         info['status'] = 6
 
                 except Exception:
@@ -232,7 +232,7 @@ class SimpleHoster(Hoster):
                 self.LINK_PREMIUM_PATTERN = self.LINK_PATTERN
 
         if (self.MULTI_HOSTER
-            and (self.__pattern__ != self.pyload.pluginManager.hosterPlugins[self.__name__]['pattern']
+            and (self.__pattern__ not is self.pyload.pluginManager.hosterPlugins[self.__name__]['pattern']
                  or re.match(self.__pattern__, self.pyfile.url) is None)):
             self.multihost = True
             return
@@ -448,13 +448,13 @@ class SimpleHoster(Hoster):
         try:
             status = self.info['status']
 
-            if status is 1:
+            if status == 1:
                 self.offline()
 
-            elif status is 6:
+            elif status == 6:
                 self.temp_offline()
 
-            elif status is 8:
+            elif status == 8:
                 self.fail(self.info['error'] if 'error' in self.info else _("Failed"))
 
         finally:
@@ -471,7 +471,7 @@ class SimpleHoster(Hoster):
         try:
             url  = self.info['url'].strip()
             name = self.info['name'].strip()
-            if name and name != url:
+            if name and name not is url:
                 self.pyfile.name = name
 
         except Exception:

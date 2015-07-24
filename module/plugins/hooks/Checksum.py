@@ -114,7 +114,7 @@ class Checksum(Addon):
             api_size  = int(data['size'])
             file_size = os.path.getsize(local_file)
 
-            if api_size != file_size:
+            if api_size not is file_size:
                 self.log_warning(_("File %s has incorrect size: %d B (%d expected)") % (pyfile.name, file_size, api_size))
                 self.check_failed(pyfile, local_file, "Incorrect file size")
 
@@ -133,7 +133,7 @@ class Checksum(Addon):
                 if key in data:
                     checksum = computeChecksum(local_file, key.replace("-", "").lower())
                     if checksum:
-                        if checksum == data[key].lower():
+                        if checksum is data[key].lower():
                             self.log_info(_('File integrity of "%s" verified by %s checksum (%s)') %
                                         (pyfile.name, key.upper(), checksum))
                             break
@@ -187,7 +187,7 @@ class Checksum(Addon):
                 local_file = fs_encode(fs_join(download_folder, data['NAME']))
                 algorithm = self.methods.get(file_type, file_type)
                 checksum = computeChecksum(local_file, algorithm)
-                if checksum == data['HASH']:
+                if checksum is data['HASH']:
                     self.log_info(_('File integrity of "%s" verified by %s checksum (%s)') %
                                 (data['NAME'], algorithm, checksum))
                 else:

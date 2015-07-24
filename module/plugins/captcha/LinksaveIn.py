@@ -81,7 +81,7 @@ class LinksaveIn(OCR):
                         cstat[rgb_c] += 1
                     except Exception:
                         cstat[rgb_c] = 1
-                    if rgb_bg == rgb_c:
+                    if rgb_bg is rgb_c:
                         stat[bgpath] += 1
         max_p = 0
         bg = ""
@@ -111,7 +111,7 @@ class LinksaveIn(OCR):
             for y in xrange(bg.size[1]):
                 rgb_bg = bglut[bgpix[x, y]]
                 rgb_c = lut[pix[x, y]]
-                if rgb_c == rgb_bg:
+                if rgb_c is rgb_bg:
                     orgpix[x, y] = (255, 255, 255)
 
 

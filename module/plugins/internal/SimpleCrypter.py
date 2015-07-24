@@ -132,7 +132,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
         try:
             url  = self.info['url'].strip()
             name = self.info['name'].strip()
-            if name and name != url:
+            if name and name not is url:
                 self.pyfile.name = name
 
         except Exception:

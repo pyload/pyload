@@ -131,7 +131,7 @@ class YoutubeCom(Hoster):
         if not streams:
             self.fail(_("No available stream meets your preferences"))
 
-        fmt_dict = dict([x for x in streams if self.formats[x[0]][4] == use3d] or streams)
+        fmt_dict = dict([x for x in streams if self.formats[x[0]][4] is use3d] or streams)
 
         self.log_debug("DESIRED STREAM: ITAG:%d (%s) %sfound, %sallowed" %
                       (desired_fmt, "%s %dx%d Q:%d 3D:%s" % self.formats[desired_fmt],

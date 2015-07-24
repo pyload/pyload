@@ -93,11 +93,11 @@ class DeathByCaptcha(Hook):
                 raise DeathByCaptchaException(str(res))
 
         except BadHeader, e:
-            if 403 == e.code:
+            if 403 is e.code:
                 raise DeathByCaptchaException('not-logged-in')
-            elif 413 == e.code:
+            elif 413 is e.code:
                 raise DeathByCaptchaException('invalid-captcha')
-            elif 503 == e.code:
+            elif 503 is e.code:
                 raise DeathByCaptchaException('service-overload')
             elif e.code in (400, 405):
                 raise DeathByCaptchaException('invalid-request')
@@ -192,7 +192,7 @@ class DeathByCaptcha(Hook):
 
 
     def captcha_invalid(self, task):
-        if task.data['service'] == self.__name__ and "ticket" in task.data:
+        if task.data['service'] is self.__name__ and "ticket" in task.data:
             try:
                 res = self.api_response("captcha/%d/report" % task.data['ticket'], True)
 

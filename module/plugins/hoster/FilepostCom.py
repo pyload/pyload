@@ -100,7 +100,7 @@ class FilepostCom(SimpleHoster):
         #: See the two lines commented out with  "# ~?".
         if 'error' in res['js']:
 
-            if res['js']['error'] == 'download_delay':
+            if res['js']['error'] == "download_delay":
                 self.retry(wait_time=res['js']['params']['next_download'])
                 #: ~? self.retry(wait_time=js_answer['params']['next_download'])
 

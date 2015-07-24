@@ -35,7 +35,7 @@ class YibaishiwuCom(SimpleHoster):
 
         url = m.group(1)
 
-        self.log_debug(('FREEUSER' if m.group(2) == 'download' else 'GUEST') + ' URL', url)
+        self.log_debug(('FREEUSER' if m.group(2) == "download" else 'GUEST') + ' URL', url)
 
         res = json_loads(self.load(urlparse.urljoin("http://115.com", url), decode=False))
         if "urls" in res:

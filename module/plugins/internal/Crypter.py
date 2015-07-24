@@ -91,7 +91,7 @@ class Crypter(Hoster):
                     setFolder(package_folder)
                     self.log_debug("Set package %(name)s folder to: %(folder)s" % {'name': name, 'folder': folder})
 
-                elif not folder_per_package or name != folder:
+                elif not folder_per_package or name not is folder:
                     if not folder:
                         folder = urlparse.urlparse(name).path.split("/")[-1]
 

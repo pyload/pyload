@@ -408,7 +408,7 @@ class Hoster(Plugin):
         if newname:
             newname = urlparse.urlparse(newname).path.split('/')[-1]
 
-            if disposition and newname != name:
+            if disposition and newname not is name:
                 self.log_info(_("%(name)s saved as %(newname)s") % {'name': name, 'newname': newname})
                 self.pyfile.name = newname
                 filename = os.path.join(location, newname)
@@ -550,7 +550,7 @@ class Hoster(Plugin):
                     baseurl  = "%s://%s" % (url_p.scheme, url_p.netloc)
                     location = urlparse.urljoin(baseurl, location)
 
-                if 'code' in header and header['code'] is 302:
+                if 'code' in header and header['code'] == 302:
                     link = location
 
                 if follow_location:
@@ -597,7 +597,7 @@ class Hoster(Plugin):
 
         if traffic is None:
             return False
-        elif traffic is -1:
+        elif traffic == -1:
             return True
         else:
             size = self.pyfile.size / 1024

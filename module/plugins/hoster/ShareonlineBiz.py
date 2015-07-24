@@ -79,7 +79,7 @@ class ShareonlineBiz(SimpleHoster):
                             post={'dl_free'                  : "1",
                                   'recaptcha_challenge_field': challenge,
                                   'recaptcha_response_field' : response})
-            if not res == '0':
+            if not res == "0":
                 self.captcha.correct()
                 return res
             else:
@@ -163,7 +163,7 @@ class ShareonlineBiz(SimpleHoster):
         except Exception:
             self.log_error(_("Unknown error occurred"), errmsg)
 
-        if errmsg is "invalid":
+        if errmsg == "invalid":
             self.fail(_("File not available"))
 
         elif errmsg in ("full", "freelimit", "size", "proxy"):

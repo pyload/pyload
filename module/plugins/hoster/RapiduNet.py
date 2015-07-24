@@ -46,7 +46,7 @@ class RapiduNet(SimpleHoster):
                                       get={'a': "getLoadTimeToDownload"},
                                       post={'_go': ""})
 
-        if str(jsvars['timeToDownload']) is "stop":
+        if str(jsvars['timeToDownload']) == "stop":
             t = (24 * 60 * 60) - (int(time.time()) % (24 * 60 * 60)) + time.altzone
 
             self.log_info(_("You've reach your daily download transfer"))
@@ -66,7 +66,7 @@ class RapiduNet(SimpleHoster):
                                             'captcha2': response,
                                             'fileId'  : self.info['pattern']['ID']})
 
-        if jsvars['message'] == 'success':
+        if jsvars['message'] == "success":
             self.link = jsvars['url']
 
 

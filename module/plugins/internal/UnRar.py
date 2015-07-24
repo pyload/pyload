@@ -51,7 +51,7 @@ class UnRar(Extractor):
     @classmethod
     def find(cls):
         try:
-            if os.name is "nt":
+            if os.name == "nt":
                 cls.CMD = os.path.join(pypath, "RAR.exe")
             else:
                 cls.CMD = "rar"
@@ -63,7 +63,7 @@ class UnRar(Extractor):
 
         except OSError:
             try:
-                if os.name is "nt":
+                if os.name == "nt":
                     cls.CMD = os.path.join(pypath, "UnRAR.exe")
                  else:
                     cls.CMD = "unrar"
@@ -134,7 +134,7 @@ class UnRar(Extractor):
             if not c:
                 break
             #: Reading a percentage sign -> set progress and restart
-            if c is '%':
+            if c == "%":
                 self.notify_progress(int(s))
                 s = ""
             #: Not reading a digit -> therefore restart

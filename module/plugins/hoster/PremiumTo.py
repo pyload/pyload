@@ -42,7 +42,7 @@ class PremiumTo(MultiHoster):
             self.retry(60, 5 * 60, "No premium account available")
 
         err = ""
-        if self.req.http.code == '420':
+        if self.req.http.code == "420":
             #: Custom error code send - fail
             file = fs_encode(self.last_download)
             with open(file, "rb") as f:

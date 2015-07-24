@@ -37,7 +37,7 @@ class QuickshareCz(SimpleHoster):
         #: Determine download type - free or premium
         if self.premium:
             if 'UU_prihlasen' in self.jsvars:
-                if self.jsvars['UU_prihlasen'] == '0':
+                if self.jsvars['UU_prihlasen'] == "0":
                     self.log_warning(_("User not logged in"))
                     self.relogin(self.user)
                     self.retry()
@@ -75,9 +75,9 @@ class QuickshareCz(SimpleHoster):
         #: Check errors
         m = re.search(r'/chyba/(\d+)', self.link)
         if m:
-            if m.group(1) == '1':
+            if m.group(1) == "1":
                 self.retry(60, 2 * 60, "This IP is already downloading")
-            elif m.group(1) == '2':
+            elif m.group(1) == "2":
                 self.retry(60, 60, "No free slots available")
             else:
                 self.fail(_("Error %d") % m.group(1))

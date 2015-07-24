@@ -22,9 +22,9 @@ class FilecloudIo(Account):
             rep = self.load("https://secure.filecloud.io/api-fetch_apikey.api",
                            post={'username': user, 'password': self.get_account_data(user)['password']})
             rep = json_loads(rep)
-            if rep['status'] == 'ok':
+            if rep['status'] == "ok":
                 break
-            elif rep['status'] == 'error' and rep['message'] == 'no such user or wrong password':
+            elif rep['status'] == "error" and rep['message'] == "no such user or wrong password":
                 self.log_error(_("Wrong username or password"))
                 return {'valid': False, 'premium': False}
         else:

@@ -42,7 +42,7 @@ def timestamp():
 def seconds_to_midnight(gmt=0):
     now = datetime.datetime.utcnow() + datetime.timedelta(hours=gmt)
 
-    if now.hour is 0 and now.minute < 10:
+    if now.hour == 0 and now.minute < 10:
         midnight = now
     else:
         midnight = now + datetime.timedelta(days=1)
@@ -66,7 +66,7 @@ def replace_patterns(string, ruleslist):
 
 def set_cookies(cj, cookies):
     for cookie in cookies:
-        if isinstance(cookie, tuple) and len(cookie) is 3:
+        if isinstance(cookie, tuple) and len(cookie) == 3:
             domain, name, value = cookie
             cj.setCookie(domain, name, value)
 

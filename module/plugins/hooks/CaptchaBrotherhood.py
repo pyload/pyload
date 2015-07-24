@@ -151,7 +151,7 @@ class CaptchaBrotherhood(Hook):
 
 
     def captcha_invalid(self, task):
-        if task.data['service'] == self.__name__ and "ticket" in task.data:
+        if task.data['service'] is self.__name__ and "ticket" in task.data:
             res = self.api_response("complainCaptcha", task.data['ticket'])
 
 

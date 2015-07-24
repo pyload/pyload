@@ -152,7 +152,7 @@ class XFSHoster(SimpleHoster):
 
         stmsg = inputs['st']
 
-        if stmsg is 'OK':
+        if stmsg == 'OK':
             self.html = self.load(action, post=inputs)
 
         elif 'Can not leech file' in stmsg:

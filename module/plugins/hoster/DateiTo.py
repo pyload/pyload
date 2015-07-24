@@ -41,10 +41,10 @@ class DateiTo(SimpleHoster):
             self.check_errors()
 
             if url.endswith('download.php') and 'P' in data:
-                if data['P'] == 'I':
+                if data['P'] == "I":
                     self.do_wait()
 
-                elif data['P'] == 'IV':
+                elif data['P'] == "IV":
                     break
 
             m = re.search(self.DATA_PATTERN, self.html)

@@ -129,7 +129,7 @@ class ImageTyperz(Hook):
 
 
     def captcha_invalid(self, task):
-        if task.data['service'] == self.__name__ and "ticket" in task.data:
+        if task.data['service'] is self.__name__ and "ticket" in task.data:
             res = self.load(self.RESPOND_URL,
                          post={'action': "SETBADIMAGE",
                                'username': self.get_config('username'),

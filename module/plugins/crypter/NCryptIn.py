@@ -196,9 +196,9 @@ class NCryptIn(Crypter):
             return []
 
         #: Select suitable handler
-        if link_source_type == 'single':
+        if link_source_type == "single":
             return self.handle_single_link()
-        if link_source_type == 'cnl2':
+        if link_source_type == "cnl2":
             return self.handle_CNL2()
         elif link_source_type in ("rsdf", "ccf", "dlc"):
             return self.handle_container(link_source_type)

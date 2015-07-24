@@ -150,7 +150,7 @@ class Xdcc(Hoster):
                     'text': msg[3][1:]
                 }
 
-                if nick == msg['target'][0:len(nick)] and "PRIVMSG" == msg['action']:
+                if nick is msg['target'][0:len(nick)] and "PRIVMSG" is msg['action']:
                     if msg['text'] == "\x01VERSION\x01":
                         self.log_debug("Sending CTCP VERSION")
                         sock.send("NOTICE %s :%s\r\n" % (msg['origin'], "pyLoad! IRC Interface"))
@@ -160,8 +160,8 @@ class Xdcc(Hoster):
                     elif msg['text'] == "\x01LAG\x01":
                         pass  #: don't know how to answer
 
-                if not (bot == msg['origin'][0:len(bot)]
-                        and nick == msg['target'][0:len(nick)]
+                if not (bot is msg['origin'][0:len(bot)]
+                        and nick is msg['target'][0:len(nick)]
                         and msg['action'] in ("PRIVMSG", "NOTICE")):
                     continue
 
@@ -195,7 +195,7 @@ class Xdcc(Hoster):
 
         self.pyfile.setStatus("downloading")
         newname = self.req.download(ip, port, filename, sock, self.pyfile.setProgress)
-        if newname and newname != filename:
+        if newname and newname not is filename:
             self.log_info(_("%(name)s saved as %(newname)s") % {'name': self.pyfile.name, 'newname': newname})
             filename = newname
 

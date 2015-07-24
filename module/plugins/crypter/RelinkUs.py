@@ -185,11 +185,11 @@ class RelinkUs(Crypter):
 
 
     def handle_link_source(self, source):
-        if source == 'cnl2':
+        if source == "cnl2":
             return self.handle_CNL2Links()
-        elif source == 'dlc':
+        elif source == "dlc":
             return self.handle_DLC_links()
-        elif source == 'web':
+        elif source == "web":
             return self.handle_WEB_links()
         else:
             self.error(_('Unknown source type "%s"') % source)

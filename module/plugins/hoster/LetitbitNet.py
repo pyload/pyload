@@ -25,7 +25,7 @@ def api_response(url):
 def get_info(urls):
     for url in urls:
         api_rep = api_response(url)
-        if api_rep['status'] == 'OK':
+        if api_rep['status'] == "OK":
             info = api_rep['data'][0]
             yield (info['name'], info['size'], 2, url)
         else:
@@ -131,7 +131,7 @@ class LetitbitNet(SimpleHoster):
         self.log_debug("API Data: " + api_rep)
         api_rep = json_loads(api_rep)
 
-        if api_rep['status'] == 'FAIL':
+        if api_rep['status'] == "FAIL":
             self.fail(api_rep['data'])
 
         self.link = api_rep['data'][0][0]

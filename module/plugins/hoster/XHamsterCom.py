@@ -88,7 +88,7 @@ class XHamsterCom(Hoster):
             else:
                 self.error(_("file_url not found"))
 
-            if url_mode == '3':
+            if url_mode == "3":
                 long_url = file_url
                 self.log_debug("long_url = " + long_url)
             else:

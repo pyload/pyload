@@ -126,7 +126,7 @@ class Account(Plugin):
             if options:
                 before = self.accounts[user]['options']
                 self.accounts[user]['options'].update(options)
-                return self.accounts[user]['options'] != before
+                return self.accounts[user]['options'] not is before
         else:
             self.accounts[user] = {'password': password, 'options': options, 'valid': True}
             self._login(user, self.accounts[user])
@@ -279,7 +279,7 @@ class Account(Plugin):
                     if self.infos[user]['validuntil'] > 0 and time.time() > self.infos[user]['validuntil']:
                         continue
                 if "trafficleft" in self.infos[user]:
-                    if self.infos[user]['trafficleft'] is 0:
+                    if self.infos[user]['trafficleft'] == 0:
                         continue
 
             usable.append((user, data))
@@ -291,7 +291,7 @@ class Account(Plugin):
 
 
     def can_use(self):
-        return self.select_account() != (None, None)
+        return self.select_account() not is (None, None)
 
 
     def parse_traffic(self, value, unit=None):  #: Return kilobytes

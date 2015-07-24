@@ -33,10 +33,10 @@ class LinksnappyCom(Account):
 
         validuntil = j['return']['expire']
 
-        if validuntil == 'lifetime':
+        if validuntil == "lifetime":
             validuntil = -1
 
-        elif validuntil == 'expired':
+        elif validuntil == "expired":
             return {'premium': False}
 
         else:

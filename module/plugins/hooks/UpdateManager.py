@@ -17,7 +17,7 @@ from module.utils import save_join as fs_join
 # Case-sensitive os.path.exists
 def exists(path):
     if os.path.exists(path):
-        if os.name == 'nt':
+        if os.name == "nt":
             dir, name = os.path.split(path)
             return name in os.listdir(dir)
         else:
@@ -153,7 +153,7 @@ class UpdateManager(Addon):
         """
         Check for updates
         """
-        if self._update() is 2 and self.get_config('autorestart'):
+        if self._update() == 2 and self.get_config('autorestart'):
             if not self.pyload.api.statusDownloads():
                 self.pyload.api.restart()
             else:
@@ -225,7 +225,7 @@ class UpdateManager(Addon):
 
             for t, n in type_plugins:
                 for idx, plugin in enumerate(updatelist):
-                    if n == plugin['name'] and t == plugin['type']:
+                    if n is plugin['name'] and t is plugin['type']:
                         updatelist.pop(idx)
                         break
 
@@ -271,7 +271,7 @@ class UpdateManager(Addon):
                 content = self.load(url % plugin, decode=False)
                 m = VERSION.search(content)
 
-                if m and m.group(2) == version:
+                if m and m.group(2) is version:
                     with open(fs_join("userplugins", prefix, filename), "wb") as f:
                         f.write(content)
 

@@ -60,7 +60,7 @@ class BasePlugin(Hoster):
                     self.fail(_("File not found"))
 
             except BadHeader, e:
-                if e.code is 404:
+                if e.code == 404:
                     self.offline()
 
                 elif e.code in (401, 403):

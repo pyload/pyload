@@ -48,7 +48,7 @@ class UnibytesCom(SimpleHoster):
                 self.wait(10 * 60, True)
                 self.retry()
 
-            if post_data['step'] == 'last':
+            if post_data['step'] == "last"':
                 m = re.search(self.LINK_FREE_PATTERN, self.html)
                 if m:
                     self.link = m.group(1)
@@ -60,7 +60,7 @@ class UnibytesCom(SimpleHoster):
             last_step = post_data['step']
             action, post_data = self.parse_html_form('id="stepForm"')
 
-            if last_step == 'timer':
+            if last_step == "timer":
                 m = re.search(self.WAIT_PATTERN, self.html)
                 self.wait(m.group(1) if m else 60, False)
 

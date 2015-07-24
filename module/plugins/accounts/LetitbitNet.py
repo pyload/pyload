@@ -24,7 +24,7 @@ class LetitbitNet(Account):
         # self.log_debug("API Key Info: " + api_rep)
         # api_rep = json_loads(api_rep)
         #
-        # if api_rep['status'] == 'FAIL':
+        # if api_rep['status'] == "FAIL":
         #     self.log_warning(api_rep['data'])
         #     return {'valid': False, 'premium': False}
 

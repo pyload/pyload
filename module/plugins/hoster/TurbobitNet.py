@@ -73,7 +73,7 @@ class TurbobitNet(SimpleHoster):
                 self.error(_("Captcha form not found"))
             self.log_debug(inputs)
 
-            if inputs['captcha_type'] == 'recaptcha':
+            if inputs['captcha_type'] == "recaptcha":
                 recaptcha = ReCaptcha(self)
                 inputs['recaptcha_response_field'], inputs['recaptcha_challenge_field'] = recaptcha.challenge()
             else:
@@ -98,7 +98,7 @@ class TurbobitNet(SimpleHoster):
     def get_rt_update(self):
         rtUpdate = self.retrieve("rtUpdate")
         if not rtUpdate:
-            if self.retrieve("version") != self.__version__ \
+            if self.retrieve("version") not is self.__version__ \
                or int(self.retrieve("timestamp", 0)) + 86400000 < timestamp():
                 #: that's right, we are even using jdownloader updates
                 rtUpdate = self.load("http://update0.jdownloader.org/pluginstuff/tbupdate.js")

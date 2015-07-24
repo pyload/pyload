@@ -174,10 +174,10 @@ class LinkCryptWs(Crypter):
 
 
     def handle_link_source(self, type):
-        if type == 'cnl':
+        if type == "cnl":
                 return self.handle_CNL2()
 
-        elif type == 'web':
+        elif type == "web":
                 return self.handle_web_links()
 
         elif type in ('rsdf', 'ccf', 'dlc'):
