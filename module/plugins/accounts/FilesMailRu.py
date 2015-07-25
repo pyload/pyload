@@ -14,18 +14,18 @@ class FilesMailRu(Account):
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         return {'validuntil': None, 'trafficleft': None}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         user, domain = user.split("@")
 
         html = self.load("https://swa.mail.ru/cgi-bin/auth",
                          post={'Domain'  : domain,
                                'Login'   : user,
-                               'Password': data['password'],
+                               'Password': password,
                                'Page'    : "http://files.mail.ru/"})
 
         if "Неверное имя пользователя или пароль" in html:
-            self.wrong_password()
+            self.fail()

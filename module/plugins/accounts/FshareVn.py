@@ -24,7 +24,7 @@ class FshareVn(Account):
     DIRECT_DOWNLOAD_PATTERN = ur'<input type="checkbox"\s*([^=>]*)[^>]*/>Kích hoạt download trực tiếp</dt>'
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         html = self.load("http://www.fshare.vn/account_info.php")
 
         if re.search(self.LIFETIME_PATTERN, html):
@@ -45,15 +45,15 @@ class FshareVn(Account):
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         html = self.load("https://www.fshare.vn/login.php",
                          post={'LoginForm[email]'     : user,
-                               'LoginForm[password]'  : data['password'],
+                               'LoginForm[password]'  : password,
                                'LoginForm[rememberMe]': 1,
                                'yt0'                  : "Login"})
 
         if not re.search(r'<img\s+alt="VIP"', html):
-            self.wrong_password()
+            self.fail()
 
 
     def get_traffic_left(self):

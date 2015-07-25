@@ -21,7 +21,7 @@ class MegaRapidoNet(Account):
     USER_ID_PATTERN     = r'<\s*?div[^>]*?class\s*?=\s*?["\']checkbox_compartilhar["\'].*?>.*?<\s*?input[^>]*?name\s*?=\s*?["\']usar["\'].*?>.*?<\s*?input[^>]*?name\s*?=\s*?["\']user["\'][^>]*?value\s*?=\s*?["\'](.*?)\s*?["\']'
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         validuntil  = None
         trafficleft = None
         premium     = False
@@ -40,16 +40,16 @@ class MegaRapidoNet(Account):
                 'premium'    : premium}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         self.load("http://megarapido.net/login")
         self.load("http://megarapido.net/painel_user/ajax/logar.php",
                   post={'login': user,
-                        'senha': data['password']})
+                        'senha': password})
 
         html = self.load("http://megarapido.net/gerador")
 
         if "sair" not in html.lower():
-            self.wrong_password()
+            self.fail()
         else:
             m = re.search(self.USER_ID_PATTERN, html)
             if m:

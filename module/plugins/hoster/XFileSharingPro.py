@@ -44,8 +44,8 @@ class XFileSharingPro(XFSHoster):
         else:
             return
 
-        self.user, data = self.account.select_account()
-        self.req        = self.account.get_account_request(self.user)
+        self.user, data = self.account.select()
+        self.req        = self.account.get_request(self.user)
         self.premium    = self.account.is_premium(self.user)
 
 

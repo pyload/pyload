@@ -17,7 +17,7 @@ class FreakshareCom(Account):
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         premium = False
         validuntil  = None
         trafficleft = None
@@ -41,13 +41,13 @@ class FreakshareCom(Account):
         return {'premium': premium, 'validuntil': validuntil, 'trafficleft': trafficleft}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         self.load("http://freakshare.com/index.php?language=EN")
 
         html = self.load("https://freakshare.com/login.html",
                          post={'submit': "Login",
                                'user'  : user,
-                               'pass'  : data['password']})
+                               'pass'  : password})
 
         if ">Wrong Username or Password" in html:
-            self.wrong_password()
+            self.fail()

@@ -20,7 +20,7 @@ class MegasharesCom(Account):
     VALID_UNTIL_PATTERN = r'<p class="premium_info_box">Period Ends: (\w{3} \d{1,2}, \d{4})</p>'
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         # self.relogin(user)
         html = self.load("http://d01.megashares.com/myms.php")
 
@@ -37,12 +37,12 @@ class MegasharesCom(Account):
         return {'validuntil': validuntil, 'trafficleft': -1, 'premium': premium}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         html = self.load('http://d01.megashares.com/myms_login.php',
                          post={'httpref'       : "",
                                'myms_login'    : "Login",
                                'mymslogin_name': user,
-                               'mymspassword'  : data['password']})
+                               'mymspassword'  : password})
 
         if not '<span class="b ml">%s</span>' % user in html:
-            self.wrong_password()
+            self.fail()

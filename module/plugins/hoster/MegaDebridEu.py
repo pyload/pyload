@@ -30,7 +30,7 @@ class MegaDebridEu(MultiHoster):
         Connexion to the mega-debrid API
         Return True if succeed
         """
-        user, data = self.account.select_account()
+        user, data = self.account.select()
         jsonResponse = self.load(self.API_URL,
                                  get={'action': 'connectUser', 'login': user, 'password': data['password']})
         res = json_loads(jsonResponse)

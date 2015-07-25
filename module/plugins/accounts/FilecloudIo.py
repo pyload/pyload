@@ -16,11 +16,11 @@ class FilecloudIo(Account):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         #: It looks like the first API request always fails, so we retry 5 times, it should work on the second try
         for _i in xrange(5):
             rep = self.load("https://secure.filecloud.io/api-fetch_apikey.api",
-                           post={'username': user, 'password': self.get_account_data(user)['password']})
+                           post={'username': user, 'password': self.get_data(user)['password']})
             rep = json_loads(rep)
             if rep['status'] == "ok":
                 break
@@ -42,7 +42,7 @@ class FilecloudIo(Account):
             return {'premium': False}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         req.cj.setCookie("secure.filecloud.io", "lang", "en")
         html = self.load('https://secure.filecloud.io/user-login.html')
 
@@ -50,10 +50,10 @@ class FilecloudIo(Account):
             self.form_data = {}
 
         self.form_data['username'] = user
-        self.form_data['password'] = data['password']
+        self.form_password = password
 
         html = self.load('https://secure.filecloud.io/user-login_p.html',
                          post=self.form_data)
 
         if "you have successfully logged in" not in html:
-            self.wrong_password()
+            self.fail()

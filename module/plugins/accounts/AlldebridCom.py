@@ -20,8 +20,8 @@ class AlldebridCom(Account):
     __authors__     = [("Andy Voigt", "spamsales@online.de")]
 
 
-    def load_account_info(self, user, req):
-        data = self.get_account_data(user)
+    def parse_info(self, user, password, data, req):
+        data = self.get_data(user)
         html = self.load("http://www.alldebrid.com/account/")
         soup = BeautifulSoup.BeautifulSoup(html)
 
@@ -38,11 +38,11 @@ class AlldebridCom(Account):
 
         #: Get expiration date from API
         except Exception:
-            data = self.get_account_data(user)
+            data = self.get_data(user)
             html = self.load("https://www.alldebrid.com/api.php",
                              get={'action': "info_user",
                                   'login' : user,
-                                  'pw'    : data['password']})
+                                  'pw'    : password})
 
             self.log_debug(html)
 
@@ -54,13 +54,13 @@ class AlldebridCom(Account):
                 'premium'    : True    }
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         html = self.load("https://www.alldebrid.com/register/",
                          get={'action'        : "login",
                               'login_login'   : user,
-                              'login_password': data['password']})
+                              'login_password': password})
 
         if "This login doesn't exist" in html \
            or "The password is not valid" in html \
            or "Invalid captcha" in html:
-            self.wrong_password()
+            self.fail()

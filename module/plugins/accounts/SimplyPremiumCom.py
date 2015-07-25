@@ -15,7 +15,7 @@ class SimplyPremiumCom(Account):
     __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         premium     = False
         validuntil  = -1
         trafficleft = None
@@ -38,11 +38,11 @@ class SimplyPremiumCom(Account):
         return {'premium': premium, 'validuntil': validuntil, 'trafficleft': trafficleft}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         req.cj.setCookie("simply-premium.com", "lang", "EN")
 
         html = self.load("https://www.simply-premium.com/login.php",
-                         post={'key': user} if not data['password'] else {'login_name': user, 'login_pass': data['password']})
+                         post={'key': user} if not password else {'login_name': user, 'login_pass': password})
 
         if 'logout' not in html:
-            self.wrong_password()
+            self.fail()

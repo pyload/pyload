@@ -17,7 +17,7 @@ class TurbobitNet(Account):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         html = self.load("http://turbobit.net")
 
         m = re.search(r'<u>Turbo Access</u> to ([\d.]+)', html)
@@ -31,13 +31,13 @@ class TurbobitNet(Account):
         return {'premium': premium, 'trafficleft': -1, 'validuntil': validuntil}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         req.cj.setCookie("turbobit.net", "user_lang", "en")
 
         html = self.load("http://turbobit.net/user/login",
                          post={"user[login]" : user,
-                               "user[pass]"  : data['password'],
+                               "user[pass]"  : password,
                                "user[submit]": "Login"})
 
         if not '<div class="menu-item user-name">' in html:
-            self.wrong_password()
+            self.fail()

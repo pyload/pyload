@@ -71,7 +71,7 @@ class Addon(Plugin):
             self.event_map = None
 
         if self.event_list:
-            self.log_debug("Deprecated method `event_list`, use `event_map` instead")
+            self.log_debug("Deprecated method `event_list`, use `event_map` instead") (Remove in 0.4.10)
 
             for f in self.event_list:
                 self.manager.addEvent(f, getattr(self, f))
@@ -83,7 +83,7 @@ class Addon(Plugin):
         self.cb = self.pyload.scheduler.addJob(max(0, delay), self._periodical, [threaded], threaded=threaded)
 
 
-    #: Deprecated method, use `init_periodical` instead
+    #: Deprecated method, use `init_periodical` instead (Remove in 0.4.10)
     def initPeriodical(self, *args, **kwargs):
         return self.init_periodical(*args, **kwargs)
 
@@ -119,7 +119,7 @@ class Addon(Plugin):
         return self.get_config("activated")
 
 
-    #: Deprecated method, use `is_activated` instead
+    #: Deprecated method, use `is_activated` instead (Remove in 0.4.10)
     def isActivated(self, *args, **kwargs):
         return self.is_activated(*args, **kwargs)
 
@@ -131,7 +131,7 @@ class Addon(Plugin):
         pass
 
 
-    #: Deprecated method, use `deactivate` instead
+    #: Deprecated method, use `deactivate` instead (Remove in 0.4.10)
     def unload(self, *args, **kwargs):
         return self.deactivate(*args, **kwargs)
 
@@ -143,7 +143,7 @@ class Addon(Plugin):
         pass
 
 
-    #: Deprecated method, use `activate` instead
+    #: Deprecated method, use `activate` instead (Remove in 0.4.10)
     def coreReady(self, *args, **kwargs):
         return self.activate(*args, **kwargs)
 
@@ -155,7 +155,7 @@ class Addon(Plugin):
         pass
 
 
-    #: Deprecated method, use `exit` instead
+    #: Deprecated method, use `exit` instead (Remove in 0.4.10)
     def coreExiting(self, *args, **kwargs):
         return self.exit(*args, **kwargs)
 
@@ -164,7 +164,7 @@ class Addon(Plugin):
         pass
 
 
-    #: Deprecated method, use `download_preparing` instead
+    #: Deprecated method, use `download_preparing` instead (Remove in 0.4.10)
     def downloadPreparing(self, *args, **kwargs):
         return self.download_preparing(*args, **kwargs)
 
@@ -173,7 +173,7 @@ class Addon(Plugin):
         pass
 
 
-    #: Deprecated method, use `download_finished` instead
+    #: Deprecated method, use `download_finished` instead (Remove in 0.4.10)
     def downloadFinished(self, *args, **kwargs):
         return self.download_finished(*args, **kwargs)
 
@@ -182,7 +182,7 @@ class Addon(Plugin):
         pass
 
 
-    #: Deprecated method, use `download_failed` instead
+    #: Deprecated method, use `download_failed` instead (Remove in 0.4.10)
     def downloadFailed(self, *args, **kwargs):
         return self.download_failed(*args, **kwargs)
 
@@ -191,7 +191,7 @@ class Addon(Plugin):
         pass
 
 
-    #: Deprecated method, use `package_finished` instead
+    #: Deprecated method, use `package_finished` instead (Remove in 0.4.10)
     def packageFinished(self, *args, **kwargs):
         return self.package_finished(*args, **kwargs)
 
@@ -200,7 +200,7 @@ class Addon(Plugin):
         pass
 
 
-    #: Deprecated method, use `before_reconnect` instead
+    #: Deprecated method, use `before_reconnect` instead (Remove in 0.4.10)
     def beforeReconnecting(self, *args, **kwargs):
         return self.before_reconnect(*args, **kwargs)
 
@@ -209,7 +209,7 @@ class Addon(Plugin):
         pass
 
 
-    #: Deprecated method, use `after_reconnect` instead
+    #: Deprecated method, use `after_reconnect` instead (Remove in 0.4.10)
     def afterReconnecting(self, ip):
         return self.after_reconnect(ip, None)
 
@@ -221,7 +221,7 @@ class Addon(Plugin):
         pass
 
 
-    #: Deprecated method, use `captcha_task` instead
+    #: Deprecated method, use `captcha_task` instead (Remove in 0.4.10)
     def newCaptchaTask(self, *args, **kwargs):
         return self.captcha_task(*args, **kwargs)
 
@@ -230,7 +230,7 @@ class Addon(Plugin):
         pass
 
 
-    #: Deprecated method, use `captcha_correct` instead
+    #: Deprecated method, use `captcha_correct` instead (Remove in 0.4.10)
     def captchaCorrect(self, *args, **kwargs):
         return self.captcha_correct(*args, **kwargs)
 
@@ -239,6 +239,6 @@ class Addon(Plugin):
         pass
 
 
-    #: Deprecated method, use `captcha_invalid` instead
+    #: Deprecated method, use `captcha_invalid` instead (Remove in 0.4.10)
     def captchaInvalid(self, *args, **kwargs):
         return self.captcha_invalid(*args, **kwargs)

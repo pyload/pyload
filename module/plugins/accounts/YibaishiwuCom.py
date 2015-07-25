@@ -19,7 +19,7 @@ class YibaishiwuCom(Account):
     ACCOUNT_INFO_PATTERN = r'var USER_PERMISSION = {(.*?)}'
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         # self.relogin(user)
         html = self.load("http://115.com/")
 
@@ -29,12 +29,12 @@ class YibaishiwuCom(Account):
         return dict({'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium})
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         html = self.load("https://passport.115.com/?ac=login",
                          post={'back'          : "http://www.115.com/",
                                'goto'          : "http://115.com/",
                                "login[account]": user,
-                               "login[passwd]" : data['password']})
+                               "login[passwd]" : password})
 
         if not 'var USER_PERMISSION = {' in html:
-            self.wrong_password()
+            self.fail()

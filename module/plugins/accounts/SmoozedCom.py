@@ -34,7 +34,7 @@ class SmoozedCom(Account):
     __authors__     = [("", "")]
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         status = self.get_account_status(user, req)
 
         self.log_debug(status)
@@ -61,17 +61,17 @@ class SmoozedCom(Account):
         return info
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         #: Get user data from premiumize.me
         status = self.get_account_status(user, req)
 
         #: Check if user and password are valid
         if status['state'] != 'ok':
-            self.wrong_password()
+            self.fail()
 
 
     def get_account_status(self, user, req):
-        password  = self.get_account_data(user)['password']
+        password  = self.get_data(user)['password']
         salt      = hashlib.sha256(password).hexdigest()
         encrypted = PBKDF2(password, salt, iterations=1000).hexread(32)
 

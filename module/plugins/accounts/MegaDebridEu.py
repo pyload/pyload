@@ -19,12 +19,12 @@ class MegaDebridEu(Account):
     API_URL = "https://www.mega-debrid.eu/api.php"
 
 
-    def load_account_info(self, user, req):
-        data = self.get_account_data(user)
+    def parse_info(self, user, password, data, req):
+        data = self.get_data(user)
         jsonResponse = self.load(self.API_URL,
                                  get={'action'  : 'connectUser',
                                       'login'   : user,
-                                      'password': data['password']})
+                                      'password': password})
         res = json_loads(jsonResponse)
 
         if res['response_code'] == "ok":
@@ -34,11 +34,11 @@ class MegaDebridEu(Account):
             return {'status': False, 'premium': False}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         jsonResponse = self.load(self.API_URL,
                                  get={'action'  : 'connectUser',
                                       'login'   : user,
-                                      'password': data['password']})
+                                      'password': password})
         res = json_loads(jsonResponse)
         if res['response_code'] != "ok":
-            self.wrong_password()
+            self.fail()

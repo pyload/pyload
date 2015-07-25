@@ -18,10 +18,10 @@ class UploadheroCom(Account):
     __authors__     = [("mcmyst", "mcmyst@hotmail.fr")]
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         premium_pattern = re.compile('Il vous reste <span class="bleu">(\d+)</span> jours premium')
 
-        data = self.get_account_data(user)
+        data = self.get_data(user)
         html = self.load("http://uploadhero.co/my-account")
 
         if premium_pattern.search(html):
@@ -34,10 +34,10 @@ class UploadheroCom(Account):
         return account_info
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         html = self.load("http://uploadhero.co/lib/connexion.php",
                          post={'pseudo_login': user,
-                               'password_login': data['password']})
+                               'password_login': password})
 
         if "mot de passe invalide" in html:
-            self.wrong_password()
+            self.fail()

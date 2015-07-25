@@ -24,7 +24,7 @@ class NitroflareCom(Account):
     TOKEN_PATTERN = r'name="token" value="(.+?)"'
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         validuntil   = -1
         trafficleft  = None
         premium      = False
@@ -67,7 +67,7 @@ class NitroflareCom(Account):
                 'premium'    : premium}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         html = self.load("https://nitroflare.com/login")
 
         token = re.search(self.TOKEN_PATTERN, html).group(1)
@@ -75,8 +75,8 @@ class NitroflareCom(Account):
         html = self.load("https://nitroflare.com/login",
                          post={'login'   : "",
                                'email'   : user,
-                               'password': data['password'],
+                               'password': password,
                                'token'   : token})
 
         if re.search(self.LOGIN_FAIL_PATTERN, html):
-            self.wrong_password()
+            self.fail()

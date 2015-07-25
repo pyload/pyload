@@ -28,7 +28,7 @@ class OverLoadMe(MultiHoster):
 
 
     def handle_premium(self, pyfile):
-        data  = self.account.get_account_data(self.user)
+        data  = self.account.get_data(self.user)
         page  = self.load("https://api.over-load.me/getdownload.php",
                           get={'auth': data['password'],
                                'link': pyfile.url})

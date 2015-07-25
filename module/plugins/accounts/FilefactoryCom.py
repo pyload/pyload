@@ -22,7 +22,7 @@ class FilefactoryCom(Account):
     VALID_UNTIL_PATTERN = r'Premium valid until: <strong>(?P<D>\d{1,2})\w{1,2} (?P<M>\w{3}), (?P<Y>\d{4})</strong>'
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         html = self.load("http://www.filefactory.com/account/")
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
@@ -37,13 +37,13 @@ class FilefactoryCom(Account):
         return {'premium': premium, 'trafficleft': -1, 'validuntil': validuntil}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         req.http.c.setopt(pycurl.REFERER, "http://www.filefactory.com/member/login.php")
 
         html = self.load("https://www.filefactory.com/member/signin.php",
                          post={'loginEmail'   : user,
-                               'loginPassword': data['password'],
+                               'loginPassword': password,
                                'Submit'       : "Sign In"})
 
         if req.lastEffectiveURL != "http://www.filefactory.com/account/":
-            self.wrong_password()
+            self.fail()

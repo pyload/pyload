@@ -19,7 +19,7 @@ class QuickshareCz(Account):
     TRAFFIC_LEFT_PATTERN = r'Stav kreditu: <strong>(.+?)</strong>'
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         html = self.load("http://www.quickshare.cz/premium")
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
@@ -33,11 +33,11 @@ class QuickshareCz(Account):
         return {'validuntil': -1, 'trafficleft': trafficleft, 'premium': premium}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         html = self.load('http://www.quickshare.cz/html/prihlaseni_process.php',
                          post={'akce' : u'Přihlásit',
-                               'heslo': data['password'],
+                               'heslo': password,
                                'jmeno': user})
 
         if u'>Takový uživatel neexistuje.<' in html or u'>Špatné heslo.<' in html:
-            self.wrong_password()
+            self.fail()

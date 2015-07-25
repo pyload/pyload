@@ -26,7 +26,7 @@ class RPNetBiz(MultiHoster):
 
 
     def handle_premium(self, pyfile):
-        user, data = self.account.select_account()
+        user, data = self.account.select()
 
         #: Get the download link
         res = self.load("https://premium.rpnet.biz/client_api.php",

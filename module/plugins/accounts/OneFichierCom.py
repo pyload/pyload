@@ -22,7 +22,7 @@ class OneFichierCom(Account):
     VALID_UNTIL_PATTERN = r'Your Premium Status will end the (\d+/\d+/\d+)'
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         validuntil = None
         trafficleft = -1
         premium = None
@@ -44,15 +44,15 @@ class OneFichierCom(Account):
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium or False}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         req.http.c.setopt(pycurl.REFERER, "https://1fichier.com/login.pl?lg=en")
 
         html = self.load("https://1fichier.com/login.pl?lg=en",
                          post={'mail'   : user,
-                               'pass'   : data['password'],
+                               'pass'   : password,
                                'It'     : "on",
                                'purge'  : "off",
                                'valider': "Send"})
 
         if '>Invalid email address' in html or '>Invalid password' in html:
-            self.wrong_password()
+            self.fail()

@@ -22,7 +22,7 @@ class UploadingCom(Account):
     VALID_UNTIL_PATTERN = r'Valid Until:(.+?)<'
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         validuntil  = None
         trafficleft = None
         premium     = None
@@ -54,7 +54,7 @@ class UploadingCom(Account):
                 'premium'    : premium}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         set_cookies(req.cj,
                     [("uploading.com", "lang"    , "1" ),
                      ("uploading.com", "language", "1" ),
@@ -64,5 +64,5 @@ class UploadingCom(Account):
         self.load("http://uploading.com/")
         self.load("https://uploading.com/general/login_form/?JsHttpRequest=%s-xml" % long(time.time() * 1000),
                   post={'email'   : user,
-                        'password': data['password'],
+                        'password': password,
                         'remember': "on"})

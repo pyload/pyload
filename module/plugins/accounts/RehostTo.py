@@ -14,7 +14,7 @@ class RehostTo(Account):
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         premium     = False
         trafficleft = None
         validuntil  = -1
@@ -22,7 +22,7 @@ class RehostTo(Account):
 
         html = self.load("https://rehost.to/api.php",
                         get={'cmd' : "login", 'user': user,
-                             'pass': self.get_account_data(user)['password']})
+                             'pass': self.get_data(user)['password']})
         try:
             session = html.split(",")[1].split("=")[1]
 
@@ -46,12 +46,12 @@ class RehostTo(Account):
                     'session'    : session}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         html = self.load("https://rehost.to/api.php",
                          get={'cmd': "login",
                               'user': user,
-                              'pass': data['password']})
+                              'pass': password})
 
         if "ERROR" in html:
             self.log_debug(html)
-            self.wrong_password()
+            self.fail()

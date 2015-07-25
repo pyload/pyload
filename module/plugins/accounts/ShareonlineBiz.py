@@ -21,10 +21,10 @@ class ShareonlineBiz(Account):
                         get={'q'       : "userdetails",
                              'aux'     : "traffic",
                              'username': user,
-                             'password': self.get_account_data(user)['password']})
+                             'password': self.get_data(user)['password']})
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         premium     = False
         validuntil  = None
         trafficleft = -1
@@ -61,9 +61,9 @@ class ShareonlineBiz(Account):
                 'maxtraffic' : maxtraffic}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         html = self.api_response(user, req)
         err  = re.search(r'\*\*(.+?)\*\*', html)
         if err:
             self.log_error(err.group(1).strip())
-            self.wrong_password()
+            self.fail()

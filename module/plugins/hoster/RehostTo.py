@@ -23,7 +23,7 @@ class RehostTo(MultiHoster):
     def handle_premium(self, pyfile):
         self.download("http://rehost.to/process_download.php",
                       get={'user': "cookie",
-                           'pass': self.account.get_account_info(self.user)['session'],
+                           'pass': self.account.get_data(self.user)['session'],
                            'dl'  : pyfile.url},
                       disposition=True)
 

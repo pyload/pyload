@@ -22,7 +22,7 @@ class UploadedTo(Account):
     TRAFFIC_LEFT_PATTERN = r'<b class="cB">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         validuntil  = None
         trafficleft = None
         premium     = None
@@ -61,13 +61,13 @@ class UploadedTo(Account):
                 'premium'    : premium}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         #: req.cj.setCookie("uploaded.net", "lang", "en")
 
         html = self.load("https://uploaded.net/io/login",
                          post={'id': user,
-                               'pw': data['password'],
+                               'pw': password,
                                '_': ""})
 
         if '"err"' in html:
-            self.wrong_password()
+            self.fail()

@@ -16,7 +16,7 @@ class SimplydebridCom(Account):
     __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         get_data = {'login': 2, 'u': self.loginname, 'p': self.password}
         res = self.load("http://simply-debrid.com/api.php", get=get_data)
         data = [x.strip() for x in res.split(";")]
@@ -26,11 +26,11 @@ class SimplydebridCom(Account):
             return {'trafficleft': -1, 'validuntil': time.mktime(time.strptime(str(data[2]), "%d/%m/%Y"))}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         self.loginname = user
-        self.password  = data['password']
+        self.password  = password
         get_data       = {'login': 1, 'u': self.loginname, 'p': self.password}
 
         res = self.load("https://simply-debrid.com/api.php", get=get_data)
         if res != "02: loggin success":
-            self.wrong_password()
+            self.fail()

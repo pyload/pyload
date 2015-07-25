@@ -101,7 +101,7 @@ class SimpleHoster(Hoster):
                    ('Html file'    , r'\A\s*<!DOCTYPE html'                                                   )]
 
     CHECK_FILE    = True   #: Set to False to not check the last downloaded file with declared error patterns
-    CHECK_TRAFFIC = False  #: Set to True to force checking traffic left for premium account
+    CHECK_TRAFFIC = False  #: Set to True to reload checking traffic left for premium account
     COOKIES       = True   #: or False or list of tuples [(domain, name, value)]
     DIRECT_LINK   = None   #: Set to True to looking for direct link (as defined in handle_direct method), set to None to do it if self.account is True else False
     DISPOSITION   = True   #: Set to True to use any content-disposition value in http header as file name
@@ -499,7 +499,7 @@ class SimpleHoster(Hoster):
         self.check_status(getinfo=False)
 
 
-    #: Deprecated method
+    #: Deprecated method (Remove in 0.4.10)
     def get_fileInfo(self):
         self.info = {}
         self.check_info()

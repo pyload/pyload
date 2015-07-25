@@ -57,8 +57,8 @@ class SimpleCrypter(Crypter, SimpleHoster):
         account      = self.pyload.accountManager.getAccountPlugin(account_name)
 
         if account and account.can_use():
-            self.user, data = account.select_account()
-            self.req        = account.get_account_request(self.user)
+            self.user, data = account.select()
+            self.req        = account.get_request(self.user)
             self.premium    = account.is_premium(self.user)
 
             self.account = account

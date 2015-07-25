@@ -32,7 +32,7 @@ class NoPremiumPl(Account):
     _pwd = None
 
 
-    def load_account_info(self, name, req):
+    def parse_info(self, name, req):
         self._req = req
         try:
             result = json_loads(self.run_auth_query())
@@ -54,18 +54,18 @@ class NoPremiumPl(Account):
                 'premium'    : premium     }
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         self._usr = user
-        self._pwd = hashlib.sha1(hashlib.md5(data['password']).hexdigest()).hexdigest()
+        self._pwd = hashlib.sha1(hashlib.md5(password).hexdigest()).hexdigest()
         self._req = req
 
         try:
             response = json_loads(self.run_auth_query())
         except Exception:
-            self.wrong_password()
+            self.fail()
 
         if "errno" in response.keys():
-            self.wrong_password()
+            self.fail()
 
         data['usr'] = self._usr
         data['pwd'] = self._pwd

@@ -17,12 +17,12 @@ class FileserveCom(Account):
     __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
-    def load_account_info(self, user, req):
-        data = self.get_account_data(user)
+    def parse_info(self, user, password, data, req):
+        data = self.get_data(user)
 
         html = self.load("http://app.fileserve.com/api/login/",
                          post={'username': user,
-                               'password': data['password'],
+                               'password': password,
                                'submit': "Submit+Query"})
         res = json_loads(html)
 
@@ -33,19 +33,19 @@ class FileserveCom(Account):
             return {'premium': False, 'trafficleft': None, 'validuntil': None}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         html = self.load("http://app.fileserve.com/api/login/",
                          post={'username': user,
-                               'password': data['password'],
+                               'password': password,
                                'submit'  : "Submit+Query"})
         res = json_loads(html)
 
         if not res['type']:
-            self.wrong_password()
+            self.fail()
 
         #: Login at fileserv html
         self.load("http://www.fileserve.com/login.php",
                   post={'loginUserName'    : user,
-                        'loginUserPassword': data['password'],
+                        'loginUserPassword': password,
                         'autoLogin'        : "checked",
                         'loginFormSubmit'  : "Login"})

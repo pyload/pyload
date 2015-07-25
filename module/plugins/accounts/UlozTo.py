@@ -21,7 +21,7 @@ class UlozTo(Account):
     TRAFFIC_LEFT_PATTERN = r'<li class="menu-kredit"><a .*?title=".+?GB = ([\d.]+) MB"'
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         html = self.load("http://www.ulozto.net/")
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
@@ -32,7 +32,7 @@ class UlozTo(Account):
         return {'validuntil': -1, 'trafficleft': trafficleft, 'premium': premium}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         login_page = self.load('http://www.ulozto.net/?do=web-login')
         action     = re.findall('<form action="(.+?)"', login_page)[1].replace('&amp;', '&')
         token      = re.search('_token_" value="(.+?)"', login_page).group(1)
@@ -41,9 +41,9 @@ class UlozTo(Account):
                          post={'_token_' : token,
                                'do'      : "loginForm-submit",
                                'login'   : u"Přihlásit",
-                               'password': data['password'],
+                               'password': password,
                                'username': user,
                                'remember': "on"})
 
         if '<div class="flash error">' in html:
-            self.wrong_password()
+            self.fail()

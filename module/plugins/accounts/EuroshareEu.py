@@ -17,7 +17,7 @@ class EuroshareEu(Account):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         self.relogin(user)
         html = self.load("http://euroshare.eu/customer-zone/settings/")
 
@@ -32,11 +32,11 @@ class EuroshareEu(Account):
         return {'validuntil': validuntil, 'trafficleft': -1, 'premium': premium}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         html = self.load('http://euroshare.eu/customer-zone/login/',
                          post={'trvale'  : "1",
                                'login'   : user,
-                               'password': data['password']})
+                               'password': password})
 
         if u">Nesprávne prihlasovacie meno alebo heslo" in html:
-            self.wrong_password()
+            self.fail()

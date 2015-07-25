@@ -26,7 +26,7 @@ class RapiduNet(Account):
     TRAFFIC_LEFT_PATTERN = r'class="tipsyS"><b>(.+?)<'
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         validuntil  = None
         trafficleft = -1
         premium     = False
@@ -47,7 +47,7 @@ class RapiduNet(Account):
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         self.load("https://rapidu.net/ajax.php",
                   get={'a': "getChangeLang"},
                   post={'_go' : "",
@@ -57,10 +57,10 @@ class RapiduNet(Account):
                                     get={'a': "getUserLogin"},
                                     post={'_go'     : "",
                                           'login'   : user,
-                                          'pass'    : data['password'],
+                                          'pass'    : password,
                                           'remember': "1"}))
 
         self.log_debug(json)
 
         if not json['message'] == "success":
-            self.wrong_password()
+            self.fail()

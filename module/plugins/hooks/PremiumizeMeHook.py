@@ -22,7 +22,7 @@ class PremiumizeMeHook(MultiHook):
 
     def get_hosters(self):
         #: Get account data
-        user, data = self.account.select_account()
+        user, data = self.account.select()
 
         #: Get supported hosters list from premiumize.me using the
         #: json API v1 (see https://secure.premiumize.me/?show=api)

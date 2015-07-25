@@ -20,7 +20,7 @@ class HellshareCz(Account):
     CREDIT_LEFT_PATTERN = r'<div class="credit-link">\s*<table>\s*<tr>\s*<th>(\d+|\d\d\.\d\d\.)</th>'
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         self.relogin(user)
         html = self.load("http://www.hellshare.com/")
 
@@ -52,7 +52,7 @@ class HellshareCz(Account):
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         html = self.load('http://www.hellshare.com/')
         if req.lastEffectiveURL != 'http://www.hellshare.com/':
             #: Switch to English
@@ -72,9 +72,9 @@ class HellshareCz(Account):
         html = self.load("https://www.hellshare.com/login",
                          get={'do': "loginForm-submit"},
                          post={'login'     : "Log in",
-                               'password'  : data['password'],
+                               'password'  : password,
                                'username'  : user,
                                'perm_login': "on"})
 
         if "<p>You input a wrong user name or wrong password</p>" in html:
-            self.wrong_password()
+            self.fail()

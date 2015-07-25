@@ -25,9 +25,9 @@ class WebshareCz(Account):
     TRAFFIC_LEFT_PATTERN = r'<bytes>(.+)</bytes>'
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         html = self.load("https://webshare.cz/api/user_data/",
-                        post={'wst': self.get_account_data(user).get('wst', None)})
+                        post={'wst': self.get_data(user).get('wst', None)})
 
         self.log_debug("Response: " + html)
 
@@ -41,16 +41,16 @@ class WebshareCz(Account):
         return {'validuntil': validuntil, 'trafficleft': -1, 'premium': premium}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         salt = self.load("https://webshare.cz/api/salt/",
                          post={'username_or_email': user,
                                'wst'              : ""})
 
         if "<status>OK</status>" not in salt:
-            self.wrong_password()
+            self.fail()
 
         salt     = re.search('<salt>(.+)</salt>', salt).group(1)
-        password = hashlib.sha1(md5_crypt.encrypt(data['password'], salt=salt)).hexdigest()
+        password = hashlib.sha1(md5_crypt.encrypt(password, salt=salt)).hexdigest()
         digest   = hashlib.md5(user + ":Webshare:" + password).hexdigest()
 
         login = self.load("https://webshare.cz/api/login/",
@@ -61,6 +61,6 @@ class WebshareCz(Account):
                                 'wst'              : ""})
 
         if "<status>OK</status>" not in login:
-            self.wrong_password()
+            self.fail()
 
         data['wst'] = re.search('<token>(.+)</token>', login).group(1)

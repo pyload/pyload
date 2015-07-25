@@ -21,7 +21,7 @@ class CzshareCom(Account):
     CREDIT_LEFT_PATTERN = r'<tr class="active">\s*<td>([\d ,]+) (KiB|MiB|GiB)</td>\s*<td>([^<]*)</td>\s*</tr>'
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         premium     = False
         validuntil  = None
         trafficleft = None
@@ -44,11 +44,11 @@ class CzshareCom(Account):
                 'trafficleft': trafficleft}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         html = self.load('https://sdilej.cz/index.php',
                          post={'Prihlasit'     : "Prihlasit",
-                               "login-password": data['password'],
+                               "login-password": password,
                                "login-name"    : user})
 
         if '<div class="login' in html:
-            self.wrong_password()
+            self.fail()

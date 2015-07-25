@@ -20,14 +20,14 @@ class RapidgatorNet(Account):
     API_URL = "http://rapidgator.net/api/user"
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         validuntil  = None
         trafficleft = None
         premium     = False
         sid         = None
 
         try:
-            sid = self.get_account_data(user).get('sid', None)
+            sid = self.get_data(user).get('sid', None)
             assert sid
 
             html = self.load(urlparse.urljoin(self.API_URL, "info"),
@@ -56,11 +56,11 @@ class RapidgatorNet(Account):
                 'sid'        : sid}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         try:
             html = self.load(urlparse.urljoin(self.API_URL, "login"),
                              post={'username': user,
-                                   'password': data['password']})
+                                   'password': password})
 
             self.log_debug("API:LOGIN", html)
 
@@ -75,4 +75,4 @@ class RapidgatorNet(Account):
         except Exception, e:
             self.log_error(e)
 
-        self.wrong_password()
+        self.fail()

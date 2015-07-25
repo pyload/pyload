@@ -24,7 +24,7 @@ class Keep2ShareCc(Account):
     LOGIN_FAIL_PATTERN = r'Please fix the following input errors'
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         validuntil  = None
         trafficleft = -1
         premium     = False
@@ -60,14 +60,14 @@ class Keep2ShareCc(Account):
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         req.cj.setCookie("keep2share.cc", "lang", "en")
 
         html = self.load("https://keep2share.cc/login.html",
                          post={'LoginForm[username]'  : user,
-                               'LoginForm[password]'  : data['password'],
+                               'LoginForm[password]'  : password,
                                'LoginForm[rememberMe]': 1,
                                'yt0'                  : ""})
 
         if re.search(self.LOGIN_FAIL_PATTERN, html):
-            self.wrong_password()
+            self.fail()

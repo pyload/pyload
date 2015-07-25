@@ -25,12 +25,12 @@ class MegaRapidCz(Account):
     TRAFFIC_LEFT_PATTERN = r'<tr><td>Kredit</td><td>(.*?) GiB'
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         htmll = self.load("http://megarapid.cz/mujucet/")
 
         m = re.search(self.LIMITDL_PATTERN, htmll)
         if m:
-            data = self.get_account_data(user)
+            data = self.get_data(user)
             data['options']['limitDL'] = [int(m.group(1))]
 
         m = re.search(self.VALID_UNTIL_PATTERN, htmll)
@@ -46,7 +46,7 @@ class MegaRapidCz(Account):
         return {'premium': False, 'trafficleft': None, 'validuntil': None}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         html = self.load("http://megarapid.cz/prihlaseni/")
 
         if "Heslo:" in html:
@@ -56,6 +56,6 @@ class MegaRapidCz(Account):
             html = self.load("https://megarapid.cz/prihlaseni/",
                              post={'hash'    : hashes,
                                    'login'   : user,
-                                   'pass1'   : data['password'],
+                                   'pass1'   : password,
                                    'remember': 1,
                                    'sbmt'    : u"Přihlásit"})

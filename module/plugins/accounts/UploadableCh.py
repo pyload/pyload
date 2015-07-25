@@ -14,7 +14,7 @@ class UploadableCh(Account):
     __authors__     = [("Sasch", "gsasch@gmail.com")]
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         html = self.load("http://www.uploadable.ch/login.php")
 
         premium     = '<a href="/logout.php"' in html
@@ -23,12 +23,12 @@ class UploadableCh(Account):
         return {'validuntil': None, 'trafficleft': trafficleft, 'premium': premium}  #@TODO: validuntil
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         html = self.load("http://www.uploadable.ch/login.php",
                          post={'userName'     : user,
-                               'userPassword' : data['password'],
+                               'userPassword' : password,
                                'autoLogin'    : "1",
                                'action__login': "normalLogin"})
 
         if "Login failed" in html:
-            self.wrong_password()
+            self.fail()

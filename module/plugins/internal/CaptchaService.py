@@ -3,8 +3,8 @@
 from module.plugins.internal.Plugin import Plugin
 
 
-class Captcha(Plugin):
-    __name__    = "Captcha"
+class CaptchaService(Plugin):
+    __name__    = "CaptchaService"
     __type__    = "captcha"
     __version__ = "0.31"
     __status__  = "testing"

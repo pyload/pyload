@@ -67,12 +67,12 @@ class BasePlugin(Hoster):
                     self.log_debug("Auth required", "Received HTTP status code: %d" % e.code)
 
                     account = self.pyload.accountManager.getAccountPlugin('Http')
-                    servers = [x['login'] for x in account.get_all_accounts()]
+                    servers = [x['login'] for x in account.getAllAccounts()]  #@TODO: Recheck in 0.4.10
                     server  = urlparse.urlparse(pyfile.url).netloc
 
                     if server in servers:
                         self.log_debug("Logging on to %s" % server)
-                        self.req.addAuth(account.get_account_data(server)['password'])
+                        self.req.addAuth(account.get_data(server)['password'])
                     else:
                         pwd = self.get_password()
                         if ':' in pwd:

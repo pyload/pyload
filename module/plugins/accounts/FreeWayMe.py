@@ -15,7 +15,7 @@ class FreeWayMe(Account):
     __authors__     = [("Nicolas Giese", "james@free-way.me")]
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         status = self.get_account_status(user, req)
 
         self.log_debug(status)
@@ -33,21 +33,21 @@ class FreeWayMe(Account):
         return account_info
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         status = self.get_account_status(user, req)
 
         #: Check if user and password are valid
         if not status:
-            self.wrong_password()
+            self.fail()
 
 
     def get_account_status(self, user, req):
         answer = self.load("http://www.free-way.bz/ajax/jd.php",  #@TODO: Revert to `https` in 0.4.10
-                          get={'id': 4, 'user': user, 'pass': self.get_account_data(user)['password']})
+                          get={'id': 4, 'user': user, 'pass': self.get_data(user)['password']})
 
         self.log_debug("Login: %s" % answer)
 
         if answer == "Invalid login":
-            self.wrong_password()
+            self.fail()
 
         return json_loads(answer)

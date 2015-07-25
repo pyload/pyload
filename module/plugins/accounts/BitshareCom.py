@@ -14,7 +14,7 @@ class BitshareCom(Account):
     __authors__     = [("Paul King", None)]
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         html = self.load("http://bitshare.com/mysettings.html")
 
         if "\"http://bitshare.com/myupgrade.html\">Free" in html:
@@ -26,11 +26,11 @@ class BitshareCom(Account):
         return {'validuntil': -1, 'trafficleft': -1, 'premium': True}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         html = self.load("https://bitshare.com/login.html",
                          post={'user'    : user,
-                               'password': data['password'],
+                               'password': password,
                                'submit'  : "Login"})
 
         if "login" in req.lastEffectiveURL:
-            self.wrong_password()
+            self.fail()

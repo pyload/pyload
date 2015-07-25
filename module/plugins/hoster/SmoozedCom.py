@@ -36,7 +36,7 @@ class SmoozedCom(MultiHoster):
             pyfile.name = ".".join(temp)
 
         #: Check the link
-        get_data = {'session_key': self.account.get_account_info(self.user)['session'],
+        get_data = {'session_key': self.account.get_data(self.user)['session'],
                     'url'        : pyfile.url}
 
         data = json_loads(self.load("http://www2.smoozed.com/api/check", get=get_data))

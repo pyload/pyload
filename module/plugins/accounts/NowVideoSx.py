@@ -20,7 +20,7 @@ class NowVideoSx(Account):
     VALID_UNTIL_PATTERN = r'>Your premium membership expires on: (.+?)<'
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         validuntil  = None
         trafficleft = -1
         premium     = None
@@ -48,10 +48,10 @@ class NowVideoSx(Account):
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         html = self.load("http://www.nowvideo.sx/login.php",
                          post={'user': user,
-                               'pass': data['password']})
+                               'pass': password})
 
         if re.search(r'>Log In<', html):
-            self.wrong_password()
+            self.fail()

@@ -22,11 +22,7 @@ class XFileSharingPro(XFSAccount):
             return super(XFileSharingPro, self).init()
 
 
-    def load_account_info(self, user, req):
-        return super(XFileSharingPro if self.HOSTER_DOMAIN else XFSAccount, self).load_account_info(user, req)
-
-
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         if self.HOSTER_DOMAIN:
             try:
                 return super(XFileSharingPro, self).login(user, data, req)

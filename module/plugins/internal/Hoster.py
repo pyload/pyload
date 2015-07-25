@@ -96,10 +96,10 @@ class Hoster(Plugin):
             self.account = None
 
         if self.account:
-            self.user, data = self.account.select_account()
+            self.user, data = self.account.select()
 
             #: Browser instance, see `network.Browser`
-            self.req = self.account.get_account_request(self.user)
+            self.req = self.account.get_request(self.user)
             self.chunk_limit = -1  #: Chunk limit, -1 for unlimited
 
             #: Enables resume (will be ignored if server dont accept chunks)
@@ -593,7 +593,7 @@ class Hoster(Plugin):
         if not self.account:
             return True
 
-        traffic = self.account.get_account_info(self.user, True)['trafficleft']
+        traffic = self.account.get_data(self.user, True)['trafficleft']
 
         if traffic is None:
             return False
@@ -612,7 +612,7 @@ class Hoster(Plugin):
         return self.pyfile.package().password or ""
 
 
-    #: Deprecated method, use `check_for_same_files` instead
+    #: Deprecated method, use `check_for_same_files` instead (Remove in 0.4.10)
     def checkForSameFiles(self, *args, **kwargs):
         return self.check_for_same_files(*args, **kwargs)
 

@@ -15,8 +15,8 @@ class FastixRu(Account):
     __authors__     = [("Massimo Rosamilia", "max@spiritix.eu")]
 
 
-    def load_account_info(self, user, req):
-        data = self.get_account_data(user)
+    def parse_info(self, user, password, data, req):
+        data = self.get_data(user)
         html = json_loads(self.load("http://fastix.ru/api_v2/",
                                     get={'apikey': data['api'],
                                          'sub'   : "getaccountdetails"}))
@@ -31,11 +31,11 @@ class FastixRu(Account):
         return account_info
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         html = self.load("https://fastix.ru/api_v2/",
                          get={'sub'     : "get_apikey",
                               'email'   : user,
-                              'password': data['password']})
+                              'password': password})
 
         api = json_loads(html)
         api = api['apikey']
@@ -43,4 +43,4 @@ class FastixRu(Account):
         data['api'] = api
 
         if "error_code" in html:
-            self.wrong_password()
+            self.fail()

@@ -22,7 +22,7 @@ class CatShareNet(Account):
     TRAFFIC_LEFT_PATTERN = r'<a href="/premium">([0-9.]+ [kMG]B)'
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         premium     = False
         validuntil  = -1
         trafficleft = -1
@@ -50,12 +50,12 @@ class CatShareNet(Account):
         return {'premium': premium, 'trafficleft': trafficleft, 'validuntil': validuntil}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         html = self.load("http://catshare.net/login",  #@TODO: Revert to `https` in 0.4.10
                          post={'user_email'    : user,
-                               'user_password' : data['password'],
+                               'user_password' : password,
                                'remindPassword': 0,
                                'user[submit]'  : "Login"})
 
         if not '<a href="/logout">Wyloguj</a>' in html:
-            self.wrong_password()
+            self.fail()

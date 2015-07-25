@@ -27,7 +27,7 @@ class MyfastfileCom(MultiHoster):
 
     def handle_premium(self, pyfile):
         self.html = self.load('http://myfastfile.com/api.php',
-                         get={'user': self.user, 'pass': self.account.get_account_data(self.user)['password'],
+                         get={'user': self.user, 'pass': self.account.get_data(self.user)['password'],
                               'link': pyfile.url})
         self.log_debug("JSON data: " + self.html)
 

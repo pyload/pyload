@@ -15,9 +15,9 @@ class LetitbitNet(Account):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         ## DISABLED BECAUSE IT GET 'key exausted' EVEN IF VALID ##
-        # api_key   = self.get_account_data(user)['password']
+        # api_key   = self.get_data(user)['password']
         # json_data = [api_key, ['key/info']]
         # api_rep   = self.load("http://api.letitbit.net/json",
         #                       post={'r': json_dumps(json_data)})
@@ -31,6 +31,6 @@ class LetitbitNet(Account):
         return {'premium': True}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         #: API_KEY is the username and the PREMIUM_KEY is the password
         self.log_info(_("You must use your API KEY as username and the PREMIUM KEY as password"))

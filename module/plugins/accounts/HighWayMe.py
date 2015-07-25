@@ -15,7 +15,7 @@ class HighWayMe(Account):
     __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         premium     = False
         validuntil  = -1
         trafficleft = None
@@ -40,11 +40,11 @@ class HighWayMe(Account):
                 'trafficleft': trafficleft}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         html = self.load("https://high-way.me/api.php?login",
                          post={'login': '1',
                                'user': user,
-                               'pass': data['password']})
+                               'pass': password})
 
         if 'UserOrPassInvalid' in html:
-            self.wrong_password()
+            self.fail()

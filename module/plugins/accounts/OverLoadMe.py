@@ -15,11 +15,11 @@ class OverLoadMe(Account):
     __authors__     = [("marley", "marley@over-load.me")]
 
 
-    def load_account_info(self, user, req):
-        data  = self.get_account_data(user)
+    def parse_info(self, user, password, data, req):
+        data  = self.get_data(user)
         html  = self.load("https://api.over-load.me/account.php",
                           get={'user': user,
-                               'auth': data['password']}).strip()
+                               'auth': password}).strip()
 
         data = json_loads(html)
         self.log_debug(data)
@@ -31,12 +31,12 @@ class OverLoadMe(Account):
             return {'premium': True, 'validuntil': data['expirationunix'], 'trafficleft': -1}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         jsondata = self.load("https://api.over-load.me/account.php",
                              get={'user': user,
-                                  'auth': data['password']}).strip()
+                                  'auth': password}).strip()
 
         data = json_loads(jsondata)
 
         if data['err'] == 1:
-            self.wrong_password()
+            self.fail()

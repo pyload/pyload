@@ -17,12 +17,12 @@ class LinksnappyCom(Account):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    def load_account_info(self, user, req):
-        data = self.get_account_data(user)
+    def parse_info(self, user, password, data, req):
+        data = self.get_data(user)
         r = self.load('http://gen.linksnappy.com/lseAPI.php',
                       get={'act'     : 'USERDETAILS',
                            'username': user,
-                           'password': hashlib.md5(data['password']).hexdigest()})
+                           'password': hashlib.md5(password).hexdigest()})
 
         self.log_debug("JSON data: " + r)
 
@@ -52,11 +52,11 @@ class LinksnappyCom(Account):
                 'trafficleft': trafficleft}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         html = self.load("https://gen.linksnappy.com/lseAPI.php",
                          get={'act'     : 'USERDETAILS',
                               'username': user,
-                              'password': hashlib.md5(data['password']).hexdigest()})
+                              'password': hashlib.md5(password).hexdigest()})
 
         if "Invalid Account Details" in html:
-            self.wrong_password()
+            self.fail()

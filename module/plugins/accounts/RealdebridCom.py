@@ -16,7 +16,7 @@ class RealdebridCom(Account):
     __authors__     = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         if self.pin_code:
             return
 
@@ -30,15 +30,15 @@ class RealdebridCom(Account):
                 'premium'    : True      }
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         self.pin_code = False
 
         html = self.load("https://real-debrid.com/ajax/login.php",
                          get={'user': user,
-                              'pass': data['password']})
+                              'pass': password})
 
         if "Your login informations are incorrect" in html:
-            self.wrong_password()
+            self.fail()
 
         elif "PIN Code required" in html:
             self.log_warning(_("PIN code required. Please login to https://real-debrid.com using the PIN or disable the double authentication in your control panel on https://real-debrid.com"))

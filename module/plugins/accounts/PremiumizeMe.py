@@ -15,7 +15,7 @@ class PremiumizeMe(Account):
     __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         #: Get user data from premiumize.me
         status = self.get_account_status(user, req)
         self.log_debug(status)
@@ -30,13 +30,13 @@ class PremiumizeMe(Account):
         return account_info
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         #: Get user data from premiumize.me
         status = self.get_account_status(user, req)
 
         #: Check if user and password are valid
         if status['status'] != 200:
-            self.wrong_password()
+            self.fail()
 
 
     def get_account_status(self, user, req):
@@ -45,5 +45,5 @@ class PremiumizeMe(Account):
         answer = self.load("http://api.premiumize.me/pm-api/v1.php",  #@TODO: Revert to `https` in 0.4.10
                            get={'method'       : "accountstatus",
                                 'params[login]': user,
-                                'params[pass]' : self.get_account_data(user)['password']})
+                                'params[pass]' : self.get_data(user)['password']})
         return json_loads(answer)

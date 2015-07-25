@@ -15,7 +15,7 @@ class RPNetBiz(Account):
     __authors__     = [("Dman", "dmanugm@gmail.com")]
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         #: Get account information from rpnet.biz
         res = self.get_account_status(user, req)
         try:
@@ -33,19 +33,19 @@ class RPNetBiz(Account):
         return account_info
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         #: Get account information from rpnet.biz
         res = self.get_account_status(user, req)
 
         #: If we have an error in the res, we have wrong login information
         if 'error' in res:
-            self.wrong_password()
+            self.fail()
 
 
     def get_account_status(self, user, req):
         #: Using the rpnet API, check if valid premium account
         res = self.load("https://premium.rpnet.biz/client_api.php",
-                            get={'username': user, 'password': self.get_account_data(user)['password'],
+                            get={'username': user, 'password': self.get_data(user)['password'],
                                  'action': "showAccountInformation"})
         self.log_debug("JSON data: %s" % res)
 

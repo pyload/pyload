@@ -47,7 +47,7 @@ class MegaRapidoNet(MultiHoster):
                                'links'    : pyfile.url,
                                'exibir'   : "normal",
                                'usar'     : "premium",
-                               'user'     : self.account.get_account_info(self.user).get('sid', None),
+                               'user'     : self.account.get_data(self.user).get('sid', None),
                                'autoreset': ""})
 
         if "desloga e loga novamente para gerar seus links" in self.html.lower():

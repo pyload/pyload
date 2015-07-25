@@ -39,7 +39,7 @@ class Container(Crypter):
         self._create_packages()
 
 
-    #: Deprecated method, use `_load2disk` instead
+    #: Deprecated method, use `_load2disk` instead (Remove in 0.4.10)
     def loadToDisk(self, *args, **kwargs):
         return self._load2disk(*args, **kwargs)
 
@@ -68,7 +68,7 @@ class Container(Crypter):
                     self.fail(_("File not exists"))
 
 
-    #: Deprecated method, use `delete_tmp` instead
+    #: Deprecated method, use `delete_tmp` instead (Remove in 0.4.10)
     def deleteTmp(self, *args, **kwargs):
         return self.delete_tmp(*args, **kwargs)
 

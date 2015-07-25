@@ -20,7 +20,7 @@ class MultishareCz(Account):
     ACCOUNT_INFO_PATTERN = r'<input type="hidden" id="(u_ID|u_hash)" name=".+?" value="(.+?)">'
 
 
-    def load_account_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         # self.relogin(user)
         html = self.load("http://www.multishare.cz/profil/")
 
@@ -34,11 +34,11 @@ class MultishareCz(Account):
         return dict(mms_info, **{'validuntil': -1, 'trafficleft': trafficleft})
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         html = self.load('https://www.multishare.cz/html/prihlaseni_process.php',
                          post={'akce' : "Přihlásit",
-                               'heslo': data['password'],
+                               'heslo': password,
                                'jmeno': user})
 
         if '<div class="akce-chyba akce">' in html:
-            self.wrong_password()
+            self.fail()

@@ -20,5 +20,5 @@ class SmoozedComHook(MultiHook):
 
 
     def get_hosters(self):
-        user, data = self.account.select_account()
-        return self.account.get_account_info(user)['hosters']
+        user, data = self.account.select()
+        return self.account.get_data(user)['hosters']
