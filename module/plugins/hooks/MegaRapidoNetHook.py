@@ -76,7 +76,7 @@ class MegaRapidoNetHook(MultiHook):
 
         hoster_list = []
 
-        for item in hosters.itervalues():
+        for item in hosters.values():
             hoster_list.extend(item)
 
         return hoster_list

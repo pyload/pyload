@@ -18,7 +18,7 @@ from module.utils import fixup, fs_encode, parseFileSize as parse_size
 
 
 #@TODO: Adapt and move to PyFile in 0.4.10
-statusMap = dict((v, k) for k, v in _statusMap.iteritems())
+statusMap = dict((v, k) for k, v in _statusMap.items())
 
 
 class SimpleHoster(Hoster):

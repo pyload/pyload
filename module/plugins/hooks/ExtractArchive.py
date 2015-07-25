@@ -299,7 +299,7 @@ class ExtractArchive(Addon):
             matched   = False
             success   = True
             files_ids = dict((pylink['name'], ((fs_join(download_folder, pypack.folder, pylink['name'])), pylink['id'], out)) for pylink \
-                        in sorted(pypack.getChildren().itervalues(), key=lambda k: k['name'])).values()  #: Remove duplicates
+                        in sorted(pypack.getChildren().values(), key=lambda k: k['name'])).values()  #: Remove duplicates
 
             #: Check as long there are unseen files
             while files_ids:

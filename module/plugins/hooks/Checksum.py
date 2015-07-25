@@ -166,7 +166,7 @@ class Checksum(Addon):
     def package_finished(self, pypack):
         download_folder = fs_join(self.pyload.config.get("general", "download_folder"), pypack.folder, "")
 
-        for link in pypack.getChildren().itervalues():
+        for link in pypack.getChildren().values():
             file_type = os.path.splitext(link['name'])[1][1:].lower()
 
             if file_type not in self.formats:

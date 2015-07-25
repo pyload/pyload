@@ -57,7 +57,7 @@ class Crypter(Hoster):
         """
         Generate new packages from self.urls
         """
-        packages = [(name, links, None) for name, links in self.pyload.api.generatePackages(self.urls).iteritems()]
+        packages = [(name, links, None) for name, links in self.pyload.api.generatePackages(self.urls).items()]
         self.packages.extend(packages)
 
 

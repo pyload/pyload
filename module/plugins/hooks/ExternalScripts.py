@@ -48,7 +48,7 @@ class ExternalScripts(Addon):
             for dir in (pypath, ''):
                 self.init_plugin_type(folder, os.path.join(dir, 'scripts', folder))
 
-        for script_type, names in self.scripts.iteritems():
+        for script_type, names in self.scripts.items():
             if names:
                 self.log_info(_("Installed scripts for: ") + script_type, ", ".join(map(os.path.basename, names)))
 

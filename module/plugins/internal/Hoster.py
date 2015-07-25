@@ -362,7 +362,7 @@ class Hoster(Plugin):
             self.fail(_("No url given"))
 
         if self.pyload.debug:
-            self.log_debug("DOWNLOAD URL " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
+            self.log_debug("DOWNLOAD URL " + url, *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url")])
 
         self.captcha.correct()
         self.check_for_same_files()
@@ -474,7 +474,7 @@ class Hoster(Plugin):
 
             #: Produces encoding errors, better log to other file in the future?
             # self.log_debug("Content: %s" % content)
-            for name, rule in rules.iteritems():
+            for name, rule in rules.items():
                 if isinstance(rule, basestring):
                     if rule in content:
                         do_delete = True

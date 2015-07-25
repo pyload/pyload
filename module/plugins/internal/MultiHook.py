@@ -187,11 +187,11 @@ class MultiHook(Hook):
         excludedList = []
 
         if self.plugintype == "hoster":
-            pluginMap    = dict((name.lower(), name) for name in self.pyload.pluginManager.hosterPlugins.iterkeys())
+            pluginMap    = dict((name.lower(), name) for name in self.pyload.pluginManager.hosterPlugins.keys())
             accountList  = [account.type.lower() for account in self.pyload.api.getAccounts(False) if account.valid and account.premium]
         else:
             pluginMap    = {}
-            accountList  = [name[::-1].replace("Folder"[::-1], "", 1).lower()[::-1] for name in self.pyload.pluginManager.crypterPlugins.iterkeys()]
+            accountList  = [name[::-1].replace("Folder"[::-1], "", 1).lower()[::-1] for name in self.pyload.pluginManager.crypterPlugins.keys()]
 
         for plugin in self.plugins_cached():
             name = remove_chars(plugin, "-.")

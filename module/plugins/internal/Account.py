@@ -88,7 +88,7 @@ class Account(Plugin):
 
     #@TODO: Rewrite in 0.4.10
     def init_accounts(self, accounts):
-        for user, data in accounts.iteritems():
+        for user, data in accounts.items():
             self.add(user, data['password'], data['options'])
             self._login(user)
 
@@ -254,7 +254,7 @@ class Account(Plugin):
 
     #: Remove in 0.4.10
     def getAllAccounts(self, *args, **kwargs):
-        return [self.getAccountData(user, *args, **kwargs) for user, info in self.info.iteritems()]
+        return [self.getAccountData(user, *args, **kwargs) for user, info in self.info.items()]
 
 
     def login_fail(self, reason=_("Login handshake has failed")):
@@ -281,7 +281,7 @@ class Account(Plugin):
         Returns an valid account name and data
         """
         usable = []
-        for user, info in self.info.iteritems():
+        for user, info in self.info.items():
             if not info['login']['valid']:
                 continue
 

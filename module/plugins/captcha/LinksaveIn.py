@@ -85,7 +85,7 @@ class LinksaveIn(OCR):
                         stat[bgpath] += 1
         max_p = 0
         bg = ""
-        for bgpath, value in stat.iteritems():
+        for bgpath, value in stat.items():
             if max_p < value:
                 bg = bgpath
                 max_p = value

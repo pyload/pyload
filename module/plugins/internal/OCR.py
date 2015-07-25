@@ -260,7 +260,7 @@ class OCR(Plugin):
         hkey = 0
         hvalue = 0
 
-        for key, value in highest.iteritems():
+        for key, value in highest.items():
             if value > hvalue:
                 hkey = key
                 hvalue = value
@@ -325,7 +325,7 @@ class OCR(Plugin):
         else:
             result = self.result_captcha
 
-        for key, item in values.iteritems():
+        for key, item in values.items():
 
             if key.__class__ is str:
                 result = result.replace(key, item)

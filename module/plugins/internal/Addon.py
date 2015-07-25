@@ -60,7 +60,7 @@ class Addon(Plugin):
 
     def init_events(self):
         if self.event_map:
-            for event, funcs in self.event_map.iteritems():
+            for event, funcs in self.event_map.items():
                 if type(funcs) in (list, tuple):
                     for f in funcs:
                         self.manager.addEvent(event, getattr(self, f))

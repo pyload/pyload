@@ -43,7 +43,7 @@ class SoundcloudCom(SimpleHoster):
                              get={'client_id': client_id}))
 
         regex = re.compile(r'[^\d]')
-        http_streams = sorted([(key, value) for key, value in streams.iteritems() if key.startswith('http_')],
+        http_streams = sorted([(key, value) for key, value in streams.items() if key.startswith('http_')],
                               key=lambda t: regex.sub(t[0], ''),
                               reverse=True)
 

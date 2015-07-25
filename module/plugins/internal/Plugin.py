@@ -94,7 +94,7 @@ def parse_html_form(attr_str, html, input_names={}):
 
         if input_names:
             #: Check input attributes
-            for key, val in input_names.iteritems():
+            for key, val in input_names.items():
                 if key in inputs:
                     if isinstance(val, basestring) and inputs[key] is val:
                         continue
@@ -271,7 +271,7 @@ class Plugin(object):
             self.fail(_("No url given"))
 
         if self.pyload.debug:
-            self.log_debug("LOAD URL " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
+            self.log_debug("LOAD URL " + url, *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url")])
 
         if req is None:
             if hasattr(self, "req"):

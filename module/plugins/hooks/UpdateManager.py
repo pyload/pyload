@@ -114,7 +114,7 @@ class UpdateManager(Addon):
         modules = filter(
             lambda m: m and (m.__name__.startswith("module.plugins.") or
                              m.__name__.startswith("userplugins.")) and
-                             m.__name__.count(".") >= 2, sys.modules.itervalues()
+                             m.__name__.count(".") >= 2, sys.modules.values()
         )
 
         reloads = []
