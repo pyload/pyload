@@ -20,7 +20,7 @@ class FilecloudIo(Account):
         #: It looks like the first API request always fails, so we retry 5 times, it should work on the second try
         for _i in xrange(5):
             rep = self.load("https://secure.filecloud.io/api-fetch_apikey.api",
-                           post={'username': user, 'password': self.get_data(user)['password']})
+                           post={'username': user, 'password': password})
             rep = json_loads(rep)
             if rep['status'] == "ok":
                 break
@@ -56,4 +56,4 @@ class FilecloudIo(Account):
                          post=self.form_data)
 
         if "you have successfully logged in" not in html:
-            self.fail()
+            self.login_fail()

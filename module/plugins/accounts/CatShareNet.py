@@ -58,4 +58,4 @@ class CatShareNet(Account):
                                'user[submit]'  : "Login"})
 
         if not '<a href="/logout">Wyloguj</a>' in html:
-            self.fail()
+            self.login_fail()

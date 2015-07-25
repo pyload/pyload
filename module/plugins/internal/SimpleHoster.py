@@ -13,7 +13,7 @@ from module.PyFile import statusMap as _statusMap
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster, create_getInfo, parse_fileInfo
-from module.plugins.internal.Plugin import Fail, Retry, fixurl, replace_patterns, set_cookies
+from module.plugins.internal.Plugin import Fail, Retry, fixurl, replace_patterns, seconds_to_midnight, set_cookies
 from module.utils import fixup, fs_encode, parseFileSize as parse_size
 
 
@@ -115,7 +115,7 @@ class SimpleHoster(Hoster):
 
     @classmethod
     def api_info(cls, url):
-        return super(SimpleHoster, self).get_info(url)
+        return super(SimpleHoster, cls).get_info(url)
 
 
     @classmethod

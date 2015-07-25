@@ -39,4 +39,4 @@ class EuroshareEu(Account):
                                'password': password})
 
         if u">Nesprávne prihlasovacie meno alebo heslo" in html:
-            self.fail()
+            self.login_fail()

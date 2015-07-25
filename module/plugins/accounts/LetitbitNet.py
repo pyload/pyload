@@ -17,8 +17,7 @@ class LetitbitNet(Account):
 
     def parse_info(self, user, password, data, req):
         ## DISABLED BECAUSE IT GET 'key exausted' EVEN IF VALID ##
-        # api_key   = self.get_data(user)['password']
-        # json_data = [api_key, ['key/info']]
+        # json_data = [password, ['key/info']]
         # api_rep   = self.load("http://api.letitbit.net/json",
         #                       post={'r': json_dumps(json_data)})
         # self.log_debug("API Key Info: " + api_rep)

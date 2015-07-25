@@ -63,4 +63,4 @@ class RapiduNet(Account):
         self.log_debug(json)
 
         if not json['message'] == "success":
-            self.fail()
+            self.login_fail()

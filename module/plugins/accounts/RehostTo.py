@@ -21,8 +21,9 @@ class RehostTo(Account):
         session     = ""
 
         html = self.load("https://rehost.to/api.php",
-                        get={'cmd' : "login", 'user': user,
-                             'pass': self.get_data(user)['password']})
+                        get={'cmd' : "login",
+                             'user': user,
+                             'pass': password})
         try:
             session = html.split(",")[1].split("=")[1]
 
@@ -54,4 +55,4 @@ class RehostTo(Account):
 
         if "ERROR" in html:
             self.log_debug(html)
-            self.fail()
+            self.login_fail()

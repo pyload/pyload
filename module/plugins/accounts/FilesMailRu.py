@@ -28,4 +28,4 @@ class FilesMailRu(Account):
                                'Page'    : "http://files.mail.ru/"})
 
         if "Неверное имя пользователя или пароль" in html:
-            self.fail()
+            self.login_fail()

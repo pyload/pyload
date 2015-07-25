@@ -41,7 +41,7 @@ class FileserveCom(Account):
         res = json_loads(html)
 
         if not res['type']:
-            self.fail()
+            self.login_fail()
 
         #: Login at fileserv html
         self.load("http://www.fileserve.com/login.php",

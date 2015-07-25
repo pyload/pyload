@@ -45,4 +45,4 @@ class SimplyPremiumCom(Account):
                          post={'key': user} if not password else {'login_name': user, 'login_pass': password})
 
         if 'logout' not in html:
-            self.fail()
+            self.login_fail()

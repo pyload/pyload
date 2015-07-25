@@ -187,7 +187,7 @@ class FileserveCom(Hoster):
             #: Try api download
             res = self.load("http://app.fileserve.com/api/download/premium/",
                             post={'username': self.user,
-                                  'password': self.account.get_data(self.user)['password'],
+                                  'password': self.account.get_info(self.user)['login']['password'],
                                   'shorten': self.file_id})
             if res:
                 res = json_loads(res)

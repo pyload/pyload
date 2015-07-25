@@ -32,7 +32,7 @@ class OboomCom(Account):
 
 
     def load_account_data(self, user, req):
-        passwd = self.get_data(user)['password']
+        passwd = self.get_info(user)['login']['password']
         salt   = passwd[::-1]
         pbkdf2 = PBKDF2(passwd, salt, 1000).hexread(16)
 
@@ -42,7 +42,7 @@ class OboomCom(Account):
 
         if not result[0] == 200:
             self.log_warning(_("Failed to log in: %s") % result[1])
-            self.fail()
+            self.login_fail()
 
         return result[1]
 

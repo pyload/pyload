@@ -38,7 +38,7 @@ class RealdebridCom(Account):
                               'pass': password})
 
         if "Your login informations are incorrect" in html:
-            self.fail()
+            self.login_fail()
 
         elif "PIN Code required" in html:
             self.log_warning(_("PIN code required. Please login to https://real-debrid.com using the PIN or disable the double authentication in your control panel on https://real-debrid.com"))

@@ -47,7 +47,7 @@ class WebshareCz(Account):
                                'wst'              : ""})
 
         if "<status>OK</status>" not in salt:
-            self.fail()
+            self.login_fail()
 
         salt     = re.search('<salt>(.+)</salt>', salt).group(1)
         password = hashlib.sha1(md5_crypt.encrypt(password, salt=salt)).hexdigest()
@@ -61,6 +61,6 @@ class WebshareCz(Account):
                                 'wst'              : ""})
 
         if "<status>OK</status>" not in login:
-            self.fail()
+            self.login_fail()
 
         data['wst'] = re.search('<token>(.+)</token>', login).group(1)

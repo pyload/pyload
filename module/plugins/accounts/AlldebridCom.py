@@ -63,4 +63,4 @@ class AlldebridCom(Account):
         if "This login doesn't exist" in html \
            or "The password is not valid" in html \
            or "Invalid captcha" in html:
-            self.fail()
+            self.login_fail()

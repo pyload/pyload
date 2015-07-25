@@ -40,4 +40,4 @@ class QuickshareCz(Account):
                                'jmeno': user})
 
         if u'>Takový uživatel neexistuje.<' in html or u'>Špatné heslo.<' in html:
-            self.fail()
+            self.login_fail()

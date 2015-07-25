@@ -36,4 +36,4 @@ class PremiumTo(Account):
                                   'password': self.password})
 
         if "wrong username" in authcode:
-            self.fail()
+            self.login_fail()

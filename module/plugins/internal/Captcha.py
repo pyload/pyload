@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import time
 import traceback
 
@@ -25,10 +26,6 @@ class Captcha(Plugin):
         self.task   = None  #: captchaManager task
 
         self.init()
-
-
-    def _log(self, level, args):
-        return self.plugin._log(level, (self.__name__,) + args)
 
 
     def init(self):

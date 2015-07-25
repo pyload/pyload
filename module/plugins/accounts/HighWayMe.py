@@ -47,4 +47,4 @@ class HighWayMe(Account):
                                'pass': password})
 
         if 'UserOrPassInvalid' in html:
-            self.fail()
+            self.login_fail()

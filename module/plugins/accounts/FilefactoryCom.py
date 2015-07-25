@@ -46,4 +46,4 @@ class FilefactoryCom(Account):
                                'Submit'       : "Sign In"})
 
         if req.lastEffectiveURL != "http://www.filefactory.com/account/":
-            self.fail()
+            self.login_fail()

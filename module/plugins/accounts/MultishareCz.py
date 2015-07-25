@@ -41,4 +41,4 @@ class MultishareCz(Account):
                                'jmeno': user})
 
         if '<div class="akce-chyba akce">' in html:
-            self.fail()
+            self.login_fail()

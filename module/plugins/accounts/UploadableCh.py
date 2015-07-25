@@ -31,4 +31,4 @@ class UploadableCh(Account):
                                'action__login': "normalLogin"})
 
         if "Login failed" in html:
-            self.fail()
+            self.login_fail()

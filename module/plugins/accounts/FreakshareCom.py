@@ -50,4 +50,4 @@ class FreakshareCom(Account):
                                'pass'  : password})
 
         if ">Wrong Username or Password" in html:
-            self.fail()
+            self.login_fail()

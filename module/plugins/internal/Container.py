@@ -56,8 +56,9 @@ class Container(Crypter):
             try:
                 with open(self.pyfile.url, "wb") as f:
                     f.write(content)
+
             except IOError, e:
-                self.fail(str(e))
+                self.fail(str(e))  #@TODO: Remove `str` in 0.4.10
 
         else:
             self.pyfile.name = os.path.basename(self.pyfile.url)

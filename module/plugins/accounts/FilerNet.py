@@ -56,4 +56,4 @@ class FilerNet(Account):
                                '_target_path': "https://filer.net/"})
 
         if 'Logout' not in html:
-            self.fail()
+            self.login_fail()

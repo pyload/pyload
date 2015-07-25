@@ -124,7 +124,7 @@ class LetitbitNet(SimpleHoster):
 
     def handle_premium(self, pyfile):
         api_key = self.user
-        premium_key = self.account.get_data(self.user)['password']
+        premium_key = self.account.get_info(self.user)['login']['password']
 
         json_data = [api_key, ["download/direct_links", {'pass': premium_key, 'link': pyfile.url}]]
         api_rep = self.load('http://api.letitbit.net/json', post={'r': json_dumps(json_data)})

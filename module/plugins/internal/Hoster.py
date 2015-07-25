@@ -171,7 +171,7 @@ class Hoster(Plugin):
         self.req.renewHTTPRequest()
 
         if self.account:
-            self.account.check_login(self.user)
+            self.account.is_logged(self.user)
         else:
             self.req.clearCookies()
 
@@ -206,7 +206,10 @@ class Hoster(Plugin):
 
     def set_reconnect(self, reconnect):
         reconnect = bool(reconnect)
-        self.log_debug("Set wantReconnect to: %s (previous: %s)" % (reconnect, self.wantReconnect))
+
+        self.log_info(_("Reconnect: %s") % reconnect)
+        self.log_debug("Previous wantReconnect: %s" % self.wantReconnect)
+
         self.wantReconnect = reconnect
 
 
@@ -220,8 +223,8 @@ class Hoster(Plugin):
         wait_time  = max(int(seconds), 1)
         wait_until = time.time() + wait_time + 1
 
-        self.log_debug("Set waitUntil to: %f (previous: %f)" % (wait_until, self.pyfile.waitUntil),
-                       "Wait: %d (+1) seconds" % wait_time)
+        self.log_info(_("Wait: %d seconds") % wait_time)
+        self.log_debug("Previous waitUntil: %f" % self.pyfile.waitUntil)
 
         self.pyfile.waitUntil = wait_until
 
@@ -229,13 +232,13 @@ class Hoster(Plugin):
             self.set_reconnect(reconnect)
 
 
-    def wait(self, seconds=0, reconnect=None):
+    def wait(self, seconds=None, reconnect=None):
         """
         Waits the time previously set
         """
         pyfile = self.pyfile
 
-        if seconds > 0:
+        if seconds is not None:
             self.set_wait(seconds)
 
         if reconnect is not None:
@@ -243,11 +246,8 @@ class Hoster(Plugin):
 
         self.waiting = True
 
-        status = pyfile.status
+        status = pyfile.status  #@NOTE: Remove in 0.4.10
         pyfile.setStatus("waiting")
-
-        self.log_info(_("Wait: %d seconds") % (pyfile.waitUntil - time.time()),
-                      _("Reconnect: %s")    % self.wantReconnect)
 
         if self.account:
             self.log_debug("Ignore reconnection due account logged")
@@ -256,11 +256,9 @@ class Hoster(Plugin):
                 if pyfile.abort:
                     self.abort()
 
-                time.sleep(1)
+                time.sleep(3)
         else:
             while pyfile.waitUntil > time.time():
-                self.thread.m.reconnecting.wait(1)
-
                 if pyfile.abort:
                     self.abort()
 
@@ -268,12 +266,12 @@ class Hoster(Plugin):
                     self.waiting = False
                     self.wantReconnect = False
                     raise Reconnect
-
-                time.sleep(1)
+                    
+                self.thread.m.reconnecting.wait(3)
+                time.sleep(3)
 
         self.waiting = False
-
-        pyfile.status = status
+        pyfile.status = status  #@NOTE: Remove in 0.4.10
 
 
     def skip(self, reason=""):
@@ -388,7 +386,7 @@ class Hoster(Plugin):
                     os.chown(location, uid, gid)
 
             except Exception, e:
-                self.fail(e)
+                self.fail(str(e))  #@TODO: Remove `str` in 0.4.10
 
         #: Convert back to unicode
         location = fs_decode(location)
@@ -508,7 +506,7 @@ class Hoster(Plugin):
             redirect = max(follow_location, 1)
 
         else:
-            redirect = self.get_config("maxredirs", plugin="UserAgentSwitcher")
+            redirect = self.get_config("maxredirs", 10, "UserAgentSwitcher")
 
         for i in xrange(redirect):
             try:

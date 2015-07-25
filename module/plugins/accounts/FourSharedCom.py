@@ -31,4 +31,4 @@ class FourSharedCom(Account):
                               'returnTo' : "http://www.4shared.com/account/home.jsp"})
 
         if 'Please log in to access your 4shared account' in res:
-            self.fail()
+            self.login_fail()

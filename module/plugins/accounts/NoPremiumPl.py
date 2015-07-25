@@ -62,10 +62,10 @@ class NoPremiumPl(Account):
         try:
             response = json_loads(self.run_auth_query())
         except Exception:
-            self.fail()
+            self.login_fail()
 
         if "errno" in response.keys():
-            self.fail()
+            self.login_fail()
 
         data['usr'] = self._usr
         data['pwd'] = self._pwd

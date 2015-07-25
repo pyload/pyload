@@ -53,7 +53,7 @@ class FshareVn(Account):
                                'yt0'                  : "Login"})
 
         if not re.search(r'<img\s+alt="VIP"', html):
-            self.fail()
+            self.login_fail()
 
 
     def get_traffic_left(self):

@@ -55,4 +55,4 @@ class OneFichierCom(Account):
                                'valider': "Send"})
 
         if '>Invalid email address' in html or '>Invalid password' in html:
-            self.fail()
+            self.login_fail()

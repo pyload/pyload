@@ -75,4 +75,4 @@ class RapidgatorNet(Account):
         except Exception, e:
             self.log_error(e)
 
-        self.fail()
+        self.login_fail()

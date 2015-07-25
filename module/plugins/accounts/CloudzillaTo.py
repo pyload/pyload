@@ -34,4 +34,4 @@ class CloudzillaTo(Account):
                                'w'        : "dologin"})
 
         if "ERROR" in html:
-            self.fail()
+            self.login_fail()

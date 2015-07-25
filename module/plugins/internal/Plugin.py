@@ -5,6 +5,7 @@ from __future__ import with_statement
 import inspect
 import os
 import re
+import traceback
 import urllib
 
 from module.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload as Skip  #@TODO: Remove in 0.4.10
@@ -80,12 +81,12 @@ def parse_html_form(attr_str, html, input_names={}):
     for form in re.finditer(r"(?P<TAG><form[^>]*%s[^>]*>)(?P<CONTENT>.*?)</?(form|body|html)[^>]*>" % attr_str,
                             html, re.S | re.I):
         inputs = {}
-        action = parseHtmlTagAttrValue("action", form.group('TAG'))
+        action = parse_html_tag_attr_value("action", form.group('TAG'))
 
         for inputtag in re.finditer(r'(<(input|textarea)[^>]*>)([^<]*(?=</\2)|)', form.group('CONTENT'), re.S | re.I):
-            name = parseHtmlTagAttrValue("name", inputtag.group(1))
+            name = parse_html_tag_attr_value("name", inputtag.group(1))
             if name:
-                value = parseHtmlTagAttrValue("value", inputtag.group(1))
+                value = parse_html_tag_attr_value("value", inputtag.group(1))
                 if not value:
                     inputs[name] = inputtag.group(3) or ""
                 else:
@@ -155,9 +156,10 @@ class Plugin(object):
     def _log(self, level, args):
         log = getattr(self.pyload.log, level)
         msg = encode(" | ".join((a if isinstance(a, basestring) else str(a)).strip() for a in args if a))  #@NOTE: `fs_encode` -> `encode` in 0.4.10
-        log("%(plugin)s%(id)s: %(msg)s" % {'plugin': self.__name__,
-                                           'id'    : ("[%s]" % self.pyfile.id) if hasattr(self, 'pyfile') else "",
-                                           'msg'   : msg or _(level.upper() + " MARK")})
+        log("%(type)s %(plugin)s%(id)s: %(msg)s" % {'type': self.__type__.upper(),
+                                                    'plugin': self.__name__,
+                                                    'id'    : ("[%s]" % self.pyfile.id) if hasattr(self, 'pyfile') else "",
+                                                    'msg'   : msg or _(level.upper() + " MARK")})
 
 
     def log_debug(self, *args):
@@ -204,6 +206,7 @@ class Plugin(object):
 
         except KeyError:
             self.log_warning(_("Config option or plugin not found"))
+            traceback.print_exc()
             return default
 
 

@@ -48,4 +48,4 @@ class FilejungleCom(Account):
                                'recaptcha_shortencode_field': ""})
 
         if re.search(self.LOGIN_FAILED_PATTERN, html):
-            self.fail()
+            self.login_fail()

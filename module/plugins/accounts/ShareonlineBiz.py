@@ -16,12 +16,12 @@ class ShareonlineBiz(Account):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def api_response(self, user, req):
+    def api_response(self, user, password, req):
         return self.load("http://api.share-online.biz/cgi-bin",
                         get={'q'       : "userdetails",
                              'aux'     : "traffic",
                              'username': user,
-                             'password': self.get_data(user)['password']})
+                             'password': password})
 
 
     def parse_info(self, user, password, data, req):
@@ -31,7 +31,7 @@ class ShareonlineBiz(Account):
         maxtraffic  = 100 * 1024 * 1024 * 1024  #: 100 GB
 
         api = {}
-        for line in self.api_response(user, req).splitlines():
+        for line in self.api_response(user, password, req).splitlines():
             if "=" in line:
                 key, value = line.split("=")
                 api[key] = value
@@ -62,8 +62,8 @@ class ShareonlineBiz(Account):
 
 
     def login(self, user, password, data, req):
-        html = self.api_response(user, req)
+        html = self.api_response(user, password, req)
         err  = re.search(r'\*\*(.+?)\*\*', html)
         if err:
             self.log_error(err.group(1).strip())
-            self.fail()
+            self.login_fail()

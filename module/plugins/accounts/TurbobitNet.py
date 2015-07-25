@@ -40,4 +40,4 @@ class TurbobitNet(Account):
                                "user[submit]": "Login"})
 
         if not '<div class="menu-item user-name">' in html:
-            self.fail()
+            self.login_fail()

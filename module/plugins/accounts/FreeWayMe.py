@@ -16,7 +16,7 @@ class FreeWayMe(Account):
 
 
     def parse_info(self, user, password, data, req):
-        status = self.get_account_status(user, req)
+        status = self.get_account_status(user, password, req)
 
         self.log_debug(status)
 
@@ -34,20 +34,20 @@ class FreeWayMe(Account):
 
 
     def login(self, user, password, data, req):
-        status = self.get_account_status(user, req)
+        status = self.get_account_status(user, password, req)
 
         #: Check if user and password are valid
         if not status:
-            self.fail()
+            self.login_fail()
 
 
-    def get_account_status(self, user, req):
+    def get_account_status(self, user, password, req):
         answer = self.load("http://www.free-way.bz/ajax/jd.php",  #@TODO: Revert to `https` in 0.4.10
-                          get={'id': 4, 'user': user, 'pass': self.get_data(user)['password']})
+                          get={'id': 4, 'user': user, 'pass': password})
 
         self.log_debug("Login: %s" % answer)
 
         if answer == "Invalid login":
-            self.fail()
+            self.login_fail()
 
         return json_loads(answer)

@@ -40,4 +40,4 @@ class UploadheroCom(Account):
                                'password_login': password})
 
         if "mot de passe invalide" in html:
-            self.fail()
+            self.login_fail()

@@ -33,7 +33,7 @@ class FreeWayMe(MultiHoster):
                                get={'multiget': 7,
                                     'url'     : pyfile.url,
                                     'user'    : user,
-                                    'pw'      : self.account.get_data(user)['password'],
+                                    'pw'      : self.account.get_info(self.user)['login']['password'],
                                     'json'    : ""},
                                just_header=True)
 

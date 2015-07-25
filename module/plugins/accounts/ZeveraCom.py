@@ -53,7 +53,7 @@ class ZeveraCom(Account):
         self.password = password
 
         if self.api_response(req) == "No trafic":
-            self.fail()
+            self.login_fail()
 
 
     def api_response(self, req, just_header=False, **kwargs):

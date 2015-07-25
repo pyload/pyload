@@ -59,4 +59,4 @@ class LinksnappyCom(Account):
                               'password': hashlib.md5(password).hexdigest()})
 
         if "Invalid Account Details" in html:
-            self.fail()
+            self.login_fail()

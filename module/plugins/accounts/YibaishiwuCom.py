@@ -37,4 +37,4 @@ class YibaishiwuCom(Account):
                                "login[passwd]" : password})
 
         if not 'var USER_PERMISSION = {' in html:
-            self.fail()
+            self.login_fail()

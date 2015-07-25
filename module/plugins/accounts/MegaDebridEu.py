@@ -41,4 +41,4 @@ class MegaDebridEu(Account):
                                       'password': password})
         res = json_loads(jsonResponse)
         if res['response_code'] != "ok":
-            self.fail()
+            self.login_fail()

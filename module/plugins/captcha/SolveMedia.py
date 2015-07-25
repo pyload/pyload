@@ -29,7 +29,7 @@ class SolveMedia(CaptchaService):
             self.log_debug("Key: %s" % self.key)
             return self.key
         else:
-            self.log_warning(_("Key pattern not found")
+            self.log_warning(_("Key pattern not found"))
             return None
 
 
@@ -44,7 +44,7 @@ class SolveMedia(CaptchaService):
                 magic = re.search(r'name="magic" value="(.+?)"', html).group(1)
 
             except AttributeError:
-                self.log_warning(_("Magic pattern not found")
+                self.log_warning(_("Magic pattern not found"))
                 magic = None
 
             try:

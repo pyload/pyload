@@ -46,4 +46,4 @@ class UlozTo(Account):
                                'remember': "on"})
 
         if '<div class="flash error">' in html:
-            self.fail()
+            self.login_fail()

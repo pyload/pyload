@@ -48,7 +48,7 @@ class ReCaptcha(CaptchaService):
 
         else:
             return self.challenge(key,
-                                  version=2 if re.search(self.KEY_V2_PATTERN, html or self.retrieve_data()) else 1)
+                                  version=2 if re.search(self.KEY_V2_PATTERN, data or self.retrieve_data()) else 1)
 
 
     def _challenge_v1(self, key):

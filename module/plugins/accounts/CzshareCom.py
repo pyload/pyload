@@ -51,4 +51,4 @@ class CzshareCom(Account):
                                "login-name"    : user})
 
         if '<div class="login' in html:
-            self.fail()
+            self.login_fail()

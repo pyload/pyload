@@ -49,10 +49,10 @@ class MegaRapidoNet(Account):
         html = self.load("http://megarapido.net/gerador")
 
         if "sair" not in html.lower():
-            self.fail()
+            self.login_fail()
         else:
             m = re.search(self.USER_ID_PATTERN, html)
             if m:
                 data['uid'] = m.group(1)
             else:
-                self.fail("Couldn't find the user ID")
+                self.login_fail("Couldn't find the user ID")

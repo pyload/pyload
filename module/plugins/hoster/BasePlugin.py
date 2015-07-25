@@ -72,7 +72,7 @@ class BasePlugin(Hoster):
 
                     if server in servers:
                         self.log_debug("Logging on to %s" % server)
-                        self.req.addAuth(account.get_data(server)['password'])
+                        self.req.addAuth(account.get_info(server)['login']['password'])
                     else:
                         pwd = self.get_password()
                         if ':' in pwd:

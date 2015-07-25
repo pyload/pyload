@@ -71,7 +71,7 @@ class Addon(Plugin):
             self.event_map = None
 
         if self.event_list:
-            self.log_debug("Deprecated method `event_list`, use `event_map` instead") (Remove in 0.4.10)
+            self.log_debug("Deprecated method `event_list`, use `event_map` instead")
 
             for f in self.event_list:
                 self.manager.addEvent(f, getattr(self, f))

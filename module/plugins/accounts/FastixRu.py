@@ -43,4 +43,4 @@ class FastixRu(Account):
         data['api'] = api
 
         if "error_code" in html:
-            self.fail()
+            self.login_fail()

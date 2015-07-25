@@ -39,4 +39,4 @@ class OverLoadMe(Account):
         data = json_loads(jsondata)
 
         if data['err'] == 1:
-            self.fail()
+            self.login_fail()

@@ -42,4 +42,4 @@ class DebridItaliaCom(Account):
                               'p': password})
 
         if 'NO' in html:
-            self.fail()
+            self.login_fail()

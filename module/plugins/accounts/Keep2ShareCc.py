@@ -70,4 +70,4 @@ class Keep2ShareCc(Account):
                                'yt0'                  : ""})
 
         if re.search(self.LOGIN_FAIL_PATTERN, html):
-            self.fail()
+            self.login_fail()

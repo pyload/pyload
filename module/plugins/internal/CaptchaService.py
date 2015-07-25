@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Plugin import Plugin
+from module.plugins.internal.Captcha import Captcha
 
 
-class CaptchaService(Plugin):
+class CaptchaService(Captcha):
     __name__    = "CaptchaService"
     __type__    = "captcha"
     __version__ = "0.31"
@@ -16,6 +16,10 @@ class CaptchaService(Plugin):
 
     def init(self):
         self.key = None  #: Last key detected
+
+
+    def _log(self, level, args):
+        return self.plugin._log(level, (self.__name__,) + args)
 
 
     #@TODO: Recheck in 0.4.10

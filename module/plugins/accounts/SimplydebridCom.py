@@ -17,8 +17,10 @@ class SimplydebridCom(Account):
 
 
     def parse_info(self, user, password, data, req):
-        get_data = {'login': 2, 'u': self.loginname, 'p': self.password}
-        res = self.load("http://simply-debrid.com/api.php", get=get_data)
+        res = self.load("http://simply-debrid.com/api.php",
+                        get={'login': 2,
+                             'u'    : user,
+                             'p'    : password})
         data = [x.strip() for x in res.split(";")]
         if str(data[0]) != "1":
             return {'premium': False}
@@ -27,10 +29,9 @@ class SimplydebridCom(Account):
 
 
     def login(self, user, password, data, req):
-        self.loginname = user
-        self.password  = password
-        get_data       = {'login': 1, 'u': self.loginname, 'p': self.password}
-
-        res = self.load("https://simply-debrid.com/api.php", get=get_data)
+        res = self.load("https://simply-debrid.com/api.php",
+                        get={'login': 1,
+                             'u'    : user,
+                             'p'    : password})
         if res != "02: loggin success":
-            self.fail()
+            self.login_fail()

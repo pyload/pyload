@@ -77,4 +77,4 @@ class HellshareCz(Account):
                                'perm_login': "on"})
 
         if "<p>You input a wrong user name or wrong password</p>" in html:
-            self.fail()
+            self.login_fail()

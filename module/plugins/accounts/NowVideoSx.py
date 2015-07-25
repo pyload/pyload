@@ -54,4 +54,4 @@ class NowVideoSx(Account):
                                'pass': password})
 
         if re.search(r'>Log In<', html):
-            self.fail()
+            self.login_fail()

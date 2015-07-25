@@ -17,7 +17,7 @@ class RPNetBiz(Account):
 
     def parse_info(self, user, password, data, req):
         #: Get account information from rpnet.biz
-        res = self.get_account_status(user, req)
+        res = self.get_account_status(user, password, req)
         try:
             if res['accountInfo']['isPremium']:
                 #: Parse account info. Change the trafficleft later to support per host info.
@@ -35,17 +35,17 @@ class RPNetBiz(Account):
 
     def login(self, user, password, data, req):
         #: Get account information from rpnet.biz
-        res = self.get_account_status(user, req)
+        res = self.get_account_status(user, password, req)
 
         #: If we have an error in the res, we have wrong login information
         if 'error' in res:
-            self.fail()
+            self.login_fail()
 
 
-    def get_account_status(self, user, req):
+    def get_account_status(self, user, password req):
         #: Using the rpnet API, check if valid premium account
         res = self.load("https://premium.rpnet.biz/client_api.php",
-                            get={'username': user, 'password': self.get_data(user)['password'],
+                            get={'username': user, 'password': password,
                                  'action': "showAccountInformation"})
         self.log_debug("JSON data: %s" % res)
 

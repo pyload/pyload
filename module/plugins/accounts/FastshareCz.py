@@ -48,4 +48,4 @@ class FastshareCz(Account):
                                'heslo': password})
 
         if ">Wrong username or password" in html:
-            self.fail()
+            self.login_fail()

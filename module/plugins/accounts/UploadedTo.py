@@ -70,4 +70,4 @@ class UploadedTo(Account):
                                '_': ""})
 
         if '"err"' in html:
-            self.fail()
+            self.login_fail()

@@ -35,4 +35,4 @@ class DepositfilesCom(Account):
                                'password': password})
 
         if r'<div class="error_message">Sie haben eine falsche Benutzername-Passwort-Kombination verwendet.</div>' in html:
-            self.fail()
+            self.login_fail()

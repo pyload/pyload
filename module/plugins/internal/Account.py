@@ -4,6 +4,7 @@ from __future__ import with_statement
 
 import random
 import time
+import threading
 import traceback
 
 from module.plugins.internal.Plugin import Plugin
@@ -29,6 +30,7 @@ class Account(Plugin):
     def __init__(self, manager, accounts):
         self.pyload = manager.core
         self.info   = {}  #: Provide information in dict here
+        self.lock   = threading.RLock()
 
         self.init()
         self.init_accounts(accounts)
@@ -58,9 +60,7 @@ class Account(Plugin):
             self.login(user, info['login']['password'], info['data'], self.req)
 
         except Exception, e:
-            self.log_warning(
-                _("Could not login with account %(user)s | %(msg)s") % {'user': user,
-                                                                        'msg' : e})
+            self.log_warning(_("Could not login with username ") + user, e)
             res = info['login']['valid'] = False
             if self.pyload.debug:
                 traceback.print_exc()
@@ -86,13 +86,15 @@ class Account(Plugin):
         return self._login(user)
 
 
+    #@TODO: Rewrite in 0.4.10
     def init_accounts(self, accounts):
         for user, data in accounts.iteritems():
             self.add(user, data['password'], data['options'])
             self._login(user)
 
 
-    def add(self, user, password=None, options):
+    @lock
+    def add(self, user, password=None, options={}):
         if user not in self.info:
             self.info[user] = {'login': {'valid': True, 'password': password or "", 'timestamp': 0},  #@NOTE: Do not remove `'valid': True` in 0.4.9 or accounts will not login
                                'data' : {'options': options, 'timestamp': 0}}
@@ -102,7 +104,8 @@ class Account(Plugin):
             self.log_error(_("Error adding account"), _("User already exists"))
 
 
-    def update(self, user, password=None, options):
+    @lock
+    def update(self, user, password=None, options={}):
         """
         Updates account and return true if anything changed
         """
@@ -131,7 +134,7 @@ class Account(Plugin):
             self.info.clear()
 
         elif user in self.info:
-            del self.info[user]
+            self.info.pop(user, None)
 
 
     #: Deprecated method, use `remove` instead (Remove in 0.4.10)
@@ -140,64 +143,88 @@ class Account(Plugin):
 
 
     def get_data(self, user, reload=False):
-        return self.get_info(user, reload)['data']
+        if not user:
+            return
 
+        info = self.get_info(user, reload)
+        if info and 'data' in info:
+            return info['data']
+
+
+    #: Deprecated method, use `get_data` instead (Remove in 0.4.10)
+    def getAccountData(self, *args, **kwargs):
+        if 'force' in kwargs:
+            kwargs['reload'] = kwargs['force']
+            kwargs.pop('force', None)
+        data = self.get_data(*args, **kwargs) or {}
+        if 'options' not in data:
+            data['options'] = {'limitdl': ['0']}
+        return data
 
     @lock
     def get_info(self, user, reload=False):
         """
         Retrieve account infos for an user, do **not** overwrite this method!\\
-        just use it to retrieve infos in hoster plugins. see `load_info`
+        just use it to retrieve infos in hoster plugins. see `parse_info`
 
         :param user: username
         :param reload: reloads cached account information
         :return: dictionary with information
         """
-        if not reload and user in self.info:
-            info = self.info[user]
+        traceback.print_exc()  ######################
 
-            if info['data']['timestamp'] + self.INFO_THRESHOLD * 60 < time.time():
-                self.log_debug("Reached timeout for account data")
-                self.schedule_refresh(user)
+        if user not in self.info:
+            self.log_error(_("User %s not found while retrieving account info") % user)
+            return
+
+        elif reload:
+            self.log_debug("Get Account Info for: %s" % user)
+            info = self._parse_info(user)
 
         else:
-            self.log_debug("Get Account Info for: %s" % user)
-            info = self.load_info(user)
+            info = self.info[user]
 
-        self.log_debug("Account Info: %s" % info)
+            if self.INFO_THRESHOLD > 0 and info['data']['timestamp'] + self.INFO_THRESHOLD * 60 < time.time():
+                self.log_debug("Reached data timeout for %s" % user)
+                self.schedule_refresh(user)
+
+        safe_info = info.copy()
+        safe_info['login']['password'] = "**********"
+        self.log_debug("Account info: %s" % safe_info)
         return info
 
 
     def is_premium(self, user):
-        return self.get_info(user)['premium']
+        if not user:
+            return False
+
+        info = self.get_info(user, reload)
+        return info['premium'] if info and 'premium' in info else False
 
 
-    def load_info(self, user):
-        self.log_critical(user in self.info) #############################
-
+    def _parse_info(self, user):
         info = self.info[user]
         data = info['data']
 
         #@TODO: Remove in 0.4.10
         data.update({'login': user,
-                     'type' : self.__name__},
-                     'valid': self.info[user]['login']['valid'])
+                     'type' : self.__name__,
+                     'valid': self.info[user]['login']['valid']})
 
         try:
+            data['timestamp'] = time.time()  #: Set timestamp for login
+
             self.req   = self.get_request(user)
-            extra_info = self.parse_info(user, info['login']['password'], info, req)
+            extra_info = self.parse_info(user, info['login']['password'], info, self.req)
 
             if extra_info and isinstance(extra_info, dict):
                 data.update(extra_info)
-                data['timestamp'] = time.time()
 
         except Exception, e:
-            self.log_warning(_("Error loading info for account %(user)s | %(err)s") %
-                               {'user': user, 'err': e})
-            data['error'] = str(e)
+            self.log_warning(_("Error loading info for ") + user, e)
 
             if self.pyload.debug:
-                traceback.print_exc():
+                traceback.print_exc()
 
         else:
             for key in ('premium', 'validuntil', 'trafficleft', 'maxtraffic'):
@@ -227,7 +254,11 @@ class Account(Plugin):
 
     #: Remove in 0.4.10
     def getAllAccounts(self, *args, **kwargs):
-        return [self.get_data(user, reload) for user, info in self.info.iteritems()]
+        return [self.getAccountData(user, *args, **kwargs) for user, info in self.info.iteritems()]
+
+
+    def login_fail(self, reason=_("Login handshake has failed")):
+        return self.fail(reason)
 
 
     def get_request(self, user=None):
@@ -240,7 +271,6 @@ class Account(Plugin):
     def get_cookies(self, user=None):
         if not user:
             user, info = self.select()
-            return None
 
         return self.pyload.requestFactory.getCookieJar(self.__name__, user)
 
@@ -316,17 +346,20 @@ class Account(Plugin):
         """
         Add task to refresh account info to sheduler
         """
-        self.log_debug("Scheduled Account refresh for %s in %s seconds." % (user, time))
+        self.log_debug("Scheduled refresh for %s in %s seconds" % (user, time))
         self.pyload.scheduler.addJob(time, self.get_info, [user, reload])
 
 
     #: Deprecated method, use `schedule_refresh` instead (Remove in 0.4.10)
     def scheduleRefresh(self, *args, **kwargs):
+        if 'force' in kwargs:
+            kwargs['reload'] = kwargs['force']
+            kwargs.pop('force', None)
         return self.schedule_refresh(*args, **kwargs)
 
 
     @lock
-    def check_login(self, user):
+    def is_logged(self, user):
         """
         Checks if user is still logged in
         """

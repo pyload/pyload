@@ -33,4 +33,4 @@ class BitshareCom(Account):
                                'submit'  : "Login"})
 
         if "login" in req.lastEffectiveURL:
-            self.fail()
+            self.login_fail()
