@@ -10,7 +10,7 @@ from module.plugins.internal.Plugin import Plugin
 class Captcha(Plugin):
     __name__    = "Captcha"
     __type__    = "captcha"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__  = "testing"
 
     __description__ = """Base anti-captcha plugin"""
@@ -46,13 +46,13 @@ class Captcha(Plugin):
 
 
     def decrypt(self, url, get={}, post={}, ref=False, cookies=False, decode=False,
-                input_type='jpg', output_type='textual', ocr=True):
+                input_type='jpg', output_type='textual', ocr=True, timeout=300):
         img = self.load(url, get=get, post=post, ref=ref, cookies=cookies, decode=decode)
-        return self._decrypt(img, input_type, output_type, ocr)
+        return self._decrypt(img, input_type, output_type, ocr, timeout)
 
 
-    #@TODO: Definitely dhoose a better name for this method!
-    def _decrypt(self, raw, input_type='jpg', output_type='textual', ocr=None):
+    #@TODO: Definitely choose a better name for this method!
+    def _decrypt(self, raw, input_type='jpg', output_type='textual', ocr=None, timeout=300):
         """
         Loads a captcha and decrypts it with ocr, plugin, user input
 
@@ -91,11 +91,13 @@ class Captcha(Plugin):
                 try:
                     self.task = captchaManager.newTask(raw, input_type, tmp_img.name, output_type)
                     captchaManager.handleCaptcha(self.task)
+                    self.task.setWaiting(max(timeout, 50))  #@TODO: Move to `CaptchaManager` in 0.4.10
 
                     while self.task.isWaiting():
                         if self.plugin.pyfile.abort:
                             self.plugin.abort()
                         time.sleep(1)
+
                 finally:
                     captchaManager.removeTask(self.task)
 
@@ -103,7 +105,8 @@ class Captcha(Plugin):
                     self.fail(task.error)
 
                 elif not self.task.result:
-                    self.fail(_("No captcha result obtained in appropiate time by any of the plugins"))
+                    self.captcha.invalid()
+                    self.plugin.retry(reason=_("No captcha result obtained in appropiate time"))
 
                 result = self.task.result
                 self.log_info(_("Captcha result: ") + result)  #@TODO: Remove from here?

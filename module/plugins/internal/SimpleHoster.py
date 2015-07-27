@@ -24,7 +24,7 @@ statusMap = dict((v, k) for k, v in _statusMap.items())
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.72"
+    __version__ = "1.73"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -301,10 +301,7 @@ class SimpleHoster(Hoster):
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
             err = str(e)  #@TODO: Recheck in 0.4.10
 
-            if err is _("No captcha result obtained in appropiate time by any of the plugins."):  #@TODO: Fix in 0.4.10
-                self.check_file()
-
-            elif self.get_config('fallback', True) and self.premium:
+            if self.get_config('fallback', True) and self.premium:
                 self.log_warning(_("Premium download failed"), e)
                 self.restart(reset=True)
 
