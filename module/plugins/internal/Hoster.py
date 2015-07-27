@@ -272,15 +272,17 @@ class Hoster(Plugin):
         """
         Skip and give reason
         """
-        raise Skip(encode(reason))
+        raise Skip(encode(reason))  #@TODO: Remove `encode` in 0.4.10
 
 
     def abort(self, reason=""):
         """
         Abort and give reason
         """
+        #@TODO: Remove in 0.4.10
         if reason:
             self.pyfile.error = encode(reason)
+
         raise Abort
 
 
@@ -288,8 +290,10 @@ class Hoster(Plugin):
         """
         Fail and indicate file is offline
         """
+        #@TODO: Remove in 0.4.10
         if reason:
             self.pyfile.error = encode(reason)
+
         raise Fail("offline")
 
 
@@ -297,8 +301,10 @@ class Hoster(Plugin):
         """
         Fail and indicates file ist temporary offline, the core may take consequences
         """
+        #@TODO: Remove in 0.4.10
         if reason:
             self.pyfile.error = encode(reason)
+
         raise Fail("temp. offline")
 
 
@@ -320,7 +326,7 @@ class Hoster(Plugin):
         self.wait(wait_time, False)
 
         self.retries[id] += 1
-        raise Retry(reason)
+        raise Retry(encode(reason))  #@TODO: Remove `encode` in 0.4.10
 
 
     def restart(self, reason=None, reset=False):
@@ -335,7 +341,7 @@ class Hoster(Plugin):
             self.account = None
             self.req = self.pyload.requestFactory.getRequest(self.__name__)
 
-        raise Retry(reason)
+        raise Retry(encode(reason))  #@TODO: Remove `encode` in 0.4.10
 
 
     def fixurl(self, url):

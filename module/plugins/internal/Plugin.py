@@ -245,7 +245,7 @@ class Plugin(object):
         """
         Fail and give reason
         """
-        raise Fail(encode(reason))  #: Move `encode(reason)` to manager in 0.4.10
+        raise Fail(encode(reason))  #@TODO: Remove `encode` in 0.4.10
 
 
     def error(self, reason="", type=_("Parse")):
@@ -256,7 +256,7 @@ class Plugin(object):
         msg += (": %s" % reason.strip()) if reason else ""
         msg += _(" | Plugin may be out of date")
 
-        raise Fail(msg)
+        raise Fail(encode(msg))  #@TODO: Remove `encode` in 0.4.10
 
 
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=True, req=None):

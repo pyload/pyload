@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.22"
+    __version__ = "1.23"
     __status__  = "testing"
 
     __description__ = """Rar extractor plugin"""
@@ -65,7 +65,7 @@ class UnRar(Extractor):
             try:
                 if os.name == "nt":
                     cls.CMD = os.path.join(pypath, "UnRAR.exe")
-                 else:
+                else:
                     cls.CMD = "unrar"
 
                 p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)

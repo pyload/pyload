@@ -13,7 +13,7 @@ from module.PyFile import statusMap as _statusMap
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster, create_getInfo, parse_fileInfo
-from module.plugins.internal.Plugin import Fail, Retry, fixurl, replace_patterns, seconds_to_midnight, set_cookies
+from module.plugins.internal.Plugin import Fail, encode, fixurl, replace_patterns, seconds_to_midnight, set_cookies
 from module.utils import fixup, fs_encode, parseFileSize as parse_size
 
 
@@ -211,7 +211,7 @@ class SimpleHoster(Hoster):
         self.leech_dl      = False
 
         if not self.get_config('use_premium', True):
-            self.retry_free()
+            self.restart(reset=True)
 
         if self.LOGIN_PREMIUM and not self.premium:
             self.fail(_("Required premium account not found"))
@@ -299,14 +299,12 @@ class SimpleHoster(Hoster):
             self.check_file()
 
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
-            err = str(e)  #@TODO: Recheck in 0.4.10
-
             if self.get_config('fallback', True) and self.premium:
                 self.log_warning(_("Premium download failed"), e)
                 self.restart(reset=True)
 
             else:
-                raise Fail(err)
+                raise Fail(encode(e))  #@TODO: Remove `encode` in 0.4.10
 
 
     def check_file(self):

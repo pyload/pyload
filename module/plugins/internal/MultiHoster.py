@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.Plugin import Fail, Retry
+from module.plugins.internal.Plugin import Fail
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns, set_cookies
 
 
@@ -85,11 +85,9 @@ class MultiHoster(SimpleHoster):
             self.check_file()
 
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
-            err = str(e)  #@TODO: Recheck in 0.4.10
-
             if self.premium:
                 self.log_warning(_("Premium download failed"))
-                self.retry_free()
+                self.restart(reset=True)
 
             elif self.get_config("revertfailed", True) \
                  and "new_module" in self.pyload.pluginManager.hosterPlugins[self.__name__]:
@@ -105,10 +103,10 @@ class MultiHoster(SimpleHoster):
                 hdict['new_module'] = tmp_module
                 hdict['new_name']   = tmp_name
 
-                raise Retry(_("Revert to original hoster plugin"))
+                self.restart(_("Revert to original hoster plugin"))
 
             else:
-                raise Fail(err)
+                raise Fail(encode(e))  #@TODO: Remove `encode` in 0.4.10
 
 
     def handle_premium(self, pyfile):

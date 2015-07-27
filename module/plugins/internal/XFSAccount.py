@@ -151,8 +151,8 @@ class XFSAccount(Account):
 
 
     def login(self, user, password, data, req):
-        if not self.HOSTER_URL:  #@TODO: Remove in 0.4.10
-            raise Exception(_("Missing HOSTER_DOMAIN"))
+        if not self.HOSTER_URL:
+            self.login_fail(_("Missing HOSTER_DOMAIN"))
 
         if not self.LOGIN_URL:
             self.LOGIN_URL  = urlparse.urljoin(self.HOSTER_URL, "login.html")
