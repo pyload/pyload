@@ -7,6 +7,7 @@ import re
 import traceback
 
 from module.plugins.internal.Crypter import Crypter
+from module.plugins.internal.Plugin import exists
 from module.utils import save_join as fs_join
 
 
@@ -66,8 +67,8 @@ class Container(Crypter):
 
         else:
             self.pyfile.name = os.path.basename(self.pyfile.url)
-            if not os.path.exists(self.pyfile.url):
-                if os.path.exists(fs_join(pypath, self.pyfile.url)):
+            if not exists(self.pyfile.url):
+                if exists(fs_join(pypath, self.pyfile.url)):
                     self.pyfile.url = fs_join(pypath, self.pyfile.url)
                 else:
                     self.fail(_("File not exists"))

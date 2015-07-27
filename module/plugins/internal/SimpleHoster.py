@@ -294,7 +294,7 @@ class SimpleHoster(Hoster):
 
             if not self.last_download:
                 self.log_info(_("Downloading file..."))
-                self.download(self.link, ref=False, disposition=self.DISPOSITION)
+                self.download(self.link, disposition=self.DISPOSITION)
 
             self.check_file()
 
@@ -346,7 +346,7 @@ class SimpleHoster(Hoster):
                         self.html = f.read(50000)  #@TODO: Recheck in 0.4.10
                     self.check_errors()
 
-        self.log_debug("No errors found")
+        self.log_info(_("No errors found"))
         self.pyfile.error = ""
 
 

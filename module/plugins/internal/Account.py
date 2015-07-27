@@ -60,7 +60,7 @@ class Account(Plugin):
             self.login(user, info['login']['password'], info['data'], self.req)
 
         except Exception, e:
-            self.log_warning(_("Could not login with username ") + user, e)
+            self.log_warning(_("Could not login user `%s`") % user, e)
             res = info['login']['valid'] = False
             if self.pyload.debug:
                 traceback.print_exc()
@@ -77,6 +77,8 @@ class Account(Plugin):
 
 
     def relogin(self, user):
+        self.log_info(_("Relogin user `%s`...") % user)
+
         with self.get_request(user) as req:
             req.clearCookies()
 
@@ -90,18 +92,27 @@ class Account(Plugin):
     def init_accounts(self, accounts):
         for user, data in accounts.items():
             self.add(user, data['password'], data['options'])
-            self._login(user)
 
 
     @lock
     def add(self, user, password=None, options={}):
         if user not in self.info:
-            self.info[user] = {'login': {'valid': None, 'password': password or "", 'timestamp': 0},
-                               'data' : {'options': options, 'timestamp': 0}}
+            self.info[user] = {'login': {'valid'    : None,
+                                         'password' : password or "",
+                                         'timestamp': 0},
+                               'data' : {'options'    : options,
+                                         'premium'    : None,
+                                         'validuntil' : None,
+                                         'trafficleft': None,
+                                         'maxtraffic' : None,
+                                         'timestamp'  : 0}}
+
+            self.log_info(_("Login user `%s`...") % user)
             self._login(user)
             return True
+
         else:
-            self.log_error(_("Error adding account"), _("User already exists"))
+            self.log_error(_("Error adding user `%s`") % user, _("User already exists"))
 
 
     @lock
@@ -172,11 +183,11 @@ class Account(Plugin):
         :return: dictionary with information
         """
         if user not in self.info:
-            self.log_error(_("User %s not found while retrieving account info") % user)
+            self.log_error(_("User `%s` not found while retrieving account info") % user)
             return
 
         elif reload:
-            self.log_debug("Get Account Info for: %s" % user)
+            self.log_info(_("Parsing account info for user `%s`...") % user)
             info = self._parse_info(user)
 
         else:
@@ -188,7 +199,7 @@ class Account(Plugin):
 
         safe_info = info.copy()
         safe_info['login']['password'] = "**********"
-        self.log_debug("Account info: %s" % safe_info)
+        self.log_debug("Account info for user `%s`: %s" % (user, safe_info))
         return info
 
 
@@ -219,15 +230,10 @@ class Account(Plugin):
                 data.update(extra_info)
 
         except Exception, e:
-            self.log_warning(_("Error loading info for ") + user, e)
+            self.log_warning(_("Error loading info for user `%s`") % user, e)
 
             if self.pyload.debug:
                 traceback.print_exc()
-
-        else:
-            for key in ('premium', 'validuntil', 'trafficleft', 'maxtraffic'):
-                if key not in data:
-                    data[key] = None
 
         finally:
             if self.req:
@@ -324,7 +330,7 @@ class Account(Plugin):
         if user not in self.info:
             return
 
-        self.log_warning(_("Account %s has not enough traffic, checking again in 30min") % user)
+        self.log_warning(_("Account `%s` has not enough traffic") % user, _("Checking again in 30 minutes"))
 
         self.info[user]['data'].update({'trafficleft': 0})
         self.schedule_refresh(user, 30 * 60)
@@ -334,7 +340,7 @@ class Account(Plugin):
         if user not in self.info:
             return
 
-        self.log_warning(_("Account %s is expired, checking again in 1h") % user)
+        self.log_warning(_("Account `%s` is expired") % user, _("Checking again in 60 minutes"))
 
         self.info[user]['data'].update({'validuntil': time.time() - 1})
         self.schedule_refresh(user, 60 * 60)
@@ -344,7 +350,7 @@ class Account(Plugin):
         """
         Add task to refresh account info to sheduler
         """
-        self.log_debug("Scheduled refresh for %s in %s seconds" % (user, time))
+        self.log_debug("Scheduled refresh for user `%s` in %s seconds" % (user, time))
         self.pyload.scheduler.addJob(time, self.get_info, [user, reload])
 
 

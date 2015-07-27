@@ -53,7 +53,7 @@ class XFSAccount(Account):
                 set_cookies(req.cj, self.COOKIES)
 
 
-    def parse_info(self, user, req):
+    def parse_info(self, user, password, data, req):
         validuntil   = None
         trafficleft  = None
         leechtraffic = None
@@ -150,7 +150,7 @@ class XFSAccount(Account):
                 'premium'     : premium}
 
 
-    def login(self, user, password, info, req):
+    def login(self, user, password, data, req):
         if not self.HOSTER_URL:  #@TODO: Remove in 0.4.10
             raise Exception(_("Missing HOSTER_DOMAIN"))
 
@@ -164,7 +164,7 @@ class XFSAccount(Account):
                       'redirect': self.HOSTER_URL}
 
         inputs.update({'login'   : user,
-                       'password': data['password']})
+                       'password': password})
 
         if action:
             url = urlparse.urljoin("http://", action)
@@ -174,4 +174,4 @@ class XFSAccount(Account):
         html = self.load(url, post=inputs)
 
         if re.search(self.LOGIN_FAIL_PATTERN, html):
-            self.fail()
+            self.login_fail()

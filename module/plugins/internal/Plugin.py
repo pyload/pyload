@@ -30,6 +30,18 @@ def encode(string, encoding='utf8'):
 
 
 #@TODO: Move to utils in 0.4.10
+def exists(path):
+    if os.path.exists(path):
+        if os.name == "nt":
+            dir, name = os.path.split(path)
+            return name in os.listdir(dir)
+        else:
+            return True
+    else:
+        return False
+
+
+#@TODO: Move to utils in 0.4.10
 def fixurl(url):
     return html_unescape(urllib.unquote(url.decode('unicode-escape'))).strip()
 
@@ -158,7 +170,7 @@ class Plugin(object):
         log("%(type)s %(plugin)s%(id)s : %(msg)s" % {'type': self.__type__.upper(),
                                                      'plugin': self.__name__,
                                                      'id'    : ("[%s]" % self.pyfile.id) if hasattr(self, 'pyfile') else "",
-                                                     'msg'   : msg or "---------- MARK ----------"})
+                                                     'msg'   : msg})
 
 
     def log_debug(self, *args):
@@ -290,7 +302,7 @@ class Plugin(object):
             frame = inspect.currentframe()
             framefile = fs_join("tmp", self.__name__, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
             try:
-                if not os.path.exists(os.path.join("tmp", self.__name__)):
+                if not exists(os.path.join("tmp", self.__name__)):
                     os.makedirs(os.path.join("tmp", self.__name__))
 
                 with open(framefile, "wb") as f:

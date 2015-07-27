@@ -80,7 +80,7 @@ class MultiHoster(SimpleHoster):
 
             if not self.last_download:
                 self.log_info(_("Downloading file..."))
-                self.download(self.link, ref=False, disposition=True)
+                self.download(self.link, disposition=True)
 
             self.check_file()
 

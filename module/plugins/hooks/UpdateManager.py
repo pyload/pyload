@@ -11,25 +11,14 @@ import traceback
 from operator import itemgetter
 
 from module.plugins.internal.Addon import Expose, Addon, threaded
-from module.utils import save_join as fs_join
-
-
-# Case-sensitive os.path.exists
-def exists(path):
-    if os.path.exists(path):
-        if os.name == "nt":
-            dir, name = os.path.split(path)
-            return name in os.listdir(dir)
-        else:
-            return True
-    else:
-        return False
+from module.plugins.internal.Plugin import exists
+from module.utils import fs_encode, save_join as fs_join
 
 
 class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "0.54"
+    __version__ = "0.55"
     __status__  = "testing"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),
@@ -271,13 +260,13 @@ class UpdateManager(Addon):
                 content = self.load(url % plugin, decode=False)
                 m = VERSION.search(content)
 
-                if m and m.group(2) is version:
+                if m and m.group(2) == version:
                     with open(fs_join("userplugins", prefix, filename), "wb") as f:
-                        f.write(content)
+                        f.write(fs_encode(content))
 
                     updated.append((prefix, name))
                 else:
-                    raise Exception, _("Version mismatch")
+                    raise Exception(_("Version mismatch"))
 
             except Exception, e:
                 self.log_error(_("Error updating plugin: %s") % filename, e)

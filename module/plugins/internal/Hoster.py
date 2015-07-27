@@ -15,9 +15,9 @@ if os.name != "nt":
 
 from module.plugins.internal.Captcha import Captcha
 from module.plugins.internal.Plugin import (Plugin, Abort, Fail, Reconnect, Retry, Skip,
-                                            chunks, encode, fixurl as _fixurl, replace_patterns, seconds_to_midnight,
-                                            set_cookies, parse_html_form, parse_html_tag_attr_value,
-                                            timestamp)
+                                            chunks, encode, exists, fixurl as _fixurl, replace_patterns,
+                                            seconds_to_midnight, set_cookies, parse_html_form,
+                                            parse_html_tag_attr_value, timestamp)
 from module.utils import fs_decode, fs_encode, save_join as fs_join, save_path as safe_filename
 
 
@@ -249,7 +249,7 @@ class Hoster(Plugin):
                 if pyfile.abort:
                     self.abort()
 
-                time.sleep(3)
+                time.sleep(2)
 
         else:
             while pyfile.waitUntil > time.time():
@@ -261,8 +261,8 @@ class Hoster(Plugin):
                     self.wantReconnect = False
                     raise Reconnect
 
-                self.thread.m.reconnecting.wait(3)
-                time.sleep(3)
+                self.thread.m.reconnecting.wait(2)
+                time.sleep(2)
 
         self.waiting = False
         pyfile.status = status  #@NOTE: Remove in 0.4.10
@@ -386,7 +386,7 @@ class Hoster(Plugin):
 
         location = fs_join(download_folder, self.pyfile.package().folder)
 
-        if not os.path.exists(location):
+        if not exists(location):
             try:
                 os.makedirs(location, int(self.pyload.config.get("permission", "folder"), 8))
 
@@ -456,7 +456,7 @@ class Hoster(Plugin):
         do_delete = False
         last_download = fs_encode(self.last_download)
 
-        if not self.last_download or not os.path.exists(last_download):
+        if not self.last_download or not exists(last_download):
             self.last_download = ""
             self.fail(self.pyfile.error or _("No file downloaded"))
 
@@ -506,6 +506,7 @@ class Hoster(Plugin):
                         traceback.print_exc()
 
                 else:
+                    self.last_download = ""
                     self.log_info(_("File deleted"))
 
 
@@ -647,14 +648,14 @@ class Hoster(Plugin):
         download_folder = self.pyload.config.get("general", "download_folder")
         location = fs_join(download_folder, pack.folder, self.pyfile.name)
 
-        if starting and self.pyload.config.get("download", "skip_existing") and os.path.exists(location):
+        if starting and self.pyload.config.get("download", "skip_existing") and exists(location):
             size = os.stat(location).st_size
             if size >= self.pyfile.size:
                 self.skip("File exists")
 
         pyfile = self.pyload.db.findDuplicates(self.pyfile.id, self.pyfile.package().folder, self.pyfile.name)
         if pyfile:
-            if os.path.exists(location):
+            if exists(location):
                 self.skip(pyfile[0])
 
             self.log_debug("File %s not skipped, because it does not exists." % self.pyfile.name)
