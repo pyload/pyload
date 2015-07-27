@@ -23,7 +23,7 @@ from module.plugins.internal.Account import Account
 class OboomCom(Account):
     __name__    = "OboomCom"
     __type__    = "account"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__  = "testing"
 
     __description__ = """Oboom.com account plugin"""
@@ -36,7 +36,7 @@ class OboomCom(Account):
         salt   = passwd[::-1]
         pbkdf2 = PBKDF2(passwd, salt, 1000).hexread(16)
 
-        result = json_loads(self.load("https://www.oboom.com/1/login",
+        result = json_loads(self.load("http://www.oboom.com/1/login",  #@TODO: Revert to `https` in 0.4.10
                                       get={'auth': user,
                                            'pass': pbkdf2}))
 
