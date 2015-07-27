@@ -10,7 +10,7 @@ from module.plugins.internal.Plugin import Plugin
 class Captcha(Plugin):
     __name__    = "Captcha"
     __type__    = "captcha"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__  = "testing"
 
     __description__ = """Base anti-captcha plugin"""
@@ -20,9 +20,8 @@ class Captcha(Plugin):
 
     def __init__(self, plugin):  #@TODO: Pass pyfile instead plugin, so store plugin's html in its associated pyfile as data
         self.pyload = plugin.pyload
-        self.info   = {}  #: Provide information in dict here
-
         self.plugin = plugin
+        self.info   = {}  #: Provide information in dict here
         self.task   = None  #: captchaManager task
 
         self.init()
@@ -35,6 +34,10 @@ class Captcha(Plugin):
         pass
 
 
+    def _log(self, level, args):
+        return self.plugin._log(level, (self.__name__,) + args)
+
+
     def recognize(self, image):
         """
         Extend to build your custom anti-captcha ocr
@@ -43,17 +46,17 @@ class Captcha(Plugin):
 
 
     def decrypt(self, url, get={}, post={}, ref=False, cookies=False, decode=False,
-                input_type='png', output_type='textual', ocr=True):
+                input_type='jpg', output_type='textual', ocr=True):
         img = self.load(url, get=get, post=post, ref=ref, cookies=cookies, decode=decode)
         return self._decrypt(img, input_type, output_type, ocr)
 
 
     #@TODO: Definitely dhoose a better name for this method!
-    def _decrypt(self, raw, input_type='png', output_type='textual', ocr=None):
+    def _decrypt(self, raw, input_type='jpg', output_type='textual', ocr=None):
         """
         Loads a captcha and decrypts it with ocr, plugin, user input
 
-        :param url: url of captcha image
+        :param raw: image raw data
         :param get: get part for request
         :param post: post part for request
         :param cookies: True if cookies should be enabled
@@ -75,7 +78,7 @@ class Captcha(Plugin):
                     OCR = self.pyload.pluginManager.loadClass("captcha", ocr)  #: Rename `captcha` to `ocr` in 0.4.10
 
                     if self.plugin.pyfile.abort:
-                        self.abort()
+                        self.plugin.abort()
 
                     result = OCR(self.plugin).recognize(tmp_img.name)
 
@@ -86,12 +89,12 @@ class Captcha(Plugin):
                 captchaManager = self.pyload.captchaManager
 
                 try:
-                    self.task = captchaManager.newTask(img, input_type, tmp_img.name, output_type)
+                    self.task = captchaManager.newTask(raw, input_type, tmp_img.name, output_type)
                     captchaManager.handleCaptcha(self.task)
 
                     while self.task.isWaiting():
                         if self.plugin.pyfile.abort:
-                            self.abort()
+                            self.plugin.abort()
                         time.sleep(1)
                 finally:
                     captchaManager.removeTask(self.task)
@@ -102,12 +105,13 @@ class Captcha(Plugin):
                 elif not self.task.result:
                     self.fail(_("No captcha result obtained in appropiate time by any of the plugins"))
 
-                result = task.result
-                self.log_debug("Received captcha result: %s" % result)  #@TODO: Remove from here?
+                result = self.task.result
+                self.log_info(_("Captcha result: ") + result)  #@TODO: Remove from here?
 
         if not self.pyload.debug:
             try:
                 os.remove(tmp_img.name)
+
             except OSError, e:
                 self.log_warning(_("Error removing: %s") % tmp_img.name, e)
                 traceback.print_exc()

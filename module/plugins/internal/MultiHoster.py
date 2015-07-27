@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, r
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -21,47 +21,48 @@ class MultiHoster(SimpleHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
+    LEECH_HOSTER  = False
     LOGIN_ACCOUNT = True
 
 
     def setup(self):
         self.chunk_limit     = 1
-        self.multiDL        = bool(self.account)
+        self.multiDL         = bool(self.account)
         self.resume_download = self.premium
 
 
     def prepare(self):
-        self.html      = ""
-        self.link      = ""     #@TODO: Move to Hoster in 0.4.10
-        self.direct_dl = False  #@TODO: Move to Hoster in 0.4.10
+        #@TODO: Recheck in 0.4.10
+        plugin = self.pyload.pluginManager.hosterPlugins[self.__name__]
+        name   = plugin['name']
+        module = plugin['module']
+        klass  = getattr(module, name)
 
-        if not self.get_config('use_premium', True):
-            self.retry_free()
-
-        if self.LOGIN_ACCOUNT and not self.account:
-            self.fail(_("Required account not found"))
-
-        self.req.setOption("timeout", 120)
-
-        if isinstance(self.COOKIES, list):
-            set_cookies(self.req.cj, self.COOKIES)
+        self.get_info = klass.get_info
 
         if self.DIRECT_LINK is None:
-            self.direct_dl = self.__pattern__ != r'^unmatchable$' and re.match(self.__pattern__, self.pyfile.url)
+            direct_dl = self.__pattern__ != r'^unmatchable$' and re.match(self.__pattern__, self.pyfile.url)
         else:
-            self.direct_dl = self.DIRECT_LINK
+            direct_dl = self.DIRECT_LINK
 
-        self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
+        super(MultiHoster, self).prepare()
+
+        self.direct_dl = direct_dl
 
 
     def process(self, pyfile):
         try:
             self.prepare()
+            self.check_info()  #@TODO: Remove in 0.4.10
 
             if self.direct_dl:
-                self.check_info()
-                self.log_debug("Looking for direct download link...")
+                self.log_info(_("Looking for direct download link..."))
                 self.handle_direct(pyfile)
+
+                if self.link or was_downloaded():
+                    self.log_info(_("Direct download link detected"))
+                else:
+                    self.log_info(_("Direct download link not found"))
 
             if not self.link and not self.last_download:
                 self.preload()
@@ -70,14 +71,17 @@ class MultiHoster(SimpleHoster):
                 self.check_status(getinfo=False)
 
                 if self.premium and (not self.CHECK_TRAFFIC or self.check_traffic_left()):
-                    self.log_debug("Handled as premium download")
+                    self.log_info(_("Processing as premium download..."))
                     self.handle_premium(pyfile)
 
                 elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.check_traffic_left()):
-                    self.log_debug("Handled as free download")
+                    self.log_info(_("Processing as free download..."))
                     self.handle_free(pyfile)
 
-            self.download(self.link, ref=False, disposition=True)
+            if not self.last_download:
+                self.log_info(_("Downloading file..."))
+                self.download(self.link, ref=False, disposition=True)
+
             self.check_file()
 
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10

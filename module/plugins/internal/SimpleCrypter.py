@@ -10,7 +10,7 @@ from module.utils import fixup, html_unescape
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.56"
+    __version__ = "0.57"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -51,6 +51,11 @@ class SimpleCrypter(Crypter, SimpleHoster):
       def load_page(self, page_n):
           return the html of the page number page_n
     """
+
+    DIRECT_LINK  = True
+    LEECH_HOSTER = False
+
+
     #@TODO: Remove in 0.4.10
     def init(self):
         account_name = (self.__name__ + ".py").replace("Folder.py", "").replace(".py", "")
@@ -62,27 +67,6 @@ class SimpleCrypter(Crypter, SimpleHoster):
             self.premium    = account.is_premium(self.user)
 
             self.account = account
-
-
-    def prepare(self):
-        self.pyfile.error = ""  #@TODO: Remove in 0.4.10
-
-        self.html  = ""  #@TODO: Recheck in 0.4.10
-        self.link  = ""  #@TODO: Recheck in 0.4.10
-        self.links = []
-
-        if self.LOGIN_PREMIUM and not self.premium:
-            self.fail(_("Required premium account not found"))
-
-        if self.LOGIN_ACCOUNT and not self.account:
-            self.fail(_("Required account not found"))
-
-        self.req.setOption("timeout", 120)
-
-        if isinstance(self.COOKIES, list):
-            set_cookies(self.req.cj, self.COOKIES)
-
-        self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
 
 
     def handle_direct(self, pyfile):
@@ -101,16 +85,19 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
     def decrypt(self, pyfile):
         self.prepare()
+        self.check_info()  #@TODO: Remove in 0.4.10
 
-        self.log_debug("Looking for link redirect...")
-        self.handle_direct(pyfile)
+        if self.direct_dl:
+            self.log_debug(_("Looking for direct download link..."))
+            self.handle_direct(pyfile)
 
-        if self.link:
-            self.urls = [self.link]
+            if self.link or self.links or self.urls or self.packages:
+                self.log_info(_("Direct download link detected"))
+            else:
+                self.log_info(_("Direct download link not found"))
 
-        else:
+        if not (self.link or self.links or self.urls or self.packages):
             self.preload()
-            self.check_info()
 
             self.links = self.get_links() or list()
 
@@ -119,33 +106,12 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
             self.log_debug("Package has %d links" % len(self.links))
 
+        if self.link:
+            self.urls.append(self.link)
+
         if self.links:
-            self.packages = [(self.info['name'], self.links, self.info['folder'])]
-
-
-    def check_name_size(self, getinfo=True):
-        if not self.info or getinfo:
-            self.log_debug("File info (BEFORE): %s" % self.info)
-            self.info.update(self.get_info(self.pyfile.url, self.html))
-            self.log_debug("File info (AFTER): %s"  % self.info)
-
-        try:
-            url  = self.info['url'].strip()
-            name = self.info['name'].strip()
-            if name and name is not url:
-                self.pyfile.name = name
-
-        except Exception:
-            pass
-
-        try:
-            folder = self.info['folder'] = self.pyfile.name
-
-        except Exception:
-            pass
-
-        self.log_debug("File name: %s"   % self.pyfile.name,
-                      "File folder: %s" % self.pyfile.name)
+            name = folder = pyfile.name
+            self.packages.append((name, self.links, folder))
 
 
     def get_links(self):

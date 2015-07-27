@@ -6,7 +6,7 @@ from module.plugins.internal.Captcha import Captcha
 class CaptchaService(Captcha):
     __name__    = "CaptchaService"
     __type__    = "captcha"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__  = "testing"
 
     __description__ = """Base anti-captcha service plugin"""
@@ -16,10 +16,6 @@ class CaptchaService(Captcha):
 
     def init(self):
         self.key = None  #: Last key detected
-
-
-    def _log(self, level, args):
-        return self.plugin._log(level, (self.__name__,) + args)
 
 
     #@TODO: Recheck in 0.4.10

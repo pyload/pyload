@@ -5,7 +5,6 @@ from __future__ import with_statement
 import inspect
 import os
 import re
-import traceback
 import urllib
 
 from module.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload as Skip  #@TODO: Remove in 0.4.10
@@ -126,7 +125,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -155,11 +154,11 @@ class Plugin(object):
 
     def _log(self, level, args):
         log = getattr(self.pyload.log, level)
-        msg = encode(" | ".join((a if isinstance(a, basestring) else str(a)).strip() for a in args if a))  #@NOTE: `fs_encode` -> `encode` in 0.4.10
-        log("%(type)s %(plugin)s%(id)s: %(msg)s" % {'type': self.__type__.upper(),
-                                                    'plugin': self.__name__,
-                                                    'id'    : ("[%s]" % self.pyfile.id) if hasattr(self, 'pyfile') else "",
-                                                    'msg'   : msg or _(level.upper() + " MARK")})
+        msg = encode(" | ".join((a if isinstance(a, basestring) else str(a)).strip() for a in args if a))
+        log("%(type)s %(plugin)s%(id)s : %(msg)s" % {'type': self.__type__.upper(),
+                                                     'plugin': self.__name__,
+                                                     'id'    : ("[%s]" % self.pyfile.id) if hasattr(self, 'pyfile') else "",
+                                                     'msg'   : msg or "---------- MARK ----------"})
 
 
     def log_debug(self, *args):
@@ -205,8 +204,7 @@ class Plugin(object):
             return self.pyload.config.getPlugin(plugin or self.__name__, option)
 
         except KeyError:
-            self.log_warning(_("Config option or plugin not found"))
-            traceback.print_exc()
+            self.log_warning(_("Config option `%s` not found, use default `%s`") % (option, default or None))
             return default
 
 
@@ -271,7 +269,8 @@ class Plugin(object):
             self.fail(_("No url given"))
 
         if self.pyload.debug:
-            self.log_debug("LOAD URL " + url, *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url")])
+            self.log_debug("LOAD URL " + url,
+                           *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url")])
 
         if req is None:
             if hasattr(self, "req"):

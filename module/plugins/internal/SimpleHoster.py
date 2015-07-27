@@ -24,7 +24,7 @@ statusMap = dict((v, k) for k, v in _statusMap.items())
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.71"
+    __version__ = "1.72"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -107,7 +107,7 @@ class SimpleHoster(Hoster):
     DISPOSITION   = True   #: Set to True to use any content-disposition value in http header as file name
     LOGIN_ACCOUNT = False  #: Set to True to require account login
     LOGIN_PREMIUM = False  #: Set to True to require premium account login
-    MULTI_HOSTER  = False  #: Set to True to leech other hoster link (as defined in handle_multi method)
+    LEECH_HOSTER  = False  #: Set to True to leech other hoster link (as defined in handle_multi method)
     TEXT_ENCODING = True   #: Set to encoding name if encoding value in http header is not correct
 
     LINK_PATTERN = None
@@ -203,18 +203,19 @@ class SimpleHoster(Hoster):
 
 
     def prepare(self):
-        self.pyfile.error = ""  #@TODO: Remove in 0.4.10
-
-        self.html      = ""  #@TODO: Recheck in 0.4.10
-        self.link      = ""  #@TODO: Recheck in 0.4.10
-        self.direct_dl = False
-        self.multihost = False
+        self.pyfile.error  = ""  #@TODO: Remove in 0.4.10
+        self.html          = ""  #@TODO: Recheck in 0.4.10
+        self.link          = ""  #@TODO: Recheck in 0.4.10
+        self.last_download = ""
+        self.direct_dl     = False
+        self.leech_dl      = False
 
         if not self.get_config('use_premium', True):
             self.retry_free()
 
         if self.LOGIN_PREMIUM and not self.premium:
             self.fail(_("Required premium account not found"))
+            self.LOGIN_ACCOUNT = True
 
         if self.LOGIN_ACCOUNT and not self.account:
             self.fail(_("Required account not found"))
@@ -231,18 +232,21 @@ class SimpleHoster(Hoster):
             if not hasattr(self, 'LINK_PREMIUM_PATTERN'):
                 self.LINK_PREMIUM_PATTERN = self.LINK_PATTERN
 
-        if (self.MULTI_HOSTER
+        if (self.LEECH_HOSTER
             and (self.__pattern__ is not self.pyload.pluginManager.hosterPlugins[self.__name__]['pattern']
-                 or re.match(self.__pattern__, self.pyfile.url) is None)):
-            self.multihost = True
-            return
+                 and re.match(self.__pattern__, self.pyfile.url) is None)):
+            self.leech_dl = True
 
-        if self.DIRECT_LINK is None:
+        if self.leech_dl:
+            self.direct_dl = False
+
+        elif self.DIRECT_LINK is None:
             self.direct_dl = bool(self.account)
         else:
             self.direct_dl = self.DIRECT_LINK
 
-        self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
+        if not self.leech_dl:
+            self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
 
 
     def preload(self):
@@ -255,33 +259,43 @@ class SimpleHoster(Hoster):
     def process(self, pyfile):
         try:
             self.prepare()
-            self.check_info()
+            self.check_info()  #@TODO: Remove in 0.4.10
 
-            if self.direct_dl:
-                self.log_debug("Looking for direct download link...")
-                self.handle_direct(pyfile)
-
-            if self.multihost and not self.link and not self.last_download:
-                self.log_debug("Looking for leeched download link...")
+            if self.leech_dl:
+                self.log_info(_("Processing as debrid download..."))
                 self.handle_multi(pyfile)
 
+                if not self.link and not was_downloaded():
+                    self.log_info(_("Failed to leech url"))
+
+            else:
+                if not self.link and self.direct_dl and not self.last_download:
+                    self.log_info(_("Looking for direct download link..."))
+                    self.handle_direct(pyfile)
+
+                    if self.link or self.last_download:
+                        self.log_info(_("Direct download link detected"))
+                    else:
+                        self.log_info(_("Direct download link not found"))
+
                 if not self.link and not self.last_download:
-                    self.MULTI_HOSTER = False
-                    self.retry(1, reason=_("Multi hoster fails"))
+                    self.preload()
 
-            if not self.link and not self.last_download:
-                self.preload()
-                self.check_info()
+                    if 'status' not in self.info or self.info['status'] is 3:  #@TODO: Recheck in 0.4.10
+                        self.check_info()
 
-                if self.premium and (not self.CHECK_TRAFFIC or self.check_traffic_left()):
-                    self.log_debug("Handled as premium download")
-                    self.handle_premium(pyfile)
+                    if self.premium and (not self.CHECK_TRAFFIC or self.check_traffic_left()):
+                        self.log_info(_("Processing as premium download..."))
+                        self.handle_premium(pyfile)
 
-                elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.check_traffic_left()):
-                    self.log_debug("Handled as free download")
-                    self.handle_free(pyfile)
+                    elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.check_traffic_left()):
+                        self.log_info(_("Processing as free download..."))
+                        self.handle_free(pyfile)
 
-            self.download(self.link, ref=False, disposition=self.DISPOSITION)
+            if not self.last_download:
+                self.log_info(_("Downloading file..."))
+                self.download(self.link, ref=False, disposition=self.DISPOSITION)
+
             self.check_file()
 
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
@@ -292,25 +306,26 @@ class SimpleHoster(Hoster):
 
             elif self.get_config('fallback', True) and self.premium:
                 self.log_warning(_("Premium download failed"), e)
-                self.retry_free()
+                self.restart(reset=True)
 
             else:
                 raise Fail(err)
 
 
     def check_file(self):
-        lastDownload = fs_encode(self.last_download)
+        self.log_info(_("Checking file..."))
 
         if self.captcha.task and not self.last_download:
             self.captcha.invalid()
             self.retry(10, reason=_("Wrong captcha"))
 
         elif self.check_download({'Empty file': re.compile(r'\A((.|)(\2|\s)*)\Z')},
-                                 file_size=self.info['size']):
+                                 file_size=self.info['size'] if 'size' in self.info else 0,
+                                 delete=True):
             self.error(_("Empty file"))
 
         else:
-            self.log_debug("Checking last downloaded file with built-in rules")
+            self.log_debug("Using default check rules...")
             for r, p in self.FILE_ERRORS:
                 errmsg = self.check_download({r: re.compile(p)})
                 if errmsg is not None:
@@ -326,12 +341,13 @@ class SimpleHoster(Hoster):
                     self.retry(wait_time=60, reason=errmsg)
             else:
                 if self.CHECK_FILE:
-                    self.log_debug("Checking last downloaded file with custom rules")
-                    with open(lastDownload, "rb") as f:
+                    self.log_debug("Using custom check rules...")
+                    with open(fs_encode(self.last_download), "rb") as f:
                         self.html = f.read(50000)  #@TODO: Recheck in 0.4.10
                     self.check_errors()
 
-        self.log_debug("No file errors found")
+        self.log_debug("No errors found")
+        self.pyfile.error = ""
 
 
     def check_errors(self):
@@ -440,13 +456,14 @@ class SimpleHoster(Hoster):
 
     def check_status(self, getinfo=True):
         if not self.info or getinfo:
-            self.log_debug("Update file info...")
-            self.log_debug("Previous file info: %s" % self.info)
+            self.log_info(_("Updating file info..."))
+            old_info = self.info.copy()
             self.info.update(self.get_info(self.pyfile.url, self.html))
-            self.log_debug("Current file info: %s"  % self.info)
+            self.log_debug("File info: %s" % self.info)
+            self.log_debug("Previous file info: %s" % old_info)
 
         try:
-            status = self.info['status']
+            status = self.info['status'] or None
 
             if status == 1:
                 self.offline()
@@ -455,40 +472,49 @@ class SimpleHoster(Hoster):
                 self.temp_offline()
 
             elif status == 8:
-                self.fail(self.info['error'] if 'error' in self.info else _("Failed"))
+                if 'error' in self.info:
+                    self.fail(self.info['error'])
+                else:
+                    self.fail(_("File status: " + statusMap[status]))
 
         finally:
-            self.log_debug("File status: %s" % statusMap[status])
+            self.log_info(_("File status: ") + (statusMap[status] if status else _("Unknown")))
 
 
     def check_name_size(self, getinfo=True):
         if not self.info or getinfo:
-            self.log_debug("Update file info...")
-            self.log_debug("Previous file info: %s" % self.info)
+            self.log_info(_("Updating file info..."))
+            old_info = self.info.copy()
             self.info.update(self.get_info(self.pyfile.url, self.html))
-            self.log_debug("Current file info: %s"  % self.info)
+            self.log_debug("File info: %s" % self.info)
+            self.log_debug("Previous file info: %s" % old_info)
 
         try:
             url  = self.info['url'].strip()
             name = self.info['name'].strip()
+
+        except KeyError:
+            pass
+
+        else:
             if name and name is not url:
                 self.pyfile.name = name
 
-        except Exception:
-            pass
+        if 'size' in self.info and self.info['size'] > 0:
+            self.pyfile.size = int(self.info['size'])  #@TODO: Fix int conversion in 0.4.10
 
-        try:
-            size = self.info['size']
-            if size > 0:
-                self.pyfile.size = size
+        # self.pyfile.sync()
 
-        except Exception:
-            pass
+        name   = self.pyfile.name
+        size   = self.pyfile.size
+        folder = self.info['folder'] = name
 
-        self.log_debug("File name: %s" % self.pyfile.name,
-                      "File size: %s byte" % self.pyfile.size if self.pyfile.size > 0 else "File size: Unknown")
+        self.log_info(_("File name: ") + name)
+        self.log_info(_("File size: %s bytes") % size if size > 0 else _("File size: Unknown"))
+        # self.log_info("File folder: " + folder)
 
 
+    #@TODO: Rewrite in 0.4.10
     def check_info(self):
         self.check_name_size()
 
@@ -507,13 +533,7 @@ class SimpleHoster(Hoster):
 
 
     def handle_direct(self, pyfile):
-        link = self.direct_link(pyfile.url, self.resume_download)
-
-        if link:
-            self.log_info(_("Direct download link detected"))
-            self.link = link
-        else:
-            self.log_debug("Direct download link not found")
+        self.link = self.direct_link(pyfile.url, self.resume_download)
 
 
     def handle_multi(self, pyfile):  #: Multi-hoster handler
@@ -534,7 +554,7 @@ class SimpleHoster(Hoster):
     def handle_premium(self, pyfile):
         if not hasattr(self, 'LINK_PREMIUM_PATTERN'):
             self.log_error(_("Premium download not implemented"))
-            self.log_debug("Handled as free download")
+            self.log_info(_("Processing as free download..."))
             self.handle_free(pyfile)
 
         m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
@@ -542,12 +562,3 @@ class SimpleHoster(Hoster):
             self.error(_("Premium download link not found"))
         else:
             self.link = m.group(1)
-
-
-    def retry_free(self):
-        if not self.premium:
-            return
-        self.premium = False
-        self.account = None
-        self.req = self.pyload.requestFactory.getRequest(self.__name__)
-        raise Retry(_("Fallback to free download"))

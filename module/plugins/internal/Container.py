@@ -13,7 +13,7 @@ from module.utils import save_join as fs_join
 class Container(Crypter):
     __name__    = "Container"
     __type__    = "container"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -24,17 +24,21 @@ class Container(Crypter):
     __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
-    def preprocessing(self, thread):
+    def process(self, pyfile):
         """
-        Prepare
+        Main method
         """
-        self.setup()
-        self.thread = thread
-
         self._load2disk()
 
-        self.decrypt(self.pyfile)
+        self.decrypt(pyfile)
+
         self.delete_tmp()
+
+        if self.urls:
+            self._generate_packages()
+
+        elif not self.packages:
+            self.error(_("No link grabbed"), "decrypt")
 
         self._create_packages()
 

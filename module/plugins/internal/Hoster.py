@@ -47,7 +47,7 @@ def create_getInfo(klass):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -179,6 +179,7 @@ class Hoster(Plugin):
 
         self.pyfile.setStatus("starting")
 
+        self.log_debug("PROCESS URL " + self.pyfile.url)
         return self.process(self.pyfile)
 
 
@@ -195,19 +196,10 @@ class Hoster(Plugin):
         return min(self.pyload.config.get("download", "chunks"), self.chunk_limit)
 
 
-    def reset_account(self):
-        """
-        Don't use account and retry download
-        """
-        self.account = None
-        self.req = self.pyload.requestFactory.getRequest(self.__name__)
-        self.retry()
-
-
     def set_reconnect(self, reconnect):
         reconnect = bool(reconnect)
 
-        self.log_info(_("Reconnect: %s") % reconnect)
+        self.log_info(_("RECONNECT ") + ("enabled" if reconnect else "disabled"))
         self.log_debug("Previous wantReconnect: %s" % self.wantReconnect)
 
         self.wantReconnect = reconnect
@@ -223,7 +215,7 @@ class Hoster(Plugin):
         wait_time  = max(int(seconds), 1)
         wait_until = time.time() + wait_time + 1
 
-        self.log_info(_("Wait: %d seconds") % wait_time)
+        self.log_info(_("WAIT %d seconds") % wait_time)
         self.log_debug("Previous waitUntil: %f" % self.pyfile.waitUntil)
 
         self.pyfile.waitUntil = wait_until
@@ -249,14 +241,16 @@ class Hoster(Plugin):
         status = pyfile.status  #@NOTE: Remove in 0.4.10
         pyfile.setStatus("waiting")
 
-        if self.account:
-            self.log_debug("Ignore reconnection due account logged")
+        if not self.wantReconnect or self.account:
+            if self.account:
+                self.log_warning("Ignore reconnection due logged account")
 
             while pyfile.waitUntil > time.time():
                 if pyfile.abort:
                     self.abort()
 
                 time.sleep(3)
+
         else:
             while pyfile.waitUntil > time.time():
                 if pyfile.abort:
@@ -266,7 +260,7 @@ class Hoster(Plugin):
                     self.waiting = False
                     self.wantReconnect = False
                     raise Reconnect
-                    
+
                 self.thread.m.reconnecting.wait(3)
                 time.sleep(3)
 
@@ -321,11 +315,26 @@ class Hoster(Plugin):
             self.retries[id] = 0
 
         if 0 < max_tries <= self.retries[id]:
-            self.fail(reason or _("Max retries reached"), _("retry"))
+            self.fail(reason or _("Max retries reached"))
 
         self.wait(wait_time, False)
 
         self.retries[id] += 1
+        raise Retry(reason)
+
+
+    def restart(self, reason=None, reset=False):
+        if not reason:
+            reason = _("Fallback to free download") if reset else _("Restart")
+
+        if reset:
+            if not self.premium:
+                return
+
+            self.premium = False
+            self.account = None
+            self.req = self.pyload.requestFactory.getRequest(self.__name__)
+
         raise Retry(reason)
 
 
@@ -362,7 +371,8 @@ class Hoster(Plugin):
             self.fail(_("No url given"))
 
         if self.pyload.debug:
-            self.log_debug("DOWNLOAD URL " + url, *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url")])
+            self.log_debug("DOWNLOAD URL " + url,
+                           *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url")])
 
         self.captcha.correct()
         self.check_for_same_files()
@@ -432,7 +442,7 @@ class Hoster(Plugin):
         return self.last_download
 
 
-    def check_download(self, rules, delete=True, file_size=0, size_tolerance=1000, read_size=100000):
+    def check_download(self, rules, delete=False, file_size=0, size_tolerance=2048, read_size=100000):
         """
         Checks the content of the last downloaded file, re match is saved to `lastCheck`
 
@@ -444,14 +454,14 @@ class Hoster(Plugin):
         :return: dictionary key of the first rule that matched
         """
         do_delete = False
-        lastDownload = fs_encode(self.last_download)
+        last_download = fs_encode(self.last_download)
 
-        if not self.last_download or not os.path.exists(lastDownload):
+        if not self.last_download or not os.path.exists(last_download):
             self.last_download = ""
             self.fail(self.pyfile.error or _("No file downloaded"))
 
         try:
-            download_size = os.stat(lastDownload).st_size
+            download_size = os.stat(last_download).st_size
 
             if download_size < 1:
                 do_delete = True
@@ -462,14 +472,13 @@ class Hoster(Plugin):
 
                 if diff > size_tolerance:
                     do_delete = True
-                    self.fail(_("File size mismatch"))
+                    self.fail(_("File size mismatch | Expected file size: %s | Downloaded file size: %s")
+                              % (file_size, download_size))
 
                 elif diff != 0:
                     self.log_warning(_("File size is not equal to expected size"))
 
-            self.log_debug("Download Check triggered")
-
-            with open(lastDownload, "rb") as f:
+            with open(last_download, "rb") as f:
                 content = f.read(read_size)
 
             #: Produces encoding errors, better log to other file in the future?
@@ -489,11 +498,15 @@ class Hoster(Plugin):
         finally:
             if delete and do_delete:
                 try:
-                    os.remove(lastDownload)
+                    os.remove(last_download)
+
                 except OSError, e:
-                    self.log_warning(_("Error removing: %s") % lastDownload, e)
+                    self.log_warning(_("Error removing: %s") % last_download, e)
                     if self.pyload.debug:
                         traceback.print_exc()
+
+                else:
+                    self.log_info(_("File deleted"))
 
 
     def direct_link(self, url, follow_location=None):

@@ -13,7 +13,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.54"
+    __version__ = "0.55"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -27,7 +27,7 @@ class XFSHoster(SimpleHoster):
 
     HOSTER_DOMAIN = None
 
-    MULTI_HOSTER = True  #@NOTE: Should be default to False for safe, but I'm lazy...
+    LEECH_HOSTER = True  #@NOTE: Should be default to False for safe, but I'm lazy...
 
     NAME_PATTERN = r'(Filename[ ]*:[ ]*</b>(</td><td nowrap>)?|name="fname"[ ]+value="|<[\w^_]+ class="(file)?name">)\s*(?P<N>.+?)(\s*<|")'
     SIZE_PATTERN = r'(Size[ ]*:[ ]*</b>(</td><td>)?|File:.*>|</font>\s*\(|<[\w^_]+ class="size">)\s*(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)'
@@ -110,8 +110,8 @@ class XFSHoster(SimpleHoster):
             if m:
                 break
         else:
-            self.log_error(data['op'] if 'op' in data else _("UNKNOWN"))
-            return ""
+            if 'op' in data:
+                self.error(_("Missing OP data after: ") + data['op'])
 
         self.link = m.group(1)
 

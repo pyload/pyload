@@ -14,7 +14,7 @@ from module.utils import compare_time, lock, parseFileSize as parse_size
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -66,7 +66,7 @@ class Account(Plugin):
                 traceback.print_exc()
 
         else:
-            res = True
+            res = info['login']['valid'] = True
 
         finally:
             if self.req:
@@ -96,7 +96,7 @@ class Account(Plugin):
     @lock
     def add(self, user, password=None, options={}):
         if user not in self.info:
-            self.info[user] = {'login': {'valid': True, 'password': password or "", 'timestamp': 0},  #@NOTE: Do not remove `'valid': True` in 0.4.9 or accounts will not login
+            self.info[user] = {'login': {'valid': None, 'password': password or "", 'timestamp': 0},
                                'data' : {'options': options, 'timestamp': 0}}
             self._login(user)
             return True
@@ -171,8 +171,6 @@ class Account(Plugin):
         :param reload: reloads cached account information
         :return: dictionary with information
         """
-        traceback.print_exc()  ######################
-
         if user not in self.info:
             self.log_error(_("User %s not found while retrieving account info") % user)
             return
@@ -312,7 +310,7 @@ class Account(Plugin):
 
 
     def can_use(self):
-        return self.select() is not (None, None)
+        return self.select() != (None, None)
 
 
     def parse_traffic(self, value, unit=None):  #: Return kilobytes
