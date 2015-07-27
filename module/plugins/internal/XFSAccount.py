@@ -11,7 +11,7 @@ from module.plugins.internal.Plugin import parse_html_form, set_cookies
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __status__  = "testing"
 
     __description__ = """XFileSharing account plugin"""
