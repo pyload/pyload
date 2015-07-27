@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ShareonlineBiz(SimpleHoster):
     __name__    = "ShareonlineBiz"
     __type__    = "hoster"
-    __version__ = "0.54"
+    __version__ = "0.55"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
@@ -52,7 +52,7 @@ class ShareonlineBiz(SimpleHoster):
                 info['size']     = field[3]  #: In bytes
                 info['md5']      = field[4].strip().lower().replace("\n\n", "")  #: md5
 
-            elif field[1] in ("DELETED", "NOT FOUND"):
+            elif field[1] in ("DELETED", "NOTFOUND"):
                 info['status'] = 1
 
         except IndexError:
