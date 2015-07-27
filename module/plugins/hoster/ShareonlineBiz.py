@@ -166,11 +166,14 @@ class ShareonlineBiz(SimpleHoster):
         if errmsg == "invalid":
             self.fail(_("File not available"))
 
-        elif errmsg in ("full", "freelimit", "size", "proxy"):
+        elif errmsg in ("freelimit", "size", "proxy"):
             self.fail(_("Premium account needed"))
 
         elif errmsg in ("expired", "server"):
             self.retry(wait_time=600, reason=errmsg)
+
+        elif errmsg == "full":
+            self.retry(10, 600, _("Server is full"))
 
         elif 'slot' in errmsg:
             self.wantReconnect = True

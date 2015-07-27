@@ -46,13 +46,13 @@ class Captcha(Plugin):
 
 
     def decrypt(self, url, get={}, post={}, ref=False, cookies=False, decode=False,
-                input_type='jpg', output_type='textual', ocr=True, timeout=300):
+                input_type='jpg', output_type='textual', ocr=True, timeout=120):
         img = self.load(url, get=get, post=post, ref=ref, cookies=cookies, decode=decode)
         return self._decrypt(img, input_type, output_type, ocr, timeout)
 
 
     #@TODO: Definitely choose a better name for this method!
-    def _decrypt(self, raw, input_type='jpg', output_type='textual', ocr=None, timeout=300):
+    def _decrypt(self, raw, input_type='jpg', output_type='textual', ocr=None, timeout=120):
         """
         Loads a captcha and decrypts it with ocr, plugin, user input
 
