@@ -42,7 +42,7 @@ class FastshareCz(SimpleHoster):
         if self.CREDIT_ERROR in self.html:
             errmsg = self.info['error'] = _("Not enough traffic left")
             self.log_warning(errmsg)
-            self.reset_account()
+            self.restart(reset=True)
 
         self.info.pop('error', None)
 
@@ -73,9 +73,9 @@ class FastshareCz(SimpleHoster):
             self.retry(max_tries=5, reason=_("Wrong captcha"))
 
         elif check == "credit":
-            self.reset_account()
+            self.restart(reset=True)
 
-        return super(FastshareCz, self).checkFile()
+        return super(FastshareCz, self).check_file()
 
 
 getInfo = create_getInfo(FastshareCz)

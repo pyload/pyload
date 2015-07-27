@@ -45,7 +45,7 @@ class SimplydebridCom(MultiHoster):
         if self.check_download({'error': "No address associated with hostname"}):
             self.retry(24, 3 * 60, _("Bad file downloaded"))
 
-        return super(SimplydebridCom, self).checkFile()
+        return super(SimplydebridCom, self).check_file()
 
 
 getInfo = create_getInfo(SimplydebridCom)

@@ -148,7 +148,7 @@ class UlozTo(SimpleHoster):
         elif check == "not_found":
             self.fail(_("Server error, file not downloadable"))
 
-        return super(UlozTo, self).checkFile()
+        return super(UlozTo, self).check_file()
 
 
 getInfo = create_getInfo(UlozTo)

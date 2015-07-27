@@ -52,7 +52,7 @@ class BasePlugin(Hoster):
 
         for _i in xrange(5):
             try:
-                link = self.direct_link(self, urllib.unquote(pyfile.url))
+                link = self.direct_link(urllib.unquote(pyfile.url))
 
                 if link:
                     self.download(link, ref=False, disposition=True)

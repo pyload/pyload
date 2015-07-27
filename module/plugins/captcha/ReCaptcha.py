@@ -81,7 +81,7 @@ class ReCaptcha(CaptchaService):
             self.fail(_("ReCaptcha second challenge pattern not found"))
 
         self.log_debug("Second challenge: %s" % challenge)
-        result = self.decrypt("%simage" % server,
+        result = self.decrypt(urlparse.urljoin(server, "image"),
                               get={'c': challenge},
                               cookies=True,
                               input_type="jpg",

@@ -52,7 +52,7 @@ class PremiumTo(MultiHoster):
         if err:
             self.fail(err)
 
-        return super(PremiumTo, self).checkFile()
+        return super(PremiumTo, self).check_file()
 
 
 getInfo = create_getInfo(PremiumTo)

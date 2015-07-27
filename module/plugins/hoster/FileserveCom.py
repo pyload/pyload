@@ -69,7 +69,7 @@ class FileserveCom(Hoster):
 
 
     def process(self, pyfile):
-        pyfile.name, pyfile.size, status, self.url = checkFile(self, [self.url])[0]
+        pyfile.name, pyfile.size, status, self.url = check_file(self, [self.url])[0]
         if status != 2:
             self.offline()
         self.log_debug("File Name: %s Size: %d" % (pyfile.name, pyfile.size))
@@ -196,7 +196,7 @@ class FileserveCom(Hoster):
                 elif res['error_code'] in ["305", "500"]:
                     self.temp_offline()
                 elif res['error_code'] in ["403", "605"]:
-                    self.reset_account()
+                    self.restart(reset=True)
                 elif res['error_code'] in ["606", "607", "608"]:
                     self.offline()
                 else:
@@ -211,4 +211,4 @@ class FileserveCom(Hoster):
 
 def get_info(urls):
     for chunk in chunks(urls, 100):
-        yield checkFile(FileserveCom, chunk)
+        yield check_file(FileserveCom, chunk)

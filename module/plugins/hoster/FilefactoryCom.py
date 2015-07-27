@@ -71,7 +71,7 @@ class FilefactoryCom(SimpleHoster):
         elif check == "error":
             self.error(_("Unknown error"))
 
-        return super(FilefactoryCom, self).checkFile()
+        return super(FilefactoryCom, self).check_file()
 
 
     def handle_premium(self, pyfile):

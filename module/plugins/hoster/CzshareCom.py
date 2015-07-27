@@ -72,7 +72,7 @@ class CzshareCom(SimpleHoster):
             inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
         except Exception, e:
             self.log_error(e)
-            self.reset_account()
+            self.restart(reset=True)
 
         #: Download the file, destination is determined by pyLoad
         self.download("http://sdilej.cz/profi_down.php", post=inputs, disposition=True)
@@ -148,7 +148,7 @@ class CzshareCom(SimpleHoster):
             self.fail(_("File not available - try later"))
 
         elif check == "credit":
-            self.reset_account()
+            self.restart(reset=True)
 
         elif check == "multi-dl":
             self.wait(5 * 60, 12, _("Download limit reached"))
@@ -157,7 +157,7 @@ class CzshareCom(SimpleHoster):
             self.captcha.invalid()
             self.retry()
 
-        return super(CzshareCom, self).checkFile()
+        return super(CzshareCom, self).check_file()
 
 
 getInfo = create_getInfo(CzshareCom)

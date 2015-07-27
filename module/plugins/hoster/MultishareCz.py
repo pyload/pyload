@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MultishareCz(SimpleHoster):
     __name__    = "MultishareCz"
     __type__    = "hoster"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?multishare\.cz/stahnout/(?P<ID>\d+)'
@@ -23,7 +23,7 @@ class MultishareCz(SimpleHoster):
     SIZE_REPLACEMENTS = [('&nbsp;', '')]
 
     CHECK_TRAFFIC = True
-    MULTI_HOSTER  = True
+    LEECH_HOSTER  = True
 
     INFO_PATTERN    = ur'(?:<li>Název|Soubor): <strong>(?P<N>[^<]+)</strong><(?:/li><li|br)>Velikost: <strong>(?P<S>[^<]+)</strong>'
     OFFLINE_PATTERN = ur'<h1>Stáhnout soubor</h1><p><strong>Požadovaný soubor neexistuje.</strong></p>'

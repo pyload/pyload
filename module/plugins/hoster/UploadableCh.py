@@ -71,7 +71,7 @@ class UploadableCh(SimpleHoster):
             self.wait(60 * 60, True)
             self.retry()
 
-        return super(UploadableCh, self).checkFile()
+        return super(UploadableCh, self).check_file()
 
 
 getInfo = create_getInfo(UploadableCh)

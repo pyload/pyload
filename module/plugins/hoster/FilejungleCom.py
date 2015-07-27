@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.FileserveCom import FileserveCom, checkFile
+from module.plugins.hoster.FileserveCom import FileserveCom, check_file
 from module.plugins.internal.Plugin import chunks
 
 
@@ -27,4 +27,4 @@ class FilejungleCom(FileserveCom):
 
 def get_info(urls):
     for chunk in chunks(urls, 100):
-        yield checkFile(FilejungleCom, chunk)
+        yield check_file(FilejungleCom, chunk)
