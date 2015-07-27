@@ -8,7 +8,7 @@ from module.plugins.internal.Hook import Hook
 class XFileSharingPro(Hook):
     __name__    = "XFileSharingPro"
     __type__    = "hook"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __status__  = "testing"
 
     __config__ = [("activated"       , "bool", "Activated"                     , True ),
@@ -29,11 +29,11 @@ class XFileSharingPro(Hook):
                               r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:user|folder)s?/\w+')}
 
     HOSTER_BUILTIN  = [#WORKING HOSTERS:
-                       "backin.net", "eyesfile.ca", "file4safe.com", "fileband.com",
-                       "filedwon.com", "fileparadox.in", "filevice.com", "hostingbulk.com",
-                       "junkyvideo.com", "linestorage.com", "ravishare.com", "ryushare.com",
-                       "salefiles.com", "sendmyway.com", "sharebeast.com", "sharesix.com",
-                       "thefile.me", "verzend.be", "worldbytez.com", "xvidstage.com",
+                       "ani-stream.com", "backin.net", "eyesfile.ca", "file4safe.com", 
+                       "fileband.com", "filedwon.com", "fileparadox.in", "filevice.com", 
+                       "hostingbulk.com", "junkyvideo.com", "linestorage.com", "ravishare.com", 
+                       "ryushare.com", "salefiles.com", "sendmyway.com", "sharebeast.com", 
+                       "sharesix.com", "thefile.me", "verzend.be", "worldbytez.com", "xvidstage.com",
                        #: NOT TESTED:
                        "101shared.com", "4upfiles.com", "filemaze.ws", "filenuke.com",
                        "linkzhost.com", "mightyupload.com", "rockdizfile.com", "sharerepo.com",
