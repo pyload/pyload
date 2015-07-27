@@ -122,7 +122,7 @@ class ExtractArchive(Addon):
                   ("repair"         , "bool"              , "Repair broken archives (RAR required)"     , False                                                                    ),
                   ("test"           , "bool"              , "Test archive before extracting"            , False                                                                    ),
                   ("usepasswordfile", "bool"              , "Use password file"                         , True                                                                     ),
-                  ("passwordfile"   , "file"              , "Password file"                             , "archive_password.txt"                                                   ),
+                  ("passwordfile"   , "file"              , "Password file"                             , "passwords.txt"                                                          ),
                   ("delete"         , "bool"              , "Delete archive after extraction"           , True                                                                     ),
                   ("deltotrash"     , "bool"              , "Move to trash (recycle bin) instead delete", True                                                                     ),
                   ("subfolder"      , "bool"              , "Create subfolder for each package"         , False                                                                    ),
