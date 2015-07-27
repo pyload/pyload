@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
+
 import os
 import time
 import traceback
@@ -10,7 +12,7 @@ from module.plugins.internal.Plugin import Plugin
 class Captcha(Plugin):
     __name__    = "Captcha"
     __type__    = "captcha"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__  = "testing"
 
     __description__ = """Base anti-captcha plugin"""
