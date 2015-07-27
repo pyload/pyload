@@ -137,7 +137,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -164,34 +164,35 @@ class Plugin(object):
         pass
 
 
-    def _log(self, level, args):
+    def _log(self, level, plugintype, pluginname, messages):
         log = getattr(self.pyload.log, level)
-        msg = encode(" | ".join((a if isinstance(a, basestring) else str(a)).strip() for a in args if a))
-        log("%(type)s %(plugin)s%(id)s : %(msg)s" % {'type': self.__type__.upper(),
-                                                     'plugin': self.__name__,
-                                                     'id'    : ("[%s]" % self.pyfile.id) if hasattr(self, 'pyfile') else "",
-                                                     'msg'   : msg})
+        msg = encode(" | ".join((a if isinstance(a, basestring) else str(a)).strip() for a in messages if a))
+        log("%(plugintype)s %(pluginname)s%(id)s : %(msg)s"
+            % {'plugintype': plugintype.upper(),
+               'pluginname': pluginname,
+               'id'        : ("[%s]" % self.pyfile.id) if hasattr(self, 'pyfile') else "",
+               'msg'       : msg})
 
 
     def log_debug(self, *args):
         if self.pyload.debug:
-            return self._log("debug", args)
+            return self._log("debug", self.__type__, self.__name__, args)
 
 
     def log_info(self, *args):
-        return self._log("info", args)
+        return self._log("info", self.__type__, self.__name__, args)
 
 
     def log_warning(self, *args):
-        return self._log("warning", args)
+        return self._log("warning", self.__type__, self.__name__, args)
 
 
     def log_error(self, *args):
-        return self._log("error", args)
+        return self._log("error", self.__type__, self.__name__, args)
 
 
     def log_critical(self, *args):
-        return self._log("critical", args)
+        return self._log("critical", self.__type__, self.__name__, args)
 
 
     def set_config(self, option, value):

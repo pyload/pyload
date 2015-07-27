@@ -8,7 +8,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class XFileSharingPro(XFSHoster):
     __name__    = "XFileSharingPro"
     __type__    = "hoster"
-    __version__ = "0.49"
+    __version__ = "0.50"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)'
@@ -21,8 +21,8 @@ class XFileSharingPro(XFSHoster):
     URL_REPLACEMENTS = [("/embed-", "/")]
 
 
-    def _log(self, level, args):
-        return super(XFileSharingPro, self)._log(level, (self.HOSTER_NAME,) + args)
+    def _log(self, level, plugintype, pluginname, messages):
+        return super(XFileSharingPro, self)._log(level, plugintype, pluginname, (self.HOSTER_NAME,) + messages)
 
 
     def init(self):

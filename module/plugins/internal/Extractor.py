@@ -22,7 +22,7 @@ class PasswordError(Exception):
 class Extractor(Plugin):
     __name__    = "Extractor"
     __type__    = "extractor"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__  = "testing"
 
     __description__ = """Base extractor plugin"""
@@ -113,8 +113,8 @@ class Extractor(Plugin):
         pass
 
 
-    def _log(self, level, args):
-        return self.plugin._log(level, (self.__name__,) + args)
+    def _log(self, level, plugintype, pluginname, messages):
+        return self.plugin._log(level, plugintype, pluginname, (self.__name__,) + messages)
 
 
     def check(self):
