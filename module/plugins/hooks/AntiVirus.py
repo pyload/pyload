@@ -16,7 +16,7 @@ from module.utils import fs_encode, save_join as fs_join
 class AntiVirus(Addon):
     __name__    = "AntiVirus"
     __type__    = "hook"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     #@TODO: add trash option (use Send2Trash lib)
@@ -36,8 +36,8 @@ class AntiVirus(Addon):
     @Expose
     @threaded
     def scan(self, pyfile, thread):
-        file     = fs_encode(pyfile.plugin.lastDownload)
-        filename = os.path.basename(pyfile.plugin.lastDownload)
+        file     = fs_encode(pyfile.plugin.last_download)
+        filename = os.path.basename(pyfile.plugin.last_download)
         cmdfile  = fs_encode(self.get_config('cmdfile'))
         cmdargs  = fs_encode(self.get_config('cmdargs').strip())
 

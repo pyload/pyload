@@ -38,7 +38,7 @@ def compute_checksum(local_file, algorithm):
 class Checksum(Addon):
     __name__    = "Checksum"
     __type__    = "hook"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __config__ = [("check_checksum", "bool"             , "Check checksum? (If False only size will be verified)", True   ),
@@ -99,10 +99,10 @@ class Checksum(Addon):
 
         self.log_debug(data)
 
-        if not pyfile.plugin.lastDownload:
+        if not pyfile.plugin.last_download:
             self.check_failed(pyfile, None, "No file downloaded")
 
-        local_file = fs_encode(pyfile.plugin.lastDownload)
+        local_file = fs_encode(pyfile.plugin.last_download)
         # download_folder = self.pyload.config.get("general", "download_folder")
         # local_file = fs_encode(fs_join(download_folder, pyfile.package().folder, pyfile.name))
 

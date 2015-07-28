@@ -108,7 +108,7 @@ class MegaCoNz(Hoster):
 
     def decrypt_file(self, key):
         """
-        Decrypts the file at lastDownload`
+        Decrypts the file at last_download`
         """
         #: Upper 64 bit of counter start
         n = self.b64_decode(key)[16:24]
