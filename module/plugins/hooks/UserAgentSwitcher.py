@@ -3,12 +3,13 @@
 import pycurl
 
 from module.plugins.internal.Addon import Addon
+from module.plugins.internal.Plugin import encode
 
 
 class UserAgentSwitcher(Addon):
     __name__    = "UserAgentSwitcher"
     __type__    = "hook"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __config__ = [("activated"     , "bool", "Activated"                             , True                                                                      ),
@@ -34,4 +35,4 @@ class UserAgentSwitcher(Addon):
 
         if useragent:
             self.log_debug("Use custom user-agent string: " + useragent)
-            pyfile.plugin.req.http.c.setopt(pycurl.USERAGENT, useragent)
+            pyfile.plugin.req.http.c.setopt(pycurl.USERAGENT, encode(useragent))
