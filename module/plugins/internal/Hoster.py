@@ -47,7 +47,7 @@ def create_getInfo(klass):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -355,7 +355,7 @@ class Hoster(Plugin):
         return url
 
 
-    def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=False):
+    def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=True):
         """
         Downloads the content at url to download folder
 
@@ -420,7 +420,7 @@ class Hoster(Plugin):
             self.pyfile.size = self.req.size
 
         if newname:
-            newname = urlparse.urlparse(newname).path.split('/')[-1]
+            newname = urlparse.urlparse(newname).path.split('/')[-1].split('*=')[-1]  #@TODO: Remove in 0.4.10
 
             if disposition and newname is not name:
                 self.log_info(_("%(name)s saved as %(newname)s") % {'name': name, 'newname': newname})

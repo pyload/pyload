@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, r
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -80,7 +80,7 @@ class MultiHoster(SimpleHoster):
 
             if not self.last_download:
                 self.log_info(_("Downloading file..."))
-                self.download(self.link, disposition=True)
+                self.download(self.link, disposition=self.DISPOSITION)
 
             self.check_file()
 

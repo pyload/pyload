@@ -13,7 +13,7 @@ from module.utils import html_unescape
 class GoogledriveCom(SimpleHoster):
     __name__    = "GoogledriveCom"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(drive|docs)\.google\.com/(file/d/\w+|uc\?.*id=)'
@@ -23,8 +23,6 @@ class GoogledriveCom(SimpleHoster):
     __license__     = "GPLv3"
     __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
-
-    DISPOSITION = False  #: Remove in 0.4.10
 
     NAME_PATTERN    = r'(?:<title>|class="uc-name-size".*>)(?P<N>.+?)(?: - Google Drive</title>|</a> \()'
     OFFLINE_PATTERN = r'align="center"><p class="errorMessage"'

@@ -2,13 +2,12 @@
 
 from __future__ import with_statement
 
+import operator
 import os
 import re
 import sys
 import time
 import traceback
-
-from operator import itemgetter
 
 from module.plugins.internal.Addon import Expose, Addon, threaded
 from module.plugins.internal.Plugin import exists
@@ -224,7 +223,7 @@ class UpdateManager(Addon):
                     'name': n,
                 })
 
-        for plugin in sorted(updatelist, key=itemgetter("type", "name")):
+        for plugin in sorted(updatelist, key=operator.itemgetter("type", "name")):
             filename = plugin['name']
             prefix   = plugin['type']
             version  = plugin['version']

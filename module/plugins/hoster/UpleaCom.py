@@ -9,7 +9,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class UpleaCom(XFSHoster):
     __name__    = "UpleaCom"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?uplea\.com/dl/\w{15}'
@@ -19,8 +19,6 @@ class UpleaCom(XFSHoster):
     __authors__     = [("Redleon", None),
                        ("GammaC0de", None)]
 
-
-    DISPOSITION = False  #@TODO: Remove in 0.4.10
 
     HOSTER_DOMAIN = "uplea.com"
 

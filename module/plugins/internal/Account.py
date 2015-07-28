@@ -5,8 +5,6 @@ import time
 import threading
 import traceback
 
-from operator import itemgetter
-
 from module.plugins.internal.Plugin import Plugin
 from module.utils import compare_time, lock, parseFileSize as parse_size
 

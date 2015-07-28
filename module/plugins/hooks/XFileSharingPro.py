@@ -29,10 +29,10 @@ class XFileSharingPro(Hook):
                               r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:user|folder)s?/\w+')}
 
     HOSTER_BUILTIN  = [#WORKING HOSTERS:
-                       "ani-stream.com", "backin.net", "eyesfile.ca", "file4safe.com", 
-                       "fileband.com", "filedwon.com", "fileparadox.in", "filevice.com", 
-                       "hostingbulk.com", "junkyvideo.com", "linestorage.com", "ravishare.com", 
-                       "ryushare.com", "salefiles.com", "sendmyway.com", "sharebeast.com", 
+                       "ani-stream.com", "backin.net", "eyesfile.ca", "file4safe.com",
+                       "fileband.com", "filedwon.com", "fileparadox.in", "filevice.com",
+                       "hostingbulk.com", "junkyvideo.com", "linestorage.com", "ravishare.com",
+                       "ryushare.com", "salefiles.com", "sendmyway.com", "sharebeast.com",
                        "sharesix.com", "thefile.me", "verzend.be", "worldbytez.com", "xvidstage.com",
                        #: NOT TESTED:
                        "101shared.com", "4upfiles.com", "filemaze.ws", "filenuke.com",
