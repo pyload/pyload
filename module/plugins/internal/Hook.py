@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Addon import Addon
+from module.plugins.internal.Addon import Addon, threaded
 
 
 class Hook(Addon):
     __name__    = "Hook"
     __type__    = "hook"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __config__   = []  #: [("name", "type", "desc", "default")]
