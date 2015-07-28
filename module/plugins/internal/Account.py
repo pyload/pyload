@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
-
 import random
 import time
 import threading
 import traceback
+
+from operator import itemgetter
 
 from module.plugins.internal.Plugin import Plugin
 from module.utils import compare_time, lock, parseFileSize as parse_size
@@ -14,7 +14,7 @@ from module.utils import compare_time, lock, parseFileSize as parse_size
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -31,6 +31,8 @@ class Account(Plugin):
         self.pyload = manager.core
         self.info   = {}  #: Provide information in dict here
         self.lock   = threading.RLock()
+
+        self.accounts = accounts  #@TODO: Remove in 0.4.10
 
         self.init()
         self.init_accounts(accounts)
@@ -62,11 +64,14 @@ class Account(Plugin):
         except Exception, e:
             self.log_warning(_("Could not login user `%s`") % user, e)
             res = info['login']['valid'] = False
+            self.accounts[user]['valid'] = False  #@TODO: Remove in 0.4.10
+
             if self.pyload.debug:
                 traceback.print_exc()
 
         else:
             res = info['login']['valid'] = True
+            self.accounts[user]['valid'] = True  #@TODO: Remove in 0.4.10
 
         finally:
             if self.req:
@@ -79,8 +84,10 @@ class Account(Plugin):
     def relogin(self, user):
         self.log_info(_("Relogin user `%s`...") % user)
 
-        with self.get_request(user) as req:
+        req = self.get_request(user)
+        if req:
             req.clearCookies()
+            req.close()
 
         if user in self.info:
             self.info[user]['login'].clear()
@@ -107,6 +114,13 @@ class Account(Plugin):
                                          'maxtraffic' : None,
                                          'timestamp'  : 0}}
 
+            #@TODO: Remove in 0.4.10
+            self.accounts[user] = self.info[user]['data']
+            self.accounts[user].update({'login'   : user,
+                                        'type'    : self.__name__,
+                                        'valid'   : self.info[user]['login']['valid'],
+                                        'password': self.info[user]['login']['password']})
+
             self.log_info(_("Login user `%s`...") % user)
             self._login(user)
             return True
@@ -120,19 +134,24 @@ class Account(Plugin):
         """
         Updates account and return true if anything changed
         """
+        if not password or not options:
+            return
+
         if user not in self.info:
             return self.add(user, password, options)
 
-        elif password or options:
+        else:
             if password:
                 self.info[user]['login']['password'] = password
+                self.accounts[user]['password']      = password  #@TODO: Remove in 0.4.10
                 self.relogin(user)
-                return True
 
             if options:
                 before = self.info[user]['data'][user]['options']
                 self.info[user]['data']['options'].update(options)
                 return self.info[user]['data']['options'] != before
+
+            return True
 
 
     #: Deprecated method, use `update` instead (Remove in 0.4.10)
@@ -143,9 +162,11 @@ class Account(Plugin):
     def remove(self, user=None): # -> def remove
         if not user:
             self.info.clear()
+            self.accounts.clear()  #@TODO: Remove in 0.4.10
 
         elif user in self.info:
             self.info.pop(user, None)
+            self.accounts.pop(user, None)  #@TODO: Remove in 0.4.10
 
 
     #: Deprecated method, use `remove` instead (Remove in 0.4.10)
@@ -167,10 +188,13 @@ class Account(Plugin):
         if 'force' in kwargs:
             kwargs['reload'] = kwargs['force']
             kwargs.pop('force', None)
+
         data = self.get_data(*args, **kwargs) or {}
         if 'options' not in data:
             data['options'] = {'limitdl': ['0']}
+
         return data
+
 
     @lock
     def get_info(self, user, reload=False):
@@ -199,7 +223,9 @@ class Account(Plugin):
 
         safe_info = info.copy()
         safe_info['login']['password'] = "**********"
+        safe_info['data']['password']  = "**********"  #@TODO: Remove in 0.4.10
         self.log_debug("Account info for user `%s`: %s" % (user, safe_info))
+
         return info
 
 
@@ -213,21 +239,15 @@ class Account(Plugin):
 
     def _parse_info(self, user):
         info = self.info[user]
-        data = info['data']
-
-        #@TODO: Remove in 0.4.10
-        data.update({'login': user,
-                     'type' : self.__name__,
-                     'valid': self.info[user]['login']['valid']})
 
         try:
-            data['timestamp'] = time.time()  #: Set timestamp for login
+            info['data']['timestamp'] = time.time()  #: Set timestamp for login
 
             self.req   = self.get_request(user)
             extra_info = self.parse_info(user, info['login']['password'], info, self.req)
 
             if extra_info and isinstance(extra_info, dict):
-                data.update(extra_info)
+                info['data'].update(extra_info)
 
         except Exception, e:
             self.log_warning(_("Error loading info for user `%s`") % user, e)
@@ -279,40 +299,50 @@ class Account(Plugin):
         return self.pyload.requestFactory.getCookieJar(self.__name__, user)
 
 
-    #@TODO: Random account only? Simply crazy... rewrite
     def select(self):
         """
-        Returns an valid account name and data
+        Returns a valid account name and data
         """
-        usable = []
+        free_accounts    = []
+        premium_accounts = []
+
         for user, info in self.info.items():
             if not info['login']['valid']:
                 continue
 
-            options = info['data']['options']
-            if "time" in options and options['time']:
+            data = info['data']
+
+            if "time" in data['options'] and data['options']['time']:
                 time_data = ""
                 try:
-                    time_data = options['time'][0]
+                    time_data  = data['options']['time'][0]
                     start, end = time_data.split("-")
+
                     if not compare_time(start.split(":"), end.split(":")):
                         continue
 
                 except Exception:
-                    self.log_warning(_("Your time %s has wrong format, use 1:22-3:44") % time_data)
+                    self.log_warning(_("Wrong time format `%s` for account `%s`, use 1:22-3:44") % (user, time_data))
 
-            if user in self.info:
-                if None is not self.info[user]['validuntil'] > 0 and time.time() > self.info[user]['validuntil']:
-                    continue
-                if None is not self.info[user]['trafficleft'] == 0:
-                    continue
+            if data['trafficleft'] == 0:
+                continue
 
-            usable.append((user, info))
+            if data['validuntil'] > 0 and time.time() > data['validuntil']:
+                continue
 
-        if not usable:
-            return None, None
+            if data['premium']:
+                premium_accounts.append((user, info))
 
-        return random.choice(usable)
+            else:
+                free_accounts.append((user, info))
+
+        all_accounts = premium_accounts or free_accounts
+        fav_accounts = [(user, info) for user, info in all_accounts if info['validuntil'] is not None]
+
+        accounts = sorted(fav_accounts or all_accounts,
+                          key=itemgetter("validuntil"), reverse=True) or [(None, None)]
+
+        return accounts[0]
 
 
     def can_use(self):
@@ -332,7 +362,7 @@ class Account(Plugin):
 
         self.log_warning(_("Account `%s` has not enough traffic") % user, _("Checking again in 30 minutes"))
 
-        self.info[user]['data'].update({'trafficleft': 0})
+        self.info[user]['data']['trafficleft'] = 0
         self.schedule_refresh(user, 30 * 60)
 
 
@@ -342,7 +372,7 @@ class Account(Plugin):
 
         self.log_warning(_("Account `%s` is expired") % user, _("Checking again in 60 minutes"))
 
-        self.info[user]['data'].update({'validuntil': time.time() - 1})
+        self.info[user]['data']['validuntil'] = time.time() - 1
         self.schedule_refresh(user, 60 * 60)
 
 
