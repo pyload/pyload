@@ -2,14 +2,14 @@
 
 import re
 
-from module.plugins.internal.Plugin import Fail
+from module.plugins.internal.Plugin import Fail, encode
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns, set_cookies
 
 
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
