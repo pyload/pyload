@@ -14,7 +14,7 @@ from module.utils import compare_time, lock, parseFileSize as parse_size
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -301,10 +301,10 @@ class Account(Plugin):
 
     def select(self):
         """
-        Returns a valid account name and data
+        Returns a valid account name and info
         """
-        free_accounts    = []
-        premium_accounts = []
+        free_accounts    = {}
+        premium_accounts = {}
 
         for user, info in self.info.items():
             if not info['login']['valid']:
@@ -331,18 +331,24 @@ class Account(Plugin):
                 continue
 
             if data['premium']:
-                premium_accounts.append((user, info))
+                premium_accounts[user] = info
 
             else:
-                free_accounts.append((user, info))
+                free_accounts[user] = info
 
-        all_accounts = premium_accounts or free_accounts
-        fav_accounts = [(user, info) for user, info in all_accounts if info['data']['validuntil'] is not None]
+        account_list = (premium_accounts or free_accounts).items()
 
-        accounts = sorted(fav_accounts or all_accounts,
-                          key=itemgetter("validuntil"), reverse=True) or [(None, None)]
+        if not account_list:
+            return None, None
 
-        return accounts[0]
+        validuntil_list = [(user, info) for user, info in account_list if info['data']['validuntil']]
+
+        if not validuntil_list:
+            return random.choice(account_list)  #@TODO: Random account?! Recheck in 0.4.10
+
+        return sorted(validuntil_list,
+                      key=lambda user, info: info['data']['validuntil'],
+                      reverse=True)[0]
 
 
     def can_use(self):
