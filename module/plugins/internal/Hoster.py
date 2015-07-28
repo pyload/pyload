@@ -47,7 +47,7 @@ def create_getInfo(klass):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -448,7 +448,7 @@ class Hoster(Plugin):
         return self.last_download
 
 
-    def check_download(self, rules, delete=False, file_size=0, size_tolerance=2048, read_size=100000):
+    def check_download(self, rules, delete=False, file_size=0, size_tolerance=1024, read_size=100000):
         """
         Checks the content of the last downloaded file, re match is saved to `lastCheck`
 
