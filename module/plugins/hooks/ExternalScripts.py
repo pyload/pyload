@@ -10,7 +10,7 @@ from module.utils import fs_encode, save_join as fs_join
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"         , True ),
@@ -81,7 +81,7 @@ class ExternalScripts(Addon):
 
     def call_script(self, script, *args):
         try:
-            cmd_args = (fs_encode(x) if isinstande(x, basestring) else str(x) for x in args)  #@NOTE: `fs_encode` -> `encode` in 0.4.10
+            cmd_args = (fs_encode(x) if isinstance(x, basestring) else str(x) for x in args)  #@NOTE: `fs_encode` -> `encode` in 0.4.10
 
             self.log_debug("Executing: %s" % os.path.abspath(script), "Args: " + ' '.join(cmd_args))
 
