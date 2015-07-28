@@ -12,7 +12,7 @@ from module.utils import compare_time, lock, parseFileSize as parse_size
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -345,7 +345,7 @@ class Account(Plugin):
             return random.choice(account_list)  #@TODO: Random account?! Recheck in 0.4.10
 
         return sorted(validuntil_list,
-                      key=lambda user, info: info['data']['validuntil'],
+                      key=lambda a: a[1]['data']['validuntil'],
                       reverse=True)[0]
 
 
