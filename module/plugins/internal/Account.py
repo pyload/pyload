@@ -14,7 +14,7 @@ from module.utils import compare_time, lock, parseFileSize as parse_size
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -327,7 +327,7 @@ class Account(Plugin):
             if data['trafficleft'] == 0:
                 continue
 
-            if data['validuntil'] > 0 and time.time() > data['validuntil']:
+            if time.time() > data['validuntil'] > 0:
                 continue
 
             if data['premium']:
@@ -337,7 +337,7 @@ class Account(Plugin):
                 free_accounts.append((user, info))
 
         all_accounts = premium_accounts or free_accounts
-        fav_accounts = [(user, info) for user, info in all_accounts if info['validuntil'] is not None]
+        fav_accounts = [(user, info) for user, info in all_accounts if info['data']['validuntil'] is not None]
 
         accounts = sorted(fav_accounts or all_accounts,
                           key=itemgetter("validuntil"), reverse=True) or [(None, None)]
