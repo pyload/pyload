@@ -47,7 +47,7 @@ def create_getInfo(klass):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -420,7 +420,7 @@ class Hoster(Plugin):
             self.pyfile.size = self.req.size
 
         if newname:
-            newname = urlparse.urlparse(newname).path.split('/')[-1].split('*=')[-1]  #@TODO: Remove in 0.4.10
+            newname = urlparse.urlparse(newname).path.split('*=')[-1].split('/')[-1]  #@TODO: Remove in 0.4.10
 
             if disposition and newname is not name:
                 self.log_info(_("%(name)s saved as %(newname)s") % {'name': name, 'newname': newname})

@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ZippyshareCom(SimpleHoster):
     __name__    = "ZippyshareCom"
     __type__    = "hoster"
-    __version__ = "0.80"
+    __version__ = "0.81"
     __status__  = "testing"
 
     __pattern__ = r'http://www\d{0,2}\.zippyshare\.com/v(/|iew\.jsp.*key=)(?P<KEY>[\w^_]+)'
@@ -88,7 +88,7 @@ class ZippyshareCom(SimpleHoster):
         scripts = ['\n'.join(('try{', script, '} catch(err){}')) for script in scripts]
 
         #: Get the file's url by evaluating all the scripts
-        scripts = ['var GVAR = {}'] + list(initScripts)  + scripts + ['GVAR['dlbutton_href']']
+        scripts = ["var GVAR = {}"] + list(initScripts)  + scripts + ['GVAR["dlbutton_href"]']
         return self.js.eval('\n'.join(scripts))
 
 

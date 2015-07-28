@@ -31,7 +31,7 @@ class ImageSequence:
 class CircleCaptcha(OCR):
     __name__    = "CircleCaptcha"
     __type__    = "ocr"
-    __version__ = "1.02"
+    __version__ = "1.03"
     __status__  = "testing"
 
     __description__ = """Circle captcha ocr plugin"""
@@ -255,7 +255,12 @@ class CircleCaptcha(OCR):
         missing = 0
         missingconsecutive = 0
         missinglist = []
-        minX = 0 maxX = 0 minY = 0 maxY = 0
+
+        minX = 0
+        maxX = 0
+        minY = 0
+        maxY = 0
+
         pointsofcircle = []
 
         if (c[2] < min_ray) or (c[2] > max_ray):

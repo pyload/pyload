@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 class RPNetBiz(Account):
     __name__    = "RPNetBiz"
     __type__    = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __description__ = """RPNet.biz account plugin"""
@@ -42,7 +42,7 @@ class RPNetBiz(Account):
             self.login_fail()
 
 
-    def get_account_status(self, user, password req):
+    def get_account_status(self, user, password, req):
         #: Using the rpnet API, check if valid premium account
         res = self.load("https://premium.rpnet.biz/client_api.php",
                             get={'username': user, 'password': password,

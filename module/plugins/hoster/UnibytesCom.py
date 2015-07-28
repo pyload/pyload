@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UnibytesCom(SimpleHoster):
     __name__    = "UnibytesCom"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?unibytes\.com/[\w .-]{11}B'
@@ -48,7 +48,7 @@ class UnibytesCom(SimpleHoster):
                 self.wait(10 * 60, True)
                 self.retry()
 
-            if post_data['step'] == "last"':
+            if post_data['step'] == "last":
                 m = re.search(self.LINK_FREE_PATTERN, self.html)
                 if m:
                     self.link = m.group(1)
