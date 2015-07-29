@@ -3,18 +3,18 @@
 import os
 import subprocess
 
-from module.plugins.internal.Addon import Addon
+from module.plugins.internal.Addon import Addon, Expose
 from module.utils import fs_encode, save_join as fs_join
 
 
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.44"
+    __version__ = "0.45"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"         , True ),
-                  ("waitend"  , "bool", "Wait script ending", False)]
+                  ("lock"     , "bool", "Wait script ending", False)]
 
     __description__ = """Run external scripts"""
     __license__     = "GPLv3"
@@ -74,57 +74,62 @@ class ExternalScripts(Addon):
                 continue
 
             if not os.access(file, os.X_OK):
-                self.log_warning(_("Script not executable:") + " %s/%s" % (name, filename))
+                self.log_warning(_("Script not executable: %s/%s" % (name, filename))
 
             self.scripts[name].append(file)
 
 
-    def call_script(self, script, *args):
+    @Expose
+    def call(self, script, args=[], lock=False):
         try:
-            cmd_args = (fs_encode(x) if isinstance(x, basestring) else str(x) for x in args)  #@NOTE: `fs_encode` -> `encode` in 0.4.10
+            args = [script] + map(encode, args)
+            self.log_info(_("EXECUTE [%s] %s") % (os.path.dirname(script), args))
 
-            self.log_debug("Executing: %s" % os.path.abspath(script), "Args: " + ' '.join(cmd_args))
-
-            cmd = (script,) + cmd_args
-
-            p = subprocess.Popen(cmd, bufsize=-1)  #@NOTE: output goes to pyload
-            if self.get_config('waitend'):
+            p = subprocess.Popen(args, bufsize=-1)  #@NOTE: output goes to pyload
+            if lock:
                 p.communicate()
 
         except Exception, e:
-            try:
-                self.log_error(_("Runtime error: %s") % os.path.abspath(script), e)
-            except Exception:
-                self.log_error(_("Runtime error: %s") % os.path.abspath(script), _("Unknown error"))
+            self.log_error(_("Runtime error: %s") % os.path.abspath(script), e or _("Unknown error"))
 
 
     def pyload_start(self):
+        lock = self.get_config('lock')
         for script in self.scripts['pyload_start']:
-            self.call_script(script)
+            self.call(script, lock=lock)
 
 
     def exit(self):
+        lock = self.get_config('lock')
         for script in self.scripts['pyload_restart' if self.pyload.do_restart else 'pyload_stop']:
-            self.call_script(script)
+            self.call(script, lock=True)
 
 
     def before_reconnect(self, ip):
+        lock = self.get_config('lock')
         for script in self.scripts['before_reconnect']:
-            self.call_script(script, ip)
+            args = [ip]
+            self.call(script, args, lock)
         self.info['oldip'] = ip
 
 
     def after_reconnect(self, ip):
+        lock = self.get_config('lock')
         for script in self.scripts['after_reconnect']:
-            self.call_script(script, ip, self.info['oldip'])  #@TODO: Use built-in oldip in 0.4.10
+            args = [ip, self.info['oldip']]  #@TODO: Use built-in oldip in 0.4.10
+            self.call(script, args, lock)
 
 
     def download_preparing(self, pyfile):
+        lock = self.get_config('lock')
         for script in self.scripts['download_preparing']:
-            self.call_script(script, pyfile.id, pyfile.name, None, pyfile.pluginname, pyfile.url)
+            args = [pyfile.id, pyfile.name, None, pyfile.pluginname, pyfile.url]
+            self.call(script, args, lock)
 
 
     def download_failed(self, pyfile):
+        lock = self.get_config('lock')
+
         if self.pyload.config.get("general", "folder_per_package"):
             download_folder = fs_join(self.pyload.config.get("general", "download_folder"), pyfile.package().folder)
         else:
@@ -132,10 +137,13 @@ class ExternalScripts(Addon):
 
         for script in self.scripts['download_failed']:
             file = fs_join(download_folder, pyfile.name)
-            self.call_script(script, pyfile.id, pyfile.name, file, pyfile.pluginname, pyfile.url)
+            args = [script, pyfile.id, pyfile.name, file, pyfile.pluginname, pyfile.url]
+            self.call(script, args, lock)
 
 
     def download_finished(self, pyfile):
+        lock = self.get_config('lock')
+
         if self.pyload.config.get("general", "folder_per_package"):
             download_folder = fs_join(self.pyload.config.get("general", "download_folder"), pyfile.package().folder)
         else:
@@ -143,30 +151,39 @@ class ExternalScripts(Addon):
 
         for script in self.scripts['download_finished']:
             file = fs_join(download_folder, pyfile.name)
-            self.call_script(script, pyfile.id, pyfile.name, file, pyfile.pluginname, pyfile.url)
+            args = [pyfile.id, pyfile.name, file, pyfile.pluginname, pyfile.url]
+            self.call(script, args, lock)
 
 
     def archive_extract_failed(self, pyfile, archive):
+        lock = self.get_config('lock')
         for script in self.scripts['archive_extract_failed']:
-            self.call_script(script, pyfile.id, pyfile.name, archive.filename, archive.out, archive.files)
+            args = [pyfile.id, pyfile.name, archive.filename, archive.out, archive.files]
+            self.call(script, args, lock)
 
 
     def archive_extracted(self, pyfile, archive):
+        lock = self.get_config('lock')
         for script in self.scripts['archive_extracted']:
-            self.call_script(script, pyfile.id, pyfile.name, archive.filename, archive.out, archive.files)
+            args = [script, pyfile.id, pyfile.name, archive.filename, archive.out, archive.files]
+            self.call(script, args, lock)
 
 
     def package_finished(self, pypack):
+        lock = self.get_config('lock')
+
         if self.pyload.config.get("general", "folder_per_package"):
             download_folder = fs_join(self.pyload.config.get("general", "download_folder"), pypack.folder)
         else:
             download_folder = self.pyload.config.get("general", "download_folder")
 
         for script in self.scripts['package_finished']:
-            self.call_script(script, pypack.id, pypack.name, download_folder, pypack.password)
+            args = [pypack.id, pypack.name, download_folder, pypack.password]
+            self.call(script, args, lock)
 
 
     def package_deleted(self, pid):
+        lock = self.get_config('lock')
         pack = self.pyload.api.getPackageInfo(pid)
 
         if self.pyload.config.get("general", "folder_per_package"):
@@ -175,44 +192,55 @@ class ExternalScripts(Addon):
             download_folder = self.pyload.config.get("general", "download_folder")
 
         for script in self.scripts['package_deleted']:
-            self.call_script(script, pack.id, pack.name, download_folder, pack.password)
+            args = [pack.id, pack.name, download_folder, pack.password]
+            self.call(script, args, lock)
 
 
     def package_extract_failed(self, pypack):
+        lock = self.get_config('lock')
+
         if self.pyload.config.get("general", "folder_per_package"):
             download_folder = fs_join(self.pyload.config.get("general", "download_folder"), pypack.folder)
         else:
             download_folder = self.pyload.config.get("general", "download_folder")
 
         for script in self.scripts['package_extract_failed']:
-            self.call_script(script, pypack.id, pypack.name, download_folder, pypack.password)
+            args = [pypack.id, pypack.name, download_folder, pypack.password]
+            self.call(script, args, lock)
 
 
     def package_extracted(self, pypack):
+        lock = self.get_config('lock')
+
         if self.pyload.config.get("general", "folder_per_package"):
             download_folder = fs_join(self.pyload.config.get("general", "download_folder"), pypack.folder)
         else:
             download_folder = self.pyload.config.get("general", "download_folder")
 
         for script in self.scripts['package_extracted']:
-            self.call_script(script, pypack.id, pypack.name, download_folder)
+            args = [pypack.id, pypack.name, download_folder]
+            self.call(script, args, lock)
 
 
     def all_downloads_finished(self):
+        lock = self.get_config('lock')
         for script in self.scripts['all_downloads_finished']:
-            self.call_script(script)
+            self.call(script, lock=lock)
 
 
     def all_downloads_processed(self):
+        lock = self.get_config('lock')
         for script in self.scripts['all_downloads_processed']:
-            self.call_script(script)
+            self.call(script, lock=lock)
 
 
     def all_archives_extracted(self):
+        lock = self.get_config('lock')
         for script in self.scripts['all_archives_extracted']:
-            self.call_script(script)
+            self.call(script, lock=lock)
 
 
     def all_archives_processed(self):
+        lock = self.get_config('lock')
         for script in self.scripts['all_archives_processed']:
-            self.call_script(script)
+            self.call(script, lock=lock)
