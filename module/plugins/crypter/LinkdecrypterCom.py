@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.Crypter import Crypter
+from module.plugins.internal.MultiCrypter import MultiCrypter
 
 
-class LinkdecrypterCom(Crypter):
+class LinkdecrypterCom(MultiCrypter):
     __name__    = "LinkdecrypterCom"
     __type__    = "crypter"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
