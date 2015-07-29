@@ -112,7 +112,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.48"
+    __version__ = "1.49"
     __status__  = "testing"
 
     __config__ = [("activated"      , "bool"              , "Activated"                                 , True                                                                     ),
@@ -353,7 +353,7 @@ class ExtractArchive(Addon):
 
                         #: Remove processed file and related multiparts from list
                         files_ids = [(fname, fid, fout) for fname, fid, fout in files_ids \
-                                    if fname not in archive.getDeleteFiles()]
+                                    if fname not in archive.get_delete_files()]
                         self.log_debug("Extracted files: %s" % new_files)
                         self.set_permissions(new_files)
 
@@ -470,7 +470,7 @@ class ExtractArchive(Addon):
             pyfile.setProgress(100)
             pyfile.setStatus("processing")
 
-            delfiles = archive.getDeleteFiles()
+            delfiles = archive.get_delete_files()
             self.log_debug("Would delete: " + ", ".join(delfiles))
 
             if self.get_config('delete'):
