@@ -26,14 +26,14 @@ class Kernel32(object):
 class AntiStandby(Addon):
     __name__    = "AntiStandby"
     __type__    = "hook"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                       , True ),
                   ("hdd"      , "bool", "Prevent HDD standby"             , True ),
                   ("system"   , "bool", "Prevent OS standby"              , True ),
                   ("display"  , "bool", "Prevent display standby"         , False),
-                  ("interval" , "int" , "HDD touching interval in seconds", 7    )]
+                  ("interval" , "int" , "HDD touching interval in seconds", 25   )]
 
     __description__ = """Prevent OS, HDD and display standby"""
     __license__     = "GPLv3"
@@ -141,8 +141,8 @@ class AntiStandby(Addon):
     @Expose
     def max_mtime(self, path):
         return max(os.path.getmtime(os.path.join(root, file))
-                   for file in files
-                   for root, dirs, files in os.walk(path, topdown=False))
+                   for root, dirs, files in os.walk(path, topdown=False)
+                   for file in files)
 
 
     def periodical(self):
