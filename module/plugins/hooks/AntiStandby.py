@@ -1,0 +1,157 @@
+# -*- coding: utf-8 -*-
+
+from __future__ import with_statement
+
+import os
+import time
+import subprocess
+import sys
+
+try:
+    import caffeine
+except ImportError:
+    pass
+
+from module.plugins.Addon import Addon, Expose
+
+
+class Kernel32(object):
+    ES_AWAYMODE_REQUIRED = 0x00000040
+    ES_CONTINUOUS        = 0x80000000
+    ES_DISPLAY_REQUIRED  = 0x00000002
+    ES_SYSTEM_REQUIRED   = 0x00000001
+    ES_USER_PRESENT      = 0x00000004
+
+
+class AntiStandby(Addon):
+    __name__    = "AntiStandby"
+    __type__    = "hook"
+    __version__ = "0.01"
+    __status__  = "testing"
+
+    __config__ = [("activated", "bool", "Activated"                       , True ),
+                  ("hdd"      , "bool", "Prevent HDD standby"             , True ),
+                  ("system"   , "bool", "Prevent OS standby"              , True ),
+                  ("display"  , "bool", "Prevent display standby"         , False),
+                  ("interval" , "int" , "HDD touching interval in seconds", 7    )]
+
+    __description__ = """Prevent OS, HDD and display standby"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+
+
+    TMP_FILE     = ".antistandby"
+    MIN_INTERVAL = 5
+
+
+    def setup(self):
+        self.mtime = 0
+
+
+    def activate(self):
+        hdd     = self.get_config('hdd')
+        system  = self.get_config('system')
+        display = self.get_config('display')
+
+        if hdd:
+            self.interval = max(self.get_config('interval'), self.MIN_INTERVAL)
+            self.init_periodical(self, threaded=True)
+
+        if os.name == "nt":
+            self.win_standby(system, display)
+
+        elif sys.platform == "darwin":
+            self.osx_standby(system, display)
+
+        else:
+            self.linux_standby(system, display)
+
+
+    def deactivate(self):
+        try:
+            os.remove(self.TMP_FILE)
+
+        except OSError:
+            pass
+
+        if os.name == "nt":
+            self.win_standby(True)
+
+        elif sys.platform == "darwin":
+            self.osx_standby(True)
+
+        else:
+            self.linux_standby(True)
+
+
+    @Expose
+    def win_standby(system=True, display=True):
+        import ctypes
+
+        set = ctypes.windll.kernel32.SetThreadExecutionState
+
+        if system:
+            if display:
+                set(Kernel32.ES_CONTINUOUS)
+            else:
+                set(Kernel32.ES_CONTINUOUS | Kernel32.ES_DISPLAY_REQUIRED)
+        else:
+            if display:
+                set(Kernel32.ES_CONTINUOUS | Kernel32.ES_SYSTEM_REQUIRED)
+            else:
+                set(Kernel32.ES_CONTINUOUS | Kernel32.ES_SYSTEM_REQUIRED | Kernel32.ES_DISPLAY_REQUIRED)
+
+
+    @Expose
+    def osx_standby(system=True, display=True):
+        try:
+            if system:
+                caffeine.off()
+            else:
+                caffeine.on(display)
+
+        except NameError:
+            self.log_warning(_("Unable to change power state"),
+                             _("caffeine lib not found"))
+
+        except Exception, e:
+            self.log_warning(_("Unable to change power state"), e)
+
+
+    @Expose
+    def linux_standby(system=True, display=True):
+        try:
+            if display:
+                subprocess.call(["xset", "+dpms", "s", "default"])
+            else:
+                subprocess.call(["xset", "-dpms", "s", "off"])
+
+        except Exception, e:
+            self.log_warning(_("Unable to change power state"), e)
+
+
+    @Expose
+    def touch(self, path):
+        with open(path, 'w'):
+            os.utime(path, None)
+
+        self.mtime = time.time()
+
+
+    @Expose
+    def max_mtime(self, path):
+        return max(os.path.getmtime(os.path.join(root, file))
+                   for file in files
+                   for root, dirs, files in os.walk(path, topdown=False))
+
+
+    def periodical(self):
+        if self.get_config('hdd') is False:
+            return
+
+        if os.name != "nt":
+            path = self.pyload.config.get("general", "download_folder")
+            if (self.max_mtime(path) - self.mtime) < self.interval:
+                return
+
+        self.touch(self.TMP_FILE)
