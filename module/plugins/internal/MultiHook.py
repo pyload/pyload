@@ -11,7 +11,7 @@ from module.utils import decode, remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.51"
+    __version__ = "0.52"
     __status__  = "testing"
 
     __config__  = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
@@ -100,16 +100,16 @@ class MultiHook(Hook):
         if self.plugins:
             return self.plugins
 
-        for _i in xrange(2):
+        for _i in xrange(5):
             try:
                 pluginset = self._plugin_set(self.get_hosters())
                 break
 
             except Exception, e:
-                self.log_debug(e, "Waiting 1 minute and retry")
+                self.log_warning(e, _("Waiting 1 minute and retry"))
                 time.sleep(60)
         else:
-            self.log_warning(_("Fallback to default reload interval due plugin parse error"))
+            self.log_error(_("No hoster list retrieved"))
             self.interval = self.MIN_RELOAD_INTERVAL
             return list()
 
