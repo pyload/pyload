@@ -115,7 +115,7 @@ class UpdateManager(Addon):
                 if not os.path.isfile(f):
                     continue
 
-                mtime = os.stat(f).st_mtime
+                mtime = os.path.getmtime(f)
 
                 if id not in self.mtimes:
                     self.mtimes[id] = mtime
