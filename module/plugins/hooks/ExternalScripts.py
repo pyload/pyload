@@ -10,7 +10,7 @@ from module.utils import fs_encode, save_join as fs_join
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"         , True ),
@@ -44,37 +44,37 @@ class ExternalScripts(Addon):
                    "all_archives_extracted", "all_archives_processed"]
 
         for folder in folders:
-            self.scripts[folder] = []
-            for dir in (pypath, ''):
-                self.init_plugin_type(folder, os.path.join(dir, 'scripts', folder))
+            path = os.path.join("scripts", folder)
+            self.init_folder(folder, path)
 
-        for script_type, names in self.scripts.items():
-            if names:
-                self.log_info(_("Installed scripts for: ") + script_type, ", ".join(map(os.path.basename, names)))
+        for folder, scripts in self.scripts.items():
+            if scripts:
+                self.log_info(_("Installed scripts in folder `%s`: %s")
+                              % (folder, ", ".join(scripts)))
 
         self.pyload_start()
 
 
-    def init_plugin_type(self, name, dir):
-        if not os.path.isdir(dir):
+    def init_folder(self, name, path):
+        self.scripts[name] = []
+
+        if not os.path.isdir(path):
             try:
-                os.makedirs(dir)
+                os.makedirs(path)
 
             except OSError, e:
                 self.log_debug(e)
                 return
 
-        for filename in os.listdir(dir):
-            file = fs_join(dir, filename)
-
+        for file in os.listdir(path):
             if not os.path.isfile(file):
                 continue
 
-            if filename[0] in ("#", "_") or filename.endswith("~") or filename.endswith(".swp"):
+            if file[0] in ("#", "_") or file.endswith("~") or file.endswith(".swp"):
                 continue
 
             if not os.access(file, os.X_OK):
-                self.log_warning(_("Script not executable: %s/%s" % (name, filename))
+                self.log_warning(_("Script not executable: [%s] %s") % (name, file))
 
             self.scripts[name].append(file)
 
@@ -82,15 +82,16 @@ class ExternalScripts(Addon):
     @Expose
     def call(self, script, args=[], lock=False):
         try:
-            args = [script] + map(encode, args)
-            self.log_info(_("EXECUTE [%s] %s") % (os.path.dirname(script), args))
+            script = os.path.abspath(script)
+            args   = [script] + map(encode, args)
 
+            self.log_info(_("EXECUTE [%s] %s") % (os.path.dirname(script), args))
             p = subprocess.Popen(args, bufsize=-1)  #@NOTE: output goes to pyload
             if lock:
                 p.communicate()
 
         except Exception, e:
-            self.log_error(_("Runtime error: %s") % os.path.abspath(script), e or _("Unknown error"))
+            self.log_error(_("Runtime error: %s") % script, e or _("Unknown error"))
 
 
     def pyload_start(self):
