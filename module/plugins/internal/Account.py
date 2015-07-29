@@ -232,7 +232,7 @@ class Account(Plugin):
             return False
 
         info = self.get_info(user, reload)
-        return info['premium'] if info and 'premium' in info else False
+        return info['data']['premium'] if info and 'data' in info and 'premium' in info['data'] else False
 
 
     def _parse_info(self, user):
