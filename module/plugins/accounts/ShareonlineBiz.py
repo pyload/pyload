@@ -18,10 +18,10 @@ class ShareonlineBiz(Account):
 
     def api_response(self, user, password, req):
         return self.load("http://api.share-online.biz/cgi-bin",
-                        get={'q'       : "userdetails",
-                             'aux'     : "traffic",
-                             'username': user,
-                             'password': password})
+                         get={'q'       : "userdetails",
+                              'aux'     : "traffic",
+                              'username': user,
+                              'password': password})
 
 
     def parse_info(self, user, password, data, req):

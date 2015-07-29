@@ -80,7 +80,7 @@ def set_cookies(cj, cookies):
     for cookie in cookies:
         if isinstance(cookie, tuple) and len(cookie) == 3:
             domain, name, value = cookie
-            cj.setCookie(domain, name, value)
+            cj.setCookie(domain, name, encode(value))  #@TODO: Remove `encode` in 0.4.10
 
 
 def parse_html_tag_attr_value(attr_name, tag):
@@ -137,7 +137,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
