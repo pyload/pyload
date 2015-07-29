@@ -26,7 +26,7 @@ class Kernel32(object):
 class AntiStandby(Addon):
     __name__    = "AntiStandby"
     __type__    = "hook"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                       , True ),
@@ -45,6 +45,7 @@ class AntiStandby(Addon):
 
 
     def init(self):
+        self.pid   = None
         self.mtime = 0
 
 
@@ -121,6 +122,13 @@ class AntiStandby(Addon):
     @Expose
     def linux_standby(self, system=True, display=True):
         try:
+            if system:
+                if self.pid:
+                    self.pid.kill()
+
+            elif not self.pid:
+                self.pid = subprocess.Popen(["caffeine"])
+
             if display:
                 subprocess.call(["xset", "+dpms", "s", "default"])
             else:
@@ -140,18 +148,23 @@ class AntiStandby(Addon):
 
     @Expose
     def max_mtime(self, path):
-        return max(os.path.getmtime(os.path.join(root, file))
-                   for root, dirs, files in os.walk(path, topdown=False)
-                   for file in files)
+        return max(0, 0,
+                   *(os.path.getmtime(os.path.join(root, file))
+                        for root, dirs, files in os.walk(path, topdown=False)
+                            for file in files))
 
 
     def periodical(self):
         if self.get_config('hdd') is False:
             return
 
-        if os.name != "nt":
-            path = self.pyload.config.get("general", "download_folder")
-            if (self.max_mtime(path) - self.mtime) < self.interval:
-                return
+        if (self.pyfile.threadManager.pause or
+                not self.pyfile.api.isTimeDownload() or
+                    not self.pyfile.threadManager.getActiveFiles()):
+            return
+
+        path = self.pyload.config.get("general", "download_folder")
+        if (self.max_mtime(path) - self.mtime) < self.interval:
+            return
 
         self.touch(self.TMP_FILE)
