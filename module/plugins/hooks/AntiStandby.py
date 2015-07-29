@@ -26,7 +26,7 @@ class Kernel32(object):
 class AntiStandby(Addon):
     __name__    = "AntiStandby"
     __type__    = "hook"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                       , True ),
@@ -158,9 +158,9 @@ class AntiStandby(Addon):
         if self.get_config('hdd') is False:
             return
 
-        if (self.pyfile.threadManager.pause or
-                not self.pyfile.api.isTimeDownload() or
-                    not self.pyfile.threadManager.getActiveFiles()):
+        if (self.pyload.threadManager.pause or
+                not self.pyload.api.isTimeDownload() or
+                    not self.pyload.threadManager.getActiveFiles()):
             return
 
         path = self.pyload.config.get("general", "download_folder")
