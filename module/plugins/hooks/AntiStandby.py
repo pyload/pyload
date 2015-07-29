@@ -26,7 +26,7 @@ class Kernel32(object):
 class AntiStandby(Addon):
     __name__    = "AntiStandby"
     __type__    = "hook"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                       , True ),
@@ -44,7 +44,7 @@ class AntiStandby(Addon):
     MIN_INTERVAL = 5
 
 
-    def setup(self):
+    def init(self):
         self.mtime = 0
 
 
