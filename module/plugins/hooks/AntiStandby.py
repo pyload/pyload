@@ -12,7 +12,7 @@ try:
 except ImportError:
     pass
 
-from module.plugins.Addon import Addon, Expose
+from module.plugins.internal.Addon import Addon, Expose
 
 
 class Kernel32(object):
@@ -26,7 +26,7 @@ class Kernel32(object):
 class AntiStandby(Addon):
     __name__    = "AntiStandby"
     __type__    = "hook"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                       , True ),
@@ -50,12 +50,12 @@ class AntiStandby(Addon):
 
     def activate(self):
         hdd     = self.get_config('hdd')
-        system  = self.get_config('system')
-        display = self.get_config('display')
+        system  = not self.get_config('system')
+        display = not self.get_config('display')
 
         if hdd:
             self.interval = max(self.get_config('interval'), self.MIN_INTERVAL)
-            self.init_periodical(self, threaded=True)
+            self.init_periodical(threaded=True)
 
         if os.name == "nt":
             self.win_standby(system, display)
@@ -85,7 +85,7 @@ class AntiStandby(Addon):
 
 
     @Expose
-    def win_standby(system=True, display=True):
+    def win_standby(self, system=True, display=True):
         import ctypes
 
         set = ctypes.windll.kernel32.SetThreadExecutionState
@@ -103,7 +103,7 @@ class AntiStandby(Addon):
 
 
     @Expose
-    def osx_standby(system=True, display=True):
+    def osx_standby(self, system=True, display=True):
         try:
             if system:
                 caffeine.off()
@@ -119,7 +119,7 @@ class AntiStandby(Addon):
 
 
     @Expose
-    def linux_standby(system=True, display=True):
+    def linux_standby(self, system=True, display=True):
         try:
             if display:
                 subprocess.call(["xset", "+dpms", "s", "default"])
