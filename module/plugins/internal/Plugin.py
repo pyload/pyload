@@ -2,6 +2,7 @@
 
 from __future__ import with_statement
 
+import datetime
 import inspect
 import os
 import re
@@ -137,7 +138,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
