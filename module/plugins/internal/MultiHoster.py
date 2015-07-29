@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, r
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -34,8 +34,8 @@ class MultiHoster(SimpleHoster):
     def _log(self, level, plugintype, pluginname, messages):
         return super(MultiHoster, self)._log(level,
                                              plugintype,
-                                             "%s: %s" % (pluginname, self.HOSTER_NAME),
-                                             messages)
+                                             pluginname,
+                                             (self.HOSTER_NAME,) + messages)
 
 
     def setup(self):

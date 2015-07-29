@@ -21,7 +21,7 @@ from module.utils import save_join as fs_join
 class OCR(Plugin):
     __name__    = "OCR"
     __type__    = "ocr"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __description__ = """OCR base plugin"""
@@ -47,8 +47,8 @@ class OCR(Plugin):
     def _log(self, level, plugintype, pluginname, messages):
         return self.plugin._log(level,
                                 plugintype,
-                                "%s: %s" % (self.plugin.__name__, self.__name__),
-                                messages)
+                                self.plugin.__name__,
+                                (self.__name__,) + messages)
 
 
     def load_image(self, image):
