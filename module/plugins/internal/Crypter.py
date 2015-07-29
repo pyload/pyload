@@ -9,7 +9,7 @@ from module.utils import save_path as safe_filename
 class Crypter(Hoster):
     __name__    = "Crypter"
     __type__    = "crypter"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -78,7 +78,7 @@ class Crypter(Hoster):
                           "%d links" % len(links),
                           "Saved to folder: %s" % folder if folder else "Saved to download folder")
 
-            pid = self.pyload.api.addPackage(name, self.fixurl(links), package_queue)
+            pid = self.pyload.api.addPackage(name, map(self.fixurl, links), package_queue)
 
             if package_password:
                 self.pyload.api.setPackageData(pid, {'password': package_password})
