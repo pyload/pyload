@@ -8,7 +8,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class XFileSharingPro(XFSHoster):
     __name__    = "XFileSharingPro"
     __type__    = "hoster"
-    __version__ = "0.51"
+    __version__ = "0.52"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)'
@@ -34,7 +34,7 @@ class XFileSharingPro(XFSHoster):
         self.__pattern__ = self.pyload.pluginManager.hosterPlugins[self.__name__]['pattern']
 
         self.HOSTER_DOMAIN = re.match(self.__pattern__, self.pyfile.url).group("DOMAIN").lower()
-        self.HOSTER_NAME   = "".join(part.capitalize() for part in re.split(r'(\.|\d+)', self.HOSTER_DOMAIN) if part != '.')
+        self.HOSTER_NAME   = "".join(part.capitalize() for part in re.split(r'(\.|\d+|\-)', self.HOSTER_DOMAIN) if part != '.')
 
         account = self.pyload.accountManager.getAccountPlugin(self.HOSTER_NAME)
 

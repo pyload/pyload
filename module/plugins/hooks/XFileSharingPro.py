@@ -8,7 +8,7 @@ from module.plugins.internal.Hook import Hook
 class XFileSharingPro(Hook):
     __name__    = "XFileSharingPro"
     __type__    = "hook"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __status__  = "testing"
 
     __config__ = [("activated"       , "bool", "Activated"                     , True ),
@@ -29,7 +29,7 @@ class XFileSharingPro(Hook):
                               r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:user|folder)s?/\w+')}
 
     HOSTER_BUILTIN  = [#WORKING HOSTERS:
-                       "ani-stream.com", "backin.net", "eyesfile.ca", "file4safe.com",
+                       "ani-stream.com", "backin.net", "cloudsix.me", "eyesfile.ca", "file4safe.com",
                        "fileband.com", "filedwon.com", "fileparadox.in", "filevice.com",
                        "hostingbulk.com", "junkyvideo.com", "linestorage.com", "ravishare.com",
                        "ryushare.com", "salefiles.com", "sendmyway.com", "sharebeast.com",
