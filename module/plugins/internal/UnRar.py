@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.23"
+    __version__ = "1.24"
     __status__  = "testing"
 
     __description__ = """Rar extractor plugin"""
@@ -32,10 +32,8 @@ class UnRar(Extractor):
                        ("Immenz"        , "immenz@gmx.net"   )]
 
 
-    CMD = "unrar"
-    VERSION = ""
+    CMD        = "unrar"
     EXTENSIONS = [".rar"]
-
 
     re_multipart = re.compile(r'\.(part|r)(\d+)(?:\.rar)?(\.rev|\.bad)?', re.I)
 
@@ -58,7 +56,7 @@ class UnRar(Extractor):
 
             p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = p.communicate()
-            cls.__name__ = "RAR"
+            # cls.__name__ = "RAR"
             cls.REPAIR = True
 
         except OSError:
@@ -74,12 +72,11 @@ class UnRar(Extractor):
             except OSError:
                 return False
 
-        else:
-            return True
+        m = cls.re_version.search(out)
+        if m is not None:
+            cls.VERSION = m.group(1)
 
-        finally:
-            m = cls.re_version.search(out)
-            cls.VERSION = m.group(1) if m else '(version unknown)'
+        return True
 
 
     @classmethod
@@ -206,8 +203,7 @@ class UnRar(Extractor):
                     result.add(fs_join(self.out, os.path.basename(f)))
         else:
             for f in fs_decode(out).splitlines():
-                f = f.strip()
-                result.add(fs_join(self.out, f))
+                result.add(fs_join(self.out, f.strip()))
 
         return list(result)
 

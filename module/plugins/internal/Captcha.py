@@ -12,7 +12,7 @@ from module.plugins.internal.Plugin import Plugin
 class Captcha(Plugin):
     __name__    = "Captcha"
     __type__    = "captcha"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__  = "testing"
 
     __description__ = """Base anti-captcha plugin"""
@@ -37,7 +37,10 @@ class Captcha(Plugin):
 
 
     def _log(self, level, plugintype, pluginname, messages):
-        return self.plugin._log(level, plugintype, pluginname, (self.__name__,) + messages)
+        return self.plugin._log(level,
+                                plugintype,
+                                "%s: %s" % (self.plugin.__name__, self.__name__),
+                                messages)
 
 
     def recognize(self, image):
@@ -107,7 +110,7 @@ class Captcha(Plugin):
                     self.fail(task.error)
 
                 elif not self.task.result:
-                    self.captcha.invalid()
+                    self.invalid()
                     self.plugin.retry(reason=_("No captcha result obtained in appropiate time"))
 
                 result = self.task.result

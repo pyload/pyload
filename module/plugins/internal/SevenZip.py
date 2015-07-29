@@ -10,7 +10,7 @@ from module.utils import fs_encode, save_join as fs_join
 
 class SevenZip(UnRar):
     __name__    = "SevenZip"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __description__ = """7-Zip extractor plugin"""
@@ -19,9 +19,7 @@ class SevenZip(UnRar):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    CMD     = "7z"
-    VERSION = ""
-
+    CMD        = "7z"
     EXTENSIONS = [".7z", ".xz", ".zip", ".gz", ".gzip", ".tgz", ".bz2", ".bzip2",
                   ".tbz2", ".tbz", ".tar", ".wim", ".swm", ".lzma", ".rar", ".cab",
                   ".arj", ".z", ".taz", ".cpio", ".rpm", ".deb", ".lzh", ".lha",
@@ -50,11 +48,11 @@ class SevenZip(UnRar):
             return False
 
         else:
-            return True
-
-        finally:
             m = cls.re_version.search(out)
-            cls.VERSION = m.group(1) if m else '(version unknown)'
+            if m is not None:
+                cls.VERSION = m.group(1)
+
+            return True
 
 
     def verify(self, password):

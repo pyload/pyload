@@ -112,7 +112,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.47"
+    __version__ = "1.48"
     __status__  = "testing"
 
     __config__ = [("activated"      , "bool"              , "Activated"                                 , True                                                                     ),
@@ -490,13 +490,15 @@ class ExtractArchive(Addon):
                             send2trash.send2trash(file)
 
                         except NameError:
-                            self.log_warning(_("Unable to move %s to trash: Send2Trash lib not found") % os.path.basename(f))
+                            self.log_warning(_("Unable to move %s to trash") % os.path.basename(f),
+                                             _("Send2Trash lib not found"))
 
                         except Exception, e:
-                            self.log_warning(_("Unable to move %s to trash: %s") % (os.path.basename(f), e.message))
+                            self.log_warning(_("Unable to move %s to trash") % os.path.basename(f),
+                                             e.message)
 
                         else:
-                            self.log_debug("Successfully moved %s to trash" % os.path.basename(f))
+                            self.log_info(_("Moved %s to trash") % os.path.basename(f))
 
             self.log_info(name, _("Extracting finished"))
             extracted_files = archive.files or archive.list()
