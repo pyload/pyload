@@ -209,7 +209,7 @@ class DeathByCaptcha(Hook):
         try:
             ticket, result = self.submit(c)
         except DeathByCaptchaException, e:
-            task.error = e.getCode()
+            task.error = e.get_code()
             self.log_error(e.getDesc())
             return
 

@@ -148,7 +148,7 @@ class ImageTyperz(Hook):
         try:
             ticket, result = self.submit(c)
         except ImageTyperzException, e:
-            task.error = e.getCode()
+            task.error = e.get_code()
             return
 
         task.data['ticket'] = ticket

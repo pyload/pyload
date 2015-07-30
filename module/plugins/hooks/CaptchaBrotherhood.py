@@ -161,7 +161,7 @@ class CaptchaBrotherhood(Hook):
         try:
             ticket, result = self.submit(c)
         except CaptchaBrotherhoodException, e:
-            task.error = e.getCode()
+            task.error = e.get_code()
             return
 
         task.data['ticket'] = ticket

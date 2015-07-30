@@ -129,7 +129,7 @@ class BypassCaptcha(Hook):
         try:
             ticket, result = self.submit(c)
         except BypassCaptchaException, e:
-            task.error = e.getCode()
+            task.error = e.get_code()
             return
 
         task.data['ticket'] = ticket
