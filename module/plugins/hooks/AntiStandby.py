@@ -13,6 +13,7 @@ except ImportError:
     pass
 
 from module.plugins.internal.Addon import Addon, Expose
+from module.utils import fs_join
 
 
 class Kernel32(object):
@@ -26,7 +27,7 @@ class Kernel32(object):
 class AntiStandby(Addon):
     __name__    = "AntiStandby"
     __type__    = "hook"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                       , True ),
@@ -149,7 +150,7 @@ class AntiStandby(Addon):
     @Expose
     def max_mtime(self, path):
         return max(0, 0,
-                   *(os.path.getmtime(os.path.join(root, file))
+                   *(os.path.getmtime(fs_join(root, file))
                         for root, dirs, files in os.walk(path, topdown=False)
                             for file in files))
 

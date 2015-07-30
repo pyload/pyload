@@ -68,10 +68,7 @@ class FilecryptCc(Crypter):
         self.log_info(_("Found %d mirrors") % len(mirror))
 
         for i in mirror[1:]:
-            try:
-                self.site_with_links = self.site_with_links + self.load(i).decode("utf-8", "replace")
-            except:
-                self.site_with_links = self.site_with_links + self.load(i)
+            self.site_with_links = self.site_with_links + self.load(i)
 
 
     def handle_password_protection(self):
