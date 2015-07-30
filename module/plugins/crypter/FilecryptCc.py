@@ -16,7 +16,7 @@ from module.plugins.captcha.ReCaptcha import ReCaptcha
 class FilecryptCc(Crypter):
     __name__    = "FilecryptCc"
     __type__    = "crypter"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
@@ -68,7 +68,10 @@ class FilecryptCc(Crypter):
         self.log_info(_("Found %d mirrors") % len(mirror))
 
         for i in mirror[1:]:
-            self.site_with_links = self.site_with_links + self.load(i).decode("utf-8", "replace")
+            try:
+                self.site_with_links = self.site_with_links + self.load(i).decode("utf-8", "replace")
+            except:
+                self.site_with_links = self.site_with_links + self.load(i)
 
 
     def handle_password_protection(self):
