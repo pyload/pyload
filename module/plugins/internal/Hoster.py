@@ -47,7 +47,7 @@ def create_getInfo(klass):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -385,11 +385,7 @@ class Hoster(Plugin):
 
         self.pyfile.setStatus("downloading")
 
-        if disposition:
-            self.pyfile.name = urlparse.urlparse(url).path.split('/')[-1] or self.pyfile.name
-
         download_folder = self.pyload.config.get("general", "download_folder")
-
         location = fs_join(download_folder, self.pyfile.package().folder)
 
         if not exists(location):
@@ -402,7 +398,7 @@ class Hoster(Plugin):
                     os.chown(location, uid, gid)
 
             except Exception, e:
-                self.fail(str(e))  #@TODO: Remove `str` in 0.4.10
+                self.fail(e)
 
         #: Convert back to unicode
         location = fs_decode(location)
