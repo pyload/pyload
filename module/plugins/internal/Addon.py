@@ -25,7 +25,7 @@ def threaded(fn):
 class Addon(Plugin):
     __name__    = "Addon"
     __type__    = "hook"  #@TODO: Change to `addon` in 0.4.10
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "testing"
 
     __config__   = []  #: [("name", "type", "desc", "default")]
@@ -157,6 +157,7 @@ class Addon(Plugin):
 
     #: Deprecated method, use `exit` instead (Remove in 0.4.10)
     def coreExiting(self, *args, **kwargs):
+        self.unload(*args, **kwargs)  #@TODO: Fix in 0.4.10
         return self.exit(*args, **kwargs)
 
 
