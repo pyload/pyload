@@ -8,7 +8,7 @@ from module.plugins.internal.Account import Account
 class ShareonlineBiz(Account):
     __name__    = "ShareonlineBiz"
     __type__    = "account"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__  = "testing"
 
     __description__ = """Share-online.biz account plugin"""
@@ -21,17 +21,14 @@ class ShareonlineBiz(Account):
                         get={'q'       : "userdetails",
                              'aux'     : "traffic",
                              'username': user,
-                             'password': password})
+                             'password': password},
+                        decode=False)
 
         self.log_debug(res)
 
-        api = {}
-        for line in res.splitlines():
-            if "=" in line:
-                key, value = line.split("=")
-                api[key] = value
+        api = dict(line.split("=") for line in res.splitlines() if "=" in line)
 
-        if not api['a']:
+        if not 'a' in api:
             self.login_fail(_("Invalid username/password"))
 
         if api['a'].lower() == "not_available":
