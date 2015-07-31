@@ -338,7 +338,7 @@ class SimpleHoster(Hoster):
                 if self.CHECK_FILE:
                     self.log_debug("Using custom check rules...")
                     with open(fs_encode(self.last_download), "rb") as f:
-                        self.html = f.read(50000)  #@TODO: Recheck in 0.4.10
+                        self.html = f.read(1048576)  #@TODO: Recheck in 0.4.10
                     self.check_errors()
 
         self.log_info(_("No errors found"))

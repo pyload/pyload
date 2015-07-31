@@ -43,7 +43,7 @@ def create_getInfo(klass):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -68,43 +68,14 @@ class Hoster(Plugin):
         self.multiDL = True  #@TODO: Change to `multi_dl` in 0.4.10
         self.limitDL = 0     #@TODO: Change to `limit_dl` in 0.4.10
 
-        #: Chunk limit
-        self.chunk_limit = 1
-        self.resume_download = False
-
         #: time.time() + wait in seconds
         self.wait_until = 0
-        self.waiting = False
-
-        #: Captcha reader instance
-        self.ocr = None
+        self.waiting    = False
 
         #: Account handler instance, see :py:class:`Account`
-        self.account = self.pyload.accountManager.getAccountPlugin(self.__name__)
-
-        #: Premium status
-        self.premium = False
-
-        #: username/login
-        self.user = None
-
-        if self.account and not self.account.can_use():
-            self.account = None
-
-        if self.account:
-            self.user, data = self.account.select()
-
-            #: Browser instance, see `network.Browser`
-            self.req = self.account.get_request(self.user)
-            self.chunk_limit = -1  #: Chunk limit, -1 for unlimited
-
-            #: Enables resume (will be ignored if server dont accept chunks)
-            self.resume_download = True
-
-            #: Premium status
-            self.premium = self.account.is_premium(self.user)
-        else:
-            self.req = self.pyload.requestFactory.getRequest(self.__name__)
+        self.account = None
+        self.user    = None
+        self.req     = None
 
         #: Associated pyfile instance, see `PyFile`
         self.pyfile = pyfile
@@ -129,6 +100,7 @@ class Hoster(Plugin):
         #: Dict of the amount of retries already made
         self.retries = {}
 
+        self._setup()
         self.init()
 
 
@@ -136,9 +108,9 @@ class Hoster(Plugin):
     def get_info(cls, url="", html=""):
         url   = _fixurl(url)
         url_p = urlparse.urlparse(url)
-        return {'name'  : (url_p.path.split('/')[-1]
-                           or url_p.query.split('=', 1)[::-1][0].split('&', 1)[0]
-                           or url_p.netloc.split('.', 1)[0]),
+        return {'name'  : (url_p.path.split('/')[-1] or
+                            url_p.query.split('=', 1)[::-1][0].split('&', 1)[0] or
+                                url_p.netloc.split('.', 1)[0]),
                 'size'  : 0,
                 'status': 3 if url else 8,
                 'url'   : url}
@@ -158,6 +130,41 @@ class Hoster(Plugin):
         pass
 
 
+    def _setup(self):
+        if self.account:
+            self.chunk_limit     = -1  #: -1 for unlimited
+            self.resume_download = True
+            self.premium         = self.account.is_premium(self.user)
+        else:
+            self.chunk_limit     = 1
+            self.resume_download = False
+            self.premium         = False
+
+
+    def load_account(self):
+        oldaccount = self.account
+
+        if not self.account:
+            self.account = self.pyload.accountManager.getAccountPlugin(self.__name__)
+
+        if self.account:
+            if self.user:
+                self.account = self.account.is_logged(self.user, relogin=True)
+            else:
+                self.user, data = self.account.select()
+                if not self.user:
+                    self.account = False
+
+        if self.account == oldaccount:
+            self.req.clearCookies()
+
+        elif self.account:
+            self.req = self.account.get_request(self.user)  #: Browser instance, see `network.Browser`
+
+        else:
+            self.req = self.pyload.requestFactory.getRequest(self.__name__)
+
+
     def preprocessing(self, thread):
         """
         Handles important things to do before starting
@@ -166,16 +173,13 @@ class Hoster(Plugin):
 
         self.req.renewHTTPRequest()
 
-        if self.account:
-            self.account.is_logged(self.user)
-        else:
-            self.req.clearCookies()
-
+        self.load_account()
+        self._setup()
         self.setup()
 
         self.pyfile.setStatus("starting")
-
         self.log_debug("PROCESS URL " + self.pyfile.url, "PLUGIN VERSION %s" % self.__version__)
+
         return self.process(self.pyfile)
 
 
@@ -426,7 +430,7 @@ class Hoster(Plugin):
         return self.last_download
 
 
-    def check_download(self, rules, delete=False, file_size=0, size_tolerance=1024, read_size=100000):
+    def check_download(self, rules, delete=False, file_size=0, size_tolerance=1024, read_size=1048576):
         """
         Checks the content of the last downloaded file, re match is saved to `lastCheck`
 

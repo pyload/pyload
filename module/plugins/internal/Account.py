@@ -13,7 +13,7 @@ from module.utils import compare_time, lock, parseFileSize as parse_size
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -23,14 +23,14 @@ class Account(Plugin):
 
 
     LOGIN_TIMEOUT  = 10 * 60  #: After that time (in minutes) pyload will relogin the account
-    INFO_THRESHOLD = 10 * 60  #: After that time (in minutes) account data will be reloaded
+    INFO_THRESHOLD = 30 * 60  #: After that time (in minutes) account data will be reloaded
 
 
     def __init__(self, manager, accounts):
-        self.pyload = manager.core
-        self.info   = {}  #: Provide information in dict here
-        self.lock   = threading.RLock()
-
+        self.pyload   = manager.core
+        self.info     = {}  #: Provide information in dict here
+        self.lock     = threading.RLock()
+        self.req      = None
         self.accounts = accounts  #@TODO: Remove in 0.4.10
 
         self.init()
@@ -73,9 +73,7 @@ class Account(Plugin):
             self.accounts[user]['valid'] = True  #@TODO: Remove in 0.4.10
 
         finally:
-            if self.req:
-                self.req.close()
-            del self.req
+            self.del_request()
 
             return res
 
@@ -86,7 +84,7 @@ class Account(Plugin):
         req = self.get_request(user)
         if req:
             req.clearCookies()
-            req.close()
+            self.del_request()
 
         if user in self.info:
             self.info[user]['login'].clear()
@@ -110,8 +108,7 @@ class Account(Plugin):
                                          'premium'    : None,
                                          'validuntil' : None,
                                          'trafficleft': None,
-                                         'maxtraffic' : None,
-                                         'timestamp'  : 0}}
+                                         'maxtraffic' : None}}
 
             #@TODO: Remove in 0.4.10
             self.accounts[user] = self.info[user]['data']
@@ -133,7 +130,7 @@ class Account(Plugin):
         """
         Updates account and return true if anything changed
         """
-        if not password or not options:
+        if not (password or options):
             return
 
         if user not in self.info:
@@ -173,6 +170,7 @@ class Account(Plugin):
         return self.remove(*args, **kwargs)
 
 
+    #@NOTE: Remove in 0.4.10?
     def get_data(self, user, reload=False):
         if not user:
             return
@@ -213,17 +211,17 @@ class Account(Plugin):
             self.log_info(_("Parsing account info for user `%s`...") % user)
             info = self._parse_info(user)
 
+            safe_info = copy.deepcopy(info)
+            safe_info['login']['password'] = "**********"
+            safe_info['data']['password']  = "**********"  #@TODO: Remove in 0.4.10
+            self.log_debug("Account info for user `%s`: %s" % (user, safe_info))
+
         else:
             info = self.info[user]
 
-            if self.INFO_THRESHOLD > 0 and info['data']['timestamp'] + self.INFO_THRESHOLD * 60 < time.time():
+            if self.INFO_THRESHOLD > 0 and info['login']['timestamp'] + self.INFO_THRESHOLD < time.time():
                 self.log_debug("Reached data timeout for %s" % user)
                 self.schedule_refresh(user)
-
-        safe_info = copy.deepcopy(info)
-        safe_info['login']['password'] = "**********"
-        safe_info['data']['password']  = "**********"  #@TODO: Remove in 0.4.10
-        self.log_debug("Account info for user `%s`: %s" % (user, safe_info))
 
         return info
 
@@ -232,32 +230,31 @@ class Account(Plugin):
         if not user:
             return False
 
-        info = self.get_info(user, reload)
-        return info.get('data', {}).get('premium', False)
+        info = self.get_info(user)
+        return info['data']['premium']
 
 
     def _parse_info(self, user):
         info = self.info[user]
 
-        try:
-            info['data']['timestamp'] = time.time()  #: Set timestamp for login
+        if not info['login']['valid']:
+            return info
 
+        try:
             self.req   = self.get_request(user)
             extra_info = self.parse_info(user, info['login']['password'], info, self.req)
 
             if extra_info and isinstance(extra_info, dict):
                 info['data'].update(extra_info)
 
-        except Exception, e:
+        except (Fail, Exception), e:
             self.log_warning(_("Error loading info for user `%s`") % user, e)
 
             if self.pyload.debug:
                 traceback.print_exc()
 
         finally:
-            if self.req:
-                self.req.close()
-            del self.req
+            self.del_request()
 
             self.info[user].update(info)
             return info
@@ -289,6 +286,13 @@ class Account(Plugin):
             user, info = self.select()
 
         return self.pyload.requestFactory.getRequest(self.__name__, user)
+
+
+    def del_request(self):
+        try:
+            self.req.close()
+        finally:
+            self.req = None
 
 
     def get_cookies(self, user=None):
@@ -350,10 +354,6 @@ class Account(Plugin):
                       reverse=True)[0]
 
 
-    def can_use(self):
-        return self.select() != (None, None)
-
-
     def parse_traffic(self, value, unit=None):  #: Return kilobytes
         if not unit and not isinstance(value, basestring):
             unit = "KB"
@@ -392,20 +392,19 @@ class Account(Plugin):
     #: Deprecated method, use `schedule_refresh` instead (Remove in 0.4.10)
     def scheduleRefresh(self, *args, **kwargs):
         if 'force' in kwargs:
-            kwargs['reload'] = kwargs['force']
-            kwargs.pop('force', None)
+            kwargs.pop('force', None)  #@TODO: Recheck in 0.4.10
         return self.schedule_refresh(*args, **kwargs)
 
 
     @lock
-    def is_logged(self, user):
+    def is_logged(self, user, relogin=False):
         """
         Checks if user is still logged in
         """
         if user in self.info:
-            if self.LOGIN_TIMEOUT > 0 and self.info[user]['login']['timestamp'] + self.LOGIN_TIMEOUT * 60 < time.time():
+            if self.LOGIN_TIMEOUT > 0 and self.info[user]['login']['timestamp'] + self.LOGIN_TIMEOUT < time.time():
                 self.log_debug("Reached login timeout for %s" % user)
-                return self.relogin(user)
+                return self.relogin(user) if relogin else False
             else:
                 return True
         else:

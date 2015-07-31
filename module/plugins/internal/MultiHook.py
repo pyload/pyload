@@ -11,7 +11,7 @@ from module.utils import decode, remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.52"
+    __version__ = "0.53"
     __status__  = "testing"
 
     __config__  = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
@@ -84,8 +84,7 @@ class MultiHook(Hook):
     def load_account(self):
         self.account = self.pyload.accountManager.getAccountPlugin(self.pluginname)
 
-        if self.account and not self.account.can_use():
-            self.account = None
+        self.load_account()
 
         if not self.account and hasattr(self.pluginclass, "LOGIN_ACCOUNT") and self.pluginclass.LOGIN_ACCOUNT:
             self.log_warning(_("Hook plugin will be deactivated due missing account reference"))
