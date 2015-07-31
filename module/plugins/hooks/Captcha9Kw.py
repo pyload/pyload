@@ -110,9 +110,9 @@ class Captcha9Kw(Hook):
                      'numeric'       : option['numeric'],
                      'math'          : option['math'],
                      'oldsource'     : pluginname,
-                     'pyload'        : "1",
+                     'pyload'        : 1,
                      'source'        : "pyload",
-                     'base64'        : "1",
+                     'base64'        : 1,
                      'mouse'         : 1 if task.isPositional() else 0,
                      'file-upload-01': b64encode(data),
                      'action'        : "usercaptchaupload"}
@@ -120,11 +120,14 @@ class Captcha9Kw(Hook):
         for _i in xrange(5):
             try:
                 res = self.load(self.API_URL, post=post_data)
+
             except BadHeader, e:
                 time.sleep(3)
+
             else:
                 if res and res.isdigit():
                     break
+
         else:
             self.log_error(_("Bad upload: %s") % res)
             return

@@ -138,7 +138,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -292,7 +292,7 @@ class Plugin(object):
         raise Fail(encode(msg))  #@TODO: Remove `encode` in 0.4.10
 
 
-    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=True, req=None):
+    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=True, multipart=False, req=None):
         """
         Load content at url and returns it
 
@@ -323,7 +323,7 @@ class Plugin(object):
             else:
                 req = self.pyload.requestFactory.getRequest(self.__name__)
 
-        res = req.load(url, get, post, ref, cookies, just_header, isinstance(post, dict), decode is True)  #@TODO: Fix network multipart in 0.4.10
+        res = req.load(url, get, post, ref, cookies, just_header, multipart, decode is True)  #@TODO: Fix network multipart in 0.4.10
 
         if decode:   #@TODO: Move to network in 0.4.10
             res = html_unescape(res)
