@@ -138,7 +138,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -194,6 +194,37 @@ class Plugin(object):
 
     def log_critical(self, *args):
         return self._log("critical", self.__type__, self.__name__, args)
+
+
+    def set_permissions(self, path):
+        if not os.path.exists(path):
+            return
+
+        try:
+            if self.pyload.config.get("permission", "change_file"):
+                if os.path.isfile(path):
+                    os.chmod(path, int(self.pyload.config.get("permission", "file"), 8))
+
+                elif os.path.isdir(path):
+                    os.chmod(path, int(self.pyload.config.get("permission", "folder"), 8))
+
+        except OSError, e:
+            self.log_warning(_("Setting path mode failed"), e)
+
+        try:
+            if os.name != "nt" and self.pyload.config.get("permission", "change_dl"):
+                uid = pwd.getpwnam(self.pyload.config.get("permission", "user"))[2]
+                gid = grp.getgrnam(self.pyload.config.get("permission", "group"))[2]
+                os.chown(path, uid, gid)
+
+        except OSError, e:
+            self.log_warning(_("Setting owner and group failed"), e)
+
+
+    def get_chunk_count(self):
+        if self.chunk_limit <= 0:
+            return self.pyload.config.get("download", "chunks")
+        return min(self.pyload.config.get("download", "chunks"), self.chunk_limit)
 
 
     def set_config(self, option, value):

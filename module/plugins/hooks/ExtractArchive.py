@@ -355,7 +355,9 @@ class ExtractArchive(Addon):
                         files_ids = [(fname, fid, fout) for fname, fid, fout in files_ids \
                                     if fname not in archive.get_delete_files()]
                         self.log_debug("Extracted files: %s" % new_files)
-                        self.set_permissions(new_files)
+
+                        for file in new_files:
+                            self.set_permissions(file)
 
                         for filename in new_files:
                             file = fs_encode(fs_join(os.path.dirname(archive.filename), filename))
@@ -584,25 +586,3 @@ class ExtractArchive(Addon):
 
         except IOError, e:
             self.log_error(e)
-
-
-    def set_permissions(self, files):
-        for f in files:
-            if not os.path.exists(f):
-                continue
-
-            try:
-                if self.pyload.config.get("permission", "change_file"):
-                    if os.path.isfile(f):
-                        os.chmod(f, int(self.pyload.config.get("permission", "file"), 8))
-
-                    elif os.path.isdir(f):
-                        os.chmod(f, int(self.pyload.config.get("permission", "folder"), 8))
-
-                if self.pyload.config.get("permission", "change_dl") and os.name != "nt":
-                    uid = getpwnam(self.pyload.config.get("permission", "user"))[2]
-                    gid = getgrnam(self.pyload.config.get("permission", "group"))[2]
-                    os.chown(f, uid, gid)
-
-            except Exception, e:
-                self.log_warning(_("Setting User and Group failed"), e)

@@ -84,19 +84,19 @@ class Crypter(Hoster):
                 self.pyload.api.setPackageData(pid, {'password': package_password})
 
             #: Workaround to do not break API addPackage method
-            setFolder = lambda x: self.pyload.api.setPackageData(pid, {'folder': x or ""})
+            set_folder = lambda x: self.pyload.api.setPackageData(pid, {'folder': x or ""})
 
             if use_subfolder:
                 if not subfolder_per_package:
-                    setFolder(package_folder)
+                    set_folder(package_folder)
                     self.log_debug("Set package %(name)s folder to: %(folder)s" % {'name': name, 'folder': folder})
 
                 elif not folder_per_package or name is not folder:
                     if not folder:
                         folder = urlparse.urlparse(name).path.split("/")[-1]
 
-                    setFolder(safe_filename(folder))
+                    set_folder(safe_filename(folder))
                     self.log_debug("Set package %(name)s folder to: %(folder)s" % {'name': name, 'folder': folder})
 
             elif folder_per_package:
-                setFolder(None)
+                set_folder(None)

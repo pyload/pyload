@@ -47,7 +47,7 @@ def create_getInfo(klass):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -179,7 +179,7 @@ class Hoster(Plugin):
 
         self.pyfile.setStatus("starting")
 
-        self.log_debug("PROCESS URL " + self.pyfile.url)
+        self.log_debug("PROCESS URL " + self.pyfile.url, "PLUGIN VERSION %s" % self.__version__)
         return self.process(self.pyfile)
 
 
@@ -188,12 +188,6 @@ class Hoster(Plugin):
         The 'main' method of every plugin, you **have to** overwrite it
         """
         raise NotImplementedError
-
-
-    def get_chunk_count(self):
-        if self.chunk_limit <= 0:
-            return self.pyload.config.get("download", "chunks")
-        return min(self.pyload.config.get("download", "chunks"), self.chunk_limit)
 
 
     def set_reconnect(self, reconnect):
@@ -385,28 +379,26 @@ class Hoster(Plugin):
 
         self.pyfile.setStatus("downloading")
 
-        download_folder = self.pyload.config.get("general", "download_folder")
-        location = fs_join(download_folder, self.pyfile.package().folder)
+        download_folder   = self.pyload.config.get("general", "download_folder")
+        download_location = fs_join(download_folder, self.pyfile.package().folder)
 
-        if not exists(location):
+        if not exists(download_location):
             try:
-                os.makedirs(location, int(self.pyload.config.get("permission", "folder"), 8))
-
-                if self.pyload.config.get("permission", "change_dl") and os.name != "nt":
-                    uid = pwd.getpwnam(self.pyload.config.get("permission", "user"))[2]
-                    gid = grp.getgrnam(self.pyload.config.get("permission", "group"))[2]
-                    os.chown(location, uid, gid)
+                os.makedirs(download_location)
 
             except Exception, e:
                 self.fail(e)
 
-        #: Convert back to unicode
-        location = fs_decode(location)
-        name = safe_filename(self.pyfile.name)
+        self.set_permissions(download_location)
 
+        location = fs_decode(download_location)
+        name     = safe_filename(urlparse.urlparse(self.pyfile.name).path.split('/')[-1] or self.pyfile.name)
         filename = os.path.join(location, name)
 
         self.pyload.hookManager.dispatchEvent("download_start", self.pyfile, url, filename)
+
+        if self.pyfile.abort:
+            self.abort()
 
         try:
             newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref, cookies=cookies,
@@ -415,32 +407,26 @@ class Hoster(Plugin):
         finally:
             self.pyfile.size = self.req.size
 
-        if newname:
-            newname = urlparse.urlparse(newname).path.split('/')[-1].split(' filename*=')[0]  #@TODO: Remove in 0.4.10
+        #@TODO: Recheck in 0.4.10
+        if disposition:
+            finalname = urlparse.urlparse(newname).path.split('/')[-1].split(' filename*=')[0]
 
-            if disposition and newname is not name:
-                self.log_info(_("%(name)s saved as %(newname)s") % {'name': name, 'newname': newname})
-                self.pyfile.name = newname
-                filename = os.path.join(location, newname)
+            if finalname != newname != name:
+                try:
+                    os.rename(fs_join(location, newname), fs_join(location, finalname))
 
-        fs_filename = fs_encode(filename)
+                except OSError, e:
+                    self.log_warning(_("Error renaming `%s` to `%s`") % (newname, finalname), e)
+                    finalname = newname
 
-        if self.pyload.config.get("permission", "change_file"):
-            try:
-                os.chmod(fs_filename, int(self.pyload.config.get("permission", "file"), 8))
-            except Exception, e:
-                self.log_warning(_("Setting file mode failed"), e)
+                self.log_info(_("`%s` saved as `%s`") % (name, finalname))
+                self.pyfile.name = finalname
+                filename = os.path.join(location, finalname)
 
-        if self.pyload.config.get("permission", "change_dl") and os.name != "nt":
-            try:
-                uid = pwd.getpwnam(self.pyload.config.get("permission", "user"))[2]
-                gid = grp.getgrnam(self.pyload.config.get("permission", "group"))[2]
-                os.chown(fs_filename, uid, gid)
-
-            except Exception, e:
-                self.log_warning(_("Setting User and Group failed"), e)
+        self.set_permissions(fs_encode(filename))
 
         self.last_download = filename
+
         return self.last_download
 
 
