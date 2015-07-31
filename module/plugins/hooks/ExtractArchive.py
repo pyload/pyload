@@ -50,11 +50,6 @@ try:
 except ImportError:
     pass
 
-from copy import copy
-if os.name != "nt":
-    from grp import getgrnam
-    from pwd import getpwnam
-
 from module.plugins.internal.Addon import Addon, Expose, threaded
 from module.plugins.internal.Plugin import replace_patterns
 from module.plugins.internal.Extractor import ArchiveError, CRCError, PasswordError

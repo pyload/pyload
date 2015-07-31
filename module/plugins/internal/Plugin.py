@@ -8,6 +8,10 @@ import os
 import re
 import urllib
 
+if os.name != "nt":
+    import grp
+    import pwd
+
 from module.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload as Skip  #@TODO: Remove in 0.4.10
 from module.utils import fs_encode, fs_decode, html_unescape, save_join as fs_join
 
@@ -138,7 +142,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'

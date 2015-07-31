@@ -9,10 +9,6 @@ import time
 import traceback
 import urlparse
 
-if os.name != "nt":
-    import grp
-    import pwd
-
 from module.plugins.internal.Captcha import Captcha
 from module.plugins.internal.Plugin import (Plugin, Abort, Fail, Reconnect, Retry, Skip,
                                             chunks, encode, exists, fixurl as _fixurl, replace_patterns,
