@@ -84,8 +84,7 @@ class ReCaptcha(CaptchaService):
         result = self.decrypt(urlparse.urljoin(server, "image"),
                               get={'c': challenge},
                               cookies=True,
-                              input_type="jpg",
-                              ocr=False)
+                              input_type="jpg")
 
         self.log_debug("Result: %s" % result)
 
@@ -173,7 +172,8 @@ class ReCaptcha(CaptchaService):
         captcha_response = self.decrypt("https://www.google.com/recaptcha/api2/payload",
                                               get={'c':token3.group(1), 'k':key},
                                               cookies=True,
-                                              ocr=False)
+                                              ocr=False,
+                                              timeout=30)
         response = b64encode('{"response":"%s"}' % captcha_response)
 
         self.log_debug("Result: %s" % response)

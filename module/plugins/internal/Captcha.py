@@ -12,7 +12,7 @@ from module.plugins.internal.Plugin import Plugin
 class Captcha(Plugin):
     __name__    = "Captcha"
     __type__    = "captcha"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__  = "testing"
 
     __description__ = """Base anti-captcha plugin"""
@@ -57,7 +57,7 @@ class Captcha(Plugin):
 
 
     #@TODO: Definitely choose a better name for this method!
-    def _decrypt(self, raw, input_type='jpg', output_type='textual', ocr=None, timeout=120):
+    def _decrypt(self, raw, input_type='jpg', output_type='textual', ocr=False, timeout=120):
         """
         Loads a captcha and decrypts it with ocr, plugin, user input
 
@@ -73,31 +73,28 @@ class Captcha(Plugin):
 
         :return: result of decrypting
         """
+        result   = ""
         time_ref = ("%.2f" % time.time())[-6:].replace(".", "")
 
         with open(os.path.join("tmp", "captcha_image_%s_%s.%s" % (self.plugin.__name__, time_ref, input_type)), "wb") as tmp_img:
             tmp_img.write(raw)
 
-            if ocr is not False:
+            if ocr:
                 if isinstance(ocr, basestring):
                     OCR = self.pyload.pluginManager.loadClass("captcha", ocr)  #: Rename `captcha` to `ocr` in 0.4.10
-
-                    if self.plugin.pyfile.abort:
-                        self.plugin.abort()
-
                     result = OCR(self.plugin).recognize(tmp_img.name)
-
                 else:
                     result = self.recognize(tmp_img.name)
 
-            else:
+            if not result:
                 captchaManager = self.pyload.captchaManager
 
                 try:
                     self.task = captchaManager.newTask(raw, input_type, tmp_img.name, output_type)
-                    captchaManager.handleCaptcha(self.task)
-                    self.task.setWaiting(max(timeout, 50))  #@TODO: Move to `CaptchaManager` in 0.4.10
 
+                    captchaManager.handleCaptcha(self.task)
+
+                    self.task.setWaiting(max(timeout, 50))  #@TODO: Move to `CaptchaManager` in 0.4.10
                     while self.task.isWaiting():
                         if self.plugin.pyfile.abort:
                             self.plugin.abort()
@@ -114,7 +111,6 @@ class Captcha(Plugin):
                     self.plugin.retry(reason=_("No captcha result obtained in appropiate time"))
 
                 result = self.task.result
-                self.log_info(_("Captcha result: ") + result)  #@TODO: Remove from here?
 
         if not self.pyload.debug:
             try:
@@ -123,6 +119,8 @@ class Captcha(Plugin):
             except OSError, e:
                 self.log_warning(_("Error removing: %s") % tmp_img.name, e)
                 traceback.print_exc()
+
+        self.log_info(_("Captcha result: ") + result)  #@TODO: Remove from here?
 
         return result
 

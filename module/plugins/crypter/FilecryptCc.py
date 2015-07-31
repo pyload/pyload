@@ -93,8 +93,7 @@ class FilecryptCc(Crypter):
             self.log_debug("Captcha-URL: %s" % m.group(1))
 
             captcha_code = self.captcha.decrypt(urlparse.urljoin(self.base_url, m.group(1)),
-                                                      input_type="gif",
-                                                      ocr=False)
+                                                input_type="gif")
 
             self.site_with_links = self.load(self.pyfile.url,
                                            post={'recaptcha_response_field': captcha_code})
