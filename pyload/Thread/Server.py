@@ -61,7 +61,7 @@ class WebServer(threading.Thread):
                 except Exception, e:
                     log.error(_("Error importing lightweight server: %s") % e)
                     log.warning(_("You need to download and compile bjoern, https://github.com/jonashaag/bjoern"))
-                    log.warning(_("Copy the boern.so file to lib/Python/Lib or use setup.py install"))
+                    log.warning(_("Copy the bjoern.so file to lib/Python/Lib or use setup.py install"))
                     log.warning(_("Of course you need to be familiar with linux and know how to compile software"))
                     self.server = "auto"
             else:
