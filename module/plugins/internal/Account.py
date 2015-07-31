@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import copy
 import random
 import time
 import threading
@@ -12,7 +13,7 @@ from module.utils import compare_time, lock, parseFileSize as parse_size
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -219,7 +220,7 @@ class Account(Plugin):
                 self.log_debug("Reached data timeout for %s" % user)
                 self.schedule_refresh(user)
 
-        safe_info = info.copy()
+        safe_info = copy.deepcopy(info)
         safe_info['login']['password'] = "**********"
         safe_info['data']['password']  = "**********"  #@TODO: Remove in 0.4.10
         self.log_debug("Account info for user `%s`: %s" % (user, safe_info))
