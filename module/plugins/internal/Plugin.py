@@ -142,7 +142,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -253,7 +253,7 @@ class Plugin(object):
             return self.pyload.config.getPlugin(plugin or self.__name__, option)
 
         except KeyError:
-            self.log_warning(_("Config option `%s` not found, use default `%s`") % (option, default or None))
+            self.log_debug("Config option `%s` not found, use default `%s`" % (option, default or None))  #@TODO: Restore to `log_warning` in 0.4.10
             return default
 
 
