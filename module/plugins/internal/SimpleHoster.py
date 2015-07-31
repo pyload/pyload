@@ -23,7 +23,7 @@ statusMap = dict((v, k) for k, v in _statusMap.items())
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.75"
+    __version__ = "1.76"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -315,7 +315,7 @@ class SimpleHoster(Hoster):
 
         elif self.check_download({'Empty file': re.compile(r'\A((.|)(\2|\s)*)\Z')},
                                  file_size=self.info['size'] if 'size' in self.info else 0,
-                                 size_tolerance=10240,
+                                 size_tolerance=1048576,
                                  delete=True):
             self.error(_("Empty file"))
 
