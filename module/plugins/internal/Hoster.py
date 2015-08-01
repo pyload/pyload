@@ -332,7 +332,7 @@ class Hoster(Plugin):
                 return
 
             self.premium = False
-            self.account = None
+            self.account = False
             self.req = self.pyload.requestFactory.getRequest(self.__name__)
 
         raise Retry(encode(reason))  #@TODO: Remove `encode` in 0.4.10
