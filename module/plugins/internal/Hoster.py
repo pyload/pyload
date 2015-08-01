@@ -43,7 +43,7 @@ def create_getInfo(klass):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -142,27 +142,22 @@ class Hoster(Plugin):
 
 
     def load_account(self):
-        oldaccount = self.account
+        if self.req:
+            self.req.close()
 
         if not self.account:
             self.account = self.pyload.accountManager.getAccountPlugin(self.__name__)
 
         if self.account:
-            if self.user:
-                self.account = self.account.is_logged(self.user, relogin=True)
-            else:
+            if not self.user:
                 self.user, data = self.account.select()
-                if not self.user:
-                    self.account = False
 
-        if self.account == oldaccount:
-            self.req.clearCookies()
+            if not self.user or not self.account.is_logged(self.user, relogin=True):
+                self.account = False
 
-        elif self.account:
-            self.req = self.account.get_request(self.user)  #: Browser instance, see `network.Browser`
-
-        else:
-            self.req = self.pyload.requestFactory.getRequest(self.__name__)
+        #: Browser instance, see `network.Browser`
+        self.req = self.pyload.requestFactory.getRequest(self.__name__,
+                                                         self.user if self.account else None)
 
 
     def preprocessing(self, thread):
@@ -170,8 +165,6 @@ class Hoster(Plugin):
         Handles important things to do before starting
         """
         self.thread = thread
-
-        self.req.renewHTTPRequest()
 
         self.load_account()
         self._setup()
@@ -516,10 +509,9 @@ class Hoster(Plugin):
                 header = self.load(url, just_header=True)
 
             except Exception:  #: Bad bad bad... rewrite this part in 0.4.10
-                req = pyreq.getHTTPRequest()
-                res = self.load(url, just_header=True)
-
-                req.close()
+                res = self.load(url,
+                                just_header=True,
+                                req=self.pyload.requestFactory.getRequest())
 
                 header = {'code': req.code}
                 for line in res.splitlines():
@@ -657,7 +649,8 @@ class Hoster(Plugin):
             del self.pyfile
 
         if hasattr(self, "req"):
-            self.req.close()
+            if self.req:
+                self.req.close()
             del self.req
 
         if hasattr(self, "thread"):
