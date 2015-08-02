@@ -12,7 +12,7 @@ from module.plugins.internal.Plugin import Plugin
 class Captcha(Plugin):
     __name__    = "Captcha"
     __type__    = "captcha"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __status__  = "testing"
 
     __description__ = """Base anti-captcha plugin"""
@@ -104,7 +104,7 @@ class Captcha(Plugin):
                 captchaManager.removeTask(self.task)
 
             if self.task.error:
-                self.fail(task.error)
+                self.fail(self.task.error)
 
             elif not self.task.result:
                 self.invalid()
