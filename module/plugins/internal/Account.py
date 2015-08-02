@@ -13,13 +13,12 @@ from module.utils import compare_time, lock, parseFileSize as parse_size
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("mkaay"         , "mkaay@mkaay.de"   ),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     LOGIN_TIMEOUT  = 10 * 60  #: After that time (in minutes) pyload will relogin the account
@@ -141,7 +140,7 @@ class Account(Plugin):
                 self.relogin(user)
 
             if options:
-                before = self.info[user]['data'][user]['options']
+                before = self.info[user]['data']['options']
                 self.info[user]['data']['options'].update(options)
                 return self.info[user]['data']['options'] != before
 
