@@ -122,7 +122,7 @@ class ShareonlineBiz(SimpleHoster):
 
 
     def handle_premium(self, pyfile):  #: Should be working better loading (account) api internally
-        html = self.load("http://api.share-online.biz/account.php",
+        html = self.load("https://api.share-online.biz/account.php",
                          get={'username': self.user,
                               'password': self.account.get_info(self.user)['login']['password'],
                               'act'     : "download",
