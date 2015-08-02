@@ -48,7 +48,7 @@ def exists(path):
 
 #@TODO: Move to utils in 0.4.10
 def fixurl(url):
-    return html_unescape(urllib.unquote(url.decode('unicode-escape'))).strip()
+    return html_unescape(urllib.unquote(url.decode('unicode-escape'))).strip().rstrip('/')
 
 
 #@TODO: Move to utils in 0.4.10
@@ -142,7 +142,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'

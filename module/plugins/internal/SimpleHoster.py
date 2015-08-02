@@ -424,7 +424,7 @@ class SimpleHoster(Hoster):
 
                 elif re.search('filename', errmsg, re.I):
                     url_p = urlparse.urlparse(self.pyfile.url)
-                    self.pyfile.url = "%s://%s/%s" % (url_p.scheme, url_p.netloc, url_p.path.strip('/').split('/')[0])
+                    self.pyfile.url = "%s://%s/%s" % (url_p.scheme, url_p.netloc, url_p.path.split('/')[0])
                     self.retry(1, reason=_("Wrong url"))
 
                 elif re.search('premium', errmsg, re.I):

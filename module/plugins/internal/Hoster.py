@@ -43,7 +43,7 @@ def create_getInfo(klass):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -373,6 +373,9 @@ class Hoster(Plugin):
             self.log_debug("DOWNLOAD URL " + url,
                            *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url")])
 
+        name = _fixurl(self.pyfile.name)
+        self.pyfile.name = urlparse.urlparse(name).path.split('/')[-1] or name
+
         self.captcha.correct()
         self.check_for_same_files()
 
@@ -384,15 +387,13 @@ class Hoster(Plugin):
         if not exists(download_location):
             try:
                 os.makedirs(download_location)
-
             except Exception, e:
                 self.fail(e)
 
         self.set_permissions(download_location)
 
         location = fs_decode(download_location)
-        name     = safe_filename(urlparse.urlparse(self.pyfile.name).path.split('/')[-1] or self.pyfile.name)
-        filename = os.path.join(location, name)
+        filename = os.path.join(location, safe_filename(self.pyfile.name))  #@TODO: Move `safe_filename` check to HTTPDownload in 0.4.10
 
         self.pyload.hookManager.dispatchEvent("download_start", self.pyfile, url, filename)
 
@@ -407,10 +408,10 @@ class Hoster(Plugin):
             self.pyfile.size = self.req.size
 
         #@TODO: Recheck in 0.4.10
-        if disposition:
+        if disposition and newname:
             finalname = urlparse.urlparse(newname).path.split('/')[-1].split(' filename*=')[0]
 
-            if finalname != newname != name:
+            if finalname != newname != self.pyfile.name:
                 try:
                     os.rename(fs_join(location, newname), fs_join(location, finalname))
 
@@ -418,7 +419,7 @@ class Hoster(Plugin):
                     self.log_warning(_("Error renaming `%s` to `%s`") % (newname, finalname), e)
                     finalname = newname
 
-                self.log_info(_("`%s` saved as `%s`") % (name, finalname))
+                self.log_info(_("`%s` saved as `%s`") % (self.pyfile.name, finalname))
                 self.pyfile.name = finalname
                 filename = os.path.join(location, finalname)
 

@@ -2,14 +2,14 @@
 
 import urlparse
 
-from module.plugins.internal.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster, _fixurl
 from module.utils import save_path as safe_filename
 
 
 class Crypter(Hoster):
     __name__    = "Crypter"
     __type__    = "crypter"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -93,7 +93,7 @@ class Crypter(Hoster):
 
                 elif not folder_per_package or name is not folder:
                     if not folder:
-                        folder = urlparse.urlparse(name).path.split("/")[-1]
+                        folder = urlparse.urlparse(_fixurl(name)).path.split("/")[-1]
 
                     set_folder(safe_filename(folder))
                     self.log_debug("Set package %(name)s folder to: %(folder)s" % {'name': name, 'folder': folder})
