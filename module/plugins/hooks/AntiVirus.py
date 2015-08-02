@@ -63,7 +63,7 @@ class AntiVirus(Addon):
                     return
 
             if p.returncode:
-                pyfile.error = _("infected file")
+                pyfile.error = _("Infected file")
                 action = self.get_config('action')
                 try:
                     if action == "Delete":

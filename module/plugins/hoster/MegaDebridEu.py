@@ -10,7 +10,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class MegaDebridEu(MultiHoster):
     __name__    = "MegaDebridEu"
     __type__    = "hoster"
-    __version__ = "0.49"
+    __version__ = "0.50"
     __status__  = "testing"
 
     __pattern__ = r'http://((?:www\d+\.|s\d+\.)?mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[\w^_]+'
@@ -30,9 +30,9 @@ class MegaDebridEu(MultiHoster):
         Connexion to the mega-debrid API
         Return True if succeed
         """
-        user, data = self.account.select()
+        user, info = self.account.select()
         jsonResponse = self.load(self.API_URL,
-                                 get={'action': 'connectUser', 'login': user, 'password': data['password']})
+                                 get={'action': 'connectUser', 'login': user, 'password': info['login']['password']})
         res = json_loads(jsonResponse)
 
         if res['response_code'] == "ok":

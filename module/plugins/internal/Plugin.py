@@ -347,6 +347,7 @@ class Plugin(object):
                 with open(framefile, "wb") as f:
                     del frame  #: Delete the frame or it wont be cleaned
                     f.write(encode(res))
+
             except IOError, e:
                 self.log_error(e)
 

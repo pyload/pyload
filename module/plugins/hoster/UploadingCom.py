@@ -4,13 +4,14 @@ import pycurl
 import re
 
 from module.common.json_layer import json_loads
+from module.plugins.internal.Plugin import encode
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, timestamp
 
 
 class UploadingCom(SimpleHoster):
     __name__    = "UploadingCom"
     __type__    = "hoster"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>\w+)'
@@ -61,7 +62,7 @@ class UploadingCom(SimpleHoster):
     def handle_free(self, pyfile):
         m = re.search('<h2>((Daily )?Download Limit)</h2>', self.html)
         if m:
-            pyfile.error = m.group(1)
+            pyfile.error = encode(m.group(1))
             self.log_warning(pyfile.error)
             self.retry(6, (6 * 60 if m.group(2) else 15) * 60, pyfile.error)
 

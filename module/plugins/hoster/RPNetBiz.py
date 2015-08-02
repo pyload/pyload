@@ -9,7 +9,7 @@ from module.common.json_layer import json_loads
 class RPNetBiz(MultiHoster):
     __name__    = "RPNetBiz"
     __type__    = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __pattern__ = r'https?://.+rpnet\.biz'
@@ -26,12 +26,12 @@ class RPNetBiz(MultiHoster):
 
 
     def handle_premium(self, pyfile):
-        user, data = self.account.select()
+        user, info = self.account.select()
 
         #: Get the download link
         res = self.load("https://premium.rpnet.biz/client_api.php",
                         get={'username': user,
-                             'password': data['password'],
+                             'password': info['login']['password'],
                              'action'  : "generate",
                              'links'   : pyfile.url})
 
@@ -50,7 +50,7 @@ class RPNetBiz(MultiHoster):
                 self.log_debug("Try: %d ; Max Tries: %d" % (my_try, max_tries))
                 res = self.load("https://premium.rpnet.biz/client_api.php",
                                 get={'username': user,
-                                     'password': data['password'],
+                                     'password': info['login']['password'],
                                      'action'  : "downloadInformation",
                                      'id'      : link_status['id']})
                 self.log_debug("JSON data hdd query: %s" % res)
