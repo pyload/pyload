@@ -63,7 +63,7 @@ class Captcha9Kw(Hook):
             self.log_error(e)
             return
 
-        pluginname = re.search(r'_([^_]*)_\d+.\w+', task.captchaFile).group(1)
+        pluginname = re.search(r'_(.+?)_\d+.\w+', task.captchaFile).group(1)
         option     = {'min'           : 2,
                       'max'           : 50,
                       'phrase'        : 0,
@@ -176,7 +176,7 @@ class Captcha9Kw(Hook):
 
         queue = min(self.get_config('queue'), 999)
         timeout = min(max(self.get_config('timeout'), 300), 3999)
-        pluginname = re.search(r'_([^_]*)_\d+.\w+', task.captchaFile).group(1)
+        pluginname = re.search(r'_(.+?)_\d+.\w+', task.captchaFile).group(1)
 
         for _i in xrange(5):
             servercheck = self.load("http://www.9kw.eu/grafik/servercheck.txt")

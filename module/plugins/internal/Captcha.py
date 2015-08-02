@@ -12,7 +12,7 @@ from module.plugins.internal.Plugin import Plugin
 class Captcha(Plugin):
     __name__    = "Captcha"
     __type__    = "captcha"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __status__  = "testing"
 
     __description__ = """Base anti-captcha plugin"""
@@ -79,38 +79,38 @@ class Captcha(Plugin):
         with open(os.path.join("tmp", "captcha_image_%s_%s.%s" % (self.plugin.__name__, time_ref, input_type)), "wb") as tmp_img:
             tmp_img.write(raw)
 
-            if ocr:
-                if isinstance(ocr, basestring):
-                    OCR = self.pyload.pluginManager.loadClass("captcha", ocr)  #: Rename `captcha` to `ocr` in 0.4.10
-                    result = OCR(self.plugin).recognize(tmp_img.name)
-                else:
-                    result = self.recognize(tmp_img.name)
+        if ocr:
+            if isinstance(ocr, basestring):
+                OCR = self.pyload.pluginManager.loadClass("captcha", ocr)  #: Rename `captcha` to `ocr` in 0.4.10
+                result = OCR(self.plugin).recognize(tmp_img.name)
+            else:
+                result = self.recognize(tmp_img.name)
 
-            if not result:
-                captchaManager = self.pyload.captchaManager
+        if not result:
+            captchaManager = self.pyload.captchaManager
 
-                try:
-                    self.task = captchaManager.newTask(raw, input_type, tmp_img.name, output_type)
+            try:
+                self.task = captchaManager.newTask(raw, input_type, tmp_img.name, output_type)
 
-                    captchaManager.handleCaptcha(self.task)
+                captchaManager.handleCaptcha(self.task)
 
-                    self.task.setWaiting(max(timeout, 50))  #@TODO: Move to `CaptchaManager` in 0.4.10
-                    while self.task.isWaiting():
-                        if self.plugin.pyfile.abort:
-                            self.plugin.abort()
-                        time.sleep(1)
+                self.task.setWaiting(max(timeout, 50))  #@TODO: Move to `CaptchaManager` in 0.4.10
+                while self.task.isWaiting():
+                    if self.plugin.pyfile.abort:
+                        self.plugin.abort()
+                    time.sleep(1)
 
-                finally:
-                    captchaManager.removeTask(self.task)
+            finally:
+                captchaManager.removeTask(self.task)
 
-                if self.task.error:
-                    self.fail(task.error)
+            if self.task.error:
+                self.fail(task.error)
 
-                elif not self.task.result:
-                    self.invalid()
-                    self.plugin.retry(reason=_("No captcha result obtained in appropiate time"))
+            elif not self.task.result:
+                self.invalid()
+                self.plugin.retry(reason=_("No captcha result obtained in appropiate time"))
 
-                result = self.task.result
+            result = self.task.result
 
         if not self.pyload.debug:
             try:
