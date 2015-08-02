@@ -25,7 +25,7 @@ def threaded(fn):
 class Addon(Plugin):
     __name__    = "Addon"
     __type__    = "hook"  #@TODO: Change to `addon` in 0.4.10
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __config__   = []  #: [("name", "type", "desc", "default")]
@@ -37,8 +37,7 @@ class Addon(Plugin):
 
 
     def __init__(self, core, manager):
-        self.pyload = core
-        self.info   = {}  #: Provide information in dict here
+        self._init(core)
 
         #: `HookManager`
         self.manager = manager

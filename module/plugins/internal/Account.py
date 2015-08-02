@@ -13,7 +13,7 @@ from module.utils import compare_time, lock, parseFileSize as parse_size
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -27,10 +27,9 @@ class Account(Plugin):
 
 
     def __init__(self, manager, accounts):
-        self.pyload   = manager.core
-        self.info     = {}  #: Provide information in dict here
+        self._init(manager.core)
+
         self.lock     = threading.RLock()
-        self.req      = None
         self.accounts = accounts  #@TODO: Remove in 0.4.10
 
         self.init()

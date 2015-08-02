@@ -43,7 +43,7 @@ def create_getInfo(klass):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -58,8 +58,7 @@ class Hoster(Plugin):
 
 
     def __init__(self, pyfile):
-        self.pyload = pyfile.m.core
-        self.info   = {}  #: Provide information in dict here
+        self._init(pyfile.m.core)
 
         #: Engage wan reconnection
         self.wantReconnect = False  #@TODO: Change to `want_reconnect` in 0.4.10

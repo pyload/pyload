@@ -20,7 +20,7 @@ class RehostToHook(MultiHook):
 
 
     def get_hosters(self):
-        user, data = self.account.select()
+        user, info = self.account.select()
         html = self.load("http://rehost.to/api.php",
                            get={'cmd'     : "get_supported_och_dl",
                                 'long_ses': self.account.get_data(user)['session']})

@@ -12,7 +12,7 @@ from module.plugins.internal.Plugin import Plugin
 class Captcha(Plugin):
     __name__    = "Captcha"
     __type__    = "captcha"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __status__  = "testing"
 
     __description__ = """Base anti-captcha plugin"""
@@ -21,9 +21,9 @@ class Captcha(Plugin):
 
 
     def __init__(self, plugin):  #@TODO: Pass pyfile instead plugin, so store plugin's html in its associated pyfile as data
-        self.pyload = plugin.pyload
+        self._init(plugin.pyload)
+
         self.plugin = plugin
-        self.info   = {}  #: Provide information in dict here
         self.task   = None  #: captchaManager task
 
         self.init()

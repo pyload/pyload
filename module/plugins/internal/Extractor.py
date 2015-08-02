@@ -22,7 +22,7 @@ class PasswordError(Exception):
 class Extractor(Plugin):
     __name__    = "Extractor"
     __type__    = "extractor"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__  = "testing"
 
     __description__ = """Base extractor plugin"""
@@ -86,9 +86,7 @@ class Extractor(Plugin):
         """
         Initialize extractor for specific file
         """
-        self.pyload = plugin.pyload
-        self.plugin = plugin
-        self.info   = {}  #: Provide information in dict here
+        self._init(plugin.pyload)
 
         self.filename     = filename
         self.out          = out

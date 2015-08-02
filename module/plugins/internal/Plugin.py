@@ -142,7 +142,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -157,10 +157,14 @@ class Plugin(object):
 
 
     def __init__(self, core):
+        self._init(core)
+        self.init()
+
+
+    def _init(self, core):
         self.pyload = core
         self.info   = {}  #: Provide information in dict here
         self.req    = None
-        self.init()
 
 
     def init(self):

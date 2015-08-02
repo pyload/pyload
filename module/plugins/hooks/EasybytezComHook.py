@@ -22,7 +22,7 @@ class EasybytezComHook(MultiHook):
 
 
     def get_hosters(self):
-        user, data = self.account.select()
+        user, info = self.account.select()
 
         html = self.load("http://www.easybytez.com",
                          req=self.account.get_request(user))
