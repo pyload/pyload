@@ -21,7 +21,7 @@ from module.utils import save_join as fs_join
 class OCR(Plugin):
     __name__    = "OCR"
     __type__    = "ocr"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __description__ = """OCR base plugin"""
@@ -30,7 +30,9 @@ class OCR(Plugin):
 
 
     def __init__(self, plugin):
-        super(OCR, self).__init__(plugin.pyload)
+        self._init(plugin.pyload)
+        self.plugin = plugin
+        self.init()
 
 
     def init(self):
