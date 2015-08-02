@@ -152,7 +152,7 @@ class XFSAccount(Account):
 
     def login(self, user, password, data, req):
         if not self.HOSTER_URL:
-            self.login_fail(_("Missing HOSTER_DOMAIN"))
+            self.login_fail(_("Missing HOSTER_URL"))
 
         if not self.LOGIN_URL:
             self.LOGIN_URL  = urlparse.urljoin(self.HOSTER_URL, "login.html")

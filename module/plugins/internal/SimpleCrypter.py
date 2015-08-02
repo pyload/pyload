@@ -10,7 +10,7 @@ from module.utils import fixup, html_unescape
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.59"
+    __version__ = "0.60"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -57,25 +57,23 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
 
     #@TODO: Remove in 0.4.10
+    def _setup(self):
+        orig_name = self.__name__
+        self.__name__ = (orig_name + ".py").replace("Folder.py", "").replace(".py", "")
+
+        super(SimpleCrypter, self)._setup()
+
+        self.__name__ = orig_name
+
+
+    #@TODO: Remove in 0.4.10
     def load_account(self):
-        accountname = (self.__name__ + ".py").replace("Folder.py", "").replace(".py", "")
+        orig_name = self.__name__
+        self.__name__ = (orig_name + ".py").replace("Folder.py", "").replace(".py", "")
 
-        if self.req:
-            self.req.close()
+        super(SimpleCrypter, self).load_account()
 
-        if not self.account:
-            self.account = self.pyload.accountManager.getAccountPlugin(accountname)
-
-        if self.account:
-            if not self.user:
-                self.user = self.account.select()[0]
-
-            if not self.user or not self.account.is_logged(self.user, relogin=True):
-                self.account = False
-
-        #: Browser instance, see `network.Browser`
-        self.req = self.pyload.requestFactory.getRequest(accountname,
-                                                         self.user if self.account else None)
+        self.__name__ = orig_name
 
 
     def handle_direct(self, pyfile):
