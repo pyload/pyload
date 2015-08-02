@@ -17,7 +17,7 @@ class PremiumizeMe(Account):
 
     def parse_info(self, user, password, data, req):
         #: Get user data from premiumize.me
-        status = self.get_account_status(user, password, req)
+        status = self.get_account_status(user, password)
         self.log_debug(status)
 
         #: Parse account info
@@ -32,14 +32,14 @@ class PremiumizeMe(Account):
 
     def login(self, user, password, data, req):
         #: Get user data from premiumize.me
-        status = self.get_account_status(user, password, req)
+        status = self.get_account_status(user, password)
 
         #: Check if user and password are valid
         if status['status'] != 200:
             self.login_fail()
 
 
-    def get_account_status(self, user, password, req):
+    def get_account_status(self, user, password):
         #: Use premiumize.me API v1 (see https://secure.premiumize.me/?show=api)
         #: To retrieve account info and return the parsed json answer
         answer = self.load("http://api.premiumize.me/pm-api/v1.php",  #@TODO: Revert to `https` in 0.4.10
