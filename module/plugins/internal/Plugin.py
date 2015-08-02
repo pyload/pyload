@@ -142,7 +142,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -378,11 +378,11 @@ class Plugin(object):
         """
         Clean everything and remove references
         """
-        for a in ("pyfile", "thread", "html"):
-            if hasattr(self, a):
-                setattr(self, a, None)
-
         try:
             self.req.close()
-        finally:
-            self.req = None
+        except Exception:
+            pass
+
+        for a in ("pyfile", "thread", "html", "req"):
+            if hasattr(self, a):
+                setattr(self, a, None)
