@@ -42,7 +42,7 @@ class ZDF(Hoster):
 
 
     def process(self, pyfile):
-        xml = etree.fromstring(self.load(self.XML_API % self.get_id(pyfile.url)))
+        xml = etree.fromstring(self.load(self.XML_API % self.get_id(pyfile.url)).encode("UTF-8"))
 
         status = xml.findtext("./status/statuscode")
         if status != "ok":
