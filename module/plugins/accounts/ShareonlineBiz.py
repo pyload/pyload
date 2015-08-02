@@ -8,7 +8,7 @@ from module.plugins.internal.Account import Account
 class ShareonlineBiz(Account):
     __name__    = "ShareonlineBiz"
     __type__    = "account"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__  = "testing"
 
     __description__ = """Share-online.biz account plugin"""
@@ -29,7 +29,7 @@ class ShareonlineBiz(Account):
         api = dict(line.split("=") for line in res.splitlines() if "=" in line)
 
         if not 'a' in api:
-            self.login_fail(_("Invalid username/password"))
+            self.login_fail(res.strip('*').strip())
 
         if api['a'].lower() == "not_available":
             self.login_fail(_("No info available"))
@@ -65,9 +65,4 @@ class ShareonlineBiz(Account):
 
     def login(self, user, password, data, req):
         api = self.api_response(user, password, req)
-        err = re.search(r'\*\*(.+?)\*\*', api)
-
-        if not err:
-            req.cj.setCookie("share-online.biz", 'a', api['a'])
-        else:
-            self.login_fail(err.group(1))
+        req.cj.setCookie("share-online.biz", 'a', api['a'])
