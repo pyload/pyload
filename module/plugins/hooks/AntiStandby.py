@@ -27,7 +27,7 @@ class Kernel32(object):
 class AntiStandby(Addon):
     __name__    = "AntiStandby"
     __type__    = "hook"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                       , True ),
@@ -130,13 +130,17 @@ class AntiStandby(Addon):
             elif not self.pid:
                 self.pid = subprocess.Popen(["caffeine"])
 
+        except Exception, e:
+            self.log_warning(_("Unable to change system power state"), e)
+
+        try:
             if display:
                 subprocess.call(["xset", "+dpms", "s", "default"])
             else:
                 subprocess.call(["xset", "-dpms", "s", "off"])
 
         except Exception, e:
-            self.log_warning(_("Unable to change power state"), e)
+            self.log_warning(_("Unable to change display power state"), e)
 
 
     @Expose
