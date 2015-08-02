@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class UploadedTo(Account):
     __name__    = "UploadedTo"
     __type__    = "account"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__  = "testing"
 
     __description__ = """Uploaded.to account plugin"""
@@ -17,8 +17,8 @@ class UploadedTo(Account):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    PREMIUM_PATTERN = r'<em>Premium</em>'
-    VALID_UNTIL_PATTERN = r'<td>Duration:</td>\s*<th>(.+?)<'
+    PREMIUM_PATTERN      = r'<em>Premium</em>'
+    VALID_UNTIL_PATTERN  = r'<td>Duration:</td>\s*<th>(.+?)<'
     TRAFFIC_LEFT_PATTERN = r'<b class="cB">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
 
@@ -64,10 +64,10 @@ class UploadedTo(Account):
     def login(self, user, password, data, req):
         #: req.cj.setCookie("uploaded.net", "lang", "en")
 
-        html = self.load("https://uploaded.net/io/login",
+        html = self.load("http://uploaded.net/io/login",
                          post={'id': user,
-                               'pw': password,
-                               '_': ""})
+                               'pw': password})
 
-        if '"err"' in html:
-            self.login_fail()
+        m = re.search(r'"err":"(.+?)"', html)
+        if m is not None:
+            self.login_fail(m.group(1))
