@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class PremiumizeMe(MultiHoster):
     __name__    = "PremiumizeMe"
     __type__    = "hoster"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate
@@ -31,13 +31,13 @@ class PremiumizeMe(MultiHoster):
             pyfile.name = ".".join(temp)
 
         #: Get account data
-        user, data = self.account.select()
+        user, info = self.account.select()
 
         #: Get rewritten link using the premiumize.me api v1 (see https://secure.premiumize.me/?show=api)
         data = json_loads(self.load("http://api.premiumize.me/pm-api/v1.php",  #@TODO: Revert to `https` in 0.4.10
                                     get={'method'       : "directdownloadlink",
                                          'params[login]': user,
-                                         'params[pass]' : data['password'],
+                                         'params[pass]' : info['login']['password'],
                                          'params[link]' : pyfile.url}))
 
         #: Check status and decide what to do
