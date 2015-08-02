@@ -3,12 +3,13 @@
 import re
 
 from module.plugins.internal.Account import Account
+from module.plugins.internal.Plugin import set_cookie
 
 
 class ShareonlineBiz(Account):
     __name__    = "ShareonlineBiz"
     __type__    = "account"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__  = "testing"
 
     __description__ = """Share-online.biz account plugin"""
@@ -65,4 +66,4 @@ class ShareonlineBiz(Account):
 
     def login(self, user, password, data, req):
         api = self.api_response(user, password, req)
-        req.cj.setCookie("share-online.biz", 'a', api['a'])
+        set_cookie(req.cj, "share-online.biz", 'a', api['a'])

@@ -12,7 +12,7 @@ from module.PyFile import statusMap as _statusMap
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster, create_getInfo, parse_fileInfo
-from module.plugins.internal.Plugin import Fail, encode, fixurl, replace_patterns, seconds_to_midnight, set_cookies
+from module.plugins.internal.Plugin import Fail, encode, fixurl, replace_patterns, seconds_to_midnight, set_cookie, set_cookies
 from module.utils import fixup, fs_encode, parseFileSize as parse_size
 
 

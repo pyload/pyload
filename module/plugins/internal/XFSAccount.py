@@ -5,13 +5,13 @@ import time
 import urlparse
 
 from module.plugins.internal.Account import Account
-from module.plugins.internal.Plugin import parse_html_form, set_cookies
+from module.plugins.internal.Plugin import parse_html_form, set_cookie
 
 
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __status__  = "testing"
 
     __description__ = """XFileSharing account plugin"""
@@ -39,20 +39,6 @@ class XFSAccount(Account):
     LOGIN_FAIL_PATTERN = r'Incorrect Login or Password|account was banned|Error<'
 
 
-    def init(self):
-        if not self.HOSTER_DOMAIN:
-            self.log_error(_("Missing HOSTER_DOMAIN"))
-            self.COOKIES = False
-
-        else:
-            if not self.HOSTER_URL:
-                self.HOSTER_URL = "http://www.%s/" % self.HOSTER_DOMAIN
-
-            if isinstance(self.COOKIES, list):
-                self.COOKIES.insert((self.HOSTER_DOMAIN, "lang", "english"))
-                set_cookies(req.cj, self.COOKIES)
-
-
     def parse_info(self, user, password, data, req):
         validuntil   = None
         trafficleft  = None
@@ -65,7 +51,9 @@ class XFSAccount(Account):
                     'leechtraffic': leechtraffic,
                     'premium'     : premium}
 
-        html = self.load(self.HOSTER_URL, get={'op': "my_account"})
+        html = self.load(self.HOSTER_URL,
+                         get={'op': "my_account"},
+                         cookies=self.COOKIES)
 
         premium = True if re.search(self.PREMIUM_PATTERN, html) else False
 
@@ -151,12 +139,22 @@ class XFSAccount(Account):
 
 
     def login(self, user, password, data, req):
+        if self.HOSTER_DOMAIN:
+            if not self.HOSTER_URL:
+                self.HOSTER_URL = "http://www.%s/" % self.HOSTER_DOMAIN
+
+            if isinstance(self.COOKIES, list):
+                self.COOKIES.insert((self.HOSTER_DOMAIN, "lang", "english"))
+            else:
+                set_cookie(req.cj, self.HOSTER_DOMAIN, "lang", "english")
+
         if not self.HOSTER_URL:
             self.login_fail(_("Missing HOSTER_URL"))
 
         if not self.LOGIN_URL:
             self.LOGIN_URL  = urlparse.urljoin(self.HOSTER_URL, "login.html")
-        html = self.load(self.LOGIN_URL)
+
+        html = self.load(self.LOGIN_URL, cookies=self.COOKIES)
 
         action, inputs = parse_html_form('name="FL"', html)
         if not inputs:
@@ -171,7 +169,7 @@ class XFSAccount(Account):
         else:
             url = self.HOSTER_URL
 
-        html = self.load(url, post=inputs)
+        html = self.load(url, post=inputs, cookies=self.COOKIES)
 
         if re.search(self.LOGIN_FAIL_PATTERN, html):
             self.login_fail()

@@ -4,12 +4,13 @@ import re
 import time
 
 from module.plugins.internal.Account import Account
+from module.plugins.internal.Plugin import set_cookie
 
 
 class TurbobitNet(Account):
     __name__    = "TurbobitNet"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __description__ = """TurbobitNet account plugin"""
@@ -32,7 +33,7 @@ class TurbobitNet(Account):
 
 
     def login(self, user, password, data, req):
-        req.cj.setCookie("turbobit.net", "user_lang", "en")
+        set_cookie(req.cj, "turbobit.net", "user_lang", "en")
 
         html = self.load("http://turbobit.net/user/login",
                          post={"user[login]" : user,

@@ -12,7 +12,7 @@ import urlparse
 from module.plugins.internal.Captcha import Captcha
 from module.plugins.internal.Plugin import (Plugin, Abort, Fail, Reconnect, Retry, Skip,
                                             chunks, encode, exists, fixurl as _fixurl, replace_patterns,
-                                            seconds_to_midnight, set_cookies, parse_html_form,
+                                            seconds_to_midnight, set_cookie, set_cookies, parse_html_form,
                                             parse_html_tag_attr_value, timestamp)
 from module.utils import fs_decode, fs_encode, save_join as fs_join, save_path as safe_filename
 

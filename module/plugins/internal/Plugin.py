@@ -81,11 +81,15 @@ def replace_patterns(string, ruleslist):
     return string
 
 
+#@TODO: Remove in 0.4.10 and fix CookieJar.setCookie
+def set_cookie(cj, domain, name, value):
+    return cj.setCookie(domain, name, encode(value))
+
+
 def set_cookies(cj, cookies):
     for cookie in cookies:
         if isinstance(cookie, tuple) and len(cookie) == 3:
-            domain, name, value = cookie
-            cj.setCookie(domain, name, encode(value))  #@TODO: Remove `encode` in 0.4.10
+            set_cookie(cj, *cookie)
 
 
 def parse_html_tag_attr_value(attr_name, tag):
@@ -142,7 +146,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -329,12 +333,18 @@ class Plugin(object):
         if req is None:
             req = self.req or self.pyload.requestFactory.getRequest(self.__name__)
 
-        res = req.load(url, get, post, ref, cookies, just_header, multipart, decode is True)  #@TODO: Fix network multipart in 0.4.10
+        #@TODO: Move to network in 0.4.10
+        if isinstance(self.COOKIES, list):
+            set_cookies(req.cj, cookies)
 
-        if decode:   #@TODO: Move to network in 0.4.10
+        res = req.load(url, get, post, ref, bool(cookies), just_header, multipart, decode is True)  #@TODO: Fix network multipart in 0.4.10
+
+        #@TODO: Move to network in 0.4.10
+        if decode:
             res = html_unescape(res)
 
-        if isinstance(decode, basestring):  #@TODO: Move to network in 0.4.10
+        #@TODO: Move to network in 0.4.10
+        if isinstance(decode, basestring):
             res = decode(res, decode)
 
         if self.pyload.debug:

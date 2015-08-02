@@ -3,7 +3,7 @@
 import re
 
 from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns, set_cookies
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns, set_cookie, set_cookies
 from module.utils import fixup, html_unescape
 
 

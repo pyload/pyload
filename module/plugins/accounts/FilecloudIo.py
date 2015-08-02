@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Account import Account
 from module.common.json_layer import json_loads
+from module.plugins.internal.Account import Account
+from module.plugins.internal.Plugin import set_cookie
 
 
 class FilecloudIo(Account):
     __name__    = "FilecloudIo"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __description__ = """FilecloudIo account plugin"""
@@ -43,7 +44,7 @@ class FilecloudIo(Account):
 
 
     def login(self, user, password, data, req):
-        req.cj.setCookie("secure.filecloud.io", "lang", "en")
+        set_cookie(req.cj, "secure.filecloud.io", "lang", "en")
         html = self.load('https://secure.filecloud.io/user-login.html')
 
         if not hasattr(self, "form_data"):

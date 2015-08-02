@@ -4,12 +4,13 @@ import re
 import time
 
 from module.plugins.internal.Account import Account
+from module.plugins.internal.Plugin import set_cookie
 
 
 class Keep2ShareCc(Account):
     __name__    = "Keep2ShareCc"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __description__ = """Keep2Share.cc account plugin"""
@@ -61,7 +62,7 @@ class Keep2ShareCc(Account):
 
 
     def login(self, user, password, data, req):
-        req.cj.setCookie("keep2share.cc", "lang", "en")
+        set_cookie(req.cj, "keep2share.cc", "lang", "en")
 
         html = self.load("https://keep2share.cc/login.html",
                          post={'LoginForm[username]'  : user,

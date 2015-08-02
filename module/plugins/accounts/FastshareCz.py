@@ -3,12 +3,13 @@
 import re
 
 from module.plugins.internal.Account import Account
+from module.plugins.internal.Plugin import set_cookie
 
 
 class FastshareCz(Account):
     __name__    = "FastshareCz"
     __type__    = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __description__ = """Fastshare.cz account plugin"""
@@ -39,7 +40,7 @@ class FastshareCz(Account):
 
 
     def login(self, user, password, data, req):
-        req.cj.setCookie("fastshare.cz", "lang", "en")
+        set_cookie(req.cj, "fastshare.cz", "lang", "en")
 
         self.load('http://www.fastshare.cz/login')  #@NOTE: Do not remove or it will not login
 

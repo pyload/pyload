@@ -2,12 +2,13 @@
 
 from module.common.json_layer import json_loads
 from module.plugins.internal.Account import Account
+from module.plugins.internal.Plugin import set_cookie
 
 
 class SimplyPremiumCom(Account):
     __name__    = "SimplyPremiumCom"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __description__ = """Simply-Premium.com account plugin"""
@@ -39,7 +40,7 @@ class SimplyPremiumCom(Account):
 
 
     def login(self, user, password, data, req):
-        req.cj.setCookie("simply-premium.com", "lang", "EN")
+        set_cookie(req.cj, "simply-premium.com", "lang", "EN")
 
         html = self.load("https://www.simply-premium.com/login.php",
                          post={'key': user} if not password else {'login_name': user, 'login_pass': password})

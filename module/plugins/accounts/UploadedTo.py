@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class UploadedTo(Account):
     __name__    = "UploadedTo"
     __type__    = "account"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__  = "testing"
 
     __description__ = """Uploaded.to account plugin"""
@@ -62,7 +62,7 @@ class UploadedTo(Account):
 
 
     def login(self, user, password, data, req):
-        #: req.cj.setCookie("uploaded.net", "lang", "en")
+        self.load("http://uploaded.net/language/en")
 
         html = self.load("http://uploaded.net/io/login",
                          post={'id': user,

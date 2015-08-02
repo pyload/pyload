@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from module.plugins.internal.Account import Account
+from module.plugins.internal.Plugin import set_cookie
 
 
 class FourSharedCom(Account):
     __name__    = "FourSharedCom"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __description__ = """FourShared.com account plugin"""
@@ -21,7 +22,7 @@ class FourSharedCom(Account):
 
 
     def login(self, user, password, data, req):
-        req.cj.setCookie("4shared.com", "4langcookie", "en")
+        set_cookie(req.cj, "4shared.com", "4langcookie", "en")
 
         res = self.load("https://www.4shared.com/web/login",
                         post={'login'    : user,

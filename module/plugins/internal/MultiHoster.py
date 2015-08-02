@@ -3,7 +3,7 @@
 import re
 
 from module.plugins.internal.Plugin import Fail, encode
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns, set_cookies
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns, set_cookie, set_cookies
 
 
 class MultiHoster(SimpleHoster):
