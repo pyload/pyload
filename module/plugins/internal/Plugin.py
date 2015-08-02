@@ -142,7 +142,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -159,6 +159,7 @@ class Plugin(object):
     def __init__(self, core):
         self.pyload = core
         self.info   = {}  #: Provide information in dict here
+        self.req    = None
         self.init()
 
 
@@ -322,10 +323,7 @@ class Plugin(object):
                            *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url")])
 
         if req is None:
-            if hasattr(self, "req"):
-                req = self.req
-            else:
-                req = self.pyload.requestFactory.getRequest(self.__name__)
+            req = self.req or self.pyload.requestFactory.getRequest(self.__name__)
 
         res = req.load(url, get, post, ref, cookies, just_header, multipart, decode is True)  #@TODO: Fix network multipart in 0.4.10
 
@@ -370,3 +368,17 @@ class Plugin(object):
             res = header
 
         return res
+
+
+    def clean(self):
+        """
+        Clean everything and remove references
+        """
+        for a in ("pyfile", "thread", "html"):
+            if hasattr(self, a):
+                setattr(self, a, None)
+
+        try:
+            self.req.close()
+        finally:
+            self.req = None

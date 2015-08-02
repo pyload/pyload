@@ -43,7 +43,7 @@ def create_getInfo(klass):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -75,7 +75,7 @@ class Hoster(Plugin):
         #: Account handler instance, see :py:class:`Account`
         self.account = None
         self.user    = None
-        self.req     = None
+        self.req     = None  #: Browser instance, see `network.Browser`
 
         #: Associated pyfile instance, see `PyFile`
         self.pyfile = pyfile
@@ -98,7 +98,8 @@ class Hoster(Plugin):
         self.html = None
 
         #: Dict of the amount of retries already made
-        self.retries = {}
+        self.retries    = {}
+        self.retry_free = False  #@TODO: Recheck in 0.4.10
 
         self._setup()
         self.init()
@@ -132,10 +133,12 @@ class Hoster(Plugin):
 
     def _setup(self):
         if self.account:
+            self.req             = self.pyload.requestFactory.getRequest(self.__name__, self.user)
             self.chunk_limit     = -1  #: -1 for unlimited
             self.resume_download = True
             self.premium         = self.account.is_premium(self.user)
         else:
+            self.req             = self.pyload.requestFactory.getRequest(self.__name__)
             self.chunk_limit     = 1
             self.resume_download = False
             self.premium         = False
@@ -150,14 +153,10 @@ class Hoster(Plugin):
 
         if self.account:
             if not self.user:
-                self.user, data = self.account.select()
+                self.user = self.account.select()[0]
 
-            if not self.user or not self.account.is_logged(self.user, relogin=True):
+            if not self.user or not self.account.is_logged(self.user, True):
                 self.account = False
-
-        #: Browser instance, see `network.Browser`
-        self.req = self.pyload.requestFactory.getRequest(self.__name__,
-                                                         self.user if self.account else None)
 
 
     def preprocessing(self, thread):
@@ -166,9 +165,19 @@ class Hoster(Plugin):
         """
         self.thread = thread
 
-        self.load_account()
+        if self.retry_free:
+            self.account = False
+        else:
+            self.load_account()  #@TODO: Move to PluginThread in 0.4.10
+            self.retry_free = False
+
         self._setup()
         self.setup()
+
+        self.pyload.hookManager.downloadPreparing(self.pyfile)  #@TODO: Recheck in 0.4.10
+
+        if self.pyfile.abort:
+            self.abort()
 
         self.pyfile.setStatus("starting")
         self.log_debug("PROCESS URL " + self.pyfile.url, "PLUGIN VERSION %s" % self.__version__)
@@ -316,17 +325,15 @@ class Hoster(Plugin):
         raise Retry(encode(reason))  #@TODO: Remove `encode` in 0.4.10
 
 
-    def restart(self, reason=None, reset=False):
+    def restart(self, reason=None, nopremium=False):
         if not reason:
-            reason = _("Fallback to free download") if reset else _("Restart")
+            reason = _("Fallback to free download") if nopremium else _("Restart")
 
-        if reset:
-            if not self.premium:
-                return
-
-            self.premium = False
-            self.account = False
-            self.req = self.pyload.requestFactory.getRequest(self.__name__)
+        if nopremium:
+            if self.premium:
+                self.retry_free = True
+            else:
+                self.fail(reason, _("Download was already free"))
 
         raise Retry(encode(reason))  #@TODO: Remove `encode` in 0.4.10
 
@@ -639,22 +646,3 @@ class Hoster(Plugin):
                 self.skip(pyfile[0])
 
             self.log_debug("File %s not skipped, because it does not exists." % self.pyfile.name)
-
-
-    def clean(self):
-        """
-        Clean everything and remove references
-        """
-        if hasattr(self, "pyfile"):
-            del self.pyfile
-
-        if hasattr(self, "req"):
-            if self.req:
-                self.req.close()
-            del self.req
-
-        if hasattr(self, "thread"):
-            del self.thread
-
-        if hasattr(self, "html"):
-            del self.html

@@ -25,7 +25,7 @@ def threaded(fn):
 class Addon(Plugin):
     __name__    = "Addon"
     __type__    = "hook"  #@TODO: Change to `addon` in 0.4.10
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __config__   = []  #: [("name", "type", "desc", "default")]
@@ -166,8 +166,9 @@ class Addon(Plugin):
 
 
     #: Deprecated method, use `download_preparing` instead (Remove in 0.4.10)
-    def downloadPreparing(self, *args, **kwargs):
-        return self.download_preparing(*args, **kwargs)
+    def downloadPreparing(self, pyfile):
+        if pyfile.plugin.req is not None:  #@TODO: Remove in 0.4.10
+            return self.download_preparing(pyfile)
 
 
     def download_finished(self, pyfile):
