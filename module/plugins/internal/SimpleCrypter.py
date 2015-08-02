@@ -68,7 +68,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
         if self.account:
             if not self.user:
-                self.user, data = self.account.select()
+                self.user = self.account.select()[0]
 
             if not self.user or not self.account.is_logged(self.user, relogin=True):
                 self.account = False

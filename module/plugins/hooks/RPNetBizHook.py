@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class RPNetBizHook(MultiHook):
     __name__    = "RPNetBizHook"
     __type__    = "hook"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
@@ -22,10 +22,12 @@ class RPNetBizHook(MultiHook):
 
     def get_hosters(self):
         #: Get account data
-        user, data = self.account.select()
+        user, info = self.account.select()
 
         res = self.load("https://premium.rpnet.biz/client_api.php",
-                     get={'username': user, 'password': data['password'], 'action': "showHosterList"})
+                        get={'username': user,
+                             'password': info['login']['password'],
+                             'action'  : "showHosterList"})
         hoster_list = json_loads(res)
 
         #: If account is not valid thera are no hosters available

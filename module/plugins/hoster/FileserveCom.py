@@ -33,7 +33,7 @@ def check_file(plugin, urls):
 class FileserveCom(Hoster):
     __name__    = "FileserveCom"
     __type__    = "hoster"
-    __version__ = "0.57"
+    __version__ = "0.58"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<ID>[^/]+)'
@@ -196,7 +196,7 @@ class FileserveCom(Hoster):
                 elif res['error_code'] in ["305", "500"]:
                     self.temp_offline()
                 elif res['error_code'] in ["403", "605"]:
-                    self.restart(reset=True)
+                    self.restart(nopremium=True)
                 elif res['error_code'] in ["606", "607", "608"]:
                     self.offline()
                 else:

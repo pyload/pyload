@@ -12,7 +12,7 @@ from module.utils import parseFileSize as parse_size
 class CzshareCom(SimpleHoster):
     __name__    = "CzshareCom"
     __type__    = "hoster"
-    __version__ = "1.01"
+    __version__ = "1.02"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download\.php\?).+'
@@ -72,7 +72,7 @@ class CzshareCom(SimpleHoster):
             inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
         except Exception, e:
             self.log_error(e)
-            self.restart(reset=True)
+            self.restart(nopremium=True)
 
         #: Download the file, destination is determined by pyLoad
         self.download("http://sdilej.cz/profi_down.php", post=inputs, disposition=True)
@@ -148,7 +148,7 @@ class CzshareCom(SimpleHoster):
             self.fail(_("File not available - try later"))
 
         elif check == "credit":
-            self.restart(reset=True)
+            self.restart(nopremium=True)
 
         elif check == "multi-dl":
             self.wait(5 * 60, 12, _("Download limit reached"))

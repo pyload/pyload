@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FastshareCz(SimpleHoster):
     __name__    = "FastshareCz"
     __type__    = "hoster"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
@@ -42,7 +42,7 @@ class FastshareCz(SimpleHoster):
         if self.CREDIT_ERROR in self.html:
             errmsg = self.info['error'] = _("Not enough traffic left")
             self.log_warning(errmsg)
-            self.restart(reset=True)
+            self.restart(nopremium=True)
 
         self.info.pop('error', None)
 
@@ -73,7 +73,7 @@ class FastshareCz(SimpleHoster):
             self.retry(max_tries=5, reason=_("Wrong captcha"))
 
         elif check == "credit":
-            self.restart(reset=True)
+            self.restart(nopremium=True)
 
         return super(FastshareCz, self).check_file()
 

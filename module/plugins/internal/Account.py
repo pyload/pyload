@@ -13,7 +13,7 @@ from module.utils import compare_time, lock, parseFileSize as parse_size
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -73,7 +73,7 @@ class Account(Plugin):
             self.accounts[user]['valid'] = True  #@TODO: Remove in 0.4.10
 
         finally:
-            self.del_request()
+            self.clean()
 
             return res
 
@@ -84,7 +84,7 @@ class Account(Plugin):
         req = self.get_request(user)
         if req:
             req.clearCookies()
-            self.del_request()
+            self.clean()
 
         if user in self.info:
             self.info[user]['login'].clear()
@@ -254,7 +254,7 @@ class Account(Plugin):
                 traceback.print_exc()
 
         finally:
-            self.del_request()
+            self.clean()
 
             self.info[user].update(info)
             return info
@@ -286,13 +286,6 @@ class Account(Plugin):
             user, info = self.select()
 
         return self.pyload.requestFactory.getRequest(self.__name__, user)
-
-
-    def del_request(self):
-        try:
-            self.req.close()
-        finally:
-            self.req = None
 
 
     def get_cookies(self, user=None):

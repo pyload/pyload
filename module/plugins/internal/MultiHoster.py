@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, r
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.49"
+    __version__ = "0.50"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -100,7 +100,7 @@ class MultiHoster(SimpleHoster):
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
             if self.premium:
                 self.log_warning(_("Premium download failed"))
-                self.restart(reset=True)
+                self.restart(nopremium=True)
 
             elif self.get_config("revertfailed", True) \
                  and "new_module" in self.pyload.pluginManager.hosterPlugins[self.__name__]:

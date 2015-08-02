@@ -23,7 +23,7 @@ statusMap = dict((v, k) for k, v in _statusMap.items())
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.76"
+    __version__ = "1.77"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -210,7 +210,7 @@ class SimpleHoster(Hoster):
         self.leech_dl      = False
 
         if not self.get_config('use_premium', True):
-            self.restart(reset=True)
+            self.restart(nopremium=True)
 
         if self.LOGIN_PREMIUM and not self.premium:
             self.fail(_("Required premium account not found"))
@@ -300,7 +300,7 @@ class SimpleHoster(Hoster):
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
             if self.get_config('fallback', True) and self.premium:
                 self.log_warning(_("Premium download failed"), e)
-                self.restart(reset=True)
+                self.restart(nopremium=True)
 
             else:
                 raise Fail(encode(e))  #@TODO: Remove `encode` in 0.4.10
