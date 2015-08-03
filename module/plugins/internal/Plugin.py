@@ -335,7 +335,7 @@ class Plugin(object):
 
         #@TODO: Move to network in 0.4.10
         if hasattr(self, 'COOKIES') and isinstance(self.COOKIES, list):
-            set_cookies(req.cj, cookies)
+            set_cookies(req.cj, self.COOKIES)
 
         res = req.load(url, get, post, ref, bool(cookies), just_header, multipart, decode is True)  #@TODO: Fix network multipart in 0.4.10
 
