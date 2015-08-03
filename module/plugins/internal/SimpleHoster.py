@@ -23,7 +23,7 @@ statusMap = dict((v, k) for k, v in _statusMap.items())
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.77"
+    __version__ = "1.78"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -221,7 +221,7 @@ class SimpleHoster(Hoster):
 
         self.req.setOption("timeout", 120)
 
-        if isinstance(self.COOKIES, list):
+        if hasattr(self, 'COOKIES') and isinstance(self.COOKIES, list):
             set_cookies(self.req.cj, self.COOKIES)
 
         if self.LINK_PATTERN:
