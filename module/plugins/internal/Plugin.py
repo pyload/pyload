@@ -334,7 +334,7 @@ class Plugin(object):
             req = self.req or self.pyload.requestFactory.getRequest(self.__name__)
 
         #@TODO: Move to network in 0.4.10
-        if isinstance(self.COOKIES, list):
+        if hasattr(self, 'COOKIES') and isinstance(self.COOKIES, list):
             set_cookies(req.cj, cookies)
 
         res = req.load(url, get, post, ref, bool(cookies), just_header, multipart, decode is True)  #@TODO: Fix network multipart in 0.4.10
