@@ -143,10 +143,11 @@ class XFSAccount(Account):
             if not self.HOSTER_URL:
                 self.HOSTER_URL = "http://www.%s/" % self.HOSTER_DOMAIN
 
-            if isinstance(self.COOKIES, list):
-                self.COOKIES.insert((self.HOSTER_DOMAIN, "lang", "english"))
-            else:
-                set_cookie(req.cj, self.HOSTER_DOMAIN, "lang", "english")
+            if hasattr(self, 'COOKIES'):
+                if isinstance(self.COOKIES, list):
+                    self.COOKIES.insert((self.HOSTER_DOMAIN, "lang", "english"))
+                else:
+                    set_cookie(req.cj, self.HOSTER_DOMAIN, "lang", "english")
 
         if not self.HOSTER_URL:
             self.login_fail(_("Missing HOSTER_URL"))
