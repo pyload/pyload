@@ -15,7 +15,7 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "1.12"
+    __version__ = "1.13"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
@@ -32,7 +32,7 @@ class UlozTo(SimpleHoster):
     OFFLINE_PATTERN = r'<title>404 - Page not found</title>|<h1 class="h1">File (has been deleted|was banned)</h1>'
 
     URL_REPLACEMENTS  = [(r'(?<=http://)([^/]+)', "www.ulozto.net")]
-    SIZE_REPLACEMENTS = [(r'([\d.]+)\s([kMG])B', convertDecimalPrefix)]
+    SIZE_REPLACEMENTS = [(r'([\d.]+)\s([kMG])B', convert_decimal_prefix)]
 
     CHECK_TRAFFIC = True
 

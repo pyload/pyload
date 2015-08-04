@@ -6,6 +6,7 @@ import re
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.captcha.SolveMedia import SolveMedia
+from module.plugins.internal.Plugin import set_cookie
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, seconds_to_midnight
 from module.utils import html_unescape
 
@@ -13,7 +14,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.56"
+    __version__ = "0.57"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
