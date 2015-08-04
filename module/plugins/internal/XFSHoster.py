@@ -10,7 +10,9 @@ from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 
 from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, secondsToMidnight
+from module.plugins.internal.Plugin import set_cookie
 from module.utils import html_unescape
+
 
 
 class XFSHoster(SimpleHoster):
