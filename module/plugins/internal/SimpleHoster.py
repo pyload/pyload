@@ -310,8 +310,8 @@ class SimpleHoster(Hoster):
             self.captcha.invalid()
             self.retry(10, reason=_("Wrong captcha"))
 
-        # 10485760 is 10MB, tolerance is used when comparing displayed size to real size
-        # For example displayed size can be 1.46GB for example, but real size can be 1.4649853
+        # 10485760 is 10MB, tolerance is used when comparing displayed size on the hoster website to real size
+        # For example displayed size can be 1.46GB for example, but real size can be 1.4649853GB
         elif self.check_download({'Empty file': re.compile(r'\A((.|)(\2|\s)*)\Z')},
                                  file_size=self.info['size'] if 'size' in self.info else 0,
                                  size_tolerance=10485760,
