@@ -13,7 +13,7 @@ from module.utils import compare_time, lock, parseFileSize as parse_size
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -82,9 +82,6 @@ class Account(Plugin):
         if req:
             req.clearCookies()
             self.clean()
-
-        if user in self.info:
-            self.info[user]['login'].clear()
 
         return self._login(user)
 
