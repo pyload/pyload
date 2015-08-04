@@ -51,7 +51,7 @@ class ZDF(Hoster):
         video = xml.find("video")
         title = video.findtext("information/title")
 
-        pyfile.name = title
+        pyfile.name = title.encode("Latin-1")
 
         target_url = sorted((v for v in video.iter("formitaet") if self.video_valid(v)),
                             key=self.video_key)[-1].findtext("url")
