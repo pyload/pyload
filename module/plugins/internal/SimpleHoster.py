@@ -23,7 +23,7 @@ statusMap = dict((v, k) for k, v in _statusMap.items())
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.79"
+    __version__ = "1.80"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'

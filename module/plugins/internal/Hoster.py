@@ -43,7 +43,7 @@ def create_getInfo(klass):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -332,7 +332,7 @@ class Hoster(Plugin):
             if self.premium:
                 self.retry_free = True
             else:
-                self.fail(reason, _("Download was already free"))
+                self.fail("%s | %s" % (reason, _("Download was already free")))
 
         raise Retry(encode(reason))  #@TODO: Remove `encode` in 0.4.10
 
