@@ -114,7 +114,7 @@ class Account(Plugin):
                                         'valid'   : self.info[user]['login']['valid'],
                                         'password': self.info[user]['login']['password']})
 
-            self.log_info(_("Login user `%s`...") % user)
+            self.log_debug(_("Login user `%s`...") % user)
             self._login(user)
             return True
 
@@ -204,7 +204,7 @@ class Account(Plugin):
             return
 
         elif reload:
-            self.log_info(_("Parsing account info for user `%s`...") % user)
+            self.log_debug(_("Parsing account info for user `%s`...") % user)
             info = self._parse_info(user)
 
             safe_info = copy.deepcopy(info)
