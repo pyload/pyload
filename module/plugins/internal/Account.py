@@ -13,7 +13,7 @@ from module.utils import compare_time, lock, parseFileSize as parse_size
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -190,7 +190,6 @@ class Account(Plugin):
         return data
 
 
-    @lock
     def get_info(self, user, reload=False):
         """
         Retrieve account infos for an user, do **not** overwrite this method!\\
@@ -213,12 +212,12 @@ class Account(Plugin):
             safe_info['data']['password']  = "**********"  #@TODO: Remove in 0.4.10
             self.log_debug("Account info for user `%s`: %s" % (user, safe_info))
 
+        elif self.INFO_THRESHOLD > 0 and self.info[user]['login']['timestamp'] + self.INFO_THRESHOLD < time.time():
+            self.log_debug("Reached data timeout for %s" % user)
+            info = self.get_info(user, True)
+
         else:
             info = self.info[user]
-
-            if self.INFO_THRESHOLD > 0 and info['login']['timestamp'] + self.INFO_THRESHOLD < time.time():
-                self.log_debug("Reached data timeout for %s" % user)
-                self.schedule_refresh(user)
 
         return info
 
@@ -371,12 +370,12 @@ class Account(Plugin):
         self.schedule_refresh(user, 60 * 60)
 
 
-    def schedule_refresh(self, user, time=0, reload=True):
+    def schedule_refresh(self, user, time=0):
         """
         Add task to refresh account info to sheduler
         """
         self.log_debug("Scheduled refresh for user `%s` in %s seconds" % (user, time))
-        self.pyload.scheduler.addJob(time, self.get_info, [user, reload])
+        self.pyload.scheduler.addJob(time, self.get_info, [user, True])
 
 
     #: Deprecated method, use `schedule_refresh` instead (Remove in 0.4.10)

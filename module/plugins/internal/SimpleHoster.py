@@ -23,7 +23,7 @@ statusMap = dict((v, k) for k, v in _statusMap.items())
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.78"
+    __version__ = "1.79"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -221,9 +221,6 @@ class SimpleHoster(Hoster):
 
         self.req.setOption("timeout", 120)
 
-        if hasattr(self, 'COOKIES') and isinstance(self.COOKIES, list):
-            set_cookies(self.req.cj, self.COOKIES)
-
         if self.LINK_PATTERN:
             if not hasattr(self, 'LINK_FREE_PATTERN'):
                 self.LINK_FREE_PATTERN = self.LINK_PATTERN
@@ -250,7 +247,7 @@ class SimpleHoster(Hoster):
 
     def preload(self):
         self.html = self.load(self.pyfile.url,
-                              cookies=bool(self.COOKIES),
+                              cookies=self.COOKIES,
                               ref=False,
                               decode=self.TEXT_ENCODING)
 

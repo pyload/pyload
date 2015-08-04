@@ -10,7 +10,7 @@ from module.plugins.internal.Hoster import Hoster
 class ZDF(Hoster):
     __name__    = "ZDF Mediathek"
     __type__    = "hoster"
-    __version__ = "0.82"
+    __version__ = "0.83"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?zdf\.de/ZDFmediathek/\D*(\d+)\D*'
@@ -42,7 +42,7 @@ class ZDF(Hoster):
 
 
     def process(self, pyfile):
-        xml = etree.fromstring(self.load(self.XML_API % self.get_id(pyfile.url)).encode("UTF-8"))
+        xml = etree.fromstring(self.load(self.XML_API % self.get_id(pyfile.url), decode=False))
 
         status = xml.findtext("./status/statuscode")
         if status != "ok":

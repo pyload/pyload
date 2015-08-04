@@ -13,7 +13,7 @@ except ImportError:
     pass
 
 from module.plugins.internal.Addon import Addon, Expose
-from module.utils import save_join as fs_join, fs_encode
+from module.utils import fs_encode, save_join as fs_join
 
 
 class Kernel32(object):

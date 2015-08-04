@@ -146,7 +146,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -334,8 +334,8 @@ class Plugin(object):
             req = self.req or self.pyload.requestFactory.getRequest(self.__name__)
 
         #@TODO: Move to network in 0.4.10
-        if hasattr(self, 'COOKIES') and isinstance(self.COOKIES, list):
-            set_cookies(req.cj, self.COOKIES)
+        if isinstance(cookies, list):
+            set_cookies(req.cj, cookies)
 
         res = req.load(url, get, post, ref, bool(cookies), just_header, multipart, decode is True)  #@TODO: Fix network multipart in 0.4.10
 

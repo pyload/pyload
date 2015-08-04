@@ -11,7 +11,7 @@ from module.plugins.internal.Plugin import parse_html_form, set_cookie
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __status__  = "testing"
 
     __description__ = """XFileSharing account plugin"""
@@ -143,11 +143,11 @@ class XFSAccount(Account):
             if not self.HOSTER_URL:
                 self.HOSTER_URL = "http://www.%s/" % self.HOSTER_DOMAIN
 
-            if hasattr(self, 'COOKIES'):
-                if isinstance(self.COOKIES, list):
+            if self.COOKIES:
+                if isinstance(self.COOKIES, list) and not self.COOKIES.count((self.HOSTER_DOMAIN, "lang", "english")):
                     self.COOKIES.insert((self.HOSTER_DOMAIN, "lang", "english"))
                 else:
-                    set_cookie(req.cj, self.HOSTER_DOMAIN, "lang", "english")
+                    set_cookie(self.req.cj, self.HOSTER_DOMAIN, "lang", "english")
 
         if not self.HOSTER_URL:
             self.login_fail(_("Missing HOSTER_URL"))
