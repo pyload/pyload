@@ -20,6 +20,7 @@ class UploadedTo(Account):
     PREMIUM_PATTERN      = r'<em>Premium</em>'
     VALID_UNTIL_PATTERN  = r'<td>Duration:</td>\s*<th>(.+?)<'
     TRAFFIC_LEFT_PATTERN = r'<b class="cB">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    COOKIES = False
 
 
     def parse_info(self, user, password, data, req):
