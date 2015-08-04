@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.24"
+    __version__ = "1.25"
     __status__  = "testing"
 
     __description__ = """Rar extractor plugin"""
@@ -177,7 +177,7 @@ class UnRar(Extractor):
 
         #: eventually Multipart Files
         files.extend(fs_join(dir, os.path.basename(file)) for file in filter(self.is_multipart, os.listdir(dir))
-                     if re.sub(self.re_multipart, ".rar", name) is re.sub(self.re_multipart, ".rar", file))
+                     if re.sub(self.re_multipart, ".rar", name) == re.sub(self.re_multipart, ".rar", file))
 
         return files
 
