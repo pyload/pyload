@@ -71,7 +71,7 @@ class ExternalScripts(Addon):
             if not os.path.isfile(file):
                 continue
 
-            if file[0] in ("#", "_") or file.endswith("~") or file.endswith(".swp"):
+            if filebase[0] in ("#", "_") or file.endswith("~") or file.endswith(".swp"):
                 continue
 
             if not os.access(file, os.X_OK):
