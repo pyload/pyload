@@ -10,7 +10,7 @@ from module.utils import fs_encode, save_join as fs_join
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"         , True ),
@@ -66,7 +66,8 @@ class ExternalScripts(Addon):
                 self.log_debug(e)
                 return
 
-        for file in os.listdir(path):
+        for filebase in os.listdir(path):
+            file = os.path.join(path, filebase)
             if not os.path.isfile(file):
                 continue
 
