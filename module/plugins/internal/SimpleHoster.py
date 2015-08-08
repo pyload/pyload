@@ -23,7 +23,7 @@ statusMap = dict((v, k) for k, v in _statusMap.items())
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.80"
+    __version__ = "1.81"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -209,12 +209,11 @@ class SimpleHoster(Hoster):
         self.direct_dl     = False
         self.leech_dl      = False
 
-        if not self.get_config('use_premium', True):
+        if not self.get_config('use_premium', True) and self.premium:
             self.restart(nopremium=True)
 
         if self.LOGIN_PREMIUM and not self.premium:
             self.fail(_("Required premium account not found"))
-            self.LOGIN_ACCOUNT = True
 
         if self.LOGIN_ACCOUNT and not self.account:
             self.fail(_("Required account not found"))
