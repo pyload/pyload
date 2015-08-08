@@ -4,6 +4,7 @@ import os
 import re
 
 from module.PyFile import PyFile
+from module.plugins.internal.Plugin import Plugin
 
 
 class ArchiveError(Exception):
@@ -18,9 +19,11 @@ class PasswordError(Exception):
     pass
 
 
-class Extractor:
+class Extractor(Plugin):
     __name__    = "Extractor"
-    __version__ = "0.24"
+    __type__    = "extractor"
+    __version__ = "0.33"
+    __status__  = "testing"
 
     __description__ = """Base extractor plugin"""
     __license__     = "GPLv3"
@@ -29,32 +32,34 @@ class Extractor:
 
 
     EXTENSIONS = []
-    VERSION    = ""
     REPAIR     = False
+    VERSION    = None
 
 
     @classmethod
-    def isArchive(cls, filename):
+    def is_archive(cls, filename):
         name = os.path.basename(filename).lower()
         return any(name.endswith(ext) for ext in cls.EXTENSIONS)
 
 
     @classmethod
-    def isMultipart(cls, filename):
+    def is_multipart(cls, filename):
         return False
 
 
     @classmethod
-    def isUsable(cls):
-        """ Check if system statisfy dependencies
+    def find(cls):
+        """
+        Check if system statisfy dependencies
         :return: boolean
         """
-        return None
+        pass
 
 
     @classmethod
-    def getTargets(cls, files_ids):
-        """ Filter suited targets from list of filename id tuple list
+    def get_targets(cls, files_ids):
+        """
+        Filter suited targets from list of filename id tuple list
         :param files_ids: List of filepathes
         :return: List of targets, id tuple list
         """
@@ -62,15 +67,15 @@ class Extractor:
         processed = []
 
         for fname, id, fout in files_ids:
-            if cls.isArchive(fname):
-                pname = re.sub(cls.re_multipart, '', fname) if cls.isMultipart(fname) else os.path.splitext(fname)[0]
+            if cls.is_archive(fname):
+                pname = re.sub(cls.re_multipart, "", fname) if cls.is_multipart(fname) else os.path.splitext(fname)[0]
                 if pname not in processed:
                     processed.append(pname)
                     targets.append((fname, id, fout))
         return targets
 
 
-    def __init__(self, manager, filename, out,
+    def __init__(self, plugin, filename, out,
                  fullpath=True,
                  overwrite=False,
                  excludefiles=[],
@@ -78,8 +83,12 @@ class Extractor:
                  delete='No',
                  keepbroken=False,
                  fid=None):
-        """ Initialize extractor for specific file """
-        self.manager      = manager
+        """
+        Initialize extractor for specific file
+        """
+        self._init(plugin.pyload)
+
+        self.plugin       = plugin
         self.filename     = filename
         self.out          = out
         self.fullpath     = fullpath
@@ -90,17 +99,29 @@ class Extractor:
         self.keepbroken   = keepbroken
         self.files        = []  #: Store extracted files here
 
-        pyfile = self.manager.core.files.getFile(fid) if fid else None
-        self.notifyProgress = lambda x: pyfile.setProgress(x) if pyfile else lambda x: None
+        pyfile = self.pyload.files.getFile(fid) if fid else None
+        self.notify_progress = lambda x: pyfile.setProgress(x) if pyfile else lambda x: None
+
+        self.init()
 
 
     def init(self):
-        """ Initialize additional data structures """
+        """
+        Initialize additional data structures
+        """
         pass
 
 
+    def _log(self, level, plugintype, pluginname, messages):
+        return self.plugin._log(level,
+                                plugintype,
+                                self.plugin.__name__,
+                                (self.__name__,) + messages)
+
+
     def check(self):
-        """Quick Check by listing content of archive.
+        """
+        Quick Check by listing content of archive.
         Raises error if password is needed, integrity is questionable or else.
 
         :raises PasswordError
@@ -109,8 +130,10 @@ class Extractor:
         """
         raise NotImplementedError
 
+
     def verify(self):
-        """Testing with Extractors buildt-in method
+        """
+        Testing with Extractors buildt-in method
         Raises error if password is needed, integrity is questionable or else.
 
         :raises PasswordError
@@ -125,7 +148,8 @@ class Extractor:
 
 
     def extract(self, password=None):
-        """Extract the archive. Raise specific errors in case of failure.
+        """
+        Extract the archive. Raise specific errors in case of failure.
 
         :param progress: Progress function, call this to update status
         :param password password to use
@@ -137,8 +161,9 @@ class Extractor:
         raise NotImplementedError
 
 
-    def getDeleteFiles(self):
-        """Return list of files to delete, do *not* delete them here.
+    def get_delete_files(self):
+        """
+        Return list of files to delete, do *not* delete them here.
 
         :return: List with paths of files to delete
         """
@@ -146,5 +171,7 @@ class Extractor:
 
 
     def list(self, password=None):
-        """Populate self.files at some point while extracting"""
+        """
+        Populate self.files at some point while extracting
+        """
         return self.files

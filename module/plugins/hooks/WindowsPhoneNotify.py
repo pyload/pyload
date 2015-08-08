@@ -3,13 +3,14 @@
 import httplib
 import time
 
-from module.plugins.Hook import Hook, Expose
+from module.plugins.internal.Addon import Addon, Expose
 
 
-class WindowsPhoneNotify(Hook):
+class WindowsPhoneNotify(Addon):
     __name__    = "WindowsPhoneNotify"
     __type__    = "hook"
-    __version__ = "0.10"
+    __version__ = "0.12"
+    __status__  = "testing"
 
     __config__ = [("push-id"        , "str" , "Push ID"                                  , ""   ),
                   ("push-url"       , "str" , "Push url"                                 , ""   ),
@@ -28,62 +29,58 @@ class WindowsPhoneNotify(Hook):
                        ("Walter Purcaro", "vuolter@gmail.com"       )]
 
 
-    interval   = 0  #@TODO: Remove in 0.4.10
-
-
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
-
-        self.event_list = ["allDownloadsProcessed", "plugin_updated"]
+    def init(self):
+        self.event_list = ["plugin_updated"]
+        self.event_map  = {'allDownloadsProcessed': "all_downloads_processed"}
 
         self.last_notify   = 0
         self.notifications = 0
 
 
     def plugin_updated(self, type_plugins):
-        if not self.getConfig('notifyupdate'):
+        if not self.get_config('notifyupdate'):
             return
 
         self.notify(_("Plugins updated"), str(type_plugins))
 
 
-    def coreReady(self):
-        self.key = (self.getConfig('push-id'), self.getConfig('push-url'))
+    def activate(self):
+        self.key = (self.get_config('push-id'), self.get_config('push-url'))
 
 
-    def coreExiting(self):
-        if not self.getConfig('notifyexit'):
+    def exit(self):
+        if not self.get_config('notifyexit'):
             return
 
-        if self.core.do_restart:
+        if self.pyload.do_restart:
             self.notify(_("Restarting pyLoad"))
         else:
             self.notify(_("Exiting pyLoad"))
 
 
-    def newCaptchaTask(self, task):
-        if not self.getConfig('notifycaptcha'):
+    def captcha_task(self, task):
+        if not self.get_config('notifycaptcha'):
             return
 
         self.notify(_("Captcha"), _("New request waiting user input"))
 
 
-    def packageFinished(self, pypack):
-        if self.getConfig('notifypackage'):
+    def package_finished(self, pypack):
+        if self.get_config('notifypackage'):
             self.notify(_("Package finished"), pypack.name)
 
 
-    def allDownloadsProcessed(self):
-        if not self.getConfig('notifyprocessed'):
+    def all_downloads_processed(self):
+        if not self.get_config('notifyprocessed'):
             return
 
-        if any(True for pdata in self.core.api.getQueue() if pdata.linksdone < pdata.linkstotal):
+        if any(True for pdata in self.pyload.api.getQueue() if pdata.linksdone < pdata.linkstotal):
             self.notify(_("Package failed"), _("One or more packages was not completed successfully"))
         else:
             self.notify(_("All packages finished"))
 
 
-    def getXmlData(self, msg):
+    def get_xml_data(self, msg):
         return ("<?xml version='1.0' encoding='utf-8'?> <wp:Notification xmlns:wp='WPNotification'> "
                 "<wp:Toast> <wp:Text1>pyLoad</wp:Text1> <wp:Text2>%s</wp:Text2> "
                 "</wp:Toast> </wp:Notification>" % msg)
@@ -99,21 +96,21 @@ class WindowsPhoneNotify(Hook):
         if not id or not url:
             return
 
-        if self.core.isClientConnected() and not self.getConfig('ignoreclient'):
+        if self.pyload.isClientConnected() and not self.get_config('ignoreclient'):
             return
 
         elapsed_time = time.time() - self.last_notify
 
-        if elapsed_time < self.getConf("sendtimewait"):
+        if elapsed_time < self.get_config("sendtimewait"):
             return
 
         if elapsed_time > 60:
             self.notifications = 0
 
-        elif self.notifications >= self.getConf("sendpermin"):
+        elif self.notifications >= self.get_config("sendpermin"):
             return
 
-        request    = self.getXmlData("%s: %s" % (event, msg) if msg else event)
+        request    = self.get_xml_data("%s: %s" % (event, msg) if msg else event)
         webservice = httplib.HTTP(url)
 
         webservice.putrequest("POST", id)

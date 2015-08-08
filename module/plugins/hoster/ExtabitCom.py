@@ -4,14 +4,15 @@ import re
 
 from module.common.json_layer import json_loads
 
-from module.plugins.internal.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, secondsToMidnight
+from module.plugins.captcha.ReCaptcha import ReCaptcha
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, seconds_to_midnight
 
 
 class ExtabitCom(SimpleHoster):
     __name__    = "ExtabitCom"
     __type__    = "hoster"
-    __version__ = "0.66"
+    __version__ = "0.67"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?extabit\.com/(file|go|fid)/(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -29,7 +30,7 @@ class ExtabitCom(SimpleHoster):
     LINK_FREE_PATTERN = r'[\'"](http://guest\d+\.extabit\.com/\w+/.*?)[\'"]'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         if r">Only premium users can download this file" in self.html:
             self.fail(_("Only premium users can download this file"))
 
@@ -37,10 +38,10 @@ class ExtabitCom(SimpleHoster):
         if m:
             self.wait(int(m.group(1)) * 60, True)
         elif "The daily downloads limit from your IP is exceeded" in self.html:
-            self.logWarning(_("You have reached your daily downloads limit for today"))
-            self.wait(secondsToMidnight(gmt=2), True)
+            self.log_warning(_("You have reached your daily downloads limit for today"))
+            self.wait(seconds_to_midnight(gmt=2), True)
 
-        self.logDebug("URL: " + self.req.http.lastEffectiveURL)
+        self.log_debug("URL: " + self.req.http.lastEffectiveURL)
         m = re.match(self.__pattern__, self.req.http.lastEffectiveURL)
         fileID = m.group('ID') if m else self.info['pattern']['ID']
 
@@ -50,14 +51,14 @@ class ExtabitCom(SimpleHoster):
             captcha_key = m.group(1)
 
             for _i in xrange(5):
-                get_data = {"type": "recaptcha"}
+                get_data = {'type': "recaptcha"}
                 get_data['capture'], get_data['challenge'] = recaptcha.challenge(captcha_key)
                 res = json_loads(self.load("http://extabit.com/file/%s/" % fileID, get=get_data))
                 if "ok" in res:
-                    self.correctCaptcha()
+                    self.captcha.correct()
                     break
                 else:
-                    self.invalidCaptcha()
+                    self.captcha.invalid()
             else:
                 self.fail(_("Invalid captcha"))
         else:

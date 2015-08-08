@@ -2,14 +2,15 @@
 
 import re
 
-from module.plugins.internal.SolveMedia import SolveMedia
+from module.plugins.captcha.SolveMedia import SolveMedia
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class KingfilesNet(SimpleHoster):
     __name__    = "KingfilesNet"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?kingfiles\.net/(?P<ID>\w{12})'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -31,12 +32,12 @@ class KingfilesNet(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = True
+        self.resume_download = True
         self.multiDL        = True
 
 
-    def handleFree(self, pyfile):
-        # Click the free user button
+    def handle_free(self, pyfile):
+        #: Click the free user button
         post_data = {'op'         : "download1",
                      'usr_login'  : "",
                      'id'         : self.info['pattern']['ID'],
@@ -44,18 +45,18 @@ class KingfilesNet(SimpleHoster):
                      'referer'    : "",
                      'method_free': "+"}
 
-        self.html = self.load(pyfile.url, post=post_data, decode=True)
+        self.html = self.load(pyfile.url, post=post_data)
 
         solvemedia = SolveMedia(self)
         response, challenge = solvemedia.challenge()
 
-        # Make the downloadlink appear and load the file
+        #: Make the downloadlink appear and load the file
         m = re.search(self.RAND_ID_PATTERN, self.html)
         if m is None:
             self.error(_("Random key not found"))
 
         rand = m.group(1)
-        self.logDebug("rand = ", rand)
+        self.log_debug("rand = ", rand)
 
         post_data = {'op'              : "download2",
                      'id'              : self.info['pattern']['ID'],
@@ -67,7 +68,7 @@ class KingfilesNet(SimpleHoster):
                      'adcopy_challenge': challenge,
                      'down_direct'     : "1"}
 
-        self.html = self.load(pyfile.url, post=post_data, decode=True)
+        self.html = self.load(pyfile.url, post=post_data)
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:

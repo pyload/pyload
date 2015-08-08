@@ -3,13 +3,14 @@
 import re
 import urlparse
 
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter
 
 
 class LixIn(Crypter):
     __name__    = "LixIn"
     __type__    = "crypter"
-    __version__ = "0.22"
+    __version__ = "0.24"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?lix\.in/(?P<ID>.+)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
@@ -33,9 +34,9 @@ class LixIn(Crypter):
             self.error(_("Unable to identify file ID"))
 
         id = m.group('ID')
-        self.logDebug("File id is %s" % id)
+        self.log_debug("File id is %s" % id)
 
-        self.html = self.load(url, decode=True)
+        self.html = self.load(url)
 
         m = re.search(self.SUBMIT_PATTERN, self.html)
         if m is None:
@@ -46,18 +47,18 @@ class LixIn(Crypter):
             for _i in xrange(5):
                 m = re.search(self.CAPTCHA_PATTERN, self.html)
                 if m:
-                    self.logDebug("Trying captcha")
-                    captcharesult = self.decryptCaptcha(urlparse.urljoin("http://lix.in/", m.group(1)))
-                self.html = self.load(url, decode=True,
-                                          post={"capt": captcharesult, "submit": "submit", "tiny": id})
+                    self.log_debug("Trying captcha")
+                    captcharesult = self.captcha.decrypt(urlparse.urljoin("http://lix.in/", m.group(1)))
+                self.html = self.load(url,
+                                          post={'capt': captcharesult, 'submit': "submit", 'tiny': id})
             else:
-                self.logDebug("No captcha/captcha solved")
+                self.log_debug("No captcha/captcha solved")
         else:
-            self.html = self.load(url, decode=True, post={"submit": "submit", "tiny": id})
+            self.html = self.load(url, post={'submit': "submit", 'tiny': id})
 
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
             self.error(_("Unable to find destination url"))
         else:
             self.urls = [m.group(1)]
-            self.logDebug("Found link %s, adding to package" % self.urls[0])
+            self.log_debug("Found link %s, adding to package" % self.urls[0])

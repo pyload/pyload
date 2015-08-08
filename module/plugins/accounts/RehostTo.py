@@ -1,40 +1,43 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class RehostTo(Account):
     __name__    = "RehostTo"
     __type__    = "account"
-    __version__ = "0.16"
+    __version__ = "0.18"
+    __status__  = "testing"
 
     __description__ = """Rehost.to account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
-    def loadAccountInfo(self, user, req):
+    def parse_info(self, user, password, data, req):
         premium     = False
         trafficleft = None
         validuntil  = -1
         session     = ""
 
-        html = req.load("http://rehost.to/api.php",
-                        get={'cmd' : "login", 'user': user,
-                             'pass': self.getAccountData(user)['password']})
+        html = self.load("https://rehost.to/api.php",
+                        get={'cmd' : "login",
+                             'user': user,
+                             'pass': password})
         try:
             session = html.split(",")[1].split("=")[1]
 
-            html = req.load("http://rehost.to/api.php",
-                            get={'cmd': "get_premium_credits", 'long_ses': session})
+            html = self.load("http://rehost.to/api.php",
+                             get={'cmd'     : "get_premium_credits",
+                                  'long_ses': session})
 
             if html.strip() == "0,0" or "ERROR" in html:
-                self.logDebug(html)
+                self.log_debug(html)
             else:
                 traffic, valid = html.split(",")
 
                 premium     = True
-                trafficleft = self.parseTraffic(traffic + "MB")
+                trafficleft = self.parse_traffic(traffic + "MB")
                 validuntil  = float(valid)
 
         finally:
@@ -44,11 +47,12 @@ class RehostTo(Account):
                     'session'    : session}
 
 
-    def login(self, user, data, req):
-        html = req.load("http://rehost.to/api.php",
-                        get={'cmd': "login", 'user': user, 'pass': data['password']},
-                        decode=True)
+    def login(self, user, password, data, req):
+        html = self.load("https://rehost.to/api.php",
+                         get={'cmd': "login",
+                              'user': user,
+                              'pass': password})
 
         if "ERROR" in html:
-            self.logDebug(html)
-            self.wrongPassword()
+            self.log_debug(html)
+            self.login_fail()

@@ -2,17 +2,19 @@
 
 import os
 import re
-import subprocessimport urllib
+import subprocess
+import urllib
 
-from module.plugins.Hoster import Hoster
-from module.plugins.internal.SimpleHoster import replace_patterns
+from module.plugins.internal.Hoster import Hoster
+from module.plugins.internal.Plugin import replace_patterns
 from module.utils import html_unescape
 
 
 def which(program):
-    """Works exactly like the unix command which
-    Courtesy of http://stackoverflow.com/a/377028/675646"""
-
+    """
+    Works exactly like the unix command which
+    Courtesy of http://stackoverflow.com/a/377028/675646
+    """
     isExe = lambda x: os.path.isfile(x) and os.access(x, os.X_OK)
 
     fpath, fname = os.path.split(program)
@@ -31,7 +33,8 @@ def which(program):
 class YoutubeCom(Hoster):
     __name__    = "YoutubeCom"
     __type__    = "hoster"
-    __version__ = "0.41"
+    __version__ = "0.44"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(youtube\.com|youtu\.be)/watch\?(?:.*&)?v=.+'
     __config__  = [("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting"             , "hd" ),
@@ -50,10 +53,10 @@ class YoutubeCom(Hoster):
 
     URL_REPLACEMENTS = [(r'youtu\.be/', 'youtube.com/')]
 
-    # Invalid characters that must be removed from the file name
+    #: Invalid characters that must be removed from the file name
     invalidChars = u'\u2605:?><"|\\'
 
-    # name, width, height, quality ranking, 3D
+    #: name, width, height, quality ranking, 3D
     formats = {5  : (".flv" , 400 , 240 , 1 , False),
                6  : (".flv" , 640 , 400 , 4 , False),
                17 : (".3gp" , 176 , 144 , 0 , False),
@@ -78,88 +81,88 @@ class YoutubeCom(Hoster):
 
 
     def setup(self):
-        self.resumeDownload = True
+        self.resume_download = True
         self.multiDL        = True
 
 
     def process(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
-        html       = self.load(pyfile.url, decode=True)
+        html       = self.load(pyfile.url)
 
         if re.search(r'<div id="player-unavailable" class="\s*player-width player-height\s*">', html):
             self.offline()
 
         if "We have been receiving a large volume of requests from your network." in html:
-            self.tempOffline()
+            self.temp_offline()
 
-        #get config
-        use3d = self.getConfig('3d')
+        #: Get config
+        use3d = self.get_config('3d')
 
         if use3d:
-            quality = {"sd": 82, "hd": 84, "fullhd": 85, "240p": 83, "360p": 82,
-                       "480p": 82, "720p": 84, "1080p": 85, "3072p": 85}
+            quality = {'sd': 82, 'hd': 84, 'fullhd': 85, '240p': 83, '360p': 82,
+                       '480p': 82, '720p': 84, '1080p': 85, '3072p': 85}
         else:
-            quality = {"sd": 18, "hd": 22, "fullhd": 37, "240p": 5, "360p": 18,
-                       "480p": 35, "720p": 22, "1080p": 37, "3072p": 38}
+            quality = {'sd': 18, 'hd': 22, 'fullhd': 37, '240p': 5, '360p': 18,
+                       '480p': 35, '720p': 22, '1080p': 37, '3072p': 38}
 
-        desired_fmt = self.getConfig('fmt')
+        desired_fmt = self.get_config('fmt')
 
         if not desired_fmt:
-            desired_fmt = quality.get(self.getConfig('quality'), 18)
+            desired_fmt = quality.get(self.get_config('quality'), 18)
 
         elif desired_fmt not in self.formats:
-            self.logWarning(_("FMT %d unknown, using default") % desired_fmt)
+            self.log_warning(_("FMT %d unknown, using default") % desired_fmt)
             desired_fmt = 0
 
-        #parse available streams
+        #: Parse available streams
         streams = re.search(r'"url_encoded_fmt_stream_map":"(.+?)",', html).group(1)
         streams = [x.split('\u0026') for x in streams.split(',')]
         streams = [dict((y.split('=', 1)) for y in x) for x in streams]
         streams = [(int(x['itag']), urllib.unquote(x['url'])) for x in streams]
 
-        # self.logDebug("Found links: %s" % streams)
+        # self.log_debug("Found links: %s" % streams)
 
-        self.logDebug("AVAILABLE STREAMS: %s" % [x[0] for x in streams])
+        self.log_debug("AVAILABLE STREAMS: %s" % [x[0] for x in streams])
 
-        #build dictionary of supported itags (3D/2D)
-        allowed = lambda x: self.getConfig(self.formats[x][0])
+        #: Build dictionary of supported itags (3D/2D)
+        allowed = lambda x: self.get_config(self.formats[x][0])
         streams = [x for x in streams if x[0] in self.formats and allowed(x[0])]
 
         if not streams:
             self.fail(_("No available stream meets your preferences"))
 
-        fmt_dict = dict([x for x in streams if self.formats[x[0]][4] == use3d] or streams)
+        fmt_dict = dict([x for x in streams if self.formats[x[0]][4] is use3d] or streams)
 
-        self.logDebug("DESIRED STREAM: ITAG:%d (%s) %sfound, %sallowed" %
+        self.log_debug("DESIRED STREAM: ITAG:%d (%s) %sfound, %sallowed" %
                       (desired_fmt, "%s %dx%d Q:%d 3D:%s" % self.formats[desired_fmt],
                        "" if desired_fmt in fmt_dict else "NOT ", "" if allowed(desired_fmt) else "NOT "))
 
-        #return fmt nearest to quality index
+        #: Return fmt nearest to quality index
         if desired_fmt in fmt_dict and allowed(desired_fmt):
             fmt = desired_fmt
         else:
-            sel  = lambda x: self.formats[x][3]  # select quality index
+            sel  = lambda x: self.formats[x][3]  #: Select quality index
             comp = lambda x, y: abs(sel(x) - sel(y))
 
-            self.logDebug("Choosing nearest fmt: %s" % [(x, allowed(x), comp(x, desired_fmt)) for x in fmt_dict.keys()])
+            self.log_debug("Choosing nearest fmt: %s" % [(x, allowed(x), comp(x, desired_fmt)) for x in fmt_dict.keys()])
 
             fmt = reduce(lambda x, y: x if comp(x, desired_fmt) <= comp(y, desired_fmt) and
                          sel(x) > sel(y) else y, fmt_dict.keys())
 
-        self.logDebug("Chosen fmt: %s" % fmt)
+        self.log_debug("Chosen fmt: %s" % fmt)
 
         url = fmt_dict[fmt]
 
-        self.logDebug("URL: %s" % url)
+        self.log_debug("URL: %s" % url)
 
-        #set file name
+        #: Set file name
         file_suffix = self.formats[fmt][0] if fmt in self.formats else ".flv"
         file_name_pattern = '<meta name="title" content="(.+?)">'
         name = re.search(file_name_pattern, html).group(1).replace("/", "")
 
-        # Cleaning invalid characters from the file name
+        #: Cleaning invalid characters from the file name
         name = name.encode('ascii', 'replace')
-        for c in self.invalidChars:
+        for c in self.invalid_chars:
             name = name.replace(c, '_')
 
         pyfile.name = html_unescape(name)

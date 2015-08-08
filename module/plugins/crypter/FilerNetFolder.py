@@ -6,7 +6,8 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class FilerNetFolder(SimpleCrypter):
     __name__    = "FilerNetFolder"
     __type__    = "crypter"
-    __version__ = "0.42"
+    __version__ = "0.43"
+    __status__  = "testing"
 
     __pattern__ = r'https?://filer\.net/folder/\w{16}'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),

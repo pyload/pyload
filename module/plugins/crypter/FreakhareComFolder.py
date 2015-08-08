@@ -8,7 +8,8 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class FreakhareComFolder(SimpleCrypter):
     __name__    = "FreakhareComFolder"
     __type__    = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?freakshare\.com/folder/.+'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
@@ -25,7 +26,7 @@ class FreakhareComFolder(SimpleCrypter):
     PAGES_PATTERN = r'Pages: +(\d+)'
 
 
-    def loadPage(self, page_n):
+    def load_page(self, page_n):
         if not hasattr(self, 'f_id') and not hasattr(self, 'f_md5'):
             m = re.search(r'http://freakshare.com/\?x=folder&f_id=(\d+)&f_md5=(\w+)', self.html)
             if m:
@@ -36,7 +37,7 @@ class FreakhareComFolder(SimpleCrypter):
                                                         'f_md5': self.f_md5,
                                                         'entrys': '20',
                                                         'page': page_n - 1,
-                                                        'order': ''}, decode=True)
+                                                        'order': ''})
 
 
 getInfo = create_getInfo(FreakhareComFolder)

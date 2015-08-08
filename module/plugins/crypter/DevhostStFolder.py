@@ -12,14 +12,15 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class DevhostStFolder(SimpleCrypter):
     __name__    = "DevhostStFolder"
     __type__    = "crypter"
-    __version__ = "0.05"
+    __version__ = "0.06"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?d-h\.st/users/(?P<USER>\w+)(/\?fld_id=(?P<ID>\d+))?'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """d-h.st folder decrypter plugin"""
+    __description__ = """D-h.st folder decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
@@ -29,11 +30,11 @@ class DevhostStFolder(SimpleCrypter):
     OFFLINE_PATTERN = r'"/cHP">test\.png<'
 
 
-    def checkNameSize(self, getinfo=True):
+    def check_name_size(self, getinfo=True):
         if not self.info or getinfo:
-            self.logDebug("File info (BEFORE): %s" % self.info)
-            self.info.update(self.getInfo(self.pyfile.url, self.html))
-            self.logDebug("File info (AFTER): %s"  % self.info)
+            self.log_debug("File info (BEFORE): %s" % self.info)
+            self.info.update(self.get_info(self.pyfile.url, self.html))
+            self.log_debug("File info (AFTER): %s"  % self.info)
 
         try:
             if self.info['pattern']['ID'] == "0":
@@ -49,7 +50,7 @@ class DevhostStFolder(SimpleCrypter):
             self.pyfile.name = m.group(1)
 
         except Exception, e:
-            self.logDebug(e)
+            self.log_debug(e)
             self.pyfile.name = self.info['pattern']['USER']
 
         try:
@@ -58,7 +59,7 @@ class DevhostStFolder(SimpleCrypter):
         except Exception:
             pass
 
-        self.logDebug("File name: %s"   % self.pyfile.name,
+        self.log_debug("File name: %s"   % self.pyfile.name,
                       "File folder: %s" % self.pyfile.name)
 
 

@@ -8,7 +8,8 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FourSharedCom(SimpleHoster):
     __name__    = "FourSharedCom"
     __type__    = "hoster"
-    __version__ = "0.31"
+    __version__ = "0.32"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?4shared(\-china)?\.com/(account/)?(download|get|file|document|photo|video|audio|mp3|office|rar|zip|archive|music)/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -35,7 +36,7 @@ class FourSharedCom(SimpleHoster):
     ID_PATTERN = r'name="d3fid" value="(.*?)"'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         m = re.search(self.LINK_BTN_PATTERN, self.html)
         if m:
             link = m.group(1)
@@ -53,7 +54,7 @@ class FourSharedCom(SimpleHoster):
         try:
             m = re.search(self.ID_PATTERN, self.html)
             res = self.load('http://www.4shared.com/web/d2/getFreeDownloadLimitInfo?fileId=%s' % m.group(1))
-            self.logDebug(res)
+            self.log_debug(res)
         except Exception:
             pass
 

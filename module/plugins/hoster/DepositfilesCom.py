@@ -3,14 +3,15 @@
 import re
 import urllib
 
-from module.plugins.internal.ReCaptcha import ReCaptcha
+from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DepositfilesCom(SimpleHoster):
     __name__    = "DepositfilesCom"
     __type__    = "hoster"
-    __version__ = "0.56"
+    __version__ = "0.57"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -40,18 +41,18 @@ class DepositfilesCom(SimpleHoster):
     LINK_MIRROR_PATTERN  = r'class="repeat_mirror"><a href="(.+?)"'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         self.html = self.load(pyfile.url, post={'gateway_result': "1"})
 
-        self.checkErrors()
+        self.check_errors()
 
         m = re.search(r"var fid = '(\w+)';", self.html)
         if m is None:
             self.retry(wait_time=5)
         params = {'fid': m.group(1)}
-        self.logDebug("FID: %s" % params['fid'])
+        self.log_debug("FID: %s" % params['fid'])
 
-        self.checkErrors()
+        self.check_errors()
 
         recaptcha = ReCaptcha(self)
         captcha_key = recaptcha.detect_key()
@@ -69,9 +70,9 @@ class DepositfilesCom(SimpleHoster):
             self.link = urllib.unquote(m.group(1))
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         if '<span class="html_download_api-gold_traffic_limit">' in self.html:
-            self.logWarning(_("Download limit reached"))
+            self.log_warning(_("Download limit reached"))
             self.retry(25, 60 * 60, "Download limit reached")
 
         elif 'onClick="show_gold_offer' in self.html:

@@ -4,14 +4,15 @@ import re
 import urlparse
 
 from module.common.json_layer import json_loads
-from module.plugins.Crypter import Crypter
-from module.utils import save_join
+from module.plugins.internal.Crypter import Crypter
+from module.utils import save_join as fs_join
 
 
 class YoutubeComFolder(Crypter):
     __name__    = "YoutubeComFolder"
     __type__    = "crypter"
-    __version__ = "1.01"
+    __version__ = "1.03"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.|m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w-]+)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True ),
@@ -29,36 +30,36 @@ class YoutubeComFolder(Crypter):
 
 
     def api_response(self, ref, req):
-        req.update({"key": self.API_KEY})
+        req.update({'key': self.API_KEY})
         url  = urlparse.urljoin("https://www.googleapis.com/youtube/v3/", ref)
         html = self.load(url, get=req)
         return json_loads(html)
 
 
-    def getChannel(self, user):
-        channels = self.api_response("channels", {"part": "id,snippet,contentDetails", "forUsername": user, "maxResults": "50"})
+    def get_channel(self, user):
+        channels = self.api_response("channels", {'part': "id,snippet,contentDetails", 'forUsername': user, 'maxResults': "50"})
         if channels['items']:
             channel = channels['items'][0]
-            return {"id": channel['id'],
-                    "title": channel['snippet']['title'],
-                    "relatedPlaylists": channel['contentDetails']['relatedPlaylists'],
-                    "user": user}  # One lone channel for user?
+            return {'id': channel['id'],
+                    'title': channel['snippet']['title'],
+                    'relatedPlaylists': channel['contentDetails']['relatedPlaylists'],
+                    'user': user}  #: One lone channel for user?
 
 
-    def getPlaylist(self, p_id):
-        playlists = self.api_response("playlists", {"part": "snippet", "id": p_id})
+    def get_playlist(self, p_id):
+        playlists = self.api_response("playlists", {'part': "snippet", 'id': p_id})
         if playlists['items']:
             playlist = playlists['items'][0]
-            return {"id": p_id,
-                    "title": playlist['snippet']['title'],
-                    "channelId": playlist['snippet']['channelId'],
-                    "channelTitle": playlist['snippet']['channelTitle']}
+            return {'id': p_id,
+                    'title': playlist['snippet']['title'],
+                    'channelId': playlist['snippet']['channelId'],
+                    'channelTitle': playlist['snippet']['channelTitle']}
 
 
-    def _getPlaylists(self, id, token=None):
-        req = {"part": "id", "maxResults": "50", "channelId": id}
+    def _get_playlists(self, id, token=None):
+        req = {'part': "id", 'maxResults': "50", 'channelId': id}
         if token:
-            req.update({"pageToken": token})
+            req.update({'pageToken': token})
 
         playlists = self.api_response("playlists", req)
 
@@ -66,18 +67,18 @@ class YoutubeComFolder(Crypter):
             yield playlist['id']
 
         if "nextPageToken" in playlists:
-            for item in self._getPlaylists(id, playlists['nextPageToken']):
+            for item in self._get_playlists(id, playlists['nextPageToken']):
                 yield item
 
 
-    def getPlaylists(self, ch_id):
-        return map(self.getPlaylist, self._getPlaylists(ch_id))
+    def get_playlists(self, ch_id):
+        return map(self.get_playlist, self._get_playlists(ch_id))
 
 
-    def _getVideosId(self, id, token=None):
-        req = {"part": "contentDetails", "maxResults": "50", "playlistId": id}
+    def _get_videos_id(self, id, token=None):
+        req = {'part': "contentDetails", 'maxResults': "50", 'playlistId': id}
         if token:
-            req.update({"pageToken": token})
+            req.update({'pageToken': token})
 
         playlist = self.api_response("playlistItems", req)
 
@@ -85,12 +86,12 @@ class YoutubeComFolder(Crypter):
             yield item['contentDetails']['videoId']
 
         if "nextPageToken" in playlist:
-            for item in self._getVideosId(id, playlist['nextPageToken']):
+            for item in self._get_videos_id(id, playlist['nextPageToken']):
                 yield item
 
 
-    def getVideosId(self, p_id):
-        return list(self._getVideosId(p_id))
+    def get_videos_id(self, p_id):
+        return list(self._get_videos_id(p_id))
 
 
     def decrypt(self, pyfile):
@@ -99,29 +100,29 @@ class YoutubeComFolder(Crypter):
         m_type = m.group('TYPE')
 
         if m_type == "user":
-            self.logDebug("Url recognized as Channel")
+            self.log_debug("Url recognized as Channel")
             user = m_id
-            channel = self.getChannel(user)
+            channel = self.get_channel(user)
 
             if channel:
-                playlists = self.getPlaylists(channel['id'])
-                self.logDebug("%s playlist\s found on channel \"%s\"" % (len(playlists), channel['title']))
+                playlists = self.get_playlists(channel['id'])
+                self.log_debug("%s playlist\s found on channel \"%s\"" % (len(playlists), channel['title']))
 
-                relatedplaylist = {p_name: self.getPlaylist(p_id) for p_name, p_id in channel['relatedPlaylists'].iteritems()}
-                self.logDebug("Channel's related playlists found = %s" % relatedplaylist.keys())
+                relatedplaylist = {p_name: self.get_playlist(p_id) for p_name, p_id in channel['relatedPlaylists'].items()}
+                self.log_debug("Channel's related playlists found = %s" % relatedplaylist.keys())
 
                 relatedplaylist['uploads']['title'] = "Unplaylisted videos"
                 relatedplaylist['uploads']['checkDups'] = True  #: checkDups flag
 
-                for p_name, p_data in relatedplaylist.iteritems():
-                    if self.getConfig(p_name):
+                for p_name, p_data in relatedplaylist.items():
+                    if self.get_config(p_name):
                         p_data['title'] += " of " + user
                         playlists.append(p_data)
             else:
                 playlists = []
         else:
-            self.logDebug("Url recognized as Playlist")
-            playlists = [self.getPlaylist(m_id)]
+            self.log_debug("Url recognized as Playlist")
+            playlists = [self.get_playlist(m_id)]
 
         if not playlists:
             self.fail(_("No playlist available"))
@@ -130,18 +131,18 @@ class YoutubeComFolder(Crypter):
         urlize = lambda x: "https://www.youtube.com/watch?v=" + x
         for p in playlists:
             p_name = p['title']
-            p_videos = self.getVideosId(p['id'])
-            p_folder = save_join(self.config['general']['download_folder'], p['channelTitle'], p_name)
-            self.logDebug("%s video\s found on playlist \"%s\"" % (len(p_videos), p_name))
+            p_videos = self.get_videos_id(p['id'])
+            p_folder = fs_join(self.pyload.config.get("general", "download_folder"), p['channelTitle'], p_name)
+            self.log_debug("%s video\s found on playlist \"%s\"" % (len(p_videos), p_name))
 
             if not p_videos:
                 continue
             elif "checkDups" in p:
                 p_urls = [urlize(v_id) for v_id in p_videos if v_id not in addedvideos]
-                self.logDebug("%s video\s available on playlist \"%s\" after duplicates cleanup" % (len(p_urls), p_name))
+                self.log_debug("%s video\s available on playlist \"%s\" after duplicates cleanup" % (len(p_urls), p_name))
             else:
                 p_urls = map(urlize, p_videos)
 
-            self.packages.append((p_name, p_urls, p_folder))  #: folder is NOT recognized by pyload 0.4.9!
+            self.packages.append((p_name, p_urls, p_folder))  #: Folder is NOT recognized by pyload 0.4.9!
 
             addedvideos.extend(p_videos)

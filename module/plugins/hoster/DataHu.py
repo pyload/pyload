@@ -11,7 +11,8 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DataHu(SimpleHoster):
     __name__    = "DataHu"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?data\.hu/get/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -28,7 +29,7 @@ class DataHu(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = True
+        self.resume_download = True
         self.multiDL        = self.premium
 
 

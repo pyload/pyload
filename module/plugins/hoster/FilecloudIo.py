@@ -3,14 +3,15 @@
 import re
 
 from module.common.json_layer import json_loads
-from module.plugins.internal.ReCaptcha import ReCaptcha
+from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FilecloudIo(SimpleHoster):
     __name__    = "FilecloudIo"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(?:filecloud\.io|ifile\.it|mihd\.net)/(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -29,7 +30,7 @@ class FilecloudIo(SimpleHoster):
     TEMP_OFFLINE_PATTERN = r'l10n\.FILES__WARNING'
 
     UKEY_PATTERN = r'\'ukey\'\s*:\'(\w+)'
-    AB1_PATTERN  = r'if\( __ab1 == \'(\w+)\' \)'
+    AB1_PATTERN  = r'if\( __ab1 is \'(\w+)\' \)'
 
     ERROR_MSG_PATTERN = r'var __error_msg\s*=\s*l10n\.(.*?);'
 
@@ -39,13 +40,13 @@ class FilecloudIo(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = True
+        self.resume_download = True
         self.multiDL        = True
-        self.chunkLimit     = 1
+        self.chunk_limit     = 1
 
 
-    def handleFree(self, pyfile):
-        data = {"ukey": self.info['pattern']['ID']}
+    def handle_free(self, pyfile):
+        data = {'ukey': self.info['pattern']['ID']}
 
         m = re.search(self.AB1_PATTERN, self.html)
         if m is None:
@@ -61,20 +62,20 @@ class FilecloudIo(SimpleHoster):
             self.error(_("ReCaptcha key not found"))
 
         response, challenge = recaptcha.challenge(captcha_key)
-        self.account.form_data = {"recaptcha_challenge_field": challenge,
-                                  "recaptcha_response_field" : response}
+        self.account.form_data = {'recaptcha_challenge_field': challenge,
+                                  'recaptcha_response_field' : response}
         self.account.relogin(self.user)
         self.retry(2)
 
         json_url = "http://filecloud.io/download-request.json"
         res = self.load(json_url, post=data)
-        self.logDebug(res)
+        self.log_debug(res)
         res = json_loads(res)
 
         if "error" in res and res['error']:
             self.fail(res)
 
-        self.logDebug(res)
+        self.log_debug(res)
         if res['captcha']:
             data['ctype'] = "recaptcha"
 
@@ -83,13 +84,13 @@ class FilecloudIo(SimpleHoster):
 
                 json_url = "http://filecloud.io/download-request.json"
                 res = self.load(json_url, post=data)
-                self.logDebug(res)
+                self.log_debug(res)
                 res = json_loads(res)
 
                 if "retry" in res and res['retry']:
-                    self.invalidCaptcha()
+                    self.captcha.invalid()
                 else:
-                    self.correctCaptcha()
+                    self.captcha.correct()
                     break
             else:
                 self.fail(_("Incorrect captcha"))
@@ -102,22 +103,22 @@ class FilecloudIo(SimpleHoster):
                 self.error(_("LINK_FREE_PATTERN not found"))
 
             if "size" in self.info and self.info['size']:
-                self.check_data = {"size": int(self.info['size'])}
+                self.check_data = {'size': int(self.info['size'])}
 
             self.link = m.group(1)
         else:
             self.fail(_("Unexpected server response"))
 
 
-    def handlePremium(self, pyfile):
-        akey = self.account.getAccountData(self.user)['akey']
+    def handle_premium(self, pyfile):
+        akey = self.account.get_data(self.user)['akey']
         ukey = self.info['pattern']['ID']
-        self.logDebug("Akey: %s | Ukey: %s" % (akey, ukey))
+        self.log_debug("Akey: %s | Ukey: %s" % (akey, ukey))
         rep = self.load("http://api.filecloud.io/api-fetch_download_url.api",
-                        post={"akey": akey, "ukey": ukey})
-        self.logDebug("FetchDownloadUrl: " + rep)
+                        post={'akey': akey, 'ukey': ukey})
+        self.log_debug("FetchDownloadUrl: " + rep)
         rep = json_loads(rep)
-        if rep['status'] == 'ok':
+        if rep['status'] == "ok":
             self.link = rep['download_url']
         else:
             self.fail(rep['message'])

@@ -3,13 +3,14 @@
 import re
 import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class MegaRapidoNet(Account):
     __name__    = "MegaRapidoNet"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.04"
+    __status__  = "testing"
 
     __description__ = """MegaRapido.net account plugin"""
     __license__     = "GPLv3"
@@ -20,16 +21,16 @@ class MegaRapidoNet(Account):
     USER_ID_PATTERN     = r'<\s*?div[^>]*?class\s*?=\s*?["\']checkbox_compartilhar["\'].*?>.*?<\s*?input[^>]*?name\s*?=\s*?["\']usar["\'].*?>.*?<\s*?input[^>]*?name\s*?=\s*?["\']user["\'][^>]*?value\s*?=\s*?["\'](.*?)\s*?["\']'
 
 
-    def loadAccountInfo(self, user, req):
+    def parse_info(self, user, password, data, req):
         validuntil  = None
         trafficleft = None
         premium     = False
 
-        html = req.load("http://megarapido.net/gerador", decode=True)
+        html = self.load("http://megarapido.net/gerador")
 
         validuntil = re.search(self.VALID_UNTIL_PATTERN, html)
         if validuntil:
-            #hier weitermachen!!! (müssen umbedingt die zeit richtig machen damit! (sollte aber möglich))
+            #: Hier weitermachen!!! (müssen umbedingt die zeit richtig machen damit! (sollte aber möglich))
             validuntil  = time.time() + int(validuntil.group(1)) * 24 * 3600 + int(validuntil.group(2)) * 3600 + int(validuntil.group(3)) * 60 + int(validuntil.group(4))
             trafficleft = -1
             premium     = True
@@ -39,19 +40,19 @@ class MegaRapidoNet(Account):
                 'premium'    : premium}
 
 
-    def login(self, user, data, req):
-        req.load("http://megarapido.net/login")
-        req.load("http://megarapido.net/painel_user/ajax/logar.php",
-                 post={'login': user, 'senha': data['password']},
-                 decode=True)
+    def login(self, user, password, data, req):
+        self.load("http://megarapido.net/login")
+        self.load("http://megarapido.net/painel_user/ajax/logar.php",
+                  post={'login': user,
+                        'senha': password})
 
-        html = req.load("http://megarapido.net/gerador")
+        html = self.load("http://megarapido.net/gerador")
 
         if "sair" not in html.lower():
-            self.wrongPassword()
+            self.login_fail()
         else:
             m = re.search(self.USER_ID_PATTERN, html)
             if m:
                 data['uid'] = m.group(1)
             else:
-                self.fail("Couldn't find the user ID")
+                self.login_fail("Couldn't find the user ID")

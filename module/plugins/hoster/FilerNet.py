@@ -8,14 +8,15 @@ import pycurl
 import re
 import urlparse
 
-from module.plugins.internal.ReCaptcha import ReCaptcha
+from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FilerNet(SimpleHoster):
     __name__    = "FilerNet"
     __type__    = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -34,14 +35,14 @@ class FilerNet(SimpleHoster):
     LINK_FREE_PATTERN = LINK_PREMIUM_PATTERN = r'href="([^"]+)">Get download</a>'
 
 
-    def handleFree(self, pyfile):
-        inputs = self.parseHtmlForm(input_names={'token': re.compile(r'.+')})[1]
+    def handle_free(self, pyfile):
+        inputs = self.parse_html_form(input_names={'token': re.compile(r'.+')})[1]
         if 'token' not in inputs:
             self.error(_("Unable to detect token"))
 
-        self.html = self.load(pyfile.url, post={'token': inputs['token']}, decode=True)
+        self.html = self.load(pyfile.url, post={'token': inputs['token']})
 
-        inputs = self.parseHtmlForm(input_names={'hash': re.compile(r'.+')})[1]
+        inputs = self.parse_html_form(input_names={'hash': re.compile(r'.+')})[1]
         if 'hash' not in inputs:
             self.error(_("Unable to detect hash"))
 
@@ -58,9 +59,9 @@ class FilerNet(SimpleHoster):
 
         if 'location' in self.req.http.header.lower():
             self.link = re.search(r'location: (\S+)', self.req.http.header, re.I).group(1)
-            self.correctCaptcha()
+            self.captcha.correct()
         else:
-            self.invalidCaptcha()
+            self.captcha.invalid()
 
 
 getInfo = create_getInfo(FilerNet)

@@ -6,7 +6,8 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class FileApeCom(DeadHoster):
     __name__    = "FileApeCom"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fileape\.com/(index\.php\?act=download\&id=|dl/)\w+'
     __config__  = []  #@TODO: Remove in 0.4.10

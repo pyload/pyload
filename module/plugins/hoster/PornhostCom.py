@@ -2,13 +2,14 @@
 
 import re
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster
 
 
 class PornhostCom(Hoster):
     __name__    = "PornhostCom"
     __type__    = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.22"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?pornhost\.com/(\d+/\d+\.html|\d+)'
 
@@ -26,14 +27,15 @@ class PornhostCom(Hoster):
         self.download(self.get_file_url())
 
 
-    # Old interface
+    #: Old interface
     def download_html(self):
         url = self.pyfile.url
         self.html = self.load(url)
 
 
     def get_file_url(self):
-        """ returns the absolute downloadable filepath
+        """
+        Returns the absolute downloadable filepath
         """
         if not self.html:
             self.download_html()
@@ -45,7 +47,7 @@ class PornhostCom(Hoster):
                 url = re.search(r'width: 894px; height: 675px">.*?<img src="(.*?)"', self.html)
                 if url is None:
                     url = re.search(r'"http://file\d+\.pornhost\.com/\d+/.*?"',
-                                    self.html)  # TODO: fix this one since it doesn't match
+                                    self.html)  #@TODO: fix this one since it doesn't match
 
         return url.group(1).strip()
 
@@ -68,7 +70,8 @@ class PornhostCom(Hoster):
 
 
     def file_exists(self):
-        """ returns True or False
+        """
+        Returns True or False
         """
         if not self.html:
             self.download_html()

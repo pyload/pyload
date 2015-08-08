@@ -3,13 +3,14 @@
 import re
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.internal.ReCaptcha import ReCaptcha
+from module.plugins.captcha.ReCaptcha import ReCaptcha
 
 
 class CatShareNet(SimpleHoster):
     __name__    = "CatShareNet"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?catshare\.net/\w{16}'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -20,8 +21,6 @@ class CatShareNet(SimpleHoster):
                        ("prOq", None),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
-
-    TEXT_ENCODING = True
 
     INFO_PATTERN = r'<title>(?P<N>.+) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)<'
     OFFLINE_PATTERN = r'<div class="alert alert-error"'
@@ -35,10 +34,10 @@ class CatShareNet(SimpleHoster):
 
     def setup(self):
         self.multiDL        = self.premium
-        self.resumeDownload = True
+        self.resume_download = True
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         recaptcha = ReCaptcha(self)
 
         response, challenge = recaptcha.challenge()

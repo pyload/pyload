@@ -4,13 +4,15 @@ import pycurl
 import re
 
 from module.common.json_layer import json_loads
+from module.plugins.internal.Plugin import encode
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, timestamp
 
 
 class UploadingCom(SimpleHoster):
     __name__    = "UploadingCom"
     __type__    = "hoster"
-    __version__ = "0.40"
+    __version__ = "0.43"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>\w+)'
 
@@ -21,7 +23,7 @@ class UploadingCom(SimpleHoster):
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    NAME_PATTERN = r'id="file_title">(?P<N>.+)</'
+    NAME_PATTERN = r'id="file_title">(?P<N>.+?)</'
     SIZE_PATTERN = r'size tip_container">(?P<S>[\d.,]+) (?P<U>[\w^_]+)<'
     OFFLINE_PATTERN = r'(Page|file) not found'
 
@@ -35,16 +37,16 @@ class UploadingCom(SimpleHoster):
         if not "/get/" in pyfile.url:
             pyfile.url = pyfile.url.replace("/files", "/files/get")
 
-        self.html = self.load(pyfile.url, decode=True)
-        self.getFileInfo()
+        self.html = self.load(pyfile.url)
+        self.get_fileInfo()
 
         if self.premium:
-            self.handlePremium(pyfile)
+            self.handle_premium(pyfile)
         else:
-            self.handleFree(pyfile)
+            self.handle_free(pyfile)
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         postData = {'action': 'get_link',
                     'code'  : self.info['pattern']['ID'],
                     'pass'  : 'undefined'}
@@ -57,11 +59,11 @@ class UploadingCom(SimpleHoster):
         raise Exception("Plugin defect")
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         m = re.search('<h2>((Daily )?Download Limit)</h2>', self.html)
         if m:
-            pyfile.error = m.group(1)
-            self.logWarning(pyfile.error)
+            pyfile.error = encode(m.group(1))
+            self.log_warning(pyfile.error)
             self.retry(6, (6 * 60 if m.group(2) else 15) * 60, pyfile.error)
 
         ajax_url = "http://uploading.com/files/get/?ajax"
@@ -72,7 +74,7 @@ class UploadingCom(SimpleHoster):
 
         if 'answer' in res and 'wait_time' in res['answer']:
             wait_time = int(res['answer']['wait_time'])
-            self.logInfo(_("Waiting %d seconds") % wait_time)
+            self.log_info(_("Waiting %d seconds") % wait_time)
             self.wait(wait_time)
         else:
             self.error(_("No AJAX/WAIT"))

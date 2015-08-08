@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import re
+import xml.etree.ElementTree as etree
 
-from xml.etree.ElementTree import fromstring
-
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster
 
 
 # Based on zdfm by Roland Beermann (http://github.com/enkore/zdfm/)
 class ZDF(Hoster):
     __name__    = "ZDF Mediathek"
     __type__    = "hoster"
-    __version__ = "0.80"
+    __version__ = "0.84"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?zdf\.de/ZDFmediathek/\D*(\d+)\D*'
 
@@ -42,7 +42,7 @@ class ZDF(Hoster):
 
 
     def process(self, pyfile):
-        xml = fromstring(self.load(self.XML_API % self.get_id(pyfile.url)))
+        xml = etree.fromstring(self.load(self.XML_API % self.get_id(pyfile.url), decode=False))
 
         status = xml.findtext("./status/statuscode")
         if status != "ok":
@@ -51,7 +51,7 @@ class ZDF(Hoster):
         video = xml.find("video")
         title = video.findtext("information/title")
 
-        pyfile.name = title
+        pyfile.name = title.encode("Latin-1")
 
         target_url = sorted((v for v in video.iter("formitaet") if self.video_valid(v)),
                             key=self.video_key)[-1].findtext("url")

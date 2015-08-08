@@ -2,14 +2,15 @@
 
 import re
 
-from module.plugins.internal.ReCaptcha import ReCaptcha
+from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DateiTo(SimpleHoster):
     __name__    = "DateiTo"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -29,21 +30,21 @@ class DateiTo(SimpleHoster):
     DATA_PATTERN = r'url: "(.*?)", data: "(.*?)",'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         url = 'http://datei.to/ajax/download.php'
         data = {'P': 'I', 'ID': self.info['pattern']['ID']}
         recaptcha = ReCaptcha(self)
 
         for _i in xrange(10):
-            self.logDebug("URL", url, "POST", data)
+            self.log_debug("URL", url, "POST", data)
             self.html = self.load(url, post=data)
-            self.checkErrors()
+            self.check_errors()
 
             if url.endswith('download.php') and 'P' in data:
-                if data['P'] == 'I':
-                    self.doWait()
+                if data['P'] == "I":
+                    self.do_wait()
 
-                elif data['P'] == 'IV':
+                elif data['P'] == "IV":
                     break
 
             m = re.search(self.DATA_PATTERN, self.html)
@@ -60,7 +61,7 @@ class DateiTo(SimpleHoster):
         self.link = self.html
 
 
-    def doWait(self):
+    def do_wait(self):
         m = re.search(self.WAIT_PATTERN, self.html)
         wait_time = int(m.group(1)) if m else 30
 

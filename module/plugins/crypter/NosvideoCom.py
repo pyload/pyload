@@ -6,7 +6,8 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class NosvideoCom(SimpleCrypter):
     __name__    = "NosvideoCom"
     __type__    = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?nosvideo\.com/\?v=\w+'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),

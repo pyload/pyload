@@ -2,14 +2,15 @@
 
 import re
 
-from module.plugins.Plugin import Fail
-from module.plugins.internal.Captcha import Captcha
+from module.plugins.internal.Plugin import Fail
+from module.plugins.internal.CaptchaService import CaptchaService
 
 
-class SolveMedia(Captcha):
+class SolveMedia(CaptchaService):
     __name__    = "SolveMedia"
     __type__    = "captcha"
-    __version__ = "0.13"
+    __version__ = "0.15"
+    __status__  = "testing"
 
     __description__ = """SolveMedia captcha service plugin"""
     __license__     = "GPLv3"
@@ -19,23 +20,23 @@ class SolveMedia(Captcha):
     KEY_PATTERN = r'api\.solvemedia\.com/papi/challenge\.(?:no)?script\?k=(.+?)["\']'
 
 
-    def detect_key(self, html=None):
-        html = html or self.retrieve_html()
+    def detect_key(self, data=None):
+        html = data or self.retrieve_data()
 
         m = re.search(self.KEY_PATTERN, html)
         if m:
             self.key = m.group(1).strip()
-            self.logDebug("Key: %s" % self.key)
+            self.log_debug("Key: %s" % self.key)
             return self.key
         else:
-            self.logWarning("Key pattern not found")
+            self.log_warning(_("Key pattern not found"))
             return None
 
 
-    def challenge(self, key=None, html=None):
-        key = key or self.retrieve_key(html)
+    def challenge(self, key=None, data=None):
+        key = key or self.retrieve_key(data)
 
-        html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript",
+        html = self.plugin.load("http://api.solvemedia.com/papi/challenge.noscript",
                                     get={'k': key})
 
         for i in xrange(1, 11):
@@ -43,7 +44,7 @@ class SolveMedia(Captcha):
                 magic = re.search(r'name="magic" value="(.+?)"', html).group(1)
 
             except AttributeError:
-                self.logWarning("Magic pattern not found")
+                self.log_warning(_("Magic pattern not found"))
                 magic = None
 
             try:
@@ -54,17 +55,17 @@ class SolveMedia(Captcha):
                 self.fail(_("SolveMedia challenge pattern not found"))
 
             else:
-                self.logDebug("Challenge: %s" % challenge)
+                self.log_debug("Challenge: %s" % challenge)
 
             try:
                 result = self.result("http://api.solvemedia.com/papi/media", challenge)
 
             except Fail, e:
-                self.logWarning(e)
+                self.log_warning(e)
                 self.plugin.invalidCaptcha()
                 result = None
 
-            html = self.plugin.req.load("http://api.solvemedia.com/papi/verify.noscript",
+            html = self.plugin.load("http://api.solvemedia.com/papi/verify.noscript",
                                         post={'adcopy_response' : result,
                                               'k'               : key,
                                               'l'               : "en",
@@ -81,9 +82,9 @@ class SolveMedia(Captcha):
 
             else:
                 if "error" in html:
-                    self.logWarning("Captcha code was invalid")
-                    self.logDebug("Retry #%d" % i)
-                    html = self.plugin.req.load(redirect)
+                    self.log_warning(_("Captcha code was invalid"))
+                    self.log_debug("Retry #%d" % i)
+                    html = self.plugin.load(redirect)
                 else:
                     break
 
@@ -94,11 +95,11 @@ class SolveMedia(Captcha):
 
 
     def result(self, server, challenge):
-        result = self.plugin.decryptCaptcha(server,
-                                            get={'c': challenge},
-                                            cookies=True,
-                                            imgtype="gif")
+        result = self.decrypt(server,
+                                    get={'c': challenge},
+                                    cookies=True,
+                                    input_type="gif")
 
-        self.logDebug("Result: %s" % result)
+        self.log_debug("Result: %s" % result)
 
         return result

@@ -8,7 +8,8 @@ from module.plugins.internal.MultiHook import MultiHook
 class LinkdecrypterComHook(MultiHook):
     __name__    = "LinkdecrypterComHook"
     __type__    = "hook"
-    __version__ = "1.06"
+    __version__ = "1.07"
+    __status__  = "testing"
 
     __config__ = [("activated"     , "bool"               , "Activated"                    , True ),
                   ("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
@@ -21,9 +22,9 @@ class LinkdecrypterComHook(MultiHook):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def getHosters(self):
+    def get_hosters(self):
         list = re.search(r'>Supported\(\d+\)</b>: <i>(.[\w.\-, ]+)',
-                         self.getURL("http://linkdecrypter.com/", decode=True).replace("(g)", "")).group(1).split(', ')
+                         self.load("http://linkdecrypter.com/").replace("(g)", "")).group(1).split(', ')
         try:
             list.remove("download.serienjunkies.org")
         except ValueError:

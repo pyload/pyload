@@ -2,15 +2,16 @@
 
 import re
 
-from module.plugins.Hoster import Hoster
-from module.plugins.internal.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import secondsToMidnight
+from module.plugins.internal.Hoster import Hoster
+from module.plugins.captcha.ReCaptcha import ReCaptcha
+from module.plugins.internal.SimpleHoster import seconds_to_midnight
 
 
 class FreakshareCom(Hoster):
     __name__    = "FreakshareCom"
     __type__    = "hoster"
-    __version__ = "0.41"
+    __version__ = "0.43"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
 
@@ -43,25 +44,24 @@ class FreakshareCom(Hoster):
 
             self.download(pyfile.url, post=self.req_opts)
 
-            check = self.checkDownload({"bad"           : "bad try",
-                                        "paralell"      : "> Sorry, you cant download more then 1 files at time. <",
-                                        "empty"         : "Warning: Unknown: Filename cannot be empty",
-                                        "wrong_captcha" : "Wrong Captcha!",
-                                        "downloadserver": "No Downloadserver. Please try again later!"})
+            check = self.check_download({'bad'           : "bad try",
+                                        'paralell'      : "> Sorry, you cant download more then 1 files at time. <",
+                                        'empty'         : "Warning: Unknown: Filename cannot be empty",
+                                        'wrong_captcha' : "Wrong Captcha!",
+                                        'downloadserver': "No Downloadserver. Please try again later!"})
 
             if check == "bad":
                 self.fail(_("Bad Try"))
 
             elif check == "paralell":
-                self.setWait(300, True)
-                self.wait()
+                self.wait(300, True)
                 self.retry()
 
             elif check == "empty":
                 self.fail(_("File not downloadable"))
 
             elif check == "wrong_captcha":
-                self.invalidCaptcha()
+                self.captcha.invalid()
                 self.retry()
 
             elif check == "downloadserver":
@@ -76,7 +76,7 @@ class FreakshareCom(Hoster):
         if not self.file_exists():
             self.offline()
 
-        self.setWait(self.get_waiting_time())
+        self.set_wait(self.get_waiting_time())
 
         pyfile.name = self.get_file_name()
         pyfile.size = self.get_file_size()
@@ -87,19 +87,20 @@ class FreakshareCom(Hoster):
 
 
     def download_html(self):
-        self.load("http://freakshare.com/index.php", {"language": "EN"})  # Set english language in server session
+        self.load("http://freakshare.com/index.php", {'language': "EN"})  #: Set english language in server session
         self.html = self.load(self.pyfile.url)
 
 
     def get_file_url(self):
-        """ returns the absolute downloadable filepath
+        """
+        Returns the absolute downloadable filepath
         """
         if not self.html:
             self.download_html()
         if not self.wantReconnect:
-            self.req_opts = self.get_download_options()  # get the Post options for the Request
-            #file_url = self.pyfile.url
-            #return file_url
+            self.req_opts = self.get_download_options()  #: Get the Post options for the Request
+            # file_url = self.pyfile.url
+            # return file_url
         else:
             self.offline()
 
@@ -141,7 +142,7 @@ class FreakshareCom(Hoster):
 
         if "Your Traffic is used up for today" in self.html:
             self.wantReconnect = True
-            return secondsToMidnight(gmt=2)
+            return seconds_to_midnight(gmt=2)
 
         timestring = re.search('\s*var\s(?:downloadWait|time)\s=\s(\d*)[\d.]*;', self.html)
         if timestring:
@@ -151,7 +152,8 @@ class FreakshareCom(Hoster):
 
 
     def file_exists(self):
-        """ returns True or False
+        """
+        Returns True or False
         """
         if not self.html:
             self.download_html()
@@ -163,11 +165,11 @@ class FreakshareCom(Hoster):
 
     def get_download_options(self):
         re_envelope = re.search(r".*?value=\"Free\sDownload\".*?\n*?(.*?<.*?>\n*)*?\n*\s*?</form>",
-                                self.html).group(0)  # get the whole request
+                                self.html).group(0)  #: Get the whole request
         to_sort = re.findall(r"<input\stype=\"hidden\"\svalue=\"(.*?)\"\sname=\"(.*?)\"\s\/>", re_envelope)
         request_options = dict((n, v) for (v, n) in to_sort)
 
-        herewego = self.load(self.pyfile.url, None, request_options)  # the actual download-Page
+        herewego = self.load(self.pyfile.url, None, request_options)  #: The actual download-Page
 
         to_sort = re.findall(r"<input\stype=\".*?\"\svalue=\"(\S*?)\".*?name=\"(\S*?)\"\s.*?\/>", herewego)
         request_options = dict((n, v) for (v, n) in to_sort)

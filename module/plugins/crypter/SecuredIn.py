@@ -6,7 +6,8 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 class SecuredIn(DeadCrypter):
     __name__    = "SecuredIn"
     __type__    = "crypter"
-    __version__ = "0.21"
+    __version__ = "0.22"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?secured\.in/download-[\d]+-\w{8}\.html'
     __config__  = []  #@TODO: Remove in 0.4.10

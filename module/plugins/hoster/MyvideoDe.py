@@ -2,14 +2,15 @@
 
 import re
 
-from module.plugins.Hoster import Hoster
-from module.unescape import unescape
+from module.plugins.internal.Hoster import Hoster
+from module.utils import html_unescape
 
 
 class MyvideoDe(Hoster):
     __name__    = "MyvideoDe"
     __type__    = "hoster"
-    __version__ = "0.90"
+    __version__ = "0.92"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?myvideo\.de/watch/'
 
@@ -38,7 +39,7 @@ class MyvideoDe(Hoster):
 
     def get_file_name(self):
         file_name_pattern = r'<h1 class=\'globalHd\'>(.*)</h1>'
-        return unescape(re.search(file_name_pattern, self.html).group(1).replace("/", "") + '.flv')
+        return html_unescape(re.search(file_name_pattern, self.html).group(1).replace("/", "") + '.flv')
 
 
     def file_exists(self):

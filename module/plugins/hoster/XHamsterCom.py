@@ -4,7 +4,7 @@ import re
 import urllib
 
 from module.common.json_layer import json_loads
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster
 
 
 def clean_json(json_expr):
@@ -18,7 +18,8 @@ def clean_json(json_expr):
 class XHamsterCom(Hoster):
     __name__    = "XHamsterCom"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.14"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?xhamster\.com/movies/.+'
     __config__  = [("type", ".mp4;.flv", "Preferred type", ".mp4")]
@@ -34,8 +35,8 @@ class XHamsterCom(Hoster):
         if not self.file_exists():
             self.offline()
 
-        if self.getConfig('type'):
-            self.desired_fmt = self.getConfig('type')
+        if self.get_config('type'):
+            self.desired_fmt = self.get_config('type')
 
         pyfile.name = self.get_file_name() + self.desired_fmt
         self.download(self.get_file_url())
@@ -47,7 +48,8 @@ class XHamsterCom(Hoster):
 
 
     def get_file_url(self):
-        """ returns the absolute downloadable filepath
+        """
+        Returns the absolute downloadable filepath
         """
         if not self.html:
             self.download_html()
@@ -79,19 +81,19 @@ class XHamsterCom(Hoster):
                 self.error(_("file_url not found"))
             file_url = file_url.group(1)
             long_url = srv_url + file_url
-            self.logDebug("long_url = " + long_url)
+            self.log_debug("long_url = " + long_url)
         else:
             if flashvars['file']:
                 file_url = urllib.unquote(flashvars['file'])
             else:
                 self.error(_("file_url not found"))
 
-            if url_mode == '3':
+            if url_mode == "3":
                 long_url = file_url
-                self.logDebug("long_url = " + long_url)
+                self.log_debug("long_url = " + long_url)
             else:
                 long_url = srv_url + "key=" + file_url
-                self.logDebug("long_url = " + long_url)
+                self.log_debug("long_url = " + long_url)
 
         return long_url
 
@@ -118,7 +120,8 @@ class XHamsterCom(Hoster):
 
 
     def file_exists(self):
-        """ returns True or False
+        """
+        Returns True or False
         """
         if not self.html:
             self.download_html()

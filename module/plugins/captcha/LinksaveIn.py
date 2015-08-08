@@ -2,27 +2,28 @@
 
 try:
     from PIL import Image
+
 except ImportError:
     import Image
 
 import glob
 import os
 
-from module.plugins.captcha.OCR import OCR
+from module.plugins.internal.OCR import OCR
 
 
 class LinksaveIn(OCR):
     __name__    = "LinksaveIn"
     __type__    = "ocr"
-    __version__ = "0.11"
+    __version__ = "0.14"
+    __status__  = "testing"
 
     __description__ = """Linksave.in ocr plugin"""
     __license__     = "GPLv3"
     __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
-    def __init__(self):
-        OCR.__init__(self)
+    def init(self):
         self.data_dir = os.path.dirname(os.path.abspath(__file__)) + os.sep + "LinksaveIn" + os.sep
 
 
@@ -31,7 +32,7 @@ class LinksaveIn(OCR):
         frame_nr = 0
 
         lut = im.resize((256, 1))
-        lut.putdata(range(256))
+        lut.putdata(xrange(256))
         lut = list(lut.convert("RGB").getdata())
 
         new = Image.new("RGB", im.size)
@@ -51,7 +52,7 @@ class LinksaveIn(OCR):
         new.save(self.data_dir+"unblacked.png")
         self.image = new.copy()
         self.pixels = self.image.load()
-        self.result_captcha = ''
+        self.result_captcha = ""
 
 
     def get_bg(self):
@@ -63,11 +64,11 @@ class LinksaveIn(OCR):
             bg = Image.open(bgpath)
 
             bglut = bg.resize((256, 1))
-            bglut.putdata(range(256))
+            bglut.putdata(xrange(256))
             bglut = list(bglut.convert("RGB").getdata())
 
             lut = img.resize((256, 1))
-            lut.putdata(range(256))
+            lut.putdata(xrange(256))
             lut = list(lut.convert("RGB").getdata())
 
             bgpix = bg.load()
@@ -80,11 +81,11 @@ class LinksaveIn(OCR):
                         cstat[rgb_c] += 1
                     except Exception:
                         cstat[rgb_c] = 1
-                    if rgb_bg == rgb_c:
+                    if rgb_bg is rgb_c:
                         stat[bgpath] += 1
         max_p = 0
         bg = ""
-        for bgpath, value in stat.iteritems():
+        for bgpath, value in stat.items():
             if max_p < value:
                 bg = bgpath
                 max_p = value
@@ -96,11 +97,11 @@ class LinksaveIn(OCR):
         img = self.image.convert("P")
 
         bglut = bg.resize((256, 1))
-        bglut.putdata(range(256))
+        bglut.putdata(xrange(256))
         bglut = list(bglut.convert("RGB").getdata())
 
         lut = img.resize((256, 1))
-        lut.putdata(range(256))
+        lut.putdata(xrange(256))
         lut = list(lut.convert("RGB").getdata())
 
         bgpix = bg.load()
@@ -110,7 +111,7 @@ class LinksaveIn(OCR):
             for y in xrange(bg.size[1]):
                 rgb_bg = bglut[bgpix[x, y]]
                 rgb_c = lut[pix[x, y]]
-                if rgb_c == rgb_bg:
+                if rgb_c is rgb_bg:
                     orgpix[x, y] = (255, 255, 255)
 
 
@@ -136,7 +137,7 @@ class LinksaveIn(OCR):
         self.pixels = self.image.load()
 
 
-    def get_captcha(self, image):
+    def recognize(self, image):
         self.load_image(image)
         bg = self.get_bg()
         self.substract_bg(bg)

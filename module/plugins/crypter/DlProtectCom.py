@@ -11,7 +11,8 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class DlProtectCom(SimpleCrypter):
     __name__    = "DlProtectCom"
     __type__    = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.05"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?dl-protect\.com/((en|fr)/)?\w+'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
@@ -28,15 +29,15 @@ class DlProtectCom(SimpleCrypter):
     OFFLINE_PATTERN = r'Unfortunately, the link you are looking for is not found'
 
 
-    def getLinks(self):
-        # Direct link with redirect
+    def get_links(self):
+        #: Direct link with redirect
         if not re.match(r"https?://(?:www\.)?dl-protect\.com/.+", self.req.http.lastEffectiveURL):
             return [self.req.http.lastEffectiveURL]
 
         post_req = {'key'       : re.search(r'name="key" value="(.+?)"', self.html).group(1),
                     'submitform': ""}
 
-        if "Please click on continue to see the content" in self.html:
+        if "Please click on continue to see the links" in self.html:
             post_req['submitform'] = "Continue"
             self.wait(2)
 
@@ -48,14 +49,13 @@ class DlProtectCom(SimpleCrypter):
                              'submitform': "Decrypt+link"})
 
             if "Password :" in self.html:
-                post_req['pwd'] = self.getPassword()
+                post_req['pwd'] = self.get_password()
 
             if "Security Code" in self.html:
-                captcha_id   = re.search(r'/captcha\.php\?uid=(.+?)"', self.html).group(1)
-                captcha_url  = "http://www.dl-protect.com/captcha.php?uid=" + captcha_id
-                captcha_code = self.decryptCaptcha(captcha_url, imgtype="gif")
-
-                post_req['secure'] = captcha_code
+                m = re.search(r'/captcha\.php\?key=(.+?)"', self.html)
+                if m:
+                    captcha_code = self.captcha.decrypt("http://www.dl-protect.com/captcha.php?key=" + m.group(1), input_type="gif")
+                    post_req['secure'] = captcha_code
 
         self.html = self.load(self.pyfile.url, post=post_req)
 

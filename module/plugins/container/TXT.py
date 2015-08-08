@@ -2,14 +2,15 @@
 
 import codecs
 
-from module.plugins.Container import Container
+from module.plugins.internal.Container import Container
 from module.utils import fs_encode
 
 
 class TXT(Container):
     __name__    = "TXT"
     __type__    = "container"
-    __version__ = "0.15"
+    __version__ = "0.17"
+    __status__  = "testing"
 
     __pattern__ = r'.+\.(txt|text)$'
     __config__  = [("flush"   , "bool"  , "Flush list after adding", False  ),
@@ -23,7 +24,7 @@ class TXT(Container):
 
     def decrypt(self, pyfile):
         try:
-            encoding = codecs.lookup(self.getConfig('encoding')).name
+            encoding = codecs.lookup(self.get_config('encoding')).name
 
         except Exception:
             encoding = "utf-8"
@@ -43,7 +44,7 @@ class TXT(Container):
                 continue
 
             if link.startswith("[") and link.endswith("]"):
-                # new package
+                #: New package
                 curPack = link[1:-1]
                 packages[curPack] = []
                 continue
@@ -52,18 +53,18 @@ class TXT(Container):
 
         txt.close()
 
-        # empty packages fix
-        for key, value in packages.iteritems():
+        #: Empty packages fix
+        for key, value in packages.items():
             if not value:
                 packages.pop(key, None)
 
-        if self.getConfig('flush'):
+        if self.get_config('flush'):
             try:
                 txt = open(fs_filename, 'wb')
                 txt.close()
 
             except IOError:
-                self.logWarning(_("Failed to flush list"))
+                self.log_warning(_("Failed to flush list"))
 
-        for name, links in packages.iteritems():
+        for name, links in packages.items():
             self.packages.append((name, links, name))

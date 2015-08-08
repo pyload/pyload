@@ -9,7 +9,8 @@ from module.utils import fixup
 class NowDownloadSx(SimpleHoster):
     __name__    = "NowDownloadSx"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.11"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(nowdownload\.[a-zA-Z]{2,}/(dl/|download\.php.+?id=|mobile/(#/files/|.+?id=))|likeupload\.org/)\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -26,18 +27,18 @@ class NowDownloadSx(SimpleHoster):
     TOKEN_PATTERN = r'"(/api/token\.php\?token=\w+)"'
     CONTINUE_PATTERN = r'"(/dl2/\w+/\w+)"'
     WAIT_PATTERN = r'\.countdown\(\{until: \+(\d+),'
-    LINK_FREE_PATTERN = r'(http://s\d+\.coolcdn\.info/nowdownload/.+?)["\']'
+    LINK_FREE_PATTERN = r'(http://s\d+(?:\.coolcdn\.info|\.mighycdndelivery\.com)/nowdownload/.+?)["\']'
 
     NAME_REPLACEMENTS = [("&#?\w+;", fixup), (r'<.*?>', '')]
 
 
     def setup(self):
-        self.resumeDownload = True
+        self.resume_download = True
         self.multiDL        = True
-        self.chunkLimit     = -1
+        self.chunk_limit     = -1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         tokenlink = re.search(self.TOKEN_PATTERN, self.html)
         continuelink = re.search(self.CONTINUE_PATTERN, self.html)
         if tokenlink is None or continuelink is None:
@@ -49,7 +50,7 @@ class NowDownloadSx(SimpleHoster):
         else:
             wait = 60
 
-        baseurl = "http://www.nowdownload.at"
+        baseurl = "http://www.nowdownload.ch"
         self.html = self.load(baseurl + str(tokenlink.group(1)))
         self.wait(wait)
 

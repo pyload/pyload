@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class Http(Account):
     __name__    = "Http"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.03"
+    __status__  = "testing"
 
     __description__ = """Http dummy account plugin"""
     __license__     = "GPLv3"

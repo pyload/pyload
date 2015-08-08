@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter
 
 
 class MultiloadCz(Crypter):
     __name__    = "MultiloadCz"
     __type__    = "crypter"
-    __version__ = "0.40"
+    __version__ = "0.42"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:[^/]*\.)?multiload\.cz/(stahnout|slozka)/.+'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"           , True),
@@ -25,7 +26,7 @@ class MultiloadCz(Crypter):
 
 
     def decrypt(self, pyfile):
-        self.html = self.load(pyfile.url, decode=True)
+        self.html = self.load(pyfile.url)
 
         if re.match(self.__pattern__, pyfile.url).group(1) == "slozka":
             m = re.search(self.FOLDER_PATTERN, self.html)
@@ -34,9 +35,9 @@ class MultiloadCz(Crypter):
         else:
             m = re.findall(self.LINK_PATTERN, self.html)
             if m:
-                prefered_set = set(self.getConfig('usedHoster').split('|'))
+                prefered_set = set(self.get_config('usedHoster').split('|'))
                 self.urls.extend(x[1] for x in m if x[0] in prefered_set)
 
                 if not self.urls:
-                    ignored_set = set(self.getConfig('ignoredHoster').split('|'))
+                    ignored_set = set(self.get_config('ignoredHoster').split('|'))
                     self.urls.extend(x[1] for x in m if x[0] not in ignored_set)

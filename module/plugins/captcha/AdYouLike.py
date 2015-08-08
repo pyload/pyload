@@ -3,13 +3,14 @@
 import re
 
 from module.common.json_layer import json_loads
-from module.plugins.internal.Captcha import Captcha
+from module.plugins.internal.CaptchaService import CaptchaService
 
 
-class AdYouLike(Captcha):
+class AdYouLike(CaptchaService):
     __name__    = "AdYouLike"
     __type__    = "captcha"
-    __version__ = "0.06"
+    __version__ = "0.07"
+    __status__  = "testing"
 
     __description__ = """AdYouLike captcha service plugin"""
     __license__     = "GPLv3"
@@ -20,28 +21,28 @@ class AdYouLike(Captcha):
     CALLBACK_PATTERN = r'(Adyoulike\.g\._jsonp_\d+)'
 
 
-    def detect_key(self, html=None):
-        html = html or self.retrieve_html()
+    def detect_key(self, data=None):
+        html = data or self.retrieve_data()
 
         m = re.search(self.AYL_PATTERN, html)
         n = re.search(self.CALLBACK_PATTERN, html)
         if m and n:
             self.key = (m.group(1).strip(), n.group(1).strip())
-            self.logDebug("Ayl: %s | Callback: %s" % self.key)
-            return self.key   #: key is the tuple(ayl, callback)
+            self.log_debug("Ayl: %s | Callback: %s" % self.key)
+            return self.key   #: Key is the tuple(ayl, callback)
         else:
-            self.logWarning("Ayl or callback pattern not found")
+            self.log_warning(_("Ayl or callback pattern not found"))
             return None
 
 
-    def challenge(self, key=None, html=None):
-        ayl, callback = key or self.retrieve_key(html)
+    def challenge(self, key=None, data=None):
+        ayl, callback = key or self.retrieve_key(data)
 
-        # {"adyoulike":{"key":"P~zQ~O0zV0WTiAzC-iw0navWQpCLoYEP"},
-        # "all":{"element_id":"ayl_private_cap_92300","lang":"fr","env":"prod"}}
+        #: {'adyoulike':{'key':"P~zQ~O0zV0WTiAzC-iw0navWQpCLoYEP"},
+        #: 'all':{'element_id':"ayl_private_cap_92300",'lang':"fr",'env':"prod"}}
         ayl = json_loads(ayl)
 
-        html = self.plugin.req.load("http://api-ayl.appspot.com/challenge",
+        html = self.plugin.load("http://api-ayl.appspot.com/challenge",
                                     get={'key'     : ayl['adyoulike']['key'],
                                          'env'     : ayl['all']['env'],
                                          'callback': callback})
@@ -51,21 +52,21 @@ class AdYouLike(Captcha):
         except AttributeError:
             self.fail(_("AdYouLike challenge pattern not found"))
 
-        self.logDebug("Challenge: %s" % challenge)
+        self.log_debug("Challenge: %s" % challenge)
 
         return self.result(ayl, challenge), challenge
 
 
     def result(self, server, challenge):
-        # Adyoulike.g._jsonp_5579316662423138
-        # ({"translations":{"fr":{"instructions_visual":"Recopiez « Soonnight » ci-dessous :"}},
-        # "site_under":true,"clickable":true,"pixels":{"VIDEO_050":[],"DISPLAY":[],"VIDEO_000":[],"VIDEO_100":[],
-        # "VIDEO_025":[],"VIDEO_075":[]},"medium_type":"image/adyoulike",
-        # "iframes":{"big":"<iframe src=\"http://www.soonnight.com/campagn.html\" scrolling=\"no\"
-        # height=\"250\" width=\"300\" frameborder=\"0\"></iframe>"},"shares":{},"id":256,
-        # "token":"e6QuI4aRSnbIZJg02IsV6cp4JQ9~MjA1","formats":{"small":{"y":300,"x":0,"w":300,"h":60},
-        # "big":{"y":0,"x":0,"w":300,"h":250},"hover":{"y":440,"x":0,"w":300,"h":60}},
-        # "tid":"SqwuAdxT1EZoi4B5q0T63LN2AkiCJBg5"})
+        #: Adyoulike.g._jsonp_5579316662423138
+        #: ({'translations':{'fr':{'instructions_visual':"Recopiez « Soonnight » ci-dessous :"}},
+        #: 'site_under':true,'clickable':true,'pixels':{'VIDEO_050':[],'DISPLAY':[],'VIDEO_000':[],'VIDEO_100':[],
+        #: 'VIDEO_025':[],'VIDEO_075':[]},'medium_type':"image/adyoulike",
+        #: 'iframes':{'big':"<iframe src=\"http://www.soonnight.com/campagn.html\" scrolling=\"no\"
+        #: height=\"250\" width=\"300\" frameborder=\"0\"></iframe>"},'shares':{},'id':256,
+        #: 'token':"e6QuI4aRSnbIZJg02IsV6cp4JQ9~MjA1",'formats':{'small':{'y':300,'x':0,'w':300,'h':60},
+        #: 'big':{'y':0,'x':0,'w':300,'h':250},'hover':{'y':440,'x':0,'w':300,'h':60}},
+        #: 'tid':"SqwuAdxT1EZoi4B5q0T63LN2AkiCJBg5"})
 
         if isinstance(server, basestring):
             server = json_loads(server)
@@ -86,6 +87,6 @@ class AdYouLike(Captcha):
                   '_ayl_token_challenge': challenge['token'],
                   '_ayl_response'       : response}
 
-        self.logDebug("Result: %s" % result)
+        self.log_debug("Result: %s" % result)
 
         return result

@@ -8,18 +8,20 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo, rep
 class SimplydebridCom(MultiHoster):
     __name__    = "SimplydebridCom"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.20"
+    __status__  = "testing"
 
     __pattern__ = r'http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd\.php'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Simply-debrid.com multi-hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
-    def handlePremium(self, pyfile):
-        #fix the links for simply-debrid.com!
+    def handle_premium(self, pyfile):
+        #: Fix the links for simply-debrid.com!
         self.link = replace_patterns(pyfile.url, [("clz.to", "cloudzer.net/file")
                                                   ("http://share-online", "http://www.share-online")
                                                   ("ul.to", "uploaded.net/file")
@@ -39,11 +41,11 @@ class SimplydebridCom(MultiHoster):
         self.wait(5)
 
 
-    def checkFile(self, rules={}):
-        if self.checkDownload({"error": "No address associated with hostname"}):
+    def check_file(self):
+        if self.check_download({'error': "No address associated with hostname"}):
             self.retry(24, 3 * 60, _("Bad file downloaded"))
 
-        return super(SimplydebridCom, self).checkFile(rules)
+        return super(SimplydebridCom, self).check_file()
 
 
 getInfo = create_getInfo(SimplydebridCom)

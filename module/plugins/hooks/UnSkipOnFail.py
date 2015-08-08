@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from module.PyFile import PyFile
-from module.plugins.Hook import Hook
+from module.plugins.internal.Addon import Addon
 
 
-class UnSkipOnFail(Hook):
+class UnSkipOnFail(Addon):
     __name__    = "UnSkipOnFail"
     __type__    = "hook"
-    __version__ = "0.07"
+    __version__ = "0.09"
+    __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated", True)]
 
@@ -16,46 +17,38 @@ class UnSkipOnFail(Hook):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    interval = 0  #@TODO: Remove in 0.4.10
-
-
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
-
-
-    def downloadFailed(self, pyfile):
-        #: Check if pyfile is still "failed",
-        #  maybe might has been restarted in meantime
+    def download_failed(self, pyfile):
+        #: Check if pyfile is still "failed", maybe might has been restarted in meantime
         if pyfile.status != 8:
             return
 
         msg = _("Looking for skipped duplicates of: %s (pid:%s)")
-        self.logInfo(msg % (pyfile.name, pyfile.package().id))
+        self.log_info(msg % (pyfile.name, pyfile.package().id))
 
-        link = self.findDuplicate(pyfile)
+        link = self.find_duplicate(pyfile)
         if link:
-            self.logInfo(_("Queue found duplicate: %s (pid:%s)") % (link.name, link.packageID))
+            self.log_info(_("Queue found duplicate: %s (pid:%s)") % (link.name, link.packageID))
 
             #: Change status of "link" to "new_status".
-            #  "link" has to be a valid FileData object,
-            #  "new_status" has to be a valid status name
-            #  (i.e. "queued" for this Plugin)
-            #  It creates a temporary PyFile object using
-            #  "link" data, changes its status, and tells
-            #  the core.files-manager to save its data.
+            #: "link" has to be a valid FileData object,
+            #: "new_status" has to be a valid status name
+            #: (i.e. "queued" for this Plugin)
+            #: It creates a temporary PyFile object using
+            #: "link" data, changes its status, and tells
+            #: The pyload.files-manager to save its data.
             pylink = self._pyfile(link)
 
             pylink.setCustomStatus(_("unskipped"), "queued")
 
-            self.core.files.save()
+            self.pyload.files.save()
             pylink.release()
 
         else:
-            self.logInfo(_("No duplicates found"))
+            self.log_info(_("No duplicates found"))
 
 
-    def findDuplicate(self, pyfile):
-        """ Search all packages for duplicate links to "pyfile".
+    def find_duplicate(self, pyfile):
+        """Search all packages for duplicate links to "pyfile".
             Duplicates are links that would overwrite "pyfile".
             To test on duplicity the package-folder and link-name
             of twolinks are compared (link.name).
@@ -64,28 +57,28 @@ class UnSkipOnFail(Hook):
             the data for "pyfile" iotselöf.
             It does MOT check the link's status.
         """
-        queue = self.core.api.getQueue()  #: get packages (w/o files, as most file data is useless here)
+        queue = self.pyload.api.getQueue()  #: Get packages (w/o files, as most file data is useless here)
 
         for package in queue:
-            #: check if package-folder equals pyfile's package folder
-            if package.folder != pyfile.package().folder:
+            #: Check if package-folder equals pyfile's package folder
+            if package.folder is not pyfile.package().folder:
                 continue
 
-            #: now get packaged data w/ files/links
-            pdata = self.core.api.getPackageData(package.pid)
+            #: Now get packaged data w/ files/links
+            pdata = self.pyload.api.getPackageData(package.pid)
             for link in pdata.links:
-                #: check if link is "skipped"
+                #: Check if link == "skipped"
                 if link.status != 4:
                     continue
 
-                #: check if link name collides with pdata's name
-                #: AND at last check if it is not pyfile itself
-                if link.name == pyfile.name and link.fid != pyfile.id:
+                #: Check if link name collides with pdata's name
+                #: and at last check if it is not pyfile itself
+                if link.name is pyfile.name and link.fid is not pyfile.id:
                     return link
 
 
     def _pyfile(self, link):
-        return PyFile(self.core.files,
+        return PyFile(self.pyload.files,
                       link.fid,
                       link.url,
                       link.name,

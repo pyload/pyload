@@ -7,10 +7,12 @@ from module.plugins.internal.MultiHoster import MultiHoster
 class RapideoPl(MultiHoster):
     __name__    = "RapideoPl"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.04"
+    __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Rapideo.pl multi-hoster plugin"""
     __license__     = "GPLv3"
@@ -37,68 +39,68 @@ class RapideoPl(MultiHoster):
     def prepare(self):
         super(RapideoPl, self).prepare()
 
-        data = self.account.getAccountData(self.user)
+        data = self.account.get_data(self.user)
 
         self.usr = data['usr']
         self.pwd = data['pwd']
 
 
-    def runFileQuery(self, url, mode=None):
+    def run_file_query(self, url, mode=None):
         query = self.API_QUERY.copy()
 
-        query["username"] = self.usr
-        query["password"] = self.pwd
-        query["url"]      = url
+        query['username'] = self.usr
+        query['password'] = self.pwd
+        query['url']      = url
 
         if mode == "fileinfo":
             query['check'] = 2
             query['loc']   = 1
 
-        self.logDebug(query)
+        self.log_debug(query)
 
         return self.load(self.API_URL, post=query)
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         try:
-            data = self.runFileQuery(pyfile.url, 'fileinfo')
+            data = self.run_file_query(pyfile.url, 'fileinfo')
 
         except Exception:
-            self.logDebug("RunFileQuery error")
-            self.tempOffline()
+            self.log_debug("RunFileQuery error")
+            self.temp_offline()
 
         try:
             parsed = json_loads(data)
 
         except Exception:
-            self.logDebug("Loads error")
-            self.tempOffline()
+            self.log_debug("Loads error")
+            self.temp_offline()
 
-        self.logDebug(parsed)
+        self.log_debug(parsed)
 
         if "errno" in parsed.keys():
-            if parsed["errno"] in self.ERROR_CODES:
-                # error code in known
-                self.fail(self.ERROR_CODES[parsed["errno"]] % self.__name__)
+            if parsed['errno'] in self.ERROR_CODES:
+                #: Error code in known
+                self.fail(self.ERROR_CODES[parsed['errno']] % self.__name__)
             else:
-                # error code isn't yet added to plugin
+                #: Error code isn't yet added to plugin
                 self.fail(
-                    parsed["errstring"]
-                    or _("Unknown error (code: %s)") % parsed["errno"]
+                    parsed['errstring']
+                    or _("Unknown error (code: %s)") % parsed['errno']
                 )
 
         if "sdownload" in parsed:
-            if parsed["sdownload"] == "1":
+            if parsed['sdownload'] == "1":
                 self.fail(
                     _("Download from %s is possible only using Rapideo.pl website \
-                    directly") % parsed["hosting"])
+                    directly") % parsed['hosting'])
 
-        pyfile.name = parsed["filename"]
-        pyfile.size = parsed["filesize"]
+        pyfile.name = parsed['filename']
+        pyfile.size = parsed['filesize']
 
         try:
-            self.link = self.runFileQuery(pyfile.url, 'filedownload')
+            self.link = self.run_file_query(pyfile.url, 'filedownload')
 
         except Exception:
-            self.logDebug("runFileQuery error #2")
-            self.tempOffline()
+            self.log_debug("runFileQuery error #2")
+            self.temp_offline()

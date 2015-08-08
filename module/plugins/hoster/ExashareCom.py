@@ -8,7 +8,8 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class ExashareCom(XFSHoster):
     __name__    = "ExashareCom"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?exashare\.com/\w{12}'
 
@@ -22,11 +23,11 @@ class ExashareCom(XFSHoster):
 
     def setup(self):
         self.multiDL        = True
-        self.chunkLimit     = 1
-        self.resumeDownload = self.premium
+        self.chunk_limit     = 1
+        self.resume_download = self.premium
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
             self.error(_("Free download link not found"))

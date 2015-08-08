@@ -6,7 +6,8 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 class HotfileComFolder(DeadCrypter):
     __name__    = "HotfileComFolder"
     __type__    = "crypter"
-    __version__ = "0.30"
+    __version__ = "0.31"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?hotfile\.com/list/\w+/\w+'
     __config__  = []  #@TODO: Remove in 0.4.10

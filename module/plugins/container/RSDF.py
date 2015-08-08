@@ -7,14 +7,15 @@ import re
 
 from Crypto.Cipher import AES
 
-from module.plugins.Container import Container
+from module.plugins.internal.Container import Container
 from module.utils import fs_encode
 
 
 class RSDF(Container):
     __name__    = "RSDF"
     __type__    = "container"
-    __version__ = "0.29"
+    __version__ = "0.31"
+    __status__  = "testing"
 
     __pattern__ = r'.+\.rsdf$'
 

@@ -10,7 +10,7 @@ except ImportError:
 
 from threading import Lock
 
-from module.plugins.Hook import Hook, threaded
+from module.plugins.internal.Addon import Addon, threaded
 
 
 def forward(source, destination):
@@ -22,14 +22,15 @@ def forward(source, destination):
             bufdata = source.recv(bufsize)
     finally:
         destination.shutdown(socket.SHUT_WR)
-        # destination.close()
+        #: destination.close()
 
 
 #@TODO: IPv6 support
-class ClickAndLoad(Hook):
+class ClickAndLoad(Addon):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
-    __version__ = "0.43"
+    __version__ = "0.45"
+    __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                             , True),
                   ("port"     , "int" , "Port"                                  , 9666),
@@ -41,20 +42,13 @@ class ClickAndLoad(Hook):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    interval = 0  #@TODO: Remove in 0.4.10
-
-
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
-
-
-    def coreReady(self):
-        if not self.config['webinterface']['activated']:
+    def activate(self):
+        if not self.pyload.config.get("webinterface", "activated"):
             return
 
-        ip      = "" if self.getConfig('extern') else "127.0.0.1"
-        webport = self.config['webinterface']['port']
-        cnlport = self.getConfig('port')
+        ip      = "" if self.get_config('extern') else "127.0.0.1"
+        webport = self.pyload.config.get("webinterface", "port")
+        cnlport = self.get_config('port')
 
         self.proxy(ip, webport, cnlport)
 
@@ -63,7 +57,7 @@ class ClickAndLoad(Hook):
     def proxy(self, ip, webport, cnlport):
         time.sleep(10)  #@TODO: Remove in 0.4.10 (implement addon delay on startup)
 
-        self.logInfo(_("Proxy listening on %s:%s") % (ip or "0.0.0.0", cnlport))
+        self.log_info(_("Proxy listening on %s:%s") % (ip or "0.0.0.0", cnlport))
 
         self._server(ip, webport, cnlport)
 
@@ -81,22 +75,22 @@ class ClickAndLoad(Hook):
 
             while True:
                 client_socket, client_addr = dock_socket.accept()
-                self.logDebug("Connection from %s:%s" % client_addr)
+                self.log_debug("Connection from %s:%s" % client_addr)
 
                 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-                if self.config['webinterface']['https']:
+                if self.pyload.config.get("webinterface", "https"):
                     try:
                         server_socket = ssl.wrap_socket(server_socket)
 
                     except NameError:
-                        self.logError(_("pyLoad's webinterface is configured to use HTTPS, Please install python's ssl lib or disable HTTPS"))
-                        client_socket.close()  #: reset the connection.
+                        self.log_error(_("pyLoad's webinterface is configured to use HTTPS, Please install python's ssl lib or disable HTTPS"))
+                        client_socket.close()  #: Reset the connection.
                         continue
 
                     except Exception, e:
-                        self.logError(_("SSL error: %s") % e.message)
-                        client_socket.close()  #: reset the connection.
+                        self.log_error(_("SSL error: %s") % e.message)
+                        client_socket.close()  #: Reset the connection.
                         continue
 
                 server_socket.connect(("127.0.0.1", webport))
@@ -105,10 +99,10 @@ class ClickAndLoad(Hook):
                 self.manager.startThread(forward, server_socket, client_socket)
 
         except socket.timeout:
-            self.logDebug("Connection timed out, retrying...")
+            self.log_debug("Connection timed out, retrying...")
             return self._server(ip, webport, cnlport)
 
         except socket.error, e:
-            self.logError(e)
+            self.log_error(e)
             time.sleep(240)
             return self._server(ip, webport, cnlport)

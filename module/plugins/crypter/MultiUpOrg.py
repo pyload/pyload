@@ -9,7 +9,8 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class MultiUpOrg(SimpleCrypter):
     __name__    = "MultiUpOrg"
     __type__    = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?multiup\.org/(en|fr)/(?P<TYPE>project|download|miror)/\w+(/\w+)?'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
@@ -24,7 +25,7 @@ class MultiUpOrg(SimpleCrypter):
     NAME_PATTERN = r'<title>.*(?:Project|Projet|ownload|élécharger) (?P<N>.+?) (\(|- )'
 
 
-    def getLinks(self):
+    def get_links(self):
         m_type = re.match(self.__pattern__, self.pyfile.url).group('TYPE')
 
         if m_type == "project":

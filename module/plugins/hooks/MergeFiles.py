@@ -6,14 +6,15 @@ import os
 import re
 import traceback
 
-from module.plugins.Hook import Hook, threaded
-from module.utils import save_join
+from module.plugins.internal.Addon import Addon, threaded
+from module.utils import save_join as fs_join
 
 
-class MergeFiles(Hook):
+class MergeFiles(Addon):
     __name__    = "MergeFiles"
     __type__    = "hook"
-    __version__ = "0.14"
+    __version__ = "0.16"
+    __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated", True)]
 
@@ -22,20 +23,14 @@ class MergeFiles(Hook):
     __authors__     = [("and9000", "me@has-no-mail.com")]
 
 
-    interval = 0  #@TODO: Remove in 0.4.10
-
     BUFFER_SIZE = 4096
 
 
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
-
-
     @threaded
-    def packageFinished(self, pack):
+    def package_finished(self, pack):
         files = {}
         fid_dict = {}
-        for fid, data in pack.getChildren().iteritems():
+        for fid, data in pack.getChildren().items():
             if re.search("\.\d{3}$", data['name']):
                 if data['name'][:-4] not in files:
                     files[data['name'][:-4]] = []
@@ -43,24 +38,24 @@ class MergeFiles(Hook):
                 files[data['name'][:-4]].sort()
                 fid_dict[data['name']] = fid
 
-        download_folder = self.config['general']['download_folder']
+        download_folder = self.pyload.config.get("general", "download_folder")
 
-        if self.config['general']['folder_per_package']:
-            download_folder = save_join(download_folder, pack.folder)
+        if self.pyload.config.get("general", "folder_per_package"):
+            download_folder = fs_join(download_folder, pack.folder)
 
-        for name, file_list in files.iteritems():
-            self.logInfo(_("Starting merging of"), name)
+        for name, file_list in files.items():
+            self.log_info(_("Starting merging of"), name)
 
-            with open(save_join(download_folder, name), "wb") as final_file:
+            with open(fs_join(download_folder, name), "wb") as final_file:
                 for splitted_file in file_list:
-                    self.logDebug("Merging part", splitted_file)
+                    self.log_debug("Merging part", splitted_file)
 
-                    pyfile = self.core.files.getFile(fid_dict[splitted_file])
+                    pyfile = self.pyload.files.getFile(fid_dict[splitted_file])
 
                     pyfile.setStatus("processing")
 
                     try:
-                        with open(save_join(download_folder, splitted_file), "rb") as s_file:
+                        with open(fs_join(download_folder, splitted_file), "rb") as s_file:
                             size_written = 0
                             s_file_size = int(os.path.getsize(os.path.join(download_folder, splitted_file)))
                             while True:
@@ -71,7 +66,7 @@ class MergeFiles(Hook):
                                     pyfile.setProgress((size_written * 100) / s_file_size)
                                 else:
                                     break
-                        self.logDebug("Finished merging part", splitted_file)
+                        self.log_debug("Finished merging part", splitted_file)
 
                     except Exception, e:
                         traceback.print_exc()
@@ -81,4 +76,4 @@ class MergeFiles(Hook):
                         pyfile.setStatus("finished")
                         pyfile.release()
 
-            self.logInfo(_("Finished merging of"), name)
+            self.log_info(_("Finished merging of"), name)

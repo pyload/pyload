@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Account import Account
+import urlparse
+
+from module.plugins.internal.Account import Account
 from module.common.json_layer import json_loads
 
 
 class RapidgatorNet(Account):
     __name__    = "RapidgatorNet"
     __type__    = "account"
-    __version__ = "0.09"
+    __version__ = "0.11"
+    __status__  = "testing"
 
     __description__ = """Rapidgator.net account plugin"""
     __license__     = "GPLv3"
@@ -17,34 +20,35 @@ class RapidgatorNet(Account):
     API_URL = "http://rapidgator.net/api/user"
 
 
-    def loadAccountInfo(self, user, req):
+    def parse_info(self, user, password, data, req):
         validuntil  = None
         trafficleft = None
         premium     = False
         sid         = None
 
         try:
-            sid = self.getAccountData(user).get('sid')
+            sid = self.get_data(user).get('sid', None)
             assert sid
 
-            html = req.load("%s/info" % self.API_URL, get={'sid': sid})
+            html = self.load(urlparse.urljoin(self.API_URL, "info"),
+                             get={'sid': sid})
 
-            self.logDebug("API:USERINFO", html)
+            self.log_debug("API:USERINFO", html)
 
             json = json_loads(html)
 
             if json['response_status'] == 200:
                 if "reset_in" in json['response']:
-                    self.scheduleRefresh(user, json['response']['reset_in'])
+                    self.schedule_refresh(user, json['response']['reset_in'])
 
                 validuntil  = json['response']['expire_date']
                 trafficleft = float(json['response']['traffic_left']) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
                 premium     = True
             else:
-                self.logError(json['response_details'])
+                self.log_error(json['response_details'])
 
         except Exception, e:
-            self.logError(e)
+            self.log_error(e)
 
         return {'validuntil' : validuntil,
                 'trafficleft': trafficleft,
@@ -52,11 +56,13 @@ class RapidgatorNet(Account):
                 'sid'        : sid}
 
 
-    def login(self, user, data, req):
+    def login(self, user, password, data, req):
         try:
-            html = req.load('%s/login' % self.API_URL, post={"username": user, "password": data['password']})
+            html = self.load(urlparse.urljoin(self.API_URL, "login"),
+                             post={'username': user,
+                                   'password': password})
 
-            self.logDebug("API:LOGIN", html)
+            self.log_debug("API:LOGIN", html)
 
             json = json_loads(html)
 
@@ -64,9 +70,9 @@ class RapidgatorNet(Account):
                 data['sid'] = str(json['response']['session_id'])
                 return
             else:
-                self.logError(json['response_details'])
+                self.log_error(json['response_details'])
 
         except Exception, e:
-            self.logError(e)
+            self.log_error(e)
 
-        self.wrongPassword()
+        self.login_fail()

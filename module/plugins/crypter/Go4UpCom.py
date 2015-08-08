@@ -9,7 +9,8 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class Go4UpCom(SimpleCrypter):
     __name__    = "Go4UpCom"
     __type__    = "crypter"
-    __version__ = "0.12"
+    __version__ = "0.13"
+    __status__  = "testing"
 
     __pattern__ = r'http://go4up\.com/(dl/\w{12}|rd/\w{12}/\d+)'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
@@ -29,7 +30,7 @@ class Go4UpCom(SimpleCrypter):
     OFFLINE_PATTERN = r'>\s*(404 Page Not Found|File not Found|Mirror does not exist)'
 
 
-    def getLinks(self):
+    def get_links(self):
         links = []
 
         m = re.search(r'(/download/gethosts/.+?)"', self.html)

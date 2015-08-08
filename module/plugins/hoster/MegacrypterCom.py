@@ -10,7 +10,8 @@ from module.plugins.hoster.MegaCoNz import MegaCoNz
 class MegacrypterCom(MegaCoNz):
     __name__    = "MegacrypterCom"
     __type__    = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
+    __status__  = "testing"
 
     __pattern__ = r'https?://\w{0,10}\.?megacrypter\.com/[\w!-]+'
 
@@ -24,26 +25,28 @@ class MegacrypterCom(MegaCoNz):
 
 
     def api_response(self, **kwargs):
-        """ Dispatch a call to the api, see megacrypter.com/api_doc """
-        self.logDebug("JSON request: " + json_dumps(kwargs))
+        """
+        Dispatch a call to the api, see megacrypter.com/api_doc
+        """
+        self.log_debug("JSON request: " + json_dumps(kwargs))
         res = self.load(self.API_URL, post=json_dumps(kwargs))
-        self.logDebug("API Response: " + res)
+        self.log_debug("API Response: " + res)
         return json_loads(res)
 
 
     def process(self, pyfile):
-        # match is guaranteed because plugin was chosen to handle url
+        #: Match is guaranteed because plugin was chosen to handle url
         node = re.match(self.__pattern__, pyfile.url).group(0)
 
-        # get Mega.co.nz link info
+        #: get Mega.co.nz link info
         info = self.api_response(link=node, m="info")
 
-        # get crypted file URL
+        #: Get crypted file URL
         dl = self.api_response(link=node, m="dl")
 
-        # TODO: map error codes, implement password protection
+        #@TODO: map error codes, implement password protection
         # if info['pass'] is True:
-        #    crypted_file_key, md5_file_key = info['key'].split("#")
+            # crypted_file_key, md5_file_key = info['key'].split("#")
 
         key = self.b64_decode(info['key'])
 
@@ -51,7 +54,7 @@ class MegacrypterCom(MegaCoNz):
 
         self.download(dl['url'])
 
-        self.decryptFile(key)
+        self.decrypt_file(key)
 
-        # Everything is finished and final name can be set
+        #: Everything is finished and final name can be set
         pyfile.name = info['name']

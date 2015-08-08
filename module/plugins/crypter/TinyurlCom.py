@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleDereferer import SimpleDereferer, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
-class TinyurlCom(SimpleDereferer):
+class TinyurlCom(SimpleCrypter):
     __name__    = "TinyurlCom"
     __type__    = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.03"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(preview\.)?tinyurl\.com/[\w-]+'
 

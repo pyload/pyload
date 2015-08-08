@@ -8,7 +8,8 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class SendspaceCom(SimpleHoster):
     __name__    = "SendspaceCom"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?sendspace\.com/file/\w+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -28,30 +29,30 @@ class SendspaceCom(SimpleHoster):
     USER_CAPTCHA_PATTERN = r'<td><img src="/captchas/captcha\.php?user=(.+?))"></td>'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         params = {}
         for _i in xrange(3):
             m = re.search(self.LINK_FREE_PATTERN, self.html)
             if m:
                 if 'captcha_hash' in params:
-                    self.correctCaptcha()
+                    self.captcha.correct()
                 self.link = m.group(1)
                 break
 
             m = re.search(self.CAPTCHA_PATTERN, self.html)
             if m:
                 if 'captcha_hash' in params:
-                    self.invalidCaptcha()
+                    self.captcha.invalid()
                 captcha_url1 = "http://www.sendspace.com/" + m.group(1)
                 m = re.search(self.USER_CAPTCHA_PATTERN, self.html)
                 captcha_url2 = "http://www.sendspace.com/" + m.group(1)
                 params = {'captcha_hash': m.group(2),
                           'captcha_submit': 'Verify',
-                          'captcha_answer': self.decryptCaptcha(captcha_url1) + " " + self.decryptCaptcha(captcha_url2)}
+                          'captcha_answer': self.captcha.decrypt(captcha_url1) + " " + self.captcha.decrypt(captcha_url2)}
             else:
                 params = {'download': "Regular Download"}
 
-            self.logDebug(params)
+            self.log_debug(params)
             self.html = self.load(pyfile.url, post=params)
         else:
             self.fail(_("Download link not found"))

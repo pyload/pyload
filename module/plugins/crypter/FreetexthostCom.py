@@ -8,7 +8,8 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class FreetexthostCom(SimpleCrypter):
     __name__    = "FreetexthostCom"
     __type__    = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?freetexthost\.com/\w+'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
@@ -20,7 +21,7 @@ class FreetexthostCom(SimpleCrypter):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    def getLinks(self):
+    def get_links(self):
         m = re.search(r'<div id="contentsinner">\s*(.+)<div class="viewcount">', self.html, re.S)
         if m is None:
             self.error(_("Unable to extract links"))

@@ -6,7 +6,8 @@ from module.plugins.hoster.ZeveraCom import ZeveraCom
 class MultihostersCom(ZeveraCom):
     __name__    = "MultihostersCom"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)multihosters\.com/(getFiles\.ashx|Members/download\.ashx)\?.*ourl=.+'
 

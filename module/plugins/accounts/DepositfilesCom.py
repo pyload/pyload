@@ -3,13 +3,14 @@
 import re
 import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class DepositfilesCom(Account):
     __name__    = "DepositfilesCom"
     __type__    = "account"
-    __version__ = "0.32"
+    __version__ = "0.34"
+    __status__  = "testing"
 
     __description__ = """Depositfiles.com account plugin"""
     __license__     = "GPLv3"
@@ -18,19 +19,20 @@ class DepositfilesCom(Account):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def loadAccountInfo(self, user, req):
-        html = req.load("https://dfiles.eu/de/gold/")
+    def parse_info(self, user, password, data, req):
+        html = self.load("https://dfiles.eu/de/gold/")
         validuntil = re.search(r"Sie haben Gold Zugang bis: <b>(.*?)</b></div>", html).group(1)
 
         validuntil = time.mktime(time.strptime(validuntil, "%Y-%m-%d %H:%M:%S"))
 
-        return {"validuntil": validuntil, "trafficleft": -1}
+        return {'validuntil': validuntil, 'trafficleft': -1}
 
 
-    def login(self, user, data, req):
-        html = req.load("https://dfiles.eu/de/login.php", get={"return": "/de/gold/payment.php"},
-                        post={"login": user, "password": data['password']},
-                        decode=True)
+    def login(self, user, password, data, req):
+        html = self.load("https://dfiles.eu/de/login.php",
+                         get={'return': "/de/gold/payment.php"},
+                         post={'login'   : user,
+                               'password': password})
 
         if r'<div class="error_message">Sie haben eine falsche Benutzername-Passwort-Kombination verwendet.</div>' in html:
-            self.wrongPassword()
+            self.login_fail()

@@ -2,14 +2,15 @@
 
 import re
 
-from module.plugins.Hoster import Hoster
-from module.unescape import unescape
+from module.plugins.internal.Hoster import Hoster
+from module.utils import html_unescape
 
 
 class RedtubeCom(Hoster):
     __name__    = "RedtubeCom"
     __type__    = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.22"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?redtube\.com/\d+'
 
@@ -33,14 +34,13 @@ class RedtubeCom(Hoster):
 
 
     def get_file_url(self):
-        """ returns the absolute downloadable filepath
+        """
+        Returns the absolute downloadable filepath
         """
         if not self.html:
             self.download_html()
 
-        file_url = unescape(re.search(r'hashlink=(http.*?)"', self.html).group(1))
-
-        return file_url
+        return html_unescape(re.search(r'hashlink=(http.*?)"', self.html).group(1))
 
 
     def get_file_name(self):
@@ -51,7 +51,8 @@ class RedtubeCom(Hoster):
 
 
     def file_exists(self):
-        """ returns True or False
+        """
+        Returns True or False
         """
         if not self.html:
             self.download_html()

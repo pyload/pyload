@@ -8,7 +8,8 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class DataHuFolder(SimpleCrypter):
     __name__    = "DataHuFolder"
     __type__    = "crypter"
-    __version__ = "0.06"
+    __version__ = "0.08"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?data\.hu/dir/\w+'
     __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
@@ -22,22 +23,22 @@ class DataHuFolder(SimpleCrypter):
 
 
     LINK_PATTERN = r'<a href=\'(http://data\.hu/get/.+)\' target=\'_blank\'>\1</a>'
-    NAME_PATTERN = ur'<title>(?P<N>.+) Let\xf6lt\xe9se</title>'
+    NAME_PATTERN = ur'<title>(?P<N>.+?) Let\xf6lt\xe9se</title>'
 
 
     def prepare(self):
         super(DataHuFolder, self).prepare()
 
-        if u'K\xe9rlek add meg a jelsz\xf3t' in self.html:  # Password protected
-            password = self.getPassword()
+        if u'K\xe9rlek add meg a jelsz\xf3t' in self.html:  #: Password protected
+            password = self.get_password()
             if not password:
                 self.fail(_("Password required"))
 
-            self.logDebug("The folder is password protected', 'Using password: " + password)
+            self.log_debug("The folder is password protected', 'Using password: " + password)
 
-            self.html = self.load(self.pyfile.url, post={'mappa_pass': password}, decode=True)
+            self.html = self.load(self.pyfile.url, post={'mappa_pass': password})
 
-            if u'Hib\xe1s jelsz\xf3' in self.html:  # Wrong password
+            if u'Hib\xe1s jelsz\xf3' in self.html:  #: Wrong password
                 self.fail(_("Wrong password"))
 
 

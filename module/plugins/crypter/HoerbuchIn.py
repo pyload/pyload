@@ -2,15 +2,16 @@
 
 import re
 
-from BeautifulSoup import BeautifulSoup, BeautifulStoneSoup
+import BeautifulSoup
 
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter
 
 
 class HoerbuchIn(Crypter):
     __name__    = "HoerbuchIn"
     __type__    = "crypter"
-    __version__ = "0.60"
+    __version__ = "0.62"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?hoerbuch\.in/(wp/horbucher/\d+/.+/|tp/out\.php\?.+|protection/folder_\d+\.html)'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
@@ -31,26 +32,26 @@ class HoerbuchIn(Crypter):
 
         if self.article.match(pyfile.url):
             html = self.load(pyfile.url)
-            soup = BeautifulSoup(html, convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
+            soup = BeautifulSoup.BeautifulSoup(html, convertEntities=BeautifulSoup.BeautifulStoneSoup.HTML_ENTITIES)
 
-            abookname = soup.find("a", attrs={"rel": "bookmark"}).text
-            for a in soup.findAll("a", attrs={"href": self.protection}):
+            abookname = soup.find("a", attrs={'rel': "bookmark"}).text
+            for a in soup.findAll("a", attrs={'href': self.protection}):
                 package = "%s (%s)" % (abookname, a.previousSibling.previousSibling.text[:-1])
-                links = self.decryptFolder(a['href'])
+                links = self.decrypt_folder(a['href'])
 
                 self.packages.append((package, links, package))
         else:
-            self.urls = self.decryptFolder(pyfile.url)
+            self.urls = self.decrypt_folder(pyfile.url)
 
 
-    def decryptFolder(self, url):
+    def decrypt_folder(self, url):
         m = self.protection.search(url)
         if m is None:
             self.fail(_("Bad URL"))
         url = m.group(0)
 
         self.pyfile.url = url
-        html = self.load(url, post={"viewed": "adpg"})
+        html = self.load(url, post={'viewed': "adpg"})
 
         links = []
         pattern = re.compile("http://www\.hoerbuch\.in/protection/(\w+)/(.*?)\"")

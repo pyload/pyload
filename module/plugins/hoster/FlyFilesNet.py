@@ -3,14 +3,14 @@
 import re
 import urllib
 
-from module.network.RequestFactory import getURL
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class FlyFilesNet(SimpleHoster):
     __name__    = "FlyFilesNet"
     __type__    = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?flyfiles\.net/.+'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -31,12 +31,12 @@ class FlyFilesNet(SimpleHoster):
 
         url = "http://flyfiles.net"
 
-        # get download URL
-        parsed_url = getURL(url, post={"getDownLink": session})
-        self.logDebug("Parsed URL: %s" % parsed_url)
+        #: Get download URL
+        parsed_url = self.load(url, post={'getDownLink': session})
+        self.log_debug("Parsed URL: %s" % parsed_url)
 
-        if parsed_url == '#downlink|' or parsed_url == "#downlink|#":
-            self.logWarning(_("Could not get the download URL. Please wait 10 minutes"))
+        if parsed_url == "#downlink|" or parsed_url == "#downlink|#":
+            self.log_warning(_("Could not get the download URL. Please wait 10 minutes"))
             self.wait(10 * 60, True)
             self.retry()
 

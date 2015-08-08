@@ -2,13 +2,14 @@
 
 import re
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster
 
 
 class YoupornCom(Hoster):
     __name__    = "YoupornCom"
     __type__    = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.22"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?youporn\.com/watch/.+'
 
@@ -29,11 +30,12 @@ class YoupornCom(Hoster):
 
     def download_html(self):
         url = self.pyfile.url
-        self.html = self.load(url, post={"user_choice": "Enter"}, cookies=False)
+        self.html = self.load(url, post={'user_choice': "Enter"}, cookies=False)
 
 
     def get_file_url(self):
-        """ returns the absolute downloadable filepath
+        """
+        Returns the absolute downloadable filepath
         """
         if not self.html:
             self.download_html()
@@ -50,7 +52,8 @@ class YoupornCom(Hoster):
 
 
     def file_exists(self):
-        """ returns True or False
+        """
+        Returns True or False
         """
         if not self.html:
             self.download_html()

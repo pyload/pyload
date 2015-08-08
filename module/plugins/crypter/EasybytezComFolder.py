@@ -6,7 +6,8 @@ from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
 class EasybytezComFolder(XFSCrypter):
     __name__    = "EasybytezComFolder"
     __type__    = "crypter"
-    __version__ = "0.10"
+    __version__ = "0.11"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?easybytez\.com/users/\d+/\d+'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

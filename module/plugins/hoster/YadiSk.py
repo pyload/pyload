@@ -10,7 +10,8 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class YadiSk(SimpleHoster):
     __name__    = "YadiSk"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
+    __status__  = "testing"
 
     __pattern__ = r'https?://yadi\.sk/d/[\w-]+'
 
@@ -23,8 +24,8 @@ class YadiSk(SimpleHoster):
 
 
     @classmethod
-    def getInfo(cls, url="", html=""):
-        info = super(YadiSk, cls).getInfo(url, html)
+    def get_info(cls, url="", html=""):
+        info = super(YadiSk, cls).get_info(url, html)
 
         if html:
             if 'idclient' not in info:
@@ -59,12 +60,12 @@ class YadiSk(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = False
+        self.resume_download = False
         self.multiDL        = False
-        self.chunkLimit     = 1
+        self.chunk_limit     = 1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         if any(True for _k in ['id', 'sk', 'version', 'idclient'] if _k not in self.info):
            self.error(_("Missing JSON data"))
 

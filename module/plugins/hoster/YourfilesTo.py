@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 
-import reimport urllib
+import re
+import urllib
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster
 
 
 class YourfilesTo(Hoster):
     __name__    = "YourfilesTo"
     __type__    = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.24"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?yourfiles\.(to|biz)/\?d=\w+'
 
@@ -30,16 +32,14 @@ class YourfilesTo(Hoster):
 
         self.pyfile.name = self.get_file_name()
 
-        wait_time = self.get_waiting_time()
-        self.setWait(wait_time)
-        self.wait()
+        self.wait(self.get_waiting_time())
 
 
     def get_waiting_time(self):
         if not self.html:
             self.download_html()
 
-        #var zzipitime = 15;
+        #: var zzipitime = 15
         m = re.search(r'var zzipitime = (\d+);', self.html)
         if m:
             sec = int(m.group(1))
@@ -55,7 +55,8 @@ class YourfilesTo(Hoster):
 
 
     def get_file_url(self):
-        """ returns the absolute downloadable filepath
+        """
+        Returns the absolute downloadable filepath
         """
         url = re.search(r"var bla = '(.*?)';", self.html)
         if url:
@@ -74,7 +75,8 @@ class YourfilesTo(Hoster):
 
 
     def file_exists(self):
-        """ returns True or False
+        """
+        Returns True or False
         """
         if not self.html:
             self.download_html()

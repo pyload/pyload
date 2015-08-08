@@ -6,7 +6,8 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class RyushareCom(XFSAccount):
     __name__    = "RyushareCom"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
+    __status__  = "testing"
 
     __description__ = """Ryushare.com account plugin"""
     __license__     = "GPLv3"

@@ -8,7 +8,8 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class IfolderRu(SimpleHoster):
     __name__    = "IfolderRu"
     __type__    = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.40"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www)?(files\.)?(ifolder\.ru|metalarea\.org|rusfolder\.(com|net|ru))/(files/)?(?P<ID>\d+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -34,27 +35,27 @@ class IfolderRu(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = self.multiDL = bool(self.account)
-        self.chunkLimit     = 1
+        self.resume_download = self.multiDL = bool(self.account)
+        self.chunk_limit     = 1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         url = "http://rusfolder.com/%s" % self.info['pattern']['ID']
-        self.html = self.load("http://rusfolder.com/%s" % self.info['pattern']['ID'], decode=True)
-        self.getFileInfo()
+        self.html = self.load("http://rusfolder.com/%s" % self.info['pattern']['ID'])
+        self.get_fileInfo()
 
         session_id = re.search(self.SESSION_ID_PATTERN, self.html).groups()
 
         captcha_url = "http://ints.rusfolder.com/random/images/?session=%s" % session_id
         for _i in xrange(5):
-            action, inputs = self.parseHtmlForm('id="download-step-one-form"')
-            inputs['confirmed_number'] = self.decryptCaptcha(captcha_url, cookies=True)
+            action, inputs = self.parse_html_form('id="download-step-one-form"')
+            inputs['confirmed_number'] = self.captcha.decrypt(captcha_url, cookies=True)
             inputs['action'] = '1'
-            self.logDebug(inputs)
+            self.log_debug(inputs)
 
-            self.html = self.load(url, decode=True, post=inputs)
+            self.html = self.load(url, post=inputs)
             if self.WRONG_CAPTCHA_PATTERN in self.html:
-                self.invalidCaptcha()
+                self.captcha.invalid()
             else:
                 break
         else:

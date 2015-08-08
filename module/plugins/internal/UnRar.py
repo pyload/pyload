@@ -8,7 +8,7 @@ from glob import glob
 from string import digits
 
 from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
-from module.utils import fs_decode, fs_encode, save_join
+from module.utils import fs_decode, fs_encode, save_join as fs_join
 
 
 def renice(pid, value):
@@ -22,7 +22,8 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.20"
+    __version__ = "1.25"
+    __status__  = "testing"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
@@ -31,12 +32,10 @@ class UnRar(Extractor):
                        ("Immenz"        , "immenz@gmx.net"   )]
 
 
-    CMD = "unrar"
-    VERSION = ""
+    CMD        = "unrar"
     EXTENSIONS = [".rar"]
 
-
-    re_multipart = re.compile(r'\.(part|r)(\d+)(?:\.rar)?(\.rev|\.bad)?',re.I)
+    re_multipart = re.compile(r'\.(part|r)(\d+)(?:\.rar)?(\.rev|\.bad)?', re.I)
 
     re_filefixed = re.compile(r'Building (.+)')
     re_filelist  = re.compile(r'^(.)(\s*[\w\.\-]+)\s+(\d+\s+)+(?:\d+\%\s+)?[\d\-]{8}\s+[\d\:]{5}', re.M|re.I)
@@ -48,38 +47,40 @@ class UnRar(Extractor):
 
 
     @classmethod
-    def isUsable(cls):
-        if os.name == "nt":
-            try:
+    def find(cls):
+        try:
+            if os.name == "nt":
                 cls.CMD = os.path.join(pypath, "RAR.exe")
+            else:
+                cls.CMD = "rar"
+
+            p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            out, err = p.communicate()
+            # cls.__name__ = "RAR"
+            cls.REPAIR = True
+
+        except OSError:
+            try:
+                if os.name == "nt":
+                    cls.CMD = os.path.join(pypath, "UnRAR.exe")
+                else:
+                    cls.CMD = "unrar"
+
                 p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, err = p.communicate()
-                cls.__name__ = "RAR"
-                cls.REPAIR = True
 
             except OSError:
-                cls.CMD = os.path.join(pypath, "UnRAR.exe")
-                p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                out, err = p.communicate()
-        else:
-            try:
-                p = subprocess.Popen(["rar"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                out, err = p.communicate()
-                cls.__name__ = "RAR"
-                cls.REPAIR = True
-
-            except OSError:  #: fallback to unrar
-                p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                out, err = p.communicate()
+                return False
 
         m = cls.re_version.search(out)
-        cls.VERSION = m.group(1) if m else '(version unknown)'
+        if m is not None:
+            cls.VERSION = m.group(1)
 
         return True
 
 
     @classmethod
-    def isMultipart(cls, filename):
+    def is_multipart(cls, filename):
         return True if cls.re_multipart.search(filename) else False
 
 
@@ -105,7 +106,7 @@ class UnRar(Extractor):
         if self.re_wrongcrc.search(err):
             raise CRCError(err)
 
-        # output only used to check if passworded files are present
+        #: Output only used to check if passworded files are present
         for attr in self.re_filelist.findall(out):
             if attr[0].startswith("*"):
                 raise PasswordError
@@ -114,7 +115,7 @@ class UnRar(Extractor):
     def repair(self):
         p = self.call_cmd("rc", fs_encode(self.filename))
 
-        # communicate and retrieve stderr
+        #: Communicate and retrieve stderr
         self._progress(p)
         err = p.stderr.read().strip()
         if err or p.returncode:
@@ -126,17 +127,17 @@ class UnRar(Extractor):
         s = ""
         while True:
             c = process.stdout.read(1)
-            # quit loop on eof
+            #: Quit loop on eof
             if not c:
                 break
-            # reading a percentage sign -> set progress and restart
-            if c == '%':
-                self.notifyProgress(int(s))
+            #: Reading a percentage sign -> set progress and restart
+            if c == "%":
+                self.notify_progress(int(s))
                 s = ""
-            # not reading a digit -> therefore restart
+            #: Not reading a digit -> therefore restart
             elif c not in digits:
                 s = ""
-            # add digit to progressstring
+            #: Add digit to progressstring
             else:
                 s += c
 
@@ -148,7 +149,7 @@ class UnRar(Extractor):
 
         renice(p.pid, self.renice)
 
-        # communicate and retrieve stderr
+        #: Communicate and retrieve stderr
         self._progress(p)
         err = p.stderr.read().strip()
 
@@ -159,7 +160,7 @@ class UnRar(Extractor):
             elif self.re_wrongcrc.search(err):
                 raise CRCError(err)
 
-            else:  #: raise error if anything is on stderr
+            else:  #: Raise error if anything is on stderr
                 raise ArchiveError(err)
 
         if p.returncode:
@@ -168,15 +169,15 @@ class UnRar(Extractor):
         self.files = self.list(password)
 
 
-    def getDeleteFiles(self):
+    def get_delete_files(self):
         dir, name = os.path.split(self.filename)
 
-        # actually extracted file
+        #: Actually extracted file
         files = [self.filename]
 
-        # eventually Multipart Files
-        files.extend(save_join(dir, os.path.basename(file)) for file in filter(self.isMultipart, os.listdir(dir))
-                     if re.sub(self.re_multipart,".rar",name) == re.sub(self.re_multipart,".rar",file))
+        #: eventually Multipart Files
+        files.extend(fs_join(dir, os.path.basename(file)) for file in filter(self.is_multipart, os.listdir(dir))
+                     if re.sub(self.re_multipart, ".rar", name) == re.sub(self.re_multipart, ".rar", file))
 
         return files
 
@@ -190,20 +191,19 @@ class UnRar(Extractor):
         if "Cannot open" in err:
             raise ArchiveError(_("Cannot open file"))
 
-        if err.strip():  #: only log error at this point
-            self.manager.logError(err.strip())
+        if err.strip():  #: Only log error at this point
+            self.log_error(err.strip())
 
         result = set()
         if not self.fullpath and self.VERSION.startswith('5'):
-            # NOTE: Unrar 5 always list full path
+            #@NOTE: Unrar 5 always list full path
             for f in fs_decode(out).splitlines():
-                f = save_join(self.out, os.path.basename(f.strip()))
+                f = fs_join(self.out, os.path.basename(f.strip()))
                 if os.path.isfile(f):
-                    result.add(save_join(self.out, os.path.basename(f)))
+                    result.add(fs_join(self.out, os.path.basename(f)))
         else:
             for f in fs_decode(out).splitlines():
-                f = f.strip()
-                result.add(save_join(self.out, f))
+                result.add(fs_join(self.out, f.strip()))
 
         return list(result)
 
@@ -211,7 +211,7 @@ class UnRar(Extractor):
     def call_cmd(self, command, *xargs, **kwargs):
         args = []
 
-        # overwrite flag
+        #: Overwrite flag
         if self.overwrite:
             args.append("-o+")
         else:
@@ -222,10 +222,10 @@ class UnRar(Extractor):
         for word in self.excludefiles:
             args.append("-x'%s'" % word.strip())
 
-        # assume yes on all queries
+        #: Assume yes on all queries
         args.append("-y")
 
-        # set a password
+        #: Set a password
         if "password" in kwargs and kwargs['password']:
             args.append("-p%s" % kwargs['password'])
         else:
@@ -234,10 +234,10 @@ class UnRar(Extractor):
         if self.keepbroken:
             args.append("-kb")
 
-        # NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
+        #@NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
         call = [self.CMD, command] + args + list(xargs)
 
-        self.manager.logDebug(" ".join(call))
+        self.log_debug(" ".join(call))
 
         p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return p

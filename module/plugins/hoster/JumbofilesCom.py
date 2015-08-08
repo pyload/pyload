@@ -8,7 +8,8 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class JumbofilesCom(SimpleHoster):
     __name__    = "JumbofilesCom"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?jumbofiles\.com/(?P<ID>\w{12})'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -24,13 +25,13 @@ class JumbofilesCom(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = True
+        self.resume_download = True
         self.multiDL        = True
 
 
-    def handleFree(self, pyfile):
-        post_data = {"id": self.info['pattern']['ID'], "op": "download3", "rand": ""}
-        html = self.load(self.pyfile.url, post=post_data, decode=True)
+    def handle_free(self, pyfile):
+        post_data = {'id': self.info['pattern']['ID'], 'op': "download3", 'rand': ""}
+        html = self.load(self.pyfile.url, post=post_data)
         self.link = re.search(self.LINK_FREE_PATTERN, html).group(1)
 
 

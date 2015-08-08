@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*
 
-import HTMLParser
 import re
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.utils import html_unescape
 
 
 class LolabitsEs(SimpleHoster):
     __name__    = "LolabitsEs"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?lolabits\.es/.+'
 
@@ -28,21 +29,22 @@ class LolabitsEs(SimpleHoster):
 
 
     def setup(self):
-        self.chunkLimit = 1
+        self.chunk_limit = 1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         fileid = re.search(self.FILEID_PATTERN, self.html).group(1)
-        self.logDebug("FileID: " + fileid)
+        self.log_debug("FileID: " + fileid)
 
         token = re.search(self.TOKEN_PATTERN, self.html).group(1)
-        self.logDebug("Token: " + token)
+        self.log_debug("Token: " + token)
 
         self.html = self.load("http://lolabits.es/action/License/Download",
                               post={'fileId'                     : fileid,
-                                    '__RequestVerificationToken' : token}).decode('unicode-escape')
+                                    '__RequestVerificationToken' : token},
+                              decode="unicode-escape")
 
-        self.link = HTMLParser.HTMLParser().unescape(re.search(self.LINK_PATTERN, self.html).group(1))
+        self.link = html_unescape(re.search(self.LINK_PATTERN, self.html).group(1))
 
 
 getInfo = create_getInfo(LolabitsEs)

@@ -2,13 +2,14 @@
 
 import re
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class QuickshareCz(Account):
     __name__    = "QuickshareCz"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.05"
+    __status__  = "testing"
 
     __description__ = """Quickshare.cz account plugin"""
     __license__     = "GPLv3"
@@ -18,26 +19,25 @@ class QuickshareCz(Account):
     TRAFFIC_LEFT_PATTERN = r'Stav kreditu: <strong>(.+?)</strong>'
 
 
-    def loadAccountInfo(self, user, req):
-        html = req.load("http://www.quickshare.cz/premium", decode=True)
+    def parse_info(self, user, password, data, req):
+        html = self.load("http://www.quickshare.cz/premium")
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m:
-            trafficleft = self.parseTraffic(m.group(1))
+            trafficleft = self.parse_traffic(m.group(1))
             premium = True if trafficleft else False
         else:
             trafficleft = None
             premium = False
 
-        return {"validuntil": -1, "trafficleft": trafficleft, "premium": premium}
+        return {'validuntil': -1, 'trafficleft': trafficleft, 'premium': premium}
 
 
-    def login(self, user, data, req):
-        html = req.load('http://www.quickshare.cz/html/prihlaseni_process.php',
-                        post={"akce": u'Přihlásit',
-                              "heslo": data['password'],
-                              "jmeno": user},
-                        decode=True)
+    def login(self, user, password, data, req):
+        html = self.load('http://www.quickshare.cz/html/prihlaseni_process.php',
+                         post={'akce' : u'Přihlásit',
+                               'heslo': password,
+                               'jmeno': user})
 
         if u'>Takový uživatel neexistuje.<' in html or u'>Špatné heslo.<' in html:
-            self.wrongPassword()
+            self.login_fail()

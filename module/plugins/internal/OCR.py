@@ -11,33 +11,54 @@ except ImportError:
 import logging
 import os
 import subprocess
-#import tempfile
+# import tempfile
+import traceback
 
-from module.utils import save_join
+from module.plugins.internal.Plugin import Plugin
+from module.utils import save_join as fs_join
 
 
-class OCR(object):
+class OCR(Plugin):
     __name__    = "OCR"
     __type__    = "ocr"
-    __version__ = "0.11"
+    __version__ = "0.19"
+    __status__  = "testing"
 
     __description__ = """OCR base plugin"""
     __license__     = "GPLv3"
     __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
-    def __init__(self):
-        self.logger = logging.getLogger("log")
+    def __init__(self, plugin):
+        self._init(plugin.pyload)
+        self.plugin = plugin
+        self.init()
+
+
+    def init(self):
+        """
+        Initialize additional data structures
+        """
+        pass
+
+
+    def _log(self, level, plugintype, pluginname, messages):
+        return self.plugin._log(level,
+                                plugintype,
+                                self.plugin.__name__,
+                                (self.__name__,) + messages)
 
 
     def load_image(self, image):
         self.image = Image.open(image)
         self.pixels = self.image.load()
-        self.result_captcha = ''
+        self.result_captcha = ""
 
 
-    def unload(self):
-        """delete all tmp images"""
+    def deactivate(self):
+        """
+        Delete all tmp images
+        """
         pass
 
 
@@ -46,31 +67,32 @@ class OCR(object):
 
 
     def run(self, command):
-        """Run a command"""
-
-        popen = subprocess.Popen(command, bufsize = -1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        """
+        Run a command
+        """
+        popen = subprocess.Popen(command, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         popen.wait()
-        output = popen.stdout.read() +" | "+ popen.stderr.read()
+        output = popen.stdout.read() + " | " + popen.stderr.read()
         popen.stdout.close()
         popen.stderr.close()
-        self.logger.debug("Tesseract ReturnCode %s Output: %s" % (popen.returncode, output))
+        self.pyload.log_debug("Tesseract ReturnCode " + popen.returncode, "Output: " + output)
 
 
-    def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True):
-        #tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
+    def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True, pagesegmode=None):
+        # tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
         try:
-            tmpTif = open(save_join("tmp", "tmpTif_%s.tif" % self.__name__), "wb")
+            tmpTif = open(fs_join("tmp", "tmpTif_%s.tif" % self.__name__), "wb")
             tmpTif.close()
 
-            #tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
-            tmpTxt = open(save_join("tmp", "tmpTxt_%s.txt" % self.__name__), "wb")
+            # tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
+            tmpTxt = open(fs_join("tmp", "tmpTxt_%s.txt" % self.__name__), "wb")
             tmpTxt.close()
 
         except IOError, e:
-            self.logError(e)
+            self.log_error(e)
             return
 
-        self.logger.debug("save tiff")
+        self.pyload.log_debug("Saving tiff...")
         self.image.save(tmpTif.name, 'TIFF')
 
         if os.name == "nt":
@@ -78,11 +100,14 @@ class OCR(object):
         else:
             tessparams = ["tesseract"]
 
-        tessparams.extend( [os.path.abspath(tmpTif.name), os.path.abspath(tmpTxt.name).replace(".txt", "")] )
+        tessparams.extend([os.path.abspath(tmpTif.name), os.path.abspath(tmpTxt.name).replace(".txt", "")])
+
+        if pagesegmode:
+            tessparams.extend(["-psm", str(pagesegmode)])
 
         if subset and (digits or lowercase or uppercase):
-            #tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
-            with open(save_join("tmp", "tmpSub_%s.subset" % self.__name__), "wb") as tmpSub:
+            # tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
+            with open(fs_join("tmp", "tmpSub_%s.subset" % self.__name__), "wb") as tmpSub:
                 tmpSub.write("tessedit_char_whitelist ")
 
                 if digits:
@@ -96,9 +121,9 @@ class OCR(object):
                 tessparams.append("nobatch")
                 tessparams.append(os.path.abspath(tmpSub.name))
 
-        self.logger.debug("run tesseract")
+        self.pyload.log_debug("Running tesseract...")
         self.run(tessparams)
-        self.logger.debug("read txt")
+        self.pyload.log_debug("Reading txt...")
 
         try:
             with open(tmpTxt.name, 'r') as f:
@@ -106,17 +131,19 @@ class OCR(object):
         except Exception:
             self.result_captcha = ""
 
-        self.logger.debug(self.result_captcha)
+        self.pyload.log_info(_("OCR result: ") + self.result_captcha)
         try:
             os.remove(tmpTif.name)
             os.remove(tmpTxt.name)
             if subset and (digits or lowercase or uppercase):
                 os.remove(tmpSub.name)
-        except Exception:
-            pass
+        except OSError, e:
+            self.log_warning(e)
+            if self.pyload.debug:
+                traceback.print_exc()
 
 
-    def get_captcha(self, name):
+    def recognize(self, name):
         raise NotImplementedError
 
 
@@ -147,15 +174,15 @@ class OCR(object):
             for y in xrange(h):
                 if pixels[x, y] == 255:
                     continue
-                # No point in processing white pixels since we only want to remove black pixel
+                #: No point in processing white pixels since we only want to remove black pixel
                 count = 0
 
                 try:
-                    if pixels[x-1, y-1] != 255:
+                    if pixels[x - 1, y - 1] != 255:
                         count += 1
-                    if pixels[x-1, y] != 255:
+                    if pixels[x - 1, y] != 255:
                         count += 1
-                    if pixels[x-1, y + 1] != 255:
+                    if pixels[x - 1, y + 1] != 255:
                         count += 1
                     if pixels[x, y + 1] != 255:
                         count += 1
@@ -163,19 +190,19 @@ class OCR(object):
                         count += 1
                     if pixels[x + 1, y] != 255:
                         count += 1
-                    if pixels[x + 1, y-1] != 255:
+                    if pixels[x + 1, y - 1] != 255:
                         count += 1
-                    if pixels[x, y-1] != 255:
+                    if pixels[x, y - 1] != 255:
                         count += 1
                 except Exception:
                     pass
 
-        # not enough neighbors are dark pixels so mark this pixel
-            # to be changed to white
+                #: Not enough neighbors are dark pixels so mark this pixel
+                #: To be changed to white
                 if count < allowed:
                     pixels[x, y] = 1
 
-            # second pass: this time set all 1's to 255 (white)
+        #: Second pass: this time set all 1's to 255 (white)
         for x in xrange(w):
             for y in xrange(h):
                 if pixels[x, y] == 1:
@@ -185,8 +212,9 @@ class OCR(object):
 
 
     def derotate_by_average(self):
-        """rotate by checking each angle and guess most suitable"""
-
+        """
+        Rotate by checking each angle and guess most suitable
+        """
         w, h = self.image.size
         pixels = self.pixels
 
@@ -210,7 +238,6 @@ class OCR(object):
                 for y in xrange(h):
                     if pixels[x, y] == 0:
                         pixels[x, y] = 255
-
 
             count = {}
 
@@ -240,7 +267,7 @@ class OCR(object):
         hkey = 0
         hvalue = 0
 
-        for key, value in highest.iteritems():
+        for key, value in highest.items():
             if value > hvalue:
                 hkey = key
                 hvalue = value
@@ -305,9 +332,9 @@ class OCR(object):
         else:
             result = self.result_captcha
 
-        for key, item in values.iteritems():
+        for key, item in values.items():
 
-            if key.__class__ == str:
+            if key.__class__ is str:
                 result = result.replace(key, item)
             else:
                 for expr in key:

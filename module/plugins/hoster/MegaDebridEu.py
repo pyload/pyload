@@ -10,12 +10,14 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class MegaDebridEu(MultiHoster):
     __name__    = "MegaDebridEu"
     __type__    = "hoster"
-    __version__ = "0.47"
+    __version__ = "0.50"
+    __status__  = "testing"
 
     __pattern__ = r'http://((?:www\d+\.|s\d+\.)?mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[\w^_]+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
-    __description__ = """mega-debrid.eu multi-hoster plugin"""
+    __description__ = """Mega-debrid.eu multi-hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("D.Ducatel", "dducatel@je-geek.fr")]
 
@@ -28,9 +30,9 @@ class MegaDebridEu(MultiHoster):
         Connexion to the mega-debrid API
         Return True if succeed
         """
-        user, data = self.account.selectAccount()
+        user, info = self.account.select()
         jsonResponse = self.load(self.API_URL,
-                                 get={'action': 'connectUser', 'login': user, 'password': data['password']})
+                                 get={'action': 'connectUser', 'login': user, 'password': info['login']['password']})
         res = json_loads(jsonResponse)
 
         if res['response_code'] == "ok":
@@ -40,7 +42,7 @@ class MegaDebridEu(MultiHoster):
             return False
 
 
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         """
         Debrid a link
         Return The debrided link if succeed or original link if fail

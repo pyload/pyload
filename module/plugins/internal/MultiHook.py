@@ -4,14 +4,15 @@ import re
 import time
 import traceback
 
-from module.plugins.Hook import Hook
+from module.plugins.internal.Hook import Hook
 from module.utils import decode, remove_chars
 
 
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.45"
+    __version__ = "0.54"
+    __status__  = "testing"
 
     __config__  = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                    ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
@@ -54,9 +55,7 @@ class MultiHook(Hook):
                            (r'^0'              , "zero"                   )]
 
 
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
-
+    def init(self):
         self.plugins       = []
         self.supported     = []
         self.new_supported = []
@@ -67,76 +66,58 @@ class MultiHook(Hook):
         self.pluginname   = None
         self.plugintype   = None
 
-        self.initPlugin()
+        self.init_plugin()
 
 
-    def initPlugin(self):
+    def init_plugin(self):
         self.pluginname         = self.__name__.rsplit("Hook", 1)[0]
-        plugin, self.plugintype = self.core.pluginManager.findPlugin(self.pluginname)
+        plugin, self.plugintype = self.pyload.pluginManager.findPlugin(self.pluginname)
 
         if plugin:
-            self.pluginmodule = self.core.pluginManager.loadModule(self.plugintype, self.pluginname)
+            self.pluginmodule = self.pyload.pluginManager.loadModule(self.plugintype, self.pluginname)
             self.pluginclass  = getattr(self.pluginmodule, self.pluginname)
         else:
-            self.logWarning("Hook plugin will be deactivated due missing plugin reference")
-            self.setConfig('activated', False)
+            self.log_warning(_("Hook plugin will be deactivated due missing plugin reference"))
+            self.set_config('activated', False)
 
 
-    def loadAccount(self):
-        self.account = self.core.accountManager.getAccountPlugin(self.pluginname)
+    def load_account(self):
+        self.account = self.pyload.accountManager.getAccountPlugin(self.pluginname)
 
-        if self.account and not self.account.canUse():
-            self.account = None
+        if self.account and not self.account.select()[0]:
+            self.account = False
 
         if not self.account and hasattr(self.pluginclass, "LOGIN_ACCOUNT") and self.pluginclass.LOGIN_ACCOUNT:
-            self.logWarning("Hook plugin will be deactivated due missing account reference")
-            self.setConfig('activated', False)
+            self.log_warning(_("Hook plugin will be deactivated due missing account reference"))
+            self.set_config('activated', False)
 
 
-    def getURL(self, *args, **kwargs):  #@TODO: Remove in 0.4.10
-        """ see HTTPRequest for argument list """
-        h = pyreq.getHTTPRequest(timeout=120)
-        try:
-            if not 'decode' in kwargs:
-                kwargs['decode'] = True
-            rep = h.load(*args, **kwargs)
-        finally:
-            h.close()
-
-        return rep
+    def activate(self):
+        self.init_periodical(threaded=True)
 
 
-    def getConfig(self, option, default=''):  #@TODO: Remove in 0.4.10
-        """getConfig with default value - sublass may not implements all config options"""
-        try:
-            return self.getConf(option)
-
-        except KeyError:
-            return default
-
-
-    def pluginsCached(self):
+    def plugins_cached(self):
         if self.plugins:
             return self.plugins
 
-        for _i in xrange(2):
+        for _i in xrange(5):
             try:
-                pluginset = self._pluginSet(self.getHosters())
+                pluginset = self._plugin_set(self.get_hosters())
                 break
 
             except Exception, e:
-                self.logDebug(e, "Waiting 1 minute and retry")
+                self.log_warning(e, _("Waiting 1 minute and retry"))
                 time.sleep(60)
         else:
-            self.logWarning(_("Fallback to default reload interval due plugin parse error"))
+            self.log_error(_("No hoster list retrieved"))
             self.interval = self.MIN_RELOAD_INTERVAL
             return list()
 
         try:
-            configmode = self.getConfig("pluginmode", 'all')
+            configmode = self.get_config('pluginmode', 'all')
             if configmode in ("listed", "unlisted"):
-                pluginlist = self.getConfig("pluginlist", '').replace('|', ',').replace(';', ',').split(',')
-                configset  = self._pluginSet(pluginlist)
+                pluginlist = self.get_config('pluginlist', '').replace('|', ',').replace(';', ',').split(',')
+                configset  = self._plugin_set(pluginlist)
 
                 if configmode == "listed":
                     pluginset &= configset
@@ -144,14 +125,14 @@ class MultiHook(Hook):
                     pluginset -= configset
 
         except Exception, e:
-            self.logError(e)
+            self.log_error(e)
 
         self.plugins = list(pluginset)
 
         return self.plugins
 
 
-    def _pluginSet(self, plugins):
+    def _plugin_set(self, plugins):
         regexp  = re.compile(r'^[\w\-.^_]{3,63}\.[a-zA-Z]{2,}$', re.U)
         plugins = [decode(p.strip()).lower() for p in plugins if regexp.match(p.strip())]
 
@@ -163,39 +144,28 @@ class MultiHook(Hook):
         return set(plugins)
 
 
-    def getHosters(self):
-        """Load list of supported hoster
+    def get_hosters(self):
+        """
+        Load list of supported hoster
 
         :return: List of domain names
         """
         raise NotImplementedError
 
 
-    #: Threaded _periodical, remove in 0.4.10 and use built-in flag for that
-    def _periodical(self):
-        try:
-            if self.isActivated():
-                self.periodical()
-
-        except Exception, e:
-            self.core.log.error(_("Error executing hooks: %s") % str(e))
-            if self.core.debug:
-                traceback.print_exc()
-
-        self.cb = self.core.scheduler.addJob(self.interval, self._periodical)
-
-
     def periodical(self):
-        """reload plugin list periodically"""
-        self.loadAccount()
+        """
+        Reload plugin list periodically
+        """
+        self.load_account()
 
-        if self.getConfig("reload", True):
-            self.interval = max(self.getConfig("reloadinterval", 12) * 60 * 60, self.MIN_RELOAD_INTERVAL)
+        if self.get_config('reload', True):
+            self.interval = max(self.get_config('reloadinterval', 12) * 60 * 60, self.MIN_RELOAD_INTERVAL)
         else:
-            self.core.scheduler.removeJob(self.cb)
+            self.pyload.scheduler.removeJob(self.cb)
             self.cb = None
 
-        self.logInfo(_("Reloading supported %s list") % self.plugintype)
+        self.log_info(_("Reloading supported %s list") % self.plugintype)
 
         old_supported = self.supported
 
@@ -203,27 +173,27 @@ class MultiHook(Hook):
         self.new_supported = []
         self.plugins       = []
 
-        self.overridePlugins()
+        self.override_plugins()
 
         old_supported = [plugin for plugin in old_supported if plugin not in self.supported]
 
         if old_supported:
-            self.logDebug("Unload: %s" % ", ".join(old_supported))
+            self.log_debug("Unload: %s" % ", ".join(old_supported))
             for plugin in old_supported:
-                self.unloadPlugin(plugin)
+                self.unload_plugin(plugin)
 
 
-    def overridePlugins(self):
+    def override_plugins(self):
         excludedList = []
 
         if self.plugintype == "hoster":
-            pluginMap    = dict((name.lower(), name) for name in self.core.pluginManager.hosterPlugins.iterkeys())
-            accountList  = [account.type.lower() for account in self.core.api.getAccounts(False) if account.valid and account.premium]
+            pluginMap    = dict((name.lower(), name) for name in self.pyload.pluginManager.hosterPlugins.keys())
+            accountList  = [account.type.lower() for account in self.pyload.api.getAccounts(False) if account.valid and account.premium]
         else:
             pluginMap    = {}
-            accountList  = [name[::-1].replace("Folder"[::-1], "", 1).lower()[::-1] for name in self.core.pluginManager.crypterPlugins.iterkeys()]
+            accountList  = [name[::-1].replace("Folder"[::-1], "", 1).lower()[::-1] for name in self.pyload.pluginManager.crypterPlugins.keys()]
 
-        for plugin in self.pluginsCached():
+        for plugin in self.plugins_cached():
             name = remove_chars(plugin, "-.")
 
             if name in accountList:
@@ -235,39 +205,39 @@ class MultiHook(Hook):
                     self.new_supported.append(plugin)
 
         if not self.supported and not self.new_supported:
-            self.logError(_("No %s loaded") % self.plugintype)
+            self.log_error(_("No %s loaded") % self.plugintype)
             return
 
-        # inject plugin plugin
-        self.logDebug("Overwritten %ss: %s" % (self.plugintype, ", ".join(sorted(self.supported))))
+        #: Inject plugin plugin
+        self.log_debug("Overwritten %ss: %s" % (self.plugintype, ", ".join(sorted(self.supported))))
 
         for plugin in self.supported:
-            hdict = self.core.pluginManager.plugins[self.plugintype][plugin]
+            hdict = self.pyload.pluginManager.plugins[self.plugintype][plugin]
             hdict['new_module'] = self.pluginmodule
             hdict['new_name']   = self.pluginname
 
         if excludedList:
-            self.logInfo(_("%ss not overwritten: %s") % (self.plugintype.capitalize(), ", ".join(sorted(excludedList))))
+            self.log_info(_("%ss not overwritten: %s") % (self.plugintype.capitalize(), ", ".join(sorted(excludedList))))
 
         if self.new_supported:
             plugins = sorted(self.new_supported)
 
-            self.logDebug("New %ss: %s" % (self.plugintype, ", ".join(plugins)))
+            self.log_debug("New %ss: %s" % (self.plugintype, ", ".join(plugins)))
 
-            # create new regexp
+            #: Create new regexp
             regexp = r'.*(?P<DOMAIN>%s).*' % "|".join(x.replace('.', '\.') for x in plugins)
-            if hasattr(self.pluginclass, "__pattern__") and isinstance(self.pluginclass.__pattern__, basestring) and '://' in self.pluginclass.__pattern__:
+            if hasattr(self.pluginclass, "__pattern__") and isinstance(self.pluginclass.__pattern__, basestring) and "://" in self.pluginclass.__pattern__:
                 regexp = r'%s|%s' % (self.pluginclass.__pattern__, regexp)
 
-            self.logDebug("Regexp: %s" % regexp)
+            self.log_debug("Regexp: %s" % regexp)
 
-            hdict = self.core.pluginManager.plugins[self.plugintype][self.pluginname]
+            hdict = self.pyload.pluginManager.plugins[self.plugintype][self.pluginname]
             hdict['pattern'] = regexp
             hdict['re']      = re.compile(regexp)
 
 
-    def unloadPlugin(self, plugin):
-        hdict = self.core.pluginManager.plugins[self.plugintype][plugin]
+    def unload_plugin(self, plugin):
+        hdict = self.pyload.pluginManager.plugins[self.plugintype][plugin]
         if "module" in hdict:
             hdict.pop('module', None)
 
@@ -276,13 +246,15 @@ class MultiHook(Hook):
             hdict.pop('new_name', None)
 
 
-    def unload(self):
-        """Remove override for all plugins. Scheduler job is removed by hookmanager"""
+    def deactivate(self):
+        """
+        Remove override for all plugins. Scheduler job is removed by hookmanager
+        """
         for plugin in self.supported:
-            self.unloadPlugin(plugin)
+            self.unload_plugin(plugin)
 
-        # reset pattern
-        hdict = self.core.pluginManager.plugins[self.plugintype][self.pluginname]
+        #: Reset pattern
+        hdict = self.pyload.pluginManager.plugins[self.plugintype][self.pluginname]
 
         hdict['pattern'] = getattr(self.pluginclass, "__pattern__", r'^unmatchable$')
         hdict['re']      = re.compile(hdict['pattern'])

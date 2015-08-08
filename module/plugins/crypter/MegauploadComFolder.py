@@ -6,7 +6,8 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 class MegauploadComFolder(DeadCrypter):
     __name__    = "MegauploadComFolder"
     __type__    = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?megaupload\.com/(\?f|xml/folderfiles\.php\?.*&?folderid)=\w+'
     __config__  = []  #@TODO: Remove in 0.4.10

@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleDereferer import SimpleDereferer, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
-class LinkSaveIn(SimpleDereferer):
+class LinkSaveIn(SimpleCrypter):
     __name__    = "LinkSaveIn"
     __type__    = "crypter"
-    __version__ = "2.04"
+    __version__ = "2.06"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?linksave\.in/\w+'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Test links:
-# http://www.solidfiles.com/d/609cdb4b1b
+#   http://www.solidfiles.com/d/609cdb4b1b
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
@@ -9,7 +9,8 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class SolidfilesCom(SimpleHoster):
     __name__    = "SolidfilesCom"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?solidfiles\.com\/d/\w+'
 
@@ -27,7 +28,7 @@ class SolidfilesCom(SimpleHoster):
 
     def setup(self):
         self.multiDL    = True
-        self.chunkLimit = 1
+        self.chunk_limit = 1
 
 
 getInfo = create_getInfo(SolidfilesCom)

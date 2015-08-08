@@ -6,7 +6,8 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class Vipleech4UCom(DeadHoster):
     __name__    = "Vipleech4UCom"
     __type__    = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?vipleech4u\.com/manager\.php'
     __config__  = []  #@TODO: Remove in 0.4.10

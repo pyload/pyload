@@ -3,13 +3,14 @@
 import re
 import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class CzshareCom(Account):
     __name__    = "CzshareCom"
     __type__    = "account"
-    __version__ = "0.18"
+    __version__ = "0.20"
+    __status__  = "testing"
 
     __description__ = """Czshare.com account plugin, now Sdilej.cz"""
     __license__     = "GPLv3"
@@ -20,20 +21,20 @@ class CzshareCom(Account):
     CREDIT_LEFT_PATTERN = r'<tr class="active">\s*<td>([\d ,]+) (KiB|MiB|GiB)</td>\s*<td>([^<]*)</td>\s*</tr>'
 
 
-    def loadAccountInfo(self, user, req):
+    def parse_info(self, user, password, data, req):
         premium     = False
         validuntil  = None
         trafficleft = None
 
-        html = req.load("http://sdilej.cz/prehled_kreditu/")
+        html = self.load("http://sdilej.cz/prehled_kreditu/")
 
         try:
             m = re.search(self.CREDIT_LEFT_PATTERN, html)
-            trafficleft = self.parseTraffic(m.group(1).replace(' ', '').replace(',', '.')) + m.group(2)
+            trafficleft = self.parse_traffic(m.group(1).replace(' ', '').replace(',', '.')) + m.group(2)
             validuntil  = time.mktime(time.strptime(m.group(3), '%d.%m.%y %H:%M'))
 
         except Exception, e:
-            self.logError(e)
+            self.log_error(e)
 
         else:
             premium = True
@@ -43,12 +44,11 @@ class CzshareCom(Account):
                 'trafficleft': trafficleft}
 
 
-    def login(self, user, data, req):
-        html = req.load('https://sdilej.cz/index.php',
-                        post={"Prihlasit": "Prihlasit",
-                              "login-password": data['password'],
-                              "login-name": user},
-                        decode=True)
+    def login(self, user, password, data, req):
+        html = self.load('https://sdilej.cz/index.php',
+                         post={'Prihlasit'     : "Prihlasit",
+                               "login-password": password,
+                               "login-name"    : user})
 
         if '<div class="login' in html:
-            self.wrongPassword()
+            self.login_fail()

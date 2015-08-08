@@ -6,7 +6,8 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 class MBLinkInfo(DeadCrypter):
     __name__    = "MBLinkInfo"
     __type__    = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?mblink\.info/?\?id=(\d+)'
     __config__  = []  #@TODO: Remove in 0.4.10

@@ -2,13 +2,14 @@
 
 import re
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster
 
 
 class PornhubCom(Hoster):
     __name__    = "PornhubCom"
     __type__    = "hoster"
-    __version__ = "0.50"
+    __version__ = "0.52"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?pornhub\.com/view_video\.php\?viewkey=\w+'
 
@@ -32,14 +33,15 @@ class PornhubCom(Hoster):
 
 
     def get_file_url(self):
-        """ returns the absolute downloadable filepath
+        """
+        Returns the absolute downloadable filepath
         """
         if not self.html:
             self.download_html()
 
         url = "http://www.pornhub.com//gateway.php"
         video_id = self.pyfile.url.split('=')[-1]
-        # thanks to jD team for this one  v
+        #: Thanks to jD team for this one  v
         post_data = "\x00\x03\x00\x00\x00\x01\x00\x0c\x70\x6c\x61\x79\x65\x72\x43\x6f\x6e\x66\x69\x67\x00\x02\x2f\x31\x00\x00\x00\x44\x0a\x00\x00\x00\x03\x02\x00"
         post_data += chr(len(video_id))
         post_data += video_id
@@ -78,7 +80,8 @@ class PornhubCom(Hoster):
 
 
     def file_exists(self):
-        """ returns True or False
+        """
+        Returns True or False
         """
         if not self.html:
             self.download_html()

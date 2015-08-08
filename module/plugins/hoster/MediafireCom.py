@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.ReCaptcha import ReCaptcha
-from module.plugins.internal.SolveMedia import SolveMedia
+from module.plugins.captcha.ReCaptcha import ReCaptcha
+from module.plugins.captcha.SolveMedia import SolveMedia
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class MediafireCom(SimpleHoster):
     __name__    = "MediafireCom"
     __type__    = "hoster"
-    __version__ = "0.89"
+    __version__ = "0.90"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)(?P<ID>\w{15})'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
@@ -31,11 +32,11 @@ class MediafireCom(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = True
+        self.resume_download = True
         self.multiDL        = True
 
 
-    def handleCaptcha(self):
+    def handle_captcha(self):
         solvemedia  = SolveMedia(self)
         captcha_key = solvemedia.detect_key()
 
@@ -43,8 +44,7 @@ class MediafireCom(SimpleHoster):
             response, challenge = solvemedia.challenge(captcha_key)
             self.html = self.load("http://www.mediafire.com/?" + self.info['pattern']['ID'],
                                   post={'adcopy_challenge': challenge,
-                                        'adcopy_response' : response},
-                                  decode=True)
+                                        'adcopy_response' : response})
             return
 
         recaptcha   = ReCaptcha(self)
@@ -53,26 +53,25 @@ class MediafireCom(SimpleHoster):
         if captcha_key:
             response, challenge = recaptcha.challenge(captcha_key)
             self.html = self.load(self.pyfile.url,
-                                  post={'g-recaptcha-response': response},
-                                  decode=True)
+                                  post={'g-recaptcha-response': response})
 
 
-    def handleFree(self, pyfile):
-        self.handleCaptcha()
+    def handle_free(self, pyfile):
+        self.handle_captcha()
 
         if self.PASSWORD_PATTERN in self.html:
-            password = self.getPassword()
+            password = self.get_password()
 
             if not password:
                 self.fail(_("No password found"))
             else:
-                self.logInfo(_("Password protected link, trying: ") + password)
+                self.log_info(_("Password protected link, trying: ") + password)
                 self.html = self.load(self.link, post={'downloadp': password})
 
                 if self.PASSWORD_PATTERN in self.html:
                     self.fail(_("Incorrect password"))
 
-        return super(MediafireCom, self).handleFree(pyfile)
+        return super(MediafireCom, self).handle_free(pyfile)
 
 
 getInfo = create_getInfo(MediafireCom)

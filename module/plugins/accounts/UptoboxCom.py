@@ -6,7 +6,8 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class UptoboxCom(XFSAccount):
     __name__    = "UptoboxCom"
     __type__    = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
+    __status__  = "testing"
 
     __description__ = """DDLStorage.com account plugin"""
     __license__     = "GPLv3"

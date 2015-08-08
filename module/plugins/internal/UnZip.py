@@ -12,19 +12,20 @@ from module.utils import fs_encode
 
 class UnZip(Extractor):
     __name__    = "UnZip"
-    __version__ = "1.12"
+    __version__ = "1.15"
+    __status__  = "testing"
 
     __description__ = """Zip extractor plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
+    VERSION    = "%s.%s.%s" % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
     EXTENSIONS = [".zip", ".zip64"]
-    VERSION ="(python %s.%s.%s)" % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
 
 
     @classmethod
-    def isUsable(cls):
+    def find(cls):
         return sys.version_info[:2] >= (2, 6)
 
 
