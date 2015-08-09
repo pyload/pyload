@@ -13,7 +13,7 @@ from module.plugins.internal.CaptchaService import CaptchaService
 class ReCaptcha(CaptchaService):
     __name__    = "ReCaptcha"
     __type__    = "captcha"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __description__ = """ReCaptcha captcha service plugin"""
@@ -22,6 +22,8 @@ class ReCaptcha(CaptchaService):
                        ("Walter Purcaro", "vuolter@gmail.com"),
                        ("zapp-brannigan", "fuerst.reinje@web.de")]
 
+
+    COOKIES = False
 
     KEY_V1_PATTERN = r'(?:recaptcha(?:/api|\.net)/(?:challenge|noscript)\?k=|Recaptcha\.create\s*\(\s*["\'])([\w-]+)'
     KEY_V2_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']:\s*["\'])([\w-]+)'
