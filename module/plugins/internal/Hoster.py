@@ -3,6 +3,7 @@
 from __future__ import with_statement
 
 import inspect
+import mimetypes
 import os
 import random
 import time
@@ -43,7 +44,7 @@ def create_getInfo(klass):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
