@@ -139,7 +139,7 @@ class Checksum(Addon):
                             break
                         else:
                             self.log_warning(_("%s checksum for file %s does not match (%s != %s)") %
-                                           (key.upper(), pyfile.name, checksum, data[key]))
+                                           (key.upper(), pyfile.name, checksum, data[key].lower()))
                             self.check_failed(pyfile, local_file, "Checksums do not match")
                     else:
                         self.log_warning(_("Unsupported hashing algorithm"), key.upper())
