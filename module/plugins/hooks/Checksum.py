@@ -38,7 +38,7 @@ def compute_checksum(local_file, algorithm):
 class Checksum(Addon):
     __name__    = "Checksum"
     __type__    = "hook"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __config__ = [("check_checksum", "bool"             , "Check checksum? (If False only size will be verified)", True   ),
@@ -133,7 +133,7 @@ class Checksum(Addon):
                 if key in data:
                     checksum = compute_checksum(local_file, key.replace("-", "").lower())
                     if checksum:
-                        if checksum is data[key].lower():
+                        if checksum == data[key].lower():
                             self.log_info(_('File integrity of "%s" verified by %s checksum (%s)') %
                                         (pyfile.name, key.upper(), checksum))
                             break
