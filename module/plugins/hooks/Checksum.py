@@ -131,7 +131,7 @@ class Checksum(Addon):
 
             for key in self.algorithms:
                 if key in data:
-                    checksum = computeChecksum(local_file, key.replace("-", "").lower())
+                    checksum = compute_checksum(local_file, key.replace("-", "").lower())
                     if checksum:
                         if checksum is data[key].lower():
                             self.log_info(_('File integrity of "%s" verified by %s checksum (%s)') %
@@ -186,7 +186,7 @@ class Checksum(Addon):
 
                 local_file = fs_encode(fs_join(download_folder, data['NAME']))
                 algorithm = self.methods.get(file_type, file_type)
-                checksum = computeChecksum(local_file, algorithm)
+                checksum = compute_checksum(local_file, algorithm)
                 if checksum is data['HASH']:
                     self.log_info(_('File integrity of "%s" verified by %s checksum (%s)') %
                                 (data['NAME'], algorithm, checksum))
