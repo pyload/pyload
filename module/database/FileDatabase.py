@@ -764,7 +764,7 @@ class FileMethods():
 
     @style.async
     def updateLink(self, f):
-        self.c.execute('UPDATE links SET url=?,name=?,size=?,status=?,error=?,package=? WHERE id=?', (f.url, f.name, f.size, f.status, f.error, str(f.packageid), str(f.id)))
+        self.c.execute('UPDATE links SET url=?,name=?,size=?,status=?,error=?,package=? WHERE id=?', (f.url, f.name, f.size, f.status, str(f.error), str(f.packageid), str(f.id)))
 
     @style.queue
     def updatePackage(self, p):
