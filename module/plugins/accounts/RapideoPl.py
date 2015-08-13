@@ -11,7 +11,7 @@ from module.plugins.internal.Account import Account
 class RapideoPl(Account):
     __name__    = "RapideoPl"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __description__ = "Rapideo.pl account plugin"
