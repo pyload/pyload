@@ -32,7 +32,7 @@ class NoPremiumPl(Account):
     _pwd = None
 
 
-    def parse_info(self, name, req):
+    def parse_info(self, user, password, data, req):
         self._req = req
         try:
             result = json_loads(self.run_auth_query())
