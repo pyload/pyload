@@ -68,8 +68,12 @@ class ShareLinksBiz(Crypter):
         url = pyfile.url
         if 's2l.biz' in url:
             url = self.load(url, just_header=True)['location']
-        self.base_url = "http://www.%s.biz" % re.match(self.__pattern__, url).group(1)
-        self.file_id = re.match(self.__pattern__, url).group('ID')
+        if re.match(self.__pattern__, url):
+            self.base_url = "http://www.%s.biz" % re.match(self.__pattern__, url).group(1)
+            self.file_id = re.match(self.__pattern__, url).group('ID')
+        else:
+            self.log_debug("Could not initialize, URL [%s] does not match pattern [%s]" % (url, self.__pattern__))
+            self.fail("Unsupported download link")
         self.package = pyfile.package()
 
 
