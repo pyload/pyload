@@ -16,7 +16,7 @@ from module.plugins.captcha.ReCaptcha import ReCaptcha
 class FilecryptCc(Crypter):
     __name__    = "FilecryptCc"
     __type__    = "crypter"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
@@ -140,8 +140,9 @@ class FilecryptCc(Crypter):
             for link in weblinks:
                 res   = self.load("%s/Link/%s.html" % (self.base_url, link))
                 link2 = re.search('<iframe noresize src="(.*)"></iframe>', res)
-                res2  = self.load(link2.group(1), just_header=True)
-                self.links.append(res2['location'])
+                if link2:
+                    res2  = self.load(link2.group(1), just_header=True)
+                    self.links.append(res2['location'])
 
         except Exception, e:
             self.log_debug("Error decrypting weblinks: %s" % e)
