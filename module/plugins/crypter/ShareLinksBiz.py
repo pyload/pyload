@@ -118,7 +118,10 @@ class ShareLinksBiz(Crypter):
         self.log_debug("Captcha map with [%d] positions" % len(captchaMap.keys()))
 
         #: Request user for captcha coords
-        m = re.search(r'<img src="/captcha.gif\?d=(.*?)&amp;PHPSESSID=(.*?)&amp;legend=1"', self.html)
+        m = re.search(r'<img src="/captcha.gif\?d=(.+?)&PHPSESSID=(.+?)&legend=1"', self.html)
+        if not m:
+            self.log_debug("Captcha url data not found, maybe plugin out of date?")
+            self.fail("Captcha url data not found")
         captchaUrl = self.base_url + '/captcha.gif?d=%s&PHPSESSID=%s' % (m.group(1), m.group(2))
         self.log_debug("Waiting user for correct position")
         coords = self.captcha.decrypt(captchaUrl, input_type="gif", output_type='positional')
