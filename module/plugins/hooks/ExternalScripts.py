@@ -3,6 +3,7 @@
 import os
 import subprocess
 
+from module.plugins.internal.Plugin import encode
 from module.plugins.internal.Addon import Addon, Expose
 from module.utils import fs_encode, save_join as fs_join
 
@@ -10,7 +11,7 @@ from module.utils import fs_encode, save_join as fs_join
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"         , True ),
@@ -66,7 +67,8 @@ class ExternalScripts(Addon):
                 self.log_debug(e)
                 return
 
-        for file in os.listdir(path):
+        for filename in os.listdir(path):
+            file = fs_join(path, filename)
             if not os.path.isfile(file):
                 continue
 
@@ -77,13 +79,14 @@ class ExternalScripts(Addon):
                 self.log_warning(_("Script not executable: [%s] %s") % (name, file))
 
             self.scripts[name].append(file)
+            self.log_info(_("Registered script: [%s] %s") % (name, file))            
 
 
     @Expose
     def call(self, script, args=[], lock=False):
         try:
             script = os.path.abspath(script)
-            args   = [script] + map(encode, args)
+            args   = [script] + map(lambda arg: encode(arg) if isinstance(arg, basestring) else encode(str(arg)), args)
 
             self.log_info(_("EXECUTE [%s] %s") % (os.path.dirname(script), args))
             p = subprocess.Popen(args, bufsize=-1)  #@NOTE: output goes to pyload
