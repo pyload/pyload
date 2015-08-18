@@ -29,6 +29,7 @@ class HotFolder(Addon):
 
     def init(self):
         self.interval = 30
+        self.init_periodical()
 
 
     def periodical(self):
