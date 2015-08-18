@@ -9,6 +9,7 @@ import random
 import time
 import traceback
 import urlparse
+import mimetypes
 
 from module.plugins.internal.Captcha import Captcha
 from module.plugins.internal.Plugin import (Plugin, Abort, Fail, Reconnect, Retry, Skip,
