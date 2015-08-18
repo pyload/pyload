@@ -11,7 +11,7 @@ from module.plugins.internal.Account import Account
 class RapideoPl(Account):
     __name__    = "RapideoPl"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __description__ = "Rapideo.pl account plugin"
@@ -32,7 +32,7 @@ class RapideoPl(Account):
     _pwd = None
 
 
-    def parse_info(self, name, req):
+    def parse_info(self, user, password, data, req):
         self._req = req
         try:
             result = json_loads(self.run_auth_query())
