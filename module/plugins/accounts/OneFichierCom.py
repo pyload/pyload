@@ -10,7 +10,7 @@ from module.plugins.internal.Account import Account
 class OneFichierCom(Account):
     __name__    = "OneFichierCom"
     __type__    = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __description__ = """1fichier.com account plugin"""
@@ -19,7 +19,7 @@ class OneFichierCom(Account):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    VALID_UNTIL_PATTERN = r'Your Premium Status will end the (\d+/\d+/\d+)'
+    VALID_UNTIL_PATTERN = r'Your subscription will end the (\d+-\d+-\d+)'
 
 
     def parse_info(self, user, password, data, req):
@@ -35,7 +35,7 @@ class OneFichierCom(Account):
             self.log_debug("Expire date: " + expiredate)
 
             try:
-                validuntil = time.mktime(time.strptime(expiredate, "%d/%m/%Y"))
+                validuntil = time.mktime(time.strptime(expiredate, "%Y-%m-%d"))
             except Exception, e:
                 self.log_error(e)
             else:
