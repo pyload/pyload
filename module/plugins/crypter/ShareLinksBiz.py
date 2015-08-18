@@ -10,7 +10,7 @@ from module.plugins.internal.Crypter import Crypter
 class ShareLinksBiz(Crypter):
     __name__    = "ShareLinksBiz"
     __type__    = "crypter"
-    __version__ = "1.16"
+    __version__ = "1.17"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
@@ -68,8 +68,12 @@ class ShareLinksBiz(Crypter):
         url = pyfile.url
         if 's2l.biz' in url:
             url = self.load(url, just_header=True)['location']
-        self.base_url = "http://www.%s.biz" % re.match(self.__pattern__, url).group(1)
-        self.file_id = re.match(self.__pattern__, url).group('ID')
+        if re.match(self.__pattern__, url):
+            self.base_url = "http://www.%s.biz" % re.match(self.__pattern__, url).group(1)
+            self.file_id = re.match(self.__pattern__, url).group('ID')
+        else:
+            self.log_debug("Could not initialize, URL [%s] does not match pattern [%s]" % (url, self.__pattern__))
+            self.fail("Unsupported download link")
         self.package = pyfile.package()
 
 
@@ -114,7 +118,10 @@ class ShareLinksBiz(Crypter):
         self.log_debug("Captcha map with [%d] positions" % len(captchaMap.keys()))
 
         #: Request user for captcha coords
-        m = re.search(r'<img src="/captcha.gif\?d=(.*?)&amp;PHPSESSID=(.*?)&amp;legend=1"', self.html)
+        m = re.search(r'<img src="/captcha.gif\?d=(.+?)&PHPSESSID=(.+?)&legend=1"', self.html)
+        if not m:
+            self.log_debug("Captcha url data not found, maybe plugin out of date?")
+            self.fail("Captcha url data not found")
         captchaUrl = self.base_url + '/captcha.gif?d=%s&PHPSESSID=%s' % (m.group(1), m.group(2))
         self.log_debug("Waiting user for correct position")
         coords = self.captcha.decrypt(captchaUrl, input_type="gif", output_type='positional')
