@@ -38,7 +38,7 @@ def compute_checksum(local_file, algorithm):
 class Checksum(Addon):
     __name__    = "Checksum"
     __type__    = "hook"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __config__ = [("check_checksum", "bool"             , "Check checksum? (If False only size will be verified)", True   ),
@@ -131,15 +131,15 @@ class Checksum(Addon):
 
             for key in self.algorithms:
                 if key in data:
-                    checksum = computeChecksum(local_file, key.replace("-", "").lower())
+                    checksum = compute_checksum(local_file, key.replace("-", "").lower())
                     if checksum:
-                        if checksum is data[key].lower():
+                        if checksum == data[key].lower():
                             self.log_info(_('File integrity of "%s" verified by %s checksum (%s)') %
                                         (pyfile.name, key.upper(), checksum))
                             break
                         else:
                             self.log_warning(_("%s checksum for file %s does not match (%s != %s)") %
-                                           (key.upper(), pyfile.name, checksum, data[key]))
+                                           (key.upper(), pyfile.name, checksum, data[key].lower()))
                             self.check_failed(pyfile, local_file, "Checksums do not match")
                     else:
                         self.log_warning(_("Unsupported hashing algorithm"), key.upper())
@@ -186,7 +186,7 @@ class Checksum(Addon):
 
                 local_file = fs_encode(fs_join(download_folder, data['NAME']))
                 algorithm = self.methods.get(file_type, file_type)
-                checksum = computeChecksum(local_file, algorithm)
+                checksum = compute_checksum(local_file, algorithm)
                 if checksum is data['HASH']:
                     self.log_info(_('File integrity of "%s" verified by %s checksum (%s)') %
                                 (data['NAME'], algorithm, checksum))
