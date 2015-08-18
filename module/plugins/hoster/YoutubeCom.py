@@ -33,7 +33,7 @@ def which(program):
 class YoutubeCom(Hoster):
     __name__    = "YoutubeCom"
     __type__    = "hoster"
-    __version__ = "0.44"
+    __version__ = "0.45"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(youtube\.com|youtu\.be)/watch\?(?:.*&)?v=.+'
@@ -54,7 +54,7 @@ class YoutubeCom(Hoster):
     URL_REPLACEMENTS = [(r'youtu\.be/', 'youtube.com/')]
 
     #: Invalid characters that must be removed from the file name
-    invalidChars = u'\u2605:?><"|\\'
+    invalid_chars = u'\u2605:?><"|\\'
 
     #: name, width, height, quality ranking, 3D
     formats = {5  : (".flv" , 400 , 240 , 1 , False),
