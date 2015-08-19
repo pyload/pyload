@@ -31,7 +31,7 @@ class UploadedTo(SimpleHoster):
 
     OFFLINE_PATTERN      = r'>Page not found'
     TEMP_OFFLINE_PATTERN = r'<title>uploaded\.net - Maintenance'
-    PREMIUM_ONLY_PATTERN = r'This file exceeds the max\. filesize which can be downloaded by free users\.'
+    PREMIUM_ONLY_PATTERN = r'This file exceeds the max\. filesize which can be downloaded by free users'
 
     LINK_FREE_PATTERN    = r"url:\s*'(.+?)'"
     LINK_PREMIUM_PATTERN = r'<div class="tfree".*\s*<form method="post" action="(.+?)"'

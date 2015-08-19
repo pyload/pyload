@@ -34,7 +34,7 @@ class MultiUpOrg(SimpleCrypter):
             pattern = r'style="width:97%;text-align:left".*\n.*href="(.*)"'
             if m_type == "download":
                 dl_pattern = r'href="(.*)">.*\n.*<h5>DOWNLOAD</h5>'
-                miror_page = urlparse.urljoin("http://www.multiup.org", re.search(dl_pattern, self.html).group(1))
+                miror_page = urlparse.urljoin("http://www.multiup.org/", re.search(dl_pattern, self.html).group(1))
                 self.html = self.load(miror_page)
 
         return re.findall(pattern, self.html)

@@ -79,7 +79,7 @@ class ExternalScripts(Addon):
                 self.log_warning(_("Script not executable: [%s] %s") % (name, file))
 
             self.scripts[name].append(file)
-            self.log_info(_("Registered script: [%s] %s") % (name, file))            
+            self.log_info(_("Registered script: [%s] %s") % (name, file))
 
 
     @Expose

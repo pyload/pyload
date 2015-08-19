@@ -11,7 +11,7 @@ from module.plugins.internal.Plugin import parse_html_form, set_cookie
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __status__  = "testing"
 
     __description__ = """XFileSharing account plugin"""
@@ -151,6 +151,8 @@ class XFSAccount(Account):
 
         if not self.HOSTER_URL:
             self.login_fail(_("Missing HOSTER_URL"))
+        else:
+            self.HOSTER_URL = self.HOSTER_URL.rstrip('/') + "/"
 
         if not self.LOGIN_URL:
             self.LOGIN_URL  = urlparse.urljoin(self.HOSTER_URL, "login.html")

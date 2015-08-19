@@ -78,7 +78,7 @@ class FileSharkPl(SimpleHoster):
         if m is None:
             self.error(_("Download url not found"))
 
-        link = urlparse.urljoin("http://fileshark.pl", m.group(1))
+        link = urlparse.urljoin("http://fileshark.pl/", m.group(1))
 
         self.html = self.load(link)
 

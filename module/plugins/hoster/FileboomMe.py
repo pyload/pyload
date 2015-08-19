@@ -37,7 +37,7 @@ class FileboomMe(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        post_url = urljoin(pyfile.url, "/file/" + self.info['pattern']['ID'])
+        post_url = urljoin(pyfile.url, "file/" + self.info['pattern']['ID'])
 
         m = re.search(r'data-slow-id="(\w+)"', self.html)
         if m:

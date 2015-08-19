@@ -21,7 +21,6 @@ class LinkdecrypterComHook(MultiHook):
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    COOKIES = False
 
     def get_hosters(self):
         list = re.search(r'>Supported\(\d+\)</b>: <i>(.[\w.\-, ]+)',
