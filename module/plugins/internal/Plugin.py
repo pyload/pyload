@@ -146,7 +146,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.30"
+    __version__ = "0.31"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -180,7 +180,7 @@ class Plugin(object):
 
     def _log(self, level, plugintype, pluginname, messages):
         log = getattr(self.pyload.log, level)
-        msg = encode(" | ".join((a if isinstance(a, basestring) else str(a)).strip() for a in messages if a))
+        msg = " | ".join((a if isinstance(a, basestring) else str(a)).strip() for a in messages if a)
         log("%(plugintype)s %(pluginname)s%(id)s: %(msg)s"
             % {'plugintype': plugintype.upper(),
                'pluginname': pluginname,
