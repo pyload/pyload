@@ -36,7 +36,7 @@ class YoutubeCom(Hoster):
     __version__ = "0.45"
     __status__  = "testing"
 
-    __pattern__ = r'https?://(?:[^/]*\.)?(youtube\.com|youtu\.be)/watch\?(?:.*&)?v=.+'
+    __pattern__ = r'https?://(?:[^/]*\.)?(youtube\.com/watch\?v=|youtu\.be)(?:.*)'
     __config__  = [("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting"             , "hd" ),
                    ("fmt"    , "int"                                         , "FMT/ITAG Number (0 for auto)", 0    ),
                    (".mp4"   , "bool"                                        , "Allow .mp4"                  , True ),
@@ -51,7 +51,7 @@ class YoutubeCom(Hoster):
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    URL_REPLACEMENTS = [(r'youtu\.be/', 'youtube.com/')]
+    URL_REPLACEMENTS = [(r'youtu\.be/', 'youtube.com/watch?v=')]
 
     #: Invalid characters that must be removed from the file name
     invalid_chars = u'\u2605:?><"|\\'
