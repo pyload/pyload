@@ -107,7 +107,7 @@ class PluginThread(Thread):
                 try:
                     dump += pformat(value) + "\n"
                 except Exception, e:
-                    dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
+                    dump += "<ERROR WHILE PRINTING VALUE> %s \n" % e
 
             del frame
 
@@ -122,7 +122,7 @@ class PluginThread(Thread):
                 try:
                     dump += pformat(attr) + "\n"
                 except Exception, e:
-                    dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
+                    dump += "<ERROR WHILE PRINTING VALUE> %s \n" % e
 
         dump += "\nPYFILE OBJECT DUMP: \n\n"
 
@@ -133,7 +133,7 @@ class PluginThread(Thread):
                 try:
                     dump += pformat(attr) + "\n"
                 except Exception, e:
-                    dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
+                    dump += "<ERROR WHILE PRINTING VALUE> %s \n" % e
 
         if pyfile.pluginname in self.m.core.config.plugin:
             dump += "\n\nCONFIG: \n\n"
@@ -218,8 +218,7 @@ class DownloadThread(PluginThread):
                 continue
 
             except Retry, e:
-                reason = e.args[0]
-                self.m.log.info(_("Download restarted: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": reason})
+                self.m.log.info(_("Download restarted: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": e})
                 self.queue.put(pyfile)
                 continue
 
@@ -300,9 +299,10 @@ class DownloadThread(PluginThread):
 
 
             except Exception, e:
+                msg = e.args[0]
                 pyfile.setStatus("failed")
-                self.m.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": str(e)})
-                pyfile.error = str(e)
+                self.m.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": msg})
+                pyfile.error = msg
 
                 if self.m.core.debug:
                     print_exc()
@@ -391,9 +391,10 @@ class DecrypterThread(PluginThread):
             return self.run()
 
         except Exception, e:
+            msg = e.args[0]
             self.active.setStatus("failed")
-            self.m.log.error(_("Decrypting failed: %(name)s | %(msg)s") % {"name": self.active.name, "msg": str(e)})
-            self.active.error = str(e)
+            self.m.log.error(_("Decrypting failed: %(name)s | %(msg)s") % {"name": self.active.name, "msg": msg})
+            self.active.error = msg
 
             if self.m.core.debug:
                 print_exc()
@@ -634,7 +635,7 @@ class InfoThread(PluginThread):
             self.m.log.debug("Finished Info Fetching for %s" % pluginname)
         except Exception, e:
             self.m.log.warning(_("Info Fetching for %(name)s failed | %(err)s") %
-                               {"name": pluginname, "err": str(e)})
+                               {"name": pluginname, "err": e})
             if self.m.core.debug:
                 print_exc()
 
@@ -670,7 +671,7 @@ class InfoThread(PluginThread):
             self.m.log.debug("Got %d links." % len(data))
 
         except Exception, e:
-            self.m.log.debug("Pre decrypting error: %s" % str(e))
+            self.m.log.debug("Pre decrypting error: %s" % e)
         finally:
             pyfile.release()
 
