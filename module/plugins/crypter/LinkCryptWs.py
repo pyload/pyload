@@ -31,7 +31,6 @@ class LinkCryptWs(Crypter):
 
 
     def setup(self):
-        self.captcha = False
         self.links   = []
         self.sources = ['cnl', 'web', 'dlc', 'rsdf', 'ccf']
 
@@ -60,7 +59,6 @@ class LinkCryptWs(Crypter):
             self.retry(8, 15, _("Can't handle Key-Captcha"))
 
         if self.is_captcha_protected():
-            self.captcha = True
             self.unlock_captcha_protection()
             self.handle_captcha_errors()
 
@@ -165,12 +163,11 @@ class LinkCryptWs(Crypter):
 
 
     def handle_captcha_errors(self):
-        if self.captcha:
-            if "Your choice was wrong!" in self.html:
-                self.captcha.invalid()
-                self.retry()
-            else:
-                self.captcha.correct()
+        if "Your choice was wrong!" in self.html:
+            self.captcha.invalid()
+            self.retry()
+        else:
+            self.captcha.correct()
 
 
     def handle_link_source(self, type):
