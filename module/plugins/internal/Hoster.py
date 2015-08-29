@@ -412,7 +412,7 @@ class Hoster(Plugin):
         if disposition and newname:
             finalname = urlparse.urlparse(newname).path.split('/')[-1].split(' filename*=')[0]
 
-            if finalname != newname
+            if finalname != newname:
                 try:
                     os.rename(fs_join(location, newname), fs_join(location, finalname))
 
