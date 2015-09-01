@@ -54,6 +54,26 @@ def fixurl(url):
 #@TODO: Move to utils in 0.4.10
 def timestamp():
     return int(time.time() * 1000)
+    
+    
+#@TODO: Move to utils in 0.4.10    
+def which(program):
+    """
+    Works exactly like the unix command which
+    Courtesy of http://stackoverflow.com/a/377028/675646
+    """
+    isExe = lambda x: os.path.isfile(x) and os.access(x, os.X_OK)
+
+    fpath, fname = os.path.split(program)
+
+    if fpath:
+        if isExe(program):
+            return program
+    else:
+        for path in os.environ['PATH'].split(os.pathsep):
+            exe_file = os.path.join(path.strip('"'), program)
+            if isExe(exe_file):
+                return exe_file
 
 
 def seconds_to_midnight(gmt=0):
@@ -146,7 +166,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.30"
+    __version__ = "0.31"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'

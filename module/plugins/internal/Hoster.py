@@ -44,7 +44,7 @@ def create_getInfo(klass):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -412,7 +412,7 @@ class Hoster(Plugin):
         if disposition and newname:
             finalname = urlparse.urlparse(newname).path.split('/')[-1].split(' filename*=')[0]
 
-            if finalname != newname != self.pyfile.name:
+            if finalname != newname:
                 try:
                     os.rename(fs_join(location, newname), fs_join(location, finalname))
 
@@ -421,8 +421,9 @@ class Hoster(Plugin):
                     finalname = newname
 
                 self.log_info(_("`%s` saved as `%s`") % (self.pyfile.name, finalname))
-                self.pyfile.name = finalname
-                filename = os.path.join(location, finalname)
+
+            self.pyfile.name = finalname
+            filename = os.path.join(location, finalname)
 
         self.set_permissions(fs_encode(filename))
 

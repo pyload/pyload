@@ -120,7 +120,7 @@ class Captcha(Plugin):
                 self.log_warning(_("Error removing: %s") % tmp_img.name, e)
                 traceback.print_exc()
 
-        self.log_info(_("Captcha result: ") + result)  #@TODO: Remove from here?
+        #self.log_info(_("Captcha result: ") + result)  #@TODO: Remove from here?
 
         return result
 
