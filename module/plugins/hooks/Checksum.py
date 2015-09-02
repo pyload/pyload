@@ -38,7 +38,7 @@ def compute_checksum(local_file, algorithm):
 class Checksum(Addon):
     __name__    = "Checksum"
     __type__    = "hook"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __config__ = [("check_checksum", "bool"             , "Check checksum? (If False only size will be verified)", True   ),
@@ -114,7 +114,7 @@ class Checksum(Addon):
             api_size  = int(data['size'])
             file_size = os.path.getsize(local_file)
 
-            if api_size is not file_size:
+            if api_size != file_size:
                 self.log_warning(_("File %s has incorrect size: %d B (%d expected)") % (pyfile.name, file_size, api_size))
                 self.check_failed(pyfile, local_file, "Incorrect file size")
 
