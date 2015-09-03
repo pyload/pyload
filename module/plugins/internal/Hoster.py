@@ -44,7 +44,7 @@ def create_getInfo(klass):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -432,9 +432,35 @@ class Hoster(Plugin):
         return self.last_download
 
 
-    def check_download(self, rules, delete=False, file_size=0, size_tolerance=1024, read_size=1048576):
+    def check_filesize(self, file_size, size_tolerance=1024):
         """
-        Checks the content of the last downloaded file, re match is saved to `lastCheck`
+        Checks the file size of the last downloaded file
+
+        :param file_size: expected file size
+        :param size_tolerance: size check tolerance
+        """
+        if not self.last_download:
+            return
+
+        download_size = os.stat(fs_encode(self.last_download)).st_size
+
+        if download_size < 1:
+            self.fail(_("Empty file"))
+
+        elif file_size > 0:
+            diff = abs(file_size - download_size)
+
+            if diff > size_tolerance:
+                self.fail(_("File size mismatch | Expected file size: %s | Downloaded file size: %s")
+                          % (file_size, download_size))
+
+            elif diff != 0:
+                self.log_warning(_("File size is not equal to expected size"))
+
+
+    def check_download(self, rules, delete=False, read_size=1048576, file_size=0, size_tolerance=1024):
+        """
+        Checks the content of the last downloaded file, re match is saved to `last_check`
 
         :param rules: dict with names and rules to match (compiled regexp or strings)
         :param delete: delete if matched
@@ -447,26 +473,11 @@ class Hoster(Plugin):
         last_download = fs_encode(self.last_download)
 
         if not self.last_download or not exists(last_download):
-            self.last_download = ""
+            self.last_download = ""  #@NOTE: Bad place...
             self.fail(self.pyfile.error or _("No file downloaded"))
 
         try:
-            download_size = os.stat(last_download).st_size
-
-            if download_size < 1:
-                do_delete = True
-                self.fail(_("Empty file"))
-
-            elif file_size > 0:
-                diff = abs(file_size - download_size)
-
-                if diff > size_tolerance:
-                    do_delete = True
-                    self.fail(_("File size mismatch | Expected file size: %s | Downloaded file size: %s")
-                              % (file_size, download_size))
-
-                elif diff != 0:
-                    self.log_warning(_("File size is not equal to expected size"))
+            self.check_filesize(file_size, size_tolerance)
 
             with open(last_download, "rb") as f:
                 content = f.read(read_size)
@@ -496,8 +507,8 @@ class Hoster(Plugin):
                         traceback.print_exc()
 
                 else:
+                    self.log_info(_("File deleted: ") + self.last_download)
                     self.last_download = ""
-                    self.log_info(_("File deleted"))
 
 
     def direct_link(self, url, follow_location=None):

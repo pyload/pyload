@@ -22,12 +22,13 @@ statusMap = dict((v, k) for k, v in _statusMap.items())
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.81"
+    __version__ = "1.82"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
-                   ("fallback"   , "bool", "Fallback to free download if premium fails", True)]
+    __config__  = [("use_premium"     , "bool", "Use premium account if available"          , True),
+                   ("premium_fallback", "bool", "Fallback to free download if premium fails", True),
+                   ("chk_filesize"    , "bool", "Check file size"                           , True)]
 
     __description__ = """Simple hoster plugin"""
     __license__     = "GPLv3"
@@ -294,7 +295,7 @@ class SimpleHoster(Hoster):
             self.check_file()
 
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
-            if self.get_config('fallback', True) and self.premium:
+            if self.get_config('premium_fallback', True) and self.premium:
                 self.log_warning(_("Premium download failed"), e)
                 self.restart(nopremium=True)
 
@@ -309,15 +310,16 @@ class SimpleHoster(Hoster):
             self.captcha.invalid()
             self.retry(10, reason=_("Wrong captcha"))
 
-        # 10485760 is 10MB, tolerance is used when comparing displayed size on the hoster website to real size
-        # For example displayed size can be 1.46GB for example, but real size can be 1.4649853GB
         elif self.check_download({'Empty file': re.compile(r'\A((.|)(\2|\s)*)\Z')},
-                                 file_size=self.info['size'] if 'size' in self.info else 0,
-                                 size_tolerance=10485760,
-                                 delete=False):  #@TODO: Make `delete` settable in 0.4.10
+                                 delete=True):
             self.error(_("Empty file"))
 
         else:
+            if self.get_config('chk_filesize', False) and 'size' in self.info:
+                # 10485760 is 10MB, tolerance is used when comparing displayed size on the hoster website to real size
+                # For example displayed size can be 1.46GB for example, but real size can be 1.4649853GB
+                self.check_filesize(self.info['size'], size_tolerance=10485760)
+
             self.log_debug("Using default check rules...")
             for r, p in self.FILE_ERRORS:
                 errmsg = self.check_download({r: re.compile(p)})
@@ -340,7 +342,7 @@ class SimpleHoster(Hoster):
                     self.check_errors()
 
         self.log_info(_("No errors found"))
-        self.pyfile.error = ""
+        self.pyfile.error = ""  #@TODO: Recheck in 0.4.10
 
 
     def check_errors(self):

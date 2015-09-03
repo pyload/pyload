@@ -79,7 +79,7 @@ class ShareonlineBiz(SimpleHoster):
                             post={'dl_free'                  : "1",
                                   'recaptcha_challenge_field': challenge,
                                   'recaptcha_response_field' : response})
-            if not res == "0":
+            if res != "0":
                 self.captcha.correct()
                 return res
             else:
@@ -136,7 +136,7 @@ class ShareonlineBiz(SimpleHoster):
 
         self.log_debug(dlinfo)
 
-        if not dlinfo['status'] == "online":
+        if dlinfo['status'] != "online":
             self.offline()
         else:
             pyfile.name = dlinfo['name']

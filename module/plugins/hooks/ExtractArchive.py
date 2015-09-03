@@ -51,7 +51,7 @@ except ImportError:
     pass
 
 from module.plugins.internal.Addon import Addon, Expose, threaded
-from module.plugins.internal.Plugin import replace_patterns
+from module.plugins.internal.Plugin import exists, replace_patterns
 from module.plugins.internal.Extractor import ArchiveError, CRCError, PasswordError
 from module.utils import fs_encode, save_join as fs_join, uniqify
 
@@ -107,7 +107,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.49"
+    __version__ = "1.50"
     __status__  = "testing"
 
     __config__ = [("activated"      , "bool"              , "Activated"                                 , True                                                                     ),
@@ -288,7 +288,7 @@ class ExtractArchive(Addon):
             if subfolder:
                 out = fs_join(out, pypack.folder)
 
-            if not os.path.exists(out):
+            if not exists(out):
                 os.makedirs(out)
 
             matched   = False
@@ -313,7 +313,7 @@ class ExtractArchive(Addon):
                     for fname, fid, fout in targets:
                         name = os.path.basename(fname)
 
-                        if not os.path.exists(fname):
+                        if not exists(fname):
                             self.log_debug(name, "File not found")
                             continue
 
@@ -356,7 +356,7 @@ class ExtractArchive(Addon):
 
                         for filename in new_files:
                             file = fs_encode(fs_join(os.path.dirname(archive.filename), filename))
-                            if not os.path.exists(file):
+                            if not exists(file):
                                 self.log_debug("New file %s does not exists" % filename)
                                 continue
 
@@ -476,7 +476,7 @@ class ExtractArchive(Addon):
                 deltotrash = self.get_config('deltotrash')
                 for f in delfiles:
                     file = fs_encode(f)
-                    if not os.path.exists(file):
+                    if not exists(file):
                         continue
 
                     if not deltotrash:

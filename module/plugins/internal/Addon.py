@@ -25,7 +25,7 @@ def threaded(fn):
 class Addon(Plugin):
     __name__    = "Addon"
     __type__    = "hook"  #@TODO: Change to `addon` in 0.4.10
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __config__   = []  #: [("name", "type", "desc", "default")]
@@ -55,6 +55,12 @@ class Addon(Plugin):
 
         self.init()
         self.init_events()
+
+
+    #@TODO: Remove in 0.4.10
+    def _log(self, level, plugintype, pluginname, messages):
+        plugintype = "addon" if plugintype is "hook" else plugintype
+        return super(Addon, self)._log(level, plugintype, pluginname, messages)
 
 
     def init_events(self):

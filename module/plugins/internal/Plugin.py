@@ -54,9 +54,9 @@ def fixurl(url):
 #@TODO: Move to utils in 0.4.10
 def timestamp():
     return int(time.time() * 1000)
-    
-    
-#@TODO: Move to utils in 0.4.10    
+
+
+#@TODO: Move to utils in 0.4.10
 def which(program):
     """
     Works exactly like the unix command which

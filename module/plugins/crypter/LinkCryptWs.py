@@ -152,7 +152,7 @@ class LinkCryptWs(Crypter):
 
         unrarpw = sitein[indexi:indexe]
 
-        if not (unrarpw == "Password" or "Dateipasswort") :
+        if unrarpw not in ("Password", "Dateipasswort"):
             self.log_debug("File password set to: [%s]"% unrarpw)
             self.pyfile.package().password = unrarpw
 
