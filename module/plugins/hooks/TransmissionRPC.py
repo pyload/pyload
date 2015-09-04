@@ -14,7 +14,7 @@ from module.plugins.internal.Addon import Addon
 class TransmissionRPC(Addon):
     __name__    = "TransmissionRPC"
     __type__    = "hook"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __pattern__ = r"https?://.+\.torrent|magnet:\?.+"
@@ -35,11 +35,11 @@ class TransmissionRPC(Addon):
 
         for url in urls:
             self.log_debug("Sending link: %s" % url)
-            self.SendToTransmission(url)
+            self.send_to_transmission(url)
             links.remove(url)
 
 
-    def SendToTransmission(self, url):
+    def send_to_transmission(self, url):
         transmission_rpc_url = self.get_config('rpc_url')
         client_request_id = self.__name__ + "".join(random.choice('0123456789ABCDEF') for _i in xrange(4))
         req = get_request()
@@ -56,17 +56,24 @@ class TransmissionRPC(Addon):
                 headers = dict(re.findall(r"(?P<name>.+?): (?P<value>.+?)\r?\n", req.header))
                 session_id = headers['X-Transmission-Session-Id']
                 req.c.setopt(pycurl.HTTPHEADER, ["X-Transmission-Session-Id: %s" % session_id])
-                response = self.load(transmission_rpc_url,
-                                     post=json_dumps({'arguments': {'filename': url},
-                                                      'method'   : 'torrent-add',
-                                                      'tag'      : client_request_id}),
-                                     req=req)
+                try:
+                    response = self.load(transmission_rpc_url,
+                                         post=json_dumps({'arguments': {'filename': url},
+                                                          'method'   : 'torrent-add',
+                                                          'tag'      : client_request_id}),
+                                         req=req)
 
+                except Exception, e:
+                     self.log_error(e)
+                     return
+        
             else:
                  self.log_error(e)
+                 return
 
         except Exception, e:
              self.log_error(e)
+             return
 
         try:
             res = json_loads(response)
