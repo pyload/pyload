@@ -38,7 +38,7 @@ from os.path import commonprefix
 
 from module import InitHomeDir
 from module.gui.ConnectionManager import *
-from module.gui.Connector import Connector
+from module.gui.connector import Connector
 from module.gui.MainWindow import *
 from module.gui.Queue import *
 from module.gui.Overview import *
