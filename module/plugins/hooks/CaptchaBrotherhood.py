@@ -155,7 +155,7 @@ class CaptchaBrotherhood(Addon):
 
     def captcha_invalid(self, task):
         if task.data['service'] is self.classname and "ticket" in task.data:
-            res = self.api_response("complainCaptcha", task.data['ticket'])
+            self.api_response("complainCaptcha", task.data['ticket'])
 
 
     @threaded
