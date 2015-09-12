@@ -18,7 +18,7 @@ from module.utils import formatSize
 class IRCInterface(Thread, Addon):
     __name__    = "IRCInterface"
     __type__    = "hook"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __config__ = [("host"     , "str" , "IRC-Server Address"                           , "Enter your server here!"),
@@ -40,7 +40,7 @@ class IRCInterface(Thread, Addon):
     def __init__(self, core, manager):
         Thread.__init__(self)
         Addon.__init__(self, core, manager)
-        self.set_daemon(True)
+        self.setDaemon(True)
 
 
     def activate(self):
