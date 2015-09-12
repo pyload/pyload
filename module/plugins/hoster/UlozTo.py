@@ -15,7 +15,7 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "1.13"
+    __version__ = "1.14"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
@@ -27,7 +27,7 @@ class UlozTo(SimpleHoster):
 
 
     INFO_PATTERN    = r'<p>File <strong>(?P<N>[^<]+)</strong> is password protected</p>'
-    NAME_PATTERN    = r'<title>(?P<N>[^<]+) \| Uloz\.to</title>'
+    NAME_PATTERN    = r'<form action="/[^/]+/(?P<N>[^""]+)" method="post" id="frm-downloadDialog-loginForm">'
     SIZE_PATTERN    = r'<span id="fileSize">.*?(?P<S>[\d.,]+\s[kMG]?B)</span>'
     OFFLINE_PATTERN = r'<title>404 - Page not found</title>|<h1 class="h1">File (has been deleted|was banned)</h1>'
 
@@ -72,7 +72,12 @@ class UlozTo(SimpleHoster):
             self.log_debug("xapca = " + str(xapca))
 
             data = json_loads(xapca)
-            captcha_value = self.captcha.decrypt(str(data['image']))
+            
+            image_link = str(data['image'])
+            if not image_link.startswith("http:"):
+                image_link = "http:" + image_link
+
+            captcha_value = self.captcha.decrypt(image_link)
             self.log_debug("CAPTCHA HASH: " + data['hash'], "CAPTCHA SALT: " + str(data['salt']), "CAPTCHA VALUE: " + captcha_value)
 
             inputs.update({'timestamp': data['timestamp'], 'salt': data['salt'], 'hash': data['hash'], 'captcha_value': captcha_value})
@@ -121,7 +126,7 @@ class UlozTo(SimpleHoster):
 
     def check_file(self):
         check = self.check_download({
-            'wrong_captcha': re.compile(r'<ul class="error">\s*<li>Error rewriting the text.</li>'),
+            'wrong_captcha': re.compile(r'<ul class="error">\s*<li>An error ocurred while verifying the user, please try again</li>'),
             'offline'      : re.compile(self.OFFLINE_PATTERN),
             'passwd'       : self.PASSWD_PATTERN,
             'server_error' : 'src="http://img.ulozto.cz/error403/vykricnik.jpg"',  #: Paralell dl, server overload etc.
