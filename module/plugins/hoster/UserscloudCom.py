@@ -13,7 +13,7 @@ class UserscloudCom(SimpleHoster):
 
     __pattern__ = r'https?://(?:www\.)?userscloud\.com/\w{12}'
 
-    __description__ = """userscloud.com hoster plugin"""
+    __description__ = """Userscloud.com hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("GammaC0de", None)]
 
