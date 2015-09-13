@@ -7,6 +7,7 @@ import inspect
 import os
 import re
 import urllib
+import unicodedata
 
 if os.name != "nt":
     import grp
@@ -49,6 +50,15 @@ def exists(path):
 #@TODO: Move to utils in 0.4.10
 def fixurl(url):
     return html_unescape(urllib.unquote(url.decode('unicode-escape'))).strip().rstrip('/')
+
+
+def fixname(m):
+    m = unicodedata.normalize('NFKD', m)
+    output = ''
+    for c in m:
+        if not unicodedata.combining(c):
+            output += c
+    return output
 
 
 #@TODO: Move to utils in 0.4.10
