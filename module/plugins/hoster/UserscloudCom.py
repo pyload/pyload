@@ -28,9 +28,10 @@ class UserscloudCom(SimpleHoster):
         self.resume_download = False
         self.chunk_limit     = 1
 
-    def handle_free(self, pyfile):
-        post_data=dict(re.findall(r'<input type="hidden" name="(.+?)" value="(.*?)">', self.html))
 
-        self.download(pyfile.url, post=post_data)
+    def handle_free(self, pyfile):
+        self.download(pyfile.url,
+                      post=dict(re.findall(r'<input type="hidden" name="(.+?)" value="(.*?)">', self.html)))
+
 
 getInfo = create_getInfo(UserscloudCom)
