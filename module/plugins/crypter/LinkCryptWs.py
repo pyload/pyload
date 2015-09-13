@@ -14,7 +14,7 @@ from module.utils import html_unescape
 class LinkCryptWs(Crypter):
     __name__    = "LinkCryptWs"
     __type__    = "crypter"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?linkcrypt\.ws/(dir|container)/(?P<ID>\w+)'
@@ -131,10 +131,10 @@ class LinkCryptWs(Crypter):
 
     def unlock_captcha_protection(self):
         captcha_url  = re.search(r'<form.*?id\s*?=\s*?"captcha"[^>]*?>.*?<\s*?input.*?src="(.+?)"', self.html, re.I | re.S).group(1)
-        captcha_code = self.captcha.decrypt(captcha_url, input_type="gif", output_type='positional')
+        captcha = self.load(captcha_url, decode=False)
+        captcha_code = self.captcha._decrypt(captcha, input_type="gif", output_type='positional')
 
         self.html = self.load(self.pyfile.url, post={'x': captcha_code[0], 'y': captcha_code[1]})
-
 
     def get_package_info(self):
         name   = self.pyfile.package().name
