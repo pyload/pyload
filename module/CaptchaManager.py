@@ -66,7 +66,7 @@ class CaptchaManager():
 
         for plugin in self.core.hookManager.activePlugins():
             try:
-                plugin.newCaptchaTask(task)
+                plugin.captcha_task(task)
             except:
                 if self.core.debug:
                     print_exc()
