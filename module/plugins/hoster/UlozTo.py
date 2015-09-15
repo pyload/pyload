@@ -15,7 +15,7 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "1.13"
+    __version__ = "1.14"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
@@ -27,7 +27,7 @@ class UlozTo(SimpleHoster):
 
 
     INFO_PATTERN    = r'<p>File <strong>(?P<N>[^<]+)</strong> is password protected</p>'
-    NAME_PATTERN    = r'<title>(?P<N>[^<]+) \| Uloz\.to</title>'
+    NAME_PATTERN    = r'<title>(?P<N>.+?) \|'
     SIZE_PATTERN    = r'<span id="fileSize">.*?(?P<S>[\d.,]+\s[kMG]?B)</span>'
     OFFLINE_PATTERN = r'<title>404 - Page not found</title>|<h1 class="h1">File (has been deleted|was banned)</h1>'
 
@@ -68,7 +68,9 @@ class UlozTo(SimpleHoster):
             #: New version - better to get new parameters (like captcha reload) because of image url - since 6.12.2013
             self.log_debug('Using "new" version')
 
-            xapca = self.load("http://www.ulozto.net/reloadXapca.php", get={'rnd': str(int(time.time()))})
+            xapca = self.load("http://www.ulozto.net/reloadXapca.php",
+                              get={'rnd': str(int(time.time()))})
+            xapca = xapca.replace('sound":"', 'sound":"http:').replace('image":"', 'image":"http:')
             self.log_debug("xapca = " + str(xapca))
 
             data = json_loads(xapca)
@@ -121,7 +123,7 @@ class UlozTo(SimpleHoster):
 
     def check_file(self):
         check = self.check_download({
-            'wrong_captcha': re.compile(r'<ul class="error">\s*<li>Error rewriting the text.</li>'),
+            'wrong_captcha': ">An error ocurred while verifying the user",
             'offline'      : re.compile(self.OFFLINE_PATTERN),
             'passwd'       : self.PASSWD_PATTERN,
             'server_error' : 'src="http://img.ulozto.cz/error403/vykricnik.jpg"',  #: Paralell dl, server overload etc.

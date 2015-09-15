@@ -14,7 +14,7 @@ from module.utils import html_unescape
 class LinkCryptWs(Crypter):
     __name__    = "LinkCryptWs"
     __type__    = "crypter"
-    __version__ = "0.10"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?linkcrypt\.ws/(dir|container)/(?P<ID>\w+)'
