@@ -354,7 +354,7 @@ class Plugin(object):
         url = fixurl(url)
 
         if not url or not isinstance(url, basestring):
-            self.fail(_("No url given"))
+            self.fail(_("No given url"))
 
         if self.pyload.debug:
             self.log_debug("LOAD URL " + url,

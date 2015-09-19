@@ -368,7 +368,7 @@ class Hoster(Plugin):
         url = self.fixurl(url)
 
         if not url or not isinstance(url, basestring):
-            self.fail(_("No url given"))
+            self.fail(_("No given url"))
 
         if self.pyload.debug:
             self.log_debug("DOWNLOAD URL " + url,

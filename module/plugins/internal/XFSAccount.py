@@ -4,6 +4,7 @@ import re
 import time
 import urlparse
 
+from module.common.json_layer import json_loads
 from module.plugins.internal.Account import Account
 from module.plugins.internal.Plugin import parse_html_form, set_cookie
 
@@ -11,7 +12,7 @@ from module.plugins.internal.Plugin import parse_html_form, set_cookie
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __status__  = "testing"
 
     __description__ = """XFileSharing account plugin"""
@@ -174,5 +175,13 @@ class XFSAccount(Account):
 
         html = self.load(url, post=inputs, cookies=self.COOKIES)
 
-        if re.search(self.LOGIN_FAIL_PATTERN, html):
-            self.login_fail()
+        try:
+            json = json_loads(html)
+
+        except ValueError:
+            if re.search(self.LOGIN_FAIL_PATTERN, html):
+                self.login_fail()
+
+        else:
+            if not 'success' in json or not json['success']:
+                self.login_fail()

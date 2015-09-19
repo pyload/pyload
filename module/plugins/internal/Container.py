@@ -63,7 +63,7 @@ class Container(Crypter):
                     f.write(content)
 
             except IOError, e:
-                self.fail(str(e))  #@TODO: Remove `str` in 0.4.10
+                self.fail(e)
 
         else:
             self.pyfile.name = os.path.basename(self.pyfile.url)
