@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import json
-import re
-import time
-
 from module.plugins.internal.XFSAccount import XFSAccount
 
 
