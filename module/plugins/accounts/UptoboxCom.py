@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Account import Account
+from module.plugins.internal.XFSAccount import XFSAccount
 
 
-class UptoboxCom(Account):
+class UptoboxCom(XFSAccount):
 	__name__    = "UptoboxCom"
 	__type__    = "account"
-	__version__ = "0.11"
+	__version__ = "0.12"
 	__status__  = "testing"
 
 	__description__ = """Uptobox.com account plugin"""
