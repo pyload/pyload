@@ -210,7 +210,7 @@ class Plugin(object):
 
     def _log(self, level, plugintype, pluginname, messages):
         log = getattr(self.pyload.log, level)
-        msg = encode(" | ".join((a if isinstance(a, basestring) else str(a)).strip() for a in messages if a))
+        msg = " | ".join((a if isinstance(a, basestring) else str(a)).strip() for a in messages if a)
         log("%(plugintype)s %(pluginname)s%(id)s: %(msg)s"
             % {'plugintype': plugintype.upper(),
                'pluginname': pluginname,
