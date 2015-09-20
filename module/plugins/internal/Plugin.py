@@ -7,7 +7,7 @@ import inspect
 import os
 import re
 import urllib
-import unicodedata
+import sys
 
 if os.name != "nt":
     import grp
@@ -176,7 +176,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -375,7 +375,7 @@ class Plugin(object):
 
         #@TODO: Move to network in 0.4.10
         if isinstance(decode, basestring):
-            res = decode(res, decode)
+            res = sys.modules[__name__].decode(res, decode) #@TODO: See #1787, use utils.decode() in 0.4.10
 
         if self.pyload.debug:
             frame = inspect.currentframe()
