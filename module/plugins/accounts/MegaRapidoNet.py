@@ -21,7 +21,7 @@ class MegaRapidoNet(Account):
     USER_ID_PATTERN     = r'<\s*?div[^>]*?class\s*?=\s*?["\']checkbox_compartilhar["\'].*?>.*?<\s*?input[^>]*?name\s*?=\s*?["\']usar["\'].*?>.*?<\s*?input[^>]*?name\s*?=\s*?["\']user["\'][^>]*?value\s*?=\s*?["\'](.*?)\s*?["\']'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         validuntil  = None
         trafficleft = None
         premium     = False
@@ -49,10 +49,10 @@ class MegaRapidoNet(Account):
         html = self.load("http://megarapido.net/gerador")
 
         if "sair" not in html.lower():
-            self.login_fail()
+            self.fail_login()
         else:
             m = re.search(self.USER_ID_PATTERN, html)
             if m:
                 data['uid'] = m.group(1)
             else:
-                self.login_fail("Couldn't find the user ID")
+                self.fail_login("Couldn't find the user ID")

@@ -23,7 +23,7 @@ class FilerNet(Account):
     FREE_PATTERN = r'Account Status</th>\s*<td>\s*Free'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         html = self.load("https://filer.net/profile")
 
         #: Free user
@@ -56,4 +56,4 @@ class FilerNet(Account):
                                '_target_path': "https://filer.net/"})
 
         if 'Logout' not in html:
-            self.login_fail()
+            self.fail_login()

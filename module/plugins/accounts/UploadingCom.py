@@ -22,7 +22,7 @@ class UploadingCom(Account):
     VALID_UNTIL_PATTERN = r'Valid Until:(.+?)<'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         validuntil  = None
         trafficleft = None
         premium     = None

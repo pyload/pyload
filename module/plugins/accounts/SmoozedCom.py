@@ -34,7 +34,7 @@ class SmoozedCom(Account):
     __authors__     = [("", "")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         status = self.get_account_status(user, password, req)
 
         self.log_debug(status)
@@ -67,7 +67,7 @@ class SmoozedCom(Account):
 
         #: Check if user and password are valid
         if status['state'] != 'ok':
-            self.login_fail()
+            self.fail_login()
 
 
     def get_account_status(self, user, password, req):

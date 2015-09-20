@@ -21,7 +21,7 @@ class DebridItaliaCom(Account):
     WALID_UNTIL_PATTERN = r'Premium valid till: (.+?) \|'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         info = {'premium': False, 'validuntil': None, 'trafficleft': None}
         html = self.load("http://debriditalia.com/")
 
@@ -42,4 +42,4 @@ class DebridItaliaCom(Account):
                               'p': password})
 
         if 'NO' in html:
-            self.login_fail()
+            self.fail_login()

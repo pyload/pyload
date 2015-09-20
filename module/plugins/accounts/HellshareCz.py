@@ -20,7 +20,7 @@ class HellshareCz(Account):
     CREDIT_LEFT_PATTERN = r'<div class="credit-link">\s*<table>\s*<tr>\s*<th>(\d+|\d\d\.\d\d\.)</th>'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         self.relogin(user)
         html = self.load("http://www.hellshare.com/")
 
@@ -77,4 +77,4 @@ class HellshareCz(Account):
                                'perm_login': "on"})
 
         if "<p>You input a wrong user name or wrong password</p>" in html:
-            self.login_fail()
+            self.fail_login()

@@ -15,7 +15,7 @@ class PremiumizeMe(Account):
     __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         #: Get user data from premiumize.me
         status = self.get_account_status(user, password)
         self.log_debug(status)
@@ -36,7 +36,7 @@ class PremiumizeMe(Account):
 
         #: Check if user and password are valid
         if status['status'] != 200:
-            self.login_fail()
+            self.fail_login()
 
 
     def get_account_status(self, user, password):

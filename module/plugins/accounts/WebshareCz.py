@@ -25,7 +25,7 @@ class WebshareCz(Account):
     TRAFFIC_LEFT_PATTERN = r'<bytes>(.+)</bytes>'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         html = self.load("https://webshare.cz/api/user_data/",
                         post={'wst': self.get_data(user).get('wst', None)})
 
@@ -47,7 +47,7 @@ class WebshareCz(Account):
                                'wst'              : ""})
 
         if "<status>OK</status>" not in salt:
-            self.login_fail()
+            self.fail_login()
 
         salt     = re.search('<salt>(.+)</salt>', salt).group(1)
         password = hashlib.sha1(md5_crypt.encrypt(password, salt=salt)).hexdigest()
@@ -61,6 +61,6 @@ class WebshareCz(Account):
                                 'wst'              : ""})
 
         if "<status>OK</status>" not in login:
-            self.login_fail()
+            self.fail_login()
 
         data['wst'] = re.search('<token>(.+)</token>', login).group(1)

@@ -19,7 +19,7 @@ class YibaishiwuCom(Account):
     ACCOUNT_INFO_PATTERN = r'var USER_PERMISSION = {(.*?)}'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         # self.relogin(user)
         html = self.load("http://115.com/")
 
@@ -37,4 +37,4 @@ class YibaishiwuCom(Account):
                                "login[passwd]" : password})
 
         if not 'var USER_PERMISSION = {' in html:
-            self.login_fail()
+            self.fail_login()

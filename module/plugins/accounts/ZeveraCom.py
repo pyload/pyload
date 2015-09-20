@@ -33,7 +33,7 @@ class ZeveraCom(Account):
             self.API_URL = "http://api.%s/jDownloader.ashx" % (self.HOSTER_DOMAIN or "")
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         validuntil  = None
         trafficleft = None
         premium     = False
@@ -53,7 +53,7 @@ class ZeveraCom(Account):
         self.password = password
 
         if self.api_response(req) == "No trafic":
-            self.login_fail()
+            self.fail_login()
 
 
     def api_response(self, req, just_header=False, **kwargs):

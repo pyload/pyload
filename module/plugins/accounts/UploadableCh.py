@@ -14,7 +14,7 @@ class UploadableCh(Account):
     __authors__     = [("Sasch", "gsasch@gmail.com")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         html = self.load("http://www.uploadable.ch/login.php")
 
         premium     = '<a href="/logout.php"' in html
@@ -31,4 +31,4 @@ class UploadableCh(Account):
                                'action__login': "normalLogin"})
 
         if "Login failed" in html:
-            self.login_fail()
+            self.fail_login()

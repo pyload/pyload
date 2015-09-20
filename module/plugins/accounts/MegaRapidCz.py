@@ -25,7 +25,7 @@ class MegaRapidCz(Account):
     TRAFFIC_LEFT_PATTERN = r'<tr><td>Kredit</td><td>(.*?) GiB'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         htmll = self.load("http://megarapid.cz/mujucet/")
 
         m = re.search(self.LIMITDL_PATTERN, htmll)

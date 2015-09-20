@@ -16,7 +16,7 @@ class FourSharedCom(Account):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         #: Free mode only for now
         return {'premium': False}
 
@@ -32,4 +32,4 @@ class FourSharedCom(Account):
                               'returnTo' : "http://www.4shared.com/account/home.jsp"})
 
         if 'Please log in to access your 4shared account' in res:
-            self.login_fail()
+            self.fail_login()

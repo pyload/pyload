@@ -16,7 +16,7 @@ class SimplyPremiumCom(Account):
     __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         premium     = False
         validuntil  = -1
         trafficleft = None
@@ -46,4 +46,4 @@ class SimplyPremiumCom(Account):
                          post={'key': user} if not password else {'login_name': user, 'login_pass': password})
 
         if 'logout' not in html:
-            self.login_fail()
+            self.fail_login()

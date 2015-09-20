@@ -25,7 +25,7 @@ class Keep2ShareCc(Account):
     LOGIN_FAIL_PATTERN = r'Please fix the following input errors'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         validuntil  = None
         trafficleft = -1
         premium     = False
@@ -71,4 +71,4 @@ class Keep2ShareCc(Account):
                                'yt0'                  : ""})
 
         if re.search(self.LOGIN_FAIL_PATTERN, html):
-            self.login_fail()
+            self.fail_login()

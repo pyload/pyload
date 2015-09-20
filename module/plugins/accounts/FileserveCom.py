@@ -17,7 +17,7 @@ class FileserveCom(Account):
     __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         data = self.get_data(user)
 
         html = self.load("http://app.fileserve.com/api/login/",
@@ -41,7 +41,7 @@ class FileserveCom(Account):
         res = json_loads(html)
 
         if not res['type']:
-            self.login_fail()
+            self.fail_login()
 
         #: Login at fileserv html
         self.load("http://www.fileserve.com/login.php",

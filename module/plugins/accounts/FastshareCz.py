@@ -21,7 +21,7 @@ class FastshareCz(Account):
     CREDIT_PATTERN = r'Credit\s*:\s*</td>\s*<td>(.+?)\s*<'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         validuntil  = -1
         trafficleft = None
         premium     = False
@@ -49,4 +49,4 @@ class FastshareCz(Account):
                                'heslo': password})
 
         if ">Wrong username or password" in html:
-            self.login_fail()
+            self.fail_login()

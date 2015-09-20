@@ -25,7 +25,7 @@ class FilejungleCom(Account):
     LOGIN_FAILED_PATTERN = r'<span htmlfor="loginUser(Name|Password)" generated="true" class="fail_info">'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         html = self.load(self.URL + "dashboard.php")
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m:
@@ -48,4 +48,4 @@ class FilejungleCom(Account):
                                'recaptcha_shortencode_field': ""})
 
         if re.search(self.LOGIN_FAILED_PATTERN, html):
-            self.login_fail()
+            self.fail_login()

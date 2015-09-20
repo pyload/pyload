@@ -15,7 +15,7 @@ class FreeWayMe(Account):
     __authors__     = [("Nicolas Giese", "james@free-way.me")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         status = self.get_account_status(user, password, req)
 
         self.log_debug(status)
@@ -38,7 +38,7 @@ class FreeWayMe(Account):
 
         #: Check if user and password are valid
         if not status:
-            self.login_fail()
+            self.fail_login()
 
 
     def get_account_status(self, user, password, req):
@@ -48,6 +48,6 @@ class FreeWayMe(Account):
         self.log_debug("Login: %s" % answer)
 
         if answer == "Invalid login":
-            self.login_fail()
+            self.fail_login()
 
         return json_loads(answer)

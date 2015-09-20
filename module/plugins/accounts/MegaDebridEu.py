@@ -19,7 +19,7 @@ class MegaDebridEu(Account):
     API_URL = "https://www.mega-debrid.eu/api.php"
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         data = self.get_data(user)
         jsonResponse = self.load(self.API_URL,
                                  get={'action'  : 'connectUser',
@@ -41,4 +41,4 @@ class MegaDebridEu(Account):
                                       'password': password})
         res = json_loads(jsonResponse)
         if res['response_code'] != "ok":
-            self.login_fail()
+            self.fail_login()

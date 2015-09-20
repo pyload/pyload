@@ -20,7 +20,7 @@ class MultishareCz(Account):
     ACCOUNT_INFO_PATTERN = r'<input type="hidden" id="(u_ID|u_hash)" name=".+?" value="(.+?)">'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         # self.relogin(user)
         html = self.load("http://www.multishare.cz/profil/")
 
@@ -41,4 +41,4 @@ class MultishareCz(Account):
                                'jmeno': user})
 
         if '<div class="akce-chyba akce">' in html:
-            self.login_fail()
+            self.fail_login()

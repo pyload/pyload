@@ -42,12 +42,12 @@ class OboomCom(Account):
 
         if result[0] != 200:
             self.log_warning(_("Failed to log in: %s") % result[1])
-            self.login_fail()
+            self.fail_login()
 
         return result[1]
 
 
-    def parse_info(self, name, req):
+    def grab_info(self, name, req):
         account_data = self.load_account_data(name, req)
 
         userData = account_data['user']

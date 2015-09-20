@@ -15,7 +15,7 @@ class FastixRu(Account):
     __authors__     = [("Massimo Rosamilia", "max@spiritix.eu")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         data = self.get_data(user)
         html = json_loads(self.load("http://fastix.ru/api_v2/",
                                     get={'apikey': data['api'],
@@ -43,4 +43,4 @@ class FastixRu(Account):
         data['api'] = api
 
         if "error_code" in html:
-            self.login_fail()
+            self.fail_login()

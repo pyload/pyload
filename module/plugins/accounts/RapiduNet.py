@@ -26,7 +26,7 @@ class RapiduNet(Account):
     TRAFFIC_LEFT_PATTERN = r'class="tipsyS"><b>(.+?)<'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         validuntil  = None
         trafficleft = -1
         premium     = False
@@ -63,4 +63,4 @@ class RapiduNet(Account):
         self.log_debug(json)
 
         if json['message'] != "success":
-            self.login_fail()
+            self.fail_login()

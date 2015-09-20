@@ -24,7 +24,7 @@ class UploadedTo(Account):
     TRAFFIC_LEFT_PATTERN = r'<b class="cB">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         validuntil  = None
         trafficleft = None
         premium     = None
@@ -72,4 +72,4 @@ class UploadedTo(Account):
 
         m = re.search(r'"err":"(.+?)"', html)
         if m is not None:
-            self.login_fail(m.group(1))
+            self.fail_login(m.group(1))

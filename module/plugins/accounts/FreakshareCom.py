@@ -17,7 +17,7 @@ class FreakshareCom(Account):
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         premium = False
         validuntil  = None
         trafficleft = None
@@ -50,4 +50,4 @@ class FreakshareCom(Account):
                                'pass'  : password})
 
         if ">Wrong Username or Password" in html:
-            self.login_fail()
+            self.fail_login()

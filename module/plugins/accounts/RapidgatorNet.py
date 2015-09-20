@@ -20,7 +20,7 @@ class RapidgatorNet(Account):
     API_URL = "http://rapidgator.net/api/user/"
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         validuntil  = None
         trafficleft = None
         premium     = False
@@ -75,4 +75,4 @@ class RapidgatorNet(Account):
         except Exception, e:
             self.log_error(e)
 
-        self.login_fail()
+        self.fail_login()

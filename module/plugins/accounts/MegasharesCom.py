@@ -20,7 +20,7 @@ class MegasharesCom(Account):
     VALID_UNTIL_PATTERN = r'<p class="premium_info_box">Period Ends: (\w{3} \d{1,2}, \d{4})</p>'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         # self.relogin(user)
         html = self.load("http://d01.megashares.com/myms.php")
 
@@ -45,4 +45,4 @@ class MegasharesCom(Account):
                                'mymspassword'  : password})
 
         if not '<span class="b ml">%s</span>' % user in html:
-            self.login_fail()
+            self.fail_login()

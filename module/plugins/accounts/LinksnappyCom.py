@@ -17,7 +17,7 @@ class LinksnappyCom(Account):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         data = self.get_data(user)
         r = self.load('http://gen.linksnappy.com/lseAPI.php',
                       get={'act'     : 'USERDETAILS',
@@ -59,4 +59,4 @@ class LinksnappyCom(Account):
                               'password': hashlib.md5(password).hexdigest()})
 
         if "Invalid Account Details" in html:
-            self.login_fail()
+            self.fail_login()

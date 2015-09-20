@@ -32,7 +32,7 @@ class RapideoPl(Account):
     _pwd = None
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         self._req = req
         try:
             result = json_loads(self.run_auth_query())
@@ -62,10 +62,10 @@ class RapideoPl(Account):
         try:
             response = json_loads(self.run_auth_query())
         except Exception:
-            self.login_fail()
+            self.fail_login()
 
         if "errno" in response.keys():
-            self.login_fail()
+            self.fail_login()
 
         data['usr'] = self._usr
         data['pwd'] = self._pwd

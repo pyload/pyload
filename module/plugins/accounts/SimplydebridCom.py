@@ -16,7 +16,7 @@ class SimplydebridCom(Account):
     __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         res = self.load("http://simply-debrid.com/api.php",
                         get={'login': 2,
                              'u'    : user,
@@ -34,4 +34,4 @@ class SimplydebridCom(Account):
                              'u'    : user,
                              'p'    : password})
         if res != "02: loggin success":
-            self.login_fail()
+            self.fail_login()

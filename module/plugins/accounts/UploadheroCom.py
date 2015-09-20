@@ -18,7 +18,7 @@ class UploadheroCom(Account):
     __authors__     = [("mcmyst", "mcmyst@hotmail.fr")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         premium_pattern = re.compile('Il vous reste <span class="bleu">(\d+)</span> jours premium')
 
         data = self.get_data(user)
@@ -40,4 +40,4 @@ class UploadheroCom(Account):
                                'password_login': password})
 
         if "mot de passe invalide" in html:
-            self.login_fail()
+            self.fail_login()

@@ -22,7 +22,7 @@ class OneFichierCom(Account):
     VALID_UNTIL_PATTERN = r'Your subscription will end the (\d+-\d+-\d+)'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         validuntil = None
         trafficleft = -1
         premium = None
@@ -55,4 +55,4 @@ class OneFichierCom(Account):
                                'valider': "Send"})
 
         if '>Invalid email address' in html or '>Invalid password' in html:
-            self.login_fail()
+            self.fail_login()

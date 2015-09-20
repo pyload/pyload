@@ -40,7 +40,7 @@ class XFSAccount(Account):
     LOGIN_FAIL_PATTERN = r'Incorrect Login or Password|account was banned|Error<'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         validuntil   = None
         trafficleft  = None
         leechtraffic = None
@@ -151,7 +151,7 @@ class XFSAccount(Account):
                     set_cookie(self.req.cj, self.HOSTER_DOMAIN, "lang", "english")
 
         if not self.HOSTER_URL:
-            self.login_fail(_("Missing HOSTER_URL"))
+            self.fail_login(_("Missing HOSTER_URL"))
         else:
             self.HOSTER_URL = self.HOSTER_URL.rstrip('/') + "/"
 
@@ -180,8 +180,8 @@ class XFSAccount(Account):
 
         except ValueError:
             if re.search(self.LOGIN_FAIL_PATTERN, html):
-                self.login_fail()
+                self.fail_login()
 
         else:
             if not 'success' in json or not json['success']:
-                self.login_fail()
+                self.fail_login()

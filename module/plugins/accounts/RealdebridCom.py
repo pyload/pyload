@@ -16,7 +16,7 @@ class RealdebridCom(Account):
     __authors__     = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         if self.pin_code:
             return
 
@@ -38,7 +38,7 @@ class RealdebridCom(Account):
                               'pass': password})
 
         if "Your login informations are incorrect" in html:
-            self.login_fail()
+            self.fail_login()
 
         elif "PIN Code required" in html:
             self.log_warning(_("PIN code required. Please login to https://real-debrid.com using the PIN or disable the double authentication in your control panel on https://real-debrid.com"))

@@ -30,15 +30,15 @@ class ShareonlineBiz(Account):
         api = dict(line.split("=") for line in res.splitlines() if "=" in line)
 
         if not 'a' in api:
-            self.login_fail(res.strip('*').strip())
+            self.fail_login(res.strip('*').strip())
 
         if api['a'].lower() == "not_available":
-            self.login_fail(_("No info available"))
+            self.fail_login(_("No info available"))
 
         return api
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         premium     = False
         validuntil  = None
         trafficleft = -1

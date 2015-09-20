@@ -24,7 +24,7 @@ class NitroflareCom(Account):
     TOKEN_PATTERN = r'name="token" value="(.+?)"'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         validuntil   = -1
         trafficleft  = None
         premium      = False
@@ -79,4 +79,4 @@ class NitroflareCom(Account):
                                'token'   : token})
 
         if re.search(self.LOGIN_FAIL_PATTERN, html):
-            self.login_fail()
+            self.fail_login()
