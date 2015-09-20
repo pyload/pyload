@@ -107,7 +107,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.50"
+    __version__ = "1.51"
     __status__  = "testing"
 
     __config__ = [("activated"      , "bool"              , "Activated"                                 , True                                                                     ),
@@ -115,7 +115,6 @@ class ExtractArchive(Addon):
                   ("overwrite"      , "bool"              , "Overwrite files"                           , False                                                                    ),
                   ("keepbroken"     , "bool"              , "Try to extract broken archives"            , False                                                                    ),
                   ("repair"         , "bool"              , "Repair broken archives (RAR required)"     , False                                                                    ),
-                  ("test"           , "bool"              , "Test archive before extracting"            , False                                                                    ),
                   ("usepasswordfile", "bool"              , "Use password file"                         , True                                                                     ),
                   ("passwordfile"   , "file"              , "Password file"                             , "passwords.txt"                                                          ),
                   ("delete"         , "bool"              , "Delete archive after extraction"           , True                                                                     ),
@@ -348,7 +347,7 @@ class ExtractArchive(Addon):
 
                         #: Remove processed file and related multiparts from list
                         files_ids = [(fname, fid, fout) for fname, fid, fout in files_ids \
-                                    if fname not in archive.get_delete_files()]
+                                    if fname not in archive.items()]
                         self.log_debug("Extracted files: %s" % new_files)
 
                         for file in new_files:
@@ -403,18 +402,10 @@ class ExtractArchive(Addon):
             passwords = uniqify([password] + self.get_passwords(False)) if self.get_config('usepasswordfile') else [password]
             for pw in passwords:
                 try:
-                    if self.get_config('test') or self.repair:
-                        pyfile.setCustomStatus(_("archive testing"))
-                        if pw:
-                            self.log_debug("Testing with password: %s" % pw)
-                        pyfile.setProgress(0)
-                        archive.verify(pw)
-                        pyfile.setProgress(100)
-                    else:
-                        archive.check(pw)
-
-                    self.add_password(pw)
-                    break
+                    pyfile.setCustomStatus(_("archive testing"))
+                    pyfile.setProgress(0)
+                    archive.verify(pw)
+                    pyfile.setProgress(100)
 
                 except PasswordError:
                     if not encrypted:
@@ -425,9 +416,11 @@ class ExtractArchive(Addon):
                     self.log_debug(name, e)
                     self.log_info(name, _("CRC Error"))
 
-                    if self.repair:
-                        self.log_warning(name, _("Repairing..."))
+                    if not self.repair:
+                        raise CRCError("Archive damaged")
 
+                    else:
+                        self.log_warning(name, _("Repairing..."))
                         pyfile.setCustomStatus(_("archive repairing"))
                         pyfile.setProgress(0)
                         repaired = archive.repair()
@@ -436,15 +429,18 @@ class ExtractArchive(Addon):
                         if not repaired and not self.get_config('keepbroken'):
                             raise CRCError("Archive damaged")
 
-                        self.add_password(pw)
-                        break
-
-                    raise CRCError("Archive damaged")
+                        else:
+                            self.add_password(pw)
+                            break
 
                 except ArchiveError, e:
                     raise ArchiveError(e)
 
-            pyfile.setCustomStatus(_("extracting"))
+                else:
+                    self.add_password(pw)
+                    break
+
+            pyfile.setCustomStatus(_("archive extracting"))
             pyfile.setProgress(0)
 
             if not encrypted or not self.get_config('usepasswordfile'):
@@ -467,7 +463,7 @@ class ExtractArchive(Addon):
             pyfile.setProgress(100)
             pyfile.setStatus("processing")
 
-            delfiles = archive.get_delete_files()
+            delfiles = archive.items()
             self.log_debug("Would delete: " + ", ".join(delfiles))
 
             if self.get_config('delete'):

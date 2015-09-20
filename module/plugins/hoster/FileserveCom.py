@@ -33,7 +33,7 @@ def check_file(plugin, urls):
 class FileserveCom(Hoster):
     __name__    = "FileserveCom"
     __type__    = "hoster"
-    __version__ = "0.58"
+    __version__ = "0.59"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<ID>[^/]+)'
@@ -94,7 +94,7 @@ class FileserveCom(Hoster):
 
             elif action['fail'] == "parallelDownload":
                 self.log_warning(_("Parallel download error, now waiting 60s"))
-                self.retry(wait_time=60, reason=_("parallelDownload"))
+                self.retry(wait_time=60, msg=_("parallelDownload"))
 
             else:
                 self.fail(_("Download check returned: %s") % action['fail'])
@@ -206,7 +206,7 @@ class FileserveCom(Hoster):
 
         if not premium_url and self.check_download({'login': re.compile(self.NOT_LOGGED_IN_PATTERN)}):
             self.account.relogin(self.user)
-            self.retry(reason=_("Not logged in"))
+            self.retry(msg=_("Not logged in"))
 
 
 def get_info(urls):

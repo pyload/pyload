@@ -38,7 +38,7 @@ def compute_checksum(local_file, algorithm):
 class Checksum(Addon):
     __name__    = "Checksum"
     __type__    = "hook"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__  = "testing"
 
     __config__ = [("check_checksum", "bool"             , "Check checksum? (If False only size will be verified)", True   ),
@@ -160,7 +160,7 @@ class Checksum(Addon):
                 return
         elif check_action == "nothing":
             return
-        pyfile.plugin.fail(reason=msg)
+        pyfile.plugin.fail(msg=msg)
 
 
     def package_finished(self, pypack):

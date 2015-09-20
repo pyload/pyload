@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ShareonlineBiz(SimpleHoster):
     __name__    = "ShareonlineBiz"
     __type__    = "hoster"
-    __version__ = "0.55"
+    __version__ = "0.56"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
@@ -170,7 +170,7 @@ class ShareonlineBiz(SimpleHoster):
             self.fail(_("Premium account needed"))
 
         elif errmsg in ("expired", "server"):
-            self.retry(wait_time=600, reason=errmsg)
+            self.retry(wait_time=600, msg=errmsg)
 
         elif errmsg == "full":
             self.retry(10, 600, _("Server is full"))
@@ -181,7 +181,7 @@ class ShareonlineBiz(SimpleHoster):
 
         else:
             self.wantReconnect = True
-            self.retry(wait_time=60, reason=errmsg)
+            self.retry(wait_time=60, msg=errmsg)
 
 
 getInfo = create_getInfo(ShareonlineBiz)

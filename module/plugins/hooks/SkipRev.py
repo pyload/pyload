@@ -13,7 +13,7 @@ from module.plugins.internal.Addon import Addon
 class SkipRev(Addon):
     __name__    = "SkipRev"
     __type__    = "hook"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__  = "testing"
 
     __config__ = [("mode"     , "Auto;Manual", "Choose recovery archives to skip"               , "Auto"),
@@ -22,13 +22,6 @@ class SkipRev(Addon):
     __description__ = """Skip recovery archives (.rev)"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
-
-
-    @staticmethod
-    def _init(self):
-        self.pyfile.plugin._init()
-        if self.pyfile.hasStatus("skipped"):
-            self.skip(self.pyfile.statusname or self.pyfile.pluginname)
 
 
     def _name(self, pyfile):
@@ -67,11 +60,6 @@ class SkipRev(Addon):
                 return
 
         pyfile.setCustomStatus("SkipRev", "skipped")
-
-        if not hasattr(pyfile.plugin, "_init"):
-            #: Work-around: inject status checker inside the preprocessing routine of the plugin
-            pyfile.plugin._init = pyfile.plugin.init
-            pyfile.plugin.init  = MethodType(self._init, pyfile.plugin)
 
 
     def download_failed(self, pyfile):

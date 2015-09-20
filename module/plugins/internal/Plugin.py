@@ -6,8 +6,9 @@ import datetime
 import inspect
 import os
 import re
-import urllib
 import sys
+import urllib
+import unicodedata
 
 if os.name != "nt":
     import grp
@@ -23,7 +24,7 @@ def decode(string, encoding='utf8'):
     if type(string) is str:
         return string.decode(encoding, "replace")
     else:
-        return string
+        return unicode(string)
 
 
 #@TODO: Move to utils in 0.4.10
@@ -32,7 +33,7 @@ def encode(string, encoding='utf8'):
     if type(string) is unicode:
         return string.encode(encoding, "replace")
     else:
-        return string
+        return str(string)
 
 
 #@TODO: Move to utils in 0.4.10
@@ -175,8 +176,8 @@ def chunks(iterable, size):
 
 class Plugin(object):
     __name__    = "Plugin"
-    __type__    = "hoster"
-    __version__ = "0.32"
+    __type__    = "plugin"
+    __version__ = "0.33"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -195,6 +196,11 @@ class Plugin(object):
         self.init()
 
 
+    def __repr__(self):
+        return "<%(type)s %(name)s>" % {'type': self.__type__.capitalize()
+                                        'name': self.__name__}
+
+
     def _init(self, core):
         self.pyload = core
         self.info   = {}  #: Provide information in dict here
@@ -210,11 +216,10 @@ class Plugin(object):
 
     def _log(self, level, plugintype, pluginname, messages):
         log = getattr(self.pyload.log, level)
-        msg = encode(" | ".join((a if isinstance(a, basestring) else str(a)).strip() for a in messages if a))
-        log("%(plugintype)s %(pluginname)s%(id)s: %(msg)s"
+        msg = " | ".join(encode(a).strip() for a in messages if a)
+        log("%(plugintype)s %(pluginname)s%: %(msg)s"
             % {'plugintype': plugintype.upper(),
                'pluginname': pluginname,
-               'id'        : ("[%s]" % self.pyfile.id) if hasattr(self, 'pyfile') else "",
                'msg'       : msg})
 
 
@@ -317,21 +322,10 @@ class Plugin(object):
         self.pyload.db.delStorage(self.__name__, key)
 
 
-    def fail(self, reason):
+    def fail(self, msg):
         """
-        Fail and give reason
+        Fail and give msg
         """
-        raise Fail(encode(reason))  #@TODO: Remove `encode` in 0.4.10
-
-
-    def error(self, reason="", type=_("Parse")):
-        if not reason:
-            type = _("Unknown")
-
-        msg  = _("%s error") % type.strip().capitalize() if type else _("Error")
-        msg += (": %s" % reason.strip()) if reason else ""
-        msg += _(" | Plugin may be out of date")
-
         raise Fail(encode(msg))  #@TODO: Remove `encode` in 0.4.10
 
 
@@ -348,9 +342,6 @@ class Plugin(object):
         :param decode: Wether to decode the output according to http header, should be True in most cases
         :return: Loaded content
         """
-        if hasattr(self, 'pyfile') and self.pyfile.abort:
-            self.abort()
-
         url = fixurl(url)
 
         if not url or not isinstance(url, basestring):
@@ -375,7 +366,7 @@ class Plugin(object):
 
         #@TODO: Move to network in 0.4.10
         if isinstance(decode, basestring):
-            res = sys.modules[__name__].decode(res, decode) #@TODO: See #1787, use utils.decode() in 0.4.10
+            res = sys.modules[self.__name__].decode(res, decode)  #@TODO: See #1787, use utils.decode() in 0.4.10
 
         if self.pyload.debug:
             frame = inspect.currentframe()

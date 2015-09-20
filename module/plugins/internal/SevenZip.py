@@ -10,7 +10,7 @@ from module.utils import fs_encode, save_join as fs_join
 
 class SevenZip(UnRar):
     __name__    = "SevenZip"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __description__ = """7-Zip extractor plugin"""
@@ -55,42 +55,28 @@ class SevenZip(UnRar):
             return True
 
 
-    def verify(self, password):
+    def verify(self, password=None):
         #: 7z can't distinguish crc and pw error in test
-        p = self.call_cmd("l", "-slt", fs_encode(self.filename))
+        p = self.call_cmd("l", "-slt", self.target)
         out, err = p.communicate()
 
         if self.re_wrongpwd.search(out):
             raise PasswordError
 
-        if self.re_wrongpwd.search(err):
+        elif self.re_wrongpwd.search(err):
             raise PasswordError
 
-        if self.re_wrongcrc.search(err):
-            raise CRCError(err)
-
-
-
-    def check(self, password):
-        p = self.call_cmd("l", "-slt", fs_encode(self.filename))
-        out, err = p.communicate()
-
-        #: Check if output or error macthes the 'wrong password'-Regexp
-        if self.re_wrongpwd.search(out):
-            raise PasswordError
-
-        if self.re_wrongcrc.search(out):
+        elif self.re_wrongcrc.search(out):
             raise CRCError(_("Header protected"))
 
-
-    def repair(self):
-        return False
+        elif self.re_wrongcrc.search(err):
+            raise CRCError(err)
 
 
     def extract(self, password=None):
         command = "x" if self.fullpath else "e"
 
-        p = self.call_cmd(command, '-o' + self.out, fs_encode(self.filename), password=password)
+        p = self.call_cmd(command, '-o' + self.out, self.target, password=password)
 
         renice(p.pid, self.renice)
 
@@ -117,7 +103,7 @@ class SevenZip(UnRar):
     def list(self, password=None):
         command = "l" if self.fullpath else "l"
 
-        p = self.call_cmd(command, fs_encode(self.filename), password=password)
+        p = self.call_cmd(command, self.target, password=password)
         out, err = p.communicate()
 
         if "Can not open" in err:

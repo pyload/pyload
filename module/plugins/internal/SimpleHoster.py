@@ -22,7 +22,7 @@ statusMap = dict((v, k) for k, v in _statusMap.items())
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.82"
+    __version__ = "1.83"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -203,12 +203,9 @@ class SimpleHoster(Hoster):
 
 
     def prepare(self):
-        self.pyfile.error  = ""  #@TODO: Remove in 0.4.10
-        self.html          = ""  #@TODO: Recheck in 0.4.10
-        self.link          = ""  #@TODO: Recheck in 0.4.10
-        self.last_download = ""
-        self.direct_dl     = False
-        self.leech_dl      = False
+        self.link      = ""
+        self.direct_dl = False
+        self.leech_dl  = False
 
         if not self.get_config('use_premium', True):
             self.restart(nopremium=True)
@@ -309,7 +306,7 @@ class SimpleHoster(Hoster):
 
         if self.captcha.task and not self.last_download:
             self.captcha.invalid()
-            self.retry(10, reason=_("Wrong captcha"))
+            self.retry(10, msg=_("Wrong captcha"))
 
         elif self.check_download({'Empty file': re.compile(r'\A((.|)(\2|\s)*)\Z')},
                                  delete=True):
@@ -334,7 +331,7 @@ class SimpleHoster(Hoster):
 
                     self.log_warning(_("Check result: ") + errmsg, _("Waiting 1 minute and retry"))
                     self.wantReconnect = True
-                    self.retry(wait_time=60, reason=errmsg)
+                    self.retry(wait_time=60, msg=errmsg)
             else:
                 if self.CHECK_FILE:
                     self.log_debug("Using custom check rules...")
@@ -409,7 +406,7 @@ class SimpleHoster(Hoster):
 
                 elif re.search('captcha|code', errmsg, re.I):
                     self.captcha.invalid()
-                    self.retry(10, reason=_("Wrong captcha"))
+                    self.retry(10, msg=_("Wrong captcha"))
 
                 elif re.search('countdown|expired', errmsg, re.I):
                     self.retry(10, 60, _("Link expired"))
@@ -426,14 +423,14 @@ class SimpleHoster(Hoster):
                 elif re.search('filename', errmsg, re.I):
                     url_p = urlparse.urlparse(self.pyfile.url)
                     self.pyfile.url = "%s://%s/%s" % (url_p.scheme, url_p.netloc, url_p.path.split('/')[0])
-                    self.retry(1, reason=_("Wrong url"))
+                    self.retry(1, msg=_("Wrong url"))
 
                 elif re.search('premium', errmsg, re.I):
                     self.fail(_("File can be downloaded by premium users only"))
 
                 else:
                     self.wantReconnect = True
-                    self.retry(wait_time=60, reason=errmsg)
+                    self.retry(wait_time=60, msg=errmsg)
 
         elif hasattr(self, 'WAIT_PATTERN'):
             m = re.search(self.WAIT_PATTERN, self.html)

@@ -10,7 +10,7 @@ from module.utils import fixup, html_unescape
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.61"
+    __version__ = "0.62"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -90,8 +90,12 @@ class SimpleCrypter(Crypter, SimpleHoster):
             self.log_error(_("Too many redirects"))
 
 
+    def prepare(self):
+        self.links = []
+        return super(SimpleCrypter, self).prepare()
+
+
     def decrypt(self, pyfile):
-        self.links = []    #@TODO: Recheck in 0.4.10
         self.prepare()
         self.check_info()  #@TODO: Remove in 0.4.10
 

@@ -44,7 +44,7 @@ def create_getInfo(klass):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -105,6 +105,16 @@ class Hoster(Plugin):
         self.init()
 
 
+    def _log(self, level, plugintype, pluginname, messages):
+        log = getattr(self.pyload.log, level)
+        msg = " | ".join(encode(a).strip() for a in messages if a)
+        log("%(plugintype)s %(pluginname)s[%(id)s]: %(msg)s"
+            % {'plugintype': plugintype.upper(),
+               'pluginname': pluginname,
+               'id'        : self.pyfile.id,
+               'msg'       : msg})
+
+
     @classmethod
     def get_info(cls, url="", html=""):
         url   = _fixurl(url)
@@ -132,6 +142,11 @@ class Hoster(Plugin):
 
 
     def _setup(self):
+        #@TODO: Remove in 0.4.10
+        self.html          = ""
+        self.last_download = ""
+        self.pyfile.error  = ""
+
         if self.account:
             self.req             = self.pyload.requestFactory.getRequest(self.__name__, self.user)
             self.chunk_limit     = -1  #: -1 for unlimited
@@ -142,6 +157,36 @@ class Hoster(Plugin):
             self.chunk_limit     = 1
             self.resume_download = False
             self.premium         = False
+
+        return self.setup()
+
+
+    def _process(self, thread):
+        """
+        Handles important things to do before starting
+        """
+        self.thread = thread
+
+        if self.retry_free:
+            self.account = False
+        else:
+            self.load_account()  #@TODO: Move to PluginThread in 0.4.10
+            self.retry_free = False
+
+        self._setup()
+
+        self.pyfile.setStatus("starting")
+        self.pyload.hookManager.downloadPreparing(self.pyfile)  #@TODO: Recheck in 0.4.10
+
+        self.check_abort()
+
+        self.log_debug("PROCESS URL " + self.pyfile.url, "PLUGIN VERSION %s" % self.__version__)
+        return self.process(self.pyfile)
+
+
+    #: Deprecated method, use `_process` instead (Remove in 0.4.10)
+    def preprocessing(self, *args, **kwargs):
+        return self._process(*args, **kwargs)
 
 
     def load_account(self):
@@ -157,32 +202,6 @@ class Hoster(Plugin):
 
             if not self.user or not self.account.is_logged(self.user, True):
                 self.account = False
-
-
-    def preprocessing(self, thread):
-        """
-        Handles important things to do before starting
-        """
-        self.thread = thread
-
-        if self.retry_free:
-            self.account = False
-        else:
-            self.load_account()  #@TODO: Move to PluginThread in 0.4.10
-            self.retry_free = False
-
-        self._setup()
-        self.setup()
-
-        self.pyload.hookManager.downloadPreparing(self.pyfile)  #@TODO: Recheck in 0.4.10
-
-        if self.pyfile.abort:
-            self.abort()
-
-        self.pyfile.setStatus("starting")
-        self.log_debug("PROCESS URL " + self.pyfile.url, "PLUGIN VERSION %s" % self.__version__)
-
-        return self.process(self.pyfile)
 
 
     def process(self, pyfile):
@@ -242,15 +261,12 @@ class Hoster(Plugin):
                 self.log_warning("Ignore reconnection due logged account")
 
             while pyfile.waitUntil > time.time():
-                if pyfile.abort:
-                    self.abort()
-
+                self.check_abort()
                 time.sleep(2)
 
         else:
             while pyfile.waitUntil > time.time():
-                if pyfile.abort:
-                    self.abort()
+                self.check_abort()
 
                 if self.thread.m.reconnecting.isSet():
                     self.waiting = False
@@ -264,78 +280,94 @@ class Hoster(Plugin):
         pyfile.status = status  #@NOTE: Remove in 0.4.10
 
 
-    def skip(self, reason=""):
+    def skip(self, msg=""):
         """
-        Skip and give reason
+        Skip and give msg
         """
-        raise Skip(encode(reason))  #@TODO: Remove `encode` in 0.4.10
+        raise Skip(encode(msg or self.pyfile.error))  #@TODO: Remove `encode` in 0.4.10
 
 
-    def abort(self, reason=""):
+    #@TODO: Remove in 0.4.10
+    def fail(self, msg):
         """
-        Abort and give reason
+        Fail and give msg
         """
-        #@TODO: Remove in 0.4.10
-        if reason:
-            self.pyfile.error = encode(reason)
+        msg = msg.strip()
+
+        if msg:
+            self.pyfile.error = msg
+        else:
+            msg = self.pyfile.error
+
+        raise Fail(encode(msg))  #@TODO: Remove `encode` in 0.4.10
+
+
+    def error(self, msg="", type=_("Parse")):
+        type = _("%s error") % type.strip().capitalize() if type else _("Unknown")
+        msg  = _("%(type)s: %(msg)s | Plugin may be out of date"
+                 % {'type': type, 'msg': msg or self.pyfile.error})
+
+        self.fail(msg)
+
+
+    def abort(self, msg=""):
+        """
+        Abort and give msg
+        """
+        if msg:  #@TODO: Remove in 0.4.10
+            self.pyfile.error = encode(msg)
 
         raise Abort
 
 
-    def offline(self, reason=""):
+    #@TODO: Recheck in 0.4.10
+    def offline(self, msg=""):
         """
         Fail and indicate file is offline
         """
-        #@TODO: Remove in 0.4.10
-        if reason:
-            self.pyfile.error = encode(reason)
-
-        raise Fail("offline")
+        self.fail("offline")
 
 
-    def temp_offline(self, reason=""):
+    #@TODO: Recheck in 0.4.10
+    def temp_offline(self, msg=""):
         """
         Fail and indicates file ist temporary offline, the core may take consequences
         """
-        #@TODO: Remove in 0.4.10
-        if reason:
-            self.pyfile.error = encode(reason)
-
-        raise Fail("temp. offline")
+        self.fail("temp. offline")
 
 
-    def retry(self, max_tries=5, wait_time=1, reason=""):
+    def retry(self, max_tries=5, wait_time=1, msg=""):
         """
         Retries and begin again from the beginning
 
         :param max_tries: number of maximum retries
         :param wait_time: time to wait in seconds
-        :param reason: reason for retrying, will be passed to fail if max_tries reached
+        :param msg: msg for retrying, will be passed to fail if max_tries reached
         """
         id = inspect.currentframe().f_back.f_lineno
         if id not in self.retries:
             self.retries[id] = 0
 
         if 0 < max_tries <= self.retries[id]:
-            self.fail(reason or _("Max retries reached"))
+            self.fail(msg or _("Max retries reached"))
 
         self.wait(wait_time, False)
 
         self.retries[id] += 1
-        raise Retry(encode(reason))  #@TODO: Remove `encode` in 0.4.10
+        raise Retry(encode(msg))  #@TODO: Remove `encode` in 0.4.10
 
 
-    def restart(self, reason=None, nopremium=False):
-        if not reason:
-            reason = _("Fallback to free download") if nopremium else _("Restart")
+    def restart(self, msg=None, nopremium=False):
+        if not msg:
+            msg = _("Fallback to free download") if nopremium else _("Restart")
 
         if nopremium:
             if self.premium:
                 self.retry_free = True
             else:
-                self.fail("%s | %s" % (reason, _("Download was already free")))
+                self.fail("%s | %s" % (msg, _("Download was already free")))
 
-        raise Retry(encode(reason))  #@TODO: Remove `encode` in 0.4.10
+        raise Retry(encode(msg))  #@TODO: Remove `encode` in 0.4.10
 
 
     def fixurl(self, url):
@@ -347,6 +379,11 @@ class Hoster(Plugin):
             url = urlparse.urljoin(baseurl, url)
 
         return url
+
+
+    def load(self, *args, **kwargs):
+        self.check_abort()
+        return super(Hoster, self).load(*args, **kwargs)
 
 
     def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=True):
@@ -362,8 +399,7 @@ class Hoster(Plugin):
         the filename will be changed if needed
         :return: The location where the file was saved
         """
-        if self.pyfile.abort:
-            self.abort()
+        self.check_abort()
 
         url = self.fixurl(url)
 
@@ -398,8 +434,7 @@ class Hoster(Plugin):
 
         self.pyload.hookManager.dispatchEvent("download_start", self.pyfile, url, filename)
 
-        if self.pyfile.abort:
-            self.abort()
+        self.check_abort()
 
         try:
             newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref, cookies=cookies,
@@ -430,6 +465,26 @@ class Hoster(Plugin):
         self.last_download = filename
 
         return self.last_download
+
+
+    def check_abort(self):
+        if not self.pyfile.abort:
+            return
+
+        if self.pyfile.hasStatus("failed"):
+            self.fail()
+
+        elif self.pyfile.hasStatus("skipped"):
+            self.skip(self.pyfile.statusname)
+
+        elif self.pyfile.hasStatus("offline"):
+            self.offline()
+
+        elif self.pyfile.hasStatus("temp. offline"):
+            self.temp_offline()
+
+        else:
+            self.abort()
 
 
     def check_filesize(self, file_size, size_tolerance=1024):
@@ -473,7 +528,6 @@ class Hoster(Plugin):
         last_download = fs_encode(self.last_download)
 
         if not self.last_download or not exists(last_download):
-            self.last_download = ""  #@NOTE: Bad place...
             self.fail(self.pyfile.error or _("No file downloaded"))
 
         try:
@@ -609,8 +663,10 @@ class Hoster(Plugin):
 
         if traffic is None:
             return False
+
         elif traffic == -1:
             return True
+
         else:
             size = self.pyfile.size / 1024
             self.log_info(_("Filesize: %s KiB, Traffic left for user %s: %s KiB") % (size, self.user, traffic))

@@ -113,18 +113,15 @@ class Addon(Plugin):
         pass
 
 
-    def __repr__(self):
-        return "<Addon %s>" % self.__name__
-
-
-    def is_activated(self):
+    @property
+    def activated(self):
         """
         Checks if addon is activated
         """
         return self.get_config("activated")
 
 
-    #: Deprecated method, use `is_activated` instead (Remove in 0.4.10)
+    #: Deprecated method, use `activated` property instead (Remove in 0.4.10)
     def isActivated(self, *args, **kwargs):
         return self.is_activated(*args, **kwargs)
 

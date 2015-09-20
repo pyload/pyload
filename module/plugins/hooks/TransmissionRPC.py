@@ -66,7 +66,7 @@ class TransmissionRPC(Addon):
                 except Exception, e:
                      self.log_error(e)
                      return
-        
+
             else:
                  self.log_error(e)
                  return

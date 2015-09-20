@@ -12,7 +12,7 @@ from module.plugins.internal.Plugin import Plugin
 class Captcha(Plugin):
     __name__    = "Captcha"
     __type__    = "captcha"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __status__  = "testing"
 
     __description__ = """Base anti-captcha plugin"""
@@ -96,8 +96,7 @@ class Captcha(Plugin):
 
                 self.task.setWaiting(max(timeout, 50))  #@TODO: Move to `CaptchaManager` in 0.4.10
                 while self.task.isWaiting():
-                    if self.plugin.pyfile.abort:
-                        self.plugin.abort()
+                    self.plugin.check_abort()
                     time.sleep(1)
 
             finally:
@@ -108,7 +107,7 @@ class Captcha(Plugin):
 
             elif not self.task.result:
                 self.invalid()
-                self.plugin.retry(reason=_("No captcha result obtained in appropiate time"))
+                self.plugin.retry(msg=_("No captcha result obtained in appropiate time"))
 
             result = self.task.result
 
