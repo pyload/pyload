@@ -10,7 +10,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class FastixRu(MultiHoster):
     __name__    = "FastixRu"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/\w{24}'
@@ -27,13 +27,11 @@ class FastixRu(MultiHoster):
 
 
     def handle_premium(self, pyfile):
-        api_key = self.account.get_data(self.user)
-        api_key = api_key['api']
-
-        self.html = self.load("http://fastix.ru/api_v2/",
-                         get={'apikey': api_key, 'sub': "getdirectlink", 'link': pyfile.url})
-
-        data = json_loads(self.html)
+        self.html = json_loads(self.load("http://fastix.ru/api_v2/",
+                                         get={'apikey': self.account.get_data()['apikey'],
+                                              'sub'   : "getdirectlink",
+                                              'link'  : pyfile.url})
+        data = self.html)
 
         self.log_debug("Json data", data)
 
