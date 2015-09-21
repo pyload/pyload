@@ -7,8 +7,9 @@ import inspect
 import os
 import re
 import sys
-import urllib
 import unicodedata
+import urllib
+import urlparse
 
 if os.name != "nt":
     import grp
@@ -49,17 +50,19 @@ def exists(path):
 
 
 #@TODO: Move to utils in 0.4.10
-def fixurl(url):
-    return html_unescape(urllib.unquote(url.decode('unicode-escape'))).strip().rstrip('/')
+def parse_name(url):
+    url = urllib.unquote(url)
+    url = url.decode('unicode-escape')
+    url = html_unescape(url)
+    url = urllib.quote(url)
 
+    url_p = urlparse.urlparse(url.strip().rstrip('/'))
 
-def fixname(m):
-    m = unicodedata.normalize('NFKD', m)
-    output = ''
-    for c in m:
-        if not unicodedata.combining(c):
-            output += c
-    return output
+    name = (url_p.path.split('/')[-1] or
+            url_p.query.split('=', 1)[::-1][0].split('&', 1)[0] or
+            url_p.netloc.split('.', 1)[0])
+
+    return urllib.unquote(name)
 
 
 #@TODO: Move to utils in 0.4.10
@@ -177,7 +180,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -342,11 +345,6 @@ class Plugin(object):
         :param decode: Wether to decode the output according to http header, should be True in most cases
         :return: Loaded content
         """
-        url = fixurl(url)
-
-        if not url or not isinstance(url, basestring):
-            self.fail(_("No given url"))
-
         if self.pyload.debug:
             self.log_debug("LOAD URL " + url,
                            *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url")])

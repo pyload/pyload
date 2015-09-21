@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import urlparse
-
-from module.plugins.internal.Hoster import Hoster, _fixurl
+from module.plugins.internal.Hoster import Hoster, parse_name
 from module.utils import save_path as safe_filename
 
 
 class Crypter(Hoster):
     __name__    = "Crypter"
     __type__    = "crypter"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -78,13 +76,14 @@ class Crypter(Hoster):
                           "%d links" % len(links),
                           "Saved to folder: %s" % folder if folder else "Saved to download folder")
 
-            pid = self.pyload.api.addPackage(name, map(self.fixurl, links), package_queue)
+            links = map(self.fixurl, links)
+            pid = self.pyload.api.addPackage(name, links, package_queue)
 
             if package_password:
                 self.pyload.api.setPackageData(pid, {'password': package_password})
 
             #: Workaround to do not break API addPackage method
-            set_folder = lambda x: self.pyload.api.setPackageData(pid, {'folder': x or ""})
+            set_folder = lambda x: self.pyload.api.setPackageData(pid, {'folder': safe_filename(x) or ""})
 
             if use_subfolder:
                 if not subfolder_per_package:
@@ -93,9 +92,9 @@ class Crypter(Hoster):
 
                 elif not folder_per_package or name is not folder:
                     if not folder:
-                        folder = urlparse.urlparse(_fixurl(name)).path.split("/")[-1]
+                        folder = parse_name(name)
 
-                    set_folder(safe_filename(folder))
+                    set_folder(folder)
                     self.log_debug("Set package %(name)s folder to: %(folder)s" % {'name': name, 'folder': folder})
 
             elif folder_per_package:

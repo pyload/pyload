@@ -5,13 +5,12 @@ from __future__ import with_statement
 import os
 import re
 import time
-import urlparse
 
 from module.PyFile import statusMap as _statusMap
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster, create_getInfo, parse_fileInfo
-from module.plugins.internal.Plugin import Fail, encode, fixurl, fixname, replace_patterns, seconds_to_midnight, set_cookie, set_cookies
+from module.plugins.internal.Plugin import Fail, encode, parse_name, replace_patterns, seconds_to_midnight, set_cookie, set_cookies
 from module.utils import fixup, fs_encode, parseFileSize as parse_size
 
 
@@ -22,7 +21,7 @@ statusMap = dict((v, k) for k, v in _statusMap.items())
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.83"
+    __version__ = "1.84"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -91,7 +90,7 @@ class SimpleHoster(Hoster):
         LINK_PREMIUM_PATTERN: (optional) group(1) should be the direct link for premium download
           example: LINK_PREMIUM_PATTERN = r'<div class="link"><a href="(.+?)"'
     """
-    NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
+    NAME_REPLACEMENTS = []
     SIZE_REPLACEMENTS = []
     URL_REPLACEMENTS  = []
 
@@ -175,9 +174,8 @@ class SimpleHoster(Hoster):
             info['status'] = 2
 
             if 'N' in info['pattern']:
-                name = fixname(info['pattern']['N'])
-                info['name'] = replace_patterns(fixurl(name),
-                                                cls.NAME_REPLACEMENTS)
+                name = replace_patterns(info['pattern']['N'], cls.NAME_REPLACEMENTS)
+                info['name'] = parse_name(name)
 
             if 'S' in info['pattern']:
                 size = replace_patterns(info['pattern']['S'] + info['pattern']['U'] if 'U' in info['pattern'] else info['pattern']['S'],
@@ -420,9 +418,7 @@ class SimpleHoster(Hoster):
                     self.offline()
 
                 elif re.search('filename', errmsg, re.I):
-                    url_p = urlparse.urlparse(self.pyfile.url)
-                    self.pyfile.url = "%s://%s/%s" % (url_p.scheme, url_p.netloc, url_p.path.split('/')[0])
-                    self.retry(1, msg=_("Wrong url"))
+                    self.fail(_("Wrong url"))
 
                 elif re.search('premium', errmsg, re.I):
                     self.fail(_("File can be downloaded by premium users only"))
@@ -482,8 +478,8 @@ class SimpleHoster(Hoster):
             self.log_debug("Previous file info: %s" % old_info)
 
         try:
-            url  = self.info['url'].strip()
-            name = self.info['name'].strip()
+            url  = self.info['url']
+            name = self.info['name']
 
         except KeyError:
             pass

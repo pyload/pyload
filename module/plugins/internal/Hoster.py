@@ -12,16 +12,17 @@ import urlparse
 
 from module.plugins.internal.Captcha import Captcha
 from module.plugins.internal.Plugin import (Plugin, Abort, Fail, Reconnect, Retry, Skip,
-                                            chunks, encode, exists, fixurl as _fixurl, replace_patterns,
-                                            seconds_to_midnight, set_cookie, set_cookies, parse_html_form,
-                                            parse_html_tag_attr_value, timestamp)
+                                            chunks, encode, exists, parse_html_form,
+                                            parse_html_tag_attr_value, parse_name,
+                                            replace_patterns, seconds_to_midnight,
+                                            set_cookie, set_cookies, timestamp)
 from module.utils import fs_decode, fs_encode, save_join as fs_join, save_path as safe_filename
 
 
 #@TODO: Remove in 0.4.10
 def parse_fileInfo(klass, url="", html=""):
     info = klass.get_info(url, html)
-    return info['name'], info['size'], info['status'], info['url']
+    return encode(info['name']), info['size'], info['status'], info['url']
 
 
 #@TODO: Remove in 0.4.10
@@ -44,7 +45,7 @@ def create_getInfo(klass):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -117,13 +118,9 @@ class Hoster(Plugin):
 
     @classmethod
     def get_info(cls, url="", html=""):
-        url   = _fixurl(url)
-        url_p = urlparse.urlparse(url)
-        return {'name'  : (url_p.path.split('/')[-1] or
-                            url_p.query.split('=', 1)[::-1][0].split('&', 1)[0] or
-                                url_p.netloc.split('.', 1)[0]),
+        return {'name'  : parse_name(url),
                 'size'  : 0,
-                'status': 3 if url else 8,
+                'status': 3 if url.strip() else 8,
                 'url'   : url}
 
 
@@ -370,11 +367,12 @@ class Hoster(Plugin):
         raise Retry(encode(msg))  #@TODO: Remove `encode` in 0.4.10
 
 
-    def fixurl(self, url):
-        url = _fixurl(url)
+    def fixurl(self, url, baseurl=None):
+        if not baseurl:
+            baseurl = self.pyfile.url
 
         if not urlparse.urlparse(url).scheme:
-            url_p = urlparse.urlparse(self.pyfile.url)
+            url_p = urlparse.urlparse(baseurl)
             baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
             url = urlparse.urljoin(baseurl, url)
 
@@ -401,17 +399,11 @@ class Hoster(Plugin):
         """
         self.check_abort()
 
-        url = self.fixurl(url)
-
-        if not url or not isinstance(url, basestring):
-            self.fail(_("No given url"))
-
         if self.pyload.debug:
             self.log_debug("DOWNLOAD URL " + url,
                            *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url")])
 
-        name = _fixurl(self.pyfile.name)
-        self.pyfile.name = urlparse.urlparse(name).path.split('/')[-1] or name
+        self.pyfile.name = parse_name(self.pyfile.name)  #: Safe check
 
         self.captcha.correct()
         self.check_for_same_files()
@@ -445,7 +437,7 @@ class Hoster(Plugin):
 
         #@TODO: Recheck in 0.4.10
         if disposition and newname:
-            finalname = urlparse.urlparse(newname).path.split('/')[-1].split(' filename*=')[0]
+            finalname = parse_name(newname).split(' filename*=')[0]
 
             if finalname != newname:
                 try:
@@ -609,12 +601,7 @@ class Hoster(Plugin):
                 link = url
 
             elif 'location' in header and header['location']:
-                location = header['location']
-
-                if not urlparse.urlparse(location).scheme:
-                    url_p    = urlparse.urlparse(url)
-                    baseurl  = "%s://%s" % (url_p.scheme, url_p.netloc)
-                    location = urlparse.urljoin(baseurl, location)
+                location = self.fixurl(header['location'], url)
 
                 if 'code' in header and header['code'] == 302:
                     link = location
@@ -624,7 +611,7 @@ class Hoster(Plugin):
                     continue
 
             else:
-                extension = os.path.splitext(urlparse.urlparse(url).path.split('/')[-1])[-1]
+                extension = os.path.splitext(parse_name(url))[-1]
 
                 if 'content-type' in header and header['content-type']:
                     mimetype = header['content-type'].split(';')[0].strip()
