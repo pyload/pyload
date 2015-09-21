@@ -9,6 +9,7 @@ import re
 import sys
 import traceback
 import urllib
+import urlparse
 
 if os.name != "nt":
     import grp
@@ -172,7 +173,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
