@@ -14,7 +14,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.58"
+    __version__ = "0.59"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -73,7 +73,7 @@ class XFSHoster(SimpleHoster):
                 self.fail(_("Missing HOSTER_DOMAIN"))
 
         if self.COOKIES:
-            if isinstance(self.COOKIES, list) and not self.COOKIES.count((self.HOSTER_DOMAIN, "lang", "english")):
+            if isinstance(self.COOKIES, list) and (self.HOSTER_DOMAIN, "lang", "english") not in self.COOKIES:
                 self.COOKIES.insert((self.HOSTER_DOMAIN, "lang", "english"))
             else:
                 set_cookie(self.req.cj, self.HOSTER_DOMAIN, "lang", "english")
@@ -163,7 +163,7 @@ class XFSHoster(SimpleHoster):
             self.retry(20, 3 * 60, _("Can not leech file"))
 
         elif 'today' in stmsg:
-            self.retry(wait_time=seconds_to_midnight(gmt=2), msg=_("You've used all Leech traffic today"))
+            self.retry(delay=seconds_to_midnight(gmt=2), msg=_("You've used all Leech traffic today"))
 
         else:
             self.fail(stmsg)
@@ -244,7 +244,7 @@ class XFSHoster(SimpleHoster):
         try:
             captcha_key = re.search(self.RECAPTCHA_PATTERN, self.html).group(1)
 
-        except Exception:
+        except AttributeError:
             captcha_key = recaptcha.detect_key()
 
         else:
@@ -258,7 +258,7 @@ class XFSHoster(SimpleHoster):
         try:
             captcha_key = re.search(self.SOLVEMEDIA_PATTERN, self.html).group(1)
 
-        except Exception:
+        except AttributeError:
             captcha_key = solvemedia.detect_key()
 
         else:

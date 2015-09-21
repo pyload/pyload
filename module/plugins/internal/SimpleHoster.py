@@ -21,7 +21,7 @@ statusMap = dict((v, k) for k, v in _statusMap.items())
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.84"
+    __version__ = "1.85"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -124,7 +124,7 @@ class SimpleHoster(Hoster):
         try:
             info['pattern'] = re.match(cls.__pattern__, url).groupdict()  #: Pattern groups will be saved here
 
-        except Exception:
+        except AttributeError:
             info['pattern'] = {}
 
         if not html and not online:
@@ -329,7 +329,7 @@ class SimpleHoster(Hoster):
 
                     self.log_warning(_("Check result: ") + errmsg, _("Waiting 1 minute and retry"))
                     self.wantReconnect = True
-                    self.retry(wait_time=60, msg=errmsg)
+                    self.retry(delay=60, msg=errmsg)
             else:
                 if self.CHECK_FILE:
                     self.log_debug("Using custom check rules...")
@@ -428,7 +428,7 @@ class SimpleHoster(Hoster):
 
                 else:
                     self.wantReconnect = True
-                    self.retry(wait_time=60, msg=errmsg)
+                    self.retry(delay=60, msg=errmsg)
 
         elif hasattr(self, 'WAIT_PATTERN'):
             m = re.search(self.WAIT_PATTERN, self.html)

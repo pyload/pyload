@@ -4,7 +4,6 @@ from __future__ import with_statement
 
 import os
 import time
-import traceback
 
 from module.plugins.internal.Plugin import Plugin
 
@@ -117,7 +116,6 @@ class Captcha(Plugin):
 
             except OSError, e:
                 self.log_warning(_("Error removing: %s") % tmp_img.name, e)
-                traceback.print_exc()
 
         #self.log_info(_("Captcha result: ") + result)  #@TODO: Remove from here?
 

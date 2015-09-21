@@ -12,7 +12,6 @@ import logging
 import os
 import subprocess
 # import tempfile
-import traceback
 
 from module.plugins.internal.Plugin import Plugin
 from module.utils import save_join as fs_join
@@ -138,10 +137,9 @@ class OCR(Plugin):
             os.remove(tmpTxt.name)
             if subset and (digits or lowercase or uppercase):
                 os.remove(tmpSub.name)
+
         except OSError, e:
             self.log_warning(e)
-            if self.pyload.debug:
-                traceback.print_exc()
 
 
     def recognize(self, name):

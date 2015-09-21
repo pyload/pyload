@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import traceback
-
 from module.plugins.internal.Plugin import Plugin
 
 
@@ -103,8 +101,6 @@ class Addon(Plugin):
 
         except Exception, e:
             self.log_error(_("Error executing periodical task: %s") % e)
-            if self.pyload.debug:
-                traceback.print_exc()
 
         self.cb = self.pyload.scheduler.addJob(self.interval, self._periodical, [threaded], threaded=threaded)
 

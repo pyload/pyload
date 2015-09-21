@@ -7,12 +7,11 @@ import mimetypes
 import os
 import random
 import time
-import traceback
 import urlparse
 
 from module.plugins.internal.Captcha import Captcha
 from module.plugins.internal.Plugin import (Plugin, Abort, Fail, Reconnect, Retry, Skip,
-                                            chunks, encode, exists, parse_html_form,
+                                            chunks, decode, encode, exists, parse_html_form,
                                             parse_html_tag_attr_value, parse_name,
                                             replace_patterns, seconds_to_midnight,
                                             set_cookie, set_cookies, timestamp)
@@ -45,7 +44,7 @@ def create_getInfo(klass):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.24"
+    __version__ = "0.26"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -75,7 +74,6 @@ class Hoster(Plugin):
 
         #: Account handler instance, see :py:class:`Account`
         self.account = None
-        self.user    = None
         self.req     = None  #: Browser instance, see `network.Browser`
 
         #: Associated pyfile instance, see `PyFile`
@@ -108,7 +106,7 @@ class Hoster(Plugin):
 
     def _log(self, level, plugintype, pluginname, messages):
         log = getattr(self.pyload.log, level)
-        msg = " | ".join(encode(a).strip() for a in messages if a)
+        msg = " | ".join(decode(a).strip() for a in messages if a)
         log("%(plugintype)s %(pluginname)s[%(id)s]: %(msg)s"
             % {'plugintype': plugintype.upper(),
                'pluginname': pluginname,
@@ -145,10 +143,10 @@ class Hoster(Plugin):
         self.pyfile.error  = ""
 
         if self.account:
-            self.req             = self.pyload.requestFactory.getRequest(self.__name__, self.user)
+            self.req             = self.pyload.requestFactory.getRequest(self.__name__, self.account.user)
             self.chunk_limit     = -1  #: -1 for unlimited
             self.resume_download = True
-            self.premium         = self.account.is_premium(self.user)
+            self.premium         = self.account.premium
         else:
             self.req             = self.pyload.requestFactory.getRequest(self.__name__)
             self.chunk_limit     = 1
@@ -194,10 +192,10 @@ class Hoster(Plugin):
             self.account = self.pyload.accountManager.getAccountPlugin(self.__name__)
 
         if self.account:
-            if not self.user:
-                self.user = self.account.select()[0]
+            if not self.account.user:  #@TODO: Move to `Account` in 0.4.10
+                self.account.user = self.account.select()[0]
 
-            if not self.user or not self.account.is_logged(self.user, True):
+            if not self.account.logged:
                 self.account = False
 
 
@@ -333,22 +331,22 @@ class Hoster(Plugin):
         self.fail("temp. offline")
 
 
-    def retry(self, max_tries=5, wait_time=1, msg=""):
+    def retry(self, attemps=5, delay=1, msg=""):
         """
         Retries and begin again from the beginning
 
-        :param max_tries: number of maximum retries
-        :param wait_time: time to wait in seconds
-        :param msg: msg for retrying, will be passed to fail if max_tries reached
+        :param attemps: number of maximum retries
+        :param delay: time to wait in seconds
+        :param msg: msg for retrying, will be passed to fail if attemps value was reached
         """
         id = inspect.currentframe().f_back.f_lineno
         if id not in self.retries:
             self.retries[id] = 0
 
-        if 0 < max_tries <= self.retries[id]:
+        if 0 < attemps <= self.retries[id]:
             self.fail(msg or _("Max retries reached"))
 
-        self.wait(wait_time, False)
+        self.wait(delay, False)
 
         self.retries[id] += 1
         raise Retry(encode(msg))  #@TODO: Remove `encode` in 0.4.10
@@ -550,8 +548,6 @@ class Hoster(Plugin):
 
                 except OSError, e:
                     self.log_warning(_("Error removing: %s") % last_download, e)
-                    if self.pyload.debug:
-                        traceback.print_exc()
 
                 else:
                     self.log_info(_("File deleted: ") + self.last_download)
@@ -648,7 +644,7 @@ class Hoster(Plugin):
         if not self.account:
             return True
 
-        traffic = self.account.get_data(self.user, True)['trafficleft']
+        traffic = self.account.get_data(self.account.user, True)['trafficleft']
 
         if traffic is None:
             return False
@@ -658,7 +654,7 @@ class Hoster(Plugin):
 
         else:
             size = self.pyfile.size / 1024
-            self.log_info(_("Filesize: %s KiB, Traffic left for user %s: %s KiB") % (size, self.user, traffic))
+            self.log_info(_("Filesize: %s KiB, Traffic left for user %s: %s KiB") % (size, self.account.user, traffic))
             return size <= traffic
 
 

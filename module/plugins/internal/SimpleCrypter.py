@@ -137,7 +137,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
         try:
             pages = int(re.search(self.PAGES_PATTERN, self.html).group(1))
 
-        except Exception:
+        except AttributeError:
             pages = 1
 
         for p in xrange(2, pages + 1):

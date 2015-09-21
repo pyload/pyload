@@ -7,9 +7,8 @@ import inspect
 import os
 import re
 import sys
-import unicodedata
+import traceback
 import urllib
-import urlparse
 
 if os.name != "nt":
     import grp
@@ -180,7 +179,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -227,24 +226,31 @@ class Plugin(object):
 
 
     def log_debug(self, *args):
-        if self.pyload.debug:
-            return self._log("debug", self.__type__, self.__name__, args)
+        if not self.pyload.debug:
+            return
+        self._log("debug", self.__type__, self.__name__, args)
 
 
     def log_info(self, *args):
-        return self._log("info", self.__type__, self.__name__, args)
+        self._log("info", self.__type__, self.__name__, args)
 
 
     def log_warning(self, *args):
-        return self._log("warning", self.__type__, self.__name__, args)
+        self._log("warning", self.__type__, self.__name__, args)
+        if self.pyload.debug:
+            traceback.print_exc()
 
 
     def log_error(self, *args):
-        return self._log("error", self.__type__, self.__name__, args)
+        self._log("error", self.__type__, self.__name__, args)
+        if self.pyload.debug:
+            traceback.print_exc()
 
 
     def log_critical(self, *args):
         return self._log("critical", self.__type__, self.__name__, args)
+        if self.pyload.debug:
+            traceback.print_exc()
 
 
     def set_permissions(self, path):
