@@ -36,6 +36,7 @@ class NoPremiumPl(Account):
         self._req = req
         try:
             result = json_loads(self.run_auth_query())
+
         except Exception:
             #@TODO: return or let it be thrown?
             return
@@ -61,6 +62,7 @@ class NoPremiumPl(Account):
 
         try:
             response = json_loads(self.run_auth_query())
+
         except Exception:
             self.fail_login()
 

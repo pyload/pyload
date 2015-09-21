@@ -61,6 +61,7 @@ class ImageTyperz(Hook):
 
         try:
             balance = float(res)
+
         except Exception:
             raise ImageTyperzException("Invalid response")
 

@@ -79,6 +79,7 @@ class CaptchaBrotherhood(Hook):
                 img.save(output, "JPEG")
             data = output.getvalue()
             output.close()
+
         except Exception, e:
             raise CaptchaBrotherhoodException("Reading or converting captcha image failed: %s" % e)
 
@@ -98,6 +99,7 @@ class CaptchaBrotherhood(Hook):
         try:
             req.c.perform()
             res = req.getResponse()
+
         except Exception, e:
             raise CaptchaBrotherhoodException("Submit captcha image failed")
 

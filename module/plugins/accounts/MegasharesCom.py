@@ -31,6 +31,7 @@ class MegasharesCom(Account):
             timestr = re.search(self.VALID_UNTIL_PATTERN, html).group(1)
             self.log_debug(timestr)
             validuntil = time.mktime(time.strptime(timestr, "%b %d, %Y"))
+
         except Exception, e:
             self.log_error(e)
 

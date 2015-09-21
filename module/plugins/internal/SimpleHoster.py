@@ -323,6 +323,7 @@ class SimpleHoster(Hoster):
 
                     try:
                         errmsg += " | " + self.last_check.group(1).strip()
+
                     except Exception:
                         pass
 
@@ -359,7 +360,8 @@ class SimpleHoster(Hoster):
                 m = re.search(self.DL_LIMIT_PATTERN, self.html)
                 try:
                     errmsg = m.group(1).strip()
-                except Exception:
+
+                except AttributeError:
                     errmsg = m.group(0).strip()
 
                 self.info['error'] = re.sub(r'<.*?>', " ", errmsg)
@@ -382,7 +384,8 @@ class SimpleHoster(Hoster):
             if m:
                 try:
                     errmsg = m.group(1).strip()
-                except Exception:
+
+                except AttributeError:
                     errmsg = m.group(0).strip()
 
                 self.info['error'] = re.sub(r'<.*?>', " ", errmsg)
@@ -432,7 +435,8 @@ class SimpleHoster(Hoster):
             if m:
                 try:
                     waitmsg = m.group(1).strip()
-                except Exception:
+
+                except AttributeError:
                     waitmsg = m.group(0).strip()
 
                 wait_time = sum(int(v) * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, "": 1}[u.lower()] for v, u in

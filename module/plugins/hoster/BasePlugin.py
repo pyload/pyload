@@ -23,18 +23,6 @@ class BasePlugin(Hoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    @classmethod
-    def get_info(cls, url="", html=""):  #@TODO: Move to hoster class in 0.4.10
-        url   = urllib.unquote(url)
-        url_p = urlparse.urlparse(url)
-        return {'name'  : (url_p.path.split('/')[-1]
-                           or url_p.query.split('=', 1)[::-1][0].split('&', 1)[0]
-                           or url_p.netloc.split('.', 1)[0]),
-                'size'  : 0,
-                'status': 3 if url else 8,
-                'url'   : url}
-
-
     def setup(self):
         self.chunk_limit     = -1
         self.multiDL        = True
@@ -95,6 +83,7 @@ class BasePlugin(Hoster):
 
         try:
             errmsg += " | " + self.last_check.group(1).strip()
+
         except Exception:
             pass
 

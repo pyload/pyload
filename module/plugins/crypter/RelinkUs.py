@@ -205,8 +205,10 @@ class RelinkUs(Crypter):
                 (vcrypted, vjk) = self._get_cipher_params(cnl2_form)
                 for (crypted, jk) in zip(vcrypted, vjk):
                     package_links.extend(self._get_links(crypted, jk))
+
             except Exception:
                 self.log_debug("Unable to decrypt CNL2 links")
+
         return package_links
 
 

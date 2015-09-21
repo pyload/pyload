@@ -55,6 +55,7 @@ class IRCInterface(Thread, Addon):
         try:
             if self.get_config('info_pack'):
                 self.response(_("Package finished: %s") % pypack.name)
+
         except Exception:
             pass
 
@@ -64,6 +65,7 @@ class IRCInterface(Thread, Addon):
             if self.get_config('info_file'):
                 self.response(
                     _("Download finished: %(name)s @ %(plugin)s ") % {'name': pyfile.name, 'plugin': pyfile.pluginname})
+
         except Exception:
             pass
 
@@ -177,6 +179,7 @@ class IRCInterface(Thread, Addon):
             trigger = temp[0]
             if len(temp) > 1:
                 args = temp[1:]
+
         except Exception:
             pass
 
@@ -185,6 +188,7 @@ class IRCInterface(Thread, Addon):
             res = handler(args)
             for line in res:
                 self.response(line, msg['origin'])
+
         except Exception, e:
             self.log_error(e)
 

@@ -410,6 +410,7 @@ class Plugin(object):
         """
         try:
             self.req.close()
+
         except Exception:
             pass
 

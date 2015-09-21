@@ -24,6 +24,7 @@ def check_file(plugin, urls):
                     parse_size(cols[2]) if cols[2] != '--' else 0,
                     2 if cols[3].startswith('Available') else 1,
                     cols[0]))
+
         except Exception, e:
             continue
 

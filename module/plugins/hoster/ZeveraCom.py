@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urlparse
 
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 

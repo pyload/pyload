@@ -136,6 +136,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
     def handle_pages(self, pyfile):
         try:
             pages = int(re.search(self.PAGES_PATTERN, self.html).group(1))
+
         except Exception:
             pages = 1
 

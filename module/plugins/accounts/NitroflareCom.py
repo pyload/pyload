@@ -40,6 +40,7 @@ class NitroflareCom(Account):
             try:
                 validuntil = sum(int(v) * {'day': 24 * 3600, 'hour': 3600, 'minute': 60}[u.lower()] for v, u in
                                  re.findall(r'(\d+)\s*(day|hour|minute)', expiredate, re.I))
+
             except Exception, e:
                 self.log_error(e)
 

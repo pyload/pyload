@@ -3,7 +3,6 @@
 import re
 import time
 import urllib
-import urlparse
 
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.captcha.ReCaptcha import ReCaptcha
@@ -160,6 +159,7 @@ class ShareonlineBiz(SimpleHoster):
 
         try:
             self.log_error(errmsg, re.search(self.ERROR_PATTERN, self.html).group(1))
+
         except Exception:
             self.log_error(_("Unknown error occurred"), errmsg)
 

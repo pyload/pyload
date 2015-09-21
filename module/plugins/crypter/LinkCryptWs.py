@@ -272,6 +272,7 @@ class LinkCryptWs(Crypter):
             (vcrypted, vjk) = self._get_cipher_params(cnl_section)
             for (crypted, jk) in zip(vcrypted, vjk):
                 package_links.extend(self._get_links(crypted, jk))
+
         except Exception:
             self.log_error(_("Unable to decrypt CNL links (JS Error) try to get over links"))
             return self.handle_web_links()

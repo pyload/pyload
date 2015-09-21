@@ -128,6 +128,7 @@ class OCR(Plugin):
         try:
             with open(tmpTxt.name, 'r') as f:
                 self.result_captcha = f.read().replace("\n", "")
+
         except Exception:
             self.result_captcha = ""
 
@@ -194,6 +195,7 @@ class OCR(Plugin):
                         count += 1
                     if pixels[x, y - 1] != 255:
                         count += 1
+
                 except Exception:
                     pass
 

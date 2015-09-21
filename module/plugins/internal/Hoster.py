@@ -416,6 +416,7 @@ class Hoster(Plugin):
         if not exists(download_location):
             try:
                 os.makedirs(download_location)
+
             except Exception, e:
                 self.fail(e)
 
@@ -632,6 +633,7 @@ class Hoster(Plugin):
         else:
             try:
                 self.log_error(_("Too many redirects"))
+
             except Exception:
                 pass
 

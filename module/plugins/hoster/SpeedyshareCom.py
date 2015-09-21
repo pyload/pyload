@@ -4,7 +4,6 @@
 # http://speedy.sh/ep2qY/Zapp-Brannigan.jpg
 
 import re
-import urlparse
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 

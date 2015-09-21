@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urlparse
 
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.SimpleHoster import SimpleHoster, parse_fileInfo

@@ -2,7 +2,6 @@
 
 import re
 import urllib
-import urlparse
 
 from types import MethodType
 
