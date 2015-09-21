@@ -10,7 +10,7 @@ from module.plugins.internal.Plugin import set_cookie
 class Keep2ShareCc(Account):
     __name__    = "Keep2ShareCc"
     __type__    = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __description__ = """Keep2Share.cc account plugin"""

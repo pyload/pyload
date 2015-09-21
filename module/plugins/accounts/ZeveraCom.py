@@ -8,7 +8,7 @@ from module.plugins.internal.Account import Account
 class ZeveraCom(Account):
     __name__    = "ZeveraCom"
     __type__    = "account"
-    __version__ = "0.28"
+    __version__ = "0.29"
     __status__  = "testing"
 
     __description__ = """Zevera.com account plugin"""

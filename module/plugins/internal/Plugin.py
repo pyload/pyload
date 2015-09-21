@@ -200,7 +200,7 @@ class Plugin(object):
 
 
     def __repr__(self):
-        return "<%(type)s %(name)s>" % {'type': self.__type__.capitalize()
+        return "<%(type)s %(name)s>" % {'type': self.__type__.capitalize(),
                                         'name': self.__name__}
 
 
@@ -220,7 +220,7 @@ class Plugin(object):
     def _log(self, level, plugintype, pluginname, messages):
         log = getattr(self.pyload.log, level)
         msg = " | ".join(encode(a).strip() for a in messages if a)
-        log("%(plugintype)s %(pluginname)s%: %(msg)s"
+        log("%(plugintype)s %(pluginname)s: %(msg)s"
             % {'plugintype': plugintype.upper(),
                'pluginname': pluginname,
                'msg'       : msg})

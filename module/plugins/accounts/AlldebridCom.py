@@ -12,7 +12,7 @@ from module.plugins.internal.Account import Account
 class AlldebridCom(Account):
     __name__    = "AlldebridCom"
     __type__    = "account"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__  = "testing"
 
     __description__ = """AllDebrid.com account plugin"""

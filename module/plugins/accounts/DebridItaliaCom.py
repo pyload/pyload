@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class DebridItaliaCom(Account):
     __name__    = "DebridItaliaCom"
     __type__    = "account"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __description__ = """Debriditalia.com account plugin"""

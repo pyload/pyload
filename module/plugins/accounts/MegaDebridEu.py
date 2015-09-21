@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 class MegaDebridEu(Account):
     __name__    = "MegaDebridEu"
     __type__    = "account"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__  = "testing"
 
     __description__ = """Mega-debrid.eu account plugin"""

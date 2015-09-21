@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class MyfastfileCom(Account):
     __name__    = "MyfastfileCom"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __description__ = """Myfastfile.com account plugin"""

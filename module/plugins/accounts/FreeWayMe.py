@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 class FreeWayMe(Account):
     __name__    = "FreeWayMe"
     __type__    = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __description__ = """FreeWayMe account plugin"""

@@ -10,7 +10,7 @@ from module.common.json_layer import json_loads
 class RapiduNet(Account):
     __name__    = "RapiduNet"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __description__ = """Rapidu.net account plugin"""

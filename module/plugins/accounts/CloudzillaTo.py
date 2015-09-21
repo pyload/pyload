@@ -8,7 +8,7 @@ from module.plugins.internal.Account import Account
 class CloudzillaTo(Account):
     __name__    = "CloudzillaTo"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __description__ = """Cloudzilla.to account plugin"""

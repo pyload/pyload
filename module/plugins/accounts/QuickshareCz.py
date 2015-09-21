@@ -8,7 +8,7 @@ from module.plugins.internal.Account import Account
 class QuickshareCz(Account):
     __name__    = "QuickshareCz"
     __type__    = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __description__ = """Quickshare.cz account plugin"""

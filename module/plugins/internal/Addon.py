@@ -25,7 +25,7 @@ def threaded(fn):
 class Addon(Plugin):
     __name__    = "Addon"
     __type__    = "hook"  #@TODO: Change to `addon` in 0.4.10
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __config__   = []  #: [("name", "type", "desc", "default")]
@@ -123,7 +123,7 @@ class Addon(Plugin):
 
     #: Deprecated method, use `activated` property instead (Remove in 0.4.10)
     def isActivated(self, *args, **kwargs):
-        return self.is_activated(*args, **kwargs)
+        return self.activated
 
 
     def deactivate(self):

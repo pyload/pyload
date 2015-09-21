@@ -10,7 +10,7 @@ from module.plugins.internal.Account import Account
 class FilefactoryCom(Account):
     __name__    = "FilefactoryCom"
     __type__    = "account"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __description__ = """Filefactory.com account plugin"""

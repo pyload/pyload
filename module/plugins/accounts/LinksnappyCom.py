@@ -9,7 +9,7 @@ from module.common.json_layer import json_loads
 class LinksnappyCom(Account):
     __name__    = "LinksnappyCom"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __description__ = """Linksnappy.com account plugin"""

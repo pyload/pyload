@@ -8,7 +8,7 @@ from module.plugins.internal.Plugin import set_cookie
 class SimplyPremiumCom(Account):
     __name__    = "SimplyPremiumCom"
     __type__    = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __description__ = """Simply-Premium.com account plugin"""

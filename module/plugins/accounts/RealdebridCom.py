@@ -8,7 +8,7 @@ from module.plugins.internal.Account import Account
 class RealdebridCom(Account):
     __name__    = "RealdebridCom"
     __type__    = "account"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __status__  = "testing"
 
     __description__ = """Real-Debrid.com account plugin"""

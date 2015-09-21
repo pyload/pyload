@@ -12,7 +12,7 @@ from module.plugins.internal.Plugin import parse_html_form, set_cookie
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.44"
+    __version__ = "0.45"
     __status__  = "testing"
 
     __description__ = """XFileSharing account plugin"""

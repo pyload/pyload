@@ -7,7 +7,7 @@ from module.plugins.internal.Account import Account
 class PremiumizeMe(Account):
     __name__    = "PremiumizeMe"
     __type__    = "account"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __description__ = """Premiumize.me account plugin"""

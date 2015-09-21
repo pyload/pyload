@@ -8,7 +8,7 @@ from module.plugins.internal.Account import Account
 class MultishareCz(Account):
     __name__    = "MultishareCz"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __description__ = """Multishare.cz account plugin"""

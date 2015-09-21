@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 class OverLoadMe(Account):
     __name__    = "OverLoadMe"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __description__ = """Over-Load.me account plugin"""
