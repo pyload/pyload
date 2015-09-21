@@ -207,12 +207,11 @@ class SimpleHoster(Hoster):
         self.direct_dl = False
         self.leech_dl  = False
 
-        if not self.get_config('use_premium', True):
+        if not self.get_config('use_premium', True) and self.premium:
             self.restart(nopremium=True)
 
         if self.LOGIN_PREMIUM and not self.premium:
             self.fail(_("Required premium account not found"))
-            self.LOGIN_ACCOUNT = True
 
         if self.LOGIN_ACCOUNT and not self.account:
             self.fail(_("Required account not found"))
