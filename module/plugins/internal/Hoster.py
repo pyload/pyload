@@ -106,7 +106,7 @@ class Hoster(Plugin):
 
     def _log(self, level, plugintype, pluginname, messages):
         log = getattr(self.pyload.log, level)
-        msg = " | ".join(decode(a).strip() for a in messages if a)
+        msg = u" | ".join(decode(a).strip() for a in messages if a)
         log("%(plugintype)s %(pluginname)s[%(id)s]: %(msg)s"
             % {'plugintype': plugintype.upper(),
                'pluginname': pluginname,
@@ -207,12 +207,13 @@ class Hoster(Plugin):
 
 
     def set_reconnect(self, reconnect):
-        reconnect = bool(reconnect)
+        if reconnect:
+            self.log_info(_("Requesting line reconnection...")
+        else:
+            self.log_debug("Reconnect: %s" % reconnect)
 
-        self.log_info(_("RECONNECT ") + ("enabled" if reconnect else "disabled"))
         self.log_debug("Previous wantReconnect: %s" % self.wantReconnect)
-
-        self.wantReconnect = reconnect
+        self.wantReconnect = bool(reconnect)
 
 
     def set_wait(self, seconds, reconnect=None):
@@ -225,7 +226,7 @@ class Hoster(Plugin):
         wait_time  = max(int(seconds), 1)
         wait_until = time.time() + wait_time + 1
 
-        self.log_info(_("WAIT %d seconds") % wait_time)
+        self.log_info(_("Waiting %d seconds...") % wait_time)
         self.log_debug("Previous waitUntil: %f" % self.pyfile.waitUntil)
 
         self.pyfile.waitUntil = wait_until

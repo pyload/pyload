@@ -163,7 +163,7 @@ class XFSHoster(SimpleHoster):
             self.retry(20, 3 * 60, _("Can not leech file"))
 
         elif 'today' in stmsg:
-            self.retry(delay=seconds_to_midnight(gmt=2), msg=_("You've used all Leech traffic today"))
+            self.retry(delay=seconds_to_midnight(), msg=_("You've used all Leech traffic today"))
 
         else:
             self.fail(stmsg)

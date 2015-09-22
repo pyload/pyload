@@ -90,11 +90,11 @@ def which(program):
                 return exe_file
 
 
-def seconds_to_midnight(gmt=None):
-    if gmt is None:
+def seconds_to_midnight(utc=None):
+    if utc is None:
         now = datetime.datetime.today()
     else:
-        now = datetime.datetime.utcnow() + datetime.timedelta(hours=gmt)
+        now = datetime.datetime.utcnow() + datetime.timedelta(hours=utc)
 
     midnight = now.replace(hour=0, minute=10, second=0, microsecond=0) + datetime.timedelta(days=1)
 
@@ -212,7 +212,7 @@ class Plugin(object):
 
     def _log(self, level, plugintype, pluginname, messages):
         log = getattr(self.pyload.log, level)
-        msg = " | ".join(encode(a).strip() for a in messages if a)
+        msg = u" | ".join(decode(a).strip() for a in messages if a)
         log("%(plugintype)s %(pluginname)s: %(msg)s"
             % {'plugintype': plugintype.upper(),
                'pluginname': pluginname,

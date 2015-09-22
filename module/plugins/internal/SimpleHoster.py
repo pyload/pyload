@@ -368,7 +368,7 @@ class SimpleHoster(Hoster):
                 self.log_warning(self.info['error'])
 
                 if re.search('da(il)?y|today', errmsg, re.I):
-                    wait_time = seconds_to_midnight(gmt=2)
+                    wait_time = seconds_to_midnight()
                 else:
                     wait_time = sum(int(v) * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, "": 1}[u.lower()] for v, u in
                                 re.findall(r'(\d+)\s*(hr|hour|min|sec|)', errmsg, re.I))
@@ -393,7 +393,7 @@ class SimpleHoster(Hoster):
 
                 if re.search('limit|wait|slot', errmsg, re.I):
                     if re.search("da(il)?y|today", errmsg):
-                        wait_time = seconds_to_midnight(gmt=2)
+                        wait_time = seconds_to_midnight()
                     else:
                         wait_time = sum(int(v) * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, "": 1}[u.lower()] for v, u in
                                     re.findall(r'(\d+)\s*(hr|hour|min|sec|)', errmsg, re.I))
