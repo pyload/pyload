@@ -575,7 +575,7 @@ class Hoster(Plugin):
             except Exception:  #: Bad bad bad... rewrite this part in 0.4.10
                 res = self.load(url,
                                 just_header=True,
-                                req=self.pyload.requestFactory.getRequest())
+                                req=self.pyload.requestFactory.getRequest(self.__name__))
 
                 header = {'code': req.code}
                 for line in res.splitlines():
