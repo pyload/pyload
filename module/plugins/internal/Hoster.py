@@ -208,7 +208,7 @@ class Hoster(Plugin):
 
     def set_reconnect(self, reconnect):
         if reconnect:
-            self.log_info(_("Requesting line reconnection...")
+            self.log_info(_("Requesting line reconnection..."))
         else:
             self.log_debug("Reconnect: %s" % reconnect)
 
