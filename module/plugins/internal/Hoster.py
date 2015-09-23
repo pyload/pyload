@@ -192,10 +192,10 @@ class Hoster(Plugin):
             self.account = self.pyload.accountManager.getAccountPlugin(self.__name__)
 
         if self.account:
-            if not self.account.user:  #@TODO: Move to `Account` in 0.4.10
+            if not hasattr(self.account, 'user'):  #@TODO: Move to `Account` in 0.4.10
                 self.account.user = self.account.select()[0]
 
-            if not self.account.logged:
+            if not hasattr(self.account, 'logged'):
                 self.account = False
 
 
