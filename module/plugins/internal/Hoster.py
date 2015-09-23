@@ -44,7 +44,7 @@ def create_getInfo(klass):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -575,7 +575,7 @@ class Hoster(Plugin):
             except Exception:  #: Bad bad bad... rewrite this part in 0.4.10
                 res = self.load(url,
                                 just_header=True,
-                                req=self.pyload.requestFactory.getRequest())
+                                req=self.pyload.requestFactory.getRequest(self.__name__))
 
                 header = {'code': req.code}
                 for line in res.splitlines():

@@ -21,7 +21,7 @@ statusMap = dict((v, k) for k, v in _statusMap.items())
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.85"
+    __version__ = "1.86"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
