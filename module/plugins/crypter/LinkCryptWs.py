@@ -44,6 +44,7 @@ class LinkCryptWs(Crypter):
         #: Request package
         self.req.http.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko")  #: Better chance to not get those key-captchas
         self.html = self.load(self.pyfile.url)
+        self.html = self.load(self.pyfile.url)
 
 
     def decrypt(self, pyfile):
