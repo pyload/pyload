@@ -44,7 +44,7 @@ def create_getInfo(klass):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.28"
+    __version__ = "0.29"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -146,7 +146,7 @@ class Hoster(Plugin):
             self.req             = self.pyload.requestFactory.getRequest(self.__name__, self.account.user)
             self.chunk_limit     = -1  #: -1 for unlimited
             self.resume_download = True
-            self.premium         = self.account.premium
+            self.premium         = self.account.is_premium(self.account.user)
         else:
             self.req             = self.pyload.requestFactory.getRequest(self.__name__)
             self.chunk_limit     = 1
@@ -195,7 +195,7 @@ class Hoster(Plugin):
             if not hasattr(self.account, 'user'):  #@TODO: Move to `Account` in 0.4.10
                 self.account.user = self.account.select()[0]
 
-            if not hasattr(self.account, 'logged'):
+            if not self.account.user or not self.account.is_logged(self.account.user, True):
                 self.account = False
 
 
