@@ -21,7 +21,7 @@ statusMap = dict((v, k) for k, v in _statusMap.items())
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.86"
+    __version__ = "1.87"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -358,23 +358,24 @@ class SimpleHoster(Hoster):
 
             elif hasattr(self, 'DL_LIMIT_PATTERN') and re.search(self.DL_LIMIT_PATTERN, self.html):
                 m = re.search(self.DL_LIMIT_PATTERN, self.html)
-                try:
-                    errmsg = m.group(1).strip()
+                if m:
+                    try:
+                        errmsg = m.group(1).strip()
 
-                except AttributeError:
-                    errmsg = m.group(0).strip()
+                    except IndexError:
+                        errmsg = m.group(0).strip()
 
-                self.info['error'] = re.sub(r'<.*?>', " ", errmsg)
-                self.log_warning(self.info['error'])
+                    self.info['error'] = re.sub(r'<.*?>', " ", errmsg)
+                    self.log_warning(self.info['error'])
 
-                if re.search('da(il)?y|today', errmsg, re.I):
-                    wait_time = seconds_to_midnight()
-                else:
-                    wait_time = sum(int(v) * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, "": 1}[u.lower()] for v, u in
-                                re.findall(r'(\d+)\s*(hr|hour|min|sec|)', errmsg, re.I))
+                    if re.search('da(il)?y|today', errmsg, re.I):
+                        wait_time = seconds_to_midnight()
+                    else:
+                        wait_time = sum(int(v) * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, "": 1}[u.lower()] for v, u in
+                                    re.findall(r'(\d+)\s*(hr|hour|min|sec|)', errmsg, re.I))
 
-                self.wantReconnect = wait_time > 300
-                self.retry(1, wait_time, _("Download limit exceeded"))
+                    self.wantReconnect = wait_time > 300
+                    self.retry(1, wait_time, _("Download limit exceeded"))
 
         if hasattr(self, 'HAPPY_HOUR_PATTERN') and re.search(self.HAPPY_HOUR_PATTERN, self.html):
             self.multiDL = True
@@ -385,7 +386,7 @@ class SimpleHoster(Hoster):
                 try:
                     errmsg = m.group(1).strip()
 
-                except AttributeError:
+                except IndexError:
                     errmsg = m.group(0).strip()
 
                 self.info['error'] = re.sub(r'<.*?>', " ", errmsg)
@@ -436,7 +437,7 @@ class SimpleHoster(Hoster):
                 try:
                     waitmsg = m.group(1).strip()
 
-                except AttributeError:
+                except IndexError:
                     waitmsg = m.group(0).strip()
 
                 wait_time = sum(int(v) * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, "": 1}[u.lower()] for v, u in
@@ -537,10 +538,10 @@ class SimpleHoster(Hoster):
             self.log_error(_("Free download not implemented"))
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
-        if m is None:
-            self.error(_("Free download link not found"))
-        else:
+        if m:
             self.link = m.group(1)
+        else:
+            self.error(_("Free download link not found"))
 
 
     def handle_premium(self, pyfile):
@@ -550,7 +551,7 @@ class SimpleHoster(Hoster):
             self.handle_free(pyfile)
 
         m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
-        if m is None:
-            self.error(_("Premium download link not found"))
-        else:
+        if m:
             self.link = m.group(1)
+        else:
+            self.error(_("Premium download link not found"))
