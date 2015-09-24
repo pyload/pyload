@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urlparse
 
 from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 

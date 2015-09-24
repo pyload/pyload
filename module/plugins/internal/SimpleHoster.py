@@ -5,13 +5,12 @@ from __future__ import with_statement
 import os
 import re
 import time
-import urlparse
 
 from module.PyFile import statusMap as _statusMap
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster, create_getInfo, parse_fileInfo
-from module.plugins.internal.Plugin import Fail, encode, fixurl, replace_patterns, seconds_to_midnight, set_cookie, set_cookies
+from module.plugins.internal.Plugin import Fail, encode, parse_name, replace_patterns, seconds_to_midnight, set_cookie, set_cookies
 from module.utils import fixup, fs_encode, parseFileSize as parse_size
 
 
@@ -22,12 +21,13 @@ statusMap = dict((v, k) for k, v in _statusMap.items())
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.81"
+    __version__ = "1.86"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
-                   ("fallback"   , "bool", "Fallback to free download if premium fails", True)]
+    __config__  = [("use_premium"     , "bool", "Use premium account if available"          , True),
+                   ("premium_fallback", "bool", "Fallback to free download if premium fails", True),
+                   ("chk_filesize"    , "bool", "Check file size"                           , True)]
 
     __description__ = """Simple hoster plugin"""
     __license__     = "GPLv3"
@@ -90,7 +90,7 @@ class SimpleHoster(Hoster):
         LINK_PREMIUM_PATTERN: (optional) group(1) should be the direct link for premium download
           example: LINK_PREMIUM_PATTERN = r'<div class="link"><a href="(.+?)"'
     """
-    NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
+    NAME_REPLACEMENTS = []
     SIZE_REPLACEMENTS = []
     URL_REPLACEMENTS  = []
 
@@ -124,7 +124,7 @@ class SimpleHoster(Hoster):
         try:
             info['pattern'] = re.match(cls.__pattern__, url).groupdict()  #: Pattern groups will be saved here
 
-        except Exception:
+        except AttributeError:
             info['pattern'] = {}
 
         if not html and not online:
@@ -174,8 +174,8 @@ class SimpleHoster(Hoster):
             info['status'] = 2
 
             if 'N' in info['pattern']:
-                info['name'] = replace_patterns(fixurl(info['pattern']['N']),
-                                                cls.NAME_REPLACEMENTS)
+                name = replace_patterns(info['pattern']['N'], cls.NAME_REPLACEMENTS)
+                info['name'] = parse_name(name)
 
             if 'S' in info['pattern']:
                 size = replace_patterns(info['pattern']['S'] + info['pattern']['U'] if 'U' in info['pattern'] else info['pattern']['S'],
@@ -201,19 +201,15 @@ class SimpleHoster(Hoster):
 
 
     def prepare(self):
-        self.pyfile.error  = ""  #@TODO: Remove in 0.4.10
-        self.html          = ""  #@TODO: Recheck in 0.4.10
-        self.link          = ""  #@TODO: Recheck in 0.4.10
-        self.last_download = ""
-        self.direct_dl     = False
-        self.leech_dl      = False
+        self.link      = ""
+        self.direct_dl = False
+        self.leech_dl  = False
 
-        if not self.get_config('use_premium', True):
+        if not self.get_config('use_premium', True) and self.premium:
             self.restart(nopremium=True)
 
         if self.LOGIN_PREMIUM and not self.premium:
             self.fail(_("Required premium account not found"))
-            self.LOGIN_ACCOUNT = True
 
         if self.LOGIN_ACCOUNT and not self.account:
             self.fail(_("Required account not found"))
@@ -294,7 +290,7 @@ class SimpleHoster(Hoster):
             self.check_file()
 
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
-            if self.get_config('fallback', True) and self.premium:
+            if self.get_config('premium_fallback', True) and self.premium:
                 self.log_warning(_("Premium download failed"), e)
                 self.restart(nopremium=True)
 
@@ -307,17 +303,18 @@ class SimpleHoster(Hoster):
 
         if self.captcha.task and not self.last_download:
             self.captcha.invalid()
-            self.retry(10, reason=_("Wrong captcha"))
+            self.retry(10, msg=_("Wrong captcha"))
 
-        # 10485760 is 10MB, tolerance is used when comparing displayed size on the hoster website to real size
-        # For example displayed size can be 1.46GB for example, but real size can be 1.4649853GB
         elif self.check_download({'Empty file': re.compile(r'\A((.|)(\2|\s)*)\Z')},
-                                 file_size=self.info['size'] if 'size' in self.info else 0,
-                                 size_tolerance=10485760,
-                                 delete=False):  #@TODO: Make `delete` settable in 0.4.10
+                                 delete=True):
             self.error(_("Empty file"))
 
         else:
+            if self.get_config('chk_filesize', False) and 'size' in self.info:
+                # 10485760 is 10MB, tolerance is used when comparing displayed size on the hoster website to real size
+                # For example displayed size can be 1.46GB for example, but real size can be 1.4649853GB
+                self.check_filesize(self.info['size'], size_tolerance=10485760)
+
             self.log_debug("Using default check rules...")
             for r, p in self.FILE_ERRORS:
                 errmsg = self.check_download({r: re.compile(p)})
@@ -326,12 +323,13 @@ class SimpleHoster(Hoster):
 
                     try:
                         errmsg += " | " + self.last_check.group(1).strip()
+
                     except Exception:
                         pass
 
                     self.log_warning(_("Check result: ") + errmsg, _("Waiting 1 minute and retry"))
                     self.wantReconnect = True
-                    self.retry(wait_time=60, reason=errmsg)
+                    self.retry(delay=60, msg=errmsg)
             else:
                 if self.CHECK_FILE:
                     self.log_debug("Using custom check rules...")
@@ -340,7 +338,7 @@ class SimpleHoster(Hoster):
                     self.check_errors()
 
         self.log_info(_("No errors found"))
-        self.pyfile.error = ""
+        self.pyfile.error = ""  #@TODO: Recheck in 0.4.10
 
 
     def check_errors(self):
@@ -362,14 +360,15 @@ class SimpleHoster(Hoster):
                 m = re.search(self.DL_LIMIT_PATTERN, self.html)
                 try:
                     errmsg = m.group(1).strip()
-                except Exception:
+
+                except AttributeError:
                     errmsg = m.group(0).strip()
 
                 self.info['error'] = re.sub(r'<.*?>', " ", errmsg)
                 self.log_warning(self.info['error'])
 
                 if re.search('da(il)?y|today', errmsg, re.I):
-                    wait_time = seconds_to_midnight(gmt=2)
+                    wait_time = seconds_to_midnight()
                 else:
                     wait_time = sum(int(v) * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, "": 1}[u.lower()] for v, u in
                                 re.findall(r'(\d+)\s*(hr|hour|min|sec|)', errmsg, re.I))
@@ -385,7 +384,8 @@ class SimpleHoster(Hoster):
             if m:
                 try:
                     errmsg = m.group(1).strip()
-                except Exception:
+
+                except AttributeError:
                     errmsg = m.group(0).strip()
 
                 self.info['error'] = re.sub(r'<.*?>', " ", errmsg)
@@ -393,7 +393,7 @@ class SimpleHoster(Hoster):
 
                 if re.search('limit|wait|slot', errmsg, re.I):
                     if re.search("da(il)?y|today", errmsg):
-                        wait_time = seconds_to_midnight(gmt=2)
+                        wait_time = seconds_to_midnight()
                     else:
                         wait_time = sum(int(v) * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, "": 1}[u.lower()] for v, u in
                                     re.findall(r'(\d+)\s*(hr|hour|min|sec|)', errmsg, re.I))
@@ -406,7 +406,7 @@ class SimpleHoster(Hoster):
 
                 elif re.search('captcha|code', errmsg, re.I):
                     self.captcha.invalid()
-                    self.retry(10, reason=_("Wrong captcha"))
+                    self.retry(10, msg=_("Wrong captcha"))
 
                 elif re.search('countdown|expired', errmsg, re.I):
                     self.retry(10, 60, _("Link expired"))
@@ -421,23 +421,22 @@ class SimpleHoster(Hoster):
                     self.offline()
 
                 elif re.search('filename', errmsg, re.I):
-                    url_p = urlparse.urlparse(self.pyfile.url)
-                    self.pyfile.url = "%s://%s/%s" % (url_p.scheme, url_p.netloc, url_p.path.split('/')[0])
-                    self.retry(1, reason=_("Wrong url"))
+                    self.fail(_("Wrong url"))
 
                 elif re.search('premium', errmsg, re.I):
                     self.fail(_("File can be downloaded by premium users only"))
 
                 else:
                     self.wantReconnect = True
-                    self.retry(wait_time=60, reason=errmsg)
+                    self.retry(delay=60, msg=errmsg)
 
         elif hasattr(self, 'WAIT_PATTERN'):
             m = re.search(self.WAIT_PATTERN, self.html)
             if m:
                 try:
                     waitmsg = m.group(1).strip()
-                except Exception:
+
+                except AttributeError:
                     waitmsg = m.group(0).strip()
 
                 wait_time = sum(int(v) * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, "": 1}[u.lower()] for v, u in
@@ -483,8 +482,8 @@ class SimpleHoster(Hoster):
             self.log_debug("Previous file info: %s" % old_info)
 
         try:
-            url  = self.info['url'].strip()
-            name = self.info['name'].strip()
+            url  = self.info['url']
+            name = self.info['name']
 
         except KeyError:
             pass

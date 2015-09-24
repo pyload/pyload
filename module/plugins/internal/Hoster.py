@@ -7,21 +7,21 @@ import mimetypes
 import os
 import random
 import time
-import traceback
 import urlparse
 
 from module.plugins.internal.Captcha import Captcha
 from module.plugins.internal.Plugin import (Plugin, Abort, Fail, Reconnect, Retry, Skip,
-                                            chunks, encode, exists, fixurl as _fixurl, replace_patterns,
-                                            seconds_to_midnight, set_cookie, set_cookies, parse_html_form,
-                                            parse_html_tag_attr_value, timestamp)
+                                            chunks, decode, encode, exists, parse_html_form,
+                                            parse_html_tag_attr_value, parse_name,
+                                            replace_patterns, seconds_to_midnight,
+                                            set_cookie, set_cookies, timestamp)
 from module.utils import fs_decode, fs_encode, save_join as fs_join, save_path as safe_filename
 
 
 #@TODO: Remove in 0.4.10
 def parse_fileInfo(klass, url="", html=""):
     info = klass.get_info(url, html)
-    return info['name'], info['size'], info['status'], info['url']
+    return encode(info['name']), info['size'], info['status'], info['url']
 
 
 #@TODO: Remove in 0.4.10
@@ -44,7 +44,7 @@ def create_getInfo(klass):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.28"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -74,7 +74,6 @@ class Hoster(Plugin):
 
         #: Account handler instance, see :py:class:`Account`
         self.account = None
-        self.user    = None
         self.req     = None  #: Browser instance, see `network.Browser`
 
         #: Associated pyfile instance, see `PyFile`
@@ -105,15 +104,21 @@ class Hoster(Plugin):
         self.init()
 
 
+    def _log(self, level, plugintype, pluginname, messages):
+        log = getattr(self.pyload.log, level)
+        msg = u" | ".join(decode(a).strip() for a in messages if a)
+        log("%(plugintype)s %(pluginname)s[%(id)s]: %(msg)s"
+            % {'plugintype': plugintype.upper(),
+               'pluginname': pluginname,
+               'id'        : self.pyfile.id,
+               'msg'       : msg})
+
+
     @classmethod
     def get_info(cls, url="", html=""):
-        url   = _fixurl(url)
-        url_p = urlparse.urlparse(url)
-        return {'name'  : (url_p.path.split('/')[-1] or
-                            url_p.query.split('=', 1)[::-1][0].split('&', 1)[0] or
-                                url_p.netloc.split('.', 1)[0]),
+        return {'name'  : parse_name(url),
                 'size'  : 0,
-                'status': 3 if url else 8,
+                'status': 3 if url.strip() else 8,
                 'url'   : url}
 
 
@@ -132,34 +137,26 @@ class Hoster(Plugin):
 
 
     def _setup(self):
+        #@TODO: Remove in 0.4.10
+        self.html          = ""
+        self.last_download = ""
+        self.pyfile.error  = ""
+
         if self.account:
-            self.req             = self.pyload.requestFactory.getRequest(self.__name__, self.user)
+            self.req             = self.pyload.requestFactory.getRequest(self.__name__, self.account.user)
             self.chunk_limit     = -1  #: -1 for unlimited
             self.resume_download = True
-            self.premium         = self.account.is_premium(self.user)
+            self.premium         = self.account.premium
         else:
             self.req             = self.pyload.requestFactory.getRequest(self.__name__)
             self.chunk_limit     = 1
             self.resume_download = False
             self.premium         = False
 
-
-    def load_account(self):
-        if self.req:
-            self.req.close()
-
-        if not self.account:
-            self.account = self.pyload.accountManager.getAccountPlugin(self.__name__)
-
-        if self.account:
-            if not self.user:
-                self.user = self.account.select()[0]
-
-            if not self.user or not self.account.is_logged(self.user, True):
-                self.account = False
+        return self.setup()
 
 
-    def preprocessing(self, thread):
+    def _process(self, thread):
         """
         Handles important things to do before starting
         """
@@ -172,17 +169,34 @@ class Hoster(Plugin):
             self.retry_free = False
 
         self._setup()
-        self.setup()
-
-        self.pyload.hookManager.downloadPreparing(self.pyfile)  #@TODO: Recheck in 0.4.10
-
-        if self.pyfile.abort:
-            self.abort()
 
         self.pyfile.setStatus("starting")
-        self.log_debug("PROCESS URL " + self.pyfile.url, "PLUGIN VERSION %s" % self.__version__)
+        self.pyload.hookManager.downloadPreparing(self.pyfile)  #@TODO: Recheck in 0.4.10
 
+        self.check_abort()
+
+        self.log_debug("PROCESS URL " + self.pyfile.url, "PLUGIN VERSION %s" % self.__version__)
         return self.process(self.pyfile)
+
+
+    #: Deprecated method, use `_process` instead (Remove in 0.4.10)
+    def preprocessing(self, *args, **kwargs):
+        return self._process(*args, **kwargs)
+
+
+    def load_account(self):
+        if self.req:
+            self.req.close()
+
+        if not self.account:
+            self.account = self.pyload.accountManager.getAccountPlugin(self.__name__)
+
+        if self.account:
+            if not hasattr(self.account, 'user'):  #@TODO: Move to `Account` in 0.4.10
+                self.account.user = self.account.select()[0]
+
+            if not hasattr(self.account, 'logged'):
+                self.account = False
 
 
     def process(self, pyfile):
@@ -193,12 +207,13 @@ class Hoster(Plugin):
 
 
     def set_reconnect(self, reconnect):
-        reconnect = bool(reconnect)
+        if reconnect:
+            self.log_info(_("Requesting line reconnection..."))
+        else:
+            self.log_debug("Reconnect: %s" % reconnect)
 
-        self.log_info(_("RECONNECT ") + ("enabled" if reconnect else "disabled"))
         self.log_debug("Previous wantReconnect: %s" % self.wantReconnect)
-
-        self.wantReconnect = reconnect
+        self.wantReconnect = bool(reconnect)
 
 
     def set_wait(self, seconds, reconnect=None):
@@ -211,7 +226,7 @@ class Hoster(Plugin):
         wait_time  = max(int(seconds), 1)
         wait_until = time.time() + wait_time + 1
 
-        self.log_info(_("WAIT %d seconds") % wait_time)
+        self.log_info(_("Waiting %d seconds...") % wait_time)
         self.log_debug("Previous waitUntil: %f" % self.pyfile.waitUntil)
 
         self.pyfile.waitUntil = wait_until
@@ -242,15 +257,12 @@ class Hoster(Plugin):
                 self.log_warning("Ignore reconnection due logged account")
 
             while pyfile.waitUntil > time.time():
-                if pyfile.abort:
-                    self.abort()
-
+                self.check_abort()
                 time.sleep(2)
 
         else:
             while pyfile.waitUntil > time.time():
-                if pyfile.abort:
-                    self.abort()
+                self.check_abort()
 
                 if self.thread.m.reconnecting.isSet():
                     self.waiting = False
@@ -264,89 +276,111 @@ class Hoster(Plugin):
         pyfile.status = status  #@NOTE: Remove in 0.4.10
 
 
-    def skip(self, reason=""):
+    def skip(self, msg=""):
         """
-        Skip and give reason
+        Skip and give msg
         """
-        raise Skip(encode(reason))  #@TODO: Remove `encode` in 0.4.10
+        raise Skip(encode(msg or self.pyfile.error))  #@TODO: Remove `encode` in 0.4.10
 
 
-    def abort(self, reason=""):
+    #@TODO: Remove in 0.4.10
+    def fail(self, msg):
         """
-        Abort and give reason
+        Fail and give msg
         """
-        #@TODO: Remove in 0.4.10
-        if reason:
-            self.pyfile.error = encode(reason)
+        msg = msg.strip()
+
+        if msg:
+            self.pyfile.error = msg
+        else:
+            msg = self.pyfile.error
+
+        raise Fail(encode(msg))  #@TODO: Remove `encode` in 0.4.10
+
+
+    def error(self, msg="", type=_("Parse")):
+        type = _("%s error") % type.strip().capitalize() if type else _("Unknown")
+        msg  = _("%(type)s: %(msg)s | Plugin may be out of date"
+                 % {'type': type, 'msg': msg or self.pyfile.error})
+
+        self.fail(msg)
+
+
+    def abort(self, msg=""):
+        """
+        Abort and give msg
+        """
+        if msg:  #@TODO: Remove in 0.4.10
+            self.pyfile.error = encode(msg)
 
         raise Abort
 
 
-    def offline(self, reason=""):
+    #@TODO: Recheck in 0.4.10
+    def offline(self, msg=""):
         """
         Fail and indicate file is offline
         """
-        #@TODO: Remove in 0.4.10
-        if reason:
-            self.pyfile.error = encode(reason)
-
-        raise Fail("offline")
+        self.fail("offline")
 
 
-    def temp_offline(self, reason=""):
+    #@TODO: Recheck in 0.4.10
+    def temp_offline(self, msg=""):
         """
         Fail and indicates file ist temporary offline, the core may take consequences
         """
-        #@TODO: Remove in 0.4.10
-        if reason:
-            self.pyfile.error = encode(reason)
-
-        raise Fail("temp. offline")
+        self.fail("temp. offline")
 
 
-    def retry(self, max_tries=5, wait_time=1, reason=""):
+    def retry(self, attemps=5, delay=1, msg=""):
         """
         Retries and begin again from the beginning
 
-        :param max_tries: number of maximum retries
-        :param wait_time: time to wait in seconds
-        :param reason: reason for retrying, will be passed to fail if max_tries reached
+        :param attemps: number of maximum retries
+        :param delay: time to wait in seconds
+        :param msg: msg for retrying, will be passed to fail if attemps value was reached
         """
         id = inspect.currentframe().f_back.f_lineno
         if id not in self.retries:
             self.retries[id] = 0
 
-        if 0 < max_tries <= self.retries[id]:
-            self.fail(reason or _("Max retries reached"))
+        if 0 < attemps <= self.retries[id]:
+            self.fail(msg or _("Max retries reached"))
 
-        self.wait(wait_time, False)
+        self.wait(delay, False)
 
         self.retries[id] += 1
-        raise Retry(encode(reason))  #@TODO: Remove `encode` in 0.4.10
+        raise Retry(encode(msg))  #@TODO: Remove `encode` in 0.4.10
 
 
-    def restart(self, reason=None, nopremium=False):
-        if not reason:
-            reason = _("Fallback to free download") if nopremium else _("Restart")
+    def restart(self, msg=None, nopremium=False):
+        if not msg:
+            msg = _("Fallback to free download") if nopremium else _("Restart")
 
         if nopremium:
             if self.premium:
                 self.retry_free = True
             else:
-                self.fail("%s | %s" % (reason, _("Download was already free")))
+                self.fail("%s | %s" % (msg, _("Download was already free")))
 
-        raise Retry(encode(reason))  #@TODO: Remove `encode` in 0.4.10
+        raise Retry(encode(msg))  #@TODO: Remove `encode` in 0.4.10
 
 
-    def fixurl(self, url):
-        url = _fixurl(url)
+    def fixurl(self, url, baseurl=None):
+        if not baseurl:
+            baseurl = self.pyfile.url
 
         if not urlparse.urlparse(url).scheme:
-            url_p = urlparse.urlparse(self.pyfile.url)
+            url_p = urlparse.urlparse(baseurl)
             baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
             url = urlparse.urljoin(baseurl, url)
 
         return url
+
+
+    def load(self, *args, **kwargs):
+        self.check_abort()
+        return super(Hoster, self).load(*args, **kwargs)
 
 
     def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=True):
@@ -362,20 +396,13 @@ class Hoster(Plugin):
         the filename will be changed if needed
         :return: The location where the file was saved
         """
-        if self.pyfile.abort:
-            self.abort()
-
-        url = self.fixurl(url)
-
-        if not url or not isinstance(url, basestring):
-            self.fail(_("No url given"))
+        self.check_abort()
 
         if self.pyload.debug:
             self.log_debug("DOWNLOAD URL " + url,
                            *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url")])
 
-        name = _fixurl(self.pyfile.name)
-        self.pyfile.name = urlparse.urlparse(name).path.split('/')[-1] or name
+        self.pyfile.name = parse_name(self.pyfile.name)  #: Safe check
 
         self.captcha.correct()
         self.check_for_same_files()
@@ -388,6 +415,7 @@ class Hoster(Plugin):
         if not exists(download_location):
             try:
                 os.makedirs(download_location)
+
             except Exception, e:
                 self.fail(e)
 
@@ -398,8 +426,7 @@ class Hoster(Plugin):
 
         self.pyload.hookManager.dispatchEvent("download_start", self.pyfile, url, filename)
 
-        if self.pyfile.abort:
-            self.abort()
+        self.check_abort()
 
         try:
             newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref, cookies=cookies,
@@ -410,7 +437,7 @@ class Hoster(Plugin):
 
         #@TODO: Recheck in 0.4.10
         if disposition and newname:
-            finalname = urlparse.urlparse(newname).path.split('/')[-1].split(' filename*=')[0]
+            finalname = parse_name(newname).split(' filename*=')[0]
 
             if finalname != newname:
                 try:
@@ -432,9 +459,55 @@ class Hoster(Plugin):
         return self.last_download
 
 
-    def check_download(self, rules, delete=False, file_size=0, size_tolerance=1024, read_size=1048576):
+    def check_abort(self):
+        if not self.pyfile.abort:
+            return
+
+        if self.pyfile.hasStatus("failed"):
+            self.fail()
+
+        elif self.pyfile.hasStatus("skipped"):
+            self.skip(self.pyfile.statusname)
+
+        elif self.pyfile.hasStatus("offline"):
+            self.offline()
+
+        elif self.pyfile.hasStatus("temp. offline"):
+            self.temp_offline()
+
+        else:
+            self.abort()
+
+
+    def check_filesize(self, file_size, size_tolerance=1024):
         """
-        Checks the content of the last downloaded file, re match is saved to `lastCheck`
+        Checks the file size of the last downloaded file
+
+        :param file_size: expected file size
+        :param size_tolerance: size check tolerance
+        """
+        if not self.last_download:
+            return
+
+        download_size = os.stat(fs_encode(self.last_download)).st_size
+
+        if download_size < 1:
+            self.fail(_("Empty file"))
+
+        elif file_size > 0:
+            diff = abs(file_size - download_size)
+
+            if diff > size_tolerance:
+                self.fail(_("File size mismatch | Expected file size: %s | Downloaded file size: %s")
+                          % (file_size, download_size))
+
+            elif diff != 0:
+                self.log_warning(_("File size is not equal to expected size"))
+
+
+    def check_download(self, rules, delete=False, read_size=1048576, file_size=0, size_tolerance=1024):
+        """
+        Checks the content of the last downloaded file, re match is saved to `last_check`
 
         :param rules: dict with names and rules to match (compiled regexp or strings)
         :param delete: delete if matched
@@ -447,26 +520,10 @@ class Hoster(Plugin):
         last_download = fs_encode(self.last_download)
 
         if not self.last_download or not exists(last_download):
-            self.last_download = ""
             self.fail(self.pyfile.error or _("No file downloaded"))
 
         try:
-            download_size = os.stat(last_download).st_size
-
-            if download_size < 1:
-                do_delete = True
-                self.fail(_("Empty file"))
-
-            elif file_size > 0:
-                diff = abs(file_size - download_size)
-
-                if diff > size_tolerance:
-                    do_delete = True
-                    self.fail(_("File size mismatch | Expected file size: %s | Downloaded file size: %s")
-                              % (file_size, download_size))
-
-                elif diff != 0:
-                    self.log_warning(_("File size is not equal to expected size"))
+            self.check_filesize(file_size, size_tolerance)
 
             with open(last_download, "rb") as f:
                 content = f.read(read_size)
@@ -492,12 +549,10 @@ class Hoster(Plugin):
 
                 except OSError, e:
                     self.log_warning(_("Error removing: %s") % last_download, e)
-                    if self.pyload.debug:
-                        traceback.print_exc()
 
                 else:
+                    self.log_info(_("File deleted: ") + self.last_download)
                     self.last_download = ""
-                    self.log_info(_("File deleted"))
 
 
     def direct_link(self, url, follow_location=None):
@@ -520,7 +575,7 @@ class Hoster(Plugin):
             except Exception:  #: Bad bad bad... rewrite this part in 0.4.10
                 res = self.load(url,
                                 just_header=True,
-                                req=self.pyload.requestFactory.getRequest())
+                                req=self.pyload.requestFactory.getRequest(self.__name__))
 
                 header = {'code': req.code}
                 for line in res.splitlines():
@@ -544,12 +599,7 @@ class Hoster(Plugin):
                 link = url
 
             elif 'location' in header and header['location']:
-                location = header['location']
-
-                if not urlparse.urlparse(location).scheme:
-                    url_p    = urlparse.urlparse(url)
-                    baseurl  = "%s://%s" % (url_p.scheme, url_p.netloc)
-                    location = urlparse.urljoin(baseurl, location)
+                location = self.fixurl(header['location'], url)
 
                 if 'code' in header and header['code'] == 302:
                     link = location
@@ -559,7 +609,7 @@ class Hoster(Plugin):
                     continue
 
             else:
-                extension = os.path.splitext(urlparse.urlparse(url).path.split('/')[-1])[-1]
+                extension = os.path.splitext(parse_name(url))[-1]
 
                 if 'content-type' in header and header['content-type']:
                     mimetype = header['content-type'].split(';')[0].strip()
@@ -580,6 +630,7 @@ class Hoster(Plugin):
         else:
             try:
                 self.log_error(_("Too many redirects"))
+
             except Exception:
                 pass
 
@@ -594,15 +645,17 @@ class Hoster(Plugin):
         if not self.account:
             return True
 
-        traffic = self.account.get_data(self.user, True)['trafficleft']
+        traffic = self.account.get_data(self.account.user, True)['trafficleft']
 
         if traffic is None:
             return False
+
         elif traffic == -1:
             return True
+
         else:
             size = self.pyfile.size / 1024
-            self.log_info(_("Filesize: %s KiB, Traffic left for user %s: %s KiB") % (size, self.user, traffic))
+            self.log_info(_("Filesize: %s KiB, Traffic left for user %s: %s KiB") % (size, self.account.user, traffic))
             return size <= traffic
 
 

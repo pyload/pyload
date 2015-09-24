@@ -10,7 +10,7 @@ from module.plugins.internal.Plugin import set_cookies
 class UploadingCom(Account):
     __name__    = "UploadingCom"
     __type__    = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __description__ = """Uploading.com account plugin"""
@@ -22,7 +22,7 @@ class UploadingCom(Account):
     VALID_UNTIL_PATTERN = r'Valid Until:(.+?)<'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         validuntil  = None
         trafficleft = None
         premium     = None

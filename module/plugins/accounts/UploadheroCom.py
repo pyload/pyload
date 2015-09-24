@@ -10,7 +10,7 @@ from module.plugins.internal.Account import Account
 class UploadheroCom(Account):
     __name__    = "UploadheroCom"
     __type__    = "account"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "testing"
 
     __description__ = """Uploadhero.co account plugin"""
@@ -18,7 +18,7 @@ class UploadheroCom(Account):
     __authors__     = [("mcmyst", "mcmyst@hotmail.fr")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         premium_pattern = re.compile('Il vous reste <span class="bleu">(\d+)</span> jours premium')
 
         data = self.get_data(user)
@@ -40,4 +40,4 @@ class UploadheroCom(Account):
                                'password_login': password})
 
         if "mot de passe invalide" in html:
-            self.login_fail()
+            self.fail_login()

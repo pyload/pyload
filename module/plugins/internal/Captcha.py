@@ -4,7 +4,6 @@ from __future__ import with_statement
 
 import os
 import time
-import traceback
 
 from module.plugins.internal.Plugin import Plugin
 
@@ -12,7 +11,7 @@ from module.plugins.internal.Plugin import Plugin
 class Captcha(Plugin):
     __name__    = "Captcha"
     __type__    = "captcha"
-    __version__ = "0.42"
+    __version__ = "0.44"
     __status__  = "testing"
 
     __description__ = """Base anti-captcha plugin"""
@@ -50,18 +49,18 @@ class Captcha(Plugin):
         pass
 
 
-    def decrypt(self, url, get={}, post={}, ref=False, cookies=False, decode=False,
+    def decrypt(self, url, get={}, post={}, ref=False, cookies=True, decode=False,
                 input_type='jpg', output_type='textual', ocr=True, timeout=120):
         img = self.load(url, get=get, post=post, ref=ref, cookies=cookies, decode=decode)
         return self._decrypt(img, input_type, output_type, ocr, timeout)
 
 
     #@TODO: Definitely choose a better name for this method!
-    def _decrypt(self, raw, input_type='jpg', output_type='textual', ocr=False, timeout=120):
+    def _decrypt(self, data, input_type='jpg', output_type='textual', ocr=False, timeout=120):
         """
         Loads a captcha and decrypts it with ocr, plugin, user input
 
-        :param raw: image raw data
+        :param data: image raw data
         :param get: get part for request
         :param post: post part for request
         :param cookies: True if cookies should be enabled
@@ -77,7 +76,7 @@ class Captcha(Plugin):
         time_ref = ("%.2f" % time.time())[-6:].replace(".", "")
 
         with open(os.path.join("tmp", "captcha_image_%s_%s.%s" % (self.plugin.__name__, time_ref, input_type)), "wb") as tmp_img:
-            tmp_img.write(raw)
+            tmp_img.write(data)
 
         if ocr:
             if isinstance(ocr, basestring):
@@ -90,14 +89,13 @@ class Captcha(Plugin):
             captchaManager = self.pyload.captchaManager
 
             try:
-                self.task = captchaManager.newTask(raw, input_type, tmp_img.name, output_type)
+                self.task = captchaManager.newTask(data, input_type, tmp_img.name, output_type)
 
                 captchaManager.handleCaptcha(self.task)
 
                 self.task.setWaiting(max(timeout, 50))  #@TODO: Move to `CaptchaManager` in 0.4.10
                 while self.task.isWaiting():
-                    if self.plugin.pyfile.abort:
-                        self.plugin.abort()
+                    self.plugin.check_abort()
                     time.sleep(1)
 
             finally:
@@ -108,7 +106,7 @@ class Captcha(Plugin):
 
             elif not self.task.result:
                 self.invalid()
-                self.plugin.retry(reason=_("No captcha result obtained in appropiate time"))
+                self.plugin.retry(msg=_("No captcha result obtained in appropiate time"))
 
             result = self.task.result
 
@@ -118,7 +116,6 @@ class Captcha(Plugin):
 
             except OSError, e:
                 self.log_warning(_("Error removing: %s") % tmp_img.name, e)
-                traceback.print_exc()
 
         #self.log_info(_("Captcha result: ") + result)  #@TODO: Remove from here?
 

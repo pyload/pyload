@@ -6,7 +6,10 @@ import datetime
 import inspect
 import os
 import re
+import sys
+import traceback
 import urllib
+import urlparse
 
 if os.name != "nt":
     import grp
@@ -22,7 +25,7 @@ def decode(string, encoding='utf8'):
     if type(string) is str:
         return string.decode(encoding, "replace")
     else:
-        return string
+        return unicode(string)
 
 
 #@TODO: Move to utils in 0.4.10
@@ -31,7 +34,7 @@ def encode(string, encoding='utf8'):
     if type(string) is unicode:
         return string.encode(encoding, "replace")
     else:
-        return string
+        return str(string)
 
 
 #@TODO: Move to utils in 0.4.10
@@ -47,16 +50,27 @@ def exists(path):
 
 
 #@TODO: Move to utils in 0.4.10
-def fixurl(url):
-    return html_unescape(urllib.unquote(url.decode('unicode-escape'))).strip().rstrip('/')
+def parse_name(url):
+    url = urllib.unquote(url)
+    url = url.decode('unicode-escape')
+    url = html_unescape(url)
+    url = urllib.quote(url)
+
+    url_p = urlparse.urlparse(url.strip().rstrip('/'))
+
+    name = (url_p.path.split('/')[-1] or
+            url_p.query.split('=', 1)[::-1][0].split('&', 1)[0] or
+            url_p.netloc.split('.', 1)[0])
+
+    return urllib.unquote(name)
 
 
 #@TODO: Move to utils in 0.4.10
 def timestamp():
     return int(time.time() * 1000)
-    
-    
-#@TODO: Move to utils in 0.4.10    
+
+
+#@TODO: Move to utils in 0.4.10
 def which(program):
     """
     Works exactly like the unix command which
@@ -76,22 +90,15 @@ def which(program):
                 return exe_file
 
 
-def seconds_to_midnight(gmt=0):
-    now = datetime.datetime.utcnow() + datetime.timedelta(hours=gmt)
-
-    if now.hour == 0 and now.minute < 10:
-        midnight = now
+def seconds_to_midnight(utc=None):
+    if utc is None:
+        now = datetime.datetime.today()
     else:
-        midnight = now + datetime.timedelta(days=1)
+        now = datetime.datetime.utcnow() + datetime.timedelta(hours=utc)
 
-    td = midnight.replace(hour=0, minute=10, second=0, microsecond=0) - now
+    midnight = now.replace(hour=0, minute=10, second=0, microsecond=0) + datetime.timedelta(days=1)
 
-    if hasattr(td, 'total_seconds'):
-        res = td.total_seconds()
-    else:  #@NOTE: work-around for python 2.5 and 2.6 missing datetime.timedelta.total_seconds
-        res = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
-
-    return int(res)
+    return (midnight - now).seconds
 
 
 def replace_patterns(string, ruleslist):
@@ -165,8 +172,8 @@ def chunks(iterable, size):
 
 class Plugin(object):
     __name__    = "Plugin"
-    __type__    = "hoster"
-    __version__ = "0.31"
+    __type__    = "plugin"
+    __version__ = "0.37"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -185,6 +192,11 @@ class Plugin(object):
         self.init()
 
 
+    def __repr__(self):
+        return "<%(type)s %(name)s>" % {'type': self.__type__.capitalize(),
+                                        'name': self.__name__}
+
+
     def _init(self, core):
         self.pyload = core
         self.info   = {}  #: Provide information in dict here
@@ -200,33 +212,39 @@ class Plugin(object):
 
     def _log(self, level, plugintype, pluginname, messages):
         log = getattr(self.pyload.log, level)
-        msg = encode(" | ".join((a if isinstance(a, basestring) else str(a)).strip() for a in messages if a))
-        log("%(plugintype)s %(pluginname)s%(id)s: %(msg)s"
+        msg = u" | ".join(decode(a).strip() for a in messages if a)
+        log("%(plugintype)s %(pluginname)s: %(msg)s"
             % {'plugintype': plugintype.upper(),
                'pluginname': pluginname,
-               'id'        : ("[%s]" % self.pyfile.id) if hasattr(self, 'pyfile') else "",
                'msg'       : msg})
 
 
     def log_debug(self, *args):
-        if self.pyload.debug:
-            return self._log("debug", self.__type__, self.__name__, args)
+        if not self.pyload.debug:
+            return
+        self._log("debug", self.__type__, self.__name__, args)
 
 
     def log_info(self, *args):
-        return self._log("info", self.__type__, self.__name__, args)
+        self._log("info", self.__type__, self.__name__, args)
 
 
     def log_warning(self, *args):
-        return self._log("warning", self.__type__, self.__name__, args)
+        self._log("warning", self.__type__, self.__name__, args)
+        if self.pyload.debug:
+            traceback.print_exc()
 
 
     def log_error(self, *args):
-        return self._log("error", self.__type__, self.__name__, args)
+        self._log("error", self.__type__, self.__name__, args)
+        if self.pyload.debug:
+            traceback.print_exc()
 
 
     def log_critical(self, *args):
         return self._log("critical", self.__type__, self.__name__, args)
+        if self.pyload.debug:
+            traceback.print_exc()
 
 
     def set_permissions(self, path):
@@ -307,21 +325,10 @@ class Plugin(object):
         self.pyload.db.delStorage(self.__name__, key)
 
 
-    def fail(self, reason):
+    def fail(self, msg):
         """
-        Fail and give reason
+        Fail and give msg
         """
-        raise Fail(encode(reason))  #@TODO: Remove `encode` in 0.4.10
-
-
-    def error(self, reason="", type=_("Parse")):
-        if not reason:
-            type = _("Unknown")
-
-        msg  = _("%s error") % type.strip().capitalize() if type else _("Error")
-        msg += (": %s" % reason.strip()) if reason else ""
-        msg += _(" | Plugin may be out of date")
-
         raise Fail(encode(msg))  #@TODO: Remove `encode` in 0.4.10
 
 
@@ -338,14 +345,6 @@ class Plugin(object):
         :param decode: Wether to decode the output according to http header, should be True in most cases
         :return: Loaded content
         """
-        if hasattr(self, 'pyfile') and self.pyfile.abort:
-            self.abort()
-
-        url = fixurl(url)
-
-        if not url or not isinstance(url, basestring):
-            self.fail(_("No url given"))
-
         if self.pyload.debug:
             self.log_debug("LOAD URL " + url,
                            *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url")])
@@ -365,7 +364,7 @@ class Plugin(object):
 
         #@TODO: Move to network in 0.4.10
         if isinstance(decode, basestring):
-            res = decode(res, decode)
+            res = sys.modules[self.__name__].decode(res, decode)  #@TODO: See #1787, use utils.decode() in 0.4.10
 
         if self.pyload.debug:
             frame = inspect.currentframe()
@@ -411,6 +410,7 @@ class Plugin(object):
         """
         try:
             self.req.close()
+
         except Exception:
             pass
 

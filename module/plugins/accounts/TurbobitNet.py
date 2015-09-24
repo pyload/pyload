@@ -10,7 +10,7 @@ from module.plugins.internal.Plugin import set_cookie
 class TurbobitNet(Account):
     __name__    = "TurbobitNet"
     __type__    = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __description__ = """TurbobitNet account plugin"""
@@ -18,7 +18,7 @@ class TurbobitNet(Account):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         html = self.load("http://turbobit.net")
 
         m = re.search(r'<u>Turbo Access</u> to ([\d.]+)', html)
@@ -41,4 +41,4 @@ class TurbobitNet(Account):
                                "user[submit]": "Login"})
 
         if not '<div class="menu-item user-name">' in html:
-            self.login_fail()
+            self.fail_login()

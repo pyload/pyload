@@ -216,8 +216,10 @@ class ShareLinksBiz(Crypter):
                 self.log_debug("JsEngine returns value [%s] for redirection link" % dlLink)
 
                 package_links.append(dlLink)
+
             except Exception, detail:
                 self.log_debug("Error decrypting Web link [%s], %s" % (ID, detail))
+
         return package_links
 
 
@@ -242,8 +244,10 @@ class ShareLinksBiz(Crypter):
             try:
                 (crypted, jk) = self._get_cipher_params()
                 package_links.extend(self._get_links(crypted, jk))
+
             except Exception:
                 self.fail(_("Unable to decrypt CNL2 links"))
+
         return package_links
 
 

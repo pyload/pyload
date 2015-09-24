@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class CzshareCom(Account):
     __name__    = "CzshareCom"
     __type__    = "account"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __description__ = """Czshare.com account plugin, now Sdilej.cz"""
@@ -21,7 +21,7 @@ class CzshareCom(Account):
     CREDIT_LEFT_PATTERN = r'<tr class="active">\s*<td>([\d ,]+) (KiB|MiB|GiB)</td>\s*<td>([^<]*)</td>\s*</tr>'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         premium     = False
         validuntil  = None
         trafficleft = None
@@ -51,4 +51,4 @@ class CzshareCom(Account):
                                "login-name"    : user})
 
         if '<div class="login' in html:
-            self.login_fail()
+            self.fail_login()

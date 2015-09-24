@@ -9,7 +9,7 @@ from module.common.json_layer import json_loads
 class RapidgatorNet(Account):
     __name__    = "RapidgatorNet"
     __type__    = "account"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __description__ = """Rapidgator.net account plugin"""
@@ -20,7 +20,7 @@ class RapidgatorNet(Account):
     API_URL = "http://rapidgator.net/api/user/"
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         validuntil  = None
         trafficleft = None
         premium     = False
@@ -75,4 +75,4 @@ class RapidgatorNet(Account):
         except Exception, e:
             self.log_error(e)
 
-        self.login_fail()
+        self.fail_login()

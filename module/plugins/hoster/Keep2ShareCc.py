@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class Keep2ShareCc(SimpleHoster):
     __name__    = "Keep2ShareCc"
     __type__    = "hoster"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
@@ -45,7 +45,7 @@ class Keep2ShareCc(SimpleHoster):
         if m:
             self.info['error'] = m.group(1)
             self.wantReconnect = True
-            self.retry(wait_time=30 * 60, reason=m.group(0))
+            self.retry(wait_time=30 * 60, msg=m.group(0))
 
         m = re.search(self.ERROR_PATTERN, self.html)
         if m:
@@ -61,7 +61,7 @@ class Keep2ShareCc(SimpleHoster):
             wait_time = sum(a * b for a, b in zip(ftr, map(int, m.group(1).split(':'))))
 
             self.wantReconnect = True
-            self.retry(wait_time=wait_time, reason="Please wait to download this file")
+            self.retry(wait_time=wait_time, msg="Please wait to download this file")
 
         self.info.pop('error', None)
 

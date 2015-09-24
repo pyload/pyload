@@ -2,7 +2,6 @@
 
 import re
 import time
-import urlparse
 
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.captcha.ReCaptcha import ReCaptcha

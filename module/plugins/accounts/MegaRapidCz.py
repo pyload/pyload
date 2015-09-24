@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class MegaRapidCz(Account):
     __name__    = "MegaRapidCz"
     __type__    = "account"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__  = "testing"
 
     __description__ = """MegaRapid.cz account plugin"""
@@ -25,7 +25,7 @@ class MegaRapidCz(Account):
     TRAFFIC_LEFT_PATTERN = r'<tr><td>Kredit</td><td>(.*?) GiB'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         htmll = self.load("http://megarapid.cz/mujucet/")
 
         m = re.search(self.LIMITDL_PATTERN, htmll)

@@ -4,6 +4,7 @@ import re
 import time
 import urlparse
 
+from module.common.json_layer import json_loads
 from module.plugins.internal.Account import Account
 from module.plugins.internal.Plugin import parse_html_form, set_cookie
 
@@ -11,7 +12,7 @@ from module.plugins.internal.Plugin import parse_html_form, set_cookie
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.43"
+    __version__ = "0.46"
     __status__  = "testing"
 
     __description__ = """XFileSharing account plugin"""
@@ -39,7 +40,7 @@ class XFSAccount(Account):
     LOGIN_FAIL_PATTERN = r'Incorrect Login or Password|account was banned|Error<'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         validuntil   = None
         trafficleft  = None
         leechtraffic = None
@@ -144,13 +145,13 @@ class XFSAccount(Account):
                 self.HOSTER_URL = "http://www.%s/" % self.HOSTER_DOMAIN
 
             if self.COOKIES:
-                if isinstance(self.COOKIES, list) and not self.COOKIES.count((self.HOSTER_DOMAIN, "lang", "english")):
+                if isinstance(self.COOKIES, list) and (self.HOSTER_DOMAIN, "lang", "english") not in self.COOKIES:
                     self.COOKIES.insert((self.HOSTER_DOMAIN, "lang", "english"))
                 else:
                     set_cookie(self.req.cj, self.HOSTER_DOMAIN, "lang", "english")
 
         if not self.HOSTER_URL:
-            self.login_fail(_("Missing HOSTER_URL"))
+            self.fail_login(_("Missing HOSTER_URL"))
         else:
             self.HOSTER_URL = self.HOSTER_URL.rstrip('/') + "/"
 
@@ -174,5 +175,13 @@ class XFSAccount(Account):
 
         html = self.load(url, post=inputs, cookies=self.COOKIES)
 
-        if re.search(self.LOGIN_FAIL_PATTERN, html):
-            self.login_fail()
+        try:
+            json = json_loads(html)
+
+        except ValueError:
+            if re.search(self.LOGIN_FAIL_PATTERN, html):
+                self.fail_login()
+
+        else:
+            if not 'success' in json or not json['success']:
+                self.fail_login()

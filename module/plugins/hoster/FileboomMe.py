@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from urlparse import urljoin
+import urlparse
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
@@ -37,7 +36,7 @@ class FileboomMe(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        post_url = urljoin(pyfile.url, "file/" + self.info['pattern']['ID'])
+        post_url = urlparse.urljoin(pyfile.url, "file/" + self.info['pattern']['ID'])
 
         m = re.search(r'data-slow-id="(\w+)"', self.html)
         if m:
@@ -46,7 +45,7 @@ class FileboomMe(SimpleHoster):
 
             m = re.search(self.LINK_PATTERN, self.html)
             if m:
-                self.link = urljoin(pyfile.url, m.group(0))
+                self.link = urlparse.urljoin(pyfile.url, m.group(0))
 
             else:
                 for _i in xrange(5):
@@ -56,7 +55,7 @@ class FileboomMe(SimpleHoster):
 
                         m = re.search(self.CAPTCHA_PATTERN, self.html)
                         if m:
-                            captcha = self.captcha.decrypt(urljoin(pyfile.url, m.group(1)))
+                            captcha = self.captcha.decrypt(urlparse.urljoin(pyfile.url, m.group(1)))
 
                             self.html = self.load(post_url,
                                                   post={'CaptchaForm[code]'  : captcha,
@@ -76,7 +75,7 @@ class FileboomMe(SimpleHoster):
 
                                 m = re.search(self.LINK_PATTERN, self.html)
                                 if m:
-                                    self.link = urljoin(pyfile.url, m.group(0))
+                                    self.link = urlparse.urljoin(pyfile.url, m.group(0))
 
                                 else:
                                     self.captcha.invalid()

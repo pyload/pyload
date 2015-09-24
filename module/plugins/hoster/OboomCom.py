@@ -13,7 +13,7 @@ from module.plugins.captcha.ReCaptcha import ReCaptcha
 class OboomCom(Hoster):
     __name__    = "OboomCom"
     __type__    = "hoster"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?oboom\.com/(?:#(?:id=|/)?)?(?P<ID>\w{8})'
@@ -141,6 +141,6 @@ class OboomCom(Hoster):
             self.download_domain = result[1]
             self.download_ticket = result[2]
         elif result[0] == 421:
-            self.retry(wait_time=result[2] + 60, reason=_("Connection limit exceeded"))
+            self.retry(wait_time=result[2] + 60, msg=_("Connection limit exceeded"))
         else:
             self.fail(_("Could not retrieve download ticket. Error code: %s") % result[0])

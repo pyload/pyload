@@ -7,7 +7,7 @@ from module.plugins.internal.Account import Account
 class HighWayMe(Account):
     __name__    = "HighWayMe.py"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __description__ = """High-Way.me account plugin"""
@@ -15,7 +15,7 @@ class HighWayMe(Account):
     __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         premium     = False
         validuntil  = -1
         trafficleft = None
@@ -47,4 +47,4 @@ class HighWayMe(Account):
                                'pass': password})
 
         if 'UserOrPassInvalid' in html:
-            self.login_fail()
+            self.fail_login()

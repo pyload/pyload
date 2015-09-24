@@ -12,7 +12,6 @@ import logging
 import os
 import subprocess
 # import tempfile
-import traceback
 
 from module.plugins.internal.Plugin import Plugin
 from module.utils import save_join as fs_join
@@ -128,6 +127,7 @@ class OCR(Plugin):
         try:
             with open(tmpTxt.name, 'r') as f:
                 self.result_captcha = f.read().replace("\n", "")
+
         except Exception:
             self.result_captcha = ""
 
@@ -137,10 +137,9 @@ class OCR(Plugin):
             os.remove(tmpTxt.name)
             if subset and (digits or lowercase or uppercase):
                 os.remove(tmpSub.name)
+
         except OSError, e:
             self.log_warning(e)
-            if self.pyload.debug:
-                traceback.print_exc()
 
 
     def recognize(self, name):
@@ -194,6 +193,7 @@ class OCR(Plugin):
                         count += 1
                     if pixels[x, y - 1] != 255:
                         count += 1
+
                 except Exception:
                     pass
 

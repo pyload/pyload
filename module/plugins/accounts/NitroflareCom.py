@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class NitroflareCom(Account):
     __name__    = "NitroflareCom"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __description__ = """Nitroflare.com account plugin"""
@@ -24,7 +24,7 @@ class NitroflareCom(Account):
     TOKEN_PATTERN = r'name="token" value="(.+?)"'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         validuntil   = -1
         trafficleft  = None
         premium      = False
@@ -40,6 +40,7 @@ class NitroflareCom(Account):
             try:
                 validuntil = sum(int(v) * {'day': 24 * 3600, 'hour': 3600, 'minute': 60}[u.lower()] for v, u in
                                  re.findall(r'(\d+)\s*(day|hour|minute)', expiredate, re.I))
+
             except Exception, e:
                 self.log_error(e)
 
@@ -79,4 +80,4 @@ class NitroflareCom(Account):
                                'token'   : token})
 
         if re.search(self.LOGIN_FAIL_PATTERN, html):
-            self.login_fail()
+            self.fail_login()

@@ -58,6 +58,7 @@ class CzshareCom(SimpleHoster):
             if credit < self.pyfile.size:
                 self.log_info(_("Not enough credit to download file: %s") % self.pyfile.name)
                 return False
+
         except Exception, e:
             #: let's continue and see what happens...
             self.log_error(e)
@@ -70,6 +71,7 @@ class CzshareCom(SimpleHoster):
         try:
             form = re.search(self.PREMIUM_FORM_PATTERN, self.html, re.S).group(1)
             inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
+
         except Exception, e:
             self.log_error(e)
             self.restart(nopremium=True)

@@ -14,7 +14,7 @@ from module.utils import html_unescape
 class LinkCryptWs(Crypter):
     __name__    = "LinkCryptWs"
     __type__    = "crypter"
-    __version__ = "0.10"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?linkcrypt\.ws/(dir|container)/(?P<ID>\w+)'
@@ -43,6 +43,7 @@ class LinkCryptWs(Crypter):
 
         #: Request package
         self.req.http.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko")  #: Better chance to not get those key-captchas
+        self.html = self.load(self.pyfile.url)
         self.html = self.load(self.pyfile.url)
 
 
@@ -152,7 +153,7 @@ class LinkCryptWs(Crypter):
 
         unrarpw = sitein[indexi:indexe]
 
-        if not (unrarpw == "Password" or "Dateipasswort") :
+        if unrarpw not in ("Password", "Dateipasswort"):
             self.log_debug("File password set to: [%s]"% unrarpw)
             self.pyfile.package().password = unrarpw
 
@@ -272,6 +273,7 @@ class LinkCryptWs(Crypter):
             (vcrypted, vjk) = self._get_cipher_params(cnl_section)
             for (crypted, jk) in zip(vcrypted, vjk):
                 package_links.extend(self._get_links(crypted, jk))
+
         except Exception:
             self.log_error(_("Unable to decrypt CNL links (JS Error) try to get over links"))
             return self.handle_web_links()

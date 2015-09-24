@@ -6,7 +6,7 @@ from module.plugins.internal.Account import Account
 class RehostTo(Account):
     __name__    = "RehostTo"
     __type__    = "account"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __description__ = """Rehost.to account plugin"""
@@ -14,7 +14,7 @@ class RehostTo(Account):
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         premium     = False
         trafficleft = None
         validuntil  = -1
@@ -55,4 +55,4 @@ class RehostTo(Account):
 
         if "ERROR" in html:
             self.log_debug(html)
-            self.login_fail()
+            self.fail_login()

@@ -12,7 +12,7 @@ from module.plugins.internal.Account import Account
 class AlldebridCom(Account):
     __name__    = "AlldebridCom"
     __type__    = "account"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__  = "testing"
 
     __description__ = """AllDebrid.com account plugin"""
@@ -20,7 +20,7 @@ class AlldebridCom(Account):
     __authors__     = [("Andy Voigt", "spamsales@online.de")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         data = self.get_data(user)
         html = self.load("http://www.alldebrid.com/account/")
         soup = BeautifulSoup.BeautifulSoup(html)
@@ -63,4 +63,4 @@ class AlldebridCom(Account):
         if "This login doesn't exist" in html \
            or "The password is not valid" in html \
            or "Invalid captcha" in html:
-            self.login_fail()
+            self.fail_login()

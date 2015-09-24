@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 class OverLoadMe(Account):
     __name__    = "OverLoadMe"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __description__ = """Over-Load.me account plugin"""
@@ -15,7 +15,7 @@ class OverLoadMe(Account):
     __authors__     = [("marley", "marley@over-load.me")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         data  = self.get_data(user)
         html  = self.load("https://api.over-load.me/account.php",
                           get={'user': user,
@@ -39,4 +39,4 @@ class OverLoadMe(Account):
         data = json_loads(jsondata)
 
         if data['err'] == 1:
-            self.login_fail()
+            self.fail_login()
