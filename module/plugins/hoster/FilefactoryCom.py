@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urlparse
 
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.SimpleHoster import SimpleHoster, parse_fileInfo
@@ -20,7 +19,7 @@ def get_info(urls):
 class FilefactoryCom(SimpleHoster):
     __name__    = "FilefactoryCom"
     __type__    = "hoster"
-    __version__ = "0.57"
+    __version__ = "0.58"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/(file|trafficshare/\w+)/\w+'
@@ -66,7 +65,7 @@ class FilefactoryCom(SimpleHoster):
 
         if check == "multiple":
             self.log_debug("Parallel downloads detected; waiting 15 minutes")
-            self.retry(wait_time=15 * 60, reason=_("Parallel downloads"))
+            self.retry(wait_time=15 * 60, msg=_("Parallel downloads"))
 
         elif check == "error":
             self.error(_("Unknown error"))

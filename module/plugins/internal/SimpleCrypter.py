@@ -4,17 +4,16 @@ import re
 
 from module.plugins.internal.Crypter import Crypter
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns, set_cookie, set_cookies
-from module.utils import fixup, html_unescape
 
 
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.60"
+    __version__ = "0.62"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),  #: Overrides pyload.config['general']['folder_per_package']
+    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Simple decrypter plugin"""
@@ -90,6 +89,11 @@ class SimpleCrypter(Crypter, SimpleHoster):
             self.log_error(_("Too many redirects"))
 
 
+    def prepare(self):
+        self.links = []
+        return super(SimpleCrypter, self).prepare()
+
+
     def decrypt(self, pyfile):
         self.prepare()
         self.check_info()  #@TODO: Remove in 0.4.10
@@ -132,7 +136,8 @@ class SimpleCrypter(Crypter, SimpleHoster):
     def handle_pages(self, pyfile):
         try:
             pages = int(re.search(self.PAGES_PATTERN, self.html).group(1))
-        except Exception:
+
+        except AttributeError:
             pages = 1
 
         for p in xrange(2, pages + 1):

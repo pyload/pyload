@@ -52,8 +52,9 @@ class YibaishiwuCom(SimpleHoster):
                 self.link = mr['url'].replace("\\", "")
                 self.log_debug("Trying URL: " + self.link)
                 break
+
             except Exception:
-                continue
+                pass
         else:
             self.fail(_("No working link found"))
 

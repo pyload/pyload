@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class CatShareNet(Account):
     __name__    = "CatShareNet"
     __type__    = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __description__ = """Catshare.net account plugin"""
@@ -22,7 +22,7 @@ class CatShareNet(Account):
     TRAFFIC_LEFT_PATTERN = r'<a href="/premium">([0-9.]+ [kMG]B)'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         premium     = False
         validuntil  = -1
         trafficleft = -1
@@ -58,4 +58,4 @@ class CatShareNet(Account):
                                'user[submit]'  : "Login"})
 
         if not '<a href="/logout">Wyloguj</a>' in html:
-            self.login_fail()
+            self.fail_login()

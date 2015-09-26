@@ -10,7 +10,7 @@ from module.common.json_layer import json_loads
 class RapiduNet(Account):
     __name__    = "RapiduNet"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __description__ = """Rapidu.net account plugin"""
@@ -26,7 +26,7 @@ class RapiduNet(Account):
     TRAFFIC_LEFT_PATTERN = r'class="tipsyS"><b>(.+?)<'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         validuntil  = None
         trafficleft = -1
         premium     = False
@@ -62,5 +62,5 @@ class RapiduNet(Account):
 
         self.log_debug(json)
 
-        if not json['message'] == "success":
-            self.login_fail()
+        if json['message'] != "success":
+            self.fail_login()

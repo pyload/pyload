@@ -29,7 +29,7 @@ class NowDownloadSx(SimpleHoster):
     WAIT_PATTERN = r'\.countdown\(\{until: \+(\d+),'
     LINK_FREE_PATTERN = r'(http://s\d+(?:\.coolcdn\.info|\.mighycdndelivery\.com)/nowdownload/.+?)["\']'
 
-    NAME_REPLACEMENTS = [("&#?\w+;", fixup), (r'<.*?>', '')]
+    NAME_REPLACEMENTS = [(r'<.*?>', '')]
 
 
     def setup(self):

@@ -10,7 +10,7 @@ from module.plugins.internal.Plugin import set_cookie
 class Keep2ShareCc(Account):
     __name__    = "Keep2ShareCc"
     __type__    = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __description__ = """Keep2Share.cc account plugin"""
@@ -25,7 +25,7 @@ class Keep2ShareCc(Account):
     LOGIN_FAIL_PATTERN = r'Please fix the following input errors'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         validuntil  = None
         trafficleft = -1
         premium     = False
@@ -71,4 +71,4 @@ class Keep2ShareCc(Account):
                                'yt0'                  : ""})
 
         if re.search(self.LOGIN_FAIL_PATTERN, html):
-            self.login_fail()
+            self.fail_login()

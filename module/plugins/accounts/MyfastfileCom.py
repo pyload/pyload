@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class MyfastfileCom(Account):
     __name__    = "MyfastfileCom"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __description__ = """Myfastfile.com account plugin"""
@@ -17,7 +17,7 @@ class MyfastfileCom(Account):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         if 'days_left' in self.json_data:
             validuntil = time.time() + self.json_data['days_left'] * 24 * 60 * 60
             return {'premium': True, 'validuntil': validuntil, 'trafficleft': -1}
@@ -36,4 +36,4 @@ class MyfastfileCom(Account):
         self.json_data = json_loads(html)
         if self.json_data['status'] != 'ok':
             self.log_error(_('Invalid login. The password to use is the API-Password you find in your "My Account" page'))
-            self.login_fail()
+            self.fail_login()

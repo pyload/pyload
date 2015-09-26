@@ -8,7 +8,7 @@ from module.plugins.internal.Account import Account
 class CloudzillaTo(Account):
     __name__    = "CloudzillaTo"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __description__ = """Cloudzilla.to account plugin"""
@@ -19,7 +19,7 @@ class CloudzillaTo(Account):
     PREMIUM_PATTERN = r'<h2>account type</h2>\s*Premium Account'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         html = self.load("http://www.cloudzilla.to/")
 
         premium = True if re.search(self.PREMIUM_PATTERN, html) else False
@@ -34,4 +34,4 @@ class CloudzillaTo(Account):
                                'w'        : "dologin"})
 
         if "ERROR" in html:
-            self.login_fail()
+            self.fail_login()

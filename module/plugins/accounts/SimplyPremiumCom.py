@@ -8,7 +8,7 @@ from module.plugins.internal.Plugin import set_cookie
 class SimplyPremiumCom(Account):
     __name__    = "SimplyPremiumCom"
     __type__    = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __description__ = """Simply-Premium.com account plugin"""
@@ -16,7 +16,7 @@ class SimplyPremiumCom(Account):
     __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         premium     = False
         validuntil  = -1
         trafficleft = None
@@ -46,4 +46,4 @@ class SimplyPremiumCom(Account):
                          post={'key': user} if not password else {'login_name': user, 'login_pass': password})
 
         if 'logout' not in html:
-            self.login_fail()
+            self.fail_login()

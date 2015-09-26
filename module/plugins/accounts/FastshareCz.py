@@ -9,7 +9,7 @@ from module.plugins.internal.Plugin import set_cookie
 class FastshareCz(Account):
     __name__    = "FastshareCz"
     __type__    = "account"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __description__ = """Fastshare.cz account plugin"""
@@ -21,7 +21,7 @@ class FastshareCz(Account):
     CREDIT_PATTERN = r'Credit\s*:\s*</td>\s*<td>(.+?)\s*<'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         validuntil  = -1
         trafficleft = None
         premium     = False
@@ -49,4 +49,4 @@ class FastshareCz(Account):
                                'heslo': password})
 
         if ">Wrong username or password" in html:
-            self.login_fail()
+            self.fail_login()

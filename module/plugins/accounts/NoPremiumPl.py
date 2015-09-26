@@ -11,7 +11,7 @@ from module.plugins.internal.Account import Account
 class NoPremiumPl(Account):
     __name__    = "NoPremiumPl"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __description__ = "NoPremium.pl account plugin"
@@ -32,10 +32,11 @@ class NoPremiumPl(Account):
     _pwd = None
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         self._req = req
         try:
             result = json_loads(self.run_auth_query())
+
         except Exception:
             #@TODO: return or let it be thrown?
             return
@@ -61,11 +62,12 @@ class NoPremiumPl(Account):
 
         try:
             response = json_loads(self.run_auth_query())
+
         except Exception:
-            self.login_fail()
+            self.fail_login()
 
         if "errno" in response.keys():
-            self.login_fail()
+            self.fail_login()
 
         data['usr'] = self._usr
         data['pwd'] = self._pwd

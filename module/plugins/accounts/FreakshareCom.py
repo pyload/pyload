@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class FreakshareCom(Account):
     __name__    = "FreakshareCom"
     __type__    = "account"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __description__ = """Freakshare.com account plugin"""
@@ -17,7 +17,7 @@ class FreakshareCom(Account):
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         premium = False
         validuntil  = None
         trafficleft = None
@@ -50,4 +50,4 @@ class FreakshareCom(Account):
                                'pass'  : password})
 
         if ">Wrong Username or Password" in html:
-            self.login_fail()
+            self.fail_login()

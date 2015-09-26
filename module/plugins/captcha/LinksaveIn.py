@@ -79,8 +79,10 @@ class LinksaveIn(OCR):
                     rgb_c = lut[pix[x, y]]
                     try:
                         cstat[rgb_c] += 1
+
                     except Exception:
                         cstat[rgb_c] = 1
+
                     if rgb_bg is rgb_c:
                         stat[bgpath] += 1
         max_p = 0

@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import seconds_to_midnight
 class HighWayMe(MultiHoster):
     __name__    = "HighWayMe"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'https?://.+high-way\.my'
@@ -39,7 +39,7 @@ class HighWayMe(MultiHoster):
 
         elif "trafficlimit" in self.html:
             self.log_warning(_("Reached daily limit"))
-            self.retry(wait_time=seconds_to_midnight(gmt=2), reason="Daily limit for this host reached")
+            self.retry(wait_time=seconds_to_midnight(gmt=2), msg="Daily limit for this host reached")
 
         elif "<code>8</code>" in self.html:
             self.log_warning(_("Hoster temporarily unavailable, waiting 1 minute and retry"))

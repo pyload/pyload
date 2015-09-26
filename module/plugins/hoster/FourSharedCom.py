@@ -55,6 +55,7 @@ class FourSharedCom(SimpleHoster):
             m = re.search(self.ID_PATTERN, self.html)
             res = self.load('http://www.4shared.com/web/d2/getFreeDownloadLimitInfo?fileId=%s' % m.group(1))
             self.log_debug(res)
+
         except Exception:
             pass
 

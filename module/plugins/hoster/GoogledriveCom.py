@@ -44,11 +44,9 @@ class GoogledriveCom(SimpleHoster):
                 self.error(_("Free download link not found"))
 
             else:
-                link = html_unescape(m.group(1).decode('unicode-escape'))
-                if not urlparse.urlparse(link).scheme:
-                    link = urlparse.urljoin("https://docs.google.com/", link)
-
+                link = self.fixurl(link, "https://docs.google.com/")
                 direct_link = self.direct_link(link, False)
+
                 if not direct_link:
                     self.html = self.load(link)
                 else:

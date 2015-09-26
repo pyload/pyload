@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 class RPNetBiz(Account):
     __name__    = "RPNetBiz"
     __type__    = "account"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __description__ = """RPNet.biz account plugin"""
@@ -15,7 +15,7 @@ class RPNetBiz(Account):
     __authors__     = [("Dman", "dmanugm@gmail.com")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data, req):
         #: Get account information from rpnet.biz
         res = self.get_account_status(user, password, req)
         try:
@@ -39,7 +39,7 @@ class RPNetBiz(Account):
 
         #: If we have an error in the res, we have wrong login information
         if 'error' in res:
-            self.login_fail()
+            self.fail_login()
 
 
     def get_account_status(self, user, password, req):

@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FastshareCz(SimpleHoster):
     __name__    = "FastshareCz"
     __type__    = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
@@ -70,7 +70,7 @@ class FastshareCz(SimpleHoster):
             self.retry(6, 10 * 60, _("Paralell download"))
 
         elif check == "wrong captcha":
-            self.retry(max_tries=5, reason=_("Wrong captcha"))
+            self.retry(max_tries=5, msg=_("Wrong captcha"))
 
         elif check == "credit":
             self.restart(nopremium=True)

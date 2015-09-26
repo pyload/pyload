@@ -35,6 +35,7 @@ class Ftp(Hoster):
         pyfile.name = parsed_url.path.rpartition('/')[2]
         try:
             pyfile.name = urllib.unquote(str(pyfile.name)).decode('utf8')
+
         except Exception:
             pass
 
@@ -63,16 +64,22 @@ class Ftp(Hoster):
         if m:
             pyfile.size = int(m.group(1))
             self.download(pyfile.url)
+
         else:
             #: Naive ftp directory listing
             if re.search(r'^25\d.*?"', self.req.http.header, re.M):
                 pyfile.url = pyfile.url.rstrip('/')
                 pkgname = "/".join([pyfile.package().name, urlparse.urlparse(pyfile.url).path.rpartition('/')[2]])
+
                 pyfile.url += '/'
+
                 self.req.http.c.setopt(48, 1)  #: CURLOPT_DIRLISTONLY
                 res = self.load(pyfile.url, decode=False)
+
                 links = [pyfile.url + x for x in res.splitlines()]
                 self.log_debug("LINKS", links)
+
                 self.pyload.api.addPackage(pkgname, links)
+
             else:
                 self.fail(_("Unexpected server response"))

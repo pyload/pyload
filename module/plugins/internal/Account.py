@@ -13,7 +13,7 @@ from module.utils import compare_time, lock, parseFileSize as parse_size
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -190,7 +190,7 @@ class Account(Plugin):
     def get_info(self, user, reload=False):
         """
         Retrieve account infos for an user, do **not** overwrite this method!\\
-        just use it to retrieve infos in hoster plugins. see `parse_info`
+        just use it to retrieve infos in hoster plugins. see `grab_info`
 
         :param user: username
         :param reload: reloads cached account information
@@ -235,7 +235,7 @@ class Account(Plugin):
 
         try:
             self.req   = self.get_request(user)
-            extra_info = self.parse_info(user, info['login']['password'], info, self.req)
+            extra_info = self.grab_info(user, info['login']['password'], info, self.req)
 
             if extra_info and isinstance(extra_info, dict):
                 info['data'].update(extra_info)
@@ -253,7 +253,7 @@ class Account(Plugin):
             return info
 
 
-    def parse_info(self, user, password, info, req):
+    def grab_info(self, user, password, info, req):
         """
         This should be overwritten in account plugin
         and retrieving account information for user
@@ -270,8 +270,8 @@ class Account(Plugin):
         return [self.getAccountData(user, *args, **kwargs) for user, info in self.info.items()]
 
 
-    def login_fail(self, reason=_("Login handshake has failed")):
-        return self.fail(reason)
+    def fail_login(self, msg=_("Login handshake has failed")):
+        return self.fail(msg)
 
 
     def get_request(self, user=None):

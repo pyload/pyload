@@ -23,7 +23,7 @@ from module.plugins.internal.Account import Account
 class OboomCom(Account):
     __name__    = "OboomCom"
     __type__    = "account"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__  = "testing"
 
     __description__ = """Oboom.com account plugin"""
@@ -40,22 +40,19 @@ class OboomCom(Account):
                                       get={'auth': user,
                                            'pass': pbkdf2}))
 
-        if not result[0] == 200:
+        if result[0] != 200:
             self.log_warning(_("Failed to log in: %s") % result[1])
-            self.login_fail()
+            self.fail_login()
 
         return result[1]
 
 
-    def parse_info(self, name, req):
+    def grab_info(self, name, req):
         account_data = self.load_account_data(name, req)
 
         userData = account_data['user']
 
-        if userData['premium'] == "null":
-            premium = False
-        else:
-            premium = True
+        premium = userData['premium'] != "null"
 
         if userData['premium_unix'] == "null":
             validUntil = -1
@@ -65,7 +62,7 @@ class OboomCom(Account):
         traffic = userData['traffic']
 
         trafficLeft = traffic['current'] / 1024  #@TODO: Remove `/ 1024` in 0.4.10
-        maxTraffic = traffic['max'] / 1024  #@TODO: Remove `/ 1024` in 0.4.10
+        maxTraffic  = traffic['max'] / 1024  #@TODO: Remove `/ 1024` in 0.4.10
 
         session = account_data['session']
 
