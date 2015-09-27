@@ -436,7 +436,7 @@ class SimpleHoster(Hoster):
                 try:
                     waitmsg = m.group(1).strip()
 
-                except AttributeError:
+                except IndexError:
                     waitmsg = m.group(0).strip()
 
                 wait_time = sum(int(v) * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, "": 1}[u.lower()] for v, u in
