@@ -173,7 +173,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -231,8 +231,6 @@ class Plugin(object):
 
     def log_warning(self, *args):
         self._log("warning", self.__type__, self.__name__, args)
-        if self.pyload.debug:
-            traceback.print_exc()
 
 
     def log_error(self, *args):
@@ -347,7 +345,7 @@ class Plugin(object):
         """
         if self.pyload.debug:
             self.log_debug("LOAD URL " + url,
-                           *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url")])
+                           *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url", "_[1]")])
 
         if req is None:
             req = self.req or self.pyload.requestFactory.getRequest(self.__name__)
