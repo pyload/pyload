@@ -303,6 +303,7 @@ class Account(Plugin):
 
     @lock
     def removeAccount(self, user):
+        self.log_info(_("Removing user `%s`...") % user)
         self.accounts.pop(user, None)
         if user is self.user:
             self.choose()

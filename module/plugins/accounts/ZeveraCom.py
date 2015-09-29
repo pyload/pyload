@@ -11,6 +11,10 @@ class ZeveraCom(Account):
     __version__ = "0.30"
     __status__  = "testing"
 
+    __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
+                  ("mh_list"    , "str"                , "Hoster list (comma separated)", ""   ),
+                  ("mh_interval", "int"                , "Reload interval in minutes"   , 60   )]
+
     __description__ = """Zevera.com account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
@@ -23,7 +27,6 @@ class ZeveraCom(Account):
     def grab_hosters(self, user, password, data):
         html = self.api_response(user, password, cmd="gethosters")
         return [x.strip() for x in html.split(",")]
-
 
 
     def __init__(self, manager, accounts):  #@TODO: remove in 0.4.10

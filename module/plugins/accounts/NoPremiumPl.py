@@ -15,6 +15,10 @@ class NoPremiumPl(Account):
     __version__ = "0.06"
     __status__  = "testing"
 
+    __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
+                  ("mh_list"    , "str"                , "Hoster list (comma separated)", ""   ),
+                  ("mh_interval", "int"                , "Reload interval in minutes"   , 60   )]
+
     __description__ = "NoPremium.pl account plugin"
     __license__     = "GPLv3"
     __authors__     = [("goddie", "dev@nopremium.pl")]

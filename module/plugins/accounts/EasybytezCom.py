@@ -11,6 +11,11 @@ class EasybytezCom(XFSAccount):
     __version__ = "0.14"
     __status__  = "testing"
 
+    __config__ = [("mh_activated", "bool"               , "Use multihoster feature"      , True ),
+                  ("mh_mode"     , "all;listed;unlisted", "Filter hosters to use"        , "all"),
+                  ("mh_list"     , "str"                , "Hoster list (comma separated)", ""   ),
+                  ("mh_interval" , "int"                , "Reload interval in minutes"   , 60   )]
+
     __description__ = """EasyBytez.com account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),

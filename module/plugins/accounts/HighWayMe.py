@@ -10,6 +10,10 @@ class HighWayMe(Account):
     __version__ = "0.06"
     __status__  = "testing"
 
+    __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
+                  ("mh_list"    , "str"                , "Hoster list (comma separated)", ""   ),
+                  ("mh_interval", "int"                , "Reload interval in minutes"   , 60   )]
+
     __description__ = """High-Way.me account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
