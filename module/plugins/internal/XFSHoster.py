@@ -45,8 +45,8 @@ class XFSHoster(SimpleHoster):
 
     CAPTCHA_PATTERN       = r'(https?://[^"\']+?/captchas?/[^"\']+)'
     CAPTCHA_BLOCK_PATTERN = r'>Enter code.*?<div.*?>(.+?)</div>'
-    RECAPTCHA_PATTERN     = r'api\.recaptcha\.net/challenge\?k=(.+?)["\']'
-    SOLVEMEDIA_PATTERN    = r'api\.solvemedia\.com/papi/challenge\.(?:no)?script\?k=(.+?)["\']'
+    RECAPTCHA_PATTERN     = None
+    SOLVEMEDIA_PATTERN    = None
 
     FORM_PATTERN    = None
     FORM_INPUTS_MAP = None  #: Dict passed as input_names to parse_html_form
