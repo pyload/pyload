@@ -11,7 +11,7 @@ from module.plugins.internal.Plugin import Plugin
 class Captcha(Plugin):
     __name__    = "Captcha"
     __type__    = "captcha"
-    __version__ = "0.44"
+    __version__ = "0.45"
     __status__  = "testing"
 
     __description__ = """Base anti-captcha plugin"""
@@ -49,9 +49,9 @@ class Captcha(Plugin):
         pass
 
 
-    def decrypt(self, url, get={}, post={}, ref=False, cookies=True, decode=False,
+    def decrypt(self, url, get={}, post={}, ref=False, cookies=True, decode=False, req=None,
                 input_type='jpg', output_type='textual', ocr=True, timeout=120):
-        img = self.load(url, get=get, post=post, ref=ref, cookies=cookies, decode=decode)
+        img = self.load(url, get=get, post=post, ref=ref, cookies=cookies, decode=decode, req=req or self.plugin.req)
         return self._decrypt(img, input_type, output_type, ocr, timeout)
 
 
