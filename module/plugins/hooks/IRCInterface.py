@@ -18,7 +18,7 @@ from module.utils import formatSize
 class IRCInterface(Thread, Addon):
     __name__    = "IRCInterface"
     __type__    = "hook"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __config__ = [("host"     , "str" , "IRC-Server Address"                           , "Enter your server here!"),
@@ -105,7 +105,8 @@ class IRCInterface(Thread, Addon):
 
         except IRCError, ex:
             self.sock.send("QUIT :byebye\r\n")
-            traceback.print_exc()
+            if self.pyload.debug:
+                traceback.print_exc()
             self.sock.close()
 
 

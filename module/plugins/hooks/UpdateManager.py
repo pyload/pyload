@@ -7,7 +7,6 @@ import os
 import re
 import sys
 import time
-import traceback
 
 from module.plugins.internal.Addon import Expose, Addon, threaded
 from module.plugins.internal.Plugin import exists
@@ -269,8 +268,6 @@ class UpdateManager(Addon):
 
             except Exception, e:
                 self.log_error(_("Error updating plugin: [%s] %s") % (type, name), e)
-                if self.pyload.debug:
-                    traceback.print_exc()
 
         if updated:
             self.log_info(_("*** Plugins updated ***"))
@@ -337,8 +334,6 @@ class UpdateManager(Addon):
 
                     except OSError, e:
                         self.log_warning(_("Error removing: %s") % filename, e)
-                        if self.pyload.debug:
-                            traceback.print_exc()
 
                     else:
                         id = (type, name)

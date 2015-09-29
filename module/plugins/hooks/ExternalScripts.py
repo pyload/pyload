@@ -94,7 +94,8 @@ class ExternalScripts(Addon):
                 p.communicate()
 
         except Exception, e:
-            self.log_error(_("Runtime error: %s") % script, e or _("Unknown error"))
+            self.log_error(_("Runtime error: %s") % script,
+                           e or _("Unknown error"))
 
 
     def pyload_start(self):

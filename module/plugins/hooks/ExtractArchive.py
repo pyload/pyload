@@ -4,7 +4,6 @@ from __future__ import with_statement
 
 import os
 import sys
-import traceback
 
 # monkey patch bug in python 2.6 and lower
 # http://bugs.python.org/issue6122 , http://bugs.python.org/issue1236 , http://bugs.python.org/issue1731717
@@ -167,13 +166,9 @@ class ExtractArchive(Addon):
                     self.log_warning(_("No %s installed") % p)
                 else:
                     self.log_warning(_("Could not activate: %s") % p, e)
-                    if self.pyload.debug:
-                        traceback.print_exc()
 
             except Exception, e:
                 self.log_warning(_("Could not activate: %s") % p, e)
-                if self.pyload.debug:
-                    traceback.print_exc()
 
         if self.extractors:
             self.log_debug(*["Found %s %s" % (Extractor.__name__, Extractor.VERSION) for Extractor in self.extractors])
@@ -510,8 +505,6 @@ class ExtractArchive(Addon):
 
         except Exception, e:
             self.log_error(name, _("Unknown error"), e)
-            if self.pyload.debug:
-                traceback.print_exc()
 
         self.manager.dispatchEvent("archive_extract_failed", pyfile, archive)
 
