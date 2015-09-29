@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class HellshareCz(Account):
     __name__    = "HellshareCz"
     __type__    = "account"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __description__ = """Hellshare.cz account plugin"""
@@ -20,7 +20,7 @@ class HellshareCz(Account):
     CREDIT_LEFT_PATTERN = r'<div class="credit-link">\s*<table>\s*<tr>\s*<th>(\d+|\d\d\.\d\d\.)</th>'
 
 
-    def grab_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         self.relogin(user)
         html = self.load("http://www.hellshare.com/")
 
@@ -53,13 +53,13 @@ class HellshareCz(Account):
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         html = self.load('http://www.hellshare.com/')
-        if req.lastEffectiveURL != 'http://www.hellshare.com/':
+        if self.req.lastEffectiveURL != 'http://www.hellshare.com/':
             #: Switch to English
-            self.log_debug("Switch lang - URL: %s" % req.lastEffectiveURL)
+            self.log_debug("Switch lang - URL: %s" % self.req.lastEffectiveURL)
 
-            json = self.load("%s?do=locRouter-show" % req.lastEffectiveURL)
+            json = self.load("%s?do=locRouter-show" % self.req.lastEffectiveURL)
             hash = re.search(r"(\-\-[0-9a-f]+\-)", json).group(1)
 
             self.log_debug("Switch lang - HASH: %s" % hash)

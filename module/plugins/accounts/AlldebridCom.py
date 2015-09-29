@@ -12,7 +12,7 @@ from module.plugins.internal.Account import Account
 class AlldebridCom(Account):
     __name__    = "AlldebridCom"
     __type__    = "account"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__  = "testing"
 
     __description__ = """AllDebrid.com account plugin"""
@@ -20,8 +20,13 @@ class AlldebridCom(Account):
     __authors__     = [("Andy Voigt", "spamsales@online.de")]
 
 
-    def grab_info(self, user, password, data, req):
-        data = self.get_data(user)
+    def grab_hosters(self, user, password, data):
+        html = self.load("https://www.alldebrid.com/api.php",
+                         get={'action': "get_host"}).replace("\"", "").strip()
+        return [x.strip() for x in html.split(",") if x.strip()]
+
+
+    def grab_info(self, user, password, data):
         html = self.load("http://www.alldebrid.com/account/")
         soup = BeautifulSoup.BeautifulSoup(html)
 
@@ -38,7 +43,6 @@ class AlldebridCom(Account):
 
         #: Get expiration date from API
         except Exception:
-            data = self.get_data(user)
             html = self.load("https://www.alldebrid.com/api.php",
                              get={'action': "info_user",
                                   'login' : user,
@@ -54,7 +58,7 @@ class AlldebridCom(Account):
                 'premium'    : True    }
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         html = self.load("https://www.alldebrid.com/register/",
                          get={'action'        : "login",
                               'login_login'   : user,

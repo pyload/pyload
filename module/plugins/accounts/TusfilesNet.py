@@ -9,7 +9,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class TusfilesNet(XFSAccount):
     __name__    = "TusfilesNet"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __description__ = """Tusfile.net account plugin"""
@@ -17,7 +17,7 @@ class TusfilesNet(XFSAccount):
     __authors__     = [("guidobelix", "guidobelix@hotmail.it")]
 
 
-    HOSTER_DOMAIN = "tusfiles.net"
+    PLUGIN_DOMAIN = "tusfiles.net"
 
     VALID_UNTIL_PATTERN = r'<span class="label label-default">([^<]+)</span>'
     TRAFFIC_LEFT_PATTERN = r'<td><img src="//www\.tusfiles\.net/i/icon/meter\.png" alt=""/></td>\n<td>&nbsp;(?P<S>[\d.,]+)'

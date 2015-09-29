@@ -6,7 +6,7 @@ from module.plugins.internal.Account import Account
 class RehostTo(Account):
     __name__    = "RehostTo"
     __type__    = "account"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __description__ = """Rehost.to account plugin"""
@@ -14,7 +14,14 @@ class RehostTo(Account):
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
-    def grab_info(self, user, password, data, req):
+    def grab_hosters(self, user, password, data):
+        html = self.load("http://rehost.to/api.php",
+                         get={'cmd'     : "get_supported_och_dl",
+                              'long_ses': data['session']})
+        return [x.strip() for x in html.replace("\"", "").split(",")]
+
+
+    def grab_info(self, user, password, data):
         premium     = False
         trafficleft = None
         validuntil  = -1
@@ -47,7 +54,7 @@ class RehostTo(Account):
                     'session'    : session}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         html = self.load("https://rehost.to/api.php",
                          get={'cmd': "login",
                               'user': user,

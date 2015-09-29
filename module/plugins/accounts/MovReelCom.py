@@ -6,7 +6,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class MovReelCom(XFSAccount):
     __name__    = "MovReelCom"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __description__ = """Movreel.com account plugin"""
@@ -17,4 +17,4 @@ class MovReelCom(XFSAccount):
     login_timeout = 60
     info_threshold = 30
 
-    HOSTER_DOMAIN = "movreel.com"
+    PLUGIN_DOMAIN = "movreel.com"

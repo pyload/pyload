@@ -8,7 +8,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class EasybytezCom(XFSAccount):
     __name__    = "EasybytezCom"
     __type__    = "account"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __description__ = """EasyBytez.com account plugin"""
@@ -17,4 +17,9 @@ class EasybytezCom(XFSAccount):
                        ("guidobelix", "guidobelix@hotmail.it")]
 
 
-    HOSTER_DOMAIN = "easybytez.com"
+    PLUGIN_DOMAIN = "easybytez.com"
+
+
+    def grab_hosters(self, user, password, data):
+        return re.search(r'</textarea>\s*Supported sites:(.*)',
+                         self.load("http://www.easybytez.com")).group(1).split(',')

@@ -9,7 +9,7 @@ from module.common.json_layer import json_loads
 class RapidgatorNet(Account):
     __name__    = "RapidgatorNet"
     __type__    = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __description__ = """Rapidgator.net account plugin"""
@@ -20,14 +20,14 @@ class RapidgatorNet(Account):
     API_URL = "http://rapidgator.net/api/user/"
 
 
-    def grab_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         validuntil  = None
         trafficleft = None
         premium     = False
         sid         = None
 
         try:
-            sid = self.get_data(user).get('sid', None)
+            sid = data.get('sid', None)
             assert sid
 
             html = self.load(urlparse.urljoin(self.API_URL, "info"),
@@ -39,7 +39,7 @@ class RapidgatorNet(Account):
 
             if json['response_status'] == 200:
                 if "reset_in" in json['response']:
-                    self.schedule_refresh(user, json['response']['reset_in'])
+                    self._schedule_refresh(user, json['response']['reset_in'])
 
                 validuntil  = json['response']['expire_date']
                 trafficleft = float(json['response']['traffic_left']) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
@@ -56,7 +56,7 @@ class RapidgatorNet(Account):
                 'sid'        : sid}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         try:
             html = self.load(urlparse.urljoin(self.API_URL, "login"),
                              post={'username': user,

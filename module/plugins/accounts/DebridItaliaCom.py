@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class DebridItaliaCom(Account):
     __name__    = "DebridItaliaCom"
     __type__    = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __description__ = """Debriditalia.com account plugin"""
@@ -21,7 +21,11 @@ class DebridItaliaCom(Account):
     WALID_UNTIL_PATTERN = r'Premium valid till: (.+?) \|'
 
 
-    def grab_info(self, user, password, data, req):
+    def grab_hosters(self, user, password, data):
+        return self.load("http://debriditalia.com/api.php", get={'hosts': ""}).replace('"', '').split(',')
+
+
+    def grab_info(self, user, password, data):
         info = {'premium': False, 'validuntil': None, 'trafficleft': None}
         html = self.load("http://debriditalia.com/")
 
@@ -36,7 +40,7 @@ class DebridItaliaCom(Account):
         return info
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         html = self.load("https://debriditalia.com/login.php",
                          get={'u': user,
                               'p': password})

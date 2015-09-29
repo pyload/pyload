@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 class OverLoadMe(Account):
     __name__    = "OverLoadMe"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __description__ = """Over-Load.me account plugin"""
@@ -15,8 +15,13 @@ class OverLoadMe(Account):
     __authors__     = [("marley", "marley@over-load.me")]
 
 
-    def grab_info(self, user, password, data, req):
-        data  = self.get_data(user)
+    def grab_hosters(self, user, password, data):
+        html = self.load("https://api.over-load.me/hoster.php",
+                         get={'auth': "0001-cb1f24dadb3aa487bda5afd3b76298935329be7700cd7-5329be77-00cf-1ca0135f"}).replace("\"", "").strip()
+        return [x.strip() for x in html.split(",") if x.strip()]
+
+
+    def grab_info(self, user, password, data):
         html  = self.load("https://api.over-load.me/account.php",
                           get={'user': user,
                                'auth': password}).strip()
@@ -31,7 +36,7 @@ class OverLoadMe(Account):
             return {'premium': True, 'validuntil': data['expirationunix'], 'trafficleft': -1}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         jsondata = self.load("https://api.over-load.me/account.php",
                              get={'user': user,
                                   'auth': password}).strip()

@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class MegaRapidCz(Account):
     __name__    = "MegaRapidCz"
     __type__    = "account"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__  = "testing"
 
     __description__ = """MegaRapid.cz account plugin"""
@@ -25,12 +25,11 @@ class MegaRapidCz(Account):
     TRAFFIC_LEFT_PATTERN = r'<tr><td>Kredit</td><td>(.*?) GiB'
 
 
-    def grab_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         htmll = self.load("http://megarapid.cz/mujucet/")
 
         m = re.search(self.LIMITDL_PATTERN, htmll)
         if m:
-            data = self.get_data(user)
             data['options']['limitDL'] = [int(m.group(1))]
 
         m = re.search(self.VALID_UNTIL_PATTERN, htmll)
@@ -46,7 +45,7 @@ class MegaRapidCz(Account):
         return {'premium': False, 'trafficleft': None, 'validuntil': None}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         html = self.load("http://megarapid.cz/prihlaseni/")
 
         if "Heslo:" in html:

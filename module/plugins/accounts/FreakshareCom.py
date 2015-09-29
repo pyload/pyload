@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class FreakshareCom(Account):
     __name__    = "FreakshareCom"
     __type__    = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __description__ = """Freakshare.com account plugin"""
@@ -17,7 +17,7 @@ class FreakshareCom(Account):
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
-    def grab_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         premium = False
         validuntil  = None
         trafficleft = None
@@ -41,7 +41,7 @@ class FreakshareCom(Account):
         return {'premium': premium, 'validuntil': validuntil, 'trafficleft': trafficleft}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         self.load("http://freakshare.com/index.php?language=EN")
 
         html = self.load("https://freakshare.com/login.html",

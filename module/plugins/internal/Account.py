@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import copy
 import random
 import time
 import threading
-import traceback
 
+from module.plugins.Plugin import SkipDownload as Skip
 from module.plugins.internal.Plugin import Plugin
 from module.utils import compare_time, lock, parseFileSize as parse_size
 
@@ -13,7 +12,7 @@ from module.utils import compare_time, lock, parseFileSize as parse_size
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.18"
+    __version__ = "0.50"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -21,18 +20,23 @@ class Account(Plugin):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    LOGIN_TIMEOUT  = 10 * 60  #: After that time (in minutes) pyload will relogin the account
-    INFO_THRESHOLD = 30 * 60  #: After that time (in minutes) account data will be reloaded
+    LOGIN_TIMEOUT = 10 * 60  #: Relogin accounts every 10 minutes
+    AUTO_TIMEOUT  = True     #: Automatically adjust relogin interval
 
 
     def __init__(self, manager, accounts):
         self._init(manager.core)
 
-        self.lock     = threading.RLock()
-        self.accounts = accounts  #@TODO: Remove in 0.4.10
+        self.manager = manager
+        self.lock    = threading.RLock()
+
+        self.accounts = accounts  #@TODO: Recheck in 0.4.10
+        self.user     = None
+
+        self.interval     = self.LOGIN_TIMEOUT
+        self.auto_timeout = self.interval if self.AUTO_TIMEOUT else False
 
         self.init()
-        self.init_accounts(accounts)
 
 
     def init(self):
@@ -42,218 +46,172 @@ class Account(Plugin):
         pass
 
 
-    def login(self, user, password, data, req):
+    @property
+    def logged(self):
+        """
+        Checks if user is still logged in
+        """
+        if not self.user:
+            return False
+
+        self.sync()
+
+        if self.info['login']['timestamp'] + self.interval < time.time():
+            self.log_debug("Reached login timeout for user `%s`" % self.user)
+            return False
+        else:
+            return True
+
+
+    @property
+    def premium(self):
+        return bool(self.get_data('premium'))
+
+
+    def signin(self, user, password, data):
         """
         Login into account, the cookies will be saved so user can be recognized
         """
         pass
 
 
-    @lock
-    def _login(self, user):
-        try:
-            info = self.info[user]
-            info['login']['timestamp'] = time.time()  #: Set timestamp for login
+    def login(self):
+        if not self.req:
+            self.log_info(_("Login user `%s`...") % self.user)
+        else:
+            self.log_info(_("Relogin user `%s`...") % self.user)
+            self.clean()
 
-            self.req = self.get_request(user)
-            self.login(user, info['login']['password'], info['data'], self.req)
+        self.req = self.pyload.requestFactory.getRequest(self.__name__, self.user)
+
+        self.sync()
+
+        try:
+            self.info['login']['timestamp'] = time.time()  #: Set timestamp for login
+            self.signin(self.user, self.info['login']['password'], self.info['data'])
+
+        except Skip:
+            self.info['login']['valid'] = True
+            if self.auto_timeout:
+                self.auto_timeout *= 2
+                self.interval = self.auto_timeout
 
         except Exception, e:
-            self.log_warning(_("Could not login user `%s`") % user, e)
-            res = info['login']['valid'] = False
-            self.accounts[user]['valid'] = False  #@TODO: Remove in 0.4.10
-
-            if self.pyload.debug:
-                traceback.print_exc()
+            self.log_error(_("Could not login user `%s`") % user, e)
+            self.info['login']['valid'] = False
 
         else:
-            res = info['login']['valid'] = True
-            self.accounts[user]['valid'] = True  #@TODO: Remove in 0.4.10
+            self.info['login']['valid'] = True
+            if self.interval is self.auto_timeout:
+                self.interval = self.auto_timeout / 2
+                self.auto_timeout = False
 
         finally:
-            self.clean()
-            return res
+            self.syncback()
+            return bool(self.info['login']['valid'])
 
 
-    def relogin(self, user):
-        self.log_info(_("Relogin user `%s`...") % user)
-
-        req = self.get_request(user)
-        if req:
-            req.clearCookies()
-            self.clean()
-
-        return self._login(user)
+    #@TODO: Recheck in 0.4.10
+    def syncback(self):
+        return self.sync(reverse=True)
 
 
-    #@TODO: Rewrite in 0.4.10
-    def init_accounts(self, accounts):
-        for user, data in accounts.items():
-            self.add(user, data['password'], data['options'])
-
-
-    @lock
-    def add(self, user, password=None, options={}):
-        if user not in self.info:
-            self.info[user] = {'login': {'valid'    : None,
-                                         'password' : password or "",
-                                         'timestamp': 0},
-                               'data' : {'options'    : options,
-                                         'premium'    : None,
-                                         'validuntil' : None,
-                                         'trafficleft': None,
-                                         'maxtraffic' : None}}
-
-            #@TODO: Remove in 0.4.10
-            self.accounts[user] = self.info[user]['data']
-            self.accounts[user].update({'login'   : user,
-                                        'type'    : self.__name__,
-                                        'valid'   : self.info[user]['login']['valid'],
-                                        'password': self.info[user]['login']['password']})
-
-            self.log_info(_("Login user `%s`...") % user)
-            self._login(user)
-            return True
-
-        else:
-            self.log_error(_("Error adding user `%s`") % user, _("User already exists"))
-
-
-    @lock
-    def update(self, user, password=None, options={}):
-        """
-        Updates account and return true if anything changed
-        """
-        if not (password or options):
+    #@TODO: Recheck in 0.4.10
+    def sync(self, reverse=False):
+        if not self.user:
             return
 
-        if user not in self.info:
-            return self.add(user, password, options)
+        u = self.accounts[self.user]
+
+        if reverse:
+            u.update(self.info['data'])
+            u.update(self.info['login'])
 
         else:
-            if password:
-                self.info[user]['login']['password'] = password
-                self.accounts[user]['password']      = password  #@TODO: Remove in 0.4.10
-                self.relogin(user)
+            d = {'login': {'password' : u['password'],
+                           'timestamp': u['timestamp'],
+                           'valid'    : u['valid']},
+                 'data' : {'maxtraffic' : u['maxtraffic'],
+                           'options'    : u['options'],
+                           'premium'    : u['premium'],
+                           'trafficleft': u['trafficleft'],
+                           'validuntil' : u['validuntil']}}
 
-            if options:
-                before = self.info[user]['data']['options']
-                self.info[user]['data']['options'].update(options)
-                return self.info[user]['data']['options'] != before
-
-            return True
-
-
-    #: Deprecated method, use `update` instead (Remove in 0.4.10)
-    def updateAccounts(self, *args, **kwargs):
-        return self.update(*args, **kwargs)
+            self.info.update(d)
 
 
-    def remove(self, user=None): # -> def remove
-        if not user:
-            self.info.clear()
-            self.accounts.clear()  #@TODO: Remove in 0.4.10
-
-        elif user in self.info:
-            self.info.pop(user, None)
-            self.accounts.pop(user, None)  #@TODO: Remove in 0.4.10
+    def relogin(self):
+        return self.login()
 
 
-    #: Deprecated method, use `remove` instead (Remove in 0.4.10)
-    def removeAccount(self, *args, **kwargs):
-        return self.remove(*args, **kwargs)
+    def reset(self):
+        self.sync()
+
+        d = {'maxtraffic' : None,
+             'options'    : {'limitdl': ['0']},
+             'premium'    : None,
+             'trafficleft': None,
+             'validuntil' : None}
+
+        self.info['data'].update(d)
+
+        self.syncback()
 
 
-    #@NOTE: Remove in 0.4.10?
-    def get_data(self, user, reload=False):
-        if not user:
-            return
-
-        info = self.get_info(user, reload)
-        if info and 'data' in info:
-            return info['data']
-
-
-    #: Deprecated method, use `get_data` instead (Remove in 0.4.10)
-    def getAccountData(self, *args, **kwargs):
-        if 'force' in kwargs:
-            kwargs['reload'] = kwargs['force']
-            kwargs.pop('force', None)
-
-        data = self.get_data(*args, **kwargs) or {}
-        if 'options' not in data:
-            data['options'] = {'limitdl': ['0']}
-
-        return data
-
-
-    def get_info(self, user, reload=False):
+    def get_info(self, refresh=True):
         """
-        Retrieve account infos for an user, do **not** overwrite this method!\\
+        Retrieve account infos for an user, do **not** overwrite this method!
         just use it to retrieve infos in hoster plugins. see `grab_info`
 
         :param user: username
-        :param reload: reloads cached account information
+        :param relogin: reloads cached account information
         :return: dictionary with information
         """
-        if user not in self.info:
-            self.log_error(_("User `%s` not found while retrieving account info") % user)
-            return
+        if not self.logged:
+            if self.relogin():
+                refresh = True
+            else:
+                refresh = False
+                self.reset()
 
-        elif reload:
-            self.log_info(_("Parsing account info for user `%s`...") % user)
-            info = self._parse_info(user)
+        if refresh:
+            self.log_info(_("Grabbing account info for user `%s`...") % self.user)
+            self.info = self._grab_info()
 
-            safe_info = copy.deepcopy(info)
+            self.syncback()
+
+            safe_info = dict(self.info)
             safe_info['login']['password'] = "**********"
-            safe_info['data']['password']  = "**********"  #@TODO: Remove in 0.4.10
-            self.log_debug("Account info for user `%s`: %s" % (user, safe_info))
+            self.log_debug("Account info for user `%s`: %s" % (self.user, safe_info))
 
-        elif self.INFO_THRESHOLD > 0 and self.info[user]['login']['timestamp'] + self.INFO_THRESHOLD < time.time():
-            self.log_debug("Reached data timeout for %s" % user)
-            info = self.get_info(user, True)
-
-        else:
-            info = self.info[user]
-
-        return info
+        return self.info
 
 
-    def is_premium(self, user):
-        if not user:
-            return False
-
-        info = self.get_info(user)
-        return info['data']['premium']
+    def get_login(self, key=None):
+        d = self.get_info()['login']
+        return d.get(key) or d
 
 
-    def _parse_info(self, user):
-        info = self.info[user]
+    def get_data(self, key=None):
+        d = self.get_info()['data']
+        return d.get(key) or d
 
-        if not info['login']['valid']:
-            return info
 
+    def _grab_info(self):
         try:
-            self.req   = self.get_request(user)
-            extra_info = self.grab_info(user, info['login']['password'], info, self.req)
+            data = self.grab_info(self.user, self.info['login']['password'], self.info['data'])
 
-            if extra_info and isinstance(extra_info, dict):
-                info['data'].update(extra_info)
+            if data and isinstance(data, dict):
+                self.info['data'].update(data)
 
-        except (Fail, Exception), e:
-            self.log_warning(_("Error loading info for user `%s`") % user, e)
-
-            if self.pyload.debug:
-                traceback.print_exc()
+        except Exception, e:
+            self.log_warning(_("Error loading info for user `%s`") % self.user, e)
 
         finally:
-            self.clean()
-
-            self.info[user].update(info)
-            return info
+            return self.info
 
 
-    def grab_info(self, user, password, info, req):
+    def grab_info(self, user, password, data):
         """
         This should be overwritten in account plugin
         and retrieving account information for user
@@ -265,43 +223,104 @@ class Account(Plugin):
         pass
 
 
-    #: Remove in 0.4.10
-    def getAllAccounts(self, *args, **kwargs):
-        return [self.getAccountData(user, *args, **kwargs) for user, info in self.info.items()]
+    ###########################################################################
+    #@TODO: Recheck and move to `AccountManager` in 0.4.10 ####################
+    ###########################################################################
+
+    @lock
+    def init_accounts(self):
+        accounts = dict(self.accounts)
+        self.accounts.clear()
+
+        for user, info in accounts.items():
+            self.add(user, info['password'], info['options'])
 
 
-    def fail_login(self, msg=_("Login handshake has failed")):
-        return self.fail(msg)
+    @lock
+    def getAccountData(self, user, force=False):
+        self.accounts[user]['plugin'].get_info()
+        return self.accounts[user]
 
 
-    def get_request(self, user=None):
-        if not user:
-            user, info = self.select()
+    @lock
+    def getAllAccounts(self, force=False):
+        if force:
+            self.init_accounts()  #@TODO: Recheck in 0.4.10
 
-        return self.pyload.requestFactory.getRequest(self.__name__, user)
-
-
-    def get_cookies(self, user=None):
-        if not user:
-            user, info = self.select()
-
-        return self.pyload.requestFactory.getCookieJar(self.__name__, user)
+        return [self.getAccountData(user, force) for user in self.accounts]
 
 
+    #@TODO: Remove in 0.4.10
+    @lock
+    def scheduleRefresh(self, user, force=False):
+        pass
+
+
+    @lock
+    def add(self, user, password=None, options={}):
+        self.log_info(_("Adding user `%s`...") % user)
+
+        if user in self.accounts:
+            self.log_error(_("Error adding user `%s`") % user, _("User already exists"))
+            return False
+
+        d = {'login'      : user,
+             'maxtraffic' : None,
+             'options'    : options or {'limitdl': ['0']},
+             'password'   : password or "",
+             'plugin'     : self.__class__(self.manager, self.accounts),
+             'premium'    : None,
+             'timestamp'  : 0,
+             'trafficleft': None,
+             'type'       : self.__name__,
+             'valid'      : None,
+             'validuntil' : None}
+
+        u = self.accounts[user] = d
+        return u['plugin'].choose(user)
+
+
+    @lock
+    def updateAccounts(self, user, password=None, options={}):
+        """
+        Updates account and return true if anything changed
+        """
+        if user in self.accounts:
+            self.log_info(_("Updating account info for user `%s`...") % user)
+
+            u = self.accounts[user]
+            if password:
+                u['password'] = password
+
+            if options:
+                u['options'].update(options)
+
+            u['plugin'].relogin()
+
+        else:
+            self.add(user, password, options)
+
+
+    @lock
+    def removeAccount(self, user):
+        self.accounts.pop(user, None)
+        if user is self.user:
+            self.choose()
+
+
+    @lock
     def select(self):
-        """
-        Returns a valid account name and info
-        """
         free_accounts    = {}
         premium_accounts = {}
 
-        for user, info in self.info.items():
+        for user in self.accounts:
+            info = self.accounts[user]['plugin'].get_info()
+            data = info['data']
+
             if not info['login']['valid']:
                 continue
 
-            data = info['data']
-
-            if "time" in data['options'] and data['options']['time']:
+            if data['options'].get('time'):
                 time_data = ""
                 try:
                     time_data  = data['options']['time'][0]
@@ -311,7 +330,8 @@ class Account(Plugin):
                         continue
 
                 except Exception:
-                    self.log_warning(_("Wrong time format `%s` for account `%s`, use 1:22-3:44") % (user, time_data))
+                    self.log_warning(_("Wrong time format `%s` for account `%s`, use 1:22-3:44")
+                                     % (user, time_data))
 
             if data['trafficleft'] == 0:
                 continue
@@ -330,68 +350,56 @@ class Account(Plugin):
         if not account_list:
             return None, None
 
-        validuntil_list = [(user, info) for user, info in account_list if info['data']['validuntil']]
+        validuntil_list = [(user, info) for user, info in account_list \
+                           if info['data']['validuntil']]
 
         if not validuntil_list:
-            return random.choice(account_list)  #@TODO: Random account?! Recheck in 0.4.10
+            return random.choice(account_list)  #@TODO: Random account?! Rewrite in 0.4.10
 
         return sorted(validuntil_list,
                       key=lambda a: a[1]['data']['validuntil'],
                       reverse=True)[0]
 
 
-    def parse_traffic(self, value, unit=None):  #: Return kilobytes
-        if not unit and not isinstance(value, basestring):
-            unit = "KB"
-
-        return parse_size(value, unit)
-
-
-    def empty(self, user):
-        if user not in self.info:
-            return
-
-        self.log_warning(_("Account `%s` has not enough traffic") % user, _("Checking again in 30 minutes"))
-
-        self.info[user]['data']['trafficleft'] = 0
-        self.schedule_refresh(user, 30 * 60)
-
-
-    def expired(self, user):
-        if user not in self.info:
-            return
-
-        self.log_warning(_("Account `%s` is expired") % user, _("Checking again in 60 minutes"))
-
-        self.info[user]['data']['validuntil'] = time.time() - 1
-        self.schedule_refresh(user, 60 * 60)
-
-
-    def schedule_refresh(self, user, time=0):
-        """
-        Add task to refresh account info to sheduler
-        """
-        self.log_debug("Scheduled refresh for user `%s` in %s seconds" % (user, time))
-        self.pyload.scheduler.addJob(time, self.get_info, [user, True])
-
-
-    #: Deprecated method, use `schedule_refresh` instead (Remove in 0.4.10)
-    def scheduleRefresh(self, *args, **kwargs):
-        if 'force' in kwargs:
-            kwargs.pop('force', None)  #@TODO: Recheck in 0.4.10
-        return self.schedule_refresh(*args, **kwargs)
-
-
     @lock
-    def is_logged(self, user, relogin=False):
+    def choose(self, user=None):
         """
-        Checks if user is still logged in
+        Choose a valid account
         """
-        if user in self.info:
-            if self.LOGIN_TIMEOUT > 0 and self.info[user]['login']['timestamp'] + self.LOGIN_TIMEOUT < time.time():
-                self.log_debug("Reached login timeout for %s" % user)
-                return self.relogin(user) if relogin else False
-            else:
-                return True
+        if not user:
+            user = self.select()[0]
+
+        elif user not in self.accounts:
+            self.log_error(_("Error choosing user `%s`") % user, _("User not exists"))
+            return False
+
+        if user is self.user:
+            return True
+
+        self.user = user
+        self.info.clear()
+        self.clean()
+
+        if self.user is not None:
+            self.login()
+            return True
+
         else:
             return False
+
+
+    ###########################################################################
+
+    def parse_traffic(self, value, unit=None):  #@NOTE: Returns kilobytes in 0.4.9
+        if not isinstance(unit, basestring):
+            unit = "KB"
+
+        return parse_size(value, unit) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
+
+
+    def fail_login(self, msg=_("Login handshake has failed")):
+        return self.fail(msg)
+
+
+    def skip_login(self, msg=_("Already signed in")):
+        return self.skip(msg)

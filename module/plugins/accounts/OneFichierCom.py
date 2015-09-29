@@ -10,7 +10,7 @@ from module.plugins.internal.Account import Account
 class OneFichierCom(Account):
     __name__    = "OneFichierCom"
     __type__    = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __description__ = """1fichier.com account plugin"""
@@ -22,7 +22,7 @@ class OneFichierCom(Account):
     VALID_UNTIL_PATTERN = r'Your subscription will end the (\d+-\d+-\d+)'
 
 
-    def grab_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         validuntil = None
         trafficleft = -1
         premium = None
@@ -45,8 +45,8 @@ class OneFichierCom(Account):
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium or False}
 
 
-    def login(self, user, password, data, req):
-        req.http.c.setopt(pycurl.REFERER, "https://1fichier.com/login.pl?lg=en")
+    def signin(self, user, password, data):
+        self.req.http.c.setopt(pycurl.REFERER, "https://1fichier.com/login.pl?lg=en")
 
         html = self.load("https://1fichier.com/login.pl?lg=en",
                          post={'mail'   : user,

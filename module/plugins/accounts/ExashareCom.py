@@ -6,7 +6,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class ExashareCom(XFSAccount):
     __name__    = "ExashareCom"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __description__ = """Exashare.com account plugin"""
@@ -14,4 +14,4 @@ class ExashareCom(XFSAccount):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_DOMAIN = "exashare.com"
+    PLUGIN_DOMAIN = "exashare.com"

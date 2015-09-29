@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class NitroflareCom(Account):
     __name__    = "NitroflareCom"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __description__ = """Nitroflare.com account plugin"""
@@ -24,7 +24,7 @@ class NitroflareCom(Account):
     TOKEN_PATTERN = r'name="token" value="(.+?)"'
 
 
-    def grab_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         validuntil   = -1
         trafficleft  = None
         premium      = False
@@ -68,7 +68,7 @@ class NitroflareCom(Account):
                 'premium'    : premium}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         html = self.load("https://nitroflare.com/login")
 
         token = re.search(self.TOKEN_PATTERN, html).group(1)

@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class CzshareCom(Account):
     __name__    = "CzshareCom"
     __type__    = "account"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__  = "testing"
 
     __description__ = """Czshare.com account plugin, now Sdilej.cz"""
@@ -21,7 +21,7 @@ class CzshareCom(Account):
     CREDIT_LEFT_PATTERN = r'<tr class="active">\s*<td>([\d ,]+) (KiB|MiB|GiB)</td>\s*<td>([^<]*)</td>\s*</tr>'
 
 
-    def grab_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         premium     = False
         validuntil  = None
         trafficleft = None
@@ -44,7 +44,7 @@ class CzshareCom(Account):
                 'trafficleft': trafficleft}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         html = self.load('https://sdilej.cz/index.php',
                          post={'Prihlasit'     : "Prihlasit",
                                "login-password": password,

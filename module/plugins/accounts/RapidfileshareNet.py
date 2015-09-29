@@ -6,7 +6,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class RapidfileshareNet(XFSAccount):
     __name__    = "RapidfileshareNet"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __description__ = """Rapidfileshare.net account plugin"""
@@ -14,6 +14,6 @@ class RapidfileshareNet(XFSAccount):
     __authors__     = [("guidobelix", "guidobelix@hotmail.it")]
 
 
-    HOSTER_DOMAIN = "rapidfileshare.net"
+    PLUGIN_DOMAIN = "rapidfileshare.net"
 
     TRAFFIC_LEFT_PATTERN = r'>Traffic available today:</TD><TD><label for="name">\s*(?P<S>[\d.,]+)\s*(?:(?P<U>[\w^_]+))?'

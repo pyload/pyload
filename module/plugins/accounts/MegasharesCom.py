@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class MegasharesCom(Account):
     __name__    = "MegasharesCom"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __description__ = """Megashares.com account plugin"""
@@ -20,7 +20,7 @@ class MegasharesCom(Account):
     VALID_UNTIL_PATTERN = r'<p class="premium_info_box">Period Ends: (\w{3} \d{1,2}, \d{4})</p>'
 
 
-    def grab_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         # self.relogin(user)
         html = self.load("http://d01.megashares.com/myms.php")
 
@@ -38,7 +38,7 @@ class MegasharesCom(Account):
         return {'validuntil': validuntil, 'trafficleft': -1, 'premium': premium}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         html = self.load('http://d01.megashares.com/myms_login.php',
                          post={'httpref'       : "",
                                'myms_login'    : "Login",

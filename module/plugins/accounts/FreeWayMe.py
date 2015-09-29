@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 class FreeWayMe(Account):
     __name__    = "FreeWayMe"
     __type__    = "account"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __description__ = """FreeWayMe account plugin"""
@@ -15,8 +15,16 @@ class FreeWayMe(Account):
     __authors__     = [("Nicolas Giese", "james@free-way.me")]
 
 
-    def grab_info(self, user, password, data, req):
-        status = self.get_account_status(user, password, req)
+    def grab_hosters(self, user, password, data):
+        hostis = self.load("http://www.free-way.bz/ajax/jd.php",
+                           get={'id'  : 3,
+                                'user': user,
+                                'pass': password}).replace("\"", "")  #@TODO: Revert to `https` in 0.4.10
+        return [x.strip() for x in hostis.split(",") if x.strip()]
+
+
+    def grab_info(self, user, password, data):
+        status = self.get_account_status(user, password)
 
         self.log_debug(status)
 
@@ -33,15 +41,15 @@ class FreeWayMe(Account):
         return account_info
 
 
-    def login(self, user, password, data, req):
-        status = self.get_account_status(user, password, req)
+    def signin(self, user, password, data):
+        status = self.get_account_status(user, password)
 
         #: Check if user and password are valid
         if not status:
             self.fail_login()
 
 
-    def get_account_status(self, user, password, req):
+    def get_account_status(self, user, password):
         answer = self.load("http://www.free-way.bz/ajax/jd.php",  #@TODO: Revert to `https` in 0.4.10
                           get={'id': 4, 'user': user, 'pass': password})
 

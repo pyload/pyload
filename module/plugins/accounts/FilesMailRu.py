@@ -6,7 +6,7 @@ from module.plugins.internal.Account import Account
 class FilesMailRu(Account):
     __name__    = "FilesMailRu"
     __type__    = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __description__ = """Filesmail.ru account plugin"""
@@ -14,11 +14,11 @@ class FilesMailRu(Account):
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
-    def grab_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         return {'validuntil': None, 'trafficleft': None}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         user, domain = user.split("@")
 
         html = self.load("https://swa.mail.ru/cgi-bin/auth",

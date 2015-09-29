@@ -10,7 +10,7 @@ from module.plugins.internal.Plugin import set_cookies
 class UploadingCom(Account):
     __name__    = "UploadingCom"
     __type__    = "account"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __description__ = """Uploading.com account plugin"""
@@ -22,7 +22,7 @@ class UploadingCom(Account):
     VALID_UNTIL_PATTERN = r'Valid Until:(.+?)<'
 
 
-    def grab_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         validuntil  = None
         trafficleft = None
         premium     = None
@@ -54,8 +54,8 @@ class UploadingCom(Account):
                 'premium'    : premium}
 
 
-    def login(self, user, password, data, req):
-        set_cookies(req.cj,
+    def signin(self, user, password, data):
+        set_cookies(self.req.cj,
                     [("uploading.com", "lang"    , "1" ),
                      ("uploading.com", "language", "1" ),
                      ("uploading.com", "setlang" , "en"),

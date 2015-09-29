@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class UploadedTo(Account):
     __name__    = "UploadedTo"
     __type__    = "account"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__  = "testing"
 
     __description__ = """Uploaded.to account plugin"""
@@ -24,7 +24,7 @@ class UploadedTo(Account):
     TRAFFIC_LEFT_PATTERN = r'<b class="cB">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
 
-    def grab_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         validuntil  = None
         trafficleft = None
         premium     = None
@@ -63,7 +63,7 @@ class UploadedTo(Account):
                 'premium'    : premium}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         self.load("http://uploaded.net/language/en")
 
         html = self.load("http://uploaded.net/io/login",

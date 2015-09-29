@@ -9,7 +9,7 @@ from module.common.json_layer import json_loads
 class LinksnappyCom(Account):
     __name__    = "LinksnappyCom"
     __type__    = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __description__ = """Linksnappy.com account plugin"""
@@ -17,8 +17,14 @@ class LinksnappyCom(Account):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    def grab_info(self, user, password, data, req):
-        data = self.get_data(user)
+    def grab_hosters(self, user, password, data):
+        json_data = self.load("http://gen.linksnappy.com/lseAPI.php", get={'act': "FILEHOSTS"})
+        json_data = json_loads(json_data)
+
+        return json_data['return'].keys()
+
+
+    def grab_info(self, user, password, data):
         r = self.load('http://gen.linksnappy.com/lseAPI.php',
                       get={'act'     : 'USERDETAILS',
                            'username': user,
@@ -52,7 +58,7 @@ class LinksnappyCom(Account):
                 'trafficleft': trafficleft}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         html = self.load("https://gen.linksnappy.com/lseAPI.php",
                          get={'act'     : 'USERDETAILS',
                               'username': user,

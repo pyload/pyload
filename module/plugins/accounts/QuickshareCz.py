@@ -8,7 +8,7 @@ from module.plugins.internal.Account import Account
 class QuickshareCz(Account):
     __name__    = "QuickshareCz"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __description__ = """Quickshare.cz account plugin"""
@@ -19,7 +19,7 @@ class QuickshareCz(Account):
     TRAFFIC_LEFT_PATTERN = r'Stav kreditu: <strong>(.+?)</strong>'
 
 
-    def grab_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         html = self.load("http://www.quickshare.cz/premium")
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
@@ -33,7 +33,7 @@ class QuickshareCz(Account):
         return {'validuntil': -1, 'trafficleft': trafficleft, 'premium': premium}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         html = self.load('http://www.quickshare.cz/html/prihlaseni_process.php',
                          post={'akce' : u'Přihlásit',
                                'heslo': password,

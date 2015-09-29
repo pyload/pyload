@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class FshareVn(Account):
     __name__    = "FshareVn"
     __type__    = "account"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __description__ = """Fshare.vn account plugin"""
@@ -24,7 +24,7 @@ class FshareVn(Account):
     DIRECT_DOWNLOAD_PATTERN = ur'<input type="checkbox"\s*([^=>]*)[^>]*/>Kích hoạt download trực tiếp</dt>'
 
 
-    def grab_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         html = self.load("http://www.fshare.vn/account_info.php")
 
         if re.search(self.LIFETIME_PATTERN, html):
@@ -45,7 +45,7 @@ class FshareVn(Account):
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         html = self.load("https://www.fshare.vn/login.php",
                          post={'LoginForm[email]'     : user,
                                'LoginForm[password]'  : password,

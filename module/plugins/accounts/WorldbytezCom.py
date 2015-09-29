@@ -6,7 +6,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class WorldbytezCom(XFSAccount):
     __name__    = "WorldbytezCom"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __description__ = """Worldbytez.com account plugin"""
@@ -14,4 +14,4 @@ class WorldbytezCom(XFSAccount):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_DOMAIN = "worldbytez.com"
+    PLUGIN_DOMAIN = "worldbytez.com"

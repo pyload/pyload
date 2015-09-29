@@ -10,7 +10,7 @@ from module.plugins.internal.Account import Account
 class FilejungleCom(Account):
     __name__    = "FilejungleCom"
     __type__    = "account"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __description__ = """Filejungle.com account plugin"""
@@ -25,7 +25,7 @@ class FilejungleCom(Account):
     LOGIN_FAILED_PATTERN = r'<span htmlfor="loginUser(Name|Password)" generated="true" class="fail_info">'
 
 
-    def grab_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         html = self.load(self.URL + "dashboard.php")
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m:
@@ -38,7 +38,7 @@ class FilejungleCom(Account):
         return {'premium': premium, 'trafficleft': -1, 'validuntil': validuntil}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         html = self.load(urlparse.urljoin(self.URL, "login.php"),
                          post={'loginUserName'              : user,
                                'loginUserPassword'          : password,

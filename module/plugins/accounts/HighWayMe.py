@@ -7,7 +7,7 @@ from module.plugins.internal.Account import Account
 class HighWayMe(Account):
     __name__    = "HighWayMe.py"
     __type__    = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __description__ = """High-Way.me account plugin"""
@@ -15,7 +15,13 @@ class HighWayMe(Account):
     __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
-    def grab_info(self, user, password, data, req):
+    def grab_hosters(self, user, password, data):
+        json_data = json_loads(self.load("https://high-way.me/api.php",
+                                           get={'hoster': 1}))
+        return [element['name'] for element in json_data['hoster']]
+
+
+    def grab_info(self, user, password, data):
         premium     = False
         validuntil  = -1
         trafficleft = None
@@ -40,7 +46,7 @@ class HighWayMe(Account):
                 'trafficleft': trafficleft}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         html = self.load("https://high-way.me/api.php?login",
                          post={'login': '1',
                                'user': user,

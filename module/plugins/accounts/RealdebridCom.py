@@ -8,7 +8,7 @@ from module.plugins.internal.Account import Account
 class RealdebridCom(Account):
     __name__    = "RealdebridCom"
     __type__    = "account"
-    __version__ = "0.49"
+    __version__ = "0.50"
     __status__  = "testing"
 
     __description__ = """Real-Debrid.com account plugin"""
@@ -16,7 +16,12 @@ class RealdebridCom(Account):
     __authors__     = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
 
 
-    def grab_info(self, user, password, data, req):
+    def grab_hosters(self, user, password, data):
+        html = self.load("https://real-debrid.com/api/hosters.php").replace("\"", "").strip()
+        return [x.strip() for x in html.split(",") if x.strip()]
+
+
+    def grab_info(self, user, password, data):
         if self.pin_code:
             return
 
@@ -30,7 +35,7 @@ class RealdebridCom(Account):
                 'premium'    : True      }
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         self.pin_code = False
 
         html = self.load("https://real-debrid.com/ajax/login.php",

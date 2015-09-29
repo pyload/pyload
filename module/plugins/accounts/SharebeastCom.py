@@ -6,7 +6,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class SharebeastCom(XFSAccount):
     __name__    = "SharebeastCom"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __description__ = """Sharebeast.com account plugin"""
@@ -14,4 +14,4 @@ class SharebeastCom(XFSAccount):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_DOMAIN = "sharebeast.com"
+    PLUGIN_DOMAIN = "sharebeast.com"

@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 class MegaDebridEu(Account):
     __name__    = "MegaDebridEu"
     __type__    = "account"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "testing"
 
     __description__ = """Mega-debrid.eu account plugin"""
@@ -19,8 +19,20 @@ class MegaDebridEu(Account):
     API_URL = "https://www.mega-debrid.eu/api.php"
 
 
-    def grab_info(self, user, password, data, req):
-        data = self.get_data(user)
+    def grab_hosters(self, user, password, data):
+        reponse   = self.load("http://www.mega-debrid.eu/api.php", get={'action': "getHosters"})
+        json_data = json_loads(reponse)
+
+        if json_data['response_code'] == "ok":
+            host_list = [element[0] for element in json_data['hosters']]
+        else:
+            self.log_error(_("Unable to retrieve hoster list"))
+            host_list = []
+
+        return host_list
+
+
+    def grab_info(self, user, password, data):
         jsonResponse = self.load(self.API_URL,
                                  get={'action'  : 'connectUser',
                                       'login'   : user,
@@ -34,7 +46,7 @@ class MegaDebridEu(Account):
             return {'status': False, 'premium': False}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         jsonResponse = self.load(self.API_URL,
                                  get={'action'  : 'connectUser',
                                       'login'   : user,
