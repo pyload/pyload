@@ -6,7 +6,6 @@ import os
 import re
 import time
 
-from module.PyFile import statusMap as _statusMap
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster, create_getInfo, parse_fileInfo
@@ -14,14 +13,10 @@ from module.plugins.internal.Plugin import Fail, encode, parse_name, replace_pat
 from module.utils import fixup, fs_encode, parseFileSize as parse_size
 
 
-#@TODO: Adapt and move to PyFile in 0.4.10
-statusMap = dict((v, k) for k, v in _statusMap.items())
-
-
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.86"
+    __version__ = "1.87"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -124,7 +119,7 @@ class SimpleHoster(Hoster):
         try:
             info['pattern'] = re.match(cls.__pattern__, url).groupdict()  #: Pattern groups will be saved here
 
-        except AttributeError:
+        except (AttributeError, IndexError):
             info['pattern'] = {}
 
         if not html and not online:
@@ -164,7 +159,7 @@ class SimpleHoster(Hoster):
                         if all(True for k in pdict if k not in info['pattern']):
                             info['pattern'].update(pdict)
 
-                    except AttributeError:
+                    except (AttributeError, IndexError):
                         continue
 
                     else:
@@ -275,11 +270,11 @@ class SimpleHoster(Hoster):
                     if 'status' not in self.info or self.info['status'] is 3:  #@TODO: Recheck in 0.4.10
                         self.check_info()
 
-                    if self.premium and (not self.CHECK_TRAFFIC or self.check_traffic_left()):
+                    if self.premium and (not self.CHECK_TRAFFIC or self.check_traffic()):
                         self.log_info(_("Processing as premium download..."))
                         self.handle_premium(pyfile)
 
-                    elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.check_traffic_left()):
+                    elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.check_traffic()):
                         self.log_info(_("Processing as free download..."))
                         self.handle_free(pyfile)
 
@@ -287,7 +282,7 @@ class SimpleHoster(Hoster):
                 self.log_info(_("Downloading file..."))
                 self.download(self.link, disposition=self.DISPOSITION)
 
-            self.check_file()
+            self.check_download()
 
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
             if self.get_config('premium_fallback', True) and self.premium:
@@ -298,26 +293,26 @@ class SimpleHoster(Hoster):
                 raise Fail(encode(e))  #@TODO: Remove `encode` in 0.4.10
 
 
-    def check_file(self):
-        self.log_info(_("Checking file..."))
+    def check_download(self):
+        self.log_info(_("Checking downloaded file..."))
 
         if self.captcha.task and not self.last_download:
             self.captcha.invalid()
             self.retry(10, msg=_("Wrong captcha"))
 
-        elif self.check_download({'Empty file': re.compile(r'\A((.|)(\2|\s)*)\Z')},
+        elif self.check_file({'Empty file': re.compile(r'\A((.|)(\2|\s)*)\Z')},
                                  delete=True):
             self.error(_("Empty file"))
 
         else:
-            if self.get_config('chk_filesize', False) and 'size' in self.info:
+            if self.get_config('chk_filesize', False) and self.info.get('size'):
                 # 10485760 is 10MB, tolerance is used when comparing displayed size on the hoster website to real size
                 # For example displayed size can be 1.46GB for example, but real size can be 1.4649853GB
                 self.check_filesize(self.info['size'], size_tolerance=10485760)
 
             self.log_debug("Using default check rules...")
             for r, p in self.FILE_ERRORS:
-                errmsg = self.check_download({r: re.compile(p)})
+                errmsg = self.check_file({r: re.compile(p)})
                 if errmsg is not None:
                     errmsg = errmsg.strip().capitalize()
 
@@ -338,7 +333,6 @@ class SimpleHoster(Hoster):
                     self.check_errors()
 
         self.log_info(_("No errors found"))
-        self.pyfile.error = ""  #@TODO: Recheck in 0.4.10
 
 
     def check_errors(self):
@@ -361,7 +355,7 @@ class SimpleHoster(Hoster):
                 try:
                     errmsg = m.group(1).strip()
 
-                except AttributeError:
+                except (AttributeError, IndexError):
                     errmsg = m.group(0).strip()
 
                 self.info['error'] = re.sub(r'<.*?>', " ", errmsg)
@@ -385,7 +379,7 @@ class SimpleHoster(Hoster):
                 try:
                     errmsg = m.group(1).strip()
 
-                except AttributeError:
+                except (AttributeError, IndexError):
                     errmsg = m.group(0).strip()
 
                 self.info['error'] = re.sub(r'<.*?>', " ", errmsg)
@@ -436,7 +430,7 @@ class SimpleHoster(Hoster):
                 try:
                     waitmsg = m.group(1).strip()
 
-                except AttributeError:
+                except (AttributeError, IndexError):
                     waitmsg = m.group(0).strip()
 
                 wait_time = sum(int(v) * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, "": 1}[u.lower()] for v, u in
@@ -455,22 +449,19 @@ class SimpleHoster(Hoster):
             self.log_debug("Previous file info: %s" % old_info)
 
         try:
-            status = self.info['status'] or None
+            status = self.info['status'] or 14
 
-            if status == 1:
+            if status is 1:
                 self.offline()
 
-            elif status == 6:
+            elif status is 6:
                 self.temp_offline()
 
-            elif status == 8:
-                if 'error' in self.info:
-                    self.fail(self.info['error'])
-                else:
-                    self.fail(_("File status: " + statusMap[status]))
+            elif status is 8:
+                self.fail()
 
         finally:
-            self.log_info(_("File status: ") + (statusMap[status] if status else _("Unknown")))
+            self.log_info(_("File status: ") + self.pyfile.getStatusName(status))
 
 
     def check_name_size(self, getinfo=True):
@@ -492,7 +483,7 @@ class SimpleHoster(Hoster):
             if name and name is not url:
                 self.pyfile.name = name
 
-        if 'size' in self.info and self.info['size'] > 0:
+        if self.info.get('size') > 0:
             self.pyfile.size = int(self.info['size'])  #@TODO: Fix int conversion in 0.4.10
 
         # self.pyfile.sync()

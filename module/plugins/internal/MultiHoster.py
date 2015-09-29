@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, r
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.50"
+    __version__ = "0.51"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -21,21 +21,21 @@ class MultiHoster(SimpleHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_NAME = None
+    PLUGIN_NAME = None
 
     LEECH_HOSTER  = False
     LOGIN_ACCOUNT = True
 
 
     def init(self):
-        self.HOSTER_NAME = self.pyload.pluginManager.hosterPlugins[self.__name__]['name']
+        self.PLUGIN_NAME = self.pyload.pluginManager.hosterPlugins[self.__name__]['name']
 
 
     def _log(self, level, plugintype, pluginname, messages):
         return super(MultiHoster, self)._log(level,
                                              plugintype,
                                              pluginname,
-                                             (self.HOSTER_NAME,) + messages)
+                                             (self.PLUGIN_NAME,) + messages)
 
 
     def setup(self):
@@ -83,11 +83,11 @@ class MultiHoster(SimpleHoster):
                 self.check_errors()
                 self.check_status(getinfo=False)
 
-                if self.premium and (not self.CHECK_TRAFFIC or self.check_traffic_left()):
+                if self.premium and (not self.CHECK_TRAFFIC or self.check_traffic()):
                     self.log_info(_("Processing as premium download..."))
                     self.handle_premium(pyfile)
 
-                elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.check_traffic_left()):
+                elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.check_traffic()):
                     self.log_info(_("Processing as free download..."))
                     self.handle_free(pyfile)
 
@@ -95,7 +95,7 @@ class MultiHoster(SimpleHoster):
                 self.log_info(_("Downloading file..."))
                 self.download(self.link, disposition=self.DISPOSITION)
 
-            self.check_file()
+            self.check_download()
 
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
             if self.premium:

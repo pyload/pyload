@@ -8,7 +8,7 @@ from glob import glob
 from string import digits
 
 from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
-from module.utils import fs_decode, fs_encode, save_join as fs_join
+from module.utils import fs_decode, save_join as fs_join
 
 
 def renice(pid, value):
@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.26"
+    __version__ = "1.27"
     __status__  = "testing"
 
     __description__ = """Rar extractor plugin"""
@@ -229,7 +229,7 @@ class UnRar(Extractor):
         args.append("-y")
 
         #: Set a password
-        if "password" in kwargs and kwargs['password']:
+        if kwargs.get('password'):
             args.append("-p%s" % kwargs['password'])
         else:
             args.append("-p-")

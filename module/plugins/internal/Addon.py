@@ -26,7 +26,6 @@ class Addon(Plugin):
     __version__ = "0.06"
     __status__  = "testing"
 
-    __config__   = []  #: [("name", "type", "desc", "default")]
     __threaded__ = []  #@TODO: Remove in 0.4.10
 
     __description__ = """Base addon plugin"""

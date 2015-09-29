@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, r
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.62"
+    __version__ = "0.63"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -81,7 +81,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
             self.log_debug("Redirect #%d to: %s" % (i, redirect))
 
             header = self.load(redirect, just_header=True)
-            if 'location' in header and header['location']:
+            if header.get('location'):
                 self.link = header['location']
             else:
                 break
@@ -137,7 +137,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
         try:
             pages = int(re.search(self.PAGES_PATTERN, self.html).group(1))
 
-        except AttributeError:
+        except (AttributeError, IndexError, ValueError):
             pages = 1
 
         for p in xrange(2, pages + 1):

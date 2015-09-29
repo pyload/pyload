@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class XFSCrypter(SimpleCrypter):
     __name__    = "XFSCrypter"
     __type__    = "crypter"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -17,7 +17,7 @@ class XFSCrypter(SimpleCrypter):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_DOMAIN = None
+    PLUGIN_DOMAIN = None
 
     URL_REPLACEMENTS = [(r'&?per_page=\d+', ""), (r'[?/&]+$', ""), (r'(.+/[^?]+)$', r'\1?'), (r'$', r'&per_page=10000')]
 
@@ -29,22 +29,22 @@ class XFSCrypter(SimpleCrypter):
 
 
     def prepare(self):
-        if not self.HOSTER_DOMAIN:
+        if not self.PLUGIN_DOMAIN:
             if self.account:
                 account      = self.account
             else:
                 account_name = (self.__name__ + ".py").replace("Folder.py", "").replace(".py", "")
                 account      = self.pyload.accountManager.getAccountPlugin(account_name)
 
-            if account and hasattr(account, "HOSTER_DOMAIN") and account.HOSTER_DOMAIN:
-                self.HOSTER_DOMAIN = account.HOSTER_DOMAIN
+            if account and hasattr(account, "PLUGIN_DOMAIN") and account.PLUGIN_DOMAIN:
+                self.PLUGIN_DOMAIN = account.PLUGIN_DOMAIN
             else:
-                self.fail(_("Missing HOSTER_DOMAIN"))
+                self.fail(_("Missing PLUGIN_DOMAIN"))
 
         if self.COOKIES:
-            if isinstance(self.COOKIES, list) and (self.HOSTER_DOMAIN, "lang", "english") not in self.COOKIES:
-                self.COOKIES.insert((self.HOSTER_DOMAIN, "lang", "english"))
+            if isinstance(self.COOKIES, list) and (self.PLUGIN_DOMAIN, "lang", "english") not in self.COOKIES:
+                self.COOKIES.insert((self.PLUGIN_DOMAIN, "lang", "english"))
             else:
-                set_cookie(self.req.cj, self.HOSTER_DOMAIN, "lang", "english")
+                set_cookie(self.req.cj, self.PLUGIN_DOMAIN, "lang", "english")
 
         return super(XFSCrypter, self).prepare()

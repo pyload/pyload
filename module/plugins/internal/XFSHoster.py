@@ -14,7 +14,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.60"
+    __version__ = "0.61"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -26,7 +26,7 @@ class XFSHoster(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com"  )]
 
 
-    HOSTER_DOMAIN = None
+    PLUGIN_DOMAIN = None
 
     LEECH_HOSTER = True  #@NOTE: Should be default to False for safe, but I'm lazy...
 
@@ -61,26 +61,26 @@ class XFSHoster(SimpleHoster):
         """
         Initialize important variables
         """
-        if not self.HOSTER_DOMAIN:
+        if not self.PLUGIN_DOMAIN:
             if self.account:
                 account = self.account
             else:
                 account = self.pyload.accountManager.getAccountPlugin(self.__name__)
 
-            if account and hasattr(account, "HOSTER_DOMAIN") and account.HOSTER_DOMAIN:
-                self.HOSTER_DOMAIN = account.HOSTER_DOMAIN
+            if account and hasattr(account, "PLUGIN_DOMAIN") and account.PLUGIN_DOMAIN:
+                self.PLUGIN_DOMAIN = account.PLUGIN_DOMAIN
             else:
-                self.fail(_("Missing HOSTER_DOMAIN"))
+                self.fail(_("Missing PLUGIN_DOMAIN"))
 
         if self.COOKIES:
-            if isinstance(self.COOKIES, list) and (self.HOSTER_DOMAIN, "lang", "english") not in self.COOKIES:
-                self.COOKIES.insert((self.HOSTER_DOMAIN, "lang", "english"))
+            if isinstance(self.COOKIES, list) and (self.PLUGIN_DOMAIN, "lang", "english") not in self.COOKIES:
+                self.COOKIES.insert((self.PLUGIN_DOMAIN, "lang", "english"))
             else:
-                set_cookie(self.req.cj, self.HOSTER_DOMAIN, "lang", "english")
+                set_cookie(self.req.cj, self.PLUGIN_DOMAIN, "lang", "english")
 
         if not self.LINK_PATTERN:
             pattern = r'(?:file: "(.+?)"|(https?://(?:www\.)?([^/]*?%s|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<])'
-            self.LINK_PATTERN = pattern % self.HOSTER_DOMAIN.replace('.', '\.')
+            self.LINK_PATTERN = pattern % self.PLUGIN_DOMAIN.replace('.', '\.')
 
         super(XFSHoster, self).prepare()
 
@@ -129,7 +129,7 @@ class XFSHoster(SimpleHoster):
             self.fail(_("Only registered or premium users can use url leech feature"))
 
         #: Only tested with easybytez.com
-        self.html = self.load("http://www.%s/" % self.HOSTER_DOMAIN)
+        self.html = self.load("http://www.%s/" % self.PLUGIN_DOMAIN)
 
         action, inputs = self.parse_html_form()
 
@@ -244,7 +244,7 @@ class XFSHoster(SimpleHoster):
         try:
             captcha_key = re.search(self.RECAPTCHA_PATTERN, self.html).group(1)
 
-        except AttributeError:
+        except (AttributeError, IndexError):
             captcha_key = recaptcha.detect_key()
 
         else:
@@ -258,7 +258,7 @@ class XFSHoster(SimpleHoster):
         try:
             captcha_key = re.search(self.SOLVEMEDIA_PATTERN, self.html).group(1)
 
-        except AttributeError:
+        except (AttributeError, IndexError):
             captcha_key = solvemedia.detect_key()
 
         else:

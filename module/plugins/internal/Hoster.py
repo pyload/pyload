@@ -11,8 +11,8 @@ import urlparse
 
 from module.plugins.internal.Captcha import Captcha
 from module.plugins.internal.Plugin import (Plugin, Abort, Fail, Reconnect, Retry, Skip,
-                                            chunks, decode, encode, exists, parse_html_form,
-                                            parse_html_tag_attr_value, parse_name,
+                                            chunks, decode, encode, exists, fixurl,
+                                            parse_html_form, parse_html_tag_attr_value, parse_name,
                                             replace_patterns, seconds_to_midnight,
                                             set_cookie, set_cookies, timestamp)
 from module.utils import fs_decode, fs_encode, save_join as fs_join, save_path as safe_filename
@@ -41,21 +41,27 @@ def create_getInfo(klass):
     return get_info
 
 
+#@NOTE: `check_abort` decorator
+def check_abort(fn):
+
+    def wrapper(self, *args, **kwargs):
+        self.check_abort()
+        return fn(self, *args, **kwargs)
+
+    return wrapper
+
+
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.28"
+    __version__ = "0.31"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = []  #: [("name", "type", "desc", "default")]
 
     __description__ = """Base hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN"         , "RaNaN@pyload.org" ),
-                       ("spoob"         , "spoob@pyload.org" ),
-                       ("mkaay"         , "mkaay@mkaay.de"   ),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def __init__(self, pyfile):
@@ -74,7 +80,7 @@ class Hoster(Plugin):
 
         #: Account handler instance, see :py:class:`Account`
         self.account = None
-        self.req     = None  #: Browser instance, see `network.Browser`
+        self.user    = None  #@TODO: Remove in 0.4.10
 
         #: Associated pyfile instance, see `PyFile`
         self.pyfile = pyfile
@@ -98,7 +104,7 @@ class Hoster(Plugin):
 
         #: Dict of the amount of retries already made
         self.retries    = {}
-        self.retry_free = False  #@TODO: Recheck in 0.4.10
+        self.force_free = False  #@TODO: Recheck in 0.4.10
 
         self._setup()
         self.init()
@@ -116,9 +122,10 @@ class Hoster(Plugin):
 
     @classmethod
     def get_info(cls, url="", html=""):
+        url = fixurl(url, unquote=True)
         return {'name'  : parse_name(url),
                 'size'  : 0,
-                'status': 3 if url.strip() else 8,
+                'status': 3 if url else 8,
                 'url'   : url}
 
 
@@ -142,6 +149,11 @@ class Hoster(Plugin):
         self.last_download = ""
         self.pyfile.error  = ""
 
+        try:
+            self.req.close()
+        except Exception:
+            pass
+
         if self.account:
             self.req             = self.pyload.requestFactory.getRequest(self.__name__, self.account.user)
             self.chunk_limit     = -1  #: -1 for unlimited
@@ -162,16 +174,16 @@ class Hoster(Plugin):
         """
         self.thread = thread
 
-        if self.retry_free:
+        if self.force_free:
             self.account = False
         else:
             self.load_account()  #@TODO: Move to PluginThread in 0.4.10
-            self.retry_free = False
+            self.force_free = False
 
         self._setup()
 
+        # self.pyload.hookManager.downloadPreparing(self.pyfile)  #@TODO: Recheck in 0.4.10
         self.pyfile.setStatus("starting")
-        self.pyload.hookManager.downloadPreparing(self.pyfile)  #@TODO: Recheck in 0.4.10
 
         self.check_abort()
 
@@ -185,17 +197,17 @@ class Hoster(Plugin):
 
 
     def load_account(self):
-        if self.req:
-            self.req.close()
-
         if not self.account:
             self.account = self.pyload.accountManager.getAccountPlugin(self.__name__)
 
-        if self.account:
-            if not hasattr(self.account, 'user'):  #@TODO: Move to `Account` in 0.4.10
-                self.account.user = self.account.select()[0]
+        if not self.account:
+            self.account = False
+            self.user    = None  #@TODO: Remove in 0.4.10
 
-            if not hasattr(self.account, 'logged'):
+        else:
+            self.account.choose()
+            self.user = self.account.user  #@TODO: Remove in 0.4.10
+            if self.account.user is None:
                 self.account = False
 
 
@@ -207,12 +219,8 @@ class Hoster(Plugin):
 
 
     def set_reconnect(self, reconnect):
-        if reconnect:
-            self.log_info(_("Requesting line reconnection..."))
-        else:
-            self.log_debug("Reconnect: %s" % reconnect)
-
-        self.log_debug("Previous wantReconnect: %s" % self.wantReconnect)
+        self.log_debug("RECONNECT %s required" % ("" if reconnect else "not"),
+                       "Previous wantReconnect: %s" % self.wantReconnect)
         self.wantReconnect = bool(reconnect)
 
 
@@ -226,8 +234,8 @@ class Hoster(Plugin):
         wait_time  = max(int(seconds), 1)
         wait_until = time.time() + wait_time + 1
 
-        self.log_info(_("Waiting %d seconds...") % wait_time)
-        self.log_debug("Previous waitUntil: %f" % self.pyfile.waitUntil)
+        self.log_debug("WAIT set to %d seconds" % wait_time,
+                       "Previous waitUntil: %f" % self.pyfile.waitUntil)
 
         self.pyfile.waitUntil = wait_until
 
@@ -249,13 +257,17 @@ class Hoster(Plugin):
 
         self.waiting = True
 
-        status = pyfile.status  #@NOTE: Remove in 0.4.10
+        status = pyfile.status  #@NOTE: Recheck in 0.4.10
         pyfile.setStatus("waiting")
 
-        if not self.wantReconnect or self.account:
+        self.log_info(_("Waiting %d seconds...") % pyfile.waitUntil - time.time())
+
+        if self.wantReconnect:
+            self.log_info(_("Requiring reconnection..."))
             if self.account:
                 self.log_warning("Ignore reconnection due logged account")
 
+        if not self.wantReconnect or self.account:
             while pyfile.waitUntil > time.time():
                 self.check_abort()
                 time.sleep(2)
@@ -263,24 +275,24 @@ class Hoster(Plugin):
         else:
             while pyfile.waitUntil > time.time():
                 self.check_abort()
+                self.thread.m.reconnecting.wait(1)
 
                 if self.thread.m.reconnecting.isSet():
                     self.waiting = False
                     self.wantReconnect = False
                     raise Reconnect
 
-                self.thread.m.reconnecting.wait(2)
                 time.sleep(2)
 
         self.waiting = False
-        pyfile.status = status  #@NOTE: Remove in 0.4.10
+        pyfile.status = status  #@NOTE: Recheck in 0.4.10
 
 
     def skip(self, msg=""):
         """
         Skip and give msg
         """
-        raise Skip(encode(msg or self.pyfile.error))  #@TODO: Remove `encode` in 0.4.10
+        raise Skip(encode(msg or self.pyfile.error or self.pyfile.pluginname))  #@TODO: Remove `encode` in 0.4.10
 
 
     #@TODO: Remove in 0.4.10
@@ -293,7 +305,7 @@ class Hoster(Plugin):
         if msg:
             self.pyfile.error = msg
         else:
-            msg = self.pyfile.error
+            msg = self.pyfile.error or (self.info['error'] if 'error' in self.info else self.pyfile.getStatusName())
 
         raise Fail(encode(msg))  #@TODO: Remove `encode` in 0.4.10
 
@@ -359,30 +371,33 @@ class Hoster(Plugin):
 
         if nopremium:
             if self.premium:
-                self.retry_free = True
+                self.force_free = True
             else:
                 self.fail("%s | %s" % (msg, _("Download was already free")))
 
         raise Retry(encode(msg))  #@TODO: Remove `encode` in 0.4.10
 
 
-    def fixurl(self, url, baseurl=None):
+    def fixurl(self, url, baseurl=None, unquote=None):
+        url = fixurl(url)
+
         if not baseurl:
-            baseurl = self.pyfile.url
+            baseurl = fixurl(self.pyfile.url)
 
         if not urlparse.urlparse(url).scheme:
             url_p = urlparse.urlparse(baseurl)
             baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
             url = urlparse.urljoin(baseurl, url)
 
-        return url
+        return fixurl(url, unquote)
 
 
+    @check_abort
     def load(self, *args, **kwargs):
-        self.check_abort()
         return super(Hoster, self).load(*args, **kwargs)
 
 
+    @check_abort
     def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=True):
         """
         Downloads the content at url to download folder
@@ -396,16 +411,18 @@ class Hoster(Plugin):
         the filename will be changed if needed
         :return: The location where the file was saved
         """
-        self.check_abort()
-
         if self.pyload.debug:
             self.log_debug("DOWNLOAD URL " + url,
-                           *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url")])
+                           *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url", "_[1]")])
+
+        url = self.fixurl(url, unquote=True)
 
         self.pyfile.name = parse_name(self.pyfile.name)  #: Safe check
 
         self.captcha.correct()
-        self.check_for_same_files()
+
+        if self.pyload.config.get("download", "skip_existing"):
+            self.check_filedupe()
 
         self.pyfile.setStatus("downloading")
 
@@ -441,7 +458,9 @@ class Hoster(Plugin):
 
             if finalname != newname:
                 try:
-                    os.rename(fs_join(location, newname), fs_join(location, finalname))
+                    oldname_enc = fs_join(download_location, newname)
+                    newname_enc = fs_join(download_location, finalname)
+                    os.rename(oldname_enc, newname_enc)
 
                 except OSError, e:
                     self.log_warning(_("Error renaming `%s` to `%s`") % (newname, finalname), e)
@@ -463,16 +482,16 @@ class Hoster(Plugin):
         if not self.pyfile.abort:
             return
 
-        if self.pyfile.hasStatus("failed"):
+        if self.pyfile.status is 8:
             self.fail()
 
-        elif self.pyfile.hasStatus("skipped"):
+        elif self.pyfile.status is 4:
             self.skip(self.pyfile.statusname)
 
-        elif self.pyfile.hasStatus("offline"):
+        elif self.pyfile.status is 1:
             self.offline()
 
-        elif self.pyfile.hasStatus("temp. offline"):
+        elif self.pyfile.status is 6:
             self.temp_offline()
 
         else:
@@ -489,7 +508,8 @@ class Hoster(Plugin):
         if not self.last_download:
             return
 
-        download_size = os.stat(fs_encode(self.last_download)).st_size
+        download_location = fs_encode(self.last_download)
+        download_size     = os.stat(download_location).st_size
 
         if download_size < 1:
             self.fail(_("Empty file"))
@@ -505,7 +525,7 @@ class Hoster(Plugin):
                 self.log_warning(_("File size is not equal to expected size"))
 
 
-    def check_download(self, rules, delete=False, read_size=1048576, file_size=0, size_tolerance=1024):
+    def check_file(self, rules, delete=False, read_size=1048576, file_size=0, size_tolerance=1024):
         """
         Checks the content of the last downloaded file, re match is saved to `last_check`
 
@@ -552,7 +572,66 @@ class Hoster(Plugin):
 
                 else:
                     self.log_info(_("File deleted: ") + self.last_download)
-                    self.last_download = ""
+                    self.last_download = ""  #: Recheck in 0.4.10
+
+
+    def check_traffic(self):
+        if not self.account:
+            return True
+
+        traffic = self.account.get_data(refresh=True)['trafficleft']
+
+        if traffic is None:
+            return False
+
+        elif traffic is -1:
+            return True
+
+        else:
+            size = self.pyfile.size / 1024  #@TODO: Remove in 0.4.10
+            self.log_info(_("Filesize: %s KiB, Traffic left for user %s: %s KiB") % (size, self.account.user, traffic))  #@TODO: Rewrite in 0.4.10
+            return size <= traffic
+
+
+    def check_filedupe(self):
+        """
+        Checks if same file was/is downloaded within same package
+
+        :param starting: indicates that the current download is going to start
+        :raises Skip:
+        """
+        pack = self.pyfile.package()
+
+        for pyfile in self.pyload.files.cache.values():
+            if pyfile is self.pyfile:
+                continue
+
+            if pyfile.name != self.pyfile.name or pyfile.package().folder != pack.folder:
+                continue
+
+            if pyfile.status in (0, 5, 7, 12):  #: (finished, waiting, starting, downloading)
+                self.skip(pyfile.pluginname)
+
+        download_folder   = self.pyload.config.get("general", "download_folder")
+        package_folder    = pack.folder if self.pyload.config.get("general", "folder_per_package") else ""
+        download_location = fs_join(download_folder, package_folder, self.pyfile.name)
+
+        if not exists(download_location):
+            return
+
+        pyfile = self.pyload.db.findDuplicates(self.pyfile.id, package_folder, self.pyfile.name)
+        if pyfile:
+            self.skip(pyfile[0])
+
+        size = os.stat(download_location).st_size
+        if size >= self.pyfile.size:
+            self.skip(_("File exists"))
+
+
+    #: Deprecated method, use `check_filedupe` instead (Remove in 0.4.10)
+    def checkForSameFiles(self, *args, **kwargs):
+        if self.pyload.config.get("download", "skip_existing"):
+            return self.check_filedupe()
 
 
     def direct_link(self, url, follow_location=None):
@@ -598,10 +677,10 @@ class Hoster(Plugin):
             if 'content-disposition' in header:
                 link = url
 
-            elif 'location' in header and header['location']:
+            elif header.get('location'):
                 location = self.fixurl(header['location'], url)
 
-                if 'code' in header and header['code'] == 302:
+                if header.get('code') == 302:
                     link = location
 
                 if follow_location:
@@ -611,7 +690,7 @@ class Hoster(Plugin):
             else:
                 extension = os.path.splitext(parse_name(url))[-1]
 
-                if 'content-type' in header and header['content-type']:
+                if header.get('content-type'):
                     mimetype = header['content-type'].split(';')[0].strip()
 
                 elif extension:
@@ -641,63 +720,8 @@ class Hoster(Plugin):
         return parse_html_form(attr_str, self.html, input_names)
 
 
-    def check_traffic_left(self):
-        if not self.account:
-            return True
-
-        traffic = self.account.get_data(self.account.user, True)['trafficleft']
-
-        if traffic is None:
-            return False
-
-        elif traffic == -1:
-            return True
-
-        else:
-            size = self.pyfile.size / 1024
-            self.log_info(_("Filesize: %s KiB, Traffic left for user %s: %s KiB") % (size, self.account.user, traffic))
-            return size <= traffic
-
-
     def get_password(self):
         """
         Get the password the user provided in the package
         """
         return self.pyfile.package().password or ""
-
-
-    #: Deprecated method, use `check_for_same_files` instead (Remove in 0.4.10)
-    def checkForSameFiles(self, *args, **kwargs):
-        return self.check_for_same_files(*args, **kwargs)
-
-
-    def check_for_same_files(self, starting=False):
-        """
-        Checks if same file was/is downloaded within same package
-
-        :param starting: indicates that the current download is going to start
-        :raises Skip:
-        """
-        pack = self.pyfile.package()
-
-        for pyfile in self.pyload.files.cache.values():
-            if pyfile != self.pyfile and pyfile.name is self.pyfile.name and pyfile.package().folder is pack.folder:
-                if pyfile.status in (0, 12):  #: Finished or downloading
-                    self.skip(pyfile.pluginname)
-                elif pyfile.status in (5, 7) and starting:  #: A download is waiting/starting and was appenrently started before
-                    self.skip(pyfile.pluginname)
-
-        download_folder = self.pyload.config.get("general", "download_folder")
-        location = fs_join(download_folder, pack.folder, self.pyfile.name)
-
-        if starting and self.pyload.config.get("download", "skip_existing") and exists(location):
-            size = os.stat(location).st_size
-            if size >= self.pyfile.size:
-                self.skip("File exists")
-
-        pyfile = self.pyload.db.findDuplicates(self.pyfile.id, self.pyfile.package().folder, self.pyfile.name)
-        if pyfile:
-            if exists(location):
-                self.skip(pyfile[0])
-
-            self.log_debug("File %s not skipped, because it does not exists." % self.pyfile.name)

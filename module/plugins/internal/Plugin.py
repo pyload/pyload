@@ -6,7 +6,6 @@ import datetime
 import inspect
 import os
 import re
-import sys
 import traceback
 import urllib
 import urlparse
@@ -26,6 +25,11 @@ def decode(string, encoding='utf8'):
         return string.decode(encoding, "replace")
     else:
         return unicode(string)
+
+
+#@TODO: Remove in 0.4.10
+def _decode(*args, **kwargs):
+    return decode(*args, **kwargs)
 
 
 #@TODO: Move to utils in 0.4.10
@@ -49,18 +53,25 @@ def exists(path):
         return False
 
 
-#@TODO: Move to utils in 0.4.10
-def parse_name(url):
-    url = urllib.unquote(url)
-    url = url.decode('unicode-escape')
-    url = html_unescape(url)
-    url = urllib.quote(url)
+#@TODO: Recheck in 0.4.10
+def fixurl(url, unquote=None):
+    newurl = urllib.unquote(url)
 
-    url_p = urlparse.urlparse(url.strip().rstrip('/'))
+    if unquote is None:
+        unquote = newurl == url
 
-    name = (url_p.path.split('/')[-1] or
-            url_p.query.split('=', 1)[::-1][0].split('&', 1)[0] or
-            url_p.netloc.split('.', 1)[0])
+    newurl = html_unescape(newurl.decode('unicode-escape')).strip()
+
+    return newurl if unquote else urllib.quote(newurl)
+
+
+#@TODO: Recheck in 0.4.10
+def parse_name(string):
+    path  = fixurl(decode(string), unquote=False)
+    url_p = urlparse.urlparse(path.rstrip('/'))
+    name  = (url_p.path.split('/')[-1] or
+             url_p.query.split('=', 1)[::-1][0].split('&', 1)[0] or
+             url_p.netloc.split('.', 1)[0])
 
     return urllib.unquote(name)
 
@@ -96,7 +107,7 @@ def seconds_to_midnight(utc=None):
     else:
         now = datetime.datetime.utcnow() + datetime.timedelta(hours=utc)
 
-    midnight = now.replace(hour=0, minute=10, second=0, microsecond=0) + datetime.timedelta(days=1)
+    midnight = now.replace(hour=0, minute=1, second=0, microsecond=0) + datetime.timedelta(days=1)
 
     return (midnight - now).seconds
 
@@ -173,7 +184,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -199,8 +210,8 @@ class Plugin(object):
 
     def _init(self, core):
         self.pyload = core
-        self.info   = {}  #: Provide information in dict here
-        self.req    = None
+        self.info   = {}    #: Provide information in dict here
+        self.req    = None  #: Browser instance, see `network.Browser`
 
 
     def init(self):
@@ -231,8 +242,6 @@ class Plugin(object):
 
     def log_warning(self, *args):
         self._log("warning", self.__type__, self.__name__, args)
-        if self.pyload.debug:
-            traceback.print_exc()
 
 
     def log_error(self, *args):
@@ -278,7 +287,7 @@ class Plugin(object):
         return min(self.pyload.config.get("download", "chunks"), self.chunk_limit)
 
 
-    def set_config(self, option, value):
+    def set_config(self, option, value, plugin=None):
         """
         Set config value for current plugin
 
@@ -286,7 +295,7 @@ class Plugin(object):
         :param value:
         :return:
         """
-        self.pyload.config.setPlugin(self.__name__, option, value)
+        self.pyload.config.setPlugin(plugin or self.__name__, option, value)
 
 
     def get_config(self, option, default="", plugin=None):
@@ -347,7 +356,9 @@ class Plugin(object):
         """
         if self.pyload.debug:
             self.log_debug("LOAD URL " + url,
-                           *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url")])
+                           *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url", "_[1]")])
+
+        url = fixurl(url, unquote=True)  #: Recheck in 0.4.10
 
         if req is None:
             req = self.req or self.pyload.requestFactory.getRequest(self.__name__)
@@ -364,7 +375,7 @@ class Plugin(object):
 
         #@TODO: Move to network in 0.4.10
         if isinstance(decode, basestring):
-            res = sys.modules[self.__name__].decode(res, decode)  #@TODO: See #1787, use utils.decode() in 0.4.10
+            res = _decode(res, decode)  #@NOTE: Use `utils.decode()` in 0.4.10
 
         if self.pyload.debug:
             frame = inspect.currentframe()
@@ -409,11 +420,12 @@ class Plugin(object):
         Clean everything and remove references
         """
         try:
+            self.req.clearCookies()
             self.req.close()
 
         except Exception:
             pass
 
-        for a in ("pyfile", "thread", "html", "req"):
-            if hasattr(self, a):
-                setattr(self, a, None)
+        for attr in ("account", "html", "pyfile", "req", "thread"):
+            if hasattr(self, attr):
+                setattr(self, attr, None)

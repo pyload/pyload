@@ -9,8 +9,6 @@ class Hook(Addon):
     __version__ = "0.13"
     __status__  = "testing"
 
-    __config__   = []  #: [("name", "type", "desc", "default")]
-
     __description__ = """Base hook plugin"""
     __license__     = "GPLv3"
     __authors__     = [("mkaay"         , "mkaay@mkaay.de"   ),

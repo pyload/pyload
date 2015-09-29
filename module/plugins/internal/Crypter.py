@@ -7,7 +7,7 @@ from module.utils import save_path as safe_filename
 class Crypter(Hoster):
     __name__    = "Crypter"
     __type__    = "crypter"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -83,7 +83,7 @@ class Crypter(Hoster):
                 self.pyload.api.setPackageData(pid, {'password': package_password})
 
             #: Workaround to do not break API addPackage method
-            set_folder = lambda x: self.pyload.api.setPackageData(pid, {'folder': safe_filename(x) or ""})
+            set_folder = lambda x="": self.pyload.api.setPackageData(pid, {'folder': safe_filename(x)})
 
             if use_subfolder:
                 if not subfolder_per_package:
@@ -98,4 +98,4 @@ class Crypter(Hoster):
                     self.log_debug("Set package %(name)s folder to: %(folder)s" % {'name': name, 'folder': folder})
 
             elif folder_per_package:
-                set_folder(None)
+                set_folder()
