@@ -16,7 +16,7 @@ from module.utils import fixup, fs_encode, parseFileSize as parse_size
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.87"
+    __version__ = "1.88"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -461,7 +461,7 @@ class SimpleHoster(Hoster):
                 self.fail()
 
         finally:
-            self.log_info(_("File status: ") + self.pyfile.getStatusName(status))
+            self.log_info(_("File status: ") + self.pyfile.getStatusName())
 
 
     def check_name_size(self, getinfo=True):
