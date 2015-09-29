@@ -15,8 +15,8 @@ class SevenZip(UnRar):
 
     __description__ = """7-Zip extractor plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("Michael Nowak" , ""                 ),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
+                       ("Michael Nowak" , None               )]
 
 
     CMD        = "7z"

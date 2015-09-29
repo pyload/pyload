@@ -8,7 +8,7 @@ from module.plugins.internal.MultiCrypter import MultiCrypter
 class LinkdecrypterCom(MultiCrypter):
     __name__    = "LinkdecrypterCom"
     __type__    = "crypter"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -28,7 +28,6 @@ class LinkdecrypterCom(MultiCrypter):
 
 
     def setup(self):
-        self.password = self.get_password()
         self.req.setOption("timeout", 300)
 
 
@@ -61,7 +60,8 @@ class LinkdecrypterCom(MultiCrypter):
             elif self.PASSWORD_PATTERN in self.html:
                 if self.password:
                     self.log_info(_("Password protected link"))
-                    self.html = self.load('http://linkdecrypter.com/', post={'password': self.password})
+                    self.html = self.load('http://linkdecrypter.com/',
+                                          post={'password': self.get_password()})
                 else:
                     self.fail(_("Missing password"))
 

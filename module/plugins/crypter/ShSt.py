@@ -9,7 +9,7 @@ import re
 class ShSt(Crypter):
     __name__    = "ShSt"
     __type__    = "crypter"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __pattern__ = r'http://sh\.st/\w+'
@@ -19,7 +19,7 @@ class ShSt(Crypter):
     __authors__     = [("Frederik Möllers", "fred-public@posteo.de")]
 
 
-    NAME_PATTERN = r'<title>(?P<N>.+?) - .+</title>'
+    NAME_PATTERN = r'<title>(?P<N>.+?) -'
 
 
     def decrypt(self, pyfile):

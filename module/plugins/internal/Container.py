@@ -20,7 +20,8 @@ class Container(Crypter):
 
     __description__ = """Base container decrypter plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("mkaay", "mkaay@mkaay.de")]
+    __authors__     = [("mkaay"         , "mkaay@mkaay.de"   ),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def process(self, pyfile):

@@ -10,7 +10,7 @@ from module.plugins.internal.Crypter import Crypter
 class ShareLinksBiz(Crypter):
     __name__    = "ShareLinksBiz"
     __type__    = "crypter"
-    __version__ = "1.17"
+    __version__ = "1.18"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
@@ -131,7 +131,7 @@ class ShareLinksBiz(Crypter):
         href = self._resolve_coords(coords, captchaMap)
         if href is None:
             self.captcha.invalid()
-            self.retry(wait_time=5)
+            self.retry(delay=5)
         url = self.base_url + href
         self.html = self.load(url)
 
@@ -161,7 +161,7 @@ class ShareLinksBiz(Crypter):
         if self.captcha:
             if "Your choice was wrong" in self.html:
                 self.captcha.invalid()
-                self.retry(wait_time=5)
+                self.retry(delay=5)
             else:
                 self.captcha.correct()
 
