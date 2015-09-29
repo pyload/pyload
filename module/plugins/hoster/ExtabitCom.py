@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, s
 class ExtabitCom(SimpleHoster):
     __name__    = "ExtabitCom"
     __type__    = "hoster"
-    __version__ = "0.67"
+    __version__ = "0.68"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?extabit\.com/(file|go|fid)/(?P<ID>\w+)'
@@ -39,7 +39,7 @@ class ExtabitCom(SimpleHoster):
             self.wait(int(m.group(1)) * 60, True)
         elif "The daily downloads limit from your IP is exceeded" in self.html:
             self.log_warning(_("You have reached your daily downloads limit for today"))
-            self.wait(seconds_to_midnight(gmt=2), True)
+            self.wait(seconds_to_midnight(), True)
 
         self.log_debug("URL: " + self.req.http.lastEffectiveURL)
         m = re.match(self.__pattern__, self.req.http.lastEffectiveURL)

@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class QuickshareCz(SimpleHoster):
     __name__    = "QuickshareCz"
     __type__    = "hoster"
-    __version__ = "0.57"
+    __version__ = "0.58"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:[^/]*\.)?quickshare\.cz/stahnout-soubor/.+'
@@ -39,7 +39,7 @@ class QuickshareCz(SimpleHoster):
             if 'UU_prihlasen' in self.jsvars:
                 if self.jsvars['UU_prihlasen'] == "0":
                     self.log_warning(_("User not logged in"))
-                    self.relogin(self.user)
+                    self.relogin()
                     self.retry()
                 elif float(self.jsvars['UU_kredit']) < float(self.jsvars['kredit_odecet']):
                     self.log_warning(_("Not enough credit left"))
@@ -50,7 +50,7 @@ class QuickshareCz(SimpleHoster):
         else:
             self.handle_free(pyfile)
 
-        if self.check_download({'error': re.compile(r"\AChyba!")}, max_size=100):
+        if self.check_file({'error': re.compile(r"\AChyba!")}, max_size=100):
             self.fail(_("File not m or plugin defect"))
 
 

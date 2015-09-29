@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class BitshareCom(SimpleHoster):
     __name__    = "BitshareCom"
     __type__    = "hoster"
-    __version__ = "0.55"
+    __version__ = "0.56"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/)?(?(1)|\?f=)(?P<ID>\w+)(?(1)/(?P<NAME>.+?)\.html)'
@@ -39,7 +39,7 @@ class BitshareCom(SimpleHoster):
 
     def process(self, pyfile):
         if self.premium:
-            self.account.relogin(self.user)
+            self.account.relogin()
 
         #: File id
         m = re.match(self.__pattern__, pyfile.url)
@@ -75,7 +75,7 @@ class BitshareCom(SimpleHoster):
         #: This may either download our file or forward us to an error page
         self.link = self.get_download_url()
 
-        if self.check_download({'error': ">Error occured<"}):
+        if self.check_file({'error': ">Error occured<"}):
             self.retry(5, 5 * 60, "Bitshare host : Error occured")
 
 

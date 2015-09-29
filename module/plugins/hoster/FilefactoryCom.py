@@ -19,7 +19,7 @@ def get_info(urls):
 class FilefactoryCom(SimpleHoster):
     __name__    = "FilefactoryCom"
     __type__    = "hoster"
-    __version__ = "0.58"
+    __version__ = "0.59"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/(file|trafficshare/\w+)/\w+'
@@ -59,18 +59,18 @@ class FilefactoryCom(SimpleHoster):
             self.wait(m.group(1))
 
 
-    def check_file(self):
-        check = self.check_download({'multiple': "You are currently downloading too many files at once.",
+    def check_download(self):
+        check = self.check_file({'multiple': "You are currently downloading too many files at once.",
                                     'error'   : '<div id="errorMessage">'})
 
         if check == "multiple":
             self.log_debug("Parallel downloads detected; waiting 15 minutes")
-            self.retry(wait_time=15 * 60, msg=_("Parallel downloads"))
+            self.retry(delay=15 * 60, msg=_("Parallel downloads"))
 
         elif check == "error":
             self.error(_("Unknown error"))
 
-        return super(FilefactoryCom, self).check_file()
+        return super(FilefactoryCom, self).check_download()
 
 
     def handle_premium(self, pyfile):

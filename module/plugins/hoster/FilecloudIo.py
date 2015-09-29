@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilecloudIo(SimpleHoster):
     __name__    = "FilecloudIo"
     __type__    = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(?:filecloud\.io|ifile\.it|mihd\.net)/(?P<ID>\w+)'
@@ -64,7 +64,7 @@ class FilecloudIo(SimpleHoster):
         response, challenge = recaptcha.challenge(captcha_key)
         self.account.form_data = {'recaptcha_challenge_field': challenge,
                                   'recaptcha_response_field' : response}
-        self.account.relogin(self.user)
+        self.account.relogin()
         self.retry(2)
 
         json_url = "http://filecloud.io/download-request.json"
@@ -111,7 +111,7 @@ class FilecloudIo(SimpleHoster):
 
 
     def handle_premium(self, pyfile):
-        akey = self.account.get_data(self.user)['akey']
+        akey = self.account.get_data('akey')
         ukey = self.info['pattern']['ID']
         self.log_debug("Akey: %s | Ukey: %s" % (akey, ukey))
         rep = self.load("http://api.filecloud.io/api-fetch_download_url.api",

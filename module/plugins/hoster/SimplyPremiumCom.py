@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import seconds_to_midnight
 class SimplyPremiumCom(MultiHoster):
     __name__    = "SimplyPremiumCom"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __pattern__ = r'https?://.+simply-premium\.com'
@@ -28,7 +28,7 @@ class SimplyPremiumCom(MultiHoster):
     def check_errors(self):
         if '<valid>0</valid>' in self.html or (
                 "You are not allowed to download from this host" in self.html and self.premium):
-            self.account.relogin(self.user)
+            self.account.relogin()
             self.retry()
 
         elif "NOTFOUND" in self.html:
@@ -40,7 +40,7 @@ class SimplyPremiumCom(MultiHoster):
 
         elif "trafficlimit" in self.html:
             self.log_warning(_("Reached daily limit for this host"))
-            self.retry(wait_time=seconds_to_midnight(gmt=2), msg="Daily limit for this host reached")
+            self.retry(delay=seconds_to_midnight(), msg="Daily limit for this host reached")
 
         elif "hostererror" in self.html:
             self.log_warning(_("Hoster temporarily unavailable, waiting 1 minute and retry"))

@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import seconds_to_midnight
 class FreakshareCom(Hoster):
     __name__    = "FreakshareCom"
     __type__    = "hoster"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
@@ -44,7 +44,7 @@ class FreakshareCom(Hoster):
 
             self.download(pyfile.url, post=self.req_opts)
 
-            check = self.check_download({'bad'           : "bad try",
+            check = self.check_file({'bad'           : "bad try",
                                         'paralell'      : "> Sorry, you cant download more then 1 files at time. <",
                                         'empty'         : "Warning: Unknown: Filename cannot be empty",
                                         'wrong_captcha' : "Wrong Captcha!",
@@ -142,7 +142,7 @@ class FreakshareCom(Hoster):
 
         if "Your Traffic is used up for today" in self.html:
             self.wantReconnect = True
-            return seconds_to_midnight(gmt=2)
+            return seconds_to_midnight()
 
         timestring = re.search('\s*var\s(?:downloadWait|time)\s=\s(\d*)[\d.]*;', self.html)
         if timestring:

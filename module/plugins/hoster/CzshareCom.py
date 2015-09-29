@@ -12,7 +12,7 @@ from module.utils import parseFileSize as parse_size
 class CzshareCom(SimpleHoster):
     __name__    = "CzshareCom"
     __type__    = "hoster"
-    __version__ = "1.02"
+    __version__ = "1.03"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download\.php\?).+'
@@ -40,11 +40,11 @@ class CzshareCom(SimpleHoster):
     USER_CREDIT_PATTERN  = r'<div class="credit">\s*kredit: <strong>([\d .,]+)(\w+)</strong>\s*</div><!-- .credit -->'
 
 
-    def check_traffic_left(self):
+    def check_traffic(self):
         #: Check if user logged in
         m = re.search(self.USER_CREDIT_PATTERN, self.html)
         if m is None:
-            self.account.relogin(self.user)
+            self.account.relogin()
             self.html = self.load(self.pyfile.url)
             m = re.search(self.USER_CREDIT_PATTERN, self.html)
             if m is None:
@@ -54,7 +54,7 @@ class CzshareCom(SimpleHoster):
         try:
             credit = parse_size(m.group(1).replace(' ', ''), m.group(2))
             self.log_info(_("Premium download for %i KiB of Credit") % (self.pyfile.size / 1024))
-            self.log_info(_("User %s has %i KiB left") % (self.user, credit / 1024))
+            self.log_info(_("User %s has %i KiB left") % (self.account.user, credit / 1024))
             if credit < self.pyfile.size:
                 self.log_info(_("Not enough credit to download file: %s") % self.pyfile.name)
                 return False
@@ -137,9 +137,9 @@ class CzshareCom(SimpleHoster):
         self.wait()
 
 
-    def check_file(self):
+    def check_download(self):
         #: Check download
-        check = self.check_download({
+        check = self.check_file({
             "temp offline" : re.compile(r"^Soubor je do.*asn.* nedostupn.*$"),
             'credit'       : re.compile(r"^Nem.*te dostate.*n.* kredit.$"),
             "multi-dl"     : re.compile(self.MULTIDL_PATTERN),
@@ -159,7 +159,7 @@ class CzshareCom(SimpleHoster):
             self.captcha.invalid()
             self.retry()
 
-        return super(CzshareCom, self).check_file()
+        return super(CzshareCom, self).check_download()
 
 
 getInfo = create_getInfo(CzshareCom)

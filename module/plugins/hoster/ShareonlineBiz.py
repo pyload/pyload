@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ShareonlineBiz(SimpleHoster):
     __name__    = "ShareonlineBiz"
     __type__    = "hoster"
-    __version__ = "0.56"
+    __version__ = "0.57"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
@@ -105,8 +105,8 @@ class ShareonlineBiz(SimpleHoster):
         self.wait()
 
 
-    def check_file(self):
-        check = self.check_download({'cookie': re.compile(r'<div id="dl_failure"'),
+    def check_download(self):
+        check = self.check_file({'cookie': re.compile(r'<div id="dl_failure"'),
                                     'fail'  : re.compile(r"<title>Share-Online")})
 
         if check == "cookie":
@@ -117,13 +117,13 @@ class ShareonlineBiz(SimpleHoster):
             self.captcha.invalid()
             self.retry(5, 5 * 60, _("Download failed"))
 
-        return super(ShareonlineBiz, self).check_file()
+        return super(ShareonlineBiz, self).check_download()
 
 
     def handle_premium(self, pyfile):  #: Should be working better loading (account) api internally
         html = self.load("https://api.share-online.biz/account.php",
-                         get={'username': self.user,
-                              'password': self.account.get_info(self.user)['login']['password'],
+                         get={'username': self.account.user,
+                              'password': self.account.get_login('password'),
                               'act'     : "download",
                               'lid'     : self.info['fileid']})
 
@@ -170,7 +170,7 @@ class ShareonlineBiz(SimpleHoster):
             self.fail(_("Premium account needed"))
 
         elif errmsg in ("expired", "server"):
-            self.retry(wait_time=600, msg=errmsg)
+            self.retry(delay=600, msg=errmsg)
 
         elif errmsg == "full":
             self.retry(10, 600, _("Server is full"))
@@ -181,7 +181,7 @@ class ShareonlineBiz(SimpleHoster):
 
         else:
             self.wantReconnect = True
-            self.retry(wait_time=60, msg=errmsg)
+            self.retry(delay=60, msg=errmsg)
 
 
 getInfo = create_getInfo(ShareonlineBiz)

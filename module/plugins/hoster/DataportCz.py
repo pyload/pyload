@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DataportCz(SimpleHoster):
     __name__    = "DataportCz"
     __type__    = "hoster"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?dataport\.cz/file/(.+)'
@@ -41,7 +41,7 @@ class DataportCz(SimpleHoster):
 
             self.download("http://www.dataport.cz%s" % action, post=inputs)
 
-            check = self.check_download({'captcha': 'alert("\u0160patn\u011b opsan\u00fd k\u00f3d z obr\u00e1zu");',
+            check = self.check_file({'captcha': 'alert("\u0160patn\u011b opsan\u00fd k\u00f3d z obr\u00e1zu");',
                                         'slot'   : 'alert("Je n\u00e1m l\u00edto, ale moment\u00e1ln\u011b nejsou'})
             if check == "captcha":
                 self.error(_("invalid captcha"))

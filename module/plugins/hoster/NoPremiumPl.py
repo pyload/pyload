@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHoster import MultiHoster
 class NoPremiumPl(MultiHoster):
     __name__    = "NoPremiumPl"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __pattern__ = r'https?://direct\.nopremium\.pl.+'
@@ -39,7 +39,7 @@ class NoPremiumPl(MultiHoster):
     def prepare(self):
         super(NoPremiumPl, self).prepare()
 
-        data = self.account.get_data(self.user)
+        data = self.account.get_data()
 
         self.usr = data['usr']
         self.pwd = data['pwd']
@@ -84,10 +84,8 @@ class NoPremiumPl(MultiHoster):
                 self.fail(self.ERROR_CODES[parsed['errno']] % self.__name__)
             else:
                 #: Error code isn't yet added to plugin
-                self.fail(
-                    parsed['errstring']
-                    or _("Unknown error (code: %s)") % parsed['errno']
-                )
+                self.fail(parsed['errstring'] or
+                          _("Unknown error (code: %s)") % parsed['errno'])
 
         if "sdownload" in parsed:
             if parsed['sdownload'] == "1":

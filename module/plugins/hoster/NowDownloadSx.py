@@ -3,7 +3,6 @@
 import re
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.utils import fixup
 
 
 class NowDownloadSx(SimpleHoster):

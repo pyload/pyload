@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UnibytesCom(SimpleHoster):
     __name__    = "UnibytesCom"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?unibytes\.com/[\w .-]{11}B'
@@ -21,7 +21,7 @@ class UnibytesCom(SimpleHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    HOSTER_DOMAIN = "unibytes.com"
+    PLUGIN_DOMAIN = "unibytes.com"
 
     INFO_PATTERN = r'<span[^>]*?id="fileName".*?>(?P<N>[^>]+)</span>\s*\((?P<S>\d.*?)\)'
 
@@ -30,7 +30,7 @@ class UnibytesCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        domain            = "http://www.%s/" % self.HOSTER_DOMAIN
+        domain            = "http://www.%s/" % self.PLUGIN_DOMAIN
         action, post_data = self.parse_html_form('id="startForm"')
 
         self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)

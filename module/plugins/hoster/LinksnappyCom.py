@@ -10,7 +10,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class LinksnappyCom(MultiHoster):
     __name__    = "LinksnappyCom"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:[^/]+\.)?linksnappy\.com'
@@ -26,8 +26,8 @@ class LinksnappyCom(MultiHoster):
         host        = self._get_host(pyfile.url)
         json_params = json_dumps({'link'    : pyfile.url,
                                   'type'    : host,
-                                  'username': self.user,
-                                  'password': self.account.get_info(self.user)['login']['password']})
+                                  'username': self.account.user,
+                                  'password': self.account.get_login('password')})
 
         r = self.load("http://linksnappy.com/api/linkgen",
                       post={'genLinks': json_params})

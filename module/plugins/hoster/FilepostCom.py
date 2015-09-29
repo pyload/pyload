@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilepostCom(SimpleHoster):
     __name__    = "FilepostCom"
     __type__    = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:filepost\.com/files|fp\.io)/(?P<ID>[^/]+)'
@@ -101,8 +101,8 @@ class FilepostCom(SimpleHoster):
         if 'error' in res['js']:
 
             if res['js']['error'] == "download_delay":
-                self.retry(wait_time=res['js']['params']['next_download'])
-                #: ~? self.retry(wait_time=js_answer['params']['next_download'])
+                self.retry(delay=res['js']['params']['next_download'])
+                #: ~? self.retry(delay=js_answer['params']['next_download'])
 
             elif 'Wrong file password' in res['js']['error'] \
                  or 'You entered a wrong CAPTCHA code' in res['js']['error'] \

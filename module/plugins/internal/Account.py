@@ -12,7 +12,7 @@ from module.utils import compare_time, lock, parseFileSize as parse_size
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.50"
+    __version__ = "0.51"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -187,14 +187,14 @@ class Account(Plugin):
         return self.info
 
 
-    def get_login(self, key=None):
+    def get_login(self, key=None, default=None):
         d = self.get_info()['login']
-        return d.get(key) or d
+        return d.get(key, default) if key or d
 
 
-    def get_data(self, key=None):
+    def get_data(self, key=None, default=None):
         d = self.get_info()['data']
-        return d.get(key) or d
+        return d.get(key, default) if key or d
 
 
     def _grab_info(self):

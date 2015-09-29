@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class LuckyShareNet(SimpleHoster):
     __name__    = "LuckyShareNet"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?luckyshare\.net/(?P<ID>\d{10,})'
@@ -32,7 +32,7 @@ class LuckyShareNet(SimpleHoster):
             if m:
                 seconds = int(m.group(1))
                 self.log_debug("You have to wait %d seconds between free downloads" % seconds)
-                self.retry(wait_time=seconds)
+                self.retry(delay=seconds)
             else:
                 self.error(_("Unable to detect wait time between free downloads"))
         elif 'Hash expired' in rep:

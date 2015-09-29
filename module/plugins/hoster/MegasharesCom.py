@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MegasharesCom(SimpleHoster):
     __name__    = "MegasharesCom"
     __type__    = "hoster"
-    __version__ = "0.30"
+    __version__ = "0.31"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index\.php)?\?d\d{2}=|dl/)\w+'
@@ -46,7 +46,7 @@ class MegasharesCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         if self.NO_SLOTS_PATTERN in self.html:
-            self.retry(wait_time=5 * 60)
+            self.retry(delay=5 * 60)
 
         m = re.search(self.REACTIVATE_PASSPORT_PATTERN, self.html)
         if m:
@@ -82,7 +82,7 @@ class MegasharesCom(SimpleHoster):
             time = [int(x) for x in m.groups()]
             renew = time[0] + (time[1] * 60) + (time[2] * 60)
             self.log_debug("Waiting %d seconds for a new passport" % renew)
-            self.retry(wait_time=renew, msg=_("Passport renewal"))
+            self.retry(delay=renew, msg=_("Passport renewal"))
 
         #: Check traffic left on passport
         m = re.search(self.PASSPORT_LEFT_PATTERN, self.html, re.M | re.S)
@@ -94,7 +94,7 @@ class MegasharesCom(SimpleHoster):
         self.log_info(_("Data left: %s %s (%d MB needed)") % (m.group(2), m.group(3), self.pyfile.size / 1048576))
 
         if not data_left:
-            self.retry(wait_time=600, msg=_("Passport renewal"))
+            self.retry(delay=600, msg=_("Passport renewal"))
 
         self.handle_download(False)
 

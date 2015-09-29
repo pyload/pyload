@@ -22,7 +22,7 @@ def get_info(urls):
 class MegaRapidCz(SimpleHoster):
     __name__    = "MegaRapidCz"
     __type__    = "hoster"
-    __version__ = "0.58"
+    __version__ = "0.59"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(share|mega)rapid\.cz/soubor/\d+/.+'
@@ -58,8 +58,8 @@ class MegaRapidCz(SimpleHoster):
             self.link = m.group(1)
         else:
             if re.search(self.ERR_LOGIN_PATTERN, self.html):
-                self.relogin(self.user)
-                self.retry(wait_time=60, msg=_("User login failed"))
+                self.relogin()
+                self.retry(delay=60, msg=_("User login failed"))
 
             elif re.search(self.ERR_CREDIT_PATTERN, self.html):
                 self.fail(_("Not enough credit left"))

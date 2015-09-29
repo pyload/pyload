@@ -9,7 +9,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class MyfastfileCom(MultiHoster):
     __name__    = "MyfastfileCom"
     __type__    = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __pattern__ = r'http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/'
@@ -27,7 +27,8 @@ class MyfastfileCom(MultiHoster):
 
     def handle_premium(self, pyfile):
         self.html = self.load('http://myfastfile.com/api.php',
-                         get={'user': self.user, 'pass': self.account.get_info(self.user)['login']['password'],
+                         get={'user': self.account.user,
+                              'pass': self.account.get_login('password'),
                               'link': pyfile.url})
         self.log_debug("JSON data: " + self.html)
 

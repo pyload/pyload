@@ -35,7 +35,7 @@ def get_info(urls):
 class LetitbitNet(SimpleHoster):
     __name__    = "LetitbitNet"
     __type__    = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(letitbit|shareflare)\.net/download/.+'
@@ -104,7 +104,7 @@ class LetitbitNet(SimpleHoster):
 
         if res == "error_free_download_blocked":
             self.log_warning(_("Daily limit reached"))
-            self.wait(seconds_to_midnight(gmt=2), True)
+            self.wait(seconds_to_midnight(), True)
 
         if res == "error_wrong_captcha":
             self.captcha.invalid()
@@ -123,10 +123,9 @@ class LetitbitNet(SimpleHoster):
 
 
     def handle_premium(self, pyfile):
-        api_key = self.user
-        premium_key = self.account.get_info(self.user)['login']['password']
+        premium_key = self.account.get_login('password')
 
-        json_data = [api_key, ["download/direct_links", {'pass': premium_key, 'link': pyfile.url}]]
+        json_data = [self.account.user, ["download/direct_links", {'pass': premium_key, 'link': pyfile.url}]]
         api_rep = self.load('http://api.letitbit.net/json', post={'r': json_dumps(json_data)})
         self.log_debug("API Data: " + api_rep)
         api_rep = json_loads(api_rep)

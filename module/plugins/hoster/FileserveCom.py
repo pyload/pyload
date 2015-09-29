@@ -34,7 +34,7 @@ def check_file(plugin, urls):
 class FileserveCom(Hoster):
     __name__    = "FileserveCom"
     __type__    = "hoster"
-    __version__ = "0.59"
+    __version__ = "0.60"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<ID>[^/]+)'
@@ -95,7 +95,7 @@ class FileserveCom(Hoster):
 
             elif action['fail'] == "parallelDownload":
                 self.log_warning(_("Parallel download error, now waiting 60s"))
-                self.retry(wait_time=60, msg=_("parallelDownload"))
+                self.retry(delay=60, msg=_("parallelDownload"))
 
             else:
                 self.fail(_("Download check returned: %s") % action['fail'])
@@ -120,7 +120,7 @@ class FileserveCom(Hoster):
         self.download(self.url, post={'download': "normal"})
         self.log_debug(self.req.http.lastEffectiveURL)
 
-        check = self.check_download({'expired': self.LINK_EXPIRED_PATTERN,
+        check = self.check_file({'expired': self.LINK_EXPIRED_PATTERN,
                                     'wait'   : re.compile(self.LONG_WAIT_PATTERN),
                                     'limit'  : self.DL_LIMIT_PATTERN})
 
@@ -133,7 +133,7 @@ class FileserveCom(Hoster):
 
         elif check == "limit":
             self.log_warning(_("Download limited reached for today"))
-            self.wait(seconds_to_midnight(gmt=2), True)
+            self.wait(seconds_to_midnight(), True)
             self.retry()
 
         self.thread.m.reconnecting.wait(3)  #: Ease issue with later downloads appearing to be in parallel
@@ -187,8 +187,8 @@ class FileserveCom(Hoster):
         if self.__name__ == "FileserveCom":
             #: Try api download
             res = self.load("http://app.fileserve.com/api/download/premium/",
-                            post={'username': self.user,
-                                  'password': self.account.get_info(self.user)['login']['password'],
+                            post={'username': self.account.user,
+                                  'password': self.account.get_login('password'),
                                   'shorten': self.file_id})
             if res:
                 res = json_loads(res)
@@ -205,8 +205,8 @@ class FileserveCom(Hoster):
 
         self.download(premium_url or self.pyfile.url)
 
-        if not premium_url and self.check_download({'login': re.compile(self.NOT_LOGGED_IN_PATTERN)}):
-            self.account.relogin(self.user)
+        if not premium_url and self.check_file({'login': re.compile(self.NOT_LOGGED_IN_PATTERN)}):
+            self.account.relogin()
             self.retry(msg=_("Not logged in"))
 
 

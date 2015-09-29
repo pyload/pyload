@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHoster import MultiHoster
 class SmoozedCom(MultiHoster):
     __name__    = "SmoozedCom"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate
@@ -36,7 +36,7 @@ class SmoozedCom(MultiHoster):
             pyfile.name = ".".join(temp)
 
         #: Check the link
-        get_data = {'session_key': self.account.get_data(self.user)['session'],
+        get_data = {'session_key': self.account.get_data('session'),
                     'url'        : pyfile.url}
 
         data = json_loads(self.load("http://www2.smoozed.com/api/check", get=get_data))
