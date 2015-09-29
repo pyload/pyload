@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class BezvadataCz(SimpleHoster):
     __name__    = "BezvadataCz"
     __type__    = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?bezvadata\.cz/stahnout/.+'
@@ -48,7 +48,7 @@ class BezvadataCz(SimpleHoster):
             if m is None:
                 self.error(_("Wrong captcha image"))
 
-            inputs['captcha'] = self.captcha._decrypt(m.group(1).decode('base64'), input_type='png')
+            inputs['captcha'] = self.captcha.decrypt_image(m.group(1).decode('base64'), input_type='png')
 
             if '<img src="data:image/png;base64' in self.html:
                 self.captcha.invalid()

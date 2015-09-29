@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FileSharkPl(SimpleHoster):
     __name__    = "FileSharkPl"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fileshark\.pl/pobierz/\d+/\w+'
@@ -100,7 +100,7 @@ class FileSharkPl(SimpleHoster):
         if m is None:
             self.retry(msg=_("Captcha image not found"))
 
-        inputs['form[captcha]'] = self.captcha._decrypt(m.group(1).decode('base64'), input_type='jpeg')
+        inputs['form[captcha]'] = self.captcha.decrypt_image(m.group(1).decode('base64'), input_type='jpeg')
         inputs['form[start]'] = ""
 
         self.download(link, post=inputs, disposition=True)
