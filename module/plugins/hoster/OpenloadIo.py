@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
+
 import json
 import re
-from time import sleep
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.network.RequestFactory import getURL
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class OpenloadIo(SimpleHoster):
@@ -13,8 +13,7 @@ class OpenloadIo(SimpleHoster):
     __version__ = "0.06"
     __status__  = "testing"
 
-    _FILE_ID_PATTERN = '/f/([\w\-_]+)/?'
-    __pattern__ = r'https?://(?:www\.)?openload\.(?:co|io)' + _FILE_ID_PATTERN
+    __pattern__ = r'https?://(?:www\.)?openload\.(?:co|io)/f/([\w-_]+)'
 
     __description__ = """Openload.co hoster plugin"""
     __license__     = "GPLv3"
@@ -22,15 +21,18 @@ class OpenloadIo(SimpleHoster):
 
 
     # The API reference, that this implementation uses is available at https://openload.co/api
-    _API_BASE_URL = 'https://api.openload.co/1'
+    API_URL = 'https://api.openload.co/1'
 
-    _DOWNLOAD_TICKET_URI_PATTERN = '/file/dlticket?file={0}'
-    _DOWNLOAD_FILE_URI_PATTERN = '/file/dl?file={0}&ticket={1}'
-    _FILE_INFO_URI_PATTERN = '/file/info?file={0}'
+    FILE_ID_PATTERN = '/f/([\w-_]+)'
 
-    def setup(self):
-        self.multiDL     = True
-        self.chunk_limit = 1
+    DOWNLOAD_TICKET_URI_PATTERN = '/file/dlticket?file={0}'
+    DOWNLOAD_FILE_URI_PATTERN   = '/file/dl?file={0}&ticket={1}'
+    FILE_INFO_URI_PATTERN       = '/file/info?file={0}'
+
+
+    @classmethod
+    def _load_json(cls, uri):
+        return json.loads(getURL(cls.API_URL + uri))
 
 
     @classmethod
@@ -42,10 +44,16 @@ class OpenloadIo(SimpleHoster):
         file_id = file_id[0]
         info_json = cls._load_json(cls._FILE_INFO_URI_PATTERN.format(file_id))
         file_info = info_json['result'][file_id]
-        return {'name': file_info['name'],
-                'size': file_info['size'],
+
+        return {'name'  : file_info['name'],
+                'size'  : file_info['size'],
                 'status': 3 if url.strip() else 8,
-                'url': url}
+                'url'   : url}
+
+
+    def setup(self):
+        self.multiDL     = True
+        self.chunk_limit = 1
 
 
     def handle_free(self, pyfile):
@@ -55,18 +63,12 @@ class OpenloadIo(SimpleHoster):
 
         ticket_json = self._load_json(self._DOWNLOAD_TICKET_URI_PATTERN.format(file_id))
 
-        wait_time = ticket_json['result']['wait_time']
-        sleep(wait_time + 0.1)
+        self.wait(ticket_json['result']['wait_time'])
 
         ticket = ticket_json['result']['ticket']
 
         download_json = self._load_json(self._DOWNLOAD_FILE_URI_PATTERN.format(file_id, ticket))
         self.link = download_json['result']['url']
 
-
-    @classmethod
-    def _load_json(cls, uri):
-        return json.loads(
-            getURL(cls._API_BASE_URL + uri))
 
 getInfo = create_getInfo(OpenloadIo)
