@@ -54,7 +54,7 @@ def check_abort(fn):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -260,7 +260,7 @@ class Hoster(Plugin):
         status = pyfile.status  #@NOTE: Recheck in 0.4.10
         pyfile.setStatus("waiting")
 
-        self.log_info(_("Waiting %d seconds...") % pyfile.waitUntil - time.time())
+        self.log_info(_("Waiting %d seconds...") % (pyfile.waitUntil - time.time()))
 
         if self.wantReconnect:
             self.log_info(_("Requiring reconnection..."))
