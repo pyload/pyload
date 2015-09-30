@@ -56,7 +56,7 @@ class UploadedTo(Account):
                 trafficleft = float(size.replace(',', '.')) / 1024
                 trafficleft *= 1 << 40
             else:
-                trafficleft = self.parse_traffic(size + unit)
+                trafficleft = self.parse_traffic(size, unit)
 
         return {'validuntil' : validuntil,
                 'trafficleft': trafficleft,
