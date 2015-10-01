@@ -19,11 +19,21 @@ def getInfo(urls):
 
 
 #@TODO: Remove in 0.4.10
+def parse_fileInfo(klass, url="", html=""):
+    info = klass.get_info(url, html)
+    return encode(info['name']), info['size'], info['status'], info['url']
+
+
+#@TODO: Remove in 0.4.10
 def create_getInfo(klass):
     def get_info(urls):
         for url in urls:
-            if hasattr(klass, "URL_REPLACEMENTS"):
+            try:
                 url = replace_patterns(url, klass.URL_REPLACEMENTS)
+
+            except Exception:
+                pass
+
             yield parse_fileInfo(klass, url)
 
     return get_info
@@ -42,7 +52,7 @@ def check_abort(fn):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -366,7 +376,7 @@ class Base(Plugin):
 
     @check_abort
     def load(self, *args, **kwargs):
-        return super(Hoster, self).load(*args, **kwargs)
+        return super(Base, self).load(*args, **kwargs)
 
 
     def check_abort(self):

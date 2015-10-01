@@ -4,22 +4,15 @@ from __future__ import with_statement
 
 import os
 
-from module.plugins.internal.Base import Base, check_abort, create_getInfo, getInfo
+from module.plugins.internal.Base import Base, check_abort, create_getInfo, getInfo, parse_fileInfo
 from module.plugins.internal.Plugin import Fail, Retry, encode, exists, fixurl, parse_name
 from module.utils import fs_decode, fs_encode, save_join as fs_join, save_path as safe_filename
-
-
-#@TODO: Remove in 0.4.10
-def parse_fileInfo(klass, url="", html=""):
-    info = klass.get_info(url, html)
-    return encode(info['name']), info['size'], info['status'], info['url']
-
 
 
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -33,7 +26,7 @@ class Hoster(Base):
 
 
     def __init__(self, pyfile):
-        super(Base, self).__init__(pyfile)
+        super(Hoster, self).__init__(pyfile)
 
         #: Enable simultaneous processing of multiple downloads
         self.limitDL = 0     #@TODO: Change to `limit_dl` in 0.4.10
@@ -52,7 +45,7 @@ class Hoster(Base):
 
 
     def _setup(self):
-        super(Base, self)._setup()
+        super(Hoster, self)._setup()
 
         self.last_download = None
         self.last_check    = None
@@ -64,7 +57,7 @@ class Hoster(Base):
             self.account = False
             self.user    = None  #@TODO: Remove in 0.4.10
         else:
-            super(Base, self).load_account()
+            super(Hoster, self).load_account()
             # self.rst_free = False
 
 

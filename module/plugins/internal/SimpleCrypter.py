@@ -3,13 +3,14 @@
 import re
 
 from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns, set_cookie, set_cookies
+from module.plugins.internal.Plugin import replace_patterns, set_cookie, set_cookies
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.63"
+    __version__ = "0.64"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -47,13 +48,35 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
     and its loadPage method:
 
-
       def load_page(self, page_n):
           return the html of the page number page_n
     """
 
-    DIRECT_LINK  = True
-    LEECH_HOSTER = False
+    NAME_REPLACEMENTS    = []
+    URL_REPLACEMENTS     = []
+
+    COOKIES              = True   #: or False or list of tuples [(domain, name, value)]
+    DIRECT_LINK          = True   #: Set to True to looking for direct link (as defined in handle_direct method), set to None to do it if self.account is True else False
+    LOGIN_ACCOUNT        = False  #: Set to True to require account login
+    LOGIN_PREMIUM        = False  #: Set to True to require premium account login
+    # LEECH_HOSTER         = False  #: Set to True to leech other hoster link (as defined in handle_multi method)
+    TEXT_ENCODING        = True   #: Set to encoding name if encoding value in http header is not correct
+    PAGES_PATTERN        = None
+
+    LINK_PATTERN         = None
+
+    NAME_PATTERN         = None
+    HASHSUM_PATTERN      = None
+    OFFLINE_PATTERN      = None
+    TEMP_OFFLINE_PATTERN = None
+
+    WAIT_PATTERN         = None
+    PREMIUM_ONLY_PATTERN = None
+    HAPPY_HOUR_PATTERN   = None
+    IP_BLOCKED_PATTERN   = None
+    DL_LIMIT_PATTERN     = None
+    SIZE_LIMIT_PATTERN   = None
+    ERROR_PATTERN        = None
 
 
     #@TODO: Remove in 0.4.10
@@ -113,7 +136,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
             self.links = self.get_links() or list()
 
-            if hasattr(self, 'PAGES_PATTERN') and hasattr(self, 'loadPage'):
+            if self.PAGES_PATTERN:
                 self.handle_pages(pyfile)
 
             self.log_debug("Package has %d links" % len(self.links))
@@ -134,11 +157,15 @@ class SimpleCrypter(Crypter, SimpleHoster):
         return re.findall(self.LINK_PATTERN, self.html)
 
 
+    def load_page(self, number)
+        raise NotImplementedError
+
+
     def handle_pages(self, pyfile):
         try:
             pages = int(re.search(self.PAGES_PATTERN, self.html).group(1))
 
-        except (AttributeError, IndexError, ValueError):
+        except Exception:
             pages = 1
 
         for p in xrange(2, pages + 1):

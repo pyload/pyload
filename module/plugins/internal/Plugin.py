@@ -6,6 +6,7 @@ import datetime
 import inspect
 import os
 import re
+import time
 import traceback
 import urllib
 import urlparse
@@ -77,6 +78,11 @@ def parse_name(string):
 
 
 #@TODO: Move to utils in 0.4.10
+def timestamp():
+    return int(time.time() * 1000)
+
+
+#@TODO: Move to utils in 0.4.10
 def which(program):
     """
     Works exactly like the unix command which
@@ -145,7 +151,10 @@ def parse_html_form(attr_str, html, input_names={}):
                 else:
                     inputs[name] = value
 
-        if input_names:
+        if not input_names:
+            #: No attribute check
+            return action, inputs
+        else:
             #: Check input attributes
             for key, val in input_names.items():
                 if key in inputs:
@@ -155,14 +164,12 @@ def parse_html_form(attr_str, html, input_names={}):
                         continue
                     elif hasattr(val, "search") and re.match(val, inputs[key]):
                         continue
-                    break  #: Attibute value does not match
+                    else:
+                        break  #: Attibute value does not match
                 else:
                     break  #: Attibute name does not match
             else:
                 return action, inputs  #: Passed attribute check
-        else:
-            #: No attribute check
-            return action, inputs
 
     return {}, None  #: No matching form found
 
@@ -179,7 +186,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'

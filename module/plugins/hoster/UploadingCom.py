@@ -4,14 +4,14 @@ import pycurl
 import re
 
 from module.common.json_layer import json_loads
-from module.plugins.internal.Plugin import encode
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, timestamp
+from module.plugins.internal.Plugin import encode, timestamp
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UploadingCom(SimpleHoster):
     __name__    = "UploadingCom"
     __type__    = "hoster"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>\w+)'

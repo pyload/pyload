@@ -16,7 +16,7 @@ from module.utils import fixup, fs_encode, parseFileSize as parse_size
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.89"
+    __version__ = "1.90"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -85,25 +85,43 @@ class SimpleHoster(Hoster):
         LINK_PREMIUM_PATTERN: (optional) group(1) should be the direct link for premium download
           example: LINK_PREMIUM_PATTERN = r'<div class="link"><a href="(.+?)"'
     """
-    NAME_REPLACEMENTS = []
-    SIZE_REPLACEMENTS = []
-    URL_REPLACEMENTS  = []
 
-    FILE_ERRORS = [('Html error'   , r'\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)'),
-                   ('Request error', r'([Aa]n error occured while processing your request)'                   ),
-                   ('Html file'    , r'\A\s*<!DOCTYPE html'                                                   )]
+    NAME_REPLACEMENTS    = []
+    SIZE_REPLACEMENTS    = []
+    URL_REPLACEMENTS     = []
 
-    CHECK_FILE    = True   #: Set to False to not check the last downloaded file with declared error patterns
-    CHECK_TRAFFIC = False  #: Set to True to reload checking traffic left for premium account
-    COOKIES       = True   #: or False or list of tuples [(domain, name, value)]
-    DIRECT_LINK   = None   #: Set to True to looking for direct link (as defined in handle_direct method), set to None to do it if self.account is True else False
-    DISPOSITION   = True   #: Set to True to use any content-disposition value in http header as file name
-    LOGIN_ACCOUNT = False  #: Set to True to require account login
-    LOGIN_PREMIUM = False  #: Set to True to require premium account login
-    LEECH_HOSTER  = False  #: Set to True to leech other hoster link (as defined in handle_multi method)
-    TEXT_ENCODING = True   #: Set to encoding name if encoding value in http header is not correct
+    CHECK_FILE           = True   #: Set to False to not check the last downloaded file with declared error patterns
+    CHECK_TRAFFIC        = False  #: Set to True to reload checking traffic left for premium account
+    COOKIES              = True   #: or False or list of tuples [(domain, name, value)]
+    DIRECT_LINK          = None   #: Set to True to looking for direct link (as defined in handle_direct method), set to None to do it if self.account is True else False
+    DISPOSITION          = True   #: Set to True to use any content-disposition value in http header as file name
+    LOGIN_ACCOUNT        = False  #: Set to True to require account login
+    LOGIN_PREMIUM        = False  #: Set to True to require premium account login
+    LEECH_HOSTER         = False  #: Set to True to leech other hoster link (as defined in handle_multi method)
+    TEXT_ENCODING        = True   #: Set to encoding name if encoding value in http header is not correct
 
-    LINK_PATTERN = None
+    LINK_PATTERN         = None
+    LINK_FREE_PATTERN    = None
+    LINK_PREMIUM_PATTERN = None
+
+    INFO_PATTERN         = None
+    NAME_PATTERN         = None
+    SIZE_PATTERN         = None
+    HASHSUM_PATTERN      = None
+    OFFLINE_PATTERN      = None
+    TEMP_OFFLINE_PATTERN = None
+
+    WAIT_PATTERN         = None
+    PREMIUM_ONLY_PATTERN = None
+    HAPPY_HOUR_PATTERN   = None
+    IP_BLOCKED_PATTERN   = None
+    DL_LIMIT_PATTERN     = None
+    SIZE_LIMIT_PATTERN   = None
+    ERROR_PATTERN        = None
+
+    FILE_ERRORS          = [('Html error'   , r'\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)'),
+                            ('Request error', r'([Aa]n error occured while processing your request)'                   ),
+                            ('Html file'    , r'\A\s*<!DOCTYPE html'                                                   )]
 
 
     @classmethod
@@ -119,7 +137,7 @@ class SimpleHoster(Hoster):
         try:
             info['pattern'] = re.match(cls.__pattern__, url).groupdict()  #: Pattern groups will be saved here
 
-        except (AttributeError, IndexError):
+        except Exception:
             info['pattern'] = {}
 
         if not html and not online:
@@ -144,10 +162,10 @@ class SimpleHoster(Hoster):
                     pass
 
         if html:
-            if hasattr(cls, "OFFLINE_PATTERN") and re.search(cls.OFFLINE_PATTERN, html):
+            if cls.OFFLINE_PATTERN and re.search(cls.OFFLINE_PATTERN, html):
                 info['status'] = 1
 
-            elif hasattr(cls, "TEMP_OFFLINE_PATTERN") and re.search(cls.TEMP_OFFLINE_PATTERN, html):
+            elif cls.TEMP_OFFLINE_PATTERN and re.search(cls.TEMP_OFFLINE_PATTERN, html):
                 info['status'] = 6
 
             else:
@@ -159,7 +177,7 @@ class SimpleHoster(Hoster):
                         if all(True for k in pdict if k not in info['pattern']):
                             info['pattern'].update(pdict)
 
-                    except (AttributeError, IndexError):
+                    except Exception:
                         continue
 
                     else:
@@ -209,10 +227,10 @@ class SimpleHoster(Hoster):
         self.req.setOption("timeout", 120)
 
         if self.LINK_PATTERN:
-            if not hasattr(self, 'LINK_FREE_PATTERN'):
+            if self.LINK_FREE_PATTERN is None:
                 self.LINK_FREE_PATTERN = self.LINK_PATTERN
 
-            if not hasattr(self, 'LINK_PREMIUM_PATTERN'):
+            if self.LINK_PREMIUM_PATTERN is None:
                 self.LINK_PREMIUM_PATTERN = self.LINK_PATTERN
 
         if (self.LEECH_HOSTER
@@ -313,17 +331,17 @@ class SimpleHoster(Hoster):
             self.log_warning(_("No html code to check"))
             return
 
-        if hasattr(self, 'IP_BLOCKED_PATTERN') and re.search(self.IP_BLOCKED_PATTERN, self.html):
+        if self.IP_BLOCKED_PATTERN and re.search(self.IP_BLOCKED_PATTERN, self.html):
             self.fail(_("Connection from your current IP address is not allowed"))
 
         elif not self.premium:
-            if hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html):
+            if self.PREMIUM_ONLY_PATTERN and re.search(self.PREMIUM_ONLY_PATTERN, self.html):
                 self.fail(_("File can be downloaded by premium users only"))
 
-            elif hasattr(self, 'SIZE_LIMIT_PATTERN') and re.search(self.SIZE_LIMIT_PATTERN, self.html):
+            elif self.SIZE_LIMIT_PATTERN and re.search(self.SIZE_LIMIT_PATTERN, self.html):
                 self.fail(_("File too large for free download"))
 
-            elif hasattr(self, 'DL_LIMIT_PATTERN') and re.search(self.DL_LIMIT_PATTERN, self.html):
+            elif self.DL_LIMIT_PATTERN and re.search(self.DL_LIMIT_PATTERN, self.html):
                 m = re.search(self.DL_LIMIT_PATTERN, self.html)
                 try:
                     errmsg = m.group(1).strip()
@@ -343,10 +361,10 @@ class SimpleHoster(Hoster):
                 self.wantReconnect = wait_time > 300
                 self.retry(1, wait_time, _("Download limit exceeded"))
 
-        if hasattr(self, 'HAPPY_HOUR_PATTERN') and re.search(self.HAPPY_HOUR_PATTERN, self.html):
+        if self.HAPPY_HOUR_PATTERN and re.search(self.HAPPY_HOUR_PATTERN, self.html):
             self.multiDL = True
 
-        if hasattr(self, 'ERROR_PATTERN'):
+        if self.ERROR_PATTERN:
             m = re.search(self.ERROR_PATTERN, self.html)
             if m is not None:
                 try:
@@ -396,7 +414,7 @@ class SimpleHoster(Hoster):
                     self.wantReconnect = True
                     self.retry(wait=60, msg=errmsg)
 
-        elif hasattr(self, 'WAIT_PATTERN'):
+        elif self.WAIT_PATTERN:
             m = re.search(self.WAIT_PATTERN, self.html)
             if m is not None:
                 try:
@@ -496,7 +514,7 @@ class SimpleHoster(Hoster):
 
 
     def handle_free(self, pyfile):
-        if not hasattr(self, 'LINK_FREE_PATTERN'):
+        if not self.LINK_FREE_PATTERN:
             self.log_error(_("Free download not implemented"))
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
@@ -507,10 +525,9 @@ class SimpleHoster(Hoster):
 
 
     def handle_premium(self, pyfile):
-        if not hasattr(self, 'LINK_PREMIUM_PATTERN'):
+        if not self.LINK_PREMIUM_PATTERN:
             self.log_error(_("Premium download not implemented"))
-            self.log_info(_("Processing as free download..."))
-            self.handle_free(pyfile)
+            self.restart()
 
         m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
         if m is None:

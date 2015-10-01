@@ -30,6 +30,7 @@ class XFSCrypter(SimpleCrypter):
     OFFLINE_PATTERN      = r'>\s*(No such user|\w+ (Not Found|file (was|has been) removed|no longer available)'
     TEMP_OFFLINE_PATTERN = r'>\s*\w+ server (is in )?(maintenance|maintainance)'
 
+
     def set_xfs_cookie(self):
         if not self.COOKIES:
             return

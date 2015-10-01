@@ -10,13 +10,14 @@ import urllib
 from Crypto.Cipher import ARC4
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, timestamp
+from module.plugins.internal.Plugin import timestamp
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class TurbobitNet(SimpleHoster):
     __name__    = "TurbobitNet"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'

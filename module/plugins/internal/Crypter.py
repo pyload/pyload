@@ -7,7 +7,7 @@ from module.utils import save_path as safe_filename
 class Crypter(Base):
     __name__    = "Crypter"
     __type__    = "crypter"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -21,7 +21,7 @@ class Crypter(Base):
 
 
     def __init__(self, pyfile):
-        super(Base, self).__init__(pyfile)
+        super(Crypter, self).__init__(pyfile)
 
         #: Put all packages here. It's a list of tuples like: ( name, [list of links], folder )
         self.packages = []
@@ -34,7 +34,7 @@ class Crypter(Base):
 
 
     def _setup(self):
-        super(Base, self)._setup()
+        super(Crypter, self)._setup()
 
         self.packages = []
         self.urls     = []
