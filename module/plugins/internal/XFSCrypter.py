@@ -7,10 +7,13 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class XFSCrypter(SimpleCrypter):
     __name__    = "XFSCrypter"
     __type__    = "crypter"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
+    __config__  = [("use_premium"          , "bool", "Use premium account if available"   , True),
+                   ("use_subfolder"        , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """XFileSharing decrypter plugin"""
     __license__     = "GPLv3"
@@ -27,6 +30,15 @@ class XFSCrypter(SimpleCrypter):
     OFFLINE_PATTERN      = r'>\s*(No such user|\w+ (Not Found|file (was|has been) removed|no longer available)'
     TEMP_OFFLINE_PATTERN = r'>\s*\w+ server (is in )?(maintenance|maintainance)'
 
+    def set_xfs_cookie(self):
+        if not self.COOKIES:
+            return
+
+        if isinstance(self.COOKIES, list) and (self.PLUGIN_DOMAIN, "lang", "english") not in self.COOKIES:
+            self.COOKIES.insert((self.PLUGIN_DOMAIN, "lang", "english"))
+        else:
+            set_cookie(self.req.cj, self.PLUGIN_DOMAIN, "lang", "english")
+
 
     def prepare(self):
         if not self.PLUGIN_DOMAIN:
@@ -41,10 +53,6 @@ class XFSCrypter(SimpleCrypter):
             else:
                 self.fail(_("Missing PLUGIN_DOMAIN"))
 
-        if self.COOKIES:
-            if isinstance(self.COOKIES, list) and (self.PLUGIN_DOMAIN, "lang", "english") not in self.COOKIES:
-                self.COOKIES.insert((self.PLUGIN_DOMAIN, "lang", "english"))
-            else:
-                set_cookie(self.req.cj, self.PLUGIN_DOMAIN, "lang", "english")
+        self.set_xfs_cookie()
 
         return super(XFSCrypter, self).prepare()

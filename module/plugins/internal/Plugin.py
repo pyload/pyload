@@ -77,11 +77,6 @@ def parse_name(string):
 
 
 #@TODO: Move to utils in 0.4.10
-def timestamp():
-    return int(time.time() * 1000)
-
-
-#@TODO: Move to utils in 0.4.10
 def which(program):
     """
     Works exactly like the unix command which
@@ -184,7 +179,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.38"
+    __version__ = "0.40"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -206,9 +201,10 @@ class Plugin(object):
 
 
     def _init(self, core):
-        self.pyload = core
-        self.info   = {}    #: Provide information in dict here
-        self.req    = None  #: Browser instance, see `network.Browser`
+        self.pyload    = core
+        self.info      = {}    #: Provide information in dict here
+        self.req       = None  #: Browser instance, see `network.Browser`
+        self.last_html = None
 
 
     def init(self):
@@ -355,7 +351,7 @@ class Plugin(object):
             self.log_debug("LOAD URL " + url,
                            *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url", "_[1]")])
 
-        url = fixurl(url, unquote=True)  #: Recheck in 0.4.10
+        url = fixurl(url)  #: Recheck in 0.4.10
 
         if req is None:
             req = self.req or self.pyload.requestFactory.getRequest(self.__name__)
@@ -364,15 +360,17 @@ class Plugin(object):
         if isinstance(cookies, list):
             set_cookies(req.cj, cookies)
 
-        res = req.load(url, get, post, ref, bool(cookies), just_header, multipart, decode is True)  #@TODO: Fix network multipart in 0.4.10
+        html = req.load(url, get, post, ref, bool(cookies), just_header, multipart, decode is True)  #@TODO: Fix network multipart in 0.4.10
 
         #@TODO: Move to network in 0.4.10
         if decode:
-            res = html_unescape(res)
+            html = html_unescape(html)
 
         #@TODO: Move to network in 0.4.10
         if isinstance(decode, basestring):
-            res = _decode(res, decode)  #@NOTE: Use `utils.decode()` in 0.4.10
+            html = _decode(html, decode)  #@NOTE: Use `utils.decode()` in 0.4.10
+
+        self.last_html = html
 
         if self.pyload.debug:
             frame = inspect.currentframe()
@@ -383,15 +381,18 @@ class Plugin(object):
 
                 with open(framefile, "wb") as f:
                     del frame  #: Delete the frame or it wont be cleaned
-                    f.write(encode(res))
+                    f.write(encode(html))
 
             except IOError, e:
                 self.log_error(e)
 
-        if just_header:
-            #: Parse header
+        if not just_header:
+            return html
+
+        else:
+            #@TODO: Move to network in 0.4.10
             header = {'code': req.code}
-            for line in res.splitlines():
+            for line in html.splitlines():
                 line = line.strip()
                 if not line or ":" not in line:
                     continue
@@ -407,14 +408,13 @@ class Plugin(object):
                         header[key] = [header[key], value]
                 else:
                     header[key] = value
-            res = header
 
-        return res
+            return header
 
 
     def clean(self):
         """
-        Clean everything and remove references
+        Remove references
         """
         try:
             self.req.clearCookies()
@@ -423,6 +423,5 @@ class Plugin(object):
         except Exception:
             pass
 
-        for attr in ("account", "html", "pyfile", "req", "thread"):
-            if hasattr(self, attr):
-                setattr(self, attr, None)
+        else:
+            self.req = None

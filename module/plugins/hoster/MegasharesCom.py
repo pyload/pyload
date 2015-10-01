@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MegasharesCom(SimpleHoster):
     __name__    = "MegasharesCom"
     __type__    = "hoster"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index\.php)?\?d\d{2}=|dl/)\w+'
@@ -70,7 +70,7 @@ class MegasharesCom(SimpleHoster):
 
             if 'Thank you for reactivating your passport' in res:
                 self.captcha.correct()
-                self.restart()
+                self.restart(premium=True)
             else:
                 self.retry_captcha(msg=_("Failed to reactivate passport"))
 

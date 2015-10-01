@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Hoster import Hoster, parse_name
+from module.plugins.internal.Base import Base, parse_name
 from module.utils import save_path as safe_filename
 
 
-class Crypter(Hoster):
+class Crypter(Base):
     __name__    = "Crypter"
     __type__    = "crypter"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides pyload.config.get("general", "folder_per_package")
+    __config__  = [("use_premium"          , "bool", "Use premium account if available"   , True),
+                   ("use_subfolder"        , "bool", "Save package to subfolder"          , True),  #: Overrides pyload.config.get("general", "folder_per_package")
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Base decrypter plugin"""
@@ -19,17 +20,24 @@ class Crypter(Hoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    html = None  #: Last html loaded  #@TODO: Move to Hoster
-
-
     def __init__(self, pyfile):
-        super(Crypter, self).__init__(pyfile)
+        super(Base, self).__init__(pyfile)
 
         #: Put all packages here. It's a list of tuples like: ( name, [list of links], folder )
         self.packages = []
 
         #: List of urls, pyLoad will generate packagenames
         self.urls = []
+
+        self._setup()
+        self.init()
+
+
+    def _setup(self):
+        super(Base, self)._setup()
+
+        self.packages = []
+        self.urls     = []
 
 
     def process(self, pyfile):
@@ -48,6 +56,9 @@ class Crypter(Hoster):
 
 
     def decrypt(self, pyfile):
+        """
+        The "main" method of every crypter plugin, you **have to** overwrite it
+        """
         raise NotImplementedError
 
 
@@ -77,6 +88,7 @@ class Crypter(Hoster):
                           "Saved to folder: %s" % folder if folder else "Saved to download folder")
 
             links = map(self.fixurl, links)
+
             pid = self.pyload.api.addPackage(name, links, package_queue)
 
             if package_password:

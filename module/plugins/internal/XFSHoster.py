@@ -14,10 +14,13 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.61"
+    __version__ = "0.62"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
+    __config__  = [("use_premium"     , "bool", "Use premium account if available"          , True),
+                   ("fallback_premium", "bool", "Fallback to free download if premium fails", True),
+                   ("chk_filesize"    , "bool", "Check file size"                           , True)]
 
     __description__ = """XFileSharing hoster plugin"""
     __license__     = "GPLv3"
@@ -57,6 +60,16 @@ class XFSHoster(SimpleHoster):
         self.resume_download = self.multiDL = self.premium
 
 
+    def set_xfs_cookie(self):
+        if not self.COOKIES:
+            return
+
+        if isinstance(self.COOKIES, list) and (self.PLUGIN_DOMAIN, "lang", "english") not in self.COOKIES:
+            self.COOKIES.insert((self.PLUGIN_DOMAIN, "lang", "english"))
+        else:
+            set_cookie(self.req.cj, self.PLUGIN_DOMAIN, "lang", "english")
+
+
     def prepare(self):
         """
         Initialize important variables
@@ -72,11 +85,7 @@ class XFSHoster(SimpleHoster):
             else:
                 self.fail(_("Missing PLUGIN_DOMAIN"))
 
-        if self.COOKIES:
-            if isinstance(self.COOKIES, list) and (self.PLUGIN_DOMAIN, "lang", "english") not in self.COOKIES:
-                self.COOKIES.insert((self.PLUGIN_DOMAIN, "lang", "english"))
-            else:
-                set_cookie(self.req.cj, self.PLUGIN_DOMAIN, "lang", "english")
+        self.set_xfs_cookie()
 
         if not self.LINK_PATTERN:
             pattern = r'(?:file: "(.+?)"|(https?://(?:www\.)?([^/]*?%s|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<])'

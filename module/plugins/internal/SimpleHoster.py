@@ -16,12 +16,12 @@ from module.utils import fixup, fs_encode, parseFileSize as parse_size
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.88"
+    __version__ = "1.89"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_premium"     , "bool", "Use premium account if available"          , True),
-                   ("premium_fallback", "bool", "Fallback to free download if premium fails", True),
+                   ("fallback_premium", "bool", "Fallback to free download if premium fails", True),
                    ("chk_filesize"    , "bool", "Check file size"                           , True)]
 
     __description__ = """Simple hoster plugin"""
@@ -200,9 +200,6 @@ class SimpleHoster(Hoster):
         self.direct_dl = False
         self.leech_dl  = False
 
-        if not self.get_config('use_premium', True) and self.premium:
-            self.restart(nopremium=True)
-
         if self.LOGIN_PREMIUM and not self.premium:
             self.fail(_("Required premium account not found"))
 
@@ -243,94 +240,70 @@ class SimpleHoster(Hoster):
 
 
     def process(self, pyfile):
-        try:
-            self.prepare()
-            self.check_info()  #@TODO: Remove in 0.4.10
+        self.prepare()
+        self.check_info()  #@TODO: Remove in 0.4.10
 
-            if self.leech_dl:
-                self.log_info(_("Processing as debrid download..."))
-                self.handle_multi(pyfile)
+        if self.leech_dl:
+            self.log_info(_("Processing as debrid download..."))
+            self.handle_multi(pyfile)
 
-                if not self.link and not was_downloaded():
-                    self.log_info(_("Failed to leech url"))
+            if not self.link and not was_downloaded():
+                self.log_info(_("Failed to leech url"))
 
-            else:
-                if not self.link and self.direct_dl and not self.last_download:
-                    self.log_info(_("Looking for direct download link..."))
-                    self.handle_direct(pyfile)
+        else:
+            if not self.link and self.direct_dl and not self.last_download:
+                self.log_info(_("Looking for direct download link..."))
+                self.handle_direct(pyfile)
 
-                    if self.link or self.last_download:
-                        self.log_info(_("Direct download link detected"))
-                    else:
-                        self.log_info(_("Direct download link not found"))
+                if self.link or self.last_download:
+                    self.log_info(_("Direct download link detected"))
+                else:
+                    self.log_info(_("Direct download link not found"))
 
-                if not self.link and not self.last_download:
-                    self.preload()
+            if not self.link and not self.last_download:
+                self.preload()
 
-                    if 'status' not in self.info or self.info['status'] is 3:  #@TODO: Recheck in 0.4.10
-                        self.check_info()
+                if 'status' not in self.info or self.info['status'] is 3:  #@TODO: Recheck in 0.4.10
+                    self.check_info()
 
-                    if self.premium and (not self.CHECK_TRAFFIC or self.check_traffic()):
-                        self.log_info(_("Processing as premium download..."))
-                        self.handle_premium(pyfile)
+                if self.premium and (not self.CHECK_TRAFFIC or self.check_traffic()):
+                    self.log_info(_("Processing as premium download..."))
+                    self.handle_premium(pyfile)
 
-                    elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.check_traffic()):
-                        self.log_info(_("Processing as free download..."))
-                        self.handle_free(pyfile)
+                elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.check_traffic()):
+                    self.log_info(_("Processing as free download..."))
+                    self.handle_free(pyfile)
 
-            if not self.last_download:
-                self.log_info(_("Downloading file..."))
-                self.download(self.link, disposition=self.DISPOSITION)
+        if not self.last_download:
+            self.log_info(_("Downloading file..."))
+            self.download(self.link, disposition=self.DISPOSITION)
 
-            self.check_download()
-
-        except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
-            if self.get_config('premium_fallback', True) and self.premium:
-                self.log_warning(_("Premium download failed"), e)
-                self.restart(nopremium=True)
-
-            else:
-                raise Fail(encode(e))  #@TODO: Remove `encode` in 0.4.10
+        self.check_download()
 
 
     def check_download(self):
         self.log_info(_("Checking downloaded file..."))
+        self.log_debug("Using default check rules...")
+        for r, p in self.FILE_ERRORS:
+            errmsg = self.check_file({r: re.compile(p)})
+            if errmsg is not None:
+                errmsg = errmsg.strip().capitalize()
 
-        if self.captcha.task and not self.last_download:
-            self.captcha.invalid()
-            self.retry(10, msg=_("Wrong captcha"))
+                try:
+                    errmsg += " | " + self.last_check.group(1).strip()
 
-        elif self.check_file({'Empty file': re.compile(r'\A((.|)(\2|\s)*)\Z')},
-                                 delete=True):
-            self.error(_("Empty file"))
+                except Exception:
+                    pass
 
+                self.log_warning(_("Check result: ") + errmsg, _("Waiting 1 minute and retry"))
+                self.wantReconnect = True
+                self.retry(wait=60, msg=errmsg)
         else:
-            if self.get_config('chk_filesize', False) and self.info.get('size'):
-                # 10485760 is 10MB, tolerance is used when comparing displayed size on the hoster website to real size
-                # For example displayed size can be 1.46GB for example, but real size can be 1.4649853GB
-                self.check_filesize(self.info['size'], size_tolerance=10485760)
-
-            self.log_debug("Using default check rules...")
-            for r, p in self.FILE_ERRORS:
-                errmsg = self.check_file({r: re.compile(p)})
-                if errmsg is not None:
-                    errmsg = errmsg.strip().capitalize()
-
-                    try:
-                        errmsg += " | " + self.last_check.group(1).strip()
-
-                    except Exception:
-                        pass
-
-                    self.log_warning(_("Check result: ") + errmsg, _("Waiting 1 minute and retry"))
-                    self.wantReconnect = True
-                    self.retry(delay=60, msg=errmsg)
-            else:
-                if self.CHECK_FILE:
-                    self.log_debug("Using custom check rules...")
-                    with open(fs_encode(self.last_download), "rb") as f:
-                        self.html = f.read(1048576)  #@TODO: Recheck in 0.4.10
-                    self.check_errors()
+            if self.CHECK_FILE:
+                self.log_debug("Using custom check rules...")
+                with open(fs_encode(self.last_download), "rb") as f:
+                    self.html = f.read(1048576)  #@TODO: Recheck in 0.4.10
+                self.check_errors()
 
         self.log_info(_("No errors found"))
 
@@ -375,7 +348,7 @@ class SimpleHoster(Hoster):
 
         if hasattr(self, 'ERROR_PATTERN'):
             m = re.search(self.ERROR_PATTERN, self.html)
-            if m:
+            if m is not None:
                 try:
                     errmsg = m.group(1).strip()
 
@@ -399,8 +372,7 @@ class SimpleHoster(Hoster):
                     self.fail(_("Connection from your current IP address is not allowed"))
 
                 elif re.search('captcha|code', errmsg, re.I):
-                    self.captcha.invalid()
-                    self.retry(10, msg=_("Wrong captcha"))
+                    self.retry_captcha()
 
                 elif re.search('countdown|expired', errmsg, re.I):
                     self.retry(10, 60, _("Link expired"))
@@ -415,18 +387,18 @@ class SimpleHoster(Hoster):
                     self.offline()
 
                 elif re.search('filename', errmsg, re.I):
-                    self.fail(_("Wrong url"))
+                    self.fail(_("Invalid url"))
 
                 elif re.search('premium', errmsg, re.I):
                     self.fail(_("File can be downloaded by premium users only"))
 
                 else:
                     self.wantReconnect = True
-                    self.retry(delay=60, msg=errmsg)
+                    self.retry(wait=60, msg=errmsg)
 
         elif hasattr(self, 'WAIT_PATTERN'):
             m = re.search(self.WAIT_PATTERN, self.html)
-            if m:
+            if m is not None:
                 try:
                     waitmsg = m.group(1).strip()
 

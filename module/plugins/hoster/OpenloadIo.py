@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class OpenloadIo(SimpleHoster):
     __name__    = "OpenloadIo"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?openload\.(?:co|io)/f/([\w-_]+)'
@@ -23,11 +23,11 @@ class OpenloadIo(SimpleHoster):
     # The API reference, that this implementation uses is available at https://openload.co/api
     API_URL = 'https://api.openload.co/1'
 
-    FILE_ID_PATTERN = '/f/([\w-_]+)'
+    _FILE_ID_PATTERN = '/f/([\w-_]+)'
 
-    DOWNLOAD_TICKET_URI_PATTERN = '/file/dlticket?file={0}'
-    DOWNLOAD_FILE_URI_PATTERN   = '/file/dl?file={0}&ticket={1}'
-    FILE_INFO_URI_PATTERN       = '/file/info?file={0}'
+    _DOWNLOAD_TICKET_URI_PATTERN = '/file/dlticket?file={0}'
+    _DOWNLOAD_FILE_URI_PATTERN   = '/file/dl?file={0}&ticket={1}'
+    _FILE_INFO_URI_PATTERN       = '/file/info?file={0}'
 
 
     @classmethod

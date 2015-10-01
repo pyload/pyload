@@ -10,8 +10,9 @@ class MultiCrypter(SimpleCrypter):
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
-                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("use_premium"          , "bool", "Use premium account if available"   , True),
+                   ("use_subfolder"        , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Multi decrypter plugin"""
     __license__     = "GPLv3"

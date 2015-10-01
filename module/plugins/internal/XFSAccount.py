@@ -13,7 +13,7 @@ from module.plugins.internal.Plugin import parse_html_form, set_cookie
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __status__  = "testing"
 
     __description__ = """XFileSharing account plugin"""
@@ -40,6 +40,16 @@ class XFSAccount(Account):
 
     LOGIN_FAIL_PATTERN = r'Incorrect Login or Password|account was banned|Error<'
     LOGIN_SKIP_PATTERN = r'op=logout'
+
+
+    def set_xfs_cookie(self):
+        if not self.COOKIES:
+            return
+
+        if isinstance(self.COOKIES, list) and (self.PLUGIN_DOMAIN, "lang", "english") not in self.COOKIES:
+            self.COOKIES.insert((self.PLUGIN_DOMAIN, "lang", "english"))
+        else:
+            set_cookie(self.req.cj, self.PLUGIN_DOMAIN, "lang", "english")
 
 
     def grab_info(self, user, password, data):
@@ -146,11 +156,7 @@ class XFSAccount(Account):
             if not self.PLUGIN_URL:
                 self.PLUGIN_URL = "http://www.%s/" % self.PLUGIN_DOMAIN
 
-            if self.COOKIES:
-                if isinstance(self.COOKIES, list) and (self.PLUGIN_DOMAIN, "lang", "english") not in self.COOKIES:
-                    self.COOKIES.insert((self.PLUGIN_DOMAIN, "lang", "english"))
-                else:
-                    set_cookie(self.req.cj, self.PLUGIN_DOMAIN, "lang", "english")
+            self.set_xfs_cookie()
 
         if not self.PLUGIN_URL:
             self.fail_login(_("Missing PLUGIN_URL"))
