@@ -95,7 +95,7 @@ class XFSHoster(SimpleHoster):
             self.check_errors()
 
             m = re.search(self.LINK_PATTERN, self.html, re.S)
-            if m:
+            if m is not None:
                 break
 
             data = self.get_post_parameters()
@@ -111,7 +111,7 @@ class XFSHoster(SimpleHoster):
                 break
 
             m = re.search(self.LINK_PATTERN, self.html, re.S)
-            if m:
+            if m is not None:
                 break
         else:
             if 'op' in data:
@@ -163,7 +163,7 @@ class XFSHoster(SimpleHoster):
             self.retry(20, 3 * 60, _("Can not leech file"))
 
         elif 'today' in stmsg:
-            self.retry(delay=seconds_to_midnight(), msg=_("You've used all Leech traffic today"))
+            self.retry(wait=seconds_to_midnight(), msg=_("You've used all Leech traffic today"))
 
         else:
             self.fail(stmsg)
@@ -202,7 +202,7 @@ class XFSHoster(SimpleHoster):
 
             if not self.premium:
                 m = re.search(self.WAIT_PATTERN, self.html)
-                if m:
+                if m is not None:
                     wait_time = int(m.group(1))
                     self.set_wait(wait_time, False)
 
@@ -223,13 +223,13 @@ class XFSHoster(SimpleHoster):
 
     def handle_captcha(self, inputs):
         m = re.search(self.CAPTCHA_PATTERN, self.html)
-        if m:
+        if m is not None:
             captcha_url = m.group(1)
             inputs['code'] = self.captcha.decrypt(captcha_url)
             return
 
         m = re.search(self.CAPTCHA_BLOCK_PATTERN, self.html, re.S)
-        if m:
+        if m is not None:
             captcha_div = m.group(1)
             numerals    = re.findall(r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
 

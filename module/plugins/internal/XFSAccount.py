@@ -61,7 +61,7 @@ class XFSAccount(Account):
         premium = True if re.search(self.PREMIUM_PATTERN, html) else False
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
-        if m:
+        if m is not None:
             expiredate = m.group(1).strip()
             self.log_debug("Expire date: " + expiredate)
 
@@ -84,7 +84,7 @@ class XFSAccount(Account):
             self.log_debug("VALID_UNTIL_PATTERN not found")
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        if m:
+        if m is not None:
             try:
                 traffic = m.groupdict()
                 size    = traffic['S']

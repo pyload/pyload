@@ -331,7 +331,7 @@ class Account(Plugin):
                         continue
 
                 except Exception:
-                    self.log_warning(_("Wrong time format `%s` for account `%s`, use 1:22-3:44")
+                    self.log_warning(_("Invalid time format `%s` for account `%s`, use 1:22-3:44")
                                      % (user, time_data))
 
             if data['trafficleft'] == 0:

@@ -79,7 +79,7 @@ class UpdateManager(Addon):
             if self.get_config('nodebugupdate'):
                 return
 
-        if self.get_config('checkperiod')and \
+        if self.get_config('checkperiod') and \
            time.time() - max(self.MIN_CHECK_INTERVAL, self.get_config('checkinterval') * 60 * 60) > self.info['last_check']:
             self.update()
 

@@ -104,8 +104,7 @@ class Captcha(Plugin):
                 self.fail(self.task.error)
 
             elif not self.task.result:
-                self.invalid()
-                self.plugin.retry(msg=_("No captcha result obtained in appropiate time"))
+                self.plugin.retry_captcha(msg=_("No captcha result obtained in appropriate time"))
 
             result = self.task.result
 
