@@ -79,8 +79,8 @@ class UpdateManager(Addon):
             if self.get_config('nodebugupdate'):
                 return
 
-        if self.get_config('checkperiod') \
-           and time.time() - max(self.MIN_CHECK_INTERVAL, self.get_config('checkinterval') * 60 * 60) > self.info['last_check']:
+        if self.get_config('checkperiod')and \
+           time.time() - max(self.MIN_CHECK_INTERVAL, self.get_config('checkinterval') * 60 * 60) > self.info['last_check']:
             self.update()
 
 
@@ -275,7 +275,7 @@ class UpdateManager(Addon):
             if self.pyload.pluginManager.reloadPlugins(updated):
                 exitcode = 1
             else:
-                self.log_warning(_("pyLoad restart required to reload the updated plugins"))
+                self.log_warning(_("You have to restart pyLoad to reload the updated plugins"))
                 self.info['plugins'] = True
                 exitcode = 2
 

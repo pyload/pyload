@@ -21,8 +21,8 @@ class RealdebridCom(Account):
 
 
     def grab_hosters(self, user, password, data):
-        html = self.load("https://real-debrid.com/api/hosters.php").replace("\"", "").strip()
-        return [x.strip() for x in html.split(",") if x.strip()]
+        html = self.load("https://real-debrid.com/api/hosters.php")
+        return [x for x in map(str.strip, html.replace("\"", "").split(",")) if x]
 
 
     def grab_info(self, user, password, data):

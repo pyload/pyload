@@ -46,7 +46,7 @@ class CatShareNet(SimpleHoster):
                                     'recaptcha_response_field' : response})
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
-        if m:
+        if m is not None:
             self.link = m.group(1)
 
 

@@ -50,12 +50,12 @@ class FilefactoryCom(SimpleHoster):
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
-            self.error(_("Free download link not found"))
+            return
 
         self.link = m.group(1)
 
         m = re.search(self.WAIT_PATTERN, self.html)
-        if m:
+        if m is not None:
             self.wait(m.group(1))
 
 
@@ -65,21 +65,9 @@ class FilefactoryCom(SimpleHoster):
 
         if check == "multiple":
             self.log_debug("Parallel downloads detected; waiting 15 minutes")
-            self.retry(delay=15 * 60, msg=_("Parallel downloads"))
+            self.retry(wait=15 * 60, msg=_("Parallel downloads"))
 
         elif check == "error":
             self.error(_("Unknown error"))
 
         return super(FilefactoryCom, self).check_download()
-
-
-    def handle_premium(self, pyfile):
-        self.link = self.direct_link(self.load(pyfile.url, just_header=True))
-
-        if not self.link:
-            html = self.load(pyfile.url)
-            m = re.search(self.LINK_PREMIUM_PATTERN, html)
-            if m:
-                self.link = m.group(1)
-            else:
-                self.error(_("Premium download link not found"))

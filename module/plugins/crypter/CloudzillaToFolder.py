@@ -28,7 +28,7 @@ class CloudzillaToFolder(SimpleHoster):
 
     def check_errors(self):
         m = re.search(self.PASSWORD_PATTERN, self.html)
-        if m:
+        if m is not None:
             self.html = self.load(self.pyfile.url, get={'key': self.get_password()})
 
         if re.search(self.PASSWORD_PATTERN, self.html):

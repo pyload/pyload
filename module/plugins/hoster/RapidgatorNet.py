@@ -86,7 +86,7 @@ class RapidgatorNet(SimpleHoster):
 
         else:
             self.account.relogin()
-            self.retry(delay=60)
+            self.retry(wait=60)
 
 
     def handle_premium(self, pyfile):
@@ -122,29 +122,25 @@ class RapidgatorNet(SimpleHoster):
         url = "http://rapidgator.net%s" % jsvars.get('captchaUrl', '/download/captcha')
         self.html = self.load(url)
 
-        for _i in xrange(5):
-            m = re.search(self.LINK_FREE_PATTERN, self.html)
-            if m:
-                self.link = m.group(1)
-                break
-            else:
-                captcha = self.handle_captcha()
-
-                if not captcha:
-                    self.error(_("Captcha pattern not found"))
-
-                response, challenge  = captcha.challenge()
-
-                self.html = self.load(url, post={'DownloadCaptchaForm[captcha]': "",
-                                                 'adcopy_challenge'            : challenge,
-                                                 'adcopy_response'             : response})
-
-                if "The verification code is incorrect" in self.html:
-                    self.captcha.invalid()
-                else:
-                    self.captcha.correct()
+        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        if m is not None:
+            self.link = m.group(1)
         else:
-            self.error(_("Download link"))
+            captcha = self.handle_captcha()
+
+            if not captcha:
+                self.error(_("Captcha pattern not found"))
+
+            response, challenge  = captcha.challenge()
+
+            self.html = self.load(url, post={'DownloadCaptchaForm[captcha]': "",
+                                             'adcopy_challenge'            : challenge,
+                                             'adcopy_response'             : response})
+
+            if "The verification code is incorrect" in self.html:
+                self.retry_captcha()
+            else:
+                self.captcha.correct()
 
 
     def handle_captcha(self):

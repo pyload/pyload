@@ -49,7 +49,7 @@ class WebshareCz(SimpleHoster):
         self.log_debug("API data: " + api_data)
 
         m = re.search('<link>(.+)</link>', api_data)
-        if m:
+        if m is not None:
             self.link = m.group(1)
 
 

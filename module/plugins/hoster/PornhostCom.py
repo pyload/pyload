@@ -49,7 +49,7 @@ class PornhostCom(Hoster):
                     url = re.search(r'"http://file\d+\.pornhost\.com/\d+/.*?"',
                                     self.html)  #@TODO: fix this one since it doesn't match
 
-        return url.group(1).strip()
+        return url.group(1)
 
 
     def get_file_name(self):

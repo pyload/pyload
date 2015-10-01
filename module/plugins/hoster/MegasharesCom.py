@@ -46,43 +46,40 @@ class MegasharesCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         if self.NO_SLOTS_PATTERN in self.html:
-            self.retry(delay=5 * 60)
+            self.retry(wait=5 * 60)
 
         m = re.search(self.REACTIVATE_PASSPORT_PATTERN, self.html)
-        if m:
+        if m is not None:
             passport_num = m.group(1)
             request_uri = re.search(self.REQUEST_URI_PATTERN, self.html).group(1)
 
-            for _i in xrange(5):
-                random_num = re.search(self.REACTIVATE_NUM_PATTERN, self.html).group(1)
+            random_num = re.search(self.REACTIVATE_NUM_PATTERN, self.html).group(1)
 
-                verifyinput = self.captcha.decrypt("http://d01.megashares.com/index.php",
-                                                  get={'secgfx': "gfx", 'random_num': random_num})
+            verifyinput = self.captcha.decrypt("http://d01.megashares.com/index.php",
+                                              get={'secgfx': "gfx", 'random_num': random_num})
 
-                self.log_info(_("Reactivating passport %s: %s %s") % (passport_num, random_num, verifyinput))
+            self.log_info(_("Reactivating passport %s: %s %s") % (passport_num, random_num, verifyinput))
 
-                res = self.load("http://d01.megashares.com%s" % request_uri,
-                                get={'rs'      : "check_passport_renewal",
-                                     'rsargs[]': verifyinput,
-                                     'rsargs[]': random_num,
-                                     'rsargs[]': passport_num,
-                                     'rsargs[]': "replace_sec_pprenewal",
-                                     'rsrnd[]' : str(int(time.time() * 1000))})
+            res = self.load("http://d01.megashares.com%s" % request_uri,
+                            get={'rs'      : "check_passport_renewal",
+                                 'rsargs[]': verifyinput,
+                                 'rsargs[]': random_num,
+                                 'rsargs[]': passport_num,
+                                 'rsargs[]': "replace_sec_pprenewal",
+                                 'rsrnd[]' : str(int(time.time() * 1000))})
 
-                if 'Thank you for reactivating your passport.' in res:
-                    self.captcha.correct()
-                    self.retry()
-                else:
-                    self.captcha.invalid()
+            if 'Thank you for reactivating your passport' in res:
+                self.captcha.correct()
+                self.restart()
             else:
-                self.fail(_("Failed to reactivate passport"))
+                self.retry_captcha(msg=_("Failed to reactivate passport"))
 
         m = re.search(self.PASSPORT_RENEW_PATTERN, self.html)
-        if m:
+        if m is not None:
             time = [int(x) for x in m.groups()]
             renew = time[0] + (time[1] * 60) + (time[2] * 60)
             self.log_debug("Waiting %d seconds for a new passport" % renew)
-            self.retry(delay=renew, msg=_("Passport renewal"))
+            self.retry(wait=renew, msg=_("Passport renewal"))
 
         #: Check traffic left on passport
         m = re.search(self.PASSPORT_LEFT_PATTERN, self.html, re.M | re.S)
@@ -94,13 +91,12 @@ class MegasharesCom(SimpleHoster):
         self.log_info(_("Data left: %s %s (%d MB needed)") % (m.group(2), m.group(3), self.pyfile.size / 1048576))
 
         if not data_left:
-            self.retry(delay=600, msg=_("Passport renewal"))
+            self.retry(wait=600, msg=_("Passport renewal"))
 
         self.handle_download(False)
 
 
     def handle_download(self, premium=False):
-        #: Find download link
         m = re.search(self.LINK_PATTERN % (1 if premium else 2), self.html)
         msg = _('%s download URL' % ('Premium' if premium else 'Free'))
         if m is None:

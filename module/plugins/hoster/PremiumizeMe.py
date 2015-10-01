@@ -54,7 +54,7 @@ class PremiumizeMe(MultiHoster):
             return
 
         elif status == 400:
-            self.fail(_("Invalid link"))
+            self.fail(_("Invalid url"))
 
         elif status == 404:
             self.offline()

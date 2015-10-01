@@ -39,11 +39,11 @@ class LinkdecrypterCom(MultiCrypter):
 
         while retries:
             m = re.search(self.TEXTAREA_PATTERN, self.html, re.S)
-            if m:
+            if m is not None:
                 self.urls = [x for x in m.group(1).splitlines() if '[LINK-ERROR]' not in x]
 
             m = re.search(self.CAPTCHA_PATTERN, self.html)
-            if m:
+            if m is not None:
                 captcha_url = 'http://linkdecrypter.com/' + m.group(1)
                 result_type = "positional" if "getPos" in m.group(2) else "textual"
 

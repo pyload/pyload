@@ -29,10 +29,10 @@ class LuckyShareNet(SimpleHoster):
         if 'AJAX Error' in rep:
             html = self.load(self.pyfile.url)
             m = re.search(r"waitingtime = (\d+);", html)
-            if m:
+            if m is not None:
                 seconds = int(m.group(1))
                 self.log_debug("You have to wait %d seconds between free downloads" % seconds)
-                self.retry(delay=seconds)
+                self.retry(wait=seconds)
             else:
                 self.error(_("Unable to detect wait time between free downloads"))
         elif 'Hash expired' in rep:
@@ -52,24 +52,20 @@ class LuckyShareNet(SimpleHoster):
 
         recaptcha = ReCaptcha(self)
 
-        for _i in xrange(5):
-            response, challenge = recaptcha.challenge()
-            rep = self.load(r"http://luckyshare.net/download/verify/challenge/%s/response/%s/hash/%s" %
-                            (challenge, response, json['hash']))
-            self.log_debug("JSON: " + rep)
-            if 'link' in rep:
-                json.update(self.parse_json(rep))
-                self.captcha.correct()
-                break
-            elif 'Verification failed' in rep:
-                self.captcha.invalid()
-            else:
-                self.error(_("Unable to get downlaod link"))
+        response, challenge = recaptcha.challenge()
+        rep = self.load(r"http://luckyshare.net/download/verify/challenge/%s/response/%s/hash/%s" %
+                        (challenge, response, json['hash']))
 
-        if not json['link']:
-            self.fail(_("No Download url retrieved/all captcha attempts failed"))
+        self.log_debug("JSON: " + rep)
 
-        self.link = json['link']
+        if 'Verification failed' in rep:
+            self.retry_captcha()
+
+        elif 'link' in rep:
+            self.captcha.correct()
+            json.update(self.parse_json(rep))
+            if json['link']:
+                self.link = json['link']
 
 
 getInfo = create_getInfo(LuckyShareNet)

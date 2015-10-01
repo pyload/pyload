@@ -34,20 +34,20 @@ class UploadedTo(Account):
         premium = True if re.search(self.PREMIUM_PATTERN, html) else False
 
         m = re.search(self.VALID_UNTIL_PATTERN, html, re.M)
-        if m:
+        if m is not None:
             expiredate = m.group(1).lower().strip()
 
             if expiredate == "unlimited":
                 validuntil = -1
             else:
                 m = re.findall(r'(\d+) (week|day|hour)', expiredate)
-                if m:
+                if m is not None:
                     validuntil = time.time()
                     for n, u in m:
                         validuntil += float(n) * 60 * 60 * {'week': 168, 'day': 24, 'hour': 1}[u]
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        if m:
+        if m is not None:
             traffic = m.groupdict()
             size    = traffic['S'].replace('.', '')
             unit    = traffic['U'].lower()

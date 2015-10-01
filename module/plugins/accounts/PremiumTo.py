@@ -22,9 +22,8 @@ class PremiumTo(Account):
 
     def grab_hosters(self, user, password, data):
         html = self.load("http://premium.to/api/hosters.php",
-                         get={'username': user,
-                              'password': password})
-        return [x.strip() for x in html.replace("\"", "").split(";")]
+                         get={'username': user, 'password': password})
+        return [x for x in map(str.strip, html.replace("\"", "").split(",")) if x]
 
 
     def grab_info(self, user, password, data):

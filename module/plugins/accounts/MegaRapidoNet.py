@@ -117,7 +117,7 @@ class MegaRapidoNet(Account):
             self.fail_login()
         else:
             m = re.search(self.USER_ID_PATTERN, html)
-            if m:
+            if m is not None:
                 data['uid'] = m.group(1)
             else:
                 self.fail_login("Couldn't find the user ID")

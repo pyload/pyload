@@ -30,7 +30,7 @@ class ShareonlineBiz(Account):
         api = dict(line.split("=") for line in res.splitlines() if "=" in line)
 
         if not 'a' in api:
-            self.fail_login(res.strip('*').strip())
+            self.fail_login(res.strip('*'))
 
         if api['a'].lower() == "not_available":
             self.fail_login(_("No info available"))

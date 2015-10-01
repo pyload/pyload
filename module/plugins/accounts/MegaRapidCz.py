@@ -29,16 +29,16 @@ class MegaRapidCz(Account):
         htmll = self.load("http://megarapid.cz/mujucet/")
 
         m = re.search(self.LIMITDL_PATTERN, htmll)
-        if m:
+        if m is not None:
             data['options']['limitDL'] = [int(m.group(1))]
 
         m = re.search(self.VALID_UNTIL_PATTERN, htmll)
-        if m:
+        if m is not None:
             validuntil = time.mktime(time.strptime(m.group(1), "%d.%m.%Y - %H:%M"))
             return {'premium': True, 'trafficleft': -1, 'validuntil': validuntil}
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, htmll)
-        if m:
+        if m is not None:
             trafficleft = float(m.group(1)) * (1 << 20)
             return {'premium': True, 'trafficleft': trafficleft, 'validuntil': -1}
 

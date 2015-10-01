@@ -48,7 +48,7 @@ class DepositfilesCom(SimpleHoster):
 
         m = re.search(r"var fid = '(\w+)';", self.html)
         if m is None:
-            self.retry(delay=5)
+            self.retry(wait=5)
         params = {'fid': m.group(1)}
         self.log_debug("FID: %s" % params['fid'])
 
@@ -66,7 +66,7 @@ class DepositfilesCom(SimpleHoster):
             self.html = self.load("https://dfiles.eu/get_file.php", get=params)
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
-        if m:
+        if m is not None:
             self.link = urllib.unquote(m.group(1))
 
 

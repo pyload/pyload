@@ -22,7 +22,7 @@ class SimplydebridCom(Account):
 
     def grab_hosters(self, user, password, data):
         html = self.load("http://simply-debrid.com/api.php", get={'list': 1})
-        return [x.strip() for x in html.rstrip(';').replace("\"", "").split(";")]
+        return [x for x in map(str.strip, html.rstrip(';').replace("\"", "").split(";")) if x]
 
 
     def grab_info(self, user, password, data):

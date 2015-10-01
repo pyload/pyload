@@ -24,8 +24,8 @@ class FilecryptCc(Crypter):
 
     __description__ = """Filecrypt.cc decrypter plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("zapp-brannigan", ""  ),
-                       ("GammaC0de"     , None)]
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"),
+                       ("GammaC0de"     , None                  )]
 
 
     # URL_REPLACEMENTS  = [(r'.html$', ""), (r'$', ".html")]  #@TODO: Extend SimpleCrypter
@@ -138,9 +138,9 @@ class FilecryptCc(Crypter):
                 if captcha_key:
                     try:
                         response, challenge = recaptcha.challenge(captcha_key)
+
                     except Exception:
-                        self.captcha.invalid()
-                        self.retry()
+                        self.retry_captcha()
 
                     self.site_with_links  = self.load(self.pyfile.url,
                                                       post={'g-recaptcha-response': response})
@@ -149,8 +149,7 @@ class FilecryptCc(Crypter):
                     self.retry()
 
             if re.search(self.CAPTCHA_PATTERN, self.site_with_links):
-                self.captcha.invalid()
-                self.retry()
+                self.retry_captcha()
 
         else:
             self.log_info(_("No captcha found"))

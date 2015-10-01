@@ -48,7 +48,7 @@ class MegaDebridEu(MultiHoster):
         Return The debrided link if succeed or original link if fail
         """
         if not self.api_load():
-            self.error("Unable to connect to remote API")
+            self.error(_("Unable to connect to remote API"))
 
         jsonResponse = self.load(self.API_URL,
                                  get={'action': 'getLink', 'token': self.token},

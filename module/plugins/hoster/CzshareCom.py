@@ -67,7 +67,6 @@ class CzshareCom(SimpleHoster):
 
 
     def handle_premium(self, pyfile):
-    #: Parse download link
         try:
             form = re.search(self.PREMIUM_FORM_PATTERN, self.html, re.S).group(1)
             inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
@@ -106,21 +105,17 @@ class CzshareCom(SimpleHoster):
 
         #: Get and decrypt captcha
         captcha_url = 'http://sdilej.cz/captcha.php'
-        for _i in xrange(5):
-            inputs['captchastring2'] = self.captcha.decrypt(captcha_url)
-            self.html = self.load(parsed_url, post=inputs)
+        inputs['captchastring2'] = self.captcha.decrypt(captcha_url)
+        self.html = self.load(parsed_url, post=inputs)
 
-            if u"<li>Zadaný ověřovací kód nesouhlasí!</li>" in self.html:
-                self.captcha.invalid()
+        if u"<li>Zadaný ověřovací kód nesouhlasí!</li>" in self.html:
+            self.retry_captcha()
 
-            elif re.search(self.MULTIDL_PATTERN, self.html):
-                self.wait(5 * 60, 12, _("Download limit reached"))
+        elif re.search(self.MULTIDL_PATTERN, self.html):
+            self.wait(5 * 60, 12, _("Download limit reached"))
 
-            else:
-                self.captcha.correct()
-                break
         else:
-            self.fail(_("No valid captcha code entered"))
+            self.captcha.correct()
 
         m = re.search("countdown_number = (\d+);", self.html)
         self.set_wait(int(m.group(1)) if m else 50)
@@ -156,8 +151,7 @@ class CzshareCom(SimpleHoster):
             self.wait(5 * 60, 12, _("Download limit reached"))
 
         elif check == "captcha":
-            self.captcha.invalid()
-            self.retry()
+            self.retry_captcha()
 
         return super(CzshareCom, self).check_download()
 

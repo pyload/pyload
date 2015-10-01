@@ -33,7 +33,7 @@ class FshareVn(Account):
             return {'validuntil': -1, 'trafficleft': trafficleft, 'premium': True}
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
-        if m:
+        if m is not None:
             premium = True
             validuntil = time.mktime(time.strptime(m.group(1), '%I:%M:%S %p %d-%m-%Y'))
             trafficleft = self.get_traffic_left()

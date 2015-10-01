@@ -35,7 +35,7 @@ class SmoozedCom(Account):
 
     __description__ = """Smoozed.com account plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("", "")]
+    __authors__     = [(None, None)]
 
 
     def grab_hosters(self, user, password, data):

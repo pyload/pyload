@@ -61,7 +61,7 @@ class UploadingCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         m = re.search('<h2>((Daily )?Download Limit)</h2>', self.html)
-        if m:
+        if m is not None:
             pyfile.error = encode(m.group(1))
             self.log_warning(pyfile.error)
             self.retry(6, (6 * 60 if m.group(2) else 15) * 60, pyfile.error)
@@ -88,7 +88,7 @@ class UploadingCom(SimpleHoster):
 
         self.html = self.load(url)
         m = re.search(r'<form id="file_form" action="(.*?)"', self.html)
-        if m:
+        if m is not None:
             url = m.group(1)
         else:
             self.error(_("No URL"))

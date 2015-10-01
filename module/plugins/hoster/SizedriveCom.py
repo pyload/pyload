@@ -35,7 +35,7 @@ class SizedriveCom(SimpleHoster):
                               post={'id': self.info['pattern']['ID']})
 
         m = re.search(r'<span id="boton_download" ><a href="(.+?)"', self.html)
-        if m:
+        if m is not None:
             self.link = m.group(1)
 
 

@@ -32,7 +32,7 @@ class UploadingCom(Account):
         premium = False if re.search(self.PREMIUM_PATTERN, html) else True
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
-        if m:
+        if m is not None:
             expiredate = m.group(1).strip()
             self.log_debug("Expire date: " + expiredate)
 

@@ -60,7 +60,7 @@ class LetitbitNet(SimpleHoster):
     def handle_free(self, pyfile):
         action, inputs = self.parse_html_form('id="ifree_form"')
         if not action:
-            self.error(_("ifree_form"))
+            self.error(_("Form not found"))
 
         pyfile.size = float(inputs['sssize'])
         self.log_debug(action, inputs)
@@ -99,16 +99,12 @@ class LetitbitNet(SimpleHoster):
 
         self.log_debug(res)
 
-        if not res:
-            self.captcha.invalid()
+        if not res or res == "error_wrong_captcha":
+            self.retry_captcha()
 
-        if res == "error_free_download_blocked":
+        elif res == "error_free_download_blocked":
             self.log_warning(_("Daily limit reached"))
             self.wait(seconds_to_midnight(), True)
-
-        if res == "error_wrong_captcha":
-            self.captcha.invalid()
-            self.retry()
 
         elif res.startswith('['):
             urls = json_loads(res)

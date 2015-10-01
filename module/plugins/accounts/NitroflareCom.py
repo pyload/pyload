@@ -33,7 +33,7 @@ class NitroflareCom(Account):
                          get={'s': "premium"})
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
-        if m:
+        if m is not None:
             expiredate = m.group(1).strip()
             self.log_debug("Time Left: " + expiredate)
 
@@ -54,7 +54,7 @@ class NitroflareCom(Account):
                     validuntil = -1
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        if m:
+        if m is not None:
             try:
                 trafficleft = self.parse_traffic(str(max(0, 50 - float(m.group(1)))) + " GB")
 

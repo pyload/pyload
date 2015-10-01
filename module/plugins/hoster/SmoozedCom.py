@@ -16,7 +16,7 @@ class SmoozedCom(MultiHoster):
 
     __description__ = """Smoozed.com hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("", "")]
+    __authors__     = [(None, None)]
 
 
     FILE_ERRORS = [("Error", r'{"state":"error"}'),

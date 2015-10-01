@@ -49,7 +49,7 @@ class FastshareCz(SimpleHoster):
 
     def handle_free(self, pyfile):
         m = re.search(self.FREE_URL_PATTERN, self.html)
-        if m:
+        if m is not None:
             action, captcha_src = m.groups()
         else:
             self.error(_("FREE_URL_PATTERN not found"))
@@ -70,7 +70,7 @@ class FastshareCz(SimpleHoster):
             self.retry(6, 10 * 60, _("Paralell download"))
 
         elif check == "wrong captcha":
-            self.retry(attemps=5, msg=_("Wrong captcha"))
+            self.retry_captcha()
 
         elif check == "credit":
             self.restart(nopremium=True)

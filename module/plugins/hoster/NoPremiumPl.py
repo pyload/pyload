@@ -66,14 +66,14 @@ class NoPremiumPl(MultiHoster):
             data = self.run_file_query(pyfile.url, 'fileinfo')
 
         except Exception:
-            self.log_debug("runFileQuery error")
+            self.log_debug("Query error #1")
             self.temp_offline()
 
         try:
             parsed = json_loads(data)
 
         except Exception:
-            self.log_debug("loads error")
+            self.log_debug("Data not found")
             self.temp_offline()
 
         self.log_debug(parsed)
@@ -100,5 +100,5 @@ class NoPremiumPl(MultiHoster):
             self.link = self.run_file_query(pyfile.url, 'filedownload')
 
         except Exception:
-            self.log_debug("runFileQuery error #2")
+            self.log_debug("Query error #2")
             self.temp_offline()

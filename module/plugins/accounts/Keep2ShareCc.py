@@ -33,7 +33,7 @@ class Keep2ShareCc(Account):
         html = self.load("http://keep2share.cc/site/profile.html")
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
-        if m:
+        if m is not None:
             expiredate = m.group(1).strip()
             self.log_debug("Expire date: " + expiredate)
 
@@ -51,7 +51,7 @@ class Keep2ShareCc(Account):
                     premium = True if validuntil > time.mktime(time.gmtime()) else False
 
             m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-            if m:
+            if m is not None:
                 try:
                     trafficleft = self.parse_traffic(m.group(1))
 

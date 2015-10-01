@@ -35,7 +35,7 @@ class ExtabitCom(SimpleHoster):
             self.fail(_("Only premium users can download this file"))
 
         m = re.search(r"Next free download from your ip will be available in <b>(\d+)\s*minutes", self.html)
-        if m:
+        if m is not None:
             self.wait(int(m.group(1)) * 60, True)
         elif "The daily downloads limit from your IP is exceeded" in self.html:
             self.log_warning(_("You have reached your daily downloads limit for today"))
@@ -46,21 +46,19 @@ class ExtabitCom(SimpleHoster):
         fileID = m.group('ID') if m else self.info['pattern']['ID']
 
         m = re.search(r'recaptcha/api/challenge\?k=(\w+)', self.html)
-        if m:
+        if m is not None:
             recaptcha = ReCaptcha(self)
             captcha_key = m.group(1)
 
-            for _i in xrange(5):
-                get_data = {'type': "recaptcha"}
-                get_data['capture'], get_data['challenge'] = recaptcha.challenge(captcha_key)
-                res = json_loads(self.load("http://extabit.com/file/%s/" % fileID, get=get_data))
-                if "ok" in res:
-                    self.captcha.correct()
-                    break
-                else:
-                    self.captcha.invalid()
+            get_data = {'type': "recaptcha"}
+            get_data['capture'], get_data['challenge'] = recaptcha.challenge(captcha_key)
+
+            res = json_loads(self.load("http://extabit.com/file/%s/" % fileID, get=get_data))
+
+            if "ok" in res:
+                self.captcha.correct()
             else:
-                self.fail(_("Invalid captcha"))
+                self.retry_captcha()
         else:
             self.error(_("Captcha"))
 

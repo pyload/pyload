@@ -46,5 +46,4 @@ class MyfastfileCom(Account):
 
         self.json_data = json_loads(html)
         if self.json_data['status'] != 'ok':
-            self.log_error(_('Invalid login. The password to use is the API-Password you find in your "My Account" page'))
-            self.fail_login()
+            self.fail_login(_("Invalid username or password"))

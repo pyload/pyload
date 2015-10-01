@@ -36,23 +36,22 @@ class GigapetaCom(SimpleHoster):
 
         self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
 
-        for _i in xrange(5):
-            self.check_errors()
+        self.check_errors()
 
-            captcha = self.captcha.decrypt(captcha_url)
-            self.html = self.load(pyfile.url, post={
-                'captcha_key': captcha_key,
-                'captcha': captcha,
-                'download': "Download"})
+        captcha = self.captcha.decrypt(captcha_url)
+        self.html = self.load(pyfile.url, post={
+            'captcha_key': captcha_key,
+            'captcha': captcha,
+            'download': "Download"})
 
-            m = re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I)
-            if m:
-                self.link = m.group(1).rstrip()  #@TODO: Remove .rstrip() in 0.4.10
-                break
-            elif "Entered figures don&#96;t coincide with the picture" in self.html:
-                self.captcha.invalid()
-        else:
-            self.fail(_("No valid captcha code entered"))
+        m = re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I)
+        if m is not None:
+            self.captcha.correct()
+            self.link = m.group(1)
+
+        elif "Entered figures don&#96;t coincide with the picture" in self.html:
+            self.retry_captcha()
+
 
         self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
 

@@ -23,7 +23,7 @@ class QuickshareCz(Account):
         html = self.load("http://www.quickshare.cz/premium")
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        if m:
+        if m is not None:
             trafficleft = self.parse_traffic(m.group(1))
             premium = True if trafficleft else False
         else:

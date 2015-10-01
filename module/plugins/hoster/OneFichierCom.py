@@ -102,7 +102,7 @@ class OneFichierCom(SimpleHoster):
         url, inputs = self.parse_html_form('action="https://1fichier.com/\?%s' % id)
 
         if not url:
-            self.fail(_("Download link not found"))
+            return
 
         if "pass" in inputs:
             inputs['pass'] = self.get_password()

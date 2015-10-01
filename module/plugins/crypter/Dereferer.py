@@ -38,4 +38,4 @@ class Dereferer(SimpleCrypter):
 
 
     def get_links(self):
-        return [re.match(self.__pattern__, self.pyfile.url).group('LINK').strip()]
+        return [re.match(self.__pattern__, self.pyfile.url).group('LINK')]

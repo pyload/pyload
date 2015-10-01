@@ -28,7 +28,7 @@ class FilejungleCom(Account):
     def grab_info(self, user, password, data):
         html = self.load(self.URL + "dashboard.php")
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        if m:
+        if m is not None:
             premium = True
             validuntil = time.mktime(time.strptime(m.group(1), "%d %b %Y"))
         else:

@@ -49,7 +49,7 @@ class UpleaCom(XFSHoster):
         self.html = self.load(urlparse.urljoin("http://uplea.com/", m.group(1)))
 
         m = re.search(self.WAIT_PATTERN, self.html)
-        if m:
+        if m is not None:
             self.log_debug("Waiting %s seconds" % m.group(1))
             self.wait(m.group(1), True)
             self.retry()

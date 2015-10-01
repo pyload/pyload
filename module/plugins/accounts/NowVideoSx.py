@@ -28,7 +28,7 @@ class NowVideoSx(Account):
         html = self.load("http://www.nowvideo.sx/premium.php")
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
-        if m:
+        if m is not None:
             expiredate = m.group(1).strip()
             self.log_debug("Expire date: " + expiredate)
 

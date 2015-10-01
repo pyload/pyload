@@ -39,7 +39,7 @@ class HighWayMe(MultiHoster):
 
         elif "trafficlimit" in self.html:
             self.log_warning(_("Reached daily limit"))
-            self.retry(delay=seconds_to_midnight(), msg="Daily limit for this host reached")
+            self.retry(wait=seconds_to_midnight(), msg="Daily limit for this host reached")
 
         elif "<code>8</code>" in self.html:
             self.log_warning(_("Hoster temporarily unavailable, waiting 1 minute and retry"))

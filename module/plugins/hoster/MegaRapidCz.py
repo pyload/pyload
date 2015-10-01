@@ -54,15 +54,12 @@ class MegaRapidCz(SimpleHoster):
 
     def handle_premium(self, pyfile):
         m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
-        if m:
+        if m is not None:
             self.link = m.group(1)
-        else:
-            if re.search(self.ERR_LOGIN_PATTERN, self.html):
+
+        elif re.search(self.ERR_LOGIN_PATTERN, self.html):
                 self.relogin()
-                self.retry(delay=60, msg=_("User login failed"))
+                self.retry(wait=60, msg=_("User login failed"))
 
-            elif re.search(self.ERR_CREDIT_PATTERN, self.html):
-                self.fail(_("Not enough credit left"))
-
-            else:
-                self.fail(_("Download link not found"))
+        elif re.search(self.ERR_CREDIT_PATTERN, self.html):
+            self.fail(_("Not enough credit left"))

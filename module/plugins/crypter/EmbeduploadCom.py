@@ -30,7 +30,7 @@ class EmbeduploadCom(Crypter):
         tmp_links = []
 
         m = re.findall(self.LINK_PATTERN, self.html)
-        if m:
+        if m is not None:
             prefered_set = set(self.get_config('preferedHoster').split('|'))
             prefered_set = map(lambda s: s.lower().split('.')[0], prefered_set)
 

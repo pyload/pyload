@@ -22,7 +22,7 @@ class RehostTo(Account):
         html = self.load("http://rehost.to/api.php",
                          get={'cmd'     : "get_supported_och_dl",
                               'long_ses': data['session']})
-        return [x.strip() for x in html.replace("\"", "").split(",")]
+        return [x for x in map(str.strip, html.replace("\"", "").split(",")) if x]
 
 
     def grab_info(self, user, password, data):

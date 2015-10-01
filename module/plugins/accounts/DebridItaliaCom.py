@@ -35,7 +35,7 @@ class DebridItaliaCom(Account):
 
         if 'Account premium not activated' not in html:
             m = re.search(self.WALID_UNTIL_PATTERN, html)
-            if m:
+            if m is not None:
                 validuntil = time.mktime(time.strptime(m.group(1), "%d/%m/%Y %H:%M"))
                 info = {'premium': True, 'validuntil': validuntil, 'trafficleft': -1}
             else:

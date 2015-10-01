@@ -37,11 +37,11 @@ class RapiduNet(Account):
             premium = True
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
-        if m:
+        if m is not None:
             validuntil = time.time() + (86400 * int(m.group(1)))
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        if m:
+        if m is not None:
             trafficleft = self.parse_traffic(m.group(1))
 
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}

@@ -44,7 +44,7 @@ class NowDownloadSx(SimpleHoster):
             self.error()
 
         m = re.search(self.WAIT_PATTERN, self.html)
-        if m:
+        if m is not None:
             wait = int(m.group(1))
         else:
             wait = 60
@@ -56,10 +56,8 @@ class NowDownloadSx(SimpleHoster):
         self.html = self.load(baseurl + str(continuelink.group(1)))
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
-        if m is None:
-            self.error(_("Download link not found"))
-
-        self.link = m.group(1)
+        if m is not None:
+            self.link = m.group(1)
 
 
 getInfo = create_getInfo(NowDownloadSx)

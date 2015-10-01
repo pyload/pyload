@@ -30,7 +30,7 @@ class OneFichierCom(Account):
         html = self.load("https://1fichier.com/console/abo.pl")
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
-        if m:
+        if m is not None:
             expiredate = m.group(1)
             self.log_debug("Expire date: " + expiredate)
 

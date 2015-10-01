@@ -78,7 +78,6 @@ class Captcha9Kw(Hook):
                       'cpm'           : self.get_config('captchapermin')}
 
         for opt in str(self.get_config('hoster_options').split('|')):
-
             details = map(str.strip, opt.split(':'))
 
             if not details or details[0].lower() is not pluginname.lower():
@@ -149,6 +148,7 @@ class Captcha9Kw(Hook):
                 time.sleep(5)
             else:
                 break
+
         else:
             self.log_debug("Could not send request: %s" % res)
             result = None
@@ -184,6 +184,7 @@ class Captcha9Kw(Hook):
                 break
 
             time.sleep(10)
+
         else:
             self.fail(_("Too many captchas in queue"))
 
@@ -196,9 +197,9 @@ class Captcha9Kw(Hook):
             for d in details:
                 hosteroption = d.split("=")
 
-                if len(hosteroption) > 1 \
-                   and hosteroption[0].lower() == "timeout" \
-                   and hosteroption[1].isdigit():
+                if len(hosteroption) > 1 and \
+                   hosteroption[0].lower() == "timeout" and \
+                   hosteroption[1].isdigit():
                     timeout = int(hosteroption[1])
 
             break

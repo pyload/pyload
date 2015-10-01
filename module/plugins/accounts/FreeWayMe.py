@@ -20,11 +20,9 @@ class FreeWayMe(Account):
 
 
     def grab_hosters(self, user, password, data):
-        hostis = self.load("http://www.free-way.bz/ajax/jd.php",
-                           get={'id'  : 3,
-                                'user': user,
-                                'pass': password}).replace("\"", "")  #@TODO: Revert to `https` in 0.4.10
-        return [x.strip() for x in hostis.split(",") if x.strip()]
+        html = self.load("http://www.free-way.bz/ajax/jd.php",
+                         get={'id'  : 3, 'user': user, 'pass': password})  #@TODO: Revert to `https` in 0.4.10
+        return [x for x in map(str.strip, html.replace("\"", "").split(",")) if x]
 
 
     def grab_info(self, user, password, data):

@@ -67,25 +67,20 @@ class ShareonlineBiz(SimpleHoster):
 
     def handle_captcha(self):
         recaptcha = ReCaptcha(self)
+        response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
 
-        for _i in xrange(5):
-            response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
+        m = re.search(r'var wait=(\d+);', self.html)
+        self.set_wait(int(m.group(1)) if m else 30)
 
-            m = re.search(r'var wait=(\d+);', self.html)
-            self.set_wait(int(m.group(1)) if m else 30)
-
-            res = self.load("%s/free/captcha/%d" % (self.pyfile.url, int(time.time() * 1000)),
-                            post={'dl_free'                  : "1",
-                                  'recaptcha_challenge_field': challenge,
-                                  'recaptcha_response_field' : response})
-            if res != "0":
-                self.captcha.correct()
-                return res
-            else:
-                self.captcha.invalid()
+        res = self.load("%s/free/captcha/%d" % (self.pyfile.url, int(time.time() * 1000)),
+                        post={'dl_free'                  : "1",
+                              'recaptcha_challenge_field': challenge,
+                              'recaptcha_response_field' : response})
+        if res != "0":
+            self.captcha.correct()
+            return res
         else:
-            self.captcha.invalid()
-            self.fail(_("No valid captcha solution received"))
+            self.retry_captcha()
 
 
     def handle_free(self, pyfile):
@@ -100,7 +95,7 @@ class ShareonlineBiz(SimpleHoster):
         self.link = res.decode('base64')
 
         if not self.link.startswith("http://"):
-            self.error(_("Wrong download url"))
+            self.error(_("Invalid url"))
 
         self.wait()
 
@@ -110,12 +105,10 @@ class ShareonlineBiz(SimpleHoster):
                                     'fail'  : re.compile(r"<title>Share-Online")})
 
         if check == "cookie":
-            self.captcha.invalid()
-            self.retry(5, 60, _("Cookie failure"))
+            self.retry_captcha(5, 60, _("Cookie failure"))
 
         elif check == "fail":
-            self.captcha.invalid()
-            self.retry(5, 5 * 60, _("Download failed"))
+            self.retry_captcha(5, 5 * 60, _("Download failed"))
 
         return super(ShareonlineBiz, self).check_download()
 
@@ -170,7 +163,7 @@ class ShareonlineBiz(SimpleHoster):
             self.fail(_("Premium account needed"))
 
         elif errmsg in ("expired", "server"):
-            self.retry(delay=600, msg=errmsg)
+            self.retry(wait=600, msg=errmsg)
 
         elif errmsg == "full":
             self.retry(10, 600, _("Server is full"))
@@ -181,7 +174,7 @@ class ShareonlineBiz(SimpleHoster):
 
         else:
             self.wantReconnect = True
-            self.retry(delay=60, msg=errmsg)
+            self.retry(wait=60, msg=errmsg)
 
 
 getInfo = create_getInfo(ShareonlineBiz)

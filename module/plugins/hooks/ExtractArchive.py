@@ -110,22 +110,22 @@ class ExtractArchive(Addon):
     __version__ = "1.51"
     __status__  = "testing"
 
-    __config__ = [("activated"      , "bool"              , "Activated"                                 , True                                                                     ),
-                  ("fullpath"       , "bool"              , "Extract with full paths"                   , True                                                                     ),
-                  ("overwrite"      , "bool"              , "Overwrite files"                           , False                                                                    ),
-                  ("keepbroken"     , "bool"              , "Try to extract broken archives"            , False                                                                    ),
-                  ("repair"         , "bool"              , "Repair broken archives (RAR required)"     , False                                                                    ),
-                  ("usepasswordfile", "bool"              , "Use password file"                         , True                                                                     ),
-                  ("passwordfile"   , "file"              , "Password file"                             , "passwords.txt"                                                          ),
-                  ("delete"         , "bool"              , "Delete archive after extraction"           , True                                                                     ),
-                  ("deltotrash"     , "bool"              , "Move to trash (recycle bin) instead delete", True                                                                     ),
-                  ("subfolder"      , "bool"              , "Create subfolder for each package"         , False                                                                    ),
-                  ("destination"    , "folder"            , "Extract files to folder"                   , ""                                                                       ),
-                  ("extensions"     , "str"               , "Extract archives ending with extension"    , "7z,bz2,bzip2,gz,gzip,lha,lzh,lzma,rar,tar,taz,tbz,tbz2,tgz,xar,xz,z,zip"),
-                  ("excludefiles"   , "str"               , "Don't extract the following files"         , "*.nfo,*.DS_Store,index.dat,thumb.db"                                    ),
-                  ("recursive"      , "bool"              , "Extract archives in archives"              , True                                                                     ),
-                  ("waitall"        , "bool"              , "Run after all downloads was processed"     , False                                                                    ),
-                  ("renice"         , "int"               , "CPU priority"                              , 0                                                                        )]
+    __config__ = [("activated"      , "bool"  , "Activated"                             , True                                                                     ),
+                  ("fullpath"       , "bool"  , "Extract with full paths"               , True                                                                     ),
+                  ("overwrite"      , "bool"  , "Overwrite files"                       , False                                                                    ),
+                  ("keepbroken"     , "bool"  , "Try to extract broken archives"        , False                                                                    ),
+                  ("repair"         , "bool"  , "Repair broken archives (RAR required)" , False                                                                    ),
+                  ("usepasswordfile", "bool"  , "Use password file"                     , True                                                                     ),
+                  ("passwordfile"   , "file"  , "Password file"                         , "passwords.txt"                                                          ),
+                  ("delete"         , "bool"  , "Delete archive after extraction"       , True                                                                     ),
+                  ("deltotrash"     , "bool"  , "Move to trash instead delete"          , True                                                                     ),
+                  ("subfolder"      , "bool"  , "Create subfolder for each package"     , False                                                                    ),
+                  ("destination"    , "folder", "Extract files to folder"               , ""                                                                       ),
+                  ("extensions"     , "str"   , "Extract archives ending with extension", "7z,bz2,bzip2,gz,gzip,lha,lzh,lzma,rar,tar,taz,tbz,tbz2,tgz,xar,xz,z,zip"),
+                  ("excludefiles"   , "str"   , "Don't extract the following files"     , "*.nfo,*.DS_Store,index.dat,thumb.db"                                    ),
+                  ("recursive"      , "bool"  , "Extract archives in archives"          , True                                                                     ),
+                  ("waitall"        , "bool"  , "Run after all downloads was processed" , False                                                                    ),
+                  ("renice"         , "int"   , "CPU priority"                          , 0                                                                        )]
 
     __description__ = """Extract different kind of archives"""
     __license__     = "GPLv3"

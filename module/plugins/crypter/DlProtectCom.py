@@ -53,7 +53,7 @@ class DlProtectCom(SimpleCrypter):
 
             if "Security Code" in self.html:
                 m = re.search(r'/captcha\.php\?key=(.+?)"', self.html)
-                if m:
+                if m is not None:
                     captcha_code = self.captcha.decrypt("http://www.dl-protect.com/captcha.php?key=" + m.group(1), input_type="gif")
                     post_req['secure'] = captcha_code
 

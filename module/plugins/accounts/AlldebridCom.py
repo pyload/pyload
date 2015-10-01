@@ -26,8 +26,8 @@ class AlldebridCom(Account):
 
     def grab_hosters(self, user, password, data):
         html = self.load("https://www.alldebrid.com/api.php",
-                         get={'action': "get_host"}).replace("\"", "").strip()
-        return [x.strip() for x in html.split(",") if x.strip()]
+                         get={'action': "get_host"})
+        return [x for x in map(str.strip, html.replace("\"", "").split(",")) if x]
 
 
     def grab_info(self, user, password, data):

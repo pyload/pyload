@@ -30,19 +30,19 @@ class HostujeNet(SimpleHoster):
 
     def handle_free(self, pyfile):
         m = re.search(r'<script src="([\w^_]+.php)"></script>', self.html)
-        if m:
+        if m is not None:
             jscript = self.load("http://hostuje.net/" + m.group(1))
             m = re.search(r"\('(\w+\.php\?i=\w+)'\);", jscript)
-            if m:
+            if m is not None:
                 self.load("http://hostuje.net/" + m.group(1))
             else:
-                self.error(_("unexpected javascript format"))
+                self.error(_("Unexpected javascript format"))
         else:
-            self.error(_("script not found"))
+            self.error(_("Script not found"))
 
         action, inputs = self.parse_html_form(pyfile.url.replace(".", "\.").replace( "?", "\?"))
         if not action:
-            self.error(_("form not found"))
+            self.error(_("Form not found"))
 
         self.download(action, post=inputs)
 

@@ -29,7 +29,7 @@ class FastshareCz(Account):
         html = self.load("http://www.fastshare.cz/user")
 
         m = re.search(self.CREDIT_PATTERN, html)
-        if m:
+        if m is not None:
             trafficleft = self.parse_traffic(m.group(1))
 
         premium = bool(trafficleft)

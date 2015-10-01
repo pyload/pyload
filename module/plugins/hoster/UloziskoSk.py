@@ -35,7 +35,7 @@ class UloziskoSk(SimpleHoster):
         self.get_fileInfo()
 
         m = re.search(self.IMG_PATTERN, self.html)
-        if m:
+        if m is not None:
             self.link = "http://ulozisko.sk" + m.group(1)
         else:
             self.handle_free(pyfile)

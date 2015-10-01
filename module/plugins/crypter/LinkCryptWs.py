@@ -160,13 +160,12 @@ class LinkCryptWs(Crypter):
 
     def handle_errors(self):
         if self.is_password_protected():
-            self.fail(_("Incorrect password"))
+            self.fail(_("Wrong password"))
 
 
     def handle_captcha_errors(self):
-        if "Your choice was wrong!" in self.html:
-            self.captcha.invalid()
-            self.retry()
+        if "Your choice was wrong" in self.html:
+            self.retry_captcha()
         else:
             self.captcha.correct()
 
@@ -244,7 +243,7 @@ class LinkCryptWs(Crypter):
                 if not clink:
                     continue
 
-                self.log_debug("clink avaible")
+                self.log_debug("clink found")
 
                 package_name, folder_name = self.get_package_info()
                 self.log_debug("Added package with name %s.%s and container link %s" %( package_name, type, clink.group(1)))
@@ -266,7 +265,7 @@ class LinkCryptWs(Crypter):
                 break
 
         if cnl_line:
-            self.log_debug("cnl_line gefunden")
+            self.log_debug("cnl_line found")
 
         try:
             cnl_section = self.handle_javascript(cnl_line)

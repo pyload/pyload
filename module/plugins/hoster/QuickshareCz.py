@@ -69,12 +69,12 @@ class QuickshareCz(SimpleHoster):
         if m is None:
             self.fail(_("File not found"))
 
-        self.link = m.group(1).rstrip()  #@TODO: Remove .rstrip() in 0.4.10
+        self.link = m.group(1)
         self.log_debug("FREE URL2:" + self.link)
 
         #: Check errors
         m = re.search(r'/chyba/(\d+)', self.link)
-        if m:
+        if m is not None:
             if m.group(1) == "1":
                 self.retry(60, 2 * 60, "This IP is already downloading")
             elif m.group(1) == "2":

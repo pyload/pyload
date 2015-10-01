@@ -61,8 +61,7 @@ class FreakshareCom(Hoster):
                 self.fail(_("File not downloadable"))
 
             elif check == "wrong_captcha":
-                self.captcha.invalid()
-                self.retry()
+                self.retry_captcha()
 
             elif check == "downloadserver":
                 self.retry(5, 15 * 60, _("No Download server"))
@@ -111,7 +110,7 @@ class FreakshareCom(Hoster):
 
         if not self.wantReconnect:
             m = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">([^ ]+)", self.html)
-            if m:
+            if m is not None:
                 file_name = m.group(1)
             else:
                 file_name = self.pyfile.url
@@ -128,7 +127,7 @@ class FreakshareCom(Hoster):
 
         if not self.wantReconnect:
             m = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">[^ ]+ - ([^ ]+) (\w\w)yte", self.html)
-            if m:
+            if m is not None:
                 units = float(m.group(1).replace(",", ""))
                 pow = {'KB': 1, 'MB': 2, 'GB': 3}[m.group(2)]
                 size = int(units * 1024 ** pow)

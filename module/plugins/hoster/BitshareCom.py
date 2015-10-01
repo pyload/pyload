@@ -114,16 +114,14 @@ class BitshareCom(SimpleHoster):
             self.log_debug("File is captcha protected")
             recaptcha = ReCaptcha(self)
 
-            #: Try up to 3 times
-            for i in xrange(3):
-                response, challenge = recaptcha.challenge()
-                res = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
-                                     post={'request'                  : "validateCaptcha",
-                                           'ajaxid'                   : self.ajaxid,
-                                           'recaptcha_challenge_field': challenge,
-                                           'recaptcha_response_field' : response})
-                if self.handle_captcha_errors(res):
-                    break
+            response, challenge = recaptcha.challenge()
+            res = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
+                                 post={'request'                  : "validateCaptcha",
+                                       'ajaxid'                   : self.ajaxid,
+                                       'recaptcha_challenge_field': challenge,
+                                       'recaptcha_response_field' : response})
+
+            self.handle_captcha_errors(res)
 
         #: Get download URL
         self.log_debug("Getting download url")
@@ -141,6 +139,7 @@ class BitshareCom(SimpleHoster):
         self.log_debug("Checking response [%s]" % res)
         if "ERROR:Session timed out" in res:
             self.retry()
+
         elif "ERROR" in res:
             msg = res.split(separator)[-1]
             self.fail(msg)
@@ -150,11 +149,12 @@ class BitshareCom(SimpleHoster):
         self.log_debug("Result of captcha resolving [%s]" % res)
         if "SUCCESS" in res:
             self.captcha.correct()
-            return True
+
         elif "ERROR:SESSION ERROR" in res:
             self.retry()
 
-        self.captcha.invalid()
+        else:
+            self.retry_captcha()
 
 
 getInfo = create_getInfo(BitshareCom)

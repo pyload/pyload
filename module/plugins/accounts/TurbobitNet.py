@@ -22,7 +22,7 @@ class TurbobitNet(Account):
         html = self.load("http://turbobit.net")
 
         m = re.search(r'<u>Turbo Access</u> to ([\d.]+)', html)
-        if m:
+        if m is not None:
             premium = True
             validuntil = time.mktime(time.strptime(m.group(1), "%d.%m.%Y"))
         else:

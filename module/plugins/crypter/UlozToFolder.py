@@ -36,7 +36,7 @@ class UlozToFolder(Crypter):
 
             new_links.extend(re.findall(self.LINK_PATTERN, m.group(1)))
             m = re.search(self.NEXT_PAGE_PATTERN, html)
-            if m:
+            if m is not None:
                 html = self.load("http://ulozto.net/" + m.group(1))
             else:
                 break

@@ -29,7 +29,7 @@ class FreakhareComFolder(SimpleCrypter):
     def load_page(self, page_n):
         if not hasattr(self, 'f_id') and not hasattr(self, 'f_md5'):
             m = re.search(r'http://freakshare.com/\?x=folder&f_id=(\d+)&f_md5=(\w+)', self.html)
-            if m:
+            if m is not None:
                 self.f_id = m.group(1)
                 self.f_md5 = m.group(2)
         return self.load('http://freakshare.com/', get={'x': 'folder',

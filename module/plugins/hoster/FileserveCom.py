@@ -95,7 +95,7 @@ class FileserveCom(Hoster):
 
             elif action['fail'] == "parallelDownload":
                 self.log_warning(_("Parallel download error, now waiting 60s"))
-                self.retry(delay=60, msg=_("parallelDownload"))
+                self.retry(wait=60, msg=_("parallelDownload"))
 
             else:
                 self.fail(_("Download check returned: %s") % action['fail'])
@@ -161,19 +161,15 @@ class FileserveCom(Hoster):
         captcha_key = re.search(self.CAPTCHA_KEY_PATTERN, self.html).group(1)
         recaptcha = ReCaptcha(self)
 
-        for _i in xrange(5):
-            response, challenge = recaptcha.challenge(captcha_key)
-            res = json_loads(self.load(self.URLS[2],
-                                       post={'recaptcha_challenge_field'  : challenge,
-                                             'recaptcha_response_field'   : response,
-                                             'recaptcha_shortencode_field': self.file_id}))
-            if not res['success']:
-                self.captcha.invalid()
-            else:
-                self.captcha.correct()
-                break
+        response, challenge = recaptcha.challenge(captcha_key)
+        res = json_loads(self.load(self.URLS[2],
+                                   post={'recaptcha_challenge_field'  : challenge,
+                                         'recaptcha_response_field'   : response,
+                                         'recaptcha_shortencode_field': self.file_id}))
+        if res['success']:
+            self.captcha.correct()
         else:
-            self.fail(_("Invalid captcha"))
+            self.retry_captcha()
 
 
     def do_long_wait(self, m):

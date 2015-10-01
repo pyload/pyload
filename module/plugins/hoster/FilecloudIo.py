@@ -78,22 +78,18 @@ class FilecloudIo(SimpleHoster):
         self.log_debug(res)
         if res['captcha']:
             data['ctype'] = "recaptcha"
+            data['recaptcha_response'], data['recaptcha_challenge'] = recaptcha.challenge(captcha_key)
 
-            for _i in xrange(5):
-                data['recaptcha_response'], data['recaptcha_challenge'] = recaptcha.challenge(captcha_key)
+            json_url = "http://filecloud.io/download-request.json"
+            res = self.load(json_url, post=data)
+            self.log_debug(res)
+            res = json_loads(res)
 
-                json_url = "http://filecloud.io/download-request.json"
-                res = self.load(json_url, post=data)
-                self.log_debug(res)
-                res = json_loads(res)
-
-                if "retry" in res and res['retry']:
-                    self.captcha.invalid()
-                else:
-                    self.captcha.correct()
-                    break
+            if "retry" in res and res['retry']:
+                self.retry_captcha()
             else:
-                self.fail(_("Incorrect captcha"))
+                self.captcha.correct()
+
 
         if res['dl']:
             self.html = self.load('http://filecloud.io/download.html')

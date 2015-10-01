@@ -100,15 +100,16 @@ class DlFreeFr(SimpleHoster):
         if headers.get("code") == 302 and "set-cookie" in headers and "location" in headers:
             m = re.search("(.*?)=(.*?); path=(.*?); domain=(.*)", headers.get("set-cookie"))
             cj = CookieJar(self.__name__)
-            if m:
+            if m is not None:
                 cj.setCookie(m.group(4), m.group(1), m.group(2), m.group(3))
             else:
                 self.fail(_("Cookie error"))
 
             self.link = headers.get("location")
             self.req.setCookieJar(cj)
+
         else:
-            self.fail(_("Invalid response"))
+            self.fail(_("Bad header"))
 
 
     def get_last_headers(self):

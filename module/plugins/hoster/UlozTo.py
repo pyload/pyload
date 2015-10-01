@@ -52,7 +52,7 @@ class UlozTo(SimpleHoster):
         if not action or not inputs:
             self.error(_("Free download form not found"))
 
-        self.log_debug("inputs.keys = " + str(inputs.keys()))
+        self.log_debug("inputs.keys = %s" % inputs.keys())
         #: Get and decrypt captcha
         if all(key in inputs for key in ("captcha_value", "captcha_id", "captcha_key")):
             #: Old version - last seen 9.12.2013
@@ -70,7 +70,7 @@ class UlozTo(SimpleHoster):
             xapca = self.load("http://www.ulozto.net/reloadXapca.php",
                               get={'rnd': str(int(time.time()))})
             xapca = xapca.replace('sound":"', 'sound":"http:').replace('image":"', 'image":"http:')
-            self.log_debug("xapca = " + str(xapca))
+            self.log_debug("xapca = %s" % xapca)
 
             data = json_loads(xapca)
             captcha_value = self.captcha.decrypt(str(data['image']))
@@ -110,7 +110,7 @@ class UlozTo(SimpleHoster):
                                       post={'password': password, 'password_send': 'Send'})
 
                 if self.PASSWD_PATTERN in self.html:
-                    self.fail(_("Incorrect password"))
+                    self.fail(_("Wrong password"))
             else:
                 self.fail(_("No password found"))
 
@@ -130,8 +130,7 @@ class UlozTo(SimpleHoster):
         })
 
         if check == "wrong_captcha":
-            self.captcha.invalid()
-            self.retry(msg=_("Wrong captcha code"))
+            self.retry_captcha()
 
         elif check == "offline":
             self.offline()

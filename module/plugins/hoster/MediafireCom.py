@@ -69,7 +69,7 @@ class MediafireCom(SimpleHoster):
                 self.html = self.load(self.link, post={'downloadp': password})
 
                 if self.PASSWORD_PATTERN in self.html:
-                    self.fail(_("Incorrect password"))
+                    self.fail(_("Wrong password"))
 
         return super(MediafireCom, self).handle_free(pyfile)
 
