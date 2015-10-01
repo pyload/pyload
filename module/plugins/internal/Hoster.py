@@ -2,6 +2,7 @@
 
 from __future__ import with_statement
 
+import re
 import os
 
 from module.plugins.internal.Base import Base, check_abort, create_getInfo, getInfo, parse_fileInfo
@@ -12,7 +13,7 @@ from module.utils import fs_decode, fs_encode, save_join as fs_join, save_path a
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
