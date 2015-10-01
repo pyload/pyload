@@ -45,7 +45,7 @@ def encode(string, encoding='utf8'):
 def exists(path):
     if os.path.exists(path):
         if os.name == "nt":
-            dir, name = os.path.split(path)
+            dir, name = os.path.split(path.rstrip(os.sep))
             return name in os.listdir(dir)
         else:
             return True
