@@ -11,12 +11,12 @@ import traceback
 import urllib
 import urlparse
 
-if os.name != "nt":
+if os.name is not "nt":
     import grp
     import pwd
 
 from module.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload as Skip  #@TODO: Remove in 0.4.10
-from module.utils import fs_encode, fs_decode, html_unescape, save_join as fs_join
+from module.utils import fs_encode, fs_decode, html_unescape, parseFileSize as parse_size, save_join as fs_join
 
 
 #@TODO: Move to utils in 0.4.10
@@ -45,7 +45,7 @@ def encode(string, encoding='utf8'):
 #@TODO: Move to utils in 0.4.10
 def exists(path):
     if os.path.exists(path):
-        if os.name == "nt":
+        if os.name is "nt":
             dir, name = os.path.split(path.rstrip(os.sep))
             return name in os.listdir(dir)
         else:
@@ -228,7 +228,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -314,7 +314,7 @@ class Plugin(object):
             self.log_warning(_("Setting path mode failed"), e)
 
         try:
-            if os.name != "nt" and self.pyload.config.get("permission", "change_dl"):
+            if os.name is not "nt" and self.pyload.config.get("permission", "change_dl"):
                 uid = pwd.getpwnam(self.pyload.config.get("permission", "user"))[2]
                 gid = grp.getgrnam(self.pyload.config.get("permission", "group"))[2]
                 os.chown(path, uid, gid)

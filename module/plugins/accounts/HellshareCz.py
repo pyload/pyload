@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class HellshareCz(Account):
     __name__    = "HellshareCz"
     __type__    = "account"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __description__ = """Hellshare.cz account plugin"""
@@ -42,7 +42,7 @@ class HellshareCz(Account):
                     trafficleft = -1
                 else:
                     #: Traffic-based account
-                    trafficleft = self.parse_traffic(credit + "MB")
+                    trafficleft = self.parse_traffic(credit, "MB")
                     validuntil = -1
 
             except Exception, e:

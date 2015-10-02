@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class CzshareCom(Account):
     __name__    = "CzshareCom"
     __type__    = "account"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__  = "testing"
 
     __description__ = """Czshare.com account plugin, now Sdilej.cz"""
@@ -30,7 +30,7 @@ class CzshareCom(Account):
 
         try:
             m = re.search(self.CREDIT_LEFT_PATTERN, html)
-            trafficleft = self.parse_traffic(m.group(1).replace(' ', '').replace(',', '.')) + m.group(2)
+            trafficleft = self.parse_traffic(m.group(1), m.group(2)
             validuntil  = time.mktime(time.strptime(m.group(3), '%d.%m.%y %H:%M'))
 
         except Exception, e:

@@ -12,7 +12,7 @@ from module.utils import fs_decode, save_join as fs_join
 
 
 def renice(pid, value):
-    if value and os.name != "nt":
+    if value and os.name is not "nt":
         try:
             subprocess.Popen(["renice", str(value), str(pid)], stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=-1)
 
@@ -49,7 +49,7 @@ class UnRar(Extractor):
     @classmethod
     def find(cls):
         try:
-            if os.name == "nt":
+            if os.name is "nt":
                 cls.CMD = os.path.join(pypath, "RAR.exe")
             else:
                 cls.CMD = "rar"
@@ -61,7 +61,7 @@ class UnRar(Extractor):
 
         except OSError:
             try:
-                if os.name == "nt":
+                if os.name is "nt":
                     cls.CMD = os.path.join(pypath, "UnRAR.exe")
                 else:
                     cls.CMD = "unrar"

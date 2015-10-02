@@ -16,7 +16,7 @@ from module.utils import fixup, fs_encode, parseFileSize as parse_size
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.92"
+    __version__ = "1.93"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -314,8 +314,8 @@ class SimpleHoster(Hoster):
                     pass
 
                 self.log_warning(_("Check result: ") + errmsg, _("Waiting 1 minute and retry"))
-                self.wantReconnect = True
-                self.retry(wait=60, msg=errmsg)
+                self.wait(60, reconnect=True)
+                self.restart(errmsg, premium=True)
         else:
             if self.CHECK_FILE:
                 self.log_debug("Using custom check rules...")
@@ -401,8 +401,8 @@ class SimpleHoster(Hoster):
                     self.fail(_("File can be downloaded by premium users only"))
 
                 else:
-                    self.wantReconnect = True
-                    self.retry(wait=60, msg=errmsg)
+                    self.wait(60, reconnect=True)
+                    self.restart(errmsg, premium=True)
 
         elif self.WAIT_PATTERN:
             m = re.search(self.WAIT_PATTERN, self.html)

@@ -7,7 +7,7 @@ import sys
 
 # monkey patch bug in python 2.6 and lower
 # http://bugs.python.org/issue6122 , http://bugs.python.org/issue1236 , http://bugs.python.org/issue1731717
-if sys.version_info < (2, 7) and os.name != "nt":
+if sys.version_info < (2, 7) and os.name is not "nt":
     import errno
     import subprocess
 

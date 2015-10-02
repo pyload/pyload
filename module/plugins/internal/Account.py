@@ -5,14 +5,14 @@ import time
 import threading
 
 from module.plugins.Plugin import SkipDownload as Skip
-from module.plugins.internal.Plugin import Plugin
-from module.utils import compare_time, lock, parseFileSize as parse_size
+from module.plugins.internal.Plugin import Plugin, parse_size
+from module.utils import compare_time, lock
 
 
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.52"
+    __version__ = "0.53"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -391,11 +391,9 @@ class Account(Plugin):
 
     ###########################################################################
 
-    def parse_traffic(self, value, unit=None):  #@NOTE: Returns kilobytes in 0.4.9
-        if not isinstance(unit, basestring):
-            unit = "KB"
-
-        return parse_size(value, unit) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
+    def parse_traffic(self, size, unit="KB"):  #@NOTE: Returns kilobytes in 0.4.9
+        size = re.search(r'(\d*[\.,]?\d+)', size).group(1)  #@TODO: Recjeck in 0.4.10
+        return parse_size(size, unit) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
 
 
     def fail_login(self, msg=_("Login handshake has failed")):

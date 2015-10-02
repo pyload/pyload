@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 class FreeWayMe(Account):
     __name__    = "FreeWayMe"
     __type__    = "account"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
@@ -32,7 +32,7 @@ class FreeWayMe(Account):
 
         account_info = {'validuntil': -1, 'premium': False}
         if status['premium'] == "Free":
-            account_info['trafficleft'] = self.parse_traffic(status['guthaben'] + "MB")
+            account_info['trafficleft'] = self.parse_traffic(status['guthaben'], "MB")
         elif status['premium'] == "Spender":
             account_info['trafficleft'] = -1
         elif status['premium'] == "Flatrate":

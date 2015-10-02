@@ -38,7 +38,7 @@ class SevenZip(UnRar):
     @classmethod
     def find(cls):
         try:
-            if os.name == "nt":
+            if os.name is "nt":
                 cls.CMD = os.path.join(pypath, "7z.exe")
 
             p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)

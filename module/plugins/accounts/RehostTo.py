@@ -6,7 +6,7 @@ from module.plugins.internal.Account import Account
 class RehostTo(Account):
     __name__    = "RehostTo"
     __type__    = "account"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
@@ -48,7 +48,7 @@ class RehostTo(Account):
                 traffic, valid = html.split(",")
 
                 premium     = True
-                trafficleft = self.parse_traffic(traffic + "MB")
+                trafficleft = self.parse_traffic(traffic, "MB")
                 validuntil  = float(valid)
 
         finally:

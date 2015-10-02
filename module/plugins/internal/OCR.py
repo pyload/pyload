@@ -94,7 +94,7 @@ class OCR(Plugin):
         self.pyload.log_debug("Saving tiff...")
         self.image.save(tmpTif.name, 'TIFF')
 
-        if os.name == "nt":
+        if os.name is "nt":
             tessparams = [os.path.join(pypath, "tesseract", "tesseract.exe")]
         else:
             tessparams = ["tesseract"]

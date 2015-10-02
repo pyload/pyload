@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class NitroflareCom(Account):
     __name__    = "NitroflareCom"
     __type__    = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __description__ = """Nitroflare.com account plugin"""
@@ -56,7 +56,7 @@ class NitroflareCom(Account):
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m is not None:
             try:
-                trafficleft = self.parse_traffic(str(max(0, 50 - float(m.group(1)))) + " GB")
+                trafficleft = self.parse_traffic(str(max(0, 50 - float(m.group(1)))),  "GB")
 
             except Exception, e:
                 self.log_error(e)

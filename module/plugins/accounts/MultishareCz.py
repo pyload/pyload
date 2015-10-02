@@ -8,7 +8,7 @@ from module.plugins.internal.Account import Account
 class MultishareCz(Account):
     __name__    = "MultishareCz"
     __type__    = "account"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
@@ -36,7 +36,7 @@ class MultishareCz(Account):
         html = self.load("http://www.multishare.cz/profil/")
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        trafficleft = self.parse_traffic(m.group('S') + m.group('U')) if m else 0
+        trafficleft = self.parse_traffic(m.group('S'), m.group('U')) if m else 0
         self.premium = True if trafficleft else False
 
         html = self.load("http://www.multishare.cz/")
