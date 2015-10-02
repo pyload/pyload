@@ -29,7 +29,7 @@ def forward(source, destination):
 class ClickAndLoad(Addon):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                             , True ),
@@ -57,12 +57,12 @@ class ClickAndLoad(Addon):
     @threaded
     def forward(source, destination, queue=False):
         if queue:
-            old_ids = set(id for pack.id in self.pyload.api.getCollector())
+            old_ids = set(pack.id for pack in self.pyload.api.getCollector())
 
         forward(source, destination)
 
         if queue:
-            new_ids = set(id for pack.id in self.pyload.api.getCollector())
+            new_ids = set(pack.id for pack in self.pyload.api.getCollector())
             for id in new_ids - old_ids:
                 self.pyload.api.pushToQueue(id)
 
