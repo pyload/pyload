@@ -24,7 +24,7 @@ class SolveMedia(CaptchaService):
         html = data or self.retrieve_data()
 
         m = re.search(self.KEY_PATTERN, html)
-        if m:
+        if m is not None:
             self.key = m.group(1).strip()
             self.log_debug("Key: %s" % self.key)
             return self.key

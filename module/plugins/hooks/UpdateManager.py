@@ -7,7 +7,6 @@ import os
 import re
 import sys
 import time
-import traceback
 
 from module.plugins.internal.Addon import Expose, Addon, threaded
 from module.plugins.internal.Plugin import exists
@@ -17,7 +16,7 @@ from module.utils import fs_encode, save_join as fs_join
 class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "0.55"
+    __version__ = "0.56"
     __status__  = "testing"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),
@@ -80,8 +79,8 @@ class UpdateManager(Addon):
             if self.get_config('nodebugupdate'):
                 return
 
-        if self.get_config('checkperiod') \
-           and time.time() - max(self.MIN_CHECK_INTERVAL, self.get_config('checkinterval') * 60 * 60) > self.info['last_check']:
+        if self.get_config('checkperiod') and \
+           time.time() - max(self.MIN_CHECK_INTERVAL, self.get_config('checkinterval') * 60 * 60) > self.info['last_check']:
             self.update()
 
 
@@ -268,9 +267,7 @@ class UpdateManager(Addon):
                     raise Exception(_("Version mismatch"))
 
             except Exception, e:
-                self.log_error(_("Error updating plugin: %s") % filename, e)
-                if self.pyload.debug:
-                    traceback.print_exc()
+                self.log_error(_("Error updating plugin: [%s] %s") % (type, name), e)
 
         if updated:
             self.log_info(_("*** Plugins updated ***"))
@@ -278,7 +275,7 @@ class UpdateManager(Addon):
             if self.pyload.pluginManager.reloadPlugins(updated):
                 exitcode = 1
             else:
-                self.log_warning(_("pyLoad restart required to reload the updated plugins"))
+                self.log_warning(_("You have to restart pyLoad to reload the updated plugins"))
                 self.info['plugins'] = True
                 exitcode = 2
 
@@ -337,8 +334,6 @@ class UpdateManager(Addon):
 
                     except OSError, e:
                         self.log_warning(_("Error removing: %s") % filename, e)
-                        if self.pyload.debug:
-                            traceback.print_exc()
 
                     else:
                         id = (type, name)

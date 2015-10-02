@@ -42,7 +42,7 @@ class AndroidfilehostCom(SimpleHoster):
         self.log_debug("Waiting time: %s seconds" % wait.group(1))
 
         fid = re.search(r'id="fid" value="(\d+)" />', self.html).group(1)
-        self.log_debug("fid: %s" % fid)
+        self.log_debug("FID: %s" % fid)
 
         html = self.load("https://www.androidfilehost.com/libs/otf/mirrors.otf.php",
                          post={'submit': 'submit',

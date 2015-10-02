@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import traceback
-
 from module.plugins.internal.Plugin import Plugin
 
 
@@ -25,10 +23,9 @@ def threaded(fn):
 class Addon(Plugin):
     __name__    = "Addon"
     __type__    = "hook"  #@TODO: Change to `addon` in 0.4.10
-    __version__ = "0.04"
+    __version__ = "0.06"
     __status__  = "testing"
 
-    __config__   = []  #: [("name", "type", "desc", "default")]
     __threaded__ = []  #@TODO: Remove in 0.4.10
 
     __description__ = """Base addon plugin"""
@@ -55,6 +52,12 @@ class Addon(Plugin):
 
         self.init()
         self.init_events()
+
+
+    #@TODO: Remove in 0.4.10
+    def _log(self, level, plugintype, pluginname, messages):
+        plugintype = "addon" if plugintype is "hook" else plugintype
+        return super(Addon, self)._log(level, plugintype, pluginname, messages)
 
 
     def init_events(self):
@@ -97,8 +100,6 @@ class Addon(Plugin):
 
         except Exception, e:
             self.log_error(_("Error executing periodical task: %s") % e)
-            if self.pyload.debug:
-                traceback.print_exc()
 
         self.cb = self.pyload.scheduler.addJob(self.interval, self._periodical, [threaded], threaded=threaded)
 
@@ -107,20 +108,17 @@ class Addon(Plugin):
         pass
 
 
-    def __repr__(self):
-        return "<Addon %s>" % self.__name__
-
-
-    def is_activated(self):
+    @property
+    def activated(self):
         """
         Checks if addon is activated
         """
         return self.get_config("activated")
 
 
-    #: Deprecated method, use `is_activated` instead (Remove in 0.4.10)
+    #: Deprecated method, use `activated` property instead (Remove in 0.4.10)
     def isActivated(self, *args, **kwargs):
-        return self.is_activated(*args, **kwargs)
+        return self.activated
 
 
     def deactivate(self):

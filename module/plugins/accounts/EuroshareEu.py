@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class EuroshareEu(Account):
     __name__    = "EuroshareEu"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __description__ = """Euroshare.eu account plugin"""
@@ -17,7 +17,7 @@ class EuroshareEu(Account):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         self.relogin(user)
         html = self.load("http://euroshare.eu/customer-zone/settings/")
 
@@ -32,11 +32,11 @@ class EuroshareEu(Account):
         return {'validuntil': validuntil, 'trafficleft': -1, 'premium': premium}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         html = self.load('http://euroshare.eu/customer-zone/login/',
                          post={'trvale'  : "1",
                                'login'   : user,
                                'password': password})
 
         if u">Nesprávne prihlasovacie meno alebo heslo" in html:
-            self.login_fail()
+            self.fail_login()

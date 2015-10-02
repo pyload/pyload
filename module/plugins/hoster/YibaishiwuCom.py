@@ -37,7 +37,7 @@ class YibaishiwuCom(SimpleHoster):
 
         self.log_debug(('FREEUSER' if m.group(2) == "download" else 'GUEST') + ' URL', url)
 
-        res = json_loads(self.load(urlparse.urljoin("http://115.com", url), decode=False))
+        res = json_loads(self.load(urlparse.urljoin("http://115.com/", url), decode=False))
         if "urls" in res:
             mirrors = res['urls']
 
@@ -52,8 +52,9 @@ class YibaishiwuCom(SimpleHoster):
                 self.link = mr['url'].replace("\\", "")
                 self.log_debug("Trying URL: " + self.link)
                 break
+
             except Exception:
-                continue
+                pass
         else:
             self.fail(_("No working link found"))
 

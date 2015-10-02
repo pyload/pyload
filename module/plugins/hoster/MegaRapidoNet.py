@@ -23,7 +23,7 @@ def random_with_n_digits(n):
 class MegaRapidoNet(MultiHoster):
     __name__    = "MegaRapidoNet"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?\w+\.megarapido\.net/\?file=\w+'
@@ -42,15 +42,15 @@ class MegaRapidoNet(MultiHoster):
 
     def handle_premium(self, pyfile):
         self.html = self.load("http://megarapido.net/gerar.php",
-                         post={'rand'     :random_with_N_digits(16),
-                               'urllist'  : pyfile.url,
-                               'links'    : pyfile.url,
-                               'exibir'   : "normal",
-                               'usar'     : "premium",
-                               'user'     : self.account.get_data(self.user).get('sid', None),
-                               'autoreset': ""})
+                              post={'rand'     :random_with_N_digits(16),
+                                    'urllist'  : pyfile.url,
+                                    'links'    : pyfile.url,
+                                    'exibir'   : "normal",
+                                    'usar'     : "premium",
+                                    'user'     : self.account.get_data('sid'),
+                                    'autoreset': ""})
 
         if "desloga e loga novamente para gerar seus links" in self.html.lower():
-            self.error("You have logged in at another place")
+            self.error(_("You have logged in at another place"))
 
         return super(MegaRapidoNet, self).handle_premium(pyfile)

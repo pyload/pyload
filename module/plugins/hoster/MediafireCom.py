@@ -8,10 +8,10 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MediafireCom(SimpleHoster):
     __name__    = "MediafireCom"
     __type__    = "hoster"
-    __version__ = "0.90"
+    __version__ = "0.91"
     __status__  = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)(?P<ID>\w{15})'
+    __pattern__ = r'https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)(?P<ID>\w+)'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Mediafire.com hoster plugin"""
@@ -69,7 +69,7 @@ class MediafireCom(SimpleHoster):
                 self.html = self.load(self.link, post={'downloadp': password})
 
                 if self.PASSWORD_PATTERN in self.html:
-                    self.fail(_("Incorrect password"))
+                    self.fail(_("Wrong password"))
 
         return super(MediafireCom, self).handle_free(pyfile)
 

@@ -6,7 +6,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class VidPlayNet(XFSAccount):
     __name__    = "VidPlayNet"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __description__ = """VidPlay.net account plugin"""
@@ -14,4 +14,4 @@ class VidPlayNet(XFSAccount):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_DOMAIN = "vidplay.net"
+    PLUGIN_DOMAIN = "vidplay.net"

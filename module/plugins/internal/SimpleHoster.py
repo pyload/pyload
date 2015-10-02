@@ -2,33 +2,27 @@
 
 from __future__ import with_statement
 
-import mimetypes
 import os
 import re
 import time
-import urlparse
 
-from module.PyFile import statusMap as _statusMap
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster, create_getInfo, parse_fileInfo
-from module.plugins.internal.Plugin import Fail, encode, fixurl, replace_patterns, seconds_to_midnight, set_cookie, set_cookies
+from module.plugins.internal.Plugin import Fail, encode, parse_name, parse_time, replace_patterns, seconds_to_midnight, set_cookie, set_cookies
 from module.utils import fixup, fs_encode, parseFileSize as parse_size
-
-
-#@TODO: Adapt and move to PyFile in 0.4.10
-statusMap = dict((v, k) for k, v in _statusMap.items())
 
 
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.80"
+    __version__ = "1.93"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_premium", "bool", "Use premium account if available"          , True),
-                   ("fallback"   , "bool", "Fallback to free download if premium fails", True)]
+    __config__  = [("use_premium"     , "bool", "Use premium account if available"          , True),
+                   ("fallback_premium", "bool", "Fallback to free download if premium fails", True),
+                   ("chk_filesize"    , "bool", "Check file size"                           , True)]
 
     __description__ = """Simple hoster plugin"""
     __license__     = "GPLv3"
@@ -91,25 +85,43 @@ class SimpleHoster(Hoster):
         LINK_PREMIUM_PATTERN: (optional) group(1) should be the direct link for premium download
           example: LINK_PREMIUM_PATTERN = r'<div class="link"><a href="(.+?)"'
     """
-    NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
-    SIZE_REPLACEMENTS = []
-    URL_REPLACEMENTS  = []
 
-    FILE_ERRORS = [('Html error'   , r'\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)'),
-                   ('Request error', r'([Aa]n error occured while processing your request)'                   ),
-                   ('Html file'    , r'\A\s*<!DOCTYPE html'                                                   )]
+    NAME_REPLACEMENTS    = []
+    SIZE_REPLACEMENTS    = []
+    URL_REPLACEMENTS     = []
 
-    CHECK_FILE    = True   #: Set to False to not check the last downloaded file with declared error patterns
-    CHECK_TRAFFIC = False  #: Set to True to reload checking traffic left for premium account
-    COOKIES       = True   #: or False or list of tuples [(domain, name, value)]
-    DIRECT_LINK   = None   #: Set to True to looking for direct link (as defined in handle_direct method), set to None to do it if self.account is True else False
-    DISPOSITION   = True   #: Set to True to use any content-disposition value in http header as file name
-    LOGIN_ACCOUNT = False  #: Set to True to require account login
-    LOGIN_PREMIUM = False  #: Set to True to require premium account login
-    LEECH_HOSTER  = False  #: Set to True to leech other hoster link (as defined in handle_multi method)
-    TEXT_ENCODING = True   #: Set to encoding name if encoding value in http header is not correct
+    CHECK_FILE           = True   #: Set to False to not check the last downloaded file with declared error patterns
+    CHECK_TRAFFIC        = False  #: Set to True to reload checking traffic left for premium account
+    COOKIES              = True   #: or False or list of tuples [(domain, name, value)]
+    DIRECT_LINK          = None   #: Set to True to looking for direct link (as defined in handle_direct method), set to None to do it if self.account is True else False
+    DISPOSITION          = True   #: Set to True to use any content-disposition value in http header as file name
+    LOGIN_ACCOUNT        = False  #: Set to True to require account login
+    LOGIN_PREMIUM        = False  #: Set to True to require premium account login
+    LEECH_HOSTER         = False  #: Set to True to leech other hoster link (as defined in handle_multi method)
+    TEXT_ENCODING        = True   #: Set to encoding name if encoding value in http header is not correct
 
-    LINK_PATTERN = None
+    LINK_PATTERN         = None
+    LINK_FREE_PATTERN    = None
+    LINK_PREMIUM_PATTERN = None
+
+    INFO_PATTERN         = None
+    NAME_PATTERN         = None
+    SIZE_PATTERN         = None
+    HASHSUM_PATTERN      = None
+    OFFLINE_PATTERN      = None
+    TEMP_OFFLINE_PATTERN = None
+
+    WAIT_PATTERN         = None
+    PREMIUM_ONLY_PATTERN = None
+    HAPPY_HOUR_PATTERN   = None
+    IP_BLOCKED_PATTERN   = None
+    DL_LIMIT_PATTERN     = None
+    SIZE_LIMIT_PATTERN   = None
+    ERROR_PATTERN        = None
+
+    FILE_ERRORS          = [('Html error'   , r'\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)'),
+                            ('Request error', r'([Aa]n error occured while processing your request)'                   ),
+                            ('Html file'    , r'\A\s*<!DOCTYPE html'                                                   )]
 
 
     @classmethod
@@ -150,10 +162,10 @@ class SimpleHoster(Hoster):
                     pass
 
         if html:
-            if hasattr(cls, "OFFLINE_PATTERN") and re.search(cls.OFFLINE_PATTERN, html):
+            if cls.OFFLINE_PATTERN and re.search(cls.OFFLINE_PATTERN, html):
                 info['status'] = 1
 
-            elif hasattr(cls, "TEMP_OFFLINE_PATTERN") and re.search(cls.TEMP_OFFLINE_PATTERN, html):
+            elif cls.TEMP_OFFLINE_PATTERN and re.search(cls.TEMP_OFFLINE_PATTERN, html):
                 info['status'] = 6
 
             else:
@@ -165,7 +177,7 @@ class SimpleHoster(Hoster):
                         if all(True for k in pdict if k not in info['pattern']):
                             info['pattern'].update(pdict)
 
-                    except AttributeError:
+                    except Exception:
                         continue
 
                     else:
@@ -175,8 +187,8 @@ class SimpleHoster(Hoster):
             info['status'] = 2
 
             if 'N' in info['pattern']:
-                info['name'] = replace_patterns(fixurl(info['pattern']['N']),
-                                                cls.NAME_REPLACEMENTS)
+                name = replace_patterns(info['pattern']['N'], cls.NAME_REPLACEMENTS)
+                info['name'] = parse_name(name)
 
             if 'S' in info['pattern']:
                 size = replace_patterns(info['pattern']['S'] + info['pattern']['U'] if 'U' in info['pattern'] else info['pattern']['S'],
@@ -202,19 +214,12 @@ class SimpleHoster(Hoster):
 
 
     def prepare(self):
-        self.pyfile.error  = ""  #@TODO: Remove in 0.4.10
-        self.html          = ""  #@TODO: Recheck in 0.4.10
-        self.link          = ""  #@TODO: Recheck in 0.4.10
-        self.last_download = ""
-        self.direct_dl     = False
-        self.leech_dl      = False
-
-        if not self.get_config('use_premium', True):
-            self.restart(nopremium=True)
+        self.link      = ""
+        self.direct_dl = False
+        self.leech_dl  = False
 
         if self.LOGIN_PREMIUM and not self.premium:
             self.fail(_("Required premium account not found"))
-            self.LOGIN_ACCOUNT = True
 
         if self.LOGIN_ACCOUNT and not self.account:
             self.fail(_("Required account not found"))
@@ -222,10 +227,10 @@ class SimpleHoster(Hoster):
         self.req.setOption("timeout", 120)
 
         if self.LINK_PATTERN:
-            if not hasattr(self, 'LINK_FREE_PATTERN'):
+            if self.LINK_FREE_PATTERN is None:
                 self.LINK_FREE_PATTERN = self.LINK_PATTERN
 
-            if not hasattr(self, 'LINK_PREMIUM_PATTERN'):
+            if self.LINK_PREMIUM_PATTERN is None:
                 self.LINK_PREMIUM_PATTERN = self.LINK_PATTERN
 
         if (self.LEECH_HOSTER
@@ -253,95 +258,72 @@ class SimpleHoster(Hoster):
 
 
     def process(self, pyfile):
-        try:
-            self.prepare()
-            self.check_info()  #@TODO: Remove in 0.4.10
+        self.prepare()
+        self.check_info()  #@TODO: Remove in 0.4.10
 
-            if self.leech_dl:
-                self.log_info(_("Processing as debrid download..."))
-                self.handle_multi(pyfile)
+        if self.leech_dl:
+            self.log_info(_("Processing as debrid download..."))
+            self.handle_multi(pyfile)
 
-                if not self.link and not was_downloaded():
-                    self.log_info(_("Failed to leech url"))
-
-            else:
-                if not self.link and self.direct_dl and not self.last_download:
-                    self.log_info(_("Looking for direct download link..."))
-                    self.handle_direct(pyfile)
-
-                    if self.link or self.last_download:
-                        self.log_info(_("Direct download link detected"))
-                    else:
-                        self.log_info(_("Direct download link not found"))
-
-                if not self.link and not self.last_download:
-                    self.preload()
-
-                    if 'status' not in self.info or self.info['status'] is 3:  #@TODO: Recheck in 0.4.10
-                        self.check_info()
-
-                    if self.premium and (not self.CHECK_TRAFFIC or self.check_traffic_left()):
-                        self.log_info(_("Processing as premium download..."))
-                        self.handle_premium(pyfile)
-
-                    elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.check_traffic_left()):
-                        self.log_info(_("Processing as free download..."))
-                        self.handle_free(pyfile)
-
-            if not self.last_download:
-                self.log_info(_("Downloading file..."))
-                self.download(self.link, disposition=self.DISPOSITION)
-
-            self.check_file()
-
-        except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
-            if self.get_config('fallback', True) and self.premium:
-                self.log_warning(_("Premium download failed"), e)
-                self.restart(nopremium=True)
-
-            else:
-                raise Fail(encode(e))  #@TODO: Remove `encode` in 0.4.10
-
-
-    def check_file(self):
-        self.log_info(_("Checking file..."))
-
-        if self.captcha.task and not self.last_download:
-            self.captcha.invalid()
-            self.retry(10, reason=_("Wrong captcha"))
-
-        # 10485760 is 10MB, tolerance is used when comparing displayed size on the hoster website to real size
-        # For example displayed size can be 1.46GB for example, but real size can be 1.4649853GB
-        elif self.check_download({'Empty file': re.compile(r'\A((.|)(\2|\s)*)\Z')},
-                                 file_size=self.info['size'] if 'size' in self.info else 0,
-                                 size_tolerance=10485760,
-                                 delete=True):
-            self.error(_("Empty file"))
+            if not self.link and not was_downloaded():
+                self.log_info(_("Failed to leech url"))
 
         else:
-            self.log_debug("Using default check rules...")
-            for r, p in self.FILE_ERRORS:
-                errmsg = self.check_download({r: re.compile(p)})
-                if errmsg is not None:
-                    errmsg = errmsg.strip().capitalize()
+            if not self.link and self.direct_dl and not self.last_download:
+                self.log_info(_("Looking for direct download link..."))
+                self.handle_direct(pyfile)
 
-                    try:
-                        errmsg += " | " + self.last_check.group(1).strip()
-                    except Exception:
-                        pass
+                if self.link or self.last_download:
+                    self.log_info(_("Direct download link detected"))
+                else:
+                    self.log_info(_("Direct download link not found"))
 
-                    self.log_warning(_("Check result: ") + errmsg, _("Waiting 1 minute and retry"))
-                    self.wantReconnect = True
-                    self.retry(wait_time=60, reason=errmsg)
-            else:
-                if self.CHECK_FILE:
-                    self.log_debug("Using custom check rules...")
-                    with open(fs_encode(self.last_download), "rb") as f:
-                        self.html = f.read(1048576)  #@TODO: Recheck in 0.4.10
-                    self.check_errors()
+            if not self.link and not self.last_download:
+                self.preload()
+
+                if 'status' not in self.info or self.info['status'] is 3:  #@TODO: Recheck in 0.4.10
+                    self.check_info()
+
+                if self.premium and (not self.CHECK_TRAFFIC or self.check_traffic()):
+                    self.log_info(_("Processing as premium download..."))
+                    self.handle_premium(pyfile)
+
+                elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.check_traffic()):
+                    self.log_info(_("Processing as free download..."))
+                    self.handle_free(pyfile)
+
+        if not self.last_download:
+            self.log_info(_("Downloading file..."))
+            self.download(self.link, disposition=self.DISPOSITION)
+
+        self.check_download()
+
+
+    def check_download(self):
+        self.log_info(_("Checking downloaded file..."))
+        self.log_debug("Using default check rules...")
+        for r, p in self.FILE_ERRORS:
+            errmsg = self.check_file({r: re.compile(p)})
+            if errmsg is not None:
+                errmsg = errmsg.strip().capitalize()
+
+                try:
+                    errmsg += " | " + self.last_check.group(1).strip()
+
+                except Exception:
+                    pass
+
+                self.log_warning(_("Check result: ") + errmsg, _("Waiting 1 minute and retry"))
+                self.wait(60, reconnect=True)
+                self.restart(errmsg, premium=True)
+        else:
+            if self.CHECK_FILE:
+                self.log_debug("Using custom check rules...")
+                with open(fs_encode(self.last_download), "rb") as f:
+                    self.html = f.read(1048576)  #@TODO: Recheck in 0.4.10
+                self.check_errors()
 
         self.log_info(_("No errors found"))
-        self.pyfile.error = ""
 
 
     def check_errors(self):
@@ -349,65 +331,56 @@ class SimpleHoster(Hoster):
             self.log_warning(_("No html code to check"))
             return
 
-        if hasattr(self, 'IP_BLOCKED_PATTERN') and re.search(self.IP_BLOCKED_PATTERN, self.html):
+        if self.IP_BLOCKED_PATTERN and re.search(self.IP_BLOCKED_PATTERN, self.html):
             self.fail(_("Connection from your current IP address is not allowed"))
 
         elif not self.premium:
-            if hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html):
+            if self.PREMIUM_ONLY_PATTERN and re.search(self.PREMIUM_ONLY_PATTERN, self.html):
                 self.fail(_("File can be downloaded by premium users only"))
 
-            elif hasattr(self, 'SIZE_LIMIT_PATTERN') and re.search(self.SIZE_LIMIT_PATTERN, self.html):
+            elif self.SIZE_LIMIT_PATTERN and re.search(self.SIZE_LIMIT_PATTERN, self.html):
                 self.fail(_("File too large for free download"))
 
-            elif hasattr(self, 'DL_LIMIT_PATTERN') and re.search(self.DL_LIMIT_PATTERN, self.html):
+            elif self.DL_LIMIT_PATTERN and re.search(self.DL_LIMIT_PATTERN, self.html):
                 m = re.search(self.DL_LIMIT_PATTERN, self.html)
                 try:
                     errmsg = m.group(1).strip()
-                except Exception:
+
+                except (AttributeError, IndexError):
                     errmsg = m.group(0).strip()
 
                 self.info['error'] = re.sub(r'<.*?>', " ", errmsg)
                 self.log_warning(self.info['error'])
 
-                if re.search('da(il)?y|today', errmsg, re.I):
-                    wait_time = seconds_to_midnight(gmt=2)
-                else:
-                    wait_time = sum(int(v) * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, "": 1}[u.lower()] for v, u in
-                                re.findall(r'(\d+)\s*(hr|hour|min|sec|)', errmsg, re.I))
+                wait_time = parse_time(errmsg)
+                self.wait(wait_time, reconnect=wait_time > 300)
+                self.restart(_("Download limit exceeded"), premium=True)
 
-                self.wantReconnect = wait_time > 300
-                self.retry(1, wait_time, _("Download limit exceeded"))
-
-        if hasattr(self, 'HAPPY_HOUR_PATTERN') and re.search(self.HAPPY_HOUR_PATTERN, self.html):
+        if self.HAPPY_HOUR_PATTERN and re.search(self.HAPPY_HOUR_PATTERN, self.html):
             self.multiDL = True
 
-        if hasattr(self, 'ERROR_PATTERN'):
+        if self.ERROR_PATTERN:
             m = re.search(self.ERROR_PATTERN, self.html)
-            if m:
+            if m is not None:
                 try:
                     errmsg = m.group(1).strip()
-                except Exception:
+
+                except (AttributeError, IndexError):
                     errmsg = m.group(0).strip()
 
                 self.info['error'] = re.sub(r'<.*?>', " ", errmsg)
                 self.log_warning(self.info['error'])
 
                 if re.search('limit|wait|slot', errmsg, re.I):
-                    if re.search("da(il)?y|today", errmsg):
-                        wait_time = seconds_to_midnight(gmt=2)
-                    else:
-                        wait_time = sum(int(v) * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, "": 1}[u.lower()] for v, u in
-                                    re.findall(r'(\d+)\s*(hr|hour|min|sec|)', errmsg, re.I))
-
-                    self.wantReconnect = wait_time > 300
-                    self.retry(1, wait_time, _("Download limit exceeded"))
+                    wait_time = parse_time(errmsg)
+                    self.wait(wait_time, reconnect=wait_time > 300)
+                    self.restart(_("Download limit exceeded"), premium=True)
 
                 elif re.search('country|ip|region|nation', errmsg, re.I):
                     self.fail(_("Connection from your current IP address is not allowed"))
 
                 elif re.search('captcha|code', errmsg, re.I):
-                    self.captcha.invalid()
-                    self.retry(10, reason=_("Wrong captcha"))
+                    self.retry_captcha()
 
                 elif re.search('countdown|expired', errmsg, re.I):
                     self.retry(10, 60, _("Link expired"))
@@ -422,28 +395,26 @@ class SimpleHoster(Hoster):
                     self.offline()
 
                 elif re.search('filename', errmsg, re.I):
-                    url_p = urlparse.urlparse(self.pyfile.url)
-                    self.pyfile.url = "%s://%s/%s" % (url_p.scheme, url_p.netloc, url_p.path.split('/')[0])
-                    self.retry(1, reason=_("Wrong url"))
+                    self.fail(_("Invalid url"))
 
                 elif re.search('premium', errmsg, re.I):
                     self.fail(_("File can be downloaded by premium users only"))
 
                 else:
-                    self.wantReconnect = True
-                    self.retry(wait_time=60, reason=errmsg)
+                    self.wait(60, reconnect=True)
+                    self.restart(errmsg, premium=True)
 
-        elif hasattr(self, 'WAIT_PATTERN'):
+        elif self.WAIT_PATTERN:
             m = re.search(self.WAIT_PATTERN, self.html)
-            if m:
+            if m is not None:
                 try:
                     waitmsg = m.group(1).strip()
-                except Exception:
+
+                except (AttributeError, IndexError):
                     waitmsg = m.group(0).strip()
 
-                wait_time = sum(int(v) * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, "": 1}[u.lower()] for v, u in
-                                re.findall(r'(\d+)\s*(hr|hour|min|sec|)', waitmsg, re.I))
-                self.wait(wait_time, wait_time > 300)
+                wait_time = parse_time(waitmsg)
+                self.wait(wait_time, econnect=wait_time > 300)
 
         self.info.pop('error', None)
 
@@ -457,22 +428,19 @@ class SimpleHoster(Hoster):
             self.log_debug("Previous file info: %s" % old_info)
 
         try:
-            status = self.info['status'] or None
+            status = self.info['status'] or 14
 
-            if status == 1:
+            if status is 1:
                 self.offline()
 
-            elif status == 6:
+            elif status is 6:
                 self.temp_offline()
 
-            elif status == 8:
-                if 'error' in self.info:
-                    self.fail(self.info['error'])
-                else:
-                    self.fail(_("File status: " + statusMap[status]))
+            elif status is 8:
+                self.fail()
 
         finally:
-            self.log_info(_("File status: ") + (statusMap[status] if status else _("Unknown")))
+            self.log_info(_("File status: ") + self.pyfile.getStatusName())
 
 
     def check_name_size(self, getinfo=True):
@@ -484,8 +452,8 @@ class SimpleHoster(Hoster):
             self.log_debug("Previous file info: %s" % old_info)
 
         try:
-            url  = self.info['url'].strip()
-            name = self.info['name'].strip()
+            url  = self.info['url']
+            name = self.info['name']
 
         except KeyError:
             pass
@@ -494,7 +462,7 @@ class SimpleHoster(Hoster):
             if name and name is not url:
                 self.pyfile.name = name
 
-        if 'size' in self.info and self.info['size'] > 0:
+        if self.info.get('size') > 0:
             self.pyfile.size = int(self.info['size'])  #@TODO: Fix int conversion in 0.4.10
 
         # self.pyfile.sync()
@@ -535,7 +503,7 @@ class SimpleHoster(Hoster):
 
 
     def handle_free(self, pyfile):
-        if not hasattr(self, 'LINK_FREE_PATTERN'):
+        if not self.LINK_FREE_PATTERN:
             self.log_error(_("Free download not implemented"))
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
@@ -546,10 +514,9 @@ class SimpleHoster(Hoster):
 
 
     def handle_premium(self, pyfile):
-        if not hasattr(self, 'LINK_PREMIUM_PATTERN'):
+        if not self.LINK_PREMIUM_PATTERN:
             self.log_error(_("Premium download not implemented"))
-            self.log_info(_("Processing as free download..."))
-            self.handle_free(pyfile)
+            self.restart()
 
         m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
         if m is None:

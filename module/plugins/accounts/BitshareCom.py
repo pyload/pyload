@@ -6,7 +6,7 @@ from module.plugins.internal.Account import Account
 class BitshareCom(Account):
     __name__    = "BitshareCom"
     __type__    = "account"
-    __version__ = "0.15"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __description__ = """Bitshare account plugin"""
@@ -14,7 +14,7 @@ class BitshareCom(Account):
     __authors__     = [("Paul King", None)]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         html = self.load("http://bitshare.com/mysettings.html")
 
         if "\"http://bitshare.com/myupgrade.html\">Free" in html:
@@ -26,11 +26,11 @@ class BitshareCom(Account):
         return {'validuntil': -1, 'trafficleft': -1, 'premium': True}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         html = self.load("https://bitshare.com/login.html",
                          post={'user'    : user,
                                'password': password,
                                'submit'  : "Login"})
 
-        if "login" in req.lastEffectiveURL:
-            self.login_fail()
+        if "login" in self.req.lastEffectiveURL:
+            self.fail_login()

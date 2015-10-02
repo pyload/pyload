@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class UploadedTo(Account):
     __name__    = "UploadedTo"
     __type__    = "account"
-    __version__ = "0.35"
+    __version__ = "0.37"
     __status__  = "testing"
 
     __description__ = """Uploaded.to account plugin"""
@@ -24,7 +24,7 @@ class UploadedTo(Account):
     TRAFFIC_LEFT_PATTERN = r'<b class="cB">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         validuntil  = None
         trafficleft = None
         premium     = None
@@ -34,20 +34,20 @@ class UploadedTo(Account):
         premium = True if re.search(self.PREMIUM_PATTERN, html) else False
 
         m = re.search(self.VALID_UNTIL_PATTERN, html, re.M)
-        if m:
+        if m is not None:
             expiredate = m.group(1).lower().strip()
 
             if expiredate == "unlimited":
                 validuntil = -1
             else:
                 m = re.findall(r'(\d+) (week|day|hour)', expiredate)
-                if m:
+                if m is not None:
                     validuntil = time.time()
                     for n, u in m:
                         validuntil += float(n) * 60 * 60 * {'week': 168, 'day': 24, 'hour': 1}[u]
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        if m:
+        if m is not None:
             traffic = m.groupdict()
             size    = traffic['S'].replace('.', '')
             unit    = traffic['U'].lower()
@@ -56,14 +56,14 @@ class UploadedTo(Account):
                 trafficleft = float(size.replace(',', '.')) / 1024
                 trafficleft *= 1 << 40
             else:
-                trafficleft = self.parse_traffic(size + unit)
+                trafficleft = self.parse_traffic(size, unit)
 
         return {'validuntil' : validuntil,
                 'trafficleft': trafficleft,
                 'premium'    : premium}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         self.load("http://uploaded.net/language/en")
 
         html = self.load("http://uploaded.net/io/login",
@@ -72,4 +72,4 @@ class UploadedTo(Account):
 
         m = re.search(r'"err":"(.+?)"', html)
         if m is not None:
-            self.login_fail(m.group(1))
+            self.fail_login(m.group(1))

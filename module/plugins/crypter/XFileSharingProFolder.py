@@ -8,7 +8,7 @@ from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
 class XFileSharingProFolder(XFSCrypter):
     __name__    = "XFileSharingProFolder"
     __type__    = "crypter"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:user|folder)s?/\w+'
@@ -23,7 +23,7 @@ class XFileSharingProFolder(XFSCrypter):
     def _log(self, level, plugintype, pluginname, messages):
         return super(XFileSharingProFolder, self)._log(level,
                                                        plugintype,
-                                                       "%s: %s" % (pluginname, self.HOSTER_NAME),
+                                                       "%s: %s" % (pluginname, self.PLUGIN_NAME),
                                                        messages)
 
 
@@ -32,18 +32,18 @@ class XFileSharingProFolder(XFSCrypter):
 
         self.__pattern__ = self.pyload.pluginManager.crypterPlugins[self.__name__]['pattern']
 
-        self.HOSTER_DOMAIN = re.match(self.__pattern__, self.pyfile.url).group("DOMAIN").lower()
-        self.HOSTER_NAME   = "".join(part.capitalize() for part in re.split(r'(\.|\d+|\-)', self.HOSTER_DOMAIN) if part != '.')
+        self.PLUGIN_DOMAIN = re.match(self.__pattern__, self.pyfile.url).group("DOMAIN").lower()
+        self.PLUGIN_NAME   = "".join(part.capitalize() for part in re.split(r'(\.|\d+|\-)', self.PLUGIN_DOMAIN) if part != '.')
 
 
     def _setup(self):
-        account_name     = self.__name__ if self.account.HOSTER_DOMAIN is None else self.HOSTER_NAME
+        account_name     = self.__name__ if self.account.PLUGIN_DOMAIN is None else self.PLUGIN_NAME
         self.chunk_limit = 1
         self.multiDL     = True
 
         if self.account:
-            self.req             = self.pyload.requestFactory.getRequest(accountname, self.user)
-            self.premium         = self.account.is_premium(self.user)
+            self.req             = self.pyload.requestFactory.getRequest(accountname, self.account.user)
+            self.premium         = self.account.premium
             self.resume_download = self.premium
         else:
             self.req             = self.pyload.requestFactory.getRequest(account_name)
@@ -56,19 +56,19 @@ class XFileSharingProFolder(XFSCrypter):
             self.req.close()
 
         if not self.account:
-            self.account = self.pyload.accountManager.getAccountPlugin(self.HOSTER_NAME)
+            self.account = self.pyload.accountManager.getAccountPlugin(self.PLUGIN_NAME)
 
         if not self.account:
             self.account = self.pyload.accountManager.getAccountPlugin(self.__name__)
 
         if self.account:
-            if not self.account.HOSTER_DOMAIN:
-                self.account.HOSTER_DOMAIN = self.HOSTER_DOMAIN
+            if not self.account.PLUGIN_DOMAIN:
+                self.account.PLUGIN_DOMAIN = self.PLUGIN_DOMAIN
 
-            if not self.user:
-                self.user = self.account.select()[0]
+            if not self.account.user:  #@TODO: Move to `Account` in 0.4.10
+                self.account.user = self.account.select()[0]
 
-            if not self.user or not self.account.is_logged(self.user, True):
+            if not self.account.logged:
                 self.account = False
 
 

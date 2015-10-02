@@ -8,8 +8,12 @@ from module.plugins.internal.Account import Account
 class ZeveraCom(Account):
     __name__    = "ZeveraCom"
     __type__    = "account"
-    __version__ = "0.28"
+    __version__ = "0.30"
     __status__  = "testing"
+
+    __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
+                  ("mh_list"    , "str"                , "Hoster list (comma separated)", ""   ),
+                  ("mh_interval", "int"                , "Reload interval in minutes"   , 60   )]
 
     __description__ = """Zevera.com account plugin"""
     __license__     = "GPLv3"
@@ -17,7 +21,12 @@ class ZeveraCom(Account):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_DOMAIN = "zevera.com"
+    PLUGIN_DOMAIN = "zevera.com"
+
+
+    def grab_hosters(self, user, password, data):
+        html = self.api_response(user, password, cmd="gethosters")
+        return [x.strip() for x in html.split(",")]
 
 
     def __init__(self, manager, accounts):  #@TODO: remove in 0.4.10
@@ -26,19 +35,19 @@ class ZeveraCom(Account):
 
 
     def init(self):
-        if not self.HOSTER_DOMAIN:
-            self.log_error(_("Missing HOSTER_DOMAIN"))
+        if not self.PLUGIN_DOMAIN:
+            self.log_error(_("Missing PLUGIN_DOMAIN"))
 
         if not hasattr(self, "API_URL"):
-            self.API_URL = "http://api.%s/jDownloader.ashx" % (self.HOSTER_DOMAIN or "")
+            self.API_URL = "http://api.%s/jDownloader.ashx" % (self.PLUGIN_DOMAIN or "")
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         validuntil  = None
         trafficleft = None
         premium     = False
 
-        api = self.api_response(req)
+        api = self.api_response(user, password)
 
         if "No trafic" not in api and api['endsubscriptiondate'] != "Expired!":
             validuntil  = time.mktime(time.strptime(api['endsubscriptiondate'], "%Y/%m/%d %H:%M:%S"))
@@ -48,18 +57,15 @@ class ZeveraCom(Account):
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 
 
-    def login(self, user, password, data, req):
-        self.user     = user
-        self.password = password
-
-        if self.api_response(req) == "No trafic":
-            self.login_fail()
+    def signin(self, user, password, data):
+        if self.api_response(user, password) == "No trafic":
+            self.fail_login()
 
 
-    def api_response(self, req, just_header=False, **kwargs):
+    def api_response(self, user, password=None, just_header=False, **kwargs):
         get_data = {'cmd'  : "accountinfo",
-                    'login': self.user,
-                    'pass' : self.password}
+                    'login': user,
+                    'pass' : password}
 
         get_data.update(kwargs)
 

@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class EuroshareEu(SimpleHoster):
     __name__    = "EuroshareEu"
     __type__    = "hoster"
-    __version__ = "0.30"
+    __version__ = "0.32"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?euroshare\.(eu|sk|cz|hu|pl)/file/.+'
@@ -32,17 +32,17 @@ class EuroshareEu(SimpleHoster):
 
     def handle_premium(self, pyfile):
         if self.ERROR_PATTERN in self.html:
-            self.account.relogin(self.user)
-            self.retry(reason=_("User not logged in"))
+            self.account.relogin()
+            self.retry(msg=_("User not logged in"))
 
         self.link = pyfile.url.rstrip('/') + "/download/"
 
-        check = self.check_download({'login': re.compile(self.ERROR_PATTERN),
+        check = self.check_file({'login': re.compile(self.ERROR_PATTERN),
                                     'json' : re.compile(r'\{"status":"error".*?"message":"(.*?)"')})
 
         if check == "login" or (check == "json" and self.last_check.group(1) == "Access token expired"):
-            self.account.relogin(self.user)
-            self.retry(reason=_("Access token expired"))
+            self.account.relogin()
+            self.retry(msg=_("Access token expired"))
 
         elif check == "json":
             self.fail(self.last_check.group(1))

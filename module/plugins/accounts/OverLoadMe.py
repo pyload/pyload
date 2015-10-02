@@ -7,16 +7,25 @@ from module.common.json_layer import json_loads
 class OverLoadMe(Account):
     __name__    = "OverLoadMe"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.08"
     __status__  = "testing"
+
+    __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
+                  ("mh_list"    , "str"                , "Hoster list (comma separated)", ""   ),
+                  ("mh_interval", "int"                , "Reload interval in minutes"   , 60   )]
 
     __description__ = """Over-Load.me account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("marley", "marley@over-load.me")]
 
 
-    def parse_info(self, user, password, data, req):
-        data  = self.get_data(user)
+    def grab_hosters(self, user, password, data):
+        html = self.load("https://api.over-load.me/hoster.php",
+                         get={'auth': "0001-cb1f24dadb3aa487bda5afd3b76298935329be7700cd7-5329be77-00cf-1ca0135f"})
+        return [x for x in map(str.strip, html.replace("\"", "").split(",")) if x]
+
+
+    def grab_info(self, user, password, data):
         html  = self.load("https://api.over-load.me/account.php",
                           get={'user': user,
                                'auth': password}).strip()
@@ -31,7 +40,7 @@ class OverLoadMe(Account):
             return {'premium': True, 'validuntil': data['expirationunix'], 'trafficleft': -1}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         jsondata = self.load("https://api.over-load.me/account.php",
                              get={'user': user,
                                   'auth': password}).strip()
@@ -39,4 +48,4 @@ class OverLoadMe(Account):
         data = json_loads(jsondata)
 
         if data['err'] == 1:
-            self.login_fail()
+            self.fail_login()

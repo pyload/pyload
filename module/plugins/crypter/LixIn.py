@@ -43,16 +43,13 @@ class LixIn(Crypter):
             self.error(_("Link doesn't seem valid"))
 
         m = re.search(self.CAPTCHA_PATTERN, self.html)
-        if m:
-            for _i in xrange(5):
-                m = re.search(self.CAPTCHA_PATTERN, self.html)
-                if m:
-                    self.log_debug("Trying captcha")
-                    captcharesult = self.captcha.decrypt(urlparse.urljoin("http://lix.in/", m.group(1)))
-                self.html = self.load(url,
-                                          post={'capt': captcharesult, 'submit': "submit", 'tiny': id})
-            else:
-                self.log_debug("No captcha/captcha solved")
+        if m is not None:
+            captcharesult = self.captcha.decrypt(urlparse.urljoin("http://lix.in/", m.group(1)))
+            self.html = self.load(url, post={'capt': captcharesult, 'submit': "submit", 'tiny': id})
+
+            if re.search(self.CAPTCHA_PATTERN, self.html):
+                self.fail(_("No captcha solved"))
+
         else:
             self.html = self.load(url, post={'submit': "submit", 'tiny': id})
 

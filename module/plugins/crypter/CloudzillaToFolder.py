@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urlparse
 
 from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
@@ -9,7 +8,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class CloudzillaToFolder(SimpleHoster):
     __name__    = "CloudzillaToFolder"
     __type__    = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?cloudzilla\.to/share/folder/(?P<ID>[\w^_]+)'
@@ -29,11 +28,11 @@ class CloudzillaToFolder(SimpleHoster):
 
     def check_errors(self):
         m = re.search(self.PASSWORD_PATTERN, self.html)
-        if m:
+        if m is not None:
             self.html = self.load(self.pyfile.url, get={'key': self.get_password()})
 
         if re.search(self.PASSWORD_PATTERN, self.html):
-            self.retry(reason="Wrong password")
+            self.retry(msg="Wrong password")
 
 
 getInfo = create_getInfo(CloudzillaToFolder)

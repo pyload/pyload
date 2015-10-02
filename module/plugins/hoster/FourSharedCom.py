@@ -38,7 +38,7 @@ class FourSharedCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         m = re.search(self.LINK_BTN_PATTERN, self.html)
-        if m:
+        if m is not None:
             link = m.group(1)
         else:
             link = re.sub(r'/(download|get|file|document|photo|video|audio)/', r'/get/', pyfile.url)
@@ -47,7 +47,7 @@ class FourSharedCom(SimpleHoster):
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
-            self.error(_("Download link"))
+            return
 
         self.link = m.group(1)
 
@@ -55,6 +55,7 @@ class FourSharedCom(SimpleHoster):
             m = re.search(self.ID_PATTERN, self.html)
             res = self.load('http://www.4shared.com/web/d2/getFreeDownloadLimitInfo?fileId=%s' % m.group(1))
             self.log_debug(res)
+
         except Exception:
             pass
 

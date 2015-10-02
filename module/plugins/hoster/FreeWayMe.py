@@ -6,7 +6,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class FreeWayMe(MultiHoster):
     __name__    = "FreeWayMe"
     __type__    = "hoster"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?free-way\.(bz|me)/.+'
@@ -33,7 +33,7 @@ class FreeWayMe(MultiHoster):
                                get={'multiget': 7,
                                     'url'     : pyfile.url,
                                     'user'    : user,
-                                    'pw'      : self.account.get_info(self.user)['login']['password'],
+                                    'pw'      : self.account.get_login('password'),
                                     'json'    : ""},
                                just_header=True)
 

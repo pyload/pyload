@@ -8,7 +8,7 @@ from module.plugins.internal.Plugin import set_cookie
 class FilecloudIo(Account):
     __name__    = "FilecloudIo"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __description__ = """FilecloudIo account plugin"""
@@ -17,7 +17,7 @@ class FilecloudIo(Account):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         #: It looks like the first API request always fails, so we retry 5 times, it should work on the second try
         for _i in xrange(5):
             rep = self.load("https://secure.filecloud.io/api-fetch_apikey.api",
@@ -43,8 +43,8 @@ class FilecloudIo(Account):
             return {'premium': False}
 
 
-    def login(self, user, password, data, req):
-        set_cookie(req.cj, "secure.filecloud.io", "lang", "en")
+    def signin(self, user, password, data):
+        set_cookie(self.req.cj, "secure.filecloud.io", "lang", "en")
         html = self.load('https://secure.filecloud.io/user-login.html')
 
         if not hasattr(self, "form_data"):
@@ -57,4 +57,4 @@ class FilecloudIo(Account):
                          post=self.form_data)
 
         if "you have successfully logged in" not in html:
-            self.login_fail()
+            self.fail_login()

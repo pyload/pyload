@@ -19,7 +19,7 @@ class MystoreTo(SimpleHoster):
 
     __description__ = """Mystore.to hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("zapp-brannigan", "")]
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
     NAME_PATTERN    = r'<h1>(?P<N>.+?)<'

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urlparse
 
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.SimpleHoster import SimpleHoster, parse_fileInfo
@@ -20,7 +19,7 @@ def get_info(urls):
 class FilefactoryCom(SimpleHoster):
     __name__    = "FilefactoryCom"
     __type__    = "hoster"
-    __version__ = "0.57"
+    __version__ = "0.59"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/(file|trafficshare/\w+)/\w+'
@@ -51,36 +50,24 @@ class FilefactoryCom(SimpleHoster):
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
-            self.error(_("Free download link not found"))
+            return
 
         self.link = m.group(1)
 
         m = re.search(self.WAIT_PATTERN, self.html)
-        if m:
+        if m is not None:
             self.wait(m.group(1))
 
 
-    def check_file(self):
-        check = self.check_download({'multiple': "You are currently downloading too many files at once.",
+    def check_download(self):
+        check = self.check_file({'multiple': "You are currently downloading too many files at once.",
                                     'error'   : '<div id="errorMessage">'})
 
         if check == "multiple":
             self.log_debug("Parallel downloads detected; waiting 15 minutes")
-            self.retry(wait_time=15 * 60, reason=_("Parallel downloads"))
+            self.retry(wait=15 * 60, msg=_("Parallel downloads"))
 
         elif check == "error":
             self.error(_("Unknown error"))
 
-        return super(FilefactoryCom, self).check_file()
-
-
-    def handle_premium(self, pyfile):
-        self.link = self.direct_link(self.load(pyfile.url, just_header=True))
-
-        if not self.link:
-            html = self.load(pyfile.url)
-            m = re.search(self.LINK_PREMIUM_PATTERN, html)
-            if m:
-                self.link = m.group(1)
-            else:
-                self.error(_("Premium download link not found"))
+        return super(FilefactoryCom, self).check_download()

@@ -6,15 +6,26 @@ from module.plugins.internal.Account import Account
 class RehostTo(Account):
     __name__    = "RehostTo"
     __type__    = "account"
-    __version__ = "0.18"
+    __version__ = "0.21"
     __status__  = "testing"
+
+    __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
+                  ("mh_list"    , "str"                , "Hoster list (comma separated)", ""   ),
+                  ("mh_interval", "int"                , "Reload interval in minutes"   , 60   )]
 
     __description__ = """Rehost.to account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_hosters(self, user, password, data):
+        html = self.load("http://rehost.to/api.php",
+                         get={'cmd'     : "get_supported_och_dl",
+                              'long_ses': data['session']})
+        return [x for x in map(str.strip, html.replace("\"", "").split(",")) if x]
+
+
+    def grab_info(self, user, password, data):
         premium     = False
         trafficleft = None
         validuntil  = -1
@@ -37,7 +48,7 @@ class RehostTo(Account):
                 traffic, valid = html.split(",")
 
                 premium     = True
-                trafficleft = self.parse_traffic(traffic + "MB")
+                trafficleft = self.parse_traffic(traffic, "MB")
                 validuntil  = float(valid)
 
         finally:
@@ -47,7 +58,7 @@ class RehostTo(Account):
                     'session'    : session}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         html = self.load("https://rehost.to/api.php",
                          get={'cmd': "login",
                               'user': user,
@@ -55,4 +66,4 @@ class RehostTo(Account):
 
         if "ERROR" in html:
             self.log_debug(html)
-            self.login_fail()
+            self.fail_login()

@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class HellshareCz(Account):
     __name__    = "HellshareCz"
     __type__    = "account"
-    __version__ = "0.18"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __description__ = """Hellshare.cz account plugin"""
@@ -20,7 +20,7 @@ class HellshareCz(Account):
     CREDIT_LEFT_PATTERN = r'<div class="credit-link">\s*<table>\s*<tr>\s*<th>(\d+|\d\d\.\d\d\.)</th>'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         self.relogin(user)
         html = self.load("http://www.hellshare.com/")
 
@@ -42,8 +42,9 @@ class HellshareCz(Account):
                     trafficleft = -1
                 else:
                     #: Traffic-based account
-                    trafficleft = self.parse_traffic(credit + "MB")
+                    trafficleft = self.parse_traffic(credit, "MB")
                     validuntil = -1
+
             except Exception, e:
                 self.log_error(_("Unable to parse credit info"), e)
                 validuntil = -1
@@ -52,13 +53,13 @@ class HellshareCz(Account):
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         html = self.load('http://www.hellshare.com/')
-        if req.lastEffectiveURL != 'http://www.hellshare.com/':
+        if self.req.lastEffectiveURL != 'http://www.hellshare.com/':
             #: Switch to English
-            self.log_debug("Switch lang - URL: %s" % req.lastEffectiveURL)
+            self.log_debug("Switch lang - URL: %s" % self.req.lastEffectiveURL)
 
-            json = self.load("%s?do=locRouter-show" % req.lastEffectiveURL)
+            json = self.load("%s?do=locRouter-show" % self.req.lastEffectiveURL)
             hash = re.search(r"(\-\-[0-9a-f]+\-)", json).group(1)
 
             self.log_debug("Switch lang - HASH: %s" % hash)
@@ -77,4 +78,4 @@ class HellshareCz(Account):
                                'perm_login': "on"})
 
         if "<p>You input a wrong user name or wrong password</p>" in html:
-            self.login_fail()
+            self.fail_login()

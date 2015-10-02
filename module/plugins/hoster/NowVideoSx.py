@@ -37,10 +37,8 @@ class NowVideoSx(SimpleHoster):
         self.html = self.load("http://www.nowvideo.sx/mobile/video.php", get={'id': self.info['pattern']['ID']})
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
-        if m is None:
-            self.error(_("Free download link not found"))
-
-        self.link = m.group(1)
+        if m is not None:
+            self.link = m.group(1)
 
 
 getInfo = create_getInfo(NowVideoSx)

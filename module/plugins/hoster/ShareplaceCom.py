@@ -40,7 +40,7 @@ class ShareplaceCom(Hoster):
 
         #: var zzipitime = 15
         m = re.search(r'var zzipitime = (\d+);', self.html)
-        if m:
+        if m is not None:
             sec = int(m.group(1))
         else:
             sec = 0

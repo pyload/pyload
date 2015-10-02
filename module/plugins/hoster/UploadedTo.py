@@ -2,7 +2,6 @@
 
 import re
 import time
-import urlparse
 
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.captcha.ReCaptcha import ReCaptcha
@@ -12,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "0.96"
+    __version__ = "0.97"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
@@ -31,6 +30,7 @@ class UploadedTo(SimpleHoster):
 
     OFFLINE_PATTERN      = r'>Page not found'
     TEMP_OFFLINE_PATTERN = r'<title>uploaded\.net - Maintenance'
+    PREMIUM_ONLY_PATTERN = r'This file exceeds the max\. filesize which can be downloaded by free users'
 
     LINK_FREE_PATTERN    = r"url:\s*'(.+?)'"
     LINK_PREMIUM_PATTERN = r'<div class="tfree".*\s*<form method="post" action="(.+?)"'
@@ -77,6 +77,7 @@ class UploadedTo(SimpleHoster):
         self.html = self.load("http://uploaded.net/io/ticket/captcha/%s" % self.info['pattern']['ID'],
                               post={'recaptcha_challenge_field': challenge,
                                     'recaptcha_response_field' : response})
+        self.check_errors()
 
         super(UploadedTo, self).handle_free(pyfile)
         self.check_errors()

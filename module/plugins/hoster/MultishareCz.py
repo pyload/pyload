@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MultishareCz(SimpleHoster):
     __name__    = "MultishareCz"
     __type__    = "hoster"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?multishare\.cz/stahnout/(?P<ID>\d+)'
@@ -42,7 +42,7 @@ class MultishareCz(SimpleHoster):
 
         self.check_info()
 
-        if not self.check_traffic_left():
+        if not self.check_traffic():
             self.fail(_("Not enough credit left to download file"))
 
         self.download("http://dl%d.mms.multishare.cz/html/mms_process.php" % round(random.random() * 10000 * random.random()),

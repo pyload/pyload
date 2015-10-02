@@ -29,7 +29,7 @@ class DebridItaliaCom(MultiHoster):
                               get={'generate': "on", 'link': pyfile.url, 'p': self.get_password()})
 
         if "ERROR:" not in self.html:
-            self.link = self.html.strip()
+            self.link = self.html
         else:
             self.info['error'] = re.search(r'ERROR:(.*)', self.html).group(1).strip()
 

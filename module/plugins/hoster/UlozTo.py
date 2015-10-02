@@ -15,7 +15,7 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "1.13"
+    __version__ = "1.16"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
@@ -26,8 +26,7 @@ class UlozTo(SimpleHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    INFO_PATTERN    = r'<p>File <strong>(?P<N>[^<]+)</strong> is password protected</p>'
-    NAME_PATTERN    = r'<title>(?P<N>[^<]+) \| Uloz\.to</title>'
+    NAME_PATTERN    = r'(<p>File <strong>|<title>)(?P<N>.+?)(<| \|)'
     SIZE_PATTERN    = r'<span id="fileSize">.*?(?P<S>[\d.,]+\s[kMG]?B)</span>'
     OFFLINE_PATTERN = r'<title>404 - Page not found</title>|<h1 class="h1">File (has been deleted|was banned)</h1>'
 
@@ -53,7 +52,7 @@ class UlozTo(SimpleHoster):
         if not action or not inputs:
             self.error(_("Free download form not found"))
 
-        self.log_debug("inputs.keys = " + str(inputs.keys()))
+        self.log_debug("inputs.keys = %s" % inputs.keys())
         #: Get and decrypt captcha
         if all(key in inputs for key in ("captcha_value", "captcha_id", "captcha_key")):
             #: Old version - last seen 9.12.2013
@@ -68,8 +67,10 @@ class UlozTo(SimpleHoster):
             #: New version - better to get new parameters (like captcha reload) because of image url - since 6.12.2013
             self.log_debug('Using "new" version')
 
-            xapca = self.load("http://www.ulozto.net/reloadXapca.php", get={'rnd': str(int(time.time()))})
-            self.log_debug("xapca = " + str(xapca))
+            xapca = self.load("http://www.ulozto.net/reloadXapca.php",
+                              get={'rnd': str(int(time.time()))})
+            xapca = xapca.replace('sound":"', 'sound":"http:').replace('image":"', 'image":"http:')
+            self.log_debug("xapca = %s" % xapca)
 
             data = json_loads(xapca)
             captcha_value = self.captcha.decrypt(str(data['image']))
@@ -109,7 +110,7 @@ class UlozTo(SimpleHoster):
                                       post={'password': password, 'password_send': 'Send'})
 
                 if self.PASSWD_PATTERN in self.html:
-                    self.fail(_("Incorrect password"))
+                    self.fail(_("Wrong password"))
             else:
                 self.fail(_("No password found"))
 
@@ -119,9 +120,9 @@ class UlozTo(SimpleHoster):
         return super(UlozTo, self).check_errors()
 
 
-    def check_file(self):
-        check = self.check_download({
-            'wrong_captcha': re.compile(r'<ul class="error">\s*<li>Error rewriting the text.</li>'),
+    def check_download(self):
+        check = self.check_file({
+            'wrong_captcha': ">An error ocurred while verifying the user",
             'offline'      : re.compile(self.OFFLINE_PATTERN),
             'passwd'       : self.PASSWD_PATTERN,
             'server_error' : 'src="http://img.ulozto.cz/error403/vykricnik.jpg"',  #: Paralell dl, server overload etc.
@@ -129,8 +130,7 @@ class UlozTo(SimpleHoster):
         })
 
         if check == "wrong_captcha":
-            self.captcha.invalid()
-            self.retry(reason=_("Wrong captcha code"))
+            self.retry_captcha()
 
         elif check == "offline":
             self.offline()
@@ -147,7 +147,7 @@ class UlozTo(SimpleHoster):
         elif check == "not_found":
             self.fail(_("Server error, file not downloadable"))
 
-        return super(UlozTo, self).check_file()
+        return super(UlozTo, self).check_download()
 
 
 getInfo = create_getInfo(UlozTo)

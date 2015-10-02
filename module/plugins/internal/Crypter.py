@@ -1,27 +1,23 @@
 # -*- coding: utf-8 -*-
 
-import urlparse
-
-from module.plugins.internal.Hoster import Hoster, _fixurl
+from module.plugins.internal.Base import Base, parse_name
 from module.utils import save_path as safe_filename
 
 
-class Crypter(Hoster):
+class Crypter(Base):
     __name__    = "Crypter"
     __type__    = "crypter"
-    __version__ = "0.07"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides pyload.config.get("general", "folder_per_package")
+    __config__  = [("use_premium"          , "bool", "Use premium account if available"   , True),
+                   ("use_subfolder"        , "bool", "Save package to subfolder"          , True),  #: Overrides pyload.config.get("general", "folder_per_package")
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Base decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
-
-
-    html = None  #: Last html loaded  #@TODO: Move to Hoster
 
 
     def __init__(self, pyfile):
@@ -32,6 +28,16 @@ class Crypter(Hoster):
 
         #: List of urls, pyLoad will generate packagenames
         self.urls = []
+
+        self._setup()
+        self.init()
+
+
+    def _setup(self):
+        super(Crypter, self)._setup()
+
+        self.packages = []
+        self.urls     = []
 
 
     def process(self, pyfile):
@@ -50,6 +56,9 @@ class Crypter(Hoster):
 
 
     def decrypt(self, pyfile):
+        """
+        The "main" method of every crypter plugin, you **have to** overwrite it
+        """
         raise NotImplementedError
 
 
@@ -78,13 +87,15 @@ class Crypter(Hoster):
                           "%d links" % len(links),
                           "Saved to folder: %s" % folder if folder else "Saved to download folder")
 
-            pid = self.pyload.api.addPackage(name, map(self.fixurl, links), package_queue)
+            links = map(self.fixurl, links)
+
+            pid = self.pyload.api.addPackage(name, links, package_queue)
 
             if package_password:
                 self.pyload.api.setPackageData(pid, {'password': package_password})
 
             #: Workaround to do not break API addPackage method
-            set_folder = lambda x: self.pyload.api.setPackageData(pid, {'folder': x or ""})
+            set_folder = lambda x="": self.pyload.api.setPackageData(pid, {'folder': safe_filename(x)})
 
             if use_subfolder:
                 if not subfolder_per_package:
@@ -93,10 +104,10 @@ class Crypter(Hoster):
 
                 elif not folder_per_package or name is not folder:
                     if not folder:
-                        folder = urlparse.urlparse(_fixurl(name)).path.split("/")[-1]
+                        folder = parse_name(name)
 
-                    set_folder(safe_filename(folder))
+                    set_folder(folder)
                     self.log_debug("Set package %(name)s folder to: %(folder)s" % {'name': name, 'folder': folder})
 
             elif folder_per_package:
-                set_folder(None)
+                set_folder()

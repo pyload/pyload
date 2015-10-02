@@ -7,7 +7,7 @@ from module.plugins.internal.Account import Account
 class LetitbitNet(Account):
     __name__    = "LetitbitNet"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __description__ = """Letitbit.net account plugin"""
@@ -15,7 +15,7 @@ class LetitbitNet(Account):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         ## DISABLED BECAUSE IT GET 'key exausted' EVEN IF VALID ##
         # json_data = [password, ['key/info']]
         # api_rep   = self.load("http://api.letitbit.net/json",
@@ -30,6 +30,6 @@ class LetitbitNet(Account):
         return {'premium': True}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         #: API_KEY is the username and the PREMIUM_KEY is the password
         self.log_info(_("You must use your API KEY as username and the PREMIUM KEY as password"))

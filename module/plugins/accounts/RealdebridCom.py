@@ -8,15 +8,24 @@ from module.plugins.internal.Account import Account
 class RealdebridCom(Account):
     __name__    = "RealdebridCom"
     __type__    = "account"
-    __version__ = "0.48"
+    __version__ = "0.50"
     __status__  = "testing"
+
+    __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
+                  ("mh_list"    , "str"                , "Hoster list (comma separated)", ""   ),
+                  ("mh_interval", "int"                , "Reload interval in minutes"   , 60   )]
 
     __description__ = """Real-Debrid.com account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_hosters(self, user, password, data):
+        html = self.load("https://real-debrid.com/api/hosters.php")
+        return [x for x in map(str.strip, html.replace("\"", "").split(",")) if x]
+
+
+    def grab_info(self, user, password, data):
         if self.pin_code:
             return
 
@@ -30,7 +39,7 @@ class RealdebridCom(Account):
                 'premium'    : True      }
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         self.pin_code = False
 
         html = self.load("https://real-debrid.com/ajax/login.php",
@@ -38,7 +47,7 @@ class RealdebridCom(Account):
                               'pass': password})
 
         if "Your login informations are incorrect" in html:
-            self.login_fail()
+            self.fail_login()
 
         elif "PIN Code required" in html:
             self.log_warning(_("PIN code required. Please login to https://real-debrid.com using the PIN or disable the double authentication in your control panel on https://real-debrid.com"))

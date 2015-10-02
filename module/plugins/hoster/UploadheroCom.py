@@ -44,21 +44,21 @@ class UploadheroCom(SimpleHoster):
         if m is None:
             self.error(_("Captcha not found"))
 
-        captcha = self.captcha.decrypt(urlparse.urljoin("http://uploadhero.co", m.group(1)))
+        captcha = self.captcha.decrypt(urlparse.urljoin("http://uploadhero.co/", m.group(1)))
 
         self.html = self.load(pyfile.url,
                               get={'code': captcha})
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
-        if m:
+        if m is not None:
             self.link = m.group(1) or m.group(2)
             self.wait(50)
 
 
     def check_errors(self):
         m = re.search(self.IP_BLOCKED_PATTERN, self.html)
-        if m:
-            self.html = self.load(urlparse.urljoin("http://uploadhero.co", m.group(1)))
+        if m is not None:
+            self.html = self.load(urlparse.urljoin("http://uploadhero.co/", m.group(1)))
 
             m = re.search(self.IP_WAIT_PATTERN, self.html)
             wait_time = (int(m.group(1)) * 60 + int(m.group(2))) if m else 5 * 60

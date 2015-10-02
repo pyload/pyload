@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import urlparse
-
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 

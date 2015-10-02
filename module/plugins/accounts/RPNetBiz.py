@@ -7,17 +7,36 @@ from module.common.json_layer import json_loads
 class RPNetBiz(Account):
     __name__    = "RPNetBiz"
     __type__    = "account"
-    __version__ = "0.15"
+    __version__ = "0.17"
     __status__  = "testing"
+
+    __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
+                  ("mh_list"    , "str"                , "Hoster list (comma separated)", ""   ),
+                  ("mh_interval", "int"                , "Reload interval in minutes"   , 60   )]
 
     __description__ = """RPNet.biz account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Dman", "dmanugm@gmail.com")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_hosters(self, user, password, data):
+        res = self.load("https://premium.rpnet.biz/client_api.php",
+                        get={'username': user,
+                             'password': password,
+                             'action'  : "showHosterList"})
+        hoster_list = json_loads(res)
+
+        #: If account is not valid thera are no hosters available
+        if 'error' in hoster_list:
+            return []
+
+        #: Extract hosters from json file
+        return hoster_list['hosters']
+
+
+    def grab_info(self, user, password, data):
         #: Get account information from rpnet.biz
-        res = self.get_account_status(user, password, req)
+        res = self.get_account_status(user, password)
         try:
             if res['accountInfo']['isPremium']:
                 #: Parse account info. Change the trafficleft later to support per host info.
@@ -33,16 +52,16 @@ class RPNetBiz(Account):
         return account_info
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         #: Get account information from rpnet.biz
-        res = self.get_account_status(user, password, req)
+        res = self.get_account_status(user, password)
 
         #: If we have an error in the res, we have wrong login information
         if 'error' in res:
-            self.login_fail()
+            self.fail_login()
 
 
-    def get_account_status(self, user, password, req):
+    def get_account_status(self, user, password):
         #: Using the rpnet API, check if valid premium account
         res = self.load("https://premium.rpnet.biz/client_api.php",
                             get={'username': user, 'password': password,

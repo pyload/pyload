@@ -8,15 +8,24 @@ from module.plugins.internal.Account import Account
 class SimplydebridCom(Account):
     __name__    = "SimplydebridCom"
     __type__    = "account"
-    __version__ = "0.13"
+    __version__ = "0.15"
     __status__  = "testing"
+
+    __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
+                  ("mh_list"    , "str"                , "Hoster list (comma separated)", ""   ),
+                  ("mh_interval", "int"                , "Reload interval in minutes"   , 60   )]
 
     __description__ = """Simply-Debrid.com account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_hosters(self, user, password, data):
+        html = self.load("http://simply-debrid.com/api.php", get={'list': 1})
+        return [x for x in map(str.strip, html.rstrip(';').replace("\"", "").split(";")) if x]
+
+
+    def grab_info(self, user, password, data):
         res = self.load("http://simply-debrid.com/api.php",
                         get={'login': 2,
                              'u'    : user,
@@ -28,10 +37,10 @@ class SimplydebridCom(Account):
             return {'trafficleft': -1, 'validuntil': time.mktime(time.strptime(str(data[2]), "%d/%m/%Y"))}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         res = self.load("https://simply-debrid.com/api.php",
                         get={'login': 1,
                              'u'    : user,
                              'p'    : password})
         if res != "02: loggin success":
-            self.login_fail()
+            self.fail_login()

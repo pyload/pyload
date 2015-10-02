@@ -8,15 +8,28 @@ from module.plugins.internal.Plugin import set_cookie
 class SimplyPremiumCom(Account):
     __name__    = "SimplyPremiumCom"
     __type__    = "account"
-    __version__ = "0.08"
+    __version__ = "0.10"
     __status__  = "testing"
+
+    __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
+                  ("mh_list"    , "str"                , "Hoster list (comma separated)", ""   ),
+                  ("mh_interval", "int"                , "Reload interval in minutes"   , 60   )]
 
     __description__ = """Simply-Premium.com account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_hosters(self, user, password, data):
+        json_data = self.load("http://www.simply-premium.com/api/hosts.php", get={'format': "json", 'online': 1})
+        json_data = json_loads(json_data)
+
+        host_list = [element['regex'] for element in json_data['result']]
+
+        return host_list
+
+
+    def grab_info(self, user, password, data):
         premium     = False
         validuntil  = -1
         trafficleft = None
@@ -39,11 +52,11 @@ class SimplyPremiumCom(Account):
         return {'premium': premium, 'validuntil': validuntil, 'trafficleft': trafficleft}
 
 
-    def login(self, user, password, data, req):
-        set_cookie(req.cj, "simply-premium.com", "lang", "EN")
+    def signin(self, user, password, data):
+        set_cookie(self.req.cj, "simply-premium.com", "lang", "EN")
 
         html = self.load("https://www.simply-premium.com/login.php",
                          post={'key': user} if not password else {'login_name': user, 'login_pass': password})
 
         if 'logout' not in html:
-            self.login_fail()
+            self.fail_login()

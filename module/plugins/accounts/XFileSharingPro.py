@@ -6,7 +6,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class XFileSharingPro(XFSAccount):
     __name__    = "XFileSharingPro"
     __type__    = "account"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __description__ = """XFileSharingPro multi-purpose account plugin"""
@@ -14,13 +14,13 @@ class XFileSharingPro(XFSAccount):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_DOMAIN = None
+    PLUGIN_DOMAIN = None
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         try:
-            return super(XFileSharingPro, self).login(user, data, req)
+            return super(XFileSharingPro, self).signin(user, password, data)
 
         except Fail:
-            self.HOSTER_URL = self.HOSTER_URL.replace("www.", "")
-            return super(XFileSharingPro, self).login(user, data, req)
+            self.PLUGIN_URL = self.PLUGIN_URL.replace("www.", "")
+            return super(XFileSharingPro, self).signin(user, password, data)

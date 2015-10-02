@@ -62,13 +62,11 @@ class UpstoreNet(SimpleHoster):
 
             #: STAGE 3: get direct link
             m = re.search(self.LINK_FREE_PATTERN, self.html, re.S)
-            if m:
+            if m is not None:
                 break
 
-        if m is None:
-            self.error(_("Download link not found"))
-
-        self.link = m.group(1)
+        if m is not None:
+            self.link = m.group(1)
 
 
 getInfo = create_getInfo(UpstoreNet)

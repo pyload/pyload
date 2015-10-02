@@ -79,6 +79,7 @@ class XHamsterCom(Hoster):
             file_url = re.search(r"<a href=\"" + srv_url + "(.+?)\"", self.html)
             if file_url is None:
                 self.error(_("file_url not found"))
+
             file_url = file_url.group(1)
             long_url = srv_url + file_url
             self.log_debug("long_url = " + long_url)

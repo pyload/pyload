@@ -26,16 +26,24 @@ from module.plugins.internal.Account import Account
 class SmoozedCom(Account):
     __name__    = "SmoozedCom"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.09"
     __status__  = "testing"
+
+    __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
+                  ("mh_list"    , "str"                , "Hoster list (comma separated)", ""   ),
+                  ("mh_interval", "int"                , "Reload interval in minutes"   , 60   )]
 
     __description__ = """Smoozed.com account plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("", "")]
+    __authors__     = [(None, None)]
 
 
-    def parse_info(self, user, password, data, req):
-        status = self.get_account_status(user, password, req)
+    def grab_hosters(self, user, password, data):
+        return self.get_data('hosters')
+
+
+    def grab_info(self, user, password, data):
+        status = self.get_account_status(user, password)
 
         self.log_debug(status)
 
@@ -61,16 +69,16 @@ class SmoozedCom(Account):
         return info
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         #: Get user data from premiumize.me
-        status = self.get_account_status(user, password, req)
+        status = self.get_account_status(user, password)
 
         #: Check if user and password are valid
         if status['state'] != 'ok':
-            self.login_fail()
+            self.fail_login()
 
 
-    def get_account_status(self, user, password, req):
+    def get_account_status(self, user, password):
         password  = password
         salt      = hashlib.sha256(password).hexdigest()
         encrypted = PBKDF2(password, salt, iterations=1000).hexread(32)

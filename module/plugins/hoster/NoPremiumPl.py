@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHoster import MultiHoster
 class NoPremiumPl(MultiHoster):
     __name__    = "NoPremiumPl"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __pattern__ = r'https?://direct\.nopremium\.pl.+'
@@ -39,7 +39,7 @@ class NoPremiumPl(MultiHoster):
     def prepare(self):
         super(NoPremiumPl, self).prepare()
 
-        data = self.account.get_data(self.user)
+        data = self.account.get_data()
 
         self.usr = data['usr']
         self.pwd = data['pwd']
@@ -66,14 +66,14 @@ class NoPremiumPl(MultiHoster):
             data = self.run_file_query(pyfile.url, 'fileinfo')
 
         except Exception:
-            self.log_debug("runFileQuery error")
+            self.log_debug("Query error #1")
             self.temp_offline()
 
         try:
             parsed = json_loads(data)
 
         except Exception:
-            self.log_debug("loads error")
+            self.log_debug("Data not found")
             self.temp_offline()
 
         self.log_debug(parsed)
@@ -84,10 +84,8 @@ class NoPremiumPl(MultiHoster):
                 self.fail(self.ERROR_CODES[parsed['errno']] % self.__name__)
             else:
                 #: Error code isn't yet added to plugin
-                self.fail(
-                    parsed['errstring']
-                    or _("Unknown error (code: %s)") % parsed['errno']
-                )
+                self.fail(parsed['errstring'] or
+                          _("Unknown error (code: %s)") % parsed['errno'])
 
         if "sdownload" in parsed:
             if parsed['sdownload'] == "1":
@@ -102,5 +100,5 @@ class NoPremiumPl(MultiHoster):
             self.link = self.run_file_query(pyfile.url, 'filedownload')
 
         except Exception:
-            self.log_debug("runFileQuery error #2")
+            self.log_debug("Query error #2")
             self.temp_offline()

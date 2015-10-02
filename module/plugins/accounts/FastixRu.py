@@ -7,18 +7,30 @@ from module.common.json_layer import json_loads
 class FastixRu(Account):
     __name__    = "FastixRu"
     __type__    = "account"
-    __version__ = "0.05"
+    __version__ = "0.08"
     __status__  = "testing"
+
+    __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
+                  ("mh_list"    , "str"                , "Hoster list (comma separated)", ""   ),
+                  ("mh_interval", "int"                , "Reload interval in minutes"   , 60   )]
 
     __description__ = """Fastix account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Massimo Rosamilia", "max@spiritix.eu")]
 
 
-    def parse_info(self, user, password, data, req):
-        data = self.get_data(user)
+    def grab_hosters(self, user, password, data):
+        html = self.load("http://fastix.ru/api_v2",
+                      get={'apikey': "5182964c3f8f9a7f0b00000a_kelmFB4n1IrnCDYuIFn2y",
+                           'sub'   : "allowed_sources"})
+        host_list = json_loads(html)
+        host_list = host_list['allow']
+        return host_list
+
+
+    def grab_info(self, user, password, data):
         html = json_loads(self.load("http://fastix.ru/api_v2/",
-                                    get={'apikey': data['api'],
+                                    get={'apikey': data['apikey'],
                                          'sub'   : "getaccountdetails"}))
 
         points = html['points']
@@ -31,16 +43,14 @@ class FastixRu(Account):
         return account_info
 
 
-    def login(self, user, password, data, req):
-        html = self.load("https://fastix.ru/api_v2/",
-                         get={'sub'     : "get_apikey",
-                              'email'   : user,
-                              'password': password})
+    def signin(self, user, password, data):
+        api = json_loads(self.load("https://fastix.ru/api_v2/",
+                                   get={'sub'     : "get_apikey",
+                                        'email'   : user,
+                                        'password': password}))
 
-        api = json_loads(html)
-        api = api['apikey']
+        if 'error' in api:
+            self.fail_login(api['error_txt'])
 
-        data['api'] = api
-
-        if "error_code" in html:
-            self.login_fail()
+        else:
+            data['apikey'] = api['apikey']

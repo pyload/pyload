@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class WebshareCz(SimpleHoster):
     __name__    = "WebshareCz"
     __type__    = "hoster"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(en\.)?webshare\.cz/(?:#/)?file/(?P<ID>\w+)'
@@ -41,7 +41,7 @@ class WebshareCz(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        wst = self.account.get_data(self.user).get('wst', None) if self.account else None
+        wst = self.account.get_data('wst') if self.account else None
 
         api_data = get_url("https://webshare.cz/api/file_link/",
                            post={'ident': self.info['pattern']['ID'], 'wst': wst})
@@ -49,7 +49,7 @@ class WebshareCz(SimpleHoster):
         self.log_debug("API data: " + api_data)
 
         m = re.search('<link>(.+)</link>', api_data)
-        if m:
+        if m is not None:
             self.link = m.group(1)
 
 

@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UnibytesCom(SimpleHoster):
     __name__    = "UnibytesCom"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?unibytes\.com/[\w .-]{11}B'
@@ -21,7 +21,7 @@ class UnibytesCom(SimpleHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    HOSTER_DOMAIN = "unibytes.com"
+    PLUGIN_DOMAIN = "unibytes.com"
 
     INFO_PATTERN = r'<span[^>]*?id="fileName".*?>(?P<N>[^>]+)</span>\s*\((?P<S>\d.*?)\)'
 
@@ -30,7 +30,7 @@ class UnibytesCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        domain            = "http://www.%s/" % self.HOSTER_DOMAIN
+        domain            = "http://www.%s/" % self.PLUGIN_DOMAIN
         action, post_data = self.parse_html_form('id="startForm"')
 
         self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
@@ -40,7 +40,7 @@ class UnibytesCom(SimpleHoster):
             self.html = self.load(urlparse.urljoin(domain, action), post=post_data)
 
             m = re.search(r'location:\s*(\S+)', self.req.http.header, re.I)
-            if m:
+            if m is not None:
                 self.link = m.group(1)
                 break
 
@@ -50,12 +50,12 @@ class UnibytesCom(SimpleHoster):
 
             if post_data['step'] == "last":
                 m = re.search(self.LINK_FREE_PATTERN, self.html)
-                if m:
-                    self.link = m.group(1)
+                if m is not None:
                     self.captcha.correct()
+                    self.link = m.group(1)
                     break
                 else:
-                    self.captcha.invalid()
+                    self.retry_captcha()
 
             last_step = post_data['step']
             action, post_data = self.parse_html_form('id="stepForm"')
@@ -65,7 +65,7 @@ class UnibytesCom(SimpleHoster):
                 self.wait(m.group(1) if m else 60, False)
 
             elif last_step in ("captcha", "last"):
-                post_data['captcha'] = self.captcha.decrypt(urlparse.urljoin(domain, "/captcha.jpg"))
+                post_data['captcha'] = self.captcha.decrypt(urlparse.urljoin(domain, "captcha.jpg"))
 
         else:
             self.fail(_("No valid captcha code entered"))

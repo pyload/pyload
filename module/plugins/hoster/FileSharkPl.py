@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FileSharkPl(SimpleHoster):
     __name__    = "FileSharkPl"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fileshark\.pl/pobierz/\d+/\w+'
@@ -50,12 +50,12 @@ class FileSharkPl(SimpleHoster):
     def check_errors(self):
         #: Check if file is now available for download (-> file name can be found in html body)
         m = re.search(self.WAIT_PATTERN, self.html)
-        if m:
+        if m is not None:
             errmsg = self.info['error'] = _("Another download already run")
             self.retry(15, int(m.group(1)), errmsg)
 
         m = re.search(self.ERROR_PATTERN, self.html)
-        if m:
+        if m is not None:
             alert = m.group(1)
 
             if re.match(self.IP_ERROR_PATTERN, alert):
@@ -78,12 +78,12 @@ class FileSharkPl(SimpleHoster):
         if m is None:
             self.error(_("Download url not found"))
 
-        link = urlparse.urljoin("http://fileshark.pl", m.group(1))
+        link = urlparse.urljoin("http://fileshark.pl/", m.group(1))
 
         self.html = self.load(link)
 
         m = re.search(self.WAIT_PATTERN, self.html)
-        if m:
+        if m is not None:
             seconds = int(m.group(1))
             self.log_debug("Wait %s seconds" % seconds)
             self.wait(seconds)
@@ -92,15 +92,15 @@ class FileSharkPl(SimpleHoster):
 
         m = re.search(self.TOKEN_PATTERN, self.html)
         if m is None:
-            self.retry(reason=_("Captcha form not found"))
+            self.retry(msg=_("Captcha form not found"))
 
         inputs['form[_token]'] = m.group(1)
 
         m = re.search(self.CAPTCHA_PATTERN, self.html)
         if m is None:
-            self.retry(reason=_("Captcha image not found"))
+            self.retry(msg=_("Captcha image not found"))
 
-        inputs['form[captcha]'] = self.captcha._decrypt(m.group(1).decode('base64'), input_type='jpeg')
+        inputs['form[captcha]'] = self.captcha.decrypt_image(m.group(1).decode('base64'), input_type='jpeg')
         inputs['form[start]'] = ""
 
         self.download(link, post=inputs, disposition=True)

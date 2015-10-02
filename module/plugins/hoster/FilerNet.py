@@ -6,7 +6,6 @@
 
 import pycurl
 import re
-import urlparse
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
@@ -58,10 +57,10 @@ class FilerNet(SimpleHoster):
         self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
         if 'location' in self.req.http.header.lower():
-            self.link = re.search(r'location: (\S+)', self.req.http.header, re.I).group(1)
             self.captcha.correct()
+            self.link = re.search(r'location: (\S+)', self.req.http.header, re.I).group(1)
         else:
-            self.captcha.invalid()
+            self.retry_captcha()
 
 
 getInfo = create_getInfo(FilerNet)

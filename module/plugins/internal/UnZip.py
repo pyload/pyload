@@ -7,12 +7,11 @@ import sys
 import zipfile
 
 from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
-from module.utils import fs_encode
 
 
 class UnZip(Extractor):
     __name__    = "UnZip"
-    __version__ = "1.15"
+    __version__ = "1.16"
     __status__  = "testing"
 
     __description__ = """Zip extractor plugin"""
@@ -30,17 +29,13 @@ class UnZip(Extractor):
 
 
     def list(self, password=None):
-        with zipfile.ZipFile(fs_encode(self.filename), 'r', allowZip64=True) as z:
+        with zipfile.ZipFile(self.target, 'r', allowZip64=True) as z:
             z.setpassword(password)
             return z.namelist()
 
 
-    def check(self, password):
-        pass
-
-
-    def verify(self):
-        with zipfile.ZipFile(fs_encode(self.filename), 'r', allowZip64=True) as z:
+    def verify(self, password=None):
+        with zipfile.ZipFile(self.target, 'r', allowZip64=True) as z:
             badfile = z.testzip()
 
             if badfile:
@@ -51,7 +46,7 @@ class UnZip(Extractor):
 
     def extract(self, password=None):
         try:
-            with zipfile.ZipFile(fs_encode(self.filename), 'r', allowZip64=True) as z:
+            with zipfile.ZipFile(self.target, 'r', allowZip64=True) as z:
                 z.setpassword(password)
 
                 badfile = z.testzip()

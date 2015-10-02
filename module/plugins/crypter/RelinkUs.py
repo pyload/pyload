@@ -154,7 +154,7 @@ class RelinkUs(Crypter):
 
         #: Try to get info from web
         m = re.search(self.FILE_TITLE_REGEX, self.html)
-        if m:
+        if m is not None:
             title = m.group(1).strip()
             if not self.FILE_NOTITLE in title:
                 name = folder = title
@@ -172,14 +172,11 @@ class RelinkUs(Crypter):
 
     def handle_errors(self):
         if self.PASSWORD_ERROR_ROKEN in self.html:
-            msg = "Incorrect password, please set right password on 'Edit package' form and retry"
-            self.log_debug(msg)
-            self.fail(_(msg))
+            self.fail(_("Wrong password"))
 
         if self.captcha:
             if self.CAPTCHA_ERROR_ROKEN in self.html:
-                self.captcha.invalid()
-                self.retry()
+                self.retry_captcha()
             else:
                 self.captcha.correct()
 
@@ -199,14 +196,16 @@ class RelinkUs(Crypter):
         self.log_debug("Search for CNL2 links")
         package_links = []
         m = re.search(self.CNL2_FORM_REGEX, self.html, re.S)
-        if m:
+        if m is not None:
             cnl2_form = m.group(1)
             try:
                 (vcrypted, vjk) = self._get_cipher_params(cnl2_form)
                 for (crypted, jk) in zip(vcrypted, vjk):
                     package_links.extend(self._get_links(crypted, jk))
+
             except Exception:
                 self.log_debug("Unable to decrypt CNL2 links")
+
         return package_links
 
 
@@ -214,7 +213,7 @@ class RelinkUs(Crypter):
         self.log_debug("Search for DLC links")
         package_links = []
         m = re.search(self.DLC_LINK_REGEX, self.html)
-        if m:
+        if m is not None:
             container_url = self.DLC_DOWNLOAD_URL + "?id=%s&dlc=1" % self.fileid
             self.log_debug("Downloading DLC container link [%s]" % container_url)
             try:

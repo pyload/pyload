@@ -6,7 +6,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class JunocloudMe(XFSAccount):
     __name__    = "JunocloudMe"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __description__ = """Junocloud.me account plugin"""
@@ -14,4 +14,4 @@ class JunocloudMe(XFSAccount):
     __authors__     = [("guidobelix", "guidobelix@hotmail.it")]
 
 
-    HOSTER_DOMAIN = "junocloud.me"
+    PLUGIN_DOMAIN = "junocloud.me"

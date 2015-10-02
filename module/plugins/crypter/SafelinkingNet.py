@@ -47,24 +47,25 @@ class SafelinkingNet(Crypter):
                 postData['link-password'] = self.get_password()
 
             if "altcaptcha" in self.html:
-                for _i in xrange(5):
-                    m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
-                    if m:
-                        captchaKey = m.group(1)
-                        captcha = SolveMedia(self)
-                        captchaProvider = "Solvemedia"
-                    else:
-                        self.fail(_("Error parsing captcha"))
+                m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
+                if m is not None:
+                    captchaKey = m.group(1)
+                    captcha = SolveMedia(self)
+                    captchaProvider = "Solvemedia"
+                else:
+                    self.fail(_("Error parsing captcha"))
 
-                    response, challenge = captcha.challenge(captchaKey)
-                    postData['adcopy_challenge'] = challenge
-                    postData['adcopy_response']  = response
+                response, challenge = captcha.challenge(captchaKey)
+                postData['adcopy_challenge'] = challenge
+                postData['adcopy_response']  = response
 
-                    self.html = self.load(url, post=postData)
-                    if "The password you entered was incorrect" in self.html:
-                        self.fail(_("Incorrect Password"))
-                    if not "The CAPTCHA code you entered was wrong" in self.html:
-                        break
+                self.html = self.load(url, post=postData)
+
+                if "The CAPTCHA code you entered was wrong" in self.html:
+                    self.retry_captcha()
+
+                if "The password you entered was incorrect" in self.html:
+                    self.fail(_("Wrong password"))
 
             pyfile.package().password = ""
             soup = BeautifulSoup.BeautifulSoup(self.html)
@@ -73,7 +74,7 @@ class SafelinkingNet(Crypter):
                 if "d_links" in s.text:
                     break
             m = re.search('d_links":(\[.*?\])', s.text)
-            if m:
+            if m is not None:
                 linkDict = json_loads(m.group(1))
                 for link in linkDict:
                     if not "http://" in link['full']:

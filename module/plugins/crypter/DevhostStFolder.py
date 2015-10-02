@@ -42,7 +42,7 @@ class DevhostStFolder(SimpleCrypter):
 
             p = r'href="(.+?)">Back to \w+<'
             m = re.search(p, self.html)
-            html = self.load(urlparse.urljoin("http://d-h.st", m.group(1)),
+            html = self.load(urlparse.urljoin("http://d-h.st/", m.group(1)),
                              cookies=False)
 
             p = '\?fld_id=%s.*?">(.+?)<' % self.info['pattern']['ID']

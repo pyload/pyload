@@ -12,16 +12,25 @@ from module.plugins.internal.Account import Account
 class AlldebridCom(Account):
     __name__    = "AlldebridCom"
     __type__    = "account"
-    __version__ = "0.26"
+    __version__ = "0.28"
     __status__  = "testing"
+
+    __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
+                  ("mh_list"    , "str"                , "Hoster list (comma separated)", ""   ),
+                  ("mh_interval", "int"                , "Reload interval in minutes"   , 60   )]
 
     __description__ = """AllDebrid.com account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Andy Voigt", "spamsales@online.de")]
 
 
-    def parse_info(self, user, password, data, req):
-        data = self.get_data(user)
+    def grab_hosters(self, user, password, data):
+        html = self.load("https://www.alldebrid.com/api.php",
+                         get={'action': "get_host"})
+        return [x for x in map(str.strip, html.replace("\"", "").split(",")) if x]
+
+
+    def grab_info(self, user, password, data):
         html = self.load("http://www.alldebrid.com/account/")
         soup = BeautifulSoup.BeautifulSoup(html)
 
@@ -38,7 +47,6 @@ class AlldebridCom(Account):
 
         #: Get expiration date from API
         except Exception:
-            data = self.get_data(user)
             html = self.load("https://www.alldebrid.com/api.php",
                              get={'action': "info_user",
                                   'login' : user,
@@ -54,7 +62,7 @@ class AlldebridCom(Account):
                 'premium'    : True    }
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         html = self.load("https://www.alldebrid.com/register/",
                          get={'action'        : "login",
                               'login_login'   : user,
@@ -63,4 +71,4 @@ class AlldebridCom(Account):
         if "This login doesn't exist" in html \
            or "The password is not valid" in html \
            or "Invalid captcha" in html:
-            self.login_fail()
+            self.fail_login()

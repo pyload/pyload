@@ -17,7 +17,7 @@ class DLC(Container):
     __version__ = "0.26"
     __status__  = "testing"
 
-    __pattern__ = r'.+\.dlc$'
+    __pattern__ = r'(.+\.dlc|[\w+^_]+==[\w+^_/]+==)$'
 
     __description__ = """DLC container decrypter plugin"""
     __license__     = "GPLv3"

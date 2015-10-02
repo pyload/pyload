@@ -5,6 +5,7 @@ import re
 
 from module.PyFile import PyFile
 from module.plugins.internal.Plugin import Plugin
+from module.utils import fs_encode
 
 
 class ArchiveError(Exception):
@@ -22,7 +23,7 @@ class PasswordError(Exception):
 class Extractor(Plugin):
     __name__    = "Extractor"
     __type__    = "extractor"
-    __version__ = "0.33"
+    __version__ = "0.35"
     __status__  = "testing"
 
     __description__ = """Base extractor plugin"""
@@ -43,15 +44,9 @@ class Extractor(Plugin):
 
 
     @classmethod
-    def is_multipart(cls, filename):
-        return False
-
-
-    @classmethod
     def find(cls):
         """
         Check if system statisfy dependencies
-        :return: boolean
         """
         pass
 
@@ -72,7 +67,13 @@ class Extractor(Plugin):
                 if pname not in processed:
                     processed.append(pname)
                     targets.append((fname, id, fout))
+
         return targets
+
+
+    @property
+    def target(self):
+        return fs_encode(self.filename)
 
 
     def __init__(self, plugin, filename, out,
@@ -119,53 +120,29 @@ class Extractor(Plugin):
                                 (self.__name__,) + messages)
 
 
-    def check(self):
+    def verify(self, password=None):
         """
-        Quick Check by listing content of archive.
-        Raises error if password is needed, integrity is questionable or else.
-
-        :raises PasswordError
-        :raises CRCError
-        :raises ArchiveError
+        Testing with Extractors built-in method
+        Raise error if password is needed, integrity is questionable or else
         """
-        raise NotImplementedError
-
-
-    def verify(self):
-        """
-        Testing with Extractors buildt-in method
-        Raises error if password is needed, integrity is questionable or else.
-
-        :raises PasswordError
-        :raises CRCError
-        :raises ArchiveError
-        """
-        raise NotImplementedError
+        pass
 
 
     def repair(self):
-        return None
+        return False
 
 
     def extract(self, password=None):
         """
-        Extract the archive. Raise specific errors in case of failure.
-
-        :param progress: Progress function, call this to update status
-        :param password password to use
-        :raises PasswordError
-        :raises CRCError
-        :raises ArchiveError
-        :return:
+        Extract the archive
+        Raise specific errors in case of failure
         """
         raise NotImplementedError
 
 
-    def get_delete_files(self):
+    def items(self):
         """
-        Return list of files to delete, do *not* delete them here.
-
-        :return: List with paths of files to delete
+        Return list of archive parts
         """
         return [self.filename]
 

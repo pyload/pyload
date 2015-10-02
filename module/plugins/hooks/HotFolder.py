@@ -14,7 +14,7 @@ from module.utils import fs_encode, save_join as fs_join
 class HotFolder(Addon):
     __name__    = "HotFolder"
     __type__    = "hook"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __config__ = [("folder"    , "str" , "Folder to observe"    , "container"),
@@ -29,6 +29,7 @@ class HotFolder(Addon):
 
     def init(self):
         self.interval = 30
+        self.init_periodical()
 
 
     def periodical(self):

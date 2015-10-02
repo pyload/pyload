@@ -8,11 +8,11 @@ from glob import glob
 from string import digits
 
 from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
-from module.utils import fs_decode, fs_encode, save_join as fs_join
+from module.utils import fs_decode, save_join as fs_join
 
 
 def renice(pid, value):
-    if value and os.name != "nt":
+    if value and os.name is not "nt":
         try:
             subprocess.Popen(["renice", str(value), str(pid)], stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=-1)
 
@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.25"
+    __version__ = "1.27"
     __status__  = "testing"
 
     __description__ = """Rar extractor plugin"""
@@ -49,7 +49,7 @@ class UnRar(Extractor):
     @classmethod
     def find(cls):
         try:
-            if os.name == "nt":
+            if os.name is "nt":
                 cls.CMD = os.path.join(pypath, "RAR.exe")
             else:
                 cls.CMD = "rar"
@@ -61,7 +61,7 @@ class UnRar(Extractor):
 
         except OSError:
             try:
-                if os.name == "nt":
+                if os.name is "nt":
                     cls.CMD = os.path.join(pypath, "UnRAR.exe")
                 else:
                     cls.CMD = "unrar"
@@ -84,20 +84,8 @@ class UnRar(Extractor):
         return True if cls.re_multipart.search(filename) else False
 
 
-    def verify(self, password):
-        p = self.call_cmd("t", "-v", fs_encode(self.filename), password=password)
-        self._progress(p)
-        err = p.stderr.read().strip()
-
-        if self.re_wrongpwd.search(err):
-            raise PasswordError
-
-        if self.re_wrongcrc.search(err):
-            raise CRCError(err)
-
-
-    def check(self, password):
-        p = self.call_cmd("l", "-v", fs_encode(self.filename), password=password)
+    def verify(self, password=None):
+        p = self.call_cmd("l", "-v", self.target, password=password)
         out, err = p.communicate()
 
         if self.re_wrongpwd.search(err):
@@ -113,13 +101,28 @@ class UnRar(Extractor):
 
 
     def repair(self):
-        p = self.call_cmd("rc", fs_encode(self.filename))
+        p = self.call_cmd("rc", self.target)
 
         #: Communicate and retrieve stderr
         self._progress(p)
         err = p.stderr.read().strip()
+
         if err or p.returncode:
-            return False
+            p = self.call_cmd("r", self.target)
+
+            # communicate and retrieve stderr
+            self._progress(p)
+            err = p.stderr.read().strip()
+
+            if err or p.returncode:
+                return False
+
+            else:
+                dir  = os.path.dirname(filename)
+                name = re_filefixed.search(out).group(1)
+
+                self.filename = os.path.join(dir, name)
+
         return True
 
 
@@ -145,7 +148,7 @@ class UnRar(Extractor):
     def extract(self, password=None):
         command = "x" if self.fullpath else "e"
 
-        p = self.call_cmd(command, fs_encode(self.filename), self.out, password=password)
+        p = self.call_cmd(command, self.target, self.out, password=password)
 
         renice(p.pid, self.renice)
 
@@ -169,7 +172,7 @@ class UnRar(Extractor):
         self.files = self.list(password)
 
 
-    def get_delete_files(self):
+    def items(self):
         dir, name = os.path.split(self.filename)
 
         #: Actually extracted file
@@ -185,7 +188,7 @@ class UnRar(Extractor):
     def list(self, password=None):
         command = "vb" if self.fullpath else "lb"
 
-        p = self.call_cmd(command, "-v", fs_encode(self.filename), password=password)
+        p = self.call_cmd(command, "-v", self.target, password=password)
         out, err = p.communicate()
 
         if "Cannot open" in err:
@@ -226,7 +229,7 @@ class UnRar(Extractor):
         args.append("-y")
 
         #: Set a password
-        if "password" in kwargs and kwargs['password']:
+        if kwargs.get('password'):
             args.append("-p%s" % kwargs['password'])
         else:
             args.append("-p-")

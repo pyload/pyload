@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class QuickshareCz(SimpleHoster):
     __name__    = "QuickshareCz"
     __type__    = "hoster"
-    __version__ = "0.57"
+    __version__ = "0.58"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:[^/]*\.)?quickshare\.cz/stahnout-soubor/.+'
@@ -39,7 +39,7 @@ class QuickshareCz(SimpleHoster):
             if 'UU_prihlasen' in self.jsvars:
                 if self.jsvars['UU_prihlasen'] == "0":
                     self.log_warning(_("User not logged in"))
-                    self.relogin(self.user)
+                    self.relogin()
                     self.retry()
                 elif float(self.jsvars['UU_kredit']) < float(self.jsvars['kredit_odecet']):
                     self.log_warning(_("Not enough credit left"))
@@ -50,7 +50,7 @@ class QuickshareCz(SimpleHoster):
         else:
             self.handle_free(pyfile)
 
-        if self.check_download({'error': re.compile(r"\AChyba!")}, max_size=100):
+        if self.check_file({'error': re.compile(r"\AChyba!")}, max_size=100):
             self.fail(_("File not m or plugin defect"))
 
 
@@ -69,12 +69,12 @@ class QuickshareCz(SimpleHoster):
         if m is None:
             self.fail(_("File not found"))
 
-        self.link = m.group(1).rstrip()  #@TODO: Remove .rstrip() in 0.4.10
+        self.link = m.group(1)
         self.log_debug("FREE URL2:" + self.link)
 
         #: Check errors
         m = re.search(r'/chyba/(\d+)', self.link)
-        if m:
+        if m is not None:
             if m.group(1) == "1":
                 self.retry(60, 2 * 60, "This IP is already downloading")
             elif m.group(1) == "2":

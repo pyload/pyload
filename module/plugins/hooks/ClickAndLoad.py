@@ -84,7 +84,7 @@ class ClickAndLoad(Addon):
                         server_socket = ssl.wrap_socket(server_socket)
 
                     except NameError:
-                        self.log_error(_("pyLoad's webinterface is configured to use HTTPS, Please install python's ssl lib or disable HTTPS"))
+                        self.log_error(_("Missing SSL lib"), _("Please disable HTTPS in pyLoad settings"))
                         client_socket.close()  #: Reset the connection.
                         continue
 

@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class PremiumizeMe(MultiHoster):
     __name__    = "PremiumizeMe"
     __type__    = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate
@@ -44,11 +44,17 @@ class PremiumizeMe(MultiHoster):
         status = data['status']
 
         if status == 200:
+            if 'filename' in data['result']:
+                self.pyfile.name = data['result']['filename']
+
+            if 'filesize' in data['result']:
+                self.pyfile.size = data['result']['filesize']
+
             self.link = data['result']['location']
             return
 
         elif status == 400:
-            self.fail(_("Invalid link"))
+            self.fail(_("Invalid url"))
 
         elif status == 404:
             self.offline()

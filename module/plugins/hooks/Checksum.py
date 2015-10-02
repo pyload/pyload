@@ -38,7 +38,7 @@ def compute_checksum(local_file, algorithm):
 class Checksum(Addon):
     __name__    = "Checksum"
     __type__    = "hook"
-    __version__ = "0.19"
+    __version__ = "0.22"
     __status__  = "testing"
 
     __config__ = [("check_checksum", "bool"             , "Check checksum? (If False only size will be verified)", True   ),
@@ -114,7 +114,7 @@ class Checksum(Addon):
             api_size  = int(data['size'])
             file_size = os.path.getsize(local_file)
 
-            if api_size is not file_size:
+            if api_size != file_size:
                 self.log_warning(_("File %s has incorrect size: %d B (%d expected)") % (pyfile.name, file_size, api_size))
                 self.check_failed(pyfile, local_file, "Incorrect file size")
 
@@ -131,15 +131,15 @@ class Checksum(Addon):
 
             for key in self.algorithms:
                 if key in data:
-                    checksum = computeChecksum(local_file, key.replace("-", "").lower())
+                    checksum = compute_checksum(local_file, key.replace("-", "").lower())
                     if checksum:
-                        if checksum is data[key].lower():
+                        if checksum == data[key].lower():
                             self.log_info(_('File integrity of "%s" verified by %s checksum (%s)') %
                                         (pyfile.name, key.upper(), checksum))
                             break
                         else:
                             self.log_warning(_("%s checksum for file %s does not match (%s != %s)") %
-                                           (key.upper(), pyfile.name, checksum, data[key]))
+                                           (key.upper(), pyfile.name, checksum, data[key].lower()))
                             self.check_failed(pyfile, local_file, "Checksums do not match")
                     else:
                         self.log_warning(_("Unsupported hashing algorithm"), key.upper())
@@ -160,7 +160,7 @@ class Checksum(Addon):
                 return
         elif check_action == "nothing":
             return
-        pyfile.plugin.fail(reason=msg)
+        pyfile.plugin.fail(msg=msg)
 
 
     def package_finished(self, pypack):
@@ -186,7 +186,7 @@ class Checksum(Addon):
 
                 local_file = fs_encode(fs_join(download_folder, data['NAME']))
                 algorithm = self.methods.get(file_type, file_type)
-                checksum = computeChecksum(local_file, algorithm)
+                checksum = compute_checksum(local_file, algorithm)
                 if checksum is data['HASH']:
                     self.log_info(_('File integrity of "%s" verified by %s checksum (%s)') %
                                 (data['NAME'], algorithm, checksum))

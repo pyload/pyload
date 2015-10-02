@@ -172,10 +172,10 @@ class Xdcc(Hoster):
                     retry = time.time() + 300
 
                 if "you must be on a known channel to request a pack" in msg['text']:
-                    self.fail(_("Wrong channel"))
+                    self.fail(_("Invalid channel"))
 
                 m = re.match('\x01DCC SEND (.*?) (\d+) (\d+)(?: (\d+))?\x01', msg['text'])
-                if m:
+                if m is not None:
                     done = True
 
         #: Get connection data

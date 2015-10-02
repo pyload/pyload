@@ -4,14 +4,16 @@ import re
 import time
 import urlparse
 
+from module.common.json_layer import json_loads
 from module.plugins.internal.Account import Account
+# from module.plugins.internal.MultiAccount import MultiAccount
 from module.plugins.internal.Plugin import parse_html_form, set_cookie
 
 
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.42"
+    __version__ = "0.49"
     __status__  = "testing"
 
     __description__ = """XFileSharing account plugin"""
@@ -20,8 +22,8 @@ class XFSAccount(Account):
                        ("Walter Purcaro", "vuolter@gmail.com"  )]
 
 
-    HOSTER_DOMAIN = None
-    HOSTER_URL    = None
+    PLUGIN_DOMAIN = None
+    PLUGIN_URL    = None
     LOGIN_URL     = None
 
     COOKIES = True
@@ -37,28 +39,39 @@ class XFSAccount(Account):
     LEECH_TRAFFIC_UNIT    = "MB"  #: Used only if no group <U> was found
 
     LOGIN_FAIL_PATTERN = r'Incorrect Login or Password|account was banned|Error<'
+    LOGIN_SKIP_PATTERN = r'op=logout'
 
 
-    def parse_info(self, user, password, data, req):
+    def set_xfs_cookie(self):
+        if not self.COOKIES:
+            return
+
+        if isinstance(self.COOKIES, list) and (self.PLUGIN_DOMAIN, "lang", "english") not in self.COOKIES:
+            self.COOKIES.insert((self.PLUGIN_DOMAIN, "lang", "english"))
+        else:
+            set_cookie(self.req.cj, self.PLUGIN_DOMAIN, "lang", "english")
+
+
+    def grab_info(self, user, password, data):
         validuntil   = None
         trafficleft  = None
         leechtraffic = None
         premium      = None
 
-        if not self.HOSTER_URL:  #@TODO: Remove in 0.4.10
+        if not self.PLUGIN_URL:  #@TODO: Remove in 0.4.10
             return {'validuntil'  : validuntil,
                     'trafficleft' : trafficleft,
                     'leechtraffic': leechtraffic,
                     'premium'     : premium}
 
-        html = self.load(self.HOSTER_URL,
+        html = self.load(self.PLUGIN_URL,
                          get={'op': "my_account"},
                          cookies=self.COOKIES)
 
         premium = True if re.search(self.PREMIUM_PATTERN, html) else False
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
-        if m:
+        if m is not None:
             expiredate = m.group(1).strip()
             self.log_debug("Expire date: " + expiredate)
 
@@ -81,7 +94,7 @@ class XFSAccount(Account):
             self.log_debug("VALID_UNTIL_PATTERN not found")
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        if m:
+        if m is not None:
             try:
                 traffic = m.groupdict()
                 size    = traffic['S']
@@ -138,29 +151,30 @@ class XFSAccount(Account):
                 'premium'     : premium}
 
 
-    def login(self, user, password, data, req):
-        if self.HOSTER_DOMAIN:
-            if not self.HOSTER_URL:
-                self.HOSTER_URL = "http://www.%s/" % self.HOSTER_DOMAIN
+    def signin(self, user, password, data):
+        if self.PLUGIN_DOMAIN:
+            if not self.PLUGIN_URL:
+                self.PLUGIN_URL = "http://www.%s/" % self.PLUGIN_DOMAIN
 
-            if self.COOKIES:
-                if isinstance(self.COOKIES, list) and not self.COOKIES.count((self.HOSTER_DOMAIN, "lang", "english")):
-                    self.COOKIES.insert((self.HOSTER_DOMAIN, "lang", "english"))
-                else:
-                    set_cookie(self.req.cj, self.HOSTER_DOMAIN, "lang", "english")
+            self.set_xfs_cookie()
 
-        if not self.HOSTER_URL:
-            self.login_fail(_("Missing HOSTER_URL"))
+        if not self.PLUGIN_URL:
+            self.fail_login(_("Missing PLUGIN_URL"))
+        else:
+            self.PLUGIN_URL = self.PLUGIN_URL.rstrip('/') + "/"
 
         if not self.LOGIN_URL:
-            self.LOGIN_URL  = urlparse.urljoin(self.HOSTER_URL, "login.html")
+            self.LOGIN_URL  = urlparse.urljoin(self.PLUGIN_URL, "login.html")
 
         html = self.load(self.LOGIN_URL, cookies=self.COOKIES)
+
+        if re.search(self.LOGIN_SKIP_PATTERN, html):
+            self.skip_login()
 
         action, inputs = parse_html_form('name="FL"', html)
         if not inputs:
             inputs = {'op'      : "login",
-                      'redirect': self.HOSTER_URL}
+                      'redirect': self.PLUGIN_URL}
 
         inputs.update({'login'   : user,
                        'password': password})
@@ -168,9 +182,17 @@ class XFSAccount(Account):
         if action:
             url = urlparse.urljoin("http://", action)
         else:
-            url = self.HOSTER_URL
+            url = self.PLUGIN_URL
 
         html = self.load(url, post=inputs, cookies=self.COOKIES)
 
-        if re.search(self.LOGIN_FAIL_PATTERN, html):
-            self.login_fail()
+        try:
+            json = json_loads(html)
+
+        except ValueError:
+            if re.search(self.LOGIN_FAIL_PATTERN, html):
+                self.fail_login()
+
+        else:
+            if not 'success' in json or not json['success']:
+                self.fail_login()

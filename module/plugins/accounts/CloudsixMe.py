@@ -6,7 +6,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class CloudsixMe(XFSAccount):
     __name__    = "CloudsixMe"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "testing"
 
     __description__ = """Cloudsix.me account plugin"""
@@ -14,4 +14,4 @@ class CloudsixMe(XFSAccount):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_DOMAIN = "cloudsix.me"
+    PLUGIN_DOMAIN = "cloudsix.me"

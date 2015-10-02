@@ -6,7 +6,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class SecureUploadEu(XFSAccount):
     __name__    = "SecureUploadEu"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __description__ = """SecureUpload.eu account plugin"""
@@ -14,4 +14,4 @@ class SecureUploadEu(XFSAccount):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_DOMAIN = "secureupload.eu"
+    PLUGIN_DOMAIN = "secureupload.eu"

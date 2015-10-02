@@ -34,7 +34,7 @@ class YadiSk(SimpleHoster):
                     info ['idclient']  += random.choice('0123456abcdef')
 
             m = re.search(r'<script id="models-client" type="application/json">(.+?)</script>', html)
-            if m:
+            if m is not None:
                 api_data = json_loads(m.group(1))
                 try:
                     for sect in api_data:

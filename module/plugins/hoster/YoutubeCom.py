@@ -6,37 +6,17 @@ import subprocess
 import urllib
 
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.Plugin import replace_patterns
+from module.plugins.internal.Plugin import replace_patterns, which
 from module.utils import html_unescape
-
-
-def which(program):
-    """
-    Works exactly like the unix command which
-    Courtesy of http://stackoverflow.com/a/377028/675646
-    """
-    isExe = lambda x: os.path.isfile(x) and os.access(x, os.X_OK)
-
-    fpath, fname = os.path.split(program)
-
-    if fpath:
-        if isExe(program):
-            return program
-    else:
-        for path in os.environ['PATH'].split(os.pathsep):
-            path = path.strip('"')
-            exe_file = os.path.join(path, program)
-            if isExe(exe_file):
-                return exe_file
 
 
 class YoutubeCom(Hoster):
     __name__    = "YoutubeCom"
     __type__    = "hoster"
-    __version__ = "0.44"
+    __version__ = "0.46"
     __status__  = "testing"
 
-    __pattern__ = r'https?://(?:[^/]*\.)?(youtube\.com|youtu\.be)/watch\?(?:.*&)?v=.+'
+    __pattern__ = r'https?://(?:[^/]*\.)?(youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)\w+'
     __config__  = [("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting"             , "hd" ),
                    ("fmt"    , "int"                                         , "FMT/ITAG Number (0 for auto)", 0    ),
                    (".mp4"   , "bool"                                        , "Allow .mp4"                  , True ),
@@ -51,10 +31,10 @@ class YoutubeCom(Hoster):
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    URL_REPLACEMENTS = [(r'youtu\.be/', 'youtube.com/')]
+    URL_REPLACEMENTS = [(r'youtu\.be/', 'youtube.com/watch?v=')]
 
     #: Invalid characters that must be removed from the file name
-    invalidChars = u'\u2605:?><"|\\'
+    invalid_chars = u'\u2605:?><"|\\'
 
     #: name, width, height, quality ranking, 3D
     formats = {5  : (".flv" , 400 , 240 , 1 , False),

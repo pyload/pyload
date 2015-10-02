@@ -45,21 +45,16 @@ class IfolderRu(SimpleHoster):
         self.get_fileInfo()
 
         session_id = re.search(self.SESSION_ID_PATTERN, self.html).groups()
-
         captcha_url = "http://ints.rusfolder.com/random/images/?session=%s" % session_id
-        for _i in xrange(5):
-            action, inputs = self.parse_html_form('id="download-step-one-form"')
-            inputs['confirmed_number'] = self.captcha.decrypt(captcha_url, cookies=True)
-            inputs['action'] = '1'
-            self.log_debug(inputs)
 
-            self.html = self.load(url, post=inputs)
-            if self.WRONG_CAPTCHA_PATTERN in self.html:
-                self.captcha.invalid()
-            else:
-                break
-        else:
-            self.fail(_("Invalid captcha"))
+        action, inputs = self.parse_html_form('id="download-step-one-form"')
+        inputs['confirmed_number'] = self.captcha.decrypt(captcha_url, cookies=True)
+        inputs['action'] = '1'
+        self.log_debug(inputs)
+
+        self.html = self.load(url, post=inputs)
+        if self.WRONG_CAPTCHA_PATTERN in self.html:
+            self.retry_captcha()
 
         self.link = re.search(self.LINK_FREE_PATTERN, self.html).group(1)
 

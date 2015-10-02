@@ -59,7 +59,7 @@ class AntiStandby(Addon):
             self.interval = max(self.get_config('interval'), self.MIN_INTERVAL)
             self.init_periodical(threaded=True)
 
-        if os.name == "nt":
+        if os.name is "nt":
             self.win_standby(system, display)
 
         elif sys.platform == "darwin":
@@ -76,7 +76,7 @@ class AntiStandby(Addon):
         except OSError:
             pass
 
-        if os.name == "nt":
+        if os.name is "nt":
             self.win_standby(True)
 
         elif sys.platform == "darwin":

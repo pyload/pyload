@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class FilerNet(Account):
     __name__    = "FilerNet"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __description__ = """Filer.net account plugin"""
@@ -23,7 +23,7 @@ class FilerNet(Account):
     FREE_PATTERN = r'Account Status</th>\s*<td>\s*Free'
 
 
-    def parse_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         html = self.load("https://filer.net/profile")
 
         #: Free user
@@ -43,7 +43,7 @@ class FilerNet(Account):
             return {'premium': False, 'validuntil': None, 'trafficleft': None}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         html = self.load("https://filer.net/login")
 
         token = re.search(self.TOKEN_PATTERN, html).group(1)
@@ -56,4 +56,4 @@ class FilerNet(Account):
                                '_target_path': "https://filer.net/"})
 
         if 'Logout' not in html:
-            self.login_fail()
+            self.fail_login()

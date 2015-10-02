@@ -49,7 +49,8 @@ class DateiTo(SimpleHoster):
 
             m = re.search(self.DATA_PATTERN, self.html)
             if m is None:
-                self.error(_("data"))
+                self.error(_("Data pattern not found"))
+
             url = 'http://datei.to/' + m.group(1)
             data = dict(x.split('=') for x in m.group(2).split('&'))
 

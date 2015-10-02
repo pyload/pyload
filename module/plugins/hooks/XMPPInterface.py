@@ -70,6 +70,7 @@ class XMPPInterface(IRCInterface, JabberClient):
         try:
             if self.get_config('info_pack'):
                 self.announce(_("Package finished: %s") % pypack.name)
+
         except Exception:
             pass
 
@@ -79,6 +80,7 @@ class XMPPInterface(IRCInterface, JabberClient):
             if self.get_config('info_file'):
                 self.announce(
                     _("Download finished: %(name)s @ %(plugin)s") % {'name': pyfile.name, 'plugin': pyfile.pluginname})
+
         except Exception:
             pass
 
@@ -88,6 +90,7 @@ class XMPPInterface(IRCInterface, JabberClient):
         self.connect()
         try:
             self.loop()
+
         except Exception, ex:
             self.log_error(ex)
 
@@ -159,6 +162,7 @@ class XMPPInterface(IRCInterface, JabberClient):
                 trigger = temp[0]
                 if len(temp) > 1:
                     args = temp[1:]
+
             except Exception:
                 pass
 
@@ -174,6 +178,7 @@ class XMPPInterface(IRCInterface, JabberClient):
                         body=line)
 
                     messages.append(m)
+
             except Exception, e:
                 self.log_error(e)
 

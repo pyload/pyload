@@ -121,7 +121,7 @@ class NCryptIn(Crypter):
 
     def get_package_info(self):
         m = re.search(self.NAME_PATTERN, self.html)
-        if m:
+        if m is not None:
             name = folder = m.group('N').strip()
             self.log_debug("Found name [%s] and folder [%s] in package info" % (name, folder))
         else:
@@ -177,13 +177,11 @@ class NCryptIn(Crypter):
     def handle_errors(self):
         if self.protection_type == "password":
             if "This password is invalid!" in self.cleaned_html:
-                self.log_debug("Incorrect password, please set right password on 'Edit package' form and retry")
-                self.fail(_("Incorrect password, please set right password on 'Edit package' form and retry"))
+                self.fail(_("Wrong password"))
 
         if self.protection_type == "captcha":
-            if "The securitycheck was wrong!" in self.cleaned_html:
-                self.captcha.invalid()
-                self.retry()
+            if "The securitycheck was wrong" in self.cleaned_html:
+                self.retry_captcha()
             else:
                 self.captcha.correct()
 
@@ -229,6 +227,7 @@ class NCryptIn(Crypter):
                 (vcrypted, vjk) = self._get_cipher_params()
                 for (crypted, jk) in zip(vcrypted, vjk):
                     package_links.extend(self._get_links(crypted, jk))
+
             except Exception:
                 self.fail(_("Unable to decrypt CNL2 links"))
 
@@ -270,6 +269,7 @@ class NCryptIn(Crypter):
             url = link.replace("link-", "frame-")
             link = self.load(url, just_header=True)['location']
             return link
+
         except Exception, detail:
             self.log_debug("Error decrypting link %s, %s" % (link, detail))
 
