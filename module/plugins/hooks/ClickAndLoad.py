@@ -29,12 +29,13 @@ def forward(source, destination):
 class ClickAndLoad(Addon):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __status__  = "testing"
 
-    __config__ = [("activated", "bool", "Activated"                             , True),
-                  ("port"     , "int" , "Port"                                  , 9666),
-                  ("extern"   , "bool", "Listen on the public network interface", True)]
+    __config__ = [("activated", "bool", "Activated"                             , True ),
+                  ("port"     , "int" , "Port"                                  , 9666 ),
+                  ("extern"   , "bool", "Listen on the public network interface", True ),
+                  ("queue"    , "bool", "Add packages to queue"                 , False)]
 
     __description__ = """Click'n'Load hook plugin"""
     __license__     = "GPLv3"
@@ -51,6 +52,19 @@ class ClickAndLoad(Addon):
         cnlport = self.get_config('port')
 
         self.proxy(ip, webport, cnlport)
+
+
+    @threaded
+    def forward(source, destination, queue=False):
+        if queue:
+            old_ids = set(id for pack.id in self.pyload.api.getCollector())
+
+        forward(source, destination)
+
+        if queue:
+            new_ids = set(id for pack.id in self.pyload.api.getCollector())
+            for id in new_ids - old_ids:
+                self.pyload.api.pushToQueue(id)
 
 
     @threaded
@@ -85,18 +99,18 @@ class ClickAndLoad(Addon):
 
                     except NameError:
                         self.log_error(_("Missing SSL lib"), _("Please disable HTTPS in pyLoad settings"))
-                        client_socket.close()  #: Reset the connection.
+                        client_socket.close()
                         continue
 
                     except Exception, e:
                         self.log_error(_("SSL error: %s") % e.message)
-                        client_socket.close()  #: Reset the connection.
+                        client_socket.close()
                         continue
 
                 server_socket.connect(("127.0.0.1", webport))
 
-                self.manager.startThread(forward, client_socket, server_socket)
-                self.manager.startThread(forward, server_socket, client_socket)
+                self.forward(client_socket, server_socket, self.get_config('queue'))
+                self.forward(server_socket, client_socket)
 
         except socket.timeout:
             self.log_debug("Connection timed out, retrying...")

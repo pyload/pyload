@@ -337,7 +337,7 @@ class Plugin(object):
         :param value:
         :return:
         """
-        self.pyload.config.setPlugin(plugin or self.__name__, option, value)
+        self.pyload.api.setConfigValue(plugin or self.__name__, option, value, section="plugin")
 
 
     def get_config(self, option, default="", plugin=None):
