@@ -2,8 +2,8 @@
 
 from __future__ import with_statement
 
-import re
 import os
+import re
 
 from module.plugins.internal.Base import Base, check_abort, create_getInfo, getInfo, parse_fileInfo
 from module.plugins.internal.Plugin import Fail, Retry, encode, exists, fixurl, parse_name

@@ -54,7 +54,6 @@ def exists(path):
         return False
 
 
-#@TODO: Recheck in 0.4.10
 def fixurl(url, unquote=None):
     newurl = urllib.unquote(url)
 
@@ -62,7 +61,7 @@ def fixurl(url, unquote=None):
         unquote = newurl == url
 
     newurl = html_unescape(newurl.decode('unicode-escape'))
-    newurl = re.sub(r'/{2,}', '/', newurl).strip().lstrip('.')
+    newurl = re.sub(r'[^:]/{2,}', '/', newurl).strip().lstrip('.')
 
     if not unquote:
         newurl = urllib.quote(newurl)
@@ -70,7 +69,6 @@ def fixurl(url, unquote=None):
     return newurl
 
 
-#@TODO: Recheck in 0.4.10
 def parse_name(string):
     path  = fixurl(decode(string), unquote=False)
     url_p = urlparse.urlparse(path.rstrip('/'))
@@ -79,6 +77,46 @@ def parse_name(string):
              url_p.netloc.split('.', 1)[0])
 
     return urllib.unquote(name)
+
+
+#@TODO: Move to utils in 0.4.10
+def str2int(string):
+    try:
+        return int(string)
+    except:
+        pass
+
+    ones = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
+            "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
+            "sixteen", "seventeen", "eighteen", "nineteen"]
+    tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy",
+            "eighty", "ninety"]
+
+    o_tuple = [(w, i) for i, w in enumerate(ones)]
+    t_tuple = [(w, i * 10) for i, w in enumerate(tens)]
+
+    numwords = dict(o_tuple + t_tuple)
+    tokens   = re.split(r"[\s-]+", string.lower())
+
+    try:
+        return sum(numwords[word] for word in tokens)
+    except:
+        return 0
+
+
+def parse_time(string):
+    if re.search("da(il)?y|today", string):
+        time = seconds_to_midnight()
+
+    else:
+        this  = re.compile("this", re.I)
+        regex = re.compile(r'(\d+|\w+)\s*(hr|hour|min|sec|)', re.I)
+
+        time = sum(1 if this.match(v) else str2int(v) *
+                   {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, '': 1}[u.lower()]
+                   for v, u in regex.findall(string))
+
+    return time
 
 
 #@TODO: Move to utils in 0.4.10
@@ -190,7 +228,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'

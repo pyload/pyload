@@ -9,14 +9,14 @@ import time
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster, create_getInfo, parse_fileInfo
-from module.plugins.internal.Plugin import Fail, encode, parse_name, replace_patterns, seconds_to_midnight, set_cookie, set_cookies
+from module.plugins.internal.Plugin import Fail, encode, parse_name, parse_time, replace_patterns, seconds_to_midnight, set_cookie, set_cookies
 from module.utils import fixup, fs_encode, parseFileSize as parse_size
 
 
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.90"
+    __version__ = "1.91"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -352,12 +352,7 @@ class SimpleHoster(Hoster):
                 self.info['error'] = re.sub(r'<.*?>', " ", errmsg)
                 self.log_warning(self.info['error'])
 
-                if re.search('da(il)?y|today', errmsg, re.I):
-                    wait_time = seconds_to_midnight()
-                else:
-                    wait_time = sum(int(v) * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, "": 1}[u.lower()] for v, u in
-                                re.findall(r'(\d+)\s*(hr|hour|min|sec|)', errmsg, re.I))
-
+                wait_time = parse_time(errmsg)
                 self.wantReconnect = wait_time > 300
                 self.retry(1, wait_time, _("Download limit exceeded"))
 
@@ -377,12 +372,7 @@ class SimpleHoster(Hoster):
                 self.log_warning(self.info['error'])
 
                 if re.search('limit|wait|slot', errmsg, re.I):
-                    if re.search("da(il)?y|today", errmsg):
-                        wait_time = seconds_to_midnight()
-                    else:
-                        wait_time = sum(int(v) * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, "": 1}[u.lower()] for v, u in
-                                    re.findall(r'(\d+)\s*(hr|hour|min|sec|)', errmsg, re.I))
-
+                    wait_time = parse_time(errmsg)
                     self.wantReconnect = wait_time > 300
                     self.retry(1, wait_time, _("Download limit exceeded"))
 
@@ -423,8 +413,7 @@ class SimpleHoster(Hoster):
                 except (AttributeError, IndexError):
                     waitmsg = m.group(0).strip()
 
-                wait_time = sum(int(v) * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, "": 1}[u.lower()] for v, u in
-                                re.findall(r'(\d+)\s*(hr|hour|min|sec|)', waitmsg, re.I))
+                wait_time = parse_time(waitmsg)
                 self.wait(wait_time, wait_time > 300)
 
         self.info.pop('error', None)
