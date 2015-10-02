@@ -61,7 +61,7 @@ def fixurl(url, unquote=None):
         unquote = newurl == url
 
     newurl = html_unescape(newurl.decode('unicode-escape'))
-    newurl = re.sub(r'[^:]/{2,}', '/', newurl).strip().lstrip('.')
+    newurl = re.sub(r'(?<!:)/{2,}', '/', newurl).strip().lstrip('.')
 
     if not unquote:
         newurl = urllib.quote(newurl)
@@ -228,7 +228,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.44"
+    __version__ = "0.45"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'

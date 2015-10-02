@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UnibytesCom(SimpleHoster):
     __name__    = "UnibytesCom"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?unibytes\.com/[\w .-]{11}B'
@@ -46,7 +46,7 @@ class UnibytesCom(SimpleHoster):
 
             if '>Somebody else is already downloading using your IP-address<' in self.html:
                 self.wait(10 * 60, True)
-                self.restart(premium=True)
+                self.restart()
 
             if post_data['step'] == "last":
                 m = re.search(self.LINK_FREE_PATTERN, self.html)

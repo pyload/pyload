@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ShareonlineBiz(SimpleHoster):
     __name__    = "ShareonlineBiz"
     __type__    = "hoster"
-    __version__ = "0.59"
+    __version__ = "0.60"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
@@ -174,11 +174,11 @@ class ShareonlineBiz(SimpleHoster):
 
         elif 'slot' in errmsg:
             self.wait(3600, reconnect=True)
-            self.restart(errmsg, premium=True)
+            self.restart(errmsg)
 
         else:
             self.wait(60, reconnect=True)
-            self.restart(errmsg, premium=True)
+            self.restart(errmsg)
 
 
 getInfo = create_getInfo(ShareonlineBiz)

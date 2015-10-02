@@ -13,7 +13,7 @@ from module.utils import fs_decode, fs_encode, save_join as fs_join, save_path a
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -87,13 +87,13 @@ class Hoster(Base):
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
             if self.get_config('fallback_premium', True) and self.premium:
                 self.log_warning(_("Premium download failed"), e)
-                self.restart()
+                self.restart(premium=False)
 
             else:
                 raise Fail(e)
 
 
-    def restart(self, msg="", premium=False):
+    def restart(self, msg="", premium=True):
         if not msg:
             msg = _("Simple restart") if premium else _("Fallback to free download")
 

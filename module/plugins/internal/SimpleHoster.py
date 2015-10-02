@@ -16,7 +16,7 @@ from module.utils import fixup, fs_encode, parseFileSize as parse_size
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.93"
+    __version__ = "1.94"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -315,7 +315,7 @@ class SimpleHoster(Hoster):
 
                 self.log_warning(_("Check result: ") + errmsg, _("Waiting 1 minute and retry"))
                 self.wait(60, reconnect=True)
-                self.restart(errmsg, premium=True)
+                self.restart(errmsg)
         else:
             if self.CHECK_FILE:
                 self.log_debug("Using custom check rules...")
@@ -354,7 +354,7 @@ class SimpleHoster(Hoster):
 
                 wait_time = parse_time(errmsg)
                 self.wait(wait_time, reconnect=wait_time > 300)
-                self.restart(_("Download limit exceeded"), premium=True)
+                self.restart(_("Download limit exceeded"))
 
         if self.HAPPY_HOUR_PATTERN and re.search(self.HAPPY_HOUR_PATTERN, self.html):
             self.multiDL = True
@@ -374,7 +374,7 @@ class SimpleHoster(Hoster):
                 if re.search('limit|wait|slot', errmsg, re.I):
                     wait_time = parse_time(errmsg)
                     self.wait(wait_time, reconnect=wait_time > 300)
-                    self.restart(_("Download limit exceeded"), premium=True)
+                    self.restart(_("Download limit exceeded"))
 
                 elif re.search('country|ip|region|nation', errmsg, re.I):
                     self.fail(_("Connection from your current IP address is not allowed"))
@@ -402,7 +402,7 @@ class SimpleHoster(Hoster):
 
                 else:
                     self.wait(60, reconnect=True)
-                    self.restart(errmsg, premium=True)
+                    self.restart(errmsg)
 
         elif self.WAIT_PATTERN:
             m = re.search(self.WAIT_PATTERN, self.html)
@@ -516,7 +516,7 @@ class SimpleHoster(Hoster):
     def handle_premium(self, pyfile):
         if not self.LINK_PREMIUM_PATTERN:
             self.log_error(_("Premium download not implemented"))
-            self.restart()
+            self.restart(premium=False)
 
         m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
         if m is None:
