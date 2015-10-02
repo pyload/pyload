@@ -21,7 +21,6 @@ class MegasharesCom(Account):
 
 
     def grab_info(self, user, password, data):
-        # self.relogin(user)
         html = self.load("http://d01.megashares.com/myms.php")
 
         premium = False if '>Premium Upgrade<' in html else True

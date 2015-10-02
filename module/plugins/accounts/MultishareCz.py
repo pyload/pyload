@@ -32,7 +32,6 @@ class MultishareCz(Account):
 
 
     def grab_info(self, user, password, data):
-        # self.relogin(user)
         html = self.load("http://www.multishare.cz/profil/")
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)

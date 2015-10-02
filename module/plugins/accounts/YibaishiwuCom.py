@@ -20,7 +20,6 @@ class YibaishiwuCom(Account):
 
 
     def grab_info(self, user, password, data):
-        # self.relogin(user)
         html = self.load("http://115.com/")
 
         m = re.search(self.ACCOUNT_INFO_PATTERN, html, re.S)

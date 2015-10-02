@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class EuroshareEu(Account):
     __name__    = "EuroshareEu"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __description__ = """Euroshare.eu account plugin"""
@@ -18,7 +18,6 @@ class EuroshareEu(Account):
 
 
     def grab_info(self, user, password, data):
-        self.relogin(user)
         html = self.load("http://euroshare.eu/customer-zone/settings/")
 
         m = re.search('id="input_expire_date" value="(\d+\.\d+\.\d+ \d+:\d+)"', html)
