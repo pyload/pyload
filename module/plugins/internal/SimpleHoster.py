@@ -16,7 +16,7 @@ from module.utils import fixup, fs_encode, parseFileSize as parse_size
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.94"
+    __version__ = "1.95"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -414,7 +414,7 @@ class SimpleHoster(Hoster):
                     waitmsg = m.group(0).strip()
 
                 wait_time = parse_time(waitmsg)
-                self.wait(wait_time, econnect=wait_time > 300)
+                self.wait(wait_time, reconnect=wait_time > 300)
 
         self.info.pop('error', None)
 

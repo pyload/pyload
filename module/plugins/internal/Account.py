@@ -94,7 +94,7 @@ class Account(Plugin):
         except Skip:
             self.info['login']['valid'] = True
             if self.auto_timeout:
-                self.auto_timeout *= 2
+                self.auto_timeout *= 3
                 self.interval = self.auto_timeout
 
         except Exception, e:
@@ -104,7 +104,7 @@ class Account(Plugin):
         else:
             self.info['login']['valid'] = True
             if self.interval is self.auto_timeout:
-                self.interval = self.auto_timeout / 2
+                self.interval = self.auto_timeout / 3
                 self.auto_timeout = False
 
         finally:
@@ -114,11 +114,18 @@ class Account(Plugin):
 
     #@TODO: Recheck in 0.4.10
     def syncback(self):
+        """
+        Wrapper to directly sync self.info -> self.accounts[self.user]
+        """
         return self.sync(reverse=True)
 
 
     #@TODO: Recheck in 0.4.10
     def sync(self, reverse=False):
+        """
+        Sync self.accounts[self.user] -> self.info
+        or self.info -> self.accounts[self.user] (if reverse is True)
+        """
         if not self.user:
             return
 

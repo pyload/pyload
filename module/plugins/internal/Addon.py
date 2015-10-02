@@ -101,7 +101,7 @@ class Addon(Plugin):
         except Exception, e:
             self.log_error(_("Error executing periodical task: %s") % e)
 
-        self.cb = self.pyload.scheduler.addJob(self.interval, self._periodical, [threaded], threaded=threaded)
+        self.init_periodical(self.interval, threaded)
 
 
     def periodical(self):

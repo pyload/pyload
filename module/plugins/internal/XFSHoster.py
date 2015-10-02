@@ -14,7 +14,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.63"
+    __version__ = "0.64"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -61,13 +61,16 @@ class XFSHoster(SimpleHoster):
 
 
     def set_xfs_cookie(self):
-        if not self.COOKIES:
+        if not self.PLUGIN_DOMAIN:
+            self.log_error(_("Unable to set xfs cookie due missing PLUGIN_DOMAIN"))
             return
 
-        if isinstance(self.COOKIES, list) and (self.PLUGIN_DOMAIN, "lang", "english") not in self.COOKIES:
-            self.COOKIES.insert((self.PLUGIN_DOMAIN, "lang", "english"))
+        cookie = (self.PLUGIN_DOMAIN, "lang", "english")
+
+        if isinstance(self.COOKIES, list) and cookie not in self.COOKIES:
+            self.COOKIES.insert(cookie)
         else:
-            set_cookie(self.req.cj, self.PLUGIN_DOMAIN, "lang", "english")
+            set_cookie(self.req.cj, *cookie)
 
 
     def prepare(self):
@@ -85,7 +88,8 @@ class XFSHoster(SimpleHoster):
             else:
                 self.fail(_("Missing PLUGIN_DOMAIN"))
 
-        self.set_xfs_cookie()
+        if self.COOKIES:
+            self.set_xfs_cookie()
 
         if not self.LINK_PATTERN:
             pattern = r'(?:file: "(.+?)"|(https?://(?:www\.)?([^/]*?%s|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<])'

@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class XFSCrypter(SimpleCrypter):
     __name__    = "XFSCrypter"
     __type__    = "crypter"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -32,13 +32,16 @@ class XFSCrypter(SimpleCrypter):
 
 
     def set_xfs_cookie(self):
-        if not self.COOKIES:
+        if not self.PLUGIN_DOMAIN:
+            self.log_error(_("Unable to set xfs cookie due missing PLUGIN_DOMAIN"))
             return
 
-        if isinstance(self.COOKIES, list) and (self.PLUGIN_DOMAIN, "lang", "english") not in self.COOKIES:
-            self.COOKIES.insert((self.PLUGIN_DOMAIN, "lang", "english"))
+        cookie = (self.PLUGIN_DOMAIN, "lang", "english")
+
+        if isinstance(self.COOKIES, list) and cookie not in self.COOKIES:
+            self.COOKIES.insert(cookie)
         else:
-            set_cookie(self.req.cj, self.PLUGIN_DOMAIN, "lang", "english")
+            set_cookie(self.req.cj, *cookie)
 
 
     def prepare(self):
@@ -54,6 +57,7 @@ class XFSCrypter(SimpleCrypter):
             else:
                 self.fail(_("Missing PLUGIN_DOMAIN"))
 
-        self.set_xfs_cookie()
+        if self.COOKIES:
+            self.set_xfs_cookie()
 
         return super(XFSCrypter, self).prepare()
