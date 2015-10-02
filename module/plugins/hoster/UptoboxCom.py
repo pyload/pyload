@@ -6,7 +6,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class UptoboxCom(XFSHoster):
     __name__    = "UptoboxCom"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uptobox|uptostream)\.com/\w{12}'
@@ -21,6 +21,8 @@ class UptoboxCom(XFSHoster):
     TEMP_OFFLINE_PATTERN = r'>Service Unavailable'
 
     LINK_PATTERN = r'"(https?://\w+\.uptobox\.com/d/.*?)"'
+
+    DL_LIMIT_PATTERN = r'>You have to wait (.+) to launch a new download<'
 
 
     def setup(self):

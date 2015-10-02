@@ -16,7 +16,7 @@ from module.utils import fixup, fs_encode, parseFileSize as parse_size
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.91"
+    __version__ = "1.92"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -353,8 +353,8 @@ class SimpleHoster(Hoster):
                 self.log_warning(self.info['error'])
 
                 wait_time = parse_time(errmsg)
-                self.wantReconnect = wait_time > 300
-                self.retry(1, wait_time, _("Download limit exceeded"))
+                self.wait(wait_time, reconnect=wait_time > 300)
+                self.restart(_("Download limit exceeded"), premium=True)
 
         if self.HAPPY_HOUR_PATTERN and re.search(self.HAPPY_HOUR_PATTERN, self.html):
             self.multiDL = True
@@ -373,8 +373,8 @@ class SimpleHoster(Hoster):
 
                 if re.search('limit|wait|slot', errmsg, re.I):
                     wait_time = parse_time(errmsg)
-                    self.wantReconnect = wait_time > 300
-                    self.retry(1, wait_time, _("Download limit exceeded"))
+                    self.wait(wait_time, reconnect=wait_time > 300)
+                    self.restart(_("Download limit exceeded"), premium=True)
 
                 elif re.search('country|ip|region|nation', errmsg, re.I):
                     self.fail(_("Connection from your current IP address is not allowed"))
@@ -414,7 +414,7 @@ class SimpleHoster(Hoster):
                     waitmsg = m.group(0).strip()
 
                 wait_time = parse_time(waitmsg)
-                self.wait(wait_time, wait_time > 300)
+                self.wait(wait_time, econnect=wait_time > 300)
 
         self.info.pop('error', None)
 

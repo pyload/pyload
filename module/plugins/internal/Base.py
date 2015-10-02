@@ -355,7 +355,7 @@ class Base(Plugin):
         raise Retry(encode(msg))  #@TODO: Remove `encode` in 0.4.10
 
 
-    def retry_captcha(self, attemps=10, wait=1, msg=_("Wrong captcha")):
+    def retry_captcha(self, attemps=10, wait=1, msg=_("Max captcha retries reached")):
         self.captcha.invalid()
         self.retry(attemps, wait, msg)
 
