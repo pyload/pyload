@@ -35,7 +35,7 @@ class DateiTo(SimpleHoster):
         data = {'P': 'I', 'ID': self.info['pattern']['ID']}
         recaptcha = ReCaptcha(self)
 
-        for _i in xrange(10):
+        for _i in xrange(3):
             self.log_debug("URL", url, "POST", data)
             self.html = self.load(url, post=data)
             self.check_errors()
@@ -57,7 +57,7 @@ class DateiTo(SimpleHoster):
             if url.endswith('recaptcha.php'):
                 data['recaptcha_response_field'], data['recaptcha_challenge_field'] = recaptcha.challenge()
         else:
-            self.fail(_("Too bad..."))
+            return
 
         self.link = self.html
 

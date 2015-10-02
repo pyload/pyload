@@ -4,6 +4,7 @@ import re
 import time
 
 from module.common.json_layer import json_loads
+from module.plugins.internal.Plugin import timestamp
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
@@ -68,13 +69,14 @@ class UlozTo(SimpleHoster):
             self.log_debug('Using "new" version')
 
             xapca = self.load("http://www.ulozto.net/reloadXapca.php",
-                              get={'rnd': str(int(time.time()))})
+                              get={'rnd': timestamp()})
+
             xapca = xapca.replace('sound":"', 'sound":"http:').replace('image":"', 'image":"http:')
-            self.log_debug("xapca = %s" % xapca)
+            self.log_debug("xapca: %s" % xapca)
 
             data = json_loads(xapca)
-            captcha_value = self.captcha.decrypt(str(data['image']))
-            self.log_debug("CAPTCHA HASH: " + data['hash'], "CAPTCHA SALT: " + str(data['salt']), "CAPTCHA VALUE: " + captcha_value)
+            captcha_value = self.captcha.decrypt(data['image'])
+            self.log_debug("CAPTCHA HASH: " + data['hash'], "CAPTCHA SALT: %s" % data['salt'], "CAPTCHA VALUE: " + captcha_value)
 
             inputs.update({'timestamp': data['timestamp'], 'salt': data['salt'], 'hash': data['hash'], 'captcha_value': captcha_value})
 

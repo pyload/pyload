@@ -35,7 +35,7 @@ class UnibytesCom(SimpleHoster):
 
         self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
 
-        for _i in xrange(8):
+        for _i in xrange(3):
             self.log_debug(action, post_data)
             self.html = self.load(urlparse.urljoin(domain, action), post=post_data)
 
@@ -46,7 +46,7 @@ class UnibytesCom(SimpleHoster):
 
             if '>Somebody else is already downloading using your IP-address<' in self.html:
                 self.wait(10 * 60, True)
-                self.retry()
+                self.restart(premium=True)
 
             if post_data['step'] == "last":
                 m = re.search(self.LINK_FREE_PATTERN, self.html)
@@ -66,9 +66,6 @@ class UnibytesCom(SimpleHoster):
 
             elif last_step in ("captcha", "last"):
                 post_data['captcha'] = self.captcha.decrypt(urlparse.urljoin(domain, "captcha.jpg"))
-
-        else:
-            self.fail(_("No valid captcha code entered"))
 
         self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
 

@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ShareonlineBiz(SimpleHoster):
     __name__    = "ShareonlineBiz"
     __type__    = "hoster"
-    __version__ = "0.58"
+    __version__ = "0.59"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
@@ -45,11 +45,11 @@ class ShareonlineBiz(SimpleHoster):
 
         try:
             if field[1] == "OK":
-                info['fileid']   = field[0]
-                info['status']   = 2
-                info['name']     = field[2]
-                info['size']     = field[3]  #: In bytes
-                info['md5']      = field[4].strip().lower().replace("\n\n", "")  #: md5
+                info['fileid'] = field[0]
+                info['status'] = 2
+                info['name']   = field[2]
+                info['size']   = field[3]  #: In bytes
+                info['md5']    = field[4].strip().lower().replace("\n\n", "")  #: md5
 
             elif field[1] in ("DELETED", "NOTFOUND"):
                 info['status'] = 1
@@ -102,7 +102,7 @@ class ShareonlineBiz(SimpleHoster):
 
     def check_download(self):
         check = self.check_file({'cookie': re.compile(r'<div id="dl_failure"'),
-                                    'fail'  : re.compile(r"<title>Share-Online")})
+                                 'fail'  : re.compile(r"<title>Share-Online")})
 
         if check == "cookie":
             self.retry_captcha(5, 60, _("Cookie failure"))
@@ -114,19 +114,23 @@ class ShareonlineBiz(SimpleHoster):
 
 
     def handle_premium(self, pyfile):  #: Should be working better loading (account) api internally
+        self.api_data = dlinfo = {}
+
         html = self.load("https://api.share-online.biz/account.php",
                          get={'username': self.account.user,
                               'password': self.account.get_login('password'),
                               'act'     : "download",
                               'lid'     : self.info['fileid']})
 
-        self.api_data = dlinfo = {}
+        self.log_debug(html)
 
         for line in html.splitlines():
-            key, value = line.split(": ")
-            dlinfo[key.lower()] = value
+            try:
+                key, value = line.split(": ")
+                dlinfo[key.lower()] = value
 
-        self.log_debug(dlinfo)
+            except ValueError:
+                pass
 
         if dlinfo['status'] != "online":
             self.offline()
