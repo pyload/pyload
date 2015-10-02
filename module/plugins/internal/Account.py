@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import random
+import re
 import time
 import threading
 
@@ -12,7 +13,7 @@ from module.utils import compare_time, lock
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.53"
+    __version__ = "0.54"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
