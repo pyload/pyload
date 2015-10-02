@@ -157,7 +157,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
         return re.findall(self.LINK_PATTERN, self.html)
 
 
-    def load_page(self, number)
+    def load_page(self, number):
         raise NotImplementedError
 
 

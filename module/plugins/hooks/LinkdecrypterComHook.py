@@ -2,10 +2,10 @@
 
 import re
 
-from module.plugins.internal.MultiHook import MultiHook
+from module.plugins.internal.Addon import Addon
 
 
-class LinkdecrypterComHook(MultiHook):
+class LinkdecrypterComHook(Addon):
     __name__    = "LinkdecrypterComHook"
     __type__    = "hook"
     __version__ = "1.07"
