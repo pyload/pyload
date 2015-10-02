@@ -12,7 +12,7 @@ from module.plugins.hooks.IRCInterface import IRCInterface
 class XMPPInterface(IRCInterface, JabberClient):
     __name__    = "XMPPInterface"
     __type__    = "hook"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __config__ = [("jid"      , "str" , "Jabber ID"                           , "user@exmaple-jabber-server.org"         ),
@@ -218,7 +218,7 @@ class XMPPInterface(IRCInterface, JabberClient):
         self.disconnect()
 
 
-    def after_reconnect(self, ip):
+    def after_reconnect(self, ip, oldip):
         self.connect()
 
 

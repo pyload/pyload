@@ -11,7 +11,7 @@ from module.utils import fs_encode, save_join as fs_join
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.47"
+    __version__ = "0.48"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"         , True ),
@@ -118,7 +118,7 @@ class ExternalScripts(Addon):
         self.info['oldip'] = ip
 
 
-    def after_reconnect(self, ip):
+    def after_reconnect(self, ip, oldip):
         lock = self.get_config('lock')
         for script in self.scripts['after_reconnect']:
             args = [ip, self.info['oldip']]  #@TODO: Use built-in oldip in 0.4.10
