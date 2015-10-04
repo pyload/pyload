@@ -8,8 +8,6 @@ try:
 except ImportError:
     pass
 
-from threading import Lock
-
 from module.plugins.internal.Addon import Addon, threaded
 
 
@@ -74,10 +72,6 @@ class ClickAndLoad(Addon):
         self.log_info(_("Proxy listening on %s:%s") % (ip or "0.0.0.0", cnlport))
 
         self._server(ip, webport, cnlport)
-
-        lock = Lock()
-        lock.acquire()
-        lock.acquire()
 
 
     @threaded
