@@ -124,7 +124,7 @@ class ShareLinksBiz(Crypter):
 
         #: Request user for captcha coords
         m = re.search(r'<img src="/captcha.gif\?d=(.+?)&PHPSESSID=(.+?)&legend=1"', self.html)
-        if not m:
+        if m is None:
             self.log_debug("Captcha url data not found, maybe plugin out of date?")
             self.fail(_("Captcha url data not found"))
 

@@ -18,7 +18,7 @@ class AdsCaptcha(CaptchaService):
 
 
     CAPTCHAID_PATTERN  = r'api\.adscaptcha\.com/Get\.aspx\?.*?CaptchaId=(\d+)'
-    PUBLICKEY_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?.*?PublicKey=([\w-]+)'
+    PUBLICKEY_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?.*?PublicKey=([\w\-]+)'
 
 
     def detect_key(self, data=None):
@@ -31,7 +31,7 @@ class AdsCaptcha(CaptchaService):
             self.log_debug("Key: %s | ID: %s" % self.key)
             return self.key
         else:
-            self.log_warning(_("Key or id pattern not found"))
+            self.log_debug("Key or id pattern not found")
             return None
 
 

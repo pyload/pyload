@@ -26,8 +26,8 @@ def forward(source, destination):
 
 
 #@TODO: IPv6 support
-class ClickAndLoad(Addon):
-    __name__    = "ClickAndLoad"
+class ClickNLoad(Addon):
+    __name__    = "ClickNLoad"
     __type__    = "hook"
     __version__ = "0.48"
     __status__  = "testing"

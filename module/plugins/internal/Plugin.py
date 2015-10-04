@@ -60,7 +60,7 @@ def fixurl(url, unquote=None):
     if unquote is None:
         unquote = newurl == url
 
-    newurl = html_unescape(newurl.decode('unicode-escape'))
+    newurl = html_unescape(decode(newurl).decode('unicode-escape'))
     newurl = re.sub(r'(?<!:)/{2,}', '/', newurl).strip().lstrip('.')
 
     if not unquote:
@@ -96,7 +96,7 @@ def str2int(string):
     t_tuple = [(w, i * 10) for i, w in enumerate(tens)]
 
     numwords = dict(o_tuple + t_tuple)
-    tokens   = re.split(r"[\s-]+", string.lower())
+    tokens   = re.split(r"[\s\-]+", string.lower())
 
     try:
         return sum(numwords[word] for word in tokens)
@@ -226,7 +226,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.47"
+    __version__ = "0.48"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -398,7 +398,7 @@ class Plugin(object):
             self.log_debug("LOAD URL " + url,
                            *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url", "_[1]")])
 
-        url = fixurl(url)  #: Recheck in 0.4.10
+        url = fixurl(url, unquote=True)  #: Recheck in 0.4.10
 
         if req is None:
             req = self.req or self.pyload.requestFactory.getRequest(self.__name__)

@@ -23,7 +23,7 @@ def threaded(fn):
 class Addon(Plugin):
     __name__    = "Addon"
     __type__    = "hook"  #@TODO: Change to `addon` in 0.4.10
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __threaded__ = []  #@TODO: Remove in 0.4.10
@@ -45,6 +45,8 @@ class Addon(Plugin):
         #: Deprecated alternative to event_map
         #: List of events the plugin can handle, name the functions exactly like eventname.
         self.event_list = []  #@NOTE: dont make duplicate entries in event_map
+
+        self.info['ip'] = None  #@TODO: Remove in 0.4.10
 
         #: Callback of periodical job task, used by HookManager
         self.cb       = None
@@ -210,7 +212,8 @@ class Addon(Plugin):
 
     #: Deprecated method, use `after_reconnect` instead (Remove in 0.4.10)
     def afterReconnecting(self, ip):
-        return self.after_reconnect(ip, None)
+        self.after_reconnect(ip, self.info['ip'])
+        self.info['ip'] = ip
 
 
     def captcha_task(self, task):

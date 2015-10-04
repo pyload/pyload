@@ -52,7 +52,7 @@ def check_abort(fn):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -110,7 +110,7 @@ class Base(Plugin):
 
     @classmethod
     def get_info(cls, url="", html=""):
-        url  = fixurl(url)
+        url  = fixurl(url, unquote=True)
         info = {'name'  : parse_name(url),
                 'size'  : 0,
                 'status': 3 if url else 8,
@@ -378,7 +378,7 @@ class Base(Plugin):
 
 
     def fixurl(self, url, baseurl=None, unquote=True):
-        url = fixurl(url)
+        url = fixurl(url, unquote=False)
 
         if not baseurl:
             baseurl = fixurl(self.pyfile.url)

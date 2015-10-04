@@ -3,9 +3,8 @@
 from __future__ import with_statement
 
 import os
+import shutil
 import time
-
-from shutil import move
 
 from module.plugins.internal.Addon import Addon
 from module.utils import fs_encode, save_join as fs_join
@@ -63,7 +62,7 @@ class HotFolder(Addon):
                     continue
 
                 newpath = os.path.join(folder, "finished", "tmp_" + f if self.get_config('delete') else f)
-                move(path, newpath)
+                shutil.move(path, newpath)
 
                 self.log_info(_("Added %s from HotFolder") % f)
                 self.pyload.api.addPackage(f, [newpath], 1)

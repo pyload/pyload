@@ -81,7 +81,7 @@ class ZippyshareCom(SimpleHoster):
             return varName
 
         #: Handle all getElementById
-        reVar = r'document.getElementById\(([\'"\w-]+)\)(\.)?(getAttribute\([\'"])?(\w+)?([\'"]\))?'
+        reVar = r'document.getElementById\(([\'"\w\-]+)\)(\.)?(getAttribute\([\'"])?(\w+)?([\'"]\))?'
         scripts = [re.sub(reVar, repl_element_by_id, script) for script in scripts if script]
 
         #: Add try/catch in JS to handle deliberate errors

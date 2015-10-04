@@ -13,7 +13,7 @@ class YadiSk(SimpleHoster):
     __version__ = "0.06"
     __status__  = "testing"
 
-    __pattern__ = r'https?://yadi\.sk/d/[\w-]+'
+    __pattern__ = r'https?://yadi\.sk/d/[\w\-]+'
 
     __description__ = """Yadi.sk hoster plugin"""
     __license__     = "GPLv3"

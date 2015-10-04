@@ -9,7 +9,7 @@ class ILoadTo(DeadCrypter):
     __version__ = "0.12"
     __status__  = "testing"
 
-    __pattern__ = r'http://(?:www\.)?iload\.to/go/\d+-[\w.-]+/'
+    __pattern__ = r'http://(?:www\.)?iload\.to/go/\d+\-[\w\-.]+/'
     __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """Iload.to decrypter plugin"""

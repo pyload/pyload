@@ -19,7 +19,7 @@ class OneFichierCom(Account):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    VALID_UNTIL_PATTERN = r'Your subscription will end the (\d+-\d+-\d+)'
+    VALID_UNTIL_PATTERN = r'Your subscription will end the (\d+\-\d+\-\d+)'
 
 
     def grab_info(self, user, password, data):

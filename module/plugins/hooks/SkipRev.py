@@ -74,7 +74,7 @@ class SkipRev(Addon):
         pyname = re.compile(r'%s\.part\d+\.rev$' % pyfile.name.rsplit('.', 2)[0].replace('.', '\.'))
 
         for link in self.pyload.api.getPackageData(pyfile.package().id).links:
-            if link.status == 4 and pyname.match(link.name):
+            if link.status is 4 and pyname.match(link.name):
                 pylink = self._pyfile(link)
 
                 if revtokeep > -1 or pyfile.name.endswith(".rev"):

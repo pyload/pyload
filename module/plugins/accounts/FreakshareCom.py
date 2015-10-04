@@ -25,7 +25,7 @@ class FreakshareCom(Account):
         html = self.load("http://freakshare.com/")
 
         try:
-            m = re.search(r'ltig bis:</td>\s*<td><b>([\d.:-]+)</b></td>', html, re.M)
+            m = re.search(r'ltig bis:</td>\s*<td><b>([\d.:\-]+)</b></td>', html, re.M)
             validuntil = time.mktime(time.strptime(m.group(1), "%d.%m.%Y - %H:%M"))
 
         except Exception:

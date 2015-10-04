@@ -11,7 +11,7 @@ class XFileSharingPro(XFSHoster):
     __version__ = "0.54"
     __status__  = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)'
+    __pattern__ = r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)'
 
     __description__ = """XFileSharingPro dummy hoster plugin for hook"""
     __license__     = "GPLv3"

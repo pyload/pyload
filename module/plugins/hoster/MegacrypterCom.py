@@ -13,7 +13,7 @@ class MegacrypterCom(MegaCoNz):
     __version__ = "0.23"
     __status__  = "testing"
 
-    __pattern__ = r'https?://\w{0,10}\.?megacrypter\.com/[\w!-]+'
+    __pattern__ = r'https?://\w{0,10}\.?megacrypter\.com/[\w\-!]+'
 
     __description__ = """Megacrypter.com decrypter plugin"""
     __license__     = "GPLv3"

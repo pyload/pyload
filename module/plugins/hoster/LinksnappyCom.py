@@ -46,7 +46,7 @@ class LinksnappyCom(MultiHoster):
     @staticmethod
     def _get_host(url):
         host = urlparse.urlsplit(url).netloc
-        return re.search(r'[\w-]+\.\w+$', host).group(0)
+        return re.search(r'[\w\-]+\.\w+$', host).group(0)
 
 
 getInfo = create_getInfo(LinksnappyCom)

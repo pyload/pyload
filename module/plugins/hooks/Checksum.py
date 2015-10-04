@@ -160,7 +160,8 @@ class Checksum(Addon):
                 return
         elif check_action == "nothing":
             return
-        pyfile.plugin.fail(msg=msg)
+
+        pyfile.plugin.fail(msg)
 
 
     def package_finished(self, pypack):
@@ -187,6 +188,7 @@ class Checksum(Addon):
                 local_file = fs_encode(fs_join(download_folder, data['NAME']))
                 algorithm = self.methods.get(file_type, file_type)
                 checksum = compute_checksum(local_file, algorithm)
+
                 if checksum is data['HASH']:
                     self.log_info(_('File integrity of "%s" verified by %s checksum (%s)') %
                                 (data['NAME'], algorithm, checksum))

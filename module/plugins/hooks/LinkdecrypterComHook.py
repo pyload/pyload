@@ -23,7 +23,7 @@ class LinkdecrypterComHook(Addon):
 
 
     def get_hosters(self):
-        list = re.search(r'>Supported\(\d+\)</b>: <i>(.[\w.-, ]+)',
+        list = re.search(r'>Supported\(\d+\)</b>: <i>(.[\w\-., ]+)',
                          self.load("http://linkdecrypter.com/").replace("(g)", "")).group(1).split(', ')
         try:
             list.remove("download.serienjunkies.org")

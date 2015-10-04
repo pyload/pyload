@@ -20,7 +20,7 @@ class RestartFailed(Addon):
 
 
     def periodical(self):
-        self.log_debug("Restart failed downloads")
+        self.log_info(_("Restarting all failed downloads..."))
         self.pyload.api.restartFailed()
 
 

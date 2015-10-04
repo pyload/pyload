@@ -2,12 +2,12 @@
 
 import pycurl
 import re
+import select
 import socket
 import ssl
 import time
 import traceback
 
-from select import select
 from threading import Thread
 
 from module.Api import PackageDoesNotExists, FileDoesNotExists
@@ -114,7 +114,7 @@ class IRCInterface(Thread, Addon):
         readbuffer = ""
         while True:
             time.sleep(1)
-            fdset = select([self.sock], [], [], 0)
+            fdset = select.select([self.sock], [], [], 0)
             if self.sock not in fdset[0]:
                 continue
 
