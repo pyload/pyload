@@ -60,7 +60,7 @@ def fixurl(url, unquote=None):
     if unquote is None:
         unquote = newurl == url
 
-    newurl = html_unescape(decode(newurl).decode('unicode-escape'))
+    newurl = html_unescape(newurl.encode('ascii', 'ignore'))
     newurl = re.sub(r'(?<!:)/{2,}', '/', newurl).strip().lstrip('.')
 
     if not unquote:
