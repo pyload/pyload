@@ -52,7 +52,7 @@ def check_abort(fn):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -270,6 +270,8 @@ class Base(Plugin):
                 if self.thread.m.reconnecting.isSet():
                     self.waiting = False
                     self.wantReconnect = False
+
+                    self.req.clearCookies()
                     raise Reconnect
 
                 time.sleep(2)
@@ -332,6 +334,21 @@ class Base(Plugin):
         Fail and indicates file ist temporary offline, the core may take consequences
         """
         self.fail("temp. offline")
+
+
+    def restart(self, msg="", premium=True):
+        if not msg:
+            msg = _("Restart plugin") if premium else _("Fallback to free processing")
+
+        if not premium:
+            if self.premium:
+                self.rst_free = True
+            else:
+                self.fail("%s | %s" % (msg, _("Url was already processed as free")))
+
+        self.req.clearCookies()
+
+        raise Retry(encode(msg))  #@TODO: Remove `encode` in 0.4.10
 
 
     def retry(self, attemps=5, wait=1, msg=""):

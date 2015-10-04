@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class UploadedTo(Account):
     __name__    = "UploadedTo"
     __type__    = "account"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__  = "testing"
 
     __description__ = """Uploaded.to account plugin"""
@@ -51,12 +51,7 @@ class UploadedTo(Account):
             traffic = m.groupdict()
             size    = traffic['S'].replace('.', '')
             unit    = traffic['U'].lower()
-
-            if unit.startswith('t'):  #@NOTE: Remove in 0.4.10
-                trafficleft = float(size.replace(',', '.')) / 1024
-                trafficleft *= 1 << 40
-            else:
-                trafficleft = self.parse_traffic(size, unit)
+            trafficleft = self.parse_traffic(size, unit)
 
         return {'validuntil' : validuntil,
                 'trafficleft': trafficleft,

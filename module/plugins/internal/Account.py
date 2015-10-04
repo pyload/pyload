@@ -13,7 +13,7 @@ from module.utils import compare_time, lock
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.54"
+    __version__ = "0.55"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -21,8 +21,8 @@ class Account(Plugin):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    LOGIN_TIMEOUT = 10 * 60  #: Relogin accounts every 10 minutes
-    AUTO_TIMEOUT  = True     #: Automatically adjust relogin interval
+    LOGIN_TIMEOUT = 30 * 60  #: Relogin accounts every 30 minutes
+    AUTO_INTERVAL = True     #: Automatically adjust relogin interval
 
 
     def __init__(self, manager, accounts):
@@ -34,8 +34,11 @@ class Account(Plugin):
         self.accounts = accounts  #@TODO: Recheck in 0.4.10
         self.user     = None
 
-        self.interval     = self.LOGIN_TIMEOUT
-        self.auto_timeout = self.interval if self.AUTO_TIMEOUT else False
+        self.timeout = self.LOGIN_TIMEOUT
+
+        #: Callback of periodical job task
+        self.cb       = None
+        self.interval = self.LOGIN_TIMEOUT
 
         self.init()
 
@@ -45,6 +48,28 @@ class Account(Plugin):
         Initialize additional data structures
         """
         pass
+
+
+    def init_periodical(self, delay=0, threaded=False):
+        self.cb = self.pyload.scheduler.addJob(max(0, delay), self._periodical, [threaded], threaded=threaded)
+
+
+    def _periodical(self, threaded):
+        if self.interval < 0:
+            self.cb = None
+            return
+
+        try:
+            self.periodical()
+
+        except Exception, e:
+            self.log_error(_("Error executing periodical task: %s") % e)
+
+        self.init_periodical(self.interval, threaded)
+
+
+    def periodical(self):
+        raise NotImplementedError
 
 
     @property
@@ -57,7 +82,7 @@ class Account(Plugin):
 
         self.sync()
 
-        if self.info['login']['timestamp'] + self.interval < time.time():
+        if self.info['login']['timestamp'] + self.timeout < time.time():
             self.log_debug("Reached login timeout for user `%s`" % self.user)
             return False
         else:
@@ -87,15 +112,17 @@ class Account(Plugin):
 
         self.sync()
 
+        timestamp = time.time()
+
         try:
-            self.info['login']['timestamp'] = time.time()  #: Set timestamp for login
             self.signin(self.user, self.info['login']['password'], self.info['data'])
 
         except Skip:
             self.info['login']['valid'] = True
-            if self.auto_timeout:
-                self.auto_timeout *= 3
-                self.interval = self.auto_timeout
+
+            new_timeout = timestamp - self.info['login']['timestamp']
+            if self.AUTO_INTERVAL and new_timeout > self.timeout:
+                self.timeout = new_timeout
 
         except Exception, e:
             self.log_error(_("Could not login user `%s`") % user, e)
@@ -103,12 +130,12 @@ class Account(Plugin):
 
         else:
             self.info['login']['valid'] = True
-            if self.interval is self.auto_timeout:
-                self.interval = self.auto_timeout / 3
-                self.auto_timeout = False
 
         finally:
+            self.info['login']['timestamp'] = timestamp  #: Set timestamp for login
+
             self.syncback()
+
             return bool(self.info['login']['valid'])
 
 
@@ -399,9 +426,19 @@ class Account(Plugin):
 
     ###########################################################################
 
-    def parse_traffic(self, size, unit="KB"):  #@NOTE: Returns kilobytes in 0.4.9
-        size = re.search(r'(\d*[\.,]?\d+)', size).group(1)  #@TODO: Recjeck in 0.4.10
-        return parse_size(size, unit) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
+    def parse_traffic(self, size, unit="byte"):  #@NOTE: Returns kilobytes in 0.4.9
+        unit = unit.lower().strip()  #@TODO: Remove in 0.4.10
+        size = re.search(r'(\d*[\.,]?\d+)', size).group(1)  #@TODO: Recheck in 0.4.10
+
+        self.log_debug("Size: %s" % size, "Unit: %s" % unit)
+
+        #@NOTE: Remove in 0.4.10
+        if unit.startswith('t'):
+            traffic = float(size.replace(',', '.')) * 1 << 40
+        else:
+            traffic = parse_size(size, unit)
+
+        return traffic / 1024  #@TODO: Remove `/ 1024` in 0.4.10
 
 
     def fail_login(self, msg=_("Login handshake has failed")):

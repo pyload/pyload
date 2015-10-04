@@ -24,7 +24,7 @@ class NitroflareCom(SimpleHoster):
     INFO_PATTERN    = r'title="(?P<N>.+?)".+>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'>File doesn\'t exist'
 
-    LINK_PREMIUM_PATTERN = LINK_FREE_PATTERN = r'(https?://[\w\-]+\.nitroflare\.com/.+?)"'
+    LINK_PREMIUM_PATTERN = LINK_FREE_PATTERN = r'(https?://[\w-]+\.nitroflare\.com/.+?)"'
 
     RECAPTCHA_KEY        = "6Lenx_USAAAAAF5L1pmTWvWcH73dipAEzNnmNLgy"
     PREMIUM_ONLY_PATTERN = r'This file is available with Premium only'

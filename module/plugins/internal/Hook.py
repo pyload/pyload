@@ -6,7 +6,7 @@ from module.plugins.internal.Addon import Addon, threaded
 class Hook(Addon):
     __name__    = "Hook"
     __type__    = "hook"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __description__ = """Base hook plugin"""
@@ -24,3 +24,7 @@ class Hook(Addon):
     #@TODO: Remove in 0.4.10
     def _log(self, level, plugintype, pluginname, messages):
         return super(Addon, self)._log(level, plugintype, pluginname.replace("Hook", ""), messages)
+
+
+    def periodical(self):
+        pass

@@ -10,10 +10,10 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class OpenloadIo(SimpleHoster):
     __name__    = "OpenloadIo"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?openload\.(?:co|io)/(?:f|embed)/([\w\-]+)'
+    __pattern__ = r'https?://(?:www\.)?openload\.(co|io)/(f|embed)/(?P<ID>[\w-]+)'
 
     __description__ = """Openload.co hoster plugin"""
     __license__     = "GPLv3"
@@ -22,8 +22,6 @@ class OpenloadIo(SimpleHoster):
 
     # The API reference, that this implementation uses is available at https://openload.co/api
     API_URL = 'https://api.openload.co/1'
-
-    _FILE_ID_PATTERN = '/(?:f|embed)/([\w\-]+)'
 
     _DOWNLOAD_TICKET_URI_PATTERN = '/file/dlticket?file={0}'
     _DOWNLOAD_FILE_URI_PATTERN   = '/file/dl?file={0}&ticket={1}'
@@ -39,11 +37,7 @@ class OpenloadIo(SimpleHoster):
 
     @classmethod
     def get_info(cls, url="", html=""):
-        file_id = re.findall(cls._FILE_ID_PATTERN, url, re.I)
-        if not file_id:
-            return super(OpenloadIo, cls).get_info(url)
-
-        file_id = file_id[0]
+        file_id   = self.info['pattern']['ID']
         info_json = cls._load_json(cls._FILE_INFO_URI_PATTERN.format(file_id))
         file_info = info_json['result'][file_id]
 
@@ -61,8 +55,7 @@ class OpenloadIo(SimpleHoster):
     def handle_free(self, pyfile):
         # If the link is being handled here, then it matches the file_id_pattern,
         # therefore, we can call [0] safely.
-        file_id = re.findall(self._FILE_ID_PATTERN, pyfile.url, re.I)[0]
-
+        file_id     = self.info['pattern']['ID']
         ticket_json = self._load_json(self._DOWNLOAD_TICKET_URI_PATTERN.format(file_id))
 
         self.wait(ticket_json['result']['wait_time'])

@@ -29,13 +29,13 @@ def forward(source, destination):
 class ClickAndLoad(Addon):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
-    __version__ = "0.47"
+    __version__ = "0.48"
     __status__  = "testing"
 
-    __config__ = [("activated", "bool", "Activated"                             , True ),
-                  ("port"     , "int" , "Port"                                  , 9666 ),
-                  ("extern"   , "bool", "Listen on the public network interface", True ),
-                  ("queue"    , "bool", "Add packages to queue"                 , False)]
+    __config__ = [("activated", "bool"           , "Activated"                      , True       ),
+                  ("port"     , "int"            , "Port"                           , 9666       ),
+                  ("extern"   , "bool"           , "Listen for external connections", True       ),
+                  ("dest"     , "queue;collector", "Add packages to"                , "collector")]
 
     __description__ = """Click'n'Load hook plugin"""
     __license__     = "GPLv3"
@@ -55,7 +55,7 @@ class ClickAndLoad(Addon):
 
 
     @threaded
-    def forward(source, destination, queue=False):
+    def forward(self, source, destination, queue=False):
         if queue:
             old_ids = set(pack.id for pack in self.pyload.api.getCollector())
 
@@ -109,7 +109,7 @@ class ClickAndLoad(Addon):
 
                 server_socket.connect(("127.0.0.1", webport))
 
-                self.forward(client_socket, server_socket, self.get_config('queue'))
+                self.forward(client_socket, server_socket, self.get_config('dest') is "queue")
                 self.forward(server_socket, client_socket)
 
         except socket.timeout:

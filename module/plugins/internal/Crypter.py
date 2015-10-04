@@ -7,7 +7,7 @@ from module.utils import save_path as safe_filename
 class Crypter(Base):
     __name__    = "Crypter"
     __type__    = "crypter"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -83,11 +83,12 @@ class Crypter(Base):
         subfolder_per_package = self.get_config('subfolder_per_package', True)
 
         for name, links, folder in self.packages:
-            self.log_debug("Parsed package: %s" % name,
-                          "%d links" % len(links),
-                          "Saved to folder: %s" % folder if folder else "Saved to download folder")
+            self.log_info(_("Parsed package: %s")  % name,
+                          _("Found %d links")      % len(links),
+                          _("Saved to folder: %s") % folder if folder else _("Saved to default download folder"))
 
             links = map(self.fixurl, links)
+            self.log_debug("LINKS for package " + name, *links)
 
             pid = self.pyload.api.addPackage(name, links, package_queue)
 

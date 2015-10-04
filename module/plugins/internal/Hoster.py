@@ -13,7 +13,7 @@ from module.utils import fs_decode, fs_encode, save_join as fs_join, save_path a
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -91,19 +91,6 @@ class Hoster(Base):
 
             else:
                 raise Fail(e)
-
-
-    def restart(self, msg="", premium=True):
-        if not msg:
-            msg = _("Simple restart") if premium else _("Fallback to free download")
-
-        if not premium:
-            if self.premium:
-                self.rst_free = True
-            else:
-                self.fail("%s | %s" % (msg, _("Download was already free")))
-
-        raise Retry(encode(msg))  #@TODO: Remove `encode` in 0.4.10
 
 
     @check_abort
@@ -291,8 +278,10 @@ class Hoster(Base):
             return True
 
         else:
-            size = self.pyfile.size / 1024  #@TODO: Remove in 0.4.10
-            self.log_info(_("Filesize: %s KiB, Traffic left for user %s: %s KiB") % (size, self.account.user, traffic))  #@TODO: Rewrite in 0.4.10
+            #@TODO: Rewrite in 0.4.10
+            size = self.pyfile.size / 1024
+            self.log_info(_("Filesize: %s KiB") % size,
+                          _("Traffic left for user %s: %s KiB") % (self.account.user, traffic))
             return size <= traffic
 
 

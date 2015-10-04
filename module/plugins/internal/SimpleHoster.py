@@ -385,7 +385,7 @@ class SimpleHoster(Hoster):
                 elif re.search('countdown|expired', errmsg, re.I):
                     self.retry(10, 60, _("Link expired"))
 
-                elif re.search('maintenance|maintainance|temp', errmsg, re.I):
+                elif re.search('maint(e|ai)nance|temp', errmsg, re.I):
                     self.temp_offline()
 
                 elif re.search('up to|size', errmsg, re.I):

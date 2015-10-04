@@ -11,7 +11,7 @@ class XFileSharingProFolder(XFSCrypter):
     __version__ = "0.14"
     __status__  = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:user|folder)s?/\w+'
+    __pattern__ = r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:user|folder)s?/\w+'
     __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
@@ -33,7 +33,7 @@ class XFileSharingProFolder(XFSCrypter):
         self.__pattern__ = self.pyload.pluginManager.crypterPlugins[self.__name__]['pattern']
 
         self.PLUGIN_DOMAIN = re.match(self.__pattern__, self.pyfile.url).group("DOMAIN").lower()
-        self.PLUGIN_NAME   = "".join(part.capitalize() for part in re.split(r'(\.|\d+|\-)', self.PLUGIN_DOMAIN) if part != '.')
+        self.PLUGIN_NAME   = "".join(part.capitalize() for part in re.split(r'(\.|\d+|-)', self.PLUGIN_DOMAIN) if part != '.')
 
 
     def _setup(self):

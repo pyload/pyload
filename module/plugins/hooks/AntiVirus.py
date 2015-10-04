@@ -17,7 +17,7 @@ from module.utils import fs_encode, save_join as fs_join
 class AntiVirus(Addon):
     __name__    = "AntiVirus"
     __type__    = "hook"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     #@TODO: add trash option (use Send2Trash lib)
@@ -84,7 +84,7 @@ class AntiVirus(Addon):
 
                 if scanfolder:
                     if action is "Antivirus default":
-                        self.log_warning(_("Delete/Quarantine task skipped in folder scan mode")
+                        self.log_warning(_("Delete/Quarantine task skipped in folder scan mode"))
                     return
 
                 pyfile.error = _("Infected file")

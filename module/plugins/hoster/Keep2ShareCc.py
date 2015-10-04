@@ -94,7 +94,7 @@ class Keep2ShareCc(SimpleHoster):
                      'uniqueId'           : self.fid,
                      'yt0'                : ''}
 
-        m = re.search(r'id="(captcha\-form)"', self.html)
+        m = re.search(r'id="(captcha-form)"', self.html)
         self.log_debug("Captcha form found", m)
 
         m = re.search(self.CAPTCHA_PATTERN, self.html)

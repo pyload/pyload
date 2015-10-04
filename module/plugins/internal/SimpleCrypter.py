@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.65"
+    __version__ = "0.66"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -138,8 +138,6 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
             if self.PAGES_PATTERN:
                 self.handle_pages(pyfile)
-
-            self.log_debug("Package has %d links" % len(self.links))
 
         if self.link:
             self.urls.append(self.link)

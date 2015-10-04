@@ -31,7 +31,7 @@ class FilecryptCc(Crypter):
     # URL_REPLACEMENTS  = [(r'.html$', ""), (r'$', ".html")]  #@TODO: Extend SimpleCrypter
 
     DLC_LINK_PATTERN = r'onclick="DownloadDLC\(\'(.+)\'\);">'
-    WEBLINK_PATTERN  = r"openLink.?'([\w\-]*)',"
+    WEBLINK_PATTERN  = r"openLink.?'([\w-]*)',"
 
     CAPTCHA_PATTERN          = r'class="safety">Sicherheitsabfrage<'
     INTERNAL_CAPTCHA_PATTERN = r'<img id="nc" src="(.+?)"'

@@ -109,10 +109,8 @@ def parse_time(string):
         time = seconds_to_midnight()
 
     else:
-        this  = re.compile("this", re.I)
-        regex = re.compile(r'(\d+|[\w\-]+)\s*(hr|hour|min|sec|)', re.I)
-
-        time = sum(1 if this.match(v) else str2int(v) *
+        regex = re.compile(r'(\d+| (?:this|an?) )\s*(hr|hour|min|sec|)', re.I)
+        time = sum((int(v) if v.strip() not in ("this", "a", "an") else 1) *
                    {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, '': 1}[u.lower()]
                    for v, u in regex.findall(string))
 
@@ -228,7 +226,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'

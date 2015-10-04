@@ -7,7 +7,7 @@ from module.plugins.internal.Addon import Addon
 class DeleteFinished(Addon):
     __name__    = "DeleteFinished"
     __type__    = "hook"
-    __version__ = "1.14"
+    __version__ = "1.15"
     __status__  = "testing"
 
     __config__ = [("interval"  , "int" , "Check interval in hours"          , 72   ),
@@ -21,10 +21,9 @@ class DeleteFinished(Addon):
     MIN_CHECK_INTERVAL = 1 * 60 * 60  #: 1 hour
 
 
-    ## overwritten methods ##
-    def init(self):
-        # self.event_map = {'pluginConfigChanged': "plugin_config_changed"}
+    def activate(self):
         self.interval = self.MIN_CHECK_INTERVAL
+        self.init_periodical()
 
 
     def periodical(self):
