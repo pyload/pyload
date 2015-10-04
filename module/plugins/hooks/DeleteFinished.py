@@ -37,20 +37,12 @@ class DeleteFinished(Addon):
             self.add_event('package_finished', self.wakeup)
 
 
-    # def plugin_config_changed(self, plugin, name, value):
-        # if name == "interval" and value is not self.interval:
-            # self.interval = value * 3600
-            # self.init_periodical()
-
-
     def deactivate(self):
         self.manager.removeEvent('package_finished', self.wakeup)
 
 
     def activate(self):
         self.info['sleep'] = True
-        # interval = self.get_config('interval')
-        # self.plugin_config_changed(self.__name__, 'interval', interval)
         self.interval = max(self.MIN_CHECK_INTERVAL, self.get_config('interval') * 60 * 60)
         self.add_event('package_finished', self.wakeup)
 

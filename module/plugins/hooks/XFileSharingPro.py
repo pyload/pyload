@@ -23,9 +23,9 @@ class XFileSharingPro(Hook):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    regexp     = {'hoster' : (r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
+    regexp     = {'hoster' : (r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
                               r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:embed-)?\w+'),
-                  'crypter': (r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:user|folder)s?/\w+',
+                  'crypter': (r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:user|folder)s?/\w+',
                               r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:user|folder)s?/\w+')}
 
     BUILTIN_HOSTERS  = [#WORKING HOSTERS:
@@ -44,14 +44,6 @@ class XFileSharingPro(Hook):
                         "amonshare.com", "banicrazy.info", "boosterking.com", "host4desi.com",
                         "laoupload.com", "rd-fs.com"]
     BUILTIN_CRYPTERS = ["junocloud.me", "rapidfileshare.net"]
-
-
-    # def plugin_config_changed(self, plugin, name, value):
-        # self.load_pattern()
-
-
-    # def init(self):
-        # self.event_map = {'pluginConfigChanged': "plugin_config_changed"}
 
 
     def activate(self):

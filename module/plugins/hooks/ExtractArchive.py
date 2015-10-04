@@ -137,8 +137,8 @@ class ExtractArchive(Addon):
 
 
     def init(self):
-        self.event_map  = {'allDownloadsProcessed': "all_downloads_processed",
-                           'packageDeleted'       : "package_deleted"        }
+        self.event_map = {'allDownloadsProcessed': "all_downloads_processed",
+                          'packageDeleted'       : "package_deleted"        }
 
         self.queue  = ArchiveQueue(self, "Queue")
         self.failed = ArchiveQueue(self, "Failed")

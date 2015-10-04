@@ -28,12 +28,15 @@ class ExternalScripts(Addon):
     def init(self):
         self.scripts = {}
 
-        self.event_list = ["archive_extract_failed", "archive_extracted"     ,
-                           "package_extract_failed", "package_extracted"     ,
-                           "all_archives_extracted", "all_archives_processed"]
-        self.event_map  = {'allDownloadsFinished' : "all_downloads_finished" ,
-                           'allDownloadsProcessed': "all_downloads_processed",
-                           'packageDeleted'       : "package_deleted"        }
+        self.event_map = {'allDownloadsFinished'  : "all_downloads_finished" ,
+                          'allDownloadsProcessed' : "all_downloads_processed",
+                          'packageDeleted'        : "package_deleted"        ,
+                          'archive_extract_failed': "archive_extract_failed" ,
+                          'archive_extracted'     : "archive_extracted"      ,
+                          'package_extract_failed': "package_extract_failed" ,
+                          'package_extracted'     : "package_extracted"      ,
+                          'all_archives_extracted': "all_archives_extracted" ,
+                          'all_archives_processed': "all_archives_processed" }
 
         folders = ["pyload_start", "pyload_restart", "pyload_stop",
                    "before_reconnect", "after_reconnect",
