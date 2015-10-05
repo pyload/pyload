@@ -14,7 +14,7 @@ IGNORE = (
     'EasyShareCom', 'FlyshareCz'
     )
 
-CONF_VERSION = 1
+CONF_VERSION = 2
 
 class ConfigParser:
     """

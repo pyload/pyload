@@ -12,18 +12,19 @@ from DatabaseBackend import DatabaseBackend
 from DatabaseBackend import style
 from module.Api import PERMS, ROLE
 
-# FIXME ! Hardcoded parameters
-# Format of parameters in LDAP_params.py :
-#   ldap_url       = "ldap://127.0.0.1"
-#   dn_format      = "uid={uid},ou=People,dc=dracchus,dc=site"
-#   pyload_cn      = "cn=pyload,ou=Group,dc=dracchus,dc=site"
-#   manager_cn     = "cn=Manager,dc=dracchus,dc=site"
-#   manager_passwd = [PASSWORD]
-#   users_query    = "ou=People,dc=dracchus,dc=site"
-from LDAP_params import *
+# Parameters fetched from LDAP section of pyLoad config
+# Sample parameters :
+# LDAP - "LDAP":
+#      str ldap_url : "LDAP Url" = "ldap://127.0.0.1"
+#      str dn_format : "DN Format" = "uid={uid},ou=People,dc=dracchus,dc=site"
+#      str pyload_cn : "pyLoad CN" = "cn=pyload,ou=Group,dc=dracchus,dc=site"
+#      str manager_cn : "Manager CN" = "cn=Manager,dc=dracchus,dc=site"
+#      str manager_passwd : "Manager password" = [PASSWORD]
+#      str users_query : "Users search query" = "ou=People,dc=dracchus,dc=site"
 
 # Enabled functions
-addUser_enable = False  # Disabled for satefy reasons (and not fully implemented)
+# TODO : Put this into pyload.conf
+addUser_enable = False  # Disabled for safety reasons (and not fully implemented)
 
 # Relevant documentation :
 #   LDAP injection :
@@ -46,22 +47,32 @@ class LDAP_UserMethods:
     # Parameters are stored globally
     # Mandatory to insert into Pyload code source
 
+    # Load parameters
+    # Called by pyLoadCore.py
     @classmethod
-    def __manager_login(cls):    
+    def load_config(cls, config):
+        cls.ldap_url    = config['LDAP']['ldap_url']
+        cls.dn_format   = config['LDAP']['dn_format']
+        cls.pyload_cn   = config['LDAP']['pyload_cn']
+        cls.manager_cn  = config['LDAP']['manager_cn']
+        cls.users_query = config['LDAP']['users_query']
+    
+    @classmethod
+    def __manager_login(cls):
         # Warning ! Storing Manager password is not secure !
         # TODO : Make a special pyload manager user.
         # Login to LDAP server
-        l = ldap.initialize(ldap_url)
+        l = ldap.initialize(cls.ldap_url)
         l.protocol_version = ldap.VERSION3
-        l.simple_bind_s(manager_cn, manager_passwd)
+        l.simple_bind_s(cls.manager_cn, manager_passwd)
         return l
     
     @classmethod
     def __anonymous_login(cls):
         # Login to LDAP server
-        l = ldap.initialize(ldap_url)
+        l = ldap.initialize(cls.ldap_url)
         l.protocol_version = ldap.VERSION3
-        l.simple_bind_s(manager_cn, manager_passwd)
+        l.simple_bind_s(cls.manager_cn, manager_passwd)
         return l
 
     @classmethod
@@ -69,14 +80,14 @@ class LDAP_UserMethods:
         # User dn
         dn = cls.__user_dn(user)
         # Login to LDAP server
-        l = ldap.initialize(ldap_url)
+        l = ldap.initialize(cls.ldap_url)
         l.protocol_version = ldap.VERSION3
         l.simple_bind_s(dn, passwd)
         return l
 
     @classmethod
     def __user_dn(cls, user):
-        return dn_format.format(uid = ldap.filter.escape_filter_chars(user, escape_mode = 2))
+        return cls.dn_format.format(uid = ldap.filter.escape_filter_chars(user, escape_mode = 2))
     
     @classmethod
     def __user_data_from_field(cls, field):
@@ -105,9 +116,10 @@ class LDAP_UserMethods:
     @style.queue
     def checkAuth(db, user, passwd):
         u"""Check whether the current user is a valid pyloader."""
+        cls = LDAP_UserMethods
         try:
             # Login to LDAP server
-            l = LDAP_UserMethods.__login(user, passwd)
+            l = cls.__login(user, passwd)
             # Retrieve real dn
             # Countermeasure against injection attacks
             real_dn = l.whoami_s()[3:]  # Removes the 'dn'
@@ -117,17 +129,17 @@ class LDAP_UserMethods:
             # Real uid
             real_uid = info['uid'][0]
             # Retrieve pyload group info
-            pyload_members = l.search_s(pyload_cn, ldap.SCOPE_BASE)[0][1]['memberUid']
+            pyload_members = l.search_s(cls.pyload_cn, ldap.SCOPE_BASE)[0][1]['memberUid']
             # Check user against pyload members
             if real_uid in pyload_members:
                 # User in group, return user info
-                return LDAP_UserMethods.__user_data_from_field(info)
+                return cls.__user_data_from_field(info)
             else:
                 # User not in group, invalid
-                return LDAP_UserMethods.__invalid_user()
+                return cls.__invalid_user()
         except ldap.INVALID_CREDENTIALS:
             # Invalid login
-            return LDAP_UserMethods.__invalid_user()
+            return cls.__invalid_user()
    
     @classmethod
     def addUser(cls, db, user, passwd):
@@ -136,7 +148,7 @@ class LDAP_UserMethods:
             # Login to LDAP server
             l = cls.__login(user, passwd)
             # Search user in database
-            dn = LDAP_UserMethods.__user_dn(user)
+            dn = cls.__user_dn(user)
             res = l.search_s(dn, ldap.SCOPE_BASE)
             if len(res) == 0:
                 # If user is not in database
@@ -163,43 +175,46 @@ class LDAP_UserMethods:
     
     @style.queue
     def setPermission(db, user, perms):
+        cls = LDAP_UserMethods
         # FIXME + Warning ! This function doesn't check that user entry can
         # receive the data (right objectClass)
         # Login as Manager
-        l = LDAP_UserMethods.__manager_login()
+        l = cls.__manager_login()
         # Modify user attributes
         # FIXME ! More checking !
-        dn = LDAP_UserMethods.__user_dn(user)
+        dn = cls.__user_dn(user)
         l.modify_s(dn, [(ldap.MOD_REPLACE, 'pyloadPermission', str(perms))])
 
     @style.queue
     def setRole(db, user, role):
+        cls = LDAP_UserMethods
         # FIXME + Warning ! This function doesn't check that user entry can
         # receive the data (right objectClass)
         # Login as Manager
-        l = LDAP_UserMethods.__manager_login()
+        l = cls.__manager_login()
         # Modify user attributes
         # FIXME ! More checking !
-        dn = LDAP_UserMethods.__user_dn(user)
+        dn = cls.__user_dn(user)
         l.modify_s(dn, [(ldap.MOD_REPLACE, 'pyloadRole', str(role))])
     
     # Contrary to MySQL, LDAP doesn't allow easily to retrieve only some fields
     @classmethod
-    def listUsers(cls, db):   
+    def listUsers(cls, db):
         return cls.getAllUserData(db).keys()
     
     @style.queue
     def getAllUserData(db):
+        cls = LDAP_UserMethods
         # Anonymous login to LDAP server
-        l = LDAP_UserMethods.__anonymous_login()
+        l = cls.__anonymous_login()
         # Retrieve pyload group members
-        pyload_members = l.search_s(pyload_cn, ldap.SCOPE_BASE)[0][1]['memberUid']
+        pyload_members = l.search_s(cls.pyload_cn, ldap.SCOPE_BASE)[0][1]['memberUid']
         # For each user in pyload members
         users = {}
         for uid in pyload_members:
             # Search user info
             try:
-                dn = LDAP_UserMethods.__user_dn(uid)
+                dn = cls.__user_dn(uid)
                 res = l.search_s(dn, ldap.SCOPE_BASE)
             except ldap.NO_SUCH_OBJECT:
                 # No user
@@ -215,7 +230,7 @@ class LDAP_UserMethods:
             elif len(res) == 1:
                 # Elif one single user can be found
                 # Get and store all user data
-                users[uid] = LDAP_UserMethods.__user_data_from_field(res[0][1])
+                users[uid] = cls.__user_data_from_field(res[0][1])
             elif len(res) > 1:
                 # Elif several user can be found
                 # This is a problem with LDAP server
@@ -238,5 +253,6 @@ class LDAP_UserMethods:
         # It is better to modify LDAP database from LDAP management interface
         raise NotImplementedError()
 
-DatabaseBackend.registerSub(LDAP_UserMethods)
+# Moved in pyLoadCore.py
+# DatabaseBackend.registerSub(LDAP_UserMethods)
 
