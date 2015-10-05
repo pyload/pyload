@@ -226,7 +226,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -270,30 +270,94 @@ class Plugin(object):
                'msg'       : msg})
 
 
-    def log_debug(self, *args):
-        if not self.pyload.debug:
-            return
-        self._log("debug", self.__type__, self.__name__, args)
+    def log_debug(self, *args, **kwargs):
+        frame = inspect.currentframe()
+        try:
+            if kwargs:
+                for key, val in kwargs.iteritems():
+                    if key not in ("traceback"):
+                        raise TypeError(frame.f_code.co_name + "() got an unexpected keyword argument '" + key + "'") 
+
+            if not self.pyload.debug:
+                return
+
+            self._log("debug", self.__type__, self.__name__, args)
+
+            if kwargs.get('traceback') is True:
+                traceback.print_stack(frame.f_back)
+
+        finally:
+            del frame
 
 
-    def log_info(self, *args):
-        self._log("info", self.__type__, self.__name__, args)
+    def log_info(self, *args, **kwargs):
+        frame = inspect.currentframe()
+        try:
+            if kwargs:
+                for key, val in kwargs.iteritems():
+                    if key not in ("traceback"):
+                        raise TypeError(frame.f_code.co_name + "() got an unexpected keyword argument '" + key + "'") 
+
+            self._log("info", self.__type__, self.__name__, args)
+
+            if kwargs.get('traceback') is True:
+                traceback.print_stack(frame.f_back)
+
+        finally:
+            del frame
 
 
-    def log_warning(self, *args):
-        self._log("warning", self.__type__, self.__name__, args)
+    def log_warning(self, *args, **kwargs):
+        frame = inspect.currentframe()
+        try:
+            if kwargs:
+                for key, val in kwargs.iteritems():
+                    if key not in ("traceback"):
+                        raise TypeError(frame.f_code.co_name + "() got an unexpected keyword argument '" + key + "'") 
+
+            self._log("warning", self.__type__, self.__name__, args)
+
+            if kwargs.get('traceback') is True:
+                traceback.print_stack(frame.f_back)
+
+        finally:
+            del frame
 
 
-    def log_error(self, *args):
-        self._log("error", self.__type__, self.__name__, args)
-        if self.pyload.debug:
-            traceback.print_exc()
+    def log_error(self, *args, **kwargs):
+        frame = inspect.currentframe()
+        try:
+            if kwargs:
+                for key, val in kwargs.iteritems():
+                    if key not in ("traceback"):
+                        raise TypeError(frame.f_code.co_name + "() got an unexpected keyword argument '" + key + "'") 
+
+            self._log("error", self.__type__, self.__name__, args)
+
+            if kwargs.get('traceback') is True:
+                traceback.print_stack(frame.f_back)
+
+        finally:
+            del frame
 
 
     def log_critical(self, *args):
-        return self._log("critical", self.__type__, self.__name__, args)
-        if self.pyload.debug:
-            traceback.print_exc()
+        frame = inspect.currentframe()
+        try:
+            if kwargs:
+                for key, val in kwargs.iteritems():
+                    if key not in ("traceback"):
+                        raise TypeError(frame.f_code.co_name + "() got an unexpected keyword argument '" + key + "'") 
+
+            self._log("critical", self.__type__, self.__name__, args)
+
+            if kwargs.get('traceback') is False:
+                return
+            if self.pyload.debug:
+                traceback.print_stack(frame.f_back)
+
+        finally:
+            del frame
 
 
     def set_permissions(self, path):
