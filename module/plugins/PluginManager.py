@@ -215,7 +215,8 @@ class PluginManager:
 
             for name, value in chain(self.crypterPlugins.iteritems(), self.hosterPlugins.iteritems(),
                 self.containerPlugins.iteritems()):
-                if value["re"].match(url):
+                re = value.get("re", None)
+                if re != None and re.match(url):
                     res.append((url, name))
                     last = (name, value)
                     found = True
