@@ -8,7 +8,7 @@ from module.plugins.internal.Hook import Hook
 class XFileSharingPro(Hook):
     __name__    = "XFileSharingPro"
     __type__    = "hook"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __status__  = "testing"
 
     __config__ = [("activated"       , "bool", "Activated"                     , True ),
@@ -23,9 +23,9 @@ class XFileSharingPro(Hook):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    regexp     = {'hoster' : (r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
+    regexp     = {'hoster' : (r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
                               r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:embed-)?\w+'),
-                  'crypter': (r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:user|folder)s?/\w+',
+                  'crypter': (r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:user|folder)s?/\w+',
                               r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:user|folder)s?/\w+')}
 
     BUILTIN_HOSTERS  = [#WORKING HOSTERS:
