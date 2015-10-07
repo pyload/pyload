@@ -378,7 +378,7 @@ class Base(Plugin):
 
 
     def fixurl(self, url, baseurl=None, unquote=True):
-        url = fixurl(url, unquote=False)
+        #url = fixurl(url, unquote=False)
 
         if not baseurl:
             baseurl = fixurl(self.pyfile.url)
