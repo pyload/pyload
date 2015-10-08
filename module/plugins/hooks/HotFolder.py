@@ -68,4 +68,4 @@ class HotFolder(Addon):
                 self.pyload.api.addPackage(f, [newpath], 1)
 
         except (IOError, OSError), e:
-            self.log_error(e)
+            self.log_error(e, trace=True)

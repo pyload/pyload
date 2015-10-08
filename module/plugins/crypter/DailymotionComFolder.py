@@ -83,9 +83,8 @@ class DailymotionComFolder(Crypter):
 
 
     def decrypt(self, pyfile):
-        m = re.match(self.__pattern__, pyfile.url)
-        m_id = m.group('ID')
-        m_type = m.group('TYPE')
+        m_id   = self.info['pattern']['ID']
+        m_type = self.info['pattern']['TYPE']
 
         if m_type == "playlist":
             self.log_debug("Url recognized as Playlist")

@@ -226,7 +226,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.49"
+    __version__ = "0.50"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -271,93 +271,38 @@ class Plugin(object):
 
 
     def log_debug(self, *args, **kwargs):
-        frame = inspect.currentframe()
-        try:
-            if kwargs:
-                for key, val in kwargs.iteritems():
-                    if key not in ("traceback"):
-                        raise TypeError(frame.f_code.co_name + "() got an unexpected keyword argument '" + key + "'") 
-
-            if not self.pyload.debug:
-                return
-
-            self._log("debug", self.__type__, self.__name__, args)
-
-            if kwargs.get('traceback') is True:
-                traceback.print_stack(frame.f_back)
-
-        finally:
-            del frame
+        self._log("debug", self.__type__, self.__name__, args)
+        if self.pyload.debug and kwargs.get('trace'):
+            print "Traceback (most recent call last):"
+            traceback.print_stack(inspect.currentframe().f_back)
 
 
     def log_info(self, *args, **kwargs):
-        frame = inspect.currentframe()
-        try:
-            if kwargs:
-                for key, val in kwargs.iteritems():
-                    if key not in ("traceback"):
-                        raise TypeError(frame.f_code.co_name + "() got an unexpected keyword argument '" + key + "'") 
-
-            self._log("info", self.__type__, self.__name__, args)
-
-            if kwargs.get('traceback') is True:
-                traceback.print_stack(frame.f_back)
-
-        finally:
-            del frame
+        self._log("info", self.__type__, self.__name__, args)
+        if self.pyload.debug and kwargs.get('trace'):
+            print "Traceback (most recent call last):"
+            traceback.print_stack(inspect.currentframe().f_back)
 
 
     def log_warning(self, *args, **kwargs):
-        frame = inspect.currentframe()
-        try:
-            if kwargs:
-                for key, val in kwargs.iteritems():
-                    if key not in ("traceback"):
-                        raise TypeError(frame.f_code.co_name + "() got an unexpected keyword argument '" + key + "'") 
-
-            self._log("warning", self.__type__, self.__name__, args)
-
-            if kwargs.get('traceback') is True:
-                traceback.print_stack(frame.f_back)
-
-        finally:
-            del frame
+        self._log("warning", self.__type__, self.__name__, args)
+        if self.pyload.debug and kwargs.get('trace'):
+            print "Traceback (most recent call last):"
+            traceback.print_stack(inspect.currentframe().f_back)
 
 
     def log_error(self, *args, **kwargs):
-        frame = inspect.currentframe()
-        try:
-            if kwargs:
-                for key, val in kwargs.iteritems():
-                    if key not in ("traceback"):
-                        raise TypeError(frame.f_code.co_name + "() got an unexpected keyword argument '" + key + "'") 
-
-            self._log("error", self.__type__, self.__name__, args)
-
-            if kwargs.get('traceback') is True:
-                traceback.print_stack(frame.f_back)
-
-        finally:
-            del frame
+        self._log("error", self.__type__, self.__name__, args)
+        if kwargs.get('trace'):
+            print "Traceback (most recent call last):"
+            traceback.print_stack(inspect.currentframe().f_back)
 
 
-    def log_critical(self, *args):
-        frame = inspect.currentframe()
-        try:
-            if kwargs:
-                for key, val in kwargs.iteritems():
-                    if key not in ("traceback"):
-                        raise TypeError(frame.f_code.co_name + "() got an unexpected keyword argument '" + key + "'") 
-
-            self._log("critical", self.__type__, self.__name__, args)
-
-            if kwargs.get('traceback') is False:
-                return
-            if self.pyload.debug:
-                traceback.print_stack(frame.f_back)
-
-        finally:
-            del frame
+    def log_critical(self, *args, **kwargs):
+        self._log("critical", self.__type__, self.__name__, args)
+        if kwargs.get('trace', True):
+            print "Traceback (most recent call last):"
+            traceback.print_stack(inspect.currentframe().f_back)
 
 
     def set_permissions(self, path):
@@ -495,7 +440,7 @@ class Plugin(object):
                     f.write(encode(html))
 
             except IOError, e:
-                self.log_error(e)
+                self.log_error(e, trace=True)
 
         if not just_header:
             return html

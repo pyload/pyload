@@ -66,15 +66,13 @@ class RapideoPl(MultiHoster):
             data = self.run_file_query(pyfile.url, 'fileinfo')
 
         except Exception:
-            self.log_debug("RunFileQuery error")
-            self.temp_offline()
+            self.temp_offline("Query error #1")
 
         try:
             parsed = json_loads(data)
 
         except Exception:
-            self.log_debug("Loads error")
-            self.temp_offline()
+            self.temp_offline("Data not found")
 
         self.log_debug(parsed)
 
@@ -100,5 +98,4 @@ class RapideoPl(MultiHoster):
             self.link = self.run_file_query(pyfile.url, 'filedownload')
 
         except Exception:
-            self.log_debug("runFileQuery error #2")
-            self.temp_offline()
+            self.temp_offline("Query error #2")

@@ -191,7 +191,7 @@ class IRCInterface(Thread, Addon):
                 self.response(line, msg['origin'])
 
         except Exception, e:
-            self.log_error(e)
+            self.log_error(e, trace=True)
 
 
     def response(self, msg, origin=""):

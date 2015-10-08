@@ -13,7 +13,7 @@ from module.utils import compare_time, lock
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.55"
+    __version__ = "0.56"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -63,7 +63,7 @@ class Account(Plugin):
             self.periodical()
 
         except Exception, e:
-            self.log_error(_("Error executing periodical task: %s") % e)
+            self.log_error(_("Error executing periodical task: %s") % e, trace=True)
 
         self.init_periodical(self.interval, threaded)
 

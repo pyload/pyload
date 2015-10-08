@@ -64,15 +64,15 @@ class TransmissionRPC(Addon):
                                          req=req)
 
                 except Exception, e:
-                     self.log_error(e)
+                     self.log_error(e, trace=True)
                      return
 
             else:
-                 self.log_error(e)
+                 self.log_error(e, trace=True)
                  return
 
         except Exception, e:
-             self.log_error(e)
+             self.log_error(e, trace=True)
              return
 
         try:
@@ -81,4 +81,4 @@ class TransmissionRPC(Addon):
                 self.log_debug("Result: %s" % res['result'])
 
         except Exception, e:
-            self.log_error(e)
+            self.log_error(e, trace=True)

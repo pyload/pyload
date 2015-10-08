@@ -143,7 +143,7 @@ class TurbobitNet(SimpleHoster):
                     return "http://turbobit.net%s" % out.strip()
 
             except Exception, e:
-                self.log_error(e)
+                self.log_error(e, trace=True)
         else:
             if self.retries >= 2:
                 #: Retry with updated js

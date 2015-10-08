@@ -34,7 +34,7 @@ class CzshareCom(Account):
             validuntil  = time.mktime(time.strptime(m.group(3), '%d.%m.%y %H:%M'))
 
         except Exception, e:
-            self.log_error(e)
+            self.log_error(e, trace=True)
 
         else:
             premium = True

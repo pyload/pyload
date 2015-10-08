@@ -200,7 +200,7 @@ class DeathByCaptcha(Hook):
                 self.log_error(e.getDesc())
 
             except Exception, e:
-                self.log_error(e)
+                self.log_error(e, trace=True)
 
 
     @threaded

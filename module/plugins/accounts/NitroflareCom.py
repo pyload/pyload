@@ -42,7 +42,7 @@ class NitroflareCom(Account):
                                  re.findall(r'(\d+)\s*(day|hour|minute)', expiredate, re.I))
 
             except Exception, e:
-                self.log_error(e)
+                self.log_error(e, trace=True)
 
             else:
                 self.log_debug("Valid until: %s" % validuntil)
@@ -59,7 +59,7 @@ class NitroflareCom(Account):
                 trafficleft = self.parse_traffic(str(max(0, 50 - float(m.group(1)))),  "GB")
 
             except Exception, e:
-                self.log_error(e)
+                self.log_error(e, trace=True)
         else:
             self.log_debug("TRAFFIC_LEFT_PATTERN not found")
 

@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class OpenloadIo(SimpleHoster):
     __name__    = "OpenloadIo"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?openload\.(co|io)/(f|embed)/(?P<ID>[\w\-]+)'
@@ -36,15 +36,13 @@ class OpenloadIo(SimpleHoster):
 
 
     @classmethod
-    def get_info(cls, url="", html=""):
-        file_id   = self.info['pattern']['ID']
+    def api_info(cls, url):
+        file_id   = cls.info['pattern']['ID']
         info_json = cls._load_json(cls._FILE_INFO_URI_PATTERN.format(file_id))
         file_info = info_json['result'][file_id]
 
         return {'name'  : file_info['name'],
-                'size'  : file_info['size'],
-                'status': 3 if url.strip() else 8,
-                'url'   : url}
+                'size'  : file_info['size']}
 
 
     def setup(self):

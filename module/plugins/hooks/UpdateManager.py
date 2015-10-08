@@ -323,7 +323,7 @@ class UpdateManager(Addon):
                         self.manager.deactivateHook(name)
 
                     except Exception, e:
-                        self.log_debug(e)
+                        self.log_debug(e, trace=True)
 
                 for filename in (py_filename, pyc_filename):
                     if not exists(filename):

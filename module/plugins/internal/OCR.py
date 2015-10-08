@@ -20,7 +20,7 @@ from module.utils import save_join as fs_join
 class OCR(Plugin):
     __name__    = "OCR"
     __type__    = "ocr"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __description__ = """OCR base plugin"""
@@ -88,7 +88,7 @@ class OCR(Plugin):
             tmpTxt.close()
 
         except IOError, e:
-            self.log_error(e)
+            self.log_error(e, trace=True)
             return
 
         self.pyload.log_debug("Saving tiff...")
@@ -139,7 +139,7 @@ class OCR(Plugin):
                 os.remove(tmpSub.name)
 
         except OSError, e:
-            self.log_warning(e)
+            self.log_warning(e, trace=True)
 
 
     def recognize(self, name):
@@ -179,18 +179,25 @@ class OCR(Plugin):
                 try:
                     if pixels[x - 1, y - 1] != 255:
                         count += 1
+
                     if pixels[x - 1, y] != 255:
                         count += 1
+
                     if pixels[x - 1, y + 1] != 255:
                         count += 1
+
                     if pixels[x, y + 1] != 255:
                         count += 1
+
                     if pixels[x + 1, y + 1] != 255:
                         count += 1
+
                     if pixels[x + 1, y] != 255:
                         count += 1
+
                     if pixels[x + 1, y - 1] != 255:
                         count += 1
+
                     if pixels[x, y - 1] != 255:
                         count += 1
 

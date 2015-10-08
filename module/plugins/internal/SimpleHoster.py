@@ -16,7 +16,7 @@ from module.utils import fixup, fs_encode, parseFileSize as parse_size
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.95"
+    __version__ = "1.96"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -126,19 +126,21 @@ class SimpleHoster(Hoster):
 
     @classmethod
     def api_info(cls, url):
-        return super(SimpleHoster, cls).get_info(url)
+        return {}
 
 
     @classmethod
     def get_info(cls, url="", html=""):
-        info   = cls.api_info(url)
-        online = True if info['status'] == 2 else False
+        info = super(SimpleHoster, cls).get_info(url)
 
         try:
             info['pattern'] = re.match(cls.__pattern__, url).groupdict()  #: Pattern groups will be saved here
 
         except Exception:
             info['pattern'] = {}
+
+        info = cls.api_info(url)
+        online = True if info['status'] is 2 else False
 
         if not html and not online:
             if not url:
@@ -233,10 +235,10 @@ class SimpleHoster(Hoster):
             if self.LINK_PREMIUM_PATTERN is None:
                 self.LINK_PREMIUM_PATTERN = self.LINK_PATTERN
 
-        if (self.LEECH_HOSTER
-            and (self.__pattern__ is not self.pyload.pluginManager.hosterPlugins[self.__name__]['pattern']
-                 and re.match(self.__pattern__, self.pyfile.url) is None)):
-            self.leech_dl = True
+        if self.LEECH_HOSTER:
+            pattern = self.pyload.pluginManager.hosterPlugins[self.__name__]['pattern']
+            if self.__pattern__ is not pattern and re.match(self.__pattern__, self.pyfile.url) is None:
+                self.leech_dl = True
 
         if self.leech_dl:
             self.direct_dl = False

@@ -281,7 +281,7 @@ class Hoster(Base):
             #@TODO: Rewrite in 0.4.10
             size = self.pyfile.size / 1024
             self.log_info(_("Filesize: %s KiB") % size,
-                          _("Traffic left for user %s: %s KiB") % (self.account.user, traffic))
+                          _("Traffic left for user `%s`: %s KiB") % (self.account.user, traffic))
             return size <= traffic
 
 

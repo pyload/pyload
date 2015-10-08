@@ -204,7 +204,7 @@ class RelinkUs(Crypter):
                     package_links.extend(self._get_links(crypted, jk))
 
             except Exception:
-                self.log_debug("Unable to decrypt CNL2 links")
+                self.log_debug("Unable to decrypt CNL2 links", trace=True)
 
         return package_links
 

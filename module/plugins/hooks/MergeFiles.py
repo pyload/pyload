@@ -68,7 +68,7 @@ class MergeFiles(Addon):
                         self.log_debug("Finished merging part", splitted_file)
 
                     except Exception, e:
-                        self.log_error(e)
+                        self.log_error(e, trace=True)
 
                     finally:
                         pyfile.setProgress(100)

@@ -101,7 +101,7 @@ class Addon(Plugin):
             self.periodical()
 
         except Exception, e:
-            self.log_error(_("Error executing periodical task: %s") % e)
+            self.log_error(_("Error executing periodical task: %s") % e, trace=True)
 
         self.init_periodical(self.interval, threaded)
 

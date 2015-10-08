@@ -45,7 +45,7 @@ class Keep2ShareCc(Account):
                     validuntil = time.mktime(time.strptime(expiredate, "%Y.%m.%d"))
 
                 except Exception, e:
-                    self.log_error(e)
+                    self.log_error(e, trace=True)
 
                 else:
                     premium = True if validuntil > time.mktime(time.gmtime()) else False
@@ -56,7 +56,7 @@ class Keep2ShareCc(Account):
                     trafficleft = self.parse_traffic(m.group(1))
 
                 except Exception, e:
-                    self.log_error(e)
+                    self.log_error(e, trace=True)
 
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 

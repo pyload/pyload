@@ -106,11 +106,14 @@ class XFSAccount(Account):
                     trafficleft = -1
                     if validuntil is None:
                         validuntil = -1
+
                 else:
                     if 'U' in traffic:
                         unit = traffic['U']
+
                     elif isinstance(self.TRAFFIC_LEFT_UNIT, basestring):
                         unit = self.TRAFFIC_LEFT_UNIT
+
                     else:
                         unit = ""
 

@@ -61,7 +61,7 @@ class SolveMedia(CaptchaService):
                 result = self.result("http://api.solvemedia.com/papi/media", challenge)
 
             except Fail, e:
-                self.log_warning(e)
+                self.log_warning(e, trace=True)
                 self.plugin.invalidCaptcha()
                 result = None
 
