@@ -272,6 +272,9 @@ class PluginManager:
                 self.log.error(_("Error importing %(name)s: %(msg)s") % {"name": name, "msg": str(e)})
                 if self.core.debug:
                     print_exc()
+        else:
+            self.log.debug("Plugin %s not found" % name)
+            self.log.debug("Available plugins : %s" % str(plugins))
 
     def loadClass(self, type, name):
         """Returns the class of a plugin with the same name"""
