@@ -212,8 +212,8 @@ class UpdateManager(Addon):
                         break
 
             for t, n in self.remove_plugins(sorted(type_plugins)):
-                self.log_info(_("Removed blacklisted plugin: [%(type)s] %(name)s") % {
-                    'type': t,
+                self.log_info(_("Removed blacklisted plugin: %(type)s %(name)s") % {
+                    'type': t.upper(),
                     'name': n,
                 })
 

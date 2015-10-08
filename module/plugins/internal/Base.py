@@ -28,12 +28,6 @@ def parse_fileInfo(klass, url="", html=""):
 def create_getInfo(klass):
     def get_info(urls):
         for url in urls:
-            try:
-                url = replace_patterns(url, klass.URL_REPLACEMENTS)
-
-            except Exception:
-                pass
-
             yield parse_fileInfo(klass, url)
 
     return get_info
@@ -52,7 +46,7 @@ def check_abort(fn):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -61,6 +55,9 @@ class Base(Plugin):
     __description__ = """Base plugin for Hoster and Crypter"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+
+
+    URL_REPLACEMENTS = None
 
 
     def __init__(self, pyfile):
@@ -110,11 +107,18 @@ class Base(Plugin):
 
     @classmethod
     def get_info(cls, url="", html=""):
-        url  = fixurl(url, unquote=True)
-        info = {'name'  : parse_name(url),
-                'size'  : 0,
-                'status': 3 if url else 8,
-                'url'   : url}
+        url = fixurl(url, unquote=True)
+
+        info = {'name'   : parse_name(url),
+                'pattern': {},
+                'size'   : 0,
+                'status' : 3 if url else 8,
+                'url'    : replace_patterns(url, cls.URL_REPLACEMENTS)}
+
+        try:
+            info['pattern'] = re.match(cls.__pattern__, url).groupdict()
+        except Exception:
+            pass
 
         return info
 
@@ -363,7 +367,13 @@ class Base(Plugin):
         :param wait: time to wait in seconds before retry
         :param msg: message passed to fail if attemps value was reached
         """
-        id = inspect.currentframe().f_back.f_lineno
+        frame = inspect.currentframe()
+
+        try:
+            id = frame.f_back.f_lineno
+        finally:
+            del frame
+
         if id not in self.retries:
             self.retries[id] = 0
 
@@ -420,19 +430,19 @@ class Base(Plugin):
             self.abort()
 
 
-    def direct_link(self, url, follow_location=None):
+    def direct_link(self, url, redirect=False):
         link = ""
 
-        if follow_location is None:
-            redirect = 1
+        if not redirect:
+            conn = 1
 
-        elif type(follow_location) is int:
-            redirect = max(follow_location, 1)
+        elif type(redirect) is int:
+            conn = max(redirect, 1)
 
         else:
-            redirect = self.get_config("maxredirs", 10, "UserAgentSwitcher")
+            conn = self.get_config("maxredirs", 5, plugin="UserAgentSwitcher")
 
-        for i in xrange(redirect):
+        for i in xrange(conn):
             try:
                 self.log_debug("Redirect #%d to: %s" % (i, url))
                 header = self.load(url, just_header=True)
@@ -469,7 +479,7 @@ class Base(Plugin):
                 if header.get('code') == 302:
                     link = location
 
-                if follow_location:
+                if redirect:
                     url = location
                     continue
 

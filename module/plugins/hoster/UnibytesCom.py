@@ -30,14 +30,14 @@ class UnibytesCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        domain            = "http://www.%s/" % self.PLUGIN_DOMAIN
+        domain = "http://www.%s/" % self.PLUGIN_DOMAIN
         action, post_data = self.parse_html_form('id="startForm"')
-
-        self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
 
         for _i in xrange(3):
             self.log_debug(action, post_data)
-            self.html = self.load(urlparse.urljoin(domain, action), post=post_data)
+            self.html = self.load(urlparse.urljoin(domain, action),
+                                  post=post_data,
+                                  redirect=False)
 
             m = re.search(r'location:\s*(\S+)', self.req.http.header, re.I)
             if m is not None:
@@ -66,8 +66,6 @@ class UnibytesCom(SimpleHoster):
 
             elif last_step in ("captcha", "last"):
                 post_data['captcha'] = self.captcha.decrypt(urlparse.urljoin(domain, "captcha.jpg"))
-
-        self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
 
 getInfo = create_getInfo(UnibytesCom)

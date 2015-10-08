@@ -23,12 +23,16 @@ def get_info(urls):
 
         if "error" in info or info['access_error']:
             status = "offline"
+
         else:
             status = info['status']
+
             if status in ("ready", "published"):
                 status = "online"
+
             elif status in ("waiting", "processing"):
                 status = "temp. offline"
+
             else:
                 status = "offline"
 

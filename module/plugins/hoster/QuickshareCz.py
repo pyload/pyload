@@ -60,14 +60,11 @@ class QuickshareCz(SimpleHoster):
         data = dict((x, self.jsvars[x]) for x in self.jsvars if x in ("ID1", "ID2", "ID3", "ID4"))
         self.log_debug("FREE URL1:" + download_url, data)
 
-        self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
-        self.load(download_url, post=data)
-        self.header = self.req.http.header
-        self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
+        header = self.load(download_url, post=data, just_header=True)
 
-        m = re.search(r'Location\s*:\s*(.+)', self.header, re.I)
-        if m is None:
-            self.fail(_("File not found"))
+        self.link = header.get('location')
+        if not self.link:
+            elf.fail(_("File not found"))
 
         self.link = m.group(1)
         self.log_debug("FREE URL2:" + self.link)

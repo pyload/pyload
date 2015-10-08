@@ -11,6 +11,8 @@ import traceback
 import urllib
 import urlparse
 
+import pycurl
+
 if os.name is not "nt":
     import grp
     import pwd
@@ -232,7 +234,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.51"
+    __version__ = "0.52"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -280,35 +282,35 @@ class Plugin(object):
         self._log("debug", self.__type__, self.__name__, args)
         if self.pyload.debug and kwargs.get('trace'):
             print "Traceback (most recent call last):"
-            traceback.print_stack(inspect.currentframe().f_back)
+            traceback.print_stack()
 
 
     def log_info(self, *args, **kwargs):
         self._log("info", self.__type__, self.__name__, args)
         if self.pyload.debug and kwargs.get('trace'):
             print "Traceback (most recent call last):"
-            traceback.print_stack(inspect.currentframe().f_back)
+            traceback.print_stack()
 
 
     def log_warning(self, *args, **kwargs):
         self._log("warning", self.__type__, self.__name__, args)
         if self.pyload.debug and kwargs.get('trace'):
             print "Traceback (most recent call last):"
-            traceback.print_stack(inspect.currentframe().f_back)
+            traceback.print_stack()
 
 
     def log_error(self, *args, **kwargs):
         self._log("error", self.__type__, self.__name__, args)
         if kwargs.get('trace'):
             print "Traceback (most recent call last):"
-            traceback.print_stack(inspect.currentframe().f_back)
+            traceback.print_stack()
 
 
     def log_critical(self, *args, **kwargs):
         self._log("critical", self.__type__, self.__name__, args)
         if kwargs.get('trace', True):
             print "Traceback (most recent call last):"
-            traceback.print_stack(inspect.currentframe().f_back)
+            traceback.print_stack()
 
 
     def set_permissions(self, path):
@@ -396,7 +398,8 @@ class Plugin(object):
         raise Fail(encode(msg))  #@TODO: Remove `encode` in 0.4.10
 
 
-    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=True, multipart=False, req=None):
+    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=True,
+             multipart=False, redirect=True, req=None):
         """
         Load content at url and returns it
 
@@ -422,7 +425,22 @@ class Plugin(object):
         if isinstance(cookies, list):
             set_cookies(req.cj, cookies)
 
+        #@TODO: Move to network in 0.4.10
+        if not redirect:
+            req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
+
+        elif type(redirect) is int:
+            req.http.c.setopt(pycurl.MAXREDIRS, redirect)
+
         html = req.load(url, get, post, ref, bool(cookies), just_header, multipart, decode is True)  #@TODO: Fix network multipart in 0.4.10
+
+        #@TODO: Move to network in 0.4.10
+        if not redirect:
+            req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
+
+        elif type(redirect) is int:
+            req.http.c.setopt(pycurl.MAXREDIRS,
+                              self.get_config("maxredirs", 5, plugin="UserAgentSwitcher"))
 
         #@TODO: Move to network in 0.4.10
         if decode:
@@ -436,17 +454,22 @@ class Plugin(object):
 
         if self.pyload.debug:
             frame = inspect.currentframe()
-            framefile = fs_join("tmp", self.__name__, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
+
             try:
+                framefile = fs_join("tmp", self.__name__, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
+
                 if not exists(os.path.join("tmp", self.__name__)):
                     os.makedirs(os.path.join("tmp", self.__name__))
 
                 with open(framefile, "wb") as f:
-                    del frame  #: Delete the frame or it wont be cleaned
+
                     f.write(encode(html))
 
             except IOError, e:
                 self.log_error(e, trace=True)
+
+            finally:
+                del frame  #: Delete the frame or it wont be cleaned
 
         if not just_header:
             return html

@@ -48,19 +48,13 @@ class FilerNet(SimpleHoster):
         recaptcha           = ReCaptcha(self)
         response, challenge = recaptcha.challenge()
 
-        #@NOTE: Work-around for v0.4.9 just_header issue
-        #@TODO: Check for v0.4.10
-        self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
-        self.load(pyfile.url, post={'recaptcha_challenge_field': challenge,
-                                    'recaptcha_response_field' : response,
-                                    'hash'                     : inputs['hash']})
-        self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
+        header = self.load(pyfile.url,
+                           post={'recaptcha_challenge_field': challenge,
+                                 'recaptcha_response_field' : response,
+                                 'hash'                     : inputs['hash']},
+                           just_header=True)
 
-        if 'location' in self.req.http.header.lower():
-            self.captcha.correct()
-            self.link = re.search(r'location: (\S+)', self.req.http.header, re.I).group(1)
-        else:
-            self.retry_captcha()
+        self.link = header.get('location')
 
 
 getInfo = create_getInfo(FilerNet)

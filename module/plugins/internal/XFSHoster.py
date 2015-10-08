@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
 import random
 import re
 
@@ -113,11 +112,7 @@ class XFSHoster(SimpleHoster):
 
             data = self.get_post_parameters()
 
-            self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
-
-            self.html = self.load(pyfile.url, post=data)
-
-            self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
+            self.html = self.load(pyfile.url, post=data, redirect=False)
 
             m = re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I)
             if m and not "op=" in m.group(1):

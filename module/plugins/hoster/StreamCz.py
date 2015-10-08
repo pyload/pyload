@@ -10,13 +10,13 @@ def get_info(urls):
     result = []
 
     for url in urls:
-
         html = get_url(url)
         if re.search(StreamCz.OFFLINE_PATTERN, html):
             #: File offline
             result.append((url, 0, 1, url))
         else:
             result.append((url, 0, 2, url))
+
     yield result
 
 

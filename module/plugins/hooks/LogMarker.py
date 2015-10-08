@@ -9,7 +9,7 @@ from module.plugins.internal.Plugin import seconds_to_nexthour
 class LogMarker(Addon):
     __name__    = "LogMarker"
     __type__    = "hook"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated" , False),
@@ -21,7 +21,7 @@ class LogMarker(Addon):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def init(self):
+    def activated(self):
         self.start_periodical(1 * 60 * 60 - 1, delay=seconds_to_nexthour(strict=True) - 1)
 
 

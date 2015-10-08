@@ -34,26 +34,16 @@ class GigapetaCom(SimpleHoster):
         captcha_key = str(random.randint(1, 100000000))
         captcha_url = "http://gigapeta.com/img/captcha.gif?x=%s" % captcha_key
 
-        self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
-
         self.check_errors()
 
         captcha = self.captcha.decrypt(captcha_url)
-        self.html = self.load(pyfile.url, post={
-            'captcha_key': captcha_key,
-            'captcha': captcha,
-            'download': "Download"})
+        header  = self.load(pyfile.url,
+                            post={'captcha_key': captcha_key,
+                                  'captcha'    : captcha,
+                                  'download'   : "Download"},
+                            just_header=True)
 
-        m = re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I)
-        if m is not None:
-            self.captcha.correct()
-            self.link = m.group(1)
-
-        elif "Entered figures don&#96;t coincide with the picture" in self.html:
-            self.retry_captcha()
-
-
-        self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
+        self.link = header.get('location')
 
 
 getInfo = create_getInfo(GigapetaCom)

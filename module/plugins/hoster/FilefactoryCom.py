@@ -10,9 +10,11 @@ def get_info(urls):
     for url in urls:
         h = get_url(url, just_header=True)
         m = re.search(r'Location: (.+)\r\n', h)
+
         if m and not re.match(m.group(1), FilefactoryCom.__pattern__):  #: It's a direct link! Skipping
             yield (url, 0, 3, url)
-        else:  #: It's a standard html page
+        else:
+            #: It's a standard html page
             yield parse_fileInfo(FilefactoryCom, url, get_url(url))
 
 

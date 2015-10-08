@@ -46,7 +46,7 @@ class UploadedTo(SimpleHoster):
         for _i in xrange(5):
             html = get_url("http://uploaded.net/api/filemultiple",
                            get={'apikey': cls.API_KEY,
-                                'id_0': re.match(cls.__pattern__, url).group('ID')})
+                                'id_0'  : re.match(cls.__pattern__, url).group('ID')})
 
             if html != "can't find request":
                 api = html.split(",", 4)

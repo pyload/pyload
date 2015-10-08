@@ -16,7 +16,7 @@ from module.utils import fixup, fs_encode, parseFileSize as parse_size
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.96"
+    __version__ = "1.97"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -133,31 +133,24 @@ class SimpleHoster(Hoster):
     def get_info(cls, url="", html=""):
         info = super(SimpleHoster, cls).get_info(url)
 
-        try:
-            info['pattern'] = re.match(cls.__pattern__, url).groupdict()  #: Pattern groups will be saved here
+        info.update(cls.api_info(url))
 
-        except Exception:
-            info['pattern'] = {}
-
-        info = cls.api_info(url)
-        online = True if info['status'] is 2 else False
-
-        if not html and not online:
+        if not html and info['status'] is not 2:
             if not url:
                 info['error']  = "missing url"
                 info['status'] = 1
 
-            elif info['status'] == 3:
+            elif info['status'] is 3:
                 try:
                     html = get_url(url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
 
                 except BadHeader, e:
                     info['error'] = "%d: %s" % (e.code, e.content)
 
-                    if e.code == 404:
+                    if e.code is 404:
                         info['status'] = 1
 
-                    elif e.code == 503:
+                    elif e.code is 503:
                         info['status'] = 6
 
                 except Exception:
@@ -183,30 +176,24 @@ class SimpleHoster(Hoster):
                         continue
 
                     else:
-                        online = True
+                        info['status'] = 2
 
-        if online:
-            info['status'] = 2
+        if 'N' in info['pattern']:
+            name = replace_patterns(info['pattern']['N'], cls.NAME_REPLACEMENTS)
+            info['name'] = parse_name(name)
 
-            if 'N' in info['pattern']:
-                name = replace_patterns(info['pattern']['N'], cls.NAME_REPLACEMENTS)
-                info['name'] = parse_name(name)
+        if 'S' in info['pattern']:
+            size = replace_patterns(info['pattern']['S'] + info['pattern']['U'] if 'U' in info['pattern'] else info['pattern']['S'],
+                                    cls.SIZE_REPLACEMENTS)
+            info['size'] = parse_size(size)
 
-            if 'S' in info['pattern']:
-                size = replace_patterns(info['pattern']['S'] + info['pattern']['U'] if 'U' in info['pattern'] else info['pattern']['S'],
-                                        cls.SIZE_REPLACEMENTS)
-                info['size'] = parse_size(size)
+        elif isinstance(info['size'], basestring):
+            unit = info['units'] if 'units' in info else None
+            info['size'] = parse_size(info['size'], unit)
 
-            elif isinstance(info['size'], basestring):
-                unit = info['units'] if 'units' in info else None
-                info['size'] = parse_size(info['size'], unit)
-
-            if 'H' in info['pattern']:
-                hashtype = info['pattern']['T'] if 'T' in info['pattern'] else "hash"
-                info[hashtype] = info['pattern']['H']
-
-        if not info['pattern']:
-            info.pop('pattern', None)
+        if 'H' in info['pattern']:
+            hashtype = info['pattern']['T'] if 'T' in info['pattern'] else "hash"
+            info[hashtype] = info['pattern']['H']
 
         return info
 
