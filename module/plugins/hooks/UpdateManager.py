@@ -16,7 +16,7 @@ from module.utils import fs_encode, save_join as fs_join
 class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "0.56"
+    __version__ = "0.57"
     __status__  = "testing"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),
@@ -32,10 +32,8 @@ class UpdateManager(Addon):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    interval = 0
-
     SERVER_URL         = "http://updatemanager.pyload.org"
-    MIN_CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
+    PERIODICAL_INTERVAL = 3 * 60 * 60  #: 3 hours
 
 
     def activate(self):
@@ -45,16 +43,13 @@ class UpdateManager(Addon):
             if self.do_restart is False:
                 self.pyload.api.unpauseServer()
 
-        self.init_periodical()
+        self.start_periodical(10)
 
 
     def init(self):
-        self.info     = {'pyload': False, 'version': None, 'plugins': False, 'last_check': time.time()}
-        self.mtimes   = {}  #: Store modification time for each plugin
-
+        self.info      = {'pyload': False, 'version': None, 'plugins': False, 'last_check': time.time()}
+        self.mtimes    = {}  #: Store modification time for each plugin
         self.event_map = {'allDownloadsProcessed': "all_downloads_processed"}
-
-        self.interval = 10
 
         if self.get_config('checkonstart'):
             self.pyload.api.pauseServer()
@@ -80,7 +75,7 @@ class UpdateManager(Addon):
                 return
 
         if self.get_config('checkperiod') and \
-           time.time() - max(self.MIN_CHECK_INTERVAL, self.get_config('checkinterval') * 60 * 60) > self.info['last_check']:
+           time.time() - max(self.PERIODICAL_INTERVAL, self.get_config('checkinterval') * 60 * 60) > self.info['last_check']:
             self.update()
 
 

@@ -142,13 +142,19 @@ def which(program):
                 return exe_file
 
 
-def seconds_to_midnight(utc=None):
+def seconds_to_nexthour(strict=False):
+    now      = datetime.datetime.today()
+    nexthour = now.replace(minute=0 if strict else 1, second=0, microsecond=0) + datetime.timedelta(hours=1)
+    return (nexthour - now).seconds
+
+
+def seconds_to_midnight(utc=None, strict=False):
     if utc is None:
         now = datetime.datetime.today()
     else:
         now = datetime.datetime.utcnow() + datetime.timedelta(hours=utc)
 
-    midnight = now.replace(hour=0, minute=1, second=0, microsecond=0) + datetime.timedelta(days=1)
+    midnight = now.replace(hour=0, minute=0 if strict else 1, second=0, microsecond=0) + datetime.timedelta(days=1)
 
     return (midnight - now).seconds
 
@@ -226,7 +232,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.50"
+    __version__ = "0.51"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'

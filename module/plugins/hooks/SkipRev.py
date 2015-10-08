@@ -15,7 +15,8 @@ class SkipRev(Addon):
     __version__ = "0.34"
     __status__  = "testing"
 
-    __config__ = [("mode"     , "Auto;Manual", "Choose recovery archives to skip"               , "Auto"),
+    __config__ = [("activated", "bool"       , "Activated"                                      , False ),
+                  ("mode"     , "Auto;Manual", "Choose recovery archives to skip"               , "Auto"),
                   ("revtokeep", "int"        , "Number of recovery archives to keep for package", 0     )]
 
     __description__ = """Skip recovery archives (.rev)"""

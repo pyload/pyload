@@ -13,7 +13,7 @@ from module.plugins.captcha.ReCaptcha import ReCaptcha
 class OboomCom(Hoster):
     __name__    = "OboomCom"
     __type__    = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?oboom\.com/(?:#(?:id=|/)?)?(?P<ID>\w{8})'
@@ -95,7 +95,8 @@ class OboomCom(Hoster):
                 if result[1] == -1:  #: Another download is running
                     self.set_wait(15 * 60)
                 else:
-                    self.set_wait(result[1], True)
+                    self.set_wait(result[1])
+                    self.set_reconnect(True)
 
                 self.wait()
                 self.retry(5)

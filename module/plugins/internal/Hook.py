@@ -6,7 +6,7 @@ from module.plugins.internal.Addon import Addon, threaded
 class Hook(Addon):
     __name__    = "Hook"
     __type__    = "hook"
-    __version__ = "0.14"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __description__ = """Base hook plugin"""
@@ -16,9 +16,13 @@ class Hook(Addon):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def __init__(self, core, manager):
-        super(Hook, self).__init__(core, manager)
-        self.init_periodical(10)
+    PERIODICAL_INTERVAL = 10
+
+
+    def __init__(self, *args, **kwargs):
+        super(Hook, self).__init__(*args, **kwargs)
+        if self.PERIODICAL_INTERVAL:
+            self.start_periodical(self.PERIODICAL_INTERVAL)
 
 
     #@TODO: Remove in 0.4.10

@@ -13,7 +13,7 @@ from module.utils import compare_time, lock
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.56"
+    __version__ = "0.57"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -21,8 +21,10 @@ class Account(Plugin):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    LOGIN_TIMEOUT = 30 * 60  #: Relogin accounts every 30 minutes
-    AUTO_INTERVAL = True     #: Automatically adjust relogin interval
+    LOGIN_TIMEOUT = 30 * 60  #: Relogin account every 30 minutes
+    TUNE_TIMEOUT  = True     #: Automatically tune relogin interval
+
+    PERIODICAL_INTERVAL = None
 
 
     def __init__(self, manager, accounts):
@@ -38,7 +40,7 @@ class Account(Plugin):
 
         #: Callback of periodical job task
         self.cb       = None
-        self.interval = self.LOGIN_TIMEOUT
+        self.interval = None
 
         self.init()
 
@@ -50,22 +52,46 @@ class Account(Plugin):
         pass
 
 
-    def init_periodical(self, delay=0, threaded=False):
-        self.cb = self.pyload.scheduler.addJob(max(0, delay), self._periodical, [threaded], threaded=threaded)
+    def set_interval(self, value):
+        newinterval = max(0, self.PERIODICAL_INTERVAL, value)
+
+        if newinterval != value:
+            return False
+
+        if newinterval != self.interval:
+            self.interval = newinterval
+
+        return True
+
+
+    def start_periodical(self, interval=None, threaded=False, delay=0):
+        if interval is not None and self.set_interval(interval) is False:
+            return False
+        else:
+            self.cb = self.pyload.scheduler.addJob(max(0, delay), self._periodical, [threaded], threaded=threaded)
+            return True
+
+
+    def restart_periodical(self, *args, **kwargs):
+        self.stop_periodical()
+        return self.start_periodical(*args, **kwargs)
+
+
+    def stop_periodical(self):
+        try:
+            return self.pyload.scheduler.removeJob(self.cb)
+        finally:
+            self.cb = None
 
 
     def _periodical(self, threaded):
-        if self.interval < 0:
-            self.cb = None
-            return
-
         try:
             self.periodical()
 
         except Exception, e:
             self.log_error(_("Error executing periodical task: %s") % e, trace=True)
 
-        self.init_periodical(self.interval, threaded)
+        self.restart_periodical(self.interval, threaded)
 
 
     def periodical(self):
@@ -121,7 +147,7 @@ class Account(Plugin):
             self.info['login']['valid'] = True
 
             new_timeout = timestamp - self.info['login']['timestamp']
-            if self.AUTO_INTERVAL and new_timeout > self.timeout:
+            if self.TUNE_TIMEOUT and new_timeout > self.timeout:
                 self.timeout = new_timeout
 
         except Exception, e:

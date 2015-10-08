@@ -17,7 +17,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class TurbobitNet(SimpleHoster):
     __name__    = "TurbobitNet"
     __type__    = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'
@@ -130,7 +130,8 @@ class TurbobitNet(SimpleHoster):
 
         fun = self.load(url)
 
-        self.set_wait(65, False)
+        self.set_wait(65)
+        self.set_reconnect(False)
 
         for b in [1, 3]:
             self.jscode = "var id = \'%s\';var b = %d;var inn = \'%s\';%sout" % (

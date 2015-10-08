@@ -20,8 +20,8 @@ class Crypter(Base):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def __init__(self, pyfile):
-        super(Crypter, self).__init__(pyfile)
+    def __init__(self, *args, **kwargs):
+        super(Crypter, self).__init__(*args, **kwargs)
 
         #: Put all packages here. It's a list of tuples like: ( name, [list of links], folder )
         self.packages = []

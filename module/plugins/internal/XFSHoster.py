@@ -14,7 +14,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.64"
+    __version__ = "0.65"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -217,7 +217,8 @@ class XFSHoster(SimpleHoster):
                 m = re.search(self.WAIT_PATTERN, self.html)
                 if m is not None:
                     wait_time = int(m.group(1))
-                    self.set_wait(wait_time, False)
+                    self.set_wait(wait_time)
+                    self.set_reconnect(False)
 
                 self.handle_captcha(inputs)
                 self.wait()

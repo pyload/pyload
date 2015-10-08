@@ -21,7 +21,8 @@ class IRCInterface(Thread, Addon):
     __version__ = "0.17"
     __status__  = "testing"
 
-    __config__ = [("host"     , "str" , "IRC-Server Address"                           , "Enter your server here!"),
+    __config__ = [("activated", "bool", "Activated"                                    , False                    ),
+                  ("host"     , "str" , "IRC-Server Address"                           , "Enter your server here!"),
                   ("port"     , "int" , "IRC-Server Port"                              , 6667                     ),
                   ("ident"    , "str" , "Clients ident"                                , "pyload-irc"             ),
                   ("realname" , "str" , "Realname"                                     , "pyload-irc"             ),
@@ -37,9 +38,9 @@ class IRCInterface(Thread, Addon):
     __authors__     = [("Jeix", "Jeix@hasnomail.com")]
 
 
-    def __init__(self, core, manager):
+    def __init__(self, *args, **kwargs):
         Thread.__init__(self)
-        Addon.__init__(self, core, manager)
+        Addon.__init__(self, *args, **kwargs)
         self.setDaemon(True)
 
 

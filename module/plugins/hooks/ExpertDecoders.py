@@ -18,8 +18,9 @@ class ExpertDecoders(Hook):
     __version__ = "0.06"
     __status__  = "testing"
 
-    __config__ = [("passkey"     , "password", "Access key"                      , ""  ),
-                  ("check_client", "bool"    , "Don't use if client is connected", True)]
+    __config__ = [("activated"   , "bool"    , "Activated"                       , False),
+                  ("passkey"     , "password", "Access key"                      , ""   ),
+                  ("check_client", "bool"    , "Don't use if client is connected", True )]
 
     __description__ = """Send captchas to expertdecoders.com"""
     __license__     = "GPLv3"

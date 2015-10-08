@@ -11,7 +11,8 @@ class AndroidPhoneNotify(Addon):
     __version__ = "0.11"
     __status__  = "testing"
 
-    __config__ = [("apikey"         , "str" , "API key"                                  , ""   ),
+    __config__ = [("activated"      , "bool", "Activated"                                , False),
+                  ("apikey"         , "str" , "API key"                                  , ""   ),
                   ("notifycaptcha"  , "bool", "Notify captcha request"                   , True ),
                   ("notifypackage"  , "bool", "Notify package finished"                  , True ),
                   ("notifyprocessed", "bool", "Notify packages processed"                , True ),

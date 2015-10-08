@@ -21,7 +21,8 @@ class AntiVirus(Addon):
     __status__  = "testing"
 
     #@TODO: add trash option (use Send2Trash lib)
-    __config__ = [("action"    , "Antivirus default;Delete;Quarantine", "Manage infected files"       , "Antivirus default"),
+    __config__ = [("activated" , "bool"                               , "Activated"                   , False              ),
+                  ("action"    , "Antivirus default;Delete;Quarantine", "Manage infected files"       , "Antivirus default"),
                   ("quardir"   , "folder"                             , "Quarantine folder"           , ""                 ),
                   ("deltotrash", "bool"                               , "Move to trash instead delete", True               ),
                   ("scanfailed", "bool"                               , "Scan failed downloads"       , False              ),

@@ -13,10 +13,11 @@ from module.utils import fs_encode, save_join as fs_join
 class HotFolder(Addon):
     __name__    = "HotFolder"
     __type__    = "hook"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
-    __config__ = [("folder"   , "str" , "Folder to watch"        , "watchdir" ),
+    __config__ = [("activated", "bool", "Activated"              , False      ),
+                  ("folder"   , "str" , "Folder to watch"        , "watchdir" ),
                   ("watchfile", "bool", "Watch link file"        , False      ),
                   ("delete"   , "bool", "Delete added containers", False      ),
                   ("file"     , "str" , "Link file"              , "links.txt")]
@@ -27,8 +28,7 @@ class HotFolder(Addon):
 
 
     def activate(self):
-        self.interval = 30
-        self.init_periodical(threaded=True)
+        self.start_periodical(30, threaded=True)
 
 
     def periodical(self):

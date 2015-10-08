@@ -17,7 +17,8 @@ class Captcha9Kw(Hook):
     __version__ = "0.30"
     __status__  = "testing"
 
-    __config__ = [("check_client"  , "bool"    , "Don't use if client is connected"                                                , True                                                               ),
+    __config__ = [("activated"     , "bool"    , "Activated"                                                                       , False                                                              ),
+                  ("check_client"  , "bool"    , "Don't use if client is connected"                                                , True                                                               ),
                   ("confirm"       , "bool"    , "Confirm Captcha (cost +6 credits)"                                               , False                                                              ),
                   ("captchaperhour", "int"     , "Captcha per hour"                                                                , "9999"                                                             ),
                   ("captchapermin" , "int"     , "Captcha per minute"                                                              , "9999"                                                             ),

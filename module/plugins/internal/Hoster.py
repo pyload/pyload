@@ -26,8 +26,8 @@ class Hoster(Base):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def __init__(self, pyfile):
-        super(Hoster, self).__init__(pyfile)
+    def __init__(self, *args, **kwargs):
+        super(Hoster, self).__init__(*args, **kwargs)
 
         #: Enable simultaneous processing of multiple downloads
         self.limitDL = 0     #@TODO: Change to `limit_dl` in 0.4.10

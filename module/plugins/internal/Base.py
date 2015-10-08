@@ -52,7 +52,7 @@ def check_abort(fn):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -212,25 +212,29 @@ class Base(Plugin):
         self.log_debug("RECONNECT %s required" % ("" if reconnect else "not"),
                        "Previous wantReconnect: %s" % self.wantReconnect)
         self.wantReconnect = bool(reconnect)
+        return True
 
 
-    def set_wait(self, seconds, reconnect=None):
+    def set_wait(self, seconds, strict=False):
         """
         Set a specific wait time later used with `wait`
 
         :param seconds: wait time in seconds
         :param reconnect: True if a reconnect would avoid wait time
         """
-        wait_time  = max(int(seconds), 1)
-        wait_until = time.time() + wait_time + 1
+        wait_time = float(seconds)
 
-        self.log_debug("WAIT set to %d seconds" % wait_time,
-                       "Previous waitUntil: %f" % self.pyfile.waitUntil)
+        if wait_time < 0:
+            return False
 
-        self.pyfile.waitUntil = wait_until
+        old_wait_until = self.pyfile.waitUntil
+        new_wait_until = time.time() + wait_time + float(not strict)
 
-        if reconnect is not None:
-            self.set_reconnect(reconnect)
+        self.log_debug("WAIT set to timestamp %f" % new_wait_until,
+                       "Previous waitUntil: %f"   % old_wait_until)
+
+        self.pyfile.waitUntil = new_wait_until
+        return True
 
 
     def wait(self, seconds=None, reconnect=None):

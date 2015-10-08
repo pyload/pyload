@@ -11,8 +11,9 @@ class JustPremium(Addon):
     __version__ = "0.24"
     __status__  = "testing"
 
-    __config__ = [("excluded", "str", "Exclude hosters (comma separated)", ""),
-                  ("included", "str", "Include hosters (comma separated)", "")]
+    __config__ = [("activated", "bool", "Activated"                        , False),
+                  ("excluded" , "str" , "Exclude hosters (comma separated)", ""   ),
+                  ("included" , "str" , "Include hosters (comma separated)", ""   )]
 
     __description__ = """Remove not-premium links from added urls"""
     __license__     = "GPLv3"

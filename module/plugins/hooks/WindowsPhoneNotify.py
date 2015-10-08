@@ -12,7 +12,8 @@ class WindowsPhoneNotify(Addon):
     __version__ = "0.13"
     __status__  = "testing"
 
-    __config__ = [("push-id"        , "str" , "Push ID"                                  , ""   ),
+    __config__ = [("activated"      , "bool", "Activated"                                , False),
+                  ("push-id"        , "str" , "Push ID"                                  , ""   ),
                   ("push-url"       , "str" , "Push url"                                 , ""   ),
                   ("notifycaptcha"  , "bool", "Notify captcha request"                   , True ),
                   ("notifypackage"  , "bool", "Notify package finished"                  , True ),

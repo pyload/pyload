@@ -8,10 +8,10 @@ from module.plugins.internal.Addon import Addon
 class LinkdecrypterComHook(Addon):
     __name__    = "LinkdecrypterComHook"
     __type__    = "hook"
-    __version__ = "1.07"
+    __version__ = "1.08"
     __status__  = "testing"
 
-    __config__ = [("activated"     , "bool"               , "Activated"                    , True ),
+    __config__ = [("activated"     , "bool"               , "Activated"                    , False),
                   ("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
                   ("reload"        , "bool"               , "Reload plugin list"           , True ),

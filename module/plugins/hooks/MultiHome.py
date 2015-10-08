@@ -47,7 +47,8 @@ class MultiHome(Addon):
     __version__ = "0.14"
     __status__  = "testing"
 
-    __config__ = [("interfaces", "str", "Interfaces", "None")]
+    __config__ = [("activated" , "bool", "Activated" , False ),
+                  ("interfaces", "str" , "Interfaces", "None")]
 
     __description__ = """IP address changer"""
     __license__     = "GPLv3"
