@@ -23,7 +23,7 @@ def threaded(fn):
 class Addon(Plugin):
     __name__    = "Addon"
     __type__    = "hook"  #@TODO: Change to `addon` in 0.4.10
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __threaded__ = []  #@TODO: Remove in 0.4.10
@@ -98,11 +98,11 @@ class Addon(Plugin):
         return True
 
 
-    def start_periodical(self, interval=None, threaded=False, delay=0):
+    def start_periodical(self, interval=None, threaded=False, delay=None):
         if interval is not None and self.set_interval(interval) is False:
             return False
         else:
-            self.cb = self.pyload.scheduler.addJob(max(0, delay), self._periodical, [threaded], threaded=threaded)
+            self.cb = self.pyload.scheduler.addJob(max(1, delay), self._periodical, [threaded], threaded=threaded)
             return True
 
 
@@ -118,11 +118,6 @@ class Addon(Plugin):
             self.cb = None
 
 
-    #: Deprecated method, use `start_periodical` instead (Remove in 0.4.10)
-    def initPeriodical(self, *args, **kwargs):
-        return self.start_periodical(*args, **kwargs)
-
-
     def _periodical(self, threaded):
         try:
             self.periodical()
@@ -130,7 +125,7 @@ class Addon(Plugin):
         except Exception, e:
             self.log_error(_("Error executing periodical task: %s") % e, trace=True)
 
-        self.restart_periodical(self.interval, threaded)
+        self.restart_periodical(threaded=threaded, delay=self.interval)
 
 
     def periodical(self):

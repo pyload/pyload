@@ -13,7 +13,7 @@ from module.utils import compare_time, lock
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.57"
+    __version__ = "0.58"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -64,11 +64,11 @@ class Account(Plugin):
         return True
 
 
-    def start_periodical(self, interval=None, threaded=False, delay=0):
+    def start_periodical(self, interval=None, threaded=False, delay=None):
         if interval is not None and self.set_interval(interval) is False:
             return False
         else:
-            self.cb = self.pyload.scheduler.addJob(max(0, delay), self._periodical, [threaded], threaded=threaded)
+            self.cb = self.pyload.scheduler.addJob(max(1, delay), self._periodical, [threaded], threaded=threaded)
             return True
 
 
@@ -91,7 +91,7 @@ class Account(Plugin):
         except Exception, e:
             self.log_error(_("Error executing periodical task: %s") % e, trace=True)
 
-        self.restart_periodical(self.interval, threaded)
+        self.restart_periodical(threaded=threaded, delay=self.interval)
 
 
     def periodical(self):
