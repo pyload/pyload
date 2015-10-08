@@ -65,7 +65,7 @@ class OCR(Plugin):
         output = popen.stdout.read() + " | " + popen.stderr.read()
         popen.stdout.close()
         popen.stderr.close()
-        self.pyload.log_debug("Tesseract ReturnCode " + popen.returncode, "Output: " + output)
+        self.log_debug("Tesseract ReturnCode %d" % popen.returncode, "Output: %s" % output)
 
 
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True, pagesegmode=None):
@@ -82,7 +82,7 @@ class OCR(Plugin):
             self.log_error(e)
             return
 
-        self.pyload.log_debug("Saving tiff...")
+        self.log_debug("Saving tiff...")
         self.image.save(tmpTif.name, 'TIFF')
 
         if os.name is "nt":
@@ -111,9 +111,9 @@ class OCR(Plugin):
                 tessparams.append("nobatch")
                 tessparams.append(os.path.abspath(tmpSub.name))
 
-        self.pyload.log_debug("Running tesseract...")
+        self.log_debug("Running tesseract...")
         self.run(tessparams)
-        self.pyload.log_debug("Reading txt...")
+        self.log_debug("Reading txt...")
 
         try:
             with open(tmpTxt.name, 'r') as f:
@@ -122,7 +122,7 @@ class OCR(Plugin):
         except Exception:
             self.result_captcha = ""
 
-        self.pyload.log_info(_("OCR result: ") + self.result_captcha)
+        self.log_info(_("OCR result: ") + self.result_captcha)
         try:
             os.remove(tmpTif.name)
             os.remove(tmpTxt.name)
