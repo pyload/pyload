@@ -59,6 +59,8 @@ class DlProtectCom(SimpleCrypter):
                     captcha_code = self.captcha.decrypt("http://www.dl-protect.com/captcha.php?key=" + m.group(1), input_type="gif")
                     self.log_debug("Captcha code: %s" % captcha_code)
                     post_req['secure'] = captcha_code
+                else:
+                    self.log_debug("Captcha code requested but captcha not found")
 
         self.data = self.load(self.pyfile.url, post=post_req)
 

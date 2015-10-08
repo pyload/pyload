@@ -38,6 +38,7 @@ class Captcha(Plugin):
         """
         Extend to build your custom anti-captcha ocr
         """
+        self.log_debug("This function does nothing")
         pass
 
 
