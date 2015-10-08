@@ -234,7 +234,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.52"
+    __version__ = "0.53"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -279,8 +279,10 @@ class Plugin(object):
 
 
     def log_debug(self, *args, **kwargs):
+        if not self.pyload.debug:
+            return
         self._log("debug", self.__type__, self.__name__, args)
-        if self.pyload.debug and kwargs.get('trace'):
+        if kwargs.get('trace'):
             print "Traceback (most recent call last):"
             traceback.print_stack()
 
