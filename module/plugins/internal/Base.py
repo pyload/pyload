@@ -46,7 +46,7 @@ def check_abort(fn):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -57,7 +57,7 @@ class Base(Plugin):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    URL_REPLACEMENTS = None
+    URL_REPLACEMENTS = []
 
 
     def __init__(self, pyfile):
