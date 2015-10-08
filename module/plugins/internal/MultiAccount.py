@@ -10,7 +10,7 @@ from module.utils import decode, remove_chars
 class MultiAccount(Account):
     __name__    = "MultiAccount"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
@@ -120,7 +120,7 @@ class MultiAccount(Account):
 
 
     def activate(self):
-        self.init_periodical(threaded=True)
+        self.start_periodical(threaded=True)
 
 
     def plugins_cached(self):
