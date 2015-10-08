@@ -2,14 +2,12 @@
 
 .MooDialog {
 /*	position: fixed;*/
-    margin: 0 auto 0 -350px;
     width:600px;
     padding:14px;
-    left:50%;
+    left:calc(50% - 300px);
     top: 100px;
 
 	position: absolute;
-	left: 50%;
 	z-index: 50000;
 
 	background: #fff;
@@ -21,6 +19,13 @@
 	-moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.8);
 	-webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.8);
 	box-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+}
+
+@media screen and (max-width: 650px) {
+	.MooDialog {
+		left: 0;
+		max-width:100%;
+	}
 }
 
 .MooDialogTitle {
