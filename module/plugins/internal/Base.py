@@ -46,7 +46,7 @@ def check_abort(fn):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -158,7 +158,7 @@ class Base(Plugin):
             self.req             = self.pyload.requestFactory.getRequest(self.__name__, self.account.user)
             self.chunk_limit     = -1  #: -1 for unlimited
             self.resume_download = True
-            self.premium         = self.account.premium
+            self.premium         = self.account.info['data']['premium']  #: Don't use `self.account.premium` to avoid one unnecessary get_info call
         else:
             self.req             = self.pyload.requestFactory.getRequest(self.__name__)
             self.chunk_limit     = 1

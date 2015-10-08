@@ -13,7 +13,7 @@ from module.utils import compare_time, lock
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.58"
+    __version__ = "0.60"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -299,7 +299,9 @@ class Account(Plugin):
 
     @lock
     def getAccountData(self, user, force=False):
-        self.accounts[user]['plugin'].get_info()
+        if force:
+            self.accounts[user]['plugin'].get_info()
+
         return self.accounts[user]
 
 
@@ -435,19 +437,23 @@ class Account(Plugin):
             self.log_error(_("Error choosing user `%s`") % user, _("User not exists"))
             return False
 
-        if user is self.user:
+        if self.req and user is self.user:
             return True
 
         self.user = user
         self.info.clear()
         self.clean()
 
-        if self.user is not None:
-            self.login()
-            return True
+        if user is None:
+            return False
 
         else:
-            return False
+            if not self.logged:
+                self.relogin()
+            else:
+                self.req = self.pyload.requestFactory.getRequest(self.__name__, self.user)
+
+            return True
 
 
     ###########################################################################
