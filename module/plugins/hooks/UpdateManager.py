@@ -16,7 +16,7 @@ from module.utils import fs_encode, save_join as fs_join
 class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "0.57"
+    __version__ = "0.58"
     __status__  = "testing"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),
