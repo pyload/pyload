@@ -16,7 +16,7 @@ from module.utils import fs_encode, save_join as fs_join
 class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "0.57"
+    __version__ = "0.58"
     __status__  = "testing"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),
@@ -311,6 +311,11 @@ class UpdateManager(Addon):
 
             for dir in ("userplugins", rootplugins):
                 py_filename  = fs_join(dir, type, name + ".py")
+
+                #@TODO: Remove in 0.4.10
+                if type == "hook":
+                    py_filename  = fs_join(dir, type + "s" , name + ".py")
+
                 pyc_filename = py_filename + "c"
 
                 if type == "hook":
