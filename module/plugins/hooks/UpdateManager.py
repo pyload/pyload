@@ -314,7 +314,7 @@ class UpdateManager(Addon):
 
                 #@TODO: Remove in 0.4.10
                 if type == "hook":
-                    py_filename  = fs_join(dir, type + "s" , name + ".py")
+                    py_filename  = fs_join(dir, "hooks" , name + ".py")
 
                 pyc_filename = py_filename + "c"
 
