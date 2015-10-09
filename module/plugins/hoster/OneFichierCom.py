@@ -99,8 +99,8 @@ class OneFichierCom(SimpleHoster):
     def handle_free(self, pyfile):
         self.check_errors()
 
-        id = self.info['pattern']['ID1'] or self.info['pattern']['ID2']
-        url, inputs = self.parse_html_form('action="https://1fichier.com/\?%s' % id)
+        id = self.info['pattern']['N']  # Check me : should this one be the file name or the onefichier name ???
+        url, inputs = self.parse_html_form('action="https://1fichier.com/\?[a-zA-Z0-9]+')
 
         if not url:
             return
