@@ -24,7 +24,7 @@ from module.plugins.internal.Account import Account
 
 
 class SmoozedCom(Account):
-    __name__    = "SmoozedCom"
+    __name      = "SmoozedCom"
     __type__    = "account"
     __version__ = "0.09"
     __status__  = "testing"

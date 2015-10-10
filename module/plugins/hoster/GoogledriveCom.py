@@ -11,7 +11,7 @@ from module.utils import html_unescape
 
 
 class GoogledriveCom(SimpleHoster):
-    __name__    = "GoogledriveCom"
+    __name      = "GoogledriveCom"
     __type__    = "hoster"
     __version__ = "0.14"
     __status__  = "testing"

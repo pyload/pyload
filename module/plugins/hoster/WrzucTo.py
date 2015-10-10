@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class WrzucTo(SimpleHoster):
-    __name__    = "WrzucTo"
+    __name      = "WrzucTo"
     __type__    = "hoster"
     __version__ = "0.04"
     __status__  = "testing"

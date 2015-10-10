@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class BillionuploadsCom(DeadHoster):
-    __name__    = "BillionuploadsCom"
+    __name      = "BillionuploadsCom"
     __type__    = "hoster"
     __version__ = "0.07"
     __status__  = "testing"

@@ -7,7 +7,7 @@ import re
 
 
 class ShSt(Crypter):
-    __name__    = "ShSt"
+    __name      = "ShSt"
     __type__    = "crypter"
     __version__ = "0.05"
     __status__  = "testing"

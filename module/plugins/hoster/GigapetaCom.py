@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class GigapetaCom(SimpleHoster):
-    __name__    = "GigapetaCom"
+    __name      = "GigapetaCom"
     __type__    = "hoster"
     __version__ = "0.05"
     __status__  = "testing"

@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class CloudzerNet(DeadHoster):
-    __name__    = "CloudzerNet"
+    __name      = "CloudzerNet"
     __type__    = "hoster"
     __version__ = "0.06"
     __status__  = "testing"

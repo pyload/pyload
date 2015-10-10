@@ -4,7 +4,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class FiletramCom(SimpleCrypter):
-    __name__    = "FiletramCom"
+    __name      = "FiletramCom"
     __type__    = "crypter"
     __version__ = "0.04"
     __status__  = "testing"

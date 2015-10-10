@@ -6,7 +6,7 @@ from module.plugins.internal.Addon import Addon, Expose
 
 
 class AndroidPhoneNotify(Addon):
-    __name__    = "AndroidPhoneNotify"
+    __name      = "AndroidPhoneNotify"
     __type__    = "hook"
     __version__ = "0.11"
     __status__  = "testing"

@@ -9,7 +9,7 @@ from module.utils import fs_encode
 
 
 class PremiumTo(MultiHoster):
-    __name__    = "PremiumTo"
+    __name      = "PremiumTo"
     __type__    = "hoster"
     __version__ = "0.26"
     __status__  = "testing"

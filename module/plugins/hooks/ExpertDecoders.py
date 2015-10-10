@@ -9,11 +9,11 @@ from base64 import b64encode
 
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest as get_request
-from module.plugins.internal.Hook import Hook, threaded
+from module.plugins.internal.Addon import Addon, threaded
 
 
-class ExpertDecoders(Hook):
-    __name__    = "ExpertDecoders"
+class ExpertDecoders(Addon):
+    __name      = "ExpertDecoders"
     __type__    = "hook"
     __version__ = "0.06"
     __status__  = "testing"

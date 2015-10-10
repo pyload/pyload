@@ -4,7 +4,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class FilecloudIoFolder(SimpleCrypter):
-    __name__    = "FilecloudIoFolder"
+    __name      = "FilecloudIo"
     __type__    = "crypter"
     __version__ = "0.04"
     __status__  = "testing"

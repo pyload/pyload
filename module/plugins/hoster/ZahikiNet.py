@@ -4,7 +4,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class ZahikiNet(SimpleHoster):
-    __name__    = "ZahikiNet"
+    __name      = "ZahikiNet"
     __type__    = "hoster"
     __version__ = "0.02"
     __status__  = "testing"

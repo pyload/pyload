@@ -6,7 +6,7 @@ from module.utils import save_path as safe_filename
 
 
 class Crypter(Base):
-    __name__    = "Crypter"
+    __name      = "Crypter"
     __type__    = "crypter"
     __version__ = "0.13"
     __status__  = "testing"

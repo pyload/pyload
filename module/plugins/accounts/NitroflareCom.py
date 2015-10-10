@@ -7,7 +7,7 @@ from module.plugins.internal.Account import Account
 
 
 class NitroflareCom(Account):
-    __name__    = "NitroflareCom"
+    __name      = "NitroflareCom"
     __type__    = "account"
     __version__ = "0.09"
     __status__  = "testing"

@@ -4,7 +4,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class RyushareCom(XFSAccount):
-    __name__    = "RyushareCom"
+    __name      = "RyushareCom"
     __type__    = "account"
     __version__ = "0.08"
     __status__  = "testing"

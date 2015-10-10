@@ -5,7 +5,7 @@ from module.plugins.internal.SimpleHoster import create_getInfo
 
 
 class Share4WebCom(UnibytesCom):
-    __name__    = "Share4WebCom"
+    __name      = "Share4WebCom"
     __type__    = "hoster"
     __version__ = "0.13"
     __status__  = "testing"

@@ -8,7 +8,7 @@ from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
 
 
 class TusfilesNetFolder(XFSCrypter):
-    __name__    = "TusfilesNetFolder"
+    __name      = "TusfilesNet"
     __type__    = "crypter"
     __version__ = "0.09"
     __status__  = "testing"
@@ -25,7 +25,7 @@ class TusfilesNetFolder(XFSCrypter):
 
     PAGES_PATTERN = r'>\((\d+) \w+\)<'
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", r'https://www.tusfiles.net/go/\g<ID>/')]
+    URL_REPLACEMENTS = [(__pattern + ".*", r'https://www.tusfiles.net/go/\g<ID>/')]
 
 
     def load_page(self, page_n):

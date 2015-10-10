@@ -14,7 +14,7 @@ from module.utils import fixup, fs_encode, parseFileSize as parse_size
 
 
 class SimpleHoster(Hoster):
-    __name__    = "SimpleHoster"
+    __name      = "SimpleHoster"
     __type__    = "hoster"
     __version__ = "1.97"
     __status__  = "testing"
@@ -224,7 +224,7 @@ class SimpleHoster(Hoster):
 
         if self.LEECH_HOSTER:
             pattern = self.pyload.pluginManager.hosterPlugins[self.__name__]['pattern']
-            if self.__pattern__ is not pattern and re.match(self.__pattern__, self.pyfile.url) is None:
+            if self.__pattern is not pattern and re.match(self.__pattern, self.pyfile.url) is None:
                 self.leech_dl = True
 
         if self.leech_dl:
@@ -458,11 +458,9 @@ class SimpleHoster(Hoster):
 
         name   = self.pyfile.name
         size   = self.pyfile.size
-        folder = self.info['folder'] = name
 
         self.log_info(_("File name: ") + name)
         self.log_info(_("File size: %s bytes") % size if size > 0 else _("File size: Unknown"))
-        # self.log_info("File folder: " + folder)
 
 
     #@TODO: Rewrite in 0.4.10

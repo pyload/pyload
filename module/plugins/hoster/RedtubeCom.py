@@ -7,7 +7,7 @@ from module.utils import html_unescape
 
 
 class RedtubeCom(Hoster):
-    __name__    = "RedtubeCom"
+    __name      = "RedtubeCom"
     __type__    = "hoster"
     __version__ = "0.22"
     __status__  = "testing"

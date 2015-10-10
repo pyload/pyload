@@ -5,7 +5,7 @@ from module.plugins.internal.Crypter import Crypter
 
 
 class MultiloadCz(Crypter):
-    __name__    = "MultiloadCz"
+    __name      = "MultiloadCz"
     __type__    = "crypter"
     __version__ = "0.42"
     __status__  = "testing"
@@ -28,7 +28,7 @@ class MultiloadCz(Crypter):
     def decrypt(self, pyfile):
         self.html = self.load(pyfile.url)
 
-        if re.match(self.__pattern__, pyfile.url).group(1) == "slozka":
+        if re.match(self.__pattern, pyfile.url).group(1) == "slozka":
             m = re.search(self.FOLDER_PATTERN, self.html)
             if m is not None:
                 self.urls.extend(m.group(1).split())

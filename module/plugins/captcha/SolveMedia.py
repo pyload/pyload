@@ -7,7 +7,7 @@ from module.plugins.internal.CaptchaService import CaptchaService
 
 
 class SolveMedia(CaptchaService):
-    __name__    = "SolveMedia"
+    __name      = "SolveMedia"
     __type__    = "captcha"
     __version__ = "0.15"
     __status__  = "testing"

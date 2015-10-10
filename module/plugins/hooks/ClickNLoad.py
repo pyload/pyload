@@ -27,7 +27,7 @@ def forward(source, destination):
 
 #@TODO: IPv6 support
 class ClickNLoad(Addon):
-    __name__    = "ClickNLoad"
+    __name      = "ClickNLoad"
     __type__    = "hook"
     __version__ = "0.48"
     __status__  = "testing"
@@ -37,7 +37,7 @@ class ClickNLoad(Addon):
                   ("extern"   , "bool"           , "Listen for external connections", True       ),
                   ("dest"     , "queue;collector", "Add packages to"                , "collector")]
 
-    __description__ = """Click'n'Load hook plugin"""
+    __description__ = """Click'n'Load support"""
     __license__     = "GPLv3"
     __authors__     = [("RaNaN"         , "RaNaN@pyload.de"  ),
                        ("Walter Purcaro", "vuolter@gmail.com")]

@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import re
-
 from module.plugins.internal.Plugin import set_cookie
 from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class XFSCrypter(SimpleCrypter):
-    __name__    = "XFSCrypter"
+    __name      = "XFSCrypter"
     __type__    = "crypter"
     __version__ = "0.18"
     __status__  = "testing"
@@ -51,7 +49,7 @@ class XFSCrypter(SimpleCrypter):
             if self.account:
                 account      = self.account
             else:
-                account_name = re.sub(r'Folder$', "", self.__name__)
+                account_name = self.__name__.rstrip("Folder")
                 account      = self.pyload.accountManager.getAccountPlugin(account_name)
 
             if account and hasattr(account, "PLUGIN_DOMAIN") and account.PLUGIN_DOMAIN:

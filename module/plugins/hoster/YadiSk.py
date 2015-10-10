@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class YadiSk(SimpleHoster):
-    __name__    = "YadiSk"
+    __name      = "YadiSk"
     __type__    = "hoster"
     __version__ = "0.06"
     __status__  = "testing"

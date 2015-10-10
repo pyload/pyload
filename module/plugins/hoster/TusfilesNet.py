@@ -6,7 +6,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class TusfilesNet(XFSHoster):
-    __name__    = "TusfilesNet"
+    __name      = "TusfilesNet"
     __type__    = "hoster"
     __version__ = "0.12"
     __status__  = "testing"

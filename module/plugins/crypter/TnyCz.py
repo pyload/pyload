@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class TnyCz(SimpleCrypter):
-    __name__    = "TnyCz"
+    __name      = "TnyCz"
     __type__    = "crypter"
     __version__ = "0.05"
     __status__  = "testing"

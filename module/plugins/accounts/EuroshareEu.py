@@ -7,7 +7,7 @@ from module.plugins.internal.Account import Account
 
 
 class EuroshareEu(Account):
-    __name__    = "EuroshareEu"
+    __name      = "EuroshareEu"
     __type__    = "account"
     __version__ = "0.07"
     __status__  = "testing"

@@ -4,7 +4,7 @@ from module.plugins.internal.Account import Account
 
 
 class FilesMailRu(Account):
-    __name__    = "FilesMailRu"
+    __name      = "FilesMailRu"
     __type__    = "account"
     __version__ = "0.15"
     __status__  = "testing"

@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 
 
 class SoundcloudCom(SimpleHoster):
-    __name__    = "SoundcloudCom"
+    __name      = "SoundcloudCom"
     __type__    = "hoster"
     __version__ = "0.12"
     __status__  = "testing"

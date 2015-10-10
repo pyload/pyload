@@ -6,7 +6,7 @@ from module.plugins.internal.Plugin import set_cookie
 
 
 class SimplyPremiumCom(Account):
-    __name__    = "SimplyPremiumCom"
+    __name      = "SimplyPremiumCom"
     __type__    = "account"
     __version__ = "0.10"
     __status__  = "testing"

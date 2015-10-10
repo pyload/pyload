@@ -4,7 +4,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class UptoboxCom(XFSHoster):
-    __name__    = "UptoboxCom"
+    __name      = "UptoboxCom"
     __type__    = "hoster"
     __version__ = "0.22"
     __status__  = "testing"

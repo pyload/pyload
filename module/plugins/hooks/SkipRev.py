@@ -10,7 +10,7 @@ from module.plugins.internal.Addon import Addon
 
 
 class SkipRev(Addon):
-    __name__    = "SkipRev"
+    __name      = "SkipRev"
     __type__    = "hook"
     __version__ = "0.34"
     __status__  = "testing"

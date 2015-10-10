@@ -6,7 +6,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo, rep
 
 
 class SimplydebridCom(MultiHoster):
-    __name__    = "SimplydebridCom"
+    __name      = "SimplydebridCom"
     __type__    = "hoster"
     __version__ = "0.21"
     __status__  = "testing"

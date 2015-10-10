@@ -6,7 +6,7 @@ from module.plugins.internal.Hoster import Hoster
 
 
 class PornhubCom(Hoster):
-    __name__    = "PornhubCom"
+    __name      = "PornhubCom"
     __type__    = "hoster"
     __version__ = "0.52"
     __status__  = "testing"

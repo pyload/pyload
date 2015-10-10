@@ -4,7 +4,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class WiiReloadedOrg(DeadCrypter):
-    __name__    = "WiiReloadedOrg"
+    __name      = "WiiReloadedOrg"
     __type__    = "crypter"
     __version__ = "0.12"
     __status__  = "testing"

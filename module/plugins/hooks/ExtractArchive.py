@@ -97,7 +97,7 @@ class ArchiveQueue(object):
 
 
 class ExtractArchive(Addon):
-    __name__    = "ExtractArchive"
+    __name      = "ExtractArchive"
     __type__    = "hook"
     __version__ = "1.52"
     __status__  = "testing"
@@ -162,7 +162,7 @@ class ExtractArchive(Addon):
                 self.log_warning(_("Could not activate: %s") % p, e)
 
         if self.extractors:
-            self.log_debug(*["Found %s %s" % (Extractor.__name__, Extractor.VERSION) for Extractor in self.extractors])
+            self.log_debug(*["Found %s %s" % (Extractor.__name, Extractor.VERSION) for Extractor in self.extractors])
             self.extract_queued()  #: Resume unfinished extractions
         else:
             self.log_info(_("No Extract plugins activated"))
@@ -293,7 +293,7 @@ class ExtractArchive(Addon):
                 for Extractor in self.extractors:
                     targets = Extractor.get_targets(files_ids)
                     if targets:
-                        self.log_debug("Targets for %s: %s" % (Extractor.__name__, targets))
+                        self.log_debug("Targets for %s: %s" % (Extractor.__name, targets))
                         matched = True
 
                     for fname, fid, fout in targets:

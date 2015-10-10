@@ -7,7 +7,7 @@ from module.plugins.internal.Account import Account
 
 
 class MegaRapidoNet(Account):
-    __name__    = "MegaRapidoNet"
+    __name      = "MegaRapidoNet"
     __type__    = "account"
     __version__ = "0.06"
     __status__  = "testing"

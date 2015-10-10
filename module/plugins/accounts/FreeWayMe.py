@@ -5,7 +5,7 @@ from module.common.json_layer import json_loads
 
 
 class FreeWayMe(Account):
-    __name__    = "FreeWayMe"
+    __name      = "FreeWayMe"
     __type__    = "account"
     __version__ = "0.19"
     __status__  = "testing"

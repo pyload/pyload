@@ -9,7 +9,7 @@ from module.utils import save_join as fs_join
 
 
 class DailymotionComFolder(Crypter):
-    __name__    = "DailymotionComFolder"
+    __name      = "DailymotionCom"
     __type__    = "crypter"
     __version__ = "0.03"
     __status__  = "testing"
@@ -102,4 +102,4 @@ class DailymotionComFolder(Crypter):
             p_videos = self.get_videos(p_id)
             p_folder = fs_join(self.pyload.config.get("general", "download_folder"), p_owner, p_name)
             self.log_debug("%s video\s found on playlist \"%s\"" % (len(p_videos), p_name))
-            self.packages.append((p_name, p_videos, p_folder))  #: Folder is NOT recognized by pyload 0.4.9!
+            self.packages.append((p_name, p_videos, p_folder))  #@NOTE: Folder is NOT recognized by pyload 0.4.9!

@@ -10,7 +10,7 @@ from module.plugins.captcha.SolveMedia import SolveMedia
 
 
 class SafelinkingNet(Crypter):
-    __name__    = "SafelinkingNet"
+    __name      = "SafelinkingNet"
     __type__    = "crypter"
     __version__ = "0.17"
     __status__  = "testing"
@@ -30,7 +30,7 @@ class SafelinkingNet(Crypter):
     def decrypt(self, pyfile):
         url = pyfile.url
 
-        if re.match(self.__pattern__, url).group(1) == "d":
+        if re.match(self.__pattern, url).group(1) == "d":
 
             header = self.load(url, just_header=True)
             if 'location' in header:

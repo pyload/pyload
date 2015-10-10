@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class MediafireCom(SimpleHoster):
-    __name__    = "MediafireCom"
+    __name      = "MediafireCom"
     __type__    = "hoster"
     __version__ = "0.91"
     __status__  = "testing"

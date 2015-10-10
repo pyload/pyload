@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class RgHostNet(SimpleHoster):
-    __name__    = "RgHostNet"
+    __name      = "RgHostNet"
     __type__    = "hoster"
     __version__ = "0.05"
     __status__  = "testing"

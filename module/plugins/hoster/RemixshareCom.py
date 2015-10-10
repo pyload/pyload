@@ -14,7 +14,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class RemixshareCom(SimpleHoster):
-    __name__    = "RemixshareCom"
+    __name      = "RemixshareCom"
     __type__    = "hoster"
     __version__ = "0.06"
     __status__  = "testing"

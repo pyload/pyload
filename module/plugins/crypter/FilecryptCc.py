@@ -15,7 +15,7 @@ from module.plugins.captcha.SolveMedia import SolveMedia
 
 
 class FilecryptCc(Crypter):
-    __name__    = "FilecryptCc"
+    __name      = "FilecryptCc"
     __type__    = "crypter"
     __version__ = "0.20"
     __status__  = "testing"

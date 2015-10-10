@@ -10,7 +10,7 @@ from module.utils import parseFileSize as parse_size
 
 
 class RealdebridCom(MultiHoster):
-    __name__    = "RealdebridCom"
+    __name      = "RealdebridCom"
     __type__    = "hoster"
     __version__ = "0.69"
     __status__  = "testing"

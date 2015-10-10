@@ -4,7 +4,7 @@ from module.plugins.internal.Hoster import Hoster, create_getInfo
 
 
 class DeadHoster(Hoster):
-    __name__    = "DeadHoster"
+    __name      = "DeadHoster"
     __type__    = "hoster"
     __version__ = "0.19"
     __status__  = "testing"

@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UpstoreNet(SimpleHoster):
-    __name__    = "UpstoreNet"
+    __name      = "UpstoreNet"
     __type__    = "hoster"
     __version__ = "0.07"
     __status__  = "testing"

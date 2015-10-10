@@ -5,7 +5,7 @@ from module.common.json_layer import json_loads
 
 
 class FastixRu(Account):
-    __name__    = "FastixRu"
+    __name      = "FastixRu"
     __type__    = "account"
     __version__ = "0.08"
     __status__  = "testing"

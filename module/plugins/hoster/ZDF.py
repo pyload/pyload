@@ -8,7 +8,7 @@ from module.plugins.internal.Hoster import Hoster
 
 # Based on zdfm by Roland Beermann (http://github.com/enkore/zdfm/)
 class ZDF(Hoster):
-    __name__    = "ZDF Mediathek"
+    __name      = "ZDF Mediathek"
     __type__    = "hoster"
     __version__ = "0.84"
     __status__  = "testing"

@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 
 
 class LinksnappyCom(Account):
-    __name__    = "LinksnappyCom"
+    __name      = "LinksnappyCom"
     __type__    = "account"
     __version__ = "0.10"
     __status__  = "testing"

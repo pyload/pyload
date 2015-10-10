@@ -31,7 +31,7 @@ def get_info(urls):
 
 
 class FilesMailRu(Hoster):
-    __name__    = "FilesMailRu"
+    __name      = "FilesMailRu"
     __type__    = "hoster"
     __version__ = "0.35"
     __status__  = "testing"

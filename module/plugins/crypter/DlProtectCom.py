@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class DlProtectCom(SimpleCrypter):
-    __name__    = "DlProtectCom"
+    __name      = "DlProtectCom"
     __type__    = "crypter"
     __version__ = "0.05"
     __status__  = "testing"

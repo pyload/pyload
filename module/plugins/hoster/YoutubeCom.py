@@ -11,7 +11,7 @@ from module.utils import html_unescape
 
 
 class YoutubeCom(Hoster):
-    __name__    = "YoutubeCom"
+    __name      = "YoutubeCom"
     __type__    = "hoster"
     __version__ = "0.46"
     __status__  = "testing"

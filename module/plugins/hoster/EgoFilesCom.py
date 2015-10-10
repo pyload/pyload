@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class EgoFilesCom(DeadHoster):
-    __name__    = "EgoFilesCom"
+    __name      = "EgoFilesCom"
     __type__    = "hoster"
     __version__ = "0.17"
     __status__  = "testing"

@@ -4,7 +4,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class UploadableChFolder(SimpleCrypter):
-    __name__    = "UploadableChFolder"
+    __name      = "UploadableCh"
     __type__    = "crypter"
     __version__ = "0.04"
     __status__  = "testing"

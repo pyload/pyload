@@ -4,7 +4,7 @@ from module.plugins.accounts.ZeveraCom import ZeveraCom
 
 
 class PutdriveCom(ZeveraCom):
-    __name__    = "PutdriveCom"
+    __name      = "PutdriveCom"
     __type__    = "account"
     __version__ = "0.04"
     __status__  = "testing"

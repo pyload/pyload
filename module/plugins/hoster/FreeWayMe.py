@@ -4,7 +4,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
 class FreeWayMe(MultiHoster):
-    __name__    = "FreeWayMe"
+    __name      = "FreeWayMe"
     __type__    = "hoster"
     __version__ = "0.20"
     __status__  = "testing"

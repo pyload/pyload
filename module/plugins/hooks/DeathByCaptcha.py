@@ -11,7 +11,7 @@ from base64 import b64encode
 from module.common.json_layer import json_loads
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest as get_request
-from module.plugins.internal.Hook import Hook, threaded
+from module.plugins.internal.Addon import Addon, threaded
 
 
 class DeathByCaptchaException(Exception):
@@ -48,8 +48,8 @@ class DeathByCaptchaException(Exception):
         return "<DeathByCaptchaException %s>" % self.err
 
 
-class DeathByCaptcha(Hook):
-    __name__    = "DeathByCaptcha"
+class DeathByCaptcha(Addon):
+    __name      = "DeathByCaptcha"
     __type__    = "hook"
     __version__ = "0.08"
     __status__  = "testing"

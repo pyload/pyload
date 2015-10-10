@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class CloudzillaTo(SimpleHoster):
-    __name__    = "CloudzillaTo"
+    __name      = "CloudzillaTo"
     __type__    = "hoster"
     __version__ = "0.09"
     __status__  = "testing"

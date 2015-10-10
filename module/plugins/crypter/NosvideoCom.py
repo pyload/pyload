@@ -4,7 +4,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class NosvideoCom(SimpleCrypter):
-    __name__    = "NosvideoCom"
+    __name      = "NosvideoCom"
     __type__    = "crypter"
     __version__ = "0.04"
     __status__  = "testing"

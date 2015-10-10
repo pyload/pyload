@@ -8,7 +8,7 @@ from module.plugins.internal.Account import Account
 
 
 class UploadheroCom(Account):
-    __name__    = "UploadheroCom"
+    __name      = "UploadheroCom"
     __type__    = "account"
     __version__ = "0.25"
     __status__  = "testing"

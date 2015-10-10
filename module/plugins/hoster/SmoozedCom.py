@@ -5,7 +5,7 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class SmoozedCom(MultiHoster):
-    __name__    = "SmoozedCom"
+    __name      = "SmoozedCom"
     __type__    = "hoster"
     __version__ = "0.09"
     __status__  = "testing"

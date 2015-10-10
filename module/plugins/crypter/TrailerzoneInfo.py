@@ -4,7 +4,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class TrailerzoneInfo(DeadCrypter):
-    __name__    = "TrailerzoneInfo"
+    __name      = "TrailerzoneInfo"
     __type__    = "crypter"
     __version__ = "0.04"
     __status__  = "testing"

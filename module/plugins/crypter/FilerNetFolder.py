@@ -4,7 +4,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class FilerNetFolder(SimpleCrypter):
-    __name__    = "FilerNetFolder"
+    __name      = "FilerNet"
     __type__    = "crypter"
     __version__ = "0.43"
     __status__  = "testing"

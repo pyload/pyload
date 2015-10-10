@@ -4,7 +4,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class PastebinCom(SimpleCrypter):
-    __name__    = "PastebinCom"
+    __name      = "PastebinCom"
     __type__    = "crypter"
     __version__ = "0.05"
     __status__  = "testing"
@@ -19,7 +19,7 @@ class PastebinCom(SimpleCrypter):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    URL_REPLACEMENTS = [(__pattern__ + '.*', r'http://www.pastebin.com/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern + '.*', r'http://www.pastebin.com/\g<ID>')]
 
     NAME_PATTERN = r'<div class="paste_box_line1" title="(?P<N>.+?)"'
     LINK_PATTERN = r'<div class="de\d+">(.+?)<'

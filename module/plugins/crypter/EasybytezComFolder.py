@@ -4,7 +4,7 @@ from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
 
 
 class EasybytezComFolder(XFSCrypter):
-    __name__    = "EasybytezComFolder"
+    __name      = "EasybytezCom"
     __type__    = "crypter"
     __version__ = "0.11"
     __status__  = "testing"

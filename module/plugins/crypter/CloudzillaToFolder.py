@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class CloudzillaToFolder(SimpleHoster):
-    __name__    = "CloudzillaToFolder"
+    __name      = "CloudzillaTo"
     __type__    = "crypter"
     __version__ = "0.04"
     __status__  = "testing"

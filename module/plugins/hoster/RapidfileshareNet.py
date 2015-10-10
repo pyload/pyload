@@ -4,7 +4,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class RapidfileshareNet(XFSHoster):
-    __name__    = "RapidfileshareNet"
+    __name      = "RapidfileshareNet"
     __type__    = "hoster"
     __version__ = "0.04"
     __status__  = "testing"

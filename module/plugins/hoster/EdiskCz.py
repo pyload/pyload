@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class EdiskCz(SimpleHoster):
-    __name__    = "EdiskCz"
+    __name      = "EdiskCz"
     __type__    = "hoster"
     __version__ = "0.24"
     __status__  = "testing"

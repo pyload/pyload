@@ -4,7 +4,7 @@ from module.plugins.internal.Account import Account
 
 
 class Http(Account):
-    __name__    = "Http"
+    __name      = "Http"
     __type__    = "account"
     __version__ = "0.04"
     __status__  = "testing"

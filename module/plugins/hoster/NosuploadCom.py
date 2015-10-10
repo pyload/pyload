@@ -6,7 +6,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class NosuploadCom(XFSHoster):
-    __name__    = "NosuploadCom"
+    __name      = "NosuploadCom"
     __type__    = "hoster"
     __version__ = "0.32"
     __status__  = "testing"

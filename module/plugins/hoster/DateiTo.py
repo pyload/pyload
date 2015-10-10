@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DateiTo(SimpleHoster):
-    __name__    = "DateiTo"
+    __name      = "DateiTo"
     __type__    = "hoster"
     __version__ = "0.10"
     __status__  = "testing"

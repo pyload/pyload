@@ -9,7 +9,7 @@ from module.plugins.internal.Hoster import Hoster
 
 
 class Ftp(Hoster):
-    __name__    = "Ftp"
+    __name      = "Ftp"
     __type__    = "hoster"
     __version__ = "0.55"
     __status__  = "testing"

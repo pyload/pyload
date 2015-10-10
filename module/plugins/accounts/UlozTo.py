@@ -7,7 +7,7 @@ from module.plugins.internal.Account import Account
 
 
 class UlozTo(Account):
-    __name__    = "UlozTo"
+    __name      = "UlozTo"
     __type__    = "account"
     __version__ = "0.14"
     __status__  = "testing"

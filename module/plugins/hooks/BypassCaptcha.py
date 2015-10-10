@@ -4,7 +4,7 @@ import pycurl
 
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest as get_request
-from module.plugins.internal.Hook import Hook, threaded
+from module.plugins.internal.Addon import Addon, threaded
 
 
 class BypassCaptchaException(Exception):
@@ -25,8 +25,8 @@ class BypassCaptchaException(Exception):
         return "<BypassCaptchaException %s>" % self.err
 
 
-class BypassCaptcha(Hook):
-    __name__    = "BypassCaptcha"
+class BypassCaptcha(Addon):
+    __name      = "BypassCaptcha"
     __type__    = "hook"
     __version__ = "0.08"
     __status__  = "testing"
@@ -111,7 +111,7 @@ class BypassCaptcha(Hook):
             self._process_captcha(task)
 
         else:
-            self.log_info(_("Your %s account has not enough credits") % self.__name__)
+            self.log_info(_("Your account has not enough credits"))
 
 
     def captcha_correct(self, task):

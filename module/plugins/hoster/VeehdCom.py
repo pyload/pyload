@@ -6,7 +6,7 @@ from module.plugins.internal.Hoster import Hoster
 
 
 class VeehdCom(Hoster):
-    __name__    = "VeehdCom"
+    __name      = "VeehdCom"
     __type__    = "hoster"
     __version__ = "0.25"
     __status__  = "testing"

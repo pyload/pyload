@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class OneFichierCom(SimpleHoster):
-    __name__    = "OneFichierCom"
+    __name      = "1fichier.com"
     __type__    = "hoster"
     __version__ = "0.92"
     __status__  = "testing"

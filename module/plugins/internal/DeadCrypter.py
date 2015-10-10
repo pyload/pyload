@@ -4,7 +4,7 @@ from module.plugins.internal.Crypter import Crypter, create_getInfo
 
 
 class DeadCrypter(Crypter):
-    __name__    = "DeadCrypter"
+    __name      = "DeadCrypter"
     __type__    = "crypter"
     __version__ = "0.09"
     __status__  = "testing"

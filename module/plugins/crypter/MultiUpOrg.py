@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class MultiUpOrg(SimpleCrypter):
-    __name__    = "MultiUpOrg"
+    __name      = "MultiUpOrg"
     __type__    = "crypter"
     __version__ = "0.05"
     __status__  = "testing"
@@ -26,7 +26,7 @@ class MultiUpOrg(SimpleCrypter):
 
 
     def get_links(self):
-        m_type = re.match(self.__pattern__, self.pyfile.url).group('TYPE')
+        m_type = re.match(self.__pattern, self.pyfile.url).group('TYPE')
 
         if m_type == "project":
             pattern = r'\n(http://www\.multiup\.org/(?:en|fr)/download/.*)'

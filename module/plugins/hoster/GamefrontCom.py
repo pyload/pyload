@@ -4,7 +4,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class GamefrontCom(SimpleHoster):
-    __name__    = "GamefrontCom"
+    __name      = "GamefrontCom"
     __type__    = "hoster"
     __version__ = "0.09"
     __status__  = "testing"

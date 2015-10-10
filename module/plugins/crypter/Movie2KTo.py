@@ -4,7 +4,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class Movie2KTo(DeadCrypter):
-    __name__    = "Movie2KTo"
+    __name      = "Movie2KTo"
     __type__    = "crypter"
     __version__ = "0.52"
     __status__  = "testing"

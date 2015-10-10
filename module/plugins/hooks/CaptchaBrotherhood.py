@@ -14,7 +14,7 @@ except ImportError:
     import Image
 
 from module.network.RequestFactory import getRequest as get_request
-from module.plugins.internal.Hook import Hook, threaded
+from module.plugins.internal.Addon import Addon, threaded
 
 
 class CaptchaBrotherhoodException(Exception):
@@ -35,8 +35,8 @@ class CaptchaBrotherhoodException(Exception):
         return "<CaptchaBrotherhoodException %s>" % self.err
 
 
-class CaptchaBrotherhood(Hook):
-    __name__    = "CaptchaBrotherhood"
+class CaptchaBrotherhood(Addon):
+    __name      = "CaptchaBrotherhood"
     __type__    = "hook"
     __version__ = "0.10"
     __status__  = "testing"

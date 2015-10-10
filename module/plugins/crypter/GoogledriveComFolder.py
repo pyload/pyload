@@ -4,7 +4,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class GoogledriveComFolder(SimpleCrypter):
-    __name__    = "GoogledriveCom"
+    __name      = "GoogledriveCom"
     __type__    = "crypter"
     __version__ = "0.03"
     __status__  = "testing"

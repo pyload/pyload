@@ -12,7 +12,7 @@ from module.utils import decode, fs_encode
 
 
 class DLC(Container):
-    __name__    = "DLC"
+    __name      = "DLC"
     __type__    = "container"
     __version__ = "0.26"
     __status__  = "testing"

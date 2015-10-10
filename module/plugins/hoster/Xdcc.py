@@ -14,7 +14,7 @@ from module.utils import save_join as fs_join
 
 
 class Xdcc(Hoster):
-    __name__    = "Xdcc"
+    __name      = "Xdcc"
     __type__    = "hoster"
     __version__ = "0.34"
     __status__  = "testing"

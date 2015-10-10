@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class TwoSharedCom(SimpleHoster):
-    __name__    = "TwoSharedCom"
+    __name      = "2Shared"
     __type__    = "hoster"
     __version__ = "0.14"
     __status__  = "testing"

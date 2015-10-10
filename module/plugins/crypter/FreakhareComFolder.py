@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class FreakhareComFolder(SimpleCrypter):
-    __name__    = "FreakhareComFolder"
+    __name      = "FreakhareCom"
     __type__    = "crypter"
     __version__ = "0.04"
     __status__  = "testing"

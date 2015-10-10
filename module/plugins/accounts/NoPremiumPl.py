@@ -10,7 +10,7 @@ from module.plugins.internal.Account import Account
 
 
 class NoPremiumPl(Account):
-    __name__    = "NoPremiumPl"
+    __name      = "NoPremiumPl"
     __type__    = "account"
     __version__ = "0.06"
     __status__  = "testing"

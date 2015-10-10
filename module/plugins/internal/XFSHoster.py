@@ -11,7 +11,7 @@ from module.utils import html_unescape
 
 
 class XFSHoster(SimpleHoster):
-    __name__    = "XFSHoster"
+    __name      = "XFSHoster"
     __type__    = "hoster"
     __version__ = "0.65"
     __status__  = "testing"

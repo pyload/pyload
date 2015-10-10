@@ -7,7 +7,7 @@ from module.utils import fs_encode
 
 
 class TXT(Container):
-    __name__    = "TXT"
+    __name      = "TXT"
     __type__    = "container"
     __version__ = "0.17"
     __status__  = "testing"

@@ -4,7 +4,7 @@ from module.plugins.internal.Account import Account
 
 
 class UploadableCh(Account):
-    __name__    = "UploadableCh"
+    __name      = "UploadableCh"
     __type__    = "account"
     __version__ = "0.07"
     __status__  = "testing"

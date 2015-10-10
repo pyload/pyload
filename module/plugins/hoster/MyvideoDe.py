@@ -7,7 +7,7 @@ from module.utils import html_unescape
 
 
 class MyvideoDe(Hoster):
-    __name__    = "MyvideoDe"
+    __name      = "MyvideoDe"
     __type__    = "hoster"
     __version__ = "0.92"
     __status__  = "testing"

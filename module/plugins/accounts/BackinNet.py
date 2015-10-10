@@ -4,7 +4,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class BackinNet(XFSAccount):
-    __name__    = "BackinNet"
+    __name      = "BackinNet"
     __type__    = "account"
     __version__ = "0.03"
     __status__  = "testing"

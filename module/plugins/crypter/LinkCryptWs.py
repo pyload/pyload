@@ -12,7 +12,7 @@ from module.utils import html_unescape
 
 
 class LinkCryptWs(Crypter):
-    __name__    = "LinkCryptWs"
+    __name      = "LinkCryptWs"
     __type__    = "crypter"
     __version__ = "0.12"
     __status__  = "testing"
@@ -37,7 +37,7 @@ class LinkCryptWs(Crypter):
 
     def prepare(self):
         #: Init
-        self.fileid = re.match(self.__pattern__, self.pyfile.url).group('ID')
+        self.fileid = re.match(self.__pattern, self.pyfile.url).group('ID')
 
         self.req.cj.setCookie("linkcrypt.ws", "language", "en")
 

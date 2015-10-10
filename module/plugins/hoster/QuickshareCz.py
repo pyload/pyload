@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class QuickshareCz(SimpleHoster):
-    __name__    = "QuickshareCz"
+    __name      = "QuickshareCz"
     __type__    = "hoster"
     __version__ = "0.58"
     __status__  = "testing"

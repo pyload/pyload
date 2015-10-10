@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 
 
 class RPNetBiz(MultiHoster):
-    __name__    = "RPNetBiz"
+    __name      = "RPNetBiz"
     __type__    = "hoster"
     __version__ = "0.17"
     __status__  = "testing"

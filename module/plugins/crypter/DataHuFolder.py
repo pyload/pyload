@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class DataHuFolder(SimpleCrypter):
-    __name__    = "DataHuFolder"
+    __name      = "DataHu"
     __type__    = "crypter"
     __version__ = "0.08"
     __status__  = "testing"

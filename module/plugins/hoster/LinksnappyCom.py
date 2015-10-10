@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
 class LinksnappyCom(MultiHoster):
-    __name__    = "LinksnappyCom"
+    __name      = "LinksnappyCom"
     __type__    = "hoster"
     __version__ = "0.12"
     __status__  = "testing"

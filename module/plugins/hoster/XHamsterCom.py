@@ -16,7 +16,7 @@ def clean_json(json_expr):
 
 
 class XHamsterCom(Hoster):
-    __name__    = "XHamsterCom"
+    __name      = "XHamsterCom"
     __type__    = "hoster"
     __version__ = "0.14"
     __status__  = "testing"

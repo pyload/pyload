@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class GooIm(SimpleHoster):
-    __name__    = "GooIm"
+    __name      = "GooIm"
     __type__    = "hoster"
     __version__ = "0.05"
     __status__  = "testing"

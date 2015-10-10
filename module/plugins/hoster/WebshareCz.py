@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class WebshareCz(SimpleHoster):
-    __name__    = "WebshareCz"
+    __name      = "WebshareCz"
     __type__    = "hoster"
     __version__ = "0.20"
     __status__  = "testing"
@@ -25,7 +25,7 @@ class WebshareCz(SimpleHoster):
     def api_info(cls, url):
         info = super(WebshareCz, cls).api_info(url)
 
-        info['pattern'] = re.match(cls.__pattern__, url).groupdict()
+        info['pattern'] = re.match(cls.__pattern, url).groupdict()
 
         api_data = get_url("https://webshare.cz/api/file_info/",
                            post={'ident': info['pattern']['ID'], 'wst': ""})

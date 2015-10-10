@@ -8,7 +8,7 @@ from module.plugins.internal.Crypter import Crypter
 
 
 class HoerbuchIn(Crypter):
-    __name__    = "HoerbuchIn"
+    __name      = "HoerbuchIn"
     __type__    = "crypter"
     __version__ = "0.62"
     __status__  = "testing"

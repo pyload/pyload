@@ -7,7 +7,7 @@ from module.plugins.internal.Account import Account
 
 
 class UploadedTo(Account):
-    __name__    = "UploadedTo"
+    __name      = "UploadedTo"
     __type__    = "account"
     __version__ = "0.38"
     __status__  = "testing"

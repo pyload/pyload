@@ -6,7 +6,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class HugefilesNet(XFSHoster):
-    __name__    = "HugefilesNet"
+    __name      = "HugefilesNet"
     __type__    = "hoster"
     __version__ = "0.06"
     __status__  = "testing"

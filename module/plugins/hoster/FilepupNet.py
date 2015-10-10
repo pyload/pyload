@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FilepupNet(SimpleHoster):
-    __name__    = "FilepupNet"
+    __name      = "FilepupNet"
     __type__    = "hoster"
     __version__ = "0.04"
     __status__  = "testing"

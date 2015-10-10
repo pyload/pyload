@@ -8,7 +8,7 @@ import re
 from base64 import b64encode
 
 from module.network.RequestFactory import getRequest as get_request
-from module.plugins.internal.Hook import Hook, threaded
+from module.plugins.internal.Addon import Addon, threaded
 
 
 class ImageTyperzException(Exception):
@@ -29,8 +29,8 @@ class ImageTyperzException(Exception):
         return "<ImageTyperzException %s>" % self.err
 
 
-class ImageTyperz(Hook):
-    __name__    = "ImageTyperz"
+class ImageTyperz(Addon):
+    __name      = "ImageTyperz"
     __type__    = "hook"
     __version__ = "0.08"
     __status__  = "testing"
@@ -127,7 +127,7 @@ class ImageTyperz(Hook):
             self._process_captcha(task)
 
         else:
-            self.log_info(_("Your %s account has not enough credits") % self.__name__)
+            self.log_info(_("Your account has not enough credits"))
 
 
     def captcha_invalid(self, task):

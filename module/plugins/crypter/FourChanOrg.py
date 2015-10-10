@@ -9,7 +9,7 @@ from module.plugins.internal.Crypter import Crypter
 
 
 class FourChanOrg(Crypter):
-    __name__    = "FourChanOrg"
+    __name      = "4chan"
     __type__    = "crypter"
     __version__ = "0.33"
     __status__  = "testing"

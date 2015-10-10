@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class SizedriveCom(SimpleHoster):
-    __name__    = "SizedriveCom"
+    __name      = "SizedriveCom"
     __type__    = "hoster"
     __version__ = "0.03"
     __status__  = "testing"

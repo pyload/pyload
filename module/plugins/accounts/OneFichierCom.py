@@ -8,7 +8,7 @@ from module.plugins.internal.Account import Account
 
 
 class OneFichierCom(Account):
-    __name__    = "OneFichierCom"
+    __name      = "1fichier.com"
     __type__    = "account"
     __version__ = "0.17"
     __status__  = "testing"

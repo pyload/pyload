@@ -5,7 +5,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class NitroflareComFolder(SimpleCrypter):
-    __name__    = "NitroflareComFolder"
+    __name      = "NitroflareCom"
     __type__    = "crypter"
     __version__ = "0.03"
     __status__  = "testing"

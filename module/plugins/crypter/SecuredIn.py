@@ -4,7 +4,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class SecuredIn(DeadCrypter):
-    __name__    = "SecuredIn"
+    __name      = "SecuredIn"
     __type__    = "crypter"
     __version__ = "0.22"
     __status__  = "testing"

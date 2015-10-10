@@ -4,7 +4,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class HellshareCz(SimpleHoster):
-    __name__    = "HellshareCz"
+    __name      = "HellshareCz"
     __type__    = "hoster"
     __version__ = "0.86"
     __status__  = "testing"

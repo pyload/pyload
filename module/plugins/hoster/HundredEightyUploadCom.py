@@ -4,7 +4,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class HundredEightyUploadCom(XFSHoster):
-    __name__    = "HundredEightyUploadCom"
+    __name      = "HundredEightyUploadCom"
     __type__    = "hoster"
     __version__ = "0.06"
     __status__  = "testing"

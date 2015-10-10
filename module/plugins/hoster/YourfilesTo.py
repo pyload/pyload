@@ -7,7 +7,7 @@ from module.plugins.internal.Hoster import Hoster
 
 
 class YourfilesTo(Hoster):
-    __name__    = "YourfilesTo"
+    __name      = "YourfilesTo"
     __type__    = "hoster"
     __version__ = "0.24"
     __status__  = "testing"

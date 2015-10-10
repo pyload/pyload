@@ -9,7 +9,7 @@ from module.utils import save_join as fs_join
 
 
 class YoutubeComFolder(Crypter):
-    __name__    = "YoutubeComFolder"
+    __name      = "YoutubeCom"
     __type__    = "crypter"
     __version__ = "1.03"
     __status__  = "testing"
@@ -95,7 +95,7 @@ class YoutubeComFolder(Crypter):
 
 
     def decrypt(self, pyfile):
-        m = re.match(self.__pattern__, pyfile.url)
+        m = re.match(self.__pattern, pyfile.url)
         m_id = m.group('ID')
         m_type = m.group('TYPE')
 

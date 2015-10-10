@@ -4,7 +4,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class XFileSharingPro(XFSAccount):
-    __name__    = "XFileSharingPro"
+    __name      = "XFileSharingPro"
     __type__    = "account"
     __version__ = "0.10"
     __status__  = "testing"

@@ -8,7 +8,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class NovafileCom(XFSHoster):
-    __name__    = "NovafileCom"
+    __name      = "NovafileCom"
     __type__    = "hoster"
     __version__ = "0.06"
     __status__  = "testing"

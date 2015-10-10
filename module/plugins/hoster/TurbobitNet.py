@@ -15,7 +15,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class TurbobitNet(SimpleHoster):
-    __name__    = "TurbobitNet"
+    __name      = "TurbobitNet"
     __type__    = "hoster"
     __version__ = "0.23"
     __status__  = "testing"
@@ -29,7 +29,7 @@ class TurbobitNet(SimpleHoster):
                        ("prOq", None)]
 
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", "http://turbobit.net/\g<ID>.html")]
+    URL_REPLACEMENTS = [(__pattern + ".*", "http://turbobit.net/\g<ID>.html")]
 
     COOKIES = [("turbobit.net", "user_lang", "en")]
 
@@ -99,7 +99,7 @@ class TurbobitNet(SimpleHoster):
         if rtUpdate:
             return rtUpdate
 
-        if self.retrieve("version") is not self.__version__ or \
+        if self.retrieve("version") is not self.__version or \
            int(self.retrieve("timestamp", 0)) + 86400000 < timestamp():
             #: that's right, we are even using jdownloader updates
             rtUpdate = self.load("http://update0.jdownloader.org/pluginstuff/tbupdate.js")
@@ -111,7 +111,7 @@ class TurbobitNet(SimpleHoster):
 
             self.store("rtUpdate", rtUpdate)
             self.store("timestamp", timestamp())
-            self.store("version", self.__version__)
+            self.store("version", self.__version)
         else:
             self.log_error(_("Unable to download, wait for update..."))
             self.temp_offline()

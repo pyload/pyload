@@ -11,9 +11,9 @@ from module.utils import compare_time, lock
 
 
 class Account(Plugin):
-    __name__    = "Account"
+    __name      = "Account"
     __type__    = "account"
-    __version__ = "0.60"
+    __version__ = "0.61"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -335,7 +335,7 @@ class Account(Plugin):
              'premium'    : None,
              'timestamp'  : 0,
              'trafficleft': None,
-             'type'       : self.__name__,
+             'type'       : self.__name,
              'valid'      : None,
              'validuntil' : None}
 

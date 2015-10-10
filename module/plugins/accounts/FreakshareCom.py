@@ -7,7 +7,7 @@ from module.plugins.internal.Account import Account
 
 
 class FreakshareCom(Account):
-    __name__    = "FreakshareCom"
+    __name      = "FreakshareCom"
     __type__    = "account"
     __version__ = "0.17"
     __status__  = "testing"

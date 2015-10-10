@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class RapiduNet(SimpleHoster):
-    __name__    = "RapiduNet"
+    __name      = "RapiduNet"
     __type__    = "hoster"
     __version__ = "0.10"
     __status__  = "testing"

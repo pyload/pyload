@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class SendspaceCom(SimpleHoster):
-    __name__    = "SendspaceCom"
+    __name      = "SendspaceCom"
     __type__    = "hoster"
     __version__ = "0.18"
     __status__  = "testing"

@@ -5,7 +5,7 @@ from module.plugins.internal.Crypter import Crypter
 
 
 class ChipDe(Crypter):
-    __name__    = "ChipDe"
+    __name      = "ChipDe"
     __type__    = "crypter"
     __version__ = "0.12"
     __status__  = "testing"

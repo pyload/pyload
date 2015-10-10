@@ -11,7 +11,7 @@ from module.utils import save_join as fs_join
 
 
 class Container(Crypter):
-    __name__    = "Container"
+    __name      = "Container"
     __type__    = "container"
     __version__ = "0.07"
     __status__  = "testing"

@@ -7,7 +7,7 @@ from module.plugins.captcha.ReCaptcha import ReCaptcha
 
 
 class CatShareNet(SimpleHoster):
-    __name__    = "CatShareNet"
+    __name      = "CatShareNet"
     __type__    = "hoster"
     __version__ = "0.17"
     __status__  = "testing"

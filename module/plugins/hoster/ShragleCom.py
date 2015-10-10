@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class ShragleCom(DeadHoster):
-    __name__    = "ShragleCom"
+    __name      = "ShragleCom"
     __type__    = "hoster"
     __version__ = "0.23"
     __status__  = "testing"

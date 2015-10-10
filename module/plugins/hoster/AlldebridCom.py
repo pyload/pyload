@@ -9,7 +9,7 @@ from module.utils import parseFileSize as parse_size
 
 
 class AlldebridCom(MultiHoster):
-    __name__    = "AlldebridCom"
+    __name      = "AlldebridCom"
     __type__    = "hoster"
     __version__ = "0.48"
     __status__  = "testing"

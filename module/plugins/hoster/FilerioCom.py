@@ -4,7 +4,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class FilerioCom(XFSHoster):
-    __name__    = "FilerioCom"
+    __name      = "FilerioCom"
     __type__    = "hoster"
     __version__ = "0.08"
     __status__  = "testing"

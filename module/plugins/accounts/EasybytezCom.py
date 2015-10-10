@@ -6,7 +6,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class EasybytezCom(XFSAccount):
-    __name__    = "EasybytezCom"
+    __name      = "EasybytezCom"
     __type__    = "account"
     __version__ = "0.14"
     __status__  = "testing"

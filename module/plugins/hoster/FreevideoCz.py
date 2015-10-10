@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class FreevideoCz(DeadHoster):
-    __name__    = "FreevideoCz"
+    __name      = "FreevideoCz"
     __type__    = "hoster"
     __version__ = "0.31"
     __status__  = "testing"

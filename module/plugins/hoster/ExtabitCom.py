@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, s
 
 
 class ExtabitCom(SimpleHoster):
-    __name__    = "ExtabitCom"
+    __name      = "ExtabitCom"
     __type__    = "hoster"
     __version__ = "0.68"
     __status__  = "testing"
@@ -42,7 +42,7 @@ class ExtabitCom(SimpleHoster):
             self.wait(seconds_to_midnight(), True)
 
         self.log_debug("URL: " + self.req.http.lastEffectiveURL)
-        m = re.match(self.__pattern__, self.req.http.lastEffectiveURL)
+        m = re.match(self.__pattern, self.req.http.lastEffectiveURL)
         fileID = m.group('ID') if m else self.info['pattern']['ID']
 
         m = re.search(r'recaptcha/api/challenge\?k=(\w+)', self.html)

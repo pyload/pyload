@@ -10,7 +10,7 @@ from module.utils import parseFileSize as parse_size
 
 
 class CzshareCom(SimpleHoster):
-    __name__    = "CzshareCom"
+    __name      = "CzshareCom"
     __type__    = "hoster"
     __version__ = "1.05"
     __status__  = "testing"

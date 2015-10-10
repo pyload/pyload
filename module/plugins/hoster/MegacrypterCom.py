@@ -8,7 +8,7 @@ from module.plugins.hoster.MegaCoNz import MegaCoNz
 
 
 class MegacrypterCom(MegaCoNz):
-    __name__    = "MegacrypterCom"
+    __name      = "MegacrypterCom"
     __type__    = "hoster"
     __version__ = "0.23"
     __status__  = "testing"
@@ -36,7 +36,7 @@ class MegacrypterCom(MegaCoNz):
 
     def process(self, pyfile):
         #: Match is guaranteed because plugin was chosen to handle url
-        node = re.match(self.__pattern__, pyfile.url).group(0)
+        node = re.match(self.__pattern, pyfile.url).group(0)
 
         #: get Mega.co.nz link info
         info = self.api_response(link=node, m="info")

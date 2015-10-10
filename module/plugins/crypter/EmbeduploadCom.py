@@ -6,7 +6,7 @@ from module.network.HTTPRequest import BadHeader
 
 
 class EmbeduploadCom(Crypter):
-    __name__    = "EmbeduploadCom"
+    __name      = "EmbeduploadCom"
     __type__    = "crypter"
     __version__ = "0.04"
     __status__  = "testing"

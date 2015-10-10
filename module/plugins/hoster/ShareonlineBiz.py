@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class ShareonlineBiz(SimpleHoster):
-    __name__    = "ShareonlineBiz"
+    __name      = "ShareonlineBiz"
     __type__    = "hoster"
     __version__ = "0.60"
     __status__  = "testing"
@@ -26,7 +26,7 @@ class ShareonlineBiz(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", "http://www.share-online.biz/dl/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern + ".*", "http://www.share-online.biz/dl/\g<ID>")]
 
     CHECK_TRAFFIC = True
 
@@ -41,7 +41,7 @@ class ShareonlineBiz(SimpleHoster):
 
         field = get_url("http://api.share-online.biz/linkcheck.php",
                         get={'md5'  : "1",
-                             'links': re.match(cls.__pattern__, url).group("ID")}).split(";")
+                             'links': re.match(cls.__pattern, url).group("ID")}).split(";")
 
         try:
             if field[1] == "OK":

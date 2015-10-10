@@ -11,7 +11,7 @@ from module.plugins.captcha.ReCaptcha import ReCaptcha
 
 
 class OboomCom(Hoster):
-    __name__    = "OboomCom"
+    __name      = "OboomCom"
     __type__    = "hoster"
     __version__ = "0.39"
     __status__  = "testing"
@@ -53,7 +53,7 @@ class OboomCom(Hoster):
 
 
     def get_file_id(self, url):
-        self.file_id = re.match(OboomCom.__pattern__, url).group('ID')
+        self.file_id = re.match(OboomCom.__pattern, url).group('ID')
 
 
     def get_session_token(self):

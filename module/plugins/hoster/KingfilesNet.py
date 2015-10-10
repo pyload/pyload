@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class KingfilesNet(SimpleHoster):
-    __name__    = "KingfilesNet"
+    __name      = "KingfilesNet"
     __type__    = "hoster"
     __version__ = "0.09"
     __status__  = "testing"

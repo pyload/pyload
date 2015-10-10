@@ -5,7 +5,7 @@ from module.utils import uniqify
 
 
 class ImgurComAlbum(SimpleCrypter):
-    __name__    = "ImgurComAlbum"
+    __name      = "ImgurComAlbum"
     __type__    = "crypter"
     __version__ = "0.52"
     __status__  = "testing"

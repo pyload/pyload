@@ -4,7 +4,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class RapidfileshareNet(XFSAccount):
-    __name__    = "RapidfileshareNet"
+    __name      = "RapidfileshareNet"
     __type__    = "account"
     __version__ = "0.07"
     __status__  = "testing"

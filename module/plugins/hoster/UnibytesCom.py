@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UnibytesCom(SimpleHoster):
-    __name__    = "UnibytesCom"
+    __name      = "UnibytesCom"
     __type__    = "hoster"
     __version__ = "0.16"
     __status__  = "testing"

@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class BoltsharingCom(DeadHoster):
-    __name__    = "BoltsharingCom"
+    __name      = "BoltsharingCom"
     __type__    = "hoster"
     __version__ = "0.03"
     __status__  = "testing"

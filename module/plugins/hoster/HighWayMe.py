@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleHoster import seconds_to_midnight
 
 
 class HighWayMe(MultiHoster):
-    __name__    = "HighWayMe"
+    __name      = "HighWayMe"
     __type__    = "hoster"
     __version__ = "0.15"
     __status__  = "testing"

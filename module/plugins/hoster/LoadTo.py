@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class LoadTo(SimpleHoster):
-    __name__    = "LoadTo"
+    __name      = "LoadTo"
     __type__    = "hoster"
     __version__ = "0.25"
     __status__  = "testing"

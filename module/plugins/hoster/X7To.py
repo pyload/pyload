@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class X7To(DeadHoster):
-    __name__    = "X7To"
+    __name      = "X7To"
     __type__    = "hoster"
     __version__ = "0.42"
     __status__  = "testing"

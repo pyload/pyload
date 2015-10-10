@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UploadingCom(SimpleHoster):
-    __name__    = "UploadingCom"
+    __name      = "UploadingCom"
     __type__    = "hoster"
     __version__ = "0.44"
     __status__  = "testing"

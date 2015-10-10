@@ -4,7 +4,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class LofCc(DeadCrypter):
-    __name__    = "LofCc"
+    __name      = "LofCc"
     __type__    = "crypter"
     __version__ = "0.22"
     __status__  = "testing"

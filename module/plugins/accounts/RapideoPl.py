@@ -10,7 +10,7 @@ from module.plugins.internal.Account import Account
 
 
 class RapideoPl(Account):
-    __name__    = "RapideoPl"
+    __name      = "RapideoPl"
     __type__    = "account"
     __version__ = "0.06"
     __status__  = "testing"

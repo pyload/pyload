@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class JumbofilesCom(SimpleHoster):
-    __name__    = "JumbofilesCom"
+    __name      = "JumbofilesCom"
     __type__    = "hoster"
     __version__ = "0.04"
     __status__  = "testing"

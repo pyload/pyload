@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DevhostSt(SimpleHoster):
-    __name__    = "DevhostSt"
+    __name      = "DevhostSt"
     __type__    = "hoster"
     __version__ = "0.06"
     __status__  = "testing"

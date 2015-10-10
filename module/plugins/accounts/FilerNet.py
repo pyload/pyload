@@ -7,7 +7,7 @@ from module.plugins.internal.Account import Account
 
 
 class FilerNet(Account):
-    __name__    = "FilerNet"
+    __name      = "FilerNet"
     __type__    = "account"
     __version__ = "0.09"
     __status__  = "testing"

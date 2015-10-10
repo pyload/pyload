@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
 class MegaDebridEu(MultiHoster):
-    __name__    = "MegaDebridEu"
+    __name      = "MegaDebridEu"
     __type__    = "hoster"
     __version__ = "0.50"
     __status__  = "testing"

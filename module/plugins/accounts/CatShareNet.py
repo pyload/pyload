@@ -7,7 +7,7 @@ from module.plugins.internal.Account import Account
 
 
 class CatShareNet(Account):
-    __name__    = "CatShareNet"
+    __name      = "CatShareNet"
     __type__    = "account"
     __version__ = "0.10"
     __status__  = "testing"

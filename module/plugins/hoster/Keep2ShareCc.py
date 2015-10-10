@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class Keep2ShareCc(SimpleHoster):
-    __name__    = "Keep2ShareCc"
+    __name      = "Keep2ShareCc"
     __type__    = "hoster"
     __version__ = "0.26"
     __status__  = "testing"
@@ -22,7 +22,7 @@ class Keep2ShareCc(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", "http://keep2s.cc/file/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern + ".*", "http://keep2s.cc/file/\g<ID>")]
 
     NAME_PATTERN = r'File: <span>(?P<N>.+?)</span>'
     SIZE_PATTERN = r'Size: (?P<S>[^<]+)</div>'

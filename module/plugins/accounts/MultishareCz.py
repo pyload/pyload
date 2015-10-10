@@ -6,7 +6,7 @@ from module.plugins.internal.Account import Account
 
 
 class MultishareCz(Account):
-    __name__    = "MultishareCz"
+    __name      = "MultishareCz"
     __type__    = "account"
     __version__ = "0.10"
     __status__  = "testing"

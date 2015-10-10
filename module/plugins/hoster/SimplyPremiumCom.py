@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleHoster import seconds_to_midnight
 
 
 class SimplyPremiumCom(MultiHoster):
-    __name__    = "SimplyPremiumCom"
+    __name      = "SimplyPremiumCom"
     __type__    = "hoster"
     __version__ = "0.12"
     __status__  = "testing"

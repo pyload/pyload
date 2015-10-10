@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class CrockoCom(SimpleHoster):
-    __name__    = "CrockoCom"
+    __name      = "CrockoCom"
     __type__    = "hoster"
     __version__ = "0.22"
     __status__  = "testing"

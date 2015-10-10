@@ -21,7 +21,7 @@ def random_with_n_digits(n):
 
 
 class MegaRapidoNet(MultiHoster):
-    __name__    = "MegaRapidoNet"
+    __name      = "MegaRapidoNet"
     __type__    = "hoster"
     __version__ = "0.05"
     __status__  = "testing"

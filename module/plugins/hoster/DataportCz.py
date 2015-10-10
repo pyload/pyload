@@ -4,7 +4,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DataportCz(SimpleHoster):
-    __name__    = "DataportCz"
+    __name      = "DataportCz"
     __type__    = "hoster"
     __version__ = "0.43"
     __status__  = "testing"

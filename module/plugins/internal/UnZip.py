@@ -10,7 +10,7 @@ from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError,
 
 
 class UnZip(Extractor):
-    __name__    = "UnZip"
+    __name      = "UnZip"
     __version__ = "1.16"
     __status__  = "testing"
 

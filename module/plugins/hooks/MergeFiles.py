@@ -10,7 +10,7 @@ from module.utils import save_join as fs_join
 
 
 class MergeFiles(Addon):
-    __name__    = "MergeFiles"
+    __name      = "MergeFiles"
     __type__    = "hook"
     __version__ = "0.17"
     __status__  = "testing"

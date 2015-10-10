@@ -12,7 +12,7 @@ from module.utils import fs_encode
 
 
 class RSDF(Container):
-    __name__    = "RSDF"
+    __name      = "RSDF"
     __type__    = "container"
     __version__ = "0.31"
     __status__  = "testing"

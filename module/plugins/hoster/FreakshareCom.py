@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import seconds_to_midnight
 
 
 class FreakshareCom(Hoster):
-    __name__    = "FreakshareCom"
+    __name      = "FreakshareCom"
     __type__    = "hoster"
     __version__ = "0.44"
     __status__  = "testing"

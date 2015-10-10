@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class SolidfilesCom(SimpleHoster):
-    __name__    = "SolidfilesCom"
+    __name      = "SolidfilesCom"
     __type__    = "hoster"
     __version__ = "0.03"
     __status__  = "testing"

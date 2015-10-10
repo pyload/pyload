@@ -12,7 +12,7 @@ from module.plugins.internal.Addon import Addon
 
 
 class TransmissionRPC(Addon):
-    __name__    = "TransmissionRPC"
+    __name      = "TransmissionRPC"
     __type__    = "hook"
     __version__ = "0.12"
     __status__  = "testing"
@@ -31,7 +31,7 @@ class TransmissionRPC(Addon):
 
 
     def links_added(self, links, pid):
-        pattern = re.compile(self.__pattern__)
+        pattern = re.compile(self.__pattern)
         urls = [link for link in links if pattern.match(link)]
 
         for url in urls:

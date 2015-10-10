@@ -4,7 +4,7 @@ from module.plugins.internal.Account import Account
 
 
 class BitshareCom(Account):
-    __name__    = "BitshareCom"
+    __name      = "BitshareCom"
     __type__    = "account"
     __version__ = "0.17"
     __status__  = "testing"

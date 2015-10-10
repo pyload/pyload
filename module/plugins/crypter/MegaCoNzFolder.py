@@ -6,7 +6,7 @@ from module.plugins.internal.Crypter import Crypter
 
 
 class MegaCoNzFolder(Crypter):
-    __name__    = "MegaCoNzFolder"
+    __name      = "MegaCoNz"
     __type__    = "crypter"
     __version__ = "0.06"
     __status__  = "testing"
@@ -25,6 +25,6 @@ class MegaCoNzFolder(Crypter):
 
 
     def decrypt(self, pyfile):
-        url       = "https://mega.co.nz/#F!%s!%s" % re.match(self.__pattern__, pyfile.url).groups()
+        url       = "https://mega.co.nz/#F!%s!%s" % re.match(self.__pattern, pyfile.url).groups()
         self.html = self.load("http://rapidgen.org/linkfinder", post={'linklisturl': url})
         self.urls = re.findall(r'(https://mega(\.co)?\.nz/#N!.+?)<', self.html)

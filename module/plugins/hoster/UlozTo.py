@@ -14,7 +14,7 @@ def convert_decimal_prefix(m):
 
 
 class UlozTo(SimpleHoster):
-    __name__    = "UlozTo"
+    __name      = "UlozTo"
     __type__    = "hoster"
     __version__ = "1.16"
     __status__  = "testing"

@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FileboomMe(SimpleHoster):
-    __name__    = "FileboomMe"
+    __name      = "FileboomMe"
     __type__    = "hoster"
     __version__ = "0.03"
     __status__  = "testing"

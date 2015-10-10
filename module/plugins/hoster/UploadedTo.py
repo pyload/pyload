@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UploadedTo(SimpleHoster):
-    __name__    = "UploadedTo"
+    __name      = "UploadedTo"
     __type__    = "hoster"
     __version__ = "0.97"
     __status__  = "testing"
@@ -24,7 +24,7 @@ class UploadedTo(SimpleHoster):
 
     CHECK_TRAFFIC = True
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", r'http://uploaded.net/file/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern + ".*", r'http://uploaded.net/file/\g<ID>')]
 
     API_KEY = "lhF2IeeprweDfu9ccWlxXVVypA5nA3EL"
 
@@ -46,7 +46,7 @@ class UploadedTo(SimpleHoster):
         for _i in xrange(5):
             html = get_url("http://uploaded.net/api/filemultiple",
                            get={'apikey': cls.API_KEY,
-                                'id_0'  : re.match(cls.__pattern__, url).group('ID')})
+                                'id_0'  : re.match(cls.__pattern, url).group('ID')})
 
             if html != "can't find request":
                 api = html.split(",", 4)

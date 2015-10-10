@@ -6,7 +6,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
 class DebridItaliaCom(MultiHoster):
-    __name__    = "DebridItaliaCom"
+    __name      = "DebridItaliaCom"
     __type__    = "hoster"
     __version__ = "0.19"
     __status__  = "testing"

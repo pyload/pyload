@@ -4,7 +4,7 @@ import re
 from module.plugins.internal.Crypter import Crypter
 
 class SexuriaCom(Crypter):
-    __name__    = "SexuriaCom"
+    __name      = "SexuriaCom"
     __type__    = "crypter"
     __version__ = "0.10"
     __status__  = "testing"

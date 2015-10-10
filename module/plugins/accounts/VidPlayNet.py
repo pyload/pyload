@@ -4,7 +4,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class VidPlayNet(XFSAccount):
-    __name__    = "VidPlayNet"
+    __name      = "VidPlayNet"
     __type__    = "account"
     __version__ = "0.04"
     __status__  = "testing"

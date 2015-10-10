@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class RapidgatorNet(SimpleHoster):
-    __name__    = "RapidgatorNet"
+    __name      = "RapidgatorNet"
     __type__    = "hoster"
     __version__ = "0.36"
     __status__  = "testing"

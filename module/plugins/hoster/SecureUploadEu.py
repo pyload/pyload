@@ -4,7 +4,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class SecureUploadEu(XFSHoster):
-    __name__    = "SecureUploadEu"
+    __name      = "SecureUploadEu"
     __type__    = "hoster"
     __version__ = "0.06"
     __status__  = "testing"

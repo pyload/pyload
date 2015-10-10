@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DataHu(SimpleHoster):
-    __name__    = "DataHu"
+    __name      = "DataHu"
     __type__    = "hoster"
     __version__ = "0.04"
     __status__  = "testing"

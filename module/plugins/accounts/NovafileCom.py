@@ -4,7 +4,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class NovafileCom(XFSAccount):
-    __name__    = "NovafileCom"
+    __name      = "NovafileCom"
     __type__    = "account"
     __version__ = "0.04"
     __status__  = "testing"

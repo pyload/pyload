@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UloziskoSk(SimpleHoster):
-    __name__    = "UloziskoSk"
+    __name      = "UloziskoSk"
     __type__    = "hoster"
     __version__ = "0.26"
     __status__  = "testing"

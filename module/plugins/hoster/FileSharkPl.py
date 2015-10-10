@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FileSharkPl(SimpleHoster):
-    __name__    = "FileSharkPl"
+    __name      = "FileSharkPl"
     __type__    = "hoster"
     __version__ = "0.15"
     __status__  = "testing"

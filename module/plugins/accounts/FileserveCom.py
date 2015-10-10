@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 
 
 class FileserveCom(Account):
-    __name__    = "FileserveCom"
+    __name      = "FileserveCom"
     __type__    = "account"
     __version__ = "0.24"
     __status__  = "testing"

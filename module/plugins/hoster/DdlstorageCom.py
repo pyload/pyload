@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class DdlstorageCom(DeadHoster):
-    __name__    = "DdlstorageCom"
+    __name      = "DdlstorageCom"
     __type__    = "hoster"
     __version__ = "1.03"
     __status__  = "testing"

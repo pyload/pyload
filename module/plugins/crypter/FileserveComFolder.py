@@ -6,7 +6,7 @@ from module.plugins.internal.Crypter import Crypter
 
 
 class FileserveComFolder(Crypter):
-    __name__    = "FileserveComFolder"
+    __name      = "FileserveCom"
     __type__    = "crypter"
     __version__ = "0.13"
     __status__  = "testing"

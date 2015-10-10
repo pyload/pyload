@@ -6,7 +6,7 @@ from module.plugins.internal.Account import Account
 
 
 class CloudzillaTo(Account):
-    __name__    = "CloudzillaTo"
+    __name      = "CloudzillaTo"
     __type__    = "account"
     __version__ = "0.06"
     __status__  = "testing"

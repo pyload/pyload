@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class VeohCom(SimpleHoster):
-    __name__    = "VeohCom"
+    __name      = "VeohCom"
     __type__    = "hoster"
     __version__ = "0.23"
     __status__  = "testing"
@@ -23,7 +23,7 @@ class VeohCom(SimpleHoster):
     NAME_PATTERN    = r'<meta name="title" content="(?P<N>.*?)"'
     OFFLINE_PATTERN = r'>Sorry, we couldn\'t find the video you were looking for'
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", r'http://www.veoh.com/watch/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern + ".*", r'http://www.veoh.com/watch/\g<ID>')]
 
     COOKIES = [("veoh.com", "lassieLocale", "en")]
 

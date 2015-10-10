@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class BitshareCom(SimpleHoster):
-    __name__    = "BitshareCom"
+    __name      = "BitshareCom"
     __type__    = "hoster"
     __version__ = "0.56"
     __status__  = "testing"
@@ -42,7 +42,7 @@ class BitshareCom(SimpleHoster):
             self.account.relogin()
 
         #: File id
-        m = re.match(self.__pattern__, pyfile.url)
+        m = re.match(self.__pattern, pyfile.url)
         self.file_id = max(m.group('ID1'), m.group('ID2'))
         self.log_debug("File id is [%s]" % self.file_id)
 
@@ -60,7 +60,7 @@ class BitshareCom(SimpleHoster):
             self.retry()
 
         #: File name
-        m     = re.match(self.__pattern__, pyfile.url)
+        m     = re.match(self.__pattern, pyfile.url)
         name1 = m.group('NAME') if m else None
 
         m     = re.search(self.INFO_PATTERN, self.html)

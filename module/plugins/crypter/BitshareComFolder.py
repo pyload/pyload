@@ -4,7 +4,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class BitshareComFolder(SimpleCrypter):
-    __name__    = "BitshareComFolder"
+    __name      = "BitshareCom"
     __type__    = "crypter"
     __version__ = "0.05"
     __status__  = "testing"

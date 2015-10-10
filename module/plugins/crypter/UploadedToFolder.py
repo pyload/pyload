@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class UploadedToFolder(SimpleCrypter):
-    __name__    = "UploadedToFolder"
+    __name      = "UploadedTo"
     __type__    = "crypter"
     __version__ = "0.44"
     __status__  = "testing"

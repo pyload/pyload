@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DepositfilesCom(SimpleHoster):
-    __name__    = "DepositfilesCom"
+    __name      = "DepositfilesCom"
     __type__    = "hoster"
     __version__ = "0.58"
     __status__  = "testing"
@@ -29,7 +29,7 @@ class DepositfilesCom(SimpleHoster):
 
     NAME_REPLACEMENTS = [(r'\%u([0-9A-Fa-f]{4})', lambda m: unichr(int(m.group(1), 16))),
                          (r'.*<b title="(?P<N>.+?)".*', "\g<N>")]
-    URL_REPLACEMENTS  = [(__pattern__ + ".*", "https://dfiles.eu/files/\g<ID>")]
+    URL_REPLACEMENTS  = [(__pattern + ".*", "https://dfiles.eu/files/\g<ID>")]
 
     COOKIES = [("dfiles.eu", "lang_current", "en")]
 

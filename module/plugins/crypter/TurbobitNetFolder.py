@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 
 
 class TurbobitNetFolder(SimpleCrypter):
-    __name__    = "TurbobitNetFolder"
+    __name      = "TurbobitNet"
     __type__    = "crypter"
     __version__ = "0.06"
     __status__  = "testing"

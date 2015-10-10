@@ -5,7 +5,7 @@ from module.plugins.internal.Crypter import Crypter
 
 
 class QuickshareCzFolder(Crypter):
-    __name__    = "QuickshareCzFolder"
+    __name      = "QuickshareCz"
     __type__    = "crypter"
     __version__ = "0.12"
     __status__  = "testing"

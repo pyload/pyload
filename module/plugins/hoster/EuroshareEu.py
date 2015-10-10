@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class EuroshareEu(SimpleHoster):
-    __name__    = "EuroshareEu"
+    __name      = "EuroshareEu"
     __type__    = "hoster"
     __version__ = "0.32"
     __status__  = "testing"

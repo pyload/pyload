@@ -33,7 +33,7 @@ class CustomBrowser(Browser):
 
 
 class DlFreeFr(SimpleHoster):
-    __name__    = "DlFreeFr"
+    __name      = "DlFreeFr"
     __type__    = "hoster"
     __version__ = "0.32"
     __status__  = "testing"

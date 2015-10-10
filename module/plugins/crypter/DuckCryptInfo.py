@@ -8,7 +8,7 @@ from module.plugins.internal.Crypter import Crypter
 
 
 class DuckCryptInfo(Crypter):
-    __name__    = "DuckCryptInfo"
+    __name      = "DuckCryptInfo"
     __type__    = "crypter"
     __version__ = "0.04"
     __status__  = "testing"
@@ -28,7 +28,7 @@ class DuckCryptInfo(Crypter):
     def decrypt(self, pyfile):
         url = pyfile.url
 
-        m = re.match(self.__pattern__, url)
+        m = re.match(self.__pattern, url)
         if m is None:
             self.fail(_("Weird error in link"))
         if str(m.group(1)) == "link":
@@ -39,7 +39,7 @@ class DuckCryptInfo(Crypter):
 
     def handle_folder(self, m):
         html = self.load("http://duckcrypt.info/ajax/auth.php?hash=" + str(m.group(2)))
-        m = re.match(self.__pattern__, html)
+        m = re.match(self.__pattern, html)
         self.log_debug("Redirectet to " + str(m.group(0)))
         html = self.load(str(m.group(0)))
         soup = BeautifulSoup.BeautifulSoup(html)

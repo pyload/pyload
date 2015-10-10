@@ -10,7 +10,7 @@ from module.plugins.internal.Hoster import Hoster
 
 def get_info(urls):
     result  = []
-    regex   = re.compile(DailymotionCom.__pattern__)
+    regex   = re.compile(DailymotionCom.__pattern)
     apiurl  = "https://api.dailymotion.com/video/%s"
     request = {'fields': "access_error,status,title"}
 
@@ -42,7 +42,7 @@ def get_info(urls):
 
 
 class DailymotionCom(Hoster):
-    __name__    = "DailymotionCom"
+    __name      = "DailymotionCom"
     __type__    = "hoster"
     __version__ = "0.22"
     __status__  = "testing"
@@ -121,7 +121,7 @@ class DailymotionCom(Hoster):
     def process(self, pyfile):
         self.check_info(pyfile)
 
-        id = re.match(self.__pattern__, pyfile.url).group('ID')
+        id = re.match(self.__pattern, pyfile.url).group('ID')
         self.html = self.load("http://www.dailymotion.com/embed/video/" + id)
 
         streams = self.get_streams()

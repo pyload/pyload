@@ -6,7 +6,7 @@ from module.plugins.internal.Account import Account
 
 
 class YibaishiwuCom(Account):
-    __name__    = "YibaishiwuCom"
+    __name      = "YibaishiwuCom"
     __type__    = "account"
     __version__ = "0.06"
     __status__  = "testing"

@@ -7,7 +7,7 @@ from module.plugins.internal.Hoster import Hoster
 
 
 class ShareplaceCom(Hoster):
-    __name__    = "ShareplaceCom"
+    __name      = "ShareplaceCom"
     __type__    = "hoster"
     __version__ = "0.14"
     __status__  = "testing"

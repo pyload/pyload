@@ -4,7 +4,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class JunocloudMe(XFSAccount):
-    __name__    = "JunocloudMe"
+    __name      = "JunocloudMe"
     __type__    = "account"
     __version__ = "0.04"
     __status__  = "testing"

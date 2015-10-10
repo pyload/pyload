@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class MegasharesCom(SimpleHoster):
-    __name__    = "MegasharesCom"
+    __name      = "MegasharesCom"
     __type__    = "hoster"
     __version__ = "0.33"
     __status__  = "testing"

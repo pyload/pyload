@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class NitroflareCom(SimpleHoster):
-    __name__    = "NitroflareCom"
+    __name      = "NitroflareCom"
     __type__    = "hoster"
     __version__ = "0.15"
     __status__  = "testing"

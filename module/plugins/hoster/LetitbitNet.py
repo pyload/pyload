@@ -33,7 +33,7 @@ def get_info(urls):
 
 
 class LetitbitNet(SimpleHoster):
-    __name__    = "LetitbitNet"
+    __name      = "LetitbitNet"
     __type__    = "hoster"
     __version__ = "0.33"
     __status__  = "testing"

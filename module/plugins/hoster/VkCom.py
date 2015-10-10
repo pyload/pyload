@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class VkCom(SimpleHoster):
-    __name__    = "VkCom"
+    __name      = "VkCom"
     __type__    = "hoster"
     __version__ = "0.02"
     __status__  = "testing"

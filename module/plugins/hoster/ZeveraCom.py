@@ -6,7 +6,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
 class ZeveraCom(MultiHoster):
-    __name__    = "ZeveraCom"
+    __name      = "ZeveraCom"
     __type__    = "hoster"
     __version__ = "0.33"
     __status__  = "testing"

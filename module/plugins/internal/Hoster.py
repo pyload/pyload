@@ -11,7 +11,7 @@ from module.utils import fs_decode, fs_encode, save_join as fs_join, save_path a
 
 
 class Hoster(Base):
-    __name__    = "Hoster"
+    __name      = "Hoster"
     __type__    = "hoster"
     __version__ = "0.37"
     __status__  = "testing"
@@ -83,7 +83,7 @@ class Hoster(Base):
 
         try:
             self.log_debug("PROCESS URL " + self.pyfile.url,
-                           "PLUGIN VERSION %s" % self.__version__)  #@TODO: Remove in 0.4.10
+                           "PLUGIN VERSION %s" % self.__version)  #@TODO: Remove in 0.4.10
             self.process(self.pyfile)
 
             self.check_abort()

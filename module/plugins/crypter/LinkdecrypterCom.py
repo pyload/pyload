@@ -6,7 +6,7 @@ from module.plugins.internal.MultiCrypter import MultiCrypter
 
 
 class LinkdecrypterCom(MultiCrypter):
-    __name__    = "LinkdecrypterCom"
+    __name      = "LinkdecrypterCom"
     __type__    = "crypter"
     __version__ = "0.33"
     __status__  = "testing"

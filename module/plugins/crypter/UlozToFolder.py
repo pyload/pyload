@@ -5,7 +5,7 @@ from module.plugins.internal.Crypter import Crypter
 
 
 class UlozToFolder(Crypter):
-    __name__    = "UlozToFolder"
+    __name      = "UlozTo"
     __type__    = "crypter"
     __version__ = "0.22"
     __status__  = "testing"

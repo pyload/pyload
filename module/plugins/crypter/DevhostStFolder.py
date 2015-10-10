@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class DevhostStFolder(SimpleCrypter):
-    __name__    = "DevhostStFolder"
+    __name      = "DevhostSt"
     __type__    = "crypter"
     __version__ = "0.06"
     __status__  = "testing"

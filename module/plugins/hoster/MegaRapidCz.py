@@ -20,7 +20,7 @@ def get_info(urls):
 
 
 class MegaRapidCz(SimpleHoster):
-    __name__    = "MegaRapidCz"
+    __name      = "MegaRapidCz"
     __type__    = "hoster"
     __version__ = "0.59"
     __status__  = "testing"

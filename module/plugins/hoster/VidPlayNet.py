@@ -7,7 +7,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class VidPlayNet(XFSHoster):
-    __name__    = "VidPlayNet"
+    __name      = "VidPlayNet"
     __type__    = "hoster"
     __version__ = "0.05"
     __status__  = "testing"

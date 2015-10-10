@@ -6,7 +6,7 @@ from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
 
 
 class XFileSharingProFolder(XFSCrypter):
-    __name__    = "XFileSharingProFolder"
+    __name      = "XFileSharingPro"
     __type__    = "crypter"
     __version__ = "0.14"
     __status__  = "testing"
@@ -30,9 +30,9 @@ class XFileSharingProFolder(XFSCrypter):
     def init(self):
         super(XFileSharingProFolder, self).init()
 
-        self.__pattern__ = self.pyload.pluginManager.crypterPlugins[self.__name__]['pattern']
+        self.__pattern = self.pyload.pluginManager.crypterPlugins[self.__name__]['pattern']
 
-        self.PLUGIN_DOMAIN = re.match(self.__pattern__, self.pyfile.url).group("DOMAIN").lower()
+        self.PLUGIN_DOMAIN = re.match(self.__pattern, self.pyfile.url).group("DOMAIN").lower()
         self.PLUGIN_NAME   = "".join(part.capitalize() for part in re.split(r'(\.|\d+|-)', self.PLUGIN_DOMAIN) if part != '.')
 
 

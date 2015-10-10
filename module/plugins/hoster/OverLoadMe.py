@@ -9,7 +9,7 @@ from module.utils import parseFileSize as parse_size
 
 
 class OverLoadMe(MultiHoster):
-    __name__    = "OverLoadMe"
+    __name      = "OverLoadMe"
     __type__    = "hoster"
     __version__ = "0.14"
     __status__  = "testing"

@@ -6,7 +6,7 @@ from module.plugins.internal.Addon import Addon
 
 
 class JustPremium(Addon):
-    __name__    = "JustPremium"
+    __name      = "JustPremium"
     __type__    = "hook"
     __version__ = "0.24"
     __status__  = "testing"

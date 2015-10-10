@@ -6,7 +6,7 @@ from module.plugins.internal.Addon import Addon
 
 
 class LinkdecrypterComHook(Addon):
-    __name__    = "LinkdecrypterComHook"
+    __name      = "LinkdecrypterCom"
     __type__    = "hook"
     __version__ = "1.08"
     __status__  = "testing"

@@ -4,7 +4,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class HundredEightyUploadCom(XFSAccount):
-    __name__    = "HundredEightyUploadCom"
+    __name      = "HundredEightyUploadCom"
     __type__    = "account"
     __version__ = "0.05"
     __status__  = "testing"

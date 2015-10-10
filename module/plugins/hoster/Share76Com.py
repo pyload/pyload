@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class Share76Com(DeadHoster):
-    __name__    = "Share76Com"
+    __name      = "Share76Com"
     __type__    = "hoster"
     __version__ = "0.05"
     __status__  = "testing"

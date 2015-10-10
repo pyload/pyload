@@ -4,7 +4,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class AniStreamCom(XFSAccount):
-    __name__    = "AniStreamCom"
+    __name      = "AniStreamCom"
     __type__    = "account"
     __version__ = "0.02"
     __status__  = "testing"

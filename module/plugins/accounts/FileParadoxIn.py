@@ -4,7 +4,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class FileParadoxIn(XFSAccount):
-    __name__    = "FileParadoxIn"
+    __name      = "FileParadoxIn"
     __type__    = "account"
     __version__ = "0.04"
     __status__  = "testing"

@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class FlyFilesNet(SimpleHoster):
-    __name__    = "FlyFilesNet"
+    __name      = "FlyFilesNet"
     __type__    = "hoster"
     __version__ = "0.11"
     __status__  = "testing"

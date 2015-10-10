@@ -4,7 +4,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class CramitIn(XFSAccount):
-    __name__    = "CramitIn"
+    __name      = "CramitIn"
     __type__    = "account"
     __version__ = "0.05"
     __status__  = "testing"

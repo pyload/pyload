@@ -21,7 +21,7 @@ class PasswordError(Exception):
 
 
 class Extractor(Plugin):
-    __name__    = "Extractor"
+    __name      = "Extractor"
     __type__    = "extractor"
     __version__ = "0.35"
     __status__  = "testing"
@@ -116,8 +116,8 @@ class Extractor(Plugin):
     def _log(self, level, plugintype, pluginname, messages):
         return self.plugin._log(level,
                                 plugintype,
-                                self.plugin.__name__,
-                                (self.__name__,) + messages)
+                                self.plugin.__name,
+                                (self.__name,) + messages)
 
 
     def verify(self, password=None):

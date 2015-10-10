@@ -4,7 +4,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class JunkyvideoCom(XFSAccount):
-    __name__    = "JunkyvideoCom"
+    __name      = "JunkyvideoCom"
     __type__    = "account"
     __version__ = "0.03"
     __status__  = "testing"

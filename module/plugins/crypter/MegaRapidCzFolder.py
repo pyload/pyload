@@ -4,7 +4,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class MegaRapidCzFolder(SimpleCrypter):
-    __name__    = "MegaRapidCzFolder"
+    __name      = "MegaRapidCz"
     __type__    = "crypter"
     __version__ = "0.03"
     __status__  = "testing"

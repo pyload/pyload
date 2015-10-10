@@ -46,7 +46,7 @@ from module.utils import decode, fs_decode, fs_encode
 
 
 class MegaCoNz(Hoster):
-    __name__    = "MegaCoNz"
+    __name      = "MegaCoNz"
     __type__    = "hoster"
     __version__ = "0.31"
     __status__  = "testing"
@@ -188,7 +188,7 @@ class MegaCoNz(Hoster):
 
 
     def process(self, pyfile):
-        pattern = re.match(self.__pattern__, pyfile.url).groupdict()
+        pattern = re.match(self.__pattern, pyfile.url).groupdict()
         id      = pattern['ID']
         key     = pattern['KEY']
         public  = pattern['TYPE'] == ""

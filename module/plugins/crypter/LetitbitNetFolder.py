@@ -5,7 +5,7 @@ from module.plugins.internal.Crypter import Crypter
 
 
 class LetitbitNetFolder(Crypter):
-    __name__    = "LetitbitNetFolder"
+    __name      = "LetitbitNet"
     __type__    = "crypter"
     __version__ = "0.12"
     __status__  = "testing"

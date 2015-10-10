@@ -10,7 +10,7 @@ from module.plugins.internal.Hoster import Hoster
 
 
 class BasePlugin(Hoster):
-    __name__    = "BasePlugin"
+    __name      = "BasePlugin"
     __type__    = "hoster"
     __version__ = "0.46"
     __status__  = "testing"

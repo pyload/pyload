@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
 class FastixRu(MultiHoster):
-    __name__    = "FastixRu"
+    __name      = "FastixRu"
     __type__    = "hoster"
     __version__ = "0.16"
     __status__  = "testing"

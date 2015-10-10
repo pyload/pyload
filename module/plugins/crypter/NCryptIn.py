@@ -10,7 +10,7 @@ from module.plugins.captcha.ReCaptcha import ReCaptcha
 
 
 class NCryptIn(Crypter):
-    __name__    = "NCryptIn"
+    __name      = "NCryptIn"
     __type__    = "crypter"
     __version__ = "1.37"
     __status__  = "testing"
@@ -80,7 +80,7 @@ class NCryptIn(Crypter):
 
 
     def is_single_link(self):
-        link_type = re.match(self.__pattern__, self.pyfile.url).group('TYPE')
+        link_type = re.match(self.__pattern, self.pyfile.url).group('TYPE')
         return link_type in ("link", "frame")
 
 

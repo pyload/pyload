@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class EnteruploadCom(DeadHoster):
-    __name__    = "EnteruploadCom"
+    __name      = "EnteruploadCom"
     __type__    = "hoster"
     __version__ = "0.03"
     __status__  = "testing"

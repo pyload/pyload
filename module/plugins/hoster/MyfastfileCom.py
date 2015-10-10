@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
 class MyfastfileCom(MultiHoster):
-    __name__    = "MyfastfileCom"
+    __name      = "MyfastfileCom"
     __type__    = "hoster"
     __version__ = "0.11"
     __status__  = "testing"

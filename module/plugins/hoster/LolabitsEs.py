@@ -7,7 +7,7 @@ from module.utils import html_unescape
 
 
 class LolabitsEs(SimpleHoster):
-    __name__    = "LolabitsEs"
+    __name      = "LolabitsEs"
     __type__    = "hoster"
     __version__ = "0.03"
     __status__  = "testing"

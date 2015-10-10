@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class ZippyshareCom(SimpleHoster):
-    __name__    = "ZippyshareCom"
+    __name      = "ZippyshareCom"
     __type__    = "hoster"
     __version__ = "0.83"
     __status__  = "testing"

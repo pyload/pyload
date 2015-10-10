@@ -45,7 +45,7 @@ def check_abort(fn):
 
 
 class Base(Plugin):
-    __name__    = "Base"
+    __name      = "Base"
     __type__    = "base"
     __version__ = "0.11"
     __status__  = "testing"
@@ -123,7 +123,7 @@ class Base(Plugin):
                 'url'    : replace_patterns(url, cls.URL_REPLACEMENTS)}
 
         try:
-            info['pattern'] = re.match(cls.__pattern__, url).groupdict()
+            info['pattern'] = re.match(cls.__pattern, url).groupdict()
         except Exception:
             pass
 
@@ -208,7 +208,8 @@ class Base(Plugin):
 
         self.pyfile.setStatus("starting")
 
-        self.log_debug("PROCESS URL " + self.pyfile.url, "PLUGIN VERSION %s" % self.__version__)
+        self.log_debug("PROCESS URL " + self.pyfile.url,
+                       "PLUGIN VERSION %s" % self.__version)
         self.process(self.pyfile)
 
 

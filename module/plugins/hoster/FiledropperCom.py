@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FiledropperCom(SimpleHoster):
-    __name__    = "FiledropperCom"
+    __name      = "FiledropperCom"
     __type__    = "hoster"
     __version__ = "0.02"
     __status__  = "testing"

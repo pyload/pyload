@@ -4,7 +4,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class TinyurlCom(SimpleCrypter):
-    __name__    = "TinyurlCom"
+    __name      = "TinyurlCom"
     __type__    = "crypter"
     __version__ = "0.03"
     __status__  = "testing"

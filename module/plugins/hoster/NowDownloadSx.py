@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class NowDownloadSx(SimpleHoster):
-    __name__    = "NowDownloadSx"
+    __name      = "NowDownloadSx"
     __type__    = "hoster"
     __version__ = "0.11"
     __status__  = "testing"

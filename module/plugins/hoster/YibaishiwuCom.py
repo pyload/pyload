@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class YibaishiwuCom(SimpleHoster):
-    __name__    = "YibaishiwuCom"
+    __name      = "YibaishiwuCom"
     __type__    = "hoster"
     __version__ = "0.15"
     __status__  = "testing"

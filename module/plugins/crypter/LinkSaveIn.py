@@ -4,7 +4,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class LinkSaveIn(SimpleCrypter):
-    __name__    = "LinkSaveIn"
+    __name      = "LinkSaveIn"
     __type__    = "crypter"
     __version__ = "2.06"
     __status__  = "testing"

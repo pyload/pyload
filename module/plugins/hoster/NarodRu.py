@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class NarodRu(SimpleHoster):
-    __name__    = "NarodRu"
+    __name      = "NarodRu"
     __type__    = "hoster"
     __version__ = "0.13"
     __status__  = "testing"

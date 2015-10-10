@@ -9,7 +9,7 @@ from module.utils import save_join as fs_join
 
 
 class SevenZip(UnRar):
-    __name__    = "SevenZip"
+    __name      = "SevenZip"
     __version__ = "0.16"
     __status__  = "testing"
 

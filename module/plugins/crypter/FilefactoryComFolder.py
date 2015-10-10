@@ -4,7 +4,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class FilefactoryComFolder(SimpleCrypter):
-    __name__    = "FilefactoryComFolder"
+    __name      = "FilefactoryCom"
     __type__    = "crypter"
     __version__ = "0.33"
     __status__  = "testing"

@@ -21,7 +21,7 @@ def double_decode(m):
 
 
 class FshareVn(SimpleHoster):
-    __name__    = "FshareVn"
+    __name      = "FshareVn"
     __type__    = "hoster"
     __version__ = "0.21"
     __status__  = "testing"

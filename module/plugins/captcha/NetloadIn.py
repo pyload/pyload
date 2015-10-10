@@ -4,7 +4,7 @@ from module.plugins.internal.OCR import OCR
 
 
 class NetloadIn(OCR):
-    __name__    = "NetloadIn"
+    __name      = "NetloadIn"
     __type__    = "ocr"
     __version__ = "0.14"
     __status__  = "testing"

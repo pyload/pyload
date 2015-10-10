@@ -5,7 +5,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
 class PremiumizeMe(MultiHoster):
-    __name__    = "PremiumizeMe"
+    __name      = "PremiumizeMe"
     __type__    = "hoster"
     __version__ = "0.21"
     __status__  = "testing"

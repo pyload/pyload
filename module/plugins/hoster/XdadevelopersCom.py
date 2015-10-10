@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class XdadevelopersCom(SimpleHoster):
-    __name__    = "XdadevelopersCom"
+    __name      = "XdadevelopersCom"
     __type__    = "hoster"
     __version__ = "0.04"
     __status__  = "testing"

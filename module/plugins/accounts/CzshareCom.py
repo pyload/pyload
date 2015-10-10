@@ -7,7 +7,7 @@ from module.plugins.internal.Account import Account
 
 
 class CzshareCom(Account):
-    __name__    = "CzshareCom"
+    __name      = "CzshareCom"
     __type__    = "account"
     __version__ = "0.24"
     __status__  = "testing"

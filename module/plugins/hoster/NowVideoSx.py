@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class NowVideoSx(SimpleHoster):
-    __name__    = "NowVideoSx"
+    __name      = "NowVideoSx"
     __type__    = "hoster"
     __version__ = "0.13"
     __status__  = "testing"
@@ -19,7 +19,7 @@ class NowVideoSx(SimpleHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", r'http://www.nowvideo.sx/video/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern + ".*", r'http://www.nowvideo.sx/video/\g<ID>')]
 
     NAME_PATTERN = r'<h4>(?P<N>.+?)<'
     OFFLINE_PATTERN = r'>This file no longer exists'

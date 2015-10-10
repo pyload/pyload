@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class IfolderRu(SimpleHoster):
-    __name__    = "IfolderRu"
+    __name      = "IfolderRu"
     __type__    = "hoster"
     __version__ = "0.40"
     __status__  = "testing"

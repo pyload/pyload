@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class OpenloadIo(SimpleHoster):
-    __name__    = "OpenloadIo"
+    __name      = "OpenloadIo"
     __type__    = "hoster"
     __version__ = "0.10"
     __status__  = "testing"

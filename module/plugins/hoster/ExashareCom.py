@@ -6,7 +6,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class ExashareCom(XFSHoster):
-    __name__    = "ExashareCom"
+    __name      = "ExashareCom"
     __type__    = "hoster"
     __version__ = "0.02"
     __status__  = "testing"

@@ -2,11 +2,11 @@
 
 import re
 
-from module.plugins.internal.Hook import Hook
+from module.plugins.internal.Addon import Addon
 
 
-class XFileSharingPro(Hook):
-    __name__    = "XFileSharingPro"
+class XFileSharingPro(Addon):
+    __name      = "XFileSharingPro"
     __type__    = "hook"
     __version__ = "0.44"
     __status__  = "testing"

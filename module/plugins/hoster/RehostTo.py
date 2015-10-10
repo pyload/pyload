@@ -6,7 +6,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
 class RehostTo(MultiHoster):
-    __name__    = "RehostTo"
+    __name      = "RehostTo"
     __type__    = "hoster"
     __version__ = "0.24"
     __status__  = "testing"

@@ -7,7 +7,7 @@ from module.plugins.internal.Addon import Addon, Expose
 
 
 class WindowsPhoneNotify(Addon):
-    __name__    = "WindowsPhoneNotify"
+    __name      = "WindowsPhoneNotify"
     __type__    = "hook"
     __version__ = "0.13"
     __status__  = "testing"

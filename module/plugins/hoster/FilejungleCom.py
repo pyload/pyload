@@ -5,7 +5,7 @@ from module.plugins.internal.Plugin import chunks
 
 
 class FilejungleCom(FileserveCom):
-    __name__    = "FilejungleCom"
+    __name      = "FilejungleCom"
     __type__    = "hoster"
     __version__ = "0.53"
     __status__  = "testing"

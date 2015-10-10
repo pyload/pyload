@@ -4,7 +4,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class JunocloudMe(XFSHoster):
-    __name__    = "JunocloudMe"
+    __name      = "JunocloudMe"
     __type__    = "hoster"
     __version__ = "0.06"
     __status__  = "testing"

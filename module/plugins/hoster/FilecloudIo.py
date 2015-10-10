@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FilecloudIo(SimpleHoster):
-    __name__    = "FilecloudIo"
+    __name      = "FilecloudIo"
     __type__    = "hoster"
     __version__ = "0.11"
     __status__  = "testing"

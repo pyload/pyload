@@ -7,7 +7,7 @@ from module.plugins.internal.Plugin import set_cookie
 
 
 class ShareonlineBiz(Account):
-    __name__    = "ShareonlineBiz"
+    __name      = "ShareonlineBiz"
     __type__    = "account"
     __version__ = "0.41"
     __status__  = "testing"

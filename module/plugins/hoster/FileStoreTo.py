@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FileStoreTo(SimpleHoster):
-    __name__    = "FileStoreTo"
+    __name      = "FileStoreTo"
     __type__    = "hoster"
     __version__ = "0.06"
     __status__  = "testing"

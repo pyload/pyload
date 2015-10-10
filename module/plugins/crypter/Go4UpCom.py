@@ -8,7 +8,7 @@ import json
 
 
 class Go4UpCom(SimpleCrypter):
-    __name__    = "Go4UpCom"
+    __name      = "Go4UpCom"
     __type__    = "crypter"
     __version__ = "0.14"
     __status__  = "testing"

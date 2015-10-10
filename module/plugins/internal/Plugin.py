@@ -260,9 +260,9 @@ def chunks(iterable, size):
 
 
 class Plugin(object):
-    __name__    = "Plugin"
+    __name      = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.53"
+    __version__ = "0.54"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -279,7 +279,7 @@ class Plugin(object):
 
 
     def __repr__(self):
-        return "<%(type)s %(name)s>" % {'type': self.__type__.capitalize(),
+        return "<%(type)s %(name)s>" % {'type': self.__type.capitalize(),
                                         'name': self.__name__}
 
 
@@ -288,6 +288,14 @@ class Plugin(object):
         self.info      = {}    #: Provide information in dict here
         self.req       = None  #: Browser instance, see `network.Browser`
         self.last_html = None
+
+        #@TODO: Remove in 0.4.10
+        for attr in ("name", "type", "version", "status", "pattern",
+                     "config", "description", "license", "authors"):
+            if hasattr(self, "__%s" % attr):
+                continue
+            value = getattr(self, "__%s__" % attr)
+            setattr(self, "__%s" % attr, value)
 
 
     def init(self):
@@ -307,35 +315,35 @@ class Plugin(object):
 
 
     def log_debug(self, *args, **kwargs):
-        self._log("debug", self.__type__, self.__name__, args)
+        self._log("debug", self.__type, self.__name, args)
         if self.pyload.debug and kwargs.get('trace'):
             print "Traceback (most recent call last):"
             traceback.print_stack()
 
 
     def log_info(self, *args, **kwargs):
-        self._log("info", self.__type__, self.__name__, args)
+        self._log("info", self.__type, self.__name, args)
         if self.pyload.debug and kwargs.get('trace'):
             print "Traceback (most recent call last):"
             traceback.print_stack()
 
 
     def log_warning(self, *args, **kwargs):
-        self._log("warning", self.__type__, self.__name__, args)
+        self._log("warning", self.__type, self.__name, args)
         if self.pyload.debug and kwargs.get('trace'):
             print "Traceback (most recent call last):"
             traceback.print_stack()
 
 
     def log_error(self, *args, **kwargs):
-        self._log("error", self.__type__, self.__name__, args)
+        self._log("error", self.__type, self.__name, args)
         if self.pyload.debug and kwargs.get('trace', True):
             print "Traceback (most recent call last):"
             traceback.print_stack()
 
 
     def log_critical(self, *args, **kwargs):
-        self._log("critical", self.__type__, self.__name__, args)
+        self._log("critical", self.__type, self.__name, args)
         if kwargs.get('trace', True):
             print "Traceback (most recent call last):"
             traceback.print_stack()

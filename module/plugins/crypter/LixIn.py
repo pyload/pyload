@@ -7,7 +7,7 @@ from module.plugins.internal.Crypter import Crypter
 
 
 class LixIn(Crypter):
-    __name__    = "LixIn"
+    __name      = "LixIn"
     __type__    = "crypter"
     __version__ = "0.24"
     __status__  = "testing"
@@ -29,7 +29,7 @@ class LixIn(Crypter):
     def decrypt(self, pyfile):
         url = pyfile.url
 
-        m = re.match(self.__pattern__, url)
+        m = re.match(self.__pattern, url)
         if m is None:
             self.error(_("Unable to identify file ID"))
 

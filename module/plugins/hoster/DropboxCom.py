@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DropboxCom(SimpleHoster):
-    __name__    = "DropboxCom"
+    __name      = "DropboxCom"
     __type__    = "hoster"
     __version__ = "0.05"
     __status__  = "testing"

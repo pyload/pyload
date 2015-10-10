@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class PrzeklejPl(DeadHoster):
-    __name__    = "PrzeklejPl"
+    __name      = "PrzeklejPl"
     __type__    = "hoster"
     __version__ = "0.12"
     __status__  = "testing"

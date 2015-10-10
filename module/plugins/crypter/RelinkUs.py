@@ -12,7 +12,7 @@ from module.utils import save_join as fs_join
 
 
 class RelinkUs(Crypter):
-    __name__    = "RelinkUs"
+    __name      = "RelinkUs"
     __type__    = "crypter"
     __version__ = "3.14"
     __status__  = "testing"
@@ -100,7 +100,7 @@ class RelinkUs(Crypter):
 
 
     def init_package(self, pyfile):
-        self.fileid = re.match(self.__pattern__, pyfile.url).group('ID')
+        self.fileid = re.match(self.__pattern, pyfile.url).group('ID')
         self.package = pyfile.package()
 
 

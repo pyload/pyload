@@ -4,7 +4,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class MovReelCom(XFSHoster):
-    __name__    = "MovReelCom"
+    __name      = "MovReelCom"
     __type__    = "hoster"
     __version__ = "1.25"
     __status__  = "testing"

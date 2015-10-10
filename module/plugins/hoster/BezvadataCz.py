@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class BezvadataCz(SimpleHoster):
-    __name__    = "BezvadataCz"
+    __name      = "BezvadataCz"
     __type__    = "hoster"
     __version__ = "0.30"
     __status__  = "testing"

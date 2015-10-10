@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class IcyFilesCom(DeadHoster):
-    __name__    = "IcyFilesCom"
+    __name      = "IcyFilesCom"
     __type__    = "hoster"
     __version__ = "0.07"
     __status__  = "testing"

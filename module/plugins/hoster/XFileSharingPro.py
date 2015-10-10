@@ -6,7 +6,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class XFileSharingPro(XFSHoster):
-    __name__    = "XFileSharingPro"
+    __name      = "XFileSharingPro"
     __type__    = "hoster"
     __version__ = "0.54"
     __status__  = "testing"
@@ -29,9 +29,9 @@ class XFileSharingPro(XFSHoster):
 
 
     def init(self):
-        self.__pattern__ = self.pyload.pluginManager.hosterPlugins[self.__name__]['pattern']
+        self.__pattern = self.pyload.pluginManager.hosterPlugins[self.__name__]['pattern']
 
-        self.PLUGIN_DOMAIN = re.match(self.__pattern__, self.pyfile.url).group("DOMAIN").lower()
+        self.PLUGIN_DOMAIN = re.match(self.__pattern, self.pyfile.url).group("DOMAIN").lower()
         self.PLUGIN_NAME   = "".join(part.capitalize() for part in re.split(r'(\.|\d+|-)', self.PLUGIN_DOMAIN) if part != '.')
 
 

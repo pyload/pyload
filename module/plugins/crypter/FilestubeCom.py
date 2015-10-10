@@ -4,7 +4,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class FilestubeCom(SimpleCrypter):
-    __name__    = "FilestubeCom"
+    __name      = "FilestubeCom"
     __type__    = "crypter"
     __version__ = "0.07"
     __status__  = "testing"

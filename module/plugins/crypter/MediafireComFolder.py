@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 
 
 class MediafireComFolder(Crypter):
-    __name__    = "MediafireComFolder"
+    __name      = "MediafireCom"
     __type__    = "crypter"
     __version__ = "0.16"
     __status__  = "testing"

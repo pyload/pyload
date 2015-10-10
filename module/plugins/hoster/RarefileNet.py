@@ -6,7 +6,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class RarefileNet(XFSHoster):
-    __name__    = "RarefileNet"
+    __name      = "RarefileNet"
     __type__    = "hoster"
     __version__ = "0.10"
     __status__  = "testing"

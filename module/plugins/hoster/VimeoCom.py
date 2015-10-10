@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class VimeoCom(SimpleHoster):
-    __name__    = "VimeoCom"
+    __name      = "VimeoCom"
     __type__    = "hoster"
     __version__ = "0.06"
     __status__  = "testing"
@@ -25,7 +25,7 @@ class VimeoCom(SimpleHoster):
     OFFLINE_PATTERN      = r'class="exception_header"'
     TEMP_OFFLINE_PATTERN = r'Please try again in a few minutes.<'
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", r'https://www.vimeo.com/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern + ".*", r'https://www.vimeo.com/\g<ID>')]
 
     COOKIES = [("vimeo.com", "language", "en")]
 

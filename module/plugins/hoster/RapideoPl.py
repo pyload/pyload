@@ -5,7 +5,7 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class RapideoPl(MultiHoster):
-    __name__    = "RapideoPl"
+    __name      = "RapideoPl"
     __type__    = "hoster"
     __version__ = "0.05"
     __status__  = "testing"
@@ -27,13 +27,13 @@ class RapideoPl(MultiHoster):
                  'password': "",
                  'url'     : ""}
 
-    ERROR_CODES = {0 : "[%s] Incorrect login credentials",
-                   1 : "[%s] Not enough transfer to download - top-up your account",
-                   2 : "[%s] Incorrect / dead link",
-                   3 : "[%s] Error connecting to hosting, try again later",
-                   9 : "[%s] Premium account has expired",
-                   15: "[%s] Hosting no longer supported",
-                   80: "[%s] Too many incorrect login attempts, account blocked for 24h"}
+    ERROR_CODES = {0 : "Incorrect login credentials",
+                   1 : "Not enough transfer to download - top-up your account",
+                   2 : "Incorrect / dead link",
+                   3 : "Error connecting to hosting, try again later",
+                   9 : "Premium account has expired",
+                   15: "Hosting no longer supported",
+                   80: "Too many incorrect login attempts, account blocked for 24h"}
 
 
     def prepare(self):
@@ -79,7 +79,7 @@ class RapideoPl(MultiHoster):
         if "errno" in parsed.keys():
             if parsed['errno'] in self.ERROR_CODES:
                 #: Error code in known
-                self.fail(self.ERROR_CODES[parsed['errno']] % self.__name__)
+                self.fail(self.ERROR_CODES[parsed['errno']])
             else:
                 #: Error code isn't yet added to plugin
                 self.fail(parsed['errstring'] or

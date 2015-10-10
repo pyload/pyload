@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class HotfileCom(DeadHoster):
-    __name__    = "HotfileCom"
+    __name      = "HotfileCom"
     __type__    = "hoster"
     __version__ = "0.38"
     __status__  = "testing"

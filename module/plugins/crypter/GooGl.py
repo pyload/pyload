@@ -5,7 +5,7 @@ from module.common.json_layer import json_loads
 
 
 class GooGl(SimpleCrypter):
-    __name__    = "GooGl"
+    __name      = "GooGl"
     __type__    = "crypter"
     __version__ = "0.04"
     __status__  = "testing"

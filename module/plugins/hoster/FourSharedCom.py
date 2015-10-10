@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FourSharedCom(SimpleHoster):
-    __name__    = "FourSharedCom"
+    __name      = "4shared"
     __type__    = "hoster"
     __version__ = "0.32"
     __status__  = "testing"
