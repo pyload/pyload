@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Base import Base, parse_name
+from module.plugins.internal.Base import Base, check_abort, create_getInfo, parse_fileInfo
+from module.plugins.internal.Plugin import parse_name
 from module.utils import save_path as safe_filename
 
 
 class Crypter(Base):
     __name__    = "Crypter"
     __type__    = "crypter"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -20,22 +21,12 @@ class Crypter(Base):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def __init__(self, *args, **kwargs):
-        super(Crypter, self).__init__(*args, **kwargs)
-
-        #: Put all packages here. It's a list of tuples like: ( name, [list of links], folder )
-        self.packages = []
-
-        #: List of urls, pyLoad will generate packagenames
-        self.urls = []
-
-        self._setup()
-        self.init()
+    def init_base(self):
+        self.packages = []  #: Put all packages here. It's a list of tuples like: ( name, [list of links], folder )
+        self.urls     = []  #: List of urls, pyLoad will generate packagenames
 
 
-    def _setup(self):
-        super(Crypter, self)._setup()
-
+    def setup_base(self):
         self.packages = []
         self.urls     = []
 

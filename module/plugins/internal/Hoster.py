@@ -5,7 +5,7 @@ from __future__ import with_statement
 import os
 import re
 
-from module.plugins.internal.Base import Base, check_abort, create_getInfo, getInfo, parse_fileInfo
+from module.plugins.internal.Base import Base, check_abort, create_getInfo, parse_fileInfo
 from module.plugins.internal.Plugin import Fail, Retry, encode, exists, fixurl, parse_name
 from module.utils import fs_decode, fs_encode, save_join as fs_join, save_path as safe_filename
 
@@ -13,7 +13,7 @@ from module.utils import fs_decode, fs_encode, save_join as fs_join, save_path a
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -26,11 +26,15 @@ class Hoster(Base):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def __init__(self, *args, **kwargs):
-        super(Hoster, self).__init__(*args, **kwargs)
-
+    def init_base(self):
         #: Enable simultaneous processing of multiple downloads
-        self.limitDL = 0     #@TODO: Change to `limit_dl` in 0.4.10
+        self.limitDL = 0  #@TODO: Change to `limit_dl` in 0.4.10
+
+        #:
+        self.chunk_limit = None
+
+        #:
+        self.resume_download = False
 
         #: Location where the last call to download was saved
         self.last_download = None
@@ -41,16 +45,18 @@ class Hoster(Base):
         #: Restart flag
         self.rst_free = False  #@TODO: Recheck in 0.4.10
 
-        self._setup()
-        self.init()
 
-
-    def _setup(self):
-        super(Hoster, self)._setup()
-
+    def setup_base(self):
         self.last_download = None
         self.last_check    = None
         self.rst_free      = False
+
+        if self.account:
+            self.chunk_limit     = -1  #: -1 for unlimited
+            self.resume_download = True
+        else:
+            self.chunk_limit     = 1
+            self.resume_download = False
 
 
     def load_account(self):
@@ -76,7 +82,8 @@ class Hoster(Base):
         self.pyfile.setStatus("starting")
 
         try:
-            self.log_debug("PROCESS URL " + self.pyfile.url, "PLUGIN VERSION %s" % self.__version__)  #@TODO: Remove in 0.4.10
+            self.log_debug("PROCESS URL " + self.pyfile.url,
+                           "PLUGIN VERSION %s" % self.__version__)  #@TODO: Remove in 0.4.10
             self.process(self.pyfile)
 
             self.check_abort()
@@ -94,7 +101,7 @@ class Hoster(Base):
 
 
     @check_abort
-    def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=True):
+    def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=True, resume=None, chunks=None):
         """
         Downloads the content at url to download folder
 
@@ -141,10 +148,16 @@ class Hoster(Base):
 
         self.check_abort()
 
+        chunks = min(self.pyload.config.get("download", "chunks"), chunks or self.chunk_limit or -1)
+
+        if resume is None:
+            resume = self.resume_download
+
         try:
-            newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref, cookies=cookies,
-                                            chunks=self.get_chunk_count(), resume=self.resume_download,
-                                            progressNotify=self.pyfile.setProgress, disposition=disposition)
+            newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref,
+                                            cookies=cookies, chunks=chunks, resume=resume,
+                                            progressNotify=self.pyfile.setProgress,
+                                            disposition=disposition)
         finally:
             self.pyfile.size = self.req.size
 
@@ -159,7 +172,8 @@ class Hoster(Base):
                     os.rename(oldname_enc, newname_enc)
 
                 except OSError, e:
-                    self.log_warning(_("Error renaming `%s` to `%s`") % (newname, finalname), e)
+                    self.log_warning(_("Error renaming `%s` to `%s`")
+                                     % (newname, finalname), e)
                     finalname = newname
 
                 self.log_info(_("`%s` saved as `%s`") % (self.pyfile.name, finalname))

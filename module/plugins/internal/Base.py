@@ -46,7 +46,7 @@ def check_abort(fn):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.08"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -62,6 +62,9 @@ class Base(Plugin):
 
     def __init__(self, pyfile):
         self._init(pyfile.m.core)
+
+        #:
+        self.premium = None
 
         #: Engage wan reconnection
         self.wantReconnect = False  #@TODO: Change to `want_reconnect` in 0.4.10
@@ -94,6 +97,9 @@ class Base(Plugin):
         #: Dict of the amount of retries already made
         self.retries = {}
 
+        self.init_base()
+        self.init()
+
 
     def _log(self, level, plugintype, pluginname, messages):
         log = getattr(self.pyload.log, level)
@@ -123,10 +129,18 @@ class Base(Plugin):
         return info
 
 
+    def init_base(self):
+        pass
+
+
     def init(self):
         """
         Initialize the plugin (in addition to `__init__`)
         """
+        pass
+
+
+    def setup_base(self):
         pass
 
 
@@ -155,16 +169,13 @@ class Base(Plugin):
             pass
 
         if self.account:
-            self.req             = self.pyload.requestFactory.getRequest(self.__name__, self.account.user)
-            self.chunk_limit     = -1  #: -1 for unlimited
-            self.resume_download = True
-            self.premium         = self.account.info['data']['premium']  #: Don't use `self.account.premium` to avoid one unnecessary get_info call
+            self.req     = self.pyload.requestFactory.getRequest(self.__name__, self.account.user)
+            self.premium = self.account.info['data']['premium']  #@NOTE: Avoid one unnecessary get_info call by `self.account.premium` here
         else:
-            self.req             = self.pyload.requestFactory.getRequest(self.__name__)
-            self.chunk_limit     = 1
-            self.resume_download = False
-            self.premium         = False
+            self.req     = self.pyload.requestFactory.getRequest(self.__name__)
+            self.premium = False
 
+        self.setup_base()
         self.setup()
 
 
@@ -305,7 +316,7 @@ class Base(Plugin):
         if msg:
             self.pyfile.error = msg
         else:
-            msg = self.pyfile.error or (self.info['error'] if 'error' in self.info else self.pyfile.getStatusName())
+            msg = self.pyfile.error or self.info.get('error') or self.pyfile.getStatusName()
 
         raise Fail(encode(msg))  #@TODO: Remove `encode` in 0.4.10
 
