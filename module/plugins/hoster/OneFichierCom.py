@@ -9,10 +9,10 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class OneFichierCom(SimpleHoster):
     __name__    = "OneFichierCom"
     __type__    = "hoster"
-    __version__ = "0.91"
+    __version__ = "0.92"
     __status__  = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
+    __pattern__ = r'https?://(?:www\.)?(?:\w+\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?\w+)?'
     __config__  = [("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """1fichier.com hoster plugin"""
@@ -99,7 +99,6 @@ class OneFichierCom(SimpleHoster):
     def handle_free(self, pyfile):
         self.check_errors()
 
-        id = self.info['pattern']['N']  # Check me : should this one be the file name or the onefichier name ???
         url, inputs = self.parse_html_form('action="https://1fichier.com/\?[a-zA-Z0-9]+')
 
         if not url:
