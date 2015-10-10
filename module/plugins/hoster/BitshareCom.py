@@ -84,7 +84,7 @@ class BitshareCom(SimpleHoster):
         if self.premium:
             header = self.load(self.pyfile.url, just_header=True)
             if 'location' in header:
-                return header['location']
+                return header.get('location')
 
         #: Get download info
         self.log_debug("Getting download info")

@@ -55,7 +55,7 @@ class EmbeduploadCom(Crypter):
             try:
                 header = self.load(link, just_header=True)
                 if 'location' in header:
-                    new_links.append(header['location'])
+                    new_links.append(header.get('location'))
             except BadHeader:
                 pass
         return new_links

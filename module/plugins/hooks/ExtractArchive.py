@@ -63,23 +63,15 @@ class ArchiveQueue(object):
 
 
     def get(self):
-        try:
-            return [int(pid) for pid in self.plugin.retrieve("ExtractArchive:%s" % self.storage, "").decode('base64').split()]
-
-        except Exception:
-            return []
+        return self.plugin.retrieve(self.storage, default=[])
 
 
     def set(self, value):
-        if isinstance(value, list):
-            item = str(value)[1:-1].replace(' ', '').replace(',', ' ')
-        else:
-            item = str(value).strip()
-        return self.plugin.store("ExtractArchive:%s" % self.storage, item.encode('base64')[:-1])
+        return self.plugin.store(self.storage, value)
 
 
     def delete(self):
-        return self.plugin.delete("ExtractArchive:%s" % self.storage)
+        return self.plugin.delete(self.storage)
 
 
     def add(self, item):
@@ -107,7 +99,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.51"
+    __version__ = "1.52"
     __status__  = "testing"
 
     __config__ = [("activated"      , "bool"  , "Activated"                             , True                                                                     ),

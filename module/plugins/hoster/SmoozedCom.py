@@ -59,4 +59,4 @@ class SmoozedCom(MultiHoster):
         if not "location" in header:
             self.fail(_("Unable to initialize download"))
         else:
-            self.link = header['location'][-1] if isinstance(header['location'], list) else header['location']
+            self.link = header.get('location')[-1] if isinstance(header.get('location'), list) else header.get('location')

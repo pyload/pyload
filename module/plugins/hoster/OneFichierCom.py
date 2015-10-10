@@ -99,7 +99,7 @@ class OneFichierCom(SimpleHoster):
     def handle_free(self, pyfile):
         self.check_errors()
 
-        url, inputs = self.parse_html_form('action="https://1fichier.com/\?[a-zA-Z0-9]+')
+        url, inputs = self.parse_html_form('action="https://1fichier.com/\?[\w^_]+')
 
         if not url:
             return

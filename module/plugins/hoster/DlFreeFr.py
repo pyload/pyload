@@ -125,12 +125,14 @@ class DlFreeFr(SimpleHoster):
             value = value.strip()
 
             if key in header:
-                if type(header[key]) is list:
-                    header[key].append(value)
+                header_key = header.get(key)
+                if type(header_key) is list:
+                    header_key.append(value)
                 else:
-                    header[key] = [header[key], value]
+                    header[key] = [header_key, value]
             else:
                 header[key] = value
+
         return header
 
 

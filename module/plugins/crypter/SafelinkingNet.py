@@ -34,7 +34,7 @@ class SafelinkingNet(Crypter):
 
             header = self.load(url, just_header=True)
             if 'location' in header:
-                self.urls = [header['location']]
+                self.urls = [header.get('location')]
             else:
                 self.error(_("Couldn't find forwarded Link"))
 

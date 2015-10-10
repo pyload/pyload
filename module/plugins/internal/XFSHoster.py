@@ -184,7 +184,7 @@ class XFSHoster(SimpleHoster):
         header = self.load(m.group(1), just_header=True)
 
         if 'location' in header:  #: Direct download link
-            self.link = header['location']
+            self.link = header.get('location')
 
 
     def get_post_parameters(self):

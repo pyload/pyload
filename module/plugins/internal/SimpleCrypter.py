@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.66"
+    __version__ = "0.67"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -82,20 +82,16 @@ class SimpleCrypter(Crypter, SimpleHoster):
     #@TODO: Remove in 0.4.10
     def _setup(self):
         orig_name = self.__name__
-        self.__name__ = (orig_name + ".py").replace("Folder.py", "").replace(".py", "")
-
+        self.__name__ = re.sub(r'Folder$', "", self.__name__)
         super(SimpleCrypter, self)._setup()
-
         self.__name__ = orig_name
 
 
     #@TODO: Remove in 0.4.10
     def load_account(self):
         orig_name = self.__name__
-        self.__name__ = (orig_name + ".py").replace("Folder.py", "").replace(".py", "")
-
+        self.__name__ = re.sub(r'Folder$', "", self.__name__)
         super(SimpleCrypter, self).load_account()
-
         self.__name__ = orig_name
 
 
@@ -106,7 +102,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
             header = self.load(redirect, just_header=True)
             if header.get('location'):
-                self.link = header['location']
+                self.link = header.get('location')
             else:
                 break
         else:

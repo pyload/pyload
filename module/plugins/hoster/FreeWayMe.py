@@ -38,13 +38,13 @@ class FreeWayMe(MultiHoster):
                                just_header=True)
 
             if 'location' in header:
-                headers = self.load(header['location'], just_header=True)
+                headers = self.load(header.get('location'), just_header=True)
                 if headers['code'] == 500:
                     #: Error on 2nd stage
                     self.log_error(_("Error [stage2]"))
                 else:
                     #: Seems to work..
-                    self.download(header['location'])
+                    self.download(header.get('location'))
                     break
             else:
                 #: Error page first stage

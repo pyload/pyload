@@ -463,10 +463,11 @@ class Base(Plugin):
                     value            = value.strip()
 
                     if key in header:
-                        if type(header[key]) is list:
-                            header[key].append(value)
+                        header_key = header.get(key)
+                        if type(header_key) is list:
+                            header_key.append(value)
                         else:
-                            header[key] = [header[key], value]
+                            header[key] = [header_key, value]
                     else:
                         header[key] = value
 
@@ -474,7 +475,7 @@ class Base(Plugin):
                 link = url
 
             elif header.get('location'):
-                location = self.fixurl(header['location'], url)
+                location = self.fixurl(header.get('location'), url)
 
                 if header.get('code') == 302:
                     link = location
@@ -487,7 +488,7 @@ class Base(Plugin):
                 extension = os.path.splitext(parse_name(url))[-1]
 
                 if header.get('content-type'):
-                    mimetype = header['content-type'].split(';')[0].strip()
+                    mimetype = header.get('content-type').split(';')[0].strip()
 
                 elif extension:
                     mimetype = mimetypes.guess_type(extension, False)[0] or "application/octet-stream"
