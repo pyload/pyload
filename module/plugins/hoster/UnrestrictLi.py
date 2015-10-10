@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class UnrestrictLi(DeadHoster):
-    __name      = "UnrestrictLi"
+    __name__    = "UnrestrictLi"
     __type__    = "hoster"
     __version__ = "0.24"
     __status__  = "testing"

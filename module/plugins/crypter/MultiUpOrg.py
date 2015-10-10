@@ -7,13 +7,14 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class MultiUpOrg(SimpleCrypter):
-    __name      = "MultiUpOrg"
+    __name__    = "MultiUpOrg"
     __type__    = "crypter"
     __version__ = "0.05"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?multiup\.org/(en|fr)/(?P<TYPE>project|download|mirror)/\w+(/\w+)?'
-    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium"       , "bool", "Use premium account if available"   , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
@@ -26,7 +27,7 @@ class MultiUpOrg(SimpleCrypter):
 
 
     def get_links(self):
-        m_type = re.match(self.__pattern, self.pyfile.url).group('TYPE')
+        m_type = re.match(self.__pattern__, self.pyfile.url).group('TYPE')
 
         if m_type == "project":
             pattern = r'\n(http://www\.multiup\.org/(?:en|fr)/download/.*)'

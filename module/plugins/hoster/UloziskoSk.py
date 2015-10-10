@@ -7,13 +7,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UloziskoSk(SimpleHoster):
-    __name      = "UloziskoSk"
+    __name__    = "UloziskoSk"
     __type__    = "hoster"
     __version__ = "0.26"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?ulozisko\.sk/.+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Ulozisko.sk hoster plugin"""
     __license__     = "GPLv3"

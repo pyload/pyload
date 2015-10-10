@@ -9,13 +9,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class AndroidfilehostCom(SimpleHoster):
-    __name      = "AndroidfilehostCom"
+    __name__    = "AndroidfilehostCom"
     __type__    = "hoster"
     __version__ = "0.02"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?androidfilehost\.com/\?fid=\d+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Androidfilehost.com hoster plugin"""
     __license__     = "GPLv3"

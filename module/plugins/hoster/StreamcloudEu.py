@@ -6,12 +6,13 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class StreamcloudEu(XFSHoster):
-    __name      = "StreamcloudEu"
+    __name__    = "StreamcloudEu"
     __type__    = "hoster"
     __version__ = "0.11"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?streamcloud\.eu/\w{12}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Streamcloud.eu hoster plugin"""
     __license__     = "GPLv3"

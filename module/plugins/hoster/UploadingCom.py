@@ -9,12 +9,13 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UploadingCom(SimpleHoster):
-    __name      = "UploadingCom"
+    __name__    = "UploadingCom"
     __type__    = "hoster"
     __version__ = "0.44"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>\w+)'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Uploading.com hoster plugin"""
     __license__     = "GPLv3"

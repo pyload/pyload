@@ -7,12 +7,13 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class VidPlayNet(XFSHoster):
-    __name      = "VidPlayNet"
+    __name__    = "VidPlayNet"
     __type__    = "hoster"
     __version__ = "0.05"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?vidplay\.net/\w{12}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """VidPlay.net hoster plugin"""
     __license__     = "GPLv3"

@@ -10,7 +10,7 @@ from module.plugins.internal.Account import Account
 
 
 class AlldebridCom(Account):
-    __name      = "AlldebridCom"
+    __name__    = "AlldebridCom"
     __type__    = "account"
     __version__ = "0.28"
     __status__  = "testing"

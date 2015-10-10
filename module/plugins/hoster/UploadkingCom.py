@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class UploadkingCom(DeadHoster):
-    __name      = "UploadkingCom"
+    __name__    = "UploadkingCom"
     __type__    = "hoster"
     __version__ = "0.15"
     __status__  = "testing"

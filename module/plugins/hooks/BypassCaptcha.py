@@ -26,7 +26,7 @@ class BypassCaptchaException(Exception):
 
 
 class BypassCaptcha(Addon):
-    __name      = "BypassCaptcha"
+    __name__    = "BypassCaptcha"
     __type__    = "hook"
     __version__ = "0.08"
     __status__  = "testing"
@@ -106,7 +106,7 @@ class BypassCaptcha(Addon):
 
         if self.get_credits() > 0:
             task.handler.append(self)
-            task.data['service'] = self.__name__
+            task.data['service'] = self.classname
             task.setWaiting(100)
             self._process_captcha(task)
 
@@ -115,12 +115,12 @@ class BypassCaptcha(Addon):
 
 
     def captcha_correct(self, task):
-        if task.data['service'] is self.__name__ and "ticket" in task.data:
+        if task.data['service'] is self.classname and "ticket" in task.data:
             self.respond(task.data['ticket'], True)
 
 
     def captcha_invalid(self, task):
-        if task.data['service'] is self.__name__ and "ticket" in task.data:
+        if task.data['service'] is self.classname and "ticket" in task.data:
             self.respond(task.data['ticket'], False)
 
 

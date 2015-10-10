@@ -7,7 +7,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class TusfilesNet(XFSAccount):
-    __name      = "TusfilesNet"
+    __name__    = "TusfilesNet"
     __type__    = "account"
     __version__ = "0.08"
     __status__  = "testing"

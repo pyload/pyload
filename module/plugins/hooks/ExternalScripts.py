@@ -9,7 +9,7 @@ from module.utils import fs_encode, save_join as fs_join
 
 
 class ExternalScripts(Addon):
-    __name      = "ExternalScripts"
+    __name__    = "ExternalScripts"
     __type__    = "hook"
     __version__ = "0.49"
     __status__  = "testing"

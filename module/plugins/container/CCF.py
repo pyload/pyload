@@ -11,12 +11,13 @@ from module.utils import fs_encode, save_join as fs_join
 
 
 class CCF(Container):
-    __name      = "CCF"
+    __name__    = "CCF"
     __type__    = "container"
     __version__ = "0.25"
     __status__  = "testing"
 
     __pattern__ = r'.+\.ccf$'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """CCF container decrypter plugin"""
     __license__     = "GPLv3"

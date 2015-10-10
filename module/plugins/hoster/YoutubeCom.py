@@ -11,13 +11,14 @@ from module.utils import html_unescape
 
 
 class YoutubeCom(Hoster):
-    __name      = "YoutubeCom"
+    __name__    = "YoutubeCom"
     __type__    = "hoster"
     __version__ = "0.46"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)\w+'
-    __config__  = [("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting"             , "hd" ),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting"             , "hd" ),
                    ("fmt"    , "int"                                         , "FMT/ITAG Number (0 for auto)", 0    ),
                    (".mp4"   , "bool"                                        , "Allow .mp4"                  , True ),
                    (".flv"   , "bool"                                        , "Allow .flv"                  , True ),

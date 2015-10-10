@@ -8,13 +8,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class YibaishiwuCom(SimpleHoster):
-    __name      = "YibaishiwuCom"
+    __name__    = "YibaishiwuCom"
     __type__    = "hoster"
     __version__ = "0.15"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(?:u\.)?115\.com/file/(?P<ID>\w+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """115.com hoster plugin"""
     __license__     = "GPLv3"

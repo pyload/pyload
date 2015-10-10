@@ -5,7 +5,7 @@ from module.plugins.internal.Account import Account
 
 
 class PremiumizeMe(Account):
-    __name      = "PremiumizeMe"
+    __name__    = "PremiumizeMe"
     __type__    = "account"
     __version__ = "0.21"
     __status__  = "testing"

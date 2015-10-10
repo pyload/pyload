@@ -4,7 +4,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class ILoadTo(DeadCrypter):
-    __name      = "ILoadTo"
+    __name__    = "ILoadTo"
     __type__    = "crypter"
     __version__ = "0.12"
     __status__  = "testing"

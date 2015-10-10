@@ -4,7 +4,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class FilebeerInfoFolder(DeadCrypter):
-    __name      = "FilebeerInfo"
+    __name__    = "FilebeerInfo"
     __type__    = "crypter"
     __version__ = "0.03"
     __status__  = "testing"

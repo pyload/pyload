@@ -6,13 +6,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class RgHostNet(SimpleHoster):
-    __name      = "RgHostNet"
+    __name__    = "RgHostNet"
     __type__    = "hoster"
     __version__ = "0.05"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?rghost\.(net|ru)/[\d\-]+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """RgHost.net hoster plugin"""
     __license__     = "GPLv3"

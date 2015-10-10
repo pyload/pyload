@@ -5,13 +5,14 @@ from module.plugins.internal.Crypter import Crypter
 
 
 class MultiloadCz(Crypter):
-    __name      = "MultiloadCz"
+    __name__    = "MultiloadCz"
     __type__    = "crypter"
     __version__ = "0.42"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:[^/]*\.)?multiload\.cz/(stahnout|slozka)/.+'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"           , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"           , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package" , True),
                    ("usedHoster"        , "str" , "Prefered hoster list (bar-separated)", ""  ),
                    ("ignoredHoster"     , "str" , "Ignored hoster list (bar-separated)" , ""  )]
@@ -28,7 +29,7 @@ class MultiloadCz(Crypter):
     def decrypt(self, pyfile):
         self.html = self.load(pyfile.url)
 
-        if re.match(self.__pattern, pyfile.url).group(1) == "slozka":
+        if re.match(self.__pattern__, pyfile.url).group(1) == "slozka":
             m = re.search(self.FOLDER_PATTERN, self.html)
             if m is not None:
                 self.urls.extend(m.group(1).split())

@@ -11,7 +11,7 @@ from module.plugins.internal.CaptchaService import CaptchaService
 
 
 class ReCaptcha(CaptchaService):
-    __name      = "ReCaptcha"
+    __name__    = "ReCaptcha"
     __type__    = "captcha"
     __version__ = "0.18"
     __status__  = "testing"

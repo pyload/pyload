@@ -25,7 +25,7 @@ class Kernel32(object):
 
 
 class AntiStandby(Addon):
-    __name      = "AntiStandby"
+    __name__    = "AntiStandby"
     __type__    = "hook"
     __version__ = "0.12"
     __status__  = "testing"

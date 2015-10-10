@@ -7,13 +7,14 @@ from module.common.json_layer import json_loads
 
 
 class SoundcloudCom(SimpleHoster):
-    __name      = "SoundcloudCom"
+    __name__    = "SoundcloudCom"
     __type__    = "hoster"
     __version__ = "0.12"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?soundcloud\.com/[\w\-]+/[\w\-]+'
-    __config__  = [("use_premium", "bool"        , "Use premium account if available", True    ),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool"        , "Use premium account if available", True    ),
                    ("quality"    , "Lower;Higher", "Quality"                         , "Higher")]
 
     __description__ = """SoundCloud.com hoster plugin"""

@@ -8,12 +8,13 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class OpenloadIo(SimpleHoster):
-    __name      = "OpenloadIo"
+    __name__    = "OpenloadIo"
     __type__    = "hoster"
     __version__ = "0.10"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?openload\.(co|io)/(f|embed)/(?P<ID>[\w\-]+)'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Openload.co hoster plugin"""
     __license__     = "GPLv3"

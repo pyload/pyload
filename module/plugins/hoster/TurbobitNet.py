@@ -15,13 +15,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class TurbobitNet(SimpleHoster):
-    __name      = "TurbobitNet"
+    __name__    = "TurbobitNet"
     __type__    = "hoster"
     __version__ = "0.23"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Turbobit.net hoster plugin"""
     __license__     = "GPLv3"
@@ -29,7 +30,7 @@ class TurbobitNet(SimpleHoster):
                        ("prOq", None)]
 
 
-    URL_REPLACEMENTS = [(__pattern + ".*", "http://turbobit.net/\g<ID>.html")]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", "http://turbobit.net/\g<ID>.html")]
 
     COOKIES = [("turbobit.net", "user_lang", "en")]
 
@@ -99,7 +100,7 @@ class TurbobitNet(SimpleHoster):
         if rtUpdate:
             return rtUpdate
 
-        if self.retrieve("version") is not self.__version or \
+        if self.retrieve("version") is not self.__version__ or \
            int(self.retrieve("timestamp", 0)) + 86400000 < timestamp():
             #: that's right, we are even using jdownloader updates
             rtUpdate = self.load("http://update0.jdownloader.org/pluginstuff/tbupdate.js")
@@ -111,7 +112,7 @@ class TurbobitNet(SimpleHoster):
 
             self.store("rtUpdate", rtUpdate)
             self.store("timestamp", timestamp())
-            self.store("version", self.__version)
+            self.store("version", self.__version__)
         else:
             self.log_error(_("Unable to download, wait for update..."))
             self.temp_offline()

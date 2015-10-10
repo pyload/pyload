@@ -5,7 +5,7 @@ from module.common.json_layer import json_loads
 
 
 class RPNetBiz(Account):
-    __name      = "RPNetBiz"
+    __name__    = "RPNetBiz"
     __type__    = "account"
     __version__ = "0.17"
     __status__  = "testing"

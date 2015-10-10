@@ -7,12 +7,13 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FileboomMe(SimpleHoster):
-    __name      = "FileboomMe"
+    __name__    = "FileboomMe"
     __type__    = "hoster"
     __version__ = "0.03"
     __status__  = "testing"
 
     __pattern__ = r'https?://f(?:ile)?boom\.me/file/(?P<ID>\w+)'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Fileboom.me hoster plugin"""
     __license__     = "GPLv3"

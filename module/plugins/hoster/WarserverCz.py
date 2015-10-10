@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class WarserverCz(DeadHoster):
-    __name      = "WarserverCz"
+    __name__    = "WarserverCz"
     __type__    = "hoster"
     __version__ = "0.14"
     __status__  = "testing"

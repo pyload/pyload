@@ -4,12 +4,13 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class RapidfileshareNet(XFSHoster):
-    __name      = "RapidfileshareNet"
+    __name__    = "RapidfileshareNet"
     __type__    = "hoster"
     __version__ = "0.04"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?rapidfileshare\.net/\w{12}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Rapidfileshare.net hoster plugin"""
     __license__     = "GPLv3"

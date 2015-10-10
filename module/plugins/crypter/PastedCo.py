@@ -6,12 +6,13 @@ import re
 
 
 class PastedCo(Crypter):
-    __name      = "PastedCo"
+    __name__    = "PastedCo"
     __type__    = "crypter"
     __version__ = "0.02"
     __status__  = "testing"
 
     __pattern__ = r'http://pasted\.co/\w+'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Pasted.co decrypter plugin"""
     __license__     = "GPLv3"

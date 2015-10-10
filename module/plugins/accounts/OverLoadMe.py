@@ -5,7 +5,7 @@ from module.common.json_layer import json_loads
 
 
 class OverLoadMe(Account):
-    __name      = "OverLoadMe"
+    __name__    = "OverLoadMe"
     __type__    = "account"
     __version__ = "0.08"
     __status__  = "testing"

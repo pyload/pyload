@@ -9,13 +9,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class BitshareCom(SimpleHoster):
-    __name      = "BitshareCom"
+    __name__    = "BitshareCom"
     __type__    = "hoster"
     __version__ = "0.56"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/)?(?(1)|\?f=)(?P<ID>\w+)(?(1)/(?P<NAME>.+?)\.html)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Bitshare.com hoster plugin"""
     __license__     = "GPLv3"
@@ -42,7 +43,7 @@ class BitshareCom(SimpleHoster):
             self.account.relogin()
 
         #: File id
-        m = re.match(self.__pattern, pyfile.url)
+        m = re.match(self.__pattern__, pyfile.url)
         self.file_id = max(m.group('ID1'), m.group('ID2'))
         self.log_debug("File id is [%s]" % self.file_id)
 
@@ -60,7 +61,7 @@ class BitshareCom(SimpleHoster):
             self.retry()
 
         #: File name
-        m     = re.match(self.__pattern, pyfile.url)
+        m     = re.match(self.__pattern__, pyfile.url)
         name1 = m.group('NAME') if m else None
 
         m     = re.search(self.INFO_PATTERN, self.html)

@@ -6,7 +6,7 @@ from module.plugins.internal.Account import Account
 
 
 class ZeveraCom(Account):
-    __name      = "ZeveraCom"
+    __name__    = "ZeveraCom"
     __type__    = "account"
     __version__ = "0.30"
     __status__  = "testing"

@@ -31,12 +31,13 @@ def get_info(urls):
 
 
 class FilesMailRu(Hoster):
-    __name      = "FilesMailRu"
+    __name__    = "FilesMailRu"
     __type__    = "hoster"
     __version__ = "0.35"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?files\.mail\.ru/.+'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Files.mail.ru hoster plugin"""
     __license__     = "GPLv3"

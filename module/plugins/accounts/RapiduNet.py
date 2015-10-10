@@ -8,7 +8,7 @@ from module.common.json_layer import json_loads
 
 
 class RapiduNet(Account):
-    __name      = "RapiduNet"
+    __name__    = "RapiduNet"
     __type__    = "account"
     __version__ = "0.09"
     __status__  = "testing"

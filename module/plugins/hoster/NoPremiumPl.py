@@ -5,13 +5,14 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class NoPremiumPl(MultiHoster):
-    __name      = "NoPremiumPl"
+    __name__    = "NoPremiumPl"
     __type__    = "hoster"
     __version__ = "0.05"
     __status__  = "testing"
 
     __pattern__ = r'https?://direct\.nopremium\.pl.+'
-    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium" , "bool", "Use premium account if available"    , True),
                    ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """NoPremium.pl multi-hoster plugin"""

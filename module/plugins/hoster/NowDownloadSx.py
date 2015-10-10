@@ -6,13 +6,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class NowDownloadSx(SimpleHoster):
-    __name      = "NowDownloadSx"
+    __name__    = "NowDownloadSx"
     __type__    = "hoster"
     __version__ = "0.11"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(nowdownload\.[a-zA-Z]{2,}/(dl/|download\.php.+?id=|mobile/(#/files/|.+?id=))|likeupload\.org/)\w+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """NowDownload.sx hoster plugin"""
     __license__     = "GPLv3"

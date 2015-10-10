@@ -12,13 +12,14 @@ from module.utils import save_join as fs_join
 
 
 class RelinkUs(Crypter):
-    __name      = "RelinkUs"
+    __name__    = "RelinkUs"
     __type__    = "crypter"
     __version__ = "3.14"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?relink\.us/(f/|((view|go)\.php\?id=))(?P<ID>.+)'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Relink.us decrypter plugin"""
@@ -100,7 +101,7 @@ class RelinkUs(Crypter):
 
 
     def init_package(self, pyfile):
-        self.fileid = re.match(self.__pattern, pyfile.url).group('ID')
+        self.fileid = re.match(self.__pattern__, pyfile.url).group('ID')
         self.package = pyfile.package()
 
 

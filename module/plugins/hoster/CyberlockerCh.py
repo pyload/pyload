@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class CyberlockerCh(DeadHoster):
-    __name      = "CyberlockerCh"
+    __name__    = "CyberlockerCh"
     __type__    = "hoster"
     __version__ = "0.03"
     __status__  = "testing"

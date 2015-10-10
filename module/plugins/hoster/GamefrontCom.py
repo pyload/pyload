@@ -4,12 +4,13 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class GamefrontCom(SimpleHoster):
-    __name      = "GamefrontCom"
+    __name__    = "GamefrontCom"
     __type__    = "hoster"
     __version__ = "0.09"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?gamefront\.com/files/(?P<ID>\d+)'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Gamefront.com hoster plugin"""
     __license__     = "GPLv3"

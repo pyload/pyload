@@ -8,13 +8,14 @@ from module.plugins.internal.Crypter import Crypter
 
 
 class HoerbuchIn(Crypter):
-    __name      = "HoerbuchIn"
+    __name__    = "HoerbuchIn"
     __type__    = "crypter"
     __version__ = "0.62"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?hoerbuch\.in/(wp/horbucher/\d+/.+/|tp/out\.php\?.+|protection/folder_\d+\.html)'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Hoerbuch.in decrypter plugin"""

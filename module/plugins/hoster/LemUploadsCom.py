@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class LemUploadsCom(DeadHoster):
-    __name      = "LemUploadsCom"
+    __name__    = "LemUploadsCom"
     __type__    = "hoster"
     __version__ = "0.03"
     __status__  = "testing"

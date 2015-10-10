@@ -21,7 +21,7 @@ def renice(pid, value):
 
 
 class UnRar(Extractor):
-    __name      = "UnRar"
+    __name__    = "UnRar"
     __version__ = "1.27"
     __status__  = "testing"
 
@@ -56,7 +56,7 @@ class UnRar(Extractor):
 
             p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = p.communicate()
-            # cls.__name = "RAR"
+            # cls.__name__ = "RAR"
             cls.REPAIR = True
 
         except OSError:

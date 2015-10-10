@@ -7,12 +7,13 @@ import re
 
 
 class ShSt(Crypter):
-    __name      = "ShSt"
+    __name__    = "ShSt"
     __type__    = "crypter"
     __version__ = "0.05"
     __status__  = "testing"
 
     __pattern__ = r'http://sh\.st/\w+'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Sh.St decrypter plugin"""
     __license__     = "GPLv3"

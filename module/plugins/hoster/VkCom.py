@@ -9,13 +9,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class VkCom(SimpleHoster):
-    __name      = "VkCom"
+    __name__    = "VkCom"
     __type__    = "hoster"
     __version__ = "0.02"
     __status__  = "testing"
 
     __pattern__ = r"https?://(?:www\.)?vk\.com/video_ext\.php/\?.+"
-    __config__  = [("quality", "Low;High;Auto", "Quality", "Auto")]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("quality", "Low;High;Auto", "Quality", "Auto")]
 
     __description__ = """Vk.com hoster plugin"""
     __license__     = "GPLv3"

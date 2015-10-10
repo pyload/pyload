@@ -8,13 +8,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FilecloudIo(SimpleHoster):
-    __name      = "FilecloudIo"
+    __name__    = "FilecloudIo"
     __type__    = "hoster"
     __version__ = "0.11"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(?:filecloud\.io|ifile\.it|mihd\.net)/(?P<ID>\w+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Filecloud.io hoster plugin"""
     __license__     = "GPLv3"

@@ -6,7 +6,7 @@ from module.plugins.internal.Plugin import set_cookie
 
 
 class FilecloudIo(Account):
-    __name      = "FilecloudIo"
+    __name__    = "FilecloudIo"
     __type__    = "account"
     __version__ = "0.09"
     __status__  = "testing"

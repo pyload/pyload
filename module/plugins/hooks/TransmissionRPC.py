@@ -12,7 +12,7 @@ from module.plugins.internal.Addon import Addon
 
 
 class TransmissionRPC(Addon):
-    __name      = "TransmissionRPC"
+    __name__    = "TransmissionRPC"
     __type__    = "hook"
     __version__ = "0.12"
     __status__  = "testing"
@@ -31,7 +31,7 @@ class TransmissionRPC(Addon):
 
 
     def links_added(self, links, pid):
-        pattern = re.compile(self.__pattern)
+        pattern = re.compile(self.__pattern__)
         urls = [link for link in links if pattern.match(link)]
 
         for url in urls:
@@ -42,7 +42,7 @@ class TransmissionRPC(Addon):
 
     def send_to_transmission(self, url):
         transmission_rpc_url = self.get_config('rpc_url')
-        client_request_id = self.__name__ + "".join(random.choice('0123456789ABCDEF') for _i in xrange(4))
+        client_request_id = self.classname + "".join(random.choice('0123456789ABCDEF') for _i in xrange(4))
         req = get_request()
 
         try:

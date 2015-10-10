@@ -5,12 +5,13 @@ from module.common.json_layer import json_loads
 
 
 class GooGl(SimpleCrypter):
-    __name      = "GooGl"
+    __name__    = "GooGl"
     __type__    = "crypter"
     __version__ = "0.04"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?goo\.gl/([a-zA-Z]+/)?\w+'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Goo.gl decrypter plugin"""
     __license__     = "GPLv3"

@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class FileApeCom(DeadHoster):
-    __name      = "FileApeCom"
+    __name__    = "FileApeCom"
     __type__    = "hoster"
     __version__ = "0.13"
     __status__  = "testing"

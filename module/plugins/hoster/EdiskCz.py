@@ -6,13 +6,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class EdiskCz(SimpleHoster):
-    __name      = "EdiskCz"
+    __name__    = "EdiskCz"
     __type__    = "hoster"
     __version__ = "0.24"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?edisk\.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Edisk.cz hoster plugin"""
     __license__     = "GPLv3"

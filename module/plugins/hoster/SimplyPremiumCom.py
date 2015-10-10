@@ -7,13 +7,14 @@ from module.plugins.internal.SimpleHoster import seconds_to_midnight
 
 
 class SimplyPremiumCom(MultiHoster):
-    __name      = "SimplyPremiumCom"
+    __name__    = "SimplyPremiumCom"
     __type__    = "hoster"
     __version__ = "0.12"
     __status__  = "testing"
 
     __pattern__ = r'https?://.+simply-premium\.com'
-    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium" , "bool", "Use premium account if available"    , True),
                    ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Simply-Premium.com multi-hoster plugin"""

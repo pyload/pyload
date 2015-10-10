@@ -4,7 +4,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class RarefileNet(XFSAccount):
-    __name      = "RarefileNet"
+    __name__    = "RarefileNet"
     __type__    = "account"
     __version__ = "0.06"
     __status__  = "testing"

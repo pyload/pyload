@@ -7,13 +7,14 @@ from module.common.json_layer import json_loads
 
 
 class RPNetBiz(MultiHoster):
-    __name      = "RPNetBiz"
+    __name__    = "RPNetBiz"
     __type__    = "hoster"
     __version__ = "0.17"
     __status__  = "testing"
 
     __pattern__ = r'https?://.+rpnet\.biz'
-    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium" , "bool", "Use premium account if available"    , True),
                    ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """RPNet.biz multi-hoster plugin"""

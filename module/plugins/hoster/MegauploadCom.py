@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class MegauploadCom(DeadHoster):
-    __name      = "MegauploadCom"
+    __name__    = "MegauploadCom"
     __type__    = "hoster"
     __version__ = "0.32"
     __status__  = "testing"

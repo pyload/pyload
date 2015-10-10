@@ -6,20 +6,21 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class NowVideoSx(SimpleHoster):
-    __name      = "NowVideoSx"
+    __name__    = "NowVideoSx"
     __type__    = "hoster"
     __version__ = "0.13"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?nowvideo\.[a-zA-Z]{2,}/(video/|mobile/(#/videos/|.+?id=))(?P<ID>\w+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """NowVideo.sx hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    URL_REPLACEMENTS = [(__pattern + ".*", r'http://www.nowvideo.sx/video/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r'http://www.nowvideo.sx/video/\g<ID>')]
 
     NAME_PATTERN = r'<h4>(?P<N>.+?)<'
     OFFLINE_PATTERN = r'>This file no longer exists'

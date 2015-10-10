@@ -7,7 +7,7 @@ from module.plugins.internal.Account import Account
 
 
 class NowVideoSx(Account):
-    __name      = "NowVideoSx"
+    __name__    = "NowVideoSx"
     __type__    = "account"
     __version__ = "0.07"
     __status__  = "testing"

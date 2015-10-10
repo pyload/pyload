@@ -6,13 +6,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FourSharedCom(SimpleHoster):
-    __name      = "4shared"
+    __name__    = "FourSharedCom"
     __type__    = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?4shared(-china)?\.com/(account/)?(download|get|file|document|photo|video|audio|mp3|office|rar|zip|archive|music)/.+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """4Shared.com hoster plugin"""
     __license__     = "GPLv3"

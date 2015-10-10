@@ -7,7 +7,7 @@ from module.plugins.internal.Account import Account
 
 
 class HellshareCz(Account):
-    __name      = "HellshareCz"
+    __name__    = "HellshareCz"
     __type__    = "account"
     __version__ = "0.22"
     __status__  = "testing"

@@ -7,12 +7,13 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FiledropperCom(SimpleHoster):
-    __name      = "FiledropperCom"
+    __name__    = "FiledropperCom"
     __type__    = "hoster"
     __version__ = "0.02"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filedropper\.com/\w+'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Filedropper.com hoster plugin"""
     __license__     = "GPLv3"

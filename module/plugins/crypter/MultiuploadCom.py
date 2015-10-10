@@ -4,7 +4,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class MultiuploadCom(DeadCrypter):
-    __name      = "MultiuploadCom"
+    __name__    = "MultiuploadCom"
     __type__    = "crypter"
     __version__ = "0.03"
     __status__  = "testing"

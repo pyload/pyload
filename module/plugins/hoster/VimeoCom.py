@@ -6,13 +6,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class VimeoCom(SimpleHoster):
-    __name      = "VimeoCom"
+    __name__    = "VimeoCom"
     __type__    = "hoster"
     __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(player\.)?vimeo\.com/(video/)?(?P<ID>\d+)'
-    __config__  = [("use_premium", "bool"                       , "Use premium account if available" , True     ),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool"                       , "Use premium account if available" , True     ),
                    ("quality"    , "Lowest;Mobile;SD;HD;Highest", "Quality"                          , "Highest"),
                    ("original"   , "bool"                       , "Try to download the original file", True     )]
 
@@ -25,7 +26,7 @@ class VimeoCom(SimpleHoster):
     OFFLINE_PATTERN      = r'class="exception_header"'
     TEMP_OFFLINE_PATTERN = r'Please try again in a few minutes.<'
 
-    URL_REPLACEMENTS = [(__pattern + ".*", r'https://www.vimeo.com/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r'https://www.vimeo.com/\g<ID>')]
 
     COOKIES = [("vimeo.com", "language", "en")]
 

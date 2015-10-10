@@ -8,7 +8,7 @@ from module.plugins.internal.Plugin import set_cookies
 
 
 class UploadingCom(Account):
-    __name      = "UploadingCom"
+    __name__    = "UploadingCom"
     __type__    = "account"
     __version__ = "0.16"
     __status__  = "testing"

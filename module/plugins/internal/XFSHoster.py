@@ -11,13 +11,14 @@ from module.utils import html_unescape
 
 
 class XFSHoster(SimpleHoster):
-    __name      = "XFSHoster"
+    __name__    = "XFSHoster"
     __type__    = "hoster"
     __version__ = "0.65"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_premium"     , "bool", "Use premium account if available"          , True),
+    __config__  = [("activated"       , "bool", "Activated"                                 , True),
+                   ("use_premium"     , "bool", "Use premium account if available"          , True),
                    ("fallback_premium", "bool", "Fallback to free download if premium fails", True),
                    ("chk_filesize"    , "bool", "Check file size"                           , True)]
 
@@ -80,7 +81,7 @@ class XFSHoster(SimpleHoster):
             if self.account:
                 account = self.account
             else:
-                account = self.pyload.accountManager.getAccountPlugin(self.__name__)
+                account = self.pyload.accountManager.getAccountPlugin(self.classname)
 
             if account and hasattr(account, "PLUGIN_DOMAIN") and account.PLUGIN_DOMAIN:
                 self.PLUGIN_DOMAIN = account.PLUGIN_DOMAIN

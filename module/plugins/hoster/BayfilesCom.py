@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class BayfilesCom(DeadHoster):
-    __name      = "BayfilesCom"
+    __name__    = "BayfilesCom"
     __type__    = "hoster"
     __version__ = "0.10"
     __status__  = "testing"

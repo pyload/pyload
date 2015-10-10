@@ -7,12 +7,13 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class SolidfilesCom(SimpleHoster):
-    __name      = "SolidfilesCom"
+    __name__    = "SolidfilesCom"
     __type__    = "hoster"
     __version__ = "0.03"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?solidfiles\.com\/d/\w+'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Solidfiles.com hoster plugin"""
     __license__     = "GPLv3"

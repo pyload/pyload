@@ -6,13 +6,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class MediafireCom(SimpleHoster):
-    __name      = "MediafireCom"
+    __name__    = "MediafireCom"
     __type__    = "hoster"
     __version__ = "0.91"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)(?P<ID>\w+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Mediafire.com hoster plugin"""
     __license__     = "GPLv3"

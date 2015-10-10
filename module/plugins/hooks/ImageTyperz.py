@@ -30,7 +30,7 @@ class ImageTyperzException(Exception):
 
 
 class ImageTyperz(Addon):
-    __name      = "ImageTyperz"
+    __name__    = "ImageTyperz"
     __type__    = "hook"
     __version__ = "0.08"
     __status__  = "testing"
@@ -122,7 +122,7 @@ class ImageTyperz(Addon):
 
         if self.get_credits() > 0:
             task.handler.append(self)
-            task.data['service'] = self.__name__
+            task.data['service'] = self.classname
             task.setWaiting(100)
             self._process_captcha(task)
 
@@ -131,7 +131,7 @@ class ImageTyperz(Addon):
 
 
     def captcha_invalid(self, task):
-        if task.data['service'] is self.__name__ and "ticket" in task.data:
+        if task.data['service'] is self.classname and "ticket" in task.data:
             res = self.load(self.RESPOND_URL,
                          post={'action': "SETBADIMAGE",
                                'username': self.get_config('username'),

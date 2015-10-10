@@ -9,13 +9,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class GooIm(SimpleHoster):
-    __name      = "GooIm"
+    __name__    = "GooIm"
     __type__    = "hoster"
     __version__ = "0.05"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?goo\.im/.+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Goo.im hoster plugin"""
     __license__     = "GPLv3"

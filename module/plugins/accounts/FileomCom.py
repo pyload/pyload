@@ -4,7 +4,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class FileomCom(XFSAccount):
-    __name      = "FileomCom"
+    __name__    = "FileomCom"
     __type__    = "account"
     __version__ = "0.04"
     __status__  = "testing"

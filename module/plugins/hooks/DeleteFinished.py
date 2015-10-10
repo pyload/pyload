@@ -5,7 +5,7 @@ from module.plugins.internal.Addon import Addon
 
 
 class DeleteFinished(Addon):
-    __name      = "DeleteFinished"
+    __name__    = "DeleteFinished"
     __type__    = "hook"
     __version__ = "1.16"
     __status__  = "testing"

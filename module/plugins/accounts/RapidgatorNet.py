@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 
 
 class RapidgatorNet(Account):
-    __name      = "RapidgatorNet"
+    __name__    = "RapidgatorNet"
     __type__    = "account"
     __version__ = "0.15"
     __status__  = "testing"

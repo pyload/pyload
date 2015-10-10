@@ -4,7 +4,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class HugefilesNet(XFSAccount):
-    __name      = "HugefilesNet"
+    __name__    = "HugefilesNet"
     __type__    = "account"
     __version__ = "0.04"
     __status__  = "testing"

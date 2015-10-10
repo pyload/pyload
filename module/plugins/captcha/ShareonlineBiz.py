@@ -4,7 +4,7 @@ from module.plugins.internal.OCR import OCR
 
 
 class ShareonlineBiz(OCR):
-    __name      = "ShareonlineBiz"
+    __name__    = "ShareonlineBiz"
     __type__    = "ocr"
     __version__ = "0.14"
     __status__  = "testing"

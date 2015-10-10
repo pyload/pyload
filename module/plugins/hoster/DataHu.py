@@ -9,13 +9,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DataHu(SimpleHoster):
-    __name      = "DataHu"
+    __name__    = "DataHu"
     __type__    = "hoster"
     __version__ = "0.04"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?data\.hu/get/\w+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Data.hu hoster plugin"""
     __license__     = "GPLv3"

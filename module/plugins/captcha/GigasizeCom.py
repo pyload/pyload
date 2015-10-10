@@ -4,7 +4,7 @@ from module.plugins.internal.OCR import OCR
 
 
 class GigasizeCom(OCR):
-    __name      = "GigasizeCom"
+    __name__    = "GigasizeCom"
     __type__    = "ocr"
     __version__ = "0.14"
     __status__  = "testing"

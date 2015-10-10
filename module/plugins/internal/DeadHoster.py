@@ -4,12 +4,13 @@ from module.plugins.internal.Hoster import Hoster, create_getInfo
 
 
 class DeadHoster(Hoster):
-    __name      = "DeadHoster"
+    __name__    = "DeadHoster"
     __type__    = "hoster"
     __version__ = "0.19"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Hoster is no longer available"""
     __license__     = "GPLv3"

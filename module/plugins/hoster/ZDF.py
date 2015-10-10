@@ -8,12 +8,13 @@ from module.plugins.internal.Hoster import Hoster
 
 # Based on zdfm by Roland Beermann (http://github.com/enkore/zdfm/)
 class ZDF(Hoster):
-    __name      = "ZDF Mediathek"
+    __name__    = "ZDF Mediathek"
     __type__    = "hoster"
     __version__ = "0.84"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?zdf\.de/ZDFmediathek/\D*(\d+)\D*'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """ZDF.de hoster plugin"""
     __license__     = "GPLv3"

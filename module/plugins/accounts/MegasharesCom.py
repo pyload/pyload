@@ -7,7 +7,7 @@ from module.plugins.internal.Account import Account
 
 
 class MegasharesCom(Account):
-    __name      = "MegasharesCom"
+    __name__    = "MegasharesCom"
     __type__    = "account"
     __version__ = "0.07"
     __status__  = "testing"

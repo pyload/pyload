@@ -7,13 +7,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class FlyFilesNet(SimpleHoster):
-    __name      = "FlyFilesNet"
+    __name__    = "FlyFilesNet"
     __type__    = "hoster"
     __version__ = "0.11"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?flyfiles\.net/.+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """FlyFiles.net hoster plugin"""
     __license__     = "GPLv3"

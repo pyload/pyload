@@ -11,12 +11,13 @@ from module.utils import save_join as fs_join
 
 
 class Container(Crypter):
-    __name      = "Container"
+    __name__    = "Container"
     __type__    = "container"
     __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Base container decrypter plugin"""
     __license__     = "GPLv3"

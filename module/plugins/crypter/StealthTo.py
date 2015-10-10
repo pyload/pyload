@@ -4,7 +4,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class StealthTo(DeadCrypter):
-    __name      = "StealthTo"
+    __name__    = "StealthTo"
     __type__    = "crypter"
     __version__ = "0.21"
     __status__  = "testing"

@@ -7,12 +7,13 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class UpleaCom(XFSHoster):
-    __name      = "UpleaCom"
+    __name__    = "UpleaCom"
     __type__    = "hoster"
     __version__ = "0.13"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?uplea\.com/dl/\w{15}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Uplea.com hoster plugin"""
     __license__     = "GPLv3"

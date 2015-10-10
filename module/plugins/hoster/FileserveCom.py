@@ -4,11 +4,10 @@ import re
 
 from module.common.json_layer import json_loads
 from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.Plugin import chunks
 from module.plugins.captcha.ReCaptcha import ReCaptcha
+from module.plugins.internal.Hoster import Hoster
+from module.plugins.internal.Plugin import chunks, parse_size
 from module.plugins.internal.SimpleHoster import seconds_to_midnight
-from module.utils import parseFileSize as parse_size
 
 
 def check_file(plugin, urls):
@@ -32,12 +31,13 @@ def check_file(plugin, urls):
 
 
 class FileserveCom(Hoster):
-    __name      = "FileserveCom"
+    __name__    = "FileserveCom"
     __type__    = "hoster"
     __version__ = "0.62"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<ID>[^/]+)'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Fileserve.com hoster plugin"""
     __license__     = "GPLv3"
@@ -63,7 +63,7 @@ class FileserveCom(Hoster):
 
     def setup(self):
         self.resume_download = self.multiDL = self.premium
-        self.file_id = re.match(self.__pattern, self.pyfile.url).group('ID')
+        self.file_id = re.match(self.__pattern__, self.pyfile.url).group('ID')
         self.url     = "%s%s" % (self.URLS[0], self.file_id)
 
         self.log_debug("File ID: %s URL: %s" % (self.file_id, self.url))
@@ -146,7 +146,7 @@ class FileserveCom(Hoster):
         if "fail" in res:
             self.fail(_("Failed getting wait time"))
 
-        if self.__name == "FilejungleCom":
+        if self.__name__ == "FilejungleCom":
             m = re.search(r'"waitTime":(\d+)', res)
             if m is None:
                 self.fail(_("Cannot get wait time"))
@@ -180,7 +180,7 @@ class FileserveCom(Hoster):
 
     def handle_premium(self):
         premium_url = None
-        if self.__name == "FileserveCom":
+        if self.__name__ == "FileserveCom":
             #: Try api download
             res = self.load("http://app.fileserve.com/api/download/premium/",
                             post={'username': self.account.user,

@@ -7,7 +7,7 @@ from module.plugins.internal.Addon import Addon
 
 
 class DownloadScheduler(Addon):
-    __name      = "DownloadScheduler"
+    __name__    = "DownloadScheduler"
     __type__    = "hook"
     __version__ = "0.24"
     __status__  = "testing"

@@ -8,13 +8,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class CrockoCom(SimpleHoster):
-    __name      = "CrockoCom"
+    __name__    = "CrockoCom"
     __type__    = "hoster"
     __version__ = "0.22"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(crocko|easy-share)\.com/\w+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Crocko hoster plugin"""
     __license__     = "GPLv3"

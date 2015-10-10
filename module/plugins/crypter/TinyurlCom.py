@@ -4,12 +4,13 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class TinyurlCom(SimpleCrypter):
-    __name      = "TinyurlCom"
+    __name__    = "TinyurlCom"
     __type__    = "crypter"
     __version__ = "0.03"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(preview\.)?tinyurl\.com/[\w\-]+'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Tinyurl.com decrypter plugin"""
     __license__     = "GPLv3"

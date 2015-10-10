@@ -4,7 +4,7 @@ from module.plugins.internal.Addon import Addon
 
 
 class RestartFailed(Addon):
-    __name      = "RestartFailed"
+    __name__    = "RestartFailed"
     __type__    = "hook"
     __version__ = "1.62"
     __status__  = "testing"

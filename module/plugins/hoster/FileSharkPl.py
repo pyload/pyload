@@ -7,13 +7,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FileSharkPl(SimpleHoster):
-    __name      = "FileSharkPl"
+    __name__    = "FileSharkPl"
     __type__    = "hoster"
     __version__ = "0.15"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fileshark\.pl/pobierz/\d+/\w+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """FileShark.pl hoster plugin"""
     __license__     = "GPLv3"

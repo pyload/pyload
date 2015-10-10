@@ -13,7 +13,7 @@ from module.plugins.internal.OCR import OCR
 
 
 class LinksaveIn(OCR):
-    __name      = "LinksaveIn"
+    __name__    = "LinksaveIn"
     __type__    = "ocr"
     __version__ = "0.14"
     __status__  = "testing"

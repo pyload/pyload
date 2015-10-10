@@ -11,7 +11,7 @@ def get_info(urls):
         h = get_url(url, just_header=True)
         m = re.search(r'Location: (.+)\r\n', h)
 
-        if m and not re.match(m.group(1), FilefactoryCom.__pattern):  #: It's a direct link! Skipping
+        if m and not re.match(m.group(1), FilefactoryCom.__pattern__):  #: It's a direct link! Skipping
             yield (url, 0, 3, url)
         else:
             #: It's a standard html page
@@ -19,13 +19,14 @@ def get_info(urls):
 
 
 class FilefactoryCom(SimpleHoster):
-    __name      = "FilefactoryCom"
+    __name__    = "FilefactoryCom"
     __type__    = "hoster"
     __version__ = "0.59"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/(file|trafficshare/\w+)/\w+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Filefactory.com hoster plugin"""
     __license__     = "GPLv3"

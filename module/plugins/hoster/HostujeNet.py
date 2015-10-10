@@ -6,12 +6,13 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class HostujeNet(SimpleHoster):
-    __name      = "HostujeNet"
+    __name__    = "HostujeNet"
     __type__    = "hoster"
     __version__ = "0.02"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?hostuje\.net/\w+'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Hostuje.net hoster plugin"""
     __license__     = "GPLv3"

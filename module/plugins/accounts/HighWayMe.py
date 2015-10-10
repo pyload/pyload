@@ -5,7 +5,7 @@ from module.plugins.internal.Account import Account
 
 
 class HighWayMe(Account):
-    __name      = "HighWayMe.py"
+    __name__    = "HighWayMe.py"
     __type__    = "account"
     __version__ = "0.06"
     __status__  = "testing"

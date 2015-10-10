@@ -13,7 +13,7 @@ from module.plugins.internal.Addon import Addon, threaded
 
 
 class ExpertDecoders(Addon):
-    __name      = "ExpertDecoders"
+    __name__    = "ExpertDecoders"
     __type__    = "hook"
     __version__ = "0.06"
     __status__  = "testing"

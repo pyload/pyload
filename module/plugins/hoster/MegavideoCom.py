@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class MegavideoCom(DeadHoster):
-    __name      = "MegavideoCom"
+    __name__    = "MegavideoCom"
     __type__    = "hoster"
     __version__ = "0.22"
     __status__  = "testing"

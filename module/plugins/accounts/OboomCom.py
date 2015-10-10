@@ -21,7 +21,7 @@ from module.plugins.internal.Account import Account
 
 
 class OboomCom(Account):
-    __name      = "OboomCom"
+    __name__    = "OboomCom"
     __type__    = "account"
     __version__ = "0.29"
     __status__  = "testing"

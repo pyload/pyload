@@ -7,7 +7,7 @@ from module.plugins.internal.Account import Account
 
 
 class MyfastfileCom(Account):
-    __name      = "MyfastfileCom"
+    __name__    = "MyfastfileCom"
     __type__    = "account"
     __version__ = "0.08"
     __status__  = "testing"

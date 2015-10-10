@@ -4,7 +4,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class NetfolderIn(DeadCrypter):
-    __name      = "NetfolderIn"
+    __name__    = "NetfolderIn"
     __type__    = "crypter"
     __version__ = "0.74"
     __status__  = "testing"

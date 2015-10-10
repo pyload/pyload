@@ -9,12 +9,13 @@ from module.plugins.internal.Hoster import Hoster
 
 
 class Ftp(Hoster):
-    __name      = "Ftp"
+    __name__    = "Ftp"
     __type__    = "hoster"
     __version__ = "0.55"
     __status__  = "testing"
 
     __pattern__ = r'(?:ftps?|sftp)://([\w\-.]+(:[\w\-.]+)?@)?[\w\-.]+(:\d+)?/.+'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Download from ftp directory"""
     __license__     = "GPLv3"

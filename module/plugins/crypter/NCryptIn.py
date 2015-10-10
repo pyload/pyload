@@ -10,13 +10,14 @@ from module.plugins.captcha.ReCaptcha import ReCaptcha
 
 
 class NCryptIn(Crypter):
-    __name      = "NCryptIn"
+    __name__    = "NCryptIn"
     __type__    = "crypter"
     __version__ = "1.37"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?ncrypt\.in/(?P<TYPE>folder|link|frame)-([^/\?]+)'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """NCrypt.in decrypter plugin"""
@@ -80,7 +81,7 @@ class NCryptIn(Crypter):
 
 
     def is_single_link(self):
-        link_type = re.match(self.__pattern, self.pyfile.url).group('TYPE')
+        link_type = re.match(self.__pattern__, self.pyfile.url).group('TYPE')
         return link_type in ("link", "frame")
 
 

@@ -7,13 +7,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UploadableCh(SimpleHoster):
-    __name      = "UploadableCh"
+    __name__    = "UploadableCh"
     __type__    = "hoster"
     __version__ = "0.13"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?uploadable\.ch/file/(?P<ID>\w+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Uploadable.ch hoster plugin"""
     __license__     = "GPLv3"
@@ -21,7 +22,7 @@ class UploadableCh(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    URL_REPLACEMENTS = [(__pattern + ".*", r'http://www.uploadable.ch/file/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r'http://www.uploadable.ch/file/\g<ID>')]
 
     INFO_PATTERN = r'div id=\"file_name\" title=.*>(?P<N>.+)<span class=\"filename_normal\">\((?P<S>[\d.]+) (?P<U>\w+)\)</span><'
 

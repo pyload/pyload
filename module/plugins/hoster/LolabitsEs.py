@@ -7,12 +7,13 @@ from module.utils import html_unescape
 
 
 class LolabitsEs(SimpleHoster):
-    __name      = "LolabitsEs"
+    __name__    = "LolabitsEs"
     __type__    = "hoster"
     __version__ = "0.03"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?lolabits\.es/.+'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Lolabits.es hoster plugin"""
     __license__     = "GPLv3"

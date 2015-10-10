@@ -21,8 +21,7 @@ def threaded(fn):
 
 
 class Addon(Plugin):
-    __name      = "Addon"
-    __type      = "addon"
+    __name__    = "Addon"
     __type__    = "hook"  #@TODO: Change to `addon` in 0.4.10
     __version__ = "0.13"
     __status__  = "testing"

@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class LomafileCom(DeadHoster):
-    __name      = "LomafileCom"
+    __name__    = "LomafileCom"
     __type__    = "hoster"
     __version__ = "0.53"
     __status__  = "testing"

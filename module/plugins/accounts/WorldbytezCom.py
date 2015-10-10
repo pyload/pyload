@@ -4,7 +4,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class WorldbytezCom(XFSAccount):
-    __name      = "WorldbytezCom"
+    __name__    = "WorldbytezCom"
     __type__    = "account"
     __version__ = "0.03"
     __status__  = "testing"

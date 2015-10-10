@@ -4,13 +4,14 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class TNTVillageScambioeticoOrg(SimpleCrypter):
-    __name      = "TNTVillageScambioeticoOrg"
+    __name__    = "TNTVillageScambioeticoOrg"
     __type__    = "crypter"
     __version__ = "0.03"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?forum\.tntvillage\.scambioetico\.org/index\.php\?.*showtopic=\d+'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """TNTVillage.scambioetico.org decrypter plugin"""

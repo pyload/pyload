@@ -4,7 +4,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class MovReelCom(XFSAccount):
-    __name      = "MovReelCom"
+    __name__    = "MovReelCom"
     __type__    = "account"
     __version__ = "0.05"
     __status__  = "testing"

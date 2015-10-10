@@ -7,7 +7,7 @@ from module.plugins.internal.Account import Account
 
 
 class DebridItaliaCom(Account):
-    __name      = "DebridItaliaCom"
+    __name__    = "DebridItaliaCom"
     __type__    = "account"
     __version__ = "0.17"
     __status__  = "testing"

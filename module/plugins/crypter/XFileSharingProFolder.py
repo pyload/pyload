@@ -6,13 +6,14 @@ from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
 
 
 class XFileSharingProFolder(XFSCrypter):
-    __name      = "XFileSharingPro"
+    __name__    = "XFileSharingPro"
     __type__    = "crypter"
     __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:user|folder)s?/\w+'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """XFileSharingPro dummy folder decrypter plugin for hook"""
@@ -30,14 +31,14 @@ class XFileSharingProFolder(XFSCrypter):
     def init(self):
         super(XFileSharingProFolder, self).init()
 
-        self.__pattern = self.pyload.pluginManager.crypterPlugins[self.__name__]['pattern']
+        self.__pattern__ = self.pyload.pluginManager.crypterPlugins[self.classname]['pattern']
 
-        self.PLUGIN_DOMAIN = re.match(self.__pattern, self.pyfile.url).group("DOMAIN").lower()
+        self.PLUGIN_DOMAIN = re.match(self.__pattern__, self.pyfile.url).group("DOMAIN").lower()
         self.PLUGIN_NAME   = "".join(part.capitalize() for part in re.split(r'(\.|\d+|-)', self.PLUGIN_DOMAIN) if part != '.')
 
 
     def _setup(self):
-        account_name     = self.__name__ if self.account.PLUGIN_DOMAIN is None else self.PLUGIN_NAME
+        account_name     = self.classname if self.account.PLUGIN_DOMAIN is None else self.PLUGIN_NAME
         self.chunk_limit = 1
         self.multiDL     = True
 
@@ -59,7 +60,7 @@ class XFileSharingProFolder(XFSCrypter):
             self.account = self.pyload.accountManager.getAccountPlugin(self.PLUGIN_NAME)
 
         if not self.account:
-            self.account = self.pyload.accountManager.getAccountPlugin(self.__name__)
+            self.account = self.pyload.accountManager.getAccountPlugin(self.classname)
 
         if self.account:
             if not self.account.PLUGIN_DOMAIN:

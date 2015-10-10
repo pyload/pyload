@@ -256,7 +256,7 @@ class UpdateManager(Addon):
         if blacklist:
             #@NOTE: Protect UpdateManager from self-removing
             type_plugins = [(plugin['type'], plugin['name']) for plugin in blacklist \
-                            if plugin['name'] is not self.__name__ and plugin['type'] is not self.__type__]
+                            if plugin['name'] is not self.classname and plugin['type'] is not self.__type__]
 
             c = 1
             l = len(type_plugins)

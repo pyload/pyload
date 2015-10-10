@@ -8,13 +8,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DepositfilesCom(SimpleHoster):
-    __name      = "DepositfilesCom"
+    __name__    = "DepositfilesCom"
     __type__    = "hoster"
     __version__ = "0.58"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Depositfiles.com hoster plugin"""
     __license__     = "GPLv3"
@@ -29,7 +30,7 @@ class DepositfilesCom(SimpleHoster):
 
     NAME_REPLACEMENTS = [(r'\%u([0-9A-Fa-f]{4})', lambda m: unichr(int(m.group(1), 16))),
                          (r'.*<b title="(?P<N>.+?)".*', "\g<N>")]
-    URL_REPLACEMENTS  = [(__pattern + ".*", "https://dfiles.eu/files/\g<ID>")]
+    URL_REPLACEMENTS  = [(__pattern__ + ".*", "https://dfiles.eu/files/\g<ID>")]
 
     COOKIES = [("dfiles.eu", "lang_current", "en")]
 

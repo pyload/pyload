@@ -11,7 +11,7 @@ from module.utils import fs_encode, save_join as fs_join
 
 
 class HotFolder(Addon):
-    __name      = "HotFolder"
+    __name__    = "HotFolder"
     __type__    = "hook"
     __version__ = "0.19"
     __status__  = "testing"

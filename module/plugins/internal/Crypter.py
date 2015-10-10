@@ -6,13 +6,14 @@ from module.utils import save_path as safe_filename
 
 
 class Crypter(Base):
-    __name      = "Crypter"
+    __name__    = "Crypter"
     __type__    = "crypter"
     __version__ = "0.13"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_premium"          , "bool", "Use premium account if available"   , True),
+    __config__  = [("activated"            , "bool", "Activated"                          , True),
+                   ("use_premium"          , "bool", "Use premium account if available"   , True),
                    ("use_subfolder"        , "bool", "Save package to subfolder"          , True),  #: Overrides pyload.config.get("general", "folder_per_package")
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 

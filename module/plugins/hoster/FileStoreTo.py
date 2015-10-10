@@ -6,13 +6,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FileStoreTo(SimpleHoster):
-    __name      = "FileStoreTo"
+    __name__    = "FileStoreTo"
     __type__    = "hoster"
     __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?filestore\.to/\?d=(?P<ID>\w+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """FileStore.to hoster plugin"""
     __license__     = "GPLv3"

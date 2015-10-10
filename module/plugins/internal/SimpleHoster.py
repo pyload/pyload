@@ -9,18 +9,19 @@ import time
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster, create_getInfo, parse_fileInfo
-from module.plugins.internal.Plugin import Fail, encode, parse_name, parse_time, replace_patterns, seconds_to_midnight, set_cookie, set_cookies
-from module.utils import fixup, fs_encode, parseFileSize as parse_size
+from module.plugins.internal.Plugin import Fail, encode, parse_name, parse_size, parse_time, replace_patterns, seconds_to_midnight, set_cookie, set_cookies
+from module.utils import fixup, fs_encode
 
 
 class SimpleHoster(Hoster):
-    __name      = "SimpleHoster"
+    __name__    = "SimpleHoster"
     __type__    = "hoster"
     __version__ = "1.97"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_premium"     , "bool", "Use premium account if available"          , True),
+    __config__  = [("activated"       , "bool", "Activated"                                 , True),
+                   ("use_premium"     , "bool", "Use premium account if available"          , True),
                    ("fallback_premium", "bool", "Fallback to free download if premium fails", True),
                    ("chk_filesize"    , "bool", "Check file size"                           , True)]
 
@@ -223,8 +224,8 @@ class SimpleHoster(Hoster):
                 self.LINK_PREMIUM_PATTERN = self.LINK_PATTERN
 
         if self.LEECH_HOSTER:
-            pattern = self.pyload.pluginManager.hosterPlugins[self.__name__]['pattern']
-            if self.__pattern is not pattern and re.match(self.__pattern, self.pyfile.url) is None:
+            pattern = self.pyload.pluginManager.hosterPlugins[self.classname]['pattern']
+            if self.__pattern__ is not pattern and re.match(self.__pattern__, self.pyfile.url) is None:
                 self.leech_dl = True
 
         if self.leech_dl:

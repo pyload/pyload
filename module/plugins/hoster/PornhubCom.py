@@ -6,12 +6,13 @@ from module.plugins.internal.Hoster import Hoster
 
 
 class PornhubCom(Hoster):
-    __name      = "PornhubCom"
+    __name__    = "PornhubCom"
     __type__    = "hoster"
     __version__ = "0.52"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?pornhub\.com/view_video\.php\?viewkey=\w+'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Pornhub.com hoster plugin"""
     __license__     = "GPLv3"

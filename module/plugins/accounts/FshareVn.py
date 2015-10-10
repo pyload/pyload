@@ -7,7 +7,7 @@ from module.plugins.internal.Account import Account
 
 
 class FshareVn(Account):
-    __name      = "FshareVn"
+    __name__    = "FshareVn"
     __type__    = "account"
     __version__ = "0.14"
     __status__  = "testing"

@@ -10,12 +10,13 @@ from module.plugins.internal.Hoster import Hoster
 
 
 class BasePlugin(Hoster):
-    __name      = "BasePlugin"
+    __name__    = "BasePlugin"
     __type__    = "hoster"
     __version__ = "0.46"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Base Plugin when any other didnt fit"""
     __license__     = "GPLv3"

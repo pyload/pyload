@@ -4,7 +4,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class SafesharingEu(XFSAccount):
-    __name      = "SafesharingEu"
+    __name__    = "SafesharingEu"
     __type__    = "account"
     __version__ = "0.04"
     __status__  = "testing"

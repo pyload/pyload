@@ -7,7 +7,7 @@ from module.plugins.internal.Account import Account
 
 
 class DepositfilesCom(Account):
-    __name      = "DepositfilesCom"
+    __name__    = "DepositfilesCom"
     __type__    = "account"
     __version__ = "0.36"
     __status__  = "testing"

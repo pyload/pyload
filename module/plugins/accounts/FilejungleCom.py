@@ -8,7 +8,7 @@ from module.plugins.internal.Account import Account
 
 
 class FilejungleCom(Account):
-    __name      = "FilejungleCom"
+    __name__    = "FilejungleCom"
     __type__    = "account"
     __version__ = "0.16"
     __status__  = "testing"

@@ -16,7 +16,7 @@ from module.utils import formatSize
 
 
 class IRCInterface(Thread, Addon):
-    __name      = "IRCInterface"
+    __name__    = "IRCInterface"
     __type__    = "hook"
     __version__ = "0.17"
     __status__  = "testing"

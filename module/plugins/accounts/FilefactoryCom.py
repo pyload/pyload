@@ -8,7 +8,7 @@ from module.plugins.internal.Account import Account
 
 
 class FilefactoryCom(Account):
-    __name      = "FilefactoryCom"
+    __name__    = "FilefactoryCom"
     __type__    = "account"
     __version__ = "0.19"
     __status__  = "testing"

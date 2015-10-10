@@ -49,7 +49,7 @@ class DeathByCaptchaException(Exception):
 
 
 class DeathByCaptcha(Addon):
-    __name      = "DeathByCaptcha"
+    __name__    = "DeathByCaptcha"
     __type__    = "hook"
     __version__ = "0.08"
     __status__  = "testing"
@@ -187,13 +187,13 @@ class DeathByCaptcha(Addon):
 
         if balance > rate:
             task.handler.append(self)
-            task.data['service'] = self.__name__
+            task.data['service'] = self.classname
             task.setWaiting(180)
             self._process_captcha(task)
 
 
     def captcha_invalid(self, task):
-        if task.data['service'] is self.__name__ and "ticket" in task.data:
+        if task.data['service'] is self.classname and "ticket" in task.data:
             try:
                 res = self.api_response("captcha/%d/report" % task.data['ticket'], True)
 

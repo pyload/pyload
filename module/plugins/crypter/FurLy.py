@@ -4,12 +4,13 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class FurLy(SimpleCrypter):
-    __name      = "FurLy"
+    __name__    = "FurLy"
     __type__    = "crypter"
     __version__ = "0.02"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fur\.ly/(\d/)?\w+'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Fur.ly decrypter plugin"""
     __license__     = "GPLv3"

@@ -29,7 +29,7 @@ class ImageSequence:
 
 
 class CircleCaptcha(OCR):
-    __name      = "CircleCaptcha"
+    __name__    = "CircleCaptcha"
     __type__    = "ocr"
     __version__ = "1.04"
     __status__  = "testing"

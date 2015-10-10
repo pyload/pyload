@@ -14,7 +14,7 @@ from module.utils import save_join as fs_join
 
 
 class Xdcc(Hoster):
-    __name      = "Xdcc"
+    __name__    = "Xdcc"
     __type__    = "hoster"
     __version__ = "0.34"
     __status__  = "testing"
@@ -35,7 +35,7 @@ class Xdcc(Hoster):
 
     def process(self, pyfile):
         #: Change request type
-        self.req = self.pyload.requestFactory.getRequest(self.__name__, type="XDCC")
+        self.req = self.pyload.requestFactory.getRequest(self.classname, type="XDCC")
 
         self.pyfile = pyfile
         for _i in xrange(0, 3):

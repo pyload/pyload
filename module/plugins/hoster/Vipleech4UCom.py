@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class Vipleech4UCom(DeadHoster):
-    __name      = "Vipleech4UCom"
+    __name__    = "Vipleech4UCom"
     __type__    = "hoster"
     __version__ = "0.21"
     __status__  = "testing"

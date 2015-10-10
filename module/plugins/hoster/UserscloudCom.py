@@ -6,12 +6,13 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UserscloudCom(SimpleHoster):
-    __name      = "UserscloudCom"
+    __name__    = "UserscloudCom"
     __type__    = "hoster"
     __version__ = "0.01"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?userscloud\.com/\w{12}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Userscloud.com hoster plugin"""
     __license__     = "GPLv3"

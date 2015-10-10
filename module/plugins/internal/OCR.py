@@ -18,7 +18,7 @@ from module.utils import save_join as fs_join
 
 
 class OCR(Plugin):
-    __name      = "OCR"
+    __name__    = "OCR"
     __type__    = "ocr"
     __version__ = "0.20"
     __status__  = "testing"
@@ -44,8 +44,8 @@ class OCR(Plugin):
     def _log(self, level, plugintype, pluginname, messages):
         return self.plugin._log(level,
                                 plugintype,
-                                self.plugin.__name,
-                                (self.__name,) + messages)
+                                self.plugin.__name__,
+                                (self.__name__,) + messages)
 
 
     def load_image(self, image):
@@ -80,11 +80,11 @@ class OCR(Plugin):
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True, pagesegmode=None):
         # tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
         try:
-            tmpTif = open(fs_join("tmp", "tmpTif_%s.tif" % self.__name__), "wb")
+            tmpTif = open(fs_join("tmp", "tmpTif_%s.tif" % self.classname), "wb")
             tmpTif.close()
 
             # tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
-            tmpTxt = open(fs_join("tmp", "tmpTxt_%s.txt" % self.__name__), "wb")
+            tmpTxt = open(fs_join("tmp", "tmpTxt_%s.txt" % self.classname), "wb")
             tmpTxt.close()
 
         except IOError, e:
@@ -106,7 +106,7 @@ class OCR(Plugin):
 
         if subset and (digits or lowercase or uppercase):
             # tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
-            with open(fs_join("tmp", "tmpSub_%s.subset" % self.__name__), "wb") as tmpSub:
+            with open(fs_join("tmp", "tmpSub_%s.subset" % self.classname), "wb") as tmpSub:
                 tmpSub.write("tessedit_char_whitelist ")
 
                 if digits:

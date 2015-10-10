@@ -33,13 +33,14 @@ def get_info(urls):
 
 
 class LetitbitNet(SimpleHoster):
-    __name      = "LetitbitNet"
+    __name__    = "LetitbitNet"
     __type__    = "hoster"
     __version__ = "0.33"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(letitbit|shareflare)\.net/download/.+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Letitbit.net hoster plugin"""
     __license__     = "GPLv3"

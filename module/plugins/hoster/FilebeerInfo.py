@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class FilebeerInfo(DeadHoster):
-    __name      = "FilebeerInfo"
+    __name__    = "FilebeerInfo"
     __type__    = "hoster"
     __version__ = "0.04"
     __status__  = "testing"

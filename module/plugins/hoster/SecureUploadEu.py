@@ -4,12 +4,13 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class SecureUploadEu(XFSHoster):
-    __name      = "SecureUploadEu"
+    __name__    = "SecureUploadEu"
     __type__    = "hoster"
     __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?secureupload\.eu/\w{12}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """SecureUpload.eu hoster plugin"""
     __license__     = "GPLv3"

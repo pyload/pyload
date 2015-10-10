@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class NetloadIn(DeadHoster):
-    __name      = "NetloadIn"
+    __name__    = "NetloadIn"
     __type__    = "hoster"
     __version__ = "0.51"
     __status__  = "testing"

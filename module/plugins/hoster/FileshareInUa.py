@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class FileshareInUa(DeadHoster):
-    __name      = "FileshareInUa"
+    __name__    = "FileshareInUa"
     __type__    = "hoster"
     __version__ = "0.03"
     __status__  = "testing"

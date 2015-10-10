@@ -4,7 +4,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class ExashareCom(XFSAccount):
-    __name      = "ExashareCom"
+    __name__    = "ExashareCom"
     __type__    = "account"
     __version__ = "0.03"
     __status__  = "testing"

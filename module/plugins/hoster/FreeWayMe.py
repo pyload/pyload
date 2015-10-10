@@ -4,13 +4,14 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
 class FreeWayMe(MultiHoster):
-    __name      = "FreeWayMe"
+    __name__    = "FreeWayMe"
     __type__    = "hoster"
     __version__ = "0.20"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?free-way\.(bz|me)/.+'
-    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium" , "bool", "Use premium account if available"    , True),
                    ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """FreeWayMe multi-hoster plugin"""

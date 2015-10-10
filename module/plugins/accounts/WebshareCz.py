@@ -10,7 +10,7 @@ from module.plugins.internal.Account import Account
 
 
 class WebshareCz(Account):
-    __name      = "WebshareCz"
+    __name__    = "WebshareCz"
     __type__    = "account"
     __version__ = "0.12"
     __status__  = "testing"

@@ -6,7 +6,7 @@ from module.plugins.internal.Account import Account
 
 
 class QuickshareCz(Account):
-    __name      = "QuickshareCz"
+    __name__    = "QuickshareCz"
     __type__    = "account"
     __version__ = "0.07"
     __status__  = "testing"

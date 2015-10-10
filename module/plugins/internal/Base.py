@@ -45,13 +45,14 @@ def check_abort(fn):
 
 
 class Base(Plugin):
-    __name      = "Base"
+    __name__    = "Base"
     __type__    = "base"
     __version__ = "0.11"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Base plugin for Hoster and Crypter"""
     __license__     = "GPLv3"
@@ -114,8 +115,7 @@ class Base(Plugin):
 
     @classmethod
     def get_info(cls, url="", html=""):
-        url = fixurl(url, unquote=True)
-
+        url  = fixurl(url, unquote=True)
         info = {'name'   : parse_name(url),
                 'pattern': {},
                 'size'   : 0,
@@ -123,7 +123,7 @@ class Base(Plugin):
                 'url'    : replace_patterns(url, cls.URL_REPLACEMENTS)}
 
         try:
-            info['pattern'] = re.match(cls.__pattern, url).groupdict()
+            info['pattern'] = re.match(cls.__pattern__, url).groupdict()
         except Exception:
             pass
 
@@ -170,10 +170,10 @@ class Base(Plugin):
             pass
 
         if self.account:
-            self.req     = self.pyload.requestFactory.getRequest(self.__name__, self.account.user)
+            self.req     = self.pyload.requestFactory.getRequest(self.classname, self.account.user)
             self.premium = self.account.info['data']['premium']  #@NOTE: Avoid one unnecessary get_info call by `self.account.premium` here
         else:
-            self.req     = self.pyload.requestFactory.getRequest(self.__name__)
+            self.req     = self.pyload.requestFactory.getRequest(self.classname)
             self.premium = False
 
         self.setup_base()
@@ -182,7 +182,7 @@ class Base(Plugin):
 
     def load_account(self):
         if not self.account:
-            self.account = self.pyload.accountManager.getAccountPlugin(self.__name__)
+            self.account = self.pyload.accountManager.getAccountPlugin(self.classname)
 
         if not self.account:
             self.account = False
@@ -209,7 +209,7 @@ class Base(Plugin):
         self.pyfile.setStatus("starting")
 
         self.log_debug("PROCESS URL " + self.pyfile.url,
-                       "PLUGIN VERSION %s" % self.__version)
+                       "PLUGIN VERSION %s" % self.__version__)
         self.process(self.pyfile)
 
 
@@ -463,7 +463,7 @@ class Base(Plugin):
             except Exception:  #: Bad bad bad... rewrite this part in 0.4.10
                 res = self.load(url,
                                 just_header=True,
-                                req=self.pyload.requestFactory.getRequest(self.__name__))
+                                req=self.pyload.requestFactory.getRequest(self.classname))
 
                 header = {'code': req.code}
                 for line in res.splitlines():

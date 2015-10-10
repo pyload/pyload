@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class SharingmatrixCom(DeadHoster):
-    __name      = "SharingmatrixCom"
+    __name__    = "SharingmatrixCom"
     __type__    = "hoster"
     __version__ = "0.02"
     __status__  = "testing"

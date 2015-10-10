@@ -11,7 +11,7 @@ from module.utils import compare_time, lock
 
 
 class Account(Plugin):
-    __name      = "Account"
+    __name__    = "Account"
     __type__    = "account"
     __version__ = "0.61"
     __status__  = "testing"
@@ -134,7 +134,7 @@ class Account(Plugin):
             self.log_info(_("Relogin user `%s`...") % self.user)
             self.clean()
 
-        self.req = self.pyload.requestFactory.getRequest(self.__name__, self.user)
+        self.req = self.pyload.requestFactory.getRequest(self.classname, self.user)
 
         self.sync()
 
@@ -335,7 +335,7 @@ class Account(Plugin):
              'premium'    : None,
              'timestamp'  : 0,
              'trafficleft': None,
-             'type'       : self.__name,
+             'type'       : self.__name__,
              'valid'      : None,
              'validuntil' : None}
 
@@ -451,7 +451,7 @@ class Account(Plugin):
             if not self.logged:
                 self.relogin()
             else:
-                self.req = self.pyload.requestFactory.getRequest(self.__name__, self.user)
+                self.req = self.pyload.requestFactory.getRequest(self.classname, self.user)
 
             return True
 

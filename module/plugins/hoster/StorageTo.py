@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class StorageTo(DeadHoster):
-    __name      = "StorageTo"
+    __name__    = "StorageTo"
     __type__    = "hoster"
     __version__ = "0.02"
     __status__  = "testing"

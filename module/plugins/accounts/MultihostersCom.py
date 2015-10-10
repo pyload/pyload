@@ -4,7 +4,7 @@ from module.plugins.accounts.ZeveraCom import ZeveraCom
 
 
 class MultihostersCom(ZeveraCom):
-    __name      = "MultihostersCom"
+    __name__    = "MultihostersCom"
     __type__    = "account"
     __version__ = "0.05"
     __status__  = "testing"

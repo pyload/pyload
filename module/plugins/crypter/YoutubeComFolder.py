@@ -9,13 +9,14 @@ from module.utils import save_join as fs_join
 
 
 class YoutubeComFolder(Crypter):
-    __name      = "YoutubeCom"
+    __name__    = "YoutubeCom"
     __type__    = "crypter"
     __version__ = "1.03"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.|m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w\-]+)'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True ),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True ),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True ),
                    ("likes"             , "bool", "Grab user (channel) liked videos"   , False),
                    ("favorites"         , "bool", "Grab user (channel) favorite videos", False),
@@ -95,7 +96,7 @@ class YoutubeComFolder(Crypter):
 
 
     def decrypt(self, pyfile):
-        m = re.match(self.__pattern, pyfile.url)
+        m = re.match(self.__pattern__, pyfile.url)
         m_id = m.group('ID')
         m_type = m.group('TYPE')
 

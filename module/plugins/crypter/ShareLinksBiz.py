@@ -8,13 +8,14 @@ from module.plugins.internal.Crypter import Crypter
 
 
 class ShareLinksBiz(Crypter):
-    __name      = "ShareLinksBiz"
+    __name__    = "ShareLinksBiz"
     __type__    = "crypter"
     __version__ = "1.18"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Share-Links.biz decrypter plugin"""
@@ -70,12 +71,12 @@ class ShareLinksBiz(Crypter):
         if 's2l.biz' in url:
             url = self.load(url, just_header=True)['location']
 
-        if re.match(self.__pattern, url):
-            self.base_url = "http://www.%s.biz" % re.match(self.__pattern, url).group(1)
-            self.file_id = re.match(self.__pattern, url).group('ID')
+        if re.match(self.__pattern__, url):
+            self.base_url = "http://www.%s.biz" % re.match(self.__pattern__, url).group(1)
+            self.file_id = re.match(self.__pattern__, url).group('ID')
 
         else:
-            self.log_debug("Could not initialize, URL [%s] does not match pattern [%s]" % (url, self.__pattern))
+            self.log_debug("Could not initialize, URL [%s] does not match pattern [%s]" % (url, self.__pattern__))
             self.fail(_("Unsupported download link"))
 
         self.package = pyfile.package()

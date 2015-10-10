@@ -9,13 +9,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, s
 
 
 class ExtabitCom(SimpleHoster):
-    __name      = "ExtabitCom"
+    __name__    = "ExtabitCom"
     __type__    = "hoster"
     __version__ = "0.68"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?extabit\.com/(file|go|fid)/(?P<ID>\w+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Extabit.com hoster plugin"""
     __license__     = "GPLv3"
@@ -42,7 +43,7 @@ class ExtabitCom(SimpleHoster):
             self.wait(seconds_to_midnight(), True)
 
         self.log_debug("URL: " + self.req.http.lastEffectiveURL)
-        m = re.match(self.__pattern, self.req.http.lastEffectiveURL)
+        m = re.match(self.__pattern__, self.req.http.lastEffectiveURL)
         fileID = m.group('ID') if m else self.info['pattern']['ID']
 
         m = re.search(r'recaptcha/api/challenge\?k=(\w+)', self.html)

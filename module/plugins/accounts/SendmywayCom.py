@@ -4,7 +4,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class SendmywayCom(XFSAccount):
-    __name      = "SendmywayCom"
+    __name__    = "SendmywayCom"
     __type__    = "account"
     __version__ = "0.04"
     __status__  = "testing"

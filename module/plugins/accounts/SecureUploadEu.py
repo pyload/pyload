@@ -4,7 +4,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class SecureUploadEu(XFSAccount):
-    __name      = "SecureUploadEu"
+    __name__    = "SecureUploadEu"
     __type__    = "account"
     __version__ = "0.04"
     __status__  = "testing"

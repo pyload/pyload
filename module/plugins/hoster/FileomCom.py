@@ -7,12 +7,13 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class FileomCom(XFSHoster):
-    __name      = "FileomCom"
+    __name__    = "FileomCom"
     __type__    = "hoster"
     __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?fileom\.com/\w{12}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Fileom.com hoster plugin"""
     __license__     = "GPLv3"

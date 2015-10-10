@@ -9,13 +9,14 @@ from module.utils import fs_encode
 
 
 class PremiumTo(MultiHoster):
-    __name      = "PremiumTo"
+    __name__    = "PremiumTo"
     __type__    = "hoster"
     __version__ = "0.26"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium" , "bool", "Use premium account if available"    , True),
                    ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Premium.to multi-hoster plugin"""

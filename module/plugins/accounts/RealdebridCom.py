@@ -6,7 +6,7 @@ from module.plugins.internal.Account import Account
 
 
 class RealdebridCom(Account):
-    __name      = "RealdebridCom"
+    __name__    = "RealdebridCom"
     __type__    = "account"
     __version__ = "0.50"
     __status__  = "testing"

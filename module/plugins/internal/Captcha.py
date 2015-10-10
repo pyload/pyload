@@ -9,7 +9,7 @@ from module.plugins.internal.Plugin import Plugin
 
 
 class Captcha(Plugin):
-    __name      = "Captcha"
+    __name__    = "Captcha"
     __type__    = "captcha"
     __version__ = "0.46"
     __status__  = "testing"
@@ -38,8 +38,8 @@ class Captcha(Plugin):
     def _log(self, level, plugintype, pluginname, messages):
         return self.plugin._log(level,
                                 plugintype,
-                                self.plugin.__name,
-                                (self.__name,) + messages)
+                                self.plugin.__name__,
+                                (self.__name__,) + messages)
 
 
     def recognize(self, image):

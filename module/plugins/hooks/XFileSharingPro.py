@@ -6,7 +6,7 @@ from module.plugins.internal.Addon import Addon
 
 
 class XFileSharingPro(Addon):
-    __name      = "XFileSharingPro"
+    __name__    = "XFileSharingPro"
     __type__    = "hook"
     __version__ = "0.44"
     __status__  = "testing"

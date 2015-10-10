@@ -6,13 +6,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class CloudzillaTo(SimpleHoster):
-    __name      = "CloudzillaTo"
+    __name__    = "CloudzillaTo"
     __type__    = "hoster"
     __version__ = "0.09"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?cloudzilla\.to/share/file/(?P<ID>[\w^_]+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Cloudzilla.to hoster plugin"""
     __license__     = "GPLv3"

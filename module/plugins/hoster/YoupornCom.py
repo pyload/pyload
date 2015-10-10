@@ -6,12 +6,13 @@ from module.plugins.internal.Hoster import Hoster
 
 
 class YoupornCom(Hoster):
-    __name      = "YoupornCom"
+    __name__    = "YoupornCom"
     __type__    = "hoster"
     __version__ = "0.22"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?youporn\.com/watch/.+'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Youporn.com hoster plugin"""
     __license__     = "GPLv3"

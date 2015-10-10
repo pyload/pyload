@@ -14,13 +14,14 @@ def convert_decimal_prefix(m):
 
 
 class UlozTo(SimpleHoster):
-    __name      = "UlozTo"
+    __name__    = "UlozTo"
     __type__    = "hoster"
     __version__ = "1.16"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Uloz.to hoster plugin"""
     __license__     = "GPLv3"

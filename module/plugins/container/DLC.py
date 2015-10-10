@@ -12,12 +12,13 @@ from module.utils import decode, fs_encode
 
 
 class DLC(Container):
-    __name      = "DLC"
+    __name__    = "DLC"
     __type__    = "container"
     __version__ = "0.26"
     __status__  = "testing"
 
     __pattern__ = r'(.+\.dlc|[\w+^_]+==[\w+^_/]+==)$'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """DLC container decrypter plugin"""
     __license__     = "GPLv3"

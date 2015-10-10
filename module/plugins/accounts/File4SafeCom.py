@@ -4,7 +4,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class File4SafeCom(XFSAccount):
-    __name      = "File4SafeCom"
+    __name__    = "File4SafeCom"
     __type__    = "account"
     __version__ = "0.07"
     __status__  = "testing"

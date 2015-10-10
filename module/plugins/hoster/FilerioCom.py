@@ -4,12 +4,13 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class FilerioCom(XFSHoster):
-    __name      = "FilerioCom"
+    __name__    = "FilerioCom"
     __type__    = "hoster"
     __version__ = "0.08"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(filerio\.(in|com)|filekeen\.com)/\w{12}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """FileRio.in hoster plugin"""
     __license__     = "GPLv3"

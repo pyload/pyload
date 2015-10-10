@@ -4,7 +4,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class SpeedfileCz(DeadHoster):
-    __name      = "SpeedFileCz"
+    __name__    = "SpeedFileCz"
     __type__    = "hoster"
     __version__ = "0.33"
     __status__  = "testing"

@@ -5,7 +5,7 @@ from module.common.json_layer import json_loads
 
 
 class MegaDebridEu(Account):
-    __name      = "MegaDebridEu"
+    __name__    = "MegaDebridEu"
     __type__    = "account"
     __version__ = "0.24"
     __status__  = "testing"

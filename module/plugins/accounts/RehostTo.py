@@ -4,7 +4,7 @@ from module.plugins.internal.Account import Account
 
 
 class RehostTo(Account):
-    __name      = "RehostTo"
+    __name__    = "RehostTo"
     __type__    = "account"
     __version__ = "0.21"
     __status__  = "testing"

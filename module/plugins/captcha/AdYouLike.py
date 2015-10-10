@@ -7,7 +7,7 @@ from module.plugins.internal.CaptchaService import CaptchaService
 
 
 class AdYouLike(CaptchaService):
-    __name      = "AdYouLike"
+    __name__    = "AdYouLike"
     __type__    = "captcha"
     __version__ = "0.07"
     __status__  = "testing"

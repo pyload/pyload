@@ -4,12 +4,13 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class EasybytezCom(XFSHoster):
-    __name      = "EasybytezCom"
+    __name__    = "EasybytezCom"
     __type__    = "hoster"
     __version__ = "0.24"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?easybytez\.com/\w{12}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Easybytez.com hoster plugin"""
     __license__     = "GPLv3"

@@ -4,7 +4,7 @@ from module.plugins.internal.Account import Account
 
 
 class PremiumTo(Account):
-    __name      = "PremiumTo"
+    __name__    = "PremiumTo"
     __type__    = "account"
     __version__ = "0.13"
     __status__  = "testing"

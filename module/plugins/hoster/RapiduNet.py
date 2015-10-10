@@ -10,13 +10,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class RapiduNet(SimpleHoster):
-    __name      = "RapiduNet"
+    __name__    = "RapiduNet"
     __type__    = "hoster"
     __version__ = "0.10"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?rapidu\.net/(?P<ID>\d{10})'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Rapidu.net hoster plugin"""
     __license__     = "GPLv3"

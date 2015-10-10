@@ -4,7 +4,7 @@ from module.plugins.internal.Captcha import Captcha
 
 
 class CaptchaService(Captcha):
-    __name      = "CaptchaService"
+    __name__    = "CaptchaService"
     __type__    = "captcha"
     __version__ = "0.32"
     __status__  = "testing"
@@ -23,7 +23,7 @@ class CaptchaService(Captcha):
         if self.detect_key(data):
             return self.key
         else:
-            self.fail(_("%s key not found") % self.__name)
+            self.fail(_("%s key not found") % self.__name__)
 
 
     #@TODO: Recheck in 0.4.10, html is now pyfile.data
@@ -31,7 +31,7 @@ class CaptchaService(Captcha):
         if hasattr(self.plugin, "html") and self.plugin.html:
             return self.plugin.html
         else:
-            self.fail(_("%s data not found") % self.__name)
+            self.fail(_("%s data not found") % self.__name__)
 
 
     def detect_key(self, data=None):
