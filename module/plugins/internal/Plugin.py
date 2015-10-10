@@ -260,9 +260,9 @@ def chunks(iterable, size):
 
 
 class Plugin(object):
-    __name      = "Plugin"
+    __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.54"
+    __version__ = "0.55"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -272,7 +272,6 @@ class Plugin(object):
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
-
     def __init__(self, core):
         self._init(core)
         self.init()
@@ -280,7 +279,12 @@ class Plugin(object):
 
     def __repr__(self):
         return "<%(type)s %(name)s>" % {'type': self.__type.capitalize(),
-                                        'name': self.__name__}
+                                        'name': self.classname}
+
+
+    @property
+    def classname(self):
+        return self.__class__.__name__
 
 
     def _init(self, core):
@@ -382,7 +386,7 @@ class Plugin(object):
         :param value:
         :return:
         """
-        self.pyload.api.setConfigValue(plugin or self.__name__, option, value, section="plugin")
+        self.pyload.api.setConfigValue(plugin or self.classname, option, value, section="plugin")
 
 
     def get_config(self, option, default="", plugin=None):
@@ -393,7 +397,7 @@ class Plugin(object):
         :return:
         """
         try:
-            return self.pyload.config.getPlugin(plugin or self.__name__, option)
+            return self.pyload.config.getPlugin(plugin or self.classname, option)
 
         except KeyError:
             self.log_debug("Config option `%s` not found, use default `%s`" % (option, default or None))  #@TODO: Restore to `log_warning` in 0.4.10
@@ -406,22 +410,25 @@ class Plugin(object):
         """
         value = map(decode, value) if isiterable(value) else decode(value)
         entry = json_dumps(value).encode('base64')
-        self.pyload.db.setStorage(self.__name__, key, entry)
+        self.pyload.db.setStorage(self.classname, key, entry)
 
 
     def retrieve(self, key=None, default=None):
         """
         Retrieves saved value or dict of all saved entries if key is None
         """
-        entry = self.pyload.db.getStorage(self.__name__, key)
+        entry = self.pyload.db.getStorage(self.classname, key)
 
-        if entry:
-            if type(entry) is dict:
-                value = dict((k, json_loads(v.decode('base64'))) for k, v in value.items()) or default
+        if key:
+            if entry is None:
+                value = default
             else:
-                value = json_loads(entry.decode('base64')) or default
+                value = json_loads(entry.decode('base64'))
         else:
-            value = entry
+            if not entry:
+                value = default
+            else:
+                value = dict((k, json_loads(v.decode('base64'))) for k, v in value.items())
 
         return value
 
@@ -430,7 +437,7 @@ class Plugin(object):
         """
         Delete entry in db
         """
-        self.pyload.db.delStorage(self.__name__, key)
+        self.pyload.db.delStorage(self.classname, key)
 
 
     def fail(self, msg):
@@ -461,7 +468,7 @@ class Plugin(object):
         url = fixurl(url, unquote=True)  #: Recheck in 0.4.10
 
         if req is None:
-            req = self.req or self.pyload.requestFactory.getRequest(self.__name__)
+            req = self.req or self.pyload.requestFactory.getRequest(self.classname)
 
         #@TODO: Move to network in 0.4.10
         if isinstance(cookies, list):
@@ -498,11 +505,11 @@ class Plugin(object):
             frame = inspect.currentframe()
 
             try:
-                framefile = fs_join("tmp", self.__name__, "%s_line%s.dump.html" %
+                framefile = fs_join("tmp", self.classname, "%s_line%s.dump.html" %
                                     (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
 
-                if not exists(os.path.join("tmp", self.__name__)):
-                    os.makedirs(os.path.join("tmp", self.__name__))
+                if not exists(os.path.join("tmp", self.classname)):
+                    os.makedirs(os.path.join("tmp", self.classname))
 
                 with open(framefile, "wb") as f:
                     f.write(encode(html))
