@@ -214,11 +214,11 @@ def parse_html_tag_attr_value(attr_name, tag):
 
 def parse_html_form(attr_str, html, input_names={}):
     for form in re.finditer(r"(?P<TAG><form[^>]*%s[^>]*>)(?P<CONTENT>.*?)</?(form|body|html)[^>]*>" % attr_str,
-                            html, re.S | re.I):
+                            html, re.I | re.S):
         inputs = {}
         action = parse_html_tag_attr_value("action", form.group('TAG'))
 
-        for inputtag in re.finditer(r'(<(input|textarea)[^>]*>)([^<]*(?=</\2)|)', form.group('CONTENT'), re.S | re.I):
+        for inputtag in re.finditer(r'(<(input|textarea)[^>]*>)([^<]*(?=</\2)|)', form.group('CONTENT'), re.I | re.S):
             name = parse_html_tag_attr_value("name", inputtag.group(1))
             if name:
                 value = parse_html_tag_attr_value("value", inputtag.group(1))
@@ -364,12 +364,6 @@ class Plugin(object):
 
         except OSError, e:
             self.log_warning(_("Setting owner and group failed"), e)
-
-
-    def get_chunk_count(self):
-        if self.chunk_limit <= 0:
-            return self.pyload.config.get("download", "chunks")
-        return min(self.pyload.config.get("download", "chunks"), self.chunk_limit)
 
 
     def set_config(self, option, value, plugin=None):

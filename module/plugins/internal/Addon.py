@@ -53,7 +53,7 @@ class Addon(Plugin):
 
         #: Callback of periodical job task, used by HookManager
         self.cb       = None
-        self.interval = None
+        self.interval = self.PERIODICAL_INTERVAL
 
         self.init()
         self.init_events()

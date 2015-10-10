@@ -40,7 +40,7 @@ class Account(Plugin):
 
         #: Callback of periodical job task
         self.cb       = None
-        self.interval = None
+        self.interval = self.PERIODICAL_INTERVAL
 
         self.init()
 

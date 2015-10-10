@@ -158,7 +158,7 @@ class XFSHoster(SimpleHoster):
 
         action, inputs = self.parse_html_form('F1')
         if not inputs:
-            self.retry(msg=self.info['error'] if 'error' in self.info else _("TEXTAREA F1 not found"))
+            self.retry(msg=self.info.get('error') or _("TEXTAREA F1 not found"))
 
         self.log_debug(inputs)
 
@@ -196,7 +196,7 @@ class XFSHoster(SimpleHoster):
         if not inputs:
             action, inputs = self.parse_html_form('F1')
             if not inputs:
-                self.retry(msg=self.info['error'] if 'error' in self.info else _("TEXTAREA F1 not found"))
+                self.retry(msg=self.info.get('error') or _("TEXTAREA F1 not found"))
 
         self.log_debug(inputs)
 

@@ -270,7 +270,7 @@ class SimpleHoster(Hoster):
             if not self.link and not self.last_download:
                 self.preload()
 
-                if 'status' not in self.info or self.info['status'] is 3:  #@TODO: Recheck in 0.4.10
+                if self.info.get('status', 3) is 3:  #@TODO: Recheck in 0.4.10
                     self.check_info()
 
                 if self.premium and (not self.CHECK_TRAFFIC or self.check_traffic()):

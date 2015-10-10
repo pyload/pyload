@@ -104,8 +104,8 @@ class MultiHoster(SimpleHoster):
                 self.log_warning(_("Premium download failed"))
                 self.restart(premium=False)
 
-            elif self.get_config("revertfailed", True) \
-                 and "new_module" in self.pyload.pluginManager.hosterPlugins[self.__name__]:
+            elif self.get_config("revertfailed", True) and \
+                 self.pyload.pluginManager.hosterPlugins[self.__name__].get('new_module'):
                 hdict = self.pyload.pluginManager.hosterPlugins[self.__name__]
 
                 tmp_module = hdict['new_module']
