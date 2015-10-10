@@ -3,6 +3,7 @@
 import inspect
 import mimetypes
 import os
+import re
 import time
 import urlparse
 
@@ -46,7 +47,7 @@ def check_abort(fn):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
