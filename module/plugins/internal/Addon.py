@@ -23,7 +23,7 @@ def threaded(fn):
 class Addon(Plugin):
     __name__    = "Addon"
     __type__    = "hook"  #@TODO: Change to `addon` in 0.4.10
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __threaded__ = []  #@TODO: Remove in 0.4.10
@@ -132,6 +132,14 @@ class Addon(Plugin):
         raise NotImplementedError
 
 
+    def save_info(self):
+        self.store("info", self.info)
+
+
+    def restore_info(self):
+        self.retrieve("info", self.info)
+
+
     @property
     def activated(self):
         """
@@ -154,6 +162,7 @@ class Addon(Plugin):
 
     #: Deprecated method, use `deactivate` instead (Remove in 0.4.10)
     def unload(self, *args, **kwargs):
+        self.save_info()
         return self.deactivate(*args, **kwargs)
 
 
@@ -166,6 +175,7 @@ class Addon(Plugin):
 
     #: Deprecated method, use `activate` instead (Remove in 0.4.10)
     def coreReady(self, *args, **kwargs):
+        self.restore_info()
         return self.activate(*args, **kwargs)
 
 
