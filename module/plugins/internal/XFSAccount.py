@@ -12,7 +12,7 @@ from module.plugins.internal.Plugin import parse_html_form, parse_time, set_cook
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.52"
+    __version__ = "0.53"
     __status__  = "testing"
 
     __description__ = """XFileSharing account plugin"""
@@ -207,7 +207,10 @@ class XFSAccount(Account):
             finally:
                 errmsg = re.sub(r'<.*?>', " ", errmsg.strip())
 
-            self.timeout = parse_time(errmsg)
+            new_timeout = parse_time(errmsg)
+            if new_timeout > self.timeout:
+                self.timeout = new_timeout
+
             self.fail_login(errmsg)
 
         m = re.search(self.LOGIN_FAIL_PATTERN, self.html)

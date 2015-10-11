@@ -158,10 +158,10 @@ class SimpleHoster(Hoster):
                     pass
 
         if html:
-            if cls.OFFLINE_PATTERN and re.search(cls.OFFLINE_PATTERN, html):
+            if cls.OFFLINE_PATTERN and re.search(cls.OFFLINE_PATTERN, html) is not None:
                 info['status'] = 1
 
-            elif cls.TEMP_OFFLINE_PATTERN and re.search(cls.TEMP_OFFLINE_PATTERN, html):
+            elif cls.TEMP_OFFLINE_PATTERN and re.search(cls.TEMP_OFFLINE_PATTERN, html) is not None:
                 info['status'] = 6
 
             else:
@@ -447,27 +447,21 @@ class SimpleHoster(Hoster):
             self.log_debug("File info: %s" % self.info)
             self.log_debug("Previous file info: %s" % old_info)
 
-        try:
-            url  = self.info['url']
-            name = self.info['name']
+        name = self.info.get('name')
+        size = self.info.get('size')
 
-        except KeyError:
-            pass
-
+        if name and name is not self.info.get('url'):
+            self.pyfile.name = name
         else:
-            if name and name is not url:
-                self.pyfile.name = name
+            name = self.pyfile.name
 
-        if self.info.get('size') > 0:
+        if size > 0:
             self.pyfile.size = int(self.info['size'])  #@TODO: Fix int conversion in 0.4.10
-
-        # self.pyfile.sync()
-
-        name   = self.pyfile.name
-        size   = self.pyfile.size
+        else:
+            size = self.pyfile.size
 
         self.log_info(_("File name: ") + name)
-        self.log_info(_("File size: %s bytes") % size if size > 0 else _("File size: Unknown"))
+        self.log_info(_("File size: %s bytes") % size or "N/D")
 
 
     #@TODO: Rewrite in 0.4.10
