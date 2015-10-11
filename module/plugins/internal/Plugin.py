@@ -262,7 +262,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.56"
+    __version__ = "0.57"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -314,36 +314,46 @@ class Plugin(object):
     def log_debug(self, *args, **kwargs):
         self._log("debug", self.__type__, self.__name__, args)
         if self.pyload.debug and kwargs.get('trace'):
+            frame = inspect.currentframe()
             print "Traceback (most recent call last):"
-            traceback.print_stack()
+            traceback.print_stack(frame.f_back)
+            del frame
 
 
     def log_info(self, *args, **kwargs):
         self._log("info", self.__type__, self.__name__, args)
         if self.pyload.debug and kwargs.get('trace'):
+            frame = inspect.currentframe()
             print "Traceback (most recent call last):"
-            traceback.print_stack()
+            traceback.print_stack(frame.f_back)
+            del frame
 
 
     def log_warning(self, *args, **kwargs):
         self._log("warning", self.__type__, self.__name__, args)
         if self.pyload.debug and kwargs.get('trace'):
+            frame = inspect.currentframe()
             print "Traceback (most recent call last):"
-            traceback.print_stack()
+            traceback.print_stack(frame.f_back)
+            del frame
 
 
     def log_error(self, *args, **kwargs):
         self._log("error", self.__type__, self.__name__, args)
         if self.pyload.debug and kwargs.get('trace', True):
+            frame = inspect.currentframe()
             print "Traceback (most recent call last):"
-            traceback.print_stack()
+            traceback.print_stack(frame.f_back)
+            del frame
 
 
     def log_critical(self, *args, **kwargs):
         self._log("critical", self.__type__, self.__name__, args)
         if kwargs.get('trace', True):
+            frame = inspect.currentframe()
             print "Traceback (most recent call last):"
-            traceback.print_stack()
+            traceback.print_stack(frame.f_back)
+            del frame
 
 
     def set_permissions(self, path):
