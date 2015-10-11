@@ -47,7 +47,7 @@ def check_abort(fn):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -405,10 +405,8 @@ class Base(Plugin):
 
 
     def fixurl(self, url, baseurl=None, unquote=True):
-        #url = fixurl(url, unquote=False)
-
-        if not baseurl:
-            baseurl = fixurl(self.pyfile.url)
+        url     = fixurl(url, unquote=True)
+        baseurl = fixurl(baseurl or self.pyfile.url, unquote=True)
 
         if not urlparse.urlparse(url).scheme:
             url_p = urlparse.urlparse(baseurl)

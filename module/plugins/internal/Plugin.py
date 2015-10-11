@@ -85,18 +85,19 @@ def exists(path):
 
 
 def fixurl(url, unquote=None):
-    newurl = urllib.unquote(url)
+    old = url
+    url = urllib.unquote(url)
 
     if unquote is None:
-        unquote = newurl == url
+        unquote = url is old
 
-    newurl = html_unescape(decode(newurl).decode('unicode-escape'))
-    newurl = re.sub(r'(?<!:)/{2,}', '/', newurl).strip().lstrip('.')
+    url = html_unescape(decode(url).decode('unicode-escape'))
+    url = re.sub(r'(?<!:)/{2,}', '/', url).strip().lstrip('.')
 
     if not unquote:
-        newurl = urllib.quote(newurl)
+        url = urllib.quote(url)
 
-    return newurl
+    return url
 
 
 def parse_name(string):
