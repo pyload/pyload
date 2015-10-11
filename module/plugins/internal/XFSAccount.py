@@ -4,7 +4,6 @@ import re
 import time
 import urlparse
 
-from module.common.json_layer import json_loads
 from module.plugins.internal.Account import Account
 # from module.plugins.internal.MultiAccount import MultiAccount
 from module.plugins.internal.Plugin import parse_html_form, set_cookie
@@ -13,7 +12,7 @@ from module.plugins.internal.Plugin import parse_html_form, set_cookie
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.50"
+    __version__ = "0.51"
     __status__  = "testing"
 
     __description__ = """XFileSharing account plugin"""
@@ -62,10 +61,7 @@ class XFSAccount(Account):
         premium      = None
 
         if not self.PLUGIN_URL:  #@TODO: Remove in 0.4.10
-            return {'validuntil'  : validuntil,
-                    'trafficleft' : trafficleft,
-                    'leechtraffic': leechtraffic,
-                    'premium'     : premium}
+            return
 
         html = self.load(self.PLUGIN_URL,
                          get={'op': "my_account"},
@@ -167,8 +163,6 @@ class XFSAccount(Account):
 
         if not self.PLUGIN_URL:
             self.fail_login(_("Missing PLUGIN_URL"))
-        else:
-            self.PLUGIN_URL = self.PLUGIN_URL.rstrip('/') + "/"
 
         if not self.LOGIN_URL:
             self.LOGIN_URL  = urlparse.urljoin(self.PLUGIN_URL, "login.html")
@@ -189,17 +183,9 @@ class XFSAccount(Account):
         if action:
             url = urlparse.urljoin("http://", action)
         else:
-            url = self.PLUGIN_URL
+            url = self.LOGIN_URL
 
         html = self.load(url, post=inputs, cookies=self.COOKIES)
 
-        try:
-            json = json_loads(html)
-
-        except ValueError:
-            if re.search(self.LOGIN_FAIL_PATTERN, html):
-                self.fail_login()
-
-        else:
-            if not 'success' in json or not json['success']:
-                self.fail_login()
+        if re.search(self.LOGIN_FAIL_PATTERN, html):
+            self.fail_login()

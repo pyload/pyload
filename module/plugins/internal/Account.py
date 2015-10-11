@@ -13,7 +13,7 @@ from module.utils import compare_time, lock
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.61"
+    __version__ = "0.62"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -143,7 +143,8 @@ class Account(Plugin):
         try:
             self.signin(self.user, self.info['login']['password'], self.info['data'])
 
-        except Skip:
+        except Skip, e:
+            self.log_debug(e)
             self.info['login']['valid'] = True
 
             new_timeout = timestamp - self.info['login']['timestamp']
@@ -151,7 +152,7 @@ class Account(Plugin):
                 self.timeout = new_timeout
 
         except Exception, e:
-            self.log_error(_("Could not login user `%s`") % user, e)
+            self.log_error(_("Could not login user `%s`") % self.user, e)
             self.info['login']['valid'] = False
 
         else:
