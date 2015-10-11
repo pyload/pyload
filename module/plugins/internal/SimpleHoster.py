@@ -16,7 +16,7 @@ from module.utils import fixup, fs_encode
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.97"
+    __version__ = "1.98"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -334,13 +334,16 @@ class SimpleHoster(Hoster):
             elif self.DL_LIMIT_PATTERN and re.search(self.DL_LIMIT_PATTERN, self.html):
                 m = re.search(self.DL_LIMIT_PATTERN, self.html)
                 try:
-                    errmsg = m.group(1).strip()
+                    errmsg = m.group(1)
 
                 except (AttributeError, IndexError):
-                    errmsg = m.group(0).strip()
+                    errmsg = m.group(0)
 
-                self.info['error'] = re.sub(r'<.*?>', " ", errmsg)
-                self.log_warning(self.info['error'])
+                finally:
+                    errmsg = re.sub(r'<.*?>', " ", errmsg.strip())
+
+                self.info['error'] = errmsg
+                self.log_warning(errmsg)
 
                 wait_time = parse_time(errmsg)
                 self.wait(wait_time, reconnect=wait_time > 300)
@@ -358,8 +361,11 @@ class SimpleHoster(Hoster):
                 except (AttributeError, IndexError):
                     errmsg = m.group(0).strip()
 
-                self.info['error'] = re.sub(r'<.*?>', " ", errmsg)
-                self.log_warning(self.info['error'])
+                finally:
+                    errmsg = re.sub(r'<.*?>', " ", errmsg)
+
+                self.info['error'] = errmsg
+                self.log_warning(errmsg)
 
                 if re.search('limit|wait|slot', errmsg, re.I):
                     wait_time = parse_time(errmsg)
