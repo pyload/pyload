@@ -1,0 +1,40 @@
+<!-- Captcha box -->
+<div id="cap_box" >
+
+    <form id="cap_form" class="form-group" action="/json/set_captcha" method="POST" enctype="multipart/form-data" onsubmit="return false;">
+
+        <h3>{{_("Captcha reading")}}</h3>
+        <p id="cap_title">{{_("Please read the text on the captcha.")}}</p>
+
+        <div id="cap_textual">
+
+            <input id="cap_id" name="cap_id" type="hidden" value="" />
+
+                        <div class="form-group">
+            <label>{{_("Captcha")}}</label>
+            <span ></br>
+                <img id="cap_textual_img" style="border: 1px solid #bbb; padding: 3px 3px 3px 3px;" src="">
+            </span>
+                </div>
+                <div class="form-group">
+            <label>{{_("Text")}}</label>
+            <input class="form-control" id="cap_result" name="cap_result" type="text" size="20" />
+                        <p class="small">{{_("Input the text on the captcha.")}}</p>
+        </div>
+
+        <div id="cap_positional" style="text-align: center">
+            <img id="cap_positional_img" src="" style="margin: 10px; cursor:pointer">
+        </div>
+
+        <div id="button_bar" style="text-align: center">
+            <span>
+                <button class="btn btn-primary" id="cap_submit" type="submit" style="float: right; margin-left: 5px;">{{_("Submit")}}</button>
+                <button class="btn btn-default" id="cap_reset" type="reset" style="float: right">{{_("Close")}}</button>
+            </span>
+        </div>
+
+        <div class="spacer"></div>
+
+    </form>
+
+</div>

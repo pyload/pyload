@@ -162,16 +162,16 @@ var Package = new Class({
     },
 
     parseElement: function() {
-        var imgs = this.ele.getElements('img');
+        var imgs = this.ele.getElements('span');
 
         this.name = this.ele.getElements('.name')[0];
         this.folder = this.ele.getElements('.folder')[0];
         this.password = this.ele.getElements('.password')[0];
 
-        imgs[1].addEvent('click', this.deletePackage.bind(this));
-        imgs[2].addEvent('click', this.restartPackage.bind(this));
-        imgs[3].addEvent('click', this.editPackage.bind(this));
-        imgs[4].addEvent('click', this.movePackage.bind(this));
+        imgs[3].addEvent('click', this.deletePackage.bind(this));
+        imgs[4].addEvent('click', this.restartPackage.bind(this));
+        imgs[5].addEvent('click', this.editPackage.bind(this));
+        imgs[6].addEvent('click', this.movePackage.bind(this));
 
         this.ele.getElement('.packagename').addEvent('click', this.toggle.bind(this));
 
@@ -197,14 +197,40 @@ var Package = new Class({
                     "margin-left": 0
                 }
             });
+            
+            if (link.icon == 'arrow_right.png'){
+                    link.icon = 'glyphicon glyphicon-arrow-right';
+            }
+            if (link.icon == 'status_downloading.png'){
+                    link.icon = 'glyphicon glyphicon-cloud-download';
+            }
+            if (link.icon == 'status_failed.png'){
+                    link.icon = 'glyphicon glyphicon-exclamation-sign';
+            }
+            if (link.icon == 'status_finished.png'){
+                    link.icon = 'glyphicon glyphicon-ok';
+            }
+            if (link.statusmsg == 'queued'){
+                    link.icon = 'glyphicon glyphicon-time';
+            }
+			if (link.icon == 'status_queue.png'){
+                    link.icon = 'glyphicon glyphicon-time';
+            }
+			if (link.icon == 'status_waiting.png'){
+                    link.icon = 'glyphicon glyphicon-time';
+            }
+            if (link.icon == 'status_offline.png'){
+                    link.icon = 'glyphicon glyphicon-ban-circle';
+            }
+            
 
-            var html = "<span style='cursor: move' class='child_status sorthandle'><img src='/media/default/img/{icon}' style='width: 12px; height:12px;'/></span>\n".substitute({"icon": link.icon});
-            html += "<span style='font-size: 15px'>{name}</span><br /><div class='child_secrow'>".substitute({"name": link.name});
-            html += "<span class='child_status'>{statusmsg}</span>{error}&nbsp;".substitute({"statusmsg": link.statusmsg, "error":link.error});
-            html += "<span class='child_status'>{format_size}</span>".substitute({"format_size": link.format_size});
-            html += "<span class='child_status'>{plugin}</span>&nbsp;&nbsp;".substitute({"plugin": link.plugin});
-            html += "<img title='{{_("Delete Link")}}' style='cursor: pointer;' width='10px' height='10px' src='/media/default/img/delete.png' />&nbsp;&nbsp;";
-            html += "<img title='{{_("Restart Link")}}' style='cursor: pointer;margin-left: -4px' width='10px' height='10px' src='/media/default/img/arrow_refresh.png' /></div>";
+            var html = "<span style='' class='child_status'><span style='margin-right: 2px;' class='{icon} sorthandle'></span></span>\n".substitute({"icon": link.icon});
+            html += "<span style='font-size: 18px; text-weight:bold'>{name}</span><br /><div class='child_secrow' style='margin-left: 21px; margin-bottom: 7px;'>".substitute({"name": link.name});
+            html += "<span class='child_status' style='font-size: 12px; color:#555'>{statusmsg}</span>{error}&nbsp;".substitute({"statusmsg": link.statusmsg, "error":link.error});
+            html += "<span class='child_status' style='font-size: 12px; color:#555'>{format_size}</span>".substitute({"format_size": link.format_size});
+            html += "<span class='child_status' style='font-size: 12px; color:#555'> {plugin}</span>&nbsp;&nbsp;".substitute({"plugin": link.plugin});
+            html += "<span class='glyphicon glyphicon-trash' title='{{_("Delete Link")}}' style='cursor: pointer;  font-size: 12px; color:#333;' ></span>&nbsp;&nbsp;";
+            html += "<span class='glyphicon glyphicon-repeat' title='{{_("Restart Link")}}' style='cursor: pointer; font-size: 12px; color:#333;' ></span></div>";
 
             var div = new Element("div", {
                 "id": "file_" + link.id,
@@ -235,8 +261,8 @@ var Package = new Class({
     registerLinkEvents: function() {
         this.ele.getElements('.child').each(function(child) {
             var lid = child.get('id').match(/[0-9]+/);
-            var imgs = child.getElements('.child_secrow img');
-            imgs[0].addEvent('click', function(e) {
+            var imgs = child.getElements('.child_secrow span');
+            imgs[3].addEvent('click', function(e) {
                 new Request({
                     method: 'get',
                     url: '{{pathprefix}}/api/deleteFiles/[' + this + "]",
@@ -247,14 +273,14 @@ var Package = new Class({
                 }).send();
             }.bind(lid));
 
-            imgs[1].addEvent('click', function(e) {
+            imgs[4].addEvent('click', function(e) {
                 new Request({
                     method: 'get',
                     url: '{{pathprefix}}/api/restartFile/' + this,
                     onSuccess: function() {
                         var ele = $('file_' + this);
-                        var imgs = ele.getElements("img");
-                        imgs[0].set("src", "/media/default/img/status_queue.png");
+                        var imgs = ele.getElements(".glyphicon");
+                        imgs[0].set("class", "glyphicon glyphicon-time");
                         var spans = ele.getElements(".child_status");
                         spans[1].set("html", "queued");
                         indicateSuccess();

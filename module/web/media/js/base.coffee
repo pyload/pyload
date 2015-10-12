@@ -68,9 +68,9 @@ document.addEvent "domready", ->
     $('add_reset').addEvent 'click', -> root.addBox.close()
 
     $('action_add').addEvent 'click', -> $("add_form").reset(); root.addBox.open()
-    $('action_play').addEvent 'click', -> new Request({method: 'get', url: '/api/unpauseServer'}).send()
-    $('action_cancel').addEvent 'click', -> new Request({method: 'get', url: '/api/stopAllDownloads'}).send()
-    $('action_stop').addEvent 'click', -> new Request({method: 'get', url: '/api/pauseServer'}).send()
+    $('action_play').addEvent 'click', -> new Request({method: 'get', url: '{{pathprefix}}/api/unpauseServer'}).send()
+    $('action_cancel').addEvent 'click', -> new Request({method: 'get', url: '{{pathprefix}}/api/stopAllDownloads'}).send()
+    $('action_stop').addEvent 'click', -> new Request({method: 'get', url: '{{pathprefix}}/api/pauseServer'}).send()
 
 
     # captcha events
