@@ -13,6 +13,7 @@ class LolabitsEs(SimpleHoster):
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?lolabits\.es/.+'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Lolabits.es hoster plugin"""
     __license__     = "GPLv3"

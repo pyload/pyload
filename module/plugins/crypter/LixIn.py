@@ -13,7 +13,8 @@ class LixIn(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?lix\.in/(?P<ID>.+)'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Lix.in decrypter plugin"""
@@ -43,16 +44,13 @@ class LixIn(Crypter):
             self.error(_("Link doesn't seem valid"))
 
         m = re.search(self.CAPTCHA_PATTERN, self.html)
-        if m:
-            for _i in xrange(5):
-                m = re.search(self.CAPTCHA_PATTERN, self.html)
-                if m:
-                    self.log_debug("Trying captcha")
-                    captcharesult = self.captcha.decrypt(urlparse.urljoin("http://lix.in/", m.group(1)))
-                self.html = self.load(url,
-                                          post={'capt': captcharesult, 'submit': "submit", 'tiny': id})
-            else:
-                self.log_debug("No captcha/captcha solved")
+        if m is not None:
+            captcharesult = self.captcha.decrypt(urlparse.urljoin("http://lix.in/", m.group(1)))
+            self.html = self.load(url, post={'capt': captcharesult, 'submit': "submit", 'tiny': id})
+
+            if re.search(self.CAPTCHA_PATTERN, self.html):
+                self.fail(_("No captcha solved"))
+
         else:
             self.html = self.load(url, post={'submit': "submit", 'tiny': id})
 

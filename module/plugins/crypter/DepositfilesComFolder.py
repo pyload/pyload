@@ -4,13 +4,14 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class DepositfilesComFolder(SimpleCrypter):
-    __name__    = "DepositfilesComFolder"
+    __name__    = "DepositfilesCom"
     __type__    = "crypter"
     __version__ = "0.02"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?depositfiles\.com/folders/\w+'
-    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium"       , "bool", "Use premium account if available"   , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 

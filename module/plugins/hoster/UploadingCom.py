@@ -4,17 +4,18 @@ import pycurl
 import re
 
 from module.common.json_layer import json_loads
-from module.plugins.internal.Plugin import encode
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, timestamp
+from module.plugins.internal.Plugin import encode, timestamp
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UploadingCom(SimpleHoster):
     __name__    = "UploadingCom"
     __type__    = "hoster"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>\w+)'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Uploading.com hoster plugin"""
     __license__     = "GPLv3"
@@ -61,7 +62,7 @@ class UploadingCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         m = re.search('<h2>((Daily )?Download Limit)</h2>', self.html)
-        if m:
+        if m is not None:
             pyfile.error = encode(m.group(1))
             self.log_warning(pyfile.error)
             self.retry(6, (6 * 60 if m.group(2) else 15) * 60, pyfile.error)
@@ -88,7 +89,7 @@ class UploadingCom(SimpleHoster):
 
         self.html = self.load(url)
         m = re.search(r'<form id="file_form" action="(.*?)"', self.html)
-        if m:
+        if m is not None:
             url = m.group(1)
         else:
             self.error(_("No URL"))

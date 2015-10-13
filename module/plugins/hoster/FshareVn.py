@@ -27,7 +27,8 @@ class FshareVn(SimpleHoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fshare\.vn/file/.+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """FshareVn hoster plugin"""
     __license__     = "GPLv3"
@@ -68,7 +69,7 @@ class FshareVn(SimpleHoster):
                 self.html = self.load(url, post=inputs)
 
                 if 'name="link_file_pwd_dl"' in self.html:
-                    self.fail(_("Incorrect password"))
+                    self.fail(_("Wrong password"))
             else:
                 self.fail(_("No password found"))
 
@@ -93,7 +94,7 @@ class FshareVn(SimpleHoster):
             self.offline()
 
         m = re.search(self.WAIT_PATTERN, self.html)
-        if m:
+        if m is not None:
             self.log_info(_("Wait until %s ICT") % m.group(1))
             wait_until = time.mktime.time(time.strptime.time(m.group(1), "%d/%m/%Y %H:%M"))
             self.wait(wait_until - time.mktime.time(time.gmtime.time()) - 7 * 60 * 60, True)

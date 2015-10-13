@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.Hook import Hook
+from module.plugins.internal.Addon import Addon
 
 
-class XFileSharingPro(Hook):
+class XFileSharingPro(Addon):
     __name__    = "XFileSharingPro"
     __type__    = "hook"
-    __version__ = "0.42"
+    __version__ = "0.44"
     __status__  = "testing"
 
     __config__ = [("activated"       , "bool", "Activated"                     , True ),
@@ -28,30 +28,22 @@ class XFileSharingPro(Hook):
                   'crypter': (r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:user|folder)s?/\w+',
                               r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:user|folder)s?/\w+')}
 
-    HOSTER_BUILTIN  = [#WORKING HOSTERS:
-                       "ani-stream.com", "backin.net", "cloudsix.me", "eyesfile.ca",
-                       "file4safe.com", "fileband.com", "filedwon.com", "fileparadox.in",
-                       "filevice.com", "hostingbulk.com", "junkyvideo.com", "ravishare.com",
-                       "ryushare.com", "salefiles.com", "sendmyway.com", "sharebeast.com",
-                       "sharesix.com", "thefile.me", "verzend.be", "worldbytez.com",
-                       "xvidstage.com",
-                       #: NOT TESTED:
-                       "101shared.com", "4upfiles.com", "filemaze.ws", "filenuke.com",
-                       "linkzhost.com", "mightyupload.com", "rockdizfile.com", "sharerepo.com",
-                       "shareswift.com", "uploadbaz.com", "uploadc.com", "vidbull.com",
-                       "zalaa.com", "zomgupload.com",
-                       #: NOT WORKING:
-                       "amonshare.com", "banicrazy.info", "boosterking.com", "host4desi.com",
-                       "laoupload.com", "rd-fs.com"]
-    CRYPTER_BUILTIN = ["junocloud.me", "rapidfileshare.net"]
-
-
-    # def plugin_config_changed(self, plugin, name, value):
-        # self.load_pattern()
-
-
-    # def init(self):
-        # self.event_map = {'pluginConfigChanged': "plugin_config_changed"}
+    BUILTIN_HOSTERS  = [#WORKING HOSTERS:
+                        "ani-stream.com", "backin.net", "cloudsix.me", "eyesfile.ca",
+                        "file4safe.com", "fileband.com", "filedwon.com", "fileparadox.in",
+                        "filevice.com", "hostingbulk.com", "junkyvideo.com", "ravishare.com",
+                        "ryushare.com", "salefiles.com", "sendmyway.com", "sharebeast.com",
+                        "sharesix.com", "thefile.me", "verzend.be", "worldbytez.com",
+                        "xvidstage.com",
+                        #: NOT TESTED:
+                        "101shared.com", "4upfiles.com", "filemaze.ws", "filenuke.com",
+                        "linkzhost.com", "mightyupload.com", "rockdizfile.com", "sharerepo.com",
+                        "shareswift.com", "uploadbaz.com", "uploadc.com", "vidbull.com",
+                        "zalaa.com", "zomgupload.com",
+                        #: NOT WORKING:
+                        "amonshare.com", "banicrazy.info", "boosterking.com", "host4desi.com",
+                        "laoupload.com", "rd-fs.com"]
+    BUILTIN_CRYPTERS = ["junocloud.me", "rapidfileshare.net"]
 
 
     def activate(self):
@@ -73,7 +65,7 @@ class XFileSharingPro(Hook):
                 plugin_set = set(plugins.replace(' ', '').replace('\\', '').replace('|', ',').replace(';', ',').lower().split(','))
 
                 if use_builtin_list:
-                    plugin_set |= set(x.lower() for x in getattr(self, "%s_BUILTIN" % type.upper()))
+                    plugin_set |= set(x.lower() for x in getattr(self, "BUILTIN_%sS" % type.upper()))
 
                 plugin_set -= set(('', u''))
 

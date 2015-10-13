@@ -13,6 +13,7 @@ class YourfilesTo(Hoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?yourfiles\.(to|biz)/\?d=\w+'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Youfiles.to hoster plugin"""
     __license__     = "GPLv3"
@@ -41,7 +42,7 @@ class YourfilesTo(Hoster):
 
         #: var zzipitime = 15
         m = re.search(r'var zzipitime = (\d+);', self.html)
-        if m:
+        if m is not None:
             sec = int(m.group(1))
         else:
             sec = 0

@@ -3,9 +3,8 @@
 from __future__ import with_statement
 
 import os
+import shutil
 import time
-
-from shutil import move
 
 from module.plugins.internal.Addon import Addon
 from module.utils import fs_encode, save_join as fs_join
@@ -14,22 +13,22 @@ from module.utils import fs_encode, save_join as fs_join
 class HotFolder(Addon):
     __name__    = "HotFolder"
     __type__    = "hook"
-    __version__ = "0.17"
+    __version__ = "0.19"
     __status__  = "testing"
 
-    __config__ = [("folder"    , "str" , "Folder to observe"    , "container"),
-                  ("watch_file", "bool", "Observe link file"    , False      ),
-                  ("keep"      , "bool", "Keep added containers", True       ),
-                  ("file"      , "str" , "Link file"            , "links.txt")]
+    __config__ = [("activated", "bool", "Activated"              , False      ),
+                  ("folder"   , "str" , "Folder to watch"        , "watchdir" ),
+                  ("watchfile", "bool", "Watch link file"        , False      ),
+                  ("delete"   , "bool", "Delete added containers", False      ),
+                  ("file"     , "str" , "Link file"              , "links.txt")]
 
     __description__ = """Observe folder and file for changes and add container and links"""
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "RaNaN@pyload.de")]
 
 
-    def init(self):
-        self.interval = 30
-        self.init_periodical()
+    def activate(self):
+        self.start_periodical(30, threaded=True)
 
 
     def periodical(self):
@@ -40,7 +39,7 @@ class HotFolder(Addon):
             if not os.path.isdir(os.path.join(folder, "finished")):
                 os.makedirs(os.path.join(folder, "finished"))
 
-            if self.get_config('watch_file'):
+            if self.get_config('watchfile'):
                 with open(file, "a+") as f:
                     f.seek(0)
                     content = f.read().strip()
@@ -62,11 +61,11 @@ class HotFolder(Addon):
                 if not os.path.isfile(path) or f.endswith("~") or f.startswith("#") or f.startswith("."):
                     continue
 
-                newpath = os.path.join(folder, "finished", f if self.get_config('keep') else "tmp_" + f)
-                move(path, newpath)
+                newpath = os.path.join(folder, "finished", "tmp_" + f if self.get_config('delete') else f)
+                shutil.move(path, newpath)
 
                 self.log_info(_("Added %s from HotFolder") % f)
                 self.pyload.api.addPackage(f, [newpath], 1)
 
         except (IOError, OSError), e:
-            self.log_error(e)
+            self.log_error(e, trace=True)

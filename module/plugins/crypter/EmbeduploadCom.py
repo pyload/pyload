@@ -12,7 +12,8 @@ class EmbeduploadCom(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?embedupload\.com/\?d=.+'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"           , True         ),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"           , True         ),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package" , True         ),
                    ("preferedHoster"    , "str" , "Prefered hoster list (bar-separated)", "embedupload"),
                    ("ignoredHoster"     , "str" , "Ignored hoster list (bar-separated)" , ""           )]
@@ -30,7 +31,7 @@ class EmbeduploadCom(Crypter):
         tmp_links = []
 
         m = re.findall(self.LINK_PATTERN, self.html)
-        if m:
+        if m is not None:
             prefered_set = set(self.get_config('preferedHoster').split('|'))
             prefered_set = map(lambda s: s.lower().split('.')[0], prefered_set)
 
@@ -55,7 +56,7 @@ class EmbeduploadCom(Crypter):
             try:
                 header = self.load(link, just_header=True)
                 if 'location' in header:
-                    new_links.append(header['location'])
+                    new_links.append(header.get('location'))
             except BadHeader:
                 pass
         return new_links

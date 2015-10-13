@@ -41,11 +41,12 @@ class Checksum(Addon):
     __version__ = "0.22"
     __status__  = "testing"
 
-    __config__ = [("check_checksum", "bool"             , "Check checksum? (If False only size will be verified)", True   ),
-                  ("check_action" , "fail;retry;nothing", "What to do if check fails?"                           , "retry"),
-                  ("max_tries"    , "int"               , "Number of retries"                                    , 2      ),
-                  ("retry_action" , "fail;nothing"      , "What to do if all retries fail?"                      , "fail" ),
-                  ("wait_time"    , "int"               , "Time to wait before each retry (seconds)"             , 1      )]
+    __config__ = [("activated"     , "bool"              , "Activated"                                            , False  ),
+                  ("check_checksum", "bool"              , "Check checksum? (If False only size will be verified)", True   ),
+                  ("check_action"  , "fail;retry;nothing", "What to do if check fails?"                           , "retry"),
+                  ("max_tries"     , "int"               , "Number of retries"                                    , 2      ),
+                  ("retry_action"  , "fail;nothing"      , "What to do if all retries fail?"                      , "fail" ),
+                  ("wait_time"     , "int"               , "Time to wait before each retry (seconds)"             , 1      )]
 
     __description__ = """Verify downloaded file size and checksum"""
     __license__     = "GPLv3"
@@ -160,7 +161,8 @@ class Checksum(Addon):
                 return
         elif check_action == "nothing":
             return
-        pyfile.plugin.fail(msg=msg)
+
+        pyfile.plugin.fail(msg)
 
 
     def package_finished(self, pypack):
@@ -187,6 +189,7 @@ class Checksum(Addon):
                 local_file = fs_encode(fs_join(download_folder, data['NAME']))
                 algorithm = self.methods.get(file_type, file_type)
                 checksum = compute_checksum(local_file, algorithm)
+
                 if checksum is data['HASH']:
                     self.log_info(_('File integrity of "%s" verified by %s checksum (%s)') %
                                 (data['NAME'], algorithm, checksum))

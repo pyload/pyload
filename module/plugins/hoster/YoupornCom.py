@@ -12,6 +12,7 @@ class YoupornCom(Hoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?youporn\.com/watch/.+'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Youporn.com hoster plugin"""
     __license__     = "GPLv3"

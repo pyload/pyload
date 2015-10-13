@@ -13,7 +13,8 @@ class UloziskoSk(SimpleHoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?ulozisko\.sk/.+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Ulozisko.sk hoster plugin"""
     __license__     = "GPLv3"
@@ -35,7 +36,7 @@ class UloziskoSk(SimpleHoster):
         self.get_fileInfo()
 
         m = re.search(self.IMG_PATTERN, self.html)
-        if m:
+        if m is not None:
             self.link = "http://ulozisko.sk" + m.group(1)
         else:
             self.handle_free(pyfile)

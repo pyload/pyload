@@ -11,7 +11,7 @@ from module.utils import fs_encode, save_join as fs_join
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.47"
+    __version__ = "0.49"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"         , True ),
@@ -26,15 +26,17 @@ class ExternalScripts(Addon):
 
 
     def init(self):
-        self.info['oldip'] = None
         self.scripts = {}
 
-        self.event_list = ["archive_extract_failed", "archive_extracted"     ,
-                           "package_extract_failed", "package_extracted"     ,
-                           "all_archives_extracted", "all_archives_processed"]
-        self.event_map  = {'allDownloadsFinished' : "all_downloads_finished" ,
-                           'allDownloadsProcessed': "all_downloads_processed",
-                           'packageDeleted'       : "package_deleted"        }
+        self.event_map = {'allDownloadsFinished'  : "all_downloads_finished" ,
+                          'allDownloadsProcessed' : "all_downloads_processed",
+                          'packageDeleted'        : "package_deleted"        ,
+                          'archive_extract_failed': "archive_extract_failed" ,
+                          'archive_extracted'     : "archive_extracted"      ,
+                          'package_extract_failed': "package_extract_failed" ,
+                          'package_extracted'     : "package_extracted"      ,
+                          'all_archives_extracted': "all_archives_extracted" ,
+                          'all_archives_processed': "all_archives_processed" }
 
         folders = ["pyload_start", "pyload_restart", "pyload_stop",
                    "before_reconnect", "after_reconnect",
@@ -94,7 +96,8 @@ class ExternalScripts(Addon):
                 p.communicate()
 
         except Exception, e:
-            self.log_error(_("Runtime error: %s") % script, e or _("Unknown error"))
+            self.log_error(_("Runtime error: %s") % script,
+                           e or _("Unknown error"))
 
 
     def pyload_start(self):
@@ -114,13 +117,12 @@ class ExternalScripts(Addon):
         for script in self.scripts['before_reconnect']:
             args = [ip]
             self.call(script, args, lock)
-        self.info['oldip'] = ip
 
 
-    def after_reconnect(self, ip):
+    def after_reconnect(self, ip, oldip):
         lock = self.get_config('lock')
         for script in self.scripts['after_reconnect']:
-            args = [ip, self.info['oldip']]  #@TODO: Use built-in oldip in 0.4.10
+            args = [ip, oldip]
             self.call(script, args, lock)
 
 

@@ -5,18 +5,18 @@ import re
 import subprocess
 
 from module.plugins.internal.UnRar import ArchiveError, CRCError, PasswordError, UnRar, renice
-from module.utils import fs_encode, save_join as fs_join
+from module.utils import save_join as fs_join
 
 
 class SevenZip(UnRar):
     __name__    = "SevenZip"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __description__ = """7-Zip extractor plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("Michael Nowak" , ""                 ),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
+                       ("Michael Nowak" , None               )]
 
 
     CMD        = "7z"
@@ -38,7 +38,7 @@ class SevenZip(UnRar):
     @classmethod
     def find(cls):
         try:
-            if os.name == "nt":
+            if os.name is "nt":
                 cls.CMD = os.path.join(pypath, "7z.exe")
 
             p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -128,7 +128,7 @@ class SevenZip(UnRar):
             args.append("-y")
 
         #: Set a password
-        if "password" in kwargs and kwargs['password']:
+        if kwargs.get('password'):
             args.append("-p%s" % kwargs['password'])
         else:
             args.append("-p-")

@@ -10,6 +10,7 @@ class JunocloudMe(XFSHoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:\w+\.)?junocloud\.me/\w{12}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Junocloud.me hoster plugin"""
     __license__     = "GPLv3"

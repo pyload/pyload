@@ -13,7 +13,8 @@ class DateiTo(SimpleHoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Datei.to hoster plugin"""
     __license__     = "GPLv3"
@@ -35,7 +36,7 @@ class DateiTo(SimpleHoster):
         data = {'P': 'I', 'ID': self.info['pattern']['ID']}
         recaptcha = ReCaptcha(self)
 
-        for _i in xrange(10):
+        for _i in xrange(3):
             self.log_debug("URL", url, "POST", data)
             self.html = self.load(url, post=data)
             self.check_errors()
@@ -49,14 +50,15 @@ class DateiTo(SimpleHoster):
 
             m = re.search(self.DATA_PATTERN, self.html)
             if m is None:
-                self.error(_("data"))
+                self.error(_("Data pattern not found"))
+
             url = 'http://datei.to/' + m.group(1)
             data = dict(x.split('=') for x in m.group(2).split('&'))
 
             if url.endswith('recaptcha.php'):
                 data['recaptcha_response_field'], data['recaptcha_challenge_field'] = recaptcha.challenge()
         else:
-            self.fail(_("Too bad..."))
+            return
 
         self.link = self.html
 

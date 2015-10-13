@@ -12,6 +12,7 @@ class NosuploadCom(XFSHoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?nosupload\.com/\?d=\w{12}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Nosupload.com hoster plugin"""
     __license__     = "GPLv3"
@@ -25,18 +26,18 @@ class NosuploadCom(XFSHoster):
 
 
     def get_download_link(self):
-        #: stage1: press the "Free Download" button
+        #: Stage1: press the "Free Download" button
         data = self.get_post_parameters()
         self.html = self.load(self.pyfile.url, post=data)
 
-        #: stage2: wait some time and press the "Download File" button
+        #: Stage2: wait some time and press the "Download File" button
         data = self.get_post_parameters()
         wait_time = re.search(self.WAIT_PATTERN, self.html, re.M | re.S).group(1)
         self.log_debug("Hoster told us to wait %s seconds" % wait_time)
         self.wait(wait_time)
         self.html = self.load(self.pyfile.url, post=data)
 
-        #: stage3: get the download link
+        #: Stage3: get the download link
         return re.search(self.LINK_PATTERN, self.html, re.S).group(1)
 
 

@@ -4,7 +4,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class FilesonicComFolder(DeadCrypter):
-    __name__    = "FilesonicComFolder"
+    __name__    = "FilesonicCom"
     __type__    = "crypter"
     __version__ = "0.13"
     __status__  = "testing"

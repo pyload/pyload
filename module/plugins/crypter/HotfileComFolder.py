@@ -4,7 +4,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class HotfileComFolder(DeadCrypter):
-    __name__    = "HotfileComFolder"
+    __name__    = "HotfileCom"
     __type__    = "crypter"
     __version__ = "0.31"
     __status__  = "testing"

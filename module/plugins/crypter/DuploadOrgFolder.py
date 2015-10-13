@@ -4,7 +4,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class DuploadOrgFolder(DeadCrypter):
-    __name__    = "DuploadOrgFolder"
+    __name__    = "DuploadOrg"
     __type__    = "crypter"
     __version__ = "0.03"
     __status__  = "testing"

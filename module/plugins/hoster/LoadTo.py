@@ -17,7 +17,8 @@ class LoadTo(SimpleHoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?load\.to/\w+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Load.to hoster plugin"""
     __license__     = "GPLv3"
@@ -50,7 +51,7 @@ class LoadTo(SimpleHoster):
 
         #: Set Timer - may be obsolete
         m = re.search(self.WAIT_PATTERN, self.html)
-        if m:
+        if m is not None:
             self.wait(m.group(1))
 
         #: Load.to is using solvemedia captchas since ~july 2014:

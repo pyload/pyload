@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
 import random
 import re
 
@@ -14,10 +13,14 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.60"
+    __version__ = "0.65"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
+    __config__  = [("activated"       , "bool", "Activated"                                 , True),
+                   ("use_premium"     , "bool", "Use premium account if available"          , True),
+                   ("fallback_premium", "bool", "Fallback to free download if premium fails", True),
+                   ("chk_filesize"    , "bool", "Check file size"                           , True)]
 
     __description__ = """XFileSharing hoster plugin"""
     __license__     = "GPLv3"
@@ -26,7 +29,7 @@ class XFSHoster(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com"  )]
 
 
-    HOSTER_DOMAIN = None
+    PLUGIN_DOMAIN = None
 
     LEECH_HOSTER = True  #@NOTE: Should be default to False for safe, but I'm lazy...
 
@@ -57,30 +60,40 @@ class XFSHoster(SimpleHoster):
         self.resume_download = self.multiDL = self.premium
 
 
+    def set_xfs_cookie(self):
+        if not self.PLUGIN_DOMAIN:
+            self.log_error(_("Unable to set xfs cookie due missing PLUGIN_DOMAIN"))
+            return
+
+        cookie = (self.PLUGIN_DOMAIN, "lang", "english")
+
+        if isinstance(self.COOKIES, list) and cookie not in self.COOKIES:
+            self.COOKIES.insert(cookie)
+        else:
+            set_cookie(self.req.cj, *cookie)
+
+
     def prepare(self):
         """
         Initialize important variables
         """
-        if not self.HOSTER_DOMAIN:
+        if not self.PLUGIN_DOMAIN:
             if self.account:
                 account = self.account
             else:
-                account = self.pyload.accountManager.getAccountPlugin(self.__name__)
+                account = self.pyload.accountManager.getAccountPlugin(self.classname)
 
-            if account and hasattr(account, "HOSTER_DOMAIN") and account.HOSTER_DOMAIN:
-                self.HOSTER_DOMAIN = account.HOSTER_DOMAIN
+            if account and hasattr(account, "PLUGIN_DOMAIN") and account.PLUGIN_DOMAIN:
+                self.PLUGIN_DOMAIN = account.PLUGIN_DOMAIN
             else:
-                self.fail(_("Missing HOSTER_DOMAIN"))
+                self.fail(_("Missing PLUGIN_DOMAIN"))
 
         if self.COOKIES:
-            if isinstance(self.COOKIES, list) and (self.HOSTER_DOMAIN, "lang", "english") not in self.COOKIES:
-                self.COOKIES.insert((self.HOSTER_DOMAIN, "lang", "english"))
-            else:
-                set_cookie(self.req.cj, self.HOSTER_DOMAIN, "lang", "english")
+            self.set_xfs_cookie()
 
         if not self.LINK_PATTERN:
             pattern = r'(?:file: "(.+?)"|(https?://(?:www\.)?([^/]*?%s|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<])'
-            self.LINK_PATTERN = pattern % self.HOSTER_DOMAIN.replace('.', '\.')
+            self.LINK_PATTERN = pattern % self.PLUGIN_DOMAIN.replace('.', '\.')
 
         super(XFSHoster, self).prepare()
 
@@ -95,23 +108,19 @@ class XFSHoster(SimpleHoster):
             self.check_errors()
 
             m = re.search(self.LINK_PATTERN, self.html, re.S)
-            if m:
+            if m is not None:
                 break
 
             data = self.get_post_parameters()
 
-            self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
-
-            self.html = self.load(pyfile.url, post=data)
-
-            self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
+            self.html = self.load(pyfile.url, post=data, redirect=False)
 
             m = re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I)
             if m and not "op=" in m.group(1):
                 break
 
             m = re.search(self.LINK_PATTERN, self.html, re.S)
-            if m:
+            if m is not None:
                 break
         else:
             if 'op' in data:
@@ -129,7 +138,7 @@ class XFSHoster(SimpleHoster):
             self.fail(_("Only registered or premium users can use url leech feature"))
 
         #: Only tested with easybytez.com
-        self.html = self.load("http://www.%s/" % self.HOSTER_DOMAIN)
+        self.html = self.load("http://www.%s/" % self.PLUGIN_DOMAIN)
 
         action, inputs = self.parse_html_form()
 
@@ -150,7 +159,7 @@ class XFSHoster(SimpleHoster):
 
         action, inputs = self.parse_html_form('F1')
         if not inputs:
-            self.retry(msg=self.info['error'] if 'error' in self.info else _("TEXTAREA F1 not found"))
+            self.retry(msg=self.info.get('error') or _("TEXTAREA F1 not found"))
 
         self.log_debug(inputs)
 
@@ -163,7 +172,7 @@ class XFSHoster(SimpleHoster):
             self.retry(20, 3 * 60, _("Can not leech file"))
 
         elif 'today' in stmsg:
-            self.retry(delay=seconds_to_midnight(), msg=_("You've used all Leech traffic today"))
+            self.retry(wait=seconds_to_midnight(), msg=_("You've used all Leech traffic today"))
 
         else:
             self.fail(stmsg)
@@ -176,7 +185,7 @@ class XFSHoster(SimpleHoster):
         header = self.load(m.group(1), just_header=True)
 
         if 'location' in header:  #: Direct download link
-            self.link = header['location']
+            self.link = header.get('location')
 
 
     def get_post_parameters(self):
@@ -188,7 +197,7 @@ class XFSHoster(SimpleHoster):
         if not inputs:
             action, inputs = self.parse_html_form('F1')
             if not inputs:
-                self.retry(msg=self.info['error'] if 'error' in self.info else _("TEXTAREA F1 not found"))
+                self.retry(msg=self.info.get('error') or _("TEXTAREA F1 not found"))
 
         self.log_debug(inputs)
 
@@ -202,9 +211,10 @@ class XFSHoster(SimpleHoster):
 
             if not self.premium:
                 m = re.search(self.WAIT_PATTERN, self.html)
-                if m:
+                if m is not None:
                     wait_time = int(m.group(1))
-                    self.set_wait(wait_time, False)
+                    self.set_wait(wait_time)
+                    self.set_reconnect(False)
 
                 self.handle_captcha(inputs)
                 self.wait()
@@ -223,13 +233,13 @@ class XFSHoster(SimpleHoster):
 
     def handle_captcha(self, inputs):
         m = re.search(self.CAPTCHA_PATTERN, self.html)
-        if m:
+        if m is not None:
             captcha_url = m.group(1)
             inputs['code'] = self.captcha.decrypt(captcha_url)
             return
 
         m = re.search(self.CAPTCHA_BLOCK_PATTERN, self.html, re.S)
-        if m:
+        if m is not None:
             captcha_div = m.group(1)
             numerals    = re.findall(r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
 
@@ -244,7 +254,7 @@ class XFSHoster(SimpleHoster):
         try:
             captcha_key = re.search(self.RECAPTCHA_PATTERN, self.html).group(1)
 
-        except AttributeError:
+        except Exception:
             captcha_key = recaptcha.detect_key()
 
         else:
@@ -258,7 +268,7 @@ class XFSHoster(SimpleHoster):
         try:
             captcha_key = re.search(self.SOLVEMEDIA_PATTERN, self.html).group(1)
 
-        except AttributeError:
+        except Exception:
             captcha_key = solvemedia.detect_key()
 
         else:

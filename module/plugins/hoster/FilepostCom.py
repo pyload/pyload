@@ -11,11 +11,12 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilepostCom(SimpleHoster):
     __name__    = "FilepostCom"
     __type__    = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:filepost\.com/files|fp\.io)/(?P<ID>[^/]+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Filepost.com hoster plugin"""
     __license__     = "GPLv3"
@@ -64,26 +65,19 @@ class FilepostCom(SimpleHoster):
                 self.link = self.get_json_response(get_dict, post_dict, 'link')
 
                 if not self.link:
-                    self.fail(_("Incorrect password"))
+                    self.fail(_("Wrong password"))
             else:
                 self.fail(_("No password found"))
 
         else:
-            #: Solve recaptcha
-            recaptcha = ReCaptcha(self)
+            get_dict['JsHttpRequest'] = str(int(time.time() * 10000)) + '-xml'
+            self.link = self.get_json_response(get_dict, post_dict, 'link')
 
-            for i in xrange(5):
-                get_dict['JsHttpRequest'] = str(int(time.time() * 10000)) + '-xml'
-                if i:
-                    post_dict['recaptcha_response_field'], post_dict['recaptcha_challenge_field'] = recaptcha.challenge(
-                        captcha_key)
-                    self.log_debug(u"RECAPTCHA: %s : %s : %s" % (
-                        captcha_key, post_dict['recaptcha_challenge_field'], post_dict['recaptcha_response_field']))
-
+            if not self.link:
+                #: Solve recaptcha
+                recaptcha = ReCaptcha(self)
+                post_dict['recaptcha_response_field'], post_dict['recaptcha_challenge_field'] = recaptcha.challenge(captcha_key)
                 self.link = self.get_json_response(get_dict, post_dict, 'link')
-
-            else:
-                self.fail(_("Invalid captcha"))
 
 
     def get_json_response(self, get_dict, post_dict, field):
@@ -101,8 +95,8 @@ class FilepostCom(SimpleHoster):
         if 'error' in res['js']:
 
             if res['js']['error'] == "download_delay":
-                self.retry(wait_time=res['js']['params']['next_download'])
-                #: ~? self.retry(wait_time=js_answer['params']['next_download'])
+                self.retry(wait=res['js']['params']['next_download'])
+                #: ~? self.retry(wait=js_answer['params']['next_download'])
 
             elif 'Wrong file password' in res['js']['error'] \
                  or 'You entered a wrong CAPTCHA code' in res['js']['error'] \

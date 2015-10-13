@@ -10,11 +10,12 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilecloudIo(SimpleHoster):
     __name__    = "FilecloudIo"
     __type__    = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(?:filecloud\.io|ifile\.it|mihd\.net)/(?P<ID>\w+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Filecloud.io hoster plugin"""
     __license__     = "GPLv3"
@@ -64,7 +65,7 @@ class FilecloudIo(SimpleHoster):
         response, challenge = recaptcha.challenge(captcha_key)
         self.account.form_data = {'recaptcha_challenge_field': challenge,
                                   'recaptcha_response_field' : response}
-        self.account.relogin(self.user)
+        self.account.relogin()
         self.retry(2)
 
         json_url = "http://filecloud.io/download-request.json"
@@ -78,22 +79,18 @@ class FilecloudIo(SimpleHoster):
         self.log_debug(res)
         if res['captcha']:
             data['ctype'] = "recaptcha"
+            data['recaptcha_response'], data['recaptcha_challenge'] = recaptcha.challenge(captcha_key)
 
-            for _i in xrange(5):
-                data['recaptcha_response'], data['recaptcha_challenge'] = recaptcha.challenge(captcha_key)
+            json_url = "http://filecloud.io/download-request.json"
+            res = self.load(json_url, post=data)
+            self.log_debug(res)
+            res = json_loads(res)
 
-                json_url = "http://filecloud.io/download-request.json"
-                res = self.load(json_url, post=data)
-                self.log_debug(res)
-                res = json_loads(res)
-
-                if "retry" in res and res['retry']:
-                    self.captcha.invalid()
-                else:
-                    self.captcha.correct()
-                    break
+            if "retry" in res and res['retry']:
+                self.retry_captcha()
             else:
-                self.fail(_("Incorrect captcha"))
+                self.captcha.correct()
+
 
         if res['dl']:
             self.html = self.load('http://filecloud.io/download.html')
@@ -111,7 +108,7 @@ class FilecloudIo(SimpleHoster):
 
 
     def handle_premium(self, pyfile):
-        akey = self.account.get_data(self.user)['akey']
+        akey = self.account.get_data('akey')
         ukey = self.info['pattern']['ID']
         self.log_debug("Akey: %s | Ukey: %s" % (akey, ukey))
         rep = self.load("http://api.filecloud.io/api-fetch_download_url.api",

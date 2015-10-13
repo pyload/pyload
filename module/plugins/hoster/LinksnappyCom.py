@@ -10,11 +10,12 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class LinksnappyCom(MultiHoster):
     __name__    = "LinksnappyCom"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:[^/]+\.)?linksnappy\.com'
-    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium" , "bool", "Use premium account if available"    , True),
                    ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Linksnappy.com multi-hoster plugin"""
@@ -26,8 +27,8 @@ class LinksnappyCom(MultiHoster):
         host        = self._get_host(pyfile.url)
         json_params = json_dumps({'link'    : pyfile.url,
                                   'type'    : host,
-                                  'username': self.user,
-                                  'password': self.account.get_info(self.user)['login']['password']})
+                                  'username': self.account.user,
+                                  'password': self.account.get_login('password')})
 
         r = self.load("http://linksnappy.com/api/linkgen",
                       post={'genLinks': json_params})
@@ -46,7 +47,7 @@ class LinksnappyCom(MultiHoster):
     @staticmethod
     def _get_host(url):
         host = urlparse.urlsplit(url).netloc
-        return re.search(r'[\w-]+\.\w+$', host).group(0)
+        return re.search(r'[\w\-]+\.\w+$', host).group(0)
 
 
 getInfo = create_getInfo(LinksnappyCom)

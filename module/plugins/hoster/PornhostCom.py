@@ -12,6 +12,7 @@ class PornhostCom(Hoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?pornhost\.com/(\d+/\d+\.html|\d+)'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Pornhost.com hoster plugin"""
     __license__     = "GPLv3"
@@ -49,7 +50,7 @@ class PornhostCom(Hoster):
                     url = re.search(r'"http://file\d+\.pornhost\.com/\d+/.*?"',
                                     self.html)  #@TODO: fix this one since it doesn't match
 
-        return url.group(1).strip()
+        return url.group(1)
 
 
     def get_file_name(self):

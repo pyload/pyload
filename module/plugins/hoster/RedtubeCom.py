@@ -13,6 +13,7 @@ class RedtubeCom(Hoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?redtube\.com/\d+'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Redtube.com hoster plugin"""
     __license__     = "GPLv3"

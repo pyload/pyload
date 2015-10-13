@@ -1,17 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Hoster import Hoster, parse_name
+from module.plugins.internal.Base import Base, check_abort, create_getInfo, parse_fileInfo
+from module.plugins.internal.Plugin import parse_name
 from module.utils import save_path as safe_filename
 
 
-class Crypter(Hoster):
+class Crypter(Base):
     __name__    = "Crypter"
     __type__    = "crypter"
-    __version__ = "0.08"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides pyload.config.get("general", "folder_per_package")
+    __config__  = [("activated"            , "bool", "Activated"                          , True),
+                   ("use_premium"          , "bool", "Use premium account if available"   , True),
+                   ("use_subfolder"        , "bool", "Save package to subfolder"          , True),  #: Overrides pyload.config.get("general", "folder_per_package")
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Base decrypter plugin"""
@@ -19,17 +22,14 @@ class Crypter(Hoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    html = None  #: Last html loaded  #@TODO: Move to Hoster
+    def init_base(self):
+        self.packages = []  #: Put all packages here. It's a list of tuples like: ( name, [list of links], folder )
+        self.urls     = []  #: List of urls, pyLoad will generate packagenames
 
 
-    def __init__(self, pyfile):
-        super(Crypter, self).__init__(pyfile)
-
-        #: Put all packages here. It's a list of tuples like: ( name, [list of links], folder )
+    def setup_base(self):
         self.packages = []
-
-        #: List of urls, pyLoad will generate packagenames
-        self.urls = []
+        self.urls     = []
 
 
     def process(self, pyfile):
@@ -48,6 +48,9 @@ class Crypter(Hoster):
 
 
     def decrypt(self, pyfile):
+        """
+        The "main" method of every crypter plugin, you **have to** overwrite it
+        """
         raise NotImplementedError
 
 
@@ -72,18 +75,20 @@ class Crypter(Hoster):
         subfolder_per_package = self.get_config('subfolder_per_package', True)
 
         for name, links, folder in self.packages:
-            self.log_debug("Parsed package: %s" % name,
-                          "%d links" % len(links),
-                          "Saved to folder: %s" % folder if folder else "Saved to download folder")
+            self.log_info(_("Parsed package: %s")  % name,
+                          _("Found %d links")      % len(links),
+                          _("Saved to folder: %s") % folder if folder else _("Saved to default download folder"))
 
             links = map(self.fixurl, links)
+            self.log_debug("LINKS for package " + name, *links)
+
             pid = self.pyload.api.addPackage(name, links, package_queue)
 
             if package_password:
                 self.pyload.api.setPackageData(pid, {'password': package_password})
 
             #: Workaround to do not break API addPackage method
-            set_folder = lambda x: self.pyload.api.setPackageData(pid, {'folder': safe_filename(x) or ""})
+            set_folder = lambda x="": self.pyload.api.setPackageData(pid, {'folder': safe_filename(x)})
 
             if use_subfolder:
                 if not subfolder_per_package:
@@ -98,4 +103,4 @@ class Crypter(Hoster):
                     self.log_debug("Set package %(name)s folder to: %(folder)s" % {'name': name, 'folder': folder})
 
             elif folder_per_package:
-                set_folder(None)
+                set_folder()

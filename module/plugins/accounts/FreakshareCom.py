@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class FreakshareCom(Account):
     __name__    = "FreakshareCom"
     __type__    = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __description__ = """Freakshare.com account plugin"""
@@ -17,7 +17,7 @@ class FreakshareCom(Account):
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
-    def grab_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         premium = False
         validuntil  = None
         trafficleft = None
@@ -25,8 +25,8 @@ class FreakshareCom(Account):
         html = self.load("http://freakshare.com/")
 
         try:
-            m = re.search(r'ltig bis:</td>\s*<td><b>([\d.:-]+)</b></td>', html, re.M)
-            validuntil = time.mktime(time.strptime(m.group(1).strip(), "%d.%m.%Y - %H:%M"))
+            m = re.search(r'ltig bis:</td>\s*<td><b>([\d.:\-]+)</b></td>', html, re.M)
+            validuntil = time.mktime(time.strptime(m.group(1), "%d.%m.%Y - %H:%M"))
 
         except Exception:
             pass
@@ -41,7 +41,7 @@ class FreakshareCom(Account):
         return {'premium': premium, 'validuntil': validuntil, 'trafficleft': trafficleft}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         self.load("http://freakshare.com/index.php?language=EN")
 
         html = self.load("https://freakshare.com/login.html",

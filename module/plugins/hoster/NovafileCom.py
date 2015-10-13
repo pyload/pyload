@@ -14,6 +14,7 @@ class NovafileCom(XFSHoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?novafile\.com/\w{12}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Novafile.com hoster plugin"""
     __license__     = "GPLv3"

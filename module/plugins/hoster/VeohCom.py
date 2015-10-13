@@ -12,7 +12,8 @@ class VeohCom(SimpleHoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?veoh\.com/(tv/)?(watch|videos)/(?P<ID>v\w+)'
-    __config__  = [("use_premium", "bool"         , "Use premium account if available", True  ),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool"         , "Use premium account if available", True  ),
                    ("quality"    , "Low;High;Auto", "Quality"                         , "Auto")]
 
     __description__ = """Veoh.com hoster plugin"""
@@ -42,7 +43,7 @@ class VeohCom(SimpleHoster):
         for q in quality:
             pattern = r'"fullPreviewHash%sPath":"(.+?)"' % q
             m = re.search(pattern, self.html)
-            if m:
+            if m is not None:
                 pyfile.name += ".mp4"
                 self.link = m.group(1).replace("\\", "")
                 return

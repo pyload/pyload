@@ -12,7 +12,8 @@ class DebridItaliaCom(MultiHoster):
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?debriditalia\.com/dl/\d+'
-    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium" , "bool", "Use premium account if available"    , True),
                    ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Debriditalia.com multi-hoster plugin"""
@@ -29,7 +30,7 @@ class DebridItaliaCom(MultiHoster):
                               get={'generate': "on", 'link': pyfile.url, 'p': self.get_password()})
 
         if "ERROR:" not in self.html:
-            self.link = self.html.strip()
+            self.link = self.html
         else:
             self.info['error'] = re.search(r'ERROR:(.*)', self.html).group(1).strip()
 

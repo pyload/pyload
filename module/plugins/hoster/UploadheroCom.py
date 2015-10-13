@@ -16,7 +16,8 @@ class UploadheroCom(SimpleHoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?uploadhero\.com?/dl/\w+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """UploadHero.co plugin"""
     __license__     = "GPLv3"
@@ -50,14 +51,14 @@ class UploadheroCom(SimpleHoster):
                               get={'code': captcha})
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
-        if m:
+        if m is not None:
             self.link = m.group(1) or m.group(2)
             self.wait(50)
 
 
     def check_errors(self):
         m = re.search(self.IP_BLOCKED_PATTERN, self.html)
-        if m:
+        if m is not None:
             self.html = self.load(urlparse.urljoin("http://uploadhero.co/", m.group(1)))
 
             m = re.search(self.IP_WAIT_PATTERN, self.html)

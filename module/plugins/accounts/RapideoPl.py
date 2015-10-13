@@ -6,13 +6,18 @@ import time
 
 from module.common.json_layer import json_loads
 from module.plugins.internal.Account import Account
+# from module.plugins.internal.MultiAccount import MultiAccount
 
 
 class RapideoPl(Account):
     __name__    = "RapideoPl"
     __type__    = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
+
+    __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
+                  ("mh_list"    , "str"                , "Hoster list (comma separated)", ""   ),
+                  ("mh_interval", "int"                , "Reload interval in minutes"   , 60   )]
 
     __description__ = "Rapideo.pl account plugin"
     __license__     = "GPLv3"
@@ -27,13 +32,16 @@ class RapideoPl(Account):
                  'loc'     : "1"    ,
                  'info'    : "1"    }
 
-    _req = None
-    _usr = None
-    _pwd = None
+    def grab_hosters(self, user, password, data):
+        hostings         = json_loads(self.load("https://www.rapideo.pl/clipboard.php?json=3").strip())
+        hostings_domains = [domain for row in hostings for domain in row['domains'] if row['sdownload'] == "0"]
+
+        self.log_debug(hostings_domains)
+
+        return hostings_domains
 
 
-    def grab_info(self, user, password, data, req):
-        self._req = req
+    def grab_info(self, user, password, data):
         try:
             result = json_loads(self.run_auth_query())
 
@@ -55,10 +63,9 @@ class RapideoPl(Account):
                 'premium'    : premium     }
 
 
-    def login(self, user, password, data, req):
-        self._usr = user
-        self._pwd = hashlib.md5(password).hexdigest()
-        self._req = req
+    def signin(self, user, password, data):
+        data['usr'] = user
+        data['pwd'] = hashlib.md5(password).hexdigest()
 
         try:
             response = json_loads(self.run_auth_query())
@@ -69,14 +76,11 @@ class RapideoPl(Account):
         if "errno" in response.keys():
             self.fail_login()
 
-        data['usr'] = self._usr
-        data['pwd'] = self._pwd
-
 
     def create_auth_query(self):
         query = self.API_QUERY
-        query['username'] = self._usr
-        query['password'] = self._pwd
+        query['username'] = self.info['data']['usr']
+        query['password'] = self.info['data']['pwd']
         return query
 
 

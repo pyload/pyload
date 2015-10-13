@@ -11,6 +11,7 @@ class GooGl(SimpleCrypter):
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?goo\.gl/([a-zA-Z]+/)?\w+'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Goo.gl decrypter plugin"""
     __license__     = "GPLv3"

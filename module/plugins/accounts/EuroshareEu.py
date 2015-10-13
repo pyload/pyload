@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class EuroshareEu(Account):
     __name__    = "EuroshareEu"
     __type__    = "account"
-    __version__ = "0.05"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __description__ = """Euroshare.eu account plugin"""
@@ -17,8 +17,7 @@ class EuroshareEu(Account):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    def grab_info(self, user, password, data, req):
-        self.relogin(user)
+    def grab_info(self, user, password, data):
         html = self.load("http://euroshare.eu/customer-zone/settings/")
 
         m = re.search('id="input_expire_date" value="(\d+\.\d+\.\d+ \d+:\d+)"', html)
@@ -32,7 +31,7 @@ class EuroshareEu(Account):
         return {'validuntil': validuntil, 'trafficleft': -1, 'premium': premium}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         html = self.load('http://euroshare.eu/customer-zone/login/',
                          post={'trvale'  : "1",
                                'login'   : user,

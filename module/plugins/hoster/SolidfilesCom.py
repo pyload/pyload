@@ -13,6 +13,7 @@ class SolidfilesCom(SimpleHoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?solidfiles\.com\/d/\w+'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Solidfiles.com hoster plugin"""
     __license__     = "GPLv3"

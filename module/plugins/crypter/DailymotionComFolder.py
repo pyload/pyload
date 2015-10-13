@@ -9,13 +9,14 @@ from module.utils import save_join as fs_join
 
 
 class DailymotionComFolder(Crypter):
-    __name__    = "DailymotionComFolder"
+    __name__    = "DailymotionCom"
     __type__    = "crypter"
     __version__ = "0.03"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Dailymotion.com channel & playlist decrypter"""
@@ -83,9 +84,8 @@ class DailymotionComFolder(Crypter):
 
 
     def decrypt(self, pyfile):
-        m = re.match(self.__pattern__, pyfile.url)
-        m_id = m.group('ID')
-        m_type = m.group('TYPE')
+        m_id   = self.info['pattern']['ID']
+        m_type = self.info['pattern']['TYPE']
 
         if m_type == "playlist":
             self.log_debug("Url recognized as Playlist")
@@ -103,4 +103,4 @@ class DailymotionComFolder(Crypter):
             p_videos = self.get_videos(p_id)
             p_folder = fs_join(self.pyload.config.get("general", "download_folder"), p_owner, p_name)
             self.log_debug("%s video\s found on playlist \"%s\"" % (len(p_videos), p_name))
-            self.packages.append((p_name, p_videos, p_folder))  #: Folder is NOT recognized by pyload 0.4.9!
+            self.packages.append((p_name, p_videos, p_folder))  #@NOTE: Folder is NOT recognized by pyload 0.4.9!

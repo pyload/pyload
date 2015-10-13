@@ -7,10 +7,11 @@ from module.plugins.internal.Addon import Addon
 class DeleteFinished(Addon):
     __name__    = "DeleteFinished"
     __type__    = "hook"
-    __version__ = "1.14"
+    __version__ = "1.16"
     __status__  = "testing"
 
-    __config__ = [("interval"  , "int" , "Check interval in hours"          , 72   ),
+    __config__ = [("activated" , "bool", "Activated"                        , False),
+                  ("interval"  , "int" , "Check interval in hours"          , 72   ),
                   ("deloffline", "bool", "Delete package with offline links", False)]
 
     __description__ = """Automatically delete all finished packages from queue"""
@@ -18,13 +19,11 @@ class DeleteFinished(Addon):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    MIN_CHECK_INTERVAL = 1 * 60 * 60  #: 1 hour
+    PERIODICAL_INTERVAL = 1 * 60 * 60  #: 1 hour
 
 
-    ## overwritten methods ##
-    def init(self):
-        # self.event_map = {'pluginConfigChanged': "plugin_config_changed"}
-        self.interval = self.MIN_CHECK_INTERVAL
+    def activate(self):
+        self.start_periodical()
 
 
     def periodical(self):
@@ -38,21 +37,13 @@ class DeleteFinished(Addon):
             self.add_event('package_finished', self.wakeup)
 
 
-    # def plugin_config_changed(self, plugin, name, value):
-        # if name == "interval" and value is not self.interval:
-            # self.interval = value * 3600
-            # self.init_periodical()
-
-
     def deactivate(self):
         self.manager.removeEvent('package_finished', self.wakeup)
 
 
     def activate(self):
         self.info['sleep'] = True
-        # interval = self.get_config('interval')
-        # self.plugin_config_changed(self.__name__, 'interval', interval)
-        self.interval = max(self.MIN_CHECK_INTERVAL, self.get_config('interval') * 60 * 60)
+        self.interval = max(self.PERIODICAL_INTERVAL, self.get_config('interval') * 60 * 60)
         self.add_event('package_finished', self.wakeup)
 
 

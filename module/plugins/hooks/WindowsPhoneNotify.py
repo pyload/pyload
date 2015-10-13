@@ -9,10 +9,11 @@ from module.plugins.internal.Addon import Addon, Expose
 class WindowsPhoneNotify(Addon):
     __name__    = "WindowsPhoneNotify"
     __type__    = "hook"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "testing"
 
-    __config__ = [("push-id"        , "str" , "Push ID"                                  , ""   ),
+    __config__ = [("activated"      , "bool", "Activated"                                , False),
+                  ("push-id"        , "str" , "Push ID"                                  , ""   ),
                   ("push-url"       , "str" , "Push url"                                 , ""   ),
                   ("notifycaptcha"  , "bool", "Notify captcha request"                   , True ),
                   ("notifypackage"  , "bool", "Notify package finished"                  , True ),
@@ -30,8 +31,8 @@ class WindowsPhoneNotify(Addon):
 
 
     def init(self):
-        self.event_list = ["plugin_updated"]
-        self.event_map  = {'allDownloadsProcessed': "all_downloads_processed"}
+        self.event_map = {'allDownloadsProcessed': "all_downloads_processed",
+                          'plugin_updated'       : "plugin_updated"         }
 
         self.last_notify   = 0
         self.notifications = 0

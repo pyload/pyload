@@ -10,7 +10,7 @@ from module.plugins.internal.Plugin import set_cookie
 class Keep2ShareCc(Account):
     __name__    = "Keep2ShareCc"
     __type__    = "account"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __description__ = """Keep2Share.cc account plugin"""
@@ -25,7 +25,7 @@ class Keep2ShareCc(Account):
     LOGIN_FAIL_PATTERN = r'Please fix the following input errors'
 
 
-    def grab_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         validuntil  = None
         trafficleft = -1
         premium     = False
@@ -33,7 +33,7 @@ class Keep2ShareCc(Account):
         html = self.load("http://keep2share.cc/site/profile.html")
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
-        if m:
+        if m is not None:
             expiredate = m.group(1).strip()
             self.log_debug("Expire date: " + expiredate)
 
@@ -45,24 +45,24 @@ class Keep2ShareCc(Account):
                     validuntil = time.mktime(time.strptime(expiredate, "%Y.%m.%d"))
 
                 except Exception, e:
-                    self.log_error(e)
+                    self.log_error(e, trace=True)
 
                 else:
                     premium = True if validuntil > time.mktime(time.gmtime()) else False
 
             m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-            if m:
+            if m is not None:
                 try:
                     trafficleft = self.parse_traffic(m.group(1))
 
                 except Exception, e:
-                    self.log_error(e)
+                    self.log_error(e, trace=True)
 
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 
 
-    def login(self, user, password, data, req):
-        set_cookie(req.cj, "keep2share.cc", "lang", "en")
+    def signin(self, user, password, data):
+        set_cookie(self.req.cj, "keep2share.cc", "lang", "en")
 
         html = self.load("https://keep2share.cc/login.html",
                          post={'LoginForm[username]'  : user,

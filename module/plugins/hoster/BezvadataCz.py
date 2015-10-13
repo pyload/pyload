@@ -8,11 +8,12 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class BezvadataCz(SimpleHoster):
     __name__    = "BezvadataCz"
     __type__    = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?bezvadata\.cz/stahnout/.+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """BezvaData.cz hoster plugin"""
     __license__     = "GPLv3"
@@ -39,24 +40,16 @@ class BezvadataCz(SimpleHoster):
         #: Captcha form
         self.html = self.load(url)
         self.check_errors()
-        for _i in xrange(5):
-            action, inputs = self.parse_html_form('frm-stahnoutFreeForm')
-            if not inputs:
-                self.error(_("FreeForm"))
 
-            m = re.search(r'<img src="data:image/png;base64,(.*?)"', self.html)
-            if m is None:
-                self.error(_("Wrong captcha image"))
+        action, inputs = self.parse_html_form('frm-stahnoutFreeForm')
+        if not inputs:
+            self.error(_("FreeForm"))
 
-            inputs['captcha'] = self.captcha._decrypt(m.group(1).decode('base64'), input_type='png')
+        m = re.search(r'<img src="data:image/png;base64,(.*?)"', self.html)
+        if m is None:
+            self.retry_captcha()
 
-            if '<img src="data:image/png;base64' in self.html:
-                self.captcha.invalid()
-            else:
-                self.captcha.correct()
-                break
-        else:
-            self.fail(_("No valid captcha code entered"))
+        inputs['captcha'] = self.captcha.decrypt_image(m.group(1).decode('base64'), input_type='png')
 
         #: Download url
         self.html = self.load("http://bezvadata.cz%s" % action, post=inputs)

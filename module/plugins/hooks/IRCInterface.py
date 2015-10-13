@@ -2,12 +2,12 @@
 
 import pycurl
 import re
+import select
 import socket
 import ssl
 import time
 import traceback
 
-from select import select
 from threading import Thread
 
 from module.Api import PackageDoesNotExists, FileDoesNotExists
@@ -18,10 +18,11 @@ from module.utils import formatSize
 class IRCInterface(Thread, Addon):
     __name__    = "IRCInterface"
     __type__    = "hook"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
-    __config__ = [("host"     , "str" , "IRC-Server Address"                           , "Enter your server here!"),
+    __config__ = [("activated", "bool", "Activated"                                    , False                    ),
+                  ("host"     , "str" , "IRC-Server Address"                           , "Enter your server here!"),
                   ("port"     , "int" , "IRC-Server Port"                              , 6667                     ),
                   ("ident"    , "str" , "Clients ident"                                , "pyload-irc"             ),
                   ("realname" , "str" , "Realname"                                     , "pyload-irc"             ),
@@ -37,9 +38,9 @@ class IRCInterface(Thread, Addon):
     __authors__     = [("Jeix", "Jeix@hasnomail.com")]
 
 
-    def __init__(self, core, manager):
+    def __init__(self, *args, **kwargs):
         Thread.__init__(self)
-        Addon.__init__(self, core, manager)
+        Addon.__init__(self, *args, **kwargs)
         self.setDaemon(True)
 
 
@@ -105,7 +106,8 @@ class IRCInterface(Thread, Addon):
 
         except IRCError, ex:
             self.sock.send("QUIT :byebye\r\n")
-            traceback.print_exc()
+            if self.pyload.debug:
+                traceback.print_exc()
             self.sock.close()
 
 
@@ -113,7 +115,7 @@ class IRCInterface(Thread, Addon):
         readbuffer = ""
         while True:
             time.sleep(1)
-            fdset = select([self.sock], [], [], 0)
+            fdset = select.select([self.sock], [], [], 0)
             if self.sock not in fdset[0]:
                 continue
 
@@ -190,7 +192,7 @@ class IRCInterface(Thread, Addon):
                 self.response(line, msg['origin'])
 
         except Exception, e:
-            self.log_error(e)
+            self.log_error(e, trace=True)
 
 
     def response(self, msg, origin=""):

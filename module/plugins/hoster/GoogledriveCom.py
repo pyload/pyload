@@ -17,7 +17,8 @@ class GoogledriveCom(SimpleHoster):
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(drive|docs)\.google\.com/(file/d/\w+|uc\?.*id=)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Drive.google.com hoster plugin"""
     __license__     = "GPLv3"
@@ -41,17 +42,16 @@ class GoogledriveCom(SimpleHoster):
             m = re.search(self.LINK_FREE_PATTERN, self.html)
 
             if m is None:
-                self.error(_("Free download link not found"))
+                return
 
+            link = self.fixurl(link, "https://docs.google.com/")
+            direct_link = self.direct_link(link, False)
+
+            if not direct_link:
+                self.html = self.load(link)
             else:
-                link = self.fixurl(link, "https://docs.google.com/")
-                direct_link = self.direct_link(link, False)
-
-                if not direct_link:
-                    self.html = self.load(link)
-                else:
-                    self.link = direct_link
-                    break
+                self.link = direct_link
+                break
 
 
 getInfo = create_getInfo(GoogledriveCom)

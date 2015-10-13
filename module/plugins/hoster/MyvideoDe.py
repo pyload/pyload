@@ -13,6 +13,7 @@ class MyvideoDe(Hoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?myvideo\.de/watch/'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Myvideo.de hoster plugin"""
     __license__     = "GPLv3"

@@ -12,6 +12,7 @@ class TusfilesNet(XFSHoster):
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/\w{12}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Tusfiles.net hoster plugin"""
     __license__     = "GPLv3"

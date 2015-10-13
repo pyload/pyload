@@ -23,15 +23,17 @@ def threaded(fn):
 class Addon(Plugin):
     __name__    = "Addon"
     __type__    = "hook"  #@TODO: Change to `addon` in 0.4.10
-    __version__ = "0.06"
+    __version__ = "0.13"
     __status__  = "testing"
 
-    __config__   = []  #: [("name", "type", "desc", "default")]
     __threaded__ = []  #@TODO: Remove in 0.4.10
 
     __description__ = """Base addon plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+
+
+    PERIODICAL_INTERVAL = None
 
 
     def __init__(self, core, manager):
@@ -47,18 +49,14 @@ class Addon(Plugin):
         #: List of events the plugin can handle, name the functions exactly like eventname.
         self.event_list = []  #@NOTE: dont make duplicate entries in event_map
 
+        self.info['ip'] = None  #@TODO: Remove in 0.4.10
+
         #: Callback of periodical job task, used by HookManager
         self.cb       = None
-        self.interval = 60
+        self.interval = self.PERIODICAL_INTERVAL
 
         self.init()
         self.init_events()
-
-
-    #@TODO: Remove in 0.4.10
-    def _log(self, level, plugintype, pluginname, messages):
-        plugintype = "addon" if plugintype is "hook" else plugintype
-        return super(Addon, self)._log(level, plugintype, pluginname, messages)
 
 
     def init_events(self):
@@ -82,31 +80,58 @@ class Addon(Plugin):
             self.event_list = None
 
 
-    def init_periodical(self, delay=0, threaded=False):
-        self.cb = self.pyload.scheduler.addJob(max(0, delay), self._periodical, [threaded], threaded=threaded)
+    def set_interval(self, value):
+        newinterval = max(0, self.PERIODICAL_INTERVAL, value)
+
+        if newinterval != value:
+            return False
+
+        if newinterval != self.interval:
+            self.interval = newinterval
+
+        return True
 
 
-    #: Deprecated method, use `init_periodical` instead (Remove in 0.4.10)
-    def initPeriodical(self, *args, **kwargs):
-        return self.init_periodical(*args, **kwargs)
+    def start_periodical(self, interval=None, threaded=False, delay=None):
+        if interval is not None and self.set_interval(interval) is False:
+            return False
+        else:
+            self.cb = self.pyload.scheduler.addJob(max(1, delay), self._periodical, [threaded], threaded=threaded)
+            return True
+
+
+    def restart_periodical(self, *args, **kwargs):
+        self.stop_periodical()
+        return self.start_periodical(*args, **kwargs)
+
+
+    def stop_periodical(self):
+        try:
+            return self.pyload.scheduler.removeJob(self.cb)
+        finally:
+            self.cb = None
 
 
     def _periodical(self, threaded):
-        if self.interval < 0:
-            self.cb = None
-            return
-
         try:
             self.periodical()
 
         except Exception, e:
-            self.log_error(_("Error executing periodical task: %s") % e)
+            self.log_error(_("Error executing periodical task: %s") % e, trace=True)
 
-        self.cb = self.pyload.scheduler.addJob(self.interval, self._periodical, [threaded], threaded=threaded)
+        self.restart_periodical(threaded=threaded, delay=self.interval)
 
 
     def periodical(self):
-        pass
+        raise NotImplementedError
+
+
+    def save_info(self):
+        self.store("info", self.info)
+
+
+    def restore_info(self):
+        self.retrieve("info", self.info)
 
 
     @property
@@ -131,6 +156,7 @@ class Addon(Plugin):
 
     #: Deprecated method, use `deactivate` instead (Remove in 0.4.10)
     def unload(self, *args, **kwargs):
+        self.save_info()
         return self.deactivate(*args, **kwargs)
 
 
@@ -143,6 +169,7 @@ class Addon(Plugin):
 
     #: Deprecated method, use `activate` instead (Remove in 0.4.10)
     def coreReady(self, *args, **kwargs):
+        self.restore_info()
         return self.activate(*args, **kwargs)
 
 
@@ -211,7 +238,8 @@ class Addon(Plugin):
 
     #: Deprecated method, use `after_reconnect` instead (Remove in 0.4.10)
     def afterReconnecting(self, ip):
-        return self.after_reconnect(ip, None)
+        self.after_reconnect(ip, self.info['ip'])
+        self.info['ip'] = ip
 
 
     def captcha_task(self, task):

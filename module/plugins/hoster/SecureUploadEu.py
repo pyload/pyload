@@ -10,6 +10,7 @@ class SecureUploadEu(XFSHoster):
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?secureupload\.eu/\w{12}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """SecureUpload.eu hoster plugin"""
     __license__     = "GPLv3"

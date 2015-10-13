@@ -4,7 +4,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class DdlstorageComFolder(DeadCrypter):
-    __name__    = "DdlstorageComFolder"
+    __name__    = "DdlstorageCom"
     __type__    = "crypter"
     __version__ = "0.04"
     __status__  = "testing"

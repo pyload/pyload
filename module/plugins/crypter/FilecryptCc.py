@@ -11,28 +11,34 @@ from Crypto.Cipher import AES
 
 from module.plugins.internal.Crypter import Crypter
 from module.plugins.captcha.ReCaptcha import ReCaptcha
+from module.plugins.captcha.SolveMedia import SolveMedia
 
 
 class FilecryptCc(Crypter):
     __name__    = "FilecryptCc"
     __type__    = "crypter"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Filecrypt.cc decrypter plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("zapp-brannigan", "")]
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"),
+                       ("GammaC0de"     , None                  )]
 
 
     # URL_REPLACEMENTS  = [(r'.html$', ""), (r'$', ".html")]  #@TODO: Extend SimpleCrypter
 
-    DLC_LINK_PATTERN = r'<button class="dlcdownload" type="button" title="Download \*.dlc" onclick="DownloadDLC\(\'(.+)\'\);"><i></i><span>dlc<'
-    WEBLINK_PATTERN  = r"openLink.?'([\w_-]*)',"
+    DLC_LINK_PATTERN = r'onclick="DownloadDLC\(\'(.+)\'\);">'
+    WEBLINK_PATTERN  = r"openLink.?'([\w\-]*)',"
 
-    CAPTCHA_PATTERN        = r'<img id="nc" src="(.+?)"'
-    CIRCLE_CAPTCHA_PATTERN = r'<input type="image" src="(.+?)"'
+    CAPTCHA_PATTERN          = r'class="safety">Sicherheitsabfrage<'
+    INTERNAL_CAPTCHA_PATTERN = r'<img id="nc" src="(.+?)"'
+    CIRCLE_CAPTCHA_PATTERN   = r'<input type="image" src="(.+?)"'
+    KEY_CAPTCHA_PATTERN      = r"<script language=JavaScript src='(http://backs\.keycaptcha\.com/swfs/cap\.js)'"
+    SOLVE_MEDIA_PATTERN      = r'<script type="text/javascript" src="(http://api\.solvemedia\.com/papi/challenge.+?)"'
 
     MIRROR_PAGE_PATTERN = r'"[\w]*" href="(https?://(?:www\.)?filecrypt.cc/Container/\w+\.html\?mirror=\d+)">'
 
@@ -43,7 +49,6 @@ class FilecryptCc(Crypter):
 
     def decrypt(self, pyfile):
         self.html = self.load(pyfile.url)
-        self.base_url = self.pyfile.url.split("Container")[0]
 
         if "content notfound" in self.html:  #@NOTE: "content notfound" is NOT a typo
             self.offline()
@@ -86,59 +91,89 @@ class FilecryptCc(Crypter):
 
 
     def handle_captcha(self):
-        m  = re.search(self.CAPTCHA_PATTERN, self.html)
-        m2 = re.search(self.CIRCLE_CAPTCHA_PATTERN, self.html)
+        if re.search(self.CAPTCHA_PATTERN, self.html):
+            m1  = re.search(self.INTERNAL_CAPTCHA_PATTERN, self.html)
+            m2 = re.search(self.CIRCLE_CAPTCHA_PATTERN, self.html)
+            m3 = re.search(self.SOLVE_MEDIA_PATTERN, self.html)
+            m4 = re.search(self.KEY_CAPTCHA_PATTERN, self.html)
 
-        if m:  #: Normal captcha
-            self.log_debug("Captcha-URL: %s" % m.group(1))
+            if m1:  #: Normal captcha
+                self.log_debug("Internal Captcha URL: %s" % urlparse.urljoin(self.pyfile.url, m1.group(1)))
 
-            captcha_code = self.captcha.decrypt(urlparse.urljoin(self.base_url, m.group(1)),
-                                                input_type="gif")
+                captcha_code = self.captcha.decrypt(urlparse.urljoin(self.pyfile.url, m1.group(1)),
+                                                    ref=True, input_type="gif")
 
-            self.site_with_links = self.load(self.pyfile.url,
-                                           post={'recaptcha_response_field': captcha_code})
-        elif m2:  #: Circle captcha
-            self.log_debug("Captcha-URL: %s" % m2.group(1))
+                self.site_with_links = self.load(self.pyfile.url,
+                                                 post={'recaptcha_response_field': captcha_code})
 
-            captcha_code = self.captcha.decrypt('%s%s?c=abc' %(self.base_url, m2.group(1)),
-                                               output_type='positional')
+            elif m2:  #: Circle captcha
+                self.log_debug("Circle Captcha URL: %s" % urlparse.urljoin(self.pyfile.url, m2.group(1)))
 
-            self.site_with_links = self.load(self.pyfile.url,
-                                           post={'button.x': captcha_code[0], 'button.y': captcha_code[1]})
+                captcha_code = self.captcha.decrypt(urlparse.urljoin(self.pyfile.url, m2.group(1)),
+                                                    input_type="png", output_type='positional')
+
+                self.site_with_links = self.load(self.pyfile.url,
+                                                 post={'button.x': captcha_code[0],
+                                                       'button.y': captcha_code[1]})
+
+            elif m3:  #: Solvemedia captcha
+                self.log_debug("Solvemedia Captcha URL: %s" % urlparse.urljoin(self.pyfile.url, m3.group(1)))
+
+                solvemedia  = SolveMedia(self)
+                captcha_key = solvemedia.detect_key()
+
+                if captcha_key:
+                    response, challenge = solvemedia.challenge(captcha_key)
+                    self.site_with_links  = self.load(self.pyfile.url,
+                                                      post={'adcopy_response'  : response,
+                                                            'adcopy_challenge' : challenge})
+
+            elif m4:  #: Keycaptcha captcha
+                self.log_debug("Keycaptcha Captcha URL: %s unsupported, retrying" % m4.group(1))
+                self.retry()
+
+            else:
+                recaptcha   = ReCaptcha(self)
+                captcha_key = recaptcha.detect_key()
+
+                if captcha_key:
+                    try:
+                        response, challenge = recaptcha.challenge(captcha_key)
+
+                    except Exception:
+                        self.retry_captcha()
+
+                    self.site_with_links  = self.load(self.pyfile.url,
+                                                      post={'g-recaptcha-response': response})
+                else:
+                    self.log_info(_("Unknown captcha found, retrying"))
+                    self.retry()
+
+            if re.search(self.CAPTCHA_PATTERN, self.site_with_links):
+                self.retry_captcha()
 
         else:
-            recaptcha   = ReCaptcha(self)
-            captcha_key = recaptcha.detect_key()
+            self.log_info(_("No captcha found"))
+            self.site_with_links = self.html
 
-            if captcha_key:
-                response, challenge = recaptcha.challenge(captcha_key)
-                self.site_with_links  = self.load(self.pyfile.url,
-                                                post={'g-recaptcha-response': response})
-            else:
-                self.log_info(_("No captcha found"))
-                self.site_with_links = self.html
-
-        if "recaptcha_image" in self.site_with_links or "data-sitekey" in self.site_with_links:
-            self.captcha.invalid()
-            self.retry()
 
 
     def handle_dlc_container(self):
-        dlc = re.findall(self.DLC_LINK_PATTERN, self.site_with_links)
+        dlcs = re.findall(self.DLC_LINK_PATTERN, self.site_with_links)
 
-        if not dlc:
+        if not dlcs:
             return
 
-        for i in dlc:
-            self.links.append("%s/DLC/%s.dlc" % (self.base_url, i))
+        for _dlc in dlcs:
+            self.links.append(urlparse.urljoin(self.pyfile.url, "/DLC/%s.dlc" % _dlc))
 
 
     def handle_weblinks(self):
         try:
-            weblinks = re.findall(self.WEBLINK_PATTERN, self.site_with_links)
+            links = re.findall(self.WEBLINK_PATTERN, self.site_with_links)
 
-            for link in weblinks:
-                res   = self.load("%s/Link/%s.html" % (self.base_url, link))
+            for _link in links:
+                res   = self.load(urlparse.urljoin(self.pyfile.url, "/Link/%s.html" % _link))
                 link2 = re.search('<iframe noresize src="(.*)"></iframe>', res)
                 if link2:
                     res2  = self.load(link2.group(1), just_header=True)

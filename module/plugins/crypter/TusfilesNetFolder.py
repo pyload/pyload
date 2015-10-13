@@ -8,13 +8,14 @@ from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
 
 
 class TusfilesNetFolder(XFSCrypter):
-    __name__    = "TusfilesNetFolder"
+    __name__    = "TusfilesNet"
     __type__    = "crypter"
     __version__ = "0.09"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/go/(?P<ID>\w+)'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Tusfiles.net folder decrypter plugin"""

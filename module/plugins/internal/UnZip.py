@@ -7,7 +7,6 @@ import sys
 import zipfile
 
 from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
-from module.utils import fs_encode
 
 
 class UnZip(Extractor):

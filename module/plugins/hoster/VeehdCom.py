@@ -12,7 +12,8 @@ class VeehdCom(Hoster):
     __status__  = "testing"
 
     __pattern__ = r'http://veehd\.com/video/\d+_\S+'
-    __config__  = [("filename_spaces", "bool", "Allow spaces in filename", False),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("filename_spaces", "bool", "Allow spaces in filename", False),
                    ("replacement_char", "str", "Filename replacement character", "_")]
 
     __description__ = """Veehd.com hoster plugin"""

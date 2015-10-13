@@ -9,11 +9,12 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FileSharkPl(SimpleHoster):
     __name__    = "FileSharkPl"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fileshark\.pl/pobierz/\d+/\w+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """FileShark.pl hoster plugin"""
     __license__     = "GPLv3"
@@ -50,12 +51,12 @@ class FileSharkPl(SimpleHoster):
     def check_errors(self):
         #: Check if file is now available for download (-> file name can be found in html body)
         m = re.search(self.WAIT_PATTERN, self.html)
-        if m:
+        if m is not None:
             errmsg = self.info['error'] = _("Another download already run")
             self.retry(15, int(m.group(1)), errmsg)
 
         m = re.search(self.ERROR_PATTERN, self.html)
-        if m:
+        if m is not None:
             alert = m.group(1)
 
             if re.match(self.IP_ERROR_PATTERN, alert):
@@ -83,7 +84,7 @@ class FileSharkPl(SimpleHoster):
         self.html = self.load(link)
 
         m = re.search(self.WAIT_PATTERN, self.html)
-        if m:
+        if m is not None:
             seconds = int(m.group(1))
             self.log_debug("Wait %s seconds" % seconds)
             self.wait(seconds)
@@ -100,7 +101,7 @@ class FileSharkPl(SimpleHoster):
         if m is None:
             self.retry(msg=_("Captcha image not found"))
 
-        inputs['form[captcha]'] = self.captcha._decrypt(m.group(1).decode('base64'), input_type='jpeg')
+        inputs['form[captcha]'] = self.captcha.decrypt_image(m.group(1).decode('base64'), input_type='jpeg')
         inputs['form[start]'] = ""
 
         self.download(link, post=inputs, disposition=True)

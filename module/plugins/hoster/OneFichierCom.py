@@ -9,11 +9,12 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class OneFichierCom(SimpleHoster):
     __name__    = "OneFichierCom"
     __type__    = "hoster"
-    __version__ = "0.90"
+    __version__ = "0.93"
     __status__  = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern__ = r'https?://(?:www\.)?(?:\w+\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?\w+)?'
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """1fichier.com hoster plugin"""
     __license__     = "GPLv3"
@@ -27,8 +28,9 @@ class OneFichierCom(SimpleHoster):
                        ("Ludovic Lehmann", "ludo.lehmann@gmail.com")]
 
 
-    COOKIES     = [("1fichier.com", "LG", "en")]
+    URL_REPLACEMENTS = [("https:", "http:")]  #@TODO: Remove in 0.4.10
 
+    COOKIES     = [("1fichier.com", "LG", "en")]
     DIRECT_LINK = True
 
     NAME_PATTERN    = r'>File\s*Name :</td>\s*<td.*>(?P<N>.+?)<'
@@ -98,11 +100,10 @@ class OneFichierCom(SimpleHoster):
     def handle_free(self, pyfile):
         self.check_errors()
 
-        id = self.info['pattern']['ID1'] or self.info['pattern']['ID2']
-        url, inputs = self.parse_html_form('action="https://1fichier.com/\?%s' % id)
+        url, inputs = self.parse_html_form('action="https://1fichier.com/\?[\w^_]+')
 
         if not url:
-            self.fail(_("Download link not found"))
+            return
 
         if "pass" in inputs:
             inputs['pass'] = self.get_password()

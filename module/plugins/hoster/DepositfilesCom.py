@@ -10,11 +10,12 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DepositfilesCom(SimpleHoster):
     __name__    = "DepositfilesCom"
     __type__    = "hoster"
-    __version__ = "0.57"
+    __version__ = "0.58"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Depositfiles.com hoster plugin"""
     __license__     = "GPLv3"
@@ -48,7 +49,7 @@ class DepositfilesCom(SimpleHoster):
 
         m = re.search(r"var fid = '(\w+)';", self.html)
         if m is None:
-            self.retry(wait_time=5)
+            self.retry(wait=5)
         params = {'fid': m.group(1)}
         self.log_debug("FID: %s" % params['fid'])
 
@@ -66,7 +67,7 @@ class DepositfilesCom(SimpleHoster):
             self.html = self.load("https://dfiles.eu/get_file.php", get=params)
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
-        if m:
+        if m is not None:
             self.link = urllib.unquote(m.group(1))
 
 
@@ -76,7 +77,7 @@ class DepositfilesCom(SimpleHoster):
             self.retry(25, 60 * 60, "Download limit reached")
 
         elif 'onClick="show_gold_offer' in self.html:
-            self.account.relogin(self.user)
+            self.account.relogin()
             self.retry()
 
         else:

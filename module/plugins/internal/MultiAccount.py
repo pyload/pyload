@@ -2,30 +2,29 @@
 
 import re
 import time
-import traceback
 
-from module.plugins.internal.Hook import Hook
+from module.plugins.internal.Account import Account
 from module.utils import decode, remove_chars
 
 
-class MultiHook(Hook):
-    __name__    = "MultiHook"
-    __type__    = "hook"
-    __version__ = "0.54"
+class MultiAccount(Account):
+    __name__    = "MultiAccount"
+    __type__    = "account"
+    __version__ = "0.02"
     __status__  = "testing"
 
-    __config__  = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
-                   ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
-                   ("reload"        , "bool"               , "Reload plugin list"           , True ),
-                   ("reloadinterval", "int"                , "Reload interval in hours"     , 12   )]
+    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),
+                  ("pluginlist"    , "str"                , "Plugin list (comma separated)", ""   ),
+                  ("reload"        , "bool"               , "Reload plugin list"           , True ),
+                  ("reloadinterval", "int"                , "Reload interval in hours"     , 12   )]
 
-    __description__ = """Hook plugin for multi hoster/crypter"""
+    __description__ = """Multi hoster account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("pyLoad Team"   , "admin@pyload.org" ),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    MIN_RELOAD_INTERVAL = 1 * 60 * 60  #: 1 hour
+    REFRESH_INTERVAL = 1 * 60 * 60  #: 1 hour
 
     DOMAIN_REPLACEMENTS = [(r'180upload\.com'  , "hundredeightyupload.com"),
                            (r'bayfiles\.net'   , "bayfiles.com"           ),
@@ -53,6 +52,34 @@ class MultiHook(Hook):
                            (r'^8'              , "eight"                  ),
                            (r'^9'              , "nine"                   ),
                            (r'^0'              , "zero"                   )]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     def init(self):
@@ -102,7 +129,7 @@ class MultiHook(Hook):
 
         for _i in xrange(5):
             try:
-                pluginset = self._plugin_set(self.get_hosters())
+                pluginset = self._plugin_set(self.grab_hosters())
                 break
 
             except Exception, e:
@@ -110,7 +137,7 @@ class MultiHook(Hook):
                 time.sleep(60)
         else:
             self.log_error(_("No hoster list retrieved"))
-            self.interval = self.MIN_RELOAD_INTERVAL
+            self.interval = self.REFRESH_INTERVAL
             return list()
 
         try:
@@ -144,7 +171,7 @@ class MultiHook(Hook):
         return set(plugins)
 
 
-    def get_hosters(self):
+    def grab_hosters(self, user, password, data):
         """
         Load list of supported hoster
 
@@ -160,7 +187,7 @@ class MultiHook(Hook):
         self.load_account()
 
         if self.get_config('reload', True):
-            self.interval = max(self.get_config('reloadinterval', 12) * 60 * 60, self.MIN_RELOAD_INTERVAL)
+            self.interval = max(self.get_config('reloadinterval', 12) * 60 * 60, self.REFRESH_INTERVAL)
         else:
             self.pyload.scheduler.removeJob(self.cb)
             self.cb = None

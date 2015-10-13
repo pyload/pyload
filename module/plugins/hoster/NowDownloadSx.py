@@ -3,7 +3,6 @@
 import re
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.utils import fixup
 
 
 class NowDownloadSx(SimpleHoster):
@@ -13,7 +12,8 @@ class NowDownloadSx(SimpleHoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(nowdownload\.[a-zA-Z]{2,}/(dl/|download\.php.+?id=|mobile/(#/files/|.+?id=))|likeupload\.org/)\w+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """NowDownload.sx hoster plugin"""
     __license__     = "GPLv3"
@@ -45,7 +45,7 @@ class NowDownloadSx(SimpleHoster):
             self.error()
 
         m = re.search(self.WAIT_PATTERN, self.html)
-        if m:
+        if m is not None:
             wait = int(m.group(1))
         else:
             wait = 60
@@ -57,10 +57,8 @@ class NowDownloadSx(SimpleHoster):
         self.html = self.load(baseurl + str(continuelink.group(1)))
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
-        if m is None:
-            self.error(_("Download link not found"))
-
-        self.link = m.group(1)
+        if m is not None:
+            self.link = m.group(1)
 
 
 getInfo = create_getInfo(NowDownloadSx)

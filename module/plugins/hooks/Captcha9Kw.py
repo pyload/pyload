@@ -8,16 +8,17 @@ import time
 from base64 import b64encode
 
 from module.network.HTTPRequest import BadHeader
-from module.plugins.internal.Hook import Hook, threaded
+from module.plugins.internal.Addon import Addon, threaded
 
 
-class Captcha9Kw(Hook):
+class Captcha9Kw(Addon):
     __name__    = "Captcha9Kw"
     __type__    = "hook"
     __version__ = "0.30"
     __status__  = "testing"
 
-    __config__ = [("check_client"  , "bool"    , "Don't use if client is connected"                                                , True                                                               ),
+    __config__ = [("activated"     , "bool"    , "Activated"                                                                       , False                                                              ),
+                  ("check_client"  , "bool"    , "Don't use if client is connected"                                                , True                                                               ),
                   ("confirm"       , "bool"    , "Confirm Captcha (cost +6 credits)"                                               , False                                                              ),
                   ("captchaperhour", "int"     , "Captcha per hour"                                                                , "9999"                                                             ),
                   ("captchapermin" , "int"     , "Captcha per minute"                                                              , "9999"                                                             ),
@@ -78,7 +79,6 @@ class Captcha9Kw(Hook):
                       'cpm'           : self.get_config('captchapermin')}
 
         for opt in str(self.get_config('hoster_options').split('|')):
-
             details = map(str.strip, opt.split(':'))
 
             if not details or details[0].lower() is not pluginname.lower():
@@ -149,6 +149,7 @@ class Captcha9Kw(Hook):
                 time.sleep(5)
             else:
                 break
+
         else:
             self.log_debug("Could not send request: %s" % res)
             result = None
@@ -184,6 +185,7 @@ class Captcha9Kw(Hook):
                 break
 
             time.sleep(10)
+
         else:
             self.fail(_("Too many captchas in queue"))
 
@@ -196,9 +198,9 @@ class Captcha9Kw(Hook):
             for d in details:
                 hosteroption = d.split("=")
 
-                if len(hosteroption) > 1 \
-                   and hosteroption[0].lower() == "timeout" \
-                   and hosteroption[1].isdigit():
+                if len(hosteroption) > 1 and \
+                   hosteroption[0].lower() == "timeout" and \
+                   hosteroption[1].isdigit():
                     timeout = int(hosteroption[1])
 
             break

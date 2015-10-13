@@ -16,7 +16,8 @@ class FilepupNet(SimpleHoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?filepup\.net/files/\w+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Filepup.net hoster plugin"""
     __license__     = "GPLv3"
@@ -39,11 +40,9 @@ class FilepupNet(SimpleHoster):
 
     def handle_free(self, pyfile):
         m = re.search(self.LINK_FREE_PATTERN, self.html)
-        if m is None:
-            self.error(_("Download link not found"))
-
-        dl_link = m.group(1)
-        self.download(dl_link, post={'task': "download"})
+        if m is not None:
+            dl_link = m.group(1)
+            self.download(dl_link, post={'task': "download"})
 
 
 getInfo = create_getInfo(FilepupNet)

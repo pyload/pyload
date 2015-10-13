@@ -6,7 +6,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class JunkyvideoCom(XFSAccount):
     __name__    = "JunkyvideoCom"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __description__ = """Junkyvideo.com account plugin"""
@@ -14,4 +14,4 @@ class JunkyvideoCom(XFSAccount):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_DOMAIN = "junkyvideo.com"
+    PLUGIN_DOMAIN = "junkyvideo.com"

@@ -6,7 +6,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class File4SafeCom(XFSAccount):
     __name__    = "File4SafeCom"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __description__ = """File4Safe.com account plugin"""
@@ -14,6 +14,6 @@ class File4SafeCom(XFSAccount):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    HOSTER_DOMAIN = "file4safe.com"
+    PLUGIN_DOMAIN = "file4safe.com"
 
     LOGIN_FAIL_PATTERN = r'input_login'

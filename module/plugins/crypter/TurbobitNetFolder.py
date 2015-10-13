@@ -7,13 +7,14 @@ from module.common.json_layer import json_loads
 
 
 class TurbobitNetFolder(SimpleCrypter):
-    __name__    = "TurbobitNetFolder"
+    __name__    = "TurbobitNet"
     __type__    = "crypter"
     __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/download/folder/(?P<ID>\w+)'
-    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium"       , "bool", "Use premium account if available"   , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 

@@ -7,13 +7,14 @@ from module.common.json_layer import json_loads
 
 
 class MediafireComFolder(Crypter):
-    __name__    = "MediafireComFolder"
+    __name__    = "MediafireCom"
     __type__    = "crypter"
     __version__ = "0.16"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Mediafire.com folder decrypter plugin"""
@@ -33,13 +34,13 @@ class MediafireComFolder(Crypter):
             #: Load and parse html
             html = self.load(pyfile.url)
             m = re.search(self.LINK_PATTERN, html)
-            if m:
+            if m is not None:
                 #: File page
                 self.urls.append("http://www.mediafire.com/file/%s" % m.group(1))
             else:
                 #: Folder page
                 m = re.search(self.FOLDER_KEY_PATTERN, html)
-                if m:
+                if m is not None:
                     folder_key = m.group(1)
                     self.log_debug("FOLDER KEY: %s" % folder_key)
 

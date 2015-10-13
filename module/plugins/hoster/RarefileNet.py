@@ -12,6 +12,7 @@ class RarefileNet(XFSHoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?rarefile\.net/\w{12}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Rarefile.net hoster plugin"""
     __license__     = "GPLv3"

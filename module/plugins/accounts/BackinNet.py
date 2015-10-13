@@ -6,7 +6,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class BackinNet(XFSAccount):
     __name__    = "BackinNet"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __description__ = """Backin.net account plugin"""
@@ -14,4 +14,4 @@ class BackinNet(XFSAccount):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_DOMAIN = "backin.net"
+    PLUGIN_DOMAIN = "backin.net"

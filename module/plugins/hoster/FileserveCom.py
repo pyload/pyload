@@ -4,11 +4,10 @@ import re
 
 from module.common.json_layer import json_loads
 from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.Plugin import chunks
 from module.plugins.captcha.ReCaptcha import ReCaptcha
+from module.plugins.internal.Hoster import Hoster
+from module.plugins.internal.Plugin import chunks, parse_size
 from module.plugins.internal.SimpleHoster import seconds_to_midnight
-from module.utils import parseFileSize as parse_size
 
 
 def check_file(plugin, urls):
@@ -34,10 +33,11 @@ def check_file(plugin, urls):
 class FileserveCom(Hoster):
     __name__    = "FileserveCom"
     __type__    = "hoster"
-    __version__ = "0.59"
+    __version__ = "0.62"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<ID>[^/]+)'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Fileserve.com hoster plugin"""
     __license__     = "GPLv3"
@@ -95,7 +95,7 @@ class FileserveCom(Hoster):
 
             elif action['fail'] == "parallelDownload":
                 self.log_warning(_("Parallel download error, now waiting 60s"))
-                self.retry(wait_time=60, msg=_("parallelDownload"))
+                self.retry(wait=60, msg=_("parallelDownload"))
 
             else:
                 self.fail(_("Download check returned: %s") % action['fail'])
@@ -120,7 +120,7 @@ class FileserveCom(Hoster):
         self.download(self.url, post={'download': "normal"})
         self.log_debug(self.req.http.lastEffectiveURL)
 
-        check = self.check_download({'expired': self.LINK_EXPIRED_PATTERN,
+        check = self.check_file({'expired': self.LINK_EXPIRED_PATTERN,
                                     'wait'   : re.compile(self.LONG_WAIT_PATTERN),
                                     'limit'  : self.DL_LIMIT_PATTERN})
 
@@ -133,7 +133,7 @@ class FileserveCom(Hoster):
 
         elif check == "limit":
             self.log_warning(_("Download limited reached for today"))
-            self.wait(seconds_to_midnight(gmt=2), True)
+            self.wait(seconds_to_midnight(), True)
             self.retry()
 
         self.thread.m.reconnecting.wait(3)  #: Ease issue with later downloads appearing to be in parallel
@@ -161,19 +161,15 @@ class FileserveCom(Hoster):
         captcha_key = re.search(self.CAPTCHA_KEY_PATTERN, self.html).group(1)
         recaptcha = ReCaptcha(self)
 
-        for _i in xrange(5):
-            response, challenge = recaptcha.challenge(captcha_key)
-            res = json_loads(self.load(self.URLS[2],
-                                       post={'recaptcha_challenge_field'  : challenge,
-                                             'recaptcha_response_field'   : response,
-                                             'recaptcha_shortencode_field': self.file_id}))
-            if not res['success']:
-                self.captcha.invalid()
-            else:
-                self.captcha.correct()
-                break
+        response, challenge = recaptcha.challenge(captcha_key)
+        res = json_loads(self.load(self.URLS[2],
+                                   post={'recaptcha_challenge_field'  : challenge,
+                                         'recaptcha_response_field'   : response,
+                                         'recaptcha_shortencode_field': self.file_id}))
+        if res['success']:
+            self.captcha.correct()
         else:
-            self.fail(_("Invalid captcha"))
+            self.retry_captcha()
 
 
     def do_long_wait(self, m):
@@ -187,26 +183,30 @@ class FileserveCom(Hoster):
         if self.__name__ == "FileserveCom":
             #: Try api download
             res = self.load("http://app.fileserve.com/api/download/premium/",
-                            post={'username': self.user,
-                                  'password': self.account.get_info(self.user)['login']['password'],
+                            post={'username': self.account.user,
+                                  'password': self.account.get_login('password'),
                                   'shorten': self.file_id})
             if res:
                 res = json_loads(res)
                 if res['error_code'] == "302":
                     premium_url = res['next']
+
                 elif res['error_code'] in ["305", "500"]:
                     self.temp_offline()
+
                 elif res['error_code'] in ["403", "605"]:
-                    self.restart(nopremium=True)
+                    self.restart(premium=False)
+
                 elif res['error_code'] in ["606", "607", "608"]:
                     self.offline()
+
                 else:
                     self.log_error(res['error_code'], res['error_message'])
 
         self.download(premium_url or self.pyfile.url)
 
-        if not premium_url and self.check_download({'login': re.compile(self.NOT_LOGGED_IN_PATTERN)}):
-            self.account.relogin(self.user)
+        if not premium_url and self.check_file({'login': re.compile(self.NOT_LOGGED_IN_PATTERN)}):
+            self.account.relogin()
             self.retry(msg=_("Not logged in"))
 
 

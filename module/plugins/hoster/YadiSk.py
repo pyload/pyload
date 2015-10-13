@@ -13,7 +13,8 @@ class YadiSk(SimpleHoster):
     __version__ = "0.06"
     __status__  = "testing"
 
-    __pattern__ = r'https?://yadi\.sk/d/[\w-]+'
+    __pattern__ = r'https?://yadi\.sk/d/[\w\-]+'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Yadi.sk hoster plugin"""
     __license__     = "GPLv3"
@@ -34,7 +35,7 @@ class YadiSk(SimpleHoster):
                     info ['idclient']  += random.choice('0123456abcdef')
 
             m = re.search(r'<script id="models-client" type="application/json">(.+?)</script>', html)
-            if m:
+            if m is not None:
                 api_data = json_loads(m.group(1))
                 try:
                     for sect in api_data:

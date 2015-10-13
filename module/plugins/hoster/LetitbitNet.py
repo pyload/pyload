@@ -35,11 +35,12 @@ def get_info(urls):
 class LetitbitNet(SimpleHoster):
     __name__    = "LetitbitNet"
     __type__    = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(letitbit|shareflare)\.net/download/.+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Letitbit.net hoster plugin"""
     __license__     = "GPLv3"
@@ -60,7 +61,7 @@ class LetitbitNet(SimpleHoster):
     def handle_free(self, pyfile):
         action, inputs = self.parse_html_form('id="ifree_form"')
         if not action:
-            self.error(_("ifree_form"))
+            self.error(_("Form not found"))
 
         pyfile.size = float(inputs['sssize'])
         self.log_debug(action, inputs)
@@ -99,16 +100,12 @@ class LetitbitNet(SimpleHoster):
 
         self.log_debug(res)
 
-        if not res:
-            self.captcha.invalid()
+        if not res or res == "error_wrong_captcha":
+            self.retry_captcha()
 
-        if res == "error_free_download_blocked":
+        elif res == "error_free_download_blocked":
             self.log_warning(_("Daily limit reached"))
-            self.wait(seconds_to_midnight(gmt=2), True)
-
-        if res == "error_wrong_captcha":
-            self.captcha.invalid()
-            self.retry()
+            self.wait(seconds_to_midnight(), True)
 
         elif res.startswith('['):
             urls = json_loads(res)
@@ -123,10 +120,9 @@ class LetitbitNet(SimpleHoster):
 
 
     def handle_premium(self, pyfile):
-        api_key = self.user
-        premium_key = self.account.get_info(self.user)['login']['password']
+        premium_key = self.account.get_login('password')
 
-        json_data = [api_key, ["download/direct_links", {'pass': premium_key, 'link': pyfile.url}]]
+        json_data = [self.account.user, ["download/direct_links", {'pass': premium_key, 'link': pyfile.url}]]
         api_rep = self.load('http://api.letitbit.net/json', post={'r': json_dumps(json_data)})
         self.log_debug("API Data: " + api_rep)
         api_rep = json_loads(api_rep)

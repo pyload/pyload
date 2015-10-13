@@ -13,7 +13,8 @@ class UpstoreNet(SimpleHoster):
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?upstore\.net/'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Upstore.Net File Download Hoster"""
     __license__     = "GPLv3"
@@ -62,13 +63,11 @@ class UpstoreNet(SimpleHoster):
 
             #: STAGE 3: get direct link
             m = re.search(self.LINK_FREE_PATTERN, self.html, re.S)
-            if m:
+            if m is not None:
                 break
 
-        if m is None:
-            self.error(_("Download link not found"))
-
-        self.link = m.group(1)
+        if m is not None:
+            self.link = m.group(1)
 
 
 getInfo = create_getInfo(UpstoreNet)

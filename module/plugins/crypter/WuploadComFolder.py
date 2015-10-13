@@ -4,7 +4,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class WuploadComFolder(DeadCrypter):
-    __name__    = "WuploadComFolder"
+    __name__    = "WuploadCom"
     __type__    = "crypter"
     __version__ = "0.02"
     __status__  = "testing"

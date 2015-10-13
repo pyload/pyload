@@ -8,11 +8,12 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class TwoSharedCom(SimpleHoster):
     __name__    = "TwoSharedCom"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?2shared\.com/(account/)?(download|get|file|document|photo|video|audio)/.+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """2Shared.com hoster plugin"""
     __license__     = "GPLv3"

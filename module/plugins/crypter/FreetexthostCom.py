@@ -12,7 +12,8 @@ class FreetexthostCom(SimpleCrypter):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?freetexthost\.com/\w+'
-    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium"       , "bool", "Use premium account if available"   , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 

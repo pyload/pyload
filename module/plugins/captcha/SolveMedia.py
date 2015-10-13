@@ -24,12 +24,12 @@ class SolveMedia(CaptchaService):
         html = data or self.retrieve_data()
 
         m = re.search(self.KEY_PATTERN, html)
-        if m:
+        if m is not None:
             self.key = m.group(1).strip()
             self.log_debug("Key: %s" % self.key)
             return self.key
         else:
-            self.log_warning(_("Key pattern not found"))
+            self.log_debug("Key pattern not found")
             return None
 
 
@@ -61,7 +61,7 @@ class SolveMedia(CaptchaService):
                 result = self.result("http://api.solvemedia.com/papi/media", challenge)
 
             except Fail, e:
-                self.log_warning(e)
+                self.log_warning(e, trace=True)
                 self.plugin.invalidCaptcha()
                 result = None
 

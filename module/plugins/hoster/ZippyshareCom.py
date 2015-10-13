@@ -12,11 +12,12 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ZippyshareCom(SimpleHoster):
     __name__    = "ZippyshareCom"
     __type__    = "hoster"
-    __version__ = "0.82"
+    __version__ = "0.83"
     __status__  = "testing"
 
     __pattern__ = r'http://www\d{0,3}\.zippyshare\.com/v(/|iew\.jsp.*key=)(?P<KEY>[\w^_]+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Zippyshare.com hoster plugin"""
     __license__     = "GPLv3"
@@ -52,7 +53,7 @@ class ZippyshareCom(SimpleHoster):
                 self.error(e)
 
         else:
-            self.link = self.get_link()
+            self.link = self.fixurl(self.get_link())
 
         if self.link and pyfile.name == "file.html":
             pyfile.name = urllib.unquote(self.link.split('/')[-1])
@@ -81,7 +82,7 @@ class ZippyshareCom(SimpleHoster):
             return varName
 
         #: Handle all getElementById
-        reVar = r'document.getElementById\(([\'"\w-]+)\)(\.)?(getAttribute\([\'"])?(\w+)?([\'"]\))?'
+        reVar = r'document.getElementById\(([\'"\w\-]+)\)(\.)?(getAttribute\([\'"])?(\w+)?([\'"]\))?'
         scripts = [re.sub(reVar, repl_element_by_id, script) for script in scripts if script]
 
         #: Add try/catch in JS to handle deliberate errors

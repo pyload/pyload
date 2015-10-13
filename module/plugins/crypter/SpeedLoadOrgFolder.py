@@ -4,7 +4,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class SpeedLoadOrgFolder(DeadCrypter):
-    __name__    = "SpeedLoadOrgFolder"
+    __name__    = "SpeedLoadOrg"
     __type__    = "crypter"
     __version__ = "0.31"
     __status__  = "testing"

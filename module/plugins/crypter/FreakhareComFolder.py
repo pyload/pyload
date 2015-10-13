@@ -6,13 +6,14 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class FreakhareComFolder(SimpleCrypter):
-    __name__    = "FreakhareComFolder"
+    __name__    = "FreakhareCom"
     __type__    = "crypter"
     __version__ = "0.04"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?freakshare\.com/folder/.+'
-    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium"       , "bool", "Use premium account if available"   , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
@@ -29,7 +30,7 @@ class FreakhareComFolder(SimpleCrypter):
     def load_page(self, page_n):
         if not hasattr(self, 'f_id') and not hasattr(self, 'f_md5'):
             m = re.search(r'http://freakshare.com/\?x=folder&f_id=(\d+)&f_md5=(\w+)', self.html)
-            if m:
+            if m is not None:
                 self.f_id = m.group(1)
                 self.f_md5 = m.group(2)
         return self.load('http://freakshare.com/', get={'x': 'folder',

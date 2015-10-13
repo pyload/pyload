@@ -22,7 +22,8 @@ class XHamsterCom(Hoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?xhamster\.com/movies/.+'
-    __config__  = [("type", ".mp4;.flv", "Preferred type", ".mp4")]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("type", ".mp4;.flv", "Preferred type", ".mp4")]
 
     __description__ = """XHamster.com hoster plugin"""
     __license__     = "GPLv3"
@@ -79,6 +80,7 @@ class XHamsterCom(Hoster):
             file_url = re.search(r"<a href=\"" + srv_url + "(.+?)\"", self.html)
             if file_url is None:
                 self.error(_("file_url not found"))
+
             file_url = file_url.group(1)
             long_url = srv_url + file_url
             self.log_debug("long_url = " + long_url)

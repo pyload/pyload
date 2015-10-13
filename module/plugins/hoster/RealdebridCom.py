@@ -6,7 +6,7 @@ import urllib
 
 from module.common.json_layer import json_loads
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
-from module.utils import parseFileSize as parse_size
+from module.plugins.internal.Plugin import parse_size
 
 
 class RealdebridCom(MultiHoster):
@@ -16,7 +16,8 @@ class RealdebridCom(MultiHoster):
     __status__  = "testing"
 
     __pattern__ = r'https?://((?:www\.|s\d+\.)?real-debrid\.com/dl/|[\w^_]\.rdb\.so/d/)[\w^_]+'
-    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium" , "bool", "Use premium account if available"    , True),
                    ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Real-Debrid.com multi-hoster plugin"""

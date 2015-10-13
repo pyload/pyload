@@ -10,6 +10,7 @@ class HundredEightyUploadCom(XFSHoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?180upload\.com/\w{12}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """180upload.com hoster plugin"""
     __license__     = "GPLv3"

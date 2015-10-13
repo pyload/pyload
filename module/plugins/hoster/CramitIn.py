@@ -10,6 +10,7 @@ class CramitIn(XFSHoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?cramit\.in/\w{12}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Cramit.in hoster plugin"""
     __license__     = "GPLv3"

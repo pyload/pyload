@@ -31,7 +31,7 @@ class AdYouLike(CaptchaService):
             self.log_debug("Ayl: %s | Callback: %s" % self.key)
             return self.key   #: Key is the tuple(ayl, callback)
         else:
-            self.log_warning(_("Ayl or callback pattern not found"))
+            self.log_debug("Ayl or callback pattern not found")
             return None
 
 
@@ -76,7 +76,7 @@ class AdYouLike(CaptchaService):
 
         try:
             instructions_visual = challenge['translations'][server['all']['lang']]['instructions_visual']
-            result = re.search(u'«(.+?)»', instructions_visual).group(1).strip()
+            response = re.search(u'«(.+?)»', instructions_visual).group(1).strip()
 
         except AttributeError:
             self.fail(_("AdYouLike result not found"))
@@ -87,6 +87,6 @@ class AdYouLike(CaptchaService):
                   '_ayl_token_challenge': challenge['token'],
                   '_ayl_response'       : response}
 
-        self.log_debug("Result: %s" % result)
+        self.log_debug("Result: %s" % response)
 
         return result

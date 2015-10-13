@@ -9,17 +9,18 @@ from base64 import b64encode
 
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest as get_request
-from module.plugins.internal.Hook import Hook, threaded
+from module.plugins.internal.Addon import Addon, threaded
 
 
-class ExpertDecoders(Hook):
+class ExpertDecoders(Addon):
     __name__    = "ExpertDecoders"
     __type__    = "hook"
     __version__ = "0.06"
     __status__  = "testing"
 
-    __config__ = [("passkey"     , "password", "Access key"                      , ""  ),
-                  ("check_client", "bool"    , "Don't use if client is connected", True)]
+    __config__ = [("activated"   , "bool"    , "Activated"                       , False),
+                  ("passkey"     , "password", "Access key"                      , ""   ),
+                  ("check_client", "bool"    , "Don't use if client is connected", True )]
 
     __description__ = """Send captchas to expertdecoders.com"""
     __license__     = "GPLv3"

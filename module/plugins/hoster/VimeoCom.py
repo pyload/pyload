@@ -12,7 +12,8 @@ class VimeoCom(SimpleHoster):
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(player\.)?vimeo\.com/(video/)?(?P<ID>\d+)'
-    __config__  = [("use_premium", "bool"                       , "Use premium account if available" , True     ),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool"                       , "Use premium account if available" , True     ),
                    ("quality"    , "Lowest;Mobile;SD;HD;Highest", "Quality"                          , "Highest"),
                    ("original"   , "bool"                       , "Try to download the original file", True     )]
 

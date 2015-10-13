@@ -4,7 +4,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class SharingmatrixComFolder(DeadCrypter):
-    __name__    = "SharingmatrixComFolder"
+    __name__    = "SharingmatrixCom"
     __type__    = "crypter"
     __version__ = "0.02"
     __status__  = "testing"

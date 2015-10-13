@@ -9,11 +9,12 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class QuickshareCz(SimpleHoster):
     __name__    = "QuickshareCz"
     __type__    = "hoster"
-    __version__ = "0.57"
+    __version__ = "0.58"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:[^/]*\.)?quickshare\.cz/stahnout-soubor/.+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Quickshare.cz hoster plugin"""
     __license__     = "GPLv3"
@@ -39,7 +40,7 @@ class QuickshareCz(SimpleHoster):
             if 'UU_prihlasen' in self.jsvars:
                 if self.jsvars['UU_prihlasen'] == "0":
                     self.log_warning(_("User not logged in"))
-                    self.relogin(self.user)
+                    self.relogin()
                     self.retry()
                 elif float(self.jsvars['UU_kredit']) < float(self.jsvars['kredit_odecet']):
                     self.log_warning(_("Not enough credit left"))
@@ -50,7 +51,7 @@ class QuickshareCz(SimpleHoster):
         else:
             self.handle_free(pyfile)
 
-        if self.check_download({'error': re.compile(r"\AChyba!")}, max_size=100):
+        if self.check_file({'error': re.compile(r"\AChyba!")}, max_size=100):
             self.fail(_("File not m or plugin defect"))
 
 
@@ -60,21 +61,18 @@ class QuickshareCz(SimpleHoster):
         data = dict((x, self.jsvars[x]) for x in self.jsvars if x in ("ID1", "ID2", "ID3", "ID4"))
         self.log_debug("FREE URL1:" + download_url, data)
 
-        self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
-        self.load(download_url, post=data)
-        self.header = self.req.http.header
-        self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
+        header = self.load(download_url, post=data, just_header=True)
 
-        m = re.search(r'Location\s*:\s*(.+)', self.header, re.I)
-        if m is None:
-            self.fail(_("File not found"))
+        self.link = header.get('location')
+        if not self.link:
+            elf.fail(_("File not found"))
 
-        self.link = m.group(1).rstrip()  #@TODO: Remove .rstrip() in 0.4.10
+        self.link = m.group(1)
         self.log_debug("FREE URL2:" + self.link)
 
         #: Check errors
         m = re.search(r'/chyba/(\d+)', self.link)
-        if m:
+        if m is not None:
             if m.group(1) == "1":
                 self.retry(60, 2 * 60, "This IP is already downloading")
             elif m.group(1) == "2":

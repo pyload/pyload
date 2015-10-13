@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class NitroflareCom(Account):
     __name__    = "NitroflareCom"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __description__ = """Nitroflare.com account plugin"""
@@ -24,7 +24,7 @@ class NitroflareCom(Account):
     TOKEN_PATTERN = r'name="token" value="(.+?)"'
 
 
-    def grab_info(self, user, password, data, req):
+    def grab_info(self, user, password, data):
         validuntil   = -1
         trafficleft  = None
         premium      = False
@@ -33,7 +33,7 @@ class NitroflareCom(Account):
                          get={'s': "premium"})
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
-        if m:
+        if m is not None:
             expiredate = m.group(1).strip()
             self.log_debug("Time Left: " + expiredate)
 
@@ -42,7 +42,7 @@ class NitroflareCom(Account):
                                  re.findall(r'(\d+)\s*(day|hour|minute)', expiredate, re.I))
 
             except Exception, e:
-                self.log_error(e)
+                self.log_error(e, trace=True)
 
             else:
                 self.log_debug("Valid until: %s" % validuntil)
@@ -54,12 +54,12 @@ class NitroflareCom(Account):
                     validuntil = -1
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        if m:
+        if m is not None:
             try:
-                trafficleft = self.parse_traffic(str(max(0, 50 - float(m.group(1)))) + " GB")
+                trafficleft = self.parse_traffic(str(max(0, 50 - float(m.group(1)))),  "GB")
 
             except Exception, e:
-                self.log_error(e)
+                self.log_error(e, trace=True)
         else:
             self.log_debug("TRAFFIC_LEFT_PATTERN not found")
 
@@ -68,7 +68,7 @@ class NitroflareCom(Account):
                 'premium'    : premium}
 
 
-    def login(self, user, password, data, req):
+    def signin(self, user, password, data):
         html = self.load("https://nitroflare.com/login")
 
         token = re.search(self.TOKEN_PATTERN, html).group(1)

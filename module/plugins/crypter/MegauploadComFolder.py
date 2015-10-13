@@ -4,7 +4,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class MegauploadComFolder(DeadCrypter):
-    __name__    = "MegauploadComFolder"
+    __name__    = "MegauploadCom"
     __type__    = "crypter"
     __version__ = "0.03"
     __status__  = "testing"

@@ -13,7 +13,8 @@ class KingfilesNet(SimpleHoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?kingfiles\.net/(?P<ID>\w{12})'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Kingfiles.net hoster plugin"""
     __license__     = "GPLv3"
@@ -56,7 +57,7 @@ class KingfilesNet(SimpleHoster):
             self.error(_("Random key not found"))
 
         rand = m.group(1)
-        self.log_debug("rand = ", rand)
+        self.log_debug("rand = " + rand)
 
         post_data = {'op'              : "download2",
                      'id'              : self.info['pattern']['ID'],

@@ -14,11 +14,12 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class RapidgatorNet(SimpleHoster):
     __name__    = "RapidgatorNet"
     __type__    = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Rapidgator.net hoster plugin"""
     __license__     = "GPLv3"
@@ -51,7 +52,7 @@ class RapidgatorNet(SimpleHoster):
 
     def setup(self):
         if self.account:
-            self.sid = self.account.get_data(self.user).get('sid', None)
+            self.sid = self.account.get_data('sid')
         else:
             self.sid = None
 
@@ -81,12 +82,12 @@ class RapidgatorNet(SimpleHoster):
             return json['response']
 
         elif status == 423:
-            self.account.empty(self.user)
+            self.account.empty()
             self.retry()
 
         else:
-            self.account.relogin(self.user)
-            self.retry(wait_time=60)
+            self.account.relogin()
+            self.retry(wait=60)
 
 
     def handle_premium(self, pyfile):
@@ -122,29 +123,25 @@ class RapidgatorNet(SimpleHoster):
         url = "http://rapidgator.net%s" % jsvars.get('captchaUrl', '/download/captcha')
         self.html = self.load(url)
 
-        for _i in xrange(5):
-            m = re.search(self.LINK_FREE_PATTERN, self.html)
-            if m:
-                self.link = m.group(1)
-                break
-            else:
-                captcha = self.handle_captcha()
-
-                if not captcha:
-                    self.error(_("Captcha pattern not found"))
-
-                response, challenge  = captcha.challenge()
-
-                self.html = self.load(url, post={'DownloadCaptchaForm[captcha]': "",
-                                                 'adcopy_challenge'            : challenge,
-                                                 'adcopy_response'             : response})
-
-                if "The verification code is incorrect" in self.html:
-                    self.captcha.invalid()
-                else:
-                    self.captcha.correct()
+        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        if m is not None:
+            self.link = m.group(1)
         else:
-            self.error(_("Download link"))
+            captcha = self.handle_captcha()
+
+            if not captcha:
+                self.error(_("Captcha pattern not found"))
+
+            response, challenge  = captcha.challenge()
+
+            self.html = self.load(url, post={'DownloadCaptchaForm[captcha]': "",
+                                             'adcopy_challenge'            : challenge,
+                                             'adcopy_response'             : response})
+
+            if "The verification code is incorrect" in self.html:
+                self.retry_captcha()
+            else:
+                self.captcha.correct()
 
 
     def handle_captcha(self):

@@ -9,10 +9,11 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class UpleaCom(XFSHoster):
     __name__    = "UpleaCom"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?uplea\.com/dl/\w{15}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Uplea.com hoster plugin"""
     __license__     = "GPLv3"
@@ -20,7 +21,7 @@ class UpleaCom(XFSHoster):
                        ("GammaC0de", None)]
 
 
-    HOSTER_DOMAIN = "uplea.com"
+    PLUGIN_DOMAIN = "uplea.com"
 
     SIZE_REPLACEMENTS = [('ko','KB'), ('mo','MB'), ('go','GB'), ('Ko','KB'), ('Mo','MB'), ('Go','GB')]
 
@@ -49,7 +50,7 @@ class UpleaCom(XFSHoster):
         self.html = self.load(urlparse.urljoin("http://uplea.com/", m.group(1)))
 
         m = re.search(self.WAIT_PATTERN, self.html)
-        if m:
+        if m is not None:
             self.log_debug("Waiting %s seconds" % m.group(1))
             self.wait(m.group(1), True)
             self.retry()

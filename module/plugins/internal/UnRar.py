@@ -8,11 +8,11 @@ from glob import glob
 from string import digits
 
 from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
-from module.utils import fs_decode, fs_encode, save_join as fs_join
+from module.utils import fs_decode, save_join as fs_join
 
 
 def renice(pid, value):
-    if value and os.name != "nt":
+    if value and os.name is not "nt":
         try:
             subprocess.Popen(["renice", str(value), str(pid)], stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=-1)
 
@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.26"
+    __version__ = "1.27"
     __status__  = "testing"
 
     __description__ = """Rar extractor plugin"""
@@ -38,7 +38,7 @@ class UnRar(Extractor):
     re_multipart = re.compile(r'\.(part|r)(\d+)(?:\.rar)?(\.rev|\.bad)?', re.I)
 
     re_filefixed = re.compile(r'Building (.+)')
-    re_filelist  = re.compile(r'^(.)(\s*[\w\.\-]+)\s+(\d+\s+)+(?:\d+\%\s+)?[\d\-]{8}\s+[\d\:]{5}', re.M|re.I)
+    re_filelist  = re.compile(r'^(.)(\s*[\w\-.]+)\s+(\d+\s+)+(?:\d+\%\s+)?[\d\-]{8}\s+[\d\:]{5}', re.I | re.M)
 
     re_wrongpwd  = re.compile(r'password', re.I)
     re_wrongcrc  = re.compile(r'encrypted|damaged|CRC failed|checksum error|corrupt', re.I)
@@ -49,7 +49,7 @@ class UnRar(Extractor):
     @classmethod
     def find(cls):
         try:
-            if os.name == "nt":
+            if os.name is "nt":
                 cls.CMD = os.path.join(pypath, "RAR.exe")
             else:
                 cls.CMD = "rar"
@@ -61,7 +61,7 @@ class UnRar(Extractor):
 
         except OSError:
             try:
-                if os.name == "nt":
+                if os.name is "nt":
                     cls.CMD = os.path.join(pypath, "UnRAR.exe")
                 else:
                     cls.CMD = "unrar"
@@ -229,7 +229,7 @@ class UnRar(Extractor):
         args.append("-y")
 
         #: Set a password
-        if "password" in kwargs and kwargs['password']:
+        if kwargs.get('password'):
             args.append("-p%s" % kwargs['password'])
         else:
             args.append("-p-")

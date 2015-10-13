@@ -6,13 +6,14 @@ from module.plugins.internal.Crypter import Crypter
 
 
 class FileserveComFolder(Crypter):
-    __name__    = "FileserveComFolder"
+    __name__    = "FileserveCom"
     __type__    = "crypter"
     __version__ = "0.13"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fileserve\.com/list/\w+'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """FileServe.com folder decrypter plugin"""

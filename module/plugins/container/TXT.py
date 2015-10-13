@@ -13,7 +13,8 @@ class TXT(Container):
     __status__  = "testing"
 
     __pattern__ = r'.+\.(txt|text)$'
-    __config__  = [("flush"   , "bool"  , "Flush list after adding", False  ),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("flush"   , "bool"  , "Flush list after adding", False  ),
                    ("encoding", "string", "File encoding"          , "utf-8")]
 
     __description__ = """Read link lists in plain text formats"""

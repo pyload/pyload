@@ -20,7 +20,7 @@ from module.utils import save_join as fs_join
 class OCR(Plugin):
     __name__    = "OCR"
     __type__    = "ocr"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __description__ = """OCR base plugin"""
@@ -80,21 +80,21 @@ class OCR(Plugin):
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True, pagesegmode=None):
         # tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
         try:
-            tmpTif = open(fs_join("tmp", "tmpTif_%s.tif" % self.__name__), "wb")
+            tmpTif = open(fs_join("tmp", "tmpTif_%s.tif" % self.classname), "wb")
             tmpTif.close()
 
             # tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
-            tmpTxt = open(fs_join("tmp", "tmpTxt_%s.txt" % self.__name__), "wb")
+            tmpTxt = open(fs_join("tmp", "tmpTxt_%s.txt" % self.classname), "wb")
             tmpTxt.close()
 
         except IOError, e:
-            self.log_error(e)
+            self.log_error(e, trace=True)
             return
 
         self.pyload.log_debug("Saving tiff...")
         self.image.save(tmpTif.name, 'TIFF')
 
-        if os.name == "nt":
+        if os.name is "nt":
             tessparams = [os.path.join(pypath, "tesseract", "tesseract.exe")]
         else:
             tessparams = ["tesseract"]
@@ -106,7 +106,7 @@ class OCR(Plugin):
 
         if subset and (digits or lowercase or uppercase):
             # tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
-            with open(fs_join("tmp", "tmpSub_%s.subset" % self.__name__), "wb") as tmpSub:
+            with open(fs_join("tmp", "tmpSub_%s.subset" % self.classname), "wb") as tmpSub:
                 tmpSub.write("tessedit_char_whitelist ")
 
                 if digits:
@@ -139,7 +139,7 @@ class OCR(Plugin):
                 os.remove(tmpSub.name)
 
         except OSError, e:
-            self.log_warning(e)
+            self.log_warning(e, trace=True)
 
 
     def recognize(self, name):
@@ -179,18 +179,25 @@ class OCR(Plugin):
                 try:
                     if pixels[x - 1, y - 1] != 255:
                         count += 1
+
                     if pixels[x - 1, y] != 255:
                         count += 1
+
                     if pixels[x - 1, y + 1] != 255:
                         count += 1
+
                     if pixels[x, y + 1] != 255:
                         count += 1
+
                     if pixels[x + 1, y + 1] != 255:
                         count += 1
+
                     if pixels[x + 1, y] != 255:
                         count += 1
+
                     if pixels[x + 1, y - 1] != 255:
                         count += 1
+
                     if pixels[x, y - 1] != 255:
                         count += 1
 

@@ -11,7 +11,7 @@ from module.plugins.internal.Plugin import Plugin
 class Captcha(Plugin):
     __name__    = "Captcha"
     __type__    = "captcha"
-    __version__ = "0.44"
+    __version__ = "0.46"
     __status__  = "testing"
 
     __description__ = """Base anti-captcha plugin"""
@@ -49,14 +49,13 @@ class Captcha(Plugin):
         pass
 
 
-    def decrypt(self, url, get={}, post={}, ref=False, cookies=True, decode=False,
+    def decrypt(self, url, get={}, post={}, ref=False, cookies=True, decode=False, req=None,
                 input_type='jpg', output_type='textual', ocr=True, timeout=120):
-        img = self.load(url, get=get, post=post, ref=ref, cookies=cookies, decode=decode)
-        return self._decrypt(img, input_type, output_type, ocr, timeout)
+        img = self.load(url, get=get, post=post, ref=ref, cookies=cookies, decode=decode, req=req or self.plugin.req)
+        return self.decrypt_image(img, input_type, output_type, ocr, timeout)
 
 
-    #@TODO: Definitely choose a better name for this method!
-    def _decrypt(self, data, input_type='jpg', output_type='textual', ocr=False, timeout=120):
+    def decrypt_image(self, data, input_type='jpg', output_type='textual', ocr=False, timeout=120):
         """
         Loads a captcha and decrypts it with ocr, plugin, user input
 
@@ -105,8 +104,7 @@ class Captcha(Plugin):
                 self.fail(self.task.error)
 
             elif not self.task.result:
-                self.invalid()
-                self.plugin.retry(msg=_("No captcha result obtained in appropiate time"))
+                self.plugin.retry_captcha(msg=_("No captcha result obtained in appropriate time"))
 
             result = self.task.result
 

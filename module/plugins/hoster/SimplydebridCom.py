@@ -8,11 +8,12 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo, rep
 class SimplydebridCom(MultiHoster):
     __name__    = "SimplydebridCom"
     __type__    = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __pattern__ = r'http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd\.php'
-    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium" , "bool", "Use premium account if available"    , True),
                    ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Simply-debrid.com multi-hoster plugin"""
@@ -41,11 +42,11 @@ class SimplydebridCom(MultiHoster):
         self.wait(5)
 
 
-    def check_file(self):
-        if self.check_download({'error': "No address associated with hostname"}):
+    def check_download(self):
+        if self.check_file({'error': "No address associated with hostname"}):
             self.retry(24, 3 * 60, _("Bad file downloaded"))
 
-        return super(SimplydebridCom, self).check_file()
+        return super(SimplydebridCom, self).check_download()
 
 
 getInfo = create_getInfo(SimplydebridCom)

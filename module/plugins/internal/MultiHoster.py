@@ -9,33 +9,36 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, r
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.50"
+    __version__ = "0.53"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
-                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
+    __config__  = [("activated"       , "bool", "Activated"                                 , True),
+                   ("use_premium"     , "bool", "Use premium account if available"          , True),
+                   ("fallback_premium", "bool", "Fallback to free download if premium fails", True),
+                   ("chk_filesize"    , "bool", "Check file size"                           , True),
+                   ("revertfailed"    , "bool", "Revert to standard download if fails"      , True)]
 
     __description__ = """Multi hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_NAME = None
+    PLUGIN_NAME = None
 
     LEECH_HOSTER  = False
     LOGIN_ACCOUNT = True
 
 
     def init(self):
-        self.HOSTER_NAME = self.pyload.pluginManager.hosterPlugins[self.__name__]['name']
+        self.PLUGIN_NAME = self.pyload.pluginManager.hosterPlugins[self.classname]['name']
 
 
     def _log(self, level, plugintype, pluginname, messages):
         return super(MultiHoster, self)._log(level,
                                              plugintype,
                                              pluginname,
-                                             (self.HOSTER_NAME,) + messages)
+                                             (self.PLUGIN_NAME,) + messages)
 
 
     def setup(self):
@@ -46,7 +49,7 @@ class MultiHoster(SimpleHoster):
 
     def prepare(self):
         #@TODO: Recheck in 0.4.10
-        plugin = self.pyload.pluginManager.hosterPlugins[self.__name__]
+        plugin = self.pyload.pluginManager.hosterPlugins[self.classname]
         name   = plugin['name']
         module = plugin['module']
         klass  = getattr(module, name)
@@ -83,11 +86,11 @@ class MultiHoster(SimpleHoster):
                 self.check_errors()
                 self.check_status(getinfo=False)
 
-                if self.premium and (not self.CHECK_TRAFFIC or self.check_traffic_left()):
+                if self.premium and (not self.CHECK_TRAFFIC or self.check_traffic()):
                     self.log_info(_("Processing as premium download..."))
                     self.handle_premium(pyfile)
 
-                elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.check_traffic_left()):
+                elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.check_traffic()):
                     self.log_info(_("Processing as free download..."))
                     self.handle_free(pyfile)
 
@@ -95,16 +98,16 @@ class MultiHoster(SimpleHoster):
                 self.log_info(_("Downloading file..."))
                 self.download(self.link, disposition=self.DISPOSITION)
 
-            self.check_file()
+            self.check_download()
 
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
             if self.premium:
                 self.log_warning(_("Premium download failed"))
-                self.restart(nopremium=True)
+                self.restart(premium=False)
 
-            elif self.get_config("revertfailed", True) \
-                 and "new_module" in self.pyload.pluginManager.hosterPlugins[self.__name__]:
-                hdict = self.pyload.pluginManager.hosterPlugins[self.__name__]
+            elif self.get_config("revertfailed", True) and \
+                 self.pyload.pluginManager.hosterPlugins[self.classname].get('new_module'):
+                hdict = self.pyload.pluginManager.hosterPlugins[self.classname]
 
                 tmp_module = hdict['new_module']
                 tmp_name   = hdict['new_name']

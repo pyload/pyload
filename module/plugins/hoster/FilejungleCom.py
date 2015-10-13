@@ -11,6 +11,7 @@ class FilejungleCom(FileserveCom):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?filejungle\.com/f/(?P<ID>[^/]+)'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Filejungle.com hoster plugin"""
     __license__     = "GPLv3"

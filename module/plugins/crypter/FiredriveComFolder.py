@@ -4,7 +4,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class FiredriveComFolder(DeadCrypter):
-    __name__    = "FiredriveComFolder"
+    __name__    = "FiredriveCom"
     __type__    = "crypter"
     __version__ = "0.04"
     __status__  = "testing"

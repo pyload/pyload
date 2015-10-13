@@ -15,7 +15,8 @@ class DlProtectCom(SimpleCrypter):
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?dl-protect\.com/((en|fr)/)?\w+'
-    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium"       , "bool", "Use premium account if available"   , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
@@ -53,7 +54,7 @@ class DlProtectCom(SimpleCrypter):
 
             if "Security Code" in self.html:
                 m = re.search(r'/captcha\.php\?key=(.+?)"', self.html)
-                if m:
+                if m is not None:
                     captcha_code = self.captcha.decrypt("http://www.dl-protect.com/captcha.php?key=" + m.group(1), input_type="gif")
                     post_req['secure'] = captcha_code
 

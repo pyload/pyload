@@ -10,6 +10,7 @@ class GamefrontCom(SimpleHoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?gamefront\.com/files/(?P<ID>\d+)'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Gamefront.com hoster plugin"""
     __license__     = "GPLv3"

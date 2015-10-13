@@ -4,7 +4,6 @@ from __future__ import with_statement
 
 import os
 import re
-import traceback
 
 from module.plugins.internal.Addon import Addon, threaded
 from module.utils import save_join as fs_join
@@ -13,7 +12,7 @@ from module.utils import save_join as fs_join
 class MergeFiles(Addon):
     __name__    = "MergeFiles"
     __type__    = "hook"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated", True)]
@@ -69,7 +68,7 @@ class MergeFiles(Addon):
                         self.log_debug("Finished merging part", splitted_file)
 
                     except Exception, e:
-                        traceback.print_exc()
+                        self.log_error(e, trace=True)
 
                     finally:
                         pyfile.setProgress(100)

@@ -12,6 +12,7 @@ class SizedriveCom(SimpleHoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?sizedrive\.com/[rd]/(?P<ID>\w+)'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Sizedrive.com hoster plugin"""
     __license__     = "GPLv3"
@@ -35,7 +36,7 @@ class SizedriveCom(SimpleHoster):
                               post={'id': self.info['pattern']['ID']})
 
         m = re.search(r'<span id="boton_download" ><a href="(.+?)"', self.html)
-        if m:
+        if m is not None:
             self.link = m.group(1)
 
 

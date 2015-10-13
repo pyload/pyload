@@ -12,7 +12,8 @@ class MediafireCom(SimpleHoster):
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)(?P<ID>\w+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Mediafire.com hoster plugin"""
     __license__     = "GPLv3"
@@ -69,7 +70,7 @@ class MediafireCom(SimpleHoster):
                 self.html = self.load(self.link, post={'downloadp': password})
 
                 if self.PASSWORD_PATTERN in self.html:
-                    self.fail(_("Incorrect password"))
+                    self.fail(_("Wrong password"))
 
         return super(MediafireCom, self).handle_free(pyfile)
 

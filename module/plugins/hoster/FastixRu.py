@@ -10,11 +10,12 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class FastixRu(MultiHoster):
     __name__    = "FastixRu"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/\w{24}'
-    __config__  = [("use_premium" , "bool", "Use premium account if available"    , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium" , "bool", "Use premium account if available"    , True),
                    ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Fastix multi-hoster plugin"""
@@ -27,11 +28,11 @@ class FastixRu(MultiHoster):
 
 
     def handle_premium(self, pyfile):
-        self.html = json_loads(self.load("http://fastix.ru/api_v2/",
-                                         get={'apikey': self.account.get_data()['apikey'],
-                                              'sub'   : "getdirectlink",
-                                              'link'  : pyfile.url})
-        data = self.html)
+        self.html = self.load("http://fastix.ru/api_v2/",
+                              get={'apikey': self.account.get_data('apikey'),
+                                   'sub'   : "getdirectlink",
+                                   'link'  : pyfile.url})
+        data = json_loads(self.html)
 
         self.log_debug("Json data", data)
 

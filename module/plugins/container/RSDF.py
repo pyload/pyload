@@ -18,6 +18,7 @@ class RSDF(Container):
     __status__  = "testing"
 
     __pattern__ = r'.+\.rsdf$'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """RSDF container decrypter plugin"""
     __license__     = "GPLv3"

@@ -9,11 +9,12 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FastshareCz(SimpleHoster):
     __name__    = "FastshareCz"
     __type__    = "hoster"
-    __version__ = "0.33"
+    __version__ = "0.36"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """FastShare.cz hoster plugin"""
     __license__     = "GPLv3"
@@ -42,14 +43,14 @@ class FastshareCz(SimpleHoster):
         if self.CREDIT_ERROR in self.html:
             errmsg = self.info['error'] = _("Not enough traffic left")
             self.log_warning(errmsg)
-            self.restart(nopremium=True)
+            self.restart(premium=False)
 
         self.info.pop('error', None)
 
 
     def handle_free(self, pyfile):
         m = re.search(self.FREE_URL_PATTERN, self.html)
-        if m:
+        if m is not None:
             action, captcha_src = m.groups()
         else:
             self.error(_("FREE_URL_PATTERN not found"))
@@ -59,8 +60,8 @@ class FastshareCz(SimpleHoster):
         self.download(urlparse.urljoin(baseurl, action), post={'code': captcha, 'btn.x': 77, 'btn.y': 18})
 
 
-    def check_file(self):
-        check = self.check_download({
+    def check_download(self):
+        check = self.check_file({
             'paralell-dl'  : re.compile(r"<title>FastShare.cz</title>|<script>alert\('Pres FREE muzete stahovat jen jeden soubor najednou.'\)"),
             'wrong captcha': re.compile(r'Download for FREE'),
             'credit'       : re.compile(self.CREDIT_ERROR)
@@ -70,12 +71,12 @@ class FastshareCz(SimpleHoster):
             self.retry(6, 10 * 60, _("Paralell download"))
 
         elif check == "wrong captcha":
-            self.retry(max_tries=5, msg=_("Wrong captcha"))
+            self.retry_captcha()
 
         elif check == "credit":
-            self.restart(nopremium=True)
+            self.restart(premium=False)
 
-        return super(FastshareCz, self).check_file()
+        return super(FastshareCz, self).check_download()
 
 
 getInfo = create_getInfo(FastshareCz)

@@ -27,7 +27,7 @@ class Kernel32(object):
 class AntiStandby(Addon):
     __name__    = "AntiStandby"
     __type__    = "hook"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                       , True ),
@@ -41,8 +41,9 @@ class AntiStandby(Addon):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    TMP_FILE     = ".antistandby"
-    MIN_INTERVAL = 5
+    TMP_FILE = ".antistandby"
+
+    PERIODICAL_INTERVAL = 5
 
 
     def init(self):
@@ -56,10 +57,9 @@ class AntiStandby(Addon):
         display = not self.get_config('display')
 
         if hdd:
-            self.interval = max(self.get_config('interval'), self.MIN_INTERVAL)
-            self.init_periodical(threaded=True)
+            self.start_periodical(self.get_config('interval'), threaded=True)
 
-        if os.name == "nt":
+        if os.name is "nt":
             self.win_standby(system, display)
 
         elif sys.platform == "darwin":
@@ -76,7 +76,7 @@ class AntiStandby(Addon):
         except OSError:
             pass
 
-        if os.name == "nt":
+        if os.name is "nt":
             self.win_standby(True)
 
         elif sys.platform == "darwin":

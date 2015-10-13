@@ -10,10 +10,11 @@ from module.plugins.internal.SimpleHoster import seconds_to_midnight
 class FreakshareCom(Hoster):
     __name__    = "FreakshareCom"
     __type__    = "hoster"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Freakshare.com hoster plugin"""
     __license__     = "GPLv3"
@@ -44,7 +45,7 @@ class FreakshareCom(Hoster):
 
             self.download(pyfile.url, post=self.req_opts)
 
-            check = self.check_download({'bad'           : "bad try",
+            check = self.check_file({'bad'           : "bad try",
                                         'paralell'      : "> Sorry, you cant download more then 1 files at time. <",
                                         'empty'         : "Warning: Unknown: Filename cannot be empty",
                                         'wrong_captcha' : "Wrong Captcha!",
@@ -61,8 +62,7 @@ class FreakshareCom(Hoster):
                 self.fail(_("File not downloadable"))
 
             elif check == "wrong_captcha":
-                self.captcha.invalid()
-                self.retry()
+                self.retry_captcha()
 
             elif check == "downloadserver":
                 self.retry(5, 15 * 60, _("No Download server"))
@@ -111,7 +111,7 @@ class FreakshareCom(Hoster):
 
         if not self.wantReconnect:
             m = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">([^ ]+)", self.html)
-            if m:
+            if m is not None:
                 file_name = m.group(1)
             else:
                 file_name = self.pyfile.url
@@ -128,7 +128,7 @@ class FreakshareCom(Hoster):
 
         if not self.wantReconnect:
             m = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">[^ ]+ - ([^ ]+) (\w\w)yte", self.html)
-            if m:
+            if m is not None:
                 units = float(m.group(1).replace(",", ""))
                 pow = {'KB': 1, 'MB': 2, 'GB': 3}[m.group(2)]
                 size = int(units * 1024 ** pow)
@@ -142,7 +142,7 @@ class FreakshareCom(Hoster):
 
         if "Your Traffic is used up for today" in self.html:
             self.wantReconnect = True
-            return seconds_to_midnight(gmt=2)
+            return seconds_to_midnight()
 
         timestring = re.search('\s*var\s(?:downloadWait|time)\s=\s(\d*)[\d.]*;', self.html)
         if timestring:

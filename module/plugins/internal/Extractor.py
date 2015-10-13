@@ -5,6 +5,7 @@ import re
 
 from module.PyFile import PyFile
 from module.plugins.internal.Plugin import Plugin
+from module.utils import fs_encode
 
 
 class ArchiveError(Exception):
@@ -22,7 +23,7 @@ class PasswordError(Exception):
 class Extractor(Plugin):
     __name__    = "Extractor"
     __type__    = "extractor"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__  = "testing"
 
     __description__ = """Base extractor plugin"""

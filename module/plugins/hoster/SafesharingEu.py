@@ -10,6 +10,7 @@ class SafesharingEu(XFSHoster):
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?safesharing\.eu/\w{12}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Safesharing.eu hoster plugin"""
     __license__     = "GPLv3"

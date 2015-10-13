@@ -12,6 +12,7 @@ class ExashareCom(XFSHoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?exashare\.com/\w{12}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Exashare.com hoster plugin"""
     __license__     = "GPLv3"
@@ -28,11 +29,7 @@ class ExashareCom(XFSHoster):
 
 
     def handle_free(self, pyfile):
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
-        if m is None:
-            self.error(_("Free download link not found"))
-        else:
-            self.link = m.group(1)
+        return super(XFSHoster, self).handle_free(pyfile)
 
 
 getInfo = create_getInfo(ExashareCom)

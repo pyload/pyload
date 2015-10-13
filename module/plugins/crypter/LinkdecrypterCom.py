@@ -8,11 +8,12 @@ from module.plugins.internal.MultiCrypter import MultiCrypter
 class LinkdecrypterCom(MultiCrypter):
     __name__    = "LinkdecrypterCom"
     __type__    = "crypter"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Linkdecrypter.com decrypter plugin"""
@@ -28,7 +29,6 @@ class LinkdecrypterCom(MultiCrypter):
 
 
     def setup(self):
-        self.password = self.get_password()
         self.req.setOption("timeout", 300)
 
 
@@ -40,11 +40,11 @@ class LinkdecrypterCom(MultiCrypter):
 
         while retries:
             m = re.search(self.TEXTAREA_PATTERN, self.html, re.S)
-            if m:
+            if m is not None:
                 self.urls = [x for x in m.group(1).splitlines() if '[LINK-ERROR]' not in x]
 
             m = re.search(self.CAPTCHA_PATTERN, self.html)
-            if m:
+            if m is not None:
                 captcha_url = 'http://linkdecrypter.com/' + m.group(1)
                 result_type = "positional" if "getPos" in m.group(2) else "textual"
 
@@ -61,7 +61,8 @@ class LinkdecrypterCom(MultiCrypter):
             elif self.PASSWORD_PATTERN in self.html:
                 if self.password:
                     self.log_info(_("Password protected link"))
-                    self.html = self.load('http://linkdecrypter.com/', post={'password': self.password})
+                    self.html = self.load('http://linkdecrypter.com/',
+                                          post={'password': self.get_password()})
                 else:
                     self.fail(_("Missing password"))
 

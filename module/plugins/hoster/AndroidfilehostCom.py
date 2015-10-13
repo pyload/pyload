@@ -15,7 +15,8 @@ class AndroidfilehostCom(SimpleHoster):
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?androidfilehost\.com/\?fid=\d+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Androidfilehost.com hoster plugin"""
     __license__     = "GPLv3"
@@ -42,7 +43,7 @@ class AndroidfilehostCom(SimpleHoster):
         self.log_debug("Waiting time: %s seconds" % wait.group(1))
 
         fid = re.search(r'id="fid" value="(\d+)" />', self.html).group(1)
-        self.log_debug("fid: %s" % fid)
+        self.log_debug("FID: %s" % fid)
 
         html = self.load("https://www.androidfilehost.com/libs/otf/mirrors.otf.php",
                          post={'submit': 'submit',
