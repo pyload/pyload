@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class EuroshareEu(SimpleHoster):
     __name__    = "EuroshareEu"
     __type__    = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?euroshare\.(eu|sk|cz|hu|pl)/file/.+'
@@ -23,7 +23,7 @@ class EuroshareEu(SimpleHoster):
     INFO_PATTERN    = r'<span style="float: left;"><strong>(?P<N>.+?)</strong> \((?P<S>.+?)\)</span>'
     OFFLINE_PATTERN = ur'<h2>S.bor sa nena.iel</h2>|Požadovaná stránka neexistuje!'
 
-    LINK_FREE_PATTERN = r'<a href="(/file/\d+/[^/]*/download/)"><div class="downloadButton"'
+    LINK_FREE_PATTERN = r'onclick="return checkLoad\(\);" href="(.+?)" class="tlacitko velky"'
 
     DL_LIMIT_PATTERN = r'<h2>Prebieha s.ahovanie</h2>|<p>Naraz je z jednej IP adresy mo.n. s.ahova. iba jeden s.bor'
     ERROR_PATTERN    = r'href="/customer-zone/login/"'
@@ -57,7 +57,7 @@ class EuroshareEu(SimpleHoster):
         if m is None:
             self.error(_("LINK_FREE_PATTERN not found"))
 
-        self.link = "http://euroshare.eu%s" % m.group(1)
+        self.link = m.group(1)
 
 
 getInfo = create_getInfo(EuroshareEu)
