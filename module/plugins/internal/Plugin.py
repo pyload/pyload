@@ -171,6 +171,29 @@ def which(program):
                 return exe_file
 
 
+#@TODO: Move to utils in 0.4.10
+def format_exc(frame=None):
+    """
+    Format call-stack and display exception information (if availible)
+    """
+    exception_info = sys.exc_info()
+    callstack_list = traceback.extract_stack(frame)
+    callstack_list = callstack_list[:-1]
+
+    exception_desc = ""
+    if exception_info[0] is not None:
+        exception_callstack_list = traceback.extract_tb(exception_info[2])
+        if callstack_list[-1][0] == exception_callstack_list[0][0]:  #Does this exception belongs to us?
+            callstack_list = callstack_list[:-1]
+            callstack_list.extend(exception_callstack_list)
+            exception_desc = "".join(traceback.format_exception_only(exception_info[0], exception_info[1]))
+
+    traceback_str = "Traceback (most recent call last):\n"
+    traceback_str += "".join(traceback.format_list(callstack_list))
+    traceback_str += exception_desc
+    traceback_str = traceback_str[:-1]  #Removing the last '\n'
+    return traceback_str
+
 def seconds_to_nexthour(strict=False):
     now      = datetime.datetime.today()
     nexthour = now.replace(minute=0 if strict else 1, second=0, microsecond=0) + datetime.timedelta(hours=1)
@@ -261,7 +284,7 @@ def chunks(iterable, size):
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.57"
+    __version__ = "0.58"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -312,47 +335,39 @@ class Plugin(object):
 
     def log_debug(self, *args, **kwargs):
         self._log("debug", self.__type__, self.__name__, args)
-        if self.pyload.debug and kwargs.get('trace'):
-            frame = inspect.currentframe()
-            print "Traceback (most recent call last):"
-            traceback.print_stack(frame.f_back)
-            del frame
+        if self.pyload.debug and kwargs.get('trace', False):
+            self.log_exc("debug")
 
 
     def log_info(self, *args, **kwargs):
         self._log("info", self.__type__, self.__name__, args)
-        if self.pyload.debug and kwargs.get('trace'):
-            frame = inspect.currentframe()
-            print "Traceback (most recent call last):"
-            traceback.print_stack(frame.f_back)
-            del frame
+        if kwargs.get('trace', False):
+            self.log_exc("info")
 
 
     def log_warning(self, *args, **kwargs):
         self._log("warning", self.__type__, self.__name__, args)
-        if self.pyload.debug and kwargs.get('trace'):
-            frame = inspect.currentframe()
-            print "Traceback (most recent call last):"
-            traceback.print_stack(frame.f_back)
-            del frame
+        if kwargs.get('trace', False):
+            self.log_exc("warning")
 
 
     def log_error(self, *args, **kwargs):
         self._log("error", self.__type__, self.__name__, args)
-        if self.pyload.debug and kwargs.get('trace', True):
-            frame = inspect.currentframe()
-            print "Traceback (most recent call last):"
-            traceback.print_stack(frame.f_back)
-            del frame
+        if kwargs.get('trace', False):
+            self.log_exc("error")
 
 
     def log_critical(self, *args, **kwargs):
         self._log("critical", self.__type__, self.__name__, args)
         if kwargs.get('trace', True):
-            frame = inspect.currentframe()
-            print "Traceback (most recent call last):"
-            traceback.print_stack(frame.f_back)
-            del frame
+            self.log_exc("critical")
+
+
+    def log_exc(self, level):
+        frame = inspect.currentframe()
+        log = getattr(self.pyload.log, level)
+        log(format_exc(frame.f_back))
+        del frame
 
 
     def set_permissions(self, path):
