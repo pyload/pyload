@@ -197,7 +197,8 @@ class Account(Plugin):
                            'options'    : u['options'],
                            'premium'    : u['premium'],
                            'trafficleft': u['trafficleft'],
-                           'validuntil' : u['validuntil']}}
+                           'validuntil' : u['validuntil'],
+                           'sid'        : u['sid']}}
 
             self.info.update(d)
 
@@ -213,7 +214,8 @@ class Account(Plugin):
              'options'    : {'limitdl': ['0']},
              'premium'    : None,
              'trafficleft': None,
-             'validuntil' : None}
+             'validuntil' : None,
+             'sid'        : None}
 
         self.info['data'].update(d)
 
@@ -338,7 +340,8 @@ class Account(Plugin):
              'trafficleft': None,
              'type'       : self.__name__,
              'valid'      : None,
-             'validuntil' : None}
+             'validuntil' : None,
+             'sid'        : None}
 
         u = self.accounts[user] = d
         return u['plugin'].choose(user)
