@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class EuroshareEu(SimpleHoster):
     __name__    = "EuroshareEu"
     __type__    = "hoster"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?euroshare\.(eu|sk|cz|hu|pl)/file/.+'
@@ -20,7 +20,9 @@ class EuroshareEu(SimpleHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    INFO_PATTERN    = r'<span style="float: left;"><strong>(?P<N>.+?)</strong> \((?P<S>.+?)\)</span>'
+    NAME_PATTERN    = r'<h1 class="nazev-souboru">(?P<N>.+?)</h1>'
+    SIZE_PATTERN    = r'<p class="posledni vpravo">.*\| (?P<S>.+?) (?P<U>.+?)</p>'
+    
     OFFLINE_PATTERN = ur'<h2>S.bor sa nena.iel</h2>|Požadovaná stránka neexistuje!'
 
     LINK_FREE_PATTERN = r'onclick="return checkLoad\(\);" href="(.+?)" class="tlacitko velky"'
