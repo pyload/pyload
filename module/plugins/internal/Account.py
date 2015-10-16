@@ -4,6 +4,7 @@ import random
 import re
 import time
 import threading
+import copy
 
 from module.plugins.Plugin import SkipDownload as Skip
 from module.plugins.internal.Plugin import Plugin, parse_size
@@ -242,7 +243,8 @@ class Account(Plugin):
 
             self.syncback()
 
-            safe_info = dict(self.info)
+            #: Needed to copy self.info if a value is changed, simple dict() is altering the original
+            safe_info = copy.deepcopy(self.info)
             safe_info['login']['password'] = "**********"
             self.log_debug("Account info for user `%s`: %s" % (self.user, safe_info))
 
