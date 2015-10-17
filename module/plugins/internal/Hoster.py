@@ -13,7 +13,7 @@ from module.utils import fs_decode, fs_encode, save_join as fs_join, save_path a
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -149,7 +149,9 @@ class Hoster(Base):
 
         self.check_abort()
 
-        chunks = min(self.pyload.config.get("download", "chunks"), chunks or self.chunk_limit or -1)
+        chunks = max(max(self.pyload.config.get("download", "chunks"), 1) if (chunks or self.chunk_limit) == -1 else \
+                                           min(max(self.pyload.config.get("download", "chunks"), 1), chunks or self.chunk_limit), 1)
+
 
         if resume is None:
             resume = self.resume_download
