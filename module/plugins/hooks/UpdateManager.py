@@ -276,6 +276,7 @@ class UpdateManager(Addon):
                     'name': n,
                 })
 
+        req = self.pyload.requestFactory.getRequest(self.classname)
         for plugin in updatelist:
             name    = plugin['name']
             type    = plugin['type']
@@ -298,9 +299,12 @@ class UpdateManager(Addon):
                                     'oldver': oldver,
                                     'newver': newver})
             try:
-                content = self.load(url % plugin + ".py", decode=False)
-                m = self._VERSION.search(content)
+                content = self.load(url % plugin + ".py", decode=False, req=req)
 
+                if req.code == 404:
+                    raise Exception(_("Plugin URL not found (404)"))
+                
+                m = self._VERSION.search(content)
                 if m and m.group(2) == version:
                     #@TODO: Remove in 0.4.10
                     if type in ("account", "hook"):
@@ -313,7 +317,7 @@ class UpdateManager(Addon):
 
                     updated.append((type, name))
                 else:
-                    raise Exception(_("Version mismatch"))
+                    raise Exception(_("Plugin version mismatch"))
 
             except Exception, e:
                 self.log_error(_("Error updating plugin: %s %s") % (type.upper(), name), e)
@@ -370,7 +374,7 @@ class UpdateManager(Addon):
                         os.remove(filename)
 
                     except OSError, e:
-                        self.log_warning(_("Error removing: %s") % filename, e)
+                        self.log_error(_("Error removing: %s") % filename, e)
 
                     else:
                         id = (type, name)
