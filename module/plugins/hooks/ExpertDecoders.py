@@ -15,7 +15,7 @@ from module.plugins.internal.Addon import Addon, threaded
 class ExpertDecoders(Addon):
     __name__    = "ExpertDecoders"
     __type__    = "hook"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __config__ = [("activated"   , "bool"    , "Activated"                       , False),

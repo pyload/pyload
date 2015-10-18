@@ -13,7 +13,7 @@ from module.plugins.internal.utils import html_unescape
 class YoutubeCom(Hoster):
     __name__    = "YoutubeCom"
     __type__    = "hoster"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)\w+'

@@ -7,7 +7,7 @@ from module.plugins.internal.Addon import Addon
 class UnSkipOnFail(Addon):
     __name__    = "UnSkipOnFail"
     __type__    = "hook"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated", True)]

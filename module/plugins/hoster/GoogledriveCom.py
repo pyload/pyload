@@ -13,7 +13,7 @@ from module.plugins.internal.utils import html_unescape
 class GoogledriveCom(SimpleHoster):
     __name__    = "GoogledriveCom"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(drive|docs)\.google\.com/(file/d/\w+|uc\?.*id=)'

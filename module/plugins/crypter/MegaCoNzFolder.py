@@ -8,7 +8,7 @@ from module.plugins.internal.Crypter import Crypter, create_getInfo
 class MegaCoNzFolder(Crypter):
     __name__    = "MegaCoNz"
     __type__    = "crypter"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "broken"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#F!(?P<ID>[\w^_]+)!(?P<KEY>[\w,\\-]+)'

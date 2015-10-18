@@ -11,7 +11,7 @@ from module.plugins.internal.MultiAccount import MultiAccount
 class RapideoPl(MultiAccount):
     __name__    = "RapideoPl"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),

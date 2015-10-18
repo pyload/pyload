@@ -7,7 +7,7 @@ from module.plugins.internal.utils import json
 class MegaDebridEu(MultiAccount):
     __name__    = "MegaDebridEu"
     __type__    = "account"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),

@@ -10,7 +10,7 @@ from module.plugins.internal.utils import fs_join, json
 class DailymotionComFolder(Crypter):
     __name__    = "DailymotionCom"
     __type__    = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)'

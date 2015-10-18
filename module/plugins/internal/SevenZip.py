@@ -10,7 +10,7 @@ from module.plugins.internal.utils import fs_join
 
 class SevenZip(UnRar):
     __name__    = "SevenZip"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __description__ = """7-Zip extractor plugin"""

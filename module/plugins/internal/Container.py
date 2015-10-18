@@ -12,7 +12,7 @@ from module.plugins.internal.utils import encode, exists, fs_join
 class Container(Crypter):
     __name__    = "Container"
     __type__    = "container"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'

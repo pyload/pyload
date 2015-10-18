@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class FreakshareCom(Account):
     __name__    = "FreakshareCom"
     __type__    = "account"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __description__ = """Freakshare.com account plugin"""

@@ -9,7 +9,7 @@ from module.plugins.internal.utils import encode
 class TXT(Container):
     __name__    = "TXT"
     __type__    = "container"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __pattern__ = r'.+\.(txt|text)$'

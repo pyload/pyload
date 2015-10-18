@@ -12,7 +12,7 @@ from module.plugins.hooks.IRCInterface import IRCInterface
 class XMPPInterface(IRCInterface, JabberClient):
     __name__    = "XMPPInterface"
     __type__    = "hook"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                           , False                                    ),

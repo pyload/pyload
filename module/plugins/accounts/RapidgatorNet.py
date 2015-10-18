@@ -9,7 +9,7 @@ from module.plugins.internal.utils import jso
 class RapidgatorNet(Account):
     __name__    = "RapidgatorNet"
     __type__    = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __description__ = """Rapidgator.net account plugin"""

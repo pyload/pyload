@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class PremiumizeMe(MultiHoster):
     __name__    = "PremiumizeMe"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate

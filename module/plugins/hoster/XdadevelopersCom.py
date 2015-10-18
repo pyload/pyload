@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class XdadevelopersCom(SimpleHoster):
     __name__    = "XdadevelopersCom"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?forum\.xda-developers\.com/devdb/project/dl/\?id=\d+'

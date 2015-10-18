@@ -10,7 +10,7 @@ from module.plugins.internal.Plugin import set_cookies
 class UploadingCom(Account):
     __name__    = "UploadingCom"
     __type__    = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __description__ = """Uploading.com account plugin"""

@@ -14,7 +14,7 @@ from module.plugins.internal.Addon import Addon
 class TransmissionRPC(Addon):
     __name__    = "TransmissionRPC"
     __type__    = "hook"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __pattern__ = r"https?://.+\.torrent|magnet:\?.+"

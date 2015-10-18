@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class GamefrontCom(SimpleHoster):
     __name__    = "GamefrontCom"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?gamefront\.com/files/(?P<ID>\d+)'

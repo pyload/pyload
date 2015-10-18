@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class BitshareComFolder(SimpleCrypter):
     __name__    = "BitshareCom"
     __type__    = "crypter"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?bitshare\.com/\?d=\w+'

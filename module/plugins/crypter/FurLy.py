@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class FurLy(SimpleCrypter):
     __name__    = "FurLy"
     __type__    = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fur\.ly/(\d/)?\w+'

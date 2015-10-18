@@ -11,7 +11,7 @@ from module.plugins.internal.utils import json, parse_size
 class RealdebridCom(MultiHoster):
     __name__    = "RealdebridCom"
     __type__    = "hoster"
-    __version__ = "0.69"
+    __version__ = "0.70"
     __status__  = "testing"
 
     __pattern__ = r'https?://((?:www\.|s\d+\.)?real-debrid\.com/dl/|[\w^_]\.rdb\.so/d/)[\w^_]+'

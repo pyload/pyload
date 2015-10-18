@@ -7,7 +7,7 @@ from module.plugins.internal.utils import json
 class FastixRu(MultiAccount):
     __name__    = "FastixRu"
     __type__    = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),

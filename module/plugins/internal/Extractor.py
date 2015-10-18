@@ -35,7 +35,7 @@ class PasswordError(Exception):
 class Extractor(Plugin):
     __name__    = "Extractor"
     __type__    = "extractor"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__  = "testing"
 
     __description__ = """Base extractor plugin"""

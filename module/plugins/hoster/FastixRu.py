@@ -10,7 +10,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class FastixRu(MultiHoster):
     __name__    = "FastixRu"
     __type__    = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/\w{24}'

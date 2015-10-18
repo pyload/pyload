@@ -14,7 +14,7 @@ from module.plugins.internal.utils import encode
 class RSDF(Container):
     __name__    = "RSDF"
     __type__    = "container"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__  = "testing"
 
     __pattern__ = r'.+\.rsdf$'

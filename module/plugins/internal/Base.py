@@ -37,7 +37,7 @@ def create_getInfo(klass):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'

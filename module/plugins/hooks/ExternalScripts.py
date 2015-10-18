@@ -10,7 +10,7 @@ from module.plugins.internal.utils import encode, fs_join
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.50"
+    __version__ = "0.51"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                   , True ),

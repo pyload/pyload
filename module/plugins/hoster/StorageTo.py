@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class StorageTo(DeadHoster):
     __name__    = "StorageTo"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?storage\.to/get/.+'

@@ -16,7 +16,7 @@ from module.plugins.internal.utils import encode, fs_join
 class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "1.00"
+    __version__ = "1.01"
     __status__  = "testing"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),

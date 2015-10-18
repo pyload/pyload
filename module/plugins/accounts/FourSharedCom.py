@@ -7,7 +7,7 @@ from module.plugins.internal.Plugin import set_cookie
 class FourSharedCom(Account):
     __name__    = "FourSharedCom"
     __type__    = "account"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __description__ = """FourShared.com account plugin"""

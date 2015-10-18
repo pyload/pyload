@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class IfolderRu(SimpleHoster):
     __name__    = "IfolderRu"
     __type__    = "hoster"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www)?(files\.)?(ifolder\.ru|metalarea\.org|rusfolder\.(com|net|ru))/(files/)?(?P<ID>\d+)'

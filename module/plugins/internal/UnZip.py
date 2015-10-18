@@ -11,7 +11,7 @@ from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError,
 
 class UnZip(Extractor):
     __name__    = "UnZip"
-    __version__ = "1.16"
+    __version__ = "1.17"
     __status__  = "testing"
 
     __description__ = """Zip extractor plugin"""

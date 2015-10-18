@@ -10,7 +10,7 @@ from module.plugins.internal.utils import json
 class RapiduNet(Account):
     __name__    = "RapiduNet"
     __type__    = "account"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __description__ = """Rapidu.net account plugin"""

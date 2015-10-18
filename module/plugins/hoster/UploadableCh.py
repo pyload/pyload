@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadableCh(SimpleHoster):
     __name__    = "UploadableCh"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?uploadable\.ch/file/(?P<ID>\w+)'

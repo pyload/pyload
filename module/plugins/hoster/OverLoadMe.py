@@ -10,7 +10,7 @@ from module.plugins.internal.utils import json, parse_size
 class OverLoadMe(MultiHoster):
     __name__    = "OverLoadMe"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __pattern__ = r'https?://.*overload\.me/.+'

@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FiledropperCom(SimpleHoster):
     __name__    = "FiledropperCom"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filedropper\.com/\w+'

@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class CzshareCom(Account):
     __name__    = "CzshareCom"
     __type__    = "account"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__  = "testing"
 
     __description__ = """Czshare.com account plugin, now Sdilej.cz"""

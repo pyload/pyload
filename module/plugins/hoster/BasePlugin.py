@@ -6,7 +6,7 @@ from module.plugins.internal.hoster.Http import Http, create_getInfo
 class BasePlugin(Http):
     __name__    = "BasePlugin"
     __type__    = "hoster"
-    __version__ = "0.47"
+    __version__ = "0.48"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'

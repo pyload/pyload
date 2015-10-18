@@ -17,7 +17,7 @@ from module.plugins.internal.utils import encode, fs_join
 class AntiVirus(Addon):
     __name__    = "AntiVirus"
     __type__    = "hook"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     #@TODO: add trash option (use Send2Trash lib)

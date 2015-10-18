@@ -9,7 +9,7 @@ from module.plugins.internal.utils import json
 class LinksnappyCom(MultiAccount):
     __name__    = "LinksnappyCom"
     __type__    = "account"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),

@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadingCom(SimpleHoster):
     __name__    = "UploadingCom"
     __type__    = "hoster"
-    __version__ = "0.44"
+    __version__ = "0.45"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>\w+)'

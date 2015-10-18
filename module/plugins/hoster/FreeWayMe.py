@@ -6,7 +6,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class FreeWayMe(MultiHoster):
     __name__    = "FreeWayMe"
     __type__    = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?free-way\.(bz|me)/.+'

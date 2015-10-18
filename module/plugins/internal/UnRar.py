@@ -11,7 +11,7 @@ from module.plugins.internal.utils import decode, fs_join
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.27"
+    __version__ = "1.28"
     __status__  = "testing"
 
     __description__ = """Rar extractor plugin"""

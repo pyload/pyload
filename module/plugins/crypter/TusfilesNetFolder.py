@@ -10,7 +10,7 @@ from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
 class TusfilesNetFolder(XFSCrypter):
     __name__    = "TusfilesNet"
     __type__    = "crypter"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/go/(?P<ID>\w+)'

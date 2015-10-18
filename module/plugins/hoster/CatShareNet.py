@@ -9,7 +9,7 @@ from module.plugins.captcha.ReCaptcha import ReCaptcha
 class CatShareNet(SimpleHoster):
     __name__    = "CatShareNet"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?catshare\.net/\w{15,16}'

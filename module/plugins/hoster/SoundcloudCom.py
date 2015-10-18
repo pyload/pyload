@@ -9,7 +9,7 @@ from module.plugins.internal.utils import json
 class SoundcloudCom(SimpleHoster):
     __name__    = "SoundcloudCom"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?soundcloud\.com/[\w\-]+/[\w\-]+'

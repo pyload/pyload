@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FastshareCz(SimpleHoster):
     __name__    = "FastshareCz"
     __type__    = "hoster"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'

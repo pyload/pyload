@@ -9,7 +9,7 @@ from module.plugins.internal.Plugin import set_cookie
 class FastshareCz(Account):
     __name__    = "FastshareCz"
     __type__    = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __description__ = """Fastshare.cz account plugin"""

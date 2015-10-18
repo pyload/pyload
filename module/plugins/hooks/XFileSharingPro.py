@@ -8,7 +8,7 @@ from module.plugins.internal.Addon import Addon
 class XFileSharingPro(Addon):
     __name__    = "XFileSharingPro"
     __type__    = "hook"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __status__  = "testing"
 
     __config__ = [("activated"       , "bool", "Activated"                     , True ),

@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class LoadTo(SimpleHoster):
     __name__    = "LoadTo"
     __type__    = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?load\.to/\w+'

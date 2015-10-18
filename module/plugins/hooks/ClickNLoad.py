@@ -27,7 +27,7 @@ def forward(source, destination):
 class ClickNLoad(Addon):
     __name__    = "ClickNLoad"
     __type__    = "hook"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __status__  = "testing"
 
     __config__ = [("activated", "bool"           , "Activated"                      , True       ),

@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class HostujeNet(SimpleHoster):
     __name__    = "HostujeNet"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?hostuje\.net/\w+'

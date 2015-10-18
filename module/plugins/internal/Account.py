@@ -12,7 +12,7 @@ from module.plugins.internal.utils import compare_time, isiterable, lock, parse_
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.62"
+    __version__ = "0.63"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""

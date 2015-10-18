@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class NitroflareCom(Account):
     __name__    = "NitroflareCom"
     __type__    = "account"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __description__ = """Nitroflare.com account plugin"""

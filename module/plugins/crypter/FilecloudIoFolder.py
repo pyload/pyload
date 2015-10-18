@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class FilecloudIoFolder(SimpleCrypter):
     __name__    = "FilecloudIo"
     __type__    = "crypter"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(filecloud\.io|ifile\.it)/_\w+'

@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class MegaRapidCzFolder(SimpleCrypter):
     __name__    = "MegaRapidCz"
     __type__    = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(share|mega)rapid\.cz/slozka/\d+/\w+'

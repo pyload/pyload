@@ -9,7 +9,7 @@ from module.plugins.internal.CaptchaService import CaptchaService
 class AdYouLike(CaptchaService):
     __name__    = "AdYouLike"
     __type__    = "captcha"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __description__ = """AdYouLike captcha service plugin"""

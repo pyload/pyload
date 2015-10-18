@@ -6,7 +6,7 @@ from module.plugins.internal.Account import Account
 class UploadableCh(Account):
     __name__    = "UploadableCh"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __description__ = """Uploadable.ch account plugin"""

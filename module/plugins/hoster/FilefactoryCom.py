@@ -21,7 +21,7 @@ def get_info(urls):
 class FilefactoryCom(SimpleHoster):
     __name__    = "FilefactoryCom"
     __type__    = "hoster"
-    __version__ = "0.59"
+    __version__ = "0.60"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/(file|trafficshare/\w+)/\w+'

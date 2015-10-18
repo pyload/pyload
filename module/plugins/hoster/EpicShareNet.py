@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class EpicShareNet(DeadHoster):
     __name__    = "EpicShareNet"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?epicshare\.net/\w{12}'

@@ -9,7 +9,7 @@ from module.plugins.internal.Plugin import seconds_to_nexthour
 class LogMarker(Addon):
     __name__    = "LogMarker"
     __type__    = "hook"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated" , False),

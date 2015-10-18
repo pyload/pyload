@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class SizedriveCom(SimpleHoster):
     __name__    = "SizedriveCom"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?sizedrive\.com/[rd]/(?P<ID>\w+)'

@@ -14,7 +14,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class RapidgatorNet(SimpleHoster):
     __name__    = "RapidgatorNet"
     __type__    = "hoster"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'

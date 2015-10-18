@@ -10,7 +10,7 @@ from module.plugins.internal.Plugin import set_cookie
 class TurbobitNet(Account):
     __name__    = "TurbobitNet"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __description__ = """TurbobitNet account plugin"""

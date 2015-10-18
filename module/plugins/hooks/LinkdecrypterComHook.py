@@ -8,7 +8,7 @@ from module.plugins.internal.Addon import Addon
 class LinkdecrypterComHook(Addon):
     __name__    = "LinkdecrypterCom"
     __type__    = "hook"
-    __version__ = "1.08"
+    __version__ = "1.09"
     __status__  = "testing"
 
     __config__ = [("activated"     , "bool"               , "Activated"                    , False),

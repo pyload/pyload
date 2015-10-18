@@ -9,7 +9,7 @@ from module.plugins.internal.utils import html_unescape
 class LolabitsEs(SimpleHoster):
     __name__    = "LolabitsEs"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?lolabits\.es/.+'

@@ -12,7 +12,7 @@ from module.plugins.captcha.ReCaptcha import ReCaptcha
 class NCryptIn(Crypter):
     __name__    = "NCryptIn"
     __type__    = "crypter"
-    __version__ = "1.37"
+    __version__ = "1.38"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?ncrypt\.in/(?P<TYPE>folder|link|frame)-([^/\?]+)'

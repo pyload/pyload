@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UserscloudCom(SimpleHoster):
     __name__    = "UserscloudCom"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?userscloud\.com/\w{12}'

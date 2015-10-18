@@ -9,7 +9,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class MyfastfileCom(MultiHoster):
     __name__    = "MyfastfileCom"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __pattern__ = r'http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/'

@@ -11,7 +11,7 @@ from module.plugins.internal.utils import parse_html_form, parse_time, set_cooki
 class XFSAccount(MultiAccount):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.53"
+    __version__ = "0.54"
     __status__  = "testing"
 
     __config__ = [("activated"     , "bool"               , "Activated"                    , True ),

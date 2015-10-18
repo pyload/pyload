@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class CrockoComFolder(SimpleCrypter):
     __name__    = "CrockoCom"
     __type__    = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?crocko\.com/f/.+'

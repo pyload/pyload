@@ -12,7 +12,7 @@ from module.plugins.internal.utils import parse_size
 class CzshareCom(SimpleHoster):
     __name__    = "CzshareCom"
     __type__    = "hoster"
-    __version__ = "1.05"
+    __version__ = "1.06"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download\.php\?).+'

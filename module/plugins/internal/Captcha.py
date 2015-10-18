@@ -12,7 +12,7 @@ from module.plugins.internal.utils import encode
 class Captcha(Plugin):
     __name__    = "Captcha"
     __type__    = "captcha"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __status__  = "testing"
 
     __description__ = """Base anti-captcha plugin"""

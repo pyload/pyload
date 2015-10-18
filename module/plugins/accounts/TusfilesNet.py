@@ -9,7 +9,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class TusfilesNet(XFSAccount):
     __name__    = "TusfilesNet"
     __type__    = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __description__ = """Tusfile.net account plugin"""

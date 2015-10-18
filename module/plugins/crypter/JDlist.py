@@ -6,7 +6,7 @@ from module.plugins.internal.Crypter import Crypter, create_getInfo
 class JDlist(Crypter):
     __name__    = "JDlist"
     __type__    = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "testing"
 
     __pattern__ = r'jdlist://(?P<LIST>[\w\+^_]+==)'

@@ -20,7 +20,7 @@ from module.plugins.internal.utils import *
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.58"
+    __version__ = "0.59"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'

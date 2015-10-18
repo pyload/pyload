@@ -6,7 +6,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 class FilesonicComFolder(DeadCrypter):
     __name__    = "FilesonicCom"
     __type__    = "crypter"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?filesonic\.com/folder/\w+'

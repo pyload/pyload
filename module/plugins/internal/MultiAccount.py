@@ -10,7 +10,7 @@ from module.plugins.internal.utils import decode, remove_chars, uniqify
 class MultiAccount(Account):
     __name__    = "MultiAccount"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "broken"
 
     __config__ = [("activated"     , "bool"               , "Activated"                    , True ),

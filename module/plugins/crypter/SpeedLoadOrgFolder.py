@@ -6,7 +6,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 class SpeedLoadOrgFolder(DeadCrypter):
     __name__    = "SpeedLoadOrg"
     __type__    = "crypter"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?speedload\.org/(\d+~f$|folder/\d+/)'

@@ -38,7 +38,7 @@ def compute_checksum(local_file, algorithm):
 class Checksum(Addon):
     __name__    = "Checksum"
     __type__    = "hook"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__  = "testing"
 
     __config__ = [("activated"     , "bool"              , "Activated"                                            , False  ),

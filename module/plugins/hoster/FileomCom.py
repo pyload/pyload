@@ -9,7 +9,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class FileomCom(XFSHoster):
     __name__    = "FileomCom"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?fileom\.com/\w{12}'

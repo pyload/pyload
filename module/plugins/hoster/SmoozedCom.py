@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHoster import MultiHoster
 class SmoozedCom(MultiHoster):
     __name__    = "SmoozedCom"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate

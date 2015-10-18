@@ -13,7 +13,7 @@ from module.plugins.internal.CaptchaService import CaptchaService
 class ReCaptcha(CaptchaService):
     __name__    = "ReCaptcha"
     __type__    = "captcha"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __description__ = """ReCaptcha captcha service plugin"""

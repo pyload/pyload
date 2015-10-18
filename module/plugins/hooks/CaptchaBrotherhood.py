@@ -38,7 +38,7 @@ class CaptchaBrotherhoodException(Exception):
 class CaptchaBrotherhood(Addon):
     __name__    = "CaptchaBrotherhood"
     __type__    = "hook"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __config__ = [("activated"   , "bool"    , "Activated"                       , False),

@@ -9,7 +9,7 @@ from module.plugins.internal.utils import json
 class FileserveCom(Account):
     __name__    = "FileserveCom"
     __type__    = "account"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__  = "testing"
 
     __description__ = """Fileserve.com account plugin"""

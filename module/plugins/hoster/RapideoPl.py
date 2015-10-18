@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHoster import MultiHoster
 class RapideoPl(MultiHoster):
     __name__    = "RapideoPl"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'

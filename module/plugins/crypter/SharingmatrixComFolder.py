@@ -6,7 +6,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 class SharingmatrixComFolder(DeadCrypter):
     __name__    = "SharingmatrixCom"
     __type__    = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?sharingmatrix\.com/folder/\w+'

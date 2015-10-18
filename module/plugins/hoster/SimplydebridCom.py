@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo, rep
 class SimplydebridCom(MultiHoster):
     __name__    = "SimplydebridCom"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__  = "testing"
 
     __pattern__ = r'http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd\.php'

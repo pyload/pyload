@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class NosvideoCom(SimpleCrypter):
     __name__    = "NosvideoCom"
     __type__    = "crypter"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?nosvideo\.com/\?v=\w+'

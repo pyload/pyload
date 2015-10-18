@@ -7,7 +7,7 @@ from module.plugins.internal.Account import Account
 class LetitbitNet(Account):
     __name__    = "LetitbitNet"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __description__ = """Letitbit.net account plugin"""

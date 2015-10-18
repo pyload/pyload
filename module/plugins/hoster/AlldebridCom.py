@@ -10,7 +10,7 @@ from module.plugins.internal.utils import json, parse_size
 class AlldebridCom(MultiHoster):
     __name__    = "AlldebridCom"
     __type__    = "hoster"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'

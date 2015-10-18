@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class FreakhareComFolder(SimpleCrypter):
     __name__    = "FreakhareCom"
     __type__    = "crypter"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?freakshare\.com/folder/.+'

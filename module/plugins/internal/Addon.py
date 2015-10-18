@@ -22,7 +22,7 @@ def threaded(fn):
 class Addon(Plugin):
     __name__    = "Addon"
     __type__    = "hook"  #@TODO: Change to `addon` in 0.4.10
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __threaded__ = []  #@TODO: Remove in 0.4.10

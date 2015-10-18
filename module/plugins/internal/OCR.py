@@ -20,7 +20,7 @@ from module.plugins.internal.utils import fs_join
 class OCR(Plugin):
     __name__    = "OCR"
     __type__    = "ocr"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __description__ = """OCR base plugin"""

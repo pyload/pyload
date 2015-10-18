@@ -13,7 +13,7 @@ from module.plugins.internal.utils import encode, fs_join
 class HotFolder(Addon):
     __name__    = "HotFolder"
     __type__    = "hook"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"              , False      ),

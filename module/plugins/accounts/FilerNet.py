@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class FilerNet(Account):
     __name__    = "FilerNet"
     __type__    = "account"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __description__ = """Filer.net account plugin"""

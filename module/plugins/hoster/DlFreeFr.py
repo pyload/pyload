@@ -35,7 +35,7 @@ class CustomBrowser(Browser):
 class DlFreeFr(SimpleHoster):
     __name__    = "DlFreeFr"
     __type__    = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?dl\.free\.fr/(\w+|getfile\.pl\?file=/\w+)'

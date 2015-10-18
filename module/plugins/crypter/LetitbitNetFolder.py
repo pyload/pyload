@@ -8,7 +8,7 @@ from module.plugins.internal.Crypter import Crypter, create_getInfo
 class LinkCryptWs(Crypter):
     __name__    = "LetitbitNet"
     __type__    = "crypter"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?letitbit\.net/folder/\w+'

@@ -9,7 +9,7 @@ from module.plugins.internal.Plugin import encode
 class UserAgentSwitcher(Addon):
     __name__    = "UserAgentSwitcher"
     __type__    = "hook"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __config__ = [("activated"     , "bool", "Activated"                             , True                                                                      ),
