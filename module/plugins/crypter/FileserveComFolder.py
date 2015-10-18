@@ -6,9 +6,9 @@ from module.plugins.internal.Crypter import Crypter, create_getInfo
 
 
 class FileserveComFolder(Crypter):
-    __name__    = "FileserveCom"
+    __name__    = "FileserveComFolder"
     __type__    = "crypter"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fileserve\.com/list/\w+'

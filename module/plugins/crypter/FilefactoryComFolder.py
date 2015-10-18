@@ -4,9 +4,9 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class FilefactoryComFolder(SimpleCrypter):
-    __name__    = "FilefactoryCom"
+    __name__    = "FilefactoryComFolder"
     __type__    = "crypter"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/(?:f|folder)/\w+'

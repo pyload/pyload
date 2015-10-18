@@ -4,9 +4,9 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class FshareVnFolder(SimpleCrypter):
-    __name__    = "FshareVn"
+    __name__    = "FshareVnFolder"
     __type__    = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fshare\.vn/folder/.+'

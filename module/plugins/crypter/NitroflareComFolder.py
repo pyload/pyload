@@ -5,9 +5,9 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class NitroflareComFolder(SimpleCrypter):
-    __name__    = "NitroflareCom"
+    __name__    = "NitroflareComFolder"
     __type__    = "crypter"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/folder/(?P<USER>\d+)/(?P<ID>[\w=]+)'

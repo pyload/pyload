@@ -10,9 +10,9 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class DevhostStFolder(SimpleCrypter):
-    __name__    = "DevhostSt"
+    __name__    = "DevhostStFolder"
     __type__    = "crypter"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?d-h\.st/users/(?P<USER>\w+)(/\?fld_id=(?P<ID>\d+))?'

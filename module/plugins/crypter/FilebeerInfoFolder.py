@@ -4,9 +4,9 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class FilebeerInfoFolder(DeadCrypter):
-    __name__    = "FilebeerInfo"
+    __name__    = "FilebeerInfoFolder"
     __type__    = "crypter"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?filebeer\.info/\d*~f\w+'

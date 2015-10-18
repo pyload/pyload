@@ -6,9 +6,9 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class DataHuFolder(SimpleCrypter):
-    __name__    = "DataHu"
+    __name__    = "DataHuFolder"
     __type__    = "crypter"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?data\.hu/dir/\w+'

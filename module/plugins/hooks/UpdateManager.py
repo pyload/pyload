@@ -16,7 +16,7 @@ from module.plugins.internal.utils import encode, fs_join
 class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "1.01"
+    __version__ = "1.02"
     __status__  = "testing"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),
@@ -250,6 +250,7 @@ class UpdateManager(Addon):
         updatelist, blacklist = self.parse_list(updates)
 
         url = updates[1]
+        req = self.pyload.requestFactory.getRequest(self.classname)
 
         if blacklist:
             #@NOTE: Protect UpdateManager from self-removing
@@ -276,7 +277,6 @@ class UpdateManager(Addon):
                     'name': n,
                 })
 
-        req = self.pyload.requestFactory.getRequest(self.classname)
         for plugin in updatelist:
             name    = plugin['name']
             type    = plugin['type']
@@ -301,9 +301,9 @@ class UpdateManager(Addon):
             try:
                 content = self.load(url % plugin + ".py", decode=False, req=req)
 
-                if req.code == 404:
-                    raise Exception(_("Plugin URL not found (404)"))
-                
+                if req.code is 404:
+                    raise Exception(_("URL not found"))
+
                 m = self._VERSION.search(content)
                 if m and m.group(2) == version:
                     #@TODO: Remove in 0.4.10
@@ -317,7 +317,7 @@ class UpdateManager(Addon):
 
                     updated.append((type, name))
                 else:
-                    raise Exception(_("Plugin version mismatch"))
+                    raise Exception(_("Version mismatch"))
 
             except Exception, e:
                 self.log_error(_("Error updating plugin: %s %s") % (type.upper(), name), e)
@@ -374,7 +374,7 @@ class UpdateManager(Addon):
                         os.remove(filename)
 
                     except OSError, e:
-                        self.log_error(_("Error removing: %s") % filename, e)
+                        self.log_warning(_("Error removing: %s") % filename, e)
 
                     else:
                         id = (type, name)

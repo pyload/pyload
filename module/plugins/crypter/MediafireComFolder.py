@@ -8,9 +8,9 @@ from module.plugins.internal.utils import json
 
 
 class MediafireComFolder(Crypter):
-    __name__    = "MediafireCom"
+    __name__    = "MediafireComFolder"
     __type__    = "crypter"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))'

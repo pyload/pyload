@@ -4,9 +4,9 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class DepositfilesComFolder(SimpleCrypter):
-    __name__    = "DepositfilesCom"
+    __name__    = "DepositfilesComFolder"
     __type__    = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?depositfiles\.com/folders/\w+'

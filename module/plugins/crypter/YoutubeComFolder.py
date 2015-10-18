@@ -8,9 +8,9 @@ from module.plugins.internal.utils import fs_join, json
 
 
 class YoutubeComFolder(Crypter):
-    __name__    = "YoutubeCom"
+    __name__    = "YoutubeComFolder"
     __type__    = "crypter"
-    __version__ = "1.04"
+    __version__ = "1.05"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.|m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w\-]+)'

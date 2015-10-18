@@ -7,7 +7,7 @@ from module.plugins.internal.utils import set_cookie
 class XFSCrypter(SimpleCrypter):
     __name__    = "XFSCrypter"
     __type__    = "crypter"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'

@@ -6,9 +6,9 @@ from module.plugins.internal.Crypter import Crypter, create_getInfo
 
 
 class UlozToFolder(Crypter):
-    __name__    = "UlozTo"
+    __name__    = "UlozToFolder"
     __type__    = "crypter"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(m|soubory)/.+'

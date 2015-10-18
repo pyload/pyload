@@ -6,9 +6,9 @@ from module.plugins.internal.Crypter import Crypter, create_getInfo
 
 
 class QuickshareCzFolder(Crypter):
-    __name__    = "QuickshareCz"
+    __name__    = "QuickshareCzFolder"
     __type__    = "crypter"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?quickshare\.cz/slozka-\d+'

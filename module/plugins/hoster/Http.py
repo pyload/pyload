@@ -19,8 +19,7 @@ class Http(Hoster):
 
     __description__ = """Download from http link"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def setup(self):

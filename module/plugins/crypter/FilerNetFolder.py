@@ -4,9 +4,9 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class FilerNetFolder(SimpleCrypter):
-    __name__    = "FilerNet"
+    __name__    = "FilerNetFolder"
     __type__    = "crypter"
-    __version__ = "0.44"
+    __version__ = "0.45"
     __status__  = "testing"
 
     __pattern__ = r'https?://filer\.net/folder/\w{16}'
