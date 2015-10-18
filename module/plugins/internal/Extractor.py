@@ -5,7 +5,19 @@ import re
 
 from module.PyFile import PyFile
 from module.plugins.internal.Plugin import Plugin
-from module.utils import fs_encode
+
+
+def renice(pid, value):
+    if not value or os.name is "nt":
+        return
+
+    try:
+        subprocess.Popen(["renice", str(value), str(pid)],
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE,
+                         bufsize=-1)
+    except Exception:
+        pass
 
 
 class ArchiveError(Exception):
@@ -73,15 +85,14 @@ class Extractor(Plugin):
 
     @property
     def target(self):
-        return fs_encode(self.filename)
+        return encode(self.filename)
 
 
     def __init__(self, plugin, filename, out,
                  fullpath=True,
                  overwrite=False,
                  excludefiles=[],
-                 renice=0,
-                 delete='No',
+                 renice=False,
                  keepbroken=False,
                  fid=None):
         """
@@ -95,8 +106,7 @@ class Extractor(Plugin):
         self.fullpath     = fullpath
         self.overwrite    = overwrite
         self.excludefiles = excludefiles
-        self.renice       = renice
-        self.delete       = delete
+        self.priority     = int(priority)
         self.keepbroken   = keepbroken
         self.files        = []  #: Store extracted files here
 

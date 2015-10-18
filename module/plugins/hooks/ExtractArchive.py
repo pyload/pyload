@@ -50,9 +50,8 @@ except ImportError:
     pass
 
 from module.plugins.internal.Addon import Addon, Expose, threaded
-from module.plugins.internal.Plugin import exists, replace_patterns
 from module.plugins.internal.Extractor import ArchiveError, CRCError, PasswordError
-from module.utils import fs_encode, save_join as fs_join, uniqify
+from module.plugins.internal.utils import encode, exists, fs_join, replace_patterns, uniqify
 
 
 class ArchiveQueue(object):
@@ -117,7 +116,7 @@ class ExtractArchive(Addon):
                   ("excludefiles"   , "str"   , "Don't extract the following files"     , "*.nfo,*.DS_Store,index.dat,thumb.db"                                    ),
                   ("recursive"      , "bool"  , "Extract archives in archives"          , True                                                                     ),
                   ("waitall"        , "bool"  , "Run after all downloads was processed" , False                                                                    ),
-                  ("renice"         , "int"   , "CPU priority"                          , 0                                                                        )]
+                  ("priority"       , "int"   , "Process priority"                      , 0                                                                        )]
 
     __description__ = """Extract different kind of archives"""
     __license__     = "GPLv3"
@@ -242,9 +241,8 @@ class ExtractArchive(Addon):
         subfolder   = self.get_config('subfolder')
         fullpath    = self.get_config('fullpath')
         overwrite   = self.get_config('overwrite')
-        renice      = self.get_config('renice')
+        priority    = self.get_config('priority')
         recursive   = self.get_config('recursive')
-        delete      = self.get_config('delete')
         keepbroken  = self.get_config('keepbroken')
 
         extensions   = [x.lstrip('.').lower() for x in toList(self.get_config('extensions'))]
@@ -256,7 +254,7 @@ class ExtractArchive(Addon):
         #: Reload from txt file
         self.reload_passwords()
 
-        download_folder = self.pyload.config.get("general", "download_folder")
+        dl_folder = self.pyload.config.get("general", "download_folder")
 
         #: Iterate packages -> extractors -> targets
         for pid in ids:
@@ -269,7 +267,7 @@ class ExtractArchive(Addon):
             self.log_info(_("Check package: %s") % pypack.name)
 
             #: Determine output folder
-            out = fs_join(download_folder, pypack.folder, destination, "")  #: Force trailing slash
+            out = fs_join(dl_folder, pypack.folder, destination, "")  #: Force trailing slash
 
             if subfolder:
                 out = fs_join(out, pypack.folder)
@@ -279,7 +277,7 @@ class ExtractArchive(Addon):
 
             matched   = False
             success   = True
-            files_ids = dict((pylink['name'], ((fs_join(download_folder, pypack.folder, pylink['name'])), pylink['id'], out)) for pylink \
+            files_ids = dict((pylink['name'], ((fs_join(dl_folder, pypack.folder, pylink['name'])), pylink['id'], out)) for pylink \
                         in sorted(pypack.getChildren().values(), key=lambda k: k['name'])).values()  #: Remove duplicates
 
             #: Check as long there are unseen files
@@ -312,8 +310,7 @@ class ExtractArchive(Addon):
                                                 fullpath,
                                                 overwrite,
                                                 excludefiles,
-                                                renice,
-                                                delete,
+                                                priority,
                                                 keepbroken,
                                                 fid)
 
@@ -341,7 +338,7 @@ class ExtractArchive(Addon):
                             self.set_permissions(file)
 
                         for filename in new_files:
-                            file = fs_encode(fs_join(os.path.dirname(archive.filename), filename))
+                            file = encode(fs_join(os.path.dirname(archive.filename), filename))
                             if not exists(file):
                                 self.log_debug("New file %s does not exists" % filename)
                                 continue
@@ -458,7 +455,7 @@ class ExtractArchive(Addon):
 
                 deltotrash = self.get_config('deltotrash')
                 for f in delfiles:
-                    file = fs_encode(f)
+                    file = encode(f)
                     if not exists(file):
                         continue
 
@@ -526,7 +523,7 @@ class ExtractArchive(Addon):
         try:
             passwords = []
 
-            file = fs_encode(self.get_config('passwordfile'))
+            file = encode(self.get_config('passwordfile'))
             with open(file) as f:
                 for pw in f.read().splitlines():
                     passwords.append(pw)
@@ -555,7 +552,7 @@ class ExtractArchive(Addon):
         try:
             self.passwords = uniqify([password] + self.passwords)
 
-            file = fs_encode(self.get_config('passwordfile'))
+            file = encode(self.get_config('passwordfile'))
             with open(file, "wb") as f:
                 for pw in self.passwords:
                     f.write(pw + '\n')

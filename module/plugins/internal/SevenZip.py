@@ -5,7 +5,7 @@ import re
 import subprocess
 
 from module.plugins.internal.UnRar import ArchiveError, CRCError, PasswordError, UnRar, renice
-from module.utils import save_join as fs_join
+from module.plugins.internal.utils import fs_join
 
 
 class SevenZip(UnRar):
@@ -78,8 +78,6 @@ class SevenZip(UnRar):
 
         p = self.call_cmd(command, '-o' + self.out, self.target, password=password)
 
-        renice(p.pid, self.renice)
-
         #: Communicate and retrieve stderr
         self._progress(p)
         err = p.stderr.read().strip()
@@ -139,4 +137,7 @@ class SevenZip(UnRar):
         self.log_debug(" ".join(call))
 
         p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        renice(p.pid, self.priority)
+
         return p

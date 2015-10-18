@@ -2,22 +2,11 @@
 
 import os
 import re
+import string
 import subprocess
 
-from glob import glob
-from string import digits
-
-from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
-from module.utils import fs_decode, save_join as fs_join
-
-
-def renice(pid, value):
-    if value and os.name is not "nt":
-        try:
-            subprocess.Popen(["renice", str(value), str(pid)], stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=-1)
-
-        except Exception:
-            pass
+from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError, renice
+from module.plugins.internal.utils import decode, fs_join
 
 
 class UnRar(Extractor):
@@ -138,7 +127,7 @@ class UnRar(Extractor):
                 self.notify_progress(int(s))
                 s = ""
             #: Not reading a digit -> therefore restart
-            elif c not in digits:
+            elif c not in string.digits:
                 s = ""
             #: Add digit to progressstring
             else:
@@ -149,8 +138,6 @@ class UnRar(Extractor):
         command = "x" if self.fullpath else "e"
 
         p = self.call_cmd(command, self.target, self.out, password=password)
-
-        renice(p.pid, self.renice)
 
         #: Communicate and retrieve stderr
         self._progress(p)
@@ -200,12 +187,12 @@ class UnRar(Extractor):
         result = set()
         if not self.fullpath and self.VERSION.startswith('5'):
             #@NOTE: Unrar 5 always list full path
-            for f in fs_decode(out).splitlines():
+            for f in decode(out).splitlines():
                 f = fs_join(self.out, os.path.basename(f.strip()))
                 if os.path.isfile(f):
                     result.add(fs_join(self.out, os.path.basename(f)))
         else:
-            for f in fs_decode(out).splitlines():
+            for f in decode(out).splitlines():
                 result.add(fs_join(self.out, f.strip()))
 
         return list(result)
@@ -219,8 +206,7 @@ class UnRar(Extractor):
             args.append("-o+")
         else:
             args.append("-o-")
-            if self.delete != 'No':
-                args.append("-or")
+            args.append("-or")
 
         for word in self.excludefiles:
             args.append("-x'%s'" % word.strip())
@@ -243,4 +229,7 @@ class UnRar(Extractor):
         self.log_debug(" ".join(call))
 
         p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        renice(p.pid, self.priority)
+
         return p
