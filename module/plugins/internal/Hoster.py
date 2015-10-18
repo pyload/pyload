@@ -75,7 +75,10 @@ class Hoster(Base):
         self.log_debug("Plugin status: " + self.__status__)
 
         if self.__status__ is "broken":
-            self.fail(_("Plugin is currently broken"))
+            self.fail(_("Plugin is temporarily unavailable"))
+
+        elif self.__status__ is "testing":
+            self.log_warning(_("Plugin may be unstable"))
 
         self.thread = thread
         self._setup()

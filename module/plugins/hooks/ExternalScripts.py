@@ -84,7 +84,7 @@ class ExternalScripts(Addon):
     def call(self, script, args=[], lock=None):
         if lock is None:
             lock = self.get_config('lock')
-            
+
         try:
             script = os.path.abspath(script)
             args   = [script] + map(lambda arg: encode(arg) if isinstance(arg, basestring) else encode(str(arg)), args)
@@ -98,12 +98,12 @@ class ExternalScripts(Addon):
             self.log_error(_("Runtime error: %s") % script,
                            e or _("Unknown error"))
 
-                           
+
     def _call(self, folder, args=[], lock=None):
         for script in self.scripts[folder]:
             self.call(script, args, lock)
-    
-    
+
+
     def pyload_start(self):
         self._call('pyload_start')
 

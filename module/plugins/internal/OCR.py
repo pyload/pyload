@@ -42,10 +42,8 @@ class OCR(Plugin):
 
 
     def _log(self, level, plugintype, pluginname, messages):
-        return self.plugin._log(level,
-                                plugintype,
-                                self.plugin.__name__,
-                                (self.__name__,) + messages)
+        messages = (self.__name__,) + messages
+        return self.plugin._log(level, plugintype, self.plugin.__name__, messages)
 
 
     def load_image(self, image):

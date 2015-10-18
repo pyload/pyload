@@ -13,7 +13,6 @@ class Expose(object):
 
 
 def threaded(fn):
-
     def run(*args, **kwargs):
         hookManager.startThread(fn, *args, **kwargs)
 
@@ -57,6 +56,12 @@ class Addon(Plugin):
 
         self.init()
         self.init_events()
+
+
+    #@TODO: Remove in 0.4.10
+    def _log(self, level, plugintype, pluginname, messages):
+        plugintype = "addon" if plugintype is "hook" else plugintype
+        return super(Addon, self)._log(level, plugintype, pluginname, messages)
 
 
     def init_events(self):

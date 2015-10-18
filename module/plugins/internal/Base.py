@@ -96,11 +96,11 @@ class Base(Plugin):
     def _log(self, level, plugintype, pluginname, messages):
         log = getattr(self.pyload.log, level)
         msg = u" | ".join(decode(a).strip() for a in messages if a)
-        log("%(plugintype)s %(pluginname)s[%(id)s]: %(msg)s"
-            % {'plugintype': plugintype.upper(),
-               'pluginname': pluginname,
-               'id'        : self.pyfile.id,
-               'msg'       : msg})
+        log("%(plugintype)s %(pluginname)s[%(id)s]: %(msg)s" %
+            {'plugintype': plugintype.upper(),
+             'pluginname': pluginname,
+             'id'        : self.pyfile.id,
+             'msg'       : msg})
 
 
     @classmethod
@@ -265,7 +265,10 @@ class Base(Plugin):
         self.log_debug("Plugin status: " + self.__status__)
 
         if self.__status__ is "broken":
-            self.fail(_("Plugin is currently broken"))
+            self.fail(_("Plugin is temporarily unavailable"))
+
+        elif self.__status__ is "testing":
+            self.log_warning(_("Plugin may be unstable"))
 
         self.thread = thread
         self._setup()
