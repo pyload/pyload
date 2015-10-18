@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from module.common.json_layer import json_loads
-from module.plugins.internal.Account import Account
+from module.plugins.internal.utils import json
+from module.plugins.internal.MultiAccount import MultiAccount
 
 
-class HighWayMe(Account):
+class HighWayMe(MultiAccount):
     __name__    = "HighWayMe.py"
     __type__    = "account"
     __version__ = "0.06"
@@ -20,7 +20,7 @@ class HighWayMe(Account):
 
 
     def grab_hosters(self, user, password, data):
-        json_data = json_loads(self.load("https://high-way.me/api.php",
+        json_data = json.loads(self.load("https://high-way.me/api.php",
                                            get={'hoster': 1}))
         return [element['name'] for element in json_data['hoster']]
 
@@ -34,7 +34,7 @@ class HighWayMe(Account):
 
         self.log_debug("JSON data: %s" % json_data)
 
-        json_data = json_loads(json_data)
+        json_data = json.loads(json_data)
 
         if 'premium' in json_data['user'] and json_data['user']['premium']:
             premium = True

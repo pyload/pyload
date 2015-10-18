@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Account import Account
-from module.common.json_layer import json_loads
+from module.plugins.internal.MultiAccount import MultiAccount
+from module.plugins.internal.utils import json
 
 
-class FastixRu(Account):
+class FastixRu(MultiAccount):
     __name__    = "FastixRu"
     __type__    = "account"
     __version__ = "0.08"
@@ -23,13 +23,13 @@ class FastixRu(Account):
         html = self.load("http://fastix.ru/api_v2",
                       get={'apikey': "5182964c3f8f9a7f0b00000a_kelmFB4n1IrnCDYuIFn2y",
                            'sub'   : "allowed_sources"})
-        host_list = json_loads(html)
+        host_list = json.loads(html)
         host_list = host_list['allow']
         return host_list
 
 
     def grab_info(self, user, password, data):
-        html = json_loads(self.load("http://fastix.ru/api_v2/",
+        html = json.loads(self.load("http://fastix.ru/api_v2/",
                                     get={'apikey': data['apikey'],
                                          'sub'   : "getaccountdetails"}))
 
@@ -44,7 +44,7 @@ class FastixRu(Account):
 
 
     def signin(self, user, password, data):
-        api = json_loads(self.load("https://fastix.ru/api_v2/",
+        api = json.loads(self.load("https://fastix.ru/api_v2/",
                                    get={'sub'     : "get_apikey",
                                         'email'   : user,
                                         'password': password}))

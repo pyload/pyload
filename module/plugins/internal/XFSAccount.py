@@ -4,16 +4,21 @@ import re
 import time
 import urlparse
 
-from module.plugins.internal.Account import Account
-# from module.plugins.internal.MultiAccount import MultiAccount
-from module.plugins.internal.Plugin import parse_html_form, parse_time, set_cookie
+from module.plugins.internal.MultiAccount import MultiAccount
+from module.plugins.internal.utils import parse_html_form, parse_time, set_cookie
 
 
-class XFSAccount(Account):
+class XFSAccount(MultiAccount):
     __name__    = "XFSAccount"
     __type__    = "account"
     __version__ = "0.53"
     __status__  = "testing"
+
+    __config__ = [("activated"     , "bool"               , "Activated"                    , True ),
+                  ("multi"         , "bool"               , "Multi-hoster"                 , True ),
+                  ("multi_mode"    , "all;listed;unlisted", "Hosters to use"               , "all"),
+                  ("multi_list"    , "str"                , "Hoster list (comma separated)", ""   ),
+                  ("multi_interval", "int"                , "Reload interval in hours"     , 12   )]
 
     __description__ = """XFileSharing account plugin"""
     __license__     = "GPLv3"
@@ -44,7 +49,7 @@ class XFSAccount(Account):
 
     def set_xfs_cookie(self):
         if not self.PLUGIN_DOMAIN:
-            self.log_error(_("Unable to set xfs cookie due missing PLUGIN_DOMAIN"))
+            self.log_warning(_("Unable to set xfs cookie due missing PLUGIN_DOMAIN"))
             return
 
         cookie = (self.PLUGIN_DOMAIN, "lang", "english")
@@ -53,6 +58,10 @@ class XFSAccount(Account):
             self.COOKIES.insert(cookie)
         else:
             set_cookie(self.req.cj, *cookie)
+
+
+    def grab_hosters(self, user, password, data):
+        pass
 
 
     def grab_info(self, user, password, data):

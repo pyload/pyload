@@ -2,11 +2,11 @@
 
 import time
 
-from module.common.json_layer import json_loads
-from module.plugins.internal.Account import Account
+from module.plugins.internal.utils import json
+from module.plugins.internal.MultiAccount import MultiAccount
 
 
-class MyfastfileCom(Account):
+class MyfastfileCom(MultiAccount):
     __name__    = "MyfastfileCom"
     __type__    = "account"
     __version__ = "0.08"
@@ -24,7 +24,7 @@ class MyfastfileCom(Account):
     def grab_hosters(self, user, password, data):
         json_data = self.load("http://myfastfile.com/api.php", get={'hosts': ""})
         self.log_debug("JSON data", json_data)
-        json_data = json_loads(json_data)
+        json_data = json.loads(json_data)
 
         return json_data['hosts']
 
@@ -44,6 +44,6 @@ class MyfastfileCom(Account):
 
         self.log_debug("JSON data: " + html)
 
-        self.json_data = json_loads(html)
+        self.json_data = json.loads(html)
         if self.json_data['status'] != 'ok':
             self.fail_login(_("Invalid username or password"))

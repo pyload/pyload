@@ -2,10 +2,10 @@
 
 import xml.dom.minidom as dom
 
-from module.plugins.internal.Account import Account
+from module.plugins.internal.MultiAccount import MultiAccount
 
 
-class RealdebridCom(Account):
+class RealdebridCom(MultiAccount):
     __name__    = "RealdebridCom"
     __type__    = "account"
     __version__ = "0.50"

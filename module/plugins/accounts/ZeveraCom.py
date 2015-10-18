@@ -2,10 +2,10 @@
 
 import time
 
-from module.plugins.internal.Account import Account
+from module.plugins.internal.MultiAccount import MultiAccount
 
 
-class ZeveraCom(Account):
+class ZeveraCom(MultiAccount):
     __name__    = "ZeveraCom"
     __type__    = "account"
     __version__ = "0.30"

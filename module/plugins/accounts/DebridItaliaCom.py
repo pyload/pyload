@@ -3,10 +3,10 @@
 import re
 import time
 
-from module.plugins.internal.Account import Account
+from module.plugins.internal.MultiAccount import MultiAccount
 
 
-class DebridItaliaCom(Account):
+class DebridItaliaCom(MultiAccount):
     __name__    = "DebridItaliaCom"
     __type__    = "account"
     __version__ = "0.17"

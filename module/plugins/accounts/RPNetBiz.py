@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Account import Account
-from module.common.json_layer import json_loads
+from module.plugins.internal.MultiAccount import MultiAccount
+from module.plugins.internal.utils import json
 
 
-class RPNetBiz(Account):
+class RPNetBiz(MultiAccount):
     __name__    = "RPNetBiz"
     __type__    = "account"
     __version__ = "0.17"
@@ -24,7 +24,7 @@ class RPNetBiz(Account):
                         get={'username': user,
                              'password': password,
                              'action'  : "showHosterList"})
-        hoster_list = json_loads(res)
+        hoster_list = json.loads(res)
 
         #: If account is not valid thera are no hosters available
         if 'error' in hoster_list:
@@ -68,4 +68,4 @@ class RPNetBiz(Account):
                                  'action': "showAccountInformation"})
         self.log_debug("JSON data: %s" % res)
 
-        return json_loads(res)
+        return json.loads(res)

@@ -1,10 +1,10 @@
 ﻿# -*- coding: utf-8 -*-
 
-from module.plugins.internal.Account import Account
-from module.common.json_layer import json_loads
+from module.plugins.internal.MultiAccount import MultiAccount
+from module.plugins.internal.utils import json
 
 
-class FreeWayMe(Account):
+class FreeWayMe(MultiAccount):
     __name__    = "FreeWayMe"
     __type__    = "account"
     __version__ = "0.19"
@@ -60,4 +60,4 @@ class FreeWayMe(Account):
         if answer == "Invalid login":
             self.fail_login()
 
-        return json_loads(answer)
+        return json.loads(answer)

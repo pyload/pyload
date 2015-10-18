@@ -6,10 +6,10 @@ import xml.dom.minidom as dom
 
 import BeautifulSoup
 
-from module.plugins.internal.Account import Account
+from module.plugins.internal.MultiAccount import MultiAccount
 
 
-class AlldebridCom(Account):
+class AlldebridCom(MultiAccount):
     __name__    = "AlldebridCom"
     __type__    = "account"
     __version__ = "0.28"

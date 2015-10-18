@@ -19,11 +19,11 @@ except ImportError:
         def hexread(self, octets):
             return b2a_hex(pbkdf2(self.passphrase, self.salt, self.iterations, octets))
 
-from module.common.json_layer import json_loads
-from module.plugins.internal.Account import Account
+from module.plugins.internal.utils import json
+from module.plugins.internal.MultiAccount import MultiAccount
 
 
-class SmoozedCom(Account):
+class SmoozedCom(MultiAccount):
     __name__    = "SmoozedCom"
     __type__    = "account"
     __version__ = "0.09"
@@ -83,6 +83,6 @@ class SmoozedCom(Account):
         salt      = hashlib.sha256(password).hexdigest()
         encrypted = PBKDF2(password, salt, iterations=1000).hexread(32)
 
-        return json_loads(self.load("http://www2.smoozed.com/api/login",
+        return json.loads(self.load("http://www2.smoozed.com/api/login",
                                     get={'auth': user,
                                          'password': encrypted}))

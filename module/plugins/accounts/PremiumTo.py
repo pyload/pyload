@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Account import Account
+from module.plugins.internal.MultiAccount import MultiAccount
 
 
-class PremiumTo(Account):
+class PremiumTo(MultiAccount):
     __name__    = "PremiumTo"
     __type__    = "account"
     __version__ = "0.13"

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Account import Account
-from module.common.json_layer import json_loads
+from module.plugins.internal.MultiAccount import MultiAccount
+from module.plugins.internal.utils import json
 
 
-class MegaDebridEu(Account):
+class MegaDebridEu(MultiAccount):
     __name__    = "MegaDebridEu"
     __type__    = "account"
     __version__ = "0.24"
@@ -25,7 +25,7 @@ class MegaDebridEu(Account):
 
     def grab_hosters(self, user, password, data):
         reponse   = self.load("http://www.mega-debrid.eu/api.php", get={'action': "getHosters"})
-        json_data = json_loads(reponse)
+        json_data = json.loads(reponse)
 
         if json_data['response_code'] == "ok":
             host_list = [element[0] for element in json_data['hosters']]
@@ -41,7 +41,7 @@ class MegaDebridEu(Account):
                                  get={'action'  : 'connectUser',
                                       'login'   : user,
                                       'password': password})
-        res = json_loads(jsonResponse)
+        res = json.loads(jsonResponse)
 
         if res['response_code'] == "ok":
             return {'premium': True, 'validuntil': float(res['vip_end']), 'status': True}
@@ -55,6 +55,6 @@ class MegaDebridEu(Account):
                                  get={'action'  : 'connectUser',
                                       'login'   : user,
                                       'password': password})
-        res = json_loads(jsonResponse)
+        res = json.loads(jsonResponse)
         if res['response_code'] != "ok":
             self.fail_login()

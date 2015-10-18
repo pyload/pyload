@@ -2,10 +2,10 @@
 
 import re
 
-from module.plugins.internal.Account import Account
+from module.plugins.internal.MultiAccount import MultiAccount
 
 
-class MultishareCz(Account):
+class MultishareCz(MultiAccount):
     __name__    = "MultishareCz"
     __type__    = "account"
     __version__ = "0.10"

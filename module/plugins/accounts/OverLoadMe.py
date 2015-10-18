@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Account import Account
-from module.common.json_layer import json_loads
+from module.plugins.internal.MultiAccount import MultiAccount
+from module.plugins.internal.utils import json
 
 
-class OverLoadMe(Account):
+class OverLoadMe(MultiAccount):
     __name__    = "OverLoadMe"
     __type__    = "account"
     __version__ = "0.08"
@@ -30,7 +30,7 @@ class OverLoadMe(Account):
                           get={'user': user,
                                'auth': password}).strip()
 
-        data = json_loads(html)
+        data = json.loads(html)
         self.log_debug(data)
 
         #: Check for premium
@@ -45,7 +45,7 @@ class OverLoadMe(Account):
                              get={'user': user,
                                   'auth': password}).strip()
 
-        data = json_loads(jsondata)
+        data = json.loads(jsondata)
 
         if data['err'] == 1:
             self.fail_login()
