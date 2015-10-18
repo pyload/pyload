@@ -4,7 +4,7 @@ import re
 import time
 
 from module.plugins.internal.Account import Account
-from module.common.json_layer import json_loads
+from module.plugins.internal.utils import json
 
 
 class RapiduNet(Account):
@@ -53,14 +53,14 @@ class RapiduNet(Account):
                   post={'_go' : "",
                         'lang': "en"})
 
-        json = json_loads(self.load("https://rapidu.net/ajax.php",
+        jso = json.loads(self.load("https://rapidu.net/ajax.php",
                                     get={'a': "getUserLogin"},
                                     post={'_go'     : "",
                                           'login'   : user,
                                           'pass'    : password,
                                           'remember': "1"}))
 
-        self.log_debug(json)
+        self.log_debug(jso)
 
-        if json['message'] != "success":
+        if jso['message'] != "success":
             self.fail_login()

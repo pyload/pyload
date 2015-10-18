@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.common.json_layer import json_loads
+from module.plugins.internal.utils import json
 from module.plugins.internal.Account import Account
 from module.plugins.internal.Plugin import set_cookie
 
@@ -22,7 +22,7 @@ class FilecloudIo(Account):
         for _i in xrange(5):
             rep = self.load("https://secure.filecloud.io/api-fetch_apikey.api",
                            post={'username': user, 'password': password})
-            rep = json_loads(rep)
+            rep = json.loads(rep)
             if rep['status'] == "ok":
                 break
             elif rep['status'] == "error" and rep['message'] == "no such user or wrong password":
@@ -35,7 +35,7 @@ class FilecloudIo(Account):
         self.accounts[user]['akey'] = akey  #: Saved for hoster plugin
         rep = self.load("http://api.filecloud.io/api-fetch_account_details.api",
                         post={'akey': akey})
-        rep = json_loads(rep)
+        rep = json.loads(rep)
 
         if rep['is_premium'] == 1:
             return {'validuntil': float(rep['premium_until']), 'trafficleft': -1}

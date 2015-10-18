@@ -16,7 +16,7 @@ except ImportError:
         def hexread(self, octets):
             return b2a_hex(pbkdf2(self.passphrase, self.salt, self.iterations, octets))
 
-from module.common.json_layer import json_loads
+from module.plugins.internal.utils import json
 from module.plugins.internal.Account import Account
 
 
@@ -35,7 +35,7 @@ class OboomCom(Account):
         salt   = password[::-1]
         pbkdf2 = PBKDF2(password, salt, 1000).hexread(16)
 
-        result = json_loads(self.load("http://www.oboom.com/1/login",  #@TODO: Revert to `https` in 0.4.10
+        result = json.loads(self.load("http://www.oboom.com/1/login",  #@TODO: Revert to `https` in 0.4.10
                                       get={'auth': user,
                                            'pass': pbkdf2}))
 

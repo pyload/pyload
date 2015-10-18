@@ -3,7 +3,7 @@
 import time
 
 from module.plugins.internal.Account import Account
-from module.common.json_layer import json_loads
+from module.plugins.internal.utils import json
 
 
 class FileserveCom(Account):
@@ -22,7 +22,7 @@ class FileserveCom(Account):
                          post={'username': user,
                                'password': password,
                                'submit': "Submit+Query"})
-        res = json_loads(html)
+        res = json.loads(html)
 
         if res['type'] == "premium":
             validuntil = time.mktime(time.strptime(res['expireTime'], "%Y-%m-%d %H:%M:%S"))
@@ -36,7 +36,7 @@ class FileserveCom(Account):
                          post={'username': user,
                                'password': password,
                                'submit'  : "Submit+Query"})
-        res = json_loads(html)
+        res = json.loads(html)
 
         if not res['type']:
             self.fail_login()
