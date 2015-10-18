@@ -34,16 +34,6 @@ def create_getInfo(klass):
     return get_info
 
 
-#@NOTE: `check_abort` decorator
-def check_abort(fn):
-
-    def wrapper(self, *args, **kwargs):
-        self.check_abort()
-        return fn(self, *args, **kwargs)
-
-    return wrapper
-
-
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
@@ -176,6 +166,7 @@ class Base(Plugin):
             self.req     = self.pyload.requestFactory.getRequest(self.classname)
             self.premium = False
 
+        self.grab_info()
         self.setup_base()
         self.setup()
 
@@ -195,22 +186,98 @@ class Base(Plugin):
                 self.account = False
 
 
+    def _update_name(self):
+        name = self.info.get('name')
+
+        if name and name is not self.info.get('url'):
+            self.pyfile.name = name
+        else:
+            name = self.pyfile.name
+
+        self.log_info(_("Link name: ") + name)
+
+
+    def _update_size(self):
+        size = self.info.get('size')
+
+        if size > 0:
+            self.pyfile.size = int(self.info['size'])  #@TODO: Fix int conversion in 0.4.10
+        else:
+            size = self.pyfile.size
+
+        if size:
+            self.log_info(_("Link size: %s bytes") % size)
+        else:
+            self.log_info(_("Link size: N/D"))
+
+
+    def _update_status(self):
+        self.pyfile.status = self.info.get('status', 14)
+        self.pyfile.sync()
+
+        self.log_info(_("Link status: ") + self.pyfile.getStatusName())
+
+
+    def sync_info(self):
+        self._update_name()
+        self._update_size()
+        self._update_status()
+
+
+    def grab_info(self):
+        self.log_info(_("Grabbing link info..."))
+
+        old_info = dict(self.info)
+        new_info = self.get_info(self.pyfile.url, self.html)
+
+        self.info.update(new_info)
+
+        self.log_debug("Link info: %s" % self.info)
+        self.log_debug("Previous link info: %s" % old_info)
+
+        self.sync_info()
+
+
+    def check_status(self):
+        status = self.pyfile.status
+
+        if status is 1:
+            self.offline()
+
+        elif status is 4:
+            self.skip(self.pyfile.statusname)
+
+        elif status is 6:
+            self.temp_offline()
+
+        elif status is 8:
+            self.fail()
+
+        elif status is 9 or self.pyfile.abort:
+            self.abort()
+
+
     def _process(self, thread):
         """
         Handles important things to do before starting
         """
-        self.thread = thread
+        self.log_debug("Plugin version: " + self.__version__)
+        self.log_debug("Plugin status: " + self.__status__)
 
+        if self.__status__ is "broken":
+            self.fail(_("Plugin is currently broken"))
+
+        self.thread = thread
         self._setup()
 
         # self.pyload.hookManager.downloadPreparing(self.pyfile)  #@TODO: Recheck in 0.4.10
-        self.check_abort()
+        self.check_status()
 
         self.pyfile.setStatus("starting")
 
-        self.log_debug("PROCESS URL " + self.pyfile.url,
-                       "PLUGIN VERSION %s" % self.__version__)
+        self.log_info(_("Processing url: ") + self.pyfile.url)
         self.process(self.pyfile)
+        self.check_status()
 
 
     #: Deprecated method, use `_process` instead (Remove in 0.4.10)
@@ -276,16 +343,16 @@ class Base(Plugin):
         if self.wantReconnect:
             self.log_info(_("Requiring reconnection..."))
             if self.account:
-                self.log_warning("Ignore reconnection due logged account")
+                self.log_warning("Reconnection ignored due logged account")
 
         if not self.wantReconnect or self.account:
             while pyfile.waitUntil > time.time():
-                self.check_abort()
+                self.check_status()
                 time.sleep(2)
 
         else:
             while pyfile.waitUntil > time.time():
-                self.check_abort()
+                self.check_status()
                 self.thread.m.reconnecting.wait(1)
 
                 if self.thread.m.reconnecting.isSet():
@@ -309,7 +376,7 @@ class Base(Plugin):
 
 
     #@TODO: Remove in 0.4.10
-    def fail(self, msg):
+    def fail(self, msg=""):
         """
         Fail and give msg
         """
@@ -363,7 +430,7 @@ class Base(Plugin):
 
         if not premium:
             if self.premium:
-                self.rst_free = True
+                self.restart_free = True
             else:
                 self.fail("%s | %s" % (msg, _("Url was already processed as free")))
 
@@ -416,112 +483,9 @@ class Base(Plugin):
         return fixurl(url, unquote)
 
 
-    @check_abort
     def load(self, *args, **kwargs):
+        self.check_status()
         return super(Base, self).load(*args, **kwargs)
-
-
-    def check_abort(self):
-        if not self.pyfile.abort:
-            return
-
-        if self.pyfile.status is 8:
-            self.fail()
-
-        elif self.pyfile.status is 4:
-            self.skip(self.pyfile.statusname)
-
-        elif self.pyfile.status is 1:
-            self.offline()
-
-        elif self.pyfile.status is 6:
-            self.temp_offline()
-
-        else:
-            self.abort()
-
-
-    def direct_link(self, url, redirect=False):
-        link = ""
-
-        if not redirect:
-            conn = 1
-
-        elif type(redirect) is int:
-            conn = max(redirect, 1)
-
-        else:
-            conn = self.get_config("maxredirs", 5, plugin="UserAgentSwitcher")
-
-        for i in xrange(conn):
-            try:
-                self.log_debug("Redirect #%d to: %s" % (i, url))
-                header = self.load(url, just_header=True)
-
-            except Exception:  #: Bad bad bad... rewrite this part in 0.4.10
-                res = self.load(url,
-                                just_header=True,
-                                req=self.pyload.requestFactory.getRequest(self.classname))
-
-                header = {'code': req.code}
-                for line in res.splitlines():
-                    line = line.strip()
-                    if not line or ":" not in line:
-                        continue
-
-                    key, none, value = line.partition(":")
-                    key              = key.lower().strip()
-                    value            = value.strip()
-
-                    if key in header:
-                        header_key = header.get(key)
-                        if type(header_key) is list:
-                            header_key.append(value)
-                        else:
-                            header[key] = [header_key, value]
-                    else:
-                        header[key] = value
-
-            if 'content-disposition' in header:
-                link = url
-
-            elif header.get('location'):
-                location = self.fixurl(header.get('location'), url)
-
-                if header.get('code') == 302:
-                    link = location
-
-                if redirect:
-                    url = location
-                    continue
-
-            else:
-                extension = os.path.splitext(parse_name(url))[-1]
-
-                if header.get('content-type'):
-                    mimetype = header.get('content-type').split(';')[0].strip()
-
-                elif extension:
-                    mimetype = mimetypes.guess_type(extension, False)[0] or "application/octet-stream"
-
-                else:
-                    mimetype = ""
-
-                if mimetype and (link or 'html' not in mimetype):
-                    link = url
-                else:
-                    link = ""
-
-            break
-
-        else:
-            try:
-                self.log_error(_("Too many redirects"))
-
-            except Exception:
-                pass
-
-        return link
 
 
     def parse_html_form(self, attr_str="", input_names={}):
