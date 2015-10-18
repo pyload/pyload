@@ -8,7 +8,7 @@ import re
 import zlib
 
 from module.plugins.internal.Addon import Addon
-from module.utils import save_join as fs_join, fs_encode
+from module.plugins.internal.utils import encode, fs_join
 
 
 def compute_checksum(local_file, algorithm):
@@ -103,9 +103,9 @@ class Checksum(Addon):
         if not pyfile.plugin.last_download:
             self.check_failed(pyfile, None, "No file downloaded")
 
-        local_file = fs_encode(pyfile.plugin.last_download)
-        # download_folder = self.pyload.config.get("general", "download_folder")
-        # local_file = fs_encode(fs_join(download_folder, pyfile.package().folder, pyfile.name))
+        local_file = encode(pyfile.plugin.last_download)
+        # dl_folder  = self.pyload.config.get("general", "download_folder")
+        # local_file = encode(fs_join(dl_folder, pyfile.package().folder, pyfile.name))
 
         if not os.path.isfile(local_file):
             self.check_failed(pyfile, None, "File does not exist")
@@ -166,7 +166,7 @@ class Checksum(Addon):
 
 
     def package_finished(self, pypack):
-        download_folder = fs_join(self.pyload.config.get("general", "download_folder"), pypack.folder, "")
+        dl_folder = fs_join(self.pyload.config.get("general", "download_folder"), pypack.folder, "")
 
         for link in pypack.getChildren().values():
             file_type = os.path.splitext(link['name'])[1][1:].lower()
@@ -174,7 +174,7 @@ class Checksum(Addon):
             if file_type not in self.formats:
                 continue
 
-            hash_file = fs_encode(fs_join(download_folder, link['name']))
+            hash_file = encode(fs_join(dl_folder, link['name']))
             if not os.path.isfile(hash_file):
                 self.log_warning(_("File not found"), link['name'])
                 continue
@@ -186,7 +186,7 @@ class Checksum(Addon):
                 data = m.groupdict()
                 self.log_debug(link['name'], data)
 
-                local_file = fs_encode(fs_join(download_folder, data['NAME']))
+                local_file = encode(fs_join(dl_folder, data['NAME']))
                 algorithm = self.methods.get(file_type, file_type)
                 checksum = compute_checksum(local_file, algorithm)
 

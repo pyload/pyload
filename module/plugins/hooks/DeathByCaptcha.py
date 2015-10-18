@@ -8,7 +8,7 @@ import time
 
 from base64 import b64encode
 
-from module.common.json_layer import json_loads
+from module.plugins.internal.utils import json
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest as get_request
 from module.plugins.internal.Addon import Addon, threaded
@@ -80,13 +80,13 @@ class DeathByCaptcha(Addon):
 
         res = None
         try:
-            json = self.load("%s%s" % (self.API_URL, api),
+            html = self.load("%s%s" % (self.API_URL, api),
                              post=post,
                              multipart=multipart,
                              req=req)
 
-            self.log_debug(json)
-            res = json_loads(json)
+            self.log_debug(html)
+            res = json.loads(html)
 
             if "error" in res:
                 raise DeathByCaptchaException(res['error'])
@@ -94,14 +94,18 @@ class DeathByCaptcha(Addon):
                 raise DeathByCaptchaException(str(res))
 
         except BadHeader, e:
-            if 403 is e.code:
+            if e.code is 403:
                 raise DeathByCaptchaException('not-logged-in')
-            elif 413 is e.code:
+
+            elif e.code is 413:
                 raise DeathByCaptchaException('invalid-captcha')
-            elif 503 is e.code:
+
+            elif e.code is 503:
                 raise DeathByCaptchaException('service-overload')
+
             elif e.code in (400, 405):
                 raise DeathByCaptchaException('invalid-request')
+
             else:
                 raise
 

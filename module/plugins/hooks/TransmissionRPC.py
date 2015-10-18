@@ -5,7 +5,7 @@ import re
 
 import pycurl
 
-from module.common.json_layer import json_loads, json_dumps
+from module.plugins.internal.utils import json
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest as get_request
 from module.plugins.internal.Addon import Addon
@@ -47,7 +47,7 @@ class TransmissionRPC(Addon):
 
         try:
             response = self.load(transmission_rpc_url,
-                                 post=json_dumps({'arguments': {'filename': url},
+                                 post=json.dumps({'arguments': {'filename': url},
                                                   'method'   : 'torrent-add',
                                                   'tag'      : client_request_id}),
                                  req=req)
@@ -59,7 +59,7 @@ class TransmissionRPC(Addon):
                 req.c.setopt(pycurl.HTTPHEADER, ["X-Transmission-Session-Id: %s" % session_id])
                 try:
                     response = self.load(transmission_rpc_url,
-                                         post=json_dumps({'arguments': {'filename': url},
+                                         post=json.dumps({'arguments': {'filename': url},
                                                           'method'   : 'torrent-add',
                                                           'tag'      : client_request_id}),
                                          req=req)
@@ -77,7 +77,7 @@ class TransmissionRPC(Addon):
              return
 
         try:
-            res = json_loads(response)
+            res = json.loads(response)
             if "result" in res:
                 self.log_debug("Result: %s" % res['result'])
 

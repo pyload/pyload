@@ -26,4 +26,4 @@ class RestartFailed(Addon):
 
 
     def activate(self):
-        self.start_periodical(self.get_config('interval') * 60)
+        self.set_interval(self.get_config('interval') * 60)

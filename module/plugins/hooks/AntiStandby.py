@@ -13,7 +13,7 @@ except ImportError:
     pass
 
 from module.plugins.internal.Addon import Addon, Expose
-from module.utils import fs_encode, save_join as fs_join
+from module.plugins.internal.utils import encode, fs_join
 
 
 class Kernel32(object):
@@ -42,8 +42,6 @@ class AntiStandby(Addon):
 
 
     TMP_FILE = ".antistandby"
-
-    PERIODICAL_INTERVAL = 5
 
 
     def init(self):
@@ -155,7 +153,7 @@ class AntiStandby(Addon):
     def max_mtime(self, path):
         return max(0, 0,
                    *(os.path.getmtime(fs_join(root, file))
-                        for root, dirs, files in os.walk(fs_encode(path), topdown=False)
+                        for root, dirs, files in os.walk(encode(path), topdown=False)
                             for file in files))
 
 
@@ -168,8 +166,8 @@ class AntiStandby(Addon):
                     not self.pyload.threadManager.getActiveFiles()):
             return
 
-        download_folder = self.pyload.config.get("general", "download_folder")
-        if (self.max_mtime(download_folder) - self.mtime) < self.interval:
+        dl_folder = self.pyload.config.get("general", "download_folder")
+        if (self.max_mtime(dl_folder) - self.mtime) < self.interval:
             return
 
         self.touch(self.TMP_FILE)
