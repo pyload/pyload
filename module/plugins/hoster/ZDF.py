@@ -10,7 +10,7 @@ from module.plugins.internal.Hoster import Hoster
 class ZDF(Hoster):
     __name__    = "ZDF Mediathek"
     __type__    = "hoster"
-    __version__ = "0.85"
+    __version__ = "0.86"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?zdf\.de/ZDFmediathek/\D*(\d+)\D*'
@@ -52,7 +52,7 @@ class ZDF(Hoster):
         video = xml.find("video")
         title = video.findtext("information/title")
 
-        pyfile.name = title.encode("Latin-1")
+        pyfile.name = title.encode('ascii', errors='replace')
 
         target_url = sorted((v for v in video.iter("formitaet") if self.video_valid(v)),
                             key=self.video_key)[-1].findtext("url")
