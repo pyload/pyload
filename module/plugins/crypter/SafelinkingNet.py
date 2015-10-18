@@ -4,8 +4,8 @@ import re
 
 import BeautifulSoup
 
-from module.common.json_layer import json_loads
-from module.plugins.internal.Crypter import Crypter
+from module.plugins.internal.utils import json
+from module.plugins.internal.Crypter import Crypter, create_getInfo
 from module.plugins.captcha.SolveMedia import SolveMedia
 
 
@@ -16,7 +16,7 @@ class SafelinkingNet(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?safelinking\.net/([pd])/\w+'
-    __config__  = [("activated", "bool", "Activated", True),
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
@@ -76,9 +76,12 @@ class SafelinkingNet(Crypter):
                     break
             m = re.search('d_links":(\[.*?\])', s.text)
             if m is not None:
-                linkDict = json_loads(m.group(1))
+                linkDict = json.loads(m.group(1))
                 for link in linkDict:
                     if not "http://" in link['full']:
                         self.urls.append("https://safelinking.net/d/" + link['full'])
                     else:
                         self.urls.append(link['full'])
+
+
+getInfo = create_getInfo(SafelinkingNet)

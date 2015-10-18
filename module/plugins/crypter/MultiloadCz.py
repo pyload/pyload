@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.internal.Crypter import Crypter
+
+from module.plugins.internal.Crypter import Crypter, create_getInfo
 
 
 class MultiloadCz(Crypter):
@@ -11,7 +12,7 @@ class MultiloadCz(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:[^/]*\.)?multiload\.cz/(stahnout|slozka)/.+'
-    __config__  = [("activated", "bool", "Activated", True),
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"           , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package" , True),
                    ("usedHoster"        , "str" , "Prefered hoster list (bar-separated)", ""  ),
@@ -42,3 +43,6 @@ class MultiloadCz(Crypter):
                 if not self.urls:
                     ignored_set = set(self.get_config('ignoredHoster').split('|'))
                     self.urls.extend(x[1] for x in m if x[0] not in ignored_set)
+
+
+getInfo = create_getInfo(MultiloadCz)

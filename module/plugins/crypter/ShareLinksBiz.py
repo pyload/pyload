@@ -4,7 +4,8 @@ import binascii
 import re
 
 from Crypto.Cipher import AES
-from module.plugins.internal.Crypter import Crypter
+
+from module.plugins.internal.Crypter import Crypter, create_getInfo
 
 
 class ShareLinksBiz(Crypter):
@@ -14,7 +15,7 @@ class ShareLinksBiz(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
-    __config__  = [("activated", "bool", "Activated", True),
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
@@ -132,7 +133,7 @@ class ShareLinksBiz(Crypter):
         captchaUrl = self.base_url + '/captcha.gif?d=%s&PHPSESSID=%s' % (m.group(1), m.group(2))
         self.log_debug("Waiting user for correct position")
         coords = self.captcha.decrypt(captchaUrl, input_type="gif", output_type='positional')
-        self.log_debug("Captcha resolved, coords [%s]" % str(coords))
+        self.log_debug("Captcha resolved, coords %s" % coords)
 
         #: Resolve captcha
         href = self._resolve_coords(coords, captchaMap)
@@ -294,3 +295,6 @@ class ShareLinksBiz(Crypter):
         #: Log and return
         self.log_debug("Block has %d links" % len(links))
         return links
+
+
+getInfo = create_getInfo(ShareLinksBiz)

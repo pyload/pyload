@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.internal.Crypter import Crypter
+
+from module.plugins.internal.Crypter import Crypter, create_getInfo
 
 
 class ChipDe(Crypter):
@@ -11,7 +12,7 @@ class ChipDe(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?chip\.de/video/.+\.html'
-    __config__  = [("activated", "bool", "Activated", True),
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
@@ -31,3 +32,6 @@ class ChipDe(Crypter):
         else:
             self.urls = [f.group(1)]
             self.log_debug("The file URL is %s" % self.urls[0])
+
+
+getInfo = create_getInfo(ChipDe)

@@ -12,7 +12,7 @@ class UploadedToFolder(SimpleCrypter):
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded|ul)\.(to|net)/(f|folder|list)/\w+'
-    __config__  = [("activated", "bool", "Activated", True),
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 

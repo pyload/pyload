@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.internal.Crypter import Crypter
+
+from module.plugins.internal.Crypter import Crypter, create_getInfo
 from module.network.HTTPRequest import BadHeader
 
 
@@ -12,7 +13,7 @@ class EmbeduploadCom(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?embedupload\.com/\?d=.+'
-    __config__  = [("activated", "bool", "Activated", True),
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"           , True         ),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package" , True         ),
                    ("preferedHoster"    , "str" , "Prefered hoster list (bar-separated)", "embedupload"),
@@ -60,3 +61,6 @@ class EmbeduploadCom(Crypter):
             except BadHeader:
                 pass
         return new_links
+
+
+getInfo = create_getInfo(EmbeduploadCom)

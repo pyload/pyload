@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.internal.Crypter import Crypter
+
+from module.plugins.internal.Crypter import Crypter, create_getInfo
 
 
-class LetitbitNetFolder(Crypter):
+class LinkCryptWs(Crypter):
     __name__    = "LetitbitNet"
     __type__    = "crypter"
     __version__ = "0.12"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?letitbit\.net/folder/\w+'
-    __config__  = [("activated", "bool", "Activated", True),
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
@@ -33,3 +34,6 @@ class LetitbitNetFolder(Crypter):
             self.error(_("FOLDER_PATTERN not found"))
 
         self.urls.extend(re.findall(self.LINK_PATTERN, folder.group(0)))
+
+
+getInfo = create_getInfo(LinkCryptWs)

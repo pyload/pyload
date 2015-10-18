@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter, create_getInfo
 
 import re
 
@@ -43,3 +43,6 @@ class PastedCo(Crypter):
         urls = urls[urls.find(PastedCo.FS_URL_PREFIX) + len(PastedCo.FS_URL_PREFIX):]
         urls = urls[:urls.find(PastedCo.FS_URL_SUFFIX)].splitlines()
         self.packages.append((package_name, urls, package_folder))
+
+
+getInfo = create_getInfo(PastedCo)

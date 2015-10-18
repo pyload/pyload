@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.internal.Crypter import Crypter
+
+from module.plugins.internal.Crypter import Crypter, create_getInfo
 
 
 class CzshareComFolder(Crypter):
@@ -11,7 +12,7 @@ class CzshareComFolder(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/folders/.+'
-    __config__  = [("activated", "bool", "Activated", True),
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
@@ -32,3 +33,6 @@ class CzshareComFolder(Crypter):
             self.error(_("FOLDER_PATTERN not found"))
 
         self.urls.extend(re.findall(self.LINK_PATTERN, m.group(1)))
+
+
+getInfo = create_getInfo(CzshareComFolder)

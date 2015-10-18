@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.internal.Crypter import Crypter
+
+from module.plugins.internal.Crypter import Crypter, create_getInfo
 
 
 class QuickshareCzFolder(Crypter):
@@ -11,7 +12,7 @@ class QuickshareCzFolder(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?quickshare\.cz/slozka-\d+'
-    __config__  = [("activated", "bool", "Activated", True),
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
@@ -31,3 +32,6 @@ class QuickshareCzFolder(Crypter):
         if m is None:
             self.error(_("FOLDER_PATTERN not found"))
         self.urls.extend(re.findall(self.LINK_PATTERN, m.group(1)))
+
+
+getInfo = create_getInfo(QuickshareCzFolder)

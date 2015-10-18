@@ -7,8 +7,8 @@ import pycurl
 
 from Crypto.Cipher import AES
 
-from module.plugins.internal.Crypter import Crypter
-from module.utils import html_unescape
+from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.utils import html_unescape
 
 
 class LinkCryptWs(Crypter):
@@ -316,3 +316,6 @@ class LinkCryptWs(Crypter):
         self.log_debug("Package has %d links" % len(links))
 
         return links
+
+
+getInfo = create_getInfo(LinkCryptWs)

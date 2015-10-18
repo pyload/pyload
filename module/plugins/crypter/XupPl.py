@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter, create_getInfo
 
 
 class XupPl(Crypter):
@@ -10,7 +10,7 @@ class XupPl(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?xup\.pl/.+'
-    __config__  = [("activated", "bool", "Activated", True),
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
@@ -25,3 +25,6 @@ class XupPl(Crypter):
             self.urls = [header.get('location')]
         else:
             self.fail(_("Unable to find link"))
+
+
+getInfo = create_getInfo(XupPl)

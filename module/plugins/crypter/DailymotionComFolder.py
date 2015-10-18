@@ -3,9 +3,8 @@
 import re
 import urlparse
 
-from module.common.json_layer import json_loads
-from module.plugins.internal.Crypter import Crypter
-from module.utils import save_join as fs_join
+from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.utils import fs_join, json
 
 
 class DailymotionComFolder(Crypter):
@@ -15,7 +14,7 @@ class DailymotionComFolder(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)'
-    __config__  = [("activated", "bool", "Activated", True),
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
@@ -27,7 +26,7 @@ class DailymotionComFolder(Crypter):
     def api_response(self, ref, data=None):
         url  = urlparse.urljoin("https://api.dailymotion.com/", ref)
         html = self.load(url, get=data)
-        return json_loads(html)
+        return json.loads(html)
 
 
     def get_playlist_info(self, id):
@@ -104,3 +103,6 @@ class DailymotionComFolder(Crypter):
             p_folder = fs_join(self.pyload.config.get("general", "download_folder"), p_owner, p_name)
             self.log_debug("%s video\s found on playlist \"%s\"" % (len(p_videos), p_name))
             self.packages.append((p_name, p_videos, p_folder))  #@NOTE: Folder is NOT recognized by pyload 0.4.9!
+
+
+getInfo = create_getInfo(DailymotionComFolder)

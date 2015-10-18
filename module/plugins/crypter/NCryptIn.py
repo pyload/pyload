@@ -5,7 +5,7 @@ import re
 
 from Crypto.Cipher import AES
 
-from module.plugins.internal.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter, create_getInfo
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 
 
@@ -16,7 +16,7 @@ class NCryptIn(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?ncrypt\.in/(?P<TYPE>folder|link|frame)-([^/\?]+)'
-    __config__  = [("activated", "bool", "Activated", True),
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
@@ -166,7 +166,7 @@ class NCryptIn(Crypter):
             self.log_debug("CircleCaptcha protected")
             captcha_img_url = "http://ncrypt.in/classes/captcha/circlecaptcha.php"
             coords = self.captcha.decrypt(captcha_img_url, input_type="png", output_type='positional', ocr="CircleCaptcha")
-            self.log_debug("Captcha resolved, coords [%s]" % str(coords))
+            self.log_debug("Captcha resolved, coords %s" % coords)
             postData['circle.x'] = coords[0]
             postData['circle.y'] = coords[1]
 
@@ -310,3 +310,6 @@ class NCryptIn(Crypter):
         #: Log and return
         self.log_debug("Block has %d links" % len(links))
         return links
+
+
+getInfo = create_getInfo(NCryptIn)

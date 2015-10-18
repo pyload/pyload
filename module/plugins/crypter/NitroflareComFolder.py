@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.common.json_layer import json_loads
+from module.plugins.internal.utils import json
 from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
@@ -11,7 +11,7 @@ class NitroflareComFolder(SimpleCrypter):
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/folder/(?P<USER>\d+)/(?P<ID>[\w=]+)'
-    __config__  = [("activated", "bool", "Activated", True),
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
@@ -21,7 +21,7 @@ class NitroflareComFolder(SimpleCrypter):
 
 
     def get_links(self):
-        res = json_loads(self.load("http://nitroflare.com/ajax/folder.php",
+        res = json.loads(self.load("http://nitroflare.com/ajax/folder.php",
                                    post={'userId' : self.info['pattern']['USER'],
                                          'folder' : self.info['pattern']['ID'],
                                          'page'   : 1,

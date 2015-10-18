@@ -5,7 +5,7 @@
 import re
 import urlparse
 
-from module.plugins.internal.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter, create_getInfo
 
 
 class FourChanOrg(Crypter):
@@ -15,7 +15,7 @@ class FourChanOrg(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?boards\.4chan\.org/\w+/res/(\d+)'
-    __config__  = [("activated", "bool", "Activated", True),
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
@@ -28,3 +28,6 @@ class FourChanOrg(Crypter):
         pagehtml = self.load(pyfile.url)
         images = set(re.findall(r'(images\.4chan\.org/[^/]*/src/[^"<]+)', pagehtml))
         self.urls = [urlparse.urljoin("http://", image) for image in images]
+
+
+getInfo = create_getInfo(FourChanOrg)

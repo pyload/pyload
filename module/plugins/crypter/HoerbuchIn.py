@@ -4,7 +4,7 @@ import re
 
 import BeautifulSoup
 
-from module.plugins.internal.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter, create_getInfo
 
 
 class HoerbuchIn(Crypter):
@@ -14,7 +14,7 @@ class HoerbuchIn(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?hoerbuch\.in/(wp/horbucher/\d+/.+/|tp/out\.php\?.+|protection/folder_\d+\.html)'
-    __config__  = [("activated", "bool", "Activated", True),
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
@@ -62,3 +62,6 @@ class HoerbuchIn(Crypter):
             links.append(self.req.lastEffectiveURL)
 
         return links
+
+
+getInfo = create_getInfo(HoerbuchIn)

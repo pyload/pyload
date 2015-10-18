@@ -3,7 +3,7 @@
 import re
 import urlparse
 
-from module.plugins.internal.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter, create_getInfo
 
 
 class LixIn(Crypter):
@@ -13,7 +13,7 @@ class LixIn(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?lix\.in/(?P<ID>.+)'
-    __config__  = [("activated", "bool", "Activated", True),
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
@@ -60,3 +60,6 @@ class LixIn(Crypter):
         else:
             self.urls = [m.group(1)]
             self.log_debug("Found link %s, adding to package" % self.urls[0])
+
+
+getInfo = create_getInfo(LixIn)
