@@ -7,7 +7,7 @@ class StealthTo(DeadCrypter):
     __name__    = "StealthTo"
     __type__    = "crypter"
     __version__ = "0.21"
-    __status__  = "testing"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?stealth\.to/folder/.+'
     __config__  = []  #@TODO: Remove in 0.4.10

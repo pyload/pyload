@@ -7,7 +7,7 @@ class StorageTo(DeadHoster):
     __name__    = "StorageTo"
     __type__    = "hoster"
     __version__ = "0.02"
-    __status__  = "testing"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?storage\.to/get/.+'
     __config__  = []  #@TODO: Remove in 0.4.10

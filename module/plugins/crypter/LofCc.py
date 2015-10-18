@@ -7,7 +7,7 @@ class LofCc(DeadCrypter):
     __name__    = "LofCc"
     __type__    = "crypter"
     __version__ = "0.22"
-    __status__  = "testing"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?lof\.cc/(.+)'
     __config__  = []  #@TODO: Remove in 0.4.10

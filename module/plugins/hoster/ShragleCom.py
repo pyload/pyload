@@ -7,7 +7,7 @@ class ShragleCom(DeadHoster):
     __name__    = "ShragleCom"
     __type__    = "hoster"
     __version__ = "0.23"
-    __status__  = "testing"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?(cloudnator|shragle)\.com/files/(?P<ID>.+?)/'
     __config__  = []  #@TODO: Remove in 0.4.10

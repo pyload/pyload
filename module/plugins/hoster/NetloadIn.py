@@ -7,7 +7,7 @@ class NetloadIn(DeadHoster):
     __name__    = "NetloadIn"
     __type__    = "hoster"
     __version__ = "0.51"
-    __status__  = "testing"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?netload\.(in|me)/(?P<PATH>datei|index\.php\?id=10&file_id=)(?P<ID>\w+)'
     __config__  = []  #@TODO: Remove in 0.4.10

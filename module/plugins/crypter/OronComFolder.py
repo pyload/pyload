@@ -7,7 +7,7 @@ class OronComFolder(DeadCrypter):
     __name__    = "OronCom"
     __type__    = "crypter"
     __version__ = "0.12"
-    __status__  = "testing"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?oron\.com/folder/\w+'
     __config__  = []  #@TODO: Remove in 0.4.10

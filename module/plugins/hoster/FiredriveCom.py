@@ -7,7 +7,7 @@ class FiredriveCom(DeadHoster):
     __name__    = "FiredriveCom"
     __type__    = "hoster"
     __version__ = "0.06"
-    __status__  = "testing"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?(firedrive|putlocker)\.com/(mobile/)?(file|embed)/(?P<ID>\w+)'
     __config__  = []  #@TODO: Remove in 0.4.10
