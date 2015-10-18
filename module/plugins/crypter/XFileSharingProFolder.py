@@ -38,7 +38,7 @@ class XFileSharingProFolder(XFSCrypter):
 
 
     def _setup(self):
-        account_name     = self.classname if self.account.PLUGIN_DOMAIN is None else self.PLUGIN_NAME
+        account_name     = self.classname if not self.account or self.account.PLUGIN_DOMAIN is None else self.PLUGIN_NAME
         self.chunk_limit = 1
         self.multiDL     = True
 
