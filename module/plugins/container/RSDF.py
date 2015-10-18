@@ -8,7 +8,7 @@ import re
 from Crypto.Cipher import AES
 
 from module.plugins.internal.Container import Container
-from module.utils import fs_encode
+from module.plugins.internal.utils import encode
 
 
 class RSDF(Container):
@@ -39,7 +39,7 @@ class RSDF(Container):
         cipher = AES.new(KEY, AES.MODE_CFB, iv)
 
         try:
-            fs_filename = fs_encode(pyfile.url.strip())
+            fs_filename = encode(pyfile.url.strip())
             with open(fs_filename, 'r') as rsdf:
                 data = rsdf.read()
 
