@@ -71,9 +71,6 @@ class Hoster(Base):
 
 
     def _process(self, thread):
-        """
-        Handles important things to do before starting
-        """
         self.log_debug("Plugin version: " + self.__version__)
         self.log_debug("Plugin status: " + self.__status__)
 

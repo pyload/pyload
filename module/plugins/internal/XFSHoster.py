@@ -6,8 +6,8 @@ import re
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.captcha.SolveMedia import SolveMedia
 from module.plugins.internal.Plugin import set_cookie
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, seconds_to_midnight
-from module.utils import html_unescape
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.utils import html_unescape, seconds_to_midnight
 
 
 class XFSHoster(SimpleHoster):
@@ -17,10 +17,10 @@ class XFSHoster(SimpleHoster):
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("activated"       , "bool", "Activated"                                 , True),
-                   ("use_premium"     , "bool", "Use premium account if available"          , True),
-                   ("fallback_premium", "bool", "Fallback to free download if premium fails", True),
-                   ("chk_filesize"    , "bool", "Check file size"                           , True)]
+    __config__  = [("activated"   , "bool", "Activated"                                 , True),
+                   ("use_premium" , "bool", "Use premium account if available"          , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails", True),
+                   ("chk_filesize", "bool", "Check file size"                           , True)]
 
     __description__ = """XFileSharing hoster plugin"""
     __license__     = "GPLv3"
@@ -31,7 +31,7 @@ class XFSHoster(SimpleHoster):
 
     PLUGIN_DOMAIN = None
 
-    LEECH_HOSTER = True  #@NOTE: Should be default to False for safe, but I'm lazy...
+    LEECH_HOSTER = True  #@NOTE: hould be set to `False` by default for safe, but I am lazy...
 
     NAME_PATTERN = r'(Filename[ ]*:[ ]*</b>(</td><td nowrap>)?|name="fname"[ ]+value="|<[\w^_]+ class="(file)?name">)\s*(?P<N>.+?)(\s*<|")'
     SIZE_PATTERN = r'(Size[ ]*:[ ]*</b>(</td><td>)?|File:.*>|</font>\s*\(|<[\w^_]+ class="size">)\s*(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)'
@@ -52,17 +52,18 @@ class XFSHoster(SimpleHoster):
     SOLVEMEDIA_PATTERN    = None
 
     FORM_PATTERN    = None
-    FORM_INPUTS_MAP = None  #: Dict passed as input_names to parse_html_form
+    FORM_INPUTS_MAP = None  #: Dict passed as `input_names` to `parse_html_form`
 
 
     def setup(self):
         self.chunk_limit     = -1 if self.premium else 1
-        self.resume_download = self.multiDL = self.premium
+        self.multiDL         = self.premium
+        self.resume_download = self.premium
 
 
     def set_xfs_cookie(self):
         if not self.PLUGIN_DOMAIN:
-            self.log_error(_("Unable to set xfs cookie due missing PLUGIN_DOMAIN"))
+            self.log_warning(_("Unable to set xfs cookie due missing PLUGIN_DOMAIN"))
             return
 
         cookie = (self.PLUGIN_DOMAIN, "lang", "english")

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Plugin import set_cookie
 from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.utils import set_cookie
 
 
 class XFSCrypter(SimpleCrypter):
@@ -34,7 +34,7 @@ class XFSCrypter(SimpleCrypter):
 
     def set_xfs_cookie(self):
         if not self.PLUGIN_DOMAIN:
-            self.log_error(_("Unable to set xfs cookie due missing PLUGIN_DOMAIN"))
+            self.log_warning(_("Unable to set xfs cookie due missing PLUGIN_DOMAIN"))
             return
 
         cookie = (self.PLUGIN_DOMAIN, "lang", "english")

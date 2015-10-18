@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Base import Base, check_abort, create_getInfo, parse_fileInfo
-from module.plugins.internal.Plugin import parse_name
-from module.utils import save_path as safe_filename
+from module.plugins.internal.Base import Base, create_getInfo, parse_fileInfo
+from module.plugins.internal.utils import fixname, parse_name
 
 
 class Crypter(Base):
@@ -88,7 +87,7 @@ class Crypter(Base):
                 self.pyload.api.setPackageData(pid, {'password': package_password})
 
             #: Workaround to do not break API addPackage method
-            set_folder = lambda x="": self.pyload.api.setPackageData(pid, {'folder': safe_filename(x)})
+            set_folder = lambda x="": self.pyload.api.setPackageData(pid, {'folder': fixname(x)})
 
             if use_subfolder:
                 if not subfolder_per_package:

@@ -6,8 +6,7 @@ import os
 import re
 
 from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.Plugin import exists
-from module.utils import save_join as fs_join
+from module.plugins.internal.utils import encode, exists, fs_join
 
 
 class Container(Crypter):
@@ -55,7 +54,7 @@ class Container(Crypter):
             self.pyfile.url = fs_join(self.pyload.config.get("general", "download_folder"), self.pyfile.name)
             try:
                 with open(self.pyfile.url, "wb") as f:
-                    f.write(content)
+                    f.write(encode(content))
 
             except IOError, e:
                 self.fail(e)

@@ -14,7 +14,7 @@ import subprocess
 # import tempfile
 
 from module.plugins.internal.Plugin import Plugin
-from module.utils import save_join as fs_join
+from module.plugins.internal.utils import fs_join
 
 
 class OCR(Plugin):
@@ -88,7 +88,7 @@ class OCR(Plugin):
             tmpTxt.close()
 
         except IOError, e:
-            self.log_error(e, trace=True)
+            self.log_error(e)
             return
 
         self.pyload.log_debug("Saving tiff...")
