@@ -2,12 +2,11 @@
 
 import random
 import re
-import time
 import threading
+import time
 
-from module.plugins.Plugin import SkipDownload as Skip
-from module.plugins.internal.Plugin import Plugin, parse_size
-from module.utils import compare_time, lock
+from module.plugins.internal.Plugin import Plugin, Skip
+from module.plugins.internal.utils import compare_time, isiterable, lock, parse_size
 
 
 class Account(Plugin):
@@ -40,7 +39,7 @@ class Account(Plugin):
 
         #: Callback of periodical job task
         self.cb       = None
-        self.interval = self.PERIODICAL_INTERVAL
+        self.interval = None
 
         self.init()
 
@@ -144,7 +143,7 @@ class Account(Plugin):
             self.signin(self.user, self.info['login']['password'], self.info['data'])
 
         except Skip, e:
-            self.log_debug(e)
+            self.log_warning(_("Skipped login user `%s`"), e)
             self.info['login']['valid'] = True
 
             new_timeout = timestamp - self.info['login']['timestamp']
@@ -190,14 +189,13 @@ class Account(Plugin):
             u.update(self.info['login'])
 
         else:
-            d = {'login': {'password' : u['password'],
-                           'timestamp': u['timestamp'],
-                           'valid'    : u['valid']},
-                 'data' : {'maxtraffic' : u['maxtraffic'],
-                           'options'    : u['options'],
-                           'premium'    : u['premium'],
-                           'trafficleft': u['trafficleft'],
-                           'validuntil' : u['validuntil']}}
+            d = {'login': {}, 'data': {}}
+
+            for k, v in u.items():
+                if k in ('password', 'timestamp', 'valid'):
+                    d['login'][k] = v
+                else:
+                    d['data'][k] = v
 
             self.info.update(d)
 
@@ -209,13 +207,9 @@ class Account(Plugin):
     def reset(self):
         self.sync()
 
-        d = {'maxtraffic' : None,
-             'options'    : {'limitdl': ['0']},
-             'premium'    : None,
-             'trafficleft': None,
-             'validuntil' : None}
-
-        self.info['data'].update(d)
+        clear = lambda x: {} if isinstance(x, dict) else [] if isiterable(x) else None
+        self.info['data'] = dict((k, clear(v)) for k, v in self.info['data'])
+        self.info['data']['options'] = {'limitdl': ['0']}
 
         self.syncback()
 
@@ -242,9 +236,7 @@ class Account(Plugin):
 
             self.syncback()
 
-            safe_info = dict(self.info)
-            safe_info['login']['password'] = "**********"
-            self.log_debug("Account info for user `%s`: %s" % (self.user, safe_info))
+            self.log_debug("Account info for user `%s`: %s" % (self.user, self.info))
 
         return self.info
 
@@ -460,18 +452,9 @@ class Account(Plugin):
     ###########################################################################
 
     def parse_traffic(self, size, unit="byte"):  #@NOTE: Returns kilobytes in 0.4.9
-        unit = unit.lower().strip()  #@TODO: Remove in 0.4.10
-        size = re.search(r'(\d*[\.,]?\d+)', size).group(1)  #@TODO: Recheck in 0.4.10
-
-        self.log_debug("Size: %s" % size, "Unit: %s" % unit)
-
-        #@NOTE: Remove in 0.4.10
-        if unit.startswith('t'):
-            traffic = float(size.replace(',', '.')) * 1 << 40
-        else:
-            traffic = parse_size(size, unit)
-
-        return traffic / 1024  #@TODO: Remove `/ 1024` in 0.4.10
+        self.log_debug("Size: %s" % size,
+                       "Unit: %s" % (unit if unit is not "byte" else "N/D"))
+        return parse_size(size, unit) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
 
 
     def fail_login(self, msg=_("Login handshake has failed")):
