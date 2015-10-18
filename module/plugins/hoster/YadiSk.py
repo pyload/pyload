@@ -3,7 +3,7 @@
 import re
 import random
 
-from module.common.json_layer import json_loads
+from module.plugins.internal.utils import json
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
@@ -36,7 +36,7 @@ class YadiSk(SimpleHoster):
 
             m = re.search(r'<script id="models-client" type="application/json">(.+?)</script>', html)
             if m is not None:
-                api_data = json_loads(m.group(1))
+                api_data = json.loads(m.group(1))
                 try:
                     for sect in api_data:
                         if 'model' in sect:
@@ -80,7 +80,7 @@ class YadiSk(SimpleHoster):
                                         'sk'      : self.info['sk'],
                                         'id.0'    : self.info['id']})
 
-            self.link = json_loads(self.html)['models'][0]['data']['file']
+            self.link = json.loads(self.html)['models'][0]['data']['file']
 
         except Exception:
             pass

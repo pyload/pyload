@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.common.json_layer import json_loads
+from module.plugins.internal.utils import json
 from module.plugins.internal.MultiHoster import MultiHoster
 
 
@@ -70,7 +70,7 @@ class NoPremiumPl(MultiHoster):
             self.temp_offline("Query error #1")
 
         try:
-            parsed = json_loads(data)
+            parsed = json.loads(data)
 
         except Exception:
             self.temp_offline("Data not found")

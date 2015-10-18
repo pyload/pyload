@@ -3,7 +3,7 @@
 import re
 
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
-from module.common.json_layer import json_loads
+from module.plugins.internal.utils import json
 
 
 class RPNetBiz(MultiHoster):
@@ -36,7 +36,7 @@ class RPNetBiz(MultiHoster):
                              'links'   : pyfile.url})
 
         self.log_debug("JSON data: %s" % res)
-        link_status = json_loads(res)['links'][0]  #: Get the first link... since we only queried one
+        link_status = json.loads(res)['links'][0]  #: Get the first link... since we only queried one
 
         #: Check if we only have an id as a HDD link
         if 'id' in link_status:
@@ -54,7 +54,7 @@ class RPNetBiz(MultiHoster):
                                      'action'  : "downloadInformation",
                                      'id'      : link_status['id']})
                 self.log_debug("JSON data hdd query: %s" % res)
-                download_status = json_loads(res)['download']
+                download_status = json.loads(res)['download']
 
                 if download_status['status'] == "100":
                     link_status['generated'] = download_status['rpnet_link']

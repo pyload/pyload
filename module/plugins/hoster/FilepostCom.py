@@ -3,7 +3,7 @@
 import re
 import time
 
-from module.common.json_layer import json_loads
+from module.plugins.internal.utils import json
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
@@ -81,7 +81,7 @@ class FilepostCom(SimpleHoster):
 
 
     def get_json_response(self, get_dict, post_dict, field):
-        res = json_loads(self.load('https://filepost.com/files/get/', get=get_dict, post=post_dict))
+        res = json.loads(self.load('https://filepost.com/files/get/', get=get_dict, post=post_dict))
 
         self.log_debug(res)
 

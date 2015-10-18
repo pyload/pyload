@@ -2,12 +2,11 @@
 
 import re
 
-from module.common.json_layer import json_loads
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.Plugin import chunks, parse_size
 from module.plugins.internal.SimpleHoster import seconds_to_midnight
+from module.plugins.internal.utils import chunks, json, parse_size
 
 
 def check_file(plugin, urls):
@@ -84,7 +83,7 @@ class FileserveCom(Hoster):
     def handle_free(self):
         self.html = self.load(self.url)
         action = self.load(self.url, post={'checkDownload': "check"})
-        action = json_loads(action)
+        action = json.loads(action)
         self.log_debug(action)
 
         if "fail" in action:
@@ -162,7 +161,7 @@ class FileserveCom(Hoster):
         recaptcha = ReCaptcha(self)
 
         response, challenge = recaptcha.challenge(captcha_key)
-        res = json_loads(self.load(self.URLS[2],
+        res = json.loads(self.load(self.URLS[2],
                                    post={'recaptcha_challenge_field'  : challenge,
                                          'recaptcha_response_field'   : response,
                                          'recaptcha_shortencode_field': self.file_id}))
@@ -187,7 +186,7 @@ class FileserveCom(Hoster):
                                   'password': self.account.get_login('password'),
                                   'shorten': self.file_id})
             if res:
-                res = json_loads(res)
+                res = json.loads(res)
                 if res['error_code'] == "302":
                     premium_url = res['next']
 
@@ -205,7 +204,8 @@ class FileserveCom(Hoster):
 
         self.download(premium_url or self.pyfile.url)
 
-        if not premium_url and self.check_file({'login': re.compile(self.NOT_LOGGED_IN_PATTERN)}):
+        if not premium_url and \
+           self.check_file({'login': re.compile(self.NOT_LOGGED_IN_PATTERN)}):
             self.account.relogin()
             self.retry(msg=_("Not logged in"))
 

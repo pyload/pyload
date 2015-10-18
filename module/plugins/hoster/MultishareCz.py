@@ -41,7 +41,7 @@ class MultishareCz(SimpleHoster):
     def handle_multi(self, pyfile):
         self.html = self.load('http://www.multishare.cz/html/mms_ajax.php', post={'link': pyfile.url})
 
-        self.check_info()
+        self.update_info()
 
         if not self.check_traffic():
             self.fail(_("Not enough credit left to download file"))

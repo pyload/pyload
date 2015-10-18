@@ -2,10 +2,9 @@
 
 import pycurl
 import re
-import urllib
 import urlparse
 
-from module.plugins.internal.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster, parse_name
 
 
 class Ftp(Hoster):
@@ -25,20 +24,15 @@ class Ftp(Hoster):
 
 
     def setup(self):
-        self.chunk_limit = -1
+        self.chunk_limit     = -1
         self.resume_download = True
 
 
     def process(self, pyfile):
-        p_url = urlparse.urlparse(pyfile.url)
+        p_url  = urlparse.urlparse(pyfile.url)
         netloc = p_url.netloc
 
-        pyfile.name = p_url.path.rpartition('/')[2]
-        try:
-            pyfile.name = urllib.unquote(str(pyfile.name)).decode('utf8')
-
-        except Exception:
-            pass
+        pyfile.name = parse_name(p_url.path.rpartition('/')[2])
 
         if not "@" in netloc:
             self.log_debug("Auth required")
@@ -74,6 +68,7 @@ class Ftp(Hoster):
         m = re.search(r"Content-Length:\s*(\d+)", res)
         if m is not None:
             pyfile.size = int(m.group(1))
+
             self.download(pyfile.url)
 
         else:

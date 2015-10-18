@@ -42,7 +42,7 @@ class UploadedTo(SimpleHoster):
 
     @classmethod
     def api_info(cls, url):
-        info = super(UploadedTo, cls).api_info(url)
+        info = {}
 
         for _i in xrange(5):
             html = get_url("http://uploaded.net/api/filemultiple",

@@ -3,9 +3,8 @@
 import re
 import urllib
 
-from module.common.json_layer import json_loads
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
-from module.plugins.internal.Plugin import parse_size
+from module.plugins.internal.utils import json, parse_size
 
 
 class AlldebridCom(MultiHoster):
@@ -31,7 +30,7 @@ class AlldebridCom(MultiHoster):
     def handle_premium(self, pyfile):
         password = self.get_password()
 
-        data = json_loads(self.load("http://www.alldebrid.com/service.php",
+        data = json.loads(self.load("http://www.alldebrid.com/service.php",
                                      get={'link': pyfile.url, 'json': "true", 'pw': password}))
 
         self.log_debug("Json data", data)

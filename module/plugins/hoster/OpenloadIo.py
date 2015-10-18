@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
-import json
 import re
 
 from module.network.RequestFactory import getURL
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.utils import json
 
 
 class OpenloadIo(SimpleHoster):
     __name__    = "OpenloadIo"
     __type__    = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?openload\.(co|io)/(f|embed)/(?P<ID>[\w\-]+)'
@@ -38,12 +38,12 @@ class OpenloadIo(SimpleHoster):
 
     @classmethod
     def api_info(cls, url):
-        file_id   = cls.info['pattern']['ID']
+        file_id   = re.match(cls.__pattern__, url).group('ID')
         info_json = cls._load_json(cls._FILE_INFO_URI_PATTERN.format(file_id))
         file_info = info_json['result'][file_id]
 
-        return {'name'  : file_info['name'],
-                'size'  : file_info['size']}
+        return {'name': file_info['name'],
+                'size': file_info['size']}
 
 
     def setup(self):

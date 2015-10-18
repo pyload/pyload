@@ -24,19 +24,17 @@ class WebshareCz(SimpleHoster):
 
     @classmethod
     def api_info(cls, url):
-        info = super(WebshareCz, cls).api_info(url)
+        info = {}
+        api  = get_url("https://webshare.cz/api/file_info/",
+                       post={'ident': re.match(cls.__pattern__, url).group('ID'),
+                             'wst'  : ""})
 
-        info['pattern'] = re.match(cls.__pattern__, url).groupdict()
-
-        api_data = get_url("https://webshare.cz/api/file_info/",
-                           post={'ident': info['pattern']['ID'], 'wst': ""})
-
-        if not re.search(r'<status>OK', api_data):
+        if not re.search(r'<status>OK', api):
             info['status'] = 1
         else:
             info['status'] = 2
-            info['name']   = re.search(r'<name>(.+?)<', api_data).group(1)
-            info['size']   = re.search(r'<size>(.+?)<', api_data).group(1)
+            info['name']   = re.search(r'<name>(.+?)<', api).group(1)
+            info['size']   = re.search(r'<size>(.+?)<', api).group(1)
 
         return info
 

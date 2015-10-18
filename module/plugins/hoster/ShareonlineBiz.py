@@ -38,12 +38,10 @@ class ShareonlineBiz(SimpleHoster):
 
     @classmethod
     def api_info(cls, url):
-        info = super(ShareonlineBiz, cls).api_info(url)
-
+        info  = {}
         field = get_url("http://api.share-online.biz/linkcheck.php",
                         get={'md5'  : "1",
                              'links': re.match(cls.__pattern__, url).group("ID")}).split(";")
-
         try:
             if field[1] == "OK":
                 info['fileid'] = field[0]

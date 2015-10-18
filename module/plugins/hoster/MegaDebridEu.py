@@ -3,7 +3,7 @@
 import re
 import urllib
 
-from module.common.json_layer import json_loads
+from module.plugins.internal.utils import json
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
@@ -34,7 +34,7 @@ class MegaDebridEu(MultiHoster):
         user, info = self.account.select()
         jsonResponse = self.load(self.API_URL,
                                  get={'action': 'connectUser', 'login': user, 'password': info['login']['password']})
-        res = json_loads(jsonResponse)
+        res = json.loads(jsonResponse)
 
         if res['response_code'] == "ok":
             self.token = res['token']
@@ -55,7 +55,7 @@ class MegaDebridEu(MultiHoster):
                                  get={'action': 'getLink', 'token': self.token},
                                  post={'link': pyfile.url})
 
-        res = json_loads(jsonResponse)
+        res = json.loads(jsonResponse)
         if res['response_code'] == "ok":
             self.link = res['debridLink'][1:-1]
 

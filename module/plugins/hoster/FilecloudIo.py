@@ -2,7 +2,7 @@
 
 import re
 
-from module.common.json_layer import json_loads
+from module.plugins.internal.utils import json
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
@@ -71,7 +71,7 @@ class FilecloudIo(SimpleHoster):
         json_url = "http://filecloud.io/download-request.json"
         res = self.load(json_url, post=data)
         self.log_debug(res)
-        res = json_loads(res)
+        res = json.loads(res)
 
         if "error" in res and res['error']:
             self.fail(res)
@@ -84,7 +84,7 @@ class FilecloudIo(SimpleHoster):
             json_url = "http://filecloud.io/download-request.json"
             res = self.load(json_url, post=data)
             self.log_debug(res)
-            res = json_loads(res)
+            res = json.loads(res)
 
             if "retry" in res and res['retry']:
                 self.retry_captcha()
@@ -114,7 +114,7 @@ class FilecloudIo(SimpleHoster):
         rep = self.load("http://api.filecloud.io/api-fetch_download_url.api",
                         post={'akey': akey, 'ukey': ukey})
         self.log_debug("FetchDownloadUrl: " + rep)
-        rep = json_loads(rep)
+        rep = json.loads(rep)
         if rep['status'] == "ok":
             self.link = rep['download_url']
         else:

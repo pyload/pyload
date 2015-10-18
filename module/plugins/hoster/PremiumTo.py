@@ -5,7 +5,7 @@ from __future__ import with_statement
 import os
 
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
-from module.utils import fs_encode
+from module.plugins.internal.utils import encode
 
 
 class PremiumTo(MultiHoster):
@@ -45,7 +45,7 @@ class PremiumTo(MultiHoster):
         err = ""
         if self.req.http.code == "420":
             #: Custom error code send - fail
-            file = fs_encode(self.last_download)
+            file = encode(self.last_download)
             with open(file, "rb") as f:
                 err = f.read(256).strip()
             os.remove(file)

@@ -63,8 +63,10 @@ class FilefactoryCom(SimpleHoster):
 
 
     def check_download(self):
-        check = self.check_file({'multiple': "You are currently downloading too many files at once.",
-                                    'error'   : '<div id="errorMessage">'})
+        check = self.check_file({
+            'multiple': "You are currently downloading too many files at once.",
+            'error'   : '<div id="errorMessage">'
+        })
 
         if check == "multiple":
             self.log_debug("Parallel downloads detected; waiting 15 minutes")

@@ -7,7 +7,7 @@ import urllib
 
 from module.plugins.internal.Hoster import Hoster
 from module.plugins.internal.Plugin import replace_patterns, which
-from module.utils import html_unescape
+from module.plugins.internal.utils import html_unescape
 
 
 class YoutubeCom(Hoster):

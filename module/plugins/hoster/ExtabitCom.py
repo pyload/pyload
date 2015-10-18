@@ -2,7 +2,7 @@
 
 import re
 
-from module.common.json_layer import json_loads
+from module.plugins.internal.utils import json
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, seconds_to_midnight
@@ -54,7 +54,7 @@ class ExtabitCom(SimpleHoster):
             get_data = {'type': "recaptcha"}
             get_data['capture'], get_data['challenge'] = recaptcha.challenge(captcha_key)
 
-            res = json_loads(self.load("http://extabit.com/file/%s/" % fileID, get=get_data))
+            res = json.loads(self.load("http://extabit.com/file/%s/" % fileID, get=get_data))
 
             if "ok" in res:
                 self.captcha.correct()

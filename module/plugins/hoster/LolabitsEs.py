@@ -3,7 +3,7 @@
 import re
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.utils import html_unescape
+from module.plugins.internal.utils import html_unescape
 
 
 class LolabitsEs(SimpleHoster):

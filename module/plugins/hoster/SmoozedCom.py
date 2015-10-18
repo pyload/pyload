@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.common.json_layer import json_loads
+from module.plugins.internal.utils import json
 from module.plugins.internal.MultiHoster import MultiHoster
 
 
@@ -40,7 +40,7 @@ class SmoozedCom(MultiHoster):
         get_data = {'session_key': self.account.get_data('session'),
                     'url'        : pyfile.url}
 
-        data = json_loads(self.load("http://www2.smoozed.com/api/check", get=get_data))
+        data = json.loads(self.load("http://www2.smoozed.com/api/check", get=get_data))
 
         if data['state'] != "ok":
             self.fail(data['message'])

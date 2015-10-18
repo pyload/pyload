@@ -3,7 +3,7 @@
 import re
 import urllib
 
-from module.common.json_layer import json_loads
+from module.plugins.internal.utils import json
 from module.plugins.internal.Hoster import Hoster
 
 
@@ -62,7 +62,7 @@ class XHamsterCom(Hoster):
             self.error(_("flashvar not found"))
 
         j = clean_json(json_flashvar.group(1))
-        flashvars = json_loads(j)
+        flashvars = json.loads(j)
 
         if flashvars['srv']:
             srv_url = flashvars['srv'] + '/'

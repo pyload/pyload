@@ -22,7 +22,7 @@ class EuroshareEu(SimpleHoster):
 
     NAME_PATTERN    = r'<h1 class="nazev-souboru">(?P<N>.+?)</h1>'
     SIZE_PATTERN    = r'<p class="posledni vpravo">.*\| (?P<S>.+?) (?P<U>.+?)</p>'
-    
+
     OFFLINE_PATTERN = ur'<h2>S.bor sa nena.iel</h2>|Požadovaná stránka neexistuje!'
 
     LINK_FREE_PATTERN = r'onclick="return checkLoad\(\);" href="(.+?)" class="tlacitko velky"'
@@ -40,8 +40,10 @@ class EuroshareEu(SimpleHoster):
 
         self.link = pyfile.url.rstrip('/') + "/download/"
 
-        check = self.check_file({'login': re.compile(self.ERROR_PATTERN),
-                                    'json' : re.compile(r'\{"status":"error".*?"message":"(.*?)"')})
+        check = self.check_file({
+            'login': re.compile(self.ERROR_PATTERN),
+            'json' : re.compile(r'\{"status":"error".*?"message":"(.*?)"')
+        })
 
         if check == "login" or (check == "json" and self.last_check.group(1) == "Access token expired"):
             self.account.relogin()

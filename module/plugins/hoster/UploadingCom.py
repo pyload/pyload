@@ -3,7 +3,7 @@
 import pycurl
 import re
 
-from module.common.json_layer import json_loads
+from module.plugins.internal.utils import json
 from module.plugins.internal.Plugin import encode, timestamp
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
@@ -71,7 +71,7 @@ class UploadingCom(SimpleHoster):
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
         self.req.http.lastURL = pyfile.url
 
-        res = json_loads(self.load(ajax_url, post={'action': 'second_page', 'code': self.info['pattern']['ID']}))
+        res = json.loads(self.load(ajax_url, post={'action': 'second_page', 'code': self.info['pattern']['ID']}))
 
         if 'answer' in res and 'wait_time' in res['answer']:
             wait_time = int(res['answer']['wait_time'])
@@ -80,7 +80,7 @@ class UploadingCom(SimpleHoster):
         else:
             self.error(_("No AJAX/WAIT"))
 
-        res = json_loads(self.load(ajax_url, post={'action': 'get_link', 'code': self.info['pattern']['ID'], 'pass': 'false'}))
+        res = json.loads(self.load(ajax_url, post={'action': 'get_link', 'code': self.info['pattern']['ID'], 'pass': 'false'}))
 
         if 'answer' in res and 'link' in res['answer']:
             url = res['answer']['link']

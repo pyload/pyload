@@ -4,7 +4,7 @@ import pycurl
 import re
 import time
 
-from module.common.json_layer import json_loads
+from module.plugins.internal.utils import json
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
@@ -78,7 +78,7 @@ class RapiduNet(SimpleHoster):
 
         self.log_debug(res)
 
-        return json_loads(res)
+        return json.loads(res)
 
 
 getInfo = create_getInfo(RapiduNet)

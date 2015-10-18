@@ -3,7 +3,7 @@
 import re
 import time
 
-from module.common.json_layer import json_loads
+from module.plugins.internal.utils import json
 from module.plugins.internal.Plugin import timestamp
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
@@ -75,7 +75,7 @@ class UlozTo(SimpleHoster):
             xapca = xapca.replace('sound":"', 'sound":"http:').replace('image":"', 'image":"http:')
             self.log_debug("xapca: %s" % xapca)
 
-            data = json_loads(xapca)
+            data = json.loads(xapca)
             captcha_value = self.captcha.decrypt(data['image'])
             self.log_debug("CAPTCHA HASH: " + data['hash'], "CAPTCHA SALT: %s" % data['salt'], "CAPTCHA VALUE: " + captcha_value)
 

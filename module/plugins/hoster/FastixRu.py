@@ -3,7 +3,7 @@
 import re
 import urllib
 
-from module.common.json_layer import json_loads
+from module.plugins.internal.utils import json
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
@@ -32,7 +32,7 @@ class FastixRu(MultiHoster):
                               get={'apikey': self.account.get_data('apikey'),
                                    'sub'   : "getdirectlink",
                                    'link'  : pyfile.url})
-        data = json_loads(self.html)
+        data = json.loads(self.html)
 
         self.log_debug("Json data", data)
 

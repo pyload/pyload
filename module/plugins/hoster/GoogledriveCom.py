@@ -7,7 +7,7 @@ import re
 import urlparse
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.utils import html_unescape
+from module.plugins.internal.utils import html_unescape
 
 
 class GoogledriveCom(SimpleHoster):
@@ -45,12 +45,12 @@ class GoogledriveCom(SimpleHoster):
                 return
 
             link = self.fixurl(link, "https://docs.google.com/")
-            direct_link = self.direct_link(link, False)
+            dl   = self.is_download(link, redirect=False)
 
-            if not direct_link:
+            if not dl:
                 self.html = self.load(link)
             else:
-                self.link = direct_link
+                self.link = dl
                 break
 
 

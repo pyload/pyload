@@ -3,7 +3,7 @@
 import re
 import urlparse
 
-from module.common.json_layer import json_loads, json_dumps
+from module.plugins.internal.utils import json
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
@@ -25,7 +25,7 @@ class LinksnappyCom(MultiHoster):
 
     def handle_premium(self, pyfile):
         host        = self._get_host(pyfile.url)
-        json_params = json_dumps({'link'    : pyfile.url,
+        json_params = json.dumps({'link'    : pyfile.url,
                                   'type'    : host,
                                   'username': self.account.user,
                                   'password': self.account.get_login('password')})
@@ -35,7 +35,7 @@ class LinksnappyCom(MultiHoster):
 
         self.log_debug("JSON data: " + r)
 
-        j = json_loads(r)['links'][0]
+        j = json.loads(r)['links'][0]
 
         if j['error']:
             self.error(_("Error converting the link"))

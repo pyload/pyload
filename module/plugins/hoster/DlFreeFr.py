@@ -91,7 +91,7 @@ class DlFreeFr(SimpleHoster):
             self.offline()
 
         else:
-            self.fail(_("Invalid return code: ") + str(headers.get('code')))
+            self.fail(_("Invalid return code: %s") % headers.get('code'))
 
 
     def handle_free(self, pyfile):

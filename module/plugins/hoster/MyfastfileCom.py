@@ -2,7 +2,7 @@
 
 import re
 
-from module.common.json_layer import json_loads
+from module.plugins.internal.utils import json
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
@@ -33,7 +33,7 @@ class MyfastfileCom(MultiHoster):
                               'link': pyfile.url})
         self.log_debug("JSON data: " + self.html)
 
-        self.html = json_loads(self.html)
+        self.html = json.loads(self.html)
         if self.html['status'] != 'ok':
             self.fail(_("Unable to unrestrict link"))
 
