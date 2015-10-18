@@ -11,7 +11,7 @@ class Keep2ShareCc(SimpleHoster):
     __name__    = "Keep2ShareCc"
     __type__    = "hoster"
     __version__ = "0.26"
-    __status__  = "testing"
+    __status__  = "broken"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
     __config__  = [("activated", "bool", "Activated", True),
