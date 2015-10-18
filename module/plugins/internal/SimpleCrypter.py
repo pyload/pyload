@@ -3,7 +3,7 @@
 import re
 
 from module.plugins.internal.Crypter import Crypter, create_getInfo, parse_fileInfo
-from module.plugins.internal.Plugin import replace_patterns, set_cookie, set_cookies
+from module.plugins.internal.utils import replace_patterns, set_cookie, set_cookies
 
 
 class SimpleCrypter(Crypter):
@@ -13,10 +13,11 @@ class SimpleCrypter(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("activated"            , "bool", "Activated"                          , True),
-                   ("use_premium"          , "bool", "Use premium account if available"   , True),
-                   ("use_subfolder"        , "bool", "Save package to subfolder"          , True),
-                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("activated"            , "bool", "Activated"                                        , True),
+                   ("use_premium"          , "bool", "Use premium account if available"                 , True),
+                   ("use_subfolder"        , "bool", "Save package to subfolder"                        , True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package"              , True),
+                   ("max_wait"             , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """Simple decrypter plugin"""
     __license__     = "GPLv3"
@@ -79,7 +80,7 @@ class SimpleCrypter(Crypter):
     ERROR_PATTERN        = None
 
 
-     @classmethod
+    @classmethod
     def api_info(cls, url):
         return {}
 
@@ -102,7 +103,7 @@ class SimpleCrypter(Crypter):
                 except BadHeader, e:
                     info['error'] = "%d: %s" % (e.code, e.content)
 
-                    if e.code is 404:
+                    if e.code in (404, 410):
                         info['status'] = 1
 
                     elif e.code is 503:
@@ -119,7 +120,7 @@ class SimpleCrypter(Crypter):
                 info['status'] = 6
 
             elif cls.NAME_PATTERN:
-                m = re.search(cls.NAME_PATTERN, html):
+                m = re.search(cls.NAME_PATTERN, html)
                 if m is not None:
                     info['status'] = 2
                     info['pattern'].update(m.groupdict())
@@ -133,7 +134,7 @@ class SimpleCrypter(Crypter):
 
     #@TODO: Remove in 0.4.10
     def _setup(self):
-        orig_name     = self.classname
+        orig_name      = self.classname
         self.classname = orig_name.rstrip("Folder")
         super(SimpleCrypter, self)._setup()
         self.classname = orig_name
@@ -141,24 +142,31 @@ class SimpleCrypter(Crypter):
 
     #@TODO: Remove in 0.4.10
     def load_account(self):
-        orig_name     = self.classname
+        orig_name      = self.classname
         self.classname = orig_name.rstrip("Folder")
         super(SimpleCrypter, self).load_account()
         self.classname = orig_name
 
 
     def handle_direct(self, pyfile):
-        for i in xrange(self.get_config("maxredirs", plugin="UserAgentSwitcher")):
-            redirect = self.link or pyfile.url
-            self.log_debug("Redirect #%d to: %s" % (i, redirect))
+        link      = None
+        maxredirs = self.get_config("maxredirs", default=10, plugin="UserAgentSwitcher")
 
-            header = self.load(redirect, just_header=True)
-            if header.get('location'):
-                self.link = header.get('location')
-            else:
-                break
+        for i in xrange(maxredirs):
+            url = link or pyfile.url
+            self.log_debug("Redirect #%d to: %s" % (i, url))
+
+            header   = self.load(url, just_header=True)
+            location = header.get('location')
+
+            if location:
+                link = location
+
+            elif link:
+                self.urls.append(link)
+                return
         else:
-            self.log_error(_("Too many redirects"))
+            self.log_warning(_("Too many redirects"))
 
 
     def preload(self):
@@ -169,8 +177,6 @@ class SimpleCrypter(Crypter):
 
 
     def prepare(self):
-        self.link      = ""
-        self.links     = []
         self.direct_dl = False
 
         if self.LOGIN_PREMIUM and not self.premium:
@@ -198,53 +204,46 @@ class SimpleCrypter(Crypter):
 
     def decrypt(self, pyfile):
         self.prepare()
-        self.check_info()  #@TODO: Remove in 0.4.10
 
         if self.direct_dl:
-            self.log_debug(_("Looking for direct link..."))
+            self.log_info(_("Looking for direct link..."))
             self.handle_direct(pyfile)
 
-            if self.link or self.links or self.urls or self.packages:
+            if self.urls or self.packages:
                 self.log_info(_("Direct link detected"))
             else:
                 self.log_info(_("Direct link not found"))
 
-        if not (self.link or self.links or self.urls or self.packages):
+        if not self.urls and not self.packages:
             self.preload()
 
-            self.links.extend(self.get_links())
+            self.urls.extend(self.get_links())
 
             if self.PAGES_PATTERN:
                 self.handle_pages(pyfile)
 
-        if self.link:
-            self.urls.append(self.link)
-
-        if self.links:
-            self.packages.append((pyfile.name, self.links, pyfile.name))
-
 
     def handle_free(self, pyfile):
         if not self.LINK_FREE_PATTERN:
-            self.log_error(_("Free decrypting not implemented"))
+            self.log_warning(_("Free decrypting not implemented"))
 
         links = re.findall(self.LINK_FREE_PATTERN, self.html)
         if not links:
             self.error(_("Free decrypted link not found"))
         else:
-            self.links.extend(links)
+            self.urls.extend(links)
 
 
     def handle_premium(self, pyfile):
         if not self.LINK_PREMIUM_PATTERN:
-            self.log_error(_("Premium decrypting not implemented"))
+            self.log_warning(_("Premium decrypting not implemented"))
             self.restart(premium=False)
 
         links = re.findall(self.LINK_PREMIUM_PATTERN, self.html)
         if not links:
             self.error(_("Premium decrypted link found"))
         else:
-            self.links.extend(links)
+            self.urls.extend(links)
 
 
     def get_links(self):
@@ -260,7 +259,7 @@ class SimpleCrypter(Crypter):
             self.log_info(_("Decrypting as free link..."))
             self.handle_free(pyfile)
 
-        return self.links
+        return self.urls
 
 
     def load_page(self, number):
@@ -276,7 +275,7 @@ class SimpleCrypter(Crypter):
 
         for p in xrange(2, pages + 1):
             self.html = self.load_page(p)
-            self.links.append(self.get_links())
+            self.urls.append(self.get_links())
 
 
     def check_errors(self):
@@ -309,7 +308,7 @@ class SimpleCrypter(Crypter):
                 self.log_warning(errmsg)
 
                 wait_time = parse_time(errmsg)
-                self.wait(wait_time, reconnect=wait_time > 300)
+                self.wait(wait_time, reconnect=wait_time > self.get_config("max_wait", 10) * 60)
                 self.restart(_("Download limit exceeded"))
 
         if self.HAPPY_HOUR_PATTERN and re.search(self.HAPPY_HOUR_PATTERN, self.html):
@@ -332,7 +331,7 @@ class SimpleCrypter(Crypter):
 
                 if re.search('limit|wait|slot', errmsg, re.I):
                     wait_time = parse_time(errmsg)
-                    self.wait(wait_time, reconnect=wait_time > 300)
+                    self.wait(wait_time, reconnect=wait_time > self.get_config("max_wait", 10) * 60)
                     self.restart(_("Download limit exceeded"))
 
                 elif re.search('country|ip|region|nation', errmsg, re.I):
@@ -373,63 +372,6 @@ class SimpleCrypter(Crypter):
                     waitmsg = m.group(0).strip()
 
                 wait_time = parse_time(waitmsg)
-                self.wait(wait_time, reconnect=wait_time > 300)
+                self.wait(wait_time, reconnect=wait_time > self.get_config("max_wait", 10) * 60)
 
         self.info.pop('error', None)
-
-
-    def check_status(self, getinfo=True):
-        if not self.info or getinfo:
-            self.log_info(_("Updating file info..."))
-            old_info = self.info.copy()
-            self.info.update(self.get_info(self.pyfile.url, self.html))
-            self.log_debug("File info: %s" % self.info)
-            self.log_debug("Previous file info: %s" % old_info)
-
-        try:
-            status = self.info['status'] or 14
-
-            if status is 1:
-                self.offline()
-
-            elif status is 6:
-                self.temp_offline()
-
-            elif status is 8:
-                self.fail()
-
-        finally:
-            self.log_info(_("File status: ") + self.pyfile.getStatusName())
-
-
-    def check_name_folder(self, getinfo=True):
-        if not self.info or getinfo:
-            self.log_info(_("Updating file info..."))
-            old_info = self.info.copy()
-            self.info.update(self.get_info(self.pyfile.url, self.html))
-            self.log_debug("File info: %s" % self.info)
-            self.log_debug("Previous file info: %s" % old_info)
-
-        name   = self.info.get('name')
-        folder = self.info.get('folder')
-
-        if name and name is not self.info.get('url'):
-            self.pyfile.name = name
-        else:
-            name = self.pyfile.name
-
-        self.info['folder'] = folder else self.pyfile.name
-
-        self.log_info(_("File name: ") + name)
-        self.log_info(_("File folder: ") + folder)
-
-
-    #@TODO: Rewrite in 0.4.10
-    def check_info(self):
-        self.check_name_folder()
-
-        if self.html:
-            self.check_errors()
-            self.check_name_folder()
-
-        self.check_status(getinfo=False)
