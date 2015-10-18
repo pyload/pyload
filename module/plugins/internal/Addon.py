@@ -53,7 +53,7 @@ class Addon(Plugin):
 
         #: Callback of periodical job task, used by HookManager
         self.cb       = None
-        self.interval = self.PERIODICAL_INTERVAL
+        self.interval = None
 
         self.init()
         self.init_events()
@@ -126,14 +126,6 @@ class Addon(Plugin):
         raise NotImplementedError
 
 
-    def save_info(self):
-        self.store("info", self.info)
-
-
-    def restore_info(self):
-        self.retrieve("info", self.info)
-
-
     @property
     def activated(self):
         """
@@ -156,7 +148,7 @@ class Addon(Plugin):
 
     #: Deprecated method, use `deactivate` instead (Remove in 0.4.10)
     def unload(self, *args, **kwargs):
-        self.save_info()
+        self.store("info", self.info)
         return self.deactivate(*args, **kwargs)
 
 
@@ -169,7 +161,11 @@ class Addon(Plugin):
 
     #: Deprecated method, use `activate` instead (Remove in 0.4.10)
     def coreReady(self, *args, **kwargs):
-        self.restore_info()
+        self.retrieve("info", self.info)
+
+        if self.PERIODICAL_INTERVAL:
+            self.start_periodical(self.PERIODICAL_INTERVAL, delay=5)
+
         return self.activate(*args, **kwargs)
 
 
