@@ -2,7 +2,7 @@
 
 import re
 
-from module.common.json_layer import json_loads
+from module.plugins.internal.utils import json
 from module.plugins.internal.CaptchaService import CaptchaService
 
 
@@ -40,14 +40,14 @@ class AdYouLike(CaptchaService):
 
         #: {'adyoulike':{'key':"P~zQ~O0zV0WTiAzC-iw0navWQpCLoYEP"},
         #: 'all':{'element_id':"ayl_private_cap_92300",'lang':"fr",'env':"prod"}}
-        ayl = json_loads(ayl)
+        ayl = json.loads(ayl)
 
         html = self.plugin.load("http://api-ayl.appspot.com/challenge",
                                     get={'key'     : ayl['adyoulike']['key'],
                                          'env'     : ayl['all']['env'],
                                          'callback': callback})
         try:
-            challenge = json_loads(re.search(callback + r'\s*\((.+?)\)', html).group(1))
+            challenge = json.loads(re.search(callback + r'\s*\((.+?)\)', html).group(1))
 
         except AttributeError:
             self.fail(_("AdYouLike challenge pattern not found"))
@@ -69,10 +69,10 @@ class AdYouLike(CaptchaService):
         #: 'tid':"SqwuAdxT1EZoi4B5q0T63LN2AkiCJBg5"})
 
         if isinstance(server, basestring):
-            server = json_loads(server)
+            server = json.loads(server)
 
         if isinstance(challenge, basestring):
-            challenge = json_loads(challenge)
+            challenge = json.loads(challenge)
 
         try:
             instructions_visual = challenge['translations'][server['all']['lang']]['instructions_visual']
