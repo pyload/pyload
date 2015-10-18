@@ -10,7 +10,7 @@ from module.plugins.internal.utils import encode, fs_join
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.51"
+    __version__ = "0.52"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                   , True ),
@@ -133,7 +133,7 @@ class ExternalScripts(Addon):
             dl_folder = self.pyload.config.get("general", "download_folder")
 
         file = fs_join(dl_folder, pyfile.name)
-        args = [script, pyfile.id, pyfile.name, file, pyfile.pluginname, pyfile.url]
+        args = [pyfile.id, pyfile.name, file, pyfile.pluginname, pyfile.url]
         self._call("download_failed", args)
 
 
@@ -154,7 +154,7 @@ class ExternalScripts(Addon):
 
 
     def archive_extracted(self, pyfile, archive):
-        args = [script, pyfile.id, pyfile.name, archive.filename, archive.out, archive.files]
+        args = [pyfile.id, pyfile.name, archive.filename, archive.out, archive.files]
         self._call("archive_extracted", args)
 
 

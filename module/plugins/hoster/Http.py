@@ -4,8 +4,7 @@ import re
 import urlparse
 
 from module.network.HTTPRequest import BadHeader
-from module.plugins.internal.SimpleHoster import create_getInfo
-from module.plugins.internal.Hoster import Hoster
+from module.plugins.internal.Hoster import Hoster, create_getInfo
 
 
 class Http(Hoster):
