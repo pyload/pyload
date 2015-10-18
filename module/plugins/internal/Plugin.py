@@ -2,284 +2,19 @@
 
 from __future__ import with_statement
 
-import datetime
 import inspect
 import os
-import re
-import sys
-import time
-import traceback
-import urllib
-import urlparse
-
-import pycurl
 
 if os.name is not "nt":
     import grp
     import pwd
 
-from module.common.json_layer import json_dumps, json_loads
+import pycurl
+
+import module.plugins.internal.utils as utils
+
 from module.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload as Skip  #@TODO: Remove in 0.4.10
-from module.utils import (fs_encode, fs_decode, get_console_encoding, html_unescape,
-                          parseFileSize as parse_size, save_join as fs_join)
-
-
-#@TODO: Move to utils in 0.4.10
-def isiterable(obj):
-    return hasattr(obj, "__iter__")
-
-
-#@TODO: Move to utils in 0.4.10
-def decode(string, encoding=None):
-    """Encoded string (default to UTF-8) -> unicode string"""
-    if type(string) is str:
-        try:
-            res = unicode(string, encoding or "utf-8")
-
-        except UnicodeDecodeError, e:
-            if encoding:
-                raise UnicodeDecodeError(e)
-
-            encoding = get_console_encoding(sys.stdout.encoding)
-            res = unicode(string, encoding)
-
-    elif type(string) is unicode:
-        res = string
-
-    else:
-        res = unicode(string)
-
-    return res
-
-
-#@TODO: Remove in 0.4.10
-def _decode(*args, **kwargs):
-    return decode(*args, **kwargs)
-
-
-#@TODO: Move to utils in 0.4.10
-def encode(string, encoding=None, decoding=None):
-    """Unicode or decoded string -> encoded string (default to UTF-8)"""
-    if type(string) is unicode:
-        res = string.encode(encoding or "utf-8")
-
-    elif type(string) is str:
-        res = encode(decode(string, decoding), encoding)
-
-    else:
-        res = str(string)
-
-    return res
-
-
-#@TODO: Move to utils in 0.4.10
-def exists(path):
-    if os.path.exists(path):
-        if os.name is "nt":
-            dir, name = os.path.split(path.rstrip(os.sep))
-            return name in os.listdir(dir)
-        else:
-            return True
-    else:
-        return False
-
-
-def fixurl(url, unquote=None):
-    old = url
-    url = urllib.unquote(url)
-
-    if unquote is None:
-        unquote = url is old
-
-    url = html_unescape(decode(url).decode('unicode-escape'))
-    url = re.sub(r'(?<!:)/{2,}', '/', url).strip().lstrip('.')
-
-    if not unquote:
-        url = urllib.quote(url)
-
-    return url
-
-
-def parse_name(string):
-    path  = fixurl(decode(string), unquote=False)
-    url_p = urlparse.urlparse(path.rstrip('/'))
-    name  = (url_p.path.split('/')[-1] or
-             url_p.query.split('=', 1)[::-1][0].split('&', 1)[0] or
-             url_p.netloc.split('.', 1)[0])
-
-    return urllib.unquote(name)
-
-
-#@TODO: Move to utils in 0.4.10
-def str2int(string):
-    try:
-        return int(string)
-    except:
-        pass
-
-    ones = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
-            "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
-            "sixteen", "seventeen", "eighteen", "nineteen"]
-    tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy",
-            "eighty", "ninety"]
-
-    o_tuple = [(w, i) for i, w in enumerate(ones)]
-    t_tuple = [(w, i * 10) for i, w in enumerate(tens)]
-
-    numwords = dict(o_tuple + t_tuple)
-    tokens   = re.split(r"[\s\-]+", string.lower())
-
-    try:
-        return sum(numwords[word] for word in tokens)
-    except:
-        return 0
-
-
-def parse_time(string):
-    if re.search("da(il)?y|today", string):
-        seconds = seconds_to_midnight()
-
-    else:
-        regex   = re.compile(r'(\d+| (?:this|an?) )\s*(hr|hour|min|sec|)', re.I)
-        seconds = sum((int(v) if v.strip() not in ("this", "a", "an") else 1) *
-                      {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, '': 1}[u.lower()]
-                      for v, u in regex.findall(string))
-    return seconds
-
-
-#@TODO: Move to utils in 0.4.10
-def timestamp():
-    return int(time.time() * 1000)
-
-
-#@TODO: Move to utils in 0.4.10
-def which(program):
-    """
-    Works exactly like the unix command which
-    Courtesy of http://stackoverflow.com/a/377028/675646
-    """
-    isExe = lambda x: os.path.isfile(x) and os.access(x, os.X_OK)
-
-    fpath, fname = os.path.split(program)
-
-    if fpath:
-        if isExe(program):
-            return program
-    else:
-        for path in os.environ['PATH'].split(os.pathsep):
-            exe_file = os.path.join(path.strip('"'), program)
-            if isExe(exe_file):
-                return exe_file
-
-
-#@TODO: Move to utils in 0.4.10
-def format_exc(frame=None):
-    """
-    Format call-stack and display exception information (if availible)
-    """
-    exception_info = sys.exc_info()
-    callstack_list = traceback.extract_stack(frame)
-    callstack_list = callstack_list[:-1]
-
-    exception_desc = ""
-    if exception_info[0] is not None:
-        exception_callstack_list = traceback.extract_tb(exception_info[2])
-        if callstack_list[-1][0] == exception_callstack_list[0][0]:  #Does this exception belongs to us?
-            callstack_list = callstack_list[:-1]
-            callstack_list.extend(exception_callstack_list)
-            exception_desc = "".join(traceback.format_exception_only(exception_info[0], exception_info[1]))
-
-    traceback_str = "Traceback (most recent call last):\n"
-    traceback_str += "".join(traceback.format_list(callstack_list))
-    traceback_str += exception_desc
-    traceback_str = traceback_str[:-1]  #Removing the last '\n'
-    return traceback_str
-
-def seconds_to_nexthour(strict=False):
-    now      = datetime.datetime.today()
-    nexthour = now.replace(minute=0 if strict else 1, second=0, microsecond=0) + datetime.timedelta(hours=1)
-    return (nexthour - now).seconds
-
-
-def seconds_to_midnight(utc=None, strict=False):
-    if utc is None:
-        now = datetime.datetime.today()
-    else:
-        now = datetime.datetime.utcnow() + datetime.timedelta(hours=utc)
-
-    midnight = now.replace(hour=0, minute=0 if strict else 1, second=0, microsecond=0) + datetime.timedelta(days=1)
-
-    return (midnight - now).seconds
-
-
-def replace_patterns(string, ruleslist):
-    for r in ruleslist:
-        rf, rt = r
-        string = re.sub(rf, rt, string)
-    return string
-
-
-#@TODO: Remove in 0.4.10 and fix CookieJar.setCookie
-def set_cookie(cj, domain, name, value):
-    return cj.setCookie(domain, name, encode(value))
-
-
-def set_cookies(cj, cookies):
-    for cookie in cookies:
-        if isinstance(cookie, tuple) and len(cookie) == 3:
-            set_cookie(cj, *cookie)
-
-
-def parse_html_tag_attr_value(attr_name, tag):
-    m = re.search(r"%s\s*=\s*([\"']?)((?<=\")[^\"]+|(?<=')[^']+|[^>\s\"'][^>\s]*)\1" % attr_name, tag, re.I)
-    return m.group(2) if m else None
-
-
-def parse_html_form(attr_str, html, input_names={}):
-    for form in re.finditer(r"(?P<TAG><form[^>]*%s[^>]*>)(?P<CONTENT>.*?)</?(form|body|html)[^>]*>" % attr_str,
-                            html, re.I | re.S):
-        inputs = {}
-        action = parse_html_tag_attr_value("action", form.group('TAG'))
-
-        for inputtag in re.finditer(r'(<(input|textarea)[^>]*>)([^<]*(?=</\2)|)', form.group('CONTENT'), re.I | re.S):
-            name = parse_html_tag_attr_value("name", inputtag.group(1))
-            if name:
-                value = parse_html_tag_attr_value("value", inputtag.group(1))
-                if not value:
-                    inputs[name] = inputtag.group(3) or ""
-                else:
-                    inputs[name] = value
-
-        if not input_names:
-            #: No attribute check
-            return action, inputs
-        else:
-            #: Check input attributes
-            for key, val in input_names.items():
-                if key in inputs:
-                    if isinstance(val, basestring) and inputs[key] is val:
-                        continue
-                    elif isinstance(val, tuple) and inputs[key] in val:
-                        continue
-                    elif hasattr(val, "search") and re.match(val, inputs[key]):
-                        continue
-                    else:
-                        break  #: Attibute value does not match
-                else:
-                    break  #: Attibute name does not match
-            else:
-                return action, inputs  #: Passed attribute check
-
-    return {}, None  #: No matching form found
-
-
-#@TODO: Move to utils in 0.4.10
-def chunks(iterable, size):
-    it   = iter(iterable)
-    item = list(islice(it, size))
-    while item:
-        yield item
-        item = list(islice(it, size))
+from module.plugins.internal.utils import *
 
 
 class Plugin(object):
@@ -336,38 +71,37 @@ class Plugin(object):
 
     def log_debug(self, *args, **kwargs):
         self._log("debug", self.__type__, self.__name__, args)
-        if self.pyload.debug and kwargs.get('trace', False):
-            self.log_exc("debug")
+        if self.pyload.debug and kwargs.get('trace'):
+            self.print_exc()
 
 
     def log_info(self, *args, **kwargs):
         self._log("info", self.__type__, self.__name__, args)
-        if kwargs.get('trace', False):
-            self.log_exc("info")
+        if self.pyload.debug and kwargs.get('trace'):
+            self.print_exc()
 
 
     def log_warning(self, *args, **kwargs):
         self._log("warning", self.__type__, self.__name__, args)
-        if kwargs.get('trace', False):
-            self.log_exc("warning")
+        if self.pyload.debug and kwargs.get('trace'):
+            self.print_exc()
 
 
     def log_error(self, *args, **kwargs):
         self._log("error", self.__type__, self.__name__, args)
-        if kwargs.get('trace', False):
-            self.log_exc("error")
+        if self.pyload.debug and kwargs.get('trace', True):
+            self.print_exc()
 
 
     def log_critical(self, *args, **kwargs):
         self._log("critical", self.__type__, self.__name__, args)
         if kwargs.get('trace', True):
-            self.log_exc("critical")
+            self.print_exc()
 
 
-    def log_exc(self, level):
+    def print_exc(self):
         frame = inspect.currentframe()
-        log = getattr(self.pyload.log, level)
-        log(format_exc(frame.f_back))
+        print format_exc(frame.f_back)
         del frame
 
 
@@ -427,7 +161,7 @@ class Plugin(object):
         Saves a value persistently to the database
         """
         value = map(decode, value) if isiterable(value) else decode(value)
-        entry = json_dumps(value).encode('base64')
+        entry = json.dumps(value).encode('base64')
         self.pyload.db.setStorage(self.classname, key, entry)
 
 
@@ -441,12 +175,12 @@ class Plugin(object):
             if entry is None:
                 value = default
             else:
-                value = json_loads(entry.decode('base64'))
+                value = json.loads(entry.decode('base64'))
         else:
             if not entry:
                 value = default
             else:
-                value = dict((k, json_loads(v.decode('base64'))) for k, v in value.items())
+                value = dict((k, json.loads(v.decode('base64'))) for k, v in value.items())
 
         return value
 
@@ -506,8 +240,8 @@ class Plugin(object):
             req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
         elif type(redirect) is int:
-            req.http.c.setopt(pycurl.MAXREDIRS,
-                              self.get_config("maxredirs", 5, plugin="UserAgentSwitcher"))
+            maxredirs = self.get_config("maxredirs", default=5, plugin="UserAgentSwitcher")
+            req.http.c.setopt(pycurl.MAXREDIRS, maxredirs)
 
         #@TODO: Move to network in 0.4.10
         if decode:
@@ -515,7 +249,7 @@ class Plugin(object):
 
         #@TODO: Move to network in 0.4.10
         if isinstance(decode, basestring):
-            html = _decode(html, decode)  #@NOTE: Use `utils.decode()` in 0.4.10
+            html = utils.decode(html, decode)
 
         self.last_html = html
 
@@ -544,13 +278,15 @@ class Plugin(object):
         else:
             #@TODO: Move to network in 0.4.10
             header = {'code': req.code}
+
             for line in html.splitlines():
                 line = line.strip()
                 if not line or ":" not in line:
                     continue
 
                 key, none, value = line.partition(":")
-                key = key.strip().lower()
+
+                key   = key.strip().lower()
                 value = value.strip()
 
                 if key in header:
