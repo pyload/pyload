@@ -10,7 +10,7 @@ from module.plugins.internal.utils import replace_patterns, set_cookie, set_cook
 class SimpleCrypter(Crypter):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.72"
+    __version__ = "0.73"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -106,12 +106,6 @@ class SimpleCrypter(Crypter):
 
                 except Exception:
                     pass
-
-                if pyreq.code in (404, 410):
-                    info['status'] = 1
-
-                elif pyreq.code == 503:
-                    info['status'] = 6
 
         if html:
             if cls.OFFLINE_PATTERN and re.search(cls.OFFLINE_PATTERN, html) is not None:

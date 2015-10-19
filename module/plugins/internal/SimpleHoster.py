@@ -17,7 +17,7 @@ from module.plugins.internal.utils import (encode, fixup, parse_name, parse_size
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "2.01"
+    __version__ = "2.02"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -151,12 +151,6 @@ class SimpleHoster(Hoster):
 
                 except Exception:
                     pass
-
-                if pyreq.code in (404, 410):
-                    info['status'] = 1
-
-                elif pyreq.code == 503:
-                    info['status'] = 6
 
         if html:
             if cls.OFFLINE_PATTERN and re.search(cls.OFFLINE_PATTERN, html) is not None:
