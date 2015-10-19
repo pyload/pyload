@@ -8,10 +8,11 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class XFileSharing(XFSHoster):
     __name__    = "XFileSharing"
     __type__    = "hoster"
-    __version__ = "0.58"
+    __version__ = "0.59"
     __status__  = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?(?:\w+\.)*(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)'
+    # __pattern__ = r'https?://(?:www\.)?(?:\w+\.)*(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)'
+    __pattern__ = r'^unmatchable$'
     __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """XFileSharing dummy hoster plugin for hook"""

@@ -23,7 +23,6 @@ class Plugin(object):
     __version__ = "0.59"
     __status__  = "testing"
 
-    __pattern__ = r'^unmatchable$'
     __config__  = []  #: [("name", "type", "desc", "default")]
 
     __description__ = """Base plugin"""
