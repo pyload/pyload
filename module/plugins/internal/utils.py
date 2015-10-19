@@ -24,7 +24,7 @@ except ImportError:
 class utils(object):
     __name__    = "utils"
     __type__    = "plugin"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -371,9 +371,9 @@ def replace_patterns(value, rules):
     return value
 
 
-#@TODO: Remove in 0.4.10 and fix CookieJar.setCookie
-def set_cookie(cj, domain, name, value):
-    return cj.setCookie(domain, name, encode(value))
+#@TODO: Remove in 0.4.10 and fix exp in CookieJar.setCookie
+def set_cookie(cj, domain, name, value, path='/', exp=time.time() + 180 * 24 * 3600):
+    return cj.setCookie(encode(domain), encode(name), encode(value), encode(path), int(exp))
 
 
 def set_cookies(cj, cookies):

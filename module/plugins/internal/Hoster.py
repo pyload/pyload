@@ -13,7 +13,7 @@ from module.plugins.internal.utils import encode, exists, fixurl, fs_join, parse
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -98,7 +98,7 @@ class Hoster(Base):
                 self.restart(premium=False)
 
             else:
-                raise Fail(e)
+                raise Fail(str(e))
 
 
     def isdownload(self, url, resume=None, redirect=True):
@@ -176,15 +176,10 @@ class Hoster(Base):
             self.log_debug("DOWNLOAD URL " + url,
                            *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url", "_[1]")])
 
-        dl_url      = self.isdownload(url, resume)
+        dl_url      = self.fixurl(url)
         dl_basename = parse_name(self.pyfile.name)
 
         self.pyfile.name = dl_basename
-
-        if not dl_url:
-            self.error("Invalid download url")
-
-
 
         self.captcha.correct()
 
