@@ -84,7 +84,7 @@ def parse_size(value, unit=""):  #: returns bytes
         return 0
 
     traffic = float(m.group(1).replace(',', '.'))
-    unit    = (unit.strip().lower() or m.group(2) or "byte")[0]
+    unit    = (unit or m.group(2) or "byte")[0]
 
     if unit is "b":
         return int(traffic)
