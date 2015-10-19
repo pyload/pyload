@@ -176,7 +176,7 @@ class ExternalScripts(Addon):
         else:
             dl_folder = self.pyload.config.get("general", "download_folder")
 
-        args = [pack.id, pack.name, dl_folder, pack.password]
+        args = [pypack.id, pack.name, dl_folder, pack.password]
         self._call("package_deleted", args)
 
 
