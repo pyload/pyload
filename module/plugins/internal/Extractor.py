@@ -35,7 +35,7 @@ class PasswordError(Exception):
 class Extractor(Plugin):
     __name__    = "Extractor"
     __type__    = "extractor"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__  = "testing"
 
     __description__ = """Base extractor plugin"""
@@ -93,6 +93,7 @@ class Extractor(Plugin):
                  overwrite=False,
                  excludefiles=[],
                  renice=False,
+                 priority=0,
                  keepbroken=False,
                  fid=None):
         """
@@ -106,7 +107,7 @@ class Extractor(Plugin):
         self.fullpath     = fullpath
         self.overwrite    = overwrite
         self.excludefiles = excludefiles
-        self.priority     = int(priority)
+        self.priority     = priority
         self.keepbroken   = keepbroken
         self.files        = []  #: Store extracted files here
 
