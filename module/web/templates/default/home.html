@@ -118,6 +118,7 @@ var LinkEntry = new Class({
                 }),
                 status: new Element('td', {
                 'html': '&nbsp;',
+                'class': 'hidden-xs'
                 }),
                 statusspan: new Element('span', {
                 'html': item.statusmsg,
@@ -130,10 +131,12 @@ var LinkEntry = new Class({
                 'html': item.name
                 }),
                 info: new Element('td', {
-                'html': item.info
+                'html': item.info,
+                'class': 'hidden-xs'
                 }),
                 bleft: new Element('td', {
-                'html': humanFileSize(item.size)
+                'html': humanFileSize(item.size),
+                'class': 'hidden-xs'
                 }),
                 percent: new Element('span', {
                 'html': item.percent+ '% / '+ humanFileSize(item.size-item.bleft)
@@ -243,11 +246,11 @@ var LinkEntry = new Class({
 <table class="table" style="width:100%;">
     <thead>
   <tr class="header">
-    <th>{{_("Status")}}</th>
+    <th class="hidden-xs">{{_("Status")}}</th>
     <th>{{_("Name")}}</th>
-    <th>{{_("Information")}}</th>
-    <th>{{_("Size")}}</th>
-    <th>{{_("Progress")}}</th>
+    <th class="hidden-xs>{{_("Information")}}</th>
+    <th class="hidden-xs">{{_("Size")}}</th>
+    <th class="hidden-xs">{{_("Progress")}}</th>
   </tr>
     </thead>
 </br>

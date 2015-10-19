@@ -35,47 +35,27 @@
     </ul>
 
     <h3>{{ _("System") }}</h3>
-    <table class="system">
-         <tr>
-            <td><b>{{ _("Python:") }}</b></td>
-            <td>{{ python }}</td>
-        </tr>
-        <tr>
-            <td><b>{{ _("OS:") }}</b></td>
-            <td>{{ os }}</td>
-        </tr>
-        <tr>
-            <td><b>{{ _("pyLoad version:") }}</b></td>
-            <td>{{ version }}</td>
-        </tr>
-        <tr>
-            <td><b>{{ _("Installation Folder:") }}</b></td>
-            <td>{{ folder }}</td>
-        </tr>
-        <tr>
-            <td><b>{{ _("Config Folder:") }}</b></td>
-            <td>{{ config }}</td>
-        </tr>
-        <tr>
-            <td><b>{{ _("Download Folder:") }}</b></td>
-            <td>{{ download }}</td>
-        </tr>
-        <tr>
-            <td><b>{{ _("Free Space:") }}</b></td>
-            <td>{{ freespace }}</td>
-        </tr>
-        <tr>
-            <td><b>{{ _("Language:") }}</b></td>
-            <td>{{ language }}</td>
-        </tr>
-        <tr>
-            <td><b>{{ _("Webinterface Port:") }}</b></td>
-            <td>{{ webif }}</td>
-        </tr>
-        <tr>
-            <td><b>{{ _("Remote Interface Port:") }}</b></td>
-            <td>{{ remote }}</td>
-        </tr>
-    </table>
+    <dl class="row">
+        <dt class="col-xs-12 col-sm-2"><b>{{ _("Python:") }}</b></dt>
+        <dd class="col-xs-12 col-sm-10 breakWords">{{ python }}</dd>
+        <dt class="col-xs-12 col-sm-2"><b>{{ _("OS:") }}</b></dt>
+        <dd class="col-xs-12 col-sm-10 breakWords">{{ os }}</dd>
+        <dt class="col-xs-12 col-sm-2"><b>{{ _("pyLoad version:") }}</b></dt>
+        <dd class="col-xs-12 col-sm-10">{{ version }}</dd>
+        <dt class="col-xs-12 col-sm-2"><b>{{ _("Installation Folder:") }}</b></dt>
+        <dd class="col-xs-12 col-sm-10">{{ folder }}</dd>
+        <dt class="col-xs-12 col-sm-2"><b>{{ _("Config Folder:") }}</b></dt>
+        <dd class="col-xs-12 col-sm-10">{{ config }}</dd>
+        <dt class="col-xs-12 col-sm-2"><b>{{ _("Download Folder:") }}</b></dt>
+        <dd class="col-xs-12 col-sm-10">{{ download }}</dd>
+        <dt class="col-xs-12 col-sm-2"><b>{{ _("Free Space:") }}</b></dt>
+        <dd class="col-xs-12 col-sm-10">{{ freespace }}</dd>
+        <dt class="col-xs-12 col-sm-2"><b>{{ _("Language:") }}</b></dt>
+        <dd class="col-xs-12 col-sm-10">{{ language }}</dd>
+        <dt class="col-xs-12 col-sm-2"><b>{{ _("Webinterface Port:") }}</b></dt>
+        <dd class="col-xs-12 col-sm-10">{{ webif }}</dd>
+        <dt class="col-xs-12 col-sm-2"><b>{{ _("Remote Interface Port:") }}</b></dt>
+        <dd class="col-xs-12 col-sm-10">{{ remote }}</dd>
+    </dl>
 
 {% endblock %}

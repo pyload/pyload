@@ -1,0 +1,7 @@
+.clear {
+    clear: both;
+}
+
+.breakWords {
+    word-wrap: break-word;
+}

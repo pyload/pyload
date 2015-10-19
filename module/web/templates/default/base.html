@@ -10,6 +10,7 @@
 <link rel="stylesheet" type="text/css" href="/media/default/css/window.css"/>
 <link rel="stylesheet" type="text/css" href="/media/default/css/MooDialog.css"/>
 <link rel="stylesheet" href="/media/default/css/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="/media/default/css/styles.css">
 
 <script type="text/javascript" src="/media/js/mootools-core-1.4.1.js"></script>
 <script type="text/javascript" src="/media/js/mootools-more-1.4.0.1.js"></script>
@@ -131,11 +132,11 @@
 </div>
 
 {% if perms.STATUS %}
-<div class="btn-group btn-group-sm" role="group" aria-label="..." style="margin-left:10px;">
-  <button id="action_play" class="btn btn-default" href="#"><span class="glyphicon glyphicon-play"></span>&nbsp;</button>
-  <button id="action_stop" type="button" class="btn btn-default"><span class="glyphicon glyphicon-stop"></span>&nbsp;</button>
-  <button id="action_cancel" type="button" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span>&nbsp;</button>
-  <button id="action_add" type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>&nbsp;</button>
+<div class="btn-group btn-group-sm col-xs-12 col-sm-3" role="group" aria-label="...">
+  <button id="action_play" class="btn btn-default col-xs-3" href="#"><span class="glyphicon glyphicon-play"></span>&nbsp;</button>
+  <button id="action_stop" type="button" class="btn btn-default col-xs-3"><span class="glyphicon glyphicon-stop"></span>&nbsp;</button>
+  <button id="action_cancel" type="button" class="btn btn-default col-xs-3"><span class="glyphicon glyphicon-remove"></span>&nbsp;</button>
+  <button id="action_add" type="button" class="btn btn-default col-xs-3"><span class="glyphicon glyphicon-plus"></span>&nbsp;</button>
 </div>
 
 
@@ -147,22 +148,22 @@
 
 {% if perms.LIST %}
 
-<div class="btn-group btn-group-sm" role="group" aria-label="..." style="margin-right:10px; float:right;">
-  <button id="action_play" class="btn btn-default"><span >{{_("Download:")}}</span>&nbsp;<span  class="label label-{% if status.download %}success{% else %}danger{% endif %}">{% if status.download %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</span></button>
-  <button id="action_stop" type="button" class="btn btn-default"><span>{{_("Reconnect:")}}</span>&nbsp;<span class="label label-{% if status.reconnect %}success{% else %}danger{% endif %}">{% if status.reconnect %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</span></button>
-  <button id="action_cancel" type="button" class="btn btn-default"><span class="action backlink">{{_("Speed:")}} <b id="speed">{{ status.speed }}</b></span></button>
-  <button id="action_add" type="button" class="btn btn-default"><span class="action cog">{{_("Active:")}} <b id="aktiv" title="{{_("Active")}}">{{ status.active }}</b> / <b id="aktiv_from" title="{{_("Queued")}}">{{ status.queue }}</b> / <b id="aktiv_total" title="{{_("Total")}}">{{ status.total }}</b></span></button>
+<div class="btn-group btn-group-sm col-xs-12 col-sm-8 col-md-6 col-lg-5" role="group" aria-label="..." style="float:right;">
+  <button id="action_play" class="btn btn-default col-xs-6 col-sm-3"><span >{{_("Download:")}}</span>&nbsp;<span  class="label label-{% if status.download %}success{% else %}danger{% endif %}">{% if status.download %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</span></button>
+  <button id="action_stop" type="button" class="btn btn-default col-xs-6 col-sm-3"><span>{{_("Reconnect:")}}</span>&nbsp;<span class="label label-{% if status.reconnect %}success{% else %}danger{% endif %}">{% if status.reconnect %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</span></button>
+  <button id="action_cancel" type="button" class="btn btn-default col-xs-6 col-sm-3"><span class="action backlink">{{_("Speed:")}} <b id="speed">{{ status.speed }}</b></span></button>
+  <button id="action_add" type="button" class="btn btn-default col-xs-6 col-sm-3"><span class="action cog">{{_("Active:")}} <b id="aktiv" title="{{_("Active")}}">{{ status.active }}</b> / <b id="aktiv_from" title="{{_("Queued")}}">{{ status.queue }}</b> / <b id="aktiv_total" title="{{_("Total")}}">{{ status.total }}</b></span></button>
 </div>
 
 {% endif %}
 
 {% block pageactions %}
 {% endblock %}
-<br/>
+<br class="clear" />
 
 <div id="body-wrapper" class="dokuwiki">
 
-<div id="content" style="width: 98%; margin-left:10px; margin-rigth:10px;" lang="en" dir="ltr">
+<div id="content" style="width: 98%; padding-left:10px; padding-right:10px;" lang="en" dir="ltr">
 
 <h3>{% block subtitle %}pyLoad - {{_("Webinterface")}}{% endblock %}</h3>
 
