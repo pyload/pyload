@@ -3,14 +3,13 @@
 import re
 import urlparse
 
-from module.network.HTTPRequest import BadHeader
 from module.plugins.internal.Hoster import Hoster, create_getInfo
 
 
 class Http(Hoster):
     __name__    = "Http"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __pattern__ = r'(?:jd|pys?)://.+'
@@ -30,41 +29,36 @@ class Http(Hoster):
         url    = re.sub(r'^(jd|py)', "http", pyfile.url)
         netloc = urlparse.urlparse(url).netloc
 
-        link = self.is_download(url)
+        link = self.isdownload(url)
 
         if not link:
             return
 
         for _i in xrange(2):
-            try:
-                self.download(link, ref=False, disposition=True)
+            self.download(link, ref=False, disposition=True)
 
-            except BadHeader, e:
-                if e.code in (404, 410):
-                    self.offline()
+            if self.req.code in (404, 410):
+                self.offline()
 
-                elif e.code in (401, 403):
-                    self.log_debug("Auth required", "Received HTTP status code: %d" % e.code)
+            elif self.req.code in (401, 403):
+                self.log_debug("Auth required", "Received HTTP status code: %d" % e.code)
 
-                    #@TODO: Recheck in 0.4.10
-                    if self.account:
-                        servers = [x['login'] for x in self.account.getAllAccounts()]
-                    else:
-                        servers = []
-
-                    if netloc in servers:
-                        self.log_debug("Logging on to %s" % netloc)
-                        self.req.addAuth(self.account.get_login('password'))
-
-                    else:
-                        pwd = self.get_password()
-                        if ':' in pwd:
-                            self.req.addAuth(pwd)
-                        else:
-                            self.fail(_("Authorization required"))
+                #@TODO: Recheck in 0.4.10
+                if self.account:
+                    servers = [x['login'] for x in self.account.getAllAccounts()]
                 else:
-                    self.fail(e)
+                    servers = []
 
+                if netloc in servers:
+                    self.log_debug("Logging on to %s" % netloc)
+                    self.req.addAuth(self.account.get_login('password'))
+
+                else:
+                    pwd = self.get_password()
+                    if ':' in pwd:
+                        self.req.addAuth(pwd)
+                    else:
+                        self.fail(_("Authorization required"))
             else:
                 break
 

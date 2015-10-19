@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.UnibytesCom import UnibytesCom
-from module.plugins.internal.SimpleHoster import create_getInfo
+from module.plugins.hoster.UnibytesCom import UnibytesCom, create_getInfo
 
 
 class Share4WebCom(UnibytesCom):

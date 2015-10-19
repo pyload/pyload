@@ -5,8 +5,8 @@ import re
 from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
 
 
-class XFileSharingProFolder(XFSCrypter):
-    __name__    = "XFileSharingProFolder"
+class XFileSharingFolder(XFSCrypter):
+    __name__    = "XFileSharingFolder"
     __type__    = "crypter"
     __version__ = "0.17"
     __status__  = "testing"
@@ -16,20 +16,18 @@ class XFileSharingProFolder(XFSCrypter):
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """XFileSharingPro dummy folder decrypter plugin for hook"""
+    __description__ = """XFileSharing dummy folder decrypter plugin for hook"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def _log(self, level, plugintype, pluginname, messages):
-        return super(XFileSharingProFolder, self)._log(level,
-                                                       plugintype,
-                                                       "%s: %s" % (pluginname, self.PLUGIN_NAME),
-                                                       messages)
+        messages = (self.PLUGIN_NAME,) + messages
+        return self.plugin._log(level, plugintype, pluginname, messages)
 
 
     def init(self):
-        super(XFileSharingProFolder, self).init()
+        super(XFileSharingFolder, self).init()
 
         self.__pattern__ = self.pyload.pluginManager.crypterPlugins[self.classname]['pattern']
 
@@ -73,4 +71,4 @@ class XFileSharingProFolder(XFSCrypter):
                 self.account = False
 
 
-getInfo = create_getInfo(XFileSharingProFolder)
+getInfo = create_getInfo(XFileSharingFolder)

@@ -5,8 +5,8 @@ import re
 from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
-class XFileSharingPro(XFSHoster):
-    __name__    = "XFileSharingPro"
+class XFileSharing(XFSHoster):
+    __name__    = "XFileSharing"
     __type__    = "hoster"
     __version__ = "0.57"
     __status__  = "testing"
@@ -14,7 +14,7 @@ class XFileSharingPro(XFSHoster):
     __pattern__ = r'https?://(?:www\.)?(?:\w+\.)*(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)'
     __config__  = [("activated", "bool", "Activated", True)]
 
-    __description__ = """XFileSharingPro dummy hoster plugin for hook"""
+    __description__ = """XFileSharing dummy hoster plugin for hook"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
@@ -23,10 +23,8 @@ class XFileSharingPro(XFSHoster):
 
 
     def _log(self, level, plugintype, pluginname, messages):
-        return super(XFileSharingPro, self)._log(level,
-                                                 plugintype,
-                                                 "%s: %s" % (pluginname, self.PLUGIN_NAME),
-                                                 messages)
+        messages = (self.PLUGIN_NAME,) + messages
+        return self.plugin._log(level, plugintype, pluginname, messages)
 
 
     def init(self):
@@ -72,4 +70,4 @@ class XFileSharingPro(XFSHoster):
                 self.account = False
 
 
-getInfo = create_getInfo(XFileSharingPro)
+getInfo = create_getInfo(XFileSharing)

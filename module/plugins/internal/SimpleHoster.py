@@ -6,7 +6,6 @@ import os
 import re
 import time
 
-from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster, create_getInfo, parse_fileInfo
 from module.plugins.internal.Plugin import Fail
@@ -18,7 +17,7 @@ from module.plugins.internal.utils import (encode, fixup, parse_name, parse_size
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.99"
+    __version__ = "2.00"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -150,14 +149,14 @@ class SimpleHoster(Hoster):
                 except BadHeader, e:
                     info['error'] = "%d: %s" % (e.code, e.content)
 
-                    if e.code in (404, 410):
-                        info['status'] = 1
-
-                    elif e.code is 503:
-                        info['status'] = 6
-
                 except Exception:
                     pass
+
+                if pyreq.code in (404, 410):
+                    info['status'] = 1
+
+                elif pyreq.code == 503:
+                    info['status'] = 6
 
         if html:
             if cls.OFFLINE_PATTERN and re.search(cls.OFFLINE_PATTERN, html) is not None:
@@ -428,7 +427,7 @@ class SimpleHoster(Hoster):
 
 
     def handle_direct(self, pyfile):
-        self.link = self.is_download(pyfile.url)
+        self.link = self.isdownload(pyfile.url)
 
 
     def handle_multi(self, pyfile):  #: Multi-hoster handler

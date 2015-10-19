@@ -2,6 +2,7 @@
 
 import re
 
+from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Crypter import Crypter, create_getInfo, parse_fileInfo
 from module.plugins.internal.utils import replace_patterns, set_cookie, set_cookies
 
@@ -9,7 +10,7 @@ from module.plugins.internal.utils import replace_patterns, set_cookie, set_cook
 class SimpleCrypter(Crypter):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.71"
+    __version__ = "0.72"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -103,14 +104,14 @@ class SimpleCrypter(Crypter):
                 except BadHeader, e:
                     info['error'] = "%d: %s" % (e.code, e.content)
 
-                    if e.code in (404, 410):
-                        info['status'] = 1
-
-                    elif e.code is 503:
-                        info['status'] = 6
-
                 except Exception:
                     pass
+
+                if pyreq.code in (404, 410):
+                    info['status'] = 1
+
+                elif pyreq.code == 503:
+                    info['status'] = 6
 
         if html:
             if cls.OFFLINE_PATTERN and re.search(cls.OFFLINE_PATTERN, html) is not None:

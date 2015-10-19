@@ -5,7 +5,6 @@ from __future__ import with_statement
 import os
 import re
 
-from module.network.HTTPRequest import BadHeader
 from module.plugins.internal.Base import Base, create_getInfo, parse_fileInfo
 from module.plugins.internal.Plugin import Fail, Retry
 from module.plugins.internal.utils import encode, exists, fixurl, fs_join, parse_name
@@ -14,7 +13,7 @@ from module.plugins.internal.utils import encode, exists, fixurl, fs_join, parse
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -102,7 +101,7 @@ class Hoster(Base):
                 raise Fail(e)
 
 
-    def is_download(self, url, resume=None, redirect=True):
+    def isdownload(self, url, resume=None, redirect=True):
         link      = False
         maxredirs = 10
 
@@ -177,13 +176,15 @@ class Hoster(Base):
             self.log_debug("DOWNLOAD URL " + url,
                            *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url", "_[1]")])
 
-        dl_url      = self.is_download(url, resume)
+        dl_url      = self.isdownload(url, resume)
         dl_basename = parse_name(self.pyfile.name)
 
         self.pyfile.name = dl_basename
 
         if not dl_url:
             self.error("Invalid download url")
+
+
 
         self.captcha.correct()
 
@@ -226,13 +227,19 @@ class Hoster(Base):
                                             cookies=cookies, chunks=chunks, resume=resume,
                                             progressNotify=self.pyfile.setProgress,
                                             disposition=disposition)
-        except BadHeader, e:
-            if e.code in (404, 410):
-                self.pyfile.setStatus("offline")
-            raise BadHeader(e)
-
         finally:
             self.pyfile.size = self.req.size
+
+        if self.req.code in (404, 410):
+            bad_file = fs_join(dl_dirname, newname)
+            try:
+                os.remove(bad_file)
+
+            except OSError, e:
+                self.log_debug(_("Error removing `%s`") % bad_file, e)
+
+            finally:
+                return ""
 
         #@TODO: Recheck in 0.4.10
         if disposition and newname:
@@ -333,7 +340,7 @@ class Hoster(Base):
                     os.remove(last_download)
 
                 except OSError, e:
-                    self.log_warning(_("Error removing: %s") % last_download, e)
+                    self.log_warning(_("Error removing `%s`") % last_download, e)
 
                 else:
                     self.log_info(_("File deleted: ") + self.last_download)

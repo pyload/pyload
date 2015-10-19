@@ -50,7 +50,7 @@ class Extractor(Plugin):
 
 
     @classmethod
-    def is_archive(cls, filename):
+    def isarchive(cls, filename):
         name = os.path.basename(filename).lower()
         return any(name.endswith(ext) for ext in cls.EXTENSIONS)
 
@@ -74,8 +74,8 @@ class Extractor(Plugin):
         processed = []
 
         for fname, id, fout in files_ids:
-            if cls.is_archive(fname):
-                pname = re.sub(cls.re_multipart, "", fname) if cls.is_multipart(fname) else os.path.splitext(fname)[0]
+            if cls.isarchive(fname):
+                pname = re.sub(cls.re_multipart, "", fname) if cls.ismultipart(fname) else os.path.splitext(fname)[0]
                 if pname not in processed:
                     processed.append(pname)
                     targets.append((fname, id, fout))

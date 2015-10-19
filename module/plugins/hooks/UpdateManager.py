@@ -361,7 +361,7 @@ class UpdateManager(Addon):
                         os.remove(filename)
 
                     except OSError, e:
-                        self.log_warning(_("Error removing: %s") % filename, e)
+                        self.log_warning(_("Error removing `%s`") % filename, e)
 
                     else:
                         id = (type, name)

@@ -14,7 +14,7 @@ from module.plugins.internal.Addon import Addon
 class TransmissionRPC(Addon):
     __name__    = "TransmissionRPC"
     __type__    = "hook"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r"https?://.+\.torrent|magnet:\?.+"
@@ -52,29 +52,24 @@ class TransmissionRPC(Addon):
                                                   'tag'      : client_request_id}),
                                  req=req)
 
-        except BadHeader, e:
-            if e.code == 409:
-                headers = dict(re.findall(r"(?P<name>.+?): (?P<value>.+?)\r?\n", req.header))
-                session_id = headers['X-Transmission-Session-Id']
-                req.c.setopt(pycurl.HTTPHEADER, ["X-Transmission-Session-Id: %s" % session_id])
-                try:
-                    response = self.load(transmission_rpc_url,
-                                         post=json.dumps({'arguments': {'filename': url},
-                                                          'method'   : 'torrent-add',
-                                                          'tag'      : client_request_id}),
-                                         req=req)
-
-                except Exception, e:
-                     self.log_error(e, trace=True)
-                     return
-
-            else:
-                 self.log_error(e, trace=True)
-                 return
-
         except Exception, e:
-             self.log_error(e, trace=True)
+             self.log_error(e)
              return
+             
+        if req.code == 409:
+            headers = dict(re.findall(r"(?P<name>.+?): (?P<value>.+?)\r?\n", req.header))
+            session_id = headers['X-Transmission-Session-Id']
+            req.c.setopt(pycurl.HTTPHEADER, ["X-Transmission-Session-Id: %s" % session_id])
+            try:
+                response = self.load(transmission_rpc_url,
+                                     post=json.dumps({'arguments': {'filename': url},
+                                                      'method'   : 'torrent-add',
+                                                      'tag'      : client_request_id}),
+                                     req=req)
+
+            except Exception, e:
+                self.log_error(e)
+                return
 
         try:
             res = json.loads(response)
@@ -82,4 +77,4 @@ class TransmissionRPC(Addon):
                 self.log_debug("Result: %s" % res['result'])
 
         except Exception, e:
-            self.log_error(e, trace=True)
+            self.log_error(e)

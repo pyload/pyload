@@ -13,7 +13,7 @@ from module.plugins.internal.utils import html_unescape
 class GoogledriveCom(SimpleHoster):
     __name__    = "GoogledriveCom"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(drive|docs)\.google\.com/(file/d/\w+|uc\?.*id=)'
@@ -45,7 +45,7 @@ class GoogledriveCom(SimpleHoster):
                 return
 
             link = self.fixurl(link, "https://docs.google.com/")
-            dl   = self.is_download(link, redirect=False)
+            dl   = self.isdownload(link, redirect=False)
 
             if not dl:
                 self.html = self.load(link)

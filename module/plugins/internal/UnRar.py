@@ -69,7 +69,7 @@ class UnRar(Extractor):
 
 
     @classmethod
-    def is_multipart(cls, filename):
+    def ismultipart(cls, filename):
         return True if cls.re_multipart.search(filename) else False
 
 
@@ -166,7 +166,7 @@ class UnRar(Extractor):
         files = [self.filename]
 
         #: eventually Multipart Files
-        files.extend(fs_join(dir, os.path.basename(file)) for file in filter(self.is_multipart, os.listdir(dir))
+        files.extend(fs_join(dir, os.path.basename(file)) for file in filter(self.ismultipart, os.listdir(dir))
                      if re.sub(self.re_multipart, ".rar", name) == re.sub(self.re_multipart, ".rar", file))
 
         return files

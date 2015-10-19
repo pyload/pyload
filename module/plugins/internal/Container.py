@@ -78,4 +78,4 @@ class Container(Crypter):
         try:
             os.remove(self.pyfile.url)
         except OSError, e:
-            self.log_warning(_("Error removing: %s") % self.pyfile.url, e)
+            self.log_warning(_("Error removing `%s`") % self.pyfile.url, e)
