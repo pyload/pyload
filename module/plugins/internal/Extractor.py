@@ -36,7 +36,7 @@ class PasswordError(Exception):
 class Extractor(Plugin):
     __name__    = "Extractor"
     __type__    = "extractor"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__  = "testing"
 
     __description__ = """Base extractor plugin"""
@@ -76,7 +76,7 @@ class Extractor(Plugin):
 
         for fname, id, fout in files_ids:
             if cls.isarchive(fname):
-                pname = re.sub(cls.re_multipart, "", fname) if cls.is_multipart(fname) else os.path.splitext(fname)[0]
+                pname = re.sub(cls.re_multipart, "", fname) if cls.ismultipart(fname) else os.path.splitext(fname)[0]
                 if pname not in processed:
                     processed.append(pname)
                     targets.append((fname, id, fout))

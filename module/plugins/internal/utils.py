@@ -162,8 +162,8 @@ def encode(value, encoding=None, decoding=None):
     if type(value) is unicode:
         res = value.encode(encoding or "utf-8")
 
-    #elif type(value) is str:
-        #res = encode(decode(value, decoding), encoding)
+    # elif type(value) is str:
+        # res = encode(decode(value, decoding), encoding)
 
     else:
         res = str(value)

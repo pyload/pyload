@@ -11,7 +11,7 @@ from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError,
 
 class UnZip(Extractor):
     __name__    = "UnZip"
-    __version__ = "1.18"
+    __version__ = "1.19"
     __status__  = "testing"
 
     __description__ = """Zip extractor plugin"""
@@ -29,7 +29,7 @@ class UnZip(Extractor):
 
 
     @classmethod
-    def is_multipart(cls, filename):
+    def ismultipart(cls, filename):
          return False  #@NOTE: Unsupported (rarely used anyway)
 
 

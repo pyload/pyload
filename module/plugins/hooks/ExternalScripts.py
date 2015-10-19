@@ -10,7 +10,7 @@ from module.plugins.internal.utils import encode, fs_join
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.52"
+    __version__ = "0.53"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                   , True ),
@@ -114,11 +114,13 @@ class ExternalScripts(Addon):
 
 
     def before_reconnect(self, ip):
-        self._call("before_reconnect", [ip])
+        args = [ip]
+        self._call("before_reconnect", args)
 
 
     def after_reconnect(self, ip, oldip):
-        self._call("after_reconnect", [ip, oldip])
+        args = [ip, oldip]
+        self._call("after_reconnect", args)
 
 
     def download_preparing(self, pyfile):
@@ -169,14 +171,14 @@ class ExternalScripts(Addon):
 
 
     def package_deleted(self, pid):
-        pack = self.pyload.api.getPackageInfo(pid)
+        pypack = self.pyload.api.getPackageInfo(pid)
 
         if self.pyload.config.get("general", "folder_per_package"):
-            dl_folder = fs_join(self.pyload.config.get("general", "download_folder"), pack.folder)
+            dl_folder = fs_join(self.pyload.config.get("general", "download_folder"), pypack.folder)
         else:
             dl_folder = self.pyload.config.get("general", "download_folder")
 
-        args = [pypack.id, pack.name, dl_folder, pack.password]
+        args = [pypack.id, pypack.name, dl_folder, pypack.password]
         self._call("package_deleted", args)
 
 

@@ -13,7 +13,7 @@ from module.plugins.internal.utils import encode, exists, fixurl, fs_join, parse
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -98,7 +98,7 @@ class Hoster(Base):
                 self.restart(premium=False)
 
             else:
-                raise Fail(str(e))
+                raise Fail(encode(e))
 
 
     def isdownload(self, url, resume=None, redirect=True):
