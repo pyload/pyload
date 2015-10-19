@@ -16,7 +16,7 @@ from module.plugins.internal.utils import encode, fs_join
 class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "1.02"
+    __version__ = "1.03"
     __status__  = "testing"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),
@@ -32,7 +32,7 @@ class UpdateManager(Addon):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    _VERSION = re.compile(r'__version__.*=.*("|\')([\d.]+)')
+    _VERSION = re.compile(r'^\s*__version__\s*=\s*("|\')([\d.]+)\1', re.M)
 
     SERVER_URL     = "http://updatemanager.pyload.org"
     CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
@@ -231,7 +231,6 @@ class UpdateManager(Addon):
             for line in l:
                 d = dict(zip(schema, line.split('|')))
                 d['name'] = d['name'].rsplit('.py', 1)[0]
-                d['type'] = d['type'].rstrip('s')
                 nl.append(d)
             l[:] = nl
 
@@ -282,7 +281,7 @@ class UpdateManager(Addon):
             type    = plugin['type']
             version = plugin['version']
 
-            plugins = getattr(self.pyload.pluginManager, "%sPlugins" % type)
+            plugins = getattr(self.pyload.pluginManager, "%sPlugins" % type.rstrip('s'))  #@TODO: Remove rstrip in 0.4.10
 
             oldver = float(plugins[name]['v']) if name in plugins else None
             newver = float(version)
@@ -294,25 +293,19 @@ class UpdateManager(Addon):
             else:
                 continue
 
-            self.log_info(_(msg) % {'type'  : type.upper(),
+            self.log_info(_(msg) % {'type'  : type.rstrip('s').upper(),  #@TODO: Remove rstrip in 0.4.10
                                     'name'  : name,
                                     'oldver': oldver,
                                     'newver': newver})
             try:
                 content = self.load(url % plugin + ".py", decode=False, req=req)
 
-                if req.code is 404:
+                if req.code == 404:
                     raise Exception(_("URL not found"))
 
                 m = self._VERSION.search(content)
                 if m and m.group(2) == version:
-                    #@TODO: Remove in 0.4.10
-                    if type in ("account", "hook"):
-                        folder = type + "s"
-                    else:
-                        folder = type
-
-                    with open(fs_join("userplugins", folder, name + ".py"), "wb") as f:
+                    with open(fs_join("userplugins", type, name + ".py"), "wb") as f:
                         f.write(encode(content))
 
                     updated.append((type, name))
@@ -320,7 +313,7 @@ class UpdateManager(Addon):
                     raise Exception(_("Version mismatch"))
 
             except Exception, e:
-                self.log_error(_("Error updating plugin: %s %s") % (type.upper(), name), e)
+                self.log_error(_("Error updating plugin: %s %s") % (type.rstrip('s').upper(), name), e)    #@TODO: Remove rstrip in 0.4.10
 
         return updated
 
@@ -349,14 +342,8 @@ class UpdateManager(Addon):
         for type, name in type_plugins:
             rootplugins = os.path.join(pypath, "module", "plugins")
 
-            #@TODO: Remove in 0.4.10
-            if type in ("account", "hook"):
-                folder = type + "s"
-            else:
-                folder = type
-
             for dir in ("userplugins", rootplugins):
-                py_filename  = fs_join(dir, folder, name + ".py")
+                py_filename  = fs_join(dir, type, name + ".py")
                 pyc_filename = py_filename + "c"
 
                 if type is "hook":
