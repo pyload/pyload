@@ -169,7 +169,7 @@ class ExtractArchive(Addon):
 
     @threaded
     def extract_queued(self, thread):
-        if self.extracting:  #@NOTE: doing the check here for safty (called by coreReady)
+        if self.extracting:  #@NOTE: doing the check here for safety (called by coreReady)
             return
 
         self.extracting = True
