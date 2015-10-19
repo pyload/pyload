@@ -17,7 +17,7 @@ from module.plugins.internal.utils import (encode, fixup, parse_name, parse_size
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "2.00"
+    __version__ = "2.01"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -190,7 +190,7 @@ class SimpleHoster(Hoster):
             info['size'] = parse_size(size)
 
         elif isinstance(info['size'], basestring):
-            unit = info['units'] if 'units' in info else None
+            unit = info['units'] if 'units' in info else ""
             info['size'] = parse_size(info['size'], unit)
 
         if 'H' in info['pattern']:

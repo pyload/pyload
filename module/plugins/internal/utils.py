@@ -77,27 +77,6 @@ def uniqify(seq):
     return [x for x in seq if x not in seen and not seen_add(x)]
 
 
-def parse_size(value, unit=""):  #: returns bytes
-    m = re.match(r"([\d.,]+)\s*([\w^_]*)", value.lower())
-
-    if m is None:
-        return 0
-
-    traffic = float(m.group(1).replace(',', '.'))
-    unit    = (unit.strip().lower() or m.group(2) or "byte")[0]
-
-    if unit is "b":
-        return int(traffic)
-
-    sizes   = ['b', 'k', 'm', 'g', 't', 'p', 'e']
-    sizemap = dict((u, i * 10) for i, u in enumerate(sizes))
-
-    increment = sizemap[unit]
-    integer, decimal = map(int, ("%.3f" % traffic).split('.'))
-
-    return (integer << increment) + (decimal << increment - 10)
-
-
 def fixup(m):
     text = m.group(0)
     if text[:2] == "&#":
@@ -256,6 +235,27 @@ def parse_name(value, safechar=True):
 
     name = urllib.unquote(name)
     return fixname(name) if safechar else name
+
+
+def parse_size(value, unit=""):  #: returns bytes
+    m = re.match(r"([\d.,]+)\s*([\w^_]*)", value.lower())
+
+    if m is None:
+        return 0
+
+    traffic = float(m.group(1).replace(',', '.'))
+    unit    = (unit.strip().lower() or m.group(2) or "byte")[0]
+
+    if unit is "b":
+        return int(traffic)
+
+    sizes   = ['b', 'k', 'm', 'g', 't', 'p', 'e']
+    sizemap = dict((u, i * 10) for i, u in enumerate(sizes))
+
+    increment = sizemap[unit]
+    integer, decimal = map(int, ("%.3f" % traffic).split('.'))
+
+    return (integer << increment) + (decimal << increment - 10)
 
 
 def str2int(value):

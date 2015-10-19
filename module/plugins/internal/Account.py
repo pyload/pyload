@@ -12,7 +12,7 @@ from module.plugins.internal.utils import compare_time, isiterable, lock, parse_
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.63"
+    __version__ = "0.64"
     __status__  = "testing"
 
     __description__ = """Base account plugin"""
@@ -451,10 +451,10 @@ class Account(Plugin):
 
     ###########################################################################
 
-    def parse_traffic(self, size, unit="byte"):  #@NOTE: Returns kilobytes in 0.4.9
+    def parse_traffic(self, size, unit=None):  #@NOTE: Returns kilobytes in 0.4.9
         self.log_debug("Size: %s" % size,
-                       "Unit: %s" % (unit if unit is not "byte" else "N/D"))
-        return parse_size(size, unit) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
+                       "Unit: %s" % (unit or "N/D"))
+        return parse_size(size, unit or "byte") / 1024  #@TODO: Remove `/ 1024` in 0.4.10
 
 
     def fail_login(self, msg=_("Login handshake has failed")):
