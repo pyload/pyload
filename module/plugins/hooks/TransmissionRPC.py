@@ -14,7 +14,7 @@ from module.plugins.internal.Addon import Addon
 class TransmissionRPC(Addon):
     __name__    = "TransmissionRPC"
     __type__    = "hook"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __pattern__ = r"https?://.+\.torrent|magnet:\?.+"
@@ -53,7 +53,7 @@ class TransmissionRPC(Addon):
                                  req=req)
 
         except Exception, e:
-            if req.code == 409:
+            if isinstance(e, BadHeader) and e.code == 409:
                 headers = dict(re.findall(r"(?P<name>.+?): (?P<value>.+?)\r?\n", req.header))
                 session_id = headers['X-Transmission-Session-Id']
                 req.c.setopt(pycurl.HTTPHEADER, ["X-Transmission-Session-Id: %s" % session_id])
