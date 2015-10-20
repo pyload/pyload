@@ -2,6 +2,7 @@
 
 import re
 
+from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Crypter import Crypter, create_getInfo, parse_fileInfo
 from module.plugins.internal.utils import replace_patterns, set_cookie, set_cookies
@@ -10,7 +11,7 @@ from module.plugins.internal.utils import replace_patterns, set_cookie, set_cook
 class SimpleCrypter(Crypter):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.73"
+    __version__ = "0.74"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'

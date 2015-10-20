@@ -5,6 +5,7 @@ from __future__ import with_statement
 import re
 import time
 
+from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster, create_getInfo, parse_fileInfo
 from module.plugins.internal.Plugin import Fail
@@ -16,7 +17,7 @@ from module.plugins.internal.utils import (encode, fixup, parse_name, parse_size
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "2.02"
+    __version__ = "2.03"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
