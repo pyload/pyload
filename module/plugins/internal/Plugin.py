@@ -266,7 +266,7 @@ class Plugin(object):
                     f.write(encode(html))
 
             except IOError, e:
-                self.log_error(e, trace=True)
+                self.log_error(e)
 
             finally:
                 del frame  #: Delete the frame or it wont be cleaned

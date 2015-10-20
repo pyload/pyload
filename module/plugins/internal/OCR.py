@@ -137,7 +137,7 @@ class OCR(Plugin):
                 os.remove(tmpSub.name)
 
         except OSError, e:
-            self.log_warning(e, trace=True)
+            self.log_warning(e)
 
 
     def recognize(self, name):

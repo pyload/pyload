@@ -88,7 +88,7 @@ class Account(Plugin):
             self.periodical()
 
         except Exception, e:
-            self.log_error(_("Error executing periodical task: %s") % e, trace=True)
+            self.log_error(_("Error performing periodical task"), e)
 
         self.restart_periodical(threaded=threaded, delay=self.interval)
 
