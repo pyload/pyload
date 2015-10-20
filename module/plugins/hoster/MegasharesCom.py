@@ -13,7 +13,7 @@ class MegasharesCom(SimpleHoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index\.php)?\?d\d{2}=|dl/)\w+'
-    __config__  = [("activated", "bool", "Activated", True),
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
                    ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Megashares.com hoster plugin"""

@@ -13,7 +13,7 @@ class CatShareNet(SimpleHoster):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?catshare\.net/\w{15,16}'
-    __config__  = [("activated", "bool", "Activated", True),
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
                    ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """CatShare.net hoster plugin"""

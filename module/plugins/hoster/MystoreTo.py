@@ -15,7 +15,7 @@ class MystoreTo(SimpleHoster):
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?mystore\.to/dl/.+'
-    __config__  = [("activated", "bool", "Activated", True),
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
                    ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Mystore.to hoster plugin"""
