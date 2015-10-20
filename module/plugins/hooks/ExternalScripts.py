@@ -10,7 +10,7 @@ from module.plugins.internal.utils import encode, fs_join
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.53"
+    __version__ = "0.54"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                   , True ),
@@ -178,7 +178,7 @@ class ExternalScripts(Addon):
         else:
             dl_folder = self.pyload.config.get("general", "download_folder")
 
-        args = [pypack.id, pypack.name, dl_folder, pypack.password]
+        args = [pypack.pid, pypack.name, dl_folder, pypack.password]
         self._call("package_deleted", args)
 
 
