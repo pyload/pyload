@@ -36,7 +36,7 @@ class PasswordError(Exception):
 class Extractor(Plugin):
     __name__    = "Extractor"
     __type__    = "extractor"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__  = "testing"
 
     __description__ = """Base extractor plugin"""
@@ -54,6 +54,11 @@ class Extractor(Plugin):
     def isarchive(cls, filename):
         name = os.path.basename(filename).lower()
         return any(name.endswith(ext) for ext in cls.EXTENSIONS)
+
+
+    @classmethod
+    def ismultipart(cls, filename):
+        pass
 
 
     @classmethod
@@ -139,7 +144,7 @@ class Extractor(Plugin):
 
 
     def repair(self):
-        return False
+        pass
 
 
     def extract(self, password=None):

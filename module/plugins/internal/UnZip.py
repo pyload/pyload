@@ -28,11 +28,6 @@ class UnZip(Extractor):
         return sys.version_info[:2] >= (2, 6)
 
 
-    @classmethod
-    def ismultipart(cls, filename):
-         return False  #@NOTE: Unsupported (rarely used anyway)
-
-
     def list(self, password=None):
         with zipfile.ZipFile(self.target, 'r', allowZip64=True) as z:
             z.setpassword(password)
