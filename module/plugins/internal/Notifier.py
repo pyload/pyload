@@ -2,14 +2,14 @@
 
 import time
 
-from module.plugins.internal.Notifier import Notifier, Expose
+from module.plugins.internal.Addon import Addon, Expose
 from module.plugins.internal.utils import isiterable
 
 
-class AndroidPhoneNotify(Notifier):
+class Notifier(Addon):
     __name__    = "Notifier"
     __type__    = "hook"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "testing"
 
     __config__ = [("activated"      , "bool", "Activated"                                , False),
