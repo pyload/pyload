@@ -24,7 +24,7 @@ except ImportError:
 class utils(object):
     __name__    = "utils"
     __type__    = "plugin"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
