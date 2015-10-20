@@ -24,7 +24,7 @@ except ImportError:
 class utils(object):
     __name__    = "utils"
     __type__    = "plugin"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -46,6 +46,13 @@ def lock(fn):
             args[0].lock.release()
 
     return new
+
+
+def format_time(value):
+    dt   = datetime.datetime(1, 1, 1) + datetime.timedelta(seconds=int(value))
+    days = ("%d days and " % (dt.day - 1)) if dt.day > 1 else ""
+    return days + ", ".join("%d %ss" % (getattr(dt, attr), attr) for attr in ("hour", "minute", "second")
+                            if getattr(dt, attr))
 
 
 def compare_time(start, end):
@@ -238,7 +245,7 @@ def parse_name(value, safechar=True):
 
 
 def parse_size(value, unit=""):  #: returns bytes
-    m = re.match(r"([\d.,]+)\s*([\w^_]*)", value.lower())
+    m = re.match(r"([\d.,]+)\s*([\w^_]*)", str(value).lower())
 
     if m is None:
         return 0
@@ -431,3 +438,16 @@ def chunks(iterable, size):
     while item:
         yield item
         item = list(itertools.islice(it, size))
+
+
+def renice(pid, value):
+    if not value or os.name is "nt":
+        return
+
+    try:
+        subprocess.Popen(["renice", str(value), str(pid)],
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE,
+                         bufsize=-1)
+    except Exception:
+        pass

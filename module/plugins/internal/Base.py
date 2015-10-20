@@ -8,9 +8,9 @@ import time
 import urlparse
 
 from module.plugins.internal.Captcha import Captcha
-from module.plugins.internal.Plugin import (Plugin, Abort, Fail, Reconnect, Retry, Skip,
-                                            decode, encode, fixurl, parse_html_form,
-                                            parse_name, replace_patterns)
+from module.plugins.internal.Plugin import Plugin, Abort, Fail, Reconnect, Retry, Skip
+from module.plugins.internal.utils import (decode, encode, fixurl, format_time
+                                           parse_html_form, parse_name, replace_patterns)
 
 
 #@TODO: Remove in 0.4.10
@@ -37,7 +37,7 @@ def create_getInfo(klass):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -341,7 +341,7 @@ class Base(Plugin):
         status = pyfile.status  #@NOTE: Recheck in 0.4.10
         pyfile.setStatus("waiting")
 
-        self.log_info(_("Waiting %d seconds...") % (pyfile.waitUntil - time.time()))
+        self.log_info(_("Waiting %s...") % format_time(pyfile.waitUntil - time.time()))
 
         if self.wantReconnect:
             self.log_info(_("Requiring reconnection..."))
