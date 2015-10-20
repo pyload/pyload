@@ -5,6 +5,7 @@ from __future__ import with_statement
 import os
 import re
 
+from module.network.HTTPRequest import BadHeader
 from module.plugins.internal.Base import Base, create_getInfo, parse_fileInfo
 from module.plugins.internal.Plugin import Fail, Retry
 from module.plugins.internal.utils import encode, exists, fixurl, fs_join, parse_name
@@ -13,7 +14,7 @@ from module.plugins.internal.utils import encode, exists, fixurl, fs_join, parse
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -222,6 +223,10 @@ class Hoster(Base):
                                             cookies=cookies, chunks=chunks, resume=resume,
                                             progressNotify=self.pyfile.setProgress,
                                             disposition=disposition)
+
+        except BadHeader, e:
+            self.req.code = e.code
+
         finally:
             self.pyfile.size = self.req.size
 
