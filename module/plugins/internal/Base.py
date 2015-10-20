@@ -37,7 +37,7 @@ def create_getInfo(klass):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -332,6 +332,9 @@ class Base(Plugin):
 
         if seconds is not None:
             self.set_wait(seconds)
+        else:
+            if pyfile.waitUntil == 0:
+                self.fail(_("wait() without set_wait()"))
 
         if reconnect is not None:
             self.set_reconnect(reconnect)
