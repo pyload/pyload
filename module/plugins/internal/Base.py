@@ -9,7 +9,7 @@ import urlparse
 
 from module.plugins.internal.Captcha import Captcha
 from module.plugins.internal.Plugin import Plugin, Abort, Fail, Reconnect, Retry, Skip
-from module.plugins.internal.utils import (decode, encode, fixurl, format_time
+from module.plugins.internal.utils import (decode, encode, fixurl, format_time,
                                            parse_html_form, parse_name, replace_patterns)
 
 
@@ -37,7 +37,7 @@ def create_getInfo(klass):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
