@@ -1,21 +1,19 @@
 # -*- coding: utf-8 -*-
 
-import time
-
 import pycurl
 
-from module.plugins.internal.Addon import Addon, Expose
 from module.network.RequestFactory import getRequest as get_request
+from module.plugins.internal.Notifier import Notifier
 
 
-class PushBullet(Addon):
+class PushBullet(Notifier):
     __name__    = "PushBullet"
     __type__    = "hook"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "testing"
 
     __config__ = [("activated"      , "bool", "Activated"                                , False),
-				  ("tokenkey"       , "str" , "Access Token"                             , ""   ),
+                  ("tokenkey"       , "str" , "Access Token"                             , ""   ),
                   ("notifycaptcha"  , "bool", "Notify captcha request"                   , True ),
                   ("notifypackage"  , "bool", "Notify package finished"                  , True ),
                   ("notifyprocessed", "bool", "Notify packages processed"                , True ),
@@ -25,99 +23,21 @@ class PushBullet(Addon):
                   ("sendpermin"     , "int" , "Max notifications per minute"             , 12   ),
                   ("ignoreclient"   , "bool", "Send notifications if client is connected", False)]
 
-    __description__ = """Send push notifications to your Phone (using PushBullet / based on AndroidPhoneNotify)"""
+    __description__ = """Send push notifications to your phone using pushbullet.com"""
     __license__     = "GPLv3"
     __authors__     = [("Malkavi" , "")]
 
 
-    def init(self):
-        self.event_map = {'allDownloadsProcessed': "all_downloads_processed",
-                          'plugin_updated'       : "plugin_updated"         }
-
-        self.last_notify   = 0
-        self.notifications = 0
+    def get_key(self):
+        return self.get_config('tokenkey')
 
 
-    def plugin_updated(self, type_plugins):
-        if not self.get_config('notifyupdate'):
-            return
-
-        self.notify(_("Plugins updated"), str(type_plugins))
-
-
-    def activate(self):
-        self.key = self.get_config('tokenkey')
-
-
-    def exit(self):
-        if not self.get_config('notifyexit'):
-            return
-
-        if self.pyload.do_restart:
-            self.notify(_("Restarting pyLoad"))
-        else:
-            self.notify(_("Exiting pyLoad"))
-
-
-    def captcha_task(self, task):
-        if not self.get_config('notifycaptcha'):
-            return
-
-        self.notify(_("Captcha"), _("New request waiting user input"))
-
-
-    def package_finished(self, pypack):
-        if self.get_config('notifypackage'):
-            self.notify(_("Package finished"), pypack.name)
-
-
-    def all_downloads_processed(self):
-        if not self.get_config('notifyprocessed'):
-            return
-
-        if any(True for pdata in self.pyload.api.getQueue() if pdata.linksdone < pdata.linkstotal):
-            self.notify(_("Package failed"), _("One or more packages was not completed successfully"))
-        else:
-            self.notify(_("All packages finished"))
-
-
-    @Expose
-    def notify(self,
-               event,
-               msg=None,
-               key=None):
-
-        key = key or self.key
-        if not key:
-            return
-			
-        if not msg:
-            msg = event
-			
-        if self.pyload.isClientConnected() and not self.get_config('ignoreclient'):
-            return
-
-        elapsed_time = time.time() - self.last_notify
-
-        if elapsed_time < self.get_config("sendtimewait"):
-            return
-
-        if elapsed_time > 60:
-            self.notifications = 0
-
-        elif self.notifications >= self.get_config("sendpermin"):
-            return
-
+    def send(self, event, msg, key):
         req = get_request()
         req.c.setopt(pycurl.HTTPHEADER, ["Access-Token: %s" % str(key)])
 
         self.load("https://api.pushbullet.com/v2/pushes",
-               post={'type'     : 'note',
-                    'title'      : event,
-                    'message': msg},
-               req=req)
-
-        self.last_notify    = time.time()
-        self.notifications += 1
-
-        return True
+                  post={'type'   : 'note',
+                        'title'  : event,
+                        'message': msg},
+                  req=req)
