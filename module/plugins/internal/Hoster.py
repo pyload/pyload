@@ -13,7 +13,7 @@ from module.plugins.internal.utils import encode, exists, fixurl, fs_join, parse
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -126,10 +126,10 @@ class Hoster(Base):
                 location = self.fixurl(header.get('location'), url)
                 code     = header.get('code')
 
-                if code is 302:
+                if code == 302:
                     link = location
 
-                elif code is 301:
+                elif code == 301:
                     url = location
                     if redirect:
                         continue

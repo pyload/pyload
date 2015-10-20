@@ -4,13 +4,13 @@ import os
 import re
 import subprocess
 
-from module.plugins.internal.UnRar import ArchiveError, CRCError, PasswordError, UnRar, renice
-from module.plugins.internal.utils import fs_join
+from module.plugins.internal.UnRar import UnRar, ArchiveError, CRCError, PasswordError
+from module.plugins.internal.utils import fs_join, renice
 
 
 class SevenZip(UnRar):
     __name__    = "SevenZip"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __description__ = """7-Zip extractor plugin"""

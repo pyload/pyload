@@ -8,19 +8,6 @@ from module.plugins.internal.Plugin import Plugin
 from module.plugins.internal.utils import encode
 
 
-def renice(pid, value):
-    if not value or os.name is "nt":
-        return
-
-    try:
-        subprocess.Popen(["renice", str(value), str(pid)],
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE,
-                         bufsize=-1)
-    except Exception:
-        pass
-
-
 class ArchiveError(Exception):
     pass
 
@@ -36,7 +23,7 @@ class PasswordError(Exception):
 class Extractor(Plugin):
     __name__    = "Extractor"
     __type__    = "extractor"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __status__  = "testing"
 
     __description__ = """Base extractor plugin"""
@@ -58,7 +45,7 @@ class Extractor(Plugin):
 
     @classmethod
     def ismultipart(cls, filename):
-        pass
+        return False
 
 
     @classmethod
