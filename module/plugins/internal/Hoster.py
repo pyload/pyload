@@ -14,7 +14,7 @@ from module.plugins.internal.utils import encode, exists, fixurl, fs_join, parse
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -226,6 +226,7 @@ class Hoster(Base):
 
         except BadHeader, e:
             self.req.code = e.code
+            raise BadHeader(e)
 
         finally:
             self.pyfile.size = self.req.size
@@ -238,7 +239,7 @@ class Hoster(Base):
             except OSError, e:
                 self.log_debug(_("Error removing `%s`") % bad_file, e)
 
-            finally:
+            else:
                 return ""
 
         #@TODO: Recheck in 0.4.10

@@ -34,13 +34,6 @@ class OCR(Plugin):
         self.init()
 
 
-    def init(self):
-        """
-        Initialize additional data structures
-        """
-        pass
-
-
     def _log(self, level, plugintype, pluginname, messages):
         messages = (self.__name__,) + messages
         return self.plugin._log(level, plugintype, self.plugin.__name__, messages)

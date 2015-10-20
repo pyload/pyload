@@ -11,6 +11,7 @@ from module.plugins.internal.utils import decode, fs_join, renice
 
 class UnRar(Extractor):
     __name__    = "UnRar"
+    __type__    = "extractor"
     __version__ = "1.29"
     __status__  = "testing"
 
@@ -21,8 +22,8 @@ class UnRar(Extractor):
                        ("Immenz"        , "immenz@gmx.net"   )]
 
 
-    CMD        = "unrar"
-    EXTENSIONS = [".rar"]
+    CMD          = "unrar"
+    EXTENSIONS   = [".rar"]
 
     re_multipart = re.compile(r'\.(part|r)(\d+)(?:\.rar)?(\.rev|\.bad)?', re.I)
 

@@ -20,8 +20,8 @@ class Account(Plugin):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    LOGIN_TIMEOUT = 30 * 60  #: Relogin account every 30 minutes
-    TUNE_TIMEOUT  = True     #: Automatically tune relogin interval
+    LOGIN_TIMEOUT       = 30 * 60  #: Relogin account every 30 minutes
+    TUNE_TIMEOUT        = True     #: Automatically tune relogin interval
 
     PERIODICAL_INTERVAL = None
 
@@ -42,13 +42,6 @@ class Account(Plugin):
         self.interval = None
 
         self.init()
-
-
-    def init(self):
-        """
-        Initialize additional data structures
-        """
-        pass
 
 
     def set_interval(self, value):

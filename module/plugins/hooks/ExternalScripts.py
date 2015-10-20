@@ -171,14 +171,14 @@ class ExternalScripts(Addon):
 
 
     def package_deleted(self, pid):
-        pypack = self.pyload.api.getPackageInfo(pid)
+        pdata = self.pyload.api.getPackageInfo(pid)
 
         if self.pyload.config.get("general", "folder_per_package"):
             dl_folder = fs_join(self.pyload.config.get("general", "download_folder"), pypack.folder)
         else:
             dl_folder = self.pyload.config.get("general", "download_folder")
 
-        args = [pypack.pid, pypack.name, dl_folder, pypack.password]
+        args = [pdata.pid, pdata.name, dl_folder, pdata.password]
         self._call("package_deleted", args)
 
 

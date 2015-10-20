@@ -24,7 +24,7 @@ class Notifier(Addon):
 
     __description__ = """Base notifier plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"      )]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def init(self):

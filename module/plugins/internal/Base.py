@@ -124,13 +124,6 @@ class Base(Plugin):
         pass
 
 
-    def init(self):
-        """
-        Initialize the plugin (in addition to `__init__`)
-        """
-        pass
-
-
     def setup_base(self):
         pass
 

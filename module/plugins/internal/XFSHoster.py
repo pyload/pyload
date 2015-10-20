@@ -29,30 +29,30 @@ class XFSHoster(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com"  )]
 
 
-    PLUGIN_DOMAIN = None
+    PLUGIN_DOMAIN         = None
 
-    LEECH_HOSTER = True  #@NOTE: hould be set to `False` by default for safe, but I am lazy...
+    LEECH_HOSTER          = True  #@NOTE: hould be set to `False` by default for safe, but I am lazy...
 
-    NAME_PATTERN = r'(Filename[ ]*:[ ]*</b>(</td><td nowrap>)?|name="fname"[ ]+value="|<[\w^_]+ class="(file)?name">)\s*(?P<N>.+?)(\s*<|")'
-    SIZE_PATTERN = r'(Size[ ]*:[ ]*</b>(</td><td>)?|File:.*>|</font>\s*\(|<[\w^_]+ class="size">)\s*(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)'
+    NAME_PATTERN          = r'(Filename[ ]*:[ ]*</b>(</td><td nowrap>)?|name="fname"[ ]+value="|<[\w^_]+ class="(file)?name">)\s*(?P<N>.+?)(\s*<|")'
+    SIZE_PATTERN          = r'(Size[ ]*:[ ]*</b>(</td><td>)?|File:.*>|</font>\s*\(|<[\w^_]+ class="size">)\s*(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)'
 
-    OFFLINE_PATTERN      = r'>\s*\w+ (Not Found|file (was|has been) removed|no longer available)'
-    TEMP_OFFLINE_PATTERN = r'>\s*\w+ server (is in )?(maintenance|maintainance)'
+    OFFLINE_PATTERN       = r'>\s*\w+ (Not Found|file (was|has been) removed|no longer available)'
+    TEMP_OFFLINE_PATTERN  = r'>\s*\w+ server (is in )?(maintenance|maintainance)'
 
-    WAIT_PATTERN         = r'<span id="countdown_str".*>(\d+)</span>|id="countdown" value=".*?(\d+).*?"'
-    PREMIUM_ONLY_PATTERN = r'>This file is available for Premium Users only'
-    HAPPY_HOUR_PATTERN   = r'>[Hh]appy hour'
-    ERROR_PATTERN        = r'(?:class=["\']err["\'].*?>|<[Cc]enter><b>|>Error</td>|>\(ERROR:)(?:\s*<.+?>\s*)*(.+?)(?:["\']|<|\))'
+    WAIT_PATTERN          = r'<span id="countdown_str".*>(\d+)</span>|id="countdown" value=".*?(\d+).*?"'
+    PREMIUM_ONLY_PATTERN  = r'>This file is available for Premium Users only'
+    HAPPY_HOUR_PATTERN    = r'>[Hh]appy hour'
+    ERROR_PATTERN         = r'(?:class=["\']err["\'].*?>|<[Cc]enter><b>|>Error</td>|>\(ERROR:)(?:\s*<.+?>\s*)*(.+?)(?:["\']|<|\))'
 
-    LINK_LEECH_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
+    LINK_LEECH_PATTERN    = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
 
     CAPTCHA_PATTERN       = r'(https?://[^"\']+?/captchas?/[^"\']+)'
     CAPTCHA_BLOCK_PATTERN = r'>Enter code.*?<div.*?>(.+?)</div>'
     RECAPTCHA_PATTERN     = None
     SOLVEMEDIA_PATTERN    = None
 
-    FORM_PATTERN    = None
-    FORM_INPUTS_MAP = None  #: Dict passed as `input_names` to `parse_html_form`
+    FORM_PATTERN          = None
+    FORM_INPUTS_MAP       = None  #: Dict passed as `input_names` to `parse_html_form`
 
 
     def setup(self):
@@ -216,7 +216,6 @@ class XFSHoster(SimpleHoster):
                     wait_time = int(m.group(1))
                     self.set_wait(wait_time)
                     self.set_reconnect(False)
-
                     self.handle_captcha(inputs)
                     self.wait()
         else:
