@@ -11,7 +11,7 @@ from module.plugins.internal.utils import replace_patterns, set_cookie, set_cook
 class SimpleCrypter(Crypter):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.74"
+    __version__ = "0.75"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -89,7 +89,7 @@ class SimpleCrypter(Crypter):
 
     @classmethod
     def get_info(cls, url="", html=""):
-        info = super(SimpleHoster, cls).get_info(url)
+        info = super(SimpleCrypter, cls).get_info(url)
 
         info.update(cls.api_info(url))
 
