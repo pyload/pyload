@@ -8,7 +8,7 @@ from module.plugins.internal.Notifier import Notifier
 class PushOver(Notifier):
     __name__    = "PushOver"
     __type__    = "hook"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __config__ = [("activated"      , "bool", "Activated"                                , False),
@@ -33,7 +33,11 @@ class PushOver(Notifier):
 
 
     def send(self, event, msg, key):
+        self.log_info("Sending notification")
         token, user = key
+        # msg can not be None or empty
+        if not msg:
+            msg = event
         self.load("https://api.pushover.net/1/messages.json",
                   post={'token'	 : token,
                         'user'   : user,
