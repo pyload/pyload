@@ -34,7 +34,7 @@ class WindowsPhoneNotify(Notifier):
         return self.get_config('push-id'), self.get_config('push-url')
 
 
-    def get_xml_data(self, msg):
+    def format_request(self, msg):
         return ("<?xml version='1.0' encoding='utf-8'?> <wp:Notification xmlns:wp='WPNotification'> "
                 "<wp:Toast> <wp:Text1>pyLoad</wp:Text1> <wp:Text2>%s</wp:Text2> "
                 "</wp:Toast> </wp:Notification>" % msg)
@@ -42,7 +42,7 @@ class WindowsPhoneNotify(Notifier):
 
     def send(self, event, msg, key):
         id, url    = key
-        request    = self.get_xml_data("%s: %s" % (event, msg) if msg else event)
+        request    = self.format_request("%s: %s" % (event, msg) if msg else event)
         webservice = httplib.HTTP(url)
 
         webservice.putrequest("POST", id)

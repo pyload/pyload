@@ -9,7 +9,7 @@ from module.plugins.internal.utils import isiterable
 class Notifier(Addon):
     __name__    = "Notifier"
     __type__    = "hook"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __config__ = [("activated"      , "bool", "Activated"                                , False),
@@ -85,7 +85,7 @@ class Notifier(Addon):
     @Expose
     def notify(self, event, msg="", key=None):
         key = key or self.get_key()
-        if isiterable(key) and all(key) or not key:
+        if not key or isiterable(key) and not all(key):
             return
 
         if self.pyload.isClientConnected() and not self.get_config('ignoreclient'):
