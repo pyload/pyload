@@ -324,6 +324,9 @@ class Base(Plugin):
 
         if seconds is not None:
             self.set_wait(seconds)
+        else:
+            if pyfile.waitUntil == 0:
+                self.fail(_("wait() without set_wait()"))
 
         if reconnect is not None:
             self.set_reconnect(reconnect)
