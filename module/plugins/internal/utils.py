@@ -24,7 +24,7 @@ except ImportError:
 class utils(object):
     __name__    = "utils"
     __type__    = "plugin"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -49,10 +49,20 @@ def lock(fn):
 
 
 def format_time(value):
-    dt   = datetime.datetime(1, 1, 1) + datetime.timedelta(seconds=int(value))
+    dt   = datetime.datetime(1, 1, 1) + datetime.timedelta(seconds=abs(int(value)))
     days = ("%d days and " % (dt.day - 1)) if dt.day > 1 else ""
     return days + ", ".join("%d %ss" % (getattr(dt, attr), attr) for attr in ("hour", "minute", "second")
                             if getattr(dt, attr))
+
+
+def format_size(value):
+    size  = int(value)
+    steps = 0
+    sizes = ('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB')
+    while size > 1000:
+        size /= 1024.0
+        steps += 1
+    return "%.2f %s" % (size, sizes[steps])
 
 
 def compare_time(start, end):
