@@ -12,8 +12,8 @@ from module.plugins.internal.utils import compare_time, isiterable, lock, parse_
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.64"
-    __status__  = "testing"
+    __version__ = "0.65"
+    __status__  = "stable"
 
     __description__ = """Base account plugin"""
     __license__     = "GPLv3"
@@ -42,6 +42,35 @@ class Account(Plugin):
         self.interval = None
 
         self.init()
+
+
+    @property
+    def logged(self):
+        """
+        Checks if user is still logged in
+        """
+        if not self.user:
+            return False
+
+        self.sync()
+
+        if self.info['login']['timestamp'] + self.timeout < time.time():
+            self.log_debug("Reached login timeout for user `%s`" % self.user)
+            return False
+        else:
+            return True
+
+
+    @property
+    def premium(self):
+        return bool(self.get_data('premium'))
+
+
+    def setup(self):
+        """
+        Setup for enviroment and other things, called before logging (possibly more than one time)
+        """
+        pass
 
 
     def set_interval(self, value):
@@ -90,28 +119,6 @@ class Account(Plugin):
         raise NotImplementedError
 
 
-    @property
-    def logged(self):
-        """
-        Checks if user is still logged in
-        """
-        if not self.user:
-            return False
-
-        self.sync()
-
-        if self.info['login']['timestamp'] + self.timeout < time.time():
-            self.log_debug("Reached login timeout for user `%s`" % self.user)
-            return False
-        else:
-            return True
-
-
-    @property
-    def premium(self):
-        return bool(self.get_data('premium'))
-
-
     def signin(self, user, password, data):
         """
         Login into account, the cookies will be saved so user can be recognized
@@ -129,6 +136,7 @@ class Account(Plugin):
         self.req = self.pyload.requestFactory.getRequest(self.classname, self.user)
 
         self.sync()
+        self.setup()
 
         timestamp = time.time()
 
