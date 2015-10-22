@@ -10,7 +10,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class UptoboxCom(XFSAccount):
     __name__    = "UptoboxCom"
     __type__    = "account"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __description__ = """Uptobox.com account plugin"""
@@ -24,9 +24,6 @@ class UptoboxCom(XFSAccount):
 
 
     def signin(self, user, password, data):
-        if self.COOKIES:
-            self.set_xfs_cookie()
-
         html = self.load(self.LOGIN_URL, cookies=self.COOKIES)
 
         if re.search(self.LOGIN_SKIP_PATTERN, html):
