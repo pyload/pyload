@@ -13,8 +13,8 @@ from module.plugins.internal.utils import html_unescape, seconds_to_midnight
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.67"
-    __status__  = "testing"
+    __version__ = "0.68"
+    __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("activated"   , "bool", "Activated"                                 , True),
@@ -61,13 +61,8 @@ class XFSHoster(SimpleHoster):
         self.resume_download = self.premium
 
 
-    def set_xfs_cookie(self):
-        if not self.PLUGIN_DOMAIN:
-            self.log_warning(_("Unable to set xfs cookie due missing PLUGIN_DOMAIN"))
-            return
-
+    def _set_xfs_cookie(self):
         cookie = (self.PLUGIN_DOMAIN, "lang", "english")
-
         if isinstance(self.COOKIES, list) and cookie not in self.COOKIES:
             self.COOKIES.insert(cookie)
         else:
@@ -75,22 +70,13 @@ class XFSHoster(SimpleHoster):
 
 
     def prepare(self):
-        """
-        Initialize important variables
-        """
-        if not self.PLUGIN_DOMAIN:
-            if self.account:
-                account = self.account
-            else:
-                account = self.pyload.accountManager.getAccountPlugin(self.classname)
-
-            if account and hasattr(account, "PLUGIN_DOMAIN") and account.PLUGIN_DOMAIN:
-                self.PLUGIN_DOMAIN = account.PLUGIN_DOMAIN
-            else:
-                self.fail(_("Missing PLUGIN_DOMAIN"))
+        if not self.PLUGIN_DOMAIN and self.account and self.account.PLUGIN_DOMAIN:
+            self.PLUGIN_DOMAIN = self.account.PLUGIN_DOMAIN
+        else:
+            self.fail(_("Missing PLUGIN_DOMAIN"))
 
         if self.COOKIES:
-            self.set_xfs_cookie()
+            self._set_xfs_cookie()
 
         if not self.LINK_PATTERN:
             pattern = r'(?:file: "(.+?)"|(https?://(?:www\.)?([^/]*?%s|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<])'

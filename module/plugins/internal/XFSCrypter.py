@@ -7,8 +7,8 @@ from module.plugins.internal.utils import set_cookie
 class XFSCrypter(SimpleCrypter):
     __name__    = "XFSCrypter"
     __type__    = "crypter"
-    __version__ = "0.20"
-    __status__  = "testing"
+    __version__ = "0.21"
+    __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("activated"            , "bool", "Activated"                          , True),
@@ -32,13 +32,8 @@ class XFSCrypter(SimpleCrypter):
     TEMP_OFFLINE_PATTERN = r'>\s*\w+ server (is in )?(maintenance|maintainance)'
 
 
-    def set_xfs_cookie(self):
-        if not self.PLUGIN_DOMAIN:
-            self.log_warning(_("Unable to set xfs cookie due missing PLUGIN_DOMAIN"))
-            return
-
+    def _set_xfs_cookie(self):
         cookie = (self.PLUGIN_DOMAIN, "lang", "english")
-
         if isinstance(self.COOKIES, list) and cookie not in self.COOKIES:
             self.COOKIES.insert(cookie)
         else:
@@ -46,19 +41,12 @@ class XFSCrypter(SimpleCrypter):
 
 
     def prepare(self):
-        if not self.PLUGIN_DOMAIN:
-            if self.account:
-                account      = self.account
-            else:
-                account_name = self.classname.rstrip("Folder")
-                account      = self.pyload.accountManager.getAccountPlugin(account_name)
-
-            if account and hasattr(account, "PLUGIN_DOMAIN") and account.PLUGIN_DOMAIN:
-                self.PLUGIN_DOMAIN = account.PLUGIN_DOMAIN
-            else:
-                self.fail(_("Missing PLUGIN_DOMAIN"))
+        if not self.PLUGIN_DOMAIN and self.account and self.account.PLUGIN_DOMAIN:
+            self.PLUGIN_DOMAIN = self.account.PLUGIN_DOMAIN
+        else:
+            self.fail(_("Missing PLUGIN_DOMAIN"))
 
         if self.COOKIES:
-            self.set_xfs_cookie()
+            self._set_xfs_cookie()
 
-        return super(XFSCrypter, self).prepare()
+        super(XFSCrypter, self).prepare()
