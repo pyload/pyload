@@ -8,7 +8,7 @@ class Crypter(Base):
     __name__    = "Crypter"
     __type__    = "crypter"
     __version__ = "0.14"
-    __status__  = "testing"
+    __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("activated"            , "bool", "Activated"                          , True),

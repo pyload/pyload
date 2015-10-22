@@ -17,8 +17,6 @@ class ZahikiNet(SimpleHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    DIRECT_LINK = True
-
     NAME_PATTERN    = r'/(?P<N>.+?) </title>'
     OFFLINE_PATTERN = r'>(Not Found|Il file selezionato non esiste)'
 

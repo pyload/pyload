@@ -15,7 +15,7 @@ class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
     __version__ = "0.44"
-    __status__  = "testing"
+    __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("activated"   , "bool", "Activated"                                 , True),

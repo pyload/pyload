@@ -13,7 +13,7 @@ class UnZip(Extractor):
     __name__    = "UnZip"
     __type__    = "extractor"
     __version__ = "1.20"
-    __status__  = "testing"
+    __status__  = "stable"
 
     __description__ = """Zip extractor plugin"""
     __license__     = "GPLv3"

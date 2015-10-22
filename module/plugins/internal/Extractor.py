@@ -24,7 +24,7 @@ class Extractor(Plugin):
     __name__    = "Extractor"
     __type__    = "extractor"
     __version__ = "0.40"
-    __status__  = "testing"
+    __status__  = "stable"
 
     __description__ = """Base extractor plugin"""
     __license__     = "GPLv3"
@@ -76,11 +76,6 @@ class Extractor(Plugin):
         return targets
 
 
-    @property
-    def target(self):
-        return encode(self.filename)
-
-
     def __init__(self, plugin, filename, out,
                  fullpath=True,
                  overwrite=False,
@@ -108,6 +103,11 @@ class Extractor(Plugin):
         self.notify_progress = lambda x: pyfile.setProgress(x) if pyfile else lambda x: None
 
         self.init()
+
+
+    @property
+    def target(self):
+        return encode(self.filename)
 
 
     def _log(self, level, plugintype, pluginname, messages):

@@ -13,7 +13,7 @@ class Container(Crypter):
     __name__    = "Container"
     __type__    = "container"
     __version__ = "0.08"
-    __status__  = "testing"
+    __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("activated", "bool", "Activated", True)]

@@ -21,7 +21,7 @@ class OCR(Plugin):
     __name__    = "OCR"
     __type__    = "ocr"
     __version__ = "0.21"
-    __status__  = "testing"
+    __status__  = "stable"
 
     __description__ = """OCR base plugin"""
     __license__     = "GPLv3"

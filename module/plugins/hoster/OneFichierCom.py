@@ -31,7 +31,6 @@ class OneFichierCom(SimpleHoster):
     URL_REPLACEMENTS = [("https:", "http:")]  #@TODO: Remove in 0.4.10
 
     COOKIES     = [("1fichier.com", "LG", "en")]
-    DIRECT_LINK = True
 
     NAME_PATTERN    = r'>File\s*Name :</td>\s*<td.*>(?P<N>.+?)<'
     SIZE_PATTERN    = r'>Size :</td>\s*<td.*>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'

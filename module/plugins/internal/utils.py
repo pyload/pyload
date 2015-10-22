@@ -25,7 +25,7 @@ class utils(object):
     __name__    = "utils"
     __type__    = "plugin"
     __version__ = "0.06"
-    __status__  = "testing"
+    __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
     __config__  = []

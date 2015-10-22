@@ -7,7 +7,7 @@ class MultiCrypter(SimpleCrypter):
     __name__    = "MultiCrypter"
     __type__    = "hoster"
     __version__ = "0.06"
-    __status__  = "testing"
+    __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("activated"            , "bool", "Activated"                          , True),
