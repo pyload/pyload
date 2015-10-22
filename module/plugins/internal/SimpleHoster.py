@@ -17,8 +17,8 @@ from module.plugins.internal.utils import (encode, fixup, parse_name, parse_size
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "2.03"
-    __status__  = "testing"
+    __version__ = "2.04"
+    __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("activated"   , "bool", "Activated"                                        , True),
@@ -96,7 +96,7 @@ class SimpleHoster(Hoster):
     CHECK_FILE           = True   #: Set to False to not check the last downloaded file with declared error patterns
     CHECK_TRAFFIC        = False  #: Set to True to reload checking traffic left for premium account
     COOKIES              = True   #: or False or list of tuples [(domain, name, value)]
-    DIRECT_LINK          = None   #: Set to True to looking for direct link (as defined in handle_direct method), set to None to do it if self.account is True else False
+    DIRECT_LINK          = True   #: Set to True to looking for direct link (as defined in handle_direct method), set to None to do it if self.account is True else False
     DISPOSITION          = True   #: Set to True to use any content-disposition value in http header as file name
     LOGIN_ACCOUNT        = False  #: Set to True to require account login
     LOGIN_PREMIUM        = False  #: Set to True to require premium account login
@@ -229,6 +229,7 @@ class SimpleHoster(Hoster):
 
         elif self.DIRECT_LINK is None:
             self.direct_dl = bool(self.account)
+
         else:
             self.direct_dl = self.DIRECT_LINK
 
