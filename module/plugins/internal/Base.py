@@ -37,8 +37,8 @@ def create_getInfo(klass):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.16"
-    __status__  = "testing"
+    __version__ = "0.17"
+    __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("activated"  , "bool", "Activated"                       , True),
@@ -50,6 +50,24 @@ class Base(Plugin):
 
 
     URL_REPLACEMENTS = []
+
+
+    @classmethod
+    def get_info(cls, url="", html=""):
+        url  = fixurl(url, unquote=True)
+        info = {'name'   : parse_name(url),
+                'pattern': {},
+                'size'   : 0,
+                'status' : 3 if url else 8,
+                'url'    : replace_patterns(url, cls.URL_REPLACEMENTS)}
+
+        try:
+            info['pattern'] = re.match(cls.__pattern__, url).groupdict()
+
+        except Exception:
+            pass
+
+        return info
 
 
     def __init__(self, pyfile):
@@ -102,23 +120,6 @@ class Base(Plugin):
              'msg'       : msg})
 
 
-    @classmethod
-    def get_info(cls, url="", html=""):
-        url  = fixurl(url, unquote=True)
-        info = {'name'   : parse_name(url),
-                'pattern': {},
-                'size'   : 0,
-                'status' : 3 if url else 8,
-                'url'    : replace_patterns(url, cls.URL_REPLACEMENTS)}
-
-        try:
-            info['pattern'] = re.match(cls.__pattern__, url).groupdict()
-        except Exception:
-            pass
-
-        return info
-
-
     def init_base(self):
         pass
 
@@ -158,8 +159,8 @@ class Base(Plugin):
             self.req     = self.pyload.requestFactory.getRequest(self.classname)
             self.premium = False
 
-        self.grab_info()
         self.setup_base()
+        self.grab_info()
         self.setup()
 
 

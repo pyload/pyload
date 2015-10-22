@@ -9,8 +9,8 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, r
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.56"
-    __status__  = "testing"
+    __version__ = "0.57"
+    __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("activated"   , "bool", "Activated"                                 , True),
@@ -45,23 +45,23 @@ class MultiHoster(SimpleHoster):
         self.resume_download = self.premium
 
 
-    def prepare(self):
-        #@TODO: Recheck in 0.4.10
+    #@TODO: Recheck in 0.4.10
+    def setup_base(self):
         plugin = self.pyload.pluginManager.hosterPlugins[self.classname]
-        name   = plugin['name']
-        module = plugin['module']
-        klass  = getattr(module, name)
+        klass  = getattr(plugin['module'], plugin['name'])
 
         self.get_info = klass.get_info
 
-        if self.DIRECT_LINK is None:
-            direct_dl = self.__pattern__ != r'^unmatchable$' and re.match(self.__pattern__, self.pyfile.url)
-        else:
-            direct_dl = self.DIRECT_LINK
+        super(MultiHoster, self).setup_base()
 
+
+    def prepare(self):
         super(MultiHoster, self).prepare()
 
-        self.direct_dl = direct_dl
+        if self.DIRECT_LINK is None:
+            self.direct_dl = self.__pattern__ != r'^unmatchable$' and re.match(self.__pattern__, self.pyfile.url)
+        else:
+            self.direct_dl = self.DIRECT_LINK
 
 
     def _process(self, thread):
