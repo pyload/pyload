@@ -3,7 +3,7 @@
 import urlparse
 
 from module.plugins.internal.Account import Account
-from module.plugins.internal.utils import jso
+from module.plugins.internal.utils import json
 
 
 class RapidgatorNet(Account):
