@@ -8,7 +8,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class StreamcloudEu(XFSHoster):
     __name__    = "StreamcloudEu"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?streamcloud\.eu/\w{12}'
@@ -18,6 +18,8 @@ class StreamcloudEu(XFSHoster):
     __license__     = "GPLv3"
     __authors__     = [("seoester", "seoester@googlemail.com")]
 
+
+    PLUGIN_DOMAIN = "streamcloud.eu"
 
     WAIT_PATTERN = r'var count = (\d+)'
 

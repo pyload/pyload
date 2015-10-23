@@ -34,7 +34,7 @@ class MediafireCom(SimpleHoster):
 
     def setup(self):
         self.resume_download = True
-        self.multiDL        = True
+        self.multiDL         = True
 
 
     def handle_captcha(self):

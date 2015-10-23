@@ -9,7 +9,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class FileomCom(XFSHoster):
     __name__    = "FileomCom"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?fileom\.com/\w{12}'
@@ -19,6 +19,8 @@ class FileomCom(XFSHoster):
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
+
+    PLUGIN_DOMAIN = "fileom.com"
 
     NAME_PATTERN = r'Filename: <span>(?P<N>.+?)<'
     SIZE_PATTERN = r'File Size: <span class="size">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'

@@ -8,7 +8,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class NosuploadCom(XFSHoster):
     __name__    = "NosuploadCom"
     __type__    = "hoster"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?nosupload\.com/\?d=\w{12}'
@@ -18,6 +18,8 @@ class NosuploadCom(XFSHoster):
     __license__     = "GPLv3"
     __authors__     = [("igel", "igelkun@myopera.com")]
 
+
+    PLUGIN_DOMAIN = "nosupload.com"
 
     SIZE_PATTERN = r'<p><strong>Size:</strong> (?P<S>[\d.,]+) (?P<U>[\w^_]+)</p>'
     LINK_PATTERN = r'<a class="select" href="(http://.+?)">Download</a>'

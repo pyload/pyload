@@ -6,7 +6,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class RapidfileshareNet(XFSHoster):
     __name__    = "RapidfileshareNet"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?rapidfileshare\.net/\w{12}'
@@ -16,6 +16,8 @@ class RapidfileshareNet(XFSHoster):
     __license__     = "GPLv3"
     __authors__     = [("guidobelix", "guidobelix@hotmail.it")]
 
+
+    PLUGIN_DOMAIN = "rapidfileshare.net"
 
     NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>.+?)">'
     SIZE_PATTERN = r'>http://www.rapidfileshare.net/\w+?</font> \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</font>'

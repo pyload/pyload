@@ -57,7 +57,7 @@ class XFSAccount(MultiAccount):
 
     def setup(self):
         if not self.PLUGIN_DOMAIN:
-            self.fail_login(_("Missing PLUGIN_DOMAIN"))
+            self.fail_login(_("Missing PLUGIN DOMAIN"))
 
         if not self.PLUGIN_URL:
             self.PLUGIN_URL = "http://www.%s/" % self.PLUGIN_DOMAIN
@@ -109,7 +109,7 @@ class XFSAccount(MultiAccount):
                     premium    = False
                     validuntil = None  #: Registered account type (not premium)
         else:
-            self.log_debug("VALID_UNTIL_PATTERN not found")
+            self.log_debug("VALID UNTIL PATTERN not found")
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, self.html)
         if m is not None:
@@ -137,7 +137,7 @@ class XFSAccount(MultiAccount):
             except Exception, e:
                 self.log_error(e)
         else:
-            self.log_debug("TRAFFIC_LEFT_PATTERN not found")
+            self.log_debug("TRAFFIC LEFT PATTERN not found")
 
         leech = [m.groupdict() for m in re.finditer(self.LEECH_TRAFFIC_PATTERN, self.html)]
         if leech:
@@ -164,7 +164,7 @@ class XFSAccount(MultiAccount):
             except Exception, e:
                 self.log_error(e)
         else:
-            self.log_debug("LEECH_TRAFFIC_PATTERN not found")
+            self.log_debug("LEECH TRAFFIC PATTERN not found")
 
         return {'validuntil'  : validuntil,
                 'trafficleft' : trafficleft,

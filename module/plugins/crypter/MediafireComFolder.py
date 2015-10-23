@@ -3,14 +3,13 @@
 import re
 
 from module.plugins.internal.Crypter import Crypter, create_getInfo
-from module.plugins.hoster.MediafireCom import checkHTMLHeader
 from module.plugins.internal.utils import json
 
 
 class MediafireComFolder(Crypter):
     __name__    = "MediafireComFolder"
     __type__    = "crypter"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))'
@@ -27,11 +26,39 @@ class MediafireComFolder(Crypter):
     LINK_PATTERN = r'<meta property="og:url" content="http://www\.mediafire\.com/\?(\w+)"/>'
 
 
+    def _get_url(url):
+        try:
+            for _i in xrange(3):
+                header = self.load(url, just_header=True)
+
+                for line in header.splitlines():
+                    line = line.lower()
+
+                    if 'location' in line:
+                        url = line.split(':', 1)[1].strip()
+                        if 'error.php?errno=320' in url:
+                            return url, 1
+
+                        elif not url.startswith('http://'):
+                            url = 'http://www.mediafire.com' + url
+
+                        break
+
+                    elif 'content-disposition' in line:
+                        return url, 2
+
+        except Exception:
+            return url, 3
+
+        else:
+            return url, 0
+
+
     def decrypt(self, pyfile):
-        url, result = checkHTMLHeader(pyfile.url)
+        url, result = self._get_url(pyfile.url)
         self.log_debug("Location (%d): %s" % (result, url))
 
-        if result == 0:
+        if result is 0:
             #: Load and parse html
             html = self.load(pyfile.url)
             m = re.search(self.LINK_PATTERN, html)
@@ -55,8 +82,10 @@ class MediafireComFolder(Crypter):
                             self.urls.append("http://www.mediafire.com/file/%s" % link['quickkey'])
                     else:
                         self.fail(json_resp['response']['message'])
-        elif result == 1:
+
+        elif result is 1:
             self.offline()
+
         else:
             self.urls.append(url)
 

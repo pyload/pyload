@@ -8,7 +8,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class HugefilesNet(XFSHoster):
     __name__    = "HugefilesNet"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?hugefiles\.net/\w{12}'
@@ -18,6 +18,8 @@ class HugefilesNet(XFSHoster):
     __license__     = "GPLv3"
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
+
+    PLUGIN_DOMAIN = "hugefiles.net"
 
     SIZE_PATTERN = r'File Size:</span>\s*<span.*?>(?P<S>[^<]+)</span></div>'
 

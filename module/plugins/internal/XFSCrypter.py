@@ -7,7 +7,7 @@ from module.plugins.internal.utils import set_cookie
 class XFSCrypter(SimpleCrypter):
     __name__    = "XFSCrypter"
     __type__    = "crypter"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -41,10 +41,8 @@ class XFSCrypter(SimpleCrypter):
 
 
     def prepare(self):
-        if not self.PLUGIN_DOMAIN and self.account and self.account.PLUGIN_DOMAIN:
-            self.PLUGIN_DOMAIN = self.account.PLUGIN_DOMAIN
-        else:
-            self.fail(_("Missing PLUGIN_DOMAIN"))
+        if not self.PLUGIN_DOMAIN:
+            self.fail(_("Missing PLUGIN DOMAIN"))
 
         if self.COOKIES:
             self._set_xfs_cookie()

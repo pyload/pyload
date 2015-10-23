@@ -10,7 +10,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class NovafileCom(XFSHoster):
     __name__    = "NovafileCom"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?novafile\.com/\w{12}'
@@ -21,6 +21,8 @@ class NovafileCom(XFSHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it")]
 
+
+    PLUGIN_DOMAIN = "novafile.com"
 
     ERROR_PATTERN = r'class="alert.+?alert-separate".*?>\s*(?:<p>)?(.*?)\s*</'
     WAIT_PATTERN  = r'<p>Please wait <span id="count".*?>(\d+)</span> seconds</p>'

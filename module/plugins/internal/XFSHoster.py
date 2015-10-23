@@ -12,7 +12,7 @@ from module.plugins.internal.utils import html_unescape, seconds_to_midnight, se
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.69"
+    __version__ = "0.70"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -70,10 +70,8 @@ class XFSHoster(SimpleHoster):
 
 
     def prepare(self):
-        if not self.PLUGIN_DOMAIN and self.account and self.account.PLUGIN_DOMAIN:
-            self.PLUGIN_DOMAIN = self.account.PLUGIN_DOMAIN
-        else:
-            self.fail(_("Missing PLUGIN_DOMAIN"))
+        if not self.PLUGIN_DOMAIN:
+            self.fail(_("Missing PLUGIN DOMAIN"))
 
         if self.COOKIES:
             self._set_xfs_cookie()

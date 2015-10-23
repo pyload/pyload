@@ -9,7 +9,7 @@ from module.plugins.internal.Addon import Addon
 class XFileSharing(Addon):
     __name__    = "XFileSharing"
     __type__    = "hook"
-    __version__ = "0.48"
+    __version__ = "0.50"
     __status__  = "testing"
 
     __config__ = [("activated"       , "bool", "Activated"                     , True ),
@@ -92,8 +92,8 @@ class XFileSharing(Addon):
 
             for p in self.pyload.pluginManager.plugins[type].values():
                 klass = self.pyload.pluginManager.loadClass(type, p['name'])
-                if hasattr(klass, "HOSTER_DOMAIN") and klass.HOSTER_DOMAIN and isXFS(klass):
-                    plugin_list.append(klass.HOSTER_DOMAIN)
+                if hasattr(klass, "PLUGIN_DOMAIN") and klass.PLUGIN_DOMAIN and isXFS(klass):
+                    plugin_list.append(klass.PLUGIN_DOMAIN)
 
             if plugin_list:
                 unmatch_list = '|'.join(sorted(plugin_list)).replace('.', '\.')

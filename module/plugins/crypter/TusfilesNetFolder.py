@@ -10,7 +10,7 @@ from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
 class TusfilesNetFolder(XFSCrypter):
     __name__    = "TusfilesNetFolder"
     __type__    = "crypter"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/go/(?P<ID>\w+)'
@@ -24,6 +24,7 @@ class TusfilesNetFolder(XFSCrypter):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
+    PLUGIN_DOMAIN = "tusfiles.net"
     PAGES_PATTERN = r'>\((\d+) \w+\)<'
 
     URL_REPLACEMENTS = [(__pattern__ + ".*", r'https://www.tusfiles.net/go/\g<ID>/')]

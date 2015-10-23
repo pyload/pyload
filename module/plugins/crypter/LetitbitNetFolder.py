@@ -5,10 +5,10 @@ import re
 from module.plugins.internal.Crypter import Crypter, create_getInfo
 
 
-class LinkCryptWs(Crypter):
+class LetitbitNetFolder(Crypter):
     __name__    = "LetitbitNet"
     __type__    = "crypter"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?letitbit\.net/folder/\w+'
@@ -36,4 +36,4 @@ class LinkCryptWs(Crypter):
         self.urls.extend(re.findall(self.LINK_PATTERN, folder.group(0)))
 
 
-getInfo = create_getInfo(LinkCryptWs)
+getInfo = create_getInfo(LetitbitNetFolder)

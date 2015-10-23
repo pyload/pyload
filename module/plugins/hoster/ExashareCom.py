@@ -8,7 +8,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class ExashareCom(XFSHoster):
     __name__    = "ExashareCom"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?exashare\.com/\w{12}'
@@ -19,7 +19,9 @@ class ExashareCom(XFSHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    INFO_PATTERN      = r'>(?P<NAME>.+?)<small>\( (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    PLUGIN_DOMAIN = "exashare.com"
+
+    INFO_PATTERN = r'>(?P<NAME>.+?)<small>\( (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
 
     def setup(self):
