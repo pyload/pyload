@@ -8,7 +8,7 @@ from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
 class XFileSharingFolder(XFSCrypter):
     __name__    = "XFileSharingFolder"
     __type__    = "crypter"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -48,7 +48,7 @@ class XFileSharingFolder(XFSCrypter):
     #@TODO: Recheck in 0.4.10
     def load_account(self):
         class_name = self.classname
-        self.__class__.__name__ = self.PLUGIN_NAME
+        self.__class__.__name__ = str(self.PLUGIN_NAME)
         super(XFileSharingFolder, self).load_account()
         self.__class__.__name__ = class_name
 

@@ -25,8 +25,6 @@ class MultiHoster(SimpleHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    PLUGIN_NAME   = None
-
     DIRECT_LINK   = None
     LEECH_HOSTER  = False
     LOGIN_ACCOUNT = True

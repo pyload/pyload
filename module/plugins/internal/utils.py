@@ -115,7 +115,7 @@ def html_unescape(text):
         h = HTMLParser.HTMLParser()
         return h.unescape(text)
 
-    except Exception:  #@TODO: Remove in 0.4.10
+    except NameError:  #@TODO: Remove in 0.4.10
         return xml.sax.saxutils.unescape(text)
 
 
