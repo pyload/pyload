@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class Dereferer(SimpleCrypter):
     __name__    = "Dereferer"
     __type__    = "crypter"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/.*?(?P<LINK>[\w^_]+://.+)'
@@ -23,22 +23,21 @@ class Dereferer(SimpleCrypter):
 
     PLUGIN_DOMAIN = None
     PLUGIN_NAME   = None
-    
+
     DIRECT_LINK   = False
 
 
     def _log(self, level, plugintype, pluginname, messages):
-        return super(Dereferer, self)._log(level, plugintype, pluginname, (self.PLUGIN_NAME,) + messages)
+        messages = (self.PLUGIN_NAME,) + messages
+        return super(Dereferer, self)._log(level, plugintype, pluginname, messages)
 
 
     def init(self):
-        super(Dereferer, self).init()
-
         self.__pattern__ = self.pyload.pluginManager.crypterPlugins[self.classname]['pattern']  #@TODO: Recheck in 0.4.10
 
         self.PLUGIN_DOMAIN = re.match(self.__pattern__, self.pyfile.url).group("DOMAIN").lower()
-        self.PLUGIN_NAME   = "".join(part.capitalize() for part in re.split(r'(\.|\d+)', self.PLUGIN_DOMAIN) if part != '.')
+        self.PLUGIN_NAME   = "".join(part.capitalize() for part in re.split(r'\.|\d+|-', self.PLUGIN_DOMAIN) if part != '.')
 
 
     def get_links(self):
-        return [re.match(self.__pattern__, self.pyfile.url).group('LINK')]
+        return [self.info['pattern']['LINK']]
