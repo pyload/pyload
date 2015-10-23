@@ -281,7 +281,7 @@ class SimpleCrypter(Crypter):
 
     def check_errors(self):
         if not self.html:
-            self.log_warning(_("No html code to check"))
+            self.log_debug("No data to check")
             return
 
         if self.IP_BLOCKED_PATTERN and re.search(self.IP_BLOCKED_PATTERN, self.html):
