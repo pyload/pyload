@@ -2,14 +2,15 @@
 
 import re
 
-from module.plugins.internal.Plugin import Fail, encode
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns, set_cookie, set_cookies
+from module.plugins.internal.Plugin import Fail
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.utils import encode, replace_patterns, set_cookie, set_cookies
 
 
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.57"
+    __version__ = "0.58"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -26,6 +27,7 @@ class MultiHoster(SimpleHoster):
 
     PLUGIN_NAME   = None
 
+    DIRECT_LINK   = None
     LEECH_HOSTER  = False
     LOGIN_ACCOUNT = True
 
@@ -47,9 +49,7 @@ class MultiHoster(SimpleHoster):
 
     #@TODO: Recheck in 0.4.10
     def setup_base(self):
-        plugin = self.pyload.pluginManager.hosterPlugins[self.classname]
-        klass  = getattr(plugin['module'], plugin['name'])
-
+        klass = self.pyload.pluginManager.loadClass("hoster", self.classname)
         self.get_info = klass.get_info
 
         super(MultiHoster, self).setup_base()
