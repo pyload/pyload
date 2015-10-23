@@ -8,10 +8,9 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class XFileSharing(XFSHoster):
     __name__    = "XFileSharing"
     __type__    = "hoster"
-    __version__ = "0.59"
+    __version__ = "0.60"
     __status__  = "testing"
 
-    # __pattern__ = r'https?://(?:www\.)?(?:\w+\.)*(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)'
     __pattern__ = r'^unmatchable$'
     __config__  = [("activated", "bool", "Activated", True)]
 
@@ -32,43 +31,33 @@ class XFileSharing(XFSHoster):
         self.__pattern__ = self.pyload.pluginManager.hosterPlugins[self.classname]['pattern']
 
         self.PLUGIN_DOMAIN = re.match(self.__pattern__, self.pyfile.url).group("DOMAIN").lower()
-        self.PLUGIN_NAME   = "".join(part.capitalize() for part in re.split(r'(\.|\d+|-)', self.PLUGIN_DOMAIN) if part != '.')
+        self.PLUGIN_NAME   = "".join(part.capitalize() for part in re.split(r'\.|\d+|-', self.PLUGIN_DOMAIN) if part != '.')
 
 
-    def _setup(self):
-        account_name     = self.classname if not self.account or self.account.PLUGIN_DOMAIN is None else self.PLUGIN_NAME
-        self.chunk_limit = 1
-        self.multiDL     = True
+    def setup(self):
+        self.chunk_limit     = -1 if self.premium else 1
+        self.multiDL         = True
+        self.resume_download = self.premium
 
+
+    #@TODO: Recheck in 0.4.10
+    def setup_base(self):
         if self.account:
-            self.req             = self.pyload.requestFactory.getRequest(accountname, self.account.user)
-            self.premium         = self.account.premium
-            self.resume_download = self.premium
+            self.req     = self.pyload.requestFactory.getRequest(self.PLUGIN_NAME, self.account.user)
+            self.premium = self.account.info['data']['premium']  #@NOTE: Avoid one unnecessary get_info call by `self.account.premium` here
         else:
-            self.req             = self.pyload.requestFactory.getRequest(account_name)
-            self.premium         = False
-            self.resume_download = False
+            self.req     = self.pyload.requestFactory.getRequest(self.classname)
+            self.premium = False
+
+        super(SimpleCrypter, self).setup_base()
 
 
+    #@TODO: Recheck in 0.4.10
     def load_account(self):
-        if self.req:
-            self.req.close()
-
-        if not self.account:
-            self.account = self.pyload.accountManager.getAccountPlugin(self.PLUGIN_NAME)
-
-        if not self.account:
-            self.account = self.pyload.accountManager.getAccountPlugin(self.classname)
-
-        if self.account:
-            if not self.account.PLUGIN_DOMAIN:
-                self.account.PLUGIN_DOMAIN = self.PLUGIN_DOMAIN
-
-            if not self.account.user:  #@TODO: Move to `Account` in 0.4.10
-                self.account.user = self.account.select()[0]
-
-            if not self.account.logged:
-                self.account = False
+        class_name = self.classname
+        self.__class__.__name__ = self.PLUGIN_NAME
+        super(XFileSharing, self).load_account()
+        self.__class__.__name__ = class_name
 
 
 getInfo = create_getInfo(XFileSharing)

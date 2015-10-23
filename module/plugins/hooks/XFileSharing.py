@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import inspect
 import re
 
 from module.plugins.internal.Addon import Addon
@@ -8,7 +9,7 @@ from module.plugins.internal.Addon import Addon
 class XFileSharing(Addon):
     __name__    = "XFileSharing"
     __type__    = "hook"
-    __version__ = "0.46"
+    __version__ = "0.48"
     __status__  = "testing"
 
     __config__ = [("activated"       , "bool", "Activated"                     , True ),
@@ -18,15 +19,15 @@ class XFileSharing(Addon):
                   ("hoster_list"     , "str" , "Hoster list (comma separated)" , ""   ),
                   ("crypter_list"    , "str" , "Crypter list (comma separated)", ""   )]
 
-    __description__ = """Load XFileSharing based hosters and crypters which don't need a own plugin to run"""
+    __description__ = """Load XFileSharing hosters and crypters which don't need a own plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    regexp     = {'hoster' : (r'https?://(?:www\.)?(?:\w+\.)*(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
-                              r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:embed-)?\w+'),
-                  'crypter': (r'https?://(?:www\.)?(?:\w+\.)*(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:user|folder)s?/\w+',
-                              r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:user|folder)s?/\w+')}
+    regexp = {'hoster' : (r'(?:https?://(?:www\.)?)(?!%s)(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
+                          r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:embed-)?\w+'),
+              'crypter': (r'(?:https?://(?:www\.)?)(?!%s)(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:user|folder)s?/\w+',
+                          r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:user|folder)s?/\w+')}
 
     BUILTIN_HOSTERS  = [#WORKING HOSTERS:
                         "ani-stream.com", "backin.net", "cloudsix.me", "eyesfile.ca",
@@ -47,48 +48,75 @@ class XFileSharing(Addon):
 
 
     def activate(self):
-        self.load_pattern()
-
-
-    def load_pattern(self):
-        use_builtin_list = self.get_config('use_builtin_list')
-
-        for type, plugin in (("hoster",  "XFileSharing"),
+        for type, plugin in (("hoster" , "XFileSharing"),
                              ("crypter", "XFileSharingFolder")):
-            every_plugin = not self.get_config("use_%s_list" % type)
+            self._load(type, plugin)
 
-            if every_plugin:
-                self.log_info(_("Handling any %s I can!") % type)
-                pattern = self.regexp[type][0]
+
+    def deactivate(self):
+        for type, plugin in (("hoster" , "XFileSharing"),
+                             ("crypter", "XFileSharingFolder")):
+            self._unload(type, plugin)
+
+
+    def get_pattern(self, type, plugin):
+        if self.get_config("use_%s_list" % type):
+            plugin_list = self.get_config('%s_list' % type)
+            plugin_list = plugin_list.replace(' ', '').replace('\\', '')
+            plugin_list = plugin_list.replace('|', ',').replace(';', ',')
+            plugin_list = plugin_list.lower().split(',')
+
+            plugin_set = set(plugin_list)
+
+            if self.get_config('use_builtin_list'):
+                builtin_list = getattr(self, "BUILTIN_%sS" % type.upper())
+                plugin_set.update(builtin_list)
+
+            plugin_set.difference_update(('', u''))
+
+            if not plugin_set:
+                self.log_info(_("No %s to handle") % type)
+                return
+
+            match_list = '|'.join(sorted(plugin_set)).replace('.', '\.')
+            pattern = self.regexp[type][1] % match_list
+
+            self.log_info(_("Handle %d %s%s: %s") %
+                          (len(plugin_set),
+                           type,
+                           "" if len(plugin_set) is 1 else "s",
+                           match_list.replace('\.', '.').replace('|', ', ')))
+        else:
+            plugin_list = []
+            isXFS = lambda klass: any(k.__name__.startswith("XFS") for k in inspect.getmro(klass))
+
+            for p in self.pyload.pluginManager.plugins[type].values():
+                klass = self.pyload.pluginManager.loadClass(type, p['name'])
+                if hasattr(klass, "HOSTER_DOMAIN") and klass.HOSTER_DOMAIN and isXFS(klass):
+                    plugin_list.append(klass.HOSTER_DOMAIN)
+
+            if plugin_list:
+                unmatch_list = '|'.join(sorted(plugin_list)).replace('.', '\.')
+                pattern = self.regexp[type][0] % unmatch_list
             else:
-                plugins    = self.get_config('%s_list' % type)
-                plugin_set = set(plugins.replace(' ', '').replace('\\', '').replace('|', ',').replace(';', ',').lower().split(','))
+                pattern = self.regexp[type][0]
 
-                if use_builtin_list:
-                    plugin_set |= set(x.lower() for x in getattr(self, "BUILTIN_%sS" % type.upper()))
+            self.log_info(_("Handle any %s site on the web!") % type)
 
-                plugin_set -= set(('', u''))
+        return pattern
 
-                if not plugin_set:
-                    self.log_info(_("No %s to handle") % type)
-                    self._unload(type, plugin)
-                    return
 
-                match_list = '|'.join(sorted(plugin_set))
+    def _load(self, type, plugin):
+        dict    = self.pyload.pluginManager.plugins[type][plugin]
+        pattern = self.get_pattern(type, plugin)
 
-                len_match_list = len(plugin_set)
-                self.log_info(_("Handling %d %s%s: %s") % (len_match_list,
-                                                          type,
-                                                          "" if len_match_list == 1 else "s",
-                                                          match_list.replace('|', ', ')))
+        if not pattern:
+            return
 
-                pattern = self.regexp[type][1] % match_list.replace('.', '\.')
+        dict['pattern'] = pattern
+        dict['re']      = re.compile(pattern)
 
-            dict = self.pyload.pluginManager.plugins[type][plugin]
-            dict['pattern'] = pattern
-            dict['re'] = re.compile(pattern)
-
-            self.log_debug("Loaded %s pattern: %s" % (type, pattern))
+        self.log_debug("Loaded %s pattern: %s" % (type, pattern))
 
 
     def _unload(self, type, plugin):
@@ -97,32 +125,4 @@ class XFileSharing(Addon):
         dict['re'] = re.compile(dict['pattern'])
 
 
-    def deactivate(self):
-        # self.unload_hoster("BasePlugin")
-        for type, plugin in (("hoster",  "XFileSharing"),
-                             ("crypter", "XFileSharingFolder")):
-            self._unload(type, plugin)
 
-
-    def unload_hoster(self, hoster):
-        hdict = self.pyload.pluginManager.hosterPlugins[hoster]
-        if "new_name" in hdict and hdict['new_name'] == "XFileSharing":
-            if "module" in hdict:
-                hdict.pop('module', None)
-
-            if "new_module" in hdict:
-                hdict.pop('new_module', None)
-                hdict.pop('new_name', None)
-
-            return True
-        else:
-            return False
-
-
-    # def download_failed(self, pyfile):
-        # if pyfile.pluginname == "BasePlugin" \
-           # and pyfile.hasStatus("failed") \
-           # and not self.get_config('use_hoster_list') \
-           # and self.unload_hoster("BasePlugin"):
-            # self.log_debug("Unloaded XFileSharing from BasePlugin")
-            # pyfile.setStatus("queued")
