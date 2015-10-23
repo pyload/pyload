@@ -17,7 +17,7 @@ from module.plugins.internal.utils import (encode, parse_name, parse_size,
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "2.04"
+    __version__ = "2.05"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -317,7 +317,7 @@ class SimpleHoster(Hoster):
 
     def check_errors(self):
         if not self.html:
-            self.log_warning(_("No html code to check"))
+            self.log_debug("No data to check")
             return
 
         if self.IP_BLOCKED_PATTERN and re.search(self.IP_BLOCKED_PATTERN, self.html):
