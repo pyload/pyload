@@ -14,6 +14,8 @@ import traceback
 import urllib
 import urlparse
 
+import HTMLParser
+
 try:
     import simplejson as json
 
@@ -24,7 +26,7 @@ except ImportError:
 class utils(object):
     __name__    = "utils"
     __type__    = "plugin"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -94,28 +96,6 @@ def uniqify(seq):
     return [x for x in seq if x not in seen and not seen_add(x)]
 
 
-def fixup(m):
-    text = m.group(0)
-    if text[:2] == "&#":
-        # character reference
-        try:
-            if text[:3] == "&#x":
-                return unichr(int(text[3:-1], 16))
-            else:
-                return unichr(int(text[2:-1]))
-        except ValueError:
-            pass
-    else:
-        # named entity
-        try:
-            name = text[1:-1]
-            text = unichr(htmlentitydefs.name2codepoint[name])
-        except KeyError:
-            pass
-
-    return text  #: leave as is
-
-
 def has_method(obj, name):
     """
     Check if name was defined in obj (return false if inhereted)
@@ -127,7 +107,8 @@ def html_unescape(text):
     """
     Removes HTML or XML character references and entities from a text string
     """
-    return re.sub("&#?\w+;", fixup, text)
+    h = HTMLParser.HTMLParser()
+    return h.unescape(text)
 
 
 def isiterable(obj):
