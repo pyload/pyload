@@ -41,10 +41,10 @@ class EdiskCz(SimpleHoster):
             self.error(_("ACTION_PATTERN not found"))
         action = m.group(1)
 
-        self.html = self.load(url)
+        self.data = self.load(url)
         self.get_fileInfo()
 
-        self.html = self.load(re.sub("/en/download/", "/en/download-slow/", url))
+        self.data = self.load(re.sub("/en/download/", "/en/download-slow/", url))
 
         url = self.load(re.sub("/en/download/", "/x-download/", url), post={
             'action': action

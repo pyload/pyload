@@ -30,7 +30,7 @@ class HostujeNet(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        m = re.search(r'<script src="([\w^_]+.php)"></script>', self.html)
+        m = re.search(r'<script src="([\w^_]+.php)"></script>', self.data)
         if m is not None:
             jscript = self.load("http://hostuje.net/" + m.group(1))
             m = re.search(r"\('(\w+\.php\?i=\w+)'\);", jscript)

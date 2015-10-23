@@ -72,7 +72,7 @@ class YadiSk(SimpleHoster):
 
 
         try:
-            self.html = self.load("https://yadi.sk/models/",
+            self.data = self.load("https://yadi.sk/models/",
                                   get={'_m': "do-get-resource-url"},
                                   post={'idClient': self.info['idclient'],
                                         'version' : self.info['version'],
@@ -80,7 +80,7 @@ class YadiSk(SimpleHoster):
                                         'sk'      : self.info['sk'],
                                         'id.0'    : self.info['id']})
 
-            self.link = json.loads(self.html)['models'][0]['data']['file']
+            self.link = json.loads(self.data)['models'][0]['data']['file']
 
         except Exception:
             pass

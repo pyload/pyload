@@ -32,36 +32,36 @@ class BezvadataCz(SimpleHoster):
 
     def handle_free(self, pyfile):
         #: Download button
-        m = re.search(r'<a class="stahnoutSoubor".*?href="(.*?)"', self.html)
+        m = re.search(r'<a class="stahnoutSoubor".*?href="(.*?)"', self.data)
         if m is None:
             self.error(_("Page 1 URL not found"))
         url = "http://bezvadata.cz%s" % m.group(1)
 
         #: Captcha form
-        self.html = self.load(url)
+        self.data = self.load(url)
         self.check_errors()
 
         action, inputs = self.parse_html_form('frm-stahnoutFreeForm')
         if not inputs:
             self.error(_("FreeForm"))
 
-        m = re.search(r'<img src="data:image/png;base64,(.*?)"', self.html)
+        m = re.search(r'<img src="data:image/png;base64,(.*?)"', self.data)
         if m is None:
             self.retry_captcha()
 
         inputs['captcha'] = self.captcha.decrypt_image(m.group(1).decode('base64'), input_type='png')
 
         #: Download url
-        self.html = self.load("http://bezvadata.cz%s" % action, post=inputs)
+        self.data = self.load("http://bezvadata.cz%s" % action, post=inputs)
         self.check_errors()
-        m = re.search(r'<a class="stahnoutSoubor2" href="(.*?)">', self.html)
+        m = re.search(r'<a class="stahnoutSoubor2" href="(.*?)">', self.data)
         if m is None:
             self.error(_("Page 2 URL not found"))
         url = "http://bezvadata.cz%s" % m.group(1)
         self.log_debug("DL URL %s" % url)
 
         #: countdown
-        m = re.search(r'id="countdown">(\d\d):(\d\d)<', self.html)
+        m = re.search(r'id="countdown">(\d\d):(\d\d)<', self.data)
         wait_time = (int(m.group(1)) * 60 + int(m.group(2))) if m else 120
         self.wait(wait_time, False)
 
@@ -69,9 +69,9 @@ class BezvadataCz(SimpleHoster):
 
 
     def check_errors(self):
-        if 'images/button-download-disable.png' in self.html:
+        if 'images/button-download-disable.png' in self.data:
             self.wait(5 * 60, 24, _("Download limit reached"))  #: Parallel dl limit
-        elif '<div class="infobox' in self.html:
+        elif '<div class="infobox' in self.data:
             self.temp_offline()
         else:
             return super(BezvadataCz, self).check_errors()

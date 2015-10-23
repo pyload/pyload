@@ -26,12 +26,8 @@ class CaptchaService(Captcha):
             self.fail(_("%s key not found") % self.__name__)
 
 
-    #@TODO: Recheck in 0.4.10, html is now pyfile.data
     def retrieve_data(self):
-        if hasattr(self.plugin, "html") and self.plugin.html:
-            return self.plugin.html
-        else:
-            self.fail(_("%s data not found") % self.__name__)
+        return self.plugin.data or self.plugin.last_html or ""
 
 
     def detect_key(self, data=None):

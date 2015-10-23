@@ -27,24 +27,24 @@ class CloudzillaTo(SimpleHoster):
 
 
     def check_errors(self):
-        if re.search(self.PASSWORD_PATTERN, self.html):
+        if re.search(self.PASSWORD_PATTERN, self.data):
             pw = self.get_password()
             if pw:
-                self.html = self.load(self.pyfile.url, get={'key': pw})
+                self.data = self.load(self.pyfile.url, get={'key': pw})
             else:
                 self.fail(_("Missing password"))
 
-        if re.search(self.PASSWORD_PATTERN, self.html):
+        if re.search(self.PASSWORD_PATTERN, self.data):
             self.retry(msg="Wrong password")
         else:
             return super(CloudzillaTo, self).check_errors()
 
 
     def handle_free(self, pyfile):
-        self.html = self.load("http://www.cloudzilla.to/generateticket/",
+        self.data = self.load("http://www.cloudzilla.to/generateticket/",
                               post={'file_id': self.info['pattern']['ID'], 'key': self.get_password()})
 
-        ticket = dict(re.findall(r'<(.+?)>([^<>]+?)</', self.html))
+        ticket = dict(re.findall(r'<(.+?)>([^<>]+?)</', self.data))
 
         self.log_debug(ticket)
 

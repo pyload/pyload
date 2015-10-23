@@ -67,14 +67,14 @@ class LetitbitNet(SimpleHoster):
         self.log_debug(action, inputs)
         inputs['desc'] = ""
 
-        self.html = self.load(urlparse.urljoin("http://letitbit.net/", action), post=inputs)
+        self.data = self.load(urlparse.urljoin("http://letitbit.net/", action), post=inputs)
 
-        m = re.search(self.SECONDS_PATTERN, self.html)
+        m = re.search(self.SECONDS_PATTERN, self.data)
         seconds = int(m.group(1)) if m else 60
 
         self.log_debug("Seconds found", seconds)
 
-        m = re.search(self.CAPTCHA_CONTROL_FIELD, self.html)
+        m = re.search(self.CAPTCHA_CONTROL_FIELD, self.data)
         recaptcha_control_field = m.group(1)
 
         self.log_debug("ReCaptcha control field found", recaptcha_control_field)

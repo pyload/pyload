@@ -32,13 +32,13 @@ class ExtabitCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        if r">Only premium users can download this file" in self.html:
+        if r">Only premium users can download this file" in self.data:
             self.fail(_("Only premium users can download this file"))
 
-        m = re.search(r"Next free download from your ip will be available in <b>(\d+)\s*minutes", self.html)
+        m = re.search(r"Next free download from your ip will be available in <b>(\d+)\s*minutes", self.data)
         if m is not None:
             self.wait(int(m.group(1)) * 60, True)
-        elif "The daily downloads limit from your IP is exceeded" in self.html:
+        elif "The daily downloads limit from your IP is exceeded" in self.data:
             self.log_warning(_("You have reached your daily downloads limit for today"))
             self.wait(seconds_to_midnight(), True)
 
@@ -46,7 +46,7 @@ class ExtabitCom(SimpleHoster):
         m = re.match(self.__pattern__, self.req.http.lastEffectiveURL)
         fileID = m.group('ID') if m else self.info['pattern']['ID']
 
-        m = re.search(r'recaptcha/api/challenge\?k=(\w+)', self.html)
+        m = re.search(r'recaptcha/api/challenge\?k=(\w+)', self.data)
         if m is not None:
             recaptcha = ReCaptcha(self)
             captcha_key = m.group(1)
@@ -66,9 +66,9 @@ class ExtabitCom(SimpleHoster):
         if not "href" in res:
             self.error(_("Bad JSON response"))
 
-        self.html = self.load("http://extabit.com/file/%s%s" % (fileID, res['href']))
+        self.data = self.load("http://extabit.com/file/%s%s" % (fileID, res['href']))
 
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:
             self.error(_("LINK_FREE_PATTERN not found"))
 

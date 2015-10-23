@@ -36,11 +36,11 @@ class ShareplaceCom(Hoster):
 
 
     def get_waiting_time(self):
-        if not self.html:
+        if not self.data:
             self.download_html()
 
         #: var zzipitime = 15
-        m = re.search(r'var zzipitime = (\d+);', self.html)
+        m = re.search(r'var zzipitime = (\d+);', self.data)
         if m is not None:
             sec = int(m.group(1))
         else:
@@ -51,14 +51,14 @@ class ShareplaceCom(Hoster):
 
     def download_html(self):
         url = re.sub("shareplace.com\/\?", "shareplace.com//index1.php/?a=", self.pyfile.url)
-        self.html = self.load(url)
+        self.data = self.load(url)
 
 
     def get_file_url(self):
         """
         Returns the absolute downloadable filepath
         """
-        url = re.search(r"var beer = '(.*?)';", self.html)
+        url = re.search(r"var beer = '(.*?)';", self.data)
         if url:
             url = url.group(1)
             url = urllib.unquote(
@@ -71,20 +71,20 @@ class ShareplaceCom(Hoster):
 
 
     def get_file_name(self):
-        if not self.html:
+        if not self.data:
             self.download_html()
 
-        return re.search("<title>\s*(.*?)\s*</title>", self.html).group(1)
+        return re.search("<title>\s*(.*?)\s*</title>", self.data).group(1)
 
 
     def file_exists(self):
         """
         Returns True or False
         """
-        if not self.html:
+        if not self.data:
             self.download_html()
 
-        if re.search(r"HTTP Status 404", self.html):
+        if re.search(r"HTTP Status 404", self.data):
             return False
         else:
             return True

@@ -107,24 +107,24 @@ class RelinkUs(Crypter):
 
 
     def request_package(self):
-        self.html = self.load(self.pyfile.url)
+        self.data = self.load(self.pyfile.url)
 
 
     def is_online(self):
-        if self.OFFLINE_TOKEN in self.html:
+        if self.OFFLINE_TOKEN in self.data:
             self.log_debug("File not found")
             return False
         return True
 
 
     def is_password_protected(self):
-        if self.PASSWORD_TOKEN in self.html:
+        if self.PASSWORD_TOKEN in self.data:
             self.log_debug("Links are password protected")
             return True
 
 
     def is_captcha_protected(self):
-        if self.CAPTCHA_TOKEN in self.html:
+        if self.CAPTCHA_TOKEN in self.data:
             self.log_debug("Links are captcha protected")
             return True
         return False
@@ -138,7 +138,7 @@ class RelinkUs(Crypter):
         if password:
             passwd_url = self.PASSWORD_SUBMIT_URL + "?id=%s" % self.fileid
             passwd_data = {'id': self.fileid, 'password': password, 'pw': 'submit'}
-            self.html = self.load(passwd_url, post=passwd_data)
+            self.data = self.load(passwd_url, post=passwd_data)
 
 
     def unlock_captcha_protection(self):
@@ -148,14 +148,14 @@ class RelinkUs(Crypter):
         self.log_debug("Captcha resolved, coords %s" % coords)
         captcha_post_url = self.CAPTCHA_SUBMIT_URL + "?id=%s" % self.fileid
         captcha_post_data = {'button.x': coords[0], 'button.y': coords[1], 'captcha': 'submit'}
-        self.html = self.load(captcha_post_url, post=captcha_post_data)
+        self.data = self.load(captcha_post_url, post=captcha_post_data)
 
 
     def get_package_info(self):
         name = folder = None
 
         #: Try to get info from web
-        m = re.search(self.FILE_TITLE_REGEX, self.html)
+        m = re.search(self.FILE_TITLE_REGEX, self.data)
         if m is not None:
             title = m.group(1).strip()
             if not self.FILE_NOTITLE in title:
@@ -173,11 +173,11 @@ class RelinkUs(Crypter):
 
 
     def handle_errors(self):
-        if self.PASSWORD_ERROR_ROKEN in self.html:
+        if self.PASSWORD_ERROR_ROKEN in self.data:
             self.fail(_("Wrong password"))
 
         if self.captcha:
-            if self.CAPTCHA_ERROR_ROKEN in self.html:
+            if self.CAPTCHA_ERROR_ROKEN in self.data:
                 self.retry_captcha()
             else:
                 self.captcha.correct()
@@ -197,7 +197,7 @@ class RelinkUs(Crypter):
     def handle_CNL2Links(self):
         self.log_debug("Search for CNL2 links")
         package_links = []
-        m = re.search(self.CNL2_FORM_REGEX, self.html, re.S)
+        m = re.search(self.CNL2_FORM_REGEX, self.data, re.S)
         if m is not None:
             cnl2_form = m.group(1)
             try:
@@ -214,7 +214,7 @@ class RelinkUs(Crypter):
     def handle_DLC_links(self):
         self.log_debug("Search for DLC links")
         package_links = []
-        m = re.search(self.DLC_LINK_REGEX, self.html)
+        m = re.search(self.DLC_LINK_REGEX, self.data)
         if m is not None:
             container_url = self.DLC_DOWNLOAD_URL + "?id=%s&dlc=1" % self.fileid
             self.log_debug("Downloading DLC container link [%s]" % container_url)
@@ -236,7 +236,7 @@ class RelinkUs(Crypter):
         self.log_debug("Search for WEB links")
 
         package_links = []
-        params        = re.findall(self.WEB_FORWARD_REGEX, self.html)
+        params        = re.findall(self.WEB_FORWARD_REGEX, self.data)
 
         self.log_debug("Decrypting %d Web links" % len(params))
 

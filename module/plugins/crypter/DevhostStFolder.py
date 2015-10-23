@@ -34,7 +34,7 @@ class DevhostStFolder(SimpleCrypter):
     def check_name_size(self, getinfo=True):
         if not self.info or getinfo:
             self.log_debug("File info (BEFORE): %s" % self.info)
-            self.info.update(self.get_info(self.pyfile.url, self.html))
+            self.info.update(self.get_info(self.pyfile.url, self.data))
             self.log_debug("File info (AFTER): %s"  % self.info)
 
         try:
@@ -42,7 +42,7 @@ class DevhostStFolder(SimpleCrypter):
                 raise
 
             p = r'href="(.+?)">Back to \w+<'
-            m = re.search(p, self.html)
+            m = re.search(p, self.data)
             html = self.load(urlparse.urljoin("http://d-h.st/", m.group(1)),
                              cookies=False)
 

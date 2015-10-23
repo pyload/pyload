@@ -46,18 +46,18 @@ class FilefactoryCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        if "Currently only Premium Members can download files larger than" in self.html:
+        if "Currently only Premium Members can download files larger than" in self.data:
             self.fail(_("File too large for free download"))
-        elif "All free download slots on this server are currently in use" in self.html:
+        elif "All free download slots on this server are currently in use" in self.data:
             self.retry(50, 15 * 60, _("All free slots are busy"))
 
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:
             return
 
         self.link = m.group(1)
 
-        m = re.search(self.WAIT_PATTERN, self.html)
+        m = re.search(self.WAIT_PATTERN, self.data)
         if m is not None:
             self.wait(m.group(1))
 

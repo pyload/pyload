@@ -81,16 +81,16 @@ class FileserveCom(Hoster):
 
 
     def handle_free(self):
-        self.html = self.load(self.url)
+        self.data = self.load(self.url)
         action = self.load(self.url, post={'checkDownload': "check"})
         action = json.loads(action)
         self.log_debug(action)
 
         if "fail" in action:
             if action['fail'] == "timeLimit":
-                self.html = self.load(self.url, post={'checkDownload': "showError", 'errorType': "timeLimit"})
+                self.data = self.load(self.url, post={'checkDownload': "showError", 'errorType': "timeLimit"})
 
-                self.do_long_wait(re.search(self.LONG_WAIT_PATTERN, self.html))
+                self.do_long_wait(re.search(self.LONG_WAIT_PATTERN, self.data))
 
             elif action['fail'] == "parallelDownload":
                 self.log_warning(_("Parallel download error, now waiting 60s"))
@@ -157,7 +157,7 @@ class FileserveCom(Hoster):
 
 
     def do_captcha(self):
-        captcha_key = re.search(self.CAPTCHA_KEY_PATTERN, self.html).group(1)
+        captcha_key = re.search(self.CAPTCHA_KEY_PATTERN, self.data).group(1)
         recaptcha = ReCaptcha(self)
 
         response, challenge = recaptcha.challenge(captcha_key)

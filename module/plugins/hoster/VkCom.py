@@ -30,7 +30,7 @@ class VkCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        self.link = re.findall(self.LINK_FREE_PATTERN, self.html)[0 if self.get_config('quality') == "Low" else -1]
+        self.link = re.findall(self.LINK_FREE_PATTERN, self.data)[0 if self.get_config('quality') == "Low" else -1]
 
 
 getInfo = create_getInfo(VkCom)

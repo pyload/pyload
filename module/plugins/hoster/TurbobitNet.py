@@ -45,7 +45,7 @@ class TurbobitNet(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        self.html = self.load("http://turbobit.net/download/free/%s" % self.info['pattern']['ID'])
+        self.data = self.load("http://turbobit.net/download/free/%s" % self.info['pattern']['ID'])
 
         rtUpdate = self.get_rt_update()
 
@@ -53,17 +53,17 @@ class TurbobitNet(SimpleHoster):
 
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
 
-        self.html = self.load(self.get_download_url(rtUpdate))
+        self.data = self.load(self.get_download_url(rtUpdate))
 
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
 
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
 
 
     def solve_captcha(self):
-        m = re.search(self.LIMIT_WAIT_PATTERN, self.html)
+        m = re.search(self.LIMIT_WAIT_PATTERN, self.data)
         if m is not None:
             wait_time = int(m.group(1))
             self.wait(wait_time, wait_time > 60)
@@ -79,7 +79,7 @@ class TurbobitNet(SimpleHoster):
             recaptcha = ReCaptcha(self)
             inputs['recaptcha_response_field'], inputs['recaptcha_challenge_field'] = recaptcha.challenge()
         else:
-            m = re.search(self.CAPTCHA_PATTERN, self.html)
+            m = re.search(self.CAPTCHA_PATTERN, self.data)
             if m is None:
                 self.error(_("Captcha pattern not found"))
             captcha_url = m.group(1)
@@ -87,9 +87,9 @@ class TurbobitNet(SimpleHoster):
 
         self.log_debug(inputs)
 
-        self.html = self.load(self.url, post=inputs)
+        self.data = self.load(self.url, post=inputs)
 
-        if '<div class="captcha-error">Incorrect, try again' in self.html:
+        if '<div class="captcha-error">Incorrect, try again' in self.data:
             self.retry_captcha()
         else:
             self.captcha.correct()
@@ -123,7 +123,7 @@ class TurbobitNet(SimpleHoster):
     def get_download_url(self, rtUpdate):
         self.req.http.lastURL = self.url
 
-        m = re.search("(/\w+/timeout\.js\?\w+=)([^\"\'<>]+)", self.html)
+        m = re.search("(/\w+/timeout\.js\?\w+=)([^\"\'<>]+)", self.data)
         if m is not None:
             url = "http://turbobit.net%s%s" % m.groups()
         else:

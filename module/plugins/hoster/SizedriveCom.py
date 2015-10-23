@@ -32,10 +32,10 @@ class SizedriveCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         self.wait(5)
-        self.html = self.load("http://www.sizedrive.com/getdownload.php",
+        self.data = self.load("http://www.sizedrive.com/getdownload.php",
                               post={'id': self.info['pattern']['ID']})
 
-        m = re.search(r'<span id="boton_download" ><a href="(.+?)"', self.html)
+        m = re.search(r'<span id="boton_download" ><a href="(.+?)"', self.data)
         if m is not None:
             self.link = m.group(1)
 

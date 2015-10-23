@@ -35,9 +35,9 @@ class NarodRu(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        self.html = self.load('http://narod.ru/disk/getcapchaxml/?rnd=%d' % int(random.random() * 777))
+        self.data = self.load('http://narod.ru/disk/getcapchaxml/?rnd=%d' % int(random.random() * 777))
 
-        m = re.search(self.CAPTCHA_PATTERN, self.html)
+        m = re.search(self.CAPTCHA_PATTERN, self.data)
         if m is None:
             self.error(_("Captcha"))
 
@@ -45,14 +45,14 @@ class NarodRu(SimpleHoster):
         captcha_url, post_data['key'] = m.groups()
         post_data['rep'] = self.captcha.decrypt(captcha_url)
 
-        self.html = self.load(pyfile.url, post=post_data)
+        self.data = self.load(pyfile.url, post=post_data)
 
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
             self.captcha.correct()
             self.link = urlparse.urljoin("http://narod.ru/", m.group(1))
 
-        elif u'<b class="error-msg"><strong>Ошиблись?</strong>' in self.html:
+        elif u'<b class="error-msg"><strong>Ошиблись?</strong>' in self.data:
             self.retry_captcha()
 
 

@@ -37,7 +37,7 @@ class ShareLinksBiz(Crypter):
 
         #: Request package
         url = self.base_url + '/' + self.file_id
-        self.html = self.load(url)
+        self.data = self.load(url)
 
         #: Unblock server (load all images)
         self.unblock_server()
@@ -84,7 +84,7 @@ class ShareLinksBiz(Crypter):
 
 
     def is_online(self):
-        if "No usable content was found" in self.html:
+        if "No usable content was found" in self.data:
             self.log_debug("File not found")
             return False
         else:
@@ -92,21 +92,21 @@ class ShareLinksBiz(Crypter):
 
 
     def is_password_protected(self):
-        if re.search(r'<form.*?id="passwordForm".*?>', self.html):
+        if re.search(r'<form.*?id="passwordForm".*?>', self.data):
             self.log_debug("Links are protected")
             return True
         return False
 
 
     def is_captcha_protected(self):
-        if '<map id="captchamap"' in self.html:
+        if '<map id="captchamap"' in self.data:
             self.log_debug("Links are captcha protected")
             return True
         return False
 
 
     def unblock_server(self):
-        imgs = re.findall(r"(/template/images/.*?\.gif)", self.html)
+        imgs = re.findall(r"(/template/images/.*?\.gif)", self.data)
         for img in imgs:
             self.load(self.base_url + img)
 
@@ -116,7 +116,7 @@ class ShareLinksBiz(Crypter):
         self.log_debug("Submitting password [%s] for protected links" % password)
         post = {'password': password, 'login': 'Submit form'}
         url = self.base_url + '/' + self.file_id
-        self.html = self.load(url, post=post)
+        self.data = self.load(url, post=post)
 
 
     def unlock_captcha_protection(self):
@@ -125,7 +125,7 @@ class ShareLinksBiz(Crypter):
         self.log_debug("Captcha map with [%d] positions" % len(captchaMap.keys()))
 
         #: Request user for captcha coords
-        m = re.search(r'<img src="/captcha.gif\?d=(.+?)&PHPSESSID=(.+?)&legend=1"', self.html)
+        m = re.search(r'<img src="/captcha.gif\?d=(.+?)&PHPSESSID=(.+?)&legend=1"', self.data)
         if m is None:
             self.log_debug("Captcha url data not found, maybe plugin out of date?")
             self.fail(_("Captcha url data not found"))
@@ -141,12 +141,12 @@ class ShareLinksBiz(Crypter):
             self.retry_captcha(wait=5)
 
         url = self.base_url + href
-        self.html = self.load(url)
+        self.data = self.load(url)
 
 
     def _get_captcha_map(self):
         mapp = {}
-        for m in re.finditer(r'<area shape="rect" coords="(.*?)" href="(.*?)"', self.html):
+        for m in re.finditer(r'<area shape="rect" coords="(.*?)" href="(.*?)"', self.data):
             rect = eval('(' + m.group(1) + ')')
             href = m.group(2)
             mapp[rect] = href
@@ -162,11 +162,11 @@ class ShareLinksBiz(Crypter):
 
 
     def handle_errors(self):
-        if "The inserted password was wrong" in self.html:
+        if "The inserted password was wrong" in self.data:
             self.fail(_("Wrong password"))
 
         if self.captcha:
-            if "Your choice was wrong" in self.html:
+            if "Your choice was wrong" in self.data:
                 self.retry_captcha(wait=5)
             else:
                 self.captcha.correct()
@@ -177,7 +177,7 @@ class ShareLinksBiz(Crypter):
 
         #: Extract from web package header
         title_re = r'<h2><img.*?/>(.*)</h2>'
-        m = re.search(title_re, self.html, re.S)
+        m = re.search(title_re, self.data, re.S)
         if m is not None:
             title = m.group(1).strip()
             if 'unnamed' not in title:
@@ -200,7 +200,7 @@ class ShareLinksBiz(Crypter):
 
         #@TODO: Gather paginated web links
         pattern = r'javascript:_get\(\'(.*?)\', \d+, \'\'\)'
-        ids = re.findall(pattern, self.html)
+        ids = re.findall(pattern, self.data)
         self.log_debug("Decrypting %d Web links" % len(ids))
         for i, ID in enumerate(ids):
             try:
@@ -234,7 +234,7 @@ class ShareLinksBiz(Crypter):
         self.log_debug("Handling Container links")
 
         pattern = r'javascript:_get\(\'(.*?)\', 0, \'(rsdf|ccf|dlc)\'\)'
-        containersLinks = re.findall(pattern, self.html)
+        containersLinks = re.findall(pattern, self.data)
         self.log_debug("Decrypting %d Container links" % len(containersLinks))
         for containerLink in containersLinks:
             link = "%s/get/%s/%s" % (self.base_url, containerLink[1], containerLink[0])
@@ -246,7 +246,7 @@ class ShareLinksBiz(Crypter):
         package_links = []
         self.log_debug("Handling CNL2 links")
 
-        if '/lib/cnl2/ClicknLoad.swf' in self.html:
+        if '/lib/cnl2/ClicknLoad.swf' in self.data:
             try:
                 (crypted, jk) = self._get_cipher_params()
                 package_links.extend(self._get_links(crypted, jk))
@@ -259,7 +259,7 @@ class ShareLinksBiz(Crypter):
 
     def _get_cipher_params(self):
         #: Request CNL2
-        code   = re.search(r'ClicknLoad.swf\?code=(.*?)"', self.html).group(1)
+        code   = re.search(r'ClicknLoad.swf\?code=(.*?)"', self.data).group(1)
         url    = "%s/get/cnl2/%s" % (self.base_url, code)
         res    = self.load(url)
         params = res.split(";;")

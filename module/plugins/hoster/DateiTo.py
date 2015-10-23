@@ -38,7 +38,7 @@ class DateiTo(SimpleHoster):
 
         for _i in xrange(3):
             self.log_debug("URL", url, "POST", data)
-            self.html = self.load(url, post=data)
+            self.data = self.load(url, post=data)
             self.check_errors()
 
             if url.endswith('download.php') and 'P' in data:
@@ -48,7 +48,7 @@ class DateiTo(SimpleHoster):
                 elif data['P'] == "IV":
                     break
 
-            m = re.search(self.DATA_PATTERN, self.html)
+            m = re.search(self.DATA_PATTERN, self.data)
             if m is None:
                 self.error(_("Data pattern not found"))
 
@@ -60,11 +60,11 @@ class DateiTo(SimpleHoster):
         else:
             return
 
-        self.link = self.html
+        self.link = self.data
 
 
     def do_wait(self):
-        m = re.search(self.WAIT_PATTERN, self.html)
+        m = re.search(self.WAIT_PATTERN, self.data)
         wait_time = int(m.group(1)) if m else 30
 
         self.load('http://datei.to/ajax/download.php', post={'P': 'Ads'})

@@ -39,24 +39,24 @@ class NowDownloadSx(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        tokenlink = re.search(self.TOKEN_PATTERN, self.html)
-        continuelink = re.search(self.CONTINUE_PATTERN, self.html)
+        tokenlink = re.search(self.TOKEN_PATTERN, self.data)
+        continuelink = re.search(self.CONTINUE_PATTERN, self.data)
         if tokenlink is None or continuelink is None:
             self.error()
 
-        m = re.search(self.WAIT_PATTERN, self.html)
+        m = re.search(self.WAIT_PATTERN, self.data)
         if m is not None:
             wait = int(m.group(1))
         else:
             wait = 60
 
         baseurl = "http://www.nowdownload.ch"
-        self.html = self.load(baseurl + str(tokenlink.group(1)))
+        self.data = self.load(baseurl + str(tokenlink.group(1)))
         self.wait(wait)
 
-        self.html = self.load(baseurl + str(continuelink.group(1)))
+        self.data = self.load(baseurl + str(continuelink.group(1)))
 
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
 

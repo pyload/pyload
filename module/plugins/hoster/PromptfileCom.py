@@ -29,7 +29,7 @@ class PromptfileCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         #: STAGE 1: get link to continue
-        m = re.search(self.CHASH_PATTERN, self.html)
+        m = re.search(self.CHASH_PATTERN, self.data)
         if m is None:
             self.error(_("CHASH_PATTERN not found"))
 
@@ -37,7 +37,7 @@ class PromptfileCom(SimpleHoster):
         self.log_debug("Read chash %s" % chash)
 
         #: Continue to stage2
-        self.html = self.load(pyfile.url, post={'chash': chash})
+        self.data = self.load(pyfile.url, post={'chash': chash})
 
         #: STAGE 2: get the direct link
         return super(PromptfileCom, self).handle_free(pyfile)

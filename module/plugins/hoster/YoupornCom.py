@@ -31,34 +31,34 @@ class YoupornCom(Hoster):
 
     def download_html(self):
         url = self.pyfile.url
-        self.html = self.load(url, post={'user_choice': "Enter"}, cookies=False)
+        self.data = self.load(url, post={'user_choice': "Enter"}, cookies=False)
 
 
     def get_file_url(self):
         """
         Returns the absolute downloadable filepath
         """
-        if not self.html:
+        if not self.data:
             self.download_html()
 
-        return re.search(r'(http://download\.youporn\.com/download/\d+\?save=1)">', self.html).group(1)
+        return re.search(r'(http://download\.youporn\.com/download/\d+\?save=1)">', self.data).group(1)
 
 
     def get_file_name(self):
-        if not self.html:
+        if not self.data:
             self.download_html()
 
         file_name_pattern = r'<title>(.+) - '
-        return re.search(file_name_pattern, self.html).group(1).replace("&amp;", "&").replace("/", "") + '.flv'
+        return re.search(file_name_pattern, self.data).group(1).replace("&amp;", "&").replace("/", "") + '.flv'
 
 
     def file_exists(self):
         """
         Returns True or False
         """
-        if not self.html:
+        if not self.data:
             self.download_html()
-        if re.search(r"(.*invalid video_id.*)", self.html):
+        if re.search(r"(.*invalid video_id.*)", self.data):
             return False
         else:
             return True

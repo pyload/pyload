@@ -42,11 +42,11 @@ class CatShareNet(SimpleHoster):
         recaptcha = ReCaptcha(self)
 
         response, challenge = recaptcha.challenge()
-        self.html = self.load(pyfile.url,
+        self.data = self.load(pyfile.url,
                               post={'recaptcha_challenge_field': challenge,
                                     'recaptcha_response_field' : response})
 
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
 

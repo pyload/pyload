@@ -54,13 +54,13 @@ class MegaRapidCz(SimpleHoster):
 
 
     def handle_premium(self, pyfile):
-        m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
+        m = re.search(self.LINK_PREMIUM_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
 
-        elif re.search(self.ERR_LOGIN_PATTERN, self.html):
+        elif re.search(self.ERR_LOGIN_PATTERN, self.data):
                 self.relogin()
                 self.retry(wait=60, msg=_("User login failed"))
 
-        elif re.search(self.ERR_CREDIT_PATTERN, self.html):
+        elif re.search(self.ERR_CREDIT_PATTERN, self.data):
             self.fail(_("Not enough credit left"))

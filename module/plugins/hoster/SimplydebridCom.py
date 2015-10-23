@@ -34,11 +34,11 @@ class SimplydebridCom(MultiHoster):
         if 'fileparadox' in self.link:
             self.link = self.link.replace("http://", "https://")
 
-        self.html = self.load("http://simply-debrid.com/api.php", get={'dl': self.link})
-        if 'tiger Link' in self.html or 'Invalid Link' in self.html or ('API' in self.html and 'ERROR' in self.html):
+        self.data = self.load("http://simply-debrid.com/api.php", get={'dl': self.link})
+        if 'tiger Link' in self.data or 'Invalid Link' in self.data or ('API' in self.data and 'ERROR' in self.data):
             self.error(_("Unable to unrestrict link"))
 
-        self.link = self.html
+        self.link = self.data
 
         self.wait(5)
 

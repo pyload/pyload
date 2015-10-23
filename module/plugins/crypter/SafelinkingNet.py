@@ -42,13 +42,13 @@ class SafelinkingNet(Crypter):
         else:
             postData = {"post-protect": "1"}
 
-            self.html = self.load(url)
+            self.data = self.load(url)
 
-            if "link-password" in self.html:
+            if "link-password" in self.data:
                 postData['link-password'] = self.get_password()
 
-            if "altcaptcha" in self.html:
-                m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
+            if "altcaptcha" in self.data:
+                m = re.search(self.SOLVEMEDIA_PATTERN, self.data)
                 if m is not None:
                     captchaKey = m.group(1)
                     captcha = SolveMedia(self)
@@ -60,16 +60,16 @@ class SafelinkingNet(Crypter):
                 postData['adcopy_challenge'] = challenge
                 postData['adcopy_response']  = response
 
-                self.html = self.load(url, post=postData)
+                self.data = self.load(url, post=postData)
 
-                if "The CAPTCHA code you entered was wrong" in self.html:
+                if "The CAPTCHA code you entered was wrong" in self.data:
                     self.retry_captcha()
 
-                if "The password you entered was incorrect" in self.html:
+                if "The password you entered was incorrect" in self.data:
                     self.fail(_("Wrong password"))
 
             pyfile.package().password = ""
-            soup = BeautifulSoup.BeautifulSoup(self.html)
+            soup = BeautifulSoup.BeautifulSoup(self.data)
             scripts = soup.findAll("script")
             for s in scripts:
                 if "d_links" in s.text:

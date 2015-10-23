@@ -39,7 +39,7 @@ class FilepupNet(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
             dl_link = m.group(1)
             self.download(dl_link, post={'task': "download"})

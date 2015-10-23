@@ -26,20 +26,20 @@ class DebridItaliaCom(MultiHoster):
 
 
     def handle_premium(self, pyfile):
-        self.html = self.load("http://www.debriditalia.com/api.php",
+        self.data = self.load("http://www.debriditalia.com/api.php",
                               get={'generate': "on", 'link': pyfile.url, 'p': self.get_password()})
 
-        if "ERROR:" not in self.html:
-            self.link = self.html
+        if "ERROR:" not in self.data:
+            self.link = self.data
         else:
-            self.info['error'] = re.search(r'ERROR:(.*)', self.html).group(1).strip()
+            self.info['error'] = re.search(r'ERROR:(.*)', self.data).group(1).strip()
 
-            self.html = self.load("http://debriditalia.com/linkgen2.php",
+            self.data = self.load("http://debriditalia.com/linkgen2.php",
                                   post={'xjxfun'   : "convertiLink",
                                         'xjxargs[]': "S<![CDATA[%s]]>" % pyfile.url,
                                         'xjxargs[]': "S%s" % self.get_password()})
             try:
-                self.link = re.search(r'<a href="(.+?)"', self.html).group(1)
+                self.link = re.search(r'<a href="(.+?)"', self.data).group(1)
             except AttributeError:
                 pass
 

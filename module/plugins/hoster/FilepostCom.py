@@ -32,12 +32,12 @@ class FilepostCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        m = re.search(self.FLP_TOKEN_PATTERN, self.html)
+        m = re.search(self.FLP_TOKEN_PATTERN, self.data)
         if m is None:
             self.error(_("Token"))
         flp_token = m.group(1)
 
-        m = re.search(self.RECAPTCHA_PATTERN, self.html)
+        m = re.search(self.RECAPTCHA_PATTERN, self.data)
         if m is None:
             self.error(_("Captcha key"))
         captcha_key = m.group(1)
@@ -52,7 +52,7 @@ class FilepostCom(SimpleHoster):
 
         post_dict = {'token': flp_token, 'code': self.info['pattern']['ID'], 'file_pass': ''}
 
-        if 'var is_pass_exists = true;' in self.html:
+        if 'var is_pass_exists = true;' in self.data:
             #: Solve password
             password = self.get_password()
 

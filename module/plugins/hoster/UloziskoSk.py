@@ -32,10 +32,10 @@ class UloziskoSk(SimpleHoster):
 
 
     def process(self, pyfile):
-        self.html = self.load(pyfile.url)
+        self.data = self.load(pyfile.url)
         self.get_fileInfo()
 
-        m = re.search(self.IMG_PATTERN, self.html)
+        m = re.search(self.IMG_PATTERN, self.data)
         if m is not None:
             self.link = "http://ulozisko.sk" + m.group(1)
         else:
@@ -43,19 +43,19 @@ class UloziskoSk(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:
             self.error(_("LINK_FREE_PATTERN not found"))
         parsed_url = 'http://www.ulozisko.sk' + m.group(1)
 
-        m = re.search(self.ID_PATTERN, self.html)
+        m = re.search(self.ID_PATTERN, self.data)
         if m is None:
             self.error(_("ID_PATTERN not found"))
         id = m.group(1)
 
         self.log_debug("URL:" + parsed_url + ' ID:' + id)
 
-        m = re.search(self.CAPTCHA_PATTERN, self.html)
+        m = re.search(self.CAPTCHA_PATTERN, self.data)
         if m is None:
             self.error(_("CAPTCHA_PATTERN not found"))
 

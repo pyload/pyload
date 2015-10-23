@@ -28,10 +28,10 @@ class EmbeduploadCom(Crypter):
 
 
     def decrypt(self, pyfile):
-        self.html = self.load(pyfile.url)
+        self.data = self.load(pyfile.url)
         tmp_links = []
 
-        m = re.findall(self.LINK_PATTERN, self.html)
+        m = re.findall(self.LINK_PATTERN, self.data)
         if m is not None:
             prefered_set = set(self.get_config('preferedHoster').split('|'))
             prefered_set = map(lambda s: s.lower().split('.')[0], prefered_set)

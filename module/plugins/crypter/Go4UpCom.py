@@ -37,7 +37,7 @@ class Go4UpCom(SimpleCrypter):
         links = []
         preference = self.get_config("preferred_hoster")
 
-        hosterslink_re = re.search(r'(/download/gethosts/.+?)"', self.html)
+        hosterslink_re = re.search(r'(/download/gethosts/.+?)"', self.data)
         if hosterslink_re:
             hosters = self.load(urlparse.urljoin("http://go4up.com/", hosterslink_re.group(1)))
             for hoster in json.loads(hosters):

@@ -91,33 +91,33 @@ class UlozTo(SimpleHoster):
 
 
     def check_errors(self):
-        if re.search(self.ADULT_PATTERN, self.html):
+        if re.search(self.ADULT_PATTERN, self.data):
             self.log_info(_("Adult content confirmation needed"))
 
-            m = re.search(self.TOKEN_PATTERN, self.html)
+            m = re.search(self.TOKEN_PATTERN, self.data)
             if m is None:
                 self.error(_("TOKEN_PATTERN not found"))
 
-            self.html = self.load(pyfile.url,
+            self.data = self.load(pyfile.url,
                                   get={'do': "askAgeForm-submit"},
                                   post={'agree': "Confirm", '_token_': m.group(1)})
 
-        if self.PASSWD_PATTERN in self.html:
+        if self.PASSWD_PATTERN in self.data:
             password = self.get_password()
 
             if password:
                 self.log_info(_("Password protected link, trying ") + password)
-                self.html = self.load(pyfile.url,
+                self.data = self.load(pyfile.url,
                                       get={'do': "passwordProtectedForm-submit"},
                                       post={'password': password, 'password_send': 'Send'})
 
-                if self.PASSWD_PATTERN in self.html:
+                if self.PASSWD_PATTERN in self.data:
                     self.fail(_("Wrong password"))
             else:
                 self.fail(_("No password found"))
 
-        if re.search(self.VIPLINK_PATTERN, self.html):
-            self.html = self.load(pyfile.url, get={'disclaimer': "1"})
+        if re.search(self.VIPLINK_PATTERN, self.data):
+            self.data = self.load(pyfile.url, get={'disclaimer': "1"})
 
         return super(UlozTo, self).check_errors()
 

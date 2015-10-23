@@ -170,7 +170,7 @@ class SimpleCrypter(Crypter):
 
 
     def preload(self):
-        self.html = self.load(self.pyfile.url,
+        self.data = self.load(self.pyfile.url,
                               cookies=self.COOKIES,
                               ref=False,
                               decode=self.TEXT_ENCODING)
@@ -228,7 +228,7 @@ class SimpleCrypter(Crypter):
         if not self.LINK_FREE_PATTERN:
             self.log_warning(_("Free decrypting not implemented"))
 
-        links = re.findall(self.LINK_FREE_PATTERN, self.html)
+        links = re.findall(self.LINK_FREE_PATTERN, self.data)
         if not links:
             self.error(_("Free decrypted link not found"))
         else:
@@ -240,7 +240,7 @@ class SimpleCrypter(Crypter):
             self.log_warning(_("Premium decrypting not implemented"))
             self.restart(premium=False)
 
-        links = re.findall(self.LINK_PREMIUM_PATTERN, self.html)
+        links = re.findall(self.LINK_PREMIUM_PATTERN, self.data)
         if not links:
             self.error(_("Premium decrypted link found"))
         else:
@@ -249,7 +249,7 @@ class SimpleCrypter(Crypter):
 
     def get_links(self):
         """
-        Returns the links extracted from self.html
+        Returns the links extracted from self.data
         You should override this only if it's impossible to extract links using only the LINK_PATTERN.
         """
         if self.premium:
@@ -269,33 +269,33 @@ class SimpleCrypter(Crypter):
 
     def handle_pages(self, pyfile):
         try:
-            pages = int(re.search(self.PAGES_PATTERN, self.html).group(1))
+            pages = int(re.search(self.PAGES_PATTERN, self.data).group(1))
 
         except Exception:
             pages = 1
 
         for p in xrange(2, pages + 1):
-            self.html = self.load_page(p)
+            self.data = self.load_page(p)
             self.urls.extend(self.get_links())
 
 
     def check_errors(self):
-        if not self.html:
+        if not self.data:
             self.log_debug("No data to check")
             return
 
-        if self.IP_BLOCKED_PATTERN and re.search(self.IP_BLOCKED_PATTERN, self.html):
+        if self.IP_BLOCKED_PATTERN and re.search(self.IP_BLOCKED_PATTERN, self.data):
             self.fail(_("Connection from your current IP address is not allowed"))
 
         elif not self.premium:
-            if self.PREMIUM_ONLY_PATTERN and re.search(self.PREMIUM_ONLY_PATTERN, self.html):
+            if self.PREMIUM_ONLY_PATTERN and re.search(self.PREMIUM_ONLY_PATTERN, self.data):
                 self.fail(_("Link can be decrypted by premium users only"))
 
-            elif self.SIZE_LIMIT_PATTERN and re.search(self.SIZE_LIMIT_PATTERN, self.html):
+            elif self.SIZE_LIMIT_PATTERN and re.search(self.SIZE_LIMIT_PATTERN, self.data):
                 self.fail(_("Link list too large for free decrypt"))
 
         if self.ERROR_PATTERN:
-            m = re.search(self.ERROR_PATTERN, self.html)
+            m = re.search(self.ERROR_PATTERN, self.data)
             if m is not None:
                 try:
                     errmsg = m.group(1)
@@ -343,7 +343,7 @@ class SimpleCrypter(Crypter):
                     self.restart(errmsg)
 
         elif self.WAIT_PATTERN:
-            m = re.search(self.WAIT_PATTERN, self.html)
+            m = re.search(self.WAIT_PATTERN, self.data)
             if m is not None:
                 try:
                     waitmsg = m.group(1).strip()

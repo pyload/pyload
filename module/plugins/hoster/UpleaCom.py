@@ -43,19 +43,19 @@ class UpleaCom(XFSHoster):
 
 
     def handle_free(self, pyfile):
-        m = re.search(self.STEP_PATTERN, self.html)
+        m = re.search(self.STEP_PATTERN, self.data)
         if m is None:
             self.error(_("STEP_PATTERN not found"))
 
-        self.html = self.load(urlparse.urljoin("http://uplea.com/", m.group(1)))
+        self.data = self.load(urlparse.urljoin("http://uplea.com/", m.group(1)))
 
-        m = re.search(self.WAIT_PATTERN, self.html)
+        m = re.search(self.WAIT_PATTERN, self.data)
         if m is not None:
             self.log_debug("Waiting %s seconds" % m.group(1))
             self.wait(m.group(1), True)
             self.retry()
 
-        m = re.search(self.LINK_PATTERN, self.html)
+        m = re.search(self.LINK_PATTERN, self.data)
         if m is None:
             self.error(_("LINK_PATTERN not found"))
 

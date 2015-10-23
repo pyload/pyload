@@ -31,13 +31,13 @@ class FiledropperCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        m = re.search(r'img id="img" src="(.+?)"', self.html)
+        m = re.search(r'img id="img" src="(.+?)"', self.data)
         if m is None:
             self.fail(_("Captcha not found"))
 
         captcha_code = self.captcha.decrypt("http://www.filedropper.com/%s" % m.group(1))
 
-        m = re.search(r'method="post" action="(.+?)"', self.html)
+        m = re.search(r'method="post" action="(.+?)"', self.data)
         if m is not None:
             self.download(urlparse.urljoin("http://www.filedropper.com/", m.group(1)),
                           post={'code': captcha_code})

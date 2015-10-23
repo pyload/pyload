@@ -42,18 +42,18 @@ class Keep2ShareCc(SimpleHoster):
 
 
     def check_errors(self):
-        m = re.search(self.TEMP_ERROR_PATTERN, self.html)
+        m = re.search(self.TEMP_ERROR_PATTERN, self.data)
         if m is not None:
             self.info['error'] = m.group(1)
             self.wantReconnect = True
             self.retry(wait=30 * 60, msg=m.group(0))
 
-        m = re.search(self.ERROR_PATTERN, self.html)
+        m = re.search(self.ERROR_PATTERN, self.data)
         if m is not None:
             errmsg = self.info['error'] = m.group(1)
             self.error(errmsg)
 
-        m = re.search(self.WAIT_PATTERN, self.html)
+        m = re.search(self.WAIT_PATTERN, self.data)
         if m is not None:
             self.log_debug("Hoster told us to wait for %s" % m.group(1))
 
@@ -68,21 +68,21 @@ class Keep2ShareCc(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        self.fid  = re.search(r'<input type="hidden" name="slow_id" value="(.+?)">', self.html).group(1)
-        self.html = self.load(pyfile.url, post={'yt0': '', 'slow_id': self.fid})
+        self.fid  = re.search(r'<input type="hidden" name="slow_id" value="(.+?)">', self.data).group(1)
+        self.data = self.load(pyfile.url, post={'yt0': '', 'slow_id': self.fid})
 
         # self.log_debug(self.fid)
         # self.log_debug(pyfile.url)
 
         self.check_errors()
 
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:
             self.handle_captcha()
             self.wait(31)
-            self.html = self.load(pyfile.url)
+            self.data = self.load(pyfile.url)
 
-            m = re.search(self.LINK_FREE_PATTERN, self.html)
+            m = re.search(self.LINK_FREE_PATTERN, self.data)
             if m is None:
                 self.error(_("Free download link not found"))
 
@@ -95,10 +95,10 @@ class Keep2ShareCc(SimpleHoster):
                      'uniqueId'           : self.fid,
                      'yt0'                : ''}
 
-        m = re.search(r'id="(captcha-form)"', self.html)
+        m = re.search(r'id="(captcha-form)"', self.data)
         self.log_debug("Captcha form found", m)
 
-        m = re.search(self.CAPTCHA_PATTERN, self.html)
+        m = re.search(self.CAPTCHA_PATTERN, self.data)
         self.log_debug("CAPTCHA_PATTERN found %s" % m)
         if m is not None:
             captcha_url = urlparse.urljoin("http://keep2s.cc/", m.group(1))
@@ -109,9 +109,9 @@ class Keep2ShareCc(SimpleHoster):
             post_data.update({'recaptcha_challenge_field': challenge,
                               'recaptcha_response_field' : response})
 
-        self.html = self.load(self.pyfile.url, post=post_data)
+        self.data = self.load(self.pyfile.url, post=post_data)
 
-        if 'verification code is incorrect' in self.html:
+        if 'verification code is incorrect' in self.data:
             self.retry_captcha()
         else:
             self.captcha.correct()

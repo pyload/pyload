@@ -39,10 +39,10 @@ class AndroidfilehostCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        wait = re.search(self.WAIT_PATTERN, self.html)
+        wait = re.search(self.WAIT_PATTERN, self.data)
         self.log_debug("Waiting time: %s seconds" % wait.group(1))
 
-        fid = re.search(r'id="fid" value="(\d+)" />', self.html).group(1)
+        fid = re.search(r'id="fid" value="(\d+)" />', self.data).group(1)
         self.log_debug("FID: %s" % fid)
 
         html = self.load("https://www.androidfilehost.com/libs/otf/mirrors.otf.php",

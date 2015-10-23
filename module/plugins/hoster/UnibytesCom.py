@@ -36,7 +36,7 @@ class UnibytesCom(SimpleHoster):
 
         for _i in xrange(3):
             self.log_debug(action, post_data)
-            self.html = self.load(urlparse.urljoin(domain, action),
+            self.data = self.load(urlparse.urljoin(domain, action),
                                   post=post_data,
                                   redirect=False)
 
@@ -45,12 +45,12 @@ class UnibytesCom(SimpleHoster):
                 self.link = m.group(1)
                 break
 
-            if '>Somebody else is already downloading using your IP-address<' in self.html:
+            if '>Somebody else is already downloading using your IP-address<' in self.data:
                 self.wait(10 * 60, True)
                 self.restart()
 
             if post_data['step'] == "last":
-                m = re.search(self.LINK_FREE_PATTERN, self.html)
+                m = re.search(self.LINK_FREE_PATTERN, self.data)
                 if m is not None:
                     self.captcha.correct()
                     self.link = m.group(1)
@@ -62,7 +62,7 @@ class UnibytesCom(SimpleHoster):
             action, post_data = self.parse_html_form('id="stepForm"')
 
             if last_step == "timer":
-                m = re.search(self.WAIT_PATTERN, self.html)
+                m = re.search(self.WAIT_PATTERN, self.data)
                 self.wait(m.group(1) if m else 60, False)
 
             elif last_step in ("captcha", "last"):

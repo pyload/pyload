@@ -82,13 +82,13 @@ class XFSAccount(MultiAccount):
         if not self.PLUGIN_URL:  #@TODO: Remove in 0.4.10
             return
 
-        self.html = self.load(self.PLUGIN_URL,
+        self.data = self.load(self.PLUGIN_URL,
                               get={'op': "my_account"},
                               cookies=self.COOKIES)
 
-        premium = True if re.search(self.PREMIUM_PATTERN, self.html) else False
+        premium = True if re.search(self.PREMIUM_PATTERN, self.data) else False
 
-        m = re.search(self.VALID_UNTIL_PATTERN, self.html)
+        m = re.search(self.VALID_UNTIL_PATTERN, self.data)
         if m is not None:
             expiredate = m.group(1).strip()
             self.log_debug("Expire date: " + expiredate)
@@ -111,7 +111,7 @@ class XFSAccount(MultiAccount):
         else:
             self.log_debug("VALID UNTIL PATTERN not found")
 
-        m = re.search(self.TRAFFIC_LEFT_PATTERN, self.html)
+        m = re.search(self.TRAFFIC_LEFT_PATTERN, self.data)
         if m is not None:
             try:
                 traffic = m.groupdict()
@@ -139,7 +139,7 @@ class XFSAccount(MultiAccount):
         else:
             self.log_debug("TRAFFIC LEFT PATTERN not found")
 
-        leech = [m.groupdict() for m in re.finditer(self.LEECH_TRAFFIC_PATTERN, self.html)]
+        leech = [m.groupdict() for m in re.finditer(self.LEECH_TRAFFIC_PATTERN, self.data)]
         if leech:
             leechtraffic = 0
             try:
@@ -173,12 +173,12 @@ class XFSAccount(MultiAccount):
 
 
     def signin(self, user, password, data):
-        self.html = self.load(self.LOGIN_URL, cookies=self.COOKIES)
+        self.data = self.load(self.LOGIN_URL, cookies=self.COOKIES)
 
-        if re.search(self.LOGIN_SKIP_PATTERN, self.html):
+        if re.search(self.LOGIN_SKIP_PATTERN, self.data):
             self.skip_login()
 
-        action, inputs = parse_html_form('name="FL"', self.html)
+        action, inputs = parse_html_form('name="FL"', self.data)
         if not inputs:
             inputs = {'op'      : "login",
                       'redirect': self.PLUGIN_URL}
@@ -191,17 +191,17 @@ class XFSAccount(MultiAccount):
         else:
             url = self.LOGIN_URL
 
-        self.html = self.load(url, post=inputs, cookies=self.COOKIES)
+        self.data = self.load(url, post=inputs, cookies=self.COOKIES)
 
         self.check_errors()
 
 
     def check_errors(self):
-        if not self.html:
-            self.log_warning(_("No html code to check"))
+        if not self.data:
+            self.log_debug("No data to check")
             return
 
-        m = re.search(self.LOGIN_BAN_PATTERN, self.html)
+        m = re.search(self.LOGIN_BAN_PATTERN, self.data)
         if m is not None:
             try:
                 errmsg = m.group(1)
@@ -218,7 +218,7 @@ class XFSAccount(MultiAccount):
 
             self.fail_login(errmsg)
 
-        m = re.search(self.LOGIN_FAIL_PATTERN, self.html)
+        m = re.search(self.LOGIN_FAIL_PATTERN, self.data)
         if m is not None:
             try:
                 errmsg = m.group(1)

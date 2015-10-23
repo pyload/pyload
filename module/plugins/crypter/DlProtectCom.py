@@ -35,10 +35,10 @@ class DlProtectCom(SimpleCrypter):
         if not re.match(r"https?://(?:www\.)?dl-protect\.com/.+", self.req.http.lastEffectiveURL):
             return [self.req.http.lastEffectiveURL]
 
-        post_req = {'key'       : re.search(r'name="key" value="(.+?)"', self.html).group(1),
+        post_req = {'key'       : re.search(r'name="key" value="(.+?)"', self.data).group(1),
                     'submitform': ""}
 
-        if "Please click on continue to see the links" in self.html:
+        if "Please click on continue to see the links" in self.data:
             post_req['submitform'] = "Continue"
             self.wait(2)
 
@@ -49,22 +49,22 @@ class DlProtectCom(SimpleCrypter):
             post_req.update({'i'         : b64time,
                              'submitform': "Decrypt+link"})
 
-            if "Password :" in self.html:
+            if "Password :" in self.data:
                 post_req['pwd'] = self.get_password()
 
-            if "Security Code" in self.html:
-                m = re.search(r'/captcha\.php\?key=(.+?)"', self.html)
+            if "Security Code" in self.data:
+                m = re.search(r'/captcha\.php\?key=(.+?)"', self.data)
                 if m is not None:
                     captcha_code = self.captcha.decrypt("http://www.dl-protect.com/captcha.php?key=" + m.group(1), input_type="gif")
                     post_req['secure'] = captcha_code
 
-        self.html = self.load(self.pyfile.url, post=post_req)
+        self.data = self.load(self.pyfile.url, post=post_req)
 
         for errmsg in ("The password is incorrect", "The security code is incorrect"):
-            if errmsg in self.html:
+            if errmsg in self.data:
                 self.fail(_(errmsg[1:]))
 
-        return re.findall(r'<a href="([^/].+?)" target="_blank">', self.html)
+        return re.findall(r'<a href="([^/].+?)" target="_blank">', self.data)
 
 
 getInfo = create_getInfo(DlProtectCom)

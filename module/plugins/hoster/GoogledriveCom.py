@@ -39,7 +39,7 @@ class GoogledriveCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         for _i in xrange(2):
-            m = re.search(self.LINK_FREE_PATTERN, self.html)
+            m = re.search(self.LINK_FREE_PATTERN, self.data)
 
             if m is None:
                 return
@@ -48,7 +48,7 @@ class GoogledriveCom(SimpleHoster):
             dl   = self.isdownload(link, redirect=False)
 
             if not dl:
-                self.html = self.load(link)
+                self.data = self.load(link)
             else:
                 self.link = dl
                 break

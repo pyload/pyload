@@ -23,7 +23,7 @@ class FreetexthostCom(SimpleCrypter):
 
 
     def get_links(self):
-        m = re.search(r'<div id="contentsinner">\s*(.+)<div class="viewcount">', self.html, re.S)
+        m = re.search(r'<div id="contentsinner">\s*(.+)<div class="viewcount">', self.data, re.S)
         if m is None:
             self.error(_("Unable to extract links"))
         links = m.group(1)

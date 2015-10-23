@@ -40,7 +40,7 @@ class VimeoCom(SimpleHoster):
     def handle_free(self, pyfile):
         password = self.get_password()
 
-        if self.js and 'class="btn iconify_down_b"' in self.html:
+        if self.js and 'class="btn iconify_down_b"' in self.data:
             html    = self.js.eval(self.load(pyfile.url, get={'action': "download", 'password': password}))
             pattern = r'href="(?P<URL>http://vimeo\.com.+?)".*?\>(?P<QL>.+?) '
         else:

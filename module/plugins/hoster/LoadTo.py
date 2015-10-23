@@ -43,14 +43,14 @@ class LoadTo(SimpleHoster):
 
     def handle_free(self, pyfile):
         #: Search for Download URL
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:
             self.error(_("LINK_FREE_PATTERN not found"))
 
         self.link = m.group(1)
 
         #: Set Timer - may be obsolete
-        m = re.search(self.WAIT_PATTERN, self.html)
+        m = re.search(self.WAIT_PATTERN, self.data)
         if m is not None:
             self.wait(m.group(1))
 

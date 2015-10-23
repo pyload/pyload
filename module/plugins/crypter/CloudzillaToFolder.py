@@ -28,11 +28,11 @@ class CloudzillaToFolder(SimpleCrypter):
 
 
     def check_errors(self):
-        m = re.search(self.PASSWORD_PATTERN, self.html)
+        m = re.search(self.PASSWORD_PATTERN, self.data)
         if m is not None:
-            self.html = self.load(self.pyfile.url, get={'key': self.get_password()})
+            self.data = self.load(self.pyfile.url, get={'key': self.get_password()})
 
-        if re.search(self.PASSWORD_PATTERN, self.html):
+        if re.search(self.PASSWORD_PATTERN, self.data):
             self.retry(msg="Wrong password")
 
 

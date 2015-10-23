@@ -49,14 +49,14 @@ class FilesMailRu(Hoster):
 
 
     def process(self, pyfile):
-        self.html = self.load(pyfile.url)
+        self.data = self.load(pyfile.url)
         self.url_pattern = '<a href="(.+?)" onclick="return Act\(this\, \'dlink\'\, event\)">(.+?)</a>'
 
         #: Marks the file as "offline" when the pattern was found on the html-page'''
-        if r'<div class="errorMessage mb10">' in self.html:
+        if r'<div class="errorMessage mb10">' in self.data:
             self.offline()
 
-        elif r'Page cannot be displayed' in self.html:
+        elif r'Page cannot be displayed' in self.data:
             self.offline()
 
         #: The filename that will be showed in the list (e.g. test.part1.rar)'''
@@ -82,16 +82,16 @@ class FilesMailRu(Hoster):
 
     def get_file_url(self):
         """
-        Gives you the URL to the file. Extracted from the Files.mail.ru HTML-page stored in self.html
+        Gives you the URL to the file. Extracted from the Files.mail.ru HTML-page stored in self.data
         """
-        return re.search(self.url_pattern, self.html).group(0).split('<a href="')[1].split('" onclick="return Act')[0]
+        return re.search(self.url_pattern, self.data).group(0).split('<a href="')[1].split('" onclick="return Act')[0]
 
 
     def get_file_name(self):
         """
         Gives you the Name for each file. Also extracted from the HTML-Page
         """
-        return re.search(self.url_pattern, self.html).group(0).split(', event)">')[1].split('</a>')[0]
+        return re.search(self.url_pattern, self.data).group(0).split(', event)">')[1].split('</a>')[0]
 
 
     def my_post_process(self):

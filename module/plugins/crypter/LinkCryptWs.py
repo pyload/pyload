@@ -44,8 +44,8 @@ class LinkCryptWs(Crypter):
 
         #: Request package
         self.req.http.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko")  #: Better chance to not get those key-captchas
-        self.html = self.load(self.pyfile.url)
-        self.html = self.load(self.pyfile.url)
+        self.data = self.load(self.pyfile.url)
+        self.data = self.load(self.pyfile.url)
 
 
     def decrypt(self, pyfile):
@@ -91,7 +91,7 @@ class LinkCryptWs(Crypter):
 
 
     def is_online(self):
-        if "<title>Linkcrypt.ws // Error 404</title>" in self.html:
+        if "<title>Linkcrypt.ws // Error 404</title>" in self.data:
             self.log_debug("Folder doesn't exist anymore")
             return False
         else:
@@ -99,7 +99,7 @@ class LinkCryptWs(Crypter):
 
 
     def is_password_protected(self):
-        if "Authorizing" in self.html:
+        if "Authorizing" in self.data:
             self.log_debug("Links are password protected")
             return True
         else:
@@ -107,7 +107,7 @@ class LinkCryptWs(Crypter):
 
 
     def is_captcha_protected(self):
-        if 'id="captcha">' in self.html:
+        if 'id="captcha">' in self.data:
             self.log_debug("Links are captcha protected")
             return True
         else:
@@ -115,7 +115,7 @@ class LinkCryptWs(Crypter):
 
 
     def is_key_captcha_protected(self):
-        if re.search(r'>If the folder does not open after klick on <', self.html, re.I):
+        if re.search(r'>If the folder does not open after klick on <', self.data, re.I):
             return True
         else:
             return False
@@ -126,16 +126,16 @@ class LinkCryptWs(Crypter):
 
         if password:
             self.log_debug("Submitting password [%s] for protected links" % password)
-            self.html = self.load(self.pyfile.url, post={'password': password, 'x': "0", 'y': "0"})
+            self.data = self.load(self.pyfile.url, post={'password': password, 'x': "0", 'y': "0"})
         else:
             self.fail(_("Folder is password protected"))
 
 
     def unlock_captcha_protection(self):
-        captcha_url  = re.search(r'<form.*?id\s*?=\s*?"captcha"[^>]*?>.*?<\s*?input.*?src="(.+?)"', self.html, re.I | re.S).group(1)
+        captcha_url  = re.search(r'<form.*?id\s*?=\s*?"captcha"[^>]*?>.*?<\s*?input.*?src="(.+?)"', self.data, re.I | re.S).group(1)
         captcha_code = self.captcha.decrypt(captcha_url, input_type="gif", output_type='positional')
 
-        self.html = self.load(self.pyfile.url, post={'x': captcha_code[0], 'y': captcha_code[1]})
+        self.data = self.load(self.pyfile.url, post={'x': captcha_code[0], 'y': captcha_code[1]})
 
 
     def get_package_info(self):
@@ -148,7 +148,7 @@ class LinkCryptWs(Crypter):
 
 
     def getunrarpw(self):
-        sitein = self.html
+        sitein = self.data
         indexi = sitein.find("|source|") + 8
         indexe = sitein.find("|", indexi)
 
@@ -165,7 +165,7 @@ class LinkCryptWs(Crypter):
 
 
     def handle_captcha_errors(self):
-        if "Your choice was wrong" in self.html:
+        if "Your choice was wrong" in self.data:
             self.retry_captcha()
         else:
             self.captcha.correct()
@@ -190,7 +190,7 @@ class LinkCryptWs(Crypter):
 
         package_links = []
         pattern = r'<form action="http://linkcrypt.ws/out.html"[^>]*?>.*?<input[^>]*?value="(.+?)"[^>]*?name="file"'
-        ids = re.findall(pattern, self.html, re.I | re.S)
+        ids = re.findall(pattern, self.data, re.I | re.S)
 
         self.log_debug("Decrypting %d Web links" % len(ids))
 
@@ -215,7 +215,7 @@ class LinkCryptWs(Crypter):
     def get_container_html(self):
         self.container_html = []
 
-        script = re.search(r'<div.*?id="ad_cont".*?<script.*?javascrip[^>]*?>(.*?)</script', self.html, re.I | re.S)
+        script = re.search(r'<div.*?id="ad_cont".*?<script.*?javascrip[^>]*?>(.*?)</script', self.data, re.I | re.S)
 
         if script:
             container_html_text = script.group(1)

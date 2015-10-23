@@ -68,7 +68,7 @@ class Container(Crypter):
                 else:
                     self.fail(_("File not exists"))
             else:
-                self.data = self.pyfile.url
+                self.data = self.pyfile.url  #@NOTE: ???
 
 
     def delete_tmp(self):

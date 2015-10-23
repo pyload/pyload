@@ -31,17 +31,17 @@ class SendspaceCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
 
         else:
-            m = re.search(self.CAPTCHA_PATTERN, self.html)
+            m = re.search(self.CAPTCHA_PATTERN, self.data)
             if m is None:
                 params = {'download': "Regular Download"}
             else:
                 captcha_url1 = "http://www.sendspace.com/" + m.group(1)
-                m = re.search(self.USER_CAPTCHA_PATTERN, self.html)
+                m = re.search(self.USER_CAPTCHA_PATTERN, self.data)
                 captcha_url2 = "http://www.sendspace.com/" + m.group(1)
                 params = {'captcha_hash': m.group(2),
                           'captcha_submit': 'Verify',
@@ -49,9 +49,9 @@ class SendspaceCom(SimpleHoster):
 
             self.log_debug(params)
 
-            self.html = self.load(pyfile.url, post=params)
+            self.data = self.load(pyfile.url, post=params)
 
-            m = re.search(self.LINK_FREE_PATTERN, self.html)
+            m = re.search(self.LINK_FREE_PATTERN, self.data)
             if m is None:
                 self.retry_captcha()
             else:

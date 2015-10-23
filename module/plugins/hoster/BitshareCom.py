@@ -48,14 +48,14 @@ class BitshareCom(SimpleHoster):
         self.log_debug("File id is [%s]" % self.file_id)
 
         #: Load main page
-        self.html = self.load(pyfile.url, ref=False)
+        self.data = self.load(pyfile.url, ref=False)
 
         #: Check offline
-        if re.search(self.OFFLINE_PATTERN, self.html):
+        if re.search(self.OFFLINE_PATTERN, self.data):
             self.offline()
 
         #: Check Traffic used up
-        if re.search(self.TRAFFIC_USED_UP, self.html):
+        if re.search(self.TRAFFIC_USED_UP, self.data):
             self.log_info(_("Your Traffic is used up for today"))
             self.wait(30 * 60, True)
             self.retry()
@@ -64,13 +64,13 @@ class BitshareCom(SimpleHoster):
         m     = re.match(self.__pattern__, pyfile.url)
         name1 = m.group('NAME') if m else None
 
-        m     = re.search(self.INFO_PATTERN, self.html)
+        m     = re.search(self.INFO_PATTERN, self.data)
         name2 = m.group('N') if m else None
 
         pyfile.name = max(name1, name2)
 
         #: Ajax file id
-        self.ajaxid = re.search(self.AJAXID_PATTERN, self.html).group(1)
+        self.ajaxid = re.search(self.AJAXID_PATTERN, self.data).group(1)
         self.log_debug("File ajax id is [%s]" % self.ajaxid)
 
         #: This may either download our file or forward us to an error page

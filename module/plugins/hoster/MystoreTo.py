@@ -36,7 +36,7 @@ class MystoreTo(SimpleHoster):
 
     def handle_free(self, pyfile):
         try:
-            fid = re.search(r'wert="(.+?)"', self.html).group(1)
+            fid = re.search(r'wert="(.+?)"', self.data).group(1)
 
         except AttributeError:
             self.error(_("File-ID not found"))

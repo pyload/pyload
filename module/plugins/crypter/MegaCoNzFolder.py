@@ -27,8 +27,8 @@ class MegaCoNzFolder(Crypter):
 
     def decrypt(self, pyfile):
         url       = "https://mega.co.nz/#F!%s!%s" % re.match(self.__pattern__, pyfile.url).groups()
-        self.html = self.load("http://rapidgen.org/linkfinder", post={'linklisturl': url})
-        self.urls = re.findall(r'(https://mega(\.co)?\.nz/#N!.+?)<', self.html)
+        self.data = self.load("http://rapidgen.org/linkfinder", post={'linklisturl': url})
+        self.urls = re.findall(r'(https://mega(\.co)?\.nz/#N!.+?)<', self.data)
 
 
 getInfo = create_getInfo(MegaCoNzFolder)

@@ -46,11 +46,11 @@ class RemixshareCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        b = re.search(self.LINK_PATTERN, self.html)
+        b = re.search(self.LINK_PATTERN, self.data)
         if not b:
             self.error(_("File url"))
 
-        c = re.search(self.TOKEN_PATTERN, self.html)
+        c = re.search(self.TOKEN_PATTERN, self.data)
         if not c:
             self.error(_("File token"))
 

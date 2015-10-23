@@ -46,7 +46,7 @@ class ZippyshareCom(SimpleHoster):
 
         if captcha_key:
             try:
-                self.link = re.search(self.LINK_PREMIUM_PATTERN, self.html)
+                self.link = re.search(self.LINK_PREMIUM_PATTERN, self.data)
                 recaptcha.challenge()
 
             except Exception, e:
@@ -61,7 +61,7 @@ class ZippyshareCom(SimpleHoster):
 
     def get_link(self):
         #: Get all the scripts inside the html body
-        soup = BeautifulSoup.BeautifulSoup(self.html)
+        soup = BeautifulSoup.BeautifulSoup(self.data)
         scripts = (s.getText().strip() for s in soup.body.findAll('script', type='text/javascript'))
 
         #: Meant to be populated with the initialization of all the DOM elements found in the scripts

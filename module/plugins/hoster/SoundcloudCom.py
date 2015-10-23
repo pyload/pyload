@@ -28,13 +28,13 @@ class SoundcloudCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         try:
-            song_id = re.search(r'sounds:(\d+)"', self.html).group(1)
+            song_id = re.search(r'sounds:(\d+)"', self.data).group(1)
 
         except Exception:
             self.error(_("Could not find song id"))
 
         try:
-            client_id = re.search(r'"clientID":"(.+?)"', self.html).group(1)
+            client_id = re.search(r'"clientID":"(.+?)"', self.data).group(1)
 
         except Exception:
             client_id = "b45b1aa10f1ac2941910a7f0d10f8e28"

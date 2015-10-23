@@ -45,18 +45,18 @@ class XHamsterCom(Hoster):
 
     def download_html(self):
         url = self.pyfile.url
-        self.html = self.load(url)
+        self.data = self.load(url)
 
 
     def get_file_url(self):
         """
         Returns the absolute downloadable filepath
         """
-        if not self.html:
+        if not self.data:
             self.download_html()
 
         flashvar_pattern = re.compile('flashvars = ({.*?});', re.S)
-        json_flashvar = flashvar_pattern.search(self.html)
+        json_flashvar = flashvar_pattern.search(self.data)
 
         if not json_flashvar:
             self.error(_("flashvar not found"))
@@ -77,7 +77,7 @@ class XHamsterCom(Hoster):
             self.error(_("url_mode not found"))
 
         if self.desired_fmt == ".mp4":
-            file_url = re.search(r"<a href=\"" + srv_url + "(.+?)\"", self.html)
+            file_url = re.search(r"<a href=\"" + srv_url + "(.+?)\"", self.data)
             if file_url is None:
                 self.error(_("file_url not found"))
 
@@ -101,20 +101,20 @@ class XHamsterCom(Hoster):
 
 
     def get_file_name(self):
-        if not self.html:
+        if not self.data:
             self.download_html()
 
         pattern = r'<title>(.*?) - xHamster\.com</title>'
-        name = re.search(pattern, self.html)
+        name = re.search(pattern, self.data)
         if name is None:
             pattern = r'<h1 >(.*)</h1>'
-            name = re.search(pattern, self.html)
+            name = re.search(pattern, self.data)
             if name is None:
                 pattern = r'http://[www.]+xhamster\.com/movies/.*/(.*?)\.html?'
                 name = re.match(file_name_pattern, self.pyfile.url)
                 if name is None:
                     pattern = r'<div id="element_str_id" style="display:none;">(.*)</div>'
-                    name = re.search(pattern, self.html)
+                    name = re.search(pattern, self.data)
                     if name is None:
                         return "Unknown"
 
@@ -125,9 +125,9 @@ class XHamsterCom(Hoster):
         """
         Returns True or False
         """
-        if not self.html:
+        if not self.data:
             self.download_html()
-        if re.search(r"(.*Video not found.*)", self.html):
+        if re.search(r"(.*Video not found.*)", self.data):
             return False
         else:
             return True

@@ -34,7 +34,7 @@ class FileStoreTo(SimpleHoster):
     def handle_free(self, pyfile):
         self.wait(10)
         self.link = self.load("http://filestore.to/ajax/download.php",
-                              get={'D': re.search(r'"D=(\w+)', self.html).group(1)})
+                              get={'D': re.search(r'"D=(\w+)', self.data).group(1)})
 
 
 getInfo = create_getInfo(FileStoreTo)

@@ -92,19 +92,19 @@ class XFSHoster(SimpleHoster):
 
             self.check_errors()
 
-            m = re.search(self.LINK_PATTERN, self.html, re.S)
+            m = re.search(self.LINK_PATTERN, self.data, re.S)
             if m is not None:
                 break
 
             data = self._post_parameters()
 
-            self.html = self.load(pyfile.url, post=data, redirect=False)
+            self.data = self.load(pyfile.url, post=data, redirect=False)
 
             m = re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I)
             if m and not "op=" in m.group(1):
                 break
 
-            m = re.search(self.LINK_PATTERN, self.html, re.S)
+            m = re.search(self.LINK_PATTERN, self.data, re.S)
             if m is not None:
                 break
         else:
@@ -123,7 +123,7 @@ class XFSHoster(SimpleHoster):
             self.fail(_("Only registered or premium users can use url leech feature"))
 
         #: Only tested with easybytez.com
-        self.html = self.load("http://www.%s/" % self.PLUGIN_DOMAIN)
+        self.data = self.load("http://www.%s/" % self.PLUGIN_DOMAIN)
 
         action, inputs = self.parse_html_form()
 
@@ -138,7 +138,7 @@ class XFSHoster(SimpleHoster):
 
         self.req.setOption("timeout", 600)  #: Wait for file to upload to easybytez.com
 
-        self.html = self.load(action, post=inputs)
+        self.data = self.load(action, post=inputs)
 
         self.check_errors()
 
@@ -151,7 +151,7 @@ class XFSHoster(SimpleHoster):
         stmsg = inputs['st']
 
         if stmsg == 'OK':
-            self.html = self.load(action, post=inputs)
+            self.data = self.load(action, post=inputs)
 
         elif 'Can not leech file' in stmsg:
             self.retry(20, 3 * 60, _("Can not leech file"))
@@ -163,7 +163,7 @@ class XFSHoster(SimpleHoster):
             self.fail(stmsg)
 
         #: Get easybytez.com link for uploaded file
-        m = re.search(self.LINK_LEECH_PATTERN, self.html)
+        m = re.search(self.LINK_LEECH_PATTERN, self.data)
         if m is None:
             self.error(_("LINK_LEECH_PATTERN not found"))
 
@@ -195,7 +195,7 @@ class XFSHoster(SimpleHoster):
                     self.fail(_("Missing password"))
 
             if not self.premium:
-                m = re.search(self.WAIT_PATTERN, self.html)
+                m = re.search(self.WAIT_PATTERN, self.data)
                 if m is not None:
                     wait_time = int(m.group(1))
                     self.set_wait(wait_time)
@@ -216,13 +216,13 @@ class XFSHoster(SimpleHoster):
 
 
     def handle_captcha(self, inputs):
-        m = re.search(self.CAPTCHA_PATTERN, self.html)
+        m = re.search(self.CAPTCHA_PATTERN, self.data)
         if m is not None:
             captcha_url = m.group(1)
             inputs['code'] = self.captcha.decrypt(captcha_url)
             return
 
-        m = re.search(self.CAPTCHA_BLOCK_PATTERN, self.html, re.S)
+        m = re.search(self.CAPTCHA_BLOCK_PATTERN, self.data, re.S)
         if m is not None:
             captcha_div = m.group(1)
             numerals    = re.findall(r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
@@ -236,7 +236,7 @@ class XFSHoster(SimpleHoster):
 
         recaptcha = ReCaptcha(self)
         try:
-            captcha_key = re.search(self.RECAPTCHA_PATTERN, self.html).group(1)
+            captcha_key = re.search(self.RECAPTCHA_PATTERN, self.data).group(1)
 
         except Exception:
             captcha_key = recaptcha.detect_key()
@@ -250,7 +250,7 @@ class XFSHoster(SimpleHoster):
 
         solvemedia = SolveMedia(self)
         try:
-            captcha_key = re.search(self.SOLVEMEDIA_PATTERN, self.html).group(1)
+            captcha_key = re.search(self.SOLVEMEDIA_PATTERN, self.data).group(1)
 
         except Exception:
             captcha_key = solvemedia.detect_key()

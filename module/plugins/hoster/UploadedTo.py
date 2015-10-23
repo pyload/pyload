@@ -70,12 +70,12 @@ class UploadedTo(SimpleHoster):
     def handle_free(self, pyfile):
         self.load("http://uploaded.net/language/en", just_header=True)
 
-        self.html = self.load("http://uploaded.net/js/download.js")
+        self.data = self.load("http://uploaded.net/js/download.js")
 
         recaptcha = ReCaptcha(self)
         response, challenge = recaptcha.challenge()
 
-        self.html = self.load("http://uploaded.net/io/ticket/captcha/%s" % self.info['pattern']['ID'],
+        self.data = self.load("http://uploaded.net/io/ticket/captcha/%s" % self.info['pattern']['ID'],
                               post={'recaptcha_challenge_field': challenge,
                                     'recaptcha_response_field' : response})
         self.check_errors()

@@ -38,23 +38,23 @@ class VeehdCom(Hoster):
     def download_html(self):
         url = self.pyfile.url
         self.log_debug("Requesting page: %s" % url)
-        self.html = self.load(url)
+        self.data = self.load(url)
 
 
     def file_exists(self):
-        if not self.html:
+        if not self.data:
             self.download_html()
 
-        if '<title>Veehd</title>' in self.html:
+        if '<title>Veehd</title>' in self.data:
             return False
         return True
 
 
     def get_file_name(self):
-        if not self.html:
+        if not self.data:
             self.download_html()
 
-        m = re.search(r'<title.*?>([^<]+) on Veehd</title>', self.html)
+        m = re.search(r'<title.*?>([^<]+) on Veehd</title>', self.data)
         if m is None:
             self.error(_("Video title not found"))
 
@@ -73,11 +73,11 @@ class VeehdCom(Hoster):
         """
         Returns the absolute downloadable filepath
         """
-        if not self.html:
+        if not self.data:
             self.download_html()
 
         m = re.search(r'<embed type="video/divx" src="(http://([^/]*\.)?veehd\.com/dl/.+?)"',
-                          self.html)
+                          self.data)
         if m is None:
             self.error(_("Embedded video url not found"))
 

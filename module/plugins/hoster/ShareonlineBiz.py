@@ -68,7 +68,7 @@ class ShareonlineBiz(SimpleHoster):
         recaptcha = ReCaptcha(self)
         response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
 
-        m = re.search(r'var wait=(\d+);', self.html)
+        m = re.search(r'var wait=(\d+);', self.data)
         self.set_wait(int(m.group(1)) if m else 30)
 
         res = self.load("%s/free/captcha/%d" % (self.pyfile.url, int(time.time() * 1000)),
@@ -85,7 +85,7 @@ class ShareonlineBiz(SimpleHoster):
     def handle_free(self, pyfile):
         self.wait(3)
 
-        self.html = self.load("%s/free/" % pyfile.url,
+        self.data = self.load("%s/free/" % pyfile.url,
                               post={'dl_free': "1", 'choice': "free"})
 
         self.check_errors()
@@ -154,7 +154,7 @@ class ShareonlineBiz(SimpleHoster):
         errmsg = m.group(1).lower()
 
         try:
-            self.log_error(errmsg, re.search(self.ERROR_PATTERN, self.html).group(1))
+            self.log_error(errmsg, re.search(self.ERROR_PATTERN, self.data).group(1))
 
         except Exception:
             self.log_error(_("Unknown error occurred"), errmsg)

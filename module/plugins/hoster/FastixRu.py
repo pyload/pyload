@@ -28,15 +28,15 @@ class FastixRu(MultiHoster):
 
 
     def handle_premium(self, pyfile):
-        self.html = self.load("http://fastix.ru/api_v2/",
+        self.data = self.load("http://fastix.ru/api_v2/",
                               get={'apikey': self.account.get_data('apikey'),
                                    'sub'   : "getdirectlink",
                                    'link'  : pyfile.url})
-        data = json.loads(self.html)
+        data = json.loads(self.data)
 
         self.log_debug("Json data", data)
 
-        if "error\":true" in self.html:
+        if "error\":true" in self.data:
             self.offline()
         else:
             self.link = data['downloadlink']

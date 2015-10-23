@@ -35,7 +35,7 @@ class TusfilesNetFolder(XFSCrypter):
 
 
     def handle_pages(self, pyfile):
-        pages = re.search(self.PAGES_PATTERN, self.html)
+        pages = re.search(self.PAGES_PATTERN, self.data)
 
         if pages:
             pages = int(math.ceil(int(pages.group('pages')) / 25.0))
@@ -43,7 +43,7 @@ class TusfilesNetFolder(XFSCrypter):
             return
 
         for p in xrange(2, pages + 1):
-            self.html = self.load_page(p)
+            self.data = self.load_page(p)
             self.urls.append(self.get_links())
 
 

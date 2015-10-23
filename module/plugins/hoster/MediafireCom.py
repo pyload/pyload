@@ -43,7 +43,7 @@ class MediafireCom(SimpleHoster):
 
         if captcha_key:
             response, challenge = solvemedia.challenge(captcha_key)
-            self.html = self.load("http://www.mediafire.com/?" + self.info['pattern']['ID'],
+            self.data = self.load("http://www.mediafire.com/?" + self.info['pattern']['ID'],
                                   post={'adcopy_challenge': challenge,
                                         'adcopy_response' : response})
             return
@@ -53,23 +53,23 @@ class MediafireCom(SimpleHoster):
 
         if captcha_key:
             response, challenge = recaptcha.challenge(captcha_key)
-            self.html = self.load(self.pyfile.url,
+            self.data = self.load(self.pyfile.url,
                                   post={'g-recaptcha-response': response})
 
 
     def handle_free(self, pyfile):
         self.handle_captcha()
 
-        if self.PASSWORD_PATTERN in self.html:
+        if self.PASSWORD_PATTERN in self.data:
             password = self.get_password()
 
             if not password:
                 self.fail(_("No password found"))
             else:
                 self.log_info(_("Password protected link, trying: ") + password)
-                self.html = self.load(self.link, post={'downloadp': password})
+                self.data = self.load(self.link, post={'downloadp': password})
 
-                if self.PASSWORD_PATTERN in self.html:
+                if self.PASSWORD_PATTERN in self.data:
                     self.fail(_("Wrong password"))
 
         return super(MediafireCom, self).handle_free(pyfile)

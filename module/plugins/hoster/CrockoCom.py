@@ -35,19 +35,19 @@ class CrockoCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        if "You need Premium membership to download this file." in self.html:
+        if "You need Premium membership to download this file." in self.data:
             self.fail(_("You need Premium membership to download this file"))
 
         for _i in xrange(5):
-            m = re.search(self.CAPTCHA_PATTERN, self.html)
+            m = re.search(self.CAPTCHA_PATTERN, self.data)
             if m is not None:
                 url = urlparse.urljoin("http://crocko.com/", m.group(1))
                 self.wait(m.group(2))
-                self.html = self.load(url)
+                self.data = self.load(url)
             else:
                 break
 
-        m = re.search(self.FORM_PATTERN, self.html, re.S)
+        m = re.search(self.FORM_PATTERN, self.data, re.S)
         if m is None:
             self.error(_("FORM_PATTERN not found"))
 

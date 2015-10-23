@@ -36,11 +36,11 @@ class FastshareCz(SimpleHoster):
 
 
     def check_errors(self):
-        if self.SLOT_ERROR in self.html:
+        if self.SLOT_ERROR in self.data:
             errmsg = self.info['error'] = _("No free slots")
             self.retry(12, 60, errmsg)
 
-        if self.CREDIT_ERROR in self.html:
+        if self.CREDIT_ERROR in self.data:
             errmsg = self.info['error'] = _("Not enough traffic left")
             self.log_warning(errmsg)
             self.restart(premium=False)
@@ -49,7 +49,7 @@ class FastshareCz(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        m = re.search(self.FREE_URL_PATTERN, self.html)
+        m = re.search(self.FREE_URL_PATTERN, self.data)
         if m is not None:
             action, captcha_src = m.groups()
         else:

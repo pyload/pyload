@@ -34,7 +34,7 @@ class EuroshareEu(SimpleHoster):
 
 
     def handle_premium(self, pyfile):
-        if self.ERROR_PATTERN in self.html:
+        if self.ERROR_PATTERN in self.data:
             self.account.relogin()
             self.retry(msg=_("User not logged in"))
 
@@ -54,10 +54,10 @@ class EuroshareEu(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        if re.search(self.DL_LIMIT_PATTERN, self.html):
+        if re.search(self.DL_LIMIT_PATTERN, self.data):
             self.wait(5 * 60, 12, _("Download limit reached"))
 
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:
             self.error(_("LINK_FREE_PATTERN not found"))
 

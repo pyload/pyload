@@ -43,11 +43,11 @@ class DepositfilesCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        self.html = self.load(pyfile.url, post={'gateway_result': "1"})
+        self.data = self.load(pyfile.url, post={'gateway_result': "1"})
 
         self.check_errors()
 
-        m = re.search(r"var fid = '(\w+)';", self.html)
+        m = re.search(r"var fid = '(\w+)';", self.data)
         if m is None:
             self.retry(wait=5)
         params = {'fid': m.group(1)}
@@ -60,29 +60,29 @@ class DepositfilesCom(SimpleHoster):
         if captcha_key is None:
             return
 
-        self.html = self.load("https://dfiles.eu/get_file.php", get=params)
+        self.data = self.load("https://dfiles.eu/get_file.php", get=params)
 
-        if '<input type=button value="Continue" onclick="check_recaptcha' in self.html:
+        if '<input type=button value="Continue" onclick="check_recaptcha' in self.data:
             params['response'], params['challenge'] = recaptcha.challenge(captcha_key)
-            self.html = self.load("https://dfiles.eu/get_file.php", get=params)
+            self.data = self.load("https://dfiles.eu/get_file.php", get=params)
 
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
             self.link = urllib.unquote(m.group(1))
 
 
     def handle_premium(self, pyfile):
-        if '<span class="html_download_api-gold_traffic_limit">' in self.html:
+        if '<span class="html_download_api-gold_traffic_limit">' in self.data:
             self.log_warning(_("Download limit reached"))
             self.retry(25, 60 * 60, "Download limit reached")
 
-        elif 'onClick="show_gold_offer' in self.html:
+        elif 'onClick="show_gold_offer' in self.data:
             self.account.relogin()
             self.retry()
 
         else:
-            link   = re.search(self.LINK_PREMIUM_PATTERN, self.html)
-            mirror = re.search(self.LINK_MIRROR_PATTERN, self.html)
+            link   = re.search(self.LINK_PREMIUM_PATTERN, self.data)
+            mirror = re.search(self.LINK_MIRROR_PATTERN, self.data)
 
             if link:
                 self.link = link.group(1)

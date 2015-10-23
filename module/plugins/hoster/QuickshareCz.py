@@ -27,11 +27,11 @@ class QuickshareCz(SimpleHoster):
 
 
     def process(self, pyfile):
-        self.html = self.load(pyfile.url)
+        self.data = self.load(pyfile.url)
         self.get_fileInfo()
 
         #: Parse js variables
-        self.jsvars = dict((x, y.strip("'")) for x, y in re.findall(r"var (\w+) = ([\d.]+|'.+?')", self.html))
+        self.jsvars = dict((x, y.strip("'")) for x, y in re.findall(r"var (\w+) = ([\d.]+|'.+?')", self.data))
         self.log_debug(self.jsvars)
         pyfile.name = self.jsvars['ID3']
 

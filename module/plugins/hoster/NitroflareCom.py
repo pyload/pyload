@@ -38,7 +38,7 @@ class NitroflareCom(SimpleHoster):
         self.load(pyfile.url, post={'goToFreePage': ""})
 
         self.load("http://nitroflare.com/ajax/setCookie.php", post={'fileId': self.info['pattern']['ID']})
-        self.html = self.load("http://nitroflare.com/ajax/freeDownload.php",
+        self.data = self.load("http://nitroflare.com/ajax/freeDownload.php",
                               post={'method': "startTimer", 'fileId': self.info['pattern']['ID']})
 
         self.check_errors()
@@ -56,7 +56,7 @@ class NitroflareCom(SimpleHoster):
         recaptcha = ReCaptcha(self)
         response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
 
-        self.html = self.load("http://nitroflare.com/ajax/freeDownload.php",
+        self.data = self.load("http://nitroflare.com/ajax/freeDownload.php",
                               post={'method'                   : "fetchDownload",
                                     'recaptcha_challenge_field': challenge,
                                     'recaptcha_response_field' : response})

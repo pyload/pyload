@@ -35,7 +35,7 @@ class OboomCom(Hoster):
     def process(self, pyfile):
         self.pyfile.url.replace(".com/#id=", ".com/#")
         self.pyfile.url.replace(".com/#/", ".com/#")
-        self.html = self.load(pyfile.url)
+        self.data = self.load(pyfile.url)
         self.get_file_id(self.pyfile.url)
         self.get_session_token()
         self.get_fileInfo(self.session_token, self.file_id)

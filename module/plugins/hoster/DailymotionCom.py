@@ -65,7 +65,7 @@ class DailymotionCom(Hoster):
         streams = []
 
         for result in re.finditer(r"\"(?P<URL>http:\\/\\/www.dailymotion.com\\/cdn\\/H264-(?P<QF>.*?)\\.*?)\"",
-                                  self.html):
+                                  self.data):
             url = result.group('URL')
             qf  = result.group('QF')
 
@@ -123,7 +123,7 @@ class DailymotionCom(Hoster):
         self.check_info(pyfile)
 
         id = re.match(self.__pattern__, pyfile.url).group('ID')
-        self.html = self.load("http://www.dailymotion.com/embed/video/" + id)
+        self.data = self.load("http://www.dailymotion.com/embed/video/" + id)
 
         streams = self.get_streams()
         quality = self.get_quality()

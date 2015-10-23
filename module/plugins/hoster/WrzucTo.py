@@ -32,7 +32,7 @@ class WrzucTo(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        data = dict(re.findall(r'(md5|file): "(.*?)"', self.html))
+        data = dict(re.findall(r'(md5|file): "(.*?)"', self.data))
         if len(data) != 2:
             self.error(_("No file ID"))
 
@@ -41,9 +41,9 @@ class WrzucTo(SimpleHoster):
         self.load("http://www.wrzuc.to/ajax/server/prepair", post={'md5': data['md5']})
 
         self.req.http.lastURL = pyfile.url
-        self.html = self.load("http://www.wrzuc.to/ajax/server/download_link", post={'file': data['file']})
+        self.data = self.load("http://www.wrzuc.to/ajax/server/download_link", post={'file': data['file']})
 
-        data.update(re.findall(r'"(download_link|server_id)":"(.*?)"', self.html))
+        data.update(re.findall(r'"(download_link|server_id)":"(.*?)"', self.data))
         if len(data) != 4:
             self.error(_("No download URL"))
 

@@ -46,13 +46,13 @@ class KingfilesNet(SimpleHoster):
                      'referer'    : "",
                      'method_free': "+"}
 
-        self.html = self.load(pyfile.url, post=post_data)
+        self.data = self.load(pyfile.url, post=post_data)
 
         solvemedia = SolveMedia(self)
         response, challenge = solvemedia.challenge()
 
         #: Make the downloadlink appear and load the file
-        m = re.search(self.RAND_ID_PATTERN, self.html)
+        m = re.search(self.RAND_ID_PATTERN, self.data)
         if m is None:
             self.error(_("Random key not found"))
 
@@ -69,9 +69,9 @@ class KingfilesNet(SimpleHoster):
                      'adcopy_challenge': challenge,
                      'down_direct'     : "1"}
 
-        self.html = self.load(pyfile.url, post=post_data)
+        self.data = self.load(pyfile.url, post=post_data)
 
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:
             self.error(_("Download url not found"))
 

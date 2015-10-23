@@ -30,16 +30,16 @@ class DataHuFolder(SimpleCrypter):
     def prepare(self):
         super(DataHuFolder, self).prepare()
 
-        if u'K\xe9rlek add meg a jelsz\xf3t' in self.html:  #: Password protected
+        if u'K\xe9rlek add meg a jelsz\xf3t' in self.data:  #: Password protected
             password = self.get_password()
             if not password:
                 self.fail(_("Password required"))
 
             self.log_debug("The folder is password protected', 'Using password: " + password)
 
-            self.html = self.load(self.pyfile.url, post={'mappa_pass': password})
+            self.data = self.load(self.pyfile.url, post={'mappa_pass': password})
 
-            if u'Hib\xe1s jelsz\xf3' in self.html:  #: Wrong password
+            if u'Hib\xe1s jelsz\xf3' in self.data:  #: Wrong password
                 self.fail(_("Wrong password"))
 
 

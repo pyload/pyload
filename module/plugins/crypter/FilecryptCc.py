@@ -48,9 +48,9 @@ class FilecryptCc(Crypter):
 
 
     def decrypt(self, pyfile):
-        self.html = self.load(pyfile.url)
+        self.data = self.load(pyfile.url)
 
-        if "content notfound" in self.html:  #@NOTE: "content notfound" is NOT a typo
+        if "content notfound" in self.data:  #@NOTE: "content notfound" is NOT a typo
             self.offline()
 
         self.handle_password_protection()
@@ -77,7 +77,7 @@ class FilecryptCc(Crypter):
 
 
     def handle_password_protection(self):
-        if '<input type="text" name="password"' not in self.html:
+        if '<input type="text" name="password"' not in self.data:
             return
 
         self.log_info(_("Folder is password protected"))
@@ -87,15 +87,15 @@ class FilecryptCc(Crypter):
         if not password:
             self.fail(_("Please enter the password in package section and try again"))
 
-        self.html = self.load(self.pyfile.url, post={'password': password})
+        self.data = self.load(self.pyfile.url, post={'password': password})
 
 
     def handle_captcha(self):
-        if re.search(self.CAPTCHA_PATTERN, self.html):
-            m1  = re.search(self.INTERNAL_CAPTCHA_PATTERN, self.html)
-            m2 = re.search(self.CIRCLE_CAPTCHA_PATTERN, self.html)
-            m3 = re.search(self.SOLVE_MEDIA_PATTERN, self.html)
-            m4 = re.search(self.KEY_CAPTCHA_PATTERN, self.html)
+        if re.search(self.CAPTCHA_PATTERN, self.data):
+            m1  = re.search(self.INTERNAL_CAPTCHA_PATTERN, self.data)
+            m2 = re.search(self.CIRCLE_CAPTCHA_PATTERN, self.data)
+            m3 = re.search(self.SOLVE_MEDIA_PATTERN, self.data)
+            m4 = re.search(self.KEY_CAPTCHA_PATTERN, self.data)
 
             if m1:  #: Normal captcha
                 self.log_debug("Internal Captcha URL: %s" % urlparse.urljoin(self.pyfile.url, m1.group(1)))
@@ -154,7 +154,7 @@ class FilecryptCc(Crypter):
 
         else:
             self.log_info(_("No captcha found"))
-            self.site_with_links = self.html
+            self.site_with_links = self.data
 
 
 

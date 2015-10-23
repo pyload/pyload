@@ -42,7 +42,7 @@ class MegaRapidoNet(MultiHoster):
 
 
     def handle_premium(self, pyfile):
-        self.html = self.load("http://megarapido.net/gerar.php",
+        self.data = self.load("http://megarapido.net/gerar.php",
                               post={'rand'     :random_with_N_digits(16),
                                     'urllist'  : pyfile.url,
                                     'links'    : pyfile.url,
@@ -51,7 +51,7 @@ class MegaRapidoNet(MultiHoster):
                                     'user'     : self.account.get_data('sid'),
                                     'autoreset': ""})
 
-        if "desloga e loga novamente para gerar seus links" in self.html.lower():
+        if "desloga e loga novamente para gerar seus links" in self.data.lower():
             self.error(_("You have logged in at another place"))
 
         return super(MegaRapidoNet, self).handle_premium(pyfile)

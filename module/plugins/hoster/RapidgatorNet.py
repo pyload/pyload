@@ -101,7 +101,7 @@ class RapidgatorNet(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        jsvars = dict(re.findall(self.JSVARS_PATTERN, self.html))
+        jsvars = dict(re.findall(self.JSVARS_PATTERN, self.data))
         self.log_debug(jsvars)
 
         self.req.http.lastURL = pyfile.url
@@ -121,9 +121,9 @@ class RapidgatorNet(SimpleHoster):
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
 
         url = "http://rapidgator.net%s" % jsvars.get('captchaUrl', '/download/captcha')
-        self.html = self.load(url)
+        self.data = self.load(url)
 
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
         else:
@@ -134,11 +134,11 @@ class RapidgatorNet(SimpleHoster):
 
             response, challenge  = captcha.challenge()
 
-            self.html = self.load(url, post={'DownloadCaptchaForm[captcha]': "",
+            self.data = self.load(url, post={'DownloadCaptchaForm[captcha]': "",
                                              'adcopy_challenge'            : challenge,
                                              'adcopy_response'             : response})
 
-            if "The verification code is incorrect" in self.html:
+            if "The verification code is incorrect" in self.data:
                 self.retry_captcha()
             else:
                 self.captcha.correct()

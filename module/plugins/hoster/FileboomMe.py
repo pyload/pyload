@@ -39,19 +39,19 @@ class FileboomMe(SimpleHoster):
     def handle_free(self, pyfile):
         post_url = urlparse.urljoin(pyfile.url, "file/" + self.info['pattern']['ID'])
 
-        m = re.search(r'data-slow-id="(\w+)"', self.html)
+        m = re.search(r'data-slow-id="(\w+)"', self.data)
         if m is not None:
-            self.html = self.load(post_url,
+            self.data = self.load(post_url,
                                   post={'slow_id': m.group(1)})
 
-            m = re.search(self.LINK_PATTERN, self.html)
+            m = re.search(self.LINK_PATTERN, self.data)
             if m is not None:
                 self.link = urlparse.urljoin(pyfile.url, m.group(0))
 
             else:
-                m = re.search(r'<input type="hidden" name="uniqueId" value="(\w+)">', self.html)
+                m = re.search(r'<input type="hidden" name="uniqueId" value="(\w+)">', self.data)
                 if m is None:
-                    m = re.search(r'>\s*Please wait ([\d:]+)', self.html)
+                    m = re.search(r'>\s*Please wait ([\d:]+)', self.data)
                     if m is not None:
                         wait_time = 0
                         for v in re.findall(r'(\d+)', m.group(1), re.I):
@@ -62,26 +62,26 @@ class FileboomMe(SimpleHoster):
                 else:
                     uniqueId = m.group(1)
 
-                    m = re.search(self.CAPTCHA_PATTERN, self.html)
+                    m = re.search(self.CAPTCHA_PATTERN, self.data)
                     if m is not None:
                         captcha = self.captcha.decrypt(urlparse.urljoin(pyfile.url, m.group(1)))
-                        self.html = self.load(post_url,
+                        self.data = self.load(post_url,
                                               post={'CaptchaForm[code]'  : captcha,
                                                     'free'               : 1,
                                                     'freeDownloadRequest': 1,
                                                     'uniqueId'           : uniqueId})
 
-                        if 'The verification code is incorrect' in self.html:
+                        if 'The verification code is incorrect' in self.data:
                             self.retry_captcha()
 
                         else:
                             self.check_errors()
 
-                            self.html = self.load(post_url,
+                            self.data = self.load(post_url,
                                                   post={'free'    : 1,
                                                         'uniqueId': uniqueId})
 
-                            m = re.search(self.LINK_PATTERN, self.html)
+                            m = re.search(self.LINK_PATTERN, self.data)
                             if m is not None:
                                 self.link = urlparse.urljoin(pyfile.url, m.group(0))
 

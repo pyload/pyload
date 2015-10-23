@@ -54,15 +54,15 @@ class NCryptIn(Crypter):
         else:
 
             #: Request folder home
-            self.html = self.request_folder_home()
-            self.cleaned_html = self.remove_html_crap(self.html)
+            self.data = self.request_folder_home()
+            self.cleaned_html = self.remove_html_crap(self.data)
             if not self.is_online():
                 self.offline()
 
             #: Check for folder protection
             if self.is_protected():
-                self.html = self.unlock_protection()
-                self.cleaned_html = self.remove_html_crap(self.html)
+                self.data = self.unlock_protection()
+                self.cleaned_html = self.remove_html_crap(self.data)
                 self.handle_errors()
 
             #: Prepare package name and folder
@@ -121,7 +121,7 @@ class NCryptIn(Crypter):
 
 
     def get_package_info(self):
-        m = re.search(self.NAME_PATTERN, self.html)
+        m = re.search(self.NAME_PATTERN, self.data)
         if m is not None:
             name = folder = m.group('N').strip()
             self.log_debug("Found name [%s] and folder [%s] in package info" % (name, folder))
@@ -240,7 +240,7 @@ class NCryptIn(Crypter):
         package_links = []
 
         pattern = r'/container/(rsdf|dlc|ccf)/(\w+)'
-        containersLinks = re.findall(pattern, self.html)
+        containersLinks = re.findall(pattern, self.data)
         self.log_debug("Decrypting %d Container links" % len(containersLinks))
         for containerLink in containersLinks:
             link = "http://ncrypt.in/container/%s/%s.%s" % (containerLink[0], containerLink[1], containerLink[0])
@@ -252,7 +252,7 @@ class NCryptIn(Crypter):
     def handle_web_links(self):
         self.log_debug("Handling Web links")
         pattern = r'(http://ncrypt\.in/link-.*?=)'
-        links = re.findall(pattern, self.html)
+        links = re.findall(pattern, self.data)
 
         package_links = []
         self.log_debug("Decrypting %d Web links" % len(links))
@@ -280,11 +280,11 @@ class NCryptIn(Crypter):
 
         #: Get jk
         jk_re = pattern % NCryptIn.JK_KEY
-        vjk = re.findall(jk_re, self.html)
+        vjk = re.findall(jk_re, self.data)
 
         #: Get crypted
         crypted_re = pattern % NCryptIn.CRYPTED_KEY
-        vcrypted = re.findall(crypted_re, self.html)
+        vcrypted = re.findall(crypted_re, self.data)
 
         #: Log and return
         self.log_debug("Detected %d crypted blocks" % len(vcrypted))

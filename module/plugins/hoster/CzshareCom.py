@@ -43,11 +43,11 @@ class CzshareCom(SimpleHoster):
 
     def check_traffic(self):
         #: Check if user logged in
-        m = re.search(self.USER_CREDIT_PATTERN, self.html)
+        m = re.search(self.USER_CREDIT_PATTERN, self.data)
         if m is None:
             self.account.relogin()
-            self.html = self.load(self.pyfile.url)
-            m = re.search(self.USER_CREDIT_PATTERN, self.html)
+            self.data = self.load(self.pyfile.url)
+            m = re.search(self.USER_CREDIT_PATTERN, self.data)
             if m is None:
                 return False
 
@@ -69,7 +69,7 @@ class CzshareCom(SimpleHoster):
 
     def handle_premium(self, pyfile):
         try:
-            form = re.search(self.PREMIUM_FORM_PATTERN, self.html, re.S).group(1)
+            form = re.search(self.PREMIUM_FORM_PATTERN, self.data, re.S).group(1)
             inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
 
         except Exception, e:
@@ -82,7 +82,7 @@ class CzshareCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         #: Get free url
-        m = re.search(self.FREE_URL_PATTERN, self.html)
+        m = re.search(self.FREE_URL_PATTERN, self.data)
         if m is None:
             self.error(_("FREE_URL_PATTERN not found"))
 
@@ -91,12 +91,12 @@ class CzshareCom(SimpleHoster):
         self.log_debug("PARSED_URL:" + parsed_url)
 
         #: Get download ticket and parse html
-        self.html = self.load(parsed_url)
-        if re.search(self.MULTIDL_PATTERN, self.html):
+        self.data = self.load(parsed_url)
+        if re.search(self.MULTIDL_PATTERN, self.data):
             self.wait(5 * 60, 12, _("Download limit reached"))
 
         try:
-            form = re.search(self.FREE_FORM_PATTERN, self.html, re.S).group(1)
+            form = re.search(self.FREE_FORM_PATTERN, self.data, re.S).group(1)
             inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
             pyfile.size = int(inputs['size'])
 
@@ -107,18 +107,18 @@ class CzshareCom(SimpleHoster):
         #: Get and decrypt captcha
         captcha_url = 'http://sdilej.cz/captcha.php'
         inputs['captchastring2'] = self.captcha.decrypt(captcha_url)
-        self.html = self.load(parsed_url, post=inputs)
+        self.data = self.load(parsed_url, post=inputs)
 
-        if u"<li>Zadaný ověřovací kód nesouhlasí!</li>" in self.html:
+        if u"<li>Zadaný ověřovací kód nesouhlasí!</li>" in self.data:
             self.retry_captcha()
 
-        elif re.search(self.MULTIDL_PATTERN, self.html):
+        elif re.search(self.MULTIDL_PATTERN, self.data):
             self.wait(5 * 60, 12, _("Download limit reached"))
 
         else:
             self.captcha.correct()
 
-        m = re.search("countdown_number = (\d+);", self.html)
+        m = re.search("countdown_number = (\d+);", self.data)
         self.set_wait(int(m.group(1)) if m else 50)
 
         #: Download the file, destination is determined by pyLoad

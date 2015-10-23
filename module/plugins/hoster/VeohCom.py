@@ -42,7 +42,7 @@ class VeohCom(SimpleHoster):
 
         for q in quality:
             pattern = r'"fullPreviewHash%sPath":"(.+?)"' % q
-            m = re.search(pattern, self.html)
+            m = re.search(pattern, self.data)
             if m is not None:
                 pyfile.name += ".mp4"
                 self.link = m.group(1).replace("\\", "")

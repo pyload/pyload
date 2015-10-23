@@ -49,14 +49,14 @@ class FilecloudIo(SimpleHoster):
     def handle_free(self, pyfile):
         data = {'ukey': self.info['pattern']['ID']}
 
-        m = re.search(self.AB1_PATTERN, self.html)
+        m = re.search(self.AB1_PATTERN, self.data)
         if m is None:
             self.error(_("__AB1"))
         data['__ab1'] = m.group(1)
 
         recaptcha = ReCaptcha(self)
 
-        m = re.search(self.RECAPTCHA_PATTERN, self.html)
+        m = re.search(self.RECAPTCHA_PATTERN, self.data)
         captcha_key = m.group(1) if m else recaptcha.detect_key()
 
         if captcha_key is None:
@@ -93,9 +93,9 @@ class FilecloudIo(SimpleHoster):
 
 
         if res['dl']:
-            self.html = self.load('http://filecloud.io/download.html')
+            self.data = self.load('http://filecloud.io/download.html')
 
-            m = re.search(self.LINK_FREE_PATTERN % self.info['pattern']['ID'], self.html)
+            m = re.search(self.LINK_FREE_PATTERN % self.info['pattern']['ID'], self.data)
             if m is None:
                 self.error(_("LINK_FREE_PATTERN not found"))
 

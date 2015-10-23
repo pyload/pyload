@@ -32,7 +32,7 @@ class UserscloudCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         self.download(pyfile.url,
-                      post=dict(re.findall(r'<input type="hidden" name="(.+?)" value="(.*?)">', self.html)))
+                      post=dict(re.findall(r'<input type="hidden" name="(.+?)" value="(.*?)">', self.data)))
 
 
 getInfo = create_getInfo(UserscloudCom)

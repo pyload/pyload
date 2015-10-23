@@ -45,12 +45,12 @@ class FshareVn(SimpleHoster):
 
 
     def preload(self):
-        self.html = self.load("http://www.fshare.vn/check_link.php",
+        self.data = self.load("http://www.fshare.vn/check_link.php",
                               post={'action': "check_link", 'arrlinks': pyfile.url})
 
 
     def handle_free(self, pyfile):
-        self.html = self.load(pyfile.url)
+        self.data = self.load(pyfile.url)
 
         self.check_errors()
 
@@ -66,22 +66,22 @@ class FshareVn(SimpleHoster):
             if password:
                 self.log_info(_("Password protected link, trying ") + password)
                 inputs['link_file_pwd_dl'] = password
-                self.html = self.load(url, post=inputs)
+                self.data = self.load(url, post=inputs)
 
-                if 'name="link_file_pwd_dl"' in self.html:
+                if 'name="link_file_pwd_dl"' in self.data:
                     self.fail(_("Wrong password"))
             else:
                 self.fail(_("No password found"))
 
         else:
-            self.html = self.load(url, post=inputs)
+            self.data = self.load(url, post=inputs)
 
         self.check_errors()
 
-        m = re.search(r'var count = (\d+)', self.html)
+        m = re.search(r'var count = (\d+)', self.data)
         self.set_wait(int(m.group(1)) if m else 30)
 
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:
             self.error(_("LINK_FREE_PATTERN not found"))
 
@@ -90,16 +90,16 @@ class FshareVn(SimpleHoster):
 
 
     def check_errors(self):
-        if '/error.php?' in self.req.lastEffectiveURL or u"Liên kết bạn chọn không tồn" in self.html:
+        if '/error.php?' in self.req.lastEffectiveURL or u"Liên kết bạn chọn không tồn" in self.data:
             self.offline()
 
-        m = re.search(self.WAIT_PATTERN, self.html)
+        m = re.search(self.WAIT_PATTERN, self.data)
         if m is not None:
             self.log_info(_("Wait until %s ICT") % m.group(1))
             wait_until = time.mktime.time(time.strptime.time(m.group(1), "%d/%m/%Y %H:%M"))
             self.wait(wait_until - time.mktime.time(time.gmtime.time()) - 7 * 60 * 60, True)
             self.retry()
-        elif '<ul class="message-error">' in self.html:
+        elif '<ul class="message-error">' in self.data:
             msg = "Unknown error occured or wait time not parsed"
             self.log_error(msg)
             self.retry(30, 2 * 60, msg)

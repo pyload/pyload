@@ -37,7 +37,7 @@ class UploadingCom(SimpleHoster):
         if not "/get/" in pyfile.url:
             pyfile.url = pyfile.url.replace("/files", "/files/get")
 
-        self.html = self.load(pyfile.url)
+        self.data = self.load(pyfile.url)
         self.get_fileInfo()
 
         if self.premium:
@@ -51,8 +51,8 @@ class UploadingCom(SimpleHoster):
                     'code'  : self.info['pattern']['ID'],
                     'pass'  : 'undefined'}
 
-        self.html = self.load('http://uploading.com/files/get/?JsHttpRequest=%d-xml' % timestamp(), post=postData)
-        url = re.search(r'"link"\s*:\s*"(.*?)"', self.html)
+        self.data = self.load('http://uploading.com/files/get/?JsHttpRequest=%d-xml' % timestamp(), post=postData)
+        url = re.search(r'"link"\s*:\s*"(.*?)"', self.data)
         if url:
             self.link = url.group(1).replace("\\/", "/")
 
@@ -60,7 +60,7 @@ class UploadingCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        m = re.search('<h2>((Daily )?Download Limit)</h2>', self.html)
+        m = re.search('<h2>((Daily )?Download Limit)</h2>', self.data)
         if m is not None:
             pyfile.error = encode(m.group(1))
             self.log_warning(pyfile.error)
@@ -86,8 +86,8 @@ class UploadingCom(SimpleHoster):
         else:
             self.error(_("No AJAX/URL"))
 
-        self.html = self.load(url)
-        m = re.search(r'<form id="file_form" action="(.*?)"', self.html)
+        self.data = self.load(url)
+        m = re.search(r'<form id="file_form" action="(.*?)"', self.data)
         if m is not None:
             url = m.group(1)
         else:

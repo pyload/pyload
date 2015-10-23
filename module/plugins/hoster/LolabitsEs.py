@@ -34,18 +34,18 @@ class LolabitsEs(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        fileid = re.search(self.FILEID_PATTERN, self.html).group(1)
+        fileid = re.search(self.FILEID_PATTERN, self.data).group(1)
         self.log_debug("FileID: " + fileid)
 
-        token = re.search(self.TOKEN_PATTERN, self.html).group(1)
+        token = re.search(self.TOKEN_PATTERN, self.data).group(1)
         self.log_debug("Token: " + token)
 
-        self.html = self.load("http://lolabits.es/action/License/Download",
+        self.data = self.load("http://lolabits.es/action/License/Download",
                               post={'fileId'                     : fileid,
                                     '__RequestVerificationToken' : token},
                               decode="unicode-escape")
 
-        self.link = html_unescape(re.search(self.LINK_PATTERN, self.html).group(1))
+        self.link = html_unescape(re.search(self.LINK_PATTERN, self.data).group(1))
 
 
 getInfo = create_getInfo(LolabitsEs)

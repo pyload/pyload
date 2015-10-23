@@ -37,8 +37,8 @@ class BasketbuildCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         try:
-            link1 = re.search(r'href="(.+dlgate/.+)"', self.html).group(1)
-            self.html = self.load(link1)
+            link1 = re.search(r'href="(.+dlgate/.+)"', self.data).group(1)
+            self.data = self.load(link1)
 
         except AttributeError:
             self.error(_("Hop #1 not found"))
@@ -47,7 +47,7 @@ class BasketbuildCom(SimpleHoster):
             self.log_debug("Next hop: %s" % link1)
 
         try:
-            wait = re.search(r'var sec = (\d+)', self.html).group(1)
+            wait = re.search(r'var sec = (\d+)', self.data).group(1)
             self.log_debug("Wait %s seconds" % wait)
             self.wait(wait)
 
@@ -55,7 +55,7 @@ class BasketbuildCom(SimpleHoster):
             self.log_debug("No wait time found")
 
         try:
-            self.link = re.search(r'id="dlLink">\s*<a href="(.+?)"', self.html).group(1)
+            self.link = re.search(r'id="dlLink">\s*<a href="(.+?)"', self.data).group(1)
 
         except AttributeError:
             self.error(_("DL-Link not found"))

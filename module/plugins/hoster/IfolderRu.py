@@ -42,10 +42,10 @@ class IfolderRu(SimpleHoster):
 
     def handle_free(self, pyfile):
         url = "http://rusfolder.com/%s" % self.info['pattern']['ID']
-        self.html = self.load("http://rusfolder.com/%s" % self.info['pattern']['ID'])
+        self.data = self.load("http://rusfolder.com/%s" % self.info['pattern']['ID'])
         self.get_fileInfo()
 
-        session_id = re.search(self.SESSION_ID_PATTERN, self.html).groups()
+        session_id = re.search(self.SESSION_ID_PATTERN, self.data).groups()
         captcha_url = "http://ints.rusfolder.com/random/images/?session=%s" % session_id
 
         action, inputs = self.parse_html_form('id="download-step-one-form"')
@@ -53,11 +53,11 @@ class IfolderRu(SimpleHoster):
         inputs['action'] = '1'
         self.log_debug(inputs)
 
-        self.html = self.load(url, post=inputs)
-        if self.WRONG_CAPTCHA_PATTERN in self.html:
+        self.data = self.load(url, post=inputs)
+        if self.WRONG_CAPTCHA_PATTERN in self.data:
             self.retry_captcha()
 
-        self.link = re.search(self.LINK_FREE_PATTERN, self.html).group(1)
+        self.link = re.search(self.LINK_FREE_PATTERN, self.data).group(1)
 
 
 getInfo = create_getInfo(IfolderRu)

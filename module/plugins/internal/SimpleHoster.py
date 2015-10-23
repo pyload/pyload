@@ -238,7 +238,7 @@ class SimpleHoster(Hoster):
 
 
     def preload(self):
-        self.html = self.load(self.pyfile.url,
+        self.data = self.load(self.pyfile.url,
                               cookies=self.COOKIES,
                               ref=False,
                               decode=self.TEXT_ENCODING)
@@ -310,28 +310,28 @@ class SimpleHoster(Hoster):
                 self.log_debug("Performing custom check rules...")
 
                 with open(encode(self.last_download), "rb") as f:
-                    self.html = f.read(1048576)  #@TODO: Recheck in 0.4.10
+                    self.data = f.read(1048576)  #@TODO: Recheck in 0.4.10
 
                 self.check_errors()
 
 
     def check_errors(self):
-        if not self.html:
+        if not self.data:
             self.log_debug("No data to check")
             return
 
-        if self.IP_BLOCKED_PATTERN and re.search(self.IP_BLOCKED_PATTERN, self.html):
+        if self.IP_BLOCKED_PATTERN and re.search(self.IP_BLOCKED_PATTERN, self.data):
             self.fail(_("Connection from your current IP address is not allowed"))
 
         elif not self.premium:
-            if self.PREMIUM_ONLY_PATTERN and re.search(self.PREMIUM_ONLY_PATTERN, self.html):
+            if self.PREMIUM_ONLY_PATTERN and re.search(self.PREMIUM_ONLY_PATTERN, self.data):
                 self.fail(_("File can be downloaded by premium users only"))
 
-            elif self.SIZE_LIMIT_PATTERN and re.search(self.SIZE_LIMIT_PATTERN, self.html):
+            elif self.SIZE_LIMIT_PATTERN and re.search(self.SIZE_LIMIT_PATTERN, self.data):
                 self.fail(_("File too large for free download"))
 
-            elif self.DL_LIMIT_PATTERN and re.search(self.DL_LIMIT_PATTERN, self.html):
-                m = re.search(self.DL_LIMIT_PATTERN, self.html)
+            elif self.DL_LIMIT_PATTERN and re.search(self.DL_LIMIT_PATTERN, self.data):
+                m = re.search(self.DL_LIMIT_PATTERN, self.data)
                 try:
                     errmsg = m.group(1)
 
@@ -348,11 +348,11 @@ class SimpleHoster(Hoster):
                 self.wait(wait_time, reconnect=wait_time > self.get_config("max_wait", 10) * 60)
                 self.restart(_("Download limit exceeded"))
 
-        if self.HAPPY_HOUR_PATTERN and re.search(self.HAPPY_HOUR_PATTERN, self.html):
+        if self.HAPPY_HOUR_PATTERN and re.search(self.HAPPY_HOUR_PATTERN, self.data):
             self.multiDL = True
 
         if self.ERROR_PATTERN:
-            m = re.search(self.ERROR_PATTERN, self.html)
+            m = re.search(self.ERROR_PATTERN, self.data)
             if m is not None:
                 try:
                     errmsg = m.group(1).strip()
@@ -400,7 +400,7 @@ class SimpleHoster(Hoster):
                     self.restart(errmsg)
 
         elif self.WAIT_PATTERN:
-            m = re.search(self.WAIT_PATTERN, self.html)
+            m = re.search(self.WAIT_PATTERN, self.data)
             if m is not None:
                 try:
                     waitmsg = m.group(1).strip()
@@ -433,7 +433,7 @@ class SimpleHoster(Hoster):
         if not self.LINK_FREE_PATTERN:
             self.log_warning(_("Free download not implemented"))
 
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:
             self.error(_("Free download link not found"))
         else:
@@ -445,7 +445,7 @@ class SimpleHoster(Hoster):
             self.log_warning(_("Premium download not implemented"))
             self.restart(premium=False)
 
-        m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
+        m = re.search(self.LINK_PREMIUM_PATTERN, self.data)
         if m is None:
             self.error(_("Premium download link not found"))
         else:
