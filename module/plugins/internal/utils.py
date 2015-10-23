@@ -14,7 +14,11 @@ import traceback
 import urllib
 import urlparse
 
-import HTMLParser
+try:
+    import HTMLParser
+
+except ImportError:  #@TODO: Remove in 0.4.10
+    import xml.sax.saxutils
 
 try:
     import simplejson as json
@@ -26,7 +30,7 @@ except ImportError:
 class utils(object):
     __name__    = "utils"
     __type__    = "plugin"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -107,8 +111,12 @@ def html_unescape(text):
     """
     Removes HTML or XML character references and entities from a text string
     """
-    h = HTMLParser.HTMLParser()
-    return h.unescape(text)
+    try:
+        h = HTMLParser.HTMLParser()
+        return h.unescape(text)
+
+    except Exception:  #@TODO: Remove in 0.4.10
+        return xml.sax.saxutils.unescape(text)
 
 
 def isiterable(obj):
