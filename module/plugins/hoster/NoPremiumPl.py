@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 from module.plugins.internal.utils import json
-from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class NoPremiumPl(MultiHoster):
     __name__    = "NoPremiumPl"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'https?://direct\.nopremium\.pl.+'
@@ -100,3 +100,6 @@ class NoPremiumPl(MultiHoster):
 
         except Exception:
             self.temp_offline("Query error #2")
+
+
+getInfo = create_getInfo(NoPremiumPl)

@@ -9,7 +9,7 @@ from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster, create_getInfo, parse_fileInfo
 from module.plugins.internal.Plugin import Fail
-from module.plugins.internal.utils import (encode, fixup, parse_name, parse_size,
+from module.plugins.internal.utils import (encode, parse_name, parse_size,
                                            parse_time, replace_patterns, seconds_to_midnight,
                                            set_cookie, set_cookies)
 

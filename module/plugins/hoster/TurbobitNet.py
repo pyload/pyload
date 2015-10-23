@@ -10,8 +10,8 @@ import urllib
 from Crypto.Cipher import ARC4
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.Plugin import timestamp
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.utils import timestamp
 
 
 class TurbobitNet(SimpleHoster):

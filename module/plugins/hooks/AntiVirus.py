@@ -10,8 +10,7 @@ except ImportError:
     pass
 
 from module.plugins.internal.Addon import Addon, Expose, threaded
-from module.plugins.internal.Plugin import exists
-from module.plugins.internal.utils import encode, fs_join
+from module.plugins.internal.utils import encode, exists, fs_join
 
 
 class AntiVirus(Addon):

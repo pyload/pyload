@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.utils import json
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
+from module.plugins.internal.utils import json
 
 
 class PremiumizeMe(MultiHoster):

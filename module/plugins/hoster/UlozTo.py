@@ -3,9 +3,8 @@
 import re
 import time
 
-from module.plugins.internal.utils import json
-from module.plugins.internal.Plugin import timestamp
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.utils import json, timestamp
 
 
 def convert_decimal_prefix(m):

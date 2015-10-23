@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.utils import json
 from module.plugins.internal.Account import Account
-from module.plugins.internal.Plugin import set_cookie
+from module.plugins.internal.utils import json, set_cookie
 
 
 class FilecloudIo(Account):

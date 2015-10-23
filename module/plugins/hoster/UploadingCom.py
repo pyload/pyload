@@ -3,9 +3,8 @@
 import pycurl
 import re
 
-from module.plugins.internal.utils import json
-from module.plugins.internal.Plugin import encode, timestamp
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.utils import encode, json, timestamp
 
 
 class UploadingCom(SimpleHoster):

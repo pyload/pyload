@@ -9,8 +9,7 @@ import sys
 import time
 
 from module.plugins.internal.Addon import Expose, Addon, threaded
-from module.plugins.internal.Plugin import exists
-from module.plugins.internal.utils import encode, fs_join
+from module.plugins.internal.utils import encode, exists, fs_join
 
 
 class UpdateManager(Addon):

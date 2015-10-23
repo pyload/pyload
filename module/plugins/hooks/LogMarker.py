@@ -3,7 +3,7 @@
 import datetime
 
 from module.plugins.internal.Addon import Addon, Expose
-from module.plugins.internal.Plugin import seconds_to_nexthour
+from module.plugins.internal.utils import seconds_to_nexthour
 
 
 class LogMarker(Addon):

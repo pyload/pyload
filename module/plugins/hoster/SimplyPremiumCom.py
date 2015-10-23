@@ -3,7 +3,7 @@
 import re
 
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
-from module.plugins.internal.SimpleHoster import seconds_to_midnight
+from module.plugins.internal.utils import seconds_to_midnight
 
 
 class SimplyPremiumCom(MultiHoster):

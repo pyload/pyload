@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.utils import json
 from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.utils import json
 
 
 class NitroflareComFolder(SimpleCrypter):

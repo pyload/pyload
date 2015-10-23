@@ -4,7 +4,7 @@ import re
 
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.Plugin import chunks
+from module.plugins.internal.utils import chunks
 
 
 def get_info(urls):

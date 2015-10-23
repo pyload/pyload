@@ -2,7 +2,8 @@
 
 import re
 
-from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo, replace_patterns
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
+from module.plugins.internal.utils import replace_patterns
 
 
 class SimplydebridCom(MultiHoster):

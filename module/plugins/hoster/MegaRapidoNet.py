@@ -2,7 +2,7 @@
 
 import random
 
-from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
 def random_with_n_digits(n):
@@ -23,7 +23,7 @@ def random_with_n_digits(n):
 class MegaRapidoNet(MultiHoster):
     __name__    = "MegaRapidoNet"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?\w+\.megarapido\.net/\?file=\w+'
@@ -55,3 +55,7 @@ class MegaRapidoNet(MultiHoster):
             self.error(_("You have logged in at another place"))
 
         return super(MegaRapidoNet, self).handle_premium(pyfile)
+
+
+getInfo = create_getInfo(MegaRapidoNet)
+

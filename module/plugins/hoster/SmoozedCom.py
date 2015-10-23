@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 from module.plugins.internal.utils import json
-from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class SmoozedCom(MultiHoster):
     __name__    = "SmoozedCom"
     __type__    = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate
@@ -61,3 +61,6 @@ class SmoozedCom(MultiHoster):
             self.fail(_("Unable to initialize download"))
         else:
             self.link = header.get('location')[-1] if isinstance(header.get('location'), list) else header.get('location')
+
+
+getInfo = create_getInfo(SmoozedCom)

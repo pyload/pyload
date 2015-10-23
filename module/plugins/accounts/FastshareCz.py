@@ -3,7 +3,7 @@
 import re
 
 from module.plugins.internal.Account import Account
-from module.plugins.internal.Plugin import set_cookie
+from module.plugins.internal.utils import set_cookie
 
 
 class FastshareCz(Account):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.utils import json
 from module.plugins.internal.MultiAccount import MultiAccount
+from module.plugins.internal.utils import json
 
 
 class PremiumizeMe(MultiAccount):
