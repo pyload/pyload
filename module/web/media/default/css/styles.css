@@ -1,7 +1,17 @@
+.left {
+    float: left;
+}
+
 .clear {
     clear: both;
 }
 
 .breakWords {
     word-wrap: break-word;
+}
+
+#plugin_form_content h3,
+#general_form_content h3 {
+    font-weight: bold;
+    font-size: 14px;
 }
