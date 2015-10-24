@@ -105,6 +105,7 @@ class Core(object):
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
+                        self.__register_DB_backend()
                         s.set_user()
                         exit()
                     elif option in ("-s", "--setup"):
@@ -112,6 +113,7 @@ class Core(object):
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
+                        self.__register_DB_backend()
                         s.start()
                         exit()
                     elif option == "--changedir":
@@ -469,7 +471,7 @@ class Core(object):
             self.threadManager.work()
             self.scheduler.work()
 
-    def setupDB(self):
+    def __register_DB_backend(self):
         # Register suitable user database methods
         if (self.config['users']['auth'] is None or
             self.config['users']['auth'] == 'internal'):
@@ -479,6 +481,10 @@ class Core(object):
             DatabaseBackend.registerSub(LDAP_UserMethods)
         else:
             raise ValueError("Invalid value for self.config['users']['auth'] : %s" % self.config['users']['auth'])
+
+    def setupDB(self):
+        # Register suitable user database methods
+        self.__register_DB_backend()
 
         self.db = DatabaseBackend(self) # the backend
         self.db.setup()
