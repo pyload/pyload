@@ -13,6 +13,7 @@ import time
 import traceback
 import urllib
 import urlparse
+import unicodedata
 
 try:
     import HTMLParser
@@ -30,7 +31,7 @@ except ImportError:
 class utils(object):
     __name__    = "utils"
     __type__    = "plugin"
-    __version__ = "0.08"
+    __version__ = "0.081"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -40,6 +41,18 @@ class utils(object):
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
+def dediacrit(value):
+     valtype = type(value)
+     if valtype is str:
+         value = value.decode('utf-8')
+     value = unicodedata.normalize('NFKD', value)
+     output = ''
+     for c in value:
+         if not unicodedata.combining(c):
+             output += c
+     if valtype is str:
+         output = output.encode('ascii', 'unicode-escape')
+     return output
 
 def lock(fn):
     def new(*args):
@@ -218,7 +231,7 @@ def fixurl(url, unquote=None):
     if unquote is None:
         unquote = url is old
 
-    url = html_unescape(decode(url).decode('unicode-escape'))
+    url = html_unescape(decode(dediacrit(url)).decode('unicode-escape'))
     url = re.sub(r'(?<!:)/{2,}', '/', url).strip().lstrip('.')
 
     if not unquote:
