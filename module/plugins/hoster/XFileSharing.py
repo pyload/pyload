@@ -8,7 +8,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class XFileSharing(XFSHoster):
     __name__    = "XFileSharing"
     __type__    = "hoster"
-    __version__ = "0.61"
+    __version__ = "0.62"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -49,7 +49,7 @@ class XFileSharing(XFSHoster):
             self.req     = self.pyload.requestFactory.getRequest(self.classname)
             self.premium = False
 
-        super(SimpleCrypter, self).setup_base()
+        super(XFileSharing, self).setup_base()
 
 
     #@TODO: Recheck in 0.4.10
