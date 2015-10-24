@@ -3,13 +3,14 @@
 import re
 import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class HellshareCz(Account):
     __name__    = "HellshareCz"
     __type__    = "account"
-    __version__ = "0.16"
+    __version__ = "0.23"
+    __status__  = "testing"
 
     __description__ = """Hellshare.cz account plugin"""
     __license__     = "GPLv3"
@@ -19,9 +20,8 @@ class HellshareCz(Account):
     CREDIT_LEFT_PATTERN = r'<div class="credit-link">\s*<table>\s*<tr>\s*<th>(\d+|\d\d\.\d\d\.)</th>'
 
 
-    def loadAccountInfo(self, user, req):
-        self.relogin(user)
-        html = req.load("http://www.hellshare.com/")
+    def grab_info(self, user, password, data):
+        html = self.load("http://www.hellshare.com/")
 
         m = re.search(self.CREDIT_LEFT_PATTERN, html)
         if m is None:
@@ -33,47 +33,48 @@ class HellshareCz(Account):
             premium = True
             try:
                 if "." in credit:
-                    #Time-based account
+                    #: Time-based account
                     vt = [int(x) for x in credit.split('.')[:2]]
                     lt = time.localtime()
-                    year = lt.tm_year + int(vt[1] < lt.tm_mon or (vt[1] == lt.tm_mon and vt[0] < lt.tm_mday))
+                    year = lt.tm_year + int(vt[1] < lt.tm_mon or (vt[1] is lt.tm_mon and vt[0] < lt.tm_mday))
                     validuntil = time.mktime(time.strptime("%s%d 23:59:59" % (credit, year), "%d.%m.%Y %H:%M:%S"))
                     trafficleft = -1
                 else:
-                    #Traffic-based account
-                    trafficleft = self.parseTraffic(credit + "MB")
+                    #: Traffic-based account
+                    trafficleft = self.parse_traffic(credit, "MB")
                     validuntil = -1
+
             except Exception, e:
-                self.logError(_("Unable to parse credit info"), e)
+                self.log_error(_("Unable to parse credit info"), e)
                 validuntil = -1
                 trafficleft = -1
 
-        return {"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium}
+        return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 
 
-    def login(self, user, data, req):
-        html = req.load('http://www.hellshare.com/', decode=True)
-        if req.lastEffectiveURL != 'http://www.hellshare.com/':
-            #Switch to English
-            self.logDebug("Switch lang - URL: %s" % req.lastEffectiveURL)
+    def signin(self, user, password, data):
+        html = self.load('http://www.hellshare.com/')
+        if self.req.lastEffectiveURL != 'http://www.hellshare.com/':
+            #: Switch to English
+            self.log_debug("Switch lang - URL: %s" % self.req.lastEffectiveURL)
 
-            json = req.load("%s?do=locRouter-show" % req.lastEffectiveURL)
-            hash = re.search(r"(\-\-[0-9a-f]+\-)", json).group(1)
+            json = self.load("%s?do=locRouter-show" % self.req.lastEffectiveURL)
+            hash = re.search(r"(--[0-9a-f]+\-)", json).group(1)
 
-            self.logDebug("Switch lang - HASH: %s" % hash)
+            self.log_debug("Switch lang - HASH: %s" % hash)
 
-            html = req.load('http://www.hellshare.com/%s/' % hash, decode=True)
+            html = self.load('http://www.hellshare.com/%s/' % hash)
 
         if re.search(self.CREDIT_LEFT_PATTERN, html):
-            self.logDebug("Already logged in")
+            self.log_debug("Already logged in")
             return
 
-        html = req.load('http://www.hellshare.com/login?do=loginForm-submit',
-                        post={"login": "Log in",
-                              "password": data['password'],
-                              "username": user,
-                              "perm_login": "on"},
-                        decode=True)
+        html = self.load("https://www.hellshare.com/login",
+                         get={'do': "loginForm-submit"},
+                         post={'login'     : "Log in",
+                               'password'  : password,
+                               'username'  : user,
+                               'perm_login': "on"})
 
         if "<p>You input a wrong user name or wrong password</p>" in html:
-            self.wrongPassword()
+            self.fail_login()

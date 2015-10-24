@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
 
 import re
+import urllib
 
-from urllib import unquote
-
-from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DepositfilesCom(SimpleHoster):
     __name__    = "DepositfilesCom"
     __type__    = "hoster"
-    __version__ = "0.54"
+    __version__ = "0.59"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Depositfiles.com hoster plugin"""
     __license__     = "GPLv3"
@@ -28,7 +29,7 @@ class DepositfilesCom(SimpleHoster):
     OFFLINE_PATTERN = r'<span class="html_download_api-not_exists"></span>'
 
     NAME_REPLACEMENTS = [(r'\%u([0-9A-Fa-f]{4})', lambda m: unichr(int(m.group(1), 16))),
-                              (r'.*<b title="(?P<N>[^"]+).*', "\g<N>")]
+                         (r'.*<b title="(?P<N>.+?)".*', "\g<N>")]
     URL_REPLACEMENTS  = [(__pattern__ + ".*", "https://dfiles.eu/files/\g<ID>")]
 
     COOKIES = [("dfiles.eu", "lang_current", "en")]
@@ -41,49 +42,47 @@ class DepositfilesCom(SimpleHoster):
     LINK_MIRROR_PATTERN  = r'class="repeat_mirror"><a href="(.+?)"'
 
 
-    def handleFree(self, pyfile):
-        self.html = self.load(pyfile.url, post={'gateway_result': "1"})
+    def handle_free(self, pyfile):
+        self.data = self.load(pyfile.url, post={'gateway_result': "1"})
 
-        self.checkErrors()
+        self.check_errors()
 
-        m = re.search(r"var fid = '(\w+)';", self.html)
+        m = re.search(r"var fid = '(\w+)';", self.data)
         if m is None:
-            self.retry(wait_time=5)
+            self.retry(wait=5)
         params = {'fid': m.group(1)}
-        self.logDebug("FID: %s" % params['fid'])
+        self.log_debug("FID: %s" % params['fid'])
 
-        self.wait()
+        self.check_errors()
+
         recaptcha = ReCaptcha(self)
         captcha_key = recaptcha.detect_key()
         if captcha_key is None:
             return
 
-        self.html = self.load("https://dfiles.eu/get_file.php", get=params)
+        self.data = self.load("https://dfiles.eu/get_file.php", get=params)
 
-        if '<input type=button value="Continue" onclick="check_recaptcha' in self.html:
+        if '<input type=button value="Continue" onclick="check_recaptcha' in self.data:
             params['response'], params['challenge'] = recaptcha.challenge(captcha_key)
-            self.html = self.load("https://dfiles.eu/get_file.php", get=params)
+            self.data = self.load("https://dfiles.eu/get_file.php", get=params)
 
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
-        if m:
-            if 'response' in params:
-                self.correctCaptcha()
-
-            self.link = unquote(m.group(1))
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
+        if m is not None:
+            self.link = urllib.unquote(m.group(1))
 
 
-    def handlePremium(self, pyfile):
-        if '<span class="html_download_api-gold_traffic_limit">' in self.html:
-            self.logWarning(_("Download limit reached"))
+    def handle_premium(self, pyfile):
+        if '<span class="html_download_api-gold_traffic_limit">' in self.data:
+            self.log_warning(_("Download limit reached"))
             self.retry(25, 60 * 60, "Download limit reached")
 
-        elif 'onClick="show_gold_offer' in self.html:
-            self.account.relogin(self.user)
+        elif 'onClick="show_gold_offer' in self.data:
+            self.account.relogin()
             self.retry()
 
         else:
-            link   = re.search(self.LINK_PREMIUM_PATTERN, self.html)
-            mirror = re.search(self.LINK_MIRROR_PATTERN, self.html)
+            link   = re.search(self.LINK_PREMIUM_PATTERN, self.data)
+            mirror = re.search(self.LINK_MIRROR_PATTERN, self.data)
 
             if link:
                 self.link = link.group(1)

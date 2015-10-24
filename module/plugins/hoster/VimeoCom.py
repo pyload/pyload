@@ -8,10 +8,12 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class VimeoCom(SimpleHoster):
     __name__    = "VimeoCom"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.07"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(player\.)?vimeo\.com/(video/)?(?P<ID>\d+)'
-    __config__  = [("use_premium", "bool"                       , "Use premium account if available" , True     ),
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool"                       , "Use premium account if available" , True     ),
                    ("quality"    , "Lowest;Mobile;SD;HD;Highest", "Quality"                          , "Highest"),
                    ("original"   , "bool"                       , "Try to download the original file", True     )]
 
@@ -20,7 +22,7 @@ class VimeoCom(SimpleHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    NAME_PATTERN         = r'<title>(?P<N>.+) on Vimeo<'
+    NAME_PATTERN         = r'<title>(?P<N>.+?) on Vimeo<'
     OFFLINE_PATTERN      = r'class="exception_header"'
     TEMP_OFFLINE_PATTERN = r'Please try again in a few minutes.<'
 
@@ -30,16 +32,16 @@ class VimeoCom(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = True
+        self.resume_download = True
         self.multiDL        = True
-        self.chunkLimit     = -1
+        self.chunk_limit     = -1
 
 
-    def handleFree(self, pyfile):
-        password = self.getPassword()
+    def handle_free(self, pyfile):
+        password = self.get_password()
 
-        if self.js and 'class="btn iconify_down_b"' in self.html:
-            html    = self.js.eval(self.load(pyfile.url, get={'action': "download", 'password': password}, decode=True))
+        if self.js and 'class="btn iconify_down_b"' in self.data:
+            html    = self.js.eval(self.load(pyfile.url, get={'action': "download", 'password': password}))
             pattern = r'href="(?P<URL>http://vimeo\.com.+?)".*?\>(?P<QL>.+?) '
         else:
             html    = self.load("https://player.vimeo.com/video/" + self.info['pattern']['ID'], get={'password': password})
@@ -47,14 +49,14 @@ class VimeoCom(SimpleHoster):
 
         link = dict((l.group('QL').lower(), l.group('URL')) for l in re.finditer(pattern, html))
 
-        if self.getConfig('original'):
+        if self.get_config('original'):
             if "original" in link:
-                self.download(link[q])
+                self.link = link[q]
                 return
             else:
-                self.logInfo(_("Original file not downloadable"))
+                self.log_info(_("Original file not downloadable"))
 
-        quality = self.getConfig('quality')
+        quality = self.get_config('quality')
         if quality == "Highest":
             qlevel = ("hd", "sd", "mobile")
         elif quality == "Lowest":
@@ -64,10 +66,10 @@ class VimeoCom(SimpleHoster):
 
         for q in qlevel:
             if q in link:
-                self.download(link[q])
+                self.link = link[q]
                 return
             else:
-                self.logInfo(_("No %s quality video found") % q.upper())
+                self.log_info(_("No %s quality video found") % q.upper())
         else:
             self.fail(_("No video found!"))
 

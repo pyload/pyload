@@ -11,14 +11,16 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MystoreTo(SimpleHoster):
     __name__    = "MystoreTo"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.05"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?mystore\.to/dl/.+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Mystore.to hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("zapp-brannigan", "")]
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
     NAME_PATTERN    = r'<h1>(?P<N>.+?)<'
@@ -27,14 +29,14 @@ class MystoreTo(SimpleHoster):
 
 
     def setup(self):
-        self.chunkLimit     = 1
-        self.resumeDownload = True
+        self.chunk_limit     = 1
+        self.resume_download = True
         self.multiDL        = True
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         try:
-            fid = re.search(r'wert="(.+?)"', self.html).group(1)
+            fid = re.search(r'wert="(.+?)"', self.data).group(1)
 
         except AttributeError:
             self.error(_("File-ID not found"))

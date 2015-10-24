@@ -3,13 +3,14 @@
 import re
 import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class MegasharesCom(Account):
     __name__    = "MegasharesCom"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.08"
+    __status__  = "testing"
 
     __description__ = """Megashares.com account plugin"""
     __license__     = "GPLv3"
@@ -19,30 +20,29 @@ class MegasharesCom(Account):
     VALID_UNTIL_PATTERN = r'<p class="premium_info_box">Period Ends: (\w{3} \d{1,2}, \d{4})</p>'
 
 
-    def loadAccountInfo(self, user, req):
-        #self.relogin(user)
-        html = req.load("http://d01.megashares.com/myms.php", decode=True)
+    def grab_info(self, user, password, data):
+        html = self.load("http://d01.megashares.com/myms.php")
 
         premium = False if '>Premium Upgrade<' in html else True
 
         validuntil = trafficleft = -1
         try:
             timestr = re.search(self.VALID_UNTIL_PATTERN, html).group(1)
-            self.logDebug(timestr)
+            self.log_debug(timestr)
             validuntil = time.mktime(time.strptime(timestr, "%b %d, %Y"))
+
         except Exception, e:
-            self.logError(e)
+            self.log_error(e, trace=True)
 
-        return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
+        return {'validuntil': validuntil, 'trafficleft': -1, 'premium': premium}
 
 
-    def login(self, user, data, req):
-        html = req.load('http://d01.megashares.com/myms_login.php',
-                        post={"httpref"       : "",
-                              "myms_login"    : "Login",
-                              "mymslogin_name": user,
-                              "mymspassword"  : data['password']},
-                        decode=True)
+    def signin(self, user, password, data):
+        html = self.load('http://d01.megashares.com/myms_login.php',
+                         post={'httpref'       : "",
+                               'myms_login'    : "Login",
+                               'mymslogin_name': user,
+                               'mymspassword'  : password})
 
         if not '<span class="b ml">%s</span>' % user in html:
-            self.wrongPassword()
+            self.fail_login()

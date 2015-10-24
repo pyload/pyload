@@ -2,13 +2,14 @@
 
 import re
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class CloudzillaTo(Account):
     __name__    = "CloudzillaTo"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.07"
+    __status__  = "testing"
 
     __description__ = """Cloudzilla.to account plugin"""
     __license__     = "GPLv3"
@@ -18,20 +19,19 @@ class CloudzillaTo(Account):
     PREMIUM_PATTERN = r'<h2>account type</h2>\s*Premium Account'
 
 
-    def loadAccountInfo(self, user, req):
-        html = req.load("http://www.cloudzilla.to/")
+    def grab_info(self, user, password, data):
+        html = self.load("http://www.cloudzilla.to/")
 
         premium = True if re.search(self.PREMIUM_PATTERN, html) else False
 
         return {'validuntil': -1, 'trafficleft': -1, 'premium': premium}
 
 
-    def login(self, user, data, req):
-        html = req.load("http://www.cloudzilla.to/",
-                        post={'lusername': user,
-                              'lpassword': data['password'],
-                              'w'        : "dologin"},
-                        decode=True)
+    def signin(self, user, password, data):
+        html = self.load("https://www.cloudzilla.to/",
+                         post={'lusername': user,
+                               'lpassword': password,
+                               'w'        : "dologin"})
 
         if "ERROR" in html:
-            self.wrongPassword()
+            self.fail_login()

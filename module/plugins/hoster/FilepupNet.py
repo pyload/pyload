@@ -12,10 +12,12 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilepupNet(SimpleHoster):
     __name__    = "FilepupNet"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.05"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?filepup\.net/files/\w+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Filepup.net hoster plugin"""
     __license__     = "GPLv3"
@@ -33,16 +35,14 @@ class FilepupNet(SimpleHoster):
 
     def setup(self):
         self.multiDL = False
-        self.chunkLimit = 1
+        self.chunk_limit = 1
 
 
-    def handleFree(self, pyfile):
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
-        if m is None:
-            self.error(_("Download link not found"))
-
-        dl_link = m.group(1)
-        self.download(dl_link, post={'task': "download"})
+    def handle_free(self, pyfile):
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
+        if m is not None:
+            dl_link = m.group(1)
+            self.download(dl_link, post={'task': "download"})
 
 
 getInfo = create_getInfo(FilepupNet)

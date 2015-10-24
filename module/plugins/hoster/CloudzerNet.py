@@ -6,10 +6,11 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class CloudzerNet(DeadHoster):
     __name__    = "CloudzerNet"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.07"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?(cloudzer\.net/file/|clz\.to/(file/)?)\w+'
-    __config__  = []
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """Cloudzer.net hoster plugin"""
     __license__     = "GPLv3"

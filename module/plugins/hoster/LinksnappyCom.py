@@ -1,42 +1,41 @@
 # -*- coding: utf-8 -*-
 
 import re
+import urlparse
 
-from urlparse import urlsplit
-
-from module.common.json_layer import json_loads, json_dumps
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
+from module.plugins.internal.utils import json
 
 
 class LinksnappyCom(MultiHoster):
     __name__    = "LinksnappyCom"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.13"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:[^/]+\.)?linksnappy\.com'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium" , "bool", "Use premium account if available"    , True),
+                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Linksnappy.com multi-hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    SINGLE_CHUNK_HOSTERS = ["easybytez.com"]
-
-
-    def handlePremium(self, pyfile):
+    def handle_premium(self, pyfile):
         host        = self._get_host(pyfile.url)
-        json_params = json_dumps({'link'    : pyfile.url,
+        json_params = json.dumps({'link'    : pyfile.url,
                                   'type'    : host,
-                                  'username': self.user,
-                                  'password': self.account.getAccountData(self.user)['password']})
+                                  'username': self.account.user,
+                                  'password': self.account.get_login('password')})
 
-        r = self.load("http://gen.linksnappy.com/genAPI.php",
+        r = self.load("http://linksnappy.com/api/linkgen",
                       post={'genLinks': json_params})
 
-        self.logDebug("JSON data: " + r)
+        self.log_debug("JSON data: " + r)
 
-        j = json_loads(r)['links'][0]
+        j = json.loads(r)['links'][0]
 
         if j['error']:
             self.error(_("Error converting the link"))
@@ -44,16 +43,11 @@ class LinksnappyCom(MultiHoster):
         pyfile.name = j['filename']
         self.link   = j['generated']
 
-        if host in self.SINGLE_CHUNK_HOSTERS:
-            self.chunkLimit = 1
-        else:
-            self.setup()
-
 
     @staticmethod
     def _get_host(url):
-        host = urlsplit(url).netloc
-        return re.search(r'[\w-]+\.\w+$', host).group(0)
+        host = urlparse.urlsplit(url).netloc
+        return re.search(r'[\w\-]+\.\w+$', host).group(0)
 
 
 getInfo = create_getInfo(LinksnappyCom)

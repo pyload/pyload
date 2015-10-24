@@ -6,16 +6,20 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class MovReelCom(XFSHoster):
     __name__    = "MovReelCom"
     __type__    = "hoster"
-    __version__ = "1.24"
+    __version__ = "1.27"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?movreel\.com/\w{12}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """MovReel.com hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("JorisV83", "jorisv83-pyload@yahoo.com")]
 
 
-    LINK_PATTERN = r'<a href="([^"]+)">Download Link'
+    PLUGIN_DOMAIN = "movreel.com"
+
+    LINK_PATTERN = r'<a href="(.+?)">Download Link'
 
 
 getInfo = create_getInfo(MovReelCom)

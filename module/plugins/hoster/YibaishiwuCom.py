@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
 
 import re
+import urlparse
 
-from module.common.json_layer import json_loads
+from module.plugins.internal.utils import json
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class YibaishiwuCom(SimpleHoster):
     __name__    = "YibaishiwuCom"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.16"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(?:u\.)?115\.com/file/(?P<ID>\w+)'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """115.com hoster plugin"""
     __license__     = "GPLv3"
@@ -26,16 +29,16 @@ class YibaishiwuCom(SimpleHoster):
     LINK_FREE_PATTERN = r'(/\?ct=(pickcode|download)[^"\']+)'
 
 
-    def handleFree(self, pyfile):
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
+    def handle_free(self, pyfile):
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:
             self.error(_("LINK_FREE_PATTERN not found"))
 
         url = m.group(1)
 
-        self.logDebug(('FREEUSER' if m.group(2) == 'download' else 'GUEST') + ' URL', url)
+        self.log_debug(('FREEUSER' if m.group(2) == "download" else 'GUEST') + ' URL', url)
 
-        res = json_loads(self.load("http://115.com" + url, decode=False))
+        res = json.loads(self.load(urlparse.urljoin("http://115.com/", url), decode=False))
         if "urls" in res:
             mirrors = res['urls']
 
@@ -47,12 +50,12 @@ class YibaishiwuCom(SimpleHoster):
 
         for mr in mirrors:
             try:
-                url = mr['url'].replace("\\", "")
-                self.logDebug("Trying URL: " + url)
-                self.download(url)
+                self.link = mr['url'].replace("\\", "")
+                self.log_debug("Trying URL: " + self.link)
                 break
+
             except Exception:
-                continue
+                pass
         else:
             self.fail(_("No working link found"))
 

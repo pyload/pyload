@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import re
+import urlparse
 
-from urlparse import urljoin
-
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class UlozTo(Account):
     __name__    = "UlozTo"
     __type__    = "account"
-    __version__ = "0.10"
+    __version__ = "0.15"
+    __status__  = "testing"
 
     __description__ = """Uloz.to account plugin"""
     __license__     = "GPLv3"
@@ -18,11 +18,11 @@ class UlozTo(Account):
                        ("pulpe", None)]
 
 
-    TRAFFIC_LEFT_PATTERN = r'<li class="menu-kredit"><a .*?title="[^"]*?GB = ([\d.]+) MB"'
+    TRAFFIC_LEFT_PATTERN = r'<li class="menu-kredit"><a .*?title=".+?GB = ([\d.]+) MB"'
 
 
-    def loadAccountInfo(self, user, req):
-        html = req.load("http://www.ulozto.net/", decode=True)
+    def grab_info(self, user, password, data):
+        html = self.load("http://www.ulozto.net/")
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
 
@@ -32,19 +32,18 @@ class UlozTo(Account):
         return {'validuntil': -1, 'trafficleft': trafficleft, 'premium': premium}
 
 
-    def login(self, user, data, req):
-        login_page = req.load('http://www.ulozto.net/?do=web-login', decode=True)
+    def signin(self, user, password, data):
+        login_page = self.load('http://www.ulozto.net/?do=web-login')
         action     = re.findall('<form action="(.+?)"', login_page)[1].replace('&amp;', '&')
         token      = re.search('_token_" value="(.+?)"', login_page).group(1)
 
-        html = req.load(urljoin("http://www.ulozto.net/", action),
-                        post={'_token_' : token,
-                              'do'      : "loginForm-submit",
-                              'login'   : u"Přihlásit",
-                              'password': data['password'],
-                              'username': user,
-                              'remember': "on"},
-                        decode=True)
+        html = self.load(urlparse.urljoin("https://www.ulozto.net/", action),
+                         post={'_token_' : token,
+                               'do'      : "loginForm-submit",
+                               'login'   : u"Přihlásit",
+                               'password': password,
+                               'username': user,
+                               'remember': "on"})
 
         if '<div class="flash error">' in html:
-            self.wrongPassword()
+            self.fail_login()

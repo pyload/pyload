@@ -11,10 +11,12 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class AndroidfilehostCom(SimpleHoster):
     __name__    = "AndroidfilehostCom"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.03"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?androidfilehost\.com/\?fid=\d+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Androidfilehost.com hoster plugin"""
     __license__     = "GPLv3"
@@ -32,33 +34,31 @@ class AndroidfilehostCom(SimpleHoster):
 
     def setup(self):
         self.multiDL        = True
-        self.resumeDownload = True
-        self.chunkLimit     = 1
+        self.resume_download = True
+        self.chunk_limit     = 1
 
 
-    def handleFree(self, pyfile):
-        wait = re.search(self.WAIT_PATTERN, self.html)
-        self.logDebug("Waiting time: %s seconds" % wait.group(1))
+    def handle_free(self, pyfile):
+        wait = re.search(self.WAIT_PATTERN, self.data)
+        self.log_debug("Waiting time: %s seconds" % wait.group(1))
 
-        fid = re.search(r'id="fid" value="(\d+)" />', self.html).group(1)
-        self.logDebug("fid: %s" % fid)
+        fid = re.search(r'id="fid" value="(\d+)" />', self.data).group(1)
+        self.log_debug("FID: %s" % fid)
 
         html = self.load("https://www.androidfilehost.com/libs/otf/mirrors.otf.php",
                          post={'submit': 'submit',
                                'action': 'getdownloadmirrors',
-                               'fid'   : fid},
-                         decode=True)
+                               'fid'   : fid})
 
         self.link   = re.findall('"url":"(.*?)"', html)[0].replace("\\", "")
         mirror_host = self.link.split("/")[2]
 
-        self.logDebug("Mirror Host: %s" % mirror_host)
+        self.log_debug("Mirror Host: %s" % mirror_host)
 
         html = self.load("https://www.androidfilehost.com/libs/otf/stats.otf.php",
                          get={'fid'   : fid,
                               'w'     : 'download',
-                              'mirror': mirror_host},
-                         decode=True)
+                              'mirror': mirror_host})
 
 
 getInfo = create_getInfo(AndroidfilehostCom)

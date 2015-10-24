@@ -6,10 +6,11 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 class StealthTo(DeadCrypter):
     __name__    = "StealthTo"
     __type__    = "crypter"
-    __version__ = "0.20"
+    __version__ = "0.22"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?stealth\.to/folder/.+'
-    __config__  = []
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """Stealth.to decrypter plugin"""
     __license__     = "GPLv3"

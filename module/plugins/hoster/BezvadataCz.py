@@ -8,10 +8,12 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class BezvadataCz(SimpleHoster):
     __name__    = "BezvadataCz"
     __type__    = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.31"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?bezvadata\.cz/stahnout/.+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """BezvaData.cz hoster plugin"""
     __license__     = "GPLv3"
@@ -24,72 +26,55 @@ class BezvadataCz(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = True
+        self.resume_download = True
         self.multiDL        = True
 
 
-    def handleFree(self, pyfile):
-        #download button
-        m = re.search(r'<a class="stahnoutSoubor".*?href="(.*?)"', self.html)
+    def handle_free(self, pyfile):
+        #: Download button
+        m = re.search(r'<a class="stahnoutSoubor".*?href="(.*?)"', self.data)
         if m is None:
             self.error(_("Page 1 URL not found"))
         url = "http://bezvadata.cz%s" % m.group(1)
 
-        #captcha form
-        self.html = self.load(url)
-        self.checkErrors()
-        for _i in xrange(5):
-            action, inputs = self.parseHtmlForm('frm-stahnoutFreeForm')
-            if not inputs:
-                self.error(_("FreeForm"))
+        #: Captcha form
+        self.data = self.load(url)
+        self.check_errors()
 
-            m = re.search(r'<img src="data:image/png;base64,(.*?)"', self.html)
-            if m is None:
-                self.error(_("Wrong captcha image"))
+        action, inputs = self.parse_html_form('frm-stahnoutFreeForm')
+        if not inputs:
+            self.error(_("FreeForm"))
 
-            #captcha image is contained in html page as base64encoded data but decryptCaptcha() expects image url
-            self.load, proper_load = self.loadcaptcha, self.load
-            try:
-                inputs['captcha'] = self.decryptCaptcha(m.group(1), imgtype='png')
-            finally:
-                self.load = proper_load
+        m = re.search(r'<img src="data:image/png;base64,(.*?)"', self.data)
+        if m is None:
+            self.retry_captcha()
 
-            if '<img src="data:image/png;base64' in self.html:
-                self.invalidCaptcha()
-            else:
-                self.correctCaptcha()
-                break
-        else:
-            self.fail(_("No valid captcha code entered"))
+        inputs['captcha'] = self.captcha.decrypt_image(m.group(1).decode('base64'), input_type='png')
 
-        #download url
-        self.html = self.load("http://bezvadata.cz%s" % action, post=inputs)
-        self.checkErrors()
-        m = re.search(r'<a class="stahnoutSoubor2" href="(.*?)">', self.html)
+        #: Download url
+        self.data = self.load("http://bezvadata.cz%s" % action, post=inputs)
+        self.check_errors()
+        m = re.search(r'<a class="stahnoutSoubor2" href="(.*?)">', self.data)
         if m is None:
             self.error(_("Page 2 URL not found"))
         url = "http://bezvadata.cz%s" % m.group(1)
-        self.logDebug("DL URL %s" % url)
+        self.log_debug("DL URL %s" % url)
 
-        #countdown
-        m = re.search(r'id="countdown">(\d\d):(\d\d)<', self.html)
+        #: countdown
+        m = re.search(r'id="countdown">(\d\d):(\d\d)<', self.data)
         wait_time = (int(m.group(1)) * 60 + int(m.group(2))) if m else 120
         self.wait(wait_time, False)
 
-        self.download(url)
+        self.link = url
 
 
-    def checkErrors(self):
-        if 'images/button-download-disable.png' in self.html:
-            self.longWait(5 * 60, 24)  #: parallel dl limit
-        elif '<div class="infobox' in self.html:
-            self.tempOffline()
-
-        self.info.pop('error', None)
-
-
-    def loadcaptcha(self, data, *args, **kwargs):
-        return data.decode('base64')
+    def check_errors(self):
+        if 'images/button-download-disable.png' in self.data:
+            self.wait(5 * 60, 24, _("Download limit reached"))  #: Parallel dl limit
+        elif '<div class="infobox' in self.data:
+            self.temp_offline()
+        else:
+            return super(BezvadataCz, self).check_errors()
 
 
 getInfo = create_getInfo(BezvadataCz)

@@ -6,10 +6,11 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 class FilebeerInfoFolder(DeadCrypter):
     __name__    = "FilebeerInfoFolder"
     __type__    = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.05"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?filebeer\.info/\d*~f\w+'
-    __config__  = []
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """Filebeer.info folder decrypter plugin"""
     __license__     = "GPLv3"

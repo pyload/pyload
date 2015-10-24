@@ -6,10 +6,11 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class KickloadCom(DeadHoster):
     __name__    = "KickloadCom"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.23"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?kickload\.com/get/.+'
-    __config__  = []
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """Kickload.com hoster plugin"""
     __license__     = "GPLv3"

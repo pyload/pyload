@@ -6,10 +6,12 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class FilerNetFolder(SimpleCrypter):
     __name__    = "FilerNetFolder"
     __type__    = "crypter"
-    __version__ = "0.42"
+    __version__ = "0.45"
+    __status__  = "testing"
 
     __pattern__ = r'https?://filer\.net/folder/\w{16}'
-    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
+                   ("use_premium"       , "bool", "Use premium account if available"   , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 

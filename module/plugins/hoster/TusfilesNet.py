@@ -1,38 +1,42 @@
 # -*- coding: utf-8 -*-
 
 from module.network.HTTPRequest import BadHeader
+from module.plugins.internal.Plugin import Retry
 from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class TusfilesNet(XFSHoster):
     __name__    = "TusfilesNet"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.15"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/\w{12}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Tusfiles.net hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
                        ("guidobelix", "guidobelix@hotmail.it")]
 
+    PLUGIN_DOMAIN = "tusfiles.net"
 
     INFO_PATTERN    = r'\](?P<N>.+) - (?P<S>[\d.,]+) (?P<U>[\w^_]+)\['
-    OFFLINE_PATTERN = r'>File Not Found|<Title>TusFiles - Fast Sharing Files!|The file you are trying to download is no longer available'
 
 
     def setup(self):
-        self.chunkLimit     = -1
-        self.multiDL        = True
-        self.resumeDownload = True
+        self.chunk_limit     = -1
+        self.multiDL         = True
+        self.limitDL         = 2
+        self.resume_download = True
 
 
-    def downloadLink(self, link):
+    def download(self, url, *args, **kwargs):
         try:
-            return super(TusfilesNet, self).downloadLink(link)
+            return super(TusfilesNet, self).download(url, *args, **kwargs)
 
         except BadHeader, e:
-            if e.code is 503:
+            if e.code == 503:
                 self.multiDL = False
                 raise Retry("503")
 

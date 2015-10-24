@@ -6,10 +6,11 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class DdlstorageCom(DeadHoster):
     __name__    = "DdlstorageCom"
     __type__    = "hoster"
-    __version__ = "1.02"
+    __version__ = "1.04"
+    __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?ddlstorage\.com/\w+'
-    __config__  = []
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """DDLStorage.com hoster plugin"""
     __license__     = "GPLv3"

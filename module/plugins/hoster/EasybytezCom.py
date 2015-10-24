@@ -6,15 +6,19 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class EasybytezCom(XFSHoster):
     __name__    = "EasybytezCom"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.26"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?easybytez\.com/\w{12}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Easybytez.com hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it")]
 
+
+    PLUGIN_DOMAIN = "easybytez.com"
 
     OFFLINE_PATTERN = r'>File not available'
 

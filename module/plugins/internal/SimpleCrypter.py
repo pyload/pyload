@@ -2,26 +2,28 @@
 
 import re
 
-from urlparse import urljoin, urlparse
+from module.network.HTTPRequest import BadHeader
+from module.network.RequestFactory import getURL as get_url
+from module.plugins.internal.Crypter import Crypter, create_getInfo, parse_fileInfo
+from module.plugins.internal.utils import replace_patterns, set_cookie, set_cookies
 
-from module.plugins.Crypter import Crypter
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns, set_cookies
-from module.utils import fixup
 
-
-class SimpleCrypter(Crypter, SimpleHoster):
+class SimpleCrypter(Crypter):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.43"
+    __version__ = "0.77"
+    __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),  #: Overrides core.config['general']['folder_per_package']
-                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("activated"            , "bool", "Activated"                                        , True),
+                   ("use_premium"          , "bool", "Use premium account if available"                 , True),
+                   ("use_subfolder"        , "bool", "Save package to subfolder"                        , True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package"              , True),
+                   ("max_wait"             , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """Simple decrypter plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"  )]
-
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
     """
     Following patterns should be defined by each crypter:
@@ -49,42 +51,133 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
     and its loadPage method:
 
-
-      def loadPage(self, page_n):
+      def load_page(self, page_n):
           return the html of the page number page_n
     """
 
-    LINK_PATTERN = None
+    NAME_REPLACEMENTS    = []
+    URL_REPLACEMENTS     = []
 
-    NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
-    URL_REPLACEMENTS  = []
+    COOKIES              = True   #: or False or list of tuples [(domain, name, value)]
+    DIRECT_LINK          = True   #: Set to True to looking for direct link (as defined in handle_direct method), set to None to do it if self.account is True else False
+    LOGIN_ACCOUNT        = False  #: Set to True to require account login
+    LOGIN_PREMIUM        = False  #: Set to True to require premium account login
+    TEXT_ENCODING        = True   #: Set to encoding name if encoding value in http header is not correct
 
-    TEXT_ENCODING = False  #: Set to True or encoding name if encoding in http header is not correct
-    COOKIES       = True  #: or False or list of tuples [(domain, name, value)]
+    LINK_PATTERN         = None
+    LINK_FREE_PATTERN    = None
+    LINK_PREMIUM_PATTERN = None
+    PAGES_PATTERN        = None
 
-    LOGIN_ACCOUNT = False
-    LOGIN_PREMIUM = False
+    NAME_PATTERN         = None
+    OFFLINE_PATTERN      = None
+    TEMP_OFFLINE_PATTERN = None
+
+    WAIT_PATTERN         = None
+    PREMIUM_ONLY_PATTERN = None
+    IP_BLOCKED_PATTERN   = None
+    SIZE_LIMIT_PATTERN   = None
+    ERROR_PATTERN        = None
+
+
+    @classmethod
+    def api_info(cls, url):
+        return {}
+
+
+    @classmethod
+    def get_info(cls, url="", html=""):
+        info = super(SimpleCrypter, cls).get_info(url)
+
+        info.update(cls.api_info(url))
+
+        if not html and info['status'] is not 2:
+            if not url:
+                info['error']  = "missing url"
+                info['status'] = 1
+
+            elif info['status'] is 3:
+                try:
+                    html = get_url(url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
+
+                except BadHeader, e:
+                    info['error'] = "%d: %s" % (e.code, e.content)
+
+                except Exception:
+                    pass
+
+        if html:
+            if cls.OFFLINE_PATTERN and re.search(cls.OFFLINE_PATTERN, html) is not None:
+                info['status'] = 1
+
+            elif cls.TEMP_OFFLINE_PATTERN and re.search(cls.TEMP_OFFLINE_PATTERN, html) is not None:
+                info['status'] = 6
+
+            elif cls.NAME_PATTERN:
+                m = re.search(cls.NAME_PATTERN, html)
+                if m is not None:
+                    info['status'] = 2
+                    info['pattern'].update(m.groupdict())
+
+        if 'N' in info['pattern']:
+            name = replace_patterns(info['pattern']['N'], cls.NAME_REPLACEMENTS)
+            info['name'] = parse_name(name)
+
+        return info
 
 
     #@TODO: Remove in 0.4.10
-    def init(self):
-        account_name = (self.__name__ + ".py").replace("Folder.py", "").replace(".py", "")
-        account      = self.pyfile.m.core.accountManager.getAccountPlugin(account_name)
+    def setup_base(self):
+        account_name = self.classname.rsplit("Folder", 1)[0]
 
-        if account and account.canUse():
-            self.user, data = account.selectAccount()
-            self.req        = account.getAccountRequest(self.user)
-            self.premium    = account.isPremium(self.user)
+        if self.account:
+            self.req     = self.pyload.requestFactory.getRequest(account_name, self.account.user)
+            self.premium = self.account.info['data']['premium']  #@NOTE: Avoid one unnecessary get_info call by `self.account.premium` here
+        else:
+            self.req     = self.pyload.requestFactory.getRequest(account_name)
+            self.premium = False
 
-            self.account = account
+        super(SimpleCrypter, self).setup_base()
+
+
+    #@TODO: Remove in 0.4.10
+    def load_account(self):
+        class_name = self.classname
+        self.__class__.__name__ = class_name.rsplit("Folder", 1)[0]
+        super(SimpleCrypter, self).load_account()
+        self.__class__.__name__ = class_name
+
+
+    def handle_direct(self, pyfile):
+        link      = None
+        maxredirs = self.get_config("maxredirs", default=10, plugin="UserAgentSwitcher")
+
+        for i in xrange(maxredirs):
+            url = link or pyfile.url
+            self.log_debug("Redirect #%d to: %s" % (i, url))
+
+            header   = self.load(url, just_header=True)
+            location = header.get('location')
+
+            if location:
+                link = location
+
+            elif link:
+                self.urls.append(link)
+                return
+        else:
+            self.log_warning(_("Too many redirects"))
+
+
+    def preload(self):
+        self.data = self.load(self.pyfile.url,
+                              cookies=self.COOKIES,
+                              ref=False,
+                              decode=self.TEXT_ENCODING)
 
 
     def prepare(self):
-        self.pyfile.error = ""  #@TODO: Remove in 0.4.10
-
-        self.info  = {}
-        self.html  = ""
-        self.links = []  #@TODO: Move to hoster class in 0.4.10
+        self.direct_dl = False
 
         if self.LOGIN_PREMIUM and not self.premium:
             self.fail(_("Required premium account not found"))
@@ -94,8 +187,17 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
         self.req.setOption("timeout", 120)
 
-        if isinstance(self.COOKIES, list):
-            set_cookies(self.req.cj, self.COOKIES)
+        if self.LINK_PATTERN:
+            if self.LINK_FREE_PATTERN is None:
+                self.LINK_FREE_PATTERN = self.LINK_PATTERN
+
+            if self.LINK_PREMIUM_PATTERN is None:
+                self.LINK_PREMIUM_PATTERN = self.LINK_PATTERN
+
+        if self.DIRECT_LINK is None:
+            self.direct_dl = bool(self.account)
+        else:
+            self.direct_dl = self.DIRECT_LINK
 
         self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
 
@@ -103,66 +205,153 @@ class SimpleCrypter(Crypter, SimpleHoster):
     def decrypt(self, pyfile):
         self.prepare()
 
-        self.preload()
-        self.checkInfo()
+        if self.direct_dl:
+            self.log_info(_("Looking for direct link..."))
+            self.handle_direct(pyfile)
 
-        self.links = self.getLinks()
+            if self.urls or self.packages:
+                self.log_info(_("Direct link detected"))
+            else:
+                self.log_info(_("Direct link not found"))
 
-        if hasattr(self, 'PAGES_PATTERN') and hasattr(self, 'loadPage'):
-            self.handlePages(pyfile)
+        if not self.urls and not self.packages:
+            self.preload()
+            self.check_errors()
 
-        self.logDebug("Package has %d links" % len(self.links))
+            self.urls.extend(self.get_links())
 
-        if self.links:
-            self.packages = [(self.info['name'], self.links, self.info['folder'])]
-
-        elif not self.urls and not self.packages:  #@TODO: Remove in 0.4.10
-            self.fail(_("No link grabbed"))
-
-
-    def checkNameSize(self, getinfo=True):
-        if not self.info or getinfo:
-            self.logDebug("File info (BEFORE): %s" % self.info)
-            self.info.update(self.getInfo(self.pyfile.url, self.html))
-            self.logDebug("File info (AFTER): %s"  % self.info)
-
-        try:
-            url  = self.info['url'].strip()
-            name = self.info['name'].strip()
-            if name and name != url:
-                self.pyfile.name = name
-
-        except Exception:
-            pass
-
-        try:
-            folder = self.info['folder'] = self.pyfile.name
-
-        except Exception:
-            pass
-
-        self.logDebug("File name: %s"   % self.pyfile.name,
-                      "File folder: %s" % self.pyfile.name)
+            if self.PAGES_PATTERN:
+                self.handle_pages(pyfile)
 
 
-    def getLinks(self):
+    def handle_free(self, pyfile):
+        if not self.LINK_FREE_PATTERN:
+            self.log_warning(_("Free decrypting not implemented"))
+
+        links = re.findall(self.LINK_FREE_PATTERN, self.data)
+        if not links:
+            self.error(_("Free decrypted link not found"))
+        else:
+            self.urls.extend(links)
+
+
+    def handle_premium(self, pyfile):
+        if not self.LINK_PREMIUM_PATTERN:
+            self.log_warning(_("Premium decrypting not implemented"))
+            self.restart(premium=False)
+
+        links = re.findall(self.LINK_PREMIUM_PATTERN, self.data)
+        if not links:
+            self.error(_("Premium decrypted link found"))
+        else:
+            self.urls.extend(links)
+
+
+    def get_links(self):
         """
-        Returns the links extracted from self.html
+        Returns the links extracted from self.data
         You should override this only if it's impossible to extract links using only the LINK_PATTERN.
         """
-        url_p   = urlparse(self.pyfile.url)
-        baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
+        if self.premium:
+            self.log_info(_("Decrypting as premium link..."))
+            self.handle_premium(pyfile)
 
-        return [urljoin(baseurl, link) if not urlparse(link).scheme else link \
-                for link in re.findall(self.LINK_PATTERN, self.html)]
+        elif not self.LOGIN_ACCOUNT:
+            self.log_info(_("Decrypting as free link..."))
+            self.handle_free(pyfile)
+
+        return self.urls
 
 
-    def handlePages(self, pyfile):
+    def load_page(self, number):
+        raise NotImplementedError
+
+
+    def handle_pages(self, pyfile):
         try:
-            pages = int(re.search(self.PAGES_PATTERN, self.html).group(1))
+            pages = int(re.search(self.PAGES_PATTERN, self.data).group(1))
+
         except Exception:
             pages = 1
 
         for p in xrange(2, pages + 1):
-            self.html = self.loadPage(p)
-            self.links += self.getLinks()
+            self.data = self.load_page(p)
+            self.urls.extend(self.get_links())
+
+
+    def check_errors(self):
+        if not self.data:
+            self.log_debug("No data to check")
+            return
+
+        if self.IP_BLOCKED_PATTERN and re.search(self.IP_BLOCKED_PATTERN, self.data):
+            self.fail(_("Connection from your current IP address is not allowed"))
+
+        elif not self.premium:
+            if self.PREMIUM_ONLY_PATTERN and re.search(self.PREMIUM_ONLY_PATTERN, self.data):
+                self.fail(_("Link can be decrypted by premium users only"))
+
+            elif self.SIZE_LIMIT_PATTERN and re.search(self.SIZE_LIMIT_PATTERN, self.data):
+                self.fail(_("Link list too large for free decrypt"))
+
+        if self.ERROR_PATTERN:
+            m = re.search(self.ERROR_PATTERN, self.data)
+            if m is not None:
+                try:
+                    errmsg = m.group(1)
+
+                except (AttributeError, IndexError):
+                    errmsg = m.group(0)
+
+                finally:
+                    errmsg = re.sub(r'<.*?>', " ", errmsg.strip())
+
+                self.info['error'] = errmsg
+                self.log_warning(errmsg)
+
+                if re.search('limit|wait|slot', errmsg, re.I):
+                    wait_time = parse_time(errmsg)
+                    self.wait(wait_time, reconnect=wait_time > self.get_config("max_wait", 10) * 60)
+                    self.restart(_("Download limit exceeded"))
+
+                elif re.search('country|ip|region|nation', errmsg, re.I):
+                    self.fail(_("Connection from your current IP address is not allowed"))
+
+                elif re.search('captcha|code', errmsg, re.I):
+                    self.retry_captcha()
+
+                elif re.search('countdown|expired', errmsg, re.I):
+                    self.retry(10, 60, _("Link expired"))
+
+                elif re.search('maint(e|ai)nance|temp', errmsg, re.I):
+                    self.temp_offline()
+
+                elif re.search('up to|size', errmsg, re.I):
+                    self.fail(_("Link list too large for free decrypt"))
+
+                elif re.search('offline|delet|remov|not? (found|(longer)? available)', errmsg, re.I):
+                    self.offline()
+
+                elif re.search('filename', errmsg, re.I):
+                    self.fail(_("Invalid url"))
+
+                elif re.search('premium', errmsg, re.I):
+                    self.fail(_("Link can be decrypted by premium users only"))
+
+                else:
+                    self.wait(60, reconnect=True)
+                    self.restart(errmsg)
+
+        elif self.WAIT_PATTERN:
+            m = re.search(self.WAIT_PATTERN, self.data)
+            if m is not None:
+                try:
+                    waitmsg = m.group(1).strip()
+
+                except (AttributeError, IndexError):
+                    waitmsg = m.group(0).strip()
+
+                wait_time = parse_time(waitmsg)
+                self.wait(wait_time, reconnect=wait_time > self.get_config("max_wait", 10) * 60)
+
+        self.info.pop('error', None)

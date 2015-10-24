@@ -2,17 +2,19 @@
 
 import re
 
-from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DateiTo(SimpleHoster):
     __name__    = "DateiTo"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.11"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Datei.to hoster plugin"""
     __license__     = "GPLv3"
@@ -24,56 +26,45 @@ class DateiTo(SimpleHoster):
     OFFLINE_PATTERN = r'>Datei wurde nicht gefunden<|>Bitte wähle deine Datei aus... <'
 
     WAIT_PATTERN    = r'countdown\({seconds: (\d+)'
-    MULTIDL_PATTERN = r'>Du lädst bereits eine Datei herunter<'
+    DOWNLOAD_PATTERN = r'>Du lädst bereits eine Datei herunter'
 
     DATA_PATTERN = r'url: "(.*?)", data: "(.*?)",'
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         url = 'http://datei.to/ajax/download.php'
         data = {'P': 'I', 'ID': self.info['pattern']['ID']}
         recaptcha = ReCaptcha(self)
 
-        for _i in xrange(10):
-            self.logDebug("URL", url, "POST", data)
-            self.html = self.load(url, post=data)
-            self.checkErrors()
+        for _i in xrange(3):
+            self.log_debug("URL", url, "POST", data)
+            self.data = self.load(url, post=data)
+            self.check_errors()
 
             if url.endswith('download.php') and 'P' in data:
-                if data['P'] == 'I':
-                    self.doWait()
+                if data['P'] == "I":
+                    self.do_wait()
 
-                elif data['P'] == 'IV':
+                elif data['P'] == "IV":
                     break
 
-            m = re.search(self.DATA_PATTERN, self.html)
+            m = re.search(self.DATA_PATTERN, self.data)
             if m is None:
-                self.error(_("data"))
+                self.error(_("Data pattern not found"))
+
             url = 'http://datei.to/' + m.group(1)
             data = dict(x.split('=') for x in m.group(2).split('&'))
 
             if url.endswith('recaptcha.php'):
                 data['recaptcha_response_field'], data['recaptcha_challenge_field'] = recaptcha.challenge()
         else:
-            self.fail(_("Too bad..."))
+            return
 
-        self.download(self.html)
-
-
-    def checkErrors(self):
-        m = re.search(self.MULTIDL_PATTERN, self.html)
-        if m:
-            m = re.search(self.WAIT_PATTERN, self.html)
-            wait_time = int(m.group(1)) if m else 30
-
-            errmsg = self.info['error'] = _("Parallel downloads")
-            self.retry(wait_time=wait_time, reason=errmsg)
-
-        self.info.pop('error', None)
+        self.link = self.data
 
 
-    def doWait(self):
-        m = re.search(self.WAIT_PATTERN, self.html)
+    def do_wait(self):
+        m = re.search(self.WAIT_PATTERN, self.data)
         wait_time = int(m.group(1)) if m else 30
 
         self.load('http://datei.to/ajax/download.php', post={'P': 'Ads'})

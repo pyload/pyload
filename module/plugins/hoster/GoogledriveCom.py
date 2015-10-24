@@ -4,63 +4,54 @@
 #   https://drive.google.com/file/d/0B6RNTe4ygItBQm15RnJiTmMyckU/view?pli=1
 
 import re
+import urlparse
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.utils import html_unescape
+from module.plugins.internal.utils import html_unescape
 
 
 class GoogledriveCom(SimpleHoster):
     __name__    = "GoogledriveCom"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.16"
+    __status__  = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?drive\.google\.com/file/.+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __pattern__ = r'https?://(?:www\.)?(drive|docs)\.google\.com/(file/d/\w+|uc\?.*id=)'
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Drive.google.com hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
-    DISPOSITION = False
-
-    NAME_PATTERN    = r'"og:title" content="(?P<N>.*?)">'
+    NAME_PATTERN    = r'(?:<title>|class="uc-name-size".*>)(?P<N>.+?)(?: - Google Drive</title>|</a> \()'
     OFFLINE_PATTERN = r'align="center"><p class="errorMessage"'
+
+    LINK_FREE_PATTERN = r'"([^"]+uc\?.*?)"'
 
 
     def setup(self):
         self.multiDL        = True
-        self.resumeDownload = True
-        self.chunkLimit     = 1
+        self.resume_download = True
+        self.chunk_limit     = 1
 
 
-    def handleFree(self, pyfile):
-        try:
-            link1 = re.search(r'"(https://docs.google.com/uc\?id.*?export=download)",',
-                              self.html.decode('unicode-escape')).group(1)
+    def handle_free(self, pyfile):
+        for _i in xrange(2):
+            m = re.search(self.LINK_FREE_PATTERN, self.data)
 
-        except AttributeError:
-            self.error(_("Hop #1 not found"))
+            if m is None:
+                return
 
-        else:
-            self.logDebug("Next hop: %s" % link1)
+            link = self.fixurl(link, "https://docs.google.com/")
+            dl   = self.isdownload(link, redirect=False)
 
-        self.html = self.load(link1).decode('unicode-escape')
-
-        try:
-            link2 = html_unescape(re.search(r'href="(/uc\?export=download.*?)">',
-                                  self.html).group(1))
-
-        except AttributeError:
-            self.error(_("Hop #2 not found"))
-
-        else:
-            self.logDebug("Next hop: %s" % link2)
-
-        link3 = self.load("https://docs.google.com" + link2, just_header=True)
-        self.logDebug("DL-Link: %s" % link3['location'])
-
-        self.link = link3['location']
+            if not dl:
+                self.data = self.load(link)
+            else:
+                self.link = dl
+                break
 
 
 getInfo = create_getInfo(GoogledriveCom)

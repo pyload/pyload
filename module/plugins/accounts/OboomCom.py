@@ -1,46 +1,57 @@
 # -*- coding: utf-8 -*-
 
-import time
+try:
+    from beaker.crypto.pbkdf2 import PBKDF2
 
-from beaker.crypto.pbkdf2 import PBKDF2
+except ImportError:
+    from beaker.crypto.pbkdf2 import pbkdf2
+    from binascii import b2a_hex
 
-from module.common.json_layer import json_loads
-from module.plugins.Account import Account
+    class PBKDF2(object):
+        def __init__(self, passphrase, salt, iterations=1000):
+            self.passphrase = passphrase
+            self.salt = salt
+            self.iterations = iterations
+
+        def hexread(self, octets):
+            return b2a_hex(pbkdf2(self.passphrase, self.salt, self.iterations, octets))
+
+from module.plugins.internal.utils import json
+from module.plugins.internal.Account import Account
 
 
 class OboomCom(Account):
     __name__    = "OboomCom"
     __type__    = "account"
-    __version__ = "0.23"
+    __version__ = "0.30"
+    __status__  = "testing"
 
     __description__ = """Oboom.com account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("stanley", "stanley.foerster@gmail.com")]
 
 
-    def loadAccountData(self, user, req):
-        passwd = self.getAccountData(user)['password']
-        salt   = passwd[::-1]
-        pbkdf2 = PBKDF2(passwd, salt, 1000).hexread(16)
+    def load_account_data(self, user, password):
+        salt   = password[::-1]
+        pbkdf2 = PBKDF2(password, salt, 1000).hexread(16)
 
-        result = json_loads(req.load("https://www.oboom.com/1/login", get={"auth": user, "pass": pbkdf2}))
+        result = json.loads(self.load("http://www.oboom.com/1/login",  #@TODO: Revert to `https` in 0.4.10
+                                      get={'auth': user,
+                                           'pass': pbkdf2}))
 
-        if not result[0] == 200:
-            self.logWarning(_("Failed to log in: %s") % result[1])
-            self.wrongPassword()
+        if result[0] != 200:
+            self.log_warning(_("Failed to log in: %s") % result[1])
+            self.fail_login()
 
         return result[1]
 
 
-    def loadAccountInfo(self, name, req):
-        accountData = self.loadAccountData(name, req)
+    def grab_info(self, user, password, data):
+        account_data = self.load_account_data(user, password)
 
-        userData = accountData['user']
+        userData = account_data['user']
 
-        if userData['premium'] == "null":
-            premium = False
-        else:
-            premium = True
+        premium = userData['premium'] != "null"
 
         if userData['premium_unix'] == "null":
             validUntil = -1
@@ -50,9 +61,9 @@ class OboomCom(Account):
         traffic = userData['traffic']
 
         trafficLeft = traffic['current'] / 1024  #@TODO: Remove `/ 1024` in 0.4.10
-        maxTraffic = traffic['max'] / 1024  #@TODO: Remove `/ 1024` in 0.4.10
+        maxTraffic  = traffic['max'] / 1024  #@TODO: Remove `/ 1024` in 0.4.10
 
-        session = accountData['session']
+        session = account_data['session']
 
         return {'premium'    : premium,
                 'validuntil' : validUntil,
@@ -61,5 +72,5 @@ class OboomCom(Account):
                 'session'    : session}
 
 
-    def login(self, user, data, req):
-        self.loadAccountData(user, req)
+    def signin(self, user, password, data):
+        self.load_account_data(user, password)

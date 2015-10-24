@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
 import re
 import time
 
-from pycurl import REFERER
-
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class OneFichierCom(Account):
     __name__    = "OneFichierCom"
     __type__    = "account"
-    __version__ = "0.12"
+    __version__ = "0.19"
+    __status__  = "testing"
 
     __description__ = """1fichier.com account plugin"""
     __license__     = "GPLv3"
@@ -19,41 +19,42 @@ class OneFichierCom(Account):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    VALID_UNTIL_PATTERN = r'Your Premium Status will end the (\d+/\d+/\d+)'
+    VALID_UNTIL_PATTERN = r'Your subscription will end the (\d+\-\d+\-\d+)'
 
 
-    def loadAccountInfo(self, user, req):
+    def grab_info(self, user, password, data):
         validuntil = None
         trafficleft = -1
         premium = None
 
-        html = req.load("https://1fichier.com/console/abo.pl")
+        html = self.load("https://1fichier.com/console/abo.pl")
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
-        if m:
+        if m is not None:
             expiredate = m.group(1)
-            self.logDebug("Expire date: " + expiredate)
+            self.log_debug("Expire date: " + expiredate)
 
             try:
-                validuntil = time.mktime(time.strptime(expiredate, "%d/%m/%Y"))
+                validuntil = time.mktime(time.strptime(expiredate, "%Y-%m-%d"))
+
             except Exception, e:
-                self.logError(e)
+                self.log_error(e, trace=True)
+
             else:
                 premium = True
 
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium or False}
 
 
-    def login(self, user, data, req):
-        req.http.c.setopt(REFERER, "https://1fichier.com/login.pl?lg=en")
+    def signin(self, user, password, data):
+        self.req.http.c.setopt(pycurl.REFERER, "https://1fichier.com/login.pl?lg=en")
 
-        html = req.load("https://1fichier.com/login.pl?lg=en",
-                        post={'mail'   : user,
-                              'pass'   : data['password'],
-                              'It'     : "on",
-                              'purge'  : "off",
-                              'valider': "Send"},
-                        decode=True)
+        html = self.load("https://1fichier.com/login.pl?lg=en",
+                         post={'mail'   : user,
+                               'pass'   : password,
+                               'It'     : "on",
+                               'purge'  : "off",
+                               'valider': "Send"})
 
         if '>Invalid email address' in html or '>Invalid password' in html:
-            self.wrongPassword()
+            self.fail_login()

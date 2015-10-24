@@ -11,10 +11,12 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DataHu(SimpleHoster):
     __name__    = "DataHu"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.05"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?data\.hu/get/\w+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Data.hu hoster plugin"""
     __license__     = "GPLv3"
@@ -24,11 +26,11 @@ class DataHu(SimpleHoster):
 
     INFO_PATTERN = ur'<title>(?P<N>.*) \((?P<S>[^)]+)\) let\xf6lt\xe9se</title>'
     OFFLINE_PATTERN = ur'Az adott f\xe1jl nem l\xe9tezik'
-    LINK_FREE_PATTERN = r'<div class="download_box_button"><a href="([^"]+)">'
+    LINK_FREE_PATTERN = r'<div class="download_box_button"><a href="(.+?)">'
 
 
     def setup(self):
-        self.resumeDownload = True
+        self.resume_download = True
         self.multiDL        = self.premium
 
 

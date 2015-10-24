@@ -8,31 +8,30 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class ExashareCom(XFSHoster):
     __name__    = "ExashareCom"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.04"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?exashare\.com/\w{12}'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Exashare.com hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    INFO_PATTERN      = r'>(?P<NAME>.+?)<small>\( (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
-    LINK_FREE_PATTERN = r'file: "(.+?)"'
+    PLUGIN_DOMAIN = "exashare.com"
+
+    INFO_PATTERN = r'>(?P<NAME>.+?)<small>\( (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
 
     def setup(self):
         self.multiDL        = True
-        self.chunkLimit     = 1
-        self.resumeDownload = self.premium
+        self.chunk_limit     = 1
+        self.resume_download = self.premium
 
 
-    def handleFree(self, pyfile):
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
-        if m is None:
-            self.error(_("Free download link not found"))
-        else:
-            self.link = m.group(1)
+    def handle_free(self, pyfile):
+        return super(XFSHoster, self).handle_free(pyfile)
 
 
 getInfo = create_getInfo(ExashareCom)

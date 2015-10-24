@@ -1,21 +1,22 @@
 # -*- coding: utf-8 -*-
 
 import re
+import urllib
 
-from random import randrange
-from urllib import unquote
-
-from module.common.json_layer import json_loads
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
+from module.plugins.internal.utils import json
 
 
 class FastixRu(MultiHoster):
     __name__    = "FastixRu"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.17"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/\w{24}'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium" , "bool", "Use premium account if available"    , True),
+                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Fastix multi-hoster plugin"""
     __license__     = "GPLv3"
@@ -23,21 +24,19 @@ class FastixRu(MultiHoster):
 
 
     def setup(self):
-        self.chunkLimit = 3
+        self.chunk_limit = 3
 
 
-    def handlePremium(self, pyfile):
-        api_key = self.account.getAccountData(self.user)
-        api_key = api_key['api']
+    def handle_premium(self, pyfile):
+        self.data = self.load("http://fastix.ru/api_v2/",
+                              get={'apikey': self.account.get_data('apikey'),
+                                   'sub'   : "getdirectlink",
+                                   'link'  : pyfile.url})
+        data = json.loads(self.data)
 
-        self.html = self.load("http://fastix.ru/api_v2/",
-                         get={'apikey': api_key, 'sub': "getdirectlink", 'link': pyfile.url})
+        self.log_debug("Json data", data)
 
-        data = json_loads(self.html)
-
-        self.logDebug("Json data", data)
-
-        if "error\":true" in self.html:
+        if "error\":true" in self.data:
             self.offline()
         else:
             self.link = data['downloadlink']

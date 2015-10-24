@@ -6,11 +6,12 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class HugefilesNet(XFSAccount):
     __name__    = "HugefilesNet"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.05"
+    __status__  = "testing"
 
     __description__ = """Hugefiles.net account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_DOMAIN = "hugefiles.net"
+    PLUGIN_DOMAIN = "hugefiles.net"

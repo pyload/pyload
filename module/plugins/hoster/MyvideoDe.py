@@ -2,16 +2,18 @@
 
 import re
 
-from module.plugins.Hoster import Hoster
-from module.unescape import unescape
+from module.plugins.internal.Hoster import Hoster
+from module.plugins.internal.utils import html_unescape
 
 
 class MyvideoDe(Hoster):
     __name__    = "MyvideoDe"
     __type__    = "hoster"
-    __version__ = "0.90"
+    __version__ = "0.93"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?myvideo\.de/watch/'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Myvideo.de hoster plugin"""
     __license__     = "GPLv3"
@@ -26,19 +28,19 @@ class MyvideoDe(Hoster):
 
 
     def download_html(self):
-        self.html = self.load(self.pyfile.url)
+        self.data = self.load(self.pyfile.url)
 
 
     def get_file_url(self):
-        videoId = re.search(r"addVariable\('_videoid','(.*)'\);p.addParam\('quality'", self.html).group(1)
-        videoServer = re.search("rel='image_src' href='(.*)thumbs/.*' />", self.html).group(1)
+        videoId = re.search(r"addVariable\('_videoid','(.*)'\);p.addParam\('quality'", self.data).group(1)
+        videoServer = re.search("rel='image_src' href='(.*)thumbs/.*' />", self.data).group(1)
         file_url = videoServer + videoId + ".flv"
         return file_url
 
 
     def get_file_name(self):
         file_name_pattern = r'<h1 class=\'globalHd\'>(.*)</h1>'
-        return unescape(re.search(file_name_pattern, self.html).group(1).replace("/", "") + '.flv')
+        return html_unescape(re.search(file_name_pattern, self.data).group(1).replace("/", "") + '.flv')
 
 
     def file_exists(self):

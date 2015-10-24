@@ -3,15 +3,16 @@
 import re
 import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class CatShareNet(Account):
     __name__    = "CatShareNet"
     __type__    = "account"
-    __version__ = "0.05"
+    __version__ = "0.11"
+    __status__  = "testing"
 
-    __description__ = """CatShareNet account plugin"""
+    __description__ = """Catshare.net account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("prOq", None)]
 
@@ -21,19 +22,19 @@ class CatShareNet(Account):
     TRAFFIC_LEFT_PATTERN = r'<a href="/premium">([0-9.]+ [kMG]B)'
 
 
-    def loadAccountInfo(self, user, req):
+    def grab_info(self, user, password, data):
         premium     = False
         validuntil  = -1
         trafficleft = -1
 
-        html = req.load("http://catshare.net/", decode=True)
+        html = self.load("http://catshare.net/")
 
         if re.search(self.PREMIUM_PATTERN, html):
             premium = True
 
         try:
             expiredate = re.search(self.VALID_UNTIL_PATTERN, html).group(1)
-            self.logDebug("Expire date: " + expiredate)
+            self.log_debug("Expire date: " + expiredate)
 
             validuntil = time.mktime(time.strptime(expiredate, "%Y-%m-%d %H:%M:%S"))
 
@@ -41,7 +42,7 @@ class CatShareNet(Account):
             pass
 
         try:
-            trafficleft = self.parseTraffic(re.search(self.TRAFFIC_LEFT_PATTERN, html).group(1))
+            trafficleft = self.parse_traffic(re.search(self.TRAFFIC_LEFT_PATTERN, html).group(1))
 
         except Exception:
             pass
@@ -49,13 +50,12 @@ class CatShareNet(Account):
         return {'premium': premium, 'trafficleft': trafficleft, 'validuntil': validuntil}
 
 
-    def login(self, user, data, req):
-        html = req.load("http://catshare.net/login",
-                        post={'user_email': user,
-                              'user_password': data['password'],
-                              'remindPassword': 0,
-                              'user[submit]': "Login"},
-                        decode=True)
+    def signin(self, user, password, data):
+        html = self.load("http://catshare.net/login",  #@TODO: Revert to `https` in 0.4.10
+                         post={'user_email'    : user,
+                               'user_password' : password,
+                               'remindPassword': 0,
+                               'user[submit]'  : "Login"})
 
         if not '<a href="/logout">Wyloguj</a>' in html:
-            self.wrongPassword()
+            self.fail_login()

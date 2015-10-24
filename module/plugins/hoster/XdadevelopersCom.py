@@ -11,10 +11,12 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class XdadevelopersCom(SimpleHoster):
     __name__    = "XdadevelopersCom"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.05"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?forum\.xda-developers\.com/devdb/project/dl/\?id=\d+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Xda-developers.com hoster plugin"""
     __license__     = "GPLv3"
@@ -28,11 +30,11 @@ class XdadevelopersCom(SimpleHoster):
 
     def setup(self):
         self.multiDL        = True
-        self.resumeDownload = True
-        self.chunkLimit     = 1
+        self.resume_download = True
+        self.chunk_limit     = 1
 
 
-    def handleFree(self, pyfile):
+    def handle_free(self, pyfile):
         self.link = pyfile.url + "&task=get"  #@TODO: Revert to `get={'task': "get"}` in 0.4.10
 
 

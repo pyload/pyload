@@ -2,36 +2,48 @@
 
 import time
 
-from module.common.json_layer import json_loads
-from module.plugins.Account import Account
+from module.plugins.internal.utils import json
+from module.plugins.internal.MultiAccount import MultiAccount
 
 
-class MyfastfileCom(Account):
+class MyfastfileCom(MultiAccount):
     __name__    = "MyfastfileCom"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.09"
+    __status__  = "testing"
+
+    __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
+                  ("mh_list"    , "str"                , "Hoster list (comma separated)", ""   ),
+                  ("mh_interval", "int"                , "Reload interval in minutes"   , 60   )]
 
     __description__ = """Myfastfile.com account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    def loadAccountInfo(self, user, req):
+    def grab_hosters(self, user, password, data):
+        json_data = self.load("http://myfastfile.com/api.php", get={'hosts': ""})
+        self.log_debug("JSON data", json_data)
+        json_data = json.loads(json_data)
+
+        return json_data['hosts']
+
+    def grab_info(self, user, password, data):
         if 'days_left' in self.json_data:
             validuntil = time.time() + self.json_data['days_left'] * 24 * 60 * 60
-            return {"premium": True, "validuntil": validuntil, "trafficleft": -1}
+            return {'premium': True, 'validuntil': validuntil, 'trafficleft': -1}
         else:
-            self.logError(_("Unable to get account information"))
+            self.log_error(_("Unable to get account information"))
 
 
-    def login(self, user, data, req):
-        # Password to use is the API-Password written in http://myfastfile.com/myaccount
-        html = req.load("http://myfastfile.com/api.php",
-                        get={"user": user, "pass": data['password']})
+    def signin(self, user, password, data):
+        #: Password to use is the API-Password written in http://myfastfile.com/myaccount
+        html = self.load("https://myfastfile.com/api.php",
+                         get={'user': user,
+                              'pass': password})
 
-        self.logDebug("JSON data: " + html)
+        self.log_debug("JSON data: " + html)
 
-        self.json_data = json_loads(html)
+        self.json_data = json.loads(html)
         if self.json_data['status'] != 'ok':
-            self.logError(_('Invalid login. The password to use is the API-Password you find in your "My Account" page'))
-            self.wrongPassword()
+            self.fail_login(_("Invalid username or password"))

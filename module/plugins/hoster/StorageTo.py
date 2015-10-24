@@ -6,10 +6,11 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class StorageTo(DeadHoster):
     __name__    = "StorageTo"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.03"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?storage\.to/get/.+'
-    __config__  = []
+    __config__  = []  #@TODO: Remove in 0.4.10
 
     __description__ = """Storage.to hoster plugin"""
     __license__     = "GPLv3"

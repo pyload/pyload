@@ -1,31 +1,31 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Account import Account
+from module.plugins.internal.Account import Account
 
 
 class FilesMailRu(Account):
     __name__    = "FilesMailRu"
     __type__    = "account"
-    __version__ = "0.11"
+    __version__ = "0.16"
+    __status__  = "testing"
 
     __description__ = """Filesmail.ru account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
-    def loadAccountInfo(self, user, req):
-        return {"validuntil": None, "trafficleft": None}
+    def grab_info(self, user, password, data):
+        return {'validuntil': None, 'trafficleft': None}
 
 
-    def login(self, user, data, req):
+    def signin(self, user, password, data):
         user, domain = user.split("@")
 
-        html = req.load("http://swa.mail.ru/cgi-bin/auth",
-                        post={"Domain": domain,
-                              "Login": user,
-                              "Password": data['password'],
-                              "Page": "http://files.mail.ru/"},
-                        decode=True)
+        html = self.load("https://swa.mail.ru/cgi-bin/auth",
+                         post={'Domain'  : domain,
+                               'Login'   : user,
+                               'Password': password,
+                               'Page'    : "http://files.mail.ru/"})
 
         if "Неверное имя пользователя или пароль" in html:
-            self.wrongPassword()
+            self.fail_login()

@@ -3,17 +3,18 @@
 import re
 import time
 
-from module.plugins.Hook import Hook
+from module.plugins.internal.Addon import Addon
 
 
-class DownloadScheduler(Hook):
+class DownloadScheduler(Addon):
     __name__    = "DownloadScheduler"
     __type__    = "hook"
-    __version__ = "0.22"
+    __version__ = "0.25"
+    __status__  = "testing"
 
-    __config__ = [("timetable", "str", "List time periods as hh:mm full or number(kB/s)",
-                   "0:00 full, 7:00 250, 10:00 0, 17:00 150"),
-                  ("abort", "bool", "Abort active downloads when start period with speed 0", False)]
+    __config__ = [("activated", "bool", "Activated"                                            , False                                    ),
+                  ("timetable", "str" , "List time periods as hh:mm full or number(kB/s)"      , "0:00 full, 7:00 250, 10:00 0, 17:00 150"),
+                  ("abort"    , "bool", "Abort active downloads when start period with speed 0", False                                    )]
 
     __description__ = """Download Scheduler"""
     __license__     = "GPLv3"
@@ -21,61 +22,53 @@ class DownloadScheduler(Hook):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    interval = 0  #@TODO: Remove in 0.4.10
+    def activate(self):
+        self.update_schedule()
 
 
-    def setup(self):
-        self.info = {}    #@TODO: Remove in 0.4.10
-        self.cb   = None  # callback to scheduler job; will be by removed hookmanager when hook unloaded
-
-
-    def coreReady(self):
-        self.updateSchedule()
-
-
-    def updateSchedule(self, schedule=None):
+    def update_schedule(self, schedule=None):
         if schedule is None:
-            schedule = self.getConfig('timetable')
+            schedule = self.get_config('timetable')
 
         schedule = re.findall("(\d{1,2}):(\d{2})[\s]*(-?\d+)",
                               schedule.lower().replace("full", "-1").replace("none", "0"))
         if not schedule:
-            self.logError(_("Invalid schedule"))
+            self.log_error(_("Invalid schedule"))
             return
 
         t0  = time.localtime()
         now = (t0.tm_hour, t0.tm_min, t0.tm_sec, "X")
         schedule = sorted([(int(x[0]), int(x[1]), 0, int(x[2])) for x in schedule] + [now])
 
-        self.logDebug("Schedule", schedule)
+        self.log_debug("Schedule", schedule)
 
         for i, v in enumerate(schedule):
             if v[3] == "X":
                 last, next = schedule[i - 1], schedule[(i + 1) % len(schedule)]
-                self.logDebug("Now/Last/Next", now, last, next)
+                self.log_debug("Now/Last/Next", now, last, next)
 
-                self.setDownloadSpeed(last[3])
+                self.set_download_speed(last[3])
 
                 next_time = (((24 + next[0] - now[0]) * 60 + next[1] - now[1]) * 60 + next[2] - now[2]) % 86400
-                self.core.scheduler.removeJob(self.cb)
-                self.cb = self.core.scheduler.addJob(next_time, self.updateSchedule, threaded=False)
+                self.pyload.scheduler.removeJob(self.cb)
+                self.cb = self.pyload.scheduler.addJob(next_time, self.update_schedule, threaded=False)
 
 
-    def setDownloadSpeed(self, speed):
+    def set_download_speed(self, speed):
         if speed == 0:
-            abort = self.getConfig('abort')
-            self.logInfo(_("Stopping download server. (Running downloads will %sbe aborted.)") % '' if abort else _('not '))
-            self.core.api.pauseServer()
+            abort = self.get_config('abort')
+            self.log_info(_("Stopping download server. (Running downloads will %sbe aborted.)") % '' if abort else _('not '))
+            self.pyload.api.pauseServer()
             if abort:
-                self.core.api.stopAllDownloads()
+                self.pyload.api.stopAllDownloads()
         else:
-            self.core.api.unpauseServer()
+            self.pyload.api.unpauseServer()
 
             if speed > 0:
-                self.logInfo(_("Setting download speed to %d kB/s") % speed)
-                self.core.api.setConfigValue("download", "limit_speed", 1)
-                self.core.api.setConfigValue("download", "max_speed", speed)
+                self.log_info(_("Setting download speed to %d kB/s") % speed)
+                self.pyload.config.set("download", "limit_speed", 1)
+                self.pyload.config.set("download", "max_speed", speed)
             else:
-                self.logInfo(_("Setting download speed to FULL"))
-                self.core.api.setConfigValue("download", "limit_speed", 0)
-                self.core.api.setConfigValue("download", "max_speed", -1)
+                self.log_info(_("Setting download speed to FULL"))
+                self.pyload.config.set("download", "limit_speed", 0)
+                self.pyload.config.set("download", "max_speed", -1)

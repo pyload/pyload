@@ -2,17 +2,17 @@
 
 import re
 
-from urlparse import urljoin
-
 from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
-class CloudzillaToFolder(SimpleHoster):
+class CloudzillaToFolder(SimpleCrypter):
     __name__    = "CloudzillaToFolder"
     __type__    = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.07"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?cloudzilla\.to/share/folder/(?P<ID>[\w^_]+)'
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Cloudzilla.to folder decrypter plugin"""
     __license__     = "GPLv3"
@@ -27,13 +27,13 @@ class CloudzillaToFolder(SimpleHoster):
     PASSWORD_PATTERN = r'<div id="pwd_protected">'
 
 
-    def checkErrors(self):
-        m = re.search(self.PASSWORD_PATTERN, self.html)
-        if m:
-            self.html = self.load(self.pyfile.url, get={'key': self.getPassword()})
+    def check_errors(self):
+        m = re.search(self.PASSWORD_PATTERN, self.data)
+        if m is not None:
+            self.data = self.load(self.pyfile.url, get={'key': self.get_password()})
 
-        if re.search(self.PASSWORD_PATTERN, self.html):
-            self.retry(reason="Wrong password")
+        if re.search(self.PASSWORD_PATTERN, self.data):
+            self.retry(msg="Wrong password")
 
 
 getInfo = create_getInfo(CloudzillaToFolder)

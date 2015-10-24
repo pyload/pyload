@@ -2,18 +2,17 @@
 
 import re
 
-from urlparse import urljoin
-
 from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class UploadedToFolder(SimpleCrypter):
     __name__    = "UploadedToFolder"
     __type__    = "crypter"
-    __version__ = "0.42"
+    __version__ = "0.46"
+    __status__  = "testing"
 
-    __pattern__ = r'http://(?:www\.)?(uploaded|ul)\.(to|net)/(f|folder|list)/(?P<ID>\w+)'
-    __config__  = [("use_premium"       , "bool", "Use premium account if available"   , True),
+    __pattern__ = r'https?://(?:www\.)?(uploaded|ul)\.(to|net)/(f|folder|list)/\w+'
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
                    ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
@@ -22,17 +21,11 @@ class UploadedToFolder(SimpleCrypter):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    PLAIN_PATTERN = r'<small class="date"><a href="([\w/]+)" onclick='
-    NAME_PATTERN = r'<title>(?P<N>.+?)<'
+    NAME_PATTERN         = r'<title>(?P<N>.+?)<'
+    OFFLINE_PATTERN      = r'>Page not found'
+    TEMP_OFFLINE_PATTERN = r'<title>uploaded\.net - Maintenance'
 
-
-    def getLinks(self):
-        m = re.search(self.PLAIN_PATTERN, self.html)
-        if m is None:
-            self.error(_("PLAIN_PATTERN not found"))
-
-        plain_link = urljoin("http://uploaded.net/", m.group(1))
-        return self.load(plain_link).split('\n')[:-1]
+    LINK_PATTERN = r'<h2><a href="(.+?)"'
 
 
 getInfo = create_getInfo(UploadedToFolder)

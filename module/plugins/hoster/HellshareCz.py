@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from urlparse import urljoin
-
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class HellshareCz(SimpleHoster):
     __name__    = "HellshareCz"
     __type__    = "hoster"
-    __version__ = "0.85"
+    __version__ = "0.87"
+    __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?hellshare\.(?:cz|com|sk|hu|pl)/[^?]*/\d+'
-    __config__  = [("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Hellshare.cz hoster plugin"""
     __license__     = "GPLv3"
@@ -29,8 +29,8 @@ class HellshareCz(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = self.multiDL = bool(self.account)
-        self.chunkLimit = 1
+        self.resume_download = self.multiDL = bool(self.account)
+        self.chunk_limit = 1
 
 
 getInfo = create_getInfo(HellshareCz)

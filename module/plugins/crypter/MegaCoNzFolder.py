@@ -2,16 +2,18 @@
 
 import re
 
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter, create_getInfo
 
 
 class MegaCoNzFolder(Crypter):
     __name__    = "MegaCoNzFolder"
     __type__    = "crypter"
-    __version__ = "0.04"
+    __version__ = "0.08"
+    __status__  = "broken"
 
-    __pattern__ = r'(?:https?://(?:www\.)?mega\.co\.nz/|mega:|chrome:.+?)#F!(?P<ID>[\w^_]+)!(?P<KEY>[\w,\\-]+)'
-    __config__  = [("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+    __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#F!(?P<ID>[\w^_]+)!(?P<KEY>[\w,\\-]+)'
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
                    ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Mega.co.nz folder decrypter plugin"""
@@ -25,8 +27,8 @@ class MegaCoNzFolder(Crypter):
 
     def decrypt(self, pyfile):
         url       = "https://mega.co.nz/#F!%s!%s" % re.match(self.__pattern__, pyfile.url).groups()
-        self.html = self.load("http://rapidgen.org/linkfinder", post={'linklisturl': url})
-        self.urls = re.findall(r'(https://mega.co.nz/#N!.+?)<', self.html)
+        self.data = self.load("http://rapidgen.org/linkfinder", post={'linklisturl': url})
+        self.urls = re.findall(r'(https://mega(\.co)?\.nz/#N!.+?)<', self.data)
 
-        if not self.urls:  #@TODO: Remove in 0.4.10
-            self.fail(_("No link grabbed"))
+
+getInfo = create_getInfo(MegaCoNzFolder)

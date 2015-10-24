@@ -2,16 +2,18 @@
 
 import re
 
-from module.plugins.Hook import Hook
+from module.plugins.internal.Addon import Addon
 
 
-class JustPremium(Hook):
+class JustPremium(Addon):
     __name__    = "JustPremium"
     __type__    = "hook"
-    __version__ = "0.22"
+    __version__ = "0.25"
+    __status__  = "testing"
 
-    __config__ = [("excluded", "str", "Exclude hosters (comma separated)", ""),
-                  ("included", "str", "Include hosters (comma separated)", "")]
+    __config__ = [("activated", "bool", "Activated"                        , False),
+                  ("excluded" , "str" , "Exclude hosters (comma separated)", ""   ),
+                  ("included" , "str" , "Include hosters (comma separated)", ""   )]
 
     __description__ = """Remove not-premium links from added urls"""
     __license__     = "GPLv3"
@@ -20,28 +22,24 @@ class JustPremium(Hook):
                        ("immenz"        , "immenz@gmx.net"    )]
 
 
-    event_list = ["linksAdded"]
-    interval   = 0  #@TODO: Remove in 0.4.10
+    def init(self):
+        self.event_map = {'linksAdded': "links_added"}
 
 
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
+    def links_added(self, links, pid):
+        hosterdict = self.pyload.pluginManager.hosterPlugins
+        linkdict   = self.pyload.api.checkURLs(links)
 
-
-    def linksAdded(self, links, pid):
-        hosterdict = self.core.pluginManager.hosterPlugins
-        linkdict   = self.core.api.checkURLs(links)
-
-        premiumplugins = set(account.type for account in self.core.api.getAccounts(False) \
+        premiumplugins = set(account.type for account in self.pyload.api.getAccounts(False) \
                              if account.valid and account.premium)
-        multihosters   = set(hoster for hoster in self.core.pluginManager.hosterPlugins \
+        multihosters   = set(hoster for hoster in self.pyload.pluginManager.hosterPlugins \
                              if 'new_name' in hosterdict[hoster] \
                              and hosterdict[hoster]['new_name'] in premiumplugins)
 
         excluded = map(lambda domain: "".join(part.capitalize() for part in re.split(r'(\.|\d+)', domain) if part != '.'),
-                       self.getConfig('excluded').replace(' ', '').replace(',', '|').replace(';', '|').split('|'))
+                       self.get_config('excluded').replace(' ', '').replace(',', '|').replace(';', '|').split('|'))
         included = map(lambda domain: "".join(part.capitalize() for part in re.split(r'(\.|\d+)', domain) if part != '.'),
-                       self.getConfig('included').replace(' ', '').replace(',', '|').replace(';', '|').split('|'))
+                       self.get_config('included').replace(' ', '').replace(',', '|').replace(';', '|').split('|'))
 
         hosterlist = (premiumplugins | multihosters).union(excluded).difference(included)
 
@@ -50,7 +48,7 @@ class JustPremium(Hook):
             return
 
         for pluginname in set(linkdict.keys()) - hosterlist:
-            self.logInfo(_("Remove links of plugin: %s") % pluginname)
+            self.log_info(_("Remove links of plugin: %s") % pluginname)
             for link in linkdict[pluginname]:
-                self.logDebug("Remove link: %s" % link)
+                self.log_debug("Remove link: %s" % link)
                 links.remove(link)

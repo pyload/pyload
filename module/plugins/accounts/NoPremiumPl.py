@@ -4,78 +4,85 @@ import datetime
 import hashlib
 import time
 
-from module.plugins.Account import Account
-from module.common.json_layer import json_loads as loads
+from module.plugins.internal.utils import json
+from module.plugins.internal.MultiAccount import MultiAccount
 
 
-class NoPremiumPl(Account):
-    __name__ = "NoPremiumPl"
-    __version__ = "0.01"
-    __type__ = "account"
+class NoPremiumPl(MultiAccount):
+    __name__    = "NoPremiumPl"
+    __type__    = "account"
+    __version__ = "0.07"
+    __status__  = "testing"
+
+    __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
+                  ("mh_list"    , "str"                , "Hoster list (comma separated)", ""   ),
+                  ("mh_interval", "int"                , "Reload interval in minutes"   , 60   )]
+
     __description__ = "NoPremium.pl account plugin"
-    __license__ = "GPLv3"
-    __authors__ = [("goddie", "dev@nopremium.pl")]
+    __license__     = "GPLv3"
+    __authors__     = [("goddie", "dev@nopremium.pl")]
 
-    _api_url = "http://crypt.nopremium.pl"
 
-    _api_query = {
-        "site": "nopremium",
-        "username": "",
-        "password": "",
-        "output": "json",
-        "loc": "1",
-        "info": "1"
-    }
+    API_URL   = "http://crypt.nopremium.pl"
+    API_QUERY = {'site'    : "nopremium",
+                 'username': ""         ,
+                 'password': ""         ,
+                 'output'  : "json"     ,
+                 'loc'     : "1"        ,
+                 'info'    : "1"        }
 
-    _req = None
-    _usr = None
-    _pwd = None
+    def grab_hosters(self, user, password, data):
+        hostings         = json.loads(self.load("https://www.nopremium.pl/clipboard.php?json=3").strip())
+        hostings_domains = [domain for row in hostings for domain in row['domains'] if row['sdownload'] == "0"]
 
-    def loadAccountInfo(self, name, req):
-        self._req = req
+        self.log_debug(hostings_domains)
+
+        return hostings_domains
+
+
+    def grab_info(self, user, password, data):
         try:
-            result = loads(self.runAuthQuery())
+            result = json.loads(self.run_auth_query())
+
         except Exception:
-            # todo: return or let it be thrown?
+            #@TODO: return or let it be thrown?
             return
 
         premium = False
         valid_untill = -1
 
-        if "expire" in result.keys() and result["expire"]:
+        if "expire" in result.keys() and result['expire']:
             premium = True
-            valid_untill = time.mktime(datetime.datetime.fromtimestamp(int(result["expire"])).timetuple())
-        traffic_left = result["balance"] * 1024
+            valid_untill = time.mktime(datetime.datetime.fromtimestamp(int(result['expire'])).timetuple())
 
-        return ({
-                    "validuntil": valid_untill,
-                    "trafficleft": traffic_left,
-                    "premium": premium
-                })
+        traffic_left = result['balance'] * 1024
 
-    def login(self, user, data, req):
-        self._usr = user
-        self._pwd = hashlib.sha1(hashlib.md5(data["password"]).hexdigest()).hexdigest()
-        self._req = req
+        return {'validuntil' : valid_untill,
+                'trafficleft': traffic_left,
+                'premium'    : premium     }
+
+
+    def signin(self, user, password, data):
+        data['usr'] = user
+        data['pwd'] = hashlib.sha1(hashlib.md5(password).hexdigest()).hexdigest()
 
         try:
-            response = loads(self.runAuthQuery())
+            response = json.loads(self.run_auth_query())
+
         except Exception:
-            self.wrongPassword()
+            self.fail_login()
 
         if "errno" in response.keys():
-            self.wrongPassword()
-        data['usr'] = self._usr
-        data['pwd'] = self._pwd
+            self.fail_login()
 
-    def createAuthQuery(self):
-        query = self._api_query
-        query["username"] = self._usr
-        query["password"] = self._pwd
 
+    def create_auth_query(self):
+        query = self.API_QUERY
+        query['username'] = self.info['data']['usr']
+        query['password'] = self.info['data']['pwd']
         return query
 
-    def runAuthQuery(self):
-        data = self._req.load(self._api_url, post=self.createAuthQuery())
 
-        return data
+    def run_auth_query(self):
+        return self.load(self.API_URL,
+                         post=self.create_auth_query())
