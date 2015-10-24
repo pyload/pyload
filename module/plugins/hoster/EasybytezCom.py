@@ -25,4 +25,8 @@ class EasybytezCom(XFSHoster):
     LINK_PATTERN = r'(http://(\w+\.(easybytez|easyload|ezbytez|zingload)\.(com|to)|\d+\.\d+\.\d+\.\d+)/files/\d+/\w+/.+?)["\'<]'
 
 
+    def setup(self):
+        self.multiDL         = self.premium
+        self.resume_download = self.premium
+
 getInfo = create_getInfo(EasybytezCom)
