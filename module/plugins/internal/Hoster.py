@@ -2,6 +2,7 @@
 
 from __future__ import with_statement
 
+import mimetypes
 import os
 import re
 
@@ -14,7 +15,7 @@ from module.plugins.internal.utils import encode, exists, fixurl, fs_join, parse
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.44"
+    __version__ = "0.45"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
