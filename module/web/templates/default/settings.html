@@ -12,24 +12,24 @@
 
 {% block content %}
 
-    <ul id="toptabs" class="nav nav-tabs">
+    <ul id="toptabs" class="nav nav-tabs left col-xs-12">
             <li role="presentation" class"active"><a href="#">{{ _("General") }}</a></li>
             <li role="presentation"><a href="#">{{ _("Plugins") }}</a></li>
             <li role="presentation"><a href="#">{{ _("Accounts") }}</a></li>
     </ul>
 
-    <div id="tabsback" style="height: 20px; padding-left: 150px; color: white; font-weight: bold;">
+    <div id="tabsback" class="clear" style="height: 20px; padding-left: 150px; color: white; font-weight: bold;">
 
     </div>
 
         <span id="tabs-body">
             <!-- General -->
             <span id="general" class="active tabContent">
-                <ul class="nav tabs" style="width: 20%; float:left;">
+                <ul class="nav tabs col-xs-5 col-sm-3 col-md-2" style="float:left;">
                     <li class>
                         <div class="panel panel-default" >
                           <div class="panel-body">
-                            <ul id="general-menu" style="float: left; height: 600px; overflow: auto; overflow-x: hidden; width: 100%">
+                            <ul id="general-menu" style="float: left; height: 600px; overflow: auto; overflow-x: hidden; width: 100%; padding-left: 0;">
                                 {% for entry,name in conf.general %}
                                     <nobr>
                                         <li style="list-style-type: none; cursor: pointer; margin-top: 10px;" id="general|{{ entry }}">{{ name }}</li>
@@ -41,10 +41,10 @@
                     </li>
                 </ul>
 
-                <form style="float: left; width:40%; margin-left: 20%; diplay:block; position: fixed; overflow: auto;" id="general_form" action="" method="POST" autocomplete="off">
+                <form style="overflow: auto;" class="col-xs-7 col-md-5" id="general_form" action="" method="POST" autocomplete="off">
                     <span id="general_form_content">
                     <br>
-                    <h3>&nbsp;&nbsp; {{ _("Choose a section from the menu") }}</h3>
+                    <h3>{{ _("Choose a section from the menu") }}</h3>
                     <br>
                     </span>
 
@@ -54,11 +54,11 @@
 
             <!-- Plugins -->
             <span id="plugins" class="tabContent">
-                <ul class="nav tabs" style="width: 20%; float:left; hight:300px;">
+                <ul class="nav tabs col-xs-5 col-sm-3 col-md-2" style="float:left;">
                     <li class>
                         <div class="panel panel-default">
                             <div class="panel-body">
-                                <ul id="plugin-menu" style="float: left; height: 600px; overflow: auto; overflow-x: hidden; width: 100%">
+                                <ul id="plugin-menu" style="float: left; height: 600px; overflow: auto; overflow-x: hidden; width: 100%; padding-left: 0;">
                                     {% for entry,name in conf.plugin %}
                                         <nobr>
                                             <li style="list-style-type: none; cursor: pointer; margin-top: 10px;" id="plugin|{{ entry }}">{{ name }}</li>
@@ -71,11 +71,11 @@
                 </ul>
 
 
-                 <form style="float: left; width:40%; margin-left: 10px;" id="plugin_form" action="" method="POST" autocomplete="off">
+                 <form class="col-xs-7 col-md-5" id="plugin_form" action="" method="POST" autocomplete="off">
 
                      <span id="plugin_form_content" style:"position: static;">
                     <br>
-                    <h3>&nbsp;&nbsp; {{ _("Choose a section from the menu") }}</h3>
+                    <h3>{{ _("Choose a section from the menu") }}</h3>
                     <br>
                          </span>
                      <input class="btn btn-primary" style="float:right; margin-right: 10px;" id="plugin|submit" class="styled_button" type="submit" value="{{_("Submit")}}"/>
