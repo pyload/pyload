@@ -52,7 +52,7 @@ from module.common.JsEngine import JsEngine
 from module import remote
 from module.remote.RemoteManager import RemoteManager
 from module.database import DatabaseBackend, FileHandler
-from module.database import UserMethods, LDAP_UserMethods
+from module.database import UserMethods, LDAP_UserMethods, Dummy_UserMethods
 
 from module.utils import freeSpace, formatSize, get_console_encoding
 
@@ -479,6 +479,8 @@ class Core(object):
         elif self.config['users']['auth'] == 'LDAP':
             LDAP_UserMethods.load_config(self.config)
             DatabaseBackend.registerSub(LDAP_UserMethods)
+        elif self.config['users']['auth'] == 'dummy':
+            DatabaseBackend.registerSub(Dummy_UserMethods)
         else:
             raise ValueError("Invalid value for self.config['users']['auth'] : %s" % self.config['users']['auth'])
 
