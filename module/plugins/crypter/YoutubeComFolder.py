@@ -10,7 +10,7 @@ from module.plugins.internal.utils import fs_join, json
 class YoutubeComFolder(Crypter):
     __name__    = "YoutubeComFolder"
     __type__    = "crypter"
-    __version__ = "1.05"
+    __version__ = "1.06"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.|m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w\-]+)'
@@ -108,7 +108,10 @@ class YoutubeComFolder(Crypter):
                 playlists = self.get_playlists(channel['id'])
                 self.log_debug("%s playlist\s found on channel \"%s\"" % (len(playlists), channel['title']))
 
-                relatedplaylist = {p_name: self.get_playlist(p_id) for p_name, p_id in channel['relatedPlaylists'].items()}
+                relatedplaylist = dict()
+                for p_name, p_id in channel['relatedPlaylists'].items():
+                    relatedplaylist.update({p_name: self.get_playlist(p_id)})
+
                 self.log_debug("Channel's related playlists found = %s" % relatedplaylist.keys())
 
                 relatedplaylist['uploads']['title'] = "Unplaylisted videos"
