@@ -9,7 +9,7 @@ from module.plugins.internal.Addon import Addon
 class XFileSharing(Addon):
     __name__    = "XFileSharing"
     __type__    = "hook"
-    __version__ = "0.50"
+    __version__ = "0.51"
     __status__  = "testing"
 
     __config__ = [("activated"       , "bool", "Activated"                     , True ),
@@ -33,9 +33,8 @@ class XFileSharing(Addon):
                         "ani-stream.com", "backin.net", "cloudsix.me", "eyesfile.ca",
                         "file4safe.com", "fileband.com", "filedwon.com", "fileparadox.in",
                         "filevice.com", "hostingbulk.com", "junkyvideo.com", "ravishare.com",
-                        "ryushare.com", "salefiles.com", "sendmyway.com", "sharebeast.com",
-                        "sharesix.com", "thefile.me", "verzend.be", "worldbytez.com",
-                        "xvidstage.com",
+                        "salefiles.com", "sendmyway.com", "sharebeast.com", "sharesix.com",
+                        "thefile.me", "verzend.be", "worldbytez.com", "xvidstage.com",
                         #: NOT TESTED:
                         "101shared.com", "4upfiles.com", "filemaze.ws", "filenuke.com",
                         "linkzhost.com", "mightyupload.com", "rockdizfile.com", "sharerepo.com",
