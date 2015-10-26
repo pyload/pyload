@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Sep 09 22:12:40 2015
-
-@author: Dracchus
+  LDAP user backend
+  
+  @author: Hadrien Theveneau
 """
 
 import ldap
