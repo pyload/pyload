@@ -7,7 +7,7 @@ from module.plugins.internal.utils import chunks
 class FilejungleCom(FileserveCom):
     __name__    = "FilejungleCom"
     __type__    = "hoster"
-    __version__ = "0.54"
+    __version__ = "0.55"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?filejungle\.com/f/(?P<ID>[^/]+)'

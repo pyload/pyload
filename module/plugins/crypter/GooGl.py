@@ -7,7 +7,7 @@ from module.plugins.internal.utils import json
 class GooGl(SimpleCrypter):
     __name__    = "GooGl"
     __type__    = "crypter"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?goo\.gl/([a-zA-Z]+/)?\w+'

@@ -9,7 +9,7 @@ from module.plugins.internal.Hoster import Hoster
 class ShareplaceCom(Hoster):
     __name__    = "ShareplaceCom"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?shareplace\.(com|org)/\?\w+'

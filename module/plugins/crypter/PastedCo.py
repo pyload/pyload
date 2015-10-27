@@ -8,7 +8,7 @@ import re
 class PastedCo(Crypter):
     __name__    = "PastedCo"
     __type__    = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __pattern__ = r'http://pasted\.co/\w+'

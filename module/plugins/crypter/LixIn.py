@@ -9,7 +9,7 @@ from module.plugins.internal.Crypter import Crypter, create_getInfo
 class LixIn(Crypter):
     __name__    = "LixIn"
     __type__    = "crypter"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?lix\.in/(?P<ID>.+)'

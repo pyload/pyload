@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class UnrestrictLi(DeadHoster):
     __name__    = "UnrestrictLi"
     __type__    = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?(unrestrict|unr)\.li/dl/[\w^_]+'

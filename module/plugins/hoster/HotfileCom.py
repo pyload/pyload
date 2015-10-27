@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class HotfileCom(DeadHoster):
     __name__    = "HotfileCom"
     __type__    = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?hotfile\.com/dl/\d+/\w+'

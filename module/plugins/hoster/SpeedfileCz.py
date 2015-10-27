@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class SpeedfileCz(DeadHoster):
     __name__    = "SpeedFileCz"
     __type__    = "hoster"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?speedfile\.cz/.+'

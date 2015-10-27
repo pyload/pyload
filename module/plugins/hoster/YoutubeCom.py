@@ -12,7 +12,7 @@ from module.plugins.internal.utils import html_unescape, replace_patterns, which
 class YoutubeCom(Hoster):
     __name__    = "YoutubeCom"
     __type__    = "hoster"
-    __version__ = "0.47"
+    __version__ = "0.48"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)\w+'

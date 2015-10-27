@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class FileshareInUa(DeadHoster):
     __name__    = "FileshareInUa"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?fileshare\.in\.ua/\w{7}'

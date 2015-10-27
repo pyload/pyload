@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class KickloadCom(DeadHoster):
     __name__    = "KickloadCom"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?kickload\.com/get/.+'

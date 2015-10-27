@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class FiletramCom(SimpleCrypter):
     __name__    = "FiletramCom"
     __type__    = "crypter"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?filetram\.com/[^/]+/.+'

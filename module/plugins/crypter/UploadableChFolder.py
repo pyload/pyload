@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class UploadableChFolder(SimpleCrypter):
     __name__    = "UploadableChFolder"
     __type__    = "crypter"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?uploadable\.ch/list/\w+'

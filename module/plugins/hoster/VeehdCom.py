@@ -8,7 +8,7 @@ from module.plugins.internal.Hoster import Hoster
 class VeehdCom(Hoster):
     __name__    = "VeehdCom"
     __type__    = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__  = "testing"
 
     __pattern__ = r'http://veehd\.com/video/\d+_\S+'

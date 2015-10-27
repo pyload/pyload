@@ -15,7 +15,7 @@ from module.plugins.internal.utils import fs_join
 class Xdcc(Hoster):
     __name__    = "Xdcc"
     __type__    = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__  = "testing"
 
     __config__ = [("nick", "str", "Nickname", "pyload"),

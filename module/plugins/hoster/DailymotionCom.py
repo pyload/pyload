@@ -44,7 +44,7 @@ def get_info(urls):
 class DailymotionCom(Hoster):
     __name__    = "DailymotionCom"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?dailymotion\.com/.*video/(?P<ID>[\w^_]+)'

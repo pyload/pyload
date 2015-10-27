@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class WarserverCz(DeadHoster):
     __name__    = "WarserverCz"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?warserver\.cz/stahnout/\d+'

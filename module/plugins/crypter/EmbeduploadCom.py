@@ -9,7 +9,7 @@ from module.network.HTTPRequest import BadHeader
 class EmbeduploadCom(Crypter):
     __name__    = "EmbeduploadCom"
     __type__    = "crypter"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?embedupload\.com/\?d=.+'

@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class IcyFilesCom(DeadHoster):
     __name__    = "IcyFilesCom"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?icyfiles\.com/(.+)'

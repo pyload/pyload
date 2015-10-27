@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class TurbouploadCom(DeadHoster):
     __name__    = "TurbouploadCom"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?turboupload\.com/(\w+)'

@@ -9,7 +9,7 @@ from module.plugins.internal.Hoster import Hoster
 class XVideosCom(Hoster):
     __name__    = "XVideos.com"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?xvideos\.com/video(\d+)'

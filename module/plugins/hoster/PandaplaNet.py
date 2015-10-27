@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class PandaplaNet(DeadHoster):
     __name__    = "PandaplaNet"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?pandapla\.net/\w{12}'

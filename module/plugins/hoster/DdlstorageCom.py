@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class DdlstorageCom(DeadHoster):
     __name__    = "DdlstorageCom"
     __type__    = "hoster"
-    __version__ = "1.04"
+    __version__ = "1.05"
     __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?ddlstorage\.com/\w+'

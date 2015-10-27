@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UloziskoSk(SimpleHoster):
     __name__    = "UloziskoSk"
     __type__    = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?ulozisko\.sk/.+'

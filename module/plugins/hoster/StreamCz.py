@@ -23,7 +23,7 @@ def get_info(urls):
 class StreamCz(Hoster):
     __name__    = "StreamCz"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?stream\.cz/[^/]+/\d+'

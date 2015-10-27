@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class OronCom(DeadHoster):
     __name__    = "OronCom"
     __type__    = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?oron\.com/\w{12}'

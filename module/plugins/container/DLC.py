@@ -14,7 +14,7 @@ from module.plugins.internal.utils import decode, encode
 class DLC(Container):
     __name__    = "DLC"
     __type__    = "container"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__  = "testing"
 
     __pattern__ = r'(.+\.dlc|[\w\+^_]+==[\w\+^_/]+==)$'

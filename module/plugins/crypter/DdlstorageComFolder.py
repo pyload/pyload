@@ -6,7 +6,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 class DdlstorageComFolder(DeadCrypter):
     __name__    = "DdlstorageComFolder"
     __type__    = "crypter"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?ddlstorage\.com/folder/\w+'

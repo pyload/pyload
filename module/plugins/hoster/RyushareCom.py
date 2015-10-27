@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class RyushareCom(DeadHoster):
     __name__ = "RyushareCom"
     __type__ = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?ryushare\.com/\w+'

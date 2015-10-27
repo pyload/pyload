@@ -23,7 +23,7 @@ def double_decode(m):
 class FshareVn(SimpleHoster):
     __name__    = "FshareVn"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fshare\.vn/file/.+'

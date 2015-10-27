@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class FreevideoCz(DeadHoster):
     __name__    = "FreevideoCz"
     __type__    = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?freevideo\.cz/vase-videa/.+'

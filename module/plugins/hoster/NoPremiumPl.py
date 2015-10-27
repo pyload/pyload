@@ -7,7 +7,7 @@ from module.plugins.internal.utils import json
 class NoPremiumPl(MultiHoster):
     __name__    = "NoPremiumPl"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __pattern__ = r'https?://direct\.nopremium\.pl.+'

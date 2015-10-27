@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class JumbofilesCom(SimpleHoster):
     __name__    = "JumbofilesCom"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?jumbofiles\.com/(?P<ID>\w{12})'

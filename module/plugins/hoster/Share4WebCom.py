@@ -6,7 +6,7 @@ from module.plugins.hoster.UnibytesCom import UnibytesCom, create_getInfo
 class Share4WebCom(UnibytesCom):
     __name__    = "Share4WebCom"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?share4web\.com/get/\w+'

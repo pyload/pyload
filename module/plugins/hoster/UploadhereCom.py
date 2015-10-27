@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class UploadhereCom(DeadHoster):
     __name__    = "UploadhereCom"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?uploadhere\.com/\w{10}'

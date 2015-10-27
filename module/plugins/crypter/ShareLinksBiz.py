@@ -11,7 +11,7 @@ from module.plugins.internal.Crypter import Crypter, create_getInfo
 class ShareLinksBiz(Crypter):
     __name__    = "ShareLinksBiz"
     __type__    = "crypter"
-    __version__ = "1.19"
+    __version__ = "1.20"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'

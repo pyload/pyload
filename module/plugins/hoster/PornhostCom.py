@@ -8,7 +8,7 @@ from module.plugins.internal.Hoster import Hoster
 class PornhostCom(Hoster):
     __name__    = "PornhostCom"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?pornhost\.com/(\d+/\d+\.html|\d+)'

@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class UploadboxCom(DeadHoster):
     __name__    = "Uploadbox"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?uploadbox\.com/files/.+'

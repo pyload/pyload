@@ -6,7 +6,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class EasybytezCom(XFSHoster):
     __name__    = "EasybytezCom"
     __type__    = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?easybytez\.com/\w{12}'

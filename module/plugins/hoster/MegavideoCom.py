@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class MegavideoCom(DeadHoster):
     __name__    = "MegavideoCom"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?megavideo\.com/\?.*&?(d|v)=\w+'

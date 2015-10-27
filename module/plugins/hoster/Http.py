@@ -9,7 +9,7 @@ from module.plugins.internal.Hoster import Hoster, create_getInfo
 class Http(Hoster):
     __name__    = "Http"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __pattern__ = r'(?:jd|pys?)://.+'

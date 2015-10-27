@@ -9,7 +9,7 @@ from module.plugins.internal.utils import html_unescape
 class RedtubeCom(Hoster):
     __name__    = "RedtubeCom"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?redtube\.com/\d+'

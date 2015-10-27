@@ -14,7 +14,7 @@ from module.plugins.internal.utils import encode, fs_join
 class CCF(Container):
     __name__    = "CCF"
     __type__    = "container"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__  = "testing"
 
     __pattern__ = r'.+\.ccf$'

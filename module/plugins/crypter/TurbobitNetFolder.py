@@ -9,7 +9,7 @@ from module.plugins.internal.utils import json
 class TurbobitNetFolder(SimpleCrypter):
     __name__    = "TurbobitNetFolder"
     __type__    = "crypter"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "broken"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/download/folder/(?P<ID>\w+)'

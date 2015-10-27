@@ -10,7 +10,7 @@ from module.plugins.internal.Hoster import Hoster, parse_name
 class Ftp(Hoster):
     __name__    = "Ftp"
     __type__    = "hoster"
-    __version__ = "0.56"
+    __version__ = "0.57"
     __status__  = "testing"
 
     __pattern__ = r'(?:ftps?|sftp)://([\w\-.]+(:[\w\-.]+)?@)?[\w\-.]+(:\d+)?/.+'
