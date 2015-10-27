@@ -38,6 +38,7 @@ class DlProtectCom(SimpleCrypter):
 
         post_req = {'key'       : re.search(r'name="key" value="(.+?)"', self.data).group(1),
                     'submitform': ""}
+        self.log_debug("Key: %s" % post_req['key'])
 
         if "Please click on continue to see the links" in self.data:
             post_req['submitform'] = "Continue"
