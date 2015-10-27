@@ -18,7 +18,9 @@ class DLC(Container):
     __status__  = "testing"
 
     __pattern__ = r'(.+\.dlc|[\w\+^_]+==[\w\+^_/]+==)$'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__  = [("activated"            , "bool", "Activated"                          , True),
+                   ("use_subfolder"        , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """DLC container decrypter plugin"""
     __license__     = "GPLv3"

@@ -18,7 +18,9 @@ class RSDF(Container):
     __status__  = "testing"
 
     __pattern__ = r'.+\.rsdf$'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__  = [("activated"            , "bool", "Activated"                          , True),
+                   ("use_subfolder"        , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """RSDF container decrypter plugin"""
     __license__     = "GPLv3"
@@ -60,4 +62,4 @@ class RSDF(Container):
                 if not link:
                     continue
                 link = cipher.decrypt(link.decode('base64')).replace('CCF: ', '')
-                self.urls.append(link)
+                self.links.append(link)

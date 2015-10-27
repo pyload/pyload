@@ -44,7 +44,7 @@ class FilecryptCc(Crypter):
 
 
     def setup(self):
-        self.links = []
+        self.urls = []
 
 
     def decrypt(self, pyfile):
@@ -59,8 +59,8 @@ class FilecryptCc(Crypter):
 
         for handle in (self.handle_CNL, self.handle_weblinks, self.handle_dlc_container):
             handle()
-            if self.links:
-                self.packages = [(pyfile.package().name, self.links, pyfile.package().name)]
+            if self.urls:
+                self.packages = [(pyfile.package().name, self.urls, pyfile.package().name)]
                 return
 
 
@@ -165,7 +165,7 @@ class FilecryptCc(Crypter):
             return
 
         for _dlc in dlcs:
-            self.links.append(urlparse.urljoin(self.pyfile.url, "/DLC/%s.dlc" % _dlc))
+            self.urls.append(urlparse.urljoin(self.pyfile.url, "/DLC/%s.dlc" % _dlc))
 
 
     def handle_weblinks(self):
@@ -177,7 +177,7 @@ class FilecryptCc(Crypter):
                 link2 = re.search('<iframe noresize src="(.*)"></iframe>', res)
                 if link2:
                     res2  = self.load(link2.group(1), just_header=True)
-                    self.links.append(res2['location'])
+                    self.urls.append(res2['location'])
 
         except Exception, e:
             self.log_debug("Error decrypting weblinks: %s" % e)
@@ -189,7 +189,7 @@ class FilecryptCc(Crypter):
             vcrypted = re.findall('<input type="hidden" name="crypted" value="(.*)">', self.site_with_links)
 
             for i in xrange(len(vcrypted)):
-                self.links.extend(self._get_links(vcrypted[i], vjk[i]))
+                self.urls.extend(self._get_links(vcrypted[i], vjk[i]))
 
         except Exception, e:
             self.log_debug("Error decrypting CNL: %s" % e)

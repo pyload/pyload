@@ -12,9 +12,10 @@ class LinkdecrypterCom(MultiCrypter):
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("activated"         , "bool", "Activated"                          , True),
-                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
-                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("activated"            , "bool", "Activated"                          , True),
+                   ("use_premium"          , "bool", "Use premium account if available"   , True),
+                   ("use_subfolder"        , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Linkdecrypter.com decrypter plugin"""
     __license__     = "GPLv3"
@@ -41,7 +42,7 @@ class LinkdecrypterCom(MultiCrypter):
         while retries:
             m = re.search(self.TEXTAREA_PATTERN, self.data, re.S)
             if m is not None:
-                self.urls = [x for x in m.group(1).splitlines() if '[LINK-ERROR]' not in x]
+                self.links = [x for x in m.group(1).splitlines() if '[LINK-ERROR]' not in x]
 
             m = re.search(self.CAPTCHA_PATTERN, self.data)
             if m is not None:

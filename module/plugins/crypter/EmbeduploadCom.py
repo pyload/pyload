@@ -13,11 +13,12 @@ class EmbeduploadCom(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?embedupload\.com/\?d=.+'
-    __config__  = [("activated"         , "bool", "Activated"                          , True),
-                   ("use_subfolder"     , "bool", "Save package to subfolder"           , True         ),
-                   ("subfolder_per_pack", "bool", "Create a subfolder for each package" , True         ),
-                   ("preferedHoster"    , "str" , "Prefered hoster list (bar-separated)", "embedupload"),
-                   ("ignoredHoster"     , "str" , "Ignored hoster list (bar-separated)" , ""           )]
+    __config__  = [("activated"            , "bool", "Activated"                           , True         ),
+                   ("use_premium"          , "bool", "Use premium account if available"    , True         ),
+                   ("use_subfolder"        , "bool", "Save package to subfolder"           , True         ),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package" , True         ),
+                   ("preferedHoster"       , "str" , "Prefered hoster list (bar-separated)", "embedupload"),
+                   ("ignoredHoster"        , "str" , "Ignored hoster list (bar-separated)" , ""           )]
 
     __description__ = """EmbedUpload.com decrypter plugin"""
     __license__     = "GPLv3"
@@ -39,16 +40,16 @@ class EmbeduploadCom(Crypter):
             self.log_debug("PF: %s" % prefered_set)
 
             tmp_links.extend(x[1] for x in m if x[0] in prefered_set)
-            self.urls = self.get_location(tmp_links)
+            self.links = self.get_location(tmp_links)
 
-            if not self.urls:
+            if not self.links:
                 ignored_set = set(self.get_config('ignoredHoster').split('|'))
                 ignored_set = map(lambda s: s.lower().split('.')[0], ignored_set)
 
                 self.log_debug("IG: %s" % ignored_set)
 
                 tmp_links.extend(x[1] for x in m if x[0] not in ignored_set)
-                self.urls = self.get_location(tmp_links)
+                self.links = self.get_location(tmp_links)
 
 
     def get_location(self, tmp_links):

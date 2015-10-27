@@ -14,9 +14,12 @@ class MegaDebridEu(MultiHoster):
     __status__  = "testing"
 
     __pattern__ = r'http://((?:www\d+\.|s\d+\.)?mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[\w^_]+'
-    __config__  = [("activated", "bool", "Activated", True),
-                   ("use_premium" , "bool", "Use premium account if available"    , True),
-                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True ),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True ),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , False),
+                   ("chk_filesize", "bool", "Check file size"                                  , True ),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10   ),
+                   ("revertfailed", "bool", "Revert to standard download if fails"             , True )]
 
     __description__ = """Mega-debrid.eu multi-hoster plugin"""
     __license__     = "GPLv3"

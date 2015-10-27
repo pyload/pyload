@@ -10,7 +10,7 @@ class MBLinkInfo(DeadCrypter):
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?mblink\.info/?\?id=(\d+)'
-    __config__  = []  #@TODO: Remove in 0.4.10
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """MBLink.info decrypter plugin"""
     __license__     = "GPLv3"

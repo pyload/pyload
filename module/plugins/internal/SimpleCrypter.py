@@ -163,7 +163,7 @@ class SimpleCrypter(Crypter):
                 link = location
 
             elif link:
-                self.urls.append(link)
+                self.links.append(link)
                 return
         else:
             self.log_warning(_("Too many redirects"))
@@ -209,16 +209,16 @@ class SimpleCrypter(Crypter):
             self.log_info(_("Looking for direct link..."))
             self.handle_direct(pyfile)
 
-            if self.urls or self.packages:
+            if self.links or self.packages:
                 self.log_info(_("Direct link detected"))
             else:
                 self.log_info(_("Direct link not found"))
 
-        if not self.urls and not self.packages:
+        if not self.links and not self.packages:
             self.preload()
             self.check_errors()
 
-            self.urls.extend(self.get_links())
+            self.links.extend(self.get_links())
 
             if self.PAGES_PATTERN:
                 self.handle_pages(pyfile)
@@ -232,7 +232,7 @@ class SimpleCrypter(Crypter):
         if not links:
             self.error(_("Free decrypted link not found"))
         else:
-            self.urls.extend(links)
+            self.links.extend(links)
 
 
     def handle_premium(self, pyfile):
@@ -244,7 +244,7 @@ class SimpleCrypter(Crypter):
         if not links:
             self.error(_("Premium decrypted link found"))
         else:
-            self.urls.extend(links)
+            self.links.extend(links)
 
 
     def get_links(self):
@@ -260,7 +260,7 @@ class SimpleCrypter(Crypter):
             self.log_info(_("Decrypting as free link..."))
             self.handle_free(pyfile)
 
-        return self.urls
+        return self.links
 
 
     def load_page(self, number):
@@ -276,7 +276,7 @@ class SimpleCrypter(Crypter):
 
         for p in xrange(2, pages + 1):
             self.data = self.load_page(p)
-            self.urls.extend(self.get_links())
+            self.links.extend(self.get_links())
 
 
     def check_errors(self):

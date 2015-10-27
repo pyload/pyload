@@ -18,7 +18,9 @@ class CCF(Container):
     __status__  = "testing"
 
     __pattern__ = r'.+\.ccf$'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__  = [("activated"            , "bool", "Activated"                          , True),
+                   ("use_subfolder"        , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """CCF container decrypter plugin"""
     __license__     = "GPLv3"
@@ -47,4 +49,4 @@ class CCF(Container):
         with open(dlc_file, "w") as tempdlc:
             tempdlc.write(dlc)
 
-        self.urls = [dlc_file]
+        self.links = [dlc_file]

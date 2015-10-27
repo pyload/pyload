@@ -15,9 +15,10 @@ class FourChanOrg(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?boards\.4chan\.org/\w+/res/(\d+)'
-    __config__  = [("activated"         , "bool", "Activated"                          , True),
-                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
-                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("activated"            , "bool", "Activated"                          , True),
+                   ("use_premium"          , "bool", "Use premium account if available"   , True),
+                   ("use_subfolder"        , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """4chan.org folder decrypter plugin"""
     __license__     = "GPLv3"
@@ -27,7 +28,7 @@ class FourChanOrg(Crypter):
     def decrypt(self, pyfile):
         pagehtml = self.load(pyfile.url)
         images = set(re.findall(r'(images\.4chan\.org/[^/]*/src/[^"<]+)', pagehtml))
-        self.urls = [urlparse.urljoin("http://", image) for image in images]
+        self.links = [urlparse.urljoin("http://", image) for image in images]
 
 
 getInfo = create_getInfo(FourChanOrg)

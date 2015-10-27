@@ -23,12 +23,12 @@ class Crypter(Base):
 
     def init_base(self):
         self.packages = []  #: Put all packages here. It's a list of tuples like: ( name, [list of links], folder )
-        self.urls     = []  #: List of urls, pyLoad will generate packagenames
+        self.links     = []  #: List of urls, pyLoad will generate packagenames
 
 
     def setup_base(self):
         self.packages = []
-        self.urls     = []
+        self.links     = []
 
 
     def process(self, pyfile):
@@ -37,7 +37,7 @@ class Crypter(Base):
         """
         self.decrypt(pyfile)
 
-        if self.urls:
+        if self.links:
             self._generate_packages()
 
         elif not self.packages:
@@ -55,9 +55,9 @@ class Crypter(Base):
 
     def _generate_packages(self):
         """
-        Generate new packages from self.urls
+        Generate new packages from self.links
         """
-        packages = [(name, links, None) for name, links in self.pyload.api.generatePackages(self.urls).items()]
+        packages = [(name, links, None) for name, links in self.pyload.api.generatePackages(self.links).items()]
         self.packages.extend(packages)
 
 

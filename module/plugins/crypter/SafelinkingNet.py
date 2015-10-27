@@ -16,9 +16,10 @@ class SafelinkingNet(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?safelinking\.net/([pd])/\w+'
-    __config__  = [("activated"         , "bool", "Activated"                          , True),
-                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
-                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("activated"            , "bool", "Activated"                          , True),
+                   ("use_premium"          , "bool", "Use premium account if available"   , True),
+                   ("use_subfolder"        , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Safelinking.net decrypter plugin"""
     __license__     = "GPLv3"
@@ -35,7 +36,7 @@ class SafelinkingNet(Crypter):
 
             header = self.load(url, just_header=True)
             if 'location' in header:
-                self.urls = [header.get('location')]
+                self.links = [header.get('location')]
             else:
                 self.error(_("Couldn't find forwarded Link"))
 
@@ -79,9 +80,9 @@ class SafelinkingNet(Crypter):
                 linkDict = json.loads(m.group(1))
                 for link in linkDict:
                     if not "http://" in link['full']:
-                        self.urls.append("https://safelinking.net/d/" + link['full'])
+                        self.links.append("https://safelinking.net/d/" + link['full'])
                     else:
-                        self.urls.append(link['full'])
+                        self.links.append(link['full'])
 
 
 getInfo = create_getInfo(SafelinkingNet)

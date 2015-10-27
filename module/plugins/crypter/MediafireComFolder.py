@@ -13,9 +13,10 @@ class MediafireComFolder(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))'
-    __config__  = [("activated"         , "bool", "Activated"                          , True),
-                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
-                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("activated"            , "bool", "Activated"                          , True),
+                   ("use_premium"          , "bool", "Use premium account if available"   , True),
+                   ("use_subfolder"        , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Mediafire.com folder decrypter plugin"""
     __license__     = "GPLv3"
@@ -64,7 +65,7 @@ class MediafireComFolder(Crypter):
             m = re.search(self.LINK_PATTERN, html)
             if m is not None:
                 #: File page
-                self.urls.append("http://www.mediafire.com/file/%s" % m.group(1))
+                self.links.append("http://www.mediafire.com/file/%s" % m.group(1))
             else:
                 #: Folder page
                 m = re.search(self.FOLDER_KEY_PATTERN, html)
@@ -79,7 +80,7 @@ class MediafireComFolder(Crypter):
                     # self.log_info(json_resp)
                     if json_resp['response']['result'] == "Success":
                         for link in json_resp['response']['folder_info']['files']:
-                            self.urls.append("http://www.mediafire.com/file/%s" % link['quickkey'])
+                            self.links.append("http://www.mediafire.com/file/%s" % link['quickkey'])
                     else:
                         self.fail(json_resp['response']['message'])
 
@@ -87,7 +88,7 @@ class MediafireComFolder(Crypter):
             self.offline()
 
         else:
-            self.urls.append(url)
+            self.links.append(url)
 
 
 getInfo = create_getInfo(MediafireComFolder)

@@ -10,7 +10,7 @@ class WiiReloadedOrg(DeadCrypter):
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?wii-reloaded\.org/protect/get\.php\?i=.+'
-    __config__  = []  #@TODO: Remove in 0.4.10
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Wii-Reloaded.org decrypter plugin"""
     __license__     = "GPLv3"

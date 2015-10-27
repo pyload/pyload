@@ -92,7 +92,7 @@ class Hoster(Base):
         try:
             self.process(self.pyfile)
             self.check_status()
-            self._check_download()
+            self.check_download()
 
         except Fail, e:  #@TODO: Move to PluginThread in 0.4.10
             if self.get_config('fallback', True) and self.premium:
@@ -349,7 +349,7 @@ class Hoster(Base):
                     self.last_download = ""  #: Recheck in 0.4.10
 
 
-    def _check_download(self):
+    def check_download(self):
         self.log_info(_("Checking downloaded file..."))
 
         if self.captcha.task and not self.last_download:

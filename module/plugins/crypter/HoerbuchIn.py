@@ -14,9 +14,10 @@ class HoerbuchIn(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?hoerbuch\.in/(wp/horbucher/\d+/.+/|tp/out\.php\?.+|protection/folder_\d+\.html)'
-    __config__  = [("activated"         , "bool", "Activated"                          , True),
-                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
-                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("activated"            , "bool", "Activated"                          , True),
+                   ("use_premium"          , "bool", "Use premium account if available"   , True),
+                   ("use_subfolder"        , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Hoerbuch.in decrypter plugin"""
     __license__     = "GPLv3"
@@ -42,7 +43,7 @@ class HoerbuchIn(Crypter):
 
                 self.packages.append((package, links, package))
         else:
-            self.urls = self.decrypt_folder(pyfile.url)
+            self.links = self.decrypt_folder(pyfile.url)
 
 
     def decrypt_folder(self, url):

@@ -12,9 +12,10 @@ class FileserveComFolder(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fileserve\.com/list/\w+'
-    __config__  = [("activated"         , "bool", "Activated"                          , True),
-                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
-                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("activated"            , "bool", "Activated"                          , True),
+                   ("use_premium"          , "bool", "Use premium account if available"   , True),
+                   ("use_subfolder"        , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """FileServe.com folder decrypter plugin"""
     __license__     = "GPLv3"
@@ -37,7 +38,7 @@ class FileserveComFolder(Crypter):
         new_links.extend(re.findall(self.LINK_PATTERN, folder.group(1)))
 
         if new_links:
-            self.urls = [map(lambda s: "http://fileserve.com%s" % s, new_links)]
+            self.links = [map(lambda s: "http://fileserve.com%s" % s, new_links)]
 
 
 getInfo = create_getInfo(FileserveComFolder)

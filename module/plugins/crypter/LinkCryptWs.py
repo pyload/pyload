@@ -32,7 +32,7 @@ class LinkCryptWs(Crypter):
 
 
     def setup(self):
-        self.links   = []
+        self.urls   = []
         self.sources = ['cnl', 'web', 'dlc', 'rsdf', 'ccf']
 
 
@@ -83,11 +83,11 @@ class LinkCryptWs(Crypter):
             links = self.handle_link_source(type)
 
             if links:
-                self.links.extend(links)
+                self.urls.extend(links)
                 break
 
-        if self.links:
-            self.packages = [(package_name, self.links, folder_name)]
+        if self.urls:
+            self.packages = [(package_name, self.urls, folder_name)]
 
 
     def is_online(self):

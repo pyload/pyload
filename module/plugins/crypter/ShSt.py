@@ -30,7 +30,7 @@ class ShSt(Crypter):
         #: Fetch the target URL
         header = self.load(self.pyfile.url, just_header = True, decode = False)
         target_url = header.get('location')
-        self.urls.append(target_url)
+        self.links.append(target_url)
 
 
 getInfo = create_getInfo(ShSt)

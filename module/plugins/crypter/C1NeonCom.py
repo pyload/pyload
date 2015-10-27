@@ -10,7 +10,7 @@ class C1NeonCom(DeadCrypter):
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?c1neon\.com/.+'
-    __config__  = []  #@TODO: Remove in 0.4.10
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """C1neon.com decrypter plugin"""
     __license__     = "GPLv3"
