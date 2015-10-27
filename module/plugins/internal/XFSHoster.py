@@ -12,7 +12,7 @@ from module.plugins.internal.utils import html_unescape, seconds_to_midnight, se
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.70"
+    __version__ = "0.71"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
