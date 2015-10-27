@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ShareonlineBiz(SimpleHoster):
     __name__    = "ShareonlineBiz"
     __type__    = "hoster"
-    __version__ = "0.61"
+    __version__ = "0.62"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
@@ -146,7 +146,7 @@ class ShareonlineBiz(SimpleHoster):
 
 
     def check_errors(self):
-        m = re.search(r"/failure/(.*?)/1", self.req.lastEffectiveURL)
+        m = re.search(r"/failure/(.*?)/", self.req.lastEffectiveURL)
         if m is None:
             self.info.pop('error', None)
             return
