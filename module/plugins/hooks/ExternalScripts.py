@@ -10,7 +10,7 @@ from module.plugins.internal.utils import encode, fs_join
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.54"
+    __version__ = "0.55"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                   , True ),
@@ -174,7 +174,7 @@ class ExternalScripts(Addon):
         pdata = self.pyload.api.getPackageInfo(pid)
 
         if self.pyload.config.get("general", "folder_per_package"):
-            dl_folder = fs_join(self.pyload.config.get("general", "download_folder"), pypack.folder)
+            dl_folder = fs_join(self.pyload.config.get("general", "download_folder"), pdata.folder)
         else:
             dl_folder = self.pyload.config.get("general", "download_folder")
 
