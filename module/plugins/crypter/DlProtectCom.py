@@ -69,7 +69,8 @@ class DlProtectCom(SimpleCrypter):
             if errmsg in self.data:
                 self.fail(_(errmsg[1:]))
 
-        return re.findall(r'<a href="([^/].+?)" target="_blank">', self.data)
+        # Filters interesting urls from ads
+        return re.findall(r'<a href="(?P<id>[^/].+?)" target="_blank">(?P=id)</a>', self.data)
 
 
 getInfo = create_getInfo(DlProtectCom)
