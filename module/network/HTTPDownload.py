@@ -357,5 +357,5 @@ if __name__ == "__main__":
 
     print "starting"
 
-    dwnld = HTTPDownload(url, "test_100mb.bin", bucket=bucket, options={'interface': None, 'proxies': None, 'ipv6': None})  # FIXME !
+    dwnld = HTTPDownload(url, u"test_100mb.bin", bucket=bucket, options={'interface': None, 'proxies': None, 'ipv6': None})  # FIXME !
     dwnld.download(chunks=3, resume=True)
