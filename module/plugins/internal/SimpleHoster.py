@@ -286,7 +286,7 @@ class SimpleHoster(Hoster):
     def check_download(self):
         super(SimpleHoster, self).check_download()
 
-        self.log_info(_("Checking downloaded file with built-in rules...")
+        self.log_info(_("Checking downloaded file with built-in rules..."))
         for r, p in self.FILE_ERRORS:
             errmsg = self.check_file({r: re.compile(p)})
             if errmsg is not None:
@@ -303,7 +303,7 @@ class SimpleHoster(Hoster):
                 self.restart(errmsg)
         else:
             if self.CHECK_FILE:
-                self.log_info(_("Checking downloaded file with custom rules...")
+                self.log_info(_("Checking downloaded file with custom rules..."))
 
                 with open(encode(self.last_download), "rb") as f:
                     self.data = f.read(1048576)  #@TODO: Recheck in 0.4.10
