@@ -330,6 +330,21 @@ class HTTPDownload():
 if __name__ == "__main__":
     url = "http://speedtest.netcologne.de/test_100mb.bin"
 
+    #Quick and dirty logger
+    import logging
+    import logging.handlers
+    import sys
+    from os.path import join
+    log = logging.getLogger("log")
+    console = logging.StreamHandler(sys.stdout)
+    frm = logging.Formatter("%(asctime)s %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
+    console.setFormatter(frm)
+    log.addHandler(console) #if console logging
+    file_handler = logging.FileHandler('log.txt', encoding="utf8")
+    file_handler.setFormatter(frm)
+    log.addHandler(file_handler)
+    log.setLevel(logging.DEBUG)
+
     #Create some dummies to avoid errors
     import __builtin__
     __builtin__._ = lambda x: x
