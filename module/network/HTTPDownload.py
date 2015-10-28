@@ -330,6 +330,10 @@ class HTTPDownload():
 if __name__ == "__main__":
     url = "http://speedtest.netcologne.de/test_100mb.bin"
 
+    #Create some dummies to avoid errors
+    import __builtin__
+    __builtin__._ = lambda x: x
+    
     from Bucket import Bucket
 
     bucket = Bucket()
@@ -338,5 +342,5 @@ if __name__ == "__main__":
 
     print "starting"
 
-    dwnld = HTTPDownload(url, "test_100mb.bin", bucket=bucket)
+    dwnld = HTTPDownload(url, "test_100mb.bin", bucket=bucket, options={'interface': None, 'proxies': None, 'ipv6': None})  # FIXME !
     dwnld.download(chunks=3, resume=True)
