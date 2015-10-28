@@ -32,7 +32,7 @@ class WrongFormat(Exception):
 
 class ChunkInfo():
     def __init__(self, name):
-        self.name = unicode(name)
+        self.name = unicode(name, encoding = "utf-8")
         self.size = 0
         self.resume = False
         self.chunks = []

@@ -21,7 +21,7 @@ def getInfo(urls):
 #@TODO: Remove in 0.4.10
 def parse_fileInfo(klass, url="", html=""):
     info = klass.get_info(url, html)
-    return encode(info['name']), info['size'], info['status'], info['url']
+    return info['name'], info['size'], info['status'], info['url']  # No need to encode name
 
 
 #@TODO: Remove in 0.4.10

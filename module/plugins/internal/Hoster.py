@@ -311,7 +311,7 @@ class Hoster(Base):
         :return: dictionary key of the first rule that matched
         """
         do_delete = False
-        last_download = encode(self.last_download)  #@TODO: Recheck in 0.4.10
+        last_download = self.last_download #exists function takes unicode string #@TODO: Recheck in 0.4.10
 
         if not self.last_download or not exists(last_download):
             self.fail(self.pyfile.error or _("No file downloaded"))

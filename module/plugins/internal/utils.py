@@ -13,6 +13,7 @@ import time
 import traceback
 import urllib
 import urlparse
+import codecs
 
 try:
     import HTMLParser
@@ -156,7 +157,10 @@ def decode(value, encoding=None):
         res = value
 
     else:
-        res = unicode(value)
+        try:
+            res = unicode(value)
+        except UnicodeDecodeError as e:
+            res = unicode(str(value), encoding or 'utf-8')
 
     return res
 
@@ -211,6 +215,38 @@ def remove_chars(value, repl):
         return value.translate(string.maketrans("", ""), repl)
 
 
+ESCAPE_SEQUENCE_RE = re.compile(r'''
+    ( \\U........      # 8-digit hex escapes
+    | \\u....          # 4-digit hex escapes
+    | \\x..            # 2-digit hex escapes
+    | \\[0-7]{1,3}     # Octal escapes
+    | \\N\{[^}]+\}     # Unicode characters by name
+    | \\[\\'"abfnrtv]  # Single-character escapes
+    )''', re.UNICODE | re.VERBOSE)
+
+# See https://stackoverflow.com/questions/4020539/process-escape-sequences-in-a-string-in-python
+def decode_escapes(s):
+    def decode_match(match):
+        return codecs.decode(match.group(0), 'unicode-escape')
+
+    return ESCAPE_SEQUENCE_RE.sub(decode_match, s)
+
+def quote(str, encoding = 'utf-8'):
+    u"""
+    Escapes special URI caracters.
+
+    :param str: Unicode string
+    :param encoding: Output encoding
+    :return: Quoted string
+    """
+    reserved = ";/?:@&=+$,"
+    def quoter(char):
+        if not char in reserved:
+            return char
+        else:
+            return ''.join('%{:02X}'.format(ord(c)) for c in char.encode(encoding))
+    return ''.join(quoter(c) for c in str)
+
 def fixurl(url, unquote=None):
     old = url
     url = urllib.unquote(url)
@@ -218,11 +254,11 @@ def fixurl(url, unquote=None):
     if unquote is None:
         unquote = url is old
 
-    url = html_unescape(decode(url).decode('unicode-escape'))
+    url = html_unescape(decode_escapes(decode(url)))
     url = re.sub(r'(?<!:)/{2,}', '/', url).strip().lstrip('.')
 
     if not unquote:
-        url = urllib.quote(url)
+        url = quote(url)
 
     return url
 
@@ -231,9 +267,8 @@ def fixname(value):
     repl = '<>:"/\\|?*' if os.name is "nt" else '\0/\\"'
     return remove_chars(value, repl)
 
-
 def parse_name(value, safechar=True):
-    path  = fixurl(decode(value), unquote=False)
+    path  = fixurl(decode(value), unquote=False)  # Double check this !
     url_p = urlparse.urlparse(path.rstrip('/'))
     name  = (url_p.path.split('/')[-1] or
               url_p.query.split('=', 1)[::-1][0].split('&', 1)[0] or
