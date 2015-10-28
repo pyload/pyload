@@ -22,3 +22,15 @@ http://www.dl-protect.com/B7AC24C2
 http://www.dl-protect.com/3098E99E
 http://www.dl-protect.com/7718FA8E
 
+# Diacritics
+# name   test-accents-1-é.bin
+# size   10 MiB
+# sha256 ee5282173bcef1dd1755f74e39a986c558b25384174505888cdab815a8226292
+# sha1   fb9c88073031c5026786f60c4e0dfd57fb63a532
+# md5    4574bea78ff8753dd6f7861c3816d668
+https://1fichier.com/?qty728bkrb
+http://uptobox.com/xqlbyur7yh98
+http://dl.free.fr/vHUThBFwf
+http://turbobit.net/2arj54dfjone.html
+http://uplea.com/dl/E4C022F8EB7438C
+
