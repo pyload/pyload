@@ -11,7 +11,7 @@ from module.plugins.internal.utils import replace_patterns, set_cookie, set_cook
 class SimpleCrypter(Crypter):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.78"
+    __version__ = "0.79"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -98,7 +98,8 @@ class SimpleCrypter(Crypter):
 
             elif info['status'] is 3:
                 try:
-                    html = get_url(url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
+                    if not self.isdownload(url):
+                        html = get_url(url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
 
                 except BadHeader, e:
                     info['error'] = "%d: %s" % (e.code, e.content)

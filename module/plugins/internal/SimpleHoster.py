@@ -17,7 +17,7 @@ from module.plugins.internal.utils import (encode, parse_name, parse_size,
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "2.06"
+    __version__ = "2.07"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -144,7 +144,8 @@ class SimpleHoster(Hoster):
 
             elif info['status'] is 3:
                 try:
-                    html = get_url(url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
+                    if not self.isdownload(url):
+                        html = get_url(url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
 
                 except BadHeader, e:
                     info['error'] = "%d: %s" % (e.code, e.content)
