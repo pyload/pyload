@@ -169,6 +169,7 @@ class HTTPChunk(HTTPRequest):
         # request all bytes, since some servers in russia seems to have a defect arihmetic unit
 
         fs_name = self.p.info.getChunkName(self.id) #Encoding not needed on file names
+        self.log.debug("File name: %s" % fs_name)
         if self.resume:
             self.fp = open(fs_name, "ab")
             self.arrived = self.fp.tell()
