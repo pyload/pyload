@@ -11,7 +11,7 @@ from module.plugins.internal.utils import replace_patterns, set_cookie, set_cook
 class SimpleCrypter(Crypter):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.78"
+    __version__ = "0.79"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -149,24 +149,26 @@ class SimpleCrypter(Crypter):
 
 
     def handle_direct(self, pyfile):
-        link      = None
+        redirect = None
         maxredirs = self.get_config("maxredirs", default=10, plugin="UserAgentSwitcher")
 
         for i in xrange(maxredirs):
-            url = link or pyfile.url
-            self.log_debug("Redirect #%d to: %s" % (i, url))
+            redirect = redirect or pyfile.url
+            self.log_debug("Redirect #%d to: %s" % (i, redirect))
 
-            header   = self.load(url, just_header=True)
+            data = self.load(redirect)
+            header = dict(re.findall(r"(?P<name>.+?): (?P<value>.+?)\r?\n", self.req.http.header))
+                #Ugly, but there is no direct way to fetch headers AND data
             location = header.get('location')
 
             if location:
-                link = location
-
-            elif link:
-                self.links.append(link)
+                redirect = location
+            else:
+                self.data = data
+                self.links.extend(self.get_links())
                 return
         else:
-            self.log_warning(_("Too many redirects"))
+            self.log_error(_("Too many redirects"))
 
 
     def preload(self):
