@@ -29,7 +29,7 @@ from HTTPChunk import ChunkInfo, HTTPChunk
 from HTTPRequest import BadHeader
 
 from module.plugins.Plugin import Abort
-from module.utils import save_join, fs_encode
+from module.utils import save_join
 
 class HTTPDownload():
     """ loads a url http + ftp """
@@ -61,6 +61,8 @@ class HTTPDownload():
             self.size = self.info.size
             self.infoSaved = True
         except IOError:
+            self.log.debug("IO Error")
+            self.log.debug("Infos: %s" % {'filename': filename, })
             self.info = ChunkInfo(filename)
 
         self.chunkSupport = None
@@ -88,7 +90,7 @@ class HTTPDownload():
         return (self.arrived * 100) / self.size
 
     def _copyChunks(self):
-        init = fs_encode(self.info.getChunkName(0)) #initial chunk name
+        init = self.info.getChunkName(0) #initial chunk name #no need to encode filenames
 
         if self.info.getCount() > 1:
             fo = open(init, "rb+") #first chunkfile
@@ -96,7 +98,7 @@ class HTTPDownload():
                 #input file
                 fo.seek(
                     self.info.getChunkRange(i - 1)[1] + 1) #seek to beginning of chunk, to get rid of overlapping chunks
-                fname = fs_encode("%s.chunk%d" % (self.filename, i))
+                fname = "%s.chunk%d" % (self.filename, i) #no need to encode filenames
                 fi = open(fname, "rb")
                 buf = 32 * 1024
                 while True: #copy in chunks, consumes less memory
@@ -110,13 +112,13 @@ class HTTPDownload():
                     remove(init)
                     self.info.remove() #there are probably invalid chunks
                     raise Exception("Downloaded content was smaller than expected. Try to reduce download connections.")
-                remove(fname) #remove chunk
+                remove(fname) #remove chunk #no need to encode filenames
             fo.close()
 
         if self.nameDisposition and self.disposition:
             self.filename = save_join(dirname(self.filename), self.nameDisposition)
 
-        move(init, fs_encode(self.filename))
+        move(init, self.filename) #no need to encode filenames
         self.info.remove() #remove info file
 
     def download(self, chunks=1, resume=False):
@@ -249,7 +251,7 @@ class HTTPDownload():
                         for chunk in to_clean:
                             self.closeChunk(chunk)
                             self.chunks.remove(chunk)
-                            remove(fs_encode(self.info.getChunkName(chunk.id)))
+                            remove(self.info.getChunkName(chunk.id))
 
                         #let first chunk load the rest and update the info file
                         init.resetRange()

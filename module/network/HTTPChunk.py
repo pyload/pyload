@@ -20,9 +20,11 @@ from os import remove, stat, fsync
 from os.path import exists
 from time import sleep
 from re import search
-from module.utils import fs_encode
 import codecs
 import pycurl
+
+import inspect
+from module.plugins.internal.utils import format_exc, decode
 
 from HTTPRequest import HTTPRequest
 
@@ -32,7 +34,7 @@ class WrongFormat(Exception):
 
 class ChunkInfo():
     def __init__(self, name):
-        self.name = unicode(name, encoding = "utf-8")
+        self.name = decode(name, encoding = "utf-8") #decode function from utils more bullet-proof than unicode
         self.size = 0
         self.resume = False
         self.chunks = []
@@ -65,7 +67,7 @@ class ChunkInfo():
 
 
     def save(self):
-        fs_name = fs_encode("%s.chunks" % self.name)
+        fs_name = u"%s.chunks" % self.name #Encoding not needed on file names
         fh = codecs.open(fs_name, "w", "utf_8")
         fh.write("name:%s\n" % self.name)
         fh.write("size:%s\n" % self.size)
@@ -77,7 +79,7 @@ class ChunkInfo():
 
     @staticmethod
     def load(name):
-        fs_name = fs_encode("%s.chunks" % name)
+        fs_name = "%s.chunks" % name #Encoding not needed on file names
         if not exists(fs_name):
             raise IOError()
         fh = codecs.open(fs_name, "r", "utf_8")
@@ -108,7 +110,7 @@ class ChunkInfo():
         return ci
 
     def remove(self):
-        fs_name = fs_encode("%s.chunks" % self.name)
+        fs_name = "%s.chunks" % self.name #Encoding not needed on file names
         if exists(fs_name): remove(fs_name)
 
     def getCount(self):
@@ -166,7 +168,7 @@ class HTTPChunk(HTTPRequest):
 
         # request all bytes, since some servers in russia seems to have a defect arihmetic unit
 
-        fs_name = fs_encode(self.p.info.getChunkName(self.id))
+        fs_name = self.p.info.getChunkName(self.id) #Encoding not needed on file names
         if self.resume:
             self.fp = open(fs_name, "ab")
             self.arrived = self.fp.tell()
