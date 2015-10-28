@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DropboxCom(SimpleHoster):
     __name__    = "DropboxCom"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?dropbox\.com/.+'
@@ -25,6 +25,8 @@ class DropboxCom(SimpleHoster):
 
     NAME_PATTERN = r'<title>Dropbox - (?P<N>.+?)<'
     SIZE_PATTERN = r'&nbsp;&middot;&nbsp; (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+
+    LINK_PATTERN = r'<a href="(?P<url>[^"]+?)" id="default_content_download_button" class="freshbutton-blue">'
 
     OFFLINE_PATTERN = r'<title>Dropbox - (404|Shared link error)<'
 
