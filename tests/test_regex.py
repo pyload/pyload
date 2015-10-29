@@ -2,10 +2,7 @@
 
 import re
 
-# Prepare some dummy requirements for module importing
-import __builtin__
-__builtin__._ = lambda x: x
-
+import common_init
 from module.plugins.hoster.UpleaCom import UpleaCom
 
 def test_uplea_name_regex():

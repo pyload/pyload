@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from nose.tools import nottest
-
-from module.network.HTTPDownload import HTTPDownload
-
 import hashlib
+
+import common_init
+from module.network.HTTPDownload import HTTPDownload
 
 def checksum_md5(filename):
     md5 = hashlib.md5()
@@ -16,25 +16,6 @@ def checksum_md5(filename):
 @nottest
 def test_accents_download():
     url = "http://speedtest.netcologne.de/test_1mb.bin"
-
-    #Quick and dirty logger
-    import logging
-    import logging.handlers
-    import sys
-    from os.path import join
-    log = logging.getLogger("log")
-    console = logging.StreamHandler(sys.stdout)
-    frm = logging.Formatter("%(asctime)s %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
-    console.setFormatter(frm)
-    log.addHandler(console) #if console logging
-    file_handler = logging.FileHandler('log.txt', encoding="utf8")
-    file_handler.setFormatter(frm)
-    log.addHandler(file_handler)
-    log.setLevel(logging.DEBUG)
-
-    #Create some dummies to avoid errors
-    import __builtin__
-    __builtin__._ = lambda x: x
 
     from module.network.Bucket import Bucket
 

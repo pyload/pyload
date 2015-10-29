@@ -100,7 +100,7 @@ class Hoster(Base):
                 self.restart(premium=False)
 
             else:
-                raise Fail(encode(e))
+                raise Fail(encode(e)) #FIXME: Check this
 
 
     def isdownload(self, url, resume=None, redirect=True):
@@ -194,8 +194,8 @@ class Hoster(Base):
         dl_dirname  = os.path.join(dl_folder, self.pyfile.package().folder)
         dl_filename = os.path.join(dl_dirname, dl_basename)
 
-        dl_dir  = encode(dl_dirname)
-        dl_file = encode(dl_filename)  #@TODO: Move safe-filename check to HTTPDownload in 0.4.10
+        dl_dir  = dl_dirname #self.set_permissions take unicode string
+        dl_file = dl_filename  #@TODO: Check this in 0.4.10
 
         if not exists(dl_dir):
             try:
@@ -263,7 +263,7 @@ class Hoster(Base):
             self.pyfile.name = safename
 
             dl_filename = os.path.join(dl_dirname, safename)
-            dl_file = encode(dl_filename)
+            dl_file = dl_filename #self.set_permissions takes unicode string
 
         self.set_permissions(dl_file)
 
@@ -282,7 +282,7 @@ class Hoster(Base):
         if not self.last_download:
             return
 
-        dl_location = encode(self.last_download)
+        dl_location = self.last_download #os.stat takes unicode string
         dl_size     = os.stat(dl_location).st_size
 
         if dl_size < 1:
