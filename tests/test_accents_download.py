@@ -23,7 +23,7 @@ def test_accents_download():
     bucket.setRate(200 * 1024)
     bucket = None
 
-    print "starting"
+    print "Starting download test. Please wait."
 
     # Download
     filename = u"é.bin"
