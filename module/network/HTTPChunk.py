@@ -19,6 +19,7 @@
 from os import remove, stat, fsync
 from os.path import exists
 from time import sleep
+import re
 from re import search
 import codecs
 import pycurl
@@ -260,7 +261,8 @@ class HTTPChunk(HTTPRequest):
                 self.p.chunkSupport = True
 
             if line.startswith("content-disposition") and "filename=" in line:
-                name = orgline.partition("filename=")[2]
+                # Matches filename="[name]"
+                name = re.search(r"filename=((?<![\\])['\"])(?P<name>(?:.(?!(?<![\\])\1))*.?)\1", orgline).group('name')
                 name = name.replace('"', "").replace("'", "").replace(";", "").strip()
                 self.p.nameDisposition = name
                 self.log.debug("Content-Disposition: %s" % name)
