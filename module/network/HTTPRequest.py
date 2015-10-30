@@ -24,6 +24,7 @@ from urllib import quote, urlencode
 from httplib import responses
 from logging import getLogger
 from cStringIO import StringIO
+import re
 
 from module.plugins.Plugin import Abort
 
@@ -252,6 +253,14 @@ class HTTPRequest():
                     encoding = charset[0]
 
         try:
+            # Search for meta tag encoding in req
+            # because response encoding can be different of encoding in headers (case in dl.free.fr)
+            content_type = re.search(r"<meta http-equiv=\"Content-Type\" content=((?<![\\])['\"])(?P<content>(?:.(?!(?<![\\])\1))*.?)\1 />", rep)
+            if content_type:
+                charset = re.search(r"charset=(?P<encoding>[\w\-]+)", content_type.group('content'))
+                if charset:
+                    encoding = charset.group('encoding')
+
             self.log.debug("Decoded %s" % encoding )
             if lookup(encoding).name == 'utf-8' and rep.startswith(BOM_UTF8):
                 encoding = 'utf-8-sig'
@@ -263,8 +272,9 @@ class HTTPRequest():
 
         except LookupError:
             self.log.debug("No Decoder foung for %s" % encoding)
-        except Exception:
+        except Exception as e:
             self.log.debug("Error when decoding string from %s." % encoding)
+            self.log.debug("Exception message %s" % e)
 
         return rep
 
