@@ -80,7 +80,7 @@ class ChunkInfo():
 
     @staticmethod
     def load(name):
-        fs_name = "%s.chunks" % name #Encoding not needed on file names
+        fs_name = u"%s.chunks" % name #Encoding not needed on file names
         if not exists(fs_name):
             raise IOError()
         fh = codecs.open(fs_name, "r", "utf_8")
