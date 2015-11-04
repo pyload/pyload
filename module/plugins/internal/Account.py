@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import copy
 import random
 import re
 import threading
@@ -12,7 +13,7 @@ from module.plugins.internal.utils import compare_time, isiterable, lock, parse_
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.65"
+    __version__ = "0.66"
     __status__  = "stable"
 
     __description__ = """Base account plugin"""
@@ -237,7 +238,9 @@ class Account(Plugin):
 
             self.syncback()
 
-            self.log_debug("Account info for user `%s`: %s" % (self.user, self.info))
+            safe_info = copy.deepcopy(self.info)
+            safe_info['login']['password'] = "**********"
+            self.log_debug("Account info for user `%s`: %s" % (self.user, safe_info))
 
         return self.info
 
