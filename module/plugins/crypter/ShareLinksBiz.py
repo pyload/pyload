@@ -11,7 +11,7 @@ from module.plugins.internal.Crypter import Crypter, create_getInfo
 class ShareLinksBiz(Crypter):
     __name__    = "ShareLinksBiz"
     __type__    = "crypter"
-    __version__ = "1.20"
+    __version__ = "1.21"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
@@ -71,7 +71,12 @@ class ShareLinksBiz(Crypter):
         url = pyfile.url
 
         if 's2l.biz' in url:
-            url = self.load(url, just_header=True)['location']
+            header = self.load(url, just_header=True)
+            
+            if not 'location' in header:
+                self.fail(_("Unable to initialize download"))
+            else:
+                url = header.get('location')
 
         if re.match(self.__pattern__, url):
             self.base_url = "http://www.%s.biz" % re.match(self.__pattern__, url).group(1)
