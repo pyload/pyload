@@ -11,7 +11,7 @@ class Keep2ShareCc(SimpleHoster):
     __name__    = "Keep2ShareCc"
     __type__    = "hoster"
     __version__ = "0.28"
-    __status__  = "broken"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
     __config__  = [("activated"   , "bool", "Activated"                                        , True),
@@ -34,8 +34,9 @@ class Keep2ShareCc(SimpleHoster):
     OFFLINE_PATTERN      = r'File not found or deleted|Sorry, this file is blocked or deleted|Error 404'
     TEMP_OFFLINE_PATTERN = r'Downloading blocked due to'
 
-    LINK_FREE_PATTERN    = r'"(.+?url.html\?file=.+?)"|window\.location\.href = \'(.+?)\';'
+    LINK_FREE_PATTERN    = r'"([^"]+?url.html\?file=.+?)"|window\.location\.href = \'(.+?)\';'
     LINK_PREMIUM_PATTERN = r'window\.location\.href = \'(.+?)\';'
+    UNIQUE_ID_PATTERN    = r"data: {uniqueId: '(?P<uID>\w+)', free: 1}"
 
     CAPTCHA_PATTERN = r'src="(/file/captcha\.html.+?)"'
 
@@ -68,6 +69,7 @@ class Keep2ShareCc(SimpleHoster):
             self.retry(wait=wait_time, msg="Please wait to download this file")
 
         self.info.pop('error', None)
+        # super(Keep2ShareCc, self).check_errors()
 
 
     def handle_free(self, pyfile):
@@ -83,13 +85,22 @@ class Keep2ShareCc(SimpleHoster):
         if m is None:
             self.handle_captcha()
             self.wait(31)
-            self.data = self.load(pyfile.url)
+            # get the uniqueId from the html code
+            m = re.search(self.UNIQUE_ID_PATTERN, self.data)
+            if m is None:
+                self.error(_("Unique-ID pattern not found"))
+            self.data = self.load(pyfile.url, post={'uniqueId': m.group('uID'), 'free': '1'})
 
             m = re.search(self.LINK_FREE_PATTERN, self.data)
             if m is None:
                 self.error(_("Free download link not found"))
 
-        self.link = m.group(1)
+        # if group 1 did not match, check group 2
+        if m.group(1) is not None:
+            self.link = m.group(1)
+        else:
+            self.link = m.group(2)
+        self.log_debug("download link: %s" % self.link)
 
 
     def handle_captcha(self):
@@ -121,3 +132,4 @@ class Keep2ShareCc(SimpleHoster):
 
 
 getInfo = create_getInfo(Keep2ShareCc)
+
