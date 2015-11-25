@@ -6,7 +6,7 @@ from module.plugins.internal.Captcha import Captcha
 class CaptchaService(Captcha):
     __name__    = "CaptchaService"
     __type__    = "captcha"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__  = "stable"
 
     __description__ = """Base anti-captcha service plugin"""
