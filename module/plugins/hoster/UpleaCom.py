@@ -9,7 +9,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class UpleaCom(XFSHoster):
     __name__    = "UpleaCom"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?uplea\.com/dl/\w{15}'
@@ -36,7 +36,7 @@ class UpleaCom(XFSHoster):
     LINK_PATTERN = r'"(https?://\w+\.uplea\.com/anonym/.*?)"'
 
     PREMIUM_ONLY_PATTERN = r'You need to have a Premium subscription to download this file'
-    WAIT_PATTERN         = r'timeText: ?([\d.]+),'
+    WAIT_PATTERN         = r'timeText: ?(\d+),'
     STEP_PATTERN         = r'<a href="(/step/.+)">'
 
 
@@ -54,8 +54,7 @@ class UpleaCom(XFSHoster):
         self.data = self.load(urlparse.urljoin("http://uplea.com/", m.group(1)))
 
         m = re.search(self.WAIT_PATTERN, self.data)
-        if m is not None:
-            self.log_debug("Waiting %s seconds" % m.group(1))
+        if m:
             self.wait(m.group(1), True)
             self.retry()
 
@@ -64,7 +63,10 @@ class UpleaCom(XFSHoster):
             self.error(_("LINK_PATTERN not found"))
 
         self.link = m.group(1)
-        self.wait(15)
+
+        m = re.search(r".ulCounter\({'timer':(\d+)}\)", self.data)
+        if m:
+            self.wait(m.group(1))
 
 
 getInfo = create_getInfo(UpleaCom)
