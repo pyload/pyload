@@ -17,7 +17,7 @@ from module.plugins.internal.utils import (encode, parse_name, parse_size,
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "2.06"
+    __version__ = "2.07"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -420,7 +420,7 @@ class SimpleHoster(Hoster):
 
 
     def handle_direct(self, pyfile):
-        self.link = self.isdownload(pyfile.url)
+        self.link = pyfile.url if self.isdownload(pyfile.url) else None
 
 
     def handle_multi(self, pyfile):  #: Multi-hoster handler
