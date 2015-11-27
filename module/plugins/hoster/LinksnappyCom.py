@@ -23,7 +23,8 @@ class LinksnappyCom(MultiHoster):
 
     __description__ = """Linksnappy.com multi-hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it", "Bilal Ghouri")]
+    __authors__     = [("stickell",     "l.stickell@yahoo.it"),
+                       ("Bilal Ghouri", None                 )]
 
 
     def handle_premium(self, pyfile):
