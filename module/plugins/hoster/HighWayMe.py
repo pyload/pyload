@@ -3,13 +3,13 @@
 import re
 
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
-from module.plugins.internal.SimpleHoster import seconds_to_midnight
+from module.plugins.internal.utils import seconds_to_midnight
 
 
 class HighWayMe(MultiHoster):
     __name__    = "HighWayMe"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __pattern__ = r'https?://.+high-way\.my'

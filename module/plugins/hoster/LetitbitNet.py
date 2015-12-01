@@ -12,7 +12,8 @@ import urlparse
 from module.plugins.internal.utils import json
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, seconds_to_midnight
+from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.utils import seconds_to_midnight
 
 
 def api_response(url):
@@ -35,7 +36,7 @@ def get_info(urls):
 class LetitbitNet(SimpleHoster):
     __name__    = "LetitbitNet"
     __type__    = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(letitbit|shareflare)\.net/download/.+'

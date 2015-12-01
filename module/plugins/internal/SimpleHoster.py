@@ -10,14 +10,13 @@ from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster, create_getInfo, parse_fileInfo
 from module.plugins.internal.Plugin import Fail
 from module.plugins.internal.utils import (encode, parse_name, parse_size,
-                                           parse_time, replace_patterns, seconds_to_midnight,
-                                           set_cookie, set_cookies)
+                                           parse_time, replace_patterns)
 
 
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "2.07"
+    __version__ = "2.08"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'

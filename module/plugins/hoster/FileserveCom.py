@@ -5,8 +5,7 @@ import re
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.SimpleHoster import seconds_to_midnight
-from module.plugins.internal.utils import chunks, json, parse_size
+from module.plugins.internal.utils import chunks, json, parse_size, seconds_to_midnight
 
 
 def check_file(plugin, urls):
@@ -32,7 +31,7 @@ def check_file(plugin, urls):
 class FileserveCom(Hoster):
     __name__    = "FileserveCom"
     __type__    = "hoster"
-    __version__ = "0.64"
+    __version__ = "0.65"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<ID>[^/]+)'

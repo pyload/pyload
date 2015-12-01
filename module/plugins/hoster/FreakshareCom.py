@@ -4,13 +4,13 @@ import re
 
 from module.plugins.internal.Hoster import Hoster
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import seconds_to_midnight
+from module.plugins.internal.utils import seconds_to_midnight
 
 
 class FreakshareCom(Hoster):
     __name__    = "FreakshareCom"
     __type__    = "hoster"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
