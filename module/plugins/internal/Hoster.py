@@ -15,7 +15,7 @@ from module.plugins.internal.utils import encode, exists, fixurl, fs_join, parse
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -105,58 +105,26 @@ class Hoster(Base):
 
     def isdownload(self, url, resume=None, redirect=True):
         link      = False
-        maxredirs = 10
 
-        if resume is None:
-            resume = self.resume_download
+        header = self.follow_redirects_and_get_header(url, redirect)
 
-        if type(redirect) is int:
-            maxredirs = max(redirect, 1)
+        if 'content-disposition' in header:
+            return url
+        else:
+            mimetype    = ""
+            contenttype = header.get('content-type')
+            extension   = os.path.splitext(parse_name(url))[-1]
 
-        elif redirect:
-            maxredirs = self.get_config("maxredirs", default=maxredirs, plugin="UserAgentSwitcher")
+            if contenttype:
+                mimetype = contenttype.split(';')[0].strip()
 
-        for i in xrange(maxredirs):
-            self.log_debug("Redirect #%d to: %s" % (i, url))
+            elif extension:
+                mimetype = mimetypes.guess_type(extension, False)[0] or "application/octet-stream"
 
-            header = self.load(url, just_header=True)
-
-            if 'content-disposition' in header:
-                link = url
-
-            elif header.get('location'):
-                location = self.fixurl(header.get('location'), url)
-                code     = header.get('code')
-
-                if code == 302:
-                    link = location
-
-                elif code == 301:
-                    url = location
-                    if redirect:
-                        continue
-
-                if resume:
-                    url = location
-                    continue
-
+            if mimetype and (link or 'html' not in mimetype):
+                return url
             else:
-                mimetype    = ""
-                contenttype = header.get('content-type')
-                extension   = os.path.splitext(parse_name(url))[-1]
-
-                if contenttype:
-                    mimetype = contenttype.split(';')[0].strip()
-
-                elif extension:
-                    mimetype = mimetypes.guess_type(extension, False)[0] or "application/octet-stream"
-
-                if mimetype and (link or 'html' not in mimetype):
-                    link = url
-                else:
-                    link = False
-
-            return link
+                return False
 
 
     def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=True, resume=None, chunks=None):
