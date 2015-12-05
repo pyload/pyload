@@ -11,7 +11,7 @@ from module.plugins.internal.utils import parse_html_form, parse_time, set_cooki
 class XFSAccount(MultiAccount):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.56"
+    __version__ = "0.57"
     __status__  = "stable"
 
     __config__ = [("activated"     , "bool"               , "Activated"                    , True ),
@@ -212,7 +212,7 @@ class XFSAccount(MultiAccount):
             finally:
                 errmsg = re.sub(r'<.*?>', " ", errmsg.strip())
 
-            new_timeout = parse_time(errmsg)
+            new_timeout = self.parse_time(errmsg)
             if new_timeout > self.timeout:
                 self.timeout = new_timeout
 
@@ -231,3 +231,7 @@ class XFSAccount(MultiAccount):
 
             self.timeout = self.LOGIN_TIMEOUT
             self.fail_login(errmsg)
+
+
+    def parse_time(self, value):
+        return parse_time(value)

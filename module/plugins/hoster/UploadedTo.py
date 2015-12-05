@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "0.99"
+    __version__ = "1.00"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
@@ -68,6 +68,13 @@ class UploadedTo(SimpleHoster):
     def setup(self):
         self.multiDL = self.resume_download = self.premium
         self.chunk_limit = 1  #: Critical problems with more chunks
+
+
+    def parse_time(self, value):
+        if re.search("You have reached the max. number of possible free downloads for this hour", value):
+            return 10800  #@note: actual wait time is 3 hours
+        else:
+            return super(UploadedTo, self).parse_time(value)
 
 
     def handle_free(self, pyfile):

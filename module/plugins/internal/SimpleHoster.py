@@ -16,7 +16,7 @@ from module.plugins.internal.utils import (encode, parse_name, parse_size,
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "2.08"
+    __version__ = "2.09"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -341,7 +341,7 @@ class SimpleHoster(Hoster):
                 self.info['error'] = errmsg
                 self.log_warning(errmsg)
 
-                wait_time = parse_time(errmsg)
+                wait_time = self.parse_time(errmsg)
                 self.wait(wait_time, reconnect=wait_time > self.get_config("max_wait", 10) * 60)
                 self.restart(_("Download limit exceeded"))
 
@@ -364,7 +364,7 @@ class SimpleHoster(Hoster):
                 self.log_warning(errmsg)
 
                 if re.search('limit|wait|slot', errmsg, re.I):
-                    wait_time = parse_time(errmsg)
+                    wait_time = self.parse_time(errmsg)
                     self.wait(wait_time, reconnect=wait_time > self.get_config("max_wait", 10) * 60)
                     self.restart(_("Download limit exceeded"))
 
@@ -405,7 +405,7 @@ class SimpleHoster(Hoster):
                 except (AttributeError, IndexError):
                     waitmsg = m.group(0).strip()
 
-                wait_time = parse_time(waitmsg)
+                wait_time = self.parse_time(waitmsg)
                 self.wait(wait_time, reconnect=wait_time > self.get_config("max_wait", 10) * 60)
 
         self.info.pop('error', None)
@@ -447,3 +447,7 @@ class SimpleHoster(Hoster):
             self.error(_("Premium download link not found"))
         else:
             self.link = m.group(1)
+
+
+    def parse_time(self, value):
+        return parse_time(value)
