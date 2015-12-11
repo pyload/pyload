@@ -5,13 +5,13 @@ import re
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Crypter import Crypter, create_getInfo, parse_fileInfo
-from module.plugins.internal.utils import replace_patterns, set_cookie, set_cookies
+from module.plugins.internal.utils import parse_name, replace_patterns, set_cookie, set_cookies
 
 
 class SimpleCrypter(Crypter):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.79"
+    __version__ = "0.80"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -41,7 +41,7 @@ class SimpleCrypter(Crypter):
         example: TEMP_OFFLINE_PATTERN = r'Server maintainance'
 
 
-    You can override the getLinks method if you need a more sophisticated way to extract the links.
+    You can override the get_links method if you need a more sophisticated way to extract the links.
 
 
     If the links are splitted on multiple pages you can define the PAGES_PATTERN regex:
@@ -49,7 +49,7 @@ class SimpleCrypter(Crypter):
       PAGES_PATTERN: (optional) group(1) should be the number of overall pages containing the links
         example: PAGES_PATTERN = r'Pages: (\d+)'
 
-    and its loadPage method:
+    and its load_page method:
 
       def load_page(self, page_n):
           return the html of the page number page_n
@@ -256,11 +256,11 @@ class SimpleCrypter(Crypter):
         """
         if self.premium:
             self.log_info(_("Decrypting as premium link..."))
-            self.handle_premium(pyfile)
+            self.handle_premium(self.pyfile)
 
         elif not self.LOGIN_ACCOUNT:
             self.log_info(_("Decrypting as free link..."))
-            self.handle_free(pyfile)
+            self.handle_free(self.pyfile)
 
         return self.links
 
