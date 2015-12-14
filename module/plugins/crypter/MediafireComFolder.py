@@ -3,13 +3,13 @@
 import re
 
 from module.plugins.internal.Crypter import Crypter, create_getInfo
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 
 
 class MediafireComFolder(Crypter):
     __name__    = "MediafireComFolder"
     __type__    = "crypter"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))'

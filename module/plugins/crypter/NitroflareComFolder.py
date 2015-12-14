@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 
 
 class NitroflareComFolder(SimpleCrypter):
     __name__    = "NitroflareComFolder"
     __type__    = "crypter"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/folder/(?P<USER>\d+)/(?P<ID>[\w=]+)'

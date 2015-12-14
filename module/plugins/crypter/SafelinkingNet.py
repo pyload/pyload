@@ -4,7 +4,7 @@ import re
 
 import BeautifulSoup
 
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 from module.plugins.internal.Crypter import Crypter, create_getInfo
 from module.plugins.captcha.SolveMedia import SolveMedia
 
@@ -12,7 +12,7 @@ from module.plugins.captcha.SolveMedia import SolveMedia
 class SafelinkingNet(Crypter):
     __name__    = "SafelinkingNet"
     __type__    = "crypter"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?safelinking\.net/([pd])/\w+'

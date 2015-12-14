@@ -10,7 +10,7 @@ from module.plugins.internal.Crypter import Crypter, create_getInfo
 class DuckCryptInfo(Crypter):
     __name__    = "DuckCryptInfo"
     __type__    = "crypter"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?duckcrypt\.info/(folder|wait|link)/(\w+)/?(\w*)'

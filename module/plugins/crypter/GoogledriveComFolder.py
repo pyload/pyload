@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class GoogledriveComFolder(SimpleCrypter):
     __name__    = "GoogledriveComFolder"
     __type__    = "crypter"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?drive\.google\.com/folderview\?.*id=\w+'

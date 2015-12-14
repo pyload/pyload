@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class FilestubeCom(SimpleCrypter):
     __name__    = "FilestubeCom"
     __type__    = "crypter"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?filestube\.(?:com|to)/\w+'

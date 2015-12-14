@@ -4,13 +4,13 @@ import re
 import urlparse
 
 from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 
 
 class Go4UpCom(SimpleCrypter):
     __name__    = "Go4UpCom"
     __type__    = "crypter"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __pattern__ = r'http://go4up\.com/(dl/\w{12}|rd/\w{12}/\d+)'
@@ -35,7 +35,7 @@ class Go4UpCom(SimpleCrypter):
 
     def get_links(self):
         links = []
-        preference = self.get_config("preferred_hoster")
+        preference = self.config.get("preferred_hoster")
 
         hosterslink_re = re.search(r'(/download/gethosts/.+?)"', self.data)
         if hosterslink_re:

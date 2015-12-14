@@ -11,7 +11,7 @@ from module.plugins.internal.Crypter import Crypter, create_getInfo
 class FourChanOrg(Crypter):
     __name__    = "FourChanOrg"
     __type__    = "crypter"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?boards\.4chan\.org/\w+/res/(\d+)'

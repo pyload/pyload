@@ -6,16 +6,16 @@ import binascii
 import os
 import re
 
-from Crypto.Cipher import AES
+import Crypto.Cipher
 
 from module.plugins.internal.Crypter import Crypter, create_getInfo
-from module.plugins.internal.utils import fs_join
+from module.plugins.internal.misc import fsjoin
 
 
 class RelinkUs(Crypter):
     __name__    = "RelinkUs"
     __type__    = "crypter"
-    __version__ = "3.16"
+    __version__ = "3.17"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?relink\.us/(f/|((view|go)\.php\?id=))(?P<ID>.+)'
@@ -222,7 +222,7 @@ class RelinkUs(Crypter):
             try:
                 dlc = self.load(container_url)
                 dlc_filename = self.fileid + ".dlc"
-                dlc_filepath = fs_join(self.pyload.config.get("general", "download_folder"), dlc_filename)
+                dlc_filepath = fsjoin(self.pyload.config.get("general", "download_folder"), dlc_filename)
                 with open(dlc_filepath, "wb") as f:
                     f.write(dlc)
                 package_links.append(dlc_filepath)
@@ -283,7 +283,7 @@ class RelinkUs(Crypter):
         #: Decrypt
         Key = key
         IV = key
-        obj = AES.new(Key, AES.MODE_CBC, IV)
+        obj = Crypto.Cipher.AES.new(Key, Crypto.Cipher.AES.MODE_CBC, IV)
         text = obj.decrypt(crypted.decode('base64'))
 
         #: Extract links

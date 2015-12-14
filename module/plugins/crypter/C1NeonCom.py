@@ -6,7 +6,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 class C1NeonCom(DeadCrypter):
     __name__    = "C1NeonCom"
     __type__    = "crypter"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?c1neon\.com/.+'

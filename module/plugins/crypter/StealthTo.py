@@ -6,7 +6,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 class StealthTo(DeadCrypter):
     __name__    = "StealthTo"
     __type__    = "crypter"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?stealth\.to/folder/.+'

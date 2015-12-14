@@ -6,7 +6,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 class Movie2KTo(DeadCrypter):
     __name__    = "Movie2KTo"
     __type__    = "crypter"
-    __version__ = "0.54"
+    __version__ = "0.55"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?movie2k\.to/(.+)\.html'

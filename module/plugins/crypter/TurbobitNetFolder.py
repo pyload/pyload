@@ -3,13 +3,13 @@
 import re
 
 from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 
 
 class TurbobitNetFolder(SimpleCrypter):
     __name__    = "TurbobitNetFolder"
     __type__    = "crypter"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "broken"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/download/folder/(?P<ID>\w+)'

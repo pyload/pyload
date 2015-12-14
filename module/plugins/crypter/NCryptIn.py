@@ -3,7 +3,7 @@
 import binascii
 import re
 
-from Crypto.Cipher import AES
+import Crypto.Cipher
 
 from module.plugins.internal.Crypter import Crypter, create_getInfo
 from module.plugins.captcha.ReCaptcha import ReCaptcha
@@ -12,7 +12,7 @@ from module.plugins.captcha.ReCaptcha import ReCaptcha
 class NCryptIn(Crypter):
     __name__    = "NCryptIn"
     __type__    = "crypter"
-    __version__ = "1.39"
+    __version__ = "1.40"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?ncrypt\.in/(?P<TYPE>folder|link|frame)-([^/\?]+)'
@@ -301,7 +301,7 @@ class NCryptIn(Crypter):
         #: Decrypt
         Key = key
         IV = key
-        obj = AES.new(Key, AES.MODE_CBC, IV)
+        obj = Crypto.Cipher.AES.new(Key, Crypto.Cipher.AES.MODE_CBC, IV)
         text = obj.decrypt(crypted.decode('base64'))
 
         #: Extract links

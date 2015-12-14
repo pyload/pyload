@@ -3,18 +3,17 @@
 import binascii
 import re
 
+import Crypto.Cipher
 import pycurl
 
-from Crypto.Cipher import AES
-
 from module.plugins.internal.Crypter import Crypter, create_getInfo
-from module.plugins.internal.utils import html_unescape
+from module.plugins.internal.misc import html_unescape
 
 
 class LinkCryptWs(Crypter):
     __name__    = "LinkCryptWs"
     __type__    = "crypter"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?linkcrypt\.ws/(dir|container)/(?P<ID>\w+)'
@@ -305,7 +304,7 @@ class LinkCryptWs(Crypter):
         #: Decrypt
         Key  = key
         IV   = key
-        obj  = AES.new(Key, AES.MODE_CBC, IV)
+        obj  = Crypto.Cipher.AES.new(Key, Crypto.Cipher.AES.MODE_CBC, IV)
         text = obj.decrypt(crypted.decode('base64'))
 
         #: Extract links

@@ -10,7 +10,7 @@ from module.plugins.internal.Crypter import Crypter, create_getInfo
 class HoerbuchIn(Crypter):
     __name__    = "HoerbuchIn"
     __type__    = "crypter"
-    __version__ = "0.64"
+    __version__ = "0.65"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?hoerbuch\.in/(wp/horbucher/\d+/.+/|tp/out\.php\?.+|protection/folder_\d+\.html)'

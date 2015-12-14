@@ -8,7 +8,7 @@ from module.plugins.internal.MultiCrypter import MultiCrypter
 class LinkdecrypterCom(MultiCrypter):
     __name__    = "LinkdecrypterCom"
     __type__    = "crypter"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'

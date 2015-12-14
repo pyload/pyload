@@ -4,13 +4,13 @@ import re
 import urlparse
 
 from module.plugins.internal.Crypter import Crypter, create_getInfo
-from module.plugins.internal.utils import fs_join, json
+from module.plugins.internal.misc import fsjoin, json
 
 
 class YoutubeComFolder(Crypter):
     __name__    = "YoutubeComFolder"
     __type__    = "crypter"
-    __version__ = "1.07"
+    __version__ = "1.08"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.|m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w\-]+)'
@@ -117,7 +117,7 @@ class YoutubeComFolder(Crypter):
                 relatedplaylist['uploads']['checkDups'] = True  #: checkDups flag
 
                 for p_name, p_data in relatedplaylist.items():
-                    if self.get_config(p_name):
+                    if self.config.get(p_name):
                         p_data['title'] += " of " + user
                         playlists.append(p_data)
             else:
@@ -134,7 +134,7 @@ class YoutubeComFolder(Crypter):
         for p in playlists:
             p_name = p['title']
             p_videos = self.get_videos_id(p['id'])
-            p_folder = fs_join(self.pyload.config.get("general", "download_folder"), p['channelTitle'], p_name)
+            p_folder = fsjoin(self.pyload.config.get("general", "download_folder"), p['channelTitle'], p_name)
             self.log_debug("%s video\s found on playlist \"%s\"" % (len(p_videos), p_name))
 
             if not p_videos:

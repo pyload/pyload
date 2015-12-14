@@ -1,13 +1,13 @@
 import re
 
 from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
-from module.plugins.internal.utils import uniqify
+from module.plugins.internal.misc import uniqify
 
 
-class ImgurComAlbum(SimpleCrypter):
-    __name__    = "ImgurComAlbum"
+class ImgurCom(SimpleCrypter):
+    __name__    = "ImgurCom"
     __type__    = "crypter"
-    __version__ = "0.54"
+    __version__ = "0.55"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.|m\.)?imgur\.com/(a|gallery|)/?\w{5,7}'
@@ -31,4 +31,4 @@ class ImgurComAlbum(SimpleCrypter):
         return uniqify(map(f, re.findall(self.LINK_PATTERN, self.data)))
 
 
-getInfo = create_getInfo(ImgurComAlbum)
+getInfo = create_getInfo(ImgurCom)
