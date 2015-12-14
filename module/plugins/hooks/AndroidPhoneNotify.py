@@ -6,19 +6,22 @@ from module.plugins.internal.Notifier import Notifier
 class AndroidPhoneNotify(Notifier):
     __name__    = "AndroidPhoneNotify"
     __type__    = "hook"
-    __version__ = "0.13"
+    __version__ = "0.15"
     __status__  = "testing"
 
-    __config__ = [("activated"      , "bool", "Activated"                                , False),
-                  ("apikey"         , "str" , "API key"                                  , ""   ),
-                  ("notifycaptcha"  , "bool", "Notify captcha request"                   , True ),
-                  ("notifypackage"  , "bool", "Notify package finished"                  , True ),
-                  ("notifyprocessed", "bool", "Notify packages processed"                , True ),
-                  ("notifyupdate"   , "bool", "Notify plugin updates"                    , True ),
-                  ("notifyexit"     , "bool", "Notify pyLoad shutdown"                   , True ),
-                  ("sendtimewait"   , "int" , "Timewait in seconds between notifications", 5    ),
-                  ("sendpermin"     , "int" , "Max notifications per minute"             , 12   ),
-                  ("ignoreclient"   , "bool", "Send notifications if client is connected", False)]
+    __config__ = [("activated"       , "bool", "Activated"                                , False),
+                  ("apikey"          , "str" , "API key"                                  , ""   ),
+                  ("captcha"         , "bool", "Notify captcha request"                   , True ),
+                  ("reconnection"    , "bool", "Notify reconnection request"              , False),
+                  ("downloadfinished", "bool", "Notify download finished"                 , True ),
+                  ("downloadfailed"  , "bool", "Notify download failed"                   , True ),
+                  ("packagefinished" , "bool", "Notify package finished"                  , True ),
+                  ("packagefailed"   , "bool", "Notify package failed"                    , True ),
+                  ("update"          , "bool", "Notify pyLoad update"                     , False),
+                  ("exit"            , "bool", "Notify pyLoad shutdown/restart"           , False),
+                  ("sendinterval"    , "int" , "Interval in seconds between notifications", 1    ),
+                  ("sendpermin"      , "int" , "Max notifications per minute"             , 60   ),
+                  ("ignoreclient"    , "bool", "Send notifications if client is connected", True )]
 
     __description__ = """Send push notifications to your Android Phone using notifymyandroid.com"""
     __license__     = "GPLv3"
@@ -27,7 +30,7 @@ class AndroidPhoneNotify(Notifier):
 
 
     def get_key(self):
-        return self.get_config('apikey')
+        return self.config.get('apikey')
 
 
     def send(self, event, msg, key):

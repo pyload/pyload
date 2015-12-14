@@ -8,20 +8,23 @@ from module.plugins.internal.Notifier import Notifier
 class PushOver(Notifier):
     __name__    = "PushOver"
     __type__    = "hook"
-    __version__ = "0.04"
+    __version__ = "0.06"
     __status__  = "testing"
 
-    __config__ = [("activated"      , "bool", "Activated"                                , False),
-                  ("tokenkey"       , "str" , "Token key"                                , ""   ),
-                  ("userkey"        , "str" , "User key"                                 , ""   ),
-                  ("notifycaptcha"  , "bool", "Notify captcha request"                   , True ),
-                  ("notifypackage"  , "bool", "Notify package finished"                  , True ),
-                  ("notifyprocessed", "bool", "Notify packages processed"                , True ),
-                  ("notifyupdate"   , "bool", "Notify plugin updates"                    , True ),
-                  ("notifyexit"     , "bool", "Notify pyLoad shutdown"                   , True ),
-                  ("sendtimewait"   , "int" , "Timewait in seconds between notifications", 5    ),
-                  ("sendpermin"     , "int" , "Max notifications per minute"             , 12   ),
-                  ("ignoreclient"   , "bool", "Send notifications if client is connected", False)]
+    __config__ = [("activated"       , "bool", "Activated"                                , False),
+                  ("tokenkey"        , "str" , "Token key"                                , ""   ),
+                  ("userkey"         , "str" , "User key"                                 , ""   ),
+                  ("captcha"         , "bool", "Notify captcha request"                   , True ),
+                  ("reconnection"    , "bool", "Notify reconnection request"              , False),
+                  ("downloadfinished", "bool", "Notify download finished"                 , True ),
+                  ("downloadfailed"  , "bool", "Notify download failed"                   , True ),
+                  ("packagefinished" , "bool", "Notify package finished"                  , True ),
+                  ("packagefailed"   , "bool", "Notify package failed"                    , True ),
+                  ("update"          , "bool", "Notify pyLoad update"                     , False),
+                  ("exit"            , "bool", "Notify pyLoad shutdown/restart"           , False),
+                  ("sendinterval"    , "int" , "Interval in seconds between notifications", 1    ),
+                  ("sendpermin"      , "int" , "Max notifications per minute"             , 60   ),
+                  ("ignoreclient"    , "bool", "Send notifications if client is connected", True )]
 
     __description__ = """Send push notifications to your phone using pushover.net"""
     __license__     = "GPLv3"
@@ -29,7 +32,7 @@ class PushOver(Notifier):
 
 
     def get_key(self):
-        return self.get_config('tokenkey'), self.get_config('userkey')
+        return self.config.get('tokenkey'), self.config.get('userkey')
 
 
     def send(self, event, msg, key):
