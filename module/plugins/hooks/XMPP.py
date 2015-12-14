@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from pyxmpp import streamtls
-from pyxmpp.all import JID, Message
-from pyxmpp.interface import implements
-from pyxmpp.interfaces import *
+import pyxmpp
+
 from pyxmpp.jabber.client import JabberClient
 
-from module.plugins.hooks.IRCInterface import IRCInterface
+from module.plugins.hooks.IRC import IRC
 
 
-class XMPPInterface(IRCInterface, JabberClient):
-    __name__    = "XMPPInterface"
+class XMPP(IRC, JabberClient):
+    __name__    = "XMPP"
     __type__    = "hook"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                           , False                                    ),
@@ -29,21 +27,21 @@ class XMPPInterface(IRCInterface, JabberClient):
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
-    implements(IMessageHandlersProvider)
+    pyxmpp.interface.implements(IMessageHandlersProvider)
 
 
     def __init__(self, *args, **kwargs):
-        IRCInterface.__init__(self, *args, **kwargs)
+        IRC.__init__(self, *args, **kwargs)
 
-        self.jid = JID(self.get_config('jid'))
-        password = self.get_config('pw')
+        self.jid = pyxmpp.all.JID(self.config.get('jid'))
+        password = self.config.get('pw')
 
         #: If bare JID is provided add a resource -- it is required
         if not self.jid.resource:
-            self.jid = JID(self.jid.node, self.jid.domain, "pyLoad")
+            self.jid = pyxmpp.all.JID(self.jid.node, self.jid.domain, "pyLoad")
 
-        if self.get_config('tls'):
-            tls_settings = streamtls.TLSSettings(require=True, verify_peer=False)
+        if self.config.get('tls'):
+            tls_settings = pyxmpp.streamtls.TLSSettings(require=True, verify_peer=False)
             auth = ("sasl:PLAIN", "sasl:DIGEST-MD5")
         else:
             tls_settings = None
@@ -69,7 +67,7 @@ class XMPPInterface(IRCInterface, JabberClient):
 
     def package_finished(self, pypack):
         try:
-            if self.get_config('info_pack'):
+            if self.config.get('info_pack'):
                 self.announce(_("Package finished: %s") % pypack.name)
 
         except Exception:
@@ -78,7 +76,7 @@ class XMPPInterface(IRCInterface, JabberClient):
 
     def download_finished(self, pyfile):
         try:
-            if self.get_config('info_file'):
+            if self.config.get('info_file'):
                 self.announce(
                     _("Download finished: %(name)s @ %(plugin)s") % {'name': pyfile.name, 'plugin': pyfile.pluginname})
 
@@ -146,11 +144,11 @@ class XMPPInterface(IRCInterface, JabberClient):
         to_jid = stanza.get_from()
         from_jid = stanza.get_to()
 
-        # j = JID()
+        # j = pyxmpp.all.JID()
         to_name = to_jid.as_utf8()
         from_name = from_jid.as_utf8()
 
-        names = self.get_config('owners').split(";")
+        names = self.config.get('owners').split(";")
 
         if to_name in names or to_jid.node + "@" + to_jid.domain in names:
             messages = []
@@ -171,7 +169,7 @@ class XMPPInterface(IRCInterface, JabberClient):
             try:
                 res = handler(args)
                 for line in res:
-                    m = Message(
+                    m = pyxmpp.all.Message(
                         to_jid=to_jid,
                         from_jid=from_jid,
                         stanza_type=stanza.get_type(),
@@ -197,15 +195,15 @@ class XMPPInterface(IRCInterface, JabberClient):
         """
         Send message to all owners
         """
-        for user in self.get_config('owners').split(";"):
+        for user in self.config.get('owners').split(";"):
             self.log_debug("Send message to", user)
 
-            to_jid = JID(user)
+            to_jid = pyxmpp.all.JID(user)
 
-            m = Message(from_jid=self.jid,
-                        to_jid=to_jid,
-                        stanza_type="chat",
-                        body=message)
+            m = pyxmpp.all.Message(from_jid=self.jid,
+                                   to_jid=to_jid,
+                                   stanza_type="chat",
+                                   body=message)
 
             stream = self.get_stream()
             if not stream:
@@ -230,7 +228,7 @@ class VersionHandler(object):
     This class will answer version query and announce 'jabber:iq:version' namespace
     in the client's disco#info results.
     """
-    implements(IIqHandlersProvider, IFeaturesProvider)
+    pyxmpp.interface.implements(IIqHandlersProvider, IFeaturesProvider)
 
 
     def __init__(self, client):
