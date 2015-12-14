@@ -269,6 +269,9 @@ class PluginManager(object):
         :param type: plugin type, subfolder of pyload.plugins
         :param name:
         """
+        if type not in self.plugins:
+            raise Exception("Plugins with type \"" + type + "\" doesn't exist!")
+
         plugins = self.plugins[type]
 
         if name in plugins:

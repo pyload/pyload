@@ -103,7 +103,7 @@ class DlFreeFr(SimpleHoster):
         headers = self.getLastHeaders()
         if headers.get("code") == 302 and "set-cookie" in headers and "location" in headers:
             m = re.search("(.*?)=(.*?); path=(.*?); domain=(.*?)", headers.get("set-cookie"))
-            cj = CookieJar(__name)
+            cj = CookieJar()
             if m:
                 cj.setCookie(m.group(4), m.group(1), m.group(2), m.group(3))
             else:

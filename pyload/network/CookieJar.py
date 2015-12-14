@@ -20,6 +20,25 @@ class CookieJar(Cookie.SimpleCookie):
     def getCookie(self, name):
         return self[name].value
 
+    def addPycurlCookies(self, clist):
+        for c in clist:
+            splitted = c.split("\t")
+            domain = splitted[0]
+            path = splitted[2]
+            name = splitted[5]
+            value = splitted[6]
+
+            self.setCookie(domain, name, value, path)
+
+    def getAsPycurlCookies(self):
+        cookies = list()
+
+        for cookie in self:
+            cstr = "\t".join((self[cookie]["domain"], "FALSE", self[cookie]["path"], self[cookie]["secure"],
+                              str(self[cookie]["expires"]), cookie, self[cookie].value))
+            cookies.append(cstr)
+
+        return cookies
 
     def setCookie(self, domain, name, value, path="/", exp=None, secure="FALSE"):
         self[name] = value
@@ -38,5 +57,4 @@ class CookieJar(Cookie.SimpleCookie):
 
         self[name]['expires'] = expires
 
-        if secure == "TRUE":
-            self[name]['secure'] = secure
+        self[name]['secure'] = secure

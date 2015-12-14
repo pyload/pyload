@@ -39,7 +39,7 @@ class AccountManager(object):
         try:
             if plugin in self.accounts:
                 if plugin not in self.plugins:
-                    klass = self.core.pluginManager.loadClass("accounts", plugin)
+                    klass = self.core.pluginManager.loadClass("account", plugin)
                     if klass:
                         self.plugins[plugin] = klass(self, self.accounts[plugin])
                     else:  #@NOTE: The account class no longer exists (blacklisted plugin). Skipping the account to avoid crash
@@ -48,7 +48,8 @@ class AccountManager(object):
                 return self.plugins[plugin]
             else:
                 raise
-        except Exception:
+        except Exception, e:
+            self.core.log.error(str(e))
             return None
 
 

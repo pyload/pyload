@@ -75,7 +75,7 @@ class RequestFactory(object):
         if (pluginName, account) in self.cookiejars:
             return self.cookiejars[(pluginName, account)]
 
-        cj = CookieJar(pluginName, account)
+        cj = CookieJar()
         self.cookiejars[(pluginName, account)] = cj
         return cj
 
