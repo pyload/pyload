@@ -6,7 +6,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class CloudsharesNet(XFSAccount):
     __name__    = "CloudsharesNet"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "testing"
 
     __description__ = """Cloudshares.net account plugin"""

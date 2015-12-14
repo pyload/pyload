@@ -4,13 +4,13 @@ import re
 import time
 
 from module.plugins.internal.Account import Account
-from module.plugins.internal.utils import set_cookie
+from module.plugins.internal.misc import set_cookie
 
 
 class Keep2ShareCc(Account):
     __name__    = "Keep2ShareCc"
     __type__    = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __description__ = """Keep2Share.cc account plugin"""

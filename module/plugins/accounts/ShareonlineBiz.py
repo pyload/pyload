@@ -3,13 +3,13 @@
 import re
 
 from module.plugins.internal.Account import Account
-from module.plugins.internal.utils import set_cookie
+from module.plugins.internal.misc import set_cookie
 
 
 class ShareonlineBiz(Account):
     __name__    = "ShareonlineBiz"
     __type__    = "account"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __status__  = "testing"
 
     __description__ = """Share-online.biz account plugin"""

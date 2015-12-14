@@ -19,14 +19,14 @@ except ImportError:
         def hexread(self, octets):
             return b2a_hex(pbkdf2(self.passphrase, self.salt, self.iterations, octets))
 
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 from module.plugins.internal.MultiAccount import MultiAccount
 
 
 class SmoozedCom(MultiAccount):
     __name__    = "SmoozedCom"
     __type__    = "account"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),

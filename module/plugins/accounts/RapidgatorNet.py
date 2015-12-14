@@ -3,13 +3,13 @@
 import urlparse
 
 from module.plugins.internal.Account import Account
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 
 
 class RapidgatorNet(Account):
     __name__    = "RapidgatorNet"
     __type__    = "account"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __description__ = """Rapidgator.net account plugin"""

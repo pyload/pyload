@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class UlozTo(Account):
     __name__    = "UlozTo"
     __type__    = "account"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __description__ = """Uloz.to account plugin"""

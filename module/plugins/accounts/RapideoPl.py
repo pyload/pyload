@@ -4,14 +4,14 @@ import datetime
 import hashlib
 import time
 
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 from module.plugins.internal.MultiAccount import MultiAccount
 
 
 class RapideoPl(MultiAccount):
     __name__    = "RapideoPl"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),

@@ -8,7 +8,7 @@ from module.plugins.internal.MultiAccount import MultiAccount
 class SimplydebridCom(MultiAccount):
     __name__    = "SimplydebridCom"
     __type__    = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),

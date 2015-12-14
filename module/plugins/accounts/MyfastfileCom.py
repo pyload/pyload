@@ -2,14 +2,14 @@
 
 import time
 
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 from module.plugins.internal.MultiAccount import MultiAccount
 
 
 class MyfastfileCom(MultiAccount):
     __name__    = "MyfastfileCom"
     __type__    = "account"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),

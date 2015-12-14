@@ -61,11 +61,11 @@ class UploadedTo(Account):
     def signin(self, user, password, data):
         try:
             self.load("http://uploaded.net/me")
-    
+
             html = self.load("http://uploaded.net/io/login",
                              post={'id': user,
                                    'pw': password})
-    
+
             m = re.search(r'"err":"(.+?)"', html)
             if m is not None:
                 self.fail_login(m.group(1))

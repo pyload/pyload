@@ -1,13 +1,13 @@
 ﻿# -*- coding: utf-8 -*-
 
 from module.plugins.internal.MultiAccount import MultiAccount
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 
 
 class FreeWayMe(MultiAccount):
     __name__    = "FreeWayMe"
     __type__    = "account"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),

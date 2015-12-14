@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from module.plugins.internal.MultiAccount import MultiAccount
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 
 
 class OverLoadMe(MultiAccount):
     __name__    = "OverLoadMe"
     __type__    = "account"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),

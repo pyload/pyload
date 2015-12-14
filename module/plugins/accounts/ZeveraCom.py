@@ -8,7 +8,7 @@ from module.plugins.internal.MultiAccount import MultiAccount
 class ZeveraCom(MultiAccount):
     __name__    = "ZeveraCom"
     __type__    = "account"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),

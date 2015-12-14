@@ -6,7 +6,7 @@ from module.plugins.internal.Account import Account
 class FilesMailRu(Account):
     __name__    = "FilesMailRu"
     __type__    = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __description__ = """Filesmail.ru account plugin"""

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
 import re
 import time
+
+import pycurl
 
 from module.plugins.internal.Account import Account
 
@@ -10,7 +11,7 @@ from module.plugins.internal.Account import Account
 class OneFichierCom(Account):
     __name__    = "OneFichierCom"
     __type__    = "account"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __description__ = """1fichier.com account plugin"""

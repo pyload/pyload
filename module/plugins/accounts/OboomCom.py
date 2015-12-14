@@ -16,14 +16,14 @@ except ImportError:
         def hexread(self, octets):
             return b2a_hex(pbkdf2(self.passphrase, self.salt, self.iterations, octets))
 
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 from module.plugins.internal.Account import Account
 
 
 class OboomCom(Account):
     __name__    = "OboomCom"
     __type__    = "account"
-    __version__ = "0.30"
+    __version__ = "0.31"
     __status__  = "testing"
 
     __description__ = """Oboom.com account plugin"""

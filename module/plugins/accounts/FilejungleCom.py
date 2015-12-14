@@ -10,7 +10,7 @@ from module.plugins.internal.Account import Account
 class FilejungleCom(Account):
     __name__    = "FilejungleCom"
     __type__    = "account"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __description__ = """Filejungle.com account plugin"""

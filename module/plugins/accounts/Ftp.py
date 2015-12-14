@@ -6,7 +6,7 @@ from module.plugins.internal.Account import Account
 class Ftp(Account):
     __name__    = "Ftp"
     __type__    = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __description__ = """Ftp dummy account plugin"""

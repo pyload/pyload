@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class CatShareNet(Account):
     __name__    = "CatShareNet"
     __type__    = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __description__ = """Catshare.net account plugin"""
