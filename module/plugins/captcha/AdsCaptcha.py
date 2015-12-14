@@ -9,7 +9,7 @@ from module.plugins.internal.CaptchaService import CaptchaService
 class AdsCaptcha(CaptchaService):
     __name__    = "AdsCaptcha"
     __type__    = "captcha"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __description__ = """AdsCaptcha captcha service plugin"""
@@ -38,7 +38,7 @@ class AdsCaptcha(CaptchaService):
     def challenge(self, key=None, data=None):
         PublicKey, CaptchaId = key or self.retrieve_key(data)
 
-        html = self.plugin.load("http://api.adscaptcha.com/Get.aspx",
+        html = self.pyfile.plugin.load("http://api.adscaptcha.com/Get.aspx",
                                     get={'CaptchaId': CaptchaId,
                                          'PublicKey': PublicKey})
         try:
