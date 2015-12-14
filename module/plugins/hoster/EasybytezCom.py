@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster
 
 
 class EasybytezCom(XFSHoster):
     __name__    = "EasybytezCom"
     __type__    = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?easybytez\.com/\w{12}'
@@ -27,6 +27,3 @@ class EasybytezCom(XFSHoster):
     OFFLINE_PATTERN = r'>File not available'
 
     LINK_PATTERN = r'(http://(\w+\.(easybytez|easyload|ezbytez|zingload)\.(com|to)|\d+\.\d+\.\d+\.\d+)/files/\d+/\w+/.+?)["\'<]'
-
-
-getInfo = create_getInfo(EasybytezCom)

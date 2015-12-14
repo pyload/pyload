@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
 import re
+
+import pycurl
 
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest as get_request
-from module.plugins.internal.SimpleHoster import SimpleHoster, parse_fileInfo
+from module.plugins.internal.Base import parse_fileInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 def get_info(urls):
@@ -22,7 +24,7 @@ def get_info(urls):
 class MegaRapidCz(SimpleHoster):
     __name__    = "MegaRapidCz"
     __type__    = "hoster"
-    __version__ = "0.61"
+    __version__ = "0.62"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(share|mega)rapid\.cz/soubor/\d+/.+'

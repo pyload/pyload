@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class FileStoreTo(SimpleHoster):
     __name__    = "FileStoreTo"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?filestore\.to/\?d=(?P<ID>\w+)'
@@ -38,6 +38,3 @@ class FileStoreTo(SimpleHoster):
         self.wait(10)
         self.link = self.load("http://filestore.to/ajax/download.php",
                               get={'D': re.search(r'"D=(\w+)', self.data).group(1)})
-
-
-getInfo = create_getInfo(FileStoreTo)

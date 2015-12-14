@@ -5,13 +5,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class GooIm(SimpleHoster):
     __name__    = "GooIm"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?goo\.im/.+'
@@ -38,6 +38,3 @@ class GooIm(SimpleHoster):
     def handle_free(self, pyfile):
         self.wait(10)
         self.link = pyfile.url
-
-
-getInfo = create_getInfo(GooIm)

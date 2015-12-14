@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
 import random
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class GigapetaCom(SimpleHoster):
     __name__    = "GigapetaCom"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?gigapeta\.com/dl/\w+'
@@ -48,6 +47,3 @@ class GigapetaCom(SimpleHoster):
                             just_header=True)
 
         self.link = header.get('location')
-
-
-getInfo = create_getInfo(GigapetaCom)

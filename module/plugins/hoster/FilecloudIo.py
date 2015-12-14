@@ -2,15 +2,15 @@
 
 import re
 
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class FilecloudIo(SimpleHoster):
     __name__    = "FilecloudIo"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(?:filecloud\.io|ifile\.it|mihd\.net)/(?P<ID>\w+)'
@@ -57,7 +57,7 @@ class FilecloudIo(SimpleHoster):
             self.error(_("__AB1"))
         data['__ab1'] = m.group(1)
 
-        recaptcha = ReCaptcha(self)
+        recaptcha = ReCaptcha(pyfile)
 
         m = re.search(self.RECAPTCHA_PATTERN, self.data)
         captcha_key = m.group(1) if m else recaptcha.detect_key()
@@ -122,6 +122,3 @@ class FilecloudIo(SimpleHoster):
             self.link = rep['download_url']
         else:
             self.fail(rep['message'])
-
-
-getInfo = create_getInfo(FilecloudIo)

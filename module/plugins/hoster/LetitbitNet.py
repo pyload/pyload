@@ -9,11 +9,11 @@
 import re
 import urlparse
 
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster
-from module.plugins.internal.utils import seconds_to_midnight
+from module.plugins.internal.misc import seconds_to_midnight
 
 
 def api_response(url):
@@ -91,7 +91,7 @@ class LetitbitNet(SimpleHoster):
 
         self.log_debug(res)
 
-        recaptcha = ReCaptcha(self)
+        recaptcha = ReCaptcha(pyfile)
         response, challenge = recaptcha.challenge()
 
         post_data = {'recaptcha_challenge_field': challenge,

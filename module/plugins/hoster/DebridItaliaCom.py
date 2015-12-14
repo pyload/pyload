@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
+from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class DebridItaliaCom(MultiHoster):
     __name__    = "DebridItaliaCom"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?debriditalia\.com/dl/\d+'
@@ -45,6 +45,3 @@ class DebridItaliaCom(MultiHoster):
                 self.link = re.search(r'<a href="(.+?)"', self.data).group(1)
             except AttributeError:
                 pass
-
-
-getInfo = create_getInfo(DebridItaliaCom)

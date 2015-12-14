@@ -3,7 +3,7 @@
 import re
 import urlparse
 
-from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster
 
 
 class UpleaCom(XFSHoster):
@@ -67,6 +67,3 @@ class UpleaCom(XFSHoster):
         m = re.search(r".ulCounter\({'timer':(\d+)}\)", self.data)
         if m:
             self.wait(m.group(1))
-
-
-getInfo = create_getInfo(UpleaCom)

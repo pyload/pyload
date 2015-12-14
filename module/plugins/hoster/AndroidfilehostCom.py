@@ -5,13 +5,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class AndroidfilehostCom(SimpleHoster):
     __name__    = "AndroidfilehostCom"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?androidfilehost\.com/\?fid=\d+'
@@ -28,7 +28,7 @@ class AndroidfilehostCom(SimpleHoster):
 
     NAME_PATTERN    = r'<br />(?P<N>.*?)</h1>'
     SIZE_PATTERN    = r'<h4>size</h4>\s*<p>(?P<S>[\d.,]+)(?P<U>[\w^_]+)</p>'
-    HASHSUM_PATTERN = r'<h4>(?P<T>.*?)</h4>\s*<p><code>(?P<H>.*?)</code></p>'
+    HASHSUM_PATTERN = r'<h4>(?P<H>.*?)</h4>\s*<p><code>(?P<D>.*?)</code></p>'
 
     OFFLINE_PATTERN = r'404 not found'
 
@@ -62,6 +62,3 @@ class AndroidfilehostCom(SimpleHoster):
                          get={'fid'   : fid,
                               'w'     : 'download',
                               'mirror': mirror_host})
-
-
-getInfo = create_getInfo(AndroidfilehostCom)

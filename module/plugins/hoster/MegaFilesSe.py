@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
+from module.plugins.internal.DeadHoster import DeadHoster
 
 
 class MegaFilesSe(DeadHoster):
     __name__    = "MegaFilesSe"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?megafiles\.se/\w{12}'
@@ -15,6 +15,3 @@ class MegaFilesSe(DeadHoster):
     __description__ = """MegaFiles.se hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("t4skforce", "t4skforce1337[AT]gmail[DOT]com")]
-
-
-getInfo = create_getInfo(MegaFilesSe)

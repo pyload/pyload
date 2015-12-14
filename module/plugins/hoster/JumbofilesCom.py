@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class JumbofilesCom(SimpleHoster):
     __name__    = "JumbofilesCom"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?jumbofiles\.com/(?P<ID>\w{12})'
@@ -37,6 +37,3 @@ class JumbofilesCom(SimpleHoster):
         post_data = {'id': self.info['pattern']['ID'], 'op': "download3", 'rand': ""}
         html = self.load(self.pyfile.url, post=post_data)
         self.link = re.search(self.LINK_FREE_PATTERN, html).group(1)
-
-
-getInfo = create_getInfo(JumbofilesCom)

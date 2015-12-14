@@ -8,7 +8,7 @@ from module.plugins.internal.Hoster import Hoster
 class VeehdCom(Hoster):
     __name__    = "VeehdCom"
     __type__    = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__  = "testing"
 
     __pattern__ = r'http://veehd\.com/video/\d+_\S+'
@@ -61,12 +61,12 @@ class VeehdCom(Hoster):
         name = m.group(1)
 
         #: Replace unwanted characters in filename
-        if self.get_config('filename_spaces'):
+        if self.config.get('filename_spaces'):
             pattern = '[^\w ]+'
         else:
             pattern = '[^\w.]+'
 
-        return re.sub(pattern, self.get_config('replacement_char'), name) + '.avi'
+        return re.sub(pattern, self.config.get('replacement_char'), name) + '.avi'
 
 
     def get_file_url(self):

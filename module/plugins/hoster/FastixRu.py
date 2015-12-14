@@ -3,14 +3,14 @@
 import re
 import urllib
 
-from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
-from module.plugins.internal.utils import json
+from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.misc import json
 
 
 class FastixRu(MultiHoster):
     __name__    = "FastixRu"
     __type__    = "hoster"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/\w{24}'
@@ -43,6 +43,3 @@ class FastixRu(MultiHoster):
             self.offline()
         else:
             self.link = data['downloadlink']
-
-
-getInfo = create_getInfo(FastixRu)

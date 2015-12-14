@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class PromptfileCom(SimpleHoster):
     __name__    = "PromptfileCom"
     __type__    = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?promptfile\.com/'
@@ -44,6 +44,3 @@ class PromptfileCom(SimpleHoster):
 
         #: STAGE 2: get the direct link
         return super(PromptfileCom, self).handle_free(pyfile)
-
-
-getInfo = create_getInfo(PromptfileCom)

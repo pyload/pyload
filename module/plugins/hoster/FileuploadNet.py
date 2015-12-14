@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class FileuploadNet(SimpleHoster):
     __name__    = "FileuploadNet"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(en\.)?file-upload\.net/download-\d+/.+'
@@ -33,6 +33,3 @@ class FileuploadNet(SimpleHoster):
     def setup(self):
         self.multiDL    = True
         self.chunk_limit = 1
-
-
-getInfo = create_getInfo(FileuploadNet)

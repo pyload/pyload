@@ -3,7 +3,7 @@
 import re
 import urllib
 
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 from module.plugins.internal.Hoster import Hoster
 
 
@@ -18,7 +18,7 @@ def clean_json(json_expr):
 class XHamsterCom(Hoster):
     __name__    = "XHamsterCom"
     __type__    = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?xhamster\.com/movies/.+'
@@ -36,8 +36,8 @@ class XHamsterCom(Hoster):
         if not self.file_exists():
             self.offline()
 
-        if self.get_config('type'):
-            self.desired_fmt = self.get_config('type')
+        if self.config.get('type'):
+            self.desired_fmt = self.config.get('type')
 
         pyfile.name = self.get_file_name() + self.desired_fmt
         self.download(self.get_file_url())

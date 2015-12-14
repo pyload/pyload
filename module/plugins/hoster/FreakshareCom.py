@@ -4,7 +4,7 @@ import re
 
 from module.plugins.internal.Hoster import Hoster
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.utils import seconds_to_midnight
+from module.plugins.internal.misc import seconds_to_midnight
 
 
 class FreakshareCom(Hoster):
@@ -45,7 +45,7 @@ class FreakshareCom(Hoster):
 
             self.download(pyfile.url, post=self.req_opts)
 
-            check = self.check_file({
+            check = self.scan_download({
                 'bad'           : "bad try",
                 'paralell'      : "> Sorry, you cant download more then 1 files at time. <",
                 'empty'         : "Warning: Unknown: Filename cannot be empty",
@@ -179,7 +179,7 @@ class FreakshareCom(Hoster):
         challenge = re.search(r"http://api\.recaptcha\.net/challenge\?k=(\w+)", herewego)
 
         if challenge:
-            re_captcha = ReCaptcha(self)
+            re_captcha = ReCaptcha(self.pyfile)
             (request_options['recaptcha_challenge_field'],
              request_options['recaptcha_response_field']) = re_captcha.challenge(challenge.group(1))
 

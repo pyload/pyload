@@ -6,14 +6,14 @@
 import re
 import urlparse
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.internal.utils import html_unescape
+from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.misc import html_unescape
 
 
 class GoogledriveCom(SimpleHoster):
     __name__    = "GoogledriveCom"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(drive|docs)\.google\.com/(file/d/\w+|uc\?.*id=)'
@@ -55,6 +55,3 @@ class GoogledriveCom(SimpleHoster):
             else:
                 self.link = dl
                 break
-
-
-getInfo = create_getInfo(GoogledriveCom)

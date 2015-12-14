@@ -3,8 +3,8 @@
 import re
 import urlparse
 
-from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
-from module.plugins.internal.utils import json
+from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.misc import json
 
 
 class LinksnappyCom(MultiHoster):
@@ -52,6 +52,3 @@ class LinksnappyCom(MultiHoster):
     def _get_host(url):
         host = urlparse.urlsplit(url).netloc
         return re.search(r'[\w\-]+\.\w+$', host).group(0)
-
-
-getInfo = create_getInfo(LinksnappyCom)

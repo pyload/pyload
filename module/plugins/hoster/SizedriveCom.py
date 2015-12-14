@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class SizedriveCom(SimpleHoster):
     __name__    = "SizedriveCom"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?sizedrive\.com/[rd]/(?P<ID>\w+)'
@@ -42,6 +42,3 @@ class SizedriveCom(SimpleHoster):
         m = re.search(r'<span id="boton_download" ><a href="(.+?)"', self.data)
         if m is not None:
             self.link = m.group(1)
-
-
-getInfo = create_getInfo(SizedriveCom)

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster
 
 
 class UptoboxCom(XFSHoster):
     __name__    = "UptoboxCom"
     __type__    = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uptobox|uptostream)\.com/\w{12}'
@@ -36,6 +36,3 @@ class UptoboxCom(XFSHoster):
         self.multiDL = True
         self.chunk_limit = 1
         self.resume_download = True
-
-
-getInfo = create_getInfo(UptoboxCom)

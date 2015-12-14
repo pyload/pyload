@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
+from module.plugins.internal.DeadHoster import DeadHoster
 
 
 class DodanePl(DeadHoster):
     __name__    = "DodanePl"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?dodane\.pl/file/\d+'
@@ -15,6 +15,3 @@ class DodanePl(DeadHoster):
     __description__ = """Dodane.pl hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("z00nx", "z00nx0@gmail.com")]
-
-
-getInfo = create_getInfo(DodanePl)

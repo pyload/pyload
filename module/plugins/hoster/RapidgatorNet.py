@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
 import re
 
-from module.plugins.internal.utils import json
+import pycurl
+
 from module.network.HTTPRequest import BadHeader
 from module.plugins.captcha.AdsCaptcha import AdsCaptcha
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.captcha.SolveMedia import SolveMedia
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.misc import json
 
 
 class RapidgatorNet(SimpleHoster):
     __name__    = "RapidgatorNet"
     __type__    = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
@@ -81,10 +82,10 @@ class RapidgatorNet(SimpleHoster):
             status = e.code
             msg = e
 
-        if status == 200:
+        if status is 200:
             return jso['response']
 
-        elif status == 423:
+        elif status is 423:
             self.account.empty()
             self.retry()
 
@@ -149,7 +150,7 @@ class RapidgatorNet(SimpleHoster):
 
     def handle_captcha(self):
         for klass in (AdsCaptcha, ReCaptcha, SolveMedia):
-            inst = klass(self)
+            inst = klass(self.pyfile)
             if inst.detect_key():
                 return inst
 
@@ -160,6 +161,3 @@ class RapidgatorNet(SimpleHoster):
             self.retry()
         self.log_debug(url, res)
         return json.loads(res)
-
-
-getInfo = create_getInfo(RapidgatorNet)

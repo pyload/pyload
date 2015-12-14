@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class NowVideoSx(SimpleHoster):
     __name__    = "NowVideoSx"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?nowvideo\.[a-zA-Z]{2,}/(video/|mobile/(#/videos/|.+?id=))(?P<ID>\w+)'
@@ -43,6 +43,3 @@ class NowVideoSx(SimpleHoster):
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
-
-
-getInfo = create_getInfo(NowVideoSx)

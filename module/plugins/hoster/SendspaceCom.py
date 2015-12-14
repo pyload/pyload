@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class SendspaceCom(SimpleHoster):
     __name__    = "SendspaceCom"
     __type__    = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?sendspace\.com/file/\w+'
@@ -59,6 +59,3 @@ class SendspaceCom(SimpleHoster):
                 self.retry_captcha()
             else:
                 self.link = m.group(1)
-
-
-getInfo = create_getInfo(SendspaceCom)

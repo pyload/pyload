@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class UserscloudCom(SimpleHoster):
     __name__    = "UserscloudCom"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?userscloud\.com/\w{12}'
@@ -37,6 +37,3 @@ class UserscloudCom(SimpleHoster):
     def handle_free(self, pyfile):
         self.download(pyfile.url,
                       post=dict(re.findall(r'<input type="hidden" name="(.+?)" value="(.*?)">', self.data)))
-
-
-getInfo = create_getInfo(UserscloudCom)

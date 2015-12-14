@@ -2,14 +2,14 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.internal.utils import html_unescape
+from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.misc import html_unescape
 
 
 class LolabitsEs(SimpleHoster):
     __name__    = "LolabitsEs"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?lolabits\.es/.+'
@@ -50,6 +50,3 @@ class LolabitsEs(SimpleHoster):
                               decode="unicode-escape")
 
         self.link = html_unescape(re.search(self.LINK_PATTERN, self.data).group(1))
-
-
-getInfo = create_getInfo(LolabitsEs)

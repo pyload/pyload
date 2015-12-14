@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class GamefrontCom(SimpleHoster):
     __name__    = "GamefrontCom"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?gamefront\.com/files/(?P<ID>\d+)'
@@ -37,6 +37,3 @@ class GamefrontCom(SimpleHoster):
         self.data = self.load("http://www.gamefront.com/files/service/thankyou",
                               get={'id': self.info['pattern']['ID']})
         return super(GamefrontCom, self).handle_free(pyfile)
-
-
-getInfo = create_getInfo(GamefrontCom)

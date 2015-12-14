@@ -5,13 +5,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class VkCom(SimpleHoster):
     __name__    = "VkCom"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __pattern__ = r"https?://(?:www\.)?vk\.com/video_ext\.php/\?.+"
@@ -33,7 +33,4 @@ class VkCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        self.link = re.findall(self.LINK_FREE_PATTERN, self.data)[0 if self.get_config('quality') == "Low" else -1]
-
-
-getInfo = create_getInfo(VkCom)
+        self.link = re.findall(self.LINK_FREE_PATTERN, self.data)[0 if self.config.get('quality') == "Low" else -1]

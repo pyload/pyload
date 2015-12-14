@@ -3,13 +3,13 @@
 import re
 import urlparse
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class FileSharkPl(SimpleHoster):
     __name__    = "FileSharkPl"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fileshark\.pl/pobierz/\d+/\w+'
@@ -108,6 +108,3 @@ class FileSharkPl(SimpleHoster):
         inputs['form[start]'] = ""
 
         self.download(link, post=inputs, disposition=True)
-
-
-getInfo = create_getInfo(FileSharkPl)

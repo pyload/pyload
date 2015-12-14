@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
 import re
 import urlparse
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class UnibytesCom(SimpleHoster):
     __name__    = "UnibytesCom"
     __type__    = "hoster"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?unibytes\.com/[\w\- .]{11}B'
@@ -70,6 +69,3 @@ class UnibytesCom(SimpleHoster):
 
             elif last_step in ("captcha", "last"):
                 post_data['captcha'] = self.captcha.decrypt(urlparse.urljoin(domain, "captcha.jpg"))
-
-
-getInfo = create_getInfo(UnibytesCom)

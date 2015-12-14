@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
+from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class ZeveraCom(MultiHoster):
     __name__    = "ZeveraCom"
     __type__    = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)zevera\.com/(getFiles\.ashx|Members/download\.ashx)\?.*ourl=.+'
@@ -30,6 +30,3 @@ class ZeveraCom(MultiHoster):
 
     def handle_premium(self, pyfile):
         self.link = "https://%s/getFiles.ashx?ourl=%s" % (self.account.PLUGIN_DOMAIN, pyfile.url)
-
-
-getInfo = create_getInfo(ZeveraCom)

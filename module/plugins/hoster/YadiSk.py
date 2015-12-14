@@ -3,14 +3,14 @@
 import re
 import random
 
-from module.plugins.internal.utils import json
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.misc import json
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class YadiSk(SimpleHoster):
     __name__    = "YadiSk"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __pattern__ = r'https?://yadi\.sk/d/[\w\-]+'
@@ -88,6 +88,3 @@ class YadiSk(SimpleHoster):
 
         except Exception:
             pass
-
-
-getInfo = create_getInfo(YadiSk)

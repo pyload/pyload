@@ -4,13 +4,13 @@ import re
 import urlparse
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class Keep2ShareCc(SimpleHoster):
     __name__    = "Keep2ShareCc"
     __type__    = "hoster"
-    __version__ = "0.28"
+    __version__ = "0.29"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
@@ -118,7 +118,7 @@ class Keep2ShareCc(SimpleHoster):
             captcha_url = urlparse.urljoin("http://keep2s.cc/", m.group(1))
             post_data['CaptchaForm[code]'] = self.captcha.decrypt(captcha_url)
         else:
-            recaptcha = ReCaptcha(self)
+            recaptcha = ReCaptcha(self.pyfile)
             response, challenge = recaptcha.challenge()
             post_data.update({'recaptcha_challenge_field': challenge,
                               'recaptcha_response_field' : response})
@@ -129,7 +129,3 @@ class Keep2ShareCc(SimpleHoster):
             self.retry_captcha()
         else:
             self.captcha.correct()
-
-
-getInfo = create_getInfo(Keep2ShareCc)
-

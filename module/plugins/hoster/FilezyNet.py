@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
+from module.plugins.internal.DeadHoster import DeadHoster
 
 
 class FilezyNet(DeadHoster):
     __name__    = "FilezyNet"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?filezy\.net/\w{12}'
@@ -15,6 +15,3 @@ class FilezyNet(DeadHoster):
     __description__ = """Filezy.net hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = []
-
-
-getInfo = create_getInfo(FilezyNet)

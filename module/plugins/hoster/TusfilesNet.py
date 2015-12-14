@@ -2,13 +2,13 @@
 
 from module.network.HTTPRequest import BadHeader
 from module.plugins.internal.Plugin import Retry
-from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster
 
 
 class TusfilesNet(XFSHoster):
     __name__    = "TusfilesNet"
     __type__    = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/\w{12}'
@@ -40,9 +40,6 @@ class TusfilesNet(XFSHoster):
             return super(TusfilesNet, self).download(url, *args, **kwargs)
 
         except BadHeader, e:
-            if e.code == 503:
+            if e.code is 503:
                 self.multiDL = False
                 raise Retry("503")
-
-
-getInfo = create_getInfo(TusfilesNet)

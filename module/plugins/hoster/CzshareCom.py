@@ -5,14 +5,14 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.internal.utils import parse_size
+from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.misc import parse_size
 
 
 class CzshareCom(SimpleHoster):
     __name__    = "CzshareCom"
     __type__    = "hoster"
-    __version__ = "1.07"
+    __version__ = "1.08"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download\.php\?).+'
@@ -138,7 +138,7 @@ class CzshareCom(SimpleHoster):
 
     def check_download(self):
         #: Check download
-        check = self.check_file({
+        check = self.scan_download({
             "temp offline" : re.compile(r"^Soubor je do.*asn.* nedostupn.*$"),
             'credit'       : re.compile(r"^Nem.*te dostate.*n.* kredit.$"),
             "multi-dl"     : re.compile(self.MULTIDL_PATTERN),
@@ -158,6 +158,3 @@ class CzshareCom(SimpleHoster):
             self.retry_captcha()
 
         return super(CzshareCom, self).check_download()
-
-
-getInfo = create_getInfo(CzshareCom)

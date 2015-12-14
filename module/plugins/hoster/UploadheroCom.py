@@ -6,13 +6,13 @@
 import re
 import urlparse
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class UploadheroCom(SimpleHoster):
     __name__    = "UploadheroCom"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?uploadhero\.com?/dl/\w+'
@@ -70,6 +70,3 @@ class UploadheroCom(SimpleHoster):
             self.retry()
 
         return super(UploadheroCom, self).check_errors()
-
-
-getInfo = create_getInfo(UploadheroCom)

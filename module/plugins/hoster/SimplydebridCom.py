@@ -2,14 +2,14 @@
 
 import re
 
-from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
-from module.plugins.internal.utils import replace_patterns
+from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.misc import replace_patterns
 
 
 class SimplydebridCom(MultiHoster):
     __name__    = "SimplydebridCom"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "testing"
 
     __pattern__ = r'http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd\.php'
@@ -47,10 +47,7 @@ class SimplydebridCom(MultiHoster):
 
 
     def check_download(self):
-        if self.check_file({'error': "No address associated with hostname"}):
+        if self.scan_download({'error': "No address associated with hostname"}):
             self.retry(24, 3 * 60, _("Bad file downloaded"))
 
         return super(SimplydebridCom, self).check_download()
-
-
-getInfo = create_getInfo(SimplydebridCom)

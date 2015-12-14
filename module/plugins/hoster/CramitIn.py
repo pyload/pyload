@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster
 
 
 class CramitIn(XFSHoster):
     __name__    = "CramitIn"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?cramit\.in/\w{12}'
@@ -25,6 +25,3 @@ class CramitIn(XFSHoster):
 
     INFO_PATTERN = r'<span class=t2>\s*(?P<N>.*?)</span>.*?<small>\s*\((?P<S>.*?)\)'
     LINK_PATTERN = r'href="(http://cramit\.in/file_download/.*?)"'
-
-
-getInfo = create_getInfo(CramitIn)

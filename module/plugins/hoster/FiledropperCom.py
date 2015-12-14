@@ -3,13 +3,13 @@
 import re
 import urlparse
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class FiledropperCom(SimpleHoster):
     __name__    = "FiledropperCom"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filedropper\.com/\w+'
@@ -45,6 +45,3 @@ class FiledropperCom(SimpleHoster):
         if m is not None:
             self.download(urlparse.urljoin("http://www.filedropper.com/", m.group(1)),
                           post={'code': captcha_code})
-
-
-getInfo = create_getInfo(FiledropperCom)

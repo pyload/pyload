@@ -3,13 +3,13 @@
 import re
 import urlparse
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class FileboomMe(SimpleHoster):
     __name__    = "FileboomMe"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'https?://f(?:ile)?boom\.me/file/(?P<ID>\w+)'
@@ -88,6 +88,3 @@ class FileboomMe(SimpleHoster):
                             m = re.search(self.LINK_PATTERN, self.data)
                             if m is not None:
                                 self.link = urlparse.urljoin(pyfile.url, m.group(0))
-
-
-getInfo = create_getInfo(FileboomMe)

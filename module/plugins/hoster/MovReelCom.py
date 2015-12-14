@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster
 
 
 class MovReelCom(XFSHoster):
     __name__    = "MovReelCom"
     __type__    = "hoster"
-    __version__ = "1.28"
+    __version__ = "1.29"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?movreel\.com/\w{12}'
@@ -24,6 +24,3 @@ class MovReelCom(XFSHoster):
     PLUGIN_DOMAIN = "movreel.com"
 
     LINK_PATTERN = r'<a href="(.+?)">Download Link'
-
-
-getInfo = create_getInfo(MovReelCom)

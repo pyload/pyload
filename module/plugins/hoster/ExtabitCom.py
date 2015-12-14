@@ -2,11 +2,11 @@
 
 import re
 
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.internal.utils import seconds_to_midnight
+from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.misc import seconds_to_midnight
 
 
 class ExtabitCom(SimpleHoster):
@@ -52,7 +52,7 @@ class ExtabitCom(SimpleHoster):
 
         m = re.search(r'recaptcha/api/challenge\?k=(\w+)', self.data)
         if m is not None:
-            recaptcha = ReCaptcha(self)
+            recaptcha = ReCaptcha(pyfile)
             captcha_key = m.group(1)
 
             get_data = {'type': "recaptcha"}
@@ -77,6 +77,3 @@ class ExtabitCom(SimpleHoster):
             self.error(_("LINK_FREE_PATTERN not found"))
 
         self.link = m.group(1)
-
-
-getInfo = create_getInfo(ExtabitCom)

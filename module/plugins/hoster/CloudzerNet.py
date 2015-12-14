@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
+from module.plugins.internal.DeadHoster import DeadHoster
 
 
 class CloudzerNet(DeadHoster):
     __name__    = "CloudzerNet"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?(cloudzer\.net/file/|clz\.to/(file/)?)\w+'
@@ -17,6 +17,3 @@ class CloudzerNet(DeadHoster):
     __authors__     = [("gs", "I-_-I-_-I@web.de"),
                        ("z00nx", "z00nx0@gmail.com"),
                        ("stickell", "l.stickell@yahoo.it")]
-
-
-getInfo = create_getInfo(CloudzerNet)

@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class IfolderRu(SimpleHoster):
     __name__    = "IfolderRu"
     __type__    = "hoster"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www)?(files\.)?(ifolder\.ru|metalarea\.org|rusfolder\.(com|net|ru))/(files/)?(?P<ID>\d+)'
@@ -61,7 +61,3 @@ class IfolderRu(SimpleHoster):
             self.retry_captcha()
 
         self.link = re.search(self.LINK_FREE_PATTERN, self.data).group(1)
-
-
-getInfo = create_getInfo(IfolderRu)
-

@@ -3,7 +3,7 @@
 import re
 
 from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class OneFichierCom(SimpleHoster):
@@ -86,8 +86,6 @@ class OneFichierCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        self.check_errors()
-
         url, inputs = self.parse_html_form('action="https://1fichier.com/\?[\w^_]+')
 
         if not url:
@@ -98,7 +96,7 @@ class OneFichierCom(SimpleHoster):
 
         inputs['dl_no_ssl'] = "on"
 
-        self.data=self.load(url, post=inputs)
+        self.data = self.load(url, post=inputs)
 
         m = re.search(self.LINK_PATTERN, self.data)
         if m:
@@ -106,6 +104,4 @@ class OneFichierCom(SimpleHoster):
 
 
     def handle_premium(self, pyfile):
-        self.download(pyfile.url, post={'did': 0, 'dl_no_ssl': "on"}, disposition=False)  #@TODO: Remove disposition in 0.4.10
-
-
+        self.download(pyfile.url, post={'did': 1, 'dl_no_ssl': "on"}, disposition=False)  #@TODO: Remove disposition in 0.4.10

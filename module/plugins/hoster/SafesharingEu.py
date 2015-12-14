@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster
 
 
 class SafesharingEu(XFSHoster):
     __name__    = "SafesharingEu"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?safesharing\.eu/\w{12}'
@@ -24,6 +24,3 @@ class SafesharingEu(XFSHoster):
     PLUGIN_DOMAIN = "safesharing.eu"
 
     ERROR_PATTERN = r'(?:<div class="alert alert-danger">)(.+?)(?:</div>)'
-
-
-getInfo = create_getInfo(SafesharingEu)

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
+from module.plugins.internal.DeadHoster import DeadHoster
 
 
 class MegauploadCom(DeadHoster):
     __name__    = "MegauploadCom"
     __type__    = "hoster"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?megaupload\.com/\?.*&?(d|v)=\w+'
@@ -15,6 +15,3 @@ class MegauploadCom(DeadHoster):
     __description__ = """Megaupload.com hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("spoob", "spoob@pyload.org")]
-
-
-getInfo = create_getInfo(MegauploadCom)

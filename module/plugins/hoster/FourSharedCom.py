@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class FourSharedCom(SimpleHoster):
     __name__    = "FourSharedCom"
     __type__    = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?4shared(-china)?\.com/(account/)?(download|get|file|document|photo|video|audio|mp3|office|rar|zip|archive|music)/.+'
@@ -64,6 +64,3 @@ class FourSharedCom(SimpleHoster):
             pass
 
         self.wait(20)
-
-
-getInfo = create_getInfo(FourSharedCom)

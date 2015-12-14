@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
-from module.plugins.internal.utils import json
+from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.misc import json
 
 
 class PremiumizeMe(MultiHoster):
     __name__    = "PremiumizeMe"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate
@@ -47,7 +47,7 @@ class PremiumizeMe(MultiHoster):
         #: Check status and decide what to do
         status = data['status']
 
-        if status == 200:
+        if status is 200:
             if 'filename' in data['result']:
                 self.pyfile.name = data['result']['filename']
 
@@ -57,10 +57,10 @@ class PremiumizeMe(MultiHoster):
             self.link = data['result']['location']
             return
 
-        elif status == 400:
+        elif status is 400:
             self.fail(_("Invalid url"))
 
-        elif status == 404:
+        elif status is 404:
             self.offline()
 
         elif status >= 500:
@@ -68,6 +68,3 @@ class PremiumizeMe(MultiHoster):
 
         else:
             self.fail(data['statusmessage'])
-
-
-getInfo = create_getInfo(PremiumizeMe)

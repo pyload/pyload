@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class EuroshareEu(SimpleHoster):
     __name__    = "EuroshareEu"
     __type__    = "hoster"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?euroshare\.(eu|sk|cz|hu|pl)/file/.+'
@@ -43,7 +43,7 @@ class EuroshareEu(SimpleHoster):
 
         self.link = pyfile.url.rstrip('/') + "/download/"
 
-        check = self.check_file({
+        check = self.scan_download({
             'login': re.compile(self.ERROR_PATTERN),
             'json' : re.compile(r'\{"status":"error".*?"message":"(.*?)"')
         })
@@ -65,6 +65,3 @@ class EuroshareEu(SimpleHoster):
             self.error(_("LINK_FREE_PATTERN not found"))
 
         self.link = m.group(1)
-
-
-getInfo = create_getInfo(EuroshareEu)

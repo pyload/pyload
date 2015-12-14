@@ -3,7 +3,8 @@
 import re
 
 from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.SimpleHoster import SimpleHoster, parse_fileInfo
+from module.plugins.internal.Base import parse_fileInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 def get_info(urls):
@@ -21,7 +22,7 @@ def get_info(urls):
 class FilefactoryCom(SimpleHoster):
     __name__    = "FilefactoryCom"
     __type__    = "hoster"
-    __version__ = "0.61"
+    __version__ = "0.62"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/(file|trafficshare/\w+)/\w+'
@@ -66,7 +67,7 @@ class FilefactoryCom(SimpleHoster):
 
 
     def check_download(self):
-        check = self.check_file({
+        check = self.scan_download({
             'multiple': "You are currently downloading too many files at once.",
             'error'   : '<div id="errorMessage">'
         })

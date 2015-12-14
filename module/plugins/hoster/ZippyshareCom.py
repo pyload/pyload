@@ -6,13 +6,13 @@ import urllib
 import BeautifulSoup
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class ZippyshareCom(SimpleHoster):
     __name__    = "ZippyshareCom"
     __type__    = "hoster"
-    __version__ = "0.85"
+    __version__ = "0.86"
     __status__  = "testing"
 
     __pattern__ = r'http://www\d{0,3}\.zippyshare\.com/v(/|iew\.jsp.*key=)(?P<KEY>[\w^_]+)'
@@ -30,9 +30,10 @@ class ZippyshareCom(SimpleHoster):
 
     COOKIES = [("zippyshare.com", "ziplocale", "en")]
 
-    NAME_PATTERN    = r'(<title>Zippyshare.com - |"/)(?P<N>[^/]+)(</title>|";)'
-    SIZE_PATTERN    = r'>Size:.+?">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
-    OFFLINE_PATTERN = r'does not exist (anymore )?on this server<'
+    NAME_PATTERN         = r'(<title>Zippyshare.com - |"/)(?P<N>[^/]+)(</title>|";)'
+    SIZE_PATTERN         = r'>Size:.+?">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    OFFLINE_PATTERN      = r'does not exist (anymore )?on this server<'
+    TEMP_OFFLINE_PATTERN = None
 
     LINK_PREMIUM_PATTERN = r"document.location = '(.+?)'"
 
@@ -44,7 +45,7 @@ class ZippyshareCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        recaptcha   = ReCaptcha(self)
+        recaptcha   = ReCaptcha(pyfile)
         captcha_key = recaptcha.detect_key()
 
         if captcha_key:
@@ -94,6 +95,3 @@ class ZippyshareCom(SimpleHoster):
         #: Get the file's url by evaluating all the scripts
         scripts = ["var GVAR = {}"] + list(initScripts)  + scripts + ['GVAR["dlbutton_href"]']
         return self.js.eval('\n'.join(scripts))
-
-
-getInfo = create_getInfo(ZippyshareCom)

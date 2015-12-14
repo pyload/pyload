@@ -3,13 +3,13 @@
 import re
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class UploadableCh(SimpleHoster):
     __name__    = "UploadableCh"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?uploadable\.ch/file/(?P<ID>\w+)'
@@ -48,7 +48,7 @@ class UploadableCh(SimpleHoster):
         b = self.load(pyfile.url, post={'checkDownload': "check"})
         self.log_debug(b)  #: Expected output: {'success': "showCaptcha"}
 
-        recaptcha = ReCaptcha(self)
+        recaptcha = ReCaptcha(pyfile)
 
         response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
 
@@ -70,12 +70,9 @@ class UploadableCh(SimpleHoster):
 
 
     def check_download(self):
-        if self.check_file({'wait': re.compile("Please wait for")}):
+        if self.scan_download({'wait': re.compile("Please wait for")}):
             self.log_info(_("Downloadlimit reached, please wait or reconnect"))
             self.wait(60 * 60, True)
             self.retry()
 
         return super(UploadableCh, self).check_download()
-
-
-getInfo = create_getInfo(UploadableCh)

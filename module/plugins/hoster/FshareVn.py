@@ -5,7 +5,8 @@ import time
 import urlparse
 
 from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.SimpleHoster import SimpleHoster, parse_fileInfo
+from module.plugins.internal.Base import parse_fileInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 def get_info(urls):
@@ -23,7 +24,7 @@ def double_decode(m):
 class FshareVn(SimpleHoster):
     __name__    = "FshareVn"
     __type__    = "hoster"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fshare\.vn/file/.+'

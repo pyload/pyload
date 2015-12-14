@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class VeohCom(SimpleHoster):
     __name__    = "VeohCom"
     __type__    = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?veoh\.com/(tv/)?(watch|videos)/(?P<ID>v\w+)'
@@ -38,7 +38,7 @@ class VeohCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        quality = self.get_config('quality')
+        quality = self.config.get('quality')
         if quality == "Auto":
             quality = ("High", "Low")
 
@@ -53,6 +53,3 @@ class VeohCom(SimpleHoster):
                 self.log_info(_("No %s quality video found") % q.upper())
         else:
             self.fail(_("No video found!"))
-
-
-getInfo = create_getInfo(VeohCom)

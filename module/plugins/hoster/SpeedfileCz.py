@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
+from module.plugins.internal.DeadHoster import DeadHoster
 
 
 class SpeedfileCz(DeadHoster):
     __name__    = "SpeedFileCz"
     __type__    = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?speedfile\.cz/.+'
@@ -15,6 +15,3 @@ class SpeedfileCz(DeadHoster):
     __description__ = """Speedfile.cz hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
-
-
-getInfo = create_getInfo(SpeedfileCz)

@@ -2,15 +2,15 @@
 
 import re
 
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class LuckyShareNet(SimpleHoster):
     __name__    = "LuckyShareNet"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?luckyshare\.net/(?P<ID>\d{10,})'
@@ -54,7 +54,7 @@ class LuckyShareNet(SimpleHoster):
         jso = self.parse_json(rep)
         self.wait(jso['time'])
 
-        recaptcha = ReCaptcha(self)
+        recaptcha = ReCaptcha(pyfile)
 
         response, challenge = recaptcha.challenge()
         rep = self.load(r"http://luckyshare.net/download/verify/challenge/%s/response/%s/hash/%s" %
@@ -70,6 +70,3 @@ class LuckyShareNet(SimpleHoster):
             jso.update(self.parse_json(rep))
             if jso['link']:
                 self.link = jso['link']
-
-
-getInfo = create_getInfo(LuckyShareNet)

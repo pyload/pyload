@@ -3,13 +3,13 @@
 # Test links:
 #   http://www.solidfiles.com/d/609cdb4b1b
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class SolidfilesCom(SimpleHoster):
     __name__    = "SolidfilesCom"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?solidfiles\.com\/d/\w+'
@@ -34,6 +34,3 @@ class SolidfilesCom(SimpleHoster):
     def setup(self):
         self.multiDL    = True
         self.chunk_limit = 1
-
-
-getInfo = create_getInfo(SolidfilesCom)

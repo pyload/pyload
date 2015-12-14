@@ -2,14 +2,14 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 
 
 class CatShareNet(SimpleHoster):
     __name__    = "CatShareNet"
     __type__    = "hoster"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?catshare\.net/\w{15,16}'
@@ -42,7 +42,7 @@ class CatShareNet(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        recaptcha = ReCaptcha(self)
+        recaptcha = ReCaptcha(pyfile)
 
         response, challenge = recaptcha.challenge()
         self.data = self.load(pyfile.url,
@@ -52,6 +52,3 @@ class CatShareNet(SimpleHoster):
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
-
-
-getInfo = create_getInfo(CatShareNet)

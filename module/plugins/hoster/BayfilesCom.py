@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
+from module.plugins.internal.DeadHoster import DeadHoster
 
 
 class BayfilesCom(DeadHoster):
     __name__    = "BayfilesCom"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?bayfiles\.(com|net)/file/(?P<ID>\w+/\w+/[^/]+)'
@@ -15,6 +15,3 @@ class BayfilesCom(DeadHoster):
     __description__ = """Bayfiles.com hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
-
-
-getInfo = create_getInfo(BayfilesCom)

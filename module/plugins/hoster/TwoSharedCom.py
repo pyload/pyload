@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class TwoSharedCom(SimpleHoster):
     __name__    = "TwoSharedCom"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?2shared\.com/(account/)?(download|get|file|document|photo|video|audio)/.+'
@@ -33,6 +33,3 @@ class TwoSharedCom(SimpleHoster):
     def setup(self):
         self.resume_download = True
         self.multiDL        = True
-
-
-getInfo = create_getInfo(TwoSharedCom)

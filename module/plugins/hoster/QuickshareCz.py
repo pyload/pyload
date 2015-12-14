@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class QuickshareCz(SimpleHoster):
     __name__    = "QuickshareCz"
     __type__    = "hoster"
-    __version__ = "0.60"
+    __version__ = "0.61"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:[^/]*\.)?quickshare\.cz/stahnout-soubor/.+'
@@ -54,7 +53,7 @@ class QuickshareCz(SimpleHoster):
         else:
             self.handle_free(pyfile)
 
-        if self.check_file({'error': re.compile(r"\AChyba!")}, max_size=100):
+        if self.scan_download({'error': re.compile(r"\AChyba!")}, read_size=100):
             self.fail(_("File not m or plugin defect"))
 
 
@@ -88,6 +87,3 @@ class QuickshareCz(SimpleHoster):
         download_url = '%s/download_premium.php' % self.jsvars['server']
         data = dict((x, self.jsvars[x]) for x in self.jsvars if x in ("ID1", "ID2", "ID4", "ID5"))
         self.download(download_url, get=data)
-
-
-getInfo = create_getInfo(QuickshareCz)

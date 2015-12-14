@@ -4,7 +4,7 @@ import re
 
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.utils import chunks
+from module.plugins.internal.misc import chunks
 
 
 def get_info(urls):
@@ -33,7 +33,7 @@ def get_info(urls):
 class FilesMailRu(Hoster):
     __name__    = "FilesMailRu"
     __type__    = "hoster"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?files\.mail\.ru/.+'
@@ -101,11 +101,11 @@ class FilesMailRu(Hoster):
         #: then the download will be restarted. It's only bad for these
         #: who want download a HTML-File (it's one in a million ;-) )
         #
-        #: The maximum UploadSize allowed on files.mail.ru at the moment == 100MB
+        #: The maximum UploadSize allowed on files.mail.ru at the moment is 100MB
         #: so i set it to check every download because sometimes there are downloads
         #: that contain the HTML-Text and 60MB ZEROs after that in a xyzfile.part1.rar file
         #: (Loading 100MB in to ram is not an option)
-        if self.check_file({'html': "<meta name="}, read_size=50000) is "html":
+        if self.scan_download({'html': "<meta name="}, read_size=50000) is "html":
             self.log_info(_("There was HTML Code in the Downloaded File (%s)...redirect error? The Download will be restarted." %
                           self.pyfile.name))
             self.retry()

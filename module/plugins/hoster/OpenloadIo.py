@@ -3,14 +3,14 @@
 import re
 
 from module.network.RequestFactory import getURL
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.internal.utils import json
+from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.misc import json
 
 
 class OpenloadIo(SimpleHoster):
     __name__    = "OpenloadIo"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?openload\.(co|io)/(f|embed)/(?P<ID>[\w\-]+)'
@@ -67,6 +67,3 @@ class OpenloadIo(SimpleHoster):
 
         download_json = self._load_json(self._DOWNLOAD_FILE_URI_PATTERN.format(file_id, ticket))
         self.link = download_json['result']['url']
-
-
-getInfo = create_getInfo(OpenloadIo)

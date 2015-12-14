@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
+from module.plugins.internal.DeadHoster import DeadHoster
 
 
 class NetloadIn(DeadHoster):
     __name__    = "NetloadIn"
     __type__    = "hoster"
-    __version__ = "0.53"
+    __version__ = "0.54"
     __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?netload\.(in|me)/(?P<PATH>datei|index\.php\?id=10&file_id=)(?P<ID>\w+)'
@@ -17,6 +17,3 @@ class NetloadIn(DeadHoster):
     __authors__     = [("spoob", "spoob@pyload.org"),
                        ("RaNaN", "ranan@pyload.org"),
                        ("Gregy", "gregy@gregy.cz"  )]
-
-
-getInfo = create_getInfo(NetloadIn)

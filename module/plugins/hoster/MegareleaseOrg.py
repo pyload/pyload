@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
+from module.plugins.internal.DeadHoster import DeadHoster
 
 
 class MegareleaseOrg(DeadHoster):
     __name__    = "MegareleaseOrg"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?megarelease\.org/\w{12}'
@@ -16,6 +16,3 @@ class MegareleaseOrg(DeadHoster):
     __license__     = "GPLv3"
     __authors__     = [("derek3x", "derek3x@vmail.me"),
                        ("stickell", "l.stickell@yahoo.it")]
-
-
-getInfo = create_getInfo(MegareleaseOrg)

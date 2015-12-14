@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class DropboxCom(SimpleHoster):
     __name__    = "DropboxCom"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?dropbox\.com/.+'
@@ -41,6 +41,3 @@ class DropboxCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         self.download(pyfile.url, get={'dl': "1"})
-
-
-getInfo = create_getInfo(DropboxCom)

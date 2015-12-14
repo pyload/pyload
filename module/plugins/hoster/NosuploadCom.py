@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster
 
 
 class NosuploadCom(XFSHoster):
     __name__    = "NosuploadCom"
     __type__    = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?nosupload\.com/\?d=\w{12}'
@@ -45,6 +45,3 @@ class NosuploadCom(XFSHoster):
 
         #: Stage3: get the download link
         return re.search(self.LINK_PATTERN, self.data, re.S).group(1)
-
-
-getInfo = create_getInfo(NosuploadCom)

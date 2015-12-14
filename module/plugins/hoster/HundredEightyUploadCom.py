@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster
 
 
 class HundredEightyUploadCom(XFSHoster):
     __name__    = "HundredEightyUploadCom"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?180upload\.com/\w{12}'
@@ -24,6 +24,3 @@ class HundredEightyUploadCom(XFSHoster):
     PLUGIN_DOMAIN = "180upload.com"
 
     OFFLINE_PATTERN = r'>File Not Found'
-
-
-getInfo = create_getInfo(HundredEightyUploadCom)

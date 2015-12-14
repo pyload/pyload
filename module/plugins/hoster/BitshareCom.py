@@ -5,13 +5,13 @@ from __future__ import with_statement
 import re
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class BitshareCom(SimpleHoster):
     __name__    = "BitshareCom"
     __type__    = "hoster"
-    __version__ = "0.58"
+    __version__ = "0.59"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/)?(?(1)|\?f=)(?P<ID>\w+)(?(1)/(?P<NAME>.+?)\.html)'
@@ -79,7 +79,7 @@ class BitshareCom(SimpleHoster):
         #: This may either download our file or forward us to an error page
         self.link = self.get_download_url()
 
-        if self.check_file({'error': ">Error occured<"}):
+        if self.scan_download({'error': ">Error occured<"}):
             self.retry(5, 5 * 60, "Bitshare host : Error occured")
 
 
@@ -114,9 +114,9 @@ class BitshareCom(SimpleHoster):
                 self.retry()
 
         #: Resolve captcha
-        if captcha == 1:
+        if captcha is 1:
             self.log_debug("File is captcha protected")
-            recaptcha = ReCaptcha(self)
+            recaptcha = ReCaptcha(self.pyfile)
 
             response, challenge = recaptcha.challenge()
             res = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
@@ -159,6 +159,3 @@ class BitshareCom(SimpleHoster):
 
         else:
             self.retry_captcha()
-
-
-getInfo = create_getInfo(BitshareCom)

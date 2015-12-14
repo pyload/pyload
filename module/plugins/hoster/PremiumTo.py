@@ -4,14 +4,14 @@ from __future__ import with_statement
 
 import os
 
-from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
-from module.plugins.internal.utils import encode
+from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.misc import encode
 
 
 class PremiumTo(MultiHoster):
     __name__    = "PremiumTo"
     __type__    = "hoster"
-    __version__ = "0.28"
+    __version__ = "0.29"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -42,21 +42,20 @@ class PremiumTo(MultiHoster):
 
 
     def check_download(self):
-        if self.check_file({'nopremium': "No premium account available"}):
+        if self.scan_download({'nopremium': "No premium account available"}):
             self.retry(60, 5 * 60, "No premium account available")
 
         err = ""
         if self.req.http.code == "420":
             #: Custom error code send - fail
             file = encode(self.last_download)
+
             with open(file, "rb") as f:
                 err = f.read(256).strip()
-            os.remove(file)
+
+            self.remove(file)
 
         if err:
             self.fail(err)
 
         return super(PremiumTo, self).check_download()
-
-
-getInfo = create_getInfo(PremiumTo)

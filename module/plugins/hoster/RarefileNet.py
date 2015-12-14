@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster
 
 
 class RarefileNet(XFSHoster):
     __name__    = "RarefileNet"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?rarefile\.net/\w{12}'
@@ -26,6 +26,3 @@ class RarefileNet(XFSHoster):
     PLUGIN_DOMAIN = "rarefile.net"
 
     LINK_PATTERN = r'<a href="(.+?)">\1</a>'
-
-
-getInfo = create_getInfo(RarefileNet)

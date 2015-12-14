@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
+from module.plugins.internal.DeadHoster import DeadHoster
 
 
 class HotfileCom(DeadHoster):
     __name__    = "HotfileCom"
     __type__    = "hoster"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __status__  = "stable"
 
     __pattern__ = r'https?://(?:www\.)?hotfile\.com/dl/\d+/\w+'
@@ -18,6 +18,3 @@ class HotfileCom(DeadHoster):
                        ("spoob", "spoob@pyload.org"),
                        ("mkaay", "mkaay@mkaay.de"),
                        ("JoKoT3", "jokot3@gmail.com")]
-
-
-getInfo = create_getInfo(HotfileCom)

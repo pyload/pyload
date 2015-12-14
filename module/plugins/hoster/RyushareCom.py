@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
+from module.plugins.internal.DeadHoster import DeadHoster
 
 
 class RyushareCom(DeadHoster):
@@ -17,6 +17,3 @@ class RyushareCom(DeadHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it"),
                        ("quareevo", "quareevo@arcor.de"  )]
-
-
-getInfo = create_getInfo(RyushareCom)

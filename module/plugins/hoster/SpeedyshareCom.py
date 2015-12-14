@@ -5,13 +5,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class SpeedyshareCom(SimpleHoster):
     __name__    = "SpeedyshareCom"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(speedyshare\.com|speedy\.sh)/\w+'
@@ -43,6 +43,3 @@ class SpeedyshareCom(SimpleHoster):
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:
             self.link = m.group(1)
-
-
-getInfo = create_getInfo(SpeedyshareCom)

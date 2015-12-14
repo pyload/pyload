@@ -5,13 +5,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class DataHu(SimpleHoster):
     __name__    = "DataHu"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?data\.hu/get/\w+'
@@ -35,6 +35,3 @@ class DataHu(SimpleHoster):
     def setup(self):
         self.resume_download = True
         self.multiDL        = self.premium
-
-
-getInfo = create_getInfo(DataHu)

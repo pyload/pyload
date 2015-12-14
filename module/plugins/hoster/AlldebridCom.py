@@ -3,14 +3,14 @@
 import re
 import urllib
 
-from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
-from module.plugins.internal.utils import json, parse_size
+from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.misc import json, parse_size
 
 
 class AlldebridCom(MultiHoster):
     __name__    = "AlldebridCom"
     __type__    = "hoster"
-    __version__ = "0.50"
+    __version__ = "0.51"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'
@@ -49,6 +49,3 @@ class AlldebridCom(MultiHoster):
                 pyfile.name = data['filename']
             pyfile.size = parse_size(data['filesize'])
             self.link = data['link']
-
-
-getInfo = create_getInfo(AlldebridCom)

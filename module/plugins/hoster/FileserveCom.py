@@ -5,7 +5,7 @@ import re
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.utils import chunks, json, parse_size, seconds_to_midnight
+from module.plugins.internal.misc import chunks, json, parse_size, seconds_to_midnight
 
 
 def check_file(plugin, urls):
@@ -69,7 +69,7 @@ class FileserveCom(Hoster):
 
     def process(self, pyfile):
         pyfile.name, pyfile.size, status, self.url = check_file(self, [self.url])[0]
-        if status != 2:
+        if status is not 2:
             self.offline()
         self.log_debug("File Name: %s Size: %d" % (pyfile.name, pyfile.size))
 
@@ -118,7 +118,7 @@ class FileserveCom(Hoster):
         self.download(self.url, post={'download': "normal"})
         self.log_debug(self.req.http.lastEffectiveURL)
 
-        check = self.check_file({'expired': self.LINK_EXPIRED_PATTERN,
+        check = self.scan_download({'expired': self.LINK_EXPIRED_PATTERN,
                                     'wait'   : re.compile(self.LONG_WAIT_PATTERN),
                                     'limit'  : self.DL_LIMIT_PATTERN})
 
@@ -157,7 +157,7 @@ class FileserveCom(Hoster):
 
     def do_captcha(self):
         captcha_key = re.search(self.CAPTCHA_KEY_PATTERN, self.data).group(1)
-        recaptcha = ReCaptcha(self)
+        recaptcha = ReCaptcha(self.pyfile)
 
         response, challenge = recaptcha.challenge(captcha_key)
         res = json.loads(self.load(self.URLS[2],
@@ -204,7 +204,7 @@ class FileserveCom(Hoster):
         self.download(premium_url or self.pyfile.url)
 
         if not premium_url and \
-           self.check_file({'login': re.compile(self.NOT_LOGGED_IN_PATTERN)}):
+           self.scan_download({'login': re.compile(self.NOT_LOGGED_IN_PATTERN)}):
             self.account.relogin()
             self.retry(msg=_("Not logged in"))
 

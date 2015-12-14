@@ -3,7 +3,7 @@
 import re
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class UpstoreNet(SimpleHoster):
@@ -43,7 +43,7 @@ class UpstoreNet(SimpleHoster):
 
         #: STAGE 2: solv captcha and wait
         #: First get the infos we need: recaptcha key and wait time
-        recaptcha = ReCaptcha(self)
+        recaptcha = ReCaptcha(pyfile)
 
         #: Try the captcha 5 times
         for i in xrange(5):
@@ -85,8 +85,4 @@ class UpstoreNet(SimpleHoster):
             self.wantReconnect = True
             self.retry(wait_time=3600, reason=_("Upstore doesn't like us today"))
 
-
-
-
-getInfo = create_getInfo(UpstoreNet)
  

@@ -5,13 +5,13 @@ import time
 
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "0.99"
+    __version__ = "1.00"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
@@ -75,7 +75,7 @@ class UploadedTo(SimpleHoster):
 
         self.data = self.load("http://uploaded.net/js/download.js")
 
-        recaptcha = ReCaptcha(self)
+        recaptcha = ReCaptcha(pyfile)
         response, challenge = recaptcha.challenge()
 
         self.data = self.load("http://uploaded.net/io/ticket/captcha/%s" % self.info['pattern']['ID'],
@@ -85,6 +85,3 @@ class UploadedTo(SimpleHoster):
 
         super(UploadedTo, self).handle_free(pyfile)
         self.check_errors()
-
-
-getInfo = create_getInfo(UploadedTo)

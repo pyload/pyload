@@ -5,13 +5,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class MystoreTo(SimpleHoster):
     __name__    = "MystoreTo"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?mystore\.to/dl/.+'
@@ -46,6 +46,3 @@ class MystoreTo(SimpleHoster):
 
         self.link = self.load("http://mystore.to/api/download",
                               post={'FID': fid})
-
-
-getInfo = create_getInfo(MystoreTo)

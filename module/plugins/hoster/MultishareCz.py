@@ -3,13 +3,13 @@
 import random
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class MultishareCz(SimpleHoster):
     __name__    = "MultishareCz"
     __type__    = "hoster"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?multishare\.cz/stahnout/(?P<ID>\d+)'
@@ -54,6 +54,3 @@ class MultishareCz(SimpleHoster):
                            'u_hash': self.acc_info['u_hash'],
                            'link'  : pyfile.url},
                       disposition=True)
-
-
-getInfo = create_getInfo(MultishareCz)

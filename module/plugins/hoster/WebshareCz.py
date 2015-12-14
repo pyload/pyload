@@ -3,13 +3,13 @@
 import re
 
 from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class WebshareCz(SimpleHoster):
     __name__    = "WebshareCz"
     __type__    = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(en\.)?webshare\.cz/(?:#/)?file/(?P<ID>\w+)'
@@ -57,6 +57,3 @@ class WebshareCz(SimpleHoster):
 
     def handle_premium(self, pyfile):
         return self.handle_free(pyfile)
-
-
-getInfo = create_getInfo(WebshareCz)

@@ -2,8 +2,8 @@
 
 import re
 
-from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
-from module.plugins.internal.utils import seconds_to_midnight
+from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.misc import seconds_to_midnight
 
 
 class HighWayMe(MultiHoster):
@@ -30,7 +30,7 @@ class HighWayMe(MultiHoster):
 
 
     def check_errors(self):
-        if self.data.get('code') == 302:  #@NOTE: This is not working. It should by if 302 Moved Temporarily then... But I don't now how to implement it.
+        if self.data.get('code') is 302:  #@NOTE: This is not working. It should by if 302 Moved Temporarily then... But I don't now how to implement it.
             self.account.relogin()
             self.retry()
 
@@ -77,6 +77,3 @@ class HighWayMe(MultiHoster):
             self.pyfile.size = 0
 
         self.link = re.search(r'<download>([^<]+)</download>', self.data).group(1)
-
-
-getInfo = create_getInfo(HighWayMe)

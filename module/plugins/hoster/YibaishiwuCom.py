@@ -3,14 +3,14 @@
 import re
 import urlparse
 
-from module.plugins.internal.utils import json
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.misc import json
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class YibaishiwuCom(SimpleHoster):
     __name__    = "YibaishiwuCom"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(?:u\.)?115\.com/file/(?P<ID>\w+)'
@@ -61,6 +61,3 @@ class YibaishiwuCom(SimpleHoster):
                 pass
         else:
             self.fail(_("No working link found"))
-
-
-getInfo = create_getInfo(YibaishiwuCom)

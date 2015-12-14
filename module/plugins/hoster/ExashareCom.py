@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster
 
 
 class ExashareCom(XFSHoster):
     __name__    = "ExashareCom"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?exashare\.com/\w{12}'
@@ -36,6 +36,3 @@ class ExashareCom(XFSHoster):
 
     def handle_free(self, pyfile):
         return super(ExashareCom, self).handle_free(pyfile)
-
-
-getInfo = create_getInfo(ExashareCom)

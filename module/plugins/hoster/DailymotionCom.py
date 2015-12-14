@@ -3,7 +3,7 @@
 import re
 
 from module.PyFile import statusMap
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster
 
@@ -44,7 +44,7 @@ def get_info(urls):
 class DailymotionCom(Hoster):
     __name__    = "DailymotionCom"
     __type__    = "hoster"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?dailymotion\.com/.*video/(?P<ID>[\w^_]+)'
@@ -78,7 +78,7 @@ class DailymotionCom(Hoster):
 
 
     def get_quality(self):
-        q = self.get_config('quality')
+        q = self.config.get('quality')
 
         if q == "Lowest":
             quality = 0
@@ -112,10 +112,10 @@ class DailymotionCom(Hoster):
     def check_info(self, pyfile):
         pyfile.name, pyfile.size, pyfile.status, pyfile.url = get_info([pyfile.url])[0]
 
-        if pyfile.status == 1:
+        if pyfile.status is 1:
             self.offline()
 
-        elif pyfile.status == 6:
+        elif pyfile.status is 6:
             self.temp_offline()
 
 

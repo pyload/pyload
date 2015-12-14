@@ -2,14 +2,14 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.internal.utils import json
+from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.misc import json
 
 
 class SoundcloudCom(SimpleHoster):
     __name__    = "SoundcloudCom"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?soundcloud\.com/[\w\-]+/[\w\-]+'
@@ -53,8 +53,5 @@ class SoundcloudCom(SimpleHoster):
         self.log_debug("Streams found: %s" % (http_streams or "None"))
 
         if http_streams:
-            stream_name, self.link = http_streams[0 if self.get_config('quality') == "Higher" else -1]
+            stream_name, self.link = http_streams[0 if self.config.get('quality') == "Higher" else -1]
             pyfile.name += '.' + stream_name.split('_')[1].lower()
-
-
-getInfo = create_getInfo(SoundcloudCom)

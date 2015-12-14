@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class HellshareCz(SimpleHoster):
     __name__    = "HellshareCz"
     __type__    = "hoster"
-    __version__ = "0.88"
+    __version__ = "0.89"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?hellshare\.(?:cz|com|sk|hu|pl)/[^?]*/\d+'
@@ -34,6 +34,3 @@ class HellshareCz(SimpleHoster):
     def setup(self):
         self.resume_download = self.multiDL = bool(self.account)
         self.chunk_limit = 1
-
-
-getInfo = create_getInfo(HellshareCz)

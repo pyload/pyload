@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
+from module.plugins.internal.DeadHoster import DeadHoster
 
 
 class UploadStationCom(DeadHoster):
     __name__    = "UploadStationCom"
     __type__    = "hoster"
-    __version__ = "0.55"
+    __version__ = "0.56"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?uploadstation\.com/file/(?P<ID>\w+)'
@@ -16,6 +16,3 @@ class UploadStationCom(DeadHoster):
     __license__     = "GPLv3"
     __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
                        ("zoidberg", "zoidberg@mujmail.cz")]
-
-
-getInfo = create_getInfo(UploadStationCom)

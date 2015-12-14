@@ -3,13 +3,13 @@
 # Test links:
 # http://fileom.com/gycaytyzdw3g/random.bin.html
 
-from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster
 
 
 class FileomCom(XFSHoster):
     __name__    = "FileomCom"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?fileom\.com/\w{12}'
@@ -36,6 +36,3 @@ class FileomCom(XFSHoster):
         self.multiDL = True
         self.chunk_limit = 1
         self.resume_download = self.premium
-
-
-getInfo = create_getInfo(FileomCom)

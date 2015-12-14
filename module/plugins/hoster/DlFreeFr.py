@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class DlFreeFr(SimpleHoster):
     __name__    = "DlFreeFr"
     __type__    = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?dl\.free\.fr/(getfile\.pl\?file=/|[a-z])(?P<ID>\w+)'
@@ -37,6 +37,3 @@ class DlFreeFr(SimpleHoster):
         self.download("http://dl.free.fr/getfile.pl",
                       post={'file': '/' + self.info['pattern']['ID'],
                             'send': "Valider+et+télécharger+le+fichier"})
-
-
-getInfo = create_getInfo(DlFreeFr)

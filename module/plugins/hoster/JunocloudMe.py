@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster
 
 
 class JunocloudMe(XFSHoster):
     __name__    = "JunocloudMe"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:\w+\.)?junocloud\.me/\w{12}'
@@ -27,6 +27,3 @@ class JunocloudMe(XFSHoster):
 
     OFFLINE_PATTERN      = r'>No such file with this filename<'
     TEMP_OFFLINE_PATTERN = r'The page may have been renamed, removed or be temporarily unavailable.<'
-
-
-getInfo = create_getInfo(JunocloudMe)

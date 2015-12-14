@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__    = "NitroflareCom"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
@@ -57,7 +57,7 @@ class NitroflareCom(SimpleHoster):
 
         self.wait(wait_time)
 
-        recaptcha = ReCaptcha(self)
+        recaptcha = ReCaptcha(pyfile)
         response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
 
         self.data = self.load("http://nitroflare.com/ajax/freeDownload.php",

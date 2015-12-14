@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
 import re
 import time
 
-from module.plugins.internal.utils import json
-from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+import pycurl
 
+from module.plugins.captcha.ReCaptcha import ReCaptcha
+from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.misc import json
 
 class RapiduNet(SimpleHoster):
     __name__    = "RapiduNet"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?rapidu\.net/(?P<ID>\d{10})'
@@ -60,7 +60,7 @@ class RapiduNet(SimpleHoster):
         else:
             self.wait(int(jsvars['timeToDownload']) - int(time.time()))
 
-        recaptcha = ReCaptcha(self)
+        recaptcha = ReCaptcha(pyfile)
         response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
 
         jsvars = self.get_json_response("https://rapidu.net/ajax.php",
@@ -82,6 +82,3 @@ class RapiduNet(SimpleHoster):
         self.log_debug(res)
 
         return json.loads(res)
-
-
-getInfo = create_getInfo(RapiduNet)

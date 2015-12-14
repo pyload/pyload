@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class EdiskCz(SimpleHoster):
     __name__    = "EdiskCz"
     __type__    = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?edisk\.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.+'
@@ -57,6 +57,3 @@ class EdiskCz(SimpleHoster):
             self.fail(_("Unexpected server response"))
 
         self.link = url
-
-
-getInfo = create_getInfo(EdiskCz)

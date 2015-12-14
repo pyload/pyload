@@ -4,13 +4,13 @@ import random
 import re
 import urlparse
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class NarodRu(SimpleHoster):
     __name__    = "NarodRu"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?narod(\.yandex)?\.ru/(disk|start/\d+\.\w+\-narod\.yandex\.ru)/(?P<ID>\d+)/.+'
@@ -57,6 +57,3 @@ class NarodRu(SimpleHoster):
 
         elif u'<b class="error-msg"><strong>Ошиблись?</strong>' in self.data:
             self.retry_captcha()
-
-
-getInfo = create_getInfo(NarodRu)

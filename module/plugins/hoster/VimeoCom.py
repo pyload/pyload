@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class VimeoCom(SimpleHoster):
     __name__    = "VimeoCom"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(player\.)?vimeo\.com/(video/)?(?P<ID>\d+)'
@@ -50,14 +50,14 @@ class VimeoCom(SimpleHoster):
 
         link = dict((l.group('QL').lower(), l.group('URL')) for l in re.finditer(pattern, html))
 
-        if self.get_config('original'):
+        if self.config.get('original'):
             if "original" in link:
                 self.link = link[q]
                 return
             else:
                 self.log_info(_("Original file not downloadable"))
 
-        quality = self.get_config('quality')
+        quality = self.config.get('quality')
         if quality == "Highest":
             qlevel = ("hd", "sd", "mobile")
         elif quality == "Lowest":
@@ -73,6 +73,3 @@ class VimeoCom(SimpleHoster):
                 self.log_info(_("No %s quality video found") % q.upper())
         else:
             self.fail(_("No video found!"))
-
-
-getInfo = create_getInfo(VimeoCom)

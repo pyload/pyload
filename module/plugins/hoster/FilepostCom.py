@@ -3,15 +3,15 @@
 import re
 import time
 
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class FilepostCom(SimpleHoster):
     __name__    = "FilepostCom"
     __type__    = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:filepost\.com/files|fp\.io)/(?P<ID>[^/]+)'
@@ -78,7 +78,7 @@ class FilepostCom(SimpleHoster):
 
             if not self.link:
                 #: Solve recaptcha
-                recaptcha = ReCaptcha(self)
+                recaptcha = ReCaptcha(pyfile)
                 post_dict['recaptcha_response_field'], post_dict['recaptcha_challenge_field'] = recaptcha.challenge(captcha_key)
                 self.link = self.get_json_response(get_dict, post_dict, 'link')
 
@@ -117,6 +117,3 @@ class FilepostCom(SimpleHoster):
             self.error(_("JSON %s 2") % field)
 
         return res['js']['answer'][field]
-
-
-getInfo = create_getInfo(FilepostCom)

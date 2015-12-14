@@ -4,13 +4,13 @@ import re
 import urllib
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class DepositfilesCom(SimpleHoster):
     __name__    = "DepositfilesCom"
     __type__    = "hoster"
-    __version__ = "0.60"
+    __version__ = "0.61"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
@@ -58,7 +58,7 @@ class DepositfilesCom(SimpleHoster):
 
         self.check_errors()
 
-        recaptcha = ReCaptcha(self)
+        recaptcha = ReCaptcha(pyfile)
         captcha_key = recaptcha.detect_key()
         if captcha_key is None:
             return
@@ -92,6 +92,3 @@ class DepositfilesCom(SimpleHoster):
 
             elif mirror:
                 self.link = mirror.group(1)
-
-
-getInfo = create_getInfo(DepositfilesCom)

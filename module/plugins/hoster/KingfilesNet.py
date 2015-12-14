@@ -3,13 +3,13 @@
 import re
 
 from module.plugins.captcha.SolveMedia import SolveMedia
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class KingfilesNet(SimpleHoster):
     __name__    = "KingfilesNet"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?kingfiles\.net/(?P<ID>\w{12})'
@@ -51,7 +51,7 @@ class KingfilesNet(SimpleHoster):
 
         self.data = self.load(pyfile.url, post=post_data)
 
-        solvemedia = SolveMedia(self)
+        solvemedia = SolveMedia(pyfile)
         response, challenge = solvemedia.challenge()
 
         #: Make the downloadlink appear and load the file
@@ -79,6 +79,3 @@ class KingfilesNet(SimpleHoster):
             self.error(_("Download url not found"))
 
         self.link = m.group(1)
-
-
-getInfo = create_getInfo(KingfilesNet)

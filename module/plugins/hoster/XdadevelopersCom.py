@@ -5,13 +5,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class XdadevelopersCom(SimpleHoster):
     __name__    = "XdadevelopersCom"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?forum\.xda-developers\.com/devdb/project/dl/\?id=\d+'
@@ -39,6 +39,3 @@ class XdadevelopersCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         self.link = pyfile.url + "&task=get"  #@TODO: Revert to `get={'task': "get"}` in 0.4.10
-
-
-getInfo = create_getInfo(XdadevelopersCom)

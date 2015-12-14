@@ -2,14 +2,14 @@
 
 import re
 
-from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
-from module.plugins.internal.utils import json
+from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.misc import json
 
 
 class RPNetBiz(MultiHoster):
     __name__    = "RPNetBiz"
     __type__    = "hoster"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __pattern__ = r'https?://.+rpnet\.biz'
@@ -79,6 +79,3 @@ class RPNetBiz(MultiHoster):
             self.fail(link_status['error'])
         else:
             self.fail(_("Something went wrong, not supposed to enter here"))
-
-
-getInfo = create_getInfo(RPNetBiz)

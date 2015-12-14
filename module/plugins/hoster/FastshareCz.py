@@ -3,13 +3,13 @@
 import re
 import urlparse
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class FastshareCz(SimpleHoster):
     __name__    = "FastshareCz"
     __type__    = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
@@ -64,7 +64,7 @@ class FastshareCz(SimpleHoster):
 
 
     def check_download(self):
-        check = self.check_file({
+        check = self.scan_download({
             'paralell-dl'  : re.compile(r"<title>FastShare.cz</title>|<script>alert\('Pres FREE muzete stahovat jen jeden soubor najednou.'\)"),
             'wrong captcha': re.compile(r'Download for FREE'),
             'credit'       : re.compile(self.CREDIT_ERROR)
@@ -80,6 +80,3 @@ class FastshareCz(SimpleHoster):
             self.restart(premium=False)
 
         return super(FastshareCz, self).check_download()
-
-
-getInfo = create_getInfo(FastshareCz)

@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class BezvadataCz(SimpleHoster):
     __name__    = "BezvadataCz"
     __type__    = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?bezvadata\.cz/stahnout/.+'
@@ -78,6 +78,3 @@ class BezvadataCz(SimpleHoster):
             self.temp_offline()
         else:
             return super(BezvadataCz, self).check_errors()
-
-
-getInfo = create_getInfo(BezvadataCz)

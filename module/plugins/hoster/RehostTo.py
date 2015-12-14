@@ -2,13 +2,13 @@
 
 import urllib
 
-from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
+from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class RehostTo(MultiHoster):
     __name__    = "RehostTo"
     __type__    = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__  = "testing"
 
     __pattern__ = r'https?://.*rehost\.to\..+'
@@ -30,6 +30,3 @@ class RehostTo(MultiHoster):
                            'pass': self.account.get_data('session'),
                            'dl'  : pyfile.url},
                       disposition=True)
-
-
-getInfo = create_getInfo(RehostTo)

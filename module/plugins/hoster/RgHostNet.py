@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class RgHostNet(SimpleHoster):
     __name__    = "RgHostNet"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?rghost\.(net|ru)/[\d\-]+'
@@ -24,10 +24,7 @@ class RgHostNet(SimpleHoster):
 
 
     INFO_PATTERN    = r'data-share42-text="(?P<N>.+?) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)'
-    HASHSUM_PATTERN = r'<dt>(?P<T>\w+)</dt>\s*<dd>(?P<H>\w+)'
+    HASHSUM_PATTERN = r'<dt>(?P<H>\w+)</dt>\s*<dd>(?P<D>\w+)'
     OFFLINE_PATTERN = r'>(File is deleted|page not found)'
 
     LINK_FREE_PATTERN = r'<a href="(.+?)" class="btn large'
-
-
-getInfo = create_getInfo(RgHostNet)

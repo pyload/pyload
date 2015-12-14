@@ -7,13 +7,13 @@
 import re
 
 from module.plugins.captcha.SolveMedia import SolveMedia
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class LoadTo(SimpleHoster):
     __name__    = "LoadTo"
     __type__    = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?load\.to/\w+'
@@ -58,7 +58,7 @@ class LoadTo(SimpleHoster):
             self.wait(m.group(1))
 
         #: Load.to is using solvemedia captchas since ~july 2014:
-        solvemedia  = SolveMedia(self)
+        solvemedia  = SolveMedia(pyfile)
         captcha_key = solvemedia.detect_key()
 
         if captcha_key:
@@ -67,6 +67,3 @@ class LoadTo(SimpleHoster):
                           post={'adcopy_challenge': challenge,
                                 'adcopy_response' : response,
                                 'returnUrl'       : pyfile.url})
-
-
-getInfo = create_getInfo(LoadTo)

@@ -4,17 +4,16 @@
 # http://filer.net/get/ivgf5ztw53et3ogd
 # http://filer.net/get/hgo14gzcng3scbvv
 
-import pycurl
 import re
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class FilerNet(SimpleHoster):
     __name__    = "FilerNet"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'
@@ -49,7 +48,7 @@ class FilerNet(SimpleHoster):
         if 'hash' not in inputs:
             self.error(_("Unable to detect hash"))
 
-        recaptcha           = ReCaptcha(self)
+        recaptcha = ReCaptcha(pyfile)
         response, challenge = recaptcha.challenge()
 
         header = self.load(pyfile.url,
@@ -59,6 +58,3 @@ class FilerNet(SimpleHoster):
                            just_header=True)
 
         self.link = header.get('location')
-
-
-getInfo = create_getInfo(FilerNet)

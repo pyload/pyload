@@ -3,14 +3,14 @@
 import re
 import urllib
 
-from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
-from module.plugins.internal.utils import json
+from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.misc import json
 
 
 class MegaDebridEu(MultiHoster):
     __name__    = "MegaDebridEu"
     __type__    = "hoster"
-    __version__ = "0.52"
+    __version__ = "0.53"
     __status__  = "testing"
 
     __pattern__ = r'http://((?:www\d+\.|s\d+\.)?mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[\w^_]+'
@@ -61,6 +61,3 @@ class MegaDebridEu(MultiHoster):
         res = json.loads(jsonResponse)
         if res['response_code'] == "ok":
             self.link = res['debridLink'][1:-1]
-
-
-getInfo = create_getInfo(MegaDebridEu)

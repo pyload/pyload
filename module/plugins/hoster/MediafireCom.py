@@ -2,13 +2,13 @@
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.captcha.SolveMedia import SolveMedia
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class MediafireCom(SimpleHoster):
     __name__    = "MediafireCom"
     __type__    = "hoster"
-    __version__ = "0.93"
+    __version__ = "0.94"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)(?P<ID>\w+)'
@@ -41,7 +41,7 @@ class MediafireCom(SimpleHoster):
 
 
     def handle_captcha(self):
-        solvemedia  = SolveMedia(self)
+        solvemedia  = SolveMedia(self.pyfile)
         captcha_key = solvemedia.detect_key()
 
         if captcha_key:
@@ -51,7 +51,7 @@ class MediafireCom(SimpleHoster):
                                         'adcopy_response' : response})
             return
 
-        recaptcha   = ReCaptcha(self)
+        recaptcha   = ReCaptcha(self.pyfile)
         captcha_key = recaptcha.detect_key()
 
         if captcha_key:
@@ -76,6 +76,3 @@ class MediafireCom(SimpleHoster):
                     self.fail(_("Wrong password"))
 
         return super(MediafireCom, self).handle_free(pyfile)
-
-
-getInfo = create_getInfo(MediafireCom)

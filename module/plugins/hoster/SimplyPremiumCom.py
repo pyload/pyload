@@ -2,14 +2,14 @@
 
 import re
 
-from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
-from module.plugins.internal.utils import seconds_to_midnight
+from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.misc import seconds_to_midnight
 
 
 class SimplyPremiumCom(MultiHoster):
     __name__    = "SimplyPremiumCom"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __pattern__ = r'https?://.+simply-premium\.com'
@@ -81,6 +81,3 @@ class SimplyPremiumCom(MultiHoster):
 
         except AttributeError:
             self.link = 'http://www.simply-premium.com/premium.php?link=' + self.pyfile.url
-
-
-getInfo = create_getInfo(SimplyPremiumCom)

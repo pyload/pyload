@@ -5,13 +5,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class DevhostSt(SimpleHoster):
     __name__    = "DevhostSt"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?d-h\.st/(?!users/)\w{3}'
@@ -28,7 +28,7 @@ class DevhostSt(SimpleHoster):
 
     NAME_PATTERN      = r'<span title="(?P<N>.*?)"'
     SIZE_PATTERN      = r'</span> \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)<br'
-    HASHSUM_PATTERN   = r'>(?P<T>.*?) Sum</span>: &nbsp;(?P<H>.*?)<br'
+    HASHSUM_PATTERN   = r'>(?P<H>.*?) Sum</span>: &nbsp;(?P<D>.*?)<br'
 
     OFFLINE_PATTERN   = r'>File Not Found'
     LINK_FREE_PATTERN = r'var product_download_url= \'(.+?)\''
@@ -37,6 +37,3 @@ class DevhostSt(SimpleHoster):
     def setup(self):
         self.multiDL    = True
         self.chunk_limit = 1
-
-
-getInfo = create_getInfo(DevhostSt)

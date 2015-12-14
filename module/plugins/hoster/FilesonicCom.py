@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
+from module.plugins.internal.DeadHoster import DeadHoster
 
 
 class FilesonicCom(DeadHoster):
     __name__    = "FilesonicCom"
     __type__    = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?filesonic\.com/file/\w+'
@@ -16,6 +16,3 @@ class FilesonicCom(DeadHoster):
     __license__     = "GPLv3"
     __authors__     = [("jeix", "jeix@hasnomail.de"),
                        ("paulking", None)]
-
-
-getInfo = create_getInfo(FilesonicCom)

@@ -6,7 +6,7 @@ import urllib
 
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class ShareonlineBiz(SimpleHoster):
@@ -68,7 +68,7 @@ class ShareonlineBiz(SimpleHoster):
 
 
     def handle_captcha(self):
-        recaptcha = ReCaptcha(self)
+        recaptcha = ReCaptcha(self.pyfile)
         response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
 
         m = re.search(r'var wait=(\d+);', self.data)
@@ -103,8 +103,8 @@ class ShareonlineBiz(SimpleHoster):
 
 
     def check_download(self):
-        check = self.check_file({'cookie': re.compile(r'<div id="dl_failure"'),
-                                 'fail'  : re.compile(r"<title>Share-Online")})
+        check = self.scan_download({'cookie': re.compile(r'<div id="dl_failure"'),
+                                    'fail'  : re.compile(r"<title>Share-Online")})
 
         if check == "cookie":
             self.retry_captcha(5, 60, _("Cookie failure"))
@@ -181,6 +181,3 @@ class ShareonlineBiz(SimpleHoster):
         else:
             self.wait(60, reconnect=True)
             self.restart(errmsg)
-
-
-getInfo = create_getInfo(ShareonlineBiz)

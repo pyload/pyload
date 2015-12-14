@@ -6,13 +6,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class FilepupNet(SimpleHoster):
     __name__    = "FilepupNet"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?filepup\.net/files/\w+'
@@ -46,6 +46,3 @@ class FilepupNet(SimpleHoster):
         if m is not None:
             dl_link = m.group(1)
             self.download(dl_link, post={'task': "download"})
-
-
-getInfo = create_getInfo(FilepupNet)

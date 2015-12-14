@@ -4,13 +4,13 @@ import re
 import urlparse
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class CrockoCom(SimpleHoster):
     __name__    = "CrockoCom"
     __type__    = "hoster"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(crocko|easy-share)\.com/\w+'
@@ -56,13 +56,10 @@ class CrockoCom(SimpleHoster):
 
         action, form = m.groups()
         inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
-        recaptcha = ReCaptcha(self)
+        recaptcha = ReCaptcha(pyfile)
 
         inputs['recaptcha_response_field'], inputs['recaptcha_challenge_field'] = recaptcha.challenge()
         self.download(action, post=inputs)
 
-        if self.check_file({'captcha': recaptcha.KEY_AJAX_PATTERN}):
+        if self.scan_download({'captcha': recaptcha.KEY_AJAX_PATTERN}):
             self.retry_captcha()
-
-
-getInfo = create_getInfo(CrockoCom)

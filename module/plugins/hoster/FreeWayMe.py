@@ -1,12 +1,12 @@
 ﻿# -*- coding: utf-8 -*-
 
-from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
+from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class FreeWayMe(MultiHoster):
     __name__    = "FreeWayMe"
     __type__    = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?free-way\.(bz|me)/.+'
@@ -43,7 +43,7 @@ class FreeWayMe(MultiHoster):
 
             if 'location' in header:
                 headers = self.load(header.get('location'), just_header=True)
-                if headers['code'] == 500:
+                if headers['code'] is 500:
                     #: Error on 2nd stage
                     self.log_error(_("Error [stage2]"))
                 else:
@@ -55,6 +55,3 @@ class FreeWayMe(MultiHoster):
                 self.log_error(_("Error [stage1]"))
 
             #@TODO: handle errors
-
-
-getInfo = create_getInfo(FreeWayMe)

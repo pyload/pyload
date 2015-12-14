@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from module.plugins.hoster.FileserveCom import FileserveCom, check_file
-from module.plugins.internal.utils import chunks
+from module.plugins.internal.misc import chunks
 
 
 class FilejungleCom(FileserveCom):
     __name__    = "FilejungleCom"
     __type__    = "hoster"
-    __version__ = "0.55"
+    __version__ = "0.56"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?filejungle\.com/f/(?P<ID>[^/]+)'

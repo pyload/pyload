@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.internal.utils import encode, json, timestamp
+import pycurl
+
+from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.misc import encode, json, timestamp
 
 
 class UploadingCom(SimpleHoster):
     __name__    = "UploadingCom"
     __type__    = "hoster"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>\w+)'
@@ -98,6 +99,3 @@ class UploadingCom(SimpleHoster):
             self.error(_("No URL"))
 
         self.link = url
-
-
-getInfo = create_getInfo(UploadingCom)

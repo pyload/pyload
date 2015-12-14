@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
+from module.plugins.internal.DeadHoster import DeadHoster
 
 
 class BoltsharingCom(DeadHoster):
     __name__    = "BoltsharingCom"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?boltsharing\.com/\w{12}'
@@ -15,6 +15,3 @@ class BoltsharingCom(DeadHoster):
     __description__ = """Boltsharing.com hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
-
-
-getInfo = create_getInfo(BoltsharingCom)

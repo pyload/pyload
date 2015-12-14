@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class FlyFilesNet(SimpleHoster):
     __name__    = "FlyFilesNet"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?flyfiles\.net/.+'

@@ -3,13 +3,13 @@
 import re
 import urlparse
 
-from module.plugins.internal.Hoster import Hoster, create_getInfo
+from module.plugins.internal.Hoster import Hoster
 
 
 class Http(Hoster):
     __name__    = "Http"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __pattern__ = r'(?:jd|pys?)://.+'
@@ -66,9 +66,12 @@ class Http(Hoster):
 
 
     def check_download(self):
-        errmsg = self.check_file({'Html error'   : re.compile(r'\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)'),
-                                  'Html file'    : re.compile(r'\A\s*<!DOCTYPE html'),
-                                  'Request error': re.compile(r'([Aa]n error occured while processing your request)')})
+        errmsg = self.scan_download({
+            'Html error'   : re.compile(r'\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)'),
+            'Html file'    : re.compile(r'\A\s*<!DOCTYPE html'),
+            'Request error': re.compile(r'([Aa]n error occured while processing your request)')
+        })
+
         if not errmsg:
             return
 
@@ -80,6 +83,3 @@ class Http(Hoster):
 
         self.log_warning(_("Check result: ") + errmsg, _("Waiting 1 minute and retry"))
         self.retry(3, 60, errmsg)
-
-
-getInfo = create_getInfo(Http)
