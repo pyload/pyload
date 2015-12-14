@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
+from module.plugins.internal.DeadCrypter import DeadCrypter
 
 
 class DdlstorageComFolder(DeadCrypter):
@@ -16,6 +16,3 @@ class DdlstorageComFolder(DeadCrypter):
     __license__     = "GPLv3"
     __authors__     = [("godofdream", "soilfiction@gmail.com"),
                        ("stickell", "l.stickell@yahoo.it")]
-
-
-getInfo = create_getInfo(DdlstorageComFolder)

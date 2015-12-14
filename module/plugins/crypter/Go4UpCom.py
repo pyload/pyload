@@ -3,7 +3,7 @@
 import re
 import urlparse
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 from module.plugins.internal.misc import json
 
 
@@ -41,7 +41,7 @@ class Go4UpCom(SimpleCrypter):
         if hosterslink_re:
             hosters = self.load(urlparse.urljoin("http://go4up.com/", hosterslink_re.group(1)))
             for hoster in json.loads(hosters):
-                if preference != 0 and preference != int(hoster["hostId"]):
+                if preference is not 0 and preference != int(hoster["hostId"]):
                     continue
                 pagelink_re = re.search(self.LINK_PATTERN, hoster["link"])
                 if pagelink_re:
@@ -51,6 +51,3 @@ class Go4UpCom(SimpleCrypter):
                         links.append(link_re.group(1))
 
         return links
-
-
-getInfo = create_getInfo(Go4UpCom)

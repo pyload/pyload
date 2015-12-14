@@ -4,7 +4,7 @@ import re
 
 import BeautifulSoup
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 
 
 class HoerbuchIn(Crypter):
@@ -63,6 +63,3 @@ class HoerbuchIn(Crypter):
             links.append(self.req.lastEffectiveURL)
 
         return links
-
-
-getInfo = create_getInfo(HoerbuchIn)

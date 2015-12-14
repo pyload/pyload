@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
+from module.plugins.internal.DeadCrypter import DeadCrypter
 
 
 class CryptItCom(DeadCrypter):
@@ -15,6 +15,3 @@ class CryptItCom(DeadCrypter):
     __description__ = """Crypt-it.com decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("jeix", "jeix@hasnomail.de")]
-
-
-getInfo = create_getInfo(CryptItCom)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class LinkSaveIn(SimpleCrypter):
@@ -24,6 +24,3 @@ class LinkSaveIn(SimpleCrypter):
     COOKIES = [("linksave.in", "Linksave_Language", "english")]
 
     OFFLINE_PATTERN = r'>(Error )?404 -'
-
-
-getInfo = create_getInfo(LinkSaveIn)

@@ -3,7 +3,7 @@
 import re
 import urlparse
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 from module.plugins.internal.misc import fsjoin, json
 
 
@@ -148,6 +148,3 @@ class YoutubeComFolder(Crypter):
             self.packages.append((p_name, p_urls, p_folder))  #: Folder is NOT recognized by pyload 0.4.9!
 
             addedvideos.extend(p_videos)
-
-
-getInfo = create_getInfo(YoutubeComFolder)

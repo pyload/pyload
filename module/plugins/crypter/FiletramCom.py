@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class FiletramCom(SimpleCrypter):
@@ -24,6 +24,3 @@ class FiletramCom(SimpleCrypter):
 
     LINK_PATTERN = r'\s+(http://.+)'
     NAME_PATTERN = r'<title>(?P<N>.+?) - Free Download'
-
-
-getInfo = create_getInfo(FiletramCom)

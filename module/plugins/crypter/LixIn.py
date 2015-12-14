@@ -3,7 +3,7 @@
 import re
 import urlparse
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 
 
 class LixIn(Crypter):
@@ -61,6 +61,3 @@ class LixIn(Crypter):
         else:
             self.links = [m.group(1)]
             self.log_debug("Found link %s, adding to package" % self.links[0])
-
-
-getInfo = create_getInfo(LixIn)

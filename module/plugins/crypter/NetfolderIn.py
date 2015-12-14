@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
+from module.plugins.internal.DeadCrypter import DeadCrypter
 
 
 class NetfolderIn(DeadCrypter):
@@ -16,6 +16,3 @@ class NetfolderIn(DeadCrypter):
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "RaNaN@pyload.org"),
                        ("fragonib", "fragonib[AT]yahoo[DOT]es")]
-
-
-getInfo = create_getInfo(NetfolderIn)

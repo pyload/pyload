@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 
 
 class FileserveComFolder(Crypter):
@@ -39,6 +39,3 @@ class FileserveComFolder(Crypter):
 
         if new_links:
             self.links = [map(lambda s: "http://fileserve.com%s" % s, new_links)]
-
-
-getInfo = create_getInfo(FileserveComFolder)

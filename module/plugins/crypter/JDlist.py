@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 
 
 class JDlist(Crypter):
@@ -22,6 +22,3 @@ class JDlist(Crypter):
 
     def decrypt(self, pyfile):
         self.links.extend(self.info['pattern']['LIST'].decode('base64').split(','))
-
-
-getInfo = create_getInfo(JDlist)

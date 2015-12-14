@@ -3,7 +3,7 @@
 import re
 import urlparse
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class MultiUpOrg(SimpleCrypter):
@@ -40,6 +40,3 @@ class MultiUpOrg(SimpleCrypter):
                 self.data = self.load(mirror_page)
 
         return re.findall(pattern, self.data)
-
-
-getInfo = create_getInfo(MultiUpOrg)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class TinyurlCom(SimpleCrypter):
@@ -24,6 +24,3 @@ class TinyurlCom(SimpleCrypter):
     URL_REPLACEMENTS = [(r'preview\.', r'')]
 
     OFFLINE_PATTERN = r">Error: Unable to find site's URL to redirect to"
-
-
-getInfo = create_getInfo(TinyurlCom)

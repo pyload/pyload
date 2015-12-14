@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 
 
 class MultiloadCz(Crypter):
@@ -44,6 +44,3 @@ class MultiloadCz(Crypter):
                 if not self.links:
                     ignored_set = set(self.config.get('ignoredHoster').split('|'))
                     self.links.extend(x[1] for x in m if x[0] not in ignored_set)
-
-
-getInfo = create_getInfo(MultiloadCz)

@@ -6,8 +6,8 @@ import re
 import Crypto.Cipher
 import pycurl
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
-from module.plugins.internal.misc import html_unescape
+from module.plugins.internal.Crypter import Crypter
+from module.plugins.internal.misc import html_unescape, set_cookie(cj
 
 
 class LinkCryptWs(Crypter):
@@ -39,7 +39,7 @@ class LinkCryptWs(Crypter):
         #: Init
         self.fileid = re.match(self.__pattern__, self.pyfile.url).group('ID')
 
-        self.req.cj.setCookie("linkcrypt.ws", "language", "en")
+        set_cookie(req.cj, "linkcrypt.ws", "language", "en")
 
         #: Request package
         self.req.http.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko")  #: Better chance to not get those key-captchas
@@ -315,6 +315,3 @@ class LinkCryptWs(Crypter):
         self.log_debug("Package has %d links" % len(links))
 
         return links
-
-
-getInfo = create_getInfo(LinkCryptWs)

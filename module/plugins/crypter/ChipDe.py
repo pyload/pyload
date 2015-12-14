@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 
 
 class ChipDe(Crypter):
@@ -33,6 +33,3 @@ class ChipDe(Crypter):
         else:
             self.links = [f.group(1)]
             self.log_debug("The file URL is %s" % self.links[0])
-
-
-getInfo = create_getInfo(ChipDe)

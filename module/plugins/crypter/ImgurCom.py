@@ -1,6 +1,6 @@
 import re
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 from module.plugins.internal.misc import uniqify
 
 
@@ -29,6 +29,3 @@ class ImgurCom(SimpleCrypter):
     def get_links(self):
         f = lambda url: "http://" + re.sub(r'(\w{7})s\.', r'\1.', url)
         return uniqify(map(f, re.findall(self.LINK_PATTERN, self.data)))
-
-
-getInfo = create_getInfo(ImgurCom)

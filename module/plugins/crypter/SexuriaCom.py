@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 
 
 class SexuriaCom(Crypter):
@@ -107,6 +107,3 @@ class SexuriaCom(Crypter):
 
         #: All done, return to caller
         return name, linklist, folder, password
-
-
-getInfo = create_getInfo(SexuriaCom)

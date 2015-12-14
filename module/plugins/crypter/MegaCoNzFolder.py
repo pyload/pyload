@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 
 
 class MegaCoNzFolder(Crypter):
@@ -30,6 +30,3 @@ class MegaCoNzFolder(Crypter):
         url       = "https://mega.co.nz/#F!%s!%s" % re.match(self.__pattern__, pyfile.url).groups()
         self.data = self.load("http://rapidgen.org/linkfinder", post={'linklisturl': url})
         self.links = re.findall(r'(https://mega(\.co)?\.nz/#N!.+?)<', self.data)
-
-
-getInfo = create_getInfo(MegaCoNzFolder)

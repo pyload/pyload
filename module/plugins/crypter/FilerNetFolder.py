@@ -1,6 +1,6 @@
 import re
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class FilerNetFolder(SimpleCrypter):
@@ -26,6 +26,3 @@ class FilerNetFolder(SimpleCrypter):
 
     NAME_PATTERN    = r'<h3>(?P<N>.+?) - <small'
     OFFLINE_PATTERN = r'Nicht gefunden'
-
-
-getInfo = create_getInfo(FilerNetFolder)

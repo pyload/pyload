@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 from module.plugins.internal.misc import json
 
 
@@ -89,6 +89,3 @@ class MediafireComFolder(Crypter):
 
         else:
             self.links.append(url)
-
-
-getInfo = create_getInfo(MediafireComFolder)

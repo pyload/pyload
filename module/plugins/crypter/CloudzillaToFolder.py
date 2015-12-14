@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class CloudzillaToFolder(SimpleCrypter):
@@ -38,6 +38,3 @@ class CloudzillaToFolder(SimpleCrypter):
 
         if re.search(self.PASSWORD_PATTERN, self.data):
             self.retry(msg="Wrong password")
-
-
-getInfo = create_getInfo(CloudzillaToFolder)

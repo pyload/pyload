@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
+from module.plugins.internal.DeadCrypter import DeadCrypter
 
 
 class WuploadComFolder(DeadCrypter):
@@ -15,6 +15,3 @@ class WuploadComFolder(DeadCrypter):
     __description__ = """Wupload.com folder decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
-
-
-getInfo = create_getInfo(WuploadComFolder)

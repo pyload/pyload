@@ -4,7 +4,7 @@ import base64
 import re
 import time
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class DlProtectCom(SimpleCrypter):
@@ -42,7 +42,7 @@ class DlProtectCom(SimpleCrypter):
         i = base64.b64decode(i)
         # Split information
         infos = i.split('|')
-        assert(len(infos) == 4)
+        assert(len(infos) is 4)
         res = infos[0]
         user_agent = infos[1]
         plugins = [x.split(';') for x in infos[2].split('&')]
@@ -123,6 +123,3 @@ class DlProtectCom(SimpleCrypter):
 
         # Filters interesting urls from ads
         return re.findall(r'<a href="(?P<id>[^/].+?)" target="_blank">(?P=id)</a>', self.data)
-
-
-getInfo = create_getInfo(DlProtectCom)

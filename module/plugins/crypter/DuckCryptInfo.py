@@ -4,7 +4,7 @@ import re
 
 import BeautifulSoup
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 
 
 class DuckCryptInfo(Crypter):
@@ -60,6 +60,3 @@ class DuckCryptInfo(Crypter):
         self.links = [soup.find("iframe")['src']]
         if not self.links:
             self.log_info(_("No link found"))
-
-
-getInfo = create_getInfo(DuckCryptInfo)

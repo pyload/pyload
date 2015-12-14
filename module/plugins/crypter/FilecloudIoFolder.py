@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class FilecloudIoFolder(SimpleCrypter):
@@ -23,6 +23,3 @@ class FilecloudIoFolder(SimpleCrypter):
 
     LINK_PATTERN = r'href="(http://filecloud\.io/\w+)" title'
     NAME_PATTERN = r'>(?P<N>.+?) - filecloud\.io<'
-
-
-getInfo = create_getInfo(FilecloudIoFolder)

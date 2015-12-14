@@ -6,7 +6,7 @@
 import re
 import urlparse
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class DevhostStFolder(SimpleCrypter):
@@ -63,6 +63,3 @@ class DevhostStFolder(SimpleCrypter):
 
         self.log_debug("File name: %s"   % self.pyfile.name,
                       "File folder: %s" % self.pyfile.name)
-
-
-getInfo = create_getInfo(DevhostStFolder)

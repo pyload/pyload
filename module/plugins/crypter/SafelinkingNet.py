@@ -5,7 +5,7 @@ import re
 import BeautifulSoup
 
 from module.plugins.internal.misc import json
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 from module.plugins.captcha.SolveMedia import SolveMedia
 
 
@@ -83,6 +83,3 @@ class SafelinkingNet(Crypter):
                         self.links.append("https://safelinking.net/d/" + link['full'])
                     else:
                         self.links.append(link['full'])
-
-
-getInfo = create_getInfo(SafelinkingNet)

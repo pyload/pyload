@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class TNTVillageScambioeticoOrg(SimpleCrypter):
@@ -30,6 +30,3 @@ class TNTVillageScambioeticoOrg(SimpleCrypter):
             links = super(TNTVillageScambioeticoOrg, self).getLinks()
             if links:
                 return links
-
-
-getInfo = create_getInfo(TNTVillageScambioeticoOrg)

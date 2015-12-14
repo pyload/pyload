@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
+from module.plugins.internal.DeadCrypter import DeadCrypter
 
 
 class MBLinkInfo(DeadCrypter):
@@ -16,6 +16,3 @@ class MBLinkInfo(DeadCrypter):
     __license__     = "GPLv3"
     __authors__     = [("Gummibaer", "Gummibaer@wiki-bierkiste.de"),
                        ("stickell", "l.stickell@yahoo.it")]
-
-
-getInfo = create_getInfo(MBLinkInfo)

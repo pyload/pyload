@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class DataHuFolder(SimpleCrypter):
@@ -42,6 +42,3 @@ class DataHuFolder(SimpleCrypter):
 
             if u'Hib\xe1s jelsz\xf3' in self.data:  #: Wrong password
                 self.fail(_("Wrong password"))
-
-
-getInfo = create_getInfo(DataHuFolder)

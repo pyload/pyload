@@ -4,7 +4,7 @@ import math
 import re
 import urlparse
 
-from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
+from module.plugins.internal.XFSCrypter import XFSCrypter
 
 
 class TusfilesNetFolder(XFSCrypter):
@@ -47,6 +47,3 @@ class TusfilesNetFolder(XFSCrypter):
         for p in xrange(2, pages + 1):
             self.data = self.load_page(p)
             self.links.append(self.get_links())
-
-
-getInfo = create_getInfo(TusfilesNetFolder)

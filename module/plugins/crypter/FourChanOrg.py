@@ -5,7 +5,7 @@
 import re
 import urlparse
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 
 
 class FourChanOrg(Crypter):
@@ -29,6 +29,3 @@ class FourChanOrg(Crypter):
         pagehtml = self.load(pyfile.url)
         images = set(re.findall(r'(images\.4chan\.org/[^/]*/src/[^"<]+)', pagehtml))
         self.links = [urlparse.urljoin("http://", image) for image in images]
-
-
-getInfo = create_getInfo(FourChanOrg)

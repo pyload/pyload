@@ -8,7 +8,7 @@ import re
 
 import Crypto.Cipher
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 from module.plugins.internal.misc import fsjoin
 
 
@@ -293,6 +293,3 @@ class RelinkUs(Crypter):
         #: Log and return
         self.log_debug("Package has %d links" % len(links))
         return links
-
-
-getInfo = create_getInfo(RelinkUs)

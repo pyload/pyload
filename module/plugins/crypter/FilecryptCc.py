@@ -9,7 +9,7 @@ import urlparse
 
 import Crypto.Cipher
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.captcha.SolveMedia import SolveMedia
 
@@ -210,6 +210,3 @@ class FilecryptCc(Crypter):
         links = filter(bool, text.split('\n'))
 
         return links
-
-
-getInfo = create_getInfo(FilecryptCc)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class BitshareComFolder(SimpleCrypter):
@@ -23,6 +23,3 @@ class BitshareComFolder(SimpleCrypter):
 
     LINK_PATTERN = r'<a href="(http://bitshare\.com/files/.+)">.+</a></td>'
     NAME_PATTERN = r'View public folder "(?P<N>.+?)"</h1>'
-
-
-getInfo = create_getInfo(BitshareComFolder)

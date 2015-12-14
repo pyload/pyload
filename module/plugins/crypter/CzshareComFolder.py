@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 
 
 class CzshareComFolder(Crypter):
@@ -34,6 +34,3 @@ class CzshareComFolder(Crypter):
             self.error(_("FOLDER_PATTERN not found"))
 
         self.links.extend(re.findall(self.LINK_PATTERN, m.group(1)))
-
-
-getInfo = create_getInfo(CzshareComFolder)

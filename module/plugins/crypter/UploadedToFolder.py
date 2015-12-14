@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class UploadedToFolder(SimpleCrypter):
@@ -28,6 +28,3 @@ class UploadedToFolder(SimpleCrypter):
     TEMP_OFFLINE_PATTERN = r'<title>uploaded\.net - Maintenance'
 
     LINK_PATTERN = r'<h2><a href="(.+?)"'
-
-
-getInfo = create_getInfo(UploadedToFolder)

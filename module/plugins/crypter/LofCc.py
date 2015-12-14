@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
+from module.plugins.internal.DeadCrypter import DeadCrypter
 
 
 class LofCc(DeadCrypter):
@@ -15,6 +15,3 @@ class LofCc(DeadCrypter):
     __description__ = """Lof.cc decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("mkaay", "mkaay@mkaay.de")]
-
-
-getInfo = create_getInfo(LofCc)

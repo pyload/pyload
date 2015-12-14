@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class FurLy(SimpleCrypter):
@@ -25,6 +25,3 @@ class FurLy(SimpleCrypter):
 
     LINK_PATTERN    = r'urls\[\d+\] = "(.+?)"'
     OFFLINE_PATTERN = r'var output;\s*var total'
-
-
-getInfo = create_getInfo(FurLy)

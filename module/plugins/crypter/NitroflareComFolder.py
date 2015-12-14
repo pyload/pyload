@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 from module.plugins.internal.misc import json
 
 
@@ -34,6 +34,3 @@ class NitroflareComFolder(SimpleCrypter):
             self.offline()
 
         return [link['url'] for link in res['files']] if 'files' in res else None
-
-
-getInfo = create_getInfo(NitroflareComFolder)

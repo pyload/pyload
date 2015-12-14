@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class PastebinCom(SimpleCrypter):
@@ -25,6 +25,3 @@ class PastebinCom(SimpleCrypter):
 
     NAME_PATTERN = r'<div class="paste_box_line1" title="(?P<N>.+?)"'
     LINK_PATTERN = r'<div class="de\d+">(.+?)<'
-
-
-getInfo = create_getInfo(PastebinCom)

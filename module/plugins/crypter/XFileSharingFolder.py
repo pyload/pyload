@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
+from module.plugins.internal.XFSCrypter import XFSCrypter
 
 
 class XFileSharingFolder(XFSCrypter):
@@ -39,7 +39,7 @@ class XFileSharingFolder(XFSCrypter):
     def setup_base(self):
         if self.account:
             self.req     = self.pyload.requestFactory.getRequest(self.PLUGIN_NAME, self.account.user)
-            self.premium = self.account.info['data']['premium']  #@NOTE: Avoid one unnecessary get_info call by `self.account.premium` here
+            self.premium = self.account.info['data']['premium']  #@NOTE: Don't call get_info here to reduce overhead
         else:
             self.req     = self.pyload.requestFactory.getRequest(self.classname)
             self.premium = False
@@ -53,6 +53,3 @@ class XFileSharingFolder(XFSCrypter):
         self.__class__.__name__ = str(self.PLUGIN_NAME)
         super(XFileSharingFolder, self).load_account()
         self.__class__.__name__ = class_name
-
-
-getInfo = create_getInfo(XFileSharingFolder)

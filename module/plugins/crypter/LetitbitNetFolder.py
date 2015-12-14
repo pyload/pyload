@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 
 
 class LetitbitNetFolder(Crypter):
@@ -35,6 +35,3 @@ class LetitbitNetFolder(Crypter):
             self.error(_("FOLDER_PATTERN not found"))
 
         self.links.extend(re.findall(self.LINK_PATTERN, folder.group(0)))
-
-
-getInfo = create_getInfo(LetitbitNetFolder)

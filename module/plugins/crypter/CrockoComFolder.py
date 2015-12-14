@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class CrockoComFolder(SimpleCrypter):
@@ -22,6 +22,3 @@ class CrockoComFolder(SimpleCrypter):
 
 
     LINK_PATTERN = r'<td class="last"><a href="(.+?)">download</a>'
-
-
-getInfo = create_getInfo(CrockoComFolder)

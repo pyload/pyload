@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class GoogledriveComFolder(SimpleCrypter):
@@ -24,6 +24,3 @@ class GoogledriveComFolder(SimpleCrypter):
     NAME_PATTERN    = r"folderName: '(?P<N>.+?)'"
     LINK_PATTERN    = r'\[,"\w+"(?:,,".+?")?,"(.+?)"'
     OFFLINE_PATTERN = r'<TITLE>'
-
-
-getInfo = create_getInfo(GoogledriveComFolder)

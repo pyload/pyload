@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 from module.network.HTTPRequest import BadHeader
 
 
@@ -62,6 +62,3 @@ class EmbeduploadCom(Crypter):
             except BadHeader:
                 pass
         return new_links
-
-
-getInfo = create_getInfo(EmbeduploadCom)

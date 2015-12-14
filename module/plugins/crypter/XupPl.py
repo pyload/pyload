@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 
 
 class XupPl(Crypter):
@@ -26,6 +26,3 @@ class XupPl(Crypter):
             self.links = [header.get('location')]
         else:
             self.fail(_("Unable to find link"))
-
-
-getInfo = create_getInfo(XupPl)

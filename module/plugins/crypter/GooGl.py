@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 from module.plugins.internal.misc import json
 
 
@@ -33,6 +33,3 @@ class GooGl(SimpleCrypter):
         self.log_debug("JSON data: " + rep)
         rep = json.loads(rep)
         return [rep['longUrl']] if "longUrl" in rep else None
-
-
-getInfo = create_getInfo(GooGl)

@@ -3,7 +3,7 @@
 import re
 import urlparse
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 from module.plugins.internal.misc import fsjoin, json
 
 
@@ -104,6 +104,3 @@ class DailymotionComFolder(Crypter):
             p_folder = fsjoin(self.pyload.config.get("general", "download_folder"), p_owner, p_name)
             self.log_debug("%s video\s found on playlist \"%s\"" % (len(p_videos), p_name))
             self.packages.append((p_name, p_videos, p_folder))  #@NOTE: Folder is NOT recognized by pyload 0.4.9!
-
-
-getInfo = create_getInfo(DailymotionComFolder)

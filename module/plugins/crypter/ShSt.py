@@ -4,7 +4,7 @@ import re
 
 import pycurl
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 
 
 class ShSt(Crypter):
@@ -31,6 +31,3 @@ class ShSt(Crypter):
         header = self.load(self.pyfile.url, just_header = True, decode = False)
         target_url = header.get('location')
         self.links.append(target_url)
-
-
-getInfo = create_getInfo(ShSt)

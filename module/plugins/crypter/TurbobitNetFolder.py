@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 from module.plugins.internal.misc import json
 
 
@@ -44,6 +44,3 @@ class TurbobitNetFolder(SimpleCrypter):
 
     def get_links(self):
         return ["http://turbobit.net/%s.html" % id for id in self._get_links(self.info['pattern']['ID'])]
-
-
-getInfo = create_getInfo(TurbobitNetFolder)

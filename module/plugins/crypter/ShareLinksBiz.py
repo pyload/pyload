@@ -5,7 +5,7 @@ import re
 
 import Crypto.Cipher
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 
 
 class ShareLinksBiz(Crypter):
@@ -301,6 +301,3 @@ class ShareLinksBiz(Crypter):
         #: Log and return
         self.log_debug("Block has %d links" % len(links))
         return links
-
-
-getInfo = create_getInfo(ShareLinksBiz)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
+from module.plugins.internal.DeadCrypter import DeadCrypter
 
 
 class TrailerzoneInfo(DeadCrypter):
@@ -15,6 +15,3 @@ class TrailerzoneInfo(DeadCrypter):
     __description__ = """TrailerZone.info decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("godofdream", "soilfiction@gmail.com")]
-
-
-getInfo = create_getInfo(TrailerzoneInfo)
