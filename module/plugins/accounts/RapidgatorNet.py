@@ -36,7 +36,7 @@ class RapidgatorNet(Account):
 
             jso = json.loads(html)
 
-            if jso['response_status'] == 200:
+            if jso['response_status'] is 200:
                 if "reset_in" in jso['response']:
                     self._schedule_refresh(user, jso['response']['reset_in'])
 
@@ -65,7 +65,7 @@ class RapidgatorNet(Account):
 
             jso = json.loads(html)
 
-            if jso['response_status'] == 200:
+            if jso['response_status'] is 200:
                 data['sid'] = str(jso['response']['session_id'])
                 return
             else:

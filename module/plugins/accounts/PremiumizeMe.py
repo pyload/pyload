@@ -29,7 +29,7 @@ class PremiumizeMe(MultiAccount):
         data = json.loads(answer)
 
         #: If account is not valid thera are no hosters available
-        if data['status'] != 200:
+        if data['status'] is not 200:
             return []
 
         #: Extract hosters from json file
@@ -56,7 +56,7 @@ class PremiumizeMe(MultiAccount):
         status = self.get_account_status(user, password)
 
         #: Check if user and password are valid
-        if status['status'] != 200:
+        if status['status'] is not 200:
             self.fail_login()
 
 

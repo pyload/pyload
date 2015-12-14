@@ -36,7 +36,7 @@ class FilecloudIo(Account):
                         post={'akey': akey})
         rep = json.loads(rep)
 
-        if rep['is_premium'] == 1:
+        if rep['is_premium'] is 1:
             return {'validuntil': float(rep['premium_until']), 'trafficleft': -1}
         else:
             return {'premium': False}

@@ -47,5 +47,5 @@ class OverLoadMe(MultiAccount):
 
         data = json.loads(jsondata)
 
-        if data['err'] == 1:
+        if data['err'] is 1:
             self.fail_login()

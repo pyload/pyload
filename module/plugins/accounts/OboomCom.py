@@ -39,7 +39,7 @@ class OboomCom(Account):
                                       get={'auth': user,
                                            'pass': pbkdf2}))
 
-        if result[0] != 200:
+        if result[0] is not 200:
             self.log_warning(_("Failed to log in: %s") % result[1])
             self.fail_login()
 
