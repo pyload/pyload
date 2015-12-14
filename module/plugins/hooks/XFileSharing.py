@@ -9,7 +9,7 @@ from module.plugins.internal.Addon import Addon
 class XFileSharing(Addon):
     __name__    = "XFileSharing"
     __type__    = "hook"
-    __version__ = "0.52"
+    __version__ = "0.53"
     __status__  = "testing"
 
     __config__ = [("activated"       , "bool", "Activated"                     , True ),
@@ -24,9 +24,9 @@ class XFileSharing(Addon):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    regexp = {'hoster' : (r'(?:https?://(?:www\.)?)(?!%s)(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
+    regexp = {'hoster' : (r'(?:https?://(?:www\.)?)(?!(?:www\.)?(?:%s))(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,})+)(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
                           r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:embed-)?\w+'),
-              'crypter': (r'(?:https?://(?:www\.)?)(?!%s)(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/(?:user|folder)s?/\w+',
+              'crypter': (r'(?:https?://(?:www\.)?)(?!(?:www\.)?(?:%s))(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,})+)(?:\:\d+)?)/(?:user|folder)s?/\w+',
                           r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:user|folder)s?/\w+')}
 
     BUILTIN_HOSTERS  = [# WORKING HOSTERS:
@@ -60,15 +60,15 @@ class XFileSharing(Addon):
 
 
     def get_pattern(self, type, plugin):
-        if self.get_config("use_%s_list" % type):
-            plugin_list = self.get_config('%s_list' % type)
+        if self.config.get("use_%s_list" % type):
+            plugin_list = self.config.get('%s_list' % type)
             plugin_list = plugin_list.replace(' ', '').replace('\\', '')
             plugin_list = plugin_list.replace('|', ',').replace(';', ',')
             plugin_list = plugin_list.lower().split(',')
 
             plugin_set = set(plugin_list)
 
-            if self.get_config('use_builtin_list'):
+            if self.config.get('use_builtin_list'):
                 builtin_list = getattr(self, "BUILTIN_%sS" % type.upper())
                 plugin_set.update(builtin_list)
 
