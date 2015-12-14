@@ -12,8 +12,8 @@ try:
 except ImportError:
     pass
 
-from module.plugins.internal.Addon import Addon, Expose
-from module.plugins.internal.utils import encode, fs_join
+from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import Expose, encode, fsjoin
 
 
 class Kernel32(object):
@@ -27,7 +27,7 @@ class Kernel32(object):
 class AntiStandby(Addon):
     __name__    = "AntiStandby"
     __type__    = "hook"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                       , True ),
@@ -50,12 +50,12 @@ class AntiStandby(Addon):
 
 
     def activate(self):
-        hdd     = self.get_config('hdd')
-        system  = not self.get_config('system')
-        display = not self.get_config('display')
+        hdd     = self.config.get('hdd')
+        system  = not self.config.get('system')
+        display = not self.config.get('display')
 
         if hdd:
-            self.start_periodical(self.get_config('interval'), threaded=True)
+            self.start_periodical(self.config.get('interval'), threaded=True)
 
         if os.name is "nt":
             self.win_standby(system, display)
@@ -68,11 +68,7 @@ class AntiStandby(Addon):
 
 
     def deactivate(self):
-        try:
-            os.remove(self.TMP_FILE)
-
-        except OSError:
-            pass
+        self.remove(self.TMP_FILE, trash=False)
 
         if os.name is "nt":
             self.win_standby(True)
@@ -152,18 +148,18 @@ class AntiStandby(Addon):
     @Expose
     def max_mtime(self, path):
         return max(0, 0,
-                   *(os.path.getmtime(fs_join(root, file))
+                   *(os.path.getmtime(fsjoin(root, file))
                         for root, dirs, files in os.walk(encode(path), topdown=False)
                             for file in files))
 
 
     def periodical(self):
-        if self.get_config('hdd') is False:
+        if self.config.get('hdd') is False:
             return
 
         if (self.pyload.threadManager.pause or
-                not self.pyload.api.isTimeDownload() or
-                    not self.pyload.threadManager.getActiveFiles()):
+            not self.pyload.api.isTimeDownload() or
+            not self.pyload.threadManager.getActiveFiles()):
             return
 
         dl_folder = self.pyload.config.get("general", "download_folder")

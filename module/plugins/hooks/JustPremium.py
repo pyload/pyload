@@ -8,7 +8,7 @@ from module.plugins.internal.Addon import Addon
 class JustPremium(Addon):
     __name__    = "JustPremium"
     __type__    = "hook"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                        , False),
@@ -37,9 +37,9 @@ class JustPremium(Addon):
                              and hosterdict[hoster]['new_name'] in premiumplugins)
 
         excluded = map(lambda domain: "".join(part.capitalize() for part in re.split(r'(\.|\d+)', domain) if part != '.'),
-                       self.get_config('excluded').replace(' ', '').replace(',', '|').replace(';', '|').split('|'))
+                       self.config.get('excluded').replace(' ', '').replace(',', '|').replace(';', '|').split('|'))
         included = map(lambda domain: "".join(part.capitalize() for part in re.split(r'(\.|\d+)', domain) if part != '.'),
-                       self.get_config('included').replace(' ', '').replace(',', '|').replace(';', '|').split('|'))
+                       self.config.get('included').replace(' ', '').replace(',', '|').replace(';', '|').split('|'))
 
         hosterlist = (premiumplugins | multihosters).union(excluded).difference(included)
 

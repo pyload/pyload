@@ -2,14 +2,14 @@
 
 import datetime
 
-from module.plugins.internal.Addon import Addon, Expose
-from module.plugins.internal.utils import seconds_to_nexthour
+from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import Expose, seconds_to_nexthour
 
 
 class LogMarker(Addon):
     __name__    = "LogMarker"
     __type__    = "hook"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated" , False),
@@ -26,12 +26,12 @@ class LogMarker(Addon):
 
 
     def periodical(self):
-        if self.get_config('mark_day') and datetime.datetime.today().hour is 0:
+        if self.config.get('mark_day') and datetime.datetime.today().hour is 0:
             self.log_info("------------------------------------------------")
             self.log_info(_("------------------- DAY MARK -------------------"))
             self.log_info("------------------------------------------------")
 
-        elif self.get_config('mark_hour'):
+        elif self.config.get('mark_hour'):
             self.log_info("------------------------------------------------")
             self.log_info(_("------------------- HOUR MARK ------------------"))
             self.log_info("------------------------------------------------")

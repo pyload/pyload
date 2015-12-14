@@ -2,20 +2,21 @@
 
 from __future__ import with_statement
 
-import pycurl
+import base64
 import uuid
 
-from base64 import b64encode
+import pycurl
 
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest as get_request
-from module.plugins.internal.Addon import Addon, threaded
+from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import threaded
 
 
 class ExpertDecoders(Addon):
     __name__    = "ExpertDecoders"
     __type__    = "hook"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __config__ = [("activated"   , "bool"    , "Activated"                       , False),
@@ -32,7 +33,7 @@ class ExpertDecoders(Addon):
 
 
     def get_credits(self):
-        res = self.load(self.API_URL, post={'key': self.get_config('passkey'), 'action': "balance"})
+        res = self.load(self.API_URL, post={'key': self.config.get('passkey'), 'action': "balance"})
 
         if res.isdigit():
             self.log_info(_("%s credits left") % res)
@@ -44,7 +45,7 @@ class ExpertDecoders(Addon):
 
 
     @threaded
-    def _process_captcha(self, task):
+    def _process_captcha(self, task)
         task.data['ticket'] = ticket = uuid.uuid4()
         result = None
 
@@ -58,8 +59,8 @@ class ExpertDecoders(Addon):
         try:
             result = self.load(self.API_URL,
                                post={'action'     : "upload",
-                                    'key'        : self.get_config('passkey'),
-                                    'file'       : b64encode(data),
+                                    'key'        : self.config.get('passkey'),
+                                    'file'       : base64.b64encode(data),
                                     'gen_task_id': ticket},
                                req=req)
         finally:
@@ -73,10 +74,10 @@ class ExpertDecoders(Addon):
         if not task.isTextual():
             return False
 
-        if not self.get_config('passkey'):
+        if not self.config.get('passkey'):
             return False
 
-        if self.pyload.isClientConnected() and self.get_config('check_client'):
+        if self.pyload.isClientConnected() and self.config.get('check_client'):
             return False
 
         if self.get_credits() > 0:
@@ -93,7 +94,7 @@ class ExpertDecoders(Addon):
 
             try:
                 res = self.load(self.API_URL,
-                             post={'action': "refund", 'key': self.get_config('passkey'), 'gen_task_id': task.data['ticket']})
+                             post={'action': "refund", 'key': self.config.get('passkey'), 'gen_task_id': task.data['ticket']})
                 self.log_info(_("Request refund"), res)
 
             except BadHeader, e:

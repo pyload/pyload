@@ -3,9 +3,10 @@
 from __future__ import with_statement
 
 import StringIO
-import pycurl
 import time
 import urllib
+
+import pycurl
 
 try:
     from PIL import Image
@@ -14,7 +15,8 @@ except ImportError:
     import Image
 
 from module.network.RequestFactory import getRequest as get_request
-from module.plugins.internal.Addon import Addon, threaded
+from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import threaded
 
 
 class CaptchaBrotherhoodException(Exception):
@@ -38,7 +40,7 @@ class CaptchaBrotherhoodException(Exception):
 class CaptchaBrotherhood(Addon):
     __name__    = "CaptchaBrotherhood"
     __type__    = "hook"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __config__ = [("activated"   , "bool"    , "Activated"                       , False),
@@ -57,7 +59,7 @@ class CaptchaBrotherhood(Addon):
 
     def get_credits(self):
         res = self.load(self.API_URL + "askCredits.aspx",
-                     get={'username': self.get_config('username'), 'password': self.get_config('password')})
+                     get={'username': self.config.get('username'), 'password': self.config.get('password')})
         if not res.startswith("OK"):
             raise CaptchaBrotherhoodException(res)
         else:
@@ -87,8 +89,8 @@ class CaptchaBrotherhood(Addon):
         req = get_request()
 
         url = "%ssendNewCaptcha.aspx?%s" % (self.API_URL,
-                                            urllib.urlencode({'username'     : self.get_config('username'),
-                                                              'password'     : self.get_config('password'),
+                                            urllib.urlencode({'username'     : self.config.get('username'),
+                                                              'password'     : self.config.get('password'),
                                                               'captchaSource': "pyLoad",
                                                               'timeout'      : "80"}))
 
@@ -122,8 +124,8 @@ class CaptchaBrotherhood(Addon):
 
     def api_response(self, api, ticket):
         res = self.load("%s%s.aspx" % (self.API_URL, api),
-                          get={'username': self.get_config('username'),
-                               'password': self.get_config('password'),
+                          get={'username': self.config.get('username'),
+                               'password': self.config.get('password'),
                                'captchaID': ticket})
         if not res.startswith("OK"):
             raise CaptchaBrotherhoodException("Unknown response: %s" % res)
@@ -138,10 +140,10 @@ class CaptchaBrotherhood(Addon):
         if not task.isTextual():
             return False
 
-        if not self.get_config('username') or not self.get_config('password'):
+        if not self.config.get('username') or not self.config.get('password'):
             return False
 
-        if self.pyload.isClientConnected() and self.get_config('check_client'):
+        if self.pyload.isClientConnected() and self.config.get('check_client'):
             return False
 
         if self.get_credits() > 10:
@@ -159,7 +161,7 @@ class CaptchaBrotherhood(Addon):
 
 
     @threaded
-    def _process_captcha(self, task):
+    def _process_captcha(self, task)
         c = task.captchaFile
         try:
             ticket, result = self.submit(c)

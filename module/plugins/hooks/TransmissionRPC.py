@@ -5,16 +5,16 @@ import re
 
 import pycurl
 
-from module.plugins.internal.utils import json
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest as get_request
 from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import json
 
 
 class TransmissionRPC(Addon):
     __name__    = "TransmissionRPC"
     __type__    = "hook"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __pattern__ = r"https?://.+\.torrent|magnet:\?.+"
@@ -41,7 +41,7 @@ class TransmissionRPC(Addon):
 
 
     def send_to_transmission(self, url):
-        transmission_rpc_url = self.get_config('rpc_url')
+        transmission_rpc_url = self.config.get('rpc_url')
         client_request_id = self.classname + "".join(random.choice('0123456789ABCDEF') for _i in xrange(4))
         req = get_request()
 

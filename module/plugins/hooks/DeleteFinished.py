@@ -7,7 +7,7 @@ from module.plugins.internal.Addon import Addon
 class DeleteFinished(Addon):
     __name__    = "DeleteFinished"
     __type__    = "hook"
-    __version__ = "1.17"
+    __version__ = "1.18"
     __status__  = "testing"
 
     __config__ = [("activated" , "bool", "Activated"                        , False),
@@ -24,7 +24,7 @@ class DeleteFinished(Addon):
 
     def periodical(self):
         if not self.info['sleep']:
-            deloffline = self.get_config('deloffline')
+            deloffline = self.config.get('deloffline')
             mode = "0,1,4" if deloffline else "0,4"
             msg = _('delete all finished packages in queue list (%s packages with offline links)')
             self.log_info(msg % (_('including') if deloffline else _('excluding')))
@@ -39,7 +39,7 @@ class DeleteFinished(Addon):
 
     def activate(self):
         self.info['sleep'] = True
-        self.set_interval(self.get_config('interval') * 60 * 60)
+        self.set_interval(self.config.get('interval') * 60 * 60)
         self.add_event('package_finished', self.wakeup)
 
 
