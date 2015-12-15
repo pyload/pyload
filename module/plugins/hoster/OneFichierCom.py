@@ -9,10 +9,10 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class OneFichierCom(SimpleHoster):
     __name__    = "OneFichierCom"
     __type__    = "hoster"
-    __version__ = "0.95"
+    __version__ = "0.96"
     __status__  = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?(?:\w+\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?\w+)?'
+    __pattern__ = r'https?://(?:www\.)?(?:\w+\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(?:es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?\w+)?'
     __config__  = [("activated"   , "bool", "Activated"                                        , True),
                    ("use_premium" , "bool", "Use premium account if available"                 , True),
                    ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
@@ -28,7 +28,8 @@ class OneFichierCom(SimpleHoster):
                        ("stickell", "l.stickell@yahoo.it"),
                        ("Elrick69", "elrick69[AT]rocketmail[DOT]com"),
                        ("Walter Purcaro", "vuolter@gmail.com"),
-                       ("Ludovic Lehmann", "ludo.lehmann@gmail.com")]
+                       ("Ludovic Lehmann", "ludo.lehmann@gmail.com"),
+                       ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
 
     URL_REPLACEMENTS = [("https:", "http:")]  #@TODO: Remove in 0.4.10
@@ -41,9 +42,8 @@ class OneFichierCom(SimpleHoster):
 
     WAIT_PATTERN = r'>You must wait \d+ minutes'
 
-
     def setup(self):
-        self.multiDL        = self.premium
+        self.multiDL         = self.premium
         self.resume_download = True
 
 
@@ -96,11 +96,11 @@ class OneFichierCom(SimpleHoster):
 
         inputs['submit'] = "Download"
 
-        self.download(url, post=inputs)
+        self.download(url, post=inputs, disposition=False)  #@TODO: Remove disposition in 0.4.10
 
 
     def handle_premium(self, pyfile):
-        self.download(pyfile.url, post={'did': 0, 'dl_no_ssl': "on"})
+        self.download(pyfile.url, post={'did': 0, 'dl_no_ssl': "on"}, disposition=False)  #@TODO: Remove disposition in 0.4.10
 
 
 getInfo = create_getInfo(OneFichierCom)
