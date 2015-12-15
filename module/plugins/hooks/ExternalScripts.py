@@ -10,7 +10,7 @@ from module.plugins.internal.misc import Expose, encode, fsjoin
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.56"
+    __version__ = "0.60"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                  , True ),
@@ -35,6 +35,11 @@ class ExternalScripts(Addon):
                           'all_archives_processed': "all_archives_processed" ,
                           'pyload_updated'        : "pyload_updated"         }
 
+        self.start_periodical(60)
+        self.pyload_start()
+
+
+    def make_folders(self):
         folders = ["pyload_start", "pyload_restart", "pyload_stop",
                    "before_reconnect", "after_reconnect",
                    "download_preparing", "download_failed", "download_finished",
@@ -44,48 +49,53 @@ class ExternalScripts(Addon):
                    "all_archives_extracted", "all_archives_processed"]
 
         for folder in folders:
-            path = os.path.join("scripts", folder)
-            self.init_folder(folder, path)
+            dir = os.path.join("scripts", folder)
 
-        for folder, scripts in self.scripts.items():
-            if scripts:
-                self.log_info(_("Installed scripts in folder `%s`: %s")
-                              % (folder, ", ".join(scripts)))
+            if os.path.isdir(dir):
+                continue
 
-        self.pyload_start()
-
-
-    def init_folder(self, name, path):
-        self.scripts[name] = []
-
-        if not os.path.isdir(path):
             try:
-                os.makedirs(path)
+                os.makedirs(dir)
 
             except OSError, e:
                 self.log_debug(e, trace=True)
-                return
-
-        for filename in os.listdir(path):
-            file = fsjoin(path, filename)
-            if not os.path.isfile(file):
-                continue
-
-            if file[0] in ("#", "_") or file.endswith("~") or file.endswith(".swp"):
-                continue
-
-            if not os.access(file, os.X_OK):
-                self.log_warning(_("Script not executable: [%s] %s") % (name, file))
-
-            self.scripts[name].append(file)
-            self.log_info(_("Registered script: [%s] %s") % (name, file))
 
 
-    @Expose
+    def periodical(self):
+        self.make_folders()
+
+        folders = [entry for entry in os.listdir("scripts") \
+                   if os.path.isdir(os.path.join("scripts", entry))]
+
+        for folder in folders:
+            self.scripts[folder] = []
+
+            dirname = os.path.join("scripts", folder)
+
+            for entry in os.listdir(dirname):
+                file = os.path.join(dirname, entry)
+
+                if not os.path.isfile(file):
+                    continue
+
+                if file[0] in ("#", "_") or file.endswith("~") or file.endswith(".swp"):
+                    continue
+
+                if not os.access(file, os.X_OK):
+                    self.log_warning(_("Script `%s` is not executable") % entry)
+
+                self.scripts[folder].append(file)
+
+            script_names = map(os.path.basename, self.scripts[folder])
+            self.log_info(_("Activated %s scripts: %s")
+                          % (folder, ", ".join(script_names) or None))
+
+
     def call_cmd(self, command, *args, **kwargs):
-        self.log_info(_("EXECUTE [%s] %s") % (os.path.dirname(command), args))
-        call = map(encode, [command] + args)
+        call = [command] + args
+        self.log_debug("EXECUTE " + " ".join(call))
 
+        call = map(encode, call)
         p = subprocess.Popen(call, bufsize=-1)  #@NOTE: output goes to pyload
 
         return p
@@ -93,12 +103,26 @@ class ExternalScripts(Addon):
 
     @Expose
     def call_script(self, folder, *args, **kwargs):
-        for script in self.scripts[folder]:
+        scripts = self.scripts.get(folder)
+
+        if folder not in scripts:
+            self.log_debug("Folder `%s` not found" % folder)
+            return
+
+        scripts = self.scripts.get(folder)
+
+        if not scripts:
+            self.log_debug("No script found under folder `%s`" % folder)
+            return
+
+        self.log_info(_("Executing %s scripts...") % folder)
+
+        for file in scripts:
             try:
-                p = self.call_cmd(script, args)
+                p = self.call_cmd(file, args)
 
             except Exception, e:
-                self.log_error(_("Runtime error: %s") % script,
+                self.log_error(_("Runtime error: %s") % file,
                                e or _("Unknown error"))
 
             else:
