@@ -6,7 +6,7 @@ import threading
 import time
 
 from module.plugins.internal.Plugin import Plugin, Skip
-from module.plugins.internal.utils import compare_time, isiterable, lock, parse_size, safe_format
+from module.plugins.internal.misc import compare_time, isiterable, lock, parse_size, safe_format
 
 
 class Account(Plugin):
@@ -85,7 +85,7 @@ class Account(Plugin):
         return True
 
 
-    def start_periodical(self, interval=None, threaded=False, delay=None):
+    def start_periodical(self, interval=None, threaded=False, delay=0):
         if interval is not None and self.set_interval(interval) is False:
             return False
         else:
@@ -209,7 +209,7 @@ class Account(Plugin):
         self.sync()
 
         clear = lambda x: {} if isinstance(x, dict) else [] if isiterable(x) else None
-        self.info['data'] = dict((k, clear(v)) for k, v in self.info['data'])
+        self.info['data'] = dict((k, clear(v)) for k, v in self.info['data'].items())
         self.info['data']['options'] = {'limitdl': ['0']}
 
         self.syncback()
