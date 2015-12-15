@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import socket
-import threading
 import time
 
 try:
@@ -9,18 +8,8 @@ try:
 except ImportError:
     pass
 
-from module.plugins.internal.Addon import Addon, threaded
-
-
-def forward(source, destination):
-    try:
-        bufsize = 1024
-        bufdata = source.recv(bufsize)
-        while bufdata:
-            destination.sendall(bufdata)
-            bufdata = source.recv(bufsize)
-    finally:
-        destination.shutdown(socket.SHUT_WR)
+from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import forward, lock, threaded
 
 
 #@TODO: IPv6 support
@@ -46,8 +35,8 @@ class ClickNLoad(Addon):
         if not self.pyload.config.get("webinterface", "activated"):
             return
 
-        cnlip   = "" if self.get_config('extern') else "127.0.0.1"
-        cnlport = self.get_config('port')
+        cnlip   = "" if self.config.get('extern') else "127.0.0.1"
+        cnlport = self.config.get('port')
         webip   = "127.0.0.1" if any(_ip == self.pyload.config.get("webinterface", "host") for _ip in ("0.0.0.0", "")) \
             else self.pyload.config.get("webinterface", "host")
         webport = self.pyload.config.get("webinterface", "port")
@@ -55,8 +44,9 @@ class ClickNLoad(Addon):
         self.pyload.scheduler.addJob(5, self.proxy, [cnlip, cnlport, webip, webport], threaded=False)
 
 
+    @lock
     @threaded
-    def forward(self, source, destination, queue=False):
+    def forward(self, source, destination, queue=False)
         if queue:
             old_ids = set(pack.id for pack in self.pyload.api.getCollector())
 
@@ -71,12 +61,7 @@ class ClickNLoad(Addon):
     @threaded
     def proxy(self, cnlip, cnlport, webip, webport):
         self.log_info(_("Proxy listening on %s:%s") % (cnlip or "0.0.0.0", cnlport))
-
         self._server(cnlip, cnlport, webip, webport)
-
-        lock = threading.Lock()
-        lock.acquire()
-        lock.acquire()
 
 
     @threaded
@@ -108,7 +93,7 @@ class ClickNLoad(Addon):
 
                 server_socket.connect((webip, webport))
 
-                self.forward(client_socket, server_socket, self.get_config('dest') is "queue")
+                self.forward(client_socket, server_socket, self.config.get('dest') is "queue")
                 self.forward(server_socket, client_socket)
 
         except socket.timeout:
