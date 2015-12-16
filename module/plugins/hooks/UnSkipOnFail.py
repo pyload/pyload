@@ -62,7 +62,7 @@ class UnSkipOnFail(Addon):
             pdata = self.pyload.api.getPackageData(pinfo.pid)
             for link in pdata.links:
                 #: Check if link == "skipped"
-                if link.status != 4:
+                if link.status is not 4:
                     continue
 
                 #: Check if link name collides with pdata's name

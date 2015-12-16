@@ -94,13 +94,13 @@ class DeathByCaptcha(Addon):
                 raise DeathByCaptchaException(str(res))
 
         except BadHeader, e:
-            if e.code == 403:
+            if e.code is 403:
                 raise DeathByCaptchaException('not-logged-in')
 
-            elif e.code == 413:
+            elif e.code is 413:
                 raise DeathByCaptchaException('invalid-captcha')
 
-            elif e.code == 503:
+            elif e.code is 503:
                 raise DeathByCaptchaException('service-overload')
 
             elif e.code in (400, 405):

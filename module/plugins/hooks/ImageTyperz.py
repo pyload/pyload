@@ -100,7 +100,7 @@ class ImageTyperz(Addon):
             raise ImageTyperzException(res)
         else:
             data = res.split('|')
-            if len(data) == 2:
+            if len(data) is 2:
                 ticket, result = data
             else:
                 raise ImageTyperzException("Unknown response: %s" % res)

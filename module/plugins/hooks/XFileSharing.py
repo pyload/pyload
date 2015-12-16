@@ -123,6 +123,3 @@ class XFileSharing(Addon):
         dict = self.pyload.pluginManager.plugins[type][plugin]
         dict['pattern'] = r'^unmatchable$'
         dict['re'] = re.compile(dict['pattern'])
-
-
-
