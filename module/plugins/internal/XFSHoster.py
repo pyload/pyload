@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 
+import operator
 import random
 import re
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.captcha.SolveMedia import SolveMedia
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.internal.utils import html_unescape, seconds_to_midnight, set_cookie
+from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.misc import html_unescape, seconds_to_midnight, set_cookie
 
 
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.71"
+    __version__ = "0.72"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -230,12 +231,12 @@ class XFSHoster(SimpleHoster):
 
             self.log_debug(captcha_div)
 
-            inputs['code'] = "".join(a[1] for a in sorted(numerals, key=lambda num: int(num[0])))
+            inputs['code'] = "".join(a[1] for a in sorted(numerals, key=operator.itemgetter(0)))
 
             self.log_debug("Captcha code: %s" % inputs['code'], numerals)
             return
 
-        recaptcha = ReCaptcha(self)
+        recaptcha = ReCaptcha(self.pyfile)
         try:
             captcha_key = re.search(self.RECAPTCHA_PATTERN, self.data).group(1)
 
@@ -249,7 +250,7 @@ class XFSHoster(SimpleHoster):
             inputs['recaptcha_response_field'], inputs['recaptcha_challenge_field'] = recaptcha.challenge(captcha_key)
             return
 
-        solvemedia = SolveMedia(self)
+        solvemedia = SolveMedia(self.pyfile)
         try:
             captcha_key = re.search(self.SOLVEMEDIA_PATTERN, self.data).group(1)
 
