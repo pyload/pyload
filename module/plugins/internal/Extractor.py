@@ -23,7 +23,7 @@ class PasswordError(Exception):
 class Extractor(Plugin):
     __name__    = "Extractor"
     __type__    = "extractor"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __status__  = "stable"
 
     __description__ = """Base extractor plugin"""
@@ -80,7 +80,6 @@ class Extractor(Plugin):
                  fullpath=True,
                  overwrite=False,
                  excludefiles=[],
-                 renice=False,
                  priority=0,
                  keepbroken=False,
                  fid=None):
