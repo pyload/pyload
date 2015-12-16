@@ -14,13 +14,13 @@ import subprocess
 # import tempfile
 
 from module.plugins.internal.Plugin import Plugin
-from module.plugins.internal.utils import fs_join
+from module.plugins.internal.misc import encode, fsjoin
 
 
 class OCR(Plugin):
     __name__    = "OCR"
     __type__    = "ocr"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__  = "stable"
 
     __description__ = """OCR base plugin"""
@@ -28,15 +28,15 @@ class OCR(Plugin):
     __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
-    def __init__(self, plugin):
-        self._init(plugin.pyload)
-        self.plugin = plugin
+    def __init__(self, pyfile):
+        self._init(pyfile.m.core)
+        self.pyfile = pyfile
         self.init()
 
 
     def _log(self, level, plugintype, pluginname, messages):
         messages = (self.__name__,) + messages
-        return self.plugin._log(level, plugintype, self.plugin.__name__, messages)
+        return self.pyfile.plugin._log(level, plugintype, self.pyfile.plugin.__name__, messages)
 
 
     def load_image(self, image):
@@ -56,26 +56,33 @@ class OCR(Plugin):
         self.image = self.image.point(lambda a: a * value + 10)
 
 
-    def run(self, command):
+    def call_cmd(self, command, *args, **kwargs):
         """
         Run a command
         """
-        popen = subprocess.Popen(command, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        call = [command] + args
+        self.log_debug("EXECUTE " + " ".join(call))
+
+        call = map(encode, call)
+        popen = subprocess.Popen(call, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         popen.wait()
+
         output = popen.stdout.read() + " | " + popen.stderr.read()
+
         popen.stdout.close()
         popen.stderr.close()
+
         self.log_debug("Tesseract ReturnCode %d" % popen.returncode, "Output: %s" % output)
 
 
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True, pagesegmode=None):
         # tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
         try:
-            tmpTif = open(fs_join("tmp", "tmpTif_%s.tif" % self.classname), "wb")
+            tmpTif = open(fsjoin("tmp", "tmpTif_%s.tif" % self.classname), "wb")
             tmpTif.close()
 
             # tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
-            tmpTxt = open(fs_join("tmp", "tmpTxt_%s.txt" % self.classname), "wb")
+            tmpTxt = open(fsjoin("tmp", "tmpTxt_%s.txt" % self.classname), "wb")
             tmpTxt.close()
 
         except IOError, e:
@@ -86,18 +93,18 @@ class OCR(Plugin):
         self.image.save(tmpTif.name, 'TIFF')
 
         if os.name is "nt":
-            tessparams = [os.path.join(pypath, "tesseract", "tesseract.exe")]
+            command = os.path.join(pypath, "tesseract", "tesseract.exe")
         else:
-            tessparams = ["tesseract"]
+            command = "tesseract"
 
-        tessparams.extend([os.path.abspath(tmpTif.name), os.path.abspath(tmpTxt.name).replace(".txt", "")])
+        args = [os.path.abspath(tmpTif.name), os.path.abspath(tmpTxt.name).replace(".txt", "")]
 
         if pagesegmode:
-            tessparams.extend(["-psm", str(pagesegmode)])
+            args.extend(["-psm", str(pagesegmode)])
 
         if subset and (digits or lowercase or uppercase):
             # tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
-            with open(fs_join("tmp", "tmpSub_%s.subset" % self.classname), "wb") as tmpSub:
+            with open(fsjoin("tmp", "tmpSub_%s.subset" % self.classname), "wb") as tmpSub:
                 tmpSub.write("tessedit_char_whitelist ")
 
                 if digits:
@@ -108,11 +115,11 @@ class OCR(Plugin):
                     tmpSub.write("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
                 tmpSub.write("\n")
-                tessparams.append("nobatch")
-                tessparams.append(os.path.abspath(tmpSub.name))
+                args.append("nobatch")
+                args.append(os.path.abspath(tmpSub.name))
 
         self.log_debug("Running tesseract...")
-        self.run(tessparams)
+        self.call_cmd(command, *args)
         self.log_debug("Reading txt...")
 
         try:
@@ -123,14 +130,12 @@ class OCR(Plugin):
             self.result_captcha = ""
 
         self.log_info(_("OCR result: ") + self.result_captcha)
-        try:
-            os.remove(tmpTif.name)
-            os.remove(tmpTxt.name)
-            if subset and (digits or lowercase or uppercase):
-                os.remove(tmpSub.name)
 
-        except OSError, e:
-            self.log_warning(e)
+        self.remove(tmpTif.name, trash=False)
+        self.remove(tmpTxt.name, trash=False)
+
+        if subset and (digits or lowercase or uppercase):
+            self.remove(tmpSub.name, trash=False)
 
 
     def recognize(self, name):
@@ -162,34 +167,34 @@ class OCR(Plugin):
 
         for x in xrange(w):
             for y in xrange(h):
-                if pixels[x, y] == 255:
+                if pixels[x, y] is 255:
                     continue
                 #: No point in processing white pixels since we only want to remove black pixel
                 count = 0
 
                 try:
-                    if pixels[x - 1, y - 1] != 255:
+                    if pixels[x - 1, y - 1] is not 255:
                         count += 1
 
-                    if pixels[x - 1, y] != 255:
+                    if pixels[x - 1, y] is not 255:
                         count += 1
 
-                    if pixels[x - 1, y + 1] != 255:
+                    if pixels[x - 1, y + 1] is not 255:
                         count += 1
 
-                    if pixels[x, y + 1] != 255:
+                    if pixels[x, y + 1] is not 255:
                         count += 1
 
-                    if pixels[x + 1, y + 1] != 255:
+                    if pixels[x + 1, y + 1] is not 255:
                         count += 1
 
-                    if pixels[x + 1, y] != 255:
+                    if pixels[x + 1, y] is not 255:
                         count += 1
 
-                    if pixels[x + 1, y - 1] != 255:
+                    if pixels[x + 1, y - 1] is not 255:
                         count += 1
 
-                    if pixels[x, y - 1] != 255:
+                    if pixels[x, y - 1] is not 255:
                         count += 1
 
                 except Exception:
@@ -203,7 +208,7 @@ class OCR(Plugin):
         #: Second pass: this time set all 1's to 255 (white)
         for x in xrange(w):
             for y in xrange(h):
-                if pixels[x, y] == 1:
+                if pixels[x, y] is 1:
                     pixels[x, y] = 255
 
         self.pixels = pixels
@@ -218,7 +223,7 @@ class OCR(Plugin):
 
         for x in xrange(w):
             for y in xrange(h):
-                if pixels[x, y] == 0:
+                if pixels[x, y] is 0:
                     pixels[x, y] = 155
 
         highest = {}
@@ -234,7 +239,7 @@ class OCR(Plugin):
 
             for x in xrange(w):
                 for y in xrange(h):
-                    if pixels[x, y] == 0:
+                    if pixels[x, y] is 0:
                         pixels[x, y] = 255
 
             count = {}
@@ -242,14 +247,14 @@ class OCR(Plugin):
             for x in xrange(w):
                 count[x] = 0
                 for y in xrange(h):
-                    if pixels[x, y] == 155:
+                    if pixels[x, y] is 155:
                         count[x] += 1
 
             sum = 0
             cnt = 0
 
             for x in count.values():
-                if x != 0:
+                if x is not 0:
                     sum += x
                     cnt += 1
 
@@ -275,10 +280,10 @@ class OCR(Plugin):
 
         for x in xrange(w):
             for y in xrange(h):
-                if pixels[x, y] == 0:
+                if pixels[x, y] is 0:
                     pixels[x, y] = 255
 
-                if pixels[x, y] == 155:
+                if pixels[x, y] is 155:
                     pixels[x, y] = 0
 
         self.pixels = pixels
@@ -295,7 +300,7 @@ class OCR(Plugin):
         for x in xrange(width):
             black_pixel_in_col = False
             for y in xrange(height):
-                if pixels[x, y] != 255:
+                if pixels[x, y] is not 255:
                     if not started:
                         started = True
                         firstX = x
