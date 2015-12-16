@@ -1,28 +1,15 @@
 # -*- coding: utf-8 -*-
 
+import threading
+
 from module.plugins.internal.Plugin import Plugin
-
-
-class Expose(object):
-    """
-    Used for decoration to declare rpc services
-    """
-    def __new__(cls, f, *args, **kwargs):
-        hookManager.addRPC(f.__module__, f.func_name, f.func_doc)
-        return f
-
-
-def threaded(fn):
-    def run(*args, **kwargs):
-        hookManager.startThread(fn, *args, **kwargs)
-
-    return run
+from module.plugins.internal.misc import isiterable
 
 
 class Addon(Plugin):
     __name__    = "Addon"
     __type__    = "hook"  #@TODO: Change to `addon` in 0.4.10
-    __version__ = "0.14"
+    __version__ = "0.50"
     __status__  = "stable"
 
     __threaded__ = []  #@TODO: Remove in 0.4.10
@@ -40,6 +27,7 @@ class Addon(Plugin):
 
         #: `HookManager`
         self.manager = manager
+        self.lock    = threading.Lock()
 
         #: Automatically register event listeners for functions, attribute will be deleted dont use it yourself
         self.event_map = {}
@@ -55,6 +43,7 @@ class Addon(Plugin):
         self.interval = None
 
         self.init()
+        self._init_events()  #@TODO: Remove in 0.4.10
         self.init_events()
 
 
@@ -63,7 +52,7 @@ class Addon(Plugin):
         """
         Checks if addon is activated
         """
-        return self.get_config("activated")
+        return self.config.get("activated")
 
 
     #@TODO: Remove in 0.4.10
@@ -72,10 +61,25 @@ class Addon(Plugin):
         return super(Addon, self)._log(level, plugintype, pluginname, messages)
 
 
+    #@TODO: Remove in 0.4.10
+    def _init_events(self):
+        event_map = {'allDownloadsFinished' : "all_downloads_finished" ,
+                     'allDownloadsProcessed': "all_downloads_processed",
+                     'configChanged'        : "config_changed"         ,
+                     'download_processed'   : "download_processed"     ,
+                     'download_start'       : "download_start"         ,
+                     'linksAdded'           : "links_added"            ,
+                     'packageDeleted'       : "package_deleted"        ,
+                     'package_failed'       : "package_failed"         ,
+                     'package_processed'    : "package_processed"      }
+        for event, funcs in event_map.items():
+            self.manager.addEvent(event, getattr(self, funcs))
+
+
     def init_events(self):
         if self.event_map:
             for event, funcs in self.event_map.items():
-                if type(funcs) in (list, tuple):
+                if isiterable(funcs):
                     for f in funcs:
                         self.manager.addEvent(event, getattr(self, f))
                 else:
@@ -105,7 +109,7 @@ class Addon(Plugin):
         return True
 
 
-    def start_periodical(self, interval=None, threaded=False, delay=None):
+    def start_periodical(self, interval=None, threaded=False, delay=0):
         if interval is not None and self.set_interval(interval) is False:
             return False
         else:
@@ -153,7 +157,7 @@ class Addon(Plugin):
 
     #: Deprecated method, use `deactivate` instead (Remove in 0.4.10)
     def unload(self, *args, **kwargs):
-        self.store("info", self.info)
+        self.db.store("info", self.info)
         return self.deactivate(*args, **kwargs)
 
 
@@ -166,7 +170,7 @@ class Addon(Plugin):
 
     #: Deprecated method, use `activate` instead (Remove in 0.4.10)
     def coreReady(self, *args, **kwargs):
-        self.retrieve("info", self.info)
+        self.db.retrieve("info", self.info)
 
         if self.PERIODICAL_INTERVAL:
             self.start_periodical(self.PERIODICAL_INTERVAL, delay=5)
@@ -187,6 +191,22 @@ class Addon(Plugin):
         return self.exit(*args, **kwargs)
 
 
+    def all_downloads_finished(self):
+        pass
+
+
+    def all_downloads_processed(self):
+        pass
+
+
+    def config_changed(self, category, option, value, section):
+        pass
+
+
+    def links_added(self, urls, pypack):
+        pass
+
+
     def download_preparing(self, pyfile):
         pass
 
@@ -197,13 +217,22 @@ class Addon(Plugin):
             return self.download_preparing(pyfile)
 
 
+    def download_start(self, pyfile, url, filename):
+        pass
+
+
+    def download_processed(self, pyfile):
+        pass
+
+
     def download_finished(self, pyfile):
         pass
 
 
     #: Deprecated method, use `download_finished` instead (Remove in 0.4.10)
     def downloadFinished(self, *args, **kwargs):
-        return self.download_finished(*args, **kwargs)
+        if pyfile.hasStatus("finished"):  #: Check if still "finished" (Fix in 0.4.10)
+            return self.download_finished(*args, **kwargs)
 
 
     def download_failed(self, pyfile):
@@ -212,7 +241,20 @@ class Addon(Plugin):
 
     #: Deprecated method, use `download_failed` instead (Remove in 0.4.10)
     def downloadFailed(self, *args, **kwargs):
-        return self.download_failed(*args, **kwargs)
+        if pyfile.hasStatus("failed"):  #: Check if still "failed" (Fix in 0.4.10)
+            return self.download_failed(*args, **kwargs)
+
+
+    def package_processed(self, pypack):
+        pass
+
+
+    def package_deleted(self, pid):
+        pass
+
+
+    def package_failed(self, pypack):
+        pass
 
 
     def package_finished(self, pypack):
