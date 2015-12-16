@@ -5,13 +5,13 @@ import time
 import urlparse
 
 from module.plugins.internal.MultiAccount import MultiAccount
-from module.plugins.internal.utils import parse_html_form, parse_time, set_cookie
+from module.plugins.internal.misc import parse_html_form, parse_time, set_cookie
 
 
 class XFSAccount(MultiAccount):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.56"
+    __version__ = "0.57"
     __status__  = "stable"
 
     __config__ = [("activated"     , "bool"               , "Activated"                    , True ),
@@ -197,8 +197,10 @@ class XFSAccount(MultiAccount):
 
 
     def check_errors(self):
+        self.log_info(_("Checking for link errors..."))
+
         if not self.data:
-            self.log_debug("No data to check")
+            self.log_warning(_("No data to check"))
             return
 
         m = re.search(self.LOGIN_BAN_PATTERN, self.data)
@@ -231,3 +233,5 @@ class XFSAccount(MultiAccount):
 
             self.timeout = self.LOGIN_TIMEOUT
             self.fail_login(errmsg)
+
+        self.log_info(_("No errors found"))

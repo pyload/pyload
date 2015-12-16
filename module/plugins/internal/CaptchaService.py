@@ -27,7 +27,7 @@ class CaptchaService(Captcha):
 
 
     def retrieve_data(self):
-        return self.plugin.data or self.plugin.last_html or ""
+        return self.pyfile.plugin.data or self.pyfile.plugin.last_html or ""
 
 
     def detect_key(self, data=None):

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
-from module.plugins.internal.utils import set_cookie
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.misc import set_cookie
 
 
 class XFSCrypter(SimpleCrypter):
     __name__    = "XFSCrypter"
     __type__    = "crypter"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'

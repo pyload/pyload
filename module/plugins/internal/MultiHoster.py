@@ -3,14 +3,14 @@
 import re
 
 from module.plugins.internal.Plugin import Fail
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.internal.utils import encode, replace_patterns, set_cookie, set_cookies
+from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.misc import encode, replace_patterns, set_cookie, set_cookies
 
 
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.58"
+    __version__ = "0.59"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -68,7 +68,7 @@ class MultiHoster(SimpleHoster):
             super(MultiHoster, self)._process(thread)
 
         except Fail, e:
-            if self.get_config("revertfailed", True) and \
+            if self.config.get("revertfailed", True) and \
                self.pyload.pluginManager.hosterPlugins[self.classname].get('new_module'):
                 hdict = self.pyload.pluginManager.hosterPlugins[self.classname]
 

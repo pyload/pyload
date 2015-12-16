@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#@TODO: Move to utils directory 0.4.10
+#@TODO: Move to misc directory in 0.4.10
 
 from __future__ import with_statement
 
@@ -32,7 +32,7 @@ except ImportError:
 class misc(object):
     __name__    = "misc"
     __type__    = "plugin"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'

@@ -222,9 +222,9 @@ class UnRar(Extractor):
 
         #@NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
         call = [self.CMD, command] + args + list(xargs)
-        self.log_debug(" ".join(call))
-        call = map(encode, call)
+        self.log_debug("EXECUTE " + " ".join(call))
 
+        call = map(encode, call)
         p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         renice(p.pid, self.priority)

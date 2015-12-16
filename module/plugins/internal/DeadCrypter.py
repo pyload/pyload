@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 
 
 class DeadCrypter(Crypter):
     __name__    = "DeadCrypter"
     __type__    = "crypter"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -26,6 +26,3 @@ class DeadCrypter(Crypter):
 
     def setup(self):
         self.offline(_("Crypter is no longer available"))
-
-
-getInfo = create_getInfo(DeadCrypter)
