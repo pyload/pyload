@@ -6,13 +6,13 @@ import os
 import re
 
 from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.utils import encode, exists, fs_join
+from module.plugins.internal.misc import encode, exists, fsjoin
 
 
 class Container(Crypter):
     __name__    = "Container"
     __type__    = "container"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -34,7 +34,8 @@ class Container(Crypter):
 
         self.decrypt(pyfile)
 
-        self.delete_tmp()
+        if self.pyfile.name.startswith("tmp_"):
+            self.remove(pyfile.url, trash=False)
 
         if self.links:
             self._generate_packages()
@@ -53,7 +54,7 @@ class Container(Crypter):
         if self.pyfile.url.startswith("http"):
             self.pyfile.name = re.findall("([^\/=]+)", self.pyfile.url)[-1]
             content = self.load(self.pyfile.url)
-            self.pyfile.url = fs_join(self.pyload.config.get("general", "download_folder"), self.pyfile.name)
+            self.pyfile.url = fsjoin(self.pyload.config.get("general", "download_folder"), self.pyfile.name)
             try:
                 with open(self.pyfile.url, "wb") as f:
                     f.write(encode(content))
@@ -65,19 +66,9 @@ class Container(Crypter):
             self.pyfile.name = os.path.basename(self.pyfile.url)
 
             if not exists(self.pyfile.url):
-                if exists(fs_join(pypath, self.pyfile.url)):
-                    self.pyfile.url = fs_join(pypath, self.pyfile.url)
+                if exists(fsjoin(pypath, self.pyfile.url)):
+                    self.pyfile.url = fsjoin(pypath, self.pyfile.url)
                 else:
                     self.fail(_("File not exists"))
             else:
                 self.data = self.pyfile.url  #@NOTE: ???
-
-
-    def delete_tmp(self):
-        if not self.pyfile.name.startswith("tmp_"):
-            return
-
-        try:
-            os.remove(self.pyfile.url)
-        except OSError, e:
-            self.log_warning(_("Error removing `%s`") % self.pyfile.url, e)
