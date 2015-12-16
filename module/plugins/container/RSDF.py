@@ -5,16 +5,16 @@ from __future__ import with_statement
 import binascii
 import re
 
-from Crypto.Cipher import AES
+import Crypto.Cipher
 
 from module.plugins.internal.Container import Container
-from module.plugins.internal.utils import encode
+from module.plugins.internal.misc import encode
 
 
 class RSDF(Container):
     __name__    = "RSDF"
     __type__    = "container"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__  = "testing"
 
     __pattern__ = r'.+\.rsdf$'
@@ -37,8 +37,8 @@ class RSDF(Container):
         KEY = binascii.unhexlify(self.KEY)
         IV  = binascii.unhexlify(self.IV)
 
-        iv     = AES.new(KEY, AES.MODE_ECB).encrypt(IV)
-        cipher = AES.new(KEY, AES.MODE_CFB, iv)
+        iv     = Crypto.Cipher.AES.new(KEY, Crypto.Cipher.AES.MODE_ECB).encrypt(IV)
+        cipher = Crypto.Cipher.AES.new(KEY, Crypto.Cipher.AES.MODE_CFB, iv)
 
         try:
             fs_filename = encode(pyfile.url.strip())

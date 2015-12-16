@@ -8,13 +8,13 @@ import urllib2
 import MultipartPostHandler
 
 from module.plugins.internal.Container import Container
-from module.plugins.internal.utils import encode, fs_join
+from module.plugins.internal.misc import encode, fsjoin
 
 
 class CCF(Container):
     __name__    = "CCF"
     __type__    = "container"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__  = "testing"
 
     __pattern__ = r'.+\.ccf$'
@@ -38,7 +38,7 @@ class CCF(Container):
                                    'upload'  : open(fs_filename, "rb")}).read()
 
         dl_folder = self.pyload.config.get("general", "download_folder")
-        dlc_file  = fs_join(dl_folder, "tmp_%s.dlc" % pyfile.name)
+        dlc_file  = fsjoin(dl_folder, "tmp_%s.dlc" % pyfile.name)
 
         try:
             dlc = re.search(r'<dlc>(.+)</dlc>', dlc_content, re.S).group(1).decode('base64')
