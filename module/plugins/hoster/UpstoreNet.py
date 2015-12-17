@@ -73,7 +73,7 @@ class UpstoreNet(SimpleHoster):
             if m is not None:
                 wait_time = 60* int(m.group(1))
                 self.wantReconnect = True
-                self.retry(wait_time=wait_time, reason=_("Please wait to download this file"))
+                self.retry(wait=wait_time, reason=_("Please wait to download this file"))
 
             m = re.search(self.LINK_FREE_PATTERN, self.data, re.S)
             if m is not None:
