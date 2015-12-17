@@ -36,7 +36,7 @@ def create_getInfo(klass):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -278,6 +278,30 @@ class Base(Plugin):
     #: Deprecated method, use `_process` instead (Remove in 0.4.10)
     def preprocessing(self, *args, **kwargs):
         return self._process(*args, **kwargs)
+
+
+    def follow_redirects_and_get_header(self, redirect=10, update_pyfile=True):
+        maxredirs = 1
+
+        if type(redirect) is int:
+            maxredirs = max(redirect, 1)
+
+        elif redirect:
+            maxredirs = self.get_config("maxredirs", default=maxredirs, plugin="UserAgentSwitcher")
+
+        url = self.pyfile.url
+        for i in xrange(maxredirs):
+            self.log_debug("Redirect #%d to: %s" % (i, url))
+
+            header = self.load(url, just_header=True)
+
+            if header.get('location'):
+                url = self.fixurl(header.get('location'), url)
+                if update_pyfile:
+                    self.pyfile.url = url
+            else:
+                return header
+        return header
 
 
     def process(self, pyfile):
