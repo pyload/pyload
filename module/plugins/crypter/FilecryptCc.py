@@ -123,6 +123,7 @@ class FilecryptCc(Crypter):
                 captcha_key = solvemedia.detect_key()
 
                 if captcha_key:
+                    self.captcha = solvemedia
                     response, challenge = solvemedia.challenge(captcha_key)
                     self.site_with_links  = self.load(self.pyfile.url,
                                                       post={'adcopy_response'  : response,
@@ -134,9 +135,11 @@ class FilecryptCc(Crypter):
 
             else:
                 recaptcha   = ReCaptcha(self)
-                captcha_key = recaptcha.detect_key()
+                captcha_key = self.captcha.detect_key()
 
                 if captcha_key:
+                    self.captcha = recaptcha
+                     
                     try:
                         response, challenge = recaptcha.challenge(captcha_key)
 

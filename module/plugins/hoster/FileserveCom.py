@@ -5,10 +5,10 @@ import re
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import chunks, json, parse_size, seconds_to_midnight
+from module.plugins.internal.misc import json, parse_size, seconds_to_midnight
 
 
-def check_file(plugin, urls):
+def get_info(plugin, urls):
     html = get_url(plugin.URLS[1], post={'urls': "\n".join(urls)})
 
     file_info = []
@@ -207,8 +207,3 @@ class FileserveCom(Hoster):
            self.scan_download({'login': re.compile(self.NOT_LOGGED_IN_PATTERN)}):
             self.account.relogin()
             self.retry(msg=_("Not logged in"))
-
-
-def get_info(urls):
-    for chunk in chunks(urls, 100):
-        yield check_file(FileserveCom, chunk)

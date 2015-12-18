@@ -15,8 +15,7 @@ except ImportError:
     import Image
 
 from module.network.RequestFactory import getRequest as get_request
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import threaded
+from module.plugins.internal.Addon import Addon, threaded
 
 
 class CaptchaBrotherhoodException(Exception):
@@ -161,7 +160,7 @@ class CaptchaBrotherhood(Addon):
 
 
     @threaded
-    def _process_captcha(self, task)
+    def _process_captcha(self, task):
         c = task.captchaFile
         try:
             ticket, result = self.submit(c)

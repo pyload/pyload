@@ -7,8 +7,7 @@ import re
 import time
 
 from module.network.HTTPRequest import BadHeader
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import threaded
+from module.plugins.internal.Addon import Addon, threaded
 
 
 class Captcha9Kw(Addon):
@@ -55,7 +54,7 @@ class Captcha9Kw(Addon):
 
 
     @threaded
-    def _process_captcha(self, task)
+    def _process_captcha(self, task):
         try:
             with open(task.captchaFile, 'rb') as f:
                 data = f.read()

@@ -163,10 +163,10 @@ class MegaCoNz(Hoster):
         df.close()
 
         # if file_mac[0] ^ file_mac[1], file_mac[2] ^ file_mac[3] is not meta_mac:
-            # os.remove(file_decrypted)
+            # self.remove(file_decrypted, trash=False)
             # self.fail(_("Checksum mismatch"))
 
-        os.remove(file_crypted)
+        self.remove(file_crypted, trash=False)
         self.last_download = decode(file_decrypted)
 
 

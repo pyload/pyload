@@ -150,9 +150,10 @@ class RapidgatorNet(SimpleHoster):
 
     def handle_captcha(self):
         for klass in (AdsCaptcha, ReCaptcha, SolveMedia):
-            inst = klass(self.pyfile)
-            if inst.detect_key():
-                return inst
+            captcha = klass(self.pyfile)
+            if captcha.detect_key():
+                self.captcha = captcha
+                return captcha
 
 
     def get_json_response(self, url):

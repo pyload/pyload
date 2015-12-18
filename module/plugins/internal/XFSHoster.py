@@ -247,6 +247,7 @@ class XFSHoster(SimpleHoster):
             self.log_debug("ReCaptcha key: %s" % captcha_key)
 
         if captcha_key:
+            self.captcha = recaptcha
             inputs['recaptcha_response_field'], inputs['recaptcha_challenge_field'] = recaptcha.challenge(captcha_key)
             return
 
@@ -261,4 +262,5 @@ class XFSHoster(SimpleHoster):
             self.log_debug("SolveMedia key: %s" % captcha_key)
 
         if captcha_key:
+            self.captcha = solvemedia
             inputs['adcopy_response'], inputs['adcopy_challenge'] = solvemedia.challenge(captcha_key)

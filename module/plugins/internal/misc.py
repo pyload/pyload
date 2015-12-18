@@ -84,22 +84,6 @@ class SimpleQueue(object):
         return self.set(queue)
 
 
-class Expose(object):
-    """
-    Used for decoration to declare rpc services
-    """
-    def __new__(cls, f, *args, **kwargs):
-        hookManager.addRPC(f.__module__, f.func_name, f.func_doc)
-        return f
-
-
-def threaded(fn):
-    def run(*args, **kwargs):
-        hookManager.startThread(fn, *args, **kwargs)
-
-    return run
-
-
 def lock(fn):
     def new(*args):
         args[0].lock.acquire()

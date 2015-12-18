@@ -7,7 +7,7 @@ import Crypto.Cipher
 import pycurl
 
 from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.misc import html_unescape, set_cookie(cj
+from module.plugins.internal.misc import html_unescape, set_cookie
 
 
 class LinkCryptWs(Crypter):

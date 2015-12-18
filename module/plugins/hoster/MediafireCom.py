@@ -45,6 +45,7 @@ class MediafireCom(SimpleHoster):
         captcha_key = solvemedia.detect_key()
 
         if captcha_key:
+            self.captcha = solvemedia
             response, challenge = solvemedia.challenge(captcha_key)
             self.data = self.load("http://www.mediafire.com/?" + self.info['pattern']['ID'],
                                   post={'adcopy_challenge': challenge,
@@ -55,6 +56,7 @@ class MediafireCom(SimpleHoster):
         captcha_key = recaptcha.detect_key()
 
         if captcha_key:
+            self.captcha = recaptcha
             response, challenge = recaptcha.challenge(captcha_key)
             self.data = self.load(self.pyfile.url,
                                   post={'g-recaptcha-response': response})

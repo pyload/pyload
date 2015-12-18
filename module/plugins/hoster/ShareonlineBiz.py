@@ -68,8 +68,8 @@ class ShareonlineBiz(SimpleHoster):
 
 
     def handle_captcha(self):
-        recaptcha = ReCaptcha(self.pyfile)
-        response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
+        self.captcha = ReCaptcha(self.pyfile)
+        response, challenge = self.captcha.challenge(self.RECAPTCHA_KEY)
 
         m = re.search(r'var wait=(\d+);', self.data)
         self.set_wait(int(m.group(1)) if m else 30)

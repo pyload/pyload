@@ -3,8 +3,8 @@
 import os
 import subprocess
 
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import Expose, encode, fsjoin
+from module.plugins.internal.Addon import Addon, Expose
+from module.plugins.internal.misc import encode, fsjoin
 
 
 class ExternalScripts(Addon):

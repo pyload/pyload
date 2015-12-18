@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.FileserveCom import FileserveCom, check_file
-from module.plugins.internal.misc import chunks
+from module.plugins.hoster.FileserveCom import FileserveCom
 
 
 class FilejungleCom(FileserveCom):
@@ -24,8 +23,3 @@ class FilejungleCom(FileserveCom):
     LINKCHECK_TD = r'<div class="(?:col )?col\d">(?:<.*?>|&nbsp;)*([^<]*)'
 
     LONG_WAIT_PATTERN = r'<h1>Please wait for (\d+) (\w+)\s*to download the next file\.</h1>'
-
-
-def get_info(urls):
-    for chunk in chunks(urls, 100):
-        yield check_file(FilejungleCom, chunk)
