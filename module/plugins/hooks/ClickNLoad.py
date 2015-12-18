@@ -8,8 +8,8 @@ try:
 except ImportError:
     pass
 
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import forward, lock, threaded
+from module.plugins.internal.Addon import Addon, threaded
+from module.plugins.internal.misc import forward, lock
 
 
 #@TODO: IPv6 support
@@ -46,7 +46,7 @@ class ClickNLoad(Addon):
 
     @lock
     @threaded
-    def forward(self, source, destination, queue=False)
+    def forward(self, source, destination, queue=False):
         if queue:
             old_ids = set(pack.id for pack in self.pyload.api.getCollector())
 

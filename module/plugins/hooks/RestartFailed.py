@@ -15,10 +15,7 @@ class RestartFailed(Addon):
     __description__ = """Restart all the failed downloads in queue"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
-
-
-    PERIODICAL_INTERVAL = 15 * 60  #: 15 minutes
-
+    
 
     def periodical(self):
         self.log_info(_("Restarting all failed downloads..."))
@@ -26,4 +23,4 @@ class RestartFailed(Addon):
 
 
     def activate(self):
-        self.set_interval(self.config.get('interval') * 60)
+        self.start_periodical(self.config.get('interval') * 60)

@@ -23,9 +23,7 @@ class Account(Plugin):
     LOGIN_TIMEOUT       = 30 * 60  #: Relogin account every 30 minutes
     TUNE_TIMEOUT        = True     #: Automatically tune relogin interval
 
-    PERIODICAL_INTERVAL = None
-
-
+    
     def __init__(self, manager, accounts):
         self._init(manager.core)
 
@@ -74,7 +72,7 @@ class Account(Plugin):
 
 
     def set_interval(self, value):
-        newinterval = max(0, self.PERIODICAL_INTERVAL, value)
+        newinterval = max(0, value)
 
         if newinterval != value:
             return False
