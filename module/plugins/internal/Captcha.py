@@ -47,11 +47,11 @@ class Captcha(Plugin):
         return self.decrypt_image(img, input_type, output_type, ocr, timeout)
 
 
-    def decrypt_image(self, data, input_type='jpg', output_type='textual', ocr=False, timeout=120):
+    def decrypt_image(self, img, input_type='jpg', output_type='textual', ocr=False, timeout=120):
         """
         Loads a captcha and decrypts it with ocr, plugin, user input
 
-        :param data: image raw data
+        :param img: image raw data
         :param get: get part for request
         :param post: post part for request
         :param cookies: True if cookies should be enabled
@@ -66,21 +66,21 @@ class Captcha(Plugin):
         result   = ""
         time_ref = ("%.2f" % time.time())[-6:].replace(".", "")
 
-        with open(os.path.join("tmp", "captcha_image_%s_%s.%s" % (self.pyfile.plugin.__name__, time_ref, input_type)), "wb") as tmp_img:
-            tmp_img.write(encode(data))
+        with open(os.path.join("tmp", "captcha_image_%s_%s.%s" % (self.pyfile.plugin.__name__, time_ref, input_type)), "wb") as img_f:
+            img_f.write(encode(img))
 
         if ocr:
             if isinstance(ocr, basestring):
-                OCR = self.pyload.pluginManager.loadClass("captcha", ocr)  #: Rename `captcha` to `ocr` in 0.4.10
-                result = OCR(self.pyfile).recognize(tmp_img.name)
+                _OCR = self.pyload.pluginManager.loadClass("captcha", ocr)  #: Rename `captcha` to `ocr` in 0.4.10
+                result = _OCR(self.pyfile).recognize(img_f.name)
             else:
-                result = self.recognize(tmp_img.name)
+                result = self.recognize(img_f.name)
 
         if not result:
             captchaManager = self.pyload.captchaManager
 
             try:
-                self.task = captchaManager.newTask(data, input_type, tmp_img.name, output_type)
+                self.task = captchaManager.newTask(img, input_type, img_f.name, output_type)
 
                 captchaManager.handleCaptcha(self.task)
 
@@ -101,7 +101,7 @@ class Captcha(Plugin):
             result = self.task.result
 
         if not self.pyload.debug:
-            self.remove(tmp_img.name, trash=False)
+            self.remove(img_f.name, trash=False)
 
         # self.log_info(_("Captcha result: ") + result)  #@TODO: Remove from here?
 

@@ -40,8 +40,8 @@ class OCR(Plugin):
 
 
     def load_image(self, image):
-        self.image = Image.open(image)
-        self.pixels = self.image.load()
+        self.img = Image.open(image)
+        self.pixels = self.img.load()
         self.result_captcha = ""
 
 
@@ -53,7 +53,7 @@ class OCR(Plugin):
 
 
     def threshold(self, value):
-        self.image = self.image.point(lambda a: a * value + 10)
+        self.img = self.img.point(lambda a: a * value + 10)
 
 
     def call_cmd(self, command, *args, **kwargs):
@@ -90,7 +90,7 @@ class OCR(Plugin):
             return
 
         self.log_debug("Saving tiff...")
-        self.image.save(tmpTif.name, 'TIFF')
+        self.img.save(tmpTif.name, 'TIFF')
 
         if os.name is "nt":
             command = os.path.join(pypath, "tesseract", "tesseract.exe")
@@ -138,20 +138,20 @@ class OCR(Plugin):
             self.remove(tmpSub.name, trash=False)
 
 
-    def recognize(self, name):
+    def recognize(self, image):
         raise NotImplementedError
 
 
     def to_greyscale(self):
-        if self.image.mode != 'L':
-            self.image = self.image.convert('L')
+        if self.img.mode != 'L':
+            self.img = self.img.convert('L')
 
-        self.pixels = self.image.load()
+        self.pixels = self.img.load()
 
 
     def eval_black_white(self, limit):
-        self.pixels = self.image.load()
-        w, h = self.image.size
+        self.pixels = self.img.load()
+        w, h = self.img.size
         for x in xrange(w):
             for y in xrange(h):
                 if self.pixels[x, y] > limit:
@@ -163,7 +163,7 @@ class OCR(Plugin):
     def clean(self, allowed):
         pixels = self.pixels
 
-        w, h = self.image.size
+        w, h = self.img.size
 
         for x in xrange(w):
             for y in xrange(h):
@@ -218,7 +218,7 @@ class OCR(Plugin):
         """
         Rotate by checking each angle and guess most suitable
         """
-        w, h = self.image.size
+        w, h = self.img.size
         pixels = self.pixels
 
         for x in xrange(w):
@@ -231,11 +231,11 @@ class OCR(Plugin):
 
         for angle in xrange(-45, 45):
 
-            tmpimage = self.image.rotate(angle)
+            tmpimage = self.img.rotate(angle)
 
             pixels = tmpimage.load()
 
-            w, h = self.image.size
+            w, h = self.img.size
 
             for x in xrange(w):
                 for y in xrange(h):
@@ -275,8 +275,8 @@ class OCR(Plugin):
                 hkey = key
                 hvalue = value
 
-        self.image = self.image.rotate(hkey)
-        pixels = self.image.load()
+        self.img = self.img.rotate(hkey)
+        pixels = self.img.load()
 
         for x in xrange(w):
             for y in xrange(h):
@@ -290,7 +290,7 @@ class OCR(Plugin):
 
 
     def split_captcha_letters(self):
-        captcha = self.image
+        captcha = self.img
         started = False
         letters = []
         width, height = captcha.size
