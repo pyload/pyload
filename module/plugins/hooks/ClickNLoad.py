@@ -27,7 +27,7 @@ def forward(source, destination):
 class ClickNLoad(Addon):
     __name__    = "ClickNLoad"
     __type__    = "hook"
-    __version__ = "0.50"
+    __version__ = "0.51"
     __status__  = "testing"
 
     __config__ = [("activated", "bool"           , "Activated"                      , True       ),
@@ -48,7 +48,8 @@ class ClickNLoad(Addon):
 
         cnlip   = "" if self.get_config('extern') else "127.0.0.1"
         cnlport = self.get_config('port')
-        webip   = self.pyload.config.get("webinterface", "host") or "127.0.0.1"
+        webip   = "127.0.0.1" if any(_ip == self.pyload.config.get("webinterface", "host") for _ip in ("0.0.0.0", "")) \
+            else self.pyload.config.get("webinterface", "host")
         webport = self.pyload.config.get("webinterface", "port")
 
         self.pyload.scheduler.addJob(5, self.proxy, [cnlip, cnlport, webip, webport], threaded=False)
