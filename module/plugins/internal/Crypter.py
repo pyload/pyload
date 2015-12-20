@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Base import Base, create_getInfo, parse_fileInfo
-from module.plugins.internal.utils import fixname, parse_name
+from module.plugins.internal.Base import Base
+from module.plugins.internal.misc import parse_name, safename
 
 
 class Crypter(Base):
     __name__    = "Crypter"
     __type__    = "crypter"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -23,18 +23,15 @@ class Crypter(Base):
 
     def init_base(self):
         self.packages = []  #: Put all packages here. It's a list of tuples like: ( name, [list of links], folder )
-        self.links     = []  #: List of urls, pyLoad will generate packagenames
+        self.links    = []  #: List of urls, pyLoad will generate packagenames
 
 
     def setup_base(self):
         self.packages = []
-        self.links     = []
+        self.links    = []
 
 
     def process(self, pyfile):
-        """
-        Main method
-        """
         self.decrypt(pyfile)
 
         if self.links:
@@ -57,7 +54,8 @@ class Crypter(Base):
         """
         Generate new packages from self.links
         """
-        packages = [(name, links, None) for name, links in self.pyload.api.generatePackages(self.links).items()]
+        pdict    = self.pyload.api.generatePackages(self.links)
+        packages = [(name, links, None) for name, links in pdict.items()]
         self.packages.extend(packages)
 
 
@@ -65,13 +63,13 @@ class Crypter(Base):
         """
         Create new packages from self.packages
         """
-        package_folder   = self.pyfile.package().folder
-        package_password = self.pyfile.package().password
-        package_queue    = self.pyfile.package().queue
+        pack_folder   = self.pyfile.package().folder
+        pack_password = self.pyfile.package().password
+        pack_queue    = self.pyfile.package().queue
 
         folder_per_package    = self.pyload.config.get("general", "folder_per_package")
-        use_subfolder         = self.get_config('use_subfolder', folder_per_package)
-        subfolder_per_package = self.get_config('subfolder_per_package', True)
+        use_subfolder         = self.config.get('use_subfolder', folder_per_package)
+        subfolder_per_package = self.config.get('subfolder_per_package', True)
 
         for name, links, folder in self.packages:
             self.log_info(_("Parsed package: %s")  % name,
@@ -81,25 +79,27 @@ class Crypter(Base):
             links = map(self.fixurl, links)
             self.log_debug("LINKS for package " + name, *links)
 
-            pid = self.pyload.api.addPackage(name, links, package_queue)
+            pid = self.pyload.api.addPackage(name, links, pack_queue)
 
-            if package_password:
-                self.pyload.api.setPackageData(pid, {'password': package_password})
+            if pack_password:
+                self.pyload.api.setPackageData(pid, {'password': pack_password})
 
             #: Workaround to do not break API addPackage method
-            set_folder = lambda x="": self.pyload.api.setPackageData(pid, {'folder': fixname(x)})
+            set_folder = lambda x: self.pyload.api.setPackageData(pid, {'folder': safename(x or "")})
 
             if use_subfolder:
                 if not subfolder_per_package:
-                    set_folder(package_folder)
-                    self.log_debug("Set package %(name)s folder to: %(folder)s" % {'name': name, 'folder': folder})
+                    set_folder(pack_folder)
+                    self.log_debug("Set package %(name)s folder to: %(folder)s"
+                                   % {'name': name, 'folder': folder})
 
                 elif not folder_per_package or name is not folder:
                     if not folder:
                         folder = parse_name(name)
 
                     set_folder(folder)
-                    self.log_debug("Set package %(name)s folder to: %(folder)s" % {'name': name, 'folder': folder})
+                    self.log_debug("Set package %(name)s folder to: %(folder)s"
+                                   % {'name': name, 'folder': folder})
 
             elif folder_per_package:
                 set_folder()
