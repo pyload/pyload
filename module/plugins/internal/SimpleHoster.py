@@ -16,7 +16,7 @@ from module.plugins.internal.utils import (encode, parse_name, parse_size,
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "2.12"
+    __version__ = "2.13"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -277,8 +277,8 @@ class SimpleHoster(Hoster):
                     self.log_info(_("Processing as free download..."))
                     self.handle_free(pyfile)
 
-        if not self.link:
-            self.error(_("%s download link not found") % ("Premium" if self.premium else "Free"))
+                if not self.link:
+                    self.error(_("%s download link not found") % ("Premium" if self.premium else "Free"))
 
         if not self.last_download:
             self.log_info(_("Downloading file..."))
