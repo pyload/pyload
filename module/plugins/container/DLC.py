@@ -37,7 +37,7 @@ class DLC(Container):
 
 
     def decrypt(self, pyfile):
-        fs_filename = encode(pyfile.url.strip())
+        fs_filename = encode(pyfile.url)
         with open(fs_filename) as dlc:
             data = dlc.read().strip()
 

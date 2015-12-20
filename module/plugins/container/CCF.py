@@ -29,7 +29,7 @@ class CCF(Container):
 
 
     def decrypt(self, pyfile):
-        fs_filename = encode(pyfile.url.strip())
+        fs_filename = encode(pyfile.url)
         opener      = urllib2.build_opener(MultipartPostHandler.MultipartPostHandler)
 
         dlc_content = opener.open('http://service.jdownloader.net/dlcrypt/getDLC.php',

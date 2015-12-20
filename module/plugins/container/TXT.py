@@ -32,7 +32,7 @@ class TXT(Container):
         except Exception:
             encoding = "utf-8"
 
-        fs_filename = encode(pyfile.url.strip())
+        fs_filename = encode(pyfile.url)
         txt         = codecs.open(fs_filename, 'r', encoding)
         curPack     = "Parsed links from %s" % pyfile.name
         packages    = {curPack:[],}

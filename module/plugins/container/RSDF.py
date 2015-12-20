@@ -41,7 +41,7 @@ class RSDF(Container):
         cipher = Crypto.Cipher.AES.new(KEY, Crypto.Cipher.AES.MODE_CFB, iv)
 
         try:
-            fs_filename = encode(pyfile.url.strip())
+            fs_filename = encode(pyfile.url)
             with open(fs_filename, 'r') as rsdf:
                 data = rsdf.read()
 
