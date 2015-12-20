@@ -91,10 +91,9 @@ class Api(Iface):
     def __init__(self, core):
         self.core = core
 
-
     def _convertPyFile(self, p):
         fdata = FileData(p['id'], p['url'], p['name'], p['plugin'], p['size'],
-                         p['format_size'], p['status'], p['statusmsg'],
+                         str(p['format_size']), p['status'], p['statusmsg'],
                          p['package'], p['error'], p['order'])
         return fdata
 
@@ -309,8 +308,8 @@ class Api(Iface):
                 continue
             data.append(DownloadInfo(
                 pyfile.id, pyfile.name, pyfile.getSpeed(), pyfile.getETA(), pyfile.formatETA(),
-                pyfile.getBytesLeft(), pyfile.getSize(), pyfile.formatSize(), pyfile.getPercent(),
-                pyfile.status, pyfile.getStatusName(), pyfile.formatWait(),
+                pyfile.getBytesLeft(), pyfile.getSize(), pyfile.formatSize(),
+                pyfile.getPercent(), pyfile.status, pyfile.getStatusName(), pyfile.formatWait(),
                 pyfile.waitUntil, pyfile.packageid, pyfile.package().name, pyfile.pluginname))
         return data
 
@@ -474,6 +473,7 @@ class Api(Iface):
         data = self.core.files.getPackageData(int(pid))
         if not data:
             raise PackageDoesNotExists(pid)
+
         return PackageData(data['id'], data['name'], data['folder'], data['site'], data['password'],
                            data['queue'], data['order'],
                            links=[self._convertPyFile(x) for x in data['links'].itervalues()])
@@ -891,8 +891,10 @@ class Api(Iface):
         :return: list of `AccountInfo`
         """
         accs = self.core.accountManager.getAccountInfos(False, refresh)
+        accounts = list()
+
         for group in accs.values():
-            accounts = [AccountInfo(acc['validuntil'], acc['login'], acc['options'], acc['valid'],
+            accounts += [AccountInfo(acc['validuntil'], acc['login'], acc['options'], acc['valid'],
                                     acc['trafficleft'], acc['maxtraffic'], acc['premium'], acc['type'])
                         for acc in group]
         return accounts or list()

@@ -101,7 +101,7 @@ def server_js(theme, file):
         return server_static(theme, file)
 
 
-@bottle.route('/<theme>/<file:path>')
+@bottle.route('/<theme>/<file:re:(.+/)?[^/]+\.[^/]+>')
 def server_static(theme, file):
     bottle.response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                                 time.gmtime(time.time() + 24 * 7 * 60 * 60))
