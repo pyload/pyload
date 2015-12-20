@@ -27,10 +27,10 @@ class HotFolder(Addon):
 
 
     def activate(self):
-        self.start_periodical(30, threaded=True)
+        self.periodical.start(30, threaded=True)
 
 
-    def periodical(self):
+    def periodical_task(self):
         folder = encode(self.config.get('folder'))
         file   = encode(self.config.get('file'))
 

@@ -15,12 +15,12 @@ class RestartFailed(Addon):
     __description__ = """Restart all the failed downloads in queue"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
-    
 
-    def periodical(self):
+
+    def periodical_task(self):
         self.log_info(_("Restarting all failed downloads..."))
         self.pyload.api.restartFailed()
 
 
     def activate(self):
-        self.start_periodical(self.config.get('interval') * 60)
+        self.periodical.start(self.config.get('interval') * 60)

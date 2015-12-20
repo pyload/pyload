@@ -19,7 +19,7 @@ class DeleteFinished(Addon):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def periodical(self):
+    def periodical_task(self):
         if not self.info['sleep']:
             deloffline = self.config.get('deloffline')
             mode = "0,1,4" if deloffline else "0,4"
@@ -37,7 +37,7 @@ class DeleteFinished(Addon):
     def activate(self):
         self.info['sleep'] = True
         self.add_event('package_finished', self.wakeup)
-        self.start_periodical(self.config.get('interval') * 60 * 60)
+        self.periodical.start(self.config.get('interval') * 60 * 60)
 
 
     ## own methods ##

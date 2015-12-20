@@ -4,7 +4,7 @@ import os
 import subprocess
 
 from module.plugins.internal.Addon import Addon, Expose
-from module.plugins.internal.misc import encode, fsjoin
+from module.plugins.internal.misc import encode
 
 
 class ExternalScripts(Addon):
@@ -35,7 +35,7 @@ class ExternalScripts(Addon):
                           'all_archives_processed': "all_archives_processed" ,
                           'pyload_updated'        : "pyload_updated"         }
 
-        self.start_periodical(60)
+        self.periodical.start(60)
         self.pyload_start()
 
 
@@ -61,7 +61,7 @@ class ExternalScripts(Addon):
                 self.log_debug(e, trace=True)
 
 
-    def periodical(self):
+    def periodical_task(self):
         self.make_folders()
 
         folders = [entry for entry in os.listdir("scripts") \
@@ -157,12 +157,7 @@ class ExternalScripts(Addon):
 
 
     def download_failed(self, pyfile):
-        if self.pyload.config.get("general", "folder_per_package"):
-            dl_folder = fsjoin(self.pyload.config.get("general", "download_folder"), pyfile.package().folder)
-        else:
-            dl_folder = self.pyload.config.get("general", "download_folder")
-
-        file = os.path.join(dl_folder, pyfile.name)
+        file = pyfile.plugin.last_download
         args = [pyfile.id, pyfile.name, file, pyfile.pluginname, pyfile.url]
         self.call_script("download_failed", *args)
 
@@ -184,42 +179,41 @@ class ExternalScripts(Addon):
 
 
     def package_finished(self, pypack):
+        dl_folder = self.pyload.config.get("general", "download_folder")
+
         if self.pyload.config.get("general", "folder_per_package"):
-            dl_folder = fsjoin(self.pyload.config.get("general", "download_folder"), pypack.folder)
-        else:
-            dl_folder = self.pyload.config.get("general", "download_folder")
+            dl_folder = os.path.join(dl_folder, pypack.folder)
 
         args = [pypack.id, pypack.name, dl_folder, pypack.password]
         self.call_script("package_finished", *args)
 
 
     def package_deleted(self, pid):
+        dl_folder = self.pyload.config.get("general", "download_folder")
         pdata = self.pyload.api.getPackageInfo(pid)
 
         if self.pyload.config.get("general", "folder_per_package"):
-            dl_folder = fsjoin(self.pyload.config.get("general", "download_folder"), pdata.folder)
-        else:
-            dl_folder = self.pyload.config.get("general", "download_folder")
+            dl_folder = os.path.join(dl_folder, pdata.folder)
 
         args = [pdata.pid, pdata.name, dl_folder, pdata.password]
         self.call_script("package_deleted", *args)
 
 
     def package_extract_failed(self, pypack):
+        dl_folder = self.pyload.config.get("general", "download_folder")
+
         if self.pyload.config.get("general", "folder_per_package"):
-            dl_folder = fsjoin(self.pyload.config.get("general", "download_folder"), pypack.folder)
-        else:
-            dl_folder = self.pyload.config.get("general", "download_folder")
+            dl_folder = os.path.join(dl_folder, pypack.folder)
 
         args = [pypack.id, pypack.name, dl_folder, pypack.password]
         self.call_script("package_extract_failed", *args)
 
 
     def package_extracted(self, pypack):
+        dl_folder = self.pyload.config.get("general", "download_folder")
+
         if self.pyload.config.get("general", "folder_per_package"):
-            dl_folder = fsjoin(self.pyload.config.get("general", "download_folder"), pypack.folder)
-        else:
-            dl_folder = self.pyload.config.get("general", "download_folder")
+            dl_folder = os.path.join(dl_folder, pypack.folder)
 
         args = [pypack.id, pypack.name, dl_folder]
         self.call_script("package_extracted", *args)

@@ -12,8 +12,8 @@ try:
 except ImportError:
     pass
 
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import Expose, encode, fsjoin
+from module.plugins.internal.Addon import Addon, Expose
+from module.plugins.internal.misc import encode, fsjoin
 
 
 class Kernel32(object):
@@ -55,7 +55,7 @@ class AntiStandby(Addon):
         display = not self.config.get('display')
 
         if hdd:
-            self.start_periodical(self.config.get('interval'), threaded=True)
+            self.periodical.start(self.config.get('interval'), threaded=True)
 
         if os.name is "nt":
             self.win_standby(system, display)
@@ -153,7 +153,7 @@ class AntiStandby(Addon):
                             for file in files))
 
 
-    def periodical(self):
+    def periodical_task(self):
         if self.config.get('hdd') is False:
             return
 
@@ -163,7 +163,7 @@ class AntiStandby(Addon):
             return
 
         dl_folder = self.pyload.config.get("general", "download_folder")
-        if (self.max_mtime(dl_folder) - self.mtime) < self.interval:
+        if (self.max_mtime(dl_folder) - self.mtime) < self.periodical.interval:
             return
 
         self.touch(self.TMP_FILE)
