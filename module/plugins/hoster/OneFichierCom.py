@@ -96,7 +96,14 @@ class OneFichierCom(SimpleHoster):
 
         inputs['submit'] = "Download"
 
-        self.download(url, post=inputs, disposition=False)  #@TODO: Remove disposition in 0.4.10
+        self.data = self.load(url, post=inputs)
+        match = re.search(r'<a href="(.+?)".*?>Click here to download the file</a>', self.data)
+        if match:
+            url = match.group(1)
+            self.download(url)
+        else:
+            self.log_error("Could not find download link")
+
 
 
     def handle_premium(self, pyfile):
