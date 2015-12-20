@@ -218,22 +218,12 @@ def get_console_encoding(enc):
 
 
 #@NOTE: Revert to `decode` in Python 3
-def decode(value, encoding=None):
+def decode(value, encoding=None, errors='strict'):
     """
-    Encoded string (default to UTF-8) -> unicode string
+    Encoded string (default to own system encoding) -> unicode string
     """
     if type(value) is str:
-        try:
-            # res = value.decode(encoding or 'utf-8')
-            res = unicode(value, encoding or 'utf-8')
-
-        except UnicodeDecodeError, e:
-            if encoding:
-                raise UnicodeDecodeError(e)
-
-            encoding = get_console_encoding(sys.stdout.encoding)
-            # res = value.decode(encoding)
-            res = unicode(value, encoding)
+        res = unicode(value, encoding or get_console_encoding(sys.stdout.encoding), errors)
 
     elif type(value) is unicode:
         res = value
@@ -243,23 +233,31 @@ def decode(value, encoding=None):
 
     return res
 
+    
+def transcode(value, decoding, encoding):
+    return value.decode(decoding).encode(encoding)
+    
 
-def encode(value, encoding=None, decoding=None):
+def encode(value, encoding='utf-8', errors='backslashreplace'):
     """
-    Unicode or decoded string -> encoded string (default to UTF-8)
+    Unicode string -> encoded string (default to UTF-8)
     """
     if type(value) is unicode:
-        res = value.encode(encoding or "utf-8")
+        res = value.encode(encoding, errors)
 
-    # elif type(value) is str:
-        # res = encode(decode(value, decoding), encoding)
+    elif type(value) is str:
+        decoding = get_console_encoding(sys.stdin.encoding)
+        if encoding == decoding:
+            res = value
+        else:
+            res = transcode(decoding, encoding)
 
     else:
         res = str(value)
 
     return res
-
-
+    
+    
 def exists(path):
     path = encode(path)
 
@@ -271,6 +269,14 @@ def exists(path):
             return True
     else:
         return False
+        
+
+def fsjoin(*args):
+    """
+    Like os.path.join, but encoding aware
+    (for safe-joining see `safejoin`)
+    """
+    return encode(os.path.join(args))
 
 
 def remove_chars(value, repl):
@@ -303,14 +309,6 @@ def fixurl(url, unquote=None):
         url = urllib.quote(url)
 
     return url
-
-
-def fsjoin(*args):
-    """
-    Like os.path.join, but encoding aware
-    (for safe-joining see `safejoin`)
-    """
-    return encode(os.path.join(args))
 
 
 def truncate(name, length):
@@ -477,7 +475,7 @@ def which(filename):
 
     else:
         for path in os.environ['PATH'].split(os.pathsep):
-            filename = os.path.join(path.strip('"'), program)
+            filename = os.path.join(path.strip('"'), filename)
             if isexecutable(filename):
                 return filename
 
@@ -539,8 +537,9 @@ def replace_patterns(value, rules):
 
 
 #@TODO: Remove in 0.4.10 and fix exp in CookieJar.setCookie
-def set_cookie(cj, domain, name, value, path='/', exp=time.time() + 180 * 24 * 3600):
-    return cj.setCookie(encode(domain), encode(name), encode(value), encode(path), int(exp))
+def set_cookie(cj, *args, path='/', exp=time.time() + 180 * 24 * 3600):
+    args = map(encode, args) + [encode(path), int(exp)]
+    return cj.setCookie(*args)
 
 
 def set_cookies(cj, cookies):
