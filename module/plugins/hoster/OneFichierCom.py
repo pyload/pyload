@@ -41,6 +41,7 @@ class OneFichierCom(SimpleHoster):
     OFFLINE_PATTERN = r'File not found !\s*<'
 
     WAIT_PATTERN = r'>You must wait \d+ minutes'
+    LINK_FREE_PATTERN = r'<a href="(.+?)".*?>Click here to download the file</a>'
 
     def setup(self):
         self.multiDL         = self.premium
@@ -96,7 +97,8 @@ class OneFichierCom(SimpleHoster):
 
         inputs['submit'] = "Download"
 
-        self.download(url, post=inputs, disposition=False)  #@TODO: Remove disposition in 0.4.10
+        self.data = self.load(url, post=inputs)
+        return super(OneFichierCom, self).handle_free(pyfile)
 
 
     def handle_premium(self, pyfile):
