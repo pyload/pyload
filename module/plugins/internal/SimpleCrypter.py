@@ -4,8 +4,8 @@ import re
 
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.Crypter import Crypter, create_getInfo, parse_fileInfo
-from module.plugins.internal.utils import parse_name, replace_patterns, set_cookie, set_cookies
+from module.plugins.internal.Crypter import Crypter
+from module.plugins.internal.misc import parse_name, replace_patterns, set_cookie, set_cookies
 
 
 class SimpleCrypter(Crypter):
@@ -70,8 +70,8 @@ class SimpleCrypter(Crypter):
     PAGES_PATTERN        = None
 
     NAME_PATTERN         = None
-    OFFLINE_PATTERN      = None
-    TEMP_OFFLINE_PATTERN = None
+    OFFLINE_PATTERN      = r'[^\w](404\s|[Ii]nvalid|[Oo]ffline|[Dd]elet|[Rr]emov|([Nn]o(t|thing)?|sn\'t) (found|(longer )?(available|exist)))'
+    TEMP_OFFLINE_PATTERN = r'[^\w](503\s|[Mm]aint(e|ai)nance|[Tt]emp([.-]|orarily)|[Mm]irror)'
 
     WAIT_PATTERN         = None
     PREMIUM_ONLY_PATTERN = None
@@ -132,7 +132,7 @@ class SimpleCrypter(Crypter):
 
         if self.account:
             self.req     = self.pyload.requestFactory.getRequest(account_name, self.account.user)
-            self.premium = self.account.info['data']['premium']  #@NOTE: Avoid one unnecessary get_info call by `self.account.premium` here
+            self.premium = self.account.info['data']['premium']  #@NOTE: Don't call get_info here to reduce overhead
         else:
             self.req     = self.pyload.requestFactory.getRequest(account_name)
             self.premium = False
@@ -149,26 +149,24 @@ class SimpleCrypter(Crypter):
 
 
     def handle_direct(self, pyfile):
-        redirect = None
-        maxredirs = self.get_config("maxredirs", default=10, plugin="UserAgentSwitcher")
+        maxredirs = self.pyload.api.getConfigValue("UserAgentSwitcher", "maxredirs", "plugin") or 5
+        redirect  = None
 
         for i in xrange(maxredirs):
             redirect = redirect or pyfile.url
             self.log_debug("Redirect #%d to: %s" % (i, redirect))
 
-            data = self.load(redirect)
-            header = dict(re.findall(r"(?P<name>.+?): (?P<value>.+?)\r?\n", self.req.http.header))
-                #Ugly, but there is no direct way to fetch headers AND data
-            location = header.get('location')
+            html = self.load(redirect)
+            location = self.last_header.get('location')
 
             if location:
                 redirect = location
             else:
-                self.data = data
+                self.data = html
                 self.links.extend(self.get_links())
                 return
         else:
-            self.log_error(_("Too many redirects"))
+            self.log_warning(_("Too many redirects"))
 
 
     def preload(self):
@@ -282,8 +280,10 @@ class SimpleCrypter(Crypter):
 
 
     def check_errors(self):
+        self.log_info(_("Checking for link errors..."))
+
         if not self.data:
-            self.log_debug("No data to check")
+            self.log_warning(_("No data to check"))
             return
 
         if self.IP_BLOCKED_PATTERN and re.search(self.IP_BLOCKED_PATTERN, self.data):
@@ -311,33 +311,40 @@ class SimpleCrypter(Crypter):
                 self.info['error'] = errmsg
                 self.log_warning(errmsg)
 
-                if re.search('limit|wait|slot', errmsg, re.I):
-                    wait_time = parse_time(errmsg)
-                    self.wait(wait_time, reconnect=wait_time > self.get_config("max_wait", 10) * 60)
-                    self.restart(_("Download limit exceeded"))
-
-                elif re.search('country|ip|region|nation', errmsg, re.I):
-                    self.fail(_("Connection from your current IP address is not allowed"))
-
-                elif re.search('captcha|code', errmsg, re.I):
-                    self.retry_captcha()
-
-                elif re.search('countdown|expired', errmsg, re.I):
-                    self.retry(10, 60, _("Link expired"))
-
-                elif re.search('maint(e|ai)nance|temp', errmsg, re.I):
+                if re.search(self.TEMP_OFFLINE_PATTERN, errmsg):
                     self.temp_offline()
 
-                elif re.search('up to|size', errmsg, re.I):
-                    self.fail(_("Link list too large for free decrypt"))
-
-                elif re.search('offline|delet|remov|not? (found|(longer)? available)', errmsg, re.I):
+                elif re.search(self.OFFLINE_PATTERN, errmsg):
                     self.offline()
 
-                elif re.search('filename', errmsg, re.I):
+                elif re.search(r'limit|wait|slot', errmsg, re.I):
+                    wait_time = parse_time(errmsg)
+                    self.wait(wait_time, reconnect=wait_time > self.config.get("max_wait", 10) * 60)
+                    self.restart(_("Download limit exceeded"))
+
+                elif re.search(r'country|ip|region|nation', errmsg, re.I):
+                    self.fail(_("Connection from your current IP address is not allowed"))
+
+                elif re.search(r'captcha|code', errmsg, re.I):
+                    self.retry_captcha()
+
+                elif re.search(r'countdown|expired', errmsg, re.I):
+                    self.retry(10, 60, _("Link expired"))
+
+                elif re.search(r'503|maint(e|ai)nance|temp|mirror', errmsg, re.I):
+                    self.temp_offline()
+
+                elif re.search(r'up to|size', errmsg, re.I):
+                    self.fail(_("Link list too large for free decrypt"))
+
+                elif re.search(r'404|sorry|offline|delet|remov|(no(t|thing)?|sn\'t) (found|(longer )?(available|exist))',
+                               errmsg, re.I):
+                    self.offline()
+
+                elif re.search(r'filename', errmsg, re.I):
                     self.fail(_("Invalid url"))
 
-                elif re.search('premium', errmsg, re.I):
+                elif re.search(r'premium', errmsg, re.I):
                     self.fail(_("Link can be decrypted by premium users only"))
 
                 else:
@@ -354,6 +361,7 @@ class SimpleCrypter(Crypter):
                     waitmsg = m.group(0).strip()
 
                 wait_time = parse_time(waitmsg)
-                self.wait(wait_time, reconnect=wait_time > self.get_config("max_wait", 10) * 60)
+                self.wait(wait_time, reconnect=wait_time > self.config.get("max_wait", 10) * 60)
 
+        self.log_info(_("No errors found"))
         self.info.pop('error', None)
