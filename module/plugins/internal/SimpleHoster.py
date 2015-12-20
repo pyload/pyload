@@ -16,7 +16,7 @@ from module.plugins.internal.utils import (encode, parse_name, parse_size,
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "2.10"
+    __version__ = "2.11"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -431,7 +431,7 @@ class SimpleHoster(Hoster):
 
     def handle_free(self, pyfile):
         if not self.LINK_FREE_PATTERN:
-            self.log_warning(_("Free download not implemented"))
+            self.error(_("Free download not implemented"))
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
