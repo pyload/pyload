@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class OneFichierCom(SimpleHoster):
     __name__    = "OneFichierCom"
     __type__    = "hoster"
-    __version__ = "0.96"
+    __version__ = "0.97"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w+\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(?:es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?\w+)?'
@@ -31,17 +31,18 @@ class OneFichierCom(SimpleHoster):
                        ("Ludovic Lehmann", "ludo.lehmann@gmail.com"),
                        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
+    DISPOSITION      = False  #@TODO: Remove disposition in 0.4.10
 
     URL_REPLACEMENTS = [("https:", "http:")]  #@TODO: Remove in 0.4.10
 
-    COOKIES     = [("1fichier.com", "LG", "en")]
+    COOKIES          = [("1fichier.com", "LG", "en")]
 
-    NAME_PATTERN    = r'>File\s*Name :</td>\s*<td.*>(?P<N>.+?)<'
-    SIZE_PATTERN    = r'>Size :</td>\s*<td.*>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
-    OFFLINE_PATTERN = r'File not found !\s*<'
+    NAME_PATTERN     = r'>File\s*Name :</td>\s*<td.*>(?P<N>.+?)<'
+    SIZE_PATTERN     = r'>Size :</td>\s*<td.*>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    OFFLINE_PATTERN  = r'File not found !\s*<'
+    LINK_PATTERN     = r'<a href="(.+?)".*>Click here to download the file</a>'
 
-    WAIT_PATTERN = r'>You must wait \d+ minutes'
-    LINK_FREE_PATTERN = r'<a href="(.+?)".*?>Click here to download the file</a>'
+    WAIT_PATTERN     = r'>You must wait \d+ minutes'
 
     def setup(self):
         self.multiDL         = self.premium
@@ -53,7 +54,7 @@ class OneFichierCom(SimpleHoster):
         redirect = url
         for i in xrange(10):
             try:
-                headers = dict(re.findall(r"(?P<name>.+?): (?P<value>.+?)\r?\n", get_url(redirect, just_header=True).lower()))
+                headers = dict((k.lower(), v) for k,v in re.findall(r"(?P<name>.+?): (?P<value>.+?)\r?\n", get_url(redirect, just_header=True)))
                 if 'location' in headers and headers['location']:
                     redirect = headers['location']
                 else:
@@ -95,14 +96,16 @@ class OneFichierCom(SimpleHoster):
         if "pass" in inputs:
             inputs['pass'] = self.get_password()
 
-        inputs['submit'] = "Download"
+        inputs['dl_no_ssl'] = "on"
 
-        self.data = self.load(url, post=inputs)
-        return super(OneFichierCom, self).handle_free(pyfile)
+        self.data=self.load(url, post=inputs)
+
+        m = re.search(self.LINK_PATTERN, self.data)
+        if m:
+            self.link = m.group(1)
 
 
     def handle_premium(self, pyfile):
         self.download(pyfile.url, post={'did': 0, 'dl_no_ssl': "on"}, disposition=False)  #@TODO: Remove disposition in 0.4.10
 
 
-getInfo = create_getInfo(OneFichierCom)
