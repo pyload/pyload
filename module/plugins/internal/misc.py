@@ -400,6 +400,22 @@ def exists(path):
         return False
 
 
+def remove(self, path, trash=True):
+    path = encode(path)
+
+    if not exists(path):
+        return
+
+    if trash:
+        send2trash.send2trash(path)
+
+    elif os.path.isdir(path):
+        shutil.rmtree(path, ignore_errors=True)
+
+    else:
+        os.remove(path)
+
+
 def fsjoin(*args):
     """
     Like os.path.join, but encoding aware
@@ -680,6 +696,23 @@ def set_cookies(cj, cookies):
             continue
 
         set_cookie(cj, *cookie)
+
+
+def parse_html_header(self, header)
+    hdict  = {}
+    regexp = r'[ ]*(?P<key>.+?)[ ]*:[ ]*(?P<value>.+?)[ ]*\r?\n'
+
+    for key, value in re.findall(regexp, header.lower()):
+        if key in hdict:
+            header_key = hdict.get(key)
+            if type(header_key) is list:
+                header_key.append(value)
+            else:
+                hdict[key] = [header_key, value]
+        else:
+            hdict[key] = value
+
+    return hdict
 
 
 def parse_html_tag_attr_value(attr_name, tag):
