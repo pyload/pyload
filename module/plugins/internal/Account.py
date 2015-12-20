@@ -6,7 +6,7 @@ import threading
 import time
 
 from module.plugins.internal.Plugin import Plugin, Skip
-from module.plugins.internal.misc import compare_time, isiterable, lock, parse_size, safe_format
+from module.plugins.internal.misc import Periodical, compare_time, isiterable, lock, parse_size, safe_format
 
 
 class Account(Plugin):
@@ -23,7 +23,7 @@ class Account(Plugin):
     LOGIN_TIMEOUT       = 30 * 60  #: Relogin account every 30 minutes
     TUNE_TIMEOUT        = True     #: Automatically tune relogin interval
 
-    
+
     def __init__(self, manager, accounts):
         self._init(manager.core)
 
@@ -35,9 +35,9 @@ class Account(Plugin):
 
         self.timeout = self.LOGIN_TIMEOUT
 
-        #: Callback of periodical job task
-        self.cb       = None
-        self.interval = None
+        #: Callback of periodical job task, used by HookManager
+        self.periodical = Periodical(self, self.periodical_task)
+        self.cb = self.periodical.cb  #@TODO: Recheck in 0.4.10
 
         self.init()
 
@@ -71,49 +71,7 @@ class Account(Plugin):
         pass
 
 
-    def set_interval(self, value):
-        newinterval = max(0, value)
-
-        if newinterval != value:
-            return False
-
-        if newinterval != self.interval:
-            self.interval = newinterval
-
-        return True
-
-
-    def start_periodical(self, interval=None, threaded=False, delay=0):
-        if interval is not None and self.set_interval(interval) is False:
-            return False
-        else:
-            self.cb = self.pyload.scheduler.addJob(max(1, delay), self._periodical, [threaded], threaded=threaded)
-            return True
-
-
-    def restart_periodical(self, *args, **kwargs):
-        self.stop_periodical()
-        return self.start_periodical(*args, **kwargs)
-
-
-    def stop_periodical(self):
-        try:
-            return self.pyload.scheduler.removeJob(self.cb)
-        finally:
-            self.cb = None
-
-
-    def _periodical(self, threaded):
-        try:
-            self.periodical()
-
-        except Exception, e:
-            self.log_error(_("Error performing periodical task"), e)
-
-        self.restart_periodical(threaded=threaded, delay=self.interval)
-
-
-    def periodical(self):
+    def periodical_task(self):
         raise NotImplementedError
 
 
