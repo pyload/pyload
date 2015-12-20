@@ -43,6 +43,135 @@ class misc(object):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
+class Config(object):
+
+    def __init__(self, plugin):
+        self.plugin = plugin
+
+
+    def set(self, option, value):
+        """
+        Set config value for current plugin
+
+        :param option:
+        :param value:
+        :return:
+        """
+        self.plugin.pyload.api.setConfigValue(self.plugin.classname, option, value, section="plugin")
+
+
+    def get(self, option, default=""):
+        """
+        Returns config value for current plugin
+
+        :param option:
+        :return:
+        """
+        try:
+            return self.plugin.pyload.config.getPlugin(self.plugin.classname, option)
+
+        except KeyError:
+            self.plugin.log_debug("Config option `%s` not found, use default `%s`" % (option, default or None))  #@TODO: Restore to `log_warning` in 0.4.10
+            return default
+
+
+class DB(object):
+
+    def __init__(self, plugin):
+        self.plugin = plugin
+
+
+    def store(self, key, value):
+        """
+        Saves a value persistently to the database
+        """
+        value = map(decode, value) if isiterable(value) else decode(value)
+        entry = json.dumps(value).encode('base64')
+        self.plugin.pyload.db.setStorage(self.plugin.classname, key, entry)
+
+
+    def retrieve(self, key=None, default=None):
+        """
+        Retrieves saved value or dict of all saved entries if key is None
+        """
+        entry = self.plugin.pyload.db.getStorage(self.plugin.classname, key)
+
+        if key:
+            if entry is None:
+                value = default
+            else:
+                value = json.loads(entry.decode('base64'))
+        else:
+            if not entry:
+                value = default
+            else:
+                value = dict((k, json.loads(v.decode('base64'))) for k, v in value.items())
+
+        return value
+
+
+    def delete(self, key):
+        """
+        Delete entry in db
+        """
+        self.plugin.pyload.db.delStorage(self.plugin.classname, key)
+
+
+class Periodical(object):
+
+    def __init__(self, plugin, task=lambda x: x, interval=None):
+        self.plugin   = plugin
+        self.task     = task
+        self.cb       = None
+        self.interval = interval
+
+
+    def set_interval(self, value):
+        newinterval = max(0, value)
+
+        if newinterval != value:
+            return False
+
+        if newinterval != self.interval:
+            self.interval = newinterval
+
+        return True
+
+
+    def start(self, interval=None, threaded=False, delay=0):
+        if interval is not None and self.set_interval(interval) is False:
+            return False
+        else:
+            self.cb = self.plugin.pyload.scheduler.addJob(max(1, delay), self._task, [threaded], threaded=threaded)
+            return True
+
+
+    def restart(self, *args, **kwargs):
+        self.stop()
+        return self.start(*args, **kwargs)
+
+
+    def stop(self):
+        try:
+            return self.plugin.pyload.scheduler.removeJob(self.cb)
+
+        except Exception:
+            return False
+
+        finally:
+            self.cb = None
+
+
+    def _task(self, threaded):
+        try:
+            self.task()
+
+        except Exception, e:
+            self.log_error(_("Error performing periodical task"), e)
+
+        self.restart(threaded=threaded, delay=self.interval)
+
+
 class SimpleQueue(object):
 
     def __init__(self, plugin, storage="queue"):
@@ -233,10 +362,10 @@ def decode(value, encoding=None, errors='strict'):
 
     return res
 
-    
+
 def transcode(value, decoding, encoding):
     return value.decode(decoding).encode(encoding)
-    
+
 
 def encode(value, encoding='utf-8', errors='backslashreplace'):
     """
@@ -256,8 +385,8 @@ def encode(value, encoding='utf-8', errors='backslashreplace'):
         res = str(value)
 
     return res
-    
-    
+
+
 def exists(path):
     path = encode(path)
 
@@ -269,7 +398,7 @@ def exists(path):
             return True
     else:
         return False
-        
+
 
 def fsjoin(*args):
     """
