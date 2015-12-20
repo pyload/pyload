@@ -57,12 +57,12 @@ class LoadTo(SimpleHoster):
         if m is not None:
             self.wait(m.group(1))
 
-        #: Load.to is using solvemedia captchas since ~july 2014:
-        solvemedia  = SolveMedia(pyfile)
-        captcha_key = solvemedia.detect_key()
+        #: Load.to is using SolveMedia captchas since ~july 2014:
+        self.captcha = SolveMedia(pyfile)
+        captcha_key  = self.captcha.detect_key()
 
         if captcha_key:
-            response, challenge = solvemedia.challenge(captcha_key)
+            response, challenge = self.captcha.challenge(captcha_key)
             self.download(self.link,
                           post={'adcopy_challenge': challenge,
                                 'adcopy_response' : response,

@@ -73,16 +73,17 @@ class MediafireComFolder(Crypter):
                     folder_key = m.group(1)
                     self.log_debug("FOLDER KEY: %s" % folder_key)
 
-                    json_resp = json.loads(self.load("http://www.mediafire.com/api/folder/get_info.php",
-                                                     get={'folder_key'     : folder_key,
-                                                          'response_format': "json",
-                                                          'version'        : 1}))
-                    # self.log_info(json_resp)
-                    if json_resp['response']['result'] == "Success":
-                        for link in json_resp['response']['folder_info']['files']:
+                    html = self.load("http://www.mediafire.com/api/folder/get_info.php",
+                                     get={'folder_key'     : folder_key,
+                                          'response_format': "json",
+                                          'version'        : 1})
+                    json_data = json.loads(html)
+                    # self.log_info(json_data)
+                    if json_data['response']['result'] == "Success":
+                        for link in json_data['response']['folder_info']['files']:
                             self.links.append("http://www.mediafire.com/file/%s" % link['quickkey'])
                     else:
-                        self.fail(json_resp['response']['message'])
+                        self.fail(json_data['response']['message'])
 
         elif result is 1:
             self.offline()

@@ -20,7 +20,7 @@ class Expose(object):
     def __new__(cls, fn, *args, **kwargs):
         hookManager.addRPC(fn.__module__, fn.func_name, fn.func_doc)
         return fn
-           
+
 
 class Addon(Plugin):
     __name__    = "Addon"
@@ -34,7 +34,7 @@ class Addon(Plugin):
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    
+
     def __init__(self, core, manager):
         self._init(core)
 

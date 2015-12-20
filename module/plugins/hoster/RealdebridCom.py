@@ -32,11 +32,12 @@ class RealdebridCom(MultiHoster):
 
 
     def handle_premium(self, pyfile):
-        data = json.loads(self.load("https://real-debrid.com/ajax/unrestrict.php",
-                                    get={'lang'    : "en",
-                                         'link'    : pyfile.url,
-                                         'password': self.get_password(),
-                                         'time'    : int(time.time() * 1000)}))
+        html = self.load("https://real-debrid.com/ajax/unrestrict.php",
+                         get={'lang'    : "en",
+                              'link'    : pyfile.url,
+                              'password': self.get_password(),
+                              'time'    : int(time.time() * 1000)})
+        data = json.loads(html)
 
         self.log_debug("Returned Data: %s" % data)
 

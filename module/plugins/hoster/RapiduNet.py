@@ -60,8 +60,8 @@ class RapiduNet(SimpleHoster):
         else:
             self.wait(int(jsvars['timeToDownload']) - int(time.time()))
 
-        recaptcha = ReCaptcha(pyfile)
-        response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
+        self.captcha = ReCaptcha(pyfile)
+        response, challenge = self.captcha.challenge(self.RECAPTCHA_KEY)
 
         jsvars = self.get_json_response("https://rapidu.net/ajax.php",
                                       get={'a': "getCheckCaptcha"},

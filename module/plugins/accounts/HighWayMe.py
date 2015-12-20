@@ -20,8 +20,8 @@ class HighWayMe(MultiAccount):
 
 
     def grab_hosters(self, user, password, data):
-        json_data = json.loads(self.load("https://high-way.me/api.php",
-                                           get={'hoster': 1}))
+        html = self.load("https://high-way.me/api.php", get={'hoster': 1})
+        json_data  = json.loads(html)
         return [element['name'] for element in json_data['hoster']]
 
 

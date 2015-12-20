@@ -57,8 +57,8 @@ class NitroflareCom(SimpleHoster):
 
         self.wait(wait_time)
 
-        recaptcha = ReCaptcha(pyfile)
-        response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
+        self.captcha = ReCaptcha(pyfile)
+        response, challenge = self.captcha.challenge(self.RECAPTCHA_KEY)
 
         self.data = self.load("http://nitroflare.com/ajax/freeDownload.php",
                               post={'method'                   : "fetchDownload",

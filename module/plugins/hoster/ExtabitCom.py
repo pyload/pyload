@@ -52,13 +52,14 @@ class ExtabitCom(SimpleHoster):
 
         m = re.search(r'recaptcha/api/challenge\?k=(\w+)', self.data)
         if m is not None:
-            recaptcha = ReCaptcha(pyfile)
+            self.captcha = ReCaptcha(pyfile)
             captcha_key = m.group(1)
 
             get_data = {'type': "recaptcha"}
-            get_data['capture'], get_data['challenge'] = recaptcha.challenge(captcha_key)
+            get_data['capture'], get_data['challenge'] = self.captcha.challenge(captcha_key)
 
-            res = json.loads(self.load("http://extabit.com/file/%s/" % fileID, get=get_data))
+            html = self.load("http://extabit.com/file/%s/" % fileID, get=get_data)
+            res = json.loads(html)
 
             if "ok" in res:
                 self.captcha.correct()

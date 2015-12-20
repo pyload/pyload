@@ -38,11 +38,12 @@ class PremiumizeMe(MultiHoster):
         user, info = self.account.select()
 
         #: Get rewritten link using the premiumize.me api v1 (see https://secure.premiumize.me/?show=api)
-        data = json.loads(self.load("http://api.premiumize.me/pm-api/v1.php",  #@TODO: Revert to `https` in 0.4.10
-                                    get={'method'       : "directdownloadlink",
-                                         'params[login]': user,
-                                         'params[pass]' : info['login']['password'],
-                                         'params[link]' : pyfile.url}))
+        html = self.load("http://api.premiumize.me/pm-api/v1.php",  #@TODO: Revert to `https` in 0.4.10
+                         get={'method'       : "directdownloadlink",
+                              'params[login]': user,
+                              'params[pass]' : info['login']['password'],
+                              'params[link]' : pyfile.url})
+        data = json.loads(html)
 
         #: Check status and decide what to do
         status = data['status']

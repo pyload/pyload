@@ -56,10 +56,10 @@ class CrockoCom(SimpleHoster):
 
         action, form = m.groups()
         inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
-        recaptcha = ReCaptcha(pyfile)
+        self.captcha = ReCaptcha(pyfile)
 
-        inputs['recaptcha_response_field'], inputs['recaptcha_challenge_field'] = recaptcha.challenge()
+        inputs['recaptcha_response_field'], inputs['recaptcha_challenge_field'] = self.captcha.challenge()
         self.download(action, post=inputs)
 
-        if self.scan_download({'captcha': recaptcha.KEY_AJAX_PATTERN}):
+        if self.scan_download({'captcha': self.captcha.KEY_AJAX_PATTERN}):
             self.retry_captcha()

@@ -41,11 +41,11 @@ class OverLoadMe(MultiAccount):
 
 
     def signin(self, user, password, data):
-        jsondata = self.load("https://api.over-load.me/account.php",
-                             get={'user': user,
-                                  'auth': password}).strip()
+        html = self.load("https://api.over-load.me/account.php",
+                         get={'user': user,
+                              'auth': password}).strip()
 
-        data = json.loads(jsondata)
+        data = json.loads(html)
 
         if data['err'] is 1:
             self.fail_login()

@@ -48,8 +48,8 @@ class FilerNet(SimpleHoster):
         if 'hash' not in inputs:
             self.error(_("Unable to detect hash"))
 
-        recaptcha = ReCaptcha(pyfile)
-        response, challenge = recaptcha.challenge()
+        self.captcha = ReCaptcha(pyfile)
+        response, challenge = self.captcha.challenge()
 
         header = self.load(pyfile.url,
                            post={'recaptcha_challenge_field': challenge,

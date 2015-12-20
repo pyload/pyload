@@ -47,9 +47,7 @@ class OboomCom(Hoster):
         self.download("http://%s/1.0/dlh" % self.download_domain, get={'ticket': self.download_ticket, 'http_errors': 0})
 
 
-    def load_url(self, url, get=None):
-        if get is None:
-            get = {}
+    def load_url(self, url, get={}):
         return json.loads(self.load(url, get))
 
 
@@ -74,8 +72,8 @@ class OboomCom(Hoster):
 
 
     def solve_captcha(self):
-        recaptcha = ReCaptcha(self.pyfile)
-        response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
+        self.captcha = ReCaptcha(self.pyfile)
+        response, challenge = self.captcha.challenge(self.RECAPTCHA_KEY)
 
         apiUrl = "http://www.oboom.com/1.0/download/ticket"
         params = {'recaptcha_challenge_field': challenge,

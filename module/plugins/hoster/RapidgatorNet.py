@@ -73,9 +73,9 @@ class RapidgatorNet(SimpleHoster):
                              get={'sid': self.sid,
                                   'url': self.pyfile.url})
             self.log_debug("API:%s" % cmd, html, "SID: %s" % self.sid)
-            jso = json.loads(html)
-            status = jso['response_status']
-            msg = jso['response_details']
+            json_data = json.loads(html)
+            status = json_data['response_status']
+            msg = json_data['response_details']
 
         except BadHeader, e:
             self.log_error("API: %s" % cmd, e, "SID: %s" % self.sid)
@@ -83,7 +83,7 @@ class RapidgatorNet(SimpleHoster):
             msg = e
 
         if status is 200:
-            return jso['response']
+            return json_data['response']
 
         elif status is 423:
             self.account.empty()

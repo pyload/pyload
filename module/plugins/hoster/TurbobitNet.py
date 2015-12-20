@@ -79,8 +79,8 @@ class TurbobitNet(SimpleHoster):
         self.log_debug(inputs)
 
         if inputs['captcha_type'] == "recaptcha":
-            recaptcha = ReCaptcha(self.pyfile)
-            inputs['recaptcha_response_field'], inputs['recaptcha_challenge_field'] = recaptcha.challenge()
+            self.captcha = ReCaptcha(self.pyfile)
+            inputs['recaptcha_response_field'], inputs['recaptcha_challenge_field'] = self.captcha.challenge()
         else:
             m = re.search(self.CAPTCHA_PATTERN, self.data)
             if m is None:

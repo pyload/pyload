@@ -119,7 +119,7 @@ class FilecryptCc(Crypter):
             elif m3:  #: Solvemedia captcha
                 self.log_debug("Solvemedia Captcha URL: %s" % urlparse.urljoin(self.pyfile.url, m3.group(1)))
 
-                solvemedia  = SolveMedia(self)
+                solvemedia  = SolveMedia(self.pyfile)
                 captcha_key = solvemedia.detect_key()
 
                 if captcha_key:
@@ -134,12 +134,12 @@ class FilecryptCc(Crypter):
                 self.retry()
 
             else:
-                recaptcha   = ReCaptcha(self)
-                captcha_key = self.captcha.detect_key()
+                recaptcha   = ReCaptcha(self.pyfile)
+                captcha_key = recaptcha.detect_key()
 
                 if captcha_key:
                     self.captcha = recaptcha
-                     
+
                     try:
                         response, challenge = recaptcha.challenge(captcha_key)
 

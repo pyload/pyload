@@ -54,17 +54,17 @@ class ShareLinksBiz(Crypter):
             self.handle_errors()
 
         #: Extract package links
-        package_links = []
-        package_links.extend(self.handle_web_links())
-        package_links.extend(self.handle_containers())
-        package_links.extend(self.handle_CNL2())
-        package_links = set(package_links)
+        pack_links = []
+        pack_links.extend(self.handle_web_links())
+        pack_links.extend(self.handle_containers())
+        pack_links.extend(self.handle_CNL2())
+        pack_links = set(pack_links)
 
         #: Get package info
-        package_name, package_folder = self.get_package_info()
+        pack_name, pack_folder = self.get_package_info()
 
         #: Pack
-        self.packages = [(package_name, package_links, package_folder)]
+        self.packages = [(pack_name, pack_links, pack_folder)]
 
 
     def init_file(self, pyfile):
@@ -201,7 +201,7 @@ class ShareLinksBiz(Crypter):
 
 
     def handle_web_links(self):
-        package_links = []
+        pack_links = []
         self.log_debug("Handling Web links")
 
         #@TODO: Gather paginated web links
@@ -227,16 +227,16 @@ class ShareLinksBiz(Crypter):
 
                 self.log_debug("JsEngine returns value [%s] for redirection link" % dlLink)
 
-                package_links.append(dlLink)
+                pack_links.append(dlLink)
 
             except Exception, detail:
                 self.log_debug("Error decrypting Web link [%s], %s" % (ID, detail))
 
-        return package_links
+        return pack_links
 
 
     def handle_containers(self):
-        package_links = []
+        pack_links = []
         self.log_debug("Handling Container links")
 
         pattern = r'javascript:_get\(\'(.*?)\', 0, \'(rsdf|ccf|dlc)\'\)'
@@ -244,23 +244,23 @@ class ShareLinksBiz(Crypter):
         self.log_debug("Decrypting %d Container links" % len(containersLinks))
         for containerLink in containersLinks:
             link = "%s/get/%s/%s" % (self.base_url, containerLink[1], containerLink[0])
-            package_links.append(link)
-        return package_links
+            pack_links.append(link)
+        return pack_links
 
 
     def handle_CNL2(self):
-        package_links = []
+        pack_links = []
         self.log_debug("Handling CNL2 links")
 
         if '/lib/cnl2/ClicknLoad.swf' in self.data:
             try:
                 (crypted, jk) = self._get_cipher_params()
-                package_links.extend(self._get_links(crypted, jk))
+                pack_links.extend(self._get_links(crypted, jk))
 
             except Exception:
                 self.fail(_("Unable to decrypt CNL2 links"))
 
-        return package_links
+        return pack_links
 
 
     def _get_cipher_params(self):

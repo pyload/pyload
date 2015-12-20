@@ -116,9 +116,9 @@ class BitshareCom(SimpleHoster):
         #: Resolve captcha
         if captcha is 1:
             self.log_debug("File is captcha protected")
-            recaptcha = ReCaptcha(self.pyfile)
+            self.captcha = ReCaptcha(self.pyfile)
 
-            response, challenge = recaptcha.challenge()
+            response, challenge = self.captcha.challenge()
             res = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
                                  post={'request'                  : "validateCaptcha",
                                        'ajaxid'                   : self.ajaxid,

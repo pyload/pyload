@@ -43,7 +43,8 @@ class SmoozedCom(MultiHoster):
         get_data = {'session_key': self.account.get_data('session'),
                     'url'        : pyfile.url}
 
-        data = json.loads(self.load("http://www2.smoozed.com/api/check", get=get_data))
+        html = self.load("http://www2.smoozed.com/api/check", get=get_data)
+        data = json.loads(html)
 
         if data['state'] != "ok":
             self.fail(data['message'])

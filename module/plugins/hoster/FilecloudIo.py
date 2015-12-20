@@ -57,15 +57,15 @@ class FilecloudIo(SimpleHoster):
             self.error(_("__AB1"))
         data['__ab1'] = m.group(1)
 
-        recaptcha = ReCaptcha(pyfile)
+        self.captcha = ReCaptcha(pyfile)
 
         m = re.search(self.RECAPTCHA_PATTERN, self.data)
-        captcha_key = m.group(1) if m else recaptcha.detect_key()
+        captcha_key = m.group(1) if m else self.captcha.detect_key()
 
         if captcha_key is None:
             self.error(_("ReCaptcha key not found"))
 
-        response, challenge = recaptcha.challenge(captcha_key)
+        response, challenge = self.captcha.challenge(captcha_key)
         self.account.form_data = {'recaptcha_challenge_field': challenge,
                                   'recaptcha_response_field' : response}
         self.account.relogin()
@@ -82,7 +82,7 @@ class FilecloudIo(SimpleHoster):
         self.log_debug(res)
         if res['captcha']:
             data['ctype'] = "recaptcha"
-            data['recaptcha_response'], data['recaptcha_challenge'] = recaptcha.challenge(captcha_key)
+            data['recaptcha_response'], data['recaptcha_challenge'] = self.captcha.challenge(captcha_key)
 
             json_url = "http://filecloud.io/download-request.json"
             res = self.load(json_url, post=data)

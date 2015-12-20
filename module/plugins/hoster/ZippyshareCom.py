@@ -45,13 +45,13 @@ class ZippyshareCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        recaptcha   = ReCaptcha(pyfile)
-        captcha_key = recaptcha.detect_key()
+        self.captcha   = ReCaptcha(pyfile)
+        captcha_key = self.captcha.detect_key()
 
         if captcha_key:
             try:
                 self.link = re.search(self.LINK_PREMIUM_PATTERN, self.data)
-                recaptcha.challenge()
+                self.captcha.challenge()
 
             except Exception, e:
                 self.error(e)

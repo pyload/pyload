@@ -42,9 +42,9 @@ class CatShareNet(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        recaptcha = ReCaptcha(pyfile)
+        self.captcha = ReCaptcha(pyfile)
 
-        response, challenge = recaptcha.challenge()
+        response, challenge = self.captcha.challenge()
         self.data = self.load(pyfile.url,
                               post={'recaptcha_challenge_field': challenge,
                                     'recaptcha_response_field' : response})

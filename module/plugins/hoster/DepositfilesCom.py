@@ -58,15 +58,15 @@ class DepositfilesCom(SimpleHoster):
 
         self.check_errors()
 
-        recaptcha = ReCaptcha(pyfile)
-        captcha_key = recaptcha.detect_key()
+        self.captcha = ReCaptcha(pyfile)
+        captcha_key = self.captcha.detect_key()
         if captcha_key is None:
             return
 
         self.data = self.load("https://dfiles.eu/get_file.php", get=params)
 
         if '<input type=button value="Continue" onclick="check_recaptcha' in self.data:
-            params['response'], params['challenge'] = recaptcha.challenge(captcha_key)
+            params['response'], params['challenge'] = self.captcha.challenge(captcha_key)
             self.data = self.load("https://dfiles.eu/get_file.php", get=params)
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)

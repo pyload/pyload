@@ -42,8 +42,9 @@ class SoundcloudCom(SimpleHoster):
             client_id = "b45b1aa10f1ac2941910a7f0d10f8e28"
 
         #: Url to retrieve the actual song url
-        streams = json.loads(self.load("https://api.soundcloud.com/tracks/%s/streams" % song_id,
-                             get={'client_id': client_id}))
+        html = self.load("https://api.soundcloud.com/tracks/%s/streams" % song_id,
+                         get={'client_id': client_id})
+        streams = json.loads(html)
 
         regex = re.compile(r'[^\d]')
         http_streams = sorted([(key, value) for key, value in streams.items() if key.startswith('http_')],

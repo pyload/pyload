@@ -114,7 +114,7 @@ class Keep2ShareCc(SimpleHoster):
 
         m = re.search(self.CAPTCHA_PATTERN, self.data)
         self.log_debug("CAPTCHA_PATTERN found %s" % m)
-        
+
         if m is not None:
             captcha_url = urlparse.urljoin("http://keep2s.cc/", m.group(1))
             post_data['CaptchaForm[code]'] = self.captcha.decrypt(captcha_url)

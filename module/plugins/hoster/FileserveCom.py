@@ -157,13 +157,14 @@ class FileserveCom(Hoster):
 
     def do_captcha(self):
         captcha_key = re.search(self.CAPTCHA_KEY_PATTERN, self.data).group(1)
-        recaptcha = ReCaptcha(self.pyfile)
+        self.captcha = ReCaptcha(self.pyfile)
 
-        response, challenge = recaptcha.challenge(captcha_key)
-        res = json.loads(self.load(self.URLS[2],
-                                   post={'recaptcha_challenge_field'  : challenge,
-                                         'recaptcha_response_field'   : response,
-                                         'recaptcha_shortencode_field': self.file_id}))
+        response, challenge = self.captcha.challenge(captcha_key)
+        html = self.load(self.URLS[2],
+                         post={'recaptcha_challenge_field'  : challenge,
+                               'recaptcha_response_field'   : response,
+                               'recaptcha_shortencode_field': self.file_id})
+        res = json.loads(html)
         if res['success']:
             self.captcha.correct()
         else:

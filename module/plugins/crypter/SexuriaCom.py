@@ -36,10 +36,10 @@ class SexuriaCom(Crypter):
         self.package = pyfile.package()
 
         #: Decrypt and add links
-        package_name, self.urls, folder_name, package_pwd = self.decrypt_links(self.pyfile.url)
-        if package_pwd:
-            self.pyfile.package().password = package_pwd
-        self.packages = [(package_name, self.urls, folder_name)]
+        pack_name, self.urls, folder_name, pack_pwd = self.decrypt_links(self.pyfile.url)
+        if pack_pwd:
+            self.pyfile.package().password = pack_pwd
+        self.packages = [(pack_name, self.urls, folder_name)]
 
 
     def decrypt_links(self, url):

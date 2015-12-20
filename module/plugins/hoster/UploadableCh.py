@@ -44,13 +44,13 @@ class UploadableCh(SimpleHoster):
 
         self.wait(30)
 
-        #: Make the recaptcha appear and show it the pyload interface
+        #: Make the ReCaptcha appear and show it the pyload interface
         b = self.load(pyfile.url, post={'checkDownload': "check"})
         self.log_debug(b)  #: Expected output: {'success': "showCaptcha"}
 
-        recaptcha = ReCaptcha(pyfile)
+        self.captcha = ReCaptcha(pyfile)
 
-        response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
+        response, challenge = self.captcha.challenge(self.RECAPTCHA_KEY)
 
         #: Submit the captcha solution
         self.load("http://www.uploadable.ch/checkReCaptcha.php",

@@ -91,8 +91,8 @@ class LetitbitNet(SimpleHoster):
 
         self.log_debug(res)
 
-        recaptcha = ReCaptcha(pyfile)
-        response, challenge = recaptcha.challenge()
+        self.captcha = ReCaptcha(pyfile)
+        response, challenge = self.captcha.challenge()
 
         post_data = {'recaptcha_challenge_field': challenge,
                      'recaptcha_response_field': response,

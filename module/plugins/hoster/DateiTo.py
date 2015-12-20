@@ -37,7 +37,7 @@ class DateiTo(SimpleHoster):
     def handle_free(self, pyfile):
         url = 'http://datei.to/ajax/download.php'
         data = {'P': 'I', 'ID': self.info['pattern']['ID']}
-        recaptcha = ReCaptcha(pyfile)
+        self.captcha = ReCaptcha(pyfile)
 
         for _i in xrange(3):
             self.log_debug("URL", url, "POST", data)
@@ -58,8 +58,8 @@ class DateiTo(SimpleHoster):
             url = 'http://datei.to/' + m.group(1)
             data = dict(x.split('=') for x in m.group(2).split('&'))
 
-            if url.endswith('recaptcha.php'):
-                data['recaptcha_response_field'], data['recaptcha_challenge_field'] = recaptcha.challenge()
+            if url.endswith('self.captcha.php'):
+                data['recaptcha_response_field'], data['recaptcha_challenge_field'] = self.captcha.challenge()
         else:
             return
 

@@ -51,8 +51,8 @@ class KingfilesNet(SimpleHoster):
 
         self.data = self.load(pyfile.url, post=post_data)
 
-        solvemedia = SolveMedia(pyfile)
-        response, challenge = solvemedia.challenge()
+        self.captcha = SolveMedia(pyfile)
+        response, challenge = self.captcha.challenge()
 
         #: Make the downloadlink appear and load the file
         m = re.search(self.RAND_ID_PATTERN, self.data)

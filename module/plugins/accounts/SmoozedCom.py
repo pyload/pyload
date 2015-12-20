@@ -83,6 +83,7 @@ class SmoozedCom(MultiAccount):
         salt      = hashlib.sha256(password).hexdigest()
         encrypted = PBKDF2(password, salt, iterations=1000).hexread(32)
 
-        return json.loads(self.load("http://www2.smoozed.com/api/login",
-                                    get={'auth': user,
-                                         'password': encrypted}))
+        html = self.load("http://www2.smoozed.com/api/login",
+                         get={'auth': user,
+                              'password': encrypted})
+        return json.loads(html)

@@ -75,8 +75,8 @@ class UploadedTo(SimpleHoster):
 
         self.data = self.load("http://uploaded.net/js/download.js")
 
-        recaptcha = ReCaptcha(pyfile)
-        response, challenge = recaptcha.challenge()
+        self.captcha = ReCaptcha(pyfile)
+        response, challenge = self.captcha.challenge()
 
         self.data = self.load("http://uploaded.net/io/ticket/captcha/%s" % self.info['pattern']['ID'],
                               post={'recaptcha_challenge_field': challenge,

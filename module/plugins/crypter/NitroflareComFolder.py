@@ -23,11 +23,12 @@ class NitroflareComFolder(SimpleCrypter):
 
 
     def get_links(self):
-        res = json.loads(self.load("http://nitroflare.com/ajax/folder.php",
-                                   post={'userId' : self.info['pattern']['USER'],
-                                         'folder' : self.info['pattern']['ID'],
-                                         'page'   : 1,
-                                         'perPage': 10000}))
+        html = self.load("http://nitroflare.com/ajax/folder.php",
+                         post={'userId' : self.info['pattern']['USER'],
+                               'folder' : self.info['pattern']['ID'],
+                               'page'   : 1,
+                               'perPage': 10000})
+        res = json.loads(html)
         if res['name']:
             self.pyfile.name = res['name']
         else:

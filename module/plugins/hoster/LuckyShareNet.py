@@ -51,14 +51,14 @@ class LuckyShareNet(SimpleHoster):
 
         self.log_debug("JSON: " + rep)
 
-        jso = self.parse_json(rep)
-        self.wait(jso['time'])
+        json_data = self.parse_json(rep)
+        self.wait(json_data['time'])
 
-        recaptcha = ReCaptcha(pyfile)
+        self.captcha = ReCaptcha(pyfile)
 
-        response, challenge = recaptcha.challenge()
+        response, challenge = self.captcha.challenge()
         rep = self.load(r"http://luckyshare.net/download/verify/challenge/%s/response/%s/hash/%s" %
-                        (challenge, response, jso['hash']))
+                        (challenge, response, json_data['hash']))
 
         self.log_debug("JSON: " + rep)
 
@@ -67,6 +67,6 @@ class LuckyShareNet(SimpleHoster):
 
         elif 'link' in rep:
             self.captcha.correct()
-            jso.update(self.parse_json(rep))
-            if jso['link']:
-                self.link = jso['link']
+            json_data.update(self.parse_json(rep))
+            if json_data['link']:
+                self.link = json_data['link']

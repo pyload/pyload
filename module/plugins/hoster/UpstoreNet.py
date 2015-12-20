@@ -42,8 +42,8 @@ class UpstoreNet(SimpleHoster):
         self.check_errors()
 
         #: STAGE 2: solv captcha and wait
-        #: First get the infos we need: recaptcha key and wait time
-        recaptcha = ReCaptcha(pyfile)
+        #: First get the infos we need: self.captcha key and wait time
+        self.captcha = ReCaptcha(pyfile)
 
         #: Try the captcha 5 times
         for i in xrange(5):
@@ -56,7 +56,7 @@ class UpstoreNet(SimpleHoster):
             self.wait(wait_time)
 
             #: then, handle the captcha
-            response, challenge = recaptcha.challenge()
+            response, challenge = self.captcha.challenge()
             post_data.update({'recaptcha_challenge_field': challenge,
                               'recaptcha_response_field' : response})
 
@@ -85,4 +85,4 @@ class UpstoreNet(SimpleHoster):
             self.wantReconnect = True
             self.retry(wait_time=3600, reason=_("Upstore doesn't like us today"))
 
- 
+

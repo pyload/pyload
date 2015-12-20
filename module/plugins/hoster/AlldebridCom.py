@@ -33,8 +33,9 @@ class AlldebridCom(MultiHoster):
     def handle_premium(self, pyfile):
         password = self.get_password()
 
-        data = json.loads(self.load("http://www.alldebrid.com/service.php",
-                                     get={'link': pyfile.url, 'json': "true", 'pw': password}))
+        html = self.load("http://www.alldebrid.com/service.php",
+                         get={'link': pyfile.url, 'json': "true", 'pw': password})
+        data = json.loads(html)
 
         self.log_debug("Json data", data)
 

@@ -53,14 +53,15 @@ class RapiduNet(Account):
                   post={'_go' : "",
                         'lang': "en"})
 
-        jso = json.loads(self.load("https://rapidu.net/ajax.php",
-                                    get={'a': "getUserLogin"},
-                                    post={'_go'     : "",
-                                          'login'   : user,
-                                          'pass'    : password,
-                                          'remember': "1"}))
+        html = self.load("https://rapidu.net/ajax.php",
+                         get={'a': "getUserLogin"},
+                         post={'_go'     : "",
+                               'login'   : user,
+                               'pass'    : password,
+                               'remember': "1"})
+        json_data = json.loads(html)
 
-        self.log_debug(jso)
+        self.log_debug(json_data)
 
-        if jso['message'] != "success":
+        if json_data['message'] != "success":
             self.fail_login()

@@ -77,14 +77,15 @@ class FilepostCom(SimpleHoster):
             self.link = self.get_json_response(get_dict, post_dict, 'link')
 
             if not self.link:
-                #: Solve recaptcha
-                recaptcha = ReCaptcha(pyfile)
-                post_dict['recaptcha_response_field'], post_dict['recaptcha_challenge_field'] = recaptcha.challenge(captcha_key)
+                #: Solve ReCaptcha
+                self.captcha = ReCaptcha(pyfile)
+                post_dict['recaptcha_response_field'], post_dict['recaptcha_challenge_field'] = self.captcha.challenge(captcha_key)
                 self.link = self.get_json_response(get_dict, post_dict, 'link')
 
 
     def get_json_response(self, get_dict, post_dict, field):
-        res = json.loads(self.load('https://filepost.com/files/get/', get=get_dict, post=post_dict))
+        html = self.load('https://filepost.com/files/get/', get=get_dict, post=post_dict)
+        res  = json.loads(html)
 
         self.log_debug(res)
 

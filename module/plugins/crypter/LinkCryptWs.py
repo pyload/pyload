@@ -72,7 +72,7 @@ class LinkCryptWs(Crypter):
         self.getunrarpw()
 
         #: Get package name and folder
-        package_name, folder_name = self.get_package_info()
+        pack_name, folder_name = self.get_package_info()
 
         #: Get the container definitions from script section
         self.get_container_html()
@@ -86,7 +86,7 @@ class LinkCryptWs(Crypter):
                 break
 
         if self.urls:
-            self.packages = [(package_name, self.urls, folder_name)]
+            self.packages = [(pack_name, self.urls, folder_name)]
 
 
     def is_online(self):
@@ -187,7 +187,7 @@ class LinkCryptWs(Crypter):
     def handle_web_links(self):
         self.log_debug("Search for Web links ")
 
-        package_links = []
+        pack_links = []
         pattern = r'<form action="http://linkcrypt.ws/out.html"[^>]*?>.*?<input[^>]*?value="(.+?)"[^>]*?name="file"'
         ids = re.findall(pattern, self.data, re.I | re.S)
 
@@ -203,12 +203,12 @@ class LinkCryptWs(Crypter):
                 link2 = res[indexs:indexe]
 
                 link2 = html_unescape(link2)
-                package_links.append(link2)
+                pack_links.append(link2)
 
             except Exception, detail:
                 self.log_debug("Error decrypting Web link %s, %s" % (weblink_id, detail))
 
-        return package_links
+        return pack_links
 
 
     def get_container_html(self):
@@ -227,7 +227,7 @@ class LinkCryptWs(Crypter):
 
 
     def handle_container(self, type):
-        package_links = []
+        pack_links = []
         type = type.lower()
 
         self.log_debug('Search for %s Container links' % type.upper())
@@ -245,18 +245,18 @@ class LinkCryptWs(Crypter):
 
                 self.log_debug("clink found")
 
-                package_name, folder_name = self.get_package_info()
-                self.log_debug("Added package with name %s.%s and container link %s" %( package_name, type, clink.group(1)))
-                self.pyload.api.uploadContainer('.'.join([package_name, type]), self.load(clink.group(1)))
+                pack_name, folder_name = self.get_package_info()
+                self.log_debug("Added package with name %s.%s and container link %s" %( pack_name, type, clink.group(1)))
+                self.pyload.api.uploadContainer('.'.join([pack_name, type]), self.load(clink.group(1)))
                 return "Found it"
 
-        return package_links
+        return pack_links
 
 
     def handle_CNL2(self):
         self.log_debug("Search for CNL links")
 
-        package_links = []
+        pack_links = []
         cnl_line = None
 
         for line in self.container_html:
@@ -271,13 +271,13 @@ class LinkCryptWs(Crypter):
             cnl_section = self.handle_javascript(cnl_line)
             (vcrypted, vjk) = self._get_cipher_params(cnl_section)
             for (crypted, jk) in zip(vcrypted, vjk):
-                package_links.extend(self._get_links(crypted, jk))
+                pack_links.extend(self._get_links(crypted, jk))
 
         except Exception:
             self.log_error(_("Unable to decrypt CNL links (JS Error) try to get over links"), trace=True)
             return self.handle_web_links()
 
-        return package_links
+        return pack_links
 
 
     def _get_cipher_params(self, cnl_section):

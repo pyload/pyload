@@ -52,7 +52,7 @@ class SafelinkingNet(Crypter):
                 m = re.search(self.SOLVEMEDIA_PATTERN, self.data)
                 if m is not None:
                     captchaKey = m.group(1)
-                    captcha = SolveMedia(self)
+                    captcha = SolveMedia(pyfile)
                     captchaProvider = "Solvemedia"
                 else:
                     self.fail(_("Error parsing captcha"))
