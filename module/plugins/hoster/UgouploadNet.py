@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UgouploadNet(SimpleHoster):
     __name__    = "UgouploadNet"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www)?\.ugoupload\.net/\w{4}/.+'
@@ -39,6 +39,9 @@ class UgouploadNet(SimpleHoster):
 
 
     def handle_free(self, pyfile):
+        if self.req.code == 404:
+            self.offline()
+
         self.check_errors()
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)
@@ -47,7 +50,7 @@ class UgouploadNet(SimpleHoster):
             response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
 
             self.download(m.group(1), post={'recaptcha_challenge_field': challenge,
-                                          'recaptcha_response_field': response,
-                                          'submit':	"Submit",
-                                          'submitted': "1",
-                                          'd': "1"})
+                                            'recaptcha_response_field': response,
+                                             'submit':	"Submit",
+                                             'submitted': "1",
+                                             'd': "1"})
