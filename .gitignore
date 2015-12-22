@@ -1,0 +1,10 @@
+.settings
+.*project
+*.dll
+*.exe
+*.py[cd]
+
+qt.conf
+UnRAR_license.txt
+
+tesseract
