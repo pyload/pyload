@@ -1,6 +1,4 @@
 import httplib
-import locale
-import pdb
 import re
 import StringIO
 import sys
@@ -9,9 +7,7 @@ import urllib
 import urllib2
 from bs4 import BeautifulSoup as Soup
 from datetime import datetime
-from module.network.RequestFactory import getURL
-from module.plugins.internal.Hook import Hook
-from module.plugins.internal.Addon import Addon, threaded
+from module.plugins.internal.Addon import Addon
 from pytz import timezone
 
 
@@ -52,8 +48,8 @@ class WarezWorld(Addon):
     __name__ = 'WarezWorld'
     __type__ = 'hook'
     __status__ = 'testing'
-    __author_name__ = ('ArnoNym')
-    __author_mail__ = ('')
+    __author_name__ = ('Arno-Nymous')
+    __author_mail__ = ('Arno-Nymous@users.noreply.github.com')
     __version__ = '1.2'
     __description__ = 'Get new movies from Warez-World.org'
     __config__ = [
