@@ -27,7 +27,7 @@ def forward(source, destination):
 class ClickNLoad(Addon):
     __name__    = "ClickNLoad"
     __type__    = "hook"
-    __version__ = "0.49"
+    __version__ = "0.51"
     __status__  = "testing"
 
     __config__ = [("activated", "bool"           , "Activated"                      , True       ),
@@ -37,19 +37,22 @@ class ClickNLoad(Addon):
 
     __description__ = """Click'n'Load support"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN"         , "RaNaN@pyload.de"  ),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("RaNaN"         , "RaNaN@pyload.de"           ),
+                       ("Walter Purcaro", "vuolter@gmail.com"         ),
+                       ("GammaC0de"     , "nitzo2001[AT]yahoo[DOT]com")]
 
 
     def activate(self):
         if not self.pyload.config.get("webinterface", "activated"):
             return
 
-        ip      = "" if self.get_config('extern') else "127.0.0.1"
-        webport = self.pyload.config.get("webinterface", "port")
+        cnlip   = "" if self.get_config('extern') else "127.0.0.1"
         cnlport = self.get_config('port')
+        webip   = "127.0.0.1" if any(_ip == self.pyload.config.get("webinterface", "host") for _ip in ("0.0.0.0", "")) \
+            else self.pyload.config.get("webinterface", "host")
+        webport = self.pyload.config.get("webinterface", "port")
 
-        self.pyload.scheduler.addJob(5, self.proxy, [ip, webport, cnlport], threaded=False)
+        self.pyload.scheduler.addJob(5, self.proxy, [cnlip, cnlport, webip, webport], threaded=False)
 
 
     @threaded
@@ -66,10 +69,10 @@ class ClickNLoad(Addon):
 
 
     @threaded
-    def proxy(self, ip, webport, cnlport):
-        self.log_info(_("Proxy listening on %s:%s") % (ip or "0.0.0.0", cnlport))
+    def proxy(self, cnlip, cnlport, webip, webport):
+        self.log_info(_("Proxy listening on %s:%s") % (cnlip or "0.0.0.0", cnlport))
 
-        self._server(ip, webport, cnlport)
+        self._server(cnlip, cnlport, webip, webport)
 
         lock = threading.Lock()
         lock.acquire()
@@ -77,10 +80,10 @@ class ClickNLoad(Addon):
 
 
     @threaded
-    def _server(self, ip, webport, cnlport):
+    def _server(self, cnlip, cnlport, webip, webport):
         try:
             dock_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            dock_socket.bind((ip, cnlport))
+            dock_socket.bind((cnlip, cnlport))
             dock_socket.listen(5)
 
             while True:
@@ -103,16 +106,16 @@ class ClickNLoad(Addon):
                         client_socket.close()
                         continue
 
-                server_socket.connect(("127.0.0.1", webport))
+                server_socket.connect((webip, webport))
 
                 self.forward(client_socket, server_socket, self.get_config('dest') is "queue")
                 self.forward(server_socket, client_socket)
 
         except socket.timeout:
             self.log_debug("Connection timed out, retrying...")
-            return self._server(ip, webport, cnlport)
+            return self._server(cnlip, cnlport, webip, webport)
 
         except socket.error, e:
             self.log_error(e)
             time.sleep(240)
-            return self._server(ip, webport, cnlport)
+            return self._server(cnlip, cnlport, webip, webport)

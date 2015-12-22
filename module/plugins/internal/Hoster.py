@@ -15,7 +15,7 @@ from module.plugins.internal.utils import encode, exists, fixurl, fs_join, parse
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -226,7 +226,7 @@ class Hoster(Base):
                                             disposition=disposition)
 
         except BadHeader, e:
-            self.req.code = e.code
+            self.req.http.code = e.code
             raise BadHeader(e)
 
         finally:

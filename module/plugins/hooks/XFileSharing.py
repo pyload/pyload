@@ -9,7 +9,7 @@ from module.plugins.internal.Addon import Addon
 class XFileSharing(Addon):
     __name__    = "XFileSharing"
     __type__    = "hook"
-    __version__ = "0.51"
+    __version__ = "0.52"
     __status__  = "testing"
 
     __config__ = [("activated"       , "bool", "Activated"                     , True ),
