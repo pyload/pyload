@@ -209,7 +209,7 @@ class Account(Plugin):
         self.sync()
 
         clear = lambda x: {} if isinstance(x, dict) else [] if isiterable(x) else None
-        self.info['data'] = dict((k, clear(v)) for k, v in self.info['data'])
+        self.info['data'] = dict((k, clear(v)) for k, v in self.info['data'].iteritems())
         self.info['data']['options'] = {'limitdl': ['0']}
 
         self.syncback()
