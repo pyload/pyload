@@ -107,7 +107,7 @@ class LinkCryptWs(Crypter):
 
 
     def is_captcha_protected(self):
-        if 'id="captcha">' in self.data:
+        if ('Linkcrypt.ws // Captx' in self.data) or ('Linkcrypt.ws // TextX' in self.data):
             self.log_debug("Links are captcha protected")
             return True
         else:
@@ -132,7 +132,7 @@ class LinkCryptWs(Crypter):
 
 
     def unlock_captcha_protection(self):
-        captcha_url  = re.search(r'<form.*?id\s*?=\s*?"captcha"[^>]*?>.*?<\s*?input.*?src="(.+?)"', self.data, re.I | re.S).group(1)
+        captcha_url  = 'http://linkcrypt.ws/captx.html?secid=id=&id='
         captcha_code = self.captcha.decrypt(captcha_url, input_type="gif", output_type='positional')
 
         self.data = self.load(self.pyfile.url, post={'x': captcha_code[0], 'y': captcha_code[1]})
@@ -148,15 +148,9 @@ class LinkCryptWs(Crypter):
 
 
     def getunrarpw(self):
-        sitein = self.data
-        indexi = sitein.find("|source|") + 8
-        indexe = sitein.find("|", indexi)
-
-        unrarpw = sitein[indexi:indexe]
-
-        if unrarpw not in ("Password", "Dateipasswort"):
-            self.log_debug("File password set to: [%s]"% unrarpw)
-            self.pyfile.package().password = unrarpw
+        # Skip password parsing, since the method was not reliable due to the scrambling of the form data.
+        # That way one could not predict the exact position of the password at a certain index.
+        return
 
 
     def handle_errors(self):
@@ -198,8 +192,8 @@ class LinkCryptWs(Crypter):
             try:
                 res = self.load("http://linkcrypt.ws/out.html", post = {'file':weblink_id})
 
-                indexs = res.find("window.location =") + 19
-                indexe = res.find('"', indexs)
+                indexs = res.find("var url = ") + 11
+                indexe = res.find("'", indexs)
 
                 link2 = res[indexs:indexe]
 
@@ -215,7 +209,7 @@ class LinkCryptWs(Crypter):
     def get_container_html(self):
         self.container_html = []
 
-        script = re.search(r'<div.*?id="ad_cont".*?<script.*?javascrip[^>]*?>(.*?)</script', self.data, re.I | re.S)
+        script = re.search(r'<script.*?javascript[^>]*?>.*(eval.*?)\s*eval.*</script>.*<div class="clearfix', self.data, re.I | re.S)
 
         if script:
             container_html_text = script.group(1)
@@ -261,7 +255,7 @@ class LinkCryptWs(Crypter):
         cnl_line = None
 
         for line in self.container_html:
-            if "cnl" in line:
+            if "addcrypted2" in line:
                 cnl_line = line
                 break
 
@@ -283,7 +277,7 @@ class LinkCryptWs(Crypter):
 
     def _get_cipher_params(self, cnl_section):
         #: Get jk
-        jk_re = r'<INPUT.*?NAME="%s".*?VALUE="(.*?)"' % LinkCryptWs.JK_KEY
+        jk_re = r'<INPUT.*?NAME="%s".*?VALUE="\D*(\d*)\D*"' % LinkCryptWs.JK_KEY
         vjk = re.findall(jk_re, cnl_section)
 
         #: Get crypted
@@ -297,10 +291,9 @@ class LinkCryptWs(Crypter):
 
     def _get_links(self, crypted, jk):
         #: Get key
-        jreturn = self.js.eval("%s f()" % jk)
-        key     = binascii.unhexlify(jreturn)
+        key     = binascii.unhexlify(jk)
 
-        self.log_debug("JsEngine returns value [%s]" % jreturn)
+        self.log_debug("JsEngine returns value [%s]" % key)
 
         #: Decrypt
         Key  = key
