@@ -32,8 +32,10 @@ class ShareonlineBiz(Account):
         if not 'a' in api:
             self.fail_login(res.strip('*'))
 
-        if api['a'].lower() == "not_available":
-            self.fail_login(_("No info available"))
+# Since api['a'] always returns 'not_available' for Shareonline, uncommented this for the time being.
+# Resolves the problem that the log always says 'Could not login user | No info available'.
+#         if api['a'].lower() == "not_available":
+#             self.fail_login(_("No info available"))
 
         return api
 
