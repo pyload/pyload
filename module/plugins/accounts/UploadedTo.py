@@ -31,7 +31,7 @@ class UploadedTo(Account):
 
         html = self.load("http://uploaded.net/me")
 
-        premium = True if re.search(self.PREMIUM_PATTERN, html) else False
+        premium = True if re.search(self.PREMIUM_PATTERN, html).group() else False
 
         m = re.search(self.VALID_UNTIL_PATTERN, html, re.M)
         if m is not None:
