@@ -11,7 +11,7 @@ from module.plugins.internal.Crypter import Crypter, create_getInfo
 class ShareLinksBiz(Crypter):
     __name__    = "ShareLinksBiz"
     __type__    = "crypter"
-    __version__ = "1.21"
+    __version__ = "1.22"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
@@ -22,14 +22,14 @@ class ShareLinksBiz(Crypter):
 
     __description__ = """Share-Links.biz decrypter plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es")]
+    __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
+                       ("Arno-Nymous", None)]
 
 
     def setup(self):
         self.base_url = None
         self.file_id = None
         self.package = None
-        self.captcha = False
 
 
     def decrypt(self, pyfile):
@@ -49,7 +49,6 @@ class ShareLinksBiz(Crypter):
             self.handle_errors()
 
         if self.is_captcha_protected():
-            self.captcha = True
             self.unlock_captcha_protection()
             self.handle_errors()
 
@@ -139,7 +138,7 @@ class ShareLinksBiz(Crypter):
         captchaUrl = self.base_url + '/captcha.gif?d=%s&PHPSESSID=%s' % (m.group(1), m.group(2))
         self.log_debug("Waiting user for correct position")
         coords = self.captcha.decrypt(captchaUrl, input_type="gif", output_type='positional')
-        self.log_debug("Captcha resolved, coords %s" % coords)
+        self.log_debug("Captcha resolved! Coords: {}, {}".format(*coords))
 
         #: Resolve captcha
         href = self._resolve_coords(coords, captchaMap)

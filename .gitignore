@@ -7,4 +7,10 @@
 qt.conf
 UnRAR_license.txt
 
-tesseract
+/*/
+!/docs
+!/icons
+!/locale
+!/module
+!/scripts
+!/tests

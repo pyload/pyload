@@ -9,7 +9,7 @@ from module.plugins.internal.utils import set_cookie
 class ShareonlineBiz(Account):
     __name__    = "ShareonlineBiz"
     __type__    = "account"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __status__  = "testing"
 
     __description__ = """Share-online.biz account plugin"""
@@ -31,11 +31,6 @@ class ShareonlineBiz(Account):
 
         if not 'a' in api:
             self.fail_login(res.strip('*'))
-
-# Since api['a'] always returns 'not_available' for Shareonline, uncommented this for the time being.
-# Resolves the problem that the log always says 'Could not login user | No info available'.
-#         if api['a'].lower() == "not_available":
-#             self.fail_login(_("No info available"))
 
         return api
 

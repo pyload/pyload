@@ -14,7 +14,7 @@ from module.plugins.internal.utils import html_unescape
 class LinkCryptWs(Crypter):
     __name__    = "LinkCryptWs"
     __type__    = "crypter"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?linkcrypt\.ws/(dir|container)/(?P<ID>\w+)'
@@ -24,7 +24,8 @@ class LinkCryptWs(Crypter):
     __license__     = "GPLv3"
     __authors__     = [("kagenoshin", "kagenoshin[AT]gmx[DOT]ch"),
                        ("glukgluk", None),
-                       ("Gummibaer", None)]
+                       ("Gummibaer", None),
+                       ("Arno-Nymous", None)]
 
 
     CRYPTED_KEY = "crypted"
