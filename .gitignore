@@ -12,5 +12,6 @@ UnRAR_license.txt
 !/icons
 !/locale
 !/module
+/module/config/configdir
 !/scripts
 !/tests
