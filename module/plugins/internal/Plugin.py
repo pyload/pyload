@@ -20,7 +20,7 @@ from module.plugins.internal.utils import *
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.59"
+    __version__ = "0.60"
     __status__  = "stable"
 
     __config__  = []  #: [("name", "type", "desc", "default")]
@@ -214,7 +214,7 @@ class Plugin(object):
         """
         if self.pyload.debug:
             self.log_debug("LOAD URL " + url,
-                           *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url", "_[1]")])
+                           *["%s=%s" % (key, "{********}" if self.__type__ == "account" and key in ("get", "post") else val) for key, val in locals().items() if key not in ("self", "url", "_[1]")])
 
         url = fixurl(url, unquote=True)  #: Recheck in 0.4.10
 
