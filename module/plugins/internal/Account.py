@@ -8,12 +8,12 @@ import time
 
 from module.plugins.internal.Plugin import Plugin, Skip
 from module.plugins.internal.utils import compare_time, isiterable, lock, parse_size
-d
+
 
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.67"
+    __version__ = "0.68"
     __status__  = "stable"
 
     __description__ = """Base account plugin"""
