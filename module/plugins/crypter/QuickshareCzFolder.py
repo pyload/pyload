@@ -12,10 +12,9 @@ class QuickshareCzFolder(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?quickshare\.cz/slozka-\d+'
-    __config__  = [("activated"            , "bool", "Activated"                          , True),
-                   ("use_premium"          , "bool", "Use premium account if available"   , True),
-                   ("use_subfolder"        , "bool", "Save package to subfolder"          , True),
-                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("activated"         , "bool"          , "Activated"                       , True     ),
+                   ("use_premium"       , "bool"          , "Use premium account if available", True     ),
+                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"  , "Default")]
 
     __description__ = """Quickshare.cz folder decrypter plugin"""
     __license__     = "GPLv3"

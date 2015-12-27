@@ -2,17 +2,18 @@
 
 import re
 
-from module.plugins.internal.Crypter import Crypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
-class HflixIn(Crypter):
-    __name__ = "HflixIn"
-    __type__ = "crypter"
-    __version__ = "0.1"
+
+class HflixIn(SimpleCrypter):
+    __name__    = "HflixIn"
+    __type__    = "crypter"
+    __version__ = "0.11"
     __status__  = "testing"
 
-    __pattern__ = r"http://hflix.in/\w{5}"
+    __pattern__ = r'http://(www\.)?hflix\.in/\w+'
 
-    __description__ = """Hflix.in Decrypter Plugin"""
+    __description__ = """Hflix.in decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 

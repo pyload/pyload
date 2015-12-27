@@ -14,13 +14,12 @@ class YoutubeComFolder(Crypter):
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.|m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w\-]+)'
-    __config__  = [("activated"            , "bool", "Activated"                          , True ),
-                   ("use_premium"          , "bool", "Use premium account if available"   , True ),
-                   ("use_subfolder"        , "bool", "Save package to subfolder"          , True ),
-                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True ),
-                   ("likes"                , "bool", "Grab user (channel) liked videos"   , False),
-                   ("favorites"            , "bool", "Grab user (channel) favorite videos", False),
-                   ("uploads"              , "bool", "Grab channel unplaylisted videos"   , True )]
+    __config__  = [("activated"         , "bool"          , "Activated"                          , True     ),
+                   ("use_premium"       , "bool"          , "Use premium account if available"   , True     ),
+                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"     , "Default"),
+                   ("likes"             , "bool"          , "Grab user (channel) liked videos"   , False    ),
+                   ("favorites"         , "bool"          , "Grab user (channel) favorite videos", False    ),
+                   ("uploads"           , "bool"          , "Grab channel unplaylisted videos"   , True     )]
 
     __description__ = """Youtube.com channel & playlist decrypter plugin"""
     __license__     = "GPLv3"
