@@ -101,6 +101,7 @@ class SimpleHoster(Hoster):
     LOGIN_PREMIUM        = False  #: Set to True to require premium account login
     LEECH_HOSTER         = False  #: Set to True to leech other hoster link (as defined in handle_multi method)
     TEXT_ENCODING        = True   #: Set to encoding name if encoding value in http header is not correct
+    # TRANSLATE_ERROR      = True
 
     LINK_PATTERN         = None
     LINK_FREE_PATTERN    = None
@@ -246,12 +247,10 @@ class SimpleHoster(Hoster):
     def process(self, pyfile):
         self.prepare()
 
+        #@TODO: Remove `handle_multi`, use MultiHoster instead
         if self.leech_dl:
             self.log_info(_("Processing as debrid download..."))
             self.handle_multi(pyfile)
-
-            if not self.link and not was_downloaded():
-                self.log_info(_("Failed to leech url"))
 
         else:
             if not self.link and self.direct_dl:
@@ -265,24 +264,22 @@ class SimpleHoster(Hoster):
 
             if not self.link:
                 self.preload()
+                self.check_errors()
 
                 if self.info.get('status', 3) is not 2:
                     self.grab_info()
                     self.check_status()
                     self.check_duplicates()
 
-                if self.premium and (not self.CHECK_TRAFFIC or self.check_traffic()):
+                if self.premium and (not self.CHECK_TRAFFIC or not self.out_of_traffic()):
                     self.log_info(_("Processing as premium download..."))
                     self.handle_premium(pyfile)
 
-                elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.check_traffic()):
+                elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or not self.out_of_traffic()):
                     self.log_info(_("Processing as free download..."))
                     self.handle_free(pyfile)
 
-                if not self.link and not self.last_download:
-                    self.error(_("%s download link not found") % ("Premium" if self.premium else "Free"))
-
-        if not self.last_download:
+        if self.link and not self.last_download:
             self.log_info(_("Downloading file..."))
             self.download(self.link, disposition=self.DISPOSITION)
 
@@ -295,7 +292,7 @@ class SimpleHoster(Hoster):
     def check_download(self):
         super(SimpleHoster, self).check_download()
 
-        self.log_info(_("Checking downloaded file with built-in rules..."))
+        self.log_info(_("Checking file (with built-in rules)..."))
         for r, p in self.FILE_ERRORS:
             errmsg = self.scan_download({r: re.compile(p)})
             if errmsg is not None:
@@ -312,7 +309,7 @@ class SimpleHoster(Hoster):
                 self.restart(errmsg)
         else:
             if self.CHECK_FILE:
-                self.log_info(_("Checking downloaded file with custom rules..."))
+                self.log_info(_("Checking file (with custom rules)..."))
 
                 with open(encode(self.last_download), "rb") as f:
                     self.data = f.read(1048576)  #@TODO: Recheck in 0.4.10
@@ -448,10 +445,12 @@ class SimpleHoster(Hoster):
 
     def handle_free(self, pyfile):
         if not self.LINK_FREE_PATTERN:
-            self.error(_("Free download not implemented"))
+            self.fail(_("Free download not implemented"))
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)
-        if m is not None:
+        if m is None:
+            self.error(_("Free download link not found"))
+        else:
             self.link = m.group(1)
 
 
@@ -461,5 +460,7 @@ class SimpleHoster(Hoster):
             self.restart(premium=False)
 
         m = re.search(self.LINK_PREMIUM_PATTERN, self.data)
-        if m is not None:
+        if m is None:
+            self.error(_("Premium download link not found"))
+        else:
             self.link = m.group(1)

@@ -51,11 +51,18 @@ class Plugin(object):
 
 
     def _init(self, core):
-        self.pyload      = core
-        self.db          = DB(self)
-        self.config      = Config(self)
-        self.info        = {}    #: Provide information in dict here
-        self.req         = None  #: Browser instance, see `network.Browser`
+        #: Internal modules
+        self.pyload = core
+        self.db     = DB(self)
+        self.config = Config(self)
+
+        #: Provide information in dict here
+        self.info = {}
+
+        #: Browser instance, see `network.Browser`
+        self.req = self.pyload.requestFactory.getRequest(self.classname)
+
+        #: Last loaded html
         self.last_html   = ""
         self.last_header = {}
 
@@ -175,7 +182,7 @@ class Plugin(object):
         url = fixurl(url, unquote=True)  #: Recheck in 0.4.10
 
         if req is None:
-            req = self.req or self.pyload.requestFactory.getRequest(self.classname)
+            req = self.req
 
         #@TODO: Move to network in 0.4.10
         if isinstance(cookies, list):

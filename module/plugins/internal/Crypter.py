@@ -7,7 +7,7 @@ from module.plugins.internal.misc import parse_name, safename
 class Crypter(Base):
     __name__    = "Crypter"
     __type__    = "crypter"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
