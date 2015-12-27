@@ -3,7 +3,7 @@
 import re
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class UgouploadNet(SimpleHoster):
@@ -12,7 +12,7 @@ class UgouploadNet(SimpleHoster):
     __version__ = "0.02"
     __status__  = "testing"
 
-    __pattern__ = r'https?://(?:www)?\.ugoupload\.net/\w{4}/.+'
+    __pattern__ = r'https?://(?:www)?\.ugoupload\.net/\w{4}'
     __config__  = [("activated"   , "bool", "Activated"                                        , True),
                    ("use_premium" , "bool", "Use premium account if available"                 , True),
                    ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),

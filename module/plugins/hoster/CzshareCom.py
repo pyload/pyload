@@ -44,7 +44,7 @@ class CzshareCom(SimpleHoster):
     USER_CREDIT_PATTERN  = r'<div class="credit">\s*kredit: <strong>([\d .,]+)(\w+)</strong>\s*</div><!-- .credit -->'
 
 
-    def check_traffic(self):
+    def out_of_traffic(self):
         #: Check if user logged in
         m = re.search(self.USER_CREDIT_PATTERN, self.data)
         if m is None:
@@ -52,7 +52,7 @@ class CzshareCom(SimpleHoster):
             self.data = self.load(self.pyfile.url)
             m = re.search(self.USER_CREDIT_PATTERN, self.data)
             if m is None:
-                return False
+                return True
 
         #: Check user credit
         try:
@@ -61,13 +61,13 @@ class CzshareCom(SimpleHoster):
             self.log_info(_("User %s has %i KiB left") % (self.account.user, credit / 1024))
             if credit < self.pyfile.size:
                 self.log_info(_("Not enough credit to download file: %s") % self.pyfile.name)
-                return False
+                return True
 
         except Exception, e:
             #: let's continue and see what happens...
             self.log_error(e, trace=True)
 
-        return True
+        return False
 
 
     def handle_premium(self, pyfile):
