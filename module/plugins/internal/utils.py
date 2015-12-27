@@ -30,7 +30,7 @@ except ImportError:
 class utils(object):
     __name__    = "utils"
     __type__    = "plugin"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -69,6 +69,36 @@ def format_size(value):
         size /= 1024.0
         steps += 1
     return "%.2f %s" % (size, sizes[steps])
+
+
+def safe_format(value, unsafe):
+    """
+    Returns the content of value omitting sensitive information
+
+    Args:
+        value: value to format
+        unsafe: string or list: sensitive word(s) to remove
+    """
+    if isinstance(value, basestring):
+        if isinstance(unsafe, basestring):
+            return "'%s'" % ("**********" if value == unsafe else value)
+
+        elif isinstance(unsafe, list):
+            return "'%s'" % ("**********" if value in unsafe else value)
+
+    elif isinstance(value, dict):
+        return "{%s}" % ", ".join("'%s': %s" % (k, safe_format(v, unsafe)) for k, v in value.iteritems())
+
+    elif isinstance(value, list):
+        return "[%s]" % ", ".join("%s" % safe_format(v, unsafe) for v in value)
+
+    elif isinstance(value, tuple):
+        return "(%s)" % ", ".join("%s" % safe_format(v, unsafe) for v in value)
+
+    elif isinstance(value, set):
+        return "set([%s])" % ", ".join("%s" % safe_format(v, unsafe) for v in value)
+
+    return repr(value)
 
 
 def compare_time(start, end):
