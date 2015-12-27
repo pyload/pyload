@@ -6,13 +6,13 @@ import threading
 import time
 
 from module.plugins.internal.Plugin import Plugin, Skip
-from module.plugins.internal.utils import compare_time, isiterable, lock, parse_size
+from module.plugins.internal.utils import compare_time, isiterable, lock, parse_size, safe_format
 
 
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.65"
+    __version__ = "0.69"
     __status__  = "stable"
 
     __description__ = """Base account plugin"""
@@ -237,7 +237,7 @@ class Account(Plugin):
 
             self.syncback()
 
-            self.log_debug("Account info for user `%s`: %s" % (self.user, self.info))
+            self.log_debug("Account info for user `%s`: %s" % (self.user, safe_format(self.info, self.info['login']['password'])))
 
         return self.info
 
