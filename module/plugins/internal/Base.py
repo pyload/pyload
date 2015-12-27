@@ -104,6 +104,12 @@ class Base(Plugin):
     def _log(self, level, plugintype, pluginname, messages):
         log = getattr(self.pyload.log, level)
         msg = u" | ".join(decode(a).strip() for a in messages if a)
+
+        try:
+            msg = msg.replace(self.account.info['login']['password'], "**********")
+        except Exception:
+            pass
+
         log("%(plugintype)s %(pluginname)s[%(id)s]: %(msg)s" %
             {'plugintype': plugintype.upper(),
              'pluginname': pluginname,

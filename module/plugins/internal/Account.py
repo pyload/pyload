@@ -6,7 +6,7 @@ import threading
 import time
 
 from module.plugins.internal.Plugin import Plugin, Skip
-from module.plugins.internal.misc import Periodical, compare_time, isiterable, lock, parse_size, safe_format
+from module.plugins.internal.misc import Periodical, compare_time, isiterable, lock, parse_size
 
 
 class Account(Plugin):
@@ -62,6 +62,21 @@ class Account(Plugin):
     @property
     def premium(self):
         return bool(self.get_data('premium'))
+
+
+    def _log(self, level, plugintype, pluginname, messages):
+        log = getattr(self.pyload.log, level)
+        msg = u" | ".join(decode(a).strip() for a in messages if a)
+
+        try:
+            msg = msg.replace(self.info['login']['password'], "**********")
+        except Exception:
+            pass
+
+        log("%(plugintype)s %(pluginname)s: %(msg)s" %
+            {'plugintype': plugintype.upper(),
+             'pluginname': pluginname,
+             'msg'       : msg})
 
 
     def setup(self):
@@ -193,7 +208,7 @@ class Account(Plugin):
 
             self.syncback()
 
-            self.log_debug("Account info for user `%s`: %s" % (self.user, safe_format(self.info, self.info['login']['password'])))
+            self.log_debug("Account info for user `%s`: %s" % (self.user, self.info))
 
         return self.info
 
@@ -408,7 +423,7 @@ class Account(Plugin):
 
     ###########################################################################
 
-    def parse_traffic(self, size, unit=None):  #@NOTE: Returns kilobytes in 0.4.9
+    def parse_traffic(self, size, unit=None):  #@NOTE: Returns kilobytes only in 0.4.9
         self.log_debug("Size: %s" % size,
                        "Unit: %s" % (unit or "N/D"))
         return parse_size(size, unit or "byte") / 1024  #@TODO: Remove `/ 1024` in 0.4.10

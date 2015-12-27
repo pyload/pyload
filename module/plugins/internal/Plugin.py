@@ -176,8 +176,8 @@ class Plugin(object):
         """
         if self.pyload.debug:
             self.log_debug("LOAD URL " + url,
-                           *["%s=%s" % (key, safe_format(val, self.info['login']['password']) if self.__type__ == "account" else val)
-                             for key, val in locals().items() if key not in ("self", "url", "_[1]")])
+                           *["%s=%s" % (key, value) for key, value in locals().items()
+                             if key not in ("self", "url", "_[1]")])
 
         url = fixurl(url, unquote=True)  #: Recheck in 0.4.10
 

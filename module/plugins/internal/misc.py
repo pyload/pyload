@@ -682,8 +682,8 @@ def replace_patterns(value, rules):
 
 
 #@TODO: Remove in 0.4.10 and fix exp in CookieJar.setCookie
-def set_cookie(cj, *args, path='/', exp=time.time() + 180 * 24 * 3600):
-    args = map(encode, args) + [encode(path), int(exp)]
+def set_cookie(cj, domain, name, value, path='/', exp=time.time() + 180 * 24 * 3600):
+    args = map(encode, [domain, name, value, path]) + [int(exp)]
     return cj.setCookie(*args)
 
 
@@ -698,7 +698,7 @@ def set_cookies(cj, cookies):
         set_cookie(cj, *cookie)
 
 
-def parse_html_header(self, header)
+def parse_html_header(self, header):
     hdict  = {}
     regexp = r'[ ]*(?P<key>.+?)[ ]*:[ ]*(?P<value>.+?)[ ]*\r?\n'
 
@@ -740,13 +740,13 @@ def parse_html_form(attr_str, html, input_names={}):
             return action, inputs
         else:
             #: Check input attributes
-            for key, val in input_names.items():
+            for key, value in input_names.items():
                 if key in inputs:
-                    if isinstance(val, basestring) and inputs[key] is val:
+                    if isinstance(value, basestring) and inputs[key] is value:
                         continue
-                    elif isinstance(val, tuple) and inputs[key] in val:
+                    elif isinstance(value, tuple) and inputs[key] in value:
                         continue
-                    elif hasattr(val, "search") and re.match(val, inputs[key]):
+                    elif hasattr(value, "search") and re.match(value, inputs[key]):
                         continue
                     else:
                         break  #: Attibute value does not match

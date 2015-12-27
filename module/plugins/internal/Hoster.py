@@ -211,7 +211,7 @@ class Hoster(Base):
 
         if self.pyload.debug:
             self.log_debug("DOWNLOAD URL " + url,
-                           *["%s=%s" % (key, val) for key, val in locals().items()
+                           *["%s=%s" % (key, value) for key, value in locals().items()
                              if key not in ("self", "url", "_[1]")])
 
         dl_url      = self.fixurl(url)

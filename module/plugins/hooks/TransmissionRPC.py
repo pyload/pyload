@@ -17,7 +17,7 @@ class TransmissionRPC(Addon):
     __version__ = "0.17"
     __status__  = "testing"
 
-    __pattern__ = r"https?://.+\.torrent|magnet:\?.+"
+    __pattern__ = r'https?://.+\.torrent|magnet:\?.+'
     __config__  = [("activated", "bool", "Activated"           , False                                   ),
                    ("rpc_url"  , "str" , "Transmission RPC URL", "http://127.0.0.1:9091/transmission/rpc")]
 
