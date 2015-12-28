@@ -9,13 +9,13 @@ import sys
 import time
 
 from module.plugins.internal.Addon import Expose, Addon, threaded
-from module.plugins.internal.utils import encode, exists, fs_join
+from module.plugins.internal.misc import encode, exists, fsjoin
 
 
 class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "1.04"
+    __version__ = "1.05"
     __status__  = "testing"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),
@@ -45,7 +45,7 @@ class UpdateManager(Addon):
             if self.do_restart is False:
                 self.pyload.api.unpauseServer()
 
-        self.start_periodical(10)
+        self.periodical.start(10)
 
 
     def init(self):
@@ -53,7 +53,7 @@ class UpdateManager(Addon):
         self.mtimes    = {}  #: Store modification time for each plugin
         self.event_map = {'allDownloadsProcessed': "all_downloads_processed"}
 
-        if self.get_config('checkonstart'):
+        if self.config.get('checkonstart'):
             self.pyload.api.pauseServer()
             self.checkonstart = True
         else:
@@ -67,16 +67,16 @@ class UpdateManager(Addon):
             self.pyload.api.restart()
 
 
-    def periodical(self):
+    def periodical_task(self):
         if self.pyload.debug:
-            if self.get_config('reloadplugins'):
+            if self.config.get('reloadplugins'):
                 self.autoreload_plugins()
 
-            if self.get_config('nodebugupdate'):
+            if self.config.get('nodebugupdate'):
                 return
 
-        if self.get_config('checkperiod') and \
-           time.time() - max(self.CHECK_INTERVAL, self.get_config('checkinterval') * 60 * 60) > self.info['last_check']:
+        if self.config.get('checkperiod') and \
+           time.time() - max(self.CHECK_INTERVAL, self.config.get('checkinterval') * 60 * 60) > self.info['last_check']:
             self.update()
 
 
@@ -146,7 +146,7 @@ class UpdateManager(Addon):
         """
         Check for updates
         """
-        if self._update() is not 2 or not self.get_config('autorestart'):
+        if self._update() is not 2 or not self.config.get('autorestart'):
             return
 
         if not self.pyload.api.statusDownloads():
@@ -304,7 +304,7 @@ class UpdateManager(Addon):
 
                 m = self._VERSION.search(content)
                 if m and m.group(2) == plugin_version:
-                    with open(fs_join("userplugins", plugin_type, plugin_name + ".py"), "wb") as f:
+                    with open(fsjoin("userplugins", plugin_type, plugin_name + ".py"), "wb") as f:
                         f.write(encode(content))
 
                     updated.append((plugin_type, plugin_name))
@@ -342,7 +342,7 @@ class UpdateManager(Addon):
             rootplugins = os.path.join(pypath, "module", "plugins")
 
             for basedir in ("userplugins", rootplugins):
-                py_filename  = fs_join(basedir, plugin_type, plugin_name + ".py")
+                py_filename  = fsjoin(basedir, plugin_type, plugin_name + ".py")
                 pyc_filename = py_filename + "c"
 
                 if plugin_type is "hook":

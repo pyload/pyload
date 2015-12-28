@@ -10,13 +10,13 @@ except ImportError:
     pass
 
 from module.plugins.internal.Addon import Addon, Expose, threaded
-from module.plugins.internal.utils import encode, exists, fs_join
+from module.plugins.internal.misc import encode, exists, fsjoin
 
 
 class AntiVirus(Addon):
     __name__    = "AntiVirus"
     __type__    = "hook"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     #@TODO: add trash option (use Send2Trash lib)
@@ -38,18 +38,18 @@ class AntiVirus(Addon):
     @Expose
     @threaded
     def scan(self, pyfile, thread):
-        avfile = encode(self.get_config('avfile'))
-        avargs = encode(self.get_config('avargs').strip())
+        avfile = encode(self.config.get('avfile'))
+        avargs = encode(self.config.get('avargs').strip())
 
         if not os.path.isfile(avfile):
             self.fail(_("Antivirus executable not found"))
 
-        scanfolder = self.get_config('avtarget') is "folder"
+        scanfolder = self.config.get('avtarget') is "folder"
 
         if scanfolder:
             dl_folder      = self.pyload.config.get("general", "download_folder")
             package_folder = pyfile.package().folder if self.pyload.config.get("general", "folder_per_package") else ""
-            target      = fs_join(dl_folder, package_folder, pyfile.name)
+            target      = fsjoin(dl_folder, package_folder, pyfile.name)
             target_repr = "Folder: " + package_folder or dl_folder
         else:
             target      = encode(pyfile.plugin.last_download)
@@ -75,12 +75,12 @@ class AntiVirus(Addon):
 
             if err:
                 self.log_warning(target_repr, err)
-                if not self.get_config('ignore-err'):
+                if not self.config.get('ignore-err'):
                     self.log_debug("Delete/Quarantine task aborted due scan error")
                     return
 
             if p.returncode:
-                action = self.get_config('action')
+                action = self.config.get('action')
 
                 if scanfolder:
                     if action is "Antivirus default":
@@ -91,7 +91,7 @@ class AntiVirus(Addon):
 
                 try:
                     if action is "Delete":
-                        if not self.get_config('deltotrash'):
+                        if not self.config.get('deltotrash'):
                             os.remove(file)
 
                         else:
@@ -101,19 +101,19 @@ class AntiVirus(Addon):
                             except NameError:
                                 self.log_warning(_("Send2Trash lib not found, moving to quarantine instead"))
                                 pyfile.setCustomStatus(_("file moving"))
-                                shutil.move(file, self.get_config('quardir'))
+                                shutil.move(file, self.config.get('quardir'))
 
                             except Exception, e:
                                 self.log_warning(_("Unable to move file to trash: %s, moving to quarantine instead") % e.message)
                                 pyfile.setCustomStatus(_("file moving"))
-                                shutil.move(file, self.get_config('quardir'))
+                                shutil.move(file, self.config.get('quardir'))
 
                             else:
                                 self.log_debug("Successfully moved file to trash")
 
                     elif action is "Quarantine":
                         pyfile.setCustomStatus(_("file moving"))
-                        shutil.move(file, self.get_config('quardir'))
+                        shutil.move(file, self.config.get('quardir'))
 
                 except (IOError, shutil.Error), e:
                     self.log_error(target_repr, action + " action failed!", e)
@@ -132,5 +132,5 @@ class AntiVirus(Addon):
 
     def download_failed(self, pyfile):
         #: Check if pyfile is still "failed", maybe might has been restarted in meantime
-        if pyfile.status is 8 and self.get_config('scanfailed'):
+        if pyfile.status is 8 and self.config.get('scanfailed'):
             return self.scan(pyfile)

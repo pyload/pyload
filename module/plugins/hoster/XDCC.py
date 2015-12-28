@@ -14,7 +14,7 @@ from module.plugins.internal.misc import fsjoin
 class XDCC(Hoster):
     __name__    = "XDCC"
     __type__    = "hoster"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__  = "testing"
 
     __config__ = [("nick", "str", "Nickname", "pyload"),

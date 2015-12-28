@@ -32,7 +32,7 @@ except ImportError:
 class misc(object):
     __name__    = "misc"
     __type__    = "plugin"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -60,7 +60,7 @@ class Config(object):
         self.plugin.pyload.api.setConfigValue(self.plugin.classname, option, value, section="plugin")
 
 
-    def get(self, option, default=""):
+    def get(self, option, default=None):
         """
         Returns config value for current plugin
 
@@ -71,7 +71,7 @@ class Config(object):
             return self.plugin.pyload.config.getPlugin(self.plugin.classname, option)
 
         except KeyError:
-            self.plugin.log_debug("Config option `%s` not found, use default `%s`" % (option, default or None))  #@TODO: Restore to `log_warning` in 0.4.10
+            self.plugin.log_debug("Config option `%s` not found, use default `%s`" % (option, default))  #@TODO: Restore to `log_warning` in 0.4.10
             return default
 
 
@@ -698,7 +698,7 @@ def set_cookies(cj, cookies):
         set_cookie(cj, *cookie)
 
 
-def parse_html_header(self, header):
+def parse_html_header(header):
     hdict  = {}
     regexp = r'[ ]*(?P<key>.+?)[ ]*:[ ]*(?P<value>.+?)[ ]*\r?\n'
 
