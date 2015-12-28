@@ -379,7 +379,7 @@ def encode(value, encoding='utf-8', errors='backslashreplace'):
         if encoding == decoding:
             res = value
         else:
-            res = transcode(decoding, encoding)
+            res = transcode(value, decoding, encoding)
 
     else:
         res = str(value)

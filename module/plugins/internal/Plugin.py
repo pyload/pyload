@@ -18,8 +18,9 @@ except ImportError:
 
 import module.plugins.internal.misc as utils
 
+from module.network.RequestFactory import getRequest as get_request
 from module.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload as Skip  #@TODO: Remove in 0.4.10
-from module.plugins.internal.misc import *  #@NOTE: Don't use `*`
+from module.plugins.internal.misc import Config, DB, decode, encode, fixurl, format_exc, parse_html_header
 
 
 class Plugin(object):
@@ -119,7 +120,6 @@ class Plugin(object):
         del frame
 
 
-    #@TODO: Move to misc
     def remove(self, path, trash=False):  #@TODO: Change to `trash=True` in 0.4.10
         try:
             remove(path, trash)
@@ -181,7 +181,10 @@ class Plugin(object):
 
         url = fixurl(url, unquote=True)  #: Recheck in 0.4.10
 
-        if req is None:
+        if req is False:
+            req = get_request()
+
+        elif not req:
             req = self.req
 
         #@TODO: Move to network in 0.4.10
