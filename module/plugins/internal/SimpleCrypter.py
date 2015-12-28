@@ -11,7 +11,7 @@ from module.plugins.internal.misc import parse_name, replace_patterns, set_cooki
 class SimpleCrypter(Crypter):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.80"
+    __version__ = "0.81"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
