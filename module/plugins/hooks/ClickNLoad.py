@@ -16,7 +16,7 @@ from module.plugins.internal.misc import forward, lock
 class ClickNLoad(Addon):
     __name__    = "ClickNLoad"
     __type__    = "hook"
-    __version__ = "0.51"
+    __version__ = "0.52"
     __status__  = "testing"
 
     __config__ = [("activated", "bool"           , "Activated"                      , True       ),
