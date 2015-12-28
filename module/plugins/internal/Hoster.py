@@ -16,7 +16,7 @@ from module.plugins.internal.misc import compute_checksum, encode, exists, fixur
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
