@@ -17,7 +17,7 @@ class AntiVirus(Addon):
     __name__    = "AntiVirus"
     __type__    = "hook"
     __version__ = "0.16"
-    __status__  = "testing"
+    __status__  = "broken"
 
     #@TODO: add trash option (use Send2Trash lib)
     __config__ = [("activated" , "bool"                               , "Activated"                   , False              ),

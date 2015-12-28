@@ -88,7 +88,8 @@ class Hoster(Base):
         self._initialize()
         self._setup()
 
-        # self.pyload.hookManager.downloadPreparing(self.pyfile)  #@TODO: Recheck in 0.4.10
+        #@TODO: Enable in 0.4.10
+        # self.pyload.hookManager.downloadPreparing(self.pyfile)
         # self.check_status()
         self.check_duplicates()
 
@@ -120,14 +121,15 @@ class Hoster(Base):
         self.pyload.hookManager.dispatchEvent("download_processed", self.pyfile)
 
         try:
-            unfinished = any(pyfile.hasStatus('queued') for pyfile in pypack.getChildren()
-                             if pyfile.id is not self.pyfile.id)
+            unfinished = any(fdata['status'] is 3 for fid, fdata in pypack.getChildren().items()
+                             if fid is not self.pyfile.id)
             if unfinished:
                 return
 
             self.pyload.hookManager.dispatchEvent("package_processed", pypack)
 
-            failed = any(pyfile.status in (1, 6, 8, 9, 14) for pyfile in pypack.getChildren())
+            failed = any(fdata['status'] in (1, 6, 8, 9, 14)
+                         for fid, fdata in pypack.getChildren().items())
 
             if not failed:
                 return
@@ -149,7 +151,7 @@ class Hoster(Base):
             maxredirs = max(redirect, 1)
 
         elif redirect:
-            maxredirs = self.pyload.api.getConfigValue("UserAgentSwitcher", "maxredirs", "plugin") or maxredirs
+            maxredirs = int(self.pyload.api.getConfigValue("UserAgentSwitcher", "maxredirs", "plugin")) or maxredirs  #@TODO: Remove `int` in 0.4.10
 
         for i in xrange(maxredirs):
             self.log_debug("Redirect #%d to: %s" % (i, url))

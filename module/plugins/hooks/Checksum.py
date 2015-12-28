@@ -39,7 +39,7 @@ class Checksum(Addon):
     __name__    = "Checksum"
     __type__    = "hook"
     __version__ = "0.24"
-    __status__  = "testing"
+    __status__  = "broken"
 
     __config__ = [("activated"     , "bool"              , "Activated"                                            , False  ),
                   ("check_checksum", "bool"              , "Check checksum? (If False only size will be verified)", True   ),
@@ -168,15 +168,15 @@ class Checksum(Addon):
     def package_finished(self, pypack):
         dl_folder = fsjoin(self.pyload.config.get("general", "download_folder"), pypack.folder, "")
 
-        for link in pypack.getChildren().values():
-            file_type = os.path.splitext(link['name'])[1][1:].lower()
+        for fid, fdata in pypack.getChildren().items():
+            file_type = os.path.splitext(fdata['name'])[1][1:].lower()
 
             if file_type not in self.formats:
                 continue
 
-            hash_file = encode(fsjoin(dl_folder, link['name']))
+            hash_file = encode(fsjoin(dl_folder, fdata['name']))
             if not os.path.isfile(hash_file):
-                self.log_warning(_("File not found"), link['name'])
+                self.log_warning(_("File not found"), fdata['name'])
                 continue
 
             with open(hash_file) as f:
@@ -184,7 +184,7 @@ class Checksum(Addon):
 
             for m in re.finditer(self.regexps.get(file_type, self.regexps['default']), text):
                 data = m.groupdict()
-                self.log_debug(link['name'], data)
+                self.log_debug(fdata['name'], data)
 
                 local_file = encode(fsjoin(dl_folder, data['NAME']))
                 algorithm = self.methods.get(file_type, file_type)

@@ -11,8 +11,8 @@ from module.plugins.internal.misc import encode, json, timestamp
 class UploadingCom(SimpleHoster):
     __name__    = "UploadingCom"
     __type__    = "hoster"
-    __version__ = "0.47"
-    __status__  = "testing"
+    __version__ = "0.48"
+    __status__  = "broken"
 
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>\w+)'
     __config__  = [("activated"   , "bool", "Activated"                                        , True),

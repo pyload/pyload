@@ -105,6 +105,7 @@ class Base(Plugin):
         log = getattr(self.pyload.log, level)
         msg = u" | ".join(decode(a).strip() for a in messages if a)
 
+        #: Hide any password
         try:
             msg = msg.replace(self.account.info['login']['password'], "**********")
         except Exception:
@@ -253,7 +254,7 @@ class Base(Plugin):
         self.log_debug("Plugin status: " + self.__status__)
 
         if self.__status__ is "broken":
-            self.fail(_("Plugin is temporarily unavailable"))
+            self.abort(_("Plugin is temporarily unavailable"))
 
         elif self.__status__ is "testing":
             self.log_warning(_("Plugin may be unstable"))
@@ -268,7 +269,8 @@ class Base(Plugin):
         self._initialize()
         self._setup()
 
-        # self.pyload.hookManager.downloadPreparing(self.pyfile)  #@TODO: Recheck in 0.4.10
+        #@TODO: Enable in 0.4.10
+        # self.pyload.hookManager.downloadPreparing(self.pyfile)
         # self.check_status()
 
         self.pyfile.setStatus("starting")

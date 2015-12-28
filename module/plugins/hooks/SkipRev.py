@@ -25,17 +25,18 @@ class SkipRev(Addon):
         return pyfile.pluginclass.get_info(pyfile.url)['name']
 
 
-    def create_pyFile(self, link):
+    def _create_pyFile(self, data):
+        pylink = self.pyload.api._convertPyFile(data)
         return PyFile(self.pyload.files,
-                      link.fid,
-                      link.url,
-                      link.name,
-                      link.size,
-                      link.status,
-                      link.error,
-                      link.plugin,
-                      link.packageID,
-                      link.order)
+                      pylink.fid,
+                      pylink.url,
+                      pylink.name,
+                      pylink.size,
+                      pylink.status,
+                      pylink.error,
+                      pylink.plugin,
+                      pylink.packageID,
+                      pylink.order)
 
 
     def download_preparing(self, pyfile):
@@ -50,8 +51,8 @@ class SkipRev(Addon):
             status_list = (1, 4, 8, 9, 14) if revtokeep < 0 else (1, 3, 4, 8, 9, 14)
             pyname      = re.compile(r'%s\.part\d+\.rev$' % name.rsplit('.', 2)[0].replace('.', '\.'))
 
-            queued = [True for link in pyfile.package().getChildren() \
-                      if link.status not in status_list and pyname.match(link.name)].count(True)
+            queued = [True for fid, fdata in pyfile.package().getChildren().items() \
+                      if fdata['status'] not in status_list and pyname.match(fdata['name'])].count(True)
 
             if not queued or queued < revtokeep:  #: Keep one rev at least in auto mode
                 return
@@ -70,15 +71,15 @@ class SkipRev(Addon):
 
         pyname = re.compile(r'%s\.part\d+\.rev$' % pyfile.name.rsplit('.', 2)[0].replace('.', '\.'))
 
-        for link in pyfile.package().getChildren():
-            if link.status is 4 and pyname.match(link.name):
-                pylink = self.create_pyFile(link)
+        for fid, fdata in pyfile.package().getChildren().items():
+            if fdata['status'] is 4 and pyname.match(fdata['name']):
+                pyfile_new = self._create_pyFile(fdata)
 
                 if revtokeep > -1 or pyfile.name.endswith(".rev"):
-                    pylink.setStatus("queued")
+                    pyfile_new.setStatus("queued")
                 else:
-                    pylink.setCustomStatus(_("unskipped"), "queued")
+                    pyfile_new.setCustomStatus(_("unskipped"), "queued")
 
                 self.pyload.files.save()
-                pylink.release()
+                pyfile_new.release()
                 return

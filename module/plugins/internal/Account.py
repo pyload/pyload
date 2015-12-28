@@ -68,6 +68,7 @@ class Account(Plugin):
         log = getattr(self.pyload.log, level)
         msg = u" | ".join(decode(a).strip() for a in messages if a)
 
+        #: Hide any password
         try:
             msg = msg.replace(self.info['login']['password'], "**********")
         except Exception:

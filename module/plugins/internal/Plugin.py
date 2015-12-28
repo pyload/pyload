@@ -206,7 +206,7 @@ class Plugin(object):
             req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
         elif type(redirect) is int:
-            maxredirs = self.pyload.api.getConfigValue("UserAgentSwitcher", "maxredirs", "plugin") or 5
+            maxredirs = int(self.pyload.api.getConfigValue("UserAgentSwitcher", "maxredirs", "plugin")) or 5  #@TODO: Remove `int` in 0.4.10
             req.http.c.setopt(pycurl.MAXREDIRS, maxredirs)
 
         #@TODO: Move to network in 0.4.10

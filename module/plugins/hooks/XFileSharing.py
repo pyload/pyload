@@ -9,10 +9,10 @@ from module.plugins.internal.Addon import Addon
 class XFileSharing(Addon):
     __name__    = "XFileSharing"
     __type__    = "hook"
-    __version__ = "0.54"
+    __version__ = "0.55"
     __status__  = "testing"
 
-    __config__ = [("activated"       , "bool", "Activated"                     , True ),
+    __config__ = [("activated"       , "bool", "Activated"                     , False),
                   ("use_hoster_list" , "bool", "Load listed hosters only"      , False),
                   ("use_crypter_list", "bool", "Load listed crypters only"     , False),
                   ("use_builtin_list", "bool", "Load built-in plugin list"     , True ),
@@ -107,7 +107,7 @@ class XFileSharing(Addon):
             else:
                 pattern = self.regexp[type][0]
 
-            self.log_info(_("Handle any %s site on the web!") % type)
+            self.log_info(_("Auto-discover new %ss") % type)
 
         return pattern
 
@@ -122,7 +122,7 @@ class XFileSharing(Addon):
         dict['pattern'] = pattern
         dict['re']      = re.compile(pattern)
 
-        self.log_debug("Loaded %s pattern: %s" % (type, pattern))
+        self.log_debug("Pattern for %ss: %s" % (type, pattern))
 
 
     def _unload(self, type, plugin):

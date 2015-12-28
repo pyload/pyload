@@ -99,7 +99,7 @@ class ExtractArchive(Addon):
     __name__    = "ExtractArchive"
     __type__    = "hook"
     __version__ = "1.54"
-    __status__  = "testing"
+    __status__  = "broken"
 
     __config__ = [("activated"      , "bool"  , "Activated"                             , True                                                                     ),
                   ("fullpath"       , "bool"  , "Extract with full paths"               , True                                                                     ),
@@ -142,7 +142,7 @@ class ExtractArchive(Addon):
 
 
     def activate(self):
-        for p in ("UnRar", "SevenZip", "UnZip"):
+        for p in ("UnRar", "SevenZip", "UnZip", "UnTar"):
             try:
                 module = self.pyload.pluginManager.loadModule("internal", p)
                 klass  = getattr(module, p)
@@ -277,8 +277,8 @@ class ExtractArchive(Addon):
 
             matched   = False
             success   = True
-            files_ids = dict((pylink['name'], ((fsjoin(dl_folder, pypack.folder, pylink['name'])), pylink['id'], out)) for pylink \
-                        in sorted(pypack.getChildren().values(), key=lambda k: k['name'])).values()  #: Remove duplicates
+            files_ids = dict((fdata['name'], ((fsjoin(dl_folder, pypack.folder, fdata['name'])), fid, out)) for fid, fdata \
+                        in sorted(pypack.getChildren().values(), key=lambda k: k['name'])).items()  #: Remove duplicates
 
             #: Check as long there are unseen files
             while files_ids:
