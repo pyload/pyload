@@ -21,13 +21,13 @@ import module.plugins.internal.misc as utils
 from module.network.RequestFactory import getRequest as get_request
 from module.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload as Skip  #@TODO: Remove in 0.4.10
 from module.plugins.internal.misc import (Config, DB, decode, encode, exists, fixurl, fsjoin,
-                                          format_exc, html_unescape, parse_html_header)
+                                          format_exc, html_unescape, parse_html_header, set_cookies)
 
 
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.62"
+    __version__ = "0.63"
     __status__  = "stable"
 
     __config__  = []  #: [("name", "type", "desc", "default")]
