@@ -62,15 +62,15 @@ class ArchiveQueue(object):
 
 
     def get(self):
-        return self.plugin.retrieve(self.storage, default=[])
+        return self.plugin.db.retrieve(self.storage, default=[])
 
 
     def set(self, value):
-        return self.plugin.store(self.storage, value)
+        return self.plugin.db.store(self.storage, value)
 
 
     def delete(self):
-        return self.plugin.delete(self.storage)
+        return self.plugin.db.delete(self.storage)
 
 
     def add(self, item):
