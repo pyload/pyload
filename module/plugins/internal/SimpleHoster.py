@@ -16,7 +16,7 @@ from module.plugins.internal.misc import (encode, parse_name, parse_size,
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "2.14"
+    __version__ = "2.15"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
