@@ -13,7 +13,7 @@ from module.plugins.internal.misc import encode, exists
 class Container(Crypter):
     __name__    = "Container"
     __type__    = "container"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
