@@ -10,7 +10,7 @@ from module.plugins.internal.misc import json
 class LinksnappyCom(MultiHoster):
     __name__    = "LinksnappyCom"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:[^/]+\.)?linksnappy\.com'
