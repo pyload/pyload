@@ -55,4 +55,3 @@ class GoogledriveCom(SimpleHoster):
                 return
             else:
                 self.data = self.load(link)
-                

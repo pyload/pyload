@@ -10,7 +10,7 @@ from module.plugins.internal.misc import encode
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.60"
+    __version__ = "0.61"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                  , True ),
@@ -68,6 +68,8 @@ class ExternalScripts(Addon):
                    if os.path.isdir(os.path.join("scripts", entry))]
 
         for folder in folders:
+            self.log_debug("Watching folder `%s`..." % folder)
+
             self.scripts[folder] = []
 
             dirname = os.path.join("scripts", folder)
@@ -86,9 +88,12 @@ class ExternalScripts(Addon):
 
                 self.scripts[folder].append(file)
 
+            if not self.scripts[folder]:
+                continue
+
             script_names = map(os.path.basename, self.scripts[folder])
-            self.log_info(_("Activated %s scripts: %s")
-                          % (folder, ", ".join(script_names) or None))
+            self.log_info(_("Activated scripts in folder `%s`: %s")
+                          % (folder, ", ".join(script_names)))
 
 
     def call_cmd(self, command, *args, **kwargs):
