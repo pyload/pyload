@@ -9,7 +9,7 @@ from module.plugins.internal.misc import seconds_to_midnight
 class HighWayMe(MultiHoster):
     __name__    = "HighWayMe"
     __type__    = "hoster"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __pattern__ = r'https?://.+high-way\.my'
