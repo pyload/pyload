@@ -98,7 +98,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.54"
+    __version__ = "1.55"
     __status__  = "broken"
 
     __config__ = [("activated"      , "bool"  , "Activated"                             , True                                                                     ),
