@@ -48,7 +48,7 @@ class Container(Crypter):
 
     def _delete_tmpfile(self):
         if self.pyfile.name.startswith("tmp_"):
-            self.remove(pyfile.url, trash=False)
+            self.remove(self.pyfile.url, trash=False)
 
 
     def _make_tmpfile(self):
