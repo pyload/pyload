@@ -12,7 +12,7 @@ from module.plugins.internal.misc import seconds_to_midnight
 class ExtabitCom(SimpleHoster):
     __name__    = "ExtabitCom"
     __type__    = "hoster"
-    __version__ = "0.71"
+    __version__ = "0.72"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?extabit\.com/(file|go|fid)/(?P<ID>\w+)'
