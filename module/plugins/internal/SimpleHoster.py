@@ -290,7 +290,7 @@ class SimpleHoster(Hoster):
 
 
     def check_download(self):
-        super(SimpleHoster, self).check_download()
+        super(SimpleHoster, self)._check_download()
 
         self.log_info(_("Checking file (with built-in rules)..."))
         for r, p in self.FILE_ERRORS:
