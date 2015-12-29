@@ -51,7 +51,7 @@ except ImportError:
 
 from module.plugins.internal.Addon import Addon, Expose, threaded
 from module.plugins.internal.Extractor import ArchiveError, CRCError, PasswordError
-from module.plugins.internal.misc import encode, exists, fsjoin, replace_patterns, uniqify
+from module.plugins.internal.misc import encode, exists, fsjoin, uniqify
 
 
 class ArchiveQueue(object):

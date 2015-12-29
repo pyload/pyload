@@ -4,7 +4,7 @@ import re
 
 from module.plugins.internal.Plugin import Fail
 from module.plugins.internal.SimpleHoster import SimpleHoster
-from module.plugins.internal.misc import encode, replace_patterns, set_cookie, set_cookies
+from module.plugins.internal.misc import encode
 
 
 class MultiHoster(SimpleHoster):
