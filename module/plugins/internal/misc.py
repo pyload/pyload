@@ -32,7 +32,7 @@ except ImportError:
 class misc(object):
     __name__    = "misc"
     __type__    = "plugin"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -421,7 +421,7 @@ def fsjoin(*args):
     Like os.path.join, but encoding aware
     (for safe-joining see `safejoin`)
     """
-    return encode(os.path.join(args))
+    return encode(os.path.join(*args))
 
 
 def remove_chars(value, repl):
