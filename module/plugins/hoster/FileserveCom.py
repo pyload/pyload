@@ -31,7 +31,7 @@ def get_info(plugin, urls):
 class FileserveCom(Hoster):
     __name__    = "FileserveCom"
     __type__    = "hoster"
-    __version__ = "0.65"
+    __version__ = "0.66"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<ID>[^/]+)'
