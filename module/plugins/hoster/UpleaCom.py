@@ -9,7 +9,7 @@ from module.plugins.internal.XFSHoster import XFSHoster
 class UpleaCom(XFSHoster):
     __name__    = "UpleaCom"
     __type__    = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?uplea\.com/dl/\w{15}'
