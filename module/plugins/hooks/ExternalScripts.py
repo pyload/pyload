@@ -118,7 +118,7 @@ class ExternalScripts(Addon):
             self.log_debug("Folder `%s` not found" % folder)
             return
 
-        self.log_info(_("Executing %s scripts...") % folder)
+        self.log_info(_("Executing scripts in folder `%s`...") % folder)
 
         for file in scripts:
             try:

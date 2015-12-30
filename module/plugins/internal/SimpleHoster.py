@@ -16,7 +16,7 @@ from module.plugins.internal.misc import (encode, parse_name, parse_size,
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "2.15"
+    __version__ = "2.16"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -290,8 +290,6 @@ class SimpleHoster(Hoster):
 
 
     def check_download(self):
-        super(SimpleHoster, self).check_download()
-
         self.log_info(_("Checking file (with built-in rules)..."))
         for r, p in self.FILE_ERRORS:
             errmsg = self.scan_download({r: re.compile(p)})
