@@ -12,6 +12,7 @@ import itertools
 import os
 import re
 import shutil
+import socket
 import string
 import sys
 import time
@@ -32,7 +33,7 @@ except ImportError:
 class misc(object):
     __name__    = "misc"
     __type__    = "plugin"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
