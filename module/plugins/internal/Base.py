@@ -27,7 +27,7 @@ def parse_fileInfo(klass, url="", html=""):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -88,8 +88,10 @@ class Base(Plugin):
         self.js = self.pyload.js
 
         #: Captcha stuff
-        _Captcha = self.pyload.pluginManager.loadClass("captcha", self.classname) or Captcha
-        self.captcha = _Captcha(pyfile)
+        #@TODO: Replace in 0.4.10:
+        #_Captcha = self.pyload.pluginManager.loadClass("captcha", self.classname) or Captcha
+        # self.captcha = _Captcha(pyfile)
+        self.captcha = Captcha(pyfile)
 
         #: Some plugins store html code here
         self.data = ""
