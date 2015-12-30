@@ -10,7 +10,7 @@ from module.plugins.internal.misc import encode
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.62"
+    __version__ = "0.63"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                  , True ),
@@ -67,9 +67,9 @@ class ExternalScripts(Addon):
         folders = [entry for entry in os.listdir("scripts") \
                    if os.path.isdir(os.path.join("scripts", entry))]
 
-        for folder in folders:
-            self.log_debug("Watching folder `%s`..." % folder)
+        self.log_debug("Watching folders: " + "`, `".join(folders))
 
+        for folder in folders:
             self.scripts[folder] = []
 
             dirname = os.path.join("scripts", folder)
