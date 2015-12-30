@@ -10,7 +10,7 @@ from module.plugins.internal.misc import encode
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.61"
+    __version__ = "0.62"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                  , True ),
@@ -110,14 +110,12 @@ class ExternalScripts(Addon):
     def call_script(self, folder, *args, **kwargs):
         scripts = self.scripts.get(folder)
 
-        if folder not in scripts:
-            self.log_debug("Folder `%s` not found" % folder)
-            return
-
-        scripts = self.scripts.get(folder)
-
         if not scripts:
             self.log_debug("No script found under folder `%s`" % folder)
+            return
+
+        if folder not in scripts:
+            self.log_debug("Folder `%s` not found" % folder)
             return
 
         self.log_info(_("Executing %s scripts...") % folder)
