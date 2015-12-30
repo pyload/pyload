@@ -9,7 +9,7 @@ from module.plugins.internal.misc import set_cookie
 class ShareonlineBiz(Account):
     __name__    = "ShareonlineBiz"
     __type__    = "account"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __status__  = "testing"
 
     __description__ = """Share-online.biz account plugin"""
@@ -24,8 +24,6 @@ class ShareonlineBiz(Account):
                              'username': user,
                              'password': password},
                         decode=False)
-
-        self.log_debug(res)
 
         api = dict(line.split("=") for line in res.splitlines() if "=" in line)
 
