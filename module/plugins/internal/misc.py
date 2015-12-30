@@ -33,7 +33,7 @@ except ImportError:
 class misc(object):
     __name__    = "misc"
     __type__    = "plugin"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -472,7 +472,7 @@ def safepath(value):
     Remove invalid characters and truncate the path if needed
     """
     drive, filename = os.path.splitdrive(value)
-    filename = os.path.join(*map(safename, filename.split(os.sep)))
+    filename = os.path.join(os.sep, *map(safename, filename.split(os.sep)))
     path = os.path.abspath(drive + filename)
 
     try:
