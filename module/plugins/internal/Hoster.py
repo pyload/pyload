@@ -2,6 +2,7 @@
 
 from __future__ import with_statement
 
+import __builtin__
 import hashlib
 import mimetypes
 import os
@@ -14,7 +15,6 @@ from module.plugins.internal.misc import compute_checksum, encode, exists, fixur
 
 
 # Python 2.5 compatibility hack for property.setter, property.deleter
-import __builtin__
 if not hasattr(__builtin__.property, "setter"):
     class property(__builtin__.property):
         __metaclass__ = type

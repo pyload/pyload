@@ -32,7 +32,7 @@ except ImportError:
 class misc(object):
     __name__    = "misc"
     __type__    = "plugin"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -803,7 +803,7 @@ def compute_checksum(filename, hashtype):
         last = 0
 
         with open(file, "rb") as f:
-            for chunk in iter(lambda: f.read(buf), b''):
+            for chunk in iter(lambda: f.read(buf), ''):
                 last = hf(chunk, last)
 
         return "%x" % last
@@ -812,7 +812,7 @@ def compute_checksum(filename, hashtype):
         h = hashlib.new(hashtype)
 
         with open(file, "rb") as f:
-            for chunk in iter(lambda: f.read(buf * h.block_size), b''):
+            for chunk in iter(lambda: f.read(buf * h.block_size), ''):
                 h.update(chunk)
 
         return h.hexdigest()
