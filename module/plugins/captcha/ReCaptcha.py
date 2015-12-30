@@ -12,7 +12,7 @@ from module.plugins.internal.CaptchaService import CaptchaService
 class ReCaptcha(CaptchaService):
     __name__    = "ReCaptcha"
     __type__    = "captcha"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __description__ = """ReCaptcha captcha service plugin"""
@@ -84,8 +84,6 @@ class ReCaptcha(CaptchaService):
                               get={'c': challenge},
                               cookies=True,
                               input_type="jpg")
-
-        self.log_debug("Result: %s" % result)
 
         return result, challenge
 
@@ -175,7 +173,7 @@ class ReCaptcha(CaptchaService):
                                               timeout=30)
         response = base64.b64encode('{"response":"%s"}' % captcha_response)
 
-        self.log_debug("Result: %s" % response)
+        self.log_debug("Result: `%s`" % response)
 
         timeToSolve     = int(round(time.time() * 1000)) - millis_captcha_loading
         timeToSolveMore = timeToSolve + int(float("0." + str(random.randint(1, 99999999))) * 500)

@@ -9,7 +9,7 @@ from module.plugins.internal.CaptchaService import CaptchaService
 class SolveMedia(CaptchaService):
     __name__    = "SolveMedia"
     __type__    = "captcha"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __description__ = """SolveMedia captcha service plugin"""
@@ -99,7 +99,4 @@ class SolveMedia(CaptchaService):
                                     get={'c': challenge},
                                     cookies=True,
                                     input_type="gif")
-
-        self.log_debug("Result: %s" % result)
-
         return result

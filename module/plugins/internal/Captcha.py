@@ -12,7 +12,7 @@ from module.plugins.internal.misc import encode
 class Captcha(Plugin):
     __name__    = "Captcha"
     __type__    = "captcha"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __status__  = "stable"
 
     __description__ = """Base anti-captcha plugin"""
@@ -63,7 +63,7 @@ class Captcha(Plugin):
 
         :return: result of decrypting
         """
-        result   = ""
+        result   = None
         time_ref = ("%.2f" % time.time())[-6:].replace(".", "")
 
         with open(os.path.join("tmp", "captcha_image_%s_%s.%s" % (self.pyfile.plugin.__name__, time_ref, input_type)), "wb") as img_f:
@@ -77,6 +77,9 @@ class Captcha(Plugin):
                 result = self.recognize(img_f.name)
 
         if not result:
+            if ocr:
+                self.log_warning(_("No OCR result"))
+
             captchaManager = self.pyload.captchaManager
 
             try:
@@ -92,18 +95,19 @@ class Captcha(Plugin):
             finally:
                 captchaManager.removeTask(self.task)
 
-            if self.task.error:
-                self.fail(self.task.error)
-
-            elif not self.task.result:
-                self.pyfile.plugin.retry_captcha(msg=_("No captcha result obtained in appropriate time"))
-
             result = self.task.result
+
+            if self.task.error:
+                self.pyfile.plugin.retry_captcha(msg=self.task.error)
+
+            if self.task.result:
+                self.log_info(_("Captcha result: `%s`") % result)
+
+            else:
+                self.pyfile.plugin.retry_captcha(msg=_("No captcha result obtained in appropriate timing"))
 
         if not self.pyload.debug:
             self.remove(img_f.name, trash=False)
-
-        # self.log_info(_("Captcha result: ") + result)  #@TODO: Remove from here?
 
         return result
 
@@ -112,13 +116,15 @@ class Captcha(Plugin):
         if not self.task:
             return
 
-        self.log_warning(_("Invalid captcha"))
+        self.log_warning(_("Invalid captcha"), self.task.result)
         self.task.invalid()
+        self.task = None
 
 
     def correct(self):
         if not self.task:
             return
 
-        self.log_info(_("Correct captcha"))
+        self.log_info(_("Correct captcha"), self.task.result)
         self.task.correct()
+        self.task = None

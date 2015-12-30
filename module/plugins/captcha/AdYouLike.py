@@ -9,7 +9,7 @@ from module.plugins.internal.CaptchaService import CaptchaService
 class AdYouLike(CaptchaService):
     __name__    = "AdYouLike"
     __type__    = "captcha"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __description__ = """AdYouLike captcha service plugin"""
@@ -86,7 +86,5 @@ class AdYouLike(CaptchaService):
                   '_ayl_tid'            : challenge['tid'],
                   '_ayl_token_challenge': challenge['token'],
                   '_ayl_response'       : response}
-
-        self.log_debug("Result: %s" % response)
 
         return result

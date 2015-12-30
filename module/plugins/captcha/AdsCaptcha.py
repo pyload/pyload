@@ -9,7 +9,7 @@ from module.plugins.internal.CaptchaService import CaptchaService
 class AdsCaptcha(CaptchaService):
     __name__    = "AdsCaptcha"
     __type__    = "captcha"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __description__ = """AdsCaptcha captcha service plugin"""
@@ -58,7 +58,4 @@ class AdsCaptcha(CaptchaService):
                                     get={'cid': challenge, 'dummy': random.random()},
                                     cookies=True,
                                     input_type="jpg")
-
-        self.log_debug("Result: %s" % result)
-
         return result

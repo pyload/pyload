@@ -34,7 +34,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -239,7 +239,6 @@ class Hoster(Base):
 
         self.pyfile.name = dl_basename
 
-        self.captcha.correct()
         self.check_duplicates()
 
         self.pyfile.setStatus("downloading")
@@ -285,6 +284,7 @@ class Hoster(Base):
 
         finally:
             self.pyfile.size = self.req.size
+            self.captcha.correct()
 
         if self.req.code in (404, 410):
             bad_file = fsjoin(dl_dirname, newname)
