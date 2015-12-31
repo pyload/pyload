@@ -7,7 +7,7 @@ from module.plugins.internal.misc import parse_name, safename
 class Crypter(Base):
     __name__    = "Crypter"
     __type__    = "crypter"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -70,6 +70,8 @@ class Crypter(Base):
 
         if folder_per_package is "Default":
             folder_per_package = self.pyload.config.get("general", "folder_per_package")
+        else:
+            folder_per_package = folder_per_package is "Yes"
 
         for name, links, folder in self.packages:
             self.log_info(_("Create package: %s") % name,
