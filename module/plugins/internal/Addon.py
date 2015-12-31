@@ -25,7 +25,7 @@ class Expose(object):
 class Addon(Plugin):
     __name__    = "Addon"
     __type__    = "hook"  #@TODO: Change to `addon` in 0.4.10
-    __version__ = "0.50"
+    __version__ = "0.51"
     __status__  = "stable"
 
     __threaded__ = []  #@TODO: Remove in 0.4.10
@@ -186,8 +186,7 @@ class Addon(Plugin):
 
     #: Deprecated method, use `download_finished` instead (Remove in 0.4.10)
     def downloadFinished(self, pyfile):
-        if pyfile.hasStatus("finished"):  #: Check if still "finished" (Fix in 0.4.10)
-            return self.download_finished(pyfile)
+        return self.download_finished(pyfile)
 
 
     def download_failed(self, pyfile):
