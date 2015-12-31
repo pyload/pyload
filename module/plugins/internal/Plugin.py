@@ -27,7 +27,7 @@ from module.plugins.internal.misc import (Config, DB, decode, encode, exists, fi
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.63"
+    __version__ = "0.64"
     __status__  = "stable"
 
     __config__  = []  #: [("name", "type", "desc", "default")]
@@ -226,7 +226,7 @@ class Plugin(object):
 
         #@TODO: Move to network in 0.4.10
         header = {'code': req.code}
-        header.update(parse_html_header(req.http.header))
+        header.update(parse_html_header(req.http.header if hasattr(req, "http") else req.header))  #@NOTE: req can be a HTTPRequest or a Browser object
 
         self.last_header = header
 
