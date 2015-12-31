@@ -658,10 +658,10 @@ def seconds_to_nexthour(strict=False):
 
 
 def seconds_to_midnight(utc=None, strict=False):
-    if utc is None:
-        now = datetime.datetime.today()
-    else:
+    if type(utc) is int:
         now = datetime.datetime.utcnow() + datetime.timedelta(hours=utc)
+    else:
+        now = datetime.datetime.today()
 
     midnight = now.replace(hour=0, minute=0 if strict else 1, second=0, microsecond=0) + datetime.timedelta(days=1)
 
