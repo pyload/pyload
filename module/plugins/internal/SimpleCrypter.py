@@ -149,10 +149,9 @@ class SimpleCrypter(Crypter):
 
     def handle_direct(self, pyfile):
         maxredirs = int(self.pyload.api.getConfigValue("UserAgentSwitcher", "maxredirs", "plugin")) or 5  #@TODO: Remove `int` in 0.4.10
-        redirect  = None
+        redirect  = pyfile.url
 
         for i in xrange(maxredirs):
-            redirect = redirect or pyfile.url
             self.log_debug("Redirect #%d to: %s" % (i, redirect))
 
             html = self.load(redirect)
@@ -169,6 +168,9 @@ class SimpleCrypter(Crypter):
 
 
     def preload(self):
+        if self.data:
+            return
+
         self.data = self.load(self.pyfile.url,
                               cookies=self.COOKIES,
                               ref=False,

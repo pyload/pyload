@@ -238,6 +238,9 @@ class SimpleHoster(Hoster):
 
 
     def preload(self):
+        if self.data:
+            return
+
         self.data = self.load(self.pyfile.url,
                               cookies=self.COOKIES,
                               ref=False,
