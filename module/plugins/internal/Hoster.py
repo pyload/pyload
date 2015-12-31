@@ -158,12 +158,12 @@ class Hoster(Base):
             self.check_status()
 
 
-    def isdownload(self, url, resume=None, redirect=True):
-        link      = False
+    def isdownload(self, url, redirect=True, resumable=None):
+        resource  = False
         maxredirs = 5
 
-        if resume is None:
-            resume = self.resume_download
+        if resumable is None:
+            resumable = self.resume_download
 
         if type(redirect) is int:
             maxredirs = max(redirect, 1)
@@ -176,22 +176,20 @@ class Hoster(Base):
 
             header = self.load(url, just_header=True)
 
+            if not redirect or header.get('connection') is "close":
+                resumable = False
+
             if 'content-disposition' in header:
-                link = url
+                resource = url
 
             elif header.get('location'):
                 location = self.fixurl(header.get('location'), url)
                 code     = header.get('code')
 
                 if code == 302:
-                    link = location
+                    resource = location
 
-                elif code == 301:
-                    url = location
-                    if redirect:
-                        continue
-
-                if resume:
+                elif code == 301 or resumable:
                     url = location
                     continue
 
@@ -204,14 +202,50 @@ class Hoster(Base):
                     mimetype = contenttype.split(';')[0].strip()
 
                 elif extension:
-                    mimetype = mimetypes.guess_type(extension, False)[0] or "application/octet-stream"
+                    mimetype = mimetypes.guess_type(extension, False)[0] or \
+                               "application/octet-stream"
 
-                if mimetype and (link or 'html' not in mimetype):
-                    link = url
+                if mimetype and (resource or 'html' not in mimetype):
+                    resource = url
                 else:
-                    link = False
+                    resource = False
 
-            return link
+            return resource
+
+
+    def _download(self, url, filename, get, post, ref, cookies, disposition, resume, chunks):
+        file = encode(filename)  #@TODO: Safe-filename check in HTTPDownload in 0.4.10
+        resume = self.resume_download if resume is None else bool(resume)
+
+        dl_chunks   = self.pyload.config.get("download", "chunks")
+        chunk_limit = chunks or self.chunk_limit or -1
+
+        if -1 in (dl_chunks, chunk_limit):
+            chunks = max(dl_chunks, chunk_limit)
+        else:
+            chunks = min(dl_chunks, chunk_limit)
+
+        try:
+            newname = self.req.httpDownload(url, file, get, post,
+                                            ref, cookies, chunks, resume,
+                                            self.pyfile.setProgress, disposition)
+        except BadHeader, e:
+            self.req.http.code = e.code
+            raise BadHeader(e)
+
+        else:
+            if self.req.code in (404, 410):
+                bad_file = fsjoin(dl_dirname, newname)
+                if self.remove(bad_file):
+                    return ""
+            else:
+                self.log_info(_("File saved"))
+
+            return newname
+
+        finally:
+            self.pyfile.size = self.req.size
+            self.captcha.correct()
 
 
     def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=True, resume=None, chunks=None):
@@ -248,7 +282,7 @@ class Hoster(Base):
         dl_filename = safejoin(dl_dirname, dl_basename)
 
         dl_dir  = encode(dl_dirname)
-        dl_file = encode(dl_filename)  #@TODO: Move safe-filename check to HTTPDownload in 0.4.10
+        dl_file = encode(dl_filename)
 
         if not exists(dl_dir):
             try:
@@ -262,36 +296,8 @@ class Hoster(Base):
         self.pyload.hookManager.dispatchEvent("download_start", self.pyfile, dl_url, dl_filename)
         self.check_status()
 
-        dl_chunks   = self.pyload.config.get("download", "chunks")
-        chunk_limit = chunks or self.chunk_limit or -1
-
-        if -1 in (dl_chunks, chunk_limit):
-            chunks = max(dl_chunks, chunk_limit)
-        else:
-            chunks = min(dl_chunks, chunk_limit)
-
-        resume = self.resume_download if resume is None else bool(resume)
-
-        try:
-            newname = self.req.httpDownload(dl_url, dl_file, get=get, post=post, ref=ref,
-                                            cookies=cookies, chunks=chunks, resume=resume,
-                                            progressNotify=self.pyfile.setProgress,
-                                            disposition=disposition)
-
-        except BadHeader, e:
-            self.req.http.code = e.code
-            raise BadHeader(e)
-
-        finally:
-            self.pyfile.size = self.req.size
-            self.captcha.correct()
-
-        if self.req.code in (404, 410):
-            bad_file = fsjoin(dl_dirname, newname)
-            if self.remove(bad_file):
-                return ""
-        else:
-            self.log_info(_("File saved"))
+        newname = self._download(dl_url, dl_filename, get, post, ref, cookies,
+                                 disposition, resume, chunks)
 
         #@TODO: Recheck in 0.4.10
         if disposition and newname:
