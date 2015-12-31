@@ -34,7 +34,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.49"
+    __version__ = "0.50"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -183,10 +183,10 @@ class Hoster(Base):
                 location = self.fixurl(header.get('location'), url)
                 code     = header.get('code')
 
-                if code is 302:
+                if code == 302:
                     link = location
 
-                elif code is 301:
+                elif code == 301:
                     url = location
                     if redirect:
                         continue
