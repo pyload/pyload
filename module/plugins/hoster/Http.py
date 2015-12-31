@@ -29,7 +29,7 @@ class Http(Hoster):
         url    = re.sub(r'^(jd|py)', "http", pyfile.url)
         netloc = urlparse.urlparse(url).netloc
 
-        link = self.isdownload(url)
+        link = self.isresource(url)
 
         if not link:
             return

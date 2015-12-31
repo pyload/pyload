@@ -158,7 +158,7 @@ class Hoster(Base):
             self.check_status()
 
 
-    def isdownload(self, url, redirect=True, resumable=None):
+    def isresource(self, url, redirect=True, resumable=None):
         resource  = False
         maxredirs = 5
 

@@ -48,7 +48,7 @@ class GoogledriveCom(SimpleHoster):
                 return
 
             link = self.fixurl(m.group(1), "https://docs.google.com/")
-            dl   = self.isdownload(link)
+            dl   = self.isresource(link)
 
             if dl:
                 self.link = dl

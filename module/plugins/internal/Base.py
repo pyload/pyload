@@ -459,7 +459,7 @@ class Base(Plugin):
         try:
             id = frame.f_back.f_lineno
         finally:
-            del frame
+            del frame  #: Delete the frame or it wont be cleaned
 
         if id not in self.retries:
             self.retries[id] = 0

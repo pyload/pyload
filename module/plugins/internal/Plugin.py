@@ -117,8 +117,10 @@ class Plugin(object):
 
     def _print_exc(self):
         frame = inspect.currentframe()
-        print format_exc(frame.f_back)
-        del frame
+        try:
+            print format_exc(frame.f_back)
+        finally:
+            del frame
 
 
     def remove(self, path, trash=False):  #@TODO: Change to `trash=True` in 0.4.10
@@ -220,23 +222,7 @@ class Plugin(object):
         self.last_html = html
 
         if self.pyload.debug:
-            frame = inspect.currentframe()
-
-            try:
-                framefile = fsjoin("tmp", self.classname, "%s_line%s.dump.html"
-                                   % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
-
-                if not exists(os.path.join("tmp", self.classname)):
-                    os.makedirs(os.path.join("tmp", self.classname))
-
-                with open(framefile, "wb") as f:
-                    f.write(encode(html))
-
-            except IOError, e:
-                self.log_error(e)
-
-            finally:
-                del frame  #: Delete the frame or it wont be cleaned
+            self.dump_html()
 
         #@TODO: Move to network in 0.4.10
         header = {'code': req.code}
@@ -248,6 +234,26 @@ class Plugin(object):
             return header
         else:
             return html
+
+
+    def dump_html(self):
+        frame = inspect.currentframe()
+
+        try:
+            framefile = fsjoin("tmp", self.classname, "%s_line%s.dump.html"
+                               % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
+
+            if not exists(os.path.join("tmp", self.classname)):
+                os.makedirs(os.path.join("tmp", self.classname))
+
+            with open(framefile, "wb") as f:
+                f.write(encode(self.last_html))
+
+        except IOError, e:
+            self.log_error(e)
+
+        finally:
+            del frame  #: Delete the frame or it wont be cleaned
 
 
     def clean(self):

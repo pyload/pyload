@@ -437,7 +437,7 @@ class SimpleHoster(Hoster):
 
 
     def handle_direct(self, pyfile):
-        self.link = pyfile.url if self.isdownload(pyfile.url) else None
+        self.link = pyfile.url if self.isresource(pyfile.url) else None
 
 
     def handle_multi(self, pyfile):  #: Multi-hoster handler
