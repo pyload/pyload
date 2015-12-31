@@ -15,11 +15,11 @@ from module.plugins.internal.misc import encode, exists, fsjoin
 class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "1.05"
+    __version__ = "1.06"
     __status__  = "testing"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),
-                  ("checkinterval", "int" , "Check interval in hours"                  , 8    ),
+                  ("checkinterval", "int" , "Check interval in hours"                  , 6    ),
                   ("autorestart"  , "bool", "Auto-restart pyLoad when required"        , True ),
                   ("checkonstart" , "bool", "Check for updates on startup"             , True ),
                   ("checkperiod"  , "bool", "Check for updates periodically"           , True ),

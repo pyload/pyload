@@ -33,7 +33,7 @@ except ImportError:
 class misc(object):
     __name__    = "misc"
     __type__    = "plugin"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'

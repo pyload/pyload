@@ -12,7 +12,7 @@ from module.plugins.internal.misc import encode, fsjoin, move_tree
 class HotFolder(Addon):
     __name__    = "HotFolder"
     __type__    = "hook"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"              , False      ),
@@ -27,7 +27,7 @@ class HotFolder(Addon):
 
 
     def activate(self):
-        self.periodical.start(30, threaded=True)
+        self.periodical.start(60, threaded=True)
 
 
     def periodical_task(self):
