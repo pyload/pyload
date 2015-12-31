@@ -33,7 +33,7 @@ except ImportError:
 class misc(object):
     __name__    = "misc"
     __type__    = "plugin"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -168,7 +168,7 @@ class Periodical(object):
             self.task()
 
         except Exception, e:
-            self.log_error(_("Error performing periodical task"), e)
+            self.plugin.log_error(_("Error performing periodical task"), e)
 
         self.restart(threaded=threaded, delay=self.interval)
 
