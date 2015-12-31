@@ -34,7 +34,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.50"
+    __version__ = "0.51"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -139,8 +139,8 @@ class Hoster(Base):
         self.pyload.hookManager.dispatchEvent("download_processed", self.pyfile)
 
         try:
-            unfinished = any(fdata['status'] is 3 for fid, fdata in pypack.getChildren().items()
-                             if fid is not self.pyfile.id)
+            unfinished = any(fdata['status'] == 3 for fid, fdata in pypack.getChildren().items()
+                             if fid != self.pyfile.id)
             if unfinished:
                 return
 
@@ -176,7 +176,7 @@ class Hoster(Base):
 
             header = self.load(url, just_header=True)
 
-            if not redirect or header.get('connection') is "close":
+            if not redirect or header.get('connection') == "close":
                 resumable = False
 
             if 'content-disposition' in header:
@@ -390,7 +390,7 @@ class Hoster(Base):
         if traffic is None:
             return True
 
-        elif traffic is -1:
+        elif traffic == -1:
             return False
 
         else:
