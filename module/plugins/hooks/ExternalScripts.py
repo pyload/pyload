@@ -10,7 +10,7 @@ from module.plugins.internal.misc import encode
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.63"
+    __version__ = "0.64"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                  , True ),
@@ -35,7 +35,7 @@ class ExternalScripts(Addon):
                           'all_archives_processed': "all_archives_processed" ,
                           'pyload_updated'        : "pyload_updated"         }
 
-        self.periodical.start(60)
+        self.periodical.start(300)
         self.pyload_start()
 
 
@@ -67,11 +67,8 @@ class ExternalScripts(Addon):
         folders = [entry for entry in os.listdir("scripts") \
                    if os.path.isdir(os.path.join("scripts", entry))]
 
-        self.log_debug("Watching folders: " + "`, `".join(folders))
-
         for folder in folders:
-            self.scripts[folder] = []
-
+            scripts = []
             dirname = os.path.join("scripts", folder)
 
             for entry in os.listdir(dirname):
@@ -86,14 +83,18 @@ class ExternalScripts(Addon):
                 if not os.access(file, os.X_OK):
                     self.log_warning(_("Script `%s` is not executable") % entry)
 
-                self.scripts[folder].append(file)
+                scripts.append(file)
 
-            if not self.scripts[folder]:
+            if not scripts:
                 continue
 
-            script_names = map(os.path.basename, self.scripts[folder])
+            new_scripts = [s for s in scripts if s not in self.scripts[folder]]
+
+            script_names = map(os.path.basename, new_scripts)
             self.log_info(_("Activated scripts in folder `%s`: %s")
                           % (folder, ", ".join(script_names)))
+
+            self.scripts[folder] = scripts
 
 
     def call_cmd(self, command, *args, **kwargs):
