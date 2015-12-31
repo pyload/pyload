@@ -10,7 +10,7 @@ from module.plugins.internal.misc import encode
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.64"
+    __version__ = "0.65"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                  , True ),
@@ -88,7 +88,11 @@ class ExternalScripts(Addon):
             if not scripts:
                 continue
 
-            new_scripts = [s for s in scripts if s not in self.scripts[folder]]
+            new_scripts = [s for s in scripts if folder not in self.scripts or
+                           folder in self.scripts and s not in self.scripts[folder]]
+
+            if not new_scripts:
+                continue
 
             script_names = map(os.path.basename, new_scripts)
             self.log_info(_("Activated scripts in folder `%s`: %s")
