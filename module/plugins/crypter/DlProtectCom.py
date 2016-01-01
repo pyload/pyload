@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class DlProtectCom(SimpleCrypter):
     __name__    = "DlProtectCom"
     __type__    = "crypter"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?dl-protect\.com/((en|fr)/)?\w+'
@@ -41,7 +41,7 @@ class DlProtectCom(SimpleCrypter):
         i = base64.b64decode(i)
         # Split information
         infos = i.split('|')
-        assert(len(infos) is 4)
+        assert(len(infos) == 4)
         res = infos[0]
         user_agent = infos[1]
         plugins = [x.split(';') for x in infos[2].split('&')]

@@ -31,7 +31,7 @@ def get_info(plugin, urls):
 class FileserveCom(Hoster):
     __name__    = "FileserveCom"
     __type__    = "hoster"
-    __version__ = "0.66"
+    __version__ = "0.67"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<ID>[^/]+)'
@@ -69,7 +69,7 @@ class FileserveCom(Hoster):
 
     def process(self, pyfile):
         pyfile.name, pyfile.size, status, self.url = check_file(self, [self.url])[0]
-        if status is not 2:
+        if status != 2:
             self.offline()
         self.log_debug("File Name: %s Size: %d" % (pyfile.name, pyfile.size))
 

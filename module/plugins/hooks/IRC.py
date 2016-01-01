@@ -219,7 +219,7 @@ class IRC(Thread, Notifier):
         lines = ["ID - Name - Status - Speed - ETA - Progress"]
         for data in downloads:
 
-            if data.status is 5:
+            if data.status == 5:
                 temp_progress = data.format_wait
             else:
                 temp_progress = "%d%% (%s)" % (data.percent, data.format_size)

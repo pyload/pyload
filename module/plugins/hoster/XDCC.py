@@ -14,7 +14,7 @@ from module.plugins.internal.misc import fsjoin
 class XDCC(Hoster):
     __name__    = "XDCC"
     __type__    = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__  = "testing"
 
     __config__ = [("nick", "str", "Nickname", "pyload"),
@@ -48,7 +48,7 @@ class XDCC(Hoster):
                 else:
                     errno = e.args[0]
 
-                if errno is 10054:
+                if errno == 10054:
                     self.log_debug("Server blocked our ip, retry in 5 min")
                     self.wait(300)
                     continue
@@ -72,9 +72,9 @@ class XDCC(Hoster):
 
         temp = server.split(':')
         ln = len(temp)
-        if ln is 2:
+        if ln == 2:
             host, port = temp
-        elif ln is 1:
+        elif ln == 1:
             host, port = temp[0], 6667
         else:
             self.fail(_("Invalid hostname for IRC Server: %s") % server)
@@ -139,7 +139,7 @@ class XDCC(Hoster):
                     self.fail(_("IRC-Error: %s") % line)
 
                 msg = line.split(None, 3)
-                if len(msg) is not 4:
+                if len(msg) != 4:
                     continue
 
                 msg = {

@@ -15,7 +15,7 @@ from module.plugins.internal.misc import json
 class RapidgatorNet(SimpleHoster):
     __name__    = "RapidgatorNet"
     __type__    = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
@@ -82,10 +82,10 @@ class RapidgatorNet(SimpleHoster):
             status = e.code
             msg = e
 
-        if status is 200:
+        if status == 200:
             return json_data['response']
 
-        elif status is 423:
+        elif status == 423:
             self.account.empty()
             self.retry()
 

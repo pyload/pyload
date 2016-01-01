@@ -11,7 +11,7 @@ from module.plugins.internal.misc import encode, fsjoin, renice
 class SevenZip(UnRar):
     __name__    = "SevenZip"
     __type__    = "extractor"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __description__ = """7-Zip extractor plugin"""
@@ -37,7 +37,7 @@ class SevenZip(UnRar):
     @classmethod
     def find(cls):
         try:
-            if os.name is "nt":
+            if os.name == "nt":
                 cls.CMD = os.path.join(pypath, "7z.exe")
 
             p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)

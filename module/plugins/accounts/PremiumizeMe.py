@@ -7,7 +7,7 @@ from module.plugins.internal.misc import json
 class PremiumizeMe(MultiAccount):
     __name__    = "PremiumizeMe"
     __type__    = "account"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
@@ -29,7 +29,7 @@ class PremiumizeMe(MultiAccount):
         data = json.loads(answer)
 
         #: If account is not valid thera are no hosters available
-        if data['status'] is not 200:
+        if data['status'] != 200:
             return []
 
         #: Extract hosters from json file
@@ -56,7 +56,7 @@ class PremiumizeMe(MultiAccount):
         status = self.get_account_status(user, password)
 
         #: Check if user and password are valid
-        if status['status'] is not 200:
+        if status['status'] != 200:
             self.fail_login()
 
 

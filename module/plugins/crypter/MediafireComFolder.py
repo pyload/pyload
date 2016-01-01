@@ -9,7 +9,7 @@ from module.plugins.internal.misc import json
 class MediafireComFolder(Crypter):
     __name__    = "MediafireComFolder"
     __type__    = "crypter"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))'
@@ -58,7 +58,7 @@ class MediafireComFolder(Crypter):
         url, result = self._get_url(pyfile.url)
         self.log_debug("Location (%d): %s" % (result, url))
 
-        if result is 0:
+        if result == 0:
             #: Load and parse html
             html = self.load(pyfile.url)
             m = re.search(self.LINK_PATTERN, html)
@@ -84,7 +84,7 @@ class MediafireComFolder(Crypter):
                     else:
                         self.fail(json_data['response']['message'])
 
-        elif result is 1:
+        elif result == 1:
             self.offline()
 
         else:

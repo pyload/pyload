@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class BitshareCom(SimpleHoster):
     __name__    = "BitshareCom"
     __type__    = "hoster"
-    __version__ = "0.59"
+    __version__ = "0.60"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/)?(?(1)|\?f=)(?P<ID>\w+)(?(1)/(?P<NAME>.+?)\.html)'
@@ -114,7 +114,7 @@ class BitshareCom(SimpleHoster):
                 self.retry()
 
         #: Resolve captcha
-        if captcha is 1:
+        if captcha == 1:
             self.log_debug("File is captcha protected")
             self.captcha = ReCaptcha(self.pyfile)
 

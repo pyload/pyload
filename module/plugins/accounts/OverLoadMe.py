@@ -7,7 +7,7 @@ from module.plugins.internal.misc import json
 class OverLoadMe(MultiAccount):
     __name__    = "OverLoadMe"
     __type__    = "account"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
@@ -47,5 +47,5 @@ class OverLoadMe(MultiAccount):
 
         data = json.loads(html)
 
-        if data['err'] is 1:
+        if data['err'] == 1:
             self.fail_login()

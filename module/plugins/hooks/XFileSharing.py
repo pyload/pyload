@@ -84,7 +84,7 @@ class XFileSharing(Addon):
             self.log_info(_("Handle %d %s%s: %s") %
                           (len(plugin_set),
                            type,
-                           "" if len(plugin_set) is 1 else "s",
+                           "" if len(plugin_set) == 1 else "s",
                            match_list.replace('\.', '.').replace('|', ', ')))
         else:
             plugin_list = []

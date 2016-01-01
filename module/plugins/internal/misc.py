@@ -33,7 +33,7 @@ except ImportError:
 class misc(object):
     __name__    = "misc"
     __type__    = "plugin"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -264,7 +264,7 @@ def compare_time(start, end):
 
 
 def free_space(folder):
-    if os.name is "nt":
+    if os.name == "nt":
         import ctypes
 
         free_bytes = ctypes.c_ulonglong(0)
@@ -285,7 +285,7 @@ def fsbsize(path):
     """
     path = encode(path)
 
-    if os.name is "nt":
+    if os.name == "nt":
         import ctypes
 
         drive = "%s\\" % os.path.splitdrive(path)[0]
@@ -337,8 +337,8 @@ def isiterable(obj):
 
 
 def get_console_encoding(enc):
-    if os.name is "nt":
-        if enc is "cp65001":  #: aka UTF-8
+    if os.name == "nt":
+        if enc == "cp65001":  #: aka UTF-8
             enc = "cp850"
             # print "WARNING: Windows codepage 65001 (UTF-8) is not supported, used `%s` instead" % enc
     else:
@@ -392,7 +392,7 @@ def exists(path):
     path = encode(path)
 
     if os.path.exists(path):
-        if os.name is "nt":
+        if os.name == "nt":
             dir, name = os.path.split(path.rstrip(os.sep))
             return name in os.listdir(dir)
         else:
@@ -476,7 +476,7 @@ def safepath(value):
     path = os.path.abspath(drive + filename)
 
     try:
-        if os.name is not "nt":
+        if os.name != "nt":
             return
 
         length = len(path) - 259
@@ -502,7 +502,7 @@ def safename(value):
     """
     Remove invalid characters
     """
-    repl = '<>:"/\\|?*' if os.name is "nt" else '\0/\\"'
+    repl = '<>:"/\\|?*' if os.name == "nt" else '\0/\\"'
     name = remove_chars(value, repl)
     return name
 
@@ -527,7 +527,7 @@ def parse_size(value, unit=""):  #: returns bytes
     size = float(m.group(1).replace(',', '.'))
     unit = (unit.strip().lower() or m.group(2) or "byte")[0]
 
-    if unit is "b":
+    if unit == "b":
         return int(size)
 
     sizeunits = ['b', 'k', 'm', 'g', 't', 'p', 'e']
@@ -693,7 +693,7 @@ def set_cookies(cj, cookies):
         if not isinstance(cookie, tuple):
             continue
 
-        if len(cookie) is not 3:
+        if len(cookie) != 3:
             continue
 
         set_cookie(cj, *cookie)
@@ -768,7 +768,7 @@ def chunks(iterable, size):
 
 
 def renice(pid, value):
-    if not value or os.name is "nt":
+    if not value or os.name == "nt":
         return
 
     try:

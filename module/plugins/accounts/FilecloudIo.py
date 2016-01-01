@@ -7,7 +7,7 @@ from module.plugins.internal.misc import json, set_cookie
 class FilecloudIo(Account):
     __name__    = "FilecloudIo"
     __type__    = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __description__ = """FilecloudIo account plugin"""
@@ -36,7 +36,7 @@ class FilecloudIo(Account):
                         post={'akey': akey})
         rep = json.loads(rep)
 
-        if rep['is_premium'] is 1:
+        if rep['is_premium'] == 1:
             return {'validuntil': float(rep['premium_until']), 'trafficleft': -1}
         else:
             return {'premium': False}

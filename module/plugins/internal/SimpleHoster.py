@@ -16,7 +16,7 @@ from module.plugins.internal.misc import (encode, parse_name, parse_size,
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "2.17"
+    __version__ = "2.18"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -137,12 +137,12 @@ class SimpleHoster(Hoster):
         info = super(SimpleHoster, cls).get_info(url)
         info.update(cls.api_info(url))
 
-        if not html and info['status'] is not 2:
+        if not html and info['status'] != 2:
             if not url:
                 info['error']  = "missing url"
                 info['status'] = 1
 
-            elif info['status'] is 3:
+            elif info['status'] == 3:
                 try:
                     html = get_url(url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
 
@@ -269,7 +269,7 @@ class SimpleHoster(Hoster):
                 self.preload()
                 self.check_errors()
 
-                if self.info.get('status', 3) is not 2:
+                if self.info.get('status', 3) != 2:
                     self.grab_info()
                     self.check_status()
                     self.check_duplicates()

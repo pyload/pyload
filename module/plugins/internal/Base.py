@@ -27,7 +27,7 @@ def parse_fileInfo(klass, url="", html=""):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -235,19 +235,19 @@ class Base(Plugin):
     def check_status(self):
         status = self.pyfile.status
 
-        if status is 1:
+        if status == 1:
             self.offline()
 
-        elif status is 4:
+        elif status == 4:
             self.skip(self.pyfile.statusname)
 
-        elif status is 6:
+        elif status == 6:
             self.temp_offline()
 
-        elif status is 8:
+        elif status == 8:
             self.fail()
 
-        elif status is 9 or self.pyfile.abort:
+        elif status == 9 or self.pyfile.abort:
             self.abort()
 
 
@@ -255,10 +255,10 @@ class Base(Plugin):
         self.log_debug("Plugin version: " + self.__version__)
         self.log_debug("Plugin status: " + self.__status__)
 
-        if self.__status__ is "broken":
+        if self.__status__ == "broken":
             self.abort(_("Plugin is temporarily unavailable"))
 
-        elif self.__status__ is "testing":
+        elif self.__status__ == "testing":
             self.log_warning(_("Plugin may be unstable"))
 
 

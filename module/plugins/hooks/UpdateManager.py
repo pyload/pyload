@@ -15,7 +15,7 @@ from module.plugins.internal.misc import encode, exists, fsjoin
 class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "1.06"
+    __version__ = "1.08"
     __status__  = "testing"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),
@@ -146,7 +146,7 @@ class UpdateManager(Addon):
         """
         Check for updates
         """
-        if self._update() is not 2 or not self.config.get('autorestart'):
+        if self._update() != 2 or not self.config.get('autorestart'):
             return
 
         if not self.pyload.api.statusDownloads():
@@ -345,7 +345,7 @@ class UpdateManager(Addon):
                 py_filename  = fsjoin(basedir, plugin_type, plugin_name + ".py")
                 pyc_filename = py_filename + "c"
 
-                if plugin_type is "hook":
+                if plugin_type == "hook":
                     try:
                         self.manager.deactivateHook(plugin_name)
 

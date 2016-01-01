@@ -7,7 +7,7 @@ from module.plugins.internal.Addon import Addon
 class UnSkipOnFail(Addon):
     __name__    = "UnSkipOnFail"
     __type__    = "hook"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated", True)]
@@ -62,7 +62,7 @@ class UnSkipOnFail(Addon):
             pdata = self.pyload.api.getPackageData(pinfo.pid)
             for link in pdata.links:
                 #: Check if link == "skipped"
-                if link.status is not 4:
+                if link.status != 4:
                     continue
 
                 #: Check if link name collides with pdata's name

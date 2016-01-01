@@ -9,7 +9,7 @@ from module.plugins.internal.misc import seconds_to_nexthour
 class LogMarker(Addon):
     __name__    = "LogMarker"
     __type__    = "hook"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated" , False),
@@ -26,7 +26,7 @@ class LogMarker(Addon):
 
 
     def periodical_task(self):
-        if self.config.get('mark_day') and datetime.datetime.today().hour is 0:
+        if self.config.get('mark_day') and datetime.datetime.today().hour == 0:
             self.log_info("------------------------------------------------")
             self.log_info(_("------------------- DAY MARK -------------------"))
             self.log_info("------------------------------------------------")

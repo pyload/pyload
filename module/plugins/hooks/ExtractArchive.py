@@ -7,7 +7,7 @@ import sys
 
 # monkey patch bug in python 2.6 and lower
 # http://bugs.python.org/issue6122 , http://bugs.python.org/issue1236 , http://bugs.python.org/issue1731717
-if sys.version_info < (2, 7) and os.name is not "nt":
+if sys.version_info < (2, 7) and os.name != "nt":
     import errno
     import subprocess
 
@@ -98,7 +98,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.55"
+    __version__ = "1.56"
     __status__  = "broken"
 
     __config__ = [("activated"      , "bool"  , "Activated"                             , True                                                                     ),

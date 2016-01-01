@@ -11,7 +11,7 @@ from module.plugins.internal.misc import json, parse_size
 class RealdebridCom(MultiHoster):
     __name__    = "RealdebridCom"
     __type__    = "hoster"
-    __version__ = "0.72"
+    __version__ = "0.73"
     __status__  = "testing"
 
     __pattern__ = r'https?://((?:www\.|s\d+\.)?real-debrid\.com/dl/|[\w^_]\.rdb\.so/d/)[\w^_]+'
@@ -41,7 +41,7 @@ class RealdebridCom(MultiHoster):
 
         self.log_debug("Returned Data: %s" % data)
 
-        if data['error'] is not 0:
+        if data['error'] != 0:
             if data['message'] == "Your file is unavailable on the hoster.":
                 self.offline()
             else:

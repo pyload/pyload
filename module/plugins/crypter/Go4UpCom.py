@@ -10,7 +10,7 @@ from module.plugins.internal.misc import json
 class Go4UpCom(SimpleCrypter):
     __name__    = "Go4UpCom"
     __type__    = "crypter"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __pattern__ = r'http://go4up\.com/(dl/\w{12}|rd/\w{12}/\d+)'
@@ -40,7 +40,7 @@ class Go4UpCom(SimpleCrypter):
         if hosterslink_re:
             hosters = self.load(urlparse.urljoin("http://go4up.com/", hosterslink_re.group(1)))
             for hoster in json.loads(hosters):
-                if preference is not 0 and preference != int(hoster["hostId"]):
+                if preference != 0 and preference != int(hoster["hostId"]):
                     continue
                 pagelink_re = re.search(self.LINK_PATTERN, hoster["link"])
                 if pagelink_re:

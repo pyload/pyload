@@ -12,7 +12,7 @@ from module.plugins.internal.misc import decode, encode, fsjoin, renice
 class UnRar(Extractor):
     __name__    = "UnRar"
     __type__    = "extractor"
-    __version__ = "1.30"
+    __version__ = "1.31"
     __status__  = "testing"
 
     __description__ = """RAR extractor plugin"""
@@ -37,7 +37,7 @@ class UnRar(Extractor):
     @classmethod
     def find(cls):
         try:
-            if os.name is "nt":
+            if os.name == "nt":
                 cls.CMD = os.path.join(pypath, "RAR.exe")
             else:
                 cls.CMD = "rar"
@@ -49,7 +49,7 @@ class UnRar(Extractor):
 
         except OSError:
             try:
-                if os.name is "nt":
+                if os.name == "nt":
                     cls.CMD = os.path.join(pypath, "UnRAR.exe")
                 else:
                     cls.CMD = "unrar"

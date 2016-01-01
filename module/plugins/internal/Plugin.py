@@ -6,7 +6,7 @@ import inspect
 import os
 import re
 
-if os.name is not "nt":
+if os.name != "nt":
     import grp
     import pwd
 
@@ -150,7 +150,7 @@ class Plugin(object):
             mode = int(permission, 8)
             os.chmod(path, mode)
 
-        if os.name is not "nt" and self.pyload.config.get("permission", "change_dl"):
+        if os.name != "nt" and self.pyload.config.get("permission", "change_dl"):
             uid = pwd.getpwnam(self.pyload.config.get("permission", "user"))[2]
             gid = grp.getgrnam(self.pyload.config.get("permission", "group"))[2]
             os.chown(path, uid, gid)

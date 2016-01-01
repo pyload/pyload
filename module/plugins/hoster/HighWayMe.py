@@ -9,7 +9,7 @@ from module.plugins.internal.misc import seconds_to_midnight
 class HighWayMe(MultiHoster):
     __name__    = "HighWayMe"
     __type__    = "hoster"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __pattern__ = r'https?://.+high-way\.my'
@@ -30,7 +30,7 @@ class HighWayMe(MultiHoster):
 
 
     def check_errors(self):
-        if self.data.get('code') is 302:  #@NOTE: This is not working. It should by if 302 Moved Temporarily then... But I don't now how to implement it.
+        if self.data.get('code') == 302:  #@NOTE: This is not working. It should by if 302 Moved Temporarily then... But I don't now how to implement it.
             self.account.relogin()
             self.retry()
 

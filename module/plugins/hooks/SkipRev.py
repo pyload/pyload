@@ -72,7 +72,7 @@ class SkipRev(Addon):
         pyname = re.compile(r'%s\.part\d+\.rev$' % pyfile.name.rsplit('.', 2)[0].replace('.', '\.'))
 
         for fid, fdata in pyfile.package().getChildren().items():
-            if fdata['status'] is 4 and pyname.match(fdata['name']):
+            if fdata['status'] == 4 and pyname.match(fdata['name']):
                 pyfile_new = self._create_pyFile(fdata)
 
                 if revtokeep > -1 or pyfile.name.endswith(".rev"):

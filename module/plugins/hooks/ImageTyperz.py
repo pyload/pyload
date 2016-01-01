@@ -32,7 +32,7 @@ class ImageTyperzException(Exception):
 class ImageTyperz(Addon):
     __name__    = "ImageTyperz"
     __type__    = "hook"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __config__ = [("activated"   , "bool"    , "Activated"                       , False),
@@ -99,7 +99,7 @@ class ImageTyperz(Addon):
             raise ImageTyperzException(res)
         else:
             data = res.split('|')
-            if len(data) is 2:
+            if len(data) == 2:
                 ticket, result = data
             else:
                 raise ImageTyperzException("Unknown response: %s" % res)

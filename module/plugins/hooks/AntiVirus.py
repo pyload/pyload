@@ -16,7 +16,7 @@ from module.plugins.internal.misc import encode, exists, fsjoin
 class AntiVirus(Addon):
     __name__    = "AntiVirus"
     __type__    = "hook"
-    __version__ = "0.16"
+    __version__ = "0.18"
     __status__  = "broken"
 
     #@TODO: add trash option (use Send2Trash lib)
@@ -44,7 +44,7 @@ class AntiVirus(Addon):
         if not os.path.isfile(avfile):
             self.fail(_("Antivirus executable not found"))
 
-        scanfolder = self.config.get('avtarget') is "folder"
+        scanfolder = self.config.get('avtarget') == "folder"
 
         if scanfolder:
             dl_folder      = self.pyload.config.get("general", "download_folder")
@@ -83,14 +83,14 @@ class AntiVirus(Addon):
                 action = self.config.get('action')
 
                 if scanfolder:
-                    if action is "Antivirus default":
+                    if action == "Antivirus default":
                         self.log_warning(_("Delete/Quarantine task skipped in folder scan mode"))
                     return
 
                 pyfile.error = _("Infected file")
 
                 try:
-                    if action is "Delete":
+                    if action == "Delete":
                         if not self.config.get('deltotrash'):
                             os.remove(file)
 
@@ -111,7 +111,7 @@ class AntiVirus(Addon):
                             else:
                                 self.log_debug("Successfully moved file to trash")
 
-                    elif action is "Quarantine":
+                    elif action == "Quarantine":
                         pyfile.setCustomStatus(_("file moving"))
                         shutil.move(file, self.config.get('quardir'))
 
@@ -132,5 +132,5 @@ class AntiVirus(Addon):
 
     def download_failed(self, pyfile):
         #: Check if pyfile is still "failed", maybe might has been restarted in meantime
-        if pyfile.status is 8 and self.config.get('scanfailed'):
+        if pyfile.status == 8 and self.config.get('scanfailed'):
             return self.scan(pyfile)

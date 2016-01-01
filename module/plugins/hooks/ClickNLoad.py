@@ -16,7 +16,7 @@ from module.plugins.internal.misc import forward, lock
 class ClickNLoad(Addon):
     __name__    = "ClickNLoad"
     __type__    = "hook"
-    __version__ = "0.52"
+    __version__ = "0.53"
     __status__  = "testing"
 
     __config__ = [("activated", "bool"           , "Activated"                      , True       ),
@@ -93,7 +93,7 @@ class ClickNLoad(Addon):
 
                 server_socket.connect((webip, webport))
 
-                self.forward(client_socket, server_socket, self.config.get('dest') is "queue")
+                self.forward(client_socket, server_socket, self.config.get('dest') == "queue")
                 self.forward(server_socket, client_socket)
 
         except socket.timeout:

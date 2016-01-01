@@ -20,7 +20,7 @@ from module.plugins.internal.misc import encode, fsjoin
 class OCR(Plugin):
     __name__    = "OCR"
     __type__    = "ocr"
-    __version__ = "0.22"
+    __version__ = "0.25"
     __status__  = "stable"
 
     __description__ = """OCR base plugin"""
@@ -92,7 +92,7 @@ class OCR(Plugin):
         self.log_debug("Saving tiff...")
         self.img.save(tmpTif.name, 'TIFF')
 
-        if os.name is "nt":
+        if os.name == "nt":
             command = os.path.join(pypath, "tesseract", "tesseract.exe")
         else:
             command = "tesseract"
@@ -167,34 +167,34 @@ class OCR(Plugin):
 
         for x in xrange(w):
             for y in xrange(h):
-                if pixels[x, y] is 255:
+                if pixels[x, y] == 255:
                     continue
                 #: No point in processing white pixels since we only want to remove black pixel
                 count = 0
 
                 try:
-                    if pixels[x - 1, y - 1] is not 255:
+                    if pixels[x - 1, y - 1] != 255:
                         count += 1
 
-                    if pixels[x - 1, y] is not 255:
+                    if pixels[x - 1, y] != 255:
                         count += 1
 
-                    if pixels[x - 1, y + 1] is not 255:
+                    if pixels[x - 1, y + 1] != 255:
                         count += 1
 
-                    if pixels[x, y + 1] is not 255:
+                    if pixels[x, y + 1] != 255:
                         count += 1
 
-                    if pixels[x + 1, y + 1] is not 255:
+                    if pixels[x + 1, y + 1] != 255:
                         count += 1
 
-                    if pixels[x + 1, y] is not 255:
+                    if pixels[x + 1, y] != 255:
                         count += 1
 
-                    if pixels[x + 1, y - 1] is not 255:
+                    if pixels[x + 1, y - 1] != 255:
                         count += 1
 
-                    if pixels[x, y - 1] is not 255:
+                    if pixels[x, y - 1] != 255:
                         count += 1
 
                 except Exception:
@@ -208,7 +208,7 @@ class OCR(Plugin):
         #: Second pass: this time set all 1's to 255 (white)
         for x in xrange(w):
             for y in xrange(h):
-                if pixels[x, y] is 1:
+                if pixels[x, y] == 1:
                     pixels[x, y] = 255
 
         self.pixels = pixels
@@ -223,7 +223,7 @@ class OCR(Plugin):
 
         for x in xrange(w):
             for y in xrange(h):
-                if pixels[x, y] is 0:
+                if pixels[x, y] == 0:
                     pixels[x, y] = 155
 
         highest = {}
@@ -239,7 +239,7 @@ class OCR(Plugin):
 
             for x in xrange(w):
                 for y in xrange(h):
-                    if pixels[x, y] is 0:
+                    if pixels[x, y] == 0:
                         pixels[x, y] = 255
 
             count = {}
@@ -247,14 +247,14 @@ class OCR(Plugin):
             for x in xrange(w):
                 count[x] = 0
                 for y in xrange(h):
-                    if pixels[x, y] is 155:
+                    if pixels[x, y] == 155:
                         count[x] += 1
 
             sum = 0
             cnt = 0
 
             for x in count.values():
-                if x is not 0:
+                if x != 0:
                     sum += x
                     cnt += 1
 
@@ -280,10 +280,10 @@ class OCR(Plugin):
 
         for x in xrange(w):
             for y in xrange(h):
-                if pixels[x, y] is 0:
+                if pixels[x, y] == 0:
                     pixels[x, y] = 255
 
-                if pixels[x, y] is 155:
+                if pixels[x, y] == 155:
                     pixels[x, y] = 0
 
         self.pixels = pixels
@@ -300,7 +300,7 @@ class OCR(Plugin):
         for x in xrange(width):
             black_pixel_in_col = False
             for y in xrange(height):
-                if pixels[x, y] is not 255:
+                if pixels[x, y] != 255:
                     if not started:
                         started = True
                         firstX = x

@@ -10,7 +10,7 @@ from module.plugins.internal.misc import json, parse_size
 class OverLoadMe(MultiHoster):
     __name__    = "OverLoadMe"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __pattern__ = r'https?://.*overload\.me/.+'
@@ -40,7 +40,7 @@ class OverLoadMe(MultiHoster):
 
         self.log_debug(data)
 
-        if data['error'] is 1:
+        if data['error'] == 1:
             self.log_warning(data['msg'])
             self.temp_offline()
         else:

@@ -43,7 +43,7 @@ class FreeWayMe(MultiHoster):
 
             if 'location' in header:
                 headers = self.load(header.get('location'), just_header=True)
-                if headers['code'] is 500:
+                if headers['code'] == 500:
                     #: Error on 2nd stage
                     self.log_error(_("Error [stage2]"))
                 else:
