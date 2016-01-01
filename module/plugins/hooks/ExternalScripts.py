@@ -10,7 +10,7 @@ from module.plugins.internal.misc import encode
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.65"
+    __version__ = "0.66"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                  , True ),
@@ -24,6 +24,15 @@ class ExternalScripts(Addon):
     def init(self):
         self.scripts = {}
 
+        self.folders = ["pyload_start", "pyload_restart", "pyload_stop",
+                       "before_reconnect", "after_reconnect",
+                       "download_preparing", "download_failed", "download_finished",
+                       "archive_extract_failed", "archive_extracted",
+                       "package_finished", "package_deleted", "package_extract_failed", "package_extracted",
+                       "all_downloads_processed", "all_downloads_finished",  #@TODO: Invert `all_downloads_processed`, `all_downloads_finished` order in 0.4.10
+                       "all_archives_extracted", "all_archives_processed"]
+
+
         self.event_map = {'allDownloadsFinished'  : "all_downloads_finished" ,
                           'allDownloadsProcessed' : "all_downloads_processed",
                           'packageDeleted'        : "package_deleted"        ,
@@ -35,20 +44,12 @@ class ExternalScripts(Addon):
                           'all_archives_processed': "all_archives_processed" ,
                           'pyload_updated'        : "pyload_updated"         }
 
-        self.periodical.start(300)
+        self.periodical.start(60)
         self.pyload_start()
 
 
     def make_folders(self):
-        folders = ["pyload_start", "pyload_restart", "pyload_stop",
-                   "before_reconnect", "after_reconnect",
-                   "download_preparing", "download_failed", "download_finished",
-                   "archive_extract_failed", "archive_extracted",
-                   "package_finished", "package_deleted", "package_extract_failed", "package_extracted",
-                   "all_downloads_processed", "all_downloads_finished",  #@TODO: Invert `all_downloads_processed`, `all_downloads_finished` order in 0.4.10
-                   "all_archives_extracted", "all_archives_processed"]
-
-        for folder in folders:
+        for folder in self.folders:
             dir = os.path.join("scripts", folder)
 
             if os.path.isdir(dir):
@@ -64,48 +65,52 @@ class ExternalScripts(Addon):
     def periodical_task(self):
         self.make_folders()
 
-        folders = [entry for entry in os.listdir("scripts") \
-                   if os.path.isdir(os.path.join("scripts", entry))]
-
-        for folder in folders:
+        for folder in self.folders:
             scripts = []
             dirname = os.path.join("scripts", folder)
 
-            for entry in os.listdir(dirname):
-                file = os.path.join(dirname, entry)
+            if folder not in self.scripts:
+                self.scripts[folder] = []
 
-                if not os.path.isfile(file):
-                    continue
+            if os.path.isdir(dirname):
+                for entry in os.listdir(dirname):
+                    file = os.path.join(dirname, entry)
 
-                if file[0] in ("#", "_") or file.endswith("~") or file.endswith(".swp"):
-                    continue
+                    if not os.path.isfile(file):
+                        continue
 
-                if not os.access(file, os.X_OK):
-                    self.log_warning(_("Script `%s` is not executable") % entry)
+                    if file[0] in ("#", "_") or file.endswith("~") or file.endswith(".swp"):
+                        continue
 
-                scripts.append(file)
+                    if not os.access(file, os.X_OK):
+                        self.log_warning(_("Script `%s` is not executable") % entry)
 
-            if not scripts:
-                continue
+                    scripts.append(file)
 
-            new_scripts = [s for s in scripts if folder not in self.scripts or
-                           folder in self.scripts and s not in self.scripts[folder]]
+            new_scripts = [_s for _s in scripts if _s not in self.scripts[folder]]
 
-            if not new_scripts:
-                continue
+            if new_scripts:
+                script_names = map(os.path.basename, new_scripts)
+                self.log_info(_("Activated scripts in folder `%s`: %s")
+                              % (folder, ", ".join(script_names)))
 
-            script_names = map(os.path.basename, new_scripts)
-            self.log_info(_("Activated scripts in folder `%s`: %s")
-                          % (folder, ", ".join(script_names)))
+
+            removed_scripts = [_s for _s in self.scripts[folder] if _s not in scripts]
+
+            if removed_scripts:
+                script_names = map(os.path.basename, removed_scripts)
+                self.log_info(_("Deactivated scripts in folder `%s`: %s")
+                              % (folder, ", ".join(script_names)))
 
             self.scripts[folder] = scripts
 
-
     def call_cmd(self, command, *args, **kwargs):
-        call = [command] + args
+        _args = ['"' + _arg + '"' if ' ' in encode(_arg) else _arg for _arg in args]
+
+        call = map(encode, [command] + _args)
+
         self.log_debug("EXECUTE " + " ".join(call))
 
-        call = map(encode, call)
         p = subprocess.Popen(call, bufsize=-1)  #@NOTE: output goes to pyload
 
         return p
@@ -115,26 +120,27 @@ class ExternalScripts(Addon):
     def call_script(self, folder, *args, **kwargs):
         scripts = self.scripts.get(folder)
 
-        if not scripts:
-            self.log_debug("No script found under folder `%s`" % folder)
+        if folder not in self.scripts:
+            self.log_debug(_("Folder `%s` not found") % folder)
             return
 
-        if folder not in scripts:
-            self.log_debug("Folder `%s` not found" % folder)
+        if not scripts:
+            self.log_debug(_("No script found under folder `%s`") % folder)
             return
 
         self.log_info(_("Executing scripts in folder `%s`...") % folder)
 
         for file in scripts:
             try:
-                p = self.call_cmd(file, args)
+                p = self.call_cmd(file, *args)
 
             except Exception, e:
                 self.log_error(_("Runtime error: %s") % file,
                                e or _("Unknown error"))
 
             else:
-                if kwargs.get('lock') or not self.config.get('unlock'):
+                lock = kwargs.get('lock', None)
+                if lock is True or lock is None and not self.config.get('unlock'):
                     p.communicate()
 
 
