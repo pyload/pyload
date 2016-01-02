@@ -31,7 +31,7 @@ class SimpleCrypter(Crypter):
         example: LINK_PATTERN = r'<div class="link"><a href="(.+?)"'
 
       NAME_PATTERN: (optional) folder name or page title
-        example: NAME_PATTERN = r'<title>Files of: (?P<N>[^<]+) folder</title>'
+        example: NAME_PATTERN = r'<title>Files of: (?P<N>.+?) folder</title>'
 
       OFFLINE_PATTERN: (optional) Checks if the page is unreachable
         example: OFFLINE_PATTERN = r'File (deleted|not found)'
@@ -148,26 +148,14 @@ class SimpleCrypter(Crypter):
 
 
     def handle_direct(self, pyfile):
-        maxredirs = int(self.pyload.api.getConfigValue("UserAgentSwitcher", "maxredirs", "plugin")) or 5  #@TODO: Remove `int` in 0.4.10
-        redirect  = pyfile.url
+        self._preload()
 
-        for i in xrange(maxredirs):
-            self.log_debug("Redirect #%d to: %s" % (i, redirect))
-
-            html = self.load(redirect)
-            location = self.last_header.get('location')
-
-            if location:
-                redirect = location
-            else:
-                self.data = html
-                self.links.extend(self.get_links())
-                return
-        else:
-            self.log_warning(_("Too many redirects"))
+        link = self.last_header.get('url')
+        if re.match(self.__pattern__, link) is None:
+            self.links.append(link)
 
 
-    def preload(self):
+    def _preload(self):
         if self.data:
             return
 
@@ -177,7 +165,7 @@ class SimpleCrypter(Crypter):
                               decode=self.TEXT_ENCODING)
 
 
-    def prepare(self):
+    def _prepare(self):
         self.direct_dl = False
 
         if self.LOGIN_PREMIUM and not self.premium:
@@ -196,7 +184,7 @@ class SimpleCrypter(Crypter):
                 self.LINK_PREMIUM_PATTERN = self.LINK_PATTERN
 
         if self.DIRECT_LINK is None:
-            self.direct_dl = bool(self.account)
+            self.direct_dl = bool(self.premium)
         else:
             self.direct_dl = self.DIRECT_LINK
 
@@ -204,7 +192,7 @@ class SimpleCrypter(Crypter):
 
 
     def decrypt(self, pyfile):
-        self.prepare()
+        self._prepare()
 
         if self.direct_dl:
             self.log_info(_("Looking for direct link..."))
@@ -216,7 +204,7 @@ class SimpleCrypter(Crypter):
                 self.log_info(_("Direct link not found"))
 
         if not self.links and not self.packages:
-            self.preload()
+            self._preload()
             self.check_errors()
 
             self.links.extend(self.get_links())
@@ -320,7 +308,7 @@ class SimpleCrypter(Crypter):
 
                 elif re.search(r'limit|wait|slot', errmsg, re.I):
                     wait_time = parse_time(errmsg)
-                    self.wait(wait_time, reconnect=wait_time > self.config.get("max_wait", 10) * 60)
+                    self.wait(wait_time, reconnect=wait_time > self.config.get('max_wait', 10) * 60)
                     self.restart(_("Download limit exceeded"))
 
                 elif re.search(r'country|ip|region|nation', errmsg, re.I):
@@ -362,7 +350,7 @@ class SimpleCrypter(Crypter):
                     waitmsg = m.group(0).strip()
 
                 wait_time = parse_time(waitmsg)
-                self.wait(wait_time, reconnect=wait_time > self.config.get("max_wait", 10) * 60)
+                self.wait(wait_time, reconnect=wait_time > self.config.get('max_wait', 10) * 60)
 
         self.log_info(_("No errors found"))
         self.info.pop('error', None)
