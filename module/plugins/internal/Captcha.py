@@ -12,7 +12,7 @@ from module.plugins.internal.misc import encode
 class Captcha(Plugin):
     __name__    = "Captcha"
     __type__    = "captcha"
-    __version__ = "0.50"
+    __version__ = "0.51"
     __status__  = "stable"
 
     __description__ = """Base anti-captcha plugin"""
@@ -59,7 +59,7 @@ class Captcha(Plugin):
         :param output_type: 'textual' if text is written on the captcha\
         or 'positional' for captcha where the user have to click\
         on a specific region on the captcha
-        :param ocr: if True, ocr is not used
+        :param ocr: if True, builtin ocr is used. if string, the OCR plugin name is used
 
         :return: result of decrypting
         """
@@ -67,19 +67,24 @@ class Captcha(Plugin):
         time_ref = ("%.2f" % time.time())[-6:].replace(".", "")
 
         with open(os.path.join("tmp", "captcha_image_%s_%s.%s" % (self.pyfile.plugin.__name__, time_ref, input_type)), "wb") as img_f:
-            img_f.write(encode(img))
+            img_f.write(img)
 
         if ocr:
+            self.log_warning(_("Using OCR to decrypt captcha"))
+
             if isinstance(ocr, basestring):
                 _OCR = self.pyload.pluginManager.loadClass("captcha", ocr)  #: Rename `captcha` to `ocr` in 0.4.10
                 result = _OCR(self.pyfile).recognize(img_f.name)
             else:
                 result = self.recognize(img_f.name)
 
-        if not result:
-            if ocr:
-                self.log_warning(_("No OCR result"))
+                if not result:
+                    self.log_warning(_("No OCR result"))
 
+        else:
+            self.log_warning(_("OCR was not used"))
+
+        if not result:
             captchaManager = self.pyload.captchaManager
 
             try:
