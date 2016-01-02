@@ -36,14 +36,14 @@ class XFileSharingFolder(XFSCrypter):
 
     #@TODO: Recheck in 0.4.10
     def setup_base(self):
+        super(XFileSharingFolder, self).setup_base()
+
         if self.account:
             self.req     = self.pyload.requestFactory.getRequest(self.PLUGIN_NAME, self.account.user)
             self.premium = self.account.info['data']['premium']  #@NOTE: Don't call get_info here to reduce overhead
         else:
             self.req     = self.pyload.requestFactory.getRequest(self.classname)
             self.premium = False
-
-        super(XFileSharingFolder, self).setup_base()
 
 
     #@TODO: Recheck in 0.4.10
