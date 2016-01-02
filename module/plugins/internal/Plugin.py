@@ -63,6 +63,7 @@ class Plugin(object):
 
         #: Browser instance, see `network.Browser`
         self.req = self.pyload.requestFactory.getRequest(self.classname)
+        self.req.setOption("timeout", 60)  #@TODO: Remove in 0.4.10
 
         #: Last loaded html
         self.last_html   = ""
@@ -145,14 +146,14 @@ class Plugin(object):
         file_perms = False
         dl_perms   = False
 
-        if self.pyload.config.get("permission", "change_file"):
-            permission = self.pyload.config.get("permission", "folder" if os.path.isdir(path) else "file")
+        if self.pyload.config.get('permission', "change_file"):
+            permission = self.pyload.config.get('permission', "folder" if os.path.isdir(path) else "file")
             mode = int(permission, 8)
             os.chmod(path, mode)
 
-        if os.name != "nt" and self.pyload.config.get("permission", "change_dl"):
-            uid = pwd.getpwnam(self.pyload.config.get("permission", "user"))[2]
-            gid = grp.getgrnam(self.pyload.config.get("permission", "group"))[2]
+        if os.name != "nt" and self.pyload.config.get('permission', "change_dl"):
+            uid = pwd.getpwnam(self.pyload.config.get('permission', "user"))[2]
+            gid = grp.getgrnam(self.pyload.config.get('permission', "group"))[2]
             os.chown(path, uid, gid)
 
 
@@ -186,6 +187,7 @@ class Plugin(object):
 
         if req is False:
             req = get_request()
+            req.setOption("timeout", 60)  #@TODO: Remove in 0.4.10
 
         elif not req:
             req = self.req
@@ -225,7 +227,7 @@ class Plugin(object):
             self.dump_html()
 
         #@TODO: Move to network in 0.4.10
-        header = {'code': req.code}
+        header = {'code': req.code, 'url': req.lastEffectiveURL}
         header.update(parse_html_header(req.http.header if hasattr(req, "http") else req.header))  #@NOTE: req can be a HTTPRequest or a Browser object
 
         self.last_header = header

@@ -160,6 +160,8 @@ class Base(Plugin):
             self.req     = self.pyload.requestFactory.getRequest(self.classname)
             self.premium = False
 
+        self.req.setOption("timeout", 60)  #@TODO: Remove in 0.4.10
+
         self.setup_base()
         self.grab_info()
         self.setup()
