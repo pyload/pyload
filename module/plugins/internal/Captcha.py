@@ -70,7 +70,7 @@ class Captcha(Plugin):
             img_f.write(img)
 
         if ocr:
-            self.log_warning(_("Using OCR to decrypt captcha"))
+            self.log_info(_("Using OCR to decrypt captcha..."))
 
             if isinstance(ocr, basestring):
                 _OCR = self.pyload.pluginManager.loadClass("captcha", ocr)  #: Rename `captcha` to `ocr` in 0.4.10
@@ -80,9 +80,6 @@ class Captcha(Plugin):
 
                 if not result:
                     self.log_warning(_("No OCR result"))
-
-        else:
-            self.log_warning(_("OCR was not used"))
 
         if not result:
             captchaManager = self.pyload.captchaManager

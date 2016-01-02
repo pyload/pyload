@@ -519,7 +519,7 @@ def parse_name(value, safechar=True):
 
 
 def parse_size(value, unit=""):  #: returns bytes
-    m = re.match(r"([\d.,]+)\s*([\w^_]*)", str(value).lower())
+    m = re.match(r'([\d.,]+)\s*([\w^_]*)', str(value).lower())
 
     if m is None:
         return 0
@@ -557,7 +557,7 @@ def str2int(value):
     t_tuple = [(w, i * 10) for i, w in enumerate(tens)]
 
     numwords = dict(o_tuple + t_tuple)
-    tokens   = re.split(r"[\s\-]+", value.lower())
+    tokens   = re.split(r'[\s\-]+', value.lower())
 
     try:
         return sum(numwords[word] for word in tokens)
@@ -717,17 +717,17 @@ def parse_html_header(header):
 
 
 def parse_html_tag_attr_value(attr_name, tag):
-    m = re.search(r"%s\s*=\s*([\"']?)((?<=\")[^\"]+|(?<=')[^']+|[^>\s\"'][^>\s]*)\1" % attr_name, tag, re.I)
+    m = re.search(r'%s\s*=\s*(["\']?)((?<=")[^"]+|(?<=\')[^\']+|[^>\s"\'][^>\s]*)\1' % attr_name, tag, re.I)
     return m.group(2) if m else None
 
 
 def parse_html_form(attr_str, html, input_names={}):
-    for form in re.finditer(r"(?P<TAG><form[^>]*%s[^>]*>)(?P<CONTENT>.*?)</?(form|body|html)[^>]*>" % attr_str,
+    for form in re.finditer(r'(?P<TAG><form[^>]*%s.*?>)(?P<CONTENT>.*?)</?(form|body|html).*?>' % attr_str,
                             html, re.I | re.S):
         inputs = {}
         action = parse_html_tag_attr_value("action", form.group('TAG'))
 
-        for inputtag in re.finditer(r'(<(input|textarea)[^>]*>)([^<]*(?=</\2)|)', form.group('CONTENT'), re.I | re.S):
+        for inputtag in re.finditer(r'(<(input|textarea).*?>)([^<]*(?=</\2)|)', form.group('CONTENT'), re.I | re.S):
             name = parse_html_tag_attr_value("name", inputtag.group(1))
             if name:
                 value = parse_html_tag_attr_value("value", inputtag.group(1))

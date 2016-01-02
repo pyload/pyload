@@ -69,7 +69,7 @@ class Crypter(Base):
         folder_per_package = self.config.get('folder_per_package', "Default")
 
         if folder_per_package == "Default":
-            folder_per_package = self.pyload.config.get("general", "folder_per_package")
+            folder_per_package = self.pyload.config.get('general', 'folder_per_package')
         else:
             folder_per_package = folder_per_package == "Yes"
 

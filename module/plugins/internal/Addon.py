@@ -61,7 +61,7 @@ class Addon(Plugin):
         """
         Checks if addon is activated
         """
-        return self.config.get("activated")
+        return self.config.get('activated')
 
 
     #@TODO: Remove in 0.4.10
@@ -195,7 +195,7 @@ class Addon(Plugin):
 
     #: Deprecated method, use `download_failed` instead (Remove in 0.4.10)
     def downloadFailed(self, pyfile):
-        if pyfile.hasStatus("failed"):  #: Check if still "failed" (Fix in 0.4.10)
+        if pyfile.hasStatus("failed"):  #@NOTE: Check if "still" set as failed (Fix in 0.4.10)
             return self.download_failed(pyfile)
 
 
