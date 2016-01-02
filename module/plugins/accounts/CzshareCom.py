@@ -18,7 +18,7 @@ class CzshareCom(Account):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    CREDIT_LEFT_PATTERN = r'<tr class="active">\s*<td>([\d ,]+) (KiB|MiB|GiB)</td>\s*<td>([^<]*)</td>\s*</tr>'
+    CREDIT_LEFT_PATTERN = r'<tr class="active">\s*<td>([\d ,]+) (KiB|MiB|GiB)</td>\s*<td>(.*?)</td>\s*</tr>'
 
 
     def grab_info(self, user, password, data):

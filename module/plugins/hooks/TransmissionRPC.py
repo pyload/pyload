@@ -54,7 +54,7 @@ class TransmissionRPC(Addon):
 
         except Exception, e:
             if isinstance(e, BadHeader) and e.code == 409:
-                headers = dict(re.findall(r"(?P<name>.+?): (?P<value>.+?)\r?\n", req.header))
+                headers = dict(re.findall(r'(?P<name>.+?): (?P<value>.+?)\r?\n', req.header))
                 session_id = headers['X-Transmission-Session-Id']
                 req.c.setopt(pycurl.HTTPHEADER, ["X-Transmission-Session-Id: %s" % session_id])
                 try:

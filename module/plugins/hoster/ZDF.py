@@ -39,7 +39,7 @@ class ZDF(Hoster):
 
     @staticmethod
     def get_id(url):
-        return int(re.search(r"\D*(\d{4,})\D*", url).group(1))
+        return int(re.search(r'\D*(\d{4,})\D*', url).group(1))
 
 
     def process(self, pyfile):

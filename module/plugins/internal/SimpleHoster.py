@@ -96,7 +96,7 @@ class SimpleHoster(Hoster):
     CHECK_TRAFFIC        = False  #: Set to True to reload checking traffic left for premium account
     COOKIES              = True   #: or False or list of tuples [(domain, name, value)]
     DIRECT_LINK          = True   #: Set to True to looking for direct link (as defined in handle_direct method), set to None to do it if self.account is True else False
-    DISPOSITION          = True   #: Set to True to use any content-disposition value in http header as file name
+    DISPOSITION          = True   #: Set to True to use any content-disposition value found in http header as file name
     LOGIN_ACCOUNT        = False  #: Set to True to require account login
     LOGIN_PREMIUM        = False  #: Set to True to require premium account login
     LEECH_HOSTER         = False  #: Set to True to leech other hoster link (as defined in handle_multi method)
@@ -199,7 +199,7 @@ class SimpleHoster(Hoster):
         self.resume_download = self.premium
 
 
-    def prepare(self):
+    def _prepare(self):
         self.link      = ""
         self.direct_dl = False
         self.leech_dl  = False
@@ -220,7 +220,7 @@ class SimpleHoster(Hoster):
                 self.LINK_PREMIUM_PATTERN = self.LINK_PATTERN
 
         if self.LEECH_HOSTER:
-            pattern = self.pyload.pluginManager.hosterPlugins[self.classname]['pattern']
+            pattern = self.pyload.pluginManager.hosterPlugins.get(self.classname)['pattern']
             if self.__pattern__ is not pattern and re.match(self.__pattern__, self.pyfile.url) is None:
                 self.leech_dl = True
 
@@ -228,7 +228,7 @@ class SimpleHoster(Hoster):
             self.direct_dl = False
 
         elif self.DIRECT_LINK is None:
-            self.direct_dl = bool(self.account)
+            self.direct_dl = bool(self.premium)
 
         else:
             self.direct_dl = self.DIRECT_LINK
@@ -237,7 +237,7 @@ class SimpleHoster(Hoster):
             self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
 
 
-    def preload(self):
+    def _preload(self):
         if self.data:
             return
 
@@ -248,7 +248,7 @@ class SimpleHoster(Hoster):
 
 
     def process(self, pyfile):
-        self.prepare()
+        self._prepare()
 
         #@TODO: Remove `handle_multi`, use MultiHoster instead
         if self.leech_dl:
@@ -266,7 +266,7 @@ class SimpleHoster(Hoster):
                     self.log_info(_("Direct download link not found"))
 
             if not self.link:
-                self.preload()
+                self._preload()
                 self.check_errors()
 
                 if self.info.get('status', 3) != 2:
@@ -352,7 +352,7 @@ class SimpleHoster(Hoster):
                 self.log_warning(errmsg)
 
                 wait_time = parse_time(errmsg)
-                self.wait(wait_time, reconnect=wait_time > self.config.get("max_wait", 10) * 60)
+                self.wait(wait_time, reconnect=wait_time > self.config.get('max_wait', 10) * 60)
                 self.restart(_("Download limit exceeded"))
 
         if self.HAPPY_HOUR_PATTERN and re.search(self.HAPPY_HOUR_PATTERN, self.data):
@@ -381,7 +381,7 @@ class SimpleHoster(Hoster):
 
                 elif re.search(r'limit|wait|slot', errmsg, re.I):
                     wait_time = parse_time(errmsg)
-                    self.wait(wait_time, reconnect=wait_time > self.config.get("max_wait", 10) * 60)
+                    self.wait(wait_time, reconnect=wait_time > self.config.get('max_wait', 10) * 60)
                     self.restart(_("Download limit exceeded"))
 
                 elif re.search(r'country|ip|region|nation', errmsg, re.I):
@@ -423,7 +423,7 @@ class SimpleHoster(Hoster):
                     waitmsg = m.group(0).strip()
 
                 wait_time = parse_time(waitmsg)
-                self.wait(wait_time, reconnect=wait_time > self.config.get("max_wait", 10) * 60)
+                self.wait(wait_time, reconnect=wait_time > self.config.get('max_wait', 10) * 60)
 
         self.log_info(_("No errors found"))
         self.info.pop('error', None)
@@ -437,7 +437,7 @@ class SimpleHoster(Hoster):
 
 
     def handle_direct(self, pyfile):
-        self.link = pyfile.url if self.isresource(pyfile.url) else None
+        self.link = self.isresource(pyfile.url)
 
 
     def handle_multi(self, pyfile):  #: Multi-hoster handler

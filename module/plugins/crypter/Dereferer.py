@@ -40,9 +40,5 @@ class Dereferer(SimpleCrypter):
         self.PLUGIN_NAME   = "".join(part.capitalize() for part in re.split(r'\.|\d+|-', self.PLUGIN_DOMAIN) if part != '.')
 
 
-    def preload(self):
-        pass
-
-
     def get_links(self):
         return [self.info['pattern']['LINK']]

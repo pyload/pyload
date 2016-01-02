@@ -7,29 +7,6 @@ from module.plugins.internal.Hoster import Hoster
 from module.plugins.internal.misc import chunks
 
 
-def get_info(urls):
-    result = []
-    for chunk in chunks(urls, 10):
-        for url in chunk:
-            html = get_url(url)
-            if r'<div class="errorMessage mb10">' in html:
-                result.append((url, 0, 1, url))
-            elif r'Page cannot be displayed' in html:
-                result.append((url, 0, 1, url))
-            else:
-                try:
-                    url_pattern = '<a href="(.+?)" onclick="return Act\(this\, \'dlink\'\, event\)">(.+?)</a>'
-                    file_name = re.search(url_pattern, html).group(0).split(', event)">')[1].split('</a>')[0]
-                    result.append((file_name, 0, 2, url))
-
-                except Exception:
-                    pass
-
-        #: status 1=OFFLINE, 2=OK, 3=UNKNOWN
-        #: result.append((#name,#size,#status,#url))
-        yield result
-
-
 class FilesMailRu(Hoster):
     __name__    = "FilesMailRu"
     __type__    = "hoster"

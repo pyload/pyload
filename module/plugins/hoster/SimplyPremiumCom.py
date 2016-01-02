@@ -65,7 +65,7 @@ class SimplyPremiumCom(MultiHoster):
         self.check_errors()
 
         try:
-            self.pyfile.name = re.search(r'<name>([^<]+)</name>', self.data).group(1)
+            self.pyfile.name = re.search(r'<name>(.+?)</name>', self.data).group(1)
 
         except AttributeError:
             self.pyfile.name = ""
@@ -77,7 +77,7 @@ class SimplyPremiumCom(MultiHoster):
             self.pyfile.size = 0
 
         try:
-            self.link = re.search(r'<download>([^<]+)</download>', self.data).group(1)
+            self.link = re.search(r'<download>(.+?)</download>', self.data).group(1)
 
         except AttributeError:
             self.link = 'http://www.simply-premium.com/premium.php?link=' + self.pyfile.url

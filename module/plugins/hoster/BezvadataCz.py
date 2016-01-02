@@ -23,8 +23,8 @@ class BezvadataCz(SimpleHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    NAME_PATTERN = r'<p><b>Soubor: (?P<N>[^<]+)</b></p>'
-    SIZE_PATTERN = r'<li><strong>Velikost:</strong> (?P<S>[^<]+)</li>'
+    NAME_PATTERN = r'<p><b>Soubor: (?P<N>.+?)</b></p>'
+    SIZE_PATTERN = r'<li><strong>Velikost:</strong> (?P<S>.+?)</li>'
     OFFLINE_PATTERN = r'<title>BezvaData \| Soubor nenalezen</title>'
 
 

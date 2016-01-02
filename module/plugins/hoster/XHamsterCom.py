@@ -77,7 +77,7 @@ class XHamsterCom(Hoster):
             self.error(_("url_mode not found"))
 
         if self.desired_fmt == ".mp4":
-            file_url = re.search(r"<a href=\"" + srv_url + "(.+?)\"", self.data)
+            file_url = re.search(r'<a href=\"" + srv_url + "(.+?)\"', self.data)
             if file_url is None:
                 self.error(_("file_url not found"))
 
@@ -127,7 +127,7 @@ class XHamsterCom(Hoster):
         """
         if not self.data:
             self.download_html()
-        if re.search(r"(.*Video not found.*)", self.data):
+        if re.search(r'(.*Video not found.*)', self.data):
             return False
         else:
             return True

@@ -40,8 +40,8 @@ class NoPremiumPl(MultiHoster):
                    80: "Too many incorrect login attempts, account blocked for 24h"}
 
 
-    def prepare(self):
-        super(NoPremiumPl, self).prepare()
+    def _prepare(self):
+        super(NoPremiumPl, self)._prepare()
 
         data = self.account.get_data()
 

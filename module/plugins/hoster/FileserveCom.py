@@ -8,26 +8,6 @@ from module.plugins.internal.Hoster import Hoster
 from module.plugins.internal.misc import json, parse_size, seconds_to_midnight
 
 
-def get_info(plugin, urls):
-    html = get_url(plugin.URLS[1], post={'urls': "\n".join(urls)})
-
-    file_info = []
-    for li in re.finditer(plugin.LINKCHECK_TR, html, re.S):
-        try:
-            cols = re.findall(plugin.LINKCHECK_TD, li.group(1))
-            if cols:
-                file_info.append((
-                    cols[1] if cols[1] != '--' else cols[0],
-                    parse_size(cols[2]) if cols[2] != '--' else 0,
-                    2 if cols[3].startswith('Available') else 1,
-                    cols[0]))
-
-        except Exception, e:
-            continue
-
-    return file_info
-
-
 class FileserveCom(Hoster):
     __name__    = "FileserveCom"
     __type__    = "hoster"
@@ -48,9 +28,6 @@ class FileserveCom(Hoster):
     URLS = ["http://www.fileserve.com/file/",
             "http://www.fileserve.com/link-checker.php",
             "http://www.fileserve.com/checkReCaptcha.php"]
-
-    LINKCHECK_TR = r'<tr>\s*(<td>http://www\.fileserve\.com/file/.*?)</tr>'
-    LINKCHECK_TD = r'<td>(?:<.*?>|&nbsp;)*([^<]*)'
 
     CAPTCHA_KEY_PATTERN   = r'var reCAPTCHA_publickey=\'(.+?)\''
     LONG_WAIT_PATTERN     = r'<li class="title">You need to wait (\d+) (\w+) to start another download\.</li>'

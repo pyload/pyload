@@ -59,7 +59,7 @@ class SmoozedCom(MultiAccount):
                     'hosters'    : [hoster['name'] for hoster in status['data']['hoster']]}
 
             if info['validuntil'] < time.time():
-                if float(status['data']['user'].get("user_trial", 0)) > time.time():
+                if float(status['data']['user'].get('user_trial', 0)) > time.time():
                     info['premium'] = True
                 else:
                     info['premium'] = False

@@ -54,7 +54,7 @@ class VeehdCom(Hoster):
         if not self.data:
             self.download_html()
 
-        m = re.search(r'<title.*?>([^<]+) on Veehd</title>', self.data)
+        m = re.search(r'<title.*?>(.+?) on Veehd</title>', self.data)
         if m is None:
             self.error(_("Video title not found"))
 

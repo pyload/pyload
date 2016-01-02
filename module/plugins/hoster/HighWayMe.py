@@ -65,7 +65,7 @@ class HighWayMe(MultiHoster):
         self.check_errors()
 
         try:
-            self.pyfile.name = re.search(r'<name>([^<]+)</name>', self.data).group(1)
+            self.pyfile.name = re.search(r'<name>(.+?)</name>', self.data).group(1)
 
         except AttributeError:
             self.pyfile.name = ""
@@ -76,4 +76,4 @@ class HighWayMe(MultiHoster):
         except AttributeError:
             self.pyfile.size = 0
 
-        self.link = re.search(r'<download>([^<]+)</download>', self.data).group(1)
+        self.link = re.search(r'<download>(.+?)</download>', self.data).group(1)

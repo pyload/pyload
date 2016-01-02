@@ -82,7 +82,7 @@ class DlProtectCom(SimpleCrypter):
 
     def get_links(self):
         #: Direct link with redirect
-        if not re.match(r"https?://(?:www\.)?dl-protect\.com/.+", self.req.http.lastEffectiveURL):
+        if not re.match(r'https?://(?:www\.)?dl-protect\.com/.+', self.req.http.lastEffectiveURL):
             return [self.req.http.lastEffectiveURL]
 
         post_req = {'key'       : re.search(r'name="key" value="(.+?)"', self.data).group(1),

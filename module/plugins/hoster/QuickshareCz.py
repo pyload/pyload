@@ -23,7 +23,7 @@ class QuickshareCz(SimpleHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    NAME_PATTERN = r'<th width="145px">Název:</th>\s*<td style="word-wrap:break-word;">(?P<N>[^<]+)</td>'
+    NAME_PATTERN = r'<th width="145px">Název:</th>\s*<td style="word-wrap:break-word;">(?P<N>.+?)</td>'
     SIZE_PATTERN = r'<th>Velikost:</th>\s*<td>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</td>'
     OFFLINE_PATTERN = r'<script type="text/javascript">location\.href=\'/chyba\';</script>'
 
@@ -53,7 +53,7 @@ class QuickshareCz(SimpleHoster):
         else:
             self.handle_free(pyfile)
 
-        if self.scan_download({'error': re.compile(r"\AChyba!")}, read_size=100):
+        if self.scan_download({'error': re.compile(r'\AChyba!')}, read_size=100):
             self.fail(_("File not m or plugin defect"))
 
 

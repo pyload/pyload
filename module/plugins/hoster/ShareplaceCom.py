@@ -84,7 +84,7 @@ class ShareplaceCom(Hoster):
         if not self.data:
             self.download_html()
 
-        if re.search(r"HTTP Status 404", self.data):
+        if re.search(r'HTTP Status 404', self.data):
             return False
         else:
             return True

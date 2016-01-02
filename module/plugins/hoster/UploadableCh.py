@@ -32,7 +32,7 @@ class UploadableCh(SimpleHoster):
     OFFLINE_PATTERN      = r'>(File not available|This file is no longer available)'
     TEMP_OFFLINE_PATTERN = r'<div class="icon_err">'
 
-    WAIT_PATTERN = r'>Please wait.+?<'
+    WAIT_PATTERN = r'>Please wait[^<]+'
 
     RECAPTCHA_KEY = "6LdlJuwSAAAAAPJbPIoUhyqOJd7-yrah5Nhim5S3"
 

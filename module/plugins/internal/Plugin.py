@@ -249,12 +249,7 @@ class Plugin(object):
                 os.makedirs(os.path.join("tmp", self.classname))
 
             with open(framefile, "wb") as f:
-                try:
-                    html = encode(self.last_html)
-                except Exception:
-                    html = self.last_html
-
-                f.write(html)
+                f.write(encode(self.last_html))
 
         except IOError, e:
             self.log_error(e)

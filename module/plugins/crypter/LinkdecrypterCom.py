@@ -48,7 +48,7 @@ class LinkdecrypterCom(MultiCrypter):
                 captcha_url = 'http://linkdecrypter.com/' + m.group(1)
                 result_type = "positional" if "getPos" in m.group(2) else "textual"
 
-                m = re.search(r"<p><i><b>([^<]+)</b></i></p>", self.data)
+                m = re.search(r'<p><i><b>(.+?)</b></i></p>', self.data)
                 msg = m.group(1) if m else ""
                 self.log_info(_("Captcha protected link"), result_type, msg)
 

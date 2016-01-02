@@ -49,7 +49,7 @@ class SmoozedCom(MultiHoster):
         if data['state'] != "ok":
             self.fail(data['message'])
 
-        if data['data'].get("state", "ok") != "ok":
+        if data['data'].get('state', 'ok') != "ok":
             if data['data'] == "Offline":
                 self.offline()
             else:

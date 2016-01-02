@@ -147,7 +147,7 @@ class YoutubeCom(Hoster):
 
         pyfile.name = html_unescape(name)
 
-        time = re.search(r"t=((\d+)m)?(\d+)s", pyfile.url)
+        time = re.search(r't=((\d+)m)?(\d+)s', pyfile.url)
         ffmpeg = which("ffmpeg")
         if ffmpeg and time:
             m, s = time.groups()[1:]

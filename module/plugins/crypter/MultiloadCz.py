@@ -25,7 +25,7 @@ class MultiloadCz(Crypter):
 
 
     FOLDER_PATTERN = r'<form action="" method="get"><textarea.*?>([^>]*)</textarea></form>'
-    LINK_PATTERN = r'<p class="manager-server"><strong>([^<]+)</strong></p><p class="manager-linky"><a href="(.+?)">'
+    LINK_PATTERN = r'<p class="manager-server"><strong>(.+?)</strong></p><p class="manager-linky"><a href="(.+?)">'
 
 
     def decrypt(self, pyfile):

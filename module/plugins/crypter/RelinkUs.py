@@ -221,7 +221,7 @@ class RelinkUs(Crypter):
             try:
                 dlc = self.load(container_url)
                 dlc_filename = self.fileid + ".dlc"
-                dlc_filepath = fsjoin(self.pyload.config.get("general", "download_folder"), dlc_filename)
+                dlc_filepath = fsjoin(self.pyload.config.get('general', 'download_folder'), dlc_filename)
                 with open(dlc_filepath, "wb") as f:
                     f.write(dlc)
                 pack_links.append(dlc_filepath)

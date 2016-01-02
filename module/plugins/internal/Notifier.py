@@ -136,13 +136,13 @@ class Notifier(Addon):
 
         elapsed_time = time.time() - self.last_notify
 
-        if elapsed_time < self.config.get("sendinterval", 1):
+        if elapsed_time < self.config.get('sendinterval', 1):
             return
 
         elif elapsed_time > 60:
             self.notifications = 0
 
-        elif self.notifications >= self.config.get("sendpermin", 60):
+        elif self.notifications >= self.config.get('sendpermin', 60):
             return
 
         self.log_debug("Sending notification...")

@@ -20,7 +20,7 @@ class MultiCrypter(SimpleCrypter):
 
 
     def init(self):
-        self.PLUGIN_NAME = self.pyload.pluginManager.crypterPlugins[self.classname]['name']
+        self.PLUGIN_NAME = self.pyload.pluginManager.crypterPlugins.get(self.classname)['name']
 
 
     def _log(self, level, plugintype, pluginname, messages):

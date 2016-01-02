@@ -133,7 +133,7 @@ class YoutubeComFolder(Crypter):
         for p in playlists:
             p_name = p['title']
             p_videos = self.get_videos_id(p['id'])
-            p_folder = fsjoin(self.pyload.config.get("general", "download_folder"), p['channelTitle'], p_name)
+            p_folder = fsjoin(self.pyload.config.get('general', 'download_folder'), p['channelTitle'], p_name)
             self.log_debug("%s video\s found on playlist \"%s\"" % (len(p_videos), p_name))
 
             if not p_videos:

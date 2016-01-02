@@ -67,10 +67,9 @@ class Ftp(Hoster):
         self.req.http.c.setopt(pycurl.NOBODY, 0)
         self.log_debug(self.req.http.header)
 
-        m = re.search(r"Content-Length:\s*(\d+)", res)
+        m = re.search(r'Content-Length:\s*(\d+)', res)
         if m is not None:
             pyfile.size = int(m.group(1))
-
             self.download(pyfile.url)
 
         else:

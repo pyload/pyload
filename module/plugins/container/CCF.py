@@ -37,7 +37,7 @@ class CCF(Container):
                                    'filename': "test.ccf",
                                    'upload'  : open(fs_filename, "rb")}).read()
 
-        dl_folder = self.pyload.config.get("general", "download_folder")
+        dl_folder = self.pyload.config.get('general', 'download_folder')
         dlc_file  = fsjoin(dl_folder, "tmp_%s.dlc" % pyfile.name)
 
         try:

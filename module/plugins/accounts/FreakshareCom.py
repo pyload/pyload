@@ -32,7 +32,7 @@ class FreakshareCom(Account):
             pass
 
         try:
-            m = re.search(r'Traffic verbleibend:</td>\s*<td>([^<]+)', html, re.M)
+            m = re.search(r'Traffic verbleibend:</td>\s*<td>(.+?)', html, re.M)
             trafficleft = self.parse_traffic(m.group(1))
 
         except Exception:

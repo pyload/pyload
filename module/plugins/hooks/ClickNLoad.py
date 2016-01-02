@@ -32,14 +32,14 @@ class ClickNLoad(Addon):
 
 
     def activate(self):
-        if not self.pyload.config.get("webinterface", "activated"):
+        if not self.pyload.config.get('webinterface', 'activated'):
             return
 
         cnlip   = "" if self.config.get('extern') else "127.0.0.1"
         cnlport = self.config.get('port')
-        webip   = "127.0.0.1" if any(_ip == self.pyload.config.get("webinterface", "host") for _ip in ("0.0.0.0", "")) \
-            else self.pyload.config.get("webinterface", "host")
-        webport = self.pyload.config.get("webinterface", "port")
+        webip   = "127.0.0.1" if any(_ip == self.pyload.config.get('webinterface', 'host') for _ip in ("0.0.0.0", "")) \
+            else self.pyload.config.get('webinterface', 'host')
+        webport = self.pyload.config.get('webinterface', 'port')
 
         self.pyload.scheduler.addJob(5, self.proxy, [cnlip, cnlport, webip, webport], threaded=False)
 
@@ -77,7 +77,7 @@ class ClickNLoad(Addon):
 
                 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-                if self.pyload.config.get("webinterface", "https"):
+                if self.pyload.config.get('webinterface', 'https'):
                     try:
                         server_socket = ssl.wrap_socket(server_socket)
 

@@ -123,8 +123,10 @@ class SevenZip(UnRar):
             args.append("-y")
 
         #: Set a password
-        if kwargs.get('password'):
-            args.append("-p%s" % kwargs['password'])
+        password = kwargs.get('password')
+
+        if password:
+            args.append("-p%s" % password)
         else:
             args.append("-p-")
 

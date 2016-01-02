@@ -26,7 +26,7 @@ class UnibytesCom(SimpleHoster):
 
     PLUGIN_DOMAIN = "unibytes.com"
 
-    INFO_PATTERN = r'<span[^>]*?id="fileName".*?>(?P<N>[^>]+)</span>\s*\((?P<S>\d.*?)\)'
+    INFO_PATTERN = r'<span[^>]*?id="fileName".*?>(?P<N>.+?)</span>\s*\((?P<S>\d.*?)\)'
 
     WAIT_PATTERN = r'Wait for <span id="slowRest">(\d+)</span> sec'
     LINK_FREE_PATTERN = r'<a href="(.+?)">Download</a>'
@@ -42,10 +42,10 @@ class UnibytesCom(SimpleHoster):
                                   post=post_data,
                                   redirect=False)
 
-            m = re.search(r'location:\s*(\S+)', self.req.http.header, re.I)
-            if m is not None:
-                self.link = m.group(1)
-                break
+            location = self.last_header.get('location')
+            if location:
+                self.link = location
+                return
 
             if '>Somebody else is already downloading using your IP-address<' in self.data:
                 self.wait(10 * 60, True)

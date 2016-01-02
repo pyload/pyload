@@ -58,7 +58,7 @@ class YoupornCom(Hoster):
         """
         if not self.data:
             self.download_html()
-        if re.search(r"(.*invalid video_id.*)", self.data):
+        if re.search(r'(.*invalid video_id.*)', self.data):
             return False
         else:
             return True

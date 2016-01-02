@@ -21,7 +21,7 @@ class DataportCz(SimpleHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    NAME_PATTERN = r'<span itemprop="name">(?P<N>[^<]+)</span>'
+    NAME_PATTERN = r'<span itemprop="name">(?P<N>.+?)</span>'
     SIZE_PATTERN = r'<td class="fil">Velikost</td>\s*<td>(?P<S>[^<]+)</td>'
     OFFLINE_PATTERN = r'<h2>Soubor nebyl nalezen</h2>'
 

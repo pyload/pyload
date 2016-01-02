@@ -29,7 +29,7 @@ class Keep2ShareCc(SimpleHoster):
     URL_REPLACEMENTS = [(__pattern__ + ".*", "http://keep2s.cc/file/\g<ID>")]
 
     NAME_PATTERN = r'File: <span>(?P<N>.+?)</span>'
-    SIZE_PATTERN = r'Size: (?P<S>[^<]+)</div>'
+    SIZE_PATTERN = r'Size: (?P<S>.+?)</div>'
 
     OFFLINE_PATTERN      = r'File not found or deleted|Sorry, this file is blocked or deleted|Error 404'
     TEMP_OFFLINE_PATTERN = r'Downloading blocked due to'

@@ -752,12 +752,12 @@ class CircleCaptcha(OCR):
                         #: Delete nearly circle
                         verify = -1
 
-                # if verify is 0:
+                # if verify == 0:
                     # if self.pyload.debug:
                     # pix[c[0][0], c[0][1]] = 90 #(255, 255, 0)
                     # im.save("output.png", "png")
                     # return c[0][0], c[0][1]
-                # elif verify is 1:
+                # elif verify == 1:
                     # if self.pyload.debug:
                         # pix[c[0][0], c[0][1]] = 40 #(255, 0, 0)
                         # im.save("output.png", "png")

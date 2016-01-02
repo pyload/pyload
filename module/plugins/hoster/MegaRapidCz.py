@@ -10,17 +10,6 @@ from module.plugins.internal.Base import parse_fileInfo
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
-def get_info(urls):
-    h = get_request()
-    h.c.setopt(pycurl.HTTPHEADER,
-               ["Accept: text/html",
-                "User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0"])
-
-    for url in urls:
-        html = h.load(url)
-        yield parse_fileInfo(MegaRapidCz, url, html)
-
-
 class MegaRapidCz(SimpleHoster):
     __name__    = "MegaRapidCz"
     __type__    = "hoster"
@@ -42,13 +31,13 @@ class MegaRapidCz(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    NAME_PATTERN = r'<h1.*?><span.*?>(?:<a.*?>)?(?P<N>[^<]+)'
-    SIZE_PATTERN = r'<td class="i">Velikost:</td>\s*<td class="h"><strong>\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+)</strong></td>'
+    NAME_PATTERN    = r'<h1.*?><span.*?>(?:<a.*?>)?(?P<N>.+?)'
+    SIZE_PATTERN    = r'<td class="i">Velikost:</td>\s*<td class="h"><strong>\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+)</strong></td>'
     OFFLINE_PATTERN = ur'Nastala chyba 404|Soubor byl smazán'
 
     CHECK_TRAFFIC = True
 
-    LINK_PREMIUM_PATTERN = r'<a href="(.+?)" title="Stahnout">([^<]+)</a>'
+    LINK_PREMIUM_PATTERN = r'<a href="(.+?)" title="Stahnout">(.+?)</a>'
 
     ERR_LOGIN_PATTERN  = ur'<div class="error_div"><strong>Stahování je přístupné pouze přihlášeným uživatelům'
     ERR_CREDIT_PATTERN = ur'<div class="error_div"><strong>Stahování zdarma je možné jen přes náš'

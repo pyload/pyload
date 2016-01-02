@@ -60,7 +60,7 @@ class OCR(Plugin):
         """
         Run a command
         """
-        call = [command] + args
+        call = (command,) + args
         self.log_debug("EXECUTE " + " ".join(call))
 
         call = map(encode, call)

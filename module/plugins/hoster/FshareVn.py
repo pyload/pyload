@@ -9,14 +9,6 @@ from module.plugins.internal.Base import parse_fileInfo
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
-def get_info(urls):
-    for url in urls:
-        html = get_url("http://www.fshare.vn/check_link.php",
-                       post={'action': "check_link", 'arrlinks': url})
-
-        yield parse_fileInfo(FshareVn, url, html)
-
-
 def double_decode(m):
     return m.group(1).decode('raw_unicode_escape')
 
@@ -39,7 +31,7 @@ class FshareVn(SimpleHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    INFO_PATTERN = r'<p>(?P<N>[^<]+)<\\/p>[\\trn\s]*<p>(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)<\\/p>'
+    INFO_PATTERN    = r'<p>(?P<N>.+?)<\\/p>[\\trn\s]*<p>(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)<\\/p>'
     OFFLINE_PATTERN = r'<div class=\\"f_left file_w\\"|<\\/p>\\t\\t\\t\\t\\r\\n\\t\\t<p><\\/p>\\t\\t\\r\\n\\t\\t<p>0 KB<\\/p>'
 
     NAME_REPLACEMENTS = [("(.*)", double_decode)]

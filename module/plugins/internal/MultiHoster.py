@@ -32,7 +32,7 @@ class MultiHoster(SimpleHoster):
 
 
     def init(self):
-        self.PLUGIN_NAME = self.pyload.pluginManager.hosterPlugins[self.classname]['name']
+        self.PLUGIN_NAME = self.pyload.pluginManager.hosterPlugins.get(self.classname)['name']
 
 
     def _log(self, level, plugintype, pluginname, messages):
@@ -54,8 +54,8 @@ class MultiHoster(SimpleHoster):
         super(MultiHoster, self).setup_base()
 
 
-    def prepare(self):
-        super(MultiHoster, self).prepare()
+    def _prepare(self):
+        super(MultiHoster, self)._prepare()
 
         if self.DIRECT_LINK is None:
             self.direct_dl = self.__pattern__ != r'^unmatchable$' and re.match(self.__pattern__, self.pyfile.url)
@@ -68,9 +68,9 @@ class MultiHoster(SimpleHoster):
             super(MultiHoster, self)._process(thread)
 
         except Fail, e:
-            if self.config.get("revertfailed", True) and \
-               self.pyload.pluginManager.hosterPlugins[self.classname].get('new_module'):
-                hdict = self.pyload.pluginManager.hosterPlugins[self.classname]
+            if self.config.get('revertfailed', True) and \
+               self.pyload.pluginManager.hosterPlugins.get(self.classname).get('new_module'):
+                hdict = self.pyload.pluginManager.hosterPlugins.get(self.classname)
 
                 tmp_module = hdict['new_module']
                 tmp_name   = hdict['new_name']
@@ -85,7 +85,7 @@ class MultiHoster(SimpleHoster):
                 self.restart(_("Revert to original hoster plugin"))
 
             else:
-                raise Fail(encode(e))
+                raise Fail(e)
 
 
     def handle_premium(self, pyfile):

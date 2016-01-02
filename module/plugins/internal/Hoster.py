@@ -139,14 +139,14 @@ class Hoster(Base):
         self.pyload.hookManager.dispatchEvent("download_processed", self.pyfile)
 
         try:
-            unfinished = any(fdata['status'] == 3 for fid, fdata in pypack.getChildren().items()
-                             if fid != self.pyfile.id)
+            unfinished = any(fdata.get('status') == 3 for fid, fdata in pypack.getChildren().items()
+                             if fid is not self.pyfile.id)
             if unfinished:
                 return
 
             self.pyload.hookManager.dispatchEvent("package_processed", pypack)
 
-            failed = any(fdata['status'] in (1, 6, 8, 9, 14)
+            failed = any(fdata.get('status') in (1, 6, 8, 9, 14)
                          for fid, fdata in pypack.getChildren().items())
 
             if not failed:
@@ -171,11 +171,9 @@ class Hoster(Base):
         elif redirect:
             maxredirs = int(self.pyload.api.getConfigValue("UserAgentSwitcher", "maxredirs", "plugin")) or maxredirs  #@TODO: Remove `int` in 0.4.10
 
-        for i in xrange(maxredirs):
-            self.log_debug("Redirect #%d to: %s" % (i, url))
+        header = self.load(url, just_header=True)
 
-            header = self.load(url, just_header=True)
-
+        for i in xrange(1, maxredirs):
             if not redirect or header.get('connection') == "close":
                 resumable = False
 
@@ -190,11 +188,12 @@ class Hoster(Base):
                     resource = location
 
                 elif code == 301 or resumable:
+                    self.log_debug("Redirect #%d to: %s" % (i, location))
+                    header = self.load(location, just_header=True)
                     url = location
                     continue
 
             else:
-                mimetype    = ""
                 contenttype = header.get('content-type')
                 extension   = os.path.splitext(parse_name(url))[-1]
 
@@ -204,6 +203,9 @@ class Hoster(Base):
                 elif extension:
                     mimetype = mimetypes.guess_type(extension, False)[0] or \
                                "application/octet-stream"
+
+                else:
+                    mimetype = None
 
                 if mimetype and (resource or 'html' not in mimetype):
                     resource = url
@@ -217,7 +219,7 @@ class Hoster(Base):
         file = encode(filename)  #@TODO: Safe-filename check in HTTPDownload in 0.4.10
         resume = self.resume_download if resume is None else bool(resume)
 
-        dl_chunks   = self.pyload.config.get("download", "chunks")
+        dl_chunks   = self.pyload.config.get('download', 'chunks')
         chunk_limit = chunks or self.chunk_limit or -1
 
         if -1 in (dl_chunks, chunk_limit):
@@ -277,7 +279,7 @@ class Hoster(Base):
 
         self.pyfile.setStatus("downloading")
 
-        dl_folder   = self.pyload.config.get("general", "download_folder")
+        dl_folder   = self.pyload.config.get('general', 'download_folder')
         dl_dirname  = safejoin(dl_folder, self.pyfile.package().folder)
         dl_filename = safejoin(dl_dirname, dl_basename)
 
@@ -479,8 +481,8 @@ class Hoster(Base):
 
         :raises Skip:
         """
-        pack_folder = self.pyfile.package().folder if self.pyload.config.get("general", "folder_per_package") else ""
-        dl_folder   = self.pyload.config.get("general", "download_folder")
+        pack_folder = self.pyfile.package().folder if self.pyload.config.get('general', 'folder_per_package') else ""
+        dl_folder   = self.pyload.config.get('general', 'download_folder')
         dl_file     = fsjoin(dl_folder, pack_folder, self.pyfile.name)
 
         if not exists(dl_file):
@@ -491,7 +493,7 @@ class Hoster(Base):
                 self.last_download = ""
             return
 
-        if self.pyload.config.get("download", "skip_existing"):
+        if self.pyload.config.get('download', 'skip_existing'):
             plugin = self.pyload.db.findDuplicates(self.pyfile.id, pack_folder, self.pyfile.name)
             msg = plugin[0] if plugin else _("File exists")
             self.skip(msg)

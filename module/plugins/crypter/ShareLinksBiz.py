@@ -110,7 +110,7 @@ class ShareLinksBiz(Crypter):
 
 
     def unblock_server(self):
-        imgs = re.findall(r"(/template/images/.*?\.gif)", self.data)
+        imgs = re.findall(r'(/template/images/.*?\.gif)', self.data)
         for img in imgs:
             self.load(self.base_url + img)
 

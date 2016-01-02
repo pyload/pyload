@@ -62,8 +62,8 @@ class MultiHome(Addon):
         self.parse_interfaces(self.config.get('interfaces').split(";"))
 
         if not self.interfaces:
-            self.parse_interfaces([self.pyload.config.get("download", "interface")])
-            self.config.set("interfaces", self.to_config())
+            self.parse_interfaces([self.pyload.config.get('download', 'interface')])
+            self.config.set('interfaces', self.to_config())
 
 
     def to_config(self):

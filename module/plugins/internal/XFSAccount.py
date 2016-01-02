@@ -69,8 +69,9 @@ class XFSAccount(MultiAccount):
             self._set_xfs_cookie()
 
 
-    def grab_hosters(self, user, password, data):
-        pass
+    #@TODO: Implement default grab_hosters routine
+    # def grab_hosters(self, user, password, data):
+        # pass
 
 
     def grab_info(self, user, password, data):

@@ -187,7 +187,7 @@ class XDCC(Hoster):
 
         self.pyfile.name = packname
 
-        dl_folder = self.pyload.config.get("general", "download_folder")
+        dl_folder = self.pyload.config.get('general', 'download_folder')
         filename = fsjoin(dl_folder, packname)
 
         self.log_info(_("Downloading %s from %s:%d") % (packname, ip, port))

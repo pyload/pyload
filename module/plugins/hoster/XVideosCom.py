@@ -23,7 +23,7 @@ class XVideosCom(Hoster):
     def process(self, pyfile):
         site = self.load(pyfile.url)
         pyfile.name = "%s (%s).flv" % (
-            re.search(r"<h2>([^<]+)<span", site).group(1),
+            re.search(r'<h2>(.+?)<span', site).group(1),
             re.match(self.__pattern__, pyfile.url).group(1),
         )
-        self.download(urllib.unquote(re.search(r"flv_url=([^&]+)&", site).group(1)))
+        self.download(urllib.unquote(re.search(r'flv_url=([^&]+)&', site).group(1)))

@@ -27,7 +27,7 @@ class CzshareCom(SimpleHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    NAME_PATTERN    = r'<div class="tab" id="parameters">\s*<p>\s*Cel. n.zev: <a href=.*?>(?P<N>[^<]+)</a>'
+    NAME_PATTERN    = r'<div class="tab" id="parameters">\s*<p>\s*Cel. n.zev: <a href=.*?>(?P<N>.+?)</a>'
     SIZE_PATTERN    = r'<div class="tab" id="category">(?:\s*<p>[^\n]*</p>)*\s*Velikost:\s*(?P<S>[\d .,]+)(?P<U>[\w^_]+)\s*</div>'
     OFFLINE_PATTERN = r'<div class="header clearfix">\s*<h2 class="red">'
 
@@ -40,7 +40,7 @@ class CzshareCom(SimpleHoster):
     FREE_FORM_PATTERN    = r'<form action="download\.php" method="post">\s*<img src="captcha\.php" id="captcha" />(.*?)</form>'
     PREMIUM_FORM_PATTERN = r'<form action="/profi_down\.php" method="post">(.*?)</form>'
     FORM_INPUT_PATTERN   = r'<input[^>]* name="(.+?)" value="(.+?)"[^>]*/>'
-    MULTIDL_PATTERN      = r'<p><font color=\'red\'>Z[^<]*PROFI.</font></p>'
+    MULTIDL_PATTERN      = r'<p><font color=\'red\'>Z.*?PROFI.</font></p>'
     USER_CREDIT_PATTERN  = r'<div class="credit">\s*kredit: <strong>([\d .,]+)(\w+)</strong>\s*</div><!-- .credit -->'
 
 
@@ -139,8 +139,8 @@ class CzshareCom(SimpleHoster):
     def check_download(self):
         #: Check download
         check = self.scan_download({
-            "temp offline" : re.compile(r"^Soubor je do.*asn.* nedostupn.*$"),
-            'credit'       : re.compile(r"^Nem.*te dostate.*n.* kredit.$"),
+            "temp offline" : re.compile(r'^Soubor je do.*asn.* nedostupn.*$'),
+            'credit'       : re.compile(r'^Nem.*te dostate.*n.* kredit.$'),
             "multi-dl"     : re.compile(self.MULTIDL_PATTERN),
             'captcha'      : "<li>Zadaný ověřovací kód nesouhlasí!</li>"
         })

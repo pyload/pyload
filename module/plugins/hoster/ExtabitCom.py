@@ -28,7 +28,7 @@ class ExtabitCom(SimpleHoster):
 
 
     NAME_PATTERN = r'<th>File:</th>\s*<td class="col-fileinfo">\s*<div title="(?P<N>.+?)">'
-    SIZE_PATTERN = r'<th>Size:</th>\s*<td class="col-fileinfo">(?P<S>[^<]+)</td>'
+    SIZE_PATTERN = r'<th>Size:</th>\s*<td class="col-fileinfo">(?P<S>.+?)</td>'
     OFFLINE_PATTERN = r'>File not found<'
     TEMP_OFFLINE_PATTERN = r'>(File is temporary unavailable|No download mirror)<'
 
@@ -36,10 +36,10 @@ class ExtabitCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        if r">Only premium users can download this file" in self.data:
+        if r'>Only premium users can download this file" in self.data:
             self.fail(_("Only premium users can download this file"))
 
-        m = re.search(r"Next free download from your ip will be available in <b>(\d+)\s*minutes", self.data)
+        m = re.search(r"Next free download from your ip will be available in <b>(\d+)\s*minutes', self.data)
         if m is not None:
             self.wait(int(m.group(1)) * 60, True)
         elif "The daily downloads limit from your IP is exceeded" in self.data:

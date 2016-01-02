@@ -40,8 +40,8 @@ class RapideoPl(MultiHoster):
                    80: "Too many incorrect login attempts, account blocked for 24h"}
 
 
-    def prepare(self):
-        super(RapideoPl, self).prepare()
+    def _prepare(self):
+        super(RapideoPl, self)._prepare()
 
         data = self.account.get_data()
 

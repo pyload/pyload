@@ -19,5 +19,5 @@ class TusfilesNet(XFSAccount):
 
     PLUGIN_DOMAIN = "tusfiles.net"
 
-    VALID_UNTIL_PATTERN = r'<span class="label label-default">([^<]+)</span>'
+    VALID_UNTIL_PATTERN = r'<span class="label label-default">(.+?)</span>'
     TRAFFIC_LEFT_PATTERN = r'<td><img src="//www\.tusfiles\.net/i/icon/meter\.png" alt=""/></td>\n<td>&nbsp;(?P<S>[\d.,]+)'

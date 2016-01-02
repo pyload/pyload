@@ -23,4 +23,4 @@ class SecureUploadEu(XFSHoster):
 
     PLUGIN_DOMAIN = "secureupload.eu"
 
-    INFO_PATTERN = r'<h3>Downloading (?P<N>[^<]+) \((?P<S>[^<]+)\)</h3>'
+    INFO_PATTERN = r'<h3>Downloading (?P<N>.+?) \((?P<S>.+?)\)</h3>'

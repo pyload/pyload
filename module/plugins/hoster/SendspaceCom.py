@@ -23,7 +23,7 @@ class SendspaceCom(SimpleHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    NAME_PATTERN    = r'<h2 class="bgray">\s*<(?:b|strong)>(?P<N>[^<]+)</'
+    NAME_PATTERN    = r'<h2 class="bgray">\s*<(?:b|strong)>(?P<N>.+?)</'
     SIZE_PATTERN    = r'<div class="file_description reverse margin_center">\s*<b>File Size:</b>\s*(?P<S>[\d.,]+)(?P<U>[\w^_]+)\s*</div>'
     OFFLINE_PATTERN = r'<div class="msg error" style="cursor: default">Sorry, the file you requested is not available.</div>'
 

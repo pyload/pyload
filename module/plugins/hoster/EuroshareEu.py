@@ -33,7 +33,7 @@ class EuroshareEu(SimpleHoster):
     DL_LIMIT_PATTERN = r'<h2>Prebieha s.ahovanie</h2>|<p>Naraz je z jednej IP adresy mo.n. s.ahova. iba jeden s.bor'
     ERROR_PATTERN    = r'href="/customer-zone/login/"'
 
-    URL_REPLACEMENTS = [(r"(http://[^/]*\.)(sk|cz|hu|pl)/", r"\1eu/")]
+    URL_REPLACEMENTS = [(r'(http://[^/]*\.)(sk|cz|hu|pl)/', r'\1eu/')]
 
 
     def handle_premium(self, pyfile):

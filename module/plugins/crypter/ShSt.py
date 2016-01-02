@@ -28,6 +28,6 @@ class ShSt(Crypter):
         #: If we use curl as a user agent, we will get a straight redirect (no waiting!)
         self.req.http.c.setopt(pycurl.USERAGENT, "curl/7.42.1")
         #: Fetch the target URL
-        header = self.load(self.pyfile.url, just_header = True, decode = False)
+        header = self.load(self.pyfile.url, just_header=True, decode=False)
         target_url = header.get('location')
         self.links.append(target_url)

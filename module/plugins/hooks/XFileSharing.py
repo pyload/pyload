@@ -60,7 +60,7 @@ class XFileSharing(Addon):
 
 
     def get_pattern(self, type, plugin):
-        if self.config.get("use_%s_list" % type):
+        if self.config.get('use_%s_list' % type):
             plugin_list = self.config.get('%s_list' % type)
             plugin_list = plugin_list.replace(' ', '').replace('\\', '')
             plugin_list = plugin_list.replace('|', ',').replace(';', ',')

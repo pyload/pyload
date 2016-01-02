@@ -46,7 +46,7 @@ class XFSHoster(SimpleHoster):
     HAPPY_HOUR_PATTERN    = r'>[Hh]appy hour'
     ERROR_PATTERN         = r'(?:class=["\']err["\'].*?>|<[Cc]enter><b>|>Error</td>|>\(ERROR:)(?:\s*<.+?>\s*)*(.+?)(?:["\']|<|\))'
 
-    LINK_LEECH_PATTERN    = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
+    LINK_LEECH_PATTERN    = r'<h2>Download Link</h2>\s*<textarea.*?>(.+?)'
 
     CAPTCHA_PATTERN       = r'(https?://[^"\']+?/captchas?/[^"\']+)'
     CAPTCHA_BLOCK_PATTERN = r'>Enter code.*?<div.*?>(.+?)</div>'
@@ -71,7 +71,7 @@ class XFSHoster(SimpleHoster):
             set_cookie(self.req.cj, *cookie)
 
 
-    def prepare(self):
+    def _prepare(self):
         if not self.PLUGIN_DOMAIN:
             self.fail(_("Missing PLUGIN DOMAIN"))
 
@@ -82,7 +82,7 @@ class XFSHoster(SimpleHoster):
             pattern = r'(?:file: "(.+?)"|(https?://(?:www\.)?([^/]*?%s|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<])'
             self.LINK_PATTERN = pattern % self.PLUGIN_DOMAIN.replace('.', '\.')
 
-        super(XFSHoster, self).prepare()
+        super(XFSHoster, self)._prepare()
 
         if self.DIRECT_LINK is None:
             self.direct_dl = self.premium
@@ -98,12 +98,11 @@ class XFSHoster(SimpleHoster):
             if m is not None:
                 break
 
-            data = self._post_parameters()
+            self.data = self.load(pyfile.url,
+                                  post=self._post_parameters(),
+                                  redirect=False)
 
-            self.data = self.load(pyfile.url, post=data, redirect=False)
-
-            m = re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I)
-            if m and not "op=" in m.group(1):
+            if not "op=" in self.last_header.get('location', "op="):
                 break
 
             m = re.search(self.LINK_PATTERN, self.data, re.S)
@@ -169,10 +168,7 @@ class XFSHoster(SimpleHoster):
         if m is None:
             self.error(_("LINK_LEECH_PATTERN not found"))
 
-        header = self.load(m.group(1), just_header=True)
-
-        if 'location' in header:  #: Direct download link
-            self.link = header.get('location')
+        self.link = self.load(m.group(1), just_header=True).get('location')
 
 
     def _post_parameters(self):

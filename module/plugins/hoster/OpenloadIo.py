@@ -2,7 +2,7 @@
 
 import re
 
-from module.network.RequestFactory import getURL
+from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.SimpleHoster import SimpleHoster
 from module.plugins.internal.misc import json
 
@@ -37,7 +37,7 @@ class OpenloadIo(SimpleHoster):
 
     @classmethod
     def _load_json(cls, uri):
-        return json.loads(getURL(cls.API_URL + uri))
+        return json.loads(get_url(cls.API_URL + uri))
 
 
     @classmethod

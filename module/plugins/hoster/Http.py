@@ -15,7 +15,7 @@ class Http(Hoster):
     __pattern__ = r'(?:jd|pys?)://.+'
     __config__  = [("activated", "bool", "Activated", True)]
 
-    __description__ = """Download from http link"""
+    __description__ = """Download simple http link"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 

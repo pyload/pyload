@@ -23,7 +23,7 @@ class JumbofilesCom(SimpleHoster):
     __authors__     = [("godofdream", "soilfiction@gmail.com")]
 
 
-    INFO_PATTERN = r'<TR><TD>(?P<N>[^<]+?)\s*<small>\((?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)'
+    INFO_PATTERN = r'<TR><TD>(?P<N>.+?)\s*<small>\((?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'Not Found or Deleted / Disabled due to inactivity or DMCA'
     LINK_FREE_PATTERN = r'<meta http-equiv="refresh" content="10;url=(.+)">'
 
