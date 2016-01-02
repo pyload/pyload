@@ -104,7 +104,7 @@ class ShareonlineBiz(SimpleHoster):
 
     def check_download(self):
         check = self.scan_download({'cookie': re.compile(r'<div id="dl_failure"'),
-                                    'fail'  : re.compile(r'<title>Share-Online")})
+                                    'fail'  : re.compile(r'<title>Share-Online')})
 
         if check == "cookie":
             self.retry_captcha(5, 60, _("Cookie failure"))
@@ -118,7 +118,7 @@ class ShareonlineBiz(SimpleHoster):
     def handle_premium(self, pyfile):  #: Should be working better loading (account) api internally
         self.api_data = dlinfo = {}
 
-        html = self.load("https://api.share-online.biz/account.php',
+        html = self.load("https://api.share-online.biz/account.php",
                          get={'username': self.account.user,
                               'password': self.account.get_login('password'),
                               'act'     : "download",
