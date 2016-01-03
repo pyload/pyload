@@ -45,6 +45,10 @@ class ExternalScripts(Addon):
                           'pyload_updated'        : "pyload_updated"         }
 
         self.periodical.start(60)
+        self.periodical_task()  #@NOTE: Initial scan so dont miss `pyload_start` scripts if any
+
+
+    def activate(self):
         self.pyload_start()
 
 
