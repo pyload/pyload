@@ -12,7 +12,7 @@ from module.plugins.internal.misc import encode
 class Captcha(Plugin):
     __name__    = "Captcha"
     __type__    = "captcha"
-    __version__ = "0.51"
+    __version__ = "0.52"
     __status__  = "stable"
 
     __description__ = """Base anti-captcha plugin"""
@@ -41,9 +41,9 @@ class Captcha(Plugin):
         pass
 
 
-    def decrypt(self, url, get={}, post={}, ref=False, cookies=True, decode=False, req=None,
+    def decrypt(self, url, get={}, post={}, ref=False, cookies=True, req=None,
                 input_type='jpg', output_type='textual', ocr=True, timeout=120):
-        img = self.load(url, get=get, post=post, ref=ref, cookies=cookies, decode=decode, req=req or self.pyfile.plugin.req)
+        img = self.load(url, get=get, post=post, ref=ref, cookies=cookies, decode=False, req=req or self.pyfile.plugin.req)
         return self.decrypt_image(img, input_type, output_type, ocr, timeout)
 
 
