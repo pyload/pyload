@@ -28,6 +28,11 @@ try:
 except ImportError:
     import json
 
+try:
+    import send2trash
+except ImportError:
+    pass
+
 
 #@TODO: Remove in 0.4.10
 class misc(object):
