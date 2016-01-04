@@ -4,24 +4,18 @@ from __future__ import with_statement
 
 import inspect
 import os
+import pycurl
 import re
 
 if os.name != "nt":
     import grp
     import pwd
 
-import pycurl
-try:
-    import send2trash
-except ImportError:
-    pass
-
-import module.plugins.internal.misc as utils
 
 from module.network.RequestFactory import getRequest as get_request
 from module.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload as Skip  #@TODO: Remove in 0.4.10
 from module.plugins.internal.misc import (Config, DB, decode, encode, exists, fixurl, fsjoin,
-                                          format_exc, html_unescape, parse_html_header, set_cookies)
+                                          format_exc, html_unescape, parse_html_header, remove, set_cookies)
 
 
 class Plugin(object):
@@ -219,7 +213,7 @@ class Plugin(object):
 
         #@TODO: Move to network in 0.4.10
         if isinstance(decode, basestring):
-            html = utils.decode(html, decode)
+            html = decode(html, decode)
 
         self.last_html = html
 
