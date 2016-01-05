@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
+from module.plugins.internal.DeadHoster import DeadHoster
 
 
 class WuploadCom(DeadHoster):
     __name__    = "WuploadCom"
     __type__    = "hoster"
-    __version__ = "0.24"
-    __status__  = "testing"
+    __version__ = "0.27"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?wupload\..+?/file/((\w+/)?\d+)(/.*)?'
     __config__  = []  #@TODO: Remove in 0.4.10
@@ -16,6 +16,3 @@ class WuploadCom(DeadHoster):
     __license__     = "GPLv3"
     __authors__     = [("jeix", "jeix@hasnomail.de"),
                        ("Paul King", None)]
-
-
-getInfo = create_getInfo(WuploadCom)

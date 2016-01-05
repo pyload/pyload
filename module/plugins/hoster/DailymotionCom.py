@@ -3,7 +3,7 @@
 import re
 
 from module.PyFile import statusMap
-from module.common.json_layer import json_loads
+from module.plugins.internal.misc import json
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster
 
@@ -17,7 +17,7 @@ def get_info(urls):
     for url in urls:
         id   = regex.match(url).group('ID')
         html = get_url(apiurl % id, get=request)
-        info = json_loads(html)
+        info = json.loads(html)
 
         name = info['title'] + ".mp4" if "title" in info else url
 
@@ -44,7 +44,7 @@ def get_info(urls):
 class DailymotionCom(Hoster):
     __name__    = "DailymotionCom"
     __type__    = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.26"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?dailymotion\.com/.*video/(?P<ID>[\w^_]+)'
@@ -64,8 +64,8 @@ class DailymotionCom(Hoster):
     def get_streams(self):
         streams = []
 
-        for result in re.finditer(r"\"(?P<URL>http:\\/\\/www.dailymotion.com\\/cdn\\/H264-(?P<QF>.*?)\\.*?)\"",
-                                  self.html):
+        for result in re.finditer(r'\"(?P<URL>http:\\/\\/www.dailymotion.com\\/cdn\\/H264-(?P<QF>.*?)\\.*?)\"',
+                                  self.data):
             url = result.group('URL')
             qf  = result.group('QF')
 
@@ -78,7 +78,7 @@ class DailymotionCom(Hoster):
 
 
     def get_quality(self):
-        q = self.get_config('quality')
+        q = self.config.get('quality')
 
         if q == "Lowest":
             quality = 0
@@ -123,7 +123,7 @@ class DailymotionCom(Hoster):
         self.check_info(pyfile)
 
         id = re.match(self.__pattern__, pyfile.url).group('ID')
-        self.html = self.load("http://www.dailymotion.com/embed/video/" + id)
+        self.data = self.load("http://www.dailymotion.com/embed/video/" + id)
 
         streams = self.get_streams()
         quality = self.get_quality()

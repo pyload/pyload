@@ -4,15 +4,14 @@ import datetime
 import hashlib
 import time
 
-from module.common.json_layer import json_loads
-from module.plugins.internal.Account import Account
-# from module.plugins.internal.MultiAccount import MultiAccount
+from module.plugins.internal.misc import json
+from module.plugins.internal.MultiAccount import MultiAccount
 
 
-class NoPremiumPl(Account):
+class NoPremiumPl(MultiAccount):
     __name__    = "NoPremiumPl"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
@@ -33,7 +32,8 @@ class NoPremiumPl(Account):
                  'info'    : "1"        }
 
     def grab_hosters(self, user, password, data):
-        hostings         = json_loads(self.load("https://www.nopremium.pl/clipboard.php?json=3").strip())
+        html = self.load("https://www.nopremium.pl/clipboard.php?json=3").strip()
+        hostings         = json.loads(html)
         hostings_domains = [domain for row in hostings for domain in row['domains'] if row['sdownload'] == "0"]
 
         self.log_debug(hostings_domains)
@@ -43,7 +43,7 @@ class NoPremiumPl(Account):
 
     def grab_info(self, user, password, data):
         try:
-            result = json_loads(self.run_auth_query())
+            result = json.loads(self.run_auth_query())
 
         except Exception:
             #@TODO: return or let it be thrown?
@@ -68,7 +68,7 @@ class NoPremiumPl(Account):
         data['pwd'] = hashlib.sha1(hashlib.md5(password).hexdigest()).hexdigest()
 
         try:
-            response = json_loads(self.run_auth_query())
+            response = json.loads(self.run_auth_query())
 
         except Exception:
             self.fail_login()

@@ -5,18 +5,21 @@ import time
 
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "0.97"
+    __version__ = "1.01"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
-    __config__  = [("activated", "bool", "Activated", True),
-                   ("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
+                   ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """Uploaded.net hoster plugin"""
     __license__     = "GPLv3"
@@ -42,7 +45,7 @@ class UploadedTo(SimpleHoster):
 
     @classmethod
     def api_info(cls, url):
-        info = super(UploadedTo, cls).api_info(url)
+        info = {}
 
         for _i in xrange(5):
             html = get_url("http://uploaded.net/api/filemultiple",
@@ -70,18 +73,15 @@ class UploadedTo(SimpleHoster):
     def handle_free(self, pyfile):
         self.load("http://uploaded.net/language/en", just_header=True)
 
-        self.html = self.load("http://uploaded.net/js/download.js")
+        self.data = self.load("http://uploaded.net/js/download.js")
 
-        recaptcha = ReCaptcha(self)
-        response, challenge = recaptcha.challenge()
+        self.captcha = ReCaptcha(pyfile)
+        response, challenge = self.captcha.challenge()
 
-        self.html = self.load("http://uploaded.net/io/ticket/captcha/%s" % self.info['pattern']['ID'],
+        self.data = self.load("http://uploaded.net/io/ticket/captcha/%s" % self.info['pattern']['ID'],
                               post={'recaptcha_challenge_field': challenge,
                                     'recaptcha_response_field' : response})
         self.check_errors()
 
         super(UploadedTo, self).handle_free(pyfile)
         self.check_errors()
-
-
-getInfo = create_getInfo(UploadedTo)

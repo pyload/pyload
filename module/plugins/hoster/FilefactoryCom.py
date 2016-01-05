@@ -3,7 +3,8 @@
 import re
 
 from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.SimpleHoster import SimpleHoster, parse_fileInfo
+from module.plugins.internal.Base import parse_fileInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 def get_info(urls):
@@ -21,12 +22,15 @@ def get_info(urls):
 class FilefactoryCom(SimpleHoster):
     __name__    = "FilefactoryCom"
     __type__    = "hoster"
-    __version__ = "0.59"
+    __version__ = "0.62"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/(file|trafficshare/\w+)/\w+'
-    __config__  = [("activated", "bool", "Activated", True),
-                   ("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
+                   ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """Filefactory.com hoster plugin"""
     __license__     = "GPLv3"
@@ -46,25 +50,27 @@ class FilefactoryCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        if "Currently only Premium Members can download files larger than" in self.html:
+        if "Currently only Premium Members can download files larger than" in self.data:
             self.fail(_("File too large for free download"))
-        elif "All free download slots on this server are currently in use" in self.html:
+        elif "All free download slots on this server are currently in use" in self.data:
             self.retry(50, 15 * 60, _("All free slots are busy"))
 
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:
             return
 
         self.link = m.group(1)
 
-        m = re.search(self.WAIT_PATTERN, self.html)
+        m = re.search(self.WAIT_PATTERN, self.data)
         if m is not None:
             self.wait(m.group(1))
 
 
     def check_download(self):
-        check = self.check_file({'multiple': "You are currently downloading too many files at once.",
-                                    'error'   : '<div id="errorMessage">'})
+        check = self.scan_download({
+            'multiple': "You are currently downloading too many files at once.",
+            'error'   : '<div id="errorMessage">'
+        })
 
         if check == "multiple":
             self.log_debug("Parallel downloads detected; waiting 15 minutes")

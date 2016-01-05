@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class MegaRapidCzFolder(SimpleCrypter):
-    __name__    = "MegaRapidCz"
+    __name__    = "MegaRapidCzFolder"
     __type__    = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(share|mega)rapid\.cz/slozka/\d+/\w+'
-    __config__  = [("activated", "bool", "Activated", True),
-                   ("use_premium"       , "bool", "Use premium account if available"   , True),
-                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
-                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("activated"         , "bool"          , "Activated"                                        , True     ),
+                   ("use_premium"       , "bool"          , "Use premium account if available"                 , True     ),
+                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"                   , "Default"),
+                   ("max_wait"          , "int"           , "Reconnect if waiting time is greater than minutes", 10       )]
 
     __description__ = """Share-Rapid.com folder decrypter plugin"""
     __license__     = "GPLv3"
@@ -21,6 +21,3 @@ class MegaRapidCzFolder(SimpleCrypter):
 
 
     LINK_PATTERN = r'<td class="soubor".*?><a href="(.+?)">'
-
-
-getInfo = create_getInfo(MegaRapidCzFolder)

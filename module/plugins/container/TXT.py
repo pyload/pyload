@@ -3,19 +3,21 @@
 import codecs
 
 from module.plugins.internal.Container import Container
-from module.utils import fs_encode
+from module.plugins.internal.misc import encode
 
 
 class TXT(Container):
     __name__    = "TXT"
     __type__    = "container"
-    __version__ = "0.17"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __pattern__ = r'.+\.(txt|text)$'
-    __config__  = [("activated", "bool", "Activated", True),
-                   ("flush"   , "bool"  , "Flush list after adding", False  ),
-                   ("encoding", "string", "File encoding"          , "utf-8")]
+    __config__  = [("activated"         , "bool"          , "Activated"                       , True     ),
+                   ("use_premium"       , "bool"          , "Use premium account if available", True     ),
+                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"  , "Default"),
+                   ("flush"             , "bool"          , "Flush list after adding"         , False    ),
+                   ("encoding"          , "str"           , "File encoding"                   , "utf-8"  )]
 
     __description__ = """Read link lists in plain text formats"""
     __license__     = "GPLv3"
@@ -25,12 +27,12 @@ class TXT(Container):
 
     def decrypt(self, pyfile):
         try:
-            encoding = codecs.lookup(self.get_config('encoding')).name
+            encoding = codecs.lookup(self.config.get('encoding')).name
 
         except Exception:
             encoding = "utf-8"
 
-        fs_filename = fs_encode(pyfile.url.strip())
+        fs_filename = encode(pyfile.url)
         txt         = codecs.open(fs_filename, 'r', encoding)
         curPack     = "Parsed links from %s" % pyfile.name
         packages    = {curPack:[],}
@@ -59,7 +61,7 @@ class TXT(Container):
             if not value:
                 packages.pop(key, None)
 
-        if self.get_config('flush'):
+        if self.config.get('flush'):
             try:
                 txt = open(fs_filename, 'wb')
                 txt.close()

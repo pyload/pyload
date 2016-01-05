@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from module.common.json_layer import json_loads
-from module.plugins.internal.Account import Account
+from module.plugins.internal.MultiAccount import MultiAccount
+from module.plugins.internal.misc import json
 
 
-class PremiumizeMe(Account):
+class PremiumizeMe(MultiAccount):
     __name__    = "PremiumizeMe"
     __type__    = "account"
-    __version__ = "0.21"
+    __version__ = "0.24"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
@@ -26,7 +26,7 @@ class PremiumizeMe(Account):
                            get={'method'       : "hosterlist",
                                 'params[login]': user,
                                 'params[pass]' : password})
-        data = json_loads(answer)
+        data = json.loads(answer)
 
         #: If account is not valid thera are no hosters available
         if data['status'] != 200:
@@ -67,4 +67,4 @@ class PremiumizeMe(Account):
                            get={'method'       : "accountstatus",
                                 'params[login]': user,
                                 'params[pass]' : password})
-        return json_loads(answer)
+        return json.loads(answer)

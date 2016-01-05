@@ -6,10 +6,10 @@ from module.plugins.internal.Addon import Addon
 
 
 class LinkdecrypterComHook(Addon):
-    __name__    = "LinkdecrypterCom"
+    __name__    = "LinkdecrypterComHook"
     __type__    = "hook"
-    __version__ = "1.08"
-    __status__  = "testing"
+    __version__ = "1.09"
+    __status__  = "broken"
 
     __config__ = [("activated"     , "bool"               , "Activated"                    , False),
                   ("pluginmode"    , "all;listed;unlisted", "Use for plugins"              , "all"),

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
 import re
 import select
 import socket
@@ -8,17 +7,19 @@ import ssl
 import time
 import traceback
 
+import pycurl
+
 from threading import Thread
 
 from module.Api import PackageDoesNotExists, FileDoesNotExists
-from module.plugins.internal.Addon import Addon
-from module.utils import formatSize
+from module.plugins.internal.Notifier import Notifier
+from module.internal.misc import formatSize
 
 
-class IRCInterface(Thread, Addon):
-    __name__    = "IRCInterface"
+class IRC(Thread, Notifier):
+    __name__    = "IRC"
     __type__    = "hook"
-    __version__ = "0.17"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                                    , False                    ),
@@ -54,7 +55,7 @@ class IRCInterface(Thread, Addon):
 
     def package_finished(self, pypack):
         try:
-            if self.get_config('info_pack'):
+            if self.config.get('info_pack'):
                 self.response(_("Package finished: %s") % pypack.name)
 
         except Exception:
@@ -63,7 +64,7 @@ class IRCInterface(Thread, Addon):
 
     def download_finished(self, pyfile):
         try:
-            if self.get_config('info_file'):
+            if self.config.get('info_file'):
                 self.response(
                     _("Download finished: %(name)s @ %(plugin)s ") % {'name': pyfile.name, 'plugin': pyfile.pluginname})
 
@@ -72,14 +73,14 @@ class IRCInterface(Thread, Addon):
 
 
     def captcha_task(self, task):
-        if self.get_config('captcha') and task.isTextual():
+        if self.config.get('captcha') and task.isTextual():
             task.handler.append(self)
             task.setWaiting(60)
 
             html = self.load("http://www.freeimagehosting.net/upload.php",
                           post={'attached': (pycurl.FORM_FILE, task.captchaFile)})
 
-            url = re.search(r"\[img\]([^\[]+)\[/img\]\[/url\]", html).group(1)
+            url = re.search(r'\[img\]([^\[]+)\[/img\]\[/url\]', html).group(1)
             self.response(_("New Captcha Request: %s") % url)
             self.response(_("Answer with 'c %s text on the captcha'") % task.id)
 
@@ -87,16 +88,16 @@ class IRCInterface(Thread, Addon):
     def run(self):
         #: Connect to IRC etc.
         self.sock = socket.socket()
-        host = self.get_config('host')
-        self.sock.connect((host, self.get_config('port')))
+        host = self.config.get('host')
+        self.sock.connect((host, self.config.get('port')))
 
-        if self.get_config('ssl'):
+        if self.config.get('ssl'):
             self.sock = ssl.wrap_socket(self.sock, cert_reqs=ssl.CERT_NONE)  #@TODO: support certificate
 
-        nick = self.get_config('nick')
+        nick = self.config.get('nick')
         self.sock.send("NICK %s\r\n" % nick)
         self.sock.send("USER %s %s bla :%s\r\n" % (nick, host, nick))
-        for t in self.get_config('owner').split():
+        for t in self.config.get('owner').split():
             if t.strip().startswith("#"):
                 self.sock.send("JOIN %s\r\n" % t.strip())
         self.log_info(_("Connected to"), host)
@@ -151,10 +152,10 @@ class IRCInterface(Thread, Addon):
 
 
     def handle_events(self, msg):
-        if not msg['origin'].split("!", 1)[0] in self.get_config('owner').split():
+        if not msg['origin'].split("!", 1)[0] in self.config.get('owner').split():
             return
 
-        if msg['target'].split("!", 1)[0] is not self.get_config('nick'):
+        if msg['target'].split("!", 1)[0] is not self.config.get('nick'):
             return
 
         if msg['action'] != "PRIVMSG":
@@ -197,7 +198,7 @@ class IRCInterface(Thread, Addon):
 
     def response(self, msg, origin=""):
         if origin == "":
-            for t in self.get_config('owner').split():
+            for t in self.config.get('owner').split():
                 self.sock.send("PRIVMSG %s :%s\r\n" % (t.strip(), msg))
         else:
             self.sock.send("PRIVMSG %s :%s\r\n" % (origin.split("!", 1)[0], msg))
@@ -236,25 +237,25 @@ class IRCInterface(Thread, Addon):
 
 
     def event_queue(self, args):
-        ps = self.pyload.api.getQueueData()
+        pdata = self.pyload.api.getQueueData()
 
-        if not ps:
+        if not pdata:
             return ["INFO: There are no packages in queue."]
 
         lines = []
-        for pack in ps:
+        for pack in pdata:
             lines.append('PACKAGE #%s: "%s" with %d links.' % (pack.pid, pack.name, len(pack.links)))
 
         return lines
 
 
     def event_collector(self, args):
-        ps = self.pyload.api.getCollectorData()
-        if not ps:
+        pdata = self.pyload.api.getCollectorData()
+        if not pdata:
             return ["INFO: No packages in collector!"]
 
         lines = []
-        for pack in ps:
+        for pack in pdata:
             lines.append('PACKAGE #%s: "%s" with %d links.' % (pack.pid, pack.name, len(pack.links)))
 
         return lines

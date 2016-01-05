@@ -3,18 +3,22 @@
 import re
 import random
 
-from module.common.json_layer import json_loads
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.misc import json
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class YadiSk(SimpleHoster):
     __name__    = "YadiSk"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __pattern__ = r'https?://yadi\.sk/d/[\w\-]+'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
+                   ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """Yadi.sk hoster plugin"""
     __license__     = "GPLv3"
@@ -36,7 +40,7 @@ class YadiSk(SimpleHoster):
 
             m = re.search(r'<script id="models-client" type="application/json">(.+?)</script>', html)
             if m is not None:
-                api_data = json_loads(m.group(1))
+                api_data = json.loads(m.group(1))
                 try:
                     for sect in api_data:
                         if 'model' in sect:
@@ -72,7 +76,7 @@ class YadiSk(SimpleHoster):
 
 
         try:
-            self.html = self.load("https://yadi.sk/models/",
+            self.data = self.load("https://yadi.sk/models/",
                                   get={'_m': "do-get-resource-url"},
                                   post={'idClient': self.info['idclient'],
                                         'version' : self.info['version'],
@@ -80,10 +84,7 @@ class YadiSk(SimpleHoster):
                                         'sk'      : self.info['sk'],
                                         'id.0'    : self.info['id']})
 
-            self.link = json_loads(self.html)['models'][0]['data']['file']
+            self.link = json.loads(self.data)['models'][0]['data']['file']
 
         except Exception:
             pass
-
-
-getInfo = create_getInfo(YadiSk)

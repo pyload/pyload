@@ -5,7 +5,7 @@
 
 import re
 
-from module.common.json_layer import json_loads
+from module.plugins.internal.misc import json
 from module.plugins.internal.Hoster import Hoster
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 
@@ -13,7 +13,7 @@ from module.plugins.captcha.ReCaptcha import ReCaptcha
 class OboomCom(Hoster):
     __name__    = "OboomCom"
     __type__    = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.43"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?oboom\.com/(?:#(?:id=|/)?)?(?P<ID>\w{8})'
@@ -35,7 +35,7 @@ class OboomCom(Hoster):
     def process(self, pyfile):
         self.pyfile.url.replace(".com/#id=", ".com/#")
         self.pyfile.url.replace(".com/#/", ".com/#")
-        self.html = self.load(pyfile.url)
+        self.data = self.load(pyfile.url)
         self.get_file_id(self.pyfile.url)
         self.get_session_token()
         self.get_fileInfo(self.session_token, self.file_id)
@@ -47,10 +47,8 @@ class OboomCom(Hoster):
         self.download("http://%s/1.0/dlh" % self.download_domain, get={'ticket': self.download_ticket, 'http_errors': 0})
 
 
-    def load_url(self, url, get=None):
-        if get is None:
-            get = {}
-        return json_loads(self.load(url, get))
+    def load_url(self, url, get={}):
+        return json.loads(self.load(url, get))
 
 
     def get_file_id(self, url):
@@ -74,8 +72,8 @@ class OboomCom(Hoster):
 
 
     def solve_captcha(self):
-        recaptcha = ReCaptcha(self)
-        response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
+        self.captcha = ReCaptcha(self.pyfile)
+        response, challenge = self.captcha.challenge(self.RECAPTCHA_KEY)
 
         apiUrl = "http://www.oboom.com/1.0/download/ticket"
         params = {'recaptcha_challenge_field': challenge,

@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
 import re
-import urllib
 import urlparse
 
+import pycurl
+
 from module.plugins.internal.Hoster import Hoster
+from module.plugins.internal.misc import parse_name
 
 
 class Ftp(Hoster):
     __name__    = "Ftp"
     __type__    = "hoster"
-    __version__ = "0.55"
+    __version__ = "0.59"
     __status__  = "testing"
 
     __pattern__ = r'(?:ftps?|sftp)://([\w\-.]+(:[\w\-.]+)?@)?[\w\-.]+(:\d+)?/.+'
@@ -25,20 +26,15 @@ class Ftp(Hoster):
 
 
     def setup(self):
-        self.chunk_limit = -1
+        self.chunk_limit     = -1
         self.resume_download = True
 
 
     def process(self, pyfile):
-        p_url = urlparse.urlparse(pyfile.url)
+        p_url  = urlparse.urlparse(pyfile.url)
         netloc = p_url.netloc
 
-        pyfile.name = p_url.path.rpartition('/')[2]
-        try:
-            pyfile.name = urllib.unquote(str(pyfile.name)).decode('utf8')
-
-        except Exception:
-            pass
+        pyfile.name = parse_name(p_url.path.rpartition('/')[2])
 
         if not "@" in netloc:
             self.log_debug("Auth required")
@@ -71,7 +67,7 @@ class Ftp(Hoster):
         self.req.http.c.setopt(pycurl.NOBODY, 0)
         self.log_debug(self.req.http.header)
 
-        m = re.search(r"Content-Length:\s*(\d+)", res)
+        m = re.search(r'Content-Length:\s*(\d+)', res)
         if m is not None:
             pyfile.size = int(m.group(1))
             self.download(pyfile.url)

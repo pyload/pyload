@@ -1,21 +1,25 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
 import re
 
-from module.common.json_layer import json_loads
-from module.plugins.internal.Plugin import encode, timestamp
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+import pycurl
+
+from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.misc import encode, json, timestamp
 
 
 class UploadingCom(SimpleHoster):
     __name__    = "UploadingCom"
     __type__    = "hoster"
-    __version__ = "0.44"
-    __status__  = "testing"
+    __version__ = "0.48"
+    __status__  = "broken"
 
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>\w+)'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
+                   ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """Uploading.com hoster plugin"""
     __license__     = "GPLv3"
@@ -38,7 +42,7 @@ class UploadingCom(SimpleHoster):
         if not "/get/" in pyfile.url:
             pyfile.url = pyfile.url.replace("/files", "/files/get")
 
-        self.html = self.load(pyfile.url)
+        self.data = self.load(pyfile.url)
         self.get_fileInfo()
 
         if self.premium:
@@ -52,8 +56,8 @@ class UploadingCom(SimpleHoster):
                     'code'  : self.info['pattern']['ID'],
                     'pass'  : 'undefined'}
 
-        self.html = self.load('http://uploading.com/files/get/?JsHttpRequest=%d-xml' % timestamp(), post=postData)
-        url = re.search(r'"link"\s*:\s*"(.*?)"', self.html)
+        self.data = self.load('http://uploading.com/files/get/?JsHttpRequest=%d-xml' % timestamp(), post=postData)
+        url = re.search(r'"link"\s*:\s*"(.*?)"', self.data)
         if url:
             self.link = url.group(1).replace("\\/", "/")
 
@@ -61,7 +65,7 @@ class UploadingCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        m = re.search('<h2>((Daily )?Download Limit)</h2>', self.html)
+        m = re.search('<h2>((Daily )?Download Limit)</h2>', self.data)
         if m is not None:
             pyfile.error = encode(m.group(1))
             self.log_warning(pyfile.error)
@@ -71,7 +75,10 @@ class UploadingCom(SimpleHoster):
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
         self.req.http.lastURL = pyfile.url
 
-        res = json_loads(self.load(ajax_url, post={'action': 'second_page', 'code': self.info['pattern']['ID']}))
+        html = self.load(ajax_url,
+                         post={'action': 'second_page',
+                               'code'  : self.info['pattern']['ID']})
+        res = json.loads(html)
 
         if 'answer' in res and 'wait_time' in res['answer']:
             wait_time = int(res['answer']['wait_time'])
@@ -80,21 +87,22 @@ class UploadingCom(SimpleHoster):
         else:
             self.error(_("No AJAX/WAIT"))
 
-        res = json_loads(self.load(ajax_url, post={'action': 'get_link', 'code': self.info['pattern']['ID'], 'pass': 'false'}))
+        html = self.load(ajax_url,
+                         post={'action': 'get_link',
+                               'code'  : self.info['pattern']['ID'],
+                               'pass'  : 'false'})
+        res = json.loads(html)
 
         if 'answer' in res and 'link' in res['answer']:
             url = res['answer']['link']
         else:
             self.error(_("No AJAX/URL"))
 
-        self.html = self.load(url)
-        m = re.search(r'<form id="file_form" action="(.*?)"', self.html)
+        self.data = self.load(url)
+        m = re.search(r'<form id="file_form" action="(.*?)"', self.data)
         if m is not None:
             url = m.group(1)
         else:
             self.error(_("No URL"))
 
         self.link = url
-
-
-getInfo = create_getInfo(UploadingCom)

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Account import Account
-from module.common.json_layer import json_loads
+from module.plugins.internal.MultiAccount import MultiAccount
+from module.plugins.internal.misc import json
 
 
-class OverLoadMe(Account):
+class OverLoadMe(MultiAccount):
     __name__    = "OverLoadMe"
     __type__    = "account"
-    __version__ = "0.08"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
@@ -30,7 +30,7 @@ class OverLoadMe(Account):
                           get={'user': user,
                                'auth': password}).strip()
 
-        data = json_loads(html)
+        data = json.loads(html)
         self.log_debug(data)
 
         #: Check for premium
@@ -41,11 +41,11 @@ class OverLoadMe(Account):
 
 
     def signin(self, user, password, data):
-        jsondata = self.load("https://api.over-load.me/account.php",
-                             get={'user': user,
-                                  'auth': password}).strip()
+        html = self.load("https://api.over-load.me/account.php",
+                         get={'user': user,
+                              'auth': password}).strip()
 
-        data = json_loads(jsondata)
+        data = json.loads(html)
 
         if data['err'] == 1:
             self.fail_login()

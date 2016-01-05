@@ -9,13 +9,13 @@ from module.plugins.internal.Crypter import Crypter
 class LixIn(Crypter):
     __name__    = "LixIn"
     __type__    = "crypter"
-    __version__ = "0.24"
+    __version__ = "0.27"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?lix\.in/(?P<ID>.+)'
-    __config__  = [("activated", "bool", "Activated", True),
-                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
-                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("activated"         , "bool"          , "Activated"                       , True     ),
+                   ("use_premium"       , "bool"          , "Use premium account if available", True     ),
+                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"  , "Default")]
 
     __description__ = """Lix.in decrypter plugin"""
     __license__     = "GPLv3"
@@ -37,26 +37,26 @@ class LixIn(Crypter):
         id = m.group('ID')
         self.log_debug("File id is %s" % id)
 
-        self.html = self.load(url)
+        self.data = self.load(url)
 
-        m = re.search(self.SUBMIT_PATTERN, self.html)
+        m = re.search(self.SUBMIT_PATTERN, self.data)
         if m is None:
             self.error(_("Link doesn't seem valid"))
 
-        m = re.search(self.CAPTCHA_PATTERN, self.html)
+        m = re.search(self.CAPTCHA_PATTERN, self.data)
         if m is not None:
             captcharesult = self.captcha.decrypt(urlparse.urljoin("http://lix.in/", m.group(1)))
-            self.html = self.load(url, post={'capt': captcharesult, 'submit': "submit", 'tiny': id})
+            self.data = self.load(url, post={'capt': captcharesult, 'submit': "submit", 'tiny': id})
 
-            if re.search(self.CAPTCHA_PATTERN, self.html):
+            if re.search(self.CAPTCHA_PATTERN, self.data):
                 self.fail(_("No captcha solved"))
 
         else:
-            self.html = self.load(url, post={'submit': "submit", 'tiny': id})
+            self.data = self.load(url, post={'submit': "submit", 'tiny': id})
 
-        m = re.search(self.LINK_PATTERN, self.html)
+        m = re.search(self.LINK_PATTERN, self.data)
         if m is None:
             self.error(_("Unable to find destination url"))
         else:
-            self.urls = [m.group(1)]
-            self.log_debug("Found link %s, adding to package" % self.urls[0])
+            self.links = [m.group(1)]
+            self.log_debug("Found link %s, adding to package" % self.links[0])

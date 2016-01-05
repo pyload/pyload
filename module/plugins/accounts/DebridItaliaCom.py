@@ -3,13 +3,13 @@
 import re
 import time
 
-from module.plugins.internal.Account import Account
+from module.plugins.internal.MultiAccount import MultiAccount
 
 
-class DebridItaliaCom(Account):
+class DebridItaliaCom(MultiAccount):
     __name__    = "DebridItaliaCom"
     __type__    = "account"
-    __version__ = "0.17"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),

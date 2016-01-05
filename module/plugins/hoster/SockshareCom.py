@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
+from module.plugins.internal.DeadHoster import DeadHoster
 
 
 class SockshareCom(DeadHoster):
     __name__    = "SockshareCom"
     __type__    = "hoster"
-    __version__ = "0.06"
-    __status__  = "testing"
+    __version__ = "0.09"
+    __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?sockshare\.com/(mobile/)?(file|embed)/(?P<ID>\w+)'
     __config__  = []  #@TODO: Remove in 0.4.10
@@ -17,6 +17,3 @@ class SockshareCom(DeadHoster):
     __authors__     = [("jeix", "jeix@hasnomail.de"),
                        ("stickell", "l.stickell@yahoo.it"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
-
-
-getInfo = create_getInfo(SockshareCom)

@@ -3,17 +3,16 @@
 from __future__ import with_statement
 
 import os
-import shutil
 import time
 
 from module.plugins.internal.Addon import Addon
-from module.utils import fs_encode, save_join as fs_join
+from module.plugins.internal.misc import encode, fsjoin, move_tree
 
 
 class HotFolder(Addon):
     __name__    = "HotFolder"
     __type__    = "hook"
-    __version__ = "0.19"
+    __version__ = "0.22"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"              , False      ),
@@ -28,18 +27,18 @@ class HotFolder(Addon):
 
 
     def activate(self):
-        self.start_periodical(30, threaded=True)
+        self.periodical.start(60, threaded=True)
 
 
-    def periodical(self):
-        folder = fs_encode(self.get_config('folder'))
-        file   = fs_encode(self.get_config('file'))
+    def periodical_task(self):
+        folder = encode(self.config.get('folder'))
+        file   = encode(self.config.get('file'))
 
         try:
             if not os.path.isdir(os.path.join(folder, "finished")):
                 os.makedirs(os.path.join(folder, "finished"))
 
-            if self.get_config('watchfile'):
+            if self.config.get('watchfile'):
                 with open(file, "a+") as f:
                     f.seek(0)
                     content = f.read().strip()
@@ -50,7 +49,7 @@ class HotFolder(Addon):
 
                     name = "%s_%s.txt" % (file, time.strftime("%H-%M-%S_%d%b%Y"))
 
-                    with open(fs_join(folder, "finished", name), "wb") as f:
+                    with open(fsjoin(folder, "finished", name), "wb") as f:
                         f.write(content)
 
                     self.pyload.api.addPackage(f.name, [f.name], 1)
@@ -61,8 +60,8 @@ class HotFolder(Addon):
                 if not os.path.isfile(path) or f.endswith("~") or f.startswith("#") or f.startswith("."):
                     continue
 
-                newpath = os.path.join(folder, "finished", "tmp_" + f if self.get_config('delete') else f)
-                shutil.move(path, newpath)
+                newpath = os.path.join(folder, "finished", "tmp_" + f if self.config.get('delete') else f)
+                move_tree(path, newpath)
 
                 self.log_info(_("Added %s from HotFolder") % f)
                 self.pyload.api.addPackage(f, [newpath], 1)

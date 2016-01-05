@@ -3,18 +3,21 @@
 import re
 import urlparse
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class FastshareCz(SimpleHoster):
     __name__    = "FastshareCz"
     __type__    = "hoster"
-    __version__ = "0.36"
+    __version__ = "0.39"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
-    __config__  = [("activated", "bool", "Activated", True),
-                   ("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
+                   ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """FastShare.cz hoster plugin"""
     __license__     = "GPLv3"
@@ -36,11 +39,11 @@ class FastshareCz(SimpleHoster):
 
 
     def check_errors(self):
-        if self.SLOT_ERROR in self.html:
+        if self.SLOT_ERROR in self.data:
             errmsg = self.info['error'] = _("No free slots")
             self.retry(12, 60, errmsg)
 
-        if self.CREDIT_ERROR in self.html:
+        if self.CREDIT_ERROR in self.data:
             errmsg = self.info['error'] = _("Not enough traffic left")
             self.log_warning(errmsg)
             self.restart(premium=False)
@@ -49,7 +52,7 @@ class FastshareCz(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        m = re.search(self.FREE_URL_PATTERN, self.html)
+        m = re.search(self.FREE_URL_PATTERN, self.data)
         if m is not None:
             action, captcha_src = m.groups()
         else:
@@ -61,7 +64,7 @@ class FastshareCz(SimpleHoster):
 
 
     def check_download(self):
-        check = self.check_file({
+        check = self.scan_download({
             'paralell-dl'  : re.compile(r"<title>FastShare.cz</title>|<script>alert\('Pres FREE muzete stahovat jen jeden soubor najednou.'\)"),
             'wrong captcha': re.compile(r'Download for FREE'),
             'credit'       : re.compile(self.CREDIT_ERROR)
@@ -77,6 +80,3 @@ class FastshareCz(SimpleHoster):
             self.restart(premium=False)
 
         return super(FastshareCz, self).check_download()
-
-
-getInfo = create_getInfo(FastshareCz)

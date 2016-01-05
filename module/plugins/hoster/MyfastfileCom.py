@@ -2,20 +2,23 @@
 
 import re
 
-from module.common.json_layer import json_loads
-from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
+from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.misc import json
 
 
 class MyfastfileCom(MultiHoster):
     __name__    = "MyfastfileCom"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/'
-    __config__  = [("activated", "bool", "Activated", True),
-                   ("use_premium" , "bool", "Use premium account if available"    , True),
-                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True ),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True ),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , False),
+                   ("chk_filesize", "bool", "Check file size"                                  , True ),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10   ),
+                   ("revertfailed", "bool", "Revert to standard download if fails"             , True )]
 
     __description__ = """Myfastfile.com multi-hoster plugin"""
     __license__     = "GPLv3"
@@ -27,17 +30,14 @@ class MyfastfileCom(MultiHoster):
 
 
     def handle_premium(self, pyfile):
-        self.html = self.load('http://myfastfile.com/api.php',
+        self.data = self.load('http://myfastfile.com/api.php',
                          get={'user': self.account.user,
                               'pass': self.account.get_login('password'),
                               'link': pyfile.url})
-        self.log_debug("JSON data: " + self.html)
+        self.log_debug("JSON data: " + self.data)
 
-        self.html = json_loads(self.html)
-        if self.html['status'] != 'ok':
+        self.data = json.loads(self.data)
+        if self.data['status'] != 'ok':
             self.fail(_("Unable to unrestrict link"))
 
-        self.link = self.html['link']
-
-
-getInfo = create_getInfo(MyfastfileCom)
+        self.link = self.data['link']

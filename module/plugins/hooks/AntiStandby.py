@@ -13,7 +13,7 @@ except ImportError:
     pass
 
 from module.plugins.internal.Addon import Addon, Expose
-from module.utils import fs_encode, save_join as fs_join
+from module.plugins.internal.misc import encode, fsjoin
 
 
 class Kernel32(object):
@@ -27,7 +27,7 @@ class Kernel32(object):
 class AntiStandby(Addon):
     __name__    = "AntiStandby"
     __type__    = "hook"
-    __version__ = "0.12"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                       , True ),
@@ -43,8 +43,6 @@ class AntiStandby(Addon):
 
     TMP_FILE = ".antistandby"
 
-    PERIODICAL_INTERVAL = 5
-
 
     def init(self):
         self.pid   = None
@@ -52,14 +50,14 @@ class AntiStandby(Addon):
 
 
     def activate(self):
-        hdd     = self.get_config('hdd')
-        system  = not self.get_config('system')
-        display = not self.get_config('display')
+        hdd     = self.config.get('hdd')
+        system  = not self.config.get('system')
+        display = not self.config.get('display')
 
         if hdd:
-            self.start_periodical(self.get_config('interval'), threaded=True)
+            self.periodical.start(self.config.get('interval'), threaded=True)
 
-        if os.name is "nt":
+        if os.name == "nt":
             self.win_standby(system, display)
 
         elif sys.platform == "darwin":
@@ -70,13 +68,9 @@ class AntiStandby(Addon):
 
 
     def deactivate(self):
-        try:
-            os.remove(self.TMP_FILE)
+        self.remove(self.TMP_FILE, trash=False)
 
-        except OSError:
-            pass
-
-        if os.name is "nt":
+        if os.name == "nt":
             self.win_standby(True)
 
         elif sys.platform == "darwin":
@@ -154,22 +148,22 @@ class AntiStandby(Addon):
     @Expose
     def max_mtime(self, path):
         return max(0, 0,
-                   *(os.path.getmtime(fs_join(root, file))
-                        for root, dirs, files in os.walk(fs_encode(path), topdown=False)
+                   *(os.path.getmtime(fsjoin(root, file))
+                        for root, dirs, files in os.walk(encode(path), topdown=False)
                             for file in files))
 
 
-    def periodical(self):
-        if self.get_config('hdd') is False:
+    def periodical_task(self):
+        if self.config.get('hdd') is False:
             return
 
         if (self.pyload.threadManager.pause or
-                not self.pyload.api.isTimeDownload() or
-                    not self.pyload.threadManager.getActiveFiles()):
+            not self.pyload.api.isTimeDownload() or
+            not self.pyload.threadManager.getActiveFiles()):
             return
 
-        download_folder = self.pyload.config.get("general", "download_folder")
-        if (self.max_mtime(download_folder) - self.mtime) < self.interval:
+        dl_folder = self.pyload.config.get('general', 'download_folder')
+        if (self.max_mtime(dl_folder) - self.mtime) < self.periodical.interval:
             return
 
         self.touch(self.TMP_FILE)

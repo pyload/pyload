@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from module.common.json_layer import json_loads
-from module.plugins.internal.Account import Account
-from module.plugins.internal.Plugin import set_cookie
+from module.plugins.internal.MultiAccount import MultiAccount
+from module.plugins.internal.misc import json, set_cookie
 
 
-class SimplyPremiumCom(Account):
+class SimplyPremiumCom(MultiAccount):
     __name__    = "SimplyPremiumCom"
     __type__    = "account"
-    __version__ = "0.10"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
@@ -22,7 +21,7 @@ class SimplyPremiumCom(Account):
 
     def grab_hosters(self, user, password, data):
         json_data = self.load("http://www.simply-premium.com/api/hosts.php", get={'format': "json", 'online': 1})
-        json_data = json_loads(json_data)
+        json_data = json.loads(json_data)
 
         host_list = [element['regex'] for element in json_data['result']]
 
@@ -38,7 +37,7 @@ class SimplyPremiumCom(Account):
 
         self.log_debug("JSON data: %s" % json_data)
 
-        json_data = json_loads(json_data)
+        json_data = json.loads(json_data)
 
         if 'vip' in json_data['result'] and json_data['result']['vip']:
             premium = True

@@ -3,9 +3,8 @@
 import re
 import time
 
-from module.common.json_layer import json_loads
-from module.plugins.internal.Plugin import timestamp
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.misc import json, timestamp
 
 
 def convert_decimal_prefix(m):
@@ -16,12 +15,15 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "1.16"
+    __version__ = "1.19"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
-    __config__  = [("activated", "bool", "Activated", True),
-                   ("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
+                   ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """Uloz.to hoster plugin"""
     __license__     = "GPLv3"
@@ -75,7 +77,7 @@ class UlozTo(SimpleHoster):
             xapca = xapca.replace('sound":"', 'sound":"http:').replace('image":"', 'image":"http:')
             self.log_debug("xapca: %s" % xapca)
 
-            data = json_loads(xapca)
+            data = json.loads(xapca)
             captcha_value = self.captcha.decrypt(data['image'])
             self.log_debug("CAPTCHA HASH: " + data['hash'], "CAPTCHA SALT: %s" % data['salt'], "CAPTCHA VALUE: " + captcha_value)
 
@@ -92,39 +94,39 @@ class UlozTo(SimpleHoster):
 
 
     def check_errors(self):
-        if re.search(self.ADULT_PATTERN, self.html):
+        if re.search(self.ADULT_PATTERN, self.data):
             self.log_info(_("Adult content confirmation needed"))
 
-            m = re.search(self.TOKEN_PATTERN, self.html)
+            m = re.search(self.TOKEN_PATTERN, self.data)
             if m is None:
                 self.error(_("TOKEN_PATTERN not found"))
 
-            self.html = self.load(pyfile.url,
+            self.data = self.load(pyfile.url,
                                   get={'do': "askAgeForm-submit"},
                                   post={'agree': "Confirm", '_token_': m.group(1)})
 
-        if self.PASSWD_PATTERN in self.html:
+        if self.PASSWD_PATTERN in self.data:
             password = self.get_password()
 
             if password:
                 self.log_info(_("Password protected link, trying ") + password)
-                self.html = self.load(pyfile.url,
+                self.data = self.load(pyfile.url,
                                       get={'do': "passwordProtectedForm-submit"},
                                       post={'password': password, 'password_send': 'Send'})
 
-                if self.PASSWD_PATTERN in self.html:
+                if self.PASSWD_PATTERN in self.data:
                     self.fail(_("Wrong password"))
             else:
                 self.fail(_("No password found"))
 
-        if re.search(self.VIPLINK_PATTERN, self.html):
-            self.html = self.load(pyfile.url, get={'disclaimer': "1"})
+        if re.search(self.VIPLINK_PATTERN, self.data):
+            self.data = self.load(pyfile.url, get={'disclaimer': "1"})
 
         return super(UlozTo, self).check_errors()
 
 
     def check_download(self):
-        check = self.check_file({
+        check = self.scan_download({
             'wrong_captcha': ">An error ocurred while verifying the user",
             'offline'      : re.compile(self.OFFLINE_PATTERN),
             'passwd'       : self.PASSWD_PATTERN,
@@ -151,6 +153,3 @@ class UlozTo(SimpleHoster):
             self.fail(_("Server error, file not downloadable"))
 
         return super(UlozTo, self).check_download()
-
-
-getInfo = create_getInfo(UlozTo)

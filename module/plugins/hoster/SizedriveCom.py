@@ -2,17 +2,21 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class SizedriveCom(SimpleHoster):
     __name__    = "SizedriveCom"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?sizedrive\.com/[rd]/(?P<ID>\w+)'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
+                   ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """Sizedrive.com hoster plugin"""
     __license__     = "GPLv3"
@@ -32,12 +36,9 @@ class SizedriveCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         self.wait(5)
-        self.html = self.load("http://www.sizedrive.com/getdownload.php",
+        self.data = self.load("http://www.sizedrive.com/getdownload.php",
                               post={'id': self.info['pattern']['ID']})
 
-        m = re.search(r'<span id="boton_download" ><a href="(.+?)"', self.html)
+        m = re.search(r'<span id="boton_download" ><a href="(.+?)"', self.data)
         if m is not None:
             self.link = m.group(1)
-
-
-getInfo = create_getInfo(SizedriveCom)

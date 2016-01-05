@@ -8,7 +8,7 @@ import re
 import zlib
 
 from module.plugins.internal.Addon import Addon
-from module.utils import save_join as fs_join, fs_encode
+from module.plugins.internal.misc import encode, fsjoin
 
 
 def compute_checksum(local_file, algorithm):
@@ -38,8 +38,8 @@ def compute_checksum(local_file, algorithm):
 class Checksum(Addon):
     __name__    = "Checksum"
     __type__    = "hook"
-    __version__ = "0.22"
-    __status__  = "testing"
+    __version__ = "0.24"
+    __status__  = "broken"
 
     __config__ = [("activated"     , "bool"              , "Activated"                                            , False  ),
                   ("check_checksum", "bool"              , "Check checksum? (If False only size will be verified)", True   ),
@@ -65,7 +65,7 @@ class Checksum(Addon):
 
 
     def activate(self):
-        if not self.get_config('check_checksum'):
+        if not self.config.get('check_checksum'):
             self.log_info(_("Checksum validation is disabled in plugin configuration"))
 
 
@@ -103,9 +103,9 @@ class Checksum(Addon):
         if not pyfile.plugin.last_download:
             self.check_failed(pyfile, None, "No file downloaded")
 
-        local_file = fs_encode(pyfile.plugin.last_download)
-        # download_folder = self.pyload.config.get("general", "download_folder")
-        # local_file = fs_encode(fs_join(download_folder, pyfile.package().folder, pyfile.name))
+        local_file = encode(pyfile.plugin.last_download)
+        # dl_folder  = self.pyload.config.get("general", "download_folder")
+        # local_file = encode(fsjoin(dl_folder, pyfile.package().folder, pyfile.name))
 
         if not os.path.isfile(local_file):
             self.check_failed(pyfile, None, "File does not exist")
@@ -122,7 +122,7 @@ class Checksum(Addon):
             data.pop('size', None)
 
         #: Validate checksum
-        if data and self.get_config('check_checksum'):
+        if data and self.config.get('check_checksum'):
 
             if not 'md5' in data:
                 for type in ("checksum", "hashsum", "hash"):
@@ -149,14 +149,14 @@ class Checksum(Addon):
 
 
     def check_failed(self, pyfile, local_file, msg):
-        check_action = self.get_config('check_action')
+        check_action = self.config.get('check_action')
         if check_action == "retry":
-            max_tries = self.get_config('max_tries')
-            retry_action = self.get_config('retry_action')
+            max_tries = self.config.get('max_tries')
+            retry_action = self.config.get('retry_action')
             if pyfile.plugin.retries < max_tries:
                 if local_file:
                     os.remove(local_file)
-                pyfile.plugin.retry(max_tries, self.get_config('wait_time'), msg)
+                pyfile.plugin.retry(max_tries, self.config.get('wait_time'), msg)
             elif retry_action == "nothing":
                 return
         elif check_action == "nothing":
@@ -166,17 +166,17 @@ class Checksum(Addon):
 
 
     def package_finished(self, pypack):
-        download_folder = fs_join(self.pyload.config.get("general", "download_folder"), pypack.folder, "")
+        dl_folder = fsjoin(self.pyload.config.get("general", "download_folder"), pypack.folder, "")
 
-        for link in pypack.getChildren().values():
-            file_type = os.path.splitext(link['name'])[1][1:].lower()
+        for fid, fdata in pypack.getChildren().items():
+            file_type = os.path.splitext(fdata['name'])[1][1:].lower()
 
             if file_type not in self.formats:
                 continue
 
-            hash_file = fs_encode(fs_join(download_folder, link['name']))
+            hash_file = encode(fsjoin(dl_folder, fdata['name']))
             if not os.path.isfile(hash_file):
-                self.log_warning(_("File not found"), link['name'])
+                self.log_warning(_("File not found"), fdata['name'])
                 continue
 
             with open(hash_file) as f:
@@ -184,9 +184,9 @@ class Checksum(Addon):
 
             for m in re.finditer(self.regexps.get(file_type, self.regexps['default']), text):
                 data = m.groupdict()
-                self.log_debug(link['name'], data)
+                self.log_debug(fdata['name'], data)
 
-                local_file = fs_encode(fs_join(download_folder, data['NAME']))
+                local_file = encode(fsjoin(dl_folder, data['NAME']))
                 algorithm = self.methods.get(file_type, file_type)
                 checksum = compute_checksum(local_file, algorithm)
 

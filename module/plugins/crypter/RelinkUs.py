@@ -3,24 +3,25 @@
 from __future__ import with_statement
 
 import binascii
-import re
 import os
+import re
 
-from Crypto.Cipher import AES
+import Crypto.Cipher
+
 from module.plugins.internal.Crypter import Crypter
-from module.utils import save_join as fs_join
+from module.plugins.internal.misc import fsjoin
 
 
 class RelinkUs(Crypter):
     __name__    = "RelinkUs"
     __type__    = "crypter"
-    __version__ = "3.14"
+    __version__ = "3.17"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?relink\.us/(f/|((view|go)\.php\?id=))(?P<ID>.+)'
-    __config__  = [("activated", "bool", "Activated", True),
-                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
-                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("activated"         , "bool"          , "Activated"                       , True     ),
+                   ("use_premium"       , "bool"          , "Use premium account if available", True     ),
+                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"  , "Default")]
 
     __description__ = """Relink.us decrypter plugin"""
     __license__     = "GPLv3"
@@ -85,19 +86,19 @@ class RelinkUs(Crypter):
             self.handle_errors()
 
         #: Get package name and folder
-        (package_name, folder_name) = self.get_package_info()
+        (pack_name, folder_name) = self.get_package_info()
 
         #: Extract package links
-        package_links = []
+        pack_links = []
         for sources in self.PREFERRED_LINK_SOURCES:
-            package_links.extend(self.handle_link_source(sources))
-            if package_links:  #: Use only first source which provides links
+            pack_links.extend(self.handle_link_source(sources))
+            if pack_links:  #: Use only first source which provides links
                 break
-        package_links = set(package_links)
+        pack_links = set(pack_links)
 
         #: Pack
-        if package_links:
-            self.packages = [(package_name, package_links, folder_name)]
+        if pack_links:
+            self.packages = [(pack_name, pack_links, folder_name)]
 
 
     def init_package(self, pyfile):
@@ -106,24 +107,24 @@ class RelinkUs(Crypter):
 
 
     def request_package(self):
-        self.html = self.load(self.pyfile.url)
+        self.data = self.load(self.pyfile.url)
 
 
     def is_online(self):
-        if self.OFFLINE_TOKEN in self.html:
+        if self.OFFLINE_TOKEN in self.data:
             self.log_debug("File not found")
             return False
         return True
 
 
     def is_password_protected(self):
-        if self.PASSWORD_TOKEN in self.html:
+        if self.PASSWORD_TOKEN in self.data:
             self.log_debug("Links are password protected")
             return True
 
 
     def is_captcha_protected(self):
-        if self.CAPTCHA_TOKEN in self.html:
+        if self.CAPTCHA_TOKEN in self.data:
             self.log_debug("Links are captcha protected")
             return True
         return False
@@ -137,24 +138,24 @@ class RelinkUs(Crypter):
         if password:
             passwd_url = self.PASSWORD_SUBMIT_URL + "?id=%s" % self.fileid
             passwd_data = {'id': self.fileid, 'password': password, 'pw': 'submit'}
-            self.html = self.load(passwd_url, post=passwd_data)
+            self.data = self.load(passwd_url, post=passwd_data)
 
 
     def unlock_captcha_protection(self):
         self.log_debug("Request user positional captcha resolving")
         captcha_img_url = self.CAPTCHA_IMG_URL + "?id=%s" % self.fileid
         coords = self.captcha.decrypt(captcha_img_url, input_type="png", output_type='positional', ocr="CircleCaptcha")
-        self.log_debug("Captcha resolved, coords [%s]" % str(coords))
+        self.log_debug("Captcha resolved, coords %s" % coords)
         captcha_post_url = self.CAPTCHA_SUBMIT_URL + "?id=%s" % self.fileid
         captcha_post_data = {'button.x': coords[0], 'button.y': coords[1], 'captcha': 'submit'}
-        self.html = self.load(captcha_post_url, post=captcha_post_data)
+        self.data = self.load(captcha_post_url, post=captcha_post_data)
 
 
     def get_package_info(self):
         name = folder = None
 
         #: Try to get info from web
-        m = re.search(self.FILE_TITLE_REGEX, self.html)
+        m = re.search(self.FILE_TITLE_REGEX, self.data)
         if m is not None:
             title = m.group(1).strip()
             if not self.FILE_NOTITLE in title:
@@ -172,11 +173,11 @@ class RelinkUs(Crypter):
 
 
     def handle_errors(self):
-        if self.PASSWORD_ERROR_ROKEN in self.html:
+        if self.PASSWORD_ERROR_ROKEN in self.data:
             self.fail(_("Wrong password"))
 
         if self.captcha:
-            if self.CAPTCHA_ERROR_ROKEN in self.html:
+            if self.CAPTCHA_ERROR_ROKEN in self.data:
                 self.retry_captcha()
             else:
                 self.captcha.correct()
@@ -195,47 +196,47 @@ class RelinkUs(Crypter):
 
     def handle_CNL2Links(self):
         self.log_debug("Search for CNL2 links")
-        package_links = []
-        m = re.search(self.CNL2_FORM_REGEX, self.html, re.S)
+        pack_links = []
+        m = re.search(self.CNL2_FORM_REGEX, self.data, re.S)
         if m is not None:
             cnl2_form = m.group(1)
             try:
                 (vcrypted, vjk) = self._get_cipher_params(cnl2_form)
                 for (crypted, jk) in zip(vcrypted, vjk):
-                    package_links.extend(self._get_links(crypted, jk))
+                    pack_links.extend(self._get_links(crypted, jk))
 
             except Exception:
                 self.log_debug("Unable to decrypt CNL2 links", trace=True)
 
-        return package_links
+        return pack_links
 
 
     def handle_DLC_links(self):
         self.log_debug("Search for DLC links")
-        package_links = []
-        m = re.search(self.DLC_LINK_REGEX, self.html)
+        pack_links = []
+        m = re.search(self.DLC_LINK_REGEX, self.data)
         if m is not None:
             container_url = self.DLC_DOWNLOAD_URL + "?id=%s&dlc=1" % self.fileid
             self.log_debug("Downloading DLC container link [%s]" % container_url)
             try:
                 dlc = self.load(container_url)
                 dlc_filename = self.fileid + ".dlc"
-                dlc_filepath = fs_join(self.pyload.config.get("general", "download_folder"), dlc_filename)
+                dlc_filepath = fsjoin(self.pyload.config.get('general', 'download_folder'), dlc_filename)
                 with open(dlc_filepath, "wb") as f:
                     f.write(dlc)
-                package_links.append(dlc_filepath)
+                pack_links.append(dlc_filepath)
 
             except Exception:
                 self.fail(_("Unable to download DLC container"))
 
-        return package_links
+        return pack_links
 
 
     def handle_WEB_links(self):
         self.log_debug("Search for WEB links")
 
-        package_links = []
-        params        = re.findall(self.WEB_FORWARD_REGEX, self.html)
+        pack_links = []
+        params        = re.findall(self.WEB_FORWARD_REGEX, self.data)
 
         self.log_debug("Decrypting %d Web links" % len(params))
 
@@ -248,14 +249,14 @@ class RelinkUs(Crypter):
                 res  = self.load(url)
                 link = re.search(self.WEB_LINK_REGEX, res).group(1)
 
-                package_links.append(link)
+                pack_links.append(link)
 
             except Exception, detail:
                 self.log_debug("Error decrypting Web link %s, %s" % (index, detail))
 
             self.wait(4)
 
-        return package_links
+        return pack_links
 
 
     def _get_cipher_params(self, cnl2_form):
@@ -281,7 +282,7 @@ class RelinkUs(Crypter):
         #: Decrypt
         Key = key
         IV = key
-        obj = AES.new(Key, AES.MODE_CBC, IV)
+        obj = Crypto.Cipher.AES.new(Key, Crypto.Cipher.AES.MODE_CBC, IV)
         text = obj.decrypt(crypted.decode('base64'))
 
         #: Extract links

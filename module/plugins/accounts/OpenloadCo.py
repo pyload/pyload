@@ -3,15 +3,15 @@
 from module.plugins.internal.XFSAccount import XFSAccount
 
 
-class FileParadoxIn(XFSAccount):
-    __name__    = "FileParadoxIn"
+class OpenloadCo(XFSAccount):
+    __name__    = "OpenloadCo"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.02"
     __status__  = "testing"
 
-    __description__ = """FileParadox.in account plugin"""
+    __description__ = """Openload.co account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    PLUGIN_DOMAIN = "fileparadox.in"
+    PLUGIN_DOMAIN = "openload.co"

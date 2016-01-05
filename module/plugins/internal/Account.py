@@ -2,29 +2,26 @@
 
 import random
 import re
-import time
 import threading
+import time
 
-from module.plugins.Plugin import SkipDownload as Skip
-from module.plugins.internal.Plugin import Plugin, parse_size
-from module.utils import compare_time, lock
+from module.plugins.internal.Plugin import Plugin, Skip
+from module.plugins.internal.misc import Periodical, compare_time, decode, isiterable, lock, parse_size
 
 
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.62"
-    __status__  = "testing"
+    __version__ = "0.70"
+    __status__  = "stable"
 
     __description__ = """Base account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    LOGIN_TIMEOUT = 30 * 60  #: Relogin account every 30 minutes
-    TUNE_TIMEOUT  = True     #: Automatically tune relogin interval
-
-    PERIODICAL_INTERVAL = None
+    LOGIN_TIMEOUT       = 30 * 60  #: Relogin account every 30 minutes
+    TUNE_TIMEOUT        = True     #: Automatically tune relogin interval
 
 
     def __init__(self, manager, accounts):
@@ -38,64 +35,11 @@ class Account(Plugin):
 
         self.timeout = self.LOGIN_TIMEOUT
 
-        #: Callback of periodical job task
-        self.cb       = None
-        self.interval = self.PERIODICAL_INTERVAL
+        #: Callback of periodical job task, used by HookManager
+        self.periodical = Periodical(self, self.periodical_task)
+        self.cb = self.periodical.cb  #@TODO: Recheck in 0.4.10
 
         self.init()
-
-
-    def init(self):
-        """
-        Initialize additional data structures
-        """
-        pass
-
-
-    def set_interval(self, value):
-        newinterval = max(0, self.PERIODICAL_INTERVAL, value)
-
-        if newinterval != value:
-            return False
-
-        if newinterval != self.interval:
-            self.interval = newinterval
-
-        return True
-
-
-    def start_periodical(self, interval=None, threaded=False, delay=None):
-        if interval is not None and self.set_interval(interval) is False:
-            return False
-        else:
-            self.cb = self.pyload.scheduler.addJob(max(1, delay), self._periodical, [threaded], threaded=threaded)
-            return True
-
-
-    def restart_periodical(self, *args, **kwargs):
-        self.stop_periodical()
-        return self.start_periodical(*args, **kwargs)
-
-
-    def stop_periodical(self):
-        try:
-            return self.pyload.scheduler.removeJob(self.cb)
-        finally:
-            self.cb = None
-
-
-    def _periodical(self, threaded):
-        try:
-            self.periodical()
-
-        except Exception, e:
-            self.log_error(_("Error executing periodical task: %s") % e, trace=True)
-
-        self.restart_periodical(threaded=threaded, delay=self.interval)
-
-
-    def periodical(self):
-        raise NotImplementedError
 
 
     @property
@@ -120,6 +64,33 @@ class Account(Plugin):
         return bool(self.get_data('premium'))
 
 
+    def _log(self, level, plugintype, pluginname, messages):
+        log = getattr(self.pyload.log, level)
+        msg = u" | ".join(decode(a).strip() for a in messages if a)
+
+        #: Hide any password
+        try:
+            msg = msg.replace(self.info['login']['password'], "**********")
+        except Exception:
+            pass
+
+        log("%(plugintype)s %(pluginname)s: %(msg)s" %
+            {'plugintype': plugintype.upper(),
+             'pluginname': pluginname,
+             'msg'       : msg})
+
+
+    def setup(self):
+        """
+        Setup for enviroment and other things, called before logging (possibly more than one time)
+        """
+        pass
+
+
+    def periodical_task(self):
+        raise NotImplementedError
+
+
     def signin(self, user, password, data):
         """
         Login into account, the cookies will be saved so user can be recognized
@@ -137,6 +108,7 @@ class Account(Plugin):
         self.req = self.pyload.requestFactory.getRequest(self.classname, self.user)
 
         self.sync()
+        self.setup()
 
         timestamp = time.time()
 
@@ -144,7 +116,7 @@ class Account(Plugin):
             self.signin(self.user, self.info['login']['password'], self.info['data'])
 
         except Skip, e:
-            self.log_debug(e)
+            self.log_warning(_("Skipped login user `%s`"), e)
             self.info['login']['valid'] = True
 
             new_timeout = timestamp - self.info['login']['timestamp']
@@ -190,14 +162,13 @@ class Account(Plugin):
             u.update(self.info['login'])
 
         else:
-            d = {'login': {'password' : u['password'],
-                           'timestamp': u['timestamp'],
-                           'valid'    : u['valid']},
-                 'data' : {'maxtraffic' : u['maxtraffic'],
-                           'options'    : u['options'],
-                           'premium'    : u['premium'],
-                           'trafficleft': u['trafficleft'],
-                           'validuntil' : u['validuntil']}}
+            d = {'login': {}, 'data': {}}
+
+            for k, v in u.items():
+                if k in ('password', 'timestamp', 'valid'):
+                    d['login'][k] = v
+                else:
+                    d['data'][k] = v
 
             self.info.update(d)
 
@@ -209,13 +180,9 @@ class Account(Plugin):
     def reset(self):
         self.sync()
 
-        d = {'maxtraffic' : None,
-             'options'    : {'limitdl': ['0']},
-             'premium'    : None,
-             'trafficleft': None,
-             'validuntil' : None}
-
-        self.info['data'].update(d)
+        clear = lambda x: {} if isinstance(x, dict) else [] if isiterable(x) else None
+        self.info['data'] = dict((k, clear(v)) for k, v in self.info['data'].items())
+        self.info['data']['options'] = {'limitdl': ['0']}
 
         self.syncback()
 
@@ -242,9 +209,7 @@ class Account(Plugin):
 
             self.syncback()
 
-            safe_info = dict(self.info)
-            safe_info['login']['password'] = "**********"
-            self.log_debug("Account info for user `%s`: %s" % (self.user, safe_info))
+            self.log_debug("Account info for user `%s`: %s" % (self.user, self.info))
 
         return self.info
 
@@ -459,19 +424,10 @@ class Account(Plugin):
 
     ###########################################################################
 
-    def parse_traffic(self, size, unit="byte"):  #@NOTE: Returns kilobytes in 0.4.9
-        unit = unit.lower().strip()  #@TODO: Remove in 0.4.10
-        size = re.search(r'(\d*[\.,]?\d+)', size).group(1)  #@TODO: Recheck in 0.4.10
-
-        self.log_debug("Size: %s" % size, "Unit: %s" % unit)
-
-        #@NOTE: Remove in 0.4.10
-        if unit.startswith('t'):
-            traffic = float(size.replace(',', '.')) * 1 << 40
-        else:
-            traffic = parse_size(size, unit)
-
-        return traffic / 1024  #@TODO: Remove `/ 1024` in 0.4.10
+    def parse_traffic(self, size, unit=None):  #@NOTE: Returns kilobytes only in 0.4.9
+        self.log_debug("Size: %s" % size,
+                       "Unit: %s" % (unit or "N/D"))
+        return parse_size(size, unit or "byte") / 1024  #@TODO: Remove `/ 1024` in 0.4.10
 
 
     def fail_login(self, msg=_("Login handshake has failed")):

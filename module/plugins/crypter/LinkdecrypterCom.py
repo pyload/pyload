@@ -8,13 +8,13 @@ from module.plugins.internal.MultiCrypter import MultiCrypter
 class LinkdecrypterCom(MultiCrypter):
     __name__    = "LinkdecrypterCom"
     __type__    = "crypter"
-    __version__ = "0.33"
+    __version__ = "0.36"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("activated", "bool", "Activated", True),
-                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
-                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("activated"         , "bool"          , "Activated"                       , True     ),
+                   ("use_premium"       , "bool"          , "Use premium account if available", True     ),
+                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"  , "Default")]
 
     __description__ = """Linkdecrypter.com decrypter plugin"""
     __license__     = "GPLv3"
@@ -36,36 +36,36 @@ class LinkdecrypterCom(MultiCrypter):
         retries = 5
 
         post_dict = {'link_cache': "on", 'pro_links': pyfile.url, 'modo_links': "text"}
-        self.html = self.load('http://linkdecrypter.com/', post=post_dict)
+        self.data = self.load('http://linkdecrypter.com/', post=post_dict)
 
         while retries:
-            m = re.search(self.TEXTAREA_PATTERN, self.html, re.S)
+            m = re.search(self.TEXTAREA_PATTERN, self.data, re.S)
             if m is not None:
-                self.urls = [x for x in m.group(1).splitlines() if '[LINK-ERROR]' not in x]
+                self.links = [x for x in m.group(1).splitlines() if '[LINK-ERROR]' not in x]
 
-            m = re.search(self.CAPTCHA_PATTERN, self.html)
+            m = re.search(self.CAPTCHA_PATTERN, self.data)
             if m is not None:
                 captcha_url = 'http://linkdecrypter.com/' + m.group(1)
                 result_type = "positional" if "getPos" in m.group(2) else "textual"
 
-                m = re.search(r"<p><i><b>([^<]+)</b></i></p>", self.html)
+                m = re.search(r'<p><i><b>(.+?)</b></i></p>', self.data)
                 msg = m.group(1) if m else ""
                 self.log_info(_("Captcha protected link"), result_type, msg)
 
                 captcha = self.captcha.decrypt(captcha_url, output_type=result_type)
                 if result_type == "positional":
                     captcha = "%d|%d" % captcha
-                self.html = self.load('http://linkdecrypter.com/', post={'captcha': captcha})
+                self.data = self.load('http://linkdecrypter.com/', post={'captcha': captcha})
                 retries -= 1
 
-            elif self.PASSWORD_PATTERN in self.html:
+            elif self.PASSWORD_PATTERN in self.data:
                 if self.password:
                     self.log_info(_("Password protected link"))
-                    self.html = self.load('http://linkdecrypter.com/',
+                    self.data = self.load('http://linkdecrypter.com/',
                                           post={'password': self.get_password()})
                 else:
                     self.fail(_("Missing password"))
 
             else:
                 retries -= 1
-                self.html = self.load('http://linkdecrypter.com/')
+                self.data = self.load('http://linkdecrypter.com/')

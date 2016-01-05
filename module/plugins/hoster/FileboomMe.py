@@ -3,17 +3,21 @@
 import re
 import urlparse
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class FileboomMe(SimpleHoster):
     __name__    = "FileboomMe"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'https?://f(?:ile)?boom\.me/file/(?P<ID>\w+)'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
+                   ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """Fileboom.me hoster plugin"""
     __license__     = "GPLv3"
@@ -39,19 +43,19 @@ class FileboomMe(SimpleHoster):
     def handle_free(self, pyfile):
         post_url = urlparse.urljoin(pyfile.url, "file/" + self.info['pattern']['ID'])
 
-        m = re.search(r'data-slow-id="(\w+)"', self.html)
+        m = re.search(r'data-slow-id="(\w+)"', self.data)
         if m is not None:
-            self.html = self.load(post_url,
+            self.data = self.load(post_url,
                                   post={'slow_id': m.group(1)})
 
-            m = re.search(self.LINK_PATTERN, self.html)
+            m = re.search(self.LINK_PATTERN, self.data)
             if m is not None:
                 self.link = urlparse.urljoin(pyfile.url, m.group(0))
 
             else:
-                m = re.search(r'<input type="hidden" name="uniqueId" value="(\w+)">', self.html)
+                m = re.search(r'<input type="hidden" name="uniqueId" value="(\w+)">', self.data)
                 if m is None:
-                    m = re.search(r'>\s*Please wait ([\d:]+)', self.html)
+                    m = re.search(r'>\s*Please wait ([\d:]+)', self.data)
                     if m is not None:
                         wait_time = 0
                         for v in re.findall(r'(\d+)', m.group(1), re.I):
@@ -62,28 +66,25 @@ class FileboomMe(SimpleHoster):
                 else:
                     uniqueId = m.group(1)
 
-                    m = re.search(self.CAPTCHA_PATTERN, self.html)
+                    m = re.search(self.CAPTCHA_PATTERN, self.data)
                     if m is not None:
                         captcha = self.captcha.decrypt(urlparse.urljoin(pyfile.url, m.group(1)))
-                        self.html = self.load(post_url,
+                        self.data = self.load(post_url,
                                               post={'CaptchaForm[code]'  : captcha,
                                                     'free'               : 1,
                                                     'freeDownloadRequest': 1,
                                                     'uniqueId'           : uniqueId})
 
-                        if 'The verification code is incorrect' in self.html:
+                        if 'The verification code is incorrect' in self.data:
                             self.retry_captcha()
 
                         else:
                             self.check_errors()
 
-                            self.html = self.load(post_url,
+                            self.data = self.load(post_url,
                                                   post={'free'    : 1,
                                                         'uniqueId': uniqueId})
 
-                            m = re.search(self.LINK_PATTERN, self.html)
+                            m = re.search(self.LINK_PATTERN, self.data)
                             if m is not None:
                                 self.link = urlparse.urljoin(pyfile.url, m.group(0))
-
-
-getInfo = create_getInfo(FileboomMe)

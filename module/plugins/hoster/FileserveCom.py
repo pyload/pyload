@@ -2,38 +2,16 @@
 
 import re
 
-from module.common.json_layer import json_loads
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.Plugin import chunks, parse_size
-from module.plugins.internal.SimpleHoster import seconds_to_midnight
-
-
-def check_file(plugin, urls):
-    html = get_url(plugin.URLS[1], post={'urls': "\n".join(urls)})
-
-    file_info = []
-    for li in re.finditer(plugin.LINKCHECK_TR, html, re.S):
-        try:
-            cols = re.findall(plugin.LINKCHECK_TD, li.group(1))
-            if cols:
-                file_info.append((
-                    cols[1] if cols[1] != '--' else cols[0],
-                    parse_size(cols[2]) if cols[2] != '--' else 0,
-                    2 if cols[3].startswith('Available') else 1,
-                    cols[0]))
-
-        except Exception, e:
-            continue
-
-    return file_info
+from module.plugins.internal.misc import json, parse_size, seconds_to_midnight
 
 
 class FileserveCom(Hoster):
     __name__    = "FileserveCom"
     __type__    = "hoster"
-    __version__ = "0.62"
+    __version__ = "0.67"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<ID>[^/]+)'
@@ -50,9 +28,6 @@ class FileserveCom(Hoster):
     URLS = ["http://www.fileserve.com/file/",
             "http://www.fileserve.com/link-checker.php",
             "http://www.fileserve.com/checkReCaptcha.php"]
-
-    LINKCHECK_TR = r'<tr>\s*(<td>http://www\.fileserve\.com/file/.*?)</tr>'
-    LINKCHECK_TD = r'<td>(?:<.*?>|&nbsp;)*([^<]*)'
 
     CAPTCHA_KEY_PATTERN   = r'var reCAPTCHA_publickey=\'(.+?)\''
     LONG_WAIT_PATTERN     = r'<li class="title">You need to wait (\d+) (\w+) to start another download\.</li>'
@@ -82,16 +57,16 @@ class FileserveCom(Hoster):
 
 
     def handle_free(self):
-        self.html = self.load(self.url)
+        self.data = self.load(self.url)
         action = self.load(self.url, post={'checkDownload': "check"})
-        action = json_loads(action)
+        action = json.loads(action)
         self.log_debug(action)
 
         if "fail" in action:
             if action['fail'] == "timeLimit":
-                self.html = self.load(self.url, post={'checkDownload': "showError", 'errorType': "timeLimit"})
+                self.data = self.load(self.url, post={'checkDownload': "showError", 'errorType': "timeLimit"})
 
-                self.do_long_wait(re.search(self.LONG_WAIT_PATTERN, self.html))
+                self.do_long_wait(re.search(self.LONG_WAIT_PATTERN, self.data))
 
             elif action['fail'] == "parallelDownload":
                 self.log_warning(_("Parallel download error, now waiting 60s"))
@@ -120,7 +95,7 @@ class FileserveCom(Hoster):
         self.download(self.url, post={'download': "normal"})
         self.log_debug(self.req.http.lastEffectiveURL)
 
-        check = self.check_file({'expired': self.LINK_EXPIRED_PATTERN,
+        check = self.scan_download({'expired': self.LINK_EXPIRED_PATTERN,
                                     'wait'   : re.compile(self.LONG_WAIT_PATTERN),
                                     'limit'  : self.DL_LIMIT_PATTERN})
 
@@ -158,14 +133,15 @@ class FileserveCom(Hoster):
 
 
     def do_captcha(self):
-        captcha_key = re.search(self.CAPTCHA_KEY_PATTERN, self.html).group(1)
-        recaptcha = ReCaptcha(self)
+        captcha_key = re.search(self.CAPTCHA_KEY_PATTERN, self.data).group(1)
+        self.captcha = ReCaptcha(self.pyfile)
 
-        response, challenge = recaptcha.challenge(captcha_key)
-        res = json_loads(self.load(self.URLS[2],
-                                   post={'recaptcha_challenge_field'  : challenge,
-                                         'recaptcha_response_field'   : response,
-                                         'recaptcha_shortencode_field': self.file_id}))
+        response, challenge = self.captcha.challenge(captcha_key)
+        html = self.load(self.URLS[2],
+                         post={'recaptcha_challenge_field'  : challenge,
+                               'recaptcha_response_field'   : response,
+                               'recaptcha_shortencode_field': self.file_id})
+        res = json.loads(html)
         if res['success']:
             self.captcha.correct()
         else:
@@ -187,7 +163,7 @@ class FileserveCom(Hoster):
                                   'password': self.account.get_login('password'),
                                   'shorten': self.file_id})
             if res:
-                res = json_loads(res)
+                res = json.loads(res)
                 if res['error_code'] == "302":
                     premium_url = res['next']
 
@@ -205,11 +181,7 @@ class FileserveCom(Hoster):
 
         self.download(premium_url or self.pyfile.url)
 
-        if not premium_url and self.check_file({'login': re.compile(self.NOT_LOGGED_IN_PATTERN)}):
+        if not premium_url and \
+           self.scan_download({'login': re.compile(self.NOT_LOGGED_IN_PATTERN)}):
             self.account.relogin()
             self.retry(msg=_("Not logged in"))
-
-
-def get_info(urls):
-    for chunk in chunks(urls, 100):
-        yield check_file(FileserveCom, chunk)

@@ -3,18 +3,21 @@
 import re
 import time
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class MegasharesCom(SimpleHoster):
     __name__    = "MegasharesCom"
     __type__    = "hoster"
-    __version__ = "0.33"
+    __version__ = "0.36"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index\.php)?\?d\d{2}=|dl/)\w+'
-    __config__  = [("activated", "bool", "Activated", True),
-                   ("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
+                   ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """Megashares.com hoster plugin"""
     __license__     = "GPLv3"
@@ -46,15 +49,15 @@ class MegasharesCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        if self.NO_SLOTS_PATTERN in self.html:
+        if self.NO_SLOTS_PATTERN in self.data:
             self.retry(wait=5 * 60)
 
-        m = re.search(self.REACTIVATE_PASSPORT_PATTERN, self.html)
+        m = re.search(self.REACTIVATE_PASSPORT_PATTERN, self.data)
         if m is not None:
             passport_num = m.group(1)
-            request_uri = re.search(self.REQUEST_URI_PATTERN, self.html).group(1)
+            request_uri = re.search(self.REQUEST_URI_PATTERN, self.data).group(1)
 
-            random_num = re.search(self.REACTIVATE_NUM_PATTERN, self.html).group(1)
+            random_num = re.search(self.REACTIVATE_NUM_PATTERN, self.data).group(1)
 
             verifyinput = self.captcha.decrypt("http://d01.megashares.com/index.php",
                                               get={'secgfx': "gfx", 'random_num': random_num})
@@ -75,7 +78,7 @@ class MegasharesCom(SimpleHoster):
             else:
                 self.retry_captcha(msg=_("Failed to reactivate passport"))
 
-        m = re.search(self.PASSPORT_RENEW_PATTERN, self.html)
+        m = re.search(self.PASSPORT_RENEW_PATTERN, self.data)
         if m is not None:
             time = [int(x) for x in m.groups()]
             renew = time[0] + (time[1] * 60) + (time[2] * 60)
@@ -83,7 +86,7 @@ class MegasharesCom(SimpleHoster):
             self.retry(wait=renew, msg=_("Passport renewal"))
 
         #: Check traffic left on passport
-        m = re.search(self.PASSPORT_LEFT_PATTERN, self.html, re.M | re.S)
+        m = re.search(self.PASSPORT_LEFT_PATTERN, self.data, re.M | re.S)
         if m is None:
             self.fail(_("Passport not found"))
 
@@ -98,13 +101,10 @@ class MegasharesCom(SimpleHoster):
 
 
     def handle_download(self, premium=False):
-        m = re.search(self.LINK_PATTERN % (1 if premium else 2), self.html)
+        m = re.search(self.LINK_PATTERN % (1 if premium else 2), self.data)
         msg = _('%s download URL' % ('Premium' if premium else 'Free'))
         if m is None:
             self.error(msg)
 
         self.link = m.group(1)
         self.log_debug("%s: %s" % (msg, self.link))
-
-
-getInfo = create_getInfo(MegasharesCom)

@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import array
+import base64
 import os
-# import pycurl
 import random
 import re
 
-from base64 import standard_b64decode
+import Crypto.Cipher
+import Crypto.Util
+# import pycurl
 
-from Crypto.Cipher import AES
-from Crypto.Util import Counter
-
-from module.common.json_layer import json_loads, json_dumps
 from module.plugins.internal.Hoster import Hoster
-from module.utils import decode, fs_decode, fs_encode
+from module.plugins.internal.misc import decode, encode, json
 
 
 ############################ General errors ###################################
@@ -48,7 +46,7 @@ from module.utils import decode, fs_decode, fs_encode
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.31"
+    __version__ = "0.34"
     __status__  = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,]+)'
@@ -89,14 +87,14 @@ class MegaCoNz(Hoster):
         #: Generate a session id, no idea where to obtain elsewhere
         uid = random.randint(10 << 9, 10 ** 10)
 
-        res = self.load(self.API_URL, get={'id': uid}, post=json_dumps([kwargs]))
+        res = self.load(self.API_URL, get={'id': uid}, post=json.dumps([kwargs]))
         self.log_debug("Api Response: " + res)
-        return json_loads(res)
+        return json.loads(res)
 
 
     def decrypt_attr(self, data, key):
         k, iv, meta_mac = self.get_cipher_key(key)
-        cbc             = AES.new(k, AES.MODE_CBC, "\0" * 16)
+        cbc             = Crypto.Cipher.AES.new(k, Crypto.Cipher.AES.MODE_CBC, "\0" * 16)
         attr            = decode(cbc.decrypt(self.b64_decode(data)))
 
         self.log_debug("Decrypted Attr: %s" % attr)
@@ -104,7 +102,7 @@ class MegaCoNz(Hoster):
             self.fail(_("Decryption failed"))
 
         #: Data is padded, 0-bytes must be stripped
-        return json_loads(re.search(r'{.+?}', attr).group(0))
+        return json.loads(re.search(r'{.+?}', attr).group(0))
 
 
     def decrypt_file(self, key):
@@ -116,13 +114,13 @@ class MegaCoNz(Hoster):
 
         #: Convert counter to long and shift bytes
         k, iv, meta_mac = self.get_cipher_key(key)
-        ctr             = Counter.new(128, initial_value=long(n.encode("hex"), 16) << 64)
-        cipher          = AES.new(k, AES.MODE_CTR, counter=ctr)
+        ctr             = Crypto.Util.Counter.new(128, initial_value=long(n.encode("hex"), 16) << 64)
+        cipher          = Crypto.Cipher.AES.new(k, Crypto.Cipher.AES.MODE_CTR, counter=ctr)
 
         self.pyfile.setStatus("decrypting")
         self.pyfile.setProgress(0)
 
-        file_crypted   = fs_encode(self.last_download)
+        file_crypted   = encode(self.last_download)
         file_decrypted = file_crypted.rsplit(self.FILE_SUFFIX)[0]
 
         try:
@@ -165,11 +163,11 @@ class MegaCoNz(Hoster):
         df.close()
 
         # if file_mac[0] ^ file_mac[1], file_mac[2] ^ file_mac[3] is not meta_mac:
-            # os.remove(file_decrypted)
+            # self.remove(file_decrypted, trash=False)
             # self.fail(_("Checksum mismatch"))
 
-        os.remove(file_crypted)
-        self.last_download = fs_decode(file_decrypted)
+        self.remove(file_crypted, trash=False)
+        self.last_download = decode(file_decrypted)
 
 
     def check_error(self, code):

@@ -3,17 +3,21 @@
 # Test links:
 #   http://www.solidfiles.com/d/609cdb4b1b
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class SolidfilesCom(SimpleHoster):
     __name__    = "SolidfilesCom"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?solidfiles\.com\/d/\w+'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
+                   ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """Solidfiles.com hoster plugin"""
     __license__     = "GPLv3"
@@ -30,6 +34,3 @@ class SolidfilesCom(SimpleHoster):
     def setup(self):
         self.multiDL    = True
         self.chunk_limit = 1
-
-
-getInfo = create_getInfo(SolidfilesCom)

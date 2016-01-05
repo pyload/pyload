@@ -6,18 +6,21 @@ import urllib
 
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class ShareonlineBiz(SimpleHoster):
     __name__    = "ShareonlineBiz"
     __type__    = "hoster"
-    __version__ = "0.60"
+    __version__ = "0.65"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
-    __config__  = [("activated", "bool", "Activated", True),
-                   ("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
+                   ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """Shareonline.biz hoster plugin"""
     __license__     = "GPLv3"
@@ -38,12 +41,10 @@ class ShareonlineBiz(SimpleHoster):
 
     @classmethod
     def api_info(cls, url):
-        info = super(ShareonlineBiz, cls).api_info(url)
-
+        info  = {}
         field = get_url("http://api.share-online.biz/linkcheck.php",
                         get={'md5'  : "1",
                              'links': re.match(cls.__pattern__, url).group("ID")}).split(";")
-
         try:
             if field[1] == "OK":
                 info['fileid'] = field[0]
@@ -67,10 +68,10 @@ class ShareonlineBiz(SimpleHoster):
 
 
     def handle_captcha(self):
-        recaptcha = ReCaptcha(self)
-        response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
+        self.captcha = ReCaptcha(self.pyfile)
+        response, challenge = self.captcha.challenge(self.RECAPTCHA_KEY)
 
-        m = re.search(r'var wait=(\d+);', self.html)
+        m = re.search(r'var wait=(\d+);', self.data)
         self.set_wait(int(m.group(1)) if m else 30)
 
         res = self.load("%s/free/captcha/%d" % (self.pyfile.url, int(time.time() * 1000)),
@@ -87,7 +88,7 @@ class ShareonlineBiz(SimpleHoster):
     def handle_free(self, pyfile):
         self.wait(3)
 
-        self.html = self.load("%s/free/" % pyfile.url,
+        self.data = self.load("%s/free/" % pyfile.url,
                               post={'dl_free': "1", 'choice': "free"})
 
         self.check_errors()
@@ -102,8 +103,8 @@ class ShareonlineBiz(SimpleHoster):
 
 
     def check_download(self):
-        check = self.check_file({'cookie': re.compile(r'<div id="dl_failure"'),
-                                 'fail'  : re.compile(r"<title>Share-Online")})
+        check = self.scan_download({'cookie': re.compile(r'<div id="dl_failure"'),
+                                    'fail'  : re.compile(r'<title>Share-Online')})
 
         if check == "cookie":
             self.retry_captcha(5, 60, _("Cookie failure"))
@@ -148,7 +149,7 @@ class ShareonlineBiz(SimpleHoster):
 
 
     def check_errors(self):
-        m = re.search(r"/failure/(.*?)/1", self.req.lastEffectiveURL)
+        m = re.search(r'/failure/(.*?)/', self.req.lastEffectiveURL)
         if m is None:
             self.info.pop('error', None)
             return
@@ -156,7 +157,7 @@ class ShareonlineBiz(SimpleHoster):
         errmsg = m.group(1).lower()
 
         try:
-            self.log_error(errmsg, re.search(self.ERROR_PATTERN, self.html).group(1))
+            self.log_error(errmsg, re.search(self.ERROR_PATTERN, self.data).group(1))
 
         except Exception:
             self.log_error(_("Unknown error occurred"), errmsg)
@@ -180,6 +181,3 @@ class ShareonlineBiz(SimpleHoster):
         else:
             self.wait(60, reconnect=True)
             self.restart(errmsg)
-
-
-getInfo = create_getInfo(ShareonlineBiz)

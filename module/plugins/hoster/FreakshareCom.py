@@ -4,13 +4,13 @@ import re
 
 from module.plugins.internal.Hoster import Hoster
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import seconds_to_midnight
+from module.plugins.internal.misc import seconds_to_midnight
 
 
 class FreakshareCom(Hoster):
     __name__    = "FreakshareCom"
     __type__    = "hoster"
-    __version__ = "0.44"
+    __version__ = "0.48"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
@@ -35,7 +35,7 @@ class FreakshareCom(Hoster):
         pyfile.url = pyfile.url.replace("freakshare.net/", "freakshare.com/")
 
         if self.account:
-            self.html = self.load(pyfile.url, cookies=False)
+            self.data = self.load(pyfile.url, cookies=False)
             pyfile.name = self.get_file_name()
             self.download(pyfile.url)
 
@@ -45,11 +45,13 @@ class FreakshareCom(Hoster):
 
             self.download(pyfile.url, post=self.req_opts)
 
-            check = self.check_file({'bad'           : "bad try",
-                                        'paralell'      : "> Sorry, you cant download more then 1 files at time. <",
-                                        'empty'         : "Warning: Unknown: Filename cannot be empty",
-                                        'wrong_captcha' : "Wrong Captcha!",
-                                        'downloadserver': "No Downloadserver. Please try again later!"})
+            check = self.scan_download({
+                'bad'           : "bad try",
+                'paralell'      : "> Sorry, you cant download more then 1 files at time. <",
+                'empty'         : "Warning: Unknown: Filename cannot be empty",
+                'wrong_captcha' : "Wrong Captcha!",
+                'downloadserver': "No Downloadserver. Please try again later!"
+            })
 
             if check == "bad":
                 self.fail(_("Bad Try"))
@@ -88,14 +90,14 @@ class FreakshareCom(Hoster):
 
     def download_html(self):
         self.load("http://freakshare.com/index.php", {'language': "EN"})  #: Set english language in server session
-        self.html = self.load(self.pyfile.url)
+        self.data = self.load(self.pyfile.url)
 
 
     def get_file_url(self):
         """
         Returns the absolute downloadable filepath
         """
-        if not self.html:
+        if not self.data:
             self.download_html()
         if not self.wantReconnect:
             self.req_opts = self.get_download_options()  #: Get the Post options for the Request
@@ -106,11 +108,11 @@ class FreakshareCom(Hoster):
 
 
     def get_file_name(self):
-        if not self.html:
+        if not self.data:
             self.download_html()
 
         if not self.wantReconnect:
-            m = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">([^ ]+)", self.html)
+            m = re.search(r'<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">([^ ]+)', self.data)
             if m is not None:
                 file_name = m.group(1)
             else:
@@ -123,11 +125,11 @@ class FreakshareCom(Hoster):
 
     def get_file_size(self):
         size = 0
-        if not self.html:
+        if not self.data:
             self.download_html()
 
         if not self.wantReconnect:
-            m = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">[^ ]+ - ([^ ]+) (\w\w)yte", self.html)
+            m = re.search(r'<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">[^ ]+ - ([^ ]+) (\w\w)yte', self.data)
             if m is not None:
                 units = float(m.group(1).replace(",", ""))
                 pow = {'KB': 1, 'MB': 2, 'GB': 3}[m.group(2)]
@@ -137,14 +139,14 @@ class FreakshareCom(Hoster):
 
 
     def get_waiting_time(self):
-        if not self.html:
+        if not self.data:
             self.download_html()
 
-        if "Your Traffic is used up for today" in self.html:
+        if "Your Traffic is used up for today" in self.data:
             self.wantReconnect = True
             return seconds_to_midnight()
 
-        timestring = re.search('\s*var\s(?:downloadWait|time)\s=\s(\d*)[\d.]*;', self.html)
+        timestring = re.search('\s*var\s(?:downloadWait|time)\s=\s(\d*)[\d.]*;', self.data)
         if timestring:
             return int(timestring.group(1))
         else:
@@ -155,29 +157,29 @@ class FreakshareCom(Hoster):
         """
         Returns True or False
         """
-        if not self.html:
+        if not self.data:
             self.download_html()
-        if re.search(r"This file does not exist!", self.html):
+        if re.search(r'This file does not exist!', self.data):
             return False
         else:
             return True
 
 
     def get_download_options(self):
-        re_envelope = re.search(r".*?value=\"Free\sDownload\".*?\n*?(.*?<.*?>\n*)*?\n*\s*?</form>",
-                                self.html).group(0)  #: Get the whole request
-        to_sort = re.findall(r"<input\stype=\"hidden\"\svalue=\"(.*?)\"\sname=\"(.*?)\"\s\/>", re_envelope)
+        re_envelope = re.search(r'.*?value=\"Free\sDownload\".*?\n*?(.*?<.*?>\n*)*?\n*\s*?</form>',
+                                self.data).group(0)  #: Get the whole request
+        to_sort = re.findall(r'<input\stype=\"hidden\"\svalue=\"(.*?)\"\sname=\"(.*?)\"\s\/>', re_envelope)
         request_options = dict((n, v) for (v, n) in to_sort)
 
         herewego = self.load(self.pyfile.url, None, request_options)  #: The actual download-Page
 
-        to_sort = re.findall(r"<input\stype=\".*?\"\svalue=\"(\S*?)\".*?name=\"(\S*?)\"\s.*?\/>", herewego)
+        to_sort = re.findall(r'<input\stype=\".*?\"\svalue=\"(\S*?)\".*?name=\"(\S*?)\"\s.*?\/>', herewego)
         request_options = dict((n, v) for (v, n) in to_sort)
 
-        challenge = re.search(r"http://api\.recaptcha\.net/challenge\?k=(\w+)", herewego)
+        challenge = re.search(r'http://api\.recaptcha\.net/challenge\?k=(\w+)', herewego)
 
         if challenge:
-            re_captcha = ReCaptcha(self)
+            re_captcha = ReCaptcha(self.pyfile)
             (request_options['recaptcha_challenge_field'],
              request_options['recaptcha_response_field']) = re_captcha.challenge(challenge.group(1))
 

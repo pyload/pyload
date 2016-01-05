@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Account import Account
+from module.plugins.internal.MultiAccount import MultiAccount
 
 
-class RehostTo(Account):
+class RehostTo(MultiAccount):
     __name__    = "RehostTo"
     __type__    = "account"
-    __version__ = "0.21"
+    __version__ = "0.23"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),

@@ -31,7 +31,7 @@ class ImageSequence:
 class CircleCaptcha(OCR):
     __name__    = "CircleCaptcha"
     __type__    = "ocr"
-    __version__ = "1.04"
+    __version__ = "1.07"
     __status__  = "testing"
 
     __description__ = """Circle captcha ocr plugin"""
@@ -474,15 +474,15 @@ class CircleCaptcha(OCR):
 
         #: Assial Simmetric
         if self.pyload.debug:
-            self.log_debug("Center: " + str(c),
-                           "Missing: " + str(missing),
-                           "Howmany: " + str(howmany),
-                           "Ratio: " + str(missing / howmany),
-                           "Missing consecutives: " + str(missingconsecutive),
-                           "Missing X lenght: " + str(minX) + ":" + str(maxX),
-                           "Missing Y lenght: " + str(minY) + ":" + str(maxY),
-                           "Ratio without consecutives: " + str((missing - missingconsecutive) / howmany),
-                           "List missing: " + str(missinglist))
+            self.log_debug("Center: %s"                     % c,
+                           "Missing: %s"                    % missing,
+                           "Howmany: %s"                    % howmany,
+                           "Ratio: %s"                      % (missing / howmany),
+                           "Missing consecutives: %s"       % missingconsecutive,
+                           "Missing X lenght: %s:%s"        % (minX, maxX),
+                           "Missing Y lenght: %s:%s"        % (minY, maxY),
+                           "Ratio without consecutives: %s" % ((missing - missingconsecutive) / howmany),
+                           "List missing: %s"               % missinglist)
 
         #: Lenght of missing cannot be over 75% of diameter
 
@@ -711,7 +711,7 @@ class CircleCaptcha(OCR):
                             break
 
             if self.pyload.debug:
-                self.log_debug('Howmany opened circle? ' + str(len(found)) + ' ' + str(found))
+                self.log_debug("Howmany opened circle?", found)
 
             #: Clean results
             for c in found:

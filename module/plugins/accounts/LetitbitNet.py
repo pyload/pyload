@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from module.plugins.internal.Account import Account
-# from module.common.json_layer import json_loads, json_dumps
+# from module.plugins.internal.misc import json
 
 
 class LetitbitNet(Account):
     __name__    = "LetitbitNet"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __description__ = """Letitbit.net account plugin"""
@@ -19,9 +19,9 @@ class LetitbitNet(Account):
         ## DISABLED BECAUSE IT GET 'key exausted' EVEN IF VALID ##
         # json_data = [password, ['key/info']]
         # api_rep   = self.load("http://api.letitbit.net/json",
-        #                       post={'r': json_dumps(json_data)})
+        #                       post={'r': json.dumps(json_data)})
         # self.log_debug("API Key Info: " + api_rep)
-        # api_rep = json_loads(api_rep)
+        # api_rep = json.loads(api_rep)
         #
         # if api_rep['status'] == "FAIL":
         #     self.log_warning(api_rep['data'])

@@ -7,7 +7,7 @@ import binascii
 import re
 import urlparse
 
-from Crypto.Cipher import AES
+import Crypto.Cipher
 
 from module.plugins.internal.Crypter import Crypter
 from module.plugins.captcha.ReCaptcha import ReCaptcha
@@ -17,7 +17,7 @@ from module.plugins.captcha.SolveMedia import SolveMedia
 class FilecryptCc(Crypter):
     __name__    = "FilecryptCc"
     __type__    = "crypter"
-    __version__ = "0.20"
+    __version__ = "0.23"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
@@ -44,13 +44,13 @@ class FilecryptCc(Crypter):
 
 
     def setup(self):
-        self.links = []
+        self.urls = []
 
 
     def decrypt(self, pyfile):
-        self.html = self.load(pyfile.url)
+        self.data = self.load(pyfile.url)
 
-        if "content notfound" in self.html:  #@NOTE: "content notfound" is NOT a typo
+        if "content notfound" in self.data:  #@NOTE: "content notfound" is NOT a typo
             self.offline()
 
         self.handle_password_protection()
@@ -59,8 +59,8 @@ class FilecryptCc(Crypter):
 
         for handle in (self.handle_CNL, self.handle_weblinks, self.handle_dlc_container):
             handle()
-            if self.links:
-                self.packages = [(pyfile.package().name, self.links, pyfile.package().name)]
+            if self.urls:
+                self.packages = [(pyfile.package().name, self.urls, pyfile.package().name)]
                 return
 
 
@@ -77,7 +77,7 @@ class FilecryptCc(Crypter):
 
 
     def handle_password_protection(self):
-        if '<input type="text" name="password"' not in self.html:
+        if '<input type="text" name="password"' not in self.data:
             return
 
         self.log_info(_("Folder is password protected"))
@@ -87,15 +87,15 @@ class FilecryptCc(Crypter):
         if not password:
             self.fail(_("Please enter the password in package section and try again"))
 
-        self.html = self.load(self.pyfile.url, post={'password': password})
+        self.data = self.load(self.pyfile.url, post={'password': password})
 
 
     def handle_captcha(self):
-        if re.search(self.CAPTCHA_PATTERN, self.html):
-            m1  = re.search(self.INTERNAL_CAPTCHA_PATTERN, self.html)
-            m2 = re.search(self.CIRCLE_CAPTCHA_PATTERN, self.html)
-            m3 = re.search(self.SOLVE_MEDIA_PATTERN, self.html)
-            m4 = re.search(self.KEY_CAPTCHA_PATTERN, self.html)
+        if re.search(self.CAPTCHA_PATTERN, self.data):
+            m1  = re.search(self.INTERNAL_CAPTCHA_PATTERN, self.data)
+            m2 = re.search(self.CIRCLE_CAPTCHA_PATTERN, self.data)
+            m3 = re.search(self.SOLVE_MEDIA_PATTERN, self.data)
+            m4 = re.search(self.KEY_CAPTCHA_PATTERN, self.data)
 
             if m1:  #: Normal captcha
                 self.log_debug("Internal Captcha URL: %s" % urlparse.urljoin(self.pyfile.url, m1.group(1)))
@@ -119,10 +119,11 @@ class FilecryptCc(Crypter):
             elif m3:  #: Solvemedia captcha
                 self.log_debug("Solvemedia Captcha URL: %s" % urlparse.urljoin(self.pyfile.url, m3.group(1)))
 
-                solvemedia  = SolveMedia(self)
+                solvemedia  = SolveMedia(self.pyfile)
                 captcha_key = solvemedia.detect_key()
 
                 if captcha_key:
+                    self.captcha = solvemedia
                     response, challenge = solvemedia.challenge(captcha_key)
                     self.site_with_links  = self.load(self.pyfile.url,
                                                       post={'adcopy_response'  : response,
@@ -133,10 +134,12 @@ class FilecryptCc(Crypter):
                 self.retry()
 
             else:
-                recaptcha   = ReCaptcha(self)
+                recaptcha   = ReCaptcha(self.pyfile)
                 captcha_key = recaptcha.detect_key()
 
                 if captcha_key:
+                    self.captcha = recaptcha
+
                     try:
                         response, challenge = recaptcha.challenge(captcha_key)
 
@@ -154,7 +157,7 @@ class FilecryptCc(Crypter):
 
         else:
             self.log_info(_("No captcha found"))
-            self.site_with_links = self.html
+            self.site_with_links = self.data
 
 
 
@@ -165,7 +168,7 @@ class FilecryptCc(Crypter):
             return
 
         for _dlc in dlcs:
-            self.links.append(urlparse.urljoin(self.pyfile.url, "/DLC/%s.dlc" % _dlc))
+            self.urls.append(urlparse.urljoin(self.pyfile.url, "/DLC/%s.dlc" % _dlc))
 
 
     def handle_weblinks(self):
@@ -177,7 +180,7 @@ class FilecryptCc(Crypter):
                 link2 = re.search('<iframe noresize src="(.*)"></iframe>', res)
                 if link2:
                     res2  = self.load(link2.group(1), just_header=True)
-                    self.links.append(res2['location'])
+                    self.urls.append(res2['location'])
 
         except Exception, e:
             self.log_debug("Error decrypting weblinks: %s" % e)
@@ -189,7 +192,7 @@ class FilecryptCc(Crypter):
             vcrypted = re.findall('<input type="hidden" name="crypted" value="(.*)">', self.site_with_links)
 
             for i in xrange(len(vcrypted)):
-                self.links.extend(self._get_links(vcrypted[i], vjk[i]))
+                self.urls.extend(self._get_links(vcrypted[i], vjk[i]))
 
         except Exception, e:
             self.log_debug("Error decrypting CNL: %s" % e)
@@ -202,7 +205,7 @@ class FilecryptCc(Crypter):
         #: Decrypt
         Key  = key
         IV   = key
-        obj  = AES.new(Key, AES.MODE_CBC, IV)
+        obj  = Crypto.Cipher.AES.new(Key, Crypto.Cipher.AES.MODE_CBC, IV)
         text = obj.decrypt(crypted.decode('base64'))
 
         #: Extract links

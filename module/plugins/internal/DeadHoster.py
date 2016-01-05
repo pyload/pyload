@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Hoster import Hoster, create_getInfo
+from module.plugins.internal.Hoster import Hoster
 
 
 class DeadHoster(Hoster):
     __name__    = "DeadHoster"
     __type__    = "hoster"
-    __version__ = "0.19"
-    __status__  = "testing"
+    __version__ = "0.21"
+    __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("activated", "bool", "Activated", True)]
@@ -26,6 +26,3 @@ class DeadHoster(Hoster):
 
     def setup(self):
         self.offline(_("Hoster is no longer available"))
-
-
-getInfo = create_getInfo(DeadHoster)

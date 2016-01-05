@@ -2,14 +2,14 @@
 
 import hashlib
 
-from module.plugins.internal.Account import Account
-from module.common.json_layer import json_loads
+from module.plugins.internal.MultiAccount import MultiAccount
+from module.plugins.internal.misc import json
 
 
-class LinksnappyCom(Account):
+class LinksnappyCom(MultiAccount):
     __name__    = "LinksnappyCom"
     __type__    = "account"
-    __version__ = "0.10"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
@@ -23,7 +23,7 @@ class LinksnappyCom(Account):
 
     def grab_hosters(self, user, password, data):
         json_data = self.load("http://gen.linksnappy.com/lseAPI.php", get={'act': "FILEHOSTS"})
-        json_data = json_loads(json_data)
+        json_data = json.loads(json_data)
 
         return json_data['return'].keys()
 
@@ -36,7 +36,7 @@ class LinksnappyCom(Account):
 
         self.log_debug("JSON data: " + r)
 
-        j = json_loads(r)
+        j = json.loads(r)
 
         if j['error']:
             return {'premium': False}

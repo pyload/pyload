@@ -2,17 +2,21 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class UserscloudCom(SimpleHoster):
     __name__    = "UserscloudCom"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?userscloud\.com/\w{12}'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
+                   ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """Userscloud.com hoster plugin"""
     __license__     = "GPLv3"
@@ -32,7 +36,4 @@ class UserscloudCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         self.download(pyfile.url,
-                      post=dict(re.findall(r'<input type="hidden" name="(.+?)" value="(.*?)">', self.html)))
-
-
-getInfo = create_getInfo(UserscloudCom)
+                      post=dict(re.findall(r'<input type="hidden" name="(.+?)" value="(.*?)">', self.data)))

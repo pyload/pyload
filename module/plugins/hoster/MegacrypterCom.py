@@ -2,7 +2,7 @@
 
 import re
 
-from module.common.json_layer import json_loads, json_dumps
+from module.plugins.internal.misc import json
 
 from module.plugins.hoster.MegaCoNz import MegaCoNz
 
@@ -10,7 +10,7 @@ from module.plugins.hoster.MegaCoNz import MegaCoNz
 class MegacrypterCom(MegaCoNz):
     __name__    = "MegacrypterCom"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.26"
     __status__  = "testing"
 
     __pattern__ = r'https?://\w{0,10}\.?megacrypter\.com/[\w\-!]+'
@@ -29,10 +29,10 @@ class MegacrypterCom(MegaCoNz):
         """
         Dispatch a call to the api, see megacrypter.com/api_doc
         """
-        self.log_debug("JSON request: " + json_dumps(kwargs))
-        res = self.load(self.API_URL, post=json_dumps(kwargs))
+        self.log_debug("JSON request: " + json.dumps(kwargs))
+        res = self.load(self.API_URL, post=json.dumps(kwargs))
         self.log_debug("API Response: " + res)
-        return json_loads(res)
+        return json.loads(res)
 
 
     def process(self, pyfile):

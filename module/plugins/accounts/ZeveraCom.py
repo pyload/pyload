@@ -2,13 +2,13 @@
 
 import time
 
-from module.plugins.internal.Account import Account
+from module.plugins.internal.MultiAccount import MultiAccount
 
 
-class ZeveraCom(Account):
+class ZeveraCom(MultiAccount):
     __name__    = "ZeveraCom"
     __type__    = "account"
-    __version__ = "0.30"
+    __version__ = "0.32"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
