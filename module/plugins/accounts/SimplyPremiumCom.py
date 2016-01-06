@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from module.plugins.internal.MultiAccount import MultiAccount
-from module.plugins.internal.utils import json, set_cookie
+from module.plugins.internal.misc import json, set_cookie
 
 
 class SimplyPremiumCom(MultiAccount):
     __name__    = "SimplyPremiumCom"
     __type__    = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),

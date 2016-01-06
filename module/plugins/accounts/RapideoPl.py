@@ -4,14 +4,14 @@ import datetime
 import hashlib
 import time
 
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 from module.plugins.internal.MultiAccount import MultiAccount
 
 
 class RapideoPl(MultiAccount):
     __name__    = "RapideoPl"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
@@ -32,7 +32,8 @@ class RapideoPl(MultiAccount):
                  'info'    : "1"    }
 
     def grab_hosters(self, user, password, data):
-        hostings         = json.loads(self.load("https://www.rapideo.pl/clipboard.php?json=3").strip())
+        html = self.load("https://www.rapideo.pl/clipboard.php?json=3").strip()
+        hostings         = json.loads(html)
         hostings_domains = [domain for row in hostings for domain in row['domains'] if row['sdownload'] == "0"]
 
         self.log_debug(hostings_domains)

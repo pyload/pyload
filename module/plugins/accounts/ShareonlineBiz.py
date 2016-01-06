@@ -3,13 +3,13 @@
 import re
 
 from module.plugins.internal.Account import Account
-from module.plugins.internal.utils import set_cookie
+from module.plugins.internal.misc import set_cookie
 
 
 class ShareonlineBiz(Account):
     __name__    = "ShareonlineBiz"
     __type__    = "account"
-    __version__ = "0.42"
+    __version__ = "0.44"
     __status__  = "testing"
 
     __description__ = """Share-online.biz account plugin"""
@@ -25,15 +25,10 @@ class ShareonlineBiz(Account):
                              'password': password},
                         decode=False)
 
-        self.log_debug(res)
-
         api = dict(line.split("=") for line in res.splitlines() if "=" in line)
 
         if not 'a' in api:
             self.fail_login(res.strip('*'))
-
-        if api['a'].lower() == "not_available":
-            self.fail_login(_("No info available"))
 
         return api
 

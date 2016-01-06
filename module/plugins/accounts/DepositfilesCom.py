@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class DepositfilesCom(Account):
     __name__    = "DepositfilesCom"
     __type__    = "account"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__  = "testing"
 
     __description__ = """Depositfiles.com account plugin"""
@@ -21,7 +21,7 @@ class DepositfilesCom(Account):
 
     def grab_info(self, user, password, data):
         html = self.load("https://dfiles.eu/de/gold/")
-        validuntil = re.search(r"Sie haben Gold Zugang bis: <b>(.*?)</b></div>", html).group(1)
+        validuntil = re.search(r'Sie haben Gold Zugang bis: <b>(.*?)</b></div>', html).group(1)
 
         validuntil = time.mktime(time.strptime(validuntil, "%Y-%m-%d %H:%M:%S"))
 

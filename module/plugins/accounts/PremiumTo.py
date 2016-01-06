@@ -6,7 +6,7 @@ from module.plugins.internal.MultiAccount import MultiAccount
 class PremiumTo(MultiAccount):
     __name__    = "PremiumTo"
     __type__    = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),

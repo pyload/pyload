@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from module.plugins.internal.Account import Account
-from module.plugins.internal.utils import json, set_cookie
+from module.plugins.internal.misc import json, set_cookie
 
 
 class FilecloudIo(Account):
     __name__    = "FilecloudIo"
     __type__    = "account"
-    __version__ = "0.10"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __description__ = """FilecloudIo account plugin"""

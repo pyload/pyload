@@ -4,18 +4,21 @@ import re
 import urlparse
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class Keep2ShareCc(SimpleHoster):
     __name__    = "Keep2ShareCc"
     __type__    = "hoster"
-    __version__ = "0.27"
-    __status__  = "broken"
+    __version__ = "0.29"
+    __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
-    __config__  = [("activated"  , "bool", "Activated"                       , True),
-                   ("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
+                   ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """Keep2Share.cc hoster plugin"""
     __license__     = "GPLv3"
@@ -26,13 +29,14 @@ class Keep2ShareCc(SimpleHoster):
     URL_REPLACEMENTS = [(__pattern__ + ".*", "http://keep2s.cc/file/\g<ID>")]
 
     NAME_PATTERN = r'File: <span>(?P<N>.+?)</span>'
-    SIZE_PATTERN = r'Size: (?P<S>[^<]+)</div>'
+    SIZE_PATTERN = r'Size: (?P<S>.+?)</div>'
 
     OFFLINE_PATTERN      = r'File not found or deleted|Sorry, this file is blocked or deleted|Error 404'
     TEMP_OFFLINE_PATTERN = r'Downloading blocked due to'
 
-    LINK_FREE_PATTERN    = r'"(.+?url.html\?file=.+?)"|window\.location\.href = \'(.+?)\';'
+    LINK_FREE_PATTERN    = r'"([^"]+?url.html\?file=.+?)"|window\.location\.href = \'(.+?)\';'
     LINK_PREMIUM_PATTERN = r'window\.location\.href = \'(.+?)\';'
+    UNIQUE_ID_PATTERN    = r"data: {uniqueId: '(?P<uID>\w+)', free: 1}"
 
     CAPTCHA_PATTERN = r'src="(/file/captcha\.html.+?)"'
 
@@ -65,6 +69,7 @@ class Keep2ShareCc(SimpleHoster):
             self.retry(wait=wait_time, msg="Please wait to download this file")
 
         self.info.pop('error', None)
+        # super(Keep2ShareCc, self).check_errors()
 
 
     def handle_free(self, pyfile):
@@ -80,13 +85,22 @@ class Keep2ShareCc(SimpleHoster):
         if m is None:
             self.handle_captcha()
             self.wait(31)
-            self.data = self.load(pyfile.url)
+            # get the uniqueId from the html code
+            m = re.search(self.UNIQUE_ID_PATTERN, self.data)
+            if m is None:
+                self.error(_("Unique-ID pattern not found"))
+            self.data = self.load(pyfile.url, post={'uniqueId': m.group('uID'), 'free': '1'})
 
             m = re.search(self.LINK_FREE_PATTERN, self.data)
             if m is None:
                 self.error(_("Free download link not found"))
 
-        self.link = m.group(1)
+        # if group 1 did not match, check group 2
+        if m.group(1) is not None:
+            self.link = m.group(1)
+        else:
+            self.link = m.group(2)
+        self.log_debug("download link: %s" % self.link)
 
 
     def handle_captcha(self):
@@ -100,12 +114,13 @@ class Keep2ShareCc(SimpleHoster):
 
         m = re.search(self.CAPTCHA_PATTERN, self.data)
         self.log_debug("CAPTCHA_PATTERN found %s" % m)
+
         if m is not None:
             captcha_url = urlparse.urljoin("http://keep2s.cc/", m.group(1))
             post_data['CaptchaForm[code]'] = self.captcha.decrypt(captcha_url)
         else:
-            recaptcha = ReCaptcha(self)
-            response, challenge = recaptcha.challenge()
+            self.captcha = ReCaptcha(self.pyfile)
+            response, challenge = self.captcha.challenge()
             post_data.update({'recaptcha_challenge_field': challenge,
                               'recaptcha_response_field' : response})
 
@@ -115,6 +130,3 @@ class Keep2ShareCc(SimpleHoster):
             self.retry_captcha()
         else:
             self.captcha.correct()
-
-
-getInfo = create_getInfo(Keep2ShareCc)

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from module.plugins.internal.MultiAccount import MultiAccount
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 
 
 class OverLoadMe(MultiAccount):
     __name__    = "OverLoadMe"
     __type__    = "account"
-    __version__ = "0.09"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
@@ -41,11 +41,11 @@ class OverLoadMe(MultiAccount):
 
 
     def signin(self, user, password, data):
-        jsondata = self.load("https://api.over-load.me/account.php",
-                             get={'user': user,
-                                  'auth': password}).strip()
+        html = self.load("https://api.over-load.me/account.php",
+                         get={'user': user,
+                              'auth': password}).strip()
 
-        data = json.loads(jsondata)
+        data = json.loads(html)
 
         if data['err'] == 1:
             self.fail_login()

@@ -4,23 +4,24 @@ from __future__ import with_statement
 
 import inspect
 import os
+import pycurl
+import re
 
-if os.name is not "nt":
+if os.name != "nt":
     import grp
     import pwd
 
-import pycurl
 
-import module.plugins.internal.utils as utils
-
+from module.network.RequestFactory import getRequest as get_request
 from module.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload as Skip  #@TODO: Remove in 0.4.10
-from module.plugins.internal.utils import *
+from module.plugins.internal.misc import (Config, DB, decode, encode, exists, fixurl, fsjoin,
+                                          format_exc, html_unescape, parse_html_header, remove, set_cookies)
 
 
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.59"
+    __version__ = "0.65"
     __status__  = "stable"
 
     __config__  = []  #: [("name", "type", "desc", "default")]
@@ -46,10 +47,21 @@ class Plugin(object):
 
 
     def _init(self, core):
-        self.pyload    = core
-        self.info      = {}    #: Provide information in dict here
-        self.req       = None  #: Browser instance, see `network.Browser`
-        self.last_html = None
+        #: Internal modules
+        self.pyload = core
+        self.db     = DB(self)
+        self.config = Config(self)
+
+        #: Provide information in dict here
+        self.info = {}
+
+        #: Browser instance, see `network.Browser`
+        self.req = self.pyload.requestFactory.getRequest(self.classname)
+        self.req.setOption("timeout", 60)  #@TODO: Remove in 0.4.10
+
+        #: Last loaded html
+        self.last_html   = ""
+        self.last_header = {}
 
 
     def init(self):
@@ -71,124 +83,72 @@ class Plugin(object):
     def log_debug(self, *args, **kwargs):
         self._log("debug", self.__type__, self.__name__, args)
         if self.pyload.debug and kwargs.get('trace'):
-            self.print_exc()
+            self._print_exc()
 
 
     def log_info(self, *args, **kwargs):
         self._log("info", self.__type__, self.__name__, args)
         if self.pyload.debug and kwargs.get('trace'):
-            self.print_exc()
+            self._print_exc()
 
 
     def log_warning(self, *args, **kwargs):
         self._log("warning", self.__type__, self.__name__, args)
         if self.pyload.debug and kwargs.get('trace'):
-            self.print_exc()
+            self._print_exc()
 
 
     def log_error(self, *args, **kwargs):
         self._log("error", self.__type__, self.__name__, args)
         if self.pyload.debug and kwargs.get('trace', True):
-            self.print_exc()
+            self._print_exc()
 
 
     def log_critical(self, *args, **kwargs):
         self._log("critical", self.__type__, self.__name__, args)
         if kwargs.get('trace', True):
-            self.print_exc()
+            self._print_exc()
 
 
-    def print_exc(self):
+    def _print_exc(self):
         frame = inspect.currentframe()
-        print format_exc(frame.f_back)
-        del frame
+        try:
+            print format_exc(frame.f_back)
+        finally:
+            del frame
+
+
+    def remove(self, path, trash=False):  #@TODO: Change to `trash=True` in 0.4.10
+        try:
+            remove(path, trash)
+
+        except (NameError, OSError), e:
+            self.log_warning(_("Error removing `%s`") % os.path.abspath(path), e)
+            return False
+
+        else:
+            self.log_info(_("Path deleted: ") + os.path.abspath(path))
+            return True
 
 
     def set_permissions(self, path):
-        if not os.path.exists(path):
+        path = encode(path)
+
+        if not exists(path):
             return
 
-        try:
-            if self.pyload.config.get("permission", "change_file"):
-                if os.path.isfile(path):
-                    os.chmod(path, int(self.pyload.config.get("permission", "file"), 8))
+        file_perms = False
+        dl_perms   = False
 
-                elif os.path.isdir(path):
-                    os.chmod(path, int(self.pyload.config.get("permission", "folder"), 8))
+        if self.pyload.config.get('permission', "change_file"):
+            permission = self.pyload.config.get('permission', "folder" if os.path.isdir(path) else "file")
+            mode = int(permission, 8)
+            os.chmod(path, mode)
 
-        except OSError, e:
-            self.log_warning(_("Setting path mode failed"), e)
-
-        try:
-            if os.name is not "nt" and self.pyload.config.get("permission", "change_dl"):
-                uid = pwd.getpwnam(self.pyload.config.get("permission", "user"))[2]
-                gid = grp.getgrnam(self.pyload.config.get("permission", "group"))[2]
-                os.chown(path, uid, gid)
-
-        except OSError, e:
-            self.log_warning(_("Setting owner and group failed"), e)
-
-
-    def set_config(self, option, value, plugin=None):
-        """
-        Set config value for current plugin
-
-        :param option:
-        :param value:
-        :return:
-        """
-        self.pyload.api.setConfigValue(plugin or self.classname, option, value, section="plugin")
-
-
-    def get_config(self, option, default="", plugin=None):
-        """
-        Returns config value for current plugin
-
-        :param option:
-        :return:
-        """
-        try:
-            return self.pyload.config.getPlugin(plugin or self.classname, option)
-
-        except KeyError:
-            self.log_debug("Config option `%s` not found, use default `%s`" % (option, default or None))  #@TODO: Restore to `log_warning` in 0.4.10
-            return default
-
-
-    def store(self, key, value):
-        """
-        Saves a value persistently to the database
-        """
-        value = map(decode, value) if isiterable(value) else decode(value)
-        entry = json.dumps(value).encode('base64')
-        self.pyload.db.setStorage(self.classname, key, entry)
-
-
-    def retrieve(self, key=None, default=None):
-        """
-        Retrieves saved value or dict of all saved entries if key is None
-        """
-        entry = self.pyload.db.getStorage(self.classname, key)
-
-        if key:
-            if entry is None:
-                value = default
-            else:
-                value = json.loads(entry.decode('base64'))
-        else:
-            if not entry:
-                value = default
-            else:
-                value = dict((k, json.loads(v.decode('base64'))) for k, v in value.items())
-
-        return value
-
-
-    def delete(self, key):
-        """
-        Delete entry in db
-        """
-        self.pyload.db.delStorage(self.classname, key)
+        if os.name != "nt" and self.pyload.config.get('permission', "change_dl"):
+            uid = pwd.getpwnam(self.pyload.config.get('permission', "user"))[2]
+            gid = grp.getgrnam(self.pyload.config.get('permission', "group"))[2]
+            os.chown(path, uid, gid)
 
 
     def fail(self, msg):
@@ -214,12 +174,17 @@ class Plugin(object):
         """
         if self.pyload.debug:
             self.log_debug("LOAD URL " + url,
-                           *["%s=%s" % (key, val) for key, val in locals().items() if key not in ("self", "url", "_[1]")])
+                           *["%s=%s" % (key, value) for key, value in locals().items()
+                             if key not in ("self", "url", "_[1]")])
 
         url = fixurl(url, unquote=True)  #: Recheck in 0.4.10
 
-        if req is None:
-            req = self.req or self.pyload.requestFactory.getRequest(self.classname)
+        if req is False:
+            req = get_request()
+            req.setOption("timeout", 60)  #@TODO: Remove in 0.4.10
+
+        elif not req:
+            req = self.req
 
         #@TODO: Move to network in 0.4.10
         if isinstance(cookies, list):
@@ -239,7 +204,7 @@ class Plugin(object):
             req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
         elif type(redirect) is int:
-            maxredirs = self.get_config("maxredirs", default=5, plugin="UserAgentSwitcher")
+            maxredirs = int(self.pyload.api.getConfigValue("UserAgentSwitcher", "maxredirs", "plugin")) or 5  #@TODO: Remove `int` in 0.4.10
             req.http.c.setopt(pycurl.MAXREDIRS, maxredirs)
 
         #@TODO: Move to network in 0.4.10
@@ -248,56 +213,43 @@ class Plugin(object):
 
         #@TODO: Move to network in 0.4.10
         if isinstance(decode, basestring):
-            html = utils.decode(html, decode)
+            html = decode(html, decode)
 
         self.last_html = html
 
         if self.pyload.debug:
-            frame = inspect.currentframe()
+            self.dump_html()
 
-            try:
-                framefile = fs_join("tmp", self.classname, "%s_line%s.dump.html" %
-                                    (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
+        #@TODO: Move to network in 0.4.10
+        header = {'code': req.code, 'url': req.lastEffectiveURL}
+        header.update(parse_html_header(req.http.header if hasattr(req, "http") else req.header))  #@NOTE: req can be a HTTPRequest or a Browser object
 
-                if not exists(os.path.join("tmp", self.classname)):
-                    os.makedirs(os.path.join("tmp", self.classname))
+        self.last_header = header
 
-                with open(framefile, "wb") as f:
-                    f.write(encode(html))
-
-            except IOError, e:
-                self.log_error(e)
-
-            finally:
-                del frame  #: Delete the frame or it wont be cleaned
-
-        if not just_header:
+        if just_header:
+            return header
+        else:
             return html
 
-        else:
-            #@TODO: Move to network in 0.4.10
-            header = {'code': req.code}
 
-            for line in html.splitlines():
-                line = line.strip()
-                if not line or ":" not in line:
-                    continue
+    def dump_html(self):
+        frame = inspect.currentframe()
 
-                key, none, value = line.partition(":")
+        try:
+            framefile = fsjoin("tmp", self.classname, "%s_line%s.dump.html"
+                               % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
 
-                key   = key.strip().lower()
-                value = value.strip()
+            if not exists(os.path.join("tmp", self.classname)):
+                os.makedirs(os.path.join("tmp", self.classname))
 
-                if key in header:
-                    header_key = header.get(key)
-                    if type(header_key) is list:
-                        header_key.append(value)
-                    else:
-                        header[key] = [header_key, value]
-                else:
-                    header[key] = value
+            with open(framefile, "wb") as f:
+                f.write(encode(self.last_html))
 
-            return header
+        except IOError, e:
+            self.log_error(e)
+
+        finally:
+            del frame  #: Delete the frame or it wont be cleaned
 
 
     def clean(self):

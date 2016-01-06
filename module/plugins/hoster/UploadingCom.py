@@ -1,20 +1,25 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.internal.utils import encode, json, timestamp
+import pycurl
+
+from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.misc import encode, json, timestamp
 
 
 class UploadingCom(SimpleHoster):
     __name__    = "UploadingCom"
     __type__    = "hoster"
-    __version__ = "0.45"
-    __status__  = "testing"
+    __version__ = "0.48"
+    __status__  = "broken"
 
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>\w+)'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
+                   ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """Uploading.com hoster plugin"""
     __license__     = "GPLv3"
@@ -70,7 +75,10 @@ class UploadingCom(SimpleHoster):
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
         self.req.http.lastURL = pyfile.url
 
-        res = json.loads(self.load(ajax_url, post={'action': 'second_page', 'code': self.info['pattern']['ID']}))
+        html = self.load(ajax_url,
+                         post={'action': 'second_page',
+                               'code'  : self.info['pattern']['ID']})
+        res = json.loads(html)
 
         if 'answer' in res and 'wait_time' in res['answer']:
             wait_time = int(res['answer']['wait_time'])
@@ -79,7 +87,11 @@ class UploadingCom(SimpleHoster):
         else:
             self.error(_("No AJAX/WAIT"))
 
-        res = json.loads(self.load(ajax_url, post={'action': 'get_link', 'code': self.info['pattern']['ID'], 'pass': 'false'}))
+        html = self.load(ajax_url,
+                         post={'action': 'get_link',
+                               'code'  : self.info['pattern']['ID'],
+                               'pass'  : 'false'})
+        res = json.loads(html)
 
         if 'answer' in res and 'link' in res['answer']:
             url = res['answer']['link']
@@ -94,6 +106,3 @@ class UploadingCom(SimpleHoster):
             self.error(_("No URL"))
 
         self.link = url
-
-
-getInfo = create_getInfo(UploadingCom)

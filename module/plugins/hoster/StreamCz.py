@@ -2,28 +2,13 @@
 
 import re
 
-from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster
-
-
-def get_info(urls):
-    result = []
-
-    for url in urls:
-        html = get_url(url)
-        if re.search(StreamCz.OFFLINE_PATTERN, html):
-            #: File offline
-            result.append((url, 0, 1, url))
-        else:
-            result.append((url, 0, 2, url))
-
-    yield result
 
 
 class StreamCz(Hoster):
     __name__    = "StreamCz"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.25"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?stream\.cz/[^/]+/\d+'

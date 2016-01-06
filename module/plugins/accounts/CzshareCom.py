@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class CzshareCom(Account):
     __name__    = "CzshareCom"
     __type__    = "account"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__  = "testing"
 
     __description__ = """Czshare.com account plugin, now Sdilej.cz"""
@@ -18,7 +18,7 @@ class CzshareCom(Account):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    CREDIT_LEFT_PATTERN = r'<tr class="active">\s*<td>([\d ,]+) (KiB|MiB|GiB)</td>\s*<td>([^<]*)</td>\s*</tr>'
+    CREDIT_LEFT_PATTERN = r'<tr class="active">\s*<td>([\d ,]+) (KiB|MiB|GiB)</td>\s*<td>(.*?)</td>\s*</tr>'
 
 
     def grab_info(self, user, password, data):

@@ -2,19 +2,22 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 
 
 class CatShareNet(SimpleHoster):
     __name__    = "CatShareNet"
     __type__    = "hoster"
-    __version__ = "0.18"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?catshare\.net/\w{15,16}'
-    __config__  = [("activated"  , "bool", "Activated"                       , True),
-                   ("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
+                   ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """CatShare.net hoster plugin"""
     __license__     = "GPLv3"
@@ -39,9 +42,9 @@ class CatShareNet(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        recaptcha = ReCaptcha(self)
+        self.captcha = ReCaptcha(pyfile)
 
-        response, challenge = recaptcha.challenge()
+        response, challenge = self.captcha.challenge()
         self.data = self.load(pyfile.url,
                               post={'recaptcha_challenge_field': challenge,
                                     'recaptcha_response_field' : response})
@@ -49,6 +52,3 @@ class CatShareNet(SimpleHoster):
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
-
-
-getInfo = create_getInfo(CatShareNet)

@@ -4,13 +4,13 @@ import re
 import time
 
 from module.plugins.internal.Account import Account
-from module.plugins.internal.utils import set_cookie
+from module.plugins.internal.misc import set_cookie
 
 
 class TurbobitNet(Account):
     __name__    = "TurbobitNet"
     __type__    = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __description__ = """TurbobitNet account plugin"""

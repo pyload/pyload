@@ -2,19 +2,23 @@
 
 import re
 
-from module.network.RequestFactory import getURL
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.internal.utils import json
+from module.network.RequestFactory import getURL as get_url
+from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.misc import json
 
 
 class OpenloadIo(SimpleHoster):
     __name__    = "OpenloadIo"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?openload\.(co|io)/(f|embed)/(?P<ID>[\w\-]+)'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
+                   ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """Openload.co hoster plugin"""
     __license__     = "GPLv3"
@@ -33,7 +37,7 @@ class OpenloadIo(SimpleHoster):
 
     @classmethod
     def _load_json(cls, uri):
-        return json.loads(getURL(cls.API_URL + uri))
+        return json.loads(get_url(cls.API_URL + uri))
 
 
     @classmethod
@@ -63,6 +67,3 @@ class OpenloadIo(SimpleHoster):
 
         download_json = self._load_json(self._DOWNLOAD_FILE_URI_PATTERN.format(file_id, ticket))
         self.link = download_json['result']['url']
-
-
-getInfo = create_getInfo(OpenloadIo)

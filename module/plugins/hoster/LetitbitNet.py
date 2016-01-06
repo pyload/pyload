@@ -9,38 +9,25 @@
 import re
 import urlparse
 
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, seconds_to_midnight
-
-
-def api_response(url):
-    json_data = ["yw7XQy2v9", ["download/info", {'link': url}]]
-    api_rep   = get_url("http://api.letitbit.net/json",
-                        post={'r': json.dumps(json_data)})
-    return json.loads(api_rep)
-
-
-def get_info(urls):
-    for url in urls:
-        api_rep = api_response(url)
-        if api_rep['status'] == "OK":
-            info = api_rep['data'][0]
-            yield (info['name'], info['size'], 2, url)
-        else:
-            yield (url, 0, 1, url)
+from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.misc import seconds_to_midnight
 
 
 class LetitbitNet(SimpleHoster):
     __name__    = "LetitbitNet"
     __type__    = "hoster"
-    __version__ = "0.34"
+    __version__ = "0.37"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(letitbit|shareflare)\.net/download/.+'
-    __config__  = [("activated"  , "bool", "Activated"                       , True),
-                   ("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
+                   ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """Letitbit.net hoster plugin"""
     __license__     = "GPLv3"
@@ -48,7 +35,7 @@ class LetitbitNet(SimpleHoster):
                        ("z00nx", "z00nx0@gmail.com")]
 
 
-    URL_REPLACEMENTS = [(r"(?<=http://)([^/]+)", "letitbit.net")]
+    URL_REPLACEMENTS = [(r'(?<=http://)([^/]+)', "letitbit.net")]
 
     SECONDS_PATTERN = r'seconds\s*=\s*(\d+);'
     CAPTCHA_CONTROL_FIELD = r'recaptcha_control_field\s=\s\'(.+?)\''
@@ -87,8 +74,8 @@ class LetitbitNet(SimpleHoster):
 
         self.log_debug(res)
 
-        recaptcha = ReCaptcha(self)
-        response, challenge = recaptcha.challenge()
+        self.captcha = ReCaptcha(pyfile)
+        response, challenge = self.captcha.challenge()
 
         post_data = {'recaptcha_challenge_field': challenge,
                      'recaptcha_response_field': response,

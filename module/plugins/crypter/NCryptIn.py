@@ -3,22 +3,22 @@
 import binascii
 import re
 
-from Crypto.Cipher import AES
+import Crypto.Cipher
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.Crypter import Crypter
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 
 
 class NCryptIn(Crypter):
     __name__    = "NCryptIn"
     __type__    = "crypter"
-    __version__ = "1.38"
+    __version__ = "1.40"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?ncrypt\.in/(?P<TYPE>folder|link|frame)-([^/\?]+)'
-    __config__  = [("activated"         , "bool", "Activated"                          , True),
-                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
-                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("activated"         , "bool"          , "Activated"                       , True     ),
+                   ("use_premium"       , "bool"          , "Use premium account if available", True     ),
+                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"  , "Default")]
 
     __description__ = """NCrypt.in decrypter plugin"""
     __license__     = "GPLv3"
@@ -42,13 +42,13 @@ class NCryptIn(Crypter):
     def decrypt(self, pyfile):
         #: Init
         self.package = pyfile.package()
-        package_links = []
-        package_name = self.package.name
+        pack_links = []
+        pack_name = self.package.name
         folder_name = self.package.folder
 
         #: Deal with single links
         if self.is_single_link():
-            package_links.extend(self.handle_single_link())
+            pack_links.extend(self.handle_single_link())
 
         #: Deal with folders
         else:
@@ -66,18 +66,18 @@ class NCryptIn(Crypter):
                 self.handle_errors()
 
             #: Prepare package name and folder
-            (package_name, folder_name) = self.get_package_info()
+            (pack_name, folder_name) = self.get_package_info()
 
             #: Extract package links
             for link_source_type in self.links_source_order:
-                package_links.extend(self.handle_link_source(link_source_type))
-                if package_links:  #: Use only first source which provides links
+                pack_links.extend(self.handle_link_source(link_source_type))
+                if pack_links:  #: Use only first source which provides links
                     break
-            package_links = set(package_links)
+            pack_links = set(pack_links)
 
         #: Pack and return links
-        if package_links:
-            self.packages = [(package_name, package_links, folder_name)]
+        if pack_links:
+            self.packages = [(pack_name, pack_links, folder_name)]
 
 
     def is_single_link(self):
@@ -156,8 +156,8 @@ class NCryptIn(Crypter):
             self.log_debug("ReCaptcha protected")
             captcha_key = re.search(r'\?k=(.*?)"', form).group(1)
             self.log_debug("Resolving ReCaptcha with key [%s]" % captcha_key)
-            recaptcha = ReCaptcha(self)
-            response, challenge = recaptcha.challenge(captcha_key)
+            self.captcha = ReCaptcha(self.pyfile)
+            response, challenge = self.captcha.challenge(captcha_key)
             postData['recaptcha_challenge_field'] = challenge
             postData['recaptcha_response_field']  = response
 
@@ -209,44 +209,44 @@ class NCryptIn(Crypter):
 
     def handle_single_link(self):
         self.log_debug("Handling Single link")
-        package_links = []
+        pack_links = []
 
         #: Decrypt single link
         decrypted_link = self.decrypt_link(self.pyfile.url)
         if decrypted_link:
-            package_links.append(decrypted_link)
+            pack_links.append(decrypted_link)
 
-        return package_links
+        return pack_links
 
 
     def handle_CNL2(self):
         self.log_debug("Handling CNL2 links")
-        package_links = []
+        pack_links = []
 
         if 'cnl2_output' in self.cleaned_html:
             try:
                 (vcrypted, vjk) = self._get_cipher_params()
                 for (crypted, jk) in zip(vcrypted, vjk):
-                    package_links.extend(self._get_links(crypted, jk))
+                    pack_links.extend(self._get_links(crypted, jk))
 
             except Exception:
                 self.fail(_("Unable to decrypt CNL2 links"))
 
-        return package_links
+        return pack_links
 
 
     def handle_containers(self):
         self.log_debug("Handling Container links")
-        package_links = []
+        pack_links = []
 
         pattern = r'/container/(rsdf|dlc|ccf)/(\w+)'
         containersLinks = re.findall(pattern, self.data)
         self.log_debug("Decrypting %d Container links" % len(containersLinks))
         for containerLink in containersLinks:
             link = "http://ncrypt.in/container/%s/%s.%s" % (containerLink[0], containerLink[1], containerLink[0])
-            package_links.append(link)
+            pack_links.append(link)
 
-        return package_links
+        return pack_links
 
 
     def handle_web_links(self):
@@ -254,15 +254,15 @@ class NCryptIn(Crypter):
         pattern = r'(http://ncrypt\.in/link-.*?=)'
         links = re.findall(pattern, self.data)
 
-        package_links = []
+        pack_links = []
         self.log_debug("Decrypting %d Web links" % len(links))
         for i, link in enumerate(links):
             self.log_debug("Decrypting Web link %d, %s" % (i + 1, link))
             decrypted_link = self.decrypt(link)
             if decrypted_link:
-                package_links.append(decrypted_link)
+                pack_links.append(decrypted_link)
 
-        return package_links
+        return pack_links
 
 
     def decrypt_link(self, link):
@@ -300,7 +300,7 @@ class NCryptIn(Crypter):
         #: Decrypt
         Key = key
         IV = key
-        obj = AES.new(Key, AES.MODE_CBC, IV)
+        obj = Crypto.Cipher.AES.new(Key, Crypto.Cipher.AES.MODE_CBC, IV)
         text = obj.decrypt(crypted.decode('base64'))
 
         #: Extract links
@@ -310,6 +310,3 @@ class NCryptIn(Crypter):
         #: Log and return
         self.log_debug("Block has %d links" % len(links))
         return links
-
-
-getInfo = create_getInfo(NCryptIn)

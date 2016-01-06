@@ -2,19 +2,21 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class VeohCom(SimpleHoster):
     __name__    = "VeohCom"
     __type__    = "hoster"
-    __version__ = "0.24"
+    __version__ = "0.26"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?veoh\.com/(tv/)?(watch|videos)/(?P<ID>v\w+)'
-    __config__  = [("activated", "bool", "Activated", True),
-                   ("use_premium", "bool"         , "Use premium account if available", True  ),
-                   ("quality"    , "Low;High;Auto", "Quality"                         , "Auto")]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
+                   ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """Veoh.com hoster plugin"""
     __license__     = "GPLv3"
@@ -36,7 +38,7 @@ class VeohCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        quality = self.get_config('quality')
+        quality = self.config.get('quality')
         if quality == "Auto":
             quality = ("High", "Low")
 
@@ -51,6 +53,3 @@ class VeohCom(SimpleHoster):
                 self.log_info(_("No %s quality video found") % q.upper())
         else:
             self.fail(_("No video found!"))
-
-
-getInfo = create_getInfo(VeohCom)

@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
 
 import re
+import select
 import socket
 import struct
 import sys
 import time
 
-from select import select
-
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.utils import fs_join
+from module.plugins.internal.misc import fsjoin
 
 
-class Xdcc(Hoster):
-    __name__    = "Xdcc"
+class XDCC(Hoster):
+    __name__    = "XDCC"
     __type__    = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.39"
     __status__  = "testing"
 
     __config__ = [("nick", "str", "Nickname", "pyload"),
@@ -67,9 +66,9 @@ class Xdcc(Hoster):
         chan = m.group(2)
         bot = m.group(3)
         pack = m.group(4)
-        nick = self.get_config('nick')
-        ident = self.get_config('ident')
-        real = self.get_config('realname')
+        nick = self.config.get('nick')
+        ident = self.config.get('ident')
+        real = self.config.get('realname')
 
         temp = server.split(':')
         ln = len(temp)
@@ -119,7 +118,7 @@ class Xdcc(Hoster):
                     sock.close()
                     self.fail(_("XDCC Bot did not answer"))
 
-            fdset = select([sock], [], [], 0)
+            fdset = select.select([sock], [], [], 0)
             if sock not in fdset[0]:
                 continue
 
@@ -188,8 +187,8 @@ class Xdcc(Hoster):
 
         self.pyfile.name = packname
 
-        dl_folder = self.pyload.config.get("general", "download_folder")
-        filename = fs_join(dl_folder, packname)
+        dl_folder = self.pyload.config.get('general', 'download_folder')
+        filename = fsjoin(dl_folder, packname)
 
         self.log_info(_("Downloading %s from %s:%d") % (packname, ip, port))
 

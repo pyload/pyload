@@ -3,22 +3,23 @@
 import re
 
 from module.plugins.internal.Plugin import Fail
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.internal.utils import encode, replace_patterns, set_cookie, set_cookies
+from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.misc import encode
 
 
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.58"
+    __version__ = "0.59"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("activated"   , "bool", "Activated"                                 , True),
-                   ("use_premium" , "bool", "Use premium account if available"          , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails", True),
-                   ("chk_filesize", "bool", "Check file size"                           , True),
-                   ("revertfailed", "bool", "Revert to standard download if fails"      , True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True ),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True ),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , False),
+                   ("chk_filesize", "bool", "Check file size"                                  , True ),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10   ),
+                   ("revertfailed", "bool", "Revert to standard download if fails"             , True )]
 
     __description__ = """Multi hoster plugin"""
     __license__     = "GPLv3"
@@ -31,7 +32,7 @@ class MultiHoster(SimpleHoster):
 
 
     def init(self):
-        self.PLUGIN_NAME = self.pyload.pluginManager.hosterPlugins[self.classname]['name']
+        self.PLUGIN_NAME = self.pyload.pluginManager.hosterPlugins.get(self.classname)['name']
 
 
     def _log(self, level, plugintype, pluginname, messages):
@@ -53,8 +54,8 @@ class MultiHoster(SimpleHoster):
         super(MultiHoster, self).setup_base()
 
 
-    def prepare(self):
-        super(MultiHoster, self).prepare()
+    def _prepare(self):
+        super(MultiHoster, self)._prepare()
 
         if self.DIRECT_LINK is None:
             self.direct_dl = self.__pattern__ != r'^unmatchable$' and re.match(self.__pattern__, self.pyfile.url)
@@ -67,9 +68,9 @@ class MultiHoster(SimpleHoster):
             super(MultiHoster, self)._process(thread)
 
         except Fail, e:
-            if self.get_config("revertfailed", True) and \
-               self.pyload.pluginManager.hosterPlugins[self.classname].get('new_module'):
-                hdict = self.pyload.pluginManager.hosterPlugins[self.classname]
+            if self.config.get('revertfailed', True) and \
+               self.pyload.pluginManager.hosterPlugins.get(self.classname).get('new_module'):
+                hdict = self.pyload.pluginManager.hosterPlugins.get(self.classname)
 
                 tmp_module = hdict['new_module']
                 tmp_name   = hdict['new_name']
@@ -84,7 +85,7 @@ class MultiHoster(SimpleHoster):
                 self.restart(_("Revert to original hoster plugin"))
 
             else:
-                raise Fail(encode(e))
+                raise Fail(e)
 
 
     def handle_premium(self, pyfile):

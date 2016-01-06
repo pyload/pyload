@@ -2,20 +2,23 @@
 
 import re
 
-from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
-from module.plugins.internal.utils import json
+from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.misc import json
 
 
 class RPNetBiz(MultiHoster):
     __name__    = "RPNetBiz"
     __type__    = "hoster"
-    __version__ = "0.18"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __pattern__ = r'https?://.+rpnet\.biz'
-    __config__  = [("activated", "bool", "Activated", True),
-                   ("use_premium" , "bool", "Use premium account if available"    , True),
-                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True ),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True ),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , False),
+                   ("chk_filesize", "bool", "Check file size"                                  , True ),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10   ),
+                   ("revertfailed", "bool", "Revert to standard download if fails"             , True )]
 
     __description__ = """RPNet.biz multi-hoster plugin"""
     __license__     = "GPLv3"
@@ -76,6 +79,3 @@ class RPNetBiz(MultiHoster):
             self.fail(link_status['error'])
         else:
             self.fail(_("Something went wrong, not supposed to enter here"))
-
-
-getInfo = create_getInfo(RPNetBiz)

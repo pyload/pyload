@@ -2,14 +2,14 @@
 
 import re
 
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 from module.plugins.internal.CaptchaService import CaptchaService
 
 
 class AdYouLike(CaptchaService):
     __name__    = "AdYouLike"
     __type__    = "captcha"
-    __version__ = "0.08"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __description__ = """AdYouLike captcha service plugin"""
@@ -42,7 +42,7 @@ class AdYouLike(CaptchaService):
         #: 'all':{'element_id':"ayl_private_cap_92300",'lang':"fr",'env':"prod"}}
         ayl = json.loads(ayl)
 
-        html = self.plugin.load("http://api-ayl.appspot.com/challenge",
+        html = self.pyfile.plugin.load("http://api-ayl.appspot.com/challenge",
                                     get={'key'     : ayl['adyoulike']['key'],
                                          'env'     : ayl['all']['env'],
                                          'callback': callback})
@@ -86,7 +86,5 @@ class AdYouLike(CaptchaService):
                   '_ayl_tid'            : challenge['tid'],
                   '_ayl_token_challenge': challenge['token'],
                   '_ayl_response'       : response}
-
-        self.log_debug("Result: %s" % response)
 
         return result

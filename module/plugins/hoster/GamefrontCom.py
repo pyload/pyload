@@ -1,16 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class GamefrontCom(SimpleHoster):
     __name__    = "GamefrontCom"
     __type__    = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?gamefront\.com/files/(?P<ID>\d+)'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
+                   ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """Gamefront.com hoster plugin"""
     __license__     = "GPLv3"
@@ -33,6 +37,3 @@ class GamefrontCom(SimpleHoster):
         self.data = self.load("http://www.gamefront.com/files/service/thankyou",
                               get={'id': self.info['pattern']['ID']})
         return super(GamefrontCom, self).handle_free(pyfile)
-
-
-getInfo = create_getInfo(GamefrontCom)

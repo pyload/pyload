@@ -3,13 +3,13 @@
 import urlparse
 
 from module.plugins.internal.Account import Account
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 
 
 class RapidgatorNet(Account):
     __name__    = "RapidgatorNet"
     __type__    = "account"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __description__ = """Rapidgator.net account plugin"""
@@ -34,17 +34,17 @@ class RapidgatorNet(Account):
 
             self.log_debug("API:USERINFO", html)
 
-            jso = json.loads(html)
+            json_data = json.loads(html)
 
-            if jso['response_status'] == 200:
-                if "reset_in" in jso['response']:
-                    self._schedule_refresh(user, jso['response']['reset_in'])
+            if json_data['response_status'] == 200:
+                if "reset_in" in json_data['response']:
+                    self._schedule_refresh(user, json_data['response']['reset_in'])
 
-                validuntil  = jso['response']['expire_date']
-                trafficleft = float(jso['response']['traffic_left']) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
+                validuntil  = json_data['response']['expire_date']
+                trafficleft = float(json_data['response']['traffic_left']) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
                 premium     = True
             else:
-                self.log_error(jso['response_details'])
+                self.log_error(json_data['response_details'])
 
         except Exception, e:
             self.log_error(e, trace=True)
@@ -63,13 +63,13 @@ class RapidgatorNet(Account):
 
             self.log_debug("API:LOGIN", html)
 
-            jso = json.loads(html)
+            json_data = json.loads(html)
 
-            if jso['response_status'] == 200:
-                data['sid'] = str(jso['response']['session_id'])
+            if json_data['response_status'] == 200:
+                data['sid'] = str(json_data['response']['session_id'])
                 return
             else:
-                self.log_error(jso['response_details'])
+                self.log_error(json_data['response_details'])
 
         except Exception, e:
             self.log_error(e, trace=True)

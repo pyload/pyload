@@ -8,7 +8,7 @@ from module.plugins.internal.MultiAccount import MultiAccount
 class RealdebridCom(MultiAccount):
     __name__    = "RealdebridCom"
     __type__    = "account"
-    __version__ = "0.51"
+    __version__ = "0.52"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),

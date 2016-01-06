@@ -3,13 +3,13 @@
 import time
 
 from module.plugins.internal.Account import Account
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 
 
 class FileserveCom(Account):
     __name__    = "FileserveCom"
     __type__    = "account"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__  = "testing"
 
     __description__ = """Fileserve.com account plugin"""

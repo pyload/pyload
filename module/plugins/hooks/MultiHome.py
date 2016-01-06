@@ -44,7 +44,7 @@ class Interface(object):
 class MultiHome(Addon):
     __name__    = "MultiHome"
     __type__    = "hook"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __config__ = [("activated" , "bool", "Activated" , False ),
@@ -59,11 +59,11 @@ class MultiHome(Addon):
         self.register   = {}
         self.interfaces = []
 
-        self.parse_interfaces(self.get_config('interfaces').split(";"))
+        self.parse_interfaces(self.config.get('interfaces').split(";"))
 
         if not self.interfaces:
-            self.parse_interfaces([self.pyload.config.get("download", "interface")])
-            self.set_config("interfaces", self.to_config())
+            self.parse_interfaces([self.pyload.config.get('download', 'interface')])
+            self.config.set('interfaces', self.to_config())
 
 
     def to_config(self):

@@ -3,13 +3,13 @@
 import re
 
 from module.plugins.internal.Account import Account
-from module.plugins.internal.utils import set_cookie
+from module.plugins.internal.misc import set_cookie
 
 
 class FastshareCz(Account):
     __name__    = "FastshareCz"
     __type__    = "account"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __description__ = """Fastshare.cz account plugin"""

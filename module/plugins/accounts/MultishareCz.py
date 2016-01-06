@@ -8,7 +8,7 @@ from module.plugins.internal.MultiAccount import MultiAccount
 class MultishareCz(MultiAccount):
     __name__    = "MultishareCz"
     __type__    = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),

@@ -6,7 +6,7 @@ from module.plugins.internal.Account import Account
 class BitshareCom(Account):
     __name__    = "BitshareCom"
     __type__    = "account"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __description__ = """Bitshare account plugin"""

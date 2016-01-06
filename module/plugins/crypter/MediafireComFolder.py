@@ -2,20 +2,20 @@
 
 import re
 
-from module.plugins.internal.Crypter import Crypter, create_getInfo
-from module.plugins.internal.utils import json
+from module.plugins.internal.Crypter import Crypter
+from module.plugins.internal.misc import json
 
 
 class MediafireComFolder(Crypter):
     __name__    = "MediafireComFolder"
     __type__    = "crypter"
-    __version__ = "0.19"
+    __version__ = "0.22"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))'
-    __config__  = [("activated"         , "bool", "Activated"                          , True),
-                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
-                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("activated"         , "bool"          , "Activated"                       , True     ),
+                   ("use_premium"       , "bool"          , "Use premium account if available", True     ),
+                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"  , "Default")]
 
     __description__ = """Mediafire.com folder decrypter plugin"""
     __license__     = "GPLv3"
@@ -58,13 +58,13 @@ class MediafireComFolder(Crypter):
         url, result = self._get_url(pyfile.url)
         self.log_debug("Location (%d): %s" % (result, url))
 
-        if result is 0:
+        if result == 0:
             #: Load and parse html
             html = self.load(pyfile.url)
             m = re.search(self.LINK_PATTERN, html)
             if m is not None:
                 #: File page
-                self.urls.append("http://www.mediafire.com/file/%s" % m.group(1))
+                self.links.append("http://www.mediafire.com/file/%s" % m.group(1))
             else:
                 #: Folder page
                 m = re.search(self.FOLDER_KEY_PATTERN, html)
@@ -72,22 +72,20 @@ class MediafireComFolder(Crypter):
                     folder_key = m.group(1)
                     self.log_debug("FOLDER KEY: %s" % folder_key)
 
-                    json_resp = json.loads(self.load("http://www.mediafire.com/api/folder/get_info.php",
-                                                     get={'folder_key'     : folder_key,
-                                                          'response_format': "json",
-                                                          'version'        : 1}))
-                    # self.log_info(json_resp)
-                    if json_resp['response']['result'] == "Success":
-                        for link in json_resp['response']['folder_info']['files']:
-                            self.urls.append("http://www.mediafire.com/file/%s" % link['quickkey'])
+                    html = self.load("http://www.mediafire.com/api/folder/get_info.php",
+                                     get={'folder_key'     : folder_key,
+                                          'response_format': "json",
+                                          'version'        : 1})
+                    json_data = json.loads(html)
+                    # self.log_info(json_data)
+                    if json_data['response']['result'] == "Success":
+                        for link in json_data['response']['folder_info']['files']:
+                            self.links.append("http://www.mediafire.com/file/%s" % link['quickkey'])
                     else:
-                        self.fail(json_resp['response']['message'])
+                        self.fail(json_data['response']['message'])
 
-        elif result is 1:
+        elif result == 1:
             self.offline()
 
         else:
-            self.urls.append(url)
-
-
-getInfo = create_getInfo(MediafireComFolder)
+            self.links.append(url)

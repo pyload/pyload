@@ -2,20 +2,22 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.internal.utils import json
+from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.misc import json
 
 
 class SoundcloudCom(SimpleHoster):
     __name__    = "SoundcloudCom"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?soundcloud\.com/[\w\-]+/[\w\-]+'
-    __config__  = [("activated", "bool", "Activated", True),
-                   ("use_premium", "bool"        , "Use premium account if available", True    ),
-                   ("quality"    , "Lower;Higher", "Quality"                         , "Higher")]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
+                   ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """SoundCloud.com hoster plugin"""
     __license__     = "GPLv3"
@@ -40,8 +42,9 @@ class SoundcloudCom(SimpleHoster):
             client_id = "b45b1aa10f1ac2941910a7f0d10f8e28"
 
         #: Url to retrieve the actual song url
-        streams = json.loads(self.load("https://api.soundcloud.com/tracks/%s/streams" % song_id,
-                             get={'client_id': client_id}))
+        html = self.load("https://api.soundcloud.com/tracks/%s/streams" % song_id,
+                         get={'client_id': client_id})
+        streams = json.loads(html)
 
         regex = re.compile(r'[^\d]')
         http_streams = sorted([(key, value) for key, value in streams.items() if key.startswith('http_')],
@@ -51,8 +54,5 @@ class SoundcloudCom(SimpleHoster):
         self.log_debug("Streams found: %s" % (http_streams or "None"))
 
         if http_streams:
-            stream_name, self.link = http_streams[0 if self.get_config('quality') == "Higher" else -1]
+            stream_name, self.link = http_streams[0 if self.config.get('quality') == "Higher" else -1]
             pyfile.name += '.' + stream_name.split('_')[1].lower()
-
-
-getInfo = create_getInfo(SoundcloudCom)

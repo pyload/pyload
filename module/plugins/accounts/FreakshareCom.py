@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class FreakshareCom(Account):
     __name__    = "FreakshareCom"
     __type__    = "account"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __description__ = """Freakshare.com account plugin"""
@@ -32,7 +32,7 @@ class FreakshareCom(Account):
             pass
 
         try:
-            m = re.search(r'Traffic verbleibend:</td>\s*<td>([^<]+)', html, re.M)
+            m = re.search(r'Traffic verbleibend:</td>\s*<td>(.+?)', html, re.M)
             trafficleft = self.parse_traffic(m.group(1))
 
         except Exception:

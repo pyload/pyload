@@ -4,19 +4,20 @@ import math
 import re
 import urlparse
 
-from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
+from module.plugins.internal.XFSCrypter import XFSCrypter
 
 
 class TusfilesNetFolder(XFSCrypter):
     __name__    = "TusfilesNetFolder"
     __type__    = "crypter"
-    __version__ = "0.12"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/go/(?P<ID>\w+)'
-    __config__  = [("activated"         , "bool", "Activated"                          , True),
-                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
-                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
+    __config__  = [("activated"         , "bool"          , "Activated"                                        , True     ),
+                   ("use_premium"       , "bool"          , "Use premium account if available"                 , True     ),
+                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"                   , "Default"),
+                   ("max_wait"          , "int"           , "Reconnect if waiting time is greater than minutes", 10       )]
 
     __description__ = """Tusfiles.net folder decrypter plugin"""
     __license__     = "GPLv3"
@@ -44,7 +45,4 @@ class TusfilesNetFolder(XFSCrypter):
 
         for p in xrange(2, pages + 1):
             self.data = self.load_page(p)
-            self.urls.append(self.get_links())
-
-
-getInfo = create_getInfo(TusfilesNetFolder)
+            self.links.append(self.get_links())

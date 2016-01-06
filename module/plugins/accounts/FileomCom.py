@@ -6,7 +6,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class FileomCom(XFSAccount):
     __name__    = "FileomCom"
     __type__    = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __description__ = """Fileom.com account plugin"""

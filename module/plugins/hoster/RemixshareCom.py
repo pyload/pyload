@@ -10,18 +10,21 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class RemixshareCom(SimpleHoster):
     __name__    = "RemixshareCom"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __pattern__ = r'https?://remixshare\.com/(download|dl)/\w+'
-    __config__  = [("activated"  , "bool", "Activated"                       , True),
-                   ("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
+                   ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """Remixshare.com hoster plugin"""
     __license__     = "GPLv3"
@@ -31,7 +34,7 @@ class RemixshareCom(SimpleHoster):
 
 
     INFO_PATTERN    = r'title=\'.+?\'>(?P<N>.+?)</span><span class=\'light2\'>&nbsp;\((?P<S>\d+)&nbsp;(?P<U>[\w^_]+)\)<'
-    HASHSUM_PATTERN = r'>(?P<T>MD5): (?P<H>\w+)'
+    HASHSUM_PATTERN = r'>(?P<H>MD5): (?P<D>\w+)'
     OFFLINE_PATTERN = r'<h1>Ooops!'
 
     LINK_PATTERN  = r'var uri = "(.+?)"'
@@ -55,6 +58,3 @@ class RemixshareCom(SimpleHoster):
             self.error(_("File token"))
 
         self.link = b.group(1) + "/zzz/" + c.group(1)
-
-
-getInfo = create_getInfo(RemixshareCom)

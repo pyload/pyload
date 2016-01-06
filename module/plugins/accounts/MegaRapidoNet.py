@@ -9,7 +9,7 @@ from module.plugins.internal.MultiAccount import MultiAccount
 class MegaRapidoNet(MultiAccount):
     __name__    = "MegaRapidoNet"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),

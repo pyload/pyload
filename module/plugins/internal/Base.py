@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import inspect
-import mimetypes
 import os
 import re
 import time
@@ -9,11 +8,11 @@ import urlparse
 
 from module.plugins.internal.Captcha import Captcha
 from module.plugins.internal.Plugin import Plugin, Abort, Fail, Reconnect, Retry, Skip
-from module.plugins.internal.utils import (decode, encode, fixurl, format_size, format_time,
-                                           parse_html_form, parse_name, replace_patterns)
+from module.plugins.internal.misc import (decode, encode, fixurl, format_size, format_time,
+                                          parse_html_form, parse_name, replace_patterns)
 
 
-#@TODO: Remove in 0.4.10
+#@TODO: Recheck in 0.4.10
 def getInfo(urls):
     #: result = [ .. (name, size, status, url) .. ]
     pass
@@ -25,19 +24,10 @@ def parse_fileInfo(klass, url="", html=""):
     return encode(info['name']), info['size'], info['status'], info['url']
 
 
-#@TODO: Remove in 0.4.10
-def create_getInfo(klass):
-    def get_info(urls):
-        for url in urls:
-            yield parse_fileInfo(klass, url)
-
-    return get_info
-
-
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.17"
+    __version__ = "0.22"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -56,6 +46,7 @@ class Base(Plugin):
     def get_info(cls, url="", html=""):
         url  = fixurl(url, unquote=True)
         info = {'name'   : parse_name(url),
+                'hash'   : {},
                 'pattern': {},
                 'size'   : 0,
                 'status' : 3 if url else 8,
@@ -73,9 +64,6 @@ class Base(Plugin):
     def __init__(self, pyfile):
         self._init(pyfile.m.core)
 
-        #:
-        self.premium = None
-
         #: Engage wan reconnection
         self.wantReconnect = False  #@TODO: Change to `want_reconnect` in 0.4.10
 
@@ -83,22 +71,27 @@ class Base(Plugin):
         self.multiDL = True  #@TODO: Change to `multi_dl` in 0.4.10
 
         #: time.time() + wait in seconds
-        self.waiting    = False
+        self.waiting = False
 
         #: Account handler instance, see :py:class:`Account`
         self.account = None
         self.user    = None  #@TODO: Remove in 0.4.10
+        self.premium = None
 
         #: Associated pyfile instance, see `PyFile`
         self.pyfile = pyfile
 
-        self.thread = None  #: Holds thread in future
+        #: Holds thread in future
+        self.thread = None
 
         #: Js engine, see `JsEngine`
         self.js = self.pyload.js
 
         #: Captcha stuff
-        self.captcha = Captcha(self)
+        #@TODO: Replace in 0.4.10:
+        #_Captcha = self.pyload.pluginManager.loadClass("captcha", self.classname) or Captcha
+        # self.captcha = _Captcha(pyfile)
+        self.captcha = Captcha(pyfile)
 
         #: Some plugins store html code here
         self.data = ""
@@ -113,6 +106,13 @@ class Base(Plugin):
     def _log(self, level, plugintype, pluginname, messages):
         log = getattr(self.pyload.log, level)
         msg = u" | ".join(decode(a).strip() for a in messages if a)
+
+        #: Hide any password
+        try:
+            msg = msg.replace(self.account.info['login']['password'], "**********")
+        except Exception:
+            pass
+
         log("%(plugintype)s %(pluginname)s[%(id)s]: %(msg)s" %
             {'plugintype': plugintype.upper(),
              'pluginname': pluginname,
@@ -137,11 +137,12 @@ class Base(Plugin):
 
     def _setup(self):
         #@TODO: Remove in 0.4.10
-        self.data         = ""
         self.pyfile.error = ""
-        self.last_html    = None
+        self.data         = ""
+        self.last_html    = ""
+        self.last_header  = {}
 
-        if self.get_config('use_premium', True):
+        if self.config.get('use_premium', True):
             self.load_account()  #@TODO: Move to PluginThread in 0.4.10
         else:
             self.account = False
@@ -158,6 +159,8 @@ class Base(Plugin):
         else:
             self.req     = self.pyload.requestFactory.getRequest(self.classname)
             self.premium = False
+
+        self.req.setOption("timeout", 60)  #@TODO: Remove in 0.4.10
 
         self.setup_base()
         self.grab_info()
@@ -194,7 +197,7 @@ class Base(Plugin):
         size = self.info.get('size')
 
         if size > 0:
-            self.pyfile.size = int(self.info['size'])  #@TODO: Fix int conversion in 0.4.10
+            self.pyfile.size = int(self.info.get('size'))  #@TODO: Fix int conversion in 0.4.10
         else:
             size = self.pyfile.size
 
@@ -234,40 +237,45 @@ class Base(Plugin):
     def check_status(self):
         status = self.pyfile.status
 
-        if status is 1:
+        if status == 1:
             self.offline()
 
-        elif status is 4:
+        elif status == 4:
             self.skip(self.pyfile.statusname)
 
-        elif status is 6:
+        elif status == 6:
             self.temp_offline()
 
-        elif status is 8:
+        elif status == 8:
             self.fail()
 
-        elif status is 9 or self.pyfile.abort:
+        elif status == 9 or self.pyfile.abort:
             self.abort()
+
+
+    def _initialize(self):
+        self.log_debug("Plugin version: " + self.__version__)
+        self.log_debug("Plugin status: " + self.__status__)
+
+        if self.__status__ == "broken":
+            self.abort(_("Plugin is temporarily unavailable"))
+
+        elif self.__status__ == "testing":
+            self.log_warning(_("Plugin may be unstable"))
 
 
     def _process(self, thread):
         """
         Handles important things to do before starting
         """
-        self.log_debug("Plugin version: " + self.__version__)
-        self.log_debug("Plugin status: " + self.__status__)
-
-        if self.__status__ is "broken":
-            self.fail(_("Plugin is temporarily unavailable"))
-
-        elif self.__status__ is "testing":
-            self.log_warning(_("Plugin may be unstable"))
-
         self.thread = thread
+
+        self._initialize()
         self._setup()
 
-        # self.pyload.hookManager.downloadPreparing(self.pyfile)  #@TODO: Recheck in 0.4.10
-        self.check_status()
+        #@TODO: Enable in 0.4.10
+        # self.pyload.hookManager.downloadPreparing(self.pyfile)
+        # self.check_status()
 
         self.pyfile.setStatus("starting")
 
@@ -278,6 +286,7 @@ class Base(Plugin):
 
     #: Deprecated method, use `_process` instead (Remove in 0.4.10)
     def preprocessing(self, *args, **kwargs):
+        time.sleep(1)  #@NOTE: Recheck info thread synchronization in 0.4.10
         return self._process(*args, **kwargs)
 
 
@@ -321,15 +330,13 @@ class Base(Plugin):
         """
         Waits the time previously set
         """
-        pyfile = self.pyfile
-
         if seconds is not None:
             self.set_wait(seconds)
 
         if reconnect is not None:
             self.set_reconnect(reconnect)
 
-        wait_time = pyfile.waitUntil - time.time()
+        wait_time = self.pyfile.waitUntil - time.time()
 
         if wait_time < 1:
             self.log_warning(_("Invalid wait time interval"))
@@ -337,8 +344,8 @@ class Base(Plugin):
 
         self.waiting = True
 
-        status = pyfile.status  #@NOTE: Recheck in 0.4.10
-        pyfile.setStatus("waiting")
+        status = self.pyfile.status  #@NOTE: Recheck in 0.4.10
+        self.pyfile.setStatus("waiting")
 
         self.log_info(_("Waiting %s...") % format_time(wait_time))
 
@@ -348,12 +355,12 @@ class Base(Plugin):
                 self.log_warning(_("Reconnection ignored due logged account"))
 
         if not self.wantReconnect or self.account:
-            while pyfile.waitUntil > time.time():
+            while self.pyfile.waitUntil > time.time():
                 self.check_status()
                 time.sleep(2)
 
         else:
-            while pyfile.waitUntil > time.time():
+            while self.pyfile.waitUntil > time.time():
                 self.check_status()
                 self.thread.m.reconnecting.wait(1)
 
@@ -367,7 +374,7 @@ class Base(Plugin):
                 time.sleep(2)
 
         self.waiting = False
-        pyfile.status = status  #@NOTE: Recheck in 0.4.10
+        self.pyfile.status = status  #@NOTE: Recheck in 0.4.10
 
 
     def skip(self, msg=""):
@@ -454,7 +461,7 @@ class Base(Plugin):
         try:
             id = frame.f_back.f_lineno
         finally:
-            del frame
+            del frame  #: Delete the frame or it wont be cleaned
 
         if id not in self.retries:
             self.retries[id] = 0

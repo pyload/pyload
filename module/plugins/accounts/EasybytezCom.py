@@ -8,7 +8,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class EasybytezCom(XFSAccount):
     __name__    = "EasybytezCom"
     __type__    = "account"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __config__ = [("mh_activated", "bool"               , "Use multihoster feature"      , True ),

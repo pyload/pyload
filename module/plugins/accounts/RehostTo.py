@@ -6,7 +6,7 @@ from module.plugins.internal.MultiAccount import MultiAccount
 class RehostTo(MultiAccount):
     __name__    = "RehostTo"
     __type__    = "account"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),

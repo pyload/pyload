@@ -9,7 +9,7 @@ from module.plugins.internal.Hoster import Hoster
 class ShareplaceCom(Hoster):
     __name__    = "ShareplaceCom"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?shareplace\.(com|org)/\?\w+'
@@ -84,7 +84,7 @@ class ShareplaceCom(Hoster):
         if not self.data:
             self.download_html()
 
-        if re.search(r"HTTP Status 404", self.data):
+        if re.search(r'HTTP Status 404', self.data):
             return False
         else:
             return True

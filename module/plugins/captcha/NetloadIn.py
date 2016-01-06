@@ -6,7 +6,7 @@ from module.plugins.internal.OCR import OCR
 class NetloadIn(OCR):
     __name__    = "NetloadIn"
     __type__    = "ocr"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __description__ = """Netload.in ocr plugin"""

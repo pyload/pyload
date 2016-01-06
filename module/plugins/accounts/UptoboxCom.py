@@ -3,14 +3,14 @@
 import re
 import urlparse
 
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class UptoboxCom(XFSAccount):
     __name__    = "UptoboxCom"
     __type__    = "account"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __description__ = """Uptobox.com account plugin"""

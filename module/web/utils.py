@@ -18,16 +18,15 @@
 """
 from bottle import request, HTTPError, redirect, ServerAdapter
 
-from webinterface import env, TEMPLATE, PYLOAD
+from webinterface import env, TEMPLATE
 
 from module.Api import has_permission, PERMS, ROLE
 
 def render_to_response(name, args={}, proc=[]):
     for p in proc:
         args.update(p())
-	args["pathprefix"] = PYLOAD.getConfigValue("webinterface", "prefix")
-    t = env.get_template(TEMPLATE + "/" + name)
 
+    t = env.get_template(TEMPLATE + "/" + name)
     return t.render(**args)
 
 
@@ -109,14 +108,14 @@ def login_required(perm=None):
                         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                             return HTTPError(403, "Forbidden")
                         else:
-                            return redirect(PYLOAD.getConfigValue("webinterface", "prefix") + "/nopermission")
+                            return redirect("/nopermission")
 
                 return func(*args, **kwargs)
             else:
                 if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                     return HTTPError(403, "Forbidden")
                 else:
-                    return redirect(PYLOAD.getConfigValue("webinterface", "prefix") + "/login")
+                    return redirect("/login")
 
         return _view
 

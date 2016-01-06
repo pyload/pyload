@@ -4,13 +4,13 @@ import re
 import time
 
 from module.plugins.internal.Account import Account
-from module.plugins.internal.utils import set_cookies
+from module.plugins.internal.misc import set_cookies
 
 
 class UploadingCom(Account):
     __name__    = "UploadingCom"
     __type__    = "account"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __description__ = """Uploading.com account plugin"""

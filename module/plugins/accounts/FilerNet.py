@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class FilerNet(Account):
     __name__    = "FilerNet"
     __type__    = "account"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __description__ = """Filer.net account plugin"""
@@ -19,7 +19,7 @@ class FilerNet(Account):
 
     TOKEN_PATTERN = r'name="_csrf_token" value="(.+?)"'
     WALID_UNTIL_PATTERN = r'Der Premium-Zugang ist gültig bis (.+)\.\s*</td>'
-    TRAFFIC_PATTERN = r'Traffic</th>\s*<td>([^<]+)</td>'
+    TRAFFIC_PATTERN = r'Traffic</th>\s*<td>(.+?)</td>'
     FREE_PATTERN = r'Account Status</th>\s*<td>\s*Free'
 
 

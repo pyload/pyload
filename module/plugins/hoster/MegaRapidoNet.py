@@ -2,7 +2,7 @@
 
 import random
 
-from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
+from module.plugins.internal.MultiHoster import MultiHoster
 
 
 def random_with_n_digits(n):
@@ -23,13 +23,16 @@ def random_with_n_digits(n):
 class MegaRapidoNet(MultiHoster):
     __name__    = "MegaRapidoNet"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?\w+\.megarapido\.net/\?file=\w+'
-    __config__  = [("activated", "bool", "Activated", True),
-                   ("use_premium" , "bool", "Use premium account if available"    , True),
-                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True ),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True ),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , False),
+                   ("chk_filesize", "bool", "Check file size"                                  , True ),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10   ),
+                   ("revertfailed", "bool", "Revert to standard download if fails"             , True )]
 
     __description__ = """MegaRapido.net multi-hoster plugin"""
     __license__     = "GPLv3"
@@ -55,7 +58,3 @@ class MegaRapidoNet(MultiHoster):
             self.error(_("You have logged in at another place"))
 
         return super(MegaRapidoNet, self).handle_premium(pyfile)
-
-
-getInfo = create_getInfo(MegaRapidoNet)
-

@@ -28,7 +28,7 @@ class BypassCaptchaException(Exception):
 class BypassCaptcha(Addon):
     __name__    = "BypassCaptcha"
     __type__    = "hook"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __config__ = [("activated"   , "bool"    , "Activated"                       , False),
@@ -50,7 +50,7 @@ class BypassCaptcha(Addon):
 
 
     def get_credits(self):
-        res = self.load(self.GETCREDITS_URL, post={'key': self.get_config('passkey')})
+        res = self.load(self.GETCREDITS_URL, post={'key': self.config.get('passkey')})
 
         data = dict(x.split(' ', 1) for x in res.splitlines())
         return int(data['Left'])
@@ -65,7 +65,7 @@ class BypassCaptcha(Addon):
         try:
             res = self.load(self.SUBMIT_URL,
                             post={'vendor_key': self.PYLOAD_KEY,
-                                  'key': self.get_config('passkey'),
+                                  'key': self.config.get('passkey'),
                                   'gen_task_id': "1",
                                   'file': (pycurl.FORM_FILE, captcha)},
                             req=req)
@@ -85,7 +85,7 @@ class BypassCaptcha(Addon):
 
     def respond(self, ticket, success):
         try:
-            res = self.load(self.RESPOND_URL, post={'task_id': ticket, 'key': self.get_config('passkey'),
+            res = self.load(self.RESPOND_URL, post={'task_id': ticket, 'key': self.config.get('passkey'),
                                                       'cv': 1 if success else 0})
         except BadHeader, e:
             self.log_error(_("Could not send response"), e)
@@ -98,10 +98,10 @@ class BypassCaptcha(Addon):
         if not task.isTextual():
             return False
 
-        if not self.get_config('passkey'):
+        if not self.config.get('passkey'):
             return False
 
-        if self.pyload.isClientConnected() and self.get_config('check_client'):
+        if self.pyload.isClientConnected() and self.config.get('check_client'):
             return False
 
         if self.get_credits() > 0:

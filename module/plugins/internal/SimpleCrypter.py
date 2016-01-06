@@ -4,22 +4,21 @@ import re
 
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.Crypter import Crypter, create_getInfo, parse_fileInfo
-from module.plugins.internal.utils import replace_patterns, set_cookie, set_cookies
+from module.plugins.internal.Crypter import Crypter
+from module.plugins.internal.misc import parse_name, replace_patterns
 
 
 class SimpleCrypter(Crypter):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.77"
+    __version__ = "0.83"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("activated"            , "bool", "Activated"                                        , True),
-                   ("use_premium"          , "bool", "Use premium account if available"                 , True),
-                   ("use_subfolder"        , "bool", "Save package to subfolder"                        , True),
-                   ("subfolder_per_package", "bool", "Create a subfolder for each package"              , True),
-                   ("max_wait"             , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__  = [("activated"         , "bool"          , "Activated"                                        , True     ),
+                   ("use_premium"       , "bool"          , "Use premium account if available"                 , True     ),
+                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"                   , "Default"),
+                   ("max_wait"          , "int"           , "Reconnect if waiting time is greater than minutes", 10       )]
 
     __description__ = """Simple decrypter plugin"""
     __license__     = "GPLv3"
@@ -32,7 +31,7 @@ class SimpleCrypter(Crypter):
         example: LINK_PATTERN = r'<div class="link"><a href="(.+?)"'
 
       NAME_PATTERN: (optional) folder name or page title
-        example: NAME_PATTERN = r'<title>Files of: (?P<N>[^<]+) folder</title>'
+        example: NAME_PATTERN = r'<title>Files of: (?P<N>.+?) folder</title>'
 
       OFFLINE_PATTERN: (optional) Checks if the page is unreachable
         example: OFFLINE_PATTERN = r'File (deleted|not found)'
@@ -41,7 +40,7 @@ class SimpleCrypter(Crypter):
         example: TEMP_OFFLINE_PATTERN = r'Server maintainance'
 
 
-    You can override the getLinks method if you need a more sophisticated way to extract the links.
+    You can override the get_links method if you need a more sophisticated way to extract the links.
 
 
     If the links are splitted on multiple pages you can define the PAGES_PATTERN regex:
@@ -49,7 +48,7 @@ class SimpleCrypter(Crypter):
       PAGES_PATTERN: (optional) group(1) should be the number of overall pages containing the links
         example: PAGES_PATTERN = r'Pages: (\d+)'
 
-    and its loadPage method:
+    and its load_page method:
 
       def load_page(self, page_n):
           return the html of the page number page_n
@@ -70,8 +69,8 @@ class SimpleCrypter(Crypter):
     PAGES_PATTERN        = None
 
     NAME_PATTERN         = None
-    OFFLINE_PATTERN      = None
-    TEMP_OFFLINE_PATTERN = None
+    OFFLINE_PATTERN      = r'[^\w](404\s|[Ii]nvalid|[Oo]ffline|[Dd]elet|[Rr]emov|([Nn]o(t|thing)?|sn\'t) (found|(longer )?(available|exist)))'
+    TEMP_OFFLINE_PATTERN = r'[^\w](503\s|[Mm]aint(e|ai)nance|[Tt]emp([.-]|orarily)|[Mm]irror)'
 
     WAIT_PATTERN         = None
     PREMIUM_ONLY_PATTERN = None
@@ -91,12 +90,12 @@ class SimpleCrypter(Crypter):
 
         info.update(cls.api_info(url))
 
-        if not html and info['status'] is not 2:
+        if not html and info['status'] != 2:
             if not url:
                 info['error']  = "missing url"
                 info['status'] = 1
 
-            elif info['status'] is 3:
+            elif info['status'] == 3:
                 try:
                     html = get_url(url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
 
@@ -132,7 +131,7 @@ class SimpleCrypter(Crypter):
 
         if self.account:
             self.req     = self.pyload.requestFactory.getRequest(account_name, self.account.user)
-            self.premium = self.account.info['data']['premium']  #@NOTE: Avoid one unnecessary get_info call by `self.account.premium` here
+            self.premium = self.account.info['data']['premium']  #@NOTE: Don't call get_info here to reduce overhead
         else:
             self.req     = self.pyload.requestFactory.getRequest(account_name)
             self.premium = False
@@ -149,34 +148,24 @@ class SimpleCrypter(Crypter):
 
 
     def handle_direct(self, pyfile):
-        link      = None
-        maxredirs = self.get_config("maxredirs", default=10, plugin="UserAgentSwitcher")
+        self._preload()
 
-        for i in xrange(maxredirs):
-            url = link or pyfile.url
-            self.log_debug("Redirect #%d to: %s" % (i, url))
-
-            header   = self.load(url, just_header=True)
-            location = header.get('location')
-
-            if location:
-                link = location
-
-            elif link:
-                self.urls.append(link)
-                return
-        else:
-            self.log_warning(_("Too many redirects"))
+        link = self.last_header.get('url')
+        if re.match(self.__pattern__, link) is None:
+            self.links.append(link)
 
 
-    def preload(self):
+    def _preload(self):
+        if self.data:
+            return
+
         self.data = self.load(self.pyfile.url,
                               cookies=self.COOKIES,
                               ref=False,
                               decode=self.TEXT_ENCODING)
 
 
-    def prepare(self):
+    def _prepare(self):
         self.direct_dl = False
 
         if self.LOGIN_PREMIUM and not self.premium:
@@ -195,7 +184,7 @@ class SimpleCrypter(Crypter):
                 self.LINK_PREMIUM_PATTERN = self.LINK_PATTERN
 
         if self.DIRECT_LINK is None:
-            self.direct_dl = bool(self.account)
+            self.direct_dl = bool(self.premium)
         else:
             self.direct_dl = self.DIRECT_LINK
 
@@ -203,22 +192,22 @@ class SimpleCrypter(Crypter):
 
 
     def decrypt(self, pyfile):
-        self.prepare()
+        self._prepare()
 
         if self.direct_dl:
             self.log_info(_("Looking for direct link..."))
             self.handle_direct(pyfile)
 
-            if self.urls or self.packages:
+            if self.links or self.packages:
                 self.log_info(_("Direct link detected"))
             else:
                 self.log_info(_("Direct link not found"))
 
-        if not self.urls and not self.packages:
-            self.preload()
+        if not self.links and not self.packages:
+            self._preload()
             self.check_errors()
 
-            self.urls.extend(self.get_links())
+            self.links.extend(self.get_links())
 
             if self.PAGES_PATTERN:
                 self.handle_pages(pyfile)
@@ -232,7 +221,7 @@ class SimpleCrypter(Crypter):
         if not links:
             self.error(_("Free decrypted link not found"))
         else:
-            self.urls.extend(links)
+            self.links.extend(links)
 
 
     def handle_premium(self, pyfile):
@@ -244,7 +233,7 @@ class SimpleCrypter(Crypter):
         if not links:
             self.error(_("Premium decrypted link found"))
         else:
-            self.urls.extend(links)
+            self.links.extend(links)
 
 
     def get_links(self):
@@ -254,13 +243,13 @@ class SimpleCrypter(Crypter):
         """
         if self.premium:
             self.log_info(_("Decrypting as premium link..."))
-            self.handle_premium(pyfile)
+            self.handle_premium(self.pyfile)
 
         elif not self.LOGIN_ACCOUNT:
             self.log_info(_("Decrypting as free link..."))
-            self.handle_free(pyfile)
+            self.handle_free(self.pyfile)
 
-        return self.urls
+        return self.links
 
 
     def load_page(self, number):
@@ -276,12 +265,14 @@ class SimpleCrypter(Crypter):
 
         for p in xrange(2, pages + 1):
             self.data = self.load_page(p)
-            self.urls.extend(self.get_links())
+            self.links.extend(self.get_links())
 
 
     def check_errors(self):
+        self.log_info(_("Checking for link errors..."))
+
         if not self.data:
-            self.log_debug("No data to check")
+            self.log_warning(_("No data to check"))
             return
 
         if self.IP_BLOCKED_PATTERN and re.search(self.IP_BLOCKED_PATTERN, self.data):
@@ -309,33 +300,40 @@ class SimpleCrypter(Crypter):
                 self.info['error'] = errmsg
                 self.log_warning(errmsg)
 
-                if re.search('limit|wait|slot', errmsg, re.I):
-                    wait_time = parse_time(errmsg)
-                    self.wait(wait_time, reconnect=wait_time > self.get_config("max_wait", 10) * 60)
-                    self.restart(_("Download limit exceeded"))
-
-                elif re.search('country|ip|region|nation', errmsg, re.I):
-                    self.fail(_("Connection from your current IP address is not allowed"))
-
-                elif re.search('captcha|code', errmsg, re.I):
-                    self.retry_captcha()
-
-                elif re.search('countdown|expired', errmsg, re.I):
-                    self.retry(10, 60, _("Link expired"))
-
-                elif re.search('maint(e|ai)nance|temp', errmsg, re.I):
+                if re.search(self.TEMP_OFFLINE_PATTERN, errmsg):
                     self.temp_offline()
 
-                elif re.search('up to|size', errmsg, re.I):
-                    self.fail(_("Link list too large for free decrypt"))
-
-                elif re.search('offline|delet|remov|not? (found|(longer)? available)', errmsg, re.I):
+                elif re.search(self.OFFLINE_PATTERN, errmsg):
                     self.offline()
 
-                elif re.search('filename', errmsg, re.I):
+                elif re.search(r'limit|wait|slot', errmsg, re.I):
+                    wait_time = parse_time(errmsg)
+                    self.wait(wait_time, reconnect=wait_time > self.config.get('max_wait', 10) * 60)
+                    self.restart(_("Download limit exceeded"))
+
+                elif re.search(r'country|ip|region|nation', errmsg, re.I):
+                    self.fail(_("Connection from your current IP address is not allowed"))
+
+                elif re.search(r'captcha|code', errmsg, re.I):
+                    self.retry_captcha()
+
+                elif re.search(r'countdown|expired', errmsg, re.I):
+                    self.retry(10, 60, _("Link expired"))
+
+                elif re.search(r'503|maint(e|ai)nance|temp|mirror', errmsg, re.I):
+                    self.temp_offline()
+
+                elif re.search(r'up to|size', errmsg, re.I):
+                    self.fail(_("Link list too large for free decrypt"))
+
+                elif re.search(r'404|sorry|offline|delet|remov|(no(t|thing)?|sn\'t) (found|(longer )?(available|exist))',
+                               errmsg, re.I):
+                    self.offline()
+
+                elif re.search(r'filename', errmsg, re.I):
                     self.fail(_("Invalid url"))
 
-                elif re.search('premium', errmsg, re.I):
+                elif re.search(r'premium', errmsg, re.I):
                     self.fail(_("Link can be decrypted by premium users only"))
 
                 else:
@@ -352,6 +350,7 @@ class SimpleCrypter(Crypter):
                     waitmsg = m.group(0).strip()
 
                 wait_time = parse_time(waitmsg)
-                self.wait(wait_time, reconnect=wait_time > self.get_config("max_wait", 10) * 60)
+                self.wait(wait_time, reconnect=wait_time > self.config.get('max_wait', 10) * 60)
 
+        self.log_info(_("No errors found"))
         self.info.pop('error', None)

@@ -3,24 +3,27 @@
 import time
 
 from module.plugins.internal.Addon import Addon, Expose
-from module.plugins.internal.utils import isiterable
+from module.plugins.internal.misc import encode, isiterable
 
 
 class Notifier(Addon):
     __name__    = "Notifier"
     __type__    = "hook"
-    __version__ = "0.04"
+    __version__ = "0.07"
     __status__  = "testing"
 
-    __config__ = [("activated"      , "bool", "Activated"                                , False),
-                  ("notifycaptcha"  , "bool", "Notify captcha request"                   , True ),
-                  ("notifypackage"  , "bool", "Notify package finished"                  , True ),
-                  ("notifyprocessed", "bool", "Notify packages processed"                , True ),
-                  ("notifyupdate"   , "bool", "Notify plugin updates"                    , True ),
-                  ("notifyexit"     , "bool", "Notify pyLoad shutdown"                   , True ),
-                  ("sendtimewait"   , "int" , "Timewait in seconds between notifications", 5    ),
-                  ("sendpermin"     , "int" , "Max notifications per minute"             , 12   ),
-                  ("ignoreclient"   , "bool", "Send notifications if client is connected", False)]
+    __config__ = [("activated"       , "bool", "Activated"                                , False),
+                  ("captcha"         , "bool", "Notify captcha request"                   , True ),
+                  ("reconnection"    , "bool", "Notify reconnection request"              , False),
+                  ("downloadfinished", "bool", "Notify download finished"                 , True ),
+                  ("downloadfailed"  , "bool", "Notify download failed"                   , True ),
+                  ("packagefinished" , "bool", "Notify package finished"                  , True ),
+                  ("packagefailed"   , "bool", "Notify package failed"                    , True ),
+                  ("update"          , "bool", "Notify pyLoad update"                     , False),
+                  ("exit"            , "bool", "Notify pyLoad shutdown/restart"           , False),
+                  ("sendinterval"    , "int" , "Interval in seconds between notifications", 1    ),
+                  ("sendpermin"      , "int" , "Max notifications per minute"             , 60   ),
+                  ("ignoreclient"    , "bool", "Send notifications if client is connected", True )]
 
     __description__ = """Base notifier plugin"""
     __license__     = "GPLv3"
@@ -29,49 +32,10 @@ class Notifier(Addon):
 
     def init(self):
         self.event_map = {'allDownloadsProcessed': "all_downloads_processed",
-                          'plugin_updated'       : "plugin_updated"         }
+                          'pyload_updated'       : "pyload_updated"         }
 
         self.last_notify   = 0
         self.notifications = 0
-
-
-    def plugin_updated(self, type_plugins):
-        if not self.get_config('notifyupdate'):
-            return
-
-        self.notify(_("Plugins updated"), str(type_plugins))
-
-
-    def exit(self):
-        if not self.get_config('notifyexit'):
-            return
-
-        if self.pyload.do_restart:
-            self.notify(_("Restarting pyLoad"))
-        else:
-            self.notify(_("Exiting pyLoad"))
-
-
-    def captcha_task(self, task):
-        if not self.get_config('notifycaptcha'):
-            return
-
-        self.notify(_("Captcha"), _("New request waiting user input"))
-
-
-    def package_finished(self, pypack):
-        if self.get_config('notifypackage'):
-            self.notify(_("Package finished"), pypack.name)
-
-
-    def all_downloads_processed(self):
-        if not self.get_config('notifyprocessed'):
-            return
-
-        if any(True for pdata in self.pyload.api.getQueue() if pdata.linksdone < pdata.linkstotal):
-            self.notify(_("Package failed"), _("One or more packages was not completed successfully"))
-        else:
-            self.notify(_("All packages finished"))
 
 
     def get_key(self):
@@ -82,36 +46,116 @@ class Notifier(Addon):
         raise NotImplementedError
 
 
+    def pyload_updated(self, etag):
+        if not self.config.get('update', True):
+            return
+
+        self.notify(_("pyLoad updated"), etag)
+
+
+    def exit(self):
+        if not self.config.get('exit', True):
+            return
+
+        if self.pyload.do_restart:
+            self.notify(_("Restarting pyLoad"))
+        else:
+            self.notify(_("Exiting pyLoad"))
+
+
+    def captcha_task(self, task):
+        if not self.config.get('captcha', True):
+            return
+
+        self.notify(_("Captcha"), _("New request waiting user input"))
+
+
+    def before_reconnect(self, ip):
+        if not self.config.get('reconnection', False):
+            return
+
+        self.notify(_("Waiting reconnection"), _("Current IP: %s") % ip)
+
+
+    def after_reconnect(self, ip, oldip):
+        if not self.config.get('reconnection', False):
+            return
+
+        self.notify(_("Reconnection failed"), _("Current IP: %s") % ip)
+
+
+    def package_finished(self, pypack):
+        if not self.config.get('packagefinished', True):
+            return
+
+        self.notify(_("Package finished"), pypack.name)
+
+
+    def package_failed(self, pypack):
+        if not self.config.get('packagefailed', True):
+            return
+
+        self.notify(_("Package failed"), pypack.name)
+
+
+    def download_finished(self, pyfile):
+        if not self.config.get('downloadfinished', False):
+            return
+
+        self.notify(_("Download finished"), pyfile.name)
+
+
+    def download_failed(self, pyfile):
+        if self.config.get('downloadfailed', True):
+            return
+
+        self.notify(_("Download failed"), pyfile.name)
+
+
+    def all_downloads_processed(self):
+        self.notify(_("All downloads processed"))
+
+
+    def all_downloads_finished(self):
+        self.notify(_("All downloads finished"))
+
+
     @Expose
-    def notify(self, event, msg="", key=None):
+    def notify(self, event, msg=None, key=None):
         key = key or self.get_key()
         if not key or isiterable(key) and not all(key):
             return
 
-        if self.pyload.isClientConnected() and not self.get_config('ignoreclient'):
+        if isiterable(msg):
+            msg = " | ".join(encode(a).strip() for a in msg if a)
+        else:
+            msg = encode(msg)
+
+        if self.pyload.isClientConnected() and not self.config.get('ignoreclient', False):
             return
 
         elapsed_time = time.time() - self.last_notify
 
-        if elapsed_time < self.get_config("sendtimewait"):
+        if elapsed_time < self.config.get('sendinterval', 1):
             return
 
         elif elapsed_time > 60:
             self.notifications = 0
 
-        elif self.notifications >= self.get_config("sendpermin"):
+        elif self.notifications >= self.config.get('sendpermin', 60):
             return
 
-        self.log_info(_("Sending notification..."))
+        self.log_debug("Sending notification...")
 
         try:
-            resp = self.send(event, msg, key)
+            self.send(event, msg, key)
 
         except Exception, e:
             self.log_error(_("Error sending notification"), e)
             return False
 
         else:
+            self.log_debug("Notification sent")
             return True
 
         finally:

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from module.plugins.internal.MultiAccount import MultiAccount
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 
 
 class PremiumizeMe(MultiAccount):
     __name__    = "PremiumizeMe"
     __type__    = "account"
-    __version__ = "0.22"
+    __version__ = "0.24"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),

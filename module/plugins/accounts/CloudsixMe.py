@@ -6,7 +6,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class CloudsixMe(XFSAccount):
     __name__    = "CloudsixMe"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __description__ = """Cloudsix.me account plugin"""

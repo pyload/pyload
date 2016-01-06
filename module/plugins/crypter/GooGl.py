@@ -1,17 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
-from module.plugins.internal.utils import json
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.misc import json
 
 
 class GooGl(SimpleCrypter):
     __name__    = "GooGl"
     __type__    = "crypter"
-    __version__ = "0.05"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?goo\.gl/([a-zA-Z]+/)?\w+'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__  = [("activated"         , "bool"          , "Activated"                                        , True     ),
+                   ("use_premium"       , "bool"          , "Use premium account if available"                 , True     ),
+                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"                   , "Default"),
+                   ("max_wait"          , "int"           , "Reconnect if waiting time is greater than minutes", 10       )]
 
     __description__ = """Goo.gl decrypter plugin"""
     __license__     = "GPLv3"
@@ -29,6 +32,3 @@ class GooGl(SimpleCrypter):
         self.log_debug("JSON data: " + rep)
         rep = json.loads(rep)
         return [rep['longUrl']] if "longUrl" in rep else None
-
-
-getInfo = create_getInfo(GooGl)

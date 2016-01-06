@@ -6,7 +6,7 @@ from module.plugins.internal.OCR import OCR
 class ShareonlineBiz(OCR):
     __name__    = "ShareonlineBiz"
     __type__    = "ocr"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __description__ = """Shareonline.biz ocr plugin"""
@@ -18,8 +18,8 @@ class ShareonlineBiz(OCR):
     def recognize(self, image):
         self.load_image(image)
         self.to_greyscale()
-        self.image = self.image.resize((160, 50))
-        self.pixels = self.image.load()
+        self.img = self.img.resize((160, 50))
+        self.pixels = self.img.load()
         self.threshold(1.85)
         # self.eval_black_white(240)
         # self.derotate_by_average()
@@ -28,7 +28,7 @@ class ShareonlineBiz(OCR):
 
         final = ""
         for letter in letters:
-            self.image = letter
+            self.img = letter
             self.run_tesser(True, True, False, False)
             final += self.result_captcha
 

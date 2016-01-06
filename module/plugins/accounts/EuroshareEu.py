@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class EuroshareEu(Account):
     __name__    = "EuroshareEu"
     __type__    = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __description__ = """Euroshare.eu account plugin"""

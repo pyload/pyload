@@ -4,7 +4,7 @@ import hashlib
 import re
 import time
 
-from passlib.hash import md5_crypt
+import passlib.hash
 
 from module.plugins.internal.Account import Account
 
@@ -12,7 +12,7 @@ from module.plugins.internal.Account import Account
 class WebshareCz(Account):
     __name__    = "WebshareCz"
     __type__    = "account"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __description__ = """Webshare.cz account plugin"""
@@ -50,7 +50,7 @@ class WebshareCz(Account):
             self.fail_login()
 
         salt     = re.search('<salt>(.+)</salt>', salt).group(1)
-        password = hashlib.sha1(md5_crypt.encrypt(password, salt=salt)).hexdigest()
+        password = hashlib.sha1(passlib.hash.md5_crypt.encrypt(password, salt=salt)).hexdigest()
         digest   = hashlib.md5(user + ":Webshare:" + password).hexdigest()
 
         login = self.load("https://webshare.cz/api/login/",

@@ -6,18 +6,21 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class FilepupNet(SimpleHoster):
     __name__    = "FilepupNet"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?filepup\.net/files/\w+'
-    __config__  = [("activated"  , "bool", "Activated"                       , True),
-                   ("use_premium", "bool", "Use premium account if available", True)]
+    __config__  = [("activated"   , "bool", "Activated"                                        , True),
+                   ("use_premium" , "bool", "Use premium account if available"                 , True),
+                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
+                   ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """Filepup.net hoster plugin"""
     __license__     = "GPLv3"
@@ -43,6 +46,3 @@ class FilepupNet(SimpleHoster):
         if m is not None:
             dl_link = m.group(1)
             self.download(dl_link, post={'task': "download"})
-
-
-getInfo = create_getInfo(FilepupNet)

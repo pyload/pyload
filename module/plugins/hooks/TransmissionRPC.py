@@ -5,19 +5,19 @@ import re
 
 import pycurl
 
-from module.plugins.internal.utils import json
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest as get_request
 from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import json
 
 
 class TransmissionRPC(Addon):
     __name__    = "TransmissionRPC"
     __type__    = "hook"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
-    __pattern__ = r"https?://.+\.torrent|magnet:\?.+"
+    __pattern__ = r'https?://.+\.torrent|magnet:\?.+'
     __config__  = [("activated", "bool", "Activated"           , False                                   ),
                    ("rpc_url"  , "str" , "Transmission RPC URL", "http://127.0.0.1:9091/transmission/rpc")]
 
@@ -41,7 +41,7 @@ class TransmissionRPC(Addon):
 
 
     def send_to_transmission(self, url):
-        transmission_rpc_url = self.get_config('rpc_url')
+        transmission_rpc_url = self.config.get('rpc_url')
         client_request_id = self.classname + "".join(random.choice('0123456789ABCDEF') for _i in xrange(4))
         req = get_request()
 
@@ -54,7 +54,7 @@ class TransmissionRPC(Addon):
 
         except Exception, e:
             if isinstance(e, BadHeader) and e.code == 409:
-                headers = dict(re.findall(r"(?P<name>.+?): (?P<value>.+?)\r?\n", req.header))
+                headers = dict(re.findall(r'(?P<name>.+?): (?P<value>.+?)\r?\n', req.header))
                 session_id = headers['X-Transmission-Session-Id']
                 req.c.setopt(pycurl.HTTPHEADER, ["X-Transmission-Session-Id: %s" % session_id])
                 try:

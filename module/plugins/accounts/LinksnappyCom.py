@@ -3,13 +3,13 @@
 import hashlib
 
 from module.plugins.internal.MultiAccount import MultiAccount
-from module.plugins.internal.utils import json
+from module.plugins.internal.misc import json
 
 
 class LinksnappyCom(MultiAccount):
     __name__    = "LinksnappyCom"
     __type__    = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),

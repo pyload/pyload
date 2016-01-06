@@ -8,7 +8,7 @@ from module.plugins.internal.Hoster import Hoster
 class PornhubCom(Hoster):
     __name__    = "PornhubCom"
     __type__    = "hoster"
-    __version__ = "0.53"
+    __version__ = "0.55"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?pornhub\.com/view_video\.php\?viewkey=\w+'
@@ -67,7 +67,7 @@ class PornhubCom(Hoster):
         if not self.data:
             self.download_html()
 
-        m = re.search(r'<title.+?>([^<]+) - ', self.data)
+        m = re.search(r'<title.+?>(.+?) - ', self.data)
         if m is not None:
             name = m.group(1)
         else:

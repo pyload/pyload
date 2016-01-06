@@ -6,7 +6,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class FilerioCom(XFSAccount):
     __name__    = "FilerioCom"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __description__ = """FileRio.in account plugin"""

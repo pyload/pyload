@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class UploadedTo(Account):
     __name__    = "UploadedTo"
     __type__    = "account"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __status__  = "testing"
 
     __description__ = """Uploaded.to account plugin"""
@@ -59,12 +59,17 @@ class UploadedTo(Account):
 
 
     def signin(self, user, password, data):
-        self.load("http://uploaded.net/language/en")
+        try:
+            self.load("http://uploaded.net/me")
 
-        html = self.load("http://uploaded.net/io/login",
-                         post={'id': user,
-                               'pw': password})
+            html = self.load("http://uploaded.net/io/login",
+                             post={'id': user,
+                                   'pw': password})
 
-        m = re.search(r'"err":"(.+?)"', html)
-        if m is not None:
-            self.fail_login(m.group(1))
+            m = re.search(r'"err":"(.+?)"', html)
+            if m is not None:
+                self.fail_login(m.group(1))
+
+        except Exception, e:
+            self.log_error(e, trace=True)
+            self.fail_login(e.message)

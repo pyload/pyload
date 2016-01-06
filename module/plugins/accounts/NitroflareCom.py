@@ -9,12 +9,12 @@ from module.plugins.internal.Account import Account
 class NitroflareCom(Account):
     __name__    = "NitroflareCom"
     __type__    = "account"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __description__ = """Nitroflare.com account plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"  )]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     VALID_UNTIL_PATTERN  = r'>Time Left</label><strong>(.+?)</'

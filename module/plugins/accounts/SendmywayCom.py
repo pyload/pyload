@@ -6,7 +6,7 @@ from module.plugins.internal.XFSAccount import XFSAccount
 class SendmywayCom(XFSAccount):
     __name__    = "SendmywayCom"
     __type__    = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __description__ = """Sendmyway.com account plugin"""
