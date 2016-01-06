@@ -10,7 +10,7 @@ from module.plugins.internal.Hoster import Hoster
 class ZDF(Hoster):
     __name__    = "ZDF Mediathek"
     __type__    = "hoster"
-    __version__ = "0.88"
+    __version__ = "0.86"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?zdf\.de/ZDFmediathek/\D*(\d+)\D*'
@@ -39,7 +39,7 @@ class ZDF(Hoster):
 
     @staticmethod
     def get_id(url):
-        return int(re.search(r'\D*(\d{4,})\D*', url).group(1))
+        return int(re.search(r"\D*(\d{4,})\D*", url).group(1))
 
 
     def process(self, pyfile):

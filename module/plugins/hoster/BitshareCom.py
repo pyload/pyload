@@ -5,21 +5,18 @@ from __future__ import with_statement
 import re
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class BitshareCom(SimpleHoster):
     __name__    = "BitshareCom"
     __type__    = "hoster"
-    __version__ = "0.60"
+    __version__ = "0.57"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/)?(?(1)|\?f=)(?P<ID>\w+)(?(1)/(?P<NAME>.+?)\.html)'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Bitshare.com hoster plugin"""
     __license__     = "GPLv3"
@@ -79,7 +76,7 @@ class BitshareCom(SimpleHoster):
         #: This may either download our file or forward us to an error page
         self.link = self.get_download_url()
 
-        if self.scan_download({'error': ">Error occured<"}):
+        if self.check_file({'error': ">Error occured<"}):
             self.retry(5, 5 * 60, "Bitshare host : Error occured")
 
 
@@ -116,9 +113,9 @@ class BitshareCom(SimpleHoster):
         #: Resolve captcha
         if captcha == 1:
             self.log_debug("File is captcha protected")
-            self.captcha = ReCaptcha(self.pyfile)
+            recaptcha = ReCaptcha(self)
 
-            response, challenge = self.captcha.challenge()
+            response, challenge = recaptcha.challenge()
             res = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
                                  post={'request'                  : "validateCaptcha",
                                        'ajaxid'                   : self.ajaxid,
@@ -159,3 +156,6 @@ class BitshareCom(SimpleHoster):
 
         else:
             self.retry_captcha()
+
+
+getInfo = create_getInfo(BitshareCom)

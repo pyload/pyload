@@ -3,17 +3,18 @@
 import binascii
 import re
 
-import Crypto.Cipher
 import pycurl
 
-from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.misc import html_unescape, set_cookie
+from Crypto.Cipher import AES
+
+from module.plugins.internal.Crypter import Crypter, create_getInfo
+from module.plugins.internal.utils import html_unescape
 
 
 class LinkCryptWs(Crypter):
     __name__    = "LinkCryptWs"
     __type__    = "crypter"
-    __version__ = "0.15"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?linkcrypt\.ws/(dir|container)/(?P<ID>\w+)'
@@ -23,8 +24,7 @@ class LinkCryptWs(Crypter):
     __license__     = "GPLv3"
     __authors__     = [("kagenoshin", "kagenoshin[AT]gmx[DOT]ch"),
                        ("glukgluk", None),
-                       ("Gummibaer", None),
-                       ("Arno-Nymous", None)]
+                       ("Gummibaer", None)]
 
 
     CRYPTED_KEY = "crypted"
@@ -32,7 +32,7 @@ class LinkCryptWs(Crypter):
 
 
     def setup(self):
-        self.urls   = []
+        self.links   = []
         self.sources = ['cnl', 'web', 'dlc', 'rsdf', 'ccf']
 
 
@@ -40,7 +40,7 @@ class LinkCryptWs(Crypter):
         #: Init
         self.fileid = re.match(self.__pattern__, self.pyfile.url).group('ID')
 
-        set_cookie(req.cj, "linkcrypt.ws", "language", "en")
+        self.req.cj.setCookie("linkcrypt.ws", "language", "en")
 
         #: Request package
         self.req.http.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko")  #: Better chance to not get those key-captchas
@@ -73,7 +73,7 @@ class LinkCryptWs(Crypter):
         self.getunrarpw()
 
         #: Get package name and folder
-        pack_name, folder_name = self.get_package_info()
+        package_name, folder_name = self.get_package_info()
 
         #: Get the container definitions from script section
         self.get_container_html()
@@ -83,11 +83,11 @@ class LinkCryptWs(Crypter):
             links = self.handle_link_source(type)
 
             if links:
-                self.urls.extend(links)
+                self.links.extend(links)
                 break
 
-        if self.urls:
-            self.packages = [(pack_name, self.urls, folder_name)]
+        if self.links:
+            self.packages = [(package_name, self.links, folder_name)]
 
 
     def is_online(self):
@@ -107,7 +107,7 @@ class LinkCryptWs(Crypter):
 
 
     def is_captcha_protected(self):
-        if ('Linkcrypt.ws // Captx' in self.data) or ('Linkcrypt.ws // TextX' in self.data):
+        if 'id="captcha">' in self.data:
             self.log_debug("Links are captcha protected")
             return True
         else:
@@ -132,7 +132,7 @@ class LinkCryptWs(Crypter):
 
 
     def unlock_captcha_protection(self):
-        captcha_url  = 'http://linkcrypt.ws/captx.html?secid=id=&id='
+        captcha_url  = re.search(r'<form.*?id\s*?=\s*?"captcha"[^>]*?>.*?<\s*?input.*?src="(.+?)"', self.data, re.I | re.S).group(1)
         captcha_code = self.captcha.decrypt(captcha_url, input_type="gif", output_type='positional')
 
         self.data = self.load(self.pyfile.url, post={'x': captcha_code[0], 'y': captcha_code[1]})
@@ -148,9 +148,15 @@ class LinkCryptWs(Crypter):
 
 
     def getunrarpw(self):
-        # Skip password parsing, since the method was not reliable due to the scrambling of the form data.
-        # That way one could not predict the exact position of the password at a certain index.
-        return
+        sitein = self.data
+        indexi = sitein.find("|source|") + 8
+        indexe = sitein.find("|", indexi)
+
+        unrarpw = sitein[indexi:indexe]
+
+        if unrarpw not in ("Password", "Dateipasswort"):
+            self.log_debug("File password set to: [%s]"% unrarpw)
+            self.pyfile.package().password = unrarpw
 
 
     def handle_errors(self):
@@ -182,7 +188,7 @@ class LinkCryptWs(Crypter):
     def handle_web_links(self):
         self.log_debug("Search for Web links ")
 
-        pack_links = []
+        package_links = []
         pattern = r'<form action="http://linkcrypt.ws/out.html"[^>]*?>.*?<input[^>]*?value="(.+?)"[^>]*?name="file"'
         ids = re.findall(pattern, self.data, re.I | re.S)
 
@@ -192,24 +198,24 @@ class LinkCryptWs(Crypter):
             try:
                 res = self.load("http://linkcrypt.ws/out.html", post = {'file':weblink_id})
 
-                indexs = res.find("var url = ") + 11
-                indexe = res.find("'", indexs)
+                indexs = res.find("window.location =") + 19
+                indexe = res.find('"', indexs)
 
                 link2 = res[indexs:indexe]
 
                 link2 = html_unescape(link2)
-                pack_links.append(link2)
+                package_links.append(link2)
 
             except Exception, detail:
                 self.log_debug("Error decrypting Web link %s, %s" % (weblink_id, detail))
 
-        return pack_links
+        return package_links
 
 
     def get_container_html(self):
         self.container_html = []
 
-        script = re.search(r'<script.*?javascript[^>]*?>.*(eval.*?)\s*eval.*</script>.*<div class="clearfix', self.data, re.I | re.S)
+        script = re.search(r'<div.*?id="ad_cont".*?<script.*?javascrip[^>]*?>(.*?)</script', self.data, re.I | re.S)
 
         if script:
             container_html_text = script.group(1)
@@ -222,7 +228,7 @@ class LinkCryptWs(Crypter):
 
 
     def handle_container(self, type):
-        pack_links = []
+        package_links = []
         type = type.lower()
 
         self.log_debug('Search for %s Container links' % type.upper())
@@ -240,22 +246,22 @@ class LinkCryptWs(Crypter):
 
                 self.log_debug("clink found")
 
-                pack_name, folder_name = self.get_package_info()
-                self.log_debug("Added package with name %s.%s and container link %s" %( pack_name, type, clink.group(1)))
-                self.pyload.api.uploadContainer('.'.join([pack_name, type]), self.load(clink.group(1)))
+                package_name, folder_name = self.get_package_info()
+                self.log_debug("Added package with name %s.%s and container link %s" %( package_name, type, clink.group(1)))
+                self.pyload.api.uploadContainer('.'.join([package_name, type]), self.load(clink.group(1)))
                 return "Found it"
 
-        return pack_links
+        return package_links
 
 
     def handle_CNL2(self):
         self.log_debug("Search for CNL links")
 
-        pack_links = []
+        package_links = []
         cnl_line = None
 
         for line in self.container_html:
-            if "addcrypted2" in line:
+            if "cnl" in line:
                 cnl_line = line
                 break
 
@@ -266,18 +272,18 @@ class LinkCryptWs(Crypter):
             cnl_section = self.handle_javascript(cnl_line)
             (vcrypted, vjk) = self._get_cipher_params(cnl_section)
             for (crypted, jk) in zip(vcrypted, vjk):
-                pack_links.extend(self._get_links(crypted, jk))
+                package_links.extend(self._get_links(crypted, jk))
 
         except Exception:
             self.log_error(_("Unable to decrypt CNL links (JS Error) try to get over links"), trace=True)
             return self.handle_web_links()
 
-        return pack_links
+        return package_links
 
 
     def _get_cipher_params(self, cnl_section):
         #: Get jk
-        jk_re = r'<INPUT.*?NAME="%s".*?VALUE="\D*(\d*)\D*"' % LinkCryptWs.JK_KEY
+        jk_re = r'<INPUT.*?NAME="%s".*?VALUE="(.*?)"' % LinkCryptWs.JK_KEY
         vjk = re.findall(jk_re, cnl_section)
 
         #: Get crypted
@@ -291,14 +297,15 @@ class LinkCryptWs(Crypter):
 
     def _get_links(self, crypted, jk):
         #: Get key
-        key     = binascii.unhexlify(jk)
+        jreturn = self.js.eval("%s f()" % jk)
+        key     = binascii.unhexlify(jreturn)
 
-        self.log_debug("JsEngine returns value [%s]" % key)
+        self.log_debug("JsEngine returns value [%s]" % jreturn)
 
         #: Decrypt
         Key  = key
         IV   = key
-        obj  = Crypto.Cipher.AES.new(Key, Crypto.Cipher.AES.MODE_CBC, IV)
+        obj  = AES.new(Key, AES.MODE_CBC, IV)
         text = obj.decrypt(crypted.decode('base64'))
 
         #: Extract links
@@ -309,3 +316,6 @@ class LinkCryptWs(Crypter):
         self.log_debug("Package has %d links" % len(links))
 
         return links
+
+
+getInfo = create_getInfo(LinkCryptWs)

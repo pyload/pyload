@@ -2,10 +2,10 @@
 
 from __future__ import with_statement
 
-import base64
+import pycurl
 import re
 
-import pycurl
+from base64 import b64encode
 
 from module.network.RequestFactory import getRequest as get_request
 from module.plugins.internal.Addon import Addon, threaded
@@ -32,7 +32,7 @@ class ImageTyperzException(Exception):
 class ImageTyperz(Addon):
     __name__    = "ImageTyperz"
     __type__    = "hook"
-    __version__ = "0.11"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __config__ = [("activated"   , "bool"    , "Activated"                       , False),
@@ -54,8 +54,8 @@ class ImageTyperz(Addon):
     def get_credits(self):
         res = self.load(self.GETCREDITS_URL,
                      post={'action': "REQUESTBALANCE",
-                           'username': self.config.get('username'),
-                           'password': self.config.get('password')})
+                           'username': self.get_config('username'),
+                           'password': self.get_config('password')})
 
         if res.startswith('ERROR'):
             raise ImageTyperzException(res)
@@ -77,19 +77,19 @@ class ImageTyperz(Addon):
 
         try:
             #@NOTE: Workaround multipart-post bug in HTTPRequest.py
-            if re.match("^\w*$", self.config.get('password')):
+            if re.match("^\w*$", self.get_config('password')):
                 multipart = True
                 data = (pycurl.FORM_FILE, captcha)
             else:
                 multipart = False
                 with open(captcha, 'rb') as f:
                     data = f.read()
-                data = base64.b64encode(data)
+                data = b64encode(data)
 
             res = self.load(self.SUBMIT_URL,
                             post={'action': "UPLOADCAPTCHA",
-                                  'username': self.config.get('username'),
-                                  'password': self.config.get('password'), 'file': data},
+                                  'username': self.get_config('username'),
+                                  'password': self.get_config('password'), 'file': data},
                             multipart=multipart,
                             req=req)
         finally:
@@ -114,10 +114,10 @@ class ImageTyperz(Addon):
         if not task.isTextual():
             return False
 
-        if not self.config.get('username') or not self.config.get('password'):
+        if not self.get_config('username') or not self.get_config('password'):
             return False
 
-        if self.pyload.isClientConnected() and self.config.get('check_client'):
+        if self.pyload.isClientConnected() and self.get_config('check_client'):
             return False
 
         if self.get_credits() > 0:
@@ -134,8 +134,8 @@ class ImageTyperz(Addon):
         if task.data['service'] is self.classname and "ticket" in task.data:
             res = self.load(self.RESPOND_URL,
                          post={'action': "SETBADIMAGE",
-                               'username': self.config.get('username'),
-                               'password': self.config.get('password'),
+                               'username': self.get_config('username'),
+                               'password': self.get_config('password'),
                                'imageid': task.data['ticket']})
 
             if res == "SUCCESS":

@@ -8,7 +8,7 @@ from module.plugins.internal.Hoster import Hoster
 class YoupornCom(Hoster):
     __name__    = "YoupornCom"
     __type__    = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.23"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?youporn\.com/watch/.+'
@@ -58,7 +58,7 @@ class YoupornCom(Hoster):
         """
         if not self.data:
             self.download_html()
-        if re.search(r'(.*invalid video_id.*)', self.data):
+        if re.search(r"(.*invalid video_id.*)", self.data):
             return False
         else:
             return True

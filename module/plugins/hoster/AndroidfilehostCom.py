@@ -5,21 +5,18 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class AndroidfilehostCom(SimpleHoster):
     __name__    = "AndroidfilehostCom"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?androidfilehost\.com/\?fid=\d+'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Androidfilehost.com hoster plugin"""
     __license__     = "GPLv3"
@@ -28,7 +25,7 @@ class AndroidfilehostCom(SimpleHoster):
 
     NAME_PATTERN    = r'<br />(?P<N>.*?)</h1>'
     SIZE_PATTERN    = r'<h4>size</h4>\s*<p>(?P<S>[\d.,]+)(?P<U>[\w^_]+)</p>'
-    HASHSUM_PATTERN = r'<h4>(?P<H>.*?)</h4>\s*<p><code>(?P<D>.*?)</code></p>'
+    HASHSUM_PATTERN = r'<h4>(?P<T>.*?)</h4>\s*<p><code>(?P<H>.*?)</code></p>'
 
     OFFLINE_PATTERN = r'404 not found'
 
@@ -62,3 +59,6 @@ class AndroidfilehostCom(SimpleHoster):
                          get={'fid'   : fid,
                               'w'     : 'download',
                               'mirror': mirror_host})
+
+
+getInfo = create_getInfo(AndroidfilehostCom)

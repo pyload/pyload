@@ -2,21 +2,17 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class HostujeNet(SimpleHoster):
     __name__    = "HostujeNet"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?hostuje\.net/\w+'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Hostuje.net hoster plugin"""
     __license__     = "GPLv3"
@@ -50,3 +46,6 @@ class HostujeNet(SimpleHoster):
             self.error(_("Form not found"))
 
         self.download(action, post=inputs)
+
+
+getInfo = create_getInfo(HostujeNet)

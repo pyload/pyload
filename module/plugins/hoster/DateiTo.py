@@ -3,21 +3,18 @@
 import re
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DateiTo(SimpleHoster):
     __name__    = "DateiTo"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Datei.to hoster plugin"""
     __license__     = "GPLv3"
@@ -37,7 +34,7 @@ class DateiTo(SimpleHoster):
     def handle_free(self, pyfile):
         url = 'http://datei.to/ajax/download.php'
         data = {'P': 'I', 'ID': self.info['pattern']['ID']}
-        self.captcha = ReCaptcha(pyfile)
+        recaptcha = ReCaptcha(self)
 
         for _i in xrange(3):
             self.log_debug("URL", url, "POST", data)
@@ -58,8 +55,8 @@ class DateiTo(SimpleHoster):
             url = 'http://datei.to/' + m.group(1)
             data = dict(x.split('=') for x in m.group(2).split('&'))
 
-            if url.endswith('self.captcha.php'):
-                data['recaptcha_response_field'], data['recaptcha_challenge_field'] = self.captcha.challenge()
+            if url.endswith('recaptcha.php'):
+                data['recaptcha_response_field'], data['recaptcha_challenge_field'] = recaptcha.challenge()
         else:
             return
 
@@ -72,3 +69,6 @@ class DateiTo(SimpleHoster):
 
         self.load('http://datei.to/ajax/download.php', post={'P': 'Ads'})
         self.wait(wait_time, False)
+
+
+getInfo = create_getInfo(DateiTo)

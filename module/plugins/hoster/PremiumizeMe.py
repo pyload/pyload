@@ -1,22 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.MultiHoster import MultiHoster
-from module.plugins.internal.misc import json
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
+from module.plugins.internal.utils import json
 
 
 class PremiumizeMe(MultiHoster):
     __name__    = "PremiumizeMe"
     __type__    = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.22"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate
-    __config__  = [("activated"   , "bool", "Activated"                                        , True ),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True ),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , False),
-                   ("chk_filesize", "bool", "Check file size"                                  , True ),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10   ),
-                   ("revertfailed", "bool", "Revert to standard download if fails"             , True )]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium" , "bool", "Use premium account if available"    , True),
+                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Premiumize.me multi-hoster plugin"""
     __license__     = "GPLv3"
@@ -38,12 +35,11 @@ class PremiumizeMe(MultiHoster):
         user, info = self.account.select()
 
         #: Get rewritten link using the premiumize.me api v1 (see https://secure.premiumize.me/?show=api)
-        html = self.load("http://api.premiumize.me/pm-api/v1.php",  #@TODO: Revert to `https` in 0.4.10
-                         get={'method'       : "directdownloadlink",
-                              'params[login]': user,
-                              'params[pass]' : info['login']['password'],
-                              'params[link]' : pyfile.url})
-        data = json.loads(html)
+        data = json.loads(self.load("http://api.premiumize.me/pm-api/v1.php",  #@TODO: Revert to `https` in 0.4.10
+                                    get={'method'       : "directdownloadlink",
+                                         'params[login]': user,
+                                         'params[pass]' : info['login']['password'],
+                                         'params[link]' : pyfile.url}))
 
         #: Check status and decide what to do
         status = data['status']
@@ -69,3 +65,6 @@ class PremiumizeMe(MultiHoster):
 
         else:
             self.fail(data['statusmessage'])
+
+
+getInfo = create_getInfo(PremiumizeMe)

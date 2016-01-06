@@ -2,20 +2,19 @@
 
 import re
 
-from module.plugins.internal.XFSCrypter import XFSCrypter
+from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
 
 
 class XFileSharingFolder(XFSCrypter):
     __name__    = "XFileSharingFolder"
     __type__    = "crypter"
-    __version__ = "0.24"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("activated"         , "bool"          , "Activated"                                        , True     ),
-                   ("use_premium"       , "bool"          , "Use premium account if available"                 , True     ),
-                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"                   , "Default"),
-                   ("max_wait"          , "int"           , "Reconnect if waiting time is greater than minutes", 10       )]
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """XFileSharing dummy folder decrypter plugin for hook"""
     __license__     = "GPLv3"
@@ -36,14 +35,14 @@ class XFileSharingFolder(XFSCrypter):
 
     #@TODO: Recheck in 0.4.10
     def setup_base(self):
-        super(XFileSharingFolder, self).setup_base()
-
         if self.account:
             self.req     = self.pyload.requestFactory.getRequest(self.PLUGIN_NAME, self.account.user)
-            self.premium = self.account.info['data']['premium']  #@NOTE: Don't call get_info here to reduce overhead
+            self.premium = self.account.info['data']['premium']  #@NOTE: Avoid one unnecessary get_info call by `self.account.premium` here
         else:
             self.req     = self.pyload.requestFactory.getRequest(self.classname)
             self.premium = False
+
+        super(SimpleCrypter, self).setup_base()
 
 
     #@TODO: Recheck in 0.4.10
@@ -52,3 +51,6 @@ class XFileSharingFolder(XFSCrypter):
         self.__class__.__name__ = str(self.PLUGIN_NAME)
         super(XFileSharingFolder, self).load_account()
         self.__class__.__name__ = class_name
+
+
+getInfo = create_getInfo(XFileSharingFolder)

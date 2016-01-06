@@ -4,21 +4,18 @@ import re
 import urlparse
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class CrockoCom(SimpleHoster):
     __name__    = "CrockoCom"
     __type__    = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.23"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(crocko|easy-share)\.com/\w+'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Crocko hoster plugin"""
     __license__     = "GPLv3"
@@ -26,7 +23,7 @@ class CrockoCom(SimpleHoster):
 
 
     NAME_PATTERN    = r'<span class="fz24">Download:\s*<strong>(?P<N>.*)'
-    SIZE_PATTERN    = r'<span class="tip1"><span class="inner">(?P<S>.+?)</span></span>'
+    SIZE_PATTERN    = r'<span class="tip1"><span class="inner">(?P<S>[^<]+)</span></span>'
     OFFLINE_PATTERN = r'<h1>Sorry,<br />the page you\'re looking for <br />isn\'t here.</h1>|File not found'
 
     CAPTCHA_PATTERN = r"u='(/file_contents/captcha/\w+)';\s*w='(\d+)';"
@@ -56,10 +53,13 @@ class CrockoCom(SimpleHoster):
 
         action, form = m.groups()
         inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
-        self.captcha = ReCaptcha(pyfile)
+        recaptcha = ReCaptcha(self)
 
-        inputs['recaptcha_response_field'], inputs['recaptcha_challenge_field'] = self.captcha.challenge()
+        inputs['recaptcha_response_field'], inputs['recaptcha_challenge_field'] = recaptcha.challenge()
         self.download(action, post=inputs)
 
-        if self.scan_download({'captcha': self.captcha.KEY_AJAX_PATTERN}):
+        if self.check_file({'captcha': recaptcha.KEY_AJAX_PATTERN}):
             self.retry_captcha()
+
+
+getInfo = create_getInfo(CrockoCom)

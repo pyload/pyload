@@ -2,21 +2,20 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class VimeoCom(SimpleHoster):
     __name__    = "VimeoCom"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(player\.)?vimeo\.com/(video/)?(?P<ID>\d+)'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium", "bool"                       , "Use premium account if available" , True     ),
+                   ("quality"    , "Lowest;Mobile;SD;HD;Highest", "Quality"                          , "Highest"),
+                   ("original"   , "bool"                       , "Try to download the original file", True     )]
 
     __description__ = """Vimeo.com hoster plugin"""
     __license__     = "GPLv3"
@@ -50,14 +49,14 @@ class VimeoCom(SimpleHoster):
 
         link = dict((l.group('QL').lower(), l.group('URL')) for l in re.finditer(pattern, html))
 
-        if self.config.get('original'):
+        if self.get_config('original'):
             if "original" in link:
                 self.link = link[q]
                 return
             else:
                 self.log_info(_("Original file not downloadable"))
 
-        quality = self.config.get('quality')
+        quality = self.get_config('quality')
         if quality == "Highest":
             qlevel = ("hd", "sd", "mobile")
         elif quality == "Lowest":
@@ -73,3 +72,6 @@ class VimeoCom(SimpleHoster):
                 self.log_info(_("No %s quality video found") % q.upper())
         else:
             self.fail(_("No video found!"))
+
+
+getInfo = create_getInfo(VimeoCom)

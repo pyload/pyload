@@ -2,21 +2,18 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FourSharedCom(SimpleHoster):
     __name__    = "FourSharedCom"
     __type__    = "hoster"
-    __version__ = "0.36"
+    __version__ = "0.34"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?4shared(-china)?\.com/(account/)?(download|get|file|document|photo|video|audio|mp3|office|rar|zip|archive|music)/.+'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """4Shared.com hoster plugin"""
     __license__     = "GPLv3"
@@ -28,7 +25,7 @@ class FourSharedCom(SimpleHoster):
     SIZE_PATTERN = r'<span title="Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)">'
     OFFLINE_PATTERN = r'The file link that you requested is not valid\.|This file was deleted.'
 
-    NAME_REPLACEMENTS = [(r'&#(\d+).', lambda m: unichr(int(m.group(1))))]
+    NAME_REPLACEMENTS = [(r"&#(\d+).", lambda m: unichr(int(m.group(1))))]
     SIZE_REPLACEMENTS = [(",", "")]
 
     DIRECT_LINK   = False
@@ -64,3 +61,6 @@ class FourSharedCom(SimpleHoster):
             pass
 
         self.wait(20)
+
+
+getInfo = create_getInfo(FourSharedCom)

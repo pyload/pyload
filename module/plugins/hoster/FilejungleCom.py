@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.FileserveCom import FileserveCom
+from module.plugins.hoster.FileserveCom import FileserveCom, check_file
+from module.plugins.internal.utils import chunks
 
 
 class FilejungleCom(FileserveCom):
     __name__    = "FilejungleCom"
     __type__    = "hoster"
-    __version__ = "0.56"
+    __version__ = "0.54"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?filejungle\.com/f/(?P<ID>[^/]+)'
@@ -23,3 +24,8 @@ class FilejungleCom(FileserveCom):
     LINKCHECK_TD = r'<div class="(?:col )?col\d">(?:<.*?>|&nbsp;)*([^<]*)'
 
     LONG_WAIT_PATTERN = r'<h1>Please wait for (\d+) (\w+)\s*to download the next file\.</h1>'
+
+
+def get_info(urls):
+    for chunk in chunks(urls, 100):
+        yield check_file(FilejungleCom, chunk)

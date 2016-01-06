@@ -7,7 +7,7 @@ from module.plugins.internal.Addon import Addon
 class UnSkipOnFail(Addon):
     __name__    = "UnSkipOnFail"
     __type__    = "hook"
-    __version__ = "0.12"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated", True)]
@@ -18,6 +18,10 @@ class UnSkipOnFail(Addon):
 
 
     def download_failed(self, pyfile):
+        #: Check if pyfile is still "failed", maybe might has been restarted in meantime
+        if pyfile.status != 8:
+            return
+
         msg = _("Looking for skipped duplicates of: %s (pid:%s)")
         self.log_info(msg % (pyfile.name, pyfile.package().id))
 
@@ -32,12 +36,12 @@ class UnSkipOnFail(Addon):
             #: It creates a temporary PyFile object using
             #: "link" data, changes its status, and tells
             #: The pyload.files-manager to save its data.
-            pyfile_new = self._create_pyFile(link)
+            pylink = self._pyfile(link)
 
-            pyfile_new.setCustomStatus(_("unskipped"), "queued")
+            pylink.setCustomStatus(_("unskipped"), "queued")
 
             self.pyload.files.save()
-            pyfile_new.release()
+            pylink.release()
 
         else:
             self.log_info(_("No duplicates found"))
@@ -53,13 +57,15 @@ class UnSkipOnFail(Addon):
             the data for "pyfile" iotselöf.
             It does MOT check the link's status.
         """
-        for pinfo in self.pyload.api.getQueue():
+        queue = self.pyload.api.getQueue()  #: Get packages (w/o files, as most file data is useless here)
+
+        for package in queue:
             #: Check if package-folder equals pyfile's package folder
-            if pinfo.folder is not pyfile.package().folder:
+            if package.folder is not pyfile.package().folder:
                 continue
 
             #: Now get packaged data w/ files/links
-            pdata = self.pyload.api.getPackageData(pinfo.pid)
+            pdata = self.pyload.api.getPackageData(package.pid)
             for link in pdata.links:
                 #: Check if link == "skipped"
                 if link.status != 4:
@@ -71,14 +77,14 @@ class UnSkipOnFail(Addon):
                     return link
 
 
-    def _create_pyFile(self, pylink):
+    def _pyfile(self, link):
         return PyFile(self.pyload.files,
-                      pylink.fid,
-                      pylink.url,
-                      pylink.name,
-                      pylink.size,
-                      pylink.status,
-                      pylink.error,
-                      pylink.plugin,
-                      pylink.packageID,
-                      pylink.order)
+                      link.fid,
+                      link.url,
+                      link.name,
+                      link.size,
+                      link.status,
+                      link.error,
+                      link.plugin,
+                      link.packageID,
+                      link.order)

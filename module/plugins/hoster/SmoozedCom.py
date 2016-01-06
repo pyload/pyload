@@ -1,22 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.MultiHoster import MultiHoster
-from module.plugins.internal.misc import json
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
+from module.plugins.internal.utils import json
 
 
 class SmoozedCom(MultiHoster):
     __name__    = "SmoozedCom"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate
-    __config__  = [("activated"   , "bool", "Activated"                                        , True ),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True ),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , False),
-                   ("chk_filesize", "bool", "Check file size"                                  , True ),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10   ),
-                   ("revertfailed", "bool", "Revert to standard download if fails"             , True )]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium" , "bool", "Use premium account if available"    , True),
+                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Smoozed.com hoster plugin"""
     __license__     = "GPLv3"
@@ -43,13 +40,12 @@ class SmoozedCom(MultiHoster):
         get_data = {'session_key': self.account.get_data('session'),
                     'url'        : pyfile.url}
 
-        html = self.load("http://www2.smoozed.com/api/check", get=get_data)
-        data = json.loads(html)
+        data = json.loads(self.load("http://www2.smoozed.com/api/check", get=get_data))
 
         if data['state'] != "ok":
             self.fail(data['message'])
 
-        if data['data'].get('state', 'ok') != "ok":
+        if data['data'].get("state", "ok") != "ok":
             if data['data'] == "Offline":
                 self.offline()
             else:
@@ -65,3 +61,6 @@ class SmoozedCom(MultiHoster):
             self.fail(_("Unable to initialize download"))
         else:
             self.link = header.get('location')[-1] if isinstance(header.get('location'), list) else header.get('location')
+
+
+getInfo = create_getInfo(SmoozedCom)

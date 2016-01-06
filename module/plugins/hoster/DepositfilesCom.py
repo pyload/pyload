@@ -4,21 +4,18 @@ import re
 import urllib
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DepositfilesCom(SimpleHoster):
     __name__    = "DepositfilesCom"
     __type__    = "hoster"
-    __version__ = "0.61"
+    __version__ = "0.59"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Depositfiles.com hoster plugin"""
     __license__     = "GPLv3"
@@ -58,15 +55,15 @@ class DepositfilesCom(SimpleHoster):
 
         self.check_errors()
 
-        self.captcha = ReCaptcha(pyfile)
-        captcha_key = self.captcha.detect_key()
+        recaptcha = ReCaptcha(self)
+        captcha_key = recaptcha.detect_key()
         if captcha_key is None:
             return
 
         self.data = self.load("https://dfiles.eu/get_file.php", get=params)
 
         if '<input type=button value="Continue" onclick="check_recaptcha' in self.data:
-            params['response'], params['challenge'] = self.captcha.challenge(captcha_key)
+            params['response'], params['challenge'] = recaptcha.challenge(captcha_key)
             self.data = self.load("https://dfiles.eu/get_file.php", get=params)
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)
@@ -92,3 +89,6 @@ class DepositfilesCom(SimpleHoster):
 
             elif mirror:
                 self.link = mirror.group(1)
+
+
+getInfo = create_getInfo(DepositfilesCom)

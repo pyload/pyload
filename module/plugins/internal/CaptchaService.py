@@ -6,7 +6,7 @@ from module.plugins.internal.Captcha import Captcha
 class CaptchaService(Captcha):
     __name__    = "CaptchaService"
     __type__    = "captcha"
-    __version__ = "0.34"
+    __version__ = "0.33"
     __status__  = "stable"
 
     __description__ = """Base anti-captcha service plugin"""
@@ -27,7 +27,7 @@ class CaptchaService(Captcha):
 
 
     def retrieve_data(self):
-        return self.pyfile.plugin.data or self.pyfile.plugin.last_html or ""
+        return self.plugin.data or self.plugin.last_html or ""
 
 
     def detect_key(self, data=None):

@@ -19,14 +19,14 @@ except ImportError:
         def hexread(self, octets):
             return b2a_hex(pbkdf2(self.passphrase, self.salt, self.iterations, octets))
 
-from module.plugins.internal.misc import json
+from module.plugins.internal.utils import json
 from module.plugins.internal.MultiAccount import MultiAccount
 
 
 class SmoozedCom(MultiAccount):
     __name__    = "SmoozedCom"
     __type__    = "account"
-    __version__ = "0.11"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
@@ -59,7 +59,7 @@ class SmoozedCom(MultiAccount):
                     'hosters'    : [hoster['name'] for hoster in status['data']['hoster']]}
 
             if info['validuntil'] < time.time():
-                if float(status['data']['user'].get('user_trial', 0)) > time.time():
+                if float(status['data']['user'].get("user_trial", 0)) > time.time():
                     info['premium'] = True
                 else:
                     info['premium'] = False
@@ -83,7 +83,6 @@ class SmoozedCom(MultiAccount):
         salt      = hashlib.sha256(password).hexdigest()
         encrypted = PBKDF2(password, salt, iterations=1000).hexread(32)
 
-        html = self.load("http://www2.smoozed.com/api/login",
-                         get={'auth': user,
-                              'password': encrypted})
-        return json.loads(html)
+        return json.loads(self.load("http://www2.smoozed.com/api/login",
+                                    get={'auth': user,
+                                         'password': encrypted}))

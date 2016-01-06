@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster
+from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class ShareFilesCo(DeadHoster):
     __name__    = "ShareFilesCo"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.04"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?sharefiles\.co/\w{12}'
@@ -15,3 +15,6 @@ class ShareFilesCo(DeadHoster):
     __description__ = """Sharefiles.co hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
+
+
+getInfo = create_getInfo(ShareFilesCo)

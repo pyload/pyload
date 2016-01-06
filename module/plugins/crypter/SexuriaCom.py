@@ -2,19 +2,19 @@
 
 import re
 
-from module.plugins.internal.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter, create_getInfo
 
 
 class SexuriaCom(Crypter):
     __name__    = "SexuriaCom"
     __type__    = "crypter"
-    __version__ = "0.13"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?sexuria\.com/(v1/)?(Pornos_Kostenlos_.+?_(\d+)\.html|dl_links_\d+_\d+\.html|id=\d+\&part=\d+\&link=\d+)'
     __config__  = [("activated"         , "bool", "Activated"                          , True),
                    ("use_subfolder"       , "bool", "Save package to subfolder"          , True),
-                  ("folder_per_package", "Default;Yes;No", "Create folder for each package"  , "Default")]
+                  ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Sexuria.com decrypter plugin"""
     __license__     = "GPLv3"
@@ -36,10 +36,10 @@ class SexuriaCom(Crypter):
         self.package = pyfile.package()
 
         #: Decrypt and add links
-        pack_name, self.urls, folder_name, pack_pwd = self.decrypt_links(self.pyfile.url)
-        if pack_pwd:
-            self.pyfile.package().password = pack_pwd
-        self.packages = [(pack_name, self.urls, folder_name)]
+        package_name, self.links, folder_name, package_pwd = self.decrypt_links(self.pyfile.url)
+        if package_pwd:
+            self.pyfile.package().password = package_pwd
+        self.packages = [(package_name, self.links, folder_name)]
 
 
     def decrypt_links(self, url):
@@ -107,3 +107,6 @@ class SexuriaCom(Crypter):
 
         #: All done, return to caller
         return name, linklist, folder, password
+
+
+getInfo = create_getInfo(SexuriaCom)

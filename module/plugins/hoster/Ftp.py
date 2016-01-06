@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
 import re
 import urlparse
 
-import pycurl
-
-from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import parse_name
+from module.plugins.internal.Hoster import Hoster, parse_name
 
 
 class Ftp(Hoster):
     __name__    = "Ftp"
     __type__    = "hoster"
-    __version__ = "0.59"
+    __version__ = "0.56"
     __status__  = "testing"
 
     __pattern__ = r'(?:ftps?|sftp)://([\w\-.]+(:[\w\-.]+)?@)?[\w\-.]+(:\d+)?/.+'
@@ -67,9 +65,10 @@ class Ftp(Hoster):
         self.req.http.c.setopt(pycurl.NOBODY, 0)
         self.log_debug(self.req.http.header)
 
-        m = re.search(r'Content-Length:\s*(\d+)', res)
+        m = re.search(r"Content-Length:\s*(\d+)", res)
         if m is not None:
             pyfile.size = int(m.group(1))
+
             self.download(pyfile.url)
 
         else:

@@ -6,13 +6,13 @@ import subprocess
 import urllib
 
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import html_unescape, replace_patterns, which
+from module.plugins.internal.utils import html_unescape, replace_patterns, which
 
 
 class YoutubeCom(Hoster):
     __name__    = "YoutubeCom"
     __type__    = "hoster"
-    __version__ = "0.49"
+    __version__ = "0.47"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)\w+'
@@ -76,7 +76,7 @@ class YoutubeCom(Hoster):
             self.temp_offline()
 
         #: Get config
-        use3d = self.config.get('3d')
+        use3d = self.get_config('3d')
 
         if use3d:
             quality = {'sd': 82, 'hd': 84, 'fullhd': 85, '240p': 83, '360p': 82,
@@ -85,10 +85,10 @@ class YoutubeCom(Hoster):
             quality = {'sd': 18, 'hd': 22, 'fullhd': 37, '240p': 5, '360p': 18,
                        '480p': 35, '720p': 22, '1080p': 37, '3072p': 38}
 
-        desired_fmt = self.config.get('fmt')
+        desired_fmt = self.get_config('fmt')
 
         if not desired_fmt:
-            desired_fmt = quality.get(self.config.get('quality'), 18)
+            desired_fmt = quality.get(self.get_config('quality'), 18)
 
         elif desired_fmt not in self.formats:
             self.log_warning(_("FMT %d unknown, using default") % desired_fmt)
@@ -105,7 +105,7 @@ class YoutubeCom(Hoster):
         self.log_debug("AVAILABLE STREAMS: %s" % [x[0] for x in streams])
 
         #: Build dictionary of supported itags (3D/2D)
-        allowed = lambda x: self.config.get(self.formats[x][0])
+        allowed = lambda x: self.get_config(self.formats[x][0])
         streams = [x for x in streams if x[0] in self.formats and allowed(x[0])]
 
         if not streams:
@@ -147,7 +147,7 @@ class YoutubeCom(Hoster):
 
         pyfile.name = html_unescape(name)
 
-        time = re.search(r't=((\d+)m)?(\d+)s', pyfile.url)
+        time = re.search(r"t=((\d+)m)?(\d+)s", pyfile.url)
         ffmpeg = which("ffmpeg")
         if ffmpeg and time:
             m, s = time.groups()[1:]
@@ -171,4 +171,4 @@ class YoutubeCom(Hoster):
                 "-acodec", "copy",
                 filename])
 
-            self.remove(inputfile, trash=False)
+            os.remove(inputfile)

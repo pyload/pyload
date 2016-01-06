@@ -2,20 +2,20 @@
 
 import re
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class FreakhareComFolder(SimpleCrypter):
     __name__    = "FreakhareComFolder"
     __type__    = "crypter"
-    __version__ = "0.08"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?freakshare\.com/folder/.+'
-    __config__  = [("activated"         , "bool"          , "Activated"                                        , True     ),
-                   ("use_premium"       , "bool"          , "Use premium account if available"                 , True     ),
-                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"                   , "Default"),
-                   ("max_wait"          , "int"           , "Reconnect if waiting time is greater than minutes", 10       )]
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
+                   ("use_premium"       , "bool", "Use premium account if available"   , True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Freakhare.com folder decrypter plugin"""
     __license__     = "GPLv3"
@@ -39,3 +39,6 @@ class FreakhareComFolder(SimpleCrypter):
                                                         'entrys': '20',
                                                         'page': page_n - 1,
                                                         'order': ''})
+
+
+getInfo = create_getInfo(FreakhareComFolder)

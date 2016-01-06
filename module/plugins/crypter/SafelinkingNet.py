@@ -4,21 +4,21 @@ import re
 
 import BeautifulSoup
 
-from module.plugins.internal.misc import json
-from module.plugins.internal.Crypter import Crypter
+from module.plugins.internal.utils import json
+from module.plugins.internal.Crypter import Crypter, create_getInfo
 from module.plugins.captcha.SolveMedia import SolveMedia
 
 
 class SafelinkingNet(Crypter):
     __name__    = "SafelinkingNet"
     __type__    = "crypter"
-    __version__ = "0.20"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?safelinking\.net/([pd])/\w+'
-    __config__  = [("activated"         , "bool"          , "Activated"                       , True     ),
-                   ("use_premium"       , "bool"          , "Use premium account if available", True     ),
-                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"  , "Default")]
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Safelinking.net decrypter plugin"""
     __license__     = "GPLv3"
@@ -35,7 +35,7 @@ class SafelinkingNet(Crypter):
 
             header = self.load(url, just_header=True)
             if 'location' in header:
-                self.links = [header.get('location')]
+                self.urls = [header.get('location')]
             else:
                 self.error(_("Couldn't find forwarded Link"))
 
@@ -51,7 +51,7 @@ class SafelinkingNet(Crypter):
                 m = re.search(self.SOLVEMEDIA_PATTERN, self.data)
                 if m is not None:
                     captchaKey = m.group(1)
-                    captcha = SolveMedia(pyfile)
+                    captcha = SolveMedia(self)
                     captchaProvider = "Solvemedia"
                 else:
                     self.fail(_("Error parsing captcha"))
@@ -79,6 +79,9 @@ class SafelinkingNet(Crypter):
                 linkDict = json.loads(m.group(1))
                 for link in linkDict:
                     if not "http://" in link['full']:
-                        self.links.append("https://safelinking.net/d/" + link['full'])
+                        self.urls.append("https://safelinking.net/d/" + link['full'])
                     else:
-                        self.links.append(link['full'])
+                        self.urls.append(link['full'])
+
+
+getInfo = create_getInfo(SafelinkingNet)

@@ -2,23 +2,20 @@
 
 import re
 
-from module.plugins.internal.MultiHoster import MultiHoster
-from module.plugins.internal.misc import seconds_to_midnight
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import seconds_to_midnight
 
 
 class HighWayMe(MultiHoster):
     __name__    = "HighWayMe"
     __type__    = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __pattern__ = r'https?://.+high-way\.my'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True ),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True ),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , False),
-                   ("chk_filesize", "bool", "Check file size"                                  , True ),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10   ),
-                   ("revertfailed", "bool", "Revert to standard download if fails"             , True )]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium" , "bool", "Use premium account if available"    , True),
+                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """High-Way.me multi-hoster plugin"""
     __license__     = "GPLv3"
@@ -65,7 +62,7 @@ class HighWayMe(MultiHoster):
         self.check_errors()
 
         try:
-            self.pyfile.name = re.search(r'<name>(.+?)</name>', self.data).group(1)
+            self.pyfile.name = re.search(r'<name>([^<]+)</name>', self.data).group(1)
 
         except AttributeError:
             self.pyfile.name = ""
@@ -76,4 +73,7 @@ class HighWayMe(MultiHoster):
         except AttributeError:
             self.pyfile.size = 0
 
-        self.link = re.search(r'<download>(.+?)</download>', self.data).group(1)
+        self.link = re.search(r'<download>([^<]+)</download>', self.data).group(1)
+
+
+getInfo = create_getInfo(HighWayMe)

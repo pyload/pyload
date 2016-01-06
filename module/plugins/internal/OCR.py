@@ -14,13 +14,13 @@ import subprocess
 # import tempfile
 
 from module.plugins.internal.Plugin import Plugin
-from module.plugins.internal.misc import encode, fsjoin
+from module.plugins.internal.utils import fs_join
 
 
 class OCR(Plugin):
     __name__    = "OCR"
     __type__    = "ocr"
-    __version__ = "0.25"
+    __version__ = "0.21"
     __status__  = "stable"
 
     __description__ = """OCR base plugin"""
@@ -28,20 +28,20 @@ class OCR(Plugin):
     __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
-    def __init__(self, pyfile):
-        self._init(pyfile.m.core)
-        self.pyfile = pyfile
+    def __init__(self, plugin):
+        self._init(plugin.pyload)
+        self.plugin = plugin
         self.init()
 
 
     def _log(self, level, plugintype, pluginname, messages):
         messages = (self.__name__,) + messages
-        return self.pyfile.plugin._log(level, plugintype, self.pyfile.plugin.__name__, messages)
+        return self.plugin._log(level, plugintype, self.plugin.__name__, messages)
 
 
     def load_image(self, image):
-        self.img = Image.open(image)
-        self.pixels = self.img.load()
+        self.image = Image.open(image)
+        self.pixels = self.image.load()
         self.result_captcha = ""
 
 
@@ -53,58 +53,51 @@ class OCR(Plugin):
 
 
     def threshold(self, value):
-        self.img = self.img.point(lambda a: a * value + 10)
+        self.image = self.image.point(lambda a: a * value + 10)
 
 
-    def call_cmd(self, command, *args, **kwargs):
+    def run(self, command):
         """
         Run a command
         """
-        call = (command,) + args
-        self.log_debug("EXECUTE " + " ".join(call))
-
-        call = map(encode, call)
-        popen = subprocess.Popen(call, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        popen = subprocess.Popen(command, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         popen.wait()
-
         output = popen.stdout.read() + " | " + popen.stderr.read()
-
         popen.stdout.close()
         popen.stderr.close()
-
-        self.log_debug("Tesseract ReturnCode %d" % popen.returncode, "Output: %s" % output)
+        self.pyload.log_debug("Tesseract ReturnCode " + popen.returncode, "Output: " + output)
 
 
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True, pagesegmode=None):
         # tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
         try:
-            tmpTif = open(fsjoin("tmp", "tmpTif_%s.tif" % self.classname), "wb")
+            tmpTif = open(fs_join("tmp", "tmpTif_%s.tif" % self.classname), "wb")
             tmpTif.close()
 
             # tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
-            tmpTxt = open(fsjoin("tmp", "tmpTxt_%s.txt" % self.classname), "wb")
+            tmpTxt = open(fs_join("tmp", "tmpTxt_%s.txt" % self.classname), "wb")
             tmpTxt.close()
 
         except IOError, e:
             self.log_error(e)
             return
 
-        self.log_debug("Saving tiff...")
-        self.img.save(tmpTif.name, 'TIFF')
+        self.pyload.log_debug("Saving tiff...")
+        self.image.save(tmpTif.name, 'TIFF')
 
-        if os.name == "nt":
-            command = os.path.join(pypath, "tesseract", "tesseract.exe")
+        if os.name is "nt":
+            tessparams = [os.path.join(pypath, "tesseract", "tesseract.exe")]
         else:
-            command = "tesseract"
+            tessparams = ["tesseract"]
 
-        args = [os.path.abspath(tmpTif.name), os.path.abspath(tmpTxt.name).replace(".txt", "")]
+        tessparams.extend([os.path.abspath(tmpTif.name), os.path.abspath(tmpTxt.name).replace(".txt", "")])
 
         if pagesegmode:
-            args.extend(["-psm", str(pagesegmode)])
+            tessparams.extend(["-psm", str(pagesegmode)])
 
         if subset and (digits or lowercase or uppercase):
             # tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
-            with open(fsjoin("tmp", "tmpSub_%s.subset" % self.classname), "wb") as tmpSub:
+            with open(fs_join("tmp", "tmpSub_%s.subset" % self.classname), "wb") as tmpSub:
                 tmpSub.write("tessedit_char_whitelist ")
 
                 if digits:
@@ -115,12 +108,12 @@ class OCR(Plugin):
                     tmpSub.write("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
                 tmpSub.write("\n")
-                args.append("nobatch")
-                args.append(os.path.abspath(tmpSub.name))
+                tessparams.append("nobatch")
+                tessparams.append(os.path.abspath(tmpSub.name))
 
-        self.log_debug("Running tesseract...")
-        self.call_cmd(command, *args)
-        self.log_debug("Reading txt...")
+        self.pyload.log_debug("Running tesseract...")
+        self.run(tessparams)
+        self.pyload.log_debug("Reading txt...")
 
         try:
             with open(tmpTxt.name, 'r') as f:
@@ -129,29 +122,31 @@ class OCR(Plugin):
         except Exception:
             self.result_captcha = ""
 
-        self.log_info(_("OCR result: ") + self.result_captcha)
+        self.pyload.log_info(_("OCR result: ") + self.result_captcha)
+        try:
+            os.remove(tmpTif.name)
+            os.remove(tmpTxt.name)
+            if subset and (digits or lowercase or uppercase):
+                os.remove(tmpSub.name)
 
-        self.remove(tmpTif.name, trash=False)
-        self.remove(tmpTxt.name, trash=False)
-
-        if subset and (digits or lowercase or uppercase):
-            self.remove(tmpSub.name, trash=False)
+        except OSError, e:
+            self.log_warning(e)
 
 
-    def recognize(self, image):
+    def recognize(self, name):
         raise NotImplementedError
 
 
     def to_greyscale(self):
-        if self.img.mode != 'L':
-            self.img = self.img.convert('L')
+        if self.image.mode != 'L':
+            self.image = self.image.convert('L')
 
-        self.pixels = self.img.load()
+        self.pixels = self.image.load()
 
 
     def eval_black_white(self, limit):
-        self.pixels = self.img.load()
-        w, h = self.img.size
+        self.pixels = self.image.load()
+        w, h = self.image.size
         for x in xrange(w):
             for y in xrange(h):
                 if self.pixels[x, y] > limit:
@@ -163,7 +158,7 @@ class OCR(Plugin):
     def clean(self, allowed):
         pixels = self.pixels
 
-        w, h = self.img.size
+        w, h = self.image.size
 
         for x in xrange(w):
             for y in xrange(h):
@@ -218,7 +213,7 @@ class OCR(Plugin):
         """
         Rotate by checking each angle and guess most suitable
         """
-        w, h = self.img.size
+        w, h = self.image.size
         pixels = self.pixels
 
         for x in xrange(w):
@@ -231,11 +226,11 @@ class OCR(Plugin):
 
         for angle in xrange(-45, 45):
 
-            tmpimage = self.img.rotate(angle)
+            tmpimage = self.image.rotate(angle)
 
             pixels = tmpimage.load()
 
-            w, h = self.img.size
+            w, h = self.image.size
 
             for x in xrange(w):
                 for y in xrange(h):
@@ -275,8 +270,8 @@ class OCR(Plugin):
                 hkey = key
                 hvalue = value
 
-        self.img = self.img.rotate(hkey)
-        pixels = self.img.load()
+        self.image = self.image.rotate(hkey)
+        pixels = self.image.load()
 
         for x in xrange(w):
             for y in xrange(h):
@@ -290,7 +285,7 @@ class OCR(Plugin):
 
 
     def split_captcha_letters(self):
-        captcha = self.img
+        captcha = self.image
         started = False
         letters = []
         width, height = captcha.size

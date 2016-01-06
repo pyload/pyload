@@ -94,7 +94,7 @@ def js_dynamic(path):
         # static files are not rendered
         if "static" not in path and "mootools" not in path:
             t = env.get_template("js/%s" % path)
-            return t.render()
+            return t.render({"pathprefix": PYLOAD.getConfigValue("webinterface", "prefix")})
         else:
             return static_file(path, root=join(PROJECT_DIR, "media", "js"))
     except:
@@ -109,13 +109,13 @@ def server_static(path):
 
 @route('/favicon.ico')
 def favicon():
-    return static_file("favicon.ico", root=join(PROJECT_DIR, "media", "img"))
+    return static_file("favicon.ico", root=PYLOAD.getConfigValue("webinterface", "prefix") + "/media/img")
 
 
 @route('/login', method="GET")
 def login():
     if not PYLOAD and SETUP:
-        redirect("/setup")
+        return redirect(PYLOAD.getConfigValue("webinterface", "prefix") + "/")
     else:
         return render_to_response("login.html", proc=[pre_processor])
 
@@ -136,7 +136,7 @@ def login_post():
         return render_to_response("login.html", {"errors": True}, [pre_processor])
 
     set_session(request, info)
-    return redirect("/")
+    return redirect(PYLOAD.getConfigValue("webinterface", "prefix") + "/")
 
 
 @route("/logout")
@@ -155,7 +155,7 @@ def home():
     except:
         s = request.environ.get('beaker.session')
         s.delete()
-        return redirect("/login")
+        return redirect(PYLOAD.getConfigValue("webinterface", "prefix") + "/login")
 
     for link in res:
         if link["status"] == 12:
@@ -288,8 +288,8 @@ def config():
 
 
 @route("/filechooser")
-@route("/pathchooser")
 @route("/filechooser/:file#.+#")
+@route("/pathchooser")
 @route("/pathchooser/:path#.+#")
 @login_required('STATUS')
 def path(file="", path=""):

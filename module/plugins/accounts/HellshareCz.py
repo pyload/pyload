@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class HellshareCz(Account):
     __name__    = "HellshareCz"
     __type__    = "account"
-    __version__ = "0.24"
+    __version__ = "0.23"
     __status__  = "testing"
 
     __description__ = """Hellshare.cz account plugin"""
@@ -59,7 +59,7 @@ class HellshareCz(Account):
             self.log_debug("Switch lang - URL: %s" % self.req.lastEffectiveURL)
 
             json = self.load("%s?do=locRouter-show" % self.req.lastEffectiveURL)
-            hash = re.search(r'(--[0-9a-f]+\-)', json).group(1)
+            hash = re.search(r"(--[0-9a-f]+\-)", json).group(1)
 
             self.log_debug("Switch lang - HASH: %s" % hash)
 

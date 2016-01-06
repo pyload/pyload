@@ -2,21 +2,17 @@
 
 import re
 
-from module.plugins.internal.XFSHoster import XFSHoster
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class NosuploadCom(XFSHoster):
     __name__    = "NosuploadCom"
     __type__    = "hoster"
-    __version__ = "0.36"
+    __version__ = "0.34"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?nosupload\.com/\?d=\w{12}'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Nosupload.com hoster plugin"""
     __license__     = "GPLv3"
@@ -45,3 +41,6 @@ class NosuploadCom(XFSHoster):
 
         #: Stage3: get the download link
         return re.search(self.LINK_PATTERN, self.data, re.S).group(1)
+
+
+getInfo = create_getInfo(NosuploadCom)

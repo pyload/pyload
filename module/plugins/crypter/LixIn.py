@@ -3,19 +3,19 @@
 import re
 import urlparse
 
-from module.plugins.internal.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter, create_getInfo
 
 
 class LixIn(Crypter):
     __name__    = "LixIn"
     __type__    = "crypter"
-    __version__ = "0.27"
+    __version__ = "0.25"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?lix\.in/(?P<ID>.+)'
-    __config__  = [("activated"         , "bool"          , "Activated"                       , True     ),
-                   ("use_premium"       , "bool"          , "Use premium account if available", True     ),
-                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"  , "Default")]
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Lix.in decrypter plugin"""
     __license__     = "GPLv3"
@@ -58,5 +58,8 @@ class LixIn(Crypter):
         if m is None:
             self.error(_("Unable to find destination url"))
         else:
-            self.links = [m.group(1)]
-            self.log_debug("Found link %s, adding to package" % self.links[0])
+            self.urls = [m.group(1)]
+            self.log_debug("Found link %s, adding to package" % self.urls[0])
+
+
+getInfo = create_getInfo(LixIn)

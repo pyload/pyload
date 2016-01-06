@@ -3,21 +3,18 @@
 import re
 import urlparse
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FastshareCz(SimpleHoster):
     __name__    = "FastshareCz"
     __type__    = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.37"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """FastShare.cz hoster plugin"""
     __license__     = "GPLv3"
@@ -64,7 +61,7 @@ class FastshareCz(SimpleHoster):
 
 
     def check_download(self):
-        check = self.scan_download({
+        check = self.check_file({
             'paralell-dl'  : re.compile(r"<title>FastShare.cz</title>|<script>alert\('Pres FREE muzete stahovat jen jeden soubor najednou.'\)"),
             'wrong captcha': re.compile(r'Download for FREE'),
             'credit'       : re.compile(self.CREDIT_ERROR)
@@ -80,3 +77,6 @@ class FastshareCz(SimpleHoster):
             self.restart(premium=False)
 
         return super(FastshareCz, self).check_download()
+
+
+getInfo = create_getInfo(FastshareCz)

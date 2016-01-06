@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster
+from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class SharingmatrixCom(DeadHoster):
     __name__    = "SharingmatrixCom"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.03"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?sharingmatrix\.com/file/\w+'
@@ -16,3 +16,6 @@ class SharingmatrixCom(DeadHoster):
     __license__     = "GPLv3"
     __authors__     = [("jeix", "jeix@hasnomail.de"),
                        ("paulking", None)]
+
+
+getInfo = create_getInfo(SharingmatrixCom)

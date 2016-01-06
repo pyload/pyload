@@ -1,29 +1,25 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
 import re
 
-import pycurl
-
+from module.plugins.internal.utils import json
 from module.network.HTTPRequest import BadHeader
 from module.plugins.captcha.AdsCaptcha import AdsCaptcha
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.captcha.SolveMedia import SolveMedia
-from module.plugins.internal.SimpleHoster import SimpleHoster
-from module.plugins.internal.misc import json
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class RapidgatorNet(SimpleHoster):
     __name__    = "RapidgatorNet"
     __type__    = "hoster"
-    __version__ = "0.40"
+    __version__ = "0.37"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Rapidgator.net hoster plugin"""
     __license__     = "GPLv3"
@@ -73,9 +69,9 @@ class RapidgatorNet(SimpleHoster):
                              get={'sid': self.sid,
                                   'url': self.pyfile.url})
             self.log_debug("API:%s" % cmd, html, "SID: %s" % self.sid)
-            json_data = json.loads(html)
-            status = json_data['response_status']
-            msg = json_data['response_details']
+            jso = json.loads(html)
+            status = jso['response_status']
+            msg = jso['response_details']
 
         except BadHeader, e:
             self.log_error("API: %s" % cmd, e, "SID: %s" % self.sid)
@@ -83,7 +79,7 @@ class RapidgatorNet(SimpleHoster):
             msg = e
 
         if status == 200:
-            return json_data['response']
+            return jso['response']
 
         elif status == 423:
             self.account.empty()
@@ -150,10 +146,9 @@ class RapidgatorNet(SimpleHoster):
 
     def handle_captcha(self):
         for klass in (AdsCaptcha, ReCaptcha, SolveMedia):
-            captcha = klass(self.pyfile)
-            if captcha.detect_key():
-                self.captcha = captcha
-                return captcha
+            inst = klass(self)
+            if inst.detect_key():
+                return inst
 
 
     def get_json_response(self, url):
@@ -162,3 +157,6 @@ class RapidgatorNet(SimpleHoster):
             self.retry()
         self.log_debug(url, res)
         return json.loads(res)
+
+
+getInfo = create_getInfo(RapidgatorNet)

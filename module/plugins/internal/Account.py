@@ -6,13 +6,13 @@ import threading
 import time
 
 from module.plugins.internal.Plugin import Plugin, Skip
-from module.plugins.internal.misc import Periodical, compare_time, decode, isiterable, lock, parse_size
+from module.plugins.internal.utils import compare_time, isiterable, lock, parse_size
 
 
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.70"
+    __version__ = "0.65"
     __status__  = "stable"
 
     __description__ = """Base account plugin"""
@@ -22,6 +22,8 @@ class Account(Plugin):
 
     LOGIN_TIMEOUT       = 30 * 60  #: Relogin account every 30 minutes
     TUNE_TIMEOUT        = True     #: Automatically tune relogin interval
+
+    PERIODICAL_INTERVAL = None
 
 
     def __init__(self, manager, accounts):
@@ -35,9 +37,9 @@ class Account(Plugin):
 
         self.timeout = self.LOGIN_TIMEOUT
 
-        #: Callback of periodical job task, used by HookManager
-        self.periodical = Periodical(self, self.periodical_task)
-        self.cb = self.periodical.cb  #@TODO: Recheck in 0.4.10
+        #: Callback of periodical job task
+        self.cb       = None
+        self.interval = None
 
         self.init()
 
@@ -64,22 +66,6 @@ class Account(Plugin):
         return bool(self.get_data('premium'))
 
 
-    def _log(self, level, plugintype, pluginname, messages):
-        log = getattr(self.pyload.log, level)
-        msg = u" | ".join(decode(a).strip() for a in messages if a)
-
-        #: Hide any password
-        try:
-            msg = msg.replace(self.info['login']['password'], "**********")
-        except Exception:
-            pass
-
-        log("%(plugintype)s %(pluginname)s: %(msg)s" %
-            {'plugintype': plugintype.upper(),
-             'pluginname': pluginname,
-             'msg'       : msg})
-
-
     def setup(self):
         """
         Setup for enviroment and other things, called before logging (possibly more than one time)
@@ -87,7 +73,49 @@ class Account(Plugin):
         pass
 
 
-    def periodical_task(self):
+    def set_interval(self, value):
+        newinterval = max(0, self.PERIODICAL_INTERVAL, value)
+
+        if newinterval != value:
+            return False
+
+        if newinterval != self.interval:
+            self.interval = newinterval
+
+        return True
+
+
+    def start_periodical(self, interval=None, threaded=False, delay=None):
+        if interval is not None and self.set_interval(interval) is False:
+            return False
+        else:
+            self.cb = self.pyload.scheduler.addJob(max(1, delay), self._periodical, [threaded], threaded=threaded)
+            return True
+
+
+    def restart_periodical(self, *args, **kwargs):
+        self.stop_periodical()
+        return self.start_periodical(*args, **kwargs)
+
+
+    def stop_periodical(self):
+        try:
+            return self.pyload.scheduler.removeJob(self.cb)
+        finally:
+            self.cb = None
+
+
+    def _periodical(self, threaded):
+        try:
+            self.periodical()
+
+        except Exception, e:
+            self.log_error(_("Error performing periodical task"), e)
+
+        self.restart_periodical(threaded=threaded, delay=self.interval)
+
+
+    def periodical(self):
         raise NotImplementedError
 
 
@@ -181,7 +209,7 @@ class Account(Plugin):
         self.sync()
 
         clear = lambda x: {} if isinstance(x, dict) else [] if isiterable(x) else None
-        self.info['data'] = dict((k, clear(v)) for k, v in self.info['data'].items())
+        self.info['data'] = dict((k, clear(v)) for k, v in self.info['data'])
         self.info['data']['options'] = {'limitdl': ['0']}
 
         self.syncback()
@@ -424,7 +452,7 @@ class Account(Plugin):
 
     ###########################################################################
 
-    def parse_traffic(self, size, unit=None):  #@NOTE: Returns kilobytes only in 0.4.9
+    def parse_traffic(self, size, unit=None):  #@NOTE: Returns kilobytes in 0.4.9
         self.log_debug("Size: %s" % size,
                        "Unit: %s" % (unit or "N/D"))
         return parse_size(size, unit or "byte") / 1024  #@TODO: Remove `/ 1024` in 0.4.10

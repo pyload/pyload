@@ -3,32 +3,32 @@
 import binascii
 import re
 
-import Crypto.Cipher
+from Crypto.Cipher import AES
 
-from module.plugins.internal.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter, create_getInfo
 
 
 class ShareLinksBiz(Crypter):
     __name__    = "ShareLinksBiz"
     __type__    = "crypter"
-    __version__ = "1.22"
+    __version__ = "1.19"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
-    __config__  = [("activated"         , "bool"          , "Activated"                       , True     ),
-                   ("use_premium"       , "bool"          , "Use premium account if available", True     ),
-                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"  , "Default")]
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Share-Links.biz decrypter plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
-                       ("Arno-Nymous", None)]
+    __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es")]
 
 
     def setup(self):
         self.base_url = None
         self.file_id = None
         self.package = None
+        self.captcha = False
 
 
     def decrypt(self, pyfile):
@@ -48,33 +48,29 @@ class ShareLinksBiz(Crypter):
             self.handle_errors()
 
         if self.is_captcha_protected():
+            self.captcha = True
             self.unlock_captcha_protection()
             self.handle_errors()
 
         #: Extract package links
-        pack_links = []
-        pack_links.extend(self.handle_web_links())
-        pack_links.extend(self.handle_containers())
-        pack_links.extend(self.handle_CNL2())
-        pack_links = set(pack_links)
+        package_links = []
+        package_links.extend(self.handle_web_links())
+        package_links.extend(self.handle_containers())
+        package_links.extend(self.handle_CNL2())
+        package_links = set(package_links)
 
         #: Get package info
-        pack_name, pack_folder = self.get_package_info()
+        package_name, package_folder = self.get_package_info()
 
         #: Pack
-        self.packages = [(pack_name, pack_links, pack_folder)]
+        self.packages = [(package_name, package_links, package_folder)]
 
 
     def init_file(self, pyfile):
         url = pyfile.url
 
         if 's2l.biz' in url:
-            header = self.load(url, just_header=True)
-
-            if not 'location' in header:
-                self.fail(_("Unable to initialize download"))
-            else:
-                url = header.get('location')
+            url = self.load(url, just_header=True)['location']
 
         if re.match(self.__pattern__, url):
             self.base_url = "http://www.%s.biz" % re.match(self.__pattern__, url).group(1)
@@ -110,7 +106,7 @@ class ShareLinksBiz(Crypter):
 
 
     def unblock_server(self):
-        imgs = re.findall(r'(/template/images/.*?\.gif)', self.data)
+        imgs = re.findall(r"(/template/images/.*?\.gif)", self.data)
         for img in imgs:
             self.load(self.base_url + img)
 
@@ -137,7 +133,7 @@ class ShareLinksBiz(Crypter):
         captchaUrl = self.base_url + '/captcha.gif?d=%s&PHPSESSID=%s' % (m.group(1), m.group(2))
         self.log_debug("Waiting user for correct position")
         coords = self.captcha.decrypt(captchaUrl, input_type="gif", output_type='positional')
-        self.log_debug("Captcha resolved! Coords: {}, {}".format(*coords))
+        self.log_debug("Captcha resolved, coords %s" % coords)
 
         #: Resolve captcha
         href = self._resolve_coords(coords, captchaMap)
@@ -199,7 +195,7 @@ class ShareLinksBiz(Crypter):
 
 
     def handle_web_links(self):
-        pack_links = []
+        package_links = []
         self.log_debug("Handling Web links")
 
         #@TODO: Gather paginated web links
@@ -225,16 +221,16 @@ class ShareLinksBiz(Crypter):
 
                 self.log_debug("JsEngine returns value [%s] for redirection link" % dlLink)
 
-                pack_links.append(dlLink)
+                package_links.append(dlLink)
 
             except Exception, detail:
                 self.log_debug("Error decrypting Web link [%s], %s" % (ID, detail))
 
-        return pack_links
+        return package_links
 
 
     def handle_containers(self):
-        pack_links = []
+        package_links = []
         self.log_debug("Handling Container links")
 
         pattern = r'javascript:_get\(\'(.*?)\', 0, \'(rsdf|ccf|dlc)\'\)'
@@ -242,23 +238,23 @@ class ShareLinksBiz(Crypter):
         self.log_debug("Decrypting %d Container links" % len(containersLinks))
         for containerLink in containersLinks:
             link = "%s/get/%s/%s" % (self.base_url, containerLink[1], containerLink[0])
-            pack_links.append(link)
-        return pack_links
+            package_links.append(link)
+        return package_links
 
 
     def handle_CNL2(self):
-        pack_links = []
+        package_links = []
         self.log_debug("Handling CNL2 links")
 
         if '/lib/cnl2/ClicknLoad.swf' in self.data:
             try:
                 (crypted, jk) = self._get_cipher_params()
-                pack_links.extend(self._get_links(crypted, jk))
+                package_links.extend(self._get_links(crypted, jk))
 
             except Exception:
                 self.fail(_("Unable to decrypt CNL2 links"))
 
-        return pack_links
+        return package_links
 
 
     def _get_cipher_params(self):
@@ -289,7 +285,7 @@ class ShareLinksBiz(Crypter):
         #: Decrypt
         Key = key
         IV = key
-        obj = Crypto.Cipher.AES.new(Key, Crypto.Cipher.AES.MODE_CBC, IV)
+        obj = AES.new(Key, AES.MODE_CBC, IV)
         text = obj.decrypt(crypted.decode('base64'))
 
         #: Extract links
@@ -299,3 +295,6 @@ class ShareLinksBiz(Crypter):
         #: Log and return
         self.log_debug("Block has %d links" % len(links))
         return links
+
+
+getInfo = create_getInfo(ShareLinksBiz)

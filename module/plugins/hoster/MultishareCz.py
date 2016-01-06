@@ -3,21 +3,18 @@
 import random
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class MultishareCz(SimpleHoster):
     __name__    = "MultishareCz"
     __type__    = "hoster"
-    __version__ = "0.46"
+    __version__ = "0.44"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?multishare\.cz/stahnout/(?P<ID>\d+)'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """MultiShare.cz hoster plugin"""
     __license__     = "GPLv3"
@@ -29,7 +26,7 @@ class MultishareCz(SimpleHoster):
     CHECK_TRAFFIC = True
     LEECH_HOSTER  = True
 
-    INFO_PATTERN    = ur'(?:<li>Název|Soubor): <strong>(?P<N>.+?)</strong><(?:/li><li|br)>Velikost: <strong>(?P<S>.+?)</strong>'
+    INFO_PATTERN    = ur'(?:<li>Název|Soubor): <strong>(?P<N>[^<]+)</strong><(?:/li><li|br)>Velikost: <strong>(?P<S>[^<]+)</strong>'
     OFFLINE_PATTERN = ur'<h1>Stáhnout soubor</h1><p><strong>Požadovaný soubor neexistuje.</strong></p>'
 
 
@@ -46,7 +43,7 @@ class MultishareCz(SimpleHoster):
 
         self.update_info()
 
-        if self.out_of_traffic():
+        if not self.check_traffic():
             self.fail(_("Not enough credit left to download file"))
 
         self.download("http://dl%d.mms.multishare.cz/html/mms_process.php" % round(random.random() * 10000 * random.random()),
@@ -54,3 +51,6 @@ class MultishareCz(SimpleHoster):
                            'u_hash': self.acc_info['u_hash'],
                            'link'  : pyfile.url},
                       disposition=True)
+
+
+getInfo = create_getInfo(MultishareCz)

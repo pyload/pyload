@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.Http import Http
+from module.plugins.hoster.Http import Http, create_getInfo
 
 
 class BasePlugin(Http):
     __name__    = "BasePlugin"
     __type__    = "hoster"
-    __version__ = "0.51"
+    __version__ = "0.49"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -23,3 +23,6 @@ class BasePlugin(Http):
 
         if not self.pyfile.url.startswith("http"):
             self.fail(_("No plugin matched"))
+
+
+getInfo = create_getInfo(BasePlugin)

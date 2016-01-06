@@ -3,21 +3,17 @@
 import re
 import urlparse
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FileboomMe(SimpleHoster):
     __name__    = "FileboomMe"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __pattern__ = r'https?://f(?:ile)?boom\.me/file/(?P<ID>\w+)'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Fileboom.me hoster plugin"""
     __license__     = "GPLv3"
@@ -88,3 +84,6 @@ class FileboomMe(SimpleHoster):
                             m = re.search(self.LINK_PATTERN, self.data)
                             if m is not None:
                                 self.link = urlparse.urljoin(pyfile.url, m.group(0))
+
+
+getInfo = create_getInfo(FileboomMe)

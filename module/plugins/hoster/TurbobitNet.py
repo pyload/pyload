@@ -1,31 +1,28 @@
 # -*- coding: utf-8 -*-
 
 import binascii
+import pycurl
 import random
 import re
 import time
 import urllib
 
-import Crypto.Cipher
-import pycurl
+from Crypto.Cipher import ARC4
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster
-from module.plugins.internal.misc import timestamp
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.utils import timestamp
 
 
 class TurbobitNet(SimpleHoster):
     __name__    = "TurbobitNet"
     __type__    = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.24"
     __status__  = "broken"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Turbobit.net hoster plugin"""
     __license__     = "GPLv3"
@@ -79,8 +76,8 @@ class TurbobitNet(SimpleHoster):
         self.log_debug(inputs)
 
         if inputs['captcha_type'] == "recaptcha":
-            self.captcha = ReCaptcha(self.pyfile)
-            inputs['recaptcha_response_field'], inputs['recaptcha_challenge_field'] = self.captcha.challenge()
+            recaptcha = ReCaptcha(self)
+            inputs['recaptcha_response_field'], inputs['recaptcha_challenge_field'] = recaptcha.challenge()
         else:
             m = re.search(self.CAPTCHA_PATTERN, self.data)
             if m is None:
@@ -99,12 +96,12 @@ class TurbobitNet(SimpleHoster):
 
 
     def get_rt_update(self):
-        rtUpdate = self.db.retrieve("rtUpdate")
+        rtUpdate = self.retrieve("rtUpdate")
         if rtUpdate:
             return rtUpdate
 
-        if self.db.retrieve("version") is not self.__version__ or \
-           int(self.db.retrieve("timestamp", 0)) + 86400000 < timestamp():
+        if self.retrieve("version") is not self.__version__ or \
+           int(self.retrieve("timestamp", 0)) + 86400000 < timestamp():
             #: that's right, we are even using jdownloader updates
             rtUpdate = self.load("http://update0.jdownloader.org/pluginstuff/tbupdate.js")
             rtUpdate = self.decrypt(rtUpdate.splitlines()[1])
@@ -113,9 +110,9 @@ class TurbobitNet(SimpleHoster):
                               r'zza=\2;for(var zzi=0;zzi<zza.length;zzi++){\1=zza[zzi];', rtUpdate)
             rtUpdate = re.sub(r"for\((\w+)=", r"for(var \1=", rtUpdate)
 
-            self.db.store("rtUpdate", rtUpdate)
-            self.db.store("timestamp", timestamp())
-            self.db.store("version", self.__version__)
+            self.store("rtUpdate", rtUpdate)
+            self.store("timestamp", timestamp())
+            self.store("version", self.__version__)
         else:
             self.log_error(_("Unable to download, wait for update..."))
             self.temp_offline()
@@ -152,7 +149,7 @@ class TurbobitNet(SimpleHoster):
         else:
             if self.retries >= 2:
                 #: Retry with updated js
-                self.db.delete("rtUpdate")
+                self.delete("rtUpdate")
             else:
                 self.retry()
 
@@ -160,7 +157,7 @@ class TurbobitNet(SimpleHoster):
 
 
     def decrypt(self, data):
-        cipher = Crypto.Cipher.ARC4.new(binascii.hexlify('E\x15\xa1\x9e\xa3M\xa0\xc6\xa0\x84\xb6H\x83\xa8o\xa0'))
+        cipher = ARC4.new(binascii.hexlify('E\x15\xa1\x9e\xa3M\xa0\xc6\xa0\x84\xb6H\x83\xa8o\xa0'))
         return binascii.unhexlify(cipher.encrypt(binascii.unhexlify(data)))
 
 
@@ -168,3 +165,6 @@ class TurbobitNet(SimpleHoster):
         lt = time.localtime()
         tz = time.altzone if lt.tm_isdst else time.timezone
         return "%s GMT%+03d%02d" % (time.strftime("%a %b %d %Y %H:%M:%S", lt), -tz // 3600, tz % 3600)
+
+
+getInfo = create_getInfo(TurbobitNet)

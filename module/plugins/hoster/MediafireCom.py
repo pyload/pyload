@@ -2,21 +2,18 @@
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.captcha.SolveMedia import SolveMedia
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class MediafireCom(SimpleHoster):
     __name__    = "MediafireCom"
     __type__    = "hoster"
-    __version__ = "0.94"
+    __version__ = "0.92"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)(?P<ID>\w+)'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Mediafire.com hoster plugin"""
     __license__     = "GPLv3"
@@ -41,22 +38,20 @@ class MediafireCom(SimpleHoster):
 
 
     def handle_captcha(self):
-        solvemedia  = SolveMedia(self.pyfile)
+        solvemedia  = SolveMedia(self)
         captcha_key = solvemedia.detect_key()
 
         if captcha_key:
-            self.captcha = solvemedia
             response, challenge = solvemedia.challenge(captcha_key)
             self.data = self.load("http://www.mediafire.com/?" + self.info['pattern']['ID'],
                                   post={'adcopy_challenge': challenge,
                                         'adcopy_response' : response})
             return
 
-        recaptcha   = ReCaptcha(self.pyfile)
+        recaptcha   = ReCaptcha(self)
         captcha_key = recaptcha.detect_key()
 
         if captcha_key:
-            self.captcha = recaptcha
             response, challenge = recaptcha.challenge(captcha_key)
             self.data = self.load(self.pyfile.url,
                                   post={'g-recaptcha-response': response})
@@ -78,3 +73,6 @@ class MediafireCom(SimpleHoster):
                     self.fail(_("Wrong password"))
 
         return super(MediafireCom, self).handle_free(pyfile)
+
+
+getInfo = create_getInfo(MediafireCom)

@@ -7,7 +7,7 @@ import sys
 
 # monkey patch bug in python 2.6 and lower
 # http://bugs.python.org/issue6122 , http://bugs.python.org/issue1236 , http://bugs.python.org/issue1731717
-if sys.version_info < (2, 7) and os.name != "nt":
+if sys.version_info < (2, 7) and os.name is not "nt":
     import errno
     import subprocess
 
@@ -51,7 +51,7 @@ except ImportError:
 
 from module.plugins.internal.Addon import Addon, Expose, threaded
 from module.plugins.internal.Extractor import ArchiveError, CRCError, PasswordError
-from module.plugins.internal.misc import encode, exists, fsjoin, uniqify
+from module.plugins.internal.utils import encode, exists, fs_join, replace_patterns, uniqify
 
 
 class ArchiveQueue(object):
@@ -62,15 +62,15 @@ class ArchiveQueue(object):
 
 
     def get(self):
-        return self.plugin.db.retrieve(self.storage, default=[])
+        return self.plugin.retrieve(self.storage, default=[])
 
 
     def set(self, value):
-        return self.plugin.db.store(self.storage, value)
+        return self.plugin.store(self.storage, value)
 
 
     def delete(self):
-        return self.plugin.db.delete(self.storage)
+        return self.plugin.delete(self.storage)
 
 
     def add(self, item):
@@ -98,8 +98,8 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.56"
-    __status__  = "broken"
+    __version__ = "1.53"
+    __status__  = "testing"
 
     __config__ = [("activated"      , "bool"  , "Activated"                             , True                                                                     ),
                   ("fullpath"       , "bool"  , "Extract with full paths"               , True                                                                     ),
@@ -142,14 +142,14 @@ class ExtractArchive(Addon):
 
 
     def activate(self):
-        for p in ("UnRar", "SevenZip", "UnZip", "UnTar"):
+        for p in ("UnRar", "SevenZip", "UnZip"):
             try:
                 module = self.pyload.pluginManager.loadModule("internal", p)
                 klass  = getattr(module, p)
                 if klass.find():
                     self.extractors.append(klass)
                 if klass.REPAIR:
-                    self.repair = self.config.get('repair')
+                    self.repair = self.get_config('repair')
 
             except OSError, e:
                 if e.errno == 2:
@@ -206,7 +206,7 @@ class ExtractArchive(Addon):
         """
         for id in ids:
             self.queue.add(id)
-        if not self.config.get('waitall') and not self.extracting:
+        if not self.get_config('waitall') and not self.extracting:
             self.extract_queued()
 
 
@@ -216,13 +216,13 @@ class ExtractArchive(Addon):
 
     def package_finished(self, pypack):
         self.queue.add(pypack.id)
-        if not self.config.get('waitall') and not self.extracting:
+        if not self.get_config('waitall') and not self.extracting:
             self.extract_queued()
 
 
     def all_downloads_processed(self):
         self.last_package = True
-        if self.config.get('waitall') and not self.extracting:
+        if self.get_config('waitall') and not self.extracting:
             self.extract_queued()
 
 
@@ -237,16 +237,16 @@ class ExtractArchive(Addon):
 
         toList = lambda string: string.replace(' ', '').replace(',', '|').replace(';', '|').split('|')
 
-        destination = self.config.get('destination')
-        subfolder   = self.config.get('subfolder')
-        fullpath    = self.config.get('fullpath')
-        overwrite   = self.config.get('overwrite')
-        priority    = self.config.get('priority')
-        recursive   = self.config.get('recursive')
-        keepbroken  = self.config.get('keepbroken')
+        destination = self.get_config('destination')
+        subfolder   = self.get_config('subfolder')
+        fullpath    = self.get_config('fullpath')
+        overwrite   = self.get_config('overwrite')
+        priority    = self.get_config('priority')
+        recursive   = self.get_config('recursive')
+        keepbroken  = self.get_config('keepbroken')
 
-        extensions   = [x.lstrip('.').lower() for x in toList(self.config.get('extensions'))]
-        excludefiles = toList(self.config.get('excludefiles'))
+        extensions   = [x.lstrip('.').lower() for x in toList(self.get_config('extensions'))]
+        excludefiles = toList(self.get_config('excludefiles'))
 
         if extensions:
             self.log_debug("Use for extensions: %s" % "|.".join(extensions))
@@ -267,18 +267,18 @@ class ExtractArchive(Addon):
             self.log_info(_("Check package: %s") % pypack.name)
 
             #: Determine output folder
-            out = fsjoin(dl_folder, pypack.folder, destination, "")  #: Force trailing slash
+            out = fs_join(dl_folder, pypack.folder, destination, "")  #: Force trailing slash
 
             if subfolder:
-                out = fsjoin(out, pypack.folder)
+                out = fs_join(out, pypack.folder)
 
             if not exists(out):
                 os.makedirs(out)
 
             matched   = False
             success   = True
-            files_ids = dict((fdata['name'], ((fsjoin(dl_folder, pypack.folder, fdata['name'])), fid, out)) for fid, fdata \
-                        in sorted(pypack.getChildren().values(), key=lambda k: k['name'])).items()  #: Remove duplicates
+            files_ids = dict((pylink['name'], ((fs_join(dl_folder, pypack.folder, pylink['name'])), pylink['id'], out)) for pylink \
+                        in sorted(pypack.getChildren().values(), key=lambda k: k['name'])).values()  #: Remove duplicates
 
             #: Check as long there are unseen files
             while files_ids:
@@ -338,7 +338,7 @@ class ExtractArchive(Addon):
                             self.set_permissions(file)
 
                         for filename in new_files:
-                            file = encode(fsjoin(os.path.dirname(archive.filename), filename))
+                            file = encode(fs_join(os.path.dirname(archive.filename), filename))
                             if not exists(file):
                                 self.log_debug("New file %s does not exists" % filename)
                                 continue
@@ -383,7 +383,7 @@ class ExtractArchive(Addon):
         encrypted = False
         try:
             self.log_debug("Password: %s" % (password or "None provided"))
-            passwords = uniqify([password] + self.get_passwords(False)) if self.config.get('usepasswordfile') else [password]
+            passwords = uniqify([password] + self.get_passwords(False)) if self.get_config('usepasswordfile') else [password]
             for pw in passwords:
                 try:
                     pyfile.setCustomStatus(_("archive testing"))
@@ -410,7 +410,7 @@ class ExtractArchive(Addon):
                         repaired = archive.repair()
                         pyfile.setProgress(100)
 
-                        if not repaired and not self.config.get('keepbroken'):
+                        if not repaired and not self.get_config('keepbroken'):
                             raise CRCError("Archive damaged")
 
                         else:
@@ -427,7 +427,7 @@ class ExtractArchive(Addon):
             pyfile.setCustomStatus(_("archive extracting"))
             pyfile.setProgress(0)
 
-            if not encrypted or not self.config.get('usepasswordfile'):
+            if not encrypted or not self.get_config('usepasswordfile'):
                 self.log_debug("Extracting using password: %s" % (password or "None"))
                 archive.extract(password)
             else:
@@ -450,10 +450,10 @@ class ExtractArchive(Addon):
             delfiles = archive.items()
             self.log_debug("Would delete: " + ", ".join(delfiles))
 
-            if self.config.get('delete'):
+            if self.get_config('delete'):
                 self.log_info(_("Deleting %s files") % len(delfiles))
 
-                deltotrash = self.config.get('deltotrash')
+                deltotrash = self.get_config('deltotrash')
                 for f in delfiles:
                     file = encode(f)
                     if not exists(file):
@@ -523,7 +523,7 @@ class ExtractArchive(Addon):
         try:
             passwords = []
 
-            file = encode(self.config.get('passwordfile'))
+            file = encode(self.get_config('passwordfile'))
             with open(file) as f:
                 for pw in f.read().splitlines():
                     passwords.append(pw)
@@ -552,7 +552,7 @@ class ExtractArchive(Addon):
         try:
             self.passwords = uniqify([password] + self.passwords)
 
-            file = encode(self.config.get('passwordfile'))
+            file = encode(self.get_config('passwordfile'))
             with open(file, "wb") as f:
                 for pw in self.passwords:
                     f.write(pw + '\n')

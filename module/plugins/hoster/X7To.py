@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster
+from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class X7To(DeadHoster):
     __name__    = "X7To"
     __type__    = "hoster"
-    __version__ = "0.45"
+    __version__ = "0.43"
     __status__  = "stable"
 
     __pattern__ = r'http://(?:www\.)?x7\.to/'
@@ -15,3 +15,6 @@ class X7To(DeadHoster):
     __description__ = """X7.to hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("ernieb", "ernieb")]
+
+
+getInfo = create_getInfo(X7To)

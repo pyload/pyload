@@ -1,22 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.MultiHoster import MultiHoster
-from module.plugins.internal.misc import json
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
+from module.plugins.internal.utils import json
 
 
 class RapideoPl(MultiHoster):
     __name__    = "RapideoPl"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True ),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True ),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , False),
-                   ("chk_filesize", "bool", "Check file size"                                  , True ),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10   ),
-                   ("revertfailed", "bool", "Revert to standard download if fails"             , True )]
+    __config__  = [("activated", "bool", "Activated", True),
+                   ("use_premium" , "bool", "Use premium account if available"    , True),
+                   ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Rapideo.pl multi-hoster plugin"""
     __license__     = "GPLv3"
@@ -40,8 +37,8 @@ class RapideoPl(MultiHoster):
                    80: "Too many incorrect login attempts, account blocked for 24h"}
 
 
-    def _prepare(self):
-        super(RapideoPl, self)._prepare()
+    def prepare(self):
+        super(RapideoPl, self).prepare()
 
         data = self.account.get_data()
 
@@ -103,3 +100,6 @@ class RapideoPl(MultiHoster):
 
         except Exception:
             self.temp_offline("Query error #2")
+
+
+getInfo = create_getInfo(RapideoPl)

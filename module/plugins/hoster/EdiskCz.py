@@ -2,21 +2,18 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class EdiskCz(SimpleHoster):
     __name__    = "EdiskCz"
     __type__    = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.25"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?edisk\.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.+'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Edisk.cz hoster plugin"""
     __license__     = "GPLv3"
@@ -57,3 +54,6 @@ class EdiskCz(SimpleHoster):
             self.fail(_("Unexpected server response"))
 
         self.link = url
+
+
+getInfo = create_getInfo(EdiskCz)

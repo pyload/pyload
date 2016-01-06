@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster
+from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class LomafileCom(DeadHoster):
     __name__    = "LomafileCom"
     __type__    = "hoster"
-    __version__ = "0.56"
+    __version__ = "0.54"
     __status__  = "stable"
 
     __pattern__ = r'http://lomafile\.com/\w{12}'
@@ -16,3 +16,6 @@ class LomafileCom(DeadHoster):
     __license__     = "GPLv3"
     __authors__     = [("nath_schwarz", "nathan.notwhite@gmail.com"),
                        ("guidobelix", "guidobelix@hotmail.it")]
+
+
+getInfo = create_getInfo(LomafileCom)

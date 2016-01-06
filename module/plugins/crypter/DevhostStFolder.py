@@ -6,20 +6,20 @@
 import re
 import urlparse
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class DevhostStFolder(SimpleCrypter):
     __name__    = "DevhostStFolder"
     __type__    = "crypter"
-    __version__ = "0.10"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?d-h\.st/users/(?P<USER>\w+)(/\?fld_id=(?P<ID>\d+))?'
-    __config__  = [("activated"         , "bool"          , "Activated"                                        , True     ),
-                   ("use_premium"       , "bool"          , "Use premium account if available"                 , True     ),
-                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"                   , "Default"),
-                   ("max_wait"          , "int"           , "Reconnect if waiting time is greater than minutes", 10       )]
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
+                   ("use_premium"       , "bool", "Use premium account if available"   , True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """D-h.st folder decrypter plugin"""
     __license__     = "GPLv3"
@@ -62,3 +62,6 @@ class DevhostStFolder(SimpleCrypter):
 
         self.log_debug("File name: %s"   % self.pyfile.name,
                       "File folder: %s" % self.pyfile.name)
+
+
+getInfo = create_getInfo(DevhostStFolder)

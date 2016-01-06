@@ -3,21 +3,17 @@
 import re
 import urlparse
 
-from module.plugins.internal.XFSHoster import XFSHoster
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class UpleaCom(XFSHoster):
     __name__    = "UpleaCom"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?uplea\.com/dl/\w{15}'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Uplea.com hoster plugin"""
     __license__     = "GPLv3"
@@ -36,7 +32,7 @@ class UpleaCom(XFSHoster):
     LINK_PATTERN = r'"(https?://\w+\.uplea\.com/anonym/.*?)"'
 
     PREMIUM_ONLY_PATTERN = r'You need to have a Premium subscription to download this file'
-    WAIT_PATTERN         = r'timeText: ?(\d+),'
+    WAIT_PATTERN         = r'timeText: ?([\d.]+),'
     STEP_PATTERN         = r'<a href="(/step/.+)">'
 
 
@@ -54,7 +50,8 @@ class UpleaCom(XFSHoster):
         self.data = self.load(urlparse.urljoin("http://uplea.com/", m.group(1)))
 
         m = re.search(self.WAIT_PATTERN, self.data)
-        if m:
+        if m is not None:
+            self.log_debug("Waiting %s seconds" % m.group(1))
             self.wait(m.group(1), True)
             self.retry()
 
@@ -63,7 +60,7 @@ class UpleaCom(XFSHoster):
             self.error(_("LINK_PATTERN not found"))
 
         self.link = m.group(1)
+        self.wait(15)
 
-        m = re.search(r".ulCounter\({'timer':(\d+)}\)", self.data)
-        if m:
-            self.wait(m.group(1))
+
+getInfo = create_getInfo(UpleaCom)

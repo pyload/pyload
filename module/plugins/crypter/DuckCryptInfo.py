@@ -4,19 +4,19 @@ import re
 
 import BeautifulSoup
 
-from module.plugins.internal.Crypter import Crypter
+from module.plugins.internal.Crypter import Crypter, create_getInfo
 
 
 class DuckCryptInfo(Crypter):
     __name__    = "DuckCryptInfo"
     __type__    = "crypter"
-    __version__ = "0.07"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?duckcrypt\.info/(folder|wait|link)/(\w+)/?(\w*)'
-    __config__  = [("activated"         , "bool"          , "Activated"                       , True     ),
-                   ("use_premium"       , "bool"          , "Use premium account if available", True     ),
-                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"  , "Default")]
+    __config__  = [("activated"         , "bool", "Activated"                          , True),
+                   ("use_subfolder"     , "bool", "Save package to subfolder"          , True),
+                   ("subfolder_per_pack", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """DuckCrypt.info decrypter plugin"""
     __license__     = "GPLv3"
@@ -56,6 +56,9 @@ class DuckCryptInfo(Crypter):
     def handle_link(self, url):
         html = self.load(url)
         soup = BeautifulSoup(html)
-        self.links = [soup.find("iframe")['src']]
-        if not self.links:
+        self.urls = [soup.find("iframe")['src']]
+        if not self.urls:
             self.log_info(_("No link found"))
+
+
+getInfo = create_getInfo(DuckCryptInfo)

@@ -5,7 +5,7 @@ import re
 
 from module.PyFile import PyFile
 from module.plugins.internal.Plugin import Plugin
-from module.plugins.internal.misc import encode
+from module.plugins.internal.utils import encode
 
 
 class ArchiveError(Exception):
@@ -23,7 +23,7 @@ class PasswordError(Exception):
 class Extractor(Plugin):
     __name__    = "Extractor"
     __type__    = "extractor"
-    __version__ = "0.42"
+    __version__ = "0.40"
     __status__  = "stable"
 
     __description__ = """Base extractor plugin"""
@@ -40,7 +40,7 @@ class Extractor(Plugin):
     @classmethod
     def isarchive(cls, filename):
         name = os.path.basename(filename).lower()
-        return any(name.endswith('.' + ext) for ext in cls.EXTENSIONS)
+        return any(name.endswith(ext) for ext in cls.EXTENSIONS)
 
 
     @classmethod
@@ -63,48 +63,44 @@ class Extractor(Plugin):
         :param files_ids: List of filepathes
         :return: List of targets, id tuple list
         """
-        targets   = []
+        targets = []
         processed = []
 
-        for id, fname, fout in files_ids:
-            if not cls.isarchive(fname):
-                continue
-
-            if cls.ismultipart(fname):
-                pname = re.sub(cls._RE_PART, "", fname)
-            else:
-                pname = os.path.splitext(fname)[0]
-
-            if pname in processed:
-                continue
-
-            processed.append(pname)
-            targets.append((id, fname, fout))
+        for fname, id, fout in files_ids:
+            if cls.isarchive(fname):
+                pname = re.sub(cls.re_multipart, "", fname) if cls.ismultipart(fname) else os.path.splitext(fname)[0]
+                if pname not in processed:
+                    processed.append(pname)
+                    targets.append((fname, id, fout))
 
         return targets
 
 
-    def __init__(self, pyfile, filename, out,
+    def __init__(self, plugin, filename, out,
                  fullpath=True,
                  overwrite=False,
                  excludefiles=[],
+                 renice=False,
                  priority=0,
-                 keepbroken=False):
+                 keepbroken=False,
+                 fid=None):
         """
         Initialize extractor for specific file
         """
-        self._init(pyfile.m.core)
+        self._init(plugin.pyload)
 
-        self.pyfile       = pyfile
+        self.plugin       = plugin
         self.filename     = filename
-        self.name         = os.path.basename(filename)
         self.out          = out
         self.fullpath     = fullpath
         self.overwrite    = overwrite
         self.excludefiles = excludefiles
         self.priority     = priority
         self.keepbroken   = keepbroken
-        self.progress     = lambda x: pyfile.setProgress(int(x))
+        self.files        = []  #: Store extracted files here
+
+        pyfile = self.pyload.files.getFile(fid) if fid else None
+        self.notify_progress = lambda x: pyfile.setProgress(x) if pyfile else lambda x: None
 
         self.init()
 
@@ -114,14 +110,9 @@ class Extractor(Plugin):
         return encode(self.filename)
 
 
-    @property
-    def dest(self):
-        return encode(self.out)
-
-
     def _log(self, level, plugintype, pluginname, messages):
         messages = (self.__name__,) + messages
-        return self.pyfile.plugin._log(level, plugintype, self.pyfile.plugin.__name__, messages)
+        return self.plugin._log(level, plugintype, self.plugin.__name__, messages)
 
 
     def verify(self, password=None):
@@ -144,7 +135,7 @@ class Extractor(Plugin):
         raise NotImplementedError
 
 
-    def chunks(self):
+    def items(self):
         """
         Return list of archive parts
         """
@@ -153,6 +144,6 @@ class Extractor(Plugin):
 
     def list(self, password=None):
         """
-        Return list of archive files
+        Populate self.files at some point while extracting
         """
-        raise NotImplementedError
+        return self.files

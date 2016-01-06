@@ -2,21 +2,18 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class IfolderRu(SimpleHoster):
     __name__    = "IfolderRu"
     __type__    = "hoster"
-    __version__ = "0.43"
+    __version__ = "0.41"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www)?(files\.)?(ifolder\.ru|metalarea\.org|rusfolder\.(com|net|ru))/(files/)?(?P<ID>\d+)'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Ifolder.ru hoster plugin"""
     __license__     = "GPLv3"
@@ -25,8 +22,8 @@ class IfolderRu(SimpleHoster):
 
     SIZE_REPLACEMENTS = [(u'Кб', 'KB'), (u'Мб', 'MB'), (u'Гб', 'GB')]
 
-    NAME_PATTERN    = ur'(?:<div><span>)?Название:(?:</span>)? <b>(?P<N>.+?)</b><(?:/div|br)>'
-    SIZE_PATTERN    = ur'(?:<div><span>)?Размер:(?:</span>)? <b>(?P<S>.+?)</b><(?:/div|br)>'
+    NAME_PATTERN    = ur'(?:<div><span>)?Название:(?:</span>)? <b>(?P<N>[^<]+)</b><(?:/div|br)>'
+    SIZE_PATTERN    = ur'(?:<div><span>)?Размер:(?:</span>)? <b>(?P<S>[^<]+)</b><(?:/div|br)>'
     OFFLINE_PATTERN = ur'<p>Файл номер <b>.*?</b> (не найден|удален) !!!</p>'
 
     SESSION_ID_PATTERN = r'<input type="hidden" name="session" value="(.+?)"'
@@ -61,3 +58,7 @@ class IfolderRu(SimpleHoster):
             self.retry_captcha()
 
         self.link = re.search(self.LINK_FREE_PATTERN, self.data).group(1)
+
+
+getInfo = create_getInfo(IfolderRu)
+

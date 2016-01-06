@@ -1,26 +1,23 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
 import re
 import time
 
-import pycurl
-
+from module.plugins.internal.utils import json
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster
-from module.plugins.internal.misc import json
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+
 
 class RapiduNet(SimpleHoster):
     __name__    = "RapiduNet"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.11"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?rapidu\.net/(?P<ID>\d{10})'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__  = [("activated"  , "bool", "Activated"                       , True),
+                   ("use_premium", "bool", "Use premium account if available", True)]
 
     __description__ = """Rapidu.net hoster plugin"""
     __license__     = "GPLv3"
@@ -60,8 +57,8 @@ class RapiduNet(SimpleHoster):
         else:
             self.wait(int(jsvars['timeToDownload']) - int(time.time()))
 
-        self.captcha = ReCaptcha(pyfile)
-        response, challenge = self.captcha.challenge(self.RECAPTCHA_KEY)
+        recaptcha = ReCaptcha(self)
+        response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
 
         jsvars = self.get_json_response("https://rapidu.net/ajax.php",
                                       get={'a': "getCheckCaptcha"},
@@ -82,3 +79,6 @@ class RapiduNet(SimpleHoster):
         self.log_debug(res)
 
         return json.loads(res)
+
+
+getInfo = create_getInfo(RapiduNet)

@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
 
-import threading
-
 from module.plugins.internal.Plugin import Plugin
-from module.plugins.internal.misc import Periodical, isiterable
+
+
+class Expose(object):
+    """
+    Used for decoration to declare rpc services
+    """
+    def __new__(cls, f, *args, **kwargs):
+        hookManager.addRPC(f.__module__, f.func_name, f.func_doc)
+        return f
 
 
 def threaded(fn):
@@ -13,19 +19,10 @@ def threaded(fn):
     return run
 
 
-class Expose(object):
-    """
-    Used for decoration to declare rpc services
-    """
-    def __new__(cls, fn, *args, **kwargs):
-        hookManager.addRPC(fn.__module__, fn.func_name, fn.func_doc)
-        return fn
-
-
 class Addon(Plugin):
     __name__    = "Addon"
     __type__    = "hook"  #@TODO: Change to `addon` in 0.4.10
-    __version__ = "0.51"
+    __version__ = "0.14"
     __status__  = "stable"
 
     __threaded__ = []  #@TODO: Remove in 0.4.10
@@ -35,24 +32,29 @@ class Addon(Plugin):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
+    PERIODICAL_INTERVAL = None
+
+
     def __init__(self, core, manager):
         self._init(core)
 
         #: `HookManager`
         self.manager = manager
-        self.lock    = threading.Lock()
 
         #: Automatically register event listeners for functions, attribute will be deleted dont use it yourself
         self.event_map = {}
 
+        #: Deprecated alternative to event_map
+        #: List of events the plugin can handle, name the functions exactly like eventname.
+        self.event_list = []  #@NOTE: dont make duplicate entries in event_map
+
         self.info['ip'] = None  #@TODO: Remove in 0.4.10
 
         #: Callback of periodical job task, used by HookManager
-        self.periodical = Periodical(self, self.periodical_task)
-        self.cb = self.periodical.cb  #@TODO: Recheck in 0.4.10
+        self.cb       = None
+        self.interval = None
 
         self.init()
-        self._init_events()  #@TODO: Remove in 0.4.10
         self.init_events()
 
 
@@ -61,34 +63,19 @@ class Addon(Plugin):
         """
         Checks if addon is activated
         """
-        return self.config.get('activated')
+        return self.get_config("activated")
 
 
     #@TODO: Remove in 0.4.10
     def _log(self, level, plugintype, pluginname, messages):
-        plugintype = "addon" if plugintype == "hook" else plugintype
+        plugintype = "addon" if plugintype is "hook" else plugintype
         return super(Addon, self)._log(level, plugintype, pluginname, messages)
-
-
-    #@TODO: Remove in 0.4.10
-    def _init_events(self):
-        event_map = {'allDownloadsFinished' : "all_downloads_finished" ,
-                     'allDownloadsProcessed': "all_downloads_processed",
-                     'configChanged'        : "config_changed"         ,
-                     'download_processed'   : "download_processed"     ,
-                     'download_start'       : "download_start"         ,
-                     'linksAdded'           : "links_added"            ,
-                     'packageDeleted'       : "package_deleted"        ,
-                     'package_failed'       : "package_failed"         ,
-                     'package_processed'    : "package_processed"      }
-        for event, funcs in event_map.items():
-            self.manager.addEvent(event, getattr(self, funcs))
 
 
     def init_events(self):
         if self.event_map:
             for event, funcs in self.event_map.items():
-                if isiterable(funcs):
+                if type(funcs) in (list, tuple):
                     for f in funcs:
                         self.manager.addEvent(event, getattr(self, f))
                 else:
@@ -97,13 +84,63 @@ class Addon(Plugin):
             #: Delete for various reasons
             self.event_map = None
 
+        if self.event_list:
+            self.log_debug("Deprecated method `event_list`, use `event_map` instead")
 
-    def periodical_task(self):
+            for f in self.event_list:
+                self.manager.addEvent(f, getattr(self, f))
+
+            self.event_list = None
+
+
+    def set_interval(self, value):
+        newinterval = max(0, self.PERIODICAL_INTERVAL, value)
+
+        if newinterval != value:
+            return False
+
+        if newinterval != self.interval:
+            self.interval = newinterval
+
+        return True
+
+
+    def start_periodical(self, interval=None, threaded=False, delay=None):
+        if interval is not None and self.set_interval(interval) is False:
+            return False
+        else:
+            self.cb = self.pyload.scheduler.addJob(max(1, delay), self._periodical, [threaded], threaded=threaded)
+            return True
+
+
+    def restart_periodical(self, *args, **kwargs):
+        self.stop_periodical()
+        return self.start_periodical(*args, **kwargs)
+
+
+    def stop_periodical(self):
+        try:
+            return self.pyload.scheduler.removeJob(self.cb)
+        finally:
+            self.cb = None
+
+
+    def _periodical(self, threaded):
+        try:
+            self.periodical()
+
+        except Exception, e:
+            self.log_error(_("Error performing periodical task"), e)
+
+        self.restart_periodical(threaded=threaded, delay=self.interval)
+
+
+    def periodical(self):
         raise NotImplementedError
 
 
     #: Deprecated method, use `activated` property instead (Remove in 0.4.10)
-    def isActivated(self):
+    def isActivated(self, *args, **kwargs):
         return self.activated
 
 
@@ -115,9 +152,9 @@ class Addon(Plugin):
 
 
     #: Deprecated method, use `deactivate` instead (Remove in 0.4.10)
-    def unload(self):
-        self.db.store("info", self.info)
-        return self.deactivate()
+    def unload(self, *args, **kwargs):
+        self.store("info", self.info)
+        return self.deactivate(*args, **kwargs)
 
 
     def activate(self):
@@ -128,9 +165,13 @@ class Addon(Plugin):
 
 
     #: Deprecated method, use `activate` instead (Remove in 0.4.10)
-    def coreReady(self):
-        self.db.retrieve("info", self.info)
-        return self.activate()
+    def coreReady(self, *args, **kwargs):
+        self.retrieve("info", self.info)
+
+        if self.PERIODICAL_INTERVAL:
+            self.start_periodical(self.PERIODICAL_INTERVAL, delay=5)
+
+        return self.activate(*args, **kwargs)
 
 
     def exit(self):
@@ -141,25 +182,9 @@ class Addon(Plugin):
 
 
     #: Deprecated method, use `exit` instead (Remove in 0.4.10)
-    def coreExiting(self):
-        self.unload()  #@TODO: Fix in 0.4.10
-        return self.exit()
-
-
-    def config_changed(self, category, option, value, section):
-        pass
-
-
-    def all_downloads_finished(self):
-        pass
-
-
-    def all_downloads_processed(self):
-        pass
-
-
-    def links_added(self, urls, pypack):
-        pass
+    def coreExiting(self, *args, **kwargs):
+        self.unload(*args, **kwargs)  #@TODO: Fix in 0.4.10
+        return self.exit(*args, **kwargs)
 
 
     def download_preparing(self, pyfile):
@@ -172,21 +197,13 @@ class Addon(Plugin):
             return self.download_preparing(pyfile)
 
 
-    def download_start(self, pyfile, url, filename):
-        pass
-
-
-    def download_processed(self, pyfile):
-        pass
-
-
     def download_finished(self, pyfile):
         pass
 
 
     #: Deprecated method, use `download_finished` instead (Remove in 0.4.10)
-    def downloadFinished(self, pyfile):
-        return self.download_finished(pyfile)
+    def downloadFinished(self, *args, **kwargs):
+        return self.download_finished(*args, **kwargs)
 
 
     def download_failed(self, pyfile):
@@ -194,21 +211,8 @@ class Addon(Plugin):
 
 
     #: Deprecated method, use `download_failed` instead (Remove in 0.4.10)
-    def downloadFailed(self, pyfile):
-        if pyfile.hasStatus("failed"):  #@NOTE: Check if "still" set as failed (Fix in 0.4.10)
-            return self.download_failed(pyfile)
-
-
-    def package_processed(self, pypack):
-        pass
-
-
-    def package_deleted(self, pid):
-        pass
-
-
-    def package_failed(self, pypack):
-        pass
+    def downloadFailed(self, *args, **kwargs):
+        return self.download_failed(*args, **kwargs)
 
 
     def package_finished(self, pypack):
@@ -216,8 +220,8 @@ class Addon(Plugin):
 
 
     #: Deprecated method, use `package_finished` instead (Remove in 0.4.10)
-    def packageFinished(self, pypack):
-        return self.package_finished(pypack)
+    def packageFinished(self, *args, **kwargs):
+        return self.package_finished(*args, **kwargs)
 
 
     def before_reconnect(self, ip):
@@ -225,8 +229,8 @@ class Addon(Plugin):
 
 
     #: Deprecated method, use `before_reconnect` instead (Remove in 0.4.10)
-    def beforeReconnecting(self, ip):
-        return self.before_reconnect(ip)
+    def beforeReconnecting(self, *args, **kwargs):
+        return self.before_reconnect(*args, **kwargs)
 
 
     def after_reconnect(self, ip, oldip):
@@ -247,8 +251,8 @@ class Addon(Plugin):
 
 
     #: Deprecated method, use `captcha_task` instead (Remove in 0.4.10)
-    def newCaptchaTask(self, task):
-        return self.captcha_task(task)
+    def newCaptchaTask(self, *args, **kwargs):
+        return self.captcha_task(*args, **kwargs)
 
 
     def captcha_correct(self, task):
@@ -256,8 +260,8 @@ class Addon(Plugin):
 
 
     #: Deprecated method, use `captcha_correct` instead (Remove in 0.4.10)
-    def captchaCorrect(self, task):
-        return self.captcha_correct(task)
+    def captchaCorrect(self, *args, **kwargs):
+        return self.captcha_correct(*args, **kwargs)
 
 
     def captcha_invalid(self, task):
@@ -265,5 +269,5 @@ class Addon(Plugin):
 
 
     #: Deprecated method, use `captcha_invalid` instead (Remove in 0.4.10)
-    def captchaInvalid(self, task):
-        return self.captcha_invalid(task)
+    def captchaInvalid(self, *args, **kwargs):
+        return self.captcha_invalid(*args, **kwargs)
