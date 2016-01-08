@@ -17,7 +17,7 @@ from module.plugins.internal.misc import forward, lock
 class ClickNLoad(Addon):
     __name__    = "ClickNLoad"
     __type__    = "hook"
-    __version__ = "0.54"
+    __version__ = "0.55"
     __status__  = "testing"
 
     __config__ = [("activated", "bool"           , "Activated"                      , True       ),
@@ -39,8 +39,9 @@ class ClickNLoad(Addon):
             else self.pyload.config.get('webinterface', 'host')
         self.web_port  = self.pyload.config.get('webinterface', 'port')
 
-        self.do_exit = False
-        self.exit_done = threading.Event()
+        self.server_running = False
+        self.do_exit        = False
+        self.exit_done      = threading.Event()
 
 
     def activate(self):
@@ -52,22 +53,23 @@ class ClickNLoad(Addon):
 
 
     def exit(self):
-        self.log_info(_("Shutting down proxy..."))
-
-        self.do_exit = True
-
-        try:
-            wakeup_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            wakeup_socket.connect(("127.0.0.1" if any(_ip == self.cnl_ip for _ip in ("0.0.0.0", "")) else self.cnl_ip, self.cnl_port))
-            wakeup_socket.close()
-        except Exception:
-            pass
-
-        success_exit = self.exit_done.wait(10)
-        if success_exit:
-            self.log_debug(_("Server exited successfully"))
-        else:
-            self.log_warning(_("Server was not exited gracefully, shutdown forced"))
+        if self.server_running:
+            self.log_info(_("Shutting down proxy..."))
+    
+            self.do_exit = True
+    
+            try:
+                wakeup_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                wakeup_socket.connect(("127.0.0.1" if any(_ip == self.cnl_ip for _ip in ("0.0.0.0", "")) else self.cnl_ip, self.cnl_port))
+                wakeup_socket.close()
+            except Exception:
+                pass
+    
+            success_exit = self.exit_done.wait(10)
+            if success_exit:
+                self.log_debug(_("Server exited successfully"))
+            else:
+                self.log_warning(_("Server was not exited gracefully, shutdown forced"))
 
 
     @lock
@@ -94,6 +96,7 @@ class ClickNLoad(Addon):
     def _server(self):
         try:
             self.exit_done.clear()
+            self.server_running = True
 
             dock_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             dock_socket.bind((self.cnl_ip, self.cnl_port))
