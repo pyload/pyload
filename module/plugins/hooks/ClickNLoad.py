@@ -17,7 +17,7 @@ from module.plugins.internal.misc import forward, lock
 class ClickNLoad(Addon):
     __name__    = "ClickNLoad"
     __type__    = "hook"
-    __version__ = "0.56"
+    __version__ = "0.57"
     __status__  = "testing"
 
     __config__ = [("activated", "bool"           , "Activated"                      , True       ),
@@ -53,11 +53,23 @@ class ClickNLoad(Addon):
 
 
     def deactivate(self):
-        self._shutdown()
+        if self.server_running:
+            self.log_info(_("Shutting down proxy..."))
 
+            self.do_exit = True
 
-    def exit(self):
-        self._shutdown()
+            try:
+                wakeup_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                wakeup_socket.connect(("127.0.0.1" if any(_ip == self.cnl_ip for _ip in ("0.0.0.0", "")) else self.cnl_ip, self.cnl_port))
+                wakeup_socket.close()
+            except Exception:
+                pass
+
+            success_exit = self.exit_done.wait(10)
+            if success_exit:
+                self.log_debug(_("Server exited successfully"))
+            else:
+                self.log_warning(_("Server was not exited gracefully, shutdown forced"))
 
 
     @lock
@@ -87,6 +99,7 @@ class ClickNLoad(Addon):
             self.server_running = True
 
             dock_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            dock_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             dock_socket.bind((self.cnl_ip, self.cnl_port))
             dock_socket.listen(5)
 
@@ -132,23 +145,3 @@ class ClickNLoad(Addon):
             self.log_error(e)
             time.sleep(240)
             return self._server()
-
-
-    def _shutdown(self):
-        if self.server_running:
-            self.log_info(_("Shutting down proxy..."))
-
-            self.do_exit = True
-
-            try:
-                wakeup_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                wakeup_socket.connect(("127.0.0.1" if any(_ip == self.cnl_ip for _ip in ("0.0.0.0", "")) else self.cnl_ip, self.cnl_port))
-                wakeup_socket.close()
-            except Exception:
-                pass
-
-            success_exit = self.exit_done.wait(10)
-            if success_exit:
-                self.log_debug(_("Server exited successfully"))
-            else:
-                self.log_warning(_("Server was not exited gracefully, shutdown forced"))
