@@ -14,7 +14,7 @@ from module.plugins.internal.misc import encode
 class RSDF(Container):
     __name__    = "RSDF"
     __type__    = "container"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__  = "testing"
 
     __pattern__ = r'.+\.rsdf$'
@@ -46,7 +46,7 @@ class RSDF(Container):
                 data = rsdf.read()
 
         except IOError, e:
-            self.fail(e)
+            self.fail(e.message)
 
         if re.search(r'<title>404 - Not Found</title>', data):
             pyfile.setStatus("offline")

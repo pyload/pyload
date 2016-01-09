@@ -46,7 +46,7 @@ from module.plugins.internal.misc import decode, encode, json
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__  = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,]+)'
@@ -128,7 +128,7 @@ class MegaCoNz(Hoster):
             df = open(file_decrypted, "wb")
 
         except IOError, e:
-            self.fail(e)
+            self.fail(e.message)
 
         chunk_size = 2 ** 15  #: Buffer size, 32k
         # file_mac   = [0, 0, 0, 0]  # calculate CBC-MAC for checksum
