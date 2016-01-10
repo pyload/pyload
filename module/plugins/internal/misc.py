@@ -38,7 +38,7 @@ except ImportError:
 class misc(object):
     __name__    = "misc"
     __type__    = "plugin"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -406,7 +406,7 @@ def exists(path):
         return False
 
 
-def remove(self, path, trash=True):
+def remove(path, trash=True):
     path = encode(path)
 
     if not exists(path):
