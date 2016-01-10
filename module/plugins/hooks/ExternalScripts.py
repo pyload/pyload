@@ -10,7 +10,7 @@ from module.plugins.internal.misc import encode
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.68"
+    __version__ = "0.69"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                  , True ),
@@ -31,7 +31,7 @@ class ExternalScripts(Addon):
                        "download_finished", "download_processed",  #@TODO: Invert 'download_processed', 'download_finished' order in 0.4.10
                        "archive_extract_failed", "archive_extracted",
                        "package_finished", "package_processed",  #@TODO: Invert 'package_finished', 'package_processed' order in 0.4.10
-                       "package_deleted", "package_extract_failed", "package_extracted",
+                       "package_deleted", "package_failed", "package_extract_failed", "package_extracted",
                        "all_downloads_processed", "all_downloads_finished",  #@TODO: Invert `all_downloads_processed`, `all_downloads_finished` order in 0.4.10
                        "all_archives_extracted", "all_archives_processed"]
 
@@ -229,6 +229,17 @@ class ExternalScripts(Addon):
 
         args = [pdata.pid, pdata.name, dl_folder, pdata.password]
         self.call_script("package_deleted", *args)
+
+
+    def package_failed(self, pid):
+        dl_folder = self.pyload.config.get("general", "download_folder")
+        pdata = self.pyload.api.getPackageInfo(pid)
+
+        if self.pyload.config.get("general", "folder_per_package"):
+            dl_folder = os.path.join(dl_folder, pdata.folder)
+
+        args = [pdata.pid, pdata.name, dl_folder, pdata.password]
+        self.call_script("package_failed", *args)
 
 
     def package_extract_failed(self, pypack):
