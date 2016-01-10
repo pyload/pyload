@@ -15,7 +15,7 @@ from module.plugins.internal.OCR import OCR
 class LinksaveIn(OCR):
     __name__    = "LinksaveIn"
     __type__    = "ocr"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __description__ = """Linksave.in ocr plugin"""
@@ -83,7 +83,7 @@ class LinksaveIn(OCR):
                     except Exception:
                         cstat[rgb_c] = 1
 
-                    if rgb_bg is rgb_c:
+                    if rgb_bg == rgb_c:
                         stat[bgpath] += 1
         max_p = 0
         bg = ""
@@ -113,7 +113,7 @@ class LinksaveIn(OCR):
             for y in xrange(bg.size[1]):
                 rgb_bg = bglut[bgpix[x, y]]
                 rgb_c = lut[pix[x, y]]
-                if rgb_c is rgb_bg:
+                if rgb_c == rgb_bg:
                     orgpix[x, y] = (255, 255, 255)
 
 

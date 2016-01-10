@@ -7,7 +7,7 @@ from module.plugins.internal.Addon import Addon
 class UnSkipOnFail(Addon):
     __name__    = "UnSkipOnFail"
     __type__    = "hook"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated", True)]
@@ -55,7 +55,7 @@ class UnSkipOnFail(Addon):
         """
         for pinfo in self.pyload.api.getQueue():
             #: Check if package-folder equals pyfile's package folder
-            if pinfo.folder is not pyfile.package().folder:
+            if pinfo.folder != pyfile.package().folder:
                 continue
 
             #: Now get packaged data w/ files/links
@@ -67,7 +67,7 @@ class UnSkipOnFail(Addon):
 
                 #: Check if link name collides with pdata's name
                 #: and at last check if it is not pyfile itself
-                if link.name is pyfile.name and link.fid is not pyfile.id:
+                if link.name == pyfile.name and link.fid != pyfile.id:
                     return link
 
 

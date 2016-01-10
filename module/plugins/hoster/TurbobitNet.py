@@ -17,7 +17,7 @@ from module.plugins.internal.misc import timestamp
 class TurbobitNet(SimpleHoster):
     __name__    = "TurbobitNet"
     __type__    = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__  = "broken"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'
@@ -103,7 +103,7 @@ class TurbobitNet(SimpleHoster):
         if rtUpdate:
             return rtUpdate
 
-        if self.db.retrieve("version") is not self.__version__ or \
+        if self.db.retrieve("version") != self.__version__ or \
            int(self.db.retrieve("timestamp", 0)) + 86400000 < timestamp():
             #: that's right, we are even using jdownloader updates
             rtUpdate = self.load("http://update0.jdownloader.org/pluginstuff/tbupdate.js")

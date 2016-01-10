@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class HellshareCz(Account):
     __name__    = "HellshareCz"
     __type__    = "account"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__  = "testing"
 
     __description__ = """Hellshare.cz account plugin"""
@@ -36,7 +36,7 @@ class HellshareCz(Account):
                     #: Time-based account
                     vt = [int(x) for x in credit.split('.')[:2]]
                     lt = time.localtime()
-                    year = lt.tm_year + int(vt[1] < lt.tm_mon or (vt[1] is lt.tm_mon and vt[0] < lt.tm_mday))
+                    year = lt.tm_year + int(vt[1] < lt.tm_mon or (vt[1] == lt.tm_mon and vt[0] < lt.tm_mday))
                     validuntil = time.mktime(time.strptime("%s%d 23:59:59" % (credit, year), "%d.%m.%Y %H:%M:%S"))
                     trafficleft = -1
                 else:

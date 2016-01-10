@@ -39,7 +39,7 @@ class CaptchaBrotherhoodException(Exception):
 class CaptchaBrotherhood(Addon):
     __name__    = "CaptchaBrotherhood"
     __type__    = "hook"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __config__ = [("activated"   , "bool"    , "Activated"                       , False),
@@ -155,7 +155,7 @@ class CaptchaBrotherhood(Addon):
 
 
     def captcha_invalid(self, task):
-        if task.data['service'] is self.classname and "ticket" in task.data:
+        if task.data['service'] == self.classname and "ticket" in task.data:
             self.api_response("complainCaptcha", task.data['ticket'])
 
 

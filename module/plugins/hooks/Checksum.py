@@ -38,7 +38,7 @@ def compute_checksum(local_file, algorithm):
 class Checksum(Addon):
     __name__    = "Checksum"
     __type__    = "hook"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__  = "broken"
 
     __config__ = [("activated"     , "bool"              , "Activated"                                            , False  ),
@@ -190,7 +190,7 @@ class Checksum(Addon):
                 algorithm = self.methods.get(file_type, file_type)
                 checksum = compute_checksum(local_file, algorithm)
 
-                if checksum is data['HASH']:
+                if checksum == data['HASH']:
                     self.log_info(_('File integrity of "%s" verified by %s checksum (%s)') %
                                 (data['NAME'], algorithm, checksum))
                 else:

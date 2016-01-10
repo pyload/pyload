@@ -34,7 +34,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.53"
+    __version__ = "0.54"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -140,7 +140,7 @@ class Hoster(Base):
 
         try:
             unfinished = any(fdata.get('status') == 3 for fid, fdata in pypack.getChildren().items()
-                             if fid is not self.pyfile.id)
+                             if fid != self.pyfile.id)
             if unfinished:
                 return
 

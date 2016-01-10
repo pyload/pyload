@@ -38,7 +38,7 @@ except ImportError:
 class misc(object):
     __name__    = "misc"
     __type__    = "plugin"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -751,7 +751,7 @@ def parse_html_form(attr_str, html, input_names={}):
             #: Check input attributes
             for key, value in input_names.items():
                 if key in inputs:
-                    if isinstance(value, basestring) and inputs[key] is value:
+                    if isinstance(value, basestring) and inputs[key] == value:
                         continue
                     elif isinstance(value, tuple) and inputs[key] in value:
                         continue

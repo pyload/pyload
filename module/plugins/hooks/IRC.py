@@ -19,7 +19,7 @@ from module.internal.misc import formatSize
 class IRC(Thread, Notifier):
     __name__    = "IRC"
     __type__    = "hook"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                                    , False                    ),
@@ -155,7 +155,7 @@ class IRC(Thread, Notifier):
         if not msg['origin'].split("!", 1)[0] in self.config.get('owner').split():
             return
 
-        if msg['target'].split("!", 1)[0] is not self.config.get('nick'):
+        if msg['target'].split("!", 1)[0] != self.config.get('nick'):
             return
 
         if msg['action'] != "PRIVMSG":

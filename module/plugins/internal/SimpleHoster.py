@@ -16,7 +16,7 @@ from module.plugins.internal.misc import (encode, parse_name, parse_size,
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "2.18"
+    __version__ = "2.19"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -221,7 +221,7 @@ class SimpleHoster(Hoster):
 
         if self.LEECH_HOSTER:
             pattern = self.pyload.pluginManager.hosterPlugins.get(self.classname)['pattern']
-            if self.__pattern__ is not pattern and re.match(self.__pattern__, self.pyfile.url) is None:
+            if self.__pattern__ != pattern and re.match(self.__pattern__, self.pyfile.url) is None:
                 self.leech_dl = True
 
         if self.leech_dl:

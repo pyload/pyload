@@ -51,7 +51,7 @@ class DeathByCaptchaException(Exception):
 class DeathByCaptcha(Addon):
     __name__    = "DeathByCaptcha"
     __type__    = "hook"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __config__ = [("activated"   , "bool"    , "Activated"                       , False),
@@ -197,7 +197,7 @@ class DeathByCaptcha(Addon):
 
 
     def captcha_invalid(self, task):
-        if task.data['service'] is self.classname and "ticket" in task.data:
+        if task.data['service'] == self.classname and "ticket" in task.data:
             try:
                 res = self.api_response("captcha/%d/report" % task.data['ticket'], True)
 
