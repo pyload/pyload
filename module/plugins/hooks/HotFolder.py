@@ -3,16 +3,17 @@
 from __future__ import with_statement
 
 import os
+import shutil
 import time
 
 from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import encode, fsjoin, move_tree
+from module.plugins.internal.misc import encode, fsjoin
 
 
 class HotFolder(Addon):
     __name__    = "HotFolder"
     __type__    = "hook"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"              , False      ),
@@ -61,7 +62,7 @@ class HotFolder(Addon):
                     continue
 
                 newpath = os.path.join(folder, "finished", "tmp_" + f if self.config.get('delete') else f)
-                move_tree(path, newpath)
+                shutil.move(path, newpath)
 
                 self.log_info(_("Added %s from HotFolder") % f)
                 self.pyload.api.addPackage(f, [newpath], 1)
