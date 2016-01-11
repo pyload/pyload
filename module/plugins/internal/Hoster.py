@@ -34,7 +34,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.54"
+    __version__ = "0.55"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -279,7 +279,7 @@ class Hoster(Base):
 
         self.pyfile.setStatus("downloading")
 
-        dl_folder   = os.path.abspath(self.pyload.config.get('general', 'download_folder'))
+        dl_folder   = self.pyload.config.get('general', 'download_folder')
         dl_dirname  = safejoin(dl_folder, self.pyfile.package().folder)
         dl_filename = safejoin(dl_dirname, dl_basename)
 
