@@ -104,7 +104,6 @@ class Extractor(Plugin):
         self.excludefiles = excludefiles
         self.priority     = priority
         self.keepbroken   = keepbroken
-        self.progress     = lambda x: pyfile.setProgress(int(x))
 
         self.init()
 

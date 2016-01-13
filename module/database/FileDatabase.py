@@ -21,11 +21,12 @@
 from threading import RLock
 from time import time
 
-from module.utils import formatSize, lock
 from module.PullEvents import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
-from module.PyPackage import PyPackage
 from module.PyFile import PyFile
+from module.PyPackage import PyPackage
 from module.database import style, DatabaseBackend
+from module.utils import formatSize, lock
+
 
 try:
     from pysqlite2 import dbapi2 as sqlite3
@@ -831,7 +832,9 @@ class FileMethods():
         self.c.execute("SELECT url, name, size, status, error, plugin, package, linkorder FROM links WHERE id=?", (str(id), ))
         r = self.c.fetchone()
         if not r: return None
-        return PyFile(self.manager, id, * r)
+        pyfile = PyFile(self.manager, id, * r)
+        pyfile.initPlugin()
+        return pyfile
 
 
     @style.queue

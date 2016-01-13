@@ -123,7 +123,7 @@ class UnRar(Extractor):
                 break
             #: Reading a percentage sign -> set progress and restart
             if c == "%":
-                self.notifyprogress(int(s))
+                self.pyfile.setProgress(int(s))
                 s = ""
             #: Not reading a digit -> therefore restart
             elif c not in string.digits:

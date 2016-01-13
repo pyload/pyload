@@ -191,12 +191,12 @@ class ExternalScripts(Addon):
 
 
     def archive_extract_failed(self, pyfile, archive):
-        args = [pyfile.id, pyfile.name, archive.filename, archive.out, archive.files]
+        args = [pyfile.id, pyfile.name, archive.filename, archive.out, archive.list()]
         self.call_script("archive_extract_failed", *args)
 
 
     def archive_extracted(self, pyfile, archive):
-        args = [pyfile.id, pyfile.name, archive.filename, archive.out, archive.files]
+        args = [pyfile.id, pyfile.name, archive.filename, archive.out, archive.list()]
         self.call_script("archive_extracted", *args)
 
 
