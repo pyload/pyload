@@ -12,7 +12,7 @@ import Crypto.Util
 
 from module.plugins.internal.Hoster import Hoster
 from module.plugins.internal.misc import decode, encode, json
-
+from base64 import standard_b64decode
 
 ############################ General errors ###################################
 # EINTERNAL            (-1): An internal error has occurred. Please submit a bug report, detailing the exact circumstances in which this error occurred
