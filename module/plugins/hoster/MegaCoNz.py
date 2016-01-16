@@ -12,7 +12,7 @@ import Crypto.Util
 
 from module.plugins.internal.Hoster import Hoster
 from module.plugins.internal.misc import decode, encode, json
-from base64 import standard_b64decode
+
 
 ############################ General errors ###################################
 # EINTERNAL            (-1): An internal error has occurred. Please submit a bug report, detailing the exact circumstances in which this error occurred
@@ -46,7 +46,7 @@ from base64 import standard_b64decode
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__  = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,]+)'
@@ -64,7 +64,7 @@ class MegaCoNz(Hoster):
 
     def b64_decode(self, data):
         data = data.replace("-", "+").replace("_", "/")
-        return standard_b64decode(data + '=' * (-len(data) % 4))
+        return base64.standard_b64decode(data + '=' * (-len(data) % 4))
 
 
     def get_cipher_key(self, key):
