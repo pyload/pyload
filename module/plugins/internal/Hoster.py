@@ -34,7 +34,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.55"
+    __version__ = "0.56"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -233,7 +233,7 @@ class Hoster(Base):
                                             self.pyfile.setProgress, disposition)
         except BadHeader, e:
             self.req.http.code = e.code
-            raise BadHeader(e)
+            raise
 
         else:
             if self.req.code in (404, 410):
