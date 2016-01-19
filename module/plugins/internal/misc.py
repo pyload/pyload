@@ -38,7 +38,7 @@ except ImportError:
 class misc(object):
     __name__    = "misc"
     __type__    = "plugin"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -220,10 +220,10 @@ class SimpleQueue(object):
 
 
 def lock(fn):
-    def new(*args):
+    def new(*args, **kwargs):
         args[0].lock.acquire()
         try:
-            return fn(*args)
+            return fn(*args, **kwargs)
 
         finally:
             args[0].lock.release()
