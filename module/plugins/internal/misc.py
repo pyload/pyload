@@ -38,7 +38,7 @@ except ImportError:
 class misc(object):
     __name__    = "misc"
     __type__    = "plugin"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -711,7 +711,8 @@ def parse_html_header(header):
     hdict  = {}
     regexp = r'[ ]*(?P<key>.+?)[ ]*:[ ]*(?P<value>.+?)[ ]*\r?\n'
 
-    for key, value in re.findall(regexp, header.lower()):
+    for key, value in re.findall(regexp, header):
+        key = key.lower()
         if key in hdict:
             header_key = hdict.get(key)
             if type(header_key) is list:
