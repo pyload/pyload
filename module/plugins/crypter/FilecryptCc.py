@@ -25,8 +25,8 @@ class FilecryptCc(Crypter):
 
     __description__ = """Filecrypt.cc decrypter plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"),
-                       ("GammaC0de"     , None                  )]
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"      ),
+                       ("GammaC0de"     , "nitzo2001[AT]yahoo[DOT]com")]
 
 
     # URL_REPLACEMENTS  = [(r'.html$', ""), (r'$', ".html")]  #@TODO: Extend SimpleCrypter
