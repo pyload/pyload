@@ -9,19 +9,19 @@ from module.plugins.internal.Crypter import Crypter
 
 
 class ShareLinksBiz(Crypter):
-    __name__    = "ShareLinksBiz"
-    __type__    = "crypter"
+    __name__ = "ShareLinksBiz"
+    __type__ = "crypter"
     __version__ = "1.22"
-    __status__  = "testing"
+    __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
-    __config__  = [("activated"         , "bool"          , "Activated"                       , True     ),
-                   ("use_premium"       , "bool"          , "Use premium account if available", True     ),
+    __config__ = [("activated"         , "bool"          , "Activated"                       , True),
+                   ("use_premium"       , "bool"          , "Use premium account if available", True),
                    ("folder_per_package", "Default;Yes;No", "Create folder for each package"  , "Default")]
 
     __description__ = """Share-Links.biz decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
+    __license__ = "GPLv3"
+    __authors__ = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
                        ("Arno-Nymous", None)]
 
 
@@ -53,9 +53,15 @@ class ShareLinksBiz(Crypter):
 
         #: Extract package links
         pack_links = []
-        pack_links.extend(self.handle_web_links())
-        pack_links.extend(self.handle_containers())
-        pack_links.extend(self.handle_CNL2())
+        for source in ['cnl', 'web', 'dlc']:
+            if source == 'cnl':
+                pack_links.extend(self.handle_CNL2())
+            if source == 'web':
+                pack_links.extend(self.handle_web_links())
+            if source == 'dlc':
+                pack_links.extend(self.handle_containers())
+            if pack_links:
+                break
         pack_links = set(pack_links)
 
         #: Get package info
@@ -137,7 +143,7 @@ class ShareLinksBiz(Crypter):
         captchaUrl = self.base_url + '/captcha.gif?d=%s&PHPSESSID=%s' % (m.group(1), m.group(2))
         self.log_debug("Waiting user for correct position")
         coords = self.captcha.decrypt(captchaUrl, input_type="gif", output_type='positional')
-        self.log_debug("Captcha resolved! Coords: {}, {}".format(*coords))
+        self.log_debug("Captcha resolved! Coords: {}".format(coords))
 
         #: Resolve captcha
         href = self._resolve_coords(coords, captchaMap)
@@ -263,14 +269,14 @@ class ShareLinksBiz(Crypter):
 
     def _get_cipher_params(self):
         #: Request CNL2
-        code   = re.search(r'ClicknLoad.swf\?code=(.*?)"', self.data).group(1)
-        url    = "%s/get/cnl2/%s" % (self.base_url, code)
-        res    = self.load(url)
+        code = re.search(r'ClicknLoad.swf\?code=(.*?)"', self.data).group(1)
+        url = "%s/get/cnl2/%s" % (self.base_url, code)
+        res = self.load(url)
         params = res.split(";;")
 
         #: Get jk
         strlist = list(params[1].decode('base64'))
-        jk      = "".join(strlist[::-1])
+        jk = "".join(strlist[::-1])
 
         #: Get crypted
         strlist = list(params[2].decode('base64'))

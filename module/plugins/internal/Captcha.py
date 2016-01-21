@@ -10,21 +10,21 @@ from module.plugins.internal.misc import encode
 
 
 class Captcha(Plugin):
-    __name__    = "Captcha"
-    __type__    = "captcha"
+    __name__ = "Captcha"
+    __type__ = "captcha"
     __version__ = "0.52"
-    __status__  = "stable"
+    __status__ = "stable"
 
     __description__ = """Base anti-captcha plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def __init__(self, pyfile):
         self._init(pyfile.m.core)
 
         self.pyfile = pyfile
-        self.task   = None  #: captchaManager task
+        self.task = None  #: captchaManager task
 
         self.init()
 
@@ -63,10 +63,10 @@ class Captcha(Plugin):
 
         :return: result of decrypting
         """
-        result   = None
-        time_ref = ("%.2f" % time.time())[-6:].replace(".", "")
+        result = None
+        time_ref = ("{:.2f}".format(time.time()))[-6:].replace(".", "")
 
-        with open(os.path.join("tmp", "captcha_image_%s_%s.%s" % (self.pyfile.plugin.__name__, time_ref, input_type)), "wb") as img_f:
+        with open(os.path.join("tmp", "captcha_image_{0}_{1}.{2}".format(self.pyfile.plugin.__name__, time_ref, input_type)), "wb") as img_f:
             img_f.write(img)
 
         if ocr:
@@ -103,7 +103,7 @@ class Captcha(Plugin):
                 self.pyfile.plugin.retry_captcha(msg=self.task.error)
 
             elif self.task.result:
-                self.log_info(_("Captcha result: `%s`") % result)
+                self.log_info(_("Captcha result: {0}").format(result))
 
             else:
                 self.pyfile.plugin.retry_captcha(msg=_("No captcha result obtained in appropriate timing"))
