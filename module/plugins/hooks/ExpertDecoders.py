@@ -9,13 +9,14 @@ import pycurl
 
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest as get_request
-from module.plugins.internal.Addon import Addon, threaded
+from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import threaded
 
 
 class ExpertDecoders(Addon):
     __name__    = "ExpertDecoders"
     __type__    = "hook"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __config__ = [("activated"   , "bool"    , "Activated"                       , False),

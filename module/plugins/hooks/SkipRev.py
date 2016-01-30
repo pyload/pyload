@@ -9,7 +9,7 @@ from module.plugins.internal.Addon import Addon
 class SkipRev(Addon):
     __name__    = "SkipRev"
     __type__    = "hook"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__  = "testing"
 
     __config__ = [("activated", "bool"       , "Activated"                                      , False ),
@@ -42,7 +42,7 @@ class SkipRev(Addon):
     def download_preparing(self, pyfile):
         name = self._name(pyfile)
 
-        if pyfile.statusname is _("unskipped") or not name.endswith(".rev") or not ".part" in name:
+        if pyfile.statusname == "unskipped" or not name.endswith(".rev") or not ".part" in name:
             return
 
         revtokeep = -1 if self.config.get('mode') == "Auto" else self.config.get('revtokeep')

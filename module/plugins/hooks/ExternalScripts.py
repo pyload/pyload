@@ -3,14 +3,14 @@
 import os
 import subprocess
 
-from module.plugins.internal.Addon import Addon, Expose
-from module.plugins.internal.misc import encode
+from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import encode, Expose
 
 
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.67"
+    __version__ = "0.70"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                  , True ),
@@ -18,7 +18,8 @@ class ExternalScripts(Addon):
 
     __description__ = """Run external scripts"""
     __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"         ),
+                       ("GammaC0de"     , "nitzo2001[AT}yahoo[DOT]com")]
 
 
     def init(self):
@@ -26,17 +27,16 @@ class ExternalScripts(Addon):
 
         self.folders = ["pyload_start", "pyload_restart", "pyload_stop",
                        "before_reconnect", "after_reconnect",
-                       "download_preparing", "download_failed", "download_finished",
+                       "download_preparing", "download_failed",
+                       "download_finished", "download_processed",  #@TODO: Invert 'download_processed', 'download_finished' order in 0.4.10
                        "archive_extract_failed", "archive_extracted",
-                       "package_finished", "package_deleted", "package_extract_failed", "package_extracted",
+                       "package_finished", "package_processed",  #@TODO: Invert 'package_finished', 'package_processed' order in 0.4.10
+                       "package_deleted", "package_failed", "package_extract_failed", "package_extracted",
                        "all_downloads_processed", "all_downloads_finished",  #@TODO: Invert `all_downloads_processed`, `all_downloads_finished` order in 0.4.10
                        "all_archives_extracted", "all_archives_processed"]
 
 
-        self.event_map = {'allDownloadsFinished'  : "all_downloads_finished" ,
-                          'allDownloadsProcessed' : "all_downloads_processed",
-                          'packageDeleted'        : "package_deleted"        ,
-                          'archive_extract_failed': "archive_extract_failed" ,
+        self.event_map = {'archive_extract_failed': "archive_extract_failed" ,
                           'archive_extracted'     : "archive_extracted"      ,
                           'package_extract_failed': "package_extract_failed" ,
                           'package_extracted'     : "package_extracted"      ,
@@ -184,6 +184,12 @@ class ExternalScripts(Addon):
         self.call_script("download_finished", *args)
 
 
+    def download_processed(self, pyfile):
+        file = pyfile.plugin.last_download
+        args = [pyfile.id, pyfile.name, file, pyfile.pluginname, pyfile.url]
+        self.call_script("download_processed", *args)
+
+
     def archive_extract_failed(self, pyfile, archive):
         args = [pyfile.id, pyfile.name, archive.filename, archive.out, archive.files]
         self.call_script("archive_extract_failed", *args)
@@ -204,6 +210,16 @@ class ExternalScripts(Addon):
         self.call_script("package_finished", *args)
 
 
+    def package_processed(self, pypack):
+        dl_folder = self.pyload.config.get("general", "download_folder")
+
+        if self.pyload.config.get("general", "folder_per_package"):
+            dl_folder = os.path.join(dl_folder, pypack.folder)
+
+        args = [pypack.id, pypack.name, dl_folder, pypack.password]
+        self.call_script("package_processed", *args)
+
+
     def package_deleted(self, pid):
         dl_folder = self.pyload.config.get("general", "download_folder")
         pdata = self.pyload.api.getPackageInfo(pid)
@@ -213,6 +229,17 @@ class ExternalScripts(Addon):
 
         args = [pdata.pid, pdata.name, dl_folder, pdata.password]
         self.call_script("package_deleted", *args)
+
+
+    def package_failed(self, pid):
+        dl_folder = self.pyload.config.get("general", "download_folder")
+        pdata = self.pyload.api.getPackageInfo(pid)
+
+        if self.pyload.config.get("general", "folder_per_package"):
+            dl_folder = os.path.join(dl_folder, pdata.folder)
+
+        args = [pdata.pid, pdata.name, dl_folder, pdata.password]
+        self.call_script("package_failed", *args)
 
 
     def package_extract_failed(self, pypack):

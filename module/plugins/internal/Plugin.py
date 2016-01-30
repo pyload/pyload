@@ -21,7 +21,7 @@ from module.plugins.internal.misc import (Config, DB, decode, encode, exists, fi
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.65"
+    __version__ = "0.66"
     __status__  = "stable"
 
     __config__  = []  #: [("name", "type", "desc", "default")]
@@ -243,7 +243,12 @@ class Plugin(object):
                 os.makedirs(os.path.join("tmp", self.classname))
 
             with open(framefile, "wb") as f:
-                f.write(encode(self.last_html))
+                try:
+                    html = encode(self.last_html)
+                except Exception:
+                    html = self.last_html
+
+                f.write(html)
 
         except IOError, e:
             self.log_error(e)

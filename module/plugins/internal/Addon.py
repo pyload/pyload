@@ -6,26 +6,10 @@ from module.plugins.internal.Plugin import Plugin
 from module.plugins.internal.misc import Periodical, isiterable
 
 
-def threaded(fn):
-    def run(*args, **kwargs):
-        hookManager.startThread(fn, *args, **kwargs)
-
-    return run
-
-
-class Expose(object):
-    """
-    Used for decoration to declare rpc services
-    """
-    def __new__(cls, fn, *args, **kwargs):
-        hookManager.addRPC(fn.__module__, fn.func_name, fn.func_doc)
-        return fn
-
-
 class Addon(Plugin):
     __name__    = "Addon"
     __type__    = "hook"  #@TODO: Change to `addon` in 0.4.10
-    __version__ = "0.51"
+    __version__ = "0.52"
     __status__  = "stable"
 
     __threaded__ = []  #@TODO: Remove in 0.4.10

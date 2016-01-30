@@ -8,14 +8,14 @@ import re
 import sys
 import time
 
-from module.plugins.internal.Addon import Expose, Addon, threaded
-from module.plugins.internal.misc import encode, exists, fsjoin
+from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import encode, exists, Expose, fsjoin, threaded
 
 
 class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "1.08"
+    __version__ = "1.10"
     __status__  = "testing"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),
@@ -252,8 +252,8 @@ class UpdateManager(Addon):
 
         if blacklist:
             #@NOTE: Protect UpdateManager from self-removing
-            blacklisted_plugins = [(plugin['type'], plugin['name']) for plugin in blacklist \
-                            if plugin['name'] is not self.classname and plugin['type'] is not self.__type__]
+            blacklisted_plugins = [(plugin['type'], plugin['name']) for plugin in blacklist
+                                   if plugin['name'] != self.classname and plugin['type'] != self.__type__]
 
             c = 1
             l = len(blacklisted_plugins)

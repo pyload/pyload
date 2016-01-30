@@ -12,7 +12,7 @@ from module.plugins.internal.misc import encode
 class Captcha(Plugin):
     __name__    = "Captcha"
     __type__    = "captcha"
-    __version__ = "0.52"
+    __version__ = "0.53"
     __status__  = "stable"
 
     __description__ = """Base anti-captcha plugin"""
@@ -103,7 +103,7 @@ class Captcha(Plugin):
                 self.pyfile.plugin.retry_captcha(msg=self.task.error)
 
             elif self.task.result:
-                self.log_info(_("Captcha result: `%s`") % result)
+                self.log_info(_("Captcha result: `%s`") % (result,))
 
             else:
                 self.pyfile.plugin.retry_captcha(msg=_("No captcha result obtained in appropriate timing"))

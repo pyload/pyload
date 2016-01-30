@@ -6,8 +6,8 @@ import os
 import random
 import re
 
-import Crypto.Cipher
-import Crypto.Util
+import Crypto.Cipher.AES
+import Crypto.Util.Counter
 # import pycurl
 
 from module.plugins.internal.Hoster import Hoster
@@ -46,7 +46,7 @@ from module.plugins.internal.misc import decode, encode, json
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.34"
+    __version__ = "0.37"
     __status__  = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,]+)'
@@ -64,7 +64,7 @@ class MegaCoNz(Hoster):
 
     def b64_decode(self, data):
         data = data.replace("-", "+").replace("_", "/")
-        return standard_b64decode(data + '=' * (-len(data) % 4))
+        return base64.standard_b64decode(data + '=' * (-len(data) % 4))
 
 
     def get_cipher_key(self, key):
@@ -128,7 +128,7 @@ class MegaCoNz(Hoster):
             df = open(file_decrypted, "wb")
 
         except IOError, e:
-            self.fail(e)
+            self.fail(e.message)
 
         chunk_size = 2 ** 15  #: Buffer size, 32k
         # file_mac   = [0, 0, 0, 0]  # calculate CBC-MAC for checksum

@@ -38,7 +38,7 @@ except ImportError:
 class misc(object):
     __name__    = "misc"
     __type__    = "plugin"
-    __version__ = "0.18"
+    __version__ = "0.26"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -121,6 +121,15 @@ class DB(object):
         Delete entry in db
         """
         self.plugin.pyload.db.delStorage(self.plugin.classname, key)
+
+
+class Expose(object):
+    """
+    Used for decoration to declare rpc services
+    """
+    def __new__(cls, fn, *args, **kwargs):
+        hookManager.addRPC(fn.__module__, fn.func_name, fn.func_doc)
+        return fn
 
 
 class Periodical(object):
@@ -220,15 +229,22 @@ class SimpleQueue(object):
 
 
 def lock(fn):
-    def new(*args):
+    def new(*args, **kwargs):
         args[0].lock.acquire()
         try:
-            return fn(*args)
+            return fn(*args, **kwargs)
 
         finally:
             args[0].lock.release()
 
     return new
+
+
+def threaded(fn):
+    def run(*args, **kwargs):
+        hookManager.startThread(fn, *args, **kwargs)
+
+    return run
 
 
 def format_time(value):
@@ -406,7 +422,7 @@ def exists(path):
         return False
 
 
-def remove(self, path, trash=True):
+def remove(path, trash=True):
     path = encode(path)
 
     if not exists(path):
@@ -476,9 +492,13 @@ def safepath(value):
     """
     Remove invalid characters and truncate the path if needed
     """
+    if os.name == "nt":
+        unt, value = os.path.splitunc(value)
+    else:
+        unt = ""
     drive, filename = os.path.splitdrive(value)
-    filename = os.path.join(os.sep, *map(safename, filename.split(os.sep)))
-    path = os.path.abspath(drive + filename)
+    filename = os.path.join(os.sep if os.path.isabs(filename) else "", *map(safename, filename.split(os.sep)))
+    path = unt + drive + filename
 
     try:
         if os.name != "nt":
@@ -490,11 +510,10 @@ def safepath(value):
 
         dirname, basename = os.path.split(filename)
         name, ext = os.path.splitext(basename)
-        path = drive + dirname + truncate(name, length) + ext
+        path = unt + drive + dirname + truncate(name, length) + ext
 
     finally:
         return path
-
 
 def safejoin(*args):
     """
@@ -708,7 +727,8 @@ def parse_html_header(header):
     hdict  = {}
     regexp = r'[ ]*(?P<key>.+?)[ ]*:[ ]*(?P<value>.+?)[ ]*\r?\n'
 
-    for key, value in re.findall(regexp, header.lower()):
+    for key, value in re.findall(regexp, header):
+        key = key.lower()
         if key in hdict:
             header_key = hdict.get(key)
             if type(header_key) is list:
@@ -748,7 +768,7 @@ def parse_html_form(attr_str, html, input_names={}):
             #: Check input attributes
             for key, value in input_names.items():
                 if key in inputs:
-                    if isinstance(value, basestring) and inputs[key] is value:
+                    if isinstance(value, basestring) and inputs[key] == value:
                         continue
                     elif isinstance(value, tuple) and inputs[key] in value:
                         continue

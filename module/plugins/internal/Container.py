@@ -13,7 +13,7 @@ from module.plugins.internal.misc import encode, exists
 class Container(Crypter):
     __name__    = "Container"
     __type__    = "container"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -69,7 +69,7 @@ class Container(Crypter):
                     f.write(encode(content))
 
             except IOError, e:
-                self.fail(e)
+                self.fail(e.message)
 
         elif not exists(self.pyfile.url):
             self.fail(_("File not found"))

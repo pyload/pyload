@@ -8,7 +8,8 @@ import re
 import pycurl
 
 from module.network.RequestFactory import getRequest as get_request
-from module.plugins.internal.Addon import Addon, threaded
+from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import threaded
 
 
 class ImageTyperzException(Exception):
@@ -32,7 +33,7 @@ class ImageTyperzException(Exception):
 class ImageTyperz(Addon):
     __name__    = "ImageTyperz"
     __type__    = "hook"
-    __version__ = "0.11"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __config__ = [("activated"   , "bool"    , "Activated"                       , False),
@@ -131,7 +132,7 @@ class ImageTyperz(Addon):
 
 
     def captcha_invalid(self, task):
-        if task.data['service'] is self.classname and "ticket" in task.data:
+        if task.data['service'] == self.classname and "ticket" in task.data:
             res = self.load(self.RESPOND_URL,
                          post={'action': "SETBADIMAGE",
                                'username': self.config.get('username'),

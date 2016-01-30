@@ -13,7 +13,7 @@ from module.plugins.internal.misc import html_unescape, set_cookie
 class LinkCryptWs(Crypter):
     __name__    = "LinkCryptWs"
     __type__    = "crypter"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?linkcrypt\.ws/(dir|container)/(?P<ID>\w+)'
@@ -40,7 +40,7 @@ class LinkCryptWs(Crypter):
         #: Init
         self.fileid = re.match(self.__pattern__, self.pyfile.url).group('ID')
 
-        set_cookie(req.cj, "linkcrypt.ws", "language", "en")
+        set_cookie(self.req.cj, "linkcrypt.ws", "language", "en")
 
         #: Request package
         self.req.http.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko")  #: Better chance to not get those key-captchas
@@ -125,7 +125,7 @@ class LinkCryptWs(Crypter):
         password = self.get_password()
 
         if password:
-            self.log_debug("Submitting password [%s] for protected links" % password)
+            self.log_debug("Submitting password [{0}] for protected links".format(password))
             self.data = self.load(self.pyfile.url, post={'password': password, 'x': "0", 'y': "0"})
         else:
             self.fail(_("Folder is password protected"))
@@ -142,7 +142,7 @@ class LinkCryptWs(Crypter):
         name   = self.pyfile.package().name
         folder = self.pyfile.package().folder
 
-        self.log_debug("Defaulting to pyfile name [%s] and folder [%s] for package" % (name, folder))
+        self.log_debug("Defaulting to pyfile name [{0}] and folder [{1}] for package".format(name, folder))
 
         return name, folder
 
@@ -186,13 +186,13 @@ class LinkCryptWs(Crypter):
         pattern = r'<form action="http://linkcrypt.ws/out.html"[^>]*?>.*?<input[^>]*?value="(.+?)"[^>]*?name="file"'
         ids = re.findall(pattern, self.data, re.I | re.S)
 
-        self.log_debug("Decrypting %d Web links" % len(ids))
+        self.log_debug("Decrypting {0} Web links".format(len(ids)))
 
         for idx, weblink_id in enumerate(ids):
             try:
                 res = self.load("http://linkcrypt.ws/out.html", post = {'file':weblink_id})
 
-                indexs = res.find("var url = ") + 11
+                indexs = res.find("href=doNotTrack('") + 17
                 indexe = res.find("'", indexs)
 
                 link2 = res[indexs:indexe]
@@ -201,7 +201,7 @@ class LinkCryptWs(Crypter):
                 pack_links.append(link2)
 
             except Exception, detail:
-                self.log_debug("Error decrypting Web link %s, %s" % (weblink_id, detail))
+                self.log_debug("Error decrypting Web link {0}, {1}".format(weblink_id, detail))
 
         return pack_links
 
@@ -241,7 +241,7 @@ class LinkCryptWs(Crypter):
                 self.log_debug("clink found")
 
                 pack_name, folder_name = self.get_package_info()
-                self.log_debug("Added package with name %s.%s and container link %s" %( pack_name, type, clink.group(1)))
+                self.log_debug("Added package with name {0}.{1} and container link {2}".format(pack_name, type, clink.group(1)))
                 self.pyload.api.uploadContainer('.'.join([pack_name, type]), self.load(clink.group(1)))
                 return "Found it"
 
@@ -285,7 +285,7 @@ class LinkCryptWs(Crypter):
         vcrypted = re.findall(crypted_re, cnl_section)
 
         #: Log and return
-        self.log_debug("Detected %d crypted blocks" % len(vcrypted))
+        self.log_debug("Detected {0} crypted blocks".format(len(vcrypted)))
         return vcrypted, vjk
 
 
@@ -293,7 +293,7 @@ class LinkCryptWs(Crypter):
         #: Get key
         key     = binascii.unhexlify(jk)
 
-        self.log_debug("JsEngine returns value [%s]" % key)
+        self.log_debug("JsEngine returns value [{0}]".format(key))
 
         #: Decrypt
         Key  = key
@@ -306,6 +306,6 @@ class LinkCryptWs(Crypter):
         links = filter(bool, text.split('\n'))
 
         #: Log and return
-        self.log_debug("Package has %d links" % len(links))
+        self.log_debug("Package has {0} links".format(len(links)))
 
         return links

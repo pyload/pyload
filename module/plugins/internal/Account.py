@@ -12,7 +12,7 @@ from module.plugins.internal.misc import Periodical, compare_time, decode, isite
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.70"
+    __version__ = "0.72"
     __status__  = "stable"
 
     __description__ = """Base account plugin"""
@@ -306,7 +306,10 @@ class Account(Plugin):
              'validuntil' : None}
 
         u = self.accounts[user] = d
-        return u['plugin'].choose(user)
+        result = u['plugin'].choose(user)
+        u['plugin'].get_info()
+
+        return result
 
 
     @lock

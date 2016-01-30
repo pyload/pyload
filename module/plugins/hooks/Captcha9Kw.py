@@ -7,13 +7,14 @@ import re
 import time
 
 from module.network.HTTPRequest import BadHeader
-from module.plugins.internal.Addon import Addon, threaded
+from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import threaded
 
 
 class Captcha9Kw(Addon):
     __name__    = "Captcha9Kw"
     __type__    = "hook"
-    __version__ = "0.32"
+    __version__ = "0.34"
     __status__  = "testing"
 
     __config__ = [("activated"     , "bool"    , "Activated"                                                                       , False                                                              ),
@@ -80,7 +81,7 @@ class Captcha9Kw(Addon):
         for opt in str(self.config.get('hoster_options').split('|')):
             details = map(str.strip, opt.split(':'))
 
-            if not details or details[0].lower() is not pluginname.lower():
+            if not details or details[0].lower() != pluginname.lower():
                 continue
 
             for d in details:
@@ -191,7 +192,7 @@ class Captcha9Kw(Addon):
         for opt in str(self.config.get('hoster_options').split('|')):
             details = map(str.strip, opt.split(':'))
 
-            if not details or details[0].lower() is not pluginname.lower():
+            if not details or details[0].lower() != pluginname.lower():
                 continue
 
             for d in details:

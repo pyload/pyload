@@ -27,7 +27,7 @@ def parse_fileInfo(klass, url="", html=""):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.22"
+    __version__ = "0.24"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -185,7 +185,7 @@ class Base(Plugin):
     def _update_name(self):
         name = self.info.get('name')
 
-        if name and name is not self.info.get('url'):
+        if name and name != self.info.get('url'):
             self.pyfile.name = name
         else:
             name = self.pyfile.name
@@ -286,7 +286,10 @@ class Base(Plugin):
 
     #: Deprecated method, use `_process` instead (Remove in 0.4.10)
     def preprocessing(self, *args, **kwargs):
-        time.sleep(1)  #@NOTE: Recheck info thread synchronization in 0.4.10
+        self.pyfile.setStatus("starting")  #@NOTE: Set pyfile status from `queued` to `starting` as soon as possible to avoid race condition in ThreadManager's assignJob function
+
+        #@NOTE: Recheck info thread synchronization in 0.4.10
+        # time.sleep(1)
         return self._process(*args, **kwargs)
 
 

@@ -12,7 +12,7 @@ from module.plugins.internal.misc import html_unescape, replace_patterns, which
 class YoutubeCom(Hoster):
     __name__    = "YoutubeCom"
     __type__    = "hoster"
-    __version__ = "0.49"
+    __version__ = "0.50"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)\w+'
@@ -111,7 +111,7 @@ class YoutubeCom(Hoster):
         if not streams:
             self.fail(_("No available stream meets your preferences"))
 
-        fmt_dict = dict([x for x in streams if self.formats[x[0]][4] is use3d] or streams)
+        fmt_dict = dict([x for x in streams if self.formats[x[0]][4] == use3d] or streams)
 
         self.log_debug("DESIRED STREAM: ITAG:%d (%s) %sfound, %sallowed" %
                       (desired_fmt, "%s %dx%d Q:%d 3D:%s" % self.formats[desired_fmt],

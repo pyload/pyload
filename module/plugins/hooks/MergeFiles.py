@@ -5,14 +5,14 @@ from __future__ import with_statement
 import os
 import re
 
-from module.plugins.internal.Addon import Addon, threaded
-from module.plugins.internal.misc import fsjoin
+from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import fsjoin, threaded
 
 
 class MergeFiles(Addon):
     __name__    = "MergeFiles"
     __type__    = "hook"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated", True)]

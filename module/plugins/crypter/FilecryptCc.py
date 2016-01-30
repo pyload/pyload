@@ -17,7 +17,7 @@ from module.plugins.captcha.SolveMedia import SolveMedia
 class FilecryptCc(Crypter):
     __name__    = "FilecryptCc"
     __type__    = "crypter"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
@@ -25,16 +25,18 @@ class FilecryptCc(Crypter):
 
     __description__ = """Filecrypt.cc decrypter plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"),
-                       ("GammaC0de"     , None                  )]
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"      ),
+                       ("GammaC0de"     , "nitzo2001[AT]yahoo[DOT]com")]
 
 
     # URL_REPLACEMENTS  = [(r'.html$', ""), (r'$', ".html")]  #@TODO: Extend SimpleCrypter
 
+    COOKIES          = [("filecrypt.cc", "lang", "en")]
+
     DLC_LINK_PATTERN = r'onclick="DownloadDLC\(\'(.+)\'\);">'
     WEBLINK_PATTERN  = r"openLink.?'([\w\-]*)',"
 
-    CAPTCHA_PATTERN          = r'class="safety">Sicherheitsabfrage<'
+    CAPTCHA_PATTERN          = r'class="safety">Security prompt<'
     INTERNAL_CAPTCHA_PATTERN = r'<img id="nc" src="(.+?)"'
     CIRCLE_CAPTCHA_PATTERN   = r'<input type="image" src="(.+?)"'
     KEY_CAPTCHA_PATTERN      = r"<script language=JavaScript src='(http://backs\.keycaptcha\.com/swfs/cap\.js)'"

@@ -38,7 +38,7 @@ def compute_checksum(local_file, algorithm):
 class Checksum(Addon):
     __name__    = "Checksum"
     __type__    = "hook"
-    __version__ = "0.24"
+    __version__ = "0.26"
     __status__  = "broken"
 
     __config__ = [("activated"     , "bool"              , "Activated"                                            , False  ),
@@ -98,7 +98,6 @@ class Checksum(Addon):
         else:
             return
 
-        self.log_debug(data)
 
         if not pyfile.plugin.last_download:
             self.check_failed(pyfile, None, "No file downloaded")
@@ -121,26 +120,26 @@ class Checksum(Addon):
 
             data.pop('size', None)
 
+        self.log_debug(data)
         #: Validate checksum
         if data and self.config.get('check_checksum'):
 
-            if not 'md5' in data:
-                for type in ("checksum", "hashsum", "hash"):
-                    if type in data:
-                        data['md5'] = data[type]  #@NOTE: What happens if it's not an md5 hash?
-                        break
+            for key in self.algorithms:
+                if key in data and not key in data['hash']:
+                    data['hash'][key] = data[key]
+                    break
 
             for key in self.algorithms:
-                if key in data:
+                if key in data['hash']:
                     checksum = compute_checksum(local_file, key.replace("-", "").lower())
                     if checksum:
-                        if checksum == data[key].lower():
+                        if checksum == data['hash'][key].lower():
                             self.log_info(_('File integrity of "%s" verified by %s checksum (%s)') %
                                         (pyfile.name, key.upper(), checksum))
                             break
                         else:
                             self.log_warning(_("%s checksum for file %s does not match (%s != %s)") %
-                                           (key.upper(), pyfile.name, checksum, data[key].lower()))
+                                           (key.upper(), pyfile.name, checksum, data['hash'][key].lower()))
                             self.check_failed(pyfile, local_file, "Checksums do not match")
                     else:
                         self.log_warning(_("Unsupported hashing algorithm"), key.upper())
@@ -190,7 +189,7 @@ class Checksum(Addon):
                 algorithm = self.methods.get(file_type, file_type)
                 checksum = compute_checksum(local_file, algorithm)
 
-                if checksum is data['HASH']:
+                if checksum == data['HASH']:
                     self.log_info(_('File integrity of "%s" verified by %s checksum (%s)') %
                                 (data['NAME'], algorithm, checksum))
                 else:
