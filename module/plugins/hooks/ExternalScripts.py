@@ -10,7 +10,7 @@ from module.plugins.internal.misc import encode, Expose
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.69"
+    __version__ = "0.70"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                  , True ),
