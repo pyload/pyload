@@ -6,8 +6,8 @@ import os
 import random
 import re
 
-import Crypto.Cipher
-import Crypto.Util
+import Crypto.Cipher.AES
+import Crypto.Util.Counter
 # import pycurl
 
 from module.plugins.internal.Hoster import Hoster
@@ -46,7 +46,7 @@ from module.plugins.internal.misc import decode, encode, json
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__  = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,]+)'
