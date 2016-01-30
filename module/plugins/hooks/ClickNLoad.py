@@ -9,15 +9,15 @@ try:
 except ImportError:
     pass
 
-from module.plugins.internal.Addon import Addon, threaded
-from module.plugins.internal.misc import forward, lock
+from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import forward, lock, threaded
 
 
 #@TODO: IPv6 support
 class ClickNLoad(Addon):
     __name__    = "ClickNLoad"
     __type__    = "hook"
-    __version__ = "0.58"
+    __version__ = "0.59"
     __status__  = "testing"
 
     __config__ = [("activated", "bool"           , "Activated"                      , True       ),

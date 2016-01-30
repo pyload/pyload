@@ -4,7 +4,8 @@ import pycurl
 
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest as get_request
-from module.plugins.internal.Addon import Addon, threaded
+from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import threaded
 
 
 class BypassCaptchaException(Exception):
@@ -28,7 +29,7 @@ class BypassCaptchaException(Exception):
 class BypassCaptcha(Addon):
     __name__    = "BypassCaptcha"
     __type__    = "hook"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __config__ = [("activated"   , "bool"    , "Activated"                       , False),

@@ -38,7 +38,7 @@ except ImportError:
 class misc(object):
     __name__    = "misc"
     __type__    = "plugin"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -121,6 +121,15 @@ class DB(object):
         Delete entry in db
         """
         self.plugin.pyload.db.delStorage(self.plugin.classname, key)
+
+
+class Expose(object):
+    """
+    Used for decoration to declare rpc services
+    """
+    def __new__(cls, fn, *args, **kwargs):
+        hookManager.addRPC(fn.__module__, fn.func_name, fn.func_doc)
+        return fn
 
 
 class Periodical(object):
@@ -229,6 +238,13 @@ def lock(fn):
             args[0].lock.release()
 
     return new
+
+
+def threaded(fn):
+    def run(*args, **kwargs):
+        hookManager.startThread(fn, *args, **kwargs)
+
+    return run
 
 
 def format_time(value):

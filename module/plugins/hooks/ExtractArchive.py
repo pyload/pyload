@@ -49,9 +49,9 @@ try:
 except ImportError:
     pass
 
-from module.plugins.internal.Addon import Addon, Expose, threaded
+from module.plugins.internal.Addon import Addon
 from module.plugins.internal.Extractor import ArchiveError, CRCError, PasswordError
-from module.plugins.internal.misc import encode, exists, fsjoin, uniqify
+from module.plugins.internal.misc import encode, exists, Expose, fsjoin, threaded, uniqify
 
 
 class ArchiveQueue(object):
@@ -98,7 +98,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.56"
+    __version__ = "1.57"
     __status__  = "broken"
 
     __config__ = [("activated"      , "bool"  , "Activated"                             , True                                                                     ),

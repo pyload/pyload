@@ -2,14 +2,14 @@
 
 import time
 
-from module.plugins.internal.Addon import Addon, Expose
-from module.plugins.internal.misc import encode, isiterable
+from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import encode, Expose, isiterable
 
 
 class Notifier(Addon):
     __name__    = "Notifier"
     __type__    = "hook"
-    __version__ = "0.07"
+    __version__ = "0.09"
     __status__  = "testing"
 
     __config__ = [("activated"       , "bool", "Activated"                                , False),

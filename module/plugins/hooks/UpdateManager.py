@@ -8,14 +8,14 @@ import re
 import sys
 import time
 
-from module.plugins.internal.Addon import Expose, Addon, threaded
-from module.plugins.internal.misc import encode, exists, fsjoin
+from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import encode, exists, Expose, fsjoin, threaded
 
 
 class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "1.09"
+    __version__ = "1.10"
     __status__  = "testing"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),

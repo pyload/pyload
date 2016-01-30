@@ -9,14 +9,14 @@ try:
 except ImportError:
     pass
 
-from module.plugins.internal.Addon import Addon, Expose, threaded
-from module.plugins.internal.misc import encode, exists, fsjoin
+from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import encode, exists, fsjoin, Expose, threaded
 
 
 class AntiVirus(Addon):
     __name__    = "AntiVirus"
     __type__    = "hook"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "broken"
 
     #@TODO: add trash option (use Send2Trash lib)

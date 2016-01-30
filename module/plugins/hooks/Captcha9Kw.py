@@ -7,13 +7,14 @@ import re
 import time
 
 from module.network.HTTPRequest import BadHeader
-from module.plugins.internal.Addon import Addon, threaded
+from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import threaded
 
 
 class Captcha9Kw(Addon):
     __name__    = "Captcha9Kw"
     __type__    = "hook"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__  = "testing"
 
     __config__ = [("activated"     , "bool"    , "Activated"                                                                       , False                                                              ),

@@ -10,8 +10,8 @@ import pycurl
 
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest as get_request
-from module.plugins.internal.Addon import Addon, threaded
-from module.plugins.internal.misc import json
+from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import json, threaded
 
 
 class DeathByCaptchaException(Exception):
@@ -51,7 +51,7 @@ class DeathByCaptchaException(Exception):
 class DeathByCaptcha(Addon):
     __name__    = "DeathByCaptcha"
     __type__    = "hook"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __config__ = [("activated"   , "bool"    , "Activated"                       , False),
