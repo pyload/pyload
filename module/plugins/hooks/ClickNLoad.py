@@ -17,7 +17,7 @@ from module.plugins.internal.misc import forward, lock
 class ClickNLoad(Addon):
     __name__    = "ClickNLoad"
     __type__    = "hook"
-    __version__ = "0.57"
+    __version__ = "0.58"
     __status__  = "testing"
 
     __config__ = [("activated", "bool"           , "Activated"                      , True       ),
@@ -65,8 +65,8 @@ class ClickNLoad(Addon):
             except Exception:
                 pass
 
-            success_exit = self.exit_done.wait(10)
-            if success_exit:
+            self.exit_done.wait(10)
+            if self.exit_done.isSet():
                 self.log_debug(_("Server exited successfully"))
             else:
                 self.log_warning(_("Server was not exited gracefully, shutdown forced"))
