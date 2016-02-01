@@ -48,19 +48,20 @@ class XFileSharing(Addon):
 
 
     def activate(self):
-        for type, plugin in (("hoster" , "XFileSharing"),
+        for type, plugin in (("hoster" , "XFileSharingHoster"),
                              ("crypter", "XFileSharingFolder")):
             self._load(type, plugin)
 
 
     def deactivate(self):
-        for type, plugin in (("hoster" , "XFileSharing"),
+        for type, plugin in (("hoster" , "XFileSharingHoster"),
                              ("crypter", "XFileSharingFolder")):
             self._unload(type, plugin)
 
 
     def get_pattern(self, type, plugin):
         if self.config.get('use_%s_list' % type):
+            self.log_info(_('handling only listed hosters'))
             plugin_list = self.config.get('%s_list' % type)
             plugin_list = plugin_list.replace(' ', '').replace('\\', '')
             plugin_list = plugin_list.replace('|', ',').replace(';', ',')
@@ -87,6 +88,7 @@ class XFileSharing(Addon):
                            "" if len(plugin_set) == 1 else "s",
                            match_list.replace('\.', '.').replace('|', ', ')))
         else:
+            self.log_info(_('handling all sorts of hosters'))
             plugin_list = []
             isXFS = lambda klass: any(k.__name__.startswith("XFS") for k in inspect.getmro(klass))
 
