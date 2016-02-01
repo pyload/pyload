@@ -13,7 +13,7 @@ from module.plugins.internal.misc import html_unescape, seconds_to_midnight, set
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.72"
+    __version__ = "0.73"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -96,6 +96,7 @@ class XFSHoster(SimpleHoster):
 
             m = re.search(self.LINK_PATTERN, self.data, re.S)
             if m is not None:
+                self.link = m.group(1)
                 break
 
             self.data = self.load(pyfile.url,
@@ -103,16 +104,16 @@ class XFSHoster(SimpleHoster):
                                   redirect=False)
 
             if not "op=" in self.last_header.get('location', "op="):
+                self.link = self.last_header.get('location')
                 break
 
             m = re.search(self.LINK_PATTERN, self.data, re.S)
             if m is not None:
+                self.link = m.group(1)
                 break
         else:
             if 'op' in data:
                 self.error(_("Missing OP data after: ") + data['op'])
-
-        self.link = m.group(1)
 
 
     def handle_premium(self, pyfile):
