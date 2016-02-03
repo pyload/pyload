@@ -13,7 +13,7 @@ from module.plugins.internal.misc import html_unescape, seconds_to_midnight, set
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.73"
+    __version__ = "0.74"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -112,8 +112,7 @@ class XFSHoster(SimpleHoster):
                 self.link = m.group(1)
                 break
         else:
-            if 'op' in data:
-                self.error(_("Missing OP data after: ") + data['op'])
+            self.error(_("Too many OPs"))
 
 
     def handle_premium(self, pyfile):
