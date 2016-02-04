@@ -7,13 +7,13 @@ import re
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.captcha.SolveMedia import SolveMedia
 from module.plugins.internal.SimpleHoster import SimpleHoster
-from module.plugins.internal.misc import html_unescape, seconds_to_midnight, set_cookie
+from module.plugins.internal.misc import html_unescape, parse_time, seconds_to_midnight, set_cookie
 
 
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.74"
+    __version__ = "0.75"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -195,7 +195,13 @@ class XFSHoster(SimpleHoster):
             if not self.premium:
                 m = re.search(self.WAIT_PATTERN, self.data)
                 if m is not None:
-                    wait_time = int(m.group(1))
+                    try:
+                        waitmsg = m.group(1).strip()
+
+                    except (AttributeError, IndexError):
+                        waitmsg = m.group(0).strip()
+
+                    wait_time = parse_time(waitmsg)
                     self.set_wait(wait_time)
                     self.set_reconnect(False)
                     self.handle_captcha(inputs)
