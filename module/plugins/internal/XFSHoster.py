@@ -204,7 +204,8 @@ class XFSHoster(SimpleHoster):
                     wait_time = parse_time(waitmsg)
                     self.set_wait(wait_time)
                     self.set_reconnect(False)
-                    self.handle_captcha(inputs)
+                    if wait_time < self.config.get('max_wait', 10) * 60:
+                        self.handle_captcha(inputs)
                     self.wait()
         else:
             inputs['referer'] = self.pyfile.url
