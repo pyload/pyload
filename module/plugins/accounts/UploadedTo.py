@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class UploadedTo(Account):
     __name__    = "UploadedTo"
     __type__    = "account"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __status__  = "testing"
 
     __description__ = """Uploaded.to account plugin"""
@@ -71,5 +71,5 @@ class UploadedTo(Account):
                 self.fail_login(m.group(1))
 
         except Exception, e:
-            self.log_error(e, trace=True)
+            self.log_error(e.message, trace=True)
             self.fail_login(e.message)
