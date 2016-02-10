@@ -9,7 +9,7 @@ from module.plugins.internal.misc import json
 class SoundcloudCom(SimpleHoster):
     __name__    = "SoundcloudCom"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?soundcloud\.com/[\w\-]+/[\w\-]+'
@@ -21,7 +21,8 @@ class SoundcloudCom(SimpleHoster):
 
     __description__ = """SoundCloud.com hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"         ),
+                       ("GammaC0de"     , "nitzo2001[AT]yahoo[DOT]com")]
 
 
     NAME_PATTERN    = r'title" content="(?P<N>.+?)"'
@@ -39,7 +40,7 @@ class SoundcloudCom(SimpleHoster):
             client_id = re.search(r'"clientID":"(.+?)"', self.data).group(1)
 
         except Exception:
-            client_id = "b45b1aa10f1ac2941910a7f0d10f8e28"
+            client_id = "02gUJC0hH2ct1EGOcYXQIzRFU91c72Ea"
 
         #: Url to retrieve the actual song url
         html = self.load("https://api.soundcloud.com/tracks/%s/streams" % song_id,
