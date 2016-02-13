@@ -10,7 +10,7 @@ from module.plugins.internal.misc import encode, Expose
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.71"
+    __version__ = "0.72"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                  , True ),
@@ -235,7 +235,7 @@ class ExternalScripts(Addon):
         dl_folder = self.pyload.config.get("general", "download_folder")
 
         if self.pyload.config.get("general", "folder_per_package"):
-            dl_folder = os.path.join(dl_folder, pdata.folder)
+            dl_folder = os.path.join(dl_folder, pypack.folder)
 
         args = [pypack.id, pypack.name, dl_folder, pypack.password]
         self.call_script("package_failed", *args)
