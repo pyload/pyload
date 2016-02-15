@@ -63,6 +63,9 @@ if "--configdir=" in args:
         configdir = args[pos + 12:].strip()
     else:
         configdir = args[pos + 12:end].strip()
+    if configdir.startswith('~'):
+        configdir = path.expanduser(configdir)
+
 elif path.exists(path.join(pypath, "module", "config", "configdir")):
     f = open(path.join(pypath, "module", "config", "configdir"), "rb")
     c = f.read().strip()
