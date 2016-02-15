@@ -55,8 +55,8 @@ __builtin__.homedir = homedir
 args = " ".join(argv[1:])
 
 # dirty method to set configdir from commandline arguments
-if "--configdir=" in args:
-    pos = args.find("--configdir=")
+if "--configdir" in args:
+    pos = args.find("--configdir")
     end = args.find("-", pos + 12)
 
     if end == -1:
