@@ -82,7 +82,8 @@ class Core(object):
                 print "pyLoad", CURRENT_VERSION
                 exit()
             elif argvs.pidfile is not None:
-                self.pidfile = argument
+                self.pidfile = argvs.pidfile
+                print("PID is now located in: {}".format(argvs.pidfile))
             elif argvs.daemon:
                 self.daemon = True
             elif argvs.clear:
@@ -117,6 +118,8 @@ class Core(object):
                 exit()
             elif argvs.no_remote:
                 self.remote = False
+            elif argvs.configdir is not None:
+                print("Configdir is now located in: {}".format(argvs.configdir))
 
     def toggle_pause(self):
         if self.threadManager.pause:
