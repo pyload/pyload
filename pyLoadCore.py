@@ -209,6 +209,7 @@ class Core(object):
 
     def start(self, rpc=True, web=True):
         """ starts the fun :D """
+
         self.version = CURRENT_VERSION
 
         if not exists("pyload.conf"):
