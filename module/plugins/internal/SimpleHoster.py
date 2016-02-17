@@ -188,8 +188,8 @@ class SimpleHoster(Hoster):
             info['size'] = parse_size(info['size'], unit)
 
         if 'H' in info['pattern']:
-            type = info['pattern']['H'].strip('-').upper()
-            info['hash'][type] = info['pattern']['D']
+            the_type = info['pattern']['H'].strip('-').upper()
+            info['hash'][the_type] = info['pattern']['D']
 
         return info
 
