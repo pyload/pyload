@@ -14,7 +14,7 @@ from module.plugins.internal.misc import threaded
 class Captcha9Kw(Addon):
     __name__    = "Captcha9Kw"
     __type__    = "hook"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__  = "testing"
 
     __config__ = [("activated"     , "bool"    , "Activated"                                                                       , False                                                              ),
@@ -213,10 +213,10 @@ class Captcha9Kw(Addon):
 
 
     def _captcha_response(self, task, correct):
-        type = "correct" if correct else "refund"
+        request_type = "correct" if correct else "refund"
 
         if 'ticket' not in task.data:
-            self.log_debug("No CaptchaID for %s request (task: %s)" % (type, task))
+            self.log_debug("No CaptchaID for %s request (task: %s)" % (request_type, task))
             return
 
         passkey = self.config.get('passkey')
@@ -231,14 +231,14 @@ class Captcha9Kw(Addon):
                               'source' : "pyload",
                               'id'     : task.data['ticket']})
 
-            self.log_debug("Request %s: %s" % (type, res))
+            self.log_debug("Request %s: %s" % (request_type, res))
 
             if res == "OK":
                 break
 
             time.sleep(5)
         else:
-            self.log_debug("Could not send %s request: %s" % (type, res))
+            self.log_debug("Could not send %s request: %s" % (request_type, res))
 
 
     def captcha_correct(self, task):

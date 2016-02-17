@@ -13,7 +13,7 @@ from module.plugins.internal.misc import html_unescape, set_cookie
 class LinkCryptWs(Crypter):
     __name__    = "LinkCryptWs"
     __type__    = "crypter"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?linkcrypt\.ws/(dir|container)/(?P<ID>\w+)'
@@ -79,8 +79,8 @@ class LinkCryptWs(Crypter):
         self.get_container_html()
 
         #: Extract package links
-        for type in self.sources:
-            links = self.handle_link_source(type)
+        for source_type in self.sources:
+            links = self.handle_link_source(source_type)
 
             if links:
                 self.urls.extend(links)
@@ -165,18 +165,18 @@ class LinkCryptWs(Crypter):
             self.captcha.correct()
 
 
-    def handle_link_source(self, type):
-        if type == "cnl":
+    def handle_link_source(self, source_type):
+        if source_type == "cnl":
                 return self.handle_CNL2()
 
-        elif type == "web":
+        elif source_type == "web":
                 return self.handle_web_links()
 
-        elif type in ('rsdf', 'ccf', 'dlc'):
-                return self.handle_container(type)
+        elif source_type in ('rsdf', 'ccf', 'dlc'):
+                return self.handle_container(source_type)
 
         else:
-            self.fail(_("Unknown source type: %s") % type)  #@TODO: Replace with self.error in 0.4.10
+            self.fail(_("Unknown source type: %s") % source_type)  #@TODO: Replace with self.error in 0.4.10
 
 
     def handle_web_links(self):
@@ -221,17 +221,17 @@ class LinkCryptWs(Crypter):
         return self.js.eval(line.replace('{}))',"{}).replace('document.open();document.write','').replace(';document.close();',''))"))
 
 
-    def handle_container(self, type):
+    def handle_container(self, container_type):
         pack_links = []
-        type = type.lower()
+        container_type = container_type.lower()
 
-        self.log_debug('Search for %s Container links' % type.upper())
+        self.log_debug('Search for %s Container links' % container_type.upper())
 
-        if not type.isalnum():  #: Check to prevent broken re-pattern (cnl2, rsdf, ccf, dlc, web are all alpha-numeric)
-            self.fail(_("Unknown container type: %s") % type)  #@TODO: Replace with self.error in 0.4.10
+        if not container_type.isalnum():  #: Check to prevent broken re-pattern (cnl2, rsdf, ccf, dlc, web are all alpha-numeric)
+            self.fail(_("Unknown container type: %s") % container_type)  #@TODO: Replace with self.error in 0.4.10
 
         for line in self.container_html:
-            if type in line:
+            if container_type in line:
                 jseval = self.handle_javascript(line)
                 clink = re.search(r'href=["\'](["\']+)', jseval, re.I)
 
@@ -241,8 +241,8 @@ class LinkCryptWs(Crypter):
                 self.log_debug("clink found")
 
                 pack_name, folder_name = self.get_package_info()
-                self.log_debug("Added package with name {0}.{1} and container link {2}".format(pack_name, type, clink.group(1)))
-                self.pyload.api.uploadContainer('.'.join([pack_name, type]), self.load(clink.group(1)))
+                self.log_debug("Added package with name {0}.{1} and container link {2}".format(pack_name, container_type, clink.group(1)))
+                self.pyload.api.uploadContainer('.'.join([pack_name, container_type]), self.load(clink.group(1)))
                 return "Found it"
 
         return pack_links
