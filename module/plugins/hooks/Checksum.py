@@ -38,7 +38,7 @@ def compute_checksum(local_file, algorithm):
 class Checksum(Addon):
     __name__    = "Checksum"
     __type__    = "hook"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__  = "broken"
 
     __config__ = [("activated"     , "bool"              , "Activated"                                            , False  ),
@@ -123,6 +123,7 @@ class Checksum(Addon):
         self.log_debug(data)
         #: Validate checksum
         if data and self.config.get('check_checksum'):
+            data['hash'] = data.get('hash', {})
 
             for key in self.algorithms:
                 if key in data and not key in data['hash']:
