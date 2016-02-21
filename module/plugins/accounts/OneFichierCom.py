@@ -11,7 +11,7 @@ from module.plugins.internal.Account import Account
 class OneFichierCom(Account):
     __name__    = "OneFichierCom"
     __type__    = "account"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __description__ = """1fichier.com account plugin"""
@@ -20,7 +20,7 @@ class OneFichierCom(Account):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    VALID_UNTIL_PATTERN = r'Your subscription will end the (\d+\-\d+\-\d+)'
+    VALID_UNTIL_PATTERN = r'Your account is Premium until <span style="font-weight:bold">(\d+\-\d+\-\d+)'
 
 
     def grab_info(self, user, password, data):
