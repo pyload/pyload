@@ -6,6 +6,7 @@ import time
 import pycurl
 
 from module.plugins.internal.Account import Account
+from module.network.HTTPRequest import BadHeader
 
 
 class OneFichierCom(Account):
@@ -50,12 +51,20 @@ class OneFichierCom(Account):
     def signin(self, user, password, data):
         self.req.http.c.setopt(pycurl.REFERER, "https://1fichier.com/login.pl?lg=en")
 
-        html = self.load("https://1fichier.com/login.pl?lg=en",
-                         post={'mail'   : user,
-                               'pass'   : password,
-                               'It'     : "on",
-                               'purge'  : "off",
-                               'valider': "Send"})
+        try:
+            html = self.load("https://1fichier.com/login.pl?lg=en",
+                             post={'mail'   : user,
+                                   'pass'   : password,
+                                   'It'     : "on",
+                                   'purge'  : "off",
+                                   'valider': "Send"})
 
-        if '>Invalid email address' in html or '>Invalid password' in html:
-            self.fail_login()
+            if any(_x in html for _x in
+                   ('>Invalid username or Password', '>Invalid email address', '>Invalid password')):
+                self.fail_login()
+
+        except BadHeader, e:
+            if e.code == 403:
+                self.fail_login()
+            else:
+                raise
