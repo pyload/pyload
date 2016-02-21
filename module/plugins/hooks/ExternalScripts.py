@@ -10,7 +10,7 @@ from module.plugins.internal.misc import encode, Expose
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.70"
+    __version__ = "0.72"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                  , True ),
@@ -231,14 +231,13 @@ class ExternalScripts(Addon):
         self.call_script("package_deleted", *args)
 
 
-    def package_failed(self, pid):
+    def package_failed(self, pypack):
         dl_folder = self.pyload.config.get("general", "download_folder")
-        pdata = self.pyload.api.getPackageInfo(pid)
 
         if self.pyload.config.get("general", "folder_per_package"):
-            dl_folder = os.path.join(dl_folder, pdata.folder)
+            dl_folder = os.path.join(dl_folder, pypack.folder)
 
-        args = [pdata.pid, pdata.name, dl_folder, pdata.password]
+        args = [pypack.id, pypack.name, dl_folder, pypack.password]
         self.call_script("package_failed", *args)
 
 

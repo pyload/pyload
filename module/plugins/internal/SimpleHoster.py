@@ -16,7 +16,7 @@ from module.plugins.internal.misc import (encode, parse_name, parse_size,
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "2.20"
+    __version__ = "2.21"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -188,8 +188,8 @@ class SimpleHoster(Hoster):
             info['size'] = parse_size(info['size'], unit)
 
         if 'H' in info['pattern']:
-            type = info['pattern']['H'].strip('-').upper()
-            info['hash'][type] = info['pattern']['D']
+            hash_type = info['pattern']['H'].strip('-').upper()
+            info['hash'][hash_type] = info['pattern']['D']
 
         return info
 

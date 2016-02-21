@@ -7,13 +7,13 @@ import re
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.captcha.SolveMedia import SolveMedia
 from module.plugins.internal.SimpleHoster import SimpleHoster
-from module.plugins.internal.misc import html_unescape, seconds_to_midnight, set_cookie
+from module.plugins.internal.misc import html_unescape, parse_time, seconds_to_midnight, set_cookie
 
 
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.72"
+    __version__ = "0.75"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -96,6 +96,7 @@ class XFSHoster(SimpleHoster):
 
             m = re.search(self.LINK_PATTERN, self.data, re.S)
             if m is not None:
+                self.link = m.group(1)
                 break
 
             self.data = self.load(pyfile.url,
@@ -103,16 +104,15 @@ class XFSHoster(SimpleHoster):
                                   redirect=False)
 
             if not "op=" in self.last_header.get('location', "op="):
+                self.link = self.last_header.get('location')
                 break
 
             m = re.search(self.LINK_PATTERN, self.data, re.S)
             if m is not None:
+                self.link = m.group(1)
                 break
         else:
-            if 'op' in data:
-                self.error(_("Missing OP data after: ") + data['op'])
-
-        self.link = m.group(1)
+            self.error(_("Too many OPs"))
 
 
     def handle_premium(self, pyfile):
@@ -195,10 +195,17 @@ class XFSHoster(SimpleHoster):
             if not self.premium:
                 m = re.search(self.WAIT_PATTERN, self.data)
                 if m is not None:
-                    wait_time = int(m.group(1))
+                    try:
+                        waitmsg = m.group(1).strip()
+
+                    except (AttributeError, IndexError):
+                        waitmsg = m.group(0).strip()
+
+                    wait_time = parse_time(waitmsg)
                     self.set_wait(wait_time)
                     self.set_reconnect(False)
-                    self.handle_captcha(inputs)
+                    if wait_time < self.config.get('max_wait', 10) * 60:
+                        self.handle_captcha(inputs)
                     self.wait()
         else:
             inputs['referer'] = self.pyfile.url
