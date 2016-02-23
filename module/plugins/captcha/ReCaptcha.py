@@ -6,20 +6,25 @@ import re
 import time
 import urlparse
 
+from bs4 import BeautifulSoup as Soup
+import requests
+
 from module.plugins.internal.CaptchaService import CaptchaService
 
 
 class ReCaptcha(CaptchaService):
-    __name__    = "ReCaptcha"
-    __type__    = "captcha"
-    __version__ = "0.21"
-    __status__  = "testing"
-
-    __description__ = """ReCaptcha captcha service plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("pyLoad Team", "admin@pyload.org"),
-                       ("Walter Purcaro", "vuolter@gmail.com"),
-                       ("zapp-brannigan", "fuerst.reinje@web.de")]
+    __name__ = 'ReCaptcha'
+    __type__ = 'captcha'
+    __version__ = '0.22'
+    __status__ = 'testing'
+    __description__ = 'ReCaptcha captcha service plugin'
+    __license__ = 'GPLv3'
+    __authors__ = [
+        ('pyLoad Team', 'admin@pyload.org'),
+        ('Walter Purcaro', 'vuolter@gmail.com'),
+        ('zapp-brannigan', 'fuerst.reinje@web.de'),
+        ('Arno-Nymous', None)
+    ]
 
 
     KEY_V1_PATTERN = r'(?:recaptcha(?:/api|\.net)/(?:challenge|noscript)\?k=|Recaptcha\.create\s*\(\s*["\'])([\w\-]+)'
@@ -108,87 +113,117 @@ class ReCaptcha(CaptchaService):
         return vers, language, jsh
 
 
-    def _prepare_time_and_rpc(self):
-        self.pyfile.plugin.load("http://www.google.com/recaptcha/api2/demo")
+    def prepare_image(self, image):
+        from PIL import Image, ImageDraw, ImageFont
+        from StringIO import StringIO
 
-        millis = int(round(time.time() * 1000))
+        fontName = 'arialbd'
 
-        self.log_debug("Time: %s" % millis)
+        s = StringIO()
+        s.write(image)
+        s.seek(0)
+        img = Image.open(s)
+        draw = ImageDraw.Draw(img)
+        font = ImageFont.truetype(fontName, 13)
 
-        rand = random.randint(1, 99999999)
-        a    = "0.%s" % str(rand * 2147483647)
-        rpc  = int(100000000 * float(a))
+        tileSize = {'width': img.size[0] / 3, 'height': img.size[1] / 3}
+        tileIndexSize = {'width': 13, 'height': 13}
 
-        self.log_debug("Rpc-token: %s" % rpc)
+        for i in range(3):
+            for j in range(3):
+                tileIndexPos = {
+                    'x': i * tileSize['width'] + (tileSize['width'] / 2) - (tileIndexSize['width'] / 2),
+                    'y': j * tileSize['height']
+                }
+                draw.rectangle(
+                    [
+                        tileIndexPos['x'],
+                        tileIndexPos['y'],
+                        tileIndexPos['x'] + tileIndexSize['width'],
+                        tileIndexPos['y'] + tileIndexSize['height']
+                    ],
+                    fill='#fff'
+                )
+                indexNumber = str(j * 3 + i + 1)
+                textWidth, textHeight = font.getsize(indexNumber)
+                draw.text(
+                    (
+                        tileIndexPos['x'] + (tileIndexSize['width'] / 2) - (textWidth / 2),
+                        tileIndexPos['y'] + (tileIndexSize['height'] / 2) - (textHeight / 2)
+                    ),
+                    indexNumber,
+                    '#000',
+                    font=font
+                )
 
-        return millis, rpc
+        font = ImageFont.truetype(fontName, 16)
+        message = self.v2ChallengeMsg + '\nType image numbers like "258".'
+        textWidth, textHeight = font.getsize(message)
+        # the text's real height is twice as big as returned by font.getsize() since we use
+        # a newline character which indeed breaks the text but doesn't count as a second line
+        # in font.getsize().
+        textHeight *= 2
+        margin = 5
+        textHeight = textHeight + margin * 2  #  add some margin between border, text and image
+        img2 = Image.new('RGB', (img.size[0], img.size[1] + textHeight), '#fff')
+        img2.paste(img, (0, textHeight))
+        draw = ImageDraw.Draw(img2)
+        draw.text((0, margin), message, '#000', font=font)
+        s.truncate(0)
+        img2.save(s, format='JPEG')
+        img = s.getvalue()
+        s.close()
+        return img
 
 
     def _challenge_v2(self, key, parent=None):
-        if parent is None:
+        fallbackURL = 'http://www.google.com/recaptcha/api/fallback?k=' + key
+        session = requests.Session()
+
+        fallback = session.get(
+            fallbackURL,
+            headers={
+                'Referer': self.pyfile.url
+            }
+        )
+        fallback = Soup(fallback.text, 'html5lib')
+
+        while True:
+            c = fallback.find('input', {'name': 'c', 'type': 'hidden'})['value']
+
             try:
-                parent = urlparse.urljoin("http://", urlparse.urlparse(self.pyfile.url).netloc)
+                challengeMessage = fallback.find('label', {'class': 'fbc-imageselect-message-text'}).text
+            except:
+                challengeMessage = fallback.find('div', {'class': 'fbc-imageselect-message-error'}).text
+            self.v2ChallengeMsg = challengeMessage
 
-            except Exception:
-                parent = ""
+            imageURL = 'http://www.google.com' + fallback.find('img', {'class': 'fbc-imageselect-payload'})['src']
+            img = self.load(
+                imageURL,
+                req=self.pyfile.plugin.req,
+                get={},
+                post={},
+                ref=False,
+                cookies=True,
+                decode=False
+            )
+            img = self.prepare_image(img)
+            response = self.decrypt_image(img)
 
-        botguardstring      = "!A"
-        vers, language, jsh = self._collect_api_info()
-        millis, rpc         = self._prepare_time_and_rpc()
+            a = {'c': c}
+            b = {'response': [int(k) - 1 for k in response if k.isdigit()]}
+            d = dict(a, **b)
+            fallback = session.post(
+                fallbackURL,
+                headers={'Referer': fallbackURL},
+                data=d
+            )
 
-        html = self.pyfile.plugin.load("https://www.google.com/recaptcha/api2/anchor",
-                                    get={'k'       : key,
-                                         'hl'      : language,
-                                         'v'       : vers,
-                                         'usegapi' : "1",
-                                         'jsh'     : "%s#id=IO_%s" % (jsh, millis),
-                                         'parent'  : parent,
-                                         'pfname'  : "",
-                                         'rpctoken': rpc})
+            fallback = Soup(fallback.text, 'html5lib')
 
-        token1 = re.search(r'id="recaptcha-token" value="(.*?)">', html)
-        self.log_debug("Token #1: %s" % token1.group(1))
+            recaptchaTokenTextarea = fallback.find('div', {'class': 'fbc-verification-token'})
+            if recaptchaTokenTextarea:
+                recaptchaVerificationToken = recaptchaTokenTextarea.textarea.text
+                break
 
-        html = self.pyfile.plugin.load("https://www.google.com/recaptcha/api2/frame",
-                                get={'c'      : token1.group(1),
-                                     'hl'     : language,
-                                     'v'      : vers,
-                                     'bg'     : botguardstring,
-                                     'k'      : key,
-                                     'usegapi': "1",
-                                     'jsh'    : jsh},
-                                decode="unicode-escape")
-
-        token2 = re.search(r'"finput","(.*?)",', html)
-        self.log_debug("Token #2: %s" % token2.group(1))
-
-        token3 = re.search(r'"rresp","(.*?)",', html)
-        self.log_debug("Token #3: %s" % token3.group(1))
-
-        millis_captcha_loading = int(round(time.time() * 1000))
-        captcha_response = self.decrypt("https://www.google.com/recaptcha/api2/payload",
-                                              get={'c':token3.group(1), 'k':key},
-                                              cookies=True,
-                                              ocr=False,
-                                              timeout=30)
-        response = base64.b64encode('{"response":"%s"}' % captcha_response)
-
-        self.log_debug("Result: `%s`" % response)
-
-        timeToSolve     = int(round(time.time() * 1000)) - millis_captcha_loading
-        timeToSolveMore = timeToSolve + int(float("0." + str(random.randint(1, 99999999))) * 500)
-
-        html = self.pyfile.plugin.load("https://www.google.com/recaptcha/api2/userverify",
-                                    post={'k'       : key,
-                                          'c'       : token3.group(1),
-                                          'response': response,
-                                          't'       : timeToSolve,
-                                          'ct'      : timeToSolveMore,
-                                          'bg'      : botguardstring})
-
-        token4 = re.search(r'"uvresp","(.*?)",', html)
-        self.log_debug("Token #4: %s" % token4.group(1))
-
-        result = token4.group(1)
-
-        return result, None
+        return recaptchaVerificationToken
