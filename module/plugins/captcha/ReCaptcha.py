@@ -1,15 +1,23 @@
 # -*- coding: utf-8 -*-
 
-import base64
-import random
+from StringIO import StringIO
+import os
 import re
-import time
 import urlparse
 
 from bs4 import BeautifulSoup as Soup
 import requests
 
 from module.plugins.internal.CaptchaService import CaptchaService
+
+try:
+    from PIL import Image
+    from PIL import ImageDraw
+    from PIL import ImageFont
+except ImportError:
+    import Image
+    import ImageDraw
+    import ImageFont
 
 
 class ReCaptcha(CaptchaService):
@@ -114,20 +122,26 @@ class ReCaptcha(CaptchaService):
 
 
     def prepare_image(self, image):
-        from PIL import Image, ImageDraw, ImageFont
-        from StringIO import StringIO
+        # This is just a string to calculate biggest height of a text, since usually
+        # the letters 'p' and 'k' reach to the lower most respective higher most
+        # points in a text font (see typography) and thus we can hereby calculate
+        # the biggest text height of a given font
+        dummyText = 'pk'
 
         fontName = 'arialbd'
-
         s = StringIO()
         s.write(image)
         s.seek(0)
+        
         img = Image.open(s)
         draw = ImageDraw.Draw(img)
-        font = ImageFont.truetype(fontName, 13)
+        if os.name == 'nt':
+            font = ImageFont.truetype(fontName, 13)
+        else:
+            font = None
 
         tileSize = {'width': img.size[0] / 3, 'height': img.size[1] / 3}
-        tileIndexSize = {'width': 13, 'height': 13}
+        tileIndexSize = {'width': draw.textsize('0')[0], 'height': draw.textsize('0')[1]}
 
         for i in range(3):
             for j in range(3):
@@ -142,10 +156,10 @@ class ReCaptcha(CaptchaService):
                         tileIndexPos['x'] + tileIndexSize['width'],
                         tileIndexPos['y'] + tileIndexSize['height']
                     ],
-                    fill='#fff'
+                    fill='white'
                 )
                 indexNumber = str(j * 3 + i + 1)
-                textWidth, textHeight = font.getsize(indexNumber)
+                textWidth, textHeight = draw.textsize(indexNumber, font=font)
                 draw.text(
                     (
                         tileIndexPos['x'] + (tileIndexSize['width'] / 2) - (textWidth / 2),
@@ -156,19 +170,27 @@ class ReCaptcha(CaptchaService):
                     font=font
                 )
 
-        font = ImageFont.truetype(fontName, 16)
+        if os.name == 'nt':
+            font = ImageFont.truetype(fontName, 16)
         message = self.v2ChallengeMsg + '\nType image numbers like "258".'
-        textWidth, textHeight = font.getsize(message)
         # the text's real height is twice as big as returned by font.getsize() since we use
         # a newline character which indeed breaks the text but doesn't count as a second line
         # in font.getsize().
-        textHeight *= 2
+        if os.name == 'nt':
+            textHeight = draw.multiline_textsize(message, font=font)[1]
+        else:
+            lines = message.split('\n')
+            textHeight = len(lines) * draw.textsize(dummyText, font=font)[1]
         margin = 5
-        textHeight = textHeight + margin * 2  #  add some margin between border, text and image
-        img2 = Image.new('RGB', (img.size[0], img.size[1] + textHeight), '#fff')
+        textHeight = textHeight + margin * 2  #  add some margin on top and bottom of text
+        img2 = Image.new('RGB', (img.size[0], img.size[1] + textHeight), 'white')
         img2.paste(img, (0, textHeight))
         draw = ImageDraw.Draw(img2)
-        draw.text((0, margin), message, '#000', font=font)
+        if os.name == 'nt':
+            draw.text((0, margin), message, fill='black', font=font)
+        else:
+            for i in range(len(lines)):
+                draw.text((0, i * draw.textsize(dummyText)[1]), lines[i], fill='black', font=font)
         s.truncate(0)
         img2.save(s, format='JPEG')
         img = s.getvalue()
