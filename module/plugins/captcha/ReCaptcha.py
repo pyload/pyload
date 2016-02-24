@@ -172,7 +172,7 @@ class ReCaptcha(CaptchaService):
 
         if os.name == 'nt':
             font = ImageFont.truetype(fontName, 16)
-        message = self.v2ChallengeMsg + '\nType image numbers like "258".'
+        message = self.v2ChallengeMsg + '\n(Type image numbers like "258")'
         # the text's real height is twice as big as returned by font.getsize() since we use
         # a newline character which indeed breaks the text but doesn't count as a second line
         # in font.getsize().
@@ -187,10 +187,10 @@ class ReCaptcha(CaptchaService):
         img2.paste(img, (0, textHeight))
         draw = ImageDraw.Draw(img2)
         if os.name == 'nt':
-            draw.text((0, margin), message, fill='black', font=font)
+            draw.text((3, margin), message, fill='black', font=font)
         else:
             for i in range(len(lines)):
-                draw.text((0, i * draw.textsize(dummyText)[1]), lines[i], fill='black', font=font)
+                draw.text((3, i * draw.textsize(dummyText)[1] + margin), lines[i], fill='black', font=font)
         s.truncate(0)
         img2.save(s, format='JPEG')
         img = s.getvalue()
