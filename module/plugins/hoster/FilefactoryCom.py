@@ -13,7 +13,7 @@ def get_info(urls):
         m = re.search(r'Location: (.+)\r\n', h)
 
         if m and not re.match(m.group(1), FilefactoryCom.__pattern__):  #: It's a direct link! Skipping
-            yield (url, 0, 3, url)
+            yield (url, 0, 7, url)
         else:
             #: It's a standard html page
             yield parse_fileInfo(FilefactoryCom, url, get_url(url))
@@ -22,7 +22,7 @@ def get_info(urls):
 class FilefactoryCom(SimpleHoster):
     __name__    = "FilefactoryCom"
     __type__    = "hoster"
-    __version__ = "0.62"
+    __version__ = "0.63"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/(file|trafficshare/\w+)/\w+'

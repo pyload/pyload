@@ -11,7 +11,7 @@ from module.plugins.internal.misc import parse_name, replace_patterns
 class SimpleCrypter(Crypter):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.83"
+    __version__ = "0.84"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -95,7 +95,7 @@ class SimpleCrypter(Crypter):
                 info['error']  = "missing url"
                 info['status'] = 1
 
-            elif info['status'] == 3:
+            elif info['status'] in (3, 7):
                 try:
                     html = get_url(url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
 

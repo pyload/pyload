@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class OneFichierCom(SimpleHoster):
     __name__    = "OneFichierCom"
     __type__    = "hoster"
-    __version__ = "0.98"
+    __version__ = "0.99"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w+\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(?:es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?\w+)?'
@@ -66,7 +66,7 @@ class OneFichierCom(SimpleHoster):
 
                         info = {'name'  : name,
                                 'size'  : long(headers.get('content-length')),
-                                'status': 3,
+                                'status': 7,
                                 'url'   : url}
 
                     else:
