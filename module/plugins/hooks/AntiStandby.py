@@ -27,10 +27,10 @@ class Kernel32(object):
 class AntiStandby(Addon):
     __name__    = "AntiStandby"
     __type__    = "hook"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
-    __config__ = [("activated", "bool", "Activated"                       , True ),
+    __config__ = [("activated", "bool", "Activated"                       , False),
                   ("hdd"      , "bool", "Prevent HDD standby"             , True ),
                   ("system"   , "bool", "Prevent OS standby"              , True ),
                   ("display"  , "bool", "Prevent display standby"         , False),
