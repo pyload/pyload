@@ -21,10 +21,10 @@ except ImportError:
 
 
 class ReCaptcha(CaptchaService):
-    __name__ = 'ReCaptcha'
-    __type__ = 'captcha'
-    __version__ = '0.22'
-    __status__ = 'testing'
+    __name__    = 'ReCaptcha'
+    __type__    = 'captcha'
+    __version__ = '0.23'
+    __status__  = 'testing'
 
     __description__ = 'ReCaptcha captcha service plugin'
     __license__     = 'GPLv3'
