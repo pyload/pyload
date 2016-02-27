@@ -1,25 +1,36 @@
 # -*- coding: utf-8 -*-
 
-import base64
-import random
+import os
 import re
-import time
+import urllib
 import urlparse
 
+from StringIO import StringIO
 from module.plugins.internal.CaptchaService import CaptchaService
+
+try:
+    from PIL import _imaging
+    from PIL import Image
+    from PIL import ImageDraw
+    from PIL import ImageFont
+except ImportError:
+    import _imaging
+    import Image
+    import ImageDraw
+    import ImageFont
 
 
 class ReCaptcha(CaptchaService):
-    __name__    = "ReCaptcha"
-    __type__    = "captcha"
-    __version__ = "0.21"
-    __status__  = "testing"
+    __name__ = 'ReCaptcha'
+    __type__ = 'captcha'
+    __version__ = '0.22'
+    __status__ = 'testing'
 
-    __description__ = """ReCaptcha captcha service plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("pyLoad Team", "admin@pyload.org"),
-                       ("Walter Purcaro", "vuolter@gmail.com"),
-                       ("zapp-brannigan", "fuerst.reinje@web.de")]
+    __description__ = 'ReCaptcha captcha service plugin'
+    __license__     = 'GPLv3'
+    __authors__     = [('Walter Purcaro', 'vuolter@gmail.com'   ),
+                       ('zapp-brannigan', 'fuerst.reinje@web.de'),
+                       ('Arno-Nymous'   , None                  )]
 
 
     KEY_V1_PATTERN = r'(?:recaptcha(?:/api|\.net)/(?:challenge|noscript)\?k=|Recaptcha\.create\s*\(\s*["\'])([\w\-]+)'
@@ -57,7 +68,7 @@ class ReCaptcha(CaptchaService):
             challenge = re.search("challenge : '(.+?)',", html).group(1)
             server    = re.search("server : '(.+?)',", html).group(1)
 
-        except AttributeError:
+        except (AttributeError, IndexError):
             self.fail(_("ReCaptcha challenge pattern not found"))
 
         self.log_debug("Challenge: %s" % challenge)
@@ -76,7 +87,7 @@ class ReCaptcha(CaptchaService):
         try:
             challenge = re.search('\(\'(.+?)\',',html).group(1)
 
-        except AttributeError:
+        except (AttributeError, IndexError):
             self.fail(_("ReCaptcha second challenge pattern not found"))
 
         self.log_debug("Second challenge: %s" % challenge)
@@ -108,87 +119,137 @@ class ReCaptcha(CaptchaService):
         return vers, language, jsh
 
 
-    def _prepare_time_and_rpc(self):
-        self.pyfile.plugin.load("http://www.google.com/recaptcha/api2/demo")
+    def _prepare_image(self, image, challenge_msg):
+        dummy_text = 'pk'
+        # This is just a string to calculate biggest height of a text, since usually
+        # the letters 'p' and 'k' reach to the lower most respective higher most
+        # points in a text font (see typography) and thus we can hereby calculate
+        # the biggest text height of a given font
 
-        millis = int(round(time.time() * 1000))
+        font_name = 'arialbd'
+        s = StringIO()
+        s.write(image)
+        s.seek(0)
+        
+        img = Image.open(s)
+        draw = ImageDraw.Draw(img)
 
-        self.log_debug("Time: %s" % millis)
+        if os.name == 'nt':
+            font = ImageFont.truetype(font_name, 13)
+        else:
+            font = None
 
-        rand = random.randint(1, 99999999)
-        a    = "0.%s" % str(rand * 2147483647)
-        rpc  = int(100000000 * float(a))
+        tile_size       = {'width': img.size[0] / 3, 'height': img.size[1] / 3}
+        tile_index_size = {'width': draw.textsize('0')[0], 'height': draw.textsize('0')[1]}
 
-        self.log_debug("Rpc-token: %s" % rpc)
+        for i in xrange(3):
+            for j in xrange(3):
+                tile_index_pos = {
+                    'x': i * tile_size['width'] + (tile_size['width'] / 2) - (tile_index_size['width'] / 2),
+                    'y': j * tile_size['height']
+                }
+                draw.rectangle(
+                    [
+                        tile_index_pos['x'],
+                        tile_index_pos['y'],
+                        tile_index_pos['x'] + tile_index_size['width'],
+                        tile_index_pos['y'] + tile_index_size['height']
+                    ],
+                    fill='white'
+                )
+                index_number = str(j * 3 + i + 1)
+                text_width, text_height = draw.textsize(index_number, font=font)
+                draw.text(
+                    (
+                        tile_index_pos['x'] + (tile_index_size['width'] / 2) - (text_width / 2),
+                        tile_index_pos['y'] + (tile_index_size['height'] / 2) - (text_height / 2)
+                    ),
+                    index_number,
+                    '#000',
+                    font=font
+                )
 
-        return millis, rpc
+        if os.name == 'nt':
+            font = ImageFont.truetype(font_name, 16)
+
+        message = challenge_msg + '\n(Type image numbers like "258")'
+
+        # the text's real height is twice as big as returned by font.getsize() since we use
+        # a newline character which indeed breaks the text but doesn't count as a second line
+        # in font.getsize().
+        if os.name == 'nt':
+            text_height = draw.multiline_textsize(message, font=font)[1]
+
+        else:
+            lines = message.split('\n')
+            text_height = len(lines) * draw.textsize(dummy_text, font=font)[1]
+
+        margin = 5
+        text_height = text_height + margin * 2  #  add some margin on top and bottom of text
+
+        img2 = Image.new('RGB', (img.size[0], img.size[1] + text_height), 'white')
+        img2.paste(img, (0, text_height))
+        draw = ImageDraw.Draw(img2)
+
+        if os.name == 'nt':
+            draw.text((3, margin), message, fill='black', font=font)
+        else:
+            for i in xrange(len(lines)):
+                draw.text((3, i * draw.textsize(dummy_text)[1] + margin), lines[i], fill='black', font=font)
+
+        s.truncate(0)
+        img2.save(s, format='JPEG')
+        img = s.getvalue()
+        s.close()
+
+        return img
 
 
-    def _challenge_v2(self, key, parent=None):
-        if parent is None:
+    def _challenge_v2(self, key):
+        fallback_url = 'http://www.google.com/recaptcha/api/fallback?k=' + key
+
+        html = self.pyfile.plugin.load(fallback_url)
+
+        for i in xrange(10):
             try:
-                parent = urlparse.urljoin("http://", urlparse.urlparse(self.pyfile.url).netloc)
+                challenge = re.search(r'name="c"\s+value=\s*"([^"]+)', html).group(1)
 
-            except Exception:
-                parent = ""
+            except (AttributeError, IndexError):
+                self.fail(_("ReCaptcha challenge pattern not found"))
 
-        botguardstring      = "!A"
-        vers, language, jsh = self._collect_api_info()
-        millis, rpc         = self._prepare_time_and_rpc()
+            try:
+                challenge_msg = re.search(r'<label .*?class="fbc-imageselect-message-text">(.*?)</label>', html).group(1)
 
-        html = self.pyfile.plugin.load("https://www.google.com/recaptcha/api2/anchor",
-                                    get={'k'       : key,
-                                         'hl'      : language,
-                                         'v'       : vers,
-                                         'usegapi' : "1",
-                                         'jsh'     : "%s#id=IO_%s" % (jsh, millis),
-                                         'parent'  : parent,
-                                         'pfname'  : "",
-                                         'rpctoken': rpc})
+            except (AttributeError, IndexError):
+                try:
+                    challenge_msg = re.search(r'<div .*?class=\"fbc-imageselect-message-error\">(.*?)</div>', html).group(1)
 
-        token1 = re.search(r'id="recaptcha-token" value="(.*?)">', html)
-        self.log_debug("Token #1: %s" % token1.group(1))
+                except (AttributeError, IndexError):
+                    self.fail(_("ReCaptcha challenge message not found"))
 
-        html = self.pyfile.plugin.load("https://www.google.com/recaptcha/api2/frame",
-                                get={'c'      : token1.group(1),
-                                     'hl'     : language,
-                                     'v'      : vers,
-                                     'bg'     : botguardstring,
-                                     'k'      : key,
-                                     'usegapi': "1",
-                                     'jsh'    : jsh},
-                                decode="unicode-escape")
+            challenge_msg = re.sub(r'</?\w+?>', "", challenge_msg, 0 , re.I)
 
-        token2 = re.search(r'"finput","(.*?)",', html)
-        self.log_debug("Token #2: %s" % token2.group(1))
+            image_url = urlparse.urljoin('http://www.google.com',
+                                         re.search(r'"(/recaptcha/api2/payload[^"]+)', html).group(1))
 
-        token3 = re.search(r'"rresp","(.*?)",', html)
-        self.log_debug("Token #3: %s" % token3.group(1))
+            img = self.pyfile.plugin.load(image_url, ref=fallback_url, decode=False)
 
-        millis_captcha_loading = int(round(time.time() * 1000))
-        captcha_response = self.decrypt("https://www.google.com/recaptcha/api2/payload",
-                                              get={'c':token3.group(1), 'k':key},
-                                              cookies=True,
-                                              ocr=False,
-                                              timeout=30)
-        response = base64.b64encode('{"response":"%s"}' % captcha_response)
+            img = self._prepare_image(img, challenge_msg)
 
-        self.log_debug("Result: `%s`" % response)
+            response = self.decrypt_image(img)
 
-        timeToSolve     = int(round(time.time() * 1000)) - millis_captcha_loading
-        timeToSolveMore = timeToSolve + int(float("0." + str(random.randint(1, 99999999))) * 500)
+            post_str = "c=" + urllib.quote_plus(challenge) +\
+                       "".join("&response=%s" % str(int(k) - 1) for k in response if k.isdigit())
+            html = self.pyfile.plugin.load(fallback_url, post=post_str, ref=fallback_url)
 
-        html = self.pyfile.plugin.load("https://www.google.com/recaptcha/api2/userverify",
-                                    post={'k'       : key,
-                                          'c'       : token3.group(1),
-                                          'response': response,
-                                          't'       : timeToSolve,
-                                          'ct'      : timeToSolveMore,
-                                          'bg'      : botguardstring})
+            try:
+                result = re.search(r'"this\.select\(\)">(.*?)</textarea>', html).group(1)
+                break
 
-        token4 = re.search(r'"uvresp","(.*?)",', html)
-        self.log_debug("Token #4: %s" % token4.group(1))
+            except (AttributeError, IndexError):
+                pass
 
-        result = token4.group(1)
+        else:
+            self.fail(_("Recaptcha max retries exceeded"))
 
-        return result, None
+        return result, challenge
