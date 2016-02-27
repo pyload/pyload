@@ -9,21 +9,27 @@ from StringIO import StringIO
 from module.plugins.internal.CaptchaService import CaptchaService
 
 try:
+    no_pil = False
     from PIL import _imaging
     from PIL import Image
     from PIL import ImageDraw
     from PIL import ImageFont
+
 except ImportError:
-    import _imaging
-    import Image
-    import ImageDraw
-    import ImageFont
+    try:
+        import _imaging
+        import Image
+        import ImageDraw
+        import ImageFont
+
+    except ImportError:
+        no_pil = True
 
 
 class ReCaptcha(CaptchaService):
     __name__    = 'ReCaptcha'
     __type__    = 'captcha'
-    __version__ = '0.23'
+    __version__ = '0.24'
     __status__  = 'testing'
 
     __description__ = 'ReCaptcha captcha service plugin'
@@ -120,6 +126,10 @@ class ReCaptcha(CaptchaService):
 
 
     def _prepare_image(self, image, challenge_msg):
+        if no_pil:
+            self.log_error(_("Missing PIL lib"), _("Please install python's PIL library"))
+            self.fail(_("Missing PIL lib"))
+
         dummy_text = 'pk'
         # This is just a string to calculate biggest height of a text, since usually
         # the letters 'p' and 'k' reach to the lower most respective higher most
@@ -208,7 +218,7 @@ class ReCaptcha(CaptchaService):
     def _challenge_v2(self, key):
         fallback_url = 'http://www.google.com/recaptcha/api/fallback?k=' + key
 
-        html = self.pyfile.plugin.load(fallback_url)
+        html = self.pyfile.plugin.load(fallback_url, ref=self.pyfile.url)
 
         for i in xrange(10):
             try:
