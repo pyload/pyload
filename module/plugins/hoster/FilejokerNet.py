@@ -8,7 +8,7 @@ from module.plugins.internal.XFSHoster import XFSHoster
 class FilejokerNet(XFSHoster):
     __name__    = "FilejokerNet"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filejoker\.net/\w{12}'
@@ -27,6 +27,7 @@ class FilejokerNet(XFSHoster):
 
     WAIT_PATTERN      = r'Please [Ww]ait (?:<span id="count" class="alert-success">)?([\w ]+?)(?:</span> seconds</p>| until the next download)'
     RECAPTCHA_PATTERN = r'<div id="recaptcha_image" class="pic"></div>'
+    ERROR_PATTERN     = r'Wrong Captcha'
 
     INFO_PATTERN      = r'<div class="name-size">(?P<N>.+?) <small>\((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</small></div>'
     SIZE_REPLACEMENTS = [('Kb','KB'), ('Mb','MB'), ('Gb','GB')]
