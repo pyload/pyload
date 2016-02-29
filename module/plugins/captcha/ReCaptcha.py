@@ -29,7 +29,7 @@ except ImportError:
 class ReCaptcha(CaptchaService):
     __name__    = 'ReCaptcha'
     __type__    = 'captcha'
-    __version__ = '0.24'
+    __version__ = '0.25'
     __status__  = 'testing'
 
     __description__ = 'ReCaptcha captcha service plugin'
@@ -152,22 +152,23 @@ class ReCaptcha(CaptchaService):
         tile_size       = {'width': img.size[0] / 3, 'height': img.size[1] / 3}
         tile_index_size = {'width': draw.textsize('0')[0], 'height': draw.textsize('0')[1]}
 
-        for i in xrange(3):
-            for j in xrange(3):
+        margin = 2
+        for x in xrange(3):
+            for y in xrange(3):
                 tile_index_pos = {
-                    'x': i * tile_size['width'] + (tile_size['width'] / 2) - (tile_index_size['width'] / 2),
-                    'y': j * tile_size['height']
+                    'x': x * tile_size['width'] + (tile_size['width'] / 2) - (tile_index_size['width'] / 2),
+                    'y': y * tile_size['height']
                 }
                 draw.rectangle(
                     [
-                        tile_index_pos['x'],
+                        tile_index_pos['x'] - margin,
                         tile_index_pos['y'],
-                        tile_index_pos['x'] + tile_index_size['width'],
+                        tile_index_pos['x'] + tile_index_size['width'] + margin,
                         tile_index_pos['y'] + tile_index_size['height']
                     ],
                     fill='white'
                 )
-                index_number = str(j * 3 + i + 1)
+                index_number = str(y * 3 + x + 1)
                 text_width, text_height = draw.textsize(index_number, font=font)
                 draw.text(
                     (
@@ -182,30 +183,46 @@ class ReCaptcha(CaptchaService):
         if os.name == 'nt':
             font = ImageFont.truetype(font_name, 16)
 
+        _sol = 0
+        _eol = 1
+        while True:
+            # determine maximum width of line
+            while draw.textsize(challenge_msg[_sol:_eol], font=font)[0] < img.size[0] and _eol < len(challenge_msg):
+                _eol += 1
+
+            # if we've wrapped the text, then adjust the wrap to the last word
+            if _eol < len(challenge_msg):
+                _eol = challenge_msg.rfind(" ", 0, _eol)
+                if _eol > 0:
+                    challenge_msg = challenge_msg[:_eol] + '\n' + challenge_msg[_eol+1:]
+                    _sol = _eol+1
+            else:
+                break
+
         message = challenge_msg + '\n(Type image numbers like "258")'
 
         # the text's real height is twice as big as returned by font.getsize() since we use
         # a newline character which indeed breaks the text but doesn't count as a second line
         # in font.getsize().
         if os.name == 'nt':
-            text_height = draw.multiline_textsize(message, font=font)[1]
+            text_area_height = draw.multiline_textsize(message, font=font)[1]
 
         else:
             lines = message.split('\n')
-            text_height = len(lines) * draw.textsize(dummy_text, font=font)[1]
+            text_area_height = len(lines) * draw.textsize(dummy_text, font=font)[1]
 
         margin = 5
-        text_height = text_height + margin * 2  #  add some margin on top and bottom of text
+        text_area_height = text_area_height + margin * 2  #  add some margin on top and bottom of text
 
-        img2 = Image.new('RGB', (img.size[0], img.size[1] + text_height), 'white')
-        img2.paste(img, (0, text_height))
+        img2 = Image.new('RGB', (img.size[0], img.size[1] + text_area_height), 'white')
+        img2.paste(img, (0, text_area_height))
         draw = ImageDraw.Draw(img2)
 
         if os.name == 'nt':
             draw.text((3, margin), message, fill='black', font=font)
         else:
             for i in xrange(len(lines)):
-                draw.text((3, i * draw.textsize(dummy_text)[1] + margin), lines[i], fill='black', font=font)
+                draw.text((3, i * draw.textsize(dummy_text, font=font)[1] + margin), lines[i], fill='black', font=font)
 
         s.truncate(0)
         img2.save(s, format='JPEG')
