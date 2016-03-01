@@ -29,7 +29,7 @@ except ImportError:
 class ReCaptcha(CaptchaService):
     __name__    = 'ReCaptcha'
     __type__    = 'captcha'
-    __version__ = '0.26'
+    __version__ = '0.27'
     __status__  = 'testing'
 
     __description__ = 'ReCaptcha captcha service plugin'
@@ -136,13 +136,14 @@ class ReCaptcha(CaptchaService):
         # points in a text font (see typography) and thus we can hereby calculate
         # the biggest text height of a given font
 
-        font_name = 'arialbd'
         s = StringIO()
         s.write(image)
         s.seek(0)
-        
+
         img = Image.open(s)
         draw = ImageDraw.Draw(img)
+
+        font_name = 'arialbd'
 
         if os.name == 'nt':
             font = ImageFont.truetype(font_name, 13)
@@ -159,6 +160,7 @@ class ReCaptcha(CaptchaService):
                     'x': x * tile_size['width'] + (tile_size['width'] / 2) - (tile_index_size['width'] / 2),
                     'y': y * tile_size['height']
                 }
+
                 draw.rectangle(
                     [
                         tile_index_pos['x'] - margin,
@@ -168,8 +170,10 @@ class ReCaptcha(CaptchaService):
                     ],
                     fill='white'
                 )
+
                 index_number = str(y * 3 + x + 1)
                 text_width, text_height = draw.textsize(index_number, font=font)
+
                 draw.text(
                     (
                         tile_index_pos['x'] + (tile_index_size['width'] / 2) - (text_width / 2),
