@@ -29,7 +29,7 @@ except ImportError:
 class ReCaptcha(CaptchaService):
     __name__    = 'ReCaptcha'
     __type__    = 'captcha'
-    __version__ = '0.25'
+    __version__ = '0.26'
     __status__  = 'testing'
 
     __description__ = 'ReCaptcha captcha service plugin'
@@ -254,7 +254,7 @@ class ReCaptcha(CaptchaService):
                 except (AttributeError, IndexError):
                     self.fail(_("ReCaptcha challenge message not found"))
 
-            challenge_msg = re.sub(r'</?\w+?>', "", challenge_msg, 0 , re.I)
+            challenge_msg = re.sub(r'</?\w+?>', "", challenge_msg)
 
             image_url = urlparse.urljoin('http://www.google.com',
                                          re.search(r'"(/recaptcha/api2/payload[^"]+)', html).group(1))
