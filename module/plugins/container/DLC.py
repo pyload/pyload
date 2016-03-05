@@ -5,7 +5,7 @@ from __future__ import with_statement
 import re
 import xml.dom.minidom
 
-import Crypto.Cipher
+import Crypto.Cipher.AES
 
 from module.plugins.internal.Container import Container
 from module.plugins.internal.misc import decode, encode
@@ -14,7 +14,7 @@ from module.plugins.internal.misc import decode, encode
 class DLC(Container):
     __name__    = "DLC"
     __type__    = "container"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __status__  = "testing"
 
     __pattern__ = r'(.+\.dlc|[\w\+^_]+==[\w\+^_/]+==)$'
