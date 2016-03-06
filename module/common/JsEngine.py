@@ -133,9 +133,9 @@ class JsEngine():
             return results[0]
 
     def eval_pyv8(self, script):
-        rt = PyV8.JSContext()
-        rt.enter()
-        return rt.eval(script)
+        with PyV8.JSLocker():
+            with PyV8.JSContext() as rt:
+                return rt.eval(script)
 
     def eval_js(self, script):
         script = "print(eval(unescape('%s')))" % quote(script)
