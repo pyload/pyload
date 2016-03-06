@@ -15,7 +15,7 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "1.19"
+    __version__ = "1.20"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
@@ -23,6 +23,7 @@ class UlozTo(SimpleHoster):
                    ("use_premium" , "bool", "Use premium account if available"                 , True),
                    ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
                    ("chk_filesize", "bool", "Check file size"                                  , True),
+                   ("captcha"     , "Image;Sound", "Captcha recognition"                       , "Image"),
                    ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
 
     __description__ = """Uloz.to hoster plugin"""
@@ -78,6 +79,10 @@ class UlozTo(SimpleHoster):
             self.log_debug("xapca: %s" % xapca)
 
             data = json.loads(xapca)
+            if self.config.get("captcha") == "Image":
+                captcha_value = self.captcha.decrypt(data['image'])
+            else:
+                captcha_value = self.captcha.decrypt(str(data['sound']), input_type='wav', ocr="UlozTo")
             captcha_value = self.captcha.decrypt(data['image'])
             self.log_debug("CAPTCHA HASH: " + data['hash'], "CAPTCHA SALT: %s" % data['salt'], "CAPTCHA VALUE: " + captcha_value)
 
@@ -135,7 +140,8 @@ class UlozTo(SimpleHoster):
         })
 
         if check == "wrong_captcha":
-            self.retry_captcha()
+            self.captcha.invalid()
+            self.retry(msg=_("Wrong captcha code"))
 
         elif check == "offline":
             self.offline()
