@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pyxmpp
+import pyxmpp.interfaces
 
 from pyxmpp.jabber.client import JabberClient
 
@@ -10,7 +11,7 @@ from module.plugins.hooks.IRC import IRC
 class XMPP(IRC, JabberClient):
     __name__    = "XMPP"
     __type__    = "hook"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                           , False                                    ),
@@ -18,6 +19,7 @@ class XMPP(IRC, JabberClient):
                   ("pw"       , "str" , "Password"                            , ""                                       ),
                   ("tls"      , "bool", "Use TLS"                             , False                                    ),
                   ("owners"   , "str" , "List of JIDs accepting commands from", "me@icq-gateway.org;some@msn-gateway.org"),
+                  ("keepalive", "int" , "keepalive interval (0 to disable)"    , 0                                        ),
                   ("info_file", "bool", "Inform about every file finished"    , False                                    ),
                   ("info_pack", "bool", "Inform about every package finished" , True                                     ),
                   ("captcha"  , "bool", "Send captcha requests"               , True                                     )]
@@ -27,7 +29,7 @@ class XMPP(IRC, JabberClient):
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
-    pyxmpp.interface.implements(IMessageHandlersProvider)
+    pyxmpp.interface.implements(pyxmpp.interfaces.IMessageHandlersProvider)
 
 
     def __init__(self, *args, **kwargs):
@@ -51,7 +53,7 @@ class XMPP(IRC, JabberClient):
         #: And identity data
         JabberClient.__init__(self, self.jid, password,
                               disco_name="pyLoad XMPP Client", disco_type="bot",
-                              tls_settings=tls_settings, auth_methods=auth)
+                              tls_settings=tls_settings, auth_methods=auth, keepalive=self.config.get('keepalive'))
 
         self.interface_providers = [
             VersionHandler(self),
@@ -228,7 +230,7 @@ class VersionHandler(object):
     This class will answer version query and announce 'jabber:iq:version' namespace
     in the client's disco#info results.
     """
-    pyxmpp.interface.implements(IIqHandlersProvider, IFeaturesProvider)
+    pyxmpp.interface.implements(pyxmpp.interfaces.IIqHandlersProvider, pyxmpp.interfaces.IFeaturesProvider)
 
 
     def __init__(self, client):
