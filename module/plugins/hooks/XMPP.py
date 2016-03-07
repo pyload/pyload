@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pyxmpp
+import pyxmpp.all
 import pyxmpp.interfaces
 
 from pyxmpp.jabber.client import JabberClient
@@ -11,18 +12,18 @@ from module.plugins.hooks.IRC import IRC
 class XMPP(IRC, JabberClient):
     __name__    = "XMPP"
     __type__    = "hook"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
-    __config__ = [("activated", "bool", "Activated"                           , False                                    ),
-                  ("jid"      , "str" , "Jabber ID"                           , "user@exmaple-jabber-server.org"         ),
-                  ("pw"       , "str" , "Password"                            , ""                                       ),
-                  ("tls"      , "bool", "Use TLS"                             , False                                    ),
-                  ("owners"   , "str" , "List of JIDs accepting commands from", "me@icq-gateway.org;some@msn-gateway.org"),
-                  ("keepalive", "int" , "keepalive interval (0 to disable)"    , 0                                        ),
-                  ("info_file", "bool", "Inform about every file finished"    , False                                    ),
-                  ("info_pack", "bool", "Inform about every package finished" , True                                     ),
-                  ("captcha"  , "bool", "Send captcha requests"               , True                                     )]
+    __config__ = [("activated", "bool", "Activated"                                    , False                                    ),
+                  ("jid"      , "str" , "Jabber ID"                                    , "user@exmaple-jabber-server.org"         ),
+                  ("pw"       , "str" , "Password"                                     , ""                                       ),
+                  ("tls"      , "bool", "Use TLS"                                      , False                                    ),
+                  ("owners"   , "str" , "List of JIDs accepting commands from"         , "me@icq-gateway.org;some@msn-gateway.org"),
+                  ("keepalive", "int" , "Keepalive interval in seconds (0 to disable)" , 0                                        ),
+                  ("info_file", "bool", "Inform about every file finished"             , False                                    ),
+                  ("info_pack", "bool", "Inform about every package finished"          , True                                     ),
+                  ("captcha"  , "bool", "Send captcha requests"                        , True                                     )]
 
     __description__ = """Connect to jabber and let owner perform different tasks"""
     __license__     = "GPLv3"
