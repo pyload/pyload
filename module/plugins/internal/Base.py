@@ -27,7 +27,7 @@ def parse_fileInfo(klass, url="", html=""):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -49,7 +49,7 @@ class Base(Plugin):
                 'hash'   : {},
                 'pattern': {},
                 'size'   : 0,
-                'status' : 3 if url else 8,
+                'status' : 7 if url else 8,
                 'url'    : replace_patterns(url, cls.URL_REPLACEMENTS)}
 
         try:
@@ -286,10 +286,11 @@ class Base(Plugin):
 
     #: Deprecated method, use `_process` instead (Remove in 0.4.10)
     def preprocessing(self, *args, **kwargs):
-        self.pyfile.setStatus("starting")  #@NOTE: Set pyfile status from `queued` to `starting` as soon as possible to avoid race condition in ThreadManager's assignJob function
+        #@NOTE: Set pyfile status from `queued` to `starting` as soon as possible to avoid race condition in ThreadManager's assignJob function
+        #@NOTE: Move to ThreadManager in 0.4.10
+        self.pyfile.setStatus("starting")
 
         #@NOTE: Recheck info thread synchronization in 0.4.10
-        # time.sleep(1)
         return self._process(*args, **kwargs)
 
 

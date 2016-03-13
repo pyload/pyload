@@ -6,7 +6,7 @@ import re
 import time
 import urllib
 
-import Crypto.Cipher
+import Crypto.Cipher.ARC4
 import pycurl
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
@@ -17,7 +17,7 @@ from module.plugins.internal.misc import timestamp
 class TurbobitNet(SimpleHoster):
     __name__    = "TurbobitNet"
     __type__    = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__  = "broken"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'

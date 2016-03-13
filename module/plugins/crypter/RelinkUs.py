@@ -6,7 +6,7 @@ import binascii
 import os
 import re
 
-import Crypto.Cipher
+import Crypto.Cipher.AES
 
 from module.plugins.internal.Crypter import Crypter
 from module.plugins.internal.misc import fsjoin
@@ -15,7 +15,7 @@ from module.plugins.internal.misc import fsjoin
 class RelinkUs(Crypter):
     __name__    = "RelinkUs"
     __type__    = "crypter"
-    __version__ = "3.17"
+    __version__ = "3.18"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?relink\.us/(f/|((view|go)\.php\?id=))(?P<ID>.+)'

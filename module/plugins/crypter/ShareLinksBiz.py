@@ -3,7 +3,7 @@
 import binascii
 import re
 
-import Crypto.Cipher
+import Crypto.Cipher.AES
 
 from module.plugins.internal.Crypter import Crypter
 
@@ -11,7 +11,7 @@ from module.plugins.internal.Crypter import Crypter
 class ShareLinksBiz(Crypter):
     __name__    = "ShareLinksBiz"
     __type__    = "crypter"
-    __version__ = "1.22"
+    __version__ = "1.23"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'

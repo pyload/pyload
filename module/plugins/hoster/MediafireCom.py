@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class MediafireCom(SimpleHoster):
     __name__    = "MediafireCom"
     __type__    = "hoster"
-    __version__ = "0.94"
+    __version__ = "0.95"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)(?P<ID>\w+)'
@@ -56,10 +56,18 @@ class MediafireCom(SimpleHoster):
         captcha_key = recaptcha.detect_key()
 
         if captcha_key:
-            self.captcha = recaptcha
-            response, challenge = recaptcha.challenge(captcha_key)
-            self.data = self.load(self.pyfile.url,
-                                  post={'g-recaptcha-response': response})
+            url, inputs = self.parse_html_form('name="form_captcha"')
+            self.log_debug(("form_captcha url:%s inputs:%s") % (url, inputs))
+
+            if url:
+                self.captcha = recaptcha
+                response, challenge = recaptcha.challenge(captcha_key)
+
+                inputs['g-recaptcha-response'] = response
+                self.data = self.load(self.fixurl(url), post=inputs)
+
+            else:
+                self.fail("ReCaptcha form not found")
 
 
     def handle_free(self, pyfile):

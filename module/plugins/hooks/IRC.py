@@ -13,13 +13,13 @@ from threading import Thread
 
 from module.Api import PackageDoesNotExists, FileDoesNotExists
 from module.plugins.internal.Notifier import Notifier
-from module.internal.misc import formatSize
+from module.plugins.internal.misc import format_size
 
 
 class IRC(Thread, Notifier):
     __name__    = "IRC"
     __type__    = "hook"
-    __version__ = "0.20"
+    __version__ = "0.22"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                                    , False                    ),
@@ -41,7 +41,7 @@ class IRC(Thread, Notifier):
 
     def __init__(self, *args, **kwargs):
         Thread.__init__(self)
-        Addon.__init__(self, *args, **kwargs)
+        Notifier.__init__(self, *args, **kwargs)
         self.setDaemon(True)
 
 
@@ -229,7 +229,7 @@ class IRC(Thread, Notifier):
                              data.fid,
                              data.name,
                              data.statusmsg,
-                             "%s/s" % formatSize(data.speed),
+                             "%s/s" % format_size(data.speed),
                              "%s" % data.format_eta,
                              temp_progress
                          ))

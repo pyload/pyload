@@ -3,7 +3,7 @@
 import binascii
 import re
 
-import Crypto.Cipher
+import Crypto.Cipher.AES
 import pycurl
 
 from module.plugins.internal.Crypter import Crypter
@@ -13,7 +13,7 @@ from module.plugins.internal.misc import html_unescape, set_cookie
 class LinkCryptWs(Crypter):
     __name__    = "LinkCryptWs"
     __type__    = "crypter"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?linkcrypt\.ws/(dir|container)/(?P<ID>\w+)'

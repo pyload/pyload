@@ -5,7 +5,7 @@ from __future__ import with_statement
 import binascii
 import re
 
-import Crypto.Cipher
+import Crypto.Cipher.AES
 
 from module.plugins.internal.Container import Container
 from module.plugins.internal.misc import encode
@@ -14,7 +14,7 @@ from module.plugins.internal.misc import encode
 class RSDF(Container):
     __name__    = "RSDF"
     __type__    = "container"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__  = "testing"
 
     __pattern__ = r'.+\.rsdf$'

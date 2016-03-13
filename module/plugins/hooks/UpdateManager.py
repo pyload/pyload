@@ -15,7 +15,7 @@ from module.plugins.internal.misc import encode, exists, Expose, fsjoin, threade
 class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "1.10"
+    __version__ = "1.11"
     __status__  = "testing"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),
@@ -283,7 +283,12 @@ class UpdateManager(Addon):
             plugins = getattr(self.pyload.pluginManager, "%sPlugins" % plugin_type.rstrip('s'))  #@TODO: Remove rstrip in 0.4.10
 
             oldver = float(plugins[plugin_name]['v']) if plugin_name in plugins else None
-            newver = float(plugin_version)
+            try:
+                newver = float(plugin_version)
+            except ValueError:
+                self.log_error(_("Error updating plugin: %s %s") % (plugin_type.rstrip('s').upper(), plugin_name),
+                               _("Bad version number on the server"))
+                continue
 
             if not oldver:
                 msg = "New plugin: %(type)s %(name)s (v%(newver).2f)"

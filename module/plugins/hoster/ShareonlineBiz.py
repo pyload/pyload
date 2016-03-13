@@ -172,7 +172,7 @@ class ShareonlineBiz(SimpleHoster):
             self.retry(wait=600, msg=errmsg)
 
         elif errmsg == "full":
-            self.retry(10, 600, _("Server is full"))
+            self.fail(_("Server is full"))
 
         elif 'slot' in errmsg:
             self.wait(3600, reconnect=True)

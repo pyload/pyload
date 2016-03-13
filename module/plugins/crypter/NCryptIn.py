@@ -3,7 +3,7 @@
 import binascii
 import re
 
-import Crypto.Cipher
+import Crypto.Cipher.AES
 
 from module.plugins.internal.Crypter import Crypter
 from module.plugins.captcha.ReCaptcha import ReCaptcha
@@ -12,7 +12,7 @@ from module.plugins.captcha.ReCaptcha import ReCaptcha
 class NCryptIn(Crypter):
     __name__    = "NCryptIn"
     __type__    = "crypter"
-    __version__ = "1.40"
+    __version__ = "1.41"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?ncrypt\.in/(?P<TYPE>folder|link|frame)-([^/\?]+)'

@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
 import re
 import urlparse
-
-import pycurl
 
 from module.plugins.internal.Hoster import Hoster
 from module.plugins.internal.misc import parse_name
@@ -12,7 +11,7 @@ from module.plugins.internal.misc import parse_name
 class Ftp(Hoster):
     __name__    = "Ftp"
     __type__    = "hoster"
-    __version__ = "0.59"
+    __version__ = "0.60"
     __status__  = "testing"
 
     __pattern__ = r'(?:ftps?|sftp)://([\w\-.]+(:[\w\-.]+)?@)?[\w\-.]+(:\d+)?/.+'
@@ -37,8 +36,6 @@ class Ftp(Hoster):
         pyfile.name = parse_name(p_url.path.rpartition('/')[2])
 
         if not "@" in netloc:
-            self.log_debug("Auth required")
-
             #@TODO: Recheck in 0.4.10
             if self.account:
                 servers = [x['login'] for x in self.account.getAllAccounts()]
@@ -52,24 +49,25 @@ class Ftp(Hoster):
             else:
                 pwd = self.get_password()
                 if ':' in pwd:
+                    self.log_debug("Logging on to %s" % netloc)
                     self.req.addAuth(pwd)
                 else:
-                    self.fail(_("Authorization required"))
-
-        self.req.http.c.setopt(pycurl.NOBODY, 1)
+                    self.log_debug(_("Using anonymous logon"))
 
         try:
-            res = self.load(pyfile.url)
+            headers = self.load(pyfile.url, just_header=True)
 
         except pycurl.error, e:
-            self.fail(_("Error %d: %s") % e.args)
+            if "530" in e.args[1]:
+                self.fail(_("Authorization required"))
+            else:
+                self.fail(_("Error %d: %s") % e.args)
 
         self.req.http.c.setopt(pycurl.NOBODY, 0)
         self.log_debug(self.req.http.header)
 
-        m = re.search(r'Content-Length:\s*(\d+)', res)
-        if m is not None:
-            pyfile.size = int(m.group(1))
+        if "content-length" in headers:
+            pyfile.size = headers.get("content-length")
             self.download(pyfile.url)
 
         else:
