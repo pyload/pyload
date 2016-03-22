@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class CryptCat(SimpleCrypter):
     __name__    = "CryptCat"
     __type__    = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?crypt\.cat/\w+'
@@ -28,29 +28,30 @@ class CryptCat(SimpleCrypter):
 
 
     def get_links(self):
-        url = self.req.http.lastEffectiveURL
+        baseurl = self.req.http.lastEffectiveURL
+        url, inputs = self.parse_html_form()
+
 
         if ">Enter your password.<" in self.data:
             password = self.get_password()
             if not password:
                 self.fail(_("Password required"))
 
-            post_data = {'Pass1'   : password,
-                         'Submit0' : "" }
+            inputs['Pass1'] = password
 
         elif "Enter Captcha" in self.data:
             m = re.search(r'<img src="(.+?)"', self.data)
             if m:
                 captcha_code = self.captcha.decrypt(m.group(1), input_type="jpeg")
-                post_data = {'security_code' : captcha_code,
-                             'submit1'       : "" }
+                inputs['security_code'] = captcha_code
+
             else:
                 return []
 
         else:
             return []
 
-        self.data = self.load(url, post=post_data, ref=url)
+        self.data = self.load(baseurl, post=inputs, ref=baseurl)
 
         if "You have entered an incorrect password." in self.data:
             self.fail(_("Wrong password"))
