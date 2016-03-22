@@ -38,7 +38,7 @@ except ImportError:
 class misc(object):
     __name__    = "misc"
     __type__    = "plugin"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -752,7 +752,7 @@ def parse_html_form(attr_str, html, input_names={}):
         inputs = {}
         action = parse_html_tag_attr_value("action", form.group('TAG'))
 
-        for inputtag in re.finditer(r'(<(input|textarea|button).*?>)([^<]*(?=</\2)|)',
+        for inputtag in re.finditer(r'(<(input|textarea).*?>)([^<]*(?=</\2)|)',
                                     re.sub(re.compile(r'<!--.+?-->', re.I | re.S), "", form.group('CONTENT')),
                                     re.I | re.S):
 
