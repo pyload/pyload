@@ -15,7 +15,7 @@ from module.plugins.internal.misc import json, seconds_to_midnight
 class RapidgatorNet(SimpleHoster):
     __name__    = "RapidgatorNet"
     __type__    = "hoster"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
@@ -158,7 +158,9 @@ class RapidgatorNet(SimpleHoster):
             if "The verification code is incorrect" in self.data:
                 self.retry_captcha()
             else:
-                self.captcha.correct()
+                m = re.search(self.LINK_FREE_PATTERN, self.data)
+                if m is not None:
+                    self.link = m.group(1)
 
 
     def handle_captcha(self):
