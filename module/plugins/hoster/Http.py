@@ -29,13 +29,8 @@ class Http(Hoster):
         url    = re.sub(r'^(jd|py)', "http", pyfile.url)
         netloc = urlparse.urlparse(url).netloc
 
-        link = self.isresource(url)
-
-        if not link:
-            return
-
         for _i in xrange(2):
-            self.download(link, ref=False, disposition=True)
+            self.download(url, ref=False, disposition=True)
 
             if self.req.code in (404, 410):
                 self.offline()
