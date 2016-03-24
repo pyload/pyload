@@ -15,7 +15,7 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "1.20"
+    __version__ = "1.21"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
@@ -79,11 +79,10 @@ class UlozTo(SimpleHoster):
             self.log_debug("xapca: %s" % xapca)
 
             data = json.loads(xapca)
-            if self.config.get("captcha") == "Image":
-                captcha_value = self.captcha.decrypt(data['image'])
-            else:
+            if self.config.get("captcha") == "Sound":
                 captcha_value = self.captcha.decrypt(str(data['sound']), input_type='wav', ocr="UlozTo")
-            captcha_value = self.captcha.decrypt(data['image'])
+            else:
+                captcha_value = self.captcha.decrypt(data['image'])
             self.log_debug("CAPTCHA HASH: " + data['hash'], "CAPTCHA SALT: %s" % data['salt'], "CAPTCHA VALUE: " + captcha_value)
 
             inputs.update({'timestamp': data['timestamp'], 'salt': data['salt'], 'hash': data['hash'], 'captcha_value': captcha_value})
