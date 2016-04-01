@@ -9,7 +9,7 @@ from module.plugins.internal.CaptchaService import CaptchaService
 class SolveMedia(CaptchaService):
     __name__    = "SolveMedia"
     __type__    = "captcha"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __description__ = """SolveMedia captcha service plugin"""
@@ -62,7 +62,7 @@ class SolveMedia(CaptchaService):
 
             except Fail, e:
                 self.log_warning(e, trace=True)
-                self.pyfile.plugin.invalidCaptcha()
+                self.pyfile.plugin.captcha.invalid()
                 result = None
 
             html = self.pyfile.plugin.load("http://api.solvemedia.com/papi/verify.noscript",
