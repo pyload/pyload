@@ -15,7 +15,7 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "1.21"
+    __version__ = "1.22"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
@@ -86,6 +86,14 @@ class UlozTo(SimpleHoster):
             self.log_debug("CAPTCHA HASH: " + data['hash'], "CAPTCHA SALT: %s" % data['salt'], "CAPTCHA VALUE: " + captcha_value)
 
             inputs.update({'timestamp': data['timestamp'], 'salt': data['salt'], 'hash': data['hash'], 'captcha_value': captcha_value})
+
+        elif all(key in inputs for key in ('do', 'cid', 'ts', 'sign', '_token_', 'sign_a', 'adi')):
+            # New version 1.4.2016 
+            self.log_debug('Using "new" > 1.4.2016')
+
+            inputs.update({'do': inputs['do'], '_token_': inputs['_token_'],
+                            'ts': inputs['ts'], 'cid': inputs['cid'],
+                            'adi': inputs['adi'], 'sign_a': inputs['sign_a'],'sign': inputs['sign']})
 
         else:
             self.error(_("CAPTCHA form changed"))
