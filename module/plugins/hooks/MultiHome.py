@@ -31,7 +31,7 @@ class Interface(object):
 class MultiHome(Addon):
     __name__    = "MultiHome"
     __type__    = "hook"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __config__ = [("activated" , "bool", "Activated" , False ),
@@ -39,7 +39,7 @@ class MultiHome(Addon):
 
     __description__ = """IP address changer"""
     __license__     = "GPLv3"
-    __authors__     = [("mkaay",   "mkaay@mkaay.de"            ),
+    __authors__     = [("mkaay",     "mkaay@mkaay.de"            ),
                        ("GammaC0de", "nitzo2001{AT]yahoo[DOT]com")]
 
 
