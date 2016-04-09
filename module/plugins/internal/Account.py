@@ -12,7 +12,7 @@ from module.plugins.internal.misc import Periodical, compare_time, decode, isite
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.72"
+    __version__ = "0.73"
     __status__  = "stable"
 
     __description__ = """Base account plugin"""
@@ -203,7 +203,7 @@ class Account(Plugin):
                 refresh = False
                 self.reset()
 
-        if refresh:
+        if refresh and self.info['login']['valid']:
             self.log_info(_("Grabbing account info for user `%s`...") % self.user)
             self.info = self._grab_info()
 
