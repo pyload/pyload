@@ -4,24 +4,27 @@ import re
 import time
 
 from module.plugins.internal.Account import Account
+from module.PyFile import PyFile
+from module.plugins.captcha.ReCaptcha import ReCaptcha
 
 
 class NitroflareCom(Account):
     __name__    = "NitroflareCom"
     __type__    = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __description__ = """Nitroflare.com account plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"         ),
+                       ("GammaC0de",      "nitzo2001[AT]yahoo[DOT]com")]
 
 
     VALID_UNTIL_PATTERN  = r'>Time Left</label><strong>(.+?)</'
-    TRAFFIC_LEFT_PATTERN = r'>Daily Limit</label><strong>([\d.,]+)'
+    TRAFFIC_LEFT_PATTERN = r'>Your Daily Limit</label><strong>([\d.,]+) / ([\d.,]+)'
     LOGIN_FAIL_PATTERN   = r'<ul class="errors">\s*<li>'
 
-    TOKEN_PATTERN = r'name="token" value="(.+?)"'
+    TOKEN_PATTERN =   r'name="token" value="(.+?)"'
 
 
     def grab_info(self, user, password, data):
@@ -56,7 +59,7 @@ class NitroflareCom(Account):
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m is not None:
             try:
-                trafficleft = self.parse_traffic(str(max(0, 50 - float(m.group(1)))),  "GB")
+                trafficleft = self.parse_traffic(str(max(0, float(m.group(2)) - float(m.group(1)))),  "GB")
 
             except Exception, e:
                 self.log_error(e, trace=True)
@@ -69,15 +72,41 @@ class NitroflareCom(Account):
 
 
     def signin(self, user, password, data):
-        html = self.load("https://nitroflare.com/login")
+        login_url = "https://nitroflare.com/login"
+        post_data = {'login'   : "",
+                     'email'   : user,
+                     'password': password}
 
-        token = re.search(self.TOKEN_PATTERN, html).group(1)
+        self.data = self.load(login_url)
 
-        html = self.load("https://nitroflare.com/login",
-                         post={'login'   : "",
-                               'email'   : user,
-                               'password': password,
-                               'token'   : token})
+        # dummy pyfile
+        pyfile = PyFile(self.pyload.files, -1, login_url, login_url, 0, 0, "", self.classname, -1, -1)
+        pyfile.plugin = self
 
-        if re.search(self.LOGIN_FAIL_PATTERN, html):
+        self.captcha = ReCaptcha(pyfile)
+
+        captcha_key = self.captcha.detect_key()
+        if captcha_key:
+            response, challenge = self.captcha.challenge()
+            post_data['g-recaptcha-response'] = response
+
+        token = re.search(self.TOKEN_PATTERN, self.data).group(1)
+        post_data['token'] = token
+
+        self.data = self.load("https://nitroflare.com/login", post=post_data)
+
+        if re.search(self.LOGIN_FAIL_PATTERN, self.data):
             self.fail_login()
+
+    """
+     @NOTE: below are methods
+      necessary for captcha to work with account plugins
+    """
+    def check_status(self):
+        pass
+
+    def retry_captcha(self, attemps=10, wait=1, msg=_("Max captcha retries reached")):
+        self.captcha.invalid()
+        self.fail_login(msg="Invalid captcha")
+
+
