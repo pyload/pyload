@@ -11,7 +11,7 @@ from module.plugins.captcha.ReCaptcha import ReCaptcha
 class NitroflareCom(Account):
     __name__    = "NitroflareCom"
     __type__    = "account"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__  = "testing"
 
     __description__ = """Nitroflare.com account plugin"""
@@ -21,7 +21,7 @@ class NitroflareCom(Account):
 
 
     VALID_UNTIL_PATTERN  = r'>Time Left</label><strong>(.+?)</'
-    TRAFFIC_LEFT_PATTERN = r'>Your Daily Limit</label><strong>([\d.,]+) / ([\d.,]+)'
+    TRAFFIC_LEFT_PATTERN = r'>Your Daily Limit</label><strong>([\d.,]+) (?:[\w^_]+ )?/ ([\d.,]+)'
     LOGIN_FAIL_PATTERN   = r'<ul class="errors">\s*<li>'
 
     TOKEN_PATTERN =   r'name="token" value="(.+?)"'
