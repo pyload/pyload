@@ -9,13 +9,16 @@ from module.plugins.internal.misc import json
 class RapidgatorNet(Account):
     __name__    = "RapidgatorNet"
     __type__    = "account"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __description__ = """Rapidgator.net account plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __authors__     = [("zoidberg",  "zoidberg@mujmail.cz"       ),
+                       ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
+
+    TUNE_TIMEOUT = False
 
     API_URL = "http://rapidgator.net/api/user/"
 
@@ -37,12 +40,10 @@ class RapidgatorNet(Account):
             json_data = json.loads(html)
 
             if json_data['response_status'] == 200:
-                if "reset_in" in json_data['response']:
-                    self._schedule_refresh(user, json_data['response']['reset_in'])
-
                 validuntil  = json_data['response']['expire_date']
                 trafficleft = float(json_data['response']['traffic_left']) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
                 premium     = True
+
             else:
                 self.log_error(json_data['response_details'])
 
@@ -67,7 +68,9 @@ class RapidgatorNet(Account):
 
             if json_data['response_status'] == 200:
                 data['sid'] = str(json_data['response']['session_id'])
+                self.timeout = float(json_data['response']['reset_in'])
                 return
+
             else:
                 self.log_error(json_data['response_details'])
 
