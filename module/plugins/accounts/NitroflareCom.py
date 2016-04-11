@@ -11,7 +11,7 @@ from module.plugins.captcha.ReCaptcha import ReCaptcha
 class NitroflareCom(Account):
     __name__    = "NitroflareCom"
     __type__    = "account"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __description__ = """Nitroflare.com account plugin"""
@@ -21,7 +21,7 @@ class NitroflareCom(Account):
 
 
     VALID_UNTIL_PATTERN  = r'>Time Left</label><strong>(.+?)</'
-    TRAFFIC_LEFT_PATTERN = r'>Your Daily Limit</label><strong>([\d.,]+) (?:[\w^_]+ )?/ ([\d.,]+)'
+    TRAFFIC_LEFT_PATTERN = r'>Your Daily Limit</label><strong>(?P<S1>[\d.,]+) (?P<U1>[\w^_]+ )?/ (?P<S2>[\d.,]+) (?P<U2>[\w^_]+)'
     LOGIN_FAIL_PATTERN   = r'<ul class="errors">\s*<li>'
 
     TOKEN_PATTERN =   r'name="token" value="(.+?)"'
@@ -59,7 +59,7 @@ class NitroflareCom(Account):
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m is not None:
             try:
-                trafficleft = self.parse_traffic(str(max(0, float(m.group(2)) - float(m.group(1)))),  "GB")
+                trafficleft = self.parse_traffic(m.group('S2'), m.group('U2')) - self.parse_traffic(m.group('S1'), m.group('U1') if m.group('U1') else "B")
 
             except Exception, e:
                 self.log_error(e, trace=True)
