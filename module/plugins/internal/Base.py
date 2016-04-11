@@ -27,7 +27,7 @@ def parse_fileInfo(klass, url="", html=""):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -181,9 +181,8 @@ class Base(Plugin):
             if self.account.user is None:
                 self.account = False
 
-
     def _update_name(self):
-        name = self.info.get('name')
+        name = self.info.get('name').decode('utf-8')
 
         if name and name != self.info.get('url'):
             self.pyfile.name = name

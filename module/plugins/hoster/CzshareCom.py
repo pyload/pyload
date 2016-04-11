@@ -12,10 +12,10 @@ from module.plugins.internal.misc import parse_size
 class CzshareCom(SimpleHoster):
     __name__    = "CzshareCom"
     __type__    = "hoster"
-    __version__ = "1.08"
+    __version__ = "1.09"
     __status__  = "testing"
 
-    __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download\.php\?).+'
+    __pattern__ = r'https?://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download\.php\?).+'
     __config__  = [("activated"   , "bool", "Activated"                                        , True),
                    ("use_premium" , "bool", "Use premium account if available"                 , True),
                    ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
