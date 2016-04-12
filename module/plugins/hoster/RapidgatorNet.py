@@ -27,10 +27,11 @@ class RapidgatorNet(SimpleHoster):
 
     __description__ = """Rapidgator.net hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
-                       ("chrox", None),
-                       ("stickell", "l.stickell@yahoo.it"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("zoidberg",       "zoidberg@mujmail.cz"       ),
+                       ("chrox",          None                        ),
+                       ("stickell",       "l.stickell@yahoo.it"       ),
+                       ("Walter Purcaro", "vuolter@gmail.com"         ),
+                       ("GammaCode",      "nitzo2001[AT]yahoo[DOT]com")]
 
 
     API_URL = "http://rapidgator.net/api/file"
@@ -86,8 +87,7 @@ class RapidgatorNet(SimpleHoster):
             return json_data['response']
 
         elif status == 423:
-            self.account.empty()
-            self.retry()
+            self.restart(msg=json_data['response_details'], premium=False)
 
         else:
             self.account.relogin()
