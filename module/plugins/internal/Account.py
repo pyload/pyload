@@ -12,7 +12,7 @@ from module.plugins.internal.misc import Periodical, compare_time, decode, isite
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.73"
+    __version__ = "0.74"
     __status__  = "stable"
 
     __description__ = """Base account plugin"""
@@ -367,9 +367,11 @@ class Account(Plugin):
                                      % (user, time_data))
 
             if data['trafficleft'] == 0:
+                self.log_warning(_("Not using account `%s` because the account has no traffic left") % user)
                 continue
 
             if time.time() > data['validuntil'] > 0:
+                self.log_warning(_("Not using account `%s` because the account has expired") % user)
                 continue
 
             if data['premium']:
