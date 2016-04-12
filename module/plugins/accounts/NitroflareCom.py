@@ -11,7 +11,7 @@ from module.plugins.captcha.ReCaptcha import ReCaptcha
 class NitroflareCom(Account):
     __name__    = "NitroflareCom"
     __type__    = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __description__ = """Nitroflare.com account plugin"""
@@ -59,7 +59,7 @@ class NitroflareCom(Account):
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m is not None:
             try:
-                trafficleft = self.parse_traffic(m.group('S2'), m.group('U2')) - self.parse_traffic(m.group('S1'), m.group('U1') if m.group('U1') else "B")
+                trafficleft = self.parse_traffic(m.group('S2'), m.group('U2')) - self.parse_traffic(m.group('S1'), m.group('U1') or "B")
 
             except Exception, e:
                 self.log_error(e, trace=True)
