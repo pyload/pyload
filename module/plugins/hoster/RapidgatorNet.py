@@ -15,7 +15,7 @@ from module.plugins.internal.misc import json, seconds_to_midnight
 class RapidgatorNet(SimpleHoster):
     __name__    = "RapidgatorNet"
     __type__    = "hoster"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
@@ -27,10 +27,11 @@ class RapidgatorNet(SimpleHoster):
 
     __description__ = """Rapidgator.net hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
-                       ("chrox", None),
-                       ("stickell", "l.stickell@yahoo.it"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("zoidberg",       "zoidberg@mujmail.cz"       ),
+                       ("chrox",          None                        ),
+                       ("stickell",       "l.stickell@yahoo.it"       ),
+                       ("Walter Purcaro", "vuolter@gmail.com"         ),
+                       ("GammaCode",      "nitzo2001[AT]yahoo[DOT]com")]
 
 
     API_URL = "http://rapidgator.net/api/file"
@@ -86,8 +87,7 @@ class RapidgatorNet(SimpleHoster):
             return json_data['response']
 
         elif status == 423:
-            self.account.empty()
-            self.retry()
+            self.restart(msg=json_data['response_details'], premium=False)
 
         else:
             self.account.relogin()

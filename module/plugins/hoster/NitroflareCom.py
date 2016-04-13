@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__    = "NitroflareCom"
     __type__    = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
@@ -23,7 +23,8 @@ class NitroflareCom(SimpleHoster):
     __license__     = "GPLv3"
     __authors__     = [("sahil"         , "sahilshekhawat01@gmail.com"),
                        ("Walter Purcaro", "vuolter@gmail.com"         ),
-                       ("Stickell"      , "l.stickell@yahoo.it"       )]
+                       ("Stickell"      , "l.stickell@yahoo.it"       ),
+                       ("GammaC0de",      "nitzo2001[AT]yahoo[DOT]com")]
 
     INFO_PATTERN    = r'title="(?P<N>.+?)".+>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'>File doesn\'t exist'

@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class UploadedTo(Account):
     __name__    = "UploadedTo"
     __type__    = "account"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __status__  = "testing"
 
     __description__ = """Uploaded.to account plugin"""
@@ -20,7 +20,7 @@ class UploadedTo(Account):
     COOKIES = False
 
     PREMIUM_PATTERN      = r'<em>Premium</em>'
-    VALID_UNTIL_PATTERN  = r'<td>Duration:</td>\s*<th>(.+?)<'
+    VALID_UNTIL_PATTERN  = r'<td>Duration:</td>\s*<th>\s*(.+?)<'
     TRAFFIC_LEFT_PATTERN = r'<b class="cB">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
 
