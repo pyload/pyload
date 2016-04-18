@@ -40,7 +40,7 @@ class BIGHTTPRequest(HTTPRequest):
 class YoutubeCom(Hoster):
     __name__    = "YoutubeCom"
     __type__    = "hoster"
-    __version__ = "0.51"
+    __version__ = "0.52"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)\w+'
@@ -246,8 +246,6 @@ class YoutubeCom(Hoster):
 
         if "&ratebypass=" not in url:
             url += "&ratebypass=yes"
-
-        self.log_debug("URL: %s" % url)
 
         #: Set file name
         file_suffix = self.formats[choosen_fmt][0] if choosen_fmt in self.formats else ".flv"
