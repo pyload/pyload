@@ -13,7 +13,7 @@ from module.plugins.internal.misc import html_unescape, set_cookie
 class LinkCryptWs(Crypter):
     __name__    = "LinkCryptWs"
     __type__    = "crypter"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?linkcrypt\.ws/(dir|container)/(?P<ID>\w+)'
@@ -21,10 +21,10 @@ class LinkCryptWs(Crypter):
 
     __description__ = """LinkCrypt.ws decrypter plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("kagenoshin", "kagenoshin[AT]gmx[DOT]ch"),
-                       ("glukgluk", None),
-                       ("Gummibaer", None),
-                       ("Arno-Nymous", None)]
+    __authors__     = [("kagenoshin",  "kagenoshin[AT]gmx[DOT]ch"),
+                       ("glukgluk",    None                      ),
+                       ("Gummibaer",   None                      ),
+                       ("Arno-Nymous", None                      )]
 
 
     CRYPTED_KEY = "crypted"
@@ -92,7 +92,7 @@ class LinkCryptWs(Crypter):
 
     def is_online(self):
         if "<title>Linkcrypt.ws // Error 404</title>" in self.data:
-            self.log_debug("Folder doesn't exist anymore")
+            self.log_debug(_("Folder doesn't exist anymore"))
             return False
         else:
             return True
@@ -100,7 +100,7 @@ class LinkCryptWs(Crypter):
 
     def is_password_protected(self):
         if "Authorizing" in self.data:
-            self.log_debug("Links are password protected")
+            self.log_debug(_("Links are password protected"))
             return True
         else:
             return False
@@ -125,7 +125,7 @@ class LinkCryptWs(Crypter):
         password = self.get_password()
 
         if password:
-            self.log_debug("Submitting password [{0}] for protected links".format(password))
+            self.log_debug(_("Submitting password [%s] for protected links") % password)
             self.data = self.load(self.pyfile.url, post={'password': password, 'x': "0", 'y': "0"})
         else:
             self.fail(_("Folder is password protected"))
@@ -142,7 +142,7 @@ class LinkCryptWs(Crypter):
         name   = self.pyfile.package().name
         folder = self.pyfile.package().folder
 
-        self.log_debug("Defaulting to pyfile name [{0}] and folder [{1}] for package".format(name, folder))
+        self.log_debug(_("Defaulting to pyfile name [%s] and folder [%s] for package") % (name, folder))
 
         return name, folder
 
@@ -186,7 +186,7 @@ class LinkCryptWs(Crypter):
         pattern = r'<form action="http://linkcrypt.ws/out.html"[^>]*?>.*?<input[^>]*?value="(.+?)"[^>]*?name="file"'
         ids = re.findall(pattern, self.data, re.I | re.S)
 
-        self.log_debug("Decrypting {0} Web links".format(len(ids)))
+        self.log_debug(_("Decrypting %s Web links") % len(ids))
 
         for idx, weblink_id in enumerate(ids):
             try:
@@ -201,7 +201,7 @@ class LinkCryptWs(Crypter):
                 pack_links.append(link2)
 
             except Exception, detail:
-                self.log_debug("Error decrypting Web link {0}, {1}".format(weblink_id, detail))
+                self.log_debug(_("Error decrypting Web link %s, %s") % (weblink_id, detail))
 
         return pack_links
 
@@ -225,7 +225,7 @@ class LinkCryptWs(Crypter):
         pack_links = []
         container_type = container_type.lower()
 
-        self.log_debug('Search for %s Container links' % container_type.upper())
+        self.log_debug(_("Search for %s Container links") % container_type.upper())
 
         if not container_type.isalnum():  #: Check to prevent broken re-pattern (cnl2, rsdf, ccf, dlc, web are all alpha-numeric)
             self.fail(_("Unknown container type: %s") % container_type)  #@TODO: Replace with self.error in 0.4.10
@@ -241,7 +241,7 @@ class LinkCryptWs(Crypter):
                 self.log_debug("clink found")
 
                 pack_name, folder_name = self.get_package_info()
-                self.log_debug("Added package with name {0}.{1} and container link {2}".format(pack_name, container_type, clink.group(1)))
+                self.log_debug(_("Added package with name %s.%s and container link %s") % (pack_name, container_type, clink.group(1)))
                 self.pyload.api.uploadContainer('.'.join([pack_name, container_type]), self.load(clink.group(1)))
                 return "Found it"
 
@@ -285,7 +285,7 @@ class LinkCryptWs(Crypter):
         vcrypted = re.findall(crypted_re, cnl_section)
 
         #: Log and return
-        self.log_debug("Detected {0} crypted blocks".format(len(vcrypted)))
+        self.log_debug(_("Detected %s crypted blocks") % len(vcrypted))
         return vcrypted, vjk
 
 
@@ -293,7 +293,7 @@ class LinkCryptWs(Crypter):
         #: Get key
         key     = binascii.unhexlify(jk)
 
-        self.log_debug("JsEngine returns value [{0}]".format(key))
+        self.log_debug(_("JsEngine returns value [%s]") % key)
 
         #: Decrypt
         Key  = key
@@ -306,6 +306,6 @@ class LinkCryptWs(Crypter):
         links = filter(bool, text.split('\n'))
 
         #: Log and return
-        self.log_debug("Package has {0} links".format(len(links)))
+        self.log_debug(_("Package has %s links")% len(links))
 
         return links
