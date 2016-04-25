@@ -38,7 +38,7 @@ except ImportError:
 class misc(object):
     __name__    = "misc"
     __type__    = "plugin"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -55,7 +55,7 @@ class Config(object):
         self.plugin = plugin
 
 
-    def set(self, option, value):
+    def set(self, option, value, plugin=None):
         """
         Set config value for current plugin
 
@@ -63,10 +63,10 @@ class Config(object):
         :param value:
         :return:
         """
-        self.plugin.pyload.api.setConfigValue(self.plugin.classname, option, value, section="plugin")
+        self.plugin.pyload.api.setConfigValue(plugin or self.plugin.classname, option, value, section="plugin")
 
 
-    def get(self, option, default=None):
+    def get(self, option, default=None, plugin=None):
         """
         Returns config value for current plugin
 
@@ -74,7 +74,7 @@ class Config(object):
         :return:
         """
         try:
-            return self.plugin.pyload.config.getPlugin(self.plugin.classname, option)
+            return self.plugin.pyload.config.getPlugin(plugin or self.plugin.classname, option)
 
         except KeyError:
             self.plugin.log_debug("Config option `%s` not found, use default `%s`" % (option, default))  #@TODO: Restore to `log_warning` in 0.4.10
