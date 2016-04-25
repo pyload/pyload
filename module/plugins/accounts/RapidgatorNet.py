@@ -9,7 +9,7 @@ from module.plugins.internal.misc import json
 class RapidgatorNet(Account):
     __name__    = "RapidgatorNet"
     __type__    = "account"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __description__ = """Rapidgator.net account plugin"""
@@ -68,7 +68,14 @@ class RapidgatorNet(Account):
 
             if json_data['response_status'] == 200:
                 data['sid'] = str(json_data['response']['session_id'])
-                self.timeout = float(json_data['response']['reset_in'])
+
+                if 'reset_in' in json_data['response']:
+                    self.timeout = float(json_data['response']['reset_in'])
+                    self.TUNE_TIMEOUT = False
+
+                else:
+                    self.TUNE_TIMEOUT = True
+
                 return
 
             else:

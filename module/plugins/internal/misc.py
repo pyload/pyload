@@ -92,8 +92,7 @@ class DB(object):
         """
         Saves a value persistently to the database
         """
-        value = map(decode, value) if isiterable(value) else decode(value)
-        entry = json.dumps(value).encode('base64')
+        entry = json.dumps(value, ensure_ascii=False).encode('base64')
         self.plugin.pyload.db.setStorage(self.plugin.classname, key, entry)
 
 
@@ -336,9 +335,9 @@ def uniqify(seq):
 
 def has_method(obj, name):
     """
-    Check if name was defined in obj (return false if inhereted)
+    Check if function 'name' was defined in obj
     """
-    return hasattr(obj, '__dict__') and name in obj.__dict__
+    return callable(getattr(obj, name, None))
 
 
 def html_unescape(text):
