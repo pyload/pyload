@@ -21,6 +21,7 @@ import urllib
 import urlparse
 import xml.sax.saxutils  #@TODO: Remove in 0.4.10
 import zlib
+import unicodedata
 
 try:
     import simplejson as json
@@ -367,21 +368,25 @@ def get_console_encoding(enc):
     return enc
 
 
+def normalize(value):
+    return unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
+
+
 #@NOTE: Revert to `decode` in Python 3
 def decode(value, encoding=None, errors='strict'):
     """
     Encoded string (default to own system encoding) -> unicode string
     """
-    if type(value) is str:
+    if isinstance(value, str):
         res = unicode(value, encoding or get_console_encoding(sys.stdout.encoding), errors)
 
-    elif type(value) is unicode:
+    elif isinstance(value, unicode):
         res = value
 
     else:
         res = unicode(value)
 
-    return res
+    return normalize(res)
 
 
 def transcode(value, decoding, encoding):
@@ -392,10 +397,10 @@ def encode(value, encoding='utf-8', errors='backslashreplace'):
     """
     Unicode string -> encoded string (default to UTF-8)
     """
-    if type(value) is unicode:
+    if isinstance(value, unicode):
         res = value.encode(encoding, errors)
 
-    elif type(value) is str:
+    elif isinstance(value, str):
         decoding = get_console_encoding(sys.stdin.encoding)
         if encoding == decoding:
             res = value
@@ -449,15 +454,15 @@ def remove_chars(value, repl):
     """
     Remove all chars in repl from string
     """
-    if type(repl) is unicode:
+    if isinstance(repl, unicode):
         for badc in list(repl):
             value = value.replace(badc, "")
         return value
 
-    elif type(value) is unicode:
+    elif isinstance(value, unicode):
         return value.translate(dict((ord(s), None) for s in repl))
 
-    elif type(value) is str:
+    elif isinstance(value, str):
         return value.translate(string.maketrans("", ""), repl)
 
 
@@ -681,7 +686,7 @@ def seconds_to_nexthour(strict=False):
 
 
 def seconds_to_midnight(utc=None, strict=False):
-    if type(utc) is int:
+    if isinstance(utc, int):
         now = datetime.datetime.utcnow() + datetime.timedelta(hours=utc)
     else:
         now = datetime.datetime.today()
@@ -730,7 +735,7 @@ def parse_html_header(header):
         key = key.lower()
         if key in hdict:
             header_key = hdict.get(key)
-            if type(header_key) is list:
+            if isinstance(header_key, list):
                 header_key.append(value)
             else:
                 hdict[key] = [header_key, value]
