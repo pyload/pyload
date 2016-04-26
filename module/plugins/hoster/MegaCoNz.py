@@ -46,11 +46,11 @@ from module.plugins.internal.misc import decode, encode, json
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__  = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)(?:###n=(?P<OWNER>[\w^_]+))?'
-    __config__  = [("activated",      "bool", "Activated", True)]
+    __config__  = [("activated", "bool", "Activated", True)]
 
     __description__ = """Mega.co.nz hoster plugin"""
     __license__     = "GPLv3"
@@ -68,7 +68,7 @@ class MegaCoNz(Hoster):
         return base64.b64decode(str(data), "-_")
 
 
-    def base64_b64encode(self, data):
+    def base64_encode(self, data):
         return base64.b64encode(data, "-_")
 
 
@@ -89,8 +89,8 @@ class MegaCoNz(Hoster):
         """
         Construct the cipher key from the given data
         """
-        k = (key[0] ^ key[4], key[1] ^ key[5], key[2] ^ key[6], key[3] ^ key[7])
-        iv = key[4:6] + (0, 0)
+        k        = (key[0] ^ key[4], key[1] ^ key[5], key[2] ^ key[6], key[3] ^ key[7])
+        iv       = key[4:6] + (0, 0)
         meta_mac = key[6:8]
 
         return k, iv, meta_mac
@@ -207,8 +207,8 @@ class MegaCoNz(Hoster):
         self.log_info(_("File decrypted"))
         self.remove(file_crypted, trash=False)
 
-        file_mac = (file_mac[0] ^ file_mac[1], file_mac[2] ^ file_mac[3])
         if checksum_activated and check_checksum:
+            file_mac = (file_mac[0] ^ file_mac[1], file_mac[2] ^ file_mac[3])
             if file_mac == meta_mac:
                 self.log_info(_('File integrity of "%s" verified by CBC-MAC checksum (%s)') %
                               (file_decrypted, meta_mac))

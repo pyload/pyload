@@ -43,7 +43,7 @@ from module.plugins.internal.misc import decode, json
 class MegaCoNzFolder(Crypter):
     __name__    = "MegaCoNzFolder"
     __type__    = "crypter"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__  = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#F!(?P<ID>[\w^_]+)!(?P<KEY>[\w,\-=]+)'
@@ -65,7 +65,7 @@ class MegaCoNzFolder(Crypter):
         return base64.b64decode(str(data), "-_")
 
 
-    def base64_b64encode(self, data):
+    def base64_encode(self, data):
         return base64.b64encode(data, "-_")
 
 
@@ -137,6 +137,7 @@ class MegaCoNzFolder(Crypter):
 
         master_key =  self.base64_to_a32(master_key)
 
+        #: F is for requesting folder listing (kind like a `ls` command)
         mega = self.api_response(a="f", c=1, r=1, ca=1, ssl=1)[0]
 
         if isinstance(mega, int):
@@ -145,7 +146,7 @@ class MegaCoNzFolder(Crypter):
             self.check_error(mega['e'])
 
 
-        get_node_key = lambda k: self.base64_b64encode(self.a32_to_str(self.decrypt_key(k, master_key)))
+        get_node_key = lambda k: self.base64_encode(self.a32_to_str(self.decrypt_key(k, master_key)))
 
         self.links = [_("https://mega.co.nz/#N!%s!%s=###n=%s") %
                       (_f['h'],
