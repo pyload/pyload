@@ -48,7 +48,7 @@ class UlozTo(SimpleHoster):
     TOKEN_PATTERN   = r'<input type="hidden" name="_token_" .*?value="(.+?)"'
 
 
-    def setup(self):       
+    def setup(self):
         self.chunk_limit     = 16 if self.premium else 1
         self.multiDL         = True
         self.resume_download = True
