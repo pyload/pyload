@@ -38,7 +38,7 @@ def compute_checksum(local_file, algorithm):
 class Checksum(Addon):
     __name__    = "Checksum"
     __type__    = "hook"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__  = "broken"
 
     __config__ = [("activated"     , "bool"              , "Activated"                                            , False  ),
@@ -153,7 +153,7 @@ class Checksum(Addon):
         if check_action == "retry":
             max_tries = self.config.get('max_tries')
             retry_action = self.config.get('retry_action')
-            if pyfile.plugin.retries < max_tries:
+            if all(_r < max_tries for _id, _r in pyfile.plugin.retries.items()):
                 if local_file:
                     os.remove(local_file)
                 pyfile.plugin.retry(max_tries, self.config.get('wait_time'), msg)
