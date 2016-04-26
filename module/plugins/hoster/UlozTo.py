@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import re
-import time
 
 from module.plugins.internal.SimpleHoster import SimpleHoster
-from module.plugins.internal.misc import json, timestamp
+from module.plugins.internal.misc import json, timestamp, parse_name
 
 
 def convert_decimal_prefix(m):
@@ -15,10 +14,12 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "1.22"
+    __version__ = "1.32"
     __status__  = "testing"
 
-    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
+    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)/(?:live/)?(?P<ID>\w+/[^/?]*)'
+
+
     __config__  = [("activated"   , "bool", "Activated"                                        , True),
                    ("use_premium" , "bool", "Use premium account if available"                 , True),
                    ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
@@ -28,7 +29,8 @@ class UlozTo(SimpleHoster):
 
     __description__ = """Uloz.to hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                        ("ondrej", "git@ondrej.it"),]
 
 
     NAME_PATTERN    = r'(<p>File <strong>|<title>)(?P<N>.+?)(<| \|)'
@@ -40,7 +42,7 @@ class UlozTo(SimpleHoster):
 
     CHECK_TRAFFIC = True
 
-    ADULT_PATTERN   = r'<form action="(.+?)" method="post" id="frm-askAgeForm">'
+    ADULT_PATTERN   = r'PORNfile.cz'
     PASSWD_PATTERN  = r'<div class="passwordProtectedFile">'
     VIPLINK_PATTERN = r'<a href=".+?\?disclaimer=1" class="linkVip">'
     TOKEN_PATTERN   = r'<input type="hidden" name="_token_" .*?value="(.+?)"'
@@ -48,8 +50,24 @@ class UlozTo(SimpleHoster):
 
     def setup(self):
         self.chunk_limit     = 16 if self.premium else 1
-        self.multiDL        = True
+        self.multiDL         = True
         self.resume_download = True
+
+
+    def process(self, pyfile):
+        html = self.load(pyfile.url)
+        if re.search(self.ADULT_PATTERN, html):
+            self.log_info(_("Adult content confirmation needed"))
+
+            url = pyfile.url.replace("ulozto.net", "pornfile.cz")
+            self.load("http://pornfile.cz/porn-disclaimer",
+                        post={'agree': "Confirm", 'do': 'pornDisclaimer-submit'})
+
+            html = self.load(url)
+            name = re.search(self.NAME_PATTERN, html).group(2)
+            self.pyfile.name = parse_name(name)
+
+        return super(UlozTo, self).process(pyfile)
 
 
     def handle_free(self, pyfile):
@@ -106,23 +124,12 @@ class UlozTo(SimpleHoster):
 
 
     def check_errors(self):
-        if re.search(self.ADULT_PATTERN, self.data):
-            self.log_info(_("Adult content confirmation needed"))
-
-            m = re.search(self.TOKEN_PATTERN, self.data)
-            if m is None:
-                self.error(_("TOKEN_PATTERN not found"))
-
-            self.data = self.load(pyfile.url,
-                                  get={'do': "askAgeForm-submit"},
-                                  post={'agree': "Confirm", '_token_': m.group(1)})
-
         if self.PASSWD_PATTERN in self.data:
             password = self.get_password()
 
             if password:
                 self.log_info(_("Password protected link, trying ") + password)
-                self.data = self.load(pyfile.url,
+                self.data = self.load(self.pyfile.url,
                                       get={'do': "passwordProtectedForm-submit"},
                                       post={'password': password, 'password_send': 'Send'})
 

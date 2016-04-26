@@ -9,16 +9,17 @@ from module.plugins.internal.Account import Account
 class UlozTo(Account):
     __name__    = "UlozTo"
     __type__    = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __description__ = """Uloz.to account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
-                       ("pulpe", None)]
+                       ("pulpe", None),
+                       ("ondrej", "git@ondrej.it"),]
 
 
-    TRAFFIC_LEFT_PATTERN = r'<li class="menu-kredit"><a .*?title=".+?GB = ([\d.]+) MB"'
+    TRAFFIC_LEFT_PATTERN = r'<a class="menu-kredit" href="/kredit" title="[^"]*?[MGT]+B = ([\d.]+) MB"'
 
 
     def grab_info(self, user, password, data):
@@ -37,7 +38,7 @@ class UlozTo(Account):
         action     = re.findall('<form action="(.+?)"', login_page)[1].replace('&amp;', '&')
         token      = re.search('_token_" value="(.+?)"', login_page).group(1)
 
-        html = self.load(urlparse.urljoin("https://www.ulozto.net/", action),
+        html = self.load(urlparse.urljoin("http://www.ulozto.net/", action),
                          post={'_token_' : token,
                                'do'      : "loginForm-submit",
                                'login'   : u"Přihlásit",
