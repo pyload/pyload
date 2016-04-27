@@ -43,7 +43,7 @@ from module.plugins.internal.misc import decode, json
 class MegaCoNzFolder(Crypter):
     __name__    = "MegaCoNzFolder"
     __type__    = "crypter"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#F!(?P<ID>[\w^_]+)!(?P<KEY>[\w,\-=]+)'
@@ -70,12 +70,12 @@ class MegaCoNzFolder(Crypter):
 
 
     def a32_to_str(self, a):
-        return struct.pack(_(">%dI") % len(a), *a)  #: big-endian, unsigned int
+        return struct.pack(">%dI" % len(a), *a)  #: big-endian, unsigned int
 
 
     def str_to_a32(self, s):
         s += '\0' * (-len(s) % 4)  # Add padding, we need a string with a length multiple of 4
-        return struct.unpack(_(">%dI") % (len(s) / 4), s)  #: big-endian, unsigned int
+        return struct.unpack(">%dI" % (len(s) / 4), s)  #: big-endian, unsigned int
 
 
     def base64_to_a32(self, s):

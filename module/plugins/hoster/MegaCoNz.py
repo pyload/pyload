@@ -46,7 +46,7 @@ from module.plugins.internal.misc import decode, encode, json
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __status__  = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)(?:###n=(?P<OWNER>[\w^_]+))?'
@@ -73,12 +73,12 @@ class MegaCoNz(Hoster):
 
 
     def a32_to_str(self, a):
-        return struct.pack(_(">%dI") % len(a), *a)  #: big-endian, unsigned int
+        return struct.pack(">%dI" % len(a), *a)  #: big-endian, unsigned int
 
 
     def str_to_a32(self, s):
         s += '\0' * (-len(s) % 4)  # Add padding, we need a string with a length multiple of 4
-        return struct.unpack(_(">%dI") % (len(s) / 4), s)  #: big-endian, unsigned int
+        return struct.unpack(">%dI" % (len(s) / 4), s)  #: big-endian, unsigned int
 
 
     def base64_to_a32(self, s):
