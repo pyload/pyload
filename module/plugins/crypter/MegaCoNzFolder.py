@@ -43,7 +43,7 @@ from module.plugins.internal.misc import decode, json
 class MegaCoNzFolder(Crypter):
     __name__    = "MegaCoNzFolder"
     __type__    = "crypter"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#F!(?P<ID>[\w^_]+)!(?P<KEY>[\w,\-=]+)'
@@ -147,7 +147,7 @@ class MegaCoNzFolder(Crypter):
 
         get_node_key = lambda k: self.base64_encode(self.a32_to_str(self.decrypt_key(k, master_key)))
 
-        self.links = [_("https://mega.co.nz/#N!%s!%s=###n=%s") %
+        self.links = [_("https://mega.co.nz/#N!%s!%s###n=%s") %
                       (_f['h'],
                        get_node_key(_f['k'][_f['k'].index(':') + 1:]),
                        id)
