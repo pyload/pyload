@@ -88,8 +88,8 @@ class MegaCrypto(object):
         """
         Construct the cipher key from the given data
         """
-        k = (key[0] ^ key[4], key[1] ^ key[5], key[2] ^ key[6], key[3] ^ key[7])
-        iv = key[4:6] + (0, 0)
+        k        = (key[0] ^ key[4], key[1] ^ key[5], key[2] ^ key[6], key[3] ^ key[7])
+        iv       = key[4:6] + (0, 0)
         meta_mac = key[6:8]
 
         return k, iv, meta_mac
@@ -124,7 +124,7 @@ class MegaCrypto(object):
         Calculate chunks for a given encrypted file size
         """
         chunk_start = 0
-        chunk_size = 0x20000
+        chunk_size  = 0x20000
 
         while chunk_start + chunk_size < size:
             yield (chunk_start, chunk_size)
@@ -143,16 +143,16 @@ class MegaCrypto(object):
         def __init__(self, key):
             k, iv, meta_mac = MegaCrypto.get_cipher_key(key)
             self.hash = '\0' * 16
-            self.key = MegaCrypto.a32_to_str(k)
-            self.iv = MegaCrypto.a32_to_str(iv[0:2] * 2)
-            self.AES = Crypto.Cipher.AES.new(self.key, mode=Crypto.Cipher.AES.MODE_CBC, IV=self.hash)
+            self.key  = MegaCrypto.a32_to_str(k)
+            self.iv   = MegaCrypto.a32_to_str(iv[0:2] * 2)
+            self.AES  = Crypto.Cipher.AES.new(self.key, mode=Crypto.Cipher.AES.MODE_CBC, IV=self.hash)
 
 
         def update(self, chunk):
             cbc = Crypto.Cipher.AES.new(self.key, mode=Crypto.Cipher.AES.MODE_CBC, IV=self.iv)
             for j in xrange(0, len(chunk), 16):
                 block = chunk[j:j + 16].ljust(16, '\0')
-                hash = cbc.encrypt(block)
+                hash  = cbc.encrypt(block)
 
             self.hash = self.AES.encrypt(hash)
 
@@ -203,7 +203,7 @@ class MegaClient(object):
             else:
                 raise
 
-        self.plugin.log_debug("Api Response: " + res)
+        self.plugin.log_debug(_("Api Response: ") + res)
         return json.loads(res)
 
 
@@ -226,7 +226,7 @@ class MegaClient(object):
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __status__  = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)(?:###n=(?P<OWNER>[\w^_]+))?'
@@ -244,7 +244,7 @@ class MegaCoNz(Hoster):
 
     def decrypt_file(self, key):
         """
-        Decrypts and verifies checksum to the file at last_download`
+        Decrypts and verifies checksum to the file at 'last_download'
         """
         k, iv, meta_mac = MegaCrypto.get_cipher_key(key)
         ctr             = Crypto.Util.Counter.new(128, initial_value = ((iv[0] << 32) + iv[1]) << 64)
@@ -266,10 +266,9 @@ class MegaCoNz(Hoster):
         encrypted_size = os.path.getsize(file_crypted)
 
         checksum_activated = self.config.get("activated", default=False, plugin="Checksum")
-        check_checksum = self.config.get("check_checksum", default=True, plugin="Checksum")
+        check_checksum     = self.config.get("check_checksum", default=True, plugin="Checksum")
 
         cbc_mac = MegaCrypto.Checksum(key) if checksum_activated and check_checksum else None
-        cbc_mac = MegaCrypto.Checksum(key)
 
         progress = 0
         for chunk_start, chunk_size in MegaCrypto.get_chunks(encrypted_size):
@@ -329,7 +328,7 @@ class MegaCoNz(Hoster):
 
     def check_exists(self, name):
         """
-        Because of Mega downloads a temporary encrypted file with the extension of ".crypted",
+        Because of Mega downloads a temporary encrypted file with the extension of '.crypted',
         pyLoad cannot correctly detect if the file exists before downloading.
         This function corrects this.
 
@@ -355,7 +354,7 @@ class MegaCoNz(Hoster):
             self.log_error(_("Missing owner in URL"))
             self.fail(_("Missing owner in URL"))
 
-        self.log_debug("ID: %s" % id, "Key: %s" % key, "Type: %s" % ("public" if public else "node"), "Owner: %s" % owner)
+        self.log_debug(_("ID: %s") % id, _("Key: %s") % key, _("Type: %s") % ("public" if public else "node"), _("Owner: %s") % owner)
 
         key = MegaCrypto.base64_to_a32(key)
 
@@ -377,7 +376,7 @@ class MegaCoNz(Hoster):
         if not attr:
             self.fail(_("Decryption failed"))
 
-        self.log_debug("Decrypted Attr: %s" % decode(attr))
+        self.log_debug(_("Decrypted Attr: %s") % decode(attr))
 
         name = attr['n']
 

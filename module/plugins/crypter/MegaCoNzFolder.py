@@ -2,13 +2,14 @@
 
 from module.plugins.internal.Crypter import Crypter
 from module.plugins.internal.misc import json
+
 from module.plugins.hoster.MegaCoNz import MegaClient, MegaCrypto
 
 
 class MegaCoNzFolder(Crypter):
     __name__    = "MegaCoNzFolder"
     __type__    = "crypter"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#F!(?P<ID>[\w^_]+)!(?P<KEY>[\w,\-=]+)'
@@ -26,7 +27,7 @@ class MegaCoNzFolder(Crypter):
         id         = self.info['pattern']['ID']
         master_key = self.info['pattern']['KEY']
 
-        self.log_debug("ID: %s" % id, "Key: %s" % master_key, "Type: public folder")
+        self.log_debug(_("ID: %s") % id, _("Key: %s") % master_key, _("Type: public folder"))
 
         master_key = MegaCrypto.base64_to_a32(master_key)
 
