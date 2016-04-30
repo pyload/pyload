@@ -38,7 +38,7 @@ def compute_checksum(local_file, algorithm):
 class Checksum(Addon):
     __name__    = "Checksum"
     __type__    = "hook"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __status__  = "broken"
 
     __config__ = [("activated"     , "bool"              , "Activated"                                            , False  ),
@@ -166,6 +166,7 @@ class Checksum(Addon):
         elif check_action == "nothing":
             return
 
+        os.remove(local_file)
         pyfile.plugin.fail(msg)
 
 
