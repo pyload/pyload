@@ -23,7 +23,7 @@ _decode = decode  #@NOTE: save decode() as _decode() for use with load(url, deco
 class Plugin(object):
     __name__    = "Plugin"
     __type__    = "plugin"
-    __version__ = "0.67"
+    __version__ = "0.68"
     __status__  = "stable"
 
     __config__  = []  #: [("name", "type", "desc", "default")]
