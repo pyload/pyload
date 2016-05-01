@@ -12,7 +12,6 @@ import Crypto.Util.Counter
 from module.network.HTTPRequest import BadHeader
 from module.plugins.internal.Hoster import Hoster
 from module.plugins.internal.misc import decode, encode, exists, fsjoin, json
-from module.plugins.Plugin import SkipDownload as Skip
 
 
 ############################ General errors ###################################
@@ -226,7 +225,7 @@ class MegaClient(object):
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __status__  = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)(?:###n=(?P<OWNER>[\w^_]+))?'
@@ -341,7 +340,7 @@ class MegaCoNz(Hoster):
                                name)
             if exists(dest_file):
                 self.pyfile.name = name
-                raise Skip("File exists.")
+                self.skip("File exists.")
 
 
     def process(self, pyfile):
