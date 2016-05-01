@@ -153,6 +153,13 @@ class Plugin(object):
             os.chown(path, uid, gid)
 
 
+    def skip(self, msg):
+        """
+        Skip and give msg
+        """
+        raise Skip(encode(msg))  # @TODO: Remove `encode` in 0.4.10
+
+
     def fail(self, msg):
         """
         Fail and give msg
