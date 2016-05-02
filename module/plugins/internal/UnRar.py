@@ -28,7 +28,7 @@ class UnRar(Extractor):
 
     _RE_PART    = re.compile(r'\.(part|r)\d+(\.rar|\.rev)?(\.bad)?', re.I)
     _RE_FIXNAME = re.compile(r'Building (.+)')
-    _RE_FILES   = re.compile(r'^(.)(\s*[\w\-.]+)\s+(\d+\s+)+(?:\d+\%\s+)?[\d\-]{8}\s+[\d\:]{5}', re.I | re.M)
+    _RE_FILES = re.compile(r'^(.)(\s*[\w\-.]+)\s+(\d+\s+)+(?:\d+\%\s+)?[\d\-]{8,}\s+[\d\:]{5}', re.I | re.M)
     _RE_BADPWD  = re.compile(r'password', re.I)
     _RE_BADCRC  = re.compile(r'encrypted|damaged|CRC failed|checksum error|corrupt', re.I)
     _RE_VERSION = re.compile(r'(?:UN)?RAR\s(\d+\.\d+)', re.I)
