@@ -9,10 +9,10 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class WebshareCz(SimpleHoster):
     __name__    = "WebshareCz"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?(en\.)?webshare\.cz/(?:#/)?file/(?P<ID>\w+)'
+    __pattern__ = r'https?://(?:www\.)?(en\.)?webshare\.cz/(?:#/)?(file/)?(?P<ID>\w+)'
     __config__  = [("activated"   , "bool", "Activated"                                        , True),
                    ("use_premium" , "bool", "Use premium account if available"                 , True),
                    ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
@@ -21,23 +21,27 @@ class WebshareCz(SimpleHoster):
 
     __description__ = """WebShare.cz hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it    "),
-                       ("rush"    , "radek.senfeld@gmail.com")]
+    __authors__     = [("stickell", "l.stickell@yahoo.it"    ),
+                       ("rush"    , "radek.senfeld@gmail.com"),
+                       ("ondrej"  , "git@ondrej.it"          ),]
 
 
     @classmethod
     def api_info(cls, url):
         info = {}
-        api  = get_url("https://webshare.cz/api/file_info/",
+        api_data  = get_url("https://webshare.cz/api/file_info/",
                        post={'ident': re.match(cls.__pattern__, url).group('ID'),
                              'wst'  : ""})
 
-        if not re.search(r'<status>OK', api):
+        if re.search(r'<status>OK', api_data):
+            info['status'] = 2
+            info['name']   = re.search(r'<name>(.+?)<', api_data).group(1)
+            info['size']   = re.search(r'<size>(.+?)<', api_data).group(1)
+        elif re.search(r'<status>FATAL', api_data):
             info['status'] = 1
         else:
-            info['status'] = 2
-            info['name']   = re.search(r'<name>(.+?)<', api).group(1)
-            info['size']   = re.search(r'<size>(.+?)<', api).group(1)
+            info['status'] = 8
+            info['error']  = _("Could not find required xml data")
 
         return info
 
