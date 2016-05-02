@@ -29,17 +29,19 @@ class WebshareCz(SimpleHoster):
     @classmethod
     def api_info(cls, url):
         info = {}
-        api  = get_url("https://webshare.cz/api/file_info/",
+        api_data  = get_url("https://webshare.cz/api/file_info/",
                        post={'ident': re.match(cls.__pattern__, url).group('ID'),
                              'wst'  : ""})
 
-        if not re.search(r'<status>OK', api):
+        if re.search(r'<status>OK', api_data):
+            info['status'] = 2
+            info['name']   = re.search(r'<name>(.+?)<', api_data).group(1)
+            info['size']   = re.search(r'<size>(.+?)<', api_data).group(1)
+        elif re.search(r'<status>FATAL', api_data):
+            info['status'] = 1
+        else:
             info['status'] = 8
             info['error'] = _("Could not find required xml data")
-        else:
-            info['status'] = 2
-            info['name']   = re.search(r'<name>(.+?)<', api).group(1)
-            info['size']   = re.search(r'<size>(.+?)<', api).group(1)
 
         return info
 
