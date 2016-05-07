@@ -14,7 +14,7 @@ class SafelinkingNet(Crypter):
     __version__ = "0.21"
     __status__  = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?safelinking\.net/(([pd])/)?\w+'
+    __pattern__ = r'https?://(?:www\.)?safelinking\.net/(?P<link_type>[pd]/)?\w+'
     __config__  = [("activated"         , "bool"          , "Activated"                       , True     ),
                    ("use_premium"       , "bool"          , "Use premium account if available", True     ),
                    ("folder_per_package", "Default;Yes;No", "Create folder for each package"  , "Default")]
@@ -23,94 +23,95 @@ class SafelinkingNet(Crypter):
     __license__     = "GPLv3"
     __authors__     = [("quareevo", "quareevo@arcor.de"),("tbsn","tbsnpy_github@gmx.de")]
 
-
-    SOLVEMEDIA_PATTERN = "solvemediaApiKey = '([\w\-.]+)';"
-
+    # Safelinking seems to use a static SolveMedia key
     SAFELINKING_SOLVEMEDIA_KEY = "OZ987i6xTzNs9lw5.MA-2Vxbc-UxFrLu"
+    
+    # Safelinking url that handles the captcha response
+    SAFELINKING_CAPTCHA_JSON_URL = "https://safelinking.net/v1/captcha"
 
 
-    def json_response(self, url, hash, challenge, response, multipart=False):
-        
+    def json_response(self, hash, challenge, response):
+
         self.req.clearHeaders()
-        
-        self.req.putHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/38.0")
-        self.req.putHeader("Accept", "application/json, text/plain, */*")
-        self.req.putHeader("Accept-Language", "en-US,en;q=0.5")
+        self.req.putHeader("Accept", "application/json")
         self.req.putHeader("Accept-Encoding", "gzip, deflate, br")
-        self.req.putHeader("Content-Type" , "application/json;charset=utf-8")
-        
-        post = json.dumps({'answer': response,
-                           'challengeId' : challenge ,
-                           'hash': hash ,
-                           'type' : '0'})
+        self.req.putHeader("Content-Type" , "application/json")
+                
+        if( self.package_password ):
+            post = json.dumps({'answer': response, 'challengeId' : challenge, 
+                               'hash': hash, 'type' : '0', 'password' : self.package_password  })
+        else:
+            post = json.dumps({'answer': response, 'challengeId' : challenge, 'hash': hash, 'type' : '0'})
 
         res = None
         try:
-            html = self.load(url,
-                             post=post,
-                             decode=False)
-                        
-            self.log_debug("Response answer: ")
-            self.log_debug(html)
-
+            html = self.load( SafelinkingNet.SAFELINKING_CAPTCHA_JSON_URL , post=post)
             res = json.loads(html)
 
         except BadHeader, e:
             self.log_debug(e)
-
 
         return res
 
 
     def decrypt(self, pyfile):
         
-        self.log_debug("Self:")
-        self.log_debug(self)
-        
         url = pyfile.url
+
+        self.package_password = self.get_password()
         
-        self.log_debug("Link name: %s" % self.pyfile.name )
-
-        if re.match(self.__pattern__, url).group(1) == "d":
-
+        if( self.package_password ):
+            self.log_debug("Using package password %s" % self.package_password )
+        
+        # Process direct links
+        if re.match(self.__pattern__, url).group('link_type') == "d/":
             header = self.load(url, just_header=True)
+
             if 'location' in header:
                 self.links = [header.get('location')]
+
             else:
                 self.error(_("Couldn't find forwarded Link"))
-
+                
+        # Process protected links
         else:
-            postData = {"post-protect": "1"}
-
+            # Load Safelinking site 
             # This sets the referrer for further calls
             self.data = self.load(url)
-            
-            self.log_debug("SafelinkingNet() first page: %s" % self.data)
-            
-            if "link-password" in self.data:
-                postData['link-password'] = self.get_password()
-            
+            #self.log_debug("SafelinkingNet() first page: %s" % self.data)
+
             
             if "ajaxSetup" in self.data:
-                
                 # Use static key for now
                 captchaKey = SafelinkingNet.SAFELINKING_SOLVEMEDIA_KEY
-                captcha = SolveMediaJson(pyfile)
-                captchaProvider = "Solvemedia"
 
+                # Retreive and solve captcha
+                captcha = SolveMediaJson(pyfile)
                 response, challenge = captcha.challenge(captchaKey)
                 
-                json_res = self.json_response( "https://safelinking.net/v1/captcha" , self.pyfile.name , challenge, response, multipart=False)
+                # Send response to Safelinking
+                json_res = self.json_response( self.pyfile.name , challenge, response)
                 
+                # Evaluate response
                 if( None == json_res ):
-                    self.error("No valid JSON response")
+                    self.fail("No valid JSON response")
+                    
+                # Response: Wrong password
+                elif( "passwordFail" in json_res ):
+                                        
+                    if( self.package_password ):
+                        self.fail("Wrong password: \"%s\"" % self.package_password )
+                    else:
+                        self.fail(_("Please enter the password in package section and try again"))
+
+                # Response: Error message
                 elif( "message" in json_res ):
                     self.log_info("Message: %s" % json_res['message'] )
-                    self.retry(wait=10, msg=json_res['message'])
+                    self.retry(wait=1, msg=json_res['message'])
+
+                # Response: Links
                 elif( "links" in json_res ):
                     for link in json_res['links']:
-                        self.log_debug("Url: ")
-                        self.log_debug(link['url'])
                         self.links.append(link['url'])
                 else:
-                    self.log_debug("Unexpected response")
+                    self.fail("Unexpected JSON response")
