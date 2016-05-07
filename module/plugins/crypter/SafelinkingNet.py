@@ -2,34 +2,74 @@
 
 import re
 
-import BeautifulSoup
-
 from module.plugins.internal.misc import json
+from module.network.HTTPRequest import BadHeader
 from module.plugins.internal.Crypter import Crypter
-from module.plugins.captcha.SolveMedia import SolveMedia
+from module.plugins.captcha.SolveMediaJson import SolveMediaJson
 
 
 class SafelinkingNet(Crypter):
     __name__    = "SafelinkingNet"
     __type__    = "crypter"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?safelinking\.net/([pd])/\w+'
+    __pattern__ = r'https?://(?:www\.)?safelinking\.net/(([pd])/)?\w+'
     __config__  = [("activated"         , "bool"          , "Activated"                       , True     ),
                    ("use_premium"       , "bool"          , "Use premium account if available", True     ),
                    ("folder_per_package", "Default;Yes;No", "Create folder for each package"  , "Default")]
 
     __description__ = """Safelinking.net decrypter plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("quareevo", "quareevo@arcor.de")]
+    __authors__     = [("quareevo", "quareevo@arcor.de"),("tbsn","tbsnpy_github@gmx.de")]
 
 
     SOLVEMEDIA_PATTERN = "solvemediaApiKey = '([\w\-.]+)';"
 
+    SAFELINKING_SOLVEMEDIA_KEY = "OZ987i6xTzNs9lw5.MA-2Vxbc-UxFrLu"
+
+
+    def json_response(self, url, hash, challenge, response, multipart=False):
+        
+        self.req.clearHeaders()
+        
+        self.req.putHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/38.0")
+        self.req.putHeader("Accept", "application/json, text/plain, */*")
+        self.req.putHeader("Accept-Language", "en-US,en;q=0.5")
+        self.req.putHeader("Accept-Encoding", "gzip, deflate, br")
+        self.req.putHeader("Content-Type" , "application/json;charset=utf-8")
+        
+        post = json.dumps({'answer': response,
+                           'challengeId' : challenge ,
+                           'hash': hash ,
+                           'type' : '0'})
+
+        res = None
+        try:
+            html = self.load(url,
+                             post=post,
+                             decode=False)
+                        
+            self.log_debug("Response answer: ")
+            self.log_debug(html)
+
+            res = json.loads(html)
+
+        except BadHeader, e:
+            self.log_debug(e)
+
+
+        return res
+
 
     def decrypt(self, pyfile):
+        
+        self.log_debug("Self:")
+        self.log_debug(self)
+        
         url = pyfile.url
+        
+        self.log_debug("Link name: %s" % self.pyfile.name )
 
         if re.match(self.__pattern__, url).group(1) == "d":
 
@@ -42,43 +82,35 @@ class SafelinkingNet(Crypter):
         else:
             postData = {"post-protect": "1"}
 
+            # This sets the referrer for further calls
             self.data = self.load(url)
-
+            
+            self.log_debug("SafelinkingNet() first page: %s" % self.data)
+            
             if "link-password" in self.data:
                 postData['link-password'] = self.get_password()
-
-            if "altcaptcha" in self.data:
-                m = re.search(self.SOLVEMEDIA_PATTERN, self.data)
-                if m is not None:
-                    captchaKey = m.group(1)
-                    captcha = SolveMedia(pyfile)
-                    captchaProvider = "Solvemedia"
-                else:
-                    self.fail(_("Error parsing captcha"))
+            
+            
+            if "ajaxSetup" in self.data:
+                
+                # Use static key for now
+                captchaKey = SafelinkingNet.SAFELINKING_SOLVEMEDIA_KEY
+                captcha = SolveMediaJson(pyfile)
+                captchaProvider = "Solvemedia"
 
                 response, challenge = captcha.challenge(captchaKey)
-                postData['adcopy_challenge'] = challenge
-                postData['adcopy_response']  = response
-
-                self.data = self.load(url, post=postData)
-
-                if "The CAPTCHA code you entered was wrong" in self.data:
-                    self.retry_captcha()
-
-                if "The password you entered was incorrect" in self.data:
-                    self.fail(_("Wrong password"))
-
-            pyfile.package().password = ""
-            soup = BeautifulSoup.BeautifulSoup(self.data)
-            scripts = soup.findAll("script")
-            for s in scripts:
-                if "d_links" in s.text:
-                    break
-            m = re.search('d_links":(\[.*?\])', s.text)
-            if m is not None:
-                linkDict = json.loads(m.group(1))
-                for link in linkDict:
-                    if not "http://" in link['full']:
-                        self.links.append("https://safelinking.net/d/" + link['full'])
-                    else:
-                        self.links.append(link['full'])
+                
+                json_res = self.json_response( "https://safelinking.net/v1/captcha" , self.pyfile.name , challenge, response, multipart=False)
+                
+                if( None == json_res ):
+                    self.error("No valid JSON response")
+                elif( "message" in json_res ):
+                    self.log_info("Message: %s" % json_res['message'] )
+                    self.retry(wait=10, msg=json_res['message'])
+                elif( "links" in json_res ):
+                    for link in json_res['links']:
+                        self.log_debug("Url: ")
+                        self.log_debug(link['url'])
+                        self.links.append(link['url'])
+                else:
+                    self.log_debug("Unexpected response")
