@@ -35,29 +35,29 @@ class SolveMediaJson(CaptchaService):
 
 
     def challenge(self, key=None, data=None):
+
+        challengeRes = None
+
         key = key or self.retrieve_key(data)
-
-        self.log_debug( "self.pyfile.plugin:")
-        self.log_debug(self.pyfile.plugin)
-
+        
         html = self.pyfile.plugin.load("http://api.solvemedia.com/papi/_challenge.js",
                                     get={'k': key})
-        
-        
+                
         jsonResult = json.loads(html)
-        acChallengeResult = jsonResult['ACChallengeResult']
-        challenge =acChallengeResult['chid']
-
-        #self.log_debug( "SolvemediaJson: challenge: %s" % challenge )
+        if( 'ACChallengeResult' in jsonResult ):
+            acChallengeResult = jsonResult['ACChallengeResult']
+            if( 'chid' in acChallengeResult ):
+                challengeRes =acChallengeResult['chid']
         
-        result = self.result("http://api.solvemedia.com/papi/media", challenge)
+        if( None != challengeRes ):
+            result = self.result("http://api.solvemedia.com/papi/media", challengeRes)
         
-        return result, challenge
+        return result, challengeRes
         
 
     def result(self, server, challenge):
         result = self.decrypt(server,
-                                    get={'c': challenge},
-                                    cookies=True,
-                                    input_type="gif")
+                              get={'c': challenge},
+                              cookies=True,
+                              input_type="gif")
         return result
