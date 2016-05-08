@@ -3,19 +3,13 @@
 import re
 import time
 
-
-
 from module.network.HTTPRequest import BadHeader
-
-from module.network.RequestFactory import getURL as get_url
-from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import json, parse_size, seconds_to_midnight
 
 class ClicknUpload(Hoster):
     __name__ = "ClicknUpload"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?clicknupload\.(?:com|me|link)/\w{12}'
@@ -64,7 +58,7 @@ class ClicknUpload(Hoster):
         
         refreshLinkComplete = "http://clicknupload.link" + self.refreshLink
         
-        self.log_debug("Wait for %i seconds" % self.refreshTimeout )
+        self.log_debug("Wait for %i seconds" % (self.refreshTimeout+1) )
         time.sleep(self.refreshTimeout+1)
         self.log_debug("Waiting done. Load \"%s\"" % refreshLinkComplete )
         
