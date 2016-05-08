@@ -5,7 +5,7 @@ import re
 from module.plugins.internal.misc import json
 from module.network.HTTPRequest import BadHeader
 from module.plugins.internal.Crypter import Crypter
-from module.plugins.captcha.SolveMediaJson import SolveMediaJson
+from module.plugins.captcha.SolveMedia import SolveMedia
 
 
 class SafelinkingNet(Crypter):
@@ -86,8 +86,8 @@ class SafelinkingNet(Crypter):
                 captchaKey = SafelinkingNet.SAFELINKING_SOLVEMEDIA_KEY
 
                 # Retreive and solve captcha
-                captcha = SolveMediaJson(pyfile)
-                response, challenge = captcha.challenge(captchaKey)
+                captcha = SolveMedia(pyfile)
+                response, challenge = captcha.challenge(key=captchaKey)
                 
                 # Send response to Safelinking
                 json_res = self.json_response( self.pyfile.name , challenge, response)
