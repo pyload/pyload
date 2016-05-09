@@ -1,14 +1,15 @@
+# -*- coding: utf-8 -*-
+
 import re
-import json
 
 from module.plugins.internal.SimpleCrypter import SimpleCrypter
-from module.plugins.internal.misc import uniqify
+from module.plugins.internal.misc import json, uniqify
 
 
 class ImgurCom(SimpleCrypter):
     __name__    = "ImgurCom"
     __type__    = "crypter"
-    __version__ = "0.58"
+    __version__ = "0.59"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.|m\.)?imgur\.com/(a|gallery|)/?\w{5,7}'
