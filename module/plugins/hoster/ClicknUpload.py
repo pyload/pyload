@@ -178,6 +178,11 @@ class ClicknUpload(Hoster):
         # Variable to hold the extracted direct link
         self.directLink = None
 
+        # Clickandupload redirects clickandupload.me and clickandupload.com links
+        # to clickandupload.link
+        # Rename them here, to prevent issues with the referrer
+        pyfile.url = re.sub( r'clicknupload.(me|com)', r'clicknupload.link', pyfile.url )
+
         post = dict()
         
         retVal = 0
