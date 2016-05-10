@@ -53,7 +53,7 @@ def get_link_quality(videos, quality):
 class StreamCz(SimpleHoster):
     __name__    = "StreamCz"
     __type__    = "hoster"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?stream\.cz/[^/]+/(?P<EP>\d+).+'
@@ -89,4 +89,5 @@ class StreamCz(SimpleHoster):
             link_name, container = os.path.splitext(link)
             self.pyfile.name = data["name"] + container
 
-            self.link = link
+            self.log_info(_("Downloading file..."))
+            self.download(link)
