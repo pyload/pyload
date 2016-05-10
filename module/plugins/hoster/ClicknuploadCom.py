@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class ClicknuploadCom(SimpleHoster):
     __name__    = "ClicknuploadCom"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?clicknupload\.(?:com|me|link)/\w{12}'
@@ -37,7 +37,7 @@ class ClicknuploadCom(SimpleHoster):
     def handle_free(self, pyfile):
         action, inputs = self.parse_html_form("action=''")
         if not inputs:
-            self.log_debug(_("Form 1 not found"))
+            self.fail(_("Form 1 not found"))
 
         self.data = self.load(pyfile.url, post=inputs)
 
@@ -45,7 +45,7 @@ class ClicknuploadCom(SimpleHoster):
 
         action, inputs = self.parse_html_form('name="F1"')
         if not inputs:
-            self.log_debug(_("Form 2 not found"))
+            self.fail(_("Form 2 not found"))
 
         self.data = self.load(pyfile.url, post=inputs)
 
