@@ -12,11 +12,10 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 def get_api_password(episode):
     api_key = "fb5f58a820353bd7095de526253c14fd"
 
-    timestamp = int(round(time.time() * 1000 / 1e3 / 24 / 3600))
+    timestamp = int(round(time.time() / 24 / 3600))
     api_pass = api_key + "/episode/" + episode + str(timestamp)
 
-    m = hashlib.md5()
-    m.update(api_pass)
+    m = hashlib.md5(api_pass)
 
     return m.hexdigest()
 
@@ -53,7 +52,7 @@ def get_link_quality(videos, quality):
 class StreamCz(SimpleHoster):
     __name__    = "StreamCz"
     __type__    = "hoster"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?stream\.cz/[^/]+/(?P<EP>\d+).+'
