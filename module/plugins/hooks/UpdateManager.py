@@ -15,7 +15,7 @@ from module.plugins.internal.misc import encode, exists, Expose, fsjoin, threade
 class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "1.11"
+    __version__ = "1.12"
     __status__  = "testing"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),
@@ -163,7 +163,7 @@ class UpdateManager(Addon):
         self.info['pyload']     = False
         self.info['last_check'] = time.time()
 
-        if not newversion:
+        if not newversion or not re.search(r'^\d+(?:\.\d+){0,3}[a-z]?$', newversion):
             exitcode = 0
 
         elif newversion == "None":
