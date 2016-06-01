@@ -11,7 +11,7 @@ from module.plugins.captcha.ReCaptcha import ReCaptcha
 class NitroflareCom(Account):
     __name__    = "NitroflareCom"
     __type__    = "account"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __description__ = """Nitroflare.com account plugin"""
@@ -73,11 +73,14 @@ class NitroflareCom(Account):
 
     def signin(self, user, password, data):
         login_url = "https://nitroflare.com/login"
+
+        self.data = self.load(login_url)
+        if "document.location.href='logout'" in self.data:
+            self.skip_login()
+
         post_data = {'login'   : "",
                      'email'   : user,
                      'password': password}
-
-        self.data = self.load(login_url)
 
         # dummy pyfile
         pyfile = PyFile(self.pyload.files, -1, login_url, login_url, 0, 0, "", self.classname, -1, -1)
@@ -93,7 +96,7 @@ class NitroflareCom(Account):
         token = re.search(self.TOKEN_PATTERN, self.data).group(1)
         post_data['token'] = token
 
-        self.data = self.load("https://nitroflare.com/login", post=post_data)
+        self.data = self.load(login_url, post=post_data)
 
         if re.search(self.LOGIN_FAIL_PATTERN, self.data):
             self.fail_login()
@@ -108,5 +111,3 @@ class NitroflareCom(Account):
     def retry_captcha(self, attemps=10, wait=1, msg=_("Max captcha retries reached")):
         self.captcha.invalid()
         self.fail_login(msg="Invalid captcha")
-
-
