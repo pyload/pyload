@@ -12,7 +12,7 @@ from module.plugins.internal.misc import Periodical, compare_time, decode, isite
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.74"
+    __version__ = "0.75"
     __status__  = "stable"
 
     __description__ = """Base account plugin"""
@@ -116,7 +116,7 @@ class Account(Plugin):
             self.signin(self.user, self.info['login']['password'], self.info['data'])
 
         except Skip, e:
-            self.log_warning(_("Skipped login user `%s`"), e)
+            self.log_warning(_("Skipped login user `%s`") % self.user, e)
             self.info['login']['valid'] = True
 
             new_timeout = timestamp - self.info['login']['timestamp']
