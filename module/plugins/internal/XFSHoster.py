@@ -13,7 +13,7 @@ from module.plugins.internal.misc import html_unescape, parse_time, seconds_to_m
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.75"
+    __version__ = "0.76"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -207,6 +207,13 @@ class XFSHoster(SimpleHoster):
                     if wait_time < self.config.get('max_wait', 10) * 60:
                         self.handle_captcha(inputs)
                     self.wait()
+
+                else:
+                    self.handle_captcha(inputs)
+
+                if 'referer' in inputs and len(inputs['referer']) == 0:
+                    inputs['referer'] = self.pyfile.url
+
         else:
             inputs['referer'] = self.pyfile.url
 
