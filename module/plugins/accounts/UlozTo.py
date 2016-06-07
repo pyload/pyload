@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class UlozTo(Account):
     __name__    = "UlozTo"
     __type__    = "account"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __description__ = """Uloz.to account plugin"""
@@ -23,7 +23,7 @@ class UlozTo(Account):
 
 
     def grab_info(self, user, password, data):
-        html = self.load("http://www.ulozto.net/")
+        html = self.load("https://www.ulozto.net/")
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
 
@@ -34,11 +34,11 @@ class UlozTo(Account):
 
 
     def signin(self, user, password, data):
-        login_page = self.load('http://www.ulozto.net/?do=web-login')
+        login_page = self.load('https://www.ulozto.net/?do=web-login')
         action     = re.findall('<form action="(.+?)"', login_page)[1].replace('&amp;', '&')
         token      = re.search('_token_" value="(.+?)"', login_page).group(1)
 
-        html = self.load(urlparse.urljoin("http://www.ulozto.net/", action),
+        html = self.load(urlparse.urljoin("https://www.ulozto.net/", action),
                          post={'_token_' : token,
                                'do'      : "loginForm-submit",
                                'login'   : u"Přihlásit",
