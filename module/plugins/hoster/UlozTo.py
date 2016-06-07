@@ -14,7 +14,7 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "1.33"
+    __version__ = "1.34"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)/(?:live/)?(?P<ID>\w+/[^/?]*)'
@@ -38,7 +38,9 @@ class UlozTo(SimpleHoster):
     OFFLINE_PATTERN = r'<title>404 - Page not found</title>|<h1 class="h1">File (has been deleted|was banned)</h1>'
 
     URL_REPLACEMENTS  = [(r'(?<=http://)([^/]+)', "www.ulozto.net"),
-                         ("http://", "https://")]
+                        ("http://", "https://"),
+                        (r'(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)', "ulozto.net")]
+
     SIZE_REPLACEMENTS = [(r'([\d.]+)\s([kMG])B', convert_decimal_prefix)]
 
     CHECK_TRAFFIC = True
@@ -152,7 +154,7 @@ class UlozTo(SimpleHoster):
             'wrong_captcha': ">An error ocurred while verifying the user",
             'offline'      : re.compile(self.OFFLINE_PATTERN),
             'passwd'       : self.PASSWD_PATTERN,
-            'server_error' : 'src="https://img.ulozto.cz/error403/vykricnik.jpg"',  #: Paralell dl, server overload etc.
+            'server_error' : "<h1>Z Tvého počítače se již stahuje",  #: Paralell dl, server overload etc.
             'not_found'    : "<title>Ulož.to</title>"
         })
 
