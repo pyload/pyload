@@ -38,7 +38,8 @@ class UnTar(Extractor):
 
     def list(self, password=None):
         with tarfile.open(self.target) as t:
-            return t.getnames()
+            self.files = t.getnames()
+        return self.files
 
 
     def verify(self, password=None):
@@ -56,11 +57,13 @@ class UnTar(Extractor):
 
 
     def extract(self, password=None):
-        self.verify()
+        self.verify(password)
 
         try:
             with tarfile.open(self.target, errorlevel=2) as t:
                 t.extractall(self.dest)
+                self.files = t.getnames()
+            return self.files
 
         except tarfile.ExtractError, e:
             self.log_warning(e)

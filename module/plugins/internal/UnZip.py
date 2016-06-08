@@ -36,7 +36,8 @@ class UnZip(Extractor):
     def list(self, password=None):
         with zipfile.ZipFile(self.target, 'r') as z:
             z.setpassword(password)
-            return z.namelist()
+            self.files = z.namelist()
+        return self.files
 
 
     def verify(self, password=None):
@@ -63,6 +64,8 @@ class UnZip(Extractor):
             with zipfile.ZipFile(self.target, 'r') as z:
                 z.setpassword(password)
                 z.extractall(self.dest)
+                self.files = z.namelist()
+            return self.files
 
         except RuntimeError, e:
             raise ArchiveError(e)

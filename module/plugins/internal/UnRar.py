@@ -155,8 +155,7 @@ class UnRar(Extractor):
         if p.returncode:
             raise ArchiveError(_("Process return code: %d") % p.returncode)
 
-        self.files = self.list(password)
-        return self.files
+        return self.list(password)
 
 
     def chunks(self):
@@ -195,7 +194,8 @@ class UnRar(Extractor):
             for f in decode(out).splitlines():
                 result.add(fsjoin(self.dest, f.strip()))
 
-        return list(result)
+        self.files = list(result)
+        return self.files
 
 
     def call_cmd(self, command, *xargs, **kwargs):
