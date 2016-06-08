@@ -25,7 +25,10 @@ class UnTar(Extractor):
 
     @classmethod
     def isarchive(cls, filename):
-        return tarfile.is_tarfile(encode(filename))
+        try:
+            return tarfile.is_tarfile(encode(filename))
+        except:
+            return False
 
 
     @classmethod
