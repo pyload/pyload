@@ -330,7 +330,7 @@ class ExtractArchive(Addon):
 
                         #: Remove processed file and related multiparts from list
                         files_ids = [(fid, fname, fout) for fid, fname, fout in files_ids \
-                                    if fname not in archive.items()]
+                                    if fname not in archive.chunks()]
                         self.log_debug("Extracted files: %s" % new_files)
 
                         for filename in new_files:
