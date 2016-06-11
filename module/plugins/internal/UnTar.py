@@ -12,7 +12,7 @@ from module.plugins.internal.misc import encode
 class UnTar(Extractor):
     __name__    = "UnTar"
     __type__    = "extractor"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "stable"
 
     __description__ = """TAR extractor plugin"""

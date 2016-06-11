@@ -98,8 +98,8 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.57"
-    __status__  = "broken"
+    __version__ = "1.58"
+    __status__  = "testing"
 
     __config__ = [("activated"      , "bool"  , "Activated"                             , True                                                                     ),
                   ("fullpath"       , "bool"  , "Extract with full paths"               , True                                                                     ),
