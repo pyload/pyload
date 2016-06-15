@@ -209,7 +209,7 @@ class UnRar(Extractor):
             args.append("-or")
 
         for word in self.excludefiles:
-            args.append("-x'%s'" % word.strip())
+            args.append("-x%s" % word.strip())
 
         #: Assume yes on all queries
         args.append("-y")
