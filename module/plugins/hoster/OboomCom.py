@@ -13,7 +13,7 @@ from module.plugins.captcha.ReCaptcha import ReCaptcha
 class OboomCom(Hoster):
     __name__    = "OboomCom"
     __type__    = "hoster"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?oboom\.com/(?:#(?:id=|/)?)?(?P<ID>\w{8})'
@@ -89,8 +89,7 @@ class OboomCom(Hoster):
             self.captcha.correct()
             self.wait(30)
 
-        else:
-            if result[0] == 403:
+        elif result[0] == 403:
                 if result[1] == -1:  #: Another download is running
                     self.set_wait(15 * 60)
                 else:
@@ -100,10 +99,11 @@ class OboomCom(Hoster):
                 self.wait()
                 self.retry(5)
 
-            elif result[0] == 400 and result[1] == "forbidden":
-                self.retry(5, 15 * 60, _("Service unavailable"))
+        elif result[0] == 400 and result[1] == "forbidden":
+            self.retry(5, 15 * 60, _("Service unavailable"))
 
-        self.retry_captcha()
+        else:
+            self.retry_captcha()
 
 
     def get_fileInfo(self, token, fileId):
