@@ -2,9 +2,14 @@
 
 import re
 
+from module.network.RequestFactory import getURL as get_url
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
+try:
+    import simplejson as json
+except ImportError:
+    import json
 
 class NitroflareCom(SimpleHoster):
     __name__    = "NitroflareCom"
@@ -30,6 +35,7 @@ class NitroflareCom(SimpleHoster):
     OFFLINE_PATTERN = r'>File doesn\'t exist'
 
     LINK_PREMIUM_PATTERN = LINK_FREE_PATTERN = r'(https?://[\w\-]+\.nitroflare\.com/.+?)"'
+    FILE_ID_PATTERN = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
     DIRECT_LINK = False
 
     RECAPTCHA_KEY        = "6Lenx_USAAAAAF5L1pmTWvWcH73dipAEzNnmNLgy"
@@ -72,3 +78,37 @@ class NitroflareCom(SimpleHoster):
             self.retry_captcha()
 
         return super(NitroflareCom, self).handle_free(pyfile)
+
+
+    @classmethod
+    def api_info(cls, url):
+        info  = {}
+        #cls.log_info(url)
+        fileid = re.search(cls.FILE_ID_PATTERN, url).group('ID')
+        data = json.loads(get_url("https://nitroflare.com/api/v2/getFileInfo", get={'files': fileid}))
+        #cls.log_info("Fetching file info for "+fileid)
+        #cls.log_info(json.dumps(data))
+        if (data['type'] == 'success') and (data['result']['files'][fileid]['status'] == 'online'):
+            fileinfo = data['result']['files'][fileid]
+            info['fileid'] = fileid
+            info['status'] = 2
+            info['name']   = fileinfo['name']
+            info['size']   = fileinfo['size']  #: In bytes
+
+        return info
+
+
+    def handle_premium(self, pyfile):
+        self.api_data = dlinfo = {}
+
+        data = json.loads(self.load("https://nitroflare.com/api/v2/getDownloadLink",
+                         get={
+                             'file': self.info['fileid'],
+                             'user': self.account.user,
+                             'premiumKey': self.account.get_login('password') 
+                         }))
+
+        if data['type'] == 'success':
+            pyfile.name = data['result']['name']
+            pyfile.size = int(data['result']['size'])
+            self.link = data['result']['url']
