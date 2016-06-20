@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import re
 import time
 
 from module.plugins.internal.Account import Account
@@ -10,7 +9,7 @@ from module.plugins.internal.misc import json
 class NitroflareCom(Account):
     __name__ = "NitroflareCom"
     __type__ = "account"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__ = "testing"
 
     __description__ = """Nitroflare.com account plugin"""
