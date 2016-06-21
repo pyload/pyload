@@ -40,7 +40,7 @@ class BIGHTTPRequest(HTTPRequest):
 class YoutubeCom(Hoster):
     __name__    = "YoutubeCom"
     __type__    = "hoster"
-    __version__ = "0.52"
+    __version__ = "0.53"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)\w+'
@@ -140,9 +140,9 @@ class YoutubeCom(Hoster):
                 self.fail(e.message)
 
         #: Remove old records from cache
-        for _c in cache_info['cache'].iterkeys():
-            if time.time() >= cache_info['cache'][_c]['time'] + 24 * 60 * 60:
-                cache_info['cache'].pop(_c, None)
+        for _k in list(cache_info['cache'].iterkeys()):
+            if time.time() >= cache_info['cache'][_k]['time'] + 24 * 60 * 60:
+                cache_info['cache'].pop(_k, None)
                 cache_dirty = True
 
         if cache_dirty:
