@@ -83,7 +83,7 @@ class ShareLinksBiz(Crypter):
                 url = header.get('location')
 
         if re.match(self.__pattern__, url):
-            self.base_url = "http://www.%s.biz" % re.match(self.__pattern__, url).group(1)
+            self.base_url = "http://%s.biz" % re.match(self.__pattern__, url).group(1)
             self.file_id = re.match(self.__pattern__, url).group('ID')
 
         else:
