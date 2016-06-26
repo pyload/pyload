@@ -2,14 +2,16 @@
 
 import re
 
+from module.network.RequestFactory import getURL as get_url
 from module.plugins.captcha.ReCaptcha import ReCaptcha
+from module.plugins.internal.misc import json
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class NitroflareCom(SimpleHoster):
     __name__    = "NitroflareCom"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
@@ -30,6 +32,7 @@ class NitroflareCom(SimpleHoster):
     OFFLINE_PATTERN = r'>File doesn\'t exist'
 
     LINK_PREMIUM_PATTERN = LINK_FREE_PATTERN = r'(https?://[\w\-]+\.nitroflare\.com/.+?)"'
+    FILE_ID_PATTERN = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
     DIRECT_LINK = False
 
     RECAPTCHA_KEY        = "6Lenx_USAAAAAF5L1pmTWvWcH73dipAEzNnmNLgy"
@@ -38,9 +41,28 @@ class NitroflareCom(SimpleHoster):
     # ERROR_PATTERN        = r'downloading is not possible'
 
 
+    @classmethod
+    def api_info(cls, url):
+        info    = {}
+        file_id = re.search(cls.__pattern__, url).group('ID')
+
+        data = json.loads(get_url("https://nitroflare.com/api/v2/getFileInfo",
+                                  get={'files': file_id},
+                                  decode=True))
+
+        if data['type'] == 'success':
+            fileinfo = data['result']['files'][file_id]
+            info['status'] = 2 if fileinfo['status'] == 'online' else 1
+            info['name']   = fileinfo['name']
+            info['size']   = fileinfo['size']  #: In bytes
+
+        return info
+
+
     def handle_free(self, pyfile):
         #: Used here to load the cookies which will be required later
-        self.load("http://nitroflare.com/ajax/setCookie.php", post={'fileId': self.info['pattern']['ID']})
+        self.load("http://nitroflare.com/ajax/setCookie.php",
+                  post={'fileId': self.info['pattern']['ID']})
 
         self.load(pyfile.url, post={'goToFreePage': ""})
 
@@ -72,3 +94,15 @@ class NitroflareCom(SimpleHoster):
             self.retry_captcha()
 
         return super(NitroflareCom, self).handle_free(pyfile)
+
+
+    def handle_premium(self, pyfile):
+        data = json.loads(self.load("https://nitroflare.com/api/v2/getDownloadLink",
+                                    get={'file'      : self.info['pattern']['ID'],
+                                         'user'      : self.account.user,
+                                         'premiumKey': self.account.get_login('password')}))
+
+        if data['type'] == 'success':
+            pyfile.name = data['result']['name']
+            pyfile.size = int(data['result']['size'])
+            self.link   = data['result']['url']

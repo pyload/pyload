@@ -23,7 +23,7 @@ class PasswordError(Exception):
 class Extractor(Plugin):
     __name__    = "Extractor"
     __type__    = "extractor"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __status__  = "stable"
 
     __description__ = """Base extractor plugin"""
@@ -104,7 +104,7 @@ class Extractor(Plugin):
         self.excludefiles = excludefiles
         self.priority     = priority
         self.keepbroken   = keepbroken
-        self.progress     = lambda x: pyfile.setProgress(int(x))
+        self.files        = None
 
         self.init()
 
@@ -117,11 +117,6 @@ class Extractor(Plugin):
     @property
     def dest(self):
         return encode(self.out)
-
-
-    def _log(self, level, plugintype, pluginname, messages):
-        messages = (self.__name__,) + messages
-        return self.pyfile.plugin._log(level, plugintype, self.pyfile.plugin.__name__, messages)
 
 
     def verify(self, password=None):
@@ -156,3 +151,9 @@ class Extractor(Plugin):
         Return list of archive files
         """
         raise NotImplementedError
+
+    def progress(self, x):
+        """
+        Set extraction progress
+        """
+        return self.pyfile.setProgress(int(x))

@@ -3,19 +3,20 @@
 from module.plugins.internal.Account import Account
 
 
-class UploadableCh(Account):
-    __name__    = "UploadableCh"
+class BigfileTo(Account):
+    __name__    = "BigfileTo"
     __type__    = "account"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
-    __description__ = """Uploadable.ch account plugin"""
+    __description__ = """bigfile.to account plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("Sasch", "gsasch@gmail.com")]
+    __authors__     = [("Sasch"    , "gsasch@gmail.com"          ),
+                       ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
 
     def grab_info(self, user, password, data):
-        html = self.load("http://www.uploadable.ch/login.php")
+        html = self.load("https://www.bigfile.to/login.php")
 
         premium     = '<a href="/logout.php"' in html
         trafficleft = -1 if premium else None
@@ -24,7 +25,7 @@ class UploadableCh(Account):
 
 
     def signin(self, user, password, data):
-        html = self.load("http://www.uploadable.ch/login.php",
+        html = self.load("https://www.bigfile.to/login.php",
                          post={'userName'     : user,
                                'userPassword' : password,
                                'autoLogin'    : "1",

@@ -17,7 +17,7 @@ from module.plugins.captcha.SolveMedia import SolveMedia
 class FilecryptCc(Crypter):
     __name__    = "FilecryptCc"
     __type__    = "crypter"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
@@ -36,7 +36,7 @@ class FilecryptCc(Crypter):
     DLC_LINK_PATTERN = r'onclick="DownloadDLC\(\'(.+)\'\);">'
     WEBLINK_PATTERN  = r"openLink.?'([\w\-]*)',"
 
-    CAPTCHA_PATTERN          = r'class="safety">Security prompt<'
+    CAPTCHA_PATTERN          = r'<h2>Security prompt</h2>'
     INTERNAL_CAPTCHA_PATTERN = r'<img id="nc" src="(.+?)"'
     CIRCLE_CAPTCHA_PATTERN   = r'<input type="image" src="(.+?)"'
     KEY_CAPTCHA_PATTERN      = r"<script language=JavaScript src='(http://backs\.keycaptcha\.com/swfs/cap\.js)'"

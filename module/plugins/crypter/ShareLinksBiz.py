@@ -11,7 +11,7 @@ from module.plugins.internal.Crypter import Crypter
 class ShareLinksBiz(Crypter):
     __name__    = "ShareLinksBiz"
     __type__    = "crypter"
-    __version__ = "1.25"
+    __version__ = "1.27"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
@@ -83,7 +83,7 @@ class ShareLinksBiz(Crypter):
                 url = header.get('location')
 
         if re.match(self.__pattern__, url):
-            self.base_url = "http://www.%s.biz" % re.match(self.__pattern__, url).group(1)
+            self.base_url = "http://%s.biz" % re.match(self.__pattern__, url).group(1)
             self.file_id = re.match(self.__pattern__, url).group('ID')
 
         else:
@@ -143,7 +143,7 @@ class ShareLinksBiz(Crypter):
         captcha_url = self.base_url + '/captcha.gif?d=%s&PHPSESSID=%s' % (m.group(1), m.group(2))
         self.log_debug(_("Waiting user for correct position"))
         coords = self.captcha.decrypt(captcha_url, input_type="gif", output_type='positional')
-        self.log_debug(_("Captcha resolved! Coords: *s, %s") % (coords[0], coords[1]))
+        self.log_debug(_("Captcha resolved! Coords: %s, %s") % (coords[0], coords[1]))
 
         #: Resolve captcha
         href = self._resolve_coords(coords, captcha_map)
@@ -236,6 +236,8 @@ class ShareLinksBiz(Crypter):
             except Exception, detail:
                 self.log_debug(_("Error decrypting Web link [%s], %s") % (ID, detail))
 
+        self.log_debug(_("%s links") % len(pack_links))
+
         return pack_links
 
 
@@ -243,12 +245,18 @@ class ShareLinksBiz(Crypter):
         pack_links = []
         self.log_debug(_("Handling Container links"))
 
-        pattern = r'javascript:_get\(\'(.*?)\', 0, \'(rsdf|ccf|dlc)\'\)'
+        pattern = r'javascript:_get\(\'(.+?)\', 0, \'(rsdf|ccf|dlc)\'\)'
+
         containers_links = re.findall(pattern, self.data)
+
         self.log_debug(_("Decrypting %d Container links") % len(containers_links))
+
         for container_link in containers_links:
             link = "%s/get/%s/%s" % (self.base_url, container_link[1], container_link[0])
             pack_links.append(link)
+
+        self.log_debug(_("%s links") % len(pack_links))
+
         return pack_links
 
 
@@ -263,6 +271,8 @@ class ShareLinksBiz(Crypter):
 
             except Exception:
                 self.fail(_("Unable to decrypt CNL2 links"))
+
+        self.log_debug(_("%s links") % len(pack_links))
 
         return pack_links
 

@@ -14,10 +14,10 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "1.32"
+    __version__ = "1.34"
     __status__  = "testing"
 
-    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)/(?:live/)?(?P<ID>\w+/[^/?]*)'
+    __pattern__ = r'https?://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)/(?:live/)?(?P<ID>\w+/[^/?]*)'
 
 
     __config__  = [("activated"   , "bool", "Activated"                                        , True),
@@ -37,7 +37,10 @@ class UlozTo(SimpleHoster):
     SIZE_PATTERN    = r'<span id="fileSize">.*?(?P<S>[\d.,]+\s[kMG]?B)</span>'
     OFFLINE_PATTERN = r'<title>404 - Page not found</title>|<h1 class="h1">File (has been deleted|was banned)</h1>'
 
-    URL_REPLACEMENTS  = [(r'(?<=http://)([^/]+)', "www.ulozto.net")]
+    URL_REPLACEMENTS  = [(r'(?<=http://)([^/]+)', "www.ulozto.net"),
+                        ("http://", "https://"),
+                        (r'(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)', "ulozto.net")]
+
     SIZE_REPLACEMENTS = [(r'([\d.]+)\s([kMG])B', convert_decimal_prefix)]
 
     CHECK_TRAFFIC = True
@@ -60,8 +63,9 @@ class UlozTo(SimpleHoster):
             self.log_info(_("Adult content confirmation needed"))
 
             url = pyfile.url.replace("ulozto.net", "pornfile.cz")
-            self.load("http://pornfile.cz/porn-disclaimer",
-                        post={'agree': "Confirm", 'do': 'pornDisclaimer-submit'})
+            self.load("https://pornfile.cz/porn-disclaimer",
+                      post={'agree': "Confirm",
+                            'do'   : "pornDisclaimer-submit"})
 
             html = self.load(url)
             name = re.search(self.NAME_PATTERN, html).group(2)
@@ -81,7 +85,7 @@ class UlozTo(SimpleHoster):
             #: Old version - last seen 9.12.2013
             self.log_debug('Using "old" version')
 
-            captcha_value = self.captcha.decrypt("http://img.uloz.to/captcha/%s.png" % inputs['captcha_id'])
+            captcha_value = self.captcha.decrypt("https://img.uloz.to/captcha/%s.png" % inputs['captcha_id'])
             self.log_debug("CAPTCHA ID: " + inputs['captcha_id'] + ", CAPTCHA VALUE: " + captcha_value)
 
             inputs.update({'captcha_id': inputs['captcha_id'], 'captcha_key': inputs['captcha_key'], 'captcha_value': captcha_value})
@@ -90,10 +94,10 @@ class UlozTo(SimpleHoster):
             #: New version - better to get new parameters (like captcha reload) because of image url - since 6.12.2013
             self.log_debug('Using "new" version')
 
-            xapca = self.load("http://www.ulozto.net/reloadXapca.php",
+            xapca = self.load("https://www.ulozto.net/reloadXapca.php",
                               get={'rnd': timestamp()})
 
-            xapca = xapca.replace('sound":"', 'sound":"http:').replace('image":"', 'image":"http:')
+            xapca = xapca.replace('sound":"', 'sound":"https:').replace('image":"', 'image":"https:')
             self.log_debug("xapca: %s" % xapca)
 
             data = json.loads(xapca)
@@ -116,7 +120,7 @@ class UlozTo(SimpleHoster):
         else:
             self.error(_("CAPTCHA form changed"))
 
-        self.download("http://www.ulozto.net" + action, post=inputs)
+        self.download("https://www.ulozto.net" + action, post=inputs)
 
 
     def handle_premium(self, pyfile):
@@ -131,7 +135,8 @@ class UlozTo(SimpleHoster):
                 self.log_info(_("Password protected link, trying ") + password)
                 self.data = self.load(self.pyfile.url,
                                       get={'do': "passwordProtectedForm-submit"},
-                                      post={'password': password, 'password_send': 'Send'})
+                                      post={'password'     : password,
+                                            'password_send': 'Send'})
 
                 if self.PASSWD_PATTERN in self.data:
                     self.fail(_("Wrong password"))
@@ -139,7 +144,7 @@ class UlozTo(SimpleHoster):
                 self.fail(_("No password found"))
 
         if re.search(self.VIPLINK_PATTERN, self.data):
-            self.data = self.load(pyfile.url, get={'disclaimer': "1"})
+            self.data = self.load(self.pyfile.url, get={'disclaimer': "1"})
 
         return super(UlozTo, self).check_errors()
 
@@ -149,7 +154,7 @@ class UlozTo(SimpleHoster):
             'wrong_captcha': ">An error ocurred while verifying the user",
             'offline'      : re.compile(self.OFFLINE_PATTERN),
             'passwd'       : self.PASSWD_PATTERN,
-            'server_error' : 'src="http://img.ulozto.cz/error403/vykricnik.jpg"',  #: Paralell dl, server overload etc.
+            'server_error' : "<h1>Z Tvého počítače se již stahuje",  #: Paralell dl, server overload etc.
             'not_found'    : "<title>Ulož.to</title>"
         })
 

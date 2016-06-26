@@ -225,7 +225,7 @@ class MegaClient(object):
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __status__  = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)(?:###n=(?P<OWNER>[\w^_]+))?'
@@ -362,14 +362,16 @@ class MegaCoNz(Hoster):
         #: G is for requesting a download url
         #: This is similar to the calls in the mega js app, documentation is very bad
         if public:
-            res = mega.api_response(a="g", g=1, p=id, ssl=1)[0]
+            res = mega.api_response(a="g", g=1, p=id, ssl=1)
         else:
-            res = mega.api_response(a="g", g=1, n=id, ssl=1)[0]
+            res = mega.api_response(a="g", g=1, n=id, ssl=1)
 
         if isinstance(res, int):
             mega.check_error(res)
-        elif "e" in res:
-            mega.check_error(res['e'])
+        elif isinstance(res, list):
+            res = res[0]
+            if "e" in res:
+                mega.check_error(res['e'])
 
         attr = MegaCrypto.decrypt_attr(res['at'], key)
         if not attr:

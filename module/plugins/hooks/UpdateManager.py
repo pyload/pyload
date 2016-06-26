@@ -15,7 +15,7 @@ from module.plugins.internal.misc import encode, exists, Expose, fsjoin, threade
 class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "1.12"
+    __version__ = "1.14"
     __status__  = "testing"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),
@@ -33,7 +33,8 @@ class UpdateManager(Addon):
 
     _VERSION = re.compile(r'^\s*__version__\s*=\s*("|\')([\d.]+)\1', re.M)
 
-    SERVER_URL     = "http://updatemanager.pyload.org"
+    # SERVER_URL     = "http://updatemanager.pyload.org"
+    SERVER_URL     = "http://updatemanager-spyload.rhcloud.com"
     CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
 
 
@@ -163,18 +164,21 @@ class UpdateManager(Addon):
         self.info['pyload']     = False
         self.info['last_check'] = time.time()
 
-        if not newversion or not re.search(r'^\d+(?:\.\d+){0,3}[a-z]?$', newversion):
+        if not newversion:
             exitcode = 0
 
         elif newversion == "None":
             self.log_info(_("pyLoad is up to date!"))
             exitcode = self.update_plugins()
 
-        else:
+        elif re.search(r'^\d+(?:\.\d+){0,3}[a-z]?$', newversion):
             self.log_info(_("***  New pyLoad %s available  ***") % newversion)
             self.log_info(_("***  Get it here: https://github.com/pyload/pyload/releases  ***"))
             self.info['pyload'] = True
             exitcode = 3
+
+        else:
+            exitcode = 0
 
         #: Exit codes:
         #:  -1 = No plugin updated, new pyLoad version available

@@ -8,7 +8,7 @@ from module.plugins.internal.Crypter import Crypter
 class SexuriaCom(Crypter):
     __name__    = "SexuriaCom"
     __type__    = "crypter"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?sexuria\.com/(v1/)?(Pornos_Kostenlos_.+?_(\d+)\.html|dl_links_\d+_\d+\.html|id=\d+\&part=\d+\&link=\d+)'
@@ -21,13 +21,13 @@ class SexuriaCom(Crypter):
     __authors__     = [("NETHead", "NETHead.AT.gmx.DOT.net")]
 
     #: Constants
-    PATTERN_SUPPORTED_MAIN     = r'http://(www\.)?sexuria\.com/(v1/)?Pornos_Kostenlos_.+?_(\d+)\.html'
-    PATTERN_SUPPORTED_CRYPT    = r'http://(www\.)?sexuria\.com/(v1/)?dl_links_\d+_(?P<ID>\d+)\.html'
+    PATTERN_SUPPORTED_CRYPT     = r'http://(www\.)?sexuria\.com/(v1/)?Pornos_Kostenlos_.+?_(\d+)\.html'
+    PATTERN_SUPPORTED_MAIN      = r'http://(www\.)?sexuria\.com/(v1/)?dl_links_\d+_(?P<ID>\d+)\.html'
     PATTERN_SUPPORTED_REDIRECT = r'http://(www\.)?sexuria\.com/out\.php\?id=(?P<ID>\d+)\&part=\d+\&link=\d+'
     PATTERN_TITLE              = r'<title> - (?P<TITLE>.*) Sexuria - Kostenlose Pornos - Rapidshare XXX Porn</title>'
     PATTERN_PASSWORD           = r'<strong>Passwort: </strong></div></td>.*?bgcolor="#EFEFEF">(?P<PWD>.*?)</td>'
     PATTERN_DL_LINK_PAGE       = r'"(dl_links_\d+_\d+\.html)"'
-    PATTERN_REDIRECT_LINKS     = r'value="(http://sexuria\.com/out\.php\?id=\d+\&part=\d+\&link=\d+)" readonly'
+    PATTERN_REDIRECT_LINKS     = r'disabled\'" href="(.*)" id'
     LIST_PWDIGNORE             = ["Kein Passwort", "-"]
 
     def decrypt(self, pyfile):
@@ -92,7 +92,7 @@ class SexuriaCom(Crypter):
             else:
                 for link in links:
                     link = link.replace("http://sexuria.com/", "http://www.sexuria.com/")
-                    finallink = self.load(link, just_header=True)['location']
+                    finallink = self.load(link, just_header=True)['url']
                     if not finallink or ("sexuria.com/" in finallink):
                         self.log_error(_("Broken for link: %s") % link)
                     else:
