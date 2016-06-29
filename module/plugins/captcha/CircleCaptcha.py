@@ -4,26 +4,44 @@
 
 from __future__ import division
 
-import Image
-import ImageDraw
+################################################
+class pyload(object):
+    def __init__(self):
+        self.debug = True
+
+class OCR(object):
+    def __init__(self):
+        self.pyload = pyload()
+
+    def log_info(self, *args, **kwargs):
+        msg = u" | ".join(str(a).strip() for a in args if a)
+        print msg
+
+    def log_debug(self, *args, **kwargs):
+        msg = u" | ".join(str(a).strip() for a in args if a)
+        print msg
+################################################
+
+from PIL import Image
+from PIL import ImageDraw
 import cStringIO
 import math
 import operator
 import urllib
 
-from module.plugins.internal.OCR import OCR
+# from module.plugins.internal.OCR import OCR
 
 
 class ImageSequence:
 
-    def __init__(self, im):
-        self.im = im
+    def __init__(self, img):
+        self.img = img
 
     def __getitem__(self, ix):
         try:
             if ix:
-                self.im.seek(ix)
-            return self.im
+                self.img.seek(ix)
+            return self.img
         except EOFError:
             raise IndexError # end of sequence
 
@@ -466,15 +484,15 @@ class CircleCaptcha(OCR):
             max_y = max(missing_list, key=operator.itemgetter(1))[1]
 
         #: Assial Simmetric
-        self.log_debug("Center: %s"                     % c,
-                       "Missing: %s"                    % missing,
-                       "Howmany: %s"                    % how_many,
-                       "Ratio: %s"                      % (missing / how_many),
-                       "Missing consecutives: %s"       % missing_consecutive,
-                       "Missing X lenght: %s:%s"        % (min_x, max_x),
-                       "Missing Y lenght: %s:%s"        % (min_y, max_y),
-                       "Ratio without consecutives: %s" % ((missing - missing_consecutive) / how_many),
-                       "List missing: %s"               % missing_list)
+        self.log_debug("Center: %s,%s"                  % (c[0], c[1]))
+        self.log_debug("Missing: %s"                    % missing)
+        self.log_debug("Howmany: %s"                    % how_many)
+        self.log_debug("Ratio: %s"                      % (missing / how_many))
+        self.log_debug("Missing consecutives: %s"       % missing_consecutive)
+        self.log_debug("Missing X length: %s:%s"        % (min_x, max_x))
+        self.log_debug("Missing Y length: %s:%s"        % (min_y, max_y))
+        self.log_debug("Ratio without consecutives: %s" % ((missing - missing_consecutive) / how_many))
+        self.log_debug("List missing: %s"               % missing_list)
 
         #: Length of missing cannot be over 75% of diameter
 
@@ -484,7 +502,7 @@ class CircleCaptcha(OCR):
             #: raw_input('tro')
             return -1
         """
-        #: Lenght of missing cannot be less 10% of diameter
+        #: length of missing cannot be less 10% of diameter
         if max_x - min_x < c[2] * 2 * 0.10 and max_y - min_y < c[2] * 2 * 0.10:
             return -1
         """
@@ -543,25 +561,25 @@ class CircleCaptcha(OCR):
     def recognize(self, image):
         iDebugSaveFile = 0
         my_palette = None
-        for im in ImageSequence(image):
-            im.save("orig.png", "png")
+        for _img in ImageSequence(image):
+            _img.save("orig.png", "png")
             if my_palette is not None:
-                im.putpalette(my_palette)
-            my_palette = im.getpalette()
-            im = im.convert('L')
+                _img.putpalette(my_palette)
+            my_palette = _img.getpalette()
+            _img = _img.convert('L')
 
             if self.pyload.debug:
                 iDebugSaveFile += 1
                 # if iDebugSaveFile < 7:
                     # continue
-                im.save("output" + str(iDebugSaveFile) + ".png", "png")
-                raw_input('frame: '+ str(im))
+                _img.save("output" + str(iDebugSaveFile) + ".png", "png")
+                raw_input('frame: '+ str(_img))
 
-            pix = im.load()
+            pix = _img.load()
 
-            stepheight = xrange(1, im.size[1], 2)
+            stepheight = xrange(1, _img.size[1], 2)
             #: stepheight = xrange(45, 47)
-            imagewidth = xrange(1, im.size[0])
+            imagewidth = xrange(1, _img.size[0])
             lstPoints = [] # Declares an empty list for the points
             lstX = [] # CoordinateX
             lstY = [] # CoordinateY
@@ -570,13 +588,13 @@ class CircleCaptcha(OCR):
             max_diameter = 70
 
             if self.pyload.debug:
-                imdebug = im.copy()
-                draw = ImageDraw.Draw(imdebug)
-                pixcopy = imdebug.load()
+                img_debug = _img.copy()
+                draw = ImageDraw.Draw(img_debug)
+                pix_debug = img_debug.load()
 
             #: Clean image for powerfull search
-            self.clean_image(im, pix)
-            im.save("cleaned" + str(iDebugSaveFile) + ".png", "png")
+            self.clean_image(_img, pix)
+            _img.save("cleaned" + str(iDebugSaveFile) + ".png", "png")
 
             circles_found = set()
             findnewcircle = True
@@ -587,7 +605,7 @@ class CircleCaptcha(OCR):
                 curcolor = -1
                 for k in xrange(1, 100):
                     findnewcircle = False
-                    retval = self.find_first_pixel_x(im, pix, x1, y1, -1, False)
+                    retval = self.find_first_pixel_x(_img, pix, x1, y1, -1, False)
                     x1 = retval[0]
                     curcolor = retval[1]
                     if x1 == -2:
@@ -603,12 +621,12 @@ class CircleCaptcha(OCR):
                         continue
 
                     if self.pyload.debug:
-                        pixcopy[x1, y1] = 45 #(255, 0, 0, 255)
+                        pix_debug[x1, y1] = 45 #(255, 0, 0, 255)
                     #: circles_found 1 pixel, seeking x2, y2
                     x2 = x1
                     y2 = y1
                     for i in xrange(1, 100):
-                        retval = self.find_last_pixel_x(im, pix, x2, y2, -1, True)
+                        retval = self.find_last_pixel_x(_img, pix, x2, y2, -1, True)
                         x2 = retval[0]
                         if x1 == -2:
                             findnewcircle = True
@@ -619,13 +637,13 @@ class CircleCaptcha(OCR):
                             self.log_debug("x2, y2 -> " + str((x2, y1)) + ": " + str(pix[x2, y1]))
                         if abs(x2 - x1) < min_distance:
                             continue
-                        if abs(x2 - x1) > (im.size[1] * 2 / 3):
+                        if abs(x2 - x1) > (_img.size[1] * 2 / 3):
                             break
                         if abs(x2 - x1) > max_diameter:
                             break
 
                         if self.pyload.debug:
-                            pixcopy[x2, y2] = 65 #(0, 255, 0, 255)
+                            pix_debug[x2, y2] = 65 #(0, 255, 0, 255)
                         #: circles_found 2 pixel, seeking x3, y3
                         #: Verify cord
 
@@ -633,7 +651,7 @@ class CircleCaptcha(OCR):
                             x3 = math.floor(x2 - ((x2 - x1) / 2))
                             y3 = y1
                             for j in xrange(1, 50):
-                                retval = self.find_last_pixel_y(im, pix, x3, y3, True if invert == 1 else False, -1, True)
+                                retval = self.find_last_pixel_y(_img, pix, x3, y3, True if invert == 1 else False, -1, True)
                                 # self.log_debug(x3, y3, retval[0], invert)
                                 y3 = retval[0]
                                 if y3 == -2:
@@ -647,23 +665,23 @@ class CircleCaptcha(OCR):
                                 #: Verify cord
                                 if abs(y3 - y2) < min_distance:
                                     continue
-                                if abs(y3 - y2) > (im.size[1] * 2 / 3):
+                                if abs(y3 - y2) > (_img.size[1] * 2 / 3):
                                     break
                                 if abs(y3 - y2) > max_diameter:
                                     break
 
                                 if self.pyload.debug:
-                                    pixcopy[x3, y3] = 85
+                                    pix_debug[x3, y3] = 85
                                 #: circles_found 3 pixel. try circle
                                 circle = self.find_circle(pix, x1, y1, x2, y2, x3, y3)
 
-                                if circle[0] + circle[2] >= im.size[0] or circle[1] + circle[2] >= im.size[1] or circle[0] - circle[2] <= 0 or circle[1] - circle[2] <= 0:
+                                if circle[0] + circle[2] >= _img.size[0] or circle[1] + circle[2] >= _img.size[1] or circle[0] - circle[2] <= 0 or circle[1] - circle[2] <= 0:
                                     continue
 
                                 if self.pyload.debug:
-                                    pixcopy[circle[0], circle[1]] = 0
+                                    pix_debug[circle[0], circle[1]] = 0
                                 #: (x-r, y-r, x+r, y+r)
-                                verified = self.verify_circle(im, pix, circle)
+                                verified = self.verify_circle(_img, pix, circle)
 
                                 if verified == -1:
                                     verified = -1
@@ -679,21 +697,22 @@ class CircleCaptcha(OCR):
                                     # if verified == -1:
                                         # draw.ellipse((circle[0]-circle[2], circle[1]-circle[2], circle[0]+circle[2], circle[1]+circle[2]), outline=0)
                                         # _pause = "NOTDOUND"
-                                        # imdebug.save("debug.png", "png")
+                                        # img_debug.save("debug.png", "png")
                                     if verified == 0:
-                                        draw.ellipse((circle[0]-circle[2], circle[1]-circle[2], circle[0]+circle[2], circle[1]+circle[2]), outline=120)
+                                        draw.ellipse((circle[0]-circle[2], circle[1]-circle[2], circle[0]+circle[2], circle[1]+circle[2]), outline=120, fill=128)
                                         _pause = "OPENED"
 
                                     if verified == 1:
-                                        draw.ellipse((circle[0]-circle[2], circle[1]-circle[2], circle[0]+circle[2], circle[1]+circle[2]), outline=65)
+                                        draw.ellipse((circle[0]-circle[2], circle[1]-circle[2], circle[0]+circle[2], circle[1]+circle[2]), outline=65, fill=128)
                                         _pause = "CLOSED"
 
-                                    imdebug.save("debug.png", "png")
+                                    img_debug.save("debug" + str(iDebugSaveFile) +".png", "png")
+                                    iDebugSaveFile += 1
 
-                                    if _pause != "":
-                                        valore = raw_input('Found ' + _pause + ' CIRCLE circle press [Enter] = continue / [q] for Quit: ' + str(verified))
-                                        if valore == "q":
-                                            sys.exit()
+                                    # if _pause != "":
+                                    #     valore = raw_input('Found ' + _pause + ' CIRCLE circle press [Enter] = continue / [q] for Quit: ' + str(verified))
+                                    #     if valore == "q":
+                                    #         sys.exit()
 
                                 if findnewcircle is True:
                                     break
@@ -749,21 +768,21 @@ class CircleCaptcha(OCR):
                 if verify == 0:
                     if self.pyload.debug:
                         pix[circle[0][0], circle[0][1]] = 90 #(255, 255, 0)
-                        im.save("output.png", "png")
+                        _img.save("output.png", "png")
                         return circle[0][0], circle[0][1]
 
                 elif verify == 1:
                     if self.pyload.debug:
                         pix[circle[0][0], circle[0][1]] = 40 #(255, 0, 0)
-                        im.save("output.png", "png")
+                        _img.save("output.png", "png")
 
                 else:
                     if self.pyload.debug:
                         pix[circle[0][0], circle[0][1]] = 180 #(0, 0, 255)
-                        im.save("output.png", "png")
+                        _img.save("output.png", "png")
 
         if self.pyload.debug:
-            im.save("output.png", "png")
+            _img.save("output.png", "png")
 
 
     #: Return coordinates of opened circle (eg (x, y))
@@ -771,20 +790,21 @@ class CircleCaptcha(OCR):
         file = cStringIO.StringIO(urllib.urlopen(url).read())
         img = Image.open(file)
         coords = self.recognize(img)
-        self.log_info(_("Coords: %s") % coords)
+        self.log_info(_("Coords: %s") % repr(coords))
 
 
     #: Return coordinates of opened circle (eg (x, y))
     def decrypt_from_file(self, filename):
         coords = self.recognize(Image.open(filename))  #: Can be many different formats.
-        self.log_info(_("Coords: %s") % coords)
+        self.log_info(_("Coords: %s") % repr(coords))
 
 
 ##DEBUG
-# import datetime
-# a = datetime.datetime.now()
-# x = CircleCaptcha()
-# coords = x.decrypt_from_file("decripter/captx.html2.gif")
-# coords = x.decrypt_from_web("http://ncrypt.in/classes/captcha/circlecaptcha.php")
-# b = datetime.datetime.now()
-# self.log_debug("Elapsed time: %s seconds" % (b-a).seconds)
+_ = lambda x: x
+import datetime
+a = datetime.datetime.now()
+x = CircleCaptcha()
+# coords = x.decrypt_from_file("c:\Home\Programming\Projects\pyLoad\dummy\CircleCaptcha\circlecaptcha.png")
+coords = x.decrypt_from_web("http://ncrypt.in/classes/captcha/circlecaptcha.php")
+b = datetime.datetime.now()
+print ("Elapsed time: %s seconds" % (b-a).seconds)
