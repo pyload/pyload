@@ -17,7 +17,7 @@ class UlozTo(SimpleHoster):
     __version__ = "1.34"
     __status__  = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)/(?:live/)?(?P<ID>\w+/[^/?]*)'
+    __pattern__ = r'https?://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)/(?:live/)?(?P<ID>[!\w]+/[^/?]*)'
 
 
     __config__  = [("activated"   , "bool", "Activated"                                        , True),
