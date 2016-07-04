@@ -40,7 +40,7 @@ class BIGHTTPRequest(HTTPRequest):
 class YoutubeCom(Hoster):
     __name__    = "YoutubeCom"
     __type__    = "hoster"
-    __version__ = "0.53"
+    __version__ = "0.54"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)\w+'
@@ -492,7 +492,7 @@ class JSInterpreter(object):
         return obj
 
     def extract_function(self, function_name):
-        func_m = re.search(r'(?x)(?:function\s+%s|[{;,]%s\s*=\s*function|var\s+%s\s*=\s*function)\s*\((?P<args>[^)]*)\)\s*\{(?P<code>[^}]+)\}'
+        func_m = re.search(r'(?x)(?:function\s+%s|[{;,]\s*%s\s*=\s*function|var\s+%s\s*=\s*function)\s*\((?P<args>[^)]*)\)\s*\{(?P<code>[^}]+)\}'
                            % (re.escape(function_name), re.escape(function_name), re.escape(function_name)), self.code)
         if func_m is None:
             raise JSInterpreterError('Could not find JS function %r' % function_name)
