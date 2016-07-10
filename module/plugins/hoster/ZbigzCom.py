@@ -11,7 +11,7 @@ from module.plugins.internal.misc import json
 class ZbigzCom(Hoster):
     __name__    = "ZbigzCom"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "testing"
 
     __pattern__ = r'https?://.+\.torrent|magnet:\?.+'
@@ -118,6 +118,8 @@ class ZbigzCom(Hoster):
 
             while True:
                 json_data = self.jquery_call(zip_status_url, file_id, call_id)
+                if json_data is None:
+                    self.fail("Unexpected jQuery response")
 
                 if 'faultString' in json_data:
                     self.fail(json_data['faultString'])
