@@ -34,7 +34,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.57"
+    __version__ = "0.58"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -231,6 +231,11 @@ class Hoster(Base):
             newname = self.req.httpDownload(url, file, get, post,
                                             ref, cookies, chunks, resume,
                                             self.pyfile.setProgress, disposition)
+
+        except IOError, e:
+            self.log_error(e.message)
+            self.fail("IOError %s" % e.errno)
+
         except BadHeader, e:
             self.req.http.code = e.code
             raise
