@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import re
-
 import BeautifulSoup
-import module.plugins.internal.misc as misc
-
 from module.plugins.internal.Crypter import Crypter
-
 
 class HoerbuchIn(Crypter):
     __name__    = "HoerbuchIn"
@@ -46,7 +42,6 @@ class HoerbuchIn(Crypter):
         else:
             self.links = self.decrypt_folder(pyfile.url)
 
-    # http://hoerbuch.us/wp/horbucher/74057/anna-zaires-capture-me-ergreife-mich-ungekuerz/
     def decrypt_folder(self, url):
 
         m = self.hoster_links.search(url) or self.protection.search(url)
