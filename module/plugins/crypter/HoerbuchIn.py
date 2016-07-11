@@ -14,7 +14,7 @@ class HoerbuchIn(Crypter):
     __version__ = "0.66"
     __status__  = "testing"
 
-    __pattern__ = r'http://(?:www\.)?hoerbuch\.us/(wp/goto/Download/\d+/|wp/horbucher/\d+/|tp/out\.php\?.+|protection/folder_\d+\.html)'
+    __pattern__ = r'http://(?:www\.)?hoerbuch\.us/(wp/horbucher/\d+/|tp/out\.php\?.+|protection/folder_\d+\.html)'
     __config__  = [("activated"         , "bool"          , "Activated"                       , True     ),
                    ("use_premium"       , "bool"          , "Use premium account if available", True     ),
                    ("folder_per_package", "Default;Yes;No", "Create folder for each package"  , "Default")]
