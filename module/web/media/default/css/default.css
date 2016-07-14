@@ -10,7 +10,9 @@
 .rightalign {
 	text-align:right;
 }
-
+#select_mark {
+    /*display: inlinbe;*/
+}
 
 .dokuwiki div.plugin_translation ul li a.wikilink1:link, .dokuwiki div.plugin_translation ul li a.wikilink1:hover, .dokuwiki div.plugin_translation ul li a.wikilink1:active, .dokuwiki div.plugin_translation ul li a.wikilink1:visited {
 	background-color:#000080;
