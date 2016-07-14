@@ -23,8 +23,8 @@ class UnRar(Extractor):
 
 
     CMD        = "unrar"
-    EXTENSIONS = ["rar", "zip", "cab", "arj", "lzh", "tar", "gz", "ace", "uue",
-                  "bz2", "jar", "iso", "7z", "xz", "z"]
+    EXTENSIONS = ["rar", "cab", "arj", "lzh", "tar", "gz", "ace", "uue",
+                  "bz2", "jar", "iso", "xz", "z"]
 
     _RE_PART    = re.compile(r'\.(part|r)\d+(\.rar|\.rev)?(\.bad)?', re.I)
     _RE_FIXNAME = re.compile(r'Building (.+)')
