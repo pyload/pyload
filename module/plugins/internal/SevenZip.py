@@ -11,7 +11,7 @@ from module.plugins.internal.misc import encode, fsjoin, renice
 class SevenZip(UnRar):
     __name__    = "SevenZip"
     __type__    = "extractor"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __description__ = """7-Zip extractor plugin"""
