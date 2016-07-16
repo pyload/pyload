@@ -12,7 +12,7 @@ from module.plugins.internal.misc import decode, encode, fsjoin, renice
 class UnRar(Extractor):
     __name__    = "UnRar"
     __type__    = "extractor"
-    __version__ = "1.32"
+    __version__ = "1.33"
     __status__  = "testing"
 
     __description__ = """RAR extractor plugin"""
@@ -23,8 +23,8 @@ class UnRar(Extractor):
 
 
     CMD        = "unrar"
-    EXTENSIONS = ["rar", "zip", "cab", "arj", "lzh", "tar", "gz", "ace", "uue",
-                  "bz2", "jar", "iso", "7z", "xz", "z"]
+    EXTENSIONS = ["rar", "cab", "arj", "lzh", "tar", "gz", "ace", "uue",
+                  "bz2", "jar", "iso", "xz", "z"]
 
     _RE_PART    = re.compile(r'\.(part|r)\d+(\.rar|\.rev)?(\.bad)?', re.I)
     _RE_FIXNAME = re.compile(r'Building (.+)')
