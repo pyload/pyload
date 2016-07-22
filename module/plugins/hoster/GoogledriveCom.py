@@ -13,7 +13,7 @@ from module.plugins.internal.misc import json
 class GoogledriveCom(Hoster):
     __name__    = "GoogledriveCom"
     __type__    = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:drive|docs)\.google\.com/(?:file/d/|(?:uc|open)\?.*id=)(?P<ID>[-\w]+)'
@@ -46,7 +46,7 @@ class GoogledriveCom(Hoster):
             return json_data
 
         except BadHeader, e:
-            self.log_error("API Error: %s" % cmd, e, "ID: %s" % self.info['pattern']['ID'])
+            self.log_error("API Error: %s" % cmd, e, "ID: %s" % self.info['pattern']['ID'], "Error code: %s" % e.code)
             return None
 
 
