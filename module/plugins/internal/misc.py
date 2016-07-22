@@ -601,7 +601,6 @@ def parse_time(value):
         regex   = re.compile(r'(\d+| (?:this|an?) )\s*(hr|hour|min|sec|)', re.I)
         seconds = 0
         for v, u in regex.findall(value):
-            print "parsing time from " + str(v) + " & " + str(u)
             if v.strip() in ("this", "a", "an"):
                 # if we have just " this/an/a " without a unit, do not return 1s as parsed time, but default to 1h
                 if u is '':
