@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class Keep2ShareCc(SimpleHoster):
     __name__    = "Keep2ShareCc"
     __type__    = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
@@ -69,7 +69,7 @@ class Keep2ShareCc(SimpleHoster):
         self.data = self.load(pyfile.url, post={'yt0': '', 'slow_id': self.fid})
 
         # self.log_debug(self.fid)
-        self.log_debug('URL: %s' % pyfile.url)
+        # self.log_debug('URL: %s' % pyfile.url)
         
         self.check_errors()
 
@@ -120,8 +120,6 @@ class Keep2ShareCc(SimpleHoster):
         self.data = self.load(self.pyfile.url, post=post_data)
 
         if 'verification code is incorrect' in self.data:
-            self.log_debug("here's what we've got: ")
-            self.log_debug(self.data)
             self.retry_captcha()
         else:
             self.captcha.correct()
