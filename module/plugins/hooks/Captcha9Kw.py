@@ -14,7 +14,7 @@ from module.plugins.internal.misc import threaded
 class Captcha9Kw(Addon):
     __name__    = "Captcha9Kw"
     __type__    = "hook"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__  = "testing"
 
     __config__ = [("activated"     , "bool"    , "Activated"                                                                      , False                                                              ),
@@ -24,7 +24,7 @@ class Captcha9Kw(Addon):
                   ("captchapermin" , "int"     , "Captcha per minute"                                                             , "9999"                                                             ),
                   ("prio"          , "int"     , "Priority (max 10)(cost +0 -> +10 credits)"                                      , "0"                                                                ),
                   ("queue"         , "int"     , "Max. Queue (max 999)"                                                           , "50"                                                               ),
-                  ("hoster_options", "str"     , "Hoster options (format pluginname;prio=1;selfsolve=1;confirm=1;timeout=900|...)", ""),
+                  ("hoster_options", "str"     , "Hoster options (format pluginname;prio 1;selfsolve 1;confirm 1;timeout 900|...)", ""),
                   ("selfsolve"     , "bool"    , "Selfsolve (manually solve your captcha in your 9kw client if active)"           , "0"                                                                ),
                   ("passkey"       , "password", "API key"                                                                        , ""                                                                 ),
                   ("timeout"       , "int"     , "Timeout in seconds (min 60, max 3999)"                                          , "900"                                                              )]
@@ -85,7 +85,7 @@ class Captcha9Kw(Addon):
                 continue
 
             for d in details:
-                hosteroption = d.split("=")
+                hosteroption = d.split(" ")
 
                 if len(hosteroption) < 2 or not hosteroption[1].isdigit():
                     continue
