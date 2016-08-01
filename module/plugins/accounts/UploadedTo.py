@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class UploadedTo(Account):
     __name__    = "UploadedTo"
     __type__    = "account"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __status__  = "testing"
 
     __description__ = """Uploaded.to account plugin"""
@@ -29,9 +29,8 @@ class UploadedTo(Account):
 
         premium = True if re.search(self.PREMIUM_PATTERN, html) else False
         if premium:
-            validuntil = None
+            validuntil  = None
             trafficleft = None
-            premium = None
 
             m = re.search(self.VALID_UNTIL_PATTERN, html, re.M)
             if m is not None:
@@ -53,14 +52,13 @@ class UploadedTo(Account):
                 unit    = traffic['U'].lower()
                 trafficleft = self.parse_traffic(size, unit)
 
-            return {'validuntil' : validuntil,
-                    'trafficleft': trafficleft,
-                    'premium'    : premium}
-
         else:
-            return {'validuntil' : -1,
-                    'trafficleft': -1,
-                    'premium'    : premium}
+            validuntil  = -1
+            trafficleft = -1
+
+        return {'validuntil' : validuntil,
+                'trafficleft': trafficleft,
+                'premium'    : premium}
 
 
     def signin(self, user, password, data):
