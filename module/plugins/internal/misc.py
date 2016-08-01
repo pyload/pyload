@@ -596,7 +596,7 @@ def parse_time(value):
         # use the HH:MM:SS format, NOTE: when only one ':' is found, it assumes MM:SS
         factor_arr = [1,60,3600]
         value = re.sub("[^:0-9]","", value)
-        seconds = sum([u*v for u,v in zip(factor_arr, map(int,value.split(':').reverse()))])
+        seconds = sum([u*v for u,v in zip(factor_arr, map(int,value.split(':')[::-1]))])
 
     else:
         regex   = re.compile(r'(\d+| (?:this|an?) )\s*(hr|hour|min|sec|)', re.I)
