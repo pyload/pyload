@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class SmuleCom(SimpleHoster):
     __name__    = "SmuleCom"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?smule\.com/recording/.+'
@@ -34,7 +34,8 @@ class SmuleCom(SimpleHoster):
         info = super(SmuleCom, cls).get_info(url, html)
         # Unfortunately, NAME_PATTERN does not include file extension so we blindly add '.mp4' as an extension.
         # (hopefully all links are '.mp4' files)
-        info['name'] += ".mp4"
+        if 'name' in info:
+            info['name'] += ".mp4"
 
         return info
 
@@ -59,8 +60,7 @@ class SmuleCom(SimpleHoster):
         
         # step 2: from the js code, parse the necessary parts: the decoder function and the headers
         # as the jscript is fairly long, we'll split it to make parsing easier
-        if self.JS_SPLIT_WORD:
-            community_js_code = community_js_code.partition(self.JS_SPLIT_WORD)[0]
+        community_js_code = community_js_code.partition(self.JS_SPLIT_WORD)[0]
 
         m = re.search(self.JS_HEADER_PATTERN, community_js_code)
         if m is None:
