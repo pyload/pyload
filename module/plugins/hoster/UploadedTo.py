@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import re
 import time
 
@@ -11,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "1.01"
+    __version__ = "1.02"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
@@ -85,3 +86,12 @@ class UploadedTo(SimpleHoster):
 
         super(UploadedTo, self).handle_free(pyfile)
         self.check_errors()
+
+    def check_download(self):
+        check = self.scan_download({'dl_limit': self.DL_LIMIT_PATTERN})
+
+        if check == "dl_limit":
+            os.remove(self.last_download)
+            self.retry(wait=3600, msg=_("Download limit reached"))
+
+        return super(UploadedTo, self).check_download()
