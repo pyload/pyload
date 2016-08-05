@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "1.03"
+    __version__ = "1.04"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
@@ -91,7 +91,7 @@ class UploadedTo(SimpleHoster):
         check = self.scan_download({'dl_limit': self.DL_LIMIT_PATTERN})
 
         if check == "dl_limit":
-            self.log_error(_("Free download limit reached"))
+            self.log_warning(_("Free download limit reached"))
             os.remove(self.last_download)
             self.retry(wait=10800, msg=_("Free download limit reached"))
 
