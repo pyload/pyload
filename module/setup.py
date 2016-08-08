@@ -243,7 +243,7 @@ class Setup():
 
             v = jinja2.__version__
             if v and "unknown" not in v:
-                if not v.startswith("2.5") and not v.startswith("2.6"):
+                if not v.startswith("2.5") and not v.startswith("2.6") and not v.startswith("2.7"):
                     print _("Your installed jinja2 version %s seems too old.") % jinja2.__version__
                     print _("You can safely continue but if the webinterface is not working,")
                     print _("please upgrade or deinstall it, pyLoad includes a sufficient jinja2 libary.")
