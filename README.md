@@ -14,6 +14,7 @@ or help us out, visit http://github.com/pyload/pyload
 
 Documentation about extending pyLoad can be found at http://docs.pyload.org or join us at #pyload on irc.freenode.net
 
+
 Dependencies
 ============
 
@@ -43,6 +44,7 @@ Optional
 - BeautifulSoup
 - pyOpenSSL: For SSL connection
 
+
 First start
 ===========
 
@@ -58,6 +60,7 @@ For a list of options use::
 
     python pyLoadCore.py -h
 
+
 Configuration
 =============
 
@@ -69,6 +72,7 @@ the options take a look at http://pyload.org/configuration.
 To restart the configure assistent run::
 
     python pyLoadCore.py -s
+
 
 Adding downloads
 ----------------
@@ -82,6 +86,7 @@ for more options refer to::
     python pyLoadCli.py -h
 
 The webinterface can be accessed when pointing your webbrowser to the ip and configured port, defaults to http://localhost:8000
+
 
 Notes
 =====

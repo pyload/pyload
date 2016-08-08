@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#Copyright (C) 2011 RaNaN
+# Copyright (C) 2011 RaNaN
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
@@ -26,15 +26,15 @@ from printer import *
 
 from module.Api import Destination, PackageData
 
+
 class ManageFiles(Handler):
     """ possibility to manage queue/collector """
 
     def init(self):
         self.target = Destination.Queue
-        self.pos = 0    #position in queue
+        self.pos = 0  #position in queue
         self.package = -1  #choosen package
-        self.mode = ""   # move/delete/restart
-
+        self.mode = ""  # move/delete/restart
         self.cache = None
         self.links = None
         self.time = 0
@@ -91,7 +91,6 @@ class ManageFiles(Handler):
         self.mode = ""
         self.setInput()
 
-
     def renderBody(self, line):
         if self.package < 0:
             println(line, white(_("Manage Packages:")))
@@ -112,7 +111,7 @@ class ManageFiles(Handler):
         else:
             println(line, _("Choose what yout want to do or enter package number."))
             println(line + 1, ("%s - %%s, %s - %%s, %s - %%s" % (mag("d"), mag("m"), mag("r"))) % (
-            _("delete"), _("move"), _("restart")))
+                _("delete"), _("move"), _("restart")))
             line += 2
 
         if self.package < 0:
@@ -136,7 +135,7 @@ class ManageFiles(Handler):
             for value in islice(pack.links, self.pos, self.pos + 5):
                 try:
                     println(line, mag(value.fid) + ": %s | %s | %s" % (
-                    value.name, value.statusmsg, value.plugin))
+                        value.name, value.statusmsg, value.plugin))
                     line += 1
                     i += 1
                 except Exception, e:
@@ -147,9 +146,7 @@ class ManageFiles(Handler):
 
         println(line, mag("p") + _(" - previous") + " | " + mag("n") + _(" - next"))
         println(line + 1, mag("0.") + _(" back to main menu"))
-
         return line + 2
-
 
     def getPackages(self):
         if self.cache and self.time + 2 < time():
@@ -160,7 +157,6 @@ class ManageFiles(Handler):
         else:
             data = self.client.getCollector()
 
-
         self.cache = data
         self.time = time()
 
@@ -169,15 +165,12 @@ class ManageFiles(Handler):
     def getLinks(self):
         if self.links and self.time + 1 < time():
             return self.links
-
         try:
             data = self.client.getPackageData(self.package)
-        except:
+        except Exception:
             data = PackageData(links=[])
-
         self.links = data
         self.time = time()
-
         return data
 
     def parseInput(self, inp, package=True):
@@ -197,8 +190,6 @@ class ManageFiles(Handler):
                 for l in self.links.links:
                     if l.lid in r:
                         ret.append(l.lid)
-
             return ret
-
         else:
             return [int(x) for x in inp.split(",")]

@@ -20,18 +20,19 @@ import re
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+
 class NewPackageDock(QDockWidget):
     def __init__(self):
         QDockWidget.__init__(self, _("New Package"))
         self.setObjectName("New Package Dock")
         self.widget = NewPackageWindow(self)
         self.setWidget(self.widget)
-        self.setAllowedAreas(Qt.RightDockWidgetArea|Qt.LeftDockWidgetArea)
+        self.setAllowedAreas(Qt.RightDockWidgetArea | Qt.LeftDockWidgetArea)
         self.hide()
-    
+
     def slotDone(self):
         text = str(self.widget.box.toPlainText())
-        pw   = str(self.widget.passwordInput.text())
+        pw = str(self.widget.passwordInput.text())
         if not pw:
             pw = None
         lines = []
@@ -48,7 +49,7 @@ class NewPackageDock(QDockWidget):
 
     def parseUri(self):
 
-        text=str(self.widget.box.toPlainText())
+        text = str(self.widget.box.toPlainText())
         self.widget.box.setText("")
         result = re.findall(r"(?:ht|f)tps?:\/\/[a-zA-Z0-9\-\.\/\?=_&%#]+[<| |\"|\'|\r|\n|\t]{1}", text)
         for url in result:
@@ -56,27 +57,28 @@ class NewPackageDock(QDockWidget):
                 url = url[:-1]
             self.widget.box.append("%s " % url)
 
+
 class NewPackageWindow(QWidget):
     def __init__(self, dock):
         QWidget.__init__(self)
         self.dock = dock
         self.setLayout(QGridLayout())
         layout = self.layout()
-        
+
         nameLabel = QLabel(_("Name"))
         nameInput = QLineEdit()
         passwordLabel = QLabel(_("Password"))
         passwordInput = QLineEdit()
-        
+
         linksLabel = QLabel(_("Links in this Package"))
-        
+
         self.box = QTextEdit()
         self.nameInput = nameInput
         self.passwordInput = passwordInput
-        
+
         save = QPushButton(_("Create"))
         parseUri = QPushButton(_("Filter URLs"))
-        
+
         layout.addWidget(nameLabel, 0, 0)
         layout.addWidget(nameInput, 0, 1)
         layout.addWidget(passwordLabel, 1, 0)

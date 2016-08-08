@@ -29,6 +29,7 @@ from module.PluginThread import HookThread
 from module.plugins.PluginManager import literal_eval
 from utils import lock
 
+
 class HookManager:
     """Manages hooks, delegates and handles Events.
 
@@ -64,21 +65,16 @@ class HookManager:
     def __init__(self, core):
         self.core = core
         self.config = self.core.config
-
-        __builtin__.hookManager = self #needed to let hooks register themself
-
+        __builtin__.hookManager = self  # needed to let hooks register themself
         self.log = self.core.log
         self.plugins = []
         self.pluginMap = {}
-        self.methods = {} #dict of names and list of methods usable by rpc
+        self.methods = {}  # dict of names and list of methods usable by rpc
+        self.events = {}  # contains events
 
-        self.events = {} # contains events
-
-        #registering callback for config event
+        # registering callback for config event
         self.config.pluginCB = MethodType(self.dispatchEvent, "pluginConfigChanged", basestring)
-
         self.addEvent("pluginConfigChanged", self.manageHooks)
-
         self.lock = RLock()
         self.createIndex()
 
@@ -90,9 +86,7 @@ class HookManager:
                 args[0].log.error(_("Error executing hooks: %s") % str(e))
                 if args[0].core.debug:
                     traceback.print_exc()
-
         return new
-
 
     def addRPC(self, plugin, func, doc):
         plugin = plugin.rpartition(".")[2]
@@ -107,26 +101,22 @@ class HookManager:
         if not args: args = tuple()
         if parse:
             args = tuple([literal_eval(x) for x in args])
-
         plugin = self.pluginMap[plugin]
         f = getattr(plugin, func)
         return f(*args)
 
-
     def createIndex(self):
         plugins = []
-
         active = []
         deactive = []
 
         for pluginname in self.core.pluginManager.hookPlugins:
             try:
-                #hookClass = getattr(plugin, plugin.__name__)
-
+                # hookClass = getattr(plugin, plugin.__name__)
                 if self.core.config.getPlugin(pluginname, "activated"):
                     pluginClass = self.core.pluginManager.loadClass("hooks", pluginname)
                     if not pluginClass: continue
-                    
+
                     plugin = pluginClass(self.core, self)
                     plugins.append(plugin)
                     self.pluginMap[pluginClass.__name__] = plugin
@@ -134,9 +124,7 @@ class HookManager:
                         active.append(pluginClass.__name__)
                 else:
                     deactive.append(pluginname)
-
-
-            except:
+            except Exception:
                 self.log.warning(_("Failed activating %(name)s") % {"name": pluginname})
                 if self.core.debug:
                     traceback.print_exc()
@@ -154,15 +142,14 @@ class HookManager:
 
     def activateHook(self, plugin):
 
-        #check if already loaded
+        # check if already loaded
         for inst in self.plugins:
             if inst.__name__ == plugin:
                 return
 
         pluginClass = self.core.pluginManager.loadClass("hooks", plugin)
-
-        if not pluginClass: return
-
+        if not pluginClass:
+            return
         self.log.debug("Plugin loaded: %s" % plugin)
 
         plugin = pluginClass(self.core, self)
@@ -179,24 +166,21 @@ class HookManager:
             if inst.__name__ == plugin:
                 hook = inst
 
-        if not hook: return
-
+        if not hook:
+            return
         self.log.debug("Plugin unloaded: %s" % plugin)
-
         hook.unload()
 
-        #remove periodic call
+        # remove periodic call
         self.log.debug("Removed callback %s" % self.core.scheduler.removeJob(hook.cb))
         self.plugins.remove(hook)
         del self.pluginMap[hook.__name__]
-
 
     @try_catch
     def coreReady(self):
         for plugin in self.plugins:
             if plugin.isActivated():
                 plugin.coreReady()
-
         self.dispatchEvent("coreReady")
 
     @try_catch
@@ -204,7 +188,6 @@ class HookManager:
         for plugin in self.plugins:
             if plugin.isActivated():
                 plugin.coreExiting()
-
         self.dispatchEvent("coreExiting")
 
     @lock
@@ -212,7 +195,6 @@ class HookManager:
         for plugin in self.plugins:
             if plugin.isActivated():
                 plugin.downloadPreparing(pyfile)
-
         self.dispatchEvent("downloadPreparing", pyfile)
 
     @lock
@@ -223,7 +205,6 @@ class HookManager:
                     self.startThread(plugin.downloadFinished, pyfile)
                 else:
                     plugin.downloadFinished(pyfile)
-
         self.dispatchEvent("downloadFinished", pyfile)
 
     @lock
@@ -235,7 +216,6 @@ class HookManager:
                     self.startThread(plugin.downloadFinished, pyfile)
                 else:
                     plugin.downloadFailed(pyfile)
-
         self.dispatchEvent("downloadFailed", pyfile)
 
     @lock
@@ -246,14 +226,12 @@ class HookManager:
                     self.startThread(plugin.packageFinished, package)
                 else:
                     plugin.packageFinished(package)
-
         self.dispatchEvent("packageFinished", package)
 
     @lock
     def beforeReconnecting(self, ip):
         for plugin in self.plugins:
             plugin.beforeReconnecting(ip)
-
         self.dispatchEvent("beforeReconnecting", ip)
 
     @lock
@@ -261,11 +239,10 @@ class HookManager:
         for plugin in self.plugins:
             if plugin.isActivated():
                 plugin.afterReconnecting(ip)
-
         self.dispatchEvent("afterReconnecting", ip)
 
     def startThread(self, function, *args, **kwargs):
-        t = HookThread(self.core.threadManager, function, args, kwargs)
+        HookThread(self.core.threadManager, function, args, kwargs)
 
     def activePlugins(self):
         """ returns all active plugins """
@@ -276,17 +253,16 @@ class HookManager:
         info = {}
         for name, plugin in self.pluginMap.iteritems():
             if plugin.info:
-                #copy and convert so str
-                info[name] = dict([(x, str(y) if not isinstance(y, basestring) else y) for x, y in plugin.info.iteritems()])
+                # copy and convert so str
+                info[name] = dict(
+                    [(x, str(y) if not isinstance(y, basestring) else y) for x, y in plugin.info.iteritems()])
         return info
-
 
     def getInfo(self, plugin):
         info = {}
         if plugin in self.pluginMap and self.pluginMap[plugin].info:
             info = dict([(x, str(y) if not isinstance(y, basestring) else y)
-                for x, y in self.pluginMap[plugin].info.iteritems()])
-
+                         for x, y in self.pluginMap[plugin].info.iteritems()])
         return info
 
     def addEvent(self, event, func):
@@ -309,7 +285,6 @@ class HookManager:
                     f(*args)
                 except Exception, e:
                     self.log.warning("Error calling event handler %s: %s, %s, %s"
-                    % (event, f, args, str(e)))
+                                     % (event, f, args, str(e)))
                     if self.core.debug:
                         traceback.print_exc()
-    

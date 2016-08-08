@@ -25,44 +25,45 @@ from module.remote.thriftbackend.ThriftClient import Destination
 from module.gui.Collector import CollectorModel, Package, Link, CollectorView, statusMapReverse
 from module.utils import formatSize, formatSpeed
 
+
 class QueueModel(CollectorModel):
     """
         model for the queue view, inherits from CollectorModel
     """
-    
+
     def __init__(self, view, connector):
         CollectorModel.__init__(self, view, connector)
         self.cols = 6
         self.wait_dict = {}
-        
+
         self.updater = self.QueueUpdater(self.interval)
         self.connect(self.updater, SIGNAL("update()"), self.update)
-    
+
     class QueueUpdater(QObject):
         """
             timer which emits signal for a download status reload
             @TODO: make intervall configurable
         """
-        
+
         def __init__(self, interval):
             QObject.__init__(self)
-            
+
             self.interval = interval
             self.timer = QTimer()
             self.timer.connect(self.timer, SIGNAL("timeout()"), self, SIGNAL("update()"))
-        
+
         def start(self):
             self.timer.start(1000)
-        
+
         def stop(self):
             self.timer.stop()
-    
+
     def start(self):
         self.updater.start()
-    
+
     def stop(self):
         self.updater.stop()
-    
+
     def fullReload(self):
         """
             reimplements CollectorModel.fullReload, because we want the Queue data
@@ -77,28 +78,28 @@ class QueueModel(CollectorModel):
         self._data = sorted(self._data, key=lambda p: p.data["order"])
         self.endInsertRows()
         self.updateCount()
-    
+
     def insertEvent(self, event):
         """
             wrap CollectorModel.insertEvent to update the element count
         """
         CollectorModel.insertEvent(self, event)
         self.updateCount()
-    
+
     def removeEvent(self, event):
         """
             wrap CollectorModel.removeEvent to update the element count
         """
         CollectorModel.removeEvent(self, event)
         self.updateCount()
-    
+
     def updateEvent(self, event):
         """
             wrap CollectorModel.updateEvent to update the element count
         """
         CollectorModel.updateEvent(self, event)
         self.updateCount()
-    
+
     def updateCount(self):
         """
             calculate package- and filecount for statusbar,
@@ -111,12 +112,12 @@ class QueueModel(CollectorModel):
         self.mutex.unlock()
         self.emit(SIGNAL("updateCount"), packageCount, fileCount)
         self.mutex.lock()
-    
+
     def update(self):
         """
             update slot for download status updating
         """
-        locker = QMutexLocker(self.mutex)
+        QMutexLocker(self.mutex)
         downloading = self.connector.statusDownloads()
         if not downloading:
             return
@@ -140,9 +141,10 @@ class QueueModel(CollectorModel):
                     }
                     child.data["downloading"] = dd
                     k = pack.getChildKey(d.fid)
-                    self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
+                    self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"),
+                              self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
         self.updateCount()
-                    
+
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         """
             returns column heading
@@ -161,12 +163,12 @@ class QueueModel(CollectorModel):
             elif section == 5:
                 return QVariant(_("Progress"))
         return QVariant()
-    
+
     def getWaitingProgress(self, item):
         """
             returns time to wait, caches startingtime to provide progress
         """
-        locker = QMutexLocker(self.mutex)
+        QMutexLocker(self.mutex)
         if isinstance(item, Link):
             if item.data["status"] == 5 and item.data["downloading"]:
                 until = float(item.data["downloading"]["wait_until"])
@@ -174,19 +176,19 @@ class QueueModel(CollectorModel):
                     since, until_old = self.wait_dict[item.id]
                     if not until == until_old:
                         raise Exception
-                except:
+                except Exception:
                     since = time()
                     self.wait_dict[item.id] = since, until
                 since = float(since)
-                max_wait = float(until-since)
-                rest = int(until-time())
+                max_wait = float(until - since)
+                rest = int(until - time())
                 if rest < 0:
                     return 0, None
-                res = 100/max_wait
-                perc = rest*res
+                res = 100 / max_wait
+                perc = rest * res
                 return perc, rest
         return None
-    
+
     def getProgress(self, item, locked=True):
         """
             return download progress, locks by default
@@ -194,29 +196,29 @@ class QueueModel(CollectorModel):
             it provides an option to not lock
         """
         if locked:
-            locker = QMutexLocker(self.mutex)
+            QMutexLocker(self.mutex)
         if isinstance(item, Link):
             try:
                 if item.data["status"] == 0:
-					return 100
+                    return 100
                 return int(item.data["downloading"]["percent"])
-            except:
+            except Exception:
                 return 0
         elif isinstance(item, Package):
             count = len(item.children)
             perc_sum = 0
             for child in item.children:
                 try:
-                    if child.data["status"] == 0: #completed
+                    if child.data["status"] == 0:  # completed
                         perc_sum += 100
                     perc_sum += int(child.data["downloading"]["percent"])
-                except:
+                except Exception:
                     pass
             if count == 0:
                 return 0
-            return perc_sum/count
+            return perc_sum / count
         return 0
-    
+
     def getSpeed(self, item):
         """
             calculate download speed
@@ -241,7 +243,7 @@ class QueueModel(CollectorModel):
                 return None
             return speed_sum
         return None
-    
+
     def data(self, index, role=Qt.DisplayRole):
         """
             return cell data
@@ -271,7 +273,7 @@ class QueueModel(CollectorModel):
                             status = child.data["status"]
                 else:
                     status = item.data["status"]
-                
+
                 if speed is None or status == 7 or status == 10 or status == 5:
                     return QVariant(self.translateStatus(statusMapReverse[status]))
                 else:
@@ -279,18 +281,22 @@ class QueueModel(CollectorModel):
             elif index.column() == 3:
                 item = index.internalPointer()
                 if isinstance(item, Link):
-                    if item.data["status"] == 0: #TODO needs change??
-		            #self.getProgress(item, False) == 100:
+                    if item.data["status"] == 0:  # TODO needs change??
+                        #self.getProgress(item, False) == 100:
                         return QVariant(formatSize(item.data["size"]))
                     elif self.getProgress(item, False) == 0:
                         try:
-                            return QVariant("%s / %s" % (formatSize(item.data["size"]-item.data["downloading"]["bleft"]), formatSize(item.data["size"])))
-                        except:
+                            return QVariant("%s / %s" % (
+                            formatSize(item.data["size"] - item.data["downloading"]["bleft"]),
+                            formatSize(item.data["size"])))
+                        except Exception:
                             return QVariant("0 B / %s" % formatSize(item.data["size"]))
                     else:
                         try:
-                            return QVariant("%s / %s" % (formatSize(item.data["size"]-item.data["downloading"]["bleft"]), formatSize(item.data["size"])))
-                        except:
+                            return QVariant("%s / %s" % (
+                            formatSize(item.data["size"] - item.data["downloading"]["bleft"]),
+                            formatSize(item.data["size"])))
+                        except Exception:
                             return QVariant("? / %s" % formatSize(item.data["size"]))
                 else:
                     ms = 0
@@ -298,7 +304,7 @@ class QueueModel(CollectorModel):
                     for c in item.children:
                         try:
                             s = c.data["downloading"]["size"]
-                        except:
+                        except Exception:
                             s = c.data["size"]
                         if c.data["downloading"]:
                             cs += s - c.data["downloading"]["bleft"]
@@ -318,7 +324,7 @@ class QueueModel(CollectorModel):
             if index.column() == 0:
                 return QVariant(index.internalPointer().data["name"])
         return QVariant()
-    
+
     def flags(self, index):
         """
             cell flags
@@ -326,12 +332,13 @@ class QueueModel(CollectorModel):
         if index.column() == 0 and self.parent(index) == QModelIndex():
             return Qt.ItemIsSelectable | Qt.ItemIsEditable | Qt.ItemIsEnabled
         return Qt.ItemIsSelectable | Qt.ItemIsEnabled
-    
+
+
 class QueueView(CollectorView):
     """
         view component for queue
     """
-    
+
     def __init__(self, connector):
         CollectorView.__init__(self, connector)
         self.setModel(QueueModel(self, connector))
@@ -341,21 +348,22 @@ class QueueView(CollectorView):
         self.setColumnWidth(2, 140)
         self.setColumnWidth(3, 180)
         self.setColumnWidth(4, 70)
-        
+
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        
+
         self.delegate = QueueProgressBarDelegate(self, self.model())
         self.setItemDelegateForColumn(5, self.delegate)
+
 
 class QueueProgressBarDelegate(QItemDelegate):
     """
         used to display a progressbar in the progress cell
     """
-    
+
     def __init__(self, parent, queue):
         QItemDelegate.__init__(self, parent)
         self.queue = queue
-    
+
     def paint(self, painter, option, index):
         """
             paint the progressbar
@@ -376,8 +384,8 @@ class QueueProgressBarDelegate(QItemDelegate):
             opts.minimum = 0
             opts.progress = progress
             opts.rect = option.rect
-            opts.rect.setRight(option.rect.right()-1)
-            opts.rect.setHeight(option.rect.height()-1)
+            opts.rect.setRight(option.rect.right() - 1)
+            opts.rect.setHeight(option.rect.height() - 1)
             opts.textVisible = True
             opts.textAlignment = Qt.AlignCenter
             if not wait is None:
@@ -387,4 +395,3 @@ class QueueProgressBarDelegate(QItemDelegate):
             QApplication.style().drawControl(QStyle.CE_ProgressBar, opts, painter)
             return
         QItemDelegate.paint(self, painter, option, index)
-

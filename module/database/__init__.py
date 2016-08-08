@@ -1,3 +1,5 @@
+""" Database Package """
+
 from DatabaseBackend import DatabaseBackend
 from DatabaseBackend import style
 
