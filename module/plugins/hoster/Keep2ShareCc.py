@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class Keep2ShareCc(SimpleHoster):
     __name__    = "Keep2ShareCc"
     __type__    = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
@@ -38,6 +38,8 @@ class Keep2ShareCc(SimpleHoster):
     LINK_PREMIUM_PATTERN = r'window\.location\.href = \'(.+?)\';'
     UNIQUE_ID_PATTERN    = r"data: {uniqueId: '(?P<uID>\w+)', free: 1}"
 
+    PREMIUM_ONLY_PATTERN = r'only for premium members'
+
     CAPTCHA_PATTERN = r'src="(/file/captcha\.html.+?)"'
 
     WAIT_PATTERN         = r'Please wait ([\d:]+) to download this file'
@@ -45,45 +47,35 @@ class Keep2ShareCc(SimpleHoster):
     ERROR_PATTERN        = r'>\s*(Free user can\'t download large files|You no can access to this file|This download available only for premium users|This is private file)'
 
 
-    def check_errors(self):
-        m = re.search(self.TEMP_ERROR_PATTERN, self.data)
-        if m is not None:
-            self.info['error'] = m.group(1)
-            self.wantReconnect = True
-            self.retry(wait=30 * 60, msg=m.group(0))
-
-        m = re.search(self.ERROR_PATTERN, self.data)
-        if m is not None:
-            errmsg = self.info['error'] = m.group(1)
-            self.error(errmsg)
-
-        m = re.search(self.WAIT_PATTERN, self.data)
-        if m is not None:
-            self.log_debug("Hoster told us to wait for %s" % m.group(1))
-
-            #: String to time convert courtesy of https://stackoverflow.com/questions/10663720
-            ftr = [3600, 60, 1]
-            wait_time = sum(a * b for a, b in zip(ftr, map(int, m.group(1).split(':'))))
-
-            self.wantReconnect = True
-            self.retry(wait=wait_time, msg="Please wait to download this file")
-
-        self.info.pop('error', None)
-        # super(Keep2ShareCc, self).check_errors()
+    # a problem with keep2share is that it sometimes forwards requests to other URLs (like k2s)
+    # for example:
+    # if we try to download a file from keep2s.cc but get forwarded to k2s.cc,
+    # then, the download request goes to k2s.cc but the captcha request goes to keep2s.cc
+    # this causes correctly solved captchas to be considered wrong :(
+    # to combat this, the following function follows all redirects and updates self.pyfile.url
+    def update_url(self):
+        header = self.load(self.pyfile.url, just_header = True)
+        while 'location' in header:
+            self.log_debug('got redirected to %s' % str(header['location']))
+            self.pyfile.url = header['location']
+            header = self.load(self.pyfile.url, just_header = True)
 
 
     def handle_free(self, pyfile):
+        self.update_url()
+        self.check_errors()
+
         self.fid  = re.search(r'<input type="hidden" name="slow_id" value="(.+?)">', self.data).group(1)
         self.data = self.load(pyfile.url, post={'yt0': '', 'slow_id': self.fid})
 
         # self.log_debug(self.fid)
-        # self.log_debug(pyfile.url)
-
+        # self.log_debug('URL: %s' % pyfile.url)
+        
         self.check_errors()
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:
-            self.handle_captcha()
+            self.handle_captcha(pyfile.url)
             self.wait(31)
             # get the uniqueId from the html code
             m = re.search(self.UNIQUE_ID_PATTERN, self.data)
@@ -103,20 +95,20 @@ class Keep2ShareCc(SimpleHoster):
         self.log_debug("download link: %s" % self.link)
 
 
-    def handle_captcha(self):
+    def handle_captcha(self, url):
         post_data = {'free'               : 1,
                      'freeDownloadRequest': 1,
                      'uniqueId'           : self.fid,
                      'yt0'                : ''}
 
         m = re.search(r'id="(captcha-form)"', self.data)
-        self.log_debug("Captcha form found", m)
+        self.log_debug("Captcha form found", m.group(0))
 
         m = re.search(self.CAPTCHA_PATTERN, self.data)
-        self.log_debug("CAPTCHA_PATTERN found %s" % m)
 
         if m is not None:
-            captcha_url = urlparse.urljoin("http://keep2s.cc/", m.group(1))
+            self.log_debug("CAPTCHA_PATTERN found: %s" % m.group(0))
+            captcha_url = urlparse.urljoin(url, m.group(1))
             post_data['CaptchaForm[code]'] = self.captcha.decrypt(captcha_url)
         else:
             self.captcha = ReCaptcha(self.pyfile)
@@ -124,6 +116,7 @@ class Keep2ShareCc(SimpleHoster):
             post_data.update({'recaptcha_challenge_field': challenge,
                               'recaptcha_response_field' : response})
 
+        self.log_debug('sending data %s' % str(post_data))
         self.data = self.load(self.pyfile.url, post=post_data)
 
         if 'verification code is incorrect' in self.data:

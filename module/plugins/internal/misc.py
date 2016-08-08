@@ -38,7 +38,7 @@ except ImportError:
 class misc(object):
     __name__    = "misc"
     __type__    = "plugin"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -587,17 +587,35 @@ def str2int(value):
     except:
         return 0
 
-
 def parse_time(value):
     if re.search("da(il)?y|today", value):
         seconds = seconds_to_midnight()
 
+    elif re.search("\d:\d\d", value):
+        # use the HH:MM:SS format
+        factor_arr = [3600,60,1]
+        value = re.sub("[^:0-9]","", value)
+        seconds = sum([u*v for u,v in zip(factor_arr, map(int,value.split(':')))])
+
     else:
         regex   = re.compile(r'(\d+| (?:this|an?) )\s*(hr|hour|min|sec|)', re.I)
-        seconds = sum((int(v) if v.strip() not in ("this", "a", "an") else 1) *
-                      {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, '': 1}[u.lower()]
-                      for v, u in regex.findall(value))
-    return seconds
+        seconds = 0
+        for v, u in regex.findall(value):
+            if v.strip() in ("this", "a", "an"):
+                # if we have just " this/an/a " without a unit, do not return 1s as parsed time, but default to 1h
+                if u is '':
+                    return 3600
+                quant = 1
+            else:
+                quant = int(v)
+
+            seconds += quant * {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, '': 1}[u.lower()]
+
+    if seconds == 0:
+        return 3600
+    else:
+        return seconds
+
 
 
 def timestamp():
