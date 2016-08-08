@@ -25,9 +25,9 @@ import thread
 
 from traceback import print_exc
 
-class Forwarder():
 
-    def __init__(self, extip,extport=9666):
+class Forwarder():
+    def __init__(self, extip, extport=9666):
         print "Start portforwarding to %s:%s" % (extip, extport)
         proxy(extip, extport, 9666)
 
@@ -35,6 +35,7 @@ class Forwarder():
 def proxy(*settings):
     while True:
         server(*settings)
+
 
 def server(*settings):
     try:
@@ -49,8 +50,8 @@ def server(*settings):
             thread.start_new_thread(forward, (server_socket, client_socket))
     except Exception:
         print_exc()
-        
-        
+
+
 def forward(source, destination):
     string = ' '
     while string:
@@ -58,8 +59,9 @@ def forward(source, destination):
         if string:
             destination.sendall(string)
         else:
-            #source.shutdown(socket.SHUT_RD)
+            # source.shutdown(socket.SHUT_RD)
             destination.shutdown(socket.SHUT_WR)
+
 
 if __name__ == "__main__":
     args = argv[1:]
@@ -68,6 +70,4 @@ if __name__ == "__main__":
         exit()
     if len(args) == 1:
         args.append(9666)
-        
     f = Forwarder(args[0], int(args[1]))
-            

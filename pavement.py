@@ -25,7 +25,7 @@ setup(
     name="pyload",
     version="0.4.9",
     description='Fast, lightweight and full featured download manager.',
-    long_description=open(PROJECT_DIR / "README").read(),
+    long_description=open(PROJECT_DIR / "README.md").read(),
     keywords = ('pyload', 'download-manager', 'one-click-hoster', 'download'),
     url="http://pyload.org",
     download_url='http://pyload.org/download',
