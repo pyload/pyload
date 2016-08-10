@@ -225,7 +225,7 @@ class MegaClient(object):
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __status__  = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)(?:###n=(?P<OWNER>[\w^_]+))?'
@@ -307,9 +307,11 @@ class MegaCoNz(Hoster):
 
     def checksum_failed(self, local_file, msg):
         check_action = self.config.get("check_action", default="retry", plugin="Checksum")
+
         if check_action == "retry":
             max_tries = self.config.get("max_tries", default=2, plugin="Checksum")
             retry_action = self.config.get("retry_action", default="fail", plugin="Checksum")
+
             if all(_r < max_tries for _id, _r in self.retries.items()):
                 os.remove(local_file)
                 wait_time = self.config.get("wait_time", default=1, plugin="Checksum")
@@ -340,7 +342,7 @@ class MegaCoNz(Hoster):
                                name)
             if exists(dest_file):
                 self.pyfile.name = name
-                self.skip("File exists.")
+                self.skip(_("File exists."))
 
 
     def process(self, pyfile):
@@ -361,7 +363,7 @@ class MegaCoNz(Hoster):
         key = MegaCrypto.base64_to_a32(key)
         if len(key) != 8:
             self.log_error(_("Invalid key length"))
-            self.fail("Invalid key length")
+            self.fail(_("Invalid key length"))
 
         mega = MegaClient(self, self.info['pattern']['OWNER'] or self.info['pattern']['ID'])
 
@@ -395,7 +397,7 @@ class MegaCoNz(Hoster):
         time_left = res.get('tl', 0)
         if time_left:
             self.log_warning(_("Free download limit reached"))
-            self.retry(wait=time_left, msg="Free download limit reached")
+            self.retry(wait=time_left, msg=_("Free download limit reached"))
 
         # self.req.http.c.setopt(pycurl.SSL_CIPHER_LIST, "RC4-MD5:DEFAULT")
 
