@@ -225,7 +225,7 @@ class MegaClient(object):
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.44"
+    __version__ = "0.45"
     __status__  = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)(?:###n=(?P<OWNER>[\w^_]+))?'
@@ -353,9 +353,15 @@ class MegaCoNz(Hoster):
             self.log_error(_("Missing owner in URL"))
             self.fail(_("Missing owner in URL"))
 
-        self.log_debug(_("ID: %s") % id, _("Key: %s") % key, _("Type: %s") % ("public" if public else "node"), _("Owner: %s") % owner)
+        self.log_debug(_("ID: %s") % id,
+                       _("Key: %s") % key,
+                       _("Type: %s") % ("public" if public else "node"),
+                       _("Owner: %s") % owner)
 
         key = MegaCrypto.base64_to_a32(key)
+        if len(key) != 8:
+            self.log_error(_("Invalid key length"))
+            self.fail("Invalid key length")
 
         mega = MegaClient(self, self.info['pattern']['OWNER'] or self.info['pattern']['ID'])
 
@@ -385,6 +391,11 @@ class MegaCoNz(Hoster):
 
         pyfile.name = name + self.FILE_SUFFIX
         pyfile.size = res['s']
+
+        time_left = res.get('tl', 0)
+        if time_left:
+            self.log_warning(_("Free download limit reached"))
+            self.retry(wait=time_left, msg="Free download limit reached")
 
         # self.req.http.c.setopt(pycurl.SSL_CIPHER_LIST, "RC4-MD5:DEFAULT")
 
