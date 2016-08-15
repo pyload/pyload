@@ -14,9 +14,10 @@ from module.plugins.internal.misc import fsjoin
 class XDCC(Hoster):
     __name__    = "XDCC"
     __type__    = "hoster"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __status__  = "testing"
 
+    __pattern__ = r'xdcc://(?P<SERVER>.*?)/#?(?P<CHAN>.*?)/(?P<BOT>.*?)/#?(?P<PACK>\d+)/?'
     __config__ = [("nick", "str", "Nickname", "pyload"),
                   ("ident", "str", "Ident", "pyloadident"),
                   ("realname", "str", "Realname", "pyloadreal")]
@@ -43,7 +44,7 @@ class XDCC(Hoster):
                 return
 
             except socket.error, e:
-                if hasattr(e, "errno"):
+                if hasattr(e, "errno") and e.errno is not None:
                     errno = e.errno
                 else:
                     errno = e.args[0]
@@ -53,6 +54,7 @@ class XDCC(Hoster):
                     self.wait(300)
                     continue
 
+                self.log_debug("e: %s" % len(e.args))
                 self.fail(_("Failed due to socket errors. Code: %d") % errno)
 
         self.fail(_("Server blocked our ip, retry again later manually"))
@@ -61,11 +63,8 @@ class XDCC(Hoster):
     def do_download(self, url):
         self.pyfile.setStatus("waiting")  #: Real link
 
-        m = re.match(r'xdcc://(.*?)/#?(.*?)/(.*?)/#?(\d+)/?', url)
-        server = m.group(1)
-        chan = m.group(2)
-        bot = m.group(3)
-        pack = m.group(4)
+        server, chan, bot, pack = re.match(self.__pattern__, url).groups()
+
         nick = self.config.get('nick')
         ident = self.config.get('ident')
         real = self.config.get('realname')
@@ -153,15 +152,17 @@ class XDCC(Hoster):
                     if msg['text'] == "\x01VERSION\x01":
                         self.log_debug("Sending CTCP VERSION")
                         sock.send("NOTICE %s :%s\r\n" % (msg['origin'], "pyLoad! IRC Interface"))
+
                     elif msg['text'] == "\x01TIME\x01":
                         self.log_debug("Sending CTCP TIME")
                         sock.send("NOTICE %s :%d\r\n" % (msg['origin'], time.time()))
+
                     elif msg['text'] == "\x01LAG\x01":
                         pass  #: don't know how to answer
 
-                if not (bot == msg['origin'][0:len(bot)]
-                        and nick == msg['target'][0:len(nick)]
-                        and msg['action'] in ("PRIVMSG", "NOTICE")):
+                if msg['origin'][0:len(bot)] != bot\
+                        or msg['target'][0:len(nick)] != nick\
+                        or msg['action'] not in ("PRIVMSG", "NOTICE"):
                     continue
 
                 if self.pyload.debug:
