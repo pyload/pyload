@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class Keep2ShareCc(SimpleHoster):
     __name__    = "Keep2ShareCc"
     __type__    = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
@@ -22,11 +22,13 @@ class Keep2ShareCc(SimpleHoster):
 
     __description__ = """Keep2Share.cc hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("stickell"      , "l.stickell@yahoo.it"       ),
+                       ("Walter Purcaro", "vuolter@gmail.com"         ),
+                       ("GammaC0de"     , "nitzo2001[AT]yahoo[DOT]com")]
 
+    DIRECT_LINK = False #@TODO: Recheck in v0.4.10
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", "http://keep2s.cc/file/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", "http://k2s.cc/file/\g<ID>")]
 
     NAME_PATTERN = r'File: <span>(?P<N>.+?)</span>'
     SIZE_PATTERN = r'Size: (?P<S>.+?)</div>'
@@ -40,7 +42,7 @@ class Keep2ShareCc(SimpleHoster):
 
     CAPTCHA_PATTERN = r'src="(/file/captcha\.html.+?)"'
 
-    WAIT_PATTERN         = r'Please wait ([\d:]+) to download this file'
+    WAIT_PATTERN         = r'<div id="download-wait-timer".*>\s*(\d+).+?</div>'
     TEMP_ERROR_PATTERN   = r'>\s*(Download count files exceed|Traffic limit exceed|Free account does not allow to download more than one file at the same time)'
     ERROR_PATTERN        = r'>\s*(Free user can\'t download large files|You no can access to this file|This download available only for premium users|This is private file)'
 
@@ -73,34 +75,39 @@ class Keep2ShareCc(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        self.fid  = re.search(r'<input type="hidden" name="slow_id" value="(.+?)">', self.data).group(1)
-        self.data = self.load(pyfile.url, post={'yt0': '', 'slow_id': self.fid})
+        m = re.search(r'<input type="hidden" name="slow_id" value="(.+?)">', self.data)
+        if m is None:
+            self.error(_("Slow-ID pattern not found"))
 
-        # self.log_debug(self.fid)
-        # self.log_debug(pyfile.url)
+        self.fid  = m.group(1)
+
+        self.data = self.load(pyfile.url, post={'yt0': '',
+                                                'slow_id': self.fid})
 
         self.check_errors()
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:
             self.handle_captcha()
-            self.wait(31)
+
+            m = re.search(r'<div id="download-wait-timer".*>\s*(\d+).+?</div>', self.data)
+            if m:
+                self.wait(m.group(1))
+
             # get the uniqueId from the html code
             m = re.search(self.UNIQUE_ID_PATTERN, self.data)
             if m is None:
                 self.error(_("Unique-ID pattern not found"))
-            self.data = self.load(pyfile.url, post={'uniqueId': m.group('uID'), 'free': '1'})
+
+            self.data = self.load(pyfile.url, post={'uniqueId': m.group('uID'),
+                                                    'free': '1'})
 
             m = re.search(self.LINK_FREE_PATTERN, self.data)
             if m is None:
                 self.error(_("Free download link not found"))
 
         # if group 1 did not match, check group 2
-        if m.group(1) is not None:
-            self.link = m.group(1)
-        else:
-            self.link = m.group(2)
-        self.log_debug("download link: %s" % self.link)
+        self.link = m.group(1) if m.group(1) else m.group(2)
 
 
     def handle_captcha(self):
@@ -110,23 +117,23 @@ class Keep2ShareCc(SimpleHoster):
                      'yt0'                : ''}
 
         m = re.search(r'id="(captcha-form)"', self.data)
-        self.log_debug("Captcha form found", m)
-
-        m = re.search(self.CAPTCHA_PATTERN, self.data)
-        self.log_debug("CAPTCHA_PATTERN found %s" % m)
-
         if m is not None:
-            captcha_url = urlparse.urljoin("http://keep2s.cc/", m.group(1))
-            post_data['CaptchaForm[code]'] = self.captcha.decrypt(captcha_url)
-        else:
-            self.captcha = ReCaptcha(self.pyfile)
-            response, challenge = self.captcha.challenge()
-            post_data.update({'recaptcha_challenge_field': challenge,
-                              'recaptcha_response_field' : response})
+            m = re.search(self.CAPTCHA_PATTERN, self.data)
 
-        self.data = self.load(self.pyfile.url, post=post_data)
+            if m is not None:
+                captcha_url = urlparse.urljoin(self.pyfile.url, m.group(1))
+                post_data['CaptchaForm[code]'] = self.captcha.decrypt(captcha_url)
 
-        if 'verification code is incorrect' in self.data:
-            self.retry_captcha()
-        else:
-            self.captcha.correct()
+            else:
+                self.captcha = ReCaptcha(self.pyfile)
+                response, challenge = self.captcha.challenge()
+                post_data.update({'recaptcha_challenge_field': challenge,
+                                  'recaptcha_response_field' : response})
+
+            self.data = self.load(self.pyfile.url, post=post_data)
+
+            if 'verification code is incorrect' in self.data:
+                self.retry_captcha()
+
+            else:
+                self.captcha.correct()
