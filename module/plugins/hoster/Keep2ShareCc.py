@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class Keep2ShareCc(SimpleHoster):
     __name__    = "Keep2ShareCc"
     __type__    = "hoster"
-    __version__ = "0.30"
+    __version__ = "0.31"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
@@ -42,7 +42,7 @@ class Keep2ShareCc(SimpleHoster):
 
     CAPTCHA_PATTERN = r'src="(/file/captcha\.html.+?)"'
 
-    WAIT_PATTERN         = r'<div id="download-wait-timer".*>\s*(\d+).+?</div>'
+    WAIT_PATTERN         = r'Please wait ([\d:]+) to download this file'
     TEMP_ERROR_PATTERN   = r'>\s*(Download count files exceed|Traffic limit exceed|Free account does not allow to download more than one file at the same time)'
     ERROR_PATTERN        = r'>\s*(Free user can\'t download large files|You no can access to this file|This download available only for premium users|This is private file)'
 
