@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class Keep2ShareCc(SimpleHoster):
     __name__    = "Keep2ShareCc"
     __type__    = "hoster"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
@@ -26,7 +26,8 @@ class Keep2ShareCc(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com"         ),
                        ("GammaC0de"     , "nitzo2001[AT]yahoo[DOT]com")]
 
-    DIRECT_LINK = False #@TODO: Recheck in v0.4.10
+    DIRECT_LINK = False  #@TODO: Recheck in v0.4.10
+    DISPOSITION = False  #@TODO: Recheck in v0.4.10
 
     URL_REPLACEMENTS = [(__pattern__ + ".*", "http://k2s.cc/file/\g<ID>")]
 
