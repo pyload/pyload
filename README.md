@@ -77,7 +77,7 @@ The webinterface can be accessed when pointing your browser to the IP and config
 
 ## Chef Cookbook for pyLoad
 
-Thanks to the authors of the pyLoad Chef Cookbook, you can now install pyLoad using Chef. Refer to the [repository hosted on GitHub](https://github.com/gridtec/cookbook-pyload) for more information.
+Thanks to the authors of the pyLoad Chef Cookbook, you can now install and configure pyLoad using Chef. Refer to the [repository hosted on GitHub](https://github.com/gridtec/cookbook-pyload) to get more information of the pyLoad Chef cookbook.
 
 ## Notes
 
