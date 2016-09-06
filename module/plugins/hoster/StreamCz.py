@@ -52,7 +52,7 @@ def get_link_quality(videos, quality):
 class StreamCz(SimpleHoster):
     __name__    = "StreamCz"
     __type__    = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?stream\.cz/[^/]+/(?P<EP>\d+).+'
