@@ -2,6 +2,7 @@
 
 import pycurl
 
+from module.network.HTTPRequest import HTTPRequest
 from module.plugins.internal.Addon import Addon
 from module.plugins.internal.misc import encode
 
@@ -9,7 +10,7 @@ from module.plugins.internal.misc import encode
 class UserAgentSwitcher(Addon):
     __name__    = "UserAgentSwitcher"
     __type__    = "hook"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __config__ = [("activated"     , "bool", "Activated"                                 , True                                                                      ),
@@ -23,6 +24,9 @@ class UserAgentSwitcher(Addon):
 
 
     def download_preparing(self, pyfile):
+        if not isinstance(pyfile.plugin.req, HTTPRequest):
+            return
+
         connecttimeout = self.config.get('connecttimeout')
         maxredirs      = self.config.get('maxredirs')
         useragent      = self.config.get('useragent')
