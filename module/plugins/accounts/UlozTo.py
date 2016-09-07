@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class UlozTo(Account):
     __name__    = "UlozTo"
     __type__    = "account"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __description__ = """Uloz.to account plugin"""
@@ -40,11 +40,10 @@ class UlozTo(Account):
 
         html = self.load(urlparse.urljoin("https://www.ulozto.net/", action),
                          post={'_token_' : token,
-                               'do'      : "loginForm-submit",
-                               'login'   : u"Přihlásit",
+                               '_do'      : "loginForm-submit",
+                               'login'   : u"Submit",
                                'password': password,
-                               'username': user,
-                               'remember': "on"})
+                               'username': user})
 
         if '<div class="flash error">' in html:
             self.fail_login()
