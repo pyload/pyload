@@ -19,7 +19,7 @@ from module.plugins.internal.misc import format_size
 class IRC(Thread, Notifier):
     __name__    = "IRC"
     __type__    = "hook"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated"                                    , False                    ),
@@ -132,7 +132,7 @@ class IRC(Thread, Notifier):
                 first = line.split()
 
                 if first[0] == "PING":
-                    self.sock.send("PONG %s\r\n" % first[1])
+                    self.sock.send("PONG :%s\r\n" % first[1])
 
                 if first[0] == "ERROR":
                     raise IRCError(line)
