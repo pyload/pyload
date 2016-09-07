@@ -14,7 +14,7 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "1.35"
+    __version__ = "1.37"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)/(?:live/)?(?P<ID>[!\w]+/[^/?]*)'
@@ -57,24 +57,31 @@ class UlozTo(SimpleHoster):
         self.resume_download = True
 
 
-    def process(self, pyfile):
-        html = self.load(pyfile.url)
-        if re.search(self.ADULT_PATTERN, html):
+    def adult_confirmation(self, pyfile):
+        if re.search(self.ADULT_PATTERN, self.data):
+            adult = True
             self.log_info(_("Adult content confirmation needed"))
 
             url = pyfile.url.replace("ulozto.net", "pornfile.cz")
             self.load("https://pornfile.cz/porn-disclaimer",
                       post={'agree': "Confirm",
-                            'do'   : "pornDisclaimer-submit"})
+                            '_do'   : "pornDisclaimer-submit"})
 
             html = self.load(url)
             name = re.search(self.NAME_PATTERN, html).group(2)
-            self.pyfile.name = parse_name(name)
 
-        return super(UlozTo, self).process(pyfile)
+            self.pyfile.name = parse_name(name)
+            self.data = html
+
+        else:
+            adult = False
+
+        return adult
 
 
     def handle_free(self, pyfile):
+        is_adult = self.adult_confirmation(pyfile)
+
         action, inputs = self.parse_html_form('id="frm-downloadDialog-freeDownloadForm"')
         if not action or not inputs:
             self.error(_("Free download form not found"))
@@ -120,10 +127,12 @@ class UlozTo(SimpleHoster):
         else:
             self.error(_("CAPTCHA form changed"))
 
-        self.download("https://www.ulozto.net" + action, post=inputs)
+        domain = "https://www.pornfile.cz" if is_adult else "https://www.ulozto.net"
+        self.download(domain + action, post=inputs)
 
 
     def handle_premium(self, pyfile):
+        self.adult_confirmation(pyfile)
         self.download(pyfile.url, get={'do': "directDownload"})
 
 
