@@ -7,12 +7,12 @@ It supports link decryption as well as all important container formats.
 
 pyLoad is written entirely in Python and is currently under heavy development.
 
-For news, downloads, wiki, forum and further information visit http://pyload.org/
+For news, downloads, wiki, forum and further information visit http://pyload.net/
 
 To report bugs, suggest features, ask a question, get the developer version
 or help us out, visit http://github.com/pyload/pyload
 
-Documentation about extending pyLoad can be found at http://docs.pyload.org or join us at #pyload on irc.freenode.net
+Documentation about extending pyLoad can be found at https://github.com/pyload/pyload/wiki or join us at #pyload on irc.freenode.net
 
 Dependencies
 ============
@@ -85,4 +85,4 @@ The webinterface can be accessed when pointing your webbrowser to the ip and con
 
 Notes
 =====
-For more information, see http://pyload.org/
+For more information, see http://pyload.net/
