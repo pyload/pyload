@@ -5,7 +5,7 @@ md5:
 
 please save bandwith on our server,
 use this link only for remote uploads to new hoster
-http://get.pyload.org/static/random.bin
+http://get.pyload.net/static/random.bin
 ---------------------------------------
 http://netload.in/datei9XirAJZs79/random.bin.htm
 http://ul.to/file/o41isx
