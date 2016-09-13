@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class UlozTo(Account):
     __name__    = "UlozTo"
     __type__    = "account"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __description__ = """Uloz.to account plugin"""
@@ -19,7 +19,7 @@ class UlozTo(Account):
                        ("ondrej", "git@ondrej.it"),]
 
 
-    TRAFFIC_LEFT_PATTERN = r'<a class="menu-kredit" href="/kredit" title="[^"]*?[MGT]+B = ([\d.]+) MB"'
+    TRAFFIC_LEFT_PATTERN = r'<a href="/nastaveni"><i class="fa fa-user"></i> <em>.+</em> \(([^ ]+) ([MGT]+B)\)</a>'
 
 
     def grab_info(self, user, password, data):
@@ -27,7 +27,7 @@ class UlozTo(Account):
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
 
-        trafficleft = float(m.group(1).replace(' ', '').replace(',', '.')) * 1000 * 1.048 if m else 0
+        trafficleft = self.parse_traffic(m.group(1), m.group(2))
         premium     = True if trafficleft else False
 
         return {'validuntil': -1, 'trafficleft': trafficleft, 'premium': premium}
