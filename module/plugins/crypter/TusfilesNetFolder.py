@@ -10,7 +10,7 @@ from module.plugins.internal.XFSCrypter import XFSCrypter
 class TusfilesNetFolder(XFSCrypter):
     __name__    = "TusfilesNetFolder"
     __type__    = "crypter"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/go/(?P<ID>\w+)'
@@ -43,7 +43,7 @@ class TusfilesNetFolder(XFSCrypter):
         else:
             return
 
-        links = []
+        links = self.links
         for p in xrange(2, pages + 1):
             self.data = self.load_page(p)
             links.append(self.get_links())
