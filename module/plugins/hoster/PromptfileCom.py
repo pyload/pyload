@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class PromptfileCom(SimpleHoster):
     __name__    = "PromptfileCom"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?promptfile\.com/'
@@ -20,14 +20,16 @@ class PromptfileCom(SimpleHoster):
 
     __description__ = """Promptfile.com hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("igel", "igelkun@myopera.com")]
+    __authors__     = [("igel", "igelkun@myopera.com"),
+                        ("ondrej", "git@ondrej.it")]
 
 
     INFO_PATTERN    = r'<span style=".+?" title=".+?">(?P<N>.*?) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</span>'
     OFFLINE_PATTERN = r'<span style=".+?" title="File Not Found">File Not Found</span>'
 
-    CHASH_PATTERN     = r'<input type="hidden" name="chash" value="(.+?)" />'
-    LINK_FREE_PATTERN = r'<a href=\"(.+)\" target=\"_blank\" class=\"view_dl_link\">Download File</a>'
+    CHASH_PATTERN     = r'input.+"([a-z\d]{10,})".+"([a-z\d]{10,})"'
+    MODIFY_PATTERN    = r'\$\("#chash"\)\.val\("(.+)"\+\$\("#chash"\)'
+    LINK_FREE_PATTERN = r'<a href="(http://www\.promptfile\.com/file/[^"]+)'
 
 
     def handle_free(self, pyfile):
@@ -36,11 +38,15 @@ class PromptfileCom(SimpleHoster):
         if m is None:
             self.error(_("CHASH_PATTERN not found"))
 
-        chash = m.group(1)
-        self.log_debug("Read chash %s" % chash)
+        mod = re.search(self.MODIFY_PATTERN, self.data)
+        payload = {
+            m.group(1): mod.group(1) + m.group(2)
+        }
+
+        self.log_debug("Read chash: " + str(payload))
 
         #: Continue to stage2
-        self.data = self.load(pyfile.url, post={'chash': chash})
+        self.data = self.load(pyfile.url, post=payload)
 
         #: STAGE 2: get the direct link
         return super(PromptfileCom, self).handle_free(pyfile)
