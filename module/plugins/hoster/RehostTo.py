@@ -21,7 +21,7 @@ class RehostTo(MultiHoster):
 
     __description__ = """Rehost.com multi-hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
+    __authors__     = [("RaNaN", "RaNaN@pyload.net")]
 
 
     def handle_premium(self, pyfile):
