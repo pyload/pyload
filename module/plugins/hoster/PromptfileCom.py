@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class PromptfileCom(SimpleHoster):
     __name__    = "PromptfileCom"
     __type__    = "hoster"
-    __version__ = "0.19"
+    __version__ = "0.18"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?promptfile\.com/'
@@ -33,7 +33,6 @@ class PromptfileCom(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        self.data = self.load(pyfile.url)
         #: STAGE 1: get link to continue
         m = re.search(self.CHASH_PATTERN, self.data)
         if m is None:
