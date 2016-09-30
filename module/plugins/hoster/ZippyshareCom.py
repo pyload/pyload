@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class ZippyshareCom(SimpleHoster):
     __name__    = "ZippyshareCom"
     __type__    = "hoster"
-    __version__ = "0.87"
+    __version__ = "0.88"
     __status__  = "testing"
 
     __pattern__ = r'http://www\d{0,3}\.zippyshare\.com/v(/|iew\.jsp.*key=)(?P<KEY>[\w^_]+)'
@@ -66,7 +66,7 @@ class ZippyshareCom(SimpleHoster):
     def get_link(self):
         #: Get all the scripts inside the html body
         soup = BeautifulSoup.BeautifulSoup(self.data)
-        scripts = [s.getText() for s in soup.body.findAll('script', type='text/javascript')]
+        scripts = [s.getText() for s in soup.body.findAll('script', type='text/javascript') if 'dlbutton' in s.getText()]
 
         #: Emulate a document in JS
         inits = ['''
@@ -92,4 +92,8 @@ class ZippyshareCom(SimpleHoster):
 
         #: Get the file's url by evaluating all the scripts
         scripts = inits + scripts + ['document.dlbutton.href']
+        f = open("zippy.js", "wb")
+        f.write('\n'.join(scripts))
+        f.close()
+        self.log_debug("scripts: %s" % scripts)
         return self.js.eval('\n'.join(scripts))
