@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class CatShareNet(Account):
     __name__    = "CatShareNet"
     __type__    = "account"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__  = "testing"
 
     __description__ = """Catshare.net account plugin"""
@@ -18,9 +18,9 @@ class CatShareNet(Account):
                        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
 
-    PREMIUM_PATTERN      = r'<a href="/premium">Konto:[\s\n]*Premium'
-    VALID_UNTIL_PATTERN  = r'>Konto premium.*?<strong>(.*?)</strong></span>'
-    TRAFFIC_LEFT_PATTERN = r'<a href="/premium">(?P<S>[\d.,]+) (?P<U>[kMG]B)'
+    PREMIUM_PATTERN      = r'<span class="hidden-xs">Premium</span>'
+    VALID_UNTIL_PATTERN  = r'<span class="hidden-xs">Premium</span> <b>(.*?)</b>'
+    TRAFFIC_LEFT_PATTERN = r'<span class="hidden-xs">Premium</span>.*?\( (-?)(?P<S>[\d.,]+) (?P<U>[kMG]B) \)'
 
 
     def grab_info(self, user, password, data):
@@ -35,11 +35,15 @@ class CatShareNet(Account):
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
-            validuntil = time.mktime(time.strptime(m.group(1), "%Y-%m-%d %H:%M:%S"))
+            m = re.findall(r'(\d+) (tydzień|dni|godzin)', m.group(1))
+            if m:
+                validuntil = time.time()
+                for n, u in m:
+                    validuntil += float(n) * 60 * 60 * {'tydzień': 168, 'dni': 24, 'godzin': 1}[u]
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m:
-            trafficleft = self.parse_traffic(m.group(1), m.group(2))
+            trafficleft = 0 if m.group(1) else self.parse_traffic(m.group(2), m.group(3))
 
         return {'premium': premium, 'trafficleft': trafficleft, 'validuntil': validuntil}
 
