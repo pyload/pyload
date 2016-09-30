@@ -14,7 +14,7 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "1.37"
+    __version__ = "1.38"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)/(?:live/)?(?P<ID>[!\w]+/[^/?]*)'
@@ -30,7 +30,8 @@ class UlozTo(SimpleHoster):
     __description__ = """Uloz.to hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
-                        ("ondrej", "git@ondrej.it"),]
+                        ("ondrej", "git@ondrej.it"),
+                        ("astran", "martin.hromadko@gmail.com")]
 
 
     NAME_PATTERN    = r'(<p>File <strong>|<title>)(?P<N>.+?)(<| \|)'
@@ -82,7 +83,7 @@ class UlozTo(SimpleHoster):
     def handle_free(self, pyfile):
         is_adult = self.adult_confirmation(pyfile)
 
-        action, inputs = self.parse_html_form('id="frm-downloadDialog-freeDownloadForm"')
+        action, inputs = self.parse_html_form('id="frm-download-freeDownloadTab-freeDownloadForm"')
         if not action or not inputs:
             self.error(_("Free download form not found"))
 
