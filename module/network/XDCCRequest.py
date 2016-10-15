@@ -95,6 +95,7 @@ class XDCCRequest():
 
             time.sleep(self.sleep)
 
+
     def _send_ack(self):
         # acknowledge data by sending number of recceived bytes
         try:
@@ -204,6 +205,7 @@ class XDCCRequest():
     def speed(self):
         speeds = [x for x in self.speeds if x]
         return sum(speeds) / len(speeds)
+
 
     @property
     def percent(self):
