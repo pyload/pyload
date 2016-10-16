@@ -439,8 +439,11 @@ class XDCC(Hoster):
 
                                 else:
                                     if self.irc_client.xdcc_request_time and time.time()-self.irc_client.xdcc_request_time > 90:
-                                        self.irc_client.disconnect_server()
                                         self.log_error(_("XDCC Bot did not answer"))
+                                        #@NOTE: Somehow retry() will not trigger finally so we do cleanup excplicitly
+                                        if not self.req.arrived:
+                                            self.irc_client.xdcc_cancel_pack(bot)
+                                        self.irc_client.disconnect_server()
                                         self.retry(3, 60, _("XDCC Bot did not answer"))
 
                             origin, command, args = self.irc_client.get_irc_command()
@@ -450,6 +453,9 @@ class XDCC(Hoster):
                                 raise self.exc_info[1], None, self.exc_info[2]
 
                     finally:
+                        if self.irc_client.xdcc_request_time and not self.req.arrived:
+                            self.irc_client.xdcc_cancel_pack(bot)
+
                         self.irc_client.disconnect_server()
 
                 return
@@ -539,8 +545,9 @@ class XDCC(Hoster):
                 try:
                     os.makedirs(dl_folder)
 
-                except Exception, e:
-                    self.fail(e.message)
+                except OSError, e:
+                    self.log_error(_("Error creating directory `%s`") % dl_folder, e)
+                    self.fail(e.args[1])
 
             self.set_permissions(dl_folder)
 
@@ -563,9 +570,6 @@ class XDCC(Hoster):
             pass
 
         except Exception, e:
-            bot  = self.info['pattern']['BOT']
-            self.irc_client.xdcc_cancel_pack(bot)
-
             if not self.exc_info:
                 self.exc_info = sys.exc_info()  #: pass the exception to the main thread
 
