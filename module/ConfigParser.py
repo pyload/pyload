@@ -58,6 +58,7 @@ class ConfigParser:
         try:
             if not exists("pyload.conf"):
                 copy(join(pypath, "module", "config", "default.conf"), "pyload.conf")
+                chmod("pyload.conf", 0600)
 
             if not exists("plugin.conf"):
                 f = open("plugin.conf", "wb")
