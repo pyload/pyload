@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+ # -*- coding: utf-8 -*-
 
 import os
 import re
@@ -29,7 +29,7 @@ except ImportError:
 class ReCaptcha(CaptchaService):
     __name__    = 'ReCaptcha'
     __type__    = 'captcha'
-    __version__ = '0.27'
+    __version__ = '0.28'
     __status__  = 'testing'
 
     __description__ = 'ReCaptcha captcha service plugin'
@@ -40,7 +40,7 @@ class ReCaptcha(CaptchaService):
 
 
     KEY_V1_PATTERN = r'(?:recaptcha(?:/api|\.net)/(?:challenge|noscript)\?k=|Recaptcha\.create\s*\(\s*["\'])([\w\-]+)'
-    KEY_V2_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']:\s*["\'])([\w\-]+)'
+    KEY_V2_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']\s*:\s*["\'])([\w\-]+)'
 
 
     def detect_key(self, data=None):
