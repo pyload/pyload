@@ -29,7 +29,7 @@ except ImportError:
 class ReCaptcha(CaptchaService):
     __name__    = 'ReCaptcha'
     __type__    = 'captcha'
-    __version__ = '0.30'
+    __version__ = '0.31'
     __status__  = 'testing'
 
     __description__ = 'ReCaptcha captcha service plugin'
@@ -293,10 +293,11 @@ class ReCaptcha(CaptchaService):
 
             try:
                 result = re.search(r'"this\.select\(\)">(.*?)</textarea>', html).group(1)
+                self.correct()
                 break
 
             except (AttributeError, IndexError):
-                pass
+                self.invalid()
 
         else:
             self.fail(_("Recaptcha max retries exceeded"))
