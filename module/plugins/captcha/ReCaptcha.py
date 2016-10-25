@@ -29,7 +29,7 @@ except ImportError:
 class ReCaptcha(CaptchaService):
     __name__    = 'ReCaptcha'
     __type__    = 'captcha'
-    __version__ = '0.29'
+    __version__ = '0.30'
     __status__  = 'testing'
 
     __description__ = 'ReCaptcha captcha service plugin'
@@ -67,7 +67,7 @@ class ReCaptcha(CaptchaService):
             self.log_debug("Secure Token: %s" % self.secure_token)
             return self.secure_token
         else:
-            self.log_warning(_("Secure Token pattern not found %s") % data)
+            self.log_warning(_("Secure Token pattern not found"))
             return None
 
 
