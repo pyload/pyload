@@ -98,7 +98,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.58"
+    __version__ = "1.59"
     __status__  = "testing"
 
     __config__ = [("activated"      , "bool"  , "Activated"                             , True                                                                     ),
@@ -528,7 +528,12 @@ class ExtractArchive(Addon):
                     passwords.append(pw)
 
         except IOError, e:
-            self.log_error(e)
+            if e.errno == 2:
+                with open(file, "wb") as f:
+                    pass
+
+            else:
+                self.log_error(e)
 
         else:
             self.passwords = passwords
