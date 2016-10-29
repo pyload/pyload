@@ -17,7 +17,7 @@ from module.plugins.internal.misc import forward, lock, threaded
 class ClickNLoad(Addon):
     __name__    = "ClickNLoad"
     __type__    = "hook"
-    __version__ = "0.59"
+    __version__ = "0.60"
     __status__  = "testing"
 
     __config__ = [("activated", "bool"           , "Activated"                      , True       ),
@@ -76,12 +76,12 @@ class ClickNLoad(Addon):
     @threaded
     def forward(self, source, destination, queue=False):
         if queue:
-            old_ids = set(pack.id for pack in self.pyload.api.getCollector())
+            old_ids = set(pack.pid for pack in self.pyload.api.getCollector())
 
         forward(source, destination)
 
         if queue:
-            new_ids = set(pack.id for pack in self.pyload.api.getCollector())
+            new_ids = set(pack.pid for pack in self.pyload.api.getCollector())
             for id in new_ids - old_ids:
                 self.pyload.api.pushToQueue(id)
 
