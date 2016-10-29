@@ -5,11 +5,21 @@ from paver.easy import *
 from paver.setuputils import setup
 from paver.doctools import cog
 
+from setuptools import find_packages
+
 import sys
 import re
+import os
 from urllib import urlretrieve
 from subprocess import call, Popen, PIPE
 from zipfile import ZipFile
+
+def package_files(directory):
+    paths = []
+    for (path, directories, filenames) in os.walk(directory):
+        for filename in filenames:
+            paths.append(os.path.join('..', path, filename))
+    return paths
 
 PROJECT_DIR = path(__file__).dirname()
 sys.path.append(PROJECT_DIR)
@@ -20,6 +30,8 @@ path('pyload').mkdir()
 extradeps = []
 if sys.version_info <= (2, 5):
     extradeps += 'simplejson'
+
+extra_files = package_files('module/config') + package_files('module/web')
 
 setup(
     name="pyload",
@@ -33,10 +45,9 @@ setup(
     author="pyLoad Team",
     author_email="support@pyload.org",
     platforms = ('Any',),
-    #package_dir={'pyload': 'src'},
-    packages=['pyload'],
-    #package_data=find_package_data(),
-    #data_files=[],
+    py_modules = ['pyLoadCore', 'pyLoadCli'],
+    packages = find_packages(),
+    package_data = {'': extra_files},
     include_package_data=True,
     exclude_package_data={'pyload': ['docs*', 'scripts*', 'tests*']}, #exluced from build but not from sdist
     # 'bottle >= 0.10.0' not in list, because its small and contain little modifications
@@ -330,3 +341,4 @@ def change_mode(dir, mode, folder=False):
             p.chmod(mode)
         elif p.isfile() and not folder:
             p.chmod(mode)
+
