@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class UlozTo(Account):
     __name__    = "UlozTo"
     __type__    = "account"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __description__ = """Uloz.to account plugin"""
@@ -19,7 +19,7 @@ class UlozTo(Account):
                        ("ondrej", "git@ondrej.it"),]
 
 
-    TRAFFIC_LEFT_PATTERN = r'<a href="/nastaveni"><i class="fa fa-user"></i> <em>.+</em> \(([^ ]+) ([MGT]+B)\)</a>'
+    TRAFFIC_LEFT_PATTERN = r'<span class="user"><i class="fa fa-user"></i> <em>.+</em> \(([^ ]+) ([MGT]+B)\)</span>'
 
 
     def grab_info(self, user, password, data):

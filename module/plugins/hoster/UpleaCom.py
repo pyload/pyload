@@ -3,7 +3,7 @@
 import re
 import urlparse
 
-from module.plugins.internal.XFSHoster import XFSHoster
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 def decode_cloudflare_email(value):
@@ -16,10 +16,10 @@ def decode_cloudflare_email(value):
     return email
 
 
-class UpleaCom(XFSHoster):
+class UpleaCom(SimpleHoster):
     __name__    = "UpleaCom"
     __type__    = "hoster"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?uplea\.com/dl/\w{15}'
