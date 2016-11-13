@@ -122,7 +122,8 @@ class PreloadStub(object):
 
     def my_preload(self, *args, **kwargs):
         data = CloudFlare.handle_function(self.addon_plugin, self.hoster_plugin, "_preload", self.old_preload, (args, kwargs))
-        self.hoster_plugin.data = data
+        if data is not None:
+            self.hoster_plugin.data = data
 
 
     def __repr__(self):
@@ -132,7 +133,7 @@ class PreloadStub(object):
 class CloudFlareDdos(Addon):
     __name__    = "CloudFlareDdos"
     __type__    = "hook"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated" , False)]
