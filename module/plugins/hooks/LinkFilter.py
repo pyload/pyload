@@ -4,11 +4,11 @@ from module.plugins.internal.Addon import Addon
 class LinkFilter(Addon):
         __name__    = "LinkFilter"
         __type__    = "hook"
-        __version__ = "0.11"
+        __version__ = "0.12"
         __status__  = "testing"
 
-        __config__ = [("activated", "bool" , "Activated"                                   , False ),
-                      ("filter"   , "str"  , "Filter links containing (seperate by comma)" , "ul.to,share-online.biz" )]
+        __config__ = [("activated", "bool", "Activated"                                   ,False),
+                      ("filter"   , "str" , "Filter links containing (seperate by comma)", "ul.to,share-online.biz" )]
 
         __description__ = "Filters all added links"
         __license__     = "GPLv3"
@@ -16,7 +16,7 @@ class LinkFilter(Addon):
 
 
         def init(self):
-            self.event_map = {'linksAdded', "filter_links"}
+            self.event_map = {'linksAdded': "filter_links"}
 
 
         def filter_links(self, links, pid):
