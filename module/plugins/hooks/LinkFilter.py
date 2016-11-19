@@ -4,7 +4,7 @@ from module.plugins.internal.Addon import Addon
 class LinkFilter(Addon):
         __name__    = "LinkFilter"
         __type__    = "hook"
-        __version__ = "0.2"
+        __version__ = "0.11"
         __status__  = "testing"
 
         __config__ = [("activated", "bool" , "Activated"                                   , False ),
