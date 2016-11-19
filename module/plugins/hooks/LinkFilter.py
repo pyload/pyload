@@ -2,29 +2,29 @@
 from module.plugins.internal.Addon import Addon
 
 class LinkFilter(Addon):
-        __name__ = "LinkFilter"
-        __type__ = "hook"
-        __version__ = "0.1"
-        __status__ = "testing"
-        __config__ = [("activated"     , "bool" , "Activated"                                   , False ),
-                      ("filter"        , "str"  , "Filter links containing (seperate by comma)" , "ul.to,share-online.biz" )]
+        __name__    = "LinkFilter"
+        __type__    = "hook"
+        __version__ = "0.2"
+        __status__  = "testing"
+
+        __config__ = [("activated", "bool" , "Activated"                                   , False ),
+                      ("filter"   , "str"  , "Filter links containing (seperate by comma)" , "ul.to,share-online.biz" )]
+
         __description__ = "Filters all added links"
-        __authors__ = "segelkma"
+        __license__     = "GPLv3"
+        __authors__     = [("segelkma", None)]
 
 
-        def deactivate(self):
-            self.manager.removeEvent('linksAdded', self.filter_links)
-
-
-        def activate(self):
-            self.manager.addEvent('linksAdded', self.filter_links)
+        def init(self):
+            self.event_map = {'linksAdded', "filter_links"}
 
 
         def filter_links(self, links, pid):
             filter_entries = self.config.get('filter').split(',')
 
             for filter in filter_entries:
-                if filter == "": break
+                if filter == "":
+                    break
 
                 linkcount = len(links)
                 links[:] = [link for link in links if link.find(filter) == -1]
