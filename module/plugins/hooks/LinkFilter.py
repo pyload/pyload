@@ -24,6 +24,8 @@ class LinkFilter(Addon):
             filter_entries = self.config.get('filter').split(',')
 
             for filter in filter_entries:
+                if filter == "": break
+
                 linkcount = len(links)
                 links[:] = [link for link in links if link.find(filter) == -1]
                 linkcount -= len(links)
