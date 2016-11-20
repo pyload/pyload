@@ -29,7 +29,7 @@ except ImportError:
 class ReCaptcha(CaptchaService):
     __name__    = 'ReCaptcha'
     __type__    = 'captcha'
-    __version__ = '0.32'
+    __version__ = '0.33'
     __status__  = 'testing'
 
     __description__ = 'ReCaptcha captcha service plugin'
@@ -80,6 +80,7 @@ class ReCaptcha(CaptchaService):
 
         else:
             return self.challenge(key,
+                                  data,
                                   version=2 if re.search(self.KEY_V2_PATTERN, data or self.retrieve_data()) else 1,
                                   secure_token=secure_token)
 
