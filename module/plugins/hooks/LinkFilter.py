@@ -4,7 +4,7 @@ from module.plugins.internal.Addon import Addon
 class LinkFilter(Addon):
         __name__    = "LinkFilter"
         __type__    = "hook"
-        __version__ = "0.12"
+        __version__ = "0.13"
         __status__  = "testing"
 
         __config__ = [("activated", "bool", "Activated"                                   ,False),
@@ -15,8 +15,12 @@ class LinkFilter(Addon):
         __authors__     = [("segelkma", None)]
 
 
-        def init(self):
-            self.event_map = {'linksAdded': "filter_links"}
+        def activate(self):
+            self.manager.addEvent('linksAdded', self.filter_links)
+
+
+        def deactivate(self):
+            self.manager.removeEvent('linksAdded', self.filter_links)
 
 
         def filter_links(self, links, pid):
