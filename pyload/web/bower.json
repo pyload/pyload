@@ -1,23 +1,22 @@
 {
-    "name": "pyload",
-    "version": "0.1.0",
-    "dependencies": {
-        "pyload-common": "https://github.com/pyload/pyload-common.git",
-        "requirejs": "2.1.9",
-        "requirejs-text": "*",
-        "require-handlebars-plugin": "0.4.0",
-        "jquery": "~1.9.1",
-        "jquery.transit": "~0.9.9",
-        "jquery.cookie": "~1.3.1",
-        "jquery.animate-enhanced": "5190d403fa007395e8599dfe5e23ecee66d3d62e",
-        "flot": "~0.8.2",
-        "underscore": "~1.5.0",
-        "backbone": "1.1.0",
-        "backbone.marionette": "1.4.1",
-        "handlebars.js": "1.0.0-rc.3",
-        "jed": "~0.5.4",
-        "select2": "3.4.5",
-        "momentjs": "~2.4.0"
+    "name" : "pyload-webui",
+    "version" : "0.9.0",
+    "dependencies" : {
+        "pyload-common" : "https ://github.com/pyload/pyload-common.git",
+        "requirejs" : "2.1.9",
+        "requirejs-text" : "*",
+        "require-handlebars-plugin" : "0.4.0",
+        "jquery" : "~1.9.1",
+        "jquery.transit" : "~0.9.9",
+        "jquery.cookie" : "~1.3.1",
+        "jquery.animate-enhanced" : "5190d403fa007395e8599dfe5e23ecee66d3d62e",
+        "flot" : "~0.8.2",
+        "underscore" : "~1.5.0",
+        "backbone" : "1.1.0",
+        "backbone.marionette" : "1.4.1",
+        "handlebars.js" : "1.0.0-rc.3",
+        "jed" : "~0.5.4",
+        "select2" : "3.4.5",
+        "momentjs" : "~2.4.0"
     },
-    "devDependencies": {}
 }
