@@ -18,7 +18,7 @@ class BenchmarkTest:
     @classmethod
     def benchmark(cls, n=1):
 
-        print "Benchmarking %s" % cls.__name__
+        print("Benchmarking %s" % cls.__name__)
         print
 
         for i in range(n):
@@ -37,13 +37,13 @@ class BenchmarkTest:
             v = cls.results[k]
 
             if len(v) > 1:
-                print ("%" + length +"s: %s | average: %.2f ms") % (k, ", ".join(["%.2f" % x for x in v]), sum(v)/len(v))
+                print("%" + length +"s: %s | average: %.2f ms") % (k, ", ".join(["%.2f" % x for x in v]), sum(v)/len(v))
                 total += sum(v)/len(v)
             else:
-                print ("%" + length +"s: %.2f ms") % (k, v[0])
+                print("%" + length +"s: %.2f ms") % (k, v[0])
                 total += v[0]
 
-        print "\ntotal: %.2f ms" % total
+        print("\ntotal: %.2f ms" % total)
 
 
     @classmethod

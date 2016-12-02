@@ -5,7 +5,7 @@ import sys
 from threading import Thread
 from time import strftime, gmtime
 from types import MethodType
-from pprint import pformat
+from pprint(import pformat)
 from traceback import format_exc
 
 from pyload.utils import primary_uid

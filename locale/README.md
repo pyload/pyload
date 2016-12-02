@@ -14,7 +14,7 @@ If you want to explain a translatable string to make the translation process eas
 ```python
 # L10N: Here the tip for translators
 # Thanks
-print _("A translatable string")
+print(_("A translatable string"))
 ```
 
 Translators will see:

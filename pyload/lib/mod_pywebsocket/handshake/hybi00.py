@@ -203,7 +203,7 @@ class Handshaker(object):
     def _set_challenge_response(self):
         # 5.2 4-8.
         self._request.ws_challenge = self._get_challenge()
-        # 5.2 9. let /response/ be the MD5 finterprint of /challenge/
+        # 5.2 9. let /response/ be the MD5 finterprint(of /challenge/)
         self._request.ws_challenge_md5 = util.md5_hash(
             self._request.ws_challenge).digest()
         self._logger.debug(

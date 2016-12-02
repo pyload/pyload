@@ -24,7 +24,7 @@ class ReloadCc(MultiHoster):
     def getHoster(self):
         # If no accounts are available there will be no hosters available
         if not self.account or not self.account.canUse():
-            print "ReloadCc: No accounts available"
+            print("ReloadCc: No accounts available")
             return []
 
         # Get account data
@@ -49,7 +49,7 @@ class ReloadCc(MultiHoster):
 
         # If account is not valid thera are no hosters available
         if data['status'] != "ok":
-            print "ReloadCc: Status is not ok: %s" % data['status']
+            print("ReloadCc: Status is not ok: %s" % data['status'])
             return []
 
         # Extract hosters from json file

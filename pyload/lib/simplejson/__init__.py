@@ -14,13 +14,13 @@ Encoding basic Python object hierarchies::
     >>> import simplejson as json
     >>> json.dumps(['foo', {'bar': ('baz', None, 1.0, 2)}])
     '["foo", {"bar": ["baz", null, 1.0, 2]}]'
-    >>> print json.dumps("\"foo\bar")
+    >>> print(json.dumps("\"foo\bar"))
     "\"foo\bar"
-    >>> print json.dumps(u'\u1234')
+    >>> print(json.dumps(u'\u1234'))
     "\u1234"
-    >>> print json.dumps('\\')
+    >>> print(json.dumps('\\'))
     "\\"
-    >>> print json.dumps({"c": 0, "b": 0, "a": 0}, sort_keys=True)
+    >>> print(json.dumps({"c": 0, "b": 0, "a": 0}, sort_keys=True))
     {"a": 0, "b": 0, "c": 0}
     >>> from StringIO import StringIO
     >>> io = StringIO()
@@ -38,7 +38,7 @@ Pretty printing::
 
     >>> import simplejson as json
     >>> s = json.dumps({'4': 5, '6': 7}, sort_keys=True, indent='    ')
-    >>> print '\n'.join([l.rstrip() for l in  s.splitlines()])
+    >>> print('\n'.join([l.rstrip() for l in  s.splitlines()]))
     {
         "4": 5,
         "6": 7

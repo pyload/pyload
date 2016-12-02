@@ -38,7 +38,7 @@ class HosterPluginTester(PluginTester):
     @nottest
     def test_plugin(self, name, url, status):
         # Print to stdout to see whats going on
-        print "%s: %s, %s" % (name, url.encode("utf8"), status)
+        print("%s: %s, %s" % (name, url.encode("utf8"), status))
         log(DEBUG, "%s: %s, %s", name, url.encode("utf8"), status)
 
         # url and plugin should be only important thing
@@ -107,7 +107,7 @@ status = {}
 
 for k, v in sections.iteritems():
     if k not in statusMap:
-        print "Unknown status %s" % k
+        print("Unknown status %s" % k)
     for url in v:
         urls.append(url)
         status[url] = k

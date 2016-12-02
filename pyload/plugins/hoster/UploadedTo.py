@@ -158,7 +158,7 @@ class UploadedTo(Hoster):
         header = self.load("http://uploaded.net/file/%s" % self.fileID, just_header=True)
         if "location" in header:
             #Direct download
-            print "Direct Download: " + header['location']
+            print("Direct Download: " + header['location'])
             self.download(header['location'])
         else:
             #Indirect download
@@ -167,7 +167,7 @@ class UploadedTo(Hoster):
             if not found:
                 self.fail("Download URL not found. Try to enable direct downloads.")
             url = found.group(1)
-            print "Premium URL: " + url
+            print("Premium URL: " + url)
             self.download(url, post={})
 
     def handleFree(self):

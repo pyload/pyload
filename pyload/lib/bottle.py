@@ -68,7 +68,7 @@ py31 = (3, 1, 0) <= py < (3, 2, 0)
 # Workaround for the missing "as" keyword in py3k.
 def _e(): return sys.exc_info()[1]
 
-# Workaround for the "print is a keyword/function" Python 2/3 dilemma
+# Workaround for the "print(is a keyword/function" Python 2/3 dilemma)
 # and a fallback for mod_wsgi (resticts stdout/err attribute access)
 try:
     _stdout, _stderr = sys.stdout.write, sys.stderr.write

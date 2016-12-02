@@ -156,7 +156,7 @@ class FreakshareCom(Hoster):
         request_options = dict((n, v) for (v, n) in to_sort)
 
         # comment this in, when it doesnt work as well
-        #print "\n\n%s\n\n" % ";".join(["%s=%s" % x for x in to_sort])
+        #print("\n\n%s\n\n" % ";".join(["%s=%s" % x for x in to_sort]))
 
         challenge = re.search(r"http://api\.recaptcha\.net/challenge\?k=([0-9A-Za-z]+)", herewego)
 

@@ -45,7 +45,7 @@ class ApiProxy:
             else: # simple object
                 assert isinstance(result, type)
         except AssertionError:
-            print "Assertion for %s as %s failed" % (result, type)
+            print("Assertion for %s as %s failed" % (result, type))
             raise
 
 

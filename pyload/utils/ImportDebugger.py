@@ -14,6 +14,6 @@ class ImportDebugger(object):
 
         self.imported[name] += 1
 
-        print name, path
+        print(name, path)
 
 sys.meta_path.append(ImportDebugger())

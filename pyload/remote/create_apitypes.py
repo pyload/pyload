@@ -57,7 +57,7 @@ def main():
     classes = []
     tf = open(join(path, "pyload.thrift"), "rb").read()
 
-    print "generating apitypes.py"
+    print("generating apitypes.py")
 
     for name in dir(ttypes):
         klass = getattr(ttypes, name)

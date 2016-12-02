@@ -147,7 +147,7 @@ class Xdcc(Hoster):
 
             for line in temp:
                 if self.debug is 2:
-                    print "*> " + unicode(line, errors='ignore')
+                    print("*> " + unicode(line, errors='ignore'))
                 line = line.rstrip()
                 first = line.split()
 
@@ -184,7 +184,7 @@ class Xdcc(Hoster):
                     continue
 
                 if self.debug is 1:
-                    print "%s: %s" % (msg["origin"], msg["text"])
+                    print("%s: %s" % (msg["origin"], msg["text"]))
 
                 if "You already requested that pack" in msg["text"]:
                     retry = time.time() + 300

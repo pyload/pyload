@@ -83,10 +83,10 @@ Here is a little python script that is able to send commands to the pyload api::
 
     if __name__ == "__main__":
         session = login("User", "pwhere")
-        print "Session id:", session
+        print("Session id:", session)
 
         result = send(session, "setCaptchaResult", tid=0, result="some string")
-        print result
+        print(result)
 
 
 

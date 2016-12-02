@@ -46,7 +46,7 @@ def remove_chars(string, repl):
 def get_console_encoding(enc):
     if os.name == "nt":
         if enc == "cp65001": # aka UTF-8
-            print "WARNING: Windows codepage 65001 is not supported."
+            print("WARNING: Windows codepage 65001 is not supported.")
             enc = "cp850"
     else:
         enc = "utf8"
@@ -77,7 +77,7 @@ def to_list(value):
 
 
 def formatSize(size):
-    print "Deprecated formatSize, use format_size"
+    print("Deprecated formatSize, use format_size")
     return format_size(size)
 
 
@@ -92,7 +92,7 @@ def format_size(bytes):
 
 
 def formatSpeed(speed):
-    print "Deprecated formatSpeed, use format_speed"
+    print("Deprecated formatSpeed, use format_speed")
     return format_speed(speed)
 
 
@@ -114,7 +114,7 @@ def parse_time(timestamp, pattern):
 
 
 def parseFileSize(string, unit=None):
-    print "Deprecated parseFileSize, use parse_size"
+    print("Deprecated parseFileSize, use parse_size")
     return parse_size(string, unit)
 
 
@@ -162,7 +162,7 @@ def bits_set(bits, compare):
 
 def lock(func):
     def new(*args, **kwargs):
-        #print "Handler: %s args: %s" % (func,args[1:])
+        #print("Handler: %s args: %s" % (func,args[1:]))
         args[0].lock.acquire()
         try:
             return func(*args, **kwargs)
@@ -285,4 +285,4 @@ def try_catch(fallback):
 
 
 if __name__ == "__main__":
-    print remove_chars("ab'cdgdsf''ds'", "'ghd")
+    print(remove_chars("ab'cdgdsf''ds'", "'ghd"))

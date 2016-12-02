@@ -51,7 +51,7 @@ class ConfigParser:
                 f = open(self.CONFIG, "wb")
                 f.write("version: " + str(CONF_VERSION))
                 f.close()
-                print "Old version of %s deleted" % self.CONFIG
+                print("Old version of %s deleted" % self.CONFIG)
         else:
             f = open(self.CONFIG, "wb")
             f.write("version:" + str(CONF_VERSION))
@@ -75,7 +75,7 @@ class ConfigParser:
                 section = line.replace("[", "").replace("]", "")
 
                 if section not in self.config:
-                    print "Unrecognized section", section
+                    print("Unrecognized section", section)
                     section = ""
 
             else:
@@ -84,13 +84,13 @@ class ConfigParser:
                 value = value.strip()
 
                 if not section:
-                    print "Value without section", name
+                    print("Value without section", name)
                     continue
 
                 if name in self.config[section].config:
                     self.set(section, name, value, sync=False)
                 else:
-                    print "Unrecognized option", section, name
+                    print("Unrecognized option", section, name)
 
 
     def save(self):

@@ -24,4 +24,4 @@ if __name__ == '__main__':
     ocr = NetloadInOCR()
     urllib.urlretrieve("http://netload.in/share/includes/captcha.php", "captcha.png")
 
-    print  ocr.get_captcha('captcha.png')
+    print( ocr.get_captcha('captcha.png'))

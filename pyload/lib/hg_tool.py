@@ -39,9 +39,9 @@ def de_alias(data):
 
 def output(data):
     s = float(sum(data.values()))
-    print "Total Lines: %d" % s
+    print("Total Lines: %d" % s)
     for k, v in data.iteritems():
-        print "%15s: %.1f%% | %d" % (k, (v * 100) / s, v)
+        print("%15s: %.1f%% | %d" % (k, (v * 100) / s, v))
     print
 
 
@@ -119,14 +119,14 @@ def complete_annotate():
 if __name__ == "__main__":
     for d in (30, 90, 180):
         c = wipe(hg_churn(d))
-        print "Changes in %d days:" % d
+        print("Changes in %d days:" % d)
         output(c)
 
     c = wipe(hg_churn())
-    print "Total changes:"
+    print("Total changes:")
     output(c)
 
-    print "Current source code version:"
+    print("Current source code version:")
     data = wipe(complete_annotate())
     output(data)
 

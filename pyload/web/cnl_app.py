@@ -96,12 +96,12 @@ def addcrypted2():
                 jk.reverse()
                 jk = "".join(jk)
             else:
-                print "Could not decrypt key, please install py-spidermonkey or ossp-js"
+                print("Could not decrypt key, please install py-spidermonkey or ossp-js")
 
     try:
         Key = unhexlify(jk)
     except:
-        print "Could not decrypt key, please install py-spidermonkey or ossp-js"
+        print("Could not decrypt key, please install py-spidermonkey or ossp-js")
         return "failed"
 
     IV = Key

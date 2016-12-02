@@ -60,10 +60,10 @@ What a basic excerpt would look like: ::
         """
 
         def activate(self):
-            print "Yay, the core is ready let's do some work."
+            print("Yay, the core is ready let's do some work.")
 
         def downloadFinished(self, pyfile):
-            print "A Download just finished."
+            print("A Download just finished.")
 
 Another important feature to mention can be seen at the ``__threaded__`` parameter. Function names listed will be executed
 in a thread, in order to not block the main thread. This should be used for all kinds of long lived processing tasks.
@@ -86,13 +86,13 @@ It requires a `dict` that maps event names to function names or a `list` of func
                      "coreReady": "initialize"}
 
         def initialize(self):
-            print "Initialized."
+            print("Initialized.")
 
         def doSomeWork(self, pyfile):
-            print "This is equivalent to the above example."
+            print("This is equivalent to the above example.")
 
         def someMethod(self):
-            print "The underlying event (allDownloadsFinished) for this method is not available through the base class"
+            print("The underlying event (allDownloadsFinished) for this method is not available through the base class")
 
 An advantage of the event listener is that you are able to register and remove the listeners at runtime.
 Use `self.manager.listenTo("name", function)`, `self.manager.removeEvent("name", function)` and see doc for
@@ -121,15 +121,15 @@ Sounds complicated but is very easy to do. Just use the ``Expose`` decorator: ::
 
         @Expose
         def invoke(self, arg):
-            print "Invoked with", arg
+            print("Invoked with", arg)
 
 Thats all, it's available via the :class:`Api <pyload.Api.Api>` now. If you want to use it read :ref:`access_api`.
 Here is a basic example: ::
 
     #Assuming client is a ThriftClient or Api object
 
-    print client.getServices()
-    print client.call(ServiceCall("YourHook", "invoke", "an argument"))
+    print(client.getServices())
+    print(client.call(ServiceCall("YourHook", "invoke", "an argument")))
 
 Providing status information
 ----------------------------
@@ -154,7 +154,7 @@ Usable with: ::
 
     #Assuming client is a ThriftClient or Api object
 
-    print client.getAllInfo()
+    print(client.getAllInfo())
 
 Example
 -------

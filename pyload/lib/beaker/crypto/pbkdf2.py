@@ -42,9 +42,9 @@
 #   pwhash = crypt("secret")
 #   alleged_pw = raw_input("Enter password: ")
 #   if pwhash == crypt(alleged_pw, pwhash):
-#       print "Password good"
+#       print("Password good")
 #   else:
-#       print "Invalid password"
+#       print("Invalid password")
 #
 ###########################################################################
 # History:

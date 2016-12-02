@@ -116,7 +116,7 @@ class ManageFiles(Handler):
             line += 2
 
         if self.package < 0:
-            #print package info
+            #print(package info)
             pack = self.getPackages()
             i = 0
             for value in islice(pack, self.pos, self.pos + 5):
@@ -130,7 +130,7 @@ class ManageFiles(Handler):
                 println(line, "")
                 line += 1
         else:
-            #print links info
+            #print(links info)
             pack = self.getLinks()
             i = 0
             for value in islice(pack.links, self.pos, self.pos + 5):

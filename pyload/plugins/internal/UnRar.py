@@ -218,4 +218,4 @@ def renice(pid, value):
         try:
             Popen(["renice", str(value), str(pid)], stdout=PIPE, stderr=PIPE, bufsize=-1)
         except:
-            print "Renice failed"
+            print("Renice failed")

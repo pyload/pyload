@@ -67,7 +67,7 @@ def call_api(func, args=""):
         return error(403, "Forbidden")
 
     if not hasattr(PYLOAD.EXTERNAL, func) or func.startswith("_"):
-        print "Invalid API call", func
+        print("Invalid API call", func)
         return error(404, "Not Found")
 
     # TODO: possible encoding
@@ -97,7 +97,7 @@ def call_api(func, args=""):
             # Unsupported input
             msg = "Invalid Input %s, %s : %s" % (x, y, e.message)
             print_exc()
-            print msg
+            print(msg)
             return error(415, msg)
 
     try:

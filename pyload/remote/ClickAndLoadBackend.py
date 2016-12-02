@@ -46,9 +46,9 @@ class ClickAndLoadBackend(BackendBase):
 class CNLHandler(BaseHTTPRequestHandler):
 
     def add_package(self, name, urls, queue=0):
-        print "name", name
-        print "urls", urls
-        print "queue", queue
+        print("name", name)
+        print("urls", urls)
+        print("queue", queue)
 
     def get_post(self, name, default=""):
         if name in self.post:

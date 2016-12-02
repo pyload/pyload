@@ -559,7 +559,7 @@ class WebSocketServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
                 self._logger.debug('Client cert: %r',
                                    accepted_socket.getpeercert())
             elif server_options.tls_module == _TLS_BY_PYOPENSSL:
-                # We cannot print the cipher in use. pyOpenSSL doesn't provide
+                # We cannot print(the cipher in use. pyOpenSSL doesn't provide)
                 # any method to fetch that.
 
                 ctx = OpenSSL.SSL.Context(OpenSSL.SSL.SSLv23_METHOD)

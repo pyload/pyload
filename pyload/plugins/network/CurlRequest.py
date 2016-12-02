@@ -69,7 +69,7 @@ class CurlRequest(Request):
 
     @property
     def http(self):
-        print "Deprecated usage of req.http, just use req instead"
+        print("Deprecated usage of req.http, just use req instead")
         return self
 
     def initContext(self):
@@ -206,7 +206,7 @@ class CurlRequest(Request):
 
         if "header" in self.options:
             # TODO
-            print "custom header not implemented"
+            print("custom header not implemented")
             self.c.setopt(pycurl.HTTPHEADER, self.options["header"])
 
         if just_header:

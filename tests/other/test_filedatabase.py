@@ -67,7 +67,7 @@ class TestDatabase(BenchmarkTest):
         n = len(packs)
         assert n == len(self.pids) - 1
 
-        print "Fetched %d packages" % n
+        print("Fetched %d packages" % n)
         self.assert_pack(choice(packs.values()))
 
     def test_get_files(self):
@@ -75,12 +75,12 @@ class TestDatabase(BenchmarkTest):
         n = len(files)
         assert n >= len(self.pids)
 
-        print "Fetched %d files" % n
+        print("Fetched %d files" % n)
         self.assert_file(choice(files.values()))
 
     def test_get_files_queued(self):
         files = self.db.getAllFiles(state=DownloadState.Unfinished)
-        print "Fetched %d files queued" % len(files)
+        print("Fetched %d files queued" % len(files))
 
     def test_delete(self):
         pid = choice(self.pids)
@@ -91,14 +91,14 @@ class TestDatabase(BenchmarkTest):
         pid = choice(self.pids)
         packs = self.db.getAllPackages(root=pid)
 
-        print "Package %d has %d packages" % (pid, len(packs))
+        print("Package %d has %d packages" % (pid, len(packs)))
         self.assert_pack(choice(packs.values()))
 
     def test_get_package_files(self):
         pid = choice(self.pids)
         files = self.db.getAllFiles(package=pid)
 
-        print "Package %d has %d files" % (pid, len(files))
+        print("Package %d has %d files" % (pid, len(files)))
         self.assert_file(choice(files.values()))
 
     def test_get_package_data(self, stats=False):
@@ -116,7 +116,7 @@ class TestDatabase(BenchmarkTest):
 
     def test_find_files(self):
         files = self.db.getAllFiles(search="1")
-        print "Found %s files" % len(files)
+        print("Found %s files" % len(files))
         f = choice(files.values())
 
         assert "1" in f.name
@@ -189,7 +189,7 @@ class TestDatabase(BenchmarkTest):
             assert f.package in self.pids
             assert f.added > 10 ** 6 # date is usually big integer
         except:
-            print f
+            print(f)
             raise
 
     def assert_pack(self, p):
@@ -205,7 +205,7 @@ class TestDatabase(BenchmarkTest):
             assert isinstance(p.tags, list)
             assert p.shared in (0, 1)
         except:
-            print p
+            print(p)
             raise
 
     def assert_int(self, obj, list):

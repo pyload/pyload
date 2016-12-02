@@ -3,7 +3,7 @@
 
 # abstraction layer for json operations
 
-print ".json_layer is deprecated, use .json instead"
+print(".json_layer is deprecated, use .json instead")
 
 try: # since python 2.6
     import json

@@ -110,7 +110,7 @@ class DatabaseJob():
         except Exception, e:
             print_exc()
             try:
-                print "Database Error @", self.f.__name__, self.args[1:], self.kwargs, e
+                print("Database Error @", self.f.__name__, self.args[1:], self.kwargs, e)
             except:
                 pass
 
@@ -166,7 +166,7 @@ class DatabaseBackend(Thread):
                 try:
                     self.manager.core.log.warning(_("Database was deleted due to incompatible version."))
                 except:
-                    print "Database was deleted due to incompatible version."
+                    print("Database was deleted due to incompatible version.")
 
                 remove(self.VERSION_FILE)
                 move(self.DB_FILE, self.DB_FILE + ".backup")
@@ -476,14 +476,14 @@ if __name__ == "__main__":
             c = db.createCursor()
             for i in range(10):
                 res = c.execute("SELECT value FROM storage WHERE identifier=? AND key=?", ("foo", i))
-                print res.fetchone()
+                print(res.fetchone())
 
         @queue
         def error(db):
             c = db.createCursor()
-            print "a"
+            print("a")
             c.execute("SELECT myerror FROM storage WHERE identifier=? AND key=?", ("foo", i))
-            print "e"
+            print("e")
 
     db.registerSub(Test)
     from time import time
@@ -492,12 +492,12 @@ if __name__ == "__main__":
     for i in range(100):
         db.insert()
     end = time()
-    print end - start
+    print(end - start)
 
     start = time()
     db.insert2()
     end = time()
-    print end - start
+    print(end - start)
 
     db.error()
 

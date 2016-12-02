@@ -63,7 +63,7 @@ def do_handshake(request, dispatcher, allowDraft75=False, strict=False):
     """
 
     _LOGGER.debug('Client\'s opening handshake resource: %r', request.uri)
-    # To print mimetools.Message as escaped one-line string, we converts
+    # To print(mimetools.Message as escaped one-line string, we converts)
     # headers_in to dict object. Without conversion, if we use %r, it just
     # prints the type and address, and if we use %s, it prints the original
     # header string as multiple lines.

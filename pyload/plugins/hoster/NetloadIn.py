@@ -25,10 +25,10 @@ def getInfo(urls):
         api = getURL(apiurl + ids, decode=True)
 
         if api is None or len(api) < 10:
-            print "Netload prefetch: failed "
+            print("Netload prefetch: failed ")
             return
         if api.find("unknown_auth") >= 0:
-            print "Netload prefetch: Outdated auth code "
+            print("Netload prefetch: Outdated auth code ")
             return
 
         result = []
@@ -42,8 +42,8 @@ def getInfo(urls):
                     size = 0
                 result.append((tmp[1], size, 2 if tmp[3] == "online" else 1, chunk[i]))
             except:
-                print "Netload prefetch: Error while processing response: "
-                print r
+                print("Netload prefetch: Error while processing response: ")
+                print(r)
 
         yield result
 

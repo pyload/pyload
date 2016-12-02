@@ -68,7 +68,7 @@ if "--configdir=" in args:
             configdir = arg.replace('--configdir=', '').strip()
 
 elif "nosetests" in args:
-    print "Running in test mode"
+    print("Running in test mode")
     configdir = join(pypath, "tests", "config")
 
 elif path.exists(path.join(pypath, "pyload", "config", "configdir")):
@@ -103,4 +103,4 @@ def init_dir(other_path=None, no_change=False):
     __builtin__.configdir = configdir
     chdir(configdir)
 
-#print "Using %s as working directory." % configdir
+#print("Using %s as working directory." % configdir)

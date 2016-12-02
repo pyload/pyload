@@ -80,7 +80,7 @@ class MergeFiles(Hook):
                     s_file.close()
                     self.logDebug("Finished merging part %s" % splitted_file)
                 except Exception, e:
-                    print traceback.print_exc()
+                    print(traceback.print_exc())
                 finally:
                     pyfile.setProgress(100)
                     pyfile.setStatus("finished")

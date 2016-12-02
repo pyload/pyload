@@ -36,8 +36,8 @@ class TestConfigParser():
 
     @raises(KeyError)
     def test_invalid_config(self):
-        print self.config["invalid"]["config"]
+        print(self.config["invalid"]["config"])
 
     @raises(KeyError)
     def test_invalid_section(self):
-        print self.config["general"]["invalid"]
+        print(self.config["general"]["invalid"])

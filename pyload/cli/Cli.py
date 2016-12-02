@@ -153,8 +153,8 @@ class Cli:
 
     def renderHeader(self, line):
         """ prints download status """
-        #print updated information
-        #        print "\033[J" #clear screen
+        #print(updated information)
+        #        print("\033[J" #clear screen)
         #        self.println(1, blue("py") + yellow("Load") + white(_(" Command Line Interface")))
         #        self.println(2, "")
         #        self.println(3, white(_("%s Downloads:") % (len(data))))
@@ -226,7 +226,7 @@ class Cli:
         self.lastLowestLine = line
 
         #set cursor to position
-        print "\033[" + str(self.inputline) + ";0H"
+        print("\033[" + str(self.inputline) + ";0H")
 
     def onChar(self, char):
         """ default no special handling for single chars """
@@ -264,19 +264,19 @@ class Cli:
             files = self.client.statusDownloads()
 
             if not files:
-                print "No downloads running."
+                print("No downloads running.")
 
             for download in files:
                 if download.status == 12:  # downloading
-                    print print_status(download)
-                    print "\tDownloading: %s @ %s/s\t %s (%s%%)" % (
+                    print(print_status(download))
+                    print("\tDownloading: %s @ %s/s\t %s (%s%%)" % ()
                         download.format_eta, formatSize(download.speed), formatSize(download.size - download.bleft),
                         download.percent)
                 elif download.status == 5:
-                    print print_status(download)
-                    print "\tWaiting: %s" % download.format_wait
+                    print(print_status(download))
+                    print("\tWaiting: %s" % download.format_wait)
                 else:
-                    print print_status(download)
+                    print(print_status(download))
 
         elif command == "queue":
             print_packages(self.client.getQueueData())
@@ -286,25 +286,25 @@ class Cli:
 
         elif command == "add":
             if len(args) < 2:
-                print _("Please use this syntax: add <Package name> <link> <link2> ...")
+                print(_("Please use this syntax: add <Package name> <link> <link2> ..."))
                 return
 
             self.client.addPackage(args[0], args[1:], Destination.Queue, "")
 
         elif command == "add_coll":
             if len(args) < 2:
-                print _("Please use this syntax: add <Package name> <link> <link2> ...")
+                print(_("Please use this syntax: add <Package name> <link> <link2> ..."))
                 return
 
             self.client.addPackage(args[0], args[1:], Destination.Collector, "")
 
         elif command == "del_file":
             self.client.deleteFiles([int(x) for x in args])
-            print "Files deleted."
+            print("Files deleted.")
 
         elif command == "del_package":
             self.client.deletePackages([int(x) for x in args])
-            print "Packages deleted."
+            print("Packages deleted.")
 
         elif command == "move":
             for pid in args:
@@ -312,7 +312,7 @@ class Cli:
                 self.client.movePackage((pack.dest + 1) % 2, pack.pid)
 
         elif command == "check":
-            print _("Checking %d links:") % len(args)
+            print(_("Checking %d links:") % len(args))
             print
             rid = self.client.checkOnlineStatus(args).rid
             self.printOnlineCheck(self.client, rid)
@@ -321,7 +321,7 @@ class Cli:
         elif command == "check_container":
             path = args[0]
             if not exists(join(owd, path)):
-                print _("File does not exists.")
+                print(_("File does not exists."))
                 return
 
             f = open(join(owd, path), "rb")
@@ -346,11 +346,11 @@ class Cli:
         elif command == "restart_file":
             for x in args:
                 self.client.restartFile(int(x))
-            print "Files restarted."
+            print("Files restarted.")
         elif command == "restart_package":
             for pid in args:
                 self.client.restartPackage(int(pid))
-            print "Packages restarted."
+            print("Packages restarted.")
 
         else:
             print_commands()
@@ -364,7 +364,7 @@ class Cli:
                 elif status.status == 1: check = "Offline"
                 else: check = "Unknown"
 
-                print "%-45s %-12s\t %-15s\t %s" % (status.name, formatSize(status.size), status.plugin, check)
+                print("%-45s %-12s\t %-15s\t %s" % (status.name, formatSize(status.size), status.plugin, check))
 
             if result.rid == -1: break
 
@@ -382,7 +382,7 @@ class RefreshThread(Thread):
                 self.cli.refresh()
             except ConnectionClosed:
                 os.system("clear")
-                print _("pyLoad was terminated")
+                print(_("pyLoad was terminated"))
                 _exit(0)
             except Exception, e:
                 println(2, red(str(e)))
@@ -392,32 +392,32 @@ class RefreshThread(Thread):
 
 def print_help(config):
     print
-    print "pyLoadCli Copyright (c) 2009-2017 pyLoad Team"
+    print("pyLoadCli Copyright (c) 2009-2017 pyLoad Team")
     print
-    print "Usage: [python] pyLoadCli.py [options] [command]"
+    print("Usage: [python] pyLoadCli.py [options] [command]")
     print
-    print "<Commands>"
-    print "See pyLoadCli.py -c for a complete listing."
+    print("<Commands>")
+    print("See pyLoadCli.py -c for a complete listing.")
     print
-    print "<Options>"
-    print "  -i, --interactive", " Start in interactive mode"
+    print("<Options>")
+    print("  -i, --interactive", " Start in interactive mode")
     print
-    print "  -u, --username=", " " * 2, "Specify user name"
-    print "  --pw=<password>", " " * 2, "Password"
-    print "  -a, --address=", " " * 3, "Use address (current=%s)" % config["addr"]
-    print "  -p, --port", " " * 7, "Use port (current=%s)" % config["port"]
+    print("  -u, --username=", " " * 2, "Specify user name")
+    print("  --pw=<password>", " " * 2, "Password")
+    print("  -a, --address=", " " * 3, "Use address (current=%s)" % config["addr"])
+    print("  -p, --port", " " * 7, "Use port (current=%s)" % config["port"])
     print
-    print "  -l, --language", " " * 3, "Set user interface language (current=%s)" % config["language"]
-    print "  -h, --help", " " * 7, "Display this help text"
-    print "  -c, --commands", " " * 3, "List all available commands"
+    print("  -l, --language", " " * 3, "Set user interface language (current=%s)" % config["language"])
+    print("  -h, --help", " " * 7, "Display this help text")
+    print("  -c, --commands", " " * 3, "List all available commands")
     print
 
 
 def print_packages(data):
     for pack in data:
-        print "Package %s (#%s):" % (pack.name, pack.pid)
+        print("Package %s (#%s):" % (pack.name, pack.pid))
         for download in pack.links:
-            print "\t" + print_file(download)
+            print("\t" + print_file(download))
         print
 
 
@@ -457,10 +457,10 @@ def print_commands():
         ("toggle", _("Toggle pause/unpause")),
         ("kill", _("kill server")), ]
 
-    print _("List of commands:")
+    print(_("List of commands:"))
     print
     for c in commands:
-        print "%-35s %s" % c
+        print("%-35s %s" % c)
 
 
 def writeConfig(opts):
@@ -470,7 +470,7 @@ def writeConfig(opts):
             for opt in opts:
                 cfgfile.write("%s=%s\n" % (opt, opts[opt]))
     except:
-        print _("Couldn't write user config file")
+        print(_("Couldn't write user config file"))
 
 
 def main():
@@ -530,7 +530,7 @@ def main():
                 exit()
 
     except GetoptError:
-        print 'Unknown Argument(s) "%s"' % " ".join(sys.argv[1:])
+        print('Unknown Argument(s) "%s"' % " ".join(sys.argv[1:]))
         print_help(config)
         exit()
 
@@ -545,7 +545,7 @@ def main():
         except WrongLogin:
             pass
         except NoSSL:
-            print _("You need py-openssl to connect to this pyLoad core.")
+            print(_("You need py-openssl to connect to this pyLoad core."))
             exit()
         except NoConnection:
             config["addr"] = False
@@ -563,23 +563,23 @@ def main():
             try:
                 client = ThriftClient(config["addr"], int(config["port"]), username, password)
             except WrongLogin:
-                print _("Login data is wrong.")
+                print(_("Login data is wrong."))
             except NoConnection:
-                print _("Could not establish connection to %(addr)s:%(port)s." % {"addr": config["addr"],
+                print(_("Could not establish connection to %(addr)s:%(port)s." % {"addr": config["addr"],)
                                                                                   "port": config["port"]})
 
     else:
         try:
             client = ThriftClient(config["addr"], int(config["port"]), username, password)
         except WrongLogin:
-            print _("Login data is wrong.")
+            print(_("Login data is wrong."))
         except NoConnection:
-            print _("Could not establish connection to %(addr)s:%(port)s." % {"addr": config["addr"],
+            print(_("Could not establish connection to %(addr)s:%(port)s." % {"addr": config["addr"],)
                                                                               "port": config["port"]})
         except NoSSL:
-            print _("You need py-openssl to connect to this pyLoad core.")
+            print(_("You need py-openssl to connect to this pyLoad core."))
 
-    if interactive and command: print _("Interactive mode ignored since you passed some commands.")
+    if interactive and command: print(_("Interactive mode ignored since you passed some commands."))
 
     if client:
         writeConfig(config)

@@ -105,7 +105,7 @@ def apitypes(options):
 
     cmd = [options.apitypes.path, "-strict", "-o", outdir, "--gen", "py:slots,dynamic", outdir / "pyload.thrift"]
 
-    print "running", cmd
+    print("running", cmd)
 
     p = Popen(cmd)
     p.communicate()
@@ -160,7 +160,7 @@ def generate_locale():
 
     path("includes.txt").remove()
 
-    print "Locale generated"
+    print("Locale generated")
 
 
 @task
@@ -188,7 +188,7 @@ def upload_translations(options):
 
     shutil.rmtree(tmp)
 
-    print "Translations uploaded"
+    print("Translations uploaded")
 
 
 @task
@@ -219,7 +219,7 @@ def download_translations(options):
             continue
 
         target = path('locale') / language.basename()
-        print "Copy language %s" % target
+        print("Copy language %s" % target)
         if target.exists():
             shutil.rmtree(target)
 
@@ -236,7 +236,7 @@ def compile_translations():
             continue
 
         for f in glob(language / 'LC_MESSAGES' / '*.po'):
-            print "Compiling %s" % f
+            print("Compiling %s" % f)
             call(['msgfmt', '-o', f.replace('.po', '.mo'), f])
 
 
@@ -259,7 +259,7 @@ def virtualenv(options):
         return
 
     call([options.virtual, "--no-site-packages", "--python", options.python, options.dir])
-    print "$ source %s/bin/activate" % options.dir
+    print("$ source %s/bin/activate" % options.dir)
 
 
 @task
@@ -316,7 +316,7 @@ def walk_trans(path, excludes, endings=[".py"]):
 
 
 def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
-    print "Generate %s.pot" % domain
+    print("Generate %s.pot" % domain)
 
     f = open("includes.txt", "wb")
     if includes:
@@ -395,6 +395,6 @@ def makehtml(domain, p):
         with open(pot, 'wb') as f:
             f.writelines(content)
 
-    print "Parsed html files"
+    print("Parsed html files")
 
 

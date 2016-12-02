@@ -15,7 +15,7 @@ class CrypterPluginTester(PluginTester):
     @nottest
     def test_plugin(self, name, url, flag):
 
-        print "%s: %s" % (name, url.encode("utf8"))
+        print("%s: %s" % (name, url.encode("utf8")))
         log(DEBUG, "%s: %s", name, url.encode("utf8"))
 
         plugin = self.core.pluginManager.getPluginClass("crypter", name)
@@ -75,7 +75,7 @@ for plugin, urls in plugins.iteritems():
 
         sig = "test_LINK%d" % i
         setattr(_testerClass, sig, meta(plugin, url, flags.get(url, None), sig))
-        print url
+        print(url)
 
     locals()[plugin] = _testerClass
     del _testerClass
