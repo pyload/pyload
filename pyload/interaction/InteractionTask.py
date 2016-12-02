@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
-#   Copyright(c) 2008-2014 pyLoad Team
+#   Copyright(c) 2009-2017 pyLoad Team
 #   http://www.pyload.org
 #
 #   This file is part of pyLoad.

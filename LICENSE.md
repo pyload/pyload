@@ -1,5 +1,5 @@
 pyLoad - download manager
-Copyright(c) 2008-2012 pyLoad Team
+Copyright(c) 2009-2017 pyLoad Team
 All rights reserved.
 licensing@pyload.org
 

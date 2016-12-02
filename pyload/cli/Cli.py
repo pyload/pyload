@@ -392,7 +392,7 @@ class RefreshThread(Thread):
 
 def print_help(config):
     print
-    print "pyLoadCli Copyright (c) 2008-2014 the pyLoad Team"
+    print "pyLoadCli Copyright (c) 2009-2017 pyLoad Team"
     print
     print "Usage: [python] pyLoadCli.py [options] [command]"
     print

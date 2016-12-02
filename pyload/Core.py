@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###############################################################################
-#   Copyright(c) 2008-2014 pyLoad Team
+#   Copyright(c) 2009-2017 pyLoad Team
 #   http://www.pyload.org
 #
 #   This program is free software: you can redistribute it and/or modify
@@ -162,7 +162,7 @@ class Core(object):
 
     def print_help(self):
         print ""
-        print "pyLoad v%s     2008-2014 the pyLoad Team" % CURRENT_VERSION
+        print "pyLoad v%s     2009-2017 pyLoad Team" % CURRENT_VERSION
         print ""
         if sys.argv[0].endswith(".py"):
             print "Usage: python pyload.py [options]"
