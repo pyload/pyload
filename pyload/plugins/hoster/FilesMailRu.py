@@ -87,7 +87,7 @@ class FilesMailRu(Hoster):
         # HTML file and the Download is marked as "finished"
         # then the download will be restarted. It's only bad for these
         # who want download a HTML-File (it's one in a million ;-) )
-        # 
+        #
         # The maximum UploadSize allowed on files.mail.ru at the moment is 100MB
         # so i set it to check every download because sometimes there are downloads
         # that contain the HTML-Text and 60MB ZEROs after that in a xyzfile.part1.rar file

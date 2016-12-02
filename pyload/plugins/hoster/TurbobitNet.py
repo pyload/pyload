@@ -115,7 +115,7 @@ class TurbobitNet(SimpleHoster):
                 # that's right, we are even using jdownloader updates
                 rtUpdate = getURL("http://update0.jdownloader.org/pluginstuff/tbupdate.js")
                 rtUpdate = self.decrypt(rtUpdate.splitlines()[1])
-                # but we still need to fix the syntax to work with other engines than rhino                
+                # but we still need to fix the syntax to work with other engines than rhino
                 rtUpdate = re.sub(r'for each\(var (\w+) in(\[[^\]]+\])\)\{',
                                   r'zza=\2;for(var zzi=0;zzi<zza.length;zzi++){\1=zza[zzi];', rtUpdate)
                 rtUpdate = re.sub(r"for\((\w+)=", r"for(var \1=", rtUpdate)

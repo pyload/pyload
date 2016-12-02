@@ -49,8 +49,8 @@ def server(*settings):
             thread.start_new_thread(forward, (server_socket, client_socket))
     except Exception:
         print_exc()
-        
-        
+
+
 def forward(source, destination):
     string = ' '
     while string:
@@ -68,6 +68,5 @@ if __name__ == "__main__":
         exit()
     if len(args) == 1:
         args.append(9666)
-        
+
     f = Forwarder(args[0], int(args[1]))
-            

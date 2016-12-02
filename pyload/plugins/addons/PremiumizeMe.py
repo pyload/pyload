@@ -39,7 +39,7 @@ class PremiumizeMe(MultiHoster):
         if data['status'] != 200:
             return []
 
-        # Extract hosters from json file 
+        # Extract hosters from json file
         return data['result']['hosterlist']
 
     def coreReady(self):
@@ -50,5 +50,5 @@ class PremiumizeMe(MultiHoster):
             self.logError(_("Please add a valid premiumize.me account first and restart pyLoad."))
             return
 
-        # Run the overwriten core ready which actually enables the multihoster hook 
+        # Run the overwriten core ready which actually enables the multihoster hook
         return MultiHoster.coreReady(self)

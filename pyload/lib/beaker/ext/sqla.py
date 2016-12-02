@@ -47,7 +47,7 @@ class SqlaNamespaceManager(OpenResourceNamespaceManager):
         elif data_dir:
             self.lock_dir = data_dir + "/container_db_lock"
         if self.lock_dir:
-            verify_directory(self.lock_dir)            
+            verify_directory(self.lock_dir)
 
         self.bind = self.__class__.binds.get(str(bind.url), lambda: bind)
         self.table = self.__class__.tables.get('%s:%s' % (bind.url, table.name),

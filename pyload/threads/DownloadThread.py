@@ -220,7 +220,7 @@ class DownloadThread(BaseThread):
                 # only done when job was not put back
                 if self.queue.empty():
                     self.m.done(self)
-            
+
             #pyfile.plugin.req.clean()
 
             self.active = False

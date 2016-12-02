@@ -29,7 +29,7 @@ class CCF(Crypter):
 
         download_folder = self.config['general']['download_folder']
         location = download_folder #join(download_folder, pyfile.package().folder.decode(sys.getfilesystemencoding()))
-        if not exists(location): 
+        if not exists(location):
             makedirs(location)
 
         tempdlc_name = join(location, "tmp_%s.dlc" % pyfile.name)

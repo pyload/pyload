@@ -25,7 +25,7 @@ class MediafireComFolder(Crypter):
         self.logDebug('Location (%d): %s' % (result, url))
 
         if result == 0:
-            # load and parse html            
+            # load and parse html
             html = self.load(pyfile.url)
             found = re.search(self.FILE_URL_PATTERN, html)
             if found:

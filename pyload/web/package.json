@@ -10,7 +10,7 @@
     "contributors" : [
         "Walter Purcaro <vuolter@gmail.com>"
     ],
-    "license" : "AGPL-3.0",    
+    "license" : "AGPL-3.0",
     "repository" : "pyload/pyload",
     "bugs" : {
         "url" : "https ://github.com/pyload/pyload/issues",

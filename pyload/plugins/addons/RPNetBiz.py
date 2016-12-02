@@ -34,7 +34,7 @@ class RPNetBiz(MultiHoster):
         if 'error' in hoster_list:
             return []
 
-        # Extract hosters from json file 
+        # Extract hosters from json file
         return hoster_list['hosters']
 
     def coreReady(self):
@@ -45,5 +45,5 @@ class RPNetBiz(MultiHoster):
             self.logError(_("Please enter your %s account or deactivate this plugin") % "rpnet")
             return
 
-        # Run the overwriten core ready which actually enables the multihoster hook 
+        # Run the overwriten core ready which actually enables the multihoster hook
         return MultiHoster.coreReady(self)

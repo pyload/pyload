@@ -52,7 +52,7 @@ class NCryptIn(Crypter):
             if not self.isOnline():
                 self.offline()
 
-            # Check for folder protection    
+            # Check for folder protection
             if self.isProtected():
                 self.html = self.unlockProtection()
                 self.cleanedHtml = self.removeHtmlCrap(self.html)
@@ -139,7 +139,7 @@ class NCryptIn(Crypter):
             self.logDebug("Captcha resolved [%s]" % captcha)
             postData['captcha'] = captcha
 
-        # Resolve recaptcha           
+        # Resolve recaptcha
         if "recaptcha" in form:
             self.logDebug("ReCaptcha protected")
             captcha_key = re.search(r'\?k=(.*?)"', form).group(1)

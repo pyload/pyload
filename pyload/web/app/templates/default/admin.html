@@ -21,12 +21,12 @@
                 <small>Userverwaltung, Systeminfos</small>
                     <a id="btn_newuser" class="btn btn-warning btn-large" type="button"><i class="iconf-plus-sign iconf-large "></i></a>
                 </h1>
-                
 
-                
+
+
             </div>
 
-            <div class="dropdown">        
+            <div class="dropdown">
                 <span class="label name">User</span>
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="iconf-user iconf-8x"></i></a>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
@@ -90,12 +90,12 @@
                 </div>
                 <div class="modal-footer">
                     <a class="btn btn-primary" id="useredit_save"href="#">Save</a>
-                    
+
                 </div>
             </div>
 
 
-    
+
         </div>
 
         <div class="span2">
@@ -184,11 +184,11 @@
                     </tr>
                 </tbody>
             </table>" title="Systeminformationen">System</a>
-            
+
         </div>
       </div>
     </div>
-   
+
     <script src="static/js/libs/jquery-1.9.0.js"></script>
     {##}
     <script src="static/js/libs/bootstrap-2.2.2.js"></script>
@@ -198,11 +198,11 @@
             trigger: 'click',
             html:'true',
         });
-        
+
             $('.dropdown-toggle').dropdown();
 
             $("#btn_newuser").click(function() {
-                 
+
                  str = "<div class='dropdown1'><span class='label name'>User</span><a class='dropdown-toggle' data-toggle='dropdown1' href='#'><i class='iconf-user iconf-8x'></i></a><ul class='dropdown-menu' role='menu' aria-labelledby='dropdownMenu'><li><a tabindex='-1' href='#'>Action</a></li><li><a tabindex='-1' href='#'>Another action</a></li><li><a tabindex='-1' href='#'>Something else here</a></li><li class='divider'></li><li><a tabindex='-1' href='#'>Separated link</a></li></ul></div>";
 
             $("#userlist").append(str);
@@ -220,4 +220,4 @@
             });
 
     </script>
-{% endblock %} 
+{% endblock %}

@@ -16,7 +16,7 @@ An example ``process`` function could look like this ::
 
             def setup():
                 #TODO
-            
+
             def process(self, pyfile):
                 html = self.load(pyfile.url)  # load the content of the orginal pyfile.url to html
 

@@ -31,7 +31,7 @@ class RPNetBiz(Hoster):
             (user, data) = self.account.selectAccount()
 
             self.logDebug("Original URL: %s" % pyfile.url)
-            # Get the download link 
+            # Get the download link
             response = self.load("https://premium.rpnet.biz/client_api.php",
                                  get={"username": user, "password": data['password'],
                                       "action": "generate", "links": pyfile.url})

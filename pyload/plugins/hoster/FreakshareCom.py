@@ -162,7 +162,7 @@ class FreakshareCom(Hoster):
 
         if challenge:
             re_captcha = ReCaptcha(self)
-            (request_options["recaptcha_challenge_field"], 
+            (request_options["recaptcha_challenge_field"],
              request_options["recaptcha_response_field"]) = re_captcha.challenge(challenge.group(1))
 
         return request_options

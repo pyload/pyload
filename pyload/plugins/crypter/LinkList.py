@@ -20,11 +20,11 @@ class LinkList(Crypter):
 
         curPack = "default"
         packages = {curPack:[]}
-        
+
         for link in links:
             link = link.strip()
             if not link: continue
-            
+
             if link.startswith(";"):
                 continue
             if link.startswith("[") and link.endswith("]"):
@@ -33,14 +33,14 @@ class LinkList(Crypter):
                 packages[curPack] = []
                 continue
             packages[curPack].append(link)
-        
+
         # empty packages fix
         delete = []
-        
+
         for key,value in packages.iteritems():
             if not value:
                 delete.append(key)
-                
+
         for key in delete:
             del packages[key]
 

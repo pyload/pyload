@@ -115,7 +115,7 @@ class DlFreeFr(SimpleHoster):
     FILE_NAME_PATTERN = r"Fichier:</td>\s*<td[^>]*>(?P<N>[^>]*)</td>"
     FILE_SIZE_PATTERN = r"Taille:</td>\s*<td[^>]*>(?P<S>[\d.]+[KMG])o"
     FILE_OFFLINE_PATTERN = r"Erreur 404 - Document non trouv|Fichier inexistant|Le fichier demand&eacute; n'a pas &eacute;t&eacute; trouv&eacute;"
-    #FILE_URL_PATTERN = r'href="(?P<url>http://.*?)">T&eacute;l&eacute;charger ce fichier'   
+    #FILE_URL_PATTERN = r'href="(?P<url>http://.*?)">T&eacute;l&eacute;charger ce fichier'
 
     def setup(self):
         self.multiDL = self.resumeDownload = True
@@ -145,7 +145,7 @@ class DlFreeFr(SimpleHoster):
                 self.html = self.load(valid_url)
                 self.handleFree()
             else:
-                # Direct access to requested file for users using free.fr as Internet Service Provider. 
+                # Direct access to requested file for users using free.fr as Internet Service Provider.
                 self.download(valid_url, disposition=True)
         elif headers.get('code') == 404:
             self.offline()

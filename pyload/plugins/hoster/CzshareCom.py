@@ -107,7 +107,7 @@ class CzshareCom(SimpleHoster):
             self.logError(e)
             raise PluginParseError('Form')
 
-        # get and decrypt captcha        
+        # get and decrypt captcha
         captcha_url = 'http://sdilej.cz/captcha.php'
         for _ in range(5):
             inputs['captchastring2'] = self.decryptCaptcha(captcha_url)

@@ -53,14 +53,14 @@ class OneFichierCom(SimpleHoster):
         if not url:
             self.parseError("Download link not found")
 
-        # Check for protection 
+        # Check for protection
         if "pass" in inputs:
             inputs['pass'] = self.getPassword()
         inputs['submit'] = "Download"
 
         self.download(url, post=inputs)
 
-        # Check download 
+        # Check download
         self.checkDownloadedFile()
 
     def checkDownloadedFile(self):

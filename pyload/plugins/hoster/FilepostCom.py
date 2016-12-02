@@ -70,7 +70,7 @@ class FilepostCom(SimpleHoster):
         post_dict = {"token": flp_token, "code": file_id, "file_pass": ''}
 
         if 'var is_pass_exists = true;' in self.html:
-            # Solve password            
+            # Solve password
             for file_pass in self.getPassword().splitlines():
                 get_dict['JsHttpRequest'] = str(int(time() * 10000)) + '-xml'
                 post_dict['file_pass'] = file_pass

@@ -1,4 +1,4 @@
-/* 
+/*
  *  Global Application Object
  *  Contains all necessary logic shared across views
  */

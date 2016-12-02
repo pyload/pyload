@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: jeix
 """
 
@@ -33,17 +33,17 @@ from pyload.plugins.Plugin import Abort
 # TODO: This must be adapted to the new request interfaces
 class XDCCRequest():
     def __init__(self, timeout=30, proxies={}):
-        
+
         self.proxies = proxies
         self.timeout = timeout
-        
+
         self.filesize = 0
         self.recv = 0
         self.speed = 0
-        
+
         self.abort = False
 
-    
+
     def createSocket(self):
         # proxytype = None
         # proxy = None
@@ -60,33 +60,33 @@ class XDCCRequest():
         # else:
             # sock = socket.socket()
         # return sock
-        
+
         return socket.socket()
-    
+
     def download(self, ip, port, filename, irc, progressNotify=None):
 
         ircbuffer = ""
         lastUpdate = time()
         cumRecvLen = 0
-        
+
         dccsock = self.createSocket()
-        
+
         dccsock.settimeout(self.timeout)
         dccsock.connect((ip, port))
-        
+
         if exists(filename):
             i = 0
             nameParts = filename.rpartition(".")
             while True:
                 newfilename = "%s-%d%s%s" % (nameParts[0], i, nameParts[1], nameParts[2])
                 i += 1
-                
+
                 if not exists(newfilename):
                     filename = newfilename
                     break
-        
+
         fh = open(filename, "wb")
-        
+
         # recv loop for dcc socket
         while True:
             if self.abort:
@@ -94,44 +94,44 @@ class XDCCRequest():
                 fh.close()
                 remove(filename)
                 raise Abort()
-            
+
             self._keepAlive(irc, ircbuffer)
-            
+
             data = dccsock.recv(4096)
             dataLen = len(data)
             self.recv += dataLen
-            
+
             cumRecvLen += dataLen
-            
+
             now = time()
             timespan = now - lastUpdate
-            if timespan > 1:            
+            if timespan > 1:
                 self.speed = cumRecvLen / timespan
                 cumRecvLen = 0
                 lastUpdate = now
-                
+
                 if progressNotify:
                     progressNotify(self.percent)
-            
-            
+
+
             if not data:
                 break
-            
+
             fh.write(data)
-            
+
             # acknowledge data by sending number of received bytes
             dccsock.send(struct.pack('!I', self.recv))
-        
+
         dccsock.close()
         fh.close()
-        
+
         return filename
-    
+
     def _keepAlive(self, sock, readbuffer):
         fdset = select([sock], [], [], 0)
         if sock not in fdset[0]:
             return
-            
+
         readbuffer += sock.recv(1024)
         temp = readbuffer.split("\n")
         readbuffer = temp.pop()
@@ -144,7 +144,7 @@ class XDCCRequest():
 
     def abortDownloads(self):
         self.abort = True
-    
+
     @property
     def size(self):
         return self.filesize

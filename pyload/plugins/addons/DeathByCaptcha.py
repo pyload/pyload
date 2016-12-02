@@ -132,7 +132,7 @@ class DeathByCaptcha(Hook):
             raise DeathByCaptchaException('service-overload')
 
     def submit(self, captcha, captchaType="file", match=None):
-        #workaround multipart-post bug in HTTPRequest.py 
+        #workaround multipart-post bug in HTTPRequest.py
         if re.match("^[A-Za-z0-9]*$", self.getConfig("passkey")):
             multipart = True
             data = (FORM_FILE, captcha)

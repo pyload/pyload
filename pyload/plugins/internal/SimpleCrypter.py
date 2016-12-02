@@ -57,7 +57,7 @@ class SimpleCrypter(Crypter):
 
     def decryptURL(self, url):
         url = replace_patterns(url, self.FILE_URL_REPLACEMENTS)
-    
+
         self.html = self.load(url, decode=True)
 
         package_name = self.getPackageName()

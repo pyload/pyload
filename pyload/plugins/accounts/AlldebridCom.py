@@ -21,7 +21,7 @@ class AlldebridCom(MultiHoster):
         data = self.getAccountData(user)
         page = req.load("http://www.alldebrid.com/account/")
         soup = BeautifulSoup(page)
-        #Try to parse expiration date directly from the control panel page (better accuracy)        
+        #Try to parse expiration date directly from the control panel page (better accuracy)
         try:
             time_text = soup.find('div', attrs={'class': 'remaining_time_text'}).strong.string
             self.logDebug("Account expires in: %s" % time_text)

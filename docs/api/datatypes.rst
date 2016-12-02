@@ -512,7 +512,7 @@ for various languages. It is also a good overview of avaible methods and return 
        AccountInfo updateAccount(1: PluginName plugin, 2: string loginname, 3: string password),
        void updateAccountInfo(1: AccountInfo account),
        void removeAccount(1: AccountInfo account),
-       
+
        /////////////////////////
        // Auth+User Information
        /////////////////////////

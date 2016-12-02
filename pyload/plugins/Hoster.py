@@ -184,7 +184,7 @@ class Hoster(Base):
 
     def setWait(self, seconds, reconnect=None):
         """Set a specific wait time later used with `wait`
-        
+
         :param seconds: wait time in seconds
         :param reconnect: True if a reconnect would avoid wait time
         """
@@ -313,7 +313,7 @@ class Hoster(Base):
 
     def checkDownload(self, rules, api_size=0, max_size=50000, delete=True, read_size=0):
         """ checks the content of the last downloaded file, re match is saved to `lastCheck`
-        
+
         :param rules: dict with names and rules to match (compiled regexp or strings)
         :param api_size: expected file size
         :param max_size: if the file is larger then it wont be checked

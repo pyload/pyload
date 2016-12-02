@@ -518,7 +518,7 @@ service Pyload {
   AccountInfo updateAccount(1:AccountID aid, 2: PluginName plugin, 3: string loginname, 4: string password),
   void updateAccountInfo(1: AccountInfo account),
   void removeAccount(1: AccountInfo account),
-  
+
   /////////////////////////
   // Auth+User Information
   /////////////////////////

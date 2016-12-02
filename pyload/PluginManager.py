@@ -280,4 +280,4 @@ class PluginManager:
         :return: List of unfullfilled dependencies
         """
         pass
-    
+

@@ -151,7 +151,7 @@ class NetloadIn(Hoster):
                 self.offline()
 
             name = re.search(r'class="dl_first_filename">([^<]+)', page, re.MULTILINE)
-            # the found filename is not truncated 
+            # the found filename is not truncated
             if name:
                 name = name.group(1).strip()
                 if not name.endswith(".."):

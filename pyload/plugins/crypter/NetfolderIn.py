@@ -20,7 +20,7 @@ class NetfolderIn(SimpleCrypter):
         # Request package
         self.html = self.load(pyfile.url)
 
-        # Check for password protection    
+        # Check for password protection
         if self.isPasswordProtected():
             self.html = self.submitPassword()
             if self.html is None:
@@ -53,7 +53,7 @@ class NetfolderIn(SimpleCrypter):
         url = "http://netfolder.in/folder.php?folder_id=" + id
         password = self.getPassword()
 
-        # Submit package password     
+        # Submit package password
         post = {'password': password, 'save': 'Absenden'}
         self.logDebug("Submitting password [%s] for protected links with id [%s]" % (password, id))
         html = self.load(url, {}, post)
