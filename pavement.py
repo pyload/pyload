@@ -396,5 +396,3 @@ def makehtml(domain, p):
             f.writelines(content)
 
     print("Parsed html files")
-
-

@@ -643,4 +643,3 @@ msgstr "Brak silnika js, należy zainstlować Spidermonkey, ossp-js, pyv8, nodej
 #: pyload/utils/packagetools.py:130
 msgid "Unnamed package"
 msgstr "Nieznany pakiet"
-

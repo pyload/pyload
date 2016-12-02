@@ -67,7 +67,3 @@ class TestAccountManager(TestCase):
         self.manager.removeAccount(account.aid, "Http", adminUser.uid)
 
         assert self.manager.selectAccount("Http", adminUser) is None
-
-
-
-

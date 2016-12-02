@@ -288,4 +288,3 @@ msgstr "Невозможно подключиться к %(addr)s:%(port)s."
 #: pyload/cli/Cli.py:582
 msgid "Interactive mode ignored since you passed some commands."
 msgstr "В связи с тем, что были введены ряд команд, интерактивный режим был прерван."
-

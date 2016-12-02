@@ -438,4 +438,3 @@ msgstr "已啟動 %s"
 #: pyload/plugins/addons/MultiHoster.py:61
 msgid "No Hoster loaded"
 msgstr "找不到任何Hoster"
-

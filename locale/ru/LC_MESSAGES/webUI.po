@@ -297,4 +297,3 @@ msgid_plural "%d links"
 msgstr[0] " %d ссыл(ка/ок)"
 msgstr[1] " %d ссыл(ка/ок)"
 msgstr[2] " %d ссыл(ка/ок)"
-

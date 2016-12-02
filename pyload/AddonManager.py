@@ -254,4 +254,3 @@ class AddonManager:
 
     def dispatchEvent(self, *args):
         self.core.eventManager.dispatchEvent(*args)
-

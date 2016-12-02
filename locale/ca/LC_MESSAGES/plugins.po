@@ -438,4 +438,3 @@ msgstr "%s activat"
 #: pyload/plugins/addons/MultiHoster.py:61
 msgid "No Hoster loaded"
 msgstr "No s'ha carregat cap proveïdor"
-

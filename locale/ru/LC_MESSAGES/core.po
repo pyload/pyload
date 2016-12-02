@@ -643,4 +643,3 @@ msgstr "Не обнаружена js платформа, пожалуйста у
 #: pyload/utils/packagetools.py:130
 msgid "Unnamed package"
 msgstr "Безымянный пакет"
-

@@ -20,10 +20,3 @@ class DebugCrypter(Crypter):
         sleep(randint(3, n if n > 2 else 3))
 
         return ["debug_hoster=%d" % i for i in range(n)]
-
-
-
-
-
-
-

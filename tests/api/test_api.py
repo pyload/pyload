@@ -47,4 +47,3 @@ class TestAPI(TestCase):
 
     def test_random4(self, n):
         self.test_random(n)
-

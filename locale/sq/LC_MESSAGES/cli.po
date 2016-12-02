@@ -288,4 +288,3 @@ msgstr ""
 #: pyload/cli/Cli.py:582
 msgid "Interactive mode ignored since you passed some commands."
 msgstr ""
-

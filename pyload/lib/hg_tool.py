@@ -129,5 +129,3 @@ if __name__ == "__main__":
     print("Current source code version:")
     data = wipe(complete_annotate())
     output(data)
-
-

@@ -643,4 +643,3 @@ msgstr "Hiçbir js engine tespit edilemedi, lütfen Spidermonkey, ossp-js, pyv8,
 #: pyload/utils/packagetools.py:130
 msgid "Unnamed package"
 msgstr "İsimsiz paket"
-

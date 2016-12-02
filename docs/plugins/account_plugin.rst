@@ -8,4 +8,3 @@ Example
 
 MultiHoster
 -----------
-

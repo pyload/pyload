@@ -643,4 +643,3 @@ msgstr "Nenhuma engine js foi detectada, por favor instale o Spidermonkey, ossp-
 #: pyload/utils/packagetools.py:130
 msgid "Unnamed package"
 msgstr "Pacote sem nome"
-

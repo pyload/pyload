@@ -297,4 +297,3 @@ msgid_plural "%d links"
 msgstr[0] "%d odkaz"
 msgstr[1] "%d odkazy"
 msgstr[2] "%d odkazů"
-

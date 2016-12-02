@@ -288,4 +288,3 @@ msgstr "Не могу да успоставим везу са адресом %(a
 #: pyload/cli/Cli.py:582
 msgid "Interactive mode ignored since you passed some commands."
 msgstr "Занемарен је интерактивни режим јер сте задали неке команде."
-

@@ -643,4 +643,3 @@ msgstr "Nem észlelhető js motor, kérlek telepítsd valamelyiket: Spidermonkey
 #: pyload/utils/packagetools.py:130
 msgid "Unnamed package"
 msgstr "Névtelen csomag"
-

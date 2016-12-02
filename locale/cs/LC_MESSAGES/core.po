@@ -643,4 +643,3 @@ msgstr "Nebyl detekován žádný JS engine. Prosím nainstalujte Spidermonkey, 
 #: pyload/utils/packagetools.py:130
 msgid "Unnamed package"
 msgstr "Nepojmenovaný balíček"
-

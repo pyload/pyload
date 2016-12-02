@@ -111,4 +111,3 @@ class MultiHoster(Addon, PluginMatcher):
 
     def deactivate(self):
         self.core.pluginManager.removeMatcher(self)
-

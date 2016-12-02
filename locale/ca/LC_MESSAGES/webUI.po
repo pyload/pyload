@@ -294,4 +294,3 @@ msgid "%d link"
 msgid_plural "%d links"
 msgstr[0] "%d enllaç"
 msgstr[1] "%d enllaços"
-

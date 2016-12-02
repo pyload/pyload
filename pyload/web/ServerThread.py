@@ -147,4 +147,3 @@ class WebServer(threading.Thread):
             if self.error:
                 return self.error
             sleep(0.1)
-

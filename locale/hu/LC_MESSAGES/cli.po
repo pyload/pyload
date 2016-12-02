@@ -288,4 +288,3 @@ msgstr "Nem sikerült kapcsolódni ide: %(addr)s:%(port)s."
 #: pyload/cli/Cli.py:582
 msgid "Interactive mode ignored since you passed some commands."
 msgstr "Az interaktív mód néhány parancs után figyelmen kívül hagyva."
-

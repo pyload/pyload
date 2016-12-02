@@ -643,4 +643,3 @@ msgstr "不支援javescript，請安裝Spidermonkey, ossp-js, pyv8, nodejs, rhin
 #: pyload/utils/packagetools.py:130
 msgid "Unnamed package"
 msgstr "未命名的任務"
-

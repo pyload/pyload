@@ -288,4 +288,3 @@ msgstr "لا يمكن انشاء اتصال %(addr)s:%(port)s."
 #: pyload/cli/Cli.py:582
 msgid "Interactive mode ignored since you passed some commands."
 msgstr "الوضع التبادلي تم تجاهله حيث انك مررت بعض الاوامر."
-

@@ -438,4 +438,3 @@ msgstr "Aktivált: %s"
 #: pyload/plugins/addons/MultiHoster.py:61
 msgid "No Hoster loaded"
 msgstr "Nincs szolgáltató betöltve"
-

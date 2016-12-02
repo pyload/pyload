@@ -300,4 +300,3 @@ msgstr[0] "%d веза"
 msgstr[1] "%d везе"
 msgstr[2] "%d веза"
 msgstr[3] "%d веза"
-

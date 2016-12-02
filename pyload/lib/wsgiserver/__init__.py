@@ -1791,4 +1791,3 @@ class CherryPyWSGIServer(object):
                     ssl_environ[wsgikey] = value
 
         self.environ.update(ssl_environ)
-

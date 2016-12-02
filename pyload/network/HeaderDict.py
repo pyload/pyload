@@ -20,4 +20,3 @@ class HeaderDict(BottleHeaderDict):
                 header.append("%s:" % key)
 
         return header
-

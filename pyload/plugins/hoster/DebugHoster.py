@@ -21,10 +21,3 @@ class DebugHoster(Hoster):
 
     def process(self, pyfile):
         pass
-
-
-
-
-
-
-

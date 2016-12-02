@@ -565,4 +565,3 @@ class Iface(object):
 		pass
 	def uploadContainer(self, filename, data):
 		pass
-

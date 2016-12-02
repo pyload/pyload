@@ -5,4 +5,3 @@ from Base import *
 from pyload.utils import chunks
 
 Plugin = Base
-

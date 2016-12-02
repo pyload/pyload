@@ -643,4 +643,3 @@ msgstr "No s'ha detectat cap motor js, si us plau instal·la Spidermonkey, ossp-
 #: pyload/utils/packagetools.py:130
 msgid "Unnamed package"
 msgstr "Paquet sense nom"
-

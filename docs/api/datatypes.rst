@@ -557,4 +557,3 @@ for various languages. It is also a good overview of avaible methods and return 
 
      }
      .. [[[end]]]
-

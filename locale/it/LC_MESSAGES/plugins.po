@@ -438,4 +438,3 @@ msgstr "Attivato %s"
 #: pyload/plugins/addons/MultiHoster.py:61
 msgid "No Hoster loaded"
 msgstr "Nessun Hoster caricato"
-

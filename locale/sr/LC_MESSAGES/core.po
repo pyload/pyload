@@ -643,4 +643,3 @@ msgstr "Механизам JavaScript-а није откривен. Инстал
 #: pyload/utils/packagetools.py:130
 msgid "Unnamed package"
 msgstr "Неименовани пакет"
-

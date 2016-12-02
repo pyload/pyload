@@ -19,6 +19,3 @@ def guess_type(name):
             return mt
 
     return MediaType.Other
-
-
-
