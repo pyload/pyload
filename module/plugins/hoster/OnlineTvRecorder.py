@@ -10,7 +10,7 @@ from module.network.HTTPRequest import BadHeader
 class OnlineTvRecorder(Http):
     __name__    = "OnlineTvRecorder"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "testing"
 
     # RIPE Database:
