@@ -639,7 +639,7 @@ def deamon():
         if pid > 0:
             sys.exit(0)
     except OSError, e:
-        print(>> sys.stderr, "fork #1 failed: %d (%s)" % (e.errno, e.strerror))
+        print("fork #1 failed: %d (%s)" % (e.errno, e.strerror), file=sys.stderr)
         sys.exit(1)
 
     # decouple from parent environment
@@ -654,7 +654,7 @@ def deamon():
             print("Daemon PID %d" % pid)
             sys.exit(0)
     except OSError, e:
-        print(>> sys.stderr, "fork #2 failed: %d (%s)" % (e.errno, e.strerror))
+        print("fork #2 failed: %d (%s)" % (e.errno, e.strerror), file=sys.stderr)
         sys.exit(1)
 
     # Iterate through and close some file descriptors.

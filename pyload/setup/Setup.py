@@ -122,8 +122,7 @@ class Setup():
         print("")
         print(_("The value in brackets [] always is the default value,"))
         print(_("in case you don't want to change it or you are unsure what to choose, just hit enter."))
-        print(_()
-            "Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyLoadCore.")
+        print(_("Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyLoadCore."))
         print(_("If you have any problems with this assistent hit CTRL+C,"))
         print(_("to abort and don't let him start with pyLoadCore automatically anymore."))
         print("")
@@ -140,8 +139,7 @@ class Setup():
 
         print("")
         print(_("Do you want to change the config path? Current is %s") % abspath(""))
-        print(_()
-            "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it.")
+        print(_("If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it."))
         path = self.ask(_("Change config path?"), self.no, bool=True)
         if path:
             self.conf_path()
@@ -217,15 +215,13 @@ class Setup():
         print("")
         print(_("pyLoad offers several server backends, now following a short explanation."))
         print("threaded:", _("Default server, this server offers SSL and is a good alternative to builtin."))
-        print("fastcgi:", _()
-            "Can be used by apache, lighttpd, requires you to configure them, which is not too easy job.")
+        print("fastcgi:", _("Can be used by apache, lighttpd, requires you to configure them, which is not too easy job."))
         print("lightweight:", _("Very fast alternative written in C, requires libev and linux knowledge."))
         print("\t", _("Get it from here: https://github.com/jonashaag/bjoern, compile it"))
         print("\t", _("and copy bjoern.so to pyload/lib"))
 
         print
-        print(_()
-            "Attention: In some rare cases the builtin server is not working, if you notice problems with the webinterface")
+        print(_("Attention: In some rare cases the builtin server is not working, if you notice problems with the webinterface"))
         print(_("come back here and change the builtin server to the threaded one here."))
 
         self.config["webinterface"]["server"] = self.ask(_("Server"), "threaded",

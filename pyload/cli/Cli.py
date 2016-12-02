@@ -269,9 +269,11 @@ class Cli:
             for download in files:
                 if download.status == 12:  # downloading
                     print(print_status(download))
-                    print("\tDownloading: %s @ %s/s\t %s (%s%%)" % ()
-                        download.format_eta, formatSize(download.speed), formatSize(download.size - download.bleft),
-                        download.percent)
+                    print("\tDownloading: %s @ %s/s\t %s (%s%%)" % (
+                            download.format_eta, formatSize(download.speed),
+                            formatSize(download.size - download.bleft), download.percent
+                        )
+                    )
                 elif download.status == 5:
                     print(print_status(download))
                     print("\tWaiting: %s" % download.format_wait)
@@ -565,8 +567,11 @@ def main():
             except WrongLogin:
                 print(_("Login data is wrong."))
             except NoConnection:
-                print(_("Could not establish connection to %(addr)s:%(port)s." % {"addr": config["addr"],)
-                                                                                  "port": config["port"]})
+                print(_("Could not establish connection to %(addr)s:%(port)s.") % {
+                        "addr": config["addr"],
+                        "port": config["port"]
+                    }
+                )
 
     else:
         try:
@@ -574,8 +579,8 @@ def main():
         except WrongLogin:
             print(_("Login data is wrong."))
         except NoConnection:
-            print(_("Could not establish connection to %(addr)s:%(port)s." % {"addr": config["addr"],)
-                                                                              "port": config["port"]})
+            print(_("Could not establish connection to %(addr)s:%(port)s." % {"addr": config["addr"],
+                                                                              "port": config["port"]}))
         except NoSSL:
             print(_("You need py-openssl to connect to this pyLoad core."))
 
