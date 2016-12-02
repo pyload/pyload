@@ -194,7 +194,7 @@ class PluginLoader:
             endpos = m.start(2) - size
 
             #TODO: strings must be parsed too, otherwise breaks very easily
-            for i in xrange(m.end(2), len(content) - size + 1):
+            for i in range(m.end(2), len(content) - size + 1):
                 if content[i:i + size] == endchar:
                     # closing char seen and match now complete
                     if stack == 0:

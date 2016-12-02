@@ -53,7 +53,7 @@ class Xdcc(Hoster):
         self.req = pyfile.m.core.requestFactory.getRequest(self.__name__, type="XDCC")
 
         self.pyfile = pyfile
-        for _ in xrange(0, 3):
+        for _ in range(0, 3):
             try:
                 nmn = self.doDownload(pyfile.url)
                 self.logDebug("%s: Download of %s finished." % (self.__name__, nmn))

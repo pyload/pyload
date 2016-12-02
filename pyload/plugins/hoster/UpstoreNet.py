@@ -38,7 +38,7 @@ class UpstoreNet(SimpleHoster):
             self.parseError("could not find recaptcha pattern")
         self.logDebug("using captcha key " + recaptcha.recaptcha_key)
         # try the captcha 5 times
-        for i in xrange(5):
+        for i in range(5):
             m = re.search(self.WAIT_PATTERN, self.html)
             if not m:
                 self.parseError("could not find wait pattern")

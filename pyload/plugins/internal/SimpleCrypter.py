@@ -98,6 +98,6 @@ class SimpleCrypter(Crypter):
         else:
             pages = 1
 
-        for p in xrange(2, pages + 1):
+        for p in range(2, pages + 1):
             self.html = self.loadPage(p)
             self.package_links += self.getLinks()

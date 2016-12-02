@@ -195,7 +195,7 @@ class RepeatedXorMasker(object):
         masking_key_size = len(masking_key)
         masking_key_index = self._masking_key_index
 
-        for i in xrange(len(result)):
+        for i in range(len(result)):
             result[i] ^= masking_key[masking_key_index]
             masking_key_index = (masking_key_index + 1) % masking_key_size
 

@@ -69,7 +69,7 @@ class LoadTo(SimpleHoster):
             self.download(download_url)
         else:
             recaptcha = ReCaptcha(self)
-            for _ in xrange(5):
+            for _ in range(5):
                 challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
                 if not response == '0':
                     break

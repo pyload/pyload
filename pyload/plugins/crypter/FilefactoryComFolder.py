@@ -23,7 +23,7 @@ class FilefactoryComFolder(Crypter):
         html = self.load(url_base)
 
         new_links = []
-        for i in xrange(1, 100):
+        for i in range(1, 100):
             self.logInfo("Fetching links from page %i" % i)
             found = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
             if found is None: self.fail("Parse error (FOLDER)")

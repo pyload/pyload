@@ -124,7 +124,7 @@ class RapidgatorNet(SimpleHoster):
         url = "http://rapidgator.net%s" % jsvars.get('captchaUrl', '/download/captcha')
         self.html = self.load(url)
 
-        for _ in xrange(5):
+        for _ in range(5):
             found = re.search(self.DOWNLOAD_LINK_PATTERN, self.html)
             if found:
                 link = found.group(1)

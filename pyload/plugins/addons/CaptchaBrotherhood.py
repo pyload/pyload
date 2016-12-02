@@ -113,7 +113,7 @@ class CaptchaBrotherhood(Hook):
 
         ticket = response[3:]
 
-        for _ in xrange(15):
+        for _ in range(15):
             sleep(5)
             response = self.get_api("askCaptchaResult", ticket)
             if response.startswith("OK-answered"):

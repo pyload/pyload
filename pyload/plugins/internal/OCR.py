@@ -129,8 +129,8 @@ class OCR(object):
     def eval_black_white(self, limit):
         self.pixels = self.image.load()
         w, h = self.image.size
-        for x in xrange(w):
-            for y in xrange(h):
+        for x in range(w):
+            for y in range(h):
                 if self.pixels[x, y] > limit:
                     self.pixels[x, y] = 255
                 else:
@@ -141,8 +141,8 @@ class OCR(object):
 
         w, h = self.image.size
 
-        for x in xrange(w):
-            for y in xrange(h):
+        for x in range(w):
+            for y in range(h):
                 if pixels[x, y] == 255: continue
                 # no point in processing white pixels since we only want to remove black pixel
                 count = 0
@@ -165,8 +165,8 @@ class OCR(object):
                     pixels[x, y] = 1
 
             # second pass: this time set all 1's to 255 (white)
-        for x in xrange(w):
-            for y in xrange(h):
+        for x in range(w):
+            for y in range(h):
                 if pixels[x, y] == 1: pixels[x, y] = 255
 
         self.pixels = pixels
@@ -177,15 +177,15 @@ class OCR(object):
         w, h = self.image.size
         pixels = self.pixels
 
-        for x in xrange(w):
-            for y in xrange(h):
+        for x in range(w):
+            for y in range(h):
                 if pixels[x, y] == 0:
                     pixels[x, y] = 155
 
         highest = {}
         counts = {}
 
-        for angle in xrange(-45, 45):
+        for angle in range(-45, 45):
 
             tmpimage = self.image.rotate(angle)
 
@@ -193,17 +193,17 @@ class OCR(object):
 
             w, h = self.image.size
 
-            for x in xrange(w):
-                for y in xrange(h):
+            for x in range(w):
+                for y in range(h):
                     if pixels[x, y] == 0:
                         pixels[x, y] = 255
 
 
             count = {}
 
-            for x in xrange(w):
+            for x in range(w):
                 count[x] = 0
-                for y in xrange(h):
+                for y in range(h):
                     if pixels[x, y] == 155:
                         count[x] += 1
 
@@ -235,8 +235,8 @@ class OCR(object):
         self.image = self.image.rotate(hkey)
         pixels = self.image.load()
 
-        for x in xrange(w):
-            for y in xrange(h):
+        for x in range(w):
+            for y in range(h):
                 if pixels[x, y] == 0:
                     pixels[x, y] = 255
 
@@ -253,9 +253,9 @@ class OCR(object):
         bottomY, topY = 0, height
         pixels = captcha.load()
 
-        for x in xrange(width):
+        for x in range(width):
             black_pixel_in_col = False
-            for y in xrange(height):
+            for y in range(height):
                 if pixels[x, y] != 255:
                     if not started:
                         started = True

@@ -1293,7 +1293,7 @@ class ThreadPool(object):
     
     def start(self):
         """Start the pool of threads."""
-        for i in xrange(self.min):
+        for i in range(self.min):
             self._threads.append(WorkerThread(self.server))
         for worker in self._threads:
             worker.setName("CP WSGIServer " + worker.getName())
@@ -1314,7 +1314,7 @@ class ThreadPool(object):
     
     def grow(self, amount):
         """Spawn new worker threads (not above self.max)."""
-        for i in xrange(amount):
+        for i in range(amount):
             if self.max > 0 and len(self._threads) >= self.max:
                 break
             worker = WorkerThread(self.server)
@@ -1332,7 +1332,7 @@ class ThreadPool(object):
                 amount -= 1
         
         if amount > 0:
-            for i in xrange(min(amount, len(self._threads) - self.min)):
+            for i in range(min(amount, len(self._threads) - self.min)):
                 # Put a number of shutdown requests on the queue equal
                 # to 'amount'. Once each of those is processed by a worker,
                 # that worker will terminate and be culled from our list

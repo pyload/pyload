@@ -131,7 +131,7 @@ class XFileSharingPro(SimpleHoster):
         self.startDownload(url)
 
     def getDownloadLink(self):
-        for i in xrange(5):
+        for i in range(5):
             self.logDebug("Getting download link: #%d" % i)
             data = self.getPostParameters()
 
@@ -239,7 +239,7 @@ class XFileSharingPro(SimpleHoster):
         return self.errmsg
 
     def getPostParameters(self):
-        for _ in xrange(3):
+        for _ in range(3):
             if not self.errmsg:
                 self.checkErrors()
 

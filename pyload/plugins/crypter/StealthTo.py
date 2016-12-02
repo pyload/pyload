@@ -37,7 +37,7 @@ class StealthTo(Crypter):
             if re.search(r"name=\"id\"", input[0]):
                 ids.append(re.search(r"value=\"([^\"]+)", input[0]).group(1))
 
-        for i in xrange(0, len(ids)):
+        for i in range(0, len(ids)):
             self.req.load(url + "/web",
                           post={"authenticity_token": ats[i], "id": str(ids[i]), "link": ("download_" + str(ids[i]))},
                           cookies=True)

@@ -29,7 +29,7 @@ def replace_eval(js_expr):
 
 def checkHTMLHeader(url):
     try:
-        for _ in xrange(3):
+        for _ in range(3):
             header = getURL(url, just_header=True)
             for line in header.splitlines():
                 line = line.lower()
@@ -124,7 +124,7 @@ class MediafireCom(SimpleHoster):
         self.download(download_url)
 
     def checkCaptcha(self):
-        for _ in xrange(5):
+        for _ in range(5):
             found = re.search(self.SOLVEMEDIA_PATTERN, self.html)
             if found:
                 captcha_key = found.group(1)

@@ -87,7 +87,7 @@ class FilepostCom(SimpleHoster):
             # Solve recaptcha
             recaptcha = ReCaptcha(self)
 
-            for i in xrange(5):
+            for i in range(5):
                 get_dict['JsHttpRequest'] = str(int(time() * 10000)) + '-xml'
                 if i:
                     post_dict["recaptcha_challenge_field"], post_dict["recaptcha_response_field"] = recaptcha.challenge(

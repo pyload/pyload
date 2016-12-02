@@ -43,7 +43,7 @@ class NarodRu(SimpleHoster):
     DOWNLOAD_LINK_PATTERN = r'<a class="h-link" rel="yandex_bar" href="(.+?)">'
 
     def handleFree(self):
-        for _ in xrange(5):
+        for _ in range(5):
             self.html = self.load('http://narod.ru/disk/getcapchaxml/?rnd=%d' % int(random() * 777))
             found = re.search(self.CAPTCHA_PATTERN, self.html)
             if not found:

@@ -46,7 +46,7 @@ class LuckyShareNet(SimpleHoster):
         self.wait(int(json['time']))
 
         recaptcha = ReCaptcha(self)
-        for _ in xrange(5):
+        for _ in range(5):
             challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
             rep = self.load(r"http://luckyshare.net/download/verify/challenge/%s/response/%s/hash/%s" %
                             (challenge, response, json['hash']), decode=True)

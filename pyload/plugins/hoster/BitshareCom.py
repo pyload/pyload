@@ -102,7 +102,7 @@ class BitshareCom(SimpleHoster):
             self.logDebug("File is captcha protected")
             id = re.search(self.CAPTCHA_KEY_PATTERN, self.html).group(1)
             # Try up to 3 times
-            for i in xrange(3):
+            for i in range(3):
                 self.logDebug("Resolving ReCaptcha with key [%s], round %d" % (id, i + 1))
                 recaptcha = ReCaptcha(self)
                 challenge, code = recaptcha.challenge(id)

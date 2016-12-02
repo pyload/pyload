@@ -64,7 +64,7 @@ class MegasharesCom(SimpleHoster):
             passport_num = found.group(1)
             request_uri = re.search(self.REQUEST_URI_PATTERN, self.html).group(1)
 
-            for _ in xrange(5):
+            for _ in range(5):
                 random_num = re.search(self.REACTIVATE_NUM_PATTERN, self.html).group(1)
 
                 verifyinput = self.decryptCaptcha(

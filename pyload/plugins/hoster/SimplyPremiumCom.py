@@ -53,7 +53,7 @@ class SimplyPremiumCom(Hoster):
             self.fail("No Simply-Premium.com account provided")
         else:
             self.logDebug("Old URL: %s" % pyfile.url)
-            for i in xrange(5):
+            for i in range(5):
                 page = self.load('http://www.simply-premium.com/premium.php?info&link=' + pyfile.url)
                 self.logDebug("JSON data: " + page)
                 if page != '':

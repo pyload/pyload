@@ -38,7 +38,7 @@ class BasePlugin(Hoster):
         # self.decryptCaptcha("http://localhost:9000/captcha")
         #
         # if pyfile.url == "79":
-        #     self.core.api.addPackage("test", [str(i) for i in xrange(80)], 1)
+        #     self.core.api.addPackage("test", [str(i) for i in range(80)], 1)
         #
         # return
         if pyfile.url.startswith("http"):
@@ -74,7 +74,7 @@ class BasePlugin(Hoster):
     def downloadFile(self, pyfile):
         url = pyfile.url
 
-        for _ in xrange(5):
+        for _ in range(5):
             header = self.load(url, just_header=True)
 
             # self.load does not raise a BadHeader on 404 responses, do it here

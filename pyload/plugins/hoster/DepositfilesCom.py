@@ -67,7 +67,7 @@ class DepositfilesCom(SimpleHoster):
         self.wait()
         recaptcha = ReCaptcha(self)
 
-        for _ in xrange(5):
+        for _ in range(5):
             self.html = self.load("http://depositfiles.com/get_file.php", get=params)
 
             if '<input type=button value="Continue" onclick="check_recaptcha' in self.html:

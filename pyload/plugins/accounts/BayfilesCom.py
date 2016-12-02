@@ -32,7 +32,7 @@ class BayfilesCom(Account):
     __author_mail__ = "zoidberg@mujmail.cz"
 
     def loadAccountInfo(self, user, req):
-        for _ in xrange(2):
+        for _ in range(2):
             response = json_loads(req.load("http://api.bayfiles.com/v1/account/info"))
             self.logDebug(response)
             if not response["error"]:

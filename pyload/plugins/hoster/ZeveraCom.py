@@ -50,7 +50,7 @@ class ZeveraCom(Hoster):
     #     last_size = retries = 0
     #     olink = pyfile.url #quote(pyfile.url.encode('utf_8'))
     #
-    #     for _ in xrange(100):
+    #     for _ in range(100):
     #         self.retData = self.account.loadAPIRequest(self.req, cmd = 'download_request', olink = olink)
     #         self.checkAPIErrors(self.retData)
     #
