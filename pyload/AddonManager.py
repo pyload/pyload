@@ -219,7 +219,7 @@ class AddonManager(object):
 
     def activePlugins(self):
         """ returns all active plugins """
-        return [p for x in list(self.plugins.values()) for p in x.instances if p.isActivated()]
+        return [p for x in self.plugins.values() for p in x.instances if p.isActivated()]
 
     def getInfo(self, plugin):
         """ Retrieves all info data for a plugin """

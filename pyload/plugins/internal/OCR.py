@@ -216,7 +216,7 @@ class OCR(object):
             sum = 0
             cnt = 0
 
-            for x in list(count.values()):
+            for x in count.values():
                 if x != 0:
                     sum += x
                     cnt += 1
@@ -224,7 +224,7 @@ class OCR(object):
             avg = old_div(sum, cnt)
             counts[angle] = cnt
             highest[angle] = 0
-            for x in list(count.values()):
+            for x in count.values():
                 if x > highest[angle]:
                     highest[angle] = x
 

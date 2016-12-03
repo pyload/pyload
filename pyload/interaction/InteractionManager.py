@@ -62,8 +62,7 @@ class InteractionManager(object):
             del self.tasks[n]
 
         # keep notifications count limited
-        n = [k for k, v in self.tasks.items() if v.type == IA.Notification]
-        n.reverse()
+        n = reversed(k for k, v in self.tasks.items() if v.type == IA.Notification)
         for v in n[:self.MAX_NOTIFICATIONS]:
             del self.tasks[v]
 

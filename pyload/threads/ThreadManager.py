@@ -111,6 +111,6 @@ class ThreadManager(object):
             self.infoCache.clear()
             self.log.debug("Cleared Result cache")
 
-        for rid in list(self.infoResults.keys()):
+        for rid in self.infoResults.keys():
             if self.infoResults[rid].isStale():
                 del self.infoResults[rid]

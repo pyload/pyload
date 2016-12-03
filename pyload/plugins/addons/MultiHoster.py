@@ -47,7 +47,7 @@ class MultiHoster(Addon, PluginMatcher):
         self.logInfo(_("Activated %s") % account.__name__)
 
         pluginMap = {}
-        for name in list(self.core.pluginManager.getPlugins("hoster").keys()):
+        for name in self.core.pluginManager.getPlugins("hoster").keys():
             pluginMap[name.lower()] = name
 
         supported = []

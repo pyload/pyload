@@ -115,7 +115,7 @@ class CNLHandler(BaseHTTPRequestHandler):
                          })
 
         self.post = {}
-        for name in list(form.keys()):
+        for name in form.keys():
             self.post[name] = form[name].value
 
         return self.do_GET()

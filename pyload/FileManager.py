@@ -79,10 +79,10 @@ class FileManager(object):
     @read_lock
     def syncSave(self):
         """saves all data to backend and waits until all data are written"""
-        for pyfile in list(self.files.values()):
+        for pyfile in self.files.values():
             pyfile.sync()
 
-        for pypack in list(self.packages.values()):
+        for pypack in self.packages.values():
             pypack.sync()
 
         self.db.syncSave()
@@ -238,11 +238,11 @@ class FileManager(object):
                 queue.extend(packs[fpid].pids)
 
             # now remove unneeded data
-            for fpid in list(packs.keys()):
+            for fpid in packs.keys():
                 if fpid not in keep:
                     del packs[fpid]
 
-            for fid, f in list(files.items()):
+            for fid, f in files.items():
                 if f.package not in keep:
                     del files[fid]
 

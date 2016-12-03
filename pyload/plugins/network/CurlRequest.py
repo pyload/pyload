@@ -44,7 +44,7 @@ def myurlencode(data):
                            y.encode('utf8') if isinstance(y, str) else y) for x, y in data.items()))
 
 
-bad_headers = list(range(400, 418)) + list(range(500, 506))
+bad_headers = range(400, 418) + range(500, 506)
 
 pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 

@@ -175,7 +175,7 @@ class DownloadManager(object):
         # map plugin to list of jobs
         plugins = defaultdict(list)
 
-        for uid, info in list(jobs.items()):
+        for uid, info in jobs.items():
             # check the quota of each user and filter
             quota = self.core.api.calcQuota(uid)
             if -1 < quota < info.size:

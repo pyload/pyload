@@ -46,7 +46,7 @@ class LinkdecrypterCom(Hook):
             self.logError(_("Crypter list not found"))
             return
 
-        builtin = [name.lower() for name in list(self.core.pluginManager.crypterPlugins.keys())]
+        builtin = [name.lower() for name in self.core.pluginManager.crypterPlugins.keys()]
         builtin.extend(["downloadserienjunkiesorg"])
 
         crypter_pattern = re.compile("(\w[\w.-]+)")
