@@ -2,10 +2,15 @@
 
 from __future__ import print_function
 from __future__ import unicode_literals
+from __future__ import division
+from builtins import str
+from builtins import range
+from builtins import object
+from past.utils import old_div
 from time import time
 
 
-class BenchmarkTest:
+class BenchmarkTest(object):
 
     bench = []
     results = {}
@@ -39,8 +44,8 @@ class BenchmarkTest:
             v = cls.results[k]
 
             if len(v) > 1:
-                print(("%" + length +"s: %s | average: %.2f ms") % (k, ", ".join(["%.2f" % x for x in v]), sum(v)/len(v)))
-                total += sum(v)/len(v)
+                print(("%" + length +"s: %s | average: %.2f ms") % (k, ", ".join(["%.2f" % x for x in v]), old_div(sum(v),len(v))))
+                total += old_div(sum(v),len(v))
             else:
                 print(("%" + length +"s: %.2f ms") % (k, v[0]))
                 total += v[0]

@@ -18,7 +18,10 @@
 """
 from __future__ import unicode_literals
 
-from thread import start_new_thread
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from _thread import start_new_thread
 from pycurl import FORM_FILE, LOW_SPEED_TIME
 
 from module.network.RequestFactory import getURL, getRequest

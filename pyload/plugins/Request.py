@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+from builtins import object
 from logging import getLogger
 
 from pyload.network.HeaderDict import HeaderDict

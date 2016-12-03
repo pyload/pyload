@@ -2,6 +2,7 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from builtins import object
 from pyload.remote.JSONClient import JSONClient
 from pyload.remote.WSClient import WSClient
 
@@ -10,7 +11,7 @@ from tests.helper.config import webAddress, wsAddress
 from .ApiProxy import ApiProxy
 
 
-class ApiTester:
+class ApiTester(object):
 
     tester= []
 

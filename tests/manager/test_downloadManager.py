@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+from builtins import range
 from tests.helper.Stubs import Core, normalUser, adminUser, otherUser
 from tests.helper.BenchmarkTest import BenchmarkTest
 

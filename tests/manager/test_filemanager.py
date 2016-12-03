@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+from builtins import range
 from random import choice
 
 from tests.helper.Stubs import Core, normalUser
@@ -101,7 +102,7 @@ class TestFileManager(BenchmarkTest):
 
         assert len(view.packages) == len(self.pids)
 
-        p = choice(view.packages.values())
+        p = choice(list(view.packages.values()))
         assert len(p.fids) == self.count
         assert p.stats.linkstotal == self.count
 
@@ -130,12 +131,12 @@ class TestFileManager(BenchmarkTest):
         v = self.m.getTree(parent, False, None)
         self.assert_ordered(pids, 0, 5, v.root.pids, v.packages, True)
 
-        pid = v.packages.keys()[0]
+        pid = list(v.packages.keys())[0]
         self.assert_pack_ordered(parent, pid, 3)
         self.assert_pack_ordered(parent, pid, 0)
         self.assert_pack_ordered(parent, pid, 0)
         self.assert_pack_ordered(parent, pid, 4)
-        pid = v.packages.keys()[2]
+        pid = list(v.packages.keys())[2]
         self.assert_pack_ordered(parent, pid, 4)
         self.assert_pack_ordered(parent, pid, 3)
         self.assert_pack_ordered(parent, pid, 2)
@@ -190,11 +191,11 @@ class TestFileManager(BenchmarkTest):
     def assert_ordered(self, part, start, end, data, dict, pack=False):
         assert data[start:end] == part
         if pack:
-            assert sorted([p.packageorder for p in dict.values()]) == range(len(dict))
-            assert [dict[pid].packageorder for pid in part] == range(start, end)
+            assert sorted([p.packageorder for p in list(dict.values())]) == list(range(len(dict)))
+            assert [dict[pid].packageorder for pid in part] == list(range(start, end))
         else:
-            assert sorted([f.fileorder for f in dict.values()]) == range(len(dict))
-            assert [dict[fid].fileorder for fid in part] == range(start, end)
+            assert sorted([f.fileorder for f in list(dict.values())]) == list(range(len(dict)))
+            assert [dict[fid].fileorder for fid in part] == list(range(start, end))
 
 
     def test_move(self):
@@ -206,14 +207,14 @@ class TestFileManager(BenchmarkTest):
         v = self.m.getTree(-1, False, False)
 
         assert pid in v.root.pids
-        assert sorted([p.packageorder for p in v.packages.values()]) == range(len(v.packages))
+        assert sorted([p.packageorder for p in list(v.packages.values())]) == list(range(len(v.packages)))
 
         v = self.m.getTree(pid, False, False)
         fids = v.root.fids[10:20]
         self.m.moveFiles(fids, pid2)
         v = self.m.getTree(pid2, False, False)
 
-        assert sorted([f.fileorder for f in v.files.values()]) == range(len(v.files))
+        assert sorted([f.fileorder for f in list(v.files.values())]) == list(range(len(v.files)))
         assert len(v.files) == self.count + len(fids)
 
 

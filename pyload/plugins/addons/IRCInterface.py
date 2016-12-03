@@ -20,6 +20,7 @@
 """
 from __future__ import unicode_literals
 
+from builtins import map
 from select import select
 import socket
 from threading import Thread
@@ -351,11 +352,11 @@ class IRCInterface(Thread, Addon):
             return ["ERROR: Use del command like this: del -p|-l <id> [...] (-p indicates that the ids are from packages, -l indicates that the ids are from links)"]
 
         if args[0] == "-p":
-            ret = self.api.deletePackages(map(int, args[1:]))
+            ret = self.api.deletePackages(list(map(int, args[1:])))
             return ["INFO: Deleted %d packages!" % len(args[1:])]
 
         elif args[0] == "-l":
-            ret = self.api.delLinks(map(int, args[1:]))
+            ret = self.api.delLinks(list(map(int, args[1:])))
             return ["INFO: Deleted %d links!" % len(args[1:])]
 
         else:

@@ -2,6 +2,7 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from builtins import str
 import os
 from time import time
 
@@ -340,7 +341,7 @@ class Hoster(Base):
         #produces encoding errors, better log to other file in the future?
         #self.log.debug("Content: %s" % content)
         for name, rule in rules.items():
-            if type(rule) in (str, unicode):
+            if type(rule) in (str, str):
                 if rule in content:
                     if delete:
                         remove(lastDownload)

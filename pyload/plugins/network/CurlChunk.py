@@ -18,6 +18,10 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from __future__ import division
+from builtins import range
+from builtins import object
+from past.utils import old_div
 import re
 from os import remove, stat, fsync
 from os.path import exists
@@ -32,7 +36,7 @@ from pyload.utils.fs import fs_encode, fs_decode, safe_filename
 from .CurlRequest import CurlRequest
 
 
-class ChunkInfo():
+class ChunkInfo(object):
     def __init__(self, name):
         self.name = fs_decode(name)
         self.size = 0
@@ -57,7 +61,7 @@ class ChunkInfo():
 
     def createChunks(self, chunks):
         self.clear()
-        chunk_size = self.size / chunks
+        chunk_size = old_div(self.size, chunks)
 
         current = 0
         for i in range(chunks):
@@ -105,7 +109,7 @@ class ChunkInfo():
             else:
                 raise TypeError("chunk.file has wrong format")
 
-            ci.addChunk(name, (long(range[0]), long(range[1])))
+            ci.addChunk(name, (int(range[0]), int(range[1])))
         fh.close()
         return ci
 

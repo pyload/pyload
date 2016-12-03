@@ -17,8 +17,11 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 import re
-from Queue import Queue, Empty
+from queue import Queue, Empty
 from threading import Lock
 from time import time
 
@@ -29,7 +32,7 @@ from pyload.utils import lock
 from .AbstractHandler import AbstractHandler
 
 
-class Mode:
+class Mode(object):
     STANDBY = 1
     RUNNING = 2
 

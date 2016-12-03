@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+from builtins import str
 import sys
 from threading import Thread
 from time import strftime, gmtime
@@ -102,7 +103,7 @@ class BaseThread(Thread):
                                                        frame.f_code.co_filename,
                                                        frame.f_lineno)
 
-            for key, value in frame.f_locals.items():
+            for key, value in list(frame.f_locals.items()):
                 dump += "\t%20s = " % key
                 try:
                     dump += pformat(value) + "\n"

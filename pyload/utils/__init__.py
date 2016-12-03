@@ -4,12 +4,18 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import map
+from builtins import chr
+from past.builtins import basestring
 import os
 import time
 import re
 from string import maketrans
 from itertools import islice
-from htmlentitydefs import name2codepoint
+from html.entities import name2codepoint
 
 # abstraction layer for json operations
 try: # since python 2.6
@@ -31,7 +37,7 @@ def decode(string):
 
 def encode(string):
     """ decode string to utf8 """
-    if isinstance(string, unicode):
+    if isinstance(string, str):
         return string.encode("utf8", "replace")
     else:
         return string
@@ -41,7 +47,7 @@ def remove_chars(string, repl):
     """ removes all chars in repl from string"""
     if isinstance(string, str):
         return string.translate(maketrans("", ""), repl)
-    elif isinstance(string, unicode):
+    elif isinstance(string, str):
         return string.translate(dict([(ord(s), None) for s in repl]))
 
 
@@ -57,8 +63,8 @@ def get_console_encoding(enc):
 
 
 def compare_time(start, end):
-    start = map(int, start)
-    end = map(int, end)
+    start = list(map(int, start))
+    end = list(map(int, end))
 
     if start == end: return True
 
@@ -199,16 +205,16 @@ def fixup(m):
         # character reference
         try:
             if text[:3] == "&#x":
-                return unichr(int(text[3:-1], 16))
+                return chr(int(text[3:-1], 16))
             else:
-                return unichr(int(text[2:-1]))
+                return chr(int(text[2:-1]))
         except ValueError:
             pass
     else:
         # named entity
         try:
             name = text[1:-1]
-            text = unichr(name2codepoint[name])
+            text = chr(name2codepoint[name])
         except KeyError:
             pass
 

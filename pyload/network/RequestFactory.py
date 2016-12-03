@@ -17,12 +17,13 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from builtins import object
 from .Bucket import Bucket
 
 from pyload.plugins.network.DefaultRequest import DefaultRequest, DefaultDownload
 
 
-class RequestFactory:
+class RequestFactory(object):
     def __init__(self, core):
         self.core = core
         self.bucket = Bucket()

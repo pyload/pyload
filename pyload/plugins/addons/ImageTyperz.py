@@ -18,7 +18,9 @@
 """
 from __future__ import with_statement
 from __future__ import unicode_literals
-from thread import start_new_thread
+from future import standard_library
+standard_library.install_aliases()
+from _thread import start_new_thread
 from pycurl import FORM_FILE, LOW_SPEED_TIME
 import re
 from base64 import b64encode

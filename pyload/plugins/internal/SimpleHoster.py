@@ -17,7 +17,13 @@
     @author: zoidberg
 """
 from __future__ import unicode_literals
-from urlparse import urlparse
+from __future__ import division
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from past.builtins import basestring
+from past.utils import old_div
+from urllib.parse import urlparse
 import re
 from time import time
 
@@ -63,7 +69,7 @@ def parseHtmlForm(attr_str, html, input_names=None):
 
         if isinstance(input_names, dict):
             # check input attributes
-            for key, val in input_names.items():
+            for key, val in list(input_names.items()):
                 if key in inputs:
                     if isinstance(val, basestring) and inputs[key] == val:
                         continue
@@ -94,8 +100,8 @@ def parseFileInfo(self, url='', html=''):
     else:
         if not html and hasattr(self, "html"):
             html = self.html
-        if isinstance(self.SH_BROKEN_ENCODING, (str, unicode)):
-            html = unicode(html, self.SH_BROKEN_ENCODING)
+        if isinstance(self.SH_BROKEN_ENCODING, (str, str)):
+            html = str(html, self.SH_BROKEN_ENCODING)
             if hasattr(self, "html"):
                 self.html = html
 
@@ -125,7 +131,7 @@ def parseFileInfo(self, url='', html=''):
                     size = replace_patterns(info['S'] + info['U'] if 'U' in info else info['S'],
                                             self.FILE_SIZE_REPLACEMENTS)
                     info['size'] = parseFileSize(size)
-                elif isinstance(info['size'], (str, unicode)):
+                elif isinstance(info['size'], (str, str)):
                     if 'units' in info:
                         info['size'] += info['units']
                     info['size'] = parseFileSize(info['size'])
@@ -217,7 +223,7 @@ class SimpleHoster(Hoster):
             self.handleFree()
 
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False):
-        if isinstance(url, unicode):
+        if isinstance(url, str):
             url = url.encode('utf8')
         return Hoster.load(self, url=url, get=get, post=post, ref=ref, cookies=cookies,
                            just_header=just_header, decode=decode)
@@ -258,8 +264,8 @@ class SimpleHoster(Hoster):
         raise PluginParseError(msg)
 
     def longWait(self, wait_time=None, max_tries=3):
-        if wait_time and isinstance(wait_time, (int, long, float)):
-            time_str = "%dh %dm" % divmod(wait_time / 60, 60)
+        if wait_time and isinstance(wait_time, (int, int, float)):
+            time_str = "%dh %dm" % divmod(old_div(wait_time, 60), 60)
         else:
             wait_time = 900
             time_str = "(unknown time)"
@@ -278,7 +284,7 @@ class SimpleHoster(Hoster):
         traffic = self.account.getAccountInfo(self.user, True)["trafficleft"]
         if traffic == -1:
             return True
-        size = self.pyfile.size / 1024
+        size = old_div(self.pyfile.size, 1024)
         self.logInfo("Filesize: %i KiB, Traffic left for user %s: %i KiB" % (size, self.user, traffic))
         return size <= traffic
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+from builtins import range
 from unittest import TestCase
 
 from tests.helper.Stubs import Core

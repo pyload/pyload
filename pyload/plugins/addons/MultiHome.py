@@ -18,6 +18,8 @@
 """
 from __future__ import unicode_literals
 
+from builtins import str
+from builtins import object
 from time import time
 
 from module.plugins.Hook import Hook

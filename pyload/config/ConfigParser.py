@@ -4,6 +4,8 @@ from __future__ import with_statement
 from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from builtins import str
+from builtins import object
 from os.path import exists
 from gettext import gettext
 from new_collections import namedtuple, OrderedDict
@@ -18,7 +20,7 @@ CONF_VERSION = 2
 SectionTuple = namedtuple("SectionTuple", "label description explanation config")
 
 
-class ConfigParser:
+class ConfigParser(object):
     """
     Holds and manages the configuration + meta data for config read from file.
     """
@@ -110,7 +112,7 @@ class ConfigParser:
 
             for option, data in data.config.items():
                 value = self.get(section, option)
-                if isinstance(value, unicode):
+                if isinstance(value, str):
                     value = value.encode("utf8")
                 else:
                     value = str(value)
@@ -181,7 +183,7 @@ class ConfigParser:
         self.config[section] = data
 
 
-class Section:
+class Section(object):
     """provides dictionary like access for configparser"""
 
     def __init__(self, parser, section):

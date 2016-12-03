@@ -17,10 +17,15 @@
 
 from __future__ import print_function
 from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from builtins import object
 from threading import Thread, Event
 from shutil import move
 
-from Queue import Queue
+from queue import Queue
 from traceback import print_exc
 
 from pyload.utils.fs import chmod, exists, remove
@@ -66,7 +71,7 @@ def inner(f):
     return x
 
 
-class DatabaseMethods:
+class DatabaseMethods(object):
     # stubs for autocompletion
     core = None
     manager = None
@@ -78,7 +83,7 @@ class DatabaseMethods:
         DatabaseBackend.registerSub(cls)
 
 
-class DatabaseJob():
+class DatabaseJob(object):
     def __init__(self, f, *args, **kwargs):
         self.done = Event()
 

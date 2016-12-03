@@ -17,6 +17,7 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from builtins import range
 from hashlib import sha1
 from string import letters, digits
 from random import choice

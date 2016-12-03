@@ -19,11 +19,14 @@
 from __future__ import with_statement
 from __future__ import unicode_literals
 
-from thread import start_new_thread
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
+from _thread import start_new_thread
 
 import pycurl
-import StringIO
-from urllib import urlencode
+import io
+from urllib.parse import urlencode
 from time import sleep
 import Image
 
@@ -75,7 +78,7 @@ class CaptchaBrotherhood(Hook):
     def submit(self, captcha, captchaType="file", match=None):
         try:
             img = Image.open(captcha)
-            output = StringIO.StringIO()
+            output = io.StringIO()
             self.logDebug("CAPTCHA IMAGE", img, img.format, img.mode)
             if img.format in ("GIF", "JPEG"):
                 img.save(output, img.format)

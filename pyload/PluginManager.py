@@ -16,6 +16,8 @@
 ###############################################################################
 
 from __future__ import unicode_literals
+from builtins import str
+from builtins import object
 import sys
 
 from os.path import abspath, join
@@ -34,7 +36,7 @@ class PluginMatcher(object):
         return None
 
 
-class PluginManager:
+class PluginManager(object):
     ROOT = "pyload.plugins"
     LOCALROOT = "localplugins"
 
@@ -85,7 +87,7 @@ class PluginManager:
         res = {"hoster": [], "crypter": []} # tupels of (url, plugin)
 
         for url in urls:
-            if type(url) not in (str, unicode, buffer):
+            if type(url) not in (str, str, buffer):
                 self.log.debug("Parsing invalid type %s" % type(url))
                 continue
 

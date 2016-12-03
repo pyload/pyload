@@ -17,6 +17,9 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 from collections import defaultdict
 from threading import Event
 from time import sleep
@@ -36,7 +39,7 @@ from .threads.DownloadThread import DownloadThread
 from .threads.DecrypterThread import DecrypterThread
 
 
-class DownloadManager:
+class DownloadManager(object):
     """ Schedules and manages download and decrypter jobs. """
 
     def __init__(self, core):
@@ -117,9 +120,8 @@ class DownloadManager:
     def getProgressList(self, uid):
         """ Progress of all running downloads """
         # decrypter progress could be none
-        return filter(lambda x: x is not None,
-                      [p.getProgress() for p in self.working + self.decrypter
-                       if uid is None or p.owner == uid])
+        return [x for x in [p.getProgress() for p in self.working + self.decrypter
+                       if uid is None or p.owner == uid] if x is not None]
 
     def processingIds(self):
         """get a id list of all pyfiles processed"""
@@ -173,7 +175,7 @@ class DownloadManager:
         # map plugin to list of jobs
         plugins = defaultdict(list)
 
-        for uid, info in jobs.items():
+        for uid, info in list(jobs.items()):
             # check the quota of each user and filter
             quota = self.core.api.calcQuota(uid)
             if -1 < quota < info.size:

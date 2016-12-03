@@ -17,6 +17,9 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 from threading import  RLock
 from time import time
 
@@ -25,7 +28,7 @@ from pyload.utils import lock, to_list
 from .InfoThread import InfoThread
 
 
-class ThreadManager:
+class ThreadManager(object):
     """manages all non download related threads and jobs """
 
     def __init__(self, core):
@@ -108,6 +111,6 @@ class ThreadManager:
             self.infoCache.clear()
             self.log.debug("Cleared Result cache")
 
-        for rid in self.infoResults.keys():
+        for rid in list(self.infoResults.keys()):
             if self.infoResults[rid].isStale():
                 del self.infoResults[rid]

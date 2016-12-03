@@ -17,10 +17,11 @@
 """
 from __future__ import unicode_literals
 
+from builtins import object
 from pyload.database import DatabaseBackend, queue
 
 
-class StorageMethods():
+class StorageMethods(object):
     @queue
     def setStorage(db, identifier, key, value):
         db.c.execute("SELECT id FROM storage WHERE identifier=? AND key=?", (identifier, key))

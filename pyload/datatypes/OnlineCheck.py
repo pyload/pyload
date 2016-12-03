@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+from builtins import object
 from time import time
 
 from pyload.Api import OnlineCheck as OC
 
 
-class OnlineCheck:
+class OnlineCheck(object):
     """  Helper class that holds result of an initiated online check """
 
     def __init__(self, rid, owner):

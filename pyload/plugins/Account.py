@@ -2,6 +2,9 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from __future__ import division
+from builtins import str
+from past.utils import old_div
 from time import time
 from threading import RLock
 
@@ -282,7 +285,7 @@ class Account(Base):
         return True
 
     def parseTraffic(self, string): #returns kbyte
-        return parseFileSize(string) / 1024
+        return old_div(parseFileSize(string), 1024)
 
     def formatTrafficleft(self):
         if self.trafficleft is None:

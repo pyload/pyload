@@ -14,6 +14,9 @@ from __future__ import unicode_literals
 #   @author: RaNaN
 ###############################################################################
 
+from builtins import str
+from builtins import range
+from builtins import object
 import re
 
 from os import listdir, makedirs
@@ -42,7 +45,7 @@ class BaseAttributes(defaultdict):
         return getattr(Base, attr)
 
 
-class LoaderFactory:
+class LoaderFactory(object):
     """ Container for multiple plugin loaders  """
 
     def __init__(self, *loader):
@@ -80,7 +83,7 @@ class LoaderFactory:
                 return loader.getPlugin(plugin, name)
 
 
-class PluginLoader:
+class PluginLoader(object):
     """
     Class to provide and load plugins from the file-system
     """

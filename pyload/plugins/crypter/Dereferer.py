@@ -16,8 +16,10 @@
 """
 from __future__ import unicode_literals
 
+from future import standard_library
+standard_library.install_aliases()
 import re
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from module.plugins.Crypter import Crypter
 
@@ -33,4 +35,4 @@ class Dereferer(Crypter):
 
     def decrypt(self, pyfile):
         link = re.match(self.__pattern__, pyfile.url).group('url')
-        self.core.files.addLinks([urllib.unquote(link).rstrip('+')], pyfile.package().id)
+        self.core.files.addLinks([urllib.parse.unquote(link).rstrip('+')], pyfile.package().id)

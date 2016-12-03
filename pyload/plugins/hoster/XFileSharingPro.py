@@ -18,10 +18,13 @@
 ###############################################################################
 
 from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
 import re
 from random import random
-from urllib import unquote
-from urlparse import urlparse
+from urllib.parse import unquote
+from urllib.parse import urlparse
 from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, PluginParseError, replace_patterns
 from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia

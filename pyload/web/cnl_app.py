@@ -2,9 +2,12 @@
 from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 from os.path import join
 import re
-from urllib import unquote
+from urllib.parse import unquote
 from base64 import standard_b64decode
 from binascii import unhexlify
 from traceback import print_exc
@@ -46,7 +49,7 @@ def flash(id="0"):
 @local_check
 def add(request):
     package = request.POST.get('referer', None)
-    urls = filter(lambda x: x != "", request.POST['urls'].split("\n"))
+    urls = [x for x in request.POST['urls'].split("\n") if x != ""]
 
     if package:
         PYLOAD.addPackage(package, urls, paused=True)
@@ -111,7 +114,7 @@ def addcrypted2():
     obj = AES.new(Key, AES.MODE_CBC, IV)
     result = obj.decrypt(crypted).replace("\x00", "").replace("\r", "").split("\n")
 
-    result = filter(lambda x: x != "", result)
+    result = [x for x in result if x != ""]
 
     try:
         if package:
@@ -135,7 +138,7 @@ def flashgot():
 
     autostart = bool(int(request.forms.get('autostart', 0)))
     package = request.forms.get('package', None)
-    urls = filter(lambda x: x != "", request.forms['urls'].split("\n"))
+    urls = [x for x in request.forms['urls'].split("\n") if x != ""]
 
     # TODO: folder?
     folder = request.forms.get('dir', None)

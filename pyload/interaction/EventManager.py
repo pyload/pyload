@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+from builtins import str
+from builtins import object
 from threading import Lock
 from traceback import print_exc
 
 
-class EventManager:
+class EventManager(object):
     """
     Handles all event-related tasks, also stores an event queue for clients, so they can retrieve them later.
 

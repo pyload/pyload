@@ -2,6 +2,7 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from builtins import range
 import re
 from random import choice
 from time import sleep

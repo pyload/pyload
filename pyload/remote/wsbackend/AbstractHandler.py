@@ -16,6 +16,11 @@
 ###############################################################################
 
 from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
+from past.builtins import basestring
+from builtins import object
 from mod_pywebsocket.msgutil import send_message
 from mod_pywebsocket.util import get_class_logger
 
@@ -23,7 +28,7 @@ from pyload.Api import UserData
 from pyload.remote.json_converter import loads, dumps
 
 
-class AbstractHandler:
+class AbstractHandler(object):
     """
         Abstract Handler providing common methods shared across WebSocket handlers
     """
@@ -59,7 +64,7 @@ class AbstractHandler:
         pass
 
     def load_session(self, cookies):
-        from Cookie import SimpleCookie
+        from http.cookies import SimpleCookie
         from beaker.session import Session
         from pyload.web.webinterface import session
 
@@ -96,7 +101,7 @@ class AbstractHandler:
             self.send_result(req, self.ERROR, "No JSON request")
             return None, None, None
 
-        if not isinstance(o, basestring) and not isinstance(o, list) and len(o) not in range(1, 4):
+        if not isinstance(o, basestring) and not isinstance(o, list) and len(o) not in list(range(1, 4)):
             self.log.debug("Invalid Api call: %s" % o)
             self.send_result(req, self.ERROR, "Invalid Api call")
             return None, None, None

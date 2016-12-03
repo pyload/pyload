@@ -17,10 +17,13 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-import __builtin__
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
+import builtins
 
 from gettext import gettext
-from thread import start_new_thread
+from _thread import start_new_thread
 from threading import RLock
 
 from collections import defaultdict
@@ -35,14 +38,14 @@ from .utils import lock, to_string
 AddonTuple = namedtuple('AddonTuple', 'instances events handler')
 
 
-class AddonManager:
+class AddonManager(object):
     """ Manages addons, loading, unloading.  """
 
     def __init__(self, core):
         self.core = core
         self.config = self.core.config
 
-        __builtin__.addonManager = self #needed to let addons register themselves
+        builtins.addonManager = self #needed to let addons register themselves
 
         self.log = self.core.log
 
@@ -61,7 +64,7 @@ class AddonManager:
 
     def iterAddons(self):
         """ Yields (name, meta_data) of all addons """
-        return self.plugins.items()
+        return iter(self.plugins.items())
 
     @lock
     def callInHooks(self, event, eventName, *args):
@@ -216,7 +219,7 @@ class AddonManager:
 
     def activePlugins(self):
         """ returns all active plugins """
-        return [p for x in self.plugins.values() for p in x.instances if p.isActivated()]
+        return [p for x in list(self.plugins.values()) for p in x.instances if p.isActivated()]
 
     def getInfo(self, plugin):
         """ Retrieves all info data for a plugin """

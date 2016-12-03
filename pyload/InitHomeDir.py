@@ -16,6 +16,8 @@
 
 from __future__ import print_function
 from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
 from os import makedirs, path, chdir
 from os.path import join
 import sys
@@ -23,10 +25,10 @@ from sys import argv, platform
 
 from . import __dev__
 
-import __builtin__
+import builtins
 
-__builtin__.owd = path.abspath("") #original working directory
-__builtin__.pypath = path.abspath(path.join(__file__, "..", ".."))
+builtins.owd = path.abspath("") #original working directory
+builtins.pypath = path.abspath(path.join(__file__, "..", ".."))
 
 # Before changing the cwd, the abspath of the module must be manifested
 if 'pyload' in sys.modules:
@@ -57,7 +59,7 @@ if platform == 'nt':
 else:
     homedir = path.expanduser("~")
 
-__builtin__.homedir = homedir
+builtins.homedir = homedir
 
 configdir = None
 final = False
@@ -101,7 +103,7 @@ def init_dir(other_path=None, no_change=False):
     if not path.exists(configdir):
         makedirs(configdir, 0o700)
 
-    __builtin__.configdir = configdir
+    builtins.configdir = configdir
     chdir(configdir)
 
 #print("Using %s as working directory." % configdir)

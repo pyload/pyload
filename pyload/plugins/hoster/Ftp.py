@@ -18,8 +18,11 @@
     @author: mkaay
 """
 from __future__ import unicode_literals
-from urlparse import urlparse
-from urllib import quote, unquote
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from urllib.parse import urlparse
+from urllib.parse import quote, unquote
 import pycurl
 import re
 

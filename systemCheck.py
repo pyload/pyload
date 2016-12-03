@@ -3,6 +3,7 @@
 
 from __future__ import print_function
 from __future__ import unicode_literals
+from builtins import input
 import os
 import subprocess
 import sys
@@ -120,6 +121,6 @@ if __name__ == "__main__":
 
     # comp. with py2 and 3
     try:
-        input("Press Enter to Exit.")
+        eval(input("Press Enter to Exit."))
     except SyntaxError:  # will raise in py2
         pass

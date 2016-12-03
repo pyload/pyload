@@ -16,7 +16,10 @@
     @author: jeix
 """
 from __future__ import unicode_literals
+from __future__ import division
 
+from builtins import object
+from past.utils import old_div
 import socket
 import re
 
@@ -32,7 +35,7 @@ from pyload.plugins.Plugin import Abort
 
 
 # TODO: This must be adapted to the new request interfaces
-class XDCCRequest():
+class XDCCRequest(object):
     def __init__(self, timeout=30, proxies={}):
 
         self.proxies = proxies
@@ -107,7 +110,7 @@ class XDCCRequest():
             now = time()
             timespan = now - lastUpdate
             if timespan > 1:
-                self.speed = cumRecvLen / timespan
+                self.speed = old_div(cumRecvLen, timespan)
                 cumRecvLen = 0
                 lastUpdate = now
 
@@ -157,7 +160,7 @@ class XDCCRequest():
     @property
     def percent(self):
         if not self.filesize: return 0
-        return (self.recv * 100) / self.filesize
+        return old_div((self.recv * 100), self.filesize)
 
     def close(self):
         pass

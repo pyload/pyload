@@ -19,6 +19,8 @@
 """
 from __future__ import unicode_literals
 
+from builtins import str
+from builtins import object
 from pyxmpp import streamtls
 from pyxmpp.all import JID, Message
 from pyxmpp.jabber.client import JabberClient
@@ -130,7 +132,7 @@ class XMPPInterface(IRCInterface, JabberClient):
         subject = stanza.get_subject()
         body = stanza.get_body()
         t = stanza.get_type()
-        self.logDebug(u'pyLoad XMPP: Message from %s received.' % (unicode(stanza.get_from(), )))
+        self.logDebug(u'pyLoad XMPP: Message from %s received.' % (str(stanza.get_from(), )))
         self.logDebug(u'pyLoad XMPP: Body: %s Subject: %s Type: %s' % (body, subject, t))
 
         if t == "headline":

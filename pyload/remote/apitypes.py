@@ -5,6 +5,7 @@
 from __future__ import unicode_literals
 
 
+from builtins import object
 class BaseObject(object):
     __version__ = (0, 4, 9, 9)
     __slots__ = []
@@ -18,13 +19,13 @@ class ExceptionObject(Exception):
     __slots__ = []
 
 
-class Connection:
+class Connection(object):
     All = 0
     Resumable = 1
     Secure = 2
 
 
-class DownloadState:
+class DownloadState(object):
     All = 0
     Finished = 1
     Unfinished = 2
@@ -32,7 +33,7 @@ class DownloadState:
     Unmanaged = 4
 
 
-class DownloadStatus:
+class DownloadStatus(object):
     NA = 0
     Offline = 1
     Online = 2
@@ -56,13 +57,13 @@ class DownloadStatus:
     Unknown = 20
 
 
-class FileStatus:
+class FileStatus(object):
     Ok = 0
     Missing = 1
     Remote = 2
 
 
-class InputType:
+class InputType(object):
     NA = 0
     Text = 1
     Int = 2
@@ -82,14 +83,14 @@ class InputType:
     Table = 16
 
 
-class Interaction:
+class Interaction(object):
     All = 0
     Notification = 1
     Captcha = 2
     Query = 4
 
 
-class MediaType:
+class MediaType(object):
     All = 0
     Other = 1
     Audio = 2
@@ -100,14 +101,14 @@ class MediaType:
     Executable = 64
 
 
-class PackageStatus:
+class PackageStatus(object):
     Ok = 0
     Paused = 1
     Folder = 2
     Remote = 3
 
 
-class Permission:
+class Permission(object):
     All = 0
     Add = 1
     Delete = 2
@@ -118,7 +119,7 @@ class Permission:
     Plugins = 64
 
 
-class ProgressType:
+class ProgressType(object):
     All = 0
     Other = 1
     Download = 2
@@ -128,7 +129,7 @@ class ProgressType:
     FileOperation = 32
 
 
-class Role:
+class Role(object):
     Admin = 0
     User = 1
 

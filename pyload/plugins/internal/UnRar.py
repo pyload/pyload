@@ -19,6 +19,7 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
+from builtins import str
 import os
 import re
 from glob import glob
@@ -167,7 +168,7 @@ class UnRar(AbtractExtractor):
             return glob(re.sub("(?<=\.part)([01]+)", "*", self.file, re.IGNORECASE))
         # get files which matches .r* and filter unsuited files out
         parts = glob(re.sub(r"(?<=\.r)ar$", "*", self.file, re.IGNORECASE))
-        return filter(lambda x: self.re_partfiles.match(x), parts)
+        return [x for x in parts if self.re_partfiles.match(x)]
 
     def listContent(self):
         command = "vb" if self.fullpath else "lb"

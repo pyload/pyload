@@ -3,12 +3,14 @@
 
 from __future__ import print_function
 from __future__ import unicode_literals
+from builtins import zip
+from builtins import object
 from pyload.remote.apitypes_debug import classes, methods
 
 from tests.helper.config import credentials
 
 
-class ApiProxy:
+class ApiProxy(object):
     """ Proxy that does type checking on the api """
 
     def __init__(self, api, user=credentials[0], pw=credentials[1]):

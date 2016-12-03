@@ -17,6 +17,7 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from builtins import object
 from time import time
 from ReadWriteLock import ReadWriteLock
 
@@ -38,7 +39,7 @@ def invalidate(func):
     return new
 
 
-class FileManager:
+class FileManager(object):
     """Handles all request made to obtain information,
     modify status or other request for links or packages"""
 
@@ -78,19 +79,19 @@ class FileManager:
     @read_lock
     def syncSave(self):
         """saves all data to backend and waits until all data are written"""
-        for pyfile in self.files.values():
+        for pyfile in list(self.files.values()):
             pyfile.sync()
 
-        for pypack in self.packages.values():
+        for pypack in list(self.packages.values()):
             pypack.sync()
 
         self.db.syncSave()
 
     def cachedFiles(self):
-        return self.files.values()
+        return list(self.files.values())
 
     def cachedPackages(self):
-        return self.packages.values()
+        return list(self.packages.values())
 
     def getCollector(self):
         pass
@@ -148,10 +149,10 @@ class FileManager:
         #todo: fill child packs and files
         packs = self.db.getAllPackages(root=pid)
         if pid in packs: del packs[pid]
-        pack.pids = packs.keys()
+        pack.pids = list(packs.keys())
 
         files = self.db.getAllFiles(package=pid)
-        pack.fids = files.keys()
+        pack.fids = list(files.keys())
 
         return pack
 
@@ -237,11 +238,11 @@ class FileManager:
                 queue.extend(packs[fpid].pids)
 
             # now remove unneeded data
-            for fpid in packs.keys():
+            for fpid in list(packs.keys()):
                 if fpid not in keep:
                     del packs[fpid]
 
-            for fid, f in files.items():
+            for fid, f in list(files.items()):
                 if f.package not in keep:
                     del files[fid]
 

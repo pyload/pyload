@@ -16,6 +16,10 @@
 ###############################################################################
 
 from __future__ import unicode_literals
+from __future__ import division
+from builtins import str
+from builtins import object
+from past.utils import old_div
 import sys
 from time import time, sleep
 from random import randint
@@ -144,7 +148,7 @@ class Base(object):
 
         strings = []
         for obj in args:
-            if isinstance(obj, unicode):
+            if isinstance(obj, str):
                 strings.append(obj)
             elif isinstance(obj, str):
                 strings.append(decode(obj))
@@ -320,7 +324,7 @@ class Base(object):
             OCR = None
 
         if OCR and not forceUser:
-            sleep(randint(3000, 5000) / 1000.0)
+            sleep(old_div(randint(3000, 5000), 1000.0))
             self.checkAbort()
 
             ocr = OCR()

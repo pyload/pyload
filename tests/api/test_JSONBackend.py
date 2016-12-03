@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+from builtins import object
 from nose.tools import raises, assert_equal
 
 from requests.auth import HTTPBasicAuth
@@ -14,7 +15,7 @@ from pyload.remote.JSONClient import JSONClient
 from tests.helper.config import credentials, webAddress
 
 
-class TestJSONBackend:
+class TestJSONBackend(object):
 
     def setUp(self):
         self.client = JSONClient(webAddress)

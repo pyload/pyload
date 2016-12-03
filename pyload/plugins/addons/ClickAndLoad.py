@@ -19,8 +19,10 @@
 """
 from __future__ import unicode_literals
 
+from future import standard_library
+standard_library.install_aliases()
 import socket
-import thread
+import _thread
 
 from pyload.plugins.Addon import Addon
 
@@ -41,12 +43,12 @@ class ClickAndLoad(Addon):
         else:
             ip = "127.0.0.1"
 
-        thread.start_new_thread(proxy, (self, ip, self.port, 9666))
+        _thread.start_new_thread(proxy, (self, ip, self.port, 9666))
 
 
 def proxy(self, *settings):
-    thread.start_new_thread(server, (self,) + settings)
-    lock = thread.allocate_lock()
+    _thread.start_new_thread(server, (self,) + settings)
+    lock = _thread.allocate_lock()
     lock.acquire()
     lock.acquire()
 
@@ -60,8 +62,8 @@ def server(self, *settings):
             client_socket = dock_socket.accept()[0]
             server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             server_socket.connect(("127.0.0.1", settings[1]))
-            thread.start_new_thread(forward, (client_socket, server_socket))
-            thread.start_new_thread(forward, (server_socket, client_socket))
+            _thread.start_new_thread(forward, (client_socket, server_socket))
+            _thread.start_new_thread(forward, (server_socket, client_socket))
     except socket.error as e:
         if hasattr(e, "errno"):
             errno = e.errno
@@ -71,9 +73,9 @@ def server(self, *settings):
         if errno == 98:
             self.logWarning(_("Click'N'Load: Port 9666 already in use"))
             return
-        thread.start_new_thread(server, (self,) + settings)
+        _thread.start_new_thread(server, (self,) + settings)
     except:
-        thread.start_new_thread(server, (self,) + settings)
+        _thread.start_new_thread(server, (self,) + settings)
 
 
 def forward(source, destination):

@@ -17,7 +17,9 @@
     @author: zoidberg
 """
 from __future__ import unicode_literals
+from __future__ import division
 
+from past.utils import old_div
 import re
 from time import mktime, strptime
 from module.plugins.Account import Account
@@ -60,7 +62,7 @@ class XFSPAccount(Account):
                 if "Unlimited" in trafficleft:
                     premium = True
                 else:
-                    trafficleft = parseFileSize(trafficleft) / 1024
+                    trafficleft = old_div(parseFileSize(trafficleft), 1024)
 
         return ({"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium})
 

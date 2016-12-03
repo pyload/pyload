@@ -18,6 +18,8 @@
 """
 from __future__ import unicode_literals
 
+from builtins import str
+from builtins import zip
 import sys
 import re
 from os import stat
@@ -121,7 +123,7 @@ class UpdateManager(Hook):
         updates = updates[2:]
 
         for plugin in updates:
-            info = dict(zip(schema, plugin.split("|")))
+            info = dict(list(zip(schema, plugin.split("|"))))
             filename = info["name"]
             prefix = info["type"]
             version = info["version"]
@@ -178,9 +180,8 @@ class UpdateManager(Hook):
             self.old_periodical()
             self.last_check = time()
 
-        modules = filter(
-            lambda m: m and (m.__name__.startswith("module.plugins.") or m.__name__.startswith(
-                "userplugins.")) and m.__name__.count(".") >= 2, sys.modules.values())
+        modules = [m for m in iter(sys.modules.values()) if m and (m.__name__.startswith("module.plugins.") or m.__name__.startswith(
+                "userplugins.")) and m.__name__.count(".") >= 2]
 
         reloads = []
 

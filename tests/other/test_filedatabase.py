@@ -3,6 +3,7 @@
 
 from __future__ import print_function
 from __future__ import unicode_literals
+from builtins import range
 from tests.helper.Stubs import Core
 from tests.helper.BenchmarkTest import BenchmarkTest
 
@@ -48,7 +49,7 @@ class TestDatabase(BenchmarkTest):
 
         self.test_insert(20)
         self.test_insert_many()
-        self.fids = self.db.getAllFiles().keys()
+        self.fids = list(self.db.getAllFiles().keys())
 
 
     def test_insert(self, n=200):
@@ -72,7 +73,7 @@ class TestDatabase(BenchmarkTest):
         assert n == len(self.pids) - 1
 
         print("Fetched %d packages" % n)
-        self.assert_pack(choice(packs.values()))
+        self.assert_pack(choice(list(packs.values())))
 
     def test_get_files(self):
         files = self.db.getAllFiles()
@@ -80,7 +81,7 @@ class TestDatabase(BenchmarkTest):
         assert n >= len(self.pids)
 
         print("Fetched %d files" % n)
-        self.assert_file(choice(files.values()))
+        self.assert_file(choice(list(files.values())))
 
     def test_get_files_queued(self):
         files = self.db.getAllFiles(state=DownloadState.Unfinished)
@@ -96,14 +97,14 @@ class TestDatabase(BenchmarkTest):
         packs = self.db.getAllPackages(root=pid)
 
         print("Package %d has %d packages" % (pid, len(packs)))
-        self.assert_pack(choice(packs.values()))
+        self.assert_pack(choice(list(packs.values())))
 
     def test_get_package_files(self):
         pid = choice(self.pids)
         files = self.db.getAllFiles(package=pid)
 
         print("Package %d has %d files" % (pid, len(files)))
-        self.assert_file(choice(files.values()))
+        self.assert_file(choice(list(files.values())))
 
     def test_get_package_data(self, stats=False):
         pid = choice(self.pids)
@@ -121,7 +122,7 @@ class TestDatabase(BenchmarkTest):
     def test_find_files(self):
         files = self.db.getAllFiles(search="1")
         print("Found %s files" % len(files))
-        f = choice(files.values())
+        f = choice(list(files.values()))
 
         assert "1" in f.name
         names = self.db.getMatchingFilenames("1")

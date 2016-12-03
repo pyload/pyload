@@ -16,6 +16,9 @@
 ###############################################################################
 
 from __future__ import unicode_literals
+from __future__ import division
+from builtins import object
+from past.utils import old_div
 from time import sleep, time
 from ReadWriteLock import ReadWriteLock
 
@@ -245,7 +248,7 @@ class PyFile(object):
         if self.status == DownloadStatus.Waiting:
             return self.waitUntil - time()
 
-        return self.getBytesLeft() / self.getSpeed()
+        return old_div(self.getBytesLeft(), self.getSpeed())
 
     @try_catch(0)
     def getBytesArrived(self):

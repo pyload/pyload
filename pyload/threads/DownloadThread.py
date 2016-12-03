@@ -17,8 +17,11 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 from threading import Event
-from Queue import Queue
+from queue import Queue
 from time import sleep, time
 from traceback import print_exc
 from sys import exc_clear

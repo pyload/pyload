@@ -17,6 +17,8 @@
 """
 from __future__ import unicode_literals
 
+from builtins import str
+from builtins import object
 from threading import Thread
 from traceback import print_exc
 
@@ -57,7 +59,7 @@ class BackendBase(Thread):
         self.shutdown()
 
 
-class RemoteManager():
+class RemoteManager(object):
     available = []
 
     def __init__(self, core):

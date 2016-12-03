@@ -18,18 +18,19 @@
 """
 from __future__ import unicode_literals
 
+from builtins import object
 import re
 from random import random
 
 
-class CaptchaService():
+class CaptchaService(object):
     __version__ = "0.04"
 
     def __init__(self, plugin):
         self.plugin = plugin
 
 
-class ReCaptcha():
+class ReCaptcha(object):
     RECAPTCHA_KEY_PATTERN = r"https?://(?:www\.)?google\.com/recaptcha/api/challenge\?k=(?P<key>\w+)"
     RECAPTCHA_KEY_AJAX_PATTERN = r"Recaptcha\.create\s*\(\s*[\"'](?P<key>\w+)[\"']\s*,"
 

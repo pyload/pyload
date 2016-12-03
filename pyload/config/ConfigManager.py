@@ -123,7 +123,7 @@ class ConfigManager(ConfigParser):
         values = self.db.loadConfigsForUser(user)
 
         # Every section needs to be json decoded
-        for section, data in values.items():
+        for section, data in list(values.items()):
             try:
                 values[section] = json.loads(data) if data else {}
             except ValueError:

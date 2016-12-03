@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+from builtins import str
+from builtins import object
 from bottle import ServerAdapter as BaseAdapter
 
 
@@ -132,7 +134,7 @@ class EventletServer(ServerAdapter):
                 log_output=(not self.quiet))
         except TypeError:
             # Needed to ignore the log
-            class NoopLog:
+            class NoopLog(object):
                 def write(self, *args):
                     pass
             # Fallback, if we have old version of eventlet

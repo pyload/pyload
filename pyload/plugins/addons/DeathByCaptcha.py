@@ -18,8 +18,14 @@
 """
 from __future__ import with_statement
 from __future__ import unicode_literals
+from __future__ import division
 
-from thread import start_new_thread
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from past.utils import old_div
+from _thread import start_new_thread
 from pycurl import FORM_FILE, HTTPHEADER
 from time import sleep
 from base64 import b64encode
@@ -48,7 +54,7 @@ class DeathByCaptchaException(Exception):
         return self.err
 
     def getDesc(self):
-        if self.err in self.DBC_ERRORS.keys():
+        if self.err in list(self.DBC_ERRORS.keys()):
             return self.DBC_ERRORS[self.err]
         else:
             return self.err
@@ -183,7 +189,7 @@ class DeathByCaptcha(Hook):
             return False
 
         balance, rate = self.info["balance"], self.info["rate"]
-        self.logInfo("Account balance: US$%.3f (%d captchas left at %.2f cents each)" % (balance / 100,
+        self.logInfo("Account balance: US$%.3f (%d captchas left at %.2f cents each)" % (old_div(balance, 100),
                                                                                          balance // rate, rate))
 
         if balance > rate:

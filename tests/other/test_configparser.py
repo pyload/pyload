@@ -2,6 +2,8 @@
 
 from __future__ import print_function
 from __future__ import unicode_literals
+from past.builtins import basestring
+from builtins import object
 from nose.tools import raises
 
 from tests.helper.Stubs import Core
@@ -9,7 +11,7 @@ from tests.helper.Stubs import Core
 from pyload.config.ConfigParser import ConfigParser
 
 
-class TestConfigParser():
+class TestConfigParser(object):
 
     @classmethod
     def setUpClass(cls):

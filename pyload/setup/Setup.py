@@ -19,6 +19,11 @@
 from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import input
+from builtins import str
+from builtins import object
 import os
 import sys
 import socket
@@ -39,7 +44,7 @@ from .system import get_system_info
 from .dependencies import deps
 
 
-class Setup():
+class Setup(object):
     """
     pyLoads initial setup configuration assistant
     """
@@ -86,9 +91,9 @@ class Setup():
         self.no = "no"
 
     def start(self):
-        import __builtin__
+        import builtins
         # set the gettext translation
-        __builtin__._ = lambda x: x
+        builtins._ = lambda x: x
 
         web = WebServer(pysetup=self)
         web.start()
@@ -112,7 +117,7 @@ class Setup():
             print("Not implemented yet!")
             print("Use web configuration or config files")
 
-        raw_input()
+        input()
 
         return True
 
@@ -131,7 +136,7 @@ class Setup():
         print(_("to abort and don't let him start with pyLoadCore automatically anymore."))
         print("")
         print(_("When you are ready for system check, hit enter."))
-        raw_input()
+        input()
 
 
         # TODO: new system check + deps
@@ -173,7 +178,7 @@ class Setup():
         print("")
         print(_("Setup finished successfully."))
         print(_("Hit enter to exit and restart pyLoad"))
-        raw_input()
+        input()
         return True
 
 
@@ -258,7 +263,7 @@ class Setup():
                 print(_("2 - List users"))
                 print(_("3 - Remove user"))
                 print(_("4 - Quit"))
-                action = raw_input("[1]/2/3/4: ")
+                action = input("[1]/2/3/4: ")
                 if not action in ("1", "2", "3", "4"):
                     continue
                 elif action == "1":
@@ -328,7 +333,7 @@ class Setup():
             f.close()
             print(_("Config path changed, setup will now close, please restart to go on."))
             print(_("Press Enter to exit."))
-            raw_input()
+            input()
             exit()
         except Exception as e:
             print(_("Setting config path failed: %s") % str(e))
@@ -383,7 +388,7 @@ class Setup():
                     print(_("Passwords did not match."))
 
         while True:
-            input = raw_input(qst + " %s: " % info)
+            input = input(qst + " %s: " % info)
             input = input.decode(self.stdin_encoding)
 
             if input.strip() == "":

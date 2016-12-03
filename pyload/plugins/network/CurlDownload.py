@@ -17,6 +17,10 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from __future__ import division
+from builtins import str
+from builtins import range
+from past.utils import old_div
 from os import remove
 from os.path import dirname
 from time import time
@@ -62,7 +66,7 @@ class CurlDownload(Download):
     @property
     def speed(self):
         last = [sum(x) for x in self.lastSpeeds if x]
-        return (sum(self.speeds) + sum(last)) / (1 + len(last))
+        return old_div((sum(self.speeds) + sum(last)), (1 + len(last)))
 
     @property
     def arrived(self):
@@ -248,7 +252,7 @@ class CurlDownload(Download):
                         self.log.error(_("Download chunks failed, fallback to single connection | %s" % (str(ex))))
 
                         #list of chunks to clean and remove
-                        to_clean = filter(lambda x: x is not init, self.chunks)
+                        to_clean = [x for x in self.chunks if x is not init]
                         for chunk in to_clean:
                             self.closeChunk(chunk)
                             self.chunks.remove(chunk)
@@ -281,7 +285,7 @@ class CurlDownload(Download):
 
                 self.lastSpeeds[1] = self.lastSpeeds[0]
                 self.lastSpeeds[0] = self.speeds
-                self.speeds = [float(a) / (t - lastTimeCheck) for a in diff]
+                self.speeds = [old_div(float(a), (t - lastTimeCheck)) for a in diff]
                 self.lastArrived = [c.arrived for c in self.chunks]
                 lastTimeCheck = t
 

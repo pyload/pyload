@@ -18,6 +18,7 @@
 """
 from __future__ import unicode_literals
 
+from builtins import range
 import re
 
 from pyload.plugins.Crypter import Crypter, Package

@@ -11,7 +11,7 @@ from . import decode, remove_chars
 
 if sys.getfilesystemencoding().startswith('ANSI'):
     def fs_encode(string):
-        if isinstance(string, unicode):
+        if isinstance(string, str):
             return string.encode('utf8')
         else:
             return string
@@ -61,7 +61,7 @@ def stat(name):
 
 def safe_join(*args):
     """ joins a path, encoding aware """
-    return fs_encode(join(*[x if isinstance(x, unicode) else decode(x) for x in args]))
+    return fs_encode(join(*[x if isinstance(x, str) else decode(x) for x in args]))
 
 def save_join(*args):
     return safe_join(*args)

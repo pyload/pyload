@@ -131,4 +131,4 @@ class DecrypterThread(BaseThread):
 
         urls = uniqify(urls)
 
-        return urls, packs.values()
+        return urls, list(packs.values())

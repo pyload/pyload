@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from builtins import str
 import re
 
 from module.network.RequestFactory import getURL
@@ -50,7 +51,7 @@ class Vipleech4uCom(MultiHoster):
 
     def check_for_new_or_removed_hosters(self, hosters):
         #get the old hosters
-        old_hosters = hosters.keys()
+        old_hosters = list(hosters.keys())
 
         #load the current hosters from vipleech4u.com
         page = getURL('http://vipleech4u.com/hosts.php')

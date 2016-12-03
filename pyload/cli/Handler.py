@@ -19,7 +19,8 @@
 from __future__ import unicode_literals
 
 
-class Handler:
+from builtins import object
+class Handler(object):
     def __init__(self, cli):
         self.cli = cli
         self.init()

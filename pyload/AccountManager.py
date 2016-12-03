@@ -17,6 +17,7 @@
 
 
 from __future__ import unicode_literals
+from builtins import object
 from threading import Lock
 from random import choice
 
@@ -24,7 +25,7 @@ from pyload.Api import AccountInfo
 from pyload.utils import lock, json
 
 
-class AccountManager:
+class AccountManager(object):
     """manages all accounts"""
 
     def __init__(self, core):

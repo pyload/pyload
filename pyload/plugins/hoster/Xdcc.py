@@ -19,6 +19,8 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
+from builtins import str
+from builtins import range
 from os.path import join
 from os.path import exists
 from os import makedirs
@@ -149,7 +151,7 @@ class Xdcc(Hoster):
 
             for line in temp:
                 if self.debug is 2:
-                    print("*> " + unicode(line, errors='ignore'))
+                    print("*> " + str(line, errors='ignore'))
                 line = line.rstrip()
                 first = line.split()
 

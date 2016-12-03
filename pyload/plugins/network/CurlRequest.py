@@ -17,12 +17,16 @@
 
 from __future__ import print_function
 from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
 import pycurl
 
 from codecs import getincrementaldecoder, lookup, BOM_UTF8
-from urllib import quote, urlencode
-from httplib import responses
-from cStringIO import StringIO
+from urllib.parse import quote, urlencode
+from http.client import responses
+from io import StringIO
 
 from pyload.plugins.Base import Abort
 from pyload.network.CookieJar import CookieJar
@@ -31,16 +35,16 @@ from ..Request import Request, ResponseException
 
 
 def myquote(url):
-    return quote(url.encode('utf8') if isinstance(url, unicode) else url, safe="%/:=&?~#+!$,;'@()*[]")
+    return quote(url.encode('utf8') if isinstance(url, str) else url, safe="%/:=&?~#+!$,;'@()*[]")
 
 
 def myurlencode(data):
     data = dict(data)
-    return urlencode(dict((x.encode('utf8') if isinstance(x, unicode) else x, \
-                           y.encode('utf8') if isinstance(y, unicode) else y ) for x, y in data.items()))
+    return urlencode(dict((x.encode('utf8') if isinstance(x, str) else x, \
+                           y.encode('utf8') if isinstance(y, str) else y) for x, y in data.items()))
 
 
-bad_headers = range(400, 418) + range(500, 506)
+bad_headers = list(range(400, 418)) + list(range(500, 506))
 
 pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
@@ -166,7 +170,7 @@ class CurlRequest(Request):
         if post:
             self.c.setopt(pycurl.POST, 1)
             if not multipart:
-                if isinstance(post, unicode):
+                if isinstance(post, str):
                     post = str(post) #unicode not allowed
                 elif isinstance(post, str):
                     pass
@@ -175,7 +179,7 @@ class CurlRequest(Request):
 
                 self.c.setopt(pycurl.POSTFIELDS, post)
             else:
-                post = [(x, y.encode('utf8') if isinstance(y, unicode) else y ) for x, y in post.items()]
+                post = [(x, y.encode('utf8') if isinstance(y, str) else y ) for x, y in post.items()]
                 self.c.setopt(pycurl.HTTPPOST, post)
         else:
             self.c.setopt(pycurl.POST, 0)

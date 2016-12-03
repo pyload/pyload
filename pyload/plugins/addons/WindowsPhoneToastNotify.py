@@ -17,8 +17,10 @@
     @author: RaNaN, Godofdream, zoidberg
 """
 from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
 import time
-import httplib
+import http.client
 from module.plugins.Hook import Hook
 
 
@@ -46,7 +48,7 @@ class WindowsPhoneToastNotify(Hook):
     def doRequest(self):
         URL = self.getConfig("pushUrl")
         request = self.getXmlData()
-        webservice = httplib.HTTP(URL)
+        webservice = http.client.HTTP(URL)
         webservice.putrequest("POST", self.getConfig("pushId"))
         webservice.putheader("Host", URL)
         webservice.putheader("Content-type", "text/xml")

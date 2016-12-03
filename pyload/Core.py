@@ -20,9 +20,14 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from builtins import object
 from pyload import __version__ as CURRENT_VERSION
 
-import __builtin__
+import builtins
 
 from getopt import getopt, GetoptError
 import logging
@@ -371,7 +376,7 @@ class Core(object):
             self.db.purgeLinks()
 
         self.requestFactory = RequestFactory(self)
-        __builtin__.pyreq = self.requestFactory
+        builtins.pyreq = self.requestFactory
 
         # deferred import, could improve start-up time
         from .Api import Api

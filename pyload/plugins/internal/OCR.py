@@ -20,6 +20,10 @@
 from __future__ import with_statement
 from __future__ import print_function
 from __future__ import unicode_literals
+from __future__ import division
+from builtins import range
+from builtins import object
+from past.utils import old_div
 import os
 from os.path import join
 from os.path import abspath
@@ -212,15 +216,15 @@ class OCR(object):
             sum = 0
             cnt = 0
 
-            for x in count.values():
+            for x in list(count.values()):
                 if x != 0:
                     sum += x
                     cnt += 1
 
-            avg = sum / cnt
+            avg = old_div(sum, cnt)
             counts[angle] = cnt
             highest[angle] = 0
-            for x in count.values():
+            for x in list(count.values()):
                 if x > highest[angle]:
                     highest[angle] = x
 

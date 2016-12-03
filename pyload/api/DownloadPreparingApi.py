@@ -2,6 +2,7 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from builtins import str
 from itertools import chain
 
 from pyload.Api import Api, DownloadStatus as DS,\

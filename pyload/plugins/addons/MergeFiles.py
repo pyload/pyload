@@ -18,7 +18,9 @@
 """
 from __future__ import print_function
 from __future__ import unicode_literals
+from __future__ import division
 
+from past.utils import old_div
 import os
 import re
 import traceback
@@ -76,7 +78,7 @@ class MergeFiles(Hook):
                         if f_buffer:
                             final_file.write(f_buffer)
                             size_written += BUFFER_SIZE
-                            pyfile.setProgress((size_written * 100) / s_file_size)
+                            pyfile.setProgress(old_div((size_written * 100), s_file_size))
                         else:
                             break
                     s_file.close()

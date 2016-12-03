@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from urlparse import urlparse
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from urllib.parse import urlparse
 from re import match, search
-from urllib import unquote
+from urllib.parse import unquote
 
 from pyload.plugins.Request import ResponseException
 from pyload.plugins.Hoster import Hoster
@@ -105,7 +109,7 @@ class BasePlugin(Hoster):
                 if not disp['enc']:
                     disp['enc'] = 'utf-8'
                 name = remove_chars(disp['name'], "\"';").strip()
-                name = unicode(unquote(name), disp['enc'])
+                name = str(unquote(name), disp['enc'])
 
         if not name:
             name = url

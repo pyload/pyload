@@ -19,6 +19,8 @@
 """
 from __future__ import unicode_literals
 
+from builtins import str
+from past.builtins import basestring
 import subprocess
 from os import listdir, access, X_OK, makedirs
 from os.path import join, exists, basename, abspath

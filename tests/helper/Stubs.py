@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 import sys
 from os.path import join
 from time import strftime
 from traceback import format_exc
 
-import __builtin__
+import builtins
 
 from pyload.InitHomeDir import init_dir
 
@@ -25,7 +28,7 @@ def noop(*args, **kwargs):
     pass
 
 
-class NoopClass:
+class NoopClass(object):
     def __getattr__(self, item):
         return noop
 
@@ -33,7 +36,7 @@ class NoopClass:
 ConfigParser.save = noop
 
 
-class LogStub:
+class LogStub(object):
     def debug(self, *args):
         log(DEBUG, *args)
 
@@ -91,7 +94,7 @@ class Thread(BaseThread):
 
 Core = TestCore
 
-__builtin__._ = lambda x: x
+builtins._ = lambda x: x
 
 adminUser = User(None, uid=0, role=Role.Admin)
 normalUser = User(None, uid=1, role=Role.User)

@@ -18,9 +18,12 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 from imp import find_module
 from os.path import join, exists
-from urllib import quote
+from urllib.parse import quote
 
 
 ENGINE = ""
@@ -95,12 +98,12 @@ if not ENGINE or DEBUG:
         pass
 
 
-class JsEngine():
+class JsEngine(object):
     def __init__(self):
         self.engine = ENGINE
         self.init = False
 
-    def __nonzero__(self):
+    def __bool__(self):
         return False if not ENGINE else True
 
     def set_debug(self, value):
@@ -115,7 +118,7 @@ class JsEngine():
 
             self.init = True
 
-        if isinstance(script, unicode):
+        if isinstance(script, str):
             script = script.encode("utf8")
 
         if not ENGINE:

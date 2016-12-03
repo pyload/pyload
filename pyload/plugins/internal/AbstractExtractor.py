@@ -4,6 +4,7 @@
 from __future__ import unicode_literals
 
 
+from builtins import object
 class ArchiveError(Exception):
     pass
 
@@ -16,7 +17,7 @@ class WrongPassword(Exception):
     pass
 
 
-class AbtractExtractor:
+class AbtractExtractor(object):
 
     __version__ = "0.1"
 

@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
 from datetime import datetime, timedelta
 from time import time
-import Cookie
+import http.cookies
 
 # monkey patch for 32 bit systems
-def _getdate(future=0, weekdayname=Cookie._weekdayname, monthname=Cookie._monthname):
+def _getdate(future=0, weekdayname=http.cookies._weekdayname, monthname=http.cookies._monthname):
     dt = datetime.now() + timedelta(seconds=int(future))
     return "%s, %02d %3s %4d %02d:%02d:%02d GMT" % \
            (weekdayname[dt.weekday()], dt.day, monthname[dt.month], dt.year, dt.hour, dt.minute, dt.second)
 
-Cookie._getdate = _getdate
+http.cookies._getdate = _getdate
 
 
-class CookieJar(Cookie.SimpleCookie):
+class CookieJar(http.cookies.SimpleCookie):
     def getCookie(self, name):
         return self[name].value
 
