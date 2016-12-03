@@ -23,7 +23,7 @@ class ConfigMethods(DatabaseMethods):
     @async
     def deleteConfig(self, plugin, user=None):
         if user is None:
-            self.c.execute('DELETE FROM settings WHERE plugin=?', (plugin, ))
+            self.c.execute('DELETE FROM settings WHERE plugin=?', (plugin,))
         else:
             self.c.execute('DELETE FROM settings WHERE plugin=? AND user=?', (plugin, user))
 

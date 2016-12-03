@@ -179,7 +179,7 @@ class CurlRequest(Request):
 
                 self.c.setopt(pycurl.POSTFIELDS, post)
             else:
-                post = [(x, y.encode('utf8') if isinstance(y, str) else y ) for x, y in post.items()]
+                post = [(x, y.encode('utf8') if isinstance(y, str) else y) for x, y in post.items()]
                 self.c.setopt(pycurl.HTTPPOST, post)
         else:
             self.c.setopt(pycurl.POST, 0)
@@ -293,7 +293,7 @@ class CurlRequest(Request):
                     encoding = charset[0]
 
         try:
-            #self.log.debug("Decoded %s" % encoding )
+            #self.log.debug("Decoded %s" % encoding)
             if lookup(encoding).name == 'utf-8' and rep.startswith(BOM_UTF8):
                 encoding = 'utf-8-sig'
 

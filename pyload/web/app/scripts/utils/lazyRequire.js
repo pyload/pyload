@@ -3,7 +3,7 @@ define(
     [
         'require', 'underscore'
     ],
-    function( require, _ ){
+    function(require, _){
         'use strict';
 
 
@@ -32,7 +32,7 @@ define(
             var state = states.unloaded;
             var args;
 
-            var requireOnce = function(dependencies, loadCallback ){
+            var requireOnce = function(dependencies, loadCallback){
 
                 // Use the module state to determine which method to
                 // invoke (or just to ignore the invocation).
@@ -53,7 +53,7 @@ define(
                         function(){
 
                             args = arguments;
-                            loadCallback.apply( null, args );
+                            loadCallback.apply(null, args);
                             state = states.loaded;
 
 
@@ -73,7 +73,7 @@ define(
             };
 
             // Return the new lazy loader.
-            return( requireOnce );
+            return(requireOnce);
 
         };
 
@@ -92,6 +92,6 @@ define(
 
 
         // Return the module definition.
-        return( lazyRequire );
+        return(lazyRequire);
     }
 );

@@ -38,7 +38,7 @@ class StorageMethods(object):
             if row is not None:
                 return row[0]
         else:
-            db.c.execute("SELECT key, value FROM storage WHERE identifier=?", (identifier, ))
+            db.c.execute("SELECT key, value FROM storage WHERE identifier=?", (identifier,))
             d = {}
             for row in db.c:
                 d[row[0]] = row[1]

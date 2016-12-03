@@ -45,7 +45,7 @@ class TestDownloadManager(BenchmarkTest):
         for user in (adminUser, normalUser):
             for i in range(self.PACKAGES):
                 pid = self.files.addPackage("name %d", "folder", -1, "", "", "", False, user.uid)
-                self.files.addLinks([( "url%d" %i, "plugin%d" % (i % self.PLUGINS)) for i in range(self.LINKS)], pid, user.uid)
+                self.files.addLinks([("url%d" %i, "plugin%d" % (i % self.PLUGINS)) for i in range(self.LINKS)], pid, user.uid)
 
     def test_simple(self):
         jobs = self.db.getJobs([])

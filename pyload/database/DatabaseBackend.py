@@ -430,14 +430,14 @@ class DatabaseBackend(Thread):
         self.conn.rollback()
 
     def async(self, f, *args, **kwargs):
-        args = (self, ) + args
+        args = (self,) + args
         job = DatabaseJob(f, *args, **kwargs)
         self.jobs.put(job)
 
     def queue(self, f, *args, **kwargs):
         # Raise previous error of initialization
         if self.error: raise self.error
-        args = (self, ) + args
+        args = (self,) + args
         job = DatabaseJob(f, *args, **kwargs)
         self.jobs.put(job)
 

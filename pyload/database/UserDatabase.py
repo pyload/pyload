@@ -40,7 +40,7 @@ class UserMethods(DatabaseMethods):
         h = sha1(salt + password)
         password = salt + h.hexdigest()
 
-        self.c.execute('SELECT name FROM users WHERE name=?', (user, ))
+        self.c.execute('SELECT name FROM users WHERE name=?', (user,))
         if self.c.fetchone() is not None:
             self.c.execute('UPDATE users SET password=?, role=?, permission=? WHERE name=?',
                            (password, role, permission, user))
@@ -96,7 +96,7 @@ class UserMethods(DatabaseMethods):
     @queue
     def checkAuth(self, user, password):
         self.c.execute('SELECT uid, name, email, role, permission, folder, traffic, dllimit, dlquota, '
-                       'hddquota, user, template, password FROM "users" WHERE name=?', (user, ))
+                       'hddquota, user, template, password FROM "users" WHERE name=?', (user,))
         r = self.c.fetchone()
         if not r:
             return None
@@ -110,7 +110,7 @@ class UserMethods(DatabaseMethods):
 
     @queue #TODO
     def changePassword(self, user, oldpw, newpw):
-        self.c.execute('SELECT rowid, name, password FROM users WHERE name=?', (user, ))
+        self.c.execute('SELECT rowid, name, password FROM users WHERE name=?', (user,))
         r = self.c.fetchone()
         if not r:
             return False
@@ -135,7 +135,7 @@ class UserMethods(DatabaseMethods):
         uid = self.c.fetchone()
         if uid:
             # deletes user and all associated accounts
-            self.c.execute('DELETE FROM users WHERE user=?', (uid[0], ))
+            self.c.execute('DELETE FROM users WHERE user=?', (uid[0],))
 
 
 UserMethods.register()

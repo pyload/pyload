@@ -66,7 +66,7 @@ class FileMethods(DatabaseMethods):
     def processcount(self, fid=-1, user=None):
         """ number of files which have to be processed """
         # status in online, queued, starting, waiting, downloading
-        self.c.execute("SELECT COUNT(*), SUM(size) FROM files WHERE dlstatus IN (2,3,8,9,10) AND fid != ?", (fid, ))
+        self.c.execute("SELECT COUNT(*), SUM(size) FROM files WHERE dlstatus IN (2,3,8,9,10) AND fid != ?", (fid,))
         return self.c.fetchone()[0]
 
     @queue

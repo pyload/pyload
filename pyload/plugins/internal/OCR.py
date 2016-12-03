@@ -86,7 +86,7 @@ class OCR(object):
         else:
             tessparams = ['tesseract']
 
-        tessparams.extend( [abspath(tmp.name), abspath(tmpTxt.name).replace(".txt", "")] )
+        tessparams.extend([abspath(tmp.name), abspath(tmpTxt.name).replace(".txt", "")])
 
         if subset and (digits or lowercase or uppercase):
             #self.logger.debug("create temp subset config")

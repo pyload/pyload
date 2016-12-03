@@ -54,4 +54,4 @@ class ShareonlineBizOCR(OCR):
     # import urllib
     # ocr = ShareonlineBizOCR()
     # urllib.urlretrieve("http://www.share-online.biz/captcha.php", "captcha.jpeg")
-    # print( ocr.get_captcha('captcha.jpeg'))
+    # print(ocr.get_captcha('captcha.jpeg'))
