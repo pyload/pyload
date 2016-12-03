@@ -3,11 +3,11 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 from __future__ import division
-from past.utils import old_div
 from paver.easy import *
 from paver.doctools import cog
 
 import fnmatch
+import os.path
 
 # patch to let it support list of patterns
 def new_fnmatch(self, pattern):
@@ -90,7 +90,7 @@ module_replace = [
 @needs('cog')
 def html():
     """Build html documentation"""
-    module = old_div(path("docs"), "pyload")
+    module = os.path.join(path("docs"), "pyload")
     module.rmtree()
     call_task('paver.doctools.html')
 
@@ -104,18 +104,18 @@ def apitypes(options):
 
     outdir = PROJECT_DIR / "pyload" / "remote"
 
-    if (old_div(outdir, "gen-py")).exists():
-        (old_div(outdir, "gen-py")).rmtree()
+    if (os.path.join(outdir, "gen-py")).exists():
+        (os.path.join(outdir, "gen-py")).rmtree()
 
-    cmd = [options.apitypes.path, "-strict", "-o", outdir, "--gen", "py:slots,dynamic", old_div(outdir, "pyload.thrift")]
+    cmd = [options.apitypes.path, "-strict", "-o", outdir, "--gen", "py:slots,dynamic", os.path.join(outdir, "pyload.thrift")]
 
     print("running", cmd)
 
     p = Popen(cmd)
     p.communicate()
 
-    (old_div(outdir, "thriftgen")).rmtree()
-    (old_div(outdir, "gen-py")).move(old_div(outdir, "thriftgen"))
+    (os.path.join(outdir, "thriftgen")).rmtree()
+    (os.path.join(outdir, "gen-py")).move(os.path.join(outdir, "thriftgen"))
 
     #create light ttypes
     from pyload.remote.create_apitypes import main
@@ -154,7 +154,7 @@ def generate_locale():
     EXCLUDE = ["pyload/lib", "pyload/setup", "pyload/plugins", "Setup.py"]
 
     makepot("core", path("pyload"), EXCLUDE)
-    makepot("plugins", old_div(path("pyload"), "plugins"))
+    makepot("plugins", os.path.join(path("pyload"), "plugins"))
     makepot("setup", "", [], includes="./pyload/setup/Setup.py\n")
     makepot("webUI", path("pyload") / "web" / "app", ["components", "vendor", "gettext"], endings=[".js", ".html"],
             xxargs="--language=Python --force-po".split(" "))
@@ -175,12 +175,12 @@ def upload_translations(options):
     tmp = path(mkdtemp())
 
     shutil.copy('locale/crowdin.yaml', tmp)
-    os.mkdir(old_div(tmp, 'pyLoad'))
+    os.mkdir(os.path.join(tmp, 'pyLoad'))
     for f in glob('locale/*.pot'):
         if os.path.isfile(f):
-            shutil.copy(f, old_div(tmp, 'pyLoad'))
+            shutil.copy(f, os.path.join(tmp, 'pyLoad'))
 
-    config = old_div(tmp, 'crowdin.yaml')
+    config = os.path.join(tmp, 'crowdin.yaml')
     content = open(config, 'rb').read()
     content = content.format(key=options.key, tmp=tmp)
     f = open(config, 'wb')
@@ -203,12 +203,12 @@ def download_translations(options):
     tmp = path(mkdtemp())
 
     shutil.copy('locale/crowdin.yaml', tmp)
-    os.mkdir(old_div(tmp, 'pyLoad'))
+    os.mkdir(os.path.join(tmp, 'pyLoad'))
     for f in glob('locale/*.pot'):
         if os.path.isfile(f):
-            shutil.copy(f, old_div(tmp, 'pyLoad'))
+            shutil.copy(f, os.path.join(tmp, 'pyLoad'))
 
-    config = old_div(tmp, 'crowdin.yaml')
+    config = os.path.join(tmp, 'crowdin.yaml')
     content = open(config, 'rb').read()
     content = content.format(key=options.key, tmp=tmp)
     f = open(config, 'wb')
@@ -217,11 +217,11 @@ def download_translations(options):
 
     call(['crowdin-cli', '-c', config, 'download'])
 
-    for language in (old_div(tmp, 'pyLoad')).listdir():
+    for language in (os.path.join(tmp, 'pyLoad')).listdir():
         if not language.isdir():
             continue
 
-        target = old_div(path('locale'), language.basename())
+        target = os.path.join(path('locale'), language.basename())
         print("Copy language %s" % target)
         if target.exists():
             shutil.rmtree(target)
