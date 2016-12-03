@@ -6,29 +6,29 @@ require.config({
 
     paths: {
 
-        jquery: '../components/jquery/jquery',
-        flot: '../components/flot/jquery.flot',
-        transit: '../components/jquery.transit/jquery.transit',
-        animate: '../components/jquery.animate-enhanced/scripts/src/jquery.animate-enhanced',
-        cookie: '../components/jquery.cookie/jquery.cookie',
+        jquery: '../node_modules/jquery/jquery',
+        flot: '../node_modules/flot/jquery.flot',
+        transit: '../node_modules/jquery.transit/jquery.transit',
+        animate: '../node_modules/jquery.animate-enhanced/scripts/src/jquery.animate-enhanced',
+        cookie: '../node_modules/jquery.cookie/jquery.cookie',
         omniwindow: 'vendor/jquery.omniwindow',
-        select2: '../components/select2/select2',
-        bootstrap: '../components/bootstrap/docs/assets/js/bootstrap',
-        underscore: '../components/underscore/underscore',
-        backbone: '../components/backbone/backbone',
-        marionette: '../components/backbone.marionette/lib/backbone.marionette',
+        select2: '../node_modules/select2/select2',
+        bootstrap: '../node_modules/bootstrap/docs/assets/js/bootstrap',
+        underscore: '../node_modules/underscore/underscore',
+        backbone: '../node_modules/backbone/backbone',
+        marionette: '../node_modules/backbone.marionette/lib/backbone.marionette',
         // version must be tested carefully, many are broken for amd
-        handlebars: '../components/handlebars.js/dist/handlebars',
-        jed: '../components/jed/jed',
-        moment: '../components/momentjs/moment',
+        handlebars: '../node_modules/handlebars.js/dist/handlebars',
+        jed: '../node_modules/jed/jed',
+        moment: '../node_modules/momentjs/moment',
 
         // TODO: Two hbs dependencies could be replaced
-        i18nprecompile: '../components/require-handlebars-plugin/hbs/i18nprecompile',
-        json2: '../components/require-handlebars-plugin/hbs/json2',
+        i18nprecompile: '../node_modules/require-handlebars-plugin/hbs/i18nprecompile',
+        json2: '../node_modules/require-handlebars-plugin/hbs/json2',
 
         // Plugins
-//        text: '../components/requirejs-text/text',
-        hbs: '../components/require-handlebars-plugin/hbs',
+//        text: '../node_modules/requirejs-text/text',
+        hbs: '../node_modules/require-handlebars-plugin/hbs',
 
         // Shortcut
         tpl: '../templates/default'
