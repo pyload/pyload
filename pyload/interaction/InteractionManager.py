@@ -81,7 +81,7 @@ class InteractionManager:
     @lock
     def createQueryTask(self, input, desc, plugin="", owner=None):
         # input type was given, create a input widget
-        if type(input) == int:
+        if isinstance(input, int):
             input = Input(input)
         if not isinstance(input, Input):
             raise TypeError("'Input' class expected not '%s'" % type(input))

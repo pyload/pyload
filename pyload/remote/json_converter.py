@@ -41,7 +41,7 @@ def convert_obj(dct):
         cls = getattr(apitypes, dct['@class'])
         del dct['@class']
         # convert keywords to str, <=2.6 does not accept unicode
-        return cls(**dict((str(x) if type(x) == unicode else x, y) for x, y in dct.items()))
+        return cls(**dict((str(x) if isinstance(x, unicode) else x, y) for x, y in dct.items()))
     elif '@compact' in dct:
         cls = getattr(apitypes, dct['@compact'][0])
         return cls(*dct['@compact'][1:])

@@ -210,7 +210,7 @@ class TestDatabase(BenchmarkTest):
             raise
 
     def assert_int(self, obj, list):
-        for attr in list: assert type(getattr(obj, attr)) == int
+        for attr in list: assert isinstance(getattr(obj, attr), int)
 
 if __name__ == "__main__":
     TestDatabase.benchmark()

@@ -8,7 +8,7 @@ import fnmatch
 
 # patch to let it support list of patterns
 def new_fnmatch(self, pattern):
-    if type(pattern) == list:
+    if isinstance(pattern, list):
         for p in pattern:
             if fnmatch.fnmatch(self.name, p):
                 return True

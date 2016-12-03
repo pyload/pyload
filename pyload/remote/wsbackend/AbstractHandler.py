@@ -96,7 +96,7 @@ class AbstractHandler:
             self.send_result(req, self.ERROR, "No JSON request")
             return None, None, None
 
-        if not isinstance(o, basestring) and type(o) != list and len(o) not in range(1, 4):
+        if not isinstance(o, basestring) and not isinstance(o, list) and len(o) not in range(1, 4):
             self.log.debug("Invalid Api call: %s" % o)
             self.send_result(req, self.ERROR, "Invalid Api call")
             return None, None, None
@@ -108,7 +108,7 @@ class AbstractHandler:
             return o[0], [], {}
         elif len(o) == 2:
             func, args = o
-            if type(args) == list:
+            if isinstance(args, list):
                 return func, args, {}
             else:
                 return func, [], args

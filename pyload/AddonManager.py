@@ -177,7 +177,7 @@ class AddonManager:
         # TODO: could be improved
         #remove event listener
         for f in dir(addon):
-            if f.startswith("__") or type(getattr(addon, f)) != MethodType:
+            if f.startswith("__") or not isinstance(getattr(addon, f), MethodType):
                 continue
             self.core.eventManager.removeFromEvents(getattr(addon, f))
 

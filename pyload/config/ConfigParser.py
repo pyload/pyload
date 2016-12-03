@@ -109,7 +109,7 @@ class ConfigParser:
 
             for option, data in data.config.items():
                 value = self.get(section, option)
-                if type(value) == unicode:
+                if isinstance(value, unicode):
                     value = value.encode("utf8")
                 else:
                     value = str(value)

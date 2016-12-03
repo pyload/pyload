@@ -22,7 +22,7 @@ json_dumps = json.dumps
 
 def decode(string):
     """ decode string to unicode with utf8 """
-    if type(string) == str:
+    if isinstance(string, str):
         return string.decode("utf8", "replace")
     else:
         return string
@@ -30,7 +30,7 @@ def decode(string):
 
 def encode(string):
     """ decode string to utf8 """
-    if type(string) == unicode:
+    if isinstance(string, unicode):
         return string.encode("utf8", "replace")
     else:
         return string
@@ -38,9 +38,9 @@ def encode(string):
 
 def remove_chars(string, repl):
     """ removes all chars in repl from string"""
-    if type(string) == str:
+    if isinstance(string, str):
         return string.translate(maketrans("", ""), repl)
-    elif type(string) == unicode:
+    elif isinstance(string, unicode):
         return string.translate(dict([(ord(s), None) for s in repl]))
 
 
@@ -73,7 +73,7 @@ def compare_time(start, end):
 
 
 def to_list(value):
-    return value if type(value) == list else list(value) if type(value) == set else (
+    return value if isinstance(value, list) else list(value) if isinstance(value, set) else (
     [value] if value is not None else [])
 
 
@@ -262,7 +262,7 @@ def get_index(l, value):
 
 def primary_uid(user):
     """ Gets primary user id for user instances or ints """
-    if type(user) == int: return user
+    if isinstance(user, int): return user
     return user.primary if user else None
 
 

@@ -125,7 +125,7 @@ class PyFile(object):
 
     def setName(self, name):
         """ Only set unicode or utf8 strings as name """
-        if type(name) == str:
+        if isinstance(name, str):
             name = name.decode("utf8")
 
         name = safe_filename(name)

@@ -216,7 +216,7 @@ class SimpleHoster(Hoster):
             self.handleFree()
 
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False):
-        if type(url) == unicode:
+        if isinstance(url, unicode):
             url = url.encode('utf8')
         return Hoster.load(self, url=url, get=get, post=post, ref=ref, cookies=cookies,
                            just_header=just_header, decode=decode)

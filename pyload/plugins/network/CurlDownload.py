@@ -168,7 +168,7 @@ class CurlDownload(Download):
         if self.info.getCount() > 1: # This is a resume, if we were chunked originally assume still can
             self.chunkSupport = True
 
-        while 1:
+        while True:
             #need to create chunks
             if not chunksCreated and self.chunkSupport and self.size: #will be set later by first chunk
 
@@ -196,7 +196,7 @@ class CurlDownload(Download):
 
                 chunksCreated = True
 
-            while 1:
+            while True:
                 ret, num_handles = self.m.perform()
                 if ret != pycurl.E_CALL_MULTI_PERFORM:
                     break

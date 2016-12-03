@@ -134,16 +134,16 @@ class InfoThread(DecrypterThread):
                 self.m.log.debug("Run Info Fetching for %s" % pluginname)
                 for result in plugin.getInfo(process):
                     #result = [ .. (name, size, status, url) .. ]
-                    if not type(result) == list: result = [result]
+                    if not isinstance(result, list): result = [result]
 
                     links = []
                     # Convert results to link statuses
                     for res in result:
                         if isinstance(res, LinkStatus):
                             links.append(res)
-                        elif type(res) == tuple and len(res) == 4:
+                        elif isinstance(res, tuple) and len(res) == 4:
                             links.append(LinkStatus(res[3], res[0], int(res[1]), res[2], pluginname))
-                        elif type(res) == tuple and len(res) == 5:
+                        elif isinstance(res, tuple) and len(res) == 5:
                             links.append(LinkStatus(res[3], res[0], int(res[1]), res[2], pluginname, res[4]))
                         else:
                             self.m.log.debug("Invalid getInfo result: " + result)

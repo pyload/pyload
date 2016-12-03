@@ -218,7 +218,7 @@ class Account(Base):
                 req.close()
 
             self.restoreDefaults() # reset to initial state
-            if type(infos) == dict: # copy result from dict to class
+            if isinstance(infos, dict): # copy result from dict to class
                 for k, v in infos.items():
                     if hasattr(self, k):
                         setattr(self, k, v)

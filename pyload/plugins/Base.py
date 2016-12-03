@@ -140,9 +140,9 @@ class Base(object):
 
         strings = []
         for obj in args:
-            if type(obj) == unicode:
+            if isinstance(obj, unicode):
                 strings.append(obj)
-            elif type(obj) == str:
+            elif isinstance(obj, str):
                 strings.append(decode(obj))
             else:
                 strings.append(str(obj))
@@ -257,7 +257,7 @@ class Base(object):
                 value = value.strip()
 
                 if key in header:
-                    if type(header[key]) == list:
+                    if isinstance(header[key], list):
                         header[key].append(value)
                     else:
                         header[key] = [header[key], value]
