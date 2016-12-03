@@ -22,9 +22,9 @@ class NetloadInOCR(OCR):
 
         return self.result_captcha
 
-if __name__ == '__main__':
-    import urllib
-    ocr = NetloadInOCR()
-    urllib.urlretrieve("http://netload.in/share/includes/captcha.php", "captcha.png")
+# if __name__ == "__main__":
+    # import urllib
+    # ocr = NetloadInOCR()
+    # urllib.urlretrieve("http://netload.in/share/includes/captcha.php", "captcha.png")
 
-    print( ocr.get_captcha('captcha.png'))
+    # print( ocr.get_captcha('captcha.png'))

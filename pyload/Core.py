@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 ###############################################################################
@@ -641,7 +640,7 @@ def deamon():
         if pid > 0:
             sys.exit(0)
     except OSError as e:
-        print("fork #1 failed: %d (%s)" % (e.errno, e.strerror), file=sys.stderr)
+        # print("fork #1 failed: %d (%s)" % (e.errno, e.strerror), file=sys.stderr)
         sys.exit(1)
 
     # decouple from parent environment
@@ -656,7 +655,7 @@ def deamon():
             print("Daemon PID %d" % pid)
             sys.exit(0)
     except OSError as e:
-        print("fork #2 failed: %d (%s)" % (e.errno, e.strerror), file=sys.stderr)
+        # print("fork #2 failed: %d (%s)" % (e.errno, e.strerror), file=sys.stderr)
         sys.exit(1)
 
     # Iterate through and close some file descriptors.
@@ -689,7 +688,3 @@ def main():
             pyload_core.log.info(_("killed pyLoad from terminal"))
             pyload_core.removeLogger()
             _exit(1)
-
-
-if __name__ == "__main__":
-    print("This file can not be started directly.")

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
@@ -56,7 +55,7 @@ class WSClient:
 
         return call
 
-if __name__ == "__main__":
-    api = WSClient()
-    api.login("User", "test")
-    print(api.getServerVersion())
+# if __name__ == "__main__":
+    # api = WSClient()
+    # api.login("User", "test")
+    # print(api.getServerVersion())

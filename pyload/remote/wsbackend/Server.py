@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 #
 # Copyright 2012, Google Inc.
 # All rights reserved.
@@ -880,7 +881,7 @@ def _main(args=None):
         sys.exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     _main(sys.argv[1:])
 
 

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
     This program is free software; you can redistribute it and/or modify
@@ -188,10 +187,3 @@ class JsEngine():
 
     def error(self):
         return _("No js engine detected, please install either Spidermonkey, ossp-js, pyv8, nodejs or rhino")
-
-if __name__ == "__main__":
-    js = JsEngine()
-    js.set_debug(True)
-
-    test = u'"ü"+"ä"'
-    js.eval(test)

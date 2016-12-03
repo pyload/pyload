@@ -284,7 +284,3 @@ def try_catch(fallback):
         return new
 
     return wrap
-
-
-if __name__ == "__main__":
-    print(remove_chars("ab'cdgdsf''ds'", "'ghd"))

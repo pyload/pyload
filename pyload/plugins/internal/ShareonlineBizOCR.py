@@ -49,8 +49,8 @@ class ShareonlineBizOCR(OCR):
 
         #tesseract at 60%
 
-if __name__ == '__main__':
-    import urllib
-    ocr = ShareonlineBizOCR()
-    urllib.urlretrieve("http://www.share-online.biz/captcha.php", "captcha.jpeg")
-    print( ocr.get_captcha('captcha.jpeg'))
+# if __name__ == "__main__":
+    # import urllib
+    # ocr = ShareonlineBizOCR()
+    # urllib.urlretrieve("http://www.share-online.biz/captcha.php", "captcha.jpeg")
+    # print( ocr.get_captcha('captcha.jpeg'))

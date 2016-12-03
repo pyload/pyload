@@ -164,5 +164,5 @@ class InteractionManager:
         self.core.evm.dispatchEvent("interaction:added", task)
 
 
-if __name__ == "__main__":
-    it = InteractionTask()
+# if __name__ == "__main__":
+    # it = InteractionTask()

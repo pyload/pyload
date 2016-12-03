@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 ###############################################################################
@@ -456,49 +455,49 @@ class DatabaseBackend(Thread):
         raise AttributeError(attr)
 
 
-if __name__ == "__main__":
-    db = DatabaseBackend()
-    db.setup()
+# if __name__ == "__main__":
+    # db = DatabaseBackend()
+    # db.setup()
 
-    class Test():
-        @queue
-        def insert(db):
-            c = db.createCursor()
-            for i in range(1000):
-                c.execute("INSERT INTO storage (identifier, key, value) VALUES (?, ?, ?)", ("foo", i, "bar"))
+    # class Test():
+        # @queue
+        # def insert(db):
+            # c = db.createCursor()
+            # for i in range(1000):
+                # c.execute("INSERT INTO storage (identifier, key, value) VALUES (?, ?, ?)", ("foo", i, "bar"))
 
-        @async
-        def insert2(db):
-            c = db.createCursor()
-            for i in range(1000 * 1000):
-                c.execute("INSERT INTO storage (identifier, key, value) VALUES (?, ?, ?)", ("foo", i, "bar"))
+        # @async
+        # def insert2(db):
+            # c = db.createCursor()
+            # for i in range(1000 * 1000):
+                # c.execute("INSERT INTO storage (identifier, key, value) VALUES (?, ?, ?)", ("foo", i, "bar"))
 
-        @queue
-        def select(db):
-            c = db.createCursor()
-            for i in range(10):
-                res = c.execute("SELECT value FROM storage WHERE identifier=? AND key=?", ("foo", i))
-                print(res.fetchone())
+        # @queue
+        # def select(db):
+            # c = db.createCursor()
+            # for i in range(10):
+                # res = c.execute("SELECT value FROM storage WHERE identifier=? AND key=?", ("foo", i))
+                # print(res.fetchone())
 
-        @queue
-        def error(db):
-            c = db.createCursor()
-            print("a")
-            c.execute("SELECT myerror FROM storage WHERE identifier=? AND key=?", ("foo", i))
-            print("e")
+        # @queue
+        # def error(db):
+            # c = db.createCursor()
+            # print("a")
+            # c.execute("SELECT myerror FROM storage WHERE identifier=? AND key=?", ("foo", i))
+            # print("e")
 
-    db.registerSub(Test)
-    from time import time
+    # db.registerSub(Test)
+    # from time import time
 
-    start = time()
-    for i in range(100):
-        db.insert()
-    end = time()
-    print(end - start)
+    # start = time()
+    # for i in range(100):
+        # db.insert()
+    # end = time()
+    # print(end - start)
 
-    start = time()
-    db.insert2()
-    end = time()
-    print(end - start)
+    # start = time()
+    # db.insert2()
+    # end = time()
+    # print(end - start)
 
-    db.error()
+    # db.error()

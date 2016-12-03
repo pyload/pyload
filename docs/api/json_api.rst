@@ -60,7 +60,6 @@ Example
 
 Here is a little python script that is able to send commands to the pyload api::
 
-    #!/usr/bin/env python
     # -*- coding: utf-8 -*-
 
     from urllib import urlopen, urlencode
