@@ -19,7 +19,7 @@ except:
 
 def generate_and_add(urls, paused):
     packs = PYLOAD.generatePackages(urls)
-    for name, urls in packs.iteritems():
+    for name, urls in packs.items():
         PYLOAD.addPackage(name, urls, paused=paused)
 
 def local_check(function):

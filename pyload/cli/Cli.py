@@ -361,7 +361,7 @@ class Cli:
         while True:
             sleep(1)
             result = client.pollResults(rid)
-            for url, status in result.data.iteritems():
+            for url, status in result.data.items():
                 if status.status == 2: check = "Online"
                 elif status.status == 1: check = "Offline"
                 else: check = "Unknown"

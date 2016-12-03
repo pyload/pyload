@@ -269,7 +269,7 @@ class Setup():
                     print(_("Users"))
                     print("-----")
                     users = self.db.getAllUserData()
-                    for user in users.itervalues():
+                    for user in users.values():
                         print(user.name)
                     print("-----")
                     print("")

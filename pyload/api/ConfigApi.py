@@ -11,7 +11,7 @@ def toConfigHolder(section, config, values):
     holder = ConfigHolder(section, config.label, config.description, config.explanation)
     holder.items = [ConfigItem(option, x.label, x.description, x.input,
                                to_string(values.get(option, x.input.default_value))) for option, x in
-                    config.config.iteritems()]
+                    config.config.items()]
     return holder
 
 

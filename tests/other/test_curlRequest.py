@@ -27,7 +27,7 @@ class TestCurlRequest(TestCase):
         assert len(self.req.cj) > 1
 
         cookies = dict([c.strip().split(":") for c in self.req.load(self.cookieURL + "/cookies.php").splitlines()])
-        for k, v in cookies.iteritems():
+        for k, v in cookies.items():
             self.assertIn(k, self.req.cj)
             self.assertEqual(v, self.req.cj[k].value)
 

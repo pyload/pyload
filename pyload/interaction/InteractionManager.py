@@ -52,11 +52,11 @@ class InteractionManager:
     @lock
     def work(self):
         # old notifications will be removed
-        for n in [k for k, v in self.tasks.iteritems() if v.timedOut()]:
+        for n in [k for k, v in self.tasks.items() if v.timedOut()]:
             del self.tasks[n]
 
         # keep notifications count limited
-        n = [k for k,v in self.tasks.iteritems() if v.type == IA.Notification]
+        n = [k for k,v in self.tasks.items() if v.type == IA.Notification]
         n.reverse()
         for v in n[:self.MAX_NOTIFICATIONS]:
             del self.tasks[v]
@@ -130,7 +130,7 @@ class InteractionManager:
         self.last_clients[user] = time()
 
         # filter current mode
-        tasks = [t for t in self.tasks.itervalues() if mode == IA.All or bits_set(t.type, mode)]
+        tasks = [t for t in self.tasks.values() if mode == IA.All or bits_set(t.type, mode)]
         # filter correct user / or shared
         tasks = [t for t in tasks if user is None or user == t.owner or t.shared]
 

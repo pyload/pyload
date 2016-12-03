@@ -55,7 +55,7 @@ for l in links:
 
 h, crypter = c.pluginManager.parseUrls(urls)
 plugins = accumulate(crypter)
-for plugin, urls in plugins.iteritems():
+for plugin, urls in plugins.items():
 
     def meta_class(plugin):
         class _testerClass(CrypterPluginTester):

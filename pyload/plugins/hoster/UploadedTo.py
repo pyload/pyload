@@ -75,7 +75,7 @@ def getInfo(urls):
 
         api = getAPIData(chunk)
 
-        for data in api.itervalues():
+        for data in api.values():
             if data[0] == "online":
                 result.append((html_unescape(data[2]), data[1], 2, data[4]))
 

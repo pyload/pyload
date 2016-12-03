@@ -57,10 +57,10 @@ class InfoThread(DecrypterThread):
             hoster, crypter = self.m.core.pluginManager.parseUrls([l.url for l in links])
             accumulate(hoster + crypter, plugins)
 
-        self.progress = ProgressInfo("BasePlugin", "", _("online check"), 0, 0, sum(len(urls) for urls in plugins.itervalues()),
+        self.progress = ProgressInfo("BasePlugin", "", _("online check"), 0, 0, sum(len(urls) for urls in plugins.values()),
                                      self.owner, ProgressType.LinkCheck)
 
-        for pluginname, urls in plugins.iteritems():
+        for pluginname, urls in plugins.items():
             plugin = self.m.core.pluginManager.loadModule("hoster", pluginname)
             klass = self.m.core.pluginManager.getPluginClass("hoster", pluginname, overwrite=False)
             if has_method(klass, "getInfo"):
@@ -100,7 +100,7 @@ class InfoThread(DecrypterThread):
 
         data = parseNames([(link.name, link) for link in parse])
         # merge in packages that already have a name
-        data = accumulate(tmp.iteritems(), data)
+        data = accumulate(tmp.items(), data)
 
         # TODO: self.oc is None ?!
         self.m.setInfoResults(self.oc, data)

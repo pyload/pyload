@@ -40,7 +40,7 @@ class JSONClient:
         # Add the current session
         kwargs["session"] = self.session
         path = "/" + func + "/" + "/".join(dumps(x) for x in args)
-        data = dict((k, dumps(v)) for k, v in kwargs.iteritems())
+        data = dict((k, dumps(v)) for k, v in kwargs.items())
         rep = self.request(path, data)
         return loads(rep)
 

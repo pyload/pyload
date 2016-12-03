@@ -76,7 +76,7 @@ Here is a little python script that is able to send commands to the pyload api::
     # send arbitrary command to pyload api, parameter as keyword argument
     def send(session, command, **kwargs):
         # convert arguments to json format
-        params = dict([(k, dumps(v)) for k,v in kwargs.iteritems()])
+        params = dict([(k, dumps(v)) for k,v in kwargs.items()])
         params["session"] = session
         ret = urlopen(URL % command, urlencode(params))
         return ret.read()

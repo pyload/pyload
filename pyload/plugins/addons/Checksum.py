@@ -155,7 +155,7 @@ class Checksum(Hook):
     def packageFinished(self, pypack):
         download_folder = save_join(self.config['general']['download_folder'], pypack.folder, "")
 
-        for link in pypack.getChildren().itervalues():
+        for link in pypack.getChildren().values():
             file_type = splitext(link["name"])[1][1:].lower()
             #self.logDebug(link, file_type)
 

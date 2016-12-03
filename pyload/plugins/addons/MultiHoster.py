@@ -28,7 +28,7 @@ class MultiHoster(Addon, PluginMatcher):
 
     def matchURL(self, url):
         """ Overwritten to include new plugin regexp """
-        for hoster, regexp in self.regexp.iteritems():
+        for hoster, regexp in self.regexp.items():
             if regexp.search(url):
                 return "hoster", hoster
 

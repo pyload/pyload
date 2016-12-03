@@ -57,7 +57,7 @@ class LoaderFactory:
         for plugin_type in self.loader[0].iterTypes():
             for loader in self.loader:
                 # iterate all plugins
-                for plugin, info in loader.getPlugins(plugin_type).iteritems():
+                for plugin, info in loader.getPlugins(plugin_type).items():
                     # now iterate all other loaders
                     for l2 in self.loader:
                         if l2 is not loader:
@@ -278,14 +278,14 @@ class PluginLoader:
     def iterPlugins(self):
         """ Iterates over all plugins returning (type, name, info)  with info as PluginTuple """
 
-        for plugin, data in self.plugins.iteritems():
-            for name, info in data.iteritems():
+        for plugin, data in self.plugins.items():
+            for name, info in data.items():
                 yield plugin, name, info
 
     def iterTypes(self):
         """ Iterate over the available plugin types """
 
-        for plugin in self.plugins.iterkeys():
+        for plugin in self.plugins.keys():
             yield plugin
 
     def hasPlugin(self, plugin, name):

@@ -106,7 +106,7 @@ class Api(Iface):
         :param api: Class with methods to extend
         """
         if cls.EXTEND:
-            for name, func in api.__dict__.iteritems():
+            for name, func in api.__dict__.items():
                 if name.startswith("_"): continue
                 setattr(cls, name, MethodType(func, None, cls))
 

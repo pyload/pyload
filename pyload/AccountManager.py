@@ -73,14 +73,14 @@ class AccountManager:
 
     def iterAccounts(self):
         """ yields login, account  for all accounts"""
-        for plugin, accounts in self.accounts.iteritems():
+        for plugin, accounts in self.accounts.items():
             for account in accounts:
                 yield plugin, account
 
     def saveAccounts(self):
         """save all account information"""
         data = []
-        for plugin, accounts in self.accounts.iteritems():
+        for plugin, accounts in self.accounts.items():
             data.extend(
                 [(acc.loginname, 1 if acc.activated else 0, 1 if acc.shared else 0, acc.password,
                   json.dumps(acc.options), acc.aid) for acc in
@@ -147,13 +147,13 @@ class AccountManager:
         """ Return account info for every visible account """
         # filter by owner / shared, but admins see all accounts
         accounts = []
-        for plugin, accs in self.accounts.iteritems():
+        for plugin, accs in self.accounts.items():
             accounts.extend([acc for acc in accs if acc.shared or not uid or acc.owner == uid])
 
         return accounts
 
     def refreshAllAccounts(self):
         """ Force a refresh of every account """
-        for p in self.accounts.itervalues():
+        for p in self.accounts.values():
             for acc in p:
                 acc.getAccountInfo(True)

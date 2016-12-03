@@ -37,7 +37,7 @@ class LinkList(Crypter):
         # empty packages fix
         delete = []
 
-        for key,value in packages.iteritems():
+        for key,value in packages.items():
             if not value:
                 delete.append(key)
 
@@ -46,7 +46,7 @@ class LinkList(Crypter):
 
         urls = []
 
-        for name, links in packages.iteritems():
+        for name, links in packages.items():
             if name == "default":
                 urls.extend(links)
             else:

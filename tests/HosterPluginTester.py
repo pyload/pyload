@@ -105,7 +105,7 @@ del sections["files"]
 urls = []
 status = {}
 
-for k, v in sections.iteritems():
+for k, v in sections.items():
     if k not in statusMap:
         print("Unknown status %s" % k)
     for url in v:
@@ -115,7 +115,7 @@ for k, v in sections.iteritems():
 hoster, c = c.pluginManager.parseUrls(urls)
 
 plugins = accumulate(hoster)
-for plugin, urls in plugins.iteritems():
+for plugin, urls in plugins.items():
     # closure functions to retain local scope
     def meta_class(plugin):
         class _testerClass(HosterPluginTester):

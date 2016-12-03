@@ -59,12 +59,12 @@ class AddonManager:
 
     def iterAddons(self):
         """ Yields (name, meta_data) of all addons """
-        return self.plugins.iteritems()
+        return self.plugins.items()
 
     @lock
     def callInHooks(self, event, eventName, *args):
         """  Calls a method in all addons and catch / log errors"""
-        for plugin in self.plugins.itervalues():
+        for plugin in self.plugins.values():
             for inst in plugin.instances:
                 self.call(inst, event, *args)
         self.dispatchEvent(eventName, *args)
@@ -182,7 +182,7 @@ class AddonManager:
 
     def activateAddons(self):
         self.log.info(_("Activating addons..."))
-        for plugin in self.plugins.itervalues():
+        for plugin in self.plugins.values():
             for inst in plugin.instances:
                 if inst.isActivated():
                     self.call(inst, "activate")
@@ -192,7 +192,7 @@ class AddonManager:
     def deactivateAddons(self):
         """  Called when core is shutting down """
         self.log.info(_("Deactivating addons..."))
-        for plugin in self.plugins.itervalues():
+        for plugin in self.plugins.values():
             for inst in plugin.instances:
                 self.call(inst, "deactivate")
 
@@ -236,7 +236,7 @@ class AddonManager:
 
     def registerEvents(self):
         """ actually register all saved events """
-        for name, plugin in self.plugins.iteritems():
+        for name, plugin in self.plugins.items():
             for func, event in plugin.events:
                 for inst in plugin.instances:
                     self.listenTo(event, getattr(inst, func))

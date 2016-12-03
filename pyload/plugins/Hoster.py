@@ -337,7 +337,7 @@ class Hoster(Base):
         f.close()
         #produces encoding errors, better log to other file in the future?
         #self.log.debug("Content: %s" % content)
-        for name, rule in rules.iteritems():
+        for name, rule in rules.items():
             if type(rule) in (str, unicode):
                 if rule in content:
                     if delete:

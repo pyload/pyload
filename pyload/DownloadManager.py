@@ -166,7 +166,7 @@ class DownloadManager:
                 self.activeDownloads()))
 
         slots = self.getRemainingPluginSlots()
-        occ = tuple([plugin for plugin, v in slots.iteritems() if v == 0])
+        occ = tuple([plugin for plugin, v in slots.items() if v == 0])
         jobs = self.core.files.getJobs(occ)
 
         # map plugin to list of jobs
@@ -180,7 +180,7 @@ class DownloadManager:
 
             plugins[info.download.plugin].append(info)
 
-        for plugin, jobs in plugins.iteritems():
+        for plugin, jobs in plugins.items():
             # we know exactly the number of remaining jobs
             # or only can start one job if limit is not known
             to_schedule = slots[plugin] if plugin in slots else 1

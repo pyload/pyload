@@ -14,7 +14,7 @@ filetypes = {
 
 
 def guess_type(name):
-    for mt, regex in filetypes.iteritems():
+    for mt, regex in filetypes.items():
         if regex.search(name) is not None:
             return mt
 

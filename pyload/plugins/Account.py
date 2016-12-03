@@ -80,7 +80,7 @@ class Account(Base):
 
         info.config = [ConfigItem(name, item.label, item.description, item.input,
                                   to_string(self.getConfig(name))) for name, item in
-                       self.config_data.iteritems()]
+                       self.config_data.items()]
         return info
 
     def init(self):
@@ -218,7 +218,7 @@ class Account(Base):
 
             self.restoreDefaults() # reset to initial state
             if type(infos) == dict: # copy result from dict to class
-                for k, v in infos.iteritems():
+                for k, v in infos.items():
                     if hasattr(self, k):
                         setattr(self, k, v)
                     else:

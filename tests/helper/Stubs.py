@@ -97,7 +97,7 @@ normalUser = User(None, uid=1, role=Role.User)
 otherUser = User(None, uid=2, role=Role.User)
 
 # fixes the module paths because we changed the directory
-for name, m in sys.modules.iteritems():
+for name, m in sys.modules.items():
     if not name.startswith("tests") or not m or not hasattr(m, "__path__"):
         continue
 

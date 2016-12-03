@@ -102,10 +102,10 @@ class ConfigParser:
         chmod(self.CONFIG, 0600)
         f.write("version: %i\n\n" % CONF_VERSION)
 
-        for section, data in self.config.iteritems():
+        for section, data in self.config.items():
             f.write("[%s]\n" % section)
 
-            for option, data in data.config.iteritems():
+            for option, data in data.config.items():
                 value = self.get(section, option)
                 if type(value) == unicode:
                     value = value.encode("utf8")
@@ -157,7 +157,7 @@ class ConfigParser:
     def iterSections(self):
         """ Yields section, config info, values, for all sections """
 
-        for name, config in self.config.iteritems():
+        for name, config in self.config.items():
             yield name, config, self.values[name] if name in self.values else {}
 
     def getSection(self, section):

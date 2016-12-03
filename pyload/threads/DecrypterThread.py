@@ -58,7 +58,7 @@ class DecrypterThread(BaseThread):
         self.progress = ProgressInfo("BasePlugin", "",  _("decrypting"),
                                          0, 0, len(self.data), self.owner, ProgressType.Decrypting)
         # TODO QUEUE_DECRYPT
-        for name, urls in plugin_map.iteritems():
+        for name, urls in plugin_map.items():
             klass = self.core.pluginManager.loadClass("crypter", name)
             plugin = None
             plugin_result = []

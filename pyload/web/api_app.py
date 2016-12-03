@@ -81,7 +81,7 @@ def call_api(func, args=""):
         kwargs = request.json
 
     # file upload, reads whole file into memory
-    for name, f in request.files.iteritems():
+    for name, f in request.files.items():
         kwargs["filename"] = f.filename
         content = StringIO()
         f.save(content)
@@ -89,7 +89,7 @@ def call_api(func, args=""):
         content.close()
 
     # convert arguments from json to obj separately
-    for x, y in request.params.iteritems():
+    for x, y in request.params.items():
         try:
             if not x or not y or x == "session": continue
             kwargs[x] = loads(unquote(y))

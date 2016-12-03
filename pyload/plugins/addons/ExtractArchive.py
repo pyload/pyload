@@ -161,7 +161,7 @@ class ExtractArchive(Addon):
                 if not exists(out):
                     makedirs(out)
 
-            files_ids = [(save_join(dl, p.folder, f.name), f.fid) for f in p.getFiles().itervalues()]
+            files_ids = [(save_join(dl, p.folder, f.name), f.fid) for f in p.getFiles().values()]
             matched = False
 
             # check as long there are unseen files

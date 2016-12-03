@@ -129,7 +129,7 @@ class ConfigManager(ConfigParser):
                 values[section] = {}
                 self.core.print_exc()
 
-        for name, config in self.config.iteritems():
+        for name, config in self.config.items():
             yield name, config, values[name] if name in values else {}
 
     def getSection(self, section, user=None):

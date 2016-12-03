@@ -179,7 +179,7 @@ class UpdateManager(Hook):
 
         modules = filter(
             lambda m: m and (m.__name__.startswith("module.plugins.") or m.__name__.startswith(
-                "userplugins.")) and m.__name__.count(".") >= 2, sys.modules.itervalues())
+                "userplugins.")) and m.__name__.count(".") >= 2, sys.modules.values())
 
         reloads = []
 

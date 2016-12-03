@@ -44,7 +44,7 @@ class MergeFiles(Hook):
     def packageFinished(self, pack):
         files = {}
         fid_dict = {}
-        for fid, data in pack.getChildren().iteritems():
+        for fid, data in pack.getChildren().items():
             if re.search("\.[0-9]{3}$", data["name"]):
                 if data["name"][:-4] not in files:
                     files[data["name"][:-4]] = []
@@ -57,7 +57,7 @@ class MergeFiles(Hook):
         if self.config['general']['folder_per_package']:
             download_folder = save_join(download_folder, pack.folder)
 
-        for name, file_list in files.iteritems():
+        for name, file_list in files.items():
             self.logInfo("Starting merging of %s" % name)
             final_file = open(join(download_folder, fs_encode(name)), "wb")
 

@@ -34,7 +34,7 @@ class ApiProxy:
                 # Dict
                 elif type[0] == dict:
                     assert isinstance(result, dict)
-                    for k, v in result.iteritems():
+                    for k, v in result.items():
                         self.assert_type(k, type[1])
                         self.assert_type(v, type[2])
 

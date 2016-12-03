@@ -117,7 +117,7 @@ class PluginManager:
 
             for ptype in ("crypter", "hoster"):
                 for loader in self.loader:
-                    for name, plugin in loader.getPlugins(ptype).iteritems():
+                    for name, plugin in loader.getPlugins(ptype).items():
                         if plugin.re.match(url):
                             res[ptype].append((url, name))
                             self.history.insert(0, (ptype, name))

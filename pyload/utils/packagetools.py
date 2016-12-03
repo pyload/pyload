@@ -152,4 +152,4 @@ if __name__ == "__main__":
 
     pprint(packs)
 
-    print("Got %d urls." % sum([len(x) for x in packs.itervalues()]))
+    print("Got %d urls." % sum([len(x) for x in packs.values()]))

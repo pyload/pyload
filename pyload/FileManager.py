@@ -188,12 +188,12 @@ class FileManager:
         files = self.db.getAllFiles(package=root, state=state, search=search, owner=owner)
 
         # updating from cache
-        for fid, f in self.files.iteritems():
+        for fid, f in self.files.items():
             if fid in files:
                 files[fid] = f.toInfoData()
 
         # foreign pid, don't overwrite local pid !
-        for fpid, p in self.packages.iteritems():
+        for fpid, p in self.packages.items():
             if fpid in packs:
                 # copy the stats data
                 stats = packs[fpid].stats
@@ -210,7 +210,7 @@ class FileManager:
             return view
 
         # linear traversal over all data
-        for fpid, p in packs.iteritems():
+        for fpid, p in packs.items():
             if p.fids is None: p.fids = []
             if p.pids is None: p.pids = []
 
@@ -219,7 +219,7 @@ class FileManager:
                 if root.pids is None: root.pids = []
                 root.pids.append(fpid)
 
-        for fid, f in files.iteritems():
+        for fid, f in files.items():
             p = packs.get(f.package, None)
             if p: p.fids.append(fid)
 
@@ -257,7 +257,7 @@ class FileManager:
         # load jobs with file info
         if occ not in self.jobCache:
             self.jobCache[occ] = dict([(k, self.getFileInfo(fid)) for k, fid
-                                       in self.db.getJobs(occ).iteritems()])
+                                       in self.db.getJobs(occ).items()])
 
         return self.jobCache[occ]
 
@@ -319,7 +319,7 @@ class FileManager:
         self.db.deleteFile(fid, f.fileorder, f.packageid)
         self.releaseFile(fid)
 
-        for pyfile in self.files.itervalues():
+        for pyfile in self.files.values():
             if pyfile.packageid == pid and pyfile.fileorder > order:
                 pyfile.fileorder -= 1
 
@@ -443,7 +443,7 @@ class FileManager:
         p = self.getPackageInfo(pid)
         self.db.orderPackage(pid, p.root, p.packageorder, position)
 
-        for pack in self.packages.itervalues():
+        for pack in self.packages.values():
             if pack.root != p.root or pack.packageorder < 0: continue
             if pack.pid == pid:
                 pack.packageorder = position
@@ -475,7 +475,7 @@ class FileManager:
         diff = len(fids)
 
         if f.fileorder > position:
-            for pyfile in self.files.itervalues():
+            for pyfile in self.files.values():
                 if pyfile.packageid != f.package or pyfile.fileorder < 0: continue
                 if position <= pyfile.fileorder < f.fileorder:
                     pyfile.fileorder += diff
@@ -485,7 +485,7 @@ class FileManager:
                     self.files[fid].fileorder = position + i
 
         elif f.fileorder < position:
-            for pyfile in self.files.itervalues():
+            for pyfile in self.files.values():
                 if pyfile.packageid != f.package or pyfile.fileorder < 0: continue
                 if position >= pyfile.fileorder >= f.fileorder + diff:
                     pyfile.fileorder -= diff
@@ -540,7 +540,7 @@ class FileManager:
 
         urls = []
 
-        for pyfile in data.itervalues():
+        for pyfile in data.values():
             if pyfile.status not in (DS.NA, DS.Finished, DS.Skipped):
                 urls.append((pyfile.url, pyfile.pluginname))
 

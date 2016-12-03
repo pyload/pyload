@@ -51,7 +51,7 @@ class EventManager:
 
     def removeFromEvents(self, func):
         """ Removes func from all known events """
-        for name, events in self.events.iteritems():
+        for name, events in self.events.items():
             if func in events:
                 events.remove(func)
 

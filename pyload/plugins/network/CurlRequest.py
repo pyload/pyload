@@ -35,7 +35,7 @@ def myquote(url):
 def myurlencode(data):
     data = dict(data)
     return urlencode(dict((x.encode('utf8') if isinstance(x, unicode) else x, \
-                           y.encode('utf8') if isinstance(y, unicode) else y ) for x, y in data.iteritems()))
+                           y.encode('utf8') if isinstance(y, unicode) else y ) for x, y in data.items()))
 
 
 bad_headers = range(400, 418) + range(500, 506)
@@ -147,7 +147,7 @@ class CurlRequest(Request):
 
     def initOptions(self, options):
         """  Sets same options as available in pycurl  """
-        for k, v in options.iteritems():
+        for k, v in options.items():
             if hasattr(pycurl, k):
                 self.c.setopt(getattr(pycurl, k), v)
 
@@ -173,7 +173,7 @@ class CurlRequest(Request):
 
                 self.c.setopt(pycurl.POSTFIELDS, post)
             else:
-                post = [(x, y.encode('utf8') if type(y) == unicode else y ) for x, y in post.iteritems()]
+                post = [(x, y.encode('utf8') if type(y) == unicode else y ) for x, y in post.items()]
                 self.c.setopt(pycurl.HTTPPOST, post)
         else:
             self.c.setopt(pycurl.POST, 0)
