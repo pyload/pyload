@@ -18,8 +18,8 @@
 """
 from __future__ import unicode_literals
 
-from module.network.RequestFactory import getURL
-from module.plugins.internal.MultiHoster import MultiHoster
+from pyload.network.RequestFactory import getURL
+from pyload.plugins.internal.MultiHoster import MultiHoster
 
 
 class FreeWayMe(MultiHoster):

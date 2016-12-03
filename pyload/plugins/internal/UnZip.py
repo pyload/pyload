@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 import zipfile
 import sys
 
-from module.plugins.internal.AbstractExtractor import AbtractExtractor
+from pyload.plugins.internal.AbstractExtractor import AbtractExtractor
 
 
 class UnZip(AbtractExtractor):

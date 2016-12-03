@@ -30,10 +30,10 @@ from traceback import print_exc
 import re
 from pycurl import FORM_FILE
 
-from module.plugins.Addon import Addon
-from module.network.RequestFactory import getURL
-from module.utils import formatSize
-from module.Api import PackageDoesNotExists, FileDoesNotExists
+from pyload.plugins.Addon import Addon
+from pyload.network.RequestFactory import getURL
+from pyload.utils import formatSize
+from pyload.Api import PackageDoesNotExists, FileDoesNotExists
 
 
 class IRCInterface(Thread, Addon):

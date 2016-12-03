@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from module.plugins.Account import Account
+from pyload.plugins.Account import Account
 
 
 class Ftp(Account):

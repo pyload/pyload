@@ -30,8 +30,8 @@ from urllib.parse import urlencode
 from time import sleep
 import Image
 
-from module.network.RequestFactory import getURL, getRequest
-from module.plugins.Hook import Hook
+from pyload.network.RequestFactory import getURL, getRequest
+from pyload.plugins.Hook import Hook
 
 
 class CaptchaBrotherhoodException(Exception):

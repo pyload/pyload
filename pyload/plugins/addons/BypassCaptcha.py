@@ -24,10 +24,10 @@ from builtins import str
 from _thread import start_new_thread
 from pycurl import FORM_FILE, LOW_SPEED_TIME
 
-from module.network.RequestFactory import getURL, getRequest
-from module.network.HTTPRequest import BadHeader
+from pyload.network.RequestFactory import getURL, getRequest
+from pyload.network.HTTPRequest import BadHeader
 
-from module.plugins.Hook import Hook
+from pyload.plugins.Hook import Hook
 
 PYLOAD_KEY = "4f771155b640970d5607f919a615bdefc67e7d32"
 

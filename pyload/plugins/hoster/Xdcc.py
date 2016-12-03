@@ -31,8 +31,8 @@ import socket
 import struct
 from select import select
 
-from module.utils import save_join
-from module.plugins.Hoster import Hoster
+from pyload.utils import save_join
+from pyload.plugins.Hoster import Hoster
 
 
 class Xdcc(Hoster):

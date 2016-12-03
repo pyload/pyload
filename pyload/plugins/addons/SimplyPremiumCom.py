@@ -16,9 +16,9 @@
 ############################################################################
 
 from __future__ import unicode_literals
-from module.plugins.internal.MultiHoster import MultiHoster
-from module.network.RequestFactory import getURL
-from module.common.json_layer import json_loads
+from pyload.plugins.internal.MultiHoster import MultiHoster
+from pyload.network.RequestFactory import getURL
+from pyload.common.json_layer import json_loads
 
 
 class SimplyPremiumCom(MultiHoster):

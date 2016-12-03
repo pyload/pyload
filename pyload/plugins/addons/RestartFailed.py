@@ -18,7 +18,7 @@
 """
 from __future__ import unicode_literals
 
-from module.plugins.Hook import Hook
+from pyload.plugins.Hook import Hook
 
 
 class RestartFailed(Hook):

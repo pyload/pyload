@@ -25,8 +25,8 @@ from pycurl import FORM_FILE, LOW_SPEED_TIME
 import re
 from base64 import b64encode
 
-from module.network.RequestFactory import getURL, getRequest
-from module.plugins.Hook import Hook
+from pyload.network.RequestFactory import getURL, getRequest
+from pyload.plugins.Hook import Hook
 
 
 class ImageTyperzException(Exception):

@@ -19,8 +19,8 @@
 from __future__ import unicode_literals
 from time import mktime, time
 
-from module.lib import feedparser
-from module.plugins.Hook import Hook
+from pyload.lib import feedparser
+from pyload.plugins.Hook import Hook
 
 
 class Ev0InFetcher(Hook):

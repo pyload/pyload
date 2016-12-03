@@ -3,9 +3,9 @@
 # should be working
 
 from __future__ import unicode_literals
-from module.network.RequestFactory import getURL
-from module.plugins.internal.MultiHoster import MultiHoster
-from module.common.json_layer import json_loads
+from pyload.network.RequestFactory import getURL
+from pyload.plugins.internal.MultiHoster import MultiHoster
+from pyload.common.json_layer import json_loads
 
 
 class FastixRu(MultiHoster):

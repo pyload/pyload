@@ -680,7 +680,7 @@ def deamon():
 # And so it begins...
 def main():
     #change name to 'pyLoadCore'
-    #from module.lib.rename_process import renameProcess
+    #from pyload.lib.rename_process import renameProcess
     #renameProcess('pyLoadCore')
     if "--daemon" in sys.argv:
         deamon()

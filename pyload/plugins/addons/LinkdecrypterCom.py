@@ -20,9 +20,9 @@ from __future__ import unicode_literals
 
 import re
 
-from module.plugins.Hook import Hook
-from module.network.RequestFactory import getURL
-from module.utils import remove_chars
+from pyload.plugins.Hook import Hook
+from pyload.network.RequestFactory import getURL
+from pyload.utils import remove_chars
 
 
 class LinkdecrypterCom(Hook):

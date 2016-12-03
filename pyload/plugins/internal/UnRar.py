@@ -26,8 +26,8 @@ from glob import glob
 from subprocess import Popen, PIPE
 from string import digits
 
-from module.utils.fs import save_join, decode, fs_encode
-from module.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPassword, ArchiveError, CRCError
+from pyload.utils.fs import save_join, decode, fs_encode
+from pyload.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPassword, ArchiveError, CRCError
 
 
 class UnRar(AbtractExtractor):

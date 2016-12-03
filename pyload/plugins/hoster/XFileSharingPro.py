@@ -26,10 +26,10 @@ from random import random
 from urllib.parse import unquote
 from urllib.parse import urlparse
 from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, PluginParseError, replace_patterns
-from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia
-from module.utils import html_unescape
-from module.network.RequestFactory import getURL
+from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, PluginParseError, replace_patterns
+from pyload.plugins.internal.CaptchaService import ReCaptcha, SolveMedia
+from pyload.utils import html_unescape
+from pyload.network.RequestFactory import getURL
 
 
 class XFileSharingPro(SimpleHoster):

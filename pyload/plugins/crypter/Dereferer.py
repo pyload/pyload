@@ -21,7 +21,7 @@ standard_library.install_aliases()
 import re
 import urllib.request, urllib.parse, urllib.error
 
-from module.plugins.Crypter import Crypter
+from pyload.plugins.Crypter import Crypter
 
 
 class Dereferer(Crypter):

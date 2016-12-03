@@ -27,10 +27,10 @@ from _thread import start_new_thread
 from base64 import b64encode
 import time
 
-from module.network.RequestFactory import getURL
-from module.network.HTTPRequest import BadHeader
+from pyload.network.RequestFactory import getURL
+from pyload.network.HTTPRequest import BadHeader
 
-from module.plugins.Hook import Hook
+from pyload.plugins.Hook import Hook
 
 
 class Captcha9kw(Hook):

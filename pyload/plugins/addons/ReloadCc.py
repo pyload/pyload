@@ -2,10 +2,10 @@
 
 from __future__ import print_function
 from __future__ import unicode_literals
-from module.plugins.internal.MultiHoster import MultiHoster
+from pyload.plugins.internal.MultiHoster import MultiHoster
 
-from module.common.json_layer import json_loads
-from module.network.RequestFactory import getURL
+from pyload.common.json_layer import json_loads
+from pyload.network.RequestFactory import getURL
 
 
 class ReloadCc(MultiHoster):

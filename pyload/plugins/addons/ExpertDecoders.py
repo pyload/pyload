@@ -27,10 +27,10 @@ from pycurl import LOW_SPEED_TIME
 from uuid import uuid4
 from base64 import b64encode
 
-from module.network.RequestFactory import getURL, getRequest
-from module.network.HTTPRequest import BadHeader
+from pyload.network.RequestFactory import getURL, getRequest
+from pyload.network.HTTPRequest import BadHeader
 
-from module.plugins.Hook import Hook
+from pyload.plugins.Hook import Hook
 
 
 class ExpertDecoders(Hook):

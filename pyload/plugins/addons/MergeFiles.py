@@ -26,8 +26,8 @@ import re
 import traceback
 
 from os.path import join
-from module.utils import save_join, fs_encode
-from module.plugins.Hook import Hook
+from pyload.utils import save_join, fs_encode
+from pyload.plugins.Hook import Hook
 
 BUFFER_SIZE = 4096
 

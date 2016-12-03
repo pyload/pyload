@@ -19,9 +19,9 @@
 from __future__ import unicode_literals
 from os.path import basename
 
-from module.utils import fs_encode
-from module.plugins.Hook import Hook
-from module.PyFile import PyFile
+from pyload.utils import fs_encode
+from pyload.plugins.Hook import Hook
+from pyload.PyFile import PyFile
 
 
 class UnSkipOnFail(Hook):

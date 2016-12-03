@@ -27,10 +27,10 @@ from urllib.parse import urlparse
 import re
 from time import time
 
-from module.plugins.Hoster import Hoster
-from module.utils import html_unescape, fixup, parseFileSize
-from module.network.RequestFactory import getURL
-from module.network.CookieJar import CookieJar
+from pyload.plugins.Hoster import Hoster
+from pyload.utils import html_unescape, fixup, parseFileSize
+from pyload.network.RequestFactory import getURL
+from pyload.network.CookieJar import CookieJar
 
 
 def replace_patterns(string, ruleslist):

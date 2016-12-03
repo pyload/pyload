@@ -18,8 +18,8 @@
 """
 from __future__ import unicode_literals
 
-from module.database import style
-from module.plugins.Hook import Hook
+from pyload.database import style
+from pyload.plugins.Hook import Hook
 
 
 class DeleteFinished(Hook):

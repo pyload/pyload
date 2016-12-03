@@ -26,7 +26,7 @@ from urllib.parse import quote, unquote
 import pycurl
 import re
 
-from module.plugins.Hoster import Hoster
+from pyload.plugins.Hoster import Hoster
 
 
 class Ftp(Hoster):

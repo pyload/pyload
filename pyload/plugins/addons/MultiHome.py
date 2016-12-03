@@ -22,7 +22,7 @@ from builtins import str
 from builtins import object
 from time import time
 
-from module.plugins.Hook import Hook
+from pyload.plugins.Hook import Hook
 
 
 class MultiHome(Hook):

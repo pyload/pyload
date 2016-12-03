@@ -25,8 +25,8 @@ from os import remove
 from os.path import getsize, isfile, splitext
 import re
 
-from module.utils import save_join, fs_encode
-from module.plugins.Hook import Hook
+from pyload.utils import save_join, fs_encode
+from pyload.plugins.Hook import Hook
 
 
 def computeChecksum(local_file, algorithm):

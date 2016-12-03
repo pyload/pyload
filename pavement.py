@@ -61,28 +61,28 @@ xargs = ["--language=Python", "--add-comments=L10N",
 
 # Modules replace rules
 module_replace = [
-    ('from module.plugins.Hoster import Hoster', 'from pyload.plugins.Hoster import Hoster'),
-    ('from module.plugins.Hook import threaded, Expose, Hook',
+    ('from pyload.plugins.Hoster import Hoster', 'from pyload.plugins.Hoster import Hoster'),
+    ('from pyload.plugins.Hook import threaded, Expose, Hook',
      'from pyload.plugins.Addon import threaded, Expose, Addon'),
-    ('from module.plugins.Hook import Hook', 'from pyload.plugins.Addon import Addon'),
-    ('from module.common.json_layer import json_loads, json_dumps', 'from pyload.utils import json_loads, json_dumps'),
-    ('from module.common.json_layer import json_loads', 'from pyload.utils import json_loads'),
-    ('from module.common.json_layer import json_dumps', 'from pyload.utils import json_dumps'),
-    ('from module.utils import parseFileSize', 'from pyload.utils import parseFileSize'),
-    ('from module.utils import save_join, save_path',
+    ('from pyload.plugins.Hook import Hook', 'from pyload.plugins.Addon import Addon'),
+    ('from pyload.common.json_layer import json_loads, json_dumps', 'from pyload.utils import json_loads, json_dumps'),
+    ('from pyload.common.json_layer import json_loads', 'from pyload.utils import json_loads'),
+    ('from pyload.common.json_layer import json_dumps', 'from pyload.utils import json_dumps'),
+    ('from pyload.utils import parseFileSize', 'from pyload.utils import parseFileSize'),
+    ('from pyload.utils import save_join, save_path',
      'from pyload.utils.fs import save_join, safe_filename as save_path'),
-    ('from module.utils import save_join, fs_encode', 'from pyload.utils.fs import save_join, fs_encode'),
-    ('from module.utils import save_join', 'from pyload.utils.fs import save_join'),
-    ('from module.utils import fs_encode', 'from pyload.utils.fs import fs_encode'),
-    ('from module.unescape import unescape', 'from pyload.utils import html_unescape as unescape'),
-    ('from module.lib.BeautifulSoup import BeautifulSoup', 'from BeautifulSoup import BeautifulSoup'),
-    ('from module.lib import feedparser', 'import feedparser'),
+    ('from pyload.utils import save_join, fs_encode', 'from pyload.utils.fs import save_join, fs_encode'),
+    ('from pyload.utils import save_join', 'from pyload.utils.fs import save_join'),
+    ('from pyload.utils import fs_encode', 'from pyload.utils.fs import fs_encode'),
+    ('from pyload.unescape import unescape', 'from pyload.utils import html_unescape as unescape'),
+    ('from pyload.lib.BeautifulSoup import BeautifulSoup', 'from BeautifulSoup import BeautifulSoup'),
+    ('from pyload.lib import feedparser', 'import feedparser'),
     ('self.account.getAccountInfo(self.user, ', 'self.account.getAccountData('),
     ('self.account.getAccountInfo(self.user)', 'self.account.getAccountData()'),
     ('self.account.accounts[self.user]["password"]', 'self.account.password'),
     ("self.account.accounts[self.user]['password']", 'self.account.password'),
     (".canUse()", '.isUsable()'),
-    ('from module.', 'from pyload.')  # This should be always the last one
+    ('from pyload.', 'from pyload.')  # This should be always the last one
 ]
 
 

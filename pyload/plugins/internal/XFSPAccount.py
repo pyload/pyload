@@ -22,9 +22,9 @@ from __future__ import division
 from past.utils import old_div
 import re
 from time import mktime, strptime
-from module.plugins.Account import Account
-from module.plugins.internal.SimpleHoster import parseHtmlForm
-from module.utils import parseFileSize
+from pyload.plugins.Account import Account
+from pyload.plugins.internal.SimpleHoster import parseHtmlForm
+from pyload.utils import parseFileSize
 
 
 class XFSPAccount(Account):

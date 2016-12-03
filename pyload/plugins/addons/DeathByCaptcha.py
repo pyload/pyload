@@ -31,10 +31,10 @@ from time import sleep
 from base64 import b64encode
 import re
 
-from module.network.RequestFactory import getRequest
-from module.network.HTTPRequest import BadHeader
-from module.plugins.Hook import Hook
-from module.common.json_layer import json_loads
+from pyload.network.RequestFactory import getRequest
+from pyload.network.HTTPRequest import BadHeader
+from pyload.plugins.Hook import Hook
+from pyload.common.json_layer import json_loads
 
 
 class DeathByCaptchaException(Exception):
