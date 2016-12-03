@@ -310,5 +310,5 @@ if __name__ == '__main__':
     ocr.eval_black_white(140)
     ocr.derotate_by_average()
     ocr.run_tesser()
-    print(("Tesseract", ocr.result_captcha))
+    print("Tesseract", ocr.result_captcha)
     ocr.image.save("derotated.jpg")

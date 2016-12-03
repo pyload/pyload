@@ -26,7 +26,7 @@ class TestCurlRequest(TestCase):
 
         self.dl.download("http://pyload.org/lib/tpl/pyload/images/pyload-logo-edited3.5-new-font-small.png", "/tmp/random.bin")
 
-        print((self.dl.size, self.dl.arrived))
+        print(self.dl.size, self.dl.arrived)
         assert self.dl.size == self.dl.arrived > 0
         assert stat("/tmp/random.bin").st_size == self.dl.size
 

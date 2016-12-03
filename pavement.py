@@ -106,7 +106,7 @@ def apitypes(options):
 
     cmd = [options.apitypes.path, "-strict", "-o", outdir, "--gen", "py:slots,dynamic", outdir / "pyload.thrift"]
 
-    print(("running", cmd))
+    print("running", cmd)
 
     p = Popen(cmd)
     p.communicate()
