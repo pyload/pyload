@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from os import walk
 from os.path import abspath, dirname, join
 

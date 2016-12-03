@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from pyload.Api import AccountInfo
 from pyload.database import DatabaseMethods, queue, async
 

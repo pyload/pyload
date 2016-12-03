@@ -16,6 +16,7 @@
 #   @author: RaNaN
 ###############################################################################
 
+from __future__ import unicode_literals
 from mod_pywebsocket.msgutil import send_message
 from mod_pywebsocket.util import get_class_logger
 

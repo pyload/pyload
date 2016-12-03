@@ -34,6 +34,7 @@
 # some logging methods removed
 # Added api attribute to request
 
+from __future__ import unicode_literals
 import BaseHTTPServer
 import CGIHTTPServer
 import SocketServer

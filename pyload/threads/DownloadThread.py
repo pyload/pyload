@@ -17,6 +17,7 @@
 ###############################################################################
 
 from __future__ import absolute_import
+from __future__ import unicode_literals
 from threading import Event
 from Queue import Queue
 from time import sleep, time

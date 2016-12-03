@@ -2,6 +2,7 @@
 
 # should be working
 
+from __future__ import unicode_literals
 from module.network.RequestFactory import getURL
 from module.plugins.internal.MultiHoster import MultiHoster
 from module.common.json_layer import json_loads

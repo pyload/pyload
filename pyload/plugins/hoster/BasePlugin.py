@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from urlparse import urlparse
 from re import match, search
 from urllib import unquote

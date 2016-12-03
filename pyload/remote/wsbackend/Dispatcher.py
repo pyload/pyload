@@ -16,6 +16,7 @@
 #   @author: RaNaN
 ###############################################################################
 
+from __future__ import unicode_literals
 from mod_pywebsocket import util
 from mod_pywebsocket.dispatch import Dispatcher as BaseDispatcher
 

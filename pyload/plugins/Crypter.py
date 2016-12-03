@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
+from __future__ import unicode_literals
 from pyload.Api import LinkStatus, DownloadStatus as DS
 from pyload.utils import to_list, has_method, uniqify
 from pyload.utils.fs import exists, remove, fs_encode

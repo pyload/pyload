@@ -16,6 +16,7 @@
 
     @author: RaNaN, Godofdream, zoidberg
 """
+from __future__ import unicode_literals
 import time
 import httplib
 from module.plugins.Hook import Hook

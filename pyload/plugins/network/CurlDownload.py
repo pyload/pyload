@@ -17,6 +17,7 @@
 ###############################################################################
 
 from __future__ import absolute_import
+from __future__ import unicode_literals
 from os import remove
 from os.path import dirname
 from time import time

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
+from __future__ import unicode_literals
 from tests.helper.Stubs import Core
 from tests.helper.BenchmarkTest import BenchmarkTest
 

@@ -15,6 +15,7 @@
 
     @author: mkaay
 """
+from __future__ import unicode_literals
 
 from pyload.database import DatabaseBackend, queue
 

@@ -2,6 +2,7 @@
 
 
 from __future__ import print_function
+from __future__ import unicode_literals
 from pyload.remote.apitypes_debug import classes, methods
 
 from tests.helper.config import credentials

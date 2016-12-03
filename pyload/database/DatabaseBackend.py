@@ -17,6 +17,7 @@
 ###############################################################################
 
 from __future__ import print_function
+from __future__ import unicode_literals
 from threading import Thread, Event
 from shutil import move
 

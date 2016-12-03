@@ -17,6 +17,7 @@
 ###############################################################################
 
 
+from __future__ import unicode_literals
 from pyload.Api import UserData, Permission, Role
 from pyload.utils import bits_set
 

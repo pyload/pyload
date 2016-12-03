@@ -15,6 +15,7 @@
 #   @author: RaNaN
 ###############################################################################
 
+from __future__ import unicode_literals
 import sys
 
 from os.path import abspath, join

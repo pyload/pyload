@@ -16,6 +16,7 @@
 
     @author: RaNaN
 """
+from __future__ import unicode_literals
 
 import zipfile
 import sys

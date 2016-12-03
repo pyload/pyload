@@ -16,6 +16,7 @@
 ###############################################################################
 
 from __future__ import print_function
+from __future__ import unicode_literals
 from os import makedirs, path, chdir
 from os.path import join
 import sys

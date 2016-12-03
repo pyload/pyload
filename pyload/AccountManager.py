@@ -17,6 +17,7 @@
 ###############################################################################
 
 
+from __future__ import unicode_literals
 from threading import Lock
 from random import choice
 

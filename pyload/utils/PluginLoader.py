@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 ###############################################################################
 #   Copyright(c) 2009-2017 pyLoad Team
 #   http://www.pyload.org

@@ -17,6 +17,7 @@
     @author: jeix
     @author: mkaay
 """
+from __future__ import unicode_literals
 from urlparse import urlparse
 from urllib import quote, unquote
 import pycurl

@@ -17,6 +17,7 @@
     @author: RaNaN
     @interface-version: 0.2
 """
+from __future__ import unicode_literals
 
 import socket
 import thread

@@ -18,6 +18,7 @@
     @author: jeix
     @interface-version: 0.2
 """
+from __future__ import unicode_literals
 
 from select import select
 import socket

@@ -20,6 +20,7 @@
 ###############################################################################
 
 from __future__ import absolute_import
+from __future__ import unicode_literals
 from pyload import __version__ as CURRENT_VERSION
 
 import __builtin__

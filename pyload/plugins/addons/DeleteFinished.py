@@ -16,6 +16,7 @@
 
     @author: Walter Purcaro
 """
+from __future__ import unicode_literals
 
 from module.database import style
 from module.plugins.Hook import Hook

@@ -16,6 +16,7 @@
 ###############################################################################
 
 from __future__ import absolute_import
+from __future__ import unicode_literals
 import __builtin__
 
 from gettext import gettext

@@ -16,6 +16,7 @@
 
     @author: mkaay
 """
+from __future__ import unicode_literals
 from time import mktime, time
 
 from module.lib import feedparser

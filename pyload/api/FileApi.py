@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
+from __future__ import unicode_literals
 from pyload.Api import Api, RequirePerm, Permission, DownloadState, PackageStatus as PS, PackageDoesNotExist, FileDoesNotExist
 from pyload.utils import uniqify
 

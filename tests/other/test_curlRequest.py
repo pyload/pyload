@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from tests.helper.Stubs import Core
 from pyload.plugins.network.CurlRequest import CurlRequest
 

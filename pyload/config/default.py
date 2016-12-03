@@ -3,6 +3,7 @@
 """
 Configuration layout for default base config
 """
+from __future__ import unicode_literals
 
 #TODO: write tooltips and descriptions
 #TODO: use apis config related classes

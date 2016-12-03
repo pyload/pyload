@@ -3,6 +3,7 @@
 # JDownloader/src/jd/controlling/LinkGrabberPackager.java
 
 from __future__ import print_function
+from __future__ import unicode_literals
 import re
 from urlparse import urlparse
 

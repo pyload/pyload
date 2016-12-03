@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
+from __future__ import unicode_literals
 from module.plugins.internal.MultiHoster import MultiHoster
 
 from module.common.json_layer import json_loads

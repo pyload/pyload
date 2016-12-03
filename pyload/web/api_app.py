@@ -3,6 +3,7 @@
 
 from __future__ import print_function
 from __future__ import absolute_import
+from __future__ import unicode_literals
 from urllib import unquote
 from traceback import format_exc, print_exc
 from cStringIO import StringIO

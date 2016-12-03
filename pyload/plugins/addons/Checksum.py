@@ -18,6 +18,7 @@
 """
 
 from __future__ import with_statement
+from __future__ import unicode_literals
 import hashlib
 import zlib
 from os import remove

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from gettext import gettext
 
 from new_collections import namedtuple

@@ -14,6 +14,7 @@
 #   Subjected to the terms and conditions in LICENSE
 ###############################################################################
 
+from __future__ import unicode_literals
 from pyload.Core import main
 
 if __name__ == "__main__":

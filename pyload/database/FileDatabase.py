@@ -15,6 +15,7 @@
 #   @author: RaNaN
 ###############################################################################
 
+from __future__ import unicode_literals
 from new_collections import OrderedDict
 
 from pyload.Api import DownloadInfo, FileInfo, PackageInfo, PackageStats, DownloadState as DS, state_string

@@ -15,6 +15,7 @@
     @author: zoidberg
     Original idea by new.cze
 """
+from __future__ import unicode_literals
 
 import re
 from time import localtime

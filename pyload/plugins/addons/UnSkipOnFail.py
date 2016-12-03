@@ -16,6 +16,7 @@
 
     @author: hgg
 """
+from __future__ import unicode_literals
 from os.path import basename
 
 from module.utils import fs_encode

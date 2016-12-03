@@ -16,6 +16,7 @@
     @author: RaNaN
 """
 from __future__ import absolute_import
+from __future__ import unicode_literals
 from threading import Lock
 from time import time
 from base64 import standard_b64encode

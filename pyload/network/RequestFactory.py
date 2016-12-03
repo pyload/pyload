@@ -16,6 +16,7 @@
 ###############################################################################
 
 from __future__ import absolute_import
+from __future__ import unicode_literals
 from .Bucket import Bucket
 
 from pyload.plugins.network.DefaultRequest import DefaultRequest, DefaultDownload

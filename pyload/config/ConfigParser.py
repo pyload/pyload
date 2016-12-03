@@ -3,6 +3,7 @@
 from __future__ import with_statement
 from __future__ import print_function
 from __future__ import absolute_import
+from __future__ import unicode_literals
 from os.path import exists
 from gettext import gettext
 from new_collections import namedtuple, OrderedDict

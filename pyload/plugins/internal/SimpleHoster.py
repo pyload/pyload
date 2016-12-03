@@ -16,6 +16,7 @@
 
     @author: zoidberg
 """
+from __future__ import unicode_literals
 from urlparse import urlparse
 import re
 from time import time

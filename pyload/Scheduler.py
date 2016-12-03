@@ -16,6 +16,7 @@
 
     @author: mkaay
 """
+from __future__ import unicode_literals
 
 from time import time
 from heapq import heappop, heappush

@@ -15,6 +15,7 @@
 
     @author: mkaay
 """
+from __future__ import unicode_literals
 
 from threading import Thread
 from traceback import print_exc

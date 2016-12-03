@@ -17,6 +17,7 @@
     @author: mkaay
     @interface-version: 0.1
 """
+from __future__ import unicode_literals
 
 import subprocess
 from os import listdir, access, X_OK, makedirs

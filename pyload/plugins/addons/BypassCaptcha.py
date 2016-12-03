@@ -16,6 +16,7 @@
 
     @author: RaNaN, Godofdream, zoidberg
 """
+from __future__ import unicode_literals
 
 from thread import start_new_thread
 from pycurl import FORM_FILE, LOW_SPEED_TIME
