@@ -100,7 +100,7 @@ def parseFileInfo(self, url='', html=''):
     else:
         if not html and hasattr(self, "html"):
             html = self.html
-        if isinstance(self.SH_BROKEN_ENCODING, (str, str)):
+        if isinstance(self.SH_BROKEN_ENCODING, str):
             html = str(html, self.SH_BROKEN_ENCODING)
             if hasattr(self, "html"):
                 self.html = html
@@ -131,7 +131,7 @@ def parseFileInfo(self, url='', html=''):
                     size = replace_patterns(info['S'] + info['U'] if 'U' in info else info['S'],
                                             self.FILE_SIZE_REPLACEMENTS)
                     info['size'] = parseFileSize(size)
-                elif isinstance(info['size'], (str, str)):
+                elif isinstance(info['size'], str):
                     if 'units' in info:
                         info['size'] += info['units']
                     info['size'] = parseFileSize(info['size'])

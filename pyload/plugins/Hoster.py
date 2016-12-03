@@ -341,7 +341,7 @@ class Hoster(Base):
         #produces encoding errors, better log to other file in the future?
         #self.log.debug("Content: %s" % content)
         for name, rule in rules.items():
-            if type(rule) in (str, str):
+            if isinstance(rule, str):
                 if rule in content:
                     if delete:
                         remove(lastDownload)
