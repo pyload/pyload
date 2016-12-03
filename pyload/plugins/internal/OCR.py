@@ -77,7 +77,7 @@ class OCR(object):
         self.image.save(tmp.name, 'TIFF')
 
         if os.name == "nt":
-            tessparams = [join(pypath,"tesseract","tesseract.exe")]
+            tessparams = [join(pypath, "tesseract", "tesseract.exe")]
         else:
             tessparams = ['tesseract']
 

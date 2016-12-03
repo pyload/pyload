@@ -193,7 +193,7 @@ class Cli:
         else:
             paused = _("Status:") + " " + red(_("running"))
 
-        println(line,"%s %s: %s %s: %s %s: %s" % (
+        println(line, "%s %s: %s %s: %s %s: %s" % (
             paused, _("total Speed"), red(formatSize(speed) + "/s"), _("Files in queue"), red(
                 status.queue), _("Total"), red(status.total)))
 
@@ -495,7 +495,7 @@ def main():
 
     gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
     translation = gettext.translation("pyLoadCli", join(pypath, "locale"),
-        languages=[config["language"],"en"],fallback=True)
+        languages=[config["language"], "en"], fallback=True)
     translation.install(unicode=True)
 
     interactive = False
@@ -521,7 +521,7 @@ def main():
                 config["language"] = params
                 gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
                 translation = gettext.translation("pyLoadCli", join(pypath, "locale"),
-                    languages=[config["language"],"en"],fallback=True)
+                    languages=[config["language"], "en"], fallback=True)
                 translation.install(unicode=True)
             elif option in ("-h", "--help"):
                 print_help(config)

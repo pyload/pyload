@@ -142,7 +142,7 @@ class BaseThread(Thread):
 
     def getSystemDump(self):
         dump = "SYSTEM:\n\n"
-        for k,v in get_system_info().items():
+        for k, v in get_system_info().items():
             dump += "%s: %s\n" % (k, v)
 
         return dump

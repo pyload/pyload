@@ -224,7 +224,7 @@ class Hoster(Base):
         """ fail and indicates file ist temporary offline, the core may take consequences """
         raise Fail("temp. offline")
 
-    def retry(self, max_tries=3, wait_time=1, reason="", backoff=lambda x,y: x):
+    def retry(self, max_tries=3, wait_time=1, reason="", backoff=lambda x, y: x):
         """Retries and begin again from the beginning
 
         :param max_tries: number of maximum retries
