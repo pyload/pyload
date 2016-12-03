@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """ Store all useful functions here """
+from __future__ import print_function
 
 import os
 import time

@@ -147,7 +147,7 @@ class AddonService(BaseObject):
     __slots__ = ['func_name', 'label', 'description', 'arguments', 'pack', 'media']
 
     def __init__(self, func_name=None, label=None, description=None, arguments=None, pack=None, media=None):
-        self.func_name = func_name
+        self.__name__ = func_name
         self.label = label
         self.description = description
         self.arguments = arguments

@@ -15,6 +15,7 @@
 #   @author: RaNaN
 ###############################################################################
 
+from __future__ import absolute_import
 import __builtin__
 
 from gettext import gettext
@@ -28,7 +29,7 @@ from types import MethodType
 
 from pyload.Api import AddonService, AddonInfo, ServiceException, ServiceDoesNotExist
 from pyload.threads.AddonThread import AddonThread
-from utils import lock, to_string
+from .utils import lock, to_string
 
 AddonTuple = namedtuple('AddonTuple', 'instances events handler')
 
@@ -73,7 +74,7 @@ class AddonManager:
         try:
             func = getattr(plugin, f)
             return func(*args)
-        except Exception, e:
+        except Exception as e:
             plugin.logError(_("Error when executing %s" % f), e)
             self.core.print_exc()
 
@@ -87,7 +88,7 @@ class AddonManager:
         try:
             func = getattr(self.plugins[plugin].instances[0], func_name)
             return func(*args)
-        except Exception, e:
+        except Exception as e:
             raise ServiceException(e.message)
 
     @lock

@@ -65,7 +65,7 @@ class EventManager:
             for f in self.events[event]:
                 try:
                     f(*args, **kwargs)
-                except Exception, e:
+                except Exception as e:
                     self.log.warning("Error calling event handler %s: %s, %s, %s"
                                      % (event, f, args, str(e)))
                     self.core.print_exc()

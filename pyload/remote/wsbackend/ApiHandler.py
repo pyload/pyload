@@ -16,11 +16,12 @@
 #   @author: RaNaN
 ###############################################################################
 
+from __future__ import absolute_import
 from mod_pywebsocket.msgutil import receive_message
 
 from pyload.Api import ExceptionObject
 
-from AbstractHandler import AbstractHandler
+from .AbstractHandler import AbstractHandler
 
 class ApiHandler(AbstractHandler):
     """Provides access to the API.
@@ -42,7 +43,7 @@ class ApiHandler(AbstractHandler):
         while True:
             try:
                 line = receive_message(req)
-            except TypeError, e: # connection closed
+            except TypeError as e: # connection closed
                 self.log.debug("WS Error: %s" % e)
                 return self.passive_closing_handshake(req)
 
@@ -67,11 +68,11 @@ class ApiHandler(AbstractHandler):
 
             try:
                 result = getattr(req.api, func)(*args, **kwargs)
-            except ExceptionObject, e:
+            except ExceptionObject as e:
                 return self.send_result(req, self.BAD_REQUEST, e)
             except AttributeError:
                 return self.send_result(req, self.NOT_FOUND, "Not Found")
-            except Exception, e:
+            except Exception as e:
                 self.core.print_exc()
                 return self.send_result(req, self.ERROR, str(e))
 

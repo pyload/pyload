@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 from time import time
 
 from pyload.Api import LinkStatus, DownloadStatus, ProgressInfo, ProgressType
 from pyload.utils.packagetools import parseNames
 from pyload.utils import has_method, accumulate
 
-from BaseThread import BaseThread
-from DecrypterThread import DecrypterThread
+from .BaseThread import BaseThread
+from .DecrypterThread import DecrypterThread
 
 
 class InfoThread(DecrypterThread):
@@ -155,7 +156,7 @@ class InfoThread(DecrypterThread):
                     cb(links)
 
             self.m.log.debug("Finished Info Fetching for %s" % pluginname)
-        except Exception, e:
+        except Exception as e:
             self.m.log.warning(_("Info Fetching for %(name)s failed | %(err)s") %
                                {"name": pluginname, "err": str(e)})
             self.core.print_exc()

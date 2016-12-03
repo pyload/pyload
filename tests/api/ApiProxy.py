@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+from __future__ import print_function
 from pyload.remote.apitypes_debug import classes, methods
 
 from tests.helper.config import credentials

@@ -1,9 +1,10 @@
+from __future__ import absolute_import
 from unittest import TestCase
 from random import choice
 
 from pyload.Core import Core
 
-from ApiTester import ApiTester
+from .ApiTester import ApiTester
 
 
 class TestAPI(TestCase):
@@ -16,7 +17,7 @@ class TestAPI(TestCase):
     #TODO: parallel testing
     @classmethod
     def setUpClass(cls):
-        from test_noargs import TestNoArgs
+        from .test_noargs import TestNoArgs
 
         cls.core = Core()
         cls.core.start(False, False, True)

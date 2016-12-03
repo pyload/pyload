@@ -15,7 +15,8 @@
 #   @author: RaNaN
 ###############################################################################
 
-from Bucket import Bucket
+from __future__ import absolute_import
+from .Bucket import Bucket
 
 from pyload.plugins.network.DefaultRequest import DefaultRequest, DefaultDownload
 

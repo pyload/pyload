@@ -19,6 +19,7 @@
 #   @version: v0.5.0
 ###############################################################################
 
+from __future__ import absolute_import
 from pyload import __version__ as CURRENT_VERSION
 
 import __builtin__
@@ -43,23 +44,23 @@ import subprocess
 
 subprocess.__doc__ = None # the module with the largest doc we are using
 
-from InitHomeDir import init_dir
+from .InitHomeDir import init_dir
 
 init_dir()
 
-from AccountManager import AccountManager
-from config.ConfigParser import ConfigParser
-from config.ConfigManager import ConfigManager
-from PluginManager import PluginManager
-from interaction.EventManager import EventManager
-from network.RequestFactory import RequestFactory
-from web.ServerThread import WebServer
-from Scheduler import Scheduler
-from remote.RemoteManager import RemoteManager
-from utils.JsEngine import JsEngine
+from .AccountManager import AccountManager
+from .config.ConfigParser import ConfigParser
+from .config.ConfigManager import ConfigManager
+from .PluginManager import PluginManager
+from .interaction.EventManager import EventManager
+from .network.RequestFactory import RequestFactory
+from .web.ServerThread import WebServer
+from .Scheduler import Scheduler
+from .remote.RemoteManager import RemoteManager
+from .utils.JsEngine import JsEngine
 
-from utils import formatSize, get_console_encoding
-from utils.fs import free_space, exists, makedirs, join, chmod
+from .utils import formatSize, get_console_encoding
+from .utils.fs import free_space, exists, makedirs, join, chmod
 
 from codecs import getwriter
 
@@ -118,21 +119,21 @@ class Core(object):
                     elif option in ("-d", "--debug"):
                         self.doDebug = True
                     elif option in ("-u", "--user"):
-                        from setup.Setup import Setup
+                        from .setup.Setup import Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
                         s.set_user()
                         exit()
                     elif option in ("-s", "--setup"):
-                        from setup.Setup import Setup
+                        from .setup.Setup import Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
                         s.start()
                         exit()
                     elif option == "--changedir":
-                        from setup.Setup import Setup
+                        from .setup.Setup import Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
@@ -199,7 +200,7 @@ class Core(object):
         f = open(self.pidfile, "wb")
         f.write(str(pid))
         f.close()
-        chmod(self.pidfile, 0660)
+        chmod(self.pidfile, 0o660)
 
     def deletePidFile(self):
         if self.checkPidFile():
@@ -276,7 +277,7 @@ class Core(object):
         self.version = CURRENT_VERSION
 
         if not exists("pyload.conf") and not tests:
-            from setup.Setup import Setup
+            from .setup.Setup import Setup
 
             print("This is your first start, running configuration assistant now.")
             self.config = ConfigParser()
@@ -329,7 +330,7 @@ class Core(object):
 
                     group = getgrnam(self.config["permission"]["group"])
                     os.setgid(group[2])
-                except Exception, e:
+                except Exception as e:
                     print(_("Failed changing group: %s") % e)
 
         if self.config["permission"]["change_user"]:
@@ -339,7 +340,7 @@ class Core(object):
 
                     user = getpwnam(self.config["permission"]["user"])
                     os.setuid(user[2])
-                except Exception, e:
+                except Exception as e:
                     print(_("Failed changing user: %s") % e)
 
         if self.debug:
@@ -373,11 +374,11 @@ class Core(object):
         __builtin__.pyreq = self.requestFactory
 
         # deferred import, could improve start-up time
-        from Api import Api
-        from AddonManager import AddonManager
-        from interaction.InteractionManager import InteractionManager
-        from threads.ThreadManager import ThreadManager
-        from DownloadManager import DownloadManager
+        from .Api import Api
+        from .AddonManager import AddonManager
+        from .interaction.InteractionManager import InteractionManager
+        from .threads.ThreadManager import ThreadManager
+        from .DownloadManager import DownloadManager
 
         Api.initComponents()
         self.api = Api(self)
@@ -482,14 +483,14 @@ class Core(object):
                 self.threadManager.work()
                 self.interactionManager.work()
                 self.scheduler.work()
-            except Exception, e:
+            except Exception as e:
                 self.log.critical(_("Critical error: ") + str(e))
                 self.print_exc()
 
 
     def setupDB(self):
-        from database import DatabaseBackend
-        from FileManager import FileManager
+        from .database import DatabaseBackend
+        from .FileManager import FileManager
 
         self.db = DatabaseBackend(self) # the backend
         self.db.setup()
@@ -511,7 +512,7 @@ class Core(object):
 
         # console formatter
         if self.config['log']['console_color']:
-            from lib.colorlog import ColoredFormatter
+            from .lib.colorlog import ColoredFormatter
 
             if self.config['log']['color_theme'] == "full":
                 cfmt = "%(asctime)s %(log_color)s%(bold)s%(white)s %(levelname)-8s %(reset)s %(message)s"
@@ -550,7 +551,7 @@ class Core(object):
         self.log = logging.getLogger("log") # setable in config
 
         if not exists(self.config['log']['log_folder']):
-            makedirs(self.config['log']['log_folder'], 0700)
+            makedirs(self.config['log']['log_folder'], 0o700)
 
         if self.config['log']['file_log']:
             if self.config['log']['log_rotate']:
@@ -638,7 +639,7 @@ def deamon():
         pid = os.fork()
         if pid > 0:
             sys.exit(0)
-    except OSError, e:
+    except OSError as e:
         print("fork #1 failed: %d (%s)" % (e.errno, e.strerror), file=sys.stderr)
         sys.exit(1)
 
@@ -653,7 +654,7 @@ def deamon():
         # exit from second parent, print(eventual PID before)
             print("Daemon PID %d" % pid)
             sys.exit(0)
-    except OSError, e:
+    except OSError as e:
         print("fork #2 failed: %d (%s)" % (e.errno, e.strerror), file=sys.stderr)
         sys.exit(1)
 

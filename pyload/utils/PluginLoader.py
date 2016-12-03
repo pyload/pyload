@@ -169,7 +169,7 @@ class PluginLoader:
             #replace gettext function and eval result
             try:
                 attrs[m[0]] = literal_eval(m[-1].replace("_(", "("))
-            except Exception, e:
+            except Exception as e:
                 self.logDebug(folder, name, "Error when parsing: %s" % m[-1])
                 self.log.debug(str(e))
 

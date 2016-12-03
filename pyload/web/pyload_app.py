@@ -16,14 +16,15 @@
 #   @author: RaNaN
 ###############################################################################
 
+from __future__ import absolute_import
 import time
 from os.path import join, exists
 
 from bottle import route, static_file, response, request, redirect, template
 
-from webinterface import PYLOAD, PROJECT_DIR, SETUP, APP_PATH, UNAVAILALBE, PREFIX
+from .webinterface import PYLOAD, PROJECT_DIR, SETUP, APP_PATH, UNAVAILALBE, PREFIX
 
-from utils import login_required, add_json_header, select_language
+from .utils import login_required, add_json_header, select_language
 
 from pyload.utils import json_dumps
 

@@ -180,7 +180,7 @@ class PluginManager:
                     # cache import
                     self.modules[(plugin, name)] = module
                     return module
-                except Exception, e:
+                except Exception as e:
                     self.log.error(_("Error importing %(name)s: %(msg)s") % {"name": name, "msg": str(e)})
                     self.core.print_exc()
 

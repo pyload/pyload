@@ -16,6 +16,7 @@
 #   @author: RaNaN
 ###############################################################################
 
+from __future__ import absolute_import
 import re
 from Queue import Queue, Empty
 from threading import Lock
@@ -25,7 +26,7 @@ from mod_pywebsocket.msgutil import receive_message
 
 from pyload.Api import EventInfo, Interaction
 from pyload.utils import lock
-from AbstractHandler import AbstractHandler
+from .AbstractHandler import AbstractHandler
 
 class Mode:
     STANDBY = 1
@@ -119,7 +120,7 @@ class AsyncHandler(AbstractHandler):
             if req.mode == Mode.STANDBY:
                 try:
                     line = receive_message(req)
-                except TypeError, e: # connection closed
+                except TypeError as e: # connection closed
                     self.log.debug("WS Error: %s" % e)
                     return self.passive_closing_handshake(req)
 

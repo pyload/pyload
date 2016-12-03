@@ -143,7 +143,7 @@ class Captcha9kw(Hook):
                                         "id": task.data["ticket"]})
                 self.logInfo("Request correct: %s" % response)
 
-            except BadHeader, e:
+            except BadHeader as e:
                 self.logError("Could not send correct request.", str(e))
         else:
             self.logError("No CaptchaID for correct request (task %s) found." % task)
@@ -162,7 +162,7 @@ class Captcha9kw(Hook):
                                         "id": task.data["ticket"]})
                 self.logInfo("Request refund: %s" % response)
 
-            except BadHeader, e:
+            except BadHeader as e:
                 self.logError("Could not send refund request.", str(e))
         else:
             self.logError("No CaptchaID for not correct request (task %s) found." % task)

@@ -60,7 +60,7 @@ def server(self, *settings):
             server_socket.connect(("127.0.0.1", settings[1]))
             thread.start_new_thread(forward, (client_socket, server_socket))
             thread.start_new_thread(forward, (server_socket, client_socket))
-    except socket.error, e:
+    except socket.error as e:
         if hasattr(e, "errno"):
             errno = e.errno
         else:

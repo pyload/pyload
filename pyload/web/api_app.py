@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+from __future__ import absolute_import
 from urllib import unquote
 from traceback import format_exc, print_exc
 from cStringIO import StringIO
 
 from bottle import route, request, response, HTTPError, parse_auth
 
-from utils import set_session, get_user_api, add_json_header
-from webinterface import PYLOAD, session
+from .utils import set_session, get_user_api, add_json_header
+from .webinterface import PYLOAD, session
 
 from pyload.Api import ExceptionObject
 from pyload.remote.json_converter import loads, dumps, BaseEncoder
@@ -67,7 +69,7 @@ def call_api(func, args=""):
         return error(403, "Forbidden")
 
     if not hasattr(PYLOAD.EXTERNAL, func) or func.startswith("_"):
-        print("Invalid API call", func)
+        print(("Invalid API call", func))
         return error(404, "Not Found")
 
     # TODO: possible encoding
@@ -93,7 +95,7 @@ def call_api(func, args=""):
         try:
             if not x or not y or x == "session": continue
             kwargs[x] = loads(unquote(y))
-        except Exception, e:
+        except Exception as e:
             # Unsupported input
             msg = "Invalid Input %s, %s : %s" % (x, y, e.message)
             print_exc()
@@ -106,9 +108,9 @@ def call_api(func, args=""):
         if result is None: result = True
         return json_response(result)
 
-    except ExceptionObject, e:
+    except ExceptionObject as e:
         return error(400, e.message)
-    except Exception, e:
+    except Exception as e:
         print_exc()
         return error(500, {"error": e.message, "traceback": format_exc()})
 

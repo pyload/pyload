@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import print_function
+from __future__ import absolute_import
 from os.path import join
 import re
 from urllib import unquote
@@ -10,7 +12,7 @@ from traceback import print_exc
 from pyload.utils.fs import safe_filename
 
 from bottle import route, request, HTTPError
-from webinterface import PYLOAD, DL_ROOT, JS
+from .webinterface import PYLOAD, DL_ROOT, JS
 
 try:
     from Crypto.Cipher import AES

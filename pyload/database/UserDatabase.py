@@ -15,6 +15,7 @@
 #   @author: RaNaN
 ###############################################################################
 
+from __future__ import absolute_import
 from hashlib import sha1
 from string import letters, digits
 from random import choice
@@ -23,7 +24,7 @@ alphnum = letters + digits
 
 from pyload.Api import UserData
 
-from DatabaseBackend import DatabaseMethods, queue, async
+from .DatabaseBackend import DatabaseMethods, queue, async
 
 
 def random_salt():

@@ -16,6 +16,7 @@
 #   @author: RaNaN
 ###############################################################################
 
+from __future__ import absolute_import
 import sys
 
 from os.path import join, abspath, dirname, exists
@@ -26,12 +27,12 @@ PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
 import bottle
 from bottle import run, app
 
-from middlewares import StripPathMiddleware, PrefixMiddleware
+from .middlewares import StripPathMiddleware, PrefixMiddleware
 
 SETUP = None
 PYLOAD = None
 
-import ServerThread
+from . import ServerThread
 
 if not ServerThread.core:
     if ServerThread.setup:
@@ -85,11 +86,11 @@ web = StripPathMiddleware(session)
 if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
 
-import api_app
-import cnl_app
-import setup_app
+from . import api_app
+from . import cnl_app
+from . import setup_app
 # Last routes to register,
-import pyload_app
+from . import pyload_app
 
 # Server Adapter
 def run_server(host, port, server):

@@ -153,7 +153,7 @@ class UpdateManager(Hook):
 
             try:
                 content = getURL(url % info)
-            except Exception, e:
+            except Exception as e:
                 self.logWarning(_("Error when updating %s") % filename, str(e))
                 continue
 

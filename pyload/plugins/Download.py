@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from Request import Request
+from __future__ import absolute_import
+from .Request import Request
 
 class Download(Request):
     """ Abstract class for download request """

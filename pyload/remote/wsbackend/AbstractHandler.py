@@ -91,7 +91,7 @@ class AbstractHandler:
         """
         try:
             o = loads(msg)
-        except ValueError, e: #invalid json object
+        except ValueError as e: #invalid json object
             self.log.debug("Invalid Request: %s" % e)
             self.send_result(req, self.ERROR, "No JSON request")
             return None, None, None

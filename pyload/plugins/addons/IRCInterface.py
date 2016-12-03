@@ -111,7 +111,7 @@ class IRCInterface(Thread, Addon):
         try:
             self.main_loop()
 
-        except IRCError, ex:
+        except IRCError as ex:
             self.sock.send("QUIT :byebye\r\n")
             print_exc()
             self.sock.close()
@@ -193,7 +193,7 @@ class IRCInterface(Thread, Addon):
             res = handler(args)
             for line in res:
                 self.response(line, msg["origin"])
-        except Exception, e:
+        except Exception as e:
             self.logError("pyLoad IRC: " + repr(e))
 
     def response(self, msg, origin=""):

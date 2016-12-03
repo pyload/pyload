@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 from pyload.Api import Api, RequirePerm, Permission, DownloadState, PackageStatus as PS, PackageDoesNotExist, FileDoesNotExist
 from pyload.utils import uniqify
 
-from ApiComponent import ApiComponent
+from .ApiComponent import ApiComponent
 
 
 # TODO: user context

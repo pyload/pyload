@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 import os
 from time import time
 
@@ -12,8 +13,8 @@ from pyload.utils import chunks as _chunks
 from pyload.utils.fs import save_join, safe_filename, fs_encode, fs_decode, \
     remove, makedirs, chmod, stat, exists, join
 
-from Base import Base, Fail, Retry
-from network.DefaultRequest import DefaultRequest, DefaultDownload
+from .Base import Base, Fail, Retry
+from .network.DefaultRequest import DefaultRequest, DefaultDownload
 
 # Import for Hoster Plugins
 chunks = _chunks
@@ -268,7 +269,7 @@ class Hoster(Base):
                     gid = getgrnam(self.config["permission"]["group"])[2]
 
                     chown(location, uid, gid)
-                except Exception, e:
+                except Exception as e:
                     self.log.warning(_("Setting User and Group failed: %s") % str(e))
 
         # convert back to unicode
@@ -305,7 +306,7 @@ class Hoster(Base):
                 gid = getgrnam(self.config["permission"]["group"])[2]
 
                 chown(fs_filename, uid, gid)
-            except Exception, e:
+            except Exception as e:
                 self.log.warning(_("Setting User and Group failed: %s") % str(e))
 
         self.lastDownload = filename

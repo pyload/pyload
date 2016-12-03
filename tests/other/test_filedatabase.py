@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
 from tests.helper.Stubs import Core
 from tests.helper.BenchmarkTest import BenchmarkTest
 

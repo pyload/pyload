@@ -35,7 +35,7 @@ class LinkdecrypterCom(Hook):
     def coreReady(self):
         try:
             self.loadPatterns()
-        except Exception, e:
+        except Exception as e:
             self.logError(e)
 
     def loadPatterns(self):

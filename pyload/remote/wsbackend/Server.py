@@ -232,7 +232,8 @@ class _StandaloneSSLConnection(object):
 
         try:
             return self._connection.recv(bufsize)
-        except OpenSSL.SSL.SysCallError, (err, message):
+        except OpenSSL.SSL.SysCallError as xxx_todo_changeme:
+            (err, message) = xxx_todo_changeme.args
             if err == -1:
                 # Suppress "unexpected EOF" exception. See the OpenSSL document
                 # for SSL_get_error.
@@ -260,7 +261,7 @@ def _alias_handlers(dispatcher, websock_handlers_map_file):
             try:
                 dispatcher.add_resource_path_alias(
                     m.group(1), m.group(2))
-            except dispatch.DispatchException, e:
+            except dispatch.DispatchException as e:
                 logging.error(str(e))
     finally:
         fp.close()
@@ -321,7 +322,7 @@ class WebSocketServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
             family, socktype, proto, canonname, sockaddr = addrinfo
             try:
                 socket_ = socket.socket(family, socktype)
-            except Exception, e:
+            except Exception as e:
                 self._logger.info('Skip by failure: %r', e)
                 continue
             server_options = self.websocket_server_options
@@ -358,7 +359,7 @@ class WebSocketServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
                 socket_.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             try:
                 socket_.bind(self.server_address)
-            except Exception, e:
+            except Exception as e:
                 self._logger.info('Skip by failure: %r', e)
                 socket_.close()
                 failed_sockets.append(socketinfo)
@@ -387,7 +388,7 @@ class WebSocketServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
             self._logger.debug('Listen on: %r', addrinfo)
             try:
                 socket_.listen(self.request_queue_size)
-            except Exception, e:
+            except Exception as e:
                 self._logger.info('Skip by failure: %r', e)
                 socket_.close()
                 failed_sockets.append(socketinfo)
@@ -438,7 +439,7 @@ class WebSocketServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
             if server_options.tls_module == _TLS_BY_STANDARD_MODULE:
                 try:
                     accepted_socket.do_handshake()
-                except ssl.SSLError, e:
+                except ssl.SSLError as e:
                     self._logger.debug('%r', e)
                     raise
 
@@ -477,7 +478,7 @@ class WebSocketServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
                 # TODO(tyoshino): Convert all kinds of errors.
                 try:
                     accepted_socket.do_handshake()
-                except OpenSSL.SSL.Error, e:
+                except OpenSSL.SSL.Error as e:
                     # Set errno part to 1 (SSL_ERROR_SSL) like the ssl module
                     # does.
                     self._logger.debug('%r', e)
@@ -562,7 +563,7 @@ class WebSocketRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
         try:
             CGIHTTPServer.CGIHTTPRequestHandler.__init__(
                 self, request, client_address, server)
-        except socket.error, e:
+        except socket.error as e:
             # Broken pipe, let it pass
             errno = e.args[0] # errno on py < 2.6
             if errno != 32:
@@ -637,7 +638,7 @@ class WebSocketRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
                                   self.path)
                 self._logger.info('Fallback to CGIHTTPRequestHandler')
                 return False
-        except dispatch.DispatchException, e:
+        except dispatch.DispatchException as e:
             self._logger.info('Dispatch failed for error: %s', e)
             self.send_error(e.status)
             return False
@@ -653,14 +654,14 @@ class WebSocketRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
                     self._options.dispatcher,
                     allowDraft75=self._options.allow_draft75,
                     strict=self._options.strict)
-            except handshake.VersionException, e:
+            except handshake.VersionException as e:
                 self._logger.info('Handshake failed for version error: %s', e)
                 self.send_response(common.HTTP_STATUS_BAD_REQUEST)
                 self.send_header(common.SEC_WEBSOCKET_VERSION_HEADER,
                                  e.supported_versions)
                 self.end_headers()
                 return False
-            except handshake.HandshakeException, e:
+            except handshake.HandshakeException as e:
                 # Handshake for ws(s) failed.
                 self._logger.info('Handshake failed for error: %s', e)
                 self.send_error(e.status)
@@ -668,7 +669,7 @@ class WebSocketRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
 
             request._dispatcher = self._options.dispatcher
             self._options.dispatcher.transfer_data(request)
-        except handshake.AbortedByUserException, e:
+        except handshake.AbortedByUserException as e:
             self._logger.info('Aborted: %s', e)
         return False
 
@@ -872,7 +873,7 @@ def _main(args=None):
 
         server = WebSocketServer(options)
         server.serve_forever()
-    except Exception, e:
+    except Exception as e:
         logging.critical('mod_pywebsocket: %s' % e)
         logging.critical('mod_pywebsocket: %s' % util.get_stack_trace())
         sys.exit(1)

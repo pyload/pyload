@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+from __future__ import absolute_import
 from os.path import dirname, join
 from nose.tools import nottest
 
 from logging import log, DEBUG
 
-from helper.Stubs import Core
-from helper.PluginTester import PluginTester
+from .helper.Stubs import Core
+from .helper.PluginTester import PluginTester
 
 from pyload.plugins.Base import Fail
 from pyload.utils import accumulate, to_int
@@ -28,7 +30,7 @@ class CrypterPluginTester(PluginTester):
             if to_int(flag):
                 assert to_int(flag) == len(result)
 
-        except Exception, e:
+        except Exception as e:
             if isinstance(e, Fail) and flag == "fail":
                 pass
             else:
@@ -70,7 +72,7 @@ for plugin, urls in plugins.items():
             def _test(self):
                 self.test_plugin(plugin, url, flag)
 
-            _test.func_name = sig
+            _test.__name__ = sig
             return _test
 
         sig = "test_LINK%d" % i

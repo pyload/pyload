@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 from pyload.Api import Api, RequirePerm, Permission, StatusInfo, Interaction
 from pyload.utils.fs import join, free_space, exists
 from pyload.utils import compare_time
 
-from ApiComponent import ApiComponent
+from .ApiComponent import ApiComponent
 
 class CoreApi(ApiComponent):
     """ This module provides methods for general interaction with the core, like status or progress retrieval  """

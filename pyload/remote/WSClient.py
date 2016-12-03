@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+from __future__ import absolute_import
 from websocket import create_connection
 from httplib import UNAUTHORIZED, FORBIDDEN
 
-from json_converter import loads, dumps
-from apitypes import Unauthorized, Forbidden
+from .json_converter import loads, dumps
+from .apitypes import Unauthorized, Forbidden
 
 class WSClient:
     URL = "ws://localhost:7447/api"

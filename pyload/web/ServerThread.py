@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import with_statement
+from __future__ import absolute_import
 from time import time, sleep
 
 import threading
@@ -40,7 +41,7 @@ class WebServer(threading.Thread):
 
     def run(self):
         self.running = True
-        import webinterface
+        from . import webinterface
 
         global webinterface
 
@@ -69,7 +70,7 @@ class WebServer(threading.Thread):
         try:
             self.start_server(server)
 
-        except Exception, e:
+        except Exception as e:
             log.error(_("Failed starting webserver: " + e.message))
             self.error = e
             if core:
@@ -77,7 +78,7 @@ class WebServer(threading.Thread):
 
     def select_server(self, prefer=None):
         """ find a working server """
-        from servers import all_server
+        from .servers import all_server
 
         unavailable = []
         server = None
@@ -103,7 +104,7 @@ class WebServer(threading.Thread):
                     break # Found a server
                 else:
                     unavailable.append(server.NAME)
-            except Exception, e:
+            except Exception as e:
                 log.error(_("Failed importing webserver: " + e.message))
 
         if unavailable: # Just log whats not available to have some debug information
@@ -117,7 +118,7 @@ class WebServer(threading.Thread):
 
     def start_server(self, server):
 
-        from servers import ServerAdapter
+        from .servers import ServerAdapter
 
         if issubclass(server, ServerAdapter):
 

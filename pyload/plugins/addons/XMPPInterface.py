@@ -97,7 +97,7 @@ class XMPPInterface(IRCInterface, JabberClient):
         self.connect()
         try:
             self.loop()
-        except Exception, ex:
+        except Exception as ex:
             self.logError("pyLoad XMPP: %s" % str(ex))
 
     def stream_state_changed(self, state, arg):
@@ -173,7 +173,7 @@ class XMPPInterface(IRCInterface, JabberClient):
                         body=line)
 
                     messages.append(m)
-            except Exception, e:
+            except Exception as e:
                 self.logError("pyLoad XMPP: " + repr(e))
 
             return messages

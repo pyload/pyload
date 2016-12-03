@@ -15,6 +15,8 @@
 
     @author: RaNaN
 """
+from __future__ import print_function
+from __future__ import absolute_import
 import re
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from cgi import FieldStorage
@@ -27,7 +29,7 @@ try:
 except:
     pass
 
-from RemoteManager import BackendBase
+from .RemoteManager import BackendBase
 
 core = None
 js = None
@@ -46,9 +48,9 @@ class ClickAndLoadBackend(BackendBase):
 class CNLHandler(BaseHTTPRequestHandler):
 
     def add_package(self, name, urls, queue=0):
-        print("name", name)
-        print("urls", urls)
-        print("queue", queue)
+        print(("name", name))
+        print(("urls", urls))
+        print(("queue", queue))
 
     def get_post(self, name, default=""):
         if name in self.post:
@@ -93,7 +95,7 @@ class CNLHandler(BaseHTTPRequestHandler):
                 resp += "\r\n"
                 self.start_response(resp)
                 self.wfile.write(resp)
-            except Exception,e :
+            except Exception as e :
                 self.send_error(500, str(e))
         else:
             self.send_error(404, "Not Found")

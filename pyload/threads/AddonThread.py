@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 from copy import copy
 from traceback import print_exc
 
 from pyload.Api import ProgressInfo, ProgressType
-from BaseThread import BaseThread
+from .BaseThread import BaseThread
 
 class AddonThread(BaseThread):
     """thread for addons"""
@@ -56,16 +57,16 @@ class AddonThread(BaseThread):
             try:
                 self.kwargs["thread"] = self
                 self.f(*self.args, **self.kwargs)
-            except TypeError, e:
+            except TypeError as e:
                 #dirty method to filter out exceptions
                 if "unexpected keyword argument 'thread'" not in e.args[0]:
                     raise
 
                 del self.kwargs["thread"]
                 self.f(*self.args, **self.kwargs)
-        except Exception, e:
+        except Exception as e:
             if hasattr(self.f, "im_self"):
-                addon = self.f.im_self
+                addon = self.f.__self__
                 addon.logError(_("An Error occurred"), e)
                 if self.m.core.debug:
                     print_exc()

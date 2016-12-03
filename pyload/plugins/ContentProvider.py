@@ -17,7 +17,8 @@
 ###############################################################################
 
 
-from Base import Base
+from __future__ import absolute_import
+from .Base import Base
 
 class ContentProvider(Base):
     """

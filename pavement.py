@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
 from paver.easy import *
 from paver.doctools import cog
 
@@ -105,7 +106,7 @@ def apitypes(options):
 
     cmd = [options.apitypes.path, "-strict", "-o", outdir, "--gen", "py:slots,dynamic", outdir / "pyload.thrift"]
 
-    print("running", cmd)
+    print(("running", cmd))
 
     p = Popen(cmd)
     p.communicate()

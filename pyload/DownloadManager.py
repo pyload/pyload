@@ -16,6 +16,7 @@
 #   @author: RaNaN
 ###############################################################################
 
+from __future__ import absolute_import
 from collections import defaultdict
 from threading import Event
 from time import sleep
@@ -24,15 +25,15 @@ from subprocess import call
 
 from ReadWriteLock import ReadWriteLock
 
-from Api import DownloadStatus as DS
+from .Api import DownloadStatus as DS
 
-from utils import lock, read_lock
-from utils.fs import exists, join, free_space
+from .utils import lock, read_lock
+from .utils.fs import exists, join, free_space
 
-from network import get_ip
+from .network import get_ip
 
-from threads.DownloadThread import DownloadThread
-from threads.DecrypterThread import DecrypterThread
+from .threads.DownloadThread import DownloadThread
+from .threads.DecrypterThread import DecrypterThread
 
 
 class DownloadManager:

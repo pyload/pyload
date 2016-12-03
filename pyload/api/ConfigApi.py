@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 from pyload.Api import Api, RequirePerm, Permission, ConfigHolder, ConfigItem, ConfigInfo
 from pyload.utils import to_string
 
-from ApiComponent import ApiComponent
+from .ApiComponent import ApiComponent
 
 # helper function to create a ConfigHolder
 def toConfigHolder(section, config, values):

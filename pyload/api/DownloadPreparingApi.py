@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 from itertools import chain
 
 from pyload.Api import Api, DownloadStatus as DS,\
@@ -10,7 +11,7 @@ from pyload.utils.fs import join
 from pyload.utils.packagetools import parseNames
 from pyload.network.RequestFactory import getURL
 
-from ApiComponent import ApiComponent
+from .ApiComponent import ApiComponent
 
 class DownloadPreparingApi(ApiComponent):
     """ All kind of methods to parse links or retrieve online status """

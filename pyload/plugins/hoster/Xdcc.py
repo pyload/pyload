@@ -16,6 +16,7 @@
 
     @author: jeix
 """
+from __future__ import print_function
 
 from os.path import join
 from os.path import exists
@@ -58,7 +59,7 @@ class Xdcc(Hoster):
                 nmn = self.doDownload(pyfile.url)
                 self.logDebug("%s: Download of %s finished." % (self.__name__, nmn))
                 return
-            except socket.error, e:
+            except socket.error as e:
                 if hasattr(e, "errno"):
                     errno = e.errno
                 else:

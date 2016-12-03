@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+from __future__ import absolute_import
 from os.path import dirname
 from logging import log, DEBUG
 from hashlib import md5
@@ -8,9 +10,9 @@ from shutil import move
 
 from nose.tools import nottest
 
-from helper.Stubs import Core
-from helper.parser import parse_config
-from helper.PluginTester import PluginTester
+from .helper.Stubs import Core
+from .helper.parser import parse_config
+from .helper.PluginTester import PluginTester
 
 from pyload.datatypes.PyFile import PyFile, statusMap
 from pyload.plugins.Base import Fail
@@ -83,7 +85,7 @@ class HosterPluginTester(PluginTester):
 
                 raise Exception("Hash does not match.")
 
-        except Exception, e:
+        except Exception as e:
             if isinstance(e, Fail) and status == "failed":
                 pass
             elif isinstance(e, Fail) and status == "offline" and e.message == "offline":
@@ -131,7 +133,7 @@ for plugin, urls in plugins.items():
             def _test(self):
                 self.test_plugin(__plugin, url, status)
 
-            _test.func_name = sig
+            _test.__name__ = sig
             return _test
 
         tmp_status = status.get(url)

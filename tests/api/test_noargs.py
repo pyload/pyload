@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 import inspect
 
-from ApiTester import ApiTester
+from .ApiTester import ApiTester
 
 from pyload.remote.apitypes import Iface
 
@@ -21,7 +22,7 @@ for name in dir(Iface):
         def meta_test(name): #retain local scope
             def test(self):
                 getattr(self.api, name)()
-            test.func_name = "test_%s" % name
+            test.__name__ = "test_%s" % name
             return test
 
         setattr(TestNoArgs, "test_%s" % name, meta_test(name))

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 import re
 from bottle import request, HTTPError, redirect
 
@@ -9,7 +10,7 @@ try:
 except ImportError:
     zlib = None
 
-from webinterface import PYLOAD, SETUP
+from .webinterface import PYLOAD, SETUP
 
 
 def add_json_header(r):

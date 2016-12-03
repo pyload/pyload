@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 from time import time
 
 from pyload.utils import remove_chars
 
-from Account import Account
+from .Account import Account
 
 
 def normalize(domain):
@@ -58,7 +59,7 @@ class MultiHoster(Account):
             req = self.getAccountRequest()
             try:
                 self.hoster = self.loadHosterList(req)
-            except Exception, e:
+            except Exception as e:
                 self.logError(e)
                 return []
             finally:

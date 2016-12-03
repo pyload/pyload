@@ -16,6 +16,7 @@
 
     @author: RaNaN
 """
+from __future__ import print_function
 
 from imp import find_module
 from os.path import join, exists
@@ -132,19 +133,19 @@ class JsEngine():
             results = []
             if PYV8:
                 res = self.eval_pyv8(script)
-                print("PyV8:", res)
+                print(("PyV8:", res))
                 results.append(res)
             if JS:
                 res = self.eval_js(script)
-                print("JS:", res)
+                print(("JS:", res))
                 results.append(res)
             if NODE:
                 res = self.eval_node(script)
-                print("NODE:", res)
+                print(("NODE:", res))
                 results.append(res)
             if RHINO:
                 res = self.eval_rhino(script)
-                print("Rhino:", res)
+                print(("Rhino:", res))
                 results.append(res)
 
             warning = False

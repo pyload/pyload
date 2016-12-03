@@ -76,7 +76,7 @@ class ExternalScripts(Addon):
             self.logDebug("Executing %(script)s: %(cmd)s" % {"script": abspath(script), "cmd": " ".join(cmd)})
             #output goes to pyload
             subprocess.Popen(cmd, bufsize=-1)
-        except Exception, e:
+        except Exception as e:
             self.logError(_("Error in %(script)s: %(error)s") % {"script": basename(script), "error": str(e)})
 
     def downloadPreparing(self, pyfile):

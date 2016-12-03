@@ -144,7 +144,7 @@ class ImageTyperz(Hook):
         c = task.captchaFile
         try:
             ticket, result = self.submit(c)
-        except ImageTyperzException, e:
+        except ImageTyperzException as e:
             task.error = e.getCode()
             return
 

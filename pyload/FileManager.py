@@ -16,14 +16,16 @@
 #   @author: RaNaN
 ###############################################################################
 
+from __future__ import absolute_import
 from time import time
 from ReadWriteLock import ReadWriteLock
 
 from pyload.utils import lock, read_lock
 
-from Api import PackageStatus, DownloadStatus as DS, TreeCollection, PackageDoesNotExist
-from datatypes.PyFile import PyFile
-from datatypes.PyPackage import PyPackage, RootPackage
+from .Api import PackageStatus, DownloadStatus as DS, TreeCollection, PackageDoesNotExist
+from .datatypes.PyFile import PyFile
+from .datatypes.PyPackage import PyPackage, RootPackage
+from functools import reduce
 
 # invalidates the cache
 def invalidate(func):

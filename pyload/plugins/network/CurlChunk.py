@@ -17,6 +17,7 @@
 ###############################################################################
 
 
+from __future__ import absolute_import
 import re
 from os import remove, stat, fsync
 from os.path import exists
@@ -28,7 +29,7 @@ import pycurl
 from pyload.network.HeaderDict import HeaderDict
 from pyload.utils.fs import fs_encode, fs_decode, safe_filename
 
-from CurlRequest import CurlRequest
+from .CurlRequest import CurlRequest
 
 class ChunkInfo():
     def __init__(self, name):

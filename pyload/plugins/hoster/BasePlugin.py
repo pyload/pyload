@@ -45,7 +45,7 @@ class BasePlugin(Hoster):
 
             try:
                 self.downloadFile(pyfile)
-            except ResponseException, e:
+            except ResponseException as e:
                 if e.code in (401, 403):
                     self.logDebug("Auth required")
 

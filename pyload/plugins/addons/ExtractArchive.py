@@ -19,7 +19,7 @@ if sys.version_info < (2, 7) and os.name != "nt":
         while True:
             try:
                 return func(*args)
-            except OSError, e:
+            except OSError as e:
                 if e.errno == errno.EINTR:
                     continue
                 raise
@@ -31,7 +31,7 @@ if sys.version_info < (2, 7) and os.name != "nt":
         if self.returncode is None:
             try:
                 pid, sts = _eintr_retry_call(os.waitpid, self.pid, 0)
-            except OSError, e:
+            except OSError as e:
                 if e.errno != errno.ECHILD:
                     raise
                     # This happens if SIGCLD is set to be ignored or waiting
@@ -91,7 +91,7 @@ class ExtractArchive(Addon):
                     names.append(p)
                     self.plugins.append(klass)
 
-            except OSError, e:
+            except OSError as e:
                 if e.errno == 2:
                     self.logInfo(_("No %s installed") % p)
                 else:
@@ -99,7 +99,7 @@ class ExtractArchive(Addon):
                     if self.core.debug:
                         print_exc()
 
-            except Exception, e:
+            except Exception as e:
                 self.logWarning(_("Could not activate %s") % p, str(e))
                 if self.core.debug:
                     print_exc()
@@ -257,11 +257,11 @@ class ExtractArchive(Addon):
 
             return plugin.getExtractedFiles()
 
-        except ArchiveError, e:
+        except ArchiveError as e:
             self.logError(basename(plugin.file), _("Archive Error"), str(e))
         except CRCError:
             self.logError(basename(plugin.file), _("CRC Mismatch"))
-        except Exception, e:
+        except Exception as e:
             if self.core.debug:
                 print_exc()
             self.logError(basename(plugin.file), _("Unknown Error"), str(e))
@@ -315,5 +315,5 @@ class ExtractArchive(Addon):
                     uid = getpwnam(self.config["permission"]["user"])[2]
                     gid = getgrnam(self.config["permission"]["group"])[2]
                     chown(f, uid, gid)
-            except Exception, e:
+            except Exception as e:
                 self.logWarning(_("Setting User and Group failed"), e)

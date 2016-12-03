@@ -18,6 +18,7 @@
 #
 ###
 from __future__ import with_statement
+from __future__ import print_function
 import os
 from os.path import join
 from os.path import abspath
@@ -309,5 +310,5 @@ if __name__ == '__main__':
     ocr.eval_black_white(140)
     ocr.derotate_by_average()
     ocr.run_tesser()
-    print("Tesseract", ocr.result_captcha)
+    print(("Tesseract", ocr.result_captcha))
     ocr.image.save("derotated.jpg")

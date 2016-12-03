@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+from __future__ import absolute_import
 from os.path import abspath, dirname, join
 
 path = dirname(abspath(__file__))
 module = join(path, "..")
 
-import apitypes
-from apitypes_debug import enums
+from . import apitypes
+from .apitypes_debug import enums
 
 # generate js enums
 def main():

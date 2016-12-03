@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 from new_collections import OrderedDict
 
 from pyload.Api import InvalidConfigSection
 from pyload.utils import json
 
-from ConfigParser import ConfigParser
+from .ConfigParser import ConfigParser
 
-from convert import to_input, from_string
+from .convert import to_input, from_string
 
 def convertKeyError(func):
     """ converts KeyError into InvalidConfigSection """

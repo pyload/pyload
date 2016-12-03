@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 from os.path import isabs
 
 from pyload.Api import Api, RequirePerm, Permission, Role
 from pyload.utils.fs import join
 
-from ApiComponent import ApiComponent
+from .ApiComponent import ApiComponent
 
 class DownloadApi(ApiComponent):
     """ Component to create, add, delete or modify downloads."""

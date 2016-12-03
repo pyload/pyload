@@ -15,6 +15,7 @@
 
     @author: RaNaN
 """
+from __future__ import absolute_import
 from threading import Lock
 from time import time
 from base64 import standard_b64encode
@@ -25,7 +26,7 @@ from pyload.utils import lock, bits_set
 from pyload.Api import Interaction as IA
 from pyload.Api import InputType, Input
 
-from InteractionTask import InteractionTask
+from .InteractionTask import InteractionTask
 
 class InteractionManager:
     """

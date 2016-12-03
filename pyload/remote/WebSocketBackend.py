@@ -16,9 +16,10 @@
 #   @author: RaNaN
 ###############################################################################
 
+from __future__ import absolute_import
 import logging
 
-from RemoteManager import BackendBase
+from .RemoteManager import BackendBase
 
 from mod_pywebsocket import util
 
@@ -33,10 +34,10 @@ util.get_class_logger = get_class_logger
 class WebSocketBackend(BackendBase):
     def setup(self, host, port):
 
-        from wsbackend.Server import WebSocketServer, DefaultOptions
-        from wsbackend.Dispatcher import Dispatcher
-        from wsbackend.ApiHandler import ApiHandler
-        from wsbackend.AsyncHandler import AsyncHandler
+        from .wsbackend.Server import WebSocketServer, DefaultOptions
+        from .wsbackend.Dispatcher import Dispatcher
+        from .wsbackend.ApiHandler import ApiHandler
+        from .wsbackend.AsyncHandler import AsyncHandler
 
         options = DefaultOptions()
         options.server_host = host
@@ -47,7 +48,7 @@ class WebSocketBackend(BackendBase):
 
         # tls is needed when requested or webUI is also on tls
         if self.core.api.isWSSecure():
-            from wsbackend.Server import import_ssl
+            from .wsbackend.Server import import_ssl
             tls_module = import_ssl()
             if tls_module:
                 options.use_tls = True

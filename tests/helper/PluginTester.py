@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 from unittest import TestCase
 from os import makedirs, remove
 from os.path import exists, join, expanduser
@@ -12,7 +13,7 @@ from glob import glob
 from pycurl import LOW_SPEED_TIME, FORM_FILE
 from json import loads
 
-from Stubs import Thread, Core, noop
+from .Stubs import Thread, Core, noop
 
 from pyload.network.RequestFactory import getRequest
 from pyload.plugins.Base import Abort, Fail

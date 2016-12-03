@@ -16,6 +16,7 @@
 #   @author: RaNaN
 ###############################################################################
 
+from __future__ import absolute_import
 from threading import Event
 from Queue import Queue
 from time import sleep, time
@@ -27,7 +28,7 @@ from pyload.plugins.Base import Fail, Retry, Abort
 from pyload.plugins.Hoster import Reconnect, SkipDownload
 from pyload.plugins.Request import ResponseException
 
-from BaseThread import BaseThread
+from .BaseThread import BaseThread
 
 class DownloadThread(BaseThread):
     """thread for downloading files from 'real' hoster plugins"""
@@ -108,12 +109,12 @@ class DownloadThread(BaseThread):
 
                 continue
 
-            except Retry, e:
+            except Retry as e:
                 reason = e.args[0]
                 self.log.info(_("Download restarted: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": reason})
                 self.queue.put(pyfile)
                 continue
-            except Fail, e:
+            except Fail as e:
                 msg = e.args[0]
 
                 # TODO: activate former skipped downloads
@@ -133,7 +134,7 @@ class DownloadThread(BaseThread):
                 self.clean(pyfile)
                 continue
 
-            except error, e:
+            except error as e:
                 if len(e.args) == 2:
                     code, msg = e.args
                 else:
@@ -176,7 +177,7 @@ class DownloadThread(BaseThread):
                 self.clean(pyfile)
                 continue
 
-            except SkipDownload, e:
+            except SkipDownload as e:
                 pyfile.setStatus("skipped")
 
                 self.log.info(_("Download skipped: %(name)s due to %(plugin)s")
@@ -191,7 +192,7 @@ class DownloadThread(BaseThread):
 
                 continue
 
-            except Exception, e:
+            except Exception as e:
                 if isinstance(e, ResponseException) and e.code == 500:
                     pyfile.setStatus("temp. offline")
                     self.log.warning(_("Download is temporary offline: %s") % pyfile.name)

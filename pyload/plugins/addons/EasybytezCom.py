@@ -26,7 +26,7 @@ class EasybytezCom(MultiHoster):
 
             found = re.search(r'</textarea>\s*Supported sites:(.*)', page)
             return found.group(1).split(',')
-        except Exception, e:
+        except Exception as e:
             self.logDebug(e)
             self.logWarning("Unable to load supported hoster list, using last known")
             return ['bitshare.com', 'crocko.com', 'ddlstorage.com', 'depositfiles.com', 'extabit.com', 'hotfile.com',

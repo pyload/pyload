@@ -15,6 +15,7 @@
 #   @author: RaNaN
 ###############################################################################
 
+from __future__ import print_function
 from os import makedirs, path, chdir
 from os.path import join
 import sys
@@ -98,7 +99,7 @@ def init_dir(other_path=None, no_change=False):
         configdir = join(pypath, other_path)
 
     if not path.exists(configdir):
-        makedirs(configdir, 0700)
+        makedirs(configdir, 0o700)
 
     __builtin__.configdir = configdir
     chdir(configdir)

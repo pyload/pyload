@@ -16,6 +16,7 @@
 
     @author: and9000
 """
+from __future__ import print_function
 
 import os
 import re
@@ -79,7 +80,7 @@ class MergeFiles(Hook):
                             break
                     s_file.close()
                     self.logDebug("Finished merging part %s" % splitted_file)
-                except Exception, e:
+                except Exception as e:
                     print(traceback.print_exc())
                 finally:
                     pyfile.setProgress(100)

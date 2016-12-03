@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 #from functools import wraps
+from __future__ import absolute_import
 from pyload.utils import has_method, to_list
 
-from Base import Base
+from .Base import Base
 
 
 def class_name(p):
@@ -19,7 +20,7 @@ def AddEventListener(event):
     class _klass(object):
         def __new__(cls, f, *args, **kwargs):
             for ev in to_list(event):
-                addonManager.addEventListener(class_name(f.__module__), f.func_name, ev)
+                addonManager.addEventListener(class_name(f.__module__), f.__name__, ev)
             return f
 
     return _klass
@@ -38,8 +39,8 @@ def AddonHandler(label, desc, package=True, media=-1):
 
     class _klass(object):
         def __new__(cls, f, *args, **kwargs):
-            addonManager.addAddonHandler(class_name(f.__module__), f.func_name, label, desc,
-                                         f.func_code.co_varnames[1:], package, media)
+            addonManager.addAddonHandler(class_name(f.__module__), f.__name__, label, desc,
+                                         f.__code__.co_varnames[1:], package, media)
             return f
 
     return _klass
@@ -146,7 +147,7 @@ class Addon(Base):
     def _periodical(self):
         try:
             if self.isActivated(): self.periodical()
-        except Exception, e:
+        except Exception as e:
             self.core.log.error(_("Error executing addon: %s") % str(e))
             self.core.print_exc()
 

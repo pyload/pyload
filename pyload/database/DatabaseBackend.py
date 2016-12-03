@@ -16,6 +16,7 @@
 #   @author: RaNaN, mkaay
 ###############################################################################
 
+from __future__ import print_function
 from threading import Thread, Event
 from shutil import move
 
@@ -107,10 +108,10 @@ class DatabaseJob():
     def processJob(self):
         try:
             self.result = self.f(*self.args, **self.kwargs)
-        except Exception, e:
+        except Exception as e:
             print_exc()
             try:
-                print("Database Error @", self.f.__name__, self.args[1:], self.kwargs, e)
+                print(("Database Error @", self.f.__name__, self.args[1:], self.kwargs, e))
             except:
                 pass
 
@@ -151,7 +152,7 @@ class DatabaseBackend(Thread):
         version = self._checkVersion()
 
         self.conn = sqlite3.connect(self.DB_FILE)
-        chmod(self.DB_FILE, 0600)
+        chmod(self.DB_FILE, 0o600)
 
         self.c = self.conn.cursor()
 
@@ -175,7 +176,7 @@ class DatabaseBackend(Thread):
                 f.close()
 
                 self.conn = sqlite3.connect(self.DB_FILE)
-                chmod(self.DB_FILE, 0600)
+                chmod(self.DB_FILE, 0o600)
                 self.c = self.conn.cursor()
 
         self._createTables()
@@ -185,7 +186,7 @@ class DatabaseBackend(Thread):
     def run(self):
         try:
             self.init()
-        except Exception, e:
+        except Exception as e:
             self.error = e
         finally:
             self.running.set()

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from CurlRequest import CurlRequest
-from CurlDownload import CurlDownload
+from __future__ import absolute_import
+from .CurlRequest import CurlRequest
+from .CurlDownload import CurlDownload
 
 __version__ = "0.1"
 

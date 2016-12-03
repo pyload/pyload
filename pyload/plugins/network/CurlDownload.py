@@ -16,6 +16,7 @@
 #   @author: RaNaN
 ###############################################################################
 
+from __future__ import absolute_import
 from os import remove
 from os.path import dirname
 from time import time
@@ -29,8 +30,8 @@ from pyload.network.CookieJar import CookieJar
 from pyload.utils.fs import save_join, fs_encode
 
 from ..Download import Download
-from CurlChunk import ChunkInfo, CurlChunk
-from CurlRequest import ResponseException
+from .CurlChunk import ChunkInfo, CurlChunk
+from .CurlRequest import ResponseException
 
 # TODO: save content-disposition for resuming
 
@@ -128,7 +129,7 @@ class CurlDownload(Download):
 
         try:
             self._download(chunks, resume)
-        except pycurl.error, e:
+        except pycurl.error as e:
             #code 33 - no resume
             code = e.args[0]
             if code == 33:
@@ -214,7 +215,7 @@ class CurlDownload(Download):
                     chunk = self.findChunk(c)
                     try: # check if the header implies success, else add it to failed list
                         chunk.verifyHeader()
-                    except ResponseException, e:
+                    except ResponseException as e:
                         self.log.debug("Chunk %d failed: %s" % (chunk.id + 1, str(e)))
                         failed.append(chunk)
                         ex = e
@@ -233,7 +234,7 @@ class CurlDownload(Download):
 
                     try: # check if the header implies success, else add it to failed list
                         chunk.verifyHeader()
-                    except ResponseException, e:
+                    except ResponseException as e:
                         self.log.debug("Chunk %d failed: %s" % (chunk.id + 1, str(e)))
                         failed.append(chunk)
                         ex = e
@@ -302,7 +303,7 @@ class CurlDownload(Download):
     def closeChunk(self, chunk):
         try:
             self.m.remove_handle(chunk.c)
-        except pycurl.error, e:
+        except pycurl.error as e:
             self.log.debug("Error removing chunk: %s" % str(e))
         finally:
             chunk.close()

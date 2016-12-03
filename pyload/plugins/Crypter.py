@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 from pyload.Api import LinkStatus, DownloadStatus as DS
 from pyload.utils import to_list, has_method, uniqify
 from pyload.utils.fs import exists, remove, fs_encode
-from Base import Base, Retry
+from .Base import Base, Retry
 
 
 # represent strings as LinkStatus
@@ -272,7 +273,7 @@ class Crypter(Base):
                             f = open(fs_encode(path), "rb")
                             content.append((f.name, f.read()))
                             f.close()
-                    except IOError, e:
+                    except IOError as e:
                         self.logError("IOError", e)
                 else:
                     remote.append(url)

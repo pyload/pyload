@@ -98,7 +98,7 @@ class DeathByCaptcha(Hook):
             elif "status" not in response:
                 raise DeathByCaptchaException(str(response))
 
-        except BadHeader, e:
+        except BadHeader as e:
             if 403 == e.code:
                 raise DeathByCaptchaException('not-logged-in')
             elif 413 == e.code:
@@ -177,7 +177,7 @@ class DeathByCaptcha(Hook):
         try:
             self.getStatus()
             self.getCredits()
-        except DeathByCaptchaException, e:
+        except DeathByCaptchaException as e:
             self.logError(e.getDesc())
             return False
 
@@ -195,16 +195,16 @@ class DeathByCaptcha(Hook):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             try:
                 response = self.call_api("captcha/%d/report" % task.data["ticket"], True)
-            except DeathByCaptchaException, e:
+            except DeathByCaptchaException as e:
                 self.logError(e.getDesc())
-            except Exception, e:
+            except Exception as e:
                 self.logError(e)
 
     def processCaptcha(self, task):
         c = task.captchaFile
         try:
             ticket, result = self.submit(c)
-        except DeathByCaptchaException, e:
+        except DeathByCaptchaException as e:
             task.error = e.getCode()
             self.logError(e.getDesc())
             return

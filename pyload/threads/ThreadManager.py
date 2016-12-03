@@ -16,12 +16,13 @@
 #   @author: RaNaN
 ###############################################################################
 
+from __future__ import absolute_import
 from threading import  RLock
 from time import time
 
 from pyload.datatypes.OnlineCheck import OnlineCheck
 from pyload.utils import lock, to_list
-from InfoThread import InfoThread
+from .InfoThread import InfoThread
 
 
 class ThreadManager:

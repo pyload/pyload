@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 from time import time
 
 from pyload.utils import json_dumps
 
 from bottle import route, request, response, HTTPError, redirect
 
-from webinterface import PROJECT_DIR, SETUP
+from .webinterface import PROJECT_DIR, SETUP
 
-from utils import add_json_header
+from .utils import add_json_header
 
 # returns http error
 def error(code, msg):

@@ -95,7 +95,7 @@ class BypassCaptcha(Hook):
         try:
             response = getURL(self.RESPOND_URL, post={"task_id": ticket, "key": self.getConfig("passkey"),
                                                       "cv": 1 if success else 0})
-        except BadHeader, e:
+        except BadHeader as e:
             self.logError("Could not send response.", str(e))
 
     def newCaptchaTask(self, task):
@@ -132,7 +132,7 @@ class BypassCaptcha(Hook):
         c = task.captchaFile
         try:
             ticket, result = self.submit(c)
-        except BypassCaptchaException, e:
+        except BypassCaptchaException as e:
             task.error = e.getCode()
             return
 

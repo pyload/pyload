@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 try:
     from pyload.utils import json
 except ImportError:
     import json
 
-import apitypes
-from apitypes import BaseObject
-from apitypes import ExceptionObject
+from . import apitypes
+from .apitypes import BaseObject
+from .apitypes import ExceptionObject
 
 # compact json separator
 separators = (',', ':')

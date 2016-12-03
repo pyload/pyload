@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import with_statement
+from __future__ import print_function
+from __future__ import absolute_import
 from os.path import exists
 from gettext import gettext
 from new_collections import namedtuple, OrderedDict
@@ -8,8 +10,8 @@ from new_collections import namedtuple, OrderedDict
 from pyload.Api import Input, InputType
 from pyload.utils.fs import chmod
 
-from default import make_config
-from convert import to_configdata, from_string
+from .default import make_config
+from .convert import to_configdata, from_string
 
 CONF_VERSION = 2
 SectionTuple = namedtuple("SectionTuple", "label description explanation config")
@@ -75,7 +77,7 @@ class ConfigParser:
                 section = line.replace("[", "").replace("]", "")
 
                 if section not in self.config:
-                    print("Unrecognized section", section)
+                    print(("Unrecognized section", section))
                     section = ""
 
             else:
@@ -84,13 +86,13 @@ class ConfigParser:
                 value = value.strip()
 
                 if not section:
-                    print("Value without section", name)
+                    print(("Value without section", name))
                     continue
 
                 if name in self.config[section].config:
                     self.set(section, name, value, sync=False)
                 else:
-                    print("Unrecognized option", section, name)
+                    print(("Unrecognized option", section, name))
 
 
     def save(self):
@@ -99,7 +101,7 @@ class ConfigParser:
         configs = []
         f = open(self.CONFIG, "wb")
         configs.append(f)
-        chmod(self.CONFIG, 0600)
+        chmod(self.CONFIG, 0o600)
         f.write("version: %i\n\n" % CONF_VERSION)
 
         for section, data in self.config.items():

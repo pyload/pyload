@@ -15,6 +15,7 @@
 #   @author: RaNaN
 ###############################################################################
 
+from __future__ import print_function
 import pycurl
 
 from codecs import getincrementaldecoder, lookup, BOM_UTF8

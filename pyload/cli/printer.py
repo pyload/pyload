@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
 def blue(string):
     return "\033[1;34m" + unicode(string) + "\033[0m"
 

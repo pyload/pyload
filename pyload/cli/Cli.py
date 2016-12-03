@@ -18,6 +18,7 @@
 #
 ###
 from __future__ import with_statement
+from __future__ import print_function
 from getopt import GetoptError, getopt
 
 import pyload.common.pylgettext as gettext
@@ -100,7 +101,7 @@ class Cli:
                     self.lock.acquire()
                     self.inputHandler.onEnter(self.input)
 
-                except Exception, e:
+                except Exception as e:
                     println(2, red(e))
                 finally:
                     self.lock.release()
@@ -315,7 +316,7 @@ class Cli:
 
         elif command == "check":
             print(_("Checking %d links:") % len(args))
-            print
+            print()
             rid = self.client.checkOnlineStatus(args).rid
             self.printOnlineCheck(self.client, rid)
 
@@ -386,33 +387,33 @@ class RefreshThread(Thread):
                 os.system("clear")
                 print(_("pyLoad was terminated"))
                 _exit(0)
-            except Exception, e:
+            except Exception as e:
                 println(2, red(str(e)))
                 self.cli.reset()
                 print_exc()
 
 
 def print_help(config):
-    print
+    print()
     print("pyLoadCli Copyright (c) 2009-2017 pyLoad Team")
-    print
+    print()
     print("Usage: [python] pyLoadCli.py [options] [command]")
-    print
+    print()
     print("<Commands>")
     print("See pyLoadCli.py -c for a complete listing.")
-    print
+    print()
     print("<Options>")
-    print("  -i, --interactive", " Start in interactive mode")
-    print
-    print("  -u, --username=", " " * 2, "Specify user name")
-    print("  --pw=<password>", " " * 2, "Password")
-    print("  -a, --address=", " " * 3, "Use address (current=%s)" % config["addr"])
-    print("  -p, --port", " " * 7, "Use port (current=%s)" % config["port"])
-    print
-    print("  -l, --language", " " * 3, "Set user interface language (current=%s)" % config["language"])
-    print("  -h, --help", " " * 7, "Display this help text")
-    print("  -c, --commands", " " * 3, "List all available commands")
-    print
+    print(("  -i, --interactive", " Start in interactive mode"))
+    print()
+    print(("  -u, --username=", " " * 2, "Specify user name"))
+    print(("  --pw=<password>", " " * 2, "Password"))
+    print(("  -a, --address=", " " * 3, "Use address (current=%s)" % config["addr"]))
+    print(("  -p, --port", " " * 7, "Use port (current=%s)" % config["port"]))
+    print()
+    print(("  -l, --language", " " * 3, "Set user interface language (current=%s)" % config["language"]))
+    print(("  -h, --help", " " * 7, "Display this help text"))
+    print(("  -c, --commands", " " * 3, "List all available commands"))
+    print()
 
 
 def print_packages(data):
@@ -420,7 +421,7 @@ def print_packages(data):
         print("Package %s (#%s):" % (pack.name, pack.pid))
         for download in pack.links:
             print("\t" + print_file(download))
-        print
+        print()
 
 
 def print_file(download):
@@ -460,7 +461,7 @@ def print_commands():
         ("kill", _("kill server")), ]
 
     print(_("List of commands:"))
-    print
+    print()
     for c in commands:
         print("%-35s %s" % c)
 

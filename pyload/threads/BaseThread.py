@@ -64,11 +64,11 @@ class BaseThread(Thread):
                         pass
 
             info = zipfile.ZipInfo(save_join(name, "debug_Report.txt"), gmtime())
-            info.external_attr = 0644 << 16L # change permissions
+            info.external_attr = 0o644 << 16 # change permissions
             zip.writestr(info, dump)
 
             info = zipfile.ZipInfo(save_join(name, "system_Report.txt"), gmtime())
-            info.external_attr = 0644 << 16L
+            info.external_attr = 0o644 << 16
             zip.writestr(info, self.getSystemDump())
 
             zip.close()
@@ -76,7 +76,7 @@ class BaseThread(Thread):
             if not stat(dump_name).st_size:
                 raise Exception("Empty Zipfile")
 
-        except Exception, e:
+        except Exception as e:
             self.log.debug("Error creating zip file: %s" % e)
 
             dump_name = dump_name.replace(".zip", ".txt")
@@ -106,7 +106,7 @@ class BaseThread(Thread):
                 dump += "\t%20s = " % key
                 try:
                     dump += pformat(value) + "\n"
-                except Exception, e:
+                except Exception as e:
                     dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
 
             del frame
@@ -121,7 +121,7 @@ class BaseThread(Thread):
                 dump += "\t%20s = " % name
                 try:
                     dump += pformat(attr) + "\n"
-                except Exception, e:
+                except Exception as e:
                     dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
 
         return dump
@@ -135,7 +135,7 @@ class BaseThread(Thread):
                 dump += "\t%20s = " % name
                 try:
                     dump += pformat(attr) + "\n"
-                except Exception, e:
+                except Exception as e:
                     dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
 
         return dump

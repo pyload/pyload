@@ -42,7 +42,7 @@ def remove(path):
 def exists(path):
     return os.path.exists(fs_encode(path))
 
-def makedirs(path, mode=0755):
+def makedirs(path, mode=0o755):
     return os.makedirs(fs_encode(path), mode)
 
 def listdir(path):

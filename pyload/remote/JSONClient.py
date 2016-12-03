@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+from __future__ import absolute_import
 from urllib import urlopen, urlencode
 from httplib import UNAUTHORIZED, FORBIDDEN
 
-from json_converter import loads, dumps
-from apitypes import Unauthorized, Forbidden
+from .json_converter import loads, dumps
+from .apitypes import Unauthorized, Forbidden
 
 class JSONClient:
     URL = "http://localhost:8001/api"

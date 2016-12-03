@@ -3,6 +3,7 @@
 
 # abstraction layer for json operations
 
+from __future__ import print_function
 print(".json_layer is deprecated, use .json instead")
 
 try: # since python 2.6

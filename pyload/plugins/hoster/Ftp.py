@@ -64,7 +64,7 @@ class Ftp(Hoster):
 
         try:
             response = self.load(pyfile.url)
-        except pycurl.error, e:
+        except pycurl.error as e:
             self.fail("Error %d: %s" % e.args)
 
         self.req.http.c.setopt(pycurl.NOBODY, 0)

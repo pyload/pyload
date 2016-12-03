@@ -17,7 +17,9 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
-from OCR import OCR
+from __future__ import print_function
+from __future__ import absolute_import
+from .OCR import OCR
 
 class ShareonlineBizOCR(OCR):
     __version__ = 0.1

@@ -16,10 +16,11 @@
 #   @author: RaNaN
 ###############################################################################
 
+from __future__ import absolute_import
 import re
 from types import MethodType
 
-from remote.apitypes import *
+from .remote.apitypes import *
 
 # contains function names mapped to their permissions
 # unlisted functions are for admins only
@@ -50,7 +51,7 @@ stateMap[DownloadState.Unfinished] = frozenset(stateMap[DownloadState.All].diffe
 def state_string(state):
     return ",".join(str(x) for x in stateMap[state])
 
-from datatypes.User import User
+from .datatypes.User import User
 
 class Api(Iface):
     """

@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 from pyload.Api import Api, RequirePerm, Permission
 
-from ApiComponent import ApiComponent
+from .ApiComponent import ApiComponent
 
 CACHE = {}
 QUOTA_UNLIMITED = -1

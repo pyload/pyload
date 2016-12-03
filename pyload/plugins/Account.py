@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 from time import time
 from threading import RLock
 
@@ -8,7 +9,7 @@ from pyload.network.CookieJar import CookieJar
 from pyload.config.convert import from_string, to_configdata
 from pyload.utils import to_string, compare_time, format_size, parseFileSize, lock
 
-from Base import Base
+from .Base import Base
 
 
 class WrongPassword(Exception):
@@ -68,7 +69,7 @@ class Account(Base):
 
         try:
             self.config_data = dict(to_configdata(x) for x in self.__config__)
-        except Exception, e:
+        except Exception as e:
             self.logError("Invalid config: %s" % e)
             self.config_data = {}
 
@@ -144,7 +145,7 @@ class Account(Base):
                     , "msg": _("Wrong Password")})
             self.valid = False
 
-        except Exception, e:
+        except Exception as e:
             self.logWarning(
                 _("Could not login with account %(user)s | %(msg)s") % {"user": self.loginname
                     , "msg": e})
@@ -210,7 +211,7 @@ class Account(Base):
                 except TypeError: #TODO: temporary
                     self.logDebug("Deprecated .loadAccountInfo(...) signature, omit user argument.")
                     infos = self.loadAccountInfo(self.loginname, req)
-            except Exception, e:
+            except Exception as e:
                 infos = {"error": str(e)}
                 self.logError(_("Error: %s") % e)
             finally:

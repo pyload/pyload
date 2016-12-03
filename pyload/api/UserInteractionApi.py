@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 from pyload.Api import Api, RequirePerm, Permission, Interaction
 
-from ApiComponent import ApiComponent
+from .ApiComponent import ApiComponent
 
 class UserInteractionApi(ApiComponent):
     """ Everything needed for user interaction """

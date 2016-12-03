@@ -32,7 +32,7 @@ for path, dirs, files in walk(join(PATH, "pyload")):
             def _test(self=None):
                 __import__(imp)
 
-            _test.func_name = sig
+            _test.__name__ = sig
             return _test
 
         # generate test methods

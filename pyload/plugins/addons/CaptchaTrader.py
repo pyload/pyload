@@ -114,7 +114,7 @@ class CaptchaTrader(Hook):
             if response[0] < 0:
                 raise CaptchaTraderException(response[1])
 
-        except BadHeader, e:
+        except BadHeader as e:
             self.logError(_("Could not send response."), str(e))
 
     def newCaptchaTask(self, task):
@@ -149,7 +149,7 @@ class CaptchaTrader(Hook):
         c = task.captchaFile
         try:
             ticket, result = self.submit(c)
-        except CaptchaTraderException, e:
+        except CaptchaTraderException as e:
             task.error = e.getCode()
             return
 

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
 import sys
 
 class ImportDebugger(object):
@@ -14,6 +15,6 @@ class ImportDebugger(object):
 
         self.imported[name] += 1
 
-        print(name, path)
+        print((name, path))
 
 sys.meta_path.append(ImportDebugger())

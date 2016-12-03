@@ -16,6 +16,8 @@
 #   @author: RaNaN
 ###############################################################################
 
+from __future__ import print_function
+from __future__ import absolute_import
 import os
 import sys
 import socket
@@ -32,8 +34,8 @@ from pyload.utils.fs import abspath, dirname, exists, join, makedirs
 from pyload.utils import get_console_encoding
 from pyload.web.ServerThread import WebServer
 
-from system import get_system_info
-from dependencies import deps
+from .system import get_system_info
+from .dependencies import deps
 
 class Setup():
     """
@@ -214,13 +216,13 @@ class Setup():
         self.config["webinterface"]["port"] = self.ask(_("Port"), "8000")
         print("")
         print(_("pyLoad offers several server backends, now following a short explanation."))
-        print("threaded:", _("Default server, this server offers SSL and is a good alternative to builtin."))
-        print("fastcgi:", _("Can be used by apache, lighttpd, requires you to configure them, which is not too easy job."))
-        print("lightweight:", _("Very fast alternative written in C, requires libev and linux knowledge."))
-        print("\t", _("Get it from here: https://github.com/jonashaag/bjoern, compile it"))
-        print("\t", _("and copy bjoern.so to pyload/lib"))
+        print(("threaded:", _("Default server, this server offers SSL and is a good alternative to builtin.")))
+        print(("fastcgi:", _("Can be used by apache, lighttpd, requires you to configure them, which is not too easy job.")))
+        print(("lightweight:", _("Very fast alternative written in C, requires libev and linux knowledge.")))
+        print(("\t", _("Get it from here: https://github.com/jonashaag/bjoern, compile it")))
+        print(("\t", _("and copy bjoern.so to pyload/lib")))
 
-        print
+        print()
         print(_("Attention: In some rare cases the builtin server is not working, if you notice problems with the webinterface"))
         print(_("come back here and change the builtin server to the threaded one here."))
 
@@ -326,7 +328,7 @@ class Setup():
             print(_("Press Enter to exit."))
             raw_input()
             exit()
-        except Exception, e:
+        except Exception as e:
             print(_("Setting config path failed: %s") % str(e))
 
 
