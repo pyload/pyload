@@ -740,6 +740,7 @@ def _configure_logging(options):
     _get_logger_from_class(util._Inflater).setLevel(
         deflate_log_level_name)
 
+
 class DefaultOptions:
     server_host = ''
     port = common.DEFAULT_WEB_SOCKET_PORT

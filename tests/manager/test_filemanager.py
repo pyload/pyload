@@ -13,6 +13,7 @@ DatabaseBackend.async = DatabaseBackend.queue
 
 from pyload.Api import DownloadState
 
+
 class TestFileManager(BenchmarkTest):
     bench = ["add_packages", "add_files", "get_files_root", "get",
              "get_package_content", "get_package_tree",

@@ -8,6 +8,7 @@ from pyload.remote.WSClient import WSClient
 
 from tests.helper.config import credentials, wsAddress
 
+
 class TestWebSocketBackend:
 
     def setUp(self):

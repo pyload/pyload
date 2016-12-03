@@ -31,6 +31,7 @@ from pyload.utils.fs import fs_encode, fs_decode, safe_filename
 
 from .CurlRequest import CurlRequest
 
+
 class ChunkInfo():
     def __init__(self, name):
         self.name = fs_decode(name)
@@ -122,6 +123,7 @@ class ChunkInfo():
         return self.chunks[index][1]
 
 re_filename = re.compile(r"filename(?P<type>=|\*=(?P<enc>.+)'')(?P<name>.*)", re.I)
+
 
 class CurlChunk(CurlRequest):
     def __init__(self, id, parent, range=None, resume=False):

@@ -7,6 +7,7 @@ from pyload.remote.apitypes_debug import classes, methods
 
 from tests.helper.config import credentials
 
+
 class ApiProxy:
     """ Proxy that does type checking on the api """
 

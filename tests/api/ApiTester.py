@@ -9,6 +9,7 @@ from tests.helper.config import webAddress, wsAddress
 
 from .ApiProxy import ApiProxy
 
+
 class ApiTester:
 
     tester= []

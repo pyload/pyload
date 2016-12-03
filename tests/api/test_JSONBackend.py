@@ -13,6 +13,7 @@ from pyload.remote.JSONClient import JSONClient
 
 from tests.helper.config import credentials, webAddress
 
+
 class TestJSONBackend:
 
     def setUp(self):

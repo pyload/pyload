@@ -11,6 +11,7 @@ from pyload.network.Bucket import Bucket
 from pyload.plugins.network.CurlRequest import CurlRequest
 from pyload.plugins.network.CurlDownload import CurlDownload
 
+
 class TestCurlRequest(TestCase):
 
     cookieURL = "http://forum.pyload.org"

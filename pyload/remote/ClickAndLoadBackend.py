@@ -35,6 +35,7 @@ from .RemoteManager import BackendBase
 core = None
 js = None
 
+
 class ClickAndLoadBackend(BackendBase):
     def setup(self, host, port):
         self.httpd = HTTPServer((host, port), CNLHandler)
@@ -45,6 +46,7 @@ class ClickAndLoadBackend(BackendBase):
     def serve(self):
         while self.enabled:
             self.httpd.handle_request()
+
 
 class CNLHandler(BaseHTTPRequestHandler):
 

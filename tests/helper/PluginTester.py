@@ -94,6 +94,7 @@ Hoster.correctCaptcha = correctCaptcha
 
 Hoster.checkForSameFiles = noop
 
+
 class PluginTester(TestCase):
     @classmethod
     def setUpClass(cls):

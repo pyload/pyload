@@ -18,6 +18,7 @@ def AddEventListener(event):
     :param event: Name of event or list of them.
     """
 
+
     class _klass(object):
         def __new__(cls, f, *args, **kwargs):
             for ev in to_list(event):
@@ -37,6 +38,7 @@ def AddonHandler(label, desc, package=True, media=-1):
     :param package: True if method works withs packages
     :param media: media type of the file to work with.
     """
+
 
     class _klass(object):
         def __new__(cls, f, *args, **kwargs):

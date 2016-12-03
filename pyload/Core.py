@@ -73,6 +73,7 @@ else:
 sys._stdout = sys.stdout
 sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 
+
 # TODO List
 # - configurable auth system ldap/mysql
 # - cron job like sheduler
@@ -82,7 +83,6 @@ sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 # - sync between pyload cores
 # - new attributes (date|sync status)
 # - improve external scripts
-
 class Core(object):
     """pyLoad Core, one tool to rule them all... (the filehosters) :D"""
 

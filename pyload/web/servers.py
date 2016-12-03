@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 from bottle import ServerAdapter as BaseAdapter
 
+
 class ServerAdapter(BaseAdapter):
     SSL = False
     NAME = ""
@@ -89,6 +90,7 @@ class MeinheldServer(ServerAdapter):
         server.listen((self.host, self.port))
         server.run(handler)
 
+
 # todo:ssl
 class TornadoServer(ServerAdapter):
     """ The super hyped asynchronous server by facebook. Untested. """
@@ -133,7 +135,6 @@ class EventletServer(ServerAdapter):
             class NoopLog:
                 def write(self, *args):
                     pass
-
             # Fallback, if we have old version of eventlet
             wsgi.server(listen((self.host, self.port)), handler, log=NoopLog())
 

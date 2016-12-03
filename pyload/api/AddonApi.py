@@ -6,6 +6,7 @@ from pyload.Api import Api, RequirePerm, Permission
 
 from .ApiComponent import ApiComponent
 
+
 # TODO: multi user
 class AddonApi(ApiComponent):
     """ Methods to interact with addons """

@@ -6,6 +6,7 @@ from pyload.Api import Api, RequirePerm, Permission, Interaction
 
 from .ApiComponent import ApiComponent
 
+
 class UserInteractionApi(ApiComponent):
     """ Everything needed for user interaction """
 

@@ -17,6 +17,7 @@ from pyload.utils import primary_uid
 adminUser = primary_uid(adminUser)
 normalUser = primary_uid(normalUser)
 
+
 class TestConfigManager(TestCase):
 
     @classmethod

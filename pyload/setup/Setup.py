@@ -38,6 +38,7 @@ from pyload.web.ServerThread import WebServer
 from .system import get_system_info
 from .dependencies import deps
 
+
 class Setup():
     """
     pyLoads initial setup configuration assistant

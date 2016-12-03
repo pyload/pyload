@@ -54,8 +54,8 @@ from pyload.utils.fs import safe_join as save_join, fs_encode
 from pyload.plugins.Addon import Addon, threaded, AddonHandler
 from pyload.plugins.internal.AbstractExtractor import ArchiveError, CRCError, WrongPassword
 
-# TODO: plugin needs a rewrite to work on unfinished packages
 
+# TODO: plugin needs a rewrite to work on unfinished packages
 class ExtractArchive(Addon):
     """
     Provides: unrarFinished (folder, filename)

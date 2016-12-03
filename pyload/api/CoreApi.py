@@ -8,6 +8,7 @@ from pyload.utils import compare_time
 
 from .ApiComponent import ApiComponent
 
+
 class CoreApi(ApiComponent):
     """ This module provides methods for general interaction with the core, like status or progress retrieval  """
 

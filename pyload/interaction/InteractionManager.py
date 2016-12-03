@@ -29,6 +29,7 @@ from pyload.Api import InputType, Input
 
 from .InteractionTask import InteractionTask
 
+
 class InteractionManager:
     """
     Class that gives ability to interact with the user.

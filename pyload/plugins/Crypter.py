@@ -75,7 +75,6 @@ class PyFileMockup:
             def __init__(self, f):
                 self.name = f.pack_name
                 self.folder = self.name
-
         return PyPackage(self)
 
 

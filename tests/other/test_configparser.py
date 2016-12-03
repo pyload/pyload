@@ -8,6 +8,7 @@ from tests.helper.Stubs import Core
 
 from pyload.config.ConfigParser import ConfigParser
 
+
 class TestConfigParser():
 
     @classmethod

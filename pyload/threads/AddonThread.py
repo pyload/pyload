@@ -8,6 +8,7 @@ from traceback import print_exc
 from pyload.Api import ProgressInfo, ProgressType
 from .BaseThread import BaseThread
 
+
 class AddonThread(BaseThread):
     """thread for addons"""
 

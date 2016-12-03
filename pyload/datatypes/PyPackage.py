@@ -21,6 +21,7 @@ from time import time
 from pyload.Api import PackageInfo, PackageStatus
 from pyload.utils.fs import join
 
+
 class PyPackage:
     """
     Represents a package object at runtime

@@ -9,6 +9,7 @@ from httplib import UNAUTHORIZED, FORBIDDEN
 from .json_converter import loads, dumps
 from .apitypes import Unauthorized, Forbidden
 
+
 class JSONClient:
     URL = "http://localhost:8001/api"
 

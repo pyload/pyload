@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+
+
 class StripPathMiddleware(object):
     def __init__(self, app):
         self.app = app

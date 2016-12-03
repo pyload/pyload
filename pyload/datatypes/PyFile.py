@@ -48,6 +48,7 @@ statusMap = {
     "unknown": 20,
 }
 
+
 class PyFile(object):
     """
     Represents a file object at runtime

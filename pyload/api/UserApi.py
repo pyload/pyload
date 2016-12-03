@@ -6,6 +6,7 @@ from pyload.Api import Api, RequirePerm, Permission
 
 from .ApiComponent import ApiComponent
 
+
 class UserApi(ApiComponent):
     """ Api methods to retrieve user profile and manage users. """
 

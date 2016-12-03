@@ -13,6 +13,7 @@ from pyload.network.RequestFactory import getURL
 
 from .ApiComponent import ApiComponent
 
+
 class DownloadPreparingApi(ApiComponent):
     """ All kind of methods to parse links or retrieve online status """
 

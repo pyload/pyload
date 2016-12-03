@@ -20,6 +20,7 @@ from time import time
 from pyload.Api import InteractionTask as BaseInteractionTask
 from pyload.Api import Interaction, InputType, Input
 
+
 # noinspection PyUnresolvedReferences
 class InteractionTask(BaseInteractionTask):
     """

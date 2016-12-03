@@ -28,9 +28,11 @@ from pyload.Api import EventInfo, Interaction
 from pyload.utils import lock
 from .AbstractHandler import AbstractHandler
 
+
 class Mode:
     STANDBY = 1
     RUNNING = 2
+
 
 class AsyncHandler(AbstractHandler):
     """

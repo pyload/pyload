@@ -9,6 +9,7 @@ from pyload.utils.fs import join
 
 from .ApiComponent import ApiComponent
 
+
 class DownloadApi(ApiComponent):
     """ Component to create, add, delete or modify downloads."""
 

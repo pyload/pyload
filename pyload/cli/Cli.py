@@ -52,6 +52,7 @@ from pyload.remote.thriftbackend.ThriftClient import ThriftClient, NoConnection,
 from pyload.lib.Getch import Getch
 from pyload.lib.rename_process import renameProcess
 
+
 class Cli:
     def __init__(self, client, command):
         self.client = client

@@ -6,6 +6,7 @@ from tests.helper.Stubs import Core
 from pyload.plugins.network.CurlRequest import CurlRequest
 from pyload.network.RequestFactory import RequestFactory
 
+
 class TestRequestFactory:
 
     @classmethod

@@ -30,6 +30,7 @@ from select import select
 
 from pyload.plugins.Plugin import Abort
 
+
 # TODO: This must be adapted to the new request interfaces
 class XDCCRequest():
     def __init__(self, timeout=30, proxies={}):

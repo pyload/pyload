@@ -13,6 +13,7 @@ def _getdate(future=0, weekdayname=Cookie._weekdayname, monthname=Cookie._monthn
 
 Cookie._getdate = _getdate
 
+
 class CookieJar(Cookie.SimpleCookie):
     def getCookie(self, name):
         return self[name].value

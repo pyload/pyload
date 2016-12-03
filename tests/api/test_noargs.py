@@ -10,6 +10,7 @@ from pyload.remote.apitypes import Iface
 
 IGNORE = ('quit', 'restart')
 
+
 class TestNoArgs(ApiTester):
     def setUp(self):
         self.enableJSON()

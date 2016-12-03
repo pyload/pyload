@@ -32,7 +32,6 @@ def RequirePerm(bits):
         def __new__(cls, func, *args, **kwargs):
             perm_map[func.__name__] = bits
             return func
-
     return _Dec
 
 urlmatcher = re.compile(r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+\-=\\\.&]*)", re.IGNORECASE)
@@ -52,6 +51,7 @@ def state_string(state):
     return ",".join(str(x) for x in stateMap[state])
 
 from .datatypes.User import User
+
 
 class Api(Iface):
     """

@@ -27,6 +27,7 @@ from .printer import *
 
 from pyload.Api import Destination, PackageData
 
+
 class ManageFiles(Handler):
     """ possibility to manage queue/collector """
 

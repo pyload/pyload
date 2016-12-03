@@ -14,6 +14,7 @@ from .helper.PluginTester import PluginTester
 from pyload.plugins.Base import Fail
 from pyload.utils import accumulate, to_int
 
+
 class CrypterPluginTester(PluginTester):
     @nottest
     def test_plugin(self, name, url, flag):

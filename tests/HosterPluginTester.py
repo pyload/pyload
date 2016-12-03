@@ -123,7 +123,6 @@ for plugin, urls in plugins.items():
     def meta_class(plugin):
         class _testerClass(HosterPluginTester):
             pass
-
         _testerClass.__name__ = plugin
         return _testerClass
 

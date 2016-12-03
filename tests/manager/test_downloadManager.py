@@ -9,6 +9,7 @@ from pyload.database import DatabaseBackend
 # disable asyncronous queries
 DatabaseBackend.async = DatabaseBackend.queue
 
+
 class TestDownloadManager(BenchmarkTest):
 
     bench = ["add_links", "simple", "empty"]

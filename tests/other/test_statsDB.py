@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 from tests.helper.Stubs import Core
 
+
 class TestStatDatabase():
 
     @classmethod

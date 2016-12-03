@@ -23,6 +23,7 @@ from pyload.Api import ExceptionObject
 
 from .AbstractHandler import AbstractHandler
 
+
 class ApiHandler(AbstractHandler):
     """Provides access to the API.
 

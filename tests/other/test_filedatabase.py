@@ -14,6 +14,7 @@ DatabaseBackend.async = DatabaseBackend.queue
 
 from random import choice
 
+
 class TestDatabase(BenchmarkTest):
     bench = ["insert", "insert_links", "insert_many", "get_packages",
              "get_files", "get_files_queued", "get_package_childs", "get_package_files",

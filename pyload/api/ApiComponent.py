@@ -5,6 +5,8 @@ from pyload.remote.apitypes import Iface
 
 # Workaround to let code-completion think, this is subclass of Iface
 Iface = object
+
+
 class ApiComponent(Iface):
 
     __slots__ = []

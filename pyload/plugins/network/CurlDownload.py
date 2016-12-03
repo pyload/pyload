@@ -33,8 +33,8 @@ from ..Download import Download
 from .CurlChunk import ChunkInfo, CurlChunk
 from .CurlRequest import ResponseException
 
-# TODO: save content-disposition for resuming
 
+# TODO: save content-disposition for resuming
 class CurlDownload(Download):
     """ loads an url, http + ftp supported """
 

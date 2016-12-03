@@ -30,6 +30,7 @@ from pyload.plugins.Request import ResponseException
 
 from .BaseThread import BaseThread
 
+
 class DownloadThread(BaseThread):
     """thread for downloading files from 'real' hoster plugins"""
 

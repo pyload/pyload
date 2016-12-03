@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from module.plugins.Crypter import Crypter, Package
 import re
 
+
 class XfilesharingProFolder(Crypter):
     __name__ = "XfilesharingProFolder"
     __type__ = "crypter"

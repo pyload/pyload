@@ -16,6 +16,7 @@ from .Base import Base
 class WrongPassword(Exception):
     pass
 
+
 #noinspection PyUnresolvedReferences
 class Account(Base):
     """

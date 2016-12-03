@@ -5,10 +5,12 @@ from logging import getLogger
 
 from pyload.network.HeaderDict import HeaderDict
 
+
 class ResponseException(Exception):
     def __init__(self, code, content=""):
         Exception.__init__(self, "Server response error: %s %s" % (code, content))
         self.code = code
+
 
 class Request(object):
     """ Abstract class to support different types of request, most methods should be overwritten """
