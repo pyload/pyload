@@ -151,12 +151,11 @@ def webapp():
 def generate_locale():
     """ Generates localisation files """
 
-    EXCLUDE = ["pyload/lib", "pyload/cli", "pyload/setup", "pyload/plugins", "Setup.py"]
+    EXCLUDE = ["pyload/lib", "pyload/setup", "pyload/plugins", "Setup.py"]
 
     makepot("core", path("pyload"), EXCLUDE)
     makepot("plugins", old_div(path("pyload"), "plugins"))
     makepot("setup", "", [], includes="./pyload/setup/Setup.py\n")
-    makepot("cli", old_div(path("pyload"), "cli"), [])
     makepot("webUI", path("pyload") / "web" / "app", ["components", "vendor", "gettext"], endings=[".js", ".html"],
             xxargs="--language=Python --force-po".split(" "))
 

@@ -112,11 +112,6 @@ class Setup(object):
         if not opened:
             print("Please point your browser to the url above.")
 
-        cli = self.ask("Use commandline for configuration instead?", self.no, bool=True)
-        if cli:
-            print("Not implemented yet!")
-            print("Use web configuration or config files")
-
         input()
 
         return True
