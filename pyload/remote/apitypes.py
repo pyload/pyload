@@ -7,7 +7,7 @@ from __future__ import unicode_literals
 
 from builtins import object
 class BaseObject(object):
-    __version__ = (0, 4, 9, 9)
+    __version__ = (0, 5, 0, 0)
     __slots__ = []
 
     def __str__(self):
@@ -15,7 +15,7 @@ class BaseObject(object):
 
 
 class ExceptionObject(Exception):
-    __version__ = (0, 4, 9, 9)
+    __version__ = (0, 5, 0, 0)
     __slots__ = []
 
 
