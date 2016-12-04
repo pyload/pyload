@@ -71,8 +71,8 @@ class RemoteManager(object):
 
 
     def startBackends(self):
-        host = self.core.config["webUI"]["wsHost"]
-        port = self.core.config["webUI"]["wsPort"]
+        host = self.core.config["webui"]["wsHost"]
+        port = self.core.config["webui"]["wsPort"]
 
         for b in self.available:
             klass = getattr(__import__("pyload.remote.%s" % b, globals(), locals(), [b], -1), b)

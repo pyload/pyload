@@ -46,7 +46,7 @@ class WebSocketBackend(BackendBase):
         options.dispatcher.addHandler(ApiHandler.PATH, ApiHandler(self.core.api))
         options.dispatcher.addHandler(AsyncHandler.PATH, AsyncHandler(self.core.api))
 
-        # tls is needed when requested or webUI is also on tls
+        # tls is needed when requested or webui is also on tls
         if self.core.api.isWSSecure():
             from .wsbackend.Server import import_ssl
             tls_module = import_ssl()

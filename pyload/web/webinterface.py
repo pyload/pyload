@@ -48,9 +48,9 @@ else:
 from pyload.utils.JsEngine import JsEngine
 JS = JsEngine()
 
-TEMPLATE = config.get('webUI', 'template')
+TEMPLATE = config.get('webui', 'template')
 DL_ROOT = config.get('general', 'download_folder')
-PREFIX = config.get('webUI', 'prefix')
+PREFIX = config.get('webui', 'prefix')
 
 if PREFIX:
     PREFIX = PREFIX.rstrip("/")
@@ -60,8 +60,8 @@ if PREFIX:
 APP_PATH = "app"
 UNAVAILALBE = True
 
-# webUI build is available
-if exists(join(PROJECT_DIR, "app", "node_modules")) and exists(join(PROJECT_DIR, ".tmp")) and config.get('webUI', 'develop'):
+# webui build is available
+if exists(join(PROJECT_DIR, "app", "node_modules")) and exists(join(PROJECT_DIR, ".tmp")) and config.get('webui', 'develop'):
     UNAVAILALBE = False
 elif exists(join(PROJECT_DIR, "dist", "index.html")):
     APP_PATH = "dist"

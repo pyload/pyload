@@ -49,8 +49,8 @@ msgid "WebUI built is not available"
 msgstr "Beépített WebUI nem áll rendelkezésre"
 
 #: pyload/web/ServerThread.py:55
-msgid "Running webUI in development mode"
-msgstr "A webUI fejlesztői módban való futtatása"
+msgid "Running webui in development mode"
+msgstr "A webui fejlesztői módban való futtatása"
 
 #: pyload/web/ServerThread.py:73
 msgid "Failed starting webserver: "

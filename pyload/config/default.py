@@ -52,7 +52,7 @@ def make_config(config):
                                 ("key", "file", _("SSL Key"), "ssl.key"),
                             ])
 
-    config.addConfigSection("webUI", _("WebUI"), _("Description"), _("Long description"),
+    config.addConfigSection("webui", _("WebUI"), _("Description"), _("Long description"),
                             [
                                 ("template", "str", _("Template"), "default"),
                                 ("prefix", "str", _("Path Prefix"), ""),

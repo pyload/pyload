@@ -18,8 +18,8 @@ class CoreApi(ApiComponent):
         return self.core.version
 
     def isWSSecure(self):
-        # needs to use TLS when either requested or webUI is also using encryption
-        if not self.core.config['ssl']['activated'] or self.core.config['webUI']['https']:
+        # needs to use TLS when either requested or webui is also using encryption
+        if not self.core.config['ssl']['activated'] or self.core.config['webui']['https']:
             return False
 
         if not exists(self.core.config['ssl']['cert']) or not exists(self.core.config['ssl']['key']):
@@ -36,7 +36,7 @@ class CoreApi(ApiComponent):
         else:
             ws = "ws"
 
-        return "%s://%%s:%d" % (ws, self.core.config['webUI']['wsPort'])
+        return "%s://%%s:%d" % (ws, self.core.config['webui']['wsPort'])
 
     @RequirePerm(Permission.All)
     def getStatusInfo(self):

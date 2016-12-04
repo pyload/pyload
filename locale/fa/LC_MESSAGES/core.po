@@ -49,7 +49,7 @@ msgid "WebUI built is not available"
 msgstr ""
 
 #: pyload/web/ServerThread.py:55
-msgid "Running webUI in development mode"
+msgid "Running webui in development mode"
 msgstr ""
 
 #: pyload/web/ServerThread.py:73

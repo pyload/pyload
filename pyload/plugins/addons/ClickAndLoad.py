@@ -37,7 +37,7 @@ class ClickAndLoad(Addon):
     __author_mail__ = ("RaNaN@pyload.de", "mkaay@mkaay.de")
 
     def coreReady(self):
-        self.port = int(self.config['webUI']['port'])
+        self.port = int(self.config['webui']['port'])
         if self.getConfig("extern"):
             ip = "0.0.0.0"
         else:

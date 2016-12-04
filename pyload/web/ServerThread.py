@@ -27,14 +27,14 @@ class WebServer(threading.Thread):
         else:
             raise Exception("No config context provided")
 
-        self.server = config['webUI']['server']
-        self.https = config['webUI']['https']
+        self.server = config['webui']['server']
+        self.https = config['webui']['https']
         self.cert = config["ssl"]["cert"]
         self.key = config["ssl"]["key"]
-        self.host = config['webUI']['host']
-        self.port = config['webUI']['port']
+        self.host = config['webui']['host']
+        self.port = config['webui']['port']
         self.debug = config['general']['debug_mode']
-        self.force_server = config['webUI']['force_server']
+        self.force_server = config['webui']['force_server']
         self.error = None
 
         self.setDaemon(True)
@@ -53,7 +53,7 @@ class WebServer(threading.Thread):
         if webinterface.UNAVAILALBE:
             log.warning(_("WebUI built is not available"))
         elif webinterface.APP_PATH == "app":
-            log.info(_("Running webUI in development mode"))
+            log.info(_("Running webui in development mode"))
 
         prefer = None
 

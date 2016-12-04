@@ -49,8 +49,8 @@ msgid "WebUI built is not available"
 msgstr "WebUI nie jest dostępny"
 
 #: pyload/web/ServerThread.py:55
-msgid "Running webUI in development mode"
-msgstr "Uruchamianie webUI w trybie deweloperskim"
+msgid "Running webui in development mode"
+msgstr "Uruchamianie webui w trybie deweloperskim"
 
 #: pyload/web/ServerThread.py:73
 msgid "Failed starting webserver: "
