@@ -1,7 +1,7 @@
 pyLoad - download manager
 Copyright(c) 2009-2017 pyLoad Team
 All rights reserved.
-licensing@pyload.org
+licensing@pyload.net
 
 Open Source License
 -------------------
@@ -16,7 +16,7 @@ Alternative License
 
 With an explicit permission of the authors you may use or distribute
 this software under a different license according to the agreement.
-Please contact licensing@pyload.org for further information.
+Please contact licensing@pyload.net for further information.
 
 Contribution
 ------------
@@ -27,7 +27,7 @@ You can do so by adding the following to the file header:
   # With permission to relicense for the pyLoad Team according to LICENSE
 
 For regular contributions please sign the CLA and send it to
-contributors@pyload.org
+contributors@pyload.net
 
 Beside that you need to initial release your code with a license compatible
 to the Open Source License as choosen above.

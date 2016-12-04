@@ -2,7 +2,7 @@
 
 The localization process take place on Crowdin:
 
-http://translate.pyload.org
+http://translate.pyload.net
 
 or
 

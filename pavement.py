@@ -57,7 +57,7 @@ options(
 # xgettext args
 xargs = ["--language=Python", "--add-comments=L10N",
          "--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyload",
-         "--package-version=%s" % __version__, "--msgid-bugs-address='bugs@pyload.org'"]
+         "--package-version=%s" % __version__, "--msgid-bugs-address='dev@pyload.net'"]
 
 # Modules replace rules
 module_replace = [

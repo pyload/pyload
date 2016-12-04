@@ -49,7 +49,7 @@ class Captcha9kw(Hook):
                   ("timeout", "int", "Timeout (max. 300)", 300),
                   ("passkey", "password", "API key", "")]
     __author_name__ = "RaNaN"
-    __author_mail__ = "RaNaN@pyload.org"
+    __author_mail__ = "Mast3rRaNaN@hotmail.de"
 
     API_URL = "://www.9kw.eu/index.cgi"
 

@@ -41,7 +41,7 @@ class ExpertDecoders(Hook):
                   ("force", "bool", "Force CT even if client is connected", False),
                   ("passkey", "password", "Access key", "")]
     __author_name__ = ("RaNaN", "zoidberg")
-    __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
+    __author_mail__ = ("Mast3rRaNaN@hotmail.de", "zoidberg@mujmail.cz")
 
     API_URL = "http://www.fasttypers.org/imagepost.ashx"
 

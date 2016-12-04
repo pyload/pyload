@@ -21,7 +21,7 @@ class BasePlugin(Hoster):
     __version__ = "0.19"
     __description__ = """Base Plugin when any other didnt fit"""
     __author_name__ = "RaNaN"
-    __author_mail__ = "RaNaN@pyload.org"
+    __author_mail__ = "Mast3rRaNaN@hotmail.de"
 
     def setup(self):
         self.chunkLimit = -1

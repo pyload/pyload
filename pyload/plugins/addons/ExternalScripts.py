@@ -36,7 +36,7 @@ class ExternalScripts(Addon):
     __description__ = """Run external scripts"""
     __config__ = [("activated", "bool", "Activated", True)]
     __author_name__ = ("mkaay", "RaNaN", "spoob")
-    __author_mail__ = ("mkaay@mkaay.de", "ranan@pyload.org", "spoob@pyload.org")
+    __author_mail__ = ("mkaay@mkaay.de", "ranan@pyload.net", "spoob@pyload.net")
 
 
     def activate(self):

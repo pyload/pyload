@@ -15,7 +15,7 @@ target urls and subclass from :class:`Crypter <pyload.plugins.Crypter.Crypter>`.
 
         def decryptURL(self, url):
 
-            urls = ["http://get.pyload.org/src", "http://get.pyload.org/debian", "http://get.pyload.org/win"]
+            urls = ["http://get.pyload.net/src", "http://get.pyload.net/debian", "http://get.pyload.net/win"]
             return urls
 
 You have to overwrite at least one of ``.decryptFile``, ``.decryptURL``, ``.decryptURLs``. The first one

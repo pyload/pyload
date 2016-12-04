@@ -43,7 +43,7 @@ class XMPPInterface(IRCInterface, JabberClient):
                   ("info_pack", "bool", "Inform about every package finished", True),
                   ("captcha", "bool", "Send captcha requests", True)]
     __author_name__ = "RaNaN"
-    __author_mail__ = "RaNaN@pyload.org"
+    __author_mail__ = "Mast3rRaNaN@hotmail.de"
 
     implements(IMessageHandlersProvider)
 

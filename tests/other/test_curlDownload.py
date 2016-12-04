@@ -14,7 +14,7 @@ from pyload.plugins.network.CurlDownload import CurlDownload
 
 class TestCurlRequest(TestCase):
 
-    cookieURL = "http://forum.pyload.org"
+    cookieURL = "https://pyload.net"
 
     def setUp(self):
         self.dl = CurlDownload(Bucket())
@@ -26,7 +26,7 @@ class TestCurlRequest(TestCase):
 
         assert self.dl.context is not None
 
-        self.dl.download("http://pyload.org/lib/tpl/pyload/images/pyload-logo-edited3.5-new-font-small.png", "/tmp/random.bin")
+        self.dl.download("https://pyload.net/lib/tpl/pyload/images/pyload-logo-edited3.5-new-font-small.png", "/tmp/random.bin")
 
         print(self.dl.size, self.dl.arrived)
         assert self.dl.size == self.dl.arrived > 0

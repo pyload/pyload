@@ -54,7 +54,7 @@ class BypassCaptcha(Hook):
                   ("force", "bool", "Force BC even if client is connected", False),
                   ("passkey", "password", "Passkey", "")]
     __author_name__ = ("RaNaN", "Godofdream", "zoidberg")
-    __author_mail__ = ("RaNaN@pyload.org", "soilfcition@gmail.com", "zoidberg@mujmail.cz")
+    __author_mail__ = ("Mast3rRaNaN@hotmail.de", "soilfcition@gmail.com", "zoidberg@mujmail.cz")
 
     SUBMIT_URL = "http://bypasscaptcha.com/upload.php"
     RESPOND_URL = "http://bypasscaptcha.com/check_value.php"

@@ -39,9 +39,9 @@ class UpdateManager(Hook):
                   ("interval", "int", "Check interval in minutes", 480),
                   ("debug", "bool", "Check for plugin changes when in debug mode", False)]
     __author_name__ = "RaNaN"
-    __author_mail__ = "ranan@pyload.org"
+    __author_mail__ = "ranan@pyload.net"
 
-    URL = "http://get.pyload.org/check2/%s/"
+    URL = "http://get.pyload.net/check2/%s/"
     MIN_TIME = 3 * 60 * 60  # 3h minimum check interval
 
     @property
@@ -101,7 +101,7 @@ class UpdateManager(Hook):
 
             self.info["pyload"] = True
             self.logInfo(_("***  New pyLoad Version %s available  ***") % self.version)
-            self.logInfo(_("***  Get it here: http://pyload.org/download  ***"))
+            self.logInfo(_("***  Get it here: https://github.com/pyload/pyload/releases  ***"))
 
         except Exception:
             self.logWarning(_("Not able to connect server for updates"))

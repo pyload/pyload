@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 ###############################################################################
 #   Copyright(c) 2009-2017 pyLoad Team
-#   http://www.pyload.org
+#   https://pyload.net
 #
 #   This file is part of pyLoad.
 #   pyLoad is free software: you can redistribute it and/or modify

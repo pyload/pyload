@@ -1,9 +1,9 @@
 msgid ""
 msgstr "Project-Id-Version: pyload\n"
-"Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
+"Report-Msgid-Bugs-To: 'dev@pyload.net'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
 "PO-Revision-Date: 2014-03-22 14:03-0400\n"
-"Last-Translator: pyloadTeam <team@pyload.org>\n"
+"Last-Translator: pyloadTeam <team@pyload.net>\n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
 "MIME-Version: 1.0\n"
@@ -293,8 +293,8 @@ msgid "***  New pyLoad Version %s available  ***"
 msgstr "***  Dostępna nowa wersja %s  ***"
 
 #: pyload/plugins/addons/UpdateManager.py:101
-msgid "***  Get it here: http://pyload.org/download  ***"
-msgstr "***  Pobierz stąd: http://pyload.org/download  ***"
+msgid "***  Get it here: https://github.com/pyload/pyload/releases  ***"
+msgstr "***  Pobierz stąd: https://github.com/pyload/pyload/releases  ***"
 
 #: pyload/plugins/addons/UpdateManager.py:104
 msgid "Not able to connect server for updates"

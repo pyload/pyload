@@ -55,7 +55,7 @@ class CaptchaTrader(Hook):
                   ("force", "bool", "Force CT even if client is connected", False),
                   ("passkey", "password", "Password", "")]
     __author_name__ = "RaNaN"
-    __author_mail__ = "RaNaN@pyload.org"
+    __author_mail__ = "Mast3rRaNaN@hotmail.de"
 
     SUBMIT_URL = "http://api.captchatrader.com/submit"
     RESPOND_URL = "http://api.captchatrader.com/respond"

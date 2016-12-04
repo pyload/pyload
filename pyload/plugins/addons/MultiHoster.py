@@ -15,7 +15,7 @@ class MultiHoster(Addon, PluginMatcher):
     __description__ = "Gives ability to use MultiHoster services."
     __config__ = []
     __author__ = ("pyLoad Team",)
-    __author_mail__ = ("support@pyload.org",)
+    __author_mail__ = ("support@pyload.net",)
 
     #TODO: multiple accounts - multihoster / config options
 

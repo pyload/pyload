@@ -15,7 +15,7 @@ class Premium4Me(MultiHoster):
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
     __description__ = """Premium.to hook plugin"""
     __author_name__ = ("RaNaN", "zoidberg", "stickell")
-    __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __author_mail__ = ("Mast3rRaNaN@hotmail.de", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
     def getHoster(self):
         page = getURL("http://premium.to/api/hosters.php?authcode=%s" % self.account.authcode)

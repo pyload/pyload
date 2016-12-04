@@ -75,7 +75,7 @@ class DeathByCaptcha(Hook):
                   ("passkey", "password", "Password", ""),
                   ("force", "bool", "Force DBC even if client is connected", False)]
     __author_name__ = ("RaNaN", "zoidberg")
-    __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
+    __author_mail__ = ("Mast3rRaNaN@hotmail.de", "zoidberg@mujmail.cz")
 
     API_URL = "http://api.dbcapi.me/api/"
 

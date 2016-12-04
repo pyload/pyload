@@ -36,10 +36,10 @@ Contents
 
 .. rubric:: Footnotes
 
-.. [1] http://pyload.org
-.. [2] http://pyload.org/irc
+.. [1] https://pyload.net
+.. [2] https://pyload.net/irc
 .. [3] http://bitbucket.org/spoob/pyload/overview
-.. [4] http://forum.pyload.org
+.. [4] https://pyload.net
 
 ==================
 

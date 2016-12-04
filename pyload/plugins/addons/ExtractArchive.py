@@ -78,7 +78,7 @@ class ExtractArchive(Addon):
                   ("queue", "bool", "Wait for all downloads to be finished", True),
                   ("renice", "int", "CPU Priority", 0)]
     __author_name__ = ("pyload Team", "AndroKev")
-    __author_mail__ = ("admin<at>pyload.org", "@pyloadforum")
+    __author_mail__ = ("admin<at>pyload.net", "@pyloadforum")
 
     event_list = ["allDownloadsProcessed"]
 

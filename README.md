@@ -1,4 +1,4 @@
-# pyLoad [![Build Status](http://nightly.pyload.org/buildStatus/icon?job=Nightly)](http://nightly.pyload.org/job/Nightly/)
+# pyLoad [![Build Status](http://nightly.pyload.net/buildStatus/icon?job=Nightly)](http://nightly.pyload.net/job/Nightly/)
 
 pyLoad is a free and open source personal cloud storage as well as download manager
 for all kind of operating systems and devices, designed to be extremely lightweight and
@@ -11,12 +11,12 @@ Additionaly it has a great variety of plugins to automate common tasks and make 
 pyLoad has a full featured and well documented API, is easily extendable and accessible
 by external tools. It is written entirely in Python and currently under heavy development.
 
-For news, downloads, wiki, forum and further information visit http://pyload.org/
+For news, downloads, wiki, forum and further information visit https://pyload.net/
 
 To report bugs, suggest features, ask a question, get the developer version
 or help us out, visit https://github.com/pyload/pyload
 
-Documentation about extending pyLoad can be found at http://docs.pyload.org or join us at #pyload on irc.freenode.net
+Documentation about extending pyLoad can be found at http://docs.pyload.net or join us at #pyload on irc.freenode.net
 
 Dependencies
 ------------
@@ -64,7 +64,7 @@ Configuration
 After finishing the setup assistent pyLoad is ready to use and more configuration can be done via webinterface.
 Additionally you could simply edit the config files located in your pyLoad home dir (defaults to: ~/.pyload)
 with your favorite editor and edit the appropriate options. For a short description of
-the options take a look at http://pyload.org/configuration.
+the options take a look at https://pyload.net/configuration.
 
 To restart the configure assistent run::
 
@@ -84,4 +84,4 @@ The webinterface can be accessed when pointing your webbrowser to the ip and con
 
 Notes
 -----
-For more information, see http://pyload.org/
+For more information, see https://pyload.net/
