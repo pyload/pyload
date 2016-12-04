@@ -70,7 +70,7 @@ class ImageTyperz(Hook):
 
         try:
             balance = float(response)
-        except:
+        except Exception:
             raise ImageTyperzException("invalid response")
 
         self.logInfo("Account balance: $%s left" % response)

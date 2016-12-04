@@ -61,7 +61,7 @@ class BaseThread(Thread):
                     try:
                         # avoid encoding errors
                         zip.write(join("tmp", name, f), save_join(name, f))
-                    except:
+                    except Exception:
                         pass
 
             info = zipfile.ZipInfo(save_join(name, "debug_Report.txt"), gmtime())

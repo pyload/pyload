@@ -74,7 +74,7 @@ def server(self, *settings):
             self.logWarning(_("Click'N'Load: Port 9666 already in use"))
             return
         _thread.start_new_thread(server, (self,) + settings)
-    except:
+    except Exception:
         _thread.start_new_thread(server, (self,) + settings)
 
 

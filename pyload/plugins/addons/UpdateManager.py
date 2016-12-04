@@ -103,7 +103,7 @@ class UpdateManager(Hook):
             self.logInfo(_("***  New pyLoad Version %s available  ***") % self.version)
             self.logInfo(_("***  Get it here: http://pyload.org/download  ***"))
 
-        except:
+        except Exception:
             self.logWarning(_("Not able to connect server for updates"))
 
         return None  # Nothing will be done

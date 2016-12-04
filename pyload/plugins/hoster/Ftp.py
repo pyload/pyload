@@ -49,7 +49,7 @@ class Ftp(Hoster):
         pyfile.name = parsed_url.path.rpartition('/')[2]
         try:
             pyfile.name = unquote(str(pyfile.name)).decode('utf8')
-        except:
+        except Exception:
             pass
 
         if not "@" in netloc:

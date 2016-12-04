@@ -111,7 +111,7 @@ class OCR(object):
         try:
             with open(tmpTxt.name, 'r') as f:
                 self.result_captcha = f.read().replace("\n", "")
-        except:
+        except Exception:
             self.result_captcha = ""
 
         self.logger.debug(self.result_captcha)
@@ -120,7 +120,7 @@ class OCR(object):
             os.remove(tmpTxt.name)
             if subset and (digits or lowercase or uppercase):
                 os.remove(tmpSub.name)
-        except:
+        except Exception:
             pass
 
     def get_captcha(self, name):
@@ -162,7 +162,7 @@ class OCR(object):
                     if pixels[x + 1, y] != 255: count += 1
                     if pixels[x + 1, y-1] != 255: count += 1
                     if pixels[x, y-1] != 255: count += 1
-                except:
+                except Exception:
                     pass
 
         # not enough neighbors are dark pixels so mark this pixel

@@ -47,9 +47,9 @@ class WSClient(object):
         elif code == 500:
             raise Exception("Remote Exception: %s" % result)
         elif code == UNAUTHORIZED:
-            raise Unauthorized()
+            raise Unauthorized
         elif code == FORBIDDEN:
-            raise Forbidden()
+            raise Forbidden
 
         return result
 

@@ -121,7 +121,7 @@ class CoreApi(ApiComponent):
             if offset >= len(lines):
                 return []
             return lines[offset:]
-        except:
+        except Exception:
             return ['No log available']
 
     @RequirePerm(Permission.All)

@@ -237,7 +237,7 @@ class PluginLoader(object):
         if "pattern" in attrs and attrs["pattern"]:
             try:
                 plugin_re = re.compile(attrs["pattern"], re.I)
-            except:
+            except Exception:
                 self.logDebug(folder, name, "Invalid regexp pattern '%s'" % attrs["pattern"])
                 plugin_re = self.NO_MATCH
         else:
@@ -274,7 +274,7 @@ class PluginLoader(object):
 
             try:
                 self.config.addConfigSection(name, name, desc, expl, config)
-            except:
+            except Exception:
                 self.logDebug(folder, name, "Invalid config  %s" % config)
 
         return plugin

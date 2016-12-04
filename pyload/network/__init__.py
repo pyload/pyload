@@ -26,7 +26,7 @@ def get_ip(n=10):
             ip = getURL(sv[0])
             ip = re.match(sv[1], ip).group(1)
             break
-        except:
+        except Exception:
             ip = ""
             sleep(1)
 

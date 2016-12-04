@@ -52,7 +52,7 @@ class Ev0InFetcher(Hook):
         for h in self.getConfig("hoster").split(","):
             try:
                 return sortedLinks[h.strip()]
-            except:
+            except Exception:
                 continue
         return []
 

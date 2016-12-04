@@ -220,5 +220,5 @@ def renice(pid, value):
     if os.name != "nt" and value:
         try:
             Popen(["renice", str(value), str(pid)], stdout=PIPE, stderr=PIPE, bufsize=-1)
-        except:
+        except Exception:
             print("Renice failed")

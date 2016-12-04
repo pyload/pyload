@@ -17,7 +17,7 @@ def find_module(name):
         if f is not None:
             f.close()
         return True
-    except:
+    except Exception:
         return False
 
 

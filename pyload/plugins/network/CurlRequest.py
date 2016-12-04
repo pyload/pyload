@@ -313,7 +313,7 @@ class CurlRequest(Request):
         """ writes response """
         if self.rep.tell() > 1000000 or self.doAbort:
             rep = self.getResponse()
-            if self.doAbort: raise Abort()
+            if self.doAbort: raise Abort
             f = open("response.dump", "wb")
             f.write(rep)
             f.close()

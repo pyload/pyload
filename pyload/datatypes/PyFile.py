@@ -124,7 +124,7 @@ class PyFile(object):
                 return self.plugin.req.name
             else:
                 return self._name
-        except:
+        except Exception:
             return self._name
 
     def setName(self, name):
@@ -267,7 +267,7 @@ class PyFile(object):
                 return self.plugin.dl.size
             else:
                 return self.size
-        except:
+        except Exception:
             return self.size
 
     @try_catch(0)

@@ -193,7 +193,7 @@ class TestDatabase(BenchmarkTest):
             assert f.media in range(1024)
             assert f.package in self.pids
             assert f.added > 10 ** 6 # date is usually big integer
-        except:
+        except Exception:
             print(f)
             raise
 
@@ -209,7 +209,7 @@ class TestDatabase(BenchmarkTest):
             assert p.added > 10 ** 6
             assert isinstance(p.tags, list)
             assert p.shared in (0, 1)
-        except:
+        except Exception:
             print(p)
             raise
 

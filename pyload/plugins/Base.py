@@ -214,7 +214,7 @@ class Base(object):
 
     def checkAbort(self):
         """  Will be overwritten to determine if control flow should be aborted """
-        if self.abort(): raise Abort()
+        if self.abort(): raise Abort
 
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False):
         """Load content at url and returns it
@@ -228,7 +228,8 @@ class Base(object):
         :param decode: Whether to decode the output according to http header, should be True in most cases
         :return: Loaded content
         """
-        if not hasattr(self, "req"): raise Exception("Plugin type does not have Request attribute.")
+        if not hasattr(self, "req"):
+            raise Exception("Plugin type does not have Request attribute.")
         self.checkAbort()
 
         res = self.req.load(url, get, post, ref, cookies, just_header, decode=decode)
@@ -247,7 +248,7 @@ class Base(object):
 
             try:
                 tmp = res.encode("utf8")
-            except:
+            except Exception:
                 tmp = res
 
             f.write(tmp)
@@ -336,7 +337,7 @@ class Base(object):
             while task.isWaiting():
                 if self.abort():
                     self.im.removeTask(task)
-                    raise Abort()
+                    raise Abort
                 sleep(1)
 
             #TODO task handling
@@ -355,7 +356,7 @@ class Base(object):
         if not self.core.debug:
             try:
                 remove(temp_file.name)
-            except:
+            except Exception:
                 pass
 
         return result

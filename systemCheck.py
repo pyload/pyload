@@ -19,26 +19,26 @@ def main():
     try:
         import pycurl
         print("pycurl: " + pycurl.version)
-    except:
+    except Exception:
         print("pycurl: missing")
 
     try:
         import Crypto
         print("py-crypto: " + Crypto.__version__)
-    except:
+    except Exception:
         print("py-crypto: missing")
 
 
     try:
         import OpenSSL
         print("OpenSSL: " + OpenSSL.version.__version__)
-    except:
+    except Exception:
         print("OpenSSL: missing")
 
     try:
         import Image
         print("image library: " + Image.VERSION)
-    except:
+    except Exception:
         print("image library: missing")
 
     print("\n\n#####   System Status   #####")
@@ -55,29 +55,29 @@ def main():
 
     try:
         import pycurl
-    except:
+    except Exception:
         core_err.append("Please install py-curl to use pyLoad.")
 
 
     try:
         from pycurl import AUTOREFERER
-    except:
+    except Exception:
         core_err.append("Your py-curl version is too old, please upgrade!")
 
     try:
         import Image
-    except:
+    except Exception:
         core_err.append("Please install py-imaging/pil to use Hoster, which use captchas.")
 
     pipe = subprocess.PIPE
     try:
         p = subprocess.call(["tesseract"], stdout=pipe, stderr=pipe)
-    except:
+    except Exception:
         core_info.append("Install tesseract to try automatic captcha resolution.")
 
     try:
         import OpenSSL
-    except:
+    except Exception:
         core_info.append("Install OpenSSL if you want to create a secure connection to the core.")
 
     if core_err:
@@ -99,7 +99,7 @@ def main():
 
     try:
         import flup
-    except:
+    except Exception:
         web_info.append("Install Flup to use FastCGI or optional web servers.")
 
 

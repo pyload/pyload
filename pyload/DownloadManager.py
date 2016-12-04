@@ -260,7 +260,7 @@ class DownloadManager(object):
 
         try:
             call(self.core.config['reconnect']['method'], shell=True)
-        except:
+        except Exception:
             self.log.warning(_("Failed executing reconnect script!"))
             self.core.config["reconnect"]["activated"] = False
             self.reconnecting.clear()

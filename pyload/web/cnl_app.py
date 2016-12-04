@@ -19,7 +19,7 @@ from .webinterface import PYLOAD, DL_ROOT, JS
 
 try:
     from Crypto.Cipher import AES
-except:
+except Exception:
     pass
 
 def generate_and_add(urls, paused):
@@ -72,7 +72,7 @@ def addcrypted():
 
     try:
         PYLOAD.addPackage(package, [dlc_path], paused=True)
-    except:
+    except Exception:
         return HTTPError()
     else:
         return "success\r\n"
@@ -93,7 +93,7 @@ def addcrypted2():
     else:
         try:
             jk = re.findall(r"return ('|\")(.+)('|\")", jk)[0][1]
-        except:
+        except Exception:
         ## Test for some known js functions to decode
             if jk.find("dec") > -1 and jk.find("org") > -1:
                 org = re.findall(r"var org = ('|\")([^\"']+)", jk)[0][1]
@@ -104,7 +104,7 @@ def addcrypted2():
 
     try:
         Key = unhexlify(jk)
-    except:
+    except Exception:
         print("Could not decrypt key, please install py-spidermonkey or ossp-js")
         return "failed"
 
@@ -120,7 +120,7 @@ def addcrypted2():
             PYLOAD.addPackage(package, result, paused=True)
         else:
             generate_and_add(result, True)
-    except:
+    except Exception:
         print_exc()
         return "failed"
     else:

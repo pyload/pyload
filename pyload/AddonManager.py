@@ -122,7 +122,7 @@ class AddonManager(object):
                 else:
                     deactive.append(pluginname)
 
-            except:
+            except Exception:
                 self.log.warning(_("Failed activating %(name)s") % {"name": pluginname})
                 self.core.print_exc()
 

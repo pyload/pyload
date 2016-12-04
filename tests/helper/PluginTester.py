@@ -55,7 +55,8 @@ def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, i
     log(DEBUG, "Using ct for captcha")
     # put username and passkey into two lines in ct.conf
     conf = join(expanduser("~"), "ct.conf")
-    if not exists(conf): raise Exception("CaptchaService config %s not found." % conf)
+    if not exists(conf):
+        raise Exception("CaptchaService config %s not found." % conf)
     f = open(conf, "rb")
     req = getRequest()
 

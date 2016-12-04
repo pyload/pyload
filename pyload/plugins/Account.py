@@ -274,7 +274,7 @@ class Account(Base):
                 start, end = time_data.split("-")
                 if not compare_time(start.split(":"), end.split(":")):
                     return False
-            except:
+            except Exception:
                 self.logWarning(_("Your Time %s has a wrong format, use: 1:22-3:44") % time_data)
 
         if 0 <= self.validuntil < time():

@@ -160,7 +160,7 @@ class InteractionManager(object):
         for plugin in self.core.addonManager.activePlugins():
             try:
                 plugin.newInteractionTask(task)
-            except:
+            except Exception:
                 self.core.print_exc()
 
         self.tasks[task.iid] = task

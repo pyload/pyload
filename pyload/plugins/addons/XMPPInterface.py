@@ -84,7 +84,7 @@ class XMPPInterface(IRCInterface, JabberClient):
         try:
             if self.getConfig("info_pack"):
                 self.announce(_("Package finished: %s") % pypack.name)
-        except:
+        except Exception:
             pass
 
     def downloadFinished(self, pyfile):
@@ -92,7 +92,7 @@ class XMPPInterface(IRCInterface, JabberClient):
             if self.getConfig("info_file"):
                 self.announce(
                     _("Download finished: %(name)s @ %(plugin)s") % {"name": pyfile.name, "plugin": pyfile.pluginname})
-        except:
+        except Exception:
             pass
 
     def run(self):
@@ -161,7 +161,7 @@ class XMPPInterface(IRCInterface, JabberClient):
                 trigger = temp[0]
                 if len(temp) > 1:
                     args = temp[1:]
-            except:
+            except Exception:
                 pass
 
             handler = getattr(self, "event_%s" % trigger, self.event_pass)

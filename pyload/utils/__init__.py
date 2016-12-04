@@ -284,7 +284,7 @@ def try_catch(fallback):
         def new(*args, **kwargs):
             try:
                 return f(*args, **kwargs)
-            except:
+            except Exception:
                 return fallback
 
         return new

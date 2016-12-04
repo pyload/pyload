@@ -30,9 +30,9 @@ class JSONClient(object):
         if ret.code == 500:
             raise Exception("Remote Exception")
         if ret.code == UNAUTHORIZED:
-            raise Unauthorized()
+            raise Unauthorized
         if ret.code == FORBIDDEN:
-            raise Forbidden()
+            raise Forbidden
         return ret.read()
 
     def login(self, username, password):

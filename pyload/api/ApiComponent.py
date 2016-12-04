@@ -22,4 +22,4 @@ class ApiComponent(Iface):
         self.user = user
         self.primaryUID = 0
         # No instantiating!
-        raise Exception()
+        raise Exception

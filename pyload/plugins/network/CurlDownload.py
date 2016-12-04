@@ -290,7 +290,7 @@ class CurlDownload(Download):
                 lastTimeCheck = t
 
             if self.doAbort:
-                raise Abort()
+                raise Abort
 
             self.m.select(1)
 

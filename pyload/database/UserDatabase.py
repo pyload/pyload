@@ -54,7 +54,7 @@ class UserMethods(DatabaseMethods):
         try:
             self.c.execute('INSERT INTO users (uid, name, password) VALUES (?, ?, ?)',
                            (uid, "debugUser", random_salt()))
-        except:
+        except Exception:
             pass
 
     @queue

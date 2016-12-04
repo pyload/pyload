@@ -288,7 +288,7 @@ class Crypter(Base):
 
     def retry(self):
         """ Retry decrypting, will only work once. Somewhat deprecated method, should be avoided. """
-        raise Retry()
+        raise Retry
 
     def getPassword(self):
         """ Deprecated """

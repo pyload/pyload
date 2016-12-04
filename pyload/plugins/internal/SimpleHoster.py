@@ -112,7 +112,7 @@ def parseFileInfo(self, url='', html=''):
             online = False
             try:
                 info.update(re.match(self.__pattern__, url).groupdict())
-            except:
+            except Exception:
                 pass
 
             for pattern in ("FILE_INFO_PATTERN", "FILE_NAME_PATTERN", "FILE_SIZE_PATTERN"):

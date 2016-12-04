@@ -95,7 +95,7 @@ class DownloadThread(BaseThread):
             except Abort:
                 try:
                     self.log.info(_("Download aborted: %s") % pyfile.name)
-                except:
+                except Exception:
                     pass
 
                 pyfile.setStatus("aborted")

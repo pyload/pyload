@@ -32,7 +32,7 @@ from pyload.utils.fs import chmod, exists, remove
 
 try:
     from pysqlite2 import dbapi2 as sqlite3
-except:
+except Exception:
     import sqlite3
 
 DB = None
@@ -117,7 +117,7 @@ class DatabaseJob(object):
             print_exc()
             try:
                 print("Database Error @", self.f.__name__, self.args[1:], self.kwargs, e)
-            except:
+            except Exception:
                 pass
 
             self.exception = e
@@ -171,7 +171,7 @@ class DatabaseBackend(Thread):
 
                 try:
                     self.manager.core.log.warning(_("Database was deleted due to incompatible version."))
-                except:
+                except Exception:
                     print("Database was deleted due to incompatible version.")
 
                 remove(self.VERSION_FILE)
@@ -230,7 +230,7 @@ class DatabaseBackend(Thread):
     def _convertDB(self, v):
         try:
             return getattr(self, "_convertV%i" % v)()
-        except:
+        except Exception:
             return False
 
     #--convert scripts start

@@ -229,7 +229,7 @@ class Core(object):
         if not pid or os.name == "nt": return False
         try:
             os.kill(pid, 0)  # 0 - default signal (does nothing)
-        except:
+        except Exception:
             return 0
 
         return pid
@@ -543,7 +543,7 @@ class Core(object):
                     import colorama
 
                     colorama.init()
-                except:
+                except Exception:
                     color = False
                     print("Install 'colorama' to use the colored log on windows")
 

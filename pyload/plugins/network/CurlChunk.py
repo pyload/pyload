@@ -85,7 +85,7 @@ class ChunkInfo(object):
     def load(name):
         fs_name = fs_encode("%s.chunks" % name)
         if not exists(fs_name):
-            raise IOError()
+            raise IOError
         fh = codecs.open(fs_name, "r", "utf_8")
         name = fh.readline()[:-1]
         size = fh.readline()[:-1]

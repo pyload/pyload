@@ -136,7 +136,7 @@ def login():
     try:
         sid = s._headers["cookie_out"].split("=")[1].split(";")[0]
     # reuse old session id
-    except:
+    except Exception:
         sid = request.get_header(session.options['key'])
 
     result = BaseEncoder().default(user)

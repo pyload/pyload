@@ -68,7 +68,7 @@ class AccountManager(object):
             options = json.loads(options) if options else {}
             try:
                 self._createAccount(info, password, options)
-            except:
+            except Exception:
                 self.core.log.error(_("Could not load account %s") % info)
                 self.core.print_exc()
 

@@ -47,7 +47,7 @@ if not ENGINE:
         if out.strip() == "42":
             ENGINE = "js"
         JS = True
-    except:
+    except Exception:
         pass
 
 if not ENGINE or DEBUG:
@@ -55,7 +55,7 @@ if not ENGINE or DEBUG:
         import PyV8
         ENGINE = "pyv8"
         PYV8 = True
-    except:
+    except Exception:
         pass
 
 if not ENGINE or DEBUG:
@@ -68,7 +68,7 @@ if not ENGINE or DEBUG:
         if out.strip() == "42":
             ENGINE = "node"
         NODE = True
-    except:
+    except Exception:
         pass
 
 if not ENGINE or DEBUG:
@@ -94,7 +94,7 @@ if not ENGINE or DEBUG:
         if out.strip() == "42":
             ENGINE = "rhino"
         RHINO = True
-    except:
+    except Exception:
         pass
 
 
