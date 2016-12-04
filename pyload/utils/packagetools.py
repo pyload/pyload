@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 # JDownloader/src/jd/controlling/LinkGrabberPackager.java
 
 from __future__ import print_function
