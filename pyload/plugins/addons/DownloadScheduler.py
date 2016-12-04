@@ -13,7 +13,8 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 
     @author: zoidberg
-    Original idea by new.cze
+
+Original idea by new.cze
 """
 from __future__ import unicode_literals
 
