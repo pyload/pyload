@@ -21,7 +21,7 @@ class OneFichierCom(Account):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    VALID_UNTIL_PATTERN = r'Your account is Premium until <span style="font-weight:bold">(\d+\-\d+\-\d+)'
+    VALID_UNTIL_PATTERN = r'Your Premium offer subscription is valid until <span style="font-weight:bold">(\d+\-\d+\-\d+)'
 
 
     def grab_info(self, user, password, data):

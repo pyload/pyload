@@ -34,7 +34,7 @@ class OneFichierCom(SimpleHoster):
 
     DISPOSITION      = False  #@TODO: Remove disposition in 0.4.10
 
-    URL_REPLACEMENTS = [("https:", "http:")]  #@TODO: Remove in 0.4.10
+    URL_REPLACEMENTS = [("http:", "https:")]
 
     COOKIES          = [("1fichier.com", "LG", "en")]
 
@@ -108,4 +108,4 @@ class OneFichierCom(SimpleHoster):
 
 
     def handle_premium(self, pyfile):
-        self.download(pyfile.url, post={'did': 1, 'dl_no_ssl': "on"}, disposition=False)  #@TODO: Remove disposition in 0.4.10
+        self.download(pyfile.url, post={'did': 0, 'dl_no_ssl': "on"}, disposition=False)  #@TODO: Remove disposition in 0.4.10
