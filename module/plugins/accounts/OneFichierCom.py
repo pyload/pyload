@@ -12,7 +12,7 @@ from module.network.HTTPRequest import BadHeader
 class OneFichierCom(Account):
     __name__    = "OneFichierCom"
     __type__    = "account"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__  = "testing"
 
     __description__ = """1fichier.com account plugin"""
