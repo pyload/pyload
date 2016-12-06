@@ -107,7 +107,7 @@ module.exports = function(grunt) {
         },
         jshint: {
             options: {
-                jshintrc: '<%= yeoman.app %>/node_modules/pyload-common/.jshintrc'
+                jshintrc: '<%= yeoman.app %>/node_modules/.jshintrc'
             },
             all: [
                 'Gruntfile.js',
@@ -126,7 +126,7 @@ module.exports = function(grunt) {
         },
         less: {
             options: {
-                paths: [yeomanConfig.app + '/node_modules', yeomanConfig.app + '/node_modules/pyload-common/styles',
+                paths: [yeomanConfig.app + '/node_modules', yeomanConfig.app + '/styles/common',
                     yeomanConfig.app + '/styles/default']
                 //dumpLineNumbers: true
             },
@@ -333,17 +333,17 @@ module.exports = function(grunt) {
                             '**/select2/select2-spinner.gif',
                             '**/select2/select2x2.png'
                         ]
-                    },
-                    {
-                        expand: true,
-                        cwd: '<%= yeoman.app %>/node_modules/pyload-common',
-                        dest: '.tmp',
-                        src: [
-                            'favicon.ico',
-                            'images/*',
-                            'fonts/*'
-                        ]
                     }
+                    // {
+                        // expand: true,
+                        // cwd: '<%= yeoman.app %>/node_modules/pyload-common',
+                        // dest: '.tmp',
+                        // src: [
+                            // 'favicon.ico',
+                            // 'images/*',
+                            // 'fonts/*'
+                        // ]
+                    // }
                 ]
             },
 

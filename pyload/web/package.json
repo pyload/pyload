@@ -18,7 +18,8 @@
     },
     "homepage" : "https ://github.com/pyload/pyload",
     "dependencies" : {
-        "pyload-common" : "git+https://github.com/pyload/pyload-common.git",
+        "bootstrap": "~2.3.2",
+        "font-awesome": "~3.2.0",
         "requirejs" : "2.1.9",
         "requirejs-text" : "*",
         "require-handlebars-plugin" : "0.4.0",
