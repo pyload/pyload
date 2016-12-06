@@ -1,19 +1,32 @@
-SHELL=/bin/bash
-WRONG_PATH := $(shell type node &>/dev/null || type nodejs &>/dev/null && ln -s /usr/bin/nodejs node &>/dev/null && echo "yes")
+SHELL := /bin/sh
 PATH := ${PATH}:.
 
-init-web: prepare
-	npm install
-	npm install bower@0.9.2 grunt-cli
-	node_modules/bower/bin/bower install
-	$(MAKE) update-web
-	
-update-web: prepare
-	node_modules/grunt-cli/bin/grunt build
+.PHONY: build
+build: install
+    node_modules/grunt-cli/bin/grunt build
 
-prepare:
-ifeq ($(WRONG_PATH),yes)
-	@echo "creating node link in local dir"
-endif
+.PHONY: install
+install: check
+    npm install --legacy-bundling
+    $(MAKE) clean
 
-.PHONY: prepare
+.PHONY: uninstall
+uninstall:
+    rm -rf node_modules
+    ifdef $(wildcard "node")
+        rm -f node
+    endif
+
+.PHONY: update
+update: check
+    npm update --depth 0
+
+.PHONY: clean
+clean:
+    npm prune --production
+
+.PHONY: check
+check:
+    ifdef $(shell type node &>/dev/null || type nodejs &>/dev/null && ln -s "$(shell which nodejs)" node &>/dev/null && echo true)
+        @echo "nodejs linked to node in local dir"
+    endif
