@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class MultiUpOrg(SimpleCrypter):
     __name__    = "MultiUpOrg"
     __type__    = "crypter"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?multiup\.org/(en/|fr/)?(?P<TYPE>project|download|mirror)/\w+(/\w+)?'
@@ -53,25 +53,25 @@ class MultiUpOrg(SimpleCrypter):
                 url = re.search(r'href="(.+?)"', _a).group(1)
                 hosts_data[host] = url
 
-        choosen_hosts = []
+        chosen_hosts = []
         # priority hosts goes first
         for _h in hosts_priority:
             if _h in hosts_data and _h not in ignored_hosts:
                 self.log_debug(_("Adding '%s' link") % _h)
-                choosen_hosts.append(_h)
+                chosen_hosts.append(_h)
                 if not grab_all:
                     break
 
-        # Now the hosts of the hosts
-        if grab_all or (not grab_all and not choosen_hosts):
+        # Now the rest of the hosts
+        if grab_all or (not grab_all and not chosen_hosts):
             for _h in hosts_data:
-                if _h not in ignored_hosts and _h not in choosen_hosts:
+                if _h not in ignored_hosts and _h not in chosen_hosts:
                     self.log_debug(_("Adding '%s' link") % _h)
-                    choosen_hosts.append(_h)
+                    chosen_hosts.append(_h)
                     if not grab_all:
                         break
 
-        return [hosts_data[_h] for _h in choosen_hosts]
+        return [hosts_data[_h] for _h in chosen_hosts]
 
 
 
