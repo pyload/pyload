@@ -3,12 +3,12 @@
 Crypter - Extract links from pages
 ==================================
 
-We are starting with the simplest plugin, the :class:`Crypter <pyload.plugins.Crypter.Crypter>`.
+We are starting with the simplest plugin, the :class:`Crypter <pyload.plugins.crypter.Crypter>`.
 It's job is to take an url as input and generate a new package or links, for example by filtering the urls or
 loading a page and extracting links from the html code. You need to define the ``__pattern__`` to match
-target urls and subclass from :class:`Crypter <pyload.plugins.Crypter.Crypter>`. ::
+target urls and subclass from :class:`Crypter <pyload.plugins.crypter.Crypter>`. ::
 
-    from pyload.plugin.Crypter import Crypter
+    from pyload.plugin.crypter import Crypter
 
     class MyFileCrypter(Crypter):
         __pattern__ = r"mycrypter.com/id/([0-9]+)"
@@ -28,7 +28,7 @@ Generating Packages
 When finished with decrypting just return the urls as list and they will be added to the package. You can also
 create new Packages if needed by instantiating a :class:`Package` instance, which will look like the following::
 
-    from pyload.plugin.Crypter import Crypter, Package
+    from pyload.plugin.crypter import Crypter, Package
 
     class MyFileCrypter(Crypter):
 
@@ -52,12 +52,12 @@ your code you can use::
 SimpleCrypter
 -------------
 
-For simple crypter services there is the :class:`SimpleCrypter <pyload.plugins.internal.SimpleCrypter.SimpleCrypter>` class which handles most of the workflow. Only the regexp
+For simple crypter services there is the :class:`SimpleCrypter <pyload.plugins.internal.simplecrypter.SimpleCrypter>` class which handles most of the workflow. Only the regexp
 pattern has to be defined.
 
 Exmaple::
 
-    from pyload.plugins.internal.SimpleCrypter import SimpleCrypter
+    from pyload.plugins.internal.simplecrypter import SimpleCrypter
 
         class MyFileCrypter(SimpleCrypter):
 

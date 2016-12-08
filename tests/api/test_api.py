@@ -6,9 +6,9 @@ from builtins import range
 from unittest import TestCase
 from random import choice
 
-from pyload.Core import Core
+from pyload.core import Core
 
-from .ApiTester import ApiTester
+from .apitester import ApiTester
 
 
 class TestAPI(TestCase):

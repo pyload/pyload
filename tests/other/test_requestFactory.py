@@ -2,10 +2,10 @@
 
 from __future__ import unicode_literals
 from builtins import object
-from tests.helper.Stubs import Core
+from tests.helper.stubs import Core
 
-from pyload.plugins.network.CurlRequest import CurlRequest
-from pyload.network.RequestFactory import RequestFactory
+from pyload.plugins.network.curlrequest import CurlRequest
+from pyload.network.requestfactory import RequestFactory
 
 
 class TestRequestFactory(object):

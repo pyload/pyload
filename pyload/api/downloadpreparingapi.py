@@ -10,9 +10,9 @@ from pyload.Api import Api, DownloadStatus as DS,\
 from pyload.utils import uniqify
 from pyload.utils.fs import join
 from pyload.utils.packagetools import parseNames
-from pyload.network.RequestFactory import getURL
+from pyload.network.requestfactory import getURL
 
-from .ApiComponent import ApiComponent
+from .apicomponent import ApiComponent
 
 
 class DownloadPreparingApi(ApiComponent):

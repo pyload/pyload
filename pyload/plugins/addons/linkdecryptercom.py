@@ -5,8 +5,8 @@ from __future__ import unicode_literals
 
 import re
 
-from pyload.plugins.Hook import Hook
-from pyload.network.RequestFactory import getURL
+from pyload.plugins.hook import Hook
+from pyload.network.requestfactory import getURL
 from pyload.utils import remove_chars
 
 

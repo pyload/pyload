@@ -14,10 +14,10 @@ from urllib.parse import quote, urlencode
 from http.client import responses
 from io import StringIO
 
-from pyload.plugins.Base import Abort
-from pyload.network.CookieJar import CookieJar
+from pyload.plugins.base import Abort
+from pyload.network.cookiejar import CookieJar
 
-from ..Request import Request, ResponseException
+from ..request import Request, ResponseException
 
 
 def myquote(url):

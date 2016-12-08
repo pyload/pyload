@@ -15,8 +15,8 @@ from urllib.parse import urlencode
 from time import sleep
 import Image
 
-from pyload.network.RequestFactory import getURL, getRequest
-from pyload.plugins.Hook import Hook
+from pyload.network.requestfactory import getURL, getRequest
+from pyload.plugins.hook import Hook
 
 
 class CaptchaBrotherhoodException(Exception):

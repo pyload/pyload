@@ -4,7 +4,7 @@ Base Plugin - And here it begins...
 ===================================
 
 A Plugin in pyLoad is a python file located at one of the subfolders in :file:`pyload/plugins/`.
-All different plugin types inherit from :class:`Base <pyload.plugins.Base.Base>`, which defines basic methods
+All different plugin types inherit from :class:`Base <pyload.plugins.base.Base>`, which defines basic methods
 and meta data. You should read this section carefully, because it's the base for all plugin development. It
 is also a good idea to look at the class diagram [1]_ for all plugin types to get an overview.
 At last you should look at several already existing plugin to get a more detailed idea of how
@@ -14,23 +14,23 @@ Meta Data
 ---------
 
 All important data which must be known by pyLoad is set using class attributes pre- and suffixed with ``__``.
-An overview of acceptable values can be found in :class:`Base <pyload.plugins.Base.Base>` source code.
+An overview of acceptable values can be found in :class:`Base <pyload.plugins.base.Base>` source code.
 Unneeded attributes can be left out, except ``__version__``. Nevertheless please fill out most information
 as you can, when you want to submit your plugin to the public repository.
 
-Additionally :class:`Crypter <pyload.plugins.Crypter.Crypter>` and :class:`Hoster <pyload.plugins.Hoster.Hoster>`
+Additionally :class:`Crypter <pyload.plugins.crypter.Crypter>` and :class:`Hoster <pyload.plugins.hoster.Hoster>`
 needs to have a specific regexp [2]_ ``__pattern__``. This will be matched against input url's and if a suited
 plugin is found it is selected to handle the url.
 
 For localization pyLoad supports gettext [3]_, to mark strings for translation surround them with ``_("...")``.
 
-You don't need to subclass :class:`Base <pyload.plugins.Base.Base>` directly, but the
+You don't need to subclass :class:`Base <pyload.plugins.base.Base>` directly, but the
 intermediate type according to your plugin. As an example we choose a hoster plugin, but the same is true for all
 plugin types.
 
 How a basic hoster plugin header could look like::
 
-        from pyload.plugin.Hoster import Hoster
+        from pyload.plugin.hoster import Hoster
 
         class MyFileHoster(Hoster):
                 __version__ = "0.1"
@@ -81,10 +81,10 @@ ip_check        A hoster that checks ip, that can be avoided with reconnect
 Basic Methods
 -------------
 
-All methods can be looked up at :class:`Base <pyload.plugins.Base.Base>`. To note some important ones:
+All methods can be looked up at :class:`Base <pyload.plugins.base.Base>`. To note some important ones:
 
 The pyload core instance is accessible at ``self.core`` attribute
-and the :class:`Api <pyload.Api.Api>` at ``self.core.api``
+and the :class:`Api <pyload.api.Api>` at ``self.core.api``
 
 With ``self.load(...)`` you can load any url and get the result. This method is only available to Hoster and Crypter.
 For other plugins use ``getURL(...)`` or ``getRequest()``.

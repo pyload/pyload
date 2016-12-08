@@ -4,9 +4,9 @@ from __future__ import unicode_literals
 import re
 from random import choice
 
-from pyload.plugins.MultiHoster import MultiHoster as MultiHosterAccount, normalize
-from pyload.plugins.Addon import Addon, AddEventListener
-from pyload.PluginManager import PluginMatcher
+from pyload.plugins.multihoster import MultiHoster as MultiHosterAccount, normalize
+from pyload.plugins.addon import Addon, AddEventListener
+from pyload.pluginmanager import PluginMatcher
 
 
 class MultiHoster(Addon, PluginMatcher):

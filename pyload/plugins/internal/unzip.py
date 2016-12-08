@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 import zipfile
 import sys
 
-from pyload.plugins.internal.AbstractExtractor import AbtractExtractor
+from pyload.plugins.internal.abstractextractor import AbtractExtractor
 
 
 class UnZip(AbtractExtractor):

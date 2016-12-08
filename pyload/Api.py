@@ -38,7 +38,7 @@ stateMap[DownloadState.Unfinished] = frozenset(stateMap[DownloadState.All].diffe
 def state_string(state):
     return ",".join(str(x) for x in stateMap[state])
 
-from .datatypes.User import User
+from .datatypes.user import User
 
 
 class Api(Iface):
@@ -83,7 +83,7 @@ class Api(Iface):
         # but will only work once when they are imported
         cls.EXTEND = True
         # Import all Api modules, they register themselves.
-        import pyload.api
+        import pyload.Api
         # they will vanish from the namespace afterwards
 
 

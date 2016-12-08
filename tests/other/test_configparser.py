@@ -6,9 +6,9 @@ from past.builtins import basestring
 from builtins import object
 from nose.tools import raises
 
-from tests.helper.Stubs import Core
+from tests.helper.stubs import Core
 
-from pyload.config.ConfigParser import ConfigParser
+from pyload.config.configparser import ConfigParser
 
 
 class TestConfigParser(object):

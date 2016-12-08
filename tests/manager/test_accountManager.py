@@ -3,9 +3,9 @@
 from __future__ import unicode_literals
 from unittest import TestCase
 
-from tests.helper.Stubs import Core, adminUser, normalUser
+from tests.helper.stubs import Core, adminUser, normalUser
 
-from pyload.AccountManager import AccountManager
+from pyload.accountmanager import AccountManager
 
 
 class TestAccountManager(TestCase):

@@ -7,7 +7,7 @@ from builtins import str
 from builtins import object
 from pyload.utils import has_method, to_list
 
-from .Base import Base
+from .base import Base
 
 
 def class_name(p):

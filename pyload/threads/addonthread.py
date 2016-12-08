@@ -6,7 +6,7 @@ from copy import copy
 from traceback import print_exc
 
 from pyload.Api import ProgressInfo, ProgressType
-from .BaseThread import BaseThread
+from .basethread import BaseThread
 
 
 class AddonThread(BaseThread):

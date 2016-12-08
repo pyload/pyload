@@ -6,7 +6,7 @@ JSON API
 
 JSON [1]_ is a lightweight object notation and wrappers exists for nearly every programming language. Every
 modern browser is able to load JSON objects with JavaScript. Unlike other RPC methods you don't need to generate or precompile
-any stub methods. The JSON :class:`Api <pyload.Api.Api>` is ready to be used in most languages and most JSON libraries are lightweight
+any stub methods. The JSON :class:`Api <pyload.api.Api>` is ready to be used in most languages and most JSON libraries are lightweight
 enough to build very small and performant scripts. Because of the builtin support, JSON is the first choice for all browser
 applications.
 
@@ -28,7 +28,7 @@ so pyLoad can authenticate you.
 Calling Methods
 ---------------
 
-In general you can use any method listed at the :class:`Api <pyload.Api.Api>` documentation, which is also available to
+In general you can use any method listed at the :class:`Api <pyload.api.Api>` documentation, which is also available to
 the thrift backend.
 
 Access works simply via ``http://pyload-core/api/methodName``, where ``pyload-core`` is the ip address
@@ -43,7 +43,7 @@ Passing parameters
 To pass arguments you have two choices:
 Either use positional arguments, e.g.: ``http://pyload-core/api/getFileData/1``, where 1 is the FileID, or use keyword
 arguments supplied via GET or POST ``http://pyload-core/api/getFileData?fid=1``. You can find the argument names
-in the :class:`Api <pyload.Api.Api>` documentation.
+in the :class:`Api <pyload.api.Api>` documentation.
 
 It is important that *all* arguments are in JSON format. So ``http://pyload-core/api/getFileData/1`` is valid because
 1 represents an integer in json format. On the other hand if the method is expecting strings, this would be correct:

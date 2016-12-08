@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from pyload.network.RequestFactory import getURL
-from pyload.plugins.internal.MultiHoster import MultiHoster
+from pyload.network.requestfactory import getURL
+from pyload.plugins.internal.multihoster import MultiHoster
 
 
 class ZeveraCom(MultiHoster):

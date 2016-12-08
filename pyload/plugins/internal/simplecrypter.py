@@ -6,9 +6,9 @@ from __future__ import unicode_literals
 from builtins import range
 import re
 
-from pyload.plugins.Crypter import Crypter, Package
+from pyload.plugins.crypter import Crypter, Package
 from pyload.utils import html_unescape
-from pyload.plugins.internal.SimpleHoster import replace_patterns
+from pyload.plugins.internal.simplehoster import replace_patterns
 
 
 class SimpleCrypter(Crypter):

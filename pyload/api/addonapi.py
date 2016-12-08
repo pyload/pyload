@@ -4,7 +4,7 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from pyload.Api import Api, RequirePerm, Permission
 
-from .ApiComponent import ApiComponent
+from .apicomponent import ApiComponent
 
 
 # TODO: multi user

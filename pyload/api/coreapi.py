@@ -6,7 +6,7 @@ from pyload.Api import Api, RequirePerm, Permission, StatusInfo, Interaction
 from pyload.utils.fs import join, free_space, exists
 from pyload.utils import compare_time
 
-from .ApiComponent import ApiComponent
+from .apicomponent import ApiComponent
 
 
 class CoreApi(ApiComponent):

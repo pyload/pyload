@@ -13,11 +13,11 @@ from traceback import print_exc
 from sys import exc_clear
 from pycurl import error
 
-from pyload.plugins.Base import Fail, Retry, Abort
-from pyload.plugins.Hoster import Reconnect, SkipDownload
-from pyload.plugins.Request import ResponseException
+from pyload.plugins.base import Fail, Retry, Abort
+from pyload.plugins.hoster import Reconnect, SkipDownload
+from pyload.plugins.request import ResponseException
 
-from .BaseThread import BaseThread
+from .basethread import BaseThread
 
 
 class DownloadThread(BaseThread):

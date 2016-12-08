@@ -11,15 +11,15 @@ from traceback import format_exc
 
 import builtins
 
-from pyload.InitHomeDir import init_dir
+from pyload.inithomedir import init_dir
 
 init_dir(join("tests", "config"), True)
 
 from pyload.Api import Role
-from pyload.Core import Core
-from pyload.datatypes.User import User
-from pyload.threads.BaseThread import BaseThread
-from pyload.config.ConfigParser import ConfigParser
+from pyload.core import Core
+from pyload.datatypes.user import User
+from pyload.threads.basethread import BaseThread
+from pyload.config.configparser import ConfigParser
 
 from logging import log, DEBUG, INFO, WARN, ERROR
 

@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 from pyload.Api import Api, RequirePerm, Permission, ConfigHolder, ConfigItem, ConfigInfo
 from pyload.utils import to_string
 
-from .ApiComponent import ApiComponent
+from .apicomponent import ApiComponent
 
 # helper function to create a ConfigHolder
 def toConfigHolder(section, config, values):

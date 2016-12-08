@@ -12,7 +12,7 @@ alphnum = letters + digits
 
 from pyload.Api import UserData
 
-from .DatabaseBackend import DatabaseMethods, queue, async
+from .databasebackend import DatabaseMethods, queue, async
 
 
 def random_salt():

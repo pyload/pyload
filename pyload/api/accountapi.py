@@ -4,7 +4,7 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from pyload.utils import to_bool
 from pyload.Api import Api, RequirePerm, Permission, Conflict
-from .ApiComponent import ApiComponent
+from .apicomponent import ApiComponent
 
 
 class AccountApi(ApiComponent):

@@ -4,7 +4,7 @@
 from __future__ import unicode_literals
 
 from pyload.database import style
-from pyload.plugins.Hook import Hook
+from pyload.plugins.hook import Hook
 
 
 class DeleteFinished(Hook):

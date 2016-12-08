@@ -4,9 +4,9 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 from builtins import object
-from .Bucket import Bucket
+from .bucket import Bucket
 
-from pyload.plugins.network.DefaultRequest import DefaultRequest, DefaultDownload
+from pyload.plugins.network.defaultrequest import DefaultRequest, DefaultDownload
 
 
 class RequestFactory(object):

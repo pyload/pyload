@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 import re
 
-from pyload.plugins.internal.MultiHoster import MultiHoster
+from pyload.plugins.internal.multihoster import MultiHoster
 
 
 class EasybytezCom(MultiHoster):

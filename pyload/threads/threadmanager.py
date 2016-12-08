@@ -9,9 +9,9 @@ from builtins import object
 from threading import  RLock
 from time import time
 
-from pyload.datatypes.OnlineCheck import OnlineCheck
+from pyload.datatypes.onlinecheck import OnlineCheck
 from pyload.utils import lock, to_list
-from .InfoThread import InfoThread
+from .Infothread import InfoThread
 
 
 class ThreadManager(object):

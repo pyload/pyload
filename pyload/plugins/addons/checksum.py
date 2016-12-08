@@ -10,7 +10,7 @@ from os.path import getsize, isfile, splitext
 import re
 
 from pyload.utils import save_join, fs_encode
-from pyload.plugins.Hook import Hook
+from pyload.plugins.hook import Hook
 
 
 def computeChecksum(local_file, algorithm):

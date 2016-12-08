@@ -11,7 +11,7 @@ from os.path import isfile
 from shutil import move
 import time
 
-from pyload.plugins.Hook import Hook
+from pyload.plugins.hook import Hook
 
 
 class HotFolder(Hook):

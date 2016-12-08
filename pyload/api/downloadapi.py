@@ -8,7 +8,7 @@ from os.path import isabs
 from pyload.Api import Api, RequirePerm, Permission, Role
 from pyload.utils.fs import join
 
-from .ApiComponent import ApiComponent
+from .apicomponent import ApiComponent
 
 
 class DownloadApi(ApiComponent):

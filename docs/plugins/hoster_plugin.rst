@@ -7,7 +7,7 @@ We head to the next important section, the ``process`` method of your plugin.
 In fact the ``process`` method is the only functionality your plugin has to provide, but its always a good idea to split up tasks to not produce spaghetti code.
 An example ``process`` function could look like this ::
 
-        from pyload.plugin.Hoster import Hoster
+        from pyload.plugin.hoster import Hoster
 
         class MyFileHoster(Hoster):
             """
@@ -27,7 +27,7 @@ An example ``process`` function could look like this ::
                 # download the file, destination is determined by pyLoad
                 self.download(parsed_url)
 
-You need to know about the :class:`PyFile <pyload.PyFile.PyFile>` class, since an instance of it is given as a parameter to every pyfile.
+You need to know about the :class:`PyFile <pyload.pyfile.PyFile>` class, since an instance of it is given as a parameter to every pyfile.
 Some tasks your plugin should handle:  check if the file is online, get filename, wait if needed, download the file, etc..
 
 Common Tasks
@@ -37,7 +37,7 @@ Some hosters require you to wait a specific time. Just set the time with ``self.
 ``self.setWait(seconds, True)`` if you want pyLoad to perform a reconnect if needed.
 
 To handle captcha input just use ``self.decryptCaptcha(url, ...)``, it will be send to clients
-or handled by :class:`Addon <pyload.plugins.Addon.Addon>` plugins
+or handled by :class:`Addon <pyload.plugins.addon.Addon>` plugins
 
 
 Online status fetching

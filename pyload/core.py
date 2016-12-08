@@ -32,20 +32,20 @@ import subprocess
 
 subprocess.__doc__ = None # the module with the largest doc we are using
 
-from .InitHomeDir import init_dir
+from .inithomedir import init_dir
 
 init_dir()
 
-from .AccountManager import AccountManager
-from .config.ConfigParser import ConfigParser
-from .config.ConfigManager import ConfigManager
-from .PluginManager import PluginManager
-from .interaction.EventManager import EventManager
-from .network.RequestFactory import RequestFactory
-from .web.ServerThread import WebServer
-from .Scheduler import Scheduler
-from .remote.RemoteManager import RemoteManager
-from .utils.JsEngine import JsEngine
+from .accountmanager import AccountManager
+from .config.configparser import ConfigParser
+from .config.configmanager import ConfigManager
+from .pluginmanager import PluginManager
+from .interaction.eventmanager import EventManager
+from .network.requestfactory import RequestFactory
+from .web.serverthread import WebServer
+from .scheduler import Scheduler
+from .remote.remotemanager import RemoteManager
+from .utils.jsengine import JsEngine
 
 from .utils import formatSize, get_console_encoding
 from .utils.fs import free_space, exists, makedirs, join, chmod
@@ -107,21 +107,21 @@ class Core(object):
                     elif option in ("-d", "--debug"):
                         self.doDebug = True
                     elif option in ("-u", "--user"):
-                        from .setup.Setup import Setup
+                        from .setup.setup import Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
                         s.set_user()
                         exit()
                     elif option in ("-s", "--setup"):
-                        from .setup.Setup import Setup
+                        from .setup.setup import Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
                         s.start()
                         exit()
                     elif option == "--changedir":
-                        from .setup.Setup import Setup
+                        from .setup.setup import Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
@@ -265,7 +265,7 @@ class Core(object):
         self.version = CURRENT_VERSION
 
         if not exists("pyload.conf") and not tests:
-            from .setup.Setup import Setup
+            from .setup.setup import Setup
 
             print("This is your first start, running configuration assistant now.")
             self.config = ConfigParser()
@@ -363,10 +363,10 @@ class Core(object):
 
         # deferred import, could improve start-up time
         from .Api import Api
-        from .AddonManager import AddonManager
-        from .interaction.InteractionManager import InteractionManager
-        from .threads.ThreadManager import ThreadManager
-        from .DownloadManager import DownloadManager
+        from .addonmanager import AddonManager
+        from .interaction.interactionmanager import InteractionManager
+        from .threads.threadmanager import ThreadManager
+        from .downloadmanager import DownloadManager
 
         Api.initComponents()
         self.api = Api(self)
@@ -478,7 +478,7 @@ class Core(object):
 
     def setupDB(self):
         from .database import DatabaseBackend
-        from .FileManager import FileManager
+        from .filemanager import FileManager
 
         self.db = DatabaseBackend(self) # the backend
         self.db.setup()

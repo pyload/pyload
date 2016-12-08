@@ -9,8 +9,8 @@ from pyload.Api import LinkStatus, DownloadStatus, ProgressInfo, ProgressType
 from pyload.utils.packagetools import parseNames
 from pyload.utils import has_method, accumulate
 
-from .BaseThread import BaseThread
-from .DecrypterThread import DecrypterThread
+from .basethread import BaseThread
+from .decrypterthread import DecrypterThread
 
 
 class InfoThread(DecrypterThread):

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from tests.helper.Stubs import Core
-from pyload.plugins.network.CurlRequest import CurlRequest
+from tests.helper.stubs import Core
+from pyload.plugins.network.curlrequest import CurlRequest
 
 from unittest import TestCase
 

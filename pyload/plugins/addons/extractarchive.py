@@ -54,8 +54,8 @@ if os.name != "nt":
 
 from pyload.utils.fs import safe_join as save_join, fs_encode
 
-from pyload.plugins.Addon import Addon, threaded, AddonHandler
-from pyload.plugins.internal.AbstractExtractor import ArchiveError, CRCError, WrongPassword
+from pyload.plugins.addon import Addon, threaded, AddonHandler
+from pyload.plugins.internal.abstractextractor import ArchiveError, CRCError, WrongPassword
 
 
 # TODO: plugin needs a rewrite to work on unfinished packages

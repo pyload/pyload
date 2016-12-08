@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 from time import mktime, time
 
 from pyload.lib import feedparser
-from pyload.plugins.Hook import Hook
+from pyload.plugins.hook import Hook
 
 
 class Ev0InFetcher(Hook):

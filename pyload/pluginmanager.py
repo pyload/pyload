@@ -7,7 +7,7 @@ from builtins import object
 import sys
 
 from os.path import abspath, join
-from pyload.utils.PluginLoader import LoaderFactory, PluginLoader
+from pyload.utils.pluginloader import LoaderFactory, PluginLoader
 
 
 class PluginMatcher(object):

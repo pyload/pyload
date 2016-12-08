@@ -10,9 +10,9 @@ from _thread import start_new_thread
 from pycurl import FORM_FILE, LOW_SPEED_TIME
 
 from pyload.common.json_layer import json_loads
-from pyload.network.RequestFactory import getURL, getRequest
-from pyload.network.HTTPRequest import BadHeader
-from pyload.plugins.Hook import Hook
+from pyload.network.requestfactory import getURL, getRequest
+from pyload.network.httprequest import BadHeader
+from pyload.plugins.hook import Hook
 
 PYLOAD_KEY = "9f65e7f381c3af2b076ea680ae96b0b7"
 

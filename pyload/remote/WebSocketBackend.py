@@ -5,7 +5,7 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 import logging
 
-from .RemoteManager import BackendBase
+from .remotemanager import BackendBase
 
 from mod_pywebsocket import util
 

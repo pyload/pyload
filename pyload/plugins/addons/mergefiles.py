@@ -12,7 +12,7 @@ import traceback
 
 from os.path import join
 from pyload.utils import save_join, fs_encode
-from pyload.plugins.Hook import Hook
+from pyload.plugins.hook import Hook
 
 BUFFER_SIZE = 4096
 

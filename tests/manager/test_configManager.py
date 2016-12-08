@@ -6,12 +6,12 @@ from collections import defaultdict
 
 from nose.tools import raises
 
-from tests.helper.Stubs import Core, adminUser, normalUser
+from tests.helper.stubs import Core, adminUser, normalUser
 
 from pyload.Api import InvalidConfigSection
 from pyload.database import DatabaseBackend
-from pyload.config.ConfigParser import ConfigParser
-from pyload.config.ConfigManager import ConfigManager
+from pyload.config.configparser import ConfigParser
+from pyload.config.configmanager import ConfigManager
 from pyload.utils import primary_uid
 
 adminUser = primary_uid(adminUser)

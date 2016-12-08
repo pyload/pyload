@@ -14,12 +14,12 @@ from shutil import move
 
 from nose.tools import nottest
 
-from .helper.Stubs import Core
+from .helper.stubs import Core
 from .helper.parser import parse_config
-from .helper.PluginTester import PluginTester
+from .helper.plugintester import PluginTester
 
-from pyload.datatypes.PyFile import PyFile, statusMap
-from pyload.plugins.Base import Fail
+from pyload.datatypes.pyfile import PyFile, statusMap
+from pyload.plugins.base import Fail
 from pyload.utils import accumulate
 from pyload.utils.fs import save_join, join, exists, listdir, remove, stat
 

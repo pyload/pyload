@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 from os.path import basename
 
 from pyload.utils import fs_encode
-from pyload.plugins.Hook import Hook
+from pyload.plugins.hook import Hook
 from pyload.PyFile import PyFile
 
 

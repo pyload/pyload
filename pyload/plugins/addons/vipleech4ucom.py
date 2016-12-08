@@ -3,8 +3,8 @@ from __future__ import unicode_literals
 from builtins import str
 import re
 
-from pyload.network.RequestFactory import getURL
-from pyload.plugins.internal.MultiHoster import MultiHoster
+from pyload.network.requestfactory import getURL
+from pyload.plugins.internal.multihoster import MultiHoster
 
 
 class Vipleech4uCom(MultiHoster):

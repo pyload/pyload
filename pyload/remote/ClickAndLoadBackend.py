@@ -19,7 +19,7 @@ try:
 except Exception:
     pass
 
-from .RemoteManager import BackendBase
+from .remotemanager import BackendBase
 
 core = None
 js = None

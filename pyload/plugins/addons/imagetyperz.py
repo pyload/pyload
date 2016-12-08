@@ -10,8 +10,8 @@ from pycurl import FORM_FILE, LOW_SPEED_TIME
 import re
 from base64 import b64encode
 
-from pyload.network.RequestFactory import getURL, getRequest
-from pyload.plugins.Hook import Hook
+from pyload.network.requestfactory import getURL, getRequest
+from pyload.plugins.hook import Hook
 
 
 class ImageTyperzException(Exception):

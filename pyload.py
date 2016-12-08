@@ -15,7 +15,7 @@
 ###############################################################################
 
 from __future__ import unicode_literals
-from pyload.Core import main
+from pyload.core import main
 
 if __name__ == "__main__":
     main()

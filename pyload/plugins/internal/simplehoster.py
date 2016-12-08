@@ -12,10 +12,10 @@ from urllib.parse import urlparse
 import re
 from time import time
 
-from pyload.plugins.Hoster import Hoster
+from pyload.plugins.hoster import Hoster
 from pyload.utils import html_unescape, fixup, parseFileSize
-from pyload.network.RequestFactory import getURL
-from pyload.network.CookieJar import CookieJar
+from pyload.network.requestfactory import getURL
+from pyload.network.cookiejar import CookieJar
 
 
 def replace_patterns(string, ruleslist):

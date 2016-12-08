@@ -13,8 +13,8 @@ from traceback import print_exc
 import re
 from pycurl import FORM_FILE
 
-from pyload.plugins.Addon import Addon
-from pyload.network.RequestFactory import getURL
+from pyload.plugins.addon import Addon
+from pyload.network.requestfactory import getURL
 from pyload.utils import formatSize
 from pyload.Api import PackageDoesNotExists, FileDoesNotExists
 

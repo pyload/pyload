@@ -15,11 +15,11 @@ from glob import glob
 from pycurl import LOW_SPEED_TIME, FORM_FILE
 from json import loads
 
-from .Stubs import Thread, Core, noop
+from .stubs import Thread, Core, noop
 
-from pyload.network.RequestFactory import getRequest
-from pyload.plugins.Base import Abort, Fail
-from pyload.plugins.Hoster import Hoster
+from pyload.network.requestfactory import getRequest
+from pyload.plugins.base import Abort, Fail
+from pyload.plugins.hoster import Hoster
 
 def _wait(self):
     """ waits the time previously set """

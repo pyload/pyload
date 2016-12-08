@@ -11,9 +11,9 @@ from os import stat
 from os.path import join, exists
 from time import time
 
-from pyload.ConfigParser import IGNORE
-from pyload.network.RequestFactory import getURL
-from pyload.plugins.Hook import threaded, Expose, Hook
+from pyload.configparser import IGNORE
+from pyload.network.requestfactory import getURL
+from pyload.plugins.hook import threaded, Expose, Hook
 
 
 class UpdateManager(Hook):

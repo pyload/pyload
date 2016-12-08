@@ -6,10 +6,10 @@ from os import stat
 
 from unittest import TestCase
 
-from tests.helper.Stubs import Core
-from pyload.network.Bucket import Bucket
-from pyload.plugins.network.CurlRequest import CurlRequest
-from pyload.plugins.network.CurlDownload import CurlDownload
+from tests.helper.stubs import Core
+from pyload.network.bucket import Bucket
+from pyload.plugins.network.curlrequest import CurlRequest
+from pyload.plugins.network.curldownload import CurlDownload
 
 
 class TestCurlRequest(TestCase):

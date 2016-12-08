@@ -3,8 +3,8 @@
 
 from __future__ import unicode_literals
 from builtins import range
-from tests.helper.Stubs import Core, normalUser, adminUser, otherUser
-from tests.helper.BenchmarkTest import BenchmarkTest
+from tests.helper.stubs import Core, normalUser, adminUser, otherUser
+from tests.helper.benchmarktest import BenchmarkTest
 
 from pyload.database import DatabaseBackend
 # disable asyncronous queries

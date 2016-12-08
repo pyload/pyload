@@ -15,13 +15,13 @@ from shutil import move
 import pycurl
 
 from pyload.Api import Connection
-from pyload.plugins.Base import Abort
-from pyload.network.CookieJar import CookieJar
+from pyload.plugins.base import Abort
+from pyload.network.cookiejar import CookieJar
 from pyload.utils.fs import save_join, fs_encode
 
-from ..Download import Download
-from .CurlChunk import ChunkInfo, CurlChunk
-from .CurlRequest import ResponseException
+from ..download import Download
+from .curlchunk import ChunkInfo, CurlChunk
+from .curlrequest import ResponseException
 
 
 # TODO: save content-disposition for resuming

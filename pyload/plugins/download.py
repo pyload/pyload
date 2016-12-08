@@ -2,7 +2,7 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from .Request import Request
+from .request import Request
 
 
 class Download(Request):

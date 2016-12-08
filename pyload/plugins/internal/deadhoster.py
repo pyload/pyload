@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from pyload.plugins.Hoster import Hoster as _Hoster
+from pyload.plugins.hoster import Hoster as _Hoster
 
 
 def create_getInfo(plugin):

@@ -4,8 +4,8 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 from builtins import range
-from tests.helper.Stubs import Core
-from tests.helper.BenchmarkTest import BenchmarkTest
+from tests.helper.stubs import Core
+from tests.helper.benchmarktest import BenchmarkTest
 
 from pyload.Api import DownloadState, PackageInfo, FileInfo
 from pyload.database import DatabaseBackend

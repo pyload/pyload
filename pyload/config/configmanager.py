@@ -7,7 +7,7 @@ from new_collections import OrderedDict
 from pyload.Api import InvalidConfigSection
 from pyload.utils import json
 
-from .ConfigParser import ConfigParser
+from .configparser import ConfigParser
 
 from .convert import to_input, from_string
 

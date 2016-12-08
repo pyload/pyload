@@ -7,8 +7,8 @@ from __future__ import division
 from past.utils import old_div
 import re
 from time import mktime, strptime
-from pyload.plugins.Account import Account
-from pyload.plugins.internal.SimpleHoster import parseHtmlForm
+from pyload.plugins.account import Account
+from pyload.plugins.internal.simplehoster import parseHtmlForm
 from pyload.utils import parseFileSize
 
 

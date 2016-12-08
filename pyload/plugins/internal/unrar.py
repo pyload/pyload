@@ -12,7 +12,7 @@ from subprocess import Popen, PIPE
 from string import digits
 
 from pyload.utils.fs import save_join, decode, fs_encode
-from pyload.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPassword, ArchiveError, CRCError
+from pyload.plugins.internal.abstractextractor import AbtractExtractor, WrongPassword, ArchiveError, CRCError
 
 
 class UnRar(AbtractExtractor):

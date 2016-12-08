@@ -31,7 +31,7 @@ else:
     PYLOAD = ServerThread.core.api
     config = ServerThread.core.config
 
-from pyload.utils.JsEngine import JsEngine
+from pyload.utils.jsengine import JsEngine
 JS = JsEngine()
 
 TEMPLATE = config.get('webui', 'template')

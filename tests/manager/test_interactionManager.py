@@ -4,10 +4,10 @@ from __future__ import unicode_literals
 from builtins import range
 from unittest import TestCase
 
-from tests.helper.Stubs import Core
+from tests.helper.stubs import Core
 
 from pyload.Api import InputType, Interaction
-from pyload.interaction.InteractionManager import InteractionManager
+from pyload.interaction.interactionmanager import InteractionManager
 
 
 class TestInteractionManager(TestCase):

@@ -5,8 +5,8 @@ from __future__ import unicode_literals
 from builtins import range
 from random import choice
 
-from tests.helper.Stubs import Core, normalUser
-from tests.helper.BenchmarkTest import BenchmarkTest
+from tests.helper.stubs import Core, normalUser
+from tests.helper.benchmarktest import BenchmarkTest
 
 from pyload.database import DatabaseBackend
 # disable asyncronous queries

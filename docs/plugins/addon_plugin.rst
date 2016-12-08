@@ -4,19 +4,19 @@ Addon - Add new functionality
 =============================
 
 A Hook is a python file which is located at :file:`pyload/plugins/hooks`.
-The :class:`HookManager <pyload.HookManager.HookManager>` will load it automatically on startup. Only one instance exists
-over the complete lifetime of pyload. Your hook can interact on various events called by the :class:`HookManager <pyload.HookManager.HookManager>`,
-do something completely autonomic and has full access to the :class:`Api <pyload.Api.Api>` and every detail of pyLoad.
+The :class:`HookManager <pyload.hookmanager.HookManager>` will load it automatically on startup. Only one instance exists
+over the complete lifetime of pyload. Your hook can interact on various events called by the :class:`HookManager <pyload.hookmanager.HookManager>`,
+do something completely autonomic and has full access to the :class:`Api <pyload.api.Api>` and every detail of pyLoad.
 The UpdateManager, CaptchaTrader, UnRar and many more are implemented as hooks.
 
 Hook header
 -----------
 
-Your hook needs to subclass :class:`Hook <pyload.plugins.Hook.Hook>` and will inherit all of its methods, so make sure to check it's documentation!
+Your hook needs to subclass :class:`Hook <pyload.plugins.hook.Hook>` and will inherit all of its methods, so make sure to check it's documentation!
 
 All hooks should start with something like this: ::
 
-        from pyload.plugins.Hook import Hook
+        from pyload.plugins.hook import Hook
 
         class YourHook(Hook):
                 __name__ = "YourHook"
@@ -43,16 +43,16 @@ Interacting on Events
 
 The next step is to think about where your Hook action takes place.
 
-The easiest way is to overwrite specific methods defined by the :class:`Hook <pyload.plugins.Hook.Hook>` base class.
+The easiest way is to overwrite specific methods defined by the :class:`Hook <pyload.plugins.hook.Hook>` base class.
 The name is indicating when the function gets called.
-See :class:`Hook <pyload.plugins.Hook.Hook>` page for a complete listing.
+See :class:`Hook <pyload.plugins.hook.Hook>` page for a complete listing.
 
-You should be aware of the arguments the hooks are called with, whether its a :class:`PyFile <pyload.PyFile.PyFile>`
-or :class:`PyPackage <pyload.PyPackage.PyPackage>` you should read the relevant documentation to know how to access it's great power and manipulate them.
+You should be aware of the arguments the hooks are called with, whether its a :class:`PyFile <pyload.pyfile.PyFile>`
+or :class:`PyPackage <pyload.pypackage.PyPackage>` you should read the relevant documentation to know how to access it's great power and manipulate them.
 
 What a basic excerpt would look like: ::
 
-    from pyload.plugins.Hook import Hook
+    from pyload.plugins.hook import Hook
 
     class YourHook(Hook):
         """
@@ -70,12 +70,12 @@ in a thread, in order to not block the main thread. This should be used for all 
 
 Another and more flexible and powerful way is to use the event listener.
 All hook methods exists as event and very useful additional events are dispatched by the core. For a little overview look
-at :class:`HookManager <pyload.HookManager.HookManager>`. Keep in mind that you can define your own events and other people may listen on them.
+at :class:`HookManager <pyload.hookmanager.HookManager>`. Keep in mind that you can define your own events and other people may listen on them.
 
 For your convenience it's possible to register listeners automatically via the ``event_map`` attribute.
 It requires a `dict` that maps event names to function names or a `list` of function names. It's important that all names are strings ::
 
-    from pyload.plugins.Hook import Hook
+    from pyload.plugins.hook import Hook
 
     class YourHook(Hook):
         """
@@ -96,7 +96,7 @@ It requires a `dict` that maps event names to function names or a `list` of func
 
 An advantage of the event listener is that you are able to register and remove the listeners at runtime.
 Use `self.manager.listenTo("name", function)`, `self.manager.removeEvent("name", function)` and see doc for
-:class:`HookManager <pyload.HookManager.HookManager>`. Contrary to ``event_map``, ``function`` has to be a reference
+:class:`HookManager <pyload.hookmanager.HookManager>`. Contrary to ``event_map``, ``function`` has to be a reference
 and **not** a `string`.
 
 We introduced events because it scales better if there is a huge amount of events and hooks. So all future interactions will be exclusively
@@ -107,12 +107,12 @@ Providing
  RPC services
 ----------------------
 
-You may have noticed that pyLoad has an :class:`Api <pyload.Api.Api>`, which can be used internal or called by clients via RPC.
+You may have noticed that pyLoad has an :class:`Api <pyload.api.Api>`, which can be used internal or called by clients via RPC.
 So probably clients want to be able to interact with your hook to request it's state or invoke some action.
 
 Sounds complicated but is very easy to do. Just use the ``Expose`` decorator: ::
 
-    from pyload.plugins.Hook import Hook, Expose
+    from pyload.plugins.hook import Hook, Expose
 
     class YourHook(Hook):
         """
@@ -123,7 +123,7 @@ Sounds complicated but is very easy to do. Just use the ``Expose`` decorator: ::
         def invoke(self, arg):
             print("Invoked with", arg)
 
-Thats all, it's available via the :class:`Api <pyload.Api.Api>` now. If you want to use it read :ref:`access_api`.
+Thats all, it's available via the :class:`Api <pyload.api.Api>` now. If you want to use it read :ref:`access_api`.
 Here is a basic example: ::
 
     #Assuming client is a ThriftClient or Api object
@@ -133,11 +133,11 @@ Here is a basic example: ::
 
 Providing status information
 ----------------------------
-Your hook can store information in a ``dict`` that can easily be retrievied via the :class:`Api <pyload.Api.Api>`.
+Your hook can store information in a ``dict`` that can easily be retrievied via the :class:`Api <pyload.api.Api>`.
 
 Just store everything in ``self.info``. ::
 
-    from pyload.plugins.Hook import Hook
+    from pyload.plugins.hook import Hook
 
     class YourHook(Hook):
         """

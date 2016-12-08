@@ -7,7 +7,7 @@ import re
 from random import choice
 from time import sleep
 
-from .RequestFactory import getURL
+from .requestfactory import getURL
 
 
 def get_ip(n=10):
