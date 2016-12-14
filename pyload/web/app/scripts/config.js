@@ -5,7 +5,6 @@ require.config({
     deps: ['default'],
 
     paths: {
-
         jquery: '../node_modules/jquery/jquery',
         flot: '../node_modules/flot/jquery.flot',
         transit: '../node_modules/jquery.transit/jquery.transit',
@@ -27,7 +26,7 @@ require.config({
         json2: '../node_modules/require-handlebars-plugin/hbs/json2',
 
         // Plugins
-//        text: '../node_modules/requirejs-text/text',
+        // text: '../node_modules/requirejs-text/text',
         hbs: '../node_modules/require-handlebars-plugin/hbs',
 
         // Shortcut
@@ -61,7 +60,6 @@ require.config({
         underscore: {
             exports: '_'
         },
-
         backbone: {
             deps: ['underscore', 'jquery'],
             exports: 'Backbone'
@@ -73,7 +71,6 @@ require.config({
         handlebars: {
             exports: 'Handlebars'
         },
-
         flot: ['jquery'],
         transit: ['jquery'],
         cookie: ['jquery'],

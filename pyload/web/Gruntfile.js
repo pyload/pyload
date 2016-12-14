@@ -21,7 +21,7 @@ module.exports = function(grunt) {
     var yeomanConfig = {
         app: 'app',
         dist: 'dist',
-        banner: '/* Copyright(c) 2009-2017 pyLoad Team */\n',
+        banner: '/* Copyright(c) 2009-2017 The pyLoad Team */\n',
         protocol: 'http'
     };
 
@@ -434,7 +434,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('default', [
         'jshint',
-//        'test',
+        // 'test',
         'build'
     ]);
 };

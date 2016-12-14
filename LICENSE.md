@@ -1,5 +1,5 @@
 pyLoad - download manager
-Copyright(c) 2009-2017 pyLoad Team
+Copyright(c) 2009-2017 The pyLoad Team
 All rights reserved.
 licensing@pyload.net
 
@@ -21,10 +21,10 @@ Please contact licensing@pyload.net for further information.
 Contribution
 ------------
 
-If you want to contribute to pyLoad you have to grant permission to the
-pyLoad team to (re)license your code as desired.
+If you want to contribute to pyLoad you have to grant permission to The
+pyLoad Team to (re)license your code as desired.
 You can do so by adding the following to the file header:
-  # With permission to relicense for the pyLoad Team according to LICENSE
+  # With permission to relicense for The pyLoad Team according to LICENSE
 
 For regular contributions please sign the CLA and send it to
 contributors@pyload.net

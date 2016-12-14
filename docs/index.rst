@@ -18,7 +18,7 @@ In case you still have questions, ask at our forum [4]_ or in our official irc c
 
 We wish you happy programming!
 
--- the pyLoad Team
+-- The pyLoad Team
 
 Contents
 --------

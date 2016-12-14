@@ -21,7 +21,7 @@ Documentation about extending pyLoad can be found at http://docs.pyload.net or j
 Dependencies
 ------------
 
-You need at least python 2.5 to run pyLoad and all of these required libaries.
+You need at least python 2.6 to run pyLoad and all of these required libaries.
 They should be automatically installed when using pip install.
 The prebuilt pyload packages also install these dependencies or have them included, so manual install
 is only needed when installing pyLoad from source.
@@ -30,7 +30,6 @@ is only needed when installing pyLoad from source.
 
 - pycurl a.k.a python-curl
 - beaker
-- simplejson (for python 2.5)
 
 Some plugins require additional packages, only install these when needed.
 

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###############################################################################
-#   Copyright(c) 2009-2017 pyLoad Team
+#   Copyright(c) 2009-2017 The pyLoad Team
 #   https://pyload.net
 #
 #   This file is part of pyLoad.
@@ -15,7 +15,7 @@
 ###############################################################################
 
 from __future__ import unicode_literals
-from pyload.core import main
+from pyload import core
 
 if __name__ == "__main__":
-    main()
+    core.main()

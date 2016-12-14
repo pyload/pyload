@@ -54,7 +54,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'pyLoad'
-copyright = u'2013, pyLoad Team'
+copyright = u'2009-2017, pyLoad Team'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
