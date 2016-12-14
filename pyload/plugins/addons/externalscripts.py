@@ -4,6 +4,7 @@
 from __future__ import unicode_literals
 
 from builtins import str
+from builtins import pypath
 from past.builtins import basestring
 import subprocess
 from os import listdir, access, X_OK, makedirs

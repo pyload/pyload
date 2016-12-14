@@ -34,6 +34,9 @@ subprocess.__doc__ = None # the module with the largest doc we are using
 
 from .inithomedir import init_dir
 
+from builtins import owd
+from builtins import pypath
+
 init_dir()
 
 from .accountmanager import AccountManager
@@ -151,7 +154,7 @@ class Core(object):
 
     def print_help(self):
         print("")
-        print("pyLoad v%s     2009-2017 pyLoad Team" % CURRENT_VERSION)
+        print("pyLoad v%s     2009-2017 The pyLoad Team" % CURRENT_VERSION)
         print("")
         if sys.argv[0].endswith(".py"):
             print("Usage: python pyload.py [options]")
@@ -380,7 +383,7 @@ class Core(object):
         self.accountManager = AccountManager(self)
         self.threadManager = ThreadManager(self)
         self.downloadManager = self.dlm = DownloadManager(self)
-        self.addonManager = AddonManager(self)
+        self.addonmanager = AddonManager(self)
         self.remoteManager = RemoteManager(self)
 
         # enough initialization for test cases
@@ -433,7 +436,7 @@ class Core(object):
         self.dlm.paused = False
         self.running = True
 
-        self.addonManager.activateAddons()
+        self.addonmanager.activateAddons()
 
         self.log.info(_("pyLoad is up and running"))
         self.eventManager.dispatchEvent("core:ready")
@@ -585,7 +588,7 @@ class Core(object):
 
             self.dlm.shutdown()
             self.api.stopAllDownloads()
-            self.addonManager.deactivateAddons()
+            self.addonmanager.deactivateAddons()
 
         except:
             self.print_exc()

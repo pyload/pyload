@@ -10,6 +10,7 @@ standard_library.install_aliases()
 from builtins import input
 from builtins import str
 from builtins import object
+from builtins import pypath
 import os
 import sys
 import socket

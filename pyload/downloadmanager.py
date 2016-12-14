@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 from future import standard_library
 standard_library.install_aliases()
 from builtins import object
+from builtins import pypath
 from collections import defaultdict
 from threading import Event
 from time import sleep

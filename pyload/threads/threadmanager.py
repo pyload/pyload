@@ -11,7 +11,7 @@ from time import time
 
 from pyload.datatypes.onlinecheck import OnlineCheck
 from pyload.utils import lock, to_list
-from .Infothread import InfoThread
+from .infothread import InfoThread
 
 
 class ThreadManager(object):

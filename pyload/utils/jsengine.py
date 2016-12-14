@@ -7,6 +7,7 @@ from __future__ import unicode_literals
 from future import standard_library
 standard_library.install_aliases()
 from builtins import object
+from builtins import pypath
 from imp import find_module
 from os.path import join, exists
 from urllib.parse import quote

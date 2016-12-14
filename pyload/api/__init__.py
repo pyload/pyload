@@ -5,7 +5,4 @@ __all__ = ["CoreApi", "ConfigApi", "DownloadApi", "DownloadPreparingApi", "FileA
             "UserInteractionApi", "AccountApi", "AddonApi", "UserApi", "StatisticsApi"]
 
 # Import all components
-# from . import *
-# Above does not work in py 2.5
-for name in __all__:
-    __import__(__name__ + "." + name)
+from . import *

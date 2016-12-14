@@ -10,12 +10,10 @@ from os.path import join
 import sys
 from sys import argv, platform
 
-from . import __dev__
-
 import builtins
 
 builtins.owd = path.abspath("") #original working directory
-builtins.pypath = path.abspath(path.join(__file__, "..", ".."))
+builtins.pypath = pypath = path.abspath(path.join(__file__, "..", ".."))
 
 # Before changing the cwd, the abspath of the module must be manifested
 if 'pyload' in sys.modules:
@@ -70,9 +68,8 @@ elif path.exists(path.join(pypath, "pyload", "config", "configdir")):
 # default config dir
 if not configdir:
     # suffix when running dev version
-    dev = "-dev" if __dev__ else ""
-    configname = ".pyload" if platform in ("posix", "linux2", "darwin") else "pyload"
-    configdir = path.join(homedir, configname + dev)
+    configname = ".pyload-ng" if platform in ("posix", "linux2", "darwin") else "pyload-ng"
+    configdir = path.join(homedir, configname)
 
 
 def init_dir(other_path=None, no_change=False):
