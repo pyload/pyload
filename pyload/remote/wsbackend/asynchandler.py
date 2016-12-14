@@ -15,7 +15,7 @@ from mod_pywebsocket.msgutil import receive_message
 
 from pyload.Api import EventInfo, Interaction
 from pyload.utils import lock
-from .AbstractHandler import AbstractHandler
+from .abstracthandler import AbstractHandler
 
 
 class Mode(object):

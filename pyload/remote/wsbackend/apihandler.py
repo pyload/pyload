@@ -8,7 +8,7 @@ from mod_pywebsocket.msgutil import receive_message
 
 from pyload.Api import ExceptionObject
 
-from .AbstractHandler import AbstractHandler
+from .abstracthandler import AbstractHandler
 
 
 class ApiHandler(AbstractHandler):
