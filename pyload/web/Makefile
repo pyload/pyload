@@ -3,15 +3,16 @@ PATH := ${PATH}:.
 
 .PHONY: build
 build: install
-    node_modules/grunt-cli/bin/grunt build
+    npm run postinstall
 
 .PHONY: install
 install: check
-    npm install --legacy-bundling
+    npm install
     $(MAKE) clean
 
 .PHONY: uninstall
 uninstall:
+    # $(MAKE) clean
     rm -rf node_modules
     ifdef $(wildcard "node")
         rm -f node
