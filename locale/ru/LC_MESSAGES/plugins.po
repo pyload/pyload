@@ -12,429 +12,429 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: crowdin.net\n"
 
-#: pyload/plugins/network/CurlDownload.py:245
+#: pyload/plugins/network/curldownload.py:245
 #, python-format
 msgid "Download chunks failed, fallback to single connection | %s"
 msgstr "Загрузка параллельных потоков данных завершена с ошибками, возврат к однопоточной загрузке | %s"
 
-#: pyload/plugins/Base.py:327
+#: pyload/plugins/base.py:327
 msgid "Pil and tesseract not installed and no Client connected for captcha decrypting"
 msgstr "Pil и tesseract не установлены. Не подключен клиент для расшифровки картинок"
 
-#: pyload/plugins/Base.py:331
+#: pyload/plugins/base.py:331
 msgid "No captcha result obtained in appropriate time."
 msgstr "Не получен результат каптчи за отведенное время."
 
-#: pyload/plugins/Hoster.py:267 pyload/plugins/Hoster.py:304
-#: pyload/plugins/hoster/ARD.py:79
+#: pyload/plugins/hoster.py:267 pyload/plugins/hoster.py:304
+#: pyload/plugins/hosters/ard.py:79
 #, python-format
 msgid "Setting User and Group failed: %s"
 msgstr "Ошибка установки пользователя и группы: %s"
 
-#: pyload/plugins/Crypter.py:170
+#: pyload/plugins/crypter.py:170
 msgid "Not existing file or unsupported protocol"
 msgstr "Не существующий файл или неподдерживаемый протокол"
 
-#: pyload/plugins/Crypter.py:228
+#: pyload/plugins/crypter.py:228
 #, python-format
 msgid "Could not remove file '%s'"
 msgstr "Не удалось удалить файл «%s»"
 
-#: pyload/plugins/hoster/RapidshareCom.py:100
+#: pyload/plugins/hosters/rapidsharecom.py:100
 msgid "Rapidshare: Traffic Share (direct download)"
 msgstr "Rapidshare: Traffic Share (прямая загрузка)"
 
-#: pyload/plugins/hoster/RapidshareCom.py:127
-#: pyload/plugins/hoster/RapidshareCom.py:194
+#: pyload/plugins/hosters/rapidsharecom.py:127
+#: pyload/plugins/hosters/rapidsharecom.py:194
 msgid "Already downloading from this ip address, waiting 60 seconds"
 msgstr "Уже идет загрузка с этого IP, ждем 60 секунд"
 
-#: pyload/plugins/hoster/RapidshareCom.py:131
+#: pyload/plugins/hosters/rapidsharecom.py:131
 msgid "Invalid Auth Code, download will be restarted"
 msgstr "Неправильный код идентификации, загрузка будет перезапущена"
 
-#: pyload/plugins/hoster/RapidshareCom.py:199
+#: pyload/plugins/hosters/rapidsharecom.py:199
 msgid "RapidShareCom: No free slots"
 msgstr "RapidShareCom: Нет свободного слота"
 
-#: pyload/plugins/hoster/RapidshareCom.py:202
+#: pyload/plugins/hosters/rapidsharecom.py:202
 msgid "You need a premium account for this file"
 msgstr "Для этого файла нужен премиум аккаунт"
 
-#: pyload/plugins/hoster/RapidshareCom.py:204
+#: pyload/plugins/hosters/rapidsharecom.py:204
 msgid "Filename reported invalid"
 msgstr "Имя файла указано неверно"
 
-#: pyload/plugins/hoster/RPNetBiz.py:26
-#: pyload/plugins/hoster/RealdebridCom.py:41
-#: pyload/plugins/hoster/Premium4Me.py:28
-#: pyload/plugins/hoster/MultiDebridCom.py:46
-#: pyload/plugins/hoster/FastixRu.py:36 pyload/plugins/hoster/ZeveraCom.py:22
-#: pyload/plugins/hoster/UnrestrictLi.py:53
-#: pyload/plugins/hoster/SimplydebridCom.py:25
-#: pyload/plugins/hoster/AlldebridCom.py:38
-#: pyload/plugins/hoster/RehostTo.py:26 pyload/plugins/hoster/ReloadCc.py:24
-#: pyload/plugins/hoster/DebridItaliaCom.py:45
-#: pyload/plugins/hoster/PremiumizeMe.py:22
-#: pyload/plugins/addons/RPNetBiz.py:43
+#: pyload/plugins/hosters/rpnetbiz.py:26
+#: pyload/plugins/hosters/realdebridcom.py:41
+#: pyload/plugins/hosters/premium4me.py:28
+#: pyload/plugins/hosters/multidebridcom.py:46
+#: pyload/plugins/hosters/fastixru.py:36 pyload/plugins/hosters/zeveracom.py:22
+#: pyload/plugins/hosters/unrestrictli.py:53
+#: pyload/plugins/hosters/simplydebridcom.py:25
+#: pyload/plugins/hosters/alldebridcom.py:38
+#: pyload/plugins/hosters/rehostto.py:26 pyload/plugins/hosters/reloadcc.py:24
+#: pyload/plugins/hosters/debriditaliacom.py:45
+#: pyload/plugins/hosters/premiumizeme.py:22
+#: pyload/plugins/addons/rpnetbiz.py:43
 #, python-format
 msgid "Please enter your %s account or deactivate this plugin"
 msgstr "Пожалуйста, введите ваш аккаунт для %s или отключить этот плагин"
 
-#: pyload/plugins/hoster/MegaNz.py:56
+#: pyload/plugins/hosters/meganz.py:56
 msgid "Decryption failed"
 msgstr "Сбой расшифровки"
 
-#: pyload/plugins/hoster/MegaNz.py:106
+#: pyload/plugins/hosters/meganz.py:106
 msgid "No file key provided in the URL"
 msgstr "Нет ключа файла в URL-адресе"
 
-#: pyload/plugins/hoster/MegaNz.py:118
+#: pyload/plugins/hosters/meganz.py:118
 msgid "Error code:"
 msgstr "Код ошибки:"
 
-#: pyload/plugins/hoster/FileserveCom.py:99
+#: pyload/plugins/hosters/fileservecom.py:99
 msgid "Parallel download error, now waiting 60s."
 msgstr "Ошибка параллельной загрузки, ждем 60 секунд."
 
-#: pyload/plugins/hoster/FileserveCom.py:215
+#: pyload/plugins/hosters/fileservecom.py:215
 msgid "Not logged in."
 msgstr "Вход не произведен."
 
-#: pyload/plugins/hoster/UploadedTo.py:129
+#: pyload/plugins/hosters/uploadedto.py:129
 msgid "API key invalid"
 msgstr "Неверный ключ API"
 
-#: pyload/plugins/hoster/UploadedTo.py:153
+#: pyload/plugins/hosters/uploadedto.py:153
 #, python-format
 msgid "%s: Not enough traffic left"
 msgstr "%s: Осталось недостаточно трафика"
 
-#: pyload/plugins/hoster/UploadedTo.py:156
+#: pyload/plugins/hosters/uploadedto.py:156
 msgid "Traffic exceeded"
 msgstr "Трафик закончился"
 
-#: pyload/plugins/hoster/BasePlugin.py:65
+#: pyload/plugins/hosters/baseplugin.py:65
 msgid "Authorization required (username:password)"
 msgstr "Необходима авторизация (имя пользователя:пароль)"
 
-#: pyload/plugins/hoster/NetloadIn.py:146
-#: pyload/plugins/hoster/NetloadIn.py:170
+#: pyload/plugins/hosters/netloadin.py:146
+#: pyload/plugins/hosters/netloadin.py:170
 msgid "File temporarily not available"
 msgstr "Файл временно недоступен"
 
-#: pyload/plugins/hoster/NetloadIn.py:183
+#: pyload/plugins/hosters/netloadin.py:183
 #, python-format
 msgid "Netload: waiting between downloads %d s."
 msgstr "Netload: ожидание между загрузками %d сек."
 
-#: pyload/plugins/hoster/NetloadIn.py:214
+#: pyload/plugins/hosters/netloadin.py:214
 #, python-format
 msgid "Netload: waiting for captcha %d s."
 msgstr "Netload: ожидание картинки %d сек."
 
-#: pyload/plugins/hoster/NetloadIn.py:252
+#: pyload/plugins/hosters/netloadin.py:252
 msgid "Downloaded File was empty"
 msgstr "Загруженный файл пуст"
 
-#: pyload/plugins/hoster/FilesMailRu.py:99
+#: pyload/plugins/hosters/filesmailru.py:99
 #, python-format
 msgid "There was HTML Code in the Downloaded File (%s)...redirect error? The Download will be restarted."
 msgstr "Найден HTML-код в файле загрузки (%s)... ошибка перенаправления? Загрузка будет перезапущена."
 
-#: pyload/plugins/hoster/XHamsterCom.py:74
-#: pyload/plugins/hoster/XHamsterCom.py:83
-#: pyload/plugins/hoster/XHamsterCom.py:86
+#: pyload/plugins/hosters/xhamstercom.py:74
+#: pyload/plugins/hosters/xhamstercom.py:83
+#: pyload/plugins/hosters/xhamstercom.py:86
 #, python-format
 msgid "long_url: %s"
 msgstr "long_url: %s"
 
-#: pyload/plugins/Account.py:140 pyload/plugins/Account.py:146
+#: pyload/plugins/account.py:140 pyload/plugins/account.py:146
 #, python-format
 msgid "Could not login with account %(user)s | %(msg)s"
 msgstr "Не могу войти с учетной записью %(user)s | %(msg)s"
 
-#: pyload/plugins/Account.py:141
+#: pyload/plugins/account.py:141
 msgid "Wrong Password"
 msgstr "Неправильный пароль"
 
-#: pyload/plugins/Account.py:202
+#: pyload/plugins/account.py:202
 #, python-format
 msgid "Get Account Info for %s"
 msgstr "Получить информация об аккаунте для %s"
 
-#: pyload/plugins/Account.py:211
+#: pyload/plugins/account.py:211
 #, python-format
 msgid "Error: %s"
 msgstr "Ошибка: %s"
 
-#: pyload/plugins/Account.py:264
+#: pyload/plugins/account.py:264
 #, python-format
 msgid "Your Time %s has a wrong format, use: 1:22-3:44"
 msgstr "Время %s имеет неправильный формат, используйте формат 1:22-3:44"
 
-#: pyload/plugins/Account.py:287
+#: pyload/plugins/account.py:287
 #, python-format
 msgid "Account %s has not enough traffic, checking again in 30min"
 msgstr "Недостаточно траффика в аккаунте %s, следующая проверка через 30 минут"
 
-#: pyload/plugins/Account.py:295
+#: pyload/plugins/account.py:295
 #, python-format
 msgid "Account %s is expired, checking again in 1h"
 msgstr "Истек срок действия аккаунта %s, следующая проверка через 1 час"
 
-#: pyload/plugins/Account.py:312
+#: pyload/plugins/account.py:312
 #, python-format
 msgid "Login with %s"
 msgstr "Вход в систему как %s"
 
-#: pyload/plugins/Addon.py:163
+#: pyload/plugins/addon.py:163
 #, python-format
 msgid "Error executing addon: %s"
 msgstr "Ошибка при выполнении дополнения: %s"
 
-#: pyload/plugins/accounts/BitshareCom.py:37
+#: pyload/plugins/accounts/bitsharecom.py:37
 msgid "Activate direct Download in your Bitshare Account"
 msgstr "В своей учётной записи включите опцию 'direct Download'"
 
-#: pyload/plugins/crypter/SerienjunkiesOrg.py:130
+#: pyload/plugins/crypters/serienjunkiesorg.py:130
 msgid "Downloadlimit reached"
 msgstr "Достигнут лимит загрузок"
 
-#: pyload/plugins/addons/Premium4Me.py:29
+#: pyload/plugins/addons/premium4me.py:29
 msgid "Please add your premium.to account first and restart pyLoad"
 msgstr "Пожалуйста, сначала добавьте учетную запись premium.to и перезапустите pyLoad"
 
-#: pyload/plugins/addons/ExternalScripts.py:54
+#: pyload/plugins/addons/externalscripts.py:54
 #, python-format
 msgid "Installed scripts for %s: "
 msgstr "Установленные скрипты для %s: "
 
-#: pyload/plugins/addons/ExternalScripts.py:69
+#: pyload/plugins/addons/externalscripts.py:69
 msgid "Script not executable:"
 msgstr "Не возможно запустить скрипт:"
 
-#: pyload/plugins/addons/ExternalScripts.py:80
+#: pyload/plugins/addons/externalscripts.py:80
 #, python-format
 msgid "Error in %(script)s: %(error)s"
 msgstr "Ошибка в %(script): %(error)s"
 
-#: pyload/plugins/addons/CaptchaTrader.py:69
-#: pyload/plugins/addons/Captcha9kw.py:59
-#: pyload/plugins/addons/ExpertDecoders.py:50
+#: pyload/plugins/addons/captchatrader.py:69
+#: pyload/plugins/addons/captcha9kw.py:59
+#: pyload/plugins/addons/expertdecoders.py:50
 #, python-format
 msgid "%s credits left"
 msgstr "Осталось %s кредитов"
 
-#: pyload/plugins/addons/CaptchaTrader.py:117
+#: pyload/plugins/addons/captchatrader.py:117
 msgid "Could not send response."
 msgstr "Не удалось отправить ответ."
 
-#: pyload/plugins/addons/CaptchaTrader.py:135
+#: pyload/plugins/addons/captchatrader.py:135
 msgid "Your CaptchaTrader Account has not enough credits"
 msgstr "Недостаточно средств на вашем аккаунте CaptchaTrader"
 
-#: pyload/plugins/addons/Captcha9kw.py:93
+#: pyload/plugins/addons/captcha9kw.py:93
 #, python-format
 msgid "New CaptchaID from upload: %s : %s"
 msgstr "Новая(ые) CaptchaID из загрузки: %s: %s"
 
-#: pyload/plugins/addons/Captcha9kw.py:129
+#: pyload/plugins/addons/captcha9kw.py:129
 msgid "Your Captcha 9kw.eu Account has not enough credits"
 msgstr "Ваша учетная запись 9kw.eu имеет не достаточно кредитов"
 
-#: pyload/plugins/addons/RehostTo.py:32
+#: pyload/plugins/addons/rehostto.py:32
 msgid "Please add your rehost.to account first and restart pyLoad"
 msgstr "Пожалуйста сначала добавьте ваш rehost.to аккаунт и перезапустите pyLoad"
 
-#: pyload/plugins/addons/HotFolder.py:82
+#: pyload/plugins/addons/hotfolder.py:82
 #, python-format
 msgid "Added %s from HotFolder"
 msgstr "Добавлен %s из HotFolder"
 
-#: pyload/plugins/addons/ClickAndLoad.py:75
+#: pyload/plugins/addons/clickandload.py:75
 msgid "Click'N'Load: Port 9666 already in use"
 msgstr "Click'N'Load: Порт 9666 уже занят"
 
-#: pyload/plugins/addons/XMPPInterface.py:83
-#: pyload/plugins/addons/IRCInterface.py:74
+#: pyload/plugins/addons/xmppinterface.py:83
+#: pyload/plugins/addons/ircinterface.py:74
 #, python-format
 msgid "Package finished: %s"
 msgstr "Пакет завершен: %s"
 
-#: pyload/plugins/addons/XMPPInterface.py:91
+#: pyload/plugins/addons/xmppinterface.py:91
 #, python-format
 msgid "Download finished: %(name)s @ %(plugin)s"
 msgstr "Загрузка завершена: %(name)s @ %(plugin)s"
 
-#: pyload/plugins/addons/ExpertDecoders.py:95
+#: pyload/plugins/addons/expertdecoders.py:95
 msgid "Your ExpertDecoders Account has not enough credits"
 msgstr "Учетная запись ExpertDecoders не имеет достаточно кредитов"
 
-#: pyload/plugins/addons/UpdateManager.py:74
+#: pyload/plugins/addons/updatemanager.py:74
 msgid "*** Plugins have been updated, please restart pyLoad ***"
 msgstr "*** Дополнения обновлены, перезапустите pyLoad ***"
 
-#: pyload/plugins/addons/UpdateManager.py:76
+#: pyload/plugins/addons/updatemanager.py:76
 msgid "Plugins updated and reloaded"
 msgstr "Дополнения обновлены и перезагружены"
 
-#: pyload/plugins/addons/UpdateManager.py:79
+#: pyload/plugins/addons/updatemanager.py:79
 msgid "No plugin updates available"
 msgstr "Нет обновлений для дополнений"
 
-#: pyload/plugins/addons/UpdateManager.py:96
+#: pyload/plugins/addons/updatemanager.py:96
 msgid "No Updates for pyLoad"
 msgstr "Нет обновлений pyLoad"
 
-#: pyload/plugins/addons/UpdateManager.py:100
+#: pyload/plugins/addons/updatemanager.py:100
 #, python-format
 msgid "***  New pyLoad Version %s available  ***"
 msgstr "***  Доступна новая версия pyLoad %s  ***"
 
-#: pyload/plugins/addons/UpdateManager.py:101
+#: pyload/plugins/addons/updatemanager.py:101
 msgid "***  Get it here: https://github.com/pyload/pyload/releases  ***"
 msgstr "***  Скачайте здесь: https://github.com/pyload/pyload/releases  ***"
 
-#: pyload/plugins/addons/UpdateManager.py:104
+#: pyload/plugins/addons/updatemanager.py:104
 msgid "Not able to connect server for updates"
 msgstr "Не возможно соединиться с сервером обновлений"
 
-#: pyload/plugins/addons/UpdateManager.py:148
+#: pyload/plugins/addons/updatemanager.py:148
 #, python-format
 msgid "New version of %(type)s|%(name)s : %(version).2f"
 msgstr "Новая версия %(type)s|%(name)s : %(version).2f"
 
-#: pyload/plugins/addons/UpdateManager.py:157
-#: pyload/plugins/addons/UpdateManager.py:162
+#: pyload/plugins/addons/updatemanager.py:157
+#: pyload/plugins/addons/updatemanager.py:162
 #, python-format
 msgid "Error when updating %s"
 msgstr "Ошибка при обновлении %s"
 
-#: pyload/plugins/addons/UpdateManager.py:162
+#: pyload/plugins/addons/updatemanager.py:162
 msgid "Version mismatch"
 msgstr "Конфликт версии"
 
-#: pyload/plugins/addons/ExtractArchive.py:97
+#: pyload/plugins/addons/extractarchive.py:97
 #, python-format
 msgid "No %s installed"
 msgstr "%s не установлен"
 
-#: pyload/plugins/addons/ExtractArchive.py:99
-#: pyload/plugins/addons/ExtractArchive.py:104
+#: pyload/plugins/addons/extractarchive.py:99
+#: pyload/plugins/addons/extractarchive.py:104
 #, python-format
 msgid "Could not activate %s"
 msgstr "Не возможно активировать %s"
 
-#: pyload/plugins/addons/ExtractArchive.py:109
+#: pyload/plugins/addons/extractarchive.py:109
 msgid "Activated"
 msgstr "Активирован(a/о)"
 
-#: pyload/plugins/addons/ExtractArchive.py:111
+#: pyload/plugins/addons/extractarchive.py:111
 msgid "No Extract plugins activated"
 msgstr "Не активировано дополнений для извлечения/распаковки"
 
-#: pyload/plugins/addons/ExtractArchive.py:116
+#: pyload/plugins/addons/extractarchive.py:116
 msgid "Extract package"
 msgstr "Извлечь пакет"
 
-#: pyload/plugins/addons/ExtractArchive.py:116
+#: pyload/plugins/addons/extractarchive.py:116
 msgid "Scans package for archives and extract them"
 msgstr "Поиск архивов в пакете для их распаковки"
 
-#: pyload/plugins/addons/ExtractArchive.py:123
+#: pyload/plugins/addons/extractarchive.py:123
 #, python-format
 msgid "Package %s queued for later extracting"
 msgstr "Пакет %s поставлен в очередь для последующего извлечения/распаковки"
 
-#: pyload/plugins/addons/ExtractArchive.py:146
+#: pyload/plugins/addons/extractarchive.py:146
 #, python-format
 msgid "Check package %s"
 msgstr "Проверка пакета %s"
 
-#: pyload/plugins/addons/ExtractArchive.py:187
+#: pyload/plugins/addons/extractarchive.py:187
 #, python-format
 msgid "Extract to %s"
 msgstr "Извлечение/распаковка в %s"
 
-#: pyload/plugins/addons/ExtractArchive.py:202
+#: pyload/plugins/addons/extractarchive.py:202
 msgid "No files found to extract"
 msgstr "Не найдено файлов для извлечения"
 
-#: pyload/plugins/addons/ExtractArchive.py:209
+#: pyload/plugins/addons/extractarchive.py:209
 msgid "extracting"
 msgstr "извлекается/распаковывается"
 
-#: pyload/plugins/addons/ExtractArchive.py:220
+#: pyload/plugins/addons/extractarchive.py:220
 msgid "Password protected"
 msgstr "Защищено паролем"
 
-#: pyload/plugins/addons/ExtractArchive.py:241
+#: pyload/plugins/addons/extractarchive.py:241
 msgid "Wrong password"
 msgstr "Неправильный пароль"
 
-#: pyload/plugins/addons/ExtractArchive.py:249
+#: pyload/plugins/addons/extractarchive.py:249
 #, python-format
 msgid "Deleting %s files"
 msgstr "Удаление файлов %s"
 
-#: pyload/plugins/addons/ExtractArchive.py:256
+#: pyload/plugins/addons/extractarchive.py:256
 msgid "Extracting finished"
 msgstr "Извлечениe/распаковка завершено(a)"
 
-#: pyload/plugins/addons/ExtractArchive.py:262
+#: pyload/plugins/addons/extractarchive.py:262
 msgid "Archive Error"
 msgstr "Ошибка архива"
 
-#: pyload/plugins/addons/ExtractArchive.py:264
+#: pyload/plugins/addons/extractarchive.py:264
 msgid "CRC Mismatch"
 msgstr "Ошибка контрольной суммы"
 
-#: pyload/plugins/addons/ExtractArchive.py:268
+#: pyload/plugins/addons/extractarchive.py:268
 msgid "Unknown Error"
 msgstr "Неизвестная ошибка"
 
-#: pyload/plugins/addons/ExtractArchive.py:320
+#: pyload/plugins/addons/extractarchive.py:320
 msgid "Setting User and Group failed"
 msgstr "Ошибка установки пользователя и группы: %s"
 
-#: pyload/plugins/addons/LinkdecrypterCom.py:37
+#: pyload/plugins/addons/linkdecryptercom.py:37
 msgid "Crypter list not found"
 msgstr "Список шифрования не найден"
 
-#: pyload/plugins/addons/LinkdecrypterCom.py:51
+#: pyload/plugins/addons/linkdecryptercom.py:51
 msgid "Crypter list is empty"
 msgstr "Список шифрования пуст"
 
-#: pyload/plugins/addons/IRCInterface.py:82
+#: pyload/plugins/addons/ircinterface.py:82
 #, python-format
 msgid "Download finished: %(name)s @ %(plugin)s "
 msgstr "Загрузка завершена: %(name)s @ %(plugin)s "
 
-#: pyload/plugins/addons/IRCInterface.py:95
+#: pyload/plugins/addons/ircinterface.py:95
 #, python-format
 msgid "New Captcha Request: %s"
 msgstr "Новый запрос картинки: %s"
 
-#: pyload/plugins/addons/IRCInterface.py:96
+#: pyload/plugins/addons/ircinterface.py:96
 #, python-format
 msgid "Answer with 'c %s text on the captcha'"
 msgstr "Ответ с текстом на картинке %s"
 
-#: pyload/plugins/addons/PremiumizeMe.py:48
+#: pyload/plugins/addons/premiumizeme.py:48
 msgid "Please add a valid premiumize.me account first and restart pyLoad."
 msgstr "Пожалуйста сначала добавьте действительную учетную запись для premiumize.me и перезапустить pyLoad."
 
-#: pyload/plugins/addons/CaptchaBrotherhood.py:69
+#: pyload/plugins/addons/captchabrotherhood.py:69
 #, python-format
 msgid "%d credits left"
 msgstr "Осталось %s кредитов"
 
-#: pyload/plugins/addons/MultiHoster.py:43
+#: pyload/plugins/addons/multihoster.py:43
 #, python-format
 msgid "Activated %s"
 msgstr "Активированно %s"
 
-#: pyload/plugins/addons/MultiHoster.py:61
+#: pyload/plugins/addons/multihoster.py:61
 msgid "No Hoster loaded"
 msgstr "Не загружен ни один из файлобменников"
