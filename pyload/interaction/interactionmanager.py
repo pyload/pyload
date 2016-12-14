@@ -143,7 +143,7 @@ class InteractionManager(object):
         if task.type == IA.Notification:
             task.setWaiting(self.NOTIFICATION_TIMEOUT) # notifications are valid for 30h
 
-        for plugin in self.core.addonManager.activePlugins():
+        for plugin in self.core.addonmanager.activePlugins():
             try:
                 plugin.newInteractionTask(task)
             except Exception:

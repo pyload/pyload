@@ -280,7 +280,7 @@ class Hoster(Base):
 
         filename = join(location, name)
 
-        self.core.addonManager.dispatchEvent("download:start", self.pyfile, url, filename)
+        self.core.addonmanager.dispatchEvent("download:start", self.pyfile, url, filename)
 
         # Create the class used for downloading
         self.dl = self.core.requestFactory.getDownloadRequest(self.req, self.DOWNLOAD_CLASS)

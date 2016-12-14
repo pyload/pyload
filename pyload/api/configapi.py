@@ -67,7 +67,7 @@ class ConfigApi(ApiComponent):
         # TODO: multi user
         # TODO: better plugin / addon activated config
         data = []
-        active = [x.getName() for x in self.core.addonManager.activePlugins()]
+        active = [x.getName() for x in self.core.addonmanager.activePlugins()]
         for name, config, values in self.core.config.iterSections(self.primaryUID):
             # skip unmodified and inactive addons
             if not values and name not in active: continue

@@ -5,6 +5,7 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from builtins import str
 from builtins import object
+from builtins import addonmanager
 from pyload.utils import has_method, to_list
 
 from .base import Base
@@ -24,7 +25,7 @@ def AddEventListener(event):
     class _klass(object):
         def __new__(cls, f, *args, **kwargs):
             for ev in to_list(event):
-                addonManager.addEventListener(class_name(f.__module__), f.__name__, ev)
+                addonmanager.addEventListener(class_name(f.__module__), f.__name__, ev)
             return f
 
     return _klass
@@ -44,7 +45,7 @@ def AddonHandler(label, desc, package=True, media=-1):
 
     class _klass(object):
         def __new__(cls, f, *args, **kwargs):
-            addonManager.addAddonHandler(class_name(f.__module__), f.__name__, label, desc,
+            addonmanager.addAddonHandler(class_name(f.__module__), f.__name__, label, desc,
                                          f.__code__.co_varnames[1:], package, media)
             return f
 
@@ -65,7 +66,7 @@ def AddonProperty(name, desc, default=None, fire_event=True):
     # generated name for the attribute
     h = "__Property" + str(hash(name) ^ hash(desc))
 
-    addonManager.addInfoProperty(h, name, desc)
+    addonmanager.addInfoProperty(h, name, desc)
 
     def _get(self):
         if not hasattr(self, h):
@@ -90,7 +91,7 @@ def threaded(f):
 
     #@wraps(f)
     def run(*args, **kwargs):
-        addonManager.startThread(f, *args, **kwargs)
+        addonmanager.startThread(f, *args, **kwargs)
 
     return run
 
@@ -111,7 +112,7 @@ class Addon(Base):
     def __init__(self, core, manager, user=None):
         Base.__init__(self, core, user)
 
-        #: Callback of periodical job task, used by addonManager
+        #: Callback of periodical job task, used by AddonManager
         self.cb = None
 
         #: `AddonManager`

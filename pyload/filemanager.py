@@ -362,7 +362,7 @@ class FileManager(object):
 
         # TODO: user context?
         if not self.db.queuestats()[0]:
-            self.core.addonManager.dispatchEvent("download:allFinished")
+            self.core.addonmanager.dispatchEvent("download:allFinished")
             self.core.log.debug("All downloads finished")
             return True
 
@@ -376,7 +376,7 @@ class FileManager(object):
 
         # TODO: user context?
         if not self.db.processcount(fid):
-            self.core.addonManager.dispatchEvent("download:allProcessed")
+            self.core.addonmanager.dispatchEvent("download:allProcessed")
             self.core.log.debug("All downloads processed")
             return True
 
@@ -389,7 +389,7 @@ class FileManager(object):
         if not ids or (pyfile.id in ids and len(ids) == 1):
             if not pyfile.package().setFinished:
                 self.core.log.info(_("Package finished: %s") % pyfile.package().name)
-                self.core.addonManager.packageFinished(pyfile.package())
+                self.core.addonmanager.packageFinished(pyfile.package())
                 pyfile.package().setFinished = True
 
     def resetCount(self):

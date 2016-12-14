@@ -31,7 +31,7 @@ class AddonManager(object):
         self.core = core
         self.config = self.core.config
 
-        builtins.addonManager = self #needed to let addons register themselves
+        builtins.addonmanager = self #needed to let addons register themselves
 
         self.log = self.core.log
 

@@ -26,7 +26,7 @@ class AddonApi(ApiComponent):
         :param plugin: pluginName
         :return: list of :class:`AddonInfo`
         """
-        return self.core.addonManager.getInfo(plugin)
+        return self.core.addonmanager.getInfo(plugin)
 
     @RequirePerm(Permission.Interaction)
     def getAddonHandler(self):
@@ -35,7 +35,7 @@ class AddonApi(ApiComponent):
         :return: dict of plugin name to list of :class:`AddonService`
         """
         handler = {}
-        for name, data in self.core.addonManager.iterAddons():
+        for name, data in self.core.addonmanager.iterAddons():
             if data.handler:
                 handler[name] = list(data.handler.values())
         return handler
@@ -43,7 +43,7 @@ class AddonApi(ApiComponent):
     @RequirePerm(Permission.Interaction)
     def invokeAddon(self, plugin, func, func_args):
         """ Calls any function exposed by an addon """
-        return self.core.addonManager.invoke(plugin, func, func_args)
+        return self.core.addonmanager.invoke(plugin, func, func_args)
 
     @RequirePerm(Permission.Interaction)
     def invokeAddonHandler(self, plugin, func, pid_or_fid):
