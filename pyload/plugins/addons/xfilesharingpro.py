@@ -52,7 +52,7 @@ class XFileSharingPro(Hook):
             ))
 
         hosterList -= (excludeList)
-        hosterList -= set(('', u''))
+        hosterList -= set(('',))
 
         if not hosterList:
             self.unload()

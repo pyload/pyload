@@ -56,7 +56,7 @@ class Package(object):
         return self.name == other.name and self.links == other.links
 
     def __repr__(self):
-        return u"<CrypterPackage name=%s, links=[%s], packs=%s>" % (self.name, ", ".join(str(l) for l in self.links),
+        return "<CrypterPackage name=%s, links=[%s], packs=%s>" % (self.name, ", ".join(str(l) for l in self.links),
                                                                     self.packs)
 
     def __hash__(self):
