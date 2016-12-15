@@ -49,7 +49,7 @@ class WindowsPhoneToastNotify(Hook):
         if not self.getConfig("pushId") or not self.getConfig("pushUrl"):
             return False
 
-        if self.core.isClientConnected() and not self.getConfig("force"):
+        if self.pyload.isClientConnected() and not self.getConfig("force"):
             return False
 
         if (time.time() - float(self.getStorage("LAST_NOTIFY", 0))) < self.getConf("pushTimeout"):

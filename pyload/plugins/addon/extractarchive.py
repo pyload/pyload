@@ -89,7 +89,7 @@ class ExtractArchive(Addon):
 
         for p in ("UnRar", "UnZip"):
             try:
-                module = self.core.pluginManager.loadModule("internal", p)
+                module = self.pyload.pluginManager.loadModule("internal", p)
                 klass = getattr(module, p)
                 if klass.checkDeps():
                     names.append(p)
@@ -100,12 +100,12 @@ class ExtractArchive(Addon):
                     self.logInfo(_("No %s installed") % p)
                 else:
                     self.logWarning(_("Could not activate %s") % p, str(e))
-                    if self.core.debug:
+                    if self.pyload.debug:
                         print_exc()
 
             except Exception as e:
                 self.logWarning(_("Could not activate %s") % p, str(e))
-                if self.core.debug:
+                if self.pyload.debug:
                     print_exc()
 
         if names:
@@ -145,7 +145,7 @@ class ExtractArchive(Addon):
 
         #iterate packages -> plugins -> targets
         for pid in ids:
-            p = self.core.files.getPackage(pid)
+            p = self.pyload.files.getPackage(pid)
             self.logInfo(_("Check package %s") % p.name)
             if not p:
                 continue
@@ -205,7 +205,7 @@ class ExtractArchive(Addon):
                 self.logInfo(_("No files found to extract"))
 
     def startExtracting(self, plugin, fid, passwords, thread):
-        pyfile = self.core.files.getFile(fid)
+        pyfile = self.pyload.files.getFile(fid)
         if not pyfile:
             return []
 
@@ -244,7 +244,7 @@ class ExtractArchive(Addon):
                 self.logError(basename(plugin.file), _("Wrong password"))
                 return []
 
-            if self.core.debug:
+            if self.pyload.debug:
                 self.logDebug("Would delete: %s" % ", ".join(plugin.getDeleteFiles()))
 
             if self.getConfig("deletearchive"):
@@ -266,7 +266,7 @@ class ExtractArchive(Addon):
         except CRCError:
             self.logError(basename(plugin.file), _("CRC Mismatch"))
         except Exception as e:
-            if self.core.debug:
+            if self.pyload.debug:
                 print_exc()
             self.logError(basename(plugin.file), _("Unknown Error"), str(e))
 

@@ -17,7 +17,7 @@ class UserInteractionApi(ApiComponent):
         :param mode: binary or'ed output type
         :return: boolean
         """
-        return self.core.interactionManager.isTaskWaiting(self.primaryUID, mode)
+        return self.pyload.interactionManager.isTaskWaiting(self.primaryUID, mode)
 
     @RequirePerm(Permission.Interaction)
     def getInteractionTasks(self, mode):
@@ -26,12 +26,12 @@ class UserInteractionApi(ApiComponent):
         :param mode: binary or'ed interaction types which should be retrieved
         :rtype list of :class:`InteractionTask`
         """
-        tasks = self.core.interactionManager.getTasks(self.primaryUID, mode)
+        tasks = self.pyload.interactionManager.getTasks(self.primaryUID, mode)
         # retrieved tasks count as seen
         for t in tasks:
             t.seen = True
             if t.type == Interaction.Notification:
-                t.setWaiting(self.core.interactionManager.CLIENT_THRESHOLD)
+                t.setWaiting(self.pyload.interactionManager.CLIENT_THRESHOLD)
 
         return tasks
 
@@ -42,7 +42,7 @@ class UserInteractionApi(ApiComponent):
         :param iid: interaction id
         :param result: result as json string
         """
-        task = self.core.interactionManager.getTaskByID(iid)
+        task = self.pyload.interactionManager.getTaskByID(iid)
         if task and self.primaryUID == task.owner:
             task.setResult(result)
 

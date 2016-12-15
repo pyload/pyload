@@ -153,7 +153,7 @@ def generate_locale():
 
     EXCLUDE = ["pyload/lib", "pyload/setup", "pyload/plugins", "setup.py"]
 
-    makepot("core", path("pyload"), EXCLUDE)
+    makepot("pyload", path("pyload"), EXCLUDE)
     makepot("plugins", os.path.join(path("pyload"), "plugins"))
     makepot("setup", "", [], includes="./pyload/setup/Setup.py\n")
     makepot("webui", path("pyload") / "web" / "app", ["components", "vendor", "gettext"], endings=[".js", ".html"],

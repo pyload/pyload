@@ -54,7 +54,7 @@ class Hoster(Base):
 
     def __init__(self, pyfile):
         # TODO: pyfile.owner, but it's not correct yet
-        Base.__init__(self, pyfile.m.core)
+        Base.__init__(self, pyfile.m.pyload)
 
         self.wantReconnect = False
         #: enables simultaneous processing of multiple downloads
@@ -69,7 +69,7 @@ class Hoster(Base):
 
         self.ocr = None  #captcha reader instance
         #: account handler instance, see :py:class:`Account`
-        self.account = self.core.accountManager.selectAccount(self.__name__, self.owner)
+        self.account = self.pyload.accountManager.selectAccount(self.__name__, self.owner)
 
         #: premium status
         self.premium = False
@@ -81,7 +81,7 @@ class Hoster(Base):
             self.chunkLimit, self.limitDL, self.resumeDownload = self.account.getDownloadSettings()
             self.premium = self.account.isPremium()
         else:
-            self.req = self.core.requestFactory.getRequest(klass=self.REQUEST_CLASS)
+            self.req = self.pyload.requestFactory.getRequest(klass=self.REQUEST_CLASS)
 
         #: Will hold the download class
         self.dl = None
@@ -169,7 +169,7 @@ class Hoster(Base):
     def resetAccount(self):
         """ don't use account and retry download """
         self.account = None
-        self.req = self.core.requestFactory.getRequest(self.__name__)
+        self.req = self.pyload.requestFactory.getRequest(self.__name__)
         self.retry()
 
     def checksum(self, local_file=None):
@@ -263,9 +263,9 @@ class Hoster(Base):
         location = save_join(download_folder, self.pyfile.package().folder)
 
         if not exists(location):
-            makedirs(location, int(self.core.config["permission"]["folder"], 8))
+            makedirs(location, int(self.pyload.config["permission"]["folder"], 8))
 
-            if self.core.config["permission"]["change_dl"] and os.name != "nt":
+            if self.pyload.config["permission"]["change_dl"] and os.name != "nt":
                 try:
                     uid = getpwnam(self.config["permission"]["user"])[2]
                     gid = getgrnam(self.config["permission"]["group"])[2]
@@ -280,10 +280,10 @@ class Hoster(Base):
 
         filename = join(location, name)
 
-        self.core.addonmanager.dispatchEvent("download:start", self.pyfile, url, filename)
+        self.pyload.addonmanager.dispatchEvent("download:start", self.pyfile, url, filename)
 
         # Create the class used for downloading
-        self.dl = self.core.requestFactory.getDownloadRequest(self.req, self.DOWNLOAD_CLASS)
+        self.dl = self.pyload.requestFactory.getDownloadRequest(self.req, self.DOWNLOAD_CLASS)
         try:
             # TODO: hardcoded arguments
             newname = self.dl.download(url, filename, get=get, post=post, referer=ref, chunks=self.getChunkCount(),
@@ -299,10 +299,10 @@ class Hoster(Base):
 
         fs_filename = fs_encode(filename)
 
-        if self.core.config["permission"]["change_file"]:
-            chmod(fs_filename, int(self.core.config["permission"]["file"], 8))
+        if self.pyload.config["permission"]["change_file"]:
+            chmod(fs_filename, int(self.pyload.config["permission"]["file"], 8))
 
-        if self.core.config["permission"]["change_dl"] and os.name != "nt":
+        if self.pyload.config["permission"]["change_dl"] and os.name != "nt":
             try:
                 uid = getpwnam(self.config["permission"]["user"])[2]
                 gid = getgrnam(self.config["permission"]["group"])[2]
@@ -371,7 +371,7 @@ class Hoster(Base):
 
         pack = self.pyfile.package()
 
-        for pyfile in self.core.files.cachedFiles():
+        for pyfile in self.pyload.files.cachedFiles():
             if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package().folder == pack.folder:
                 if pyfile.status in (0, 12): #finished or downloading
                     raise SkipDownload(pyfile.pluginname)
@@ -382,12 +382,12 @@ class Hoster(Base):
         download_folder = self.config['general']['download_folder']
         location = save_join(download_folder, pack.folder, self.pyfile.name)
 
-        if starting and self.core.config['download']['skip_existing'] and exists(location):
+        if starting and self.pyload.config['download']['skip_existing'] and exists(location):
             size = os.stat(location).st_size
             if size >= self.pyfile.size:
                 raise SkipDownload("File exists.")
 
-        pyfile = self.core.db.findDuplicates(self.pyfile.id, self.pyfile.package().folder, self.pyfile.name)
+        pyfile = self.pyload.db.findDuplicates(self.pyfile.id, self.pyfile.package().folder, self.pyfile.name)
         if pyfile:
             if exists(location):
                 raise SkipDownload(pyfile[0])

@@ -22,8 +22,8 @@ class CrypterPluginTester(PluginTester):
         print("%s: %s" % (name, url.encode("utf8")))
         log(DEBUG, "%s: %s", name, url.encode("utf8"))
 
-        plugin = self.core.pluginManager.getPluginClass("crypter", name)
-        p = plugin(self.core, None, "")
+        plugin = self.pyload.pluginManager.getPluginClass("crypter", name)
+        p = plugin(self.pyload, None, "")
         self.thread.plugin = p
 
         try:

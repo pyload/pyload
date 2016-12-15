@@ -30,7 +30,7 @@ class EventManager(object):
     """
 
     def __init__(self, core):
-        self.core = core
+        self.pyload = core
         self.log = core.log
 
         self.events = {"event": []}
@@ -71,4 +71,4 @@ class EventManager(object):
                 except Exception as e:
                     self.log.warning("Error calling event handler %s: %s, %s, %s"
                                      % (event, f, args, str(e)))
-                    self.core.print_exc()
+                    self.pyload.print_exc()

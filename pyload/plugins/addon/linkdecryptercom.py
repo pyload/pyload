@@ -31,7 +31,7 @@ class LinkdecrypterCom(Hook):
             self.logError(_("Crypter list not found"))
             return
 
-        builtin = [name.lower() for name in self.core.pluginManager.crypterPlugins.keys()]
+        builtin = [name.lower() for name in self.pyload.pluginManager.crypterPlugins.keys()]
         builtin.extend(["downloadserienjunkiesorg"])
 
         crypter_pattern = re.compile("(\w[\w.-]+)")
@@ -47,7 +47,7 @@ class LinkdecrypterCom(Hook):
 
         regexp = r"https?://([^.]+\.)*?(%s)/.*" % "|".join(online)
 
-        dict = self.core.pluginManager.crypterPlugins[self.__name__]
+        dict = self.pyload.pluginManager.crypterPlugins[self.__name__]
         dict["pattern"] = regexp
         dict["re"] = re.compile(regexp)
 

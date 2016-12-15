@@ -30,7 +30,7 @@ class AbstractHandler(object):
     def __init__(self, api):
         self.log = get_class_logger()
         self.api = api
-        self.core = api.core
+        self.pyload = api.pyload
 
     def do_extra_handshake(self, req):
         self.log.debug("WS Connected: %s" % req)

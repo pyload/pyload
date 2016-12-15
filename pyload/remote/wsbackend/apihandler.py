@@ -61,7 +61,7 @@ class ApiHandler(AbstractHandler):
             except AttributeError:
                 return self.send_result(req, self.NOT_FOUND, "Not Found")
             except Exception as e:
-                self.core.print_exc()
+                self.pyload.print_exc()
                 return self.send_result(req, self.ERROR, str(e))
 
             # None is invalid json type

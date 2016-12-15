@@ -20,7 +20,7 @@ class TestAccountManager(TestCase):
 
     def setUp(self):
         self.db.purgeAccounts()
-        self.manager = AccountManager(self.core)
+        self.manager = AccountManager(self.pyload)
 
     def test_access(self):
         account = self.manager.createAccount("Http", "User", "somepw", adminUser.uid)

@@ -21,14 +21,14 @@ class RestartFailed(Hook):
 
     def periodical(self):
         self.logDebug("Restart all failed downloads now")
-        self.core.api.restartFailed()
+        self.pyload.api.restartFailed()
 
     def restartPeriodical(self, interval):
         self.logDebug("Set periodical interval to %s seconds" % interval)
         if self.cb:
-            self.core.scheduler.removeJob(self.cb)
+            self.pyload.scheduler.removeJob(self.cb)
         self.interval = interval
-        self.cb = self.core.scheduler.addJob(interval, self._periodical, threaded=False)
+        self.cb = self.pyload.scheduler.addJob(interval, self._periodical, threaded=False)
 
     def pluginConfigChanged(self, plugin, name, value):
         value *= 60

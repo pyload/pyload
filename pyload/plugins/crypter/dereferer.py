@@ -35,4 +35,4 @@ class Dereferer(Crypter):
 
     def decrypt(self, pyfile):
         link = re.match(self.__pattern__, pyfile.url).group('url')
-        self.core.files.addLinks([urllib.parse.unquote(link).rstrip('+')], pyfile.package().id)
+        self.pyload.files.addLinks([urllib.parse.unquote(link).rstrip('+')], pyfile.package().id)

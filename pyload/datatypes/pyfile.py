@@ -95,7 +95,7 @@ class PyFile(object):
 
     @property
     def id(self):
-        self.m.core.log.debug("Deprecated attr .id, use .fid instead")
+        self.m.pyload.log.debug("Deprecated attr .id, use .fid instead")
         return self.fid
 
     def setSize(self, value):
@@ -134,7 +134,7 @@ class PyFile(object):
     def initPlugin(self):
         """ inits plugin instance """
         if not self.plugin:
-            self.pluginclass = self.m.core.pluginManager.getPluginClass("hoster", self.pluginname)
+            self.pluginclass = self.m.pyload.pluginManager.getPluginClass("hoster", self.pluginname)
             self.plugin = self.pluginclass(self)
 
     @read_lock
@@ -192,7 +192,7 @@ class PyFile(object):
 
     def abortDownload(self):
         """abort pyfile if possible"""
-        while self.fid in self.m.core.dlm.processingIds():
+        while self.fid in self.m.pyload.dlm.processingIds():
 
             self.lock.acquire(shared=True)
             self.abort = True
@@ -212,7 +212,7 @@ class PyFile(object):
         """set status to finish and release file if every thread is finished with it"""
 
         # TODO: this is wrong now, it should check if addons are using it
-        if self.id in self.m.core.dlm.processingIds():
+        if self.id in self.m.pyload.dlm.processingIds():
             return False
 
         self.setStatus("finished")

@@ -31,7 +31,7 @@ class UpdateManager(Hook):
 
     @property
     def debug(self):
-        return self.core.debug and self.getConfig("debug")
+        return self.pyload.debug and self.getConfig("debug")
 
     def setup(self):
         if self.debug:
@@ -76,7 +76,7 @@ class UpdateManager(Hook):
 
         try:
             if self.version == "None":  # No updated known
-                version_check = getURL(self.URL % self.core.api.getServerVersion()).splitlines()
+                version_check = getURL(self.URL % self.pyload.api.getServerVersion()).splitlines()
                 self.version = version_check[0]
 
                 # Still no updates, plugins will be checked
@@ -124,7 +124,7 @@ class UpdateManager(Hook):
             else:
                 type = prefix
 
-            plugins = getattr(self.core.pluginManager, "%sPlugins" % type)
+            plugins = getattr(self.pyload.pluginManager, "%sPlugins" % type)
 
             if name in plugins:
                 if float(plugins[name]["v"]) >= float(version):
@@ -157,7 +157,7 @@ class UpdateManager(Hook):
 
             reloads.append((prefix, name))
 
-        self.reloaded = self.core.pluginManager.reloadPlugins(reloads)
+        self.reloaded = self.pyload.pluginManager.reloadPlugins(reloads)
 
     def checkChanges(self):
 
@@ -173,7 +173,7 @@ class UpdateManager(Hook):
         for m in modules:
             root, type, name = m.__name__.rsplit(".", 2)
             id = (type, name)
-            if type in self.core.pluginManager.plugins:
+            if type in self.pyload.pluginManager.plugins:
                 f = m.__file__.replace(".pyc", ".py")
                 if not exists(f):
                     continue
@@ -186,4 +186,4 @@ class UpdateManager(Hook):
                     reloads.append(id)
                     self.mtimes[id] = mtime
 
-        self.core.pluginManager.reloadPlugins(reloads)
+        self.pyload.pluginManager.reloadPlugins(reloads)

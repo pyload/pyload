@@ -19,7 +19,7 @@ class ThreadManager(object):
 
     def __init__(self, core):
         """Constructor"""
-        self.core = core
+        self.pyload = core
         self.log = core.log
 
         self.threads = []  # thread list
@@ -75,7 +75,7 @@ class ThreadManager(object):
         return self.infoResults.get(rid)
 
     def setInfoResults(self, oc, result):
-        self.core.evm.dispatchEvent("linkcheck:updated", oc.rid, result, owner=oc.owner)
+        self.pyload.evm.dispatchEvent("linkcheck:updated", oc.rid, result, owner=oc.owner)
         oc.update(result)
 
     def getProgressList(self, user=None):

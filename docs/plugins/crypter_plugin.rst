@@ -43,7 +43,7 @@ create new Packages if needed by instantiating a :class:`Package` instance, whic
 And that's basically all you need to know. Just as a little side-note if you want to use decrypter in
 your code you can use::
 
-        plugin = self.core.pluginManager.loadClass("crypter", "NameOfThePlugin")
+        plugin = self.pyload.pluginManager.loadClass("crypter", "NameOfThePlugin")
         # Core instance is needed for decrypting
         # decrypted will be a list of urls
         decrypted = plugin.decrypt(core, urls)

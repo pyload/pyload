@@ -123,7 +123,7 @@ class DatabaseBackend(Thread):
     def __init__(self, core):
         Thread.__init__(self)
         self.setDaemon(True)
-        self.core = core
+        self.pyload = core
         self.manager = None # set later
         self.error = None
         self.running = Event()
@@ -156,7 +156,7 @@ class DatabaseBackend(Thread):
                 self.conn.close()
 
                 try:
-                    self.manager.core.log.warning(_("Database was deleted due to incompatible version."))
+                    self.manager.pyload.log.warning(_("Database was deleted due to incompatible version."))
                 except Exception:
                     print("Database was deleted due to incompatible version.")
 

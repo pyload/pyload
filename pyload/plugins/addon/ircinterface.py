@@ -374,7 +374,7 @@ class IRCInterface(Thread, Addon):
         if not args:
             return ["ERROR: Captcha ID missing."]
 
-        task = self.core.captchaManager.getTaskByID(args[0])
+        task = self.pyload.captchaManager.getTaskByID(args[0])
         if not task:
             return ["ERROR: Captcha Task with ID %s does not exists." % args[0]]
 

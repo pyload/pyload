@@ -50,6 +50,6 @@ MO files can be generated using:
 
 `paver compile_translations`
 
-To compile a single file just use `msgfmt`. For example to compile a core.po file run:
+To compile a single file just use `msgfmt`. For example to compile a pyload.po file run:
 
-`msgfmt -o core.mo core.po`
+`msgfmt -o pyload.mo pyload.po`

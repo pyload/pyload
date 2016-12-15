@@ -29,21 +29,21 @@ class WebSocketBackend(BackendBase):
         options.server_host = host
         options.port = port
         options.dispatcher = Dispatcher()
-        options.dispatcher.addHandler(ApiHandler.PATH, ApiHandler(self.core.api))
-        options.dispatcher.addHandler(AsyncHandler.PATH, AsyncHandler(self.core.api))
+        options.dispatcher.addHandler(ApiHandler.PATH, ApiHandler(self.pyload.api))
+        options.dispatcher.addHandler(AsyncHandler.PATH, AsyncHandler(self.pyload.api))
 
         # tls is needed when requested or webui is also on tls
-        if self.core.api.isWSSecure():
+        if self.pyload.api.isWSSecure():
             from .wsbackend.server import import_ssl
             tls_module = import_ssl()
             if tls_module:
                 options.use_tls = True
                 options.tls_module = tls_module
-                options.certificate = self.core.config['ssl']['cert']
-                options.private_key = self.core.config['ssl']['key']
-                self.core.log.info(_('Using secure WebSocket'))
+                options.certificate = self.pyload.config['ssl']['cert']
+                options.private_key = self.pyload.config['ssl']['key']
+                self.pyload.log.info(_('Using secure WebSocket'))
             else:
-                self.core.log.warning(_('SSL could not be imported'))
+                self.pyload.log.warning(_('SSL could not be imported'))
 
         self.server = WebSocketServer(options)
 

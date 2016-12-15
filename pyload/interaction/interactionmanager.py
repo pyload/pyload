@@ -32,7 +32,7 @@ class InteractionManager(object):
 
     def __init__(self, core):
         self.lock = Lock()
-        self.core = core
+        self.pyload = core
         self.tasks = OrderedDict() #task store, for all outgoing tasks
 
         self.last_clients = {}
@@ -109,7 +109,7 @@ class InteractionManager(object):
     def removeTask(self, task):
         if task.iid in self.tasks:
             del self.tasks[task.iid]
-            self.core.evm.dispatchEvent("interaction:deleted", task.iid)
+            self.pyload.evm.dispatchEvent("interaction:deleted", task.iid)
 
     @lock
     def getTaskByID(self, iid):
@@ -143,14 +143,14 @@ class InteractionManager(object):
         if task.type == IA.Notification:
             task.setWaiting(self.NOTIFICATION_TIMEOUT) # notifications are valid for 30h
 
-        for plugin in self.core.addonmanager.activePlugins():
+        for plugin in self.pyload.addonmanager.activePlugins():
             try:
                 plugin.newInteractionTask(task)
             except Exception:
-                self.core.print_exc()
+                self.pyload.print_exc()
 
         self.tasks[task.iid] = task
-        self.core.evm.dispatchEvent("interaction:added", task)
+        self.pyload.evm.dispatchEvent("interaction:added", task)
 
 
 # if __name__ == "__main__":

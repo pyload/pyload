@@ -108,7 +108,7 @@ class Captcha9kw(Hook):
         if not self.getConfig("passkey"):
             return False
 
-        if self.core.isClientConnected() and not self.getConfig("force"):
+        if self.pyload.isClientConnected() and not self.getConfig("force"):
             return False
 
         if self.getCredits() > 0:

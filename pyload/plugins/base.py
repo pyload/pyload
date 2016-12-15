@@ -78,7 +78,7 @@ class Base(object):
         self.__name__ = self.__class__.__name__
 
         #: Core instance
-        self.core = core
+        self.pyload = core
         #: logging instance
         self.log = core.log
         #: core config
@@ -89,21 +89,21 @@ class Base(object):
         self.im = core.interactionManager
         if owner is not None:
             #: :class:`Api`, user api when user is set
-            self.api = self.core.api.withUserContext(owner)
+            self.api = self.pyload.api.withUserContext(owner)
             if not self.api:
                 raise Exception("Plugin running with invalid user")
 
             #: :class:`User`, user related to this plugin
             self.owner = self.api.user
         else:
-            self.api = self.core.api
+            self.api = self.pyload.api
             self.owner = None
 
         #: last interaction task
         self.task = None
 
         #: js engine, see `JsEngine`
-        self.js = self.core.js
+        self.js = self.pyload.js
 
     def __getitem__(self, item):
         """ Retrieves meta data attribute """
@@ -150,11 +150,11 @@ class Base(object):
     @property
     def pattern(self):
         """  Gives the compiled pattern of the plugin """
-        return self.core.pluginManager.getPlugin(self.__type__, self.__name__).re
+        return self.pyload.pluginManager.getPlugin(self.__type__, self.__name__).re
 
     def setConfig(self, option, value):
         """ Set config value for current plugin """
-        self.core.config.set(self.__name__, option, value)
+        self.pyload.config.set(self.__name__, option, value)
 
     def getConf(self, option):
         """ see `getConfig` """
@@ -162,21 +162,21 @@ class Base(object):
 
     def getConfig(self, option):
         """ Returns config value for current plugin """
-        return self.core.config.get(self.__name__, option)
+        return self.pyload.config.get(self.__name__, option)
 
     def setStorage(self, key, value):
         """ Saves a value persistently to the database """
-        self.core.db.setStorage(self.__name__, key, value)
+        self.pyload.db.setStorage(self.__name__, key, value)
 
     def store(self, key, value):
         """ same as `setStorage` """
-        self.core.db.setStorage(self.__name__, key, value)
+        self.pyload.db.setStorage(self.__name__, key, value)
 
     def getStorage(self, key=None, default=None):
         """ Retrieves saved value or dict of all saved entries if key is None """
         if key is not None:
-            return self.core.db.getStorage(self.__name__, key) or default
-        return self.core.db.getStorage(self.__name__, key)
+            return self.pyload.db.getStorage(self.__name__, key) or default
+        return self.pyload.db.getStorage(self.__name__, key)
 
     def retrieve(self, *args, **kwargs):
         """ same as `getStorage` """
@@ -184,11 +184,11 @@ class Base(object):
 
     def delStorage(self, key):
         """ Delete entry in db """
-        self.core.db.delStorage(self.__name__, key)
+        self.pyload.db.delStorage(self.__name__, key)
 
     def shell(self):
         """ open ipython shell """
-        if self.core.debug:
+        if self.pyload.debug:
             from IPython import embed
             #noinspection PyUnresolvedReferences
             sys.stdout = sys._stdout
@@ -220,7 +220,7 @@ class Base(object):
 
         res = self.req.load(url, get, post, ref, cookies, just_header, decode=decode)
 
-        if self.core.debug:
+        if self.pyload.debug:
             from inspect import currentframe
 
             frame = currentframe()
@@ -303,10 +303,10 @@ class Base(object):
         temp_file.close()
 
         name = "%sOCR" % self.__name__
-        has_plugin = name in self.core.pluginManager.getPlugins("internal")
+        has_plugin = name in self.pyload.pluginManager.getPlugins("internal")
 
-        if self.core.captcha:
-            OCR = self.core.pluginManager.loadClass("internal", name)
+        if self.pyload.captcha:
+            OCR = self.pyload.pluginManager.loadClass("internal", name)
         else:
             OCR = None
 
@@ -339,7 +339,7 @@ class Base(object):
             result = task.result
             self.log.debug("Received captcha result: %s" % str(result))
 
-        if not self.core.debug:
+        if not self.pyload.debug:
             try:
                 remove(temp_file.name)
             except Exception:

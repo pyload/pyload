@@ -36,7 +36,7 @@ class Deferred(object):
 
 class Scheduler(object):
     def __init__(self, core):
-        self.core = core
+        self.pyload = core
 
         self.queue = PriorityQueue()
 

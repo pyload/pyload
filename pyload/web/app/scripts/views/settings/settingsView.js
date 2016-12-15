@@ -48,7 +48,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
             refresh: function() {
                 var self = this;
                 $.ajax(App.apiRequest('getCoreConfig', null, {success: function(data) {
-                    self.coreConfig = data;
+                    self.pyloadConfig = data;
                     self.renderMenu();
                 }}));
                 $.ajax(App.apiRequest('getPluginConfig', null, {success: function(data) {

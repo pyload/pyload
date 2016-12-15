@@ -43,7 +43,7 @@ class BasePlugin(Hoster):
         # self.decryptCaptcha("http://localhost:9000/captcha")
         #
         # if pyfile.url == "79":
-        #     self.core.api.addPackage("test", [str(i) for i in range(80)], 1)
+        #     self.pyload.api.addPackage("test", [str(i) for i in range(80)], 1)
         #
         # return
         if pyfile.url.startswith("http"):
@@ -54,7 +54,7 @@ class BasePlugin(Hoster):
                 if e.code in (401, 403):
                     self.logDebug("Auth required")
 
-                    account = self.core.accountManager.getAccountPlugin('Http')
+                    account = self.pyload.accountManager.getAccountPlugin('Http')
                     servers = [x['login'] for x in account.getAllAccounts()]
                     server = urlparse(pyfile.url).netloc
 

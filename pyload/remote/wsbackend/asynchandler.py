@@ -44,7 +44,7 @@ class AsyncHandler(AbstractHandler):
         self.clients = []
         self.lock = Lock()
 
-        self.core.evm.listenTo("event", self.add_event)
+        self.pyload.evm.listenTo("event", self.add_event)
 
     @lock
     def on_open(self, req):

@@ -83,8 +83,8 @@ Basic Methods
 
 All methods can be looked up at :class:`Base <pyload.plugins.base.Base>`. To note some important ones:
 
-The pyload core instance is accessible at ``self.core`` attribute
-and the :class:`Api <pyload.api.Api>` at ``self.core.api``
+The pyload core instance is accessible at ``self.pyload`` attribute
+and the :class:`Api <pyload.api.Api>` at ``self.pyload.api``
 
 With ``self.load(...)`` you can load any url and get the result. This method is only available to Hoster and Crypter.
 For other plugins use ``getURL(...)`` or ``getRequest()``.
@@ -103,7 +103,7 @@ To enable debugging functionality start pyLoad with the ``-d`` option or enable 
 You should use ``self.logDebug(msg)`` when ever it is reasonable. It is a good pratice to log server output
 or the calculation of results and then check in the log if it really is what you are expecting.
 
-For further debugging you can install ipython [4]_, and set breakpoints with ``self.core.breakpoint()``.
+For further debugging you can install ipython [4]_, and set breakpoints with ``self.pyload.breakpoint()``.
 It will open the python debugger [5]_ and pause the plugin thread.
 To open a ipython shell in the running programm use ``self.shell()``.
 These methods are useful to gain access to the code flow at runtime and check or modify variables.

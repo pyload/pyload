@@ -151,7 +151,7 @@ class Crypter(Base):
         self.req = None
         # load account if set
         if self.USE_ACCOUNT:
-            self.account = self.core.accountManager.selectAccount(self.USE_ACCOUNT, self.owner)
+            self.account = self.pyload.accountManager.selectAccount(self.USE_ACCOUNT, self.owner)
             if self.account:
                 self.req = self.account.getAccountRequest()
 
@@ -243,7 +243,7 @@ class Crypter(Base):
                 if f.startswith("tmp_"): remove(f)
             except IOError:
                 self.logWarning(_("Could not remove file '%s'") % f)
-                self.core.print_exc()
+                self.pyload.print_exc()
 
         return to_link_list(result)
 
@@ -265,8 +265,8 @@ class Crypter(Base):
                     path = url
                 elif exists(url):
                     path = url
-                elif exists(self.core.path(url)):
-                    path = self.core.path(url)
+                elif exists(self.pyload.path(url)):
+                    path = self.pyload.path(url)
 
                 if path:
                     try:

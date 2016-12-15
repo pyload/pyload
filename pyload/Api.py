@@ -59,7 +59,7 @@ class Api(Iface):
     EXTEND = False  # only extendable when set too true
 
     def __init__(self, core):
-        self.core = core
+        self.pyload = core
         self.user_apis = {}
 
     @property
@@ -111,11 +111,11 @@ class Api(Iface):
             uid = uid.uid
 
         if uid not in self.user_apis:
-            user = self.core.db.getUserData(uid=uid)
+            user = self.pyload.db.getUserData(uid=uid)
             if not user: #TODO: anonymous user?
                 return None
 
-            self.user_apis[uid] = UserApi(self.core, User.fromUserData(self, user))
+            self.user_apis[uid] = UserApi(self.pyload, User.fromUserData(self, user))
 
         return self.user_apis[uid]
 
@@ -143,9 +143,9 @@ class Api(Iface):
         :param remoteip:
         :return: dict with info, empty when login is incorrect
         """
-        self.core.log.info(_("User '%s' tries to log in") % username)
+        self.pyload.log.info(_("User '%s' tries to log in") % username)
 
-        return self.core.db.checkAuth(username, password)
+        return self.pyload.db.checkAuth(username, password)
 
     @staticmethod
     def isAuthorized(func, user):
@@ -168,7 +168,7 @@ class UserApi(Api):
 
     def __init__(self, core, user):
         # No need to init super class
-        self.core = core
+        self.pyload = core
         self._user = user
 
     def withUserContext(self, uid):

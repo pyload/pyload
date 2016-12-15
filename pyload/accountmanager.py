@@ -16,7 +16,7 @@ class AccountManager(object):
     def __init__(self, core):
         """Constructor"""
 
-        self.core = core
+        self.pyload = core
         self.lock = Lock()
 
         # PluginName mapped to list of account instances
@@ -31,15 +31,15 @@ class AccountManager(object):
         if info.owner is None:
             raise ValueError("Owner must not be null")
 
-        klass = self.core.pluginManager.loadClass("account", plugin)
+        klass = self.pyload.pluginManager.loadClass("account", plugin)
         if not klass:
-            self.core.log.warning(_("Account plugin %s not available") % plugin)
+            self.pyload.log.warning(_("Account plugin %s not available") % plugin)
             raise ValueError("Account plugin %s not available" % plugin)
 
         if plugin not in self.accounts:
             self.accounts[plugin] = []
 
-        self.core.log.debug("Create account %s:%s" % (plugin, loginname))
+        self.pyload.log.debug("Create account %s:%s" % (plugin, loginname))
 
         # New account instance
         account = klass.fromInfoData(self, info, password, options)
@@ -48,14 +48,14 @@ class AccountManager(object):
 
     def loadAccounts(self):
         """loads all accounts available from db"""
-        for info, password, options in self.core.db.loadAccounts():
+        for info, password, options in self.pyload.db.loadAccounts():
             # put into options as used in other context
             options = json.loads(options) if options else {}
             try:
                 self._createAccount(info, password, options)
             except Exception:
-                self.core.log.error(_("Could not load account %s") % info)
-                self.core.print_exc()
+                self.pyload.log.error(_("Could not load account %s") % info)
+                self.pyload.print_exc()
 
     def iterAccounts(self):
         """ yields login, account  for all accounts"""
@@ -71,7 +71,7 @@ class AccountManager(object):
                 [(acc.loginname, 1 if acc.activated else 0, 1 if acc.shared else 0, acc.password,
                   json.dumps(acc.options), acc.aid) for acc in
                  accounts])
-        self.core.db.saveAccounts(data)
+        self.pyload.db.saveAccounts(data)
 
     def getAccount(self, aid, plugin, user=None):
         """ Find a account by specific user (if given) """
@@ -84,13 +84,13 @@ class AccountManager(object):
     def createAccount(self, plugin, loginname, password, uid):
         """ Creates a new account """
 
-        aid = self.core.db.createAccount(plugin, loginname, password, uid)
+        aid = self.pyload.db.createAccount(plugin, loginname, password, uid)
         info = AccountInfo(aid, plugin, loginname, uid, activated=True)
         account = self._createAccount(info, password, {})
         account.scheduleRefresh()
         self.saveAccounts()
 
-        self.core.eventManager.dispatchEvent("account:created", account.toInfoData())
+        self.pyload.eventManager.dispatchEvent("account:created", account.toInfoData())
         return account
 
     @lock
@@ -104,7 +104,7 @@ class AccountManager(object):
             self.saveAccounts()
             account.scheduleRefresh(force=True)
 
-        self.core.eventManager.dispatchEvent("account:updated", account.toInfoData())
+        self.pyload.eventManager.dispatchEvent("account:updated", account.toInfoData())
         return account
 
     @lock
@@ -115,8 +115,8 @@ class AccountManager(object):
                 # admins may delete accounts
                 if acc.aid == aid and (not uid or acc.owner == uid):
                     self.accounts[plugin].remove(acc)
-                    self.core.db.removeAccount(aid)
-                    self.core.evm.dispatchEvent("account:deleted", aid, user=uid)
+                    self.pyload.db.removeAccount(aid)
+                    self.pyload.evm.dispatchEvent("account:deleted", aid, user=uid)
                     break
 
     @lock

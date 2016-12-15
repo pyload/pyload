@@ -43,7 +43,7 @@ class PyPackage(object):
 
     @property
     def id(self):
-        self.m.core.log.debug("Deprecated package attr .id, use .pid instead")
+        self.m.pyload.log.debug("Deprecated package attr .id, use .pid instead")
         return self.pid
 
     def isStale(self):
@@ -62,7 +62,7 @@ class PyPackage(object):
 
     def getFiles(self):
         """get contaied files data"""
-        return self.m.core.db.getAllFiles(package=self.pid)
+        return self.m.pyload.db.getAllFiles(package=self.pid)
 
     def getPath(self, name=""):
         self.timestamp = time()
@@ -88,7 +88,7 @@ class PyPackage(object):
         return False
 
     def notifyChange(self):
-        self.m.core.eventManager.dispatchEvent("packageUpdated", self.id)
+        self.m.pyload.eventManager.dispatchEvent("packageUpdated", self.id)
 
 
 class RootPackage(PyPackage):
@@ -96,7 +96,7 @@ class RootPackage(PyPackage):
         PyPackage.__init__(self, m, -1, "root", "", owner, -2, "", "", "", 0, [], PackageStatus.Ok, False, 0)
 
     def getPath(self, name=""):
-        return join(self.m.core.config["general"]["download_folder"], name)
+        return join(self.m.pyload.config["general"]["download_folder"], name)
 
     # no database operations
     def sync(self):

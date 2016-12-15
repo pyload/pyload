@@ -48,7 +48,7 @@ class HosterPluginTester(PluginTester):
         log(DEBUG, "%s: %s, %s", name, url.encode("utf8"), status)
 
         # url and plugin should be only important thing
-        pyfile = PyFile(self.core, -1, url, url, 0, 0, 0, 0, url, name, "", 0, 0, 0, 0)
+        pyfile = PyFile(self.pyload, -1, url, url, 0, 0, 0, 0, url, name, "", 0, 0, 0, 0)
         pyfile.initPlugin()
 
         self.thread.pyfile = pyfile

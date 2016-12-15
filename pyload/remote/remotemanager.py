@@ -13,7 +13,7 @@ class BackendBase(Thread):
     def __init__(self, manager):
         Thread.__init__(self)
         self.m = manager
-        self.core = manager.core
+        self.pyload = manager.pyload
         self.enabled = True
         self.running = False
 
@@ -22,8 +22,8 @@ class BackendBase(Thread):
         try:
             self.serve()
         except Exception as e:
-            self.core.log.error(_("Remote backend error: %s") % e)
-            if self.core.debug:
+            self.pyload.log.error(_("Remote backend error: %s") % e)
+            if self.pyload.debug:
                 print_exc()
         finally:
             self.running = False
@@ -49,16 +49,16 @@ class RemoteManager(object):
     available = []
 
     def __init__(self, core):
-        self.core = core
+        self.pyload = core
         self.backends = []
 
-        if self.core.remote:
+        if self.pyload.remote:
             self.available.append("WebSocketBackend")
 
 
     def startBackends(self):
-        host = self.core.config["webui"]["wsHost"]
-        port = self.core.config["webui"]["wsPort"]
+        host = self.pyload.config["webui"]["wsHost"]
+        port = self.pyload.config["webui"]["wsPort"]
 
         for b in self.available:
             klass = getattr(
@@ -69,10 +69,10 @@ class RemoteManager(object):
                 continue
             try:
                 backend.setup(host, port)
-                self.core.log.info(_("Starting %(name)s: %(addr)s:%(port)s") % {"name": b, "addr": host, "port": port})
+                self.pyload.log.info(_("Starting %(name)s: %(addr)s:%(port)s") % {"name": b, "addr": host, "port": port})
             except Exception as e:
-                self.core.log.error(_("Failed loading backend %(name)s | %(error)s") % {"name": b, "error": str(e)})
-                if self.core.debug:
+                self.pyload.log.error(_("Failed loading backend %(name)s | %(error)s") % {"name": b, "error": str(e)})
+                if self.pyload.debug:
                     print_exc()
             else:
                 backend.start()

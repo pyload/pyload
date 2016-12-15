@@ -136,7 +136,7 @@ class Addon(Base):
         if self.cb:
             self.stopPeriodical()
 
-        self.cb = self.core.scheduler.addJob(wait, self._periodical, threaded=False)
+        self.cb = self.pyload.scheduler.addJob(wait, self._periodical, threaded=False)
         self.interval = interval
         return True
 
@@ -144,7 +144,7 @@ class Addon(Base):
         """ Stops periodical call if existing
         :return: True if the callback was stopped, false otherwise.
         """
-        if self.cb and self.core.scheduler.removeJob(self.cb):
+        if self.cb and self.pyload.scheduler.removeJob(self.cb):
             self.cb = None
             return True
         else:
@@ -154,11 +154,11 @@ class Addon(Base):
         try:
             if self.isActivated(): self.periodical()
         except Exception as e:
-            self.core.log.error(_("Error executing addon: %s") % str(e))
-            self.core.print_exc()
+            self.pyload.log.error(_("Error executing addon: %s") % str(e))
+            self.pyload.print_exc()
 
         if self.cb:
-            self.cb = self.core.scheduler.addJob(self.interval, self._periodical, threaded=False)
+            self.cb = self.pyload.scheduler.addJob(self.interval, self._periodical, threaded=False)
 
     def __repr__(self):
         return "<Addon %s>" % self.__name__
@@ -168,7 +168,7 @@ class Addon(Base):
         return True if self.__internal__ else self.getConfig("activated")
 
     def getCategory(self):
-        return self.core.pluginManager.getCategory(self.__name__)
+        return self.pyload.pluginManager.getCategory(self.__name__)
 
     def init(self):
         pass
@@ -177,7 +177,7 @@ class Addon(Base):
         """  Used to activate the addon """
         if has_method(self.__class__, "coreReady"):
             self.logDebug("Deprecated method .coreReady() use activate() instead")
-            self.coreReady()
+            self.pyloadReady()
 
     def deactivate(self):
         """ Used to deactivate the addon. """

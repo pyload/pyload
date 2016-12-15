@@ -45,7 +45,7 @@ class PremiumizeMe(MultiHoster):
 
     def coreReady(self):
         # Get account plugin and check if there is a valid account available
-        self.account = self.core.accountManager.getAccountPlugin("PremiumizeMe")
+        self.account = self.pyload.accountManager.getAccountPlugin("PremiumizeMe")
         if not self.account.canUse():
             self.account = None
             self.logError(_("Please add a valid premiumize.me account first and restart pyLoad."))

@@ -37,7 +37,7 @@ class MultiHome(Hook):
             self.interfaces.append(Interface(interface))
 
     def coreReady(self):
-        requestFactory = self.core.requestFactory
+        requestFactory = self.pyload.requestFactory
         oldGetRequest = requestFactory.getRequest
 
         def getRequest(pluginName, account=None):

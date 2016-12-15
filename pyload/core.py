@@ -439,7 +439,7 @@ class Core(object):
         self.addonmanager.activateAddons()
 
         self.log.info(_("pyLoad is up and running"))
-        self.eventManager.dispatchEvent("core:ready")
+        self.eventManager.dispatchEvent("pyload:ready")
 
         #test api
         #        from pyload.common.APIExerciser import startApiExerciser

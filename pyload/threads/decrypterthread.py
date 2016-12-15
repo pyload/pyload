@@ -32,8 +32,8 @@ class DecrypterThread(BaseThread):
         return self.progress
 
     def run(self):
-        pack = self.core.files.getPackage(self.pid)
-        api = self.core.api.withUserContext(self.owner)
+        pack = self.pyload.files.getPackage(self.pid)
+        api = self.pyload.api.withUserContext(self.owner)
         links, packages = self.decrypt(accumulate(self.data), pack.password)
 
         # if there is only one package links will be added to current one
@@ -50,7 +50,7 @@ class DecrypterThread(BaseThread):
         for p in packages:
             api.addPackage(p.name, p.getURLs(), pack.password)
 
-        self.core.files.setDownloadStatus(self.fid, DS.Finished if not self.error else DS.Failed)
+        self.pyload.files.setDownloadStatus(self.fid, DS.Finished if not self.error else DS.Failed)
         self.m.done(self)
 
     def decrypt(self, plugin_map, password=None, err=False):
@@ -60,7 +60,7 @@ class DecrypterThread(BaseThread):
                                          0, 0, len(self.data), self.owner, ProgressType.Decrypting)
         # TODO QUEUE_DECRYPT
         for name, urls in plugin_map.items():
-            klass = self.core.pluginManager.loadClass("crypter", name)
+            klass = self.pyload.pluginManager.loadClass("crypter", name)
             plugin = None
             plugin_result = []
 
@@ -77,7 +77,7 @@ class DecrypterThread(BaseThread):
                 self.log.debug("Plugin '%s' for decrypting was not loaded" % name)
             else:
                 try:
-                    plugin = klass(self.core, password)
+                    plugin = klass(self.pyload, password)
 
                     try:
                         plugin_result = plugin._decrypt(urls)
@@ -98,8 +98,8 @@ class DecrypterThread(BaseThread):
                         plugin_result.extend(LinkStatus(url, url, -1, DS.Failed, name) for url in urls)
 
                     # no debug for intentional errors
-                    if self.core.debug and not isinstance(e, Fail):
-                        self.core.print_exc()
+                    if self.pyload.debug and not isinstance(e, Fail):
+                        self.pyload.print_exc()
                         self.writeDebugReport(plugin.__name__, plugin=plugin)
                 finally:
                     if plugin:

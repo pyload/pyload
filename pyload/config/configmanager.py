@@ -30,7 +30,7 @@ class ConfigManager(ConfigParser):
     def __init__(self, core, parser):
         # No __init__ call to super class is needed!
 
-        self.core = core
+        self.pyload = core
         self.db = core.db
         # The config parser, holding the core config
         self.parser = parser
@@ -75,7 +75,7 @@ class ConfigManager(ConfigParser):
                 self.values[user, section] = json.loads(conf) if conf else {}
             except ValueError: # Something did go wrong when parsing
                 self.values[user, section] = {}
-                self.core.print_exc()
+                self.pyload.print_exc()
 
         return self.values[user, section]
 
@@ -97,7 +97,7 @@ class ConfigManager(ConfigParser):
                 self.values[user, section][option] = value
                 if sync: self.saveValues(user, section)
 
-        if changed: self.core.evm.dispatchEvent("config:changed", section, option, value)
+        if changed: self.pyload.evm.dispatchEvent("config:changed", section, option, value)
         return changed
 
     def saveValues(self, user, section):
@@ -113,7 +113,7 @@ class ConfigManager(ConfigParser):
             del self.values[user, section]
 
         self.db.deleteConfig(section, user)
-        self.core.evm.dispatchEvent("config:deleted", section, user)
+        self.pyload.evm.dispatchEvent("config:deleted", section, user)
 
     def iterCoreSections(self):
         return self.parser.iterSections()
@@ -128,7 +128,7 @@ class ConfigManager(ConfigParser):
                 values[section] = json.loads(data) if data else {}
             except ValueError:
                 values[section] = {}
-                self.core.print_exc()
+                self.pyload.print_exc()
 
         for name, config in self.config.items():
             yield name, config, values[name] if name in values else {}

@@ -114,7 +114,7 @@ class PluginTester(TestCase):
             move(f, join(name, f))
 
     def setUp(self):
-        self.thread = Thread(self.core)
+        self.thread = Thread(self.pyload)
         exc_clear()
 
     def tearDown(self):

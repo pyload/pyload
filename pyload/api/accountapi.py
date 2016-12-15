@@ -16,7 +16,7 @@ class AccountApi(ApiComponent):
 
         :return: string list
         """
-        return list(self.core.pluginManager.getPlugins("account").keys())
+        return list(self.pyload.pluginManager.getPlugins("account").keys())
 
     @RequirePerm(Permission.Accounts)
     def getAccounts(self):
@@ -24,7 +24,7 @@ class AccountApi(ApiComponent):
 
         :return: list of `AccountInfo`
         """
-        accounts = self.core.accountManager.getAllAccounts(self.primaryUID)
+        accounts = self.pyload.accountManager.getAllAccounts(self.primaryUID)
         return [acc.toInfoData() for acc in accounts]
 
     @RequirePerm(Permission.Accounts)
@@ -33,7 +33,7 @@ class AccountApi(ApiComponent):
 
             :param refresh: reload account info
         """
-        account = self.core.accountManager.getAccount(aid, plugin)
+        account = self.pyload.accountManager.getAccount(aid, plugin)
 
         # Admins can see and refresh accounts
         if not account or (self.primaryUID and self.primaryUID != account.owner):
@@ -51,7 +51,7 @@ class AccountApi(ApiComponent):
 
         :return class:`AccountInfo`
         """
-        return self.core.accountManager.createAccount(plugin, loginname, password, self.user.true_primary).toInfoData()
+        return self.pyload.accountManager.createAccount(plugin, loginname, password, self.user.true_primary).toInfoData()
 
     @RequirePerm(Permission.Accounts)
     def updateAccount(self, aid, plugin, loginname, password):
@@ -59,13 +59,13 @@ class AccountApi(ApiComponent):
 
         :return: updated account info
         """
-        return self.core.accountManager.updateAccount(aid, plugin, loginname, password, self.user).toInfoData()
+        return self.pyload.accountManager.updateAccount(aid, plugin, loginname, password, self.user).toInfoData()
 
 
     @RequirePerm(Permission.Accounts)
     def updateAccountInfo(self, account):
         """ Update account settings from :class:`AccountInfo` """
-        inst = self.core.accountManager.getAccount(account.aid, account.plugin, self.user)
+        inst = self.pyload.accountManager.getAccount(account.aid, account.plugin, self.user)
         if not inst:
             return
 
@@ -80,7 +80,7 @@ class AccountApi(ApiComponent):
 
         :param account: :class:`ÀccountInfo` instance
         """
-        self.core.accountManager.removeAccount(account.aid, account.plugin, self.primaryUID)
+        self.pyload.accountManager.removeAccount(account.aid, account.plugin, self.primaryUID)
 
 
 if Api.extend(AccountApi):

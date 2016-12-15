@@ -22,7 +22,7 @@ class TestInteractionManager(TestCase):
         cls.core = Core()
 
     def setUp(self):
-        self.im = InteractionManager(self.core)
+        self.im = InteractionManager(self.pyload)
 
         self.assertFalse(self.im.isClientConnected(self.ADMIN))
         self.assertFalse(self.im.isTaskWaiting(self.ADMIN))

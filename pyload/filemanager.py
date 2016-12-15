@@ -34,7 +34,7 @@ class FileManager(object):
 
     def __init__(self, core):
         """Constructor"""
-        self.core = core
+        self.pyload = core
         self.evm = core.eventManager
 
         # translations
@@ -56,7 +56,7 @@ class FileManager(object):
         self.downloadstats = {} # cached dl stats
         self.queuestats = {} # cached queue stats
 
-        self.db = self.core.db
+        self.db = self.pyload.db
 
     def save(self):
         """saves all data to backend"""
@@ -302,7 +302,7 @@ class FileManager(object):
         pid = f.packageid
         order = f.fileorder
 
-        if fid in self.core.dlm.processingIds():
+        if fid in self.pyload.dlm.processingIds():
             f.abortDownload()
 
         self.db.deleteFile(fid, f.fileorder, f.packageid)
@@ -362,8 +362,8 @@ class FileManager(object):
 
         # TODO: user context?
         if not self.db.queuestats()[0]:
-            self.core.addonmanager.dispatchEvent("download:allFinished")
-            self.core.log.debug("All downloads finished")
+            self.pyload.addonmanager.dispatchEvent("download:allFinished")
+            self.pyload.log.debug("All downloads finished")
             return True
 
         return False
@@ -376,8 +376,8 @@ class FileManager(object):
 
         # TODO: user context?
         if not self.db.processcount(fid):
-            self.core.addonmanager.dispatchEvent("download:allProcessed")
-            self.core.log.debug("All downloads processed")
+            self.pyload.addonmanager.dispatchEvent("download:allProcessed")
+            self.pyload.log.debug("All downloads processed")
             return True
 
         return False
@@ -388,8 +388,8 @@ class FileManager(object):
         ids = self.db.getUnfinished(pyfile.packageid)
         if not ids or (pyfile.id in ids and len(ids) == 1):
             if not pyfile.package().setFinished:
-                self.core.log.info(_("Package finished: %s") % pyfile.package().name)
-                self.core.addonmanager.packageFinished(pyfile.package())
+                self.pyload.log.info(_("Package finished: %s") % pyfile.package().name)
+                self.pyload.addonmanager.packageFinished(pyfile.package())
                 pyfile.package().setFinished = True
 
     def resetCount(self):
@@ -533,7 +533,7 @@ class FileManager(object):
             if pyfile.status not in (DS.NA, DS.Finished, DS.Skipped):
                 urls.append((pyfile.url, pyfile.pluginname))
 
-        self.core.threadManager.createInfoThread(urls, pid)
+        self.pyload.threadManager.createInfoThread(urls, pid)
 
 
     @invalidate

@@ -64,12 +64,12 @@ class DownloadThread(BaseThread):
                 self.log.info(_("Download starts: %s" % pyfile.name))
 
                 # start download
-                self.core.addonmanager.downloadPreparing(pyfile)
+                self.pyload.addonmanager.downloadPreparing(pyfile)
                 pyfile.plugin.preprocessing(self)
 
                 self.log.info(_("Download finished: %s") % pyfile.name)
-                self.core.addonmanager.downloadFinished(pyfile)
-                self.core.files.checkPackageFinished(pyfile)
+                self.pyload.addonmanager.downloadFinished(pyfile)
+                self.pyload.files.checkPackageFinished(pyfile)
 
             except NotImplementedError:
                 self.log.error(_("Plugin %s is missing a function.") % pyfile.pluginname)
@@ -120,7 +120,7 @@ class DownloadThread(BaseThread):
                     self.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": msg})
                     pyfile.error = msg
 
-                self.core.addonmanager.downloadFailed(pyfile)
+                self.pyload.addonmanager.downloadFailed(pyfile)
                 self.clean(pyfile)
                 continue
 
@@ -158,11 +158,11 @@ class DownloadThread(BaseThread):
                 else:
                     pyfile.setStatus("failed")
                     self.log.error("pycurl error %s: %s" % (code, msg))
-                    if self.core.debug:
+                    if self.pyload.debug:
                         print_exc()
                         self.writeDebugReport(pyfile.plugin.__name__, pyfile)
 
-                    self.core.addonmanager.downloadFailed(pyfile)
+                    self.pyload.addonmanager.downloadFailed(pyfile)
 
                 self.clean(pyfile)
                 continue
@@ -175,10 +175,10 @@ class DownloadThread(BaseThread):
 
                 self.clean(pyfile)
 
-                self.core.files.checkPackageFinished(pyfile)
+                self.pyload.files.checkPackageFinished(pyfile)
 
                 self.active = False
-                self.core.files.save()
+                self.pyload.files.save()
 
                 continue
 
@@ -193,16 +193,16 @@ class DownloadThread(BaseThread):
                     self.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": str(e)})
                     pyfile.error = str(e)
 
-                if self.core.debug:
+                if self.pyload.debug:
                     print_exc()
                     self.writeDebugReport(pyfile.plugin.__name__, pyfile)
 
-                self.core.addonmanager.downloadFailed(pyfile)
+                self.pyload.addonmanager.downloadFailed(pyfile)
                 self.clean(pyfile)
                 continue
 
             finally:
-                self.core.files.save()
+                self.pyload.files.save()
                 pyfile.checkIfProcessed()
                 exc_clear()
                 # manager could still be waiting for it
@@ -216,7 +216,7 @@ class DownloadThread(BaseThread):
 
             self.active = False
             pyfile.finishIfDone()
-            self.core.files.save()
+            self.pyload.files.save()
 
     def getProgress(self):
         if self.active:

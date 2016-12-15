@@ -15,15 +15,15 @@ class CoreApi(ApiComponent):
     @RequirePerm(Permission.All)
     def getServerVersion(self):
         """pyLoad Core version """
-        return self.core.version
+        return self.pyload.version
 
     def isWSSecure(self):
         # needs to use TLS when either requested or webui is also using encryption
-        if not self.core.config['ssl']['activated'] or self.core.config['webui']['https']:
+        if not self.pyload.config['ssl']['activated'] or self.pyload.config['webui']['https']:
             return False
 
-        if not exists(self.core.config['ssl']['cert']) or not exists(self.core.config['ssl']['key']):
-            self.core.log.warning(_('SSL key or certificate not found'))
+        if not exists(self.pyload.config['ssl']['cert']) or not exists(self.pyload.config['ssl']['key']):
+            self.pyload.log.warning(_('SSL key or certificate not found'))
             return False
 
         return True
@@ -36,7 +36,7 @@ class CoreApi(ApiComponent):
         else:
             ws = "ws"
 
-        return "%s://%%s:%d" % (ws, self.core.config['webui']['wsPort'])
+        return "%s://%%s:%d" % (ws, self.pyload.config['webui']['wsPort'])
 
     @RequirePerm(Permission.All)
     def getStatusInfo(self):
@@ -44,19 +44,19 @@ class CoreApi(ApiComponent):
 
         :return: `StatusInfo`
         """
-        queue = self.core.files.getQueueStats(self.primaryUID)
-        total = self.core.files.getDownloadStats(self.primaryUID)
+        queue = self.pyload.files.getQueueStats(self.primaryUID)
+        total = self.pyload.files.getDownloadStats(self.primaryUID)
 
         serverStatus = StatusInfo(0,
                                     total[0], queue[0],
                                     total[1], queue[1],
                                     self.isInteractionWaiting(Interaction.All),
-                                    not self.core.dlm.paused and self.isTimeDownload(),
-                                    self.core.dlm.paused,
-                                    self.core.config['reconnect']['activated'] and self.isTimeReconnect(),
+                                    not self.pyload.dlm.paused and self.isTimeDownload(),
+                                    self.pyload.dlm.paused,
+                                    self.pyload.config['reconnect']['activated'] and self.isTimeReconnect(),
                                     self.getQuota())
 
-        for pyfile in self.core.dlm.activeDownloads(self.primaryUID):
+        for pyfile in self.pyload.dlm.activeDownloads(self.primaryUID):
             serverStatus.speed += pyfile.getSpeed() #bytes/s
 
         return serverStatus
@@ -67,45 +67,45 @@ class CoreApi(ApiComponent):
 
         :rtype: list of :class:`ProgressInfo`
         """
-        return self.core.dlm.getProgressList(self.primaryUID) +\
-            self.core.threadManager.getProgressList(self.primaryUID)
+        return self.pyload.dlm.getProgressList(self.primaryUID) +\
+            self.pyload.threadManager.getProgressList(self.primaryUID)
 
     def pauseServer(self):
         """Pause server: It won't start any new downloads, but nothing gets aborted."""
-        self.core.dlm.paused = True
+        self.pyload.dlm.paused = True
 
     def unpauseServer(self):
         """Unpause server: New Downloads will be started."""
-        self.core.dlm.paused = False
+        self.pyload.dlm.paused = False
 
     def togglePause(self):
         """Toggle pause state.
 
         :return: new pause state
         """
-        self.core.dlm.paused ^= True
-        return self.core.dlm.paused
+        self.pyload.dlm.paused ^= True
+        return self.pyload.dlm.paused
 
     def toggleReconnect(self):
         """Toggle reconnect activation.
 
         :return: new reconnect state
         """
-        self.core.config["reconnect"]["activated"] ^= True
-        return self.core.config["reconnect"]["activated"]
+        self.pyload.config["reconnect"]["activated"] ^= True
+        return self.pyload.config["reconnect"]["activated"]
 
     def freeSpace(self):
         """Available free space at download directory in bytes"""
-        return free_space(self.core.config["general"]["download_folder"])
+        return free_space(self.pyload.config["general"]["download_folder"])
 
 
     def quit(self):
         """Clean way to quit pyLoad"""
-        self.core.do_kill = True
+        self.pyload.do_kill = True
 
     def restart(self):
         """Restart pyload core"""
-        self.core.do_restart = True
+        self.pyload.do_restart = True
 
     def getLog(self, offset=0):
         """Returns most recent log entries.
@@ -113,7 +113,7 @@ class CoreApi(ApiComponent):
         :param offset: line offset
         :return: List of log entries
         """
-        filename = join(self.core.config['log']['log_folder'], 'log.txt')
+        filename = join(self.pyload.config['log']['log_folder'], 'log.txt')
         try:
             fh = open(filename, "r")
             lines = fh.readlines()
@@ -130,8 +130,8 @@ class CoreApi(ApiComponent):
 
         :return: bool
         """
-        start = self.core.config['downloadTime']['start'].split(":")
-        end = self.core.config['downloadTime']['end'].split(":")
+        start = self.pyload.config['downloadTime']['start'].split(":")
+        end = self.pyload.config['downloadTime']['end'].split(":")
         return compare_time(start, end)
 
     @RequirePerm(Permission.All)
@@ -140,9 +140,9 @@ class CoreApi(ApiComponent):
 
         :return: bool
         """
-        start = self.core.config['reconnect']['startTime'].split(":")
-        end = self.core.config['reconnect']['endTime'].split(":")
-        return compare_time(start, end) and self.core.config["reconnect"]["activated"]
+        start = self.pyload.config['reconnect']['startTime'].split(":")
+        end = self.pyload.config['reconnect']['endTime'].split(":")
+        return compare_time(start, end) and self.pyload.config["reconnect"]["activated"]
 
 
 if Api.extend(CoreApi):

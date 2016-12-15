@@ -17,7 +17,7 @@ class ApiComponent(Iface):
         from pyload.datatypes.user import User
         assert isinstance(core, Core)
         assert issubclass(ApiComponent, Iface)
-        self.core = core
+        self.pyload = core
         assert isinstance(user, User)
         self.user = user
         self.primaryUID = 0

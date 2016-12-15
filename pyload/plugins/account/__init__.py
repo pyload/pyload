@@ -54,7 +54,7 @@ class Account(Base):
     __type__ = "account"
 
     def __init__(self, manager, aid, loginname, owner, activated, shared, password, options):
-        Base.__init__(self, manager.core, owner)
+        Base.__init__(self, manager.pyload, owner)
 
         self.aid = aid
         self.loginname = loginname
@@ -155,7 +155,7 @@ class Account(Base):
                 _("Could not login with account %(user)s | %(msg)s") % {"user": self.loginname
                     , "msg": e})
             self.valid = False
-            self.core.print_exc()
+            self.pyload.print_exc()
 
         return self.valid
 
@@ -186,7 +186,7 @@ class Account(Base):
                 self.setConfig(item.name, item.value)
 
     def getAccountRequest(self):
-        return self.core.requestFactory.getRequest(self.cj)
+        return self.pyload.requestFactory.getRequest(self.cj)
 
     def getDownloadSettings(self):
         """ Can be overwritten to change download settings. Default is no chunkLimit, max dl limit, resumeDownload
@@ -232,7 +232,7 @@ class Account(Base):
 
             self.logDebug("Account Info: %s" % str(infos))
             self.timestamp = time()
-            self.core.evm.dispatchEvent("account:loaded", self.toInfoData())
+            self.pyload.evm.dispatchEvent("account:loaded", self.toInfoData())
 
     #TODO: remove user
     def loadAccountInfo(self, req):
@@ -314,7 +314,7 @@ class Account(Base):
     def scheduleRefresh(self, time=0, force=True):
         """ add a task for refreshing the account info to the scheduler """
         self.logDebug("Scheduled Account refresh for %s in %s seconds." % (self.loginname, time))
-        self.core.scheduler.addJob(time, self.getAccountInfo, [force])
+        self.pyload.scheduler.addJob(time, self.getAccountInfo, [force])
 
     @lock
     def checkLogin(self, req):

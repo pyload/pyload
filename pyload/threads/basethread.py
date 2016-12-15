@@ -21,8 +21,8 @@ class BaseThread(Thread):
         Thread.__init__(self)
         self.setDaemon(True)
         self.m = manager #thread manager
-        self.core = manager.core
-        self.log = manager.core.log
+        self.pyload = manager.pyload
+        self.log = manager.pyload.log
 
         #: Owner of the thread, every type should set it or overwrite user
         self.owner = owner
@@ -90,7 +90,7 @@ class BaseThread(Thread):
 
     def getPluginDump(self, plugin):
         dump = "pyLoad %s Debug Report of %s %s \n\nTRACEBACK:\n %s \n\nFRAMESTACK:\n" % (
-            self.m.core.api.getServerVersion(), plugin.__name__, plugin.__version__, format_exc())
+            self.m.pyload.api.getServerVersion(), plugin.__name__, plugin.__version__, format_exc())
 
         tb = sys.exc_info()[2]
         stack = []

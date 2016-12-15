@@ -31,7 +31,7 @@ class PluginManager(object):
     DEFAULT_PLUGIN = "BasePlugin"
 
     def __init__(self, core):
-        self.core = core
+        self.pyload = core
         self.log = core.log
 
         # cached modules (type, name)
@@ -44,9 +44,9 @@ class PluginManager(object):
 
         # add to path, so we can import from userplugins
         sys.path.append(abspath(""))
-        self.loader = LoaderFactory(PluginLoader(abspath(self.LOCALROOT), self.LOCALROOT, self.core.config),
+        self.loader = LoaderFactory(PluginLoader(abspath(self.LOCALROOT), self.LOCALROOT, self.pyload.config),
                                     PluginLoader(abspath(join(pypath, "pyload", "plugins")), self.ROOT,
-                                                 self.core.config))
+                                                 self.pyload.config))
 
         self.loader.checkVersions()
 
@@ -172,7 +172,7 @@ class PluginManager(object):
                     return module
                 except Exception as e:
                     self.log.error(_("Error importing %(name)s: %(msg)s") % {"name": name, "msg": str(e)})
-                    self.core.print_exc()
+                    self.pyload.print_exc()
 
     def loadClass(self, plugin, name):
         """Returns the class of a plugin with the same name"""

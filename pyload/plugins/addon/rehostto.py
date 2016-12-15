@@ -25,7 +25,7 @@ class RehostTo(MultiHoster):
         return [x.strip() for x in page.replace("\"", "").split(",")]
 
     def coreReady(self):
-        self.account = self.core.accountManager.getAccountPlugin("RehostTo")
+        self.account = self.pyload.accountManager.getAccountPlugin("RehostTo")
 
         user = self.account.selectAccount()[0]
 
