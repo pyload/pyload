@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN
+#@author: RaNaN
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
@@ -83,7 +83,7 @@ class Api(Iface):
         # but will only work once when they are imported
         cls.EXTEND = True
         # Import all Api modules, they register themselves.
-        import pyload.Api
+        import pyload.api
         # they will vanish from the namespace afterwards
 
 
