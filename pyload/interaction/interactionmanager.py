@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN
+#@author: RaNaN
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
@@ -48,7 +48,7 @@ class InteractionManager(object):
             del self.tasks[n]
 
         # keep notifications count limited
-        n = reversed(k for k, v in self.tasks.items() if v.type == IA.Notification)
+        n = [k for k, v in self.tasks.items() if v.type == IA.Notification][::-1]
         for v in n[:self.MAX_NOTIFICATIONS]:
             del self.tasks[v]
 
