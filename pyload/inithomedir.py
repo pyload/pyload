@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN
+#@author: RaNaN
 
 from __future__ import print_function
 from __future__ import unicode_literals
@@ -68,7 +68,7 @@ elif path.exists(path.join(pypath, "pyload", "config", "configdir")):
 # default config dir
 if not configdir:
     # suffix when running dev version
-    configname = ".pyload-ng" if platform in ("posix", "linux2", "darwin") else "pyload-ng"
+    configname = ".pyload-dev" if platform in ("posix", "linux2", "darwin") else "pyload-dev"
     configdir = path.join(homedir, configname)
 
 
