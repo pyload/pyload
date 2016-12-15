@@ -42,7 +42,7 @@ from builtins import str
 from builtins import object
 import http.server
 import http.server
-import socketserver
+import SocketServer
 import base64
 import http.client
 import logging
@@ -273,7 +273,7 @@ def _alias_handlers(dispatcher, websock_handlers_map_file):
         fp.close()
 
 
-class WebSocketServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
+class WebSocketServer(SocketServer.ThreadingMixIn, http.server.HTTPServer):
     """HTTPServer specialized for WebSocket."""
 
     # Overrides SocketServer.ThreadingMixIn.daemon_threads
@@ -293,7 +293,7 @@ class WebSocketServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
         self.__ws_is_shut_down = threading.Event()
         self.__ws_serving = False
 
-        socketserver.BaseServer.__init__(
+        SocketServer.BaseServer.__init__(
             self, (options.server_host, options.port), WebSocketRequestHandler)
 
         # Expose the options object to allow handler objects access it. We name

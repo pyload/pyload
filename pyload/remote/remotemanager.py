@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: mkaay
+#@author: mkaay
 
 from __future__ import unicode_literals
 
@@ -61,7 +61,9 @@ class RemoteManager(object):
         port = self.core.config["webui"]["wsPort"]
 
         for b in self.available:
-            klass = getattr(__import__("pyload.remote.%s" % b, globals(), locals(), [b], -1), b)
+            klass = getattr(
+                __import__("pyload.remote.%s" % b.lower(), globals(), locals(), [b.lower()], -1), b
+            )
             backend = klass(self)
             if not backend.checkDeps():
                 continue
