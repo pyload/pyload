@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN
+#@author: RaNaN
 
 from __future__ import unicode_literals
 
@@ -76,7 +76,7 @@ class PluginLoader(object):
     """
     Class to provide and load plugins from the file-system
     """
-    TYPES = ("crypter", "hoster", "accounts", "addons", "network", "internal")
+    TYPES = ("crypter", "hoster", "account", "addon", "network", "internal")
 
     BUILTIN = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*(True|False|None|[0-9x.]+)', re.I)
     SINGLE = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*(?:r|u|_)?((?:(?<!")"(?!")|\').*(?:(?<!")"(?!")|\'))',
@@ -233,18 +233,18 @@ class PluginLoader(object):
             plugin_re = self.NO_MATCH
 
         deps = attrs["dependencies"]
-        category = attrs["category"] if folder == "addons" else ""
+        category = attrs["category"] if folder == "addon" else ""
 
         # create plugin tuple
-        # user_context=True is the default for non addons plugins
+        # user_context=True is the default for non addon plugins
         plugin = PluginTuple(version, plugin_re, deps, category,
-                             bool(folder != "addons" or attrs["user_context"]), filename)
+                             bool(folder != "addon" or attrs["user_context"]), filename)
 
         # These have none or their own config
-        if folder in ("internal", "accounts", "network"):
+        if folder in ("internal", "account", "network"):
             return plugin
 
-        if folder == "addons" and "config" not in attrs and not attrs["internal"]:
+        if folder == "addon" and "config" not in attrs and not attrs["internal"]:
             attrs["config"] = (["activated", "bool", "Activated", False],)
 
         if "config" in attrs and attrs["config"] is not None:
@@ -255,7 +255,7 @@ class PluginLoader(object):
             # Convert tuples to list
             config = [list(x) for x in config]
 
-            if folder == "addons" and not attrs["internal"]:
+            if folder == "addon" and not attrs["internal"]:
                 for item in config:
                     if item[0] == "activated": break
                 else: # activated flag missing

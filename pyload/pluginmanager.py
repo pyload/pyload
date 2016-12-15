@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN
+#@author: RaNaN
 
 from __future__ import unicode_literals
 from builtins import str
@@ -256,7 +256,7 @@ class PluginManager(object):
         return any(l.isUserPlugin(plugin) for l in self.loader)
 
     def getCategory(self, plugin):
-        plugin = self.loader.getPlugin("addons", plugin)
+        plugin = self.loader.getPlugin("addon", plugin)
         if plugin:
             return plugin.category or "addon"
 

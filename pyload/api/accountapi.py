@@ -16,7 +16,7 @@ class AccountApi(ApiComponent):
 
         :return: string list
         """
-        return list(self.core.pluginManager.getPlugins("accounts").keys())
+        return list(self.core.pluginManager.getPlugins("account").keys())
 
     @RequirePerm(Permission.Accounts)
     def getAccounts(self):

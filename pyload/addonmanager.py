@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN
+#@author: RaNaN
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
@@ -86,14 +86,14 @@ class AddonManager(object):
         active = []
         deactive = []
 
-        for pluginname in self.core.pluginManager.getPlugins("addons"):
+        for pluginname in self.core.pluginManager.getPlugins("addon"):
             try:
                 # check first for builtin plugin
-                attrs = self.core.pluginManager.loadAttributes("addons", pluginname)
+                attrs = self.core.pluginManager.loadAttributes("addon", pluginname)
                 internal = attrs.get("internal", False)
 
                 if internal or self.core.config.get(pluginname, "activated"):
-                    pluginClass = self.core.pluginManager.loadClass("addons", pluginname)
+                    pluginClass = self.core.pluginManager.loadClass("addon", pluginname)
 
                     if not pluginClass: continue
 
@@ -119,7 +119,7 @@ class AddonManager(object):
         # TODO: multi user
 
         # check if section was a plugin
-        if plugin not in self.core.pluginManager.getPlugins("addons"):
+        if plugin not in self.core.pluginManager.getPlugins("addon"):
             return
 
         if name == "activated" and value:
@@ -133,7 +133,7 @@ class AddonManager(object):
         if plugin in self.plugins:
             return
 
-        pluginClass = self.core.pluginManager.loadClass("addons", plugin)
+        pluginClass = self.core.pluginManager.loadClass("addon", plugin)
 
         if not pluginClass: return
 

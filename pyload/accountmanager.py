@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN
+#@author: RaNaN
 
 from __future__ import unicode_literals
 from builtins import object
@@ -31,7 +31,7 @@ class AccountManager(object):
         if info.owner is None:
             raise ValueError("Owner must not be null")
 
-        klass = self.core.pluginManager.loadClass("accounts", plugin)
+        klass = self.core.pluginManager.loadClass("account", plugin)
         if not klass:
             self.core.log.warning(_("Account plugin %s not available") % plugin)
             raise ValueError("Account plugin %s not available" % plugin)
