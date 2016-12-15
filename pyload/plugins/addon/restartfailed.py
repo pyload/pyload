@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: Walter Purcaro
+#@author: Walter Purcaro
 
 from __future__ import unicode_literals
 

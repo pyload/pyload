@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN, Godofdream, zoidberg
+#@author: RaNaN, Godofdream, zoidberg
 
 from __future__ import unicode_literals
 from future import standard_library

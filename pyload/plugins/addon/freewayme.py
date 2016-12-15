@@ -1,5 +1,5 @@
 ﻿# -*- coding: utf-8 -*-
-# @author: Nicolas Giese
+#@author: Nicolas Giese
 
 from __future__ import unicode_literals
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: and9000
+#@author: and9000
 
 from __future__ import print_function
 from __future__ import unicode_literals

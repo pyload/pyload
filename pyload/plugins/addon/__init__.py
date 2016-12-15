@@ -8,7 +8,7 @@ from builtins import object
 from builtins import addonmanager
 from pyload.utils import has_method, to_list
 
-from .base import Base
+from ..base import Base
 
 
 def class_name(p):

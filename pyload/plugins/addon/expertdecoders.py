@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: mkaay, RaNaN, zoidberg
+#@author: mkaay, RaNaN, zoidberg
 
 from __future__ import with_statement
 from __future__ import unicode_literals
