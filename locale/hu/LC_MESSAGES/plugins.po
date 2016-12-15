@@ -26,7 +26,7 @@ msgid "No captcha result obtained in appropriate time."
 msgstr "Nem érkezett captcha eredmény a megadott időn belül."
 
 #: pyload/plugins/hoster.py:267 pyload/plugins/hoster.py:304
-#: pyload/plugins/hosters/ard.py:79
+#: pyload/plugins/hoster/ard.py:79
 #, python-format
 msgid "Setting User and Group failed: %s"
 msgstr "Felhasználó és csoport beállítás sikertelen: %s"
@@ -40,111 +40,111 @@ msgstr "Nem létező fájl, vagy nem támogatott protokoll"
 msgid "Could not remove file '%s'"
 msgstr "A '%s' fájl nem törölhető"
 
-#: pyload/plugins/hosters/rapidsharecom.py:100
+#: pyload/plugins/hoster/rapidsharecom.py:100
 msgid "Rapidshare: Traffic Share (direct download)"
 msgstr "Rapidshare: Adatforgalom  megosztás (közvetlen letöltés)"
 
-#: pyload/plugins/hosters/rapidsharecom.py:127
-#: pyload/plugins/hosters/rapidsharecom.py:194
+#: pyload/plugins/hoster/rapidsharecom.py:127
+#: pyload/plugins/hoster/rapidsharecom.py:194
 msgid "Already downloading from this ip address, waiting 60 seconds"
 msgstr "Már van folyamatban letöltés erről az IP-ről, várakozás: 60mp"
 
-#: pyload/plugins/hosters/rapidsharecom.py:131
+#: pyload/plugins/hoster/rapidsharecom.py:131
 msgid "Invalid Auth Code, download will be restarted"
 msgstr "Hibás Auth kód, a letöltés újraindítása"
 
-#: pyload/plugins/hosters/rapidsharecom.py:199
+#: pyload/plugins/hoster/rapidsharecom.py:199
 msgid "RapidShareCom: No free slots"
 msgstr "RapidShareCom: Nincs ingyenes hely"
 
-#: pyload/plugins/hosters/rapidsharecom.py:202
+#: pyload/plugins/hoster/rapidsharecom.py:202
 msgid "You need a premium account for this file"
 msgstr "Ehhez a fájlhoz prémium hozzáférés szükséges"
 
-#: pyload/plugins/hosters/rapidsharecom.py:204
+#: pyload/plugins/hoster/rapidsharecom.py:204
 msgid "Filename reported invalid"
 msgstr "Hibás fájlnév"
 
-#: pyload/plugins/hosters/rpnetbiz.py:26
-#: pyload/plugins/hosters/realdebridcom.py:41
-#: pyload/plugins/hosters/premium4me.py:28
-#: pyload/plugins/hosters/multidebridcom.py:46
-#: pyload/plugins/hosters/fastixru.py:36 pyload/plugins/hosters/zeveracom.py:22
-#: pyload/plugins/hosters/unrestrictli.py:53
-#: pyload/plugins/hosters/simplydebridcom.py:25
-#: pyload/plugins/hosters/alldebridcom.py:38
-#: pyload/plugins/hosters/rehostto.py:26 pyload/plugins/hosters/reloadcc.py:24
-#: pyload/plugins/hosters/debriditaliacom.py:45
-#: pyload/plugins/hosters/premiumizeme.py:22
-#: pyload/plugins/addons/rpnetbiz.py:43
+#: pyload/plugins/hoster/rpnetbiz.py:26
+#: pyload/plugins/hoster/realdebridcom.py:41
+#: pyload/plugins/hoster/premium4me.py:28
+#: pyload/plugins/hoster/multidebridcom.py:46
+#: pyload/plugins/hoster/fastixru.py:36 pyload/plugins/hoster/zeveracom.py:22
+#: pyload/plugins/hoster/unrestrictli.py:53
+#: pyload/plugins/hoster/simplydebridcom.py:25
+#: pyload/plugins/hoster/alldebridcom.py:38
+#: pyload/plugins/hoster/rehostto.py:26 pyload/plugins/hoster/reloadcc.py:24
+#: pyload/plugins/hoster/debriditaliacom.py:45
+#: pyload/plugins/hoster/premiumizeme.py:22
+#: pyload/plugins/addon/rpnetbiz.py:43
 #, python-format
 msgid "Please enter your %s account or deactivate this plugin"
 msgstr "Add meg a(z) %s hozzáférés adatait, vagy deaktiváld ezt a beépülőt"
 
-#: pyload/plugins/hosters/meganz.py:56
+#: pyload/plugins/hoster/meganz.py:56
 msgid "Decryption failed"
 msgstr "Sikertelen dekódolás"
 
-#: pyload/plugins/hosters/meganz.py:106
+#: pyload/plugins/hoster/meganz.py:106
 msgid "No file key provided in the URL"
 msgstr "Nincs fájl kulcs az URL-ben"
 
-#: pyload/plugins/hosters/meganz.py:118
+#: pyload/plugins/hoster/meganz.py:118
 msgid "Error code:"
 msgstr "Hibakód:"
 
-#: pyload/plugins/hosters/fileservecom.py:99
+#: pyload/plugins/hoster/fileservecom.py:99
 msgid "Parallel download error, now waiting 60s."
 msgstr "Többszálas letöltés hiba, várakozás: 60s."
 
-#: pyload/plugins/hosters/fileservecom.py:215
+#: pyload/plugins/hoster/fileservecom.py:215
 msgid "Not logged in."
 msgstr "Nem vagy bejelentkezve."
 
-#: pyload/plugins/hosters/uploadedto.py:129
+#: pyload/plugins/hoster/uploadedto.py:129
 msgid "API key invalid"
 msgstr "Érvénytelen API kulcs"
 
-#: pyload/plugins/hosters/uploadedto.py:153
+#: pyload/plugins/hoster/uploadedto.py:153
 #, python-format
 msgid "%s: Not enough traffic left"
 msgstr "%s: Nincs elég adatforgalom hátra"
 
-#: pyload/plugins/hosters/uploadedto.py:156
+#: pyload/plugins/hoster/uploadedto.py:156
 msgid "Traffic exceeded"
 msgstr "Adatforgalom túllépve"
 
-#: pyload/plugins/hosters/baseplugin.py:65
+#: pyload/plugins/hoster/baseplugin.py:65
 msgid "Authorization required (username:password)"
 msgstr "Azonosítás szükséges (felhasználónév:jelszó)"
 
-#: pyload/plugins/hosters/netloadin.py:146
-#: pyload/plugins/hosters/netloadin.py:170
+#: pyload/plugins/hoster/netloadin.py:146
+#: pyload/plugins/hoster/netloadin.py:170
 msgid "File temporarily not available"
 msgstr "Állomány átmenetileg nem elérhető"
 
-#: pyload/plugins/hosters/netloadin.py:183
+#: pyload/plugins/hoster/netloadin.py:183
 #, python-format
 msgid "Netload: waiting between downloads %d s."
 msgstr "Netload: letöltések közti várakozás %d mp."
 
-#: pyload/plugins/hosters/netloadin.py:214
+#: pyload/plugins/hoster/netloadin.py:214
 #, python-format
 msgid "Netload: waiting for captcha %d s."
 msgstr "Netload: captcha-ra várakozás %d mp."
 
-#: pyload/plugins/hosters/netloadin.py:252
+#: pyload/plugins/hoster/netloadin.py:252
 msgid "Downloaded File was empty"
 msgstr "A letöltött fájl üres"
 
-#: pyload/plugins/hosters/filesmailru.py:99
+#: pyload/plugins/hoster/filesmailru.py:99
 #, python-format
 msgid "There was HTML Code in the Downloaded File (%s)...redirect error? The Download will be restarted."
 msgstr "HTML kód van a letöltött fájlban (%s). Lehet, hogy átirányítási hiba, a letöltés újra lesz indítva."
 
-#: pyload/plugins/hosters/xhamstercom.py:74
-#: pyload/plugins/hosters/xhamstercom.py:83
-#: pyload/plugins/hosters/xhamstercom.py:86
+#: pyload/plugins/hoster/xhamstercom.py:74
+#: pyload/plugins/hoster/xhamstercom.py:83
+#: pyload/plugins/hoster/xhamstercom.py:86
 #, python-format
 msgid "long_url: %s"
 msgstr "hosszú_url: %s"
@@ -193,248 +193,248 @@ msgstr "Bejelentkezés mint %s"
 msgid "Error executing addon: %s"
 msgstr "Hiba a bővítmény futtatása közben: %s"
 
-#: pyload/plugins/accounts/bitsharecom.py:37
+#: pyload/plugins/account/bitsharecom.py:37
 msgid "Activate direct Download in your Bitshare Account"
 msgstr "Közvetlen letöltés aktiválása a Bitshare hozzáférésen"
 
-#: pyload/plugins/crypters/serienjunkiesorg.py:130
+#: pyload/plugins/crypter/serienjunkiesorg.py:130
 msgid "Downloadlimit reached"
 msgstr "A letöltési korlát elérve"
 
-#: pyload/plugins/addons/premium4me.py:29
+#: pyload/plugins/addon/premium4me.py:29
 msgid "Please add your premium.to account first and restart pyLoad"
 msgstr "Először adj meg rehost.to hozzáférést majd indítsd újra a pyLoad-ot"
 
-#: pyload/plugins/addons/externalscripts.py:54
+#: pyload/plugins/addon/externalscripts.py:54
 #, python-format
 msgid "Installed scripts for %s: "
 msgstr "Scriptek telepítve - %s: "
 
-#: pyload/plugins/addons/externalscripts.py:69
+#: pyload/plugins/addon/externalscripts.py:69
 msgid "Script not executable:"
 msgstr "Script nem futtatható:"
 
-#: pyload/plugins/addons/externalscripts.py:80
+#: pyload/plugins/addon/externalscripts.py:80
 #, python-format
 msgid "Error in %(script)s: %(error)s"
 msgstr "Hiba: %(script)s: %(error)s"
 
-#: pyload/plugins/addons/captchatrader.py:69
-#: pyload/plugins/addons/captcha9kw.py:59
-#: pyload/plugins/addons/expertdecoders.py:50
+#: pyload/plugins/addon/captchatrader.py:69
+#: pyload/plugins/addon/captcha9kw.py:59
+#: pyload/plugins/addon/expertdecoders.py:50
 #, python-format
 msgid "%s credits left"
 msgstr "%s kredit maradt"
 
-#: pyload/plugins/addons/captchatrader.py:117
+#: pyload/plugins/addon/captchatrader.py:117
 msgid "Could not send response."
 msgstr "Nem sikerült választ küldeni."
 
-#: pyload/plugins/addons/captchatrader.py:135
+#: pyload/plugins/addon/captchatrader.py:135
 msgid "Your CaptchaTrader Account has not enough credits"
 msgstr "A CaptchaTrader hozzáférésen nincs elég credit"
 
-#: pyload/plugins/addons/captcha9kw.py:93
+#: pyload/plugins/addon/captcha9kw.py:93
 #, python-format
 msgid "New CaptchaID from upload: %s : %s"
 msgstr "Új CaptchaID a feltöltésből:  %s : %s"
 
-#: pyload/plugins/addons/captcha9kw.py:129
+#: pyload/plugins/addon/captcha9kw.py:129
 msgid "Your Captcha 9kw.eu Account has not enough credits"
 msgstr "A Captcha 9kw.eu hozzáférésen nincs elég credit"
 
-#: pyload/plugins/addons/rehostto.py:32
+#: pyload/plugins/addon/rehostto.py:32
 msgid "Please add your rehost.to account first and restart pyLoad"
 msgstr "Először adj meg rehost.to hozzáférést majd indítsd újra a pyLoad-ot."
 
-#: pyload/plugins/addons/hotfolder.py:82
+#: pyload/plugins/addon/hotfolder.py:82
 #, python-format
 msgid "Added %s from HotFolder"
 msgstr "%s HotFolder-ből hozzáadva"
 
-#: pyload/plugins/addons/clickandload.py:75
+#: pyload/plugins/addon/clickandload.py:75
 msgid "Click'N'Load: Port 9666 already in use"
 msgstr "Click'N'Load: A 9666 port használatban van"
 
-#: pyload/plugins/addons/xmppinterface.py:83
-#: pyload/plugins/addons/ircinterface.py:74
+#: pyload/plugins/addon/xmppinterface.py:83
+#: pyload/plugins/addon/ircinterface.py:74
 #, python-format
 msgid "Package finished: %s"
 msgstr "Kész csomag: %s"
 
-#: pyload/plugins/addons/xmppinterface.py:91
+#: pyload/plugins/addon/xmppinterface.py:91
 #, python-format
 msgid "Download finished: %(name)s @ %(plugin)s"
 msgstr "Letöltés befejezve: %(name)s @ %(plugin)s"
 
-#: pyload/plugins/addons/expertdecoders.py:95
+#: pyload/plugins/addon/expertdecoders.py:95
 msgid "Your ExpertDecoders Account has not enough credits"
 msgstr "Az ExpertDecoders hozzáférésen nincs elég credit"
 
-#: pyload/plugins/addons/updatemanager.py:74
+#: pyload/plugins/addon/updatemanager.py:74
 msgid "*** Plugins have been updated, please restart pyLoad ***"
 msgstr "*** Bővítmények frissítve, indítsd újra a pyLoad-ot ***"
 
-#: pyload/plugins/addons/updatemanager.py:76
+#: pyload/plugins/addon/updatemanager.py:76
 msgid "Plugins updated and reloaded"
 msgstr "Bővítmények frissítve és betöltve"
 
-#: pyload/plugins/addons/updatemanager.py:79
+#: pyload/plugins/addon/updatemanager.py:79
 msgid "No plugin updates available"
 msgstr "Nincs bővítmény frissítés"
 
-#: pyload/plugins/addons/updatemanager.py:96
+#: pyload/plugins/addon/updatemanager.py:96
 msgid "No Updates for pyLoad"
 msgstr "Nincs új pyLoad verzió"
 
-#: pyload/plugins/addons/updatemanager.py:100
+#: pyload/plugins/addon/updatemanager.py:100
 #, python-format
 msgid "***  New pyLoad Version %s available  ***"
 msgstr "***  Új pyLoad verzió elérhető: %s  ***"
 
-#: pyload/plugins/addons/updatemanager.py:101
+#: pyload/plugins/addon/updatemanager.py:101
 msgid "***  Get it here: https://github.com/pyload/pyload/releases  ***"
 msgstr "***  Letöltés: https://github.com/pyload/pyload/releases  ***"
 
-#: pyload/plugins/addons/updatemanager.py:104
+#: pyload/plugins/addon/updatemanager.py:104
 msgid "Not able to connect server for updates"
 msgstr "Nem sikerült a szerverhez csatlakozni a frissítésekért"
 
-#: pyload/plugins/addons/updatemanager.py:148
+#: pyload/plugins/addon/updatemanager.py:148
 #, python-format
 msgid "New version of %(type)s|%(name)s : %(version).2f"
 msgstr "Új verzió: %(type)s|%(name)s : %(version).2f"
 
-#: pyload/plugins/addons/updatemanager.py:157
-#: pyload/plugins/addons/updatemanager.py:162
+#: pyload/plugins/addon/updatemanager.py:157
+#: pyload/plugins/addon/updatemanager.py:162
 #, python-format
 msgid "Error when updating %s"
 msgstr "Hiba frissítés közben %s"
 
-#: pyload/plugins/addons/updatemanager.py:162
+#: pyload/plugins/addon/updatemanager.py:162
 msgid "Version mismatch"
 msgstr "verzió ütközés"
 
-#: pyload/plugins/addons/extractarchive.py:97
+#: pyload/plugins/addon/extractarchive.py:97
 #, python-format
 msgid "No %s installed"
 msgstr "Nincs %s telepítve"
 
-#: pyload/plugins/addons/extractarchive.py:99
-#: pyload/plugins/addons/extractarchive.py:104
+#: pyload/plugins/addon/extractarchive.py:99
+#: pyload/plugins/addon/extractarchive.py:104
 #, python-format
 msgid "Could not activate %s"
 msgstr "Nem sikerült aktiválni: %s"
 
-#: pyload/plugins/addons/extractarchive.py:109
+#: pyload/plugins/addon/extractarchive.py:109
 msgid "Activated"
 msgstr "Aktivált"
 
-#: pyload/plugins/addons/extractarchive.py:111
+#: pyload/plugins/addon/extractarchive.py:111
 msgid "No Extract plugins activated"
 msgstr "Nincs kicsomagoló bővítmény aktiválva"
 
-#: pyload/plugins/addons/extractarchive.py:116
+#: pyload/plugins/addon/extractarchive.py:116
 msgid "Extract package"
 msgstr "Csomag kitömörítése"
 
-#: pyload/plugins/addons/extractarchive.py:116
+#: pyload/plugins/addon/extractarchive.py:116
 msgid "Scans package for archives and extract them"
 msgstr "Archívum csomagvizsgálat, és kicsomagolás"
 
-#: pyload/plugins/addons/extractarchive.py:123
+#: pyload/plugins/addon/extractarchive.py:123
 #, python-format
 msgid "Package %s queued for later extracting"
 msgstr "%s csomag a várólistán későbbi kitömörítésre"
 
-#: pyload/plugins/addons/extractarchive.py:146
+#: pyload/plugins/addon/extractarchive.py:146
 #, python-format
 msgid "Check package %s"
 msgstr "Csomag ellenőrzése: %s"
 
-#: pyload/plugins/addons/extractarchive.py:187
+#: pyload/plugins/addon/extractarchive.py:187
 #, python-format
 msgid "Extract to %s"
 msgstr "Kicsomagolás: %s"
 
-#: pyload/plugins/addons/extractarchive.py:202
+#: pyload/plugins/addon/extractarchive.py:202
 msgid "No files found to extract"
 msgstr "Nincs kitömöríthető fájl"
 
-#: pyload/plugins/addons/extractarchive.py:209
+#: pyload/plugins/addon/extractarchive.py:209
 msgid "extracting"
 msgstr "kicsomagolás"
 
-#: pyload/plugins/addons/extractarchive.py:220
+#: pyload/plugins/addon/extractarchive.py:220
 msgid "Password protected"
 msgstr "Jelszóval védett"
 
-#: pyload/plugins/addons/extractarchive.py:241
+#: pyload/plugins/addon/extractarchive.py:241
 msgid "Wrong password"
 msgstr "Hibás jelszó"
 
-#: pyload/plugins/addons/extractarchive.py:249
+#: pyload/plugins/addon/extractarchive.py:249
 #, python-format
 msgid "Deleting %s files"
 msgstr "%s fájl törlése"
 
-#: pyload/plugins/addons/extractarchive.py:256
+#: pyload/plugins/addon/extractarchive.py:256
 msgid "Extracting finished"
 msgstr "Kicsomagolás kész"
 
-#: pyload/plugins/addons/extractarchive.py:262
+#: pyload/plugins/addon/extractarchive.py:262
 msgid "Archive Error"
 msgstr "Tömörített állomány hiba"
 
-#: pyload/plugins/addons/extractarchive.py:264
+#: pyload/plugins/addon/extractarchive.py:264
 msgid "CRC Mismatch"
 msgstr "CRC hiba"
 
-#: pyload/plugins/addons/extractarchive.py:268
+#: pyload/plugins/addon/extractarchive.py:268
 msgid "Unknown Error"
 msgstr "Ismeretlen hiba"
 
-#: pyload/plugins/addons/extractarchive.py:320
+#: pyload/plugins/addon/extractarchive.py:320
 msgid "Setting User and Group failed"
 msgstr "Felhasználó és csoport beállítás sikertelen"
 
-#: pyload/plugins/addons/linkdecryptercom.py:37
+#: pyload/plugins/addon/linkdecryptercom.py:37
 msgid "Crypter list not found"
 msgstr "Crypter lista nem található"
 
-#: pyload/plugins/addons/linkdecryptercom.py:51
+#: pyload/plugins/addon/linkdecryptercom.py:51
 msgid "Crypter list is empty"
 msgstr "Crypter lista üres"
 
-#: pyload/plugins/addons/ircinterface.py:82
+#: pyload/plugins/addon/ircinterface.py:82
 #, python-format
 msgid "Download finished: %(name)s @ %(plugin)s "
 msgstr "Letöltés befejezve: %(name)s @ %(plugin)s "
 
-#: pyload/plugins/addons/ircinterface.py:95
+#: pyload/plugins/addon/ircinterface.py:95
 #, python-format
 msgid "New Captcha Request: %s"
 msgstr "Új captcha kérés: %s"
 
-#: pyload/plugins/addons/ircinterface.py:96
+#: pyload/plugins/addon/ircinterface.py:96
 #, python-format
 msgid "Answer with 'c %s text on the captcha'"
 msgstr "Válaszolj ezzel: 'c %s szöveg a captcha-n'"
 
-#: pyload/plugins/addons/premiumizeme.py:48
+#: pyload/plugins/addon/premiumizeme.py:48
 msgid "Please add a valid premiumize.me account first and restart pyLoad."
 msgstr "Először adj meg premiumize.me hozzáférést majd indítsd újra a pyLoad-ot."
 
-#: pyload/plugins/addons/captchabrotherhood.py:69
+#: pyload/plugins/addon/captchabrotherhood.py:69
 #, python-format
 msgid "%d credits left"
 msgstr "%d kredit maradt"
 
-#: pyload/plugins/addons/multihoster.py:43
+#: pyload/plugins/addon/multihoster.py:43
 #, python-format
 msgid "Activated %s"
 msgstr "Aktivált: %s"
 
-#: pyload/plugins/addons/multihoster.py:61
+#: pyload/plugins/addon/multihoster.py:61
 msgid "No Hoster loaded"
 msgstr "Nincs szolgáltató betöltve"
