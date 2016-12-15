@@ -351,7 +351,7 @@ class Core(object):
 
         self.captcha = True # checks seems to fail, although tesseract is available
 
-        self.eventManager = self.evm = EventManager(self)
+        self.eventmanager = self.evm = EventManager(self)
         self.setup_db()
 
         # Upgrade to configManager
@@ -378,13 +378,13 @@ class Core(object):
         self.js = JsEngine()
 
         #hell yeah, so many important managers :D
-        self.pluginManager = PluginManager(self)
-        self.interactionManager = self.im = InteractionManager(self)
-        self.accountManager = AccountManager(self)
-        self.threadManager = ThreadManager(self)
-        self.downloadManager = self.dlm = DownloadManager(self)
+        self.pluginmanager = PluginManager(self)
+        self.interactionmanager = self.im = InteractionManager(self)
+        self.accountmanager = AccountManager(self)
+        self.threadmanager = ThreadManager(self)
+        self.downloadmanager = self.dlm = DownloadManager(self)
         self.addonmanager = AddonManager(self)
-        self.remoteManager = RemoteManager(self)
+        self.remotemanager = RemoteManager(self)
 
         # enough initialization for test cases
         if tests: return
@@ -392,7 +392,7 @@ class Core(object):
         self.log.info(_("Download time: %s") % self.api.isTimeDownload())
 
         if rpc:
-            self.remoteManager.startBackends()
+            self.remotemanager.startBackends()
 
         if web:
             self.init_webserver()
@@ -423,9 +423,9 @@ class Core(object):
                 self.api.addPackage("links.txt", [link_file], 1)
             f.close()
 
-        #self.scheduler.addJob(0, self.accountManager.getAccountInfos)
+        #self.scheduler.addJob(0, self.accountmanager.getAccountInfos)
         self.log.info(_("Activating Accounts..."))
-        self.accountManager.refreshAllAccounts()
+        self.accountmanager.refreshAllAccounts()
 
         #restart failed
         if self.config["download"]["restart_failed"]:
@@ -439,7 +439,7 @@ class Core(object):
         self.addonmanager.activateAddons()
 
         self.log.info(_("pyLoad is up and running"))
-        self.eventManager.dispatchEvent("pyload:ready")
+        self.eventmanager.dispatchEvent("pyload:ready")
 
         #test api
         #        from pyload.common.APIExerciser import startApiExerciser
@@ -470,9 +470,9 @@ class Core(object):
                 _exit(0)
                 # TODO check exits codes, clean exit is still blocked
             try:
-                self.downloadManager.work()
-                self.threadManager.work()
-                self.interactionManager.work()
+                self.downloadmanager.work()
+                self.threadmanager.work()
+                self.interactionmanager.work()
                 self.scheduler.work()
             except Exception as e:
                 self.log.critical(_("Critical error: ") + str(e))
@@ -580,7 +580,7 @@ class Core(object):
 
     def shutdown(self):
         self.log.info(_("shutting down..."))
-        self.eventManager.dispatchEvent("coreShutdown")
+        self.eventmanager.dispatchEvent("coreShutdown")
         try:
             if hasattr(self, "webserver"):
                 pass # TODO: quit webserver?

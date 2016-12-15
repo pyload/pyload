@@ -12,7 +12,7 @@ from traceback import print_exc
 class BackendBase(Thread):
     def __init__(self, manager):
         Thread.__init__(self)
-        self.m = manager
+        self.manager = manager
         self.pyload = manager.pyload
         self.enabled = True
         self.running = False

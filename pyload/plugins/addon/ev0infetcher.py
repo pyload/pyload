@@ -26,7 +26,7 @@ class Ev0InFetcher(Hook):
         self.interval = self.getConfig("interval") * 60
 
     def filter_links(self, links):
-        results = self.pyload.pluginManager.parse_urls(links)
+        results = self.pyload.pluginmanager.parse_urls(links)
         sortedLinks = {}
 
         for url, hoster in results:

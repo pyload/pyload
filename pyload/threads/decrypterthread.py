@@ -51,7 +51,7 @@ class DecrypterThread(BaseThread):
             api.addPackage(p.name, p.get_urls(), pack.password)
 
         self.pyload.files.set_download_status(self.fid, DS.Finished if not self.error else DS.Failed)
-        self.m.done(self)
+        self.manager.done(self)
 
     def decrypt(self, plugin_map, password=None, err=False):
         result = []
@@ -60,7 +60,7 @@ class DecrypterThread(BaseThread):
                                          0, 0, len(self.data), self.owner, ProgressType.Decrypting)
         # TODO QUEUE_DECRYPT
         for name, urls in plugin_map.items():
-            klass = self.pyload.pluginManager.load_class("crypter", name)
+            klass = self.pyload.pluginmanager.load_class("crypter", name)
             plugin = None
             plugin_result = []
 

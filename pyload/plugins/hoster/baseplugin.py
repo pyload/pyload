@@ -54,7 +54,7 @@ class BasePlugin(Hoster):
                 if e.code in (401, 403):
                     self.logDebug("Auth required")
 
-                    account = self.pyload.accountManager.get_account_plugin('Http')
+                    account = self.pyload.accountmanager.get_account_plugin('Http')
                     servers = [x['login'] for x in account.getAllAccounts()]
                     server = urlparse(pyfile.url).netloc
 

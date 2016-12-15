@@ -46,7 +46,7 @@ class AbtractExtractor(object):
         :param overwrite: Overwrite existing archives
         :param renice: Renice value
         """
-        self.m = m
+        self.manager = m
         self.file = file
         self.out = out
         self.fullpath = fullpath

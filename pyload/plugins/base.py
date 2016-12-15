@@ -84,9 +84,9 @@ class Base(object):
         #: core config
         self.config = core.config
         #: :class:`EventManager`
-        self.evm = core.eventManager
+        self.evm = core.eventmanager
         #: :class:`InteractionManager`
-        self.im = core.interactionManager
+        self.im = core.interactionmanager
         if owner is not None:
             #: :class:`Api`, user api when user is set
             self.api = self.pyload.api.with_user_context(owner)
@@ -150,7 +150,7 @@ class Base(object):
     @property
     def pattern(self):
         """  Gives the compiled pattern of the plugin """
-        return self.pyload.pluginManager.get_plugin(self.__type__, self.__name__).re
+        return self.pyload.pluginmanager.get_plugin(self.__type__, self.__name__).re
 
     def set_config(self, option, value):
         """ Set config value for current plugin """
@@ -303,10 +303,10 @@ class Base(object):
         temp_file.close()
 
         name = "%sOCR" % self.__name__
-        has_plugin = name in self.pyload.pluginManager.get_plugins("internal")
+        has_plugin = name in self.pyload.pluginmanager.get_plugins("internal")
 
         if self.pyload.captcha:
-            OCR = self.pyload.pluginManager.load_class("internal", name)
+            OCR = self.pyload.pluginmanager.load_class("internal", name)
         else:
             OCR = None
 

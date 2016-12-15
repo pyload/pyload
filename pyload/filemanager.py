@@ -35,7 +35,7 @@ class FileManager(object):
     def __init__(self, core):
         """Constructor"""
         self.pyload = core
-        self.evm = core.eventManager
+        self.evm = core.eventmanager
 
         # translations
         self.statusMsg = [_("none"), _("offline"), _("online"), _("queued"), _("paused"),
@@ -533,7 +533,7 @@ class FileManager(object):
             if pyfile.status not in (DS.NA, DS.Finished, DS.Skipped):
                 urls.append((pyfile.url, pyfile.pluginname))
 
-        self.pyload.threadManager.create_info_thread(urls, pid)
+        self.pyload.threadmanager.create_info_thread(urls, pid)
 
 
     @invalidate

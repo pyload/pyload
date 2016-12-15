@@ -20,7 +20,7 @@ class BaseThread(Thread):
     def __init__(self, manager, owner=None):
         Thread.__init__(self)
         self.setDaemon(True)
-        self.m = manager #thread manager
+        self.manager = manager #thread manager
         self.pyload = manager.pyload
         self.log = manager.pyload.log
 
@@ -33,7 +33,7 @@ class BaseThread(Thread):
 
     def finished(self):
         """ Remove thread from list  """
-        self.m.removeThread(self)
+        self.manager.removeThread(self)
 
     def get_progress(self):
         """ retrieves progress information about the current running task
@@ -90,7 +90,7 @@ class BaseThread(Thread):
 
     def get_plugin_dump(self, plugin):
         dump = "pyLoad %s Debug Report of %s %s \n\nTRACEBACK:\n %s \n\nFRAMESTACK:\n" % (
-            self.m.pyload.api.getServerVersion(), plugin.__name__, plugin.__version__, format_exc())
+            self.manager.pyload.api.getServerVersion(), plugin.__name__, plugin.__version__, format_exc())
 
         tb = sys.exc_info()[2]
         stack = []

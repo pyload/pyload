@@ -42,7 +42,7 @@ class CurlDownload(Download):
         self.chunks = []
         self.chunkSupport = None
 
-        self.m = pycurl.CurlMulti()
+        self.manager = pycurl.CurlMulti()
 
         #needed for speed calculation
         self.lastArrived = []
@@ -148,7 +148,7 @@ class CurlDownload(Download):
         init = CurlChunk(0, self, None, resume) #initial chunk that will load complete file (if needed)
 
         self.chunks.append(init)
-        self.m.add_handle(init.getHandle())
+        self.manager.add_handle(init.getHandle())
 
         lastFinishCheck = 0
         lastTimeCheck = 0
@@ -178,7 +178,7 @@ class CurlDownload(Download):
                     handle = c.getHandle()
                     if handle:
                         self.chunks.append(c)
-                        self.m.add_handle(handle)
+                        self.manager.add_handle(handle)
                     else:
                         #close immediately
                         self.log.debug("Invalid curl handle -> closed")
@@ -187,7 +187,7 @@ class CurlDownload(Download):
                 chunksCreated = True
 
             while True:
-                ret, num_handles = self.m.perform()
+                ret, num_handles = self.manager.perform()
                 if ret != pycurl.E_CALL_MULTI_PERFORM:
                     break
 
@@ -200,7 +200,7 @@ class CurlDownload(Download):
                 failed = []
                 ex = None # save only last exception, we can only raise one anyway
 
-                num_q, ok_list, err_list = self.m.info_read()
+                num_q, ok_list, err_list = self.manager.info_read()
                 for c in ok_list:
                     chunk = self.findChunk(c)
                     try: # check if the header implies success, else add it to failed list
@@ -278,7 +278,7 @@ class CurlDownload(Download):
             if self.doAbort:
                 raise Abort
 
-            self.m.select(1)
+            self.manager.select(1)
 
         for chunk in self.chunks:
             chunk.flushFile() #make sure downloads are written to disk
@@ -292,7 +292,7 @@ class CurlDownload(Download):
 
     def close_chunk(self, chunk):
         try:
-            self.m.remove_handle(chunk.c)
+            self.manager.remove_handle(chunk.c)
         except pycurl.error as e:
             self.log.debug("Error removing chunk: %s" % str(e))
         finally:
@@ -306,13 +306,13 @@ class CurlDownload(Download):
             #Workaround: pycurl segfaults when closing multi, that never had any curl handles
             if hasattr(self, "m"):
                 c = pycurl.Curl()
-                self.m.add_handle(c)
-                self.m.remove_handle(c)
+                self.manager.add_handle(c)
+                self.manager.remove_handle(c)
                 c.close()
 
         self.chunks = []
         if hasattr(self, "m"):
-            self.m.close()
+            self.manager.close()
             del self.m
         if hasattr(self, "info"):
             del self.info

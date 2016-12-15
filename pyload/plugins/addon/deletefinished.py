@@ -57,14 +57,14 @@ class DeleteFinished(Hook):
     ## event managing ##
     def add_event(self, event, func):
         """Adds an event listener for event name"""
-        if event in self.m.events:
-            if func in self.m.events[event]:
+        if event in self.manager.events:
+            if func in self.manager.events[event]:
                 self.logDebug('Function already registered %s' % func)
             else:
-                self.m.events[event].append(func)
+                self.manager.events[event].append(func)
         else:
-            self.m.events[event] = [func]
+            self.manager.events[event] = [func]
 
     def setup(self):
-        self.m = self.manager
-        self.removeEvent = self.m.removeEvent
+        self.manager = self.manager
+        self.removeEvent = self.manager.removeEvent

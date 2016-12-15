@@ -47,7 +47,7 @@ class XFileSharingPro(SimpleHoster):
 
     def setup(self):
         if self.__name__ == "XFileSharingPro":
-            self.__pattern__ = self.pyload.pluginManager.hosterPlugins[self.__name__]['pattern']
+            self.__pattern__ = self.pyload.pluginmanager.hosterPlugins[self.__name__]['pattern']
             self.multiDL = True
         else:
             self.resumeDownload = self.multiDL = self.premium

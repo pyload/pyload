@@ -168,7 +168,7 @@ class Addon(Base):
         return True if self.__internal__ else self.getConfig("activated")
 
     def get_category(self):
-        return self.pyload.pluginManager.get_category(self.__name__)
+        return self.pyload.pluginmanager.get_category(self.__name__)
 
     def init(self):
         pass

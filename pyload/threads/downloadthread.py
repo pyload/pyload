@@ -46,7 +46,7 @@ class DownloadThread(BaseThread):
 
             if self.active == "quit":
                 self.active = None
-                self.m.stop(self)
+                self.manager.stop(self)
                 return True
 
             try:
@@ -94,7 +94,7 @@ class DownloadThread(BaseThread):
                 self.queue.put(pyfile)
                 #pyfile.req.clearCookies()
 
-                while self.m.reconnecting.isSet():
+                while self.manager.reconnecting.isSet():
                     sleep(0.5)
 
                 continue
@@ -210,7 +210,7 @@ class DownloadThread(BaseThread):
 
                 # only done when job was not put back
                 if self.queue.empty():
-                    self.m.done(self)
+                    self.manager.done(self)
 
             #pyfile.plugin.req.clean()
 

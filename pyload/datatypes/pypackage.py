@@ -21,7 +21,7 @@ class PyPackage(object):
 
     def __init__(self, manager, pid, name, folder, root, owner, site, comment, password, added, tags, status,
                  shared, packageorder):
-        self.m = manager
+        self.manager = manager
 
         self.pid = pid
         self.name = name
@@ -43,7 +43,7 @@ class PyPackage(object):
 
     @property
     def id(self):
-        self.m.pyload.log.debug("Deprecated package attr .id, use .pid instead")
+        self.manager.pyload.log.debug("Deprecated package attr .id, use .pid instead")
         return self.pid
 
     def is_stale(self):
@@ -62,23 +62,23 @@ class PyPackage(object):
 
     def get_files(self):
         """get contaied files data"""
-        return self.m.pyload.db.getAllFiles(package=self.pid)
+        return self.manager.pyload.db.getAllFiles(package=self.pid)
 
     def get_path(self, name=""):
         self.timestamp = time()
-        return join(self.m.getPackage(self.root).getPath(), self.folder, name)
+        return join(self.manager.getPackage(self.root).getPath(), self.folder, name)
 
     def sync(self):
         """sync with db"""
-        self.m.updatePackage(self)
+        self.manager.updatePackage(self)
 
     def release(self):
         """sync and delete from cache"""
         self.sync()
-        self.m.releasePackage(self.id)
+        self.manager.releasePackage(self.id)
 
     def delete(self):
-        self.m.removePackage(self.id)
+        self.manager.removePackage(self.id)
 
     def delete_if_empty(self):
         """  True if deleted  """
@@ -88,7 +88,7 @@ class PyPackage(object):
         return False
 
     def notify_change(self):
-        self.m.pyload.eventManager.dispatchEvent("packageUpdated", self.id)
+        self.manager.pyload.eventmanager.dispatchEvent("packageUpdated", self.id)
 
 
 class RootPackage(PyPackage):
@@ -96,7 +96,7 @@ class RootPackage(PyPackage):
         PyPackage.__init__(self, m, -1, "root", "", owner, -2, "", "", "", 0, [], PackageStatus.Ok, False, 0)
 
     def get_path(self, name=""):
-        return join(self.m.pyload.config["general"]["download_folder"], name)
+        return join(self.manager.pyload.config["general"]["download_folder"], name)
 
     # no database operations
     def sync(self):

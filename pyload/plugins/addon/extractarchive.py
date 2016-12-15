@@ -89,7 +89,7 @@ class ExtractArchive(Addon):
 
         for p in ("UnRar", "UnZip"):
             try:
-                module = self.pyload.pluginManager.load_module("internal", p)
+                module = self.pyload.pluginmanager.load_module("internal", p)
                 klass = getattr(module, p)
                 if klass.checkDeps():
                     names.append(p)

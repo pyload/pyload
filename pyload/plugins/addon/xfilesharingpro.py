@@ -61,7 +61,7 @@ class XFileSharingPro(Hook):
         regexp = r"http://(?:[^/]*\.)?(%s)/\w{12}" % ("|".join(sorted(hosterList)).replace('.', '\.'))
         #self.logDebug(regexp)
 
-        dict = self.pyload.pluginManager.hosterPlugins['XFileSharingPro']
+        dict = self.pyload.pluginmanager.hosterPlugins['XFileSharingPro']
         dict["pattern"] = regexp
         dict["re"] = re.compile(regexp)
         self.logDebug("Pattern loaded - handling %d hosters" % len(hosterList))
@@ -71,6 +71,6 @@ class XFileSharingPro(Hook):
         return set([x.strip() for x in s.split(',')])
 
     def unload(self):
-        dict = self.pyload.pluginManager.hosterPlugins['XFileSharingPro']
+        dict = self.pyload.pluginmanager.hosterPlugins['XFileSharingPro']
         dict["pattern"] = r"^unmatchable$"
         dict["re"] = re.compile(r"^unmatchable$")

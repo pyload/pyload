@@ -54,7 +54,7 @@ class Hoster(Base):
 
     def __init__(self, pyfile):
         # TODO: pyfile.owner, but it's not correct yet
-        Base.__init__(self, pyfile.m.pyload)
+        Base.__init__(self, pyfile.manager.pyload)
 
         self.wantReconnect = False
         #: enables simultaneous processing of multiple downloads
@@ -69,7 +69,7 @@ class Hoster(Base):
 
         self.ocr = None  #captcha reader instance
         #: account handler instance, see :py:class:`Account`
-        self.account = self.pyload.accountManager.select_account(self.__name__, self.owner)
+        self.account = self.pyload.accountmanager.select_account(self.__name__, self.owner)
 
         #: premium status
         self.premium = False
@@ -208,9 +208,9 @@ class Hoster(Base):
         self.pyfile.setStatus("waiting")
 
         while self.pyfile.waitUntil > time():
-            self.thread.m.reconnecting.wait(2)
+            self.thread.manager.reconnecting.wait(2)
             self.checkAbort()
-            if self.thread.m.reconnecting.isSet():
+            if self.thread.manager.reconnecting.isSet():
                 self.waiting = False
                 self.wantReconnect = False
                 raise Reconnect

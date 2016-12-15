@@ -165,7 +165,7 @@ class UnRar(AbtractExtractor):
             raise ArchiveError("Cannot open file")
 
         if err.strip():  #: only log error at this point
-            self.m.logError(err.strip())
+            self.manager.logError(err.strip())
 
         result = set()
 
@@ -195,7 +195,7 @@ class UnRar(AbtractExtractor):
 
         # NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
         call = [self.CMD, command] + args + list(xargs)
-        self.m.logDebug(" ".join([decode(arg) for arg in call]))
+        self.manager.logDebug(" ".join([decode(arg) for arg in call]))
 
         p = Popen(call, stdout=PIPE, stderr=PIPE)
 
