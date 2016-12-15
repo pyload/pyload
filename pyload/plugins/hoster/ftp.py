@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: mkaay
+#@author: mkaay
 
 from __future__ import unicode_literals
 from future import standard_library
