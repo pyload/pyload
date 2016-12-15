@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN
+#@author: RaNaN
 
 from sys import argv
 from sys import exit

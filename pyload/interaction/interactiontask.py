@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN
+#@author: RaNaN
 
 from __future__ import unicode_literals
 from time import time

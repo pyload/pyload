@@ -8,7 +8,7 @@ import os
 import subprocess
 import sys
 
-#from module import InitHomeDir
+# from module import InitHomeDir
 
 def main():
     print("#####   System Information   #####\n")
@@ -47,11 +47,8 @@ def main():
     core_err = []
     core_info = []
 
-    if sys.version_info > (2, 8):
-        core_err.append("Your python version is too new, Please use Python 2.6/2.7")
-
-    if sys.version_info < (2, 5):
-        core_err.append("Your python version is too old, Please use at least Python 2.5")
+    if sys.version_info < (2, 6):
+        core_err.append("Your python version is too old, Please use at least Python 2.6")
 
     try:
         import pycurl

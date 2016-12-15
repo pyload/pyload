@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: zoidberg
+#@author: zoidberg
 
 from __future__ import unicode_literals
 

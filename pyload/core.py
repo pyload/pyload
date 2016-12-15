@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: sebnapi, RaNaN, mkaay
+#@author: sebnapi, RaNaN, mkaay
 
 from __future__ import absolute_import
 from __future__ import unicode_literals

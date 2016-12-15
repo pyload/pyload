@@ -49,13 +49,13 @@ class WebServer(threading.Thread):
 
         if self.https:
             if not exists(self.cert) or not exists(self.key):
-                log.warning(_("SSL certificates not found."))
+                log.warning("SSL certificates not found")
                 self.https = False
 
         if webinterface.UNAVAILALBE:
-            log.warning(_("WebUI built is not available"))
+            log.warning("WebUI built is not available")
         elif webinterface.APP_PATH == "app":
-            log.info(_("Running webui in development mode"))
+            log.info("Running webui in development mode")
 
         prefer = None
 
@@ -73,7 +73,7 @@ class WebServer(threading.Thread):
             self.start_server(server)
 
         except Exception as e:
-            log.error(_("Failed starting webserver: " + e.message))
+            log.error("Failed starting webserver: " + e.message)
             self.error = e
             if core:
                 core.print_exc()
@@ -107,7 +107,7 @@ class WebServer(threading.Thread):
                 else:
                     unavailable.append(server.NAME)
             except Exception as e:
-                log.error(_("Failed importing webserver: " + e.message))
+                log.error("Failed importing webserver: " + e.message)
 
         if unavailable: # Just log whats not available to have some debug information
             log.debug("Unavailable webserver: " + ", ".join(unavailable))
@@ -125,7 +125,7 @@ class WebServer(threading.Thread):
         if issubclass(server, ServerAdapter):
 
             if self.https and not server.SSL:
-                log.warning(_("This server offers no SSL, please consider using threaded instead"))
+                log.warning("This server offers no SSL, please consider using threaded instead")
             elif not self.https:
                 self.cert = self.key = None # This implicitly disables SSL
                 # there is no extra argument for the server adapter
@@ -138,8 +138,7 @@ class WebServer(threading.Thread):
         else: # server is just a string
             name = server
 
-        log.info(
-            _("Starting %(name)s webserver: %(host)s:%(port)d") % {"name": name, "host": self.host, "port": self.port})
+        log.info("Starting %(name)s webserver: %(host)s:%(port)d" % {"name": name, "host": self.host, "port": self.port})
         webinterface.run_server(host=self.host, port=self.port, server=server)
 
 
