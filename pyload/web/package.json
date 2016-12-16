@@ -4,7 +4,7 @@
     "description" : "pyLoad next-gen web user interface",
     "scripts" : {
         "test" : "echo \"Error : no test specified\" && exit 1",
-        "postinstall" : "node grunt build"
+        "postinstall" : "node node_modules\grunt-cli\bin\grunt build"
     },
     "author" : "Christian Rakow <Mast3rRaNaN@hotmail.de>",
     "contributors" : [
@@ -13,10 +13,10 @@
     "license" : "AGPL-3.0",
     "repository" : "pyload/pyload",
     "bugs" : {
-        "url" : "https ://github.com/pyload/pyload/issues",
+        "url" : "https://github.com/pyload/pyload/issues",
         "email" : "dev@pyload.net"
     },
-    "homepage" : "https ://github.com/pyload/pyload",
+    "homepage" : "https://github.com/pyload/pyload",
     "dependencies" : {
         "bootstrap": "^3.3.7",
         "font-awesome": "^4.7.0",
@@ -38,7 +38,6 @@
     },
     "devDependencies" : {
         "grunt" : "^1.0.1",
-        "grunt-cli" : "^1.2.0",
         "grunt-contrib-copy" : "*",
         "grunt-contrib-concat" : "*",
         "grunt-contrib-uglify" : "*",
@@ -61,6 +60,9 @@
         "matchdep" : "^1.0.1",
         "rjs-build-analysis" : "^0.0.3",
         "connect-livereload" : "^0.3.0"
+    },
+    "peerDependencies" : {
+        "grunt-cli" : "^1.2.0"
     },
     "engines" : {
         "node" : ">=1.4.0"
