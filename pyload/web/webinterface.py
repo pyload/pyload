@@ -47,7 +47,7 @@ APP_PATH = "app"
 UNAVAILALBE = True
 
 # webui build is available
-if exists(join(PROJECT_DIR, "node_modules")) and exists(join(PROJECT_DIR, ".tmp")) and config.get('webui', 'develop'):
+if exists(join(PROJECT_DIR, "node_modules")) and exists(join(PROJECT_DIR, ".tmp")):
     UNAVAILALBE = False
 elif exists(join(PROJECT_DIR, "dist", "index.html")):
     APP_PATH = "dist"

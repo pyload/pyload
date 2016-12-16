@@ -12,7 +12,7 @@ def make_config(config):
     # Check if gettext is installed
     _ = lambda x: x
 
-    config.addConfigSection("log", _("Log"), _("Description"), _("Long description"),
+    config.add_config_section("log", _("Log"), _("Description"), _("Long description"),
                             [
                                 ("log_size", "int", _("Size in kb"), 100),
                                 ("log_folder", "folder", _("Folder"), "Logs"),
@@ -23,7 +23,7 @@ def make_config(config):
                                 ("color_theme", "light;full", _("Color Theme"), "light"),
                             ])
 
-    config.addConfigSection("permission", _("Permissions"), _("Description"), _("Long description"),
+    config.add_config_section("permission", _("Permissions"), _("Description"), _("Long description"),
                             [
                                 ("group", "str", _("Groupname"), "users"),
                                 ("change_dl", "bool", _("Change Group and User of Downloads"), False),
@@ -35,7 +35,7 @@ def make_config(config):
                                 ("change_user", "bool", _("Change user of running process"), False),
                             ])
 
-    config.addConfigSection("general", _("General"), _("Description"), _("Long description"),
+    config.add_config_section("general", _("General"), _("Description"), _("Long description"),
                             [
                                 ("language", "en;de;fr;it;es;nl;sv;ru;pl;cs;sr;pt_BR", _("Language"), "en"),
                                 ("download_folder", "folder", _("Download Folder"), "Downloads"),
@@ -45,14 +45,14 @@ def make_config(config):
                                 ("renice", "int", _("CPU Priority"), 0),
                             ])
 
-    config.addConfigSection("ssl", _("SSL"), _("Description"), _("Long description"),
+    config.add_config_section("ssl", _("SSL"), _("Description"), _("Long description"),
                             [
                                 ("cert", "file", _("SSL Certificate"), "ssl.crt"),
                                 ("activated", "bool", _("Activated"), False),
                                 ("key", "file", _("SSL Key"), "ssl.key"),
                             ])
 
-    config.addConfigSection("webui", _("WebUI"), _("Description"), _("Long description"),
+    config.add_config_section("webui", _("WebUI"), _("Description"), _("Long description"),
                             [
                                 ("template", "str", _("Template"), "default"),
                                 ("prefix", "str", _("Path Prefix"), ""),
@@ -64,10 +64,9 @@ def make_config(config):
                                 ("port", "int", _("Port"), 8001),
                                 ("wsHost", "ip", _("IP"), "0.0.0.0"),
                                 ("wsPort", "int", _("Port"), 7447),
-                                ("develop", "bool", _("Development mode"), False),
                             ])
 
-    config.addConfigSection("proxy", _("Proxy"), _("Description"), _("Long description"),
+    config.add_config_section("proxy", _("Proxy"), _("Description"), _("Long description"),
                             [
                                 ("username", "str", _("Username"), ""),
                                 ("proxy", "bool", _("Use Proxy"), False),
@@ -77,7 +76,7 @@ def make_config(config):
                                 ("port", "int", _("Port"), 7070),
                             ])
 
-    config.addConfigSection("reconnect", _("Reconnect"), _("Description"), _("Long description"),
+    config.add_config_section("reconnect", _("Reconnect"), _("Description"), _("Long description"),
                             [
                                 ("activated", "bool", _("Use Reconnect"), False),
                                 ("method", "str", _("Method"), "./reconnect.sh"),
@@ -86,7 +85,7 @@ def make_config(config):
                                 ("endTime", "time", _("End"), "0:00"),
                             ])
 
-    config.addConfigSection("download", _("Download"), _("Description"), _("Long description"),
+    config.add_config_section("download", _("Download"), _("Description"), _("Long description"),
                             [
                                 ("max_downloads", "int", _("Max parallel downloads"), 3),
                                 ("wait_downloads", "int", _("Start downloads while waiting"), 2),
@@ -100,7 +99,7 @@ def make_config(config):
                                 ("restart_failed", "bool", _("Restart failed downloads on startup"), False),
                             ])
 
-    config.addConfigSection("downloadTime", _("Download Time"), _("Description"), _("Long description"),
+    config.add_config_section("downloadTime", _("Download Time"), _("Description"), _("Long description"),
                             [
                                 ("start", "time", _("Start"), "0:00"),
                                 ("end", "time", _("End"), "0:00"),
