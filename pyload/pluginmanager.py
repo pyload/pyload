@@ -45,7 +45,7 @@ class PluginManager(object):
         # add to path, so we can import from userplugins
         sys.path.append(abspath(""))
         self.loader = LoaderFactory(PluginLoader(abspath(self.LOCALROOT), self.LOCALROOT, self.pyload.config),
-                                    _plugin_loader(abspath(join(pypath, "pyload", "plugins")), self.ROOT,
+                                    PluginLoader(abspath(join(pypath, "pyload", "plugins")), self.ROOT,
                                                  self.pyload.config))
 
         self.loader.check_versions()
@@ -82,7 +82,7 @@ class PluginManager(object):
 
             # search the history
             for ptype, name in self.history:
-                if self.loader.getPlugin(ptype, name).re.match(url):
+                if self.loader.get_plugin(ptype, name).re.match(url):
                     res[ptype].append((url, name))
                     found = (ptype, name)
                     break # need to exit this loop first
@@ -107,7 +107,7 @@ class PluginManager(object):
 
             for ptype in ("crypter", "hoster"):
                 for loader in self.loader:
-                    for name, plugin in loader.getPlugins(ptype).items():
+                    for name, plugin in loader.get_plugins(ptype).items():
                         if plugin.re.match(url):
                             res[ptype].append((url, name))
                             self.history.insert(0, (ptype, name))
@@ -124,17 +124,17 @@ class PluginManager(object):
 
     def find_plugin(self, name):
         """ Finds the type to a plugin name """
-        return self.loader.findPlugin(name)
+        return self.loader.find_plugin(name)
 
     def get_plugin(self, plugin, name):
         """ Retrieves the plugin tuple for a single plugin or none """
-        return self.loader.getPlugin(plugin, name)
+        return self.loader.get_plugin(plugin, name)
 
     def get_plugins(self, plugin):
         """  Get all plugins of a certain type in a dict """
         plugins = {}
         for loader in self.loader:
-            plugins.update(loader.getPlugins(plugin))
+            plugins.update(loader.get_plugins(plugin))
         return plugins
 
     def get_plugin_class(self, plugin, name, overwrite=True):
@@ -148,12 +148,12 @@ class PluginManager(object):
                 if match:
                     plugin, name = match
 
-        return self.loadClass(plugin, name)
+        return self.load_class(plugin, name)
 
     def load_attributes(self, plugin, name):
         for loader in self.loader:
-            if loader.hasPlugin(plugin, name):
-                return loader.loadAttributes(plugin, name)
+            if loader.has_plugin(plugin, name):
+                return loader.load_attributes(plugin, name)
 
         return {}
 
@@ -164,9 +164,9 @@ class PluginManager(object):
         """
         if (plugin, name) in self.modules: return self.modules[(plugin, name)]
         for loader in self.loader:
-            if loader.hasPlugin(plugin, name):
+            if loader.has_plugin(plugin, name):
                 try:
-                    module = loader.loadModule(plugin, name)
+                    module = loader.load_module(plugin, name)
                     # cache import
                     self.modules[(plugin, name)] = module
                     return module
@@ -176,7 +176,7 @@ class PluginManager(object):
 
     def load_class(self, plugin, name):
         """Returns the class of a plugin with the same name"""
-        module = self.loadModule(plugin, name)
+        module = self.load_module(plugin, name)
         try:
             if module: return getattr(module, name)
         except AttributeError:
@@ -198,49 +198,49 @@ class PluginManager(object):
             # check if a different loader than the current one has the plugin
             # in this case import needs redirect
             for l2 in self.loader:
-                if l2 is not loader and l2.hasPlugin(plugin, name):
+                if l2 is not loader and l2.has_plugin(plugin, name):
                     return self
 
         # TODO: Remove when all plugin imports are adapted
         if "module" in fullname:
             return self
 
-    def load_module(self, name, replace=True):
-        if name not in sys.modules:  #could be already in modules
+    # def load_module(self, name, replace=True):
+        # if name not in sys.modules:  #could be already in modules
 
-            # TODO: only temporary
-            # TODO: strange side effects are caused by this workaround
-            # e.g a class instance is not associated correctly with its on instance because of wrong module names
-            if name.endswith("module"):
-                # name = "pyload."
-                name = name.replace(".module", "")
-                self.log.debug("Old import reference detected, use %s" % name)
-                replace = False
-                return __import__("pyload")
-            if name.startswith("module"):
-                name = name.replace("module", "pyload")
-                self.log.debug("Old import reference detected, use %s" % name)
-                replace = False
+            # #TODO: only temporary
+            # #TODO: strange side effects are caused by this workaround
+            # #e.g a class instance is not associated correctly with its on instance because of wrong module names
+            # if name.endswith("module"):
+                # #name = "pyload."
+                # name = name.replace(".module", "")
+                # self.log.debug("Old import reference detected, use %s" % name)
+                # replace = False
+                # return __import__("pyload")
+            # if name.startswith("module"):
+                # name = name.replace("module", "pyload")
+                # self.log.debug("Old import reference detected, use %s" % name)
+                # replace = False
 
-            # TODO: this still works but does not respect other loaders
-            if replace:
-                if self.ROOT in name:
-                    newname = name.replace(self.ROOT, self.LOCALROOT)
-                else:
-                    newname = name.replace(self.LOCALROOT, self.ROOT)
-            else:
-                newname = name
+            # #TODO: this still works but does not respect other loaders
+            # if replace:
+                # if self.ROOT in name:
+                    # newname = name.replace(self.ROOT, self.LOCALROOT)
+                # else:
+                    # newname = name.replace(self.LOCALROOT, self.ROOT)
+            # else:
+                # newname = name
 
-            base, plugin = newname.rsplit(".", 1)
+            # base, plugin = newname.rsplit(".", 1)
 
-            self.log.debug("Redirected import %s -> %s" % (name, newname))
+            # self.log.debug("Redirected import %s -> %s" % (name, newname))
 
-            module = __import__(newname, globals(), locals(), [plugin])
-            #inject under new an old name
-            sys.modules[name] = module
-            sys.modules[newname] = module
+            # module = __import__(newname, globals(), locals(), [plugin])
+            # #inject under new an old name
+            # sys.modules[name] = module
+            # sys.modules[newname] = module
 
-        return sys.modules[name]
+        # return sys.modules[name]
 
     def reload_plugins(self, type_plugins):
         """ reloads and reindexes plugins """
@@ -256,7 +256,7 @@ class PluginManager(object):
         return any(l.isUserPlugin(plugin) for l in self.loader)
 
     def get_category(self, plugin):
-        plugin = self.loader.getPlugin("addon", plugin)
+        plugin = self.loader.get_plugin("addon", plugin)
         if plugin:
             return plugin.category or "addon"
 
