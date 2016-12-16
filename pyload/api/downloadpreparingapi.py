@@ -25,7 +25,7 @@ class DownloadPreparingApi(ApiComponent):
         :param links:
         :return: {plugin: urls}
         """
-        data, crypter = self.pyload.pluginManager.parseUrls(links)
+        data, crypter = self.pyload.pluginManager.parse_urls(links)
         plugins = {}
 
         for url, plugin in chain(data, crypter):
@@ -43,13 +43,13 @@ class DownloadPreparingApi(ApiComponent):
         :param links:
         :return: initial set of data as :class:`OnlineCheck` instance containing the result id
         """
-        hoster, crypter = self.pyload.pluginManager.parseUrls(links)
+        hoster, crypter = self.pyload.pluginManager.parse_urls(links)
 
         #: TODO: withhold crypter, derypt or add later
         # initial result does not contain the crypter links
         tmp = [(url, LinkStatus(url, url, -1, DS.Queued, pluginname)) for url, pluginname in hoster]
         data = parseNames(tmp)
-        rid = self.pyload.threadManager.createResultThread(self.primary_uid, hoster + crypter)
+        rid = self.pyload.threadManager.create_result_thread(self.primary_uid, hoster + crypter)
 
         return OnlineCheck(rid, data)
 
@@ -89,7 +89,7 @@ class DownloadPreparingApi(ApiComponent):
         :param rid: `ResultID`
         :return: `OnlineCheck`, if rid is -1 then there is no more data available
         """
-        result = self.pyload.threadManager.getInfoResult(rid)
+        result = self.pyload.threadManager.get_info_result(rid)
         if result and result.owner == self.primary_uid:
             return result.toApiData()
 

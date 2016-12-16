@@ -186,7 +186,7 @@ class Account(Base):
                 self.setConfig(item.name, item.value)
 
     def get_account_request(self):
-        return self.pyload.requestFactory.getRequest(self.cj)
+        return self.pyload.requestFactory.get_request(self.cj)
 
     def get_download_settings(self):
         """ Can be overwritten to change download settings. Default is no chunkLimit, max dl limit, resumeDownload
@@ -232,7 +232,7 @@ class Account(Base):
 
             self.logDebug("Account Info: %s" % str(infos))
             self.timestamp = time()
-            self.pyload.evm.dispatchEvent("account:loaded", self.toInfoData())
+            self.pyload.evm.dispatch_event("account:loaded", self.toInfoData())
 
     #TODO: remove user
     def load_account_info(self, req):
@@ -314,7 +314,7 @@ class Account(Base):
     def schedule_refresh(self, time=0, force=True):
         """ add a task for refreshing the account info to the scheduler """
         self.logDebug("Scheduled Account refresh for %s in %s seconds." % (self.loginname, time))
-        self.pyload.scheduler.addJob(time, self.getAccountInfo, [force])
+        self.pyload.scheduler.add_job(time, self.getAccountInfo, [force])
 
     @lock
     def check_login(self, req):

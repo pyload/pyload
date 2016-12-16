@@ -302,7 +302,7 @@ class FileManager(object):
         pid = f.packageid
         order = f.fileorder
 
-        if fid in self.pyload.dlm.processingIds():
+        if fid in self.pyload.dlm.processing_ids():
             f.abortDownload()
 
         self.db.deleteFile(fid, f.fileorder, f.packageid)
@@ -362,7 +362,7 @@ class FileManager(object):
 
         # TODO: user context?
         if not self.db.queuestats()[0]:
-            self.pyload.addonmanager.dispatchEvent("download:allFinished")
+            self.pyload.addonmanager.dispatch_event("download:allFinished")
             self.pyload.log.debug("All downloads finished")
             return True
 
@@ -376,7 +376,7 @@ class FileManager(object):
 
         # TODO: user context?
         if not self.db.processcount(fid):
-            self.pyload.addonmanager.dispatchEvent("download:allProcessed")
+            self.pyload.addonmanager.dispatch_event("download:allProcessed")
             self.pyload.log.debug("All downloads processed")
             return True
 
@@ -389,7 +389,7 @@ class FileManager(object):
         if not ids or (pyfile.id in ids and len(ids) == 1):
             if not pyfile.package().setFinished:
                 self.pyload.log.info(_("Package finished: %s") % pyfile.package().name)
-                self.pyload.addonmanager.packageFinished(pyfile.package())
+                self.pyload.addonmanager.package_finished(pyfile.package())
                 pyfile.package().setFinished = True
 
     def reset_count(self):
@@ -533,7 +533,7 @@ class FileManager(object):
             if pyfile.status not in (DS.NA, DS.Finished, DS.Skipped):
                 urls.append((pyfile.url, pyfile.pluginname))
 
-        self.pyload.threadManager.createInfoThread(urls, pid)
+        self.pyload.threadManager.create_info_thread(urls, pid)
 
 
     @invalidate

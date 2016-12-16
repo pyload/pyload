@@ -59,7 +59,7 @@ class ReloadCc(MultiHoster):
 
     def core_ready(self):
         # Get account plugin and check if there is a valid account available
-        self.account = self.pyload.accountManager.getAccountPlugin("ReloadCc")
+        self.account = self.pyload.accountManager.get_account_plugin("ReloadCc")
         if not self.account.canUse():
             self.account = None
             self.logError("Please add a valid reload.cc account first and restart pyLoad.")

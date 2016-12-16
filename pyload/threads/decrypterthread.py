@@ -32,8 +32,8 @@ class DecrypterThread(BaseThread):
         return self.progress
 
     def run(self):
-        pack = self.pyload.files.getPackage(self.pid)
-        api = self.pyload.api.withUserContext(self.owner)
+        pack = self.pyload.files.get_package(self.pid)
+        api = self.pyload.api.with_user_context(self.owner)
         links, packages = self.decrypt(accumulate(self.data), pack.password)
 
         # if there is only one package links will be added to current one
@@ -50,7 +50,7 @@ class DecrypterThread(BaseThread):
         for p in packages:
             api.addPackage(p.name, p.get_urls(), pack.password)
 
-        self.pyload.files.setDownloadStatus(self.fid, DS.Finished if not self.error else DS.Failed)
+        self.pyload.files.set_download_status(self.fid, DS.Finished if not self.error else DS.Failed)
         self.m.done(self)
 
     def decrypt(self, plugin_map, password=None, err=False):
@@ -60,7 +60,7 @@ class DecrypterThread(BaseThread):
                                          0, 0, len(self.data), self.owner, ProgressType.Decrypting)
         # TODO QUEUE_DECRYPT
         for name, urls in plugin_map.items():
-            klass = self.pyload.pluginManager.loadClass("crypter", name)
+            klass = self.pyload.pluginManager.load_class("crypter", name)
             plugin = None
             plugin_result = []
 

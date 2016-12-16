@@ -18,7 +18,7 @@ class EasybytezCom(MultiHoster):
     __author_mail__ = "zoidberg@mujmail.cz"
 
     def get_hoster(self):
-        self.account = self.pyload.accountManager.getAccountPlugin(self.__name__)
+        self.account = self.pyload.accountManager.get_account_plugin(self.__name__)
         user = self.account.selectAccount()[0]
 
         try:

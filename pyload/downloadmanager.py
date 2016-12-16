@@ -79,7 +79,7 @@ class DownloadManager(object):
         else:
             thread = DownloadThread(self)
 
-        thread.put(self.pyload.files.getFile(info.fid))
+        thread.put(self.pyload.files.get_file(info.fid))
 
         # wait until it picked up the task
         thread.isWorking.wait()
@@ -88,7 +88,7 @@ class DownloadManager(object):
     @lock
     def start_decrypter_thread(self, info):
         """ Start decrypting of entered data, all links in one package are accumulated to one thread."""
-        self.pyload.files.setDownloadStatus(info.fid, DS.Decrypting)
+        self.pyload.files.set_download_status(info.fid, DS.Decrypting)
         self.decrypter.append(DecrypterThread(self, [(info.download.url, info.download.plugin)],
                                               info.fid, info.package, info.owner))
 
@@ -132,11 +132,11 @@ class DownloadManager(object):
             self.log.warning(_("Not enough space left on device"))
             self.paused = True
 
-        if self.paused or not self.pyload.api.isTimeDownload():
+        if self.paused or not self.pyload.api.is_time_download():
             return False
 
         # at least one thread want reconnect and we are supposed to wait
-        if self.pyload.config['reconnect']['wait'] and self.wantReconnect() > 1:
+        if self.pyload.config['reconnect']['wait'] and self.want_reconnect() > 1:
             return False
 
         self.assignJobs()
@@ -157,14 +157,14 @@ class DownloadManager(object):
 
         slots = self.getRemainingPluginSlots()
         occ = tuple([plugin for plugin, v in slots.items() if v == 0])
-        jobs = self.pyload.files.getJobs(occ)
+        jobs = self.pyload.files.get_jobs(occ)
 
         # map plugin to list of jobs
         plugins = defaultdict(list)
 
         for uid, info in jobs.items():
             # check the quota of each user and filter
-            quota = self.pyload.api.calcQuota(uid)
+            quota = self.pyload.api.calc_quota(uid)
             if -1 < quota < info.size:
                 del jobs[uid]
 
@@ -191,11 +191,11 @@ class DownloadManager(object):
     def start_job(self, info, limit):
         """ start a download or decrypter thread with given file info """
 
-        plugin = self.pyload.pluginManager.findPlugin(info.download.plugin)
+        plugin = self.pyload.pluginManager.find_plugin(info.download.plugin)
         # this plugin does not exits
         if plugin is None:
             self.log.error(_("Plugin '%s' does not exists") % info.download.plugin)
-            self.pyload.files.setDownloadStatus(info.fid, DS.Failed)
+            self.pyload.files.set_download_status(info.fid, DS.Failed)
             return False
 
         if plugin == "hoster":
@@ -217,7 +217,7 @@ class DownloadManager(object):
     def try_reconnect(self):
         """checks if reconnect needed"""
 
-        if not self.pyload.config["reconnect"]["activated"] or not self.pyload.api.isTimeReconnect():
+        if not self.pyload.config["reconnect"]["activated"] or not self.pyload.api.is_time_reconnect():
             return False
 
         # only reconnect when all threads are ready
@@ -242,7 +242,7 @@ class DownloadManager(object):
 
         old_ip = get_ip()
 
-        self.pyload.evm.dispatchEvent("reconnect:before", old_ip)
+        self.pyload.evm.dispatch_event("reconnect:before", old_ip)
         self.log.debug("Old IP: %s" % old_ip)
 
         try:
@@ -256,7 +256,7 @@ class DownloadManager(object):
 
         sleep(1)
         ip = get_ip()
-        self.pyload.evm.dispatchEvent("reconnect:after", ip)
+        self.pyload.evm.dispatch_event("reconnect:after", ip)
 
         if not old_ip or old_ip == ip:
             self.log.warning(_("Reconnect not successful"))

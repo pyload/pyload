@@ -40,7 +40,7 @@ class RPNetBiz(MultiHoster):
 
     def core_ready(self):
         # Get account plugin and check if there is a valid account available
-        self.account = self.pyload.accountManager.getAccountPlugin("RPNetBiz")
+        self.account = self.pyload.accountManager.get_account_plugin("RPNetBiz")
         if not self.account.canUse():
             self.account = None
             self.logError(_("Please enter your %s account or deactivate this plugin") % "rpnet")

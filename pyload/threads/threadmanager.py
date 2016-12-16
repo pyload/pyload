@@ -75,7 +75,7 @@ class ThreadManager(object):
         return self.infoResults.get(rid)
 
     def set_info_results(self, oc, result):
-        self.pyload.evm.dispatchEvent("linkcheck:updated", oc.rid, result, owner=oc.owner)
+        self.pyload.evm.dispatch_event("linkcheck:updated", oc.rid, result, owner=oc.owner)
         oc.update(result)
 
     def get_progress_list(self, user=None):

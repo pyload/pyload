@@ -22,7 +22,7 @@ class Premium4Me(MultiHoster):
         return [x.strip() for x in page.replace("\"", "").split(";")]
 
     def core_ready(self):
-        self.account = self.pyload.accountManager.getAccountPlugin("Premium4Me")
+        self.account = self.pyload.accountManager.get_account_plugin("Premium4Me")
 
         user = self.account.selectAccount()[0]
 

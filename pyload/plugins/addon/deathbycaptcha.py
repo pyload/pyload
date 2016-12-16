@@ -163,7 +163,7 @@ class DeathByCaptcha(Hook):
         if not self.getConfig("username") or not self.getConfig("passkey"):
             return False
 
-        if self.pyload.isClientConnected() and not self.getConfig("force"):
+        if self.pyload.is_client_connected() and not self.getConfig("force"):
             return False
 
         try:

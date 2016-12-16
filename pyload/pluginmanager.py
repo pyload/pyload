@@ -45,10 +45,10 @@ class PluginManager(object):
         # add to path, so we can import from userplugins
         sys.path.append(abspath(""))
         self.loader = LoaderFactory(PluginLoader(abspath(self.LOCALROOT), self.LOCALROOT, self.pyload.config),
-                                    PluginLoader(abspath(join(pypath, "pyload", "plugins")), self.ROOT,
+                                    _plugin_loader(abspath(join(pypath, "pyload", "plugins")), self.ROOT,
                                                  self.pyload.config))
 
-        self.loader.checkVersions()
+        self.loader.check_versions()
 
         # plugin matcher to overwrite some behaviour
         self.matcher = []

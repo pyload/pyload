@@ -45,7 +45,7 @@ class ConfigApi(ApiComponent):
         :rtype: dict of section -> ConfigHolder
         """
         data = {}
-        for section, config, values in self.pyload.config.iterCoreSections():
+        for section, config, values in self.pyload.config.iter_core_sections():
             data[section] = toConfigHolder(section, config, values)
         return data
 
@@ -55,7 +55,7 @@ class ConfigApi(ApiComponent):
         :rtype: list of PluginInfo
         """
         return [ConfigInfo(section, config.label, config.description, False, False)
-                for section, config, values in self.pyload.config.iterCoreSections()]
+                for section, config, values in self.pyload.config.iter_core_sections()]
 
     @require_perm(Permission.Plugins)
     def get_plugin_config(self):
@@ -67,14 +67,14 @@ class ConfigApi(ApiComponent):
         # TODO: multi user
         # TODO: better plugin / addon activated config
         data = []
-        active = [x.getName() for x in self.pyload.addonmanager.activePlugins()]
-        for name, config, values in self.pyload.config.iterSections(self.primary_uid):
+        active = [x.getName() for x in self.pyload.addonmanager.active_plugins()]
+        for name, config, values in self.pyload.config.iter_sections(self.primary_uid):
             # skip unmodified and inactive addons
             if not values and name not in active: continue
 
             item = ConfigInfo(name, config.label, config.description,
-                              self.pyload.pluginManager.getCategory(name),
-                              self.pyload.pluginManager.isUserPlugin(name),
+                              self.pyload.pluginManager.get_category(name),
+                              self.pyload.pluginManager.is_user_plugin(name),
                               # TODO: won't work probably
                               values.get("activated", None if "activated" not in config.config else config.config[
                                   "activated"].input.default_value))
@@ -90,9 +90,9 @@ class ConfigApi(ApiComponent):
         """
         # TODO: filter user_context / addons when not allowed
         plugins = [ConfigInfo(name, config.label, config.description,
-                              self.pyload.pluginManager.getCategory(name),
-                              self.pyload.pluginManager.isUserPlugin(name))
-                   for name, config, values in self.pyload.config.iterSections(self.primary_uid)]
+                              self.pyload.pluginManager.get_category(name),
+                              self.pyload.pluginManager.is_user_plugin(name))
+                   for name, config, values in self.pyload.config.iter_sections(self.primary_uid)]
 
         return plugins
 
@@ -104,7 +104,7 @@ class ConfigApi(ApiComponent):
         :rtype: ConfigHolder
         """
         # requires at least plugin permissions, but only admin can load core config
-        config, values = self.pyload.config.getSection(name, self.primary_uid)
+        config, values = self.pyload.config.get_section(name, self.primary_uid)
         return toConfigHolder(name, config, values)
 
 
@@ -117,7 +117,7 @@ class ConfigApi(ApiComponent):
         for item in config.items:
             self.pyload.config.set(config.name, item.name, item.value, sync=False, user=self.primary_uid)
             # save the changes
-        self.pyload.config.saveValues(self.primary_uid, config.name)
+        self.pyload.config.save_values(self.primary_uid, config.name)
 
     @require_perm(Permission.Plugins)
     def delete_config(self, plugin):

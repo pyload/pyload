@@ -64,12 +64,12 @@ class DownloadThread(BaseThread):
                 self.log.info(_("Download starts: %s" % pyfile.name))
 
                 # start download
-                self.pyload.addonmanager.downloadPreparing(pyfile)
+                self.pyload.addonmanager.download_preparing(pyfile)
                 pyfile.plugin.preprocessing(self)
 
                 self.log.info(_("Download finished: %s") % pyfile.name)
-                self.pyload.addonmanager.downloadFinished(pyfile)
-                self.pyload.files.checkPackageFinished(pyfile)
+                self.pyload.addonmanager.download_finished(pyfile)
+                self.pyload.files.check_package_finished(pyfile)
 
             except NotImplementedError:
                 self.log.error(_("Plugin %s is missing a function.") % pyfile.pluginname)
@@ -120,7 +120,7 @@ class DownloadThread(BaseThread):
                     self.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": msg})
                     pyfile.error = msg
 
-                self.pyload.addonmanager.downloadFailed(pyfile)
+                self.pyload.addonmanager.download_failed(pyfile)
                 self.clean(pyfile)
                 continue
 
@@ -162,7 +162,7 @@ class DownloadThread(BaseThread):
                         print_exc()
                         self.writeDebugReport(pyfile.plugin.__name__, pyfile)
 
-                    self.pyload.addonmanager.downloadFailed(pyfile)
+                    self.pyload.addonmanager.download_failed(pyfile)
 
                 self.clean(pyfile)
                 continue
@@ -175,7 +175,7 @@ class DownloadThread(BaseThread):
 
                 self.clean(pyfile)
 
-                self.pyload.files.checkPackageFinished(pyfile)
+                self.pyload.files.check_package_finished(pyfile)
 
                 self.active = False
                 self.pyload.files.save()
@@ -197,7 +197,7 @@ class DownloadThread(BaseThread):
                     print_exc()
                     self.writeDebugReport(pyfile.plugin.__name__, pyfile)
 
-                self.pyload.addonmanager.downloadFailed(pyfile)
+                self.pyload.addonmanager.download_failed(pyfile)
                 self.clean(pyfile)
                 continue
 

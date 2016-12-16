@@ -44,19 +44,19 @@ class CoreApi(ApiComponent):
 
         :return: `StatusInfo`
         """
-        queue = self.pyload.files.getQueueStats(self.primary_uid)
-        total = self.pyload.files.getDownloadStats(self.primary_uid)
+        queue = self.pyload.files.get_queue_stats(self.primary_uid)
+        total = self.pyload.files.get_download_stats(self.primary_uid)
 
         serverStatus = StatusInfo(0,
                                     total[0], queue[0],
                                     total[1], queue[1],
                                     self.isInteractionWaiting(Interaction.All),
-                                    not self.pyload.dlm.paused and self.isTimeDownload(),
+                                    not self.pyload.dlm.paused and self.is_time_download(),
                                     self.pyload.dlm.paused,
-                                    self.pyload.config['reconnect']['activated'] and self.isTimeReconnect(),
+                                    self.pyload.config['reconnect']['activated'] and self.is_time_reconnect(),
                                     self.getQuota())
 
-        for pyfile in self.pyload.dlm.activeDownloads(self.primary_uid):
+        for pyfile in self.pyload.dlm.active_downloads(self.primary_uid):
             serverStatus.speed += pyfile.getSpeed() #bytes/s
 
         return serverStatus
@@ -67,8 +67,8 @@ class CoreApi(ApiComponent):
 
         :rtype: list of :class:`ProgressInfo`
         """
-        return self.pyload.dlm.getProgressList(self.primary_uid) +\
-            self.pyload.threadManager.getProgressList(self.primary_uid)
+        return self.pyload.dlm.get_progress_list(self.primary_uid) +\
+            self.pyload.threadManager.get_progress_list(self.primary_uid)
 
     def pause_server(self):
         """Pause server: It won't start any new downloads, but nothing gets aborted."""

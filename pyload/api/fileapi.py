@@ -36,7 +36,7 @@ class FileApi(ApiComponent):
         :param full: go down the complete tree or only the first layer
         :return: :class:`TreeCollection`
         """
-        return self.pyload.files.getTree(pid, full, DownloadState.All, self.primary_uid)
+        return self.pyload.files.get_tree(pid, full, DownloadState.All, self.primary_uid)
 
     @require_perm(Permission.All)
     def get_filtered_file_tree(self, pid, full, state):
@@ -47,7 +47,7 @@ class FileApi(ApiComponent):
         :param state: :class:`DownloadState`, the attributes used for filtering
         :return: :class:`TreeCollection`
         """
-        return self.pyload.files.getTree(pid, full, state, self.primary_uid)
+        return self.pyload.files.get_tree(pid, full, state, self.primary_uid)
 
     @require_perm(Permission.All)
     def get_package_content(self, pid):
@@ -62,7 +62,7 @@ class FileApi(ApiComponent):
         :raises PackageDoesNotExist:
         :return: :class:`PackageInfo`
         """
-        info = self.pyload.files.getPackageInfo(pid)
+        info = self.pyload.files.get_package_info(pid)
         if not self.checkResult(info):
             raise PackageDoesNotExist(pid)
         return info
@@ -76,7 +76,7 @@ class FileApi(ApiComponent):
         :return: :class:`FileInfo`
 
         """
-        info = self.pyload.files.getFileInfo(fid)
+        info = self.pyload.files.get_file_info(fid)
         if not self.checkResult(info):
             raise FileDoesNotExist(fid)
         return info
@@ -84,16 +84,16 @@ class FileApi(ApiComponent):
     def get_file_path(self, fid):
         """ Internal method to get the filepath"""
         info = self.getFileInfo(fid)
-        pack = self.pyload.files.getPackage(info.package)
+        pack = self.pyload.files.get_package(info.package)
         return pack.getPath(), info.name
 
     @require_perm(Permission.All)
     def find_files(self, pattern):
-        return self.pyload.files.getTree(-1, True, DownloadState.All, self.primary_uid, pattern)
+        return self.pyload.files.get_tree(-1, True, DownloadState.All, self.primary_uid, pattern)
 
     @require_perm(Permission.All)
     def search_suggestions(self, pattern):
-        names = self.pyload.db.getMatchingFilenames(pattern, self.primary_uid)
+        names = self.pyload.db.get_matching_filenames(pattern, self.primary_uid)
         # TODO: stemming and reducing the names to provide better suggestions
         return uniqify(names)
 
@@ -109,7 +109,7 @@ class FileApi(ApiComponent):
         :return updated package info
         """
         pid = pack.pid
-        p = self.pyload.files.getPackage(pid)
+        p = self.pyload.files.get_package(pid)
         if not self.checkResult(p):
             raise PackageDoesNotExist(pid)
         p.updateFromInfoData(pack)
@@ -124,7 +124,7 @@ class FileApi(ApiComponent):
         :param paused: desired paused state of the package
         :return the new package status
         """
-        p = self.pyload.files.getPackage(pid)
+        p = self.pyload.files.get_package(pid)
         if not self.checkResult(p):
             raise PackageDoesNotExist(pid)
 
@@ -148,7 +148,7 @@ class FileApi(ApiComponent):
         :raises PackageDoesNotExist: When pid or root is missing
         :return: False if package can't be moved
         """
-        return self.pyload.files.movePackage(pid, root)
+        return self.pyload.files.move_package(pid, root)
 
     @require_perm(Permission.Modify)
     def move_files(self, fids, pid):
@@ -160,7 +160,7 @@ class FileApi(ApiComponent):
         :param pid: destination package
         :return: False if files can't be moved
         """
-        return self.pyload.files.moveFiles(fids, pid)
+        return self.pyload.files.move_files(fids, pid)
 
     def delete_files(self, fids):
         """ Deletes files from disk
@@ -184,7 +184,7 @@ class FileApi(ApiComponent):
         :param pid: package id
         :param position: new position, 0 for very beginning
         """
-        self.pyload.files.orderPackage(pid, position)
+        self.pyload.files.order_package(pid, position)
 
     @require_perm(Permission.Modify)
     def order_files(self, fids, pid, position):
@@ -196,7 +196,7 @@ class FileApi(ApiComponent):
         :param pid: package id of parent package
         :param position:  new position: 0 for very beginning
         """
-        self.pyload.files.orderFiles(fids, pid, position)
+        self.pyload.files.order_files(fids, pid, position)
 
 
 if Api.extend(FileApi):

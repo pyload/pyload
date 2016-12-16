@@ -47,7 +47,7 @@ class MultiHoster(Addon, PluginMatcher):
         self.logInfo(_("Activated %s") % account.__name__)
 
         pluginMap = {}
-        for name in self.pyload.pluginManager.getPlugins("hoster").keys():
+        for name in self.pyload.pluginManager.get_plugins("hoster").keys():
             pluginMap[name.lower()] = name
 
         supported = []
@@ -65,7 +65,7 @@ class MultiHoster(Addon, PluginMatcher):
             account.logError(_("No Hoster loaded"))
             return
 
-        klass = self.pyload.pluginManager.getPluginClass("hoster", account.__name__, overwrite=False)
+        klass = self.pyload.pluginManager.get_plugin_class("hoster", account.__name__, overwrite=False)
 
         if not klass:
             return
@@ -94,20 +94,20 @@ class MultiHoster(Addon, PluginMatcher):
         self.logDebug("Re-checking accounts")
 
         self.plugins = {}
-        for plugin, account in self.pyload.accountManager.iterAccounts():
+        for plugin, account in self.pyload.accountManager.iter_accounts():
             if isinstance(account, MultiHosterAccount) and account.isUsable():
                 self.addHoster(account)
 
     @add_event_listener("account:loaded")
     def refresh_account(self, acc):
 
-        account = self.pyload.accountManager.getAccount(acc.plugin, acc.loginname)
+        account = self.pyload.accountManager.get_account(acc.plugin, acc.loginname)
         if isinstance(account, MultiHosterAccount) and account.isUsable():
             self.addHoster(account)
 
     def activate(self):
         self.refreshAccounts()
-        self.pyload.pluginManager.addMatcher(self)
+        self.pyload.pluginManager.add_matcher(self)
 
     def deactivate(self):
-        self.pyload.pluginManager.removeMatcher(self)
+        self.pyload.pluginManager.remove_matcher(self)

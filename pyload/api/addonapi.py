@@ -26,7 +26,7 @@ class AddonApi(ApiComponent):
         :param plugin: pluginName
         :return: list of :class:`AddonInfo`
         """
-        return self.pyload.addonmanager.getInfo(plugin)
+        return self.pyload.addonmanager.get_info(plugin)
 
     @require_perm(Permission.Interaction)
     def get_addon_handler(self):
@@ -35,7 +35,7 @@ class AddonApi(ApiComponent):
         :return: dict of plugin name to list of :class:`AddonService`
         """
         handler = {}
-        for name, data in self.pyload.addonmanager.iterAddons():
+        for name, data in self.pyload.addonmanager.iter_addons():
             if data.handler:
                 handler[name] = list(data.handler.values())
         return handler

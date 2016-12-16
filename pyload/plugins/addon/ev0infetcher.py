@@ -26,7 +26,7 @@ class Ev0InFetcher(Hook):
         self.interval = self.getConfig("interval") * 60
 
     def filter_links(self, links):
-        results = self.pyload.pluginManager.parseUrls(links)
+        results = self.pyload.pluginManager.parse_urls(links)
         sortedLinks = {}
 
         for url, hoster in results:
@@ -63,7 +63,7 @@ class Ev0InFetcher(Hook):
                     links = self.filterLinks(item['description'].split("<br />"))
                     packagename = item['title'].encode("utf-8")
                     self.logInfo("Ev0InFetcher: new episode '%s' (matched '%s')" % (packagename, show))
-                    self.pyload.api.addPackage(packagename, links, 1 if self.getConfig("queue") else 0)
+                    self.pyload.api.add_package(packagename, links, 1 if self.getConfig("queue") else 0)
                     self.setStorage("show_%s_lastfound" % show, int(mktime(item.date_parsed)))
                     found = True
         if not found:

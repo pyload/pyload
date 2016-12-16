@@ -19,7 +19,7 @@ class DownloadApi(ApiComponent):
         if self.user:
             return self.user.true_primary
         else:
-            return self.pyload.db.getUserData(role=Role.Admin).uid
+            return self.pyload.db.get_user_data(role=Role.Admin).uid
 
     @require_perm(Permission.Add)
     def create_package(self, name, folder, root, password="", site="", comment="", paused=False):
@@ -41,7 +41,7 @@ class DownloadApi(ApiComponent):
         folder = folder.replace("http://", "").replace(":", "").replace("\\", "_").replace("..", "")
 
         self.pyload.log.info(_("Added package %(name)s as folder %(folder)s") % {"name": name, "folder": folder})
-        pid = self.pyload.files.addPackage(name, folder, root, password, site, comment, paused, self.truePrimary())
+        pid = self.pyload.files.add_package(name, folder, root, password, site, comment, paused, self.truePrimary())
 
         return pid
 
@@ -71,7 +71,7 @@ class DownloadApi(ApiComponent):
         else:
             folder = ""
 
-        pid = self.createPackage(name, folder, root, password, paused=paused)
+        pid = self.create_package(name, folder, root, password, paused=paused)
         self.addLinks(pid, links)
 
         return pid
@@ -83,11 +83,11 @@ class DownloadApi(ApiComponent):
         :param pid: package id
         :param links: list of urls
         """
-        hoster, crypter = self.pyload.pluginManager.parseUrls(links)
+        hoster, crypter = self.pyload.pluginManager.parse_urls(links)
 
-        self.pyload.files.addLinks(hoster + crypter, pid, self.truePrimary())
+        self.pyload.files.add_links(hoster + crypter, pid, self.truePrimary())
         if hoster:
-            self.pyload.threadManager.createInfoThread(hoster, pid)
+            self.pyload.threadManager.create_info_thread(hoster, pid)
 
         self.pyload.log.info((_("Added %d links to package") + " #%d" % pid) % len(hoster+crypter))
         self.pyload.files.save()
@@ -112,7 +112,7 @@ class DownloadApi(ApiComponent):
         :param fids: list of file ids
         """
         for fid in fids:
-            self.pyload.files.removeFile(fid)
+            self.pyload.files.remove_file(fid)
 
         self.pyload.files.save()
 
@@ -123,7 +123,7 @@ class DownloadApi(ApiComponent):
         :param pids: list of package ids
         """
         for pid in pids:
-            self.pyload.files.removePackage(pid)
+            self.pyload.files.remove_package(pid)
 
         self.pyload.files.save()
 
@@ -134,7 +134,7 @@ class DownloadApi(ApiComponent):
 
         :param pid: package id
         """
-        self.pyload.files.restartPackage(pid)
+        self.pyload.files.restart_package(pid)
 
     @require_perm(Permission.Modify)
     def restart_file(self, fid):
@@ -142,22 +142,22 @@ class DownloadApi(ApiComponent):
 
         :param fid: file id
         """
-        self.pyload.files.restartFile(fid)
+        self.pyload.files.restart_file(fid)
 
     @require_perm(Permission.Modify)
     def recheck_package(self, pid):
         """Check online status of all files in a package, also a default action when package is added. """
-        self.pyload.files.reCheckPackage(pid)
+        self.pyload.files.re_check_package(pid)
 
     @require_perm(Permission.Modify)
     def restart_failed(self):
         """Restarts all failed failes."""
-        self.pyload.files.restartFailed()
+        self.pyload.files.restart_failed()
 
     @require_perm(Permission.Modify)
     def stop_all_downloads(self):
         """Aborts all running downloads."""
-        for pyfile in self.pyload.files.cachedFiles():
+        for pyfile in self.pyload.files.cached_files():
             if self.hasAccess(pyfile):
                 pyfile.abortDownload()
 
@@ -168,7 +168,7 @@ class DownloadApi(ApiComponent):
         :param fids: list of file ids
         :return:
         """
-        pyfiles = self.pyload.files.cachedFiles()
+        pyfiles = self.pyload.files.cached_files()
         for pyfile in pyfiles:
             if pyfile.id in fids and self.hasAccess(pyfile):
                 pyfile.abortDownload()

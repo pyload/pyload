@@ -31,7 +31,7 @@ class UpdateManager(Hook):
 
     @property
     def debug(self):
-        return self.pyload.debug and self.getConfig("debug")
+        return self.pyload.debug and self.get_config("debug")
 
     def setup(self):
         if self.debug:
@@ -76,7 +76,7 @@ class UpdateManager(Hook):
 
         try:
             if self.version == "None":  # No updated known
-                version_check = get_url(self.URL % self.pyload.api.getServerVersion()).splitlines()
+                version_check = get_url(self.URL % self.pyload.api.get_server_version()).splitlines()
                 self.version = version_check[0]
 
                 # Still no updates, plugins will be checked
@@ -157,7 +157,7 @@ class UpdateManager(Hook):
 
             reloads.append((prefix, name))
 
-        self.reloaded = self.pyload.pluginManager.reloadPlugins(reloads)
+        self.reloaded = self.pyload.pluginManager.reload_plugins(reloads)
 
     def check_changes(self):
 
@@ -186,4 +186,4 @@ class UpdateManager(Hook):
                     reloads.append(id)
                     self.mtimes[id] = mtime
 
-        self.pyload.pluginManager.reloadPlugins(reloads)
+        self.pyload.pluginManager.reload_plugins(reloads)

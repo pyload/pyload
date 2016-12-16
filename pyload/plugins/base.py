@@ -89,7 +89,7 @@ class Base(object):
         self.im = core.interactionManager
         if owner is not None:
             #: :class:`Api`, user api when user is set
-            self.api = self.pyload.api.withUserContext(owner)
+            self.api = self.pyload.api.with_user_context(owner)
             if not self.api:
                 raise Exception("Plugin running with invalid user")
 
@@ -150,7 +150,7 @@ class Base(object):
     @property
     def pattern(self):
         """  Gives the compiled pattern of the plugin """
-        return self.pyload.pluginManager.getPlugin(self.__type__, self.__name__).re
+        return self.pyload.pluginManager.get_plugin(self.__type__, self.__name__).re
 
     def set_config(self, option, value):
         """ Set config value for current plugin """
@@ -166,17 +166,17 @@ class Base(object):
 
     def set_storage(self, key, value):
         """ Saves a value persistently to the database """
-        self.pyload.db.setStorage(self.__name__, key, value)
+        self.pyload.db.set_storage(self.__name__, key, value)
 
     def store(self, key, value):
         """ same as `setStorage` """
-        self.pyload.db.setStorage(self.__name__, key, value)
+        self.pyload.db.set_storage(self.__name__, key, value)
 
     def get_storage(self, key=None, default=None):
         """ Retrieves saved value or dict of all saved entries if key is None """
         if key is not None:
-            return self.pyload.db.getStorage(self.__name__, key) or default
-        return self.pyload.db.getStorage(self.__name__, key)
+            return self.pyload.db.get_storage(self.__name__, key) or default
+        return self.pyload.db.get_storage(self.__name__, key)
 
     def retrieve(self, *args, **kwargs):
         """ same as `getStorage` """
@@ -184,7 +184,7 @@ class Base(object):
 
     def del_storage(self, key):
         """ Delete entry in db """
-        self.pyload.db.delStorage(self.__name__, key)
+        self.pyload.db.del_storage(self.__name__, key)
 
     def shell(self):
         """ open ipython shell """
@@ -303,10 +303,10 @@ class Base(object):
         temp_file.close()
 
         name = "%sOCR" % self.__name__
-        has_plugin = name in self.pyload.pluginManager.getPlugins("internal")
+        has_plugin = name in self.pyload.pluginManager.get_plugins("internal")
 
         if self.pyload.captcha:
-            OCR = self.pyload.pluginManager.loadClass("internal", name)
+            OCR = self.pyload.pluginManager.load_class("internal", name)
         else:
             OCR = None
 

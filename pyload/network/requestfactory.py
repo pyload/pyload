@@ -15,7 +15,7 @@ class RequestFactory(object):
         self.bucket = Bucket()
         self.updateBucket()
 
-        self.pyload.evm.listenTo("config:changed", self.updateConfig)
+        self.pyload.evm.listen_to("config:changed", self.updateConfig)
 
     def get_url(self, *args, **kwargs):
         """ see HTTPRequest for argument list """
@@ -89,7 +89,7 @@ class RequestFactory(object):
     def update_bucket(self):
         """ set values in the bucket according to settings"""
         if not self.pyload.config["download"]["limit_speed"]:
-            self.bucket.setRate(-1)
+            self.bucket.set_rate(-1)
         else:
             self.bucket.setRate(self.pyload.config["download"]["max_speed"] * 1024)
 

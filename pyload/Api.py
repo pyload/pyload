@@ -111,7 +111,7 @@ class Api(Iface):
             uid = uid.uid
 
         if uid not in self.user_apis:
-            user = self.pyload.db.getUserData(uid=uid)
+            user = self.pyload.db.get_user_data(uid=uid)
             if not user: #TODO: anonymous user?
                 return None
 
@@ -145,7 +145,7 @@ class Api(Iface):
         """
         self.pyload.log.info(_("User '%s' tries to log in") % username)
 
-        return self.pyload.db.checkAuth(username, password)
+        return self.pyload.db.check_auth(username, password)
 
     @staticmethod
     def is_authorized(func, user):

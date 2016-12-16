@@ -86,14 +86,14 @@ class AddonManager(object):
         active = []
         deactive = []
 
-        for pluginname in self.pyload.pluginManager.getPlugins("addon"):
+        for pluginname in self.pyload.pluginManager.get_plugins("addon"):
             try:
                 # check first for builtin plugin
-                attrs = self.pyload.pluginManager.loadAttributes("addon", pluginname)
+                attrs = self.pyload.pluginManager.load_attributes("addon", pluginname)
                 internal = attrs.get("internal", False)
 
                 if internal or self.pyload.config.get(pluginname, "activated"):
-                    pluginClass = self.pyload.pluginManager.loadClass("addon", pluginname)
+                    pluginClass = self.pyload.pluginManager.load_class("addon", pluginname)
 
                     if not pluginClass: continue
 
@@ -119,7 +119,7 @@ class AddonManager(object):
         # TODO: multi user
 
         # check if section was a plugin
-        if plugin not in self.pyload.pluginManager.getPlugins("addon"):
+        if plugin not in self.pyload.pluginManager.get_plugins("addon"):
             return
 
         if name == "activated" and value:
@@ -133,7 +133,7 @@ class AddonManager(object):
         if plugin in self.plugins:
             return
 
-        pluginClass = self.pyload.pluginManager.loadClass("addon", plugin)
+        pluginClass = self.pyload.pluginManager.load_class("addon", plugin)
 
         if not pluginClass: return
 
@@ -159,7 +159,7 @@ class AddonManager(object):
         self.log.debug("Plugin deactivated: %s" % plugin)
 
         #remove periodic call
-        self.log.debug("Removed callback %s" % self.pyload.scheduler.removeJob(addon.cb))
+        self.log.debug("Removed callback %s" % self.pyload.scheduler.remove_job(addon.cb))
 
         # todo: only delete instances, meta data is lost otherwise
         del self.plugins[addon.__name__].instances[:]
@@ -169,7 +169,7 @@ class AddonManager(object):
         for f in dir(addon):
             if f.startswith("__") or not isinstance(getattr(addon, f), MethodType):
                 continue
-            self.pyload.eventManager.removeFromEvents(getattr(addon, f))
+            self.pyload.eventManager.remove_from_events(getattr(addon, f))
 
     def activate_addons(self):
         self.log.info(_("Activating addons..."))
@@ -241,7 +241,7 @@ class AddonManager(object):
         self.info_props[h] = AddonInfo(name, desc)
 
     def listen_to(self, *args):
-        self.pyload.eventManager.listenTo(*args)
+        self.pyload.eventManager.listen_to(*args)
 
     def dispatch_event(self, *args):
-        self.pyload.eventManager.dispatchEvent(*args)
+        self.pyload.eventManager.dispatch_event(*args)

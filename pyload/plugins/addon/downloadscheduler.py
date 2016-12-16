@@ -65,24 +65,24 @@ class DownloadScheduler(Hook):
                 self.setDownloadSpeed(last[3])
 
                 next_time = (((24 + next[0] - now[0]) * 60 + next[1] - now[1]) * 60 + next[2] - now[2]) % 86400
-                self.pyload.scheduler.removeJob(self.cb)
-                self.cb = self.pyload.scheduler.addJob(next_time, self.updateSchedule, threaded=False)
+                self.pyload.scheduler.remove_job(self.cb)
+                self.cb = self.pyload.scheduler.add_job(next_time, self.updateSchedule, threaded=False)
 
     def set_download_speed(self, speed):
         if speed == 0:
             abort = self.getConfig("abort")
             self.logInfo("Stopping download server. (Running downloads will %sbe aborted.)" % ('' if abort else 'not '))
-            self.pyload.api.pauseServer()
+            self.pyload.api.pause_server()
             if abort:
-                self.pyload.api.stopAllDownloads()
+                self.pyload.api.stop_all_downloads()
         else:
-            self.pyload.api.unpauseServer()
+            self.pyload.api.unpause_server()
 
             if speed > 0:
                 self.logInfo("Setting download speed to %d kB/s" % speed)
-                self.pyload.api.setConfigValue("download", "limit_speed", 1)
-                self.pyload.api.setConfigValue("download", "max_speed", speed)
+                self.pyload.api.set_config_value("download", "limit_speed", 1)
+                self.pyload.api.set_config_value("download", "max_speed", speed)
             else:
                 self.logInfo("Setting download speed to FULL")
-                self.pyload.api.setConfigValue("download", "limit_speed", 0)
-                self.pyload.api.setConfigValue("download", "max_speed", -1)
+                self.pyload.api.set_config_value("download", "limit_speed", 0)
+                self.pyload.api.set_config_value("download", "max_speed", -1)

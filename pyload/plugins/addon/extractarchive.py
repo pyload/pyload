@@ -89,7 +89,7 @@ class ExtractArchive(Addon):
 
         for p in ("UnRar", "UnZip"):
             try:
-                module = self.pyload.pluginManager.loadModule("internal", p)
+                module = self.pyload.pluginManager.load_module("internal", p)
                 klass = getattr(module, p)
                 if klass.checkDeps():
                     names.append(p)
@@ -145,7 +145,7 @@ class ExtractArchive(Addon):
 
         #iterate packages -> plugins -> targets
         for pid in ids:
-            p = self.pyload.files.getPackage(pid)
+            p = self.pyload.files.get_package(pid)
             self.logInfo(_("Check package %s") % p.name)
             if not p:
                 continue
@@ -205,7 +205,7 @@ class ExtractArchive(Addon):
                 self.logInfo(_("No files found to extract"))
 
     def start_extracting(self, plugin, fid, passwords, thread):
-        pyfile = self.pyload.files.getFile(fid)
+        pyfile = self.pyload.files.get_file(fid)
         if not pyfile:
             return []
 
@@ -245,7 +245,7 @@ class ExtractArchive(Addon):
                 return []
 
             if self.pyload.debug:
-                self.logDebug("Would delete: %s" % ", ".join(plugin.getDeleteFiles()))
+                self.log_debug("Would delete: %s" % ", ".join(plugin.getDeleteFiles()))
 
             if self.getConfig("deletearchive"):
                 files = plugin.getDeleteFiles()

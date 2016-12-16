@@ -52,7 +52,7 @@ class MergeFiles(Hook):
 
             for splitted_file in file_list:
                 self.logDebug("Merging part %s" % splitted_file)
-                pyfile = self.pyload.files.getFile(fid_dict[splitted_file])
+                pyfile = self.pyload.files.get_file(fid_dict[splitted_file])
                 pyfile.setStatus("processing")
                 try:
                     s_file = open(os.path.join(download_folder, splitted_file), "rb")

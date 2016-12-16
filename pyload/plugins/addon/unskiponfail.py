@@ -43,12 +43,12 @@ class UnSkipOnFail(Hook):
         dups = []
         pyfile_name = fs_encode(basename(pyfile.name))
         # get packages (w/o files, as most file data is useless here)
-        queue = self.pyload.api.getQueue()
+        queue = self.pyload.api.get_queue()
         for package in queue:
             # check if package-folder equals pyfile's package folder
             if fs_encode(package.folder) == fs_encode(pyfile.package().folder):
                 # now get packaged data w/ files/links
-                pdata = self.pyload.api.getPackageData(package.pid)
+                pdata = self.pyload.api.get_package_data(package.pid)
                 if pdata.links:
                     for link in pdata.links:
                         link_name = fs_encode(basename(link.name))
@@ -78,6 +78,6 @@ class UnSkipOnFail(Hook):
                         link.plugin,
                         link.packageID,
                         link.order)
-        pyfile.setStatus(new_status)
+        pyfile.set_status(new_status)
         self.pyload.files.save()
         pyfile.release()

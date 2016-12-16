@@ -31,7 +31,7 @@ class AccountManager(object):
         if info.owner is None:
             raise ValueError("Owner must not be null")
 
-        klass = self.pyload.pluginManager.loadClass("account", plugin)
+        klass = self.pyload.pluginManager.load_class("account", plugin)
         if not klass:
             self.pyload.log.warning(_("Account plugin %s not available") % plugin)
             raise ValueError("Account plugin %s not available" % plugin)
@@ -48,7 +48,7 @@ class AccountManager(object):
 
     def load_accounts(self):
         """loads all accounts available from db"""
-        for info, password, options in self.pyload.db.loadAccounts():
+        for info, password, options in self.pyload.db.load_accounts():
             # put into options as used in other context
             options = json.loads(options) if options else {}
             try:
@@ -71,7 +71,7 @@ class AccountManager(object):
                 [(acc.loginname, 1 if acc.activated else 0, 1 if acc.shared else 0, acc.password,
                   json.dumps(acc.options), acc.aid) for acc in
                  accounts])
-        self.pyload.db.saveAccounts(data)
+        self.pyload.db.save_accounts(data)
 
     def get_account(self, aid, plugin, user=None):
         """ Find a account by specific user (if given) """
@@ -84,13 +84,13 @@ class AccountManager(object):
     def create_account(self, plugin, loginname, password, uid):
         """ Creates a new account """
 
-        aid = self.pyload.db.createAccount(plugin, loginname, password, uid)
+        aid = self.pyload.db.create_account(plugin, loginname, password, uid)
         info = AccountInfo(aid, plugin, loginname, uid, activated=True)
         account = self._create_account(info, password, {})
         account.scheduleRefresh()
         self.saveAccounts()
 
-        self.pyload.eventManager.dispatchEvent("account:created", account.toInfoData())
+        self.pyload.eventManager.dispatch_event("account:created", account.toInfoData())
         return account
 
     @lock
@@ -104,7 +104,7 @@ class AccountManager(object):
             self.saveAccounts()
             account.scheduleRefresh(force=True)
 
-        self.pyload.eventManager.dispatchEvent("account:updated", account.toInfoData())
+        self.pyload.eventManager.dispatch_event("account:updated", account.toInfoData())
         return account
 
     @lock
@@ -115,8 +115,8 @@ class AccountManager(object):
                 # admins may delete accounts
                 if acc.aid == aid and (not uid or acc.owner == uid):
                     self.accounts[plugin].remove(acc)
-                    self.pyload.db.removeAccount(aid)
-                    self.pyload.evm.dispatchEvent("account:deleted", aid, user=uid)
+                    self.pyload.db.remove_account(aid)
+                    self.pyload.evm.dispatch_event("account:deleted", aid, user=uid)
                     break
 
     @lock
