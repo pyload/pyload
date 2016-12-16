@@ -84,11 +84,6 @@ def to_list(value):
     [value] if value is not None else [])
 
 
-def format_size(size):
-    print("Deprecated formatSize, use format_size")
-    return format_size(size)
-
-
 def format_size(bytes):
     bytes = int(bytes)
     steps = 0
@@ -97,11 +92,6 @@ def format_size(bytes):
         bytes /= 1024.0
         steps += 1
     return "%.2f %s" % (bytes, sizes[steps])
-
-
-def format_speed(speed):
-    print("Deprecated formatSpeed, use format_speed")
-    return format_speed(speed)
 
 
 def format_speed(speed):
@@ -119,11 +109,6 @@ def parse_time(timestamp, pattern):
     """ Parse a string representing a time according to a pattern and
     return a time in seconds suitable for an account plugin. """
     return int(time.mktime(time.strptime(timestamp, pattern)))
-
-
-def parse_file_size(string, unit=None):
-    print("Deprecated parseFileSize, use parse_size")
-    return parse_size(string, unit)
 
 
 def parse_size(string, unit=None):
