@@ -2,7 +2,7 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from pyload.Api import Api, RequirePerm, Permission, Interaction
+from pyload.Api import Api, require_perm, Permission, Interaction
 
 from .apicomponent import ApiComponent
 
@@ -10,23 +10,23 @@ from .apicomponent import ApiComponent
 class UserInteractionApi(ApiComponent):
     """ Everything needed for user interaction """
 
-    @RequirePerm(Permission.Interaction)
-    def isInteractionWaiting(self, mode):
+    @require_perm(Permission.Interaction)
+    def is_interaction_waiting(self, mode):
         """ Check if task is waiting.
 
         :param mode: binary or'ed output type
         :return: boolean
         """
-        return self.pyload.interactionManager.isTaskWaiting(self.primaryUID, mode)
+        return self.pyload.interactionManager.is_task_waiting(self.primary_uid, mode)
 
-    @RequirePerm(Permission.Interaction)
-    def getInteractionTasks(self, mode):
+    @require_perm(Permission.Interaction)
+    def get_interaction_tasks(self, mode):
         """Retrieve task for specific mode.
 
         :param mode: binary or'ed interaction types which should be retrieved
         :rtype list of :class:`InteractionTask`
         """
-        tasks = self.pyload.interactionManager.getTasks(self.primaryUID, mode)
+        tasks = self.pyload.interactionManager.get_tasks(self.primary_uid, mode)
         # retrieved tasks count as seen
         for t in tasks:
             t.seen = True
@@ -35,27 +35,27 @@ class UserInteractionApi(ApiComponent):
 
         return tasks
 
-    @RequirePerm(Permission.Interaction)
-    def setInteractionResult(self, iid, result):
+    @require_perm(Permission.Interaction)
+    def set_interaction_result(self, iid, result):
         """Set Result for a interaction task. It will be immediately removed from task queue afterwards
 
         :param iid: interaction id
         :param result: result as json string
         """
-        task = self.pyload.interactionManager.getTaskByID(iid)
-        if task and self.primaryUID == task.owner:
+        task = self.pyload.interactionManager.get_task_by_id(iid)
+        if task and self.primary_uid == task.owner:
             task.setResult(result)
 
-    @RequirePerm(Permission.Interaction)
-    def getAddonHandler(self):
+    @require_perm(Permission.Interaction)
+    def get_addon_handler(self):
         pass
 
-    @RequirePerm(Permission.Interaction)
-    def callAddonHandler(self, plugin, func, pid_or_fid):
+    @require_perm(Permission.Interaction)
+    def call_addon_handler(self, plugin, func, pid_or_fid):
         pass
 
-    @RequirePerm(Permission.Download)
-    def generateDownloadLink(self, fid, timeout):
+    @require_perm(Permission.Download)
+    def generate_download_link(self, fid, timeout):
         pass
 
 

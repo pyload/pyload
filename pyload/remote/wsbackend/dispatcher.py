@@ -14,5 +14,5 @@ class Dispatcher(BaseDispatcher):
         self._handler_suite_map = {}
         self._source_warnings = []
 
-    def addHandler(self, path, handler):
+    def add_handler(self, path, handler):
         self._handler_suite_map[path] = handler

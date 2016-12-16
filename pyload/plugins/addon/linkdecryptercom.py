@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 import re
 
 from pyload.plugins.hook import Hook
-from pyload.network.requestfactory import getURL
+from pyload.network.requestfactory import get_url
 from pyload.utils import remove_chars
 
 
@@ -18,14 +18,14 @@ class LinkdecrypterCom(Hook):
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
-    def coreReady(self):
+    def core_ready(self):
         try:
             self.loadPatterns()
         except Exception as e:
             self.logError(e)
 
-    def loadPatterns(self):
-        page = getURL("http://linkdecrypter.com/")
+    def load_patterns(self):
+        page = get_url("http://linkdecrypter.com/")
         m = re.search(r'<b>Supported\(\d+\)</b>: <i>([^+<]*)', page)
         if not m:
             self.logError(_("Crypter list not found"))

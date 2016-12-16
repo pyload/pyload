@@ -38,7 +38,7 @@ class InteractionManager(object):
         self.last_clients = {}
         self.ids = 0 #uniue interaction ids
 
-    def isClientConnected(self, user):
+    def is_client_connected(self, user):
         return self.last_clients.get(user, 0) + self.CLIENT_THRESHOLD > time()
 
     @lock
@@ -53,7 +53,7 @@ class InteractionManager(object):
             del self.tasks[v]
 
     @lock
-    def createNotification(self, title, content, desc="", plugin="", owner=None):
+    def create_notification(self, title, content, desc="", plugin="", owner=None):
         """ Creates and queues a new Notification
 
         :param title: short title
@@ -69,7 +69,7 @@ class InteractionManager(object):
         return task
 
     @lock
-    def createQueryTask(self, input, desc, plugin="", owner=None):
+    def create_query_task(self, input, desc, plugin="", owner=None):
         # input type was given, create a input widget
         if isinstance(input, int):
             input = Input(input)
@@ -82,7 +82,7 @@ class InteractionManager(object):
         return task
 
     @lock
-    def createCaptchaTask(self, img, format, filename, plugin="", type=InputType.Text, owner=None):
+    def create_captcha_task(self, img, format, filename, plugin="", type=InputType.Text, owner=None):
         """ Createss a new captcha task.
 
         :param img: image content (not base encoded)
@@ -106,17 +106,17 @@ class InteractionManager(object):
         return task
 
     @lock
-    def removeTask(self, task):
+    def remove_task(self, task):
         if task.iid in self.tasks:
             del self.tasks[task.iid]
             self.pyload.evm.dispatchEvent("interaction:deleted", task.iid)
 
     @lock
-    def getTaskByID(self, iid):
+    def get_task_by_id(self, iid):
         return self.tasks.get(iid, None)
 
     @lock
-    def getTasks(self, user, mode=IA.All):
+    def get_tasks(self, user, mode=IA.All):
         # update last active clients
         self.last_clients[user] = time()
 
@@ -127,11 +127,11 @@ class InteractionManager(object):
 
         return tasks
 
-    def isTaskWaiting(self, user, mode=IA.All):
-        tasks = [t for t in self.getTasks(user, mode) if not t.type == IA.Notification or not t.seen]
+    def is_task_waiting(self, user, mode=IA.All):
+        tasks = [t for t in self.get_tasks(user, mode) if not t.type == IA.Notification or not t.seen]
         return len(tasks) > 0
 
-    def queueTask(self, task):
+    def queue_task(self, task):
         cli = self.isClientConnected(task.owner)
 
         # set waiting times based on threshold

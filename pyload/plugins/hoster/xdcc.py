@@ -63,7 +63,7 @@ class Xdcc(Hoster):
 
         self.fail("Server blocked our ip, retry again later manually")
 
-    def doDownload(self, url):
+    def do_download(self, url):
         self.pyfile.setStatus("waiting")  # real link
 
         download_folder = self.config['general']['download_folder']

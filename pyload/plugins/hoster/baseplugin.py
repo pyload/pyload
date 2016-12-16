@@ -76,7 +76,7 @@ class BasePlugin(Hoster):
         else:
             self.fail("No Plugin matched and not a downloadable url.")
 
-    def downloadFile(self, pyfile):
+    def download_file(self, pyfile):
         url = pyfile.url
 
         for _ in range(5):

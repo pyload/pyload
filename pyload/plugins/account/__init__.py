@@ -47,7 +47,7 @@ class Account(Base):
     info_threshold = 600
 
     @classmethod
-    def fromInfoData(cls, m, info, password, options):
+    def from_info_data(cls, m, info, password, options):
         return cls(m, info.aid, info.loginname, info.owner,
                    True if info.activated else False, True if info.shared else False, password, options)
 
@@ -80,7 +80,7 @@ class Account(Base):
 
         self.init()
 
-    def toInfoData(self):
+    def to_info_data(self):
         info = AccountInfo(self.aid, self.__name__, self.loginname, self.owner, self.valid, self.validuntil, self.trafficleft,
                            self.maxtraffic, self.premium, self.activated, self.shared, self.options)
 
@@ -92,7 +92,7 @@ class Account(Base):
     def init(self):
         pass
 
-    def getConfig(self, option):
+    def get_config(self, option):
         """ Gets an option that was configured via the account options dialog and
         is only valid for this specific instance."""
         if option not in self.config_data:
@@ -103,7 +103,7 @@ class Account(Base):
 
         return self.config_data[option].input.default_value
 
-    def setConfig(self, option, value):
+    def set_config(self, option, value):
         """ Sets a config value for this account instance. Modifying the global values is not allowed. """
         if option not in self.config_data:
             return
@@ -159,13 +159,13 @@ class Account(Base):
 
         return self.valid
 
-    def restoreDefaults(self):
+    def restore_defaults(self):
         self.validuntil = Account.validuntil
         self.trafficleft = Account.trafficleft
         self.maxtraffic = Account.maxtraffic
         self.premium = Account.premium
 
-    def setLogin(self, loginname, password):
+    def set_login(self, loginname, password):
         """ updates the loginname and password and returns true if anything changed """
 
         if password != self.password or loginname != self.loginname:
@@ -178,17 +178,17 @@ class Account(Base):
 
         return False
 
-    def updateConfig(self, items):
+    def update_config(self, items):
         """  Updates the accounts options from config items """
         for item in items:
             # Check if a valid option
             if item.name in self.config_data:
                 self.setConfig(item.name, item.value)
 
-    def getAccountRequest(self):
+    def get_account_request(self):
         return self.pyload.requestFactory.getRequest(self.cj)
 
-    def getDownloadSettings(self):
+    def get_download_settings(self):
         """ Can be overwritten to change download settings. Default is no chunkLimit, max dl limit, resumeDownload
 
         :return: (chunkLimit, limitDL, resumeDownload) / (int, int, bool)
@@ -197,7 +197,7 @@ class Account(Base):
 
     # TODO: this method is ambiguous, it returns nothing, but just retrieves the data if needed
     @lock
-    def getAccountInfo(self, force=False):
+    def get_account_info(self, force=False):
         """retrieve account info's for an user, do **not** overwrite this method!\\
         just use it to retrieve info's in hoster plugins. see `loadAccountInfo`
 
@@ -235,7 +235,7 @@ class Account(Base):
             self.pyload.evm.dispatchEvent("account:loaded", self.toInfoData())
 
     #TODO: remove user
-    def loadAccountInfo(self, req):
+    def load_account_info(self, req):
         """ Overwrite this method and set account attributes within this method.
 
         :param user: Deprecated
@@ -244,24 +244,24 @@ class Account(Base):
         """
         pass
 
-    def getAccountCookies(self, user):
+    def get_account_cookies(self, user):
         self.logDebug("Deprecated method .getAccountCookies -> use account.cj")
         return self.cj
 
-    def selectAccount(self, *args):
+    def select_account(self, *args):
         self.logDebug("Deprecated method .selectAccount() -> use fields directly")
         return self.loginname, self.getAccountData()
 
-    def getAccountData(self, *args):
+    def get_account_data(self, *args):
         self.logDebug("Deprecated method .getAccountData -> use fields directly")
         return {"password": self.password, "premium": self.premium, "trafficleft": self.trafficleft,
                 "maxtraffic" : self.maxtraffic, "validuntil": self.validuntil}
 
-    def isPremium(self, user=None):
+    def is_premium(self, user=None):
         if user: self.logDebug("Deprecated Argument user for .isPremium()", user)
         return self.premium
 
-    def isUsable(self):
+    def is_usable(self):
         """Check several constraints to determine if account should be used"""
 
         if not self.valid or not self.activated: return False
@@ -284,15 +284,15 @@ class Account(Base):
 
         return True
 
-    def parseTraffic(self, string): #returns kbyte
+    def parse_traffic(self, string): #returns kbyte
         return old_div(parseFileSize(string), 1024)
 
-    def formatTrafficleft(self):
+    def format_trafficleft(self):
         if self.trafficleft is None:
             self.getAccountInfo(force=True)
         return format_size(self.trafficleft * 1024)
 
-    def wrongPassword(self):
+    def wrong_password(self):
         raise WrongPassword
 
     def empty(self, user=None):
@@ -311,13 +311,13 @@ class Account(Base):
         self.validuntil = time() - 1
         self.scheduleRefresh(60 * 60)
 
-    def scheduleRefresh(self, time=0, force=True):
+    def schedule_refresh(self, time=0, force=True):
         """ add a task for refreshing the account info to the scheduler """
         self.logDebug("Scheduled Account refresh for %s in %s seconds." % (self.loginname, time))
         self.pyload.scheduler.addJob(time, self.getAccountInfo, [force])
 
     @lock
-    def checkLogin(self, req):
+    def check_login(self, req):
         """ checks if the user is still logged in """
         if self.login_ts + self.login_timeout * 60 < time():
             if self.login_ts: # separate from fresh login to have better debug logs

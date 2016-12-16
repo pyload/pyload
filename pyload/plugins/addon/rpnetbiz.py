@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 from pyload.plugins.internal.multihoster import MultiHoster
 from pyload.common.json_layer import json_loads
-from pyload.network.requestfactory import getURL
+from pyload.network.requestfactory import get_url
 
 
 class RPNetBiz(MultiHoster):
@@ -19,7 +19,7 @@ class RPNetBiz(MultiHoster):
     __author_name__ = "Dman"
     __author_mail__ = "dmanugm@gmail.com"
 
-    def getHoster(self):
+    def get_hoster(self):
         # No hosts supported if no account
         if not self.account or not self.account.canUse():
             return []
@@ -27,7 +27,7 @@ class RPNetBiz(MultiHoster):
         # Get account data
         (user, data) = self.account.selectAccount()
 
-        response = getURL("https://premium.rpnet.biz/client_api.php",
+        response = get_url("https://premium.rpnet.biz/client_api.php",
                           get={"username": user, "password": data['password'], "action": "showHosterList"})
         hoster_list = json_loads(response)
 
@@ -38,7 +38,7 @@ class RPNetBiz(MultiHoster):
         # Extract hosters from json file
         return hoster_list['hosters']
 
-    def coreReady(self):
+    def core_ready(self):
         # Get account plugin and check if there is a valid account available
         self.account = self.pyload.accountManager.getAccountPlugin("RPNetBiz")
         if not self.account.canUse():

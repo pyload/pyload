@@ -32,7 +32,7 @@ class DebridItaliaCom(MultiHoster):
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 
-    def getHoster(self):
+    def get_hoster(self):
         return ["netload.in", "hotfile.com", "rapidshare.com", "multiupload.com",
                 "uploading.com", "megashares.com", "crocko.com", "filepost.com",
                 "bitshare.com", "share-links.biz", "putlocker.com", "uploaded.to",

@@ -17,10 +17,10 @@ class XfilesharingProFolder(Crypter):
     LINK_PATTERN = r'<div class="link"><a href="([^"]+)" target="_blank">[^<]*</a></div>'
     SUBFOLDER_PATTERN = r'<TD width="1%"><img src="[^"]*/images/folder2.gif"></TD><TD><a href="([^"]+)"><b>(?!\. \.<)([^<]+)</b></a></TD>'
 
-    def decryptURL(self, url):
+    def decrypt_url(self, url):
         return self.decryptFile(self.load(url, decode = True))
 
-    def decryptFile(self, html):
+    def decrypt_file(self, html):
         new_links = []
 
         new_links.extend(re.findall(self.LINK_PATTERN, html))

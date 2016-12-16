@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from pyload.network.requestfactory import getURL
+from pyload.network.requestfactory import get_url
 from pyload.plugins.internal.multihoster import MultiHoster
 
 
@@ -16,6 +16,6 @@ class SimplydebridCom(MultiHoster):
     __author_name__ = "Kagenoshin"
     __author_mail__ = "kagenoshin@gmx.ch"
 
-    def getHoster(self):
-        page = getURL("http://simply-debrid.com/api.php?list=1")
+    def get_hoster(self):
+        page = get_url("http://simply-debrid.com/api.php?list=1")
         return [x.strip() for x in page.rstrip(';').replace("\"", "").split(";")]

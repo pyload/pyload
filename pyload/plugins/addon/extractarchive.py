@@ -54,7 +54,7 @@ if os.name != "nt":
 
 from pyload.utils.fs import safe_join as save_join, fs_encode
 
-from pyload.plugins.addon import Addon, threaded, AddonHandler
+from pyload.plugins.addon import Addon, threaded, addon_handler
 from pyload.plugins.internal.abstractextractor import ArchiveError, CRCError, WrongPassword
 
 
@@ -116,12 +116,12 @@ class ExtractArchive(Addon):
         # queue with package ids
         self.queue = []
 
-    @AddonHandler(_("Extract package"), _("Scans package for archives and extract them"))
-    def extractPackage(self, pid):
+    @addon_handler(_("Extract package"), _("Scans package for archives and extract them"))
+    def extract_package(self, pid):
         """ Extract package with given id"""
         self.manager.startThread(self.extract, [pid])
 
-    def packageFinished(self, pypack):
+    def package_finished(self, pypack):
         if self.getConfig("queue"):
             self.logInfo(_("Package %s queued for later extracting") % pypack.name)
             self.queue.append(pypack.id)
@@ -129,7 +129,7 @@ class ExtractArchive(Addon):
             self.manager.startThread(self.extract, [pypack.id])
 
     @threaded
-    def allDownloadsProcessed(self, thread):
+    def all_downloads_processed(self, thread):
         local = copy(self.queue)
         del self.queue[:]
         self.extract(local, thread)
@@ -204,7 +204,7 @@ class ExtractArchive(Addon):
             if not matched:
                 self.logInfo(_("No files found to extract"))
 
-    def startExtracting(self, plugin, fid, passwords, thread):
+    def start_extracting(self, plugin, fid, passwords, thread):
         pyfile = self.pyload.files.getFile(fid)
         if not pyfile:
             return []
@@ -274,11 +274,11 @@ class ExtractArchive(Addon):
 
     # TODO: config handler for passwords?
 
-    def getPasswords(self):
+    def get_passwords(self):
         """ List of saved passwords """
         return self.passwords
 
-    def addPassword(self, pw):
+    def add_password(self, pw):
         """  Adds a password to saved list"""
         pwfile = self.getConfig("passwordfile")
 
@@ -291,7 +291,7 @@ class ExtractArchive(Addon):
             f.write(pw + "\n")
         f.close()
 
-    def reloadPasswords(self):
+    def reload_passwords(self):
         pwfile = self.getConfig("passwordfile")
         if not exists(pwfile):
             open(pwfile, "wb").close()
@@ -304,7 +304,7 @@ class ExtractArchive(Addon):
 
         self.passwords = passwords
 
-    def setPermissions(self, files):
+    def set_permissions(self, files):
         for f in files:
             if not exists(f):
                 continue

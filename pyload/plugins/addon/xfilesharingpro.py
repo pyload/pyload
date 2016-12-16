@@ -18,10 +18,10 @@ class XFileSharingPro(Hook):
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
-    def coreReady(self):
+    def core_ready(self):
         self.loadPattern()
 
-    def loadPattern(self):
+    def load_pattern(self):
         hosterList = self.getConfigSet('includeList')
         excludeList = self.getConfigSet('excludeList')
 
@@ -66,7 +66,7 @@ class XFileSharingPro(Hook):
         dict["re"] = re.compile(regexp)
         self.logDebug("Pattern loaded - handling %d hosters" % len(hosterList))
 
-    def getConfigSet(self, option):
+    def get_config_set(self, option):
         s = self.getConfig(option).lower().replace('|', ',').replace(';', ',')
         return set([x.strip() for x in s.split(',')])
 

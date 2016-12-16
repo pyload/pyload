@@ -14,11 +14,11 @@ class UnZip(AbtractExtractor):
     __version__ = "0.1"
 
     @staticmethod
-    def checkDeps():
+    def check_deps():
         return sys.version_info[:2] >= (2, 6)
 
     @staticmethod
-    def getTargets(files_ids):
+    def get_targets(files_ids):
         result = []
 
         for file, id in files_ids:
@@ -32,5 +32,5 @@ class UnZip(AbtractExtractor):
         self.files = z.namelist()
         z.extractall(self.out)
 
-    def getDeleteFiles(self):
+    def get_delete_files(self):
         return [self.file]

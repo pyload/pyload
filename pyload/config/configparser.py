@@ -41,10 +41,10 @@ class ConfigParser(object):
         self.loadDefault()
         self.parseValues(self.CONFIG)
 
-    def loadDefault(self):
+    def load_default(self):
         make_config(self)
 
-    def checkVersion(self):
+    def check_version(self):
         """Determines if config needs to be deleted"""
         if exists(self.CONFIG):
             f = open(self.CONFIG, "rb")
@@ -62,7 +62,7 @@ class ConfigParser(object):
             f.write("version:" + str(CONF_VERSION))
             f.close()
 
-    def parseValues(self, filename):
+    def parse_values(self, filename):
         """read config values from file"""
         f = open(filename, "rb")
         config = f.readlines()[1:]
@@ -155,21 +155,21 @@ class ConfigParser(object):
 
         return False
 
-    def getMetaData(self, section, option):
+    def get_meta_data(self, section, option):
         """ get all config data for an option """
         return self.config[section].config[option]
 
-    def iterSections(self):
+    def iter_sections(self):
         """ Yields section, config info, values, for all sections """
 
         for name, config in self.config.items():
             yield name, config, self.values[name] if name in self.values else {}
 
-    def getSection(self, section):
+    def get_section(self, section):
         """ Retrieves single config as tuple (section, values) """
         return self.config[section], self.values[section] if section in self.values else {}
 
-    def addConfigSection(self, section, label, desc, expl, config):
+    def add_config_section(self, section, label, desc, expl, config):
         """Adds a section to the config. `config` is a list of config tuple as used in plugin api defined as:
         The order of the config elements is preserved with OrderedDict
         """

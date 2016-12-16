@@ -25,7 +25,7 @@ DB = None
 DB_VERSION = 7
 
 
-def set_DB(db):
+def set_db(db):
     global DB
     DB = db
 
@@ -96,7 +96,7 @@ class DatabaseJob(object):
 
         return "DataBase Job %s:%s\n%sResult: %s" % (self.f.__name__, self.args[1:], output, self.result)
 
-    def processJob(self):
+    def process_job(self):
         try:
             self.result = self.f(*self.args, **self.kwargs)
         except Exception as e:
@@ -130,7 +130,7 @@ class DatabaseBackend(Thread):
 
         self.jobs = Queue()
 
-        set_DB(self)
+        set_db(self)
 
     def setup(self):
         """ *MUST* be called before db can be used !"""
@@ -140,7 +140,7 @@ class DatabaseBackend(Thread):
     def init(self):
         """main loop, which executes commands"""
 
-        version = self._checkVersion()
+        version = self._check_version()
 
         self.conn = sqlite3.connect(self.DB_FILE)
         chmod(self.DB_FILE, 0o600)
@@ -148,7 +148,7 @@ class DatabaseBackend(Thread):
         self.c = self.conn.cursor()
 
         if version is not None and version < DB_VERSION:
-            success = self._convertDB(version)
+            success = self._convert_db(version)
 
             # delete database
             if not success:
@@ -170,7 +170,7 @@ class DatabaseBackend(Thread):
                 chmod(self.DB_FILE, 0o600)
                 self.c = self.conn.cursor()
 
-        self._createTables()
+        self._create_tables()
         self.conn.commit()
 
 
@@ -199,7 +199,7 @@ class DatabaseBackend(Thread):
         self.jobs.put("quit")
         self.closing.wait(1)
 
-    def _checkVersion(self):
+    def _check_version(self):
         """ get db version"""
         if not exists(self.VERSION_FILE):
             f = open(self.VERSION_FILE, "wb")
@@ -213,7 +213,7 @@ class DatabaseBackend(Thread):
 
         return v
 
-    def _convertDB(self, v):
+    def _convert_db(self, v):
         try:
             return getattr(self, "_convertV%i" % v)()
         except Exception:
@@ -221,12 +221,12 @@ class DatabaseBackend(Thread):
 
     #--convert scripts start
 
-    def _convertV6(self):
+    def _convert_v6(self):
         return False
 
     #--convert scripts end
 
-    def _createTables(self):
+    def _create_tables(self):
         """create tables for database"""
 
         self.c.execute(
@@ -400,7 +400,7 @@ class DatabaseBackend(Thread):
         self.c.execute('VACUUM')
 
 
-    def createCursor(self):
+    def create_cursor(self):
         return self.conn.cursor()
 
     @async
@@ -408,7 +408,7 @@ class DatabaseBackend(Thread):
         self.conn.commit()
 
     @queue
-    def syncSave(self):
+    def sync_save(self):
         self.conn.commit()
 
     @async
@@ -432,11 +432,11 @@ class DatabaseBackend(Thread):
         return job.result
 
     @classmethod
-    def registerSub(cls, klass):
+    def register_sub(cls, klass):
         cls.subs.append(klass)
 
     @classmethod
-    def unregisterSub(cls, klass):
+    def unregister_sub(cls, klass):
         cls.subs.remove(klass)
 
     def __getattr__(self, attr):

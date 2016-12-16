@@ -12,7 +12,7 @@ from pycurl import LOW_SPEED_TIME
 from uuid import uuid4
 from base64 import b64encode
 
-from pyload.network.requestfactory import getURL, getRequest
+from pyload.network.requestfactory import get_url, getRequest
 from pyload.network.httprequest import BadHeader
 
 from pyload.plugins.hook import Hook
@@ -33,8 +33,8 @@ class ExpertDecoders(Hook):
     def setup(self):
         self.info = {}
 
-    def getCredits(self):
-        response = getURL(self.API_URL, post={"key": self.getConfig("passkey"), "action": "balance"})
+    def get_credits(self):
+        response = get_url(self.API_URL, post={"key": self.getConfig("passkey"), "action": "balance"})
 
         if response.isdigit():
             self.logInfo(_("%s credits left") % response)
@@ -44,7 +44,7 @@ class ExpertDecoders(Hook):
             self.logError(response)
             return 0
 
-    def processCaptcha(self, task):
+    def process_captcha(self, task):
         task.data["ticket"] = ticket = uuid4()
         result = None
 
@@ -66,7 +66,7 @@ class ExpertDecoders(Hook):
         self.logDebug("result %s : %s" % (ticket, result))
         task.setResult(result)
 
-    def newCaptchaTask(self, task):
+    def new_captcha_task(self, task):
         if not task.isTextual():
             return False
 
@@ -84,11 +84,11 @@ class ExpertDecoders(Hook):
         else:
             self.logInfo(_("Your ExpertDecoders Account has not enough credits"))
 
-    def captchaInvalid(self, task):
+    def captcha_invalid(self, task):
         if "ticket" in task.data:
 
             try:
-                response = getURL(self.API_URL, post={"action": "refund", "key": self.getConfig("passkey"),
+                response = get_url(self.API_URL, post={"action": "refund", "key": self.getConfig("passkey"),
                                                       "gen_task_id": task.data["ticket"]})
                 self.logInfo("Request refund: %s" % response)
 

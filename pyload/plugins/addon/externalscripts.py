@@ -11,7 +11,7 @@ from os import listdir, access, X_OK, makedirs
 from os.path import join, exists, basename, abspath
 
 
-from pyload.plugins.addon import Addon, AddEventListener
+from pyload.plugins.addon import Addon, add_event_listener
 from pyload.utils.fs import safe_join
 
 
@@ -41,7 +41,7 @@ class ExternalScripts(Addon):
             if names:
                 self.logInfo((_("Installed scripts for %s: ") % script_type) + ", ".join([basename(x) for x in names]))
 
-    def initPluginType(self, folder, path):
+    def init_plugin_type(self, folder, path):
         if not exists(path):
             try:
                 makedirs(path)
@@ -58,7 +58,7 @@ class ExternalScripts(Addon):
 
             self.scripts[folder].append(join(path, f))
 
-    def callScript(self, script, *args):
+    def call_script(self, script, *args):
         try:
             cmd = [script] + [str(x) if not isinstance(x, basestring) else x for x in args]
             self.logDebug("Executing %(script)s: %(cmd)s" % {"script": abspath(script), "cmd": " ".join(cmd)})
@@ -67,42 +67,42 @@ class ExternalScripts(Addon):
         except Exception as e:
             self.logError(_("Error in %(script)s: %(error)s") % {"script": basename(script), "error": str(e)})
 
-    def downloadPreparing(self, pyfile):
+    def download_preparing(self, pyfile):
         for script in self.scripts['download_preparing']:
             self.callScript(script, pyfile.pluginname, pyfile.url, pyfile.id)
 
-    def downloadFinished(self, pyfile):
+    def download_finished(self, pyfile):
         for script in self.scripts['download_finished']:
             self.callScript(script, pyfile.pluginname, pyfile.url, pyfile.name,
                             safe_join(self.config['general']['download_folder'],
                                       pyfile.package().folder, pyfile.name), pyfile.id)
 
-    def packageFinished(self, pypack):
+    def package_finished(self, pypack):
         for script in self.scripts['package_finished']:
             folder = self.config['general']['download_folder']
             folder = safe_join(folder, pypack.folder)
 
             self.callScript(script, pypack.name, folder, pypack.password, pypack.id)
 
-    def beforeReconnecting(self, ip):
+    def before_reconnecting(self, ip):
         for script in self.scripts['before_reconnect']:
             self.callScript(script, ip)
 
-    def afterReconnecting(self, ip):
+    def after_reconnecting(self, ip):
         for script in self.scripts['after_reconnect']:
             self.callScript(script, ip)
 
-    @AddEventListener("extracting:finished")
-    def extractingFinished(self, folder, fname):
+    @add_event_listener("extracting:finished")
+    def extracting_finished(self, folder, fname):
         for script in self.scripts["extracting_finished"]:
             self.callScript(script, folder, fname)
 
-    @AddEventListener("download:allFinished")
-    def allDownloadsFinished(self):
+    @add_event_listener("download:allFinished")
+    def all_downloads_finished(self):
         for script in self.scripts["all_dls_finished"]:
             self.callScript(script)
 
-    @AddEventListener("download:allProcessed")
-    def allDownloadsProcessed(self):
+    @add_event_listener("download:allProcessed")
+    def all_downloads_processed(self):
         for script in self.scripts["all_dls_processed"]:
             self.callScript(script)

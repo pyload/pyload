@@ -13,7 +13,7 @@ from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 from pyload.plugins.internal.simplehoster import SimpleHoster, create_getInfo, PluginParseError, replace_patterns
 from pyload.plugins.internal.captchaservice import ReCaptcha, SolveMedia
 from pyload.utils import html_unescape
-from pyload.network.requestfactory import getURL
+from pyload.network.requestfactory import get_url
 
 
 class XFileSharingPro(SimpleHoster):
@@ -67,9 +67,9 @@ class XFileSharingPro(SimpleHoster):
         else:
             try:
                 # Due to a 0.4.9 core bug self.load would use cookies even if
-                # cookies=False. Workaround using getURL to avoid cookies.
+                # cookies=False. Workaround using get_url to avoid cookies.
                 # Can be reverted in 0.5 as the cookies bug has been fixed.
-                self.html = getURL(pyfile.url, decode=True)
+                self.html = get_url(pyfile.url, decode=True)
                 self.file_info = self.getFileInfo()
             except PluginParseError:
                 self.file_info = None
@@ -97,7 +97,7 @@ class XFileSharingPro(SimpleHoster):
         self.captcha = self.errmsg = None
         self.passwords = self.getPassword().splitlines()
 
-    def getDirectDownloadLink(self):
+    def get_direct_download_link(self):
         """ Get download link for premium users with direct download enabled """
         self.req.http.lastURL = self.pyfile.url
 
@@ -113,12 +113,12 @@ class XFileSharingPro(SimpleHoster):
 
         return location
 
-    def handleFree(self):
+    def handle_free(self):
         url = self.getDownloadLink()
         self.logDebug("Download URL: %s" % url)
         self.startDownload(url)
 
-    def getDownloadLink(self):
+    def get_download_link(self):
         for i in range(5):
             self.logDebug("Getting download link: #%d" % i)
             data = self.getPostParameters()
@@ -144,14 +144,14 @@ class XFileSharingPro(SimpleHoster):
 
         return found.group(1)
 
-    def handlePremium(self):
+    def handle_premium(self):
         self.html = self.load(self.pyfile.url, post=self.getPostParameters())
         found = re.search(self.DIRECT_LINK_PATTERN, self.html)
         if not found:
             self.parseError('DIRECT LINK')
         self.startDownload(found.group(1))
 
-    def handleOverriden(self):
+    def handle_overriden(self):
         #only tested with easybytez.com
         self.html = self.load("http://www.%s/" % self.HOSTER_NAME)
         action, inputs = self.parseHtmlForm('')
@@ -188,14 +188,14 @@ class XFileSharingPro(SimpleHoster):
         else:
             self.retry()
 
-    def startDownload(self, link):
+    def start_download(self, link):
         link = link.strip()
         if self.captcha:
             self.correctCaptcha()
         self.logDebug('DIRECT LINK: %s' % link)
         self.download(link, disposition=True)
 
-    def checkErrors(self):
+    def check_errors(self):
         found = re.search(self.ERROR_PATTERN, self.html)
         if found:
             self.errmsg = found.group(1)
@@ -226,7 +226,7 @@ class XFileSharingPro(SimpleHoster):
 
         return self.errmsg
 
-    def getPostParameters(self):
+    def get_post_parameters(self):
         for _ in range(3):
             if not self.errmsg:
                 self.checkErrors()
@@ -287,7 +287,7 @@ class XFileSharingPro(SimpleHoster):
         else:
             self.parseError('FORM: %s' % (inputs['op'] if 'op' in inputs else 'UNKNOWN'))
 
-    def handleCaptcha(self, inputs):
+    def handle_captcha(self, inputs):
         found = re.search(self.RECAPTCHA_URL_PATTERN, self.html)
         if found:
             recaptcha_key = unquote(found.group(1))

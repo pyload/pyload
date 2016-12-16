@@ -28,7 +28,7 @@ class DecrypterThread(BaseThread):
 
         self.start()
 
-    def getProgress(self):
+    def get_progress(self):
         return self.progress
 
     def run(self):
@@ -48,7 +48,7 @@ class DecrypterThread(BaseThread):
             api.addLinks(self.pid, [l.url for l in links])
 
         for p in packages:
-            api.addPackage(p.name, p.getURLs(), pack.password)
+            api.addPackage(p.name, p.get_urls(), pack.password)
 
         self.pyload.files.setDownloadStatus(self.fid, DS.Finished if not self.error else DS.Failed)
         self.m.done(self)

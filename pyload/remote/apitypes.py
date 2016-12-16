@@ -442,171 +442,171 @@ class UserDoesNotExist(ExceptionObject):
 
 
 class Iface(object):
-    def addLinks(self, pid, links):
+    def add_links(self, pid, links):
         pass
-    def addLocalFile(self, pid, name, path):
+    def add_local_file(self, pid, name, path):
         pass
-    def addPackage(self, name, links, password):
+    def add_package(self, name, links, password):
         pass
-    def addPackageChild(self, name, links, password, root, paused):
+    def add_package_child(self, name, links, password, root, paused):
         pass
     def addPackageP(self, name, links, password, paused):
         pass
-    def addUser(self, username, password):
+    def add_user(self, username, password):
         pass
-    def checkContainer(self, filename, data):
+    def check_container(self, filename, data):
         pass
-    def checkHTML(self, html, url):
+    def check_html(self, html, url):
         pass
-    def checkLinks(self, links):
+    def check_links(self, links):
         pass
-    def createAccount(self, plugin, loginname, password):
+    def create_account(self, plugin, loginname, password):
         pass
-    def createPackage(self, name, folder, root, password, site, comment, paused):
+    def create_package(self, name, folder, root, password, site, comment, paused):
         pass
-    def deleteConfig(self, plugin):
+    def delete_config(self, plugin):
         pass
-    def deleteFiles(self, fids):
+    def delete_files(self, fids):
         pass
-    def deletePackages(self, pids):
+    def delete_packages(self, pids):
         pass
-    def findFiles(self, pattern):
+    def find_files(self, pattern):
         pass
-    def findPackages(self, tags):
+    def find_packages(self, tags):
         pass
-    def freeSpace(self):
+    def free_space(self):
         pass
-    def generateDownloadLink(self, fid, timeout):
+    def generate_download_link(self, fid, timeout):
         pass
-    def generatePackages(self, links):
+    def generate_packages(self, links):
         pass
-    def getAccountInfo(self, aid, plugin, refresh):
+    def get_account_info(self, aid, plugin, refresh):
         pass
-    def getAccountTypes(self):
+    def get_account_types(self):
         pass
-    def getAccounts(self):
+    def get_accounts(self):
         pass
-    def getAddonHandler(self):
+    def get_addon_handler(self):
         pass
-    def getAllFiles(self):
+    def get_all_files(self):
         pass
-    def getAllInfo(self):
+    def get_all_info(self):
         pass
-    def getAllUserData(self):
+    def get_all_user_data(self):
         pass
-    def getAvailablePlugins(self):
+    def get_available_plugins(self):
         pass
-    def getConfig(self):
+    def get_config(self):
         pass
-    def getConfigValue(self, section, option):
+    def get_config_value(self, section, option):
         pass
-    def getCoreConfig(self):
+    def get_core_config(self):
         pass
-    def getFileInfo(self, fid):
+    def get_file_info(self, fid):
         pass
-    def getFileTree(self, pid, full):
+    def get_file_tree(self, pid, full):
         pass
-    def getFilteredFileTree(self, pid, full, state):
+    def get_filtered_file_tree(self, pid, full, state):
         pass
-    def getFilteredFiles(self, state):
+    def get_filtered_files(self, state):
         pass
-    def getInfoByPlugin(self, plugin):
+    def get_info_by_plugin(self, plugin):
         pass
-    def getInteractionTasks(self, mode):
+    def get_interaction_tasks(self, mode):
         pass
-    def getLog(self, offset):
+    def get_log(self, offset):
         pass
-    def getPackageContent(self, pid):
+    def get_package_content(self, pid):
         pass
-    def getPackageInfo(self, pid):
+    def get_package_info(self, pid):
         pass
-    def getPluginConfig(self):
+    def get_plugin_config(self):
         pass
-    def getProgressInfo(self):
+    def get_progress_info(self):
         pass
-    def getQuota(self):
+    def get_quota(self):
         pass
-    def getServerVersion(self):
+    def get_server_version(self):
         pass
-    def getStatusInfo(self):
+    def get_status_info(self):
         pass
-    def getUserData(self):
+    def get_user_data(self):
         pass
-    def getWSAddress(self):
+    def get_ws_address(self):
         pass
-    def invokeAddon(self, plugin, func, func_args):
+    def invoke_addon(self, plugin, func, func_args):
         pass
-    def invokeAddonHandler(self, plugin, func, pid_or_fid):
+    def invoke_addon_handler(self, plugin, func, pid_or_fid):
         pass
-    def isInteractionWaiting(self, mode):
+    def is_interaction_waiting(self, mode):
         pass
-    def loadConfig(self, name):
+    def load_config(self, name):
         pass
     def login(self, username, password):
         pass
-    def moveFiles(self, fids, pid):
+    def move_files(self, fids, pid):
         pass
-    def movePackage(self, pid, root):
+    def move_package(self, pid, root):
         pass
-    def orderFiles(self, fids, pid, position):
+    def order_files(self, fids, pid, position):
         pass
-    def orderPackage(self, pids, position):
+    def order_package(self, pids, position):
         pass
-    def parseLinks(self, links):
+    def parse_links(self, links):
         pass
-    def pauseServer(self):
+    def pause_server(self):
         pass
-    def pollResults(self, rid):
+    def poll_results(self, rid):
         pass
     def quit(self):
         pass
-    def recheckPackage(self, pid):
+    def recheck_package(self, pid):
         pass
-    def removeAccount(self, account):
+    def remove_account(self, account):
         pass
-    def removeFiles(self, fids):
+    def remove_files(self, fids):
         pass
-    def removePackages(self, pids):
+    def remove_packages(self, pids):
         pass
-    def removeUser(self, uid):
+    def remove_user(self, uid):
         pass
     def restart(self):
         pass
-    def restartFailed(self):
+    def restart_failed(self):
         pass
-    def restartFile(self, fid):
+    def restart_file(self, fid):
         pass
-    def restartPackage(self, pid):
+    def restart_package(self, pid):
         pass
-    def saveConfig(self, config):
+    def save_config(self, config):
         pass
-    def searchSuggestions(self, pattern):
+    def search_suggestions(self, pattern):
         pass
-    def setConfigValue(self, section, option, value):
+    def set_config_value(self, section, option, value):
         pass
-    def setInteractionResult(self, iid, result):
+    def set_interaction_result(self, iid, result):
         pass
-    def setPackagePaused(self, pid, paused):
+    def set_package_paused(self, pid, paused):
         pass
-    def setPassword(self, username, old_password, new_password):
+    def set_password(self, username, old_password, new_password):
         pass
-    def stopAllDownloads(self):
+    def stop_all_downloads(self):
         pass
-    def stopDownloads(self, fids):
+    def stop_downloads(self, fids):
         pass
-    def togglePause(self):
+    def toggle_pause(self):
         pass
-    def toggleReconnect(self):
+    def toggle_reconnect(self):
         pass
-    def unpauseServer(self):
+    def unpause_server(self):
         pass
-    def updateAccount(self, aid, plugin, loginname, password):
+    def update_account(self, aid, plugin, loginname, password):
         pass
-    def updateAccountInfo(self, account):
+    def update_account_info(self, account):
         pass
-    def updatePackage(self, pack):
+    def update_package(self, pack):
         pass
-    def updateUserData(self, data):
+    def update_user_data(self, data):
         pass
-    def uploadContainer(self, filename, data):
+    def upload_container(self, filename, data):
         pass

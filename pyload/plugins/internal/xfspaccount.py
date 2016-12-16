@@ -25,7 +25,7 @@ class XFSPAccount(Account):
     VALID_UNTIL_PATTERN = r'>Premium.[Aa]ccount expire:</TD><TD><b>([^<]+)</b>'
     TRAFFIC_LEFT_PATTERN = r'>Traffic available today:</TD><TD><b>([^<]+)</b>'
 
-    def loadAccountInfo(self, user, req):
+    def load_account_info(self, user, req):
         html = req.load(self.MAIN_PAGE + "?op=my_account", decode=True)
 
         validuntil = trafficleft = None

@@ -21,7 +21,7 @@ def random_salt():
 
 class UserMethods(DatabaseMethods):
     @queue
-    def addUser(self, user, password, role, permission):
+    def add_user(self, user, password, role, permission):
         salt = random_salt()
         h = sha1(salt + password)
         password = salt + h.hexdigest()
@@ -35,7 +35,7 @@ class UserMethods(DatabaseMethods):
                            (user, role, permission, password))
 
     @queue
-    def addDebugUser(self, uid):
+    def add_debug_user(self, uid):
         # just add a user with uid to db
         try:
             self.c.execute('INSERT INTO users (uid, name, password) VALUES (?, ?, ?)',
@@ -44,7 +44,7 @@ class UserMethods(DatabaseMethods):
             pass
 
     @queue
-    def getUserData(self, name=None, uid=None, role=None):
+    def get_user_data(self, name=None, uid=None, role=None):
         qry = ('SELECT uid, name, email, role, permission, folder, traffic, dllimit, dlquota, '
                'hddquota, user, template FROM "users" WHERE ')
 
@@ -69,7 +69,7 @@ class UserMethods(DatabaseMethods):
         return None
 
     @queue
-    def getAllUserData(self):
+    def get_all_user_data(self):
         self.c.execute('SELECT uid, name, email, role, permission, folder, traffic, dllimit, dlquota, '
                        'hddquota, user, template FROM "users"')
         user = {}
@@ -80,7 +80,7 @@ class UserMethods(DatabaseMethods):
 
 
     @queue
-    def checkAuth(self, user, password):
+    def check_auth(self, user, password):
         self.c.execute('SELECT uid, name, email, role, permission, folder, traffic, dllimit, dlquota, '
                        'hddquota, user, template, password FROM "users" WHERE name=?', (user,))
         r = self.c.fetchone()
@@ -95,7 +95,7 @@ class UserMethods(DatabaseMethods):
             return None
 
     @queue #TODO
-    def changePassword(self, user, oldpw, newpw):
+    def change_password(self, user, oldpw, newpw):
         self.c.execute('SELECT rowid, name, password FROM users WHERE name=?', (user,))
         r = self.c.fetchone()
         if not r:
@@ -116,7 +116,7 @@ class UserMethods(DatabaseMethods):
 
     # TODO update methods
     @async
-    def removeUserByName(self, name):
+    def remove_user_by_name(self, name):
         self.c.execute("SELECT uid FROM users WHERE name=?", (name,))
         uid = self.c.fetchone()
         if uid:

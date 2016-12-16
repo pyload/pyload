@@ -12,7 +12,7 @@ from _thread import start_new_thread
 from base64 import b64encode
 import time
 
-from pyload.network.requestfactory import getURL
+from pyload.network.requestfactory import get_url
 from pyload.network.httprequest import BadHeader
 
 from pyload.plugins.hook import Hook
@@ -42,8 +42,8 @@ class Captcha9kw(Hook):
         self.API_URL = "https" + self.API_URL if self.getConfig("https") else "http" + self.API_URL
         self.info = {}
 
-    def getCredits(self):
-        response = getURL(self.API_URL, get={"apikey": self.getConfig("passkey"), "pyload": "1", "source": "pyload",
+    def get_credits(self):
+        response = get_url(self.API_URL, get={"apikey": self.getConfig("passkey"), "pyload": "1", "source": "pyload",
                                              "action": "usercaptchaguthaben"})
 
         if response.isdigit():
@@ -54,7 +54,7 @@ class Captcha9kw(Hook):
             self.logError(response)
             return 0
 
-    def processCaptcha(self, task):
+    def process_captcha(self, task):
         result = None
 
         with open(task.captchaFile, 'rb') as f:
@@ -66,7 +66,7 @@ class Captcha9kw(Hook):
         else:
             mouse = 0
 
-        response = getURL(self.API_URL, post={
+        response = get_url(self.API_URL, post={
             "apikey": self.getConfig("passkey"),
             "prio": self.getConfig("prio"),
             "confirm": self.getConfig("confirm"),
@@ -84,7 +84,7 @@ class Captcha9kw(Hook):
             self.logInfo(_("New CaptchaID from upload: %s : %s") % (response, task.captchaFile))
 
             for _ in range(1, 100, 1):
-                response2 = getURL(self.API_URL, get={"apikey": self.getConfig("passkey"), "id": response,
+                response2 = get_url(self.API_URL, get={"apikey": self.getConfig("passkey"), "id": response,
                                                       "pyload": "1", "source": "pyload",
                                                       "action": "usercaptchacorrectdata"})
 
@@ -101,7 +101,7 @@ class Captcha9kw(Hook):
             self.logError("Bad upload: %s" % response)
             return False
 
-    def newCaptchaTask(self, task):
+    def new_captcha_task(self, task):
         if not task.isTextual() and not task.isPositional():
             return False
 
@@ -119,11 +119,11 @@ class Captcha9kw(Hook):
         else:
             self.logError(_("Your Captcha 9kw.eu Account has not enough credits"))
 
-    def captchaCorrect(self, task):
+    def captcha_correct(self, task):
         if "ticket" in task.data:
 
             try:
-                response = getURL(self.API_URL,
+                response = get_url(self.API_URL,
                                   post={"action": "usercaptchacorrectback",
                                         "apikey": self.getConfig("passkey"),
                                         "api_key": self.getConfig("passkey"),
@@ -138,11 +138,11 @@ class Captcha9kw(Hook):
         else:
             self.logError("No CaptchaID for correct request (task %s) found." % task)
 
-    def captchaInvalid(self, task):
+    def captcha_invalid(self, task):
         if "ticket" in task.data:
 
             try:
-                response = getURL(self.API_URL,
+                response = get_url(self.API_URL,
                                   post={"action": "usercaptchacorrectback",
                                         "apikey": self.getConfig("passkey"),
                                         "api_key": self.getConfig("passkey"),

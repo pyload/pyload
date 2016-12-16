@@ -46,23 +46,23 @@ class Request(object):
 
         # TODO: content encoding? Could be handled globally
 
-    def initContext(self):
+    def init_context(self):
         """ Should be used to initialize everything from given context and options """
         pass
 
-    def getContext(self):
+    def get_context(self):
         """ Retrieves complete state that is needed to copy the request context """
         return self.config, self.context, self.options
 
-    def setContext(self, *args):
+    def set_context(self, *args):
         """  Sets request context """
         self.config, self.context, self.options = args
 
-    def setOption(self, name, value):
+    def set_option(self, name, value):
         """ Sets an option """
         self.options[name] = value
 
-    def unsetOption(self, name):
+    def unset_option(self, name):
         """ Removes a specific option or reset everything on empty string  """
         if name == "":
             self.options.clear()
@@ -70,11 +70,11 @@ class Request(object):
             if name in self.options:
                 del self.options[name]
 
-    def addAuth(self, user, pwd):
+    def add_auth(self, user, pwd):
         """  Adds authentication information to the request """
         self.options["auth"] = user + ":" + pwd
 
-    def removeAuth(self):
+    def remove_auth(self):
         """ Removes authentication from the request """
         self.unsetOption("auth")
 

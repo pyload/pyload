@@ -48,12 +48,12 @@ class AddonManager(object):
         # manage addons on config change
         self.listenTo("config:changed", self.manageAddon)
 
-    def iterAddons(self):
+    def iter_addons(self):
         """ Yields (name, meta_data) of all addons """
         return iter(self.plugins.items())
 
     @lock
-    def callInHooks(self, event, eventName, *args):
+    def call_in_hooks(self, event, eventName, *args):
         """  Calls a method in all addons and catch / log errors"""
         for plugin in self.plugins.values():
             for inst in plugin.instances:
@@ -82,7 +82,7 @@ class AddonManager(object):
             raise ServiceException(e.message)
 
     @lock
-    def createIndex(self):
+    def create_index(self):
         active = []
         deactive = []
 
@@ -115,7 +115,7 @@ class AddonManager(object):
         self.log.info(_("Activated addons: %s") % ", ".join(sorted(active)))
         self.log.info(_("Deactivated addons: %s") % ", ".join(sorted(deactive)))
 
-    def manageAddon(self, plugin, name, value):
+    def manage_addon(self, plugin, name, value):
         # TODO: multi user
 
         # check if section was a plugin
@@ -128,7 +128,7 @@ class AddonManager(object):
             self.deactivateAddon(plugin)
 
     @lock
-    def activateAddon(self, plugin):
+    def activate_addon(self, plugin):
         #check if already loaded
         if plugin in self.plugins:
             return
@@ -147,7 +147,7 @@ class AddonManager(object):
         self.registerEvents()
 
     @lock
-    def deactivateAddon(self, plugin):
+    def deactivate_addon(self, plugin):
         if plugin not in self.plugins:
             return
         else: # todo: multiple instances
@@ -171,7 +171,7 @@ class AddonManager(object):
                 continue
             self.pyload.eventManager.removeFromEvents(getattr(addon, f))
 
-    def activateAddons(self):
+    def activate_addons(self):
         self.log.info(_("Activating addons..."))
         for plugin in self.plugins.values():
             for inst in plugin.instances:
@@ -180,34 +180,34 @@ class AddonManager(object):
 
         self.registerEvents()
 
-    def deactivateAddons(self):
+    def deactivate_addons(self):
         """  Called when core is shutting down """
         self.log.info(_("Deactivating addons..."))
         for plugin in self.plugins.values():
             for inst in plugin.instances:
                 self.call(inst, "deactivate")
 
-    def downloadPreparing(self, pyfile):
+    def download_preparing(self, pyfile):
         self.callInHooks("downloadPreparing", "download:preparing", pyfile)
 
-    def downloadFinished(self, pyfile):
+    def download_finished(self, pyfile):
         self.callInHooks("downloadFinished", "download:finished", pyfile)
 
-    def downloadFailed(self, pyfile):
+    def download_failed(self, pyfile):
         self.callInHooks("downloadFailed", "download:failed", pyfile)
 
-    def packageFinished(self, package):
+    def package_finished(self, package):
         self.callInHooks("packageFinished", "package:finished", package)
 
     @lock
-    def startThread(self, function, *args, **kwargs):
+    def start_thread(self, function, *args, **kwargs):
         AddonThread(self.pyload.threadManager, function, args, kwargs)
 
-    def activePlugins(self):
+    def active_plugins(self):
         """ returns all active plugins """
         return [p for x in self.plugins.values() for p in x.instances if p.isActivated()]
 
-    def getInfo(self, plugin):
+    def get_info(self, plugin):
         """ Retrieves all info data for a plugin """
 
         data = []
@@ -221,27 +221,27 @@ class AddonManager(object):
                         data.append(info)
         return data
 
-    def addEventListener(self, plugin, func, event):
+    def add_event_listener(self, plugin, func, event):
         """ add the event to the list """
         self.plugins[plugin].events.append((func, event))
 
-    def registerEvents(self):
+    def register_events(self):
         """ actually register all saved events """
         for name, plugin in self.plugins.items():
             for func, event in plugin.events:
                 for inst in plugin.instances:
                     self.listenTo(event, getattr(inst, func))
 
-    def addAddonHandler(self, plugin, func, label, desc, args, package, media):
+    def add_addon_handler(self, plugin, func, label, desc, args, package, media):
         """ Registers addon service description """
         self.plugins[plugin].handler[func] = AddonService(func, gettext(label), gettext(desc), args, package, media)
 
-    def addInfoProperty(self, h, name, desc):
+    def add_info_property(self, h, name, desc):
         """  Register property as :class:`AddonInfo` """
         self.info_props[h] = AddonInfo(name, desc)
 
-    def listenTo(self, *args):
+    def listen_to(self, *args):
         self.pyload.eventManager.listenTo(*args)
 
-    def dispatchEvent(self, *args):
+    def dispatch_event(self, *args):
         self.pyload.eventManager.dispatchEvent(*args)

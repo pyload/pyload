@@ -22,14 +22,14 @@ class AbtractExtractor(object):
     __version__ = "0.1"
 
     @staticmethod
-    def checkDeps():
+    def check_deps():
         """ Check if system satisfies dependencies
         :return: boolean
         """
         return True
 
     @staticmethod
-    def getTargets(files_ids):
+    def get_targets(files_ids):
         """ Filter suited targets from list of filename id tuple list
         :param files_ids: List of file paths
         :return: List of targets, id tuple list
@@ -59,7 +59,7 @@ class AbtractExtractor(object):
         """ Initialize additional data structures """
         pass
 
-    def checkArchive(self):
+    def check_archive(self):
         """Check if password is needed. Raise ArchiveError if integrity is
         questionable.
 
@@ -68,7 +68,7 @@ class AbtractExtractor(object):
         """
         return False
 
-    def checkPassword(self, password):
+    def check_password(self, password):
         """ Check if the given password is/might be correct.
         If it can not be decided at this point return true.
 
@@ -89,13 +89,13 @@ class AbtractExtractor(object):
         """
         raise NotImplementedError
 
-    def getDeleteFiles(self):
+    def get_delete_files(self):
         """Return list of files to delete, do *not* delete them here.
 
         :return: List with paths of files to delete
         """
         raise NotImplementedError
 
-    def getExtractedFiles(self):
+    def get_extracted_files(self):
         """Populate self.files at some point while extracting"""
         return self.files

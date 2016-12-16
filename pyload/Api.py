@@ -15,7 +15,7 @@ from .remote.apitypes import *
 perm_map = {}
 
 # decorator only called on init, never initialized, so has no effect on runtime
-def RequirePerm(bits):
+def require_perm(bits):
     class _Dec(object):
         def __new__(cls, func, *args, **kwargs):
             perm_map[func.__name__] = bits
@@ -67,17 +67,17 @@ class Api(Iface):
         return None #TODO return default user?
 
     @property
-    def primaryUID(self):
+    def primary_uid(self):
         return self.user.primary if self.user else None
 
 
-    def hasAccess(self, obj):
+    def has_access(self, obj):
         """ Helper method to determine if a user has access to a resource.
          Works for obj that provides .owner attribute. Core admin has always access."""
         return self.user is None or self.user.hasAccess(obj)
 
     @classmethod
-    def initComponents(cls):
+    def init_components(cls):
         # Allow extending the api
         # This prevents unintentionally registering of the components,
         # but will only work once when they are imported
@@ -101,7 +101,7 @@ class Api(Iface):
 
         return cls.EXTEND
 
-    def withUserContext(self, uid):
+    def with_user_context(self, uid):
         """ Returns a proxy version of the api, to call method in user context
 
         :param uid: user or userData instance or uid
@@ -124,7 +124,7 @@ class Api(Iface):
     #  Auth+User Information
     #############################
 
-    @RequirePerm(Permission.All)
+    @require_perm(Permission.All)
     def login(self, username, password, remoteip=None):
         """Login into pyLoad, this **must** be called when using rpc before any methods can be used.
 
@@ -135,7 +135,7 @@ class Api(Iface):
         """
         return True if self.checkAuth(username, password, remoteip) else False
 
-    def checkAuth(self, username, password, remoteip=None):
+    def check_auth(self, username, password, remoteip=None):
         """Check authentication and returns details
 
         :param username:
@@ -148,7 +148,7 @@ class Api(Iface):
         return self.pyload.db.checkAuth(username, password)
 
     @staticmethod
-    def isAuthorized(func, user):
+    def is_authorized(func, user):
         """checks if the user is authorized for specific method
 
         :param func: function name
@@ -171,7 +171,7 @@ class UserApi(Api):
         self.pyload = core
         self._user = user
 
-    def withUserContext(self, uid):
+    def with_user_context(self, uid):
         raise Exception("Not allowed")
 
     @property

@@ -2,13 +2,13 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from pyload.Api import Api, RequirePerm, Permission, ConfigHolder, ConfigItem, ConfigInfo
+from pyload.Api import Api, require_perm, Permission, ConfigHolder, ConfigItem, ConfigInfo
 from pyload.utils import to_string
 
 from .apicomponent import ApiComponent
 
 # helper function to create a ConfigHolder
-def toConfigHolder(section, config, values):
+def to_config_holder(section, config, values):
     holder = ConfigHolder(section, config.label, config.description, config.explanation)
     holder.items = [ConfigItem(option, x.label, x.description, x.input,
                                to_string(values.get(option, x.input.default_value))) for option, x in
@@ -19,7 +19,7 @@ def toConfigHolder(section, config, values):
 class ConfigApi(ApiComponent):
     """ Everything related to configuration """
 
-    def getConfigValue(self, section, option):
+    def get_config_value(self, section, option):
         """Retrieve config value.
 
         :param section: name of category, or plugin
@@ -27,19 +27,19 @@ class ConfigApi(ApiComponent):
         :rtype: str
         :return: config value as string
         """
-        value = self.pyload.config.get(section, option, self.primaryUID)
+        value = self.pyload.config.get(section, option, self.primary_uid)
         return to_string(value)
 
-    def setConfigValue(self, section, option, value):
+    def set_config_value(self, section, option, value):
         """Set new config value.
 
         :param section:
         :param option:
         :param value: new config value
         """
-        self.pyload.config.set(section, option, value, self.primaryUID)
+        self.pyload.config.set(section, option, value, self.primary_uid)
 
-    def getConfig(self):
+    def get_config(self):
         """Retrieves complete config of core.
 
         :rtype: dict of section -> ConfigHolder
@@ -49,7 +49,7 @@ class ConfigApi(ApiComponent):
             data[section] = toConfigHolder(section, config, values)
         return data
 
-    def getCoreConfig(self):
+    def get_core_config(self):
         """ Retrieves core config sections
 
         :rtype: list of PluginInfo
@@ -57,8 +57,8 @@ class ConfigApi(ApiComponent):
         return [ConfigInfo(section, config.label, config.description, False, False)
                 for section, config, values in self.pyload.config.iterCoreSections()]
 
-    @RequirePerm(Permission.Plugins)
-    def getPluginConfig(self):
+    @require_perm(Permission.Plugins)
+    def get_plugin_config(self):
         """All plugins and addons the current user has configured
 
         :rtype: list of PluginInfo
@@ -68,7 +68,7 @@ class ConfigApi(ApiComponent):
         # TODO: better plugin / addon activated config
         data = []
         active = [x.getName() for x in self.pyload.addonmanager.activePlugins()]
-        for name, config, values in self.pyload.config.iterSections(self.primaryUID):
+        for name, config, values in self.pyload.config.iterSections(self.primary_uid):
             # skip unmodified and inactive addons
             if not values and name not in active: continue
 
@@ -82,8 +82,8 @@ class ConfigApi(ApiComponent):
 
         return data
 
-    @RequirePerm(Permission.Plugins)
-    def getAvailablePlugins(self):
+    @require_perm(Permission.Plugins)
+    def get_available_plugins(self):
         """List of all available plugins, that are configurable
 
         :rtype: list of PluginInfo
@@ -92,41 +92,41 @@ class ConfigApi(ApiComponent):
         plugins = [ConfigInfo(name, config.label, config.description,
                               self.pyload.pluginManager.getCategory(name),
                               self.pyload.pluginManager.isUserPlugin(name))
-                   for name, config, values in self.pyload.config.iterSections(self.primaryUID)]
+                   for name, config, values in self.pyload.config.iterSections(self.primary_uid)]
 
         return plugins
 
-    @RequirePerm(Permission.Plugins)
-    def loadConfig(self, name):
+    @require_perm(Permission.Plugins)
+    def load_config(self, name):
         """Get complete config options for desired section
 
         :param name: Name of plugin or config section
         :rtype: ConfigHolder
         """
         # requires at least plugin permissions, but only admin can load core config
-        config, values = self.pyload.config.getSection(name, self.primaryUID)
+        config, values = self.pyload.config.getSection(name, self.primary_uid)
         return toConfigHolder(name, config, values)
 
 
-    @RequirePerm(Permission.Plugins)
-    def saveConfig(self, config):
+    @require_perm(Permission.Plugins)
+    def save_config(self, config):
         """Used to save a configuration, core config can only be saved by admins
 
         :param config: :class:`ConfigHolder`
         """
         for item in config.items:
-            self.pyload.config.set(config.name, item.name, item.value, sync=False, user=self.primaryUID)
+            self.pyload.config.set(config.name, item.name, item.value, sync=False, user=self.primary_uid)
             # save the changes
-        self.pyload.config.saveValues(self.primaryUID, config.name)
+        self.pyload.config.saveValues(self.primary_uid, config.name)
 
-    @RequirePerm(Permission.Plugins)
-    def deleteConfig(self, plugin):
+    @require_perm(Permission.Plugins)
+    def delete_config(self, plugin):
         """Deletes modified config
 
         :param plugin: plugin name
         """
         #TODO: delete should deactivate addons?
-        self.pyload.config.delete(plugin, self.primaryUID)
+        self.pyload.config.delete(plugin, self.primary_uid)
 
 
 if Api.extend(ConfigApi):

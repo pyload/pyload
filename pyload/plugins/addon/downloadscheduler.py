@@ -38,10 +38,10 @@ class DownloadScheduler(Hook):
     def setup(self):
         self.cb = None  # callback to scheduler job; will be by removed hookmanager when hook unloaded
 
-    def coreReady(self):
+    def core_ready(self):
         self.updateSchedule()
 
-    def updateSchedule(self, schedule=None):
+    def update_schedule(self, schedule=None):
         if schedule is None:
             schedule = self.getConfig("timetable")
 
@@ -68,7 +68,7 @@ class DownloadScheduler(Hook):
                 self.pyload.scheduler.removeJob(self.cb)
                 self.cb = self.pyload.scheduler.addJob(next_time, self.updateSchedule, threaded=False)
 
-    def setDownloadSpeed(self, speed):
+    def set_download_speed(self, speed):
         if speed == 0:
             abort = self.getConfig("abort")
             self.logInfo("Stopping download server. (Running downloads will %sbe aborted.)" % ('' if abort else 'not '))

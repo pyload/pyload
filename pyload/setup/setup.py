@@ -236,7 +236,7 @@ class Setup(object):
             languages=[self.config["general"]["language"], "en"], fallback=True)
         translation.install(True)
 
-        self.openDB()
+        self.open_db()
 
         try:
             while True:
@@ -273,30 +273,30 @@ class Setup(object):
                     self.db.syncSave()
                     break
         finally:
-            self.closeDB()
+            self.close_db()
 
-    def addUser(self, username, password, role=Role.Admin):
-        self.openDB()
+    def add_user(self, username, password, role=Role.Admin):
+        self.open_db()
         try:
             self.db.addUser(username, password, role, int('1111111', 2))
         finally:
-            self.closeDB()
+            self.close_db()
 
-    def openDB(self):
+    def open_db(self):
         from pyload.database import DatabaseBackend
 
         if self.db is None:
             self.db = DatabaseBackend(None)
             self.db.setup()
 
-    def closeDB(self):
+    def close_db(self):
         if self.db is not None:
             self.db.syncSave()
             self.db.shutdown()
 
     def save(self):
         self.config.save()
-        self.closeDB()
+        self.close_db()
 
     def conf_path(self, trans=False):
         if trans:

@@ -35,10 +35,10 @@ class DeathByCaptchaException(Exception):
     def __init__(self, err):
         self.err = err
 
-    def getCode(self):
+    def get_code(self):
         return self.err
 
-    def getDesc(self):
+    def get_desc(self):
         if self.err in self.DBC_ERRORS.keys():
             return self.DBC_ERRORS[self.err]
         else:
@@ -107,7 +107,7 @@ class DeathByCaptcha(Hook):
 
         return response
 
-    def getCredits(self):
+    def get_credits(self):
         response = self.call_api("user", True)
 
         if 'is_banned' in response and response['is_banned']:
@@ -117,7 +117,7 @@ class DeathByCaptcha(Hook):
         else:
             raise DeathByCaptchaException(response)
 
-    def getStatus(self):
+    def get_status(self):
         response = self.call_api("status", False)
 
         if 'is_service_overloaded' in response and response['is_service_overloaded']:
@@ -153,7 +153,7 @@ class DeathByCaptcha(Hook):
 
         return ticket, result
 
-    def newCaptchaTask(self, task):
+    def new_captcha_task(self, task):
         if "service" in task.data:
             return False
 
@@ -183,7 +183,7 @@ class DeathByCaptcha(Hook):
             task.setWaiting(180)
             start_new_thread(self.processCaptcha, (task,))
 
-    def captchaInvalid(self, task):
+    def captcha_invalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             try:
                 response = self.call_api("captcha/%d/report" % task.data["ticket"], True)
@@ -192,7 +192,7 @@ class DeathByCaptcha(Hook):
             except Exception as e:
                 self.logError(e)
 
-    def processCaptcha(self, task):
+    def process_captcha(self, task):
         c = task.captchaFile
         try:
             ticket, result = self.submit(c)

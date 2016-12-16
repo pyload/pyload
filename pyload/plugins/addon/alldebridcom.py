@@ -3,7 +3,7 @@
 # should be working
 
 from __future__ import unicode_literals
-from pyload.network.requestfactory import getURL
+from pyload.network.requestfactory import get_url
 from pyload.plugins.internal.multihoster import MultiHoster
 
 
@@ -23,8 +23,8 @@ class AlldebridCom(MultiHoster):
     __author_name__ = "Andy Voigt"
     __author_mail__ = "spamsales@online.de"
 
-    def getHoster(self):
+    def get_hoster(self):
         https = "https" if self.getConfig("https") else "http"
-        page = getURL(https + "://www.alldebrid.com/api.php?action=get_host").replace("\"", "").strip()
+        page = get_url(https + "://www.alldebrid.com/api.php?action=get_host").replace("\"", "").strip()
 
         return [x.strip() for x in page.split(",") if x.strip()]

@@ -37,10 +37,10 @@ class Dependency(object):
 
         return avail, v
 
-    def isStatisfied(self):
+    def is_statisfied(self):
         raise NotImplementedError
 
-    def getVersion(self):
+    def get_version(self):
         return None
 
 
@@ -48,11 +48,11 @@ class Python(Dependency):
     name = "Python"
     optional = False
 
-    def isStatisfied(self):
+    def is_statisfied(self):
         # obviously
         return True
 
-    def getVersion(self):
+    def get_version(self):
         import sys
 
         return ".".join(str(v) for v in sys.version_info[:3])
@@ -62,7 +62,7 @@ class JSON(Dependency):
     name = "json"
     optional = False
 
-    def isStatisfied(self):
+    def is_statisfied(self):
         return find_module("json") or find_module("simplejson")
 
 
@@ -70,7 +70,7 @@ class PyCurl(Dependency):
     name = "pycurl"
     optional = False
 
-    def isStatisfied(self):
+    def is_statisfied(self):
         return find_module("pycurl")
 
 
@@ -78,7 +78,7 @@ class Sqlite(Dependency):
     name = "sqlite"
     optional = False
 
-    def isStatisfied(self):
+    def is_statisfied(self):
         return find_module("sqlite3") or find_module("pysqlite2")
 
 # TODO: ssl, crypto, image, tesseract, js

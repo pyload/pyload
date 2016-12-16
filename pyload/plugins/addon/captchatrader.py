@@ -10,7 +10,7 @@ from _thread import start_new_thread
 from pycurl import FORM_FILE, LOW_SPEED_TIME
 
 from pyload.common.json_layer import json_loads
-from pyload.network.requestfactory import getURL, getRequest
+from pyload.network.requestfactory import get_url, getRequest
 from pyload.network.httprequest import BadHeader
 from pyload.plugins.hook import Hook
 
@@ -21,7 +21,7 @@ class CaptchaTraderException(Exception):
     def __init__(self, err):
         self.err = err
 
-    def getCode(self):
+    def get_code(self):
         return self.err
 
     def __str__(self):
@@ -49,8 +49,8 @@ class CaptchaTrader(Hook):
     def setup(self):
         self.info = {}
 
-    def getCredits(self):
-        json = getURL(CaptchaTrader.GETCREDITS_URL % {"user": self.getConfig("username"),
+    def get_credits(self):
+        json = get_url(CaptchaTrader.GETCREDITS_URL % {"user": self.getConfig("username"),
                                                       "password": self.getConfig("passkey")})
         response = json_loads(json)
         if response[0] < 0:
@@ -94,7 +94,7 @@ class CaptchaTrader(Hook):
 
     def respond(self, ticket, success):
         try:
-            json = getURL(CaptchaTrader.RESPOND_URL, post={"is_correct": 1 if success else 0,
+            json = get_url(CaptchaTrader.RESPOND_URL, post={"is_correct": 1 if success else 0,
                                                            "username": self.getConfig("username"),
                                                            "password": self.getConfig("passkey"),
                                                            "ticket": ticket})
@@ -106,7 +106,7 @@ class CaptchaTrader(Hook):
         except BadHeader as e:
             self.logError(_("Could not send response."), str(e))
 
-    def newCaptchaTask(self, task):
+    def new_captcha_task(self, task):
         if not task.isTextual():
             return False
 
@@ -124,17 +124,17 @@ class CaptchaTrader(Hook):
         else:
             self.logInfo(_("Your CaptchaTrader Account has not enough credits"))
 
-    def captchaCorrect(self, task):
+    def captcha_correct(self, task):
         if "ticket" in task.data:
             ticket = task.data["ticket"]
             self.respond(ticket, True)
 
-    def captchaInvalid(self, task):
+    def captcha_invalid(self, task):
         if "ticket" in task.data:
             ticket = task.data["ticket"]
             self.respond(ticket, False)
 
-    def processCaptcha(self, task):
+    def process_captcha(self, task):
         c = task.captchaFile
         try:
             ticket, result = self.submit(c)

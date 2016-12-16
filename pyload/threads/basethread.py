@@ -35,14 +35,14 @@ class BaseThread(Thread):
         """ Remove thread from list  """
         self.m.removeThread(self)
 
-    def getProgress(self):
+    def get_progress(self):
         """ retrieves progress information about the current running task
 
         :return: :class:`ProgressInfo`
         """
 
     # Debug Stuff
-    def writeDebugReport(self, name, pyfile=None, plugin=None):
+    def write_debug_report(self, name, pyfile=None, plugin=None):
         """ writes a debug report to disk  """
 
         dump_name = "debug_%s_%s.zip" % (name, strftime("%d-%m-%Y_%H-%M-%S"))
@@ -88,7 +88,7 @@ class BaseThread(Thread):
         self.log.info("Debug Report written to %s" % dump_name)
         return dump_name
 
-    def getPluginDump(self, plugin):
+    def get_plugin_dump(self, plugin):
         dump = "pyLoad %s Debug Report of %s %s \n\nTRACEBACK:\n %s \n\nFRAMESTACK:\n" % (
             self.m.pyload.api.getServerVersion(), plugin.__name__, plugin.__version__, format_exc())
 
@@ -127,7 +127,7 @@ class BaseThread(Thread):
 
         return dump
 
-    def getFileDump(self, pyfile):
+    def get_file_dump(self, pyfile):
         dump = "PYFILE OBJECT DUMP: \n\n"
 
         for name in dir(pyfile):
@@ -141,7 +141,7 @@ class BaseThread(Thread):
 
         return dump
 
-    def getSystemDump(self):
+    def get_system_dump(self):
         dump = "SYSTEM:\n\n"
         for k, v in get_system_info().items():
             dump += "%s: %s\n" % (k, v)

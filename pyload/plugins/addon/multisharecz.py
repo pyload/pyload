@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 import re
 
-from pyload.network.requestfactory import getURL
+from pyload.network.requestfactory import get_url
 from pyload.plugins.internal.multihoster import MultiHoster
 
 
@@ -20,6 +20,6 @@ class MultishareCz(MultiHoster):
 
     HOSTER_PATTERN = r'<img class="logo-shareserveru"[^>]*?alt="([^"]+)"></td>\s*<td class="stav">[^>]*?alt="OK"'
 
-    def getHoster(self):
-        page = getURL("http://www.multishare.cz/monitoring/")
+    def get_hoster(self):
+        page = get_url("http://www.multishare.cz/monitoring/")
         return re.findall(self.HOSTER_PATTERN, page)

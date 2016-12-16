@@ -71,7 +71,7 @@ class DownloadManager(object):
             self.working.remove(thread)
 
     @lock
-    def startDownloadThread(self, info):
+    def start_download_thread(self, info):
         """ Use a free dl thread or create a new one """
         if self.free:
             thread = self.free[0]
@@ -86,31 +86,31 @@ class DownloadManager(object):
         self.working.append(thread)
 
     @lock
-    def startDecrypterThread(self, info):
+    def start_decrypter_thread(self, info):
         """ Start decrypting of entered data, all links in one package are accumulated to one thread."""
         self.pyload.files.setDownloadStatus(info.fid, DS.Decrypting)
         self.decrypter.append(DecrypterThread(self, [(info.download.url, info.download.plugin)],
                                               info.fid, info.package, info.owner))
 
     @read_lock
-    def activeDownloads(self, uid=None):
+    def active_downloads(self, uid=None):
         """ retrieve pyfiles of running downloads  """
         return [x.active for x in self.working
                 if uid is None or x.active.owner == uid]
 
     @read_lock
-    def waitingDownloads(self):
+    def waiting_downloads(self):
         """ all waiting downloads """
         return [x.active for x in self.working if x.active.hasStatus("waiting")]
 
     @read_lock
-    def getProgressList(self, uid):
+    def get_progress_list(self, uid):
         """ Progress of all running downloads """
         # decrypter progress could be none
         return [x for x in [p.getProgress() for p in self.working + self.decrypter
                        if uid is None or p.owner == uid] if x is not None]
 
-    def processingIds(self):
+    def processing_ids(self):
         """get a id list of all pyfiles processed"""
         return [x.fid for x in self.activeDownloads(None)]
 
@@ -143,7 +143,7 @@ class DownloadManager(object):
 
         # TODO: clean free threads
 
-    def assignJobs(self):
+    def assign_jobs(self):
         """ Load jobs from db and try to assign them """
 
         limit = self.pyload.config['download']['max_downloads'] - len(self.activeDownloads())
@@ -180,7 +180,7 @@ class DownloadManager(object):
                 if self.startJob(job, limit):
                     limit -= 1
 
-    def chooseJobs(self, jobs, k):
+    def choose_jobs(self, jobs, k):
         """ make a fair choice of which k jobs to start """
         # TODO: prefer admins, make a fairer choice?
         if k <= 0: return []
@@ -188,7 +188,7 @@ class DownloadManager(object):
 
         return sample(jobs, k)
 
-    def startJob(self, info, limit):
+    def start_job(self, info, limit):
         """ start a download or decrypter thread with given file info """
 
         plugin = self.pyload.pluginManager.findPlugin(info.download.plugin)
@@ -214,7 +214,7 @@ class DownloadManager(object):
         return False
 
     @read_lock
-    def tryReconnect(self):
+    def try_reconnect(self):
         """checks if reconnect needed"""
 
         if not self.pyload.config["reconnect"]["activated"] or not self.pyload.api.isTimeReconnect():
@@ -266,13 +266,13 @@ class DownloadManager(object):
         self.reconnecting.clear()
 
     @read_lock
-    def wantReconnect(self):
+    def want_reconnect(self):
         """ number of downloads that are waiting for reconnect """
         active = [x.active.hasPlugin() and x.active.plugin.wantReconnect and x.active.plugin.waiting for x in self.working]
         return active.count(True)
 
     @read_lock
-    def getRemainingPluginSlots(self):
+    def get_remaining_plugin_slots(self):
         """  dict of plugin names mapped to remaining dls  """
         occ = {}
         # decrypter are treated as occupied

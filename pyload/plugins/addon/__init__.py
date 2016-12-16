@@ -15,7 +15,7 @@ def class_name(p):
     return p.rpartition(".")[2]
 
 
-def AddEventListener(event):
+def add_event_listener(event):
     """ Used to register method for events. Arguments needs to match parameter of event
 
     :param event: Name of event or list of them.
@@ -31,7 +31,7 @@ def AddEventListener(event):
     return _klass
 
 
-def AddonHandler(label, desc, package=True, media=-1):
+def addon_handler(label, desc, package=True, media=-1):
     """ Register Handler for files, packages, or arbitrary callable methods. In case package is True (default)
         The method should only accept a pid as argument. When media is set it will work on files
         and should accept a fileid. Only when both is None the method can be arbitrary.
@@ -52,9 +52,9 @@ def AddonHandler(label, desc, package=True, media=-1):
     return _klass
 
 
-def AddonProperty(name, desc, default=None, fire_event=True):
+def addon_property(name, desc, default=None, fire_event=True):
     """ Use this function to declare class variables, that will be exposed as :class:`AddonInfo`.
-        It works similar to the @property function. You declare the variable like `state = AddonProperty(...)`
+        It works similar to the @property function. You declare the variable like `state = addon_property(...)`
         and use it as any other variable.
 
     :param name: display name
@@ -100,7 +100,7 @@ class Addon(Base):
     """
     Base class for addon plugins. Use @threaded decorator for all longer running tasks.
 
-    Decorate methods with @Expose, @AddEventListener, @ConfigHandler
+    Decorate methods with @Expose, @add_event_listener, @ConfigHandler
 
     """
 
@@ -123,7 +123,7 @@ class Addon(Base):
         # start periodically if set
         self.startPeriodical(self.interval, 0)
 
-    def startPeriodical(self, interval, wait):
+    def start_periodical(self, interval, wait):
         """ Starts the periodical calls with given interval. Older entries will be canceled.
         :param interval: interval in seconds
         :param wait: time to wait in seconds before periodically starts
@@ -140,7 +140,7 @@ class Addon(Base):
         self.interval = interval
         return True
 
-    def stopPeriodical(self):
+    def stop_periodical(self):
         """ Stops periodical call if existing
         :return: True if the callback was stopped, false otherwise.
         """
@@ -163,11 +163,11 @@ class Addon(Base):
     def __repr__(self):
         return "<Addon %s>" % self.__name__
 
-    def isActivated(self):
+    def is_activated(self):
         """ checks if addon is activated"""
         return True if self.__internal__ else self.getConfig("activated")
 
-    def getCategory(self):
+    def get_category(self):
         return self.pyload.pluginManager.getCategory(self.__name__)
 
     def init(self):
@@ -186,25 +186,25 @@ class Addon(Base):
     def periodical(self):
         pass
 
-    def newInteractionTask(self, task):
+    def new_interaction_task(self, task):
         """ new interaction task for the plugin, it MUST set the handler and timeout or will be ignored """
         pass
 
-    def taskCorrect(self, task):
+    def task_correct(self, task):
         pass
 
-    def taskInvalid(self, task):
+    def task_invalid(self, task):
         pass
 
     # public events starts from here
-    def downloadPreparing(self, pyfile):
+    def download_preparing(self, pyfile):
         pass
 
-    def downloadFinished(self, pyfile):
+    def download_finished(self, pyfile):
         pass
 
-    def downloadFailed(self, pyfile):
+    def download_failed(self, pyfile):
         pass
 
-    def packageFinished(self, pypack):
+    def package_finished(self, pypack):
         pass

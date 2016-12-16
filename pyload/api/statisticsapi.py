@@ -2,7 +2,7 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from pyload.Api import Api, RequirePerm, Permission
+from pyload.Api import Api, require_perm, Permission
 
 from .apicomponent import ApiComponent
 
@@ -13,14 +13,14 @@ QUOTA_UNLIMITED = -1
 class StatisticsApi(ApiComponent):
     """ Retrieve download statistics and quota """
 
-    def recordDownload(self, pyfile):
+    def record_download(self, pyfile):
         """ Add download record to the statistics """
         del CACHE[:]
 
-    def calcQuota(self, uid):
+    def calc_quota(self, uid):
         return QUOTA_UNLIMITED
 
-    def getQuota(self):
+    def get_quota(self):
         """ Number of bytes the user has left for download  """
         return self.calcQuota(self.user.true_primary)
 

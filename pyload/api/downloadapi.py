@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 from builtins import str
 from os.path import isabs
 
-from pyload.Api import Api, RequirePerm, Permission, Role
+from pyload.Api import Api, require_perm, Permission, Role
 from pyload.utils.fs import join
 
 from .apicomponent import ApiComponent
@@ -15,14 +15,14 @@ class DownloadApi(ApiComponent):
     """ Component to create, add, delete or modify downloads."""
 
     # TODO: workaround for link adding without owner
-    def truePrimary(self):
+    def true_primary(self):
         if self.user:
             return self.user.true_primary
         else:
             return self.pyload.db.getUserData(role=Role.Admin).uid
 
-    @RequirePerm(Permission.Add)
-    def createPackage(self, name, folder, root, password="", site="", comment="", paused=False):
+    @require_perm(Permission.Add)
+    def create_package(self, name, folder, root, password="", site="", comment="", paused=False):
         """Create a new package.
 
         :param name: display name of the package
@@ -46,21 +46,21 @@ class DownloadApi(ApiComponent):
         return pid
 
 
-    @RequirePerm(Permission.Add)
-    def addPackage(self, name, links, password="", paused=False):
+    @require_perm(Permission.Add)
+    def add_package(self, name, links, password="", paused=False):
         """Convenient method to add a package to the top-level and for adding links.
 
         :return: package id
         """
         return self.addPackageChild(name, links, password, -1, paused)
 
-    @RequirePerm(Permission.Add)
+    @require_perm(Permission.Add)
     def addPackageP(self, name, links, password, paused):
         """ Same as above with additional paused attribute. """
         return self.addPackageChild(name, links, password, -1, paused)
 
-    @RequirePerm(Permission.Add)
-    def addPackageChild(self, name, links, password, root, paused):
+    @require_perm(Permission.Add)
+    def add_package_child(self, name, links, password, root, paused):
         """Adds a package, with links to desired package.
 
         :param root: parents package id
@@ -76,8 +76,8 @@ class DownloadApi(ApiComponent):
 
         return pid
 
-    @RequirePerm(Permission.Add)
-    def addLinks(self, pid, links):
+    @require_perm(Permission.Add)
+    def add_links(self, pid, links):
         """Adds links to specific package. Initiates online status fetching.
 
         :param pid: package id
@@ -92,8 +92,8 @@ class DownloadApi(ApiComponent):
         self.pyload.log.info((_("Added %d links to package") + " #%d" % pid) % len(hoster+crypter))
         self.pyload.files.save()
 
-    @RequirePerm(Permission.Add)
-    def uploadContainer(self, filename, data):
+    @require_perm(Permission.Add)
+    def upload_container(self, filename, data):
         """Uploads and adds a container file to pyLoad.
 
         :param filename: filename, extension is important so it can correctly decrypted
@@ -105,8 +105,8 @@ class DownloadApi(ApiComponent):
 
         return self.addPackage(th.name, [th.name])
 
-    @RequirePerm(Permission.Delete)
-    def removeFiles(self, fids):
+    @require_perm(Permission.Delete)
+    def remove_files(self, fids):
         """Removes several file entries from pyload.
 
         :param fids: list of file ids
@@ -116,8 +116,8 @@ class DownloadApi(ApiComponent):
 
         self.pyload.files.save()
 
-    @RequirePerm(Permission.Delete)
-    def removePackages(self, pids):
+    @require_perm(Permission.Delete)
+    def remove_packages(self, pids):
         """Rempve packages and containing links.
 
         :param pids: list of package ids
@@ -128,41 +128,41 @@ class DownloadApi(ApiComponent):
         self.pyload.files.save()
 
 
-    @RequirePerm(Permission.Modify)
-    def restartPackage(self, pid):
+    @require_perm(Permission.Modify)
+    def restart_package(self, pid):
         """Restarts a package, resets every containing files.
 
         :param pid: package id
         """
         self.pyload.files.restartPackage(pid)
 
-    @RequirePerm(Permission.Modify)
-    def restartFile(self, fid):
+    @require_perm(Permission.Modify)
+    def restart_file(self, fid):
         """Resets file status, so it will be downloaded again.
 
         :param fid: file id
         """
         self.pyload.files.restartFile(fid)
 
-    @RequirePerm(Permission.Modify)
-    def recheckPackage(self, pid):
+    @require_perm(Permission.Modify)
+    def recheck_package(self, pid):
         """Check online status of all files in a package, also a default action when package is added. """
         self.pyload.files.reCheckPackage(pid)
 
-    @RequirePerm(Permission.Modify)
-    def restartFailed(self):
+    @require_perm(Permission.Modify)
+    def restart_failed(self):
         """Restarts all failed failes."""
         self.pyload.files.restartFailed()
 
-    @RequirePerm(Permission.Modify)
-    def stopAllDownloads(self):
+    @require_perm(Permission.Modify)
+    def stop_all_downloads(self):
         """Aborts all running downloads."""
         for pyfile in self.pyload.files.cachedFiles():
             if self.hasAccess(pyfile):
                 pyfile.abortDownload()
 
-    @RequirePerm(Permission.Modify)
-    def stopDownloads(self, fids):
+    @require_perm(Permission.Modify)
+    def stop_downloads(self, fids):
         """Aborts specific downloads.
 
         :param fids: list of file ids

@@ -20,6 +20,6 @@ class ApiComponent(Iface):
         self.pyload = core
         assert isinstance(user, User)
         self.user = user
-        self.primaryUID = 0
+        self.primary_uid = 0
         # No instantiating!
         raise Exception

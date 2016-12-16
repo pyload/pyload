@@ -91,7 +91,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'utils/apitypes', 'models/Col
                     return;
 
                 var self = this;
-                $.ajax(App.apiRequest('checkHTML', {
+                $.ajax(App.apiRequest('check_html', {
                     html: '',
                     url: $(e.target).val()
                 }, {

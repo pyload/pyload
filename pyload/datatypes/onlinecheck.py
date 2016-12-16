@@ -18,7 +18,7 @@ class OnlineCheck(object):
 
         self.timestamp = time()
 
-    def isStale(self, timeout=5):
+    def is_stale(self, timeout=5):
         """ checks if the data was updated or accessed recently """
         return self.timestamp + timeout * 60 < time()
 
@@ -26,7 +26,7 @@ class OnlineCheck(object):
         self.timestamp = time()
         self.result.update(result)
 
-    def toApiData(self):
+    def to_api_data(self):
         self.timestamp = time()
         oc = OC(self.rid, self.result)
         # getting the results clears the older ones

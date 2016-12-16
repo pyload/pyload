@@ -62,7 +62,7 @@ def index():
     resp = serve_static('index.html')
     # set variable depending on setup mode
     setup = 'false' if SETUP is None else 'true'
-    ws = PYLOAD.getWSAddress() if PYLOAD else False
+    ws = PYLOAD.get_ws_address() if PYLOAD else False
     external = PYLOAD.getConfigValue('webui', 'external') if PYLOAD else None
     web = None
     if PYLOAD:

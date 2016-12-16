@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from pyload.network.requestfactory import getURL
+from pyload.network.requestfactory import get_url
 from pyload.plugins.internal.multihoster import MultiHoster
 
 
@@ -20,11 +20,11 @@ class RehostTo(MultiHoster):
     __author_name__ = "RaNaN"
     __author_mail__ = "Mast3rRaNaN@hotmail.de"
 
-    def getHoster(self):
-        page = getURL("http://rehost.to/api.php?cmd=get_supported_och_dl&long_ses=%s" % self.long_ses)
+    def get_hoster(self):
+        page = get_url("http://rehost.to/api.php?cmd=get_supported_och_dl&long_ses=%s" % self.long_ses)
         return [x.strip() for x in page.replace("\"", "").split(",")]
 
-    def coreReady(self):
+    def core_ready(self):
         self.account = self.pyload.accountManager.getAccountPlugin("RehostTo")
 
         user = self.account.selectAccount()[0]

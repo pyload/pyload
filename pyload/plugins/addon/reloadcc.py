@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 from pyload.plugins.internal.multihoster import MultiHoster
 
 from pyload.common.json_layer import json_loads
-from pyload.network.requestfactory import getURL
+from pyload.network.requestfactory import get_url
 
 
 class ReloadCc(MultiHoster):
@@ -23,7 +23,7 @@ class ReloadCc(MultiHoster):
 
     interval = 0  # Disable periodic calls
 
-    def getHoster(self):
+    def get_hoster(self):
         # If no accounts are available there will be no hosters available
         if not self.account or not self.account.canUse():
             print("ReloadCc: No accounts available")
@@ -46,7 +46,7 @@ class ReloadCc(MultiHoster):
         except Exception:
             query_params.update(dict(pwd=data['password']))
 
-        answer = getURL("http://api.reload.cc/login", get=query_params)
+        answer = get_url("http://api.reload.cc/login", get=query_params)
         data = json_loads(answer)
 
         # If account is not valid thera are no hosters available
@@ -57,7 +57,7 @@ class ReloadCc(MultiHoster):
         # Extract hosters from json file
         return data['msg']['supportedHosters']
 
-    def coreReady(self):
+    def core_ready(self):
         # Get account plugin and check if there is a valid account available
         self.account = self.pyload.accountManager.getAccountPlugin("ReloadCc")
         if not self.account.canUse():

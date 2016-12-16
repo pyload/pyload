@@ -14,7 +14,7 @@ import re
 from pycurl import FORM_FILE
 
 from pyload.plugins.addon import Addon
-from pyload.network.requestfactory import getURL
+from pyload.network.requestfactory import get_url
 from pyload.utils import formatSize
 from pyload.Api import PackageDoesNotExists, FileDoesNotExists
 
@@ -43,7 +43,7 @@ class IRCInterface(Thread, Addon):
         #   self.sm = core.server_methods
         self.api = core.api  # todo, only use api
 
-    def coreReady(self):
+    def core_ready(self):
         self.new_package = {}
 
         self.abort = False
@@ -53,14 +53,14 @@ class IRCInterface(Thread, Addon):
 
         self.start()
 
-    def packageFinished(self, pypack):
+    def package_finished(self, pypack):
         try:
             if self.getConfig("info_pack"):
                 self.response(_("Package finished: %s") % pypack.name)
         except Exception:
             pass
 
-    def downloadFinished(self, pyfile):
+    def download_finished(self, pyfile):
         try:
             if self.getConfig("info_file"):
                 self.response(
@@ -68,12 +68,12 @@ class IRCInterface(Thread, Addon):
         except Exception:
             pass
 
-    def newCaptchaTask(self, task):
+    def new_captcha_task(self, task):
         if self.getConfig("captcha") and task.isTextual():
             task.handler.append(self)
             task.setWaiting(60)
 
-            page = getURL("http://www.freeimagehosting.net/upload.php",
+            page = get_url("http://www.freeimagehosting.net/upload.php",
                           post={"attached": (FORM_FILE, task.captchaFile)}, multipart=True)
 
             url = re.search(r"\[img\]([^\[]+)\[/img\]\[/url\]", page).group(1)
@@ -374,7 +374,7 @@ class IRCInterface(Thread, Addon):
         if not args:
             return ["ERROR: Captcha ID missing."]
 
-        task = self.pyload.captchaManager.getTaskByID(args[0])
+        task = self.pyload.captchaManager.get_task_by_id(args[0])
         if not task:
             return ["ERROR: Captcha Task with ID %s does not exists." % args[0]]
 

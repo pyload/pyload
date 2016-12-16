@@ -17,7 +17,7 @@ class UnSkipOnFail(Hook):
     __author_name__ = "hagg"
     __author_mail__ = ""
 
-    def downloadFailed(self, pyfile):
+    def download_failed(self, pyfile):
         pyfile_name = basename(pyfile.name)
         pid = pyfile.package().id
         msg = 'look for skipped duplicates for %s (pid:%s)...'
@@ -30,7 +30,7 @@ class UnSkipOnFail(Hook):
                 self.logInfo('restart "%s" (pid:%s)...' % (pyfile_name, lpid))
                 self.setLinkStatus(link, "queued")
 
-    def findDuplicates(self, pyfile):
+    def find_duplicates(self, pyfile):
         """ Search all packages for duplicate links to "pyfile".
             Duplicates are links that would overwrite "pyfile".
             To test on duplicity the package-folder and link-name
@@ -59,7 +59,7 @@ class UnSkipOnFail(Hook):
                                 dups.append(link)
         return dups
 
-    def setLinkStatus(self, link, new_status):
+    def set_link_status(self, link, new_status):
         """ Change status of "link" to "new_status".
             "link" has to be a valid FileData object,
             "new_status" has to be a valid status name

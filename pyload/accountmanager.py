@@ -24,7 +24,7 @@ class AccountManager(object):
 
         self.loadAccounts()
 
-    def _createAccount(self, info, password, options):
+    def _create_account(self, info, password, options):
         plugin = info.plugin
         loginname = info.loginname
         # Owner != None must be enforced
@@ -46,24 +46,24 @@ class AccountManager(object):
         self.accounts[plugin].append(account)
         return account
 
-    def loadAccounts(self):
+    def load_accounts(self):
         """loads all accounts available from db"""
         for info, password, options in self.pyload.db.loadAccounts():
             # put into options as used in other context
             options = json.loads(options) if options else {}
             try:
-                self._createAccount(info, password, options)
+                self._create_account(info, password, options)
             except Exception:
                 self.pyload.log.error(_("Could not load account %s") % info)
                 self.pyload.print_exc()
 
-    def iterAccounts(self):
+    def iter_accounts(self):
         """ yields login, account  for all accounts"""
         for plugin, accounts in self.accounts.items():
             for account in accounts:
                 yield plugin, account
 
-    def saveAccounts(self):
+    def save_accounts(self):
         """save all account information"""
         data = []
         for plugin, accounts in self.accounts.items():
@@ -73,7 +73,7 @@ class AccountManager(object):
                  accounts])
         self.pyload.db.saveAccounts(data)
 
-    def getAccount(self, aid, plugin, user=None):
+    def get_account(self, aid, plugin, user=None):
         """ Find a account by specific user (if given) """
         if plugin in self.accounts:
             for acc in self.accounts[plugin]:
@@ -81,12 +81,12 @@ class AccountManager(object):
                     return acc
 
     @lock
-    def createAccount(self, plugin, loginname, password, uid):
+    def create_account(self, plugin, loginname, password, uid):
         """ Creates a new account """
 
         aid = self.pyload.db.createAccount(plugin, loginname, password, uid)
         info = AccountInfo(aid, plugin, loginname, uid, activated=True)
-        account = self._createAccount(info, password, {})
+        account = self._create_account(info, password, {})
         account.scheduleRefresh()
         self.saveAccounts()
 
@@ -94,7 +94,7 @@ class AccountManager(object):
         return account
 
     @lock
-    def updateAccount(self, aid, plugin, loginname, password, user):
+    def update_account(self, aid, plugin, loginname, password, user):
         """add or update account"""
         account = self.getAccount(aid, plugin, user)
         if not account:
@@ -108,7 +108,7 @@ class AccountManager(object):
         return account
 
     @lock
-    def removeAccount(self, aid, plugin, uid):
+    def remove_account(self, aid, plugin, uid):
         """remove account"""
         if plugin in self.accounts:
             for acc in self.accounts[plugin]:
@@ -120,7 +120,7 @@ class AccountManager(object):
                     break
 
     @lock
-    def selectAccount(self, plugin, user):
+    def select_account(self, plugin, user):
         """ Determines suitable plugins and select one """
         if plugin in self.accounts:
             uid = user.true_primary if user else None
@@ -129,7 +129,7 @@ class AccountManager(object):
             if accs: return choice(accs)
 
     @lock
-    def getAllAccounts(self, uid):
+    def get_all_accounts(self, uid):
         """ Return account info for every visible account """
         # filter by owner / shared, but admins see all accounts
         accounts = []
@@ -138,7 +138,7 @@ class AccountManager(object):
 
         return accounts
 
-    def refreshAllAccounts(self):
+    def refresh_all_accounts(self):
         """ Force a refresh of every account """
         for p in self.accounts.values():
             for acc in p:

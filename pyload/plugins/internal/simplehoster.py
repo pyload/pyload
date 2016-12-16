@@ -14,7 +14,7 @@ from time import time
 
 from pyload.plugins.hoster import Hoster
 from pyload.utils import html_unescape, fixup, parseFileSize
-from pyload.network.requestfactory import getURL
+from pyload.network.requestfactory import get_url
 from pyload.network.cookiejar import CookieJar
 
 
@@ -30,15 +30,15 @@ def set_cookies(cj, cookies):
     for cookie in cookies:
         if isinstance(cookie, tuple) and len(cookie) == 3:
             domain, name, value = cookie
-            cj.setCookie(domain, name, value)
+            cj.set_cookie(domain, name, value)
 
 
-def parseHtmlTagAttrValue(attr_name, tag):
+def parse_html_tag_attr_value(attr_name, tag):
     m = re.search(r"%s\s*=\s*([\"']?)((?<=\")[^\"]+|(?<=')[^']+|[^>\s\"'][^>\s]*)\1" % attr_name, tag, re.I)
     return m.group(2) if m else None
 
 
-def parseHtmlForm(attr_str, html, input_names=None):
+def parse_html_form(attr_str, html, input_names=None):
     for form in re.finditer(r"(?P<tag><form[^>]*%s[^>]*>)(?P<content>.*?)</?(form|body|html)[^>]*>" % attr_str,
                             html, re.S | re.I):
         inputs = {}
@@ -74,7 +74,7 @@ def parseHtmlForm(attr_str, html, input_names=None):
     return {}, None  # no matching form found
 
 
-def parseFileInfo(self, url='', html=''):
+def parse_file_info(self, url='', html=''):
     info = {"name": url, "size": 0, "status": 3}
 
     if hasattr(self, "pyfile"):
@@ -127,13 +127,13 @@ def parseFileInfo(self, url='', html=''):
     return info['name'], info['size'], info['status'], url
 
 
-def create_getInfo(plugin):
-    def getInfo(urls):
+def create_get_info(plugin):
+    def get_info(urls):
         for url in urls:
             cj = CookieJar(plugin.__name__)
             if isinstance(plugin.SH_COOKIES, list):
                 set_cookies(cj, plugin.SH_COOKIES)
-            file_info = parseFileInfo(plugin, url, getURL(replace_patterns(url, plugin.FILE_URL_REPLACEMENTS),
+            file_info = parseFileInfo(plugin, url, get_url(replace_patterns(url, plugin.FILE_URL_REPLACEMENTS),
                                                           decode=not plugin.SH_BROKEN_ENCODING, cookies=cj))
             yield file_info
 
@@ -192,8 +192,8 @@ class SimpleHoster(Hoster):
         pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
         self.req.setOption("timeout", 120)
         # Due to a 0.4.9 core bug self.load would keep previous cookies even if overridden by cookies parameter.
-        # Workaround using getURL. Can be reverted in 0.5 as the cookies bug has been fixed.
-        self.html = getURL(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
+        # Workaround using get_url. Can be reverted in 0.5 as the cookies bug has been fixed.
+        self.html = get_url(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
         premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html)
         if not premium_only:  # Usually premium only pages doesn't show the file information
             self.getFileInfo()
@@ -203,7 +203,7 @@ class SimpleHoster(Hoster):
         elif premium_only:
             self.fail("This link require a premium account")
         else:
-            # This line is required due to the getURL workaround. Can be removed in 0.5
+            # This line is required due to the get_url workaround. Can be removed in 0.5
             self.html = self.load(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
             self.handleFree()
 
@@ -213,7 +213,7 @@ class SimpleHoster(Hoster):
         return Hoster.load(self, url=url, get=get, post=post, ref=ref, cookies=cookies,
                            just_header=just_header, decode=decode)
 
-    def getFileInfo(self):
+    def get_file_info(self):
         self.logDebug("URL: %s" % self.pyfile.url)
         if hasattr(self, "TEMP_OFFLINE_PATTERN") and re.search(self.TEMP_OFFLINE_PATTERN, self.html):
             self.tempOffline()
@@ -239,16 +239,16 @@ class SimpleHoster(Hoster):
         self.logDebug("FILE NAME: %s FILE SIZE: %s" % (self.pyfile.name, self.pyfile.size))
         return self.file_info
 
-    def handleFree(self):
+    def handle_free(self):
         self.fail("Free download not implemented")
 
-    def handlePremium(self):
+    def handle_premium(self):
         self.fail("Premium download not implemented")
 
-    def parseError(self, msg):
+    def parse_error(self, msg):
         raise PluginParseError(msg)
 
-    def longWait(self, wait_time=None, max_tries=3):
+    def long_wait(self, wait_time=None, max_tries=3):
         if wait_time and isinstance(wait_time, (int, int, float)):
             time_str = "%dh %dm" % divmod(old_div(wait_time, 60), 60)
         else:
@@ -262,10 +262,10 @@ class SimpleHoster(Hoster):
         self.wait()
         self.retry(max_tries=max_tries, reason="Download limit reached")
 
-    def parseHtmlForm(self, attr_str='', input_names=None):
+    def parse_html_form(self, attr_str='', input_names=None):
         return parseHtmlForm(attr_str, self.html, input_names)
 
-    def checkTrafficLeft(self):
+    def check_traffic_left(self):
         traffic = self.account.getAccountInfo(self.user, True)["trafficleft"]
         if traffic == -1:
             return True

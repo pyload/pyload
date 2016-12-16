@@ -2,7 +2,7 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from pyload.Api import Api, RequirePerm, Permission, DownloadState, PackageStatus as PS, PackageDoesNotExist, FileDoesNotExist
+from pyload.Api import Api, require_perm, Permission, DownloadState, PackageStatus as PS, PackageDoesNotExist, FileDoesNotExist
 from pyload.utils import uniqify
 
 from .apicomponent import ApiComponent
@@ -12,23 +12,23 @@ from .apicomponent import ApiComponent
 class FileApi(ApiComponent):
     """Everything related to available packages or files. Deleting, Modifying and so on."""
 
-    def checkResult(self, info):
+    def check_result(self, info):
         """ Internal method to verify result and owner """
         #TODO: shared?
-        return info and (not self.primaryUID or info.owner == self.primaryUID)
+        return info and (not self.primary_uid or info.owner == self.primary_uid)
 
-    @RequirePerm(Permission.All)
-    def getAllFiles(self):
+    @require_perm(Permission.All)
+    def get_all_files(self):
         """ same as `getFileTree` for toplevel root and full tree"""
         return self.getFileTree(-1, True)
 
-    @RequirePerm(Permission.All)
-    def getFilteredFiles(self, state):
+    @require_perm(Permission.All)
+    def get_filtered_files(self, state):
         """ same as `getFilteredFileTree` for toplevel root and full tree"""
         return self.getFilteredFileTree(-1, state, True)
 
-    @RequirePerm(Permission.All)
-    def getFileTree(self, pid, full):
+    @require_perm(Permission.All)
+    def get_file_tree(self, pid, full):
         """ Retrieve data for specific package. full=True will retrieve all data available
             and can result in greater delays.
 
@@ -36,10 +36,10 @@ class FileApi(ApiComponent):
         :param full: go down the complete tree or only the first layer
         :return: :class:`TreeCollection`
         """
-        return self.pyload.files.getTree(pid, full, DownloadState.All, self.primaryUID)
+        return self.pyload.files.getTree(pid, full, DownloadState.All, self.primary_uid)
 
-    @RequirePerm(Permission.All)
-    def getFilteredFileTree(self, pid, full, state):
+    @require_perm(Permission.All)
+    def get_filtered_file_tree(self, pid, full, state):
         """ Same as `getFileTree` but only contains files with specific download state.
 
         :param pid: package id
@@ -47,15 +47,15 @@ class FileApi(ApiComponent):
         :param state: :class:`DownloadState`, the attributes used for filtering
         :return: :class:`TreeCollection`
         """
-        return self.pyload.files.getTree(pid, full, state, self.primaryUID)
+        return self.pyload.files.getTree(pid, full, state, self.primary_uid)
 
-    @RequirePerm(Permission.All)
-    def getPackageContent(self, pid):
+    @require_perm(Permission.All)
+    def get_package_content(self, pid):
         """  Only retrieve content of a specific package. see `getFileTree`"""
         return self.getFileTree(pid, False)
 
-    @RequirePerm(Permission.All)
-    def getPackageInfo(self, pid):
+    @require_perm(Permission.All)
+    def get_package_info(self, pid):
         """Returns information about package, without detailed information about containing files
 
         :param pid: package id
@@ -67,8 +67,8 @@ class FileApi(ApiComponent):
             raise PackageDoesNotExist(pid)
         return info
 
-    @RequirePerm(Permission.All)
-    def getFileInfo(self, fid):
+    @require_perm(Permission.All)
+    def get_file_info(self, fid):
         """ Info for specific file
 
         :param fid: file id
@@ -81,28 +81,28 @@ class FileApi(ApiComponent):
             raise FileDoesNotExist(fid)
         return info
 
-    def getFilePath(self, fid):
+    def get_file_path(self, fid):
         """ Internal method to get the filepath"""
         info = self.getFileInfo(fid)
         pack = self.pyload.files.getPackage(info.package)
         return pack.getPath(), info.name
 
-    @RequirePerm(Permission.All)
-    def findFiles(self, pattern):
-        return self.pyload.files.getTree(-1, True, DownloadState.All, self.primaryUID, pattern)
+    @require_perm(Permission.All)
+    def find_files(self, pattern):
+        return self.pyload.files.getTree(-1, True, DownloadState.All, self.primary_uid, pattern)
 
-    @RequirePerm(Permission.All)
-    def searchSuggestions(self, pattern):
-        names = self.pyload.db.getMatchingFilenames(pattern, self.primaryUID)
+    @require_perm(Permission.All)
+    def search_suggestions(self, pattern):
+        names = self.pyload.db.getMatchingFilenames(pattern, self.primary_uid)
         # TODO: stemming and reducing the names to provide better suggestions
         return uniqify(names)
 
-    @RequirePerm(Permission.All)
-    def findPackages(self, tags):
+    @require_perm(Permission.All)
+    def find_packages(self, tags):
         pass
 
-    @RequirePerm(Permission.Modify)
-    def updatePackage(self, pack):
+    @require_perm(Permission.Modify)
+    def update_package(self, pack):
         """Allows to modify several package attributes.
 
         :param pack: :class:`PackageInfo`
@@ -116,8 +116,8 @@ class FileApi(ApiComponent):
         p.sync()
         self.pyload.files.save()
 
-    @RequirePerm(Permission.Modify)
-    def setPackagePaused(self, pid, paused):
+    @require_perm(Permission.Modify)
+    def set_package_paused(self, pid, paused):
         """ Sets the paused state of a package if possible.
 
         :param pid:  package id
@@ -138,8 +138,8 @@ class FileApi(ApiComponent):
         return p.status
 
     # TODO: multiuser etc..
-    @RequirePerm(Permission.Modify)
-    def movePackage(self, pid, root):
+    @require_perm(Permission.Modify)
+    def move_package(self, pid, root):
         """ Set a new root for specific package. This will also moves the files on disk\
            and will only work when no file is currently downloading.
 
@@ -150,8 +150,8 @@ class FileApi(ApiComponent):
         """
         return self.pyload.files.movePackage(pid, root)
 
-    @RequirePerm(Permission.Modify)
-    def moveFiles(self, fids, pid):
+    @require_perm(Permission.Modify)
+    def move_files(self, fids, pid):
         """Move multiple files to another package. This will move the files on disk and\
         only work when files are not downloading. All files needs to be continuous ordered
         in the current package.
@@ -162,7 +162,7 @@ class FileApi(ApiComponent):
         """
         return self.pyload.files.moveFiles(fids, pid)
 
-    def deleteFiles(self, fids):
+    def delete_files(self, fids):
         """ Deletes files from disk
         :param fids: list of file ids
         :return: False if any file can't be deleted currently
@@ -170,15 +170,15 @@ class FileApi(ApiComponent):
         # TODO
 
 
-    def deletePackages(self, pids):
+    def delete_packages(self, pids):
         """ Delete package and all content from disk recursively
         :param pids: list of package ids
         :return: False if any package can't be deleted currently
         """
         # TODO
 
-    @RequirePerm(Permission.Modify)
-    def orderPackage(self, pid, position):
+    @require_perm(Permission.Modify)
+    def order_package(self, pid, position):
         """Set new position for a package.
 
         :param pid: package id
@@ -186,8 +186,8 @@ class FileApi(ApiComponent):
         """
         self.pyload.files.orderPackage(pid, position)
 
-    @RequirePerm(Permission.Modify)
-    def orderFiles(self, fids, pid, position):
+    @require_perm(Permission.Modify)
+    def order_files(self, fids, pid, position):
         """ Set a new position for a bunch of files within a package.
         All files have to be in the same package and must be **continuous**\
         in the package. That means no gaps between them.

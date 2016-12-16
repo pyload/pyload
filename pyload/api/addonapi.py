@@ -2,7 +2,7 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from pyload.Api import Api, RequirePerm, Permission
+from pyload.Api import Api, require_perm, Permission
 
 from .apicomponent import ApiComponent
 
@@ -11,16 +11,16 @@ from .apicomponent import ApiComponent
 class AddonApi(ApiComponent):
     """ Methods to interact with addons """
 
-    @RequirePerm(Permission.Interaction)
-    def getAllInfo(self):
+    @require_perm(Permission.Interaction)
+    def get_all_info(self):
         """Returns all information stored by addon plugins. Values are always strings
 
         :return:
         """
         # TODO
 
-    @RequirePerm(Permission.Interaction)
-    def getInfoByPlugin(self, plugin):
+    @require_perm(Permission.Interaction)
+    def get_info_by_plugin(self, plugin):
         """Returns public information associated with specific plugin.
 
         :param plugin: pluginName
@@ -28,8 +28,8 @@ class AddonApi(ApiComponent):
         """
         return self.pyload.addonmanager.getInfo(plugin)
 
-    @RequirePerm(Permission.Interaction)
-    def getAddonHandler(self):
+    @require_perm(Permission.Interaction)
+    def get_addon_handler(self):
         """ Lists all available addon handler
 
         :return: dict of plugin name to list of :class:`AddonService`
@@ -40,13 +40,13 @@ class AddonApi(ApiComponent):
                 handler[name] = list(data.handler.values())
         return handler
 
-    @RequirePerm(Permission.Interaction)
-    def invokeAddon(self, plugin, func, func_args):
+    @require_perm(Permission.Interaction)
+    def invoke_addon(self, plugin, func, func_args):
         """ Calls any function exposed by an addon """
         return self.pyload.addonmanager.invoke(plugin, func, func_args)
 
-    @RequirePerm(Permission.Interaction)
-    def invokeAddonHandler(self, plugin, func, pid_or_fid):
+    @require_perm(Permission.Interaction)
+    def invoke_addon_handler(self, plugin, func, pid_or_fid):
         """ Calls an addon handler registered to work with packages or files  """
         return self.invokeAddon(plugin, func, (pid_or_fid,))
 

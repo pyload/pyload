@@ -42,7 +42,7 @@ class Hoster(Base):
     DOWNLOAD_CLASS = DefaultDownload
 
     @staticmethod
-    def getInfo(urls):
+    def get_info(urls):
         """This method is used to retrieve the online status of files for hoster plugins.
 
         :param urls: List of urls
@@ -106,21 +106,21 @@ class Hoster(Base):
         if self.account:
             return self.account.loginname
 
-    def getMultiDL(self):
+    def get_multi_dl(self):
         return self.limitDL <= 0
 
-    def setMultiDL(self, val):
+    def set_multi_dl(self, val):
         self.limitDL = 0 if val else 1
 
     #: virtual attribute using self.limitDL on behind
-    multiDL = property(getMultiDL, setMultiDL)
+    multiDL = property(get_multi_dl, set_multi_dl)
 
-    def getChunkCount(self):
+    def get_chunk_count(self):
         if self.chunkLimit <= 0:
             return self.config["download"]["chunks"]
         return min(self.config["download"]["chunks"], self.chunkLimit)
 
-    def getDownloadLimit(self):
+    def get_download_limit(self):
         if self.account:
             limit = self.account.options.get("limitDL", 0)
             if limit == "": limit = 0
@@ -166,7 +166,7 @@ class Hoster(Base):
     def abort(self):
         return self.pyfile.abort
 
-    def resetAccount(self):
+    def reset_account(self):
         """ don't use account and retry download """
         self.account = None
         self.req = self.pyload.requestFactory.getRequest(self.__name__)
@@ -185,7 +185,7 @@ class Hoster(Base):
 
         return True, 10
 
-    def setWait(self, seconds, reconnect=None):
+    def set_wait(self, seconds, reconnect=None):
         """Set a specific wait time later used with `wait`
 
         :param seconds: wait time in seconds
@@ -222,7 +222,7 @@ class Hoster(Base):
         """ fail and indicate file is offline """
         raise Fail("offline")
 
-    def tempOffline(self):
+    def temp_offline(self):
         """ fail and indicates file ist temporary offline, the core may take consequences """
         raise Fail("temp. offline")
 
@@ -314,7 +314,7 @@ class Hoster(Base):
         self.lastDownload = filename
         return self.lastDownload
 
-    def checkDownload(self, rules, api_size=0, max_size=50000, delete=True, read_size=0):
+    def check_download(self, rules, api_size=0, max_size=50000, delete=True, read_size=0):
         """ checks the content of the last downloaded file, re match is saved to `lastCheck`
 
         :param rules: dict with names and rules to match (compiled regexp or strings)
@@ -355,14 +355,14 @@ class Hoster(Base):
                     return name
 
 
-    def getPassword(self):
+    def get_password(self):
         """ get the password the user provided in the package"""
         password = self.pyfile.package().password
         if not password: return ""
         return password
 
 
-    def checkForSameFiles(self, starting=False):
+    def check_for_same_files(self, starting=False):
         """ checks if same file was/is downloaded within same package
 
         :param starting: indicates that the current download is going to start

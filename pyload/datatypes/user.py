@@ -12,7 +12,7 @@ from pyload.utils import bits_set
 class User(UserData):
 
     @staticmethod
-    def fromUserData(api, user):
+    def from_user_data(api, user):
         return User(api, user.uid, user.name, user.email, user.role, user.permission, user.folder,
             user.traffic, user.dllimit, user.dlquota, user.hddquota, user.user, user.templateName)
 
@@ -21,27 +21,27 @@ class User(UserData):
         self.api = api
 
 
-    def toUserData(self):
+    def to_user_data(self):
         # TODO
         return UserData()
 
-    def hasPermission(self, perms):
+    def has_permission(self, perms):
         """  Accepts permission bit or name  """
         if isinstance(perms, basestring) and hasattr(Permission, perms):
             perms = getattr(Permission, perms)
 
         return bits_set(perms, self.permission)
 
-    def hasRole(self, role):
+    def has_role(self, role):
         if isinstance(role, basestring) and hasattr(Role, role):
             role = getattr(Role, role)
 
         return self.role == role
 
-    def hasAccess(self, obj):
+    def has_access(self, obj):
         return self.primary is None or obj.owner == self.true_primary
 
-    def isAdmin(self):
+    def is_admin(self):
         return self.hasRole(Role.Admin)
 
     @property

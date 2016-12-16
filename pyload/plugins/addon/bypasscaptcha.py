@@ -9,7 +9,7 @@ from builtins import str
 from _thread import start_new_thread
 from pycurl import FORM_FILE, LOW_SPEED_TIME
 
-from pyload.network.requestfactory import getURL, getRequest
+from pyload.network.requestfactory import get_url, getRequest
 from pyload.network.httprequest import BadHeader
 
 from pyload.plugins.hook import Hook
@@ -21,7 +21,7 @@ class BypassCaptchaException(Exception):
     def __init__(self, err):
         self.err = err
 
-    def getCode(self):
+    def get_code(self):
         return self.err
 
     def __str__(self):
@@ -48,8 +48,8 @@ class BypassCaptcha(Hook):
     def setup(self):
         self.info = {}
 
-    def getCredits(self):
-        response = getURL(self.GETCREDITS_URL, post={"key": self.getConfig("passkey")})
+    def get_credits(self):
+        response = get_url(self.GETCREDITS_URL, post={"key": self.getConfig("passkey")})
 
         data = dict([x.split(' ', 1) for x in response.splitlines()])
         return int(data['Left'])
@@ -82,12 +82,12 @@ class BypassCaptcha(Hook):
 
     def respond(self, ticket, success):
         try:
-            response = getURL(self.RESPOND_URL, post={"task_id": ticket, "key": self.getConfig("passkey"),
+            response = get_url(self.RESPOND_URL, post={"task_id": ticket, "key": self.getConfig("passkey"),
                                                       "cv": 1 if success else 0})
         except BadHeader as e:
             self.logError("Could not send response.", str(e))
 
-    def newCaptchaTask(self, task):
+    def new_captcha_task(self, task):
         if "service" in task.data:
             return False
 
@@ -109,15 +109,15 @@ class BypassCaptcha(Hook):
         else:
             self.logInfo("Your %s account has not enough credits" % self.__name__)
 
-    def captchaCorrect(self, task):
+    def captcha_correct(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             self.respond(task.data["ticket"], True)
 
-    def captchaInvalid(self, task):
+    def captcha_invalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             self.respond(task.data["ticket"], False)
 
-    def processCaptcha(self, task):
+    def process_captcha(self, task):
         c = task.captchaFile
         try:
             ticket, result = self.submit(c)

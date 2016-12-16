@@ -64,14 +64,14 @@ class CurlRequest(Request):
         print("Deprecated usage of req.http, just use req instead")
         return self
 
-    def initContext(self):
+    def init_context(self):
         self.initHandle()
 
         if self.config:
             self.setInterface(self.config)
             self.initOptions(self.config)
 
-    def initHandle(self):
+    def init_handle(self):
         """ sets common options to curl handle """
 
         self.c.setopt(pycurl.FOLLOWLOCATION, 1)
@@ -105,7 +105,7 @@ class CurlRequest(Request):
              "Keep-Alive": "300",
              "Expect": ""})
 
-    def setInterface(self, options):
+    def set_interface(self, options):
 
         interface, proxy, ipv6 = options["interface"], options["proxies"], options["ipv6"]
 
@@ -137,13 +137,13 @@ class CurlRequest(Request):
         if "auth" in options:
             self.c.setopt(pycurl.USERPWD, str(options["auth"]))
 
-    def initOptions(self, options):
+    def init_options(self, options):
         """  Sets same options as available in pycurl  """
         for k, v in options.items():
             if hasattr(pycurl, k):
                 self.c.setopt(getattr(pycurl, k), v)
 
-    def setRequestContext(self, url, get, post, referer, cookies, multipart=False):
+    def set_request_context(self, url, get, post, referer, cookies, multipart=False):
         """ sets everything needed for the request """
         url = myquote(url)
 
@@ -238,22 +238,22 @@ class CurlRequest(Request):
 
         return rep
 
-    def parseCookies(self):
+    def parse_cookies(self):
         for c in self.c.getinfo(pycurl.INFO_COOKIELIST):
             #http://xiix.wordpress.com/2006/03/23/mozillafirefox-cookie-format
             domain, flag, path, secure, expires, name, value = c.split("\t")
             # http only was added in py 2.6
             domain = domain.replace("#HttpOnly_", "")
-            self.cj.setCookie(domain, name, value, path, expires, secure)
+            self.cj.set_cookie(domain, name, value, path, expires, secure)
 
-    def verifyHeader(self):
+    def verify_header(self):
         """ raise an exceptions on bad headers """
         code = int(self.c.getinfo(pycurl.RESPONSE_CODE))
         if code in bad_headers:
             raise ResponseException(code, responses.get(code, "Unknown statuscode"))
         return code
 
-    def getResponse(self):
+    def get_response(self):
         """ retrieve response from string io """
         if self.rep is None: return ""
         value = self.rep.getvalue()
@@ -261,7 +261,7 @@ class CurlRequest(Request):
         self.rep = StringIO()
         return value
 
-    def decodeResponse(self, rep):
+    def decode_response(self, rep):
         """ decode with correct encoding, relies on header """
         header = self.header.splitlines()
         encoding = "utf8" # default encoding
@@ -307,7 +307,7 @@ class CurlRequest(Request):
 
         self.rep.write(buf)
 
-    def writeHeader(self, buf):
+    def write_header(self, buf):
         """ writes header """
         self.header += buf
 

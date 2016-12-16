@@ -185,7 +185,7 @@ class Core(object):
         self.log.info(_("Received Quit signal"))
         _exit(1)
 
-    def writePidFile(self):
+    def write_pid_file(self):
         self.deletePidFile()
         pid = os.getpid()
         f = open(self.pidfile, "wb")
@@ -193,12 +193,12 @@ class Core(object):
         f.close()
         chmod(self.pidfile, 0o660)
 
-    def deletePidFile(self):
+    def delete_pid_file(self):
         if self.checkPidFile():
             self.log.debug("Deleting old pidfile %s" % self.pidfile)
             os.remove(self.pidfile)
 
-    def checkPidFile(self):
+    def check_pid_file(self):
         """ return pid as int or 0"""
         if os.path.isfile(self.pidfile):
             f = open(self.pidfile, "rb")
@@ -210,7 +210,7 @@ class Core(object):
 
         return 0
 
-    def isAlreadyRunning(self):
+    def is_already_running(self):
         pid = self.checkPidFile()
         if not pid or os.name == "nt": return False
         try:
@@ -220,7 +220,7 @@ class Core(object):
 
         return pid
 
-    def quitInstance(self):
+    def quit_instance(self):
         if os.name == "nt":
             print("Not supported on windows.")
             return
@@ -250,7 +250,7 @@ class Core(object):
             print("Error quitting pyLoad")
 
 
-    def cleanTree(self):
+    def clean_tree(self):
         for path, dirs, files in walk(self.path("pyload")):
             for f in files:
                 if not f.endswith(".pyo") and not f.endswith(".pyc"):
@@ -352,7 +352,7 @@ class Core(object):
         self.captcha = True # checks seems to fail, although tesseract is available
 
         self.eventManager = self.evm = EventManager(self)
-        self.setupDB()
+        self.setup_db()
 
         # Upgrade to configManager
         self.config = ConfigManager(self, self.config)
@@ -479,7 +479,7 @@ class Core(object):
                 self.print_exc()
 
 
-    def setupDB(self):
+    def setup_db(self):
         from .database import DatabaseBackend
         from .filemanager import FileManager
 
@@ -560,7 +560,7 @@ class Core(object):
         self.log.addHandler(console) #if console logging
         self.log.setLevel(level)
 
-    def removeLogger(self):
+    def remove_logger(self):
         for h in self.log.handlers:
             self.log.removeHandler(h)
             h.close()

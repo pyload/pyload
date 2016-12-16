@@ -7,21 +7,21 @@ from pyload.database import DatabaseMethods, queue, async
 
 class AccountMethods(DatabaseMethods):
     @queue
-    def loadAccounts(self):
+    def load_accounts(self):
         self.c.execute('SELECT aid, plugin, loginname, owner, activated, shared, password, options FROM accounts')
 
         return [(AccountInfo(r[0], r[1], r[2], r[3], activated=r[4] is 1, shared=r[5] is 1), r[6], r[7]) for r in
                 self.c]
 
     @queue
-    def createAccount(self, plugin, loginname, password, owner):
+    def create_account(self, plugin, loginname, password, owner):
         self.c.execute('INSERT INTO accounts(plugin, loginname, password, owner) VALUES(?,?,?,?)',
                        (plugin, loginname, password, owner))
 
         return self.c.lastrowid
 
     @async
-    def saveAccounts(self, data):
+    def save_accounts(self, data):
         self.c.executemany(
             'UPDATE accounts SET '
             'loginname=?, activated=?, shared=?, password=?, options=? '
@@ -29,11 +29,11 @@ class AccountMethods(DatabaseMethods):
             data)
 
     @async
-    def removeAccount(self, aid):
+    def remove_account(self, aid):
         self.c.execute('DELETE FROM accounts WHERE aid=?', (aid,))
 
     @queue
-    def purgeAccounts(self):
+    def purge_accounts(self):
         self.c.execute('DELETE FROM accounts')
 
 

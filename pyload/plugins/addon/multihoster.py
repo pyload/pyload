@@ -5,7 +5,7 @@ import re
 from random import choice
 
 from pyload.plugins.multihoster import MultiHoster as MultiHosterAccount, normalize
-from pyload.plugins.addon import Addon, AddEventListener
+from pyload.plugins.addon import Addon, add_event_listener
 from pyload.pluginmanager import PluginMatcher
 
 
@@ -26,13 +26,13 @@ class MultiHoster(Addon, PluginMatcher):
         # multihoster mapped to new regexp
         self.regexp = {}
 
-    def matchURL(self, url):
+    def match_url(self, url):
         """ Overwritten to include new plugin regexp """
         for hoster, regexp in self.regexp.items():
             if regexp.search(url):
                 return "hoster", hoster
 
-    def matchPlugin(self, plugin, name):
+    def match_plugin(self, plugin, name):
         """ Overwritten to overwrite already supported plugins """
 
         # TODO: check if account is usable
@@ -42,7 +42,7 @@ class MultiHoster(Addon, PluginMatcher):
         if name in self.plugins:
             return plugin, choice(self.plugins[name])
 
-    def addHoster(self, account):
+    def add_hoster(self, account):
 
         self.logInfo(_("Activated %s") % account.__name__)
 
@@ -89,8 +89,8 @@ class MultiHoster(Addon, PluginMatcher):
         self.regexp[klass.__name__] = re.compile(r".*(%s).*" % "|".join(patterns))
 
 
-    @AddEventListener(["account:deleted", "account:updated"])
-    def refreshAccounts(self, plugin=None, loginname=None, user=None):
+    @add_event_listener(["account:deleted", "account:updated"])
+    def refresh_accounts(self, plugin=None, loginname=None, user=None):
         self.logDebug("Re-checking accounts")
 
         self.plugins = {}
@@ -98,8 +98,8 @@ class MultiHoster(Addon, PluginMatcher):
             if isinstance(account, MultiHosterAccount) and account.isUsable():
                 self.addHoster(account)
 
-    @AddEventListener("account:loaded")
-    def refreshAccount(self, acc):
+    @add_event_listener("account:loaded")
+    def refresh_account(self, acc):
 
         account = self.pyload.accountManager.getAccount(acc.plugin, acc.loginname)
         if isinstance(account, MultiHosterAccount) and account.isUsable():

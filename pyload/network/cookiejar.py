@@ -17,10 +17,10 @@ import http.cookies
 
 
 class CookieJar(http.cookies.SimpleCookie):
-    def getCookie(self, name):
+    def get_cookie(self, name):
         return self[name].value
 
-    def setCookie(self, domain, name, value, path="/", exp=None, secure="FALSE"):
+    def set_cookie(self, domain, name, value, path="/", exp=None, secure="FALSE"):
         self[name] = value
         self[name]["domain"] = domain
         self[name]["path"] = path

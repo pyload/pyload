@@ -39,7 +39,7 @@ class MultiHoster(Account):
 
         Account.__init__(self, *args, **kwargs)
 
-    def loadHosterList(self, req):
+    def load_hoster_list(self, req):
         """Load list of supported hoster
 
         :return: List of domain names
@@ -47,7 +47,7 @@ class MultiHoster(Account):
         raise NotImplementedError
 
 
-    def isHosterUsuable(self, domain):
+    def is_hoster_usuable(self, domain):
         """ Determine before downloading if hoster should be used.
 
         :param domain: domain name
@@ -55,7 +55,7 @@ class MultiHoster(Account):
         """
         return True
 
-    def getHosterList(self, force=False):
+    def get_hoster_list(self, force=False):
         if self.ts + self.hoster_timeout < time() or force:
             req = self.getAccountRequest()
             try:

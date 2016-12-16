@@ -59,19 +59,19 @@ class XMPPInterface(IRCInterface, JabberClient):
             self,
         ]
 
-    def coreReady(self):
+    def core_ready(self):
         self.new_package = {}
 
         self.start()
 
-    def packageFinished(self, pypack):
+    def package_finished(self, pypack):
         try:
             if self.getConfig("info_pack"):
                 self.announce(_("Package finished: %s") % pypack.name)
         except Exception:
             pass
 
-    def downloadFinished(self, pyfile):
+    def download_finished(self, pyfile):
         try:
             if self.getConfig("info_file"):
                 self.announce(
@@ -190,10 +190,10 @@ class XMPPInterface(IRCInterface, JabberClient):
 
             stream.send(m)
 
-    def beforeReconnecting(self, ip):
+    def before_reconnecting(self, ip):
         self.disconnect()
 
-    def afterReconnecting(self, ip):
+    def after_reconnecting(self, ip):
         self.connect()
 
 

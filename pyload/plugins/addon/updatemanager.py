@@ -12,7 +12,7 @@ from os.path import join, exists
 from time import time
 
 from pyload.configparser import IGNORE
-from pyload.network.requestfactory import getURL
+from pyload.network.requestfactory import get_url
 from pyload.plugins.hook import threaded, Expose, Hook
 
 
@@ -67,16 +67,16 @@ class UpdateManager(Hook):
             self.logInfo(_("No plugin updates available"))
 
     @Expose
-    def recheckForUpdates(self):
+    def recheck_for_updates(self):
         """recheck if updates are available"""
         self.periodical()
 
-    def checkForUpdate(self):
+    def check_for_update(self):
         """checks if an update is available, return result"""
 
         try:
             if self.version == "None":  # No updated known
-                version_check = getURL(self.URL % self.pyload.api.getServerVersion()).splitlines()
+                version_check = get_url(self.URL % self.pyload.api.getServerVersion()).splitlines()
                 self.version = version_check[0]
 
                 # Still no updates, plugins will be checked
@@ -93,7 +93,7 @@ class UpdateManager(Hook):
 
         return None  # Nothing will be done
 
-    def checkPlugins(self, updates):
+    def check_plugins(self, updates):
         """ checks for plugins updates"""
 
         # plugins were already updated
@@ -140,7 +140,7 @@ class UpdateManager(Hook):
             })
 
             try:
-                content = getURL(url % info)
+                content = get_url(url % info)
             except Exception as e:
                 self.logWarning(_("Error when updating %s") % filename, str(e))
                 continue
@@ -159,7 +159,7 @@ class UpdateManager(Hook):
 
         self.reloaded = self.pyload.pluginManager.reloadPlugins(reloads)
 
-    def checkChanges(self):
+    def check_changes(self):
 
         if self.last_check + max(self.getConfig("interval") * 60, self.MIN_TIME) < time():
             self.old_periodical()

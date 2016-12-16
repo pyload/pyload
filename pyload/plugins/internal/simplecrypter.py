@@ -42,7 +42,7 @@ class SimpleCrypter(Crypter):
 
     FILE_URL_REPLACEMENTS = []
 
-    def decryptURL(self, url):
+    def decrypt_url(self, url):
         url = replace_patterns(url, self.FILE_URL_REPLACEMENTS)
 
         self.html = self.load(url, decode=True)
@@ -61,14 +61,14 @@ class SimpleCrypter(Crypter):
             self.fail('Could not extract any links')
 
 
-    def getLinks(self):
+    def get_links(self):
         """
         Returns the links extracted from self.html
         You should override this only if it's impossible to extract links using only the LINK_PATTERN.
         """
         return re.findall(self.LINK_PATTERN, self.html)
 
-    def getPackageName(self):
+    def get_package_name(self):
         if hasattr(self, 'TITLE_PATTERN'):
             m = re.search(self.TITLE_PATTERN, self.html)
             if m:
@@ -78,7 +78,7 @@ class SimpleCrypter(Crypter):
 
         return None
 
-    def handleMultiPages(self):
+    def handle_multi_pages(self):
         pages = re.search(self.PAGES_PATTERN, self.html)
         if pages:
             pages = int(pages.group('pages'))

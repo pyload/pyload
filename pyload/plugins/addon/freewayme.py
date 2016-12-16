@@ -3,7 +3,7 @@
 
 from __future__ import unicode_literals
 
-from pyload.network.requestfactory import getURL
+from pyload.network.requestfactory import get_url
 from pyload.plugins.internal.multihoster import MultiHoster
 
 
@@ -20,7 +20,7 @@ class FreeWayMe(MultiHoster):
     __author_name__ = "Nicolas Giese"
     __author_mail__ = "james@free-way.me"
 
-    def getHoster(self):
-        hostis = getURL("https://www.free-way.me/ajax/jd.php", get={"id": 3}).replace("\"", "").strip()
+    def get_hoster(self):
+        hostis = get_url("https://www.free-way.me/ajax/jd.php", get={"id": 3}).replace("\"", "").strip()
         self.logDebug("hosters: %s" % hostis)
         return [x.strip() for x in hostis.split(",") if x.strip()]

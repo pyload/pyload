@@ -218,7 +218,7 @@ class DownloadThread(BaseThread):
             pyfile.finishIfDone()
             self.pyload.files.save()
 
-    def getProgress(self):
+    def get_progress(self):
         if self.active:
             return self.active.getProgressInfo()
 

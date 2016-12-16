@@ -30,7 +30,7 @@ class MergeFiles(Hook):
         # nothing to do
         pass
 
-    def packageFinished(self, pack):
+    def package_finished(self, pack):
         files = {}
         fid_dict = {}
         for fid, data in pack.getChildren().items():

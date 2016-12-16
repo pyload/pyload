@@ -32,23 +32,23 @@ class Package(object):
         # nested packages
         self.packs = []
 
-    def addLinks(self, links):
+    def add_links(self, links):
         """ Add one or multiple links to the package
 
         :param links: One or list of urls or :class:`LinkStatus`
         """
         self.links.extend(to_link_list(to_list(links)))
 
-    def addPackage(self, pack):
+    def add_package(self, pack):
         self.packs.append(pack)
 
-    def getURLs(self):
+    def get_urls(self):
         return [link.url for link in self.links]
 
-    def getAllURLs(self):
-        urls = self.getURLs()
+    def get_all_urls(self):
+        urls = self.get_urls()
         for p in self.packs:
-            urls.extend(p.getAllURLs())
+            urls.extend(p.get_all_urls())
         return urls
 
     # same name and urls is enough to be equal for packages
@@ -87,7 +87,7 @@ class Crypter(Base):
 
     How to use decrypt* methods:
 
-    You have to overwrite at least one method of decryptURL, decryptURLs, decryptFile.
+    You have to overwrite at least one method of decrypt_url, decrypt_urls, decryptFile.
 
     After decrypting and generating urls/packages you have to return the result.
     Valid return Data is:
@@ -134,7 +134,7 @@ class Crypter(Base):
 
         for url_or_pack in result:
             if isinstance(url_or_pack, Package): #package
-                ret.extend(url_or_pack.getAllURLs())
+                ret.extend(url_or_pack.get_all_urls())
             elif isinstance(url_or_pack, LinkStatus): #link
                 ret.append(url_or_pack.url)
             else:
@@ -175,7 +175,7 @@ class Crypter(Base):
     def setup(self):
         """Called everytime before decrypting. A Crypter plugin will be most likely used for several jobs."""
 
-    def decryptURL(self, url):
+    def decrypt_url(self, url):
         """Decrypt a single url
 
         :param url: url to decrypt
@@ -186,7 +186,7 @@ class Crypter(Base):
         else:
             self.fail(_("Not existing file or unsupported protocol"))
 
-    def decryptURLs(self, urls):
+    def decrypt_urls(self, urls):
         """Decrypt a bunch of urls
 
         :param urls: list of urls
@@ -194,7 +194,7 @@ class Crypter(Base):
         """
         raise NotImplementedError
 
-    def decryptFile(self, content):
+    def decrypt_file(self, content):
         """Decrypt file content
 
         :param content: content to decrypt as string
@@ -226,7 +226,7 @@ class Crypter(Base):
             method = True
             try:
                 self.setup()
-                result = to_list(self.decryptURLs(urls))
+                result = to_list(self.decrypt_urls(urls))
             except NotImplementedError:
                 method = False
 
@@ -234,7 +234,7 @@ class Crypter(Base):
             if not method:
                 for url in urls:
                     self.setup()
-                    result.extend(to_list(self.decryptURL(url)))
+                    result.extend(to_list(self.decrypt_url(url)))
 
         for f, c in content:
             self.setup()
@@ -247,7 +247,7 @@ class Crypter(Base):
 
         return to_link_list(result)
 
-    def getLocalContent(self, urls):
+    def get_local_content(self, urls):
         """Load files from disk and separate to file content and url list
 
         :param urls:
@@ -290,12 +290,12 @@ class Crypter(Base):
         """ Retry decrypting, will only work once. Somewhat deprecated method, should be avoided. """
         raise Retry
 
-    def getPassword(self):
+    def get_password(self):
         """ Deprecated """
         self.logDebug("Deprecated method .getPassword(), use self.password instead.")
         return self.password
 
-    def convertPackages(self):
+    def convert_packages(self):
         """ Deprecated """
         self.logDebug("Deprecated method .convertPackages()")
         res = []

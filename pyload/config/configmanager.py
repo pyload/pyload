@@ -11,7 +11,7 @@ from .configparser import ConfigParser
 
 from .convert import to_input, from_string
 
-def convertKeyError(func):
+def convert_key_error(func):
     """ converts KeyError into InvalidConfigSection """
 
     def conv(*args, **kwargs):
@@ -68,7 +68,7 @@ class ConfigManager(ConfigParser):
 
         return self.config[section].config[option].input.default_value
 
-    def loadValues(self, user, section):
+    def load_values(self, user, section):
         if (user, section) not in self.values:
             conf = self.db.loadConfig(section, user)
             try:
@@ -100,7 +100,7 @@ class ConfigManager(ConfigParser):
         if changed: self.pyload.evm.dispatchEvent("config:changed", section, option, value)
         return changed
 
-    def saveValues(self, user, section):
+    def save_values(self, user, section):
         if section in self.parser and user is None:
             self.save()
         elif (user, section) in self.values:
@@ -115,10 +115,10 @@ class ConfigManager(ConfigParser):
         self.db.deleteConfig(section, user)
         self.pyload.evm.dispatchEvent("config:deleted", section, user)
 
-    def iterCoreSections(self):
+    def iter_core_sections(self):
         return self.parser.iterSections()
 
-    def iterSections(self, user=None):
+    def iter_sections(self, user=None):
         """ Yields: section, metadata, values """
         values = self.db.loadConfigsForUser(user)
 
@@ -133,7 +133,7 @@ class ConfigManager(ConfigParser):
         for name, config in self.config.items():
             yield name, config, values[name] if name in values else {}
 
-    def getSection(self, section, user=None):
+    def get_section(self, section, user=None):
         if section in self.parser and user is None:
             return self.parser.getSection(section)
 

@@ -63,7 +63,7 @@ class FileManager(object):
         self.db.commit()
 
     @read_lock
-    def syncSave(self):
+    def sync_save(self):
         """saves all data to backend and waits until all data are written"""
         for pyfile in self.files.values():
             pyfile.sync()
@@ -73,24 +73,24 @@ class FileManager(object):
 
         self.db.syncSave()
 
-    def cachedFiles(self):
+    def cached_files(self):
         return list(self.files.values())
 
-    def cachedPackages(self):
+    def cached_packages(self):
         return list(self.packages.values())
 
-    def getCollector(self):
+    def get_collector(self):
         pass
 
     @invalidate
-    def addLinks(self, data, pid, owner):
+    def add_links(self, data, pid, owner):
         """Add links, data = (url, plugin) tuple. Internal method should use API."""
         self.db.addLinks(data, pid, owner)
         self.evm.dispatchEvent("package:updated", pid)
 
 
     @invalidate
-    def addPackage(self, name, folder, root, password, site, comment, paused, owner):
+    def add_package(self, name, folder, root, password, site, comment, paused, owner):
         """Adds a package to database"""
         pid = self.db.addPackage(name, folder, root, password, site, comment,
                                  PackageStatus.Paused if paused else PackageStatus.Ok, owner)
@@ -101,7 +101,7 @@ class FileManager(object):
 
 
     @lock
-    def getPackage(self, pid):
+    def get_package(self, pid):
         """return package instance"""
         if pid == self.ROOT_PACKAGE:
             return RootPackage(self, self.ROOT_OWNER)
@@ -119,7 +119,7 @@ class FileManager(object):
             return pack
 
     @read_lock
-    def getPackageInfo(self, pid):
+    def get_package_info(self, pid):
         """returns dict with package information"""
         if pid == self.ROOT_PACKAGE:
             pack = RootPackage(self, self.ROOT_OWNER).toInfoData()
@@ -143,7 +143,7 @@ class FileManager(object):
         return pack
 
     @lock
-    def getFile(self, fid):
+    def get_file(self, fid):
         """returns pyfile instance"""
         if fid in self.files:
             return self.files[fid]
@@ -156,7 +156,7 @@ class FileManager(object):
             return f
 
     @read_lock
-    def getFileInfo(self, fid):
+    def get_file_info(self, fid):
         """returns dict with file information"""
         if fid in self.files:
             return self.files[fid].toInfoData()
@@ -164,7 +164,7 @@ class FileManager(object):
         return self.db.getFileInfo(fid)
 
     @read_lock
-    def getTree(self, pid, full, state, owner=None, search=None):
+    def get_tree(self, pid, full, state, owner=None, search=None):
         """  return a TreeCollection and fill the info data of containing packages.
              optional filter only unfinished files
         """
@@ -241,7 +241,7 @@ class FileManager(object):
 
 
     @lock
-    def getJobs(self, occ):
+    def get_jobs(self, occ):
 
         # load jobs with file info
         if occ not in self.jobCache:
@@ -250,26 +250,26 @@ class FileManager(object):
 
         return self.jobCache[occ]
 
-    def getDownloadStats(self, user=None):
+    def get_download_stats(self, user=None):
         """ return number of downloads  """
         if user not in self.downloadstats:
             self.downloadstats[user] = self.db.downloadstats(user)
 
         return self.downloadstats[user]
 
-    def getQueueStats(self, user=None, force=False):
+    def get_queue_stats(self, user=None, force=False):
         """number of files that have to be processed, failed files will not be included"""
         if user not in self.queuestats or force:
             self.queuestats[user] = self.db.queuestats(user)
 
         return self.queuestats[user]
 
-    def scanDownloadFolder(self):
+    def scan_download_folder(self):
         pass
 
     @lock
     @invalidate
-    def removePackage(self, pid):
+    def remove_package(self, pid):
         """delete package and all contained links"""
 
         p = self.getPackage(pid)
@@ -293,7 +293,7 @@ class FileManager(object):
 
     @lock
     @invalidate
-    def removeFile(self, fid):
+    def remove_file(self, fid):
         """deletes links"""
 
         f = self.getFile(fid)
@@ -315,19 +315,19 @@ class FileManager(object):
         self.evm.dispatchEvent("file:deleted", fid, pid)
 
     @lock
-    def releaseFile(self, fid):
+    def release_file(self, fid):
         """removes pyfile from cache"""
         if fid in self.files:
             del self.files[fid]
 
     @lock
-    def releasePackage(self, pid):
+    def release_package(self, pid):
         """removes package from cache"""
         if pid in self.packages:
             del self.packages[pid]
 
     @invalidate
-    def updateFile(self, pyfile):
+    def update_file(self, pyfile):
         """updates file"""
         self.db.updateFile(pyfile)
 
@@ -336,7 +336,7 @@ class FileManager(object):
 
     @invalidate
     @read_lock
-    def setDownloadStatus(self, fid, status):
+    def set_download_status(self, fid, status):
         """ sets a download status for a file """
         if fid in self.files:
             self.files[fid].setStatus(status)
@@ -346,18 +346,18 @@ class FileManager(object):
         self.evm.dispatchEvent("file:updated", fid)
 
     @invalidate
-    def updatePackage(self, pypack):
+    def update_package(self, pypack):
         """updates a package"""
         self.db.updatePackage(pypack)
         self.evm.dispatchEvent("package:updated", pypack.pid)
 
     @invalidate
-    def updateFileInfo(self, data, pid):
+    def update_file_info(self, data, pid):
         """ updates file info (name, size, status,[ hash,] url)"""
         self.db.updateLinkInfo(data)
         self.evm.dispatchEvent("package:updated", pid)
 
-    def checkAllLinksFinished(self):
+    def check_all_links_finished(self):
         """checks if all files are finished and dispatch event"""
 
         # TODO: user context?
@@ -368,7 +368,7 @@ class FileManager(object):
 
         return False
 
-    def checkAllLinksProcessed(self, fid=-1):
+    def check_all_links_processed(self, fid=-1):
         """checks if all files was processed and pyload would idle now, needs fid which will be ignored when counting"""
 
         # reset count so statistic will update (this is called when dl was processed)
@@ -382,7 +382,7 @@ class FileManager(object):
 
         return False
 
-    def checkPackageFinished(self, pyfile):
+    def check_package_finished(self, pyfile):
         """ checks if package is finished and calls addonmanager """
 
         ids = self.db.getUnfinished(pyfile.packageid)
@@ -392,12 +392,12 @@ class FileManager(object):
                 self.pyload.addonmanager.packageFinished(pyfile.package())
                 pyfile.package().setFinished = True
 
-    def resetCount(self):
+    def reset_count(self):
         self.queuecount = -1
 
     @read_lock
     @invalidate
-    def restartPackage(self, pid):
+    def restart_package(self, pid):
         """restart package"""
         for pyfile in self.cachedFiles():
             if pyfile.packageid == pid:
@@ -412,7 +412,7 @@ class FileManager(object):
 
     @read_lock
     @invalidate
-    def restartFile(self, fid):
+    def restart_file(self, fid):
         """ restart file"""
         if fid in self.files:
             f = self.files[fid]
@@ -427,7 +427,7 @@ class FileManager(object):
 
     @lock
     @invalidate
-    def orderPackage(self, pid, position):
+    def order_package(self, pid, position):
 
         p = self.getPackageInfo(pid)
         self.db.orderPackage(pid, p.root, p.packageorder, position)
@@ -449,7 +449,7 @@ class FileManager(object):
 
     @lock
     @invalidate
-    def orderFiles(self, fids, pid, position):
+    def order_files(self, fids, pid, position):
 
         files = [self.getFileInfo(fid) for fid in fids]
         orders = [f.fileorder for f in files]
@@ -489,7 +489,7 @@ class FileManager(object):
 
     @read_lock
     @invalidate
-    def movePackage(self, pid, root):
+    def move_package(self, pid, root):
         """  move pid - root """
 
         p = self.getPackageInfo(pid)
@@ -508,7 +508,7 @@ class FileManager(object):
 
     @read_lock
     @invalidate
-    def moveFiles(self, fids, pid):
+    def move_files(self, fids, pid):
         """ move all fids to pid """
 
         f = self.getFileInfo(fids[0])
@@ -523,7 +523,7 @@ class FileManager(object):
 
 
     @invalidate
-    def reCheckPackage(self, pid):
+    def re_check_package(self, pid):
         """ recheck links in package """
         data = self.db.getPackageData(pid)
 
@@ -537,7 +537,7 @@ class FileManager(object):
 
 
     @invalidate
-    def restartFailed(self):
+    def restart_failed(self):
         """ restart all failed links """
         # failed should not be in cache anymore, so working on db is sufficient
         self.db.restartFailed()

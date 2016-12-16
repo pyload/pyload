@@ -7,13 +7,13 @@ from pyload.database import DatabaseMethods, queue, async
 class ConfigMethods(DatabaseMethods):
 
     @async
-    def saveConfig(self, plugin, config, user=None):
+    def save_config(self, plugin, config, user=None):
         if user is None: user = -1
         self.c.execute('INSERT INTO settings(plugin, config, user) VALUES(?,?,?)', (plugin, config, user))
 
 
     @queue
-    def loadConfig(self, plugin, user=None):
+    def load_config(self, plugin, user=None):
         if user is None: user = -1
         self.c.execute('SELECT config FROM settings WHERE plugin=? AND user=?', (plugin, user))
 
@@ -21,14 +21,14 @@ class ConfigMethods(DatabaseMethods):
         return r[0] if r else ""
 
     @async
-    def deleteConfig(self, plugin, user=None):
+    def delete_config(self, plugin, user=None):
         if user is None:
             self.c.execute('DELETE FROM settings WHERE plugin=?', (plugin,))
         else:
             self.c.execute('DELETE FROM settings WHERE plugin=? AND user=?', (plugin, user))
 
     @queue
-    def loadAllConfigs(self):
+    def load_all_configs(self):
         self.c.execute('SELECT user, plugin, config FROM settings')
         configs = {}
         for r in self.c:
@@ -40,7 +40,7 @@ class ConfigMethods(DatabaseMethods):
         return configs
 
     @queue
-    def loadConfigsForUser(self, user=None):
+    def load_configs_for_user(self, user=None):
         if user is None: user = -1
         self.c.execute('SELECT plugin, config FROM settings WHERE user=?', (user,))
         configs = {}
@@ -50,7 +50,7 @@ class ConfigMethods(DatabaseMethods):
         return configs
 
     @async
-    def clearAllConfigs(self):
+    def clear_all_configs(self):
         self.c.execute('DELETE FROM settings')
 
 

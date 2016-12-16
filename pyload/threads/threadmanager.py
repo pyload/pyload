@@ -40,23 +40,23 @@ class ThreadManager(object):
         self.timestamp = 0
 
     @lock
-    def addThread(self, thread):
+    def add_thread(self, thread):
         self.threads.append(thread)
 
     @lock
-    def removeThread(self, thread):
+    def remove_thread(self, thread):
         """ Remove a thread from the local list """
         if thread in self.threads:
             self.threads.remove(thread)
 
     @lock
-    def createInfoThread(self, data, pid):
+    def create_info_thread(self, data, pid):
         """ start a thread which fetches online status and other info's """
         self.timestamp = time() + 5 * 60
         if data: InfoThread(self, None, data, pid)
 
     @lock
-    def createResultThread(self, user, data):
+    def create_result_thread(self, user, data):
         """ creates a thread to fetch online status, returns result id """
         self.timestamp = time() + 5 * 60
 
@@ -71,14 +71,14 @@ class ThreadManager(object):
         return rid
 
     @lock
-    def getInfoResult(self, rid):
+    def get_info_result(self, rid):
         return self.infoResults.get(rid)
 
-    def setInfoResults(self, oc, result):
+    def set_info_results(self, oc, result):
         self.pyload.evm.dispatchEvent("linkcheck:updated", oc.rid, result, owner=oc.owner)
         oc.update(result)
 
-    def getProgressList(self, user=None):
+    def get_progress_list(self, user=None):
         info = []
 
         for thread in self.threads:

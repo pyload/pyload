@@ -33,7 +33,7 @@ class WebSocketBackend(BackendBase):
         options.dispatcher.addHandler(AsyncHandler.PATH, AsyncHandler(self.pyload.api))
 
         # tls is needed when requested or webui is also on tls
-        if self.pyload.api.isWSSecure():
+        if self.pyload.api.is_ws_secure():
             from .wsbackend.server import import_ssl
             tls_module = import_ssl()
             if tls_module:

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from pyload.network.requestfactory import getURL
+from pyload.network.requestfactory import get_url
 from pyload.plugins.internal.multihoster import MultiHoster
 
 
@@ -16,6 +16,6 @@ class ZeveraCom(MultiHoster):
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
-    def getHoster(self):
-        page = getURL("http://www.zevera.com/jDownloader.ashx?cmd=gethosters")
+    def get_hoster(self):
+        page = get_url("http://www.zevera.com/jDownloader.ashx?cmd=gethosters")
         return [x.strip() for x in page.replace("\"", "").split(",")]

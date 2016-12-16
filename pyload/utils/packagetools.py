@@ -33,7 +33,7 @@ pat2 = re.compile("(\\.?part\\d+)", re.I)
 pat3 = re.compile("(.+)[\\.\\-_]+$")
 pat4 = re.compile("(.+)\\.\\d+\\.xtm$")
 
-def matchFirst(string, *args):
+def match_first(string, *args):
     """ matches against list of regexp and returns first match"""
     for patternlist in args:
         for pattern in patternlist:
@@ -45,7 +45,7 @@ def matchFirst(string, *args):
     return string
 
 
-def parseNames(files):
+def parse_names(files):
     """ Generates packages names from name, data lists
 
     :param files: list of (name, data)

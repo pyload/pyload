@@ -34,7 +34,7 @@ class InfoThread(DecrypterThread):
         crypter = {}
 
         # db or info result
-        cb = self.updateDB if self.pid > 1 else self.updateResult
+        cb = self.update_db if self.pid > 1 else self.updateResult
 
         # filter out crypter plugins
         for name in self.m.pyload.pluginManager.getPlugins("crypter"):
@@ -48,7 +48,7 @@ class InfoThread(DecrypterThread):
             # push these as initial result and save package names
             cb(links)
             for pack in packages:
-                for url in pack.getURLs():
+                for url in pack.get_urls():
                     self.names[url] = pack.name
 
                 links.extend(pack.links)
@@ -80,7 +80,7 @@ class InfoThread(DecrypterThread):
         self.progress = None
         self.finished()
 
-    def updateDB(self, result):
+    def update_db(self, result):
         # writes results to db
         # convert link info to tuples
         info = [(l.name, l.size, l.status, l.url) for l in result if not l.hash]
@@ -90,7 +90,7 @@ class InfoThread(DecrypterThread):
         if info_hash:
             self.m.pyload.files.updateFileInfo(info_hash, self.pid)
 
-    def updateResult(self, result):
+    def update_result(self, result):
         tmp = {}
         parse = []
         # separate these with name and without
@@ -107,7 +107,7 @@ class InfoThread(DecrypterThread):
         # TODO: self.oc is None ?!
         self.m.setInfoResults(self.oc, data)
 
-    def fetchForPlugin(self, plugin, urls, cb):
+    def fetch_for_plugin(self, plugin, urls, cb):
         """executes info fetching for given plugin and urls"""
         # also works on module names
         pluginname = plugin.__name__.split(".")[-1]

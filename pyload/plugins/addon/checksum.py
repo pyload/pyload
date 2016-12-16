@@ -13,7 +13,7 @@ from pyload.utils import save_join, fs_encode
 from pyload.plugins.hook import Hook
 
 
-def computeChecksum(local_file, algorithm):
+def compute_checksum(local_file, algorithm):
     if algorithm in getattr(hashlib, "algorithms", ("md5", "sha1", "sha224", "sha256", "sha384", "sha512")):
         h = getattr(hashlib, algorithm)()
 
@@ -55,7 +55,7 @@ class Checksum(Hook):
                'crc': r'filename=(?P<name>.+)\nsize=(?P<size>\d+)\ncrc32=(?P<hash>[0-9A-Fa-f]{8})$',
                'default': r'^(?P<hash>[0-9A-Fa-f]+)\s+\*?(?P<name>.+)$'}
 
-    def coreReady(self):
+    def core_ready(self):
         if not self.config['general']['checksum']:
             self.logInfo("Checksum validation is disabled in general configuration")
 
@@ -65,7 +65,7 @@ class Checksum(Hook):
         self.algorithms.extend(["crc32", "adler32"])
         self.formats = self.algorithms + ['sfv', 'crc', 'hash']
 
-    def downloadFinished(self, pyfile):
+    def download_finished(self, pyfile):
         """
         Compute checksum for the downloaded file and compare it with the hash provided by the hoster.
         pyfile.plugin.check_data should be a dictionary which can contain:
@@ -122,7 +122,7 @@ class Checksum(Hook):
             else:
                 self.logWarning("Unable to validate checksum for file %s" % pyfile.name)
 
-    def checkFailed(self, pyfile, local_file, msg):
+    def check_failed(self, pyfile, local_file, msg):
         check_action = self.getConfig("check_action")
         if check_action == "retry":
             max_tries = self.getConfig("max_tries")
@@ -137,7 +137,7 @@ class Checksum(Hook):
             return
         pyfile.plugin.fail(reason=msg)
 
-    def packageFinished(self, pypack):
+    def package_finished(self, pypack):
         download_folder = save_join(self.config['general']['download_folder'], pypack.folder, "")
 
         for link in pypack.getChildren().values():

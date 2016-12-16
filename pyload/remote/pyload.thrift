@@ -374,7 +374,7 @@ service Pyload {
   ///////////////////////
 
   string getServerVersion(),
-  string getWSAddress(),
+  string get_ws_address(),
   StatusInfo getStatusInfo(),
   list<ProgressInfo> getProgressInfo(),
 
@@ -416,7 +416,7 @@ service Pyload {
   // parses results and generates packages
   OnlineCheck checkLinks(1: LinkList links),
   OnlineCheck checkContainer(1: string filename, 2: binary data),
-  OnlineCheck checkHTML(1: string html, 2: string url),
+  OnlineCheck check_html(1: string html, 2: string url),
 
   // poll results from previously started online check
   OnlineCheck pollResults(1: ResultID rid),

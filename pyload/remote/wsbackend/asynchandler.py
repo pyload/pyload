@@ -89,12 +89,12 @@ class AsyncHandler(AbstractHandler):
             # TODO: events are security critical, this should be revised later
             # TODO: permissions? interaction etc
             if not req.api.user.isAdmin():
-                if user is not None and req.api.primaryUID != user:
+                if user is not None and req.api.primary_uid != user:
                     break
 
                 skip = False
                 for arg in args:
-                    if hasattr(arg, 'owner') and arg.owner != req.api.primaryUID:
+                    if hasattr(arg, 'owner') and arg.owner != req.api.primary_uid:
                         skip = True
                         break
 

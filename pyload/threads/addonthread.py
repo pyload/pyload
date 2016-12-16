@@ -27,27 +27,27 @@ class AddonThread(BaseThread):
 
         self.start()
 
-    def getActiveFiles(self):
+    def get_active_files(self):
         return self.active
 
     # TODO: multiple progresses
-    def setProgress(self, progress, pyfile=None):
+    def set_progress(self, progress, pyfile=None):
         """  Sets progress for the thread in percent"""
         self.progress = progress
 
-    def getProgress(self):
+    def get_progress(self):
         """ Progress of the thread  """
         if self.active:
             active = self.active[0]
             return ProgressInfo(active.pluginname, active.name, active.getStatusName(), 0,
                                 self.progress, 100, self.owner, ProgressType.Addon)
 
-    def addActive(self, pyfile):
+    def add_active(self, pyfile):
         """ Adds a pyfile to active list and thus will be displayed on overview"""
         if pyfile not in self.active:
             self.active.append(pyfile)
 
-    def finishFile(self, pyfile):
+    def finish_file(self, pyfile):
         if pyfile in self.active:
             self.active.remove(pyfile)
 

@@ -30,7 +30,7 @@ class DeleteFinished(Hook):
             self.info['sleep'] = True
             self.addEvent('packageFinished', self.wakeup)
 
-    def pluginConfigChanged(self, plugin, name, value):
+    def plugin_config_changed(self, plugin, name, value):
         if name == 'interval' and value != self.interval:
             self.interval = value * 3600
             self.initPeriodical()
@@ -38,7 +38,7 @@ class DeleteFinished(Hook):
     def unload(self):
         self.removeEvent('packageFinished', self.wakeup)
 
-    def coreReady(self):
+    def core_ready(self):
         self.info = {'sleep': True}
         interval = self.getConfig('interval')
         self.pluginConfigChanged('DeleteFinished', 'interval', interval)
@@ -46,7 +46,7 @@ class DeleteFinished(Hook):
 
     ## own methods ##
     @style.queue
-    def deleteFinished(self, mode):
+    def delete_finished(self, mode):
         self.c.execute('DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE package=packages.id AND status NOT IN (%s))' % mode)
         self.c.execute('DELETE FROM links WHERE NOT EXISTS(SELECT 1 FROM packages WHERE id=links.package)')
 
@@ -55,7 +55,7 @@ class DeleteFinished(Hook):
         self.info['sleep'] = False
 
     ## event managing ##
-    def addEvent(self, event, func):
+    def add_event(self, event, func):
         """Adds an event listener for event name"""
         if event in self.m.events:
             if func in self.m.events[event]:

@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from builtins import str
 import re
 
-from pyload.network.requestfactory import getURL
+from pyload.network.requestfactory import get_url
 from pyload.plugins.internal.multihoster import MultiHoster
 
 
@@ -20,7 +20,7 @@ class Vipleech4uCom(MultiHoster):
 
     HOSTER_PATTERN = re.compile(r'align\s*?=\s*?["\']*?left.*?<\s*?strong\s*?>([^<]*?)<', re.I)
 
-    def getHoster(self):
+    def get_hoster(self):
         hosters = {
             'depositfiles': ['depositfiles.com', 'dfiles.eu'],
             'uploaded': ['uploaded.to', 'uploaded.net', 'ul.to'],
@@ -54,7 +54,7 @@ class Vipleech4uCom(MultiHoster):
         old_hosters = list(hosters.keys())
 
         #load the current hosters from vipleech4u.com
-        page = getURL('http://vipleech4u.com/hosts.php')
+        page = get_url('http://vipleech4u.com/hosts.php')
         current_hosters = self.HOSTER_PATTERN.findall(page)
         current_hosters = [x.lower() for x in current_hosters]
 

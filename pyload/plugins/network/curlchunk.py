@@ -35,16 +35,16 @@ class ChunkInfo(object):
 
         return ret
 
-    def setSize(self, size):
+    def set_size(self, size):
         self.size = int(size)
 
-    def addChunk(self, name, range):
+    def add_chunk(self, name, range):
         self.chunks.append((name, range))
 
     def clear(self):
         self.chunks = []
 
-    def createChunks(self, chunks):
+    def create_chunks(self, chunks):
         self.clear()
         chunk_size = old_div(self.size, chunks)
 
@@ -102,13 +102,13 @@ class ChunkInfo(object):
         fs_name = fs_encode("%s.chunks" % self.name)
         if exists(fs_name): remove(fs_name)
 
-    def getCount(self):
+    def get_count(self):
         return len(self.chunks)
 
-    def getChunkName(self, index):
+    def get_chunk_name(self, index):
         return self.chunks[index][0]
 
-    def getChunkRange(self, index):
+    def get_chunk_range(self, index):
         return self.chunks[index][1]
 
 re_filename = re.compile(r"filename(?P<type>=|\*=(?P<enc>.+)'')(?P<name>.*)", re.I)
@@ -154,7 +154,7 @@ class CurlChunk(CurlRequest):
     def cj(self):
         return self.p.context
 
-    def getHandle(self):
+    def get_handle(self):
         """ returns a Curl handle ready to use for perform/multiperform """
 
         self.setRequestContext(self.p.url, self.p.get, self.p.post, self.p.referer, self.p.cookies)
@@ -199,7 +199,7 @@ class CurlChunk(CurlRequest):
 
         return self.c
 
-    def writeHeader(self, buf):
+    def write_header(self, buf):
         self.header += buf
         #@TODO forward headers?, this is possibly unneeded, when we just parse valid 200 headers
         # as first chunk, we will parse the headers
@@ -213,7 +213,7 @@ class CurlChunk(CurlRequest):
 
         self.headerParsed = True
 
-    def writeBody(self, buf):
+    def write_body(self, buf):
         #ignore BOM, it confuses unrar
         if not self.BOMChecked:
             if [ord(b) for b in buf[:3]] == [239, 187, 191]:
@@ -248,7 +248,7 @@ class CurlChunk(CurlRequest):
             return 0 #close if we have enough data
 
 
-    def parseHeader(self):
+    def parse_header(self):
         """parse data from received header"""
         for orgline in self.decodeResponse(self.header).splitlines():
             line = orgline.strip().lower()
@@ -273,15 +273,15 @@ class CurlChunk(CurlRequest):
         self.range = [0, 0]
         self.size = 0
 
-    def resetRange(self):
+    def reset_range(self):
         """ Reset the range, so the download will load all data available  """
         self.range = None
 
-    def setRange(self, range):
+    def set_range(self, range):
         self.range = range
         self.size = range[1] - range[0]
 
-    def flushFile(self):
+    def flush_file(self):
         """  flush and close file """
         self.fp.flush()
         fsync(self.fp.fileno()) #make sure everything was written to disk

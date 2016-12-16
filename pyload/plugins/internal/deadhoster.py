@@ -4,8 +4,8 @@ from __future__ import unicode_literals
 from pyload.plugins.hoster import Hoster as _Hoster
 
 
-def create_getInfo(plugin):
-    def getInfo(urls):
+def create_get_info(plugin):
+    def get_info(urls):
         yield [('#N/A: ' + url, 0, 1, url) for url in urls]
     return getInfo
 

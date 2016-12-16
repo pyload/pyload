@@ -31,7 +31,7 @@ class BackendBase(Thread):
     def setup(self, host, port):
         pass
 
-    def checkDeps(self):
+    def check_deps(self):
         return True
 
     def serve(self):
@@ -56,7 +56,7 @@ class RemoteManager(object):
             self.available.append("WebSocketBackend")
 
 
-    def startBackends(self):
+    def start_backends(self):
         host = self.pyload.config["webui"]["wsHost"]
         port = self.pyload.config["webui"]["wsPort"]
 

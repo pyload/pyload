@@ -109,7 +109,7 @@ class Base(object):
         """ Retrieves meta data attribute """
         return getattr(self, "__%s__" % item)
 
-    def logInfo(self, *args, **kwargs):
+    def log_info(self, *args, **kwargs):
         """ Print args to log at specific level
 
         :param args: Arbitrary object which should be logged
@@ -117,13 +117,13 @@ class Base(object):
         """
         self._log("info", *args, **kwargs)
 
-    def logWarning(self, *args, **kwargs):
+    def log_warning(self, *args, **kwargs):
         self._log("warning", *args, **kwargs)
 
-    def logError(self, *args, **kwargs):
+    def log_error(self, *args, **kwargs):
         self._log("error", *args, **kwargs)
 
-    def logDebug(self, *args, **kwargs):
+    def log_debug(self, *args, **kwargs):
         self._log("debug", *args, **kwargs)
 
     def _log(self, level, *args, **kwargs):
@@ -143,7 +143,7 @@ class Base(object):
 
         getattr(self.log, level)("%s: %s" % (self.__name__, sep.join(strings)))
 
-    def getName(self):
+    def get_name(self):
         """ Name of the plugin class """
         return self.__name__
 
@@ -152,19 +152,19 @@ class Base(object):
         """  Gives the compiled pattern of the plugin """
         return self.pyload.pluginManager.getPlugin(self.__type__, self.__name__).re
 
-    def setConfig(self, option, value):
+    def set_config(self, option, value):
         """ Set config value for current plugin """
         self.pyload.config.set(self.__name__, option, value)
 
-    def getConf(self, option):
+    def get_conf(self, option):
         """ see `getConfig` """
         return self.getConfig(option)
 
-    def getConfig(self, option):
+    def get_config(self, option):
         """ Returns config value for current plugin """
         return self.pyload.config.get(self.__name__, option)
 
-    def setStorage(self, key, value):
+    def set_storage(self, key, value):
         """ Saves a value persistently to the database """
         self.pyload.db.setStorage(self.__name__, key, value)
 
@@ -172,7 +172,7 @@ class Base(object):
         """ same as `setStorage` """
         self.pyload.db.setStorage(self.__name__, key, value)
 
-    def getStorage(self, key=None, default=None):
+    def get_storage(self, key=None, default=None):
         """ Retrieves saved value or dict of all saved entries if key is None """
         if key is not None:
             return self.pyload.db.getStorage(self.__name__, key) or default
@@ -182,7 +182,7 @@ class Base(object):
         """ same as `getStorage` """
         return self.getStorage(*args, **kwargs)
 
-    def delStorage(self, key):
+    def del_storage(self, key):
         """ Delete entry in db """
         self.pyload.db.delStorage(self.__name__, key)
 
@@ -198,7 +198,7 @@ class Base(object):
         """ Check if plugin is in an abort state, is overwritten by subtypes"""
         return False
 
-    def checkAbort(self):
+    def check_abort(self):
         """  Will be overwritten to determine if control flow should be aborted """
         if self.abort(): raise Abort
 
@@ -262,23 +262,23 @@ class Base(object):
 
         return res
 
-    def invalidTask(self):
+    def invalid_task(self):
         if self.task:
             self.task.invalid()
 
-    def invalidCaptcha(self):
+    def invalid_captcha(self):
         self.logDebug("Deprecated method .invalidCaptcha, use .invalidTask")
         self.invalidTask()
 
-    def correctTask(self):
+    def correct_task(self):
         if self.task:
             self.task.correct()
 
-    def correctCaptcha(self):
+    def correct_captcha(self):
         self.logDebug("Deprecated method .correctCaptcha, use .correctTask")
         self.correctTask()
 
-    def decryptCaptcha(self, url, get={}, post={}, cookies=True, forceUser=False, imgtype='jpg',
+    def decrypt_captcha(self, url, get={}, post={}, cookies=True, forceUser=False, imgtype='jpg',
                        result_type='textual'):
         """ Loads a captcha and decrypts it with ocr, plugin, user input
 

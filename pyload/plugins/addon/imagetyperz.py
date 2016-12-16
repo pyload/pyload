@@ -10,7 +10,7 @@ from pycurl import FORM_FILE, LOW_SPEED_TIME
 import re
 from base64 import b64encode
 
-from pyload.network.requestfactory import getURL, getRequest
+from pyload.network.requestfactory import get_url, getRequest
 from pyload.plugins.hook import Hook
 
 
@@ -18,7 +18,7 @@ class ImageTyperzException(Exception):
     def __init__(self, err):
         self.err = err
 
-    def getCode(self):
+    def get_code(self):
         return self.err
 
     def __str__(self):
@@ -46,8 +46,8 @@ class ImageTyperz(Hook):
     def setup(self):
         self.info = {}
 
-    def getCredits(self):
-        response = getURL(self.GETCREDITS_URL, post={"action": "REQUESTBALANCE", "username": self.getConfig("username"),
+    def get_credits(self):
+        response = get_url(self.GETCREDITS_URL, post={"action": "REQUESTBALANCE", "username": self.getConfig("username"),
                                                      "password": self.getConfig("passkey")})
 
         if response.startswith('ERROR'):
@@ -95,7 +95,7 @@ class ImageTyperz(Hook):
 
         return ticket, result
 
-    def newCaptchaTask(self, task):
+    def new_captcha_task(self, task):
         if "service" in task.data:
             return False
 
@@ -117,9 +117,9 @@ class ImageTyperz(Hook):
         else:
             self.logInfo("Your %s account has not enough credits" % self.__name__)
 
-    def captchaInvalid(self, task):
+    def captcha_invalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
-            response = getURL(self.RESPOND_URL, post={"action": "SETBADIMAGE", "username": self.getConfig("username"),
+            response = get_url(self.RESPOND_URL, post={"action": "SETBADIMAGE", "username": self.getConfig("username"),
                                                       "password": self.getConfig("passkey"),
                                                       "imageid": task.data["ticket"]})
 
@@ -128,7 +128,7 @@ class ImageTyperz(Hook):
             else:
                 self.logError("Bad captcha solution received, refund request failed", response)
 
-    def processCaptcha(self, task):
+    def process_captcha(self, task):
         c = task.captchaFile
         try:
             ticket, result = self.submit(c)

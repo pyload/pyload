@@ -17,7 +17,7 @@
 
 from __future__ import unicode_literals
 from pyload.plugins.internal.multihoster import MultiHoster
-from pyload.network.requestfactory import getURL
+from pyload.network.requestfactory import get_url
 from pyload.common.json_layer import json_loads
 
 
@@ -34,8 +34,8 @@ class SimplyPremiumCom(MultiHoster):
     __author_name__ = ("EvolutionClip")
     __author_mail__ = ("evolutionclip@live.de")
 
-    def getHoster(self):
-        json_data = getURL('http://www.simply-premium.com/api/hosts.php?format=json&online=1')
+    def get_hoster(self):
+        json_data = get_url('http://www.simply-premium.com/api/hosts.php?format=json&online=1')
         json_data = json_loads(json_data)
 
         host_list = [element['host'] for element in json_data['result']]

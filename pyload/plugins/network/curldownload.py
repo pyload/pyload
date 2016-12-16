@@ -62,7 +62,7 @@ class CurlDownload(Download):
     def name(self):
         return self._name if self.disposition else None
 
-    def _copyChunks(self):
+    def _copy_chunks(self):
         init = fs_encode(self.info.getChunkName(0)) #initial chunk name
 
         if self.info.getCount() > 1:
@@ -94,7 +94,7 @@ class CurlDownload(Download):
         move(init, fs_encode(self.path))
         self.info.remove() #remove info file
 
-    def checkResume(self):
+    def check_resume(self):
         try:
             self.info = ChunkInfo.load(self.path)
             self.info.resume = True #resume is only possible with valid info file
@@ -283,14 +283,14 @@ class CurlDownload(Download):
         for chunk in self.chunks:
             chunk.flushFile() #make sure downloads are written to disk
 
-        self._copyChunks()
+        self._copy_chunks()
 
-    def findChunk(self, handle):
+    def find_chunk(self, handle):
         """ linear search to find a chunk (should be ok since chunk size is usually low) """
         for chunk in self.chunks:
             if chunk.c == handle: return chunk
 
-    def closeChunk(self, chunk):
+    def close_chunk(self, chunk):
         try:
             self.m.remove_handle(chunk.c)
         except pycurl.error as e:

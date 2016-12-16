@@ -37,7 +37,7 @@ class EventManager(object):
 
         self.lock = Lock()
 
-    def listenTo(self, event, func):
+    def listen_to(self, event, func):
         """Adds an event listener for event name"""
         if event in self.events:
             if func in self.events[event]:
@@ -47,18 +47,18 @@ class EventManager(object):
         else:
             self.events[event] = [func]
 
-    def removeEvent(self, event, func):
+    def remove_event(self, event, func):
         """removes previously added event listener"""
         if event in self.events:
             self.events[event].remove(func)
 
-    def removeFromEvents(self, func):
+    def remove_from_events(self, func):
         """ Removes func from all known events """
         for name, events in self.events.items():
             if func in events:
                 events.remove(func)
 
-    def dispatchEvent(self, event, *args, **kwargs):
+    def dispatch_event(self, event, *args, **kwargs):
         """dispatches event with args"""
         # dispatch the meta event
         if event != "event":

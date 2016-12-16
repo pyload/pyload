@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from pyload.network.requestfactory import getURL
+from pyload.network.requestfactory import get_url
 from pyload.plugins.internal.multihoster import MultiHoster
 
 
@@ -19,9 +19,9 @@ class OverLoadMe(MultiHoster):
     __author_name__ = "marley"
     __author_mail__ = "marley@over-load.me"
 
-    def getHoster(self):
+    def get_hoster(self):
         https = "https" if self.getConfig("https") else "http"
-        page = getURL(https + "://api.over-load.me/hoster.php",
+        page = get_url(https + "://api.over-load.me/hoster.php",
                       get={"auth": "0001-cb1f24dadb3aa487bda5afd3b76298935329be7700cd7-5329be77-00cf-1ca0135f"}
                       ).replace("\"", "").strip()
         self.logDebug("Hosterlist: %s" % page)

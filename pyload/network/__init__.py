@@ -7,7 +7,7 @@ import re
 from random import choice
 from time import sleep
 
-from .requestfactory import getURL
+from .requestfactory import get_url
 
 
 def get_ip(n=10):
@@ -23,7 +23,7 @@ def get_ip(n=10):
     for i in range(n):
         try:
             sv = choice(services)
-            ip = getURL(sv[0])
+            ip = get_url(sv[0])
             ip = re.match(sv[1], ip).group(1)
             break
         except Exception:

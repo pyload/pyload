@@ -14,11 +14,11 @@ from pyload.utils.pluginloader import LoaderFactory, PluginLoader
 class PluginMatcher(object):
     """ Abstract class that allows modify which plugins to match and to load """
 
-    def matchURL(self, url):
+    def match_url(self, url):
         """ Returns (type, name) of a plugin if a match is found  """
         return
 
-    def matchPlugin(self, plugin, name):
+    def match_plugin(self, plugin, name):
         """ Returns (type, name) of the plugin that will be loaded instead """
         return None
 
@@ -53,7 +53,7 @@ class PluginManager(object):
         # plugin matcher to overwrite some behaviour
         self.matcher = []
 
-    def addMatcher(self, matcher, index=0):
+    def add_matcher(self, matcher, index=0):
         """ Inserts matcher at given index, first position by default """
         if not isinstance(matcher, PluginMatcher):
             raise TypeError("Expected type of PluginMatcher, got '%s' instead" % type(matcher))
@@ -63,12 +63,12 @@ class PluginManager(object):
 
         self.matcher.insert(index, matcher)
 
-    def removeMatcher(self, matcher):
+    def remove_matcher(self, matcher):
         """ Removes a matcher if it exists """
         if matcher in self.matcher:
             self.matcher.remove(matcher)
 
-    def parseUrls(self, urls):
+    def parse_urls(self, urls):
         """parse plugins for given list of urls, separate to crypter and hoster"""
 
         res = {"hoster": [], "crypter": []} # tupels of (url, plugin)
@@ -95,7 +95,7 @@ class PluginManager(object):
 
             # matcher are tried secondly, they won't go to history
             for m in self.matcher:
-                match = m.matchURL(url)
+                match = m.match_url(url)
                 if match and match[0] in res:
                     ptype, name = match
                     res[ptype].append((url, name))
@@ -122,22 +122,22 @@ class PluginManager(object):
 
         return res["hoster"], res["crypter"]
 
-    def findPlugin(self, name):
+    def find_plugin(self, name):
         """ Finds the type to a plugin name """
         return self.loader.findPlugin(name)
 
-    def getPlugin(self, plugin, name):
+    def get_plugin(self, plugin, name):
         """ Retrieves the plugin tuple for a single plugin or none """
         return self.loader.getPlugin(plugin, name)
 
-    def getPlugins(self, plugin):
+    def get_plugins(self, plugin):
         """  Get all plugins of a certain type in a dict """
         plugins = {}
         for loader in self.loader:
             plugins.update(loader.getPlugins(plugin))
         return plugins
 
-    def getPluginClass(self, plugin, name, overwrite=True):
+    def get_plugin_class(self, plugin, name, overwrite=True):
         """Gives the plugin class of a hoster or crypter plugin
 
         :param overwrite: allow the use of overwritten plugins
@@ -150,14 +150,14 @@ class PluginManager(object):
 
         return self.loadClass(plugin, name)
 
-    def loadAttributes(self, plugin, name):
+    def load_attributes(self, plugin, name):
         for loader in self.loader:
             if loader.hasPlugin(plugin, name):
                 return loader.loadAttributes(plugin, name)
 
         return {}
 
-    def loadModule(self, plugin, name):
+    def load_module(self, plugin, name):
         """ Returns loaded module for plugin
 
         :param plugin: plugin type, subfolder of module.plugins
@@ -174,7 +174,7 @@ class PluginManager(object):
                     self.log.error(_("Error importing %(name)s: %(msg)s") % {"name": name, "msg": str(e)})
                     self.pyload.print_exc()
 
-    def loadClass(self, plugin, name):
+    def load_class(self, plugin, name):
         """Returns the class of a plugin with the same name"""
         module = self.loadModule(plugin, name)
         try:
@@ -242,7 +242,7 @@ class PluginManager(object):
 
         return sys.modules[name]
 
-    def reloadPlugins(self, type_plugins):
+    def reload_plugins(self, type_plugins):
         """ reloads and reindexes plugins """
         # TODO
         # check if reloadable
@@ -251,20 +251,20 @@ class PluginManager(object):
         # update index
         # reload accounts
 
-    def isUserPlugin(self, plugin):
+    def is_user_plugin(self, plugin):
         """ A plugin suitable for multiple user """
         return any(l.isUserPlugin(plugin) for l in self.loader)
 
-    def getCategory(self, plugin):
+    def get_category(self, plugin):
         plugin = self.loader.getPlugin("addon", plugin)
         if plugin:
             return plugin.category or "addon"
 
-    def loadIcon(self, name):
+    def load_icon(self, name):
         """ load icon for single plugin, base64 encoded"""
         pass
 
-    def checkDependencies(self, type, name):
+    def check_dependencies(self, type, name):
         """ Check deps for given plugin
 
         :return: List of unfullfilled dependencies

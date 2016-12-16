@@ -30,7 +30,7 @@ class UnRar(AbtractExtractor):
     CMD = "unrar"
 
     @staticmethod
-    def checkDeps():
+    def check_deps():
         if os.name == "nt":
             UnRar.CMD = save_join(pypath, "UnRAR.exe")
             p = Popen([UnRar.CMD], stdout=PIPE, stderr=PIPE)
@@ -49,7 +49,7 @@ class UnRar(AbtractExtractor):
         return True
 
     @staticmethod
-    def getTargets(files_ids):
+    def get_targets(files_ids):
         result = []
 
         for file, id in files_ids:
@@ -72,7 +72,7 @@ class UnRar(AbtractExtractor):
         self.smallestFile = None  #: small file to test passwords
         self.password = ""  #: save the correct password
 
-    def checkArchive(self):
+    def check_archive(self):
         p = self.call_unrar("l", "-v", fs_encode(self.file))
         out, err = p.communicate()
         if self.re_wrongpwd.search(err):
@@ -98,7 +98,7 @@ class UnRar(AbtractExtractor):
 
         return False
 
-    def checkPassword(self, password):
+    def check_password(self, password):
         # at this point we can only verify header protected files
         if self.headerProtected:
             p = self.call_unrar("l", "-v", fs_encode(self.file), password=password)
@@ -149,14 +149,14 @@ class UnRar(AbtractExtractor):
             self.password = password
             self.listContent()
 
-    def getDeleteFiles(self):
+    def get_delete_files(self):
         if ".part" in self.file:
             return glob(re.sub("(?<=\.part)([01]+)", "*", self.file, re.IGNORECASE))
         # get files which matches .r* and filter unsuited files out
         parts = glob(re.sub(r"(?<=\.r)ar$", "*", self.file, re.IGNORECASE))
         return [x for x in parts if self.re_partfiles.match(x)]
 
-    def listContent(self):
+    def list_content(self):
         command = "vb" if self.fullpath else "lb"
         p = self.call_unrar(command, "-v", fs_encode(self.file), password=self.password)
         out, err = p.communicate()

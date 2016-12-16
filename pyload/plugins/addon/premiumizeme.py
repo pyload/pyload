@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from pyload.plugins.internal.multihoster import MultiHoster
 
 from pyload.common.json_layer import json_loads
-from pyload.network.requestfactory import getURL
+from pyload.network.requestfactory import get_url
 
 
 class PremiumizeMe(MultiHoster):
@@ -22,7 +22,7 @@ class PremiumizeMe(MultiHoster):
     __author_name__ = "Florian Franzen"
     __author_mail__ = "FlorianFranzen@gmail.com"
 
-    def getHoster(self):
+    def get_hoster(self):
         # If no accounts are available there will be no hosters available
         if not self.account or not self.account.canUse():
             return []
@@ -32,7 +32,7 @@ class PremiumizeMe(MultiHoster):
 
         # Get supported hosters list from premiumize.me using the
         # json API v1 (see https://secure.premiumize.me/?show=api)
-        answer = getURL("https://api.premiumize.me/pm-api/v1.php?method=hosterlist&params[login]=%s&params[pass]=%s" % (
+        answer = get_url("https://api.premiumize.me/pm-api/v1.php?method=hosterlist&params[login]=%s&params[pass]=%s" % (
                         user, data['password']))
         data = json_loads(answer)
 
@@ -43,7 +43,7 @@ class PremiumizeMe(MultiHoster):
         # Extract hosters from json file
         return data['result']['hosterlist']
 
-    def coreReady(self):
+    def core_ready(self):
         # Get account plugin and check if there is a valid account available
         self.account = self.pyload.accountManager.getAccountPlugin("PremiumizeMe")
         if not self.account.canUse():

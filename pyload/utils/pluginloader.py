@@ -44,7 +44,7 @@ class LoaderFactory(object):
         return self.loader.__iter__()
 
 
-    def checkVersions(self):
+    def check_versions(self):
         """ Reduces every plugin loader to the globally newest version.
         Afterwards every plugin is unique across all available loader """
         for plugin_type in self.loader[0].iterTypes():
@@ -56,7 +56,7 @@ class LoaderFactory(object):
                         if l2 is not loader:
                             l2.removePlugin(plugin_type, plugin, info.version)
 
-    def findPlugin(self, name):
+    def find_plugin(self, name):
         """ Finds a plugin type for given name """
         for loader in self.loader:
             for t in loader.TYPES:
@@ -65,7 +65,7 @@ class LoaderFactory(object):
 
         return None
 
-    def getPlugin(self, plugin, name):
+    def get_plugin(self, plugin, name):
         """ retrieve a plugin from an available loader """
         for loader in self.loader:
             if loader.hasPlugin(plugin, name):
@@ -103,10 +103,10 @@ class PluginLoader(object):
 
         self.createIndex()
 
-    def logDebug(self, plugin, name, msg):
+    def log_debug(self, plugin, name, msg):
         self.log.debug("Plugin %s | %s: %s" % (plugin, name, msg))
 
-    def createIndex(self):
+    def create_index(self):
         """create information for all plugins available"""
 
         if not exists(self.path):
@@ -151,7 +151,7 @@ class PluginLoader(object):
 
         return plugins
 
-    def parseAttributes(self, filename, name, folder=""):
+    def parse_attributes(self, filename, name, folder=""):
         """ Parse attribute dict from plugin"""
         data = open(filename, "rb")
         content = data.read()
@@ -173,7 +173,7 @@ class PluginLoader(object):
 
         return attrs
 
-    def parseMultiLine(self, content):
+    def parse_multi_line(self, content):
         # regexp is not enough to parse multi line statements
         attrs = []
         for m in self.MULTI.finditer(content):
@@ -204,7 +204,7 @@ class PluginLoader(object):
         return attrs
 
 
-    def parsePlugin(self, filename, folder, name):
+    def parse_plugin(self, filename, folder, name):
         """  Parses a plugin from disk, folder means plugin type in this context. Also sets config.
 
         :arg home: dict with plugins, of which the found one will be matched against (according version)
@@ -268,35 +268,35 @@ class PluginLoader(object):
 
         return plugin
 
-    def iterPlugins(self):
+    def iter_plugins(self):
         """ Iterates over all plugins returning (type, name, info)  with info as PluginTuple """
 
         for plugin, data in self.plugins.items():
             for name, info in data.items():
                 yield plugin, name, info
 
-    def iterTypes(self):
+    def iter_types(self):
         """ Iterate over the available plugin types """
 
         for plugin in self.plugins.keys():
             yield plugin
 
-    def hasPlugin(self, plugin, name):
+    def has_plugin(self, plugin, name):
         """ Check if certain plugin is available """
         return plugin in self.plugins and name in self.plugins[plugin]
 
-    def getPlugin(self, plugin, name):
+    def get_plugin(self, plugin, name):
         """  Return plugin info for a single entity """
         try:
             return self.plugins[plugin][name]
         except KeyError:
             return None
 
-    def getPlugins(self, plugin):
+    def get_plugins(self, plugin):
         """ Return all plugins of given plugin type """
         return self.plugins[plugin]
 
-    def removePlugin(self, plugin, name, available_version=None):
+    def remove_plugin(self, plugin, name, available_version=None):
         """ Removes a plugin from the index.
          Optionally only when its version is below or equal the available one
          """
@@ -311,7 +311,7 @@ class PluginLoader(object):
         except KeyError:
             return
 
-    def isUserPlugin(self, name):
+    def is_user_plugin(self, name):
         """ Determine if given plugin name is enable for user_context in any plugin type """
         for plugins in self.plugins:
             if name in plugins and name[plugins].user:
@@ -319,10 +319,10 @@ class PluginLoader(object):
 
         return False
 
-    def savePlugin(self, content):
+    def save_plugin(self, content):
         """ Saves a plugin to disk  """
 
-    def loadModule(self, plugin, name):
+    def load_module(self, plugin, name):
         """ Returns loaded module for plugin
 
         :param plugin: plugin type, subfolder of module.plugins
@@ -334,6 +334,6 @@ class PluginLoader(object):
         module = __import__(self.package + ".%s.%s" % (plugin, path), globals(), locals(), path)
         return module
 
-    def loadAttributes(self, plugin, name):
+    def load_attributes(self, plugin, name):
         """ Same as `parseAttributes` for already indexed plugins  """
         return self.parseAttributes(self.plugins[plugin][name].path, name, plugin)

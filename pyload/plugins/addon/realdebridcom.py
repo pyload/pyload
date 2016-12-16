@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from pyload.network.requestfactory import getURL
+from pyload.network.requestfactory import get_url
 from pyload.plugins.internal.multihoster import MultiHoster
 
 
@@ -20,8 +20,8 @@ class RealdebridCom(MultiHoster):
     __author_name__ = "Devirex Hazzard"
     __author_mail__ = "naibaf_11@yahoo.de"
 
-    def getHoster(self):
+    def get_hoster(self):
         https = "https" if self.getConfig("https") else "http"
-        page = getURL(https + "://real-debrid.com/api/hosters.php").replace("\"", "").strip()
+        page = get_url(https + "://real-debrid.com/api/hosters.php").replace("\"", "").strip()
 
         return [x.strip() for x in page.split(",") if x.strip()]

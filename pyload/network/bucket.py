@@ -18,7 +18,7 @@ class Bucket(object):
     def __bool__(self):
         return False if self.rate < MIN_RATE else True
 
-    def setRate(self, rate):
+    def set_rate(self, rate):
         self.rate = int(rate)
 
     def consumed(self, amount):

@@ -47,7 +47,7 @@ class InteractionTask(BaseInteractionTask):
         self.handler = []
         self.wait_until = 0
 
-    def convertResult(self, value):
+    def convert_result(self, value):
         if self.input.type == InputType.Click:
             parts = value.split(',')
             return int(parts[0]), int(parts[1])
@@ -55,17 +55,17 @@ class InteractionTask(BaseInteractionTask):
         #TODO: convert based on input/output
         return value
 
-    def getResult(self):
+    def get_result(self):
         return self.result
 
-    def setShared(self):
+    def set_shared(self):
         """ enable shared mode, should not be reversed"""
         self.shared = True
 
-    def setResult(self, value):
+    def set_result(self, value):
         self.result = self.convertResult(value)
 
-    def setWaiting(self, sec, lock=False):
+    def set_waiting(self, sec, lock=False):
         """ sets waiting in seconds from now, < 0 can be used as infinitive  """
         if not self.locked:
             if sec < 0:
@@ -75,13 +75,13 @@ class InteractionTask(BaseInteractionTask):
 
             if lock: self.locked = True
 
-    def isWaiting(self):
+    def is_waiting(self):
         if self.result or self.error or self.timedOut():
             return False
 
         return True
 
-    def timedOut(self):
+    def timed_out(self):
         return time() > self.wait_until > -1
 
     def correct(self):
