@@ -1,9 +1,9 @@
 // Format bytes in human readable format
-define('helpers/formatSize', ['handlebars', 'utils/i18n'], function(Handlebars, i18n) {
+define('helpers/formatsize', ['handlebars', 'utils/i18n'], function(Handlebars, i18n) {
     'use strict';
 
     var sizes = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB'];
-    function formatSize(bytes, options, multiplier) {
+    function formatsize(bytes, options, multiplier) {
         //multiplier 1024 is used for trafficleft because trafficleft is in KiB
         if (typeof multiplier === 'number')
            bytes = bytes * multiplier;
@@ -19,6 +19,6 @@ define('helpers/formatSize', ['handlebars', 'utils/i18n'], function(Handlebars, 
         return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
     }
 
-    Handlebars.registerHelper('formatSize', formatSize);
-    return formatSize;
+    Handlebars.registerHelper('formatsize', formatsize);
+    return formatsize;
 });

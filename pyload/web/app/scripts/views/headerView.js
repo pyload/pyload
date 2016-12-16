@@ -1,8 +1,8 @@
 define(['jquery', 'underscore', 'backbone', 'app', 'models/StatusInfo',
-    'views/progressView', 'views/notificationView', 'helpers/formatSize', 'hbs!tpl/header/layout',
+    'views/progressView', 'views/notificationView', 'helpers/formatsize', 'hbs!tpl/header/layout',
     'hbs!tpl/header/status', 'hbs!tpl/header/progressbar', 'hbs!tpl/header/progressSup', 'hbs!tpl/header/progressSub' , 'flot'],
     function(
-        $, _, Backbone, App, StatusInfo, ProgressView, NotificationView, formatSize, template, templateStatus, templateProgress, templateSup, templateSub) {
+        $, _, Backbone, App, StatusInfo, ProgressView, NotificationView, formatsize, template, templateStatus, templateProgress, templateSup, templateSub) {
         'use strict';
         // Renders the header with all information
         return Backbone.Marionette.ItemView.extend({
@@ -104,7 +104,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/StatusInfo',
                     },
                     xaxis: { ticks: [] },
                     yaxis: { ticks: [], min: 1, autoscaleMargin: 0.1, tickFormatter: function(data) {
-                        return formatSize(data * 1024);
+                        return formatsize(data * 1024);
                     }, position: 'right' },
                     grid: {
                         show: true,

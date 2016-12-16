@@ -2,7 +2,7 @@
     {{ truncate name 32}} ({{ statusmsg }})
 {{ else }}
     {{#if downloads }}
-        {{ downloads }} downloads running {{#if speed }}({{ formatSize speed }}/s){{/if}}
+        {{ downloads }} downloads running {{#if speed }}({{ formatsize speed }}/s){{/if}}
     {{ else }}
         No running tasks
     {{/if}}

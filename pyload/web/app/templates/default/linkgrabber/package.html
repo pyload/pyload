@@ -16,7 +16,7 @@
     <tr>
         <td class="link-name">{{ name }}</td>
         <td><img src="{{ pluginIcon plugin }}"> {{ plugin }}</td>
-        <td>{{ formatSize size }}</td>
+        <td>{{ formatsize size }}</td>
         <td>{{ linkStatus status }}</td>
         <td><button class="btn btn-danger btn-mini" data-index={{@index}}><i class="icon-trash"></i></button></td>
     </tr>
@@ -27,7 +27,7 @@
 <hr>
 {{ ngettext "%d link" "%d links" length }}
 {{#if size}}
-       - {{formatSize size}}
+       - {{formatsize size}}
 {{/if}} :
 {{#if online}}
 <span class="text-success">
