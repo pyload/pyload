@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 from builtins import object
 from .bucket import Bucket
 
-from pyload.plugins.network.defaultrequest import DefaultRequest, DefaultDownload
+from pyload.plugin.network.defaultrequest import DefaultRequest, DefaultDownload
 
 
 class RequestFactory(object):

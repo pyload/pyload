@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 import re
 
-from pyload.plugins.hook import Hook
+from pyload.plugin.hook import Hook
 
 
 class XFileSharingPro(Hook):

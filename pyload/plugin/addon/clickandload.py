@@ -8,7 +8,7 @@ standard_library.install_aliases()
 import socket
 import _thread
 
-from pyload.plugins.addon import Addon
+from pyload.plugin.addon import Addon
 
 
 class ClickAndLoad(Addon):

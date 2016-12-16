@@ -9,7 +9,7 @@ from builtins import object
 from threading import  RLock
 from time import time
 
-from pyload.datatypes.onlinecheck import OnlineCheck
+from pyload.datatype.onlinecheck import OnlineCheck
 from pyload.utils import lock, to_list
 from .infothread import InfoThread
 
@@ -22,7 +22,7 @@ class ThreadManager(object):
         self.pyload = core
         self.log = core.log
 
-        self.threads = []  # thread list
+        self.thread = []  # thread list
 
         self.lock = RLock()
 
@@ -41,13 +41,13 @@ class ThreadManager(object):
 
     @lock
     def add_thread(self, thread):
-        self.threads.append(thread)
+        self.thread.append(thread)
 
     @lock
     def remove_thread(self, thread):
         """ Remove a thread from the local list """
-        if thread in self.threads:
-            self.threads.remove(thread)
+        if thread in self.thread:
+            self.thread.remove(thread)
 
     @lock
     def create_info_thread(self, data, pid):
@@ -81,7 +81,7 @@ class ThreadManager(object):
     def get_progress_list(self, user=None):
         info = []
 
-        for thread in self.threads:
+        for thread in self.thread:
             # skip if not belong to current user
             if user is not None and thread.owner != user: continue
 

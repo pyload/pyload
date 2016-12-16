@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from pyload.plugins.account import Account
+from pyload.plugin.account import Account
 
 
 class Http(Account):

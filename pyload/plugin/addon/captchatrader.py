@@ -12,7 +12,7 @@ from pycurl import FORM_FILE, LOW_SPEED_TIME
 from pyload.common.json_layer import json_loads
 from pyload.network.requestfactory import get_url, get_request
 from pyload.network.httprequest import BadHeader
-from pyload.plugins.hook import Hook
+from pyload.plugin.hook import Hook
 
 PYLOAD_KEY = "9f65e7f381c3af2b076ea680ae96b0b7"
 

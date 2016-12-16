@@ -10,8 +10,8 @@ from random import random
 from urllib.parse import unquote
 from urllib.parse import urlparse
 from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
-from pyload.plugins.internal.simplehoster import SimpleHoster, create_getInfo, PluginParseError, replace_patterns
-from pyload.plugins.internal.captchaservice import ReCaptcha, SolveMedia
+from pyload.plugin.internal.simplehoster import SimpleHoster, create_getInfo, PluginParseError, replace_patterns
+from pyload.plugin.internal.captchaservice import ReCaptcha, SolveMedia
 from pyload.utils import html_unescape
 from pyload.network.requestfactory import get_url
 

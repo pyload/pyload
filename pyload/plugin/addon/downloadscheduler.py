@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 import re
 from time import localtime
 
-from pyload.plugins.hook import Hook
+from pyload.plugin.hook import Hook
 
 
 class DownloadScheduler(Hook):

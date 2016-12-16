@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 
 import re
 
-from pyload.plugins.hook import Hook
+from pyload.plugin.hook import Hook
 from pyload.network.requestfactory import get_url
 from pyload.utils import remove_chars
 

@@ -13,9 +13,9 @@ from traceback import print_exc
 from sys import exc_clear
 from pycurl import error
 
-from pyload.plugins.base import Fail, Retry, Abort
-from pyload.plugins.hoster import Reconnect, SkipDownload
-from pyload.plugins.request import ResponseException
+from pyload.plugin.base import Fail, Retry, Abort
+from pyload.plugin.hoster import Reconnect, SkipDownload
+from pyload.plugin.request import ResponseException
 
 from .basethread import BaseThread
 

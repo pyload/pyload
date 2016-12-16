@@ -22,8 +22,8 @@ from .utils.fs import exists, join, free_space
 
 from .network import get_ip
 
-from .threads.downloadthread import DownloadThread
-from .threads.decrypterthread import DecrypterThread
+from .thread.downloadthread import DownloadThread
+from .thread.decrypterthread import DecrypterThread
 
 
 class DownloadManager(object):

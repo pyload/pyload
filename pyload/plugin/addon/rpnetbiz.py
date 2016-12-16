@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from pyload.plugins.internal.multihoster import MultiHoster
+from pyload.plugin.internal.multihoster import MultiHoster
 from pyload.common.json_layer import json_loads
 from pyload.network.requestfactory import get_url
 

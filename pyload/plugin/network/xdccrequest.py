@@ -17,7 +17,7 @@ from time import time
 import struct
 from select import select
 
-from pyload.plugins.plugin import Abort
+from pyload.plugin.plugin import Abort
 
 
 # TODO: This must be adapted to the new request interfaces

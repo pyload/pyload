@@ -17,7 +17,7 @@ import struct
 from select import select
 
 from pyload.utils import save_join
-from pyload.plugins.hoster import Hoster
+from pyload.plugin.hoster import Hoster
 
 
 class Xdcc(Hoster):

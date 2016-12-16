@@ -6,8 +6,8 @@ from time import sleep
 
 from pyload.Api import LinkStatus, DownloadStatus as DS, ProgressInfo, ProgressType
 from pyload.utils import uniqify, accumulate
-from pyload.plugins.base import Abort, Retry, Fail
-from pyload.plugins.crypter import Package
+from pyload.plugin.base import Abort, Retry, Fail
+from pyload.plugin.crypter import Package
 
 from .basethread import BaseThread
 

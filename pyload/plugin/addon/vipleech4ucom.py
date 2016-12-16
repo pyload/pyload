@@ -4,7 +4,7 @@ from builtins import str
 import re
 
 from pyload.network.requestfactory import get_url
-from pyload.plugins.internal.multihoster import MultiHoster
+from pyload.plugin.internal.multihoster import MultiHoster
 
 
 class Vipleech4uCom(MultiHoster):

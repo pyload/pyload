@@ -10,7 +10,7 @@ from urllib.parse import quote, unquote
 import pycurl
 import re
 
-from pyload.plugins.hoster import Hoster
+from pyload.plugin.hoster import Hoster
 
 
 class Ftp(Hoster):

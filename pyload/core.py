@@ -39,15 +39,15 @@ from builtins import pypath
 
 init_dir()
 
-from .accountmanager import AccountManager
+from pyload.manager.accountmanager import AccountManager
 from .config.configparser import ConfigParser
-from .config.configmanager import ConfigManager
-from .pluginmanager import PluginManager
-from .interaction.eventmanager import EventManager
+from pyload.manager.configmanager import ConfigManager
+from pyload.manager.pluginmanager import PluginManager
+from pyload.manager.eventmanager import EventManager
 from .network.requestfactory import RequestFactory
-from .web.serverthread import WebServer
+from .webui.serverthread import WebServer
 from .scheduler import Scheduler
-from .remote.remotemanager import RemoteManager
+from pyload.manager.remotemanager import RemoteManager
 from .utils.jsengine import JsEngine
 
 from .utils import format_size, get_console_encoding
@@ -366,10 +366,10 @@ class Core(object):
 
         # deferred import, could improve start-up time
         from .Api import Api
-        from .addonmanager import AddonManager
-        from .interaction.interactionmanager import InteractionManager
-        from .threads.threadmanager import ThreadManager
-        from .downloadmanager import DownloadManager
+        from pyload.manager.addonmanager import AddonManager
+        from pyload.manager.interactionmanager import InteractionManager
+        from pyload.manager.threadmanager import ThreadManager
+        from pyload.manager.downloadmanager import DownloadManager
 
         Api.init_components()
         self.api = Api(self)
@@ -481,7 +481,7 @@ class Core(object):
 
     def setup_db(self):
         from .database import DatabaseBackend
-        from .filemanager import FileManager
+        from pyload.manager.filemanager import FileManager
 
         self.db = DatabaseBackend(self) # the backend
         self.db.setup()
@@ -503,7 +503,7 @@ class Core(object):
 
         # console formatter
         if self.config['log']['console_color']:
-            from .lib.colorlog import ColoredFormatter
+            from colorlog import ColoredFormatter
 
             if self.config['log']['color_theme'] == "full":
                 cfmt = "%(asctime)s %(log_color)s%(bold)s%(white)s %(levelname)-8s %(reset)s %(message)s"
@@ -665,9 +665,9 @@ def deamon():
 
 # And so it begins...
 def main():
-    #change name to 'pyLoadCore'
-    #from pyload.lib.rename_process import rename_process
-    #rename_process('pyLoadCore')
+    # change name to 'pyLoadCore'
+    # from rename_process import rename_process
+    # rename_process('pyLoadCore')
     if "--daemon" in sys.argv:
         deamon()
     else:

@@ -3,7 +3,7 @@
 
 from __future__ import unicode_literals
 
-from pyload.plugins.hook import Hook
+from pyload.plugin.hook import Hook
 
 
 class RestartFailed(Hook):

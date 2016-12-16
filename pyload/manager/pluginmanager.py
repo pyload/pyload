@@ -24,7 +24,7 @@ class PluginMatcher(object):
 
 
 class PluginManager(object):
-    ROOT = "pyload.plugins"
+    ROOT = "pyload.plugin"
     LOCALROOT = "localplugins"
 
     MATCH_HISTORY = 10
@@ -45,7 +45,7 @@ class PluginManager(object):
         # add to path, so we can import from userplugins
         sys.path.append(abspath(""))
         self.loader = LoaderFactory(PluginLoader(abspath(self.LOCALROOT), self.LOCALROOT, self.pyload.config),
-                                    PluginLoader(abspath(join(pypath, "pyload", "plugins")), self.ROOT,
+                                    PluginLoader(abspath(join(pypath, "pyload", "plugin")), self.ROOT,
                                                  self.pyload.config))
 
         self.loader.check_versions()

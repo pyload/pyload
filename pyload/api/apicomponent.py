@@ -14,7 +14,7 @@ class ApiComponent(Iface):
     def __init__(self, core, user):
         # Only for auto completion, this class can not be instantiated
         from pyload import Core
-        from pyload.datatypes.user import User
+        from pyload.datatype.user import User
         assert isinstance(core, Core)
         assert issubclass(ApiComponent, Iface)
         self.pyload = core

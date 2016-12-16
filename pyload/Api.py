@@ -38,7 +38,7 @@ stateMap[DownloadState.Unfinished] = frozenset(stateMap[DownloadState.All].diffe
 def state_string(state):
     return ",".join(str(x) for x in stateMap[state])
 
-from .datatypes.user import User
+from .datatype.user import User
 
 
 class Api(Iface):

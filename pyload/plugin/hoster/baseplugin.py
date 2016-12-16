@@ -9,8 +9,8 @@ from urllib.parse import urlparse
 from re import match, search
 from urllib.parse import unquote
 
-from pyload.plugins.request import ResponseException
-from pyload.plugins.hoster import Hoster
+from pyload.plugin.request import ResponseException
+from pyload.plugin.hoster import Hoster
 from pyload.utils import html_unescape, remove_chars
 
 

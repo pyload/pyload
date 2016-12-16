@@ -13,7 +13,7 @@ from time import time
 
 from pyload.configparser import IGNORE
 from pyload.network.requestfactory import get_url
-from pyload.plugins.hook import threaded, Expose, Hook
+from pyload.plugin.hook import threaded, Expose, Hook
 
 
 class UpdateManager(Hook):
@@ -165,7 +165,7 @@ class UpdateManager(Hook):
             self.old_periodical()
             self.last_check = time()
 
-        modules = [m for m in sys.modules.values() if m and (m.__name__.startswith("module.plugins.") or m.__name__.startswith(
+        modules = [m for m in sys.modules.values() if m and (m.__name__.startswith("pyload.plugin.") or m.__name__.startswith(
                 "userplugins.")) and m.__name__.count(".") >= 2]
 
         reloads = []

@@ -11,7 +11,7 @@ from os import listdir, access, X_OK, makedirs
 from os.path import join, exists, basename, abspath
 
 
-from pyload.plugins.addon import Addon, add_event_listener
+from pyload.plugin.addon import Addon, add_event_listener
 from pyload.utils.fs import safe_join
 
 

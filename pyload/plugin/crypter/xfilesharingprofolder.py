@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from pyload.plugins.crypter import Crypter, Package
+from pyload.plugin.crypter import Crypter, Package
 import re
 
 

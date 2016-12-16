@@ -18,7 +18,7 @@ import re
 
 from pyload.network.requestfactory import get_request
 from pyload.network.httprequest import BadHeader
-from pyload.plugins.hook import Hook
+from pyload.plugin.hook import Hook
 from pyload.common.json_layer import json_loads
 
 

@@ -15,7 +15,7 @@
 ############################################################################
 
 from __future__ import unicode_literals
-from pyload.plugins.internal.multihoster import MultiHoster
+from pyload.plugin.internal.multihoster import MultiHoster
 
 
 class DebridItaliaCom(MultiHoster):

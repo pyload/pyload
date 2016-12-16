@@ -15,7 +15,7 @@ import time
 from pyload.network.requestfactory import get_url
 from pyload.network.httprequest import BadHeader
 
-from pyload.plugins.hook import Hook
+from pyload.plugin.hook import Hook
 
 
 class Captcha9kw(Hook):

@@ -6,7 +6,7 @@ from future import standard_library
 standard_library.install_aliases()
 import time
 import http.client
-from pyload.plugins.hook import Hook
+from pyload.plugin.hook import Hook
 
 
 class WindowsPhoneToastNotify(Hook):

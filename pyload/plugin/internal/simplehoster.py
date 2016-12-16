@@ -12,7 +12,7 @@ from urllib.parse import urlparse
 import re
 from time import time
 
-from pyload.plugins.hoster import Hoster
+from pyload.plugin.hoster import Hoster
 from pyload.utils import html_unescape, fixup, parse_size 
 from pyload.network.requestfactory import get_url
 from pyload.network.cookiejar import CookieJar

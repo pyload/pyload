@@ -11,7 +11,7 @@ import re
 from base64 import b64encode
 
 from pyload.network.requestfactory import get_url, get_request
-from pyload.plugins.hook import Hook
+from pyload.plugin.hook import Hook
 
 
 class ImageTyperzException(Exception):
