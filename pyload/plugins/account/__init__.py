@@ -11,7 +11,7 @@ from threading import RLock
 from pyload.Api import AccountInfo, ConfigItem
 from pyload.network.cookiejar import CookieJar
 from pyload.config.convert import from_string, to_configdata
-from pyload.utils import to_string, compare_time, format_size, parseFileSize, lock
+from pyload.utils import to_string, compare_time, format_size, parse_size , lock
 
 from ..base import Base
 
@@ -75,7 +75,7 @@ class Account(Base):
         try:
             self.config_data = dict(to_configdata(x) for x in self.__config__)
         except Exception as e:
-            self.logError("Invalid config: %s" % e)
+            self.log_error("Invalid config: %s" % e)
             self.config_data = {}
 
         self.init()
@@ -85,7 +85,7 @@ class Account(Base):
                            self.maxtraffic, self.premium, self.activated, self.shared, self.options)
 
         info.config = [ConfigItem(name, item.label, item.description, item.input,
-                                  to_string(self.getConfig(name))) for name, item in
+                                  to_string(self.get_config(name))) for name, item in
                        self.config_data.items()]
         return info
 
@@ -96,7 +96,7 @@ class Account(Base):
         """ Gets an option that was configured via the account options dialog and
         is only valid for this specific instance."""
         if option not in self.config_data:
-            return Base.getConfig(self, option)
+            return Base.get_config(self, option)
 
         if option in self.options:
             return self.options[option]
@@ -125,7 +125,7 @@ class Account(Base):
 
     def relogin(self):
         """ Force a login. """
-        req = self.getAccountRequest()
+        req = self.get_account_request()
         try:
             return self._login(req)
         finally:
@@ -140,18 +140,18 @@ class Account(Base):
             try:
                 self.login(req)
             except TypeError: #TODO: temporary
-                self.logDebug("Deprecated .login(...) signature omit user, data")
+                self.log_debug("Deprecated .login(...) signature omit user, data")
                 self.login(self.loginname, {"password": self.password}, req)
 
             self.valid = True
         except WrongPassword:
-            self.logWarning(
+            self.log_warning(
                 _("Could not login with account %(user)s | %(msg)s") % {"user": self.loginname
                     , "msg": _("Wrong Password")})
             self.valid = False
 
         except Exception as e:
-            self.logWarning(
+            self.log_warning(
                 _("Could not login with account %(user)s | %(msg)s") % {"user": self.loginname
                     , "msg": e})
             self.valid = False
@@ -183,10 +183,10 @@ class Account(Base):
         for item in items:
             # Check if a valid option
             if item.name in self.config_data:
-                self.setConfig(item.name, item.value)
+                self.set_config(item.name, item.value)
 
     def get_account_request(self):
-        return self.pyload.requestFactory.get_request(self.cj)
+        return self.pyload.request_factory.get_request(self.cj)
 
     def get_download_settings(self):
         """ Can be overwritten to change download settings. Default is no chunkLimit, max dl limit, resumeDownload
@@ -207,32 +207,32 @@ class Account(Base):
         if force or self.timestamp + self.info_threshold * 60 < time():
 
             # make sure to login
-            req = self.getAccountRequest()
-            self.checkLogin(req)
-            self.logInfo(_("Get Account Info for %s") % self.loginname)
+            req = self.get_account_request()
+            self.check_login(req)
+            self.log_info(_("Get Account Info for %s") % self.loginname)
             try:
                 try:
-                    infos = self.loadAccountInfo(req)
+                    infos = self.load_account_info(req)
                 except TypeError: #TODO: temporary
-                    self.logDebug("Deprecated .loadAccountInfo(...) signature, omit user argument.")
-                    infos = self.loadAccountInfo(self.loginname, req)
+                    self.log_debug("Deprecated .load_account_info(...) signature, omit user argument.")
+                    infos = self.load_account_info(self.loginname, req)
             except Exception as e:
                 infos = {"error": str(e)}
-                self.logError(_("Error: %s") % e)
+                self.log_error(_("Error: %s") % e)
             finally:
                 req.close()
 
-            self.restoreDefaults() # reset to initial state
+            self.restore_defaults() # reset to initial state
             if isinstance(infos, dict): # copy result from dict to class
                 for k, v in infos.items():
                     if hasattr(self, k):
                         setattr(self, k, v)
                     else:
-                        self.logDebug("Unknown attribute %s=%s" % (k, v))
+                        self.log_debug("Unknown attribute %s=%s" % (k, v))
 
-            self.logDebug("Account Info: %s" % str(infos))
+            self.log_debug("Account Info: %s" % str(infos))
             self.timestamp = time()
-            self.pyload.evm.dispatch_event("account:loaded", self.toInfoData())
+            self.pyload.evm.dispatch_event("account:loaded", self.to_info_data())
 
     #TODO: remove user
     def load_account_info(self, req):
@@ -245,20 +245,20 @@ class Account(Base):
         pass
 
     def get_account_cookies(self, user):
-        self.logDebug("Deprecated method .getAccountCookies -> use account.cj")
+        self.log_debug("Deprecated method .getAccountCookies -> use account.cj")
         return self.cj
 
     def select_account(self, *args):
-        self.logDebug("Deprecated method .selectAccount() -> use fields directly")
-        return self.loginname, self.getAccountData()
+        self.log_debug("Deprecated method .selectAccount() -> use fields directly")
+        return self.loginname, self.get_account_data()
 
     def get_account_data(self, *args):
-        self.logDebug("Deprecated method .getAccountData -> use fields directly")
+        self.log_debug("Deprecated method .getAccountData -> use fields directly")
         return {"password": self.password, "premium": self.premium, "trafficleft": self.trafficleft,
                 "maxtraffic" : self.maxtraffic, "validuntil": self.validuntil}
 
     def is_premium(self, user=None):
-        if user: self.logDebug("Deprecated Argument user for .isPremium()", user)
+        if user: self.log_debug("Deprecated Argument user for .isPremium()", user)
         return self.premium
 
     def is_usable(self):
@@ -275,7 +275,7 @@ class Account(Base):
                 if not compare_time(start.split(":"), end.split(":")):
                     return False
             except Exception:
-                self.logWarning(_("Your Time %s has a wrong format, use: 1:22-3:44") % time_data)
+                self.log_warning(_("Your Time %s has a wrong format, use: 1:22-3:44") % time_data)
 
         if 0 <= self.validuntil < time():
             return False
@@ -285,35 +285,35 @@ class Account(Base):
         return True
 
     def parse_traffic(self, string): #returns kbyte
-        return old_div(parseFileSize(string), 1024)
+        return old_div(parse_size (string), 1024)
 
     def format_trafficleft(self):
         if self.trafficleft is None:
-            self.getAccountInfo(force=True)
+            self.get_account_info(force=True)
         return format_size(self.trafficleft * 1024)
 
     def wrong_password(self):
         raise WrongPassword
 
     def empty(self, user=None):
-        if user: self.logDebug("Deprecated argument user for .empty()", user)
+        if user: self.log_debug("Deprecated argument user for .empty()", user)
 
-        self.logWarning(_("Account %s has not enough traffic, checking again in 30min") % self.login)
+        self.log_warning(_("Account %s has not enough traffic, checking again in 30min") % self.login)
 
         self.trafficleft = 0
-        self.scheduleRefresh(30 * 60)
+        self.schedule_refresh(30 * 60)
 
     def expired(self, user=None):
-        if user: self.logDebug("Deprecated argument user for .expired()", user)
+        if user: self.log_debug("Deprecated argument user for .expired()", user)
 
-        self.logWarning(_("Account %s is expired, checking again in 1h") % user)
+        self.log_warning(_("Account %s is expired, checking again in 1h") % user)
 
         self.validuntil = time() - 1
-        self.scheduleRefresh(60 * 60)
+        self.schedule_refresh(60 * 60)
 
     def schedule_refresh(self, time=0, force=True):
         """ add a task for refreshing the account info to the scheduler """
-        self.logDebug("Scheduled Account refresh for %s in %s seconds." % (self.loginname, time))
+        self.log_debug("Scheduled Account refresh for %s in %s seconds." % (self.loginname, time))
         self.pyload.scheduler.add_job(time, self.getAccountInfo, [force])
 
     @lock
@@ -321,9 +321,9 @@ class Account(Base):
         """ checks if the user is still logged in """
         if self.login_ts + self.login_timeout * 60 < time():
             if self.login_ts: # separate from fresh login to have better debug logs
-                self.logDebug("Reached login timeout for %s" % self.loginname)
+                self.log_debug("Reached login timeout for %s" % self.loginname)
             else:
-                self.logInfo(_("Login with %s") % self.loginname)
+                self.log_info(_("Login with %s") % self.loginname)
 
             self._login(req)
             return False

@@ -157,8 +157,8 @@ class Base(object):
         self.pyload.config.set(self.__name__, option, value)
 
     def get_conf(self, option):
-        """ see `getConfig` """
-        return self.getConfig(option)
+        """ see `get_config` """
+        return self.get_config(option)
 
     def get_config(self, option):
         """ Returns config value for current plugin """
@@ -180,7 +180,7 @@ class Base(object):
 
     def retrieve(self, *args, **kwargs):
         """ same as `getStorage` """
-        return self.getStorage(*args, **kwargs)
+        return self.get_storage(*args, **kwargs)
 
     def del_storage(self, key):
         """ Delete entry in db """
@@ -216,7 +216,7 @@ class Base(object):
         """
         if not hasattr(self, "req"):
             raise Exception("Plugin type does not have Request attribute.")
-        self.checkAbort()
+        self.check_abort()
 
         res = self.req.load(url, get, post, ref, cookies, just_header, decode=decode)
 
@@ -267,16 +267,16 @@ class Base(object):
             self.task.invalid()
 
     def invalid_captcha(self):
-        self.logDebug("Deprecated method .invalidCaptcha, use .invalidTask")
-        self.invalidTask()
+        self.log_debug("Deprecated method .invalidCaptcha, use .invalidTask")
+        self.invalid_task()
 
     def correct_task(self):
         if self.task:
             self.task.correct()
 
     def correct_captcha(self):
-        self.logDebug("Deprecated method .correctCaptcha, use .correctTask")
-        self.correctTask()
+        self.log_debug("Deprecated method .correctCaptcha, use .correctTask")
+        self.correct_task()
 
     def decrypt_captcha(self, url, get={}, post={}, cookies=True, forceUser=False, imgtype='jpg',
                        result_type='textual'):
@@ -312,22 +312,22 @@ class Base(object):
 
         if OCR and not forceUser:
             sleep(old_div(randint(3000, 5000), 1000.0))
-            self.checkAbort()
+            self.check_abort()
 
             ocr = OCR()
             result = ocr.get_captcha(temp_file.name)
         else:
-            task = self.im.createCaptchaTask(img, imgtype, temp_file.name, self.__name__, result_type)
+            task = self.im.create_captcha_task(img, imgtype, temp_file.name, self.__name__, result_type)
             self.task = task
 
             while task.isWaiting():
                 if self.abort():
-                    self.im.removeTask(task)
+                    self.im.remove_task(task)
                     raise Abort
                 sleep(1)
 
             #TODO task handling
-            self.im.removeTask(task)
+            self.im.remove_task(task)
 
             if task.error and has_plugin: #ignore default error message since the user could use OCR
                 self.fail(_("Pil and tesseract not installed and no Client connected for captcha decrypting"))

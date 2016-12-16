@@ -16,7 +16,7 @@ from time import sleep
 from base64 import b64encode
 import re
 
-from pyload.network.requestfactory import getRequest
+from pyload.network.requestfactory import get_request
 from pyload.network.httprequest import BadHeader
 from pyload.plugins.hook import Hook
 from pyload.common.json_layer import json_loads
@@ -68,21 +68,21 @@ class DeathByCaptcha(Hook):
         self.info = {}
 
     def call_api(self, api="captcha", post=False, multipart=False):
-        req = getRequest()
+        req = get_request()
         req.c.setopt(HTTPHEADER, ["Accept: application/json", "User-Agent: pyLoad %s" % self.pyload.version])
 
         if post:
             if not isinstance(post, dict):
                 post = {}
-            post.update({"username": self.getConfig("username"),
-                         "password": self.getConfig("passkey")})
+            post.update({"username": self.get_config("username"),
+                         "password": self.get_config("passkey")})
 
         response = None
         try:
             json = req.load("%s%s" % (self.API_URL, api),
                             post=post,
                             multipart=multipart)
-            self.logDebug(json)
+            self.log_debug(json)
             response = json_loads(json)
 
             if "error" in response:
@@ -125,7 +125,7 @@ class DeathByCaptcha(Hook):
 
     def submit(self, captcha, captchaType="file", match=None):
         #workaround multipart-post bug in HTTPRequest.py
-        if re.match("^[A-Za-z0-9]*$", self.getConfig("passkey")):
+        if re.match("^[A-Za-z0-9]*$", self.get_config("passkey")):
             multipart = True
             data = (FORM_FILE, captcha)
         else:
@@ -149,7 +149,7 @@ class DeathByCaptcha(Hook):
             raise DeathByCaptchaException('timed-out')
 
         result = response['text']
-        self.logDebug("result %s : %s" % (ticket, result))
+        self.log_debug("result %s : %s" % (ticket, result))
 
         return ticket, result
 
@@ -160,27 +160,27 @@ class DeathByCaptcha(Hook):
         if not task.isTextual():
             return False
 
-        if not self.getConfig("username") or not self.getConfig("passkey"):
+        if not self.get_config("username") or not self.get_config("passkey"):
             return False
 
-        if self.pyload.is_client_connected() and not self.getConfig("force"):
+        if self.pyload.is_client_connected() and not self.get_config("force"):
             return False
 
         try:
-            self.getStatus()
-            self.getCredits()
+            self.get_status()
+            self.get_credits()
         except DeathByCaptchaException as e:
-            self.logError(e.getDesc())
+            self.log_error(e.getDesc())
             return False
 
         balance, rate = self.info["balance"], self.info["rate"]
-        self.logInfo("Account balance: US$%.3f (%d captchas left at %.2f cents each)" % (old_div(balance, 100),
+        self.log_info("Account balance: US$%.3f (%d captchas left at %.2f cents each)" % (old_div(balance, 100),
                                                                                          balance // rate, rate))
 
         if balance > rate:
             task.handler.append(self)
             task.data['service'] = self.__name__
-            task.setWaiting(180)
+            task.set_waiting(180)
             start_new_thread(self.processCaptcha, (task,))
 
     def captcha_invalid(self, task):
@@ -188,9 +188,9 @@ class DeathByCaptcha(Hook):
             try:
                 response = self.call_api("captcha/%d/report" % task.data["ticket"], True)
             except DeathByCaptchaException as e:
-                self.logError(e.getDesc())
+                self.log_error(e.getDesc())
             except Exception as e:
-                self.logError(e)
+                self.log_error(e)
 
     def process_captcha(self, task):
         c = task.captchaFile
@@ -198,7 +198,7 @@ class DeathByCaptcha(Hook):
             ticket, result = self.submit(c)
         except DeathByCaptchaException as e:
             task.error = e.getCode()
-            self.logError(e.getDesc())
+            self.log_error(e.getDesc())
             return
 
         task.data["ticket"] = ticket

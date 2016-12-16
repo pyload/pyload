@@ -47,13 +47,13 @@ class SimpleCrypter(Crypter):
 
         self.html = self.load(url, decode=True)
 
-        package_name = self.getPackageName()
-        self.package_links = self.getLinks()
+        package_name = self.get_package_name()
+        self.package_links = self.get_links()
 
         if hasattr(self, 'PAGES_PATTERN') and hasattr(self, 'loadPage'):
-            self.handleMultiPages()
+            self.handle_multi_pages()
 
-        self.logDebug('Package has %d links' % len(self.package_links))
+        self.log_debug('Package has %d links' % len(self.package_links))
 
         if self.package_links:
             return Package(package_name, self.package_links)
@@ -73,7 +73,7 @@ class SimpleCrypter(Crypter):
             m = re.search(self.TITLE_PATTERN, self.html)
             if m:
                 name = html_unescape(m.group('title').strip())
-                self.logDebug("Found name [%s] in package info" % (name))
+                self.log_debug("Found name [%s] in package info" % (name))
                 return name
 
         return None
@@ -86,5 +86,5 @@ class SimpleCrypter(Crypter):
             pages = 1
 
         for p in range(2, pages + 1):
-            self.html = self.loadPage(p)
-            self.package_links += self.getLinks()
+            self.html = self.load_page(p)
+            self.package_links += self.get_links()

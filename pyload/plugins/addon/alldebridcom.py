@@ -24,7 +24,7 @@ class AlldebridCom(MultiHoster):
     __author_mail__ = "spamsales@online.de"
 
     def get_hoster(self):
-        https = "https" if self.getConfig("https") else "http"
+        https = "https" if self.get_config("https") else "http"
         page = get_url(https + "://www.alldebrid.com/api.php?action=get_host").replace("\"", "").strip()
 
         return [x.strip() for x in page.split(",") if x.strip()]

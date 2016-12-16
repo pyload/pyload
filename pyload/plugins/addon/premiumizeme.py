@@ -24,11 +24,11 @@ class PremiumizeMe(MultiHoster):
 
     def get_hoster(self):
         # If no accounts are available there will be no hosters available
-        if not self.account or not self.account.canUse():
+        if not self.account or not self.account.can_use():
             return []
 
         # Get account data
-        (user, data) = self.account.selectAccount()
+        (user, data) = self.account.select_account()
 
         # Get supported hosters list from premiumize.me using the
         # json API v1 (see https://secure.premiumize.me/?show=api)
@@ -46,9 +46,9 @@ class PremiumizeMe(MultiHoster):
     def core_ready(self):
         # Get account plugin and check if there is a valid account available
         self.account = self.pyload.accountmanager.get_account_plugin("PremiumizeMe")
-        if not self.account.canUse():
+        if not self.account.can_use():
             self.account = None
-            self.logError(_("Please add a valid premiumize.me account first and restart pyLoad."))
+            self.log_error(_("Please add a valid premiumize.me account first and restart pyLoad."))
             return
 
         # Run the overwriten core ready which actually enables the multihoster hook

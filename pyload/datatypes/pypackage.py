@@ -41,11 +41,6 @@ class PyPackage(object):
         #: Finish event already fired
         self.setFinished = False
 
-    @property
-    def id(self):
-        self.manager.pyload.log.debug("Deprecated package attr .id, use .pid instead")
-        return self.pid
-
     def is_stale(self):
         return self.timestamp + 30 * 60 > time()
 
@@ -62,33 +57,33 @@ class PyPackage(object):
 
     def get_files(self):
         """get contaied files data"""
-        return self.manager.pyload.db.getAllFiles(package=self.pid)
+        return self.manager.pyload.db.get_all_files(package=self.pid)
 
     def get_path(self, name=""):
         self.timestamp = time()
-        return join(self.manager.getPackage(self.root).getPath(), self.folder, name)
+        return join(self.manager.get_package(self.root).get_path(), self.folder, name)
 
     def sync(self):
         """sync with db"""
-        self.manager.updatePackage(self)
+        self.manager.update_package(self)
 
     def release(self):
         """sync and delete from cache"""
         self.sync()
-        self.manager.releasePackage(self.id)
+        self.manager.release_package(self.id)
 
     def delete(self):
-        self.manager.removePackage(self.id)
+        self.manager.remove_package(self.id)
 
     def delete_if_empty(self):
         """  True if deleted  """
-        if not len(self.getFiles()):
+        if not len(self.get_files()):
             self.delete()
             return True
         return False
 
     def notify_change(self):
-        self.manager.pyload.eventmanager.dispatchEvent("packageUpdated", self.id)
+        self.manager.pyload.eventmanager.dispatch_event("packageUpdated", self.id)
 
 
 class RootPackage(PyPackage):

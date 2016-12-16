@@ -20,15 +20,15 @@ class LinkdecrypterCom(Hook):
 
     def core_ready(self):
         try:
-            self.loadPatterns()
+            self.load_patterns()
         except Exception as e:
-            self.logError(e)
+            self.log_error(e)
 
     def load_patterns(self):
         page = get_url("http://linkdecrypter.com/")
         m = re.search(r'<b>Supported\(\d+\)</b>: <i>([^+<]*)', page)
         if not m:
-            self.logError(_("Crypter list not found"))
+            self.log_error(_("Crypter list not found"))
             return
 
         builtin = [name.lower() for name in self.pyload.pluginmanager.crypterPlugins.keys()]
@@ -42,7 +42,7 @@ class LinkdecrypterCom(Hook):
                 online.append(m.group(1).replace(".", "\\."))
 
         if not online:
-            self.logError(_("Crypter list is empty"))
+            self.log_error(_("Crypter list is empty"))
             return
 
         regexp = r"https?://([^.]+\.)*?(%s)/.*" % "|".join(online)
@@ -51,4 +51,4 @@ class LinkdecrypterCom(Hook):
         dict["pattern"] = regexp
         dict["re"] = re.compile(regexp)
 
-        self.logDebug("REGEXP: " + regexp)
+        self.log_debug("REGEXP: " + regexp)

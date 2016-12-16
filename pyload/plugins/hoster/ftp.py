@@ -37,15 +37,15 @@ class Ftp(Hoster):
             pass
 
         if not "@" in netloc:
-            servers = [x['login'] for x in self.account.getAllAccounts()] if self.account else []
+            servers = [x['login'] for x in self.account.get_all_accounts()] if self.account else []
 
             if netloc in servers:
-                self.logDebug("Logging on to %s" % netloc)
-                self.req.addAuth(self.account.accounts[netloc]["password"])
+                self.log_debug("Logging on to %s" % netloc)
+                self.req.add_auth(self.account.accounts[netloc]["password"])
             else:
                 for pwd in pyfile.package().password.splitlines():
                     if ":" in pwd:
-                        self.req.addAuth(pwd.strip())
+                        self.req.add_auth(pwd.strip())
                         break
 
         self.req.http.c.setopt(pycurl.NOBODY, 1)
@@ -56,7 +56,7 @@ class Ftp(Hoster):
             self.fail("Error %d: %s" % e.args)
 
         self.req.http.c.setopt(pycurl.NOBODY, 0)
-        self.logDebug(self.req.http.header)
+        self.log_debug(self.req.http.header)
 
         found = re.search(r"Content-Length:\s*(\d+)", response)
         if found:
@@ -71,7 +71,7 @@ class Ftp(Hoster):
                 self.req.http.c.setopt(48, 1)  # CURLOPT_DIRLISTONLY
                 response = self.load(pyfile.url, decode=False)
                 links = [pyfile.url + quote(x) for x in response.splitlines()]
-                self.logDebug("LINKS", links)
+                self.log_debug("LINKS", links)
                 self.pyload.api.add_package(pkgname, links, 1)
                 #self.pyload.files.add_links(links, pyfile.package().id)
             else:

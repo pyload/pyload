@@ -57,10 +57,10 @@ class DownloadThread(BaseThread):
 
                 #this pyfile was deleted while queuing
                 # TODO: what will happen with new thread manager?
-                #if not pyfile.hasPlugin(): continue
+                #if not pyfile.has_plugin(): continue
 
 
-                pyfile.plugin.checkForSameFiles(starting=True)
+                pyfile.plugin.check_for_same_files(starting=True)
                 self.log.info(_("Download starts: %s" % pyfile.name))
 
                 # start download
@@ -73,7 +73,7 @@ class DownloadThread(BaseThread):
 
             except NotImplementedError:
                 self.log.error(_("Plugin %s is missing a function.") % pyfile.pluginname)
-                pyfile.setStatus("failed")
+                pyfile.set_status("failed")
                 pyfile.error = "Plugin does not work"
                 self.clean(pyfile)
                 continue
@@ -84,7 +84,7 @@ class DownloadThread(BaseThread):
                 except Exception:
                     pass
 
-                pyfile.setStatus("aborted")
+                pyfile.set_status("aborted")
 
                 # abort cleans the file
                 # self.clean(pyfile)
@@ -110,13 +110,13 @@ class DownloadThread(BaseThread):
                 # TODO: activate former skipped downloads
 
                 if msg == "offline":
-                    pyfile.setStatus("offline")
+                    pyfile.set_status("offline")
                     self.log.warning(_("Download is offline: %s") % pyfile.name)
                 elif msg == "temp. offline":
-                    pyfile.setStatus("temp. offline")
+                    pyfile.set_status("temp. offline")
                     self.log.warning(_("Download is temporary offline: %s") % pyfile.name)
                 else:
-                    pyfile.setStatus("failed")
+                    pyfile.set_status("failed")
                     self.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": msg})
                     pyfile.error = msg
 
@@ -138,7 +138,7 @@ class DownloadThread(BaseThread):
                     wait = time() + 60
 
                     pyfile.waitUntil = wait
-                    pyfile.setStatus("waiting")
+                    pyfile.set_status("waiting")
                     while time() < wait:
                         sleep(0.5)
 
@@ -147,7 +147,7 @@ class DownloadThread(BaseThread):
 
                     if pyfile.abort:
                         self.log.info(_("Download aborted: %s") % pyfile.name)
-                        pyfile.setStatus("aborted")
+                        pyfile.set_status("aborted")
                         # don't clean, aborting function does this itself
                         # self.clean(pyfile)
                     else:
@@ -156,11 +156,11 @@ class DownloadThread(BaseThread):
                     continue
 
                 else:
-                    pyfile.setStatus("failed")
+                    pyfile.set_status("failed")
                     self.log.error("pycurl error %s: %s" % (code, msg))
                     if self.pyload.debug:
                         print_exc()
-                        self.writeDebugReport(pyfile.plugin.__name__, pyfile)
+                        self.write_debug_report(pyfile.plugin.__name__, pyfile)
 
                     self.pyload.addonmanager.download_failed(pyfile)
 
@@ -168,7 +168,7 @@ class DownloadThread(BaseThread):
                 continue
 
             except SkipDownload as e:
-                pyfile.setStatus("skipped")
+                pyfile.set_status("skipped")
 
                 self.log.info(_("Download skipped: %(name)s due to %(plugin)s")
                 % {"name": pyfile.name, "plugin": e.message})
@@ -184,18 +184,18 @@ class DownloadThread(BaseThread):
 
             except Exception as e:
                 if isinstance(e, ResponseException) and e.code == 500:
-                    pyfile.setStatus("temp. offline")
+                    pyfile.set_status("temp. offline")
                     self.log.warning(_("Download is temporary offline: %s") % pyfile.name)
                     pyfile.error = _("Internal Server Error")
 
                 else:
-                    pyfile.setStatus("failed")
+                    pyfile.set_status("failed")
                     self.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": str(e)})
                     pyfile.error = str(e)
 
                 if self.pyload.debug:
                     print_exc()
-                    self.writeDebugReport(pyfile.plugin.__name__, pyfile)
+                    self.write_debug_report(pyfile.plugin.__name__, pyfile)
 
                 self.pyload.addonmanager.download_failed(pyfile)
                 self.clean(pyfile)

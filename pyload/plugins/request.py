@@ -42,7 +42,7 @@ class Request(object):
         self.code = 0
         self.flags = 0
         self.doAbort = False
-        self.initContext()
+        self.init_context()
 
         # TODO: content encoding? Could be handled globally
 
@@ -76,7 +76,7 @@ class Request(object):
 
     def remove_auth(self):
         """ Removes authentication from the request """
-        self.unsetOption("auth")
+        self.unset_option("auth")
 
     def load(self, uri, *args, **kwargs):
         """  Loads given resource from given uri. Args and kwargs depends on implementation"""
@@ -87,7 +87,7 @@ class Request(object):
 
     def reset(self):
         """  Resets the context to initial state """
-        self.unsetOption("")
+        self.unset_option("")
 
     def close(self):
         """ Close and clean everything """

@@ -21,11 +21,11 @@ class RPNetBiz(MultiHoster):
 
     def get_hoster(self):
         # No hosts supported if no account
-        if not self.account or not self.account.canUse():
+        if not self.account or not self.account.can_use():
             return []
 
         # Get account data
-        (user, data) = self.account.selectAccount()
+        (user, data) = self.account.select_account()
 
         response = get_url("https://premium.rpnet.biz/client_api.php",
                           get={"username": user, "password": data['password'], "action": "showHosterList"})
@@ -41,9 +41,9 @@ class RPNetBiz(MultiHoster):
     def core_ready(self):
         # Get account plugin and check if there is a valid account available
         self.account = self.pyload.accountmanager.get_account_plugin("RPNetBiz")
-        if not self.account.canUse():
+        if not self.account.can_use():
             self.account = None
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "rpnet")
+            self.log_error(_("Please enter your %s account or deactivate this plugin") % "rpnet")
             return
 
         # Run the overwriten core ready which actually enables the multihoster hook

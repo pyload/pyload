@@ -22,7 +22,7 @@ class StatisticsApi(ApiComponent):
 
     def get_quota(self):
         """ Number of bytes the user has left for download  """
-        return self.calcQuota(self.user.true_primary)
+        return self.calc_quota(self.user.true_primary)
 
 
 if Api.extend(StatisticsApi):

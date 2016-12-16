@@ -25,12 +25,12 @@ class ReloadCc(MultiHoster):
 
     def get_hoster(self):
         # If no accounts are available there will be no hosters available
-        if not self.account or not self.account.canUse():
+        if not self.account or not self.account.can_use():
             print("ReloadCc: No accounts available")
             return []
 
         # Get account data
-        (user, data) = self.account.selectAccount()
+        (user, data) = self.account.select_account()
 
         # Get supported hosters list from reload.cc using the json API v1
         query_params = dict(
@@ -60,9 +60,9 @@ class ReloadCc(MultiHoster):
     def core_ready(self):
         # Get account plugin and check if there is a valid account available
         self.account = self.pyload.accountmanager.get_account_plugin("ReloadCc")
-        if not self.account.canUse():
+        if not self.account.can_use():
             self.account = None
-            self.logError("Please add a valid reload.cc account first and restart pyLoad.")
+            self.log_error("Please add a valid reload.cc account first and restart pyLoad.")
             return
 
         # Run the overwriten core ready which actually enables the multihoster hook

@@ -42,13 +42,13 @@ class User(UserData):
         return self.primary is None or obj.owner == self.true_primary
 
     def is_admin(self):
-        return self.hasRole(Role.Admin)
+        return self.has_role(Role.Admin)
 
     @property
     def primary(self):
         """ Primary user id, Internal user handle used for most operations
         Secondary user account share id with primary user. Only Admins have no primary id. """
-        if self.hasRole(Role.Admin):
+        if self.has_role(Role.Admin):
             return None
         return self.true_primary
 

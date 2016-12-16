@@ -11,7 +11,7 @@ from .configparser import ConfigParser
 
 from .convert import to_input, from_string
 
-def convert_key_error(func):
+def convertkeyerror(func):
     """ converts KeyError into InvalidConfigSection """
 
     def conv(*args, **kwargs):
@@ -47,7 +47,7 @@ class ConfigManager(ConfigParser):
     def save(self):
         self.parser.save()
 
-    @convertKeyError
+    @convertkeyerror
     def get(self, section, option, user=None):
         """get config value, core config only available for admins.
         if user is not valid default value will be returned"""
@@ -62,7 +62,7 @@ class ConfigManager(ConfigParser):
                 # Check if this config exists
                 # Configs without meta data can not be loaded!
                 data = self.config[section].config[option]
-                return self.loadValues(user, section)[option]
+                return self.load_values(user, section)[option]
             except KeyError:
                 pass # Returns default value later
 
@@ -70,7 +70,7 @@ class ConfigManager(ConfigParser):
 
     def load_values(self, user, section):
         if (user, section) not in self.values:
-            conf = self.db.loadConfig(section, user)
+            conf = self.db.load_config(section, user)
             try:
                 self.values[user, section] = json.loads(conf) if conf else {}
             except ValueError: # Something did go wrong when parsing
@@ -79,7 +79,7 @@ class ConfigManager(ConfigParser):
 
         return self.values[user, section]
 
-    @convertKeyError
+    @convertkeyerror
     def set(self, section, option, value, sync=True, user=None):
         """ set config value  """
 
@@ -95,7 +95,7 @@ class ConfigManager(ConfigParser):
             if value != old_value:
                 changed = True
                 self.values[user, section][option] = value
-                if sync: self.saveValues(user, section)
+                if sync: self.save_values(user, section)
 
         if changed: self.pyload.evm.dispatch_event("config:changed", section, option, value)
         return changed
@@ -104,7 +104,7 @@ class ConfigManager(ConfigParser):
         if section in self.parser and user is None:
             self.save()
         elif (user, section) in self.values:
-            self.db.saveConfig(section, json.dumps(self.values[user, section]), user)
+            self.db.save_config(section, json.dumps(self.values[user, section]), user)
 
     def delete(self, section, user=None):
         """ Deletes values saved in db and cached values for given user, NOT meta data
@@ -112,15 +112,15 @@ class ConfigManager(ConfigParser):
         if (user, section) in self.values:
             del self.values[user, section]
 
-        self.db.deleteConfig(section, user)
+        self.db.delete_config(section, user)
         self.pyload.evm.dispatch_event("config:deleted", section, user)
 
     def iter_core_sections(self):
-        return self.parser.iterSections()
+        return self.parser.iter_sections()
 
     def iter_sections(self, user=None):
         """ Yields: section, metadata, values """
-        values = self.db.loadConfigsForUser(user)
+        values = self.db.load_configs_for_user(user)
 
         # Every section needs to be json decoded
         for section, data in values.items():
@@ -137,5 +137,5 @@ class ConfigManager(ConfigParser):
         if section in self.parser and user is None:
             return self.parser.getSection(section)
 
-        values = self.loadValues(user, section)
+        values = self.load_values(user, section)
         return self.config.get(section), values

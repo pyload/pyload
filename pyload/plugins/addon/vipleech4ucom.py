@@ -73,10 +73,10 @@ class Vipleech4uCom(MultiHoster):
                 removed_hosters.append(hoster)
 
         if new_hosters:
-            self.logDebug('The following new hosters were found on vipleech4u.com: %s' % str(new_hosters))
+            self.log_debug('The following new hosters were found on vipleech4u.com: %s' % str(new_hosters))
 
         if removed_hosters:
-            self.logDebug('The following hosters were removed from vipleech4u.com: %s' % str(removed_hosters))
+            self.log_debug('The following hosters were removed from vipleech4u.com: %s' % str(removed_hosters))
 
         if not (new_hosters and removed_hosters):
-            self.logDebug('The hoster list is still valid.')
+            self.log_debug('The hoster list is still valid.')

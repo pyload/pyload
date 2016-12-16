@@ -13,7 +13,7 @@ import re
 from time import time
 
 from pyload.plugins.hoster import Hoster
-from pyload.utils import html_unescape, fixup, parseFileSize
+from pyload.utils import html_unescape, fixup, parse_size 
 from pyload.network.requestfactory import get_url
 from pyload.network.cookiejar import CookieJar
 
@@ -22,7 +22,7 @@ def replace_patterns(string, ruleslist):
     for r in ruleslist:
         rf, rt = r
         string = re.sub(rf, rt, string)
-        #self.logDebug(rf, rt, string)
+        #self.log_debug(rf, rt, string)
     return string
 
 
@@ -115,11 +115,11 @@ def parse_file_info(self, url='', html=''):
                 if 'S' in info:
                     size = replace_patterns(info['S'] + info['U'] if 'U' in info else info['S'],
                                             self.FILE_SIZE_REPLACEMENTS)
-                    info['size'] = parseFileSize(size)
+                    info['size'] = parse_size (size)
                 elif isinstance(info['size'], str):
                     if 'units' in info:
                         info['size'] += info['units']
-                    info['size'] = parseFileSize(info['size'])
+                    info['size'] = parse_size (info['size'])
 
     if hasattr(self, "file_info"):
         self.file_info = info
@@ -196,16 +196,16 @@ class SimpleHoster(Hoster):
         self.html = get_url(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
         premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html)
         if not premium_only:  # Usually premium only pages doesn't show the file information
-            self.getFileInfo()
+            self.get_file_info()
 
-        if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
-            self.handlePremium()
+        if self.premium and (not self.SH_CHECK_TRAFFIC or self.check_traffic_left()):
+            self.handle_premium()
         elif premium_only:
             self.fail("This link require a premium account")
         else:
             # This line is required due to the get_url workaround. Can be removed in 0.5
             self.html = self.load(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
-            self.handleFree()
+            self.handle_free()
 
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False):
         if isinstance(url, str):
@@ -214,17 +214,17 @@ class SimpleHoster(Hoster):
                            just_header=just_header, decode=decode)
 
     def get_file_info(self):
-        self.logDebug("URL: %s" % self.pyfile.url)
+        self.log_debug("URL: %s" % self.pyfile.url)
         if hasattr(self, "TEMP_OFFLINE_PATTERN") and re.search(self.TEMP_OFFLINE_PATTERN, self.html):
-            self.tempOffline()
+            self.temp_offline()
 
         name, size, status = parseFileInfo(self)[:3]
 
         if status == 1:
             self.offline()
         elif status != 2:
-            self.logDebug(self.file_info)
-            self.parseError('File info')
+            self.log_debug(self.file_info)
+            self.parse_error('File info')
 
         if name:
             self.pyfile.name = name
@@ -234,9 +234,9 @@ class SimpleHoster(Hoster):
         if size:
             self.pyfile.size = size
         else:
-            self.logError("File size not parsed")
+            self.log_error("File size not parsed")
 
-        self.logDebug("FILE NAME: %s FILE SIZE: %s" % (self.pyfile.name, self.pyfile.size))
+        self.log_debug("FILE NAME: %s FILE SIZE: %s" % (self.pyfile.name, self.pyfile.size))
         return self.file_info
 
     def handle_free(self):
@@ -256,25 +256,25 @@ class SimpleHoster(Hoster):
             time_str = "(unknown time)"
             max_tries = 100
 
-        self.logInfo("Download limit reached, reconnect or wait %s" % time_str)
+        self.log_info("Download limit reached, reconnect or wait %s" % time_str)
 
-        self.setWait(wait_time, True)
+        self.set_wait(wait_time, True)
         self.wait()
         self.retry(max_tries=max_tries, reason="Download limit reached")
 
     def parse_html_form(self, attr_str='', input_names=None):
-        return parseHtmlForm(attr_str, self.html, input_names)
+        return parse_html_form(attr_str, self.html, input_names)
 
     def check_traffic_left(self):
-        traffic = self.account.getAccountInfo(self.user, True)["trafficleft"]
+        traffic = self.account.get_account_info(self.user, True)["trafficleft"]
         if traffic == -1:
             return True
         size = old_div(self.pyfile.size, 1024)
-        self.logInfo("Filesize: %i KiB, Traffic left for user %s: %i KiB" % (size, self.user, traffic))
+        self.log_info("Filesize: %i KiB, Traffic left for user %s: %i KiB" % (size, self.user, traffic))
         return size <= traffic
 
     # TODO: Remove in 0.5
     def wait(self, seconds=False, reconnect=False):
         if seconds:
-            self.setWait(seconds, reconnect)
+            self.set_wait(seconds, reconnect)
         super(SimpleHoster, self).wait()

@@ -76,12 +76,12 @@ class Hoster(Base):
 
         if self.account:
             #: Request instance bound to account
-            self.req = self.account.getAccountRequest()
+            self.req = self.account.get_account_request()
             # Default:  -1, True, True
-            self.chunkLimit, self.limitDL, self.resumeDownload = self.account.getDownloadSettings()
-            self.premium = self.account.isPremium()
+            self.chunkLimit, self.limitDL, self.resumeDownload = self.account.get_download_settings()
+            self.premium = self.account.is_premium()
         else:
-            self.req = self.pyload.requestFactory.get_request(klass=self.REQUEST_CLASS)
+            self.req = self.pyload.request_factory.get_request(klass=self.REQUEST_CLASS)
 
         #: Will hold the download class
         self.dl = None
@@ -102,7 +102,7 @@ class Hoster(Base):
 
     @property
     def user(self):
-        self.logDebug("Deprecated usage of self.user -> use self.account.loginname")
+        self.log_debug("Deprecated usage of self.user -> use self.account.loginname")
         if self.account:
             return self.account.loginname
 
@@ -149,13 +149,13 @@ class Hoster(Base):
 
         if self.account:
             # will force a re-login or reload of account info if necessary
-            self.account.getAccountInfo()
+            self.account.get_account_info()
         else:
             self.req.reset()
 
         self.setup()
 
-        self.pyfile.setStatus("starting")
+        self.pyfile.set_status("starting")
 
         return self.process(self.pyfile)
 
@@ -169,7 +169,7 @@ class Hoster(Base):
     def reset_account(self):
         """ don't use account and retry download """
         self.account = None
-        self.req = self.pyload.requestFactory.get_request(self.__name__)
+        self.req = self.pyload.request_factory.get_request(self.__name__)
         self.retry()
 
     def checksum(self, local_file=None):
@@ -199,24 +199,24 @@ class Hoster(Base):
         """ Waits the time previously set or use these from arguments. See `setWait`
         """
         if seconds is not None:
-            self.setWait(seconds, reconnect)
+            self.set_wait(seconds, reconnect)
 
         self._wait()
 
     def _wait(self):
         self.waiting = True
-        self.pyfile.setStatus("waiting")
+        self.pyfile.set_status("waiting")
 
         while self.pyfile.waitUntil > time():
             self.thread.manager.reconnecting.wait(2)
-            self.checkAbort()
+            self.check_abort()
             if self.thread.manager.reconnecting.isSet():
                 self.waiting = False
                 self.wantReconnect = False
                 raise Reconnect
 
         self.waiting = False
-        self.pyfile.setStatus("starting")
+        self.pyfile.set_status("starting")
 
     def offline(self):
         """ fail and indicate file is offline """
@@ -241,7 +241,7 @@ class Hoster(Base):
 
         self.wantReconnect = False
         self.retries += 1
-        self.setWait(backoff(wait_time, self.retries))
+        self.set_wait(backoff(wait_time, self.retries))
         self.wait()
 
         raise Retry(reason)
@@ -253,10 +253,10 @@ class Hoster(Base):
         the filename will be changed if needed
         :return: The location where the file was saved
         """
-        self.checkForSameFiles()
-        self.checkAbort()
+        self.check_for_same_files()
+        self.check_abort()
 
-        self.pyfile.setStatus("downloading")
+        self.pyfile.set_status("downloading")
 
         download_folder = self.config['general']['download_folder']
 
@@ -283,10 +283,10 @@ class Hoster(Base):
         self.pyload.addonmanager.dispatch_event("download:start", self.pyfile, url, filename)
 
         # Create the class used for downloading
-        self.dl = self.pyload.requestFactory.get_download_request(self.req, self.DOWNLOAD_CLASS)
+        self.dl = self.pyload.request_factory.get_download_request(self.req, self.DOWNLOAD_CLASS)
         try:
             # TODO: hardcoded arguments
-            newname = self.dl.download(url, filename, get=get, post=post, referer=ref, chunks=self.getChunkCount(),
+            newname = self.dl.download(url, filename, get=get, post=post, referer=ref, chunks=self.get_chunk_count(),
                                        resume=self.resumeDownload, cookies=cookies, disposition=disposition)
         finally:
             self.dl.close()
@@ -387,7 +387,7 @@ class Hoster(Base):
             if size >= self.pyfile.size:
                 raise SkipDownload("File exists.")
 
-        pyfile = self.pyload.db.find_duplicates(self.pyfile.id, self.pyfile.package().folder, self.pyfile.name)
+        pyfile = self.pyload.db.find_duplicates(self.pyfile.fid, self.pyfile.package().folder, self.pyfile.name)
         if pyfile:
             if exists(location):
                 raise SkipDownload(pyfile[0])

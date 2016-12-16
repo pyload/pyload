@@ -74,7 +74,7 @@ class Api(Iface):
     def has_access(self, obj):
         """ Helper method to determine if a user has access to a resource.
          Works for obj that provides .owner attribute. Core admin has always access."""
-        return self.user is None or self.user.hasAccess(obj)
+        return self.user is None or self.user.has_access(obj)
 
     @classmethod
     def init_components(cls):
@@ -115,7 +115,7 @@ class Api(Iface):
             if not user: #TODO: anonymous user?
                 return None
 
-            self.user_apis[uid] = UserApi(self.pyload, User.fromUserData(self, user))
+            self.user_apis[uid] = UserApi(self.pyload, User.from_user_data(self, user))
 
         return self.user_apis[uid]
 
@@ -133,7 +133,7 @@ class Api(Iface):
         :param remoteip: Omit this argument, its only used internal
         :return: bool indicating login was successful
         """
-        return True if self.checkAuth(username, password, remoteip) else False
+        return True if self.check_auth(username, password, remoteip) else False
 
     def check_auth(self, username, password, remoteip=None):
         """Check authentication and returns details

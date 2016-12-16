@@ -25,7 +25,7 @@ def add_event_listener(event):
     class _klass(object):
         def __new__(cls, f, *args, **kwargs):
             for ev in to_list(event):
-                addonmanager.addEventListener(class_name(f.__module__), f.__name__, ev)
+                addonmanager.add_event_listener(class_name(f.__module__), f.__name__, ev)
             return f
 
     return _klass
@@ -45,7 +45,7 @@ def addon_handler(label, desc, package=True, media=-1):
 
     class _klass(object):
         def __new__(cls, f, *args, **kwargs):
-            addonmanager.addAddonHandler(class_name(f.__module__), f.__name__, label, desc,
+            addonmanager.add_addon_handler(class_name(f.__module__), f.__name__, label, desc,
                                          f.__code__.co_varnames[1:], package, media)
             return f
 
@@ -66,7 +66,7 @@ def addon_property(name, desc, default=None, fire_event=True):
     # generated name for the attribute
     h = "__Property" + str(hash(name) ^ hash(desc))
 
-    addonmanager.addInfoProperty(h, name, desc)
+    addonmanager.add_info_property(h, name, desc)
 
     def _get(self):
         if not hasattr(self, h):
@@ -76,7 +76,7 @@ def addon_property(name, desc, default=None, fire_event=True):
 
     def _set(self, value):
         if fire_event:
-            self.manager.dispatchEvent("addon:property:change", value)
+            self.manager.dispatch_event("addon:property:change", value)
 
         return setattr(self, h, value)
 
@@ -91,7 +91,7 @@ def threaded(f):
 
     #@wraps(f)
     def run(*args, **kwargs):
-        addonmanager.startThread(f, *args, **kwargs)
+        addonmanager.start_thread(f, *args, **kwargs)
 
     return run
 
@@ -121,7 +121,7 @@ class Addon(Base):
         self.init()
 
         # start periodically if set
-        self.startPeriodical(self.interval, 0)
+        self.start_periodical(self.interval, 0)
 
     def start_periodical(self, interval, wait):
         """ Starts the periodical calls with given interval. Older entries will be canceled.
@@ -152,7 +152,7 @@ class Addon(Base):
 
     def _periodical(self):
         try:
-            if self.isActivated(): self.periodical()
+            if self.is_activated(): self.periodical()
         except Exception as e:
             self.pyload.log.error(_("Error executing addon: %s") % str(e))
             self.pyload.print_exc()
@@ -165,7 +165,7 @@ class Addon(Base):
 
     def is_activated(self):
         """ checks if addon is activated"""
-        return True if self.__internal__ else self.getConfig("activated")
+        return True if self.__internal__ else self.get_config("activated")
 
     def get_category(self):
         return self.pyload.pluginmanager.get_category(self.__name__)
@@ -176,8 +176,8 @@ class Addon(Base):
     def activate(self):
         """  Used to activate the addon """
         if has_method(self.__class__, "coreReady"):
-            self.logDebug("Deprecated method .coreReady() use activate() instead")
-            self.pyloadReady()
+            self.log_debug("Deprecated method .coreReady() use activate() instead")
+            self.pyload_ready()
 
     def deactivate(self):
         """ Used to deactivate the addon. """

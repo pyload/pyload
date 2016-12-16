@@ -31,10 +31,10 @@ class WindowsPhoneToastNotify(Hook):
         return myxml
 
     def do_request(self):
-        URL = self.getConfig("pushUrl")
-        request = self.getXmlData()
+        URL = self.get_config("pushUrl")
+        request = self.get_xml_data()
         webservice = http.client.HTTP(URL)
-        webservice.putrequest("POST", self.getConfig("pushId"))
+        webservice.putrequest("POST", self.get_config("pushId"))
         webservice.putheader("Host", URL)
         webservice.putheader("Content-type", "text/xml")
         webservice.putheader("X-NotificationClass", "2")
@@ -43,16 +43,16 @@ class WindowsPhoneToastNotify(Hook):
         webservice.endheaders()
         webservice.send(request)
         webservice.close()
-        self.setStorage("LAST_NOTIFY", time.time())
+        self.set_storage("LAST_NOTIFY", time.time())
 
     def new_captcha_task(self, task):
-        if not self.getConfig("pushId") or not self.getConfig("pushUrl"):
+        if not self.get_config("pushId") or not self.get_config("pushUrl"):
             return False
 
-        if self.pyload.is_client_connected() and not self.getConfig("force"):
+        if self.pyload.is_client_connected() and not self.get_config("force"):
             return False
 
-        if (time.time() - float(self.getStorage("LAST_NOTIFY", 0))) < self.getConf("pushTimeout"):
+        if (time.time() - float(self.get_storage("LAST_NOTIFY", 0))) < self.get_conf("pushTimeout"):
             return False
 
-        self.doRequest()
+        self.do_request()

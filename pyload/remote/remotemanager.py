@@ -65,7 +65,7 @@ class RemoteManager(object):
                 __import__("pyload.remote.%s" % b.lower(), globals(), locals(), [b.lower()], -1), b
             )
             backend = klass(self)
-            if not backend.checkDeps():
+            if not backend.check_deps():
                 continue
             try:
                 backend.setup(host, port)

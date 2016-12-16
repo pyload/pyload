@@ -68,14 +68,14 @@ class AddonThread(BaseThread):
         except Exception as e:
             if hasattr(self.f, "im_self"):
                 addon = self.f.__self__
-                addon.logError(_("An Error occurred"), e)
+                addon.log_error(_("An Error occurred"), e)
                 if self.manager.pyload.debug:
                     print_exc()
-                    self.writeDebugReport(addon.__name__, plugin=addon)
+                    self.write_debug_report(addon.__name__, plugin=addon)
 
         finally:
             local = copy(self.active)
             for x in local:
-                self.finishFile(x)
+                self.finish_file(x)
 
             self.finished()

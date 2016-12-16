@@ -61,7 +61,7 @@ class XFileSharingPro(SimpleHoster):
 
         if not re.match(self.__pattern__, pyfile.url):
             if self.premium:
-                self.handleOverriden()
+                self.handle_overriden()
             else:
                 self.fail("Only premium users can download from other hosters with %s" % self.HOSTER_NAME)
         else:
@@ -70,22 +70,22 @@ class XFileSharingPro(SimpleHoster):
                 # cookies=False. Workaround using get_url to avoid cookies.
                 # Can be reverted in 0.5 as the cookies bug has been fixed.
                 self.html = get_url(pyfile.url, decode=True)
-                self.file_info = self.getFileInfo()
+                self.file_info = self.get_file_info()
             except PluginParseError:
                 self.file_info = None
 
-            self.location = self.getDirectDownloadLink()
+            self.location = self.get_direct_download_link()
 
             if not self.file_info:
                 pyfile.name = html_unescape(unquote(urlparse(
                     self.location if self.location else pyfile.url).path.split("/")[-1]))
 
             if self.location:
-                self.startDownload(self.location)
+                self.start_download(self.location)
             elif self.premium:
-                self.handlePremium()
+                self.handle_premium()
             else:
-                self.handleFree()
+                self.handle_free()
 
     def prepare(self):
         """ Initialize important variables """
@@ -95,7 +95,7 @@ class XFileSharingPro(SimpleHoster):
             self.DIRECT_LINK_PATTERN = r'(http://([^/]*?%s|\d+\.\d+\.\d+\.\d+)(:\d+)?(/d/|(?:/files)?/\d+/\w+/)[^"\'<]+)' % self.HOSTER_NAME
 
         self.captcha = self.errmsg = None
-        self.passwords = self.getPassword().splitlines()
+        self.passwords = self.get_password().splitlines()
 
     def get_direct_download_link(self):
         """ Get download link for premium users with direct download enabled """
@@ -114,14 +114,14 @@ class XFileSharingPro(SimpleHoster):
         return location
 
     def handle_free(self):
-        url = self.getDownloadLink()
-        self.logDebug("Download URL: %s" % url)
-        self.startDownload(url)
+        url = self.get_download_link()
+        self.log_debug("Download URL: %s" % url)
+        self.start_download(url)
 
     def get_download_link(self):
         for i in range(5):
-            self.logDebug("Getting download link: #%d" % i)
-            data = self.getPostParameters()
+            self.log_debug("Getting download link: #%d" % i)
+            data = self.get_post_parameters()
 
             self.req.http.c.setopt(FOLLOWLOCATION, 0)
             self.html = self.load(self.pyfile.url, post=data, ref=True, decode=True)
@@ -145,31 +145,31 @@ class XFileSharingPro(SimpleHoster):
         return found.group(1)
 
     def handle_premium(self):
-        self.html = self.load(self.pyfile.url, post=self.getPostParameters())
+        self.html = self.load(self.pyfile.url, post=self.get_post_parameters())
         found = re.search(self.DIRECT_LINK_PATTERN, self.html)
         if not found:
-            self.parseError('DIRECT LINK')
-        self.startDownload(found.group(1))
+            self.parse_error('DIRECT LINK')
+        self.start_download(found.group(1))
 
     def handle_overriden(self):
         #only tested with easybytez.com
         self.html = self.load("http://www.%s/" % self.HOSTER_NAME)
-        action, inputs = self.parseHtmlForm('')
+        action, inputs = self.parse_html_form('')
         upload_id = "%012d" % int(random() * 10 ** 12)
         action += upload_id + "&js_on=1&utype=prem&upload_type=url"
         inputs['tos'] = '1'
         inputs['url_mass'] = self.pyfile.url
         inputs['up1oad_type'] = 'url'
 
-        self.logDebug(self.HOSTER_NAME, action, inputs)
+        self.log_debug(self.HOSTER_NAME, action, inputs)
         #wait for file to upload to easybytez.com
         self.req.http.c.setopt(LOW_SPEED_TIME, 600)
         self.html = self.load(action, post=inputs)
 
-        action, inputs = self.parseHtmlForm('F1')
+        action, inputs = self.parse_html_form('F1')
         if not inputs:
-            self.parseError('TEXTAREA')
-        self.logDebug(self.HOSTER_NAME, inputs)
+            self.parse_error('TEXTAREA')
+        self.log_debug(self.HOSTER_NAME, inputs)
         if inputs['st'] == 'OK':
             self.html = self.load(action, post=inputs)
         elif inputs['st'] == 'Can not leech file':
@@ -180,33 +180,33 @@ class XFileSharingPro(SimpleHoster):
         #get easybytez.com link for uploaded file
         found = re.search(self.OVR_DOWNLOAD_LINK_PATTERN, self.html)
         if not found:
-            self.parseError('DIRECT LINK (OVR)')
+            self.parse_error('DIRECT LINK (OVR)')
         self.pyfile.url = found.group(1)
         header = self.load(self.pyfile.url, just_header=True)
         if 'location' in header:  # Direct link
-            self.startDownload(self.pyfile.url)
+            self.start_download(self.pyfile.url)
         else:
             self.retry()
 
     def start_download(self, link):
         link = link.strip()
         if self.captcha:
-            self.correctCaptcha()
-        self.logDebug('DIRECT LINK: %s' % link)
+            self.correct_captcha()
+        self.log_debug('DIRECT LINK: %s' % link)
         self.download(link, disposition=True)
 
     def check_errors(self):
         found = re.search(self.ERROR_PATTERN, self.html)
         if found:
             self.errmsg = found.group(1)
-            self.logWarning(re.sub(r"<.*?>", " ", self.errmsg))
+            self.log_warning(re.sub(r"<.*?>", " ", self.errmsg))
 
             if 'wait' in self.errmsg:
                 wait_time = sum([int(v) * {"hour": 3600, "minute": 60, "second": 1}[u] for v, u in
                                  re.findall(r'(\d+)\s*(hour|minute|second)?', self.errmsg)])
                 self.wait(wait_time, True)
             elif 'captcha' in self.errmsg:
-                self.invalidCaptcha()
+                self.invalid_captcha()
             elif 'premium' in self.errmsg and 'require' in self.errmsg:
                 self.fail("File can be downloaded by premium users only")
             elif 'limit' in self.errmsg:
@@ -215,7 +215,7 @@ class XFileSharingPro(SimpleHoster):
             elif 'countdown' in self.errmsg or 'Expired' in self.errmsg:
                 self.retry()
             elif 'maintenance' in self.errmsg:
-                self.tempOffline()
+                self.temp_offline()
             elif 'download files up to' in self.errmsg:
                 self.fail("File too large for free download")
             else:
@@ -229,22 +229,22 @@ class XFileSharingPro(SimpleHoster):
     def get_post_parameters(self):
         for _ in range(3):
             if not self.errmsg:
-                self.checkErrors()
+                self.check_errors()
 
             if hasattr(self, "FORM_PATTERN"):
-                action, inputs = self.parseHtmlForm(self.FORM_PATTERN)
+                action, inputs = self.parse_html_form(self.FORM_PATTERN)
             else:
-                action, inputs = self.parseHtmlForm(input_names={"op": re.compile("^download")})
+                action, inputs = self.parse_html_form(input_names={"op": re.compile("^download")})
 
             if not inputs:
-                action, inputs = self.parseHtmlForm('F1')
+                action, inputs = self.parse_html_form('F1')
                 if not inputs:
                     if self.errmsg:
                         self.retry()
                     else:
-                        self.parseError("Form not found")
+                        self.parse_error("Form not found")
 
-            self.logDebug(self.HOSTER_NAME, inputs)
+            self.log_debug(self.HOSTER_NAME, inputs)
 
             if 'op' in inputs and inputs['op'] in ('download2', 'download3'):
                 if "password" in inputs:
@@ -257,11 +257,11 @@ class XFileSharingPro(SimpleHoster):
                     found = re.search(self.WAIT_PATTERN, self.html)
                     if found:
                         wait_time = int(found.group(1)) + 1
-                        self.setWait(wait_time, False)
+                        self.set_wait(wait_time, False)
                     else:
                         wait_time = 0
 
-                    self.captcha = self.handleCaptcha(inputs)
+                    self.captcha = self.handle_captcha(inputs)
 
                     if wait_time:
                         self.wait()
@@ -285,13 +285,13 @@ class XFileSharingPro(SimpleHoster):
                 self.errmsg = None
 
         else:
-            self.parseError('FORM: %s' % (inputs['op'] if 'op' in inputs else 'UNKNOWN'))
+            self.parse_error('FORM: %s' % (inputs['op'] if 'op' in inputs else 'UNKNOWN'))
 
     def handle_captcha(self, inputs):
         found = re.search(self.RECAPTCHA_URL_PATTERN, self.html)
         if found:
             recaptcha_key = unquote(found.group(1))
-            self.logDebug("RECAPTCHA KEY: %s" % recaptcha_key)
+            self.log_debug("RECAPTCHA KEY: %s" % recaptcha_key)
             recaptcha = ReCaptcha(self)
             inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(recaptcha_key)
             return 1
@@ -299,16 +299,16 @@ class XFileSharingPro(SimpleHoster):
             found = re.search(self.CAPTCHA_URL_PATTERN, self.html)
             if found:
                 captcha_url = found.group(1)
-                inputs['code'] = self.decryptCaptcha(captcha_url)
+                inputs['code'] = self.decrypt_captcha(captcha_url)
                 return 2
             else:
                 found = re.search(self.CAPTCHA_DIV_PATTERN, self.html, re.DOTALL)
                 if found:
                     captcha_div = found.group(1)
-                    self.logDebug(captcha_div)
+                    self.log_debug(captcha_div)
                     numerals = re.findall(r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
                     inputs['code'] = "".join([a[1] for a in sorted(numerals, key=lambda num: int(num[0]))])
-                    self.logDebug("CAPTCHA", inputs['code'], numerals)
+                    self.log_debug("CAPTCHA", inputs['code'], numerals)
                     return 3
                 else:
                     found = re.search(self.SOLVEMEDIA_PATTERN, self.html)

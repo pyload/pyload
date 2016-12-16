@@ -41,7 +41,7 @@ class AbstractHandler(object):
         s = self.load_session(cookie)
         if s:
             uid = s.get('uid', None)
-            req.api = self.api.withUserContext(uid)
+            req.api = self.api.with_user_context(uid)
             self.log.debug("WS authenticated user with cookie: %d" % uid)
 
         self.on_open(req)
@@ -114,12 +114,12 @@ class AbstractHandler(object):
             if s:
                 user = UserData(uid=s.get('uid', None))
         else:
-            s = self.api.checkAuth(*args, **kwargs)
+            s = self.api.check_auth(*args, **kwargs)
             if s:
                 user = UserData(uid=s.uid)
 
         if user:
-            req.api = self.api.withUserContext(user.uid)
+            req.api = self.api.with_user_context(user.uid)
             return self.send_result(req, self.OK, True)
         else:
             return self.send_result(req, self.FORBIDDEN, "Forbidden")

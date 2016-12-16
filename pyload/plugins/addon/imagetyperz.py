@@ -10,7 +10,7 @@ from pycurl import FORM_FILE, LOW_SPEED_TIME
 import re
 from base64 import b64encode
 
-from pyload.network.requestfactory import get_url, getRequest
+from pyload.network.requestfactory import get_url, get_request
 from pyload.plugins.hook import Hook
 
 
@@ -47,8 +47,8 @@ class ImageTyperz(Hook):
         self.info = {}
 
     def get_credits(self):
-        response = get_url(self.GETCREDITS_URL, post={"action": "REQUESTBALANCE", "username": self.getConfig("username"),
-                                                     "password": self.getConfig("passkey")})
+        response = get_url(self.GETCREDITS_URL, post={"action": "REQUESTBALANCE", "username": self.get_config("username"),
+                                                     "password": self.get_config("passkey")})
 
         if response.startswith('ERROR'):
             raise ImageTyperzException(response)
@@ -58,17 +58,17 @@ class ImageTyperz(Hook):
         except Exception:
             raise ImageTyperzException("invalid response")
 
-        self.logInfo("Account balance: $%s left" % response)
+        self.log_info("Account balance: $%s left" % response)
         return balance
 
     def submit(self, captcha, captchaType="file", match=None):
-        req = getRequest()
+        req = get_request()
         #raise timeout threshold
         req.c.setopt(LOW_SPEED_TIME, 80)
 
         try:
             #workaround multipart-post bug in HTTPRequest.py
-            if re.match("^[A-Za-z0-9]*$", self.getConfig("passkey")):
+            if re.match("^[A-Za-z0-9]*$", self.get_config("passkey")):
                 multipart = True
                 data = (FORM_FILE, captcha)
             else:
@@ -78,8 +78,8 @@ class ImageTyperz(Hook):
                 data = b64encode(data)
 
             response = req.load(self.SUBMIT_URL, post={"action": "UPLOADCAPTCHA",
-                                                       "username": self.getConfig("username"),
-                                                       "password": self.getConfig("passkey"), "file": data},
+                                                       "username": self.get_config("username"),
+                                                       "password": self.get_config("passkey"), "file": data},
                                                        multipart=multipart)
         finally:
             req.close()
@@ -102,31 +102,31 @@ class ImageTyperz(Hook):
         if not task.isTextual():
             return False
 
-        if not self.getConfig("username") or not self.getConfig("passkey"):
+        if not self.get_config("username") or not self.get_config("passkey"):
             return False
 
-        if self.pyload.is_client_connected() and not self.getConfig("force"):
+        if self.pyload.is_client_connected() and not self.get_config("force"):
             return False
 
-        if self.getCredits() > 0:
+        if self.get_credits() > 0:
             task.handler.append(self)
             task.data['service'] = self.__name__
             task.setWaiting(100)
             start_new_thread(self.processCaptcha, (task,))
 
         else:
-            self.logInfo("Your %s account has not enough credits" % self.__name__)
+            self.log_info("Your %s account has not enough credits" % self.__name__)
 
     def captcha_invalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
-            response = get_url(self.RESPOND_URL, post={"action": "SETBADIMAGE", "username": self.getConfig("username"),
-                                                      "password": self.getConfig("passkey"),
+            response = get_url(self.RESPOND_URL, post={"action": "SETBADIMAGE", "username": self.get_config("username"),
+                                                      "password": self.get_config("passkey"),
                                                       "imageid": task.data["ticket"]})
 
             if response == "SUCCESS":
-                self.logInfo("Bad captcha solution received, requested refund")
+                self.log_info("Bad captcha solution received, requested refund")
             else:
-                self.logError("Bad captcha solution received, refund request failed", response)
+                self.log_error("Bad captcha solution received, refund request failed", response)
 
     def process_captcha(self, task):
         c = task.captchaFile

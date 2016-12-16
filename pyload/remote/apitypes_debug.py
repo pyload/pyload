@@ -78,7 +78,7 @@ methods = {
     'getAllInfo': (dict, basestring, list),
     'getAllUserData': (dict, int, UserData),
     'getAvailablePlugins': (list, ConfigInfo),
-    'getConfig': (dict, basestring, ConfigHolder),
+    'get_config': (dict, basestring, ConfigHolder),
     'getConfigValue': basestring,
     'getCoreConfig': (list, ConfigInfo),
     'getFileInfo': FileInfo,

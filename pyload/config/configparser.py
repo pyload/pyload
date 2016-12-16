@@ -36,10 +36,10 @@ class ConfigParser(object):
         # The actual config values
         self.values = {}
 
-        self.checkVersion()
+        self.check_version()
 
-        self.loadDefault()
-        self.parseValues(self.CONFIG)
+        self.load_default()
+        self.parse_values(self.CONFIG)
 
     def load_default(self):
         make_config(self)

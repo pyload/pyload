@@ -67,7 +67,7 @@ class ConfigApi(ApiComponent):
         # TODO: multi user
         # TODO: better plugin / addon activated config
         data = []
-        active = [x.getName() for x in self.pyload.addonmanager.active_plugins()]
+        active = [x.get_name() for x in self.pyload.addonmanager.active_plugins()]
         for name, config, values in self.pyload.config.iter_sections(self.primary_uid):
             # skip unmodified and inactive addons
             if not values and name not in active: continue

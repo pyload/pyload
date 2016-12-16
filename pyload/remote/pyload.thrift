@@ -373,7 +373,7 @@ service Pyload {
   // Core Status
   ///////////////////////
 
-  string getServerVersion(),
+  string get_server_version(),
   string get_ws_address(),
   StatusInfo getStatusInfo(),
   list<ProgressInfo> getProgressInfo(),
@@ -393,7 +393,7 @@ service Pyload {
   // Configuration
   ///////////////////////
 
-  map<string, ConfigHolder> getConfig(),
+  map<string, ConfigHolder> get_config(),
   string getConfigValue(1: string section, 2: string option),
 
   // two methods with ambigous classification, could be configuration or addon/plugin related

@@ -27,7 +27,7 @@ class Package(object):
         self.links = []
 
         if links:
-            self.addLinks(links)
+            self.add_links(links)
 
         # nested packages
         self.packs = []
@@ -87,7 +87,7 @@ class Crypter(Base):
 
     How to use decrypt* methods:
 
-    You have to overwrite at least one method of decrypt_url, decrypt_urls, decryptFile.
+    You have to overwrite at least one method of decrypt_url, decrypt_urls, decrypt_file.
 
     After decrypting and generating urls/packages you have to return the result.
     Valid return Data is:
@@ -153,10 +153,10 @@ class Crypter(Base):
         if self.USE_ACCOUNT:
             self.account = self.pyload.accountmanager.select_account(self.USE_ACCOUNT, self.owner)
             if self.account:
-                self.req = self.account.getAccountRequest()
+                self.req = self.account.get_account_request()
 
         if self.req is None:
-            self.req = core.requestFactory.getRequest()
+            self.req = core.request_factory.get_request()
 
         #: Password supplied by user
         self.password = password
@@ -182,7 +182,7 @@ class Crypter(Base):
         :return: See :class:`Crypter` Documentation
         """
         if url.startswith("http"): # basic method to redirect
-            return self.decryptFile(self.load(url))
+            return self.decrypt_file(self.load(url))
         else:
             self.fail(_("Not existing file or unsupported protocol"))
 
@@ -211,17 +211,17 @@ class Crypter(Base):
         cls = self.__class__
 
         # separate local and remote files
-        content, urls = self.getLocalContent(urls)
+        content, urls = self.get_local_content(urls)
         result = []
 
         if urls and has_method(cls, "decrypt"):
-            self.logDebug("Deprecated .decrypt() method in Crypter plugin")
+            self.log_debug("Deprecated .decrypt() method in Crypter plugin")
             result = []
             for url in urls:
                 self.pyfile = PyFileMockup(url, cls.__name__)
                 self.setup()
                 self.decrypt(self.pyfile)
-                result.extend(self.convertPackages())
+                result.extend(self.convert_packages())
         elif urls:
             method = True
             try:
@@ -238,11 +238,11 @@ class Crypter(Base):
 
         for f, c in content:
             self.setup()
-            result.extend(to_list(self.decryptFile(c)))
+            result.extend(to_list(self.decrypt_file(c)))
             try:
                 if f.startswith("tmp_"): remove(f)
             except IOError:
-                self.logWarning(_("Could not remove file '%s'") % f)
+                self.log_warning(_("Could not remove file '%s'") % f)
                 self.pyload.print_exc()
 
         return to_link_list(result)
@@ -254,8 +254,8 @@ class Crypter(Base):
         :return: list of (filename, content), remote urls
         """
         content = []
-        # do nothing if no decryptFile method
-        if hasattr(self.__class__, "decryptFile"):
+        # do nothing if no decrypt_file method
+        if hasattr(self.__class__, "decrypt_file"):
             remote = []
             for url in urls:
                 path = None
@@ -277,7 +277,7 @@ class Crypter(Base):
                             content.append((f.name, f.read()))
                             f.close()
                     except IOError as e:
-                        self.logError("IOError", e)
+                        self.log_error("IOError", e)
                 else:
                     remote.append(url)
 
@@ -292,12 +292,12 @@ class Crypter(Base):
 
     def get_password(self):
         """ Deprecated """
-        self.logDebug("Deprecated method .getPassword(), use self.password instead.")
+        self.log_debug("Deprecated method .getPassword(), use self.password instead.")
         return self.password
 
     def convert_packages(self):
         """ Deprecated """
-        self.logDebug("Deprecated method .convertPackages()")
+        self.log_debug("Deprecated method .convert_packages()")
         res = []
         for pack in self.packages:
             # only use name and urls

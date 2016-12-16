@@ -66,7 +66,7 @@ class DatabaseMethods(object):
 
     @classmethod
     def register(cls):
-        DatabaseBackend.registerSub(cls)
+        DatabaseBackend.register_sub(cls)
 
 
 class DatabaseJob(object):
@@ -190,7 +190,7 @@ class DatabaseBackend(Thread):
                 self.conn.close()
                 self.closing.set()
                 break
-            j.processJob()
+            j.process_job()
 
 
     def shutdown(self):
@@ -477,7 +477,7 @@ class DatabaseBackend(Thread):
             # c.execute("SELECT myerror FROM storage WHERE identifier=? AND key=?", ("foo", i))
             # print("e")
 
-    # db.registerSub(Test)
+    # db.register_sub(Test)
     # from time import time
 
     # start = time()

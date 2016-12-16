@@ -71,7 +71,7 @@ class AsyncHandler(AbstractHandler):
     @lock
     def add_event(self, event, *args, **kwargs):
         # Convert arguments to json suited instance
-        event = EventInfo(event, [x.toInfoData() if hasattr(x, 'toInfoData') else x for x in args])
+        event = EventInfo(event, [x.to_info_data() if hasattr(x, 'to_info_data') else x for x in args])
 
         # use the user kwarg argument to determine access
         user = None

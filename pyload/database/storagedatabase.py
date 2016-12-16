@@ -34,4 +34,4 @@ class StorageMethods(object):
     def del_storage(db, identifier, key):
         db.c.execute("DELETE FROM storage WHERE identifier=? AND key=?", (identifier, key))
 
-DatabaseBackend.registerSub(StorageMethods)
+DatabaseBackend.register_sub(StorageMethods)

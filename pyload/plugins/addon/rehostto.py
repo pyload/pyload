@@ -27,13 +27,13 @@ class RehostTo(MultiHoster):
     def core_ready(self):
         self.account = self.pyload.accountmanager.get_account_plugin("RehostTo")
 
-        user = self.account.selectAccount()[0]
+        user = self.account.select_account()[0]
 
         if not user:
-            self.logError("Rehost.to: " + _("Please add your rehost.to account first and restart pyLoad"))
+            self.log_error("Rehost.to: " + _("Please add your rehost.to account first and restart pyLoad"))
             return
 
-        data = self.account.getAccountInfo(user)
+        data = self.account.get_account_info(user)
         self.ses = data["ses"]
         self.long_ses = data["long_ses"]
 

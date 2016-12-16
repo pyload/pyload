@@ -59,7 +59,7 @@ class XDCCRequest(object):
         lastUpdate = time()
         cumRecvLen = 0
 
-        dccsock = self.createSocket()
+        dccsock = self.create_socket()
 
         dccsock.settimeout(self.timeout)
         dccsock.connect((ip, port))

@@ -25,7 +25,7 @@ class AccountApi(ApiComponent):
         :return: list of `AccountInfo`
         """
         accounts = self.pyload.accountmanager.get_all_accounts(self.primary_uid)
-        return [acc.toInfoData() for acc in accounts]
+        return [acc.to_info_data() for acc in accounts]
 
     @require_perm(Permission.Accounts)
     def get_account_info(self, aid, plugin, refresh=False):
@@ -43,7 +43,7 @@ class AccountApi(ApiComponent):
             # reload account in place
             account.getAccountInfo(True)
 
-        return account.toInfoData()
+        return account.to_info_data()
 
     @require_perm(Permission.Accounts)
     def create_account(self, plugin, loginname, password):
@@ -51,7 +51,7 @@ class AccountApi(ApiComponent):
 
         :return class:`AccountInfo`
         """
-        return self.pyload.accountmanager.create_account(plugin, loginname, password, self.user.true_primary).toInfoData()
+        return self.pyload.accountmanager.create_account(plugin, loginname, password, self.user.true_primary).to_info_data()
 
     @require_perm(Permission.Accounts)
     def update_account(self, aid, plugin, loginname, password):
@@ -59,7 +59,7 @@ class AccountApi(ApiComponent):
 
         :return: updated account info
         """
-        return self.pyload.accountmanager.update_account(aid, plugin, loginname, password, self.user).toInfoData()
+        return self.pyload.accountmanager.update_account(aid, plugin, loginname, password, self.user).to_info_data()
 
 
     @require_perm(Permission.Accounts)
@@ -71,7 +71,7 @@ class AccountApi(ApiComponent):
 
         inst.activated = to_bool(account.activated)
         inst.shared = to_bool(account.shared)
-        inst.updateConfig(account.config)
+        inst.update_config(account.config)
 
 
     @require_perm(Permission.Accounts)

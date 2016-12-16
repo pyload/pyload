@@ -19,13 +19,13 @@ class XFileSharingPro(Hook):
     __author_mail__ = "zoidberg@mujmail.cz"
 
     def core_ready(self):
-        self.loadPattern()
+        self.load_pattern()
 
     def load_pattern(self):
-        hosterList = self.getConfigSet('includeList')
-        excludeList = self.getConfigSet('excludeList')
+        hosterList = self.get_config_set('includeList')
+        excludeList = self.get_config_set('excludeList')
 
-        if self.getConfig('loadDefault'):
+        if self.get_config('loadDefault'):
             hosterList |= set((
                 #WORKING HOSTERS:
                 "aieshare.com", "asixfiles.com", "banashare.com", "cyberlocker.ch", "eyesfile.co", "eyesfile.com",
@@ -59,15 +59,15 @@ class XFileSharingPro(Hook):
             return
 
         regexp = r"http://(?:[^/]*\.)?(%s)/\w{12}" % ("|".join(sorted(hosterList)).replace('.', '\.'))
-        #self.logDebug(regexp)
+        #self.log_debug(regexp)
 
         dict = self.pyload.pluginmanager.hosterPlugins['XFileSharingPro']
         dict["pattern"] = regexp
         dict["re"] = re.compile(regexp)
-        self.logDebug("Pattern loaded - handling %d hosters" % len(hosterList))
+        self.log_debug("Pattern loaded - handling %d hosters" % len(hosterList))
 
     def get_config_set(self, option):
-        s = self.getConfig(option).lower().replace('|', ',').replace(';', ',')
+        s = self.get_config(option).lower().replace('|', ',').replace(';', ',')
         return set([x.strip() for x in s.split(',')])
 
     def unload(self):

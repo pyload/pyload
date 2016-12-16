@@ -92,7 +92,7 @@ class UnRar(AbtractExtractor):
                     self.passwordProtected = True
                     return True
 
-        self.listContent()
+        self.list_content()
         if not self.files:
             raise ArchiveError("Empty Archive")
 
@@ -147,7 +147,7 @@ class UnRar(AbtractExtractor):
 
         if not self.files:
             self.password = password
-            self.listContent()
+            self.list_content()
 
     def get_delete_files(self):
         if ".part" in self.file:
@@ -165,7 +165,7 @@ class UnRar(AbtractExtractor):
             raise ArchiveError("Cannot open file")
 
         if err.strip():  #: only log error at this point
-            self.manager.logError(err.strip())
+            self.manager.log_error(err.strip())
 
         result = set()
 
@@ -195,7 +195,7 @@ class UnRar(AbtractExtractor):
 
         # NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
         call = [self.CMD, command] + args + list(xargs)
-        self.manager.logDebug(" ".join([decode(arg) for arg in call]))
+        self.manager.log_debug(" ".join([decode(arg) for arg in call]))
 
         p = Popen(call, stdout=PIPE, stderr=PIPE)
 

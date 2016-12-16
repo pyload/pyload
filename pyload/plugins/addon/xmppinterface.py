@@ -34,14 +34,14 @@ class XMPPInterface(IRCInterface, JabberClient):
     def __init__(self, core, manager):
         IRCInterface.__init__(self, core, manager)
 
-        self.jid = JID(self.getConfig("jid"))
-        password = self.getConfig("pw")
+        self.jid = JID(self.get_config("jid"))
+        password = self.get_config("pw")
 
         # if bare JID is provided add a resource -- it is required
         if not self.jid.resource:
             self.jid = JID(self.jid.node, self.jid.domain, "pyLoad")
 
-        if self.getConfig("tls"):
+        if self.get_config("tls"):
             tls_settings = streamtls.TLSSettings(require=True, verify_peer=False)
             auth = ("sasl:PLAIN", "sasl:DIGEST-MD5")
         else:
@@ -66,14 +66,14 @@ class XMPPInterface(IRCInterface, JabberClient):
 
     def package_finished(self, pypack):
         try:
-            if self.getConfig("info_pack"):
+            if self.get_config("info_pack"):
                 self.announce(_("Package finished: %s") % pypack.name)
         except Exception:
             pass
 
     def download_finished(self, pyfile):
         try:
-            if self.getConfig("info_file"):
+            if self.get_config("info_file"):
                 self.announce(
                     _("Download finished: %(name)s @ %(plugin)s") % {"name": pyfile.name, "plugin": pyfile.pluginname})
         except Exception:
@@ -85,22 +85,22 @@ class XMPPInterface(IRCInterface, JabberClient):
         try:
             self.loop()
         except Exception as ex:
-            self.logError("pyLoad XMPP: %s" % str(ex))
+            self.log_error("pyLoad XMPP: %s" % str(ex))
 
     def stream_state_changed(self, state, arg):
         """This one is called when the state of stream connecting the component
         to a server changes. This will usually be used to let the user
         know what is going on."""
-        self.logDebug("pyLoad XMPP: *** State changed: %s %r ***" % (state, arg))
+        self.log_debug("pyLoad XMPP: *** State changed: %s %r ***" % (state, arg))
 
     def disconnected(self):
-        self.logDebug("pyLoad XMPP: Client was disconnected")
+        self.log_debug("pyLoad XMPP: Client was disconnected")
 
     def stream_closed(self, stream):
-        self.logDebug("pyLoad XMPP: Stream was closed | %s" % stream)
+        self.log_debug("pyLoad XMPP: Stream was closed | %s" % stream)
 
     def stream_error(self, err):
-        self.logDebug("pyLoad XMPP: Stream Error: %s" % err)
+        self.log_debug("pyLoad XMPP: Stream Error: %s" % err)
 
     def get_message_handlers(self):
         """Return list of (message_type, message_handler) tuples.
@@ -116,8 +116,8 @@ class XMPPInterface(IRCInterface, JabberClient):
         subject = stanza.get_subject()
         body = stanza.get_body()
         t = stanza.get_type()
-        self.logDebug(u'pyLoad XMPP: Message from %s received.' % (str(stanza.get_from(),)))
-        self.logDebug(u'pyLoad XMPP: Body: %s Subject: %s Type: %s' % (body, subject, t))
+        self.log_debug(u'pyLoad XMPP: Message from %s received.' % (str(stanza.get_from(),)))
+        self.log_debug(u'pyLoad XMPP: Body: %s Subject: %s Type: %s' % (body, subject, t))
 
         if t == "headline":
             # 'headline' messages should never be replied to
@@ -132,7 +132,7 @@ class XMPPInterface(IRCInterface, JabberClient):
         to_name = to_jid.as_utf8()
         from_name = from_jid.as_utf8()
 
-        names = self.getConfig("owners").split(";")
+        names = self.get_config("owners").split(";")
 
         if to_name in names or to_jid.node + "@" + to_jid.domain in names:
             messages = []
@@ -161,7 +161,7 @@ class XMPPInterface(IRCInterface, JabberClient):
 
                     messages.append(m)
             except Exception as e:
-                self.logError("pyLoad XMPP: " + repr(e))
+                self.log_error("pyLoad XMPP: " + repr(e))
 
             return messages
 
@@ -173,8 +173,8 @@ class XMPPInterface(IRCInterface, JabberClient):
 
     def announce(self, message):
         """ send message to all owners"""
-        for user in self.getConfig("owners").split(";"):
-            self.logDebug("pyLoad XMPP: Send message to %s" % user)
+        for user in self.get_config("owners").split(";"):
+            self.log_debug("pyLoad XMPP: Send message to %s" % user)
 
             to_jid = JID(user)
 

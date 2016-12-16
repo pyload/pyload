@@ -8,8 +8,8 @@ from past.utils import old_div
 import re
 from time import mktime, strptime
 from pyload.plugins.account import Account
-from pyload.plugins.internal.simplehoster import parseHtmlForm
-from pyload.utils import parseFileSize
+from pyload.plugins.internal.simplehoster import parse_html_form
+from pyload.utils import parse_size 
 
 
 class XFSPAccount(Account):
@@ -36,10 +36,10 @@ class XFSPAccount(Account):
             premium = True
             trafficleft = -1
             try:
-                self.logDebug(found.group(1))
+                self.log_debug(found.group(1))
                 validuntil = mktime(strptime(found.group(1), "%d %B %Y"))
             except Exception as e:
-                self.logError(e)
+                self.log_error(e)
         else:
             found = re.search(self.TRAFFIC_LEFT_PATTERN, html)
             if found:
@@ -47,14 +47,14 @@ class XFSPAccount(Account):
                 if "Unlimited" in trafficleft:
                     premium = True
                 else:
-                    trafficleft = old_div(parseFileSize(trafficleft), 1024)
+                    trafficleft = old_div(parse_size (trafficleft), 1024)
 
         return ({"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium})
 
     def login(self, user, data, req):
         html = req.load('%slogin.html' % self.MAIN_PAGE, decode=True)
 
-        action, inputs = parseHtmlForm('name="FL"', html)
+        action, inputs = parse_html_form('name="FL"', html)
         if not inputs:
             inputs = {"op": "login",
                       "redirect": self.MAIN_PAGE}
@@ -65,4 +65,4 @@ class XFSPAccount(Account):
         html = req.load(self.MAIN_PAGE, post=inputs, decode=True)
 
         if 'Incorrect Login or Password' in html or '>Error<' in html:
-            self.wrongPassword()
+            self.wrong_password()

@@ -41,7 +41,7 @@ class DownloadApi(ApiComponent):
         folder = folder.replace("http://", "").replace(":", "").replace("\\", "_").replace("..", "")
 
         self.pyload.log.info(_("Added package %(name)s as folder %(folder)s") % {"name": name, "folder": folder})
-        pid = self.pyload.files.add_package(name, folder, root, password, site, comment, paused, self.truePrimary())
+        pid = self.pyload.files.add_package(name, folder, root, password, site, comment, paused, self.true_primary())
 
         return pid
 
@@ -52,12 +52,12 @@ class DownloadApi(ApiComponent):
 
         :return: package id
         """
-        return self.addPackageChild(name, links, password, -1, paused)
+        return self.add_package_child(name, links, password, -1, paused)
 
     @require_perm(Permission.Add)
     def addPackageP(self, name, links, password, paused):
         """ Same as above with additional paused attribute. """
-        return self.addPackageChild(name, links, password, -1, paused)
+        return self.add_package_child(name, links, password, -1, paused)
 
     @require_perm(Permission.Add)
     def add_package_child(self, name, links, password, root, paused):
@@ -72,7 +72,7 @@ class DownloadApi(ApiComponent):
             folder = ""
 
         pid = self.create_package(name, folder, root, password, paused=paused)
-        self.addLinks(pid, links)
+        self.add_links(pid, links)
 
         return pid
 
@@ -85,7 +85,7 @@ class DownloadApi(ApiComponent):
         """
         hoster, crypter = self.pyload.pluginmanager.parse_urls(links)
 
-        self.pyload.files.add_links(hoster + crypter, pid, self.truePrimary())
+        self.pyload.files.add_links(hoster + crypter, pid, self.true_primary())
         if hoster:
             self.pyload.threadmanager.create_info_thread(hoster, pid)
 
@@ -103,7 +103,7 @@ class DownloadApi(ApiComponent):
         th.write(str(data))
         th.close()
 
-        return self.addPackage(th.name, [th.name])
+        return self.add_package(th.name, [th.name])
 
     @require_perm(Permission.Delete)
     def remove_files(self, fids):
@@ -158,7 +158,7 @@ class DownloadApi(ApiComponent):
     def stop_all_downloads(self):
         """Aborts all running downloads."""
         for pyfile in self.pyload.files.cached_files():
-            if self.hasAccess(pyfile):
+            if self.has_access(pyfile):
                 pyfile.abortDownload()
 
     @require_perm(Permission.Modify)
@@ -170,7 +170,7 @@ class DownloadApi(ApiComponent):
         """
         pyfiles = self.pyload.files.cached_files()
         for pyfile in pyfiles:
-            if pyfile.id in fids and self.hasAccess(pyfile):
+            if pyfile.fid in fids and self.has_access(pyfile):
                 pyfile.abortDownload()
 
 

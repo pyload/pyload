@@ -47,20 +47,20 @@ class LoaderFactory(object):
     def check_versions(self):
         """ Reduces every plugin loader to the globally newest version.
         Afterwards every plugin is unique across all available loader """
-        for plugin_type in self.loader[0].iterTypes():
+        for plugin_type in self.loader[0].iter_types():
             for loader in self.loader:
                 # iterate all plugins
-                for plugin, info in loader.getPlugins(plugin_type).items():
+                for plugin, info in loader.get_plugins(plugin_type).items():
                     # now iterate all other loaders
                     for l2 in self.loader:
                         if l2 is not loader:
-                            l2.removePlugin(plugin_type, plugin, info.version)
+                            l2.remove_plugin(plugin_type, plugin, info.version)
 
     def find_plugin(self, name):
         """ Finds a plugin type for given name """
         for loader in self.loader:
             for t in loader.TYPES:
-                if loader.hasPlugin(t, name):
+                if loader.has_plugin(t, name):
                     return t
 
         return None
@@ -68,8 +68,8 @@ class LoaderFactory(object):
     def get_plugin(self, plugin, name):
         """ retrieve a plugin from an available loader """
         for loader in self.loader:
-            if loader.hasPlugin(plugin, name):
-                return loader.getPlugin(plugin, name)
+            if loader.has_plugin(plugin, name):
+                return loader.get_plugin(plugin, name)
 
 
 class PluginLoader(object):
@@ -101,7 +101,7 @@ class PluginLoader(object):
         self.log = getLogger("log")
         self.plugins = {}
 
-        self.createIndex()
+        self.create_index()
 
     def log_debug(self, plugin, name, msg):
         self.log.debug("Plugin %s | %s: %s" % (plugin, name, msg))
@@ -145,7 +145,7 @@ class PluginLoader(object):
                 name = f[:-3]
                 if name[-1] == ".": name = name[:-4]
 
-                plugin = self.parsePlugin(join(pfolder, f), folder, name)
+                plugin = self.parse_plugin(join(pfolder, f), folder, name)
                 if plugin:
                     plugins[name] = plugin
 
@@ -158,18 +158,18 @@ class PluginLoader(object):
         data.close()
 
         attrs = BaseAttributes()
-        for m in self.BUILTIN.findall(content) + self.SINGLE.findall(content) + self.parseMultiLine(content):
+        for m in self.BUILTIN.findall(content) + self.SINGLE.findall(content) + self.parse_multi_line(content):
             #replace gettext function and eval result
             try:
                 attrs[m[0]] = literal_eval(m[-1].replace("_(", "("))
             except Exception as e:
-                self.logDebug(folder, name, "Error when parsing: %s" % m[-1])
+                self.log_debug(folder, name, "Error when parsing: %s" % m[-1])
                 self.log.debug(str(e))
 
             if not hasattr(Base, "__%s__" % m[0]):
                 #TODO remove type from all plugins, its not needed
                 if m[0] != "type" and m[0] != "author_name":
-                    self.logDebug(folder, name, "Unknown attribute '%s'" % m[0])
+                    self.log_debug(folder, name, "Unknown attribute '%s'" % m[0])
 
         return attrs
 
@@ -210,7 +210,7 @@ class PluginLoader(object):
         :arg home: dict with plugins, of which the found one will be matched against (according version)
         :returns PluginTuple"""
 
-        attrs = self.parseAttributes(filename, name, folder)
+        attrs = self.parse_attributes(filename, name, folder)
         if not attrs: return
 
         version = 0
@@ -218,16 +218,16 @@ class PluginLoader(object):
             try:
                 version = float(attrs["version"])
             except ValueError:
-                self.logDebug(folder, name, "Invalid version %s" % attrs["version"])
+                self.log_debug(folder, name, "Invalid version %s" % attrs["version"])
                 version = 9 #TODO remove when plugins are fixed, causing update loops
         else:
-            self.logDebug(folder, name, "No version attribute")
+            self.log_debug(folder, name, "No version attribute")
 
         if "pattern" in attrs and attrs["pattern"]:
             try:
                 plugin_re = re.compile(attrs["pattern"], re.I)
             except Exception:
-                self.logDebug(folder, name, "Invalid regexp pattern '%s'" % attrs["pattern"])
+                self.log_debug(folder, name, "Invalid regexp pattern '%s'" % attrs["pattern"])
                 plugin_re = self.NO_MATCH
         else:
             plugin_re = self.NO_MATCH
@@ -262,9 +262,9 @@ class PluginLoader(object):
                     config.insert(0, ("activated", "bool", "Activated", False))
 
             try:
-                self.config.addConfigSection(name, name, desc, expl, config)
+                self.config.add_config_section(name, name, desc, expl, config)
             except Exception:
-                self.logDebug(folder, name, "Invalid config  %s" % config)
+                self.log_debug(folder, name, "Invalid config  %s" % config)
 
         return plugin
 
@@ -336,4 +336,4 @@ class PluginLoader(object):
 
     def load_attributes(self, plugin, name):
         """ Same as `parseAttributes` for already indexed plugins  """
-        return self.parseAttributes(self.plugins[plugin][name].path, name, plugin)
+        return self.parse_attributes(self.plugins[plugin][name].path, name, plugin)

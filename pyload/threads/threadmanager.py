@@ -34,7 +34,7 @@ class ThreadManager(object):
         self.resultIDs = 0
 
         # saved online checks
-        self.infoResults = {}
+        self.info_results = {}
 
         # timeout for cache purge
         self.timestamp = 0
@@ -64,7 +64,7 @@ class ThreadManager(object):
         self.resultIDs += 1
 
         oc = OnlineCheck(rid, user)
-        self.infoResults[rid] = oc
+        self.info_results[rid] = oc
 
         InfoThread(self, user, data, oc=oc)
 
@@ -72,7 +72,7 @@ class ThreadManager(object):
 
     @lock
     def get_info_result(self, rid):
-        return self.infoResults.get(rid)
+        return self.info_results.get(rid)
 
     def set_info_results(self, oc, result):
         self.pyload.evm.dispatch_event("linkcheck:updated", oc.rid, result, owner=oc.owner)
@@ -97,6 +97,6 @@ class ThreadManager(object):
             self.infoCache.clear()
             self.log.debug("Cleared Result cache")
 
-        for rid in self.infoResults.keys():
-            if self.infoResults[rid].isStale():
-                del self.infoResults[rid]
+        for rid in self.info_results.keys():
+            if self.info_results[rid].is_stale():
+                del self.info_results[rid]

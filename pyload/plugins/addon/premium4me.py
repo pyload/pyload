@@ -24,10 +24,10 @@ class Premium4Me(MultiHoster):
     def core_ready(self):
         self.account = self.pyload.accountmanager.get_account_plugin("Premium4Me")
 
-        user = self.account.selectAccount()[0]
+        user = self.account.select_account()[0]
 
         if not user:
-            self.logError(_("Please add your premium.to account first and restart pyLoad"))
+            self.log_error(_("Please add your premium.to account first and restart pyLoad"))
             return
 
         return MultiHoster.coreReady(self)

@@ -32,37 +32,37 @@ class HotFolder(Hook):
 
     def periodical(self):
 
-        if not exists(join(self.getConfig("folder"), "finished")):
-            makedirs(join(self.getConfig("folder"), "finished"))
+        if not exists(join(self.get_config("folder"), "finished")):
+            makedirs(join(self.get_config("folder"), "finished"))
 
-        if self.getConfig("watch_file"):
+        if self.get_config("watch_file"):
 
-            if not exists(self.getConfig("file")):
-                f = open(self.getConfig("file"), "wb")
+            if not exists(self.get_config("file")):
+                f = open(self.get_config("file"), "wb")
                 f.close()
 
-            f = open(self.getConfig("file"), "rb")
+            f = open(self.get_config("file"), "rb")
             content = f.read().strip()
             f.close()
-            f = open(self.getConfig("file"), "wb")
+            f = open(self.get_config("file"), "wb")
             f.close()
             if content:
-                name = "%s_%s.txt" % (self.getConfig("file"), time.strftime("%H-%M-%S_%d%b%Y"))
+                name = "%s_%s.txt" % (self.get_config("file"), time.strftime("%H-%M-%S_%d%b%Y"))
 
-                f = open(join(self.getConfig("folder"), "finished", name), "wb")
+                f = open(join(self.get_config("folder"), "finished", name), "wb")
                 f.write(content)
                 f.close()
 
                 self.pyload.api.add_package(f.name, [f.name], 1)
 
-        for f in listdir(self.getConfig("folder")):
-            path = join(self.getConfig("folder"), f)
+        for f in listdir(self.get_config("folder")):
+            path = join(self.get_config("folder"), f)
 
             if not isfile(path) or f.endswith("~") or f.startswith("#") or f.startswith("."):
                 continue
 
-            newpath = join(self.getConfig("folder"), "finished", f if self.getConfig("keep") else "tmp_" + f)
+            newpath = join(self.get_config("folder"), "finished", f if self.get_config("keep") else "tmp_" + f)
             move(path, newpath)
 
-            self.logInfo(_("Added %s from HotFolder") % f)
+            self.log_info(_("Added %s from HotFolder") % f)
             self.pyload.api.add_package(f, [newpath], 1)

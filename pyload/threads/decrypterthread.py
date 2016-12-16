@@ -45,10 +45,10 @@ class DecrypterThread(BaseThread):
         if links:
             self.log.info(
                 _("Decrypted %(count)d links into package %(name)s") % {"count": len(links), "name": pack.name})
-            api.addLinks(self.pid, [l.url for l in links])
+            api.add_links(self.pid, [l.url for l in links])
 
         for p in packages:
-            api.addPackage(p.name, p.get_urls(), pack.password)
+            api.add_package(p.name, p.get_urls(), pack.password)
 
         self.pyload.files.set_download_status(self.fid, DS.Finished if not self.error else DS.Failed)
         self.manager.done(self)
@@ -85,12 +85,12 @@ class DecrypterThread(BaseThread):
                         sleep(1)
                         plugin_result = plugin._decrypt(urls)
 
-                    plugin.logDebug("Decrypted", plugin_result)
+                    plugin.log_debug("Decrypted", plugin_result)
 
                 except Abort:
-                    plugin.logInfo(_("Decrypting aborted"))
+                    plugin.log_info(_("Decrypting aborted"))
                 except Exception as e:
-                    plugin.logError(_("Decrypting failed"), e)
+                    plugin.log_error(_("Decrypting failed"), e)
 
                     self.error = True
                     # generate error linkStatus
@@ -100,7 +100,7 @@ class DecrypterThread(BaseThread):
                     # no debug for intentional errors
                     if self.pyload.debug and not isinstance(e, Fail):
                         self.pyload.print_exc()
-                        self.writeDebugReport(plugin.__name__, plugin=plugin)
+                        self.write_debug_report(plugin.__name__, plugin=plugin)
                 finally:
                     if plugin:
                         plugin.clean()

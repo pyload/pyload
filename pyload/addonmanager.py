@@ -43,10 +43,10 @@ class AddonManager(object):
         self.info_props = {}
 
         self.lock = RLock()
-        self.createIndex()
+        self.create_index()
 
         # manage addons on config change
-        self.listenTo("config:changed", self.manageAddon)
+        self.listen_to("config:changed", self.manage_addon)
 
     def iter_addons(self):
         """ Yields (name, meta_data) of all addons """
@@ -58,14 +58,14 @@ class AddonManager(object):
         for plugin in self.plugins.values():
             for inst in plugin.instances:
                 self.call(inst, event, *args)
-        self.dispatchEvent(eventName, *args)
+        self.dispatch_event(eventName, *args)
 
     def call(self, plugin, f, *args):
         try:
             func = getattr(plugin, f)
             return func(*args)
         except Exception as e:
-            plugin.logError(_("Error when executing %s" % f), e)
+            plugin.log_error(_("Error when executing %s" % f), e)
             self.pyload.print_exc()
 
     def invoke(self, plugin, func_name, args):
@@ -93,18 +93,18 @@ class AddonManager(object):
                 internal = attrs.get("internal", False)
 
                 if internal or self.pyload.config.get(pluginname, "activated"):
-                    pluginClass = self.pyload.pluginmanager.load_class("addon", pluginname)
+                    pluginclass = self.pyload.pluginmanager.load_class("addon", pluginname)
 
-                    if not pluginClass: continue
+                    if not pluginclass: continue
 
-                    plugin = pluginClass(self.pyload, self)
-                    self.plugins[pluginClass.__name__].instances.append(plugin)
+                    plugin = pluginclass(self.pyload, self)
+                    self.plugins[pluginclass.__name__].instances.append(plugin)
 
                     # hide internals from printing
-                    if not internal and plugin.isActivated():
-                        active.append(pluginClass.__name__)
+                    if not internal and plugin.is_activated():
+                        active.append(pluginclass.__name__)
                     else:
-                        self.log.debug("Loaded internal plugin: %s" % pluginClass.__name__)
+                        self.log.debug("Loaded internal plugin: %s" % pluginclass.__name__)
                 else:
                     deactive.append(pluginname)
 
@@ -123,9 +123,9 @@ class AddonManager(object):
             return
 
         if name == "activated" and value:
-            self.activateAddon(plugin)
+            self.activate_addon(plugin)
         elif name == "activated" and not value:
-            self.deactivateAddon(plugin)
+            self.deactivate_addon(plugin)
 
     @lock
     def activate_addon(self, plugin):
@@ -133,18 +133,18 @@ class AddonManager(object):
         if plugin in self.plugins:
             return
 
-        pluginClass = self.pyload.pluginmanager.load_class("addon", plugin)
+        pluginclass = self.pyload.pluginmanager.load_class("addon", plugin)
 
-        if not pluginClass: return
+        if not pluginclass: return
 
         self.log.debug("Plugin loaded: %s" % plugin)
 
-        plugin = pluginClass(self.pyload, self)
-        self.plugins[pluginClass.__name__].instances.append(plugin)
+        plugin = pluginclass(self.pyload, self)
+        self.plugins[pluginclass.__name__].instances.append(plugin)
 
         # active the addon in new thread
         start_new_thread(plugin.activate, tuple())
-        self.registerEvents()
+        self.register_events()
 
     @lock
     def deactivate_addon(self, plugin):
@@ -175,10 +175,10 @@ class AddonManager(object):
         self.log.info(_("Activating addons..."))
         for plugin in self.plugins.values():
             for inst in plugin.instances:
-                if inst.isActivated():
+                if inst.is_activated():
                     self.call(inst, "activate")
 
-        self.registerEvents()
+        self.register_events()
 
     def deactivate_addons(self):
         """  Called when core is shutting down """
@@ -188,16 +188,16 @@ class AddonManager(object):
                 self.call(inst, "deactivate")
 
     def download_preparing(self, pyfile):
-        self.callInHooks("downloadPreparing", "download:preparing", pyfile)
+        self.call_in_hooks("downloadPreparing", "download:preparing", pyfile)
 
     def download_finished(self, pyfile):
-        self.callInHooks("downloadFinished", "download:finished", pyfile)
+        self.call_in_hooks("downloadFinished", "download:finished", pyfile)
 
     def download_failed(self, pyfile):
-        self.callInHooks("downloadFailed", "download:failed", pyfile)
+        self.call_in_hooks("downloadFailed", "download:failed", pyfile)
 
     def package_finished(self, package):
-        self.callInHooks("packageFinished", "package:finished", package)
+        self.call_in_hooks("packageFinished", "package:finished", package)
 
     @lock
     def start_thread(self, function, *args, **kwargs):
@@ -205,7 +205,7 @@ class AddonManager(object):
 
     def active_plugins(self):
         """ returns all active plugins """
-        return [p for x in self.plugins.values() for p in x.instances if p.isActivated()]
+        return [p for x in self.plugins.values() for p in x.instances if p.is_activated()]
 
     def get_info(self, plugin):
         """ Retrieves all info data for a plugin """
@@ -230,7 +230,7 @@ class AddonManager(object):
         for name, plugin in self.plugins.items():
             for func, event in plugin.events:
                 for inst in plugin.instances:
-                    self.listenTo(event, getattr(inst, func))
+                    self.listen_to(event, getattr(inst, func))
 
     def add_addon_handler(self, plugin, func, label, desc, args, package, media):
         """ Registers addon service description """

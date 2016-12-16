@@ -22,7 +22,7 @@ class AccountManager(object):
         # PluginName mapped to list of account instances
         self.accounts = {}
 
-        self.loadAccounts()
+        self.load_accounts()
 
     def _create_account(self, info, password, options):
         plugin = info.plugin
@@ -87,24 +87,24 @@ class AccountManager(object):
         aid = self.pyload.db.create_account(plugin, loginname, password, uid)
         info = AccountInfo(aid, plugin, loginname, uid, activated=True)
         account = self._create_account(info, password, {})
-        account.scheduleRefresh()
-        self.saveAccounts()
+        account.schedule_refresh()
+        self.save_accounts()
 
-        self.pyload.eventmanager.dispatch_event("account:created", account.toInfoData())
+        self.pyload.eventmanager.dispatch_event("account:created", account.to_info_data())
         return account
 
     @lock
     def update_account(self, aid, plugin, loginname, password, user):
         """add or update account"""
-        account = self.getAccount(aid, plugin, user)
+        account = self.get_account(aid, plugin, user)
         if not account:
             return
 
         if account.setLogin(loginname, password):
-            self.saveAccounts()
-            account.scheduleRefresh(force=True)
+            self.save_accounts()
+            account.schedule_refresh(force=True)
 
-        self.pyload.eventmanager.dispatch_event("account:updated", account.toInfoData())
+        self.pyload.eventmanager.dispatch_event("account:updated", account.to_info_data())
         return account
 
     @lock
@@ -125,7 +125,7 @@ class AccountManager(object):
         if plugin in self.accounts:
             uid = user.true_primary if user else None
             # TODO: temporary allowed None user
-            accs = [x for x in self.accounts[plugin] if x.isUsable() and (x.shared or uid is None or x.owner == uid)]
+            accs = [x for x in self.accounts[plugin] if x.is_usable() and (x.shared or uid is None or x.owner == uid)]
             if accs: return choice(accs)
 
     @lock

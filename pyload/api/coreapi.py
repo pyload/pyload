@@ -50,11 +50,11 @@ class CoreApi(ApiComponent):
         serverStatus = StatusInfo(0,
                                     total[0], queue[0],
                                     total[1], queue[1],
-                                    self.isInteractionWaiting(Interaction.All),
+                                    self.is_interaction_waiting(Interaction.All),
                                     not self.pyload.dlm.paused and self.is_time_download(),
                                     self.pyload.dlm.paused,
                                     self.pyload.config['reconnect']['activated'] and self.is_time_reconnect(),
-                                    self.getQuota())
+                                    self.get_quota())
 
         for pyfile in self.pyload.dlm.active_downloads(self.primary_uid):
             serverStatus.speed += pyfile.getSpeed() #bytes/s

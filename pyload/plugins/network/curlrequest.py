@@ -65,11 +65,11 @@ class CurlRequest(Request):
         return self
 
     def init_context(self):
-        self.initHandle()
+        self.init_handle()
 
         if self.config:
             self.setInterface(self.config)
-            self.initOptions(self.config)
+            self.init_options(self.config)
 
     def init_handle(self):
         """ sets common options to curl handle """
@@ -191,7 +191,7 @@ class CurlRequest(Request):
     def load(self, url, get={}, post={}, referer=True, cookies=True, just_header=False, multipart=False, decode=False):
         """ load and returns a given page """
 
-        self.setRequestContext(url, get, post, referer, cookies, multipart)
+        self.set_request_context(url, get, post, referer, cookies, multipart)
 
         # TODO: use http/rfc message instead
         self.header = ""
@@ -221,20 +221,20 @@ class CurlRequest(Request):
 
         else:
             self.c.perform()
-            rep = self.getResponse()
+            rep = self.get_response()
 
         self.c.setopt(pycurl.POSTFIELDS, "")
         self.lastURL = myquote(url)
         self.lastEffectiveURL = self.c.getinfo(pycurl.EFFECTIVE_URL)
         if self.lastEffectiveURL:
             self.lastURL = self.lastEffectiveURL
-        self.code = self.verifyHeader()
+        self.code = self.verify_header()
 
         if cookies:
-            self.parseCookies()
+            self.parse_cookies()
 
         if decode:
-            rep = self.decodeResponse(rep)
+            rep = self.decode_response(rep)
 
         return rep
 
@@ -298,7 +298,7 @@ class CurlRequest(Request):
     def write(self, buf):
         """ writes response """
         if self.rep.tell() > 1000000 or self.doAbort:
-            rep = self.getResponse()
+            rep = self.get_response()
             if self.doAbort: raise Abort
             f = open("response.dump", "wb")
             f.write(rep)

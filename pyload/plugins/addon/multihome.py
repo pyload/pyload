@@ -22,10 +22,10 @@ class MultiHome(Hook):
     def setup(self):
         self.register = {}
         self.interfaces = []
-        self.parseInterfaces(self.getConfig("interfaces").split(";"))
+        self.parse_interfaces(self.get_config("interfaces").split(";"))
         if not self.interfaces:
-            self.parseInterfaces([self.config["download"]["interface"]])
-            self.setConfig("interfaces", self.toConfig())
+            self.parse_interfaces([self.config["download"]["interface"]])
+            self.set_config("interfaces", self.to_config())
 
     def to_config(self):
         return ";".join([i.adress for i in self.interfaces])
@@ -37,18 +37,18 @@ class MultiHome(Hook):
             self.interfaces.append(Interface(interface))
 
     def core_ready(self):
-        requestFactory = self.pyload.requestFactory
-        oldGetRequest = requestFactory.getRequest
+        request_factory = self.pyload.request_factory
+        oldGetRequest = request_factory.get_request
 
         def get_request(pluginName, account=None):
-            iface = self.bestInterface(pluginName, account)
+            iface = self.best_interface(pluginName, account)
             if iface:
                 iface.useFor(pluginName, account)
-                requestFactory.iface = lambda: iface.adress
-                self.logDebug("Multihome: using address: " + iface.adress)
+                request_factory.iface = lambda: iface.adress
+                self.log_debug("Multihome: using address: " + iface.adress)
             return oldGetRequest(pluginName, account)
 
-        requestFactory.getRequest = getRequest
+        request_factory.get_request = get_request
 
     def best_interface(self, pluginName, account):
         best = None

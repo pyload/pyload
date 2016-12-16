@@ -39,13 +39,13 @@ class Xdcc(Hoster):
 
     def process(self, pyfile):
         # change request type
-        self.req = pyfile.manager.pyload.requestFactory.getRequest(self.__name__, type="XDCC")
+        self.req = pyfile.manager.pyload.request_factory.get_request(self.__name__, type="XDCC")
 
         self.pyfile = pyfile
         for _ in range(0, 3):
             try:
-                nmn = self.doDownload(pyfile.url)
-                self.logDebug("%s: Download of %s finished." % (self.__name__, nmn))
+                nmn = self.do_download(pyfile.url)
+                self.log_debug("%s: Download of %s finished." % (self.__name__, nmn))
                 return
             except socket.error as e:
                 if hasattr(e, "errno"):
@@ -54,8 +54,8 @@ class Xdcc(Hoster):
                     errno = e.args[0]
 
                 if errno in (10054,):
-                    self.logDebug("XDCC: Server blocked our ip, retry in 5 min")
-                    self.setWait(300)
+                    self.log_debug("XDCC: Server blocked our ip, retry in 5 min")
+                    self.set_wait(300)
                     self.wait()
                     continue
 
@@ -64,7 +64,7 @@ class Xdcc(Hoster):
         self.fail("Server blocked our ip, retry again later manually")
 
     def do_download(self, url):
-        self.pyfile.setStatus("waiting")  # real link
+        self.pyfile.set_status("waiting")  # real link
 
         download_folder = self.config['general']['download_folder']
         location = join(download_folder, self.pyfile.package().folder.decode(sys.getfilesystemencoding()))
@@ -76,9 +76,9 @@ class Xdcc(Hoster):
         chan = m.group(2)
         bot = m.group(3)
         pack = m.group(4)
-        nick = self.getConfig('nick')
-        ident = self.getConfig('ident')
-        real = self.getConfig('realname')
+        nick = self.get_config('nick')
+        ident = self.get_config('ident')
+        real = self.get_config('realname')
 
         temp = server.split(':')
         ln = len(temp)
@@ -159,10 +159,10 @@ class Xdcc(Hoster):
 
                 if nick == msg["target"][0:len(nick)] and "PRIVMSG" == msg["action"]:
                     if msg["text"] == "\x01VERSION\x01":
-                        self.logDebug("XDCC: Sending CTCP VERSION.")
+                        self.log_debug("XDCC: Sending CTCP VERSION.")
                         sock.send("NOTICE %s :%s\r\n" % (msg['origin'], "pyLoad! IRC Interface"))
                     elif msg["text"] == "\x01TIME\x01":
-                        self.logDebug("Sending CTCP TIME.")
+                        self.log_debug("Sending CTCP TIME.")
                         sock.send("NOTICE %s :%d\r\n" % (msg['origin'], time.time()))
                     elif msg["text"] == "\x01LAG\x01":
                         pass  # don't know how to answer
@@ -195,12 +195,12 @@ class Xdcc(Hoster):
 
         self.pyfile.name = packname
         filename = save_join(location, packname)
-        self.logInfo("XDCC: Downloading %s from %s:%d" % (packname, ip, port))
+        self.log_info("XDCC: Downloading %s from %s:%d" % (packname, ip, port))
 
-        self.pyfile.setStatus("downloading")
+        self.pyfile.set_status("downloading")
         newname = self.req.download(ip, port, filename, sock, self.pyfile.setProgress)
         if newname and newname != filename:
-            self.logInfo("%(name)s saved as %(newname)s" % {"name": self.pyfile.name, "newname": newname})
+            self.log_info("%(name)s saved as %(newname)s" % {"name": self.pyfile.name, "newname": newname})
             filename = newname
 
         # kill IRC socket

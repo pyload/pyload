@@ -21,14 +21,14 @@ class UnSkipOnFail(Hook):
         pyfile_name = basename(pyfile.name)
         pid = pyfile.package().id
         msg = 'look for skipped duplicates for %s (pid:%s)...'
-        self.logInfo(msg % (pyfile_name, pid))
-        dups = self.findDuplicates(pyfile)
+        self.log_info(msg % (pyfile_name, pid))
+        dups = self.find_duplicates(pyfile)
         for link in dups:
             # check if link is "skipped"(=4)
             if link.status == 4:
                 lpid = link.packageID
-                self.logInfo('restart "%s" (pid:%s)...' % (pyfile_name, lpid))
-                self.setLinkStatus(link, "queued")
+                self.log_info('restart "%s" (pid:%s)...' % (pyfile_name, lpid))
+                self.set_link_status(link, "queued")
 
     def find_duplicates(self, pyfile):
         """ Search all packages for duplicate links to "pyfile".
@@ -55,7 +55,7 @@ class UnSkipOnFail(Hook):
                         # check if link name collides with pdata's name
                         if link_name == pyfile_name:
                             # at last check if it is not pyfile itself
-                            if link.fid != pyfile.id:
+                            if link.fid != pyfile.fid:
                                 dups.append(link)
         return dups
 

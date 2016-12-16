@@ -23,7 +23,7 @@ class Ev0InFetcher(Hook):
     __author_mail__ = "mkaay@mkaay.de"
 
     def setup(self):
-        self.interval = self.getConfig("interval") * 60
+        self.interval = self.get_config("interval") * 60
 
     def filter_links(self, links):
         results = self.pyload.pluginmanager.parse_urls(links)
@@ -34,7 +34,7 @@ class Ev0InFetcher(Hook):
                 sortedLinks[hoster] = []
             sortedLinks[hoster].append(url)
 
-        for h in self.getConfig("hoster").split(","):
+        for h in self.get_config("hoster").split(","):
             try:
                 return sortedLinks[h.strip()]
             except Exception:
@@ -48,29 +48,29 @@ class Ev0InFetcher(Hook):
             filename = filename.lower()
             return filename
 
-        shows = [s.strip() for s in self.getConfig("shows").split(",")]
+        shows = [s.strip() for s in self.get_config("shows").split(",")]
 
-        feed = feedparser.parse("http://feeds.feedburner.com/ev0in/%s?format=xml" % self.getConfig("quality"))
+        feed = feedparser.parse("http://feeds.feedburner.com/ev0in/%s?format=xml" % self.get_config("quality"))
 
         showStorage = {}
         for show in shows:
-            showStorage[show] = int(self.getStorage("show_%s_lastfound" % show, 0))
+            showStorage[show] = int(self.get_storage("show_%s_lastfound" % show, 0))
 
         found = False
         for item in feed['items']:
             for show, lastfound in showStorage.items():
                 if show.lower() in normalizefiletitle(item['title']) and lastfound < int(mktime(item.date_parsed)):
-                    links = self.filterLinks(item['description'].split("<br />"))
+                    links = self.filter_links(item['description'].split("<br />"))
                     packagename = item['title'].encode("utf-8")
-                    self.logInfo("Ev0InFetcher: new episode '%s' (matched '%s')" % (packagename, show))
-                    self.pyload.api.add_package(packagename, links, 1 if self.getConfig("queue") else 0)
-                    self.setStorage("show_%s_lastfound" % show, int(mktime(item.date_parsed)))
+                    self.log_info("Ev0InFetcher: new episode '%s' (matched '%s')" % (packagename, show))
+                    self.pyload.api.add_package(packagename, links, 1 if self.get_config("queue") else 0)
+                    self.set_storage("show_%s_lastfound" % show, int(mktime(item.date_parsed)))
                     found = True
         if not found:
-            #self.logDebug("Ev0InFetcher: no new episodes found")
+            #self.log_debug("Ev0InFetcher: no new episodes found")
             pass
 
-        for show, lastfound in self.getStorage().items():
+        for show, lastfound in self.get_storage().items():
             if int(lastfound) > 0 and int(lastfound) + (3600 * 24 * 30) < int(time()):
-                self.delStorage("show_%s_lastfound" % show)
-                self.logDebug("Ev0InFetcher: cleaned '%s' record" % show)
+                self.del_storage("show_%s_lastfound" % show)
+                self.log_debug("Ev0InFetcher: cleaned '%s' record" % show)

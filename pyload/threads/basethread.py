@@ -33,7 +33,7 @@ class BaseThread(Thread):
 
     def finished(self):
         """ Remove thread from list  """
-        self.manager.removeThread(self)
+        self.manager.remove_thread(self)
 
     def get_progress(self):
         """ retrieves progress information about the current running task
@@ -47,10 +47,10 @@ class BaseThread(Thread):
 
         dump_name = "debug_%s_%s.zip" % (name, strftime("%d-%m-%Y_%H-%M-%S"))
         if pyfile:
-            dump = self.getPluginDump(pyfile.plugin) + "\n"
-            dump += self.getFileDump(pyfile)
+            dump = self.get_plugin_dump(pyfile.plugin) + "\n"
+            dump += self.get_file_dump(pyfile)
         else:
-            dump = self.getPluginDump(plugin)
+            dump = self.get_plugin_dump(plugin)
 
         try:
             import zipfile
@@ -70,7 +70,7 @@ class BaseThread(Thread):
 
             info = zipfile.ZipInfo(save_join(name, "system_Report.txt"), gmtime())
             info.external_attr = 0o644 << 16
-            zip.writestr(info, self.getSystemDump())
+            zip.writestr(info, self.get_system_dump())
 
             zip.close()
 
@@ -90,7 +90,7 @@ class BaseThread(Thread):
 
     def get_plugin_dump(self, plugin):
         dump = "pyLoad %s Debug Report of %s %s \n\nTRACEBACK:\n %s \n\nFRAMESTACK:\n" % (
-            self.manager.pyload.api.getServerVersion(), plugin.__name__, plugin.__version__, format_exc())
+            self.manager.pyload.api.get_server_version(), plugin.__name__, plugin.__version__, format_exc())
 
         tb = sys.exc_info()[2]
         stack = []

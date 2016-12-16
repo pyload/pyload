@@ -57,7 +57,7 @@ class Checksum(Hook):
 
     def core_ready(self):
         if not self.config['general']['checksum']:
-            self.logInfo("Checksum validation is disabled in general configuration")
+            self.log_info("Checksum validation is disabled in general configuration")
 
     def setup(self):
         self.algorithms = sorted(
@@ -79,25 +79,25 @@ class Checksum(Hook):
         else:
             return
 
-        self.logDebug(data)
+        self.log_debug(data)
 
         if not pyfile.plugin.lastDownload:
-            self.checkFailed(pyfile, None, "No file downloaded")
+            self.check_failed(pyfile, None, "No file downloaded")
 
         local_file = fs_encode(pyfile.plugin.lastDownload)
         #download_folder = self.config['general']['download_folder']
         #local_file = fs_encode(save_join(download_folder, pyfile.package().folder, pyfile.name))
 
         if not isfile(local_file):
-            self.checkFailed(pyfile, None, "File does not exist")
+            self.check_failed(pyfile, None, "File does not exist")
 
             # validate file size
         if "size" in data:
             api_size = int(data['size'])
             file_size = getsize(local_file)
             if api_size != file_size:
-                self.logWarning("File %s has incorrect size: %d B (%d expected)" % (pyfile.name, file_size, api_size))
-                self.checkFailed(pyfile, local_file, "Incorrect file size")
+                self.log_warning("File %s has incorrect size: %d B (%d expected)" % (pyfile.name, file_size, api_size))
+                self.check_failed(pyfile, local_file, "Incorrect file size")
             del data['size']
 
         # validate checksum
@@ -110,27 +110,27 @@ class Checksum(Hook):
                     checksum = computeChecksum(local_file, key.replace("-", "").lower())
                     if checksum:
                         if checksum == data[key].lower():
-                            self.logInfo('File integrity of "%s" verified by %s checksum (%s).' %
+                            self.log_info('File integrity of "%s" verified by %s checksum (%s).' %
                                         (pyfile.name, key.upper(), checksum))
                             break
                         else:
-                            self.logWarning("%s checksum for file %s does not match (%s != %s)" %
+                            self.log_warning("%s checksum for file %s does not match (%s != %s)" %
                                            (key.upper(), pyfile.name, checksum, data[key]))
-                            self.checkFailed(pyfile, local_file, "Checksums do not match")
+                            self.check_failed(pyfile, local_file, "Checksums do not match")
                     else:
-                        self.logWarning("Unsupported hashing algorithm: %s" % key.upper())
+                        self.log_warning("Unsupported hashing algorithm: %s" % key.upper())
             else:
-                self.logWarning("Unable to validate checksum for file %s" % pyfile.name)
+                self.log_warning("Unable to validate checksum for file %s" % pyfile.name)
 
     def check_failed(self, pyfile, local_file, msg):
-        check_action = self.getConfig("check_action")
+        check_action = self.get_config("check_action")
         if check_action == "retry":
-            max_tries = self.getConfig("max_tries")
-            retry_action = self.getConfig("retry_action")
+            max_tries = self.get_config("max_tries")
+            retry_action = self.get_config("retry_action")
             if pyfile.plugin.retries < max_tries:
                 if local_file:
                     remove(local_file)
-                pyfile.plugin.retry(max_tries=max_tries, wait_time=self.getConfig("wait_time"), reason=msg)
+                pyfile.plugin.retry(max_tries=max_tries, wait_time=self.get_config("wait_time"), reason=msg)
             elif retry_action == "nothing":
                 return
         elif check_action == "nothing":
@@ -142,14 +142,14 @@ class Checksum(Hook):
 
         for link in pypack.getChildren().values():
             file_type = splitext(link["name"])[1][1:].lower()
-            #self.logDebug(link, file_type)
+            #self.log_debug(link, file_type)
 
             if file_type not in self.formats:
                 continue
 
             hash_file = fs_encode(save_join(download_folder, link["name"]))
             if not isfile(hash_file):
-                self.logWarning("File not found: %s" % link["name"])
+                self.log_warning("File not found: %s" % link["name"])
                 continue
 
             with open(hash_file) as f:
@@ -157,14 +157,14 @@ class Checksum(Hook):
 
             for m in re.finditer(self.regexps.get(file_type, self.regexps['default']), text):
                 data = m.groupdict()
-                self.logDebug(link["name"], data)
+                self.log_debug(link["name"], data)
 
                 local_file = fs_encode(save_join(download_folder, data["name"]))
                 algorithm = self.methods.get(file_type, file_type)
                 checksum = computeChecksum(local_file, algorithm)
                 if checksum == data["hash"]:
-                    self.logInfo('File integrity of "%s" verified by %s checksum (%s).' %
+                    self.log_info('File integrity of "%s" verified by %s checksum (%s).' %
                                 (data["name"], algorithm, checksum))
                 else:
-                    self.logWarning("%s checksum for file %s does not match (%s != %s)" %
+                    self.log_warning("%s checksum for file %s does not match (%s != %s)" %
                                    (algorithm, data["name"], checksum, data["hash"]))

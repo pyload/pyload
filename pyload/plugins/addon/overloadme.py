@@ -20,10 +20,10 @@ class OverLoadMe(MultiHoster):
     __author_mail__ = "marley@over-load.me"
 
     def get_hoster(self):
-        https = "https" if self.getConfig("https") else "http"
+        https = "https" if self.get_config("https") else "http"
         page = get_url(https + "://api.over-load.me/hoster.php",
                       get={"auth": "0001-cb1f24dadb3aa487bda5afd3b76298935329be7700cd7-5329be77-00cf-1ca0135f"}
                       ).replace("\"", "").strip()
-        self.logDebug("Hosterlist: %s" % page)
+        self.log_debug("Hosterlist: %s" % page)
 
         return [x.strip() for x in page.split(",") if x.strip()]

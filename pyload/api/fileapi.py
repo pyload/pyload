@@ -20,12 +20,12 @@ class FileApi(ApiComponent):
     @require_perm(Permission.All)
     def get_all_files(self):
         """ same as `getFileTree` for toplevel root and full tree"""
-        return self.getFileTree(-1, True)
+        return self.get_file_tree(-1, True)
 
     @require_perm(Permission.All)
     def get_filtered_files(self, state):
         """ same as `getFilteredFileTree` for toplevel root and full tree"""
-        return self.getFilteredFileTree(-1, state, True)
+        return self.get_filtered_file_tree(-1, state, True)
 
     @require_perm(Permission.All)
     def get_file_tree(self, pid, full):
@@ -52,7 +52,7 @@ class FileApi(ApiComponent):
     @require_perm(Permission.All)
     def get_package_content(self, pid):
         """  Only retrieve content of a specific package. see `getFileTree`"""
-        return self.getFileTree(pid, False)
+        return self.get_file_tree(pid, False)
 
     @require_perm(Permission.All)
     def get_package_info(self, pid):
@@ -63,7 +63,7 @@ class FileApi(ApiComponent):
         :return: :class:`PackageInfo`
         """
         info = self.pyload.files.get_package_info(pid)
-        if not self.checkResult(info):
+        if not self.check_result(info):
             raise PackageDoesNotExist(pid)
         return info
 
@@ -77,15 +77,15 @@ class FileApi(ApiComponent):
 
         """
         info = self.pyload.files.get_file_info(fid)
-        if not self.checkResult(info):
+        if not self.check_result(info):
             raise FileDoesNotExist(fid)
         return info
 
     def get_file_path(self, fid):
         """ Internal method to get the filepath"""
-        info = self.getFileInfo(fid)
+        info = self.get_file_info(fid)
         pack = self.pyload.files.get_package(info.package)
-        return pack.getPath(), info.name
+        return pack.get_path(), info.name
 
     @require_perm(Permission.All)
     def find_files(self, pattern):
@@ -110,7 +110,7 @@ class FileApi(ApiComponent):
         """
         pid = pack.pid
         p = self.pyload.files.get_package(pid)
-        if not self.checkResult(p):
+        if not self.check_result(p):
             raise PackageDoesNotExist(pid)
         p.updateFromInfoData(pack)
         p.sync()
@@ -125,7 +125,7 @@ class FileApi(ApiComponent):
         :return the new package status
         """
         p = self.pyload.files.get_package(pid)
-        if not self.checkResult(p):
+        if not self.check_result(p):
             raise PackageDoesNotExist(pid)
 
         if p.status == PS.Ok and paused:

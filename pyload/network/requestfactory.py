@@ -13,13 +13,13 @@ class RequestFactory(object):
     def __init__(self, core):
         self.pyload = core
         self.bucket = Bucket()
-        self.updateBucket()
+        self.update_bucket()
 
-        self.pyload.evm.listen_to("config:changed", self.updateConfig)
+        self.pyload.evm.listen_to("config:changed", self.update_config)
 
     def get_url(self, *args, **kwargs):
         """ see HTTPRequest for argument list """
-        h = DefaultRequest(self.getConfig())
+        h = DefaultRequest(self.get_config())
         try:
             rep = h.load(*args, **kwargs)
         finally:
@@ -33,11 +33,11 @@ class RequestFactory(object):
         """ Creates a request with new or given context """
         # also accepts the context class directly
         if isinstance(context, klass.CONTEXT_CLASS):
-            return klass(self.getConfig(), context)
+            return klass(self.get_config(), context)
         elif context:
             return klass(*context)
         else:
-            return klass(self.getConfig())
+            return klass(self.get_config())
 
     def get_download_request(self, request=None, klass=DefaultDownload):
         """ Instantiates a instance for downloading """
@@ -78,12 +78,12 @@ class RequestFactory(object):
     def update_config(self, section, option, value):
         """ Updates the bucket when a config value changed """
         if option in ("limit_speed", "max_speed"):
-            self.updateBucket()
+            self.update_bucket()
 
     def get_config(self):
         """returns options needed for pycurl"""
-        return {"interface": self.getInterface(),
-                "proxies": self.getProxies(),
+        return {"interface": self.get_interface(),
+                "proxies": self.get_proxies(),
                 "ipv6": self.pyload.config["download"]["ipv6"]}
 
     def update_bucket(self):
@@ -91,7 +91,7 @@ class RequestFactory(object):
         if not self.pyload.config["download"]["limit_speed"]:
             self.bucket.set_rate(-1)
         else:
-            self.bucket.setRate(self.pyload.config["download"]["max_speed"] * 1024)
+            self.bucket.set_rate(self.pyload.config["download"]["max_speed"] * 1024)
 
 # needs pyreq in global namespace
 def get_url(*args, **kwargs):
@@ -99,4 +99,4 @@ def get_url(*args, **kwargs):
 
 
 def get_request(*args, **kwargs):
-    return pyreq.getRequest(*args, **kwargs)
+    return pyreq.get_request(*args, **kwargs)

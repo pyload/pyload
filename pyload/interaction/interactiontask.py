@@ -63,7 +63,7 @@ class InteractionTask(BaseInteractionTask):
         self.shared = True
 
     def set_result(self, value):
-        self.result = self.convertResult(value)
+        self.result = self.convert_result(value)
 
     def set_waiting(self, sec, lock=False):
         """ sets waiting in seconds from now, < 0 can be used as infinitive  """
@@ -76,7 +76,7 @@ class InteractionTask(BaseInteractionTask):
             if lock: self.locked = True
 
     def is_waiting(self):
-        if self.result or self.error or self.timedOut():
+        if self.result or self.error or self.timed_out():
             return False
 
         return True

@@ -22,7 +22,7 @@ class ClickAndLoad(Addon):
 
     def core_ready(self):
         self.port = int(self.config['webui']['port'])
-        if self.getConfig("extern"):
+        if self.get_config("extern"):
             ip = "0.0.0.0"
         else:
             ip = "127.0.0.1"
@@ -55,7 +55,7 @@ def server(self, *settings):
             errno = e.args[0]
 
         if errno == 98:
-            self.logWarning(_("Click'N'Load: Port 9666 already in use"))
+            self.log_warning(_("Click'N'Load: Port 9666 already in use"))
             return
         _thread.start_new_thread(server, (self,) + settings)
     except Exception:

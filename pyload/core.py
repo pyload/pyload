@@ -50,7 +50,7 @@ from .scheduler import Scheduler
 from .remote.remotemanager import RemoteManager
 from .utils.jsengine import JsEngine
 
-from .utils import formatSize, get_console_encoding
+from .utils import format_size, get_console_encoding
 from .utils.fs import free_space, exists, makedirs, join, chmod
 
 from codecs import getwriter
@@ -131,18 +131,18 @@ class Core(object):
                         s.conf_path(True)
                         exit()
                     elif option in ("-q", "--quit"):
-                        self.quitInstance()
+                        self.quit_instance()
                         exit()
                     elif option == "--status":
-                        pid = self.isAlreadyRunning()
-                        if self.isAlreadyRunning():
+                        pid = self.is_already_running()
+                        if self.is_already_running():
                             print(pid)
                             exit(0)
                         else:
                             print("false")
                             exit(1)
                     elif option == "--clean":
-                        self.cleanTree()
+                        self.clean_tree()
                         exit()
                     elif option == "--no-remote":
                         self.remote = False
@@ -186,7 +186,7 @@ class Core(object):
         _exit(1)
 
     def write_pid_file(self):
-        self.deletePidFile()
+        self.delete_pid_file()
         pid = os.getpid()
         f = open(self.pidfile, "wb")
         f.write(str(pid))
@@ -194,7 +194,7 @@ class Core(object):
         chmod(self.pidfile, 0o660)
 
     def delete_pid_file(self):
-        if self.checkPidFile():
+        if self.check_pid_file():
             self.log.debug("Deleting old pidfile %s" % self.pidfile)
             os.remove(self.pidfile)
 
@@ -211,7 +211,7 @@ class Core(object):
         return 0
 
     def is_already_running(self):
-        pid = self.checkPidFile()
+        pid = self.check_pid_file()
         if not pid or os.name == "nt": return False
         try:
             os.kill(pid, 0)  # 0 - default signal (does nothing)
@@ -225,7 +225,7 @@ class Core(object):
             print("Not supported on windows.")
             return
 
-        pid = self.isAlreadyRunning()
+        pid = self.is_already_running()
         if not pid:
             print("No pyLoad running.")
             return
@@ -301,11 +301,11 @@ class Core(object):
         translation.install(True)
 
         # load again so translations are propagated
-        self.config.loadDefault()
+        self.config.load_default()
 
         self.debug = self.doDebug or self.config['general']['debug_mode']
 
-        pid = self.isAlreadyRunning()
+        pid = self.is_already_running()
         # don't exit when in test runner
         if pid and not tests:
             print(_("pyLoad already running with pid %s") % pid)
@@ -347,7 +347,7 @@ class Core(object):
         self.log.info(_("Using home directory: %s") % getcwd())
 
         if not tests:
-            self.writePidFile()
+            self.write_pid_file()
 
         self.captcha = True # checks seems to fail, although tesseract is available
 
@@ -359,10 +359,10 @@ class Core(object):
 
         if self.deleteLinks:
             self.log.info(_("All links removed"))
-            self.db.purgeLinks()
+            self.db.purge_links()
 
-        self.requestFactory = RequestFactory(self)
-        builtins.pyreq = self.requestFactory
+        self.request_factory = RequestFactory(self)
+        builtins.pyreq = self.request_factory
 
         # deferred import, could improve start-up time
         from .Api import Api
@@ -371,7 +371,7 @@ class Core(object):
         from .threads.threadmanager import ThreadManager
         from .downloadmanager import DownloadManager
 
-        Api.initComponents()
+        Api.init_components()
         self.api = Api(self)
 
         self.scheduler = Scheduler(self)
@@ -389,10 +389,10 @@ class Core(object):
         # enough initialization for test cases
         if tests: return
 
-        self.log.info(_("Download time: %s") % self.api.isTimeDownload())
+        self.log.info(_("Download time: %s") % self.api.is_time_download())
 
         if rpc:
-            self.remotemanager.startBackends()
+            self.remotemanager.start_backends()
 
         if web:
             self.init_webserver()
@@ -404,7 +404,7 @@ class Core(object):
 
         spaceLeft = free_space(dl_folder)
 
-        self.log.info(_("Free space: %s") % formatSize(spaceLeft))
+        self.log.info(_("Free space: %s") % format_size(spaceLeft))
 
         self.config.save() #save so config files gets filled
 
@@ -413,37 +413,37 @@ class Core(object):
         if exists(link_file):
             f = open(link_file, "rb")
             if f.read().strip():
-                self.api.addPackage("links.txt", [link_file], 1)
+                self.api.add_package("links.txt", [link_file], 1)
             f.close()
 
         link_file = "links.txt"
         if exists(link_file):
             f = open(link_file, "rb")
             if f.read().strip():
-                self.api.addPackage("links.txt", [link_file], 1)
+                self.api.add_package("links.txt", [link_file], 1)
             f.close()
 
-        #self.scheduler.addJob(0, self.accountmanager.getAccountInfos)
+        #self.scheduler.add_job(0, self.accountmanager.getAccountInfos)
         self.log.info(_("Activating Accounts..."))
-        self.accountmanager.refreshAllAccounts()
+        self.accountmanager.refresh_all_accounts()
 
         #restart failed
         if self.config["download"]["restart_failed"]:
             self.log.info(_("Restarting failed downloads..."))
-            self.api.restartFailed()
+            self.api.restart_failed()
 
         # start downloads
         self.dlm.paused = False
         self.running = True
 
-        self.addonmanager.activateAddons()
+        self.addonmanager.activate_addons()
 
         self.log.info(_("pyLoad is up and running"))
-        self.eventmanager.dispatchEvent("pyload:ready")
+        self.eventmanager.dispatch_event("pyload:ready")
 
         #test api
-        #        from pyload.common.APIExerciser import startApiExerciser
-        #        startApiExerciser(self, 3)
+        #        from pyload.common.APIExerciser import start_api_exerciser
+        #        start_api_exerciser(self, 3)
 
         #some memory stats
         #        from guppy import hpy
@@ -466,7 +466,7 @@ class Core(object):
             if self.do_kill:
                 self.shutdown()
                 self.log.info(_("pyLoad quits"))
-                self.removeLogger()
+                self.remove_logger()
                 _exit(0)
                 # TODO check exits codes, clean exit is still blocked
             try:
@@ -580,26 +580,26 @@ class Core(object):
 
     def shutdown(self):
         self.log.info(_("shutting down..."))
-        self.eventmanager.dispatchEvent("coreShutdown")
+        self.eventmanager.dispatch_event("coreShutdown")
         try:
             if hasattr(self, "webserver"):
                 pass # TODO: quit webserver?
                 #                self.webserver.quit()
 
             self.dlm.shutdown()
-            self.api.stopAllDownloads()
-            self.addonmanager.deactivateAddons()
+            self.api.stop_all_downloads()
+            self.addonmanager.deactivate_addons()
 
         except:
             self.print_exc()
             self.log.info(_("error while shutting down"))
 
         finally:
-            self.files.syncSave()
+            self.files.sync_save()
             self.db.shutdown()
             self.shuttedDown = True
 
-        self.deletePidFile()
+        self.delete_pid_file()
 
     def shell(self):
         """ stop and open an ipython shell inplace"""
@@ -666,8 +666,8 @@ def deamon():
 # And so it begins...
 def main():
     #change name to 'pyLoadCore'
-    #from pyload.lib.rename_process import renameProcess
-    #renameProcess('pyLoadCore')
+    #from pyload.lib.rename_process import rename_process
+    #rename_process('pyLoadCore')
     if "--daemon" in sys.argv:
         deamon()
     else:
@@ -677,5 +677,5 @@ def main():
         except KeyboardInterrupt:
             pyload_core.shutdown()
             pyload_core.log.info(_("killed pyLoad from terminal"))
-            pyload_core.removeLogger()
+            pyload_core.remove_logger()
             _exit(1)

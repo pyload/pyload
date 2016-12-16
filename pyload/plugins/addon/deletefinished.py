@@ -22,27 +22,27 @@ class DeleteFinished(Hook):
     ## overwritten methods ##
     def periodical(self):
         if not self.info['sleep']:
-            deloffline = self.getConfig('deloffline')
+            deloffline = self.get_config('deloffline')
             mode = '0,1,4' if deloffline else '0,4'
             msg = 'delete all finished packages in queue list (%s packages with offline links)'
-            self.logInfo(msg % ('including' if deloffline else 'excluding'))
-            self.deleteFinished(mode)
+            self.log_info(msg % ('including' if deloffline else 'excluding'))
+            self.delete_finished(mode)
             self.info['sleep'] = True
-            self.addEvent('packageFinished', self.wakeup)
+            self.add_event('packageFinished', self.wakeup)
 
     def plugin_config_changed(self, plugin, name, value):
         if name == 'interval' and value != self.interval:
             self.interval = value * 3600
-            self.initPeriodical()
+            self.init_periodical()
 
     def unload(self):
-        self.removeEvent('packageFinished', self.wakeup)
+        self.remove_event('packageFinished', self.wakeup)
 
     def core_ready(self):
         self.info = {'sleep': True}
-        interval = self.getConfig('interval')
-        self.pluginConfigChanged('DeleteFinished', 'interval', interval)
-        self.addEvent('packageFinished', self.wakeup)
+        interval = self.get_config('interval')
+        self.plugin_config_changed('DeleteFinished', 'interval', interval)
+        self.add_event('packageFinished', self.wakeup)
 
     ## own methods ##
     @style.queue
@@ -51,7 +51,7 @@ class DeleteFinished(Hook):
         self.c.execute('DELETE FROM links WHERE NOT EXISTS(SELECT 1 FROM packages WHERE id=links.package)')
 
     def wakeup(self, pypack):
-        self.removeEvent('packageFinished', self.wakeup)
+        self.remove_event('packageFinished', self.wakeup)
         self.info['sleep'] = False
 
     ## event managing ##
@@ -59,7 +59,7 @@ class DeleteFinished(Hook):
         """Adds an event listener for event name"""
         if event in self.manager.events:
             if func in self.manager.events[event]:
-                self.logDebug('Function already registered %s' % func)
+                self.log_debug('Function already registered %s' % func)
             else:
                 self.manager.events[event].append(func)
         else:
@@ -67,4 +67,4 @@ class DeleteFinished(Hook):
 
     def setup(self):
         self.manager = self.manager
-        self.removeEvent = self.manager.removeEvent
+        self.remove_event = self.manager.remove_event

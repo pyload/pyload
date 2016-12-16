@@ -59,7 +59,7 @@ def call_api(func, args=""):
         # removes "' so it works on json strings
         s = s.get_by_id(remove_chars(request.params.get('session'), "'\""))
     elif auth:
-        user = PYLOAD.checkAuth(auth[0], auth[1], request.environ.get('REMOTE_ADDR', None))
+        user = PYLOAD.check_auth(auth[0], auth[1], request.environ.get('REMOTE_ADDR', None))
         # if auth is correct create a pseudo session
         if user: s = {'uid': user.uid}
 
@@ -125,7 +125,7 @@ def login():
     username = request.params.get("username")
     password = request.params.get("password")
 
-    user = PYLOAD.checkAuth(username, password, request.environ.get('REMOTE_ADDR', None))
+    user = PYLOAD.check_auth(username, password, request.environ.get('REMOTE_ADDR', None))
 
     if not user:
         return json_response(False)

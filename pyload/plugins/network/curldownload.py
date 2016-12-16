@@ -63,14 +63,14 @@ class CurlDownload(Download):
         return self._name if self.disposition else None
 
     def _copy_chunks(self):
-        init = fs_encode(self.info.getChunkName(0)) #initial chunk name
+        init = fs_encode(self.info.get_chunk_name(0)) #initial chunk name
 
-        if self.info.getCount() > 1:
+        if self.info.get_count() > 1:
             fo = open(init, "rb+") #first chunkfile
-            for i in range(1, self.info.getCount()):
+            for i in range(1, self.info.get_count()):
                 #input file
                 fo.seek(
-                    self.info.getChunkRange(i - 1)[1] + 1) #seek to beginning of chunk, to get rid of overlapping chunks
+                    self.info.get_chunk_range(i - 1)[1] + 1) #seek to beginning of chunk, to get rid of overlapping chunks
                 fname = fs_encode("%s.chunk%d" % (self.path, i))
                 fi = open(fname, "rb")
                 buf = 32 * 1024
@@ -80,7 +80,7 @@ class CurlDownload(Download):
                         break
                     fo.write(data)
                 fi.close()
-                if fo.tell() < self.info.getChunkRange(i)[1]:
+                if fo.tell() < self.info.get_chunk_range(i)[1]:
                     fo.close()
                     remove(init)
                     self.info.remove() #there are probably invalid chunks
@@ -113,7 +113,7 @@ class CurlDownload(Download):
         self.referer = referer
         self.cookies = cookies
 
-        self.checkResume()
+        self.check_resume()
         chunks = max(1, chunks)
         resume = self.info.resume and resume
 
@@ -141,7 +141,7 @@ class CurlDownload(Download):
     def _download(self, chunks, resume):
         if not resume:
             self.info.clear()
-            self.info.addChunk("%s.chunk0" % self.path, (0, 0)) #create an initial entry
+            self.info.add_chunk("%s.chunk0" % self.path, (0, 0)) #create an initial entry
 
         self.chunks = []
 
@@ -155,7 +155,7 @@ class CurlDownload(Download):
         chunksDone = set()  # list of curl handles that are finished
         chunksCreated = False
         done = False
-        if self.info.getCount() > 1: # This is a resume, if we were chunked originally assume still can
+        if self.info.get_count() > 1: # This is a resume, if we were chunked originally assume still can
             self.chunkSupport = True
 
         while True:
@@ -164,16 +164,16 @@ class CurlDownload(Download):
 
                 self.flags ^= Connection.Resumable
                 if not resume:
-                    self.info.setSize(self.size)
-                    self.info.createChunks(chunks)
+                    self.info.set_size(self.size)
+                    self.info.create_chunks(chunks)
                     self.info.save()
 
-                chunks = self.info.getCount()
+                chunks = self.info.get_count()
 
-                init.setRange(self.info.getChunkRange(0))
+                init.setRange(self.info.get_chunk_range(0))
 
                 for i in range(1, chunks):
-                    c = CurlChunk(i, self, self.info.getChunkRange(i), resume)
+                    c = CurlChunk(i, self, self.info.get_chunk_range(i), resume)
 
                     handle = c.getHandle()
                     if handle:
@@ -202,9 +202,9 @@ class CurlDownload(Download):
 
                 num_q, ok_list, err_list = self.manager.info_read()
                 for c in ok_list:
-                    chunk = self.findChunk(c)
+                    chunk = self.find_chunk(c)
                     try: # check if the header implies success, else add it to failed list
-                        chunk.verifyHeader()
+                        chunk.verify_header()
                     except ResponseException as e:
                         self.log.debug("Chunk %d failed: %s" % (chunk.id + 1, str(e)))
                         failed.append(chunk)
@@ -214,7 +214,7 @@ class CurlDownload(Download):
 
                 for c in err_list:
                     curl, errno, msg = c
-                    chunk = self.findChunk(curl)
+                    chunk = self.find_chunk(curl)
                     #test if chunk was finished
                     if errno != 23 or "0 !=" not in msg:
                         failed.append(chunk)
@@ -223,7 +223,7 @@ class CurlDownload(Download):
                         continue
 
                     try: # check if the header implies success, else add it to failed list
-                        chunk.verifyHeader()
+                        chunk.verify_header()
                     except ResponseException as e:
                         self.log.debug("Chunk %d failed: %s" % (chunk.id + 1, str(e)))
                         failed.append(chunk)
@@ -242,12 +242,12 @@ class CurlDownload(Download):
                         for chunk in to_clean:
                             self.closeChunk(chunk)
                             self.chunks.remove(chunk)
-                            remove(fs_encode(self.info.getChunkName(chunk.id)))
+                            remove(fs_encode(self.info.get_chunk_name(chunk.id)))
 
                         #let first chunk load the rest and update the info file
                         init.resetRange()
                         self.info.clear()
-                        self.info.addChunk("%s.chunk0" % self.path, (0, self.size))
+                        self.info.add_chunk("%s.chunk0" % self.path, (0, self.size))
                         self.info.save()
                     elif failed:
                         raise ex

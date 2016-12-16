@@ -29,7 +29,7 @@ class WebSocketBackend(BackendBase):
         options.server_host = host
         options.port = port
         options.dispatcher = Dispatcher()
-        options.dispatcher.addHandler(ApiHandler.PATH, ApiHandler(self.pyload.api))
+        options.dispatcher.add_handler(ApiHandler.PATH, ApiHandler(self.pyload.api))
         options.dispatcher.add_handler(AsyncHandler.PATH, AsyncHandler(self.pyload.api))
 
         # tls is needed when requested or webui is also on tls

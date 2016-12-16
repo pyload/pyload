@@ -185,13 +185,13 @@ class FileMethods(DatabaseMethods):
             'FROM packages%s ORDER BY root, packageorder')
 
         if root is None:
-            stats = self.getPackageStats(owner=owner)
+            stats = self.get_package_stats(owner=owner)
             if owner is None:
                 self.c.execute(qry % "")
             else:
                 self.c.execute(qry % " WHERE owner=?", (owner,))
         else:
-            stats = self.getPackageStats(root=root, owner=owner)
+            stats = self.get_package_stats(root=root, owner=owner)
             if owner is None:
                 self.c.execute(qry % ' WHERE root=? OR pid=?', (root, root))
             else:
@@ -238,7 +238,7 @@ class FileMethods(DatabaseMethods):
 
     @queue
     def get_stats_for_package(self, pid):
-        return self.getPackageStats(pid=pid)[pid]
+        return self.get_package_stats(pid=pid)[pid]
 
     @queue
     def get_file_info(self, fid, force=False):
@@ -260,7 +260,7 @@ class FileMethods(DatabaseMethods):
     def get_package_info(self, pid, stats=True):
         """get data for a specific package, optionally with package stats"""
         if stats:
-            stats = self.getPackageStats(pid=pid)
+            stats = self.get_package_stats(pid=pid)
 
         self.c.execute(
             'SELECT pid, name, folder, root, owner, site, comment, password, added, tags, status, shared, packageorder '

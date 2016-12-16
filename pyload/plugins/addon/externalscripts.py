@@ -34,19 +34,19 @@ class ExternalScripts(Addon):
         for folder in folders:
             self.scripts[folder] = []
 
-            self.initPluginType(folder, join(pypath, 'scripts', folder))
-            self.initPluginType(folder, join('scripts', folder))
+            self.init_plugin_type(folder, join(pypath, 'scripts', folder))
+            self.init_plugin_type(folder, join('scripts', folder))
 
         for script_type, names in self.scripts.items():
             if names:
-                self.logInfo((_("Installed scripts for %s: ") % script_type) + ", ".join([basename(x) for x in names]))
+                self.log_info((_("Installed scripts for %s: ") % script_type) + ", ".join([basename(x) for x in names]))
 
     def init_plugin_type(self, folder, path):
         if not exists(path):
             try:
                 makedirs(path)
             except Exception:
-                self.logDebug("Script folder %s not created" % folder)
+                self.log_debug("Script folder %s not created" % folder)
                 return
 
         for f in listdir(path):
@@ -54,55 +54,55 @@ class ExternalScripts(Addon):
                 continue
 
             if not access(join(path, f), X_OK):
-                self.logWarning(_("Script not executable:") + " %s/%s" % (folder, f))
+                self.log_warning(_("Script not executable:") + " %s/%s" % (folder, f))
 
             self.scripts[folder].append(join(path, f))
 
     def call_script(self, script, *args):
         try:
             cmd = [script] + [str(x) if not isinstance(x, basestring) else x for x in args]
-            self.logDebug("Executing %(script)s: %(cmd)s" % {"script": abspath(script), "cmd": " ".join(cmd)})
+            self.log_debug("Executing %(script)s: %(cmd)s" % {"script": abspath(script), "cmd": " ".join(cmd)})
             #output goes to pyload
             subprocess.Popen(cmd, bufsize=-1)
         except Exception as e:
-            self.logError(_("Error in %(script)s: %(error)s") % {"script": basename(script), "error": str(e)})
+            self.log_error(_("Error in %(script)s: %(error)s") % {"script": basename(script), "error": str(e)})
 
     def download_preparing(self, pyfile):
         for script in self.scripts['download_preparing']:
-            self.callScript(script, pyfile.pluginname, pyfile.url, pyfile.id)
+            self.call_script(script, pyfile.pluginname, pyfile.url, pyfile.fid)
 
     def download_finished(self, pyfile):
         for script in self.scripts['download_finished']:
-            self.callScript(script, pyfile.pluginname, pyfile.url, pyfile.name,
+            self.call_script(script, pyfile.pluginname, pyfile.url, pyfile.name,
                             safe_join(self.config['general']['download_folder'],
-                                      pyfile.package().folder, pyfile.name), pyfile.id)
+                                      pyfile.package().folder, pyfile.name), pyfile.fid)
 
     def package_finished(self, pypack):
         for script in self.scripts['package_finished']:
             folder = self.config['general']['download_folder']
             folder = safe_join(folder, pypack.folder)
 
-            self.callScript(script, pypack.name, folder, pypack.password, pypack.id)
+            self.call_script(script, pypack.name, folder, pypack.password, pypack.pid)
 
     def before_reconnecting(self, ip):
         for script in self.scripts['before_reconnect']:
-            self.callScript(script, ip)
+            self.call_script(script, ip)
 
     def after_reconnecting(self, ip):
         for script in self.scripts['after_reconnect']:
-            self.callScript(script, ip)
+            self.call_script(script, ip)
 
     @add_event_listener("extracting:finished")
     def extracting_finished(self, folder, fname):
         for script in self.scripts["extracting_finished"]:
-            self.callScript(script, folder, fname)
+            self.call_script(script, folder, fname)
 
     @add_event_listener("download:allFinished")
     def all_downloads_finished(self):
         for script in self.scripts["all_dls_finished"]:
-            self.callScript(script)
+            self.call_script(script)
 
     @add_event_listener("download:allProcessed")
     def all_downloads_processed(self):
         for script in self.scripts["all_dls_processed"]:
-            self.callScript(script)
+            self.call_script(script)

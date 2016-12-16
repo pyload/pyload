@@ -44,7 +44,7 @@ class MultiHoster(Addon, PluginMatcher):
 
     def add_hoster(self, account):
 
-        self.logInfo(_("Activated %s") % account.__name__)
+        self.log_info(_("Activated %s") % account.__name__)
 
         pluginMap = {}
         for name in self.pyload.pluginmanager.get_plugins("hoster").keys():
@@ -62,7 +62,7 @@ class MultiHoster(Addon, PluginMatcher):
                 new_supported.append(hoster)
 
         if not supported and not new_supported:
-            account.logError(_("No Hoster loaded"))
+            account.log_error(_("No Hoster loaded"))
             return
 
         klass = self.pyload.pluginmanager.get_plugin_class("hoster", account.__name__, overwrite=False)
@@ -71,14 +71,14 @@ class MultiHoster(Addon, PluginMatcher):
             return
 
         # inject plugin plugin
-        account.logDebug("Overwritten Hosters: %s" % ", ".join(sorted(supported)))
+        account.log_debug("Overwritten Hosters: %s" % ", ".join(sorted(supported)))
         for hoster in supported:
             if hoster in self.plugins:
                 self.plugins[hoster].append(klass.__name__)
             else:
                 self.plugins[hoster] = [klass.__name__]
 
-        account.logDebug("New Hosters: %s" % ", ".join(sorted(new_supported)))
+        account.log_debug("New Hosters: %s" % ", ".join(sorted(new_supported)))
 
         # create new regexp
         patterns = [x.replace(".", "\\.") for x in new_supported]
@@ -91,22 +91,22 @@ class MultiHoster(Addon, PluginMatcher):
 
     @add_event_listener(["account:deleted", "account:updated"])
     def refresh_accounts(self, plugin=None, loginname=None, user=None):
-        self.logDebug("Re-checking accounts")
+        self.log_debug("Re-checking accounts")
 
         self.plugins = {}
         for plugin, account in self.pyload.accountmanager.iter_accounts():
-            if isinstance(account, MultiHosterAccount) and account.isUsable():
-                self.addHoster(account)
+            if isinstance(account, MultiHosterAccount) and account.is_usable():
+                self.add_hoster(account)
 
     @add_event_listener("account:loaded")
     def refresh_account(self, acc):
 
         account = self.pyload.accountmanager.get_account(acc.plugin, acc.loginname)
-        if isinstance(account, MultiHosterAccount) and account.isUsable():
-            self.addHoster(account)
+        if isinstance(account, MultiHosterAccount) and account.is_usable():
+            self.add_hoster(account)
 
     def activate(self):
-        self.refreshAccounts()
+        self.refresh_accounts()
         self.pyload.pluginmanager.add_matcher(self)
 
     def deactivate(self):

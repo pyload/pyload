@@ -9,7 +9,7 @@ from pyload.Api import Api, DownloadStatus as DS,\
     require_perm, Permission, OnlineCheck, LinkStatus, urlmatcher
 from pyload.utils import uniqify
 from pyload.utils.fs import join
-from pyload.utils.packagetools import parseNames
+from pyload.utils.packagetools import parse_names
 from pyload.network.requestfactory import get_url
 
 from .apicomponent import ApiComponent
@@ -48,7 +48,7 @@ class DownloadPreparingApi(ApiComponent):
         #: TODO: withhold crypter, derypt or add later
         # initial result does not contain the crypter links
         tmp = [(url, LinkStatus(url, url, -1, DS.Queued, pluginname)) for url, pluginname in hoster]
-        data = parseNames(tmp)
+        data = parse_names(tmp)
         rid = self.pyload.threadmanager.create_result_thread(self.primary_uid, hoster + crypter)
 
         return OnlineCheck(rid, data)
@@ -64,7 +64,7 @@ class DownloadPreparingApi(ApiComponent):
         th = open(join(self.pyload.config["general"]["download_folder"], "tmp_" + filename), "wb")
         th.write(str(data))
         th.close()
-        return self.checkLinks([th.name])
+        return self.check_links([th.name])
 
     @require_perm(Permission.Add)
     def check_html(self, html, url):
@@ -80,7 +80,7 @@ class DownloadPreparingApi(ApiComponent):
             page = get_url(url)
             urls += [x[0] for x in urlmatcher.findall(page)]
 
-        return self.checkLinks(uniqify(urls))
+        return self.check_links(uniqify(urls))
 
     @require_perm(Permission.Add)
     def poll_results(self, rid):
@@ -100,7 +100,7 @@ class DownloadPreparingApi(ApiComponent):
         :param links: list of urls
         :return: package names mapped to urls
         """
-        result = parseNames((x, x) for x in links)
+        result = parse_names((x, x) for x in links)
         return result
 
 

@@ -57,11 +57,11 @@ class MultiHoster(Account):
 
     def get_hoster_list(self, force=False):
         if self.ts + self.hoster_timeout < time() or force:
-            req = self.getAccountRequest()
+            req = self.get_account_request()
             try:
-                self.hoster = self.loadHosterList(req)
+                self.hoster = self.load_hoster_list(req)
             except Exception as e:
-                self.logError(e)
+                self.log_error(e)
                 return []
             finally:
                 req.close()

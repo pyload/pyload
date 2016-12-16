@@ -101,7 +101,7 @@ class DownloadManager(object):
     @read_lock
     def waiting_downloads(self):
         """ all waiting downloads """
-        return [x.active for x in self.working if x.active.hasStatus("waiting")]
+        return [x.active for x in self.working if x.active.has_status("waiting")]
 
     @read_lock
     def get_progress_list(self, uid):
@@ -112,7 +112,7 @@ class DownloadManager(object):
 
     def processing_ids(self):
         """get a id list of all pyfiles processed"""
-        return [x.fid for x in self.activeDownloads(None)]
+        return [x.fid for x in self.active_downloads(None)]
 
 
     @read_lock
@@ -125,7 +125,7 @@ class DownloadManager(object):
     def work(self):
         """ main routine that does the periodical work """
 
-        self.tryReconnect()
+        self.try_reconnect()
 
         if free_space(self.pyload.config["general"]["download_folder"]) / 1024 / 1024 < \
                 self.pyload.config["general"]["min_free_space"]:
@@ -139,23 +139,23 @@ class DownloadManager(object):
         if self.pyload.config['reconnect']['wait'] and self.want_reconnect() > 1:
             return False
 
-        self.assignJobs()
+        self.assign_jobs()
 
         # TODO: clean free threads
 
     def assign_jobs(self):
         """ Load jobs from db and try to assign them """
 
-        limit = self.pyload.config['download']['max_downloads'] - len(self.activeDownloads())
+        limit = self.pyload.config['download']['max_downloads'] - len(self.active_downloads())
 
         # check for waiting dl rule
         if limit <= 0:
             # increase limit if there are waiting downloads
-            limit += min(len(self.waitingDownloads()), self.pyload.config['download']['wait_downloads'] +
+            limit += min(len(self.waiting_downloads()), self.pyload.config['download']['wait_downloads'] +
                                                   self.pyload.config['download']['max_downloads'] - len(
-                self.activeDownloads()))
+                self.active_downloads()))
 
-        slots = self.getRemainingPluginSlots()
+        slots = self.get_remaining_plugin_slots()
         occ = tuple([plugin for plugin, v in slots.items() if v == 0])
         jobs = self.pyload.files.get_jobs(occ)
 
@@ -175,9 +175,9 @@ class DownloadManager(object):
             # or only can start one job if limit is not known
             to_schedule = slots[plugin] if plugin in slots else 1
             # start all chosen jobs
-            for job in self.chooseJobs(jobs, to_schedule):
+            for job in self.choose_jobs(jobs, to_schedule):
                 # if the job was started the limit will be reduced
-                if self.startJob(job, limit):
+                if self.start_job(job, limit):
                     limit -= 1
 
     def choose_jobs(self, jobs, k):
@@ -203,11 +203,11 @@ class DownloadManager(object):
             if limit <= 0:
                 return False
 
-            self.startDownloadThread(info)
+            self.start_download_thread(info)
             return True
 
         elif plugin == "crypter":
-            self.startDecrypterThread(info)
+            self.start_decrypter_thread(info)
         else:
             self.log.error(_("Plugin type '%s' can't be used for downloading") % plugin)
 
@@ -221,7 +221,7 @@ class DownloadManager(object):
             return False
 
         # only reconnect when all threads are ready
-        if not (0 < self.wantReconnect() == len(self.working)):
+        if not (0 < self.want_reconnect() == len(self.working)):
             return False
 
         if not exists(self.pyload.config['reconnect']['method']):
@@ -268,7 +268,7 @@ class DownloadManager(object):
     @read_lock
     def want_reconnect(self):
         """ number of downloads that are waiting for reconnect """
-        active = [x.active.hasPlugin() and x.active.plugin.wantReconnect and x.active.plugin.waiting for x in self.working]
+        active = [x.active.has_plugin() and x.active.plugin.wantReconnect and x.active.plugin.waiting for x in self.working]
         return active.count(True)
 
     @read_lock
@@ -283,14 +283,14 @@ class DownloadManager(object):
 
         # get all default dl limits
         for t in self.working:
-            if not t.active.hasPlugin(): continue
-            limit = t.active.plugin.getDownloadLimit()
+            if not t.active.has_plugin(): continue
+            limit = t.active.plugin.get_download_limit()
             # limit <= 0 means no limit
             occ[t.active.pluginname] = limit if limit > 0 else float('inf')
 
         # subtract with running downloads
         for t in self.working:
-            if not t.active.hasPlugin(): continue
+            if not t.active.has_plugin(): continue
             plugin = t.active.pluginname
             if plugin in occ:
                 occ[plugin] -= 1

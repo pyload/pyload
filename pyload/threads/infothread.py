@@ -6,7 +6,7 @@ from builtins import str
 from time import time
 
 from pyload.Api import LinkStatus, DownloadStatus, ProgressInfo, ProgressType
-from pyload.utils.packagetools import parseNames
+from pyload.utils.packagetools import parse_names
 from pyload.utils import has_method, accumulate
 
 from .basethread import BaseThread
@@ -26,7 +26,7 @@ class InfoThread(DecrypterThread):
 
         self.progress = None
 
-        self.manager.addThread(self)
+        self.manager.add_thread(self)
         self.start()
 
     def run(self):
@@ -37,7 +37,7 @@ class InfoThread(DecrypterThread):
         cb = self.update_db if self.pid > 1 else self.updateResult
 
         # filter out crypter plugins
-        for name in self.manager.pyload.pluginmanager.getPlugins("crypter"):
+        for name in self.manager.pyload.pluginmanager.get_plugins("crypter"):
             if name in plugins:
                 crypter[name] = plugins[name]
                 del plugins[name]
@@ -56,21 +56,21 @@ class InfoThread(DecrypterThread):
 
             # TODO: no plugin information pushed to GUI
             # parse links and merge
-            hoster, crypter = self.manager.pyload.pluginmanager.parseUrls([l.url for l in links])
+            hoster, crypter = self.manager.pyload.pluginmanager.parse_urls([l.url for l in links])
             accumulate(hoster + crypter, plugins)
 
         self.progress = ProgressInfo("BasePlugin", "", _("online check"), 0, 0, sum(len(urls) for urls in plugins.values()),
                                      self.owner, ProgressType.LinkCheck)
 
         for pluginname, urls in plugins.items():
-            plugin = self.manager.pyload.pluginmanager.loadModule("hoster", pluginname)
-            klass = self.manager.pyload.pluginmanager.getPluginClass("hoster", pluginname, overwrite=False)
+            plugin = self.manager.pyload.pluginmanager.load_module("hoster", pluginname)
+            klass = self.manager.pyload.pluginmanager.get_plugin_class("hoster", pluginname, overwrite=False)
             if has_method(klass, "getInfo"):
-                self.fetchForPlugin(klass, urls, cb)
+                self.fetch_for_plugin(klass, urls, cb)
             # TODO: this branch can be removed in the future
             elif has_method(plugin, "getInfo"):
                 self.log.debug("Deprecated .getInfo() method on module level, use staticmethod instead")
-                self.fetchForPlugin(plugin, urls, cb)
+                self.fetch_for_plugin(plugin, urls, cb)
 
         if self.oc:
             self.oc.done = True
@@ -86,9 +86,9 @@ class InfoThread(DecrypterThread):
         info = [(l.name, l.size, l.status, l.url) for l in result if not l.hash]
         info_hash = [(l.name, l.size, l.status, l.hash, l.url) for l in result if l.hash]
         if info:
-            self.manager.pyload.files.updateFileInfo(info, self.pid)
+            self.manager.pyload.files.update_file_info(info, self.pid)
         if info_hash:
-            self.manager.pyload.files.updateFileInfo(info_hash, self.pid)
+            self.manager.pyload.files.update_file_info(info_hash, self.pid)
 
     def update_result(self, result):
         tmp = {}
@@ -100,12 +100,12 @@ class InfoThread(DecrypterThread):
             else:
                 parse.append(link)
 
-        data = parseNames([(link.name, link) for link in parse])
+        data = parse_names([(link.name, link) for link in parse])
         # merge in packages that already have a name
         data = accumulate(tmp.items(), data)
 
         # TODO: self.oc is None ?!
-        self.manager.setInfoResults(self.oc, data)
+        self.manager.set_info_results(self.oc, data)
 
     def fetch_for_plugin(self, plugin, urls, cb):
         """executes info fetching for given plugin and urls"""

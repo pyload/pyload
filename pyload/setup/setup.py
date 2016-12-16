@@ -181,7 +181,7 @@ class Setup(object):
         db.shutdown()
 
         print("")
-        langs = self.config.getMetaData("general", "language")
+        langs = self.config.get_meta_data("general", "language")
         self.config["general"]["language"] = self.ask(_("Language"), "en", langs.type.split(";"))
 
         self.config["general"]["download_folder"] = self.ask(_("Download folder"), "Downloads")
@@ -254,12 +254,12 @@ class Setup(object):
                     password = self.ask("", "", password=True)
                     admin = self.ask("Admin?", self.yes, bool=True)
 
-                    self.db.addUser(username, password, Role.Admin if admin else Role.User, int('1111111', 2))
+                    self.db.add_user(username, password, Role.Admin if admin else Role.User, int('1111111', 2))
                 elif action == "2":
                     print("")
                     print(_("Users"))
                     print("-----")
-                    users = self.db.getAllUserData()
+                    users = self.db.get_all_user_data()
                     for user in users.values():
                         print(user.name)
                     print("-----")
@@ -268,9 +268,9 @@ class Setup(object):
                     print("")
                     username = self.ask(_("Username"), "")
                     if username:
-                        self.db.removeUserByName(username)
+                        self.db.remove_user_by_name(username)
                 elif action == "4":
-                    self.db.syncSave()
+                    self.db.sync_save()
                     break
         finally:
             self.close_db()
@@ -278,7 +278,7 @@ class Setup(object):
     def add_user(self, username, password, role=Role.Admin):
         self.open_db()
         try:
-            self.db.addUser(username, password, role, int('1111111', 2))
+            self.db.add_user(username, password, role, int('1111111', 2))
         finally:
             self.close_db()
 
@@ -291,7 +291,7 @@ class Setup(object):
 
     def close_db(self):
         if self.db is not None:
-            self.db.syncSave()
+            self.db.sync_save()
             self.db.shutdown()
 
     def save(self):
@@ -322,7 +322,7 @@ class Setup(object):
 
 
     def ask_lang(self):
-        langs = self.config.getMetaData("general", "language").type.split(";")
+        langs = self.config.get_meta_data("general", "language").type.split(";")
         self.lang = self.ask(u"Choose your Language / Wähle deine Sprache", "en", langs)
         translation = gettext.translation("setup", join(self.path, "locale"), languages=[self.lang, "en"], fallback=True)
         translation.install(True)

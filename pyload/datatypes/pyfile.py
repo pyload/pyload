@@ -92,17 +92,12 @@ class PyFile(object):
         self.reconnected = False
         self.statusname = None
 
-
-    @property
-    def id(self):
-        self.manager.pyload.log.debug("Deprecated attr .id, use .fid instead")
-        return self.fid
-
+        
     def set_size(self, value):
         self._size = int(value)
 
     # will convert all sizes to ints
-    size = property(lambda self: self._size, setSize)
+    size = property(lambda self: self._size, set_size)
 
     def get_name(self):
         try:
@@ -125,7 +120,7 @@ class PyFile(object):
             self.media = guess_type(name)
             self._name = name
 
-    name = property(getName, setName)
+    name = property(get_name, set_name)
 
     def __repr__(self):
         return "<PyFile %s: %s@%s>" % (self.id, self.name, self.pluginname)
@@ -134,7 +129,7 @@ class PyFile(object):
     def init_plugin(self):
         """ inits plugin instance """
         if not self.plugin:
-            self.pluginclass = self.manager.pyload.pluginmanager.getPluginClass("hoster", self.pluginname)
+            self.pluginclass = self.manager.pyload.pluginmanager.get_plugin_class("hoster", self.pluginname)
             self.plugin = self.pluginclass(self)
 
     @read_lock
@@ -144,7 +139,7 @@ class PyFile(object):
 
     def package(self):
         """ return package instance"""
-        return self.manager.getPackage(self.packageid)
+        return self.manager.get_package(self.packageid)
 
     def set_status(self, status):
         self.status = statusMap[status]
@@ -153,7 +148,7 @@ class PyFile(object):
 
     def set_custom_status(self, msg, status="processing"):
         self.statusname = msg
-        self.setStatus(status)
+        self.set_status(status)
 
     def get_status_name(self):
         if self.status not in (15, 16) or not self.statusname:
@@ -166,7 +161,7 @@ class PyFile(object):
 
     def sync(self):
         """sync PyFile instance with database"""
-        self.manager.updateFile(self)
+        self.manager.update_file(self)
 
     @lock
     def release(self):
@@ -175,13 +170,13 @@ class PyFile(object):
             self.plugin.clean()
             self.plugin = None
 
-        self.manager.releaseFile(self.fid)
+        self.manager.release_file(self.fid)
 
 
     def to_info_data(self):
-        return FileInfo(self.fid, self.getName(), self.packageid, self.owner, self.getSize(), self.filestatus,
+        return FileInfo(self.fid, self.get_name(), self.packageid, self.owner, self.get_size(), self.filestatus,
                         self.media, self.added, self.fileorder, DownloadInfo(
-                self.url, self.pluginname, self.hash, self.status, self.getStatusName(), self.error)
+                self.url, self.pluginname, self.hash, self.status, self.get_status_name(), self.error)
         )
 
     def get_path(self):
@@ -192,7 +187,7 @@ class PyFile(object):
 
     def abort_download(self):
         """abort pyfile if possible"""
-        while self.fid in self.manager.pyload.dlm.processingIds():
+        while self.fid in self.manager.pyload.dlm.processing_ids():
 
             self.lock.acquire(shared=True)
             self.abort = True
@@ -205,23 +200,23 @@ class PyFile(object):
             sleep(0.5)
 
         self.abort = False
-        self.setStatus("aborted")
+        self.set_status("aborted")
         self.release()
 
     def finish_if_done(self):
         """set status to finish and release file if every thread is finished with it"""
 
         # TODO: this is wrong now, it should check if addons are using it
-        if self.id in self.manager.pyload.dlm.processingIds():
+        if self.id in self.manager.pyload.dlm.processing_ids():
             return False
 
-        self.setStatus("finished")
+        self.set_status("finished")
         self.release()
-        self.manager.checkAllLinksFinished()
+        self.manager.check_all_links_finished()
         return True
 
     def check_if_processed(self):
-        self.manager.checkAllLinksProcessed(self.id)
+        self.manager.check_all_links_processed(self.id)
 
     @try_catch(0)
     def get_speed(self):
@@ -234,7 +229,7 @@ class PyFile(object):
         if self.status == DownloadStatus.Waiting:
             return self.waitUntil - time()
 
-        return old_div(self.getBytesLeft(), self.getSpeed())
+        return old_div(self.get_bytes_left(), self.get_speed())
 
     @try_catch(0)
     def get_bytes_arrived(self):
@@ -261,6 +256,6 @@ class PyFile(object):
         return self.plugin.dl.flags
 
     def get_progress_info(self):
-        return ProgressInfo(self.pluginname, self.name, self.getStatusName(), self.get_eta(),
-                            self.getBytesArrived(), self.getSize(), self.owner, ProgressType.Download,
-                            DownloadProgress(self.fid, self.packageid, self.getSpeed(), self.getFlags(), self.status))
+        return ProgressInfo(self.pluginname, self.name, self.get_status_name(), self.get_eta(),
+                            self.get_bytes_arrived(), self.get_size(), self.owner, ProgressType.Download,
+                            DownloadProgress(self.fid, self.packageid, self.get_speed(), self.get_flags(), self.status))

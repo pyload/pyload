@@ -15,16 +15,16 @@ class RestartFailed(Hook):
     __author_name__ = "Walter Purcaro"
     __author_mail__ = "vuolter@gmail.com"
 
-    event_list = ["pluginConfigChanged"]
+    event_list = ["plugin_config_changed"]
 
     MIN_INTERVAL = 15 * 60  # seconds
 
     def periodical(self):
-        self.logDebug("Restart all failed downloads now")
+        self.log_debug("Restart all failed downloads now")
         self.pyload.api.restart_failed()
 
     def restart_periodical(self, interval):
-        self.logDebug("Set periodical interval to %s seconds" % interval)
+        self.log_debug("Set periodical interval to %s seconds" % interval)
         if self.cb:
             self.pyload.scheduler.remove_job(self.cb)
         self.interval = interval
@@ -36,8 +36,8 @@ class RestartFailed(Hook):
             if self.interval != value > self.MIN_INTERVAL:
                 self.restartPeriodical(value)
             else:
-                self.logWarning("Cannot change interval: given value is equal to the current or \
+                self.log_warning("Cannot change interval: given value is equal to the current or \
                                  smaller than %s seconds" % self.MIN_INTERVAL)
 
     def core_ready(self):
-        self.pluginConfigChanged(plugin="RestartFailed", name="interval", value=self.getConfig("interval"))
+        self.plugin_config_changed(plugin="RestartFailed", name="interval", value=self.get_config("interval"))

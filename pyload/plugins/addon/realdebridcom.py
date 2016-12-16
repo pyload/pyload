@@ -21,7 +21,7 @@ class RealdebridCom(MultiHoster):
     __author_mail__ = "naibaf_11@yahoo.de"
 
     def get_hoster(self):
-        https = "https" if self.getConfig("https") else "http"
+        https = "https" if self.get_config("https") else "http"
         page = get_url(https + "://real-debrid.com/api/hosters.php").replace("\"", "").strip()
 
         return [x.strip() for x in page.split(",") if x.strip()]

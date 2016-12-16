@@ -51,7 +51,7 @@ class ApiHandler(AbstractHandler):
             if not req.api:
                 return self.send_result(req, self.FORBIDDEN, "Forbidden")
 
-            if not self.api.isAuthorized(func, req.api.user):
+            if not self.api.is_authorized(func, req.api.user):
                 return self.send_result(req, self.UNAUTHORIZED, "Unauthorized")
 
             try:

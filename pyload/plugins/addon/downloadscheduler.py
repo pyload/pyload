@@ -39,30 +39,30 @@ class DownloadScheduler(Hook):
         self.cb = None  # callback to scheduler job; will be by removed hookmanager when hook unloaded
 
     def core_ready(self):
-        self.updateSchedule()
+        self.update_schedule()
 
     def update_schedule(self, schedule=None):
         if schedule is None:
-            schedule = self.getConfig("timetable")
+            schedule = self.get_config("timetable")
 
         schedule = re.findall("(\d{1,2}):(\d{2})[\s]*(-?\d+)",
                               schedule.lower().replace("full", "-1").replace("none", "0"))
         if not schedule:
-            self.logError("Invalid schedule")
+            self.log_error("Invalid schedule")
             return
 
         t0 = localtime()
         now = (t0.tm_hour, t0.tm_min, t0.tm_sec, "X")
         schedule = sorted([(int(x[0]), int(x[1]), 0, int(x[2])) for x in schedule] + [now])
 
-        self.logDebug("Schedule", schedule)
+        self.log_debug("Schedule", schedule)
 
         for i, v in enumerate(schedule):
             if v[3] == "X":
                 last, next = schedule[i - 1], schedule[(i + 1) % len(schedule)]
-                self.logDebug("Now/Last/Next", now, last, next)
+                self.log_debug("Now/Last/Next", now, last, next)
 
-                self.setDownloadSpeed(last[3])
+                self.set_download_speed(last[3])
 
                 next_time = (((24 + next[0] - now[0]) * 60 + next[1] - now[1]) * 60 + next[2] - now[2]) % 86400
                 self.pyload.scheduler.remove_job(self.cb)
@@ -70,8 +70,8 @@ class DownloadScheduler(Hook):
 
     def set_download_speed(self, speed):
         if speed == 0:
-            abort = self.getConfig("abort")
-            self.logInfo("Stopping download server. (Running downloads will %sbe aborted.)" % ('' if abort else 'not '))
+            abort = self.get_config("abort")
+            self.log_info("Stopping download server. (Running downloads will %sbe aborted.)" % ('' if abort else 'not '))
             self.pyload.api.pause_server()
             if abort:
                 self.pyload.api.stop_all_downloads()
@@ -79,10 +79,10 @@ class DownloadScheduler(Hook):
             self.pyload.api.unpause_server()
 
             if speed > 0:
-                self.logInfo("Setting download speed to %d kB/s" % speed)
+                self.log_info("Setting download speed to %d kB/s" % speed)
                 self.pyload.api.set_config_value("download", "limit_speed", 1)
                 self.pyload.api.set_config_value("download", "max_speed", speed)
             else:
-                self.logInfo("Setting download speed to FULL")
+                self.log_info("Setting download speed to FULL")
                 self.pyload.api.set_config_value("download", "limit_speed", 0)
                 self.pyload.api.set_config_value("download", "max_speed", -1)

@@ -44,7 +44,7 @@ class InteractionManager(object):
     @lock
     def work(self):
         # old notifications will be removed
-        for n in [k for k, v in self.tasks.items() if v.timedOut()]:
+        for n in [k for k, v in self.tasks.items() if v.timed_out()]:
             del self.tasks[n]
 
         # keep notifications count limited
@@ -65,7 +65,7 @@ class InteractionManager(object):
         task = InteractionTask(self.ids, IA.Notification, Input(InputType.Text, None, content), title, desc, plugin,
                                owner=owner)
         self.ids += 1
-        self.queueTask(task)
+        self.queue_task(task)
         return task
 
     @lock
@@ -78,7 +78,7 @@ class InteractionManager(object):
 
         task = InteractionTask(self.ids, IA.Query, input, _("Query"), desc, plugin, owner=owner)
         self.ids += 1
-        self.queueTask(task)
+        self.queue_task(task)
         return task
 
     @lock
@@ -102,7 +102,7 @@ class InteractionManager(object):
                             _("Captcha request"), _("Please solve the captcha."), plugin, owner=owner)
 
         self.ids += 1
-        self.queueTask(task)
+        self.queue_task(task)
         return task
 
     @lock
@@ -132,7 +132,7 @@ class InteractionManager(object):
         return len(tasks) > 0
 
     def queue_task(self, task):
-        cli = self.isClientConnected(task.owner)
+        cli = self.is_client_connected(task.owner)
 
         # set waiting times based on threshold
         if cli:

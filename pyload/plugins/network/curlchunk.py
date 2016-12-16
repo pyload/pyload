@@ -51,7 +51,7 @@ class ChunkInfo(object):
         current = 0
         for i in range(chunks):
             end = self.size - 1 if (i == chunks - 1) else current + chunk_size
-            self.addChunk("%s.chunk%s" % (self.name, i), (current, end))
+            self.add_chunk("%s.chunk%s" % (self.name, i), (current, end))
             current += chunk_size + 1
 
 
@@ -82,7 +82,7 @@ class ChunkInfo(object):
             raise TypeError("chunk.file has wrong format")
         ci = ChunkInfo(name)
         ci.loaded = True
-        ci.setSize(size)
+        ci.set_size(size)
         while True:
             if not fh.readline(): #skip line
                 break
@@ -94,7 +94,7 @@ class ChunkInfo(object):
             else:
                 raise TypeError("chunk.file has wrong format")
 
-            ci.addChunk(name, (int(range[0]), int(range[1])))
+            ci.add_chunk(name, (int(range[0]), int(range[1])))
         fh.close()
         return ci
 
@@ -136,7 +136,7 @@ class CurlChunk(CurlRequest):
 
         self.fp = None #file handle
 
-        self.initContext()
+        self.init_context()
 
         self.BOMChecked = False # check and remove byte order mark
 
@@ -157,13 +157,13 @@ class CurlChunk(CurlRequest):
     def get_handle(self):
         """ returns a Curl handle ready to use for perform/multiperform """
 
-        self.setRequestContext(self.p.url, self.p.get, self.p.post, self.p.referer, self.p.cookies)
+        self.set_request_context(self.p.url, self.p.get, self.p.post, self.p.referer, self.p.cookies)
         self.c.setopt(pycurl.WRITEFUNCTION, self.writeBody)
         self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
 
         # request all bytes, since some servers in russia seems to have a defect arihmetic unit
 
-        fs_name = fs_encode(self.p.info.getChunkName(self.id))
+        fs_name = fs_encode(self.p.info.get_chunk_name(self.id))
         if self.resume:
             self.fp = open(fs_name, "ab")
             self.arrived = self.fp.tell()
@@ -250,7 +250,7 @@ class CurlChunk(CurlRequest):
 
     def parse_header(self):
         """parse data from received header"""
-        for orgline in self.decodeResponse(self.header).splitlines():
+        for orgline in self.decode_response(self.header).splitlines():
             line = orgline.strip().lower()
             if line.startswith("accept-ranges") and "bytes" in line:
                 self.p.chunkSupport = True

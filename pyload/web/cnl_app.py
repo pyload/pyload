@@ -25,7 +25,7 @@ except Exception:
 def generate_and_add(urls, paused):
     packs = PYLOAD.generatePackages(urls)
     for name, urls in packs.items():
-        PYLOAD.addPackage(name, urls, paused=paused)
+        PYLOAD.add_package(name, urls, paused=paused)
 
 def local_check(function):
     def _view(*args, **kwargs):
@@ -52,7 +52,7 @@ def add(request):
     urls = [x for x in request.POST['urls'].split("\n") if x != ""]
 
     if package:
-        PYLOAD.addPackage(package, urls, paused=True)
+        PYLOAD.add_package(package, urls, paused=True)
     else:
         generate_and_add(urls, True)
 
@@ -71,7 +71,7 @@ def addcrypted():
     dlc_file.close()
 
     try:
-        PYLOAD.addPackage(package, [dlc_path], paused=True)
+        PYLOAD.add_package(package, [dlc_path], paused=True)
     except Exception:
         return HTTPError()
     else:
@@ -117,7 +117,7 @@ def addcrypted2():
 
     try:
         if package:
-            PYLOAD.addPackage(package, result, paused=True)
+            PYLOAD.add_package(package, result, paused=True)
         else:
             generate_and_add(result, True)
     except Exception:
@@ -143,7 +143,7 @@ def flashgot():
     folder = request.forms.get('dir', None)
 
     if package:
-        PYLOAD.addPackage(package, urls, paused=autostart)
+        PYLOAD.add_package(package, urls, paused=autostart)
     else:
         generate_and_add(urls, autostart)
     return ""
