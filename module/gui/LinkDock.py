@@ -19,9 +19,14 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+import logging
+from os.path import join
+
 class NewLinkDock(QDockWidget):
     def __init__(self):
-        QDockWidget.__init__(self, "New Links")
+        QDockWidget.__init__(self, _("Add Links"))
+        self.log = logging.getLogger("guilog")
+        
         self.setObjectName("New Links Dock")
         self.widget = NewLinkWindow(self)
         self.setWidget(self.widget)
@@ -31,26 +36,88 @@ class NewLinkDock(QDockWidget):
     def slotDone(self):
         text = str(self.widget.box.toPlainText())
         lines = text.splitlines()
-        self.emit(SIGNAL("done"), lines)
+        if not lines:
+            self.widget.slotMsgShow("<b>" + _("Error, no URLs given.") + "</b>")
+            return
+        queue = self.widget.destQueue.isChecked()
+        self.emit(SIGNAL("done"), lines, queue)
+    
+    def parseUri(self):
+        text = str(self.widget.box.toPlainText())
+        self.emit(SIGNAL("parseUri"), "linkdock", text)
+    
+    def parseUriResult(self, result):
+        self.widget.box.setPlainText(result)
+    
+    def closeEvent(self, event):
         self.widget.box.clear()
         self.hide()
+        event.ignore()
 
 class NewLinkWindow(QWidget):
     def __init__(self, dock):
         QWidget.__init__(self)
+        self.log = logging.getLogger("guilog")
         self.dock = dock
+        
         self.setLayout(QVBoxLayout())
         layout = self.layout()
         
-        explanationLabel = QLabel("Select a package and then click Add button.")
-        boxLabel = QLabel("Paste URLs here:")
-        self.box = QTextEdit()
+        boxLabel = QLabel(_("Drop or Paste URLs here") + ":")
+        self.box = PlainTextEdit()
         
-        save = QPushButton("Add")
+        self.destQueue     = QRadioButton(_("Queue"))
+        self.destCollector = QRadioButton(_("Collector"))
+        self.destCollector.setChecked(True)
+        destBtnLayout = QHBoxLayout()
+        destBtnLayout.addWidget(self.destQueue)
+        destBtnLayout.addWidget(self.destCollector)
+        destBtnLayout.addStretch(1)
         
-        layout.addWidget(explanationLabel)
+        self.clear = QPushButton(_("Clear"))
+        self.filter = QPushButton(_("Filter URLs"))
+        
+        self.save = QPushButton(_("Add"))
+        self.save.setIcon(QIcon(join(pypath, "icons","add_small.png")))
+        self.msg = QLabel("ERROR")
+        lsp = self.msg.sizePolicy()
+        lsp.setHorizontalPolicy(QSizePolicy.Ignored)
+        self.msg.setSizePolicy(lsp)
+        hbox = QHBoxLayout()
+        hbox.addWidget(self.msg)
+        hbox.addWidget(self.save)
+        
         layout.addWidget(boxLabel)
         layout.addWidget(self.box)
-        layout.addWidget(save)
+        layout.addWidget(self.clear)
+        layout.addWidget(self.filter)
+        layout.addLayout(destBtnLayout)
+        layout.addLayout(hbox)
         
-        self.connect(save, SIGNAL("clicked()"), self.dock.slotDone)
+        self.adjustSize()
+        self.msg.setFixedHeight(self.save.height())
+        self.slotMsgHide()
+        
+        self.connect(self.save, SIGNAL("clicked()"), self.dock.slotDone)
+        self.connect(self.clear, SIGNAL("clicked()"), self.box.clear)
+        self.connect(self.filter, SIGNAL("clicked()"), self.dock.parseUri)
+    
+    def slotMsgShow(self, msg):
+        self.msg.setText(msg)
+        self.msg.setFixedHeight(self.save.height())
+        self.msg.show()
+        self.save.hide()
+        QTimer.singleShot(2000, self.slotMsgHide)
+    
+    def slotMsgHide(self):
+        self.msg.hide()
+        self.save.show()
+
+class PlainTextEdit(QPlainTextEdit):
+    def __init__(self):
+        QPlainTextEdit.__init__(self)
+    
+    def dropEvent(self, event):
+        if not self.toPlainText().isEmpty():
+            self.appendPlainText("")    # appends a line feed
+        QPlainTextEdit.dropEvent(self, event)

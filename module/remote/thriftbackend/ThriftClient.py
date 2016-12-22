@@ -34,7 +34,8 @@ class NoSSL(Exception):
 class ThriftClient:
     def __init__(self, host="localhost", port=7227, user="", password=""):
 
-        self.createConnection(host, port)
+        self.ssl = False
+        self.createConnection(host, port, self.ssl)
         try:
             self.transport.open()
         except error, e:
@@ -50,16 +51,24 @@ class ThriftClient:
             if e.args and e.args[0] == 104:
                 #connection reset by peer, probably wants ssl
                 try:
-                    self.createConnection(host, port, True)
+                    self.ssl = True
+                    self.createConnection(host, port, self.ssl)
                     #set timeout or a ssl socket will block when querying none ssl server
-                    self.socket.setTimeout(10)
-
+                    self.socket.setTimeout(10 *1000)   # milliseconds
                 except ImportError:
                     #@TODO untested
                     raise NoSSL
+                except:
+                    print_exc()
+                    raise NoConnection
                 try:
-                   self.transport.open()
-                   correct = self.client.login(user, password)
+                    self.transport.open()
+                except:
+                    raise NoConnection
+                try:
+                    correct = self.client.login(user, password)
+                except:
+                    raise NoSSL
                 finally:
                     self.socket.setTimeout(None)
             elif e.args and e.args[0] == 32:
@@ -71,6 +80,9 @@ class ThriftClient:
         if not correct:
             self.transport.close()
             raise WrongLogin
+
+    def isSSLConnection(self):
+        return self.ssl
 
     def createConnection(self, host, port, ssl=False):
         self.socket = Socket(host, port, ssl)

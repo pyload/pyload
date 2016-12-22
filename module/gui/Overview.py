@@ -19,6 +19,8 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+import logging
+from module.remote.thriftbackend.ThriftClient import DownloadStatus
 from module.utils import formatSpeed, formatSize
 
 class OverviewModel(QAbstractListModel):
@@ -32,9 +34,10 @@ class OverviewModel(QAbstractListModel):
     MaxSize = 17
     Status = 18
     
-    def __init__(self, view, connector):
+    def __init__(self, view, queue):
         QAbstractListModel.__init__(self)
-        
+        self.log = logging.getLogger("guilog")
+        self.queue = queue
         self.packages = []
     
     def queueChanged(self): #dirty..
@@ -45,7 +48,7 @@ class OverviewModel(QAbstractListModel):
         def partsFinished(p):
             f = 0
             for c in p.children:
-                if c.data["status"] == 0:
+                if c.data["status"] == DownloadStatus.Finished:
                     f += 1
             return f
         
@@ -66,7 +69,7 @@ class OverviewModel(QAbstractListModel):
         
         def getProgress(p):
             for c in p.children:
-                if c.data["status"] == 13:
+                if c.data["status"] == DownloadStatus.Processing:
                     pass # TODO return _("Unpacking"), int(c.data["progress"])
             return _("Downloading"), self.queue.getProgress(p)
         
@@ -109,9 +112,11 @@ class OverviewModel(QAbstractListModel):
         return QVariant()
     
 class OverviewView(QListView):
-    def __init__(self, connector):
+    def __init__(self, queue):
         QListView.__init__(self)
-        self.setModel(OverviewModel(self, connector))
+        self.log = logging.getLogger("guilog")
+        self.model = OverviewModel(self, queue)
+        self.setModel(self.model)
         
         self.setAlternatingRowColors(True)
         self.delegate = OverviewDelegate(self)
@@ -120,8 +125,9 @@ class OverviewView(QListView):
 class OverviewDelegate(QItemDelegate):
     def __init__(self, parent):
         QItemDelegate.__init__(self, parent)
+        self.log = logging.getLogger("guilog")
         self.parent = parent
-        self.model = parent.model()
+        self.model = parent.model
     
     def paint(self, painter, option, index):
         option.rect.setHeight(59+16)
@@ -144,20 +150,20 @@ class OverviewDelegate(QItemDelegate):
             if seconds <= 0: return ""
             hours, seconds = divmod(seconds, 3600)
             minutes, seconds = divmod(seconds, 60)
-            return _("ETA: ") + "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
+            return _("ETA") + ": %.2i:%.2i:%.2i" % (hours, minutes, seconds)
         
-        statusline = QString(_("Parts: ") + "%s/%s" % (partsf, parts))
+        statusline = QString(_("Parts") + ": %s/%s" % (partsf, parts))
         if partsf == parts:
             speedline = _("Finished")
         elif not status == _("Downloading"):
             speedline = QString(status)
         else:
-            speedline = QString(formatEta(eta) + "     " + _("Speed: %s") % formatSpeed(speed))
+            speedline = QString(formatEta(eta) + "     " + _("Speed") + ": %s" % formatSpeed(speed))
         
         if progress in (0,100):
-            sizeline = QString(_("Size:") + "%s" % formatSize(maxSize))
+            sizeline = QString(_("Size") + ": %s" % formatSize(maxSize))
         else:
-            sizeline = QString(_("Size:") + "%s / %s" % (formatSize(currentSize), formatSize(maxSize)))
+            sizeline = QString(_("Size") + ": %s / %s" % (formatSize(currentSize), formatSize(maxSize)))
         
         f = painter.font()
         f.setPointSize(12)

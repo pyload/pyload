@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import with_statement
+
+import logging
 from os.path import exists
 from os.path import join
 
@@ -13,7 +15,9 @@ class ConfigParser:
     #----------------------------------------------------------------------
     def __init__(self, configdir):
         """Constructor"""
+        self.log = logging.getLogger("guilog")
         self.configdir = configdir
+        
         self.config = {}
         
         if self.checkVersion():
@@ -156,6 +160,7 @@ class Section:
     #----------------------------------------------------------------------
     def __init__(self, parser, section):
         """Constructor"""
+        self.log = logging.getLogger("guilog")
         self.parser = parser
         self.section = section
         

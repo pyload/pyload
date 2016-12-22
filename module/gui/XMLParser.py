@@ -21,15 +21,17 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtXml import *
 
+import logging
 import os
 
 class XMLParser():
     def __init__(self, data, dfile=""):
+        self.file = data
+        self.dfile = dfile
+        
         self.mutex = QMutex()
         self.mutex.lock()
         self.xml = QDomDocument()
-        self.file = data
-        self.dfile = dfile
         self.mutex.unlock()
         self.loadData()
         self.root = self.xml.documentElement()

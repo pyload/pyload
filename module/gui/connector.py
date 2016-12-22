@@ -24,7 +24,9 @@ from uuid import uuid4 as uuid
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+import logging
 import socket
+from os.path import join
 
 from module.remote.thriftbackend.ThriftClient import ThriftClient, WrongLogin, NoSSL, NoConnection
 from thrift.Thrift import TException
@@ -34,10 +36,11 @@ class Connector(QObject):
         manages the connection to the pyload core via thrift
     """
     
-    firstAttempt = True
-    
-    def __init__(self):
+    def __init__(self, firstAttempt):
         QObject.__init__(self)
+        self.firstAttempt = firstAttempt
+        self.log = logging.getLogger("guilog")
+        
         self.mutex = QMutex()
         self.connectionID = None
         self.host = None
@@ -47,17 +50,17 @@ class Connector(QObject):
         self.ssl = None
         self.running = True
         self.internal = False
+        self.pwBox = AskForUserAndPassword()
         self.proxy = self.Dummy()
     
-    def setConnectionData(self, host, port, user, password, ssl=False):
+    def setConnectionData(self, host, port, user, password):
         """
             set connection data for connection attempt, called from slotConnect
         """
-        self.host = host
-        self.port = port
-        self.user = user
+        self.host     = host
+        self.port     = port
+        self.user     = user
         self.password = password
-        self.ssl = ssl
     
     def connectProxy(self):
         """
@@ -67,34 +70,121 @@ class Connector(QObject):
             connect error signals,
             check server version
         """
-        if self.internal: return True
-
-        err = None
-        try:
-            client = ThriftClient(self.host, self.port, self.user, self.password)
-        except WrongLogin:
-            err = _("bad login credentials")
-        except NoSSL:
-            err = _("no ssl support")
-        except NoConnection:
-            err = _("can't connect to host")
-        if err:
-            if not Connector.firstAttempt:
-                self.emit(SIGNAL("errorBox"), err)
-            Connector.firstAttempt = False
+        firstAttempt = self.firstAttempt
+        self.firstAttempt = False
+        
+        if self.internal:
+            return True
+        if not self.host:
             return False
         
+        # Quick test if the host responds, we probably do not want to wait until the default socket timeout kicks in (120sec)
+        soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        soc.settimeout(5) #seconds
+        gaierror = False
+        timeout = False
+        try:
+            soc.connect((self.host, self.port))
+        except socket.gaierror:
+            gaierror = True
+        except socket.timeout:
+            timeout = True
+        except:
+            pass
+        try:
+            soc.shutdown(socket.SHUT_RD)
+        except:
+            pass
+        try:
+            soc.shutdown(socket.SHUT_WR)
+        except:
+             pass
+        soc.close()
+        if gaierror:
+            if firstAttempt:
+                return False
+            err = _("Invalid host name or address!")
+            err += "\n" + _("Host") + ": " + self.host + ":" + str(self.port)
+            self.emit(SIGNAL("msgBoxError"), err)
+            return False
+        if timeout:
+            if firstAttempt:
+                return False
+            err = _("No response from host, wait longer?")
+            err += "\n" + _("Host") + ": " + self.host + ":" + str(self.port)
+            msgb = QMessageBox()
+            self.emit(SIGNAL("setupMsgBoxYesNo"), msgb, err, "W")
+            if msgb.exec_() == QMessageBox.No:
+                return False
+        # login
+        while True:
+            err = None
+            errlogin = False
+            try:
+                client = ThriftClient(self.host, self.port, self.user, self.password)
+            except WrongLogin:
+                errlogin = True
+            except NoSSL:
+                err = _("No SSL support!")
+            except NoConnection:
+                err = _("Can't connect to host!")
+            
+            if not errlogin:
+                break
+            
+            # user and password popup
+            pwboxtxt = _("Please enter correct login credentials for")
+            pwboxtxt += "\n" + _("Host") + ": " + self.host + ":" + str(self.port)
+            self.pwBox.textLabel.setText(pwboxtxt)
+            self.pwBox.userLE.setText(self.user)
+            self.pwBox.passwordLE.setText(self.password)
+            self.pwBox.okBtn.setFocus(Qt.OtherFocusReason)
+            if self.pwBox.exec_() == QDialog.Rejected:
+                return False
+            self.user = str(self.pwBox.userLE.text())
+            self.password = str(self.pwBox.passwordLE.text())
+            sleep(1) # some delay to let the dialog fade out
+        
+        if err:
+            if firstAttempt:
+                return False
+            err += "\n" + _("Host") + ": " + self.host + ":" + str(self.port)
+            self.emit(SIGNAL("msgBoxError"), err)
+            return False
+        
+        self.ssl = client.isSSLConnection() # remember if we are connected with SSL
         self.proxy = DispatchRPC(self.mutex, client)
         self.connect(self.proxy, SIGNAL("connectionLost"), self, SIGNAL("connectionLost"))
         
+        # check server version
         server_version = self.proxy.getServerVersion()
         self.connectionID = uuid().hex
-        
         if not server_version == SERVER_VERSION:
-            self.emit(SIGNAL("errorBox"), _("server is version %(new)s client accepts version %(current)s") % { "new": server_version, "current": SERVER_VERSION})
+            if firstAttempt:
+                return False
+            err = (_("Host server version is %s") % server_version) + ", " + _("but we need version %s") % SERVER_VERSION
+            err += "\n" + _("Host") + ": " + self.host + ":" + str(self.port)
+            self.emit(SIGNAL("msgBoxError"), err)
             return False
         
         return True
+    
+    def isSSLConnection(self):
+        if self.internal:
+            return False
+        return self.ssl
+    
+    def getOurUserData(self):
+        return self.proxy.getUserData(self.user, self.password)
+    
+    def disconnectProxy(self):
+        """
+            close the sockets
+        """
+        if self.internal:
+            return
+        self.proxy.server.close()
+        self.proxy = self.Dummy()
     
     def __getattr__(self, attr):
         """
@@ -108,11 +198,69 @@ class Connector(QObject):
         """
         def __nonzero__(self):
             return False
-
+        
         def __getattr__(self, attr):
             def dummy(*args, **kwargs):
                 return None
             return dummy
+
+class AskForUserAndPassword(QDialog):
+    """
+        user and password popup
+    """
+    def __init__(self):
+        QDialog.__init__(self)
+        self.log = logging.getLogger("guilog")
+        
+        self.lastFont = None
+        
+        self.setAttribute(Qt.WA_DeleteOnClose, False)
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
+        self.setWindowTitle(_("pyLoad Client"))
+        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+        
+        grid = QGridLayout()
+        
+        self.textLabel = QLabel()
+        userLabel = QLabel(_("User") + ":")
+        self.userLE = QLineEdit()
+        pwLabel = QLabel(_("Password") + ":")
+        self.passwordLE = QLineEdit()
+        self.passwordLE.setEchoMode(QLineEdit.Password)
+        self.buttons = QDialogButtonBox(Qt.Horizontal)
+        self.okBtn = self.buttons.addButton(QDialogButtonBox.Ok)
+        self.okBtn.setText(_("OK"))
+        self.okBtn.setDefault(True)
+        self.okBtn.setAutoDefault(True)
+        self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
+        self.cancelBtn.setText(_("Cancel"))
+        self.cancelBtn.setDefault(False)
+        self.cancelBtn.setAutoDefault(True)
+        
+        grid.addWidget(self.textLabel,  0, 0, 1, 2)
+        grid.setRowMinimumHeight(1, 7)
+        grid.addWidget(userLabel,       2, 0)
+        grid.addWidget(self.userLE,     2, 1)
+        grid.addWidget(pwLabel,         3, 0)
+        grid.addWidget(self.passwordLE, 3, 1)
+        grid.setRowMinimumHeight(4, 7)
+        grid.setRowStretch(4, 1)
+        grid.addWidget(self.buttons,    5, 0, 1, 2)
+        self.setLayout(grid)
+        
+        self.setMinimumWidth(300)
+        self.adjustSize()
+        #self.setFixedHeight(self.height())
+        
+        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
+        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
+    
+    def exec_(self):
+        # It does not resize very well when the font size has changed
+        if self.font() != self.lastFont:
+            self.lastFont = self.font()
+            self.adjustSize()
+        return QDialog.exec_(self)
 
 class DispatchRPC(QObject):
     """
@@ -122,6 +270,7 @@ class DispatchRPC(QObject):
     
     def __init__(self, mutex, server):
         QObject.__init__(self)
+        self.log = logging.getLogger("guilog")
         self.mutex = mutex
         self.server = server
     

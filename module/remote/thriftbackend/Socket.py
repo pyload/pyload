@@ -4,13 +4,17 @@ import sys
 import socket
 import errno
 
-from time import sleep
+import time
 
 from thrift.transport.TSocket import TSocket, TServerSocket, TTransportException
 
 WantReadError = Exception #overwritten when ssl is used
 
 class SecureSocketConnection:
+
+    ssl_retry   = 0.05
+    ssl_timeout = 3
+
     def __init__(self, connection):
         self.__dict__["connection"] = connection
 
@@ -26,20 +30,28 @@ class SecureSocketConnection:
     def accept(self):
         connection, address = self.__dict__["connection"].accept()
         return SecureSocketConnection(connection), address
-    
+
     def send(self, buff):
-        try:
-            return self.__dict__["connection"].send(buff)
-        except WantReadError:
-            sleep(0.1)
-            return self.send(buff)
-    
+        start = time.time()
+        while True:
+            try:
+                return self.__dict__["connection"].send(buff)
+            except WantReadError:
+                time.sleep(self.ssl_retry)
+            if time.time() - start > self.ssl_timeout:
+                #print "SSL connection timed out for peer: %s:%d (send)" % self.__dict__["connection"].getpeername()
+                return ''
+
     def recv(self, buff):
-        try:
-            return self.__dict__["connection"].recv(buff)
-        except WantReadError:
-            sleep(0.1)
-            return self.recv(buff)
+        start = time.time()
+        while True:
+            try:
+                return self.__dict__["connection"].recv(buff)
+            except WantReadError:
+                time.sleep(self.ssl_retry)
+            if time.time() - start > self.ssl_timeout:
+                #print "SSL connection timed out for peer: %s:%d (recv)" % self.__dict__["connection"].getpeername()
+                return ''
 
 class Socket(TSocket):
     def __init__(self, host='localhost', port=7228, ssl=False):

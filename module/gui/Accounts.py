@@ -19,6 +19,7 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+import logging
 from time import strftime, gmtime
 
 class AccountModel(QAbstractItemModel):
@@ -28,25 +29,39 @@ class AccountModel(QAbstractItemModel):
     
     def __init__(self, view, connector):
         QAbstractItemModel.__init__(self)
-        self.connector = connector
+        self.log = logging.getLogger("guilog")
         self.view = view
+        self.connector = connector
+        
         self._data = []
         self.cols = 4
         self.mutex = QMutex()
+        self.timer = QTimer()
+        self.timer.connect(self.timer, SIGNAL("timeout()"), self.reloadData)
+    
+    def getSelectedIndexes(self):
+        """
+            called from main
+        """
+        QMutexLocker(self.mutex)
+        return self.view.selectedIndexes()
     
     def reloadData(self, force=False):
         """
             reload account list
         """
+        if not self.view.corePermissions["ACCOUNTS"]:
+            return
+        
         accounts = self.connector.proxy.getAccounts(False)
-
+        
         if self._data == accounts:
             return
         
-        if len(self._data) > 0:        
-            self.beginRemoveRows(QModelIndex(), 0, len(self._data)-1)
-            self._data = []
-            self.endRemoveRows()
+        QMutexLocker(self.mutex)
+        self.beginResetModel()
+        self._data = []
+        self.endResetModel()
             
         if len(accounts) > 0:
             self.beginInsertRows(QModelIndex(), 0, len(accounts)-1)
@@ -90,6 +105,8 @@ class AccountModel(QAbstractItemModel):
         """
             create index with data pointer
         """
+        if row < 0 or column < 0:
+            return QModelIndex()
         if parent == QModelIndex() and len(self._data) > row:
             pointer = self._data[row]
             index = self.createIndex(row, column, pointer)
@@ -155,19 +172,26 @@ class AccountView(QTreeView):
         view component for accounts
     """
     
-    def __init__(self, connector):
+    def __init__(self, corePermissions, connector):
         QTreeView.__init__(self)
-        self.setModel(AccountModel(self, connector))
+        self.log = logging.getLogger("guilog")
+        self.corePermissions = corePermissions
+        self.model = AccountModel(self, connector)
+        self.setModel(self.model)
         
         self.setColumnWidth(0, 150)
         self.setColumnWidth(1, 150)
         self.setColumnWidth(2, 150)
         self.setColumnWidth(3, 150)
         
+        self.setAlternatingRowColors(True)
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)
         
-        self.delegate = AccountDelegate(self, self.model())
+        self.delegate = AccountDelegate(self, self.model)
         self.setItemDelegateForColumn(3, self.delegate)
+    
+    def setCorePermissions(self, corePermissions):
+        self.corePermissions = corePermissions
 
 class AccountDelegate(QItemDelegate):
     """
@@ -176,8 +200,9 @@ class AccountDelegate(QItemDelegate):
     
     def __init__(self, parent, model):
         QItemDelegate.__init__(self, parent)
+        self.log = logging.getLogger("guilog")
         self.model = model
-
+    
     def paint(self, painter, option, index):
         """
             paint the progressbar

@@ -16,6 +16,9 @@
     @author: mkaay
 """
 
+import logging
+import re
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -25,22 +28,27 @@ from module.gui.PackageDock import *
 from module.gui.LinkDock import *
 from module.gui.CaptchaDock import CaptchaDock
 from module.gui.SettingsWidget import SettingsWidget
-
 from module.gui.Collector import CollectorView, Package, Link
 from module.gui.Queue import QueueView
 from module.gui.Overview import OverviewView
 from module.gui.Accounts import AccountView
 from module.gui.AccountEdit import AccountEdit
+from module.gui.Tools import whatsThisFormat
 
-from module.remote.thriftbackend.ThriftClient import AccountInfo
+from module.remote.thriftbackend.ThriftClient import AccountInfo, DownloadStatus
 
 class MainWindow(QMainWindow):
-    def __init__(self, connector):
+    def __init__(self, corePermissions, connector):
         """
             set up main window
         """
         QMainWindow.__init__(self)
+        self.log = logging.getLogger("guilog")
+        self.corePermissions = corePermissions
+        self.connector = connector
+        
         #window stuff
+        self.setWindowFlags(self.windowFlags() | Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("pyLoad Client"))
         self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
         self.resize(1000,600)
@@ -52,11 +60,14 @@ class MainWindow(QMainWindow):
         self.newPackDock = NewPackageDock()
         self.addDockWidget(Qt.RightDockWidgetArea, self.newPackDock)
         self.connect(self.newPackDock, SIGNAL("done"), self.slotAddPackage)
+        self.connect(self.newPackDock, SIGNAL("parseUri"), self.slotParseUri)
         self.captchaDock = CaptchaDock()
+        self.connect(self.captchaDock, SIGNAL("visibilityChanged(bool)"), self.slotCaptchaDockVisibilityChanged)
         self.addDockWidget(Qt.BottomDockWidgetArea, self.captchaDock)
         self.newLinkDock = NewLinkDock()
         self.addDockWidget(Qt.RightDockWidgetArea, self.newLinkDock)
         self.connect(self.newLinkDock, SIGNAL("done"), self.slotAddLinksToPackage)
+        self.connect(self.newLinkDock, SIGNAL("parseUri"), self.slotParseUri)
         
         #central widget, layout
         self.masterlayout = QVBoxLayout()
@@ -83,31 +94,48 @@ class MainWindow(QMainWindow):
                 self.setFont(f)
                 self.setAlignment(Qt.AlignRight)
         
-        class Seperator(QFrame):
-            def __init__(self):
-                QFrame.__init__(self)
-                self.setFrameShape(QFrame.VLine)
-                self.setFrameShadow(QFrame.Sunken)
+        #class Seperator(QFrame):
+        #    def __init__(self):
+        #        QFrame.__init__(self)
+        #        self.setFrameShape(QFrame.VLine)
+        #        self.setFrameShadow(QFrame.Sunken)
         
-        l.addWidget(BoldLabel(_("Packages:")), 0, 0)
-        self.packageCount = QLabel("0")
-        l.addWidget(self.packageCount, 0, 1)
+        class StwItem(QWidget):
+            def __init__(self, lbl1, lbl2, wthis):
+                QWidget.__init__(self)
+                hbox = QHBoxLayout()
+                hbox.setContentsMargins(0, 0, 0, 0)
+                hbox.addStretch(1)
+                hbox.addWidget(lbl1)
+                hbox.addWidget(lbl2)
+                hbox.addStretch(1)
+                self.setLayout(hbox)
+                self.setWhatsThis(wthis)
         
-        l.addWidget(BoldLabel(_("Files:")), 0, 2)
-        self.fileCount = QLabel("0")
-        l.addWidget(self.fileCount, 0, 3)
+        packageCountBl = BoldLabel(_("Packages") + ":")
+        self.packageCount = QLabel()
+        sitem = StwItem(packageCountBl, self.packageCount, whatsThisFormat(_("Packages"), _("The number of packages in the Queue.")))
+        l.addWidget(sitem, 0, 0, 1, 1)
         
-        l.addWidget(BoldLabel(_("Status:")), 0, 4)
-        self.status = QLabel("running")
-        l.addWidget(self.status, 0, 5)
+        fileCountBl = BoldLabel(_("Links") + ":")
+        self.fileCount = QLabel()
+        sitem = StwItem(fileCountBl, self.fileCount, whatsThisFormat(_("Links"), _("The number of links in the Queue.")))
+        l.addWidget(sitem, 0, 1, 1, 1)
         
-        l.addWidget(BoldLabel(_("Space:")), 0, 6)
-        self.space = QLabel("")
-        l.addWidget(self.space, 0, 7)
+        statusBl = BoldLabel(_("Status") + ":")
+        self.status = QLabel()
+        sitem = StwItem(statusBl, self.status, whatsThisFormat(_("Status"), _("It shows 'Running' or 'Paused'.")))
+        l.addWidget(sitem, 0, 2, 1, 1)
         
-        l.addWidget(BoldLabel(_("Speed:")), 0, 8)
-        self.speed = QLabel("")
-        l.addWidget(self.speed, 0, 9)
+        spaceBl = BoldLabel(_("Space") + ":")
+        self.space = QLabel()
+        sitem = StwItem(spaceBl, self.space, whatsThisFormat(_("Space"), _("The free space in the download folder.")))
+        l.addWidget(sitem, 0, 3, 1, 1)
+        
+        speedBl = BoldLabel(_("Speed") + ":")
+        self.speed = QLabel()
+        sitem = StwItem(speedBl, self.speed, whatsThisFormat(_("Speed"), _("The actual download speed.")))
+        l.addWidget(sitem, 0, 4, 1, 1)
         
         #l.addWidget(BoldLabel(_("Max. downloads:")), 0, 9)
         #l.addWidget(BoldLabel(_("Max. chunks:")), 1, 9)
@@ -127,15 +155,55 @@ class MainWindow(QMainWindow):
         
         #menu
         self.menus = {"file": self.menubar.addMenu(_("File")),
-                      "connections": self.menubar.addMenu(_("Connections"))}
+                      "options": self.menubar.addMenu(_("Options")),
+                      "view": self.menubar.addMenu(_("View")),
+                      "help": self.menubar.addMenu(_("Help"))}
 
         #menu actions
-        self.mactions = {"exit": QAction(_("Exit"), self.menus["file"]),
-                         "manager": QAction(_("Connection manager"), self.menus["connections"])}
+        self.mactions = {"manager": QAction(_("Connection Manager"), self.menus["file"]),
+                         "coreperms": QAction(_("Server Permissions"), self.menus["file"]),
+                         "quitcore": QAction(_("Quit pyLoad Server"), self.menus["file"]),
+                         "restartcore": QAction(_("Restart pyLoad Server"), self.menus["file"]),
+                         "exit": QAction(_("Exit"), self.menus["file"]),
+                         "notifications": QAction(_("Desktop Notifications"), self.menus["options"]),
+                         "logging": QAction(_("Client Log"), self.menus["options"]),
+                         "cnlfwding": QAction(_("ClickNLoad Forwarding"), self.menus["options"]),
+                         "autoreloading": QAction(_("Automatic Reloading"), self.menus["options"]),
+                         "fonts": QAction(_("Fonts"), self.menus["options"]),
+                         "tray": QAction(_("Tray"), self.menus["options"]),
+                         "language": QAction(_("Language"), self.menus["options"]),
+                         "reload": QAction(_("Reload"), self.menus["view"]),
+                         "showtoolbar": QAction(_("Show Toolbar"), self.menus["view"]),
+                         "showspeedlimit": QAction(_("Show Speed Limit"), self.menus["view"]),
+                         "showcaptcha": QAction(_("Show Captcha"), self.menus["view"]),
+                         "about": QAction(_("About pyLoad Client"), self.menus["help"])}
+        
+        self.mactions["showtoolbar"].setCheckable(True)
+        self.mactions["showspeedlimit"].setCheckable(True)
+        self.mactions["showspeedlimit"].setChecked(True)
+        self.mactions["showcaptcha"].setCheckable(True)
 
         #add menu actions
+        self.menus["file"].addAction(self.mactions["manager"])
+        self.menus["file"].addAction(self.mactions["coreperms"])
+        self.menus["file"].addSeparator()
+        self.menus["file"].addAction(self.mactions["quitcore"])
+        self.menus["file"].addAction(self.mactions["restartcore"])
+        self.menus["file"].addSeparator()
         self.menus["file"].addAction(self.mactions["exit"])
-        self.menus["connections"].addAction(self.mactions["manager"])
+        self.menus["options"].addAction(self.mactions["notifications"])
+        self.menus["options"].addAction(self.mactions["logging"])
+        self.menus["options"].addAction(self.mactions["cnlfwding"])
+        self.menus["options"].addAction(self.mactions["autoreloading"])
+        self.menus["options"].addAction(self.mactions["fonts"])
+        self.menus["options"].addAction(self.mactions["tray"])
+        self.menus["options"].addAction(self.mactions["language"])
+        self.menus["view"].addAction(self.mactions["reload"])
+        self.menus["view"].addSeparator()
+        self.menus["view"].addAction(self.mactions["showtoolbar"])
+        self.menus["view"].addAction(self.mactions["showspeedlimit"])
+        self.menus["view"].addAction(self.mactions["showcaptcha"])
+        self.menus["help"].addAction(self.mactions["about"])
         
         #toolbar
         self.actions = {}
@@ -149,19 +217,21 @@ class MainWindow(QMainWindow):
                      "accounts": {"w": QWidget()},
                      "settings": {}}
         #self.tabs["settings"]["s"] = QScrollArea()
-        self.tabs["settings"]["w"] = SettingsWidget()
+        self.tabs["settings"]["w"] = SettingsWidget(self.corePermissions)
         #self.tabs["settings"]["s"].setWidgetResizable(True)
         #self.tabs["settings"]["s"].setWidget(self.tabs["settings"]["w"])
-        self.tabs["log"] = {"w":QWidget()}
+        self.tabs["guilog"] = {"w":QWidget()}
+        self.tabs["corelog"] = {"w":QWidget()}
         self.tabw.addTab(self.tabs["overview"]["w"], _("Overview"))
         self.tabw.addTab(self.tabs["queue"]["w"], _("Queue"))
         self.tabw.addTab(self.tabs["collector"]["w"], _("Collector"))
         self.tabw.addTab(self.tabs["accounts"]["w"], _("Accounts"))
-        self.tabw.addTab(self.tabs["settings"]["w"], _("Settings"))
-        self.tabw.addTab(self.tabs["log"]["w"], _("Log"))
+        self.tabw.addTab(self.tabs["guilog"]["w"], _("Log"))
+        self.tabw.addTab(self.tabs["settings"]["w"], _("Server Settings"))
+        self.tabw.addTab(self.tabs["corelog"]["w"], _("Server Log"))
         
         #init tabs
-        self.init_tabs(connector)
+        self.init_tabs(self.connector)
         
         #context menus
         self.init_context()
@@ -171,96 +241,266 @@ class MainWindow(QMainWindow):
         self.masterlayout.addWidget(self.statusw)
         
         #signals..
+        self.connect(self.mactions["notifications"], SIGNAL("triggered()"), self.slotShowNotificationOptions)
+        self.connect(self.mactions["logging"], SIGNAL("triggered()"), self.slotShowLoggingOptions)
+        self.connect(self.mactions["cnlfwding"], SIGNAL("triggered()"), self.slotShowClickNLoadForwarderOptions)
+        self.connect(self.mactions["autoreloading"], SIGNAL("triggered()"), self.slotShowAutomaticReloadingOptions)
+        self.connect(self.mactions["fonts"], SIGNAL("triggered()"), self.slotShowFontOptions)
+        self.connect(self.mactions["tray"], SIGNAL("triggered()"), self.slotShowTrayOptions)
+        self.connect(self.mactions["language"], SIGNAL("triggered()"), self.slotShowLanguageOptions)
         self.connect(self.mactions["manager"], SIGNAL("triggered()"), self.slotShowConnector)
+        self.connect(self.mactions["coreperms"], SIGNAL("triggered()"), self.slotShowCorePermissions)
+        self.connect(self.mactions["quitcore"], SIGNAL("triggered()"), self.slotQuitCore)
+        self.connect(self.mactions["restartcore"], SIGNAL("triggered()"), self.slotRestartCore)
+        self.connect(self.mactions["showtoolbar"], SIGNAL("toggled(bool)"), self.slotToggleToolbar)
+        self.connect(self.mactions["showspeedlimit"], SIGNAL("toggled(bool)"), self.slotToggleSpeedLimitVisibility)
+        self.connect(self.mactions["showcaptcha"], SIGNAL("toggled(bool)"), self.slotToggleCaptchaDock)
+        self.connect(self.mactions["reload"], SIGNAL("triggered()"), self.slotReload)
+        self.connect(self.mactions["about"], SIGNAL("triggered()"), self.slotShowAbout)
         
         self.connect(self.tabs["queue"]["view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotQueueContextMenu)
-        self.connect(self.tabs["collector"]["package_view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotCollectorContextMenu)
+        self.connect(self.tabs["collector"]["view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotCollectorContextMenu)
         self.connect(self.tabs["accounts"]["view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotAccountContextMenu)
         
         self.connect(self.tabw, SIGNAL("currentChanged(int)"), self.slotTabChanged)
         
-        self.lastAddedID = None
+        self.notificationOptions = NotificationOptions()
+        self.trayOptions = TrayOptions()
+    
+        self.setFocus()
+    
+    def setCorePermissions(self, corePermissions):
+        self.corePermissions = corePermissions
         
-        self.connector = connector
+        self.tabs["queue"]["view"].setCorePermissions(corePermissions)
+        self.tabs["queue"]["w"].setEnabled(corePermissions["LIST"])
+        self.tabs["overview"]["w"].setEnabled(corePermissions["LIST"])
+        self.tabs["collector"]["view"].setCorePermissions(corePermissions)
+        self.tabs["collector"]["w"].setEnabled(corePermissions["LIST"])
+        self.mactions["reload"].setEnabled(corePermissions["LIST"])
+        
+        self.tabs["queue"]["b"].setEnabled(corePermissions["MODIFY"])
+        self.tabs["collector"]["b"].setEnabled(corePermissions["MODIFY"])
+        self.actions["restart_failed"].setEnabled(corePermissions["MODIFY"])
+        # Api.setPackageData
+        self.newPackDock.widget.passwordLabel.setEnabled(corePermissions["MODIFY"])
+        self.newPackDock.widget.passwordInput.setEnabled(corePermissions["MODIFY"])
+        
+        # Api.addFiles
+        self.newLinkDock.widget.setEnabled(corePermissions["ADD"])
+        self.actions["add_links"].setEnabled(corePermissions["ADD"])
+        # Api.addPackage
+        self.newPackDock.widget.setEnabled(corePermissions["ADD"])
+        self.actions["add_package"].setEnabled(corePermissions["ADD"])
+        if not corePermissions["ADD"]:
+            self.actions["clipboard"].setChecked(False)
+            self.actions["clipboard"].setEnabled(False)
+        # Api.uploadContainer
+        self.actions["add_container"].setEnabled(corePermissions["ADD"])
+        # Context menu 'Add' entry
+        self.queueContext.buttons["add"].setEnabled(corePermissions["ADD"])
+        self.collectorContext.buttons["add"].setEnabled(corePermissions["ADD"])
+        
+        # Api.deleteFinished
+        self.actions["remove_finished"].setEnabled(corePermissions["DELETE"])
+        
+        # Api.pauseServer and Api.unpauseServer
+        self.actions["toggle_status"].setEnabled(corePermissions["STATUS"])
+        
+        # 'Abort All' toolbar button
+        if not corePermissions["MODIFY"]:
+            self.actions["status_stop"].setEnabled(False)
+        elif not corePermissions["STATUS"]:
+            self.actions["status_stop"].setIcon(self.statusStopIconNoPause)
+            self.actions["status_stop"].setToolTip(_("Cannot set pause mode!"))
+        
+        # Speed Limit in toolbar
+        if not corePermissions["SETTINGS"]:
+            self.actions["speedlimit_enabled"].setEnabled(False)
+            self.actions["speedlimit_rate"].setEnabled(False)
+        
+        # Server Settings Tab
+        self.tabs["settings"]["w"].setCorePermissions(corePermissions)
+        self.tabs["settings"]["w"].setEnabled(corePermissions["SETTINGS"])
+        
+        # Server Log
+        if corePermissions["LOGS"]:
+            self.tabs["corelog"]["text"].setText("")
+        else:
+            self.tabs["corelog"]["text"].setText(_("Insufficient server permissions."))
+        self.tabs["corelog"]["text"].setEnabled(corePermissions["LOGS"])
+        
+        # Accounts Tab
+        self.tabs["accounts"]["view"].setCorePermissions(corePermissions)
+        self.tabs["accounts"]["w"].setEnabled(corePermissions["ACCOUNTS"])
+        self.actions["add_account"].setEnabled(corePermissions["ACCOUNTS"])
+        
+        # Disable toolbar 'Add' button when all popup-menu entries are disabled 
+        disableAdd = True
+        for act in self.addMenu.actions():
+            if act.isSeparator():
+                continue
+            disableAdd = disableAdd and not act.isEnabled()
+        self.actions["add"].setDisabled(disableAdd)
+        
+        # admin permissions
+        self.mactions["quitcore"].setEnabled(corePermissions["admin"])
+        self.mactions["restartcore"].setEnabled(corePermissions["admin"])
+    
+    def createPopupMenu(self):
+        """
+            disables default popup menu
+        """
+        return
     
     def init_toolbar(self):
         """
             create toolbar
         """
-        self.toolbar = self.addToolBar(_("Hide Toolbar"))
+        self.toolbar = self.addToolBar("toolbar")
+        self.connect(self.toolbar, SIGNAL("visibilityChanged(bool)"), self.slotToolbarVisibilityChanged)
         self.toolbar.setObjectName("Main Toolbar")
         self.toolbar.setIconSize(QSize(30,30))
         self.toolbar.setMovable(False)
-        self.actions["toggle_status"] = self.toolbar.addAction(_("Toggle Pause/Resume"))
-        pricon = QIcon()
-        pricon.addFile(join(pypath, "icons","toolbar_start.png"), QSize(), QIcon.Normal, QIcon.Off)
-        pricon.addFile(join(pypath, "icons","toolbar_pause.png"), QSize(), QIcon.Normal, QIcon.On)
-        self.actions["toggle_status"].setIcon(pricon)
+        self.actions["toggle_status"] = self.toolbar.addAction("")
+        self.actions["toggle_status"].setWhatsThis(whatsThisFormat(_("Toggle Pause"), _("When the server is in pause mode, no further downloads will be started. Ongoing downloads continue.")))
+        self.toggleStatusIconPause = QIcon(join(pypath, "icons","toolbar_pause.png"))
+        self.toggleStatusIconStart = QIcon(join(pypath, "icons","toolbar_start.png"))
+        self.actions["toggle_status"].setIcon(self.toggleStatusIconStart)
         self.actions["toggle_status"].setCheckable(True)
-        self.actions["status_stop"] = self.toolbar.addAction(QIcon(join(pypath, "icons","toolbar_stop.png")), _("Stop"))
+        self.actions["toggle_status"].setChecked(False)
+        self.actions["status_stop"] = self.toolbar.addAction("")
+        self.actions["status_stop"].setWhatsThis(whatsThisFormat(_("Abort All"), _("Aborts all ongoing downloads and sets the server to pause mode.")))
+        self.statusStopIcon = QIcon(join(pypath, "icons","toolbar_stop.png"))
+        self.statusStopIconNoPause = QIcon(join(pypath, "icons","toolbar_stop_nopause.png"))
+        self.actions["status_stop"].setIcon(self.statusStopIcon)
         self.toolbar.addSeparator()
-        self.actions["add"] = self.toolbar.addAction(QIcon(join(pypath, "icons","toolbar_add.png")), _("Add"))
+        self.actions["add"] = self.toolbar.addAction(QIcon(join(pypath, "icons","toolbar_add.png")), "")
+        self.actions["add"].setWhatsThis(whatsThisFormat(_("Add"), _("- Create a new package<br>- Add links to an existing package<br>- Add a container file to the Queue<br>- Add an account")))
         self.toolbar.addSeparator()
-        self.actions["clipboard"] = self.toolbar.addAction(QIcon(join(pypath, "icons","clipboard.png")), _("Check Clipboard"))
+        self.actions["clipboard"] = self.toolbar.addAction(QIcon(join(pypath, "icons","clipboard.png")), "")
+        self.actions["clipboard"].setWhatsThis(whatsThisFormat(_("Check Clipboard"), _("Watches the clipboard, extracts URLs from copied text and creates a package with the URLs in the Collector.")))
         self.actions["clipboard"].setCheckable(True)
-        
+        stretch1 = QWidget()
+        stretch1.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.toolbar.addWidget(stretch1)
+        whatsThis = (_("Download Speed Limit in kb/s"), _("This is just a shortcut to:") + "<br>" + _("Server Settings") + " -> General -> Download")
+        self.toolbar_speedLimit_enabled = QCheckBox(_("Speed"))
+        self.toolbar_speedLimit_enabled.setWhatsThis(whatsThisFormat(*whatsThis))
+        self.toolbar_speedLimit_rate = SpinBox()
+        self.toolbar_speedLimit_rate.setWhatsThis(whatsThisFormat(*whatsThis))
+        self.toolbar_speedLimit_rate.setMinimum(0)
+        self.toolbar_speedLimit_rate.setMaximum(999999)
+        self.actions["speedlimit_enabled"] = self.toolbar.addWidget(self.toolbar_speedLimit_enabled)
+        self.actions["speedlimit_rate"] = self.toolbar.addWidget(self.toolbar_speedLimit_rate)
+        self.actions["speedlimit_rate"].setEnabled(False)
+        self.actions["speedlimit_enabled"].setEnabled(False)
+        stretch2 = QWidget()
+        stretch2.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.toolbar.addWidget(stretch2)
+        self.actions["restart_failed"] = self.toolbar.addAction(QIcon(join(pypath, "icons","toolbar_refresh.png")), "")
+        self.actions["restart_failed"].setWhatsThis(whatsThisFormat(_("Restart Failed"), _("Restarts (resumes if supported) all failed, aborted and temporary offline downloads.")))
+        self.actions["remove_finished"] = self.toolbar.addAction(QIcon(join(pypath, "icons","toolbar_remove.png")), "")
+        self.actions["remove_finished"].setWhatsThis(whatsThisFormat(_("Remove Finished"), _("Removes all finished downloads from the Queue and the Collector.")))
         self.connect(self.actions["toggle_status"], SIGNAL("toggled(bool)"), self.slotToggleStatus)
         self.connect(self.actions["clipboard"], SIGNAL("toggled(bool)"), self.slotToggleClipboard)
+        self.connect(self.toolbar_speedLimit_enabled, SIGNAL("toggled(bool)"), self.slotSpeedLimitStatus)
+        self.connect(self.toolbar_speedLimit_rate, SIGNAL("editingFinished()"), self.slotSpeedLimitRate)
         self.connect(self.actions["status_stop"], SIGNAL("triggered()"), self.slotStatusStop)
+        self.connect(self.actions["restart_failed"], SIGNAL("triggered()"), self.slotRestartFailed)
+        self.connect(self.actions["remove_finished"], SIGNAL("triggered()"), self.slotRemoveFinished)
+        
         self.addMenu = QMenu()
-        packageAction = self.addMenu.addAction(_("Package"))
-        containerAction = self.addMenu.addAction(_("Container"))
-        accountAction = self.addMenu.addAction(_("Account"))
-        linksAction = self.addMenu.addAction(_("Links"))
+        self.actions["add_package"] = self.addMenu.addAction(_("Package"))
+        self.actions["add_links"] = self.addMenu.addAction(_("Links"))
+        self.actions["add_container"] = self.addMenu.addAction(_("Container"))
+        self.addMenu.addSeparator()
+        self.actions["add_account"] = self.addMenu.addAction(_("Account"))
         self.connect(self.actions["add"], SIGNAL("triggered()"), self.slotAdd)
-        self.connect(packageAction, SIGNAL("triggered()"), self.slotShowAddPackage)
-        self.connect(containerAction, SIGNAL("triggered()"), self.slotShowAddContainer)
-        self.connect(accountAction, SIGNAL("triggered()"), self.slotNewAccount)
-        self.connect(linksAction, SIGNAL("triggered()"), self.slotShowAddLinks)
+        self.connect(self.actions["add_package"], SIGNAL("triggered()"), self.slotShowAddPackage)
+        self.connect(self.actions["add_links"], SIGNAL("triggered()"), self.slotShowAddLinks)
+        self.connect(self.actions["add_container"], SIGNAL("triggered()"), self.slotShowAddContainer)
+        self.connect(self.actions["add_account"], SIGNAL("triggered()"), self.slotNewAccount)
     
     def init_tabs(self, connector):
         """
             create tabs
         """
+        #queue
+        self.tabs["queue"]["b"] = QPushButton(_("Pull Out Selected Packages"))
+        self.tabs["queue"]["b"].setIcon(QIcon(join(pypath, "icons","pull_small.png")))
+        self.tabs["queue"]["m"] = QLabel("<b>" + _("To drop the items in the order they were selected, hold the ALT key when releasing the mouse button!") + "</b>")
+        lsp = self.tabs["queue"]["m"].sizePolicy()
+        lsp.setHorizontalPolicy(QSizePolicy.Ignored)
+        self.tabs["queue"]["m"].setSizePolicy(lsp)
+        self.tabs["queue"]["l"] = QGridLayout()
+        self.tabs["queue"]["w"].setLayout(self.tabs["queue"]["l"])
+        self.tabs["queue"]["view"] = QueueView(self.corePermissions, connector)
+        self.tabs["queue"]["l"].addWidget(self.tabs["queue"]["view"], 0, 0)
+        self.tabs["queue"]["l"].addWidget(self.tabs["queue"]["b"], 1, 0)
+        self.tabs["queue"]["l"].addWidget(self.tabs["queue"]["m"], 1, 0)
+        self.tabs["queue"]["w"].adjustSize()
+        self.tabs["queue"]["m"].setFixedHeight(self.tabs["queue"]["b"].height())
+        self.tabs["queue"]["m"].hide()
+        self.connect(self.tabs["queue"]["b"], SIGNAL("clicked()"), self.slotPullOutPackages)
+        self.connect(self.tabs["queue"]["view"], SIGNAL("queueMsgShow"), self.slotQueueMsgShow)
+        self.connect(self.tabs["queue"]["view"], SIGNAL("queueMsgHide"), self.slotQueueMsgHide)
+        self.tabs["queue"]["view"].setContextMenuPolicy(Qt.CustomContextMenu)
+        
         #overview
         self.tabs["overview"]["l"] = QGridLayout()
         self.tabs["overview"]["w"].setLayout(self.tabs["overview"]["l"])
-        self.tabs["overview"]["view"] = OverviewView(connector)
+        self.tabs["overview"]["view"] = OverviewView(self.tabs["queue"]["view"].model)
         self.tabs["overview"]["l"].addWidget(self.tabs["overview"]["view"])
         
-        #queue
-        self.tabs["queue"]["l"] = QGridLayout()
-        self.tabs["queue"]["w"].setLayout(self.tabs["queue"]["l"])
-        self.tabs["queue"]["view"] = QueueView(connector)
-        self.tabs["queue"]["l"].addWidget(self.tabs["queue"]["view"])
-        
         #collector
-        toQueue = QPushButton(_("Push selected packages to queue"))
+        self.tabs["collector"]["b"] = QPushButton(_("Push Selected Packages to Queue"))
+        self.tabs["collector"]["b"].setIcon(QIcon(join(pypath, "icons","push_small.png")))
+        self.tabs["collector"]["m"] = QLabel("<b>" + _("To drop the items in the order they were selected, hold the ALT key when releasing the mouse button!") + "</b>")
+        lsp = self.tabs["collector"]["m"].sizePolicy()
+        lsp.setHorizontalPolicy(QSizePolicy.Ignored)
+        self.tabs["collector"]["m"].setSizePolicy(lsp)
         self.tabs["collector"]["l"] = QGridLayout()
         self.tabs["collector"]["w"].setLayout(self.tabs["collector"]["l"])
-        self.tabs["collector"]["package_view"] = CollectorView(connector)
-        self.tabs["collector"]["l"].addWidget(self.tabs["collector"]["package_view"], 0, 0)
-        self.tabs["collector"]["l"].addWidget(toQueue, 1, 0)
-        self.connect(toQueue, SIGNAL("clicked()"), self.slotPushPackageToQueue)
-        self.tabs["collector"]["package_view"].setContextMenuPolicy(Qt.CustomContextMenu)
-        self.tabs["queue"]["view"].setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tabs["collector"]["view"] = CollectorView(self.corePermissions, connector)
+        self.tabs["collector"]["l"].addWidget(self.tabs["collector"]["view"], 0, 0)
+        self.tabs["collector"]["l"].addWidget(self.tabs["collector"]["b"], 1, 0)
+        self.tabs["collector"]["l"].addWidget(self.tabs["collector"]["m"], 1, 0)
+        self.tabs["collector"]["w"].adjustSize()
+        self.tabs["collector"]["m"].setFixedHeight(self.tabs["collector"]["b"].height())
+        self.tabs["collector"]["m"].hide()
+        self.connect(self.tabs["collector"]["b"], SIGNAL("clicked()"), self.slotPushPackagesToQueue)
+        self.connect(self.tabs["collector"]["view"], SIGNAL("collectorMsgShow"), self.slotCollectorMsgShow)
+        self.connect(self.tabs["collector"]["view"], SIGNAL("collectorMsgHide"), self.slotCollectorMsgHide)
+        self.tabs["collector"]["view"].setContextMenuPolicy(Qt.CustomContextMenu)
         
-        #log
-        self.tabs["log"]["l"] = QGridLayout()
-        self.tabs["log"]["w"].setLayout(self.tabs["log"]["l"])
-        self.tabs["log"]["text"] = QTextEdit()
-        self.tabs["log"]["text"].logOffset = 0
-        self.tabs["log"]["text"].setReadOnly(True)
-        self.connect(self.tabs["log"]["text"], SIGNAL("append(QString)"), self.tabs["log"]["text"].append)
-        self.tabs["log"]["l"].addWidget(self.tabs["log"]["text"])
+        #gui log
+        self.tabs["guilog"]["l"] = QGridLayout()
+        self.tabs["guilog"]["w"].setLayout(self.tabs["guilog"]["l"])
+        self.tabs["guilog"]["text"] = QTextEdit()
+        self.tabs["guilog"]["text"].setLineWrapMode(QTextEdit.NoWrap)
+        self.tabs["guilog"]["text"].logOffset = 0
+        self.tabs["guilog"]["text"].setReadOnly(True)
+        self.connect(self.tabs["guilog"]["text"], SIGNAL("append(QString)"), self.tabs["guilog"]["text"].append)
+        self.tabs["guilog"]["l"].addWidget(self.tabs["guilog"]["text"])
+        
+        #core log
+        self.tabs["corelog"]["l"] = QGridLayout()
+        self.tabs["corelog"]["w"].setLayout(self.tabs["corelog"]["l"])
+        self.tabs["corelog"]["text"] = QTextEdit()
+        self.tabs["corelog"]["text"].setLineWrapMode(QTextEdit.NoWrap)
+        self.tabs["corelog"]["text"].logOffset = 0
+        self.tabs["corelog"]["text"].setReadOnly(True)
+        self.connect(self.tabs["corelog"]["text"], SIGNAL("append(QString)"), self.tabs["corelog"]["text"].append)
+        self.tabs["corelog"]["l"].addWidget(self.tabs["corelog"]["text"])
         
         #accounts
-        self.tabs["accounts"]["view"] = AccountView(connector)
+        self.tabs["accounts"]["view"] = AccountView(self.corePermissions, connector)
         self.tabs["accounts"]["w"].setLayout(QVBoxLayout())
         self.tabs["accounts"]["w"].layout().addWidget(self.tabs["accounts"]["view"])
-        newbutton = QPushButton(_("New Account"))
-        self.tabs["accounts"]["w"].layout().addWidget(newbutton)
-        self.connect(newbutton, SIGNAL("clicked()"), self.slotNewAccount)
+        self.tabs["accounts"]["b"] = QPushButton(_("New Account"))
+        self.tabs["accounts"]["w"].layout().addWidget(self.tabs["accounts"]["b"])
+        self.connect(self.tabs["accounts"]["b"], SIGNAL("clicked()"), self.slotNewAccount)
         self.tabs["accounts"]["view"].setContextMenuPolicy(Qt.CustomContextMenu)
     
     def init_context(self):
@@ -268,60 +508,97 @@ class MainWindow(QMainWindow):
             create context menus
         """
         self.activeMenu = None
+        
         #queue
         self.queueContext = QMenu()
         self.queueContext.buttons = {}
         self.queueContext.item = (None, None)
+        self.queueContext.buttons["pull"] = QAction(QIcon(join(pypath, "icons","pull_small.png")), _("Pull Out"), self.queueContext)
+        self.queueContext.buttons["edit"] = QAction(QIcon(join(pypath, "icons","edit_small.png")), _("Edit"), self.queueContext)
         self.queueContext.buttons["remove"] = QAction(QIcon(join(pypath, "icons","remove_small.png")), _("Remove"), self.queueContext)
         self.queueContext.buttons["restart"] = QAction(QIcon(join(pypath, "icons","refresh_small.png")), _("Restart"), self.queueContext)
-        self.queueContext.buttons["pull"] = QAction(QIcon(join(pypath, "icons","pull_small.png")), _("Pull out"), self.queueContext)
         self.queueContext.buttons["abort"] = QAction(QIcon(join(pypath, "icons","abort.png")), _("Abort"), self.queueContext)
-        self.queueContext.buttons["edit"] = QAction(QIcon(join(pypath, "icons","edit_small.png")), _("Edit Name"), self.queueContext)
+        self.queueContext.buttons["selectallpacks"] = QAction(_("Select All Packages"), self.queueContext)
+        self.queueContext.buttons["deselectall"] = QAction(_("Deselect All"), self.queueContext)
+        self.queueContext.buttons["expand"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarHorizontalExtensionButton), _("Expand All"), self.queueContext)
+        self.queueContext.buttons["collapse"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarVerticalExtensionButton), _("Collapse All"), self.queueContext)
         self.queueContext.addAction(self.queueContext.buttons["pull"])
+        self.queueContext.addSeparator()
+        self.queueContext.buttons["add"] = self.queueContext.addMenu(QIcon(join(pypath, "icons","add_small.png")), _("Add"))
+        self.queueContext.buttons["add_package"] = self.queueContext.buttons["add"].addAction(_("Package"))
+        self.queueContext.buttons["add_container"] = self.queueContext.buttons["add"].addAction(_("Container"))
+        self.queueContext.buttons["add_links"] = self.queueContext.buttons["add"].addAction(_("Links"))
         self.queueContext.addAction(self.queueContext.buttons["edit"])
         self.queueContext.addAction(self.queueContext.buttons["remove"])
         self.queueContext.addAction(self.queueContext.buttons["restart"])
+        self.queueContext.addSeparator()
         self.queueContext.addAction(self.queueContext.buttons["abort"])
-        self.connect(self.queueContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveDownload)
-        self.connect(self.queueContext.buttons["restart"], SIGNAL("triggered()"), self.slotRestartDownload)
-        self.connect(self.queueContext.buttons["pull"], SIGNAL("triggered()"), self.slotPullOutPackage)
-        self.connect(self.queueContext.buttons["abort"], SIGNAL("triggered()"), self.slotAbortDownload)
-        self.connect(self.queueContext.buttons["edit"], SIGNAL("triggered()"), self.slotEditPackage)
+        self.queueContext.addSeparator()
+        self.queueContext.addAction(self.queueContext.buttons["selectallpacks"])
+        self.queueContext.addAction(self.queueContext.buttons["deselectall"])
+        self.queueContext.addSeparator()
+        self.queueContext.addAction(self.queueContext.buttons["expand"])
+        self.queueContext.addAction(self.queueContext.buttons["collapse"])
+        self.connect(self.queueContext.buttons["pull"], SIGNAL("triggered()"), self.slotPullOutPackages)
+        self.connect(self.queueContext.buttons["add_package"], SIGNAL("triggered()"), self.slotShowAddPackage)
+        self.connect(self.queueContext.buttons["add_container"], SIGNAL("triggered()"), self.slotShowAddContainer)
+        self.connect(self.queueContext.buttons["add_links"], SIGNAL("triggered()"), self.slotShowAddLinks)
+        self.connect(self.queueContext.buttons["edit"], SIGNAL("triggered()"), self.slotEditPackages)
+        self.connect(self.queueContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveDownloads)
+        self.connect(self.queueContext.buttons["restart"], SIGNAL("triggered()"), self.slotRestartDownloads)
+        self.connect(self.queueContext.buttons["abort"], SIGNAL("triggered()"), self.slotAbortDownloads)
+        self.connect(self.queueContext.buttons["selectallpacks"], SIGNAL("triggered()"), self.slotSelectAllPackages)
+        self.connect(self.queueContext.buttons["deselectall"], SIGNAL("triggered()"), self.slotDeselectAll)
+        self.connect(self.queueContext.buttons["expand"], SIGNAL("triggered()"), self.slotExpandAll)
+        self.connect(self.queueContext.buttons["collapse"], SIGNAL("triggered()"), self.slotCollapseAll)
         
         #collector
         self.collectorContext = QMenu()
         self.collectorContext.buttons = {}
         self.collectorContext.item = (None, None)
+        self.collectorContext.buttons["push"] = QAction(QIcon(join(pypath, "icons","push_small.png")), _("Push to Queue"), self.collectorContext)
+        self.collectorContext.buttons["edit"] = QAction(QIcon(join(pypath, "icons","edit_small.png")), _("Edit"), self.collectorContext)
         self.collectorContext.buttons["remove"] = QAction(QIcon(join(pypath, "icons","remove_small.png")), _("Remove"), self.collectorContext)
-        self.collectorContext.buttons["push"] = QAction(QIcon(join(pypath, "icons","push_small.png")), _("Push to queue"), self.collectorContext)
-        self.collectorContext.buttons["edit"] = QAction(QIcon(join(pypath, "icons","edit_small.png")), _("Edit Name"), self.collectorContext)
         self.collectorContext.buttons["restart"] = QAction(QIcon(join(pypath, "icons","refresh_small.png")), _("Restart"), self.collectorContext)
-        self.collectorContext.buttons["refresh"] = QAction(QIcon(join(pypath, "icons","refresh1_small.png")),_("Refresh Status"), self.collectorContext)
+        self.collectorContext.buttons["abort"] = QAction(QIcon(join(pypath, "icons","abort.png")), _("Abort"), self.collectorContext)
+        self.collectorContext.buttons["selectallpacks"] = QAction(_("Select All Packages"), self.collectorContext)
+        self.collectorContext.buttons["deselectall"] = QAction(_("Deselect All"), self.collectorContext)
+        self.collectorContext.buttons["expand"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarHorizontalExtensionButton), _("Expand All"), self.collectorContext)
+        self.collectorContext.buttons["collapse"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarVerticalExtensionButton), _("Collapse All"), self.collectorContext)
         self.collectorContext.addAction(self.collectorContext.buttons["push"])
         self.collectorContext.addSeparator()
         self.collectorContext.buttons["add"] = self.collectorContext.addMenu(QIcon(join(pypath, "icons","add_small.png")), _("Add"))
+        self.collectorContext.buttons["add_package"] = self.collectorContext.buttons["add"].addAction(_("Package"))
+        self.collectorContext.buttons["add_links"] = self.collectorContext.buttons["add"].addAction(_("Links"))
         self.collectorContext.addAction(self.collectorContext.buttons["edit"])
         self.collectorContext.addAction(self.collectorContext.buttons["remove"])
         self.collectorContext.addAction(self.collectorContext.buttons["restart"])
         self.collectorContext.addSeparator()
-        self.collectorContext.addAction(self.collectorContext.buttons["refresh"])
-        packageAction = self.collectorContext.buttons["add"].addAction(_("Package"))
-        containerAction = self.collectorContext.buttons["add"].addAction(_("Container"))
-        linkAction = self.collectorContext.buttons["add"].addAction(_("Links"))
-        self.connect(self.collectorContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveDownload)
-        self.connect(self.collectorContext.buttons["push"], SIGNAL("triggered()"), self.slotPushPackageToQueue)
-        self.connect(self.collectorContext.buttons["edit"], SIGNAL("triggered()"), self.slotEditPackage)
-        self.connect(self.collectorContext.buttons["restart"], SIGNAL("triggered()"), self.slotRestartDownload)
-        self.connect(self.collectorContext.buttons["refresh"], SIGNAL("triggered()"), self.slotRefreshPackage)
-        self.connect(packageAction, SIGNAL("triggered()"), self.slotShowAddPackage)
-        self.connect(containerAction, SIGNAL("triggered()"), self.slotShowAddContainer)
-        self.connect(linkAction, SIGNAL("triggered()"), self.slotShowAddLinks)
+        self.collectorContext.addAction(self.collectorContext.buttons["abort"])
+        self.collectorContext.addSeparator()
+        self.collectorContext.addAction(self.collectorContext.buttons["selectallpacks"])
+        self.collectorContext.addAction(self.collectorContext.buttons["deselectall"])
+        self.collectorContext.addSeparator()
+        self.collectorContext.addAction(self.collectorContext.buttons["expand"])
+        self.collectorContext.addAction(self.collectorContext.buttons["collapse"])
+        self.connect(self.collectorContext.buttons["push"], SIGNAL("triggered()"), self.slotPushPackagesToQueue)
+        self.connect(self.collectorContext.buttons["add_package"], SIGNAL("triggered()"), self.slotShowAddPackage)
+        self.connect(self.collectorContext.buttons["add_links"], SIGNAL("triggered()"), self.slotShowAddLinks)
+        self.connect(self.collectorContext.buttons["edit"], SIGNAL("triggered()"), self.slotEditPackages)
+        self.connect(self.collectorContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveDownloads)
+        self.connect(self.collectorContext.buttons["restart"], SIGNAL("triggered()"), self.slotRestartDownloads)
+        self.connect(self.collectorContext.buttons["abort"], SIGNAL("triggered()"), self.slotAbortDownloads)
+        self.connect(self.collectorContext.buttons["selectallpacks"], SIGNAL("triggered()"), self.slotSelectAllPackages)
+        self.connect(self.collectorContext.buttons["deselectall"], SIGNAL("triggered()"), self.slotDeselectAll)
+        self.connect(self.collectorContext.buttons["expand"], SIGNAL("triggered()"), self.slotExpandAll)
+        self.connect(self.collectorContext.buttons["collapse"], SIGNAL("triggered()"), self.slotCollapseAll)
         
+        #accounts
         self.accountContext = QMenu()
         self.accountContext.buttons = {}
         self.accountContext.buttons["add"] = QAction(QIcon(join(pypath, "icons","add_small.png")), _("Add"), self.accountContext)
-        self.accountContext.buttons["remove"] = QAction(QIcon(join(pypath, "icons","remove_small.png")), _("Remove"), self.accountContext)
         self.accountContext.buttons["edit"] = QAction(QIcon(join(pypath, "icons","edit_small.png")), _("Edit"), self.accountContext)
+        self.accountContext.buttons["remove"] = QAction(QIcon(join(pypath, "icons","remove_small.png")), _("Remove"), self.accountContext)
         self.accountContext.addAction(self.accountContext.buttons["add"])
         self.accountContext.addAction(self.accountContext.buttons["edit"])
         self.accountContext.addAction(self.accountContext.buttons["remove"])
@@ -329,10 +606,98 @@ class MainWindow(QMainWindow):
         self.connect(self.accountContext.buttons["edit"], SIGNAL("triggered()"), self.slotEditAccount)
         self.connect(self.accountContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveAccount)
     
+    def slotShowAbout(self):
+        """
+            show the about-box
+        """
+        self.emit(SIGNAL("showAbout"))
+    
+    def slotQueueMsgShow(self):
+        """
+            emitted from queue view, show message label instead of pull button
+        """
+        self.tabs["queue"]["m"].setFixedHeight(self.tabs["queue"]["b"].height())
+        self.tabs["queue"]["m"].show()
+        self.tabs["queue"]["b"].hide()
+    
+    def slotQueueMsgHide(self):
+        """
+            emitted from queue view, show pull button
+        """
+        self.tabs["queue"]["m"].hide()
+        self.tabs["queue"]["b"].show()
+    
+    def slotCollectorMsgShow(self):
+        """
+            emitted from collector view, show message label instead of push button
+        """
+        self.tabs["collector"]["m"].setFixedHeight(self.tabs["collector"]["b"].height())
+        self.tabs["collector"]["m"].show()
+        self.tabs["collector"]["b"].hide()
+    
+    def slotCollectorMsgHide(self):
+        """
+            emitted from collector view, show push button
+        """
+        self.tabs["collector"]["m"].hide()
+        self.tabs["collector"]["b"].show()
+    
+    def slotToolbarVisibilityChanged(self, visible):
+        """
+            set the toolbar checkbox in view-menu (mainmenu)
+        """
+        self.mactions["showtoolbar"].setChecked(visible)
+    
+    def slotToggleToolbar(self, checked):
+        """
+            toggle from view-menu (mainmenu)
+            show/hide toolbar
+        """
+        self.toolbar.setVisible(checked)
+    
+    def slotToggleSpeedLimitVisibility(self, checked):
+        """
+            toggle from view-menu (mainmenu)
+            show/hide download speed limit
+        """
+        self.log.debug9("slotToggleSpeedLimitVisibility: toggled: %s" % str(checked))
+        self.actions["speedlimit_enabled"].setEnabled(False)
+        self.actions["speedlimit_enabled"].setVisible(checked)
+        self.actions["speedlimit_rate"].setEnabled(False)
+        self.actions["speedlimit_rate"].setVisible(checked)
+    
+    def slotCaptchaDockVisibilityChanged(self, visible):
+        """
+            set the captcha dock checkbox in view-menu (mainmenu)
+        """
+        self.mactions["showcaptcha"].setChecked(visible)
+    
+    def slotToggleCaptchaDock(self, checked):
+        """
+            toggle from view-menu (mainmenu)
+            show/hide captcha dock
+        """
+        if checked:
+            self.captchaDock.show()
+        else:
+            self.captchaDock.hide()
+    
+    def slotReload(self):
+        """
+            toggle from view-menu (mainmenu)
+            force reload queue and collector tab 
+        """
+        self.emit(SIGNAL("reloadQueue"))
+        self.emit(SIGNAL("reloadCollector"))
+    
     def slotToggleStatus(self, status):
         """
             pause/start toggle (toolbar)
         """
+        if status:
+            self.actions["toggle_status"].setIcon(self.toggleStatusIconPause)
+        else:
+            self.actions["toggle_status"].setIcon(self.toggleStatusIconStart)
         self.emit(SIGNAL("setDownloadStatus"), status)
     
     def slotStatusStop(self):
@@ -340,6 +705,20 @@ class MainWindow(QMainWindow):
             stop button (toolbar)
         """
         self.emit(SIGNAL("stopAllDownloads"))
+    
+    def slotRestartFailed(self):
+        """
+            restart failed button (toolbar)
+            let main to the stuff
+        """
+        self.emit(SIGNAL("restartFailed"))
+    
+    def slotRemoveFinished(self):
+        """
+            remove finished button (toolbar)
+            let main to the stuff
+        """
+        self.emit(SIGNAL("deleteFinished"))
     
     def slotAdd(self):
         """
@@ -353,7 +732,10 @@ class MainWindow(QMainWindow):
             action from add-menu
             show new-package dock
         """
-        self.tabw.setCurrentIndex(1)
+        if self.tabw.currentIndex() == 1:
+            self.newPackDock.widget.destQueue.setChecked(True)
+        else:
+            self.newPackDock.widget.destCollector.setChecked(True)
         self.newPackDock.show()
     
     def slotShowAddLinks(self):
@@ -361,37 +743,70 @@ class MainWindow(QMainWindow):
             action from add-menu
             show new-links dock
         """
-        self.tabw.setCurrentIndex(1)
+        if self.tabw.currentIndex() == 1:
+            self.newLinkDock.widget.destQueue.setChecked(True)
+        else:
+            self.newLinkDock.widget.destCollector.setChecked(True)
         self.newLinkDock.show()
     
     def slotShowConnector(self):
         """
-            connectionmanager action triggered
+            connection manager action triggered
             let main to the stuff
         """
         self.emit(SIGNAL("connector"))
     
-    def slotAddPackage(self, name, links, password=None):
+    def slotShowCorePermissions(self):
+        """
+            core permissions action triggered
+            let main to the stuff
+        """
+        self.emit(SIGNAL("showCorePermissions"))
+    
+    def slotQuitCore(self):
+        """
+            quit core action triggered
+            let main to the stuff
+        """
+        self.emit(SIGNAL("quitCore"))
+    
+    def slotRestartCore(self):
+        """
+            restart core action triggered
+            let main to the stuff
+        """
+        self.emit(SIGNAL("restartCore"))
+    
+    def slotParseUri(self, caller, text):
+        """
+            URI parser
+            filters URIs out of text
+        """
+        text += " "
+        result = ""
+        f = re.findall(r"(?:ht|f)tps?:\/\/[a-zA-Z0-9\-\.\/\?=_&%#]+[<| |\"|\'|\r|\n|\t]{1}", text)
+        for url in f:
+            if "\n" or "\t" or "\r" or "\"" or "<" or "'" in url:
+                url = url[:-1]
+            result += url + "\n"
+        if caller == "packagedock":
+            self.newPackDock.parseUriResult(result)
+        elif caller == "linkdock":
+            self.newLinkDock.parseUriResult(result)
+    
+    def slotAddPackage(self, name, links, queue, password=None):
         """
             new package
             let main to the stuff
         """
-        self.emit(SIGNAL("addPackage"), name, links, password)
+        self.emit(SIGNAL("addPackage"), name, links, queue, password)
         
-    def slotAddLinksToPackage(self, links):
+    def slotAddLinksToPackage(self, links, queue):
         """
             adds links to currently selected package
-            only in collector
+            let main to the stuff
         """
-        if self.tabw.currentIndex() != 1:
-            return
-        
-        smodel = self.tabs["collector"]["package_view"].selectionModel()
-        for index in smodel.selectedRows(0):
-            item = index.internalPointer()
-            if isinstance(item, Package):
-                self.connector.proxy.addFiles(item.id, links)
-                break
+        self.emit(SIGNAL("addLinksToPackage"), links, queue)
     
     def slotShowAddContainer(self):
         """
@@ -400,28 +815,21 @@ class MainWindow(QMainWindow):
         """
         typeStr = ";;".join([
             _("All Container Types (%s)") % "*.dlc *.ccf *.rsdf *.txt",
-            _("DLC (%s)") % "*.dlc",
-            _("CCF (%s)") % "*.ccf",
-            _("RSDF (%s)") % "*.rsdf",
+            "DLC (%s)" % "*.dlc",
+            "CCF (%s)" % "*.ccf",
+            "RSDF (%s)" % "*.rsdf",
             _("Text Files (%s)") % "*.txt"
         ])
-        fileNames = QFileDialog.getOpenFileNames(self, _("Open container"), "", typeStr)
+        fileNames = QFileDialog.getOpenFileNames(self, _("Open Container"), "", typeStr)
         for name in fileNames:
             self.emit(SIGNAL("addContainer"), str(name))
     
-    def slotPushPackageToQueue(self):
+    def slotPushPackagesToQueue(self):
         """
-            push collector pack to queue
-            get child ids
-            let main to the rest
+            push selected collector packages to queue
+            let main do it
         """
-        smodel = self.tabs["collector"]["package_view"].selectionModel()
-        for index in smodel.selectedRows(0):
-            item = index.internalPointer()
-            if isinstance(item, Package):
-                self.emit(SIGNAL("pushPackageToQueue"), item.id)
-            else:
-                self.emit(SIGNAL("pushPackageToQueue"), item.package.id)
+        self.emit(SIGNAL("pushPackagesToQueue"))
     
     def saveWindow(self):
         """
@@ -446,11 +854,15 @@ class MainWindow(QMainWindow):
         self.hide()
         self.emit(SIGNAL("hidden"))
         
-        # quit when no tray is available
-        if not QSystemTrayIcon.isSystemTrayAvailable():
+        # quit when the option to minimize is disabled
+        if not self.trayOptions.settings["Close2Tray"]:
+            self.emit(SIGNAL("Quit"))
+        
+        # quit when no tray is available (Connection Manager)
+        elif not QSystemTrayIcon.isSystemTrayAvailable():
             self.emit(SIGNAL("Quit"))
     
-    def restoreWindow(self, state, geo):
+    def restoreWindow(self, state, geo, stateQueue, stateCollector, stateAccounts, optionsNotifications, optionsTray, visibilitySpeedLimit):
         """
             restore window state/geometry
         """
@@ -462,6 +874,23 @@ class MainWindow(QMainWindow):
         
         self.restoreState(state_raw, self.version)
         self.restoreGeometry(geo_raw)
+        self.tabs["queue"]["view"].header().restoreState(QByteArray.fromBase64(stateQueue))
+        self.tabs["collector"]["view"].header().restoreState(QByteArray.fromBase64(stateCollector))
+        self.tabs["accounts"]["view"].header().restoreState(QByteArray.fromBase64(stateAccounts))
+        if optionsNotifications:
+            self.notificationOptions.settings = eval(str(QByteArray.fromBase64(optionsNotifications)))
+            self.notificationOptions.dict2checkBoxStates()
+        if optionsTray:
+            self.trayOptions.settings = eval(str(QByteArray.fromBase64(optionsTray)))
+            self.trayOptions.dict2checkBoxStates()
+            if self.trayOptions.settings["ShowTrayIcon"]:
+                self.emit(SIGNAL("showTrayIcon"))
+            else:
+                self.emit(SIGNAL("hideTrayIcon"))
+        if visibilitySpeedLimit:
+            visible =  eval(str(QByteArray.fromBase64(visibilitySpeedLimit)))
+            self.mactions["showspeedlimit"].setChecked(not visible)
+            self.mactions["showspeedlimit"].setChecked(visible)
     
     def slotQueueContextMenu(self, pos):
         """
@@ -477,66 +906,78 @@ class MainWindow(QMainWindow):
         self.activeMenu = self.queueContext
         showAbort = False
         if isinstance(item, Link) and item.data["downloading"]:
-            showAbort = True
+            showAbort = self.corePermissions["MODIFY"]
         elif isinstance(item, Package):
             for child in item.children:
                 if child.data["downloading"]:
-                    showAbort = True
+                    showAbort = self.corePermissions["MODIFY"]
                     break
-        if showAbort:
-            self.queueContext.buttons["abort"].setEnabled(True)
-        else:
-            self.queueContext.buttons["abort"].setEnabled(False)
         if isinstance(item, Package):
             self.queueContext.index = i
-            #self.queueContext.buttons["remove"].setEnabled(True)
-            #self.queueContext.buttons["restart"].setEnabled(True)
-            self.queueContext.buttons["pull"].setEnabled(True)
-            self.queueContext.buttons["edit"].setEnabled(True)
+            self.queueContext.buttons["pull"].setEnabled(self.corePermissions["MODIFY"])
+            self.queueContext.buttons["add_links"].setEnabled(self.corePermissions["ADD"])
+            self.queueContext.buttons["edit"].setEnabled(self.corePermissions["MODIFY"])
+            self.queueContext.buttons["remove"].setEnabled(self.corePermissions["DELETE"])
+            self.queueContext.buttons["restart"].setEnabled(self.corePermissions["MODIFY"])
         elif isinstance(item, Link):
-            self.collectorContext.index = i
-            self.collectorContext.buttons["edit"].setEnabled(False)
-            self.collectorContext.buttons["remove"].setEnabled(True)
-            self.collectorContext.buttons["push"].setEnabled(False)
-            self.collectorContext.buttons["restart"].setEnabled(True)
+            self.queueContext.index = i
+            self.queueContext.buttons["pull"].setEnabled(False)
+            self.queueContext.buttons["add_links"].setEnabled(False)
+            self.queueContext.buttons["edit"].setEnabled(False)
+            self.queueContext.buttons["remove"].setEnabled(self.corePermissions["DELETE"])
+            self.queueContext.buttons["restart"].setEnabled(self.corePermissions["MODIFY"])
         else:
             self.queueContext.index = None
-            #self.queueContext.buttons["remove"].setEnabled(False)
-            #self.queueContext.buttons["restart"].setEnabled(False)
             self.queueContext.buttons["pull"].setEnabled(False)
+            self.queueContext.buttons["add_links"].setEnabled(False)
             self.queueContext.buttons["edit"].setEnabled(False)
+            self.queueContext.buttons["remove"].setEnabled(False)
+            self.queueContext.buttons["restart"].setEnabled(False)
+        self.queueContext.buttons["abort"].setEnabled(showAbort)
         self.queueContext.exec_(menuPos)
     
     def slotCollectorContextMenu(self, pos):
         """
             custom context menu in package collector view requested
         """
-        globalPos = self.tabs["collector"]["package_view"].mapToGlobal(pos)
-        i = self.tabs["collector"]["package_view"].indexAt(pos)
+        globalPos = self.tabs["collector"]["view"].mapToGlobal(pos)
+        i = self.tabs["collector"]["view"].indexAt(pos)
         if not i:
             return
         item = i.internalPointer()
         menuPos = QCursor.pos()
         menuPos.setX(menuPos.x()+2)
         self.activeMenu = self.collectorContext
+        showAbort = False
+        if isinstance(item, Link) and (item.data["status"] == DownloadStatus.Downloading):
+            showAbort = self.corePermissions["MODIFY"]
+        elif isinstance(item, Package):
+            for child in item.children:
+                if child.data["status"] == DownloadStatus.Downloading:
+                    showAbort = self.corePermissions["MODIFY"]
+                    break
         if isinstance(item, Package):
             self.collectorContext.index = i
-            self.collectorContext.buttons["edit"].setEnabled(True)
-            self.collectorContext.buttons["remove"].setEnabled(True)
-            self.collectorContext.buttons["push"].setEnabled(True)
-            self.collectorContext.buttons["restart"].setEnabled(True)
+            self.collectorContext.buttons["push"].setEnabled(self.corePermissions["MODIFY"])
+            self.collectorContext.buttons["add_links"].setEnabled(self.corePermissions["ADD"])
+            self.collectorContext.buttons["edit"].setEnabled(self.corePermissions["MODIFY"])
+            self.collectorContext.buttons["remove"].setEnabled(self.corePermissions["DELETE"])
+            self.collectorContext.buttons["restart"].setEnabled(self.corePermissions["MODIFY"])
         elif isinstance(item, Link):
             self.collectorContext.index = i
-            self.collectorContext.buttons["edit"].setEnabled(False)
-            self.collectorContext.buttons["remove"].setEnabled(True)
             self.collectorContext.buttons["push"].setEnabled(False)
-            self.collectorContext.buttons["restart"].setEnabled(True)
+            self.collectorContext.buttons["add_links"].setEnabled(False)
+            self.collectorContext.buttons["edit"].setEnabled(False)
+            self.collectorContext.buttons["remove"].setEnabled(self.corePermissions["DELETE"])
+            self.collectorContext.buttons["restart"].setEnabled(self.corePermissions["MODIFY"])
         else:
             self.collectorContext.index = None
+            self.collectorContext.buttons["push"].setEnabled(False)
+            self.collectorContext.buttons["add_links"].setEnabled(False)
             self.collectorContext.buttons["edit"].setEnabled(False)
             self.collectorContext.buttons["remove"].setEnabled(False)
-            self.collectorContext.buttons["push"].setEnabled(False)
             self.collectorContext.buttons["restart"].setEnabled(False)
+        self.collectorContext.buttons["abort"].setEnabled(showAbort)
         self.collectorContext.exec_(menuPos)
     
     def slotLinkCollectorContextMenu(self, pos):
@@ -545,63 +986,88 @@ class MainWindow(QMainWindow):
         """
         pass
     
-    def slotRestartDownload(self):
+    def slotRestartDownloads(self):
         """
             restart download action is triggered
         """
-        smodel = self.tabs["queue"]["view"].selectionModel()
-        for index in smodel.selectedRows(0):
-            item = index.internalPointer()
-            self.emit(SIGNAL("restartDownload"), item.id, isinstance(item, Package))
+        self.emit(SIGNAL("restartDownloads"), self.activeMenu == self.queueContext)
     
-    def slotRemoveDownload(self):
+    def slotRemoveDownloads(self):
         """
             remove download action is triggered
         """
-        if self.activeMenu == self.queueContext:
-            view = self.tabs["queue"]["view"]
-        else:
-            view = self.tabs["collector"]["package_view"]
-        smodel = view.selectionModel()
-        for index in smodel.selectedRows(0):
-            item = index.internalPointer()
-            self.emit(SIGNAL("removeDownload"), item.id, isinstance(item, Package))
+        self.emit(SIGNAL("removeDownloads"), self.activeMenu == self.queueContext)
     
     def slotToggleClipboard(self, status):
         """
             check clipboard (toolbar)
         """
         self.emit(SIGNAL("setClipboardStatus"), status)
+   
+    def slotSpeedLimitStatus(self, status):
+        """
+            speed limit enable/disable checkbox (toolbar)
+        """
+        self.emit(SIGNAL("toolbarSpeedLimitEdited"))
     
-    def slotEditPackage(self):
-        # in Queue, only edit name
+    def slotSpeedLimitRate(self):
+        """
+            speed limit rate spinbox (toolbar)
+        """
+        self.toolbar_speedLimit_rate.lineEdit().deselect() # deselect any selected text
+        self.emit(SIGNAL("toolbarSpeedLimitEdited"))
+    
+    def slotEditPackages(self):
+        """
+            popup the package edit dialog
+        """
+        self.emit(SIGNAL("editPackages"), self.activeMenu == self.queueContext)
+    
+    def slotPullOutPackages(self):
+        """
+            pull selected packages out of the queue
+            let main do it
+        """
+        self.emit(SIGNAL("pullOutPackages"))
+    
+    def slotAbortDownloads(self):
+        """
+            abort selected downloads
+            let main do it
+        """
+        self.emit(SIGNAL("abortDownloads"), self.activeMenu == self.queueContext)
+    
+    def slotSelectAllPackages(self):
+        """
+            select all packages
+            let main to the stuff
+        """
+        self.emit(SIGNAL("selectAllPackages"))
+    
+    def slotDeselectAll(self):
+        """
+            clear the selection
+        """
         if self.activeMenu == self.queueContext:
             view = self.tabs["queue"]["view"]
         else:
-            view = self.tabs["collector"]["package_view"]
-        view.edit(self.activeMenu.index)
-
-    def slotEditCommit(self, editor):
-        self.emit(SIGNAL("changePackageName"), self.activeMenu.index.internalPointer().id, editor.text())
+            view = self.tabs["collector"]["view"]
+        view.clearSelection()
+        view.setCurrentIndex(QModelIndex())
     
-    def slotPullOutPackage(self):
+    def slotExpandAll(self):
         """
-            pull package out of the queue
+            expand all tree view items
+            let main to the stuff
         """
-        smodel = self.tabs["queue"]["view"].selectionModel()
-        for index in smodel.selectedRows(0):
-            item = index.internalPointer()
-            if isinstance(item, Package):
-                self.emit(SIGNAL("pullOutPackage"), item.id)
-            else:
-                self.emit(SIGNAL("pullOutPackage"), item.package.id)
+        self.emit(SIGNAL("expandAll"))
     
-    def slotAbortDownload(self):
-        view = self.tabs["queue"]["view"]
-        smodel = view.selectionModel()
-        for index in smodel.selectedRows(0):
-            item = index.internalPointer()
-            self.emit(SIGNAL("abortDownload"), item.id, isinstance(item, Package))
+    def slotCollapseAll(self):
+        """
+            collapse all tree view items
+            let main to the stuff
+        """
+        self.emit(SIGNAL("collapseAll"))
     
     # TODO disabled because changing desktop on linux, main window disappears
     #def changeEvent(self, e):
@@ -613,22 +1079,21 @@ class MainWindow(QMainWindow):
     #        super(MainWindow, self).changeEvent(e)
     
     def slotTabChanged(self, index):
-        if index == 2:
-            self.emit(SIGNAL("reloadAccounts"))
-        elif index == 3:
+        # currentIndex
+        if index == 3:
+            self.tabs["accounts"]["view"].model.reloadData()
+            self.tabs["accounts"]["view"].model.timer.start(2000)
+        else:
+            self.tabs["accounts"]["view"].model.timer.stop()
+        if index == 5:
             self.tabs["settings"]["w"].loadConfig()
     
-    def slotRefreshPackage(self):
-        smodel = self.tabs["collector"]["package_view"].selectionModel()
-        for index in smodel.selectedRows(0):
-            item = index.internalPointer()
-            pid = item.id
-            if isinstance(item, Link):
-                pid = item.package.id
-            self.emit(SIGNAL("refreshStatus"), pid)
-    
     def slotNewAccount(self):
+        if not self.corePermissions["ACCOUNTS"]:
+            return
+        
         types = self.connector.proxy.getAccountTypes()
+        types = sorted(types, key=lambda p: p)
         self.accountEdit = AccountEdit.newAccount(types)
         
         #TODO make more easy n1, n2, n3 
@@ -638,22 +1103,27 @@ class MainWindow(QMainWindow):
                 n1 = data["acctype"]
                 n2 = data["login"]
                 n3 = data["password"]
-                self.connector.updateAccount(n1, n2, n3, None)
-            
+                self.connector.proxy.updateAccount(n1, n2, n3, None)
+        
         self.accountEdit.connect(self.accountEdit, SIGNAL("done"), save)
-        self.accountEdit.show()
+        self.tabw.setCurrentIndex(3)
+        self.accountEdit.exec_()
 
     def slotEditAccount(self):
-        types = self.connector.getAccountTypes()
+        if not self.corePermissions["ACCOUNTS"]:
+            return
         
-        data = self.tabs["accounts"]["view"].selectedIndexes()
+        types = self.connector.proxy.getAccountTypes()
+        types = sorted(types, key=lambda p: p)
+        
+        data = self.tabs["accounts"]["view"].model.getSelectedIndexes()
         if len(data) < 1:
             return
-            
+        
         data = data[0].internalPointer()
         
         self.accountEdit = AccountEdit.editAccount(types, data)
-
+        
         #TODO make more easy n1, n2, n3
         #TODO reload accounts tab after insert of edit account
         #TODO if account does not exist give error
@@ -661,21 +1131,23 @@ class MainWindow(QMainWindow):
             self.accountEdit.close()
             n1 = data["acctype"]
             n2 = data["login"]
-            if data["password"]:
-                n3 = data["password"]
-            self.connector.updateAccount(n1, n2, n3, None)
-            
+            n3 = data["password"]
+            self.connector.proxy.updateAccount(n1, n2, n3, None)
+        
         self.accountEdit.connect(self.accountEdit, SIGNAL("done"), save)
-        self.accountEdit.show()
+        self.accountEdit.exec_()
     
     def slotRemoveAccount(self):
-        data = self.tabs["accounts"]["view"].selectedIndexes()
+        if not self.corePermissions["ACCOUNTS"]:
+            return
+        
+        data = self.tabs["accounts"]["view"].model.getSelectedIndexes()
         if len(data) < 1:
             return
             
         data = data[0].internalPointer()
         
-        self.connector.removeAccount(data.type, data.login)
+        self.connector.proxy.removeAccount(data.type, data.login)
     
     def slotAccountContextMenu(self, pos):
         globalPos = self.tabs["accounts"]["view"].mapToGlobal(pos)
@@ -695,3 +1167,228 @@ class MainWindow(QMainWindow):
         menuPos = QCursor.pos()
         menuPos.setX(menuPos.x()+2)
         self.accountContext.exec_(menuPos)
+    
+    def slotShowLoggingOptions(self):
+        """
+            popup the logging options dialog
+        """
+        self.emit(SIGNAL("showLoggingOptions"))
+    
+    def slotShowClickNLoadForwarderOptions(self):
+        """
+            popup the ClickNLoad port forwarder options dialog
+        """
+        self.emit(SIGNAL("showClickNLoadForwarderOptions"))
+    
+    def slotShowAutomaticReloadingOptions(self):
+        """
+            popup the automatic reloading options dialog
+        """
+        self.emit(SIGNAL("showAutomaticReloadingOptions"))
+    
+    def slotShowFontOptions(self):
+        """
+            popup the font options dialog
+        """
+        self.emit(SIGNAL("showFontOptions"))
+    
+    def slotShowNotificationOptions(self):
+        """
+            popup the notification options dialog
+        """
+        self.notificationOptions.dict2checkBoxStates()
+        if self.notificationOptions.exec_() == QDialog.Accepted:
+            self.notificationOptions.checkBoxStates2dict()
+    
+    def slotShowTrayOptions(self):
+        """
+            popup the tray options dialog
+        """
+        self.trayOptions.dict2checkBoxStates()
+        if self.trayOptions.exec_() == QDialog.Accepted:
+            self.trayOptions.checkBoxStates2dict()
+            if self.trayOptions.settings["ShowTrayIcon"]:
+                self.emit(SIGNAL("showTrayIcon"))
+            else:
+                self.emit(SIGNAL("hideTrayIcon"))
+
+    def slotShowLanguageOptions(self):
+        """
+            popup the language options dialog
+        """
+        self.emit(SIGNAL("showLanguageOptions"))
+
+class SpinBox(QSpinBox):
+    """
+        QSpinBox that supports ESCAPE key and that loses focus on ENTER key
+        for the toolbar speed limit setting
+    """
+    def __init__(self):
+        QSpinBox.__init__(self)
+        self.log = logging.getLogger("guilog")
+    
+    def focusInEvent(self, event):
+        self.lastValue = self.value()
+        QAbstractSpinBox.focusInEvent(self, event)
+    
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Escape:
+            self.setValue(self.lastValue)
+            self.clearFocus()
+        elif event.key() == Qt.Key_Return or event.key() == Qt.Key_Enter:
+                self.clearFocus()
+        QAbstractSpinBox.keyPressEvent(self, event)
+
+class NotificationOptions(QDialog):
+    """
+        notification options dialog
+    """
+    
+    def __init__(self):
+        QDialog.__init__(self)
+        self.log = logging.getLogger("guilog")
+        
+        self.settings = {}
+        
+        self.setAttribute(Qt.WA_DeleteOnClose, False)
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
+        self.setWindowTitle(_("Options"))
+        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+        
+        self.cbPackageFinished = QCheckBox(_("Package Download Finished"))
+        self.cbFinished        = QCheckBox(_("Download Finished"))
+        self.cbOffline         = QCheckBox(_("Download Offline"))
+        self.cbSkipped         = QCheckBox(_("Download Skipped"))
+        self.cbTempOffline     = QCheckBox(_("Download Temporarily Offline"))
+        self.cbFailed          = QCheckBox(_("Download Failed"))
+        self.cbAborted         = QCheckBox(_("Download Aborted"))
+        
+        vboxCb = QVBoxLayout()
+        vboxCb.addWidget(self.cbPackageFinished)
+        vboxCb.addWidget(self.cbFinished)
+        vboxCb.addWidget(self.cbOffline)
+        vboxCb.addWidget(self.cbSkipped)
+        vboxCb.addWidget(self.cbTempOffline)
+        vboxCb.addWidget(self.cbFailed)
+        vboxCb.addWidget(self.cbAborted)
+        
+        self.cbEnableNotify = QGroupBox(_("Enable Desktop Notifications"))
+        self.cbEnableNotify.setCheckable(True)
+        self.cbEnableNotify.setLayout(vboxCb)
+        
+        self.buttons = QDialogButtonBox(Qt.Horizontal, self)
+        self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
+        self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
+        self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
+        self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
+        
+        vbox = QVBoxLayout()
+        vbox.addWidget(self.cbEnableNotify)
+        vbox.addWidget(self.buttons)
+        self.setLayout(vbox)
+        
+        self.adjustSize()
+        self.setFixedSize(self.width(), self.height())
+        
+        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
+        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
+        
+        # default settings
+        self.cbEnableNotify.setChecked(False)
+        self.cbPackageFinished.setChecked(False)
+        self.cbFinished.setChecked(False)
+        self.cbOffline.setChecked(True)
+        self.cbSkipped.setChecked(True)
+        self.cbTempOffline.setChecked(True)
+        self.cbFailed.setChecked(True)
+        self.cbAborted.setChecked(False)
+        self.checkBoxStates2dict()
+    
+    def checkBoxStates2dict(self):
+        self.settings["EnableNotify"]    = self.cbEnableNotify.isChecked()
+        self.settings["PackageFinished"] = self.cbPackageFinished.isChecked()
+        self.settings["Finished"]        = self.cbFinished.isChecked()
+        self.settings["Offline"]         = self.cbOffline.isChecked()
+        self.settings["Skipped"]         = self.cbSkipped.isChecked()
+        self.settings["TempOffline"]     = self.cbTempOffline.isChecked()
+        self.settings["Failed"]          = self.cbFailed.isChecked()
+        self.settings["Aborted"]         = self.cbAborted.isChecked()
+    
+    def dict2checkBoxStates(self):
+        self.cbEnableNotify.setChecked    (self.settings["EnableNotify"])
+        self.cbPackageFinished.setChecked (self.settings["PackageFinished"]) 
+        self.cbFinished.setChecked        (self.settings["Finished"])
+        self.cbOffline.setChecked         (self.settings["Offline"])
+        self.cbSkipped.setChecked         (self.settings["Skipped"])
+        self.cbTempOffline.setChecked     (self.settings["TempOffline"])
+        self.cbFailed.setChecked          (self.settings["Failed"])
+        self.cbAborted.setChecked         (self.settings["Aborted"])
+
+class TrayOptions(QDialog):
+    """
+        tray options dialog
+    """
+    
+    def __init__(self):
+        QDialog.__init__(self)
+        self.log = logging.getLogger("guilog")
+        
+        self.settings = {}
+        
+        self.setAttribute(Qt.WA_DeleteOnClose, False)
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
+        self.setWindowTitle(_("Options"))
+        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+        
+        self.cbShowIcon   = QCheckBox(_("Show Tray Icon"))
+        self.cbClose2Tray = QCheckBox(_("Close Button minimizes to Tray"))
+        
+        vboxCb = QVBoxLayout()
+        vboxCb.addWidget(self.cbShowIcon)
+        vboxCb.addWidget(self.cbClose2Tray)
+        
+        self.gb = QGroupBox(_("Tray"))
+        self.gb.setLayout(vboxCb)
+        
+        self.buttons = QDialogButtonBox(Qt.Horizontal, self)
+        self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
+        self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
+        self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
+        self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
+        
+        vbox = QVBoxLayout()
+        vbox.addWidget(self.gb)
+        vbox.addWidget(self.buttons)
+        self.setLayout(vbox)
+        
+        self.adjustSize()
+        self.setFixedSize(self.width(), self.height())
+        
+        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
+        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
+        
+        self.connect(self.cbShowIcon, SIGNAL("toggled(bool)"), self.cbShowIconToggled)
+                
+        # default settings
+        self.cbShowIcon.setChecked(False)
+        self.cbClose2Tray.setChecked(False)
+        self.checkBoxStates2dict()
+    
+    def cbShowIconToggled(self, checked):
+        if checked:
+            self.cbClose2Tray.setEnabled(True)
+        else:
+            self.cbClose2Tray.setEnabled(False)
+            self.cbClose2Tray.setChecked(False)
+    
+    def checkBoxStates2dict(self):
+        if not self.cbShowIcon.isChecked() and self.cbClose2Tray.isChecked():
+            raise RuntimeError("Invalid dialog state")
+        self.settings["ShowTrayIcon"] = self.cbShowIcon.isChecked()
+        self.settings["Close2Tray"]   = self.cbClose2Tray.isChecked()
+    
+    def dict2checkBoxStates(self):
+        if not self.settings["ShowTrayIcon"] and self.settings["Close2Tray"]:
+            raise RuntimeError("Invalid settings")
+        self.cbShowIcon.setChecked(self.settings["ShowTrayIcon"])
+        self.cbClose2Tray.setChecked(self.settings["Close2Tray"])
