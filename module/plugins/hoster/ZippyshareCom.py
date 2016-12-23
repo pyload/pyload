@@ -62,11 +62,17 @@ class ZippyshareCom(SimpleHoster):
         if self.link and pyfile.name == "file.html":
             pyfile.name = urllib.unquote(self.link.split('/')[-1])
 
+    def is_validJS(script) : 
+        try:
+            self.js.eval(script)
+            return True
+        except:
+            return False
 
     def get_link(self):
         #: Get all the scripts inside the html body
         soup = BeautifulSoup.BeautifulSoup(self.data)
-        scripts = [s.getText() for s in soup.body.findAll('script', type='text/javascript') if 'dlbutton' in s.getText()]
+        scripts = [s.getText() for s in soup.body.findAll('script', type='text/javascript')]
 
         #: Emulate a document in JS
         inits = ['''
@@ -87,9 +93,9 @@ class ZippyshareCom(SimpleHoster):
             if values:
                 inits.append('document.getElementById("%s")["%s"] = "%s"' %(JSid, JSattr, values[-1]))
 
-        #: Add try/catch in JS to handle deliberate errors
-        scripts = ['\n'.join(('try{', script, '} catch(err){}')) for script in scripts]
-
+        #: Keep only valid JS scripts
+        scripts = [script for script in scripts if self.is_validJS(script)]
+        
         #: Get the file's url by evaluating all the scripts
         scripts = inits + scripts + ['document.dlbutton.href']
 
