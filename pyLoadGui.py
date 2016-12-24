@@ -18,7 +18,7 @@
     @author: mkaay
 """
 CURRENT_VERSION = '0.4.9'
-CURRENT_INTERNAL_VERSION = '2016-12-23'         # YYYY-MM-DD, append a lowercase letter for a new version on the same day  
+CURRENT_INTERNAL_VERSION = '2016-12-24'         # YYYY-MM-DD, append a lowercase letter for a new version on the same day  
 
 import gtk
 import sys
