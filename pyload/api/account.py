@@ -4,10 +4,10 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from pyload.utils import to_bool
 from pyload.api import Api, require_perm, Permission, Conflict
-from pyload.newapi.component import ApiComponent
+from pyload.api.base import BaseApi
 
 
-class AccountApi(ApiComponent):
+class AccountApi(BaseApi):
     """ All methods to control accounts """
 
     @require_perm(Permission.All)

@@ -4,11 +4,11 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from pyload.api import Api, require_perm, Permission
 
-from pyload.newapi.component import ApiComponent
+from pyload.api.base import BaseApi
 
 
 # TODO: multi user
-class AddonApi(ApiComponent):
+class AddonApi(BaseApi):
     """ Methods to interact with addons """
 
     @require_perm(Permission.Interaction)

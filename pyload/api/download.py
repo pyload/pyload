@@ -8,10 +8,10 @@ from os.path import isabs
 from pyload.api import Api, require_perm, Permission, Role
 from pyload.utils.fs import join
 
-from pyload.newapi.component import ApiComponent
+from pyload.api.base import BaseApi
 
 
-class DownloadApi(ApiComponent):
+class DownloadApi(BaseApi):
     """ Component to create, add, delete or modify downloads."""
 
     # TODO: workaround for link adding without owner

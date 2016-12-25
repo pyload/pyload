@@ -6,10 +6,10 @@ from pyload.api import Api, require_perm, Permission, StatusInfo, Interaction
 from pyload.utils.fs import join, free_space, exists
 from pyload.utils import compare_time
 
-from pyload.newapi.component import ApiComponent
+from pyload.api.base import BaseApi
 
 
-class CoreApi(ApiComponent):
+class CoreApi(BaseApi):
     """ This module provides methods for general interaction with the core, like status or progress retrieval  """
 
     @require_perm(Permission.All)

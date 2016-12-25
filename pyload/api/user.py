@@ -4,10 +4,10 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from pyload.api import Api, require_perm, Permission
 
-from pyload.newapi.component import ApiComponent
+from pyload.api.base import BaseApi
 
 
-class UserApi(ApiComponent):
+class UserApi(BaseApi):
     """ Api methods to retrieve user profile and manage users. """
 
     @require_perm(Permission.All)

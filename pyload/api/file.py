@@ -5,11 +5,11 @@ from __future__ import unicode_literals
 from pyload.api import Api, require_perm, Permission, DownloadState, PackageStatus as PS, PackageDoesNotExist, FileDoesNotExist
 from pyload.utils import uniqify
 
-from pyload.newapi.component import ApiComponent
+from pyload.api.base import BaseApi
 
 
 # TODO: user context
-class FileApi(ApiComponent):
+class FileApi(BaseApi):
     """Everything related to available packages or files. Deleting, Modifying and so on."""
 
     def check_result(self, info):

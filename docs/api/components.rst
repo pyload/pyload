@@ -9,12 +9,12 @@ of the available components listed by topic can be found below.
 .. autosummary::
     :toctree: module
 
-    pyload.newapi.core.CoreApi
-    pyload.newapi.config.ConfigApi
-    pyload.newapi.downloadpreparing.DownloadPreparingApi
-    pyload.newapi.download.DownloadApi
-    pyload.newapi.file.FileApi
-    pyload.newapi.mediafinder.MediaFinderApi
-    pyload.newapi.account.AccountApi
-    pyload.newapi.interaction.UserInteractionApi
-    pyload.newapi.addon.AddonApi
+    pyload.api.core.CoreApi
+    pyload.api.config.ConfigApi
+    pyload.api.predownload.PreDownloadApi
+    pyload.api.download.DownloadApi
+    pyload.api.file.FileApi
+    pyload.api.mediafinder.MediaFinderApi
+    pyload.api.account.AccountApi
+    pyload.api.interaction.UserInteractionApi
+    pyload.api.addon.AddonApi

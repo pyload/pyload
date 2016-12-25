@@ -12,10 +12,10 @@ from pyload.utils.fs import join
 from pyload.utils.packagetools import parse_names
 from pyload.network.request import get_url
 
-from pyload.newapi.component import ApiComponent
+from pyload.api.base import BaseApi
 
 
-class PreDownloadApi(ApiComponent):
+class PreDownloadApi(BaseApi):
     """ All kind of methods to parse links or retrieve online status """
 
     @require_perm(Permission.Add)

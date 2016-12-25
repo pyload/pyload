@@ -4,13 +4,13 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from pyload.api import Api, require_perm, Permission
 
-from pyload.newapi.component import ApiComponent
+from pyload.api.base import BaseApi
 
 CACHE = {}
 QUOTA_UNLIMITED = -1
 
 
-class StatisticsApi(ApiComponent):
+class StatisticsApi(BaseApi):
     """ Retrieve download statistics and quota """
 
     def record_download(self, pyfile):

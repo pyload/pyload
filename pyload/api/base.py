@@ -7,7 +7,7 @@ from pyload.remote.apitypes import Iface
 Iface = object
 
 
-class ApiComponent(Iface):
+class BaseApi(Iface):
 
     __slots__ = []
 
@@ -16,7 +16,7 @@ class ApiComponent(Iface):
         from pyload import Core
         from pyload.datatype.user import User
         assert isinstance(core, Core)
-        assert issubclass(ApiComponent, Iface)
+        assert issubclass(BaseApi, Iface)
         self.pyload = core
         assert isinstance(user, User)
         self.user = user

@@ -4,10 +4,10 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from pyload.api import Api, require_perm, Permission, Interaction
 
-from pyload.newapi.component import ApiComponent
+from pyload.api.base import BaseApi
 
 
-class UserInteractionApi(ApiComponent):
+class UserInteractionApi(BaseApi):
     """ Everything needed for user interaction """
 
     @require_perm(Permission.Interaction)
