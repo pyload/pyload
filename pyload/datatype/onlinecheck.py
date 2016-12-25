@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from builtins import object
 from time import time
 
-from pyload.Api import OnlineCheck as OC
+from pyload.api import OnlineCheck as OC
 
 
 class OnlineCheck(object):

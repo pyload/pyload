@@ -8,7 +8,7 @@ from nose.tools import raises
 
 from tests.helper.stubs import Core
 
-from pyload.config.configparser import ConfigParser
+from pyload.config.parser import ConfigParser
 
 
 class TestConfigParser(object):

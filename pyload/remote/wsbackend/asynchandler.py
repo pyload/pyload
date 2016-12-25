@@ -13,7 +13,7 @@ from time import time
 
 from mod_pywebsocket.msgutil import receive_message
 
-from pyload.Api import EventInfo, Interaction
+from pyload.api import EventInfo, Interaction
 from pyload.utils import lock
 from .abstracthandler import AbstractHandler
 

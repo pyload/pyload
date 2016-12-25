@@ -4,12 +4,12 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from new_collections import OrderedDict
 
-from pyload.Api import InvalidConfigSection
+from pyload.api import InvalidConfigSection
 from pyload.utils import json
 
-from .configparser import ConfigParser
+from pyload.config.parser import ConfigParser
 
-from .convert import to_input, from_string
+from pyload.config.convert import to_input, from_string
 
 def convertkeyerror(func):
     """ converts KeyError into InvalidConfigSection """

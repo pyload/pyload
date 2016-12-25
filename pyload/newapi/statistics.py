@@ -2,9 +2,9 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from pyload.Api import Api, require_perm, Permission
+from pyload.api import Api, require_perm, Permission
 
-from .apicomponent import ApiComponent
+from pyload.newapi.component import ApiComponent
 
 CACHE = {}
 QUOTA_UNLIMITED = -1

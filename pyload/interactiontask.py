@@ -4,8 +4,8 @@
 from __future__ import unicode_literals
 from time import time
 
-from pyload.Api import InteractionTask as BaseInteractionTask
-from pyload.Api import Interaction, InputType, Input
+from pyload.api import InteractionTask as BaseInteractionTask
+from pyload.api import Interaction, InputType, Input
 
 
 # noinspection PyUnresolvedReferences

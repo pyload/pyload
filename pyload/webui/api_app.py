@@ -14,7 +14,7 @@ from bottle import route, request, response, HTTPError, parse_auth
 from .utils import set_session, get_user_api, add_json_header
 from .webinterface import PYLOAD, session
 
-from pyload.Api import ExceptionObject
+from pyload.api import ExceptionObject
 from pyload.remote.json_converter import loads, dumps, BaseEncoder
 from pyload.utils import remove_chars
 

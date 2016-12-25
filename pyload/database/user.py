@@ -10,9 +10,9 @@ from random import choice
 
 alphnum = letters + digits
 
-from pyload.Api import UserData
+from pyload.api import UserData
 
-from .databasebackend import DatabaseMethods, queue, async
+from pyload.database.backend import DatabaseMethods, queue, async
 
 
 def random_salt():

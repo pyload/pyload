@@ -9,9 +9,9 @@ from ReadWriteLock import ReadWriteLock
 
 from pyload.utils import lock, read_lock
 
-from .Api import PackageStatus, DownloadStatus as DS, TreeCollection, PackageDoesNotExist
-from .datatype.pyfile import PyFile
-from .datatype.pypackage import PyPackage, RootPackage
+from pyload.api import PackageStatus, DownloadStatus as DS, TreeCollection, PackageDoesNotExist
+from pyload.datatype.file import PyFile
+from pyload.datatype.package import PyPackage, RootPackage
 from functools import reduce
 
 # invalidates the cache

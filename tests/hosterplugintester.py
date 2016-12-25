@@ -18,7 +18,7 @@ from .helper.stubs import Core
 from .helper.parser import parse_config
 from .helper.plugintester import PluginTester
 
-from pyload.datatypes.pyfile import PyFile, statusMap
+from pyload.datatype.file import PyFile, statusMap
 from pyload.plugins.base import Fail
 from pyload.utils import accumulate
 from pyload.utils.fs import save_join, join, exists, listdir, remove, stat

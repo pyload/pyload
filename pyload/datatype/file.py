@@ -8,7 +8,7 @@ from past.utils import old_div
 from time import sleep, time
 from ReadWriteLock import ReadWriteLock
 
-from pyload.Api import ProgressInfo, ProgressType, DownloadProgress, FileInfo, DownloadInfo, DownloadStatus
+from pyload.api import ProgressInfo, ProgressType, DownloadProgress, FileInfo, DownloadInfo, DownloadStatus
 from pyload.utils import lock, read_lock, try_catch
 from pyload.utils.fs import safe_filename
 from pyload.utils.filetypes import guess_type

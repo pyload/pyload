@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 from builtins import str
 from mod_pywebsocket.msgutil import receive_message
 
-from pyload.Api import ExceptionObject
+from pyload.api import ExceptionObject
 
 from .abstracthandler import AbstractHandler
 

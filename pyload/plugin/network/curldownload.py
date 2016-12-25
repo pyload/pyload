@@ -14,7 +14,7 @@ from shutil import move
 
 import pycurl
 
-from pyload.Api import Connection
+from pyload.api import Connection
 from pyload.plugin.base import Abort
 from pyload.network.cookiejar import CookieJar
 from pyload.utils.fs import save_join, fs_encode

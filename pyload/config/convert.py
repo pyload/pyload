@@ -6,7 +6,7 @@ from gettext import gettext
 
 from new_collections import namedtuple
 
-from pyload.Api import Input, InputType
+from pyload.api import Input, InputType
 from pyload.utils import decode, to_bool
 
 ConfigData = namedtuple("ConfigData", "label description input")

@@ -5,14 +5,14 @@ from __future__ import unicode_literals
 from builtins import str
 from itertools import chain
 
-from pyload.Api import Api, DownloadStatus as DS,\
+from pyload.api import Api, DownloadStatus as DS,\
     require_perm, Permission, OnlineCheck, LinkStatus, urlmatcher
 from pyload.utils import uniqify
 from pyload.utils.fs import join
 from pyload.utils.packagetools import parse_names
 from pyload.network.requestfactory import get_url
 
-from .apicomponent import ApiComponent
+from pyload.newapi.component import ApiComponent
 
 
 class DownloadPreparingApi(ApiComponent):

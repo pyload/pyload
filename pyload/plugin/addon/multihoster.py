@@ -6,7 +6,7 @@ from random import choice
 
 from pyload.plugin.multihoster import MultiHoster as MultiHosterAccount, normalize
 from pyload.plugin.addon import Addon, add_event_listener
-from pyload.manager.pluginmanager import PluginMatcher
+from pyload.manager.plugin import PluginMatcher
 
 
 class MultiHoster(Addon, PluginMatcher):

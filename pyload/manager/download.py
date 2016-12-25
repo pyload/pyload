@@ -15,15 +15,15 @@ from subprocess import call
 
 from ReadWriteLock import ReadWriteLock
 
-from .Api import DownloadStatus as DS
+from pyload.api import DownloadStatus as DS
 
 from .utils import lock, read_lock
 from .utils.fs import exists, join, free_space
 
 from .network import get_ip
 
-from .thread.downloadthread import DownloadThread
-from .thread.decrypterthread import DecrypterThread
+from pyload.thread.download import DownloadThread
+from pyload.thread.decrypter import DecrypterThread
 
 
 class DownloadManager(object):

@@ -11,7 +11,7 @@ from os import stat
 from os.path import join, exists
 from time import time
 
-from pyload.configparser import IGNORE
+from pyload.config.parser import IGNORE
 from pyload.network.requestfactory import get_url
 from pyload.plugin.hook import threaded, Expose, Hook
 

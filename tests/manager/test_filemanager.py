@@ -12,7 +12,7 @@ from pyload.database import DatabaseBackend
 # disable asyncronous queries
 DatabaseBackend.async = DatabaseBackend.queue
 
-from pyload.Api import DownloadState
+from pyload.api import DownloadState
 
 
 class TestFileManager(BenchmarkTest):

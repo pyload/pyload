@@ -5,10 +5,10 @@ from __future__ import unicode_literals
 from builtins import str
 from os.path import isabs
 
-from pyload.Api import Api, require_perm, Permission, Role
+from pyload.api import Api, require_perm, Permission, Role
 from pyload.utils.fs import join
 
-from .apicomponent import ApiComponent
+from pyload.newapi.component import ApiComponent
 
 
 class DownloadApi(ApiComponent):

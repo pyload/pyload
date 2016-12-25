@@ -5,8 +5,8 @@ from __future__ import unicode_literals
 from copy import copy
 from traceback import print_exc
 
-from pyload.Api import ProgressInfo, ProgressType
-from .basethread import BaseThread
+from pyload.api import ProgressInfo, ProgressType
+from pyload.thread.base import BaseThread
 
 
 class AddonThread(BaseThread):

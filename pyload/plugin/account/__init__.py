@@ -8,7 +8,7 @@ from past.utils import old_div
 from time import time
 from threading import RLock
 
-from pyload.Api import AccountInfo, ConfigItem
+from pyload.api import AccountInfo, ConfigItem
 from pyload.network.cookiejar import CookieJar
 from pyload.config.convert import from_string, to_configdata
 from pyload.utils import to_string, compare_time, format_size, parse_size , lock

@@ -7,7 +7,7 @@ from builtins import range
 from tests.helper.stubs import Core
 from tests.helper.benchmarktest import BenchmarkTest
 
-from pyload.Api import DownloadState, PackageInfo, FileInfo
+from pyload.api import DownloadState, PackageInfo, FileInfo
 from pyload.database import DatabaseBackend
 
 # disable asyncronous queries

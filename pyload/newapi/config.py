@@ -2,10 +2,10 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from pyload.Api import Api, require_perm, Permission, ConfigHolder, ConfigItem, ConfigInfo
+from pyload.api import Api, require_perm, Permission, ConfigHolder, ConfigItem, ConfigInfo
 from pyload.utils import to_string
 
-from .apicomponent import ApiComponent
+from pyload.newapi.component import ApiComponent
 
 # helper function to create a ConfigHolder
 def to_config_holder(section, config, values):

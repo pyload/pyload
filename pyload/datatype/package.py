@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 from builtins import object
 from time import time
 
-from pyload.Api import PackageInfo, PackageStatus
+from pyload.api import PackageInfo, PackageStatus
 from pyload.utils.fs import join
 
 

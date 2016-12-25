@@ -3,8 +3,8 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 from pyload.utils import to_bool
-from pyload.Api import Api, require_perm, Permission, Conflict
-from .apicomponent import ApiComponent
+from pyload.api import Api, require_perm, Permission, Conflict
+from pyload.newapi.component import ApiComponent
 
 
 class AccountApi(ApiComponent):

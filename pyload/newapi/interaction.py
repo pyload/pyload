@@ -2,9 +2,9 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from pyload.Api import Api, require_perm, Permission, Interaction
+from pyload.api import Api, require_perm, Permission, Interaction
 
-from .apicomponent import ApiComponent
+from pyload.newapi.component import ApiComponent
 
 
 class UserInteractionApi(ApiComponent):

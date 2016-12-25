@@ -3,7 +3,7 @@
 
 from __future__ import unicode_literals
 from past.builtins import basestring
-from pyload.Api import UserData, Permission, Role
+from pyload.api import UserData, Permission, Role
 from pyload.utils import bits_set
 
 

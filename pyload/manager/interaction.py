@@ -13,8 +13,8 @@ from base64 import standard_b64encode
 from new_collections import OrderedDict
 
 from pyload.utils import lock, bits_set
-from pyload.Api import Interaction as IA
-from pyload.Api import InputType, Input
+from pyload.api import Interaction as IA
+from pyload.api import InputType, Input
 
 from .. import InteractionTask
 

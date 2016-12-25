@@ -6,7 +6,7 @@ from unittest import TestCase
 
 from tests.helper.stubs import Core
 
-from pyload.Api import InputType, Interaction
+from pyload.api import InputType, Interaction
 from pyload.interaction.interactionmanager import InteractionManager
 
 

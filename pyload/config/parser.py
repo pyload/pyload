@@ -10,11 +10,11 @@ from os.path import exists
 from gettext import gettext
 from new_collections import namedtuple, OrderedDict
 
-from pyload.Api import Input, InputType
+from pyload.api import Input, InputType
 from pyload.utils.fs import chmod
 
-from .default import make_config
-from .convert import to_configdata, from_string
+from pyload.config.default import make_config
+from pyload.config.convert import to_configdata, from_string
 
 CONF_VERSION = 2
 SectionTuple = namedtuple("SectionTuple", "label description explanation config")

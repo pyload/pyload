@@ -5,12 +5,12 @@ from __future__ import unicode_literals
 from builtins import str
 from time import time
 
-from pyload.Api import LinkStatus, DownloadStatus, ProgressInfo, ProgressType
+from pyload.api import LinkStatus, DownloadStatus, ProgressInfo, ProgressType
 from pyload.utils.packagetools import parse_names
 from pyload.utils import has_method, accumulate
 
-from .basethread import BaseThread
-from .decrypterthread import DecrypterThread
+from pyload.thread.base import BaseThread
+from pyload.thread.decrypter import DecrypterThread
 
 
 class InfoThread(DecrypterThread):

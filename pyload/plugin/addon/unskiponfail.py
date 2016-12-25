@@ -6,7 +6,7 @@ from os.path import basename
 
 from pyload.utils import fs_encode
 from pyload.plugin.hook import Hook
-from pyload.PyFile import PyFile
+from pyload.datatype.file import PyFile
 
 
 class UnSkipOnFail(Hook):

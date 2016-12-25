@@ -2,7 +2,7 @@
 
 from __future__ import unicode_literals
 import re
-from pyload.Api import MediaType
+from pyload.api import MediaType
 
 filetypes = {
     MediaType.Audio: re.compile("\.(m3u|m4a|mp3|wav|wma|aac?|flac|midi|m4b)$", re.I),

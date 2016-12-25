@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 from builtins import str
 from past.builtins import basestring
 from builtins import object
-from pyload.Api import LinkStatus, DownloadStatus as DS
+from pyload.api import LinkStatus, DownloadStatus as DS
 from pyload.utils import to_list, has_method, uniqify
 from pyload.utils.fs import exists, remove, fs_encode
 from ..base import Base, Retry

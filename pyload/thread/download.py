@@ -17,7 +17,7 @@ from pyload.plugin.base import Fail, Retry, Abort
 from pyload.plugin.hoster import Reconnect, SkipDownload
 from pyload.plugin.request import ResponseException
 
-from .basethread import BaseThread
+from pyload.thread.base import BaseThread
 
 
 class DownloadThread(BaseThread):

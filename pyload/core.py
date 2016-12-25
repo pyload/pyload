@@ -39,15 +39,15 @@ from builtins import pypath
 
 init_dir()
 
-from pyload.manager.accountmanager import AccountManager
-from .config.configparser import ConfigParser
-from pyload.manager.configmanager import ConfigManager
-from pyload.manager.pluginmanager import PluginManager
-from pyload.manager.eventmanager import EventManager
+from pyload.manager.account import AccountManager
+pyload.config.parser import ConfigParser
+from pyload.manager.config import ConfigManager
+from pyload.manager.plugin import PluginManager
+from pyload.manager.event import EventManager
 from .network.requestfactory import RequestFactory
-from .webui.serverthread import WebServer
+from pyload.thread.server import WebServer
 from .scheduler import Scheduler
-from pyload.manager.remotemanager import RemoteManager
+from pyload.manager.remote import RemoteManager
 from .utils.jsengine import JsEngine
 
 from .utils import format_size, get_console_encoding
@@ -365,11 +365,11 @@ class Core(object):
         builtins.pyreq = self.request_factory
 
         # deferred import, could improve start-up time
-        from .Api import Api
-        from pyload.manager.addonmanager import AddonManager
-        from pyload.manager.interactionmanager import InteractionManager
-        from pyload.manager.threadmanager import ThreadManager
-        from pyload.manager.downloadmanager import DownloadManager
+        from pyload.api import Api
+        from pyload.manager.addon import AddonManager
+        from pyload.manager.interaction import InteractionManager
+        from pyload.manager.thread import ThreadManager
+        from pyload.manager.download import DownloadManager
 
         Api.init_components()
         self.api = Api(self)
@@ -480,8 +480,8 @@ class Core(object):
 
 
     def setup_db(self):
-        from .database import DatabaseBackend
-        from pyload.manager.filemanager import FileManager
+        from ptload.database import DatabaseBackend
+        from pyload.manager.file import FileManager
 
         self.db = DatabaseBackend(self) # the backend
         self.db.setup()

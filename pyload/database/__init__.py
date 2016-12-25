@@ -2,11 +2,11 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from .databasebackend import DatabaseMethods, DatabaseBackend, queue, async, inner
+from pyload.database.backend import DatabaseMethods, DatabaseBackend, queue, async, inner
 
-from .filedatabase import FileMethods
-from .userdatabase import UserMethods
-from .storagedatabase import StorageMethods
-from .accountdatabase import AccountMethods
-from .configdatabase import ConfigMethods
-from .statisticdatabase import StatisticMethods
+from pyload.database.file import FileMethods
+from pyload.database.user import UserMethods
+from pyload.database.storage import StorageMethods
+from pyload.database.account import AccountMethods
+from pyload.database.config import ConfigMethods
+from pyload.database.statistic import StatisticMethods

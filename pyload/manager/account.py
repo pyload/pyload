@@ -6,7 +6,7 @@ from builtins import object
 from threading import Lock
 from random import choice
 
-from pyload.Api import AccountInfo
+from pyload.api import AccountInfo
 from pyload.utils import lock, json
 
 

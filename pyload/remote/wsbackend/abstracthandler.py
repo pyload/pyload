@@ -10,7 +10,7 @@ from builtins import object
 from mod_pywebsocket.msgutil import send_message
 from mod_pywebsocket.util import get_class_logger
 
-from pyload.Api import UserData
+from pyload.api import UserData
 from pyload.remote.json_converter import loads, dumps
 
 

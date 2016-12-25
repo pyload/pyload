@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-__all__ = ["coreapi", "configapi", "downloadapi", "downloadpreparingapi", "fileapi",
-           "userinteractionapi", "accountapi", "addonapi", "userapi", "statisticsapi"]
+__all__ = ["core", "config", "download", "downloadpreparing", "file", "interaction", "account",
+           "addon", "user", "statistic"]
 
 # Import all components
 from . import *

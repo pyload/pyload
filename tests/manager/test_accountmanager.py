@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from tests.helper.stubs import Core, adminUser, normalUser
 
-from pyload.accountmanager import AccountManager
+from pyload.manager.account import AccountManager
 
 
 class TestAccountManager(TestCase):

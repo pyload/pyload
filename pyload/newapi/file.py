@@ -2,10 +2,10 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from pyload.Api import Api, require_perm, Permission, DownloadState, PackageStatus as PS, PackageDoesNotExist, FileDoesNotExist
+from pyload.api import Api, require_perm, Permission, DownloadState, PackageStatus as PS, PackageDoesNotExist, FileDoesNotExist
 from pyload.utils import uniqify
 
-from .apicomponent import ApiComponent
+from pyload.newapi.component import ApiComponent
 
 
 # TODO: user context
