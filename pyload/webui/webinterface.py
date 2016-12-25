@@ -19,7 +19,7 @@ from .middlewares import StripPathMiddleware, PrefixMiddleware
 SETUP = None
 PYLOAD = None
 
-from . import serverthread as ServerThread
+from pyload.thread import server as ServerThread
 
 if not ServerThread.core:
     if ServerThread.setup:
