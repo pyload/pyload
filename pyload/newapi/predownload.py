@@ -15,7 +15,7 @@ from pyload.network.request import get_url
 from pyload.newapi.component import ApiComponent
 
 
-class DownloadPreparingApi(ApiComponent):
+class PreDownloadApi(ApiComponent):
     """ All kind of methods to parse links or retrieve online status """
 
     @require_perm(Permission.Add)
@@ -104,5 +104,5 @@ class DownloadPreparingApi(ApiComponent):
         return result
 
 
-if Api.extend(DownloadPreparingApi):
-    del DownloadPreparingApi
+if Api.extend(PreDownloadApi):
+    del PreDownloadApi
