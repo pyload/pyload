@@ -25,7 +25,7 @@ from sys import exit
 from pyload.api import Role
 from pyload.utils.fs import abspath, dirname, exists, join, makedirs
 from pyload.utils import get_console_encoding
-from pyload.thread.server import WebServer
+from pyload.thread.webui import WebServer
 
 from pyload.setup.system import get_system_info
 from pyload.setup.dependencies import deps
