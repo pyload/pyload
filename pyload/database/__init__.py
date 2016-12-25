@@ -9,4 +9,4 @@ from pyload.database.user import UserMethods
 from pyload.database.storage import StorageMethods
 from pyload.database.account import AccountMethods
 from pyload.database.config import ConfigMethods
-from pyload.database.statistic import StatisticMethods
+from pyload.database.stat import StatisticMethods

@@ -188,7 +188,7 @@ class AddonManager(object):
                 self.call(inst, "deactivate")
 
     def download_preparing(self, pyfile):
-        self.call_in_hooks("downloadPreparing", "download:preparing", pyfile)
+        self.call_in_hooks("preDownload", "download:preparing", pyfile)
 
     def download_finished(self, pyfile):
         self.call_in_hooks("downloadFinished", "download:finished", pyfile)
