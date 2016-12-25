@@ -4,7 +4,7 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 from builtins import object
-from .bucket import Bucket
+from pyload.network.bucket import Bucket
 
 from pyload.plugin.network.defaultrequest import DefaultRequest, DefaultDownload
 

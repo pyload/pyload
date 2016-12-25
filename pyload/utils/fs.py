@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import os
 import sys
 from os.path import join
-from . import decode, remove_chars
+from pyload.utils import decode, remove_chars
 
 # File System Encoding functions:
 # Use fs_encode before accessing files on disk, it will encode the string properly

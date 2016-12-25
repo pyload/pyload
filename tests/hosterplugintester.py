@@ -14,9 +14,9 @@ from shutil import move
 
 from nose.tools import nottest
 
-from .helper.stubs import Core
-from .helper.parser import parse_config
-from .helper.plugintester import PluginTester
+from tests.helper.stubs import Core
+from tests.helper.parser import parse_config
+from tests.helper.plugintester import PluginTester
 
 from pyload.datatype.file import PyFile, statusMap
 from pyload.plugins.base import Fail

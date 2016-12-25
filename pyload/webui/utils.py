@@ -10,7 +10,7 @@ try:
 except ImportError:
     zlib = None
 
-from .webinterface import PYLOAD, SETUP
+from pyload.webui.webinterface import PYLOAD, SETUP
 
 
 def add_json_header(r):

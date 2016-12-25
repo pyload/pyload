@@ -8,7 +8,7 @@ from pyload.remote.WSClient import WSClient
 
 from tests.helper.config import webAddress, wsAddress
 
-from .apiproxy import ApiProxy
+from tests.api.apiproxy import ApiProxy
 
 
 class ApiTester(object):

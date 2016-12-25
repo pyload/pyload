@@ -14,7 +14,7 @@ PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
 import bottle
 from bottle import run, app
 
-from .middlewares import StripPathMiddleware, PrefixMiddleware
+from pyload.webui.middlewares import StripPathMiddleware, PrefixMiddleware
 
 SETUP = None
 PYLOAD = None
@@ -73,11 +73,11 @@ web = StripPathMiddleware(session)
 if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
 
-from . import api_app
-from . import cnl_app
-from . import setup_app
+from pyload.webui import api_app
+from pyload.webui import cnl_app
+from pyload.webui import setup_app
 # Last routes to register,
-from . import pyload_app
+from pyload.webui import pyload_app
 
 # Server Adapter
 def run_server(host, port, server):

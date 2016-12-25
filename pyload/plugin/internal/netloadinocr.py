@@ -3,7 +3,7 @@
 from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from .ocr import OCR
+from pyload.plugin.ocr import OCR
 
 
 class NetloadInOCR(OCR):

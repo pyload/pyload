@@ -15,8 +15,8 @@ from pyload.utils import chunks as _chunks
 from pyload.utils.fs import save_join, safe_filename, fs_encode, fs_decode, \
     remove, makedirs, chmod, stat, exists, join
 
-from ..base import Base, Fail, Retry
-from ..network.defaultrequest import DefaultRequest, DefaultDownload
+from pyload.plugin.base import Base, Fail, Retry
+from pyload.plugin.network.defaultrequest import DefaultRequest, DefaultDownload
 
 # Import for Hoster Plugins
 chunks = _chunks

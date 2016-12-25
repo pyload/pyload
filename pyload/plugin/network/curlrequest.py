@@ -15,9 +15,9 @@ from http.client import responses
 from io import StringIO
 
 from pyload.plugin.base import Abort
-from pyload.network.cookiejar import CookieJar
+from pyload.network.cookie import CookieJar
 
-from ..request import Request, ResponseException
+from pyload.plugin.request import Request, ResponseException
 
 
 def myquote(url):

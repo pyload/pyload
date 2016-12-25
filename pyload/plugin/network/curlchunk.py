@@ -18,7 +18,7 @@ import pycurl
 from pyload.network.headerdict import HeaderDict
 from pyload.utils.fs import fs_encode, fs_decode, safe_filename
 
-from .curlrequest import CurlRequest
+from pyload.plugin.network.curlrequest import CurlRequest
 
 
 class ChunkInfo(object):

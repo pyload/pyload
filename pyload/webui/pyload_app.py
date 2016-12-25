@@ -8,7 +8,7 @@ from os.path import join, exists
 
 from bottle import route, static_file, response, request, redirect, template
 
-from .webinterface import PYLOAD, PROJECT_DIR, SETUP, APP_PATH, UNAVAILALBE, PREFIX
+from pyload.webui.webinterface import PYLOAD, PROJECT_DIR, SETUP, APP_PATH, UNAVAILALBE, PREFIX
 
 from pyload.utils import login_required, add_json_header, select_language
 

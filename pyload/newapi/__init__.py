@@ -4,4 +4,4 @@ __all__ = ["core", "config", "download", "downloadpreparing", "file", "interacti
            "addon", "user", "statistic"]
 
 # Import all components
-from . import *
+from pyload.newapi import *

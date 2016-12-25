@@ -15,7 +15,7 @@ from traceback import print_exc
 from pyload.utils.fs import safe_filename
 
 from bottle import route, request, HTTPError
-from .webinterface import PYLOAD, DL_ROOT, JS
+from pyload.webui.webinterface import PYLOAD, DL_ROOT, JS
 
 try:
     from Crypto.Cipher import AES

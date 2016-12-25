@@ -46,7 +46,7 @@ from pyload.manager.plugin import PluginManager
 from pyload.manager.event import EventManager
 from pyload.network.request import RequestFactory
 from pyload.thread.server import WebServer
-from .scheduler import Scheduler
+from pyload.scheduler import Scheduler
 from pyload.manager.remote import RemoteManager
 from pyload.utils.jsengine import JsEngine
 
@@ -110,21 +110,21 @@ class Core(object):
                     elif option in ("-d", "--debug"):
                         self.doDebug = True
                     elif option in ("-u", "--user"):
-                        from .setup.setup import Setup
+                        from pyload.setup.setup import Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
                         s.set_user()
                         exit()
                     elif option in ("-s", "--setup"):
-                        from .setup.setup import Setup
+                        from pyload.setup.setup import Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
                         s.start()
                         exit()
                     elif option == "--changedir":
-                        from .setup.setup import Setup
+                        from pyload.setup.setup import Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
@@ -268,7 +268,7 @@ class Core(object):
         self.version = CURRENT_VERSION
 
         if not exists("pyload.conf") and not tests:
-            from .setup.setup import Setup
+            from pyload.setup.setup import Setup
 
             print("This is your first start, running configuration assistant now.")
             self.config = ConfigParser()

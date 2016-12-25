@@ -8,7 +8,7 @@ from builtins import object
 from pyload.api import LinkStatus, DownloadStatus as DS
 from pyload.utils import to_list, has_method, uniqify
 from pyload.utils.fs import exists, remove, fs_encode
-from ..base import Base, Retry
+from pyload.plugin.base import Base, Retry
 
 
 # represent strings as LinkStatus

@@ -10,8 +10,8 @@ from os.path import abspath, dirname, join
 path = dirname(abspath(__file__))
 module = join(path, "..")
 
-from . import apitypes
-from .apitypes_debug import enums
+from pyload.remote import apitypes
+from pyload.remote.apitypes_debug import enums
 
 # generate js enums
 def main():

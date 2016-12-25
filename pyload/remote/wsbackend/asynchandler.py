@@ -15,7 +15,7 @@ from mod_pywebsocket.msgutil import receive_message
 
 from pyload.api import EventInfo, Interaction
 from pyload.utils import lock
-from .abstracthandler import AbstractHandler
+from pyload.remote.wsbackend.abstracthandler import AbstractHandler
 
 
 class Mode(object):

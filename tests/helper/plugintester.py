@@ -15,7 +15,7 @@ from glob import glob
 from pycurl import LOW_SPEED_TIME, FORM_FILE
 from json import loads
 
-from .stubs import Thread, Core, noop
+from tests.helper.stubs import Thread, Core, noop
 
 from pyload.network.request import getRequest
 from pyload.plugins.base import Abort, Fail

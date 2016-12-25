@@ -8,8 +8,8 @@ from nose.tools import nottest
 
 from logging import log, DEBUG
 
-from .helper.stubs import Core
-from .helper.plugintester import PluginTester
+from tests.helper.stubs import Core
+from tests.helper.plugintester import PluginTester
 
 from pyload.plugins.base import Fail
 from pyload.utils import accumulate, to_int

@@ -20,7 +20,7 @@ from pyload.api import DownloadStatus as DS
 from pyload.utils import lock, read_lock
 from pyload.utils.fs import exists, join, free_space
 
-from .network import get_ip
+from pyload.network import get_ip
 
 from pyload.thread.download import DownloadThread
 from pyload.thread.decrypter import DecrypterThread

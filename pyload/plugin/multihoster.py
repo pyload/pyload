@@ -6,7 +6,7 @@ from time import time
 
 from pyload.utils import remove_chars
 
-from .account import Account
+from pyload.plugin.account import Account
 
 
 def normalize(domain):

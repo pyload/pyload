@@ -8,7 +8,7 @@ from builtins import object
 import re
 from types import MethodType
 
-from .remote.apitypes import *
+from pyload.remote.apitypes import *
 
 # contains function names mapped to their permissions
 # unlisted functions are for admins only

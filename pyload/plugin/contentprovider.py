@@ -3,7 +3,7 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from .base import Base
+from pyload.plugin.base import Base
 
 
 class ContentProvider(Base):

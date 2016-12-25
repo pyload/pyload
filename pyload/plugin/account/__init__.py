@@ -9,11 +9,11 @@ from time import time
 from threading import RLock
 
 from pyload.api import AccountInfo, ConfigItem
-from pyload.network.cookiejar import CookieJar
+from pyload.network.cookie import CookieJar
 from pyload.config.convert import from_string, to_configdata
 from pyload.utils import to_string, compare_time, format_size, parse_size , lock
 
-from ..base import Base
+from pyload.plugin.base import Base
 
 
 class WrongPassword(Exception):

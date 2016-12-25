@@ -16,12 +16,12 @@ import pycurl
 
 from pyload.api import Connection
 from pyload.plugin.base import Abort
-from pyload.network.cookiejar import CookieJar
+from pyload.network.cookie import CookieJar
 from pyload.utils.fs import save_join, fs_encode
 
-from ..download import Download
-from .curlchunk import ChunkInfo, CurlChunk
-from .curlrequest import ResponseException
+from pyload.plugin.download import Download
+from pyload.plugin.network.curlchunk import ChunkInfo, CurlChunk
+from pyload.plugin.network.curlrequest import ResponseException
 
 
 # TODO: save content-disposition for resuming

@@ -8,9 +8,9 @@ try:
 except ImportError:
     import json
 
-from . import apitypes
-from .apitypes import BaseObject
-from .apitypes import ExceptionObject
+from pyload.remote import apitypes
+from pyload.remote.apitypes import BaseObject
+from pyload.remote.apitypes import ExceptionObject
 
 # compact json separator
 separators = (',', ':')

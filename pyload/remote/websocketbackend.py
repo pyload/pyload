@@ -20,10 +20,10 @@ util.get_class_logger = get_class_logger
 class WebSocketBackend(BackendBase):
     def setup(self, host, port):
 
-        from .wsbackend.server import WebSocketServer, DefaultOptions
-        from .wsbackend.dispatcher import Dispatcher
-        from .wsbackend.apihandler import ApiHandler
-        from .wsbackend.asynchandler import AsyncHandler
+        from pyload.network.wsbackend.server import WebSocketServer, DefaultOptions
+        from pyload.network.wsbackend.dispatcher import Dispatcher
+        from pyload.network.wsbackend.apihandler import ApiHandler
+        from pyload.network.wsbackend.asynchandler import AsyncHandler
 
         options = DefaultOptions()
         options.server_host = host
@@ -34,7 +34,7 @@ class WebSocketBackend(BackendBase):
 
         # tls is needed when requested or webui is also on tls
         if self.pyload.api.is_ws_secure():
-            from .wsbackend.server import import_ssl
+            from pyload.network.wsbackend.server import import_ssl
             tls_module = import_ssl()
             if tls_module:
                 options.use_tls = True

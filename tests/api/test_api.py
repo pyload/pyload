@@ -8,7 +8,7 @@ from random import choice
 
 from pyload.core import Core
 
-from .apitester import ApiTester
+from tests.api.apitester import ApiTester
 
 
 class TestAPI(TestCase):
@@ -21,7 +21,7 @@ class TestAPI(TestCase):
     #TODO: parallel testing
     @classmethod
     def setUpClass(cls):
-        from .test_noargs import TestNoArgs
+        from tests.api.test_noargs import TestNoArgs
 
         cls.core = Core()
         cls.core.start(False, False, True)

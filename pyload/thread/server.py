@@ -43,7 +43,7 @@ class WebServer(threading.Thread):
 
     def run(self):
         self.running = True
-        from . import webinterface
+        from pyload.webui import webinterface
 
         global webinterface
 
@@ -80,7 +80,7 @@ class WebServer(threading.Thread):
 
     def select_server(self, prefer=None):
         """ find a working server """
-        from .servers import all_server
+        from pyload.webui.servers import all_server
 
         unavailable = []
         server = None
@@ -120,7 +120,7 @@ class WebServer(threading.Thread):
 
     def start_server(self, server):
 
-        from .servers import ServerAdapter
+        from pyload.webui.servers import ServerAdapter
 
         if issubclass(server, ServerAdapter):
 

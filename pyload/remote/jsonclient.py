@@ -10,8 +10,8 @@ from urllib.request import urlopen
 from urllib.parse import urlencode
 from http.client import UNAUTHORIZED, FORBIDDEN
 
-from .json_converter import loads, dumps
-from .apitypes import Unauthorized, Forbidden
+from pyload.remote.json_converter import loads, dumps
+from pyload.remote.apitypes import Unauthorized, Forbidden
 
 
 class JSONClient(object):

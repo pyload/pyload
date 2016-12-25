@@ -4,7 +4,7 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 import inspect
 
-from .apitester import ApiTester
+from tests.api.apitester import ApiTester
 
 from pyload.remote.apitypes import Iface
 

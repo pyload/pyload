@@ -5,7 +5,7 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 from past.builtins import basestring
-from .apitypes import *
+from pyload.remote.apitypes import *
 
 enums = [
     "Connection",
