@@ -92,7 +92,7 @@ class PyFile(object):
         self.reconnected = False
         self.statusname = None
 
-        
+
     def set_size(self, value):
         self._size = int(value)
 

@@ -13,7 +13,7 @@ import re
 from time import time
 
 from pyload.plugin.hoster import Hoster
-from pyload.utils import html_unescape, fixup, parse_size 
+from pyload.utils import html_unescape, fixup, parse_size
 from pyload.network.request import get_url
 from pyload.network.cookie import CookieJar
 

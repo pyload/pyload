@@ -83,7 +83,7 @@ class Api(Iface):
         # but will only work once when they are imported
         cls.EXTEND = True
         # Import all Api modules, they register themselves.
-        import pyload.api
+        import pyload.newapi
         # they will vanish from the namespace afterwards
 
 

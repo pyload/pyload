@@ -16,7 +16,7 @@ from pyload.utils import lock, bits_set
 from pyload.api import Interaction as IA
 from pyload.api import InputType, Input
 
-from interactiontask import InteractionTask
+from pyload.interactiontask import InteractionTask
 
 
 class InteractionManager(object):

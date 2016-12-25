@@ -54,8 +54,8 @@ class WebServer(threading.Thread):
 
         if webinterface.UNAVAILALBE:
             log.warning("WebUI built is not available")
-        elif webinterface.APP_PATH == "app":
-            log.info("Running webui in development mode")
+        # elif webinterface.APP_PATH == "app":
+            # log.info("Running webui in development mode")
 
         prefer = None
 

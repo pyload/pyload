@@ -31,7 +31,7 @@ def get_user_api(s):
     if s:
         uid = s.get("uid", None)
         if (uid is not None) and (PYLOAD is not None):
-            return PYLOAD.withUserContext(uid)
+            return PYLOAD.with_user_context(uid)
     return None
 
 

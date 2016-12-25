@@ -40,7 +40,7 @@ from builtins import pypath
 init_dir()
 
 from pyload.manager.account import AccountManager
-pyload.config.parser import ConfigParser
+from pyload.config.parser import ConfigParser
 from pyload.manager.config import ConfigManager
 from pyload.manager.plugin import PluginManager
 from pyload.manager.event import EventManager
@@ -480,7 +480,7 @@ class Core(object):
 
 
     def setup_db(self):
-        from ptload.database import DatabaseBackend
+        from pyload.database import DatabaseBackend
         from pyload.manager.file import FileManager
 
         self.db = DatabaseBackend(self) # the backend

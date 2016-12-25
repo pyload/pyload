@@ -23,7 +23,7 @@ except Exception:
     pass
 
 def generate_and_add(urls, paused):
-    packs = PYLOAD.generatePackages(urls)
+    packs = PYLOAD.generate_packages(urls)
     for name, urls in packs.items():
         PYLOAD.add_package(name, urls, paused=paused)
 
@@ -164,7 +164,7 @@ def crossdomain():
 def checksupport():
 
     url = request.GET.get("url")
-    res = PYLOAD.checkURLs([url])
+    res = PYLOAD.check_urls([url])
     supported = (not res[0][1] is None)
 
     return str(supported).lower()

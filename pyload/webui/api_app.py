@@ -11,7 +11,7 @@ from io import StringIO
 
 from bottle import route, request, response, HTTPError, parse_auth
 
-from pyload.utils import set_session, get_user_api, add_json_header
+from pyload.webui.utils import set_session, get_user_api, add_json_header
 from pyload.webui.webinterface import PYLOAD, session
 
 from pyload.api import ExceptionObject
@@ -67,7 +67,7 @@ def call_api(func, args=""):
     if not api:
         return error(401, "Unauthorized")
 
-    if not PYLOAD.isAuthorized(func, api.user):
+    if not PYLOAD.is_authorized(func, api.user):
         return error(403, "Forbidden")
 
     if not hasattr(PYLOAD.EXTERNAL, func) or func.startswith("_"):
