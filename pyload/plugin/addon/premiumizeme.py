@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from pyload.plugin.internal.multihoster import MultiHoster
 
 from pyload.common.json_layer import json_loads
-from pyload.network.requestfactory import get_url
+from pyload.network.request import get_url
 
 
 class PremiumizeMe(MultiHoster):

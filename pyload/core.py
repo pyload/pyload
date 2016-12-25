@@ -32,7 +32,7 @@ import subprocess
 
 subprocess.__doc__ = None # the module with the largest doc we are using
 
-from .inithomedir import init_dir
+from pyload.inithomedir import init_dir
 
 from builtins import owd
 from builtins import pypath
@@ -44,14 +44,14 @@ pyload.config.parser import ConfigParser
 from pyload.manager.config import ConfigManager
 from pyload.manager.plugin import PluginManager
 from pyload.manager.event import EventManager
-from .network.requestfactory import RequestFactory
+from pyload.network.request import RequestFactory
 from pyload.thread.server import WebServer
 from .scheduler import Scheduler
 from pyload.manager.remote import RemoteManager
-from .utils.jsengine import JsEngine
+from pyload.utils.jsengine import JsEngine
 
-from .utils import format_size, get_console_encoding
-from .utils.fs import free_space, exists, makedirs, join, chmod
+from pyload.utils import format_size, get_console_encoding
+from pyload.utils.fs import free_space, exists, makedirs, join, chmod
 
 from codecs import getwriter
 

@@ -13,7 +13,7 @@ from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 from pyload.plugin.internal.simplehoster import SimpleHoster, create_getInfo, PluginParseError, replace_patterns
 from pyload.plugin.internal.captchaservice import ReCaptcha, SolveMedia
 from pyload.utils import html_unescape
-from pyload.network.requestfactory import get_url
+from pyload.network.request import get_url
 
 
 class XFileSharingPro(SimpleHoster):

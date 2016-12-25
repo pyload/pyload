@@ -3,7 +3,7 @@
 
 from __future__ import unicode_literals
 
-from pyload.network.requestfactory import get_url
+from pyload.network.request import get_url
 from pyload.plugin.internal.multihoster import MultiHoster
 
 

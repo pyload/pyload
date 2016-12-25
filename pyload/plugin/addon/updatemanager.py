@@ -12,7 +12,7 @@ from os.path import join, exists
 from time import time
 
 from pyload.config.parser import IGNORE
-from pyload.network.requestfactory import get_url
+from pyload.network.request import get_url
 from pyload.plugin.hook import threaded, Expose, Hook
 
 

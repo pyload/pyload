@@ -15,7 +15,7 @@ from urllib.parse import urlencode
 from time import sleep
 import Image
 
-from pyload.network.requestfactory import get_url, get_request
+from pyload.network.request import get_url, get_request
 from pyload.plugin.hook import Hook
 
 

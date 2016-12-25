@@ -9,7 +9,7 @@ from builtins import str
 from _thread import start_new_thread
 from pycurl import FORM_FILE, LOW_SPEED_TIME
 
-from pyload.network.requestfactory import get_url, get_request
+from pyload.network.request import get_url, get_request
 from pyload.network.httprequest import BadHeader
 
 from pyload.plugin.hook import Hook

@@ -17,8 +17,8 @@ from ReadWriteLock import ReadWriteLock
 
 from pyload.api import DownloadStatus as DS
 
-from .utils import lock, read_lock
-from .utils.fs import exists, join, free_space
+from pyload.utils import lock, read_lock
+from pyload.utils.fs import exists, join, free_space
 
 from .network import get_ip
 

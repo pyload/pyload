@@ -12,7 +12,7 @@ from pycurl import LOW_SPEED_TIME
 from uuid import uuid4
 from base64 import b64encode
 
-from pyload.network.requestfactory import get_url, get_request
+from pyload.network.request import get_url, get_request
 from pyload.network.httprequest import BadHeader
 
 from pyload.plugin.hook import Hook

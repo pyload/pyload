@@ -10,7 +10,7 @@ from bottle import route, request, response, HTTPError, redirect
 
 from .webinterface import PROJECT_DIR, SETUP
 
-from .utils import add_json_header
+from pyload.utils import add_json_header
 
 # returns http error
 def error(code, msg):

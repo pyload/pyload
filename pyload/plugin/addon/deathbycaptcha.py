@@ -16,7 +16,7 @@ from time import sleep
 from base64 import b64encode
 import re
 
-from pyload.network.requestfactory import get_request
+from pyload.network.request import get_request
 from pyload.network.httprequest import BadHeader
 from pyload.plugin.hook import Hook
 from pyload.common.json_layer import json_loads

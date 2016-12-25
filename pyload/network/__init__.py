@@ -7,7 +7,7 @@ import re
 from random import choice
 from time import sleep
 
-from .requestfactory import get_url
+from pyload.network.request import get_url
 
 
 def get_ip(n=10):

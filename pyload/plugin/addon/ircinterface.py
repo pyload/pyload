@@ -14,7 +14,7 @@ import re
 from pycurl import FORM_FILE
 
 from pyload.plugin.addon import Addon
-from pyload.network.requestfactory import get_url
+from pyload.network.request import get_url
 from pyload.utils import format_size
 from pyload.api import PackageDoesNotExists, FileDoesNotExists
 

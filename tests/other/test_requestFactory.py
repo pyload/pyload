@@ -5,7 +5,7 @@ from builtins import object
 from tests.helper.stubs import Core
 
 from pyload.plugins.network.curlrequest import CurlRequest
-from pyload.network.requestfactory import RequestFactory
+from pyload.network.request import RequestFactory
 
 
 class TestRequestFactory(object):

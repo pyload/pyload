@@ -12,7 +12,7 @@ from _thread import start_new_thread
 from base64 import b64encode
 import time
 
-from pyload.network.requestfactory import get_url
+from pyload.network.request import get_url
 from pyload.network.httprequest import BadHeader
 
 from pyload.plugin.hook import Hook

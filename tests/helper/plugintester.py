@@ -17,7 +17,7 @@ from json import loads
 
 from .stubs import Thread, Core, noop
 
-from pyload.network.requestfactory import getRequest
+from pyload.network.request import getRequest
 from pyload.plugins.base import Abort, Fail
 from pyload.plugins.hoster import Hoster
 
