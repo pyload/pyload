@@ -1,37 +1,37 @@
 <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3>
-        {{ title }}
-        <small style="background: url('{{ pluginIcon plugin }}') no-repeat right 0; background-size: 20px; padding-right: 22px">
-            {{ plugin }}
-        </small>
-    </h3>
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+  <h3>
+    {{ title }}
+    <small style="background: url('{{ pluginIcon plugin }}') no-repeat right 0; background-size: 20px; padding-right: 22px">
+      {{ plugin }}
+    </small>
+  </h3>
 </div>
 <div class="modal-body">
-    <form class="form-horizontal" action="#">
-        <legend>{{ description }}</legend>
-        {{#if captcha }}
-        <div class="control-group">
-            <label class="control-label" for="captchaImage">
-                Captcha Image
-            </label>
+  <form class="form-horizontal" action="#">
+    <legend>{{ description }}</legend>
+    {{#if captcha }}
+    <div class="control-group">
+      <label class="control-label" for="captchaImage">
+        Captcha Image
+      </label>
 
-            <div class="controls">
-                <img id="captchaImage" src="data:image/{{ type }};base64,{{ captcha }}">
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="inputField">Captcha Text</label>
+      <div class="controls">
+        <img id="captchaImage" src="data:image/{{ type }};base64,{{ captcha }}">
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputField">Captcha Text</label>
 
-            <div class="controls" id="inputField">
-            </div>
-        </div>
-        {{ else }}
-        {{ content }}
-        {{/if}}
-    </form>
+      <div class="controls" id="inputField">
+      </div>
+    </div>
+    {{ else }}
+    {{ content }}
+    {{/if}}
+  </form>
 </div>
 <div class="modal-footer">
-    <a class="btn btn-success">{{_ "Submit"}}</a>
-    <a class="btn btn-close">{{_ "Close"}}</a>
+  <a class="btn btn-success">{{_ "Submit"}}</a>
+  <a class="btn btn-close">{{_ "Close"}}</a>
 </div>

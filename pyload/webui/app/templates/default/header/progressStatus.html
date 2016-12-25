@@ -1,8 +1,8 @@
 {{#if downloading }}
-    {{ formatsize done }} of {{ formatsize total }} ({{ formatsize download.speed }}/s)
+  {{ formatsize done }} of {{ formatsize total }} ({{ formatsize download.speed }}/s)
 {{ else }}
-    {{ statusmsg }}
+  {{ statusmsg }}
 {{/if}}
 <span class="pull-right">
-    {{ formatTimeLeft eta }}
+  {{ formatTimeLeft eta }}
 </span>

@@ -1,17 +1,17 @@
 // Format seconds in human readable format
 define('helpers/formatTimeLeft', ['handlebars', 'vendor/remaining'], function(Handlebars, Remaining) {
-    'use strict';
+  'use strict';
 
-    function formatTimeLeft(seconds, options) {
-        if (seconds === Infinity)
-            return '∞';
-        else if (!seconds || seconds <= 0)
-            return '-';
+  function formatTimeLeft(seconds, options) {
+    if (seconds === Infinity)
+      return '∞';
+    else if (!seconds || seconds <= 0)
+      return '-';
 
-        // TODO: digital or written string
-        return Remaining.getStringDigital(seconds, window.dates);
-    }
+    // TODO: digital or written string
+    return Remaining.getStringDigital(seconds, window.dates);
+  }
 
-    Handlebars.registerHelper('formatTimeLeft', formatTimeLeft);
-    return formatTimeLeft;
+  Handlebars.registerHelper('formatTimeLeft', formatTimeLeft);
+  return formatTimeLeft;
 });

@@ -1,51 +1,51 @@
 <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3>
-        {{_ "Add links" }}
-        <small>{{_ "paste & add links to pyLoad" }}</small>
-    </h3>
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+  <h3>
+    {{_ "Add links" }}
+    <small>{{_ "paste & add links to pyLoad" }}</small>
+  </h3>
 </div>
 
 <div class="modal-body">
-    <div class="container-fluid">
-        <div class="row-fluid">
-            <div class="span4">
-                <h3 class="pull-left">Links</h3>
-                <textarea id="inputLinks" rows="1" placeholder="{{_ " Paste your links here..."}}"></textarea>
-            </div>
-            <div class="span4">
-                <form action="" method="post" enctype="multipart/form-data" target="uploadTarget">
-                    <h3 class="pull-left">{{_ "Container" }}</h3>
-                    <button class="btn btn-blue btn-container">{{_ "Upload" }}</button>
-                    <input type="file" name="data" id="inputContainer" style="display: none">
-                </form>
-                <iframe id="uploadTarget" name="uploadTarget" style="display: none"></iframe>
-            </div>
-            <div class="span4">
-                <h3 class="pull-left">{{_ "URL" }}</h3>
-                <input type="text" name="inputURL" id="inputURL" placeholder="{{ _ "Link to Website"}}">
-            </div>
-        </div>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span4">
+        <h3 class="pull-left">Links</h3>
+        <textarea id="inputLinks" rows="1" placeholder="{{_ " Paste your links here..."}}"></textarea>
+      </div>
+      <div class="span4">
+        <form action="" method="post" enctype="multipart/form-data" target="uploadTarget">
+          <h3 class="pull-left">{{_ "Container" }}</h3>
+          <button class="btn btn-blue btn-container">{{_ "Upload" }}</button>
+          <input type="file" name="data" id="inputContainer" style="display: none">
+        </form>
+        <iframe id="uploadTarget" name="uploadTarget" style="display: none"></iframe>
+      </div>
+      <div class="span4">
+        <h3 class="pull-left">{{_ "URL" }}</h3>
+        <input type="text" name="inputURL" id="inputURL" placeholder="{{ _ "Link to Website"}}">
+      </div>
     </div>
+  </div>
 
-    <legend>
-        {{#if name}}
-            {{_ "Adding links to package: %s" name}}
-        {{else}}
-            {{_ "Packages" }}
-        {{/if}}
-        &nbsp;<button class="btn btn-danger btn-small btn-remove-all"><i class="icon-trash"></i></button>
-        <span class="status pull-right" style="opacity: 0">
-            <small class="status-text"></small>
-            <i class="icon-spinner icon-spin"></i>
-        </span>
-    </legend>
-    <div class="container-fluid prepared-packages">
+  <legend>
+    {{#if name}}
+      {{_ "Adding links to package: %s" name}}
+    {{else}}
+      {{_ "Packages" }}
+    {{/if}}
+    &nbsp;<button class="btn btn-danger btn-small btn-remove-all"><i class="icon-trash"></i></button>
+    <span class="status pull-right" style="opacity: 0">
+      <small class="status-text"></small>
+      <i class="icon-spinner icon-spin"></i>
+    </span>
+  </legend>
+  <div class="container-fluid prepared-packages">
 
-    </div>
+  </div>
 </div>
 
 <div class="modal-footer">
-    <!--<a class="btn btn-success"><i class="icon-plus icon-white"></i> {{_ "Add"}}</a>-->
-    <a class="btn btn-close">{{_ "Close"}}</a>
+  <!--<a class="btn btn-success"><i class="icon-plus icon-white"></i> {{_ "Add"}}</a>-->
+  <a class="btn btn-close">{{_ "Close"}}</a>
 </div>

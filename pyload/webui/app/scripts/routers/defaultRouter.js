@@ -1,30 +1,30 @@
 define(['jquery', 'backbone', 'views/headerView'], function($, Backbone, HeaderView) {
-    'use strict';
+  'use strict';
 
-    var Router = Backbone.Router.extend({
+  var Router = Backbone.Router.extend({
 
-        initialize: function() {
-            Backbone.history.start();
-        },
+    initialize: function() {
+      Backbone.history.start();
+    },
 
-        // All of your Backbone Routes (add more)
-        routes: {
+    // All of your Backbone Routes (add more)
+    routes: {
 
-            // When there is no hash bang on the url, the home method is called
-            '': 'home'
+      // When there is no hash bang on the url, the home method is called
+      '': 'home'
 
-        },
+    },
 
-        'home': function() {
-            // Instantiating mainView and anotherView instances
-            var headerView = new HeaderView();
+    'home': function() {
+      // Instantiating mainView and anotherView instances
+      var headerView = new HeaderView();
 
-            // Renders the mainView template
-            headerView.render();
+      // Renders the mainView template
+      headerView.render();
 
-        }
-    });
+    }
+  });
 
-    // Returns the Router class
-    return Router;
+  // Returns the Router class
+  return Router;
 });

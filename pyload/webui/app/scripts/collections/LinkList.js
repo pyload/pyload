@@ -1,14 +1,14 @@
 define(['jquery', 'backbone', 'underscore', 'models/LinkStatus'], function($, Backbone, _, LinkStatus) {
-    'use strict';
+  'use strict';
 
-    return Backbone.Collection.extend({
+  return Backbone.Collection.extend({
 
-        model: LinkStatus,
+    model: LinkStatus,
 
-        comparator: function(link) {
-            return link.get('name');
-        }
+    comparator: function(link) {
+      return link.get('name');
+    }
 
-    });
+  });
 
 });

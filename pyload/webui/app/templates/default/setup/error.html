@@ -1,14 +1,14 @@
 {{#ifEq status 410}}
-    <h2 class="text-warning">{{ _ "Setup timed out" }}</h2>
-    <p>{{ _ "Setup was closed due to inactivity. Please restart it to continue configuration." }}</p>
+  <h2 class="text-warning">{{ _ "Setup timed out" }}</h2>
+  <p>{{ _ "Setup was closed due to inactivity. Please restart it to continue configuration." }}</p>
 {{else}}
 {{#ifEq status 409}}
-    <h2 class="text-success">{{ _ "Setup finished" }}</h2>
-    <p>{{ _ "Setup was successful. You can restart pyLoad now." }}</p>
+  <h2 class="text-success">{{ _ "Setup finished" }}</h2>
+  <p>{{ _ "Setup was successful. You can restart pyLoad now." }}</p>
 {{else}}
-    <h2 class="text-error">
-        {{ _ "Setup failed" }}
-    </h2>
-    <p>{{ _ "Try to restart it or open a bug report." }}</p>
+  <h2 class="text-error">
+    {{ _ "Setup failed" }}
+  </h2>
+  <p>{{ _ "Try to restart it or open a bug report." }}</p>
 {{/ifEq}}
 {{/ifEq}}

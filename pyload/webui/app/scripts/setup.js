@@ -2,32 +2,32 @@
  * Router and controller used in setup mode
  */
 define([
-    // Libraries
-    'backbone',
-    'marionette',
-    'app',
+  // Libraries
+  'backbone',
+  'marionette',
+  'app',
 
-    // Views
-    'views/setup/setupView'
+  // Views
+  'views/setup/setupView'
 ],
-    function(Backbone, Marionette, App, SetupView) {
-        'use strict';
+  function(Backbone, Marionette, App, SetupView) {
+    'use strict';
 
-        return Backbone.Marionette.AppRouter.extend({
+    return Backbone.Marionette.AppRouter.extend({
 
-            appRoutes: {
-                '': 'setup'
-            },
+      appRoutes: {
+        '': 'setup'
+      },
 
-            controller: {
+      controller: {
 
-                setup: function() {
+        setup: function() {
 
-                    var view = new SetupView();
-                    App.actionbar.show(new view.actionbar());
-                    App.content.show(view);
-                }
+          var view = new SetupView();
+          App.actionbar.show(new view.actionbar());
+          App.content.show(view);
+        }
 
-            }
-        });
+      }
     });
+  });

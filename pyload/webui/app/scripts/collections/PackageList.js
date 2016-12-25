@@ -1,16 +1,16 @@
 define(['jquery', 'backbone', 'underscore', 'models/Package'], function($, Backbone, _, Package) {
-    'use strict';
+  'use strict';
 
-    return Backbone.Collection.extend({
+  return Backbone.Collection.extend({
 
-        model: Package,
+    model: Package,
 
-        comparator: function(pack) {
-            return pack.get('packageorder');
-        },
+    comparator: function(pack) {
+      return pack.get('packageorder');
+    },
 
-        initialize: function() {
-        }
+    initialize: function() {
+    }
 
-    });
+  });
 });

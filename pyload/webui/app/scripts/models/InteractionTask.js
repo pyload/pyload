@@ -1,41 +1,41 @@
 define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
-    function($, Backbone, _, App, Api) {
-        'use strict';
+  function($, Backbone, _, App, Api) {
+    'use strict';
 
-        return Backbone.Model.extend({
+    return Backbone.Model.extend({
 
-            idAttribute: 'iid',
+      idAttribute: 'iid',
 
-            defaults: {
-                iid: -1,
-                type: null,
-                input: null,
-                default_value: null,
-                title: '',
-                description: '',
-                plugin: '',
-                // additional attributes
-                result: ''
-            },
+      defaults: {
+        iid: -1,
+        type: null,
+        input: null,
+        default_value: null,
+        title: '',
+        description: '',
+        plugin: '',
+        // additional attributes
+        result: ''
+      },
 
-            // Model Constructor
-            initialize: function() {
+      // Model Constructor
+      initialize: function() {
 
-            },
+      },
 
-            save: function(options) {
-                options = App.apiRequest('setInteractionResult/' + this.get('iid'),
-                    {result: this.get('result')}, options);
+      save: function(options) {
+        options = App.apiRequest('setInteractionResult/' + this.get('iid'),
+          {result: this.get('result')}, options);
 
-                return $.ajax(options);
-            },
+        return $.ajax(options);
+      },
 
-            isNotification: function() {
-                return this.get('type') === Api.Interaction.Notification;
-            },
+      isNotification: function() {
+        return this.get('type') === Api.Interaction.Notification;
+      },
 
-            isCaptcha: function() {
-                return this.get('type') === Api.Interaction.Captcha;
-            }
-        });
+      isCaptcha: function() {
+        return this.get('type') === Api.Interaction.Captcha;
+      }
     });
+  });

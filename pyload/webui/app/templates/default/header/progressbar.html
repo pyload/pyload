@@ -3,13 +3,13 @@
 </div>
 
 <div class="progress" id="globalprogress">
-    {{#if single }}
-    <div class="bar" style="width: {{ percent }}%">
-        {{ else }}
-        <div class="bar {{#if downloads }}running{{/if}}">
-            {{/if}}
-        </div>
+  {{#if single }}
+  <div class="bar" style="width: {{ percent }}%">
+    {{ else }}
+    <div class="bar {{#if downloads }}running{{/if}}">
+      {{/if}}
     </div>
+  </div>
 </div>
 
 <div class="sub">

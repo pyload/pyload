@@ -1,25 +1,25 @@
 define(['jquery', 'backbone', 'underscore', 'app', 'hbs!tpl/setup/finished'],
-    function($, Backbone, _, App, template) {
-        'use strict';
+  function($, Backbone, _, App, template) {
+    'use strict';
 
-        return Backbone.Marionette.ItemView.extend({
+    return Backbone.Marionette.ItemView.extend({
 
-            name: 'Finished',
-            template: template,
+      name: 'Finished',
+      template: template,
 
-            events: {
-                'click .btn-blue': 'confirm'
-            },
+      events: {
+        'click .btn-blue': 'confirm'
+      },
 
-            ui: {
-            },
+      ui: {
+      },
 
-            onRender: function() {
-            },
+      onRender: function() {
+      },
 
-            confirm: function() {
-                this.model.submit();
-            }
+      confirm: function() {
+        this.model.submit();
+      }
 
-        });
     });
+  });

@@ -1,23 +1,23 @@
 define(['jquery', 'backbone', 'underscore', 'app', 'models/Account'], function($, Backbone, _, App, Account) {
-    'use strict';
+  'use strict';
 
-    return Backbone.Collection.extend({
+  return Backbone.Collection.extend({
 
-        model: Account,
+    model: Account,
 
-        comparator: function(account) {
-            return account.get('plugin');
-        },
+    comparator: function(account) {
+      return account.get('plugin');
+    },
 
-        initialize: function() {
+    initialize: function() {
 
-        },
+    },
 
-        fetch: function(options) {
-            options = App.apiRequest('getAccounts', null, options);
-            return Backbone.Collection.prototype.fetch.call(this, options);
-        }
+    fetch: function(options) {
+      options = App.apiRequest('getAccounts', null, options);
+      return Backbone.Collection.prototype.fetch.call(this, options);
+    }
 
-    });
+  });
 
 });

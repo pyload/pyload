@@ -1,41 +1,41 @@
 <div class="span3 account-type" style="background-image: url({{ pluginIcon plugin }})">
-    {{ plugin }} <br>
-    {{#if valid }}
-    <span class="text-success">
-        {{#if premium}}
-            {{_ "premium"}}
-        {{else}}
-            {{_ "valid" }}
-        {{/if}}
-    </span>
+  {{ plugin }} <br>
+  {{#if valid }}
+  <span class="text-success">
+    {{#if premium}}
+      {{_ "premium"}}
     {{else}}
-    <span class="text-error">
-        {{_ "invalid" }}
-    </span>
+      {{_ "valid" }}
     {{/if}}
+  </span>
+  {{else}}
+  <span class="text-error">
+    {{_ "invalid" }}
+  </span>
+  {{/if}}
 </div>
 <div class="span2 account-name">
-    {{ loginname }}
-    {{# if shared}}
-        TODO: shared
-    {{/if}}
+  {{ loginname }}
+  {{# if shared}}
+    TODO: shared
+  {{/if}}
 </div>
 <div class="span2 account-data">
-    {{_ "Traffic left:"}}<br>
-    {{ formatsize trafficleft 0 1024 }}
+  {{_ "Traffic left:"}}<br>
+  {{ formatsize trafficleft 0 1024 }}
 </div>
 <div class="span2 account-data">
-    {{_ "Valid until:"}}<br>
-    {{ formatTime validuntil }}
+  {{_ "Valid until:"}}<br>
+  {{ formatTime validuntil }}
 </div>
 <div class="span3">
-    {{#if activated }}
-        <button type="button" class="btn btn-success"><i class="icon-check"></i></button>
-    {{else}}
-        <button type="button" class="btn btn-success"><i class="icon-check-empty"></i></button>
-    {{/if}}
+  {{#if activated }}
+    <button type="button" class="btn btn-success"><i class="icon-check"></i></button>
+  {{else}}
+    <button type="button" class="btn btn-success"><i class="icon-check-empty"></i></button>
+  {{/if}}
 
-    <button type="button" class="btn btn-blue"><i class="icon-pencil"></i></button>
-    <button type="button" class="btn btn-yellow"><i class="icon-refresh"></i></button>
-    <button type="button" class="btn btn-danger"><i class="icon-trash"></i></button>
+  <button type="button" class="btn btn-blue"><i class="icon-pencil"></i></button>
+  <button type="button" class="btn btn-yellow"><i class="icon-refresh"></i></button>
+  <button type="button" class="btn btn-danger"><i class="icon-trash"></i></button>
 </div>

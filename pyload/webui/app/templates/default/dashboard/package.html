@@ -1,54 +1,54 @@
 {{#if selected }}
-    <i class="icon-check select"></i>
-    {{ else }}
-    <i class="icon-check-empty select"></i>
-    {{/if}}
-    <span class="package-name">
-    {{ name }}
-    </span>
+  <i class="icon-check select"></i>
+  {{ else }}
+  <i class="icon-check-empty select"></i>
+  {{/if}}
+  <span class="package-name">
+  {{ name }}
+  </span>
 
-    <div class="package-frame{{#if paused}} paused{{/if}}">
-        <div class="tag-area">
-            <!--<span class="badge badge-success"><i class="icon-tag"></i>video</span>-->
-            <!--<span class="badge badge-success badge-ghost"><i class="icon-tag"></i> Add Tag</span>-->
-        </div>
-        <div class="package-indicator">
-            <i class="icon-plus-sign btn-move" data-toggle="tooltip" title="Move files here"></i>
-            {{#if paused}}
-                <i class="icon-play toggle-paused" data-toggle="tooltip" title="Unpause Package"></i>
-            {{else}}
-                <i class="icon-pause toggle-paused" data-toggle="tooltip" title="Pause Package"></i>
-            {{/if}}
-            <i class="icon-refresh" data-toggle="tooltip" title="Restart Package"></i>
-            {{#if shared }}
-            <i class="icon-eye-open" data-toggle="tooltip" title="Package is public"></i>
-            {{ else }}
-            <i class="icon-eye-close" data-toggle="tooltip" title="Package is private"></i>
-            {{/if}}
-            <i class="icon-chevron-down" data-toggle="dropdown">
-            </i>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="#" class="btn-open"><i class="icon-folder-open-alt"></i> Open</a></li>
-                <li><a href="#" class="btn-add"><i class="icon-plus-sign"></i> Add links</a></li>
-                <li><a href="#" class="btn-edit"><i class="icon-edit"></i> Edit</a></li>
-                <li><a href="#" class="btn-delete"><i class="icon-trash"></i> Delete</a></li>
-                <li><a href="#" class="btn-recheck"><i class="icon-refresh"></i> Recheck</a></li>
-                <li class="divider"></li>
-                <li class="dropdown-submenu">
-                    <a>{{ _ "Addons" }}</a>
-                    <ul class="dropdown-menu">
-                        <li><a><i class="icon-spinner icon-spin"></i> {{ _ "Loading..." }}</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-        <div class="progress">
-            <span style="position: absolute; left: 5px">
-                {{ stats.linksdone }} / {{ stats.linkstotal }}
-            </span>
-            <div class="bar bar-info" style="width: {{ percent }}%"></div>
-            <span style="position: absolute; right: 5px">
-                    {{ formatsize stats.sizedone }} / {{ formatsize stats.sizetotal }}
-            </span>
-        </div>
+  <div class="package-frame{{#if paused}} paused{{/if}}">
+    <div class="tag-area">
+      <!--<span class="badge badge-success"><i class="icon-tag"></i>video</span>-->
+      <!--<span class="badge badge-success badge-ghost"><i class="icon-tag"></i> Add Tag</span>-->
     </div>
+    <div class="package-indicator">
+      <i class="icon-plus-sign btn-move" data-toggle="tooltip" title="Move files here"></i>
+      {{#if paused}}
+        <i class="icon-play toggle-paused" data-toggle="tooltip" title="Unpause Package"></i>
+      {{else}}
+        <i class="icon-pause toggle-paused" data-toggle="tooltip" title="Pause Package"></i>
+      {{/if}}
+      <i class="icon-refresh" data-toggle="tooltip" title="Restart Package"></i>
+      {{#if shared }}
+      <i class="icon-eye-open" data-toggle="tooltip" title="Package is public"></i>
+      {{ else }}
+      <i class="icon-eye-close" data-toggle="tooltip" title="Package is private"></i>
+      {{/if}}
+      <i class="icon-chevron-down" data-toggle="dropdown">
+      </i>
+      <ul class="dropdown-menu" role="menu">
+        <li><a href="#" class="btn-open"><i class="icon-folder-open-alt"></i> Open</a></li>
+        <li><a href="#" class="btn-add"><i class="icon-plus-sign"></i> Add links</a></li>
+        <li><a href="#" class="btn-edit"><i class="icon-edit"></i> Edit</a></li>
+        <li><a href="#" class="btn-delete"><i class="icon-trash"></i> Delete</a></li>
+        <li><a href="#" class="btn-recheck"><i class="icon-refresh"></i> Recheck</a></li>
+        <li class="divider"></li>
+        <li class="dropdown-submenu">
+          <a>{{ _ "Addons" }}</a>
+          <ul class="dropdown-menu">
+            <li><a><i class="icon-spinner icon-spin"></i> {{ _ "Loading..." }}</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="progress">
+      <span style="position: absolute; left: 5px">
+        {{ stats.linksdone }} / {{ stats.linkstotal }}
+      </span>
+      <div class="bar bar-info" style="width: {{ percent }}%"></div>
+      <span style="position: absolute; right: 5px">
+          {{ formatsize stats.sizedone }} / {{ formatsize stats.sizetotal }}
+      </span>
+    </div>
+  </div>
