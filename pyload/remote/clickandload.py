@@ -19,7 +19,7 @@ try:
 except Exception:
     pass
 
-from pyload.manager.remote import BackendBase
+from pyload.thread.remote import BackendBase
 
 core = None
 js = None
