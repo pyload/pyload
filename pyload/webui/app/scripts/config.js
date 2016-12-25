@@ -5,29 +5,29 @@ require.config({
   deps: ['default'],
 
   paths: {
-    jquery: '../node_modules/jquery/jquery',
-    flot: '../node_modules/flot/jquery.flot',
-    transit: '../node_modules/jquery.transit/jquery.transit',
-    animate: '../node_modules/jquery.animate-enhanced/scripts/src/jquery.animate-enhanced',
-    cookie: '../node_modules/jquery.cookie/jquery.cookie',
+    jquery: '../modules/jquery/dist/jquery.min',
+    flot: '../modules/Flot/jquery.flot',
+    transit: '../modules/jquery.transit/jquery.transit',
+    animate: '../modules/jQuery-Animate-Enhanced/jquery.animate-enhanced.min',
+    cookie: '../modules/jquery.cookie/jquery.cookie',
     omniwindow: 'vendor/jquery.omniwindow',
-    select2: '../node_modules/select2/select2',
-    bootstrap: '../node_modules/bootstrap/docs/assets/js/bootstrap',
-    underscore: '../node_modules/underscore/underscore',
-    backbone: '../node_modules/backbone/backbone',
-    marionette: '../node_modules/backbone.marionette/lib/backbone.marionette',
+    select2: '../modules/select2/select2',
+    bootstrap: '../modules/bootstrap/dist/js/bootstrap.min',
+    underscore: '../modules/underscore/underscore-min',
+    backbone: '../modules/backbone/backbone-min',
+    marionette: '../modules/backbone.marionette/lib/backbone.marionette.min',
     // version must be tested carefully, many are broken for amd
-    handlebars: '../node_modules/handlebars.js/dist/handlebars',
-    jed: '../node_modules/jed/jed',
-    moment: '../node_modules/momentjs/moment',
+    handlebars: '../modules/handlebars.js/dist/handlebars',
+    jed: '../modules/jed/jed',
+    moment: '../modules/moment/moment',
 
     // TODO: Two hbs dependencies could be replaced
-    i18nprecompile: '../node_modules/require-handlebars-plugin/hbs/i18nprecompile',
-    json2: '../node_modules/require-handlebars-plugin/hbs/json2',
+    // i18nprecompile: '../modules/require-handlebars-plugin/hbs/i18nprecompile',
+    json2: '../modules/require-handlebars-plugin/hbs/json2',
 
     // Plugins
-    // text: '../node_modules/requirejs-text/text',
-    hbs: '../node_modules/require-handlebars-plugin/hbs',
+    // text: '../modules/requirejs-text/text',
+    hbs: '../modules/require-handlebars-plugin/hbs',
 
     // Shortcut
     tpl: '../templates/default'

@@ -107,7 +107,7 @@ module.exports = function(grunt) {
         },
         jshint: {
             options: {
-                jshintrc: '<%= yeoman.app %>/node_modules/.jshintrc'
+                jshintrc: '.jshintrc'
             },
             all: [
                 'Gruntfile.js',
@@ -126,8 +126,7 @@ module.exports = function(grunt) {
         },
         less: {
             options: {
-                paths: [yeomanConfig.app + '/node_modules', yeomanConfig.app + '/styles/common',
-                    yeomanConfig.app + '/styles/default']
+                paths: [yeomanConfig.app + '/styles/common', yeomanConfig.app + '/styles/default']
                 //dumpLineNumbers: true
             },
             dist: {
@@ -336,7 +335,7 @@ module.exports = function(grunt) {
                     }
                     // {
                         // expand: true,
-                        // cwd: '<%= yeoman.app %>/node_modules/pyload-common',
+                        // cwd: '<%= yeoman.app %>/modules/pyload-common',
                         // dest: '.tmp',
                         // src: [
                             // 'favicon.ico',
@@ -422,7 +421,7 @@ module.exports = function(grunt) {
         'clean:dist',
         'useminPrepare',
         'less',
-        'copy', // Copy .tmp, node_modules, app to dist
+        'copy', // Copy .tmp, modules, app to dist
         'requirejs', // build the main script and remove included scripts
         'concat',
         'concurrent:dist',  // Run minimisation

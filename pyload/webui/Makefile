@@ -1,5 +1,5 @@
 SHELL := /bin/sh
-PATH := ${PATH}:.
+PATH := ${PATH}:app
 
 .PHONY: build
 build: install
@@ -7,13 +7,13 @@ build: install
 
 .PHONY: install
 install: check
-    npm install
+    npm install @modules
     $(MAKE) clean
 
 .PHONY: uninstall
 uninstall:
     # $(MAKE) clean
-    rm -rf node_modules
+    rm -rf modules
     ifdef $(wildcard "node")
         rm -f node
     endif

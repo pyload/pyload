@@ -8,8 +8,8 @@ import sys
 
 from os.path import join, abspath, dirname, exists
 
-PROJECT_DIR = abspath(dirname(__file__))
-PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
+APP_DIR = abspath(join(dirname(__file__), 'app'))
+PYLOAD_DIR = abspath(join(APP_DIR, '..', '..', '..'))
 
 import bottle
 from bottle import run, app
@@ -43,14 +43,14 @@ if PREFIX:
     if PREFIX and not PREFIX.startswith("/"):
         PREFIX = "/" + PREFIX
 
-APP_PATH = "app"
+# APP_PATH = "app"
 UNAVAILALBE = True
 
 # webui build is available
-if exists(join(PROJECT_DIR, "node_modules")) and exists(join(PROJECT_DIR, ".tmp")):
+if exists(join(APP_DIR, "modules")):
     UNAVAILALBE = False
-elif exists(join(PROJECT_DIR, "dist", "index.html")):
-    APP_PATH = "dist"
+elif exists(join(APP_DIR, "dist", "index.html")):
+    # APP_PATH = "dist"
     UNAVAILALBE = False
 
 DEBUG = config.get("general", "debug_mode") or "-d" in sys.argv or "--debug" in sys.argv

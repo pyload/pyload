@@ -4,7 +4,7 @@
     "description" : "pyLoad next-gen web user interface",
     "scripts" : {
         "test" : "echo \"Error : no test specified\" && exit 1",
-        "postinstall" : "node node_modules/grunt build"
+        "postinstall" : "node app/modules/grunt build"
     },
     "author" : "Christian Rakow <Mast3rRaNaN@hotmail.de>",
     "contributors" : [

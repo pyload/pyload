@@ -8,13 +8,11 @@ from os.path import join, exists
 
 from bottle import route, static_file, response, request, redirect, template
 
-from pyload.webui.webinterface import PYLOAD, PROJECT_DIR, SETUP, APP_PATH, UNAVAILALBE, PREFIX
+from pyload.webui.webinterface import PYLOAD, APP_DIR, SETUP, UNAVAILALBE, PREFIX
 
-from pyload.utils import login_required, add_json_header, select_language
+from pyload.webui.utils import login_required, add_json_header, select_language
 
 from pyload.utils import json_dumps
-
-APP_ROOT = join(PROJECT_DIR, APP_PATH)
 
 # Cache file names that are available gzipped
 GZIPPED = {}
@@ -63,10 +61,10 @@ def index():
     # set variable depending on setup mode
     setup = 'false' if SETUP is None else 'true'
     ws = PYLOAD.get_ws_address() if PYLOAD else False
-    external = PYLOAD.getConfigValue('webui', 'external') if PYLOAD else None
+    external = PYLOAD.get_config_value('webui', 'external') if PYLOAD else None
     web = None
     if PYLOAD:
-        web = PYLOAD.getConfigValue('webui', 'port')
+        web = PYLOAD.get_config_value('webui', 'port')
     elif SETUP:
         web = SETUP.config['webui']['port']
 
@@ -89,7 +87,7 @@ def index():
 def serve_static(path):
     # save if this resource is available as gz
     if path not in GZIPPED:
-        GZIPPED[path] = exists(join(APP_ROOT, path + ".gz"))
+        GZIPPED[path] = exists(join(APP_DIR, path + ".gz"))
 
     # gzipped and clients accepts it
     # TODO: index.html is not gzipped, because of template processing
@@ -98,11 +96,7 @@ def serve_static(path):
         gzipped = True
         path += ".gz"
 
-    resp = static_file(path, root=APP_ROOT)
-
-    # Also serve from .tmp folder in dev mode
-    if resp.status_code == 404 and APP_PATH == "app":
-        resp = static_file(path, root=join(PROJECT_DIR, '.tmp'))
+    resp = static_file(path, root=APP_DIR)
 
     if path.endswith(".html") or path.endswith(".html.gz"):
         # tell the browser all html files must be revalidated
