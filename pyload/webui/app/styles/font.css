@@ -8,6 +8,6 @@
   font-style: normal;
   font-weight: 400;
   src: local('Abel'), local('Abel-Regular');
-  src: url(../fonts/common/Abel-Regular.woff) format('woff');
-     url(../fonts/common/Abel-Regular.ttf) format('truetype');
+  src: url(../fonts/Abel/Abel-Regular.woff) format('woff');
+     url(../fonts/Abel/Abel-Regular.ttf) format('truetype');
 }
