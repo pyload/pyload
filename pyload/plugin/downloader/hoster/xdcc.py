@@ -39,7 +39,7 @@ class Xdcc(Hoster):
 
     def process(self, pyfile):
         # change request type
-        self.req = pyfile.manager.pyload.request_factory.get_request(self.__name__, type="XDCC")
+        self.req = pyfile.manager.pyload.request.get_request(self.__name__, type="XDCC")
 
         self.pyfile = pyfile
         for _ in range(0, 3):

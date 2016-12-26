@@ -156,7 +156,7 @@ class Crypter(Base):
                 self.req = self.account.get_account_request()
 
         if self.req is None:
-            self.req = core.request_factory.get_request()
+            self.req = core.request.get_request()
 
         #: Password supplied by user
         self.password = password
