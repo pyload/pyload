@@ -14,7 +14,7 @@ from urllib.parse import quote, urlencode
 from http.client import responses
 from io import StringIO
 
-from pyload.plugin.base import Abort
+from pyload.plugin import Abort
 from pyload.network.cookie import CookieJar
 
 from pyload.plugin.request import Request, ResponseException

@@ -16,7 +16,7 @@ from collections import defaultdict
 from logging import getLogger
 
 from SafeEval import const_eval as literal_eval
-from pyload.plugin.base import Base
+from pyload.plugin import Base
 
 from new_collections import namedtuple
 

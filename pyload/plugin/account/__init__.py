@@ -13,7 +13,7 @@ from pyload.network.cookie import CookieJar
 from pyload.config.convert import from_string, to_configdata
 from pyload.utils import to_string, compare_time, format_size, parse_size , lock
 
-from pyload.plugin.base import Base
+from pyload.plugin import Base
 
 
 class WrongPassword(Exception):
