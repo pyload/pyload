@@ -46,7 +46,7 @@ from pyload.manager.plugin import PluginManager
 from pyload.manager.event import EventManager
 from pyload.network.request import RequestFactory
 from pyload.thread.webui import WebServer
-from pyload.scheduler import Scheduler
+from pyload.manager.scheduler import Scheduler
 from pyload.manager.remote import RemoteManager
 from pyload.utils.jsengine import JsEngine
 
