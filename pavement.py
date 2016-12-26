@@ -7,7 +7,7 @@ from paver.easy import *
 from paver.doctools import cog
 
 import fnmatch
-import os.path
+import os
 
 # patch to let it support list of patterns
 def new_fnmatch(self, pattern):
@@ -22,7 +22,6 @@ def new_fnmatch(self, pattern):
 
 path.fnmatch = new_fnmatch
 
-import os
 import sys
 import shutil
 import re

@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+
+import os
 import sys
-from os import path
 
 from setuptools import setup
 
-PROJECT_DIR = path.abspath(path.dirname(__file__))
+PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
 
 extradeps = []
 if sys.version_info <= (2, 5):
