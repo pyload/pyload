@@ -73,11 +73,11 @@ web = StripPathMiddleware(session)
 if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
 
-from pyload.webui import api_app
-from pyload.webui import cnl_app
-from pyload.webui import setup_app
+from pyload.webui import api
+from pyload.webui import cnl
+from pyload.webui import setup
 # Last routes to register,
-from pyload.webui import pyload_app
+from pyload.webui import pyload
 
 # Server Adapter
 def run_server(host, port, server):
