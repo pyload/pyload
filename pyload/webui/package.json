@@ -61,7 +61,8 @@
         "connect-livereload" : "^0.3.0"
     },
     "peerDependencies" : {
-        "grunt" : "^1.0.1"
+        "grunt" : "^1.0.1",
+        "grunt-cli" : "^1.2.0"
     },
     "engines" : {
         "node" : ">=1.4.0"
