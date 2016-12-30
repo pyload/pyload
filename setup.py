@@ -1,63 +1,146 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#@author: vuolter
 
 from __future__ import unicode_literals
+from past.builtins import execfile
 
 import os
-import sys
 
-from setuptools import setup
+import pyload
 
-PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
 
-extradeps = []
-if sys.version_info <= (2, 5):
-    extradeps += 'simplejson'
+__all__ = ['info', 'main', 'run_venv', 'setup']
 
-from pyload import __version__
 
-setup(
-    name="pyload",
-    version=__version__,
-    description='Fast, lightweight and full featured download manager.',
-    long_description=open(path.join(PROJECT_DIR, "README.md")).read(),
-    keywords=('pyload', 'download-manager', 'one-click-hoster', 'download'),
-    url="https://pyload.net",
-    download_url='https://github.com/pyload/pyload/releases',
-    license='AGPL v3',
-    author="pyLoad Team",
-    author_email="support@pyload.net",
-    platforms=('Any',),
-    #package_dir={'pyload': 'src'},
-    packages=['pyload'],
-    #package_data=find_package_data(),
-    #data_files=[],
-    include_package_data=True,
-    exclude_package_data={'pyload': ['docs*', 'scripts*', 'tests*']}, #exluced from build but not from sdist
-    # 'bottle >= 0.10.0' not in list, because its small and contain little modifications
-    install_requires=['pycurl', 'Beaker >= 1.6'] + extradeps,
-    extras_require={
-        'SSL': ["pyOpenSSL"],
-        'DLC': ['pycrypto'],
-        'Lightweight webserver': ['bjoern'],
-        'RSS plugins': ['feedparser'],
-        'Few Hoster plugins': ['BeautifulSoup>=3.2, <3.3']
-    },
-    #setup_requires=["setuptools_hg"],
-    test_suite='nose.collector',
-    tests_require=['nose', 'websocket-client >= 0.8.0', 'requests >= 1.2.2'],
-    entry_points={
-        'console_scripts': [
-            'pyload = pyload.core:main'
-        ]},
-    zip_safe=False,
-    classifiers=[
-        "Development Status :: 5 - Production/Stable",
-        "Topic :: Internet :: WWW/HTTP",
-        "Environment :: Console",
-        "Environment :: Web Environment",
-        "Intended Audience :: End Users/Desktop",
-        "License :: OSI Approved :: GNU Affero General Public License v3",
-        "Operating System :: OS Independent",
-        "Programming Language :: Python :: 2"
+def info():
+    from pyload.utils.struct import Info
+
+    info = pyload.info()
+
+    keywords = [
+        "pyload", "download", "download-manager", "download-station", "downloader",
+        "jdownloader", "one-click-hoster", "upload", "upload-manager",
+        "upload-station", "uploader"
     ]
-)
+    install_requires = [
+        "Beaker >= 1.6", "Send2Trash", "argparse", "bitmath", "bottle >= 0.10.0",
+        "colorama", "daemonize", "future", "goslate", "jinja2", "psutil", "pycurl",
+        "requests >= 2.0", "ruamel.yaml", "setproctitle", "tld", "validators",
+        "watchdog", "wsgigzip"
+    ]
+    if os.name != 'nt':
+        install_requires.append("dbus-python")
+
+    extras_require = {
+        'Auto-update support'  : ["pip"],
+        'Captcha recognition'  : ["Pillow >= 2.0"],  #@TODO: Fix `tesserocr` installation
+        'Colored log'          : ["colorlog"],
+        'JS evaluation'        : ["Js2Py"],
+        # 'Plugin dependencies'  : ["beautifulsoup4", "pycrypto"],  #@NOTE: Build a `smart_import` for these
+        'RESTful API'          : ["thrift >= 0.8"],
+        'SSL support'          : ["pyOpenSSL"],
+        'UnRAR support'        : ["unrar"]
+    }
+    if os.name != 'nt':
+        extras_require['Lightweight webserver'] = ["bjoern"]
+
+    entry_points = {
+        'console_scripts': ['{} = {}:main'.format(info.title.lower(), info.title)]
+    }    
+    tests_require = ['nose', 'requests >= 1.2.2', 'websocket-client >= 0.8.0']
+    classifiers = [
+        "Development Status :: " + info.status,
+        "Environment :: Web Environment",
+        "Intended Audience :: Developers",
+        "Intended Audience :: End Users/Desktop",
+        "License :: OSI Approved :: " + info.license,
+        "Natural Language :: English",
+        "Operating System :: OS Independent",
+        "Programming Language :: Other",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.6",
+        "Programming Language :: Python :: 2.7",
+        "Topic :: Communications",
+        "Topic :: Communications :: File Sharing",
+        "Topic :: Internet",
+        "Topic :: Internet :: File Transfer Protocol (FTP)",
+        "Topic :: Internet :: WWW/HTTP"
+    ]
+
+    return Info(
+        keywords=keywords,
+        packages=[info.title.lower()],
+        include_package_data=True,
+        install_requires=install_requires,
+        extras_require=extras_require,
+        entry_points=entry_points,
+        test_suite='nose.collector',
+        tests_require=tests_require,
+        zip_safe=False,  #@TODO: Recheck in future...
+        classifiers=classifiers
+    )
+
+
+def _create_venv(env_dir):
+    import virtualenv
+    virtualenv.create_environment(env_dir,
+                                  site_packages=False,
+                                  clear=False,
+                                  symlink=False)
+
+
+def _activate_venv(env_dir):
+    activate_script = os.path.join(env_dir, 'bin', 'activate_this.py')
+    execfile(activate_script, dict(__file__=activate_script))
+
+
+def run_venv():
+    venv = os.path.join(ROOTDIR, "venv")
+    _create_venv(venv)
+    _activate_venv(venv)
+
+
+def _set_win_env():
+    if os.name != 'nt':
+        return
+    try:
+        os.system('SETX path "%PATH%;{}"'.format(ROOTDIR))
+    except Exception:
+        pass
+
+
+def _pre_setup():
+    info = pyload.info()
+    setupinfo = {
+        'name'   : info.title,
+        'version': info.version,
+        'url'    : info.url
+    }
+    try:
+        from setuptools import setup
+    except ImportError:
+        from distutils.core import setup
+        setupinfo.update(requires=["setuptools", "virtualenv"])
+    else:
+        setupinfo.update(setup_requires=["setuptools"],
+                         install_requires=["setuptools", "virtualenv"])
+    setup(**setupinfo)
+
+
+def setup():
+    import setuptools
+    setupinfo = info()
+    setupinfo.update(pyload.info())
+    setuptools.setup(**setupinfo)
+    _set_win_env()
+
+
+def main():
+    _pre_setup()
+    # run_venv()
+    setup()
+
+
+if __name__ == "__main__":
+    main()

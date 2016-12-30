@@ -1,21 +1,9 @@
-include *.py *.md setup.* CLA MANIFEST.in
+include *.md CLA
 
-
-recursive-include pyload *.py
-recursive-include pyload/plugins *_2*.pyc
+recursive-include locale *.mo *.pot
 
 recursive-include pyload/remote *
-recursive-exclude pyload/remote *.py[co]
+recursive-exclude pyload/remote *.py[cod]
 
-recursive-include pyload/web .bowerrc .jshintrc Gruntfile.js package.json
-prune pyload/web/node_modules
-
-recursive-include pyload/web/dist *
-recursive-include pyload/web/app *
-prune pyload/web/app/components
-
-recursive-include docs Makefile *.py *.conf *.rst *.svg *.png
-
-recursive-include tests *.py *.txt *.sh *.org
-
-recursive-include locale *.pot *.mo
+recursive-include pyload/webui *
+prune pyload/webui/app/modules
