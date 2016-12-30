@@ -34,8 +34,8 @@ subprocess.__doc__ = None # the module with the largest doc we are using
 
 from pyload.inithomedir import init_dir
 
-from builtins import owd
-from builtins import pypath
+from builtins import PACKDIR
+from builtins import COREDIR
 
 init_dir()
 
@@ -113,21 +113,21 @@ class Core(object):
                         from pyload.setup.setup import Setup
 
                         self.config = ConfigParser()
-                        s = Setup(pypath, self.config)
+                        s = Setup(COREDIR, self.config)
                         s.set_user()
                         exit()
                     elif option in ("-s", "--setup"):
                         from pyload.setup.setup import Setup
 
                         self.config = ConfigParser()
-                        s = Setup(pypath, self.config)
+                        s = Setup(COREDIR, self.config)
                         s.start()
                         exit()
                     elif option == "--changedir":
                         from pyload.setup.setup import Setup
 
                         self.config = ConfigParser()
-                        s = Setup(pypath, self.config)
+                        s = Setup(COREDIR, self.config)
                         s.conf_path(True)
                         exit()
                     elif option in ("-q", "--quit"):
@@ -272,7 +272,7 @@ class Core(object):
 
             print("This is your first start, running configuration assistant now.")
             self.config = ConfigParser()
-            s = Setup(pypath, self.config)
+            s = Setup(COREDIR, self.config)
             res = False
             try:
                 res = s.start()
@@ -408,7 +408,7 @@ class Core(object):
 
         self.config.save() #save so config files gets filled
 
-        link_file = join(pypath, "links.txt")
+        link_file = join(COREDIR, "links.txt")
 
         if exists(link_file):
             f = open(link_file, "rb")
@@ -567,7 +567,7 @@ class Core(object):
 
     def restart(self):
         self.shutdown()
-        chdir(owd)
+        chdir(PACKDIR)
         # close some open fds
         for i in range(3, 50):
             try:
@@ -622,7 +622,7 @@ class Core(object):
             print_exc()
 
     def path(self, *args):
-        return join(pypath, *args)
+        return join(COREDIR, *args)
 
 
 def deamon():

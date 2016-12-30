@@ -4,7 +4,7 @@
 from __future__ import unicode_literals
 from builtins import str
 from builtins import object
-from builtins import pypath
+from builtins import COREDIR
 import sys
 
 from os.path import abspath, join
@@ -45,7 +45,7 @@ class PluginManager(object):
         # add to path, so we can import from userplugins
         sys.path.append(abspath(""))
         self.loader = LoaderFactory(PluginLoader(abspath(self.LOCALROOT), self.LOCALROOT, self.pyload.config),
-                                    PluginLoader(abspath(join(pypath, "pyload", "plugin")), self.ROOT,
+                                    PluginLoader(abspath(join(COREDIR, "pyload", "plugin")), self.ROOT,
                                                  self.pyload.config))
 
         self.loader.check_versions()

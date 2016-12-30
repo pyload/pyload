@@ -10,7 +10,7 @@ standard_library.install_aliases()
 from builtins import input
 from builtins import str
 from builtins import object
-from builtins import pypath
+from builtins import COREDIR
 import os
 import sys
 import socket
@@ -307,10 +307,10 @@ class Setup(object):
         print(_("Setting new configpath, current configuration will not be transferred!"))
         path = self.ask(_("Config path"), abspath(""))
         try:
-            path = join(pypath, path)
+            path = join(COREDIR, path)
             if not exists(path):
                 makedirs(path)
-            f = open(join(pypath, "pyload", "config", "configdir"), "wb")
+            f = open(join(COREDIR, "pyload", "config", "configdir"), "wb")
             f.write(path)
             f.close()
             print(_("Config path changed, setup will now close, please restart to go on."))

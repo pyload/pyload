@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 from future import standard_library
 standard_library.install_aliases()
 from builtins import object
-from builtins import pypath
+from builtins import COREDIR
 from collections import defaultdict
 from threading import Event
 from time import sleep
@@ -225,8 +225,8 @@ class DownloadManager(object):
             return False
 
         if not exists(self.pyload.config['reconnect']['method']):
-            if exists(join(pypath, self.pyload.config['reconnect']['method'])):
-                self.pyload.config['reconnect']['method'] = join(pypath, self.pyload.config['reconnect']['method'])
+            if exists(join(COREDIR, self.pyload.config['reconnect']['method'])):
+                self.pyload.config['reconnect']['method'] = join(COREDIR, self.pyload.config['reconnect']['method'])
             else:
                 self.pyload.config["reconnect"]["activated"] = False
                 self.log.warning(_("Reconnect script not found!"))

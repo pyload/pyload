@@ -7,7 +7,7 @@ from __future__ import unicode_literals
 from future import standard_library
 standard_library.install_aliases()
 from builtins import object
-from builtins import pypath
+from builtins import COREDIR
 from imp import find_module
 from os.path import join, exists
 from urllib.parse import quote
@@ -66,8 +66,8 @@ if not ENGINE or DEBUG:
             path = "/usr/share/java/js.jar"
         elif exists("js.jar"):
             path = "js.jar"
-        elif exists(join(pypath, "js.jar")): #may raises an exception, but js.jar wasnt found anyway
-            path = join(pypath, "js.jar")
+        elif exists(join(COREDIR, "js.jar")): #may raises an exception, but js.jar wasnt found anyway
+            path = join(COREDIR, "js.jar")
 
         if not path:
             raise Exception

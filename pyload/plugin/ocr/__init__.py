@@ -23,7 +23,7 @@ from __future__ import unicode_literals
 from __future__ import division
 from builtins import range
 from builtins import object
-from builtins import pypath
+from builtins import COREDIR
 from past.utils import old_div
 import os
 from os.path import join
@@ -83,7 +83,7 @@ class OCR(object):
         self.image.save(tmp.name, 'TIFF')
 
         if os.name == "nt":
-            tessparams = [join(pypath, "tesseract", "tesseract.exe")]
+            tessparams = [join(COREDIR, "tesseract", "tesseract.exe")]
         else:
             tessparams = ['tesseract']
 
