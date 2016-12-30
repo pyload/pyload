@@ -14,7 +14,7 @@ from thrift.Thrift import TType
 from thriftgen.pyload import ttypes
 from thriftgen.pyload import Pyload
 
-from pyload import __version_info__
+from pyload import info
 
 type_map = {
     TType.BOOL: 'bool',
@@ -92,7 +92,7 @@ class ExceptionObject(Exception):
 \t__version__ = {0}
 \t__slots__ = []
 
-""".format(__version_info__))
+""".format(info().version))
 
     dev = open(join(path, "apitypes_debug.py"), "wb")
     dev.write("""# -*- coding: utf-8 -*-

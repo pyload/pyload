@@ -62,8 +62,8 @@ copyright = '2009-2017, pyLoad Team'
 #
 # The full version, including alpha/beta/rc tags.
 """ [[[cog
-from pyload import __version__
-v = __version__.split(".")
+from pyload import info
+v = info().version.split(".")
 cog.outl("version = '%s'" % ".".join(v[:2]))
 cog.outl("release = '%s'" % ".".join(v))
 ]]]"""

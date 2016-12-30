@@ -32,7 +32,7 @@ from subprocess import call, Popen
 PROJECT_DIR = path(__file__).dirname()
 sys.path.append(PROJECT_DIR)
 
-from pyload import __version__
+from pyload import info
 
 options = environment.options
 options(
@@ -56,7 +56,7 @@ options(
 # xgettext args
 xargs = ["--language=Python", "--add-comments=L10N",
          "--from-code=utf-8", "--copyright-holder=The pyLoad Team", "--package-name=pyload",
-         "--package-version=%s" % __version__, "--msgid-bugs-address='dev@pyload.net'"]
+         "--package-version=%s" % info().version, "--msgid-bugs-address='dev@pyload.net'"]
 
 # Modules replace rules
 module_replace = [

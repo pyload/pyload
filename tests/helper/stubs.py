@@ -11,9 +11,9 @@ from traceback import format_exc
 
 import builtins
 
-from pyload.inithomedir import init_dir
+# from pyload.inithomedir import init_dir
 
-init_dir(join("tests", "config"), True)
+# init_dir(join("tests", "config"), True)
 
 from pyload.api import Role
 from pyload.core import Core
