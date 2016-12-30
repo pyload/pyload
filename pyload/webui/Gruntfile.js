@@ -20,7 +20,7 @@ module.exports = function(grunt) {
     // configurable paths
     var yeomanConfig = {
         app: 'app',
-        dist: 'dist',
+        dist: 'app/dist',
         banner: '/* Copyright(c) 2009-2017 The pyLoad Team */\n',
         protocol: 'http'
     };
