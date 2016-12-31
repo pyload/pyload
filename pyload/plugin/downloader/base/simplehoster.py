@@ -7,7 +7,6 @@ from future import standard_library
 standard_library.install_aliases()
 from builtins import str
 from past.builtins import basestring
-from past.utils import old_div
 from urllib.parse import urlparse
 import re
 from time import time
@@ -250,7 +249,7 @@ class SimpleHoster(Hoster):
 
     def long_wait(self, wait_time=None, max_tries=3):
         if wait_time and isinstance(wait_time, (int, int, float)):
-            time_str = "{:d}h {:d}m".format(*divmod(old_div(wait_time, 60), 60))
+            time_str = "{:d}h {:d}m".format(*divmod(wait_time // 60, 60))
         else:
             wait_time = 900
             time_str = "(unknown time)"
@@ -269,7 +268,7 @@ class SimpleHoster(Hoster):
         traffic = self.account.get_account_info(self.user, True)["trafficleft"]
         if traffic == -1:
             return True
-        size = old_div(self.pyfile.size, 1024)
+        size = self.pyfile.size // 1024
         self.log_info("Filesize: {:d} KiB, Traffic left for user {}: {:d} KiB".format(size, self.user, traffic))
         return size <= traffic
 

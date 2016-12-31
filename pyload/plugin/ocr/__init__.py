@@ -24,7 +24,6 @@ from __future__ import division
 from builtins import range
 from builtins import object
 from builtins import COREDIR
-from past.utils import old_div
 import os
 from os.path import join
 from os.path import abspath
@@ -222,7 +221,7 @@ class OCR(object):
                     sum += x
                     cnt += 1
 
-            avg = old_div(sum, cnt)
+            avg = sum // cnt
             counts[angle] = cnt
             highest[angle] = 0
             for x in count.values():

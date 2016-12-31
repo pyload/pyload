@@ -5,7 +5,6 @@ from __future__ import unicode_literals
 from __future__ import division
 
 from builtins import object
-from past.utils import old_div
 import socket
 import re
 
@@ -96,7 +95,7 @@ class XDCCRequest(object):
             now = time()
             timespan = now - lastUpdate
             if timespan > 1:
-                self.speed = old_div(cumRecvLen, timespan)
+                self.speed = cumRecvLen // timespan
                 cumRecvLen = 0
                 lastUpdate = now
 
@@ -146,7 +145,7 @@ class XDCCRequest(object):
     @property
     def percent(self):
         if not self.filesize: return 0
-        return old_div((self.recv * 100), self.filesize)
+        return (self.recv * 100) // self.filesize
 
     def close(self):
         pass

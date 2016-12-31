@@ -5,7 +5,6 @@ from __future__ import unicode_literals
 from __future__ import division
 from builtins import str
 from builtins import object
-from past.utils import old_div
 import sys
 from time import time, sleep
 from random import randint
@@ -311,7 +310,7 @@ class Base(object):
             OCR = None
 
         if OCR and not forceUser:
-            sleep(old_div(randint(3000, 5000), 1000.0))
+            sleep(randint(3000, 5000) // 1000.0)
             self.check_abort()
 
             ocr = OCR()

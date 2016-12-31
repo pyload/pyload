@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 from __future__ import division
 from builtins import object
-from past.utils import old_div
 from time import time
 
 # 10kb minimum rate
@@ -29,7 +28,7 @@ class Bucket(object):
         self.tokens -= amount
 
         if self.tokens < 0:
-            return old_div(-self.tokens,float(self.rate))
+            return -self.tokens // float(self.rate)
         else:
             return 0
 

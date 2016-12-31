@@ -5,7 +5,6 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from __future__ import division
 from builtins import str
-from past.utils import old_div
 from os.path import dirname
 from logging import log, DEBUG
 from hashlib import md5
@@ -59,7 +58,7 @@ class HosterPluginTester(PluginTester):
             pyfile.plugin.preprocessing(self.thread)
 
             log(DEBUG, "downloading took {:d}s".format(time() - a))
-            log(DEBUG, "size {:d} KiB".format(old_div(pyfile.size, 1024)))
+            log(DEBUG, "size {:d} KiB".format(pyfile.size // 1024))
 
             if status == "offline":
                 raise Exception("No offline Exception raised.")

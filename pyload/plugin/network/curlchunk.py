@@ -6,7 +6,6 @@ from __future__ import unicode_literals
 from __future__ import division
 from builtins import range
 from builtins import object
-from past.utils import old_div
 import re
 from os import remove, stat, fsync
 from os.path import exists
@@ -46,7 +45,7 @@ class ChunkInfo(object):
 
     def create_chunks(self, chunks):
         self.clear()
-        chunk_size = old_div(self.size, chunks)
+        chunk_size = self.size // chunks
 
         current = 0
         for i in range(chunks):

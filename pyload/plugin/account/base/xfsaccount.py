@@ -4,7 +4,6 @@
 from __future__ import unicode_literals
 from __future__ import division
 
-from past.utils import old_div
 import re
 from time import mktime, strptime
 from pyload.plugin.account import Account
@@ -47,7 +46,7 @@ class XFSPAccount(Account):
                 if "Unlimited" in trafficleft:
                     premium = True
                 else:
-                    trafficleft = old_div(parse_size (trafficleft), 1024)
+                    trafficleft = parse_size(trafficleft) // 1024
 
         return ({"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium})
 

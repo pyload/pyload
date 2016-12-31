@@ -6,7 +6,6 @@ from __future__ import division
 from builtins import str
 from builtins import range
 from builtins import object
-from past.utils import old_div
 from time import time
 
 
@@ -45,9 +44,9 @@ class BenchmarkTest(object):
 
             if len(v) > 1:
                 print(("{:" + length + "} {} | average: {:.2f} ms").format(
-                    k, ", ".join("{:.2f}".format(x) for x in v), old_div(sum(v), len(v))
+                    k, ", ".join("{:.2f}".format(x) for x in v), sum(v) // len(v)
                 ))
-                total += old_div(sum(v), len(v))
+                total += sum(v) // len(v)
             else:
                 print(("{:" + length + "}: {:.2f} ms").format(k, v[0]))
                 total += v[0]

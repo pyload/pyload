@@ -5,7 +5,6 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from __future__ import division
 from builtins import object
-from past.utils import old_div
 from threading import Lock
 from time import time
 from base64 import standard_b64encode
@@ -138,7 +137,7 @@ class InteractionManager(object):
         if cli:
             task.setWaiting(self.CLIENT_THRESHOLD)
         else: # TODO: higher threshold after client connects?
-            task.setWaiting(old_div(self.CLIENT_THRESHOLD, 3))
+            task.setWaiting(self.CLIENT_THRESHOLD // 3)
 
         if task.type == IA.Notification:
             task.setWaiting(self.NOTIFICATION_TIMEOUT) # notifications are valid for 30h
