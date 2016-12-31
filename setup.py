@@ -25,7 +25,7 @@ def info():
     ]
     install_requires = [
         "Beaker >= 1.6", "Send2Trash", "argparse", "bitmath", "bottle >= 0.10.0",
-        "colorama", "daemonize", "future", "goslate", "jinja2", "psutil", "pycurl",
+        "colorama", "daemonize", "future", "goslate", "psutil", "pycurl",
         "requests >= 2.0", "ruamel.yaml", "setproctitle", "tld", "validators",
         "watchdog", "wsgigzip"
     ]
@@ -33,14 +33,13 @@ def info():
         install_requires.append("dbus-python")
 
     extras_require = {
-        'Auto-update support'  : ["pip"],
+        'Archive decompression': ["unrar"],        
         'Captcha recognition'  : ["Pillow >= 2.0"],  #@TODO: Fix `tesserocr` installation
         'Colored log'          : ["colorlog"],
-        'JS evaluation'        : ["Js2Py"],
-        # 'Plugin dependencies'  : ["beautifulsoup4", "pycrypto"],  #@NOTE: Build a `smart_import` for these
-        'RESTful API'          : ["thrift >= 0.8"],
-        'SSL support'          : ["pyOpenSSL"],
-        'UnRAR support'        : ["unrar"]
+        'JavaScript evaluation': ["Js2Py"],
+        # 'Plugin dependencies'  : ["beautifulsoup4", "pycrypto"],  #@NOTE: Use `smart_import`
+        'pyLoad auto-updater'  : ["pip"],
+        'SSL connection'       : ["pyOpenSSL"]        
     }
     if os.name != 'nt':
         extras_require['Lightweight webserver'] = ["bjoern"]
@@ -50,11 +49,11 @@ def info():
     }    
     tests_require = ['nose', 'requests >= 1.2.2', 'websocket-client >= 0.8.0']
     classifiers = [
-        "Development Status :: " + info.status,
+        "Development Status :: {}".format(info.status),
         "Environment :: Web Environment",
         "Intended Audience :: Developers",
         "Intended Audience :: End Users/Desktop",
-        "License :: OSI Approved :: " + info.license,
+        "License :: OSI Approved :: {}".format(info.license),
         "Natural Language :: English",
         "Operating System :: OS Independent",
         "Programming Language :: Other",
@@ -77,7 +76,7 @@ def info():
         entry_points=entry_points,
         test_suite='nose.collector',
         tests_require=tests_require,
-        zip_safe=False,  #@TODO: Recheck in future...
+        zip_safe=False,  #@TODO: Recheck...
         classifiers=classifiers
     )
 
