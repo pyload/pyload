@@ -166,7 +166,7 @@ class PluginLoader(object):
                 attrs[m[0]] = literal_eval(m[-1].replace("_(", "("))
             except Exception as e:
                 self.log_debug(folder, name, "Error when parsing: {}".format(m[-1]))
-                self.log.debug(str(e))
+                self.log.debug(e.message)
 
             if not hasattr(Base, "__{}__".format(m[0])):
                 #TODO remove type from all plugins, its not needed

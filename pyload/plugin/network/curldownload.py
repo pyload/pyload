@@ -206,7 +206,7 @@ class CurlDownload(Download):
                     try: # check if the header implies success, else add it to failed list
                         chunk.verify_header()
                     except ResponseException as e:
-                        self.log.debug("Chunk {:d} failed: {}".format(chunk.id + 1, e))
+                        self.log.debug("Chunk {:d} failed: {}".format(chunk.id + 1, e.message))
                         failed.append(chunk)
                         ex = e
                     else:
@@ -225,7 +225,7 @@ class CurlDownload(Download):
                     try: # check if the header implies success, else add it to failed list
                         chunk.verify_header()
                     except ResponseException as e:
-                        self.log.debug("Chunk {:d} failed: {}".format(chunk.id + 1, e))
+                        self.log.debug("Chunk {:d} failed: {}".format(chunk.id + 1, e.message))
                         failed.append(chunk)
                         ex = e
                     else:
@@ -294,7 +294,7 @@ class CurlDownload(Download):
         try:
             self.manager.remove_handle(chunk.c)
         except pycurl.error as e:
-            self.log.debug("Error removing chunk: {}".format(e))
+            self.log.debug("Error removing chunk: {}".format(e.message))
         finally:
             chunk.close()
 

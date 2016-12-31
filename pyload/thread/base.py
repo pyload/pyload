@@ -78,7 +78,7 @@ class BaseThread(Thread):
                 raise Exception("Empty Zipfile")
 
         except Exception as e:
-            self.log.debug("Error creating zip file: {}".format(e))
+            self.log.debug("Error creating zip file: {}".format(e.message))
 
             dump_name = dump_name.replace(".zip", ".txt")
             f = open(dump_name, "wb")
@@ -108,7 +108,7 @@ class BaseThread(Thread):
                 try:
                     dump += pformat(value) + "\n"
                 except Exception as e:
-                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(e)
+                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(e.message)
 
             del frame
 
@@ -123,7 +123,7 @@ class BaseThread(Thread):
                 try:
                     dump += pformat(attr) + "\n"
                 except Exception as e:
-                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(e)
+                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(e.message)
 
         return dump
 
@@ -137,7 +137,7 @@ class BaseThread(Thread):
                 try:
                     dump += pformat(attr) + "\n"
                 except Exception as e:
-                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(e)
+                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(e.message)
 
         return dump
 

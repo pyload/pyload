@@ -66,7 +66,7 @@ def trycatch(callback):
             try:
                 return func(self, *args, **kwargs)
             except Exception as e:
-                msg = 'Error executing `{}` | {}'.format(func.__name__, e)
+                msg = 'Error executing `{}` | {}'.format(func.__name__, e.message)
                 self.pyload.log.debug(msg)
                 if self.pyload.debug:
                     print_traceback()

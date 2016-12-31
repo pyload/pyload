@@ -112,7 +112,7 @@ class AsyncHandler(AbstractHandler):
                 try:
                     line = receive_message(req)
                 except TypeError as e: # connection closed
-                    self.log.debug("WS Error: {}".format(e))
+                    self.log.debug("WS Error: {}".format(e.message))
                     return self.passive_closing_handshake(req)
 
                 self.mode_standby(line, req)

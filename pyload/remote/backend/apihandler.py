@@ -32,7 +32,7 @@ class ApiHandler(AbstractHandler):
             try:
                 line = receive_message(req)
             except TypeError as e: # connection closed
-                self.log.debug("WS Error: {}".format(e))
+                self.log.debug("WS Error: {}".format(e.message))
                 return self.passive_closing_handshake(req)
 
             self.handle_message(line, req)
@@ -57,12 +57,12 @@ class ApiHandler(AbstractHandler):
             try:
                 result = getattr(req.api, func)(*args, **kwargs)
             except ExceptionObject as e:
-                return self.send_result(req, self.BAD_REQUEST, e)
+                return self.send_result(req, self.BAD_REQUEST, e.message)
             except AttributeError:
                 return self.send_result(req, self.NOT_FOUND, "Not Found")
             except Exception as e:
                 self.pyload.print_exc()
-                return self.send_result(req, self.ERROR, str(e))
+                return self.send_result(req, self.ERROR, e.message)
 
             # None is invalid json type
             if result is None: result = True

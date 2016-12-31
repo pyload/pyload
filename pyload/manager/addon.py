@@ -65,7 +65,7 @@ class AddonManager(object):
             func = getattr(plugin, f)
             return func(*args)
         except Exception as e:
-            plugin.log_error(_("Error when executing {}".format(f)), e)
+            plugin.log_error(_("Error when executing {}".format(f)), e.message)
             self.pyload.print_exc()
 
     def invoke(self, plugin, func_name, args):

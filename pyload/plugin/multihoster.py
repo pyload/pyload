@@ -61,7 +61,7 @@ class MultiHoster(Account):
             try:
                 self.hoster = self.load_hoster_list(req)
             except Exception as e:
-                self.log_error(e)
+                self.log_error(e.message)
                 return []
             finally:
                 req.close()

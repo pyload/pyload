@@ -189,8 +189,8 @@ class DownloadThread(BaseThread):
 
                 else:
                     pyfile.set_status("failed")
-                    self.log.warning(_("Download failed: {} | {}").format(pyfile.name, e))
-                    pyfile.error = str(e)
+                    self.log.warning(_("Download failed: {} | {}").format(pyfile.name, e.message))
+                    pyfile.error = e.message
 
                 if self.pyload.debug:
                     print_exc()

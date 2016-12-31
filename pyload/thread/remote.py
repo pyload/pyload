@@ -20,7 +20,7 @@ class BackendBase(Thread):
         try:
             self.serve()
         except Exception as e:
-            self.pyload.log.error(_("Remote backend error: {}").format(e))
+            self.pyload.log.error(_("Remote backend error: {}").format(e.message))
             if self.pyload.debug:
                 print_exc()
         finally:

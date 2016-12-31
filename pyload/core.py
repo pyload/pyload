@@ -322,7 +322,7 @@ class Core(object):
                     group = getgrnam(self.config["permission"]["group"])
                     os.setgid(group[2])
                 except Exception as e:
-                    print(_("Failed changing group: {}").format(e))
+                    print(_("Failed changing group: {}").format(e.message))
 
         if self.config["permission"]["change_user"]:
             if os.name != "nt":
@@ -332,7 +332,7 @@ class Core(object):
                     user = getpwnam(self.config["permission"]["user"])
                     os.setuid(user[2])
                 except Exception as e:
-                    print(_("Failed changing user: {}").format(e))
+                    print(_("Failed changing user: {}").format(e.message))
 
         if self.debug:
             self.init_logger(logging.DEBUG) # logging level
@@ -475,7 +475,7 @@ class Core(object):
                 self.interactionmanager.work()
                 self.scheduler.work()
             except Exception as e:
-                self.log.critical(_("Critical error: ") + str(e))
+                self.log.critical(_("Critical error: {}").format(e.message))
                 self.print_exc()
 
 

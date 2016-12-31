@@ -318,7 +318,7 @@ class Setup(object):
             input()
             exit()
         except Exception as e:
-            print(_("Setting config path failed: {}").format(e))
+            print(_("Setting config path failed: {}").format(e.message))
 
 
     def ask_lang(self):

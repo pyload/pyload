@@ -69,7 +69,7 @@ class EventManager(object):
                 try:
                     f(*args, **kwargs)
                 except Exception as e:
-                    self.log.warning("Error calling event handler {}: {}, {}, {}".format(
-                        event, f, args, e)
+                    self.log.warning(
+                        "Error calling event handler {}: {}, {}, {}".format(event, f, args, e.message)
                     )
                     self.pyload.print_exc()

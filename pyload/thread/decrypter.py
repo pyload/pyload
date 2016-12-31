@@ -56,7 +56,7 @@ class DecrypterThread(BaseThread):
     def decrypt(self, plugin_map, password=None, err=False):
         result = []
 
-        self.progress = ProgressInfo("BasePlugin", "",  _("decrypting"),
+        self.progress = ProgressInfo("BasePlugin", "", _("decrypting"),
                                          0, 0, len(self.data), self.owner, ProgressType.Decrypting)
         # TODO QUEUE_DECRYPT
         for name, urls in plugin_map.items():
@@ -90,7 +90,7 @@ class DecrypterThread(BaseThread):
                 except Abort:
                     plugin.log_info(_("Decrypting aborted"))
                 except Exception as e:
-                    plugin.log_error(_("Decrypting failed"), e)
+                    plugin.log_error(_("Decrypting failed"), e.message)
 
                     self.error = True
                     # generate error linkStatus

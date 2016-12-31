@@ -272,7 +272,7 @@ class Hoster(Base):
 
                     chown(location, uid, gid)
                 except Exception as e:
-                    self.log.warning(_("Setting User and Group failed: {}").format(e))
+                    self.log.warning(_("Setting User and Group failed: {}").format(e.message))
 
         # convert back to unicode
         location = fs_decode(location)
@@ -309,7 +309,7 @@ class Hoster(Base):
 
                 chown(fs_filename, uid, gid)
             except Exception as e:
-                self.log.warning(_("Setting User and Group failed: {}").format(e))
+                self.log.warning(_("Setting User and Group failed: {}").format(e.message))
 
         self.lastDownload = filename
         return self.lastDownload
