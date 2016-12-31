@@ -43,15 +43,15 @@ msgstr "ismeretlen"
 
 #: pyload/web/app/templates/default/dashboard/select.html:1
 msgid "1 package"
-msgid_plural "%d packages"
+msgid_plural "{:d} packages"
 msgstr[0] "1 csomag"
-msgstr[1] "%d csomag"
+msgstr[1] "{:d} csomag"
 
 #: pyload/web/app/templates/default/dashboard/select.html:4
 msgid "1 file"
-msgid_plural "%d files"
+msgid_plural "{:d} files"
 msgstr[0] "1 fájl"
-msgstr[1] "%d fájl"
+msgstr[1] "{:d} fájl"
 
 #: pyload/web/app/templates/default/dashboard/package.html:33
 msgid "Addons"
@@ -290,7 +290,7 @@ msgid "Packages"
 msgstr "Csomagok"
 
 #: pyload/web/app/templates/default/linkgrabber/package.html:19
-msgid "%d link"
-msgid_plural "%d links"
-msgstr[0] "%d link"
-msgstr[1] "%d link"
+msgid "{:d} link"
+msgid_plural "{:d} links"
+msgstr[0] "{:d} link"
+msgstr[1] "{:d} link"

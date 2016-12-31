@@ -50,8 +50,8 @@ msgstr "الاستمرار في التنصيب؟"
 
 #: pyload/setup/Setup.py:140
 #, python-format
-msgid "Do you want to change the config path? Current is %s"
-msgstr "هل تريد تغير مكان الاعدادات؟ الحالي هو %s"
+msgid "Do you want to change the config path? Current is {}"
+msgstr "هل تريد تغير مكان الاعدادات؟ الحالي هو {}"
 
 #: pyload/setup/Setup.py:142
 msgid "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it."
@@ -244,8 +244,8 @@ msgstr "اضغط Enter للإنهاء."
 
 #: pyload/setup/Setup.py:332
 #, python-format
-msgid "Setting config path failed: %s"
-msgstr "فشل الإعداد مسار التكوين: %s"
+msgid "Setting config path failed: {}"
+msgstr "فشل الإعداد مسار التكوين: {}"
 
 #: pyload/setup/Setup.py:343
 msgid "y"

@@ -43,14 +43,14 @@ msgstr "άγνωστο"
 
 #: pyload/web/app/templates/default/dashboard/select.html:1
 msgid "1 package"
-msgid_plural "%d packages"
+msgid_plural "{:d} packages"
 msgstr[0] "1 πακέτο"
-msgstr[1] "%d πακέτα"
+msgstr[1] "{:d} πακέτα"
 
 #: pyload/web/app/templates/default/dashboard/select.html:4
 msgid "1 file"
-msgid_plural "%d files"
-msgstr[0] "%d αρχεία"
+msgid_plural "{:d} files"
+msgstr[0] "{:d} αρχεία"
 msgstr[1] ""
 
 #: pyload/web/app/templates/default/dashboard/package.html:33
@@ -290,7 +290,7 @@ msgid "Packages"
 msgstr "Πακέτα"
 
 #: pyload/web/app/templates/default/linkgrabber/package.html:19
-msgid "%d link"
-msgid_plural "%d links"
-msgstr[0] "%d σύνδεσμος"
+msgid "{:d} link"
+msgid_plural "{:d} links"
+msgstr[0] "{:d} σύνδεσμος"
 msgstr[1] ""

@@ -50,8 +50,8 @@ msgstr "是否繼續設定？"
 
 #: pyload/setup/Setup.py:140
 #, python-format
-msgid "Do you want to change the config path? Current is %s"
-msgstr "目前存放設定檔的位置為 %s，是否要修改？"
+msgid "Do you want to change the config path? Current is {}"
+msgstr "目前存放設定檔的位置為 {}，是否要修改？"
 
 #: pyload/setup/Setup.py:142
 msgid "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it."
@@ -244,8 +244,8 @@ msgstr "按下 Enter 離開。"
 
 #: pyload/setup/Setup.py:332
 #, python-format
-msgid "Setting config path failed: %s"
-msgstr "設定檔路徑有誤 %s"
+msgid "Setting config path failed: {}"
+msgstr "設定檔路徑有誤 {}"
 
 #: pyload/setup/Setup.py:343
 msgid "y"

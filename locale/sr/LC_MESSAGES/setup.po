@@ -50,8 +50,8 @@ msgstr "Наставити са подешавањем?"
 
 #: pyload/setup/Setup.py:140
 #, python-format
-msgid "Do you want to change the config path? Current is %s"
-msgstr "Желите ли да промените путању за подешавање? Тренутна путања је %s"
+msgid "Do you want to change the config path? Current is {}"
+msgstr "Желите ли да промените путању за подешавање? Тренутна путања је {}"
 
 #: pyload/setup/Setup.py:142
 msgid "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it."
@@ -244,8 +244,8 @@ msgstr "Притисните Enter да изађете."
 
 #: pyload/setup/Setup.py:332
 #, python-format
-msgid "Setting config path failed: %s"
-msgstr "Не могу да поставим путању за подешавање: %s"
+msgid "Setting config path failed: {}"
+msgstr "Не могу да поставим путању за подешавање: {}"
 
 #: pyload/setup/Setup.py:343
 msgid "y"

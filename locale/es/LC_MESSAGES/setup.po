@@ -50,8 +50,8 @@ msgstr "¿Desea continuar con el asistente?"
 
 #: pyload/setup/Setup.py:140
 #, python-format
-msgid "Do you want to change the config path? Current is %s"
-msgstr "¿Quiere cambiar la ruta de configuración? Actualmente es %s"
+msgid "Do you want to change the config path? Current is {}"
+msgstr "¿Quiere cambiar la ruta de configuración? Actualmente es {}"
 
 #: pyload/setup/Setup.py:142
 msgid "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it."
@@ -244,8 +244,8 @@ msgstr "Presiona Entrar para salir."
 
 #: pyload/setup/Setup.py:332
 #, python-format
-msgid "Setting config path failed: %s"
-msgstr "Ajuste del directorio de configuración fallido: %s"
+msgid "Setting config path failed: {}"
+msgstr "Ajuste del directorio de configuración fallido: {}"
 
 #: pyload/setup/Setup.py:343
 msgid "y"

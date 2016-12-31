@@ -43,16 +43,16 @@ msgstr "desconhecido"
 
 #: pyload/web/app/templates/default/dashboard/select.html:1
 msgid "1 package"
-msgid_plural "%d packages"
+msgid_plural "{:d} packages"
 msgstr[0] "1 pacote\n"
-"%d pacotes"
-msgstr[1] "%d pacotes"
+"{:d} pacotes"
+msgstr[1] "{:d} pacotes"
 
 #: pyload/web/app/templates/default/dashboard/select.html:4
 msgid "1 file"
-msgid_plural "%d files"
-msgstr[0] "%d arquivos"
-msgstr[1] "%d arquivos"
+msgid_plural "{:d} files"
+msgstr[0] "{:d} arquivos"
+msgstr[1] "{:d} arquivos"
 
 #: pyload/web/app/templates/default/dashboard/package.html:33
 msgid "Addons"
@@ -291,7 +291,7 @@ msgid "Packages"
 msgstr "Pacotes"
 
 #: pyload/web/app/templates/default/linkgrabber/package.html:19
-msgid "%d link"
-msgid_plural "%d links"
-msgstr[0] "%d link"
-msgstr[1] "%d links"
+msgid "{:d} link"
+msgid_plural "{:d} links"
+msgstr[0] "{:d} link"
+msgstr[1] "{:d} links"

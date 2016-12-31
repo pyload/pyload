@@ -50,8 +50,8 @@ msgstr "Folytatod a beállítást?"
 
 #: pyload/setup/Setup.py:140
 #, python-format
-msgid "Do you want to change the config path? Current is %s"
-msgstr "Megváltoztatod a konfigurációs fájlok helyét? A jelenlegi: %s"
+msgid "Do you want to change the config path? Current is {}"
+msgstr "Megváltoztatod a konfigurációs fájlok helyét? A jelenlegi: {}"
 
 #: pyload/setup/Setup.py:142
 msgid "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it."
@@ -244,8 +244,8 @@ msgstr "Nyomj Entert a kilépéshez."
 
 #: pyload/setup/Setup.py:332
 #, python-format
-msgid "Setting config path failed: %s"
-msgstr "A beállítások eléri útja hibás: %s"
+msgid "Setting config path failed: {}"
+msgstr "A beállítások eléri útja hibás: {}"
 
 #: pyload/setup/Setup.py:343
 msgid "y"

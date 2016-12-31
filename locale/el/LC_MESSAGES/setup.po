@@ -50,8 +50,8 @@ msgstr "Συνέχιση με την εγκατάσταση;"
 
 #: pyload/setup/Setup.py:140
 #, python-format
-msgid "Do you want to change the config path? Current is %s"
-msgstr "Θέλετε να αλλάξετε τη διαδρομή του αρχείου αποθήκευσης των ρυθμίσεων; Η τρέχουσα είναι %s"
+msgid "Do you want to change the config path? Current is {}"
+msgstr "Θέλετε να αλλάξετε τη διαδρομή του αρχείου αποθήκευσης των ρυθμίσεων; Η τρέχουσα είναι {}"
 
 #: pyload/setup/Setup.py:142
 msgid "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it."
@@ -244,8 +244,8 @@ msgstr "Πατήστε Enter για έξοδο."
 
 #: pyload/setup/Setup.py:332
 #, python-format
-msgid "Setting config path failed: %s"
-msgstr "Ο ορισμός της διαδρομής ρυθμίσεων απέτυχε: %s"
+msgid "Setting config path failed: {}"
+msgstr "Ο ορισμός της διαδρομής ρυθμίσεων απέτυχε: {}"
 
 #: pyload/setup/Setup.py:343
 msgid "y"

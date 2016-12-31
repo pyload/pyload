@@ -50,8 +50,8 @@ msgstr "Kontynuować instalację?"
 
 #: pyload/setup/Setup.py:140
 #, python-format
-msgid "Do you want to change the config path? Current is %s"
-msgstr "Czy chcesz zmienić ścieżkę do plików konfiguracji? Obecnie to %s"
+msgid "Do you want to change the config path? Current is {}"
+msgstr "Czy chcesz zmienić ścieżkę do plików konfiguracji? Obecnie to {}"
 
 #: pyload/setup/Setup.py:142
 msgid "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it."
@@ -244,8 +244,8 @@ msgstr "Naciśnij Enter aby zakończyć."
 
 #: pyload/setup/Setup.py:332
 #, python-format
-msgid "Setting config path failed: %s"
-msgstr "Ustawienie ścieżki do plików konfiguracji nie powiodło się: %s"
+msgid "Setting config path failed: {}"
+msgstr "Ustawienie ścieżki do plików konfiguracji nie powiodło się: {}"
 
 #: pyload/setup/Setup.py:343
 msgid "y"

@@ -14,23 +14,23 @@ msgstr "Project-Id-Version: pyload\n"
 
 #: pyload/AddonManager.py:77
 #, python-format
-msgid "Error when executing %s"
-msgstr "%s yürütürken hata"
+msgid "Error when executing {}"
+msgstr "{} yürütürken hata"
 
 #: pyload/AddonManager.py:121
 #, python-format
-msgid "Failed activating %(name)s"
-msgstr "Aktive etme başarısız %(name)s"
+msgid "Failed activating {}"
+msgstr "Aktive etme başarısız {}"
 
 #: pyload/AddonManager.py:124
 #, python-format
-msgid "Activated addons: %s"
-msgstr "Aktif eklentiler: %s"
+msgid "Activated addons: {}"
+msgstr "Aktif eklentiler: {}"
 
 #: pyload/AddonManager.py:125
 #, python-format
-msgid "Deactivated addons: %s"
-msgstr "Pasif eklentiler: %s"
+msgid "Deactivated addons: {}"
+msgstr "Pasif eklentiler: {}"
 
 #: pyload/AddonManager.py:184
 msgid "Activating addons..."
@@ -66,8 +66,8 @@ msgstr "Bu sunucu hiçbir SSL sunmuyor, kullanarak yerine dişli düşünün lü
 
 #: pyload/web/ServerThread.py:139
 #, python-format
-msgid "Starting %(name)s webserver: %(host)s:%(port)d"
-msgstr "Başlıyor %(name)s websunucusu: %(host)s:%(port)d"
+msgid "Starting {} webserver: {}:{:d}"
+msgstr "Başlıyor {} websunucusu: {}:{:d}"
 
 #: pyload/config/default.py:14
 msgid "Remote"
@@ -325,23 +325,23 @@ msgstr "Yükleme süresi"
 
 #: pyload/api/DownloadApi.py:33
 #, python-format
-msgid "Added package %(name)s as folder %(folder)s"
-msgstr "Paket %(name)s eklendi %(folder)s klasör olarak"
+msgid "Added package {} as folder {}"
+msgstr "Paket {} eklendi {} klasör olarak"
 
 #: pyload/api/DownloadApi.py:84
 #, python-format
-msgid "Added %d links to package"
-msgstr "Pakete %d linkleri eklendi"
+msgid "Added {:d} links to package"
+msgstr "Pakete {:d} linkleri eklendi"
 
 #: pyload/AccountManager.py:49
 #, python-format
-msgid "Account plugin %s not available"
-msgstr "Eklenti %s hesabı için mevcut değil"
+msgid "Account plugin {} not available"
+msgstr "Eklenti {} hesabı için mevcut değil"
 
 #: pyload/AccountManager.py:70
 #, python-format
-msgid "Could not load account %s"
-msgstr "Hesap %s yüklenemedi"
+msgid "Could not load account {}"
+msgstr "Hesap {} yüklenemedi"
 
 #: pyload/interaction/InteractionManager.py:88
 msgid "Query"
@@ -357,18 +357,18 @@ msgstr "Lütfen captcha çözünüz."
 
 #: pyload/remote/RemoteManager.py:35
 #, python-format
-msgid "Remote backend error: %s"
-msgstr "Uzak uç hatası: % s"
+msgid "Remote backend error: {}"
+msgstr "Uzak uç hatası: {}"
 
 #: pyload/remote/RemoteManager.py:80
 #, python-format
-msgid "Starting %(name)s: %(addr)s:%(port)s"
-msgstr "Başlıyor %(name)s: %(addr)s:%(port)s"
+msgid "Starting {}: {}:{}"
+msgstr "Başlıyor {}: {}:{}"
 
 #: pyload/remote/RemoteManager.py:82
 #, python-format
-msgid "Failed loading backend %(name)s | %(error)s"
-msgstr "Arka uç yüklenirken hata %(name)s | %(error)s"
+msgid "Failed loading backend {} | {}"
+msgstr "Arka uç yüklenirken hata {} | {}"
 
 #: pyload/FileManager.py:53
 msgid "none"
@@ -444,13 +444,13 @@ msgstr "bilinmeyen"
 
 #: pyload/FileManager.py:426
 #, python-format
-msgid "Package finished: %s"
-msgstr "Paket tamamlandı. %s"
+msgid "Package finished: {}"
+msgstr "Paket tamamlandı. {}"
 
 #: pyload/Api.py:151
 #, python-format
-msgid "User '%s' tries to log in"
-msgstr "Kullanıcı oturum açmak için '%s' dener"
+msgid "User '{}' tries to log in"
+msgstr "Kullanıcı oturum açmak için '{}' dener"
 
 #: pyload/Core.py:195
 msgid "Received Quit signal"
@@ -458,18 +458,18 @@ msgstr "Çıkış sinyali alındı"
 
 #: pyload/Core.py:321
 #, python-format
-msgid "pyLoad already running with pid %s"
-msgstr "pyLoad zaten %s pid ile çalışıyor"
+msgid "pyLoad already running with pid {}"
+msgstr "pyLoad zaten {} pid ile çalışıyor"
 
 #: pyload/Core.py:335
 #, python-format
-msgid "Failed changing group: %s"
-msgstr "Grup değiştirme başarısız: %s"
+msgid "Failed changing group: {}"
+msgstr "Grup değiştirme başarısız: {}"
 
 #: pyload/Core.py:345
 #, python-format
-msgid "Failed changing user: %s"
-msgstr "Kullanıcı değiştirme başarısız: %s"
+msgid "Failed changing user: {}"
+msgstr "Kullanıcı değiştirme başarısız: {}"
 
 #: pyload/Core.py:356
 msgid "Starting"
@@ -477,8 +477,8 @@ msgstr "Başlıyor"
 
 #: pyload/Core.py:357
 #, python-format
-msgid "Using home directory: %s"
-msgstr "Ev dizinini kullan: %s"
+msgid "Using home directory: {}"
+msgstr "Ev dizinini kullan: {}"
 
 #: pyload/Core.py:371
 msgid "All links removed"
@@ -486,13 +486,13 @@ msgstr "Tüm bağlantılar kaldırıldı"
 
 #: pyload/Core.py:401
 #, python-format
-msgid "Download time: %s"
-msgstr "Yükleme süresi: %s"
+msgid "Download time: {}"
+msgstr "Yükleme süresi: {}"
 
 #: pyload/Core.py:416
 #, python-format
-msgid "Free space: %s"
-msgstr "Boş alan: %s"
+msgid "Free space: {}"
+msgstr "Boş alan: {}"
 
 #: pyload/Core.py:436
 msgid "Activating Accounts..."
@@ -532,8 +532,8 @@ msgstr "Veritabanı uygunsuz sürüm yüzünden silindi."
 
 #: pyload/threads/DecrypterThread.py:30
 #, python-format
-msgid "Decrypted %(count)d links into package %(name)s"
-msgstr "Çözülmüş %(count)d linkleri %(name)s paketlerine"
+msgid "Decrypted {:d} links into package {}"
+msgstr "Çözülmüş {:d} linkleri {} paketlerine"
 
 #: pyload/threads/DecrypterThread.py:55
 msgid "Decrypting aborted"
@@ -545,13 +545,13 @@ msgstr "Çözümleme başarısız oldu"
 
 #: pyload/threads/InfoThread.py:143
 #, python-format
-msgid "Info Fetching for %(name)s failed | %(err)s"
-msgstr "Bilgisi %(name)s alınırken hata | %(err)s oluştu"
+msgid "Info Fetching for {} failed | {}"
+msgstr "Bilgisi {} alınırken hata | {} oluştu"
 
 #: pyload/threads/ThreadManager.py:147
 #, python-format
-msgid "Reconnect Failed: %s"
-msgstr "Tekrar bağlanma başarısız: %s"
+msgid "Reconnect Failed: {}"
+msgstr "Tekrar bağlanma başarısız: {}"
 
 #: pyload/threads/ThreadManager.py:187
 msgid "Reconnect script not found!"
@@ -567,8 +567,8 @@ msgstr "Yeniden Bağlantı komut dosyası yürütmesi başarısız!"
 
 #: pyload/threads/ThreadManager.py:218
 #, python-format
-msgid "Reconnected, new IP: %s"
-msgstr "Yeniden Bağlandı, yeni IP: %s"
+msgid "Reconnected, new IP: {}"
+msgstr "Yeniden Bağlandı, yeni IP: {}"
 
 #: pyload/threads/ThreadManager.py:296
 msgid "Not enough space left on device"
@@ -576,43 +576,43 @@ msgstr "Aygıtta yeterli alan yok"
 
 #: pyload/threads/DownloadThread.py:64
 #, python-format
-msgid "Download starts: %s"
-msgstr "Yükleme başlar: %s"
+msgid "Download starts: {}"
+msgstr "Yükleme başlar: {}"
 
 #: pyload/threads/DownloadThread.py:70
 #, python-format
-msgid "Download finished: %s"
-msgstr "Yükleme bitti: %s"
+msgid "Download finished: {}"
+msgstr "Yükleme bitti: {}"
 
 #: pyload/threads/DownloadThread.py:75
 #, python-format
-msgid "Plugin %s is missing a function."
-msgstr "Eklenti %s işlevi eksik."
+msgid "Plugin {} is missing a function."
+msgstr "Eklenti {} işlevi eksik."
 
 #: pyload/threads/DownloadThread.py:83 pyload/threads/DownloadThread.py:147
 #, python-format
-msgid "Download aborted: %s"
-msgstr "Yükleme iptal edildi: %s"
+msgid "Download aborted: {}"
+msgstr "Yükleme iptal edildi: {}"
 
 #: pyload/threads/DownloadThread.py:103
 #, python-format
-msgid "Download restarted: %(name)s | %(msg)s"
-msgstr "Yükleme yeniden başlatıldı: %(name)s | %(msg)s"
+msgid "Download restarted: {} | {}"
+msgstr "Yükleme yeniden başlatıldı: {} | {}"
 
 #: pyload/threads/DownloadThread.py:113
 #, python-format
-msgid "Download is offline: %s"
-msgstr "Yükleme çevrimdışı: %s"
+msgid "Download is offline: {}"
+msgstr "Yükleme çevrimdışı: {}"
 
 #: pyload/threads/DownloadThread.py:116 pyload/threads/DownloadThread.py:187
 #, python-format
-msgid "Download is temporary offline: %s"
-msgstr "Yükleme geçici olarak çevrımdışı: %s"
+msgid "Download is temporary offline: {}"
+msgstr "Yükleme geçici olarak çevrımdışı: {}"
 
 #: pyload/threads/DownloadThread.py:119 pyload/threads/DownloadThread.py:192
 #, python-format
-msgid "Download failed: %(name)s | %(msg)s"
-msgstr "Yükleme başarısız: %(name)s | %(msg)s"
+msgid "Download failed: {} | {}"
+msgstr "Yükleme başarısız: {} | {}"
 
 #: pyload/threads/DownloadThread.py:136
 msgid "Couldn't connect to host or connection reset, waiting 1 minute and retry."
@@ -620,8 +620,8 @@ msgstr "Sunucuya bağlanılamadı veya bağlantı sıfırlandı, 1 dakikalık er
 
 #: pyload/threads/DownloadThread.py:171
 #, python-format
-msgid "Download skipped: %(name)s due to %(plugin)s"
-msgstr "Yükleme atlandı: %(name)s bunun yüzünden %(plugin)s"
+msgid "Download skipped: {} due to {}"
+msgstr "Yükleme atlandı: {} bunun yüzünden {}"
 
 #: pyload/threads/DownloadThread.py:188
 msgid "Internal Server Error"
@@ -633,8 +633,8 @@ msgstr "Bir hata meydana geldi"
 
 #: pyload/PluginManager.py:176
 #, python-format
-msgid "Error importing %(name)s: %(msg)s"
-msgstr "Alınırken hata %(name)s: %(msg)s"
+msgid "Error importing {}: {}"
+msgstr "Alınırken hata {}: {}"
 
 #: pyload/utils/JsEngine.py:188
 msgid "No js engine detected, please install either Spidermonkey, ossp-js, pyv8, nodejs or rhino"

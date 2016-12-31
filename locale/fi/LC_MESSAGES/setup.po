@@ -50,7 +50,7 @@ msgstr ""
 
 #: pyload/setup/Setup.py:140
 #, python-format
-msgid "Do you want to change the config path? Current is %s"
+msgid "Do you want to change the config path? Current is {}"
 msgstr ""
 
 #: pyload/setup/Setup.py:142
@@ -244,7 +244,7 @@ msgstr ""
 
 #: pyload/setup/Setup.py:332
 #, python-format
-msgid "Setting config path failed: %s"
+msgid "Setting config path failed: {}"
 msgstr ""
 
 #: pyload/setup/Setup.py:343

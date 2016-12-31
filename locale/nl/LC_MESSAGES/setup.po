@@ -50,8 +50,8 @@ msgstr "Doorgaan met setup?"
 
 #: pyload/setup/Setup.py:140
 #, python-format
-msgid "Do you want to change the config path? Current is %s"
-msgstr "Wilt u de configuratiemap aanpassen? Huidige is %s"
+msgid "Do you want to change the config path? Current is {}"
+msgstr "Wilt u de configuratiemap aanpassen? Huidige is {}"
 
 #: pyload/setup/Setup.py:142
 msgid "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it."
@@ -244,8 +244,8 @@ msgstr "Druk op enter om af te sluiten."
 
 #: pyload/setup/Setup.py:332
 #, python-format
-msgid "Setting config path failed: %s"
-msgstr "Instellen van configuratiepad mislukt: %s"
+msgid "Setting config path failed: {}"
+msgstr "Instellen van configuratiepad mislukt: {}"
 
 #: pyload/setup/Setup.py:343
 msgid "y"

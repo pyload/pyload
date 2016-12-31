@@ -14,23 +14,23 @@ msgstr "Project-Id-Version: pyload\n"
 
 #: pyload/AddonManager.py:77
 #, python-format
-msgid "Error when executing %s"
-msgstr "Fehler beim Ausführen von %s"
+msgid "Error when executing {}"
+msgstr "Fehler beim Ausführen von {}"
 
 #: pyload/AddonManager.py:121
 #, python-format
-msgid "Failed activating %(name)s"
-msgstr "Konnte %(name)s nicht aktivieren"
+msgid "Failed activating {}"
+msgstr "Konnte {} nicht aktivieren"
 
 #: pyload/AddonManager.py:124
 #, python-format
-msgid "Activated addons: %s"
-msgstr "Aktivierte Addons: %s"
+msgid "Activated addons: {}"
+msgstr "Aktivierte Addons: {}"
 
 #: pyload/AddonManager.py:125
 #, python-format
-msgid "Deactivated addons: %s"
-msgstr "Deaktivierte Erweiterungen: %s"
+msgid "Deactivated addons: {}"
+msgstr "Deaktivierte Erweiterungen: {}"
 
 #: pyload/AddonManager.py:184
 msgid "Activating addons..."
@@ -66,8 +66,8 @@ msgstr "SSL funktioniert mit diesem Server nicht, benutze bitte alternativ den '
 
 #: pyload/web/ServerThread.py:139
 #, python-format
-msgid "Starting %(name)s webserver: %(host)s:%(port)d"
-msgstr "Starte %(name)s Webserver: %(host)s:%(port)d"
+msgid "Starting {} webserver: {}:{:d}"
+msgstr "Starte {} Webserver: {}:{:d}"
 
 #: pyload/config/default.py:14
 msgid "Remote"
@@ -325,23 +325,23 @@ msgstr "Downloadzeit"
 
 #: pyload/api/DownloadApi.py:33
 #, python-format
-msgid "Added package %(name)s as folder %(folder)s"
-msgstr "Paket %(name)s als Ordner %(folder)s hinzugefügt"
+msgid "Added package {} as folder {}"
+msgstr "Paket {} als Ordner {} hinzugefügt"
 
 #: pyload/api/DownloadApi.py:84
 #, python-format
-msgid "Added %d links to package"
-msgstr "Links %d zu Paket hinzugefügt"
+msgid "Added {:d} links to package"
+msgstr "Links {:d} zu Paket hinzugefügt"
 
 #: pyload/AccountManager.py:49
 #, python-format
-msgid "Account plugin %s not available"
-msgstr "Konto-Plugin %s ist nicht verfügbar"
+msgid "Account plugin {} not available"
+msgstr "Konto-Plugin {} ist nicht verfügbar"
 
 #: pyload/AccountManager.py:70
 #, python-format
-msgid "Could not load account %s"
-msgstr "Konto %s konnte nicht geladen werden."
+msgid "Could not load account {}"
+msgstr "Konto {} konnte nicht geladen werden."
 
 #: pyload/interaction/InteractionManager.py:88
 msgid "Query"
@@ -357,18 +357,18 @@ msgstr "Bitte lösen Sie das Captcha."
 
 #: pyload/remote/RemoteManager.py:35
 #, python-format
-msgid "Remote backend error: %s"
-msgstr "Fehler beim Fernzugriff: %s"
+msgid "Remote backend error: {}"
+msgstr "Fehler beim Fernzugriff: {}"
 
 #: pyload/remote/RemoteManager.py:80
 #, python-format
-msgid "Starting %(name)s: %(addr)s:%(port)s"
-msgstr "Starte %(name)s: %(addr)s:%(port)s"
+msgid "Starting {}: {}:{}"
+msgstr "Starte {}: {}:{}"
 
 #: pyload/remote/RemoteManager.py:82
 #, python-format
-msgid "Failed loading backend %(name)s | %(error)s"
-msgstr "Konnte Backend %(name)s nicht laden | %(error)s"
+msgid "Failed loading backend {} | {}"
+msgstr "Konnte Backend {} nicht laden | {}"
 
 #: pyload/FileManager.py:53
 msgid "none"
@@ -444,13 +444,13 @@ msgstr "unbekannt"
 
 #: pyload/FileManager.py:426
 #, python-format
-msgid "Package finished: %s"
-msgstr "Paket fertiggestellt: %s"
+msgid "Package finished: {}"
+msgstr "Paket fertiggestellt: {}"
 
 #: pyload/Api.py:151
 #, python-format
-msgid "User '%s' tries to log in"
-msgstr "Benuzer '%s' versucht sich einzuloggen"
+msgid "User '{}' tries to log in"
+msgstr "Benuzer '{}' versucht sich einzuloggen"
 
 #: pyload/Core.py:195
 msgid "Received Quit signal"
@@ -458,18 +458,18 @@ msgstr "Signal zum Beenden erhalten"
 
 #: pyload/Core.py:321
 #, python-format
-msgid "pyLoad already running with pid %s"
-msgstr "pyLoad ist bereits gestartet mit der pid %s"
+msgid "pyLoad already running with pid {}"
+msgstr "pyLoad ist bereits gestartet mit der pid {}"
 
 #: pyload/Core.py:335
 #, python-format
-msgid "Failed changing group: %s"
-msgstr "Fehler beim Ändern der Gruppe: %s"
+msgid "Failed changing group: {}"
+msgstr "Fehler beim Ändern der Gruppe: {}"
 
 #: pyload/Core.py:345
 #, python-format
-msgid "Failed changing user: %s"
-msgstr "Fehler beim Ändern des Benutzers: %s"
+msgid "Failed changing user: {}"
+msgstr "Fehler beim Ändern des Benutzers: {}"
 
 #: pyload/Core.py:356
 msgid "Starting"
@@ -477,8 +477,8 @@ msgstr "starte"
 
 #: pyload/Core.py:357
 #, python-format
-msgid "Using home directory: %s"
-msgstr "Benutze Home-Verzeichnis: %s"
+msgid "Using home directory: {}"
+msgstr "Benutze Home-Verzeichnis: {}"
 
 #: pyload/Core.py:371
 msgid "All links removed"
@@ -486,13 +486,13 @@ msgstr "Alle Links entfernt"
 
 #: pyload/Core.py:401
 #, python-format
-msgid "Download time: %s"
-msgstr "Downloadzeit: %s"
+msgid "Download time: {}"
+msgstr "Downloadzeit: {}"
 
 #: pyload/Core.py:416
 #, python-format
-msgid "Free space: %s"
-msgstr "Freier Speicher: %sGB"
+msgid "Free space: {}"
+msgstr "Freier Speicher: {}GB"
 
 #: pyload/Core.py:436
 msgid "Activating Accounts..."
@@ -532,8 +532,8 @@ msgstr "Die Datenbank wurde wegen inkompatibler Version gelöscht."
 
 #: pyload/threads/DecrypterThread.py:30
 #, python-format
-msgid "Decrypted %(count)d links into package %(name)s"
-msgstr "%(count)d entschlüsselte Links in Paket %(name)s abgelegt"
+msgid "Decrypted {:d} links into package {}"
+msgstr "{:d} entschlüsselte Links in Paket {} abgelegt"
 
 #: pyload/threads/DecrypterThread.py:55
 msgid "Decrypting aborted"
@@ -545,13 +545,13 @@ msgstr "Entschlüsseln fehlgeschlagen"
 
 #: pyload/threads/InfoThread.py:143
 #, python-format
-msgid "Info Fetching for %(name)s failed | %(err)s"
-msgstr "Holen von Informationen für %(name)s fehlgeschlagen | %(err)s"
+msgid "Info Fetching for {} failed | {}"
+msgstr "Holen von Informationen für {} fehlgeschlagen | {}"
 
 #: pyload/threads/ThreadManager.py:147
 #, python-format
-msgid "Reconnect Failed: %s"
-msgstr "erneute Verbindung fehlgeschlagen: %s"
+msgid "Reconnect Failed: {}"
+msgstr "erneute Verbindung fehlgeschlagen: {}"
 
 #: pyload/threads/ThreadManager.py:187
 msgid "Reconnect script not found!"
@@ -567,8 +567,8 @@ msgstr "Fehler beim Ausführen des Skriptes für die erneute Verbindung!"
 
 #: pyload/threads/ThreadManager.py:218
 #, python-format
-msgid "Reconnected, new IP: %s"
-msgstr "Verbindung erneut aufgebaut, IP: %s"
+msgid "Reconnected, new IP: {}"
+msgstr "Verbindung erneut aufgebaut, IP: {}"
 
 #: pyload/threads/ThreadManager.py:296
 msgid "Not enough space left on device"
@@ -576,43 +576,43 @@ msgstr "Auf dem Gerät ist nicht mehr genügend Speicherplatz vorhanden"
 
 #: pyload/threads/DownloadThread.py:64
 #, python-format
-msgid "Download starts: %s"
-msgstr "Starte Download: %s"
+msgid "Download starts: {}"
+msgstr "Starte Download: {}"
 
 #: pyload/threads/DownloadThread.py:70
 #, python-format
-msgid "Download finished: %s"
-msgstr "Download fertiggestellt: %s"
+msgid "Download finished: {}"
+msgstr "Download fertiggestellt: {}"
 
 #: pyload/threads/DownloadThread.py:75
 #, python-format
-msgid "Plugin %s is missing a function."
-msgstr "Dem Plugin %s fehlt eine Funktion."
+msgid "Plugin {} is missing a function."
+msgstr "Dem Plugin {} fehlt eine Funktion."
 
 #: pyload/threads/DownloadThread.py:83 pyload/threads/DownloadThread.py:147
 #, python-format
-msgid "Download aborted: %s"
-msgstr "Download abgebrochen: %s"
+msgid "Download aborted: {}"
+msgstr "Download abgebrochen: {}"
 
 #: pyload/threads/DownloadThread.py:103
 #, python-format
-msgid "Download restarted: %(name)s | %(msg)s"
-msgstr "Download erneut gestartet: %(name)s | %(msg)s"
+msgid "Download restarted: {} | {}"
+msgstr "Download erneut gestartet: {} | {}"
 
 #: pyload/threads/DownloadThread.py:113
 #, python-format
-msgid "Download is offline: %s"
-msgstr "Download ist nicht verfügbar: %s"
+msgid "Download is offline: {}"
+msgstr "Download ist nicht verfügbar: {}"
 
 #: pyload/threads/DownloadThread.py:116 pyload/threads/DownloadThread.py:187
 #, python-format
-msgid "Download is temporary offline: %s"
-msgstr "Download ist vorübergehend nicht verfügbar: %s"
+msgid "Download is temporary offline: {}"
+msgstr "Download ist vorübergehend nicht verfügbar: {}"
 
 #: pyload/threads/DownloadThread.py:119 pyload/threads/DownloadThread.py:192
 #, python-format
-msgid "Download failed: %(name)s | %(msg)s"
-msgstr "Download fehlgeschlagen: %(name)s | %(msg)s"
+msgid "Download failed: {} | {}"
+msgstr "Download fehlgeschlagen: {} | {}"
 
 #: pyload/threads/DownloadThread.py:136
 msgid "Couldn't connect to host or connection reset, waiting 1 minute and retry."
@@ -620,8 +620,8 @@ msgstr "Verbindungsaufbau zum Host fehlgeschlagen oder die Verbindung wurde zur�
 
 #: pyload/threads/DownloadThread.py:171
 #, python-format
-msgid "Download skipped: %(name)s due to %(plugin)s"
-msgstr "Download %(name)s wegen %(plugin)s übersprungen"
+msgid "Download skipped: {} due to {}"
+msgstr "Download {} wegen {} übersprungen"
 
 #: pyload/threads/DownloadThread.py:188
 msgid "Internal Server Error"
@@ -633,8 +633,8 @@ msgstr "Ein Fehler ist aufgetreten"
 
 #: pyload/PluginManager.py:176
 #, python-format
-msgid "Error importing %(name)s: %(msg)s"
-msgstr "Fehler beim Importieren von %(name)s: %(msg)s"
+msgid "Error importing {}: {}"
+msgstr "Fehler beim Importieren von {}: {}"
 
 #: pyload/utils/JsEngine.py:188
 msgid "No js engine detected, please install either Spidermonkey, ossp-js, pyv8, nodejs or rhino"
