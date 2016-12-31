@@ -42,7 +42,7 @@ class AccountManager(object):
         self.pyload.log.debug("Create account {}:{}".format(plugin, loginname))
 
         # New account instance
-        account = klass.fromInfoData(self, info, password, options)
+        account = klass.from_info_data(self, info, password, options)
         self.accounts[plugin].append(account)
         return account
 
@@ -100,7 +100,7 @@ class AccountManager(object):
         if not account:
             return
 
-        if account.setLogin(loginname, password):
+        if account.set_login(loginname, password):
             self.save_accounts()
             account.schedule_refresh(force=True)
 
@@ -142,4 +142,4 @@ class AccountManager(object):
         """ Force a refresh of every account """
         for p in self.accounts.values():
             for acc in p:
-                acc.getAccountInfo(True)
+                acc.get_account_info(True)

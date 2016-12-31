@@ -12,7 +12,7 @@ from pyload.utils import lock, read_lock, try_catch
 from pyload.utils.fs import safe_filename
 from pyload.utils.filetypes import guess_type
 
-statusMap = {
+status_map = {
     "none": 0,
     "offline": 1,
     "online": 2,
@@ -84,7 +84,7 @@ class PyFile(object):
 
         self.plugin = None
 
-        self.waitUntil = 0 # time() + time to wait
+        self.wait_until = 0 # time() + time to wait
 
         # status attributes
         self.abort = False
@@ -141,7 +141,7 @@ class PyFile(object):
         return self.manager.get_package(self.packageid)
 
     def set_status(self, status):
-        self.status = statusMap[status]
+        self.status = status_map[status]
         # needs to sync so status is written to database
         self.sync()
 
@@ -151,12 +151,12 @@ class PyFile(object):
 
     def get_status_name(self):
         if self.status not in (15, 16) or not self.statusname:
-            return self.manager.statusMsg[self.status]
+            return self.manager.status_msg[self.status]
         else:
             return self.statusname
 
     def has_status(self, status):
-        return statusMap[status] == self.status
+        return status_map[status] == self.status
 
     def sync(self):
         """sync PyFile instance with database"""
@@ -226,7 +226,7 @@ class PyFile(object):
     def get_eta(self):
         """ gets estimated time of arrival / or waiting time"""
         if self.status == DownloadStatus.Waiting:
-            return self.waitUntil - time()
+            return self.wait_until - time()
 
         return self.get_bytes_left() // self.get_speed()
 

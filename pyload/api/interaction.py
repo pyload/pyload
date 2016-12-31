@@ -31,7 +31,7 @@ class UserInteractionApi(BaseApi):
         for t in tasks:
             t.seen = True
             if t.type == Interaction.Notification:
-                t.setWaiting(self.pyload.interactionmanager.CLIENT_THRESHOLD)
+                t.set_waiting(self.pyload.interactionmanager.CLIENT_THRESHOLD)
 
         return tasks
 
@@ -44,7 +44,7 @@ class UserInteractionApi(BaseApi):
         """
         task = self.pyload.interactionmanager.get_task_by_id(iid)
         if task and self.primary_uid == task.owner:
-            task.setResult(result)
+            task.set_result(result)
 
     @require_perm(Permission.Interaction)
     def get_addon_handler(self):

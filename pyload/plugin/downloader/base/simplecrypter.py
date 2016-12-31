@@ -36,7 +36,7 @@ class SimpleCrypter(Crypter):
 
     and a function:
 
-    loadPage(self, page_n):
+    load_page(self, page_n):
     must return the html of the page number 'page_n'
     """
 

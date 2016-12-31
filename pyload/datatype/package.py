@@ -39,7 +39,7 @@ class PyPackage(object):
         self.timestamp = time()
 
         #: Finish event already fired
-        self.setFinished = False
+        self.set_finished = False
 
     def is_stale(self):
         return self.timestamp + 30 * 60 > time()

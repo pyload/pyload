@@ -453,26 +453,26 @@ class DatabaseBackend(Thread):
     # class Test():
         # @queue
         # def insert(db):
-            # c = db.createCursor()
+            # c = db.create_cursor()
             # for i in range(1000):
                 # c.execute("INSERT INTO storage (identifier, key, value) VALUES (?, ?, ?)", ("foo", i, "bar"))
 
         # @async
         # def insert2(db):
-            # c = db.createCursor()
+            # c = db.create_cursor()
             # for i in range(1000 * 1000):
                 # c.execute("INSERT INTO storage (identifier, key, value) VALUES (?, ?, ?)", ("foo", i, "bar"))
 
         # @queue
         # def select(db):
-            # c = db.createCursor()
+            # c = db.create_cursor()
             # for i in range(10):
                 # res = c.execute("SELECT value FROM storage WHERE identifier=? AND key=?", ("foo", i))
                 # print(res.fetchone())
 
         # @queue
         # def error(db):
-            # c = db.createCursor()
+            # c = db.create_cursor()
             # print("a")
             # c.execute("SELECT myerror FROM storage WHERE identifier=? AND key=?", ("foo", i))
             # print("e")

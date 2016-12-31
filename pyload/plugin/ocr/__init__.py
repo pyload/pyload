@@ -74,9 +74,9 @@ class OCR(object):
         tmp = open(join("tmp", "tmpTif_{}.tif".format(self.__name__)), "wb")
         tmp.close()
         #self.logger.debug("create tmp txt")
-        #tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
-        tmpTxt = open(join("tmp", "tmpTxt_{}.txt".format(self.__name__)), "wb")
-        tmpTxt.close()
+        #tmp_txt = tempfile.NamedTemporaryFile(suffix=".txt")
+        tmp_txt = open(join("tmp", "tmp_txt_{}.txt".format(self.__name__)), "wb")
+        tmp_txt.close()
 
         self.logger.debug("save tiff")
         self.image.save(tmp.name, 'TIFF')
@@ -86,30 +86,30 @@ class OCR(object):
         else:
             tessparams = ['tesseract']
 
-        tessparams.extend([abspath(tmp.name), abspath(tmpTxt.name).replace(".txt", "")])
+        tessparams.extend([abspath(tmp.name), abspath(tmp_txt.name).replace(".txt", "")])
 
         if subset and (digits or lowercase or uppercase):
             #self.logger.debug("create temp subset config")
-            #tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
-            tmpSub = open(join("tmp", "tmpSub_{}.subset".format(self.__name__)), "wb")
-            tmpSub.write("tessedit_char_whitelist ")
+            #tmp_sub = tempfile.NamedTemporaryFile(suffix=".subset")
+            tmp_sub = open(join("tmp", "tmp_sub_{}.subset".format(self.__name__)), "wb")
+            tmp_sub.write("tessedit_char_whitelist ")
             if digits:
-                tmpSub.write("0123456789")
+                tmp_sub.write("0123456789")
             if lowercase:
-                tmpSub.write("abcdefghijklmnopqrstuvwxyz")
+                tmp_sub.write("abcdefghijklmnopqrstuvwxyz")
             if uppercase:
-                tmpSub.write("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-            tmpSub.write("\n")
+                tmp_sub.write("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+            tmp_sub.write("\n")
             tessparams.append("nobatch")
-            tessparams.append(abspath(tmpSub.name))
-            tmpSub.close()
+            tessparams.append(abspath(tmp_sub.name))
+            tmp_sub.close()
 
         self.logger.debug("run tesseract")
         self.run(tessparams)
         self.logger.debug("read txt")
 
         try:
-            with open(tmpTxt.name, 'r') as f:
+            with open(tmp_txt.name, 'r') as f:
                 self.result_captcha = f.read().replace("\n", "")
         except Exception:
             self.result_captcha = ""
@@ -117,9 +117,9 @@ class OCR(object):
         self.logger.debug(self.result_captcha)
         try:
             os.remove(tmp.name)
-            os.remove(tmpTxt.name)
+            os.remove(tmp_txt.name)
             if subset and (digits or lowercase or uppercase):
-                os.remove(tmpSub.name)
+                os.remove(tmp_sub.name)
         except Exception:
             pass
 
@@ -256,7 +256,7 @@ class OCR(object):
         started = False
         letters = []
         width, height = captcha.size
-        bottomY, topY = 0, height
+        bottom_y, top_y = 0, height
         pixels = captcha.load()
 
         for x in range(width):
@@ -265,17 +265,17 @@ class OCR(object):
                 if pixels[x, y] != 255:
                     if not started:
                         started = True
-                        firstX = x
-                        lastX = x
+                        first_x = x
+                        last_x = x
 
-                    if y > bottomY: bottomY = y
-                    if y < topY: topY = y
-                    if x > lastX: lastX = x
+                    if y > bottom_y: bottom_y = y
+                    if y < top_y: top_y = y
+                    if x > last_x: last_x = x
 
                     black_pixel_in_col = True
 
             if black_pixel_in_col == False and started == True:
-                rect = (firstX, topY, lastX, bottomY)
+                rect = (first_x, top_y, last_x, bottom_y)
                 new_captcha = captcha.crop(rect)
 
                 w, h = new_captcha.size
@@ -283,7 +283,7 @@ class OCR(object):
                     letters.append(new_captcha)
 
                 started = False
-                bottomY, topY = 0, height
+                bottom_y, top_y = 0, height
 
         return letters
 

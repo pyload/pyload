@@ -159,7 +159,7 @@ class DownloadApi(BaseApi):
         """Aborts all running downloads."""
         for pyfile in self.pyload.files.cached_files():
             if self.has_access(pyfile):
-                pyfile.abortDownload()
+                pyfile.abort_download()
 
     @require_perm(Permission.Modify)
     def stop_downloads(self, fids):
@@ -171,7 +171,7 @@ class DownloadApi(BaseApi):
         pyfiles = self.pyload.files.cached_files()
         for pyfile in pyfiles:
             if pyfile.fid in fids and self.has_access(pyfile):
-                pyfile.abortDownload()
+                pyfile.abort_download()
 
 
 if Api.extend(DownloadApi):

@@ -114,11 +114,11 @@ def parse_file_info(self, url='', html=''):
                 if 'S' in info:
                     size = replace_patterns(info['S'] + info['U'] if 'U' in info else info['S'],
                                             self.FILE_SIZE_REPLACEMENTS)
-                    info['size'] = parse_size (size)
+                    info['size'] = parse_size(size)
                 elif isinstance(info['size'], str):
                     if 'units' in info:
                         info['size'] += info['units']
-                    info['size'] = parse_size (info['size'])
+                    info['size'] = parse_size(info['size'])
 
     if hasattr(self, "file_info"):
         self.file_info = info
@@ -136,7 +136,7 @@ def create_get_info(plugin):
                                                           decode=not plugin.SH_BROKEN_ENCODING, cookies=cj))
             yield file_info
 
-    return getInfo
+    return get_info
 
 
 def timestamp():
@@ -183,13 +183,13 @@ class SimpleHoster(Hoster):
         self.file_info = {}
 
     def setup(self):
-        self.resumeDownload = self.multiDL = self.premium
+        self.resume_download = self.multi_dl = self.premium
         if isinstance(self.SH_COOKIES, list):
             set_cookies(self.req.cj, self.SH_COOKIES)
 
     def process(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
-        self.req.setOption("timeout", 120)
+        self.req.set_option("timeout", 120)
         # Due to a 0.4.9 core bug self.load would keep previous cookies even if overridden by cookies parameter.
         # Workaround using get_url. Can be reverted in 0.5 as the cookies bug has been fixed.
         self.html = get_url(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)

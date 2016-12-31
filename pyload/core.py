@@ -78,14 +78,14 @@ class Core(object):
     """pyLoad Core, one tool to rule them all... (the filehosters) :D"""
 
     def __init__(self):
-        self.doDebug = False
+        self.do_debug = False
         self.running = False
         self.daemon = False
         self.remote = True
         self.pdb = None
         self.arg_links = []
         self.pidfile = "pyload.pid"
-        self.deleteLinks = False # will delete links on startup
+        self.delete_links = False # will delete links on startup
 
         if len(argv) > 1:
             try:
@@ -103,12 +103,12 @@ class Core(object):
                     elif option == "--daemon":
                         self.daemon = True
                     elif option in ("-c", "--clear"):
-                        self.deleteLinks = True
+                        self.delete_links = True
                     elif option in ("-h", "--help"):
                         self.print_help()
                         exit()
                     elif option in ("-d", "--debug"):
-                        self.doDebug = True
+                        self.do_debug = True
                     elif option in ("-u", "--user"):
                         from pyload.setup.setup import Setup
 
@@ -303,7 +303,7 @@ class Core(object):
         # load again so translations are propagated
         self.config.load_default()
 
-        self.debug = self.doDebug or self.config['general']['debug_mode']
+        self.debug = self.do_debug or self.config['general']['debug_mode']
 
         pid = self.is_already_running()
         # don't exit when in test runner
@@ -341,7 +341,7 @@ class Core(object):
 
         self.do_kill = False
         self.do_restart = False
-        self.shuttedDown = False
+        self.shutted_down = False
 
         self.log.info(_("Starting") + " pyLoad {}".format(CURRENT_VERSION))
         self.log.info(_("Using home directory: {}").format(getcwd()))
@@ -357,7 +357,7 @@ class Core(object):
         # Upgrade to configManager
         self.config = ConfigManager(self, self.config)
 
-        if self.deleteLinks:
+        if self.delete_links:
             self.log.info(_("All links removed"))
             self.db.purge_links()
 
@@ -402,9 +402,9 @@ class Core(object):
         if not exists(dl_folder):
             makedirs(dl_folder)
 
-        spaceLeft = free_space(dl_folder)
+        space_left = free_space(dl_folder)
 
-        self.log.info(_("Free space: {}").format(format_size(spaceLeft)))
+        self.log.info(_("Free space: {}").format(format_size(space_left)))
 
         self.config.save() #save so config files gets filled
 
@@ -423,7 +423,7 @@ class Core(object):
                 self.api.add_package("links.txt", [link_file], 1)
             f.close()
 
-        #self.scheduler.add_job(0, self.accountmanager.getAccountInfos)
+        #self.scheduler.add_job(0, self.accountmanager.get_account_infos)
         self.log.info(_("Activating Accounts..."))
         self.accountmanager.refresh_all_accounts()
 
@@ -597,7 +597,7 @@ class Core(object):
         finally:
             self.files.sync_save()
             self.db.shutdown()
-            self.shuttedDown = True
+            self.shutted_down = True
 
         self.delete_pid_file()
 

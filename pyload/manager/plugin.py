@@ -144,7 +144,7 @@ class PluginManager(object):
         """
         if overwrite:
             for m in self.matcher:
-                match = m.matchPlugin(plugin, name)
+                match = m.match_plugin(plugin, name)
                 if match:
                     plugin, name = match
 
@@ -253,7 +253,7 @@ class PluginManager(object):
 
     def is_user_plugin(self, plugin):
         """ A plugin suitable for multiple user """
-        return any(l.isUserPlugin(plugin) for l in self.loader)
+        return any(l.is_user_plugin(plugin) for l in self.loader)
 
     def get_category(self, plugin):
         plugin = self.loader.get_plugin("addon", plugin)

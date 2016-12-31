@@ -41,7 +41,7 @@ class AccountApi(BaseApi):
 
         if refresh:
             # reload account in place
-            account.getAccountInfo(True)
+            account.get_account_info(True)
 
         return account.to_info_data()
 

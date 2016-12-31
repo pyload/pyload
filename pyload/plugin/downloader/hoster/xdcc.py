@@ -35,7 +35,7 @@ class Xdcc(Hoster):
     def setup(self):
         self.debug = 0  # 0,1,2
         self.timeout = 30
-        self.multiDL = False
+        self.multi_dl = False
 
     def process(self, pyfile):
         # change request type
@@ -198,7 +198,7 @@ class Xdcc(Hoster):
         self.log_info("XDCC: Downloading {} from {}:{:d}".format(packname, ip, port))
 
         self.pyfile.set_status("downloading")
-        newname = self.req.download(ip, port, filename, sock, self.pyfile.setProgress)
+        newname = self.req.download(ip, port, filename, sock, self.pyfile.set_progress)
         if newname and newname != filename:
             self.log_info("{} saved as {}".format(self.pyfile.name, newname))
             filename = newname
@@ -207,5 +207,5 @@ class Xdcc(Hoster):
         # sock.send("QUIT :byebye\r\n")
         sock.close()
 
-        self.lastDownload = filename
-        return self.lastDownload
+        self.last_download = filename
+        return self.last_download

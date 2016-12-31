@@ -61,7 +61,7 @@ def setup_done():
     global timestamp
     add_json_header(response)
 
-    SETUP.addUser(
+    SETUP.add_user(
         request.params['user'],
         request.params['password']
     )

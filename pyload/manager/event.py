@@ -17,7 +17,7 @@ class EventManager(object):
     ===================== ================ ===========================================================
     Name                      Arguments      Description
     ===================== ================ ===========================================================
-    event                 eventName, *args Called for every event, with eventName and original args
+    event                 event_name, *args Called for every event, with event_name and original args
     download:preparing    fid              A download was just queued and will be prepared now.
     download:start        fid              A plugin will immediately start the download afterwards.
     download:allProcessed                  All links were handled, pyLoad would idle afterwards.

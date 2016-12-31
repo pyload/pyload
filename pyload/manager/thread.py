@@ -28,10 +28,10 @@ class ThreadManager(object):
 
         # some operations require to fetch url info from hoster, so we caching them so it wont be done twice
         # contains a timestamp and will be purged after timeout
-        self.infoCache = {}
+        self.info_cache = {}
 
         # pool of ids for online check
-        self.resultIDs = 0
+        self.result_ids = 0
 
         # saved online checks
         self.info_results = {}
@@ -60,8 +60,8 @@ class ThreadManager(object):
         """ creates a thread to fetch online status, returns result id """
         self.timestamp = time() + 5 * 60
 
-        rid = self.resultIDs
-        self.resultIDs += 1
+        rid = self.result_ids
+        self.result_ids += 1
 
         oc = OnlineCheck(rid, user)
         self.info_results[rid] = oc
@@ -85,7 +85,7 @@ class ThreadManager(object):
             # skip if not belong to current user
             if user is not None and thread.owner != user: continue
 
-            progress = thread.getProgress()
+            progress = thread.get_progress()
             if progress: info.extend(to_list(progress))
 
         return info
@@ -93,8 +93,8 @@ class ThreadManager(object):
     def work(self):
         """run all task which have to be done (this is for repetitive call by core)"""
 
-        if self.infoCache and self.timestamp < time():
-            self.infoCache.clear()
+        if self.info_cache and self.timestamp < time():
+            self.info_cache.clear()
             self.log.debug("Cleared Result cache")
 
         for rid in self.info_results.keys():

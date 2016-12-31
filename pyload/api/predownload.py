@@ -91,7 +91,7 @@ class PreDownloadApi(BaseApi):
         """
         result = self.pyload.threadmanager.get_info_result(rid)
         if result and result.owner == self.primary_uid:
-            return result.toApiData()
+            return result.to_api_data()
 
     @require_perm(Permission.Add)
     def generate_packages(self, links):

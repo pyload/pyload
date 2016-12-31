@@ -32,7 +32,7 @@ class SkipDownload(Exception):
 
 class Hoster(Base):
     """
-    Base plugin for hoster plugin. Overwrite getInfo for online status retrieval, process for downloading.
+    Base plugin for hoster plugin. Overwrite get_info for online status retrieval, process for downloading.
     """
 
     #: Class used to make requests with `self.load`
@@ -56,13 +56,13 @@ class Hoster(Base):
         # TODO: pyfile.owner, but it's not correct yet
         Base.__init__(self, pyfile.manager.pyload)
 
-        self.wantReconnect = False
+        self.want_reconnect = False
         #: enables simultaneous processing of multiple downloads
-        self.limitDL = 0
+        self.limit_dl = 0
         #: chunk limit
-        self.chunkLimit = 1
+        self.chunk_limit = 1
         #: enables resume (will be ignored if server dont accept chunks)
-        self.resumeDownload = False
+        self.resume_download = False
 
         #: plugin is waiting
         self.waiting = False
@@ -78,7 +78,7 @@ class Hoster(Base):
             #: Request instance bound to account
             self.req = self.account.get_account_request()
             # Default:  -1, True, True
-            self.chunkLimit, self.limitDL, self.resumeDownload = self.account.get_download_settings()
+            self.chunk_limit, self.limit_dl, self.resume_download = self.account.get_download_settings()
             self.premium = self.account.is_premium()
         else:
             self.req = self.pyload.request.get_request(klass=self.REQUEST_CLASS)
@@ -91,9 +91,9 @@ class Hoster(Base):
         self.thread = None # holds thread in future
 
         #: location where the last call to download was saved
-        self.lastDownload = ""
+        self.last_download = ""
         #: re match of the last call to `checkDownload`
-        self.lastCheck = None
+        self.last_check = None
 
         self.retries = 0 # amount of retries already made
         self.html = None # some plugins store html code here
@@ -107,29 +107,29 @@ class Hoster(Base):
             return self.account.loginname
 
     def get_multi_dl(self):
-        return self.limitDL <= 0
+        return self.limit_dl <= 0
 
     def set_multi_dl(self, val):
-        self.limitDL = 0 if val else 1
+        self.limit_dl = 0 if val else 1
 
-    #: virtual attribute using self.limitDL on behind
-    multiDL = property(get_multi_dl, set_multi_dl)
+    #: virtual attribute using self.limit_dl on behind
+    multi_dl = property(get_multi_dl, set_multi_dl)
 
     def get_chunk_count(self):
-        if self.chunkLimit <= 0:
+        if self.chunk_limit <= 0:
             return self.config["download"]["chunks"]
-        return min(self.config["download"]["chunks"], self.chunkLimit)
+        return min(self.config["download"]["chunks"], self.chunk_limit)
 
     def get_download_limit(self):
         if self.account:
             limit = self.account.options.get("limitDL", 0)
             if limit == "": limit = 0
-            if self.limitDL > 0: # a limit is already set, we use the minimum
-                return min(int(limit), self.limitDL)
+            if self.limit_dl > 0: # a limit is already set, we use the minimum
+                return min(int(limit), self.limit_dl)
             else:
                 return int(limit)
         else:
-            return self.limitDL
+            return self.limit_dl
 
 
     def __call__(self):
@@ -192,8 +192,8 @@ class Hoster(Base):
         :param reconnect: True if a reconnect would avoid wait time
         """
         if reconnect is not None:
-            self.wantReconnect = reconnect
-        self.pyfile.waitUntil = time() + int(seconds)
+            self.want_reconnect = reconnect
+        self.pyfile.wait_until = time() + int(seconds)
 
     def wait(self, seconds=None, reconnect=None):
         """ Waits the time previously set or use these from arguments. See `setWait`
@@ -207,12 +207,12 @@ class Hoster(Base):
         self.waiting = True
         self.pyfile.set_status("waiting")
 
-        while self.pyfile.waitUntil > time():
+        while self.pyfile.wait_until > time():
             self.thread.manager.reconnecting.wait(2)
             self.check_abort()
             if self.thread.manager.reconnecting.isSet():
                 self.waiting = False
-                self.wantReconnect = False
+                self.want_reconnect = False
                 raise Reconnect
 
         self.waiting = False
@@ -239,7 +239,7 @@ class Hoster(Base):
             if not reason: reason = "Max retries reached"
             raise Fail(reason)
 
-        self.wantReconnect = False
+        self.want_reconnect = False
         self.retries += 1
         self.set_wait(backoff(wait_time, self.retries))
         self.wait()
@@ -287,7 +287,7 @@ class Hoster(Base):
         try:
             # TODO: hardcoded arguments
             newname = self.dl.download(url, filename, get=get, post=post, referer=ref, chunks=self.get_chunk_count(),
-                                       resume=self.resumeDownload, cookies=cookies, disposition=disposition)
+                                       resume=self.resume_download, cookies=cookies, disposition=disposition)
         finally:
             self.dl.close()
             self.pyfile.size = self.dl.size
@@ -311,8 +311,8 @@ class Hoster(Base):
             except Exception as e:
                 self.log.warning(_("Setting User and Group failed: {}").format(e.message))
 
-        self.lastDownload = filename
-        return self.lastDownload
+        self.last_download = filename
+        return self.last_download
 
     def check_download(self, rules, api_size=0, max_size=50000, delete=True, read_size=0):
         """ checks the content of the last downloaded file, re match is saved to `lastCheck`
@@ -324,10 +324,10 @@ class Hoster(Base):
         :param read_size: amount of bytes to read from files larger then max_size
         :return: dictionary key of the first rule that matched
         """
-        lastDownload = fs_encode(self.lastDownload)
-        if not exists(lastDownload): return None
+        last_download = fs_encode(self.last_download)
+        if not exists(last_download): return None
 
-        size = stat(lastDownload)
+        size = stat(last_download)
         size = size.st_size
 
         if api_size and api_size <= size:
@@ -335,7 +335,7 @@ class Hoster(Base):
         elif size > max_size and not read_size:
             return None
         self.log.debug("Download Check triggered")
-        f = open(lastDownload, "rb")
+        f = open(last_download, "rb")
         content = f.read(read_size if read_size else -1)
         f.close()
         #produces encoding errors, better log to other file in the future?
@@ -344,14 +344,14 @@ class Hoster(Base):
             if isinstance(rule, str):
                 if rule in content:
                     if delete:
-                        remove(lastDownload)
+                        remove(last_download)
                     return name
             elif hasattr(rule, "search"):
                 m = rule.search(content)
                 if m:
                     if delete:
-                        remove(lastDownload)
-                    self.lastCheck = m
+                        remove(last_download)
+                    self.last_check = m
                     return name
 
 

@@ -62,4 +62,4 @@ class WSClient(object):
 # if __name__ == "__main__":
     # api = WSClient()
     # api.login("User", "test")
-    # print(api.getServerVersion())
+    # print(api.get_server_version())

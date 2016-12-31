@@ -30,10 +30,10 @@ class Dependency(object):
     def check(cls):
         """  Returns (availability, version) as tuple """
         inst = cls()
-        avail = inst.isStatisfied()
+        avail = inst.is_statisfied()
         v = None
         if avail:
-            v = inst.getVersion()
+            v = inst.get_version()
 
         return avail, v
 

@@ -56,8 +56,8 @@ Example from Youtube plugin::
                           (".mp4", "bool", _("Allow .mp4"), True)]
 
 
-At runtime the desired config values can be retrieved with ``self.getConfig(name)`` and set with
-``self.setConfig(name, value)``.
+At runtime the desired config values can be retrieved with ``self.get_config(name)`` and set with
+``self.set_config(name, value)``.
 
 Tagging Guidelines
 ------------------
@@ -87,11 +87,11 @@ The pyload core instance is accessible at ``self.pyload`` attribute
 and the :class:`Api <pyload.api.Api>` at ``self.pyload.api``
 
 With ``self.load(...)`` you can load any url and get the result. This method is only available to Hoster and Crypter.
-For other plugins use ``getURL(...)`` or ``getRequest()``.
+For other plugins use ``getURL(...)`` or ``get_request()``.
 
 Use ``self.store(...)`` and ``self.retrieve(...)`` to store data persistently into the database.
 
-Make use of ``logInfo, logError, logWarning, logDebug`` for logging purposes.
+Make use of ``logInfo, logError, logWarning, log_debug`` for logging purposes.
 
 Debugging
 ---------
@@ -100,7 +100,7 @@ One of the most important aspects in software programming is debugging. It is es
 for plugins which heavily rely on external input, which is true for all hoster and crypter plugins.
 To enable debugging functionality start pyLoad with the ``-d`` option or enable it in the config.
 
-You should use ``self.logDebug(msg)`` when ever it is reasonable. It is a good pratice to log server output
+You should use ``self.log_debug(msg)`` when ever it is reasonable. It is a good pratice to log server output
 or the calculation of results and then check in the log if it really is what you are expecting.
 
 For further debugging you can install ipython [4]_, and set breakpoints with ``self.pyload.breakpoint()``.

@@ -58,7 +58,7 @@ class DownloadManager(object):
             thread.active = None
             self.working.remove(thread)
             self.free.append(thread)
-            thread.isWorking.clear()
+            thread.is_working.clear()
         elif isinstance(thread, DecrypterThread):
             self.decrypter.remove(thread)
 
@@ -82,7 +82,7 @@ class DownloadManager(object):
         thread.put(self.pyload.files.get_file(info.fid))
 
         # wait until it picked up the task
-        thread.isWorking.wait()
+        thread.is_working.wait()
         self.working.append(thread)
 
     @lock
@@ -107,7 +107,7 @@ class DownloadManager(object):
     def get_progress_list(self, uid):
         """ Progress of all running downloads """
         # decrypter progress could be none
-        return [x for x in [p.getProgress() for p in self.working + self.decrypter
+        return [x for x in [p.get_progress() for p in self.working + self.decrypter
                        if uid is None or p.owner == uid] if x is not None]
 
     def processing_ids(self):
@@ -268,7 +268,7 @@ class DownloadManager(object):
     @read_lock
     def want_reconnect(self):
         """ number of downloads that are waiting for reconnect """
-        active = [x.active.has_plugin() and x.active.plugin.wantReconnect and x.active.plugin.waiting for x in self.working]
+        active = [x.active.has_plugin() and x.active.plugin.want_reconnect and x.active.plugin.waiting for x in self.working]
         return active.count(True)
 
     @read_lock
@@ -277,7 +277,7 @@ class DownloadManager(object):
         occ = {}
         # decrypter are treated as occupied
         for p in self.decrypter:
-            progress = p.getProgress()
+            progress = p.get_progress()
             if progress:
                 occ[progress.plugin] = 0
 

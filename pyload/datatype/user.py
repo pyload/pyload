@@ -14,7 +14,7 @@ class User(UserData):
     @staticmethod
     def from_user_data(api, user):
         return User(api, user.uid, user.name, user.email, user.role, user.permission, user.folder,
-            user.traffic, user.dllimit, user.dlquota, user.hddquota, user.user, user.templateName)
+            user.traffic, user.dllimit, user.dlquota, user.hddquota, user.user, user.template_name)
 
     def __init__(self, api, *args, **kwargs):
         UserData.__init__(self, *args, **kwargs)

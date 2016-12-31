@@ -154,7 +154,7 @@ class FileMethods(DatabaseMethods):
         for r in self.c:
             f = FileInfo(r[0], r[1], r[13], r[2], r[3], r[4], r[5], r[6], r[7])
             if r[11] > 0: # dl status != NA
-                f.download = DownloadInfo(r[8], r[9], r[10], r[11], self.manager.statusMsg[r[11]], r[12])
+                f.download = DownloadInfo(r[8], r[9], r[10], r[11], self.manager.status_msg[r[11]], r[12])
 
             data[r[0]] = f
 
@@ -252,7 +252,7 @@ class FileMethods(DatabaseMethods):
         else:
             f = FileInfo(r[0], r[1], r[13], r[2], r[3], r[4], r[5], r[6], r[7])
             if r[11] > 0 or force:
-                f.download = DownloadInfo(r[8], r[9], r[10], r[11], self.manager.statusMsg[r[11]], r[12])
+                f.download = DownloadInfo(r[8], r[9], r[10], r[11], self.manager.status_msg[r[11]], r[12])
 
             return f
 

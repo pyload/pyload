@@ -135,16 +135,16 @@ class InteractionManager(object):
 
         # set waiting times based on threshold
         if cli:
-            task.setWaiting(self.CLIENT_THRESHOLD)
+            task.set_waiting(self.CLIENT_THRESHOLD)
         else: # TODO: higher threshold after client connects?
-            task.setWaiting(self.CLIENT_THRESHOLD // 3)
+            task.set_waiting(self.CLIENT_THRESHOLD // 3)
 
         if task.type == IA.Notification:
-            task.setWaiting(self.NOTIFICATION_TIMEOUT) # notifications are valid for 30h
+            task.set_waiting(self.NOTIFICATION_TIMEOUT) # notifications are valid for 30h
 
         for plugin in self.pyload.addonmanager.active_plugins():
             try:
-                plugin.newInteractionTask(task)
+                plugin.new_interaction_task(task)
             except Exception:
                 self.pyload.print_exc()
 

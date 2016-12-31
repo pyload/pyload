@@ -431,7 +431,7 @@ class UserData(BaseObject):
         self.dlquota = dlquota
         self.hddquota = hddquota
         self.user = user
-        self.templateName = templateName
+        self.template_name = templateName
 
 
 class UserDoesNotExist(ExceptionObject):

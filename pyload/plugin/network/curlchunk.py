@@ -115,7 +115,7 @@ re_filename = re.compile(r"filename(?P<type>=|\*=(?P<enc>.+)'')(?P<name>.*)", re
 
 class CurlChunk(CurlRequest):
     def __init__(self, id, parent, range=None, resume=False):
-        self.setContext(*parent.getContext())
+        self.set_context(*parent.get_context())
 
         self.id = id
         self.p = parent # CurlDownload instance
@@ -125,12 +125,12 @@ class CurlChunk(CurlRequest):
 
         self.size = range[1] - range[0] if range else -1
         self.arrived = 0
-        self.lastURL = self.p.referer
+        self.last_url = self.p.referer
 
         self.c = pycurl.Curl()
 
         self.header = ""
-        self.headerParsed = False #indicates if the header has been processed
+        self.header_parsed = False #indicates if the header has been processed
         self.headers = HeaderDict()
 
         self.fp = None #file handle
@@ -142,9 +142,9 @@ class CurlChunk(CurlRequest):
         self.rep = None
 
         self.sleep = 0.000
-        self.lastSize = 0
+        self.last_size = 0
         # next to last size
-        self.nLastSize = 0
+        self.n_last_size = 0
 
     def __repr__(self):
         return "<CurlChunk id={:d}, size={:d}, arrived={:d}>".format(self.id, self.size, self.arrived)
@@ -203,14 +203,14 @@ class CurlChunk(CurlRequest):
         #@TODO forward headers?, this is possibly unneeded, when we just parse valid 200 headers
         # as first chunk, we will parse the headers
         if not self.range and self.header.endswith("\r\n\r\n"):
-            self.parseHeader()
+            self.parse_header()
         elif not self.range and buf.startswith("150") and "data connection" in buf: #ftp file size parsing
             size = re.search(r"(\d+) bytes", buf)
             if size:
                 self.p._size = int(size.group(1))
-                self.p.chunkSupport = True
+                self.p.chunk_support = True
 
-        self.headerParsed = True
+        self.header_parsed = True
 
     def write_body(self, buf):
         #ignore BOM, it confuses unrar
@@ -220,8 +220,8 @@ class CurlChunk(CurlRequest):
             self.BOMChecked = True
 
         size = len(buf)
-        self.nLastSize = self.lastSize
-        self.lastSize = size
+        self.n_last_size = self.last_size
+        self.last_size = size
 
         self.arrived += size
 
@@ -231,12 +231,12 @@ class CurlChunk(CurlRequest):
             sleep(self.p.bucket.consumed(size))
 
         # if the buffer sizes are stable no sleep will be made
-        elif size != self.lastSize or size != self.nLastSize:
+        elif size != self.last_size or size != self.n_last_size:
             # Avoid small buffers, increasing sleep time slowly if buffer size gets smaller
             # otherwise reduce sleep time percentile (values are based on tests)
             # So in general cpu time is saved without reducing bandwidth too much
 
-            if size < self.lastSize:
+            if size < self.last_size:
                 self.sleep += 0.002
             else:
                 self.sleep *= 0.7
@@ -252,7 +252,7 @@ class CurlChunk(CurlRequest):
         for orgline in self.decode_response(self.header).splitlines():
             line = orgline.strip().lower()
             if line.startswith("accept-ranges") and "bytes" in line:
-                self.p.chunkSupport = True
+                self.p.chunk_support = True
 
             if "content-disposition" in line:
 
@@ -265,7 +265,7 @@ class CurlChunk(CurlRequest):
             if not self.resume and line.startswith("content-length"):
                 self.p._size = int(line.split(":")[1])
 
-        self.headerParsed = True
+        self.header_parsed = True
 
     def stop(self):
         """The download will not proceed after next call of write_body"""

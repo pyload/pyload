@@ -10,7 +10,7 @@ from random import random
 from urllib.parse import unquote
 from urllib.parse import urlparse
 from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
-from pyload.plugin.internal.simplehoster import SimpleHoster, create_getInfo, PluginParseError, replace_patterns
+from pyload.plugin.internal.simplehoster import SimpleHoster, create_get_info, PluginParseError, replace_patterns
 from pyload.plugin.internal.captchaservice import ReCaptcha, SolveMedia
 from pyload.utils import html_unescape
 from pyload.network.request import get_url
@@ -47,12 +47,12 @@ class XFileSharingPro(SimpleHoster):
 
     def setup(self):
         if self.__name__ == "XFileSharingPro":
-            self.__pattern__ = self.pyload.pluginmanager.hosterPlugins[self.__name__]['pattern']
-            self.multiDL = True
+            self.__pattern__ = self.pyload.pluginmanager.plugins['hoster'][self.__name__]['pattern']
+            self.multi_dl = True
         else:
-            self.resumeDownload = self.multiDL = self.premium
+            self.resume_download = self.multi_dl = self.premium
 
-        self.chunkLimit = 1
+        self.chunk_limit = 1
 
     def process(self, pyfile):
         self.prepare()
@@ -99,7 +99,7 @@ class XFileSharingPro(SimpleHoster):
 
     def get_direct_download_link(self):
         """ Get download link for premium users with direct download enabled """
-        self.req.http.lastURL = self.pyfile.url
+        self.req.http.last_url = self.pyfile.url
 
         self.req.http.c.setopt(FOLLOWLOCATION, 0)
         self.html = self.load(self.pyfile.url, cookies=True, decode=True)
@@ -320,4 +320,4 @@ class XFileSharingPro(SimpleHoster):
         return 0
 
 
-getInfo = create_getInfo(XFileSharingPro)
+get_info = create_get_info(XFileSharingPro)

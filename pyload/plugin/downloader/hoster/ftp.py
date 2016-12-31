@@ -23,8 +23,8 @@ class Ftp(Hoster):
     __author_mail__ = ("jeix@hasnomail.com", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
 
     def setup(self):
-        self.chunkLimit = -1
-        self.resumeDownload = True
+        self.chunk_limit = -1
+        self.resume_download = True
 
     def process(self, pyfile):
         parsed_url = urlparse(pyfile.url)

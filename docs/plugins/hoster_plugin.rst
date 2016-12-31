@@ -21,8 +21,8 @@ An example ``process`` function could look like this ::
                 html = self.load(pyfile.url)  # load the content of the orginal pyfile.url to html
 
                 # parse the name from the site and set attribute in pyfile
-                pyfile.name = self.myFunctionToParseTheName(html)
-                parsed_url = self.myFunctionToParseUrl(html)
+                pyfile.name = self.myfunction_to_parse_name(html)
+                parsed_url = self.myfunction_to_parse_url(html)
 
                 # download the file, destination is determined by pyLoad
                 self.download(parsed_url)
@@ -33,10 +33,10 @@ Some tasks your plugin should handle:  check if the file is online, get filename
 Common Tasks
 ----------
 
-Some hosters require you to wait a specific time. Just set the time with ``self.setWait(seconds)`` or
-``self.setWait(seconds, True)`` if you want pyLoad to perform a reconnect if needed.
+Some hosters require you to wait a specific time. Just set the time with ``self.set_wait(seconds)`` or
+``self.set_wait(seconds, True)`` if you want pyLoad to perform a reconnect if needed.
 
-To handle captcha input just use ``self.decryptCaptcha(url, ...)``, it will be send to clients
+To handle captcha input just use ``self.decrypt_captcha(url, ...)``, it will be send to clients
 or handled by :class:`Addon <pyload.plugins.addon.Addon>` plugins
 
 

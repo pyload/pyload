@@ -41,7 +41,7 @@ class Request(object):
         # Last response code
         self.code = 0
         self.flags = 0
-        self.doAbort = False
+        self.do_abort = False
         self.init_context()
 
         # TODO: content encoding? Could be handled globally
@@ -83,7 +83,7 @@ class Request(object):
         raise NotImplementedError
 
     def abort(self):
-        self.doAbort = True
+        self.do_abort = True
 
     def reset(self):
         """  Resets the context to initial state """

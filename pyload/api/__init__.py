@@ -155,9 +155,9 @@ class Api(Iface):
         :param user: `User`
         :return: boolean
         """
-        if user.isAdmin():
+        if user.is_admin():
             return True
-        elif func in perm_map and user.hasPermission(perm_map[func]):
+        elif func in perm_map and user.has_permission(perm_map[func]):
             return True
         else:
             return False

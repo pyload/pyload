@@ -60,4 +60,4 @@ class JSONClient(object):
 # if __name__ == "__main__":
     # api = JSONClient()
     # api.login("User", "test")
-    # print(api.getServerVersion())
+    # print(api.get_server_version())

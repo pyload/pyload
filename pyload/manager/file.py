@@ -19,7 +19,7 @@ def invalidate(func):
     def new(*args):
         args[0].downloadstats = {}
         args[0].queuestats = {}
-        args[0].jobCache = {}
+        args[0].job_cache = {}
         return func(*args)
 
     return new
@@ -38,7 +38,7 @@ class FileManager(object):
         self.evm = core.eventmanager
 
         # translations
-        self.statusMsg = [_("none"), _("offline"), _("online"), _("queued"), _("paused"),
+        self.status_msg = [_("none"), _("offline"), _("online"), _("queued"), _("paused"),
                           _("finished"), _("skipped"), _("failed"), _("starting"), _("waiting"),
                           _("downloading"), _("temp. offline"), _("aborted"), _("not possible"), _("missing"),
                           _("file mismatch"), _("occupied"), _("decrypting"), _("processing"), _("custom"),
@@ -47,7 +47,7 @@ class FileManager(object):
         self.files = {} # holds instances for files
         self.packages = {}  # same for packages
 
-        self.jobCache = {}
+        self.job_cache = {}
 
         # locking the caches, db is already locked implicit
         self.lock = ReadWriteLock()
@@ -113,7 +113,7 @@ class FileManager(object):
             info = self.db.get_package_info(pid, False)
             if not info: return None
 
-            pack = PyPackage.fromInfoData(self, info)
+            pack = PyPackage.from_info_data(self, info)
             self.packages[pid] = pack
 
             return pack
@@ -151,7 +151,7 @@ class FileManager(object):
             info = self.db.get_file_info(fid)
             if not info: return None
 
-            f = PyFile.fromInfoData(self, info)
+            f = PyFile.from_info_data(self, info)
             self.files[fid] = f
             return f
 
@@ -244,11 +244,11 @@ class FileManager(object):
     def get_jobs(self, occ):
 
         # load jobs with file info
-        if occ not in self.jobCache:
-            self.jobCache[occ] = dict((k, self.get_file_info(fid)) for k, fid
+        if occ not in self.job_cache:
+            self.job_cache[occ] = dict((k, self.get_file_info(fid)) for k, fid
                                       in self.db.get_jobs(occ).items())
 
-        return self.jobCache[occ]
+        return self.job_cache[occ]
 
     def get_download_stats(self, user=None):
         """ return number of downloads  """
@@ -280,7 +280,7 @@ class FileManager(object):
 
         for pyfile in self.cached_files():
             if pyfile.packageid == pid:
-                pyfile.abortDownload()
+                pyfile.abort_download()
 
         self.db.delete_package(pid)
         self.release_package(pid)
@@ -303,7 +303,7 @@ class FileManager(object):
         order = f.fileorder
 
         if fid in self.pyload.dlm.processing_ids():
-            f.abortDownload()
+            f.abort_download()
 
         self.db.delete_file(fid, f.fileorder, f.packageid)
         self.release_file(fid)
@@ -387,10 +387,10 @@ class FileManager(object):
 
         ids = self.db.get_unfinished(pyfile.packageid)
         if not ids or (pyfile.fid in ids and len(ids) == 1):
-            if not pyfile.package().setFinished:
+            if not pyfile.package().set_finished:
                 self.pyload.log.info(_("Package finished: {}").format(pyfile.package().name))
                 self.pyload.addonmanager.package_finished(pyfile.package())
-                pyfile.package().setFinished = True
+                pyfile.package().set_finished = True
 
     def reset_count(self):
         self.queuecount = -1
@@ -406,7 +406,7 @@ class FileManager(object):
         self.db.restart_package(pid)
 
         if pid in self.packages:
-            self.packages[pid].setFinished = False
+            self.packages[pid].set_finished = False
 
         self.evm.dispatch_event("package:updated", pid)
 
@@ -419,7 +419,7 @@ class FileManager(object):
             f.status = DS.Queued
             f.name = f.url
             f.error = ""
-            f.abortDownload()
+            f.abort_download()
 
         self.db.restart_file(fid)
         self.evm.dispatch_event("file:updated", fid)

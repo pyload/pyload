@@ -53,12 +53,12 @@ class AddonManager(object):
         return iter(self.plugins.items())
 
     @lock
-    def call_in_hooks(self, event, eventName, *args):
+    def call_in_hooks(self, event, event_name, *args):
         """  Calls a method in all addons and catch / log errors"""
         for plugin in self.plugins.values():
             for inst in plugin.instances:
                 self.call(inst, event, *args)
-        self.dispatch_event(eventName, *args)
+        self.dispatch_event(event_name, *args)
 
     def call(self, plugin, f, *args):
         try:

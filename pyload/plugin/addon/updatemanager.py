@@ -39,7 +39,7 @@ class UpdateManager(Hook):
             self.interval = 4
             self.last_check = 0  # timestamp of updatecheck
             self.old_periodical = self.periodical
-            self.periodical = self.checkChanges
+            self.periodical = self.check_changes
             self.mtimes = {}  # recordes times
         else:
             self.interval = max(self.get_config("interval") * 60, self.MIN_TIME)

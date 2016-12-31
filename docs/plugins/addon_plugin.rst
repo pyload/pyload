@@ -35,7 +35,7 @@ Using the Config
 
 We are taking a closer look at the ``__config__`` parameter.
 You can add more config values as desired by adding tuples of the following format to the config list: ``("name", "type", "description", "default value")``.
-When everything went right you can access the config values with ``self.getConfig(name)`` and ``self.setConfig(name,value``.
+When everything went right you can access the config values with ``self.get_config(name)`` and ``self.set_config(name,value``.
 
 
 Interacting on Events
@@ -83,7 +83,7 @@ It requires a `dict` that maps event names to function names or a `list` of func
         """
         event_map = {"downloadFinished" : "doSomeWork",
                      "allDownloadsFnished": "someMethod",
-                     "coreReady": "initialize"}
+                     "activate": "initialize"}
 
         def initialize(self):
             print("Initialized.")
@@ -95,7 +95,7 @@ It requires a `dict` that maps event names to function names or a `list` of func
             print("The underlying event (allDownloadsFinished) for this method is not available through the base class")
 
 An advantage of the event listener is that you are able to register and remove the listeners at runtime.
-Use `self.manager.listen_to("name", function)`, `self.manager.removeEvent("name", function)` and see doc for
+Use `self.manager.listen_to("name", function)`, `self.manager.remove_event("name", function)` and see doc for
 :class:`HookManager <pyload.hookmanager.HookManager>`. Contrary to ``event_map``, ``function`` has to be a reference
 and **not** a `string`.
 
@@ -128,7 +128,7 @@ Here is a basic example: ::
 
     #Assuming client is a ThriftClient or Api object
 
-    print(client.getServices())
+    print(client.get_services())
     print(client.call(ServiceCall("YourHook", "invoke", "an argument")))
 
 Providing status information
@@ -154,7 +154,7 @@ Usable with: ::
 
     #Assuming client is a ThriftClient or Api object
 
-    print(client.getAllInfo())
+    print(client.get_all_info())
 
 Example
 -------

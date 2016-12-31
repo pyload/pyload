@@ -177,7 +177,7 @@ class Setup(object):
         db.setup()
         username = self.ask(_("Username"), "User")
         password = self.ask("", "", password=True)
-        db.addUser(username, password)
+        db.add_user(username, password)
         db.shutdown()
 
         print("")

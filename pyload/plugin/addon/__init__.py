@@ -134,7 +134,7 @@ class Addon(Base):
 
         # stop running callback
         if self.cb:
-            self.stopPeriodical()
+            self.stop_periodical()
 
         self.cb = self.pyload.scheduler.add_job(wait, self._periodical, threaded=False)
         self.interval = interval
@@ -175,8 +175,8 @@ class Addon(Base):
 
     def activate(self):
         """  Used to activate the addon """
-        if has_method(self.__class__, "coreReady"):
-            self.log_debug("Deprecated method .coreReady() use activate() instead")
+        if has_method(self.__class__, "core_ready"):
+            self.log_debug("Deprecated method .core_ready() use activate() instead")
             self.pyload_ready()
 
     def deactivate(self):

@@ -18,7 +18,7 @@ target urls and subclass from :class:`Crypter <pyload.plugins.crypter.Crypter>`.
             urls = ["http://get.pyload.net/src", "http://get.pyload.net/debian", "http://get.pyload.net/win"]
             return urls
 
-You have to overwrite at least one of ``.decryptFile``, ``.decryptURL``, ``.decryptURLs``. The first one
+You have to overwrite at least one of ``.decrypt_file``, ``.decrypt_url``, ``.decrypt_urls``. The first one
 is only useful for container files, whereas the last is useful when it's possible to handle a bunch of urls
 at once. If in doubt, just overwrite `decryptURL`.
 
@@ -43,7 +43,7 @@ create new Packages if needed by instantiating a :class:`Package` instance, whic
 And that's basically all you need to know. Just as a little side-note if you want to use decrypter in
 your code you can use::
 
-        plugin = self.pyload.pluginManager.loadClass("crypter", "NameOfThePlugin")
+        plugin = self.pyload.pluginmanager.load_class("crypter", "NameOfThePlugin")
         # Core instance is needed for decrypting
         # decrypted will be a list of urls
         decrypted = plugin.decrypt(core, urls)

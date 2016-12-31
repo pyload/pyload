@@ -24,15 +24,15 @@ class BasePlugin(Hoster):
     __author_mail__ = "Mast3rRaNaN@hotmail.de"
 
     def setup(self):
-        self.chunkLimit = -1
-        self.resumeDownload = True
+        self.chunk_limit = -1
+        self.resume_download = True
 
     def process(self, pyfile):
         """main function"""
 
         #debug part, for api exerciser
         if pyfile.url.startswith("DEBUG_API"):
-            self.multiDL = False
+            self.multi_dl = False
             return
 
         # self.__name__ = "NetloadIn"
@@ -55,7 +55,7 @@ class BasePlugin(Hoster):
                     self.log_debug("Auth required")
 
                     account = self.pyload.accountmanager.get_account_plugin('Http')
-                    servers = [x['login'] for x in account.getAllAccounts()]
+                    servers = [x['login'] for x in account.get_all_accounts()]
                     server = urlparse(pyfile.url).netloc
 
                     if server in servers:

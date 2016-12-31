@@ -291,7 +291,7 @@ class Crypter(Base):
 
     def get_password(self):
         """ Deprecated """
-        self.log_debug("Deprecated method .getPassword(), use self.password instead.")
+        self.log_debug("Deprecated method .get_password(), use self.password instead.")
         return self.password
 
     def convert_packages(self):

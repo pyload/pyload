@@ -112,7 +112,7 @@ class FileApi(BaseApi):
         p = self.pyload.files.get_package(pid)
         if not self.check_result(p):
             raise PackageDoesNotExist(pid)
-        p.updateFromInfoData(pack)
+        p.update_from_info_data(pack)
         p.sync()
         self.pyload.files.save()
 

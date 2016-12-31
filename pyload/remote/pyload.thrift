@@ -375,8 +375,8 @@ service Pyload {
 
   string get_server_version(),
   string get_ws_address(),
-  StatusInfo getStatusInfo(),
-  list<ProgressInfo> getProgressInfo(),
+  StatusInfo get_status_info(),
+  list<ProgressInfo> get_progress_info(),
 
   list<string> getLog(1: i32 offset),
   ByteCount freeSpace(),
@@ -514,10 +514,10 @@ service Pyload {
   list<AccountInfo> getAccounts(),
   AccountInfo getAccountInfo(1: AccountID aid, 2: PluginName plugin, 3: bool refresh),
 
-  AccountInfo createAccount(1: PluginName plugin, 2: string loginname, 3: string password),
-  AccountInfo updateAccount(1:AccountID aid, 2: PluginName plugin, 3: string loginname, 4: string password),
+  AccountInfo create_account(1: PluginName plugin, 2: string loginname, 3: string password),
+  AccountInfo update_account(1:AccountID aid, 2: PluginName plugin, 3: string loginname, 4: string password),
   void updateAccountInfo(1: AccountInfo account),
-  void removeAccount(1: AccountInfo account),
+  void remove_account(1: AccountInfo account),
 
   /////////////////////////
   // Auth+User Information
@@ -533,7 +533,7 @@ service Pyload {
   // all user, for admins only
   map<UserID, UserData> getAllUserData(),
 
-  UserData addUser(1: string username, 2:string password),
+  UserData add_user(1: string username, 2:string password),
 
   // normal user can only update their own userdata and not all attributes
   void updateUserData(1: UserData data),
@@ -543,7 +543,7 @@ service Pyload {
   // Addon Methods
   ///////////////////////
 
-  map<PluginName, list<AddonInfo>> getAllInfo(),
+  map<PluginName, list<AddonInfo>> get_all_info(),
   list<AddonInfo> getInfoByPlugin(1: PluginName plugin),
 
   map<PluginName, list<AddonService>> getAddonHandler(),

@@ -34,7 +34,7 @@ class InfoThread(DecrypterThread):
         crypter = {}
 
         # db or info result
-        cb = self.update_db if self.pid > 1 else self.updateResult
+        cb = self.update_db if self.pid > 1 else self.update_result
 
         # filter out crypter plugins
         for name in self.manager.pyload.pluginmanager.get_plugins("crypter"):
@@ -65,11 +65,11 @@ class InfoThread(DecrypterThread):
         for pluginname, urls in plugins.items():
             plugin = self.manager.pyload.pluginmanager.load_module("hoster", pluginname)
             klass = self.manager.pyload.pluginmanager.get_plugin_class("hoster", pluginname, overwrite=False)
-            if has_method(klass, "getInfo"):
+            if has_method(klass, "get_info"):
                 self.fetch_for_plugin(klass, urls, cb)
             # TODO: this branch can be removed in the future
-            elif has_method(plugin, "getInfo"):
-                self.log.debug("Deprecated .getInfo() method on module level, use staticmethod instead")
+            elif has_method(plugin, "get_info"):
+                self.log.debug("Deprecated .get_info() method on module level, use staticmethod instead")
                 self.fetch_for_plugin(plugin, urls, cb)
 
         if self.oc:
@@ -121,8 +121,8 @@ class InfoThread(DecrypterThread):
             cached = [] #results loaded from cache
             process = [] #urls to process
             for url in urls:
-                if url in self.manager.infoCache:
-                    cached.append(self.manager.infoCache[url])
+                if url in self.manager.info_cache:
+                    cached.append(self.manager.info_cache[url])
                 else:
                     process.append(url)
 
@@ -133,7 +133,7 @@ class InfoThread(DecrypterThread):
 
             if process:
                 self.manager.log.debug("Run Info Fetching for {}".format(pluginname))
-                for result in plugin.getInfo(process):
+                for result in plugin.get_info(process):
                     #result = [ .. (name, size, status, url) .. ]
                     if not isinstance(result, list): result = [result]
 
@@ -151,7 +151,7 @@ class InfoThread(DecrypterThread):
 
                     # put them on the cache
                     for link in links:
-                        self.manager.infoCache[link.url] = link
+                        self.manager.info_cache[link.url] = link
 
                     self.progress.done += len(links)
                     cb(links)

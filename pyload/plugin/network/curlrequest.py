@@ -47,8 +47,8 @@ class CurlRequest(Request):
         Request.__init__(self, *args, **kwargs)
 
         self.rep = StringIO()
-        self.lastURL = None
-        self.lastEffectiveURL = None
+        self.last_url = None
+        self.last_effective_url = None
         self.header = ""
 
         # cookiejar defines the context
@@ -68,7 +68,7 @@ class CurlRequest(Request):
         self.init_handle()
 
         if self.config:
-            self.setInterface(self.config)
+            self.set_interface(self.config)
             self.init_options(self.config)
 
     def init_handle(self):
@@ -170,8 +170,8 @@ class CurlRequest(Request):
         else:
             self.c.setopt(pycurl.POST, 0)
 
-        if referer and self.lastURL:
-            self.headers["Referer"] = str(self.lastURL)
+        if referer and self.last_url:
+            self.headers["Referer"] = str(self.last_url)
         else:
             self.headers["Referer"] = ""
 
@@ -224,10 +224,10 @@ class CurlRequest(Request):
             rep = self.get_response()
 
         self.c.setopt(pycurl.POSTFIELDS, b"")
-        self.lastURL = myquote(url)
-        self.lastEffectiveURL = self.c.getinfo(pycurl.EFFECTIVE_URL)
-        if self.lastEffectiveURL:
-            self.lastURL = self.lastEffectiveURL
+        self.last_url = myquote(url)
+        self.last_effective_url = self.c.getinfo(pycurl.EFFECTIVE_URL)
+        if self.last_effective_url:
+            self.last_url = self.last_effective_url
         self.code = self.verify_header()
 
         if cookies:
@@ -297,9 +297,9 @@ class CurlRequest(Request):
 
     def write(self, buf):
         """ writes response """
-        if self.rep.tell() > 1000000 or self.doAbort:
+        if self.rep.tell() > 1000000 or self.do_abort:
             rep = self.get_response()
-            if self.doAbort: raise Abort
+            if self.do_abort: raise Abort
             f = open("response.dump", "wb")
             f.write(rep)
             f.close()

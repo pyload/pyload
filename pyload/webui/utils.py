@@ -86,7 +86,7 @@ def login_required(perm=None):
             api = get_user_api(s)
             if api is not None:
                 if perm:
-                    if api.user.hasPermission(perm):
+                    if api.user.has_permission(perm):
                         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                             return HTTPError(403, "Forbidden")
                         else:

@@ -52,11 +52,11 @@ class XDCCRequest(object):
 
         return socket.socket()
 
-    def download(self, ip, port, filename, irc, progressNotify=None):
+    def download(self, ip, port, filename, irc, progress_notify=None):
 
         ircbuffer = ""
-        lastUpdate = time()
-        cumRecvLen = 0
+        last_update = time()
+        cum_recv_len = 0
 
         dccsock = self.create_socket()
 
@@ -65,9 +65,9 @@ class XDCCRequest(object):
 
         if exists(filename):
             i = 0
-            nameParts = filename.rpartition(".")
+            name_parts = filename.rpartition(".")
             while True:
-                newfilename = "{}-{:d}{}{}".format(nameParts[0], i, nameParts[1], nameParts[2])
+                newfilename = "{}-{:d}{}{}".format(name_parts[0], i, name_parts[1], name_parts[2])
                 i += 1
 
                 if not exists(newfilename):
@@ -87,20 +87,20 @@ class XDCCRequest(object):
             self._keep_alive(irc, ircbuffer)
 
             data = dccsock.recv(4096)
-            dataLen = len(data)
-            self.recv += dataLen
+            data_len = len(data)
+            self.recv += data_len
 
-            cumRecvLen += dataLen
+            cum_recv_len += data_len
 
             now = time()
-            timespan = now - lastUpdate
+            timespan = now - last_update
             if timespan > 1:
-                self.speed = cumRecvLen // timespan
-                cumRecvLen = 0
-                lastUpdate = now
+                self.speed = cum_recv_len // timespan
+                cum_recv_len = 0
+                last_update = now
 
-                if progressNotify:
-                    progressNotify(self.percent)
+                if progress_notify:
+                    progress_notify(self.percent)
 
 
             if not data:

@@ -39,18 +39,18 @@ class CurlDownload(Download):
         self.disposition = False
 
         self.chunks = []
-        self.chunkSupport = None
+        self.chunk_support = None
 
         self.manager = pycurl.CurlMulti()
 
         #needed for speed calculation
-        self.lastArrived = []
+        self.last_arrived = []
         self.speeds = []
-        self.lastSpeeds = [0, 0]
+        self.last_speeds = [0, 0]
 
     @property
     def speed(self):
-        last = (sum(x) for x in self.lastSpeeds if x)
+        last = (sum(x) for x in self.last_speeds if x)
         return (sum(self.speeds) + sum(last)) // (1 + len(last))
 
     @property
@@ -98,7 +98,7 @@ class CurlDownload(Download):
             self.info = ChunkInfo.load(self.path)
             self.info.resume = True #resume is only possible with valid info file
             self._size = self.info.size
-            self.infoSaved = True
+            self.info_saved = True
         except IOError:
             self.info = ChunkInfo(self.path)
 
@@ -127,7 +127,7 @@ class CurlDownload(Download):
 
                 #remove old handles
                 for chunk in self.chunks:
-                    self.closeChunk(chunk)
+                    self.close_chunk(chunk)
 
                 return self._download(chunks, False)
             else:
@@ -147,19 +147,19 @@ class CurlDownload(Download):
         init = CurlChunk(0, self, None, resume) #initial chunk that will load complete file (if needed)
 
         self.chunks.append(init)
-        self.manager.add_handle(init.getHandle())
+        self.manager.add_handle(init.get_handle())
 
-        lastFinishCheck = 0
-        lastTimeCheck = 0
-        chunksDone = set()  # list of curl handles that are finished
-        chunksCreated = False
+        last_finish_check = 0
+        last_time_check = 0
+        chunks_done = set()  # list of curl handles that are finished
+        chunks_created = False
         done = False
         if self.info.get_count() > 1: # This is a resume, if we were chunked originally assume still can
-            self.chunkSupport = True
+            self.chunk_support = True
 
         while True:
             #need to create chunks
-            if not chunksCreated and self.chunkSupport and self.size: #will be set later by first chunk
+            if not chunks_created and self.chunk_support and self.size: #will be set later by first chunk
 
                 self.flags ^= Connection.Resumable
                 if not resume:
@@ -169,12 +169,12 @@ class CurlDownload(Download):
 
                 chunks = self.info.get_count()
 
-                init.setRange(self.info.get_chunk_range(0))
+                init.set_range(self.info.get_chunk_range(0))
 
                 for i in range(1, chunks):
                     c = CurlChunk(i, self, self.info.get_chunk_range(i), resume)
 
-                    handle = c.getHandle()
+                    handle = c.get_handle()
                     if handle:
                         self.chunks.append(c)
                         self.manager.add_handle(handle)
@@ -183,7 +183,7 @@ class CurlDownload(Download):
                         self.log.debug("Invalid curl handle -> closed")
                         c.close()
 
-                chunksCreated = True
+                chunks_created = True
 
             while True:
                 ret, num_handles = self.manager.perform()
@@ -194,7 +194,7 @@ class CurlDownload(Download):
 
             # reduce these calls
             # when num_q is 0, the loop is exited
-            while lastFinishCheck + 0.5 < t:
+            while last_finish_check + 0.5 < t:
                 # list of failed curl handles
                 failed = []
                 ex = None # save only last exception, we can only raise one anyway
@@ -209,7 +209,7 @@ class CurlDownload(Download):
                         failed.append(chunk)
                         ex = e
                     else:
-                        chunksDone.add(c)
+                        chunks_done.add(c)
 
                 for c in err_list:
                     curl, errno, msg = c
@@ -228,33 +228,33 @@ class CurlDownload(Download):
                         failed.append(chunk)
                         ex = e
                     else:
-                        chunksDone.add(curl)
+                        chunks_done.add(curl)
                 if not num_q: # no more info to get
 
                     # check if init is not finished so we reset download connections
                     # note that other chunks are closed and everything downloaded with initial connection
-                    if failed and init not in failed and init.c not in chunksDone:
+                    if failed and init not in failed and init.c not in chunks_done:
                         self.log.error(_("Download chunks failed, fallback to single connection | {}".format(ex)))
 
                         #list of chunks to clean and remove
                         to_clean = [x for x in self.chunks if x is not init]
                         for chunk in to_clean:
-                            self.closeChunk(chunk)
+                            self.close_chunk(chunk)
                             self.chunks.remove(chunk)
                             remove(fs_encode(self.info.get_chunk_name(chunk.id)))
 
                         #let first chunk load the rest and update the info file
-                        init.resetRange()
+                        init.reset_range()
                         self.info.clear()
                         self.info.add_chunk("{}.chunk0".format(self.path), (0, self.size))
                         self.info.save()
                     elif failed:
                         raise ex
 
-                    lastFinishCheck = t
+                    last_finish_check = t
 
-                    if len(chunksDone) >= len(self.chunks):
-                        if len(chunksDone) > len(self.chunks):
+                    if len(chunks_done) >= len(self.chunks):
+                        if len(chunks_done) > len(self.chunks):
                             self.log.warning("Finished download chunks size incorrect, please report bug.")
                         done = True  #all chunks loaded
 
@@ -264,23 +264,23 @@ class CurlDownload(Download):
                 break #all chunks loaded
 
             # calc speed once per second, averaging over 3 seconds
-            if lastTimeCheck + 1 < t:
-                diff = [c.arrived - (self.lastArrived[i] if len(self.lastArrived) > i else 0) for i, c in
+            if last_time_check + 1 < t:
+                diff = [c.arrived - (self.last_arrived[i] if len(self.last_arrived) > i else 0) for i, c in
                         enumerate(self.chunks)]
 
-                self.lastSpeeds[1] = self.lastSpeeds[0]
-                self.lastSpeeds[0] = self.speeds
-                self.speeds = [float(a) // (t - lastTimeCheck) for a in diff]
-                self.lastArrived = [c.arrived for c in self.chunks]
-                lastTimeCheck = t
+                self.last_speeds[1] = self.last_speeds[0]
+                self.last_speeds[0] = self.speeds
+                self.speeds = [float(a) // (t - last_time_check) for a in diff]
+                self.last_arrived = [c.arrived for c in self.chunks]
+                last_time_check = t
 
-            if self.doAbort:
+            if self.do_abort:
                 raise Abort
 
             self.manager.select(1)
 
         for chunk in self.chunks:
-            chunk.flushFile() #make sure downloads are written to disk
+            chunk.flush_file() #make sure downloads are written to disk
 
         self._copy_chunks()
 
@@ -300,7 +300,7 @@ class CurlDownload(Download):
     def close(self):
         """ cleanup """
         for chunk in self.chunks:
-            self.closeChunk(chunk)
+            self.close_chunk(chunk)
         else:
             #Workaround: pycurl segfaults when closing multi, that never had any curl handles
             if hasattr(self, "m"):

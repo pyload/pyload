@@ -12,7 +12,7 @@ class Download(Request):
 
     def __init__(self, bucket, request=None):
         # Copies the context
-        context = request.getContext() if request else [{}]
+        context = request.get_context() if request else [{}]
         Request.__init__(self, *context)
 
         self._running = False

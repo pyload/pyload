@@ -135,7 +135,7 @@ class ConfigManager(ConfigParser):
 
     def get_section(self, section, user=None):
         if section in self.parser and user is None:
-            return self.parser.getSection(section)
+            return self.parser.get_section(section)
 
         values = self.load_values(user, section)
         return self.config.get(section), values

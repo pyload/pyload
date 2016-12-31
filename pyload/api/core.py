@@ -47,7 +47,7 @@ class CoreApi(BaseApi):
         queue = self.pyload.files.get_queue_stats(self.primary_uid)
         total = self.pyload.files.get_download_stats(self.primary_uid)
 
-        serverStatus = StatusInfo(0,
+        server_status = StatusInfo(0,
                                     total[0], queue[0],
                                     total[1], queue[1],
                                     self.is_interaction_waiting(Interaction.All),
@@ -57,9 +57,9 @@ class CoreApi(BaseApi):
                                     self.get_quota())
 
         for pyfile in self.pyload.dlm.active_downloads(self.primary_uid):
-            serverStatus.speed += pyfile.getSpeed() #bytes/s
+            server_status.speed += pyfile.get_speed() #bytes/s
 
-        return serverStatus
+        return server_status
 
     @require_perm(Permission.All)
     def get_progress_info(self):

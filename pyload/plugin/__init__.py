@@ -266,7 +266,7 @@ class Base(object):
             self.task.invalid()
 
     def invalid_captcha(self):
-        self.log_debug("Deprecated method .invalidCaptcha, use .invalidTask")
+        self.log_debug("Deprecated method .invalid_captcha, use .invalid_task")
         self.invalid_task()
 
     def correct_task(self):
@@ -274,7 +274,7 @@ class Base(object):
             self.task.correct()
 
     def correct_captcha(self):
-        self.log_debug("Deprecated method .correctCaptcha, use .correctTask")
+        self.log_debug("Deprecated method .correct_captcha, use .correct_task")
         self.correct_task()
 
     def decrypt_captcha(self, url, get={}, post={}, cookies=True, forceUser=False, imgtype='jpg',
@@ -319,7 +319,7 @@ class Base(object):
             task = self.im.create_captcha_task(img, imgtype, temp_file.name, self.__name__, result_type)
             self.task = task
 
-            while task.isWaiting():
+            while task.is_waiting():
                 if self.abort():
                     self.im.remove_task(task)
                     raise Abort

@@ -88,7 +88,7 @@ class AsyncHandler(AbstractHandler):
             # filter events that these user is no owner of
             # TODO: events are security critical, this should be revised later
             # TODO: permissions? interaction etc
-            if not req.api.user.isAdmin():
+            if not req.api.user.is_admin():
                 if user is not None and req.api.primary_uid != user:
                     break
 
@@ -163,8 +163,8 @@ class AsyncHandler(AbstractHandler):
             pass
 
         if req.t <= time():
-            self.send(req, req.api.getStatusInfo())
-            self.send(req, req.api.getProgressInfo())
+            self.send(req, req.api.get_status_info())
+            self.send(req, req.api.get_progress_info())
 
             # update time for next update
             req.t = time() + req.interval

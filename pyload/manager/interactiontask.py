@@ -85,7 +85,7 @@ class InteractionTask(BaseInteractionTask):
         return time() > self.wait_until > -1
 
     def correct(self):
-        [x.taskCorrect(self) for x in self.handler]
+        [x.task_correct(self) for x in self.handler]
 
     def invalid(self):
-        [x.taskInvalid(self) for x in self.handler]
+        [x.task_invalid(self) for x in self.handler]

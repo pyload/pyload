@@ -27,8 +27,8 @@ class DownloadThread(BaseThread):
         """Constructor"""
         BaseThread.__init__(self, manager)
 
-        self.isWorking = Event()
-        self.isWorking.clear()
+        self.is_working = Event()
+        self.is_working.clear()
 
         self.queue = Queue() # job queue
         self.active = None
@@ -50,10 +50,10 @@ class DownloadThread(BaseThread):
                 return True
 
             try:
-                pyfile.initPlugin()
+                pyfile.init_plugin()
 
                 # after initialization the thread is fully ready
-                self.isWorking.set()
+                self.is_working.set()
 
                 #this pyfile was deleted while queuing
                 # TODO: what will happen with new thread manager?
@@ -92,7 +92,7 @@ class DownloadThread(BaseThread):
 
             except Reconnect:
                 self.queue.put(pyfile)
-                #pyfile.req.clearCookies()
+                #pyfile.req.clear_cookies()
 
                 while self.manager.reconnecting.isSet():
                     sleep(0.5)
@@ -137,7 +137,7 @@ class DownloadThread(BaseThread):
                     self.log.warning(_("Couldn't connect to host or connection reset, waiting 1 minute and retry."))
                     wait = time() + 60
 
-                    pyfile.waitUntil = wait
+                    pyfile.wait_until = wait
                     pyfile.set_status("waiting")
                     while time() < wait:
                         sleep(0.5)
@@ -202,10 +202,10 @@ class DownloadThread(BaseThread):
 
             finally:
                 self.pyload.files.save()
-                pyfile.checkIfProcessed()
+                pyfile.check_if_processed()
                 exc_clear()
                 # manager could still be waiting for it
-                self.isWorking.set()
+                self.is_working.set()
 
                 # only done when job was not put back
                 if self.queue.empty():
@@ -214,12 +214,12 @@ class DownloadThread(BaseThread):
             #pyfile.plugin.req.clean()
 
             self.active = False
-            pyfile.finishIfDone()
+            pyfile.finish_if_done()
             self.pyload.files.save()
 
     def get_progress(self):
         if self.active:
-            return self.active.getProgressInfo()
+            return self.active.get_progress_info()
 
     def put(self, job):
         """assign a job to the thread"""

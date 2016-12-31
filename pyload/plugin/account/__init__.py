@@ -242,20 +242,20 @@ class Account(Base):
         pass
 
     def get_account_cookies(self, user):
-        self.log_debug("Deprecated method .getAccountCookies -> use account.cj")
+        self.log_debug("Deprecated method .get_account_cookies -> use account.cj")
         return self.cj
 
     def select_account(self, *args):
-        self.log_debug("Deprecated method .selectAccount() -> use fields directly")
+        self.log_debug("Deprecated method .select_account() -> use fields directly")
         return self.loginname, self.get_account_data()
 
     def get_account_data(self, *args):
-        self.log_debug("Deprecated method .getAccountData -> use fields directly")
+        self.log_debug("Deprecated method .get_account_data -> use fields directly")
         return {"password": self.password, "premium": self.premium, "trafficleft": self.trafficleft,
                 "maxtraffic" : self.maxtraffic, "validuntil": self.validuntil}
 
     def is_premium(self, user=None):
-        if user: self.log_debug("Deprecated Argument user for .isPremium()", user)
+        if user: self.log_debug("Deprecated Argument user for .is_premium()", user)
         return self.premium
 
     def is_usable(self):
@@ -311,7 +311,7 @@ class Account(Base):
     def schedule_refresh(self, time=0, force=True):
         """ add a task for refreshing the account info to the scheduler """
         self.log_debug("Scheduled Account refresh for {} in {} seconds".format(self.loginname, time))
-        self.pyload.scheduler.add_job(time, self.getAccountInfo, [force])
+        self.pyload.scheduler.add_job(time, self.get_account_info, [force])
 
     @lock
     def check_login(self, req):

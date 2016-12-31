@@ -23,7 +23,7 @@ class AddonThread(BaseThread):
         self.active = []
         self.progress = 0
 
-        m.addThread(self)
+        m.add_thread(self)
 
         self.start()
 
@@ -39,7 +39,7 @@ class AddonThread(BaseThread):
         """ Progress of the thread  """
         if self.active:
             active = self.active[0]
-            return ProgressInfo(active.pluginname, active.name, active.getStatusName(), 0,
+            return ProgressInfo(active.pluginname, active.name, active.get_status_name(), 0,
                                 self.progress, 100, self.owner, ProgressType.Addon)
 
     def add_active(self, pyfile):
@@ -51,7 +51,7 @@ class AddonThread(BaseThread):
         if pyfile in self.active:
             self.active.remove(pyfile)
 
-        pyfile.finishIfDone()
+        pyfile.finish_if_done()
 
     def run(self): #TODO: approach via func_code
         try:
