@@ -44,7 +44,7 @@ class DecrypterThread(BaseThread):
 
         if links:
             self.log.info(
-                _("Decrypted %(count)d links into package %(name)s") % {"count": len(links), "name": pack.name})
+                _("Decrypted {:d} links into package {}").format(len(links), pack.name))
             api.add_links(self.pid, [l.url for l in links])
 
         for p in packages:
@@ -66,7 +66,7 @@ class DecrypterThread(BaseThread):
 
             # updating progress
             self.progress.plugin = name
-            self.progress.name = _("Decrypting %s links") % len(urls) if len(urls) > 1 else urls[0]
+            self.progress.name = _("Decrypting {} links").format(len(urls) if len(urls) > 1 else urls[0])
 
             #TODO: dependency check, there is a new error code for this
             # TODO: decrypting with result yielding
@@ -74,7 +74,7 @@ class DecrypterThread(BaseThread):
                 self.error = True
                 if err:
                     plugin_result.extend(LinkStatus(url, url, -1, DS.NotPossible, name) for url in urls)
-                self.log.debug("Plugin '%s' for decrypting was not loaded" % name)
+                self.log.debug("Plugin '{}' for decrypting was not loaded".format(name))
             else:
                 try:
                     plugin = klass(self.pyload, password)

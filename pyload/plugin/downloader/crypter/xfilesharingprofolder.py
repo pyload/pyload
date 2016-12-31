@@ -28,7 +28,7 @@ class XfilesharingProFolder(Crypter):
         subfolders = re.findall(self.SUBFOLDER_PATTERN, html)
         #self.log_debug(subfolders)
         for (url, name) in subfolders:
-            if self.package: name = "%s/%s" % (self.package.name, name)
+            if self.package: name = "{}/{}".format(self.package.name, name)
             new_links.append(Package(name, [url]))
 
         if not new_links: self.fail('Could not extract any links')

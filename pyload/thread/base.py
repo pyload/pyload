@@ -45,7 +45,7 @@ class BaseThread(Thread):
     def write_debug_report(self, name, pyfile=None, plugin=None):
         """ writes a debug report to disk  """
 
-        dump_name = "debug_%s_%s.zip" % (name, strftime("%d-%m-%Y_%H-%M-%S"))
+        dump_name = "debug_{}_{}.zip".format(name, strftime("%d-%m-%Y_%H-%M-%S"))
         if pyfile:
             dump = self.get_plugin_dump(pyfile.plugin) + "\n"
             dump += self.get_file_dump(pyfile)
@@ -78,20 +78,20 @@ class BaseThread(Thread):
                 raise Exception("Empty Zipfile")
 
         except Exception as e:
-            self.log.debug("Error creating zip file: %s" % e)
+            self.log.debug("Error creating zip file: {}".format(e))
 
             dump_name = dump_name.replace(".zip", ".txt")
             f = open(dump_name, "wb")
             f.write(dump)
             f.close()
 
-        self.log.info("Debug Report written to %s" % dump_name)
+        self.log.info("Debug Report written to {}".format(dump_name))
         return dump_name
 
     def get_plugin_dump(self, plugin):
-        dump = "pyLoad %s Debug Report of %s %s \n\nTRACEBACK:\n %s \n\nFRAMESTACK:\n" % (
-            self.manager.pyload.api.get_server_version(), plugin.__name__, plugin.__version__, format_exc())
-
+        dump = "pyLoad {} Debug Report of {} {} \n\nTRACEBACK:\n {} \n\nFRAMESTACK:\n".format(
+            self.manager.pyload.api.get_server_version(), plugin.__name__, plugin.__version__, format_exc()
+        )
         tb = sys.exc_info()[2]
         stack = []
         while tb:
@@ -99,16 +99,16 @@ class BaseThread(Thread):
             tb = tb.tb_next
 
         for frame in stack[1:]:
-            dump += "\nFrame %s in %s at line %s\n" % (frame.f_code.co_name,
-                                                       frame.f_code.co_filename,
-                                                       frame.f_lineno)
+            dump += "\nFrame {} in {} at line {}\n".format(frame.f_code.co_name,
+                                                           frame.f_code.co_filename,
+                                                           frame.f_lineno)
 
             for key, value in frame.f_locals.items():
-                dump += "\t%20s = " % key
+                dump += "\t%20s = ".format(key)
                 try:
                     dump += pformat(value) + "\n"
                 except Exception as e:
-                    dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
+                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(e)
 
             del frame
 
@@ -119,11 +119,11 @@ class BaseThread(Thread):
         for name in dir(plugin):
             attr = getattr(plugin, name)
             if not name.endswith("__") and not isinstance(attr, MethodType):
-                dump += "\t%20s = " % name
+                dump += "\t%20s = ".format(name)
                 try:
                     dump += pformat(attr) + "\n"
                 except Exception as e:
-                    dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
+                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(e)
 
         return dump
 
@@ -133,17 +133,17 @@ class BaseThread(Thread):
         for name in dir(pyfile):
             attr = getattr(pyfile, name)
             if not name.endswith("__") and not isinstance(attr, MethodType):
-                dump += "\t%20s = " % name
+                dump += "\t%20s = ".format(name)
                 try:
                     dump += pformat(attr) + "\n"
                 except Exception as e:
-                    dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
+                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(e)
 
         return dump
 
     def get_system_dump(self):
         dump = "SYSTEM:\n\n"
         for k, v in get_system_info().items():
-            dump += "%s: %s\n" % (k, v)
+            dump += "{}: {}\n".format(k, v)
 
         return dump

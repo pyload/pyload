@@ -60,19 +60,19 @@ class TestDatabase(BenchmarkTest):
 
     def test_insert_links(self):
         for i in range(10000):
-            fid = self.db.addLink("url %s" % i, "name", "plugin", choice(self.pids), self.owner)
+            fid = self.db.addLink("url {}".format(i), "name", "plugin", choice(self.pids), self.owner)
             self.fids.append(fid)
 
     def test_insert_many(self):
         for pid in self.pids:
-            self.db.addLinks([("url %s" % i, "plugin") for i in range(50)], pid, self.owner)
+            self.db.addLinks([("url {}".format(i), "plugin") for i in range(50)], pid, self.owner)
 
     def test_get_packages(self):
         packs = self.db.getAllPackages()
         n = len(packs)
         assert n == len(self.pids) - 1
 
-        print("Fetched %d packages" % n)
+        print("Fetched {:d} packages".format(n))
         self.assert_pack(choice(list(packs.values())))
 
     def test_get_files(self):
@@ -80,12 +80,12 @@ class TestDatabase(BenchmarkTest):
         n = len(files)
         assert n >= len(self.pids)
 
-        print("Fetched %d files" % n)
+        print("Fetched {:d} files".format(n))
         self.assert_file(choice(list(files.values())))
 
     def test_get_files_queued(self):
         files = self.db.getAllFiles(state=DownloadState.Unfinished)
-        print("Fetched %d files queued" % len(files))
+        print("Fetched {:d} files queued".format(len(files)))
 
     def test_delete(self):
         pid = choice(self.pids)
@@ -96,14 +96,14 @@ class TestDatabase(BenchmarkTest):
         pid = choice(self.pids)
         packs = self.db.getAllPackages(root=pid)
 
-        print("Package %d has %d packages" % (pid, len(packs)))
+        print("Package {:d} has {:d} packages".format(pid, len(packs)))
         self.assert_pack(choice(list(packs.values())))
 
     def test_get_package_files(self):
         pid = choice(self.pids)
         files = self.db.getAllFiles(package=pid)
 
-        print("Package %d has %d files" % (pid, len(files)))
+        print("Package {:d} has {:d} files".format(pid, len(files)))
         self.assert_file(choice(list(files.values())))
 
     def test_get_package_data(self, stats=False):
@@ -121,7 +121,7 @@ class TestDatabase(BenchmarkTest):
 
     def test_find_files(self):
         files = self.db.getAllFiles(search="1")
-        print("Found %s files" % len(files))
+        print("Found {} files".format(len(files)))
         f = choice(list(files.values()))
 
         assert "1" in f.name

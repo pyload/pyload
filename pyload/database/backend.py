@@ -89,12 +89,12 @@ class DatabaseJob(object):
         frame = self.frame.f_back
         output = ""
         for i in range(5):
-            output += "\t%s:%s, %s\n" % (basename(frame.f_code.co_filename), frame.f_lineno, frame.f_code.co_name)
+            output += "\t{}:{}, {}\n".format(basename(frame.f_code.co_filename), frame.f_lineno, frame.f_code.co_name)
             frame = frame.f_back
         del frame
         del self.frame
 
-        return "DataBase Job %s:%s\n%sResult: %s" % (self.f.__name__, self.args[1:], output, self.result)
+        return "DataBase Job {}:{}\n{}Result: {}".format(self.f.__name__, self.args[1:], output, self.result)
 
     def process_job(self):
         try:
@@ -215,7 +215,7 @@ class DatabaseBackend(Thread):
 
     def _convert_db(self, v):
         try:
-            return getattr(self, "_convertV%i" % v)()
+            return getattr(self, "_convertV{:d}".format(v))()
         except Exception:
             return False
 
@@ -252,7 +252,7 @@ class DatabaseBackend(Thread):
         self.c.execute(
             'CREATE TRIGGER IF NOT EXISTS "insert_package" AFTER INSERT ON "packages"'
             'BEGIN '
-            'UPDATE packages SET added = strftime("%s", "now"), '
+            'UPDATE packages SET added = strftime("{}", "now"), '
             'packageorder = (SELECT max(p.packageorder) + 1 FROM packages p WHERE p.root=new.root) '
             'WHERE rowid = new.rowid;'
             'END'
@@ -295,7 +295,7 @@ class DatabaseBackend(Thread):
         self.c.execute(
             'CREATE TRIGGER IF NOT EXISTS "insert_file" AFTER INSERT ON "files"'
             'BEGIN '
-            'UPDATE files SET added = strftime("%s", "now"), '
+            'UPDATE files SET added = strftime("{}", "now"), '
             'fileorder = (SELECT max(f.fileorder) + 1 FROM files f WHERE f.package=new.package) '
             'WHERE rowid = new.rowid;'
             'END'

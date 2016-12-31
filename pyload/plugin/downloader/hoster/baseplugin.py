@@ -59,7 +59,7 @@ class BasePlugin(Hoster):
                     server = urlparse(pyfile.url).netloc
 
                     if server in servers:
-                        self.log_debug("Logging on to %s" % server)
+                        self.log_debug("Logging on to {}".format(server))
                         self.req.add_auth(account.accounts[server]["password"])
                     else:
                         for pwd in pyfile.package().password.splitlines():
@@ -87,21 +87,21 @@ class BasePlugin(Hoster):
                 raise ResponseException(404)
 
             if 'location' in header:
-                self.log_debug("Location: " + header['location'])
+                self.log_debug("Location: {}".format(header['location']))
                 base = match(r'https?://[^/]+', url).group(0)
                 if header['location'].startswith("http"):
                     url = unquote(header['location'])
                 elif header['location'].startswith("/"):
                     url = base + unquote(header['location'])
                 else:
-                    url = '%s/%s' % (base, unquote(header['location']))
+                    url = '{}/{}'.format(base, unquote(header['location']))
             else:
                 break
 
         name = html_unescape(unquote(urlparse(url).path.split("/")[-1]))
 
         if 'content-disposition' in header:
-            self.log_debug("Content-Disposition: " + header['content-disposition'])
+            self.log_debug("Content-Disposition: {}".format(header['content-disposition']))
             m = search("filename(?P<type>=|\*=(?P<enc>.+)'')(?P<name>.*)", header['content-disposition'])
             if m:
                 disp = m.groupdict()
@@ -114,5 +114,5 @@ class BasePlugin(Hoster):
         if not name:
             name = url
         pyfile.name = name
-        self.log_debug("Filename: %s" % pyfile.name)
+        self.log_debug("Filename: {}".format(pyfile.name))
         self.download(url, disposition=True)

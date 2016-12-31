@@ -75,7 +75,7 @@ class Account(Base):
         try:
             self.config_data = dict(to_configdata(x) for x in self.__config__)
         except Exception as e:
-            self.log_error("Invalid config: %s" % e)
+            self.log_error("Invalid config: {}".format(e))
             self.config_data = {}
 
         self.init()
@@ -146,14 +146,12 @@ class Account(Base):
             self.valid = True
         except WrongPassword:
             self.log_warning(
-                _("Could not login with account %(user)s | %(msg)s") % {"user": self.loginname
-                    , "msg": _("Wrong Password")})
+                _("Could not login with account {} | {}").format(self.loginname, _("Wrong Password")))
             self.valid = False
 
         except Exception as e:
             self.log_warning(
-                _("Could not login with account %(user)s | %(msg)s") % {"user": self.loginname
-                    , "msg": e})
+                _("Could not login with account {} | {}").format(self.loginname, e))
             self.valid = False
             self.pyload.print_exc()
 
@@ -209,7 +207,7 @@ class Account(Base):
             # make sure to login
             req = self.get_account_request()
             self.check_login(req)
-            self.log_info(_("Get Account Info for %s") % self.loginname)
+            self.log_info(_("Get Account Info for {}").format(self.loginname))
             try:
                 try:
                     infos = self.load_account_info(req)
@@ -218,7 +216,7 @@ class Account(Base):
                     infos = self.load_account_info(self.loginname, req)
             except Exception as e:
                 infos = {"error": str(e)}
-                self.log_error(_("Error: %s") % e)
+                self.log_error(_("Error: {}").format(e))
             finally:
                 req.close()
 
@@ -228,9 +226,9 @@ class Account(Base):
                     if hasattr(self, k):
                         setattr(self, k, v)
                     else:
-                        self.log_debug("Unknown attribute %s=%s" % (k, v))
+                        self.log_debug("Unknown attribute {}={}".format(k, v))
 
-            self.log_debug("Account Info: %s" % str(infos))
+            self.log_debug("Account Info: {}".format(infos))
             self.timestamp = time()
             self.pyload.evm.dispatch_event("account:loaded", self.to_info_data())
 
@@ -275,7 +273,7 @@ class Account(Base):
                 if not compare_time(start.split(":"), end.split(":")):
                     return False
             except Exception:
-                self.log_warning(_("Your Time %s has a wrong format, use: 1:22-3:44") % time_data)
+                self.log_warning(_("Your Time {} has a wrong format, use: 1:22-3:44").format(time_data))
 
         if 0 <= self.validuntil < time():
             return False
@@ -298,7 +296,7 @@ class Account(Base):
     def empty(self, user=None):
         if user: self.log_debug("Deprecated argument user for .empty()", user)
 
-        self.log_warning(_("Account %s has not enough traffic, checking again in 30min") % self.login)
+        self.log_warning(_("Account {} has not enough traffic, checking again in 30min").format(self.login))
 
         self.trafficleft = 0
         self.schedule_refresh(30 * 60)
@@ -306,14 +304,14 @@ class Account(Base):
     def expired(self, user=None):
         if user: self.log_debug("Deprecated argument user for .expired()", user)
 
-        self.log_warning(_("Account %s is expired, checking again in 1h") % user)
+        self.log_warning(_("Account {} is expired, checking again in 1h").format(user))
 
         self.validuntil = time() - 1
         self.schedule_refresh(60 * 60)
 
     def schedule_refresh(self, time=0, force=True):
         """ add a task for refreshing the account info to the scheduler """
-        self.log_debug("Scheduled Account refresh for %s in %s seconds." % (self.loginname, time))
+        self.log_debug("Scheduled Account refresh for {} in {} seconds".format(self.loginname, time))
         self.pyload.scheduler.add_job(time, self.getAccountInfo, [force])
 
     @lock
@@ -321,9 +319,9 @@ class Account(Base):
         """ checks if the user is still logged in """
         if self.login_ts + self.login_timeout * 60 < time():
             if self.login_ts: # separate from fresh login to have better debug logs
-                self.log_debug("Reached login timeout for %s" % self.loginname)
+                self.log_debug("Reached login timeout for {}".format(self.loginname))
             else:
-                self.log_info(_("Login with %s") % self.loginname)
+                self.log_info(_("Login with {}").format(self.loginname))
 
             self._login(req)
             return False

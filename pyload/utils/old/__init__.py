@@ -91,7 +91,7 @@ def format_size(bytes):
     while bytes > 1000:
         bytes /= 1024.0
         steps += 1
-    return "%.2f %s" % (bytes, sizes[steps])
+    return "{:.2f} {}".format(bytes, sizes[steps])
 
 
 def format_speed(speed):
@@ -102,7 +102,7 @@ def format_time(seconds):
     if seconds < 0: return "00:00:00"
     hours, seconds = divmod(seconds, 3600)
     minutes, seconds = divmod(seconds, 60)
-    return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
+    return "{:.2d}:{:.2d}:{:.2d}".format(hours, minutes, seconds)
 
 
 def parse_time(timestamp, pattern):
@@ -155,7 +155,7 @@ def bits_set(bits, compare):
 
 def lock(func):
     def new(*args, **kwargs):
-        #print("Handler: %s args: %s" % (func,args[1:]))
+        # print("Handler: {} args: {}".format(func, args[1:]))
         args[0].lock.acquire()
         try:
             return func(*args, **kwargs)

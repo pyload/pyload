@@ -27,7 +27,7 @@ class BaseAttributes(defaultdict):
     """ Dictionary that loads defaults values from Base object """
 
     def __missing__(self, key):
-        attr = "__%s__" % key
+        attr = "__{}__".format(key)
         if not hasattr(Base, attr):
             return defaultdict.__missing__(self, key)
 
@@ -104,7 +104,7 @@ class PluginLoader(object):
         self.create_index()
 
     def log_debug(self, plugin, name, msg):
-        self.log.debug("Plugin %s | %s: %s" % (plugin, name, msg))
+        self.log.debug("Plugin {} | {}: {}".format(plugin, name, msg))
 
     def create_index(self):
         """create information for all plugins available"""
@@ -119,7 +119,9 @@ class PluginLoader(object):
         for plugin in self.TYPES:
             self.plugins[plugin] = self.parse(plugin)
 
-        self.log.debug("Created index of plugins for %s in %.2f ms", self.path, (time() - a) * 1000)
+        self.log.debug(
+            "Created index of plugins for {} in {:.2f} ms".format(self.path, (time() - a) * 1000)
+        )
 
     def parse(self, folder):
         """  Analyze and parses all plugins in folder """
@@ -163,13 +165,13 @@ class PluginLoader(object):
             try:
                 attrs[m[0]] = literal_eval(m[-1].replace("_(", "("))
             except Exception as e:
-                self.log_debug(folder, name, "Error when parsing: %s" % m[-1])
+                self.log_debug(folder, name, "Error when parsing: {}".format(m[-1]))
                 self.log.debug(str(e))
 
-            if not hasattr(Base, "__%s__" % m[0]):
+            if not hasattr(Base, "__{}__".format(m[0])):
                 #TODO remove type from all plugins, its not needed
                 if m[0] != "type" and m[0] != "author_name":
-                    self.log_debug(folder, name, "Unknown attribute '%s'" % m[0])
+                    self.log_debug(folder, name, "Unknown attribute '{}'".format(m[0]))
 
         return attrs
 
@@ -218,7 +220,7 @@ class PluginLoader(object):
             try:
                 version = float(attrs["version"])
             except ValueError:
-                self.log_debug(folder, name, "Invalid version %s" % attrs["version"])
+                self.log_debug(folder, name, "Invalid version {}".format(attrs["version"]))
                 version = 9 #TODO remove when plugins are fixed, causing update loops
         else:
             self.log_debug(folder, name, "No version attribute")
@@ -227,7 +229,7 @@ class PluginLoader(object):
             try:
                 plugin_re = re.compile(attrs["pattern"], re.I)
             except Exception:
-                self.log_debug(folder, name, "Invalid regexp pattern '%s'" % attrs["pattern"])
+                self.log_debug(folder, name, "Invalid regexp pattern '{}'".format(attrs["pattern"]))
                 plugin_re = self.NO_MATCH
         else:
             plugin_re = self.NO_MATCH
@@ -264,7 +266,7 @@ class PluginLoader(object):
             try:
                 self.config.add_config_section(name, name, desc, expl, config)
             except Exception:
-                self.log_debug(folder, name, "Invalid config  %s" % config)
+                self.log_debug(folder, name, "Invalid config  {}".format(config))
 
         return plugin
 
@@ -331,7 +333,7 @@ class PluginLoader(object):
         plugins = self.plugins[plugin]
         # convert path to python recognizable import
         path = basename(plugins[name].path).replace(".pyc", "").replace(".py", "")
-        module = __import__(self.package + ".%s.%s" % (plugin, path), globals(), locals(), path)
+        module = __import__("{}.{}.{}".format(self.package, plugin, path), globals(), locals(), path)
         return module
 
     def load_attributes(self, plugin, name):

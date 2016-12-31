@@ -262,7 +262,7 @@ def _alias_handlers(dispatcher, websock_handlers_map_file):
                 continue
             m = re.match('(\S+)\s+(\S+)', line)
             if not m:
-                logging.warning('Wrong format in map file:' + line)
+                logging.warning('Wrong format in map file: {}'.format(line))
                 continue
             try:
                 dispatcher.add_resource_path_alias(
@@ -426,7 +426,7 @@ class WebSocketServer(SocketServer.ThreadingMixIn, http.server.HTTPServer):
         """Override SocketServer.handle_error."""
 
         self._logger.error(
-            'Exception in processing request from: %r\n%s',
+            'Exception in processing request from: %r\n{}',
             client_address,
             util.get_stack_trace())
         # Note: client_address is a tuple.
@@ -450,7 +450,7 @@ class WebSocketServer(SocketServer.ThreadingMixIn, http.server.HTTPServer):
                     raise
 
                 # Print cipher in use. Handshake is done on accept.
-                self._logger.debug('Cipher: %s', accepted_socket.cipher())
+                self._logger.debug('Cipher: {}', accepted_socket.cipher())
                 self._logger.debug('Client cert: %r',
                                    accepted_socket.getpeercert())
             elif server_options.tls_module == _TLS_BY_PYOPENSSL:
@@ -488,7 +488,7 @@ class WebSocketServer(SocketServer.ThreadingMixIn, http.server.HTTPServer):
                     # Set errno part to 1 (SSL_ERROR_SSL) like the ssl module
                     # does.
                     self._logger.debug('%r', e)
-                    raise socket.error(1, '%r' % e)
+                    raise socket.error(1, '%r'.format(e))
                 cert = accepted_socket.get_peer_certificate()
                 self._logger.debug('Client cert subject: %r',
                                    cert.get_subject().get_components())
@@ -645,7 +645,7 @@ class WebSocketRequestHandler(http.server.CGIHTTPRequestHandler):
                 self._logger.info('Fallback to CGIHTTPRequestHandler')
                 return False
         except dispatch.DispatchException as e:
-            self._logger.info('Dispatch failed for error: %s', e)
+            self._logger.info('Dispatch failed for error: {}', e)
             self.send_error(e.status)
             return False
 
@@ -661,7 +661,7 @@ class WebSocketRequestHandler(http.server.CGIHTTPRequestHandler):
                     allowDraft75=self._options.allow_draft75,
                     strict=self._options.strict)
             except handshake.VersionException as e:
-                self._logger.info('Handshake failed for version error: %s', e)
+                self._logger.info('Handshake failed for version error: {}', e)
                 self.send_response(common.HTTP_STATUS_BAD_REQUEST)
                 self.send_header(common.SEC_WEBSOCKET_VERSION_HEADER,
                                  e.supported_versions)
@@ -669,30 +669,27 @@ class WebSocketRequestHandler(http.server.CGIHTTPRequestHandler):
                 return False
             except handshake.HandshakeException as e:
                 # Handshake for ws(s) failed.
-                self._logger.info('Handshake failed for error: %s', e)
+                self._logger.info('Handshake failed for error: {}', e)
                 self.send_error(e.status)
                 return False
 
             request._dispatcher = self._options.dispatcher
             self._options.dispatcher.transfer_data(request)
         except handshake.AbortedByUserException as e:
-            self._logger.info('Aborted: %s', e)
+            self._logger.info('Aborted: {}', e)
         return False
 
     def log_request(self, code='-', size='-'):
         """Override BaseHTTPServer.log_request."""
 
-        self._logger.info('"%s" %s %s',
-                          self.requestline, str(code), str(size))
+        self._logger.info('"{}" {} {}'.format(self.requestline, code, size))
 
     def log_error(self, *args):
         """Override BaseHTTPServer.log_error."""
 
         # Despite the name, this method is for warnings than for errors.
         # For example, HTTP status code is logged by this method.
-        self._logger.warning('%s - %s',
-                             self.address_string(),
-                             args[0] % args[1:])
+        self._logger.warning('{} - {}'.format(self.address_string(), args[0] % args[1:]))
 
     def is_cgi(self):
         """Test whether self.path corresponds to a CGI script.
@@ -719,7 +716,7 @@ class WebSocketRequestHandler(http.server.CGIHTTPRequestHandler):
 
 
 def _get_logger_from_class(c):
-    return logging.getLogger('%s.%s' % (c.__module__, c.__name__))
+    return logging.getLogger('{}.{}'.format(c.__module__, c.__name__))
 
 
 def _configure_logging(options):
@@ -732,8 +729,7 @@ def _configure_logging(options):
                 options.log_file, 'a', options.log_max, options.log_count)
     else:
         handler = logging.StreamHandler()
-    formatter = logging.Formatter(
-            '[%(asctime)s] [%(levelname)s] %(name)s: %(message)s')
+    formatter = logging.Formatter('[%(asctime)s] [%(levelname)s] %(name)s: %(message)s')
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
@@ -869,8 +865,9 @@ def _main(args=None):
         options.scan_dir = options.websock_handlers
 
     if options.use_basic_auth:
-        options.basic_auth_credential = 'Basic ' + base64.b64encode(
-            options.basic_auth_credential)
+        options.basic_auth_credential = 'Basic {}'.format(
+            base64.b64encode(options.basic_auth_credential)
+        )
 
     try:
         if options.thread_monitor_interval_in_sec > 0:
@@ -881,8 +878,8 @@ def _main(args=None):
         server = WebSocketServer(options)
         server.serve_forever()
     except Exception as e:
-        logging.critical('mod_pywebsocket: %s' % e)
-        logging.critical('mod_pywebsocket: %s' % util.get_stack_trace())
+        logging.critical('mod_pywebsocket: {}'.format(e))
+        logging.critical('mod_pywebsocket: {}'.format(util.get_stack_trace()))
         sys.exit(1)
 
 

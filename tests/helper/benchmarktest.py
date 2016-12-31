@@ -25,7 +25,7 @@ class BenchmarkTest(object):
     @classmethod
     def benchmark(cls, n=1):
 
-        print("Benchmarking %s" % cls.__name__)
+        print("Benchmarking {}".format(cls.__name__))
         print()
 
         for i in range(n):
@@ -44,13 +44,15 @@ class BenchmarkTest(object):
             v = cls.results[k]
 
             if len(v) > 1:
-                print(("%" + length +"s: %s | average: %.2f ms") % (k, ", ".join(["%.2f" % x for x in v]), old_div(sum(v),len(v))))
+                print(("{:" + length + "} {} | average: {:.2f} ms").format(
+                    k, ", ".join("{:.2f}".format(x) for x in v), old_div(sum(v),len(v))
+                )
                 total += old_div(sum(v),len(v))
             else:
-                print(("%" + length +"s: %.2f ms") % (k, v[0]))
+                print(("{:" + length + "}: {:.2f} ms").format(k, v[0]))
                 total += v[0]
 
-        print("\ntotal: %.2f ms" % total)
+        print("\ntotal: {:.2f} ms".format(total))
 
 
     @classmethod
@@ -64,7 +66,7 @@ class BenchmarkTest(object):
 
         for f in cls.bench:
             a = time()
-            getattr(obj, "test_" + f)()
+            getattr(obj, "test_{}".format(f))()
             cls.timestamp(f, a)
 
         if hasattr(cls, "tearDownClass"):

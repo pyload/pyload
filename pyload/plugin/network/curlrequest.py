@@ -124,7 +124,7 @@ class CurlRequest(Request):
             self.c.setopt(pycurl.PROXYPORT, proxy["port"])
 
             if proxy["username"]:
-                self.c.setopt(pycurl.PROXYUSERPWD, str("%s:%s" % (proxy["username"], proxy["password"])))
+                self.c.setopt(pycurl.PROXYUSERPWD, str("{}:{}".format(proxy["username"], proxy["password"])))
 
         if ipv6:
             self.c.setopt(pycurl.IPRESOLVE, pycurl.IPRESOLVE_WHATEVER)
@@ -149,7 +149,7 @@ class CurlRequest(Request):
 
         if get:
             get = urlencode(get)
-            url = "%s?%s" % (url, get)
+            url = "{}?{}".format(url, get)
 
         self.c.setopt(pycurl.URL, url)
 
@@ -279,7 +279,7 @@ class CurlRequest(Request):
                     encoding = charset[0]
 
         try:
-            #self.log.debug("Decoded %s" % encoding)
+            #self.log.debug("Decoded {}".format(encoding))
             if lookup(encoding).name == 'utf-8' and rep.startswith(BOM_UTF8):
                 encoding = 'utf-8-sig'
 
@@ -289,9 +289,9 @@ class CurlRequest(Request):
             #TODO: html_unescape as default
 
         except LookupError:
-            self.log.debug("No Decoder found for %s" % encoding)
+            self.log.debug("No Decoder found for {}".format(encoding))
         except Exception:
-            self.log.debug("Error when decoding string from %s." % encoding)
+            self.log.debug("Error when decoding string from {}.".format(encoding))
 
         return rep
 

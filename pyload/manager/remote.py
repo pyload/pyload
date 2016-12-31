@@ -25,16 +25,16 @@ class RemoteManager(object):
 
         for b in self.available:
             klass = getattr(
-                __import__("pyload.remote.%s" % b.lower(), globals(), locals(), [b.lower()], -1), b
+                __import__("pyload.remote.{}".format(b.lower()), globals(), locals(), [b.lower()], -1), b
             )
             backend = klass(self)
             if not backend.check_deps():
                 continue
             try:
                 backend.setup(host, port)
-                self.pyload.log.info(_("Starting %(name)s: %(addr)s:%(port)s") % {"name": b, "addr": host, "port": port})
+                self.pyload.log.info(_("Starting {}: {}:{}").format(b, host, port))
             except Exception as e:
-                self.pyload.log.error(_("Failed loading backend %(name)s | %(error)s") % {"name": b, "error": str(e)})
+                self.pyload.log.error(_("Failed loading backend {} | {}").format(b, e))
                 if self.pyload.debug:
                     print_exc()
             else:

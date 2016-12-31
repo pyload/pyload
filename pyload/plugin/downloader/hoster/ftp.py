@@ -40,7 +40,7 @@ class Ftp(Hoster):
             servers = [x['login'] for x in self.account.get_all_accounts()] if self.account else []
 
             if netloc in servers:
-                self.log_debug("Logging on to %s" % netloc)
+                self.log_debug("Logging on to {}".format(netloc))
                 self.req.add_auth(self.account.accounts[netloc]["password"])
             else:
                 for pwd in pyfile.package().password.splitlines():
@@ -53,7 +53,7 @@ class Ftp(Hoster):
         try:
             response = self.load(pyfile.url)
         except pycurl.error as e:
-            self.fail("Error %d: %s" % e.args)
+            self.fail("Error {:d}: {}".format(e.args))
 
         self.req.http.c.setopt(pycurl.NOBODY, 0)
         self.log_debug(self.req.http.header)

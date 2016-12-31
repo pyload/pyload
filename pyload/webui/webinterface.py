@@ -41,7 +41,7 @@ PREFIX = config.get('webui', 'prefix')
 if PREFIX:
     PREFIX = PREFIX.rstrip("/")
     if PREFIX and not PREFIX.startswith("/"):
-        PREFIX = "/" + PREFIX
+        PREFIX = "/{}".format(PREFIX)
 
 # APP_PATH = "app"
 UNAVAILALBE = True

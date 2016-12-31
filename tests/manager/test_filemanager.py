@@ -56,7 +56,7 @@ class TestFileManager(BenchmarkTest):
 
     def test_add_files(self):
         for pid in self.pids:
-            self.m.addLinks([("plugin %d" % i, "url %s" % i) for i in range(self.count)], pid, normalUser.uid)
+            self.m.addLinks([("plugin {:d}".format(i), "url {}".format(i)) for i in range(self.count)], pid, normalUser.uid)
 
         count = self.m.getQueueStats()[0]
         files = self.count * len(self.pids)

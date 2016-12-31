@@ -76,7 +76,7 @@ class CNLHandler(BaseHTTPRequestHandler):
 
         func = None
         for r, f in self.map:
-            if re.match(r"(flash(got)?/?)?"+r, path):
+            if re.match(r"(flash(got)?/?)?{}".format(r), path):
                 func = f
                 break
 
@@ -127,7 +127,7 @@ class CNLHandler(BaseHTTPRequestHandler):
         jk = self.get_post("jk")
 
         crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
-        jk = "%s f()" % jk
+        jk = "{} f()".format(jk)
         jk = js.eval(jk)
         Key = unhexlify(jk)
         IV = Key

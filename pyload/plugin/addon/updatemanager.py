@@ -26,7 +26,7 @@ class UpdateManager(Hook):
     __author_name__ = "RaNaN"
     __author_mail__ = "ranan@pyload.net"
 
-    URL = "http://get.pyload.net/check2/%s/"
+    URL = "http://get.pyload.net/check2/{}/"
     MIN_TIME = 3 * 60 * 60  # 3h minimum check interval
 
     @property
@@ -76,7 +76,7 @@ class UpdateManager(Hook):
 
         try:
             if self.version == "None":  # No updated known
-                version_check = get_url(self.URL % self.pyload.api.get_server_version()).splitlines()
+                version_check = get_url(self.URL.format(self.pyload.api.get_server_version()).splitlines())
                 self.version = version_check[0]
 
                 # Still no updates, plugins will be checked
@@ -85,7 +85,7 @@ class UpdateManager(Hook):
                     return version_check[1:]
 
             self.info["pyload"] = True
-            self.log_info(_("***  New pyLoad Version %s available  ***") % self.version)
+            self.log_info(_("***  New pyLoad Version {} available  ***").format(self.version))
             self.log_info(_("***  Get it here: https://github.com/pyload/pyload/releases  ***"))
 
         except Exception:
@@ -124,7 +124,7 @@ class UpdateManager(Hook):
             else:
                 type = prefix
 
-            plugins = getattr(self.pyload.pluginmanager, "%sPlugins" % type)
+            plugins = getattr(self.pyload.pluginmanager, "{}Plugins".format(type))
 
             if name in plugins:
                 if float(plugins[name]["v"]) >= float(version):
@@ -133,21 +133,17 @@ class UpdateManager(Hook):
             if name in IGNORE or (type, name) in IGNORE:
                 continue
 
-            self.log_info(_("New version of %(type)s|%(name)s : %(version).2f") % {
-                "type": type,
-                "name": name,
-                "version": float(version)
-            })
+            self.log_info(_("New version of {}|{} : {:.2f}").format(type, name, version))
 
             try:
-                content = get_url(url % info)
+                content = get_url(url.format(info))
             except Exception as e:
-                self.log_warning(_("Error when updating %s") % filename, str(e))
+                self.log_warning(_("Error when updating {}").format(filename), str(e))
                 continue
 
             m = vre.search(content)
             if not m or m.group(2) != version:
-                self.log_warning(_("Error when updating %s") % name, _("Version mismatch"))
+                self.log_warning(_("Error when updating {}").format(name), _("Version mismatch"))
                 continue
 
             f = open(join("userplugins", prefix, filename), "wb")

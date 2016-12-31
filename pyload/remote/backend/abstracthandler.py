@@ -33,7 +33,7 @@ class AbstractHandler(object):
         self.pyload = api.pyload
 
     def do_extra_handshake(self, req):
-        self.log.debug("WS Connected: %s" % req)
+        self.log.debug("WS Connected: {}".format(req))
         req.api = None #when api is set client is logged in
 
         # allow login via session when webinterface is active
@@ -42,7 +42,7 @@ class AbstractHandler(object):
         if s:
             uid = s.get('uid', None)
             req.api = self.api.with_user_context(uid)
-            self.log.debug("WS authenticated user with cookie: %d" % uid)
+            self.log.debug("WS authenticated user with cookie: {:d}".format(uid))
 
         self.on_open(req)
 
@@ -66,7 +66,7 @@ class AbstractHandler(object):
         return s
 
     def passive_closing_handshake(self, req):
-        self.log.debug("WS Closed: %s" % req)
+        self.log.debug("WS Closed: {}".format(req))
         self.on_close(req)
 
     def on_close(self, req):
@@ -83,12 +83,12 @@ class AbstractHandler(object):
         try:
             o = loads(msg)
         except ValueError as e: #invalid json object
-            self.log.debug("Invalid Request: %s" % e)
+            self.log.debug("Invalid Request: {}".format(e))
             self.send_result(req, self.ERROR, "No JSON request")
             return None, None, None
 
         if not isinstance(o, basestring) and not isinstance(o, list) and len(o) not in range(1, 4):
-            self.log.debug("Invalid Api call: %s" % o)
+            self.log.debug("Invalid Api call: {}".format(o))
             self.send_result(req, self.ERROR, "Invalid Api call")
             return None, None, None
 

@@ -14,9 +14,9 @@ class HeaderDict(BottleHeaderDict):
             fields = ",".join(self.getall(key))
 
             if fields:
-                header.append("%s: %s" % (key, fields))
+                header.append("{}: {}".format(key, fields))
             else:
                 # curl will remove this header
-                header.append("%s:" % key)
+                header.append("{}:".format(key))
 
         return header

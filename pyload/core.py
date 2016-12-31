@@ -148,13 +148,13 @@ class Core(object):
                         self.remote = False
 
             except GetoptError:
-                print('Unknown Argument(s) "%s"' % " ".join(argv[1:]))
+                print('Unknown Argument(s) "{}"'.format(" ".join(argv[1:])))
                 self.print_help()
                 exit()
 
     def print_help(self):
         print("")
-        print("pyLoad v%s     2009-2017 The pyLoad Team" % CURRENT_VERSION)
+        print("pyLoad v{}     2009-2017 The pyLoad Team".format(CURRENT_VERSION))
         print("")
         if sys.argv[0].endswith(".py"):
             print("Usage: python pyload.py [options]")
@@ -195,7 +195,7 @@ class Core(object):
 
     def delete_pid_file(self):
         if self.check_pid_file():
-            self.log.debug("Deleting old pidfile %s" % self.pidfile)
+            self.log.debug("Deleting old pidfile {}".format(self.pidfile))
             os.remove(self.pidfile)
 
     def check_pid_file(self):
@@ -244,7 +244,7 @@ class Core(object):
             else:
                 os.kill(pid, 9) #SIGKILL
                 print("pyLoad did not respond")
-                print("Kill signal was send to process with id %s" % pid)
+                print("Kill signal was send to process with id {}".format(pid))
 
         except:
             print("Error quitting pyLoad")
@@ -308,11 +308,11 @@ class Core(object):
         pid = self.is_already_running()
         # don't exit when in test runner
         if pid and not tests:
-            print(_("pyLoad already running with pid %s") % pid)
+            print(_("pyLoad already running with pid {}").format(pid))
             exit()
 
         if os.name != "nt" and self.config["general"]["renice"]:
-            os.system("renice %d %d" % (self.config["general"]["renice"], os.getpid()))
+            os.system("renice {:d} {:d}".format(self.config["general"]["renice"], os.getpid()))
 
         if self.config["permission"]["change_group"]:
             if os.name != "nt":
@@ -322,7 +322,7 @@ class Core(object):
                     group = getgrnam(self.config["permission"]["group"])
                     os.setgid(group[2])
                 except Exception as e:
-                    print(_("Failed changing group: %s") % e)
+                    print(_("Failed changing group: {}").format(e))
 
         if self.config["permission"]["change_user"]:
             if os.name != "nt":
@@ -332,7 +332,7 @@ class Core(object):
                     user = getpwnam(self.config["permission"]["user"])
                     os.setuid(user[2])
                 except Exception as e:
-                    print(_("Failed changing user: %s") % e)
+                    print(_("Failed changing user: {}").format(e))
 
         if self.debug:
             self.init_logger(logging.DEBUG) # logging level
@@ -343,8 +343,8 @@ class Core(object):
         self.do_restart = False
         self.shuttedDown = False
 
-        self.log.info(_("Starting") + " pyLoad %s" % CURRENT_VERSION)
-        self.log.info(_("Using home directory: %s") % getcwd())
+        self.log.info(_("Starting") + " pyLoad {}".format(CURRENT_VERSION))
+        self.log.info(_("Using home directory: {}").format(getcwd()))
 
         if not tests:
             self.write_pid_file()
@@ -389,7 +389,7 @@ class Core(object):
         # enough initialization for test cases
         if tests: return
 
-        self.log.info(_("Download time: %s") % self.api.is_time_download())
+        self.log.info(_("Download time: {}").format(self.api.is_time_download()))
 
         if rpc:
             self.remotemanager.start_backends()
@@ -404,7 +404,7 @@ class Core(object):
 
         spaceLeft = free_space(dl_folder)
 
-        self.log.info(_("Free space: %s") % format_size(spaceLeft))
+        self.log.info(_("Free space: {}").format(format_size(spaceLeft)))
 
         self.config.save() #save so config files gets filled
 
@@ -631,7 +631,7 @@ def deamon():
         if pid > 0:
             sys.exit(0)
     except OSError as e:
-        # print("fork #1 failed: %d (%s)" % (e.errno, e.strerror), file=sys.stderr)
+        # print("fork #1 failed: {:d} ({})".format(e.errno, e.strerror), file=sys.stderr)
         sys.exit(1)
 
     # decouple from parent environment
@@ -643,10 +643,10 @@ def deamon():
         pid = os.fork()
         if pid > 0:
         # exit from second parent, print(eventual PID before)
-            print("Daemon PID %d" % pid)
+            print("Daemon PID {:d}".format(pid))
             sys.exit(0)
     except OSError as e:
-        # print("fork #2 failed: %d (%s)" % (e.errno, e.strerror), file=sys.stderr)
+        # print("fork #2 failed: {:d} ({})".format(e.errno, e.strerror), file=sys.stderr)
         sys.exit(1)
 
     # Iterate through and close some file descriptors.

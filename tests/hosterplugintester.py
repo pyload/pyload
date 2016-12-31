@@ -44,8 +44,8 @@ class HosterPluginTester(PluginTester):
     @nottest
     def test_plugin(self, name, url, status):
         # Print to stdout to see whats going on
-        print("%s: %s, %s" % (name, url.encode("utf8"), status))
-        log(DEBUG, "%s: %s, %s", name, url.encode("utf8"), status)
+        print("{}: {}, {}".format(name, url.encode("utf8"), status))
+        log(DEBUG, "{}: {}, {}".format(name, url.encode("utf8"), status))
 
         # url and plugin should be only important thing
         pyfile = PyFile(self.pyload, -1, url, url, 0, 0, 0, 0, url, name, "", 0, 0, 0, 0)
@@ -58,17 +58,17 @@ class HosterPluginTester(PluginTester):
             a = time()
             pyfile.plugin.preprocessing(self.thread)
 
-            log(DEBUG, "downloading took %ds" % (time() - a))
-            log(DEBUG, "size %d kb" % (old_div(pyfile.size, 1024)))
+            log(DEBUG, "downloading took {:d}s".format(time() - a))
+            log(DEBUG, "size {:d} kb".format(old_div(pyfile.size, 1024)))
 
             if status == "offline":
                 raise Exception("No offline Exception raised.")
 
             if pyfile.name not in self.files:
-                raise Exception("Filename %s not recognized." % pyfile.name)
+                raise Exception("Filename {} not recognized.".format(pyfile.name))
 
             if not exists(save_join(DL_DIR, pyfile.name)):
-                raise Exception("File %s does not exists." % pyfile.name)
+                raise Exception("File {} does not exists.".format(pyfile.name))
 
             hash = md5()
             f = open(save_join(DL_DIR, pyfile.name), "rb")
@@ -79,7 +79,7 @@ class HosterPluginTester(PluginTester):
             f.close()
 
             if hash.hexdigest() != self.files[pyfile.name]:
-                log(DEBUG, "Hash is %s" % hash.hexdigest())
+                log(DEBUG, "Hash is {}".format(hash.hexdigest()))
 
                 size = stat(f.name).st_size
                 if size < 1024 * 1024 * 10: # 10MB
@@ -113,7 +113,7 @@ status = {}
 
 for k, v in sections.items():
     if k not in statusMap:
-        print("Unknown status %s" % k)
+        print("Unknown status {}".format(k))
     for url in v:
         urls.append(url)
         status[url] = k
@@ -141,9 +141,9 @@ for plugin, urls in plugins.items():
 
         tmp_status = status.get(url)
         if tmp_status != "online":
-            sig = "test_LINK%d_%s" % (i, tmp_status)
+            sig = "test_LINK{:d}_{}".format(i, tmp_status)
         else:
-            sig = "test_LINK%d" % i
+            sig = "test_LINK{:d}".format(i)
 
         # set test method
         setattr(_testerClass, sig, meta(plugin, url, tmp_status, sig))

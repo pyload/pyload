@@ -87,7 +87,7 @@ def addcrypted2():
 
     crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
     if JS:
-        jk = "%s f()" % jk
+        jk = "{} f()".format(jk)
         jk = JS.eval(jk)
 
     else:

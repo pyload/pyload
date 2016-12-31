@@ -10,7 +10,7 @@ import http.cookies
 # monkey patch for 32 bit systems
 # def _getdate(future=0, weekdayname=http.cookies._weekdayname, monthname=http.cookies._monthname):
     # dt = datetime.now() + timedelta(seconds=int(future))
-    # return "%s, %02d %3s %4d %02d:%02d:%02d GMT" % \
+    # return "{}, %02d %3s %4d %02d:%02d:%02d GMT" % \
            # (weekdayname[dt.weekday()], dt.day, monthname[dt.month], dt.year, dt.hour, dt.minute, dt.second)
 
 # http.cookies._getdate = _getdate

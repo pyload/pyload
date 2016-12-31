@@ -33,13 +33,13 @@ class AccountManager(object):
 
         klass = self.pyload.pluginmanager.load_class("account", plugin)
         if not klass:
-            self.pyload.log.warning(_("Account plugin %s not available") % plugin)
-            raise ValueError("Account plugin %s not available" % plugin)
+            self.pyload.log.warning(_("Account plugin {} not available").format(plugin))
+            raise ValueError("Account plugin {} not available".format(plugin))
 
         if plugin not in self.accounts:
             self.accounts[plugin] = []
 
-        self.pyload.log.debug("Create account %s:%s" % (plugin, loginname))
+        self.pyload.log.debug("Create account {}:{}".format(plugin, loginname))
 
         # New account instance
         account = klass.fromInfoData(self, info, password, options)
@@ -54,7 +54,7 @@ class AccountManager(object):
             try:
                 self._create_account(info, password, options)
             except Exception:
-                self.pyload.log.error(_("Could not load account %s") % info)
+                self.pyload.log.error(_("Could not load account {}").format(info))
                 self.pyload.print_exc()
 
     def iter_accounts(self):

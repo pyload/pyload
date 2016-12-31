@@ -21,7 +21,7 @@ GZIPPED = {}
 @route('/icons/<path:path>')
 def serve_icon(path):
     # TODO: send real file, no redirects
-    return redirect(PREFIX if PREFIX else '/' + '../images/icon.png')
+    return redirect(PREFIX if PREFIX else '../images/icon.png')
     # return static_file(path, root=join("tmp", "icons"))
 
 

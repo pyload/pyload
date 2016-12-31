@@ -388,7 +388,7 @@ class FileManager(object):
         ids = self.db.get_unfinished(pyfile.packageid)
         if not ids or (pyfile.fid in ids and len(ids) == 1):
             if not pyfile.package().setFinished:
-                self.pyload.log.info(_("Package finished: %s") % pyfile.package().name)
+                self.pyload.log.info(_("Package finished: {}").format(pyfile.package().name))
                 self.pyload.addonmanager.package_finished(pyfile.package())
                 pyfile.package().setFinished = True
 

@@ -26,12 +26,12 @@ def _wait(self):
     self.waiting = True
 
     waittime = self.pyfile.waitUntil - time()
-    log(DEBUG, "waiting %ss" % waittime)
+    log(DEBUG, "waiting {}s".format(waittime))
 
     if self.wantReconnect and waittime > 300:
-        raise Fail("Would wait for reconnect %ss" % waittime)
+        raise Fail("Would wait for reconnect {}s".format(waittime))
     elif waittime > 300:
-        raise Fail("Would wait %ss" % waittime)
+        raise Fail("Would wait {}s".format(waittime))
 
     while self.pyfile.waitUntil > time():
         sleep(1)
@@ -47,8 +47,8 @@ def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, i
                    result_type='textual'):
     img = self.load(url, get=get, post=post, cookies=cookies)
 
-    id = ("%.2f" % time())[-6:].replace(".", "")
-    temp_file = open(join("tmp", "tmpCaptcha_%s_%s.%s" % (self.__name__, id, imgtype)), "wb")
+    id = "{:.2f}".format(time())[-6:].replace(".", "")
+    temp_file = open(join("tmp", "tmpCaptcha_{}_{}.{}".format(self.__name__, id, imgtype)), "wb")
     temp_file.write(img)
     temp_file.close()
 
@@ -56,7 +56,7 @@ def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, i
     # put username and passkey into two lines in ct.conf
     conf = join(expanduser("~"), "ct.conf")
     if not exists(conf):
-        raise Exception("CaptchaService config %s not found." % conf)
+        raise Exception("CaptchaService config {} not found.".format(conf))
     f = open(conf, "rb")
     req = getRequest()
 
@@ -101,14 +101,14 @@ class PluginTester(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.core = Core()
-        name = "%s.%s" % (cls.__module__, cls.__name__)
+        name = "{}.{}".format(cls.__module__, cls.__name__)
         for f in glob(join(name, "debug_*")):
             remove(f)
 
     # Copy debug report to attachment dir for jenkins
     @classmethod
     def tearDownClass(cls):
-        name = "%s.%s" % (cls.__module__, cls.__name__)
+        name = "{}.{}".format(cls.__module__, cls.__name__)
         if not exists(name): makedirs(name)
         for f in glob("debug_*"):
             move(f, join(name, f))

@@ -56,7 +56,7 @@ options(
 # xgettext args
 xargs = ["--language=Python", "--add-comments=L10N",
          "--from-code=utf-8", "--copyright-holder=The pyLoad Team", "--package-name=pyload",
-         "--package-version=%s" % info().version, "--msgid-bugs-address='dev@pyload.net'"]
+         "--package-version={}".format(info().version), "--msgid-bugs-address='dev@pyload.net'"]
 
 # Modules replace rules
 module_replace = [
@@ -221,7 +221,7 @@ def download_translations(options):
             continue
 
         target = os.path.join(path('locale'), language.basename())
-        print("Copy language %s" % target)
+        print("Copy language {}".format(target))
         if target.exists():
             shutil.rmtree(target)
 
@@ -238,7 +238,7 @@ def compile_translations():
             continue
 
         for f in glob(language / 'LC_MESSAGES' / '*.po'):
-            print("Compiling %s" % f)
+            print("Compiling {}".format(f))
             call(['msgfmt', '-o', f.replace('.po', '.mo'), f])
 
 
@@ -261,7 +261,7 @@ def virtualenv(options):
         return
 
     call([options.virtual, "--no-site-packages", "--python", options.python, options.dir])
-    print("$ source %s/bin/activate" % options.dir)
+    print("$ source {}/bin/activate".format(options.dir))
 
 
 @task
@@ -311,14 +311,14 @@ def walk_trans(path, excludes, endings=[".py"]):
 
         for e in endings:
             if f.name.endswith(e):
-                result += "./%s\n" % f.relpath()
+                result += "./{}\n".format(f.relpath())
                 break
 
     return result
 
 
 def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
-    print("Generate %s.pot" % domain)
+    print("Generate {}.pot".format(domain))
 
     f = open("includes.txt", "wb")
     if includes:
@@ -329,22 +329,22 @@ def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
 
     f.close()
 
-    call(["xgettext", "--files-from=includes.txt", "--default-domain=%s" % domain] + xargs + xxargs)
+    call(["xgettext", "--files-from=includes.txt", "--default-domain={}".format(domain)] + xargs + xxargs)
 
     # replace charset und move file
-    with open("%s.po" % domain, "rb") as f:
+    with open("{}.po".format(domain), "rb") as f:
         content = f.read()
 
-    path("%s.po" % domain).remove()
+    path("{}.po".format(domain)).remove()
     content = content.replace("charset=CHARSET", "charset=UTF-8")
 
-    with open("locale/%s.pot" % domain, "wb") as f:
+    with open("locale/{}.pot".format(domain), "wb") as f:
         f.write(content)
 
 def makehtml(domain, p):
     """ Parses entries from html and append them to existing pot file"""
 
-    pot = path("locale") / "%s.pot"  % domain
+    pot = path("locale") / "{}.pot".format(domain)
 
     with open(pot, 'rb') as f:
         content = f.readlines()
@@ -373,8 +373,8 @@ def makehtml(domain, p):
 
                     if key not in msgids:
                         content.append("\n")
-                        content.append('msgid "%s"\n' % key)
-                        content.append('msgid_plural "%s"\n' % keyp)
+                        content.append('msgid "{}"\n'.format(key))
+                        content.append('msgid_plural "{}"\n'.format(keyp))
                         content.append('msgstr[0] ""\n')
                         content.append('msgstr[1] ""\n')
                         msgids[key] = len(content) - 4
@@ -385,12 +385,12 @@ def makehtml(domain, p):
 
                     if key not in msgids:
                         content.append("\n")
-                        content.append('msgid "%s"\n' % key)
+                        content.append('msgid "{}"\n'.format(key))
                         content.append('msgstr ""\n')
                         msgids[key] = len(content) - 2
 
                 if key:
-                    content.insert(msgids[key], "#: %s:%d\n" % (f, i))
+                    content.insert(msgids[key], "#: {}:{:d}\n".format(f, i))
                     msgids[key] += 1
 
 

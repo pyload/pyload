@@ -19,7 +19,7 @@ def parse_config(path):
             result[current_section] = []
         else:
             if not current_section:
-                raise Exception("Line without section: %s" % line)
+                raise Exception("Line without section: {}".format(line))
             result[current_section].append(line)
 
     return result

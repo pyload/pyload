@@ -24,9 +24,9 @@ for name in dir(Iface):
         def meta_test(name): #retain local scope
             def test(self):
                 getattr(self.api, name)()
-            test.__name__ = "test_%s" % name
+            test.__name__ = "test_{}".format(name)
             return test
 
-        setattr(TestNoArgs, "test_%s" % name, meta_test(name))
+        setattr(TestNoArgs, "test_{}".format(name), meta_test(name))
 
         del meta_test

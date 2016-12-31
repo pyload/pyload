@@ -9,7 +9,7 @@ from pyload.network.headerdict import HeaderDict
 
 class ResponseException(Exception):
     def __init__(self, code, content=""):
-        Exception.__init__(self, "Server response error: %s %s" % (code, content))
+        Exception.__init__(self, "Server response error: {} {}".format(code, content))
         self.code = code
 
 
@@ -72,7 +72,7 @@ class Request(object):
 
     def add_auth(self, user, pwd):
         """  Adds authentication information to the request """
-        self.options["auth"] = user + ":" + pwd
+        self.options["auth"] = "{}:{}".format(user, pwd)
 
     def remove_auth(self):
         """ Removes authentication from the request """

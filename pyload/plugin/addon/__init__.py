@@ -64,7 +64,7 @@ def addon_property(name, desc, default=None, fire_event=True):
     """
 
     # generated name for the attribute
-    h = "__Property" + str(hash(name) ^ hash(desc))
+    h = "__Property{}".format(hash(name) ^ hash(desc))
 
     addonmanager.add_info_property(h, name, desc)
 
@@ -154,14 +154,14 @@ class Addon(Base):
         try:
             if self.is_activated(): self.periodical()
         except Exception as e:
-            self.pyload.log.error(_("Error executing addon: %s") % str(e))
+            self.pyload.log.error(_("Error executing addon: {}").format(e))
             self.pyload.print_exc()
 
         if self.cb:
             self.cb = self.pyload.scheduler.add_job(self.interval, self._periodical, threaded=False)
 
     def __repr__(self):
-        return "<Addon %s>" % self.__name__
+        return "<Addon {}>".format(self.__name__)
 
     def is_activated(self):
         """ checks if addon is activated"""

@@ -63,7 +63,7 @@ class XFileSharingPro(SimpleHoster):
             if self.premium:
                 self.handle_overriden()
             else:
-                self.fail("Only premium users can download from other hosters with %s" % self.HOSTER_NAME)
+                self.fail("Only premium users can download from other hosters with {}".format(self.HOSTER_NAME))
         else:
             try:
                 # Due to a 0.4.9 core bug self.load would use cookies even if
@@ -92,7 +92,7 @@ class XFileSharingPro(SimpleHoster):
         if not hasattr(self, "HOSTER_NAME"):
             self.HOSTER_NAME = re.match(self.__pattern__, self.pyfile.url).group(1)
         if not hasattr(self, "DIRECT_LINK_PATTERN"):
-            self.DIRECT_LINK_PATTERN = r'(http://([^/]*?%s|\d+\.\d+\.\d+\.\d+)(:\d+)?(/d/|(?:/files)?/\d+/\w+/)[^"\'<]+)' % self.HOSTER_NAME
+            self.DIRECT_LINK_PATTERN = r'(http://([^/]*?{}|\d+\.\d+\.\d+\.\d+)(:\d+)?(/d/|(?:/files)?/\d+/\w+/)[^"\'<]+)'.format(self.HOSTER_NAME)
 
         self.captcha = self.errmsg = None
         self.passwords = self.get_password().splitlines()
@@ -115,12 +115,12 @@ class XFileSharingPro(SimpleHoster):
 
     def handle_free(self):
         url = self.get_download_link()
-        self.log_debug("Download URL: %s" % url)
+        self.log_debug("Download URL: {}".format(url))
         self.start_download(url)
 
     def get_download_link(self):
         for i in range(5):
-            self.log_debug("Getting download link: #%d" % i)
+            self.log_debug("Getting download link: #{:d}".format(i))
             data = self.get_post_parameters()
 
             self.req.http.c.setopt(FOLLOWLOCATION, 0)
@@ -153,9 +153,9 @@ class XFileSharingPro(SimpleHoster):
 
     def handle_overriden(self):
         #only tested with easybytez.com
-        self.html = self.load("http://www.%s/" % self.HOSTER_NAME)
+        self.html = self.load("http://www.{}/".format(self.HOSTER_NAME))
         action, inputs = self.parse_html_form('')
-        upload_id = "%012d" % int(random() * 10 ** 12)
+        upload_id = "{:012d}".format(random() * 10 ** 12)
         action += upload_id + "&js_on=1&utype=prem&upload_type=url"
         inputs['tos'] = '1'
         inputs['url_mass'] = self.pyfile.url
@@ -192,7 +192,7 @@ class XFileSharingPro(SimpleHoster):
         link = link.strip()
         if self.captcha:
             self.correct_captcha()
-        self.log_debug('DIRECT LINK: %s' % link)
+        self.log_debug('DIRECT LINK: {}'.format(link))
         self.download(link, disposition=True)
 
     def check_errors(self):
@@ -285,13 +285,13 @@ class XFileSharingPro(SimpleHoster):
                 self.errmsg = None
 
         else:
-            self.parse_error('FORM: %s' % (inputs['op'] if 'op' in inputs else 'UNKNOWN'))
+            self.parse_error('FORM: {}'.format(inputs['op'] if 'op' in inputs else 'UNKNOWN'))
 
     def handle_captcha(self, inputs):
         found = re.search(self.RECAPTCHA_URL_PATTERN, self.html)
         if found:
             recaptcha_key = unquote(found.group(1))
-            self.log_debug("RECAPTCHA KEY: %s" % recaptcha_key)
+            self.log_debug("RECAPTCHA KEY: {}".format(recaptcha_key))
             recaptcha = ReCaptcha(self)
             inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(recaptcha_key)
             return 1

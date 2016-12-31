@@ -22,7 +22,7 @@ zipPats = [re.compile("(.*)\\.zip$", re.I),
            re.compile("(.*)\\.a.$", re.I)]
 
 ffsjPats = [re.compile("(.*)\\._((_[a-z])|([a-z]{2}))(\\.|$)"),
-            re.compile("(.*)(\\.|_|-)[\\d]+(" + endings + "$)", re.I)]
+            re.compile("(.*)(\\.|_|-)[\\d]+({}$)".format(endings), re.I)]
 
 iszPats = [re.compile("(.*)\\.isz$", re.I),
            re.compile("(.*)\\.i\\d{2}$", re.I)]

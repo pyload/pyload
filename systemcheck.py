@@ -12,32 +12,32 @@ import sys
 
 def main():
     print("#####   System Information   #####\n")
-    print("Platform: " + sys.platform)
-    print("Operating System: " + os.name)
-    print("Python: " + sys.version.replace("\n", "")+ "\n")
+    print("Platform: {}".format(sys.platform))
+    print("Operating System: {}".format(os.name))
+    print("Python: {}\n".format(sys.version.replace("\n", "")))
 
     try:
         import pycurl
-        print("pycurl: " + pycurl.version)
+        print("pycurl: {}".format(pycurl.version))
     except Exception:
         print("pycurl: missing")
 
     try:
         import Crypto
-        print("py-crypto: " + Crypto.__version__)
+        print("py-crypto: {}".format(Crypto.__version__))
     except Exception:
         print("py-crypto: missing")
 
 
     try:
         import OpenSSL
-        print("OpenSSL: " + OpenSSL.version.__version__)
+        print("OpenSSL: {}".format(OpenSSL.version.__version__))
     except Exception:
         print("OpenSSL: missing")
 
     try:
         import Image
-        print("image library: " + Image.VERSION)
+        print("image library: {}".format(Image.VERSION))
     except Exception:
         print("image library: missing")
 

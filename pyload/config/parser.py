@@ -54,12 +54,12 @@ class ConfigParser(object):
 
             if not v or int(v) < CONF_VERSION:
                 f = open(self.CONFIG, "wb")
-                f.write("version: " + str(CONF_VERSION))
+                f.write("version: {}".format(CONF_VERSION))
                 f.close()
-                print("Old version of %s deleted" % self.CONFIG)
+                print("Old version of {} deleted".format(self.CONFIG))
         else:
             f = open(self.CONFIG, "wb")
-            f.write("version:" + str(CONF_VERSION))
+            f.write("version: {}".format(CONF_VERSION))
             f.close()
 
     def parse_values(self, filename):
@@ -105,10 +105,10 @@ class ConfigParser(object):
         f = open(self.CONFIG, "wb")
         configs.append(f)
         chmod(self.CONFIG, 0o600)
-        f.write("version: %i\n\n" % CONF_VERSION)
+        f.write("version: {:d}\n\n".format(CONF_VERSION))
 
         for section, data in self.config.items():
-            f.write("[%s]\n" % section)
+            f.write("[{}]\n".format(section))
 
             for option, data in data.config.items():
                 value = self.get(section, option)
@@ -117,7 +117,7 @@ class ConfigParser(object):
                 else:
                     value = str(value)
 
-                f.write('%s = %s\n' % (option, value))
+                f.write('{} = {}\n'.format(option, value))
 
             f.write("\n")
 

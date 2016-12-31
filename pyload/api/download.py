@@ -40,7 +40,7 @@ class DownloadApi(BaseApi):
 
         folder = folder.replace("http://", "").replace(":", "").replace("\\", "_").replace("..", "")
 
-        self.pyload.log.info(_("Added package %(name)s as folder %(folder)s") % {"name": name, "folder": folder})
+        self.pyload.log.info(_("Added package {} as folder {}").format(name, folder))
         pid = self.pyload.files.add_package(name, folder, root, password, site, comment, paused, self.true_primary())
 
         return pid
@@ -89,7 +89,7 @@ class DownloadApi(BaseApi):
         if hoster:
             self.pyload.threadmanager.create_info_thread(hoster, pid)
 
-        self.pyload.log.info((_("Added %d links to package") + " #%d" % pid) % len(hoster+crypter))
+        self.pyload.log.info((_("Added {:d} links to package") + " #{:d}".format(pid)).format(len(hoster + crypter)))
         self.pyload.files.save()
 
     @require_perm(Permission.Add)
@@ -99,7 +99,7 @@ class DownloadApi(BaseApi):
         :param filename: filename, extension is important so it can correctly decrypted
         :param data: file content
         """
-        th = open(join(self.pyload.config["general"]["download_folder"], "tmp_" + filename), "wb")
+        th = open(join(self.pyload.config["general"]["download_folder"], "tmp_{}".format(filename)), "wb")
         th.write(str(data))
         th.close()
 

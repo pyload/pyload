@@ -107,7 +107,7 @@ class Base(object):
 
     def __getitem__(self, item):
         """ Retrieves meta data attribute """
-        return getattr(self, "__%s__" % item)
+        return getattr(self, "__{}__".format(item))
 
     def log_info(self, *args, **kwargs):
         """ Print args to log at specific level
@@ -128,7 +128,7 @@ class Base(object):
 
     def _log(self, level, *args, **kwargs):
         if "sep" in kwargs:
-            sep = "%s" % kwargs["sep"]
+            sep = "{}".format(kwargs["sep"])
         else:
             sep = " | "
 
@@ -141,7 +141,7 @@ class Base(object):
             else:
                 strings.append(str(obj))
 
-        getattr(self.log, level)("%s: %s" % (self.__name__, sep.join(strings)))
+        getattr(self.log, level)("{}: {}".format(self.__name__, sep.join(strings)))
 
     def get_name(self):
         """ Name of the plugin class """
@@ -228,7 +228,7 @@ class Base(object):
                 makedirs(join("tmp", self.__name__))
 
             f = open(
-                join("tmp", self.__name__, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
+                join("tmp", self.__name__, "{}_line{}.dump.html".format(frame.f_back.f_code.co_name, frame.f_back.f_lineno))
                 , "wb")
             del frame # delete the frame or it wont be cleaned
 
@@ -297,12 +297,12 @@ class Base(object):
 
         img = self.load(url, get=get, post=post, cookies=cookies)
 
-        id = ("%.2f" % time())[-6:].replace(".", "")
-        temp_file = open(join("tmp", "tmpCaptcha_%s_%s.%s" % (self.__name__, id, imgtype)), "wb")
+        id = "{:.2f}".format(time())[-6:].replace(".", "")
+        temp_file = open(join("tmp", "tmpCaptcha_{}_{}.{}".format(self.__name__, id, imgtype)), "wb")
         temp_file.write(img)
         temp_file.close()
 
-        name = "%sOCR" % self.__name__
+        name = "{}OCR".format(self.__name__)
         has_plugin = name in self.pyload.pluginmanager.get_plugins("internal")
 
         if self.pyload.captcha:
@@ -337,7 +337,7 @@ class Base(object):
                 self.fail(_("No captcha result obtained in appropriate time."))
 
             result = task.result
-            self.log.debug("Received captcha result: %s" % str(result))
+            self.log.debug("Received captcha result: {}".format(result))
 
         if not self.pyload.debug:
             try:

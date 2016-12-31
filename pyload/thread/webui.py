@@ -73,7 +73,7 @@ class WebServer(threading.Thread):
             self.start_server(server)
 
         except Exception as e:
-            log.error("Failed starting webserver: " + e.message)
+            log.error("Failed starting webserver: {}".format(e.message))
             self.error = e
             if core:
                 core.print_exc()
@@ -107,10 +107,10 @@ class WebServer(threading.Thread):
                 else:
                     unavailable.append(server.NAME)
             except Exception as e:
-                log.error("Failed importing webserver: " + e.message)
+                log.error("Failed importing webserver: {}".format(e.message))
 
         if unavailable: # Just log whats not available to have some debug information
-            log.debug("Unavailable webserver: " + ", ".join(unavailable))
+            log.debug("Unavailable webserver: {}".format(", ".join(unavailable)))
 
         if not server and self.force_server:
             server = self.force_server # just return the name
@@ -138,7 +138,7 @@ class WebServer(threading.Thread):
         else: # server is just a string
             name = server
 
-        log.info("Starting %(name)s webserver: %(host)s:%(port)d" % {"name": name, "host": self.host, "port": self.port})
+        log.info("Starting {} webserver: {}:{:d}".format(name, self.host, self.port))
         webinterface.run_server(host=self.host, port=self.port, server=server)
 
 

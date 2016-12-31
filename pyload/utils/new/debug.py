@@ -18,8 +18,7 @@ from pyload.utils.new.path import makefile, open
 def report(value, path=None):
     frame = inspect.currentframe()
     try:
-        name = "{}_line{}.report".format(frame.f_back.f_code.co_name,
-                                           frame.f_back.f_lineno)
+        name = "{}_line{}.report".format(frame.f_back.f_code.co_name, frame.f_back.f_lineno)
         file = os.path.join(path or "reports", name)
         with makefile(file, 'wb') as f:
             f.write(value)
@@ -35,13 +34,13 @@ def _format_dump(obj):
         try:
             attr_dump += pprint.pformat(getattr(obj, attr_name))
         except Exception as e:
-            attr_dump += "<ERROR WHILE PRINTING VALUE> " + convert.to_str(e)
+            attr_dump += "<ERROR WHILE PRINTING VALUE> {}".format(convert.to_str(e))
         dump.append((attr_name, attr_dump))
     return dump
 
 
 def format_dump(obj):
-    title = "DUMP {}:".format(repr(obj))
+    title = "DUMP {!r}:".format(obj)
     body  = '\n'.join("\t{:20} = {}".format(attr_name, attr_dump)
                       for attr_name, attr_dump in _format_dump(obj))
     return "{}\n{}\n".format(title, body)
@@ -74,7 +73,7 @@ def _format_framestack(frame=None, limit=None):
                 try:
                     attr_dump += pprint.pformat(value)
                 except Exception as e:
-                    attr_dump += "<ERROR WHILE PRINTING VALUE> " + convert.to_str(e)
+                    attr_dump += "<ERROR WHILE PRINTING VALUE> {}".format(convert.to_str(e))
                 frame_dump.append((attr_name, attr_dump))
 
             dump.append((frame_name, frame_dump))
@@ -94,7 +93,7 @@ def format_framestack(frame=None, limit=None):
                          for attr_name, attr_dump in frame_dump)
         stack_desc.append('{}\n{}'.format(frame_name, dump))
 
-    title = "FRAMESTACK {}:".format(repr(frame))
+    title = "FRAMESTACK {!r}:".format(frame)
     body  = '\n\n'.join(stack_desc)
     return "{}\n{}\n".format(title, body)
 

@@ -64,8 +64,8 @@ copyright = '2009-2017, pyLoad Team'
 """ [[[cog
 from pyload import info
 v = info().version.split(".")
-cog.outl("version = '%s'" % ".".join(v[:2]))
-cog.outl("release = '%s'" % ".".join(v))
+cog.outl("version = '{}'".format(".".join(v[:2])))
+cog.outl("release = '{}'".format(".".join(v)))
 ]]]"""
 version = '0.4'
 release = '0.4.9.9-dev'
@@ -144,7 +144,7 @@ html_static_path = ['_static']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
-#html_last_updated_fmt = '%b %d, %Y'
+#html_last_updated_fmt = '%b {:d}, %Y'
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.

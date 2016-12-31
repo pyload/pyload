@@ -131,7 +131,7 @@ class FileMethods(DatabaseMethods):
         arg = []
 
         if state is not None and state != DS.All:
-            qry += 'dlstatus IN (%s) AND ' % state_string(state)
+            qry += 'dlstatus IN ({}) AND '.format(state_string(state))
         if owner is not None:
             qry += 'owner=? AND '
             arg.append(owner)
@@ -140,7 +140,7 @@ class FileMethods(DatabaseMethods):
             arg.append(package)
             qry += 'package=? AND '
         if search is not None:
-            search = "%%%s%%" % search.strip("%")
+            search = "%%{}%%".format(search.strip("%"))
             arg.append(search)
             qry += "name LIKE ? "
 
@@ -164,7 +164,7 @@ class FileMethods(DatabaseMethods):
     def get_matching_filenames(self, pattern, owner=None):
         """ Return matching file names for pattern, useful for search suggestions """
         qry = 'SELECT name FROM files WHERE name LIKE ?'
-        args = ["%%%s%%" % pattern.strip("%")]
+        args = ["%%{}%%".format(pattern.strip("%"))]
         if owner:
             qry += " AND owner=?"
             args.append(owner)
@@ -182,20 +182,20 @@ class FileMethods(DatabaseMethods):
         """
         qry = (
             'SELECT pid, name, folder, root, owner, site, comment, password, added, tags, status, shared, packageorder '
-            'FROM packages%s ORDER BY root, packageorder')
+            'FROM packages{} ORDER BY root, packageorder')
 
         if root is None:
             stats = self.get_package_stats(owner=owner)
             if owner is None:
-                self.c.execute(qry % "")
+                self.c.execute(qry.format(""))
             else:
-                self.c.execute(qry % " WHERE owner=?", (owner,))
+                self.c.execute(qry.format(" WHERE owner=?"), (owner,))
         else:
             stats = self.get_package_stats(root=root, owner=owner)
             if owner is None:
-                self.c.execute(qry % ' WHERE root=? OR pid=?', (root, root))
+                self.c.execute(qry.format(' WHERE root=? OR pid=?'), (root, root))
             else:
-                self.c.execute(qry % ' WHERE (root=? OR pid=?) AND owner=?', (root, root, owner))
+                self.c.execute(qry.format(' WHERE (root=? OR pid=?) AND owner=?'), (root, root, owner))
 
         data = OrderedDict()
         for r in self.c:
@@ -209,21 +209,21 @@ class FileMethods(DatabaseMethods):
     @inner
     def get_package_stats(self, pid=None, root=None, owner=None):
         qry = ("SELECT p.pid, SUM(f.size) AS sizetotal, COUNT(f.fid) AS linkstotal, sizedone, linksdone "
-               "FROM packages p JOIN files f ON p.pid = f.package AND f.dlstatus > 0 %(sub)s LEFT OUTER JOIN "
+               "FROM packages p JOIN files f ON p.pid = f.package AND f.dlstatus > 0 {0} LEFT OUTER JOIN "
                "(SELECT p.pid AS pid, SUM(f.size) AS sizedone, COUNT(f.fid) AS linksdone "
-               "FROM packages p JOIN files f ON p.pid = f.package %(sub)s AND f.dlstatus in (5,6) GROUP BY p.pid) s ON s.pid = p.pid "
+               "FROM packages p JOIN files f ON p.pid = f.package {0} AND f.dlstatus in (5,6) GROUP BY p.pid) s ON s.pid = p.pid "
                "GROUP BY p.pid")
 
         # status in (finished, skipped, processing)
 
         if root is not None:
-            self.c.execute(qry % {"sub": "AND (p.root=:root OR p.pid=:root)"}, locals())
+            self.c.execute(qry.format("AND (p.root=:root OR p.pid=:root)"), locals())
         elif pid is not None:
-            self.c.execute(qry % {"sub": "AND p.pid=:pid"}, locals())
+            self.c.execute(qry.format("AND p.pid=:pid"), locals())
         elif owner is not None:
-            self.c.execute(qry % {"sub": "AND p.owner=:owner"}, locals())
+            self.c.execute(qry.format("AND p.owner=:owner"), locals())
         else:
-            self.c.execute(qry % {"sub": ""})
+            self.c.execute(qry.format(""))
 
         data = {}
         for r in self.c:
@@ -377,12 +377,12 @@ class FileMethods(DatabaseMethods):
     @queue
     def get_jobs(self, occ):
         """return pyfile ids, which are suitable for download and don't use a occupied plugin"""
-        cmd = "(%s)" % ", ".join(["'%s'" % x for x in occ])
+        cmd = "({})".format(", ".join(["'{}'".format(x) for x in occ]))
 
         # dlstatus in online, queued, occupied | package status = ok
         cmd = ("SELECT f.owner, f.fid FROM files as f INNER JOIN packages as p ON f.package=p.pid "
-               "WHERE f.owner=? AND f.plugin NOT IN %s AND f.dlstatus IN (2,3,16) AND p.status=0 "
-               "ORDER BY p.packageorder ASC, f.fileorder ASC LIMIT 1") % cmd
+               "WHERE f.owner=? AND f.plugin NOT IN {} AND f.dlstatus IN (2,3,16) AND p.status=0 "
+               "ORDER BY p.packageorder ASC, f.fileorder ASC LIMIT 1").format(cmd)
 
 
         self.c.execute("SELECT uid FROM users")

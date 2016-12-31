@@ -74,7 +74,7 @@ class InteractionManager(object):
         if isinstance(input, int):
             input = Input(input)
         if not isinstance(input, Input):
-            raise TypeError("'Input' class expected not '%s'" % type(input))
+            raise TypeError("'Input' class expected not '{}'".format(type(input)))
 
         task = InteractionTask(self.ids, IA.Query, input, _("Query"), desc, plugin, owner=owner)
         self.ids += 1

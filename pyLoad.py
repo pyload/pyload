@@ -1,6 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #@author: vuolter
+#     ____________
+#    /       |    \
+#    |    ___/    |
+#    \___/  ______/
+#        |   o|
+#        \    /
+#         \  /
+#          \/
 
 from __future__ import print_function
 from __future__ import unicode_literals
@@ -25,18 +33,18 @@ __all__ = ['logo', 'main', 'parse_args']
 def logo():
     from colorama import Fore, Back, Style
 
-    ws = lambda x=0: " " * x
+    ws = lambda x: " " * x
     info = pyload.info()
-    logo = [
-          Fore.BLUE + " ________"  + ws()   + Fore.YELLOW  + "____",
-          Fore.BLUE + "/       |"  + ws()   + Fore.YELLOW  + "    \ ",
-          Fore.BLUE + "|    ___/"  + ws(4)  + Fore.YELLOW  + "|" + ws(7) + Fore.BLUE + "__py" + Fore.YELLOW + "Load__",
-          Fore.BLUE + "\___/"      + ws(2)  + Fore.YELLOW  + "______/",
-        Fore.YELLOW + "    |   o|" + ws(12) + Style.BRIGHT + Back.BLUE + Fore.WHITE + " v{} ".format(info.version) + Style.RESET_ALL,
-        Fore.YELLOW + "    \    /",
-        Fore.YELLOW + "     \  / " + ws(4)  + Fore.BLUE    + "© 2009-2016 The pyLoad Team",
-        Fore.YELLOW + "      \/  " + ws(11) + Fore.GREEN   + info.url + Style.RESET_ALL,
-    ]
+    logo = (
+        "{}{}{}{}{}".format(Fore.BLUE, ws(1), '________', Fore.YELLOW, "____"),
+        "{}{}{}{}{}{}".format(Fore.BLUE, '/', ws(7), '|', Fore.YELLOW, "    \"),
+        "{}{}{}{}{}{}{}{}{}{}{}{}".format(Fore.BLUE, '|', ws(4), '___/', ws(4), Fore.YELLOW, "|", ws(7), Fore.BLUE, "__py", Fore.YELLOW, "Load__"),
+        "{}{}{}{}{}".format(Fore.BLUE,'\___/', ws(2), Fore.YELLOW, "______/"),
+        "{}{}{}{}{}{}{}{}{}v{}{}".format(Fore.YELLOW, ws(4), '|', ws(3), 'o|', ws(12), Style.BRIGHT, Back.BLUE, Fore.WHITE, info.version, Style.RESET_ALL),
+        "{}{}{}{}{}".format(Fore.YELLOW, ws(4), "\\", ws(4), "/"),
+        "{}{}{}{}{}{}{}{}".format(Fore.YELLOW, ws(5), "\\", ws(2), "/", ws(5), Fore.BLUE, "© 2009-2016 The pyLoad Team"),
+        "{}{}{}{}{}{}{}".format(Fore.YELLOW, ws(6), "\\/", ws(13), Fore.GREEN, info.url, Style.RESET_ALL),
+    )
     return '\n'.join(ws(17) + i for i in logo)
 
 

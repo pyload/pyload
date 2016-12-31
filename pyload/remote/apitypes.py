@@ -11,7 +11,7 @@ class BaseObject(object):
     __slots__ = []
 
     def __str__(self):
-        return "<%s %s>" % (self.__class__.__name__, ", ".join("%s=%s" % (k, getattr(self, k)) for k in self.__slots__))
+        return "<{} {}>".format(self.__class__.__name__, ", ".join("{}={}".format(k, getattr(self, k)) for k in self.__slots__))
 
 
 class ExceptionObject(Exception):

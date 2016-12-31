@@ -41,7 +41,7 @@ class EventManager(object):
         """Adds an event listener for event name"""
         if event in self.events:
             if func in self.events[event]:
-                self.log.debug("Function already registered %s" % func)
+                self.log.debug("Function already registered {}".format(func))
             else:
                 self.events[event].append(func)
         else:
@@ -69,6 +69,7 @@ class EventManager(object):
                 try:
                     f(*args, **kwargs)
                 except Exception as e:
-                    self.log.warning("Error calling event handler %s: %s, %s, %s"
-                                     % (event, f, args, str(e)))
+                    self.log.warning("Error calling event handler {}: {}, {}, {}".format(
+                        event, f, args, e)
+                    )
                     self.pyload.print_exc()

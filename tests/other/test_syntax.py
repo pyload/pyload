@@ -38,5 +38,5 @@ for path, dirs, files in walk(join(PATH, "pyload")):
             return _test
 
         # generate test methods
-        sig = "test_%s_%s" % (packages[-2], packages[-1])
+        sig = "test_{}_{}".format(packages[-2], packages[-1])
         setattr(TestSyntax, sig, meta(imp, sig))

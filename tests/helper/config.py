@@ -6,5 +6,5 @@ credentials = ("TestUser", "pwhere")
 webPort = 8921
 wsPort = 7558
 
-webAddress = "http://localhost:%d/api" % webPort
-wsAddress = "ws://localhost:%d/api" % wsPort
+webAddress = "http://localhost:{:d}/api".format(webPort)
+wsAddress = "ws://localhost:{:d}/api".format(wsPort)

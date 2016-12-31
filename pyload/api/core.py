@@ -36,7 +36,7 @@ class CoreApi(BaseApi):
         else:
             ws = "ws"
 
-        return "%s://%%s:%d" % (ws, self.pyload.config['webui']['wsPort'])
+        return "{}://%{}:{:d}".format(ws, self.pyload.config['webui']['wsPort'])
 
     @require_perm(Permission.All)
     def get_status_info(self):

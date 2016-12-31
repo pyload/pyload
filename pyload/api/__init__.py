@@ -143,7 +143,7 @@ class Api(Iface):
         :param remoteip:
         :return: dict with info, empty when login is incorrect
         """
-        self.pyload.log.info(_("User '%s' tries to log in") % username)
+        self.pyload.log.info(_("User '{}' tries to log in").format(username))
 
         return self.pyload.db.check_auth(username, password)
 

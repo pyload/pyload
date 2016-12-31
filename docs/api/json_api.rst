@@ -65,11 +65,11 @@ Here is a little python script that is able to send commands to the pyload api::
     from urllib import urlopen, urlencode
     from json import dumps
 
-    URL = "http://localhost:8001/api/%s"
+    URL = "http://localhost:8001/api/{}"
 
     def login(user, pw):
         params = {"username": user, "password": pw}
-        ret = urlopen(URL % "login", urlencode(params))
+        ret = urlopen(URL.format("login"), urlencode(params))
         return ret.read().strip("\"")
 
     # send arbitrary command to pyload api, parameter as keyword argument
@@ -77,7 +77,7 @@ Here is a little python script that is able to send commands to the pyload api::
         # convert arguments to json format
         params = dict([(k, dumps(v)) for k,v in kwargs.items()])
         params["session"] = session
-        ret = urlopen(URL % command, urlencode(params))
+        ret = urlopen(URL.format(command), urlencode(params))
         return ret.read()
 
     if __name__ == "__main__":

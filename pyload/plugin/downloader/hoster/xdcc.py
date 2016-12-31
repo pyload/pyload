@@ -45,7 +45,7 @@ class Xdcc(Hoster):
         for _ in range(0, 3):
             try:
                 nmn = self.do_download(pyfile.url)
-                self.log_debug("%s: Download of %s finished." % (self.__name__, nmn))
+                self.log_debug("{}: Download of {} finished".format(self.__name__, nmn))
                 return
             except socket.error as e:
                 if hasattr(e, "errno"):
@@ -59,7 +59,7 @@ class Xdcc(Hoster):
                     self.wait()
                     continue
 
-                self.fail("Failed due to socket errors. Code: %d" % errno)
+                self.fail("Failed due to socket errors. Code: {:d}".format(errno))
 
         self.fail("Server blocked our ip, retry again later manually")
 
@@ -87,7 +87,7 @@ class Xdcc(Hoster):
         elif ln == 1:
             host, port = temp[0], 6667
         else:
-            self.fail("Invalid hostname for IRC Server (%s)" % server)
+            self.fail("Invalid hostname for IRC Server ({})".format(server))
 
         #######################
         # CONNECT TO IRC AND IDLE FOR REAL LINK
@@ -96,12 +96,12 @@ class Xdcc(Hoster):
         sock = socket.socket()
         sock.connect((host, int(port)))
         if nick == "pyload":
-            nick = "pyload-%d" % (time.time() % 1000)  # last 3 digits
-        sock.send("NICK %s\r\n" % nick)
-        sock.send("USER %s %s bla :%s\r\n" % (ident, host, real))
+            nick = "pyload-{:d}".format(time.time() % 1000)  # last 3 digits
+        sock.send("NICK {}\r\n".format(nick))
+        sock.send("USER {} {} bla :{}\r\n".format(ident, host, real))
         time.sleep(3)
-        sock.send("JOIN #%s\r\n" % chan)
-        sock.send("PRIVMSG %s :xdcc send #%s\r\n" % (bot, pack))
+        sock.send("JOIN #{}\r\n".format(chan))
+        sock.send("PRIVMSG {} :xdcc send #{}\r\n".format(bot, pack))
 
         # IRC recv loop
         readbuffer = ""
@@ -118,7 +118,7 @@ class Xdcc(Hoster):
                 if time.time() > retry:
                     retry = None
                     dl_time = time.time()
-                    sock.send("PRIVMSG %s :xdcc send #%s\r\n" % (bot, pack))
+                    sock.send("PRIVMSG {} :xdcc send #{}\r\n".format(bot, pack))
 
             else:
                 if (dl_time + self.timeout) < time.time():  # todo: add in config
@@ -136,15 +136,15 @@ class Xdcc(Hoster):
 
             for line in temp:
                 if self.debug is 2:
-                    print("*> " + str(line, errors='ignore'))
+                    print("*> {}".format(line, errors='ignore'))
                 line = line.rstrip()
                 first = line.split()
 
                 if first[0] == "PING":
-                    sock.send("PONG %s\r\n" % first[1])
+                    sock.send("PONG {}\r\n".format(first[1]))
 
                 if first[0] == "ERROR":
-                    self.fail("IRC-Error: %s" % line)
+                    self.fail("IRC-Error: {}".format(line))
 
                 msg = line.split(None, 3)
                 if len(msg) != 4:
@@ -160,10 +160,10 @@ class Xdcc(Hoster):
                 if nick == msg["target"][0:len(nick)] and "PRIVMSG" == msg["action"]:
                     if msg["text"] == "\x01VERSION\x01":
                         self.log_debug("XDCC: Sending CTCP VERSION.")
-                        sock.send("NOTICE %s :%s\r\n" % (msg['origin'], "pyLoad! IRC Interface"))
+                        sock.send("NOTICE {} :{}\r\n".format(msg['origin'], "pyLoad IRC Interface"))
                     elif msg["text"] == "\x01TIME\x01":
                         self.log_debug("Sending CTCP TIME.")
-                        sock.send("NOTICE %s :%d\r\n" % (msg['origin'], time.time()))
+                        sock.send("NOTICE {} :{:d}\r\n".format(msg['origin'], time.time()))
                     elif msg["text"] == "\x01LAG\x01":
                         pass  # don't know how to answer
 
@@ -173,7 +173,7 @@ class Xdcc(Hoster):
                     continue
 
                 if self.debug is 1:
-                    print("%s: %s" % (msg["origin"], msg["text"]))
+                    print("{}: {}".format(msg["origin"], msg["text"]))
 
                 if "You already requested that pack" in msg["text"]:
                     retry = time.time() + 300
@@ -195,12 +195,12 @@ class Xdcc(Hoster):
 
         self.pyfile.name = packname
         filename = save_join(location, packname)
-        self.log_info("XDCC: Downloading %s from %s:%d" % (packname, ip, port))
+        self.log_info("XDCC: Downloading {} from {}:{:d}".format(packname, ip, port))
 
         self.pyfile.set_status("downloading")
         newname = self.req.download(ip, port, filename, sock, self.pyfile.setProgress)
         if newname and newname != filename:
-            self.log_info("%(name)s saved as %(newname)s" % {"name": self.pyfile.name, "newname": newname})
+            self.log_info("{} saved as {}".format(self.pyfile.name, newname))
             filename = newname
 
         # kill IRC socket

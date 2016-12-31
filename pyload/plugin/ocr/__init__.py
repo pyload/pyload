@@ -62,21 +62,21 @@ class OCR(object):
 
         popen = subprocess.Popen(command, bufsize = -1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         popen.wait()
-        output = popen.stdout.read() +" | "+ popen.stderr.read()
+        output = "{} | {}".format(popen.stdout.read(), popen.stderr.read())
         popen.stdout.close()
         popen.stderr.close()
-        self.logger.debug("Tesseract ReturnCode %s Output: %s" % (popen.returncode, output))
+        self.logger.debug("Tesseract ReturnCode {} Output: {}".format(popen.returncode, output))
 
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True):
         #self.logger.debug("create tmp tif")
 
 
         #tmp = tempfile.NamedTemporaryFile(suffix=".tif")
-        tmp = open(join("tmp", "tmpTif_%s.tif" % self.__name__), "wb")
+        tmp = open(join("tmp", "tmpTif_{}.tif".format(self.__name__)), "wb")
         tmp.close()
         #self.logger.debug("create tmp txt")
         #tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
-        tmpTxt = open(join("tmp", "tmpTxt_%s.txt" % self.__name__), "wb")
+        tmpTxt = open(join("tmp", "tmpTxt_{}.txt".format(self.__name__)), "wb")
         tmpTxt.close()
 
         self.logger.debug("save tiff")
@@ -92,7 +92,7 @@ class OCR(object):
         if subset and (digits or lowercase or uppercase):
             #self.logger.debug("create temp subset config")
             #tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
-            tmpSub = open(join("tmp", "tmpSub_%s.subset" % self.__name__), "wb")
+            tmpSub = open(join("tmp", "tmpSub_{}.subset".format(self.__name__)), "wb")
             tmpSub.write("tessedit_char_whitelist ")
             if digits:
                 tmpSub.write("0123456789")

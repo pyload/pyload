@@ -30,7 +30,7 @@ define([], function() {
         enum = getattr(apitypes, name)
         values = dict([(attr, getattr(enum, attr)) for attr in dir(enum) if not attr.startswith("_")])
 
-        f.write("\t\t%s: %s,\n" % (name, str(values)))
+        f.write("\t\t{}: {},\n".format(name, values))
 
     f.write("\t};\n});")
     f.close()

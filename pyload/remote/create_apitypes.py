@@ -40,18 +40,18 @@ def get_spec(spec, optional=False):
             ttype = spec[3][1][0].__name__
         else:
             ttype = type_map[spec[3][0]]
-        return "(list, %s)" % ttype
+        return "(list, {})".format(ttype)
     elif spec[1] == TType.MAP:
         if spec[3][2] == TType.STRUCT:
             ttype = spec[3][3][0].__name__
         else:
             ttype = type_map[spec[3][2]]
 
-        return "(dict, %s, %s)" % (type_map[spec[3][0]], ttype)
+        return "(dict, {}, {})".format(type_map[spec[3][0]], ttype)
     else:
         return type_map[spec[1]]
 
-optional_re = "%d: +optional +[a-z0-9<>_-]+ +%s"
+optional_re = "{:d}: +optional +[a-z0-9<>_-]+ +{}"
 
 def main():
 
@@ -85,7 +85,7 @@ class BaseObject(object):
 \t__slots__ = []
 
 \tdef __str__(self):
-\t\treturn "<%s %s>" % (self.__class__.__name__, ", ".join("%s=%s" % (k,getattr(self,k)) for k in self.__slots__))
+\t\treturn "<{} {}>".format(self.__class__.__name__, ", ".join("{}={}".format(k, getattr(self,k)) for k in self.__slots__))
 
 
 class ExceptionObject(Exception):
@@ -106,13 +106,13 @@ from apitypes import *\n
     ## generate enums
     for enum in enums:
         name = enum.__name__
-        f.write("class %s:\n" % name)
+        f.write("class {}:\n".format(name))
 
         for attr in sorted(dir(enum), key=lambda x: getattr(enum, x)):
             if attr.startswith("_") or attr in ("read", "write"): continue
-            f.write("\t%s = %s\n" % (attr, getattr(enum, attr)))
+            f.write("\t{} = {}\n".format(attr, getattr(enum, attr)))
 
-        dev.write('\t"%s",\n' % name)
+        dev.write('\t"{}",\n'.format(name))
         f.write("\n")
 
     dev.write("]\n\n")
@@ -122,32 +122,32 @@ from apitypes import *\n
     for klass in classes:
         name = klass.__name__
         base = "ExceptionObject" if issubclass(klass, ttypes.TExceptionBase) else "BaseObject"
-        f.write("class %s(%s):\n" % (name,  base))
+        f.write("class {}({}):\n".format(name, base))
 
         # No attributes, don't write further info
         if not klass.__slots__:
             f.write("\tpass\n\n")
             continue
 
-        f.write("\t__slots__ = %s\n\n" % klass.__slots__)
-        dev.write("\t'%s' : [" % name)
+        f.write("\t__slots__ = {}\n\n".format(klass.__slots__))
+        dev.write("\t'{}' : [".format(name))
 
         #create init
-        args = ["self"] + ["%s=None" % x for x in klass.__slots__]
+        args = ["self"] + ["{}=None".format(x) for x in klass.__slots__]
         specs = []
 
-        f.write("\tdef __init__(%s):\n" % ", ".join(args))
+        f.write("\tdef __init__({}):\n".format(", ".join(args)))
         for i, attr in enumerate(klass.__slots__):
-            f.write("\t\tself.%s = %s\n" % (attr, attr))
+            f.write("\t\tself.{} = {}\n".format(attr, attr))
 
             spec = klass.thrift_spec[i+1]
             # assert correct order, so the list of types is enough for check
             assert spec[2] == attr
             # dirty way to check optional attribute, since it is not in the generated code
             # can produce false positives, but these are not critical
-            optional = re.search(optional_re % (i+1, attr), tf, re.I)
+            optional = re.search(optional_re.format(i + 1, attr), tf, re.I)
             if optional:
-                specs.append("(None, %s)" % get_spec(spec))
+                specs.append("(None, {})".format(get_spec(spec)))
             else:
                 specs.append(get_spec(spec))
 
@@ -164,14 +164,14 @@ from apitypes import *\n
 
         func = inspect.getargspec(getattr(Pyload.Iface, name))
 
-        f.write("\tdef %s(%s):\n\t\tpass\n" % (name, ", ".join(func.args)))
+        f.write("\tdef {}({}):\n\t\tpass\n".format(name, ", ".join(func.args)))
 
-        spec = getattr(Pyload, "%s_result" % name).thrift_spec
+        spec = getattr(Pyload, "{}_result".format(name)).thrift_spec
         if not spec or not spec[0]:
-            dev.write("\t'%s': None,\n" % name)
+            dev.write("\t'{}': None,\n".format(name))
         else:
             spec = spec[0]
-            dev.write("\t'%s': %s,\n" % (name, get_spec(spec)))
+            dev.write("\t'{}': {},\n".format(name, get_spec(spec)))
 
     f.write("\n")
     dev.write("}\n")

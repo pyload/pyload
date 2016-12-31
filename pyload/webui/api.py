@@ -99,7 +99,7 @@ def call_api(func, args=""):
             kwargs[x] = loads(unquote(y))
         except Exception as e:
             # Unsupported input
-            msg = "Invalid Input %s, %s : %s" % (x, y, e.message)
+            msg = "Invalid Input {}, {} : {}".format(x, y, e.message)
             print_exc()
             print(msg)
             return error(415, msg)

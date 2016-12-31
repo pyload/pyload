@@ -91,9 +91,9 @@ class Setup(object):
         if error: #todo errno 44 port already in use
             print(error)
 
-        url = "http://%s:%d/" % (socket.gethostbyname(socket.gethostname()), web.port)
+        url = "http://{}:{:d}/".format(socket.gethostbyname(socket.gethostname()), web.port)
 
-        print("Setup is running at %s" % url)
+        print("Setup is running at {}".format(url))
 
         opened = webbrowser.open_new_tab(url)
         if not opened:
@@ -129,7 +129,7 @@ class Setup(object):
             return False
 
         print("")
-        print(_("Do you want to change the config path? Current is %s") % abspath(""))
+        print(_("Do you want to change the config path? Current is {}").format(abspath("")))
         print(_("If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it."))
         path = self.ask(_("Change config path?"), self.no, bool=True)
         if path:
@@ -318,7 +318,7 @@ class Setup(object):
             input()
             exit()
         except Exception as e:
-            print(_("Setting config path failed: %s") % str(e))
+            print(_("Setting config path failed: {}").format(e))
 
 
     def ask_lang(self):
@@ -338,16 +338,16 @@ class Setup(object):
         if answers:
             info = "("
             for i, answer in enumerate(answers):
-                info += (", " if i != 0 else "") + str((answer == default and "[%s]" % answer) or answer)
+                info += (", " if i != 0 else "") + str((answer == default and "[{}]".format(answer)) or answer)
 
             info += ")"
         elif bool:
             if default == self.yes:
-                info = "([%s]/%s)" % (self.yes, self.no)
+                info = "([{}]/{})".format(self.yes, self.no)
             else:
-                info = "(%s/[%s])" % (self.yes, self.no)
+                info = "({}/[{}])".format(self.yes, self.no)
         else:
-            info = "[%s]" % default
+            info = "[{}]".format(default)
 
         if password:
             p1 = True
@@ -370,7 +370,7 @@ class Setup(object):
                     print(_("Passwords did not match."))
 
         while True:
-            input = input(qst + " %s: " % info)
+            input = input(qst + " {}: ".format(info))
             input = input.decode(self.stdin_encoding)
 
             if input.strip() == "":

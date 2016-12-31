@@ -272,7 +272,7 @@ class Hoster(Base):
 
                     chown(location, uid, gid)
                 except Exception as e:
-                    self.log.warning(_("Setting User and Group failed: %s") % str(e))
+                    self.log.warning(_("Setting User and Group failed: {}").format(e))
 
         # convert back to unicode
         location = fs_decode(location)
@@ -293,7 +293,7 @@ class Hoster(Base):
             self.pyfile.size = self.dl.size
 
         if disposition and newname and newname != name: #triple check, just to be sure
-            self.log.info("%(name)s saved as %(newname)s" % {"name": name, "newname": newname})
+            self.log.info("{} saved as {}".format(name, newname))
             self.pyfile.name = newname
             filename = join(location, newname)
 
@@ -309,7 +309,7 @@ class Hoster(Base):
 
                 chown(fs_filename, uid, gid)
             except Exception as e:
-                self.log.warning(_("Setting User and Group failed: %s") % str(e))
+                self.log.warning(_("Setting User and Group failed: {}").format(e))
 
         self.lastDownload = filename
         return self.lastDownload
@@ -339,7 +339,7 @@ class Hoster(Base):
         content = f.read(read_size if read_size else -1)
         f.close()
         #produces encoding errors, better log to other file in the future?
-        #self.log.debug("Content: %s" % content)
+        #self.log.debug("Content: {}".format(content))
         for name, rule in rules.items():
             if isinstance(rule, str):
                 if rule in content:
@@ -392,7 +392,7 @@ class Hoster(Base):
             if exists(location):
                 raise SkipDownload(pyfile[0])
 
-            self.log.debug("File %s not skipped, because it does not exists." % self.pyfile.name)
+            self.log.debug("File {} not skipped, because it does not exists".format(self.pyfile.name))
 
     def clean(self):
         """ clean everything and remove references """

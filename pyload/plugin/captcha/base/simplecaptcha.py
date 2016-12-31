@@ -52,7 +52,7 @@ class ReCaptcha(object):
         return challenge, result
 
     def result(self, server, challenge):
-        return self.plugin.decrypt_captcha("%simage" % server, get={"c": challenge},
+        return self.plugin.decrypt_captcha("{}image".format(server), get={"c": challenge},
                                           cookies=True, forceUser=True, imgtype="jpg")
 
 
@@ -70,14 +70,14 @@ class AdsCaptcha(CaptchaService):
         return challenge, result
 
     def result(self, server, challenge):
-        return self.plugin.decrypt_captcha("%sChallenge.aspx" % server, get={"cid": challenge, "dummy": random()},
+        return self.plugin.decrypt_captcha("{}Challenge.aspx".format(server), get={"cid": challenge, "dummy": random()},
                                           cookies=True, imgtype="jpg")
 
 
 class SolveMedia(CaptchaService):
 
     def challenge(self, src):
-        html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript?k=%s" % src, cookies=True)
+        html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript?k={}".format(src), cookies=True)
         try:
             challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="([^"]+)">',
                                   html).group(1)
@@ -88,4 +88,4 @@ class SolveMedia(CaptchaService):
         return challenge, result
 
     def result(self, challenge):
-        return self.plugin.decrypt_captcha("http://api.solvemedia.com/papi/media?c=%s" % challenge, imgtype="gif")
+        return self.plugin.decrypt_captcha("http://api.solvemedia.com/papi/media?c={}".format(challenge), imgtype="gif")

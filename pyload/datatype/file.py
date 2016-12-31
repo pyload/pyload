@@ -123,7 +123,7 @@ class PyFile(object):
     name = property(get_name, set_name)
 
     def __repr__(self):
-        return "<PyFile %s: %s@%s>" % (self.id, self.name, self.pluginname)
+        return "<PyFile {}: {}@{}>".format(self.id, self.name, self.pluginname)
 
     @lock
     def init_plugin(self):

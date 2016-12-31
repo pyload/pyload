@@ -61,18 +61,18 @@ class DownloadThread(BaseThread):
 
 
                 pyfile.plugin.check_for_same_files(starting=True)
-                self.log.info(_("Download starts: %s" % pyfile.name))
+                self.log.info(_("Download starts: {}".format(pyfile.name)))
 
                 # start download
                 self.pyload.addonmanager.download_preparing(pyfile)
                 pyfile.plugin.preprocessing(self)
 
-                self.log.info(_("Download finished: %s") % pyfile.name)
+                self.log.info(_("Download finished: {}").format(pyfile.name))
                 self.pyload.addonmanager.download_finished(pyfile)
                 self.pyload.files.check_package_finished(pyfile)
 
             except NotImplementedError:
-                self.log.error(_("Plugin %s is missing a function.") % pyfile.pluginname)
+                self.log.error(_("Plugin {} is missing a function.").format(pyfile.pluginname))
                 pyfile.set_status("failed")
                 pyfile.error = "Plugin does not work"
                 self.clean(pyfile)
@@ -80,7 +80,7 @@ class DownloadThread(BaseThread):
 
             except Abort:
                 try:
-                    self.log.info(_("Download aborted: %s") % pyfile.name)
+                    self.log.info(_("Download aborted: {}").format(pyfile.name))
                 except Exception:
                     pass
 
@@ -101,7 +101,7 @@ class DownloadThread(BaseThread):
 
             except Retry as e:
                 reason = e.args[0]
-                self.log.info(_("Download restarted: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": reason})
+                self.log.info(_("Download restarted: {} | {}").format(pyfile.name, reason))
                 self.queue.put(pyfile)
                 continue
             except Fail as e:
@@ -111,13 +111,13 @@ class DownloadThread(BaseThread):
 
                 if msg == "offline":
                     pyfile.set_status("offline")
-                    self.log.warning(_("Download is offline: %s") % pyfile.name)
+                    self.log.warning(_("Download is offline: {}").format(pyfile.name))
                 elif msg == "temp. offline":
                     pyfile.set_status("temp. offline")
-                    self.log.warning(_("Download is temporary offline: %s") % pyfile.name)
+                    self.log.warning(_("Download is temporary offline: {}").format(pyfile.name))
                 else:
                     pyfile.set_status("failed")
-                    self.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": msg})
+                    self.log.warning(_("Download failed: {} | {}").format(pyfile.name, msg))
                     pyfile.error = msg
 
                 self.pyload.addonmanager.download_failed(pyfile)
@@ -131,7 +131,7 @@ class DownloadThread(BaseThread):
                     code = 0
                     msg = e.args
 
-                self.log.debug("pycurl exception %s: %s" % (code, msg))
+                self.log.debug("pycurl exception {}: {}".format(code, msg))
 
                 if code in (7, 18, 28, 52, 56):
                     self.log.warning(_("Couldn't connect to host or connection reset, waiting 1 minute and retry."))
@@ -146,7 +146,7 @@ class DownloadThread(BaseThread):
                             break
 
                     if pyfile.abort:
-                        self.log.info(_("Download aborted: %s") % pyfile.name)
+                        self.log.info(_("Download aborted: {}").format(pyfile.name))
                         pyfile.set_status("aborted")
                         # don't clean, aborting function does this itself
                         # self.clean(pyfile)
@@ -157,7 +157,7 @@ class DownloadThread(BaseThread):
 
                 else:
                     pyfile.set_status("failed")
-                    self.log.error("pycurl error %s: %s" % (code, msg))
+                    self.log.error("pycurl error {}: {}".format(code, msg))
                     if self.pyload.debug:
                         print_exc()
                         self.write_debug_report(pyfile.plugin.__name__, pyfile)
@@ -170,8 +170,7 @@ class DownloadThread(BaseThread):
             except SkipDownload as e:
                 pyfile.set_status("skipped")
 
-                self.log.info(_("Download skipped: %(name)s due to %(plugin)s")
-                % {"name": pyfile.name, "plugin": e.message})
+                self.log.info(_("Download skipped: {} due to {}").format(pyfile.name, e.message))
 
                 self.clean(pyfile)
 
@@ -185,12 +184,12 @@ class DownloadThread(BaseThread):
             except Exception as e:
                 if isinstance(e, ResponseException) and e.code == 500:
                     pyfile.set_status("temp. offline")
-                    self.log.warning(_("Download is temporary offline: %s") % pyfile.name)
+                    self.log.warning(_("Download is temporary offline: {}").format(pyfile.name))
                     pyfile.error = _("Internal Server Error")
 
                 else:
                     pyfile.set_status("failed")
-                    self.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": str(e)})
+                    self.log.warning(_("Download failed: {} | {}").format(pyfile.name, e))
                     pyfile.error = str(e)
 
                 if self.pyload.debug:

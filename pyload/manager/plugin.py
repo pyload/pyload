@@ -56,7 +56,7 @@ class PluginManager(object):
     def add_matcher(self, matcher, index=0):
         """ Inserts matcher at given index, first position by default """
         if not isinstance(matcher, PluginMatcher):
-            raise TypeError("Expected type of PluginMatcher, got '%s' instead" % type(matcher))
+            raise TypeError("Expected type of PluginMatcher, got '{}' instead".format(type(matcher)))
 
         if matcher in self.matcher:
             self.matcher.remove(matcher)
@@ -75,7 +75,7 @@ class PluginManager(object):
 
         for url in urls:
             if type(url) not in (str, buffer):
-                self.log.debug("Parsing invalid type %s" % type(url))
+                self.log.debug("Parsing invalid type {}".format(type(url)))
                 continue
 
             found = False
@@ -171,7 +171,7 @@ class PluginManager(object):
                     self.modules[(plugin, name)] = module
                     return module
                 except Exception as e:
-                    self.log.error(_("Error importing %(name)s: %(msg)s") % {"name": name, "msg": str(e)})
+                    self.log.error(_("Error importing {}: {}").format(name, e))
                     self.pyload.print_exc()
 
     def load_class(self, plugin, name):
@@ -180,7 +180,7 @@ class PluginManager(object):
         try:
             if module: return getattr(module, name)
         except AttributeError:
-            self.log.error(_("Plugin does not define class '%s'") % name)
+            self.log.error(_("Plugin does not define class '{}'").format(name))
 
     def find_module(self, fullname, path=None):
         #redirecting imports if necessary
@@ -214,12 +214,12 @@ class PluginManager(object):
             # if name.endswith("module"):
                 # #name = "pyload."
                 # name = name.replace(".module", "")
-                # self.log.debug("Old import reference detected, use %s" % name)
+                # self.log.debug("Old import reference detected, use {}".format(name))
                 # replace = False
                 # return __import__("pyload")
             # if name.startswith("module"):
                 # name = name.replace("module", "pyload")
-                # self.log.debug("Old import reference detected, use %s" % name)
+                # self.log.debug("Old import reference detected, use {}".format(name))
                 # replace = False
 
             # #TODO: this still works but does not respect other loaders
@@ -233,7 +233,7 @@ class PluginManager(object):
 
             # base, plugin = newname.rsplit(".", 1)
 
-            # self.log.debug("Redirected import %s -> %s" % (name, newname))
+            # self.log.debug("Redirected import {} -> {}".format(name, newname))
 
             # module = __import__(newname, globals(), locals(), [plugin])
             # #inject under new an old name

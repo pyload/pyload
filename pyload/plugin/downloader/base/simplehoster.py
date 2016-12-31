@@ -34,12 +34,12 @@ def set_cookies(cj, cookies):
 
 
 def parse_html_tag_attr_value(attr_name, tag):
-    m = re.search(r"%s\s*=\s*([\"']?)((?<=\")[^\"]+|(?<=')[^']+|[^>\s\"'][^>\s]*)\1" % attr_name, tag, re.I)
+    m = re.search(r"{}\s*=\s*([\"']?)((?<=\")[^\"]+|(?<=')[^']+|[^>\s\"'][^>\s]*)\1".format(attr_name,), tag, re.I)
     return m.group(2) if m else None
 
 
 def parse_html_form(attr_str, html, input_names=None):
-    for form in re.finditer(r"(?P<tag><form[^>]*%s[^>]*>)(?P<content>.*?)</?(form|body|html)[^>]*>" % attr_str,
+    for form in re.finditer(r"(?P<tag><form[^>]*{}[^>]*>)(?P<content>.*?)</?(form|body|html)[^>]*>".format(attr_str),
                             html, re.S | re.I):
         inputs = {}
         action = parseHtmlTagAttrValue("action", form.group('tag'))
@@ -147,7 +147,7 @@ def timestamp():
 class PluginParseError(Exception):
     def __init__(self, msg):
         Exception.__init__(self)
-        self.value = 'Parse error (%s) - plugin may be out of date' % msg
+        self.value = 'Parse error ({}) - plugin may be out of date'.format(msg)
 
     def __str__(self):
         return repr(self.value)
@@ -214,7 +214,7 @@ class SimpleHoster(Hoster):
                            just_header=just_header, decode=decode)
 
     def get_file_info(self):
-        self.log_debug("URL: %s" % self.pyfile.url)
+        self.log_debug("URL: {}".format(self.pyfile.url))
         if hasattr(self, "TEMP_OFFLINE_PATTERN") and re.search(self.TEMP_OFFLINE_PATTERN, self.html):
             self.temp_offline()
 
@@ -236,7 +236,7 @@ class SimpleHoster(Hoster):
         else:
             self.log_error("File size not parsed")
 
-        self.log_debug("FILE NAME: %s FILE SIZE: %s" % (self.pyfile.name, self.pyfile.size))
+        self.log_debug("FILE NAME: {} FILE SIZE: {}".format(self.pyfile.name, self.pyfile.size))
         return self.file_info
 
     def handle_free(self):
@@ -250,13 +250,13 @@ class SimpleHoster(Hoster):
 
     def long_wait(self, wait_time=None, max_tries=3):
         if wait_time and isinstance(wait_time, (int, int, float)):
-            time_str = "%dh %dm" % divmod(old_div(wait_time, 60), 60)
+            time_str = "{:d}h {:d}m".format(*divmod(old_div(wait_time, 60), 60))
         else:
             wait_time = 900
             time_str = "(unknown time)"
             max_tries = 100
 
-        self.log_info("Download limit reached, reconnect or wait %s" % time_str)
+        self.log_info("Download limit reached, reconnect or wait {}".format(time_str))
 
         self.set_wait(wait_time, True)
         self.wait()
@@ -270,7 +270,7 @@ class SimpleHoster(Hoster):
         if traffic == -1:
             return True
         size = old_div(self.pyfile.size, 1024)
-        self.log_info("Filesize: %i KiB, Traffic left for user %s: %i KiB" % (size, self.user, traffic))
+        self.log_info("Filesize: {:d} KiB, Traffic left for user {}: {:d} KiB".format(size, self.user, traffic))
         return size <= traffic
 
     # TODO: Remove in 0.5

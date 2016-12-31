@@ -86,7 +86,7 @@ def get_bsize(path):
     if os.name == "nt":
         import ctypes
 
-        drive = "%s\\" % os.path.splitdrive(path)[0]
+        drive = "{}\\".format(os.path.splitdrive(path)[0])
         cluster_sectors, sector_size = ctypes.c_longlong(0)
         ctypes.windll.kernel32.GetDiskFreeSpaceW(ctypes.c_wchar_p(drive), ctypes.pointer(cluster_sectors), ctypes.pointer(sector_size), None, None)
         return cluster_sectors * sector_size

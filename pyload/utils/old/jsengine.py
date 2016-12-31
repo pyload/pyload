@@ -155,21 +155,21 @@ class JsEngine(object):
         return rt.eval(script)
 
     def eval_js(self, script):
-        script = "print(eval(unescape('%s')))" % quote(script)
+        script = "print(eval(unescape('{}')))".format(quote(script))
         p = subprocess.Popen(["js", "-e", script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
         out, err = p.communicate()
         res = out.strip()
         return res
 
     def eval_node(self, script):
-        script = "console.log(eval(unescape('%s')))" % quote(script)
+        script = "console.log(eval(unescape('{}')))".format(quote(script))
         p = subprocess.Popen(["node", "-e", script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
         out, err = p.communicate()
         res = out.strip()
         return res
 
     def eval_rhino(self, script):
-        script = "print(eval(unescape('%s')))" % quote(script)
+        script = "print(eval(unescape('{}')))".format(quote(script))
         p = subprocess.Popen(["java", "-cp", path, "org.mozilla.javascript.tools.shell.Main", "-e", script],
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
         out, err = p.communicate()
