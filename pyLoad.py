@@ -37,7 +37,7 @@ def logo():
     info = pyload.info()
     logo = (
         "{}{}{}{}{}".format(Fore.BLUE, ws(1), '________', Fore.YELLOW, "____"),
-        "{}{}{}{}{}{}".format(Fore.BLUE, '/', ws(7), '|', Fore.YELLOW, "    \"),
+        "{}{}{}{}{}{}{}".format(Fore.BLUE, '/', ws(7), '|', Fore.YELLOW, ws(4), "\\"),
         "{}{}{}{}{}{}{}{}{}{}{}{}".format(Fore.BLUE, '|', ws(4), '___/', ws(4), Fore.YELLOW, "|", ws(7), Fore.BLUE, "__py", Fore.YELLOW, "Load__"),
         "{}{}{}{}{}".format(Fore.BLUE,'\___/', ws(2), Fore.YELLOW, "______/"),
         "{}{}{}{}{}{}{}{}{}v{}{}".format(Fore.YELLOW, ws(4), '|', ws(3), 'o|', ws(12), Style.BRIGHT, Back.BLUE, Fore.WHITE, info.version, Style.RESET_ALL),
@@ -126,7 +126,7 @@ def parse_args(argv=None):
 
     force_help = red("Force package installation")
     sp_update.add_argument('-f', '--force', action='store_true', help=force_help)
-        
+
     print(logo() + '\n')
     return ap.parse_args(argv)
 
@@ -151,13 +151,13 @@ def _open_browser(p):
 def main():
     _set_console()
 
-    args = parse_args()    
+    args = parse_args()
     func = getattr(pyload, args.command)
     kwgs = vars(args)
     kwgs.pop('command', None)
-        
+
     res = func(**kwgs)
-    
+
     if args.command in ('restart', 'start'):
         _open_browser(p)
 

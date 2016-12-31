@@ -14,7 +14,7 @@ def make_config(config):
 
     config.add_config_section("log", _("Log"), _("Description"), _("Long description"),
                             [
-                                ("log_size", "int", _("Size in kb"), 100),
+                                ("log_size", "int", _("Size in KiB"), 100),
                                 ("log_folder", "folder", _("Folder"), "Logs"),
                                 ("file_log", "bool", _("File Log"), True),
                                 ("log_count", "int", _("Count"), 5),
@@ -41,7 +41,7 @@ def make_config(config):
                                 ("download_folder", "folder", _("Download Folder"), "Downloads"),
                                 ("folder_per_package", "bool", _("Create folder for each package"), True),
                                 ("debug_mode", "bool", _("Debug Mode"), False),
-                                ("min_free_space", "int", _("Min Free Space (MB)"), 512),
+                                ("min_free_space", "int", _("Min Free Space (MiB)"), 512),
                                 ("renice", "int", _("CPU Priority"), 0),
                             ])
 
@@ -92,7 +92,7 @@ def make_config(config):
                                 ("limit_speed", "bool", _("Limit download speed"), False),
                                 ("interface", "str", _("Download interface to bind (ip or Name)"), ""),
                                 ("skip_existing", "bool", _("Skip already existing files"), False),
-                                ("max_speed", "int", _("Max download speed in kb/s"), -1),
+                                ("max_speed", "int", _("Max download speed in KiB/s"), -1),
                                 ("ipv6", "bool", _("Allow IPv6"), False),
                                 ("ssl", "bool", _("Force SSL downloads"), False),
                                 ("chunks", "int", _("Max connections for one download"), 3),

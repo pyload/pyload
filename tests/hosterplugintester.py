@@ -59,7 +59,7 @@ class HosterPluginTester(PluginTester):
             pyfile.plugin.preprocessing(self.thread)
 
             log(DEBUG, "downloading took {:d}s".format(time() - a))
-            log(DEBUG, "size {:d} kb".format(old_div(pyfile.size, 1024)))
+            log(DEBUG, "size {:d} KiB".format(old_div(pyfile.size, 1024)))
 
             if status == "offline":
                 raise Exception("No offline Exception raised.")

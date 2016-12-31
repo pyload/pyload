@@ -40,8 +40,8 @@ builtins.USERDIR = os.getenv('APPDATA') if os.name == 'nt' else os.path.expandus
 # Before changing the cwd, the abspath of the module must be manifested
 if 'pyload' in sys.modules:
     sys.modules['pyload'].__path__ = [os.path.abspath(p) for p in sys.modules['pyload'].__path__]
-        
-        
+
+
 # sys.path.append(os.path.join(PACKDIR, 'venv'))
 sys.path.append(PACKDIR)
 sys.path.append(USERDIR)
@@ -151,8 +151,7 @@ def restart(profile=None, configdir=None, refresh=0, remote=None, webui=None,
     stop(profile or 'default')
     return start(profile, configdir, refresh, remote, webui, debug, webdebug, daemon)
 
-    
+
 #@TODO: Implement test suite
 def test():
     raise NotImplementedError
-    

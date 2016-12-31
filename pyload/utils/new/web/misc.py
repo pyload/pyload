@@ -27,7 +27,7 @@ from pyload.webui import env
 # json encoder that accepts TBase objects
 class TBaseEncoder(json.JSONEncoder):
     def default(self, value):
-        if type(value) is in (instance, object):
+        if type(value) in (instance, object):
             return convert.to_dict(value, {})
         return json.JSONEncoder.default(self, value)
 

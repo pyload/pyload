@@ -18,7 +18,7 @@ since they don't meet our requirements.
 Disregarded server Reason
 ================== ==================================================================
 paste              threaded server, no improvement to bundled one
-twisted            Too heavy (30 MB RAM min), far more complex as what we need
+twisted            Too heavy (30 MiB RAM min), far more complex as what we need
 diesel             Problems with setup, no default packages, Not working in tests
 gunicorn           Preforking server, messes many things up in our use-case
 gevent             Not usuable with several threads

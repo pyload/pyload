@@ -102,7 +102,7 @@ class DatabaseJob(object):
         except Exception as e:
             print_exc()
             try:
-                print("Database Error @", self.f.__name__, self.args[1:], self.kwargs, e)
+                print("Database Error @", self.f.__name__, self.args[1:], self.kwargs, e.message)
             except Exception:
                 pass
 
@@ -252,7 +252,7 @@ class DatabaseBackend(Thread):
         self.c.execute(
             'CREATE TRIGGER IF NOT EXISTS "insert_package" AFTER INSERT ON "packages"'
             'BEGIN '
-            'UPDATE packages SET added = strftime("{}", "now"), '
+            'UPDATE packages SET added = strftime("%s", "now"), '
             'packageorder = (SELECT max(p.packageorder) + 1 FROM packages p WHERE p.root=new.root) '
             'WHERE rowid = new.rowid;'
             'END'
@@ -295,7 +295,7 @@ class DatabaseBackend(Thread):
         self.c.execute(
             'CREATE TRIGGER IF NOT EXISTS "insert_file" AFTER INSERT ON "files"'
             'BEGIN '
-            'UPDATE files SET added = strftime("{}", "now"), '
+            'UPDATE files SET added = strftime("%s", "now"), '
             'fileorder = (SELECT max(f.fileorder) + 1 FROM files f WHERE f.package=new.package) '
             'WHERE rowid = new.rowid;'
             'END'
