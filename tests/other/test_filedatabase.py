@@ -65,7 +65,7 @@ class TestDatabase(BenchmarkTest):
 
     def test_insert_many(self):
         for pid in self.pids:
-            self.db.addLinks([("url {}".format(i), "plugin") for i in range(50)], pid, self.owner)
+            self.db.addLinks((("url {}".format(i), "plugin") for i in range(50)), pid, self.owner)
 
     def test_get_packages(self):
         packs = self.db.getAllPackages()

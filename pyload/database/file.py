@@ -377,7 +377,7 @@ class FileMethods(DatabaseMethods):
     @queue
     def get_jobs(self, occ):
         """return pyfile ids, which are suitable for download and don't use a occupied plugin"""
-        cmd = "({})".format(", ".join(["'{}'".format(x) for x in occ]))
+        cmd = "({})".format(", ".join("'{}'".format(x) for x in occ))
 
         # dlstatus in online, queued, occupied | package status = ok
         cmd = ("SELECT f.owner, f.fid FROM files as f INNER JOIN packages as p ON f.package=p.pid "

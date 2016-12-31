@@ -56,7 +56,7 @@ class InfoThread(DecrypterThread):
 
             # TODO: no plugin information pushed to GUI
             # parse links and merge
-            hoster, crypter = self.manager.pyload.pluginmanager.parse_urls([l.url for l in links])
+            hoster, crypter = self.manager.pyload.pluginmanager.parse_urls(l.url for l in links)
             accumulate(hoster + crypter, plugins)
 
         self.progress = ProgressInfo("BasePlugin", "", _("online check"), 0, 0, sum(len(urls) for urls in plugins.values()),
@@ -100,7 +100,7 @@ class InfoThread(DecrypterThread):
             else:
                 parse.append(link)
 
-        data = parse_names([(link.name, link) for link in parse])
+        data = parse_names((link.name, link) for link in parse)
         # merge in packages that already have a name
         data = accumulate(tmp.items(), data)
 
@@ -158,7 +158,7 @@ class InfoThread(DecrypterThread):
 
             self.manager.log.debug("Finished Info Fetching for {}".format(pluginname))
         except Exception as e:
-            self.manager.log.warning(_("Info Fetching for {} failed | {}").format(pluginname, e)
+            self.manager.log.warning(_("Info Fetching for {} failed | {}").format(pluginname, e.message))
             self.pyload.print_exc()
         finally:
             self.progress.done = done

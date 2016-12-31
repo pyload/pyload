@@ -202,8 +202,8 @@ class XFileSharingPro(SimpleHoster):
             self.log_warning(re.sub(r"<.*?>", " ", self.errmsg))
 
             if 'wait' in self.errmsg:
-                wait_time = sum([int(v) * {"hour": 3600, "minute": 60, "second": 1}[u] for v, u in
-                                 re.findall(r'(\d+)\s*(hour|minute|second)?', self.errmsg)])
+                wait_time = sum(int(v) * {"hour": 3600, "minute": 60, "second": 1}[u] for v, u in
+                                re.findall(r'(\d+)\s*(hour|minute|second)?', self.errmsg))
                 self.wait(wait_time, True)
             elif 'captcha' in self.errmsg:
                 self.invalid_captcha()
@@ -307,7 +307,7 @@ class XFileSharingPro(SimpleHoster):
                     captcha_div = found.group(1)
                     self.log_debug(captcha_div)
                     numerals = re.findall(r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
-                    inputs['code'] = "".join([a[1] for a in sorted(numerals, key=lambda num: int(num[0]))])
+                    inputs['code'] = "".join(a[1] for a in sorted(numerals, key=lambda num: int(num[0])))
                     self.log_debug("CAPTCHA", inputs['code'], numerals)
                     return 3
                 else:

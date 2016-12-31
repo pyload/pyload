@@ -156,8 +156,8 @@ class DownloadManager(object):
                 self.active_downloads()))
 
         slots = self.get_remaining_plugin_slots()
-        occ = tuple([plugin for plugin, v in slots.items() if v == 0])
-        jobs = self.pyload.files.get_jobs(occ)
+        occ   = tuple(plugin for plugin, v in slots.items() if v == 0)
+        jobs  = self.pyload.files.get_jobs(occ)
 
         # map plugin to list of jobs
         plugins = defaultdict(list)

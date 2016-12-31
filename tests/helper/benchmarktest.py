@@ -37,7 +37,7 @@ class BenchmarkTest(object):
         if "tearDownClass" in cls.results:
             cls.bench.append("tearDownClass")
 
-        length = str(max([len(k) for k in cls.bench]) + 1)
+        length = str(max(len(k) for k in cls.bench) + 1)
         total = 0
 
         for k in cls.bench:
@@ -45,9 +45,9 @@ class BenchmarkTest(object):
 
             if len(v) > 1:
                 print(("{:" + length + "} {} | average: {:.2f} ms").format(
-                    k, ", ".join("{:.2f}".format(x) for x in v), old_div(sum(v),len(v))
-                )
-                total += old_div(sum(v),len(v))
+                    k, ", ".join("{:.2f}".format(x) for x in v), old_div(sum(v), len(v))
+                ))
+                total += old_div(sum(v), len(v))
             else:
                 print(("{:" + length + "}: {:.2f} ms").format(k, v[0]))
                 total += v[0]

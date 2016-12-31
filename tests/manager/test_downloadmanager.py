@@ -45,14 +45,14 @@ class TestDownloadManager(BenchmarkTest):
         for user in (adminUser, normalUser):
             for i in range(self.PACKAGES):
                 pid = self.files.addPackage("name {:d}", "folder", -1, "", "", "", False, user.uid)
-                self.files.addLinks([("url{:d}".format(i), "plugin{:d}".format(i % self.PLUGINS)) for i in range(self.LINKS)], pid, user.uid)
+                self.files.addLinks((("url{:d}".format(i), "plugin{:d}".format(i % self.PLUGINS)) for i in range(self.LINKS)), pid, user.uid)
 
     def test_simple(self):
         jobs = self.db.getJobs([])
         assert len(jobs) == 2
 
     def test_empty(self):
-        assert not self.db.getJobs(["plugin{:d}".format(i) for i in range(self.PLUGINS)])
+        assert not self.db.getJobs("plugin{:d}".format(i) for i in range(self.PLUGINS))
 
 
 

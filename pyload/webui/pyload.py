@@ -43,7 +43,7 @@ def i18n(lang=None):
         # TODO use lang from PYLOAD.config or setup
     else:
         # TODO auto choose language
-        lang = select_language(["en"])
+        lang = select_language(("en",))
 
     return json_dumps({})
 

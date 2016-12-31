@@ -134,7 +134,7 @@ class AccountManager(object):
         # filter by owner / shared, but admins see all accounts
         accounts = []
         for plugin, accs in self.accounts.items():
-            accounts.extend([acc for acc in accs if acc.shared or not uid or acc.owner == uid])
+            accounts.extend(acc for acc in accs if acc.shared or not uid or acc.owner == uid)
 
         return accounts
 

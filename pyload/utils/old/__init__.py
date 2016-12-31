@@ -48,7 +48,7 @@ def remove_chars(string, repl):
     if isinstance(string, str):
         return string.translate(maketrans("", ""), repl)
     elif isinstance(string, str):
-        return string.translate(dict([(ord(s), None) for s in repl]))
+        return string.translate(dict((ord(s), None) for s in repl))
 
 
 def get_console_encoding(enc):

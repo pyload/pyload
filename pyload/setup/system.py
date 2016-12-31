@@ -20,12 +20,12 @@ def get_system_info():
     if info is None:
         import platform
 
-        info = OrderedDict([
+        info = OrderedDict((
             (_("Platform"), platform.platform()),
             (_("Version"), sys.version),
             (_("Path"), os.path.abspath("")),
             (_("Encoding"), sys.getdefaultencoding()),
             (_("FS-Encoding"), sys.getfilesystemencoding())
-        ])
+        ))
 
     return info

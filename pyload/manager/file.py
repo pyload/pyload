@@ -245,8 +245,8 @@ class FileManager(object):
 
         # load jobs with file info
         if occ not in self.jobCache:
-            self.jobCache[occ] = dict([(k, self.get_file_info(fid)) for k, fid
-                                       in self.db.get_jobs(occ).items()])
+            self.jobCache[occ] = dict((k, self.get_file_info(fid)) for k, fid
+                                      in self.db.get_jobs(occ).items())
 
         return self.jobCache[occ]
 
