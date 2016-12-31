@@ -158,8 +158,8 @@ class CurlChunk(CurlRequest):
         """ returns a Curl handle ready to use for perform/multiperform """
 
         self.set_request_context(self.p.url, self.p.get, self.p.post, self.p.referer, self.p.cookies)
-        self.c.setopt(pycurl.WRITEFUNCTION, self.writeBody)
-        self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
+        self.c.setopt(pycurl.WRITEFUNCTION, self.write_body)
+        self.c.setopt(pycurl.HEADERFUNCTION, self.write_header)
 
         # request all bytes, since some servers in russia seems to have a defect arihmetic unit
 
@@ -175,9 +175,9 @@ class CurlChunk(CurlRequest):
                 if self.arrived + self.range[0] >= self.range[1]: return None
 
                 if self.id == len(self.p.info.chunks) - 1: #as last chunk dont set end range, so we get everything
-                    range = "{:d}-".format(self.arrived + self.range[0])
+                    range = b"{:d}-".format(self.arrived + self.range[0])
                 else:
-                    range = "{:d}-{:d}".format(self.arrived + self.range[0], min(self.range[1] + 1, self.p.size - 1))
+                    range = b"{:d}-{:d}".format(self.arrived + self.range[0], min(self.range[1] + 1, self.p.size - 1))
 
                 self.log.debug("Chunked resume with range {}".format(range))
                 self.c.setopt(pycurl.RANGE, range)
@@ -269,7 +269,7 @@ class CurlChunk(CurlRequest):
         self.headerParsed = True
 
     def stop(self):
-        """The download will not proceed after next call of writeBody"""
+        """The download will not proceed after next call of write_body"""
         self.range = [0, 0]
         self.size = 0
 
