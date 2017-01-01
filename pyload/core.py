@@ -424,12 +424,12 @@ class Core(object):
             f.close()
 
         #self.scheduler.add_job(0, self.accountmanager.get_account_infos)
-        self.log.info(_("Activating Accounts..."))
+        self.log.info(_("Activating Accounts ..."))
         self.accountmanager.refresh_all_accounts()
 
         #restart failed
         if self.config["download"]["restart_failed"]:
-            self.log.info(_("Restarting failed downloads..."))
+            self.log.info(_("Restarting failed downloads ..."))
             self.api.restart_failed()
 
         # start downloads
@@ -579,7 +579,7 @@ class Core(object):
         _exit(0)
 
     def shutdown(self):
-        self.log.info(_("shutting down..."))
+        self.log.info(_("shutting down ..."))
         self.eventmanager.dispatch_event("coreShutdown")
         try:
             if hasattr(self, "webserver"):

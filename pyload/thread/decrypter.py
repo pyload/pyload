@@ -17,7 +17,7 @@ class DecrypterThread(BaseThread):
 
     def __init__(self, manager, data, fid, pid, owner):
         BaseThread.__init__(self, manager, owner)
-        # [... (url, plugin) ...]
+        # [...(url, plugin)...]
         self.data = data
         self.fid = fid
         self.pid = pid

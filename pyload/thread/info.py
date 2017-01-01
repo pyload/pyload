@@ -16,7 +16,7 @@ class InfoThread(DecrypterThread):
     def __init__(self, manager, owner, data, pid=-1, oc=None):
         BaseThread.__init__(self, manager, owner)
 
-        # [... (url, plugin) ...]
+        # [...(url, plugin)...]
         self.data = data
         self.pid = pid
         self.oc = oc # online check
